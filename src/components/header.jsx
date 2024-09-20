@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 import LandingHeader from "./landingHeader";
 import AuthHeader from "./authHeader";
@@ -10,38 +9,27 @@ const Header = ({ dfToken }) => {
   const { userDetails, popoverMenu, setPopoverMenu, changeTheme } =
     useGlobalContext();
 
-  // State to hold the header component
-  const [header, setHeader] = React.useState(null);
+  // Determine header component based on dfToken and router pathname
+  let headerComponent = null;
+  const path = router.pathname;
 
-  // Effect to determine header component based on dfToken and router pathname
-  useEffect(() => {
-    const path = router.pathname;
+  if (path === "/") {
+    headerComponent = <LandingHeader dfToken={dfToken} />;
+  } else if (!dfToken || (dfToken && path === "/email-verify")) {
+    headerComponent = <AuthHeader />;
+  } else if (dfToken && path !== "/email-verify") {
+    headerComponent = (
+      <LoggedInHeader
+        dfToken={dfToken}
+        userDetails={userDetails}
+        popoverMenu={popoverMenu}
+        setPopoverMenu={setPopoverMenu}
+        changeTheme={changeTheme}
+      />
+    );
+  }
 
-    if (path === "/") {
-      setHeader(<LandingHeader dfToken={dfToken} />);
-    } else if (!dfToken || (dfToken && path === "/email-verify")) {
-      setHeader(<AuthHeader />);
-    } else if (dfToken && path !== "/email-verify") {
-      setHeader(
-        <LoggedInHeader
-          dfToken={dfToken}
-          userDetails={userDetails}
-          popoverMenu={popoverMenu}
-          setPopoverMenu={setPopoverMenu}
-          changeTheme={changeTheme}
-        />
-      );
-    }
-  }, [
-    dfToken,
-    router.pathname,
-    userDetails,
-    popoverMenu,
-    setPopoverMenu,
-    changeTheme,
-  ]);
-
-  return header;
+  return headerComponent;
 };
 
 export default Header;

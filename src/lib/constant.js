@@ -5,3 +5,7 @@ export const popovers = {
   userMenu: "user-menu",
   loggedInMenu: "loggedin-menu",
 };
+
+export const modals = {
+  onboarding: "onboarding",
+};

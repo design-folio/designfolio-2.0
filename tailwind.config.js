@@ -11,7 +11,7 @@ module.exports = {
       fontFamily: {
         satoshi: ["var(--font-satoshi)", "sans-serif"],
         sfpro: ["var(--font-sfpro)", "sans-serif"],
-        inter: ["var(--font-inter)", "sans-serif"],
+        inter: ["var(--font-inter)"],
       },
       colors: {
         "landing-bg": "var(--landing-bg)",
@@ -20,6 +20,8 @@ module.exports = {
         "description-text": "var(--description-text)",
         "description-sub-text-color": "var(--description-sub-text-color)",
         "df-bg": "var(--df-bg)",
+        "input-text-color": "var(--input-text-color)",
+        "builder-section-card-bg": "var(--builder-section-card-bg)",
         "logo-text-color": "var(--logo-text-color)",
         "header-bg-color": "var(--header-bg-color)",
         "icon-color": "var(--icon-color)",
@@ -89,6 +91,22 @@ module.exports = {
         "theme-box-border-color": "var(--theme-box-border-color)",
         "theme-selected-color": "var(--theme-selected-color)",
         "theme-bg-hover-color": "var(--theme-bg-hover-color)",
+
+        "progress-active-color": "var(--progress-active-color)",
+        "progress-text-color": "var(--progress-text-color)",
+        "progess-trail-color": "var(--progess-trail-color)",
+
+        "checked-list-item-bg-color": "var(--checked-list-item-bg-color)",
+        "checked-list-item-border-color":
+          "var(--checked-list-item-border-color)",
+        "checked-list-item-bg-hover-color":
+          "var(--checked-list-item-bg-hover-color)",
+        "checked-list-item-icon-color": "var(--checked-list-item-icon-color)",
+        "checked-list-item-text-color": "var(--checked-list-item-text-color)",
+        "check-list-empty-border-color": "var(--check-list-empty-border-color)",
+        "modal-bg-color": "var(--modal-bg-color)",
+        "tip-text-color": "var(--tip-text-color)",
+        "modal-footer-bg": "var(--modal-footer-bg)",
       },
       boxShadow: {
         "secondary-btn-shadow": "var(--secondary-btn-shadow)", // Use the CSS variable here

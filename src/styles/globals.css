@@ -118,6 +118,25 @@
   --input-error-shadow: 0px 0px 0px 4px #ff3a3029;
 
   --card-shadow: 0px 0px 27.2px 0px #0000000d;
+
+  --progress-active-color: #ff9500;
+  --progress-text-color: #202937;
+  --progess-trail-color: #dddddd;
+
+  --checked-list-item-bg-color: transparent;
+  --checked-list-item-border-color: #e9eaeb;
+  --checked-list-item-bg-hover-color: #f6f7f9;
+  --checked-list-item-icon-color: #3f4358;
+  --checked-list-item-text-color: #202937;
+  --check-list-empty-border-color: #e9eaeb;
+
+  --builder-section-card-bg: #ffffff;
+
+  --modal-bg-color: #ffffff;
+  --label-text: #202937;
+
+  --tip-text-color: #828282;
+  --modal-footer-bg: #f5f7f9;
 }
 
 [data-theme="dark"] {
@@ -186,7 +205,7 @@
 
   /* card */
 
-  --builder-section-card-bg: #13151a;
+  --builder-section-card-bg: #1d1f27;
   --builder-section-card-heading-text: #e9eaeb;
 
   --profile-card-intro-text: #e9eaeb;
@@ -205,15 +224,32 @@
 
   --tools-card-item-border: #2f323d;
   --tools-card-item-text: #e9eaeb;
+
+  --progress-active-color: #ff9500;
+  --progress-text-color: #f9f9fb;
+  --progess-trail-color: #414453;
+
+  --checked-list-item-bg-color: transparent;
+  --checked-list-item-border-color: #3f4358;
+  --checked-list-item-bg-hover-color: #30323d;
+  --checked-list-item-icon-color: #676b7f;
+  --checked-list-item-text-color: #e9eaeb;
+
+  --check-list-empty-border-color: #3f4358;
+  --modal-bg-color: #23252f;
+  --tip-text-color: #e9eaeb;
+  --modal-footer-bg: #2c2e3a;
 }
 
 html {
   scroll-behavior: smooth;
   background-color: var(--df-bg);
+  min-height: 100vh;
 }
 
 body {
   overflow-y: scroll;
+  min-height: 100vh;
 }
 
 *:focus {
@@ -260,6 +296,11 @@ body {
   margin-top: 8px;
   font-size: 14px;
   font-weight: 500;
+}
+
+.webkit-fill {
+  @apply w-full; /* Optional: Apply Tailwind's full width class */
+  width: -webkit-fill-available;
 }
 
 @keyframes slide-up {

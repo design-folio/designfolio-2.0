@@ -96,10 +96,15 @@ function MyApp({ Component, pageProps, dfToken }) {
           forcedTheme={Component.theme || null}
           themes={theme}
         >
+          <style jsx global>{`
+            :root {
+              font-family: ${inter.style.fontFamily};
+            }
+          `}</style>
           <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
             <GlobalProvider>
               <main
-                className={`${satoshi.variable}  ${inter.variable} ${sfpro.variable}`}
+                className={`${satoshi.variable} ${sfpro.variable} ${inter.variable}`}
               >
                 <Header dfToken={dfToken} />
                 <Component {...pageProps} />

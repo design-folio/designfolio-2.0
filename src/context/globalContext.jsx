@@ -18,6 +18,17 @@ export const GlobalProvider = ({ children }) => {
   const [popoverMenu, setPopoverMenu] = useState(null);
   const [userDetails, setUserDetails] = useState(null);
   const [isUserDetailsFromCache, setIsUserDetailsFromCache] = useState(false);
+  const [isTaskCompleted, setIsTaskCompleted] = useState(false);
+  const [taskPercentage, setTaskPercentage] = useState(0);
+  const [checkList, setCheckList] = useState([
+    { name: "Add at least 1 Case Study", checked: false },
+    { name: "Add Skills", checked: false },
+    { name: "Add Experience", checked: false },
+    { name: "Add Testimonials", checked: false },
+  ]);
+  const [showModal, setShowModal] = useState("onboarding");
+  const [step, setStep] = useState(1);
+
   const { setTheme } = useTheme();
 
   // Fetch user details
@@ -40,9 +51,38 @@ export const GlobalProvider = ({ children }) => {
 
   useEffect(() => {
     if (data && !userDetailsIsState) {
-      setTheme(data?.user?.theme == 1 ? "dark" : "light");
-      setUserDetails(data?.user);
+      const userData = data?.user;
+
+      setTheme(userData?.theme == 1 ? "dark" : "light");
+      setUserDetails(userData);
       setIsUserDetailsFromCache(true);
+      setCheckList((prevList) => {
+        const newList = prevList.map((item) => {
+          switch (item.name) {
+            case "Add at least 1 Case Study":
+              return {
+                ...item,
+                checked: userData?.projects?.length > 0,
+              };
+            case "Add Skills":
+              return { ...item, checked: userData?.skills?.length > 0 };
+            case "Add Experience":
+              return {
+                ...item,
+                checked: userData?.experiences?.length > 0,
+              };
+            case "Add Testimonials":
+              return { ...item, checked: userData?.reviews?.length > 0 };
+
+            default:
+              return item;
+          }
+        });
+        const completedTasks = newList.filter((item) => item.checked).length;
+        setIsTaskCompleted(completedTasks === newList.length);
+        setTaskPercentage((completedTasks / newList.length) * 100);
+        return newList;
+      });
     }
   }, [data, setTheme, userDetailsIsState]);
 
@@ -51,6 +91,15 @@ export const GlobalProvider = ({ children }) => {
       setTheme(theme == 1 ? "dark" : "light");
       setUserDetails(() => ({ ...userDetails, theme: theme }));
     });
+  };
+
+  const openModal = (type = null) => {
+    setShowModal(type);
+  };
+
+  const closeModal = () => {
+    setShowModal(null);
+    setStep(1);
   };
 
   return (
@@ -64,6 +113,15 @@ export const GlobalProvider = ({ children }) => {
         setIsUserDetailsFromCache,
         userDetailsIsState,
         changeTheme,
+        isTaskCompleted,
+        taskPercentage,
+        checkList,
+        showModal,
+        setShowModal,
+        step,
+        setStep,
+        openModal,
+        closeModal,
       }}
     >
       {children}

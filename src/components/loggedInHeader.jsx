@@ -27,6 +27,7 @@ import Cookies from "js-cookie";
 import { _publish } from "@/network/post-request";
 import Popover from "./popover";
 import queryClient from "@/network/queryClient";
+import useClient from "@/hooks/useClient";
 
 export default function LoggedInHeader({
   userDetails,
@@ -42,7 +43,8 @@ export default function LoggedInHeader({
   const [updateLoading, setUpdateLoading] = useState(false);
   const [isMobileThemePopup, setIsMobileThemePopup] = useState(false);
 
-  const { avatar, firstName, username, latestPublishDate } = userDetails || {};
+  const { username, latestPublishDate } = userDetails || {};
+  const { isClient } = useClient();
 
   useEffect(() => {
     router.prefetch("/");
@@ -132,7 +134,7 @@ export default function LoggedInHeader({
     : "fixed top-0 left-0 right-0 md:px-10 xl:px-0 z-10 transform translate-y-[-100%] transition-transform duration-300 ease-out";
 
   return (
-    <div className={`${headerStyle} px-3 md:px-0 py-2 md:py-5 `}>
+    <div className={`${headerStyle} px-2 md:px-0 py-2 md:py-5 bg-transparent`}>
       <div className="shadow-header-shadow max-w-[890px] p-3 md:px-[32px] md:!py-4 rounded-[24px] bg-header-bg-color mx-auto flex justify-between items-center">
         <div className="flex items-center gap-[24px]">
           <Link href={"/builder"}>
@@ -147,38 +149,330 @@ export default function LoggedInHeader({
               type="secondary"
               customClass="!p-4"
             />
-            <div
-              className={`pt-[21px] origin-top-right absolute z-20 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${
-                popoverMenu === popovers.themeMenu
-                  ? "opacity-100 scale-100"
-                  : "opacity-0 scale-90 pointer-events-none"
-              }`}
-            >
-              <div className="w-[545.5px]  rounded-lg shadow-dropdown bg-theme-bg-color border-theme-border-color focus:outline-none">
-                <div className="flex justify-between items-center p-5">
-                  <Text
-                    as="h3"
-                    size="p-medium"
-                    className="text-[18px] md:text-[25px] font-medium text-popover-heading-color"
-                  >
-                    Appearance Settings
-                  </Text>
-                  <Button
-                    type="secondary"
-                    customClass="!p-2 rounded-[8px]"
-                    icon={<CloseIcon className="text-icon-color" />}
-                    onClick={handleCloseTheme}
-                  />
+            {isClient && (
+              <div
+                className={`pt-[21px] origin-top-right absolute z-20 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${
+                  popoverMenu === popovers.themeMenu
+                    ? "opacity-100 scale-100"
+                    : "opacity-0 scale-90 pointer-events-none"
+                }`}
+              >
+                <div className="w-[545.5px]  rounded-lg shadow-dropdown bg-theme-bg-color border-theme-border-color focus:outline-none">
+                  <div className="flex justify-between items-center p-5">
+                    <Text
+                      as="h3"
+                      size="p-medium"
+                      className="text-[18px] md:text-[25px] font-medium text-popover-heading-color"
+                    >
+                      Appearance Settings
+                    </Text>
+                    <Button
+                      type="secondary"
+                      customClass="!p-2 rounded-[8px]"
+                      icon={<CloseIcon className="text-icon-color" />}
+                      onClick={handleCloseTheme}
+                    />
+                  </div>
+                  <div className="px-5 py-2">
+                    <Text
+                      size="p-small"
+                      className="text-[14px] md:text-[16px] font-medium  text-popover-heading-color"
+                    >
+                      Choose your preferred theme
+                    </Text>
+
+                    <div className="flex gap-[24px] mt-3">
+                      <div
+                        onClick={() => changeTheme(0)}
+                        className={`w-full border bg-default-theme-box-bg-color border-default-theme-box-border-color hover:bg-default-theme-bg-hover-color rounded-[8px] p-[10px] cursor-pointer`}
+                      >
+                        <div className="flex justify-between items-center">
+                          <SunIcon
+                            className={
+                              theme == "dark"
+                                ? "text-icon-color"
+                                : "text-default-theme-selected-color"
+                            }
+                          />
+                          {(theme == "light" || theme == undefined) && (
+                            <img src="/assets/svgs/select.svg" alt="" />
+                          )}
+                        </div>
+                        <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] mt-4">
+                          Light mode
+                        </p>
+                      </div>
+                      <div
+                        onClick={() => changeTheme(1)}
+                        className={`w-full border bg-theme-box-bg-color border-theme-box-border-color hover:bg-theme-bg-hover-color rounded-[8px] p-[10px] cursor-pointer`}
+                      >
+                        <div className="flex justify-between items-center">
+                          <MoonIcon
+                            className={
+                              theme !== "dark"
+                                ? "text-icon-color"
+                                : "text-default-theme-selected-color"
+                            }
+                          />
+                          {theme == "dark" && (
+                            <img src="/assets/svgs/select.svg" alt="" />
+                          )}
+                        </div>
+                        <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] mt-4">
+                          Dark mode
+                        </p>
+                      </div>
+                    </div>
+
+                    <Text
+                      size="xxsmall"
+                      className="text-xs font-medium text-popover-heading-color mt-2"
+                    >
+                      💫 More theme settings and templates coming soon! Keep an
+                      eye.
+                    </Text>
+                  </div>
                 </div>
-                <div className="px-5 py-2">
-                  <Text
-                    size="p-small"
-                    className="text-[14px] md:text-[16px] font-medium  text-popover-heading-color"
-                  >
+              </div>
+            )}
+          </div>
+          <Button
+            icon={<PreviewIcon />}
+            type="secondary"
+            customClass="!p-4"
+            animation
+          />
+          <div className="relative publish-button">
+            <Button
+              text={"Publish Site"}
+              onClick={handlePublishBtn}
+              customClass="!p-4 mr-0"
+              icon={<img src="/assets/svgs/power.svg" alt="launch builder" />}
+              animation
+            />
+            {isClient && (
+              <div
+                className={`pt-5 origin-top-right absolute z-20 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${
+                  popoverMenu === popovers.publishMenu
+                    ? "opacity-100 scale-100"
+                    : "opacity-0 scale-90 pointer-events-none"
+                }`}
+              >
+                <div className=" w-[310px]  rounded-lg shadow-dropdown bg-theme-bg-color border-theme-border-color focus:outline-none">
+                  <div className="p-4">
+                    <div className="flex justify-between items-center">
+                      <div
+                        className="flex gap-2 cursor-pointer items-center"
+                        onClick={() =>
+                          window.open(
+                            `https://${username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`,
+                            "_blank"
+                          )
+                        }
+                      >
+                        <div className="mt-1">
+                          <LinkIcon className="text-icon-color" />
+                        </div>
+                        <div>
+                          <p className="text-base-text text-[14px] font-[500] font-sfpro underline underline-offset-4">
+                            {username}.designfolio.me
+                          </p>
+                          <p className="text-description-text text-[12px] font-[400] font-inter mt-1">
+                            {`Updated: ${formatedValue}`}
+                          </p>
+                        </div>
+                      </div>
+                      <Button
+                        icon={
+                          isCopied ? (
+                            <TickIcon className="text-icon-color" />
+                          ) : (
+                            <CopyIcon className="text-icon-color" />
+                          )
+                        }
+                        type="secondary"
+                        customClass="p-2 rounded-lg pointer-events"
+                        onClick={handleCopyText}
+                      />
+                    </div>
+
+                    <Button
+                      customClass="w-full mt-4"
+                      text="Update changes"
+                      isDisabled={updateLoading}
+                      onClick={handleUpdate}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="relative inline-block text-left">
+            <DfImage
+              onClick={() =>
+                setPopoverMenu((prev) =>
+                  prev == popovers.userMenu ? null : popovers.userMenu
+                )
+              }
+              src={
+                userDetails?.avatar?.url
+                  ? userDetails?.avatar?.url
+                  : "/assets/svgs/avatar.svg"
+              }
+              className={"w-[60px] h-[60px] rounded-2xl cursor-pointer"}
+            />
+
+            {isClient && (
+              <div
+                className={`pt-5 absolute z-20 right-0 origin-top-right transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${
+                  popoverMenu === popovers.userMenu
+                    ? "opacity-100 scale-100"
+                    : "opacity-0 scale-90 pointer-events-none"
+                }`}
+              >
+                <div className=" w-[310px] rounded-lg shadow-dropdown bg-theme-bg-color border-theme-border-color focus:outline-none">
+                  <div className="p-4">
+                    <div className="py-1">
+                      <Button
+                        text={"Account settings"}
+                        customClass="w-full text-[14px] justify-start py-[10px] rounded-lg"
+                        type="normal"
+                        onClick={handlenavigation}
+                        icon={<SettingIcon className="text-icon-color" />}
+                      />
+
+                      <Button
+                        text={"Logout"}
+                        customClass="w-full text-[14px] justify-start py-[10px] rounded-lg"
+                        type="normal"
+                        onClick={handleLogout}
+                        icon={
+                          <img
+                            src="/assets/svgs/logout.svg"
+                            alt="designfolio logo"
+                          />
+                        }
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+        <Button
+          customClass="md:hidden"
+          type="secondary"
+          icon={
+            <>
+              <HamburgerIcon
+                className={`mb-[4.67px] transition-transform text-icon-color easeInOut ${
+                  popovers.loggedInMenu === popoverMenu &&
+                  "translate-y-3.2 rotate-45"
+                }`}
+              />
+              <HamburgerIcon
+                className={`transition-transform text-icon-color easeInOut ${
+                  popovers.loggedInMenu === popoverMenu &&
+                  "-rotate-45 -translate-y-3.2"
+                }`}
+              />
+            </>
+          }
+          onClick={() =>
+            setPopoverMenu((prev) =>
+              prev == popovers.loggedInMenu ? null : popovers.loggedInMenu
+            )
+          }
+        />
+        {isClient && (
+          <Popover
+            show={popovers.loggedInMenu === popoverMenu}
+            className="left-0"
+          >
+            {!isMobileThemePopup ? (
+              <div>
+                <Button
+                  text={"Account settings"}
+                  customClass="w-full text-[14px] justify-between py-[10px] rounded-lg px-0 hover:bg-transparent !transition-none"
+                  type="normal"
+                  onClick={handlenavigation}
+                  iconPosition="right"
+                  icon={<SettingIcon className="text-icon-color" />}
+                />
+
+                <Button
+                  text={"Logout"}
+                  customClass="w-full text-[14px]  justify-between py-[10px] rounded-lg px-0 hover:bg-transparent !transition-none"
+                  type="normal"
+                  onClick={handleLogout}
+                  iconPosition="right"
+                  icon={
+                    <img src="/assets/svgs/logout.svg" alt="designfolio logo" />
+                  }
+                />
+                <Button
+                  icon={<ThemeIcon className="text-icon-color" />}
+                  onClick={() => setIsMobileThemePopup(true)}
+                  type="secondary"
+                  customClass="!p-4 w-full mt-4"
+                  text={"Change theme"}
+                />
+                <Button
+                  text={"Publish Site"}
+                  onClick={handleUpdate}
+                  customClass="!p-4 mr-0 w-full mt-4"
+                  icon={
+                    <img src="/assets/svgs/power.svg" alt="launch builder" />
+                  }
+                  animation
+                />
+                <div className="w-full h-[2px] bg-placeholder-color my-4" />
+                <div
+                  className="flex gap-2 cursor-pointer justify-center items-start mr-5"
+                  onClick={() =>
+                    window.open(
+                      `https://${username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`,
+                      "_blank"
+                    )
+                  }
+                >
+                  <div className="mt-1">
+                    <LinkIcon className="text-icon-color" />
+                  </div>
+                  <div>
+                    <p className="text-base-text text-[14px] font-[500] font-sfpro underline underline-offset-4 text-center">
+                      {username}.designfolio.me
+                    </p>
+                    <p className="text-description-text text-[12px] font-[400] font-inter mt-1 text-center">
+                      {`Updated: ${formatedValue}`}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div>
+                <Button
+                  text="Go Back"
+                  onClick={() => setIsMobileThemePopup(false)}
+                  type="secondary"
+                  size="small"
+                  customClass="!transition-none"
+                  icon={<LeftArrow />}
+                />
+                <Text
+                  size="p-xsmall"
+                  className="text-[16px] font-medium text-popover-heading-color mt-4"
+                >
+                  Appearance Settings
+                </Text>
+                <div>
+                  <Text className="!text-[12px] font-medium leading-3  text-popover-heading-color mt-2">
                     Choose your preferred theme
                   </Text>
 
-                  <div className="flex gap-[24px] mt-3">
+                  <div className="flex gap-[24px] mt-5">
                     <div
                       onClick={() => changeTheme(0)}
                       className={`w-full border bg-default-theme-box-bg-color border-default-theme-box-border-color hover:bg-default-theme-bg-hover-color rounded-[8px] p-[10px] cursor-pointer`}
@@ -223,300 +517,16 @@ export default function LoggedInHeader({
 
                   <Text
                     size="xxsmall"
-                    className="text-xs font-medium text-popover-heading-color mt-2"
+                    className="text-xs leading-[20px] font-medium text-popover-heading-color mt-2"
                   >
                     💫 More theme settings and templates coming soon! Keep an
                     eye.
                   </Text>
                 </div>
               </div>
-            </div>
-          </div>
-          <Button
-            icon={<PreviewIcon />}
-            type="secondary"
-            customClass="!p-4"
-            animation
-          />
-          <div className="relative publish-button">
-            <Button
-              text={"Publish Site"}
-              onClick={handlePublishBtn}
-              customClass="!p-4 mr-0"
-              icon={<img src="/assets/svgs/power.svg" alt="launch builder" />}
-              animation
-            />
-            <div
-              className={`pt-5 origin-top-right absolute z-20 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${
-                popoverMenu === popovers.publishMenu
-                  ? "opacity-100 scale-100"
-                  : "opacity-0 scale-90 pointer-events-none"
-              }`}
-            >
-              <div className=" w-[310px]  rounded-lg shadow-dropdown bg-theme-bg-color border-theme-border-color focus:outline-none">
-                <div className="p-4">
-                  <div className="flex justify-between items-center">
-                    <div
-                      className="flex gap-2 cursor-pointer items-center"
-                      onClick={() =>
-                        window.open(
-                          `https://${username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`,
-                          "_blank"
-                        )
-                      }
-                    >
-                      <div className="mt-1">
-                        <LinkIcon className="text-icon-color" />
-                      </div>
-                      <div>
-                        <p className="text-base-text text-[14px] font-[500] font-sfpro underline underline-offset-4">
-                          {username}.designfolio.me
-                        </p>
-                        <p className="text-description-text text-[12px] font-[400] font-inter mt-1">
-                          {`Updated: ${formatedValue}`}
-                        </p>
-                      </div>
-                    </div>
-                    <Button
-                      icon={
-                        isCopied ? (
-                          <TickIcon className="text-icon-color" />
-                        ) : (
-                          <CopyIcon className="text-icon-color" />
-                        )
-                      }
-                      type="secondary"
-                      customClass="p-2 rounded-lg pointer-events"
-                      onClick={handleCopyText}
-                    />
-                  </div>
-
-                  <Button
-                    customClass="w-full mt-4"
-                    text="Update changes"
-                    isDisabled={updateLoading}
-                    onClick={handleUpdate}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="relative inline-block text-left">
-            <DfImage
-              onClick={() =>
-                setPopoverMenu((prev) =>
-                  prev == popovers.userMenu ? null : popovers.userMenu
-                )
-              }
-              src={
-                userDetails?.avatar?.url
-                  ? userDetails?.avatar?.url
-                  : "/assets/svgs/avatar.svg"
-              }
-              className={"w-[60px] h-[60px] rounded-2xl cursor-pointer"}
-            />
-
-            <div
-              className={`pt-5 absolute z-20 right-0 origin-top-right transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${
-                popoverMenu === popovers.userMenu
-                  ? "opacity-100 scale-100"
-                  : "opacity-0 scale-90 pointer-events-none"
-              }`}
-            >
-              <div className=" w-[310px] rounded-lg shadow-dropdown bg-theme-bg-color border-theme-border-color focus:outline-none">
-                <div className="p-4">
-                  <div className="py-1">
-                    <Button
-                      text={"Account settings"}
-                      customClass="w-full text-[14px] justify-start py-[10px] rounded-lg"
-                      type="normal"
-                      onClick={handlenavigation}
-                      icon={<SettingIcon className="text-icon-color" />}
-                    />
-
-                    <Button
-                      text={"Logout"}
-                      customClass="w-full text-[14px] justify-start py-[10px] rounded-lg"
-                      type="normal"
-                      onClick={handleLogout}
-                      icon={
-                        <img
-                          src="/assets/svgs/logout.svg"
-                          alt="designfolio logo"
-                        />
-                      }
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <Button
-          customClass="md:hidden"
-          type="secondary"
-          icon={
-            <>
-              <HamburgerIcon
-                className={`mb-[4.67px] transition-transform text-icon-color easeInOut ${
-                  popovers.loggedInMenu === popoverMenu &&
-                  "translate-y-3.2 rotate-45"
-                }`}
-              />
-              <HamburgerIcon
-                className={`transition-transform text-icon-color easeInOut ${
-                  popovers.loggedInMenu === popoverMenu &&
-                  "-rotate-45 -translate-y-3.2"
-                }`}
-              />
-            </>
-          }
-          onClick={() =>
-            setPopoverMenu((prev) =>
-              prev == popovers.loggedInMenu ? null : popovers.loggedInMenu
-            )
-          }
-        />
-        <Popover
-          show={popovers.loggedInMenu === popoverMenu}
-          className="left-0"
-        >
-          {!isMobileThemePopup ? (
-            <div>
-              <Button
-                text={"Account settings"}
-                customClass="w-full text-[14px] justify-between py-[10px] rounded-lg px-0 hover:bg-transparent !transition-none"
-                type="normal"
-                onClick={handlenavigation}
-                iconPosition="right"
-                icon={<SettingIcon className="text-icon-color" />}
-              />
-
-              <Button
-                text={"Logout"}
-                customClass="w-full text-[14px]  justify-between py-[10px] rounded-lg px-0 hover:bg-transparent !transition-none"
-                type="normal"
-                onClick={handleLogout}
-                iconPosition="right"
-                icon={
-                  <img src="/assets/svgs/logout.svg" alt="designfolio logo" />
-                }
-              />
-              <Button
-                icon={<ThemeIcon className="text-icon-color" />}
-                onClick={() => setIsMobileThemePopup(true)}
-                type="secondary"
-                customClass="!p-4 w-full mt-4"
-                text={"Change theme"}
-              />
-              <Button
-                text={"Publish Site"}
-                onClick={handleUpdate}
-                customClass="!p-4 mr-0 w-full mt-4"
-                icon={<img src="/assets/svgs/power.svg" alt="launch builder" />}
-                animation
-              />
-              <div className="w-full h-[2px] bg-placeholder-color my-4" />
-              <div
-                className="flex gap-2 cursor-pointer justify-center items-start mr-5"
-                onClick={() =>
-                  window.open(
-                    `https://${username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`,
-                    "_blank"
-                  )
-                }
-              >
-                <div className="mt-1">
-                  <LinkIcon className="text-icon-color" />
-                </div>
-                <div>
-                  <p className="text-base-text text-[14px] font-[500] font-sfpro underline underline-offset-4 text-center">
-                    {username}.designfolio.me
-                  </p>
-                  <p className="text-description-text text-[12px] font-[400] font-inter mt-1 text-center">
-                    {`Updated: ${formatedValue}`}
-                  </p>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div>
-              <Button
-                text="Go Back"
-                onClick={() => setIsMobileThemePopup(false)}
-                type="secondary"
-                size="small"
-                customClass="!transition-none"
-                icon={<LeftArrow />}
-              />
-              <Text
-                size="p-xsmall"
-                className="text-[16px] font-medium text-popover-heading-color mt-4"
-              >
-                Appearance Settings
-              </Text>
-              <div>
-                <Text
-                  size="p-xxsmall"
-                  className="text-[14px] font-medium  text-popover-heading-color mt-2"
-                >
-                  Choose your preferred theme
-                </Text>
-
-                <div className="flex gap-[24px] mt-3">
-                  <div
-                    onClick={() => changeTheme(0)}
-                    className={`w-full border bg-default-theme-box-bg-color border-default-theme-box-border-color hover:bg-default-theme-bg-hover-color rounded-[8px] p-[10px] cursor-pointer`}
-                  >
-                    <div className="flex justify-between items-center">
-                      <SunIcon
-                        className={
-                          theme == "dark"
-                            ? "text-icon-color"
-                            : "text-default-theme-selected-color"
-                        }
-                      />
-                      {(theme == "light" || theme == undefined) && (
-                        <img src="/assets/svgs/select.svg" alt="" />
-                      )}
-                    </div>
-                    <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] mt-4">
-                      Light mode
-                    </p>
-                  </div>
-                  <div
-                    onClick={() => changeTheme(1)}
-                    className={`w-full border bg-theme-box-bg-color border-theme-box-border-color hover:bg-theme-bg-hover-color rounded-[8px] p-[10px] cursor-pointer`}
-                  >
-                    <div className="flex justify-between items-center">
-                      <MoonIcon
-                        className={
-                          theme !== "dark"
-                            ? "text-icon-color"
-                            : "text-default-theme-selected-color"
-                        }
-                      />
-                      {theme == "dark" && (
-                        <img src="/assets/svgs/select.svg" alt="" />
-                      )}
-                    </div>
-                    <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] mt-4">
-                      Dark mode
-                    </p>
-                  </div>
-                </div>
-
-                <Text
-                  size="xxsmall"
-                  className="text-xs leading-5 font-medium text-popover-heading-color mt-2"
-                >
-                  💫 More theme settings and templates coming soon! Keep an eye.
-                </Text>
-              </div>
-            </div>
-          )}
-        </Popover>
+            )}
+          </Popover>
+        )}
       </div>
     </div>
   );

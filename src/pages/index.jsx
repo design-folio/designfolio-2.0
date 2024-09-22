@@ -4,7 +4,7 @@ import React from "react";
 
 export default function Index({ dfToken }) {
   return (
-    <div className="bg-landing-bg min-h-screen">
+    <div className="bg-landing-bg-color min-h-screen">
       <Seo
         title={"Designfolio - Build your Design Portfolio Website super Fast"}
         description={
@@ -15,7 +15,7 @@ export default function Index({ dfToken }) {
         imageUrl={"https://designfolio.me/images/png/designfolio-thumbnail.png"}
         url={`https://designfolio.me`}
       />
-      <main className={"pt-[64px] md:pt-[104px] pb-5"}>
+      <main className={"pt-[88px] md:pt-[104px] pb-5"}>
         <Home dfToken={dfToken} />
       </main>
     </div>

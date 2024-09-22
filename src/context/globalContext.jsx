@@ -1,9 +1,16 @@
 import { _getUserDetails } from "@/network/get-request";
 import { _updateUser } from "@/network/post-request";
+import queryClient from "@/network/queryClient";
 import { useQuery } from "@tanstack/react-query";
 import Cookies from "js-cookie";
 import { useTheme } from "next-themes";
-import React, { createContext, useState, useContext, useEffect } from "react";
+import React, {
+  createContext,
+  useState,
+  useContext,
+  useEffect,
+  useRef,
+} from "react";
 
 // Create a new context instance
 const GlobalContext = createContext();
@@ -26,8 +33,10 @@ export const GlobalProvider = ({ children }) => {
     { name: "Add Experience", checked: false },
     { name: "Add Testimonials", checked: false },
   ]);
-  const [showModal, setShowModal] = useState("onboarding");
+  const [showModal, setShowModal] = useState(null);
   const [step, setStep] = useState(1);
+  const projectRef = useRef(null);
+  const [selectedProject, setSelectedProject] = useState(null);
 
   const { setTheme } = useTheme();
 
@@ -86,9 +95,19 @@ export const GlobalProvider = ({ children }) => {
     }
   }, [data, setTheme, userDetailsIsState]);
 
+  const updateCache = (key, data) => {
+    queryClient.setQueriesData({ queryKey: [key] }, (oldData) => {
+      // Return the new data based on the old data
+      console.log(oldData, data);
+      return { user: { ...oldData?.user, ...data } };
+    });
+  };
+
   const changeTheme = (theme) => {
     _updateUser({ theme: theme }).then((res) => {
+      console.log(res);
       setTheme(theme == 1 ? "dark" : "light");
+      updateCache("userDetails", res?.data?.user);
       setUserDetails(() => ({ ...userDetails, theme: theme }));
     });
   };
@@ -109,6 +128,7 @@ export const GlobalProvider = ({ children }) => {
         setPopoverMenu,
         userDetailLoading: isLoading,
         userDetails,
+        setUserDetails,
         userDetailsRefecth,
         setIsUserDetailsFromCache,
         userDetailsIsState,
@@ -122,6 +142,10 @@ export const GlobalProvider = ({ children }) => {
         setStep,
         openModal,
         closeModal,
+        updateCache,
+        projectRef,
+        selectedProject,
+        setSelectedProject,
       }}
     >
       {children}

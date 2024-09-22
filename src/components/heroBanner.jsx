@@ -66,7 +66,7 @@ export default function HeroBanner({ dfToken }) {
   return (
     <div className="relative md:max-w-[680px] xl:max-w-[814px] m-auto">
       <motion.h1
-        className="font-satoshi text-[32px] px-4 md:px-[24px] leading-[120%] md:text-[62px] xl:leading-[73px] font-[700] text-heading-text md:text-center overflow-hidden"
+        className="font-satoshi text-[32px] px-4 md:px-[24px] leading-[120%] md:text-[62px] xl:leading-[73px] font-[700] text-landing-heading-text-color md:text-center overflow-hidden"
         style={{ perspective: "600px" }}
         initial="initial"
         animate="animate"
@@ -91,7 +91,7 @@ export default function HeroBanner({ dfToken }) {
       </motion.h1>
 
       <motion.p
-        className="font-inter text-[20px] px-4 md:px-[24px] text-description-text font-[500] md:text-center mt-6"
+        className="font-inter text-[20px] px-4 md:px-[24px] text-landing-description-text-color font-[500] md:text-center mt-6"
         style={{ perspective: "600px" }}
         initial="initial"
         animate="animate"

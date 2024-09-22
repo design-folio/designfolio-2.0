@@ -81,13 +81,13 @@ export default function Login() {
         <Text
           as="h1"
           size={"p-large"}
-          className="text-sub-heading-text-color font-bold"
+          className="text-landing-heading-text-color font-bold"
         >
           Welcome back,
         </Text>
         <Text
           size={"p-xsmall"}
-          className="mt-2 text-description-text font-medium"
+          className="mt-2 text-landing-description-text-color font-medium"
         >
           Login to your account to access all the features
         </Text>
@@ -105,10 +105,10 @@ export default function Login() {
             onClick={googleLogin}
             customClass="w-full "
           />
-          <div className="flex items-center gap-[24px] my-[24px]">
-            <div className="w-full h-[1px] bg-project-card-border" />
+          <div className="flex items-center gap-[24px] my-[24px] text-landing-description-text-color">
+            <div className="w-full h-[1px] bg-landing-card-border-color" />
             or
-            <div className="w-full h-[1px] bg-project-card-border" />
+            <div className="w-full h-[1px] bg-landing-card-border-color" />
           </div>
           <div>
             <Formik
@@ -135,7 +135,7 @@ export default function Login() {
                   <Text
                     as="p"
                     size={"p-xxsmall"}
-                    className="mt-6 font-semibold"
+                    className="mt-6 font-medium"
                     required
                   >
                     Email
@@ -161,7 +161,7 @@ export default function Login() {
                   <Text
                     as="p"
                     size={"p-xxsmall"}
-                    className="mt-6 font-semibold"
+                    className="mt-6 font-medium"
                     required
                   >
                     Password
@@ -187,7 +187,7 @@ export default function Login() {
                   <Link href={"/forgot-password"}>
                     <Text
                       size={"p-xxsmall"}
-                      className="mt-[8px] text-right w-fit ml-auto cursor-pointer text-description-text font-medium"
+                      className="mt-[8px] text-right w-fit ml-auto cursor-pointer text-landing-description-text-color font-medium"
                     >
                       Forgot Password?
                     </Text>
@@ -207,7 +207,7 @@ export default function Login() {
 
           <Text
             size={"p-xxsmall"}
-            className="text-heading-text mt-[24px] text-center"
+            className="text-landing-description-text-color mt-[24px] text-center"
           >
             Don’t have an account?
             <Link href={"/claim-link"}>

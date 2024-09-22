@@ -3,6 +3,7 @@ import { buildStyles, CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import Task from "./task";
 import { useGlobalContext } from "@/context/globalContext";
+import Text from "./text";
 
 export default function BottomTask() {
   const { taskPercentage } = useGlobalContext();
@@ -24,7 +25,7 @@ export default function BottomTask() {
         <div
           onClick={() => setOpen((prev) => !prev)}
           style={{ boxShadow: "0px 8.3px 33.2px 0px rgba(32, 41, 55, 0.14)" }}
-          className="bg-popover-bg shadow-popover-shadow border-[5px] border-popover-border rounded-[24px] px-[14px] py-[10.42px] flex gap-[8.5px] items-center justify-center"
+          className="bg-popover-bg-color shadow-popover-shadow border-[5px] border-popover-border-color rounded-[24px] px-[14px] py-[10.42px] flex gap-[8.5px] items-center justify-center"
         >
           <div className="w-[47.24px] h-[46.28px]">
             <CircularProgressbar
@@ -37,9 +38,12 @@ export default function BottomTask() {
               })}
             />
           </div>
-          <p className="text-checked-list-item-text-color font-inter text-[13.28px] font-[600]">
+          <Text size="p-xxsmall" className="text-checked-list-item-text-color">
             Complete portfolio
-          </p>
+          </Text>
+          {/* <p className="text-checked-list-item-text-color font-inter text-[13.28px] font-[600]">
+            Complete portfolio
+          </p> */}
         </div>
       </div>
     </>

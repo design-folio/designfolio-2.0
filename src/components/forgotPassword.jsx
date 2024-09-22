@@ -51,13 +51,13 @@ export default function ForgotPassword() {
             <Text
               as="h1"
               size={"p-large"}
-              className="text-sub-heading-text-color font-bold mt-4"
+              className="text-landing-heading-text-color font-bold mt-4"
             >
               Forgot your password?
             </Text>
             <Text
               size={"p-xsmall"}
-              className="mt-2 text-description-text font-medium"
+              className="mt-2 text-landing-description-text-color font-medium"
             >
               Please Enter your Email ID to reset your Password
             </Text>
@@ -86,7 +86,7 @@ export default function ForgotPassword() {
                       <Text
                         as="p"
                         size={"p-xxsmall"}
-                        className="mt-6 font-semibold"
+                        className="mt-6 font-medium"
                         required
                       >
                         Email

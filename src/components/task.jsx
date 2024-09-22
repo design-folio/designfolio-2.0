@@ -4,6 +4,7 @@ import { useGlobalContext } from "@/context/globalContext";
 import CloseIcon from "../../public/assets/svgs/close.svg";
 import Button from "./button";
 import CheckedIcon from "../../public/assets/svgs/checked.svg";
+import Text from "./text";
 
 export default function Task({ setOpen }) {
   const { checkList, openModal, setStep } = useGlobalContext();
@@ -23,13 +24,13 @@ export default function Task({ setOpen }) {
 
   return (
     <div
-      className="bg-popover-bg shadow-popover-shadow border-[5px] border-popover-border transition-all ease-in-out duration-400 p-4 rounded-[24px] flex flex-col gap-[14px] w-[286px]"
+      className="bg-popover-bg-color shadow-popover-shadow border-4 border-popover-border-color transition-all ease-in-out duration-400 p-4 rounded-[24px] flex flex-col gap-[14px] w-[286px]"
       style={{ boxShadow: "0px 8.3px 33.2px 0px rgba(32, 41, 55, 0.14)" }}
     >
-      <div className="flex justify-between">
-        <p className="text-checked-list-item-text-color text-[20px] font-[500] !font-inter">
+      <div className="flex justify-between items-center">
+        <Text size="p-small" className="text-checked-list-item-text-color">
           Get started checklist
-        </p>
+        </Text>
         <Button
           // customClass="lg:hidden"
           type="secondary"
@@ -53,13 +54,14 @@ export default function Task({ setOpen }) {
             ) : (
               <div className="w-[25px] h-[25px] border border-check-list-empty-border-color rounded-full"></div>
             )}
-            <p
-              className={`text-[12px] font-[500] text-checked-list-item-text-color !font-inter${
+            <Text
+              size={`p-xxxsmall`}
+              className={`text-checked-list-item-text-color ${
                 item?.checked && "line-through"
               }`}
             >
               {item.name}
-            </p>
+            </Text>
           </div>
         );
       })}

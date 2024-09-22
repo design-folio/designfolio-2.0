@@ -1,6 +1,5 @@
 import Seo from "@/components/seo";
 import React from "react";
-import { getServerSideProps } from "@/lib/authServerSideProps";
 import VerifyEmail from "@/components/verifyEmail";
 import ChangeEmail from "@/components/changeEmail";
 import { useRouter } from "next/router";
@@ -8,7 +7,7 @@ import { useRouter } from "next/router";
 export default function Index() {
   const router = useRouter();
   return (
-    <div className="bg-landing-bg min-h-screen">
+    <div className="bg-landing-bg-color min-h-screen">
       <Seo
         title={"Designfolio - Build your Design Portfolio Website super Fast"}
         description={
@@ -28,4 +27,17 @@ export default function Index() {
 
 Index.theme = "light";
 
-export { getServerSideProps };
+export const getServerSideProps = async (context) => {
+  const dfToken = context.req.cookies["df-token"] || null;
+  if (!dfToken) {
+    return {
+      redirect: {
+        destination: "/builder",
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: { dfToken: !!dfToken },
+  };
+};

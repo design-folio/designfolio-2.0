@@ -91,17 +91,17 @@ export default function VerifyEmail() {
         <Text
           as="h1"
           size={"p-large"}
-          className="text-sub-heading-text-color font-bold mt-4"
+          className="text-landing-heading-text-color font-bold mt-4"
         >
           Verify Email
         </Text>
         <Text
           size={"p-xsmall"}
-          className="mt-2 text-description-text font-medium"
+          className="mt-2 text-landing-description-text-color font-medium"
         >
           We have sent an email to{" "}
-          <span className="text-[#FF553E]">{router?.query?.email}</span> with a
-          verification code. Please enter it below confirm your email.
+          <span className="text-df-orange-color">{router?.query?.email}</span>{" "}
+          with a verification code. Please enter it below confirm your email.
         </Text>
         <div className="mt-[24px]">
           <div>
@@ -126,7 +126,7 @@ export default function VerifyEmail() {
                   <Text
                     as="p"
                     size={"p-xxsmall"}
-                    className="mt-6 font-semibold"
+                    className="mt-6 font-medium"
                     required
                   >
                     Verification code
@@ -151,7 +151,7 @@ export default function VerifyEmail() {
                     className="error-message text-[14px]"
                   />
                   <div className="flex  gap-1 items-center pt-2">
-                    <p className="w-fit text-[12px] font-inter md:!text-[14px] mt-[2px] font-[500] text-heading-text">
+                    <p className="w-fit text-[12px] font-inter md:!text-[14px] mt-[2px] font-[500] text-landing-description-text-color">
                       {`${
                         timeLeft == 0
                           ? "Didn't received the code?"
@@ -161,7 +161,7 @@ export default function VerifyEmail() {
                     <Button
                       text="Resend code"
                       type="normal"
-                      customClass={`hover:bg-transparent p-0 px-1  w-fit !text-[12px] md:!text-[14px] text-input-error-color ${
+                      customClass={`hover:bg-transparent p-0 px-1  w-fit !text-[12px] md:!text-[14px] text-df-orange-color ${
                         timeLeft != 0 && "opacity-50"
                       }`}
                       disabled={timeLeft != 0}

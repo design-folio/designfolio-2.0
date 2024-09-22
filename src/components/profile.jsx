@@ -5,9 +5,10 @@ import Button from "./button";
 import DfImage from "./image";
 import EditIcon from "../../public/assets/svgs/edit.svg";
 import Link from "next/link";
+import Text from "./text";
 
 export default function Profile({ preview = false, edit = false }) {
-  const { userDetails } = useGlobalContext();
+  const { userDetails, setShowModal } = useGlobalContext();
   const controls = useAnimation();
   const skillsRef = useRef(null);
   const skills = useMemo(
@@ -40,8 +41,7 @@ export default function Profile({ preview = false, edit = false }) {
 
   return (
     <section
-      className={`bg-builder-section-card-bg rounded-[24px] p-4 lg:p-[32px] break-words`}
-      style={{ boxShadow: "0 0 16.4px rgba(0, 0, 0, 0.02)" }}
+      className={`bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words`}
     >
       {preview && (
         <Link href={"/builder"}>
@@ -68,25 +68,30 @@ export default function Profile({ preview = false, edit = false }) {
 
         <div className="flex-1 relative min-w-0 webkit-fill">
           <div className="flex justify-between gap-4">
-            <h2 className="text-[28px] md:text-[31.5px] lg:text-[39.06px] text-profile-card-intro-text font-inter font-[600] leading-[37px] lg:leading-[48px] min-w-0">
+            <Text
+              as="h2"
+              size="p-large"
+              className="text-profile-card-heading-color min-w-0 webkit-fil"
+            >
               {userDetails?.introduction}
-            </h2>
+            </Text>
             {edit && (
               <div>
                 <Button
-                  onClick={() => setShowOnboarding(true)}
+                  onClick={() => setShowModal("onboarding")}
                   customClass="!p-[13.38px] !flex-shrink-0"
                   type={"secondary"}
-                  icon={<EditIcon className="text-icon-color" />}
+                  icon={<EditIcon className="text-df-icon-color" />}
                 />
               </div>
             )}
           </div>
-          <p className="mt-[12px] text-profile-card-description-text text-[16px] font-[400] leading-[22.4px] font-inter min-w-0 webkit-fill">
-            {userDetails?.introduction
-              ? userDetails?.bio
-              : "Write your Intro here.."}
-          </p>
+          <Text
+            size="p-xsmall"
+            className="min-w-0 webkit-fill mt-[12px] text-profile-card-description-color"
+          >
+            {userDetails?.bio ? userDetails?.bio : "Write your Intro here.."}
+          </Text>
         </div>
       </div>
       <div
@@ -125,9 +130,15 @@ export default function Profile({ preview = false, edit = false }) {
                   className="mr-2"
                   alt=""
                 />
-                <div className="text-[12.8px] md:text-[14px] text-profile-card-skills-text  font-[500] font-inter rounded-[5px] px-[10px] cursor-default mr-2">
+                <Text
+                  size="p-xxxsmall"
+                  className=" text-profile-card-skill-color px-[10px] cursor-default mr-2"
+                >
                   {skill}
-                </div>
+                </Text>
+                {/* <div className="text-[12.8px] md:text-[14px] text-profile-card-skills-text  font-[500] font-inter rounded-[5px] px-[10px] cursor-default mr-2">
+                  {skill}
+                </div> */}
               </React.Fragment>
             ))}
         </motion.div>

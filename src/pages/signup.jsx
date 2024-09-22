@@ -5,7 +5,7 @@ import Signup from "@/components/signup";
 
 export default function Index() {
   return (
-    <div className="bg-landing-bg min-h-screen">
+    <div className="bg-landing-bg-color min-h-screen">
       <Seo
         title={"Designfolio - Build your Design Portfolio Website super Fast"}
         description={

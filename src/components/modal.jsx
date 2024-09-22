@@ -25,14 +25,14 @@ const Modal = ({ show, onClose, children }) => {
     }
   }, []);
 
-  useEffect(() => {
-    if (show) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "scroll";
-    }
-    () => (document.body.style.overflow = "scroll");
-  }, [show]);
+  // useEffect(() => {
+  //   if (show) {
+  //     document.body.style.overflow = "hidden";
+  //   } else {
+  //     document.body.style.overflow = "scroll";
+  //   }
+  //   () => (document.body.style.overflow = "scroll");
+  // }, [show]);
 
   if (!el || !modalRoot) {
     return null;

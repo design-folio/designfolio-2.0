@@ -22,7 +22,7 @@ const ToolCheckbox = ({ tool, field, form, theme }) => {
   return (
     <div
       onClick={handleSelect}
-      className={`cursor-pointer bg-white dark:bg-[#13151A] !border-[#30323D] !text-[#E9EAEB] hover:bg-[#30323D] flex gap-2 justify-between items-center  border border-solid rounded-full p-2 px-3`}
+      className={`cursor-pointer flex gap-2 justify-between items-center  border border-solid rounded-full p-2 px-3 dark:bg-[#13151A] dark:border-[#30323D] dark:text-[#E9EAEB] dark:hover:bg-[#30323D]`}
     >
       {tool?.image && (
         <img
@@ -39,8 +39,8 @@ const ToolCheckbox = ({ tool, field, form, theme }) => {
         <img
           src={`${
             isSelected.length != 0
-              ? "/images/svg/checkbox.svg"
-              : "/images/svg/plus.svg"
+              ? "/assets/svgs/checkbox.svg"
+              : "/assets/svgs/plus.svg"
           }`}
           alt="add"
           className={`${

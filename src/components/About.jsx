@@ -28,14 +28,14 @@ const AnimatedSection = ({ children, animationData, className, delay }) => {
         transition: `all 0.5s cubic-bezier(0.17, 0.55, 0.55, 1) ${adjustedDelay}s`,
       }}
     >
-      <div className="py-[10px] px-4 text-[14px] text-df-slate-blue font-[600] border-solid  w-fit border-[3px] border-df-secondary-600 rounded-[16px] p-2 shadow-sm bg-white">
+      <div className="py-[10px] px-4 text-[14px] bg-landing-card-step-bg-color text-landing-card-step-text-color border-landing-card-step-border-color font-[600] border-solid  w-fit border-[3px] border-df-secondary-600 rounded-[16px] p-2 shadow-sm bg-white">
         {children.stepLabel}
       </div>
       <div className="mt-4">
-        <h3 className="text-xl md:text-2xl font-satoshi font-bold text-heading-text">
+        <h3 className="text-xl md:text-2xl font-satoshi font-bold text-landing-card-heading-color">
           {children.title}
         </h3>
-        <p className="text-description-text text-sm font-medium mb-6">
+        <p className="text-landing-card-description-color text-sm font-medium mb-6">
           {children.description}
         </p>
         <Lottie
@@ -55,7 +55,7 @@ export default function About() {
     <div className="px-4 md:px-0  grid gap-6 md:grid w-full md:gap-10 md:grid-cols-2 md:grid-rows-3">
       <AnimatedSection
         animationData={claimUrl}
-        className="bg-landing-card-background border-6 border-solid border-landing-card-border rounded-md p-4 md:p-8"
+        className="bg-landing-card-bg-color border-6 border-solid border-landing-card-border-color rounded-md p-4 md:p-8"
         delay={0}
       >
         {{
@@ -66,7 +66,7 @@ export default function About() {
       </AnimatedSection>
       <AnimatedSection
         animationData={aboutJson}
-        className="bg-landing-card-background row-span-2 border-6 border-solid  border-landing-card-border rounded-md p-4 md:p-8"
+        className="bg-landing-card-bg-color row-span-2 border-6 border-solid  border-landing-card-border-color rounded-md p-4 md:p-8"
         delay={0.2}
       >
         {{
@@ -77,7 +77,7 @@ export default function About() {
       </AnimatedSection>
       <AnimatedSection
         animationData={casestudyJson}
-        className="bg-landing-card-background row-span-2 border-6 border-solid  border-landing-card-border rounded-md p-4 md:p-8"
+        className="bg-landing-card-bg-color row-span-2 border-6 border-solid border-landing-card-border-color rounded-md p-4 md:p-8"
         delay={0.4}
       >
         {{
@@ -88,7 +88,7 @@ export default function About() {
       </AnimatedSection>
       <AnimatedSection
         animationData={publishButtonJson}
-        className="bg-landing-card-background border-6 border-solid  border-landing-card-border rounded-md p-4 md:p-8"
+        className="bg-landing-card-bg-color border-6 border-solid  border-landing-card-border-color rounded-md p-4 md:p-8"
         delay={0.6}
       >
         {{

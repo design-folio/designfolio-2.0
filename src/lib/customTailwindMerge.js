@@ -14,6 +14,7 @@ const customTwMerge = extendTailwindMerge({
         "p-small",
         "p-xsmall",
         "p-xxsmall",
+        "p-xxxsmall",
       ], // Example with custom font sizes
       lineHeight: [
         "h1",
@@ -24,11 +25,12 @@ const customTwMerge = extendTailwindMerge({
         "p-small",
         "p-xsmall",
         "p-xxsmall",
+        "p-xxxsmall",
       ], // Example with custom line heights
     },
     classGroups: {
       // Define class groups to manage conflicts
-      "text-color": ["text-base-text"], // Example with text color classes
+      "text-color": ["text-base-text", "text-df-secondary-text-color"], // Example with text color classes
       "text-size": [
         "text-h1",
         "text-h2",
@@ -38,6 +40,7 @@ const customTwMerge = extendTailwindMerge({
         "text-p-small",
         "text-p-xsmall",
         "text-p-xxsmall",
+        "text-p-xxxsmall",
       ], // Example with text size classes
       // Add other class groups as needed
     },

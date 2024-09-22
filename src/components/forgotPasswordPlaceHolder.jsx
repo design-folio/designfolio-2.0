@@ -13,17 +13,17 @@ export default function ForgotPasswordPlaceHolder({ email }) {
         <Text
           as="h1"
           size={"p-large"}
-          className="text-sub-heading-text-color font-bold text-center"
+          className="text-landing-heading-text-color font-bold text-center"
         >
           Check your inbox!
         </Text>
         <Text
           variant={"medium"}
           size={"p-xsmall"}
-          className="mt-2 text-description-text font-medium text-center leading-6"
+          className="mt-2 text-landing-description-text-color font-medium text-center leading-6"
         >
           We have sent an email to{" "}
-          <span className="text-input-error-color">{email}</span> please follow
+          <span className="text-df-orange-color">{email}</span> please follow
           the instructions to reset your password
         </Text>
       </div>

@@ -1,0 +1,141 @@
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { hasSubdomain } from "@/lib/constant";
+import customTwMerge from "@/lib/customTailwindMerge";
+import Button from "./button";
+import PreviewIcon from "../../public/assets/svgs/previewIcon.svg";
+import DeleteIcon from "../../public/assets/svgs/deleteIcon.svg";
+import DragIcon from "../../public/assets/svgs/drag.svg";
+import Text from "./text";
+import { SortableHandle } from "react-sortable-hoc";
+import { useRouter } from "next/router";
+const imageVariants = {
+  hover: {
+    scale: 1.13, // Target scale when hovered
+    transition: {
+      duration: 0.35, // Smooth and quick transition
+      // ease: "easeInOut", // Smoothly accelerates and decelerates
+    },
+  },
+  initial: {
+    scale: 1, // Initial scale
+    transition: {
+      duration: 0.35, // Match the duration of the hover state for consistency
+      // ease: "easeInOut", // Use the same easing to ensure a smooth transition back
+    },
+  },
+};
+
+export default function ProjectCard({
+  className,
+  project,
+  onDeleteProject,
+  edit = false,
+}) {
+  const [isHovered, setIsHovered] = useState(false);
+  const [imageLoaded, setImageLoaded] = React.useState(false);
+  const router = useRouter();
+
+  const handleRouter = () => {
+    if (hasSubdomain()) {
+      router.push(`/project/${project._id}`);
+    } else if (router?.asPath.includes("portfolio-builder")) {
+      router.push(`/project/${project._id}/editor`);
+    } else {
+      router.push(`/project/${project._id}/preview`);
+    }
+  };
+
+  return (
+    <div
+      className={customTwMerge(
+        `bg-project-card-bg-color border border-project-card-border-color rounded-2xl min-h-[360px] h-full cursor-pointer`,
+        className
+      )}
+      onClick={handleRouter}
+    >
+      <div className="h-full flex flex-col">
+        <div className="h-[253.072px] relative  overflow-hidden rounded-t-[15px]">
+          <motion.img
+            src={project?.thumbnail?.url}
+            alt="project image"
+            className={`w-full h-full object-cover transition-opacity duration-100 ${
+              imageLoaded ? "opacity-100" : "opacity-0"
+            }`}
+            initial="initial"
+            whileHover="hover"
+            variants={imageVariants}
+            loading="lazy"
+            fetchPriority="high"
+            decoding="async"
+            onLoad={() => setImageLoaded(true)}
+          />
+          {!imageLoaded && (
+            <div className="w-full h-full bg-df-placeholder-color absolute top-0 right-0" />
+          )}
+        </div>
+
+        <div className="p-6 flex-1 flex flex-col justify-between">
+          <div>
+            <Text
+              size="p-small"
+              className="text-project-card-heading-color line-clamp-2"
+            >
+              {project?.title}
+            </Text>
+            <Text
+              size="p-xxsmall"
+              className="text-project-card-description-color line-clamp-2  mt-2 "
+            >
+              {project?.title}
+            </Text>
+          </div>
+          <div className="flex justify-between gap-3  items-center mt-4">
+            {edit ? (
+              <Button
+                text={"Edit project"}
+                customClass="w-full"
+                type="secondary"
+              />
+            ) : (
+              <motion.div
+                className="flex flex-1 w-fit"
+                onHoverStart={() => setIsHovered(true)} // Set hover state to true when hovered
+                onHoverEnd={() => setIsHovered(false)}
+              >
+                <p className="text- font-[500] !font-inter">View project</p>
+                <motion.div
+                  animate={{ x: isHovered ? 5 : 0, y: isHovered ? -5 : 0 }} // Use isHovered to control animation
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <PreviewIcon className="text-project-card-description-color" />
+                </motion.div>
+              </motion.div>
+            )}
+            {edit && (
+              <div className="flex gap-4">
+                <Button
+                  type="delete"
+                  icon={
+                    <DeleteIcon className="stroke-delete-btn-icon-color w-6 h-6" />
+                  }
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent the event from bubbling up
+                    onDeleteProject(project);
+                  }}
+                />
+                <DragHandle />
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const DragHandle = SortableHandle(() => (
+  <div className="!px-[24.5px] !cursor-grab py-[19px] transition-all duration-500 ease-out bg-project-card-reorder-btn-bg-color border-project-card-reorder-btn-bg-color hover:bg-project-card-reorder-btn-bg-hover-color rounded-2xl">
+    <DragIcon className="text-project-card-reorder-btn-icon-color" />
+  </div>
+));

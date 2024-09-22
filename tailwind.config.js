@@ -14,88 +14,158 @@ module.exports = {
         inter: ["var(--font-inter)"],
       },
       colors: {
-        "landing-bg": "var(--landing-bg)",
-        "heading-text": "var(--heading-text)",
-        "sub-heading-text-color": "var(--sub-heading-text-color)",
-        "description-text": "var(--description-text)",
-        "description-sub-text-color": "var(--description-sub-text-color)",
-        "df-bg": "var(--df-bg)",
-        "input-text-color": "var(--input-text-color)",
-        "builder-section-card-bg": "var(--builder-section-card-bg)",
-        "logo-text-color": "var(--logo-text-color)",
-        "header-bg-color": "var(--header-bg-color)",
-        "icon-color": "var(--icon-color)",
-        "base-text": "var(--base-text)",
-        "placeholder-color": "var( --placeholder-color)",
-        "nav-link": "var(--nav-link)",
-        "nav-link-hover": "var(--nav-link-hover)",
-        "nav-link-bg-hover": "var(--nav-link-bg-hover)",
-        "nav-link-base": "var(--nav-link-base)",
-        "popover-bg": "var(--popover-bg)",
-        "popover-border": "var(--popover-border)",
-        "primary-btn-bg": "var(--primary-btn-bg)",
-        "primary-btn-text": "var(--primary-btn-text)",
-        "primary-btn-bg-hover": "var(--primary-btn-bg-hover)",
-        "primary-btn-text-hover": "var(--primary-btn-text-hover)",
-        "secondary-btn-bg": "var(--secondary-btn-bg)",
-        "secondary-btn-text": "var(--secondary-btn-text)",
-        "secondary-btn-bg-hover": "var(--secondary-btn-bg-hover)",
-        "secondary-btn-text-hover": "var(--secondary-btn-text-hover)",
-        "secondary-btn-border": "var(--secondary-btn-border)",
-        "secondary-btn-border-hover": "var(--secondary-btn-border-hover)",
-        "tertiary-btn-bg": "var(--tertiary-btn-bg)",
-        "tertiary-btn-text": "var(--tertiary-btn-text)",
-        "tertiary-btn-bg-hover": "var(--tertiary-btn-bg-hover)",
-        "tertiary-btn-text-hover": "var(--tertiary-btn-text-hover)",
-        "tertiary-btn-border": "var(--tertiary-btn-border)",
-        "tertiary-btn-border-hover": "var(--tertiary-btn-border-hover)",
-        "normal-btn-text": "var(--normal-btn-text)",
-        "normal-btn-bg-hover": "var(--normal-btn-bg-hover)",
-        "delete-btn-bg": "var(--delete-btn-bg)",
-        "delete-btn-bg-hover": "var(--delete-btn-bg-hover)",
-        "delete-btn-icon": "var(--delete-btn-icon)",
-        "delete-btn-border": "var(--delete-btn-border)",
-        "delete-btn-border-hover": "var(--delete-btn-border-hover)",
-        "landing-card-border": "var(--landing-card-border)",
-        "landing-card-background": "var(--landing-card-background)",
-        "landing-card-heading": "var(--landing-card-heading)",
-        "landing-card-description": "var(--landing-card-description)",
-        "section-card-bg": "var(--section-card-bg)",
-        "builder-section-card-heading-text":
-          "var(--builder-section-card-heading-text)",
-        "profile-card-intro-text": "var(--profile-card-intro-text)",
-        "profile-card-description-text": "var(--profile-card-description-text)",
-        "profile-card-skills-text": "var(--profile-card-skills-text)",
-        "project-card-bg": "var(--project-card-bg)",
-        "project-card-title": "var(--project-card-title)",
-        "project-description": "var(--project-description)",
-        "project-card-border": "var(--project-card-border)",
-        "add-card-bg": "var(--add-card-bg)",
-        "add-card-border": "var(--add-card-border)",
-        "add-card-title": "var(--add-card-title)",
-        "add-card-description": "var(--add-card-description)",
-        "tools-card-item-border": "var(--tools-card-item-border)",
-        "tools-card-item-text": "var(--tools-card-item-text)",
-        "input-button-color": "var(--input-button-color)",
-        "input-success-color": "var( --input-success-color)",
-        "input-error-color": "var( --input-error-color)",
-        "theme-bg-color": "var(--theme-bg-color)",
-        "theme-border-color": "var( --theme-border-color)",
+        "landing-bg-color": "var(--landing-bg-color)",
+        "landing-header-bg-color": "var(--landing-header-bg-color)",
+        "landng-header-border-color": "var(--landng-header-border-color)",
+        "landing-nav-link-color": "var(--landing-nav-link-color)",
+        "landing-nav-link-hover-color": "var(--landing-nav-link-hover-color)",
+        "landing-nav-link-bg-hover-color":
+          "var(--landing-nav-link-bg-hover-color)",
+        "landing-nav-link-base-color": "var(--landing-nav-link-base-color)",
+        "landing-heading-text-color": "var(--landing-heading-text-color)",
+        "landing-description-text-color":
+          "var(--landing-description-text-color)",
+        "landing-card-bg-color": "var(--landing-card-bg-color)",
+        "landing-card-border-color": "var(--landing-card-border-color)",
+        "landing-card-step-text-color": "var(--landing-card-step-text-color)",
+        "landing-card-step-bg-color": "var(--landing-card-step-bg-color)",
+        "landing-card-step-border-color":
+          "var(--landing-card-step-border-color)",
+        "landing-card-heading-color": "var(--landing-card-heading-color)",
+        "landing-card-description-color":
+          "var(--landing-card-description-color)",
+        "landing-footer-heading-color": "var(--landing-footer-heading-color)",
+        "landing-footer-link-color": "var(--landing-footer-link-color)",
+
+        // Buttons
+        "primary-btn-bg-color": "var(--primary-btn-bg-color)",
+        "primary-btn-text-color": "var(--primary-btn-text-color)",
+        "primary-btn-bg-hover-color": "var(--primary-btn-bg-hover-color)",
+        "primary-btn-text-hover-color": "var(--primary-btn-text-hover-color)",
+
+        "secondary-btn-bg-color": "var(--secondary-btn-bg-color)",
+        "secondary-btn-text-color": "var(--secondary-btn-text-color)",
+        "secondary-btn-bg-hover-color": "var(--secondary-btn-bg-hover-color)",
+        "secondary-btn-text-hover-color":
+          "var(--secondary-btn-text-hover-color)",
+        "secondary-btn-border-color": "var(--secondary-btn-border-color)",
+        "secondary-btn-border-hover-color":
+          "var(--secondary-btn-border-hover-color)",
+        "secondary-btn-shadow": "var(--secondary-btn-shadow)",
+
+        "tertiary-btn-bg-color": "var(--tertiary-btn-bg-color)",
+        "tertiary-btn-text-color": "var(--tertiary-btn-text-color)",
+        "tertiary-btn-bg-hover-color": "var(--tertiary-btn-bg-hover-color)",
+        "tertiary-btn-text-hover-color": "var(--tertiary-btn-text-hover-color)",
+        "tertiary-btn-border-color": "var(--tertiary-btn-border-color)",
+        "tertiary-btn-border-hover-color":
+          "var(--tertiary-btn-border-hover-color)",
+
+        "normal-btn-text-color": "var(--normal-btn-text-color)",
+        "normal-btn-bg-hover-color": "var(--normal-btn-bg-hover-color)",
+
+        "modal-btn-text-color": "var(--modal-btn-text-color)",
+        "modal-btn-bg-color": "var(--modal-btn-bg-color)",
+        "modal-btn-border-color": "var(--modal-btn-border-color)",
+        "modal-btn-bg-hover-color": "var(--modal-btn-bg-hover-color)",
+        "modal-btn-border-hover-color": "var(--modal-btn-border-hover-color)",
+
+        "delete-btn-bg-color": "var(--delete-btn-bg-color)",
+        "delete-btn-bg-hover-color": "var(--delete-btn-bg-hover-color)",
+        "delete-btn-icon-color": "var(--delete-btn-icon-color)",
+        "delete-btn-border-color": "var(--delete-btn-border-color)",
+        "delete-btn-border-hover-color": "var(--delete-btn-border-hover-color)",
+        "delete-btn-shadow-color": "var(--delete-btn-shadow-color)",
+
+        // Application
+        "df-bg-color": "var(--df-bg-color)",
+        "df-base-text-color": "var(--df-base-text-color)",
+        "df-orange-color": "var(--df-orange-color)",
+        "df-secondary-text-color": "var(--df-secondary-text-color)",
+        "df-placeholder-color": "var(--df-placeholder-color)",
+        "df-logo-text-color": "var(--df-logo-text-color)",
+        "df-header-bg-color": "var(--df-header-bg-color)",
+        "df-icon-color": "var(--df-icon-color)",
+        "df-section-card-bg-color": "var(--df-section-card-bg-color)",
+        "df-section-card-heading-color": "var(--df-section-card-heading-color)",
+        "df-add-card-bg-color": "var(--df-add-card-bg-color)",
+        "df-add-card-border-color": "var(--df-add-card-border-color)",
+        "df-add-card-heading-color": "var(--df-add-card-heading-color)",
+        "df-add-card-description-color": "var(--df-add-card-description-color)",
+
+        // Profile card
+        "profile-card-heading-color": "var(--profile-card-heading-color)",
+        "profile-card-description-color":
+          "var(--profile-card-description-color)",
+        "profile-card-skill-color": "var(--profile-card-skill-color)",
+
+        // Project card
+        "project-card-bg-color": "var(--project-card-bg-color)",
+        "project-card-border-color": "var(--project-card-border-color)",
+        "project-card-heading-color": "var(--project-card-heading-color)",
+        "project-card-description-color":
+          "var(--project-card-description-color)",
+        "project-card-reorder-btn-bg-color":
+          "var(--project-card-reorder-btn-bg-color)",
+        "project-card-reorder-btn-bg-hover-color":
+          "var(--project-card-reorder-btn-bg-hover-color)",
+        "project-card-reorder-btn-icon-color":
+          "var(--project-card-reorder-btn-icon-color)",
+
+        // Project Info card
+        "project-info-card-heading-color":
+          "var(--project-info-card-heading-color)",
+        "project-info-card-description-color":
+          "var(--project-info-card-description-color)",
+
+        // Review card
+        "review-card-bg-color": "var(--review-card-bg-color)",
+        "review-card-border-color": "var(--review-card-border-color)",
+        "review-card-heading-color": "var(--review-card-heading-color)",
+        "review-card-description-color": "var(--review-card-description-color)",
+        "review-card-text-color": "var(--review-card-text-color)",
+
+        // Tool-box card
+        "tool-box-card-bg-color": "var(--tool-box-card-bg-color)",
+        "tool-box-card-text-color": "var(--tool-box-card-text-color)",
+
+        // Work experience card
+        "work-card-heading-color": "var(--work-card-heading-color)",
+        "work-card-description-color": "var(--work-card-description-color)",
+        "work-card-company-color": "var(--work-card-company-color)",
+        "work-card-sort-icon-color": "var(--work-card-sort-icon-color)",
+
+        // Modal
+        "modal-heading-color": "var(--modal-heading-color)",
+        "modal-bg-color": "var(--modal-bg-color)",
+        "modal-footer-bg-color": "var(--modal-footer-bg-color)",
+
+        // Popover
+        "popover-bg-color": "var(--popover-bg-color)",
+        "popover-border-color": "var(--popover-border-color)",
         "popover-heading-color": "var(--popover-heading-color)",
+
+        // Theme-popover
         "default-theme-box-bg-color": "var(--default-theme-box-bg-color)",
         "default-theme-box-border-color":
           "var(--default-theme-box-border-color)",
         "default-theme-selected-color": "var(--default-theme-selected-color)",
         "default-theme-bg-hover-color": "var(--default-theme-bg-hover-color)",
+
         "theme-box-bg-color": "var(--theme-box-bg-color)",
         "theme-box-border-color": "var(--theme-box-border-color)",
         "theme-selected-color": "var(--theme-selected-color)",
         "theme-bg-hover-color": "var(--theme-bg-hover-color)",
 
+        // Publish-popover
+        "publish-popover-text-color": "var(--publish-popover-text-color)",
+        "publish-popover-description-color":
+          "var(--publish-popover-description-color)",
+
+        // Task
         "progress-active-color": "var(--progress-active-color)",
         "progress-text-color": "var(--progress-text-color)",
         "progess-trail-color": "var(--progess-trail-color)",
-
         "checked-list-item-bg-color": "var(--checked-list-item-bg-color)",
         "checked-list-item-border-color":
           "var(--checked-list-item-border-color)",
@@ -104,17 +174,57 @@ module.exports = {
         "checked-list-item-icon-color": "var(--checked-list-item-icon-color)",
         "checked-list-item-text-color": "var(--checked-list-item-text-color)",
         "check-list-empty-border-color": "var(--check-list-empty-border-color)",
-        "modal-bg-color": "var(--modal-bg-color)",
-        "tip-text-color": "var(--tip-text-color)",
-        "modal-footer-bg": "var(--modal-footer-bg)",
+
+        // Inputs
+        "input-border-color": "var(--input-border-color)",
+        "input-bg-color": "var(--input-bg-color)",
+        "input-text-color": "var(--input-text-color)",
+        "input-border-focus-color": "var(--input-border-focus-color)",
+        "input-border-focus-shadow": "var(--input-border-focus-shadow)",
+        "input-border-hover-shadow": "var(--input-border-hover-shadow)",
+        "input-button-color": "var(--input-button-color)",
+        "input-placeholder-color": "var(--input-placeholder-color)",
+        "input-success-color": "var(--input-success-color)",
+        "input-error-color": "var(--input-error-color)",
+        "input-error-shadow": "var(--input-error-shadow)",
+        "input-upload-border-color": "var(--input-upload-border-color)",
+        "input-upload-bg-color": "var(--input-upload-bg-color)",
+        "input-upload-heading-color": "var(--input-upload-heading-color)",
+        "input-upload-description-color":
+          "var(--input-upload-description-color)",
+        "input-upload-icon-color": "var(--input-upload-icon-color)",
+        "input-password-bg-color": "var(--input-password-bg-color)",
+        "input-password-heading-color": "var(--input-password-heading-color)",
+        "input-password-description-color":
+          "var(--input-password-description-color)",
       },
       boxShadow: {
-        "secondary-btn-shadow": "var(--secondary-btn-shadow)", // Use the CSS variable here
-        "delete-btn-hover": "var(--delete-btn-shadow)",
-        "popover-shadow": "var(--popover-shadow)",
-        "card-shadow": "var(--card-shadow)",
+        // Landing page
+        "landing-nav-link-hover": "0 1px 3px rgba(0, 0, 0, 0.1)",
+
+        // Buttons
+        "primary-btn": "0 4px 6px rgba(0, 0, 0, 0.1)",
+        "secondary-btn": "var(--secondary-btn-shadow)",
+        "tertiary-btn": "0 2px 4px rgba(255, 85, 62, 0.2)",
+        "normal-btn": "0 2px 4px rgba(0, 0, 0, 0.1)",
+        "modal-btn": "0 4px 6px rgba(0, 0, 0, 0.1)",
+        "delete-btn": "inset 0 0 0 1px rgba(255, 59, 48, 0.5)",
+
+        // Application
+        "df-section-card": "0 2px 4px rgba(0, 0, 0, 0.2)",
+        "df-add-card": "0 2px 4px rgba(0, 0, 0, 0.1)",
+
+        // Profile card, Project card, Review card, etc.
+        card: "0 2px 4px rgba(0, 0, 0, 0.1)",
+
+        // Inputs
+        "input-border-focus-shadow": "var(--input-border-focus-shadow)",
+        "input-border-hover-shadow": "var(--input-border-hover-shadow)",
+        "input-focus": "var(--input-border-focus-shadow",
+        "input-hover": "var(--input-border-hover-shadow)",
         "input-error-shadow": "var(--input-error-shadow)",
-        "header-shadow": "var(--header-shadow)",
+        "popver-shadow": "var(--popver-shadow)",
+        "df-section-card-shadow": "var(--df-section-card-shadow)",
       },
       fontSize: {
         h1: "61px",
@@ -125,6 +235,7 @@ module.exports = {
         "p-small": "20px",
         "p-xsmall": "16px",
         "p-xxsmall": "14px",
+        "p-xxxsmall": "12px",
       },
       lineHeight: {
         h1: "79.3px",
@@ -135,6 +246,7 @@ module.exports = {
         "p-small": "26px",
         "p-xsmall": "22.8px",
         "p-xxsmall": "20.2px",
+        "p-xxxsmall": "16px",
       },
       translate: {
         4.5: "4.5px", // Custom translate value

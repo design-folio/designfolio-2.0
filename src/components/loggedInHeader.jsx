@@ -1,6 +1,5 @@
 import { popovers } from "@/lib/constant";
 import { formatTimestamp } from "@/lib/times";
-import dayjs from "dayjs";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -31,14 +30,16 @@ import useClient from "@/hooks/useClient";
 
 export default function LoggedInHeader({
   userDetails,
+  setUserDetails,
   setPopoverMenu,
   popoverMenu,
   changeTheme,
+  updateCache,
 }) {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const router = useRouter();
-  const { setTheme, theme } = useTheme();
+  const { theme } = useTheme();
   const [isCopied, setCopied] = useState(false);
   const [updateLoading, setUpdateLoading] = useState(false);
   const [isMobileThemePopup, setIsMobileThemePopup] = useState(false);
@@ -97,8 +98,11 @@ export default function LoggedInHeader({
     setUpdateLoading(true);
     _publish({ status: 1 })
       .then((res) => {
+        console.log(res);
+        setUserDetails((prev) => ({ ...prev, ...res?.data?.user }));
         setPopoverMenu(null);
         setIsMobileThemePopup(false);
+        updateCache("userDetails", res?.data?.user);
         toast.success("Published successfully.");
       })
       .finally(() => setUpdateLoading(false));
@@ -135,10 +139,10 @@ export default function LoggedInHeader({
 
   return (
     <div className={`${headerStyle} px-2 md:px-0 py-2 md:py-5 bg-transparent`}>
-      <div className="shadow-header-shadow max-w-[890px] p-3 md:px-[32px] md:!py-4 rounded-[24px] bg-header-bg-color mx-auto flex justify-between items-center">
+      <div className="shadow-header-shadow max-w-[890px] p-3 md:px-[32px] md:!py-4 rounded-[24px] bg-df-header-bg-color mx-auto flex justify-between items-center">
         <div className="flex items-center gap-[24px]">
           <Link href={"/builder"}>
-            <Logo className="text-logo-text-color" />
+            <Logo className="text-df-base-text-color" />
           </Link>
         </div>
         <div className="gap-[16px] items-center hidden md:flex">
@@ -149,6 +153,7 @@ export default function LoggedInHeader({
               type="secondary"
               customClass="!p-4"
             />
+
             {isClient && (
               <div
                 className={`pt-[21px] origin-top-right absolute z-20 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${
@@ -157,26 +162,26 @@ export default function LoggedInHeader({
                     : "opacity-0 scale-90 pointer-events-none"
                 }`}
               >
-                <div className="w-[545.5px]  rounded-lg shadow-dropdown bg-theme-bg-color border-theme-border-color focus:outline-none">
+                <div className="w-[545.5px]  rounded-xl shadow-popver-shadow bg-popover-bg-color border-4 border-solid border-popover-border-color">
                   <div className="flex justify-between items-center p-5">
                     <Text
                       as="h3"
-                      size="p-medium"
-                      className="text-[18px] md:text-[25px] font-medium text-popover-heading-color"
+                      size="p-small"
+                      className=" font-medium text-popover-heading-color"
                     >
                       Appearance Settings
                     </Text>
                     <Button
                       type="secondary"
                       customClass="!p-2 rounded-[8px]"
-                      icon={<CloseIcon className="text-icon-color" />}
+                      icon={<CloseIcon className="text-df-icon-color" />}
                       onClick={handleCloseTheme}
                     />
                   </div>
-                  <div className="px-5 py-2">
+                  <div className="px-5 pb-4">
                     <Text
-                      size="p-small"
-                      className="text-[14px] md:text-[16px] font-medium  text-popover-heading-color"
+                      size="p-xxsmall"
+                      className="text-df-secondary-text-color"
                     >
                       Choose your preferred theme
                     </Text>
@@ -226,7 +231,7 @@ export default function LoggedInHeader({
 
                     <Text
                       size="xxsmall"
-                      className="text-xs font-medium text-popover-heading-color mt-2"
+                      className="text-xs font-medium text-df-secondary-text-color mt-2"
                     >
                       💫 More theme settings and templates coming soon! Keep an
                       eye.
@@ -258,7 +263,7 @@ export default function LoggedInHeader({
                     : "opacity-0 scale-90 pointer-events-none"
                 }`}
               >
-                <div className=" w-[310px]  rounded-lg shadow-dropdown bg-theme-bg-color border-theme-border-color focus:outline-none">
+                <div className=" w-[310px] rounded-xl shadow-popver-shadow bg-popover-bg-color border-4 border-solid border-popover-border-color">
                   <div className="p-4">
                     <div className="flex justify-between items-center">
                       <div
@@ -331,7 +336,7 @@ export default function LoggedInHeader({
                     : "opacity-0 scale-90 pointer-events-none"
                 }`}
               >
-                <div className=" w-[310px] rounded-lg shadow-dropdown bg-theme-bg-color border-theme-border-color focus:outline-none">
+                <div className=" w-[250px] rounded-xl shadow-popver-shadow bg-popover-bg-color border-4 border-solid border-popover-border-color">
                   <div className="p-4">
                     <div className="py-1">
                       <Button
@@ -339,7 +344,7 @@ export default function LoggedInHeader({
                         customClass="w-full text-[14px] justify-start py-[10px] rounded-lg"
                         type="normal"
                         onClick={handlenavigation}
-                        icon={<SettingIcon className="text-icon-color" />}
+                        icon={<SettingIcon className="text-df-icon-color" />}
                       />
 
                       <Button
@@ -389,7 +394,7 @@ export default function LoggedInHeader({
         {isClient && (
           <Popover
             show={popovers.loggedInMenu === popoverMenu}
-            className="left-0"
+            className="left-0 top-[82px]"
           >
             {!isMobileThemePopup ? (
               <div>
@@ -399,7 +404,7 @@ export default function LoggedInHeader({
                   type="normal"
                   onClick={handlenavigation}
                   iconPosition="right"
-                  icon={<SettingIcon className="text-icon-color" />}
+                  icon={<SettingIcon className="text-df-icon-color" />}
                 />
 
                 <Button
@@ -442,12 +447,18 @@ export default function LoggedInHeader({
                     <LinkIcon className="text-icon-color" />
                   </div>
                   <div>
-                    <p className="text-base-text text-[14px] font-[500] font-sfpro underline underline-offset-4 text-center">
+                    <Text
+                      size="p-xxsmall"
+                      className="underline underline-offset-4"
+                    >
                       {username}.designfolio.me
-                    </p>
-                    <p className="text-description-text text-[12px] font-[400] font-inter mt-1 text-center">
+                    </Text>
+                    <Text
+                      size="p-xxxsmall"
+                      className="text-df-secondary-text-color text-center mt-1"
+                    >
                       {`Updated: ${formatedValue}`}
-                    </p>
+                    </Text>
                   </div>
                 </div>
               </div>
@@ -462,17 +473,20 @@ export default function LoggedInHeader({
                   icon={<LeftArrow />}
                 />
                 <Text
-                  size="p-xsmall"
-                  className="text-[16px] font-medium text-popover-heading-color mt-4"
+                  size="p-small"
+                  className="text-popover-heading-color mt-4"
                 >
                   Appearance Settings
                 </Text>
                 <div>
-                  <Text className="!text-[12px] font-medium leading-3  text-popover-heading-color mt-2">
+                  <Text
+                    className="text-df-secondary-text-color mt-4"
+                    size="p-xxsmall"
+                  >
                     Choose your preferred theme
                   </Text>
 
-                  <div className="flex gap-[24px] mt-5">
+                  <div className="flex gap-[24px] mt-2">
                     <div
                       onClick={() => changeTheme(0)}
                       className={`w-full border bg-default-theme-box-bg-color border-default-theme-box-border-color hover:bg-default-theme-bg-hover-color rounded-[8px] p-[10px] cursor-pointer`}
@@ -489,7 +503,7 @@ export default function LoggedInHeader({
                           <img src="/assets/svgs/select.svg" alt="" />
                         )}
                       </div>
-                      <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] mt-4">
+                      <p className="text-popover-heading-color font-inter font-[500] mt-4">
                         Light mode
                       </p>
                     </div>
@@ -516,8 +530,8 @@ export default function LoggedInHeader({
                   </div>
 
                   <Text
-                    size="xxsmall"
-                    className="text-xs leading-[20px] font-medium text-popover-heading-color mt-2"
+                    className="text-df-secondary-text-color mt-4"
+                    size="p-xxsmall"
                   >
                     💫 More theme settings and templates coming soon! Keep an
                     eye.

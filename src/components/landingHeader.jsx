@@ -58,23 +58,25 @@ export default function LandingHeader({ dfToken }) {
 
   const headerStyle = isVisible
     ? "fixed top-0 left-0 right-0 lg:px-10 xl:px-0 z-10 transition-transform duration-300 ease-out"
-    : "fixed top-0 left-0 right-0 lg:px-10 xl:px-0 z-10 transform translate-y-[-100%] transition-transform duration-300 ease-out";
+    : "fixed top-0 left-0 right-0 lg:px-10 xl:px-0 z-10 transform translate-y-[-100%] transition-transform duration-300 ease-out border-b borderb-solid border-landng-header-border-color";
 
   const commonTextClass =
-    "text-nav-link hover:text-nav-link-hover  py-[0.5px] hover:py-1 px-[8px] rounded-[5px] font-sfpro  text-[16px] font-[500] cursor-pointer hover:bg-nav-link-bg-hover transition-all duration-[350ms] ease-in-out";
+    "text-landing-nav-link-color hover:text-landing-nav-link-hover-color py-[0.5px] hover:py-1 px-[8px] rounded-[5px] font-sfpro  text-[16px] font-[500] cursor-pointer hover:bg-landing-nav-link-bg-hover-color transition-all duration-[350ms] ease-in-out";
 
   return (
     <motion.header
-      className={`${headerStyle} bg-landing-bg`}
+      className={`${headerStyle} bg-landing-bg-color`}
       initial="initial"
       animate="animate"
       variants={textVariants}
     >
       <div className="flex relative justify-between max-w-[1192px] p-3 md:px-0 md:py-3 mx-auto items-center ">
         <nav className=" md:flex gap-7 items-center md:pl-3 lg:pl-0">
-          <Logo className="text-logo-text-color " />
+          <Logo className="text-df-icon-color" />
 
-          <span className="text-nav-link-base text-2xl hidden md:block">/</span>
+          <span className="text-landing-nav-link-base-color text-2xl hidden md:block">
+            /
+          </span>
           <ul className=" gap-6 list-none items-center p-0 hidden md:flex">
             <li className={commonTextClass}>
               <Link

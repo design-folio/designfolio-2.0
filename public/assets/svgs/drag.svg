@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="13" height="21" fill="none">
+  <circle cx="10.5" cy="2.57" r="2.5" fill="currentColor" transform="rotate(90 10.5 2.57)" />
+  <circle cx="10.5" cy="10.07" r="2.5" fill="currentColor" transform="rotate(90 10.5 10.07)" />
+  <circle cx="10.5" cy="17.57" r="2.5" fill="currentColor" transform="rotate(90 10.5 17.57)" />
+  <circle cx="2.5" cy="2.57" r="2.5" fill="currentColor" transform="rotate(90 2.5 2.57)" />
+  <circle cx="2.5" cy="10.07" r="2.5" fill="currentColor" transform="rotate(90 2.5 10.07)" />
+  <circle cx="2.5" cy="17.57" r="2.5" fill="currentColor" transform="rotate(90 2.5 17.57)" />
+</svg>

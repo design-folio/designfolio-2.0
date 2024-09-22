@@ -75,7 +75,7 @@ export default function ResetPassword() {
                   <Text
                     as="p"
                     size={"p-xxsmall"}
-                    className="mt-6 font-semibold"
+                    className="mt-6 font-medium"
                     required
                   >
                     Password
@@ -100,7 +100,7 @@ export default function ResetPassword() {
                   <Text
                     as="p"
                     size={"p-xxsmall"}
-                    className="mt-6 font-semibold"
+                    className="mt-6 font-medium"
                     required
                   >
                     Confirm Password

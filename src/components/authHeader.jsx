@@ -28,7 +28,7 @@ export default function AuthHeader() {
     : "fixed top-0 left-0 right-0 lg:px-10 xl:px-0 z-10 transform translate-y-[-100%] transition-transform duration-300 ease-out";
   return (
     <div
-      className={`flex bg-landing-bg justify-center fixed right-0 left-0 p-3 md:px-0 md:py-3 ${headerStyle}`}
+      className={`flex bg-landing-bg-color justify-center fixed right-0 left-0 p-3 md:px-0 md:py-3 ${headerStyle}`}
     >
       <Link href={"/"}>
         <Logo className="text-logo-text-color" />

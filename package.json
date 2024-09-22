@@ -24,6 +24,7 @@
     "react-circular-progressbar": "^2.1.0",
     "react-dom": "^18",
     "react-select": "^5.8.1",
+    "react-sortable-hoc": "^2.0.0",
     "react-toastify": "^10.0.5",
     "tailwind-merge": "^2.5.2",
     "use-debounce": "^10.0.3",

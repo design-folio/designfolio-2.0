@@ -13,6 +13,7 @@ import Text from "./text";
 import CloseIcon from "../../public/assets/svgs/close.svg";
 import SelectField from "./SelectField";
 import ToolCheckbox from "./ToolCheckbox";
+import { useTheme } from "next-themes";
 
 const FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png", "image/gif"];
@@ -67,11 +68,20 @@ const variants = {
 };
 
 export default function Onboarding() {
-  const { userDetails, step, setStep, closeModal, showModal, setShowModal } =
-    useGlobalContext();
+  const {
+    userDetails,
+    step,
+    setStep,
+    closeModal,
+    setUserDetails,
+    updateCache,
+  } = useGlobalContext();
+  const { theme } = useTheme();
   const [imagePreview, setImagePreview] = useState(null);
   const [skillOptions, setSkillsOptions] = useState([]);
   const [toolsOptions, setToolsOptions] = useState([]);
+
+  const [isLoadingModal, setIsLoadingModalType] = useState(true);
 
   const [loading, setLoading] = useState(false);
 
@@ -161,6 +171,9 @@ export default function Onboarding() {
     setLoading(true);
     _updateUser(payload)
       .then((res) => {
+        updateCache("userDetails", res?.data?.user);
+        setUserDetails((prev) => ({ ...prev, ...res.data.user }));
+        closeModal();
         actions.setSubmitting(false);
       })
       .catch((err) => actions.setSubmitting(false))
@@ -204,29 +217,24 @@ export default function Onboarding() {
 
   useEffect(() => {
     _getSkills().then((res) => setSkillsOptions(res?.data?.skills));
-    setTimeout(() => setShowModal("onboarding"), 1000);
+    setTimeout(() => setIsLoadingModalType(false), 1000);
   }, []);
   return (
     <motion.div
-      animate={showModal == "loading" ? "loading" : "default"}
+      animate={isLoadingModal ? "loading" : "default"}
       variants={variants}
       className="w-[95vw] m-auto lg:w-[577.5px] rounded-2xl flex flex-col  bg-modal-bg-color"
     >
-      {showModal == "loading" ? (
+      {isLoadingModal ? (
         <motion.div className="h-full w-[95vw] md:w-full flex justify-center items-center rotating">
-          <img src="/images/svg/star.svg" alt="loading state" />
+          <img src="/assets/svgs/star.svg" alt="loading state" />
         </motion.div>
       ) : (
         <>
           <div className="p-5 lg:p-6 ">
             {userDetails && userDetails?.skills?.length !== 0 && (
               <div className="flex justify-between items-center">
-                <Text
-                  variant={"large"}
-                  className={
-                    "!text-[25px] !font-[700] text-base-text font-inter text-center"
-                  }
-                >
+                <Text size="p-medium" className="font-medium">
                   Update profile
                 </Text>
                 <Button
@@ -249,20 +257,15 @@ export default function Onboarding() {
                   />
                 </div>
                 <Text
-                  variant={"large"}
-                  className={
-                    "!text-[25px] !font-[700]  font-inter text-center mb-2"
-                  }
+                  size="p-medium"
+                  className={"font-semi-bold text-center mb-2"}
                 >
                   {step == 1
                     ? "Welcome to designfolio"
                     : "Your top skills, roles & tools?"}
                 </Text>
 
-                <Text
-                  variant={"small"}
-                  className={"!font-[500]  font-inter text-center"}
-                >
+                <Text size="p-small" className={"font-inter text-center"}>
                   {step == 1
                     ? "A little bit more about you"
                     : "Choose your superpowers"}
@@ -289,25 +292,16 @@ export default function Onboarding() {
                           {imagePreview ? (
                             <img
                               src={imagePreview}
-                              className="w-[100%] h-[100%] rounded-full object-cover"
-                              imageClassName="rounded-[24px]"
+                              className="w-[100%] h-[100%] rounded-2xl object-cover"
                               alt="designfolio logo"
                             />
                           ) : (
                             <>
                               <img
-                                src="/images/svg/upload.svg"
-                                className="w-[13.66px] h-[14.028px] object-cover"
+                                src={"/assets/svgs/avatar.svg"}
+                                className="w-[100%] h-[100%] rounded-2xl object-cover"
                                 alt="designfolio logo"
                               />
-                              <Button text={"Upload Image"} />
-                              <Text
-                                as="p"
-                                size={"p-xxsmall"}
-                                className="mt-6 font-semibold"
-                              >
-                                Upload avatar
-                              </Text>
                             </>
                           )}
                         </div>
@@ -316,8 +310,8 @@ export default function Onboarding() {
                             text={`${
                               imagePreview ? "Change photo" : "Upload photo"
                             }`}
-                            type="secondary"
                             size="small"
+                            type="secondary"
                             customClass="pointer-events-none"
                           />
                         </label>
@@ -338,18 +332,10 @@ export default function Onboarding() {
                         className="error-message text-sm"
                       />
                       <div className="mt-[24px] flex justify-between">
-                        <Text
-                          as="p"
-                          size={"p-xxsmall"}
-                          className="font-semibold"
-                        >
+                        <Text as="p" size={"p-xxsmall"} className="font-medium">
                           Headline
                         </Text>
-                        <Text
-                          as="p"
-                          size={"p-xxsmall"}
-                          className="font-semibold"
-                        >
+                        <Text as="p" size={"p-xxsmall"} className="font-medium">
                           {values.introduction.length ?? 0}/50
                         </Text>
                       </div>
@@ -369,25 +355,25 @@ export default function Onboarding() {
                         component="div"
                         className="error-message text-[14px]"
                       />
-                      <div className=" py-3 rounded-[10px] text-tip-text-color text-[12px] font-inter font-[500]">
+                      <Text
+                        size="p-xxxsmall"
+                        className="text-df-secondary-text-color mt-3"
+                      >
                         ✏️ <b>Tip:</b> This is the very first thing people read
                         about you.
-                      </div>
+                      </Text>
 
                       <div className="mt-[16px] flex justify-between">
                         <Text
                           as="p"
                           size={"p-xxsmall"}
-                          className="font-semibold"
+                          className="font-medium"
+                          required
                         >
                           {" "}
                           Professional summary
                         </Text>
-                        <Text
-                          as="p"
-                          size={"p-xxsmall"}
-                          className="font-semibold"
-                        >
+                        <Text as="p" size={"p-xxsmall"} className="font-medium">
                           {values.bio.length ?? 0}/250
                         </Text>
                       </div>
@@ -405,29 +391,30 @@ export default function Onboarding() {
                       <ErrorMessage
                         name="bio"
                         component="div"
-                        className="error-message text-[14px]"
+                        className="error-message text-[14px] !mt-[2px]"
                       />
-                      <div
-                        className=" py-3 rounded-[10px] text-tip-text-color
-                       text-[12px] font-inter font-[500]"
+                      <Text
+                        size="p-xxxsmall"
+                        className="text-df-secondary-text-color mt-3"
                       >
                         ✏️ <b>Pro Example:</b> Mention your role, experience,
                         skills and achievements edtech.
-                      </div>
+                      </Text>
                     </div>
                   )}
 
                   {step === 2 && (
                     <div className="mb-[18px]">
-                      <div className="flex justify-between mb-3">
+                      <div className="flex justify-between mb-2">
                         <Text
                           as="p"
                           size={"p-xxsmall"}
-                          className="font-semibold"
+                          className="font-medium"
+                          required
                         >
                           Skills
                         </Text>
-                        <Text variant={"small"} className="text-base-text">
+                        <Text as="p" size={"p-xxsmall"} className="font-medium">
                           {values?.expertise?.length ?? 0}/10
                         </Text>
                       </div>
@@ -443,8 +430,9 @@ export default function Onboarding() {
                         className="error-message text-[14px]"
                       />
                       <Text
-                        variant={"small"}
-                        className="mt-[24px] mb-2"
+                        as="p"
+                        size={"p-xxsmall"}
+                        className="font-medium mt-4 mb-2"
                         required
                       >
                         Choose the tools you work with
@@ -495,6 +483,7 @@ export default function Onboarding() {
               form="onboarding"
               text={isLastStep ? "Finish" : "Continue"}
               isLoading={loading}
+              type="modal"
             />
           </div>
         </>

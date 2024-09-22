@@ -79,13 +79,13 @@ export default function ClaimLink() {
         <Text
           as="h1"
           size={"p-large"}
-          className="text-sub-heading-text-color font-bold"
+          className="text-landing-heading-text-color font-bold"
         >
           First, claim your unique link
         </Text>
         <Text
           size={"p-xsmall"}
-          className="mt-2 text-description-text font-medium"
+          className="mt-2 text-landing-description-text-color font-medium"
         >
           Check whether we can get you the best domain.
         </Text>
@@ -109,7 +109,7 @@ export default function ClaimLink() {
                 <Text
                   as="p"
                   size={"p-xxsmall"}
-                  className="mt-6 font-semibold"
+                  className="mt-6 font-medium"
                   required
                 >
                   Your Website
@@ -239,11 +239,11 @@ export default function ClaimLink() {
         </div>
         <Text
           size={"p-xxsmall"}
-          className="text-heading-text text-center mg:w-[60%] m-auto !text-[14px] mt-6 font-medium"
+          className="text-landing-description-text-color text-center mg:w-[60%] m-auto !text-[14px] mt-6 font-medium"
         >
           Already have an account?{" "}
           <Link href={"/login"}>
-            <span className="text-input-error-color underline cursor-pointer">
+            <span className="text-df-orange-color underline cursor-pointer">
               Login
             </span>
           </Link>

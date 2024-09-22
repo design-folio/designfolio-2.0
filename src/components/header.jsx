@@ -6,8 +6,14 @@ import { useGlobalContext } from "@/context/globalContext";
 
 const Header = ({ dfToken }) => {
   const router = useRouter();
-  const { userDetails, popoverMenu, setPopoverMenu, changeTheme } =
-    useGlobalContext();
+  const {
+    userDetails,
+    popoverMenu,
+    setPopoverMenu,
+    changeTheme,
+    setUserDetails,
+    updateCache,
+  } = useGlobalContext();
 
   // Determine header component based on dfToken and router pathname
   let headerComponent = null;
@@ -25,6 +31,8 @@ const Header = ({ dfToken }) => {
         popoverMenu={popoverMenu}
         setPopoverMenu={setPopoverMenu}
         changeTheme={changeTheme}
+        setUserDetails={setUserDetails}
+        updateCache={updateCache}
       />
     );
   }

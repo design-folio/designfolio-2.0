@@ -37,18 +37,22 @@ export default function AddCard({
             size="small"
             type="secondary"
             customClass="w-fit gap-0"
-            icon={<PlusIcon className="text-df-icon-color" />}
+            icon={
+              <PlusIcon className="text-secondary-btn-text-color w-[14px] h-[14px]" />
+            }
           />
         </div>
       ) : (
         <div className=" flex flex-col justify-center items-center  h-full">
           <Button
+            type="secondary"
             icon={
-              <PlusIcon className="text-primary-btn-text-color w-[20px] h-[20px]" />
+              <PlusIcon className="text-secondary-btn-text-color w-[18px] h-[18px]" />
             }
-            text={"Add case study"}
-            customClass="gap-0"
           />
+          <Text size="p-xsmall" className="mt-2 text-df-base-text-color">
+            {title}
+          </Text>
         </div>
       )}
     </div>

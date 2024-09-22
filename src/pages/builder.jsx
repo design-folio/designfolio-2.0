@@ -9,6 +9,7 @@ import { modals } from "@/lib/constant";
 import Onboarding from "@/components/onboarding";
 import AddProject from "@/components/addProject";
 import DeleteProject from "@/components/deleteProject";
+import AddReview from "@/components/addReview";
 
 export default function Index() {
   const {
@@ -47,6 +48,8 @@ export default function Index() {
         return <AddProject />;
       case modals.deleteProject:
         return <DeleteProject />;
+      case modals.review:
+        return <AddReview />;
     }
   };
 

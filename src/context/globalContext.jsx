@@ -37,6 +37,7 @@ export const GlobalProvider = ({ children }) => {
   const [step, setStep] = useState(1);
   const projectRef = useRef(null);
   const [selectedProject, setSelectedProject] = useState(null);
+  const [selectedReview, setSelectedReview] = useState(null);
 
   const { setTheme } = useTheme();
 
@@ -118,6 +119,8 @@ export const GlobalProvider = ({ children }) => {
 
   const closeModal = () => {
     setShowModal(null);
+    setSelectedProject(null);
+    setSelectedReview(null);
     setStep(1);
   };
 
@@ -146,6 +149,8 @@ export const GlobalProvider = ({ children }) => {
         projectRef,
         selectedProject,
         setSelectedProject,
+        selectedReview,
+        setSelectedReview,
       }}
     >
       {children}

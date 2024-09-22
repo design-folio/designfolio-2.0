@@ -23,7 +23,7 @@ const SortableContainerElement = SortableContainer(({ children }) => {
   return <>{children}</>;
 });
 
-export default function Projects({ edit }) {
+export default function Projects({ edit = false }) {
   const {
     projectRef,
     userDetails,

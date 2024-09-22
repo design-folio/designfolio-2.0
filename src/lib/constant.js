@@ -10,6 +10,7 @@ export const modals = {
   onboarding: "onboarding",
   project: "project",
   deleteProject: "delete-project",
+  review: "review",
 };
 
 export function hasSubdomain() {

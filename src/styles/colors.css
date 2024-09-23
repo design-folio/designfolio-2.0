@@ -72,6 +72,7 @@
   --df-add-card-border-color: #e9eaeb;
   --df-add-card-heading-color: #202937;
   --df-add-card-description-color: #989da3;
+  --df-add-item-shadow: inset 0px 0px 0px 2px #e9eaeb;
   --df-orange-color: #ff553e;
 
   /* profile card */
@@ -183,7 +184,7 @@
   --secondary-btn-text-hover-color: #f9f9fb;
   --secondary-btn-border-color: #262832;
   --secondary-btn-border-hover-color: #565b6c;
-  --secondary-btn-shadow: inset 0px 0px 0px 2px #565b6c;
+  --secondary-btn-shadow: inset 0px 0px 0px 2px #262832;
 
   --tertiary-btn-bg-color: #ff553e;
   --tertiary-btn-text-color: #ffffff;
@@ -223,6 +224,7 @@
   --df-add-card-border-color: #262832;
   --df-add-card-heading-color: #e9eaeb;
   --df-add-card-description-color: #788095;
+  --df-add-item-shadow: inset 0px 0px 0px 2px #262832;
 
   /* profile card */
   --profile-card-heading-color: #e9eaeb;

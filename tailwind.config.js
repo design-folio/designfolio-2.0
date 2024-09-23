@@ -225,6 +225,7 @@ module.exports = {
         "input-hover": "var(--input-border-hover-shadow)",
         "input-error-shadow": "var(--input-error-shadow)",
         "popver-shadow": "var(--popver-shadow)",
+        "df-add-item-shadow": "var(--df-add-item-shadow)",
         "df-section-card-shadow": "var(--df-section-card-shadow)",
       },
       fontSize: {

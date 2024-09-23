@@ -5,6 +5,7 @@ import Reviews from "./reviews";
 import { useGlobalContext } from "@/context/globalContext";
 import Tools from "./tools";
 import Works from "./works";
+import Others from "./others";
 
 export default function Builder() {
   const {
@@ -36,6 +37,7 @@ export default function Builder() {
         setUserDetails={setUserDetails}
         updateCache={updateCache}
       />
+      <Others edit openModal={openModal} userDetails={userDetails} />
     </div>
   );
 }

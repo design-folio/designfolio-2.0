@@ -15,7 +15,7 @@ export default function AddCard({
 }) {
   return (
     <div
-      className={`bg-df-add-card-bg-color transition-all duration-150 ease-in   border border-df-add-card-border-color  hover:border-[3px] rounded-[24px] min-h-[344px] cursor-pointer ${className}`}
+      className={`bg-df-add-card-bg-color transition-all duration-150 ease-in   border border-df-add-card-border-color  hover:shadow-df-add-item-shadow rounded-[24px] min-h-[344px] cursor-pointer ${className}`}
       onClick={onClick}
     >
       {!first ? (

@@ -341,7 +341,7 @@ export default function AddProject() {
           )}
         </Formik>
       </div>
-      <div className="flex gap-2 px-3 py-4 justify-end !bg-[#F5F7F9] dark:!bg-[#2C2E3A]">
+      <div className="flex gap-2 px-3 py-4 justify-end bg-modal-footer-bg-color">
         <Button text={"Cancel"} type="secondary" onClick={closeModal} />
         <Button
           btnType="submit"

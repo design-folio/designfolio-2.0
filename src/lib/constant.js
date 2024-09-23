@@ -11,6 +11,7 @@ export const modals = {
   project: "project",
   deleteProject: "delete-project",
   review: "review",
+  tools: "tools",
 };
 
 export function hasSubdomain() {

@@ -89,7 +89,7 @@ export default function AddReview() {
         >
           {({ isSubmitting, errors, touched }) => (
             <Form id="projectForm">
-              <div className="px-5 pb-5">
+              <div className="px-5 pb-5 max-h-[440px] overflow-auto">
                 <div>
                   <Text
                     size={"p-xxsmall"}

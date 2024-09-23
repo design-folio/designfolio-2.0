@@ -5,8 +5,7 @@ import AddCard from "./AddCard";
 import PenIcon from "../../public/assets/svgs/pen-icon.svg";
 import ReviewCard from "./reviewCard";
 import { modals } from "@/lib/constant";
-export default function Reviews({ edit = false }) {
-  const { userDetails, openModal } = useGlobalContext();
+export default function Reviews({ edit = false, userDetails, openModal }) {
   return (
     <Section title={"Reviews"}>
       <div

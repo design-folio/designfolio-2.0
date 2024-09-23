@@ -23,15 +23,14 @@ const SortableContainerElement = SortableContainer(({ children }) => {
   return <>{children}</>;
 });
 
-export default function Projects({ edit = false }) {
-  const {
-    projectRef,
-    userDetails,
-    setUserDetails,
-    setSelectedProject,
-    openModal,
-  } = useGlobalContext();
-  console.log(userDetails);
+export default function Projects({
+  edit = false,
+  userDetails = null,
+  projectRef,
+  setUserDetails,
+  setSelectedProject,
+  openModal,
+}) {
   const onDeleteProject = (project) => {
     openModal(modals.deleteProject);
     setSelectedProject(project);

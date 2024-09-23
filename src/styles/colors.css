@@ -100,8 +100,9 @@
   --review-card-text-color: #202937;
 
   /* tool-box card */
-  --review-card-bg-color: #fff;
-  --review-card-text-color: #202937;
+  --tools-card-item-bg-color: #fff;
+  --tools-card-item-border-color: #f0f1f4;
+  --tools-card-item-text-color: #202937;
 
   /* work experience card */
   --work-card-heading-color: #202937;
@@ -249,8 +250,9 @@
   --review-card-text-color: #e9eaeb;
 
   /* tool-box card */
-  --toolbox-card-bg-color: #e9eaeb;
-  --toolbox-card-text-color: #2f323d;
+  --tools-card-item-bg-color: #1d1f27;
+  --tools-card-item-border-color: #2f323d;
+  --tools-card-item-text-color: #e9eaeb;
 
   /* work experience card */
   --work-card-heading-color: #e9eaeb;

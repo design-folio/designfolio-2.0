@@ -10,6 +10,7 @@ import Onboarding from "@/components/onboarding";
 import AddProject from "@/components/addProject";
 import DeleteProject from "@/components/deleteProject";
 import AddReview from "@/components/addReview";
+import AddTools from "@/components/addTools";
 
 export default function Index() {
   const {
@@ -50,6 +51,8 @@ export default function Index() {
         return <DeleteProject />;
       case modals.review:
         return <AddReview />;
+      case modals.tools:
+        return <AddTools />;
     }
   };
 

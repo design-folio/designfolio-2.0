@@ -7,8 +7,12 @@ import EditIcon from "../../public/assets/svgs/edit.svg";
 import Link from "next/link";
 import Text from "./text";
 
-export default function Profile({ preview = false, edit = false }) {
-  const { userDetails, setShowModal } = useGlobalContext();
+export default function Profile({
+  preview = false,
+  edit = false,
+  userDetails = null,
+  openModal,
+}) {
   const controls = useAnimation();
   const skillsRef = useRef(null);
   const skills = useMemo(
@@ -78,7 +82,7 @@ export default function Profile({ preview = false, edit = false }) {
             {edit && (
               <div>
                 <Button
-                  onClick={() => setShowModal("onboarding")}
+                  onClick={() => openModal("onboarding")}
                   customClass="!p-[13.38px] !flex-shrink-0"
                   type={"secondary"}
                   icon={<EditIcon className="text-df-icon-color" />}

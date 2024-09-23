@@ -126,8 +126,9 @@ module.exports = {
         "review-card-text-color": "var(--review-card-text-color)",
 
         // Tool-box card
-        "tool-box-card-bg-color": "var(--tool-box-card-bg-color)",
-        "tool-box-card-text-color": "var(--tool-box-card-text-color)",
+        "tools-card-item-bg-color": "var(--tools-card-item-bg-color)",
+        "tools-card-item-border-color": "var(--tools-card-item-border-color)",
+        "tools-card-item-text-color": "var(--tools-card-item-text-color)",
 
         // Work experience card
         "work-card-heading-color": "var(--work-card-heading-color)",

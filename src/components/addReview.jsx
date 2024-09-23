@@ -43,7 +43,7 @@ export default function AddReview() {
       .finally(() => closeModal());
   };
   return (
-    <div className="rounded-2xl bg-white m-auto lg:min-w-[500px] dark:bg-[#23252F]">
+    <div className="rounded-2xl bg-modal-bg-color m-auto lg:min-w-[500px] ">
       <div className="flex justify-between items-center p-5">
         <Text className="text-modal-heading-color">Add review details</Text>
         <Button

@@ -6,11 +6,10 @@ import EditIcon from "../../public/assets/svgs/edit.svg";
 export default function Section({
   children,
   title,
-  icon,
+  icon = <EditIcon className="text-df-icon-color" />,
   onClick,
   edit,
-  imageClassName = "w-[20px] h-[20px]",
-  className = "w-[20px] h-[20px]",
+  btnType = "secondary",
 }) {
   return (
     <div
@@ -21,12 +20,7 @@ export default function Section({
           {title}
         </Text>
         {edit && icon && (
-          <Button
-            onClick={onClick}
-            customClass="!p-[13.38px] !flex-shrink-0"
-            type={"secondary"}
-            icon={<EditIcon className="text-df-icon-color" />}
-          />
+          <Button onClick={onClick} type={btnType} icon={icon} />
         )}
       </div>
       <div className="mt-4 md:mt-5">{children}</div>

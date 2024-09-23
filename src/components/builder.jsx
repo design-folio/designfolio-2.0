@@ -4,6 +4,7 @@ import Projects from "./Projects";
 import Reviews from "./reviews";
 import { useGlobalContext } from "@/context/globalContext";
 import Tools from "./tools";
+import Works from "./works";
 
 export default function Builder() {
   const {
@@ -12,6 +13,7 @@ export default function Builder() {
     setUserDetails,
     setSelectedProject,
     openModal,
+    updateCache,
   } = useGlobalContext();
 
   return (
@@ -27,6 +29,13 @@ export default function Builder() {
       />
       <Reviews edit userDetails={userDetails} openModal={openModal} />
       <Tools userDetails={userDetails} openModal={openModal} edit />
+      <Works
+        edit
+        openModal={openModal}
+        userDetails={userDetails}
+        setUserDetails={setUserDetails}
+        updateCache={updateCache}
+      />
     </div>
   );
 }

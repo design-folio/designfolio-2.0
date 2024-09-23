@@ -11,6 +11,7 @@ import AddProject from "@/components/addProject";
 import DeleteProject from "@/components/deleteProject";
 import AddReview from "@/components/addReview";
 import AddTools from "@/components/addTools";
+import AddWork from "@/components/addWork";
 
 export default function Index() {
   const {
@@ -53,6 +54,8 @@ export default function Index() {
         return <AddReview />;
       case modals.tools:
         return <AddTools />;
+      case modals.work:
+        return <AddWork />;
     }
   };
 

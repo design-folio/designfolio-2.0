@@ -170,3 +170,36 @@ body {
 .toggle-input:checked + .toggle-label .toggle-icon.moon {
   opacity: 0;
 }
+
+.largeCheckbox {
+  transform: scale(1.5); /* Adjust the scale factor as needed */
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.select-container {
+  position: relative;
+  /* width: 200px; */
+  display: inline-block;
+}
+
+/* Hide the default select arrow */
+.custom-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+/* Custom icon */
+.select-container::after {
+  content: "";
+  position: absolute;
+  right: 10px;
+  top: 35px;
+  transform: translateY(-50%);
+  width: 20px; /* Width of your icon */
+  height: 20px; /* Height of your icon */
+  background-image: url("/assets/svgs/arrow-down.svg"); /* Path to your custom icon */
+  background-size: cover;
+  pointer-events: none; /* Makes it non-interactive */
+}

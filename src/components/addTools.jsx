@@ -23,7 +23,7 @@ const StepOneValidationSchema = Yup.object().shape({
 });
 
 export default function AddTools() {
-  const { closeModal, userDetails, userDetailsRefecth } = useGlobalContext();
+  const { closeModal, userDetails, updateCache } = useGlobalContext();
   const [tools, setTools] = useState([]);
   const [toolsOptions, setToolsOptions] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -53,7 +53,7 @@ export default function AddTools() {
     };
     _updateUser(payload)
       .then((res) => {
-        userDetailsRefecth();
+        updateCache("userDetails", res?.data?.user);
         closeModal();
         actions.setSubmitting(false);
       })

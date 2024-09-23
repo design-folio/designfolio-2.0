@@ -85,7 +85,7 @@ export default function AddProject() {
   }, [compressionProgress, compressedImage]);
 
   return (
-    <div className="rounded-2xl bg-white flex flex-col justify-between  m-auto lg:w-[500px] max-h-[550px] my-auto overflow-hidden dark:bg-[#23252F]">
+    <div className="rounded-2xl bg-modal-bg-color flex flex-col justify-between  m-auto lg:w-[500px] max-h-[550px] my-auto overflow-hidden">
       <div className="flex p-5 justify-between items-center">
         <Text size="p-medium" className="font-medium">
           Add Your Project Details
@@ -211,7 +211,7 @@ export default function AddProject() {
                   <ErrorMessage
                     name="picture"
                     component="div"
-                    className="text-red-500 text-sm mt-2"
+                    className="error-message"
                   />
                 </div>
                 <div className="mt-[24px]">

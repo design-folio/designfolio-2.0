@@ -99,8 +99,6 @@ export const GlobalProvider = ({ children }) => {
 
   const updateCache = (key, data) => {
     queryClient.setQueriesData({ queryKey: [key] }, (oldData) => {
-      // Return the new data based on the old data
-      console.log(oldData, data);
       return { user: { ...oldData?.user, ...data } };
     });
   };

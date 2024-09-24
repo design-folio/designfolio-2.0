@@ -3,6 +3,9 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  experimental: {
+    scrollRestoration: true,
+  },
   webpack: (config) => {
     // SVG
     // Grab the existing rule that handles SVG imports

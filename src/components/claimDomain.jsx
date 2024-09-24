@@ -107,13 +107,13 @@ export default function ClaimDomain({ form = "default", className = "" }) {
                     } !py-[19.2px] xl:!py-[18.8px] placeholder-[#D1D5D9] ${
                       ((!!errors.domain && values.domain && !loading) ||
                         (!isAvailable && !loading && values.domain)) &&
-                      "!text-df-error"
+                      "!text-input-error-color"
                     } ${
                       !errors.domain &&
                       domainValue &&
                       isAvailable &&
                       !loading &&
-                      "!text-df-success"
+                      "!text-input-success-color"
                     }`}
                     onChange={(e) =>
                       handleChange(

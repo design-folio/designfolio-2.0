@@ -8,16 +8,30 @@ import { useGlobalContext } from "@/context/globalContext";
 import { modals, moveItemInArray } from "@/lib/constant";
 import { _updateUser } from "@/network/post-request";
 import { twMerge } from "tailwind-merge";
+import { useRouter } from "next/router";
 
-const SortableItem = SortableElement(({ value, onDeleteProject, edit }) => (
-  <div className="h-full">
-    <ProjectCard
-      project={value}
-      onDeleteProject={onDeleteProject}
-      edit={edit}
-    />
-  </div>
-));
+const SortableItem = SortableElement(
+  ({ value, onDeleteProject, edit, preview }) => {
+    const router = useRouter();
+
+    const handleRouter = (id) => {
+      if (edit) {
+        router.push(`/project/${id}/editor`);
+      }
+    };
+
+    return (
+      <div className="h-full">
+        <ProjectCard
+          project={value}
+          onDeleteProject={onDeleteProject}
+          edit={edit}
+          handleRouter={handleRouter}
+        />
+      </div>
+    );
+  }
+);
 
 const SortableContainerElement = SortableContainer(({ children }) => {
   return <>{children}</>;
@@ -30,6 +44,7 @@ export default function Projects({
   setUserDetails,
   setSelectedProject,
   openModal,
+  preview,
 }) {
   const onDeleteProject = (project) => {
     openModal(modals.deleteProject);
@@ -75,6 +90,7 @@ export default function Projects({
                 value={project}
                 onDeleteProject={onDeleteProject}
                 edit={edit}
+                preview={preview}
               />
             ))}
             {edit && (

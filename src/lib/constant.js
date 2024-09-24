@@ -16,6 +16,7 @@ export const modals = {
   resume: "resume",
   socialMedia: "social-media",
   portfolioLinks: "portfolio-links",
+  password: "password",
 };
 
 export function hasSubdomain() {

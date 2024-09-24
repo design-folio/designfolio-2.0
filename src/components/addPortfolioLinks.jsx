@@ -30,7 +30,7 @@ const validationSchema = Yup.object().shape({
 });
 
 export default function AddPortfolioLinks() {
-  const { userDetails, closeModal, updateCache } = useGlobalContext();
+  const { userDetails, closeModal, updateCached } = useGlobalContext();
 
   return (
     <div className="rounded-2xl bg-modal-bg-color flex flex-col justify-between  m-auto lg:w-[500px] max-h-[550px] my-auto overflow-hidden">

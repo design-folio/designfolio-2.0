@@ -31,20 +31,22 @@ export default function ProjectCard({
   project,
   onDeleteProject,
   edit = false,
+  handleRouter,
 }) {
   const [isHovered, setIsHovered] = useState(false);
   const [imageLoaded, setImageLoaded] = React.useState(false);
   const router = useRouter();
 
-  const handleRouter = () => {
-    if (hasSubdomain()) {
-      router.push(`/project/${project._id}`);
-    } else if (router?.asPath.includes("portfolio-builder")) {
-      router.push(`/project/${project._id}/editor`);
-    } else {
-      router.push(`/project/${project._id}/preview`);
-    }
-  };
+  // const handleRouter = () => {
+  //   router.push(`/project/${project._id}/editor`);
+  //   // if (hasSubdomain()) {
+  //   //   router.push(`/project/${project._id}`);
+  //   // } else if (router?.asPath.includes("portfolio-builder")) {
+  //   //   router.push(`/project/${project._id}/editor`);
+  //   // } else {
+  //   //   router.push(`/project/${project._id}/preview`);
+  //   // }
+  // };
 
   return (
     <div
@@ -52,7 +54,7 @@ export default function ProjectCard({
         `bg-project-card-bg-color border border-project-card-border-color rounded-2xl min-h-[360px] h-full cursor-pointer`,
         className
       )}
-      onClick={handleRouter}
+      onClick={() => handleRouter(project._id)}
     >
       <div className="h-full flex flex-col">
         <div className="h-[253.072px] relative  overflow-hidden rounded-t-[15px]">
@@ -87,7 +89,7 @@ export default function ProjectCard({
               size="p-xxsmall"
               className="text-project-card-description-color line-clamp-2  mt-2 "
             >
-              {project?.title}
+              {project?.description}
             </Text>
           </div>
           <div className="flex justify-between gap-3  items-center mt-4">

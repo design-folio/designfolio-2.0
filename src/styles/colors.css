@@ -90,8 +90,8 @@
   --project-card-reorder-btn-icon-color: #aebeca;
 
   /* project Info card */
-  --project-card-heading-color: #202937;
-  --project-card-description-color: #8d98af;
+  --project-info-card-heading-color: #202937;
+  --project-info-card-description-color: #8d98af;
 
   /* review card */
   --review-card-bg-color: #fff;
@@ -241,8 +241,8 @@
   --project-card-reorder-btn-icon-color: #aebeca;
 
   /* project Info card */
-  --project-card-heading-color: #e9eaeb;
-  --project-card-description-color: #788095;
+  --project-info-card-heading-color: #e9eaeb;
+  --project-info-card-description-color: #788095;
 
   /* review card */
   --review-card-bg-color: #2f323d;

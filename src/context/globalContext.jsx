@@ -105,7 +105,6 @@ export const GlobalProvider = ({ children }) => {
 
   const changeTheme = (theme) => {
     _updateUser({ theme: theme }).then((res) => {
-      console.log(res);
       setTheme(theme == 1 ? "dark" : "light");
       updateCache("userDetails", res?.data?.user);
       setUserDetails(() => ({ ...userDetails, theme: theme }));

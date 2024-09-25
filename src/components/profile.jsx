@@ -18,7 +18,7 @@ export default function Profile({
   const skills = useMemo(
     () =>
       userDetails?.skills?.length != 0
-        ? userDetails?.skills.map((skill) => skill.label)
+        ? userDetails?.skills?.map((skill) => skill.label)
         : [],
     [userDetails?.skills]
   );

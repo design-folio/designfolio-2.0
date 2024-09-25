@@ -23,62 +23,65 @@ export default function Others({ openModal, userDetails, edit }) {
   const { resume } = userDetails || {};
   return (
     <div
-      className={` flex flex-col gap-4 bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words`}
+      className={` flex flex-col gap-8 bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words`}
     >
-      <div>
-        <div className="flex justify-between items-center mb-2">
-          {resume && edit && (
-            <Text size="p-small" className="text-modal-heading-color">
+      {resume && edit && (
+        <div>
+          <div className="flex justify-between items-center mb-4">
+            <Text
+              size="p-small"
+              className="text-modal-heading-color font-semibold"
+            >
               Resume
             </Text>
-          )}
-
-          {edit && resume && (
             <Button
               onClick={() => openModal(modals.resume)}
               type={"secondary"}
               icon={<EditIcon className="text-df-icon-color" />}
             />
+          </div>
+
+          {edit && !!userDetails?.resume ? (
+            <a href={userDetails?.resume?.url} download={true} target="_blank">
+              <Button
+                text={"Download Resume"}
+                customClass="w-full justify-start"
+                type="secondary"
+                icon={<NoteIcon className="text-df-icon-color" />}
+              />
+            </a>
+          ) : (
+            edit && (
+              <AddItem
+                title="Add your resume"
+                iconLeft={<ResumeIcon className="text-df-icon-color" />}
+                onClick={() => openModal(modals.resume)}
+                iconRight={
+                  <Button
+                    size="small"
+                    type="secondary"
+                    customClass="w-fit gap-0"
+                    icon={
+                      <PlusIcon className="text-secondary-btn-text-color w-[14px] h-[14px]" />
+                    }
+                  />
+                }
+              />
+            )
           )}
         </div>
-
-        {edit && !!userDetails?.resume ? (
-          <a href={userDetails?.resume?.url} download={true} target="_blank">
-            <Button
-              text={"Download Resume"}
-              customClass="w-full justify-start"
-              type="secondary"
-              icon={<NoteIcon className="text-df-icon-color" />}
-            />
-          </a>
-        ) : (
-          edit && (
-            <AddItem
-              title="Add your resume"
-              iconLeft={<ResumeIcon className="text-df-icon-color" />}
-              onClick={() => openModal(modals.resume)}
-              iconRight={
-                <Button
-                  size="small"
-                  type="secondary"
-                  customClass="w-fit gap-0"
-                  icon={
-                    <PlusIcon className="text-secondary-btn-text-color w-[14px] h-[14px]" />
-                  }
-                />
-              }
-            />
-          )
-        )}
-      </div>
+      )}
 
       <div>
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center justify-between mb-4">
           {(!!userDetails?.socials?.instagram ||
             !!userDetails?.socials?.twitter ||
             !!userDetails?.socials?.linkedin ||
             edit) && (
-            <Text size="p-small" className="text-modal-heading-color">
+            <Text
+              size="p-small"
+              className="text-modal-heading-color font-semibold"
+            >
               Connect with me
             </Text>
           )}
@@ -161,13 +164,16 @@ export default function Others({ openModal, userDetails, edit }) {
         </div>
       </div>
       <div>
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center justify-between mb-4">
           {(!!userDetails?.portfolios?.dribbble ||
             !!userDetails?.portfolios?.notion ||
             !!userDetails?.portfolios?.behance ||
             !!userDetails?.portfolios?.medium ||
             edit) && (
-            <Text size="p-small" className="text-modal-heading-color">
+            <Text
+              size="p-small"
+              className="text-modal-heading-color font-semibold"
+            >
               Other portfolio
             </Text>
           )}

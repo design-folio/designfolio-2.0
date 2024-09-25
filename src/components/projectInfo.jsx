@@ -48,11 +48,9 @@ export default function ProjectInfo({
       queryClient.setQueriesData({ queryKey: ["userDetails"] }, (oldData) => {
         return { user: { ...oldData?.user, projects: updatedProjects } };
       });
-      console.log(`project-editor-${_id}`);
       queryClient.setQueriesData(
         { queryKey: [`project-editor-${_id}`] },
         (oldData) => {
-          console.log({ ...oldData, project: { [key]: value } });
           return { ...oldData, project: { ...oldData.project, [key]: value } };
         }
       );
@@ -61,7 +59,6 @@ export default function ProjectInfo({
 
   const handleOnBlur = (field, e) => {
     saveText(field, e.target.textContent);
-    console.log(e.target.textContent);
     e.target.textContent =
       e.target.textContent.length > 0 ? e.target.textContent : "Type here...";
   };
@@ -204,6 +201,7 @@ export default function ProjectInfo({
                           <Button
                             text="Cancel"
                             click={() => setOpenPasswordDropdown(false)}
+                            type="secondary"
                           />
                           <Button
                             type="modal"
@@ -335,7 +333,6 @@ export default function ProjectInfo({
           </div>
         )}
       </div>
-      {console.log(thumbnail)}
       {edit ? (
         <ImageWithOverlayAndPicker
           src={thumbnail?.key}

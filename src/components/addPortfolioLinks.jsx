@@ -30,13 +30,13 @@ const validationSchema = Yup.object().shape({
 });
 
 export default function AddPortfolioLinks() {
-  const { userDetails, closeModal, updateCached } = useGlobalContext();
+  const { userDetails, closeModal, updateCache } = useGlobalContext();
 
   return (
     <div className="rounded-2xl bg-modal-bg-color flex flex-col justify-between  m-auto lg:w-[500px] max-h-[550px] my-auto overflow-hidden">
       <div className="flex p-5 justify-between items-center">
         <Text size="p-medium" className="font-medium">
-          Add Social Links
+          Add Portfolio Links
         </Text>
         <Button
           // customClass="lg:hidden"

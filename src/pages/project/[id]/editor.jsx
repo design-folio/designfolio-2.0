@@ -1,6 +1,5 @@
-import React from "react";
-import { getServerSideProps } from "@/lib/loggedInServerSideProps";
 import Editor from "@/components/editor";
+import React from "react";
 
 export default function Index() {
   return (
@@ -13,5 +12,3 @@ export default function Index() {
     </main>
   );
 }
-
-export { getServerSideProps };

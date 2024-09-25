@@ -75,7 +75,7 @@ export default function Index() {
         className={`max-w-[890px] mx-auto py-[94px] md:py-[135px] px-2 md:px-4 lg:px-0`}
       >
         {userDetails && <Builder />}
-        {taskPercentage !== 100 && <BottomTask />}
+        {userDetails && taskPercentage !== 100 && <BottomTask />}
       </div>
       <Modal show={showModal}>{modalContent()}</Modal>
     </main>

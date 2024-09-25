@@ -4,6 +4,10 @@ import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import ProjectInfo from "./projectInfo";
 import { useGlobalContext } from "@/context/globalContext";
+import dynamic from "next/dynamic";
+const ProjectEditor = dynamic(() => import("./projectEditor"), {
+  ssr: false,
+});
 
 export default function Editor({ edit }) {
   const router = useRouter();
@@ -11,13 +15,7 @@ export default function Editor({ edit }) {
   const { userDetails, setUserDetails, setShowModal, showModal } =
     useGlobalContext();
 
-  const {
-    data: projectDetails,
-    isLoading,
-    error,
-    isStale,
-    refetch,
-  } = useQuery({
+  const { data: projectDetails, refetch: refetchProjectDetail } = useQuery({
     queryKey: [`project-editor-${router.query.id}`],
     queryFn: async () => {
       const response = await _getProjectDetails(router.query.id, 0); // Adjust the endpoint
@@ -27,16 +25,24 @@ export default function Editor({ edit }) {
     staleTime: 60000, // Allow data to be considered stale after 1 minute (60,000 milliseconds)
   });
   return (
-    <div>
+    <div className="editor-container flex-1 flex flex-col gap-4 md:gap-6">
       {projectDetails && (
-        <ProjectInfo
-          projectDetails={projectDetails.project}
-          userDetails={userDetails}
-          setUserDetails={setUserDetails}
-          setShowModal={setShowModal}
-          showModal={showModal}
-          edit={edit}
-        />
+        <>
+          <ProjectInfo
+            projectDetails={projectDetails.project}
+            userDetails={userDetails}
+            setUserDetails={setUserDetails}
+            setShowModal={setShowModal}
+            showModal={showModal}
+            edit={edit}
+          />
+          <ProjectEditor
+            projectDetails={projectDetails.project}
+            userDetails={userDetails}
+            setUserDetails={setUserDetails}
+            refetchProjectDetail={refetchProjectDetail}
+          />
+        </>
       )}
     </div>
   );

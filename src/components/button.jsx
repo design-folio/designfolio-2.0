@@ -22,7 +22,7 @@ const Button = ({
   // Define size and style mappings
   const buttonSizes = {
     small: "p-2  text-sm rounded-[8px] font-medium",
-    medium: "p-2 text-[16px] rounded-lg font-inter font-medium",
+    medium: "p-3 text-[16px] rounded-2xl font-inter font-medium",
     large: "p-4 text-[16px] rounded-2xl font-inter font-medium",
   };
 

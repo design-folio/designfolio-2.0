@@ -14,7 +14,7 @@ export default function Reviews({ edit = false, userDetails, openModal }) {
           userDetails?.reviews?.length == 0 && "md:grid-cols-1"
         )}
       >
-        {userDetails?.reviews.map((review, i) => (
+        {userDetails?.reviews?.map((review, i) => (
           <ReviewCard review={review} edit={edit} key={i} />
         ))}
         {edit && (

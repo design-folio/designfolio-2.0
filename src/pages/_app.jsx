@@ -1,4 +1,4 @@
-import "@/styles/globals.css";
+import "@/styles/globals.scss";
 import localFont from "next/font/local";
 import { Inter } from "next/font/google";
 import Header from "@/components/header";
@@ -84,7 +84,7 @@ const sfpro = localFont({
   variable: "--font-sfpro",
 });
 
-function MyApp({ Component, pageProps, dfToken }) {
+function MyApp({ Component, pageProps, dfToken, hideHeader }) {
   const { theme } = useTheme();
 
   return (
@@ -106,7 +106,7 @@ function MyApp({ Component, pageProps, dfToken }) {
               <main
                 className={`${satoshi.variable} ${sfpro.variable} ${inter.variable}`}
               >
-                <Header dfToken={dfToken} />
+                <Header dfToken={dfToken} hideHeader={pageProps?.hideHeader} />
                 <Component {...pageProps} />
                 <ToastContainer position="bottom-right" />
               </main>

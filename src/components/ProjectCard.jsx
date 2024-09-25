@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { hasSubdomain } from "@/lib/constant";
 import customTwMerge from "@/lib/customTailwindMerge";
 import Button from "./button";
-import PreviewIcon from "../../public/assets/svgs/previewIcon.svg";
+import ViewArrowIcon from "../../public/assets/svgs/viewArrow.svg";
 import DeleteIcon from "../../public/assets/svgs/deleteIcon.svg";
 import DragIcon from "../../public/assets/svgs/drag.svg";
 import Text from "./text";
@@ -77,19 +77,13 @@ export default function ProjectCard({
           )}
         </div>
 
-        <div className="p-6 flex-1 flex flex-col justify-between">
+        <div className="p-6 flex-1 flex flex-col justify-center">
           <div>
             <Text
-              size="p-small"
-              className="text-project-card-heading-color line-clamp-2"
+              size="p-xsmall"
+              className="text-project-card-heading-color font-semibold line-clamp-2"
             >
               {project?.title}
-            </Text>
-            <Text
-              size="p-xxsmall"
-              className="text-project-card-description-color line-clamp-2  mt-2 "
-            >
-              {project?.description}
             </Text>
           </div>
           <div className="flex justify-between gap-3  items-center mt-4">
@@ -101,16 +95,21 @@ export default function ProjectCard({
               />
             ) : (
               <motion.div
-                className="flex flex-1 w-fit"
+                className="flex gap-1 flex-1 w-fit"
                 onHoverStart={() => setIsHovered(true)} // Set hover state to true when hovered
                 onHoverEnd={() => setIsHovered(false)}
               >
-                <p className="text- font-[500] !font-inter">View project</p>
+                <Text
+                  size="p-xsmall"
+                  className="text-project-card-description-color"
+                >
+                  View project
+                </Text>
                 <motion.div
                   animate={{ x: isHovered ? 5 : 0, y: isHovered ? -5 : 0 }} // Use isHovered to control animation
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  <PreviewIcon className="text-project-card-description-color" />
+                  <ViewArrowIcon className="text-project-card-description-color" />
                 </motion.div>
               </motion.div>
             )}

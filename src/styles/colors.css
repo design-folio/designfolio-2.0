@@ -168,6 +168,11 @@
   --input-password-bg-color: #f5f7f9;
   --input-password-heading-color: #202937;
   --input-password-description-color: #969cae;
+
+  --bottom-navigation-active-stroke: #202937;
+  --bottom-navigation-active-fill: #f3f4f7;
+  --bottom-navigation-inactive-stroke: #738096;
+  --bottom-navigation-inactive-fill: #f9fafb;
 }
 
 /* dark mode start*/
@@ -318,5 +323,11 @@
   --input-password-bg-color: #2c2e3a;
   --input-password-heading-color: #e9eaeb;
   --input-password-description-color: #788095;
+
+  /* bottom navigation */
+  --bottom-navigation-active-stroke: #e9eaeb;
+  --bottom-navigation-active-fill: #2f323d;
+  --bottom-navigation-inactive-stroke: #738096;
+  --bottom-navigation-inactive-fill: #1d1f26;
 }
 /* dark mode end*/

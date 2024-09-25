@@ -19,13 +19,13 @@ export default function ReviewCard({ className = "", review, edit = false }) {
       </Text>
       <div className="flex justify-between items-center">
         <div>
-          <Text
-            size="p-xsmall"
-            className="text-review-card-description-color mt-3"
-          >
+          <Text size="p-xsmall" className="text-review-card-text-color mt-3">
             {review?.name}
           </Text>
-          <Text size="p-xxsmall" className="text-review-card-text-color">
+          <Text
+            size="p-xxsmall"
+            className="text-review-card-description-color "
+          >
             {review?.company}
           </Text>
         </div>

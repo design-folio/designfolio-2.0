@@ -198,6 +198,13 @@ module.exports = {
         "input-password-heading-color": "var(--input-password-heading-color)",
         "input-password-description-color":
           "var(--input-password-description-color)",
+        "bottom-navigation-active-stroke":
+          "var(--bottom-navigation-active-stroke)",
+        "bottom-navigation-active-fill": "var(--bottom-navigation-active-fill)",
+        "bottom-navigation-inactive-stroke":
+          "var(--bottom-navigation-inactive-stroke)",
+        "bottom-navigation-inactive-fill":
+          "var(--bottom-navigation-inactive-fill)",
       },
       boxShadow: {
         // Landing page

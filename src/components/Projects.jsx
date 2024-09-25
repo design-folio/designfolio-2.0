@@ -4,34 +4,31 @@ import ProjectCard from "./ProjectCard";
 import Section from "./section";
 import AddCard from "./AddCard";
 import ProjectIcon from "../../public/assets/svgs/projectIcon.svg";
-import { useGlobalContext } from "@/context/globalContext";
 import { modals, moveItemInArray } from "@/lib/constant";
 import { _updateUser } from "@/network/post-request";
 import { twMerge } from "tailwind-merge";
 import { useRouter } from "next/router";
 
-const SortableItem = SortableElement(
-  ({ value, onDeleteProject, edit, preview }) => {
-    const router = useRouter();
+const SortableItem = SortableElement(({ value, onDeleteProject, edit }) => {
+  const router = useRouter();
 
-    const handleRouter = (id) => {
-      if (edit) {
-        router.push(`/project/${id}/editor`);
-      }
-    };
+  const handleRouter = (id) => {
+    if (edit) {
+      router.push(`/project/${id}/editor`);
+    }
+  };
 
-    return (
-      <div className="h-full">
-        <ProjectCard
-          project={value}
-          onDeleteProject={onDeleteProject}
-          edit={edit}
-          handleRouter={handleRouter}
-        />
-      </div>
-    );
-  }
-);
+  return (
+    <div className="h-full">
+      <ProjectCard
+        project={value}
+        onDeleteProject={onDeleteProject}
+        edit={edit}
+        handleRouter={handleRouter}
+      />
+    </div>
+  );
+});
 
 const SortableContainerElement = SortableContainer(({ children }) => {
   return <>{children}</>;
@@ -80,10 +77,10 @@ export default function Projects({
           <div
             className={twMerge(
               "grid gap-4 md:grid-cols-2",
-              userDetails?.projects.length === 0 && "md:grid-cols-1"
+              userDetails?.projects?.length === 0 && "md:grid-cols-1"
             )}
           >
-            {userDetails?.projects.map((project, index) => (
+            {userDetails?.projects?.map((project, index) => (
               <SortableItem
                 key={`item-${project._id}`} // Assuming each project has a unique id for better key handling
                 index={index}

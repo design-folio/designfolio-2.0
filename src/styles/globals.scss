@@ -1,0 +1,529 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("./colors.css");
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--df-bg);
+  min-height: 100vh;
+}
+
+body {
+  overflow-y: scroll;
+  min-height: 100vh;
+}
+
+*:focus {
+  outline: none;
+}
+
+.text-input {
+  padding: 16px;
+  border-radius: 16px;
+  border: 2px solid var(--input-border-color);
+  background: var(--input-bg-color);
+  color: var(--input-text-color);
+  font-family: var(--font-inter);
+  font-size: 16px;
+  font-style: normal;
+  line-height: normal;
+  width: 100%;
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 0.15s;
+}
+
+.modal-button {
+  background-color: #202937 !important;
+  color: #fff !important;
+}
+
+[data-theme="dark"] .text-input {
+  background-color: #363a48;
+  color: white !important;
+  border-color: #363a48;
+}
+[data-theme="dark"] .text-input:focus {
+  border-color: #b4bace !important;
+}
+[data-theme="dark"] .modal-button {
+  background-color: #ffffff !important;
+  color: #202937 !important;
+}
+.text-input:focus {
+  border-color: var(--input-border-focus-color);
+  box-shadow: var(--input-border-focus-shadow);
+}
+
+.text-input:hover {
+  box-shadow: var(--input-border-hover-shadow);
+}
+
+::placeholder {
+  color: var(--input-placeholder-color);
+  opacity: 1; /* Firefox */
+}
+
+::-ms-input-placeholder {
+  /* Edge 12-18 */
+  color: var(--input-placeholder-color);
+}
+
+.error-message {
+  color: var(--input-error-color);
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.webkit-fill {
+  @apply w-full; /* Optional: Apply Tailwind's full width class */
+  width: -webkit-fill-available;
+}
+
+@keyframes slide-up {
+  0% {
+    transform: translateY(100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-down {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-down {
+  animation: slide-down 0.2s ease-in-out forwards;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.2s ease-in-out forwards;
+}
+
+.toggle-container {
+  position: relative;
+  width: 52px;
+  height: 32px;
+}
+
+.toggle-input {
+  display: none;
+}
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: #556379;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background-color 0.1s ease-in-out;
+  padding-left: 4px;
+}
+
+.toggle-ball {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background-color: #fff;
+  border-radius: 50%;
+
+  transition: transform 0.1s ease-in-out;
+}
+
+.toggle-icon {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  opacity: 0;
+  transition: opacity 0.1s ease-in-out;
+}
+
+.toggle-input:checked + .toggle-label {
+  background-color: #ff553e;
+}
+
+.toggle-input:checked + .toggle-label .toggle-ball {
+  transform: translateX(20px);
+}
+
+.toggle-input:checked + .toggle-label .toggle-icon.sun {
+  opacity: 1;
+}
+
+.toggle-input:checked + .toggle-label .toggle-icon.moon {
+  opacity: 0;
+}
+
+.largeCheckbox {
+  transform: scale(1.5); /* Adjust the scale factor as needed */
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.select-container {
+  position: relative;
+  /* width: 200px; */
+  display: inline-block;
+}
+
+/* Hide the default select arrow */
+.custom-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+/* Custom icon */
+.select-container::after {
+  content: "";
+  position: absolute;
+  right: 10px;
+  top: 35px;
+  transform: translateY(-50%);
+  width: 20px; /* Width of your icon */
+  height: 20px; /* Height of your icon */
+  background-image: url("/assets/svgs/arrow-down.svg"); /* Path to your custom icon */
+  background-size: cover;
+  pointer-events: none; /* Makes it non-interactive */
+}
+
+.project-editor {
+  // overflow-x: auto;
+  position: relative;
+  will-change: transform, opacity;
+  word-wrap: break-word;
+
+  .figma-tool {
+    margin: 15px 0;
+  }
+
+  .figma-tool textarea {
+    width: 100%;
+    height: 100px;
+    box-sizing: border-box;
+    padding: 8px;
+  }
+
+  .figma-tool .figma-preview iframe {
+    width: 100%;
+    height: 450px; /* Adjust height as needed */
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+  }
+
+  .figma-tool .figma-preview {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .ce-popover--opened {
+    max-height: none;
+  }
+  .table-wrapper {
+    overflow-x: auto; /* Enable horizontal scrolling */
+    overflow-y: hidden; /* Hide vertical scrollbar if not needed */
+    width: 100%; /* Take full width of the container */
+    -webkit-overflow-scrolling: touch; /* For smooth scrolling on iOS */
+    -ms-overflow-style: none; /* Hide scrollbar in IE/Edge */
+    scrollbar-width: none; /* Hide scrollbar in Firefox */
+    padding-right: 8px;
+  }
+
+  table {
+    width: 100%; /* Ensure the table takes up the full width of the table-wrapper */
+    border-collapse: collapse; /* Optional: Collapse borders for better visual */
+  }
+
+  th,
+  td {
+    border: 1px solid #ccc; /* Add borders for clarity */
+    padding: 8px; /* Add some padding for readability */
+  }
+  h1 {
+    font-size: 24px; /* 32px if the base font size is 16px */
+    margin-top: 0.67em;
+    margin-bottom: 0.67em;
+    font-weight: 600;
+    color: #202937;
+  }
+
+  h2 {
+    font-size: 24px; /* 32px if the base font size is 16px */
+    margin-top: 0.67em;
+    margin-bottom: 0.67em;
+    font-weight: 600;
+    color: #202937;
+  }
+
+  h3 {
+    font-size: 1.17em; /* roughly 18.72px if the base font size is 16px */
+    margin-top: 1em;
+    margin-bottom: 1em;
+    font-weight: 600;
+    color: #202937;
+  }
+
+  h4 {
+    font-size: 1em; /* 16px if the base font size is 16px */
+    margin-top: 1.33em;
+    margin-bottom: 1.33em;
+    font-weight: 600;
+    color: #202937;
+  }
+
+  h5 {
+    font-size: 0.83em; /* roughly 13.28px if the base font size is 16px */
+    margin-top: 1.67em;
+    margin-bottom: 1.67em;
+    font-weight: 500;
+    color: #202937;
+  }
+
+  h6 {
+    font-size: 0.67em; /* roughly 10.72px if the base font size is 16px */
+    margin-top: 2.33em;
+    margin-bottom: 2.33em;
+    font-weight: 400;
+    color: #202937;
+  }
+  .ce-paragraph,
+  p,
+  ol,
+  ul,
+  menu {
+    font-weight: 400;
+    font-size: 16px;
+    color: #4d545f !important;
+    line-height: 22.4px;
+  }
+  p,
+  ol,
+  ul,
+  menu {
+    margin-top: 12px;
+  }
+  ol {
+    list-style: decimal;
+  }
+  ul {
+    list-style-type: disc;
+  }
+  a {
+    text-decoration: underline;
+  }
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0; /* Adjusted to remove space between cells */
+    border: solid 1px #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden; /* Ensures the border-radius is applied properly */
+  }
+
+  figure {
+    margin-top: 20px;
+  }
+
+  table th,
+  table td {
+    padding: 8px 20px;
+    text-align: left;
+    border-left: solid 1px #e5e7eb; /* Adds vertical border */
+    border-bottom: solid 1px #e5e7eb;
+  }
+
+  /* First cell of each row: reset left border for clean appearance */
+  table th:first-child,
+  table td:first-child {
+    border-left: none;
+  }
+
+  /* Remove bottom border for the last row to avoid merging with the table border */
+  table tr:last-child td {
+    border-bottom: none;
+  }
+
+  /* Applying border-radius to the first and last th of the first row */
+  table thead th:first-child {
+    border-top-left-radius: 8px;
+  }
+
+  table thead th:last-child {
+    border-top-right-radius: 8px;
+  }
+
+  /* Applying border-radius to the first and last td of the last row */
+  table tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 8px;
+  }
+
+  table tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 8px;
+  }
+
+  .ce-block__content,
+  .ce-toolbar__content {
+    max-width: calc(100% - 80px) !important;
+  }
+  .cdx-block {
+    max-width: 100% !important;
+  }
+
+  figure {
+    img {
+      margin: 12px auto;
+      width: 100%;
+      border-radius: 20px;
+    }
+    iframe {
+      height: 450px;
+      width: 100%;
+      border-radius: 20px;
+    }
+  }
+  figcaption {
+    margin: 10px 0;
+    color: #788095;
+    font-size: 13px;
+    text-align: center;
+  }
+}
+
+[data-theme="dark"] {
+  html {
+    background-color: #13151a;
+  }
+  .toggle-label {
+    background-color: #363a48;
+  }
+
+  .ce-popover-item__icon {
+    background: #fff;
+    border-radius: 4px;
+  }
+
+  .ce-popover__container {
+    background-color: #13151a !important;
+    border-color: #13151a !important;
+  }
+  .editor-container {
+    .ce-block--selected .ce-block__content,
+    .ce-inline-toolbar,
+    .codex-editor--narrow .ce-toolbox,
+    .ce-conversion-toolbar,
+    .ce-settings,
+    .ce-settings__button,
+    .ce-toolbar__settings-btn,
+    .cdx-button,
+    .ce-popover,
+    .ce-toolbar__plus:hover {
+      background: #13151a;
+      color: #fff;
+      border: transparent;
+    }
+
+    .ce-inline-tool,
+    .ce-conversion-toolbar__label,
+    .ce-toolbox__button,
+    .cdx-settings-button,
+    .ce-popover__items,
+    .ce-popover-item__title,
+    .ce-toolbar__plus {
+      color: #fff;
+    }
+
+    .ce-popover-item:hover {
+      background-color: #414453;
+    }
+    .ce-popover__search {
+      background-color: #2c2e3a;
+    }
+
+    ::selection {
+      background: #414453;
+    }
+
+    .cdx-settings-button:hover,
+    .ce-settings__button:hover,
+    .ce-toolbox__button--active,
+    .ce-toolbox__button:hover,
+    .cdx-button:hover,
+    .ce-inline-toolbar__dropdown:hover,
+    .ce-inline-tool:hover,
+    .ce-popover__item:hover,
+    .ce-toolbar__settings-btn:hover {
+      background-color: #414453;
+      color: #fff;
+    }
+
+    .cdx-notify--error {
+      background: #fb5d5d !important;
+    }
+
+    .cdx-notify__cross::after,
+    .cdx-notify__cross::before {
+      background: #414453;
+    }
+
+    .ce-paragraph,
+    .cdx-marker,
+    .ce-block,
+    .ce-block__content,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    .cdx-nested-list {
+      color: #e9eaeb !important;
+    }
+  }
+
+  .ce-inline-tool-input {
+    color: #13151a !important;
+  }
+
+  .project-editor {
+    will-change: transform, opacity;
+    position: relative;
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    .ce-paragraph,
+    p,
+    ol,
+    ul,
+    menu,
+    .cdx-nested-list,
+    table th,
+    table td {
+      color: #e9eaeb !important;
+    }
+
+    figure {
+      margin-top: 20px;
+    }
+  }
+}

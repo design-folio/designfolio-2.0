@@ -147,7 +147,7 @@ export default function Works({
               ref={scrollContainerRef}
               className="flex flex-col gap-[24px] py-5 list-none max-h-[450px] overflow-auto "
             >
-              {userDetails.experiences.map((experience, index) => (
+              {userDetails?.experiences?.map((experience, index) => (
                 <SortableItem
                   key={`item-${experience._id}`} // Assuming each project has a unique id for better key handling
                   index={index}

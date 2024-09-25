@@ -4,7 +4,7 @@ import AuthHeader from "./authHeader";
 import LoggedInHeader from "./loggedInHeader";
 import { useGlobalContext } from "@/context/globalContext";
 
-const Header = ({ dfToken }) => {
+const Header = ({ dfToken, hideHeader }) => {
   const router = useRouter();
   const {
     userDetails,
@@ -18,8 +18,9 @@ const Header = ({ dfToken }) => {
   // Determine header component based on dfToken and router pathname
   let headerComponent = null;
   const path = router.pathname;
-
-  if (path === "/") {
+  if (hideHeader) {
+    return null;
+  } else if (path === "/") {
     headerComponent = <LandingHeader dfToken={dfToken} />;
   } else if (!dfToken || (dfToken && path === "/email-verify")) {
     headerComponent = <AuthHeader />;

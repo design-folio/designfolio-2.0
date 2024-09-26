@@ -1,4 +1,4 @@
-import { popovers } from "@/lib/constant";
+import { modals, popovers } from "@/lib/constant";
 import { formatTimestamp } from "@/lib/times";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -50,7 +50,7 @@ export default function LoggedInHeader({
   useEffect(() => {
     router.prefetch("/");
     router.prefetch("/account-settings");
-    router.prefetch(`/profile-preview`);
+    router.prefetch(`/portfolio-preview`);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
@@ -146,7 +146,10 @@ export default function LoggedInHeader({
           </Link>
         </div>
         <div className="gap-[16px] items-center hidden md:flex">
-          <div className="relative theme-button">
+          <div
+            className="relative theme-button"
+            data-popover-menu={popovers.themeMenu}
+          >
             <Button
               icon={<ThemeIcon className="text-icon-color" />}
               onClick={handleTheme}
@@ -246,8 +249,12 @@ export default function LoggedInHeader({
             type="secondary"
             customClass="!p-4"
             animation
+            onClick={() => router.push("/portfolio-preview")}
           />
-          <div className="relative publish-button">
+          <div
+            className="relative publish-button"
+            data-popover-id={modals.publishMenu}
+          >
             <Button
               text={"Publish Site"}
               onClick={handlePublishBtn}
@@ -313,7 +320,10 @@ export default function LoggedInHeader({
             )}
           </div>
 
-          <div className="relative inline-block text-left">
+          <div
+            className="relative inline-block text-left"
+            data-popover-id={popovers.userMenu}
+          >
             <DfImage
               onClick={() =>
                 setPopoverMenu((prev) =>

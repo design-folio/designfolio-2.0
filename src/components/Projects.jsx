@@ -9,26 +9,32 @@ import { _updateUser } from "@/network/post-request";
 import { twMerge } from "tailwind-merge";
 import { useRouter } from "next/router";
 
-const SortableItem = SortableElement(({ value, onDeleteProject, edit }) => {
-  const router = useRouter();
+const SortableItem = SortableElement(
+  ({ value, onDeleteProject, edit, preview }) => {
+    const router = useRouter();
 
-  const handleRouter = (id) => {
-    if (edit) {
-      router.push(`/project/${id}/editor`);
-    }
-  };
+    const handleRouter = (id) => {
+      if (edit) {
+        router.push(`/project/${id}/editor`);
+      } else if (preview) {
+        router.push(`/project/${id}/preview`);
+      } else {
+        router.push(`/project/${id}`);
+      }
+    };
 
-  return (
-    <div className="h-full">
-      <ProjectCard
-        project={value}
-        onDeleteProject={onDeleteProject}
-        edit={edit}
-        handleRouter={handleRouter}
-      />
-    </div>
-  );
-});
+    return (
+      <div className="h-full">
+        <ProjectCard
+          project={value}
+          onDeleteProject={onDeleteProject}
+          edit={edit}
+          handleRouter={handleRouter}
+        />
+      </div>
+    );
+  }
+);
 
 const SortableContainerElement = SortableContainer(({ children }) => {
   return <>{children}</>;

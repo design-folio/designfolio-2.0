@@ -118,7 +118,7 @@ export default function ProjectInfo({
                   : "opacity-0 scale-90 pointer-events-none"
               }`}
             >
-              <div className=" w-[350px] md:w-[386px]  bg-popover-bg-color rounded-2xl shadow-popover-shadow border-[5px] border-popover-border-color p-4">
+              <div className=" w-[350px] md:w-[386px]  bg-popover-bg-color rounded-2xl shadow-popover-shadow border-[5px] border-popover-border-color p-2">
                 <Formik
                   initialValues={{
                     password: password,
@@ -137,7 +137,7 @@ export default function ProjectInfo({
                 >
                   {({ isSubmitting, errors, touched, validateField }) => (
                     <Form id="projectForm" autocomplete="off">
-                      <div className="bg-input-password-bg-color rounded-[8px]  py-4 px-3 transition-all">
+                      <div className="bg-input-password-bg-color rounded-lg  py-4 px-3 transition-all">
                         <div className="flex justify-between gap-[12px] items-center">
                           <div>
                             <Text

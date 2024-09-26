@@ -6,6 +6,7 @@ import DfImage from "./image";
 import EditIcon from "../../public/assets/svgs/edit.svg";
 import Link from "next/link";
 import Text from "./text";
+import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
 
 export default function Profile({
   preview = false,
@@ -54,7 +55,7 @@ export default function Profile({
             customClass="mb-5"
             type="secondary"
             size="small"
-            icon={<img src={"/assets/svgs/left-arrow.svg"} alt="back arrow" />}
+            icon={<LeftArrow className="text-df-icon-color" />}
           />
         </Link>
       )}
@@ -73,9 +74,9 @@ export default function Profile({
         <div className="flex-1 relative min-w-0 webkit-fill">
           <div className="flex justify-between gap-4">
             <Text
-              as="h2"
-              size="p-large"
-              className="text-profile-card-heading-color min-w-0 webkit-fil"
+              as="h1"
+              size="h3"
+              className="text-profile-card-heading-color min-w-0 webkit-fil font-medium"
             >
               {userDetails?.introduction}
             </Text>
@@ -135,7 +136,7 @@ export default function Profile({
                   alt=""
                 />
                 <Text
-                  size="p-xxxsmall"
+                  size="p-xxsmall"
                   className=" text-profile-card-skill-color px-[10px] cursor-default mr-2"
                 >
                   {skill}

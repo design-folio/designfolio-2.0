@@ -2,6 +2,7 @@ import { useGlobalContext } from "@/context/globalContext";
 import Text from "./text";
 import Button from "./button";
 import EditIcon from "../../public/assets/svgs/edit.svg";
+import TextWithLineBreaks from "./TextWithLineBreaks";
 
 export default function WorkCard({ work, onClick, show = true, edit }) {
   const { setSelectedWork } = useGlobalContext();
@@ -36,9 +37,14 @@ export default function WorkCard({ work, onClick, show = true, edit }) {
               />
             )}
           </div>
-          <Text size="p-small" className="text-work-card-heading-color">
+          <Text size="p-small" className="text-work-card-heading-color my-2">
             {work?.role}
           </Text>
+
+          <TextWithLineBreaks
+            text={work?.description}
+            color={"text-work-card-description-color"}
+          />
         </div>
       </div>
     </div>

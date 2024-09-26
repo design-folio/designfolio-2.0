@@ -46,7 +46,6 @@ export const GlobalProvider = ({ children }) => {
   const {
     data,
     isLoading,
-    error,
     isStale: userDetailsIsState,
     refetch: userDetailsRefecth,
   } = useQuery({
@@ -59,6 +58,42 @@ export const GlobalProvider = ({ children }) => {
     cacheTime: 300000, // Cache for 5 minutes (300,000 milliseconds)
     staleTime: 60000, // Allow data to be considered stale after 1 minute (60,000 milliseconds)
   });
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      const modalElement = document.querySelector(
+        `[data-modal-id="${showModal}"]`
+      );
+      const popoverElement = document.querySelector(
+        `[data-popover-id="${popoverMenu}"]`
+      );
+
+      if (popoverElement && !popoverElement.contains(event.target)) {
+        setPopoverMenu(null);
+        setShowModal(null);
+      }
+
+      if (modalElement && !modalElement.contains(event.target)) {
+        setShowModal(null);
+        setPopoverMenu(null);
+      }
+    };
+
+    const handleScroll = () => {
+      setShowModal(null);
+      setPopoverMenu(null);
+    };
+
+    if (showModal || popoverMenu) {
+      document.addEventListener("click", handleClickOutside);
+      document.addEventListener("scroll", handleScroll);
+    }
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+      document.removeEventListener("scroll", handleScroll);
+    };
+  }, [showModal, popoverMenu]);
 
   useEffect(() => {
     if (data && !userDetailsIsState) {

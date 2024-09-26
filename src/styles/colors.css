@@ -77,8 +77,8 @@
 
   /* profile card */
   --profile-card-heading-color: #202937;
-  --profile-card-description-color: #4d545f;
-  --profile-card-skill-color: #9b9bad;
+  --profile-card-description-color: #788095;
+  --profile-card-skill-color: #788095;
 
   /* project card */
   --project-card-bg-color: #fff;
@@ -107,7 +107,7 @@
 
   /* work experience card */
   --work-card-heading-color: #202937;
-  --work-card-description-color: #9b9bac;
+  --work-card-description-color: #788095;
   --work-card-company-color: #ff553e;
   --work-card-sort-icon-color: #9b9bac;
 
@@ -263,7 +263,7 @@
 
   /* work experience card */
   --work-card-heading-color: #e9eaeb;
-  --work-card-description-color: #788095;
+  --work-card-description-color: #b4b8c6;
   --work-card-company-color: #ff553e;
   --work-card-sort-icon-color: #9b9bac;
 

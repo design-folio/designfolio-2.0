@@ -9,7 +9,7 @@ export default function TextWithLineBreaks({ text, color }) {
       {lines.map((line, index) => (
         <React.Fragment key={index}>
           <p
-            className={`text-[#4d545f] text-[16px] font-[400] leading-[22.4px] font-inter ${
+            className={`text-[16px] font-medium leading-[22.4px] font-inter ${
               index < lines.length && "mt-2"
             } ${color}`}
           >

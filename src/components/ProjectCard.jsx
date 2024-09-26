@@ -35,19 +35,6 @@ export default function ProjectCard({
 }) {
   const [isHovered, setIsHovered] = useState(false);
   const [imageLoaded, setImageLoaded] = React.useState(false);
-  const router = useRouter();
-
-  // const handleRouter = () => {
-  //   router.push(`/project/${project._id}/editor`);
-  //   // if (hasSubdomain()) {
-  //   //   router.push(`/project/${project._id}`);
-  //   // } else if (router?.asPath.includes("portfolio-builder")) {
-  //   //   router.push(`/project/${project._id}/editor`);
-  //   // } else {
-  //   //   router.push(`/project/${project._id}/preview`);
-  //   // }
-  // };
-
   return (
     <div
       className={customTwMerge(
@@ -77,10 +64,10 @@ export default function ProjectCard({
           )}
         </div>
 
-        <div className="p-6 flex-1 flex flex-col justify-center">
+        <div className="p-6 flex-1 flex flex-col justify-between">
           <div>
             <Text
-              size="p-xsmall"
+              size="p-small"
               className="text-project-card-heading-color font-semibold line-clamp-2"
             >
               {project?.title}

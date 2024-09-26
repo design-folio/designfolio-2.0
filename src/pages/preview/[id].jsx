@@ -1,5 +1,4 @@
 import BottomLayout from "@/components/bottomLayout";
-import Others from "@/components/others";
 import OthersPreview from "@/components/othersPreview";
 import Profile from "@/components/profile";
 import Projects from "@/components/Projects";
@@ -7,8 +6,12 @@ import Reviews from "@/components/reviews";
 import Tools from "@/components/tools";
 import Works from "@/components/works";
 import { useGlobalContext } from "@/context/globalContext";
-import { useEffect } from "react";
+import { _getUser } from "@/network/get-request";
+import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/router";
 import { motion } from "framer-motion";
+import { useTheme } from "next-themes";
+import { useEffect } from "react";
 
 const containerVariants = {
   hidden: {},
@@ -26,27 +29,28 @@ const itemVariants = {
     y: 0, // Final position of children
     transition: {
       type: "spring",
-      stiffness: 180, // Smoothness adjusted
+      stiffness: 150, // Smoothness adjusted
       damping: 15, // Controlled bounciness
-      duration: 0.4, // Duration of each child's animation
+      duration: 0.5, // Duration of each child's animation
     },
   },
 };
-export default function Index() {
-  const {
-    setIsUserDetailsFromCache,
-    userDetailsIsState,
-    userDetails,
-    projectRef,
-  } = useGlobalContext();
+export default function Index({ initialUserDetails }) {
+  const { setTheme } = useTheme();
+  const router = useRouter();
+  const { data: userDetails } = useQuery({
+    queryKey: ["portfolio"],
+    queryFn: _getUser(router.query.id),
+    initialData: initialUserDetails,
+  });
+  const { projectRef } = useGlobalContext();
 
   useEffect(() => {
-    if (userDetailsIsState) {
-      setIsUserDetailsFromCache(false);
-    } else {
-      setIsUserDetailsFromCache(true);
+    if (userDetails) {
+      setTheme(userDetails?.theme == 1 ? "dark" : "light");
     }
-  }, []);
+  }, [userDetails, setTheme]);
+
   return (
     <BottomLayout>
       <main className="min-h-screen bg-df-bg-color">
@@ -61,15 +65,12 @@ export default function Index() {
               animate="visible"
             >
               <motion.div variants={itemVariants}>
-                <Profile userDetails={userDetails} preview />
+                <Profile userDetails={userDetails} />
               </motion.div>
+
               {userDetails?.projects?.length > 0 && (
                 <motion.div variants={itemVariants}>
-                  <Projects
-                    userDetails={userDetails}
-                    projectRef={projectRef}
-                    preview
-                  />
+                  <Projects userDetails={userDetails} projectRef={projectRef} />
                 </motion.div>
               )}
               {userDetails?.reviews?.length > 0 && (
@@ -77,9 +78,7 @@ export default function Index() {
                   <Reviews userDetails={userDetails} />
                 </motion.div>
               )}
-              <motion.div variants={itemVariants}>
-                <Tools userDetails={userDetails} />
-              </motion.div>
+              <Tools userDetails={userDetails} />
               {userDetails?.experiences?.length > 0 && (
                 <motion.div variants={itemVariants}>
                   <Works userDetails={userDetails} />
@@ -105,16 +104,33 @@ export default function Index() {
 }
 
 export const getServerSideProps = async (context) => {
-  const dfToken = context.req.cookies["df-token"] || null;
-  if (!dfToken) {
+  const { id } = context.query;
+  try {
+    const userResponse = await _getUser(id);
+    const user = userResponse?.data?.user;
+    if (user) {
+      return {
+        props: {
+          initialUserDetails: user,
+          hideHeader: true,
+        },
+      };
+    } else {
+      // If no user is found, redirect or handle accordingly
+      return {
+        redirect: {
+          destination: "https://designfolio.me",
+          permanent: false,
+        },
+      };
+    }
+  } catch (error) {
+    // Handle the error or redirect if necessary
     return {
       redirect: {
-        destination: "/login",
+        destination: "https://designfolio.me",
         permanent: false,
       },
     };
   }
-  return {
-    props: { dfToken: !!dfToken, hideHeader: true },
-  };
 };

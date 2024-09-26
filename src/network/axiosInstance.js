@@ -58,7 +58,7 @@ axiosInstance.interceptors.response.use(
       }
       toast.error(errorMessage);
     } else if (error.request) {
-      toast.error("No response received for the request");
+      toast.error("Network error: Please check your internet connection.");
     } else {
       toast.error("Error setting up the request: " + error.message);
     }

@@ -4,6 +4,8 @@ export const popovers = {
   themeMenu: "theme-menu",
   userMenu: "user-menu",
   loggedInMenu: "loggedin-menu",
+  password: "password",
+  task: "task",
 };
 
 export const modals = {
@@ -16,7 +18,6 @@ export const modals = {
   resume: "resume",
   socialMedia: "social-media",
   portfolioLinks: "portfolio-links",
-  password: "password",
 };
 
 export function hasSubdomain() {

@@ -77,7 +77,9 @@ export default function Index() {
         {userDetails && <Builder />}
         {userDetails && taskPercentage !== 100 && <BottomTask />}
       </div>
-      <Modal show={showModal}>{modalContent()}</Modal>
+      <Modal show={showModal && showModal != modals.task}>
+        {modalContent()}
+      </Modal>
     </main>
   );
 }

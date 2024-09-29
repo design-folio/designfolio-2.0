@@ -409,7 +409,7 @@ body {
 
 [data-theme="dark"] {
   html {
-    background-color: #13151a;
+    background-color: var(--df-bg);
   }
   .toggle-label {
     background-color: #363a48;

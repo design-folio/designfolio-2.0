@@ -30,7 +30,7 @@ export default function AddSocial() {
   return (
     <div className="rounded-2xl bg-modal-bg-color flex flex-col justify-between  m-auto lg:w-[500px] max-h-[550px] my-auto overflow-hidden">
       <div className="flex p-5 justify-between items-center">
-        <Text size="p-medium" className="font-medium">
+        <Text size="p-small" className="font-semibold">
           Add Social Links
         </Text>
         <Button

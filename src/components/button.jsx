@@ -65,7 +65,7 @@ const Button = ({
     const sizeStyle = buttonSizes[size] || "";
 
     return twMerge(
-      "inline-flex gap-2 items-center justify-center transition-all duration-500 ease-out rounded-2xl font-inter ",
+      "inline-flex gap-2 items-center justify-center transition-shadow duration-500 ease-out rounded-2xl font-inter",
       sizeStyle,
       !isDisabled && !isLoading ? baseStyle : "",
       isDisabled || isLoading ? disabledStyle : "",

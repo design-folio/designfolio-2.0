@@ -29,8 +29,8 @@ export default function Task({ setOpen }) {
       style={{ boxShadow: "0px 8.3px 33.2px 0px rgba(32, 41, 55, 0.14)" }}
     >
       <div className="flex justify-between items-center">
-        <Text size="p-small" className="text-checked-list-item-text-color">
-          Get started checklist
+        <Text size="p-xsmall" className="text-checked-list-item-text-color">
+          Launch your portfolio
         </Text>
         <Button
           // customClass="lg:hidden"

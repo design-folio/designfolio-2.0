@@ -234,7 +234,7 @@ export default function Onboarding() {
           <div className="p-5 lg:p-6 ">
             {userDetails && userDetails?.skills?.length !== 0 && (
               <div className="flex justify-between items-center">
-                <Text size="p-medium" className="font-medium">
+                <Text size="p-small" className="font-semibold">
                   Update profile
                 </Text>
                 <Button
@@ -258,14 +258,17 @@ export default function Onboarding() {
                 </div>
                 <Text
                   size="p-medium"
-                  className={"font-semi-bold text-center mb-2"}
+                  className={"font-semibold text-center mb-2"}
                 >
                   {step == 1
                     ? "Welcome to designfolio"
                     : "Your top skills, roles & tools?"}
                 </Text>
 
-                <Text size="p-small" className={"font-inter text-center"}>
+                <Text
+                  size="p-small"
+                  className={"font-inter font-normal text-center"}
+                >
                   {step == 1
                     ? "A little bit more about you"
                     : "Choose your superpowers"}
@@ -283,8 +286,12 @@ export default function Onboarding() {
             onSubmit={handleSubmit}
           >
             {({ setFieldValue, values, errors, touched }) => (
-              <Form id="onboarding" className="flex-1 overflow-y-auto">
-                <div className="p-5 lg:py-6 lg:px-8 !pt-0" ref={scrollDivRef}>
+              <Form
+                id="onboarding"
+                className="flex-1 overflow-y-auto"
+                ref={scrollDivRef}
+              >
+                <div className="p-5 lg:py-6 lg:px-8 !pt-0">
                   {step === 1 && (
                     <div>
                       <div className="flex items-center gap-4">
@@ -381,7 +388,7 @@ export default function Onboarding() {
                         name="bio"
                         as="textarea"
                         autoComplete="off"
-                        placeholder="Eg: Hey I’m Nandini, 7 years of building kickass experiences"
+                        placeholder="Eg: 7 years of building kickass experiences"
                         className={`text-input mt-2 min-h-[150px] ${
                           errors.bio &&
                           touched.bio &&
@@ -397,8 +404,8 @@ export default function Onboarding() {
                         size="p-xxxsmall"
                         className="text-df-secondary-text-color mt-3"
                       >
-                        ✏️ <b>Pro Example:</b> Mention your role, experience,
-                        skills and achievements edtech.
+                        ✏️ <b>Tip:</b> Mention your role, experience, skills and
+                        achievements
                       </Text>
                     </div>
                   )}
@@ -470,7 +477,7 @@ export default function Onboarding() {
             )}
           </Formik>
 
-          <div className="flex justify-end gap-4 py-2 lg:py-[9px] px-5 lg:px-4 rounded-b-2xl  bg-modal-footer-bg">
+          <div className="flex justify-end gap-4 py-2 lg:py-[9px] px-5 lg:px-4 rounded-b-2xl  bg-modal-footer-bg-color">
             {step > 1 && (
               <Button
                 onClick={() => handleBack()}

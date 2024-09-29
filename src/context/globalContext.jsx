@@ -61,26 +61,16 @@ export const GlobalProvider = ({ children }) => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      const modalElement = document.querySelector(
-        `[data-modal-id="${showModal}"]`
-      );
       const popoverElement = document.querySelector(
         `[data-popover-id="${popoverMenu}"]`
       );
 
       if (popoverElement && !popoverElement.contains(event.target)) {
         setPopoverMenu(null);
-        setShowModal(null);
-      }
-
-      if (modalElement && !modalElement.contains(event.target)) {
-        setShowModal(null);
-        setPopoverMenu(null);
       }
     };
 
     const handleScroll = () => {
-      setShowModal(null);
       setPopoverMenu(null);
     };
 
@@ -148,6 +138,7 @@ export const GlobalProvider = ({ children }) => {
 
   const openModal = (type = null) => {
     setShowModal(type);
+    setPopoverMenu(null);
   };
 
   const closeModal = () => {

@@ -63,7 +63,9 @@ export default function Works({
           <SortIcon className="w-4 h-4 text-df-icon-color" />
         )
       }
-      onClick={() => setShowModal(true)}
+      onClick={() => {
+        setShowModal(true);
+      }}
       imageClassName={"pr-4"}
     >
       <div className="flex flex-col gap-[24px]">
@@ -117,7 +119,7 @@ export default function Works({
       <Modal show={showModal}>
         <div className="rounded-2xl flex flex-col justify-between  m-auto lg:w-[500px] max-h-[550px] my-auto overflow-hidden bg-modal-bg-color">
           <div className="flex p-5 justify-between items-center">
-            <Text size="p-medium" className="font-medium">
+            <Text size="p-small" className="font-semibold">
               Change the order
             </Text>
             <Button

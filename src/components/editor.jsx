@@ -39,7 +39,6 @@ export default function Editor({ edit }) {
             projectDetails={projectDetails.project}
             userDetails={userDetails}
             setUserDetails={setUserDetails}
-            setShowModal={setShowModal}
             showModal={showModal}
             edit={edit}
           />

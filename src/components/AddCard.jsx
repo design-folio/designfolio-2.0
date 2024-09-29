@@ -15,7 +15,7 @@ export default function AddCard({
 }) {
   return (
     <div
-      className={`bg-df-add-card-bg-color transition-all duration-150 ease-in   border border-df-add-card-border-color  hover:shadow-df-add-item-shadow rounded-[24px] min-h-[344px] cursor-pointer ${className}`}
+      className={`bg-df-add-card-bg-color transition-shadow duration-500 ease-in   border border-df-add-card-border-color  hover:shadow-df-add-item-shadow rounded-[24px] min-h-[344px] cursor-pointer ${className}`}
       onClick={onClick}
     >
       {!first ? (
@@ -36,7 +36,7 @@ export default function AddCard({
             text={buttonTitle}
             size="small"
             type="secondary"
-            customClass="w-fit gap-0"
+            customClass="w-fit gap-1"
             icon={
               <PlusIcon className="text-secondary-btn-text-color w-[14px] h-[14px]" />
             }

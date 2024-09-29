@@ -124,7 +124,7 @@ export default function ClaimDomain({ form = "default", className = "" }) {
                       )
                     }
                   />
-                  <div className="flex justify-center items-center gap-[10px] absolute top-[3px] right-[3px]">
+                  <div className="flex justify-center items-center gap-[10px] absolute top-[4px] right-[3px]">
                     <span
                       className="text-input-button-color flex  gap-2 items-center font-inter font-[500] p-[14px] rounded-xl transition-all"
                       style={{

@@ -139,7 +139,7 @@ export default function LoggedInHeader({
 
   return (
     <div className={`${headerStyle} px-2 md:px-0 py-2 md:py-5 bg-transparent`}>
-      <div className="shadow-header-shadow max-w-[890px] p-3 md:px-[32px] md:!py-4 rounded-[24px] bg-df-header-bg-color mx-auto flex justify-between items-center">
+      <div className="shadow-header-shadow max-w-[890px] p-3  md:!p-4 rounded-[24px] bg-df-header-bg-color mx-auto flex justify-between items-center">
         <div className="flex items-center gap-[24px]">
           <Link href={"/builder"}>
             <Logo className="text-df-base-text-color" />
@@ -253,7 +253,7 @@ export default function LoggedInHeader({
           />
           <div
             className="relative publish-button"
-            data-popover-id={modals.publishMenu}
+            data-popover-id={popovers.publishMenu}
           >
             <Button
               text={"Publish Site"}
@@ -272,7 +272,7 @@ export default function LoggedInHeader({
               >
                 <div className=" w-[310px] rounded-xl shadow-popver-shadow bg-popover-bg-color border-4 border-solid border-popover-border-color">
                   <div className="p-4">
-                    <div className="flex justify-between items-center">
+                    <div className="flex justify-between items-center break-all gap-2">
                       <div
                         className="flex gap-2 cursor-pointer items-center"
                         onClick={() =>

@@ -189,7 +189,7 @@
   --secondary-btn-text-hover-color: #f9f9fb;
   --secondary-btn-border-color: #262832;
   --secondary-btn-border-hover-color: #565b6c;
-  --secondary-btn-shadow: inset 0px 0px 0px 2px #262832;
+  --secondary-btn-shadow: inset 0px 0px 0px 2px #565b6c;
 
   --tertiary-btn-bg-color: #ff553e;
   --tertiary-btn-text-color: #ffffff;

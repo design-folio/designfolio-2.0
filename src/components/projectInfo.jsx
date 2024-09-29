@@ -18,7 +18,7 @@ import queryClient from "@/network/queryClient";
 export default function ProjectInfo({
   projectDetails,
   userDetails,
-  setShowModal,
+  openModal,
   showModal,
   edit,
 }) {
@@ -98,7 +98,7 @@ export default function ProjectInfo({
             <Button
               type="secondary"
               onClick={() =>
-                setShowModal((prev) =>
+                openModal((prev) =>
                   prev == modals.password ? null : modals.password
                 )
               }

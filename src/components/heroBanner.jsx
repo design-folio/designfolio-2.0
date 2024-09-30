@@ -106,6 +106,7 @@ export default function HeroBanner({ dfToken }) {
         variants={leftBannerVariants}
         initial="hidden"
         animate="visible"
+        style={{ backfaceVisibility: "none", willChange: "opacity, transform" }}
       />
       <motion.img
         src="/assets/svgs/right-banner.svg"
@@ -114,6 +115,7 @@ export default function HeroBanner({ dfToken }) {
         variants={rightBannerVariants}
         initial="hidden"
         animate="visible"
+        style={{ backfaceVisibility: "none", willChange: "opacity, transform" }}
       />
       <div className="overflow-hidden">
         <motion.div

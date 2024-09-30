@@ -102,20 +102,18 @@ export default function HeroBanner({ dfToken }) {
       <motion.img
         src="/assets/svgs/left-banner.svg"
         alt=""
-        className="hidden md:block absolute md:top-[15px] xl:top-[75px] md:left-[-330px] transition-all duration-500 ease-out"
+        className="hidden md:block absolute md:top-[15px] xl:top-[75px] md:left-[-330px] transition-transform duration-500 ease-out"
         variants={leftBannerVariants}
         initial="hidden"
         animate="visible"
-        style={{ backfaceVisibility: "none", willChange: "opacity, transform" }}
       />
       <motion.img
         src="/assets/svgs/right-banner.svg"
         alt=""
-        className="hidden md:block absolute md:top-[15px] xl:top-[85px] md:right-[-330px] transition-all duration-500 ease-out"
+        className="hidden md:block absolute md:top-[15px] xl:top-[85px] md:right-[-330px] transition-transform duration-500 ease-out"
         variants={rightBannerVariants}
         initial="hidden"
         animate="visible"
-        style={{ backfaceVisibility: "none", willChange: "opacity, transform" }}
       />
       <div className="overflow-hidden">
         <motion.div

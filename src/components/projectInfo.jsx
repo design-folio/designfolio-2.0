@@ -6,7 +6,7 @@ import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
 import LockIcon from "../../public/assets/svgs/lock.svg";
 import LockOpenIcon from "../../public/assets/svgs/lock-open.svg";
 import Button from "./button";
-import { modals, popovers } from "@/lib/constant";
+import { popovers } from "@/lib/constant";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import Toggle from "./toggle";
 import Text from "./text";
@@ -43,19 +43,26 @@ export default function ProjectInfo({
 
   const saveProject = (key, value) => {
     _updateProject(router.query.id, { [key]: value }).then(() => {
-      const updatedProjects = userDetails?.projects?.map((item) =>
-        item._id === router.query.id ? { ...item, [key]: value } : item
-      );
-      queryClient.setQueriesData({ queryKey: ["userDetails"] }, (oldData) => {
-        return { user: { ...oldData?.user, projects: updatedProjects } };
-      });
-      queryClient.setQueriesData(
-        { queryKey: [`project-editor-${_id}`] },
-        (oldData) => {
-          return { ...oldData, project: { ...oldData.project, [key]: value } };
-        }
-      );
+      updateProjectCache(key, value);
     });
+  };
+
+  const updateProjectCache = (key, value) => {
+    const updatedProjects = userDetails?.projects?.map((item) =>
+      item._id === router.query.id ? { ...item, [key]: value } : item
+    );
+    queryClient.setQueriesData({ queryKey: ["userDetails"] }, (oldData) => {
+      return { user: { ...oldData?.user, projects: updatedProjects } };
+    });
+    queryClient.setQueriesData(
+      { queryKey: [`project-editor-${_id}`] },
+      (oldData) => {
+        return {
+          ...oldData,
+          project: { ...oldData.project, [key]: value },
+        };
+      }
+    );
   };
 
   const handleOnBlur = (field, e) => {
@@ -134,7 +141,14 @@ export default function ProjectInfo({
                     _updateProject(router.query.id, {
                       password: values.password,
                     }).then((res) => {
-                      saveProject("password", values.password);
+                      updateProjectCache(
+                        "password",
+                        res?.data?.project?.password
+                      );
+                      updateProjectCache(
+                        "protected",
+                        res?.data?.project?.protected
+                      );
                       actions.setSubmitting(false);
                       toast.success("Password has been updated.");
                     });
@@ -205,7 +219,7 @@ export default function ProjectInfo({
                         <div className="flex gap-2 justify-end mt-4">
                           <Button
                             text="Cancel"
-                            click={() => setOpenPasswordDropdown(false)}
+                            onClick={() => setPopoverMenu(null)}
                             type="secondary"
                           />
                           <Button

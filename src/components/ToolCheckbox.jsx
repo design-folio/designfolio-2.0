@@ -9,7 +9,6 @@ const ToolCheckbox = ({ tool, field, form, theme }) => {
       const nextSelectedTools = form?.values?.selectedTools?.filter(
         (selectedTool) => selectedTool?.value !== tool?.value
       );
-      // console.log(nextSelectedTools);
       form.setFieldValue("selectedTools", nextSelectedTools);
     } else {
       const nextSelectedTools = [...form?.values?.selectedTools, tool];

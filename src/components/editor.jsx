@@ -14,8 +14,13 @@ export default function Editor({ edit }) {
   const router = useRouter();
   const { setTheme } = useTheme();
 
-  const { userDetails, setUserDetails, setShowModal, showModal } =
-    useGlobalContext();
+  const {
+    userDetails,
+    setUserDetails,
+    setPopoverMenu,
+    showModal,
+    popoverMenu,
+  } = useGlobalContext();
 
   const { data: projectDetails, refetch: refetchProjectDetail } = useQuery({
     queryKey: [`project-editor-${router.query.id}`],
@@ -41,6 +46,8 @@ export default function Editor({ edit }) {
             setUserDetails={setUserDetails}
             showModal={showModal}
             edit={edit}
+            setPopoverMenu={setPopoverMenu}
+            popoverMenu={popoverMenu}
           />
           <ProjectEditor
             projectDetails={projectDetails.project}

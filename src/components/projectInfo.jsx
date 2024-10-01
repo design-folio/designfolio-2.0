@@ -6,7 +6,7 @@ import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
 import LockIcon from "../../public/assets/svgs/lock.svg";
 import LockOpenIcon from "../../public/assets/svgs/lock-open.svg";
 import Button from "./button";
-import { modals } from "@/lib/constant";
+import { modals, popovers } from "@/lib/constant";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import Toggle from "./toggle";
 import Text from "./text";
@@ -14,12 +14,13 @@ import EyeIcon from "../../public/assets/svgs/eye.svg";
 import EyeCloseIcon from "../../public/assets/svgs/eye-close.svg";
 import { ImageWithOverlayAndPicker } from "./ImageWithOverlayAndPicker";
 import queryClient from "@/network/queryClient";
+import { toast } from "react-toastify";
 
 export default function ProjectInfo({
   projectDetails,
   userDetails,
-  openModal,
-  showModal,
+  setPopoverMenu,
+  popoverMenu,
   edit,
 }) {
   const {
@@ -40,7 +41,7 @@ export default function ProjectInfo({
 
   const router = useRouter();
 
-  const saveText = (key, value) => {
+  const saveProject = (key, value) => {
     _updateProject(router.query.id, { [key]: value }).then(() => {
       const updatedProjects = userDetails?.projects?.map((item) =>
         item._id === router.query.id ? { ...item, [key]: value } : item
@@ -58,7 +59,7 @@ export default function ProjectInfo({
   };
 
   const handleOnBlur = (field, e) => {
-    saveText(field, e.target.textContent);
+    saveProject(field, e.target.textContent);
     e.target.textContent =
       e.target.textContent.length > 0 ? e.target.textContent : "Type here...";
   };
@@ -94,12 +95,15 @@ export default function ProjectInfo({
           icon={<LeftArrow className="text-df-icon-color" />}
         />
         {edit && (
-          <div className="mb-3 md:mb-0 relative" data-modal-id="password">
+          <div
+            className="mb-3 md:mb-0 relative"
+            data-popover-id={popovers.password}
+          >
             <Button
               type="secondary"
               onClick={() =>
-                openModal((prev) =>
-                  prev == modals.password ? null : modals.password
+                setPopoverMenu((prev) =>
+                  prev == popovers.password ? null : popovers.password
                 )
               }
               icon={
@@ -113,7 +117,7 @@ export default function ProjectInfo({
 
             <div
               className={`pt-2 origin-top-right absolute z-20 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${
-                showModal === modals.password
+                popoverMenu === popovers.password
                   ? "opacity-100 scale-100"
                   : "opacity-0 scale-90 pointer-events-none"
               }`}
@@ -130,7 +134,8 @@ export default function ProjectInfo({
                     _updateProject(router.query.id, {
                       password: values.password,
                     }).then((res) => {
-                      setMenuPopup(null);
+                      saveProject("password", values.password);
+                      actions.setSubmitting(false);
                       toast.success("Password has been updated.");
                     });
                   }}
@@ -205,8 +210,8 @@ export default function ProjectInfo({
                           />
                           <Button
                             type="modal"
-                            disabled={isSubmitting}
                             text={"Change"}
+                            isLoading={isSubmitting}
                             btnType="submit"
                             form="projectForm"
                           />

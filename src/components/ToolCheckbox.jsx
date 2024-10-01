@@ -12,9 +12,7 @@ const ToolCheckbox = ({ tool, field, form, theme }) => {
       // console.log(nextSelectedTools);
       form.setFieldValue("selectedTools", nextSelectedTools);
     } else {
-      // console.log(form.values);
       const nextSelectedTools = [...form?.values?.selectedTools, tool];
-      // console.log(nextSelectedTools);
       form.setFieldValue("selectedTools", nextSelectedTools);
     }
   };

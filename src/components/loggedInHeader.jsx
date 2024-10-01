@@ -98,7 +98,6 @@ export default function LoggedInHeader({
     setUpdateLoading(true);
     _publish({ status: 1 })
       .then((res) => {
-        console.log(res);
         setUserDetails((prev) => ({ ...prev, ...res?.data?.user }));
         setPopoverMenu(null);
         setIsMobileThemePopup(false);

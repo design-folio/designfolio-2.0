@@ -21,7 +21,6 @@ export default function ProjectPassword({
 }) {
   const [showEye, setShowEye] = useState(false);
   const router = useRouter();
-  console.log(projectDetails);
 
   return (
     <div className="px-4 max-w-[500px] m-auto">

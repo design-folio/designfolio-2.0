@@ -71,7 +71,7 @@ export default function Signup() {
         router.push("/email-verify");
       })
       .catch((err) => {
-        console.log(err, "err");
+        console.log(err, "errr");
       })
       .finally(() => setLoading(false));
   }

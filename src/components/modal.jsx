@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { twMerge } from "tailwind-merge";
 
-const Modal = ({ show, onClose, children }) => {
+const Modal = ({ show, onClose, children, className }) => {
   const [modalRoot, setModalRoot] = useState(null);
   const [el, setEl] = useState(null);
 
@@ -53,7 +54,10 @@ const Modal = ({ show, onClose, children }) => {
     <AnimatePresence mode="wait">
       {show && (
         <motion.div
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[999]"
+          className={twMerge(
+            "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[999]",
+            className
+          )}
           onClick={onClose}
           variants={backdropVariants}
           initial="hidden"
@@ -61,15 +65,7 @@ const Modal = ({ show, onClose, children }) => {
           exit="hidden"
           transition={{ duration: 0.3, ease: "easeInOut" }}
         >
-          <motion.div
-            onClick={(e) => e.stopPropagation()}
-            variants={modalContentVariants}
-            initial="hidden"
-            animate="visible"
-            exit="hidden"
-          >
-            {children}
-          </motion.div>
+          {children}
         </motion.div>
       )}
     </AnimatePresence>,

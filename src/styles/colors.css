@@ -50,6 +50,10 @@
   --modal-btn-bg-hover-color: #35435a;
   --modal-btn-border-hover-color: #35435a;
 
+  --ai-btn-text-color: #20294c;
+  --ai-btn-bg-color: linear-gradient(180deg, #ffffff 0.77%, #e8e8e8 100.77%);
+  --ai-btn-border-color: #e0e6eb;
+
   --delete-btn-bg-color: #ffeeeb;
   --delete-btn-bg-hover-color: #ffe5e0;
   --delete-btn-icon-color: #ff3b30;
@@ -206,6 +210,10 @@
   --modal-btn-border-color: #f9f9fb;
   --modal-btn-bg-hover-color: #ffffff;
   --modal-btn-border-hover-color: #ffffff;
+
+  --ai-btn-text-color: #ffffff;
+  --ai-btn-bg-color: linear-gradient(180deg, #5a647c 0.77%, #3e4555 100.77%);
+  --ai-btn-border-color: transparent;
 
   --delete-btn-bg-color: #692b2d;
   --delete-btn-bg-hover-color: #421d1e;

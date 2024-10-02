@@ -33,7 +33,7 @@ const Button = ({
         "bg-primary-btn-bg-color hover:bg-primary-btn-bg-hover-color text-primary-btn-text-color border border-primary-btn-bg-color opacity-70 cursor-not-allowed",
     },
     secondary: {
-      base: "bg-secondary-btn-bg-color hover:secondary-btn-bg-hover-color text-secondary-btn-text-color  border-solid border border-secondary-btn-border-color hover:secondary-btn-bg-hover-color hover:shadow-secondary-btn",
+      base: "bg-secondary-btn-bg-color hover:bg-secondary-btn-bg-hover-color text-secondary-btn-text-color  border-solid border border-secondary-btn-border-color hover:secondary-btn-bg-hover-color hover:shadow-secondary-btn",
       disabled:
         "bg-secondary-btn-bg-color  text-secondary-btn-text-color  border-solid border border-secondary-btn-border-color opacity-70 cursor-not-allowed",
     },
@@ -55,6 +55,11 @@ const Button = ({
       base: "bg-modal-btn-bg-color hover:bg-modal-btn-bg-hover-color text-modal-btn-text-color border border-modal-btn-border-color hover:border-modal-btn-bg-hover-color",
       disabled:
         "bg-modal-btn-bg-color hover:bg-modal-btn-bg-hover-color text-modal-btn-text-color border border-modal-btn-bg-color opacity-70 cursor-not-allowed",
+    },
+    ai: {
+      base: "bg-ai-btn-bg-color text-ai-btn-text-color border border-ai-btn-border-color",
+      disabled:
+        "bg-ai-btn-bg-color text-ai-btn-text-color border border-ai-btn-border-color",
     },
   };
 

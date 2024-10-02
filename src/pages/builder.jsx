@@ -15,6 +15,7 @@ import AddWork from "@/components/addWork";
 import AddResume from "@/components/addResume";
 import AddSocial from "@/components/addSocial";
 import AddPortfolioLinks from "@/components/addPortfolioLinks";
+import CreateAiProject from "@/components/createAiProject";
 
 export default function Index() {
   const {
@@ -79,6 +80,9 @@ export default function Index() {
       </div>
       <Modal show={showModal && showModal != modals.task}>
         {modalContent()}
+      </Modal>
+      <Modal show={true} className={"block"}>
+        <CreateAiProject />
       </Modal>
     </main>
   );

@@ -77,6 +77,10 @@ module.exports = {
         "delete-btn-border-hover-color": "var(--delete-btn-border-hover-color)",
         "delete-btn-shadow-color": "var(--delete-btn-shadow-color)",
 
+        "ai-btn-text-color": "var(--ai-btn-text-color)",
+        "ai-btn-bg-color": "var(--ai-btn-bg-color)",
+        "ai-btn-border-color": "var(--ai-btn-border-color)",
+
         // Application
         "df-bg-color": "var(--df-bg-color)",
         "df-base-text-color": "var(--df-base-text-color)",

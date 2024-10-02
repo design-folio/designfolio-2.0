@@ -91,7 +91,7 @@ export default function AddResume() {
 
         {resume && (
           <div
-            className={`bg-secondary-btn-bg-color hover:secondary-btn-bg-hover-color text-secondary-btn-text-color  border-solid border border-secondary-btn-border-color hover:secondary-btn-bg-hover-color flex  mb-[32px]  cursor-pointer  rounded-2xl px-[13px] py-4 justify-between items-center mt-[24px]`}
+            className={`bg-secondary-btn-bg-color hover:bg-secondary-btn-bg-hover-color text-secondary-btn-text-color  border-solid border border-secondary-btn-border-color flex  mb-[32px]  cursor-pointer  rounded-2xl px-[13px] py-4 justify-between items-center mt-[24px]`}
           >
             <div className="flex justify-between items-center gap-2">
               <NoteIcon className="text-df-icon-color" />

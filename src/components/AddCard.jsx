@@ -2,6 +2,7 @@ import ProjectIcon from "../../public/assets/svgs/projectIcon.svg";
 import Button from "./button";
 import Text from "./text";
 import PlusIcon from "../../public/assets/svgs/plus.svg";
+import AiIcon from "../../public/assets/svgs/ai.svg";
 
 export default function AddCard({
   title = "title",
@@ -10,7 +11,7 @@ export default function AddCard({
   onClick,
   first = false,
   buttonTitle = "",
-
+  secondaryButtonTitle,
   icon = <ProjectIcon />,
 }) {
   return (
@@ -32,27 +33,49 @@ export default function AddCard({
             {subTitle}
           </Text>
 
-          <Button
-            text={buttonTitle}
-            size="small"
-            type="secondary"
-            customClass="w-fit gap-1"
-            icon={
-              <PlusIcon className="text-secondary-btn-text-color w-[14px] h-[14px]" />
-            }
-          />
+          <div className="flex gap-3">
+            <Button
+              text={buttonTitle}
+              customClass="w-fit gap-1 items-center"
+              icon={
+                <PlusIcon className="text-primary-btn-text-color w-[20px] h-[20px] mb-[2px]" />
+              }
+            />
+            {secondaryButtonTitle && (
+              <Button
+                text={secondaryButtonTitle}
+                type="secondary"
+                customClass="w-fit gap-1 items-center"
+                icon={
+                  <AiIcon className="text-secondary-btn-text-color w-[22px] h-[22px] mb-[2px]" />
+                }
+              />
+            )}
+          </div>
         </div>
       ) : (
-        <div className=" flex flex-col justify-center items-center  h-full">
+        <div className="flex flex-col gap-3 justify-center items-center  h-full">
           <Button
-            type="secondary"
+            text={title}
+            customClass="w-fit gap-1 items-center"
             icon={
-              <PlusIcon className="text-secondary-btn-text-color w-[18px] h-[18px]" />
+              <PlusIcon className="text-primary-btn-text-color w-[20px] h-[20px] mb-[2px]" />
             }
           />
-          <Text size="p-xsmall" className="mt-2 text-df-base-text-color">
-            {title}
-          </Text>
+          {secondaryButtonTitle && (
+            <p className="text-df-add-card-description-color"> or</p>
+          )}
+
+          {secondaryButtonTitle && (
+            <Button
+              text={secondaryButtonTitle}
+              type="secondary"
+              customClass="w-fit gap-1 items-center"
+              icon={
+                <AiIcon className="text-secondary-btn-text-color w-[22px] h-[22px] mb-[2px]" />
+              }
+            />
+          )}
         </div>
       )}
     </div>

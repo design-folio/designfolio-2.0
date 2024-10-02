@@ -101,11 +101,12 @@ export default function Projects({
                 title={`${
                   userDetails?.projects?.length === 0
                     ? "Upload your first case study"
-                    : "Add your case study"
+                    : "Add case study"
                 }`}
                 subTitle="Show off your best work."
                 first={userDetails?.projects?.length !== 0}
                 buttonTitle="Add case study"
+                secondaryButtonTitle="Write using AI"
                 onClick={() => openModal(modals.project)}
                 icon={<ProjectIcon />}
               />

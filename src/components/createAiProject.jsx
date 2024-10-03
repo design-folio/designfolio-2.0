@@ -142,7 +142,7 @@ export default function CreateAiProject({ openModal }) {
               title: response.data.title,
               content: {
                 time: `${Date.now()}`,
-                version: "1.0.0",
+                version: "2.30.6",
                 blocks: response.data.blocks,
               },
             },

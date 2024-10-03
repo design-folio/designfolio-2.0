@@ -354,13 +354,13 @@ export default function ProjectInfo({
       </div>
       {edit ? (
         <ImageWithOverlayAndPicker
-          src={thumbnail?.key}
+          src={thumbnail?.url}
           project={projectDetails}
         />
       ) : (
         <figure className="relative">
           <img
-            src={thumbnail?.key}
+            src={thumbnail?.url}
             alt="project image"
             className={`w-full h-full rounded-[20px] object-cover transition-opacity duration-100 mt-6 md:mt-8 ${
               imageLoaded ? "opacity-100" : "opacity-0"

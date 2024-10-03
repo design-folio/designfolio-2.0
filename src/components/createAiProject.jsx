@@ -11,6 +11,8 @@ import { useGlobalContext } from "@/context/globalContext";
 import { _getCredits, _getProjectTypes } from "@/network/get-request";
 import { aiQuestions } from "@/lib/caseStudyQuestions";
 import { _generateCaseStudy, _updateUser } from "@/network/post-request";
+import { useRouter } from "next/router";
+import { toast } from "react-toastify";
 const stepOneValidationSchema = Yup.object().shape({
   projectType: Yup.string().required("Answer is a required field."),
 });
@@ -49,12 +51,13 @@ const variants = {
 export default function CreateAiProject({ openModal }) {
   const [typeProjects, setTypeprojects] = useState([]);
   const [cred, setCredits] = useState(0);
-  const { userDetails } = useGlobalContext();
+  const { userDetails, updateCache } = useGlobalContext();
   const [showCredits, setShowCredits] = useState(false);
   const [step, setStep] = useState(1);
   const [questions, setQuestions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const formikRef = useRef(null);
+  const router = useRouter();
 
   const fetchData = async () => {
     try {
@@ -135,12 +138,6 @@ export default function CreateAiProject({ openModal }) {
             {
               protected: false,
               password: "",
-              thumbnail: {
-                key: "666052badd8889344df94c69/project-591c744d-8083-42e2-ba97-6697058f5560",
-                originalName: "maxresdefault-5.jpg",
-                extension: "image/jpeg",
-                url: "https://designfolio-prod.s3.ap-south-1.amazonaws.com/666052badd8889344df94c69/project-591c744d-8083-42e2-ba97-6697058f5560?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAXT4KKUVNCPIVTIMY%2F20240921%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20240921T211319Z&X-Amz-Expires=3600&X-Amz-Signature=3bc79e732973e93dd9e7be3bd81ab426f323d22653cdc9e5ea3babc4d9d7b419&X-Amz-SignedHeaders=host&x-id=GetObject",
-              },
               description: response.data.description,
               title: response.data.title,
               content: { blocks: response.data.blocks },
@@ -149,7 +146,17 @@ export default function CreateAiProject({ openModal }) {
         };
         await _updateUser(payload)
           .then((res) => {
+            console.log(
+              res?.data?.user?.projects?.find(
+                (project) => project.title === response.data.title
+              )
+            );
+            const project = res?.data?.user?.projects?.find(
+              (project) => project.title === response.data.title
+            );
             updateCache("userDetails", res?.data?.user);
+            toast.success("Project created successfully");
+            router.push(`/project/${project._id}/editor`);
             setIsLoading(false);
             openModal(null);
           })
@@ -164,7 +171,7 @@ export default function CreateAiProject({ openModal }) {
 
   return (
     <motion.div
-      className="bg-modal-bg-color h-[95%] w-[602px] fixed top-[2.25%] right-4 flex flex-col rounded-2xl"
+      className="bg-modal-bg-color h-[95%] w-[95%] m-auto md:w-[602px] md:fixed md:top-[2.25%] md:right-4 flex flex-col rounded-2xl"
       initial="hidden"
       animate="visible"
       variants={variants}
@@ -464,11 +471,12 @@ export default function CreateAiProject({ openModal }) {
                     : "Generate Now"
                   : "Next"
               }
+              type="modal"
               form="aiProjectForm"
               isLoading={isLoading}
               icon={
                 step == 4 && (
-                  <AiIcon className="text-primary-btn-text-color w-[22px] h-[22px]" />
+                  <AiIcon className="text-modal-btn-text-color w-[22px] h-[22px]" />
                 )
               }
             />

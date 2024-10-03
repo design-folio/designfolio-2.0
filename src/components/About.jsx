@@ -25,7 +25,7 @@ const AnimatedSection = ({ children, animationData, className, delay }) => {
       style={{
         opacity: isInView ? 1 : 0,
         transform: isInView ? "none" : "translateY(80px)",
-        transition: `all 0.5s cubic-bezier(0.17, 0.55, 0.55, 1) ${adjustedDelay}s`,
+        transition: `all 0.2s cubic-bezier(0.17, 0.55, 0.55, 1) ${adjustedDelay}s`,
       }}
     >
       <div className="py-[10px] px-4 text-[14px] bg-landing-card-step-bg-color text-landing-card-step-text-color border-landing-card-step-border-color font-[600] border-solid  w-fit border-[3px] border-df-secondary-600 rounded-[16px] p-2 shadow-sm bg-white">
@@ -67,7 +67,7 @@ export default function About() {
       <AnimatedSection
         animationData={aboutJson}
         className="bg-landing-card-bg-color row-span-2 border-6 border-solid  border-landing-card-border-color rounded-md p-4 md:p-8"
-        delay={0.2}
+        delay={0.1}
       >
         {{
           stepLabel: "Step 2",
@@ -78,7 +78,7 @@ export default function About() {
       <AnimatedSection
         animationData={casestudyJson}
         className="bg-landing-card-bg-color row-span-2 border-6 border-solid border-landing-card-border-color rounded-md p-4 md:p-8"
-        delay={0.4}
+        delay={0.3}
       >
         {{
           stepLabel: "Step 3",
@@ -89,7 +89,7 @@ export default function About() {
       <AnimatedSection
         animationData={publishButtonJson}
         className="bg-landing-card-bg-color border-6 border-solid  border-landing-card-border-color rounded-md p-4 md:p-8"
-        delay={0.6}
+        delay={0.4}
       >
         {{
           stepLabel: "Step 4",

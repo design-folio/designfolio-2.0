@@ -39,7 +39,7 @@ export default function AddCard({
             {subTitle}
           </Text>
 
-          <div className="flex gap-3">
+          <div className="flex flex-col md:flex-row gap-2">
             <Button
               text={buttonTitle}
               customClass="w-fit gap-1 items-center"
@@ -48,7 +48,15 @@ export default function AddCard({
               }
             />
             {secondaryButtonTitle && (
+              <p className="text-df-add-card-description-color text-center md:hidden">
+                {" "}
+                or
+              </p>
+            )}
+
+            {secondaryButtonTitle && (
               <Button
+                onClick={handleClick}
                 text={secondaryButtonTitle}
                 type="secondary"
                 customClass="w-fit gap-1 items-center"

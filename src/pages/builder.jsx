@@ -81,7 +81,7 @@ export default function Index() {
       <Modal show={showModal && showModal != modals.aiProject}>
         {modalContent()}
       </Modal>
-      <Modal show={modals.aiProject == showModal} className={"block"}>
+      <Modal show={modals.aiProject == showModal} className={"md:block"}>
         <CreateAiProject openModal={openModal} />
       </Modal>
     </main>

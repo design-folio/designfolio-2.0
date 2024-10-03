@@ -53,6 +53,7 @@ export default function Index({ data }) {
                   projectDetails={projectDetails?.project}
                   id={router.query.id}
                   updateProjectCache={updateProjectCache}
+                  setIsProtected={setIsProtected}
                 />
               ) : (
                 <>

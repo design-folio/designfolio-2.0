@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { useGlobalContext } from "@/context/globalContext";
 import ChangePassword from "@/components/changePassword";
 import ChangeUsername from "@/components/changeUsername";
+import DeleteAccount from "@/components/deleteAccount";
 
 export default function Settings() {
   const { userDetails, setIsUserDetailsFromCache, userDetailsIsState } =
@@ -22,27 +23,31 @@ export default function Settings() {
   }, []);
   return (
     <main className="min-h-screen bg-df-bg-color">
-      <div className={`max-w-[890px] mx-auto py-[40px] px-2 md:px-4 lg:px-0`}>
-        <Button
-          text="Go Back"
-          onClick={handleBack}
-          type="secondary"
-          size="small"
-          icon={<LeftArrow className="text-df-icon-color" />}
-        />
-        <div className="mt-10">
-          {userDetails?.loginMethod == 0 && (
-            <div>
-              <ChangePassword />
-            </div>
-          )}
+      <div
+        className={`max-w-[890px]  mx-auto py-[94px] md:py-[135px] px-2 md:px-4 lg:px-0`}
+      >
+        <div className="bg-df-section-card-bg-color p-8 rounded-2xl">
+          <Button
+            text="Go Back"
+            onClick={handleBack}
+            type="secondary"
+            size="small"
+            icon={<LeftArrow className="text-df-icon-color" />}
+          />
+          <div className="mt-6">
+            {userDetails?.loginMethod == 0 && (
+              <div>
+                <ChangePassword />
+              </div>
+            )}
 
-          <div className="mt-10">
-            <ChangeUsername />
+            <div className="mt-10">
+              <ChangeUsername />
+            </div>
+            <div className="mt-10">
+              <DeleteAccount />
+            </div>
           </div>
-          {/* <div className="mt-10">
-            <DeleteAccount />
-          </div> */}
         </div>
       </div>
     </main>
@@ -60,6 +65,6 @@ export const getServerSideProps = async (context) => {
     };
   }
   return {
-    props: { dfToken: !!dfToken, hideHeader: true },
+    props: { dfToken: !!dfToken },
   };
 };

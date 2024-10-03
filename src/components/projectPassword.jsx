@@ -18,6 +18,7 @@ export default function ProjectPassword({
   id,
   status,
   updateProjectCache,
+  setIsProtected,
 }) {
   const [showEye, setShowEye] = useState(false);
   const router = useRouter();
@@ -26,7 +27,7 @@ export default function ProjectPassword({
     <div className="px-4 max-w-[500px] m-auto">
       <div className="flex justify-center">
         <img
-          src={projectDetails?.thumbnail?.key}
+          src={projectDetails?.thumbnail?.url}
           alt="project image"
           className="lg:w-[545.5px] lg:h-[253.07px] rounded-[24px] mb-5 object-cover"
         />
@@ -46,6 +47,7 @@ export default function ProjectPassword({
             _getProjectDetails(id, status, { password: values.password })
               .then((res) => {
                 updateProjectCache(res.project);
+                setIsProtected(res?.isProtected);
               })
               .finally(() => actions.setSubmitting(false));
           }}

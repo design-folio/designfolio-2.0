@@ -50,6 +50,7 @@ export default function Index() {
               projectDetails={projectDetails?.project}
               id={router.query.id}
               updateProjectCache={updateProjectCache}
+              setIsProtected={setIsProtected}
             />
           ) : (
             <ProjectPreview projectDetails={projectDetails} />

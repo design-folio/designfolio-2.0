@@ -30,7 +30,7 @@ export default function BottomNavigation() {
 
   return (
     <div className="bg-gradient-to-b from-transparent px-2  to-df-bg-color fixed bottom-0 left-0 right-0 h-[90px] lg:h-[102px] overflow-hidden  z-10">
-      {!router?.asPath.includes("project") && (
+      {!router?.asPath?.includes("project") && (
         <motion.div
           className="bg-df-section-card-bg-color rounded-[24px] shadow-bottom  p-[10px] w-fit max-w-[400px] md:max-w-[450px] m-auto flex items-center relative gap-4"
           initial={{ opacity: 0 }} // Start fully transparent

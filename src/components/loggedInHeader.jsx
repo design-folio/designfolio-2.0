@@ -59,7 +59,7 @@ export default function LoggedInHeader({
       const currentScrollY = window.scrollY;
 
       // Header is visible if scrolling down or at the top of the page
-      if (currentScrollY < lastScrollY || currentScrollY <= 0) {
+      if (currentScrollY < lastScrollY || currentScrollY <= 150) {
         setIsVisible(true);
       } else {
         setIsVisible(false);
@@ -133,8 +133,8 @@ export default function LoggedInHeader({
   const formatedValue = formatTimestamp(latestPublishDate);
 
   const headerStyle = isVisible
-    ? "fixed top-0 left-0 right-0 md:px-10 xl:px-0 z-10 transition-transform duration-300 ease-out"
-    : "fixed top-0 left-0 right-0 md:px-10 xl:px-0 z-10 transform translate-y-[-100%] transition-transform duration-300 ease-out";
+    ? "fixed top-0 left-0 right-0 md:px-4 xl:px-0 z-10 transition-transform duration-300 ease-out"
+    : "fixed top-0 left-0 right-0 md:px-4 xl:px-0 z-10 transform translate-y-[-100%] transition-transform duration-300 ease-out";
 
   return (
     <div className={`${headerStyle} px-2 md:px-0 py-2 md:py-5 bg-transparent`}>

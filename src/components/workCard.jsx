@@ -46,17 +46,16 @@ export default function WorkCard({ work, onClick, show = true, edit }) {
             <Text size="p-xsmall" className="text-work-card-company-color">
               {work?.company}
               {isMobileView && (
-                <p
-                  className={`${
-                    theme == "dark" ? "text-[#B4B8C6]" : "text-[#788095]"
-                  } text-[12.8px] lg:text-[16px] font-[500] font-inter`}
+                <Text
+                  size="p-xsmall"
+                  className="text-work-card-description-color"
                 >
                   {`${work?.startMonth} ${work?.startYear} - ${
                     work?.currentlyWorking
                       ? "Present"
                       : `${work?.endMonth} ${work?.endYear}`
                   }  `}
-                </p>
+                </Text>
               )}
             </Text>
 

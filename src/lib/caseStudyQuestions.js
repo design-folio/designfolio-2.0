@@ -112,33 +112,33 @@ export const aiQuestions = {
         {
           "data": [
             {
-              question: "What was the project or business problem you aimed to solve?",
-              template: "The project aimed to solve [Business Problem]. The strategy or goal from a business perspective was to [Business Goal].",
+              question: "What was the objective of your project or initiative?",
+              template: "The objective of the project was to address [Problem/Opportunity]. The goal was to achieve [Outcome/Goal], which would contribute to the broader organizational strategy by [Impact on Organization].",
               page: 1
             },
             {
-              question: "Who were the target customers or stakeholders, and what were their business needs?",
-              template: "The target customers or stakeholders were [Customers/Stakeholders]. Their business needs included [Business Needs], which influenced the product strategy by [How the needs impacted the strategy].",
+              question: "Who were the key stakeholders, and what needs or expectations did they have?",
+              template: "The primary stakeholders included [Stakeholders - e.g., clients, team members, leadership]. Their needs or expectations were [Needs/Expectations], which shaped the project by [How it impacted the project's direction, scope, or execution].",
               page: 1
             },
             {
-              question: "What was your approach to product development and management?",
-              template: "My role involved [Key Role, e.g., ideation, roadmap planning]. I worked on [Step 1: e.g., coordination with teams], and ensured alignment with business objectives by [How you aligned with objectives].",
+              question: "What approach or strategy did you use to deliver the project?",
+              template: "The approach to the project involved [Methodology/Strategy - e.g., Agile development, collaboration, research]. My role was focused on [Key Roles & Responsibilities]. I ensured [Alignment or Execution Strategy] by [Specific Actions or Processes].",
               page: 1
             },
             {
-              question: "What metrics or business indicators were used to measure success?",
-              template: "We measured success using [Metric/KPI], such as [Example: market adoption, customer satisfaction]. These were chosen because [Reason for choosing metrics].",
+              question: "What key metrics or success indicators were used to evaluate the project's progress and impact?",
+              template: "The project’s success was measured using [Metrics/KPIs - e.g., ROI, customer satisfaction, efficiency]. These indicators were selected because they [Reason for Choosing Metrics - e.g., align with business objectives, provide actionable insights].",
               page: 1
             },
             {
-              question: "What were the business outcomes based on these metrics?",
-              template: "The business outcomes were [Result]. We saw improvements in [Performance, e.g., market performance, customer feedback], which contributed to business success by [Impact].",
+              question: "What outcomes or results were achieved, and how did they align with the original goals?",
+              template: `The project resulted in [Outcomes/Results - e.g., increased revenue, reduced costs, improved engagement]. These outcomes aligned with the initial goals by [How They Matched/Surpassed Objectives], leading to [Business Impact - e.g., growth, market differentiation].`,
               page: 1
             },
             {
-              question: "What challenges did you face in product management, and what lessons did you learn?",
-              template: "I faced [Challenge], and I addressed it by [Solution]. The lesson I learned was [Lesson], which I’ll apply to future product management efforts by [How you’ll use the lesson].",
+              question: "What challenges did you encounter, and what did you learn from the experience?",
+              template: "During the project, I faced [Challenge - e.g., technical issues, stakeholder resistance]. To overcome this, I [Solution - e.g., implemented a new process, communicated effectively]. The experience taught me [Lesson Learned], which I will apply to future projects by [How You'll Use the Lesson].",
               page: 1
             }
           ]

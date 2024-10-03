@@ -61,6 +61,14 @@
   --delete-btn-border-hover-color: #ff3b30;
   --delete-btn-shadow-color: inset 0px 0px 0px 1px #ff3b30;
 
+  --radio-btn-bg-color: #ffffff;
+  --radio-btn-border-color: #e9eaeb;
+  --radio-btn-text-color: #202937;
+  --radio-btn-bg-hover-color: #f6f7f9;
+  --radio-btn-bg-selected-color: #f6f7f9;
+  --radio-btn-selected-fill-color: #202937;
+  --radio-btn-selected-stroke-color: #ffffff;
+
   /* application */
   --df-bg-color: #f2f2f0;
   --df-base-text-color: #202937;
@@ -78,6 +86,9 @@
   --df-add-card-description-color: #989da3;
   --df-add-item-shadow: inset 0px 0px 0px 2px #e9eaeb;
   --df-orange-color: #ff553e;
+  --df-tip-color: #828282;
+
+  --credit-text-color: #7a829d;
 
   /* profile card */
   --profile-card-heading-color: #202937;
@@ -123,7 +134,7 @@
   /* Popover */
   --popover-bg-color: #ffffff;
   --popover-border-color: #f0f1f4;
-  --poover-shadow: "0 8.3px 33.2px rgba(32, 41, 55, 0.14)";
+  --popver-shadow: "0px 8.3px 33.2px 0px rgba(32, 41, 55, 0.15)";
   --popover-heading-color: #202937;
 
   /* theme-popover */
@@ -283,7 +294,7 @@
   /* Popover */
   --popover-bg-color: #1d1f27;
   --popover-border-color: #262832;
-  --popver-shadow: "0 8.3px 33.2px rgba(32, 41, 55, 0.14)";
+  --popver-shadow: "0px 8.3px 33.2px 0px rgba(32, 41, 55, 0.15)";
   --popover-heading-color: #e9eaeb;
 
   /* theme-popover */

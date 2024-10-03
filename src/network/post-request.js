@@ -59,3 +59,6 @@ export const _changeEmail = (data) =>
   axiosInstance.patch("/user/changeEmail", data);
 
 export const _FileBugfix = () => axiosInstance.patch("/user/filePopup");
+
+export const _generateCaseStudy = (data) =>
+  axiosInstance.post("/ai/generate/caseStudy", data);

@@ -16,10 +16,10 @@ const Text = ({
     h3: "text-h3 leading-h3",
     "p-large": "text-p-large leading-p-large font-semibold",
     "p-medium": "text-p-medium leading-p-medium",
-    "p-small": "text-p-small leading-p-small",
-    "p-xsmall": "text-p-xsmall leading-p-xsmall",
-    "p-xxsmall": "text-p-xxsmall leading-p-xxsmall",
-    "p-xxxsmall": "text-p-xxxsmall leading-p-xxxsmall",
+    "p-small": "text-p-small leading-p-small font-medium",
+    "p-xsmall": "text-p-xsmall leading-p-xsmall font-medium",
+    "p-xxsmall": "text-p-xxsmall leading-p-xxsmall font-medium",
+    "p-xxxsmall": "text-p-xxxsmall leading-p-xxxsmall font-medium",
   };
 
   const Element = as;

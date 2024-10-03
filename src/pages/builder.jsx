@@ -78,11 +78,11 @@ export default function Index() {
         {userDetails && <Builder />}
         {userDetails && taskPercentage !== 100 && <BottomTask />}
       </div>
-      <Modal show={showModal && showModal != modals.task}>
+      <Modal show={showModal && showModal != modals.aiProject}>
         {modalContent()}
       </Modal>
-      <Modal show={true} className={"block"}>
-        <CreateAiProject />
+      <Modal show={modals.aiProject == showModal} className={"block"}>
+        <CreateAiProject openModal={openModal} />
       </Modal>
     </main>
   );

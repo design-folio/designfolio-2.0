@@ -109,6 +109,7 @@ export default function Projects({
                 secondaryButtonTitle="Write using AI"
                 onClick={() => openModal(modals.project)}
                 icon={<ProjectIcon />}
+                openModal={openModal}
               />
             )}
           </div>

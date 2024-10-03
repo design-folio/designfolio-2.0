@@ -81,6 +81,15 @@ module.exports = {
         "ai-btn-bg-color": "var(--ai-btn-bg-color)",
         "ai-btn-border-color": "var(--ai-btn-border-color)",
 
+        "radio-btn-bg-color": "var(--radio-btn-bg-color)",
+        "radio-btn-border-color": "var(--radio-btn-border-color)",
+        "radio-btn-text-color": "var(--radio-btn-text-color)",
+        "radio-btn-bg-hover-color": "var(--radio-btn-bg-hover-color)",
+        "radio-btn-bg-selected-color": "var(--radio-btn-bg-selected-color)",
+        "radio-btn-selected-fill-color": "var(--radio-btn-selected-fill-color)",
+        "radio-btn-selected-stroke-color":
+          "var(--radio-btn-selected-stroke-color)",
+
         // Application
         "df-bg-color": "var(--df-bg-color)",
         "df-base-text-color": "var(--df-base-text-color)",
@@ -96,6 +105,8 @@ module.exports = {
         "df-add-card-border-color": "var(--df-add-card-border-color)",
         "df-add-card-heading-color": "var(--df-add-card-heading-color)",
         "df-add-card-description-color": "var(--df-add-card-description-color)",
+        "df-tip-color": "var(--df-tip-color)",
+        "credit-text-color": "var(--credit-text-color)",
 
         // Profile card
         "profile-card-heading-color": "var(--profile-card-heading-color)",

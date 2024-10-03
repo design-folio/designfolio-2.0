@@ -15,6 +15,7 @@ const Button = ({
   btnType = "button",
   form = "",
   animation = false,
+  style,
   ...rest
 }) => {
   const [isHovered, setIsHovered] = useState(false); // State to track hover
@@ -57,9 +58,8 @@ const Button = ({
         "bg-modal-btn-bg-color hover:bg-modal-btn-bg-hover-color text-modal-btn-text-color border border-modal-btn-bg-color opacity-70 cursor-not-allowed",
     },
     ai: {
-      base: "bg-ai-btn-bg-color text-ai-btn-text-color border border-ai-btn-border-color",
-      disabled:
-        "bg-ai-btn-bg-color text-ai-btn-text-color border border-ai-btn-border-color",
+      base: "text-ai-btn-text-color border border-ai-btn-border-color",
+      disabled: "text-ai-btn-text-color border border-ai-btn-border-color",
     },
   };
 
@@ -80,6 +80,7 @@ const Button = ({
 
   return (
     <button
+      style={style}
       className={getButtonStyle()}
       onClick={onClick}
       onMouseEnter={() => animation && setIsHovered(true)}

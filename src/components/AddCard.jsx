@@ -3,6 +3,7 @@ import Button from "./button";
 import Text from "./text";
 import PlusIcon from "../../public/assets/svgs/plus.svg";
 import AiIcon from "../../public/assets/svgs/ai.svg";
+import { modals } from "@/lib/constant";
 
 export default function AddCard({
   title = "title",
@@ -13,7 +14,12 @@ export default function AddCard({
   buttonTitle = "",
   secondaryButtonTitle,
   icon = <ProjectIcon />,
+  openModal,
 }) {
+  const handleClick = (e) => {
+    e.stopPropagation();
+    openModal(modals.aiProject);
+  };
   return (
     <div
       className={`bg-df-add-card-bg-color transition-shadow duration-500 ease-in   border border-df-add-card-border-color  hover:shadow-df-add-item-shadow rounded-[24px] min-h-[344px] cursor-pointer ${className}`}
@@ -68,6 +74,7 @@ export default function AddCard({
 
           {secondaryButtonTitle && (
             <Button
+              onClick={handleClick}
               text={secondaryButtonTitle}
               type="secondary"
               customClass="w-fit gap-1 items-center"

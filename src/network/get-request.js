@@ -11,3 +11,8 @@ export const _resendOTP = () =>
   axiosInstance.get("/user/resendEmailVerification");
 
 export const _getSkills = () => axiosInstance.get("/skill/get/all");
+
+export const _getProjectTypes = () => axiosInstance.get("/projectType/get/all");
+
+export const _getCredits = (userId) =>
+  axiosInstance.get("/ai/get/credits?userId=" + userId);

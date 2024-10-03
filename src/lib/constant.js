@@ -18,6 +18,7 @@ export const modals = {
   resume: "resume",
   socialMedia: "social-media",
   portfolioLinks: "portfolio-links",
+  aiProject: "aiProject",
 };
 
 export function hasSubdomain() {

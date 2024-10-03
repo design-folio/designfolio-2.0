@@ -140,7 +140,11 @@ export default function CreateAiProject({ openModal }) {
               password: "",
               description: response.data.description,
               title: response.data.title,
-              content: { blocks: response.data.blocks },
+              content: {
+                time: `${Date.now()}`,
+                version: "2.30.6",
+                blocks: response.data.blocks,
+              },
             },
           ],
         };

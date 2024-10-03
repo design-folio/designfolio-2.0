@@ -3,6 +3,7 @@ import Text from "./text";
 import Button from "./button";
 import EditIcon from "../../public/assets/svgs/edit.svg";
 import TextWithLineBreaks from "./TextWithLineBreaks";
+import { useEffect, useState } from "react";
 
 export default function WorkCard({ work, onClick, show = true, edit }) {
   const { setSelectedWork } = useGlobalContext();

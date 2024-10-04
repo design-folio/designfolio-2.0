@@ -187,6 +187,7 @@ export default function AddReview() {
                   <Button
                     btnType="submit"
                     text={"Save"}
+                    type="modal"
                     form="projectForm"
                     isLoading={loading}
                   />

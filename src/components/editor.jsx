@@ -1,7 +1,7 @@
 import { _getProjectDetails } from "@/network/get-request";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import ProjectInfo from "./projectInfo";
 import { useGlobalContext } from "@/context/globalContext";
 import dynamic from "next/dynamic";
@@ -13,6 +13,7 @@ const ProjectEditor = dynamic(() => import("./projectEditor"), {
 export default function Editor({ edit }) {
   const router = useRouter();
   const { setTheme } = useTheme();
+  const [projectDetails, setProjectDetails] = useState(null);
 
   const {
     userDetails,
@@ -22,20 +23,25 @@ export default function Editor({ edit }) {
     popoverMenu,
   } = useGlobalContext();
 
-  const { data: projectDetails, refetch: refetchProjectDetail } = useQuery({
-    queryKey: [`project-editor-${router.query.id}`],
-    queryFn: async () => {
+  const { mutate: refetchProjectDetail } = useMutation({
+    mutationKey: [`project-editor-${router.query.id}`],
+    mutationFn: async () => {
       const response = await _getProjectDetails(router.query.id, 0); // Adjust the endpoint
       return response.data;
+    },
+    onSuccess: (data) => {
+      console.log(data);
+      setProjectDetails(data);
+      setTheme(data?.project?.theme == 1 ? "dark" : "light");
+      setIsProtected(data?.isProtected);
     },
     cacheTime: 300000, // Cache for 5 minutes (300,000 milliseconds)
     staleTime: 60000, // Allow data to be considered stale after 1 minute (60,000 milliseconds)
   });
   useEffect(() => {
-    if (userDetails?.theme) {
-      setTheme(userDetails?.theme == 1 ? "dark" : "light");
-    }
-  }, [userDetails]);
+    refetchProjectDetail();
+  }, [refetchProjectDetail]);
+
   return (
     <div className="editor-container flex-1 flex flex-col gap-4 md:gap-6">
       {projectDetails && (
@@ -48,6 +54,7 @@ export default function Editor({ edit }) {
             edit={edit}
             setPopoverMenu={setPopoverMenu}
             popoverMenu={popoverMenu}
+            refetchProjectDetail={refetchProjectDetail}
           />
           <ProjectEditor
             projectDetails={projectDetails.project}

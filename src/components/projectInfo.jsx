@@ -87,8 +87,12 @@ export default function ProjectInfo({
   };
 
   const handlePasswordRadio = async () => {
-    await _updateProject(router.query.id, { protected: !isPassword });
-    setPassword((prev) => !prev);
+    await _updateProject(router.query.id, { protected: !isPassword }).then(
+      (res) => {
+        updateProjectCache("protected", res?.data?.project?.protected);
+        setPassword((prev) => !prev);
+      }
+    );
   };
 
   return (

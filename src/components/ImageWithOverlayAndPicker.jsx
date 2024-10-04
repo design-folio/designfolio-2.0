@@ -3,12 +3,14 @@ import { motion } from "framer-motion";
 import { _updateProject } from "@/network/post-request";
 import { toast } from "react-toastify";
 import queryClient from "@/network/queryClient";
+import { useGlobalContext } from "@/context/globalContext";
 
 export const ImageWithOverlayAndPicker = ({ src, project }) => {
   // Reference to the hidden file input element
   const fileInputRef = useRef(null);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [source, setSource] = useState(src);
+  const { userDetailsRefecth } = useGlobalContext();
 
   // Function to simulate click on file input
   const handleClick = () => {
@@ -33,6 +35,8 @@ export const ImageWithOverlayAndPicker = ({ src, project }) => {
           };
         }
       );
+      userDetailsRefecth();
+
       return res; // Ensure the promise resolves with the response for further chaining if necessary
     });
   }

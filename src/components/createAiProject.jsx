@@ -201,7 +201,7 @@ export default function CreateAiProject({ openModal }) {
           >
             <Button
               type="ai"
-              text={`${cred}/2 Credits`}
+              text={`${2-cred} Credits`}
               size="small"
               style={{ background: "var(--ai-btn-bg-color)" }}
             />
@@ -223,14 +223,11 @@ export default function CreateAiProject({ openModal }) {
                     size="p-small"
                     className="font-semibold text-df-base-text-color"
                   >
-                    {`${cred}/2`}
-                  </Text>
-                  <Text size="p-xxxsmall" className="text-credit-text-color">
-                    used
+                    {`${2-cred}`}
                   </Text>
                 </div>
                 <Text size="p-xxsmall" className="mt-2 text-credit-text-color">
-                  You can create 2 AI-generated case studies per day
+                  You can use 2 AI-generated case studies per day.
                 </Text>
               </div>
             </div>

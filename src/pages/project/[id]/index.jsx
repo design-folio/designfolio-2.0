@@ -3,7 +3,7 @@ import ProjectInfo from "@/components/projectInfo";
 import ProjectPassword from "@/components/projectPassword";
 import { _getProjectDetails } from "@/network/get-request";
 import queryClient from "@/network/queryClient";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -12,11 +12,19 @@ export default function Index({ data }) {
   const router = useRouter();
   const { setTheme } = useTheme();
   const [isProtected, setIsProtected] = useState(data.isProtected);
-  const { data: projectDetails } = useQuery({
-    queryKey: [`project-${router.query.id}`],
-    queryFn: async () => {
+  const [projectDetails, setProjectDetails] = useState(null);
+
+  const { mutate: refetchProjectDetail } = useMutation({
+    mutationKey: [`project-${router.query.id}`],
+    mutationFn: async () => {
       const response = await _getProjectDetails(router.query.id, 1); // Adjust the endpoint
       return response.data;
+    },
+    onSuccess: (data) => {
+      console.log(data);
+      setProjectDetails(data);
+      setTheme(data?.project?.theme == 1 ? "dark" : "light");
+      setIsProtected(data?.isProtected);
     },
     initialData: data,
     cacheTime: 300000, // Cache for 5 minutes (300,000 milliseconds)
@@ -24,15 +32,13 @@ export default function Index({ data }) {
   });
 
   useEffect(() => {
-    if (projectDetails?.projects?.theme) {
-      setTheme(projectDetails?.projects?.theme == 1 ? "dark" : "light");
-    }
-  }, [projectDetails]);
+    refetchProjectDetail();
+  }, [refetchProjectDetail]);
 
   const updateProjectCache = (data) => {
     setIsProtected(false);
     queryClient.setQueriesData(
-      { queryKey: [`project-${router.query.id}`] },
+      { mutationKey: [`project-${router.query.id}`] },
       (oldData) => {
         return {
           ...oldData,

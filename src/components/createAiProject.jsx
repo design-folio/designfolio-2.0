@@ -240,7 +240,11 @@ export default function CreateAiProject({ openModal }) {
           <ProgressBar progress={step == 4 && 100} />
         </div>
       </header>
-      <div className="flex-1 overflow-y-auto p-8 relative">
+      <div
+        className={`flex-1 overflow-y-auto p-8 relative ${
+          cred == "2" && "opacity-75"
+        }`}
+      >
         {/* This is the scrollable body */}
         <div style={{ height: "200px" }}>
           <Formik
@@ -294,6 +298,7 @@ export default function CreateAiProject({ openModal }) {
                           component={CustomRadioButton}
                           label={res?.name}
                           selected={values.projectType === res?.name}
+                          disabled={cred == 2}
                         />
                       ))}
                     </div>
@@ -460,7 +465,7 @@ export default function CreateAiProject({ openModal }) {
                 text={"Back"}
                 type="secondary"
                 onClick={() => setStep((prev) => prev - 1)}
-                isDisabled={isLoading}
+                isDisabled={isLoading || cred == 2}
               />
             )}
             <Button
@@ -475,6 +480,7 @@ export default function CreateAiProject({ openModal }) {
               type="modal"
               form="aiProjectForm"
               isLoading={isLoading}
+              isDisabled={cred == 2}
               icon={
                 step == 4 && (
                   <AiIcon className="text-modal-btn-text-color w-[22px] h-[22px]" />

@@ -4,14 +4,14 @@ import Text from "./text";
 import EmptyCircle from "../../public/assets/svgs/emptyCircle.svg";
 import SelectedCircle from "../../public/assets/svgs/selectedCircle.svg";
 import { twMerge } from "tailwind-merge";
+import CheckedIcon from "../../public/assets/svgs/checked.svg";
 
-const CustomRadioButton = ({ field, label, value, selected }) => {
+const CustomRadioButton = ({ field, label, value, selected, disabled }) => {
   return (
     <label
-      className={twMerge(
-        "flex gap-2 items-center border border-radio-btn-border-color bg-radio-btn-bg-color w-fit p-4 rounded-2xl cursor-pointer",
-        `${selected && "bg-radio-btn-bg-selected-color"}`
-      )}
+      className={`border group border-checked-list-item-border-color w-fit bg-checked-list-item-bg-color  transition-all duration-200 ease-in-out hover:bg-checked-list-item-bg-hover-color rounded-2xl flex gap-[10px] items-center p-[10px]  ${
+        !selected ? "cursor-pointer " : "cursor-default"
+      }`}
     >
       <input
         type="radio"
@@ -20,13 +20,14 @@ const CustomRadioButton = ({ field, label, value, selected }) => {
         checked={selected}
         style={{ display: "none" }} // Hide the default radio button
         onChange={field.onChange}
+        disabled={disabled}
       />
       {selected ? (
-        <SelectedCircle className="fill-radio-btn-selected-fill-color stroke-radio-btn-selected-stroke-color" />
+        <CheckedIcon className="text-checked-list-item-icon-color" />
       ) : (
-        <EmptyCircle className="text-radio-btn-border-color" />
+        <div className="w-[25px] h-[25px] border border-check-list-empty-border-color rounded-full"></div>
       )}
-      <Text size="p-xxsmall" className="text-radio-btn-text-color">
+      <Text size="p-xxsmall" className="text-checked-list-item-text-color">
         {label}
       </Text>
     </label>

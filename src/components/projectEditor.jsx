@@ -318,7 +318,7 @@ const ProjectEditor = ({
 
       return async () => {
         if (editor && typeof editor.destroy === "function") {
-          refetchProjectDetail();
+          // refetchProjectDetail();
           editor.destroy();
         }
       };

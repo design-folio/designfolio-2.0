@@ -159,13 +159,13 @@ const BlockRenderer = ({ editorJsData }) => {
           <table className="border-collapse table-auto w-full text-sm">
             <thead>
               <tr>
-                {data.data.content[0].map((header, index) => (
+                {data?.data?.content[0]?.map((header, index) => (
                   <th key={index}>{header}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {data.data.content.slice(1).map((row, rowIndex) => (
+              {data?.data?.content.slice(1).map((row, rowIndex) => (
                 <tr key={rowIndex}>
                   {row.map((cell, cellIndex) => (
                     <td key={cellIndex}>{cell}</td>

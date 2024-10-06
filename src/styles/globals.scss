@@ -6,7 +6,7 @@
 
 html {
   scroll-behavior: smooth;
-  background-color: var(--df-bg);
+  background-color: var(--df-bg-color);
   min-height: 100vh;
 }
 
@@ -409,7 +409,7 @@ body {
 
 [data-theme="dark"] {
   html {
-    background-color: var(--df-bg);
+    background-color: var(--df-bg-color);
   }
   .toggle-label {
     background-color: #363a48;

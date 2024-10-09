@@ -13,6 +13,7 @@ import { aiQuestions } from "@/lib/caseStudyQuestions";
 import { _generateCaseStudy, _updateUser } from "@/network/post-request";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
+import Info from "./info";
 const stepOneValidationSchema = Yup.object().shape({
   projectType: Yup.string().required("Answer is a required field."),
 });
@@ -201,7 +202,7 @@ export default function CreateAiProject({ openModal }) {
           >
             <Button
               type="ai"
-              text={`${2-cred} Credits`}
+              text={`${2 - cred} Credits`}
               size="small"
               style={{ background: "var(--ai-btn-bg-color)" }}
             />
@@ -223,7 +224,7 @@ export default function CreateAiProject({ openModal }) {
                     size="p-small"
                     className="font-semibold text-df-base-text-color"
                   >
-                    {`${2-cred}`}
+                    {`${2 - cred}`}
                   </Text>
                 </div>
                 <Text size="p-xxsmall" className="mt-2 text-credit-text-color">
@@ -240,13 +241,13 @@ export default function CreateAiProject({ openModal }) {
           <ProgressBar progress={step == 4 && 100} />
         </div>
       </header>
-      <div
-        className={`flex-1 overflow-y-auto p-8 relative ${
-          cred == "2" && "opacity-75"
-        }`}
-      >
+      <div className={`flex-1 overflow-y-auto p-8 relative `}>
+        {cred == "2" && <Info className={"mb-4"} />}
         {/* This is the scrollable body */}
-        <div style={{ height: "200px" }}>
+        <div
+          style={{ height: "200px" }}
+          className={`${cred == "2" && "opacity-25"}`}
+        >
           <Formik
             innerRef={formikRef}
             validationSchema={getSchemaValidation()}

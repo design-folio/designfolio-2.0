@@ -415,9 +415,13 @@ body {
     background-color: #363a48;
   }
 
-  .ce-popover-item__icon {
+  .ce-popover-item__icon,
+  .tc-popover__item-icon {
     background: #fff;
     border-radius: 4px;
+  }
+  .tc-popover__item-icon {
+    color: #000;
   }
 
   .ce-popover__container {
@@ -434,6 +438,7 @@ body {
     .ce-toolbar__settings-btn,
     .cdx-button,
     .ce-popover,
+    .tc-popover,
     .ce-toolbar__plus:hover {
       background: #13151a;
       color: #fff;

@@ -175,7 +175,7 @@ export default function AddProject() {
                         alt="designfolio project cover image"
                       />
                     ) : (
-                      <div className="bg-input-upload-bg-color rounded-[18px] p-4 m-auto text-center flex flex-col items-center  w-full justify-center border border-dashed border-input-upload-border-color h-[250px] mt-2 ">
+                      <div className="bg-input-upload-bg-color rounded-[18px] p-4 m-auto text-center flex flex-col items-center  w-full justify-center border border-dashed border-input-upload-border-color cursor-pointer h-[250px] mt-2 ">
                         <img src="/assets/svgs/upload-red.svg" alt="" />
                         <Text
                           size="p-xsmall"

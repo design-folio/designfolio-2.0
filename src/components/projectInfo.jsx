@@ -54,15 +54,15 @@ export default function ProjectInfo({
     queryClient.setQueriesData({ queryKey: ["userDetails"] }, (oldData) => {
       return { user: { ...oldData?.user, projects: updatedProjects } };
     });
-    queryClient.setQueriesData(
-      { queryKey: [`project-editor-${_id}`] },
-      (oldData) => {
-        return {
-          ...oldData,
-          project: { ...oldData.project, [key]: value },
-        };
-      }
-    );
+    // queryClient.setQueriesData(
+    //   { queryKey: [`project-editor-${_id}`] },
+    //   (oldData) => {
+    //     return {
+    //       ...oldData,
+    //       project: { ...oldData.project, [key]: value },
+    //     };
+    //   }
+    // );
   };
 
   const handleOnBlur = (field, e) => {
@@ -259,7 +259,7 @@ export default function ProjectInfo({
 
       {description && (
         <p
-          className="text-[16px] text-project-info-card-description-color font-inter font-[500] mt-2"
+          className="text-[16px] text-project-info-card-description-color font-inter font-[500] mt-2 min-w-0 webkit-fill"
           contentEditable={edit}
           suppressContentEditableWarning
           onBlur={(e) => handleOnBlur("description", e)}
@@ -273,7 +273,7 @@ export default function ProjectInfo({
         </p>
       )}
 
-      <div className="flex flex-wrap mt-3 gap-x-5 gap-y-3 md:gap-x-[80px]">
+      <div className="flex flex-col gap-4 md:grid md:grid-cols-4 md:gap-6 mt-4">
         {(edit || !!client) && (
           <div>
             <p className="text-[14px] text-project-info-card-heading-color font-inter font-[500]">
@@ -290,7 +290,7 @@ export default function ProjectInfo({
                 }
               }}
             >
-              {client ?? "Type here..."}
+              {client ? client : "Type here..."}
             </p>
           </div>
         )}
@@ -311,7 +311,7 @@ export default function ProjectInfo({
                 }
               }}
             >
-              {role ?? "Type here..."}
+              {role ? role : "Type here..."}
             </p>
           </div>
         )}
@@ -331,7 +331,7 @@ export default function ProjectInfo({
                 }
               }}
             >
-              {industry ?? "Type here..."}
+              {industry ? industry : "Type here..."}
             </p>
           </div>
         )}
@@ -351,7 +351,7 @@ export default function ProjectInfo({
                 }
               }}
             >
-              {platform ?? "Type here..."}
+              {platform ? platform : "Type here..."}
             </p>
           </div>
         )}

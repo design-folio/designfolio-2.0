@@ -26,14 +26,14 @@ const Modal = ({ show, onClose, children, className }) => {
     }
   }, []);
 
-  // useEffect(() => {
-  //   if (show) {
-  //     document.body.style.overflow = "hidden";
-  //   } else {
-  //     document.body.style.overflow = "scroll";
-  //   }
-  //   () => (document.body.style.overflow = "scroll");
-  // }, [show]);
+  useEffect(() => {
+    if (show) {
+      document.body.style.overflowY = "hidden";
+    } else {
+      document.body.style.overflowY = "scroll";
+    }
+    () => (document.body.style.overflowY = "scroll");
+  }, [show]);
 
   if (!el || !modalRoot) {
     return null;

@@ -29,7 +29,7 @@ export default function Profile({
     const skillElementWidthIncludingMargin = 100;
     // Adjust the totalWidth calculation based on the actual elements
     const totalWidth =
-      userDetails?.skills.length * skillElementWidthIncludingMargin * 3; // *3 for the duplicated list
+      userDetails?.skills?.length * skillElementWidthIncludingMargin * 3; // *3 for the duplicated list
 
     controls.start({
       x: [0, -totalWidth],

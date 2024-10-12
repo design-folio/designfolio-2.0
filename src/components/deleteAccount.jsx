@@ -15,7 +15,6 @@ export default function DeleteAccount() {
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const handleDeleteAccount = () => {
-    console.log("asdasd");
     setLoading(true);
     setText("");
     _deleteUser().then(() => {

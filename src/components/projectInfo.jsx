@@ -272,7 +272,7 @@ export default function ProjectInfo({
         {title ? title : "Type here..."}
       </h1>
 
-      {description && (
+      {(edit || !!description) && (
         <p
           className="text-[16px] text-project-info-card-description-color font-inter font-[500] mt-2 min-w-0 webkit-fill"
           contentEditable={edit}

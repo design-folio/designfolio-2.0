@@ -151,11 +151,6 @@ export default function CreateAiProject({ openModal }) {
         };
         await _updateUser(payload)
           .then((res) => {
-            console.log(
-              res?.data?.user?.projects?.find(
-                (project) => project.title === response.data.title
-              )
-            );
             const project = res?.data?.user?.projects?.find(
               (project) => project.title === response.data.title
             );
@@ -285,6 +280,7 @@ export default function CreateAiProject({ openModal }) {
           >
             {({ setFieldValue, values, errors, touched, isValid }) => (
               <Form id="aiProjectForm" disabled={isLoading}>
+                {console.log(errors, touched)}
                 {step == 1 && (
                   <div>
                     <Text size="p-small" className="font-semiBold mb-6">

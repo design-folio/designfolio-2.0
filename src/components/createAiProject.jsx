@@ -228,7 +228,7 @@ export default function CreateAiProject({ openModal }) {
                   </Text>
                 </div>
                 <Text size="p-xxsmall" className="mt-2 text-credit-text-color">
-                  You can use 2 AI-generated case studies per day.
+                You can create 2 AI-generated Case Studies per day.
                 </Text>
               </div>
             </div>

@@ -65,6 +65,21 @@ export default function ProjectInfo({
     // );
   };
 
+  const handleInput = (e) => {
+    const textContent = e.target.textContent;
+    if (textContent.length > 110) {
+      // Prevent typing beyond 110 characters
+      e.target.textContent = textContent.slice(0, 110);
+      // Move the cursor to the end of the text
+      const range = document.createRange();
+      const sel = window.getSelection();
+      range.selectNodeContents(e.target);
+      range.collapse(false);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+  };
+
   const handleOnBlur = (field, e) => {
     saveProject(field, e.target.textContent);
     e.target.textContent =
@@ -254,10 +269,10 @@ export default function ProjectInfo({
           }
         }}
       >
-        {title ?? "Type here..."}
+        {title ? title : "Type here..."}
       </h1>
 
-      {description && (
+      {(edit || !!description) && (
         <p
           className="text-[16px] text-project-info-card-description-color font-inter font-[500] mt-2 min-w-0 webkit-fill"
           contentEditable={edit}
@@ -269,7 +284,7 @@ export default function ProjectInfo({
             }
           }}
         >
-          {description ?? "Type here..."}
+          {description ? description : "Type here..."}
         </p>
       )}
 
@@ -289,6 +304,7 @@ export default function ProjectInfo({
                   e.target.textContent = "";
                 }
               }}
+              onInput={handleInput}
             >
               {client ? client : "Type here..."}
             </p>
@@ -310,6 +326,7 @@ export default function ProjectInfo({
                   e.target.textContent = "";
                 }
               }}
+              onInput={handleInput}
             >
               {role ? role : "Type here..."}
             </p>
@@ -330,6 +347,7 @@ export default function ProjectInfo({
                   e.target.textContent = "";
                 }
               }}
+              onInput={handleInput}
             >
               {industry ? industry : "Type here..."}
             </p>
@@ -350,6 +368,7 @@ export default function ProjectInfo({
                   e.target.textContent = "";
                 }
               }}
+              onInput={handleInput}
             >
               {platform ? platform : "Type here..."}
             </p>

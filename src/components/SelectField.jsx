@@ -83,6 +83,7 @@ const SelectField = ({ options, theme, placeholder = "Select", ...props }) => {
       onBlur={() => field.onBlur({ target: { name: props.name } })}
       isClearable={false}
       className={"!text-input"}
+      maxMenuHeight={250}
     />
   );
 };

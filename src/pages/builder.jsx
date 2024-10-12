@@ -16,6 +16,8 @@ import AddResume from "@/components/addResume";
 import AddSocial from "@/components/addSocial";
 import AddPortfolioLinks from "@/components/addPortfolioLinks";
 import CreateAiProject from "@/components/createAiProject";
+import useClient from "@/hooks/useClient";
+import { Feedefy } from "@feedefy/react";
 
 export default function Index() {
   const {
@@ -27,6 +29,7 @@ export default function Index() {
     closeModal,
     taskPercentage,
   } = useGlobalContext();
+  const { isClient } = useClient();
 
   useEffect(() => {
     if (userDetailsIsState) {
@@ -84,6 +87,13 @@ export default function Index() {
       <Modal show={modals.aiProject == showModal} className={"md:block"}>
         <CreateAiProject openModal={openModal} />
       </Modal>
+      {isClient && userDetails && (
+        <Feedefy
+          projectId="a72769ea-5ab2-4ac9-81bd-1abe180d4b66"
+          data-feedefy
+          data-feedefy-userid={userDetails?.email}
+        ></Feedefy>
+      )}
     </main>
   );
 }

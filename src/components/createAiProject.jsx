@@ -20,28 +20,19 @@ const stepOneValidationSchema = Yup.object().shape({
 
 const stepTwoValidationSchema = Yup.object().shape({
   answer1: Yup.string()
-    .min(100, "Answer is shorter than 100 characters.")
+    .min(50, "Answer is shorter than 100 characters.")
     .required("Answer is a required field."),
   answer2: Yup.string()
-    .min(100, "Answer is shorter than 100 characters.")
+    .min(50, "Answer is shorter than 100 characters.")
     .required("Answer is a required field."),
 });
 
 const stepThreeValidationSchema = Yup.object().shape({
   answer3: Yup.string()
-    .min(100, "Answer is shorter than 100 characters.")
+    .min(50, "Answer is shorter than 100 characters.")
     .required("Answer is a required field."),
   answer4: Yup.string()
-    .min(100, "Answer is shorter than 100 characters.")
-    .required("Answer is a required field."),
-});
-
-const stepFourValidationSchema = Yup.object().shape({
-  answer5: Yup.string()
-    .min(100, "Answer is shorter than 100 characters.")
-    .required("Answer is a required field."),
-  answer6: Yup.string()
-    .min(100, "Answer is shorter than 100 characters.")
+    .min(50, "Answer is shorter than 100 characters.")
     .required("Answer is a required field."),
 });
 
@@ -94,8 +85,8 @@ export default function CreateAiProject({ openModal }) {
         return stepTwoValidationSchema;
       case 3:
         return stepThreeValidationSchema;
-      case 4:
-        return stepFourValidationSchema;
+      default:
+        return Yup.object(); // Default empty schema
     }
   };
 
@@ -150,11 +141,6 @@ export default function CreateAiProject({ openModal }) {
         };
         await _updateUser(payload)
           .then((res) => {
-            console.log(
-              res?.data?.user?.projects?.find(
-                (project) => project.title === response.data.title
-              )
-            );
             const project = res?.data?.user?.projects?.find(
               (project) => project.title === response.data.title
             );
@@ -236,8 +222,7 @@ export default function CreateAiProject({ openModal }) {
         <div className="flex gap-2 mt-6">
           <ProgressBar progress={100} />
           <ProgressBar progress={step >= 2 && 100} />
-          <ProgressBar progress={step >= 3 && 100} />
-          <ProgressBar progress={step == 4 && 100} />
+          <ProgressBar progress={step == 3 && 100} />
         </div>
       </header>
       <div className={`flex-1 overflow-y-auto p-8 relative `}>
@@ -245,10 +230,12 @@ export default function CreateAiProject({ openModal }) {
         {/* This is the scrollable body */}
         <div
           style={{ height: "200px" }}
-          className={`${cred == "2" && "opacity-25"}`}
+          className={`${(cred == "2" || isLoading) && "opacity-25"}`}
         >
           <Formik
             innerRef={formikRef}
+            validateOnChange={false} // Adjust validation triggering
+            validateOnBlur={true} // Adjust validation triggering
             validationSchema={getSchemaValidation()}
             initialValues={{
               projectType: "",
@@ -277,7 +264,7 @@ export default function CreateAiProject({ openModal }) {
             }}
           >
             {({ setFieldValue, values, errors, touched, isValid }) => (
-              <Form id="aiProjectForm">
+              <Form id="aiProjectForm" disabled={isLoading}>
                 {step == 1 && (
                   <div>
                     <Text size="p-small" className="font-semiBold mb-6">
@@ -405,6 +392,7 @@ export default function CreateAiProject({ openModal }) {
           <Button
             text={"Discard"}
             type="secondary"
+            isDisabled={isLoading}
             onClick={() => openModal(null)}
           />
           <div className="flex gap-4">

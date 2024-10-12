@@ -1,14 +1,10 @@
 import React, { useRef } from "react";
 import ClaimDomain from "./claimDomain";
-import Cookies from "js-cookie";
-import { useRouter } from "next/router";
-import { useInView } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import Link from "next/link";
 import Button from "./button";
 
 export default function Footer({ dfToken }) {
-  const router = useRouter();
-  const token = Cookies.get("token");
   const ref = useRef(null);
   const refLink = useRef(null);
   const isInView = useInView(ref, { once: true });
@@ -16,14 +12,12 @@ export default function Footer({ dfToken }) {
 
   return (
     <>
-      <div
+      <motion.div
         ref={ref}
         className="mt-[66px] w-full xl:mt-[120px] px-[16px] lg:px-0 md:max-w-[1192px] mx-auto"
-        style={{
-          opacity: isInView ? 1 : 0,
-          transform: isInView ? "none" : "translateY(80px)",
-          transition: `all 0.5s cubic-bezier(0.17, 0.55, 0.55, 1) 0.5s`,
-        }}
+        initial={{ opacity: 0, translateY: 80 }} // Initial state
+        animate={{ opacity: isInView ? 1 : 0, translateY: isInView ? 0 : 80 }} // Animated state
+        transition={{ duration: 0.5, ease: [0.17, 0.55, 0.55, 1] }} // Smooth transition
       >
         <div className="bg-landing-card-bg-color border-[6px] border-solid border-landing-card-border-color py-10 xl:p-0 xl:h-[500px] rounded-[24px] flex flex-col justify-center items-center px-4 md:px-0">
           <p className="text-center text-landing-footer-heading-color md:hidden px-[40px] text-[22px] xl:text-[39.5px] font-satoshi font-[500] xl:leading-[46.87px]">
@@ -50,15 +44,17 @@ export default function Footer({ dfToken }) {
             )}
           </div>
         </div>
-      </div>
-      <div
+      </motion.div>
+
+      <motion.div
         ref={refLink}
-        style={{
+        className="flex flex-col lg:flex-row justify-center items-center gap-5 lg:px-10 lg:justify-between max-w-[1192px] mx-auto pt-20 pb-5"
+        initial={{ opacity: 0, translateY: 80 }} // Initial state
+        animate={{
           opacity: isInLinkView ? 1 : 0,
-          transform: isInLinkView ? "none" : "translateY(80px)",
-          transition: `all 0.5s cubic-bezier(0.17, 0.55, 0.55, 1) 0.5s`,
-        }}
-        className="flex flex-col lg:flex-row justify-center items-center gap-5 lg:px-10 lg:justify-between  max-w-[1192px] mx-auto pt-20 pb-5 transition-all duration-500 ease-out"
+          translateY: isInLinkView ? 0 : 80,
+        }} // Animated state
+        transition={{ duration: 0.5, ease: [0.17, 0.55, 0.55, 1] }} // Smooth transition
       >
         <p className="text-[14px] font-[500] text-landing-footer-link-color font-inter">
           Copyright © 2023 Designfolio
@@ -75,7 +71,7 @@ export default function Footer({ dfToken }) {
             </p>
           </Link>
         </div>
-      </div>
+      </motion.div>
     </>
   );
 }

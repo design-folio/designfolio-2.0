@@ -246,7 +246,7 @@ export default function CreateAiProject({ openModal }) {
         {/* This is the scrollable body */}
         <div
           style={{ height: "200px" }}
-          className={`${cred == "2" && "opacity-25"}`}
+          className={`${(cred == "2" || isLoading) && "opacity-25"}`}
         >
           <Formik
             innerRef={formikRef}
@@ -284,7 +284,7 @@ export default function CreateAiProject({ openModal }) {
             }}
           >
             {({ setFieldValue, values, errors, touched, isValid }) => (
-              <Form id="aiProjectForm">
+              <Form id="aiProjectForm" disabled={isLoading}>
                 {step == 1 && (
                   <div>
                     <Text size="p-small" className="font-semiBold mb-6">
@@ -416,6 +416,7 @@ export default function CreateAiProject({ openModal }) {
                         "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
                       }`}
                       autoComplete="off"
+                      disabled={isLoading}
                     />
                     <ErrorMessage
                       name="answer5"
@@ -431,6 +432,7 @@ export default function CreateAiProject({ openModal }) {
                     <Field
                       name="answer6"
                       as="textarea"
+                      disabled={isLoading}
                       className={`text-input mt-2 min-h-[120px] border-b ${
                         errors.answer6 &&
                         touched.answer6 &&
@@ -458,6 +460,7 @@ export default function CreateAiProject({ openModal }) {
           <Button
             text={"Discard"}
             type="secondary"
+            isDisabled={isLoading}
             onClick={() => openModal(null)}
           />
           <div className="flex gap-4">

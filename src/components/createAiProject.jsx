@@ -131,7 +131,6 @@ export default function CreateAiProject({ openModal }) {
     };
     try {
       const response = await _generateCaseStudy(data);
-      console.log(response);
       if (response) {
         const payload = {
           projects: [
@@ -256,9 +255,7 @@ export default function CreateAiProject({ openModal }) {
               answer1: "",
               answer2: "",
               answer3: "",
-              answer4: "",
-              answer5: "",
-              answer6: "",
+              answer4: ""
             }}
             onSubmit={(values, actions) => {
               switch (step) {
@@ -271,10 +268,6 @@ export default function CreateAiProject({ openModal }) {
                   setStep(3);
                   break;
                 case 3:
-                  setStep(4);
-                  setIsLoading(false);
-                  break;
-                case 4:
                   handleSubmit(values, actions);
                   break;
 
@@ -402,52 +395,6 @@ export default function CreateAiProject({ openModal }) {
                     </Text>
                   </div>
                 )}
-                {step == 4 && (
-                  <div className="pb-10">
-                    <Text size="p-small" className="font-semiBold mb-2">
-                      {questions[4].question}
-                    </Text>
-                    <Field
-                      name="answer5"
-                      as="textarea"
-                      className={`text-input mt-2 min-h-[120px] border-b ${
-                        errors.answer5 &&
-                        touched.answer5 &&
-                        "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                      }`}
-                      autoComplete="off"
-                    />
-                    <ErrorMessage
-                      name="answer5"
-                      component="div"
-                      className="error-message text-[14px]"
-                    />
-                    <Text size="p-xxxsmall" className="text-df-tip-color mt-3">
-                      ✏️{questions[4].template}
-                    </Text>
-                    <Text size="p-small" className="font-semiBold mb-2 mt-4">
-                      {questions[5].question}
-                    </Text>
-                    <Field
-                      name="answer6"
-                      as="textarea"
-                      className={`text-input mt-2 min-h-[120px] border-b ${
-                        errors.answer6 &&
-                        touched.answer6 &&
-                        "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                      }`}
-                      autoComplete="off"
-                    />
-                    <ErrorMessage
-                      name="answer6"
-                      component="div"
-                      className="error-message text-[14px]"
-                    />
-                    <Text size="p-xxxsmall" className="text-df-tip-color mt-3">
-                      ✏️{questions[5].template}
-                    </Text>
-                  </div>
-                )}
               </Form>
             )}
           </Formik>
@@ -472,7 +419,7 @@ export default function CreateAiProject({ openModal }) {
             <Button
               btnType="submit"
               text={
-                step == 4
+                step == 3
                   ? isLoading
                     ? "Generating..."
                     : "Generate Now"
@@ -483,7 +430,7 @@ export default function CreateAiProject({ openModal }) {
               isLoading={isLoading}
               isDisabled={cred == 2}
               icon={
-                step == 4 && (
+                step == 3 && (
                   <AiIcon className="text-modal-btn-text-color w-[22px] h-[22px]" />
                 )
               }

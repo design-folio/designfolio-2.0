@@ -133,7 +133,6 @@ export default function CreateAiProject({ openModal }) {
     };
     try {
       const response = await _generateCaseStudy(data);
-      console.log(response);
       if (response) {
         const payload = {
           projects: [
@@ -224,8 +223,8 @@ export default function CreateAiProject({ openModal }) {
                     {`${2 - cred}`}
                   </Text>
                 </div>
-                <Text size="p-xxsmall" className="mt-2 text-credit-text-color" >
-                You can create 2 AI-generated Case Studies per day.
+                <Text size="p-xxsmall" className="mt-2 text-credit-text-color">
+                  You can create 2 AI-generated Case Studies per day.
                 </Text>
               </div>
             </div>

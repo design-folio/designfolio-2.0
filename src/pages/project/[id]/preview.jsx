@@ -18,7 +18,6 @@ export default function Index() {
       return response.data;
     },
     onSuccess: (data) => {
-      console.log(data);
       setProjectDetails(data);
       setTheme(data?.project?.theme == 1 ? "dark" : "light");
       setIsProtected(data?.isProtected);

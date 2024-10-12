@@ -96,6 +96,8 @@ export default function CreateAiProject({ openModal }) {
         return stepThreeValidationSchema;
       case 4:
         return stepFourValidationSchema;
+      default:
+        return Yup.object(); // Default empty schema
     }
   };
 
@@ -245,6 +247,8 @@ export default function CreateAiProject({ openModal }) {
         >
           <Formik
             innerRef={formikRef}
+            validateOnChange={false} // Adjust validation triggering
+            validateOnBlur={true} // Adjust validation triggering
             validationSchema={getSchemaValidation()}
             initialValues={{
               projectType: "",
@@ -280,7 +284,6 @@ export default function CreateAiProject({ openModal }) {
           >
             {({ setFieldValue, values, errors, touched, isValid }) => (
               <Form id="aiProjectForm" disabled={isLoading}>
-                {console.log(errors, touched)}
                 {step == 1 && (
                   <div>
                     <Text size="p-small" className="font-semiBold mb-6">

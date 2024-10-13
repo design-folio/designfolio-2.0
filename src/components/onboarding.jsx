@@ -213,6 +213,8 @@ export default function Onboarding() {
 
       actions.setSubmitting(false);
     }
+    formikRef.current.validateForm();
+    formikRef.current.setTouched({});
   };
 
   useEffect(() => {
@@ -232,6 +234,13 @@ export default function Onboarding() {
       ) : (
         <>
           <div className="p-5 lg:p-6 ">
+            <div className="mb-4 flex gap-3">
+              <ProgressBar progress={100} />{" "}
+              <ProgressBar
+                progress={step == 2 ? 100 : 0}
+                bg="linear-gradient(to right, #F26855, #EC7DFD)"
+              />
+            </div>
             {userDetails && userDetails?.skills?.length !== 0 && (
               <div className="flex justify-between items-center">
                 <Text size="p-small" className="font-semibold">
@@ -249,13 +258,6 @@ export default function Onboarding() {
 
             {userDetails && userDetails?.skills?.length == 0 && (
               <>
-                <div className="mb-8 flex gap-3">
-                  <ProgressBar progress={100} />{" "}
-                  <ProgressBar
-                    progress={step == 2 ? 100 : 0}
-                    bg="linear-gradient(to right, #F26855, #EC7DFD)"
-                  />
-                </div>
                 <Text
                   size="p-medium"
                   className={"font-semibold text-center mb-2"}

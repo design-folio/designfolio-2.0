@@ -224,7 +224,7 @@ export default function CreateAiProject({ openModal }) {
                   </Text>
                 </div>
                 <Text size="p-xxsmall" className="mt-2 text-credit-text-color">
-                You can create 20 AI-generated Case Studies per day.
+                  You can create 20 AI-generated Case Studies per day.
                 </Text>
               </div>
             </div>
@@ -246,8 +246,6 @@ export default function CreateAiProject({ openModal }) {
         >
           <Formik
             innerRef={formikRef}
-            validateOnChange={false} // Adjust validation triggering
-            validateOnBlur={true} // Adjust validation triggering
             validationSchema={getSchemaValidation()}
             initialValues={{
               projectType: "",
@@ -256,29 +254,31 @@ export default function CreateAiProject({ openModal }) {
               answer3: "",
               answer4: "",
               answer5: "",
-              answer6: ""
+              answer6: "",
             }}
-            onSubmit={(values, actions) => {
+            onSubmit={(values, actions, setTouched, validateForm) => {
               switch (step) {
                 case 1:
                   setIsLoading(false);
                   handleStepOne(values, actions);
                   break;
-                  case 2:
-                    setIsLoading(false);
-                    setStep(3);
-                    break;
-                  case 3:
-                    setStep(4);
-                    setIsLoading(false);
-                    break;
-                  case 4:
-                    handleSubmit(values, actions);
-                    break;
-  
-                  default:
-                    break;
-                }
+                case 2:
+                  setIsLoading(false);
+                  setStep(3);
+                  break;
+                case 3:
+                  setStep(4);
+                  setIsLoading(false);
+                  break;
+                case 4:
+                  handleSubmit(values, actions);
+                  break;
+
+                default:
+                  break;
+              }
+              formikRef.current.validateForm();
+              formikRef.current.setTouched({});
             }}
           >
             {({ setFieldValue, values, errors, touched, isValid }) => (
@@ -329,7 +329,7 @@ export default function CreateAiProject({ openModal }) {
                       className="error-message text-[14px]"
                     />
                     <Text size="p-xxxsmall" className="text-df-tip-color mt-3">
-                    ✏️<b>Template: </b> {questions[0].template}
+                      ✏️<b>Template: </b> {questions[0].template}
                     </Text>
                     <Text size="p-small" className="font-semiBold mb-2 mt-4">
                       {questions[1].question}
@@ -350,12 +350,12 @@ export default function CreateAiProject({ openModal }) {
                       className="error-message text-[14px]"
                     />
                     <Text size="p-xxxsmall" className="text-df-tip-color mt-3">
-                    ✏️<b>Template: </b> {questions[1].template}
+                      ✏️<b>Template: </b> {questions[1].template}
                     </Text>
                   </div>
                 )}
 
-{step == 3 && (
+                {step == 3 && (
                   <div className="pb-10">
                     <Text size="p-small" className="font-semiBold mb-2">
                       {questions[2].question}
@@ -376,7 +376,8 @@ export default function CreateAiProject({ openModal }) {
                       className="error-message text-[14px]"
                     />
                     <Text size="p-xxxsmall" className="text-df-tip-color mt-3">
-                    ✏️<b>Template: </b>{questions[2].template}
+                      ✏️<b>Template: </b>
+                      {questions[2].template}
                     </Text>
                     <Text size="p-small" className="font-semiBold mb-2 mt-4">
                       {questions[3].question}
@@ -397,7 +398,8 @@ export default function CreateAiProject({ openModal }) {
                       className="error-message text-[14px]"
                     />
                     <Text size="p-xxxsmall" className="text-df-tip-color mt-3">
-                    ✏️<b>Template: </b>{questions[3].template}
+                      ✏️<b>Template: </b>
+                      {questions[3].template}
                     </Text>
                   </div>
                 )}
@@ -423,7 +425,8 @@ export default function CreateAiProject({ openModal }) {
                       className="error-message text-[14px]"
                     />
                     <Text size="p-xxxsmall" className="text-df-tip-color mt-3">
-                    ✏️<b>Template: </b>{questions[4].template}
+                      ✏️<b>Template: </b>
+                      {questions[4].template}
                     </Text>
                     <Text size="p-small" className="font-semiBold mb-2 mt-4">
                       {questions[5].question}
@@ -444,7 +447,8 @@ export default function CreateAiProject({ openModal }) {
                       className="error-message text-[14px]"
                     />
                     <Text size="p-xxxsmall" className="text-df-tip-color mt-3">
-                      ✏️<b>Template: </b>{questions[5].template}
+                      ✏️<b>Template: </b>
+                      {questions[5].template}
                     </Text>
                   </div>
                 )}

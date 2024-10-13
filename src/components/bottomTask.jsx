@@ -26,7 +26,7 @@ export default function BottomTask() {
         />
       </div>
       <div
-        className={`px-2 fixed bottom-0 py-4 cursor-pointer left-0 right-0 flex flex-col justify-center items-center overflow-hidden z-10 `}
+        className={`px-2 pointer-events-none fixed bottom-0 py-4 cursor-pointer left-0 right-0 flex flex-col justify-center items-center overflow-hidden z-10 `}
       >
         <div
           onClick={() =>
@@ -35,7 +35,7 @@ export default function BottomTask() {
             )
           }
           style={{ boxShadow: "0px 8.3px 33.2px 0px rgba(32, 41, 55, 0.14)" }}
-          className="bg-popover-bg-color shadow-popover-shadow border-[5px] border-popover-border-color rounded-[24px] px-[14px] py-[10.42px] flex gap-[8.5px] items-center justify-center"
+          className="bg-popover-bg-color pointer-events-auto shadow-lg border-[5px] border-popover-border-color rounded-[24px] px-[14px] py-[10.42px] flex gap-[8.5px] items-center justify-center"
         >
           <div className="w-[47.24px] h-[46.28px]">
             <CircularProgressbar

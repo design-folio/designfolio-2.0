@@ -25,7 +25,7 @@ export default function Task({ setOpen }) {
 
   return (
     <div
-      className="bg-popover-bg-color shadow-popover-shadow border-4 border-popover-border-color transition-all ease-in-out duration-400 p-4 rounded-[24px] flex flex-col gap-[14px] w-[286px]"
+      className="bg-popover-bg-color shadow-lg border-4 border-popover-border-color transition-all ease-in-out duration-400 p-4 rounded-[24px] flex flex-col gap-[14px] w-[286px]"
       style={{ boxShadow: "0px 8.3px 33.2px 0px rgba(32, 41, 55, 0.14)" }}
     >
       <div className="flex justify-between items-center">

@@ -143,8 +143,12 @@ export default function LandingHeader({ dfToken }) {
           <Button customClass="w-full" text="Launch Builder" />
         ) : (
           <>
-            <Button customClass="w-full" text="Login" type="secondary" />
-            <Button customClass="w-full mt-4" text="Start for free" />
+            <Link href={"/login"}>
+              <Button customClass="w-full" text="Login" type="secondary" />
+            </Link>
+            <Link href={"/claim-link"}>
+              <Button customClass="w-full mt-4" text="Start for free" />
+            </Link>
           </>
         )}
       </Popover>

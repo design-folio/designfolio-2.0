@@ -217,8 +217,11 @@ export default function ClaimLink() {
                       }`}
                     >
                       <img src="/assets/svgs/error-emoji.svg" alt="" />
-                      <p className="text-center hidden md:block text-input-error-color font-[500] font-inter">
-                        Username is already taken. Your clone got here first!
+                      <p className="text-center flex  text-input-error-color font-[500] font-inter">
+                        Username is already taken.{" "}
+                        <span className="hidden md:block">
+                          Your clone got here first!
+                        </span>
                       </p>
                     </div>
                   </div>

@@ -17,6 +17,8 @@ import Undo from "editorjs-undo";
 import Compressor from "compressorjs";
 import queryClient from "@/network/queryClient";
 
+import CodepenIcon from "../../public/assets/svgs/codepen.svg";
+
 class FigmaTool {
   constructor({ data }) {
     this.data = data || { url: "" };
@@ -103,7 +105,7 @@ const ProjectEditor = ({
     if (isClient) {
       const editor = new EditorJS({
         holder: editorContainer.current,
-        minHeight: 75,
+        // minHeight: 75,
 
         onReady: () => {
           setTimeout(() => {
@@ -292,7 +294,7 @@ const ProjectEditor = ({
               // Create the <p> tag
               const div = document.createElement("div");
               div.innerHTML =
-                "💡Embed <img src='/assets/svgs/youtube.svg' class='w-4'/> or <img src='/assets/svgs/codepen.svg' class='w-4'/> by pasting the link in the editor.";
+                "💡Embed <img src='/assets/svgs/youtube.svg'  class='w-4'/> or <img src='/assets/svgs/codepen.svg' class='w-4'/> by pasting the link in the editor.";
               div.classList.add("!text-[12px]");
               div.classList.add("flex");
               div.classList.add("flex-wrap");

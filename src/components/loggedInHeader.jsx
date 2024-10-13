@@ -109,7 +109,7 @@ export default function LoggedInHeader({
 
   const handlePublishBtn = () => {
     if (!latestPublishDate) {
-      handleUpdate();
+      return handleUpdate();
     }
     setPopoverMenu((prev) =>
       prev == popovers.publishMenu ? null : popovers.publishMenu
@@ -164,7 +164,7 @@ export default function LoggedInHeader({
                     : "opacity-0 scale-90 pointer-events-none"
                 }`}
               >
-                <div className="w-[545.5px]  rounded-xl shadow-popver-shadow bg-popover-bg-color border-4 border-solid border-popover-border-color">
+                <div className="w-[545.5px]  rounded-xl shadow-lg bg-popover-bg-color border-4 border-solid border-popover-border-color">
                   <div className="flex justify-between items-center p-5">
                     <Text
                       as="h3"
@@ -269,7 +269,7 @@ export default function LoggedInHeader({
                     : "opacity-0 scale-90 pointer-events-none"
                 }`}
               >
-                <div className=" w-[310px] rounded-xl shadow-popver-shadow bg-popover-bg-color border-4 border-solid border-popover-border-color">
+                <div className=" w-[310px] rounded-xl shadow-lg bg-popover-bg-color border-4 border-solid border-popover-border-color">
                   <div className="p-4">
                     <div className="flex justify-between items-center break-all gap-2">
                       <div
@@ -345,7 +345,7 @@ export default function LoggedInHeader({
                     : "opacity-0 scale-90 pointer-events-none"
                 }`}
               >
-                <div className=" w-[250px] rounded-xl shadow-popver-shadow bg-popover-bg-color border-4 border-solid border-popover-border-color">
+                <div className=" w-[250px] rounded-xl shadow-lg bg-popover-bg-color border-4 border-solid border-popover-border-color">
                   <div className="p-4">
                     <div className="py-1">
                       <Button

@@ -148,7 +148,7 @@ export default function ProjectInfo({
                   : "opacity-0 scale-90 pointer-events-none"
               }`}
             >
-              <div className=" w-[350px] md:w-[386px]  bg-popover-bg-color rounded-2xl shadow-popover-shadow border-[5px] border-popover-border-color p-2">
+              <div className=" w-[350px] md:w-[386px]  bg-popover-bg-color rounded-2xl shadow-lg border-[5px] border-popover-border-color p-2">
                 <Formik
                   initialValues={{
                     password: password,

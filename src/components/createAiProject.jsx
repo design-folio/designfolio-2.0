@@ -36,6 +36,15 @@ const stepThreeValidationSchema = Yup.object().shape({
     .required("Answer is a required field."),
 });
 
+const stepFourValidationSchema = Yup.object().shape({
+  answer5: Yup.string()
+    .min(25, "Answer is shorter than 25 characters.")
+    .required("Answer is a required field."),
+  answer6: Yup.string()
+    .min(25, "Answer is shorter than 25 characters.")
+    .required("Answer is a required field."),
+});
+
 const variants = {
   hidden: { x: "100%" },
   visible: { x: "0%" },
@@ -63,7 +72,7 @@ export default function CreateAiProject({ openModal }) {
           })
           .catch((err) => {
             console.log(err);
-            setCredits(2);
+            setCredits(20);
           });
       }
     } catch (err) {
@@ -85,6 +94,8 @@ export default function CreateAiProject({ openModal }) {
         return stepTwoValidationSchema;
       case 3:
         return stepThreeValidationSchema;
+      case 4:
+        return stepFourValidationSchema;
       default:
         return Yup.object(); // Default empty schema
     }
@@ -187,7 +198,7 @@ export default function CreateAiProject({ openModal }) {
           >
             <Button
               type="ai"
-              text={`${2 - cred} Credits`}
+              text={`${20 - cred} Credits`}
               size="small"
               style={{ background: "var(--ai-btn-bg-color)" }}
             />
@@ -209,11 +220,11 @@ export default function CreateAiProject({ openModal }) {
                     size="p-small"
                     className="font-semibold text-df-base-text-color"
                   >
-                    {`${2 - cred}`}
+                    {`${20 - cred}`}
                   </Text>
                 </div>
                 <Text size="p-xxsmall" className="mt-2 text-credit-text-color">
-                You can create 2 AI-generated Case Studies per day.
+                You can create 20 AI-generated Case Studies per day.
                 </Text>
               </div>
             </div>
@@ -222,15 +233,16 @@ export default function CreateAiProject({ openModal }) {
         <div className="flex gap-2 mt-6">
           <ProgressBar progress={100} />
           <ProgressBar progress={step >= 2 && 100} />
-          <ProgressBar progress={step == 3 && 100} />
+          <ProgressBar progress={step >= 3 && 100} />
+          <ProgressBar progress={step == 4 && 100} />
         </div>
       </header>
       <div className={`flex-1 overflow-y-auto p-8 relative `}>
-        {cred == "2" && <Info className={"mb-4"} />}
+        {cred == "20" && <Info className={"mb-4"} />}
         {/* This is the scrollable body */}
         <div
           style={{ height: "200px" }}
-          className={`${(cred == "2" || isLoading) && "opacity-25"}`}
+          className={`${(cred == "20" || isLoading) && "opacity-25"}`}
         >
           <Formik
             innerRef={formikRef}
@@ -242,7 +254,9 @@ export default function CreateAiProject({ openModal }) {
               answer1: "",
               answer2: "",
               answer3: "",
-              answer4: ""
+              answer4: "",
+              answer5: "",
+              answer6: ""
             }}
             onSubmit={(values, actions) => {
               switch (step) {
@@ -250,17 +264,21 @@ export default function CreateAiProject({ openModal }) {
                   setIsLoading(false);
                   handleStepOne(values, actions);
                   break;
-                case 2:
-                  setIsLoading(false);
-                  setStep(3);
-                  break;
-                case 3:
-                  handleSubmit(values, actions);
-                  break;
-
-                default:
-                  break;
-              }
+                  case 2:
+                    setIsLoading(false);
+                    setStep(3);
+                    break;
+                  case 3:
+                    setStep(4);
+                    setIsLoading(false);
+                    break;
+                  case 4:
+                    handleSubmit(values, actions);
+                    break;
+  
+                  default:
+                    break;
+                }
             }}
           >
             {({ setFieldValue, values, errors, touched, isValid }) => (
@@ -311,7 +329,7 @@ export default function CreateAiProject({ openModal }) {
                       className="error-message text-[14px]"
                     />
                     <Text size="p-xxxsmall" className="text-df-tip-color mt-3">
-                      ✏️Template: {questions[0].template}
+                    ✏️<b>Template: </b> {questions[0].template}
                     </Text>
                     <Text size="p-small" className="font-semiBold mb-2 mt-4">
                       {questions[1].question}
@@ -332,11 +350,12 @@ export default function CreateAiProject({ openModal }) {
                       className="error-message text-[14px]"
                     />
                     <Text size="p-xxxsmall" className="text-df-tip-color mt-3">
-                      ✏️{questions[1].template}
+                    ✏️<b>Template: </b> {questions[1].template}
                     </Text>
                   </div>
                 )}
-                {step == 3 && (
+
+{step == 3 && (
                   <div className="pb-10">
                     <Text size="p-small" className="font-semiBold mb-2">
                       {questions[2].question}
@@ -357,7 +376,7 @@ export default function CreateAiProject({ openModal }) {
                       className="error-message text-[14px]"
                     />
                     <Text size="p-xxxsmall" className="text-df-tip-color mt-3">
-                      ✏️{questions[2].template}
+                    ✏️<b>Template: </b>{questions[2].template}
                     </Text>
                     <Text size="p-small" className="font-semiBold mb-2 mt-4">
                       {questions[3].question}
@@ -378,7 +397,54 @@ export default function CreateAiProject({ openModal }) {
                       className="error-message text-[14px]"
                     />
                     <Text size="p-xxxsmall" className="text-df-tip-color mt-3">
-                      ✏️{questions[3].template}
+                    ✏️<b>Template: </b>{questions[3].template}
+                    </Text>
+                  </div>
+                )}
+
+                {step == 4 && (
+                  <div className="pb-10">
+                    <Text size="p-small" className="font-semiBold mb-2">
+                      {questions[4].question}
+                    </Text>
+                    <Field
+                      name="answer5"
+                      as="textarea"
+                      className={`text-input mt-2 min-h-[120px] border-b ${
+                        errors.answer5 &&
+                        touched.answer5 &&
+                        "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
+                      }`}
+                      autoComplete="off"
+                    />
+                    <ErrorMessage
+                      name="answer5"
+                      component="div"
+                      className="error-message text-[14px]"
+                    />
+                    <Text size="p-xxxsmall" className="text-df-tip-color mt-3">
+                    ✏️<b>Template: </b>{questions[4].template}
+                    </Text>
+                    <Text size="p-small" className="font-semiBold mb-2 mt-4">
+                      {questions[5].question}
+                    </Text>
+                    <Field
+                      name="answer6"
+                      as="textarea"
+                      className={`text-input mt-2 min-h-[120px] border-b ${
+                        errors.answer6 &&
+                        touched.answer6 &&
+                        "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
+                      }`}
+                      autoComplete="off"
+                    />
+                    <ErrorMessage
+                      name="answer6"
+                      component="div"
+                      className="error-message text-[14px]"
+                    />
+                    <Text size="p-xxxsmall" className="text-df-tip-color mt-3">
+                      ✏️<b>Template: </b>{questions[5].template}
                     </Text>
                   </div>
                 )}
@@ -401,13 +467,13 @@ export default function CreateAiProject({ openModal }) {
                 text={"Back"}
                 type="secondary"
                 onClick={() => setStep((prev) => prev - 1)}
-                isDisabled={isLoading || cred == 2}
+                isDisabled={isLoading || cred == 20}
               />
             )}
             <Button
               btnType="submit"
               text={
-                step == 3
+                step == 4
                   ? isLoading
                     ? "Generating..."
                     : "Generate Now"
@@ -416,9 +482,9 @@ export default function CreateAiProject({ openModal }) {
               type="modal"
               form="aiProjectForm"
               isLoading={isLoading}
-              isDisabled={cred == 2}
+              isDisabled={cred == 20}
               icon={
-                step == 3 && (
+                step == 4 && (
                   <AiIcon className="text-modal-btn-text-color w-[22px] h-[22px]" />
                 )
               }

@@ -21,18 +21,18 @@ const DfImage = ({ src, style, className, alt, onClick }) => {
         className={twMerge(
           "w-full h-full rounded-[24px] object-cover transition-opacity duration-100",
           className,
-          imageLoaded ? "opacity-100" : "opacity-0"
+          imageLoaded ? "opacity-100" : "opacity-100"
         )}
         loading="lazy"
         fetchpriority="high"
         decoding="async"
-        onLoad={() => setImageLoaded(true)}
+        // onLoad={() => setImageLoaded(true)}
         style={style}
         onClick={onClick}
       />
-      {!imageLoaded && (
+      {/* {!imageLoaded && (
         <div className="w-full h-full bg-placeholder-color rounded-[24px] absolute top-0 right-0" />
-      )}
+      )} */}
     </div>
   );
 };

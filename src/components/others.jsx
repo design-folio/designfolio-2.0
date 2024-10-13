@@ -25,7 +25,7 @@ export default function Others({ openModal, userDetails, edit }) {
     <div
       className={` flex flex-col gap-8 bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words`}
     >
-      {resume && edit && (
+      {(!!resume || edit) && (
         <div>
           <div className="flex justify-between items-center mb-4">
             <Text

@@ -58,7 +58,7 @@ export default function Signup() {
         console.error("Error fetching user data:", error);
       }
     },
-    onError: () => console.log("Google login failed"),
+    onError: () => console.log("google login failed"),
     // Additional configuration if needed
   });
 

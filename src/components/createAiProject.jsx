@@ -20,28 +20,19 @@ const stepOneValidationSchema = Yup.object().shape({
 
 const stepTwoValidationSchema = Yup.object().shape({
   answer1: Yup.string()
-    .min(100, "Answer is shorter than 100 characters.")
+    .min(50, "Answer is shorter than 100 characters.")
     .required("Answer is a required field."),
   answer2: Yup.string()
-    .min(100, "Answer is shorter than 100 characters.")
+    .min(50, "Answer is shorter than 100 characters.")
     .required("Answer is a required field."),
 });
 
 const stepThreeValidationSchema = Yup.object().shape({
   answer3: Yup.string()
-    .min(100, "Answer is shorter than 100 characters.")
+    .min(50, "Answer is shorter than 100 characters.")
     .required("Answer is a required field."),
   answer4: Yup.string()
-    .min(100, "Answer is shorter than 100 characters.")
-    .required("Answer is a required field."),
-});
-
-const stepFourValidationSchema = Yup.object().shape({
-  answer5: Yup.string()
-    .min(100, "Answer is shorter than 100 characters.")
-    .required("Answer is a required field."),
-  answer6: Yup.string()
-    .min(100, "Answer is shorter than 100 characters.")
+    .min(50, "Answer is shorter than 100 characters.")
     .required("Answer is a required field."),
 });
 
@@ -94,8 +85,6 @@ export default function CreateAiProject({ openModal }) {
         return stepTwoValidationSchema;
       case 3:
         return stepThreeValidationSchema;
-      case 4:
-        return stepFourValidationSchema;
       default:
         return Yup.object(); // Default empty schema
     }
@@ -224,7 +213,7 @@ export default function CreateAiProject({ openModal }) {
                   </Text>
                 </div>
                 <Text size="p-xxsmall" className="mt-2 text-credit-text-color">
-                  You can create 2 AI-generated Case Studies per day.
+                You can create 2 AI-generated Case Studies per day.
                 </Text>
               </div>
             </div>
@@ -233,8 +222,7 @@ export default function CreateAiProject({ openModal }) {
         <div className="flex gap-2 mt-6">
           <ProgressBar progress={100} />
           <ProgressBar progress={step >= 2 && 100} />
-          <ProgressBar progress={step >= 3 && 100} />
-          <ProgressBar progress={step == 4 && 100} />
+          <ProgressBar progress={step == 3 && 100} />
         </div>
       </header>
       <div className={`flex-1 overflow-y-auto p-8 relative `}>
@@ -254,9 +242,7 @@ export default function CreateAiProject({ openModal }) {
               answer1: "",
               answer2: "",
               answer3: "",
-              answer4: "",
-              answer5: "",
-              answer6: "",
+              answer4: ""
             }}
             onSubmit={(values, actions) => {
               switch (step) {
@@ -269,10 +255,6 @@ export default function CreateAiProject({ openModal }) {
                   setStep(3);
                   break;
                 case 3:
-                  setStep(4);
-                  setIsLoading(false);
-                  break;
-                case 4:
                   handleSubmit(values, actions);
                   break;
 
@@ -400,54 +382,6 @@ export default function CreateAiProject({ openModal }) {
                     </Text>
                   </div>
                 )}
-                {step == 4 && (
-                  <div className="pb-10">
-                    <Text size="p-small" className="font-semiBold mb-2">
-                      {questions[4].question}
-                    </Text>
-                    <Field
-                      name="answer5"
-                      as="textarea"
-                      className={`text-input mt-2 min-h-[120px] border-b ${
-                        errors.answer5 &&
-                        touched.answer5 &&
-                        "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                      }`}
-                      autoComplete="off"
-                      disabled={isLoading}
-                    />
-                    <ErrorMessage
-                      name="answer5"
-                      component="div"
-                      className="error-message text-[14px]"
-                    />
-                    <Text size="p-xxxsmall" className="text-df-tip-color mt-3">
-                      ✏️{questions[4].template}
-                    </Text>
-                    <Text size="p-small" className="font-semiBold mb-2 mt-4">
-                      {questions[5].question}
-                    </Text>
-                    <Field
-                      name="answer6"
-                      as="textarea"
-                      disabled={isLoading}
-                      className={`text-input mt-2 min-h-[120px] border-b ${
-                        errors.answer6 &&
-                        touched.answer6 &&
-                        "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                      }`}
-                      autoComplete="off"
-                    />
-                    <ErrorMessage
-                      name="answer6"
-                      component="div"
-                      className="error-message text-[14px]"
-                    />
-                    <Text size="p-xxxsmall" className="text-df-tip-color mt-3">
-                      ✏️{questions[5].template}
-                    </Text>
-                  </div>
-                )}
               </Form>
             )}
           </Formik>
@@ -473,7 +407,7 @@ export default function CreateAiProject({ openModal }) {
             <Button
               btnType="submit"
               text={
-                step == 4
+                step == 3
                   ? isLoading
                     ? "Generating..."
                     : "Generate Now"
@@ -484,7 +418,7 @@ export default function CreateAiProject({ openModal }) {
               isLoading={isLoading}
               isDisabled={cred == 2}
               icon={
-                step == 4 && (
+                step == 3 && (
                   <AiIcon className="text-modal-btn-text-color w-[22px] h-[22px]" />
                 )
               }

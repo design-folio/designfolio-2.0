@@ -32,12 +32,12 @@ export default function TextWithLineBreaks({ text, color }) {
 
       {text.length > splitCount && ( // Show button only if truncation is needed
         <button
-          className="text-blue-700 hover:text-blue-900 hover:underline"
-          onClick={handleShowMore}
-          style={{ color: "#5C6486" }}
-        >
-          {showFullText ? "View less" : "View more"}
-        </button>
+  className="text-blue-700 hover:text-blue-900 hover:underline font-medium"
+  onClick={handleShowMore}
+  style={{ color: "#5C6486", marginTop: "8px" }}
+>
+  {showFullText ? "View less" : "View more"}
+</button>
       )}
     </div>
   );

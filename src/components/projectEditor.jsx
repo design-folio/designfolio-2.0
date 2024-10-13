@@ -267,7 +267,7 @@ const ProjectEditor = ({
             _updateProject(router.query.id, { content }).then((res) => {
               const updatedProjects = userDetails?.projects?.map((item) =>
                 item._id === router.query.id
-                  ? { ...item, content: res?.data?.project }
+                  ? { ...item, content: res?.data?.project?.content }
                   : item
               );
               queryClient.setQueriesData(

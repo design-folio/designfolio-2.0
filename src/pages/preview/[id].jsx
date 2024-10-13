@@ -39,7 +39,7 @@ export default function Index({ initialUserDetails }) {
   const { setTheme } = useTheme();
   const router = useRouter();
   const { data: userDetails } = useQuery({
-    queryKey: ["portfolio"],
+    queryKey: [`portfolio-${router.query.id}`],
     queryFn: _getUser(router.query.id),
     initialData: initialUserDetails,
   });

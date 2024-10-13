@@ -49,7 +49,7 @@ export default function ProjectCard({
             src={project?.thumbnail?.url}
             alt="project image"
             className={`w-full h-full object-cover transition-opacity duration-100 ${
-              imageLoaded ? "opacity-100" : "opacity-0"
+              imageLoaded ? "opacity-100" : "opacity-100"
             }`}
             initial="initial"
             whileHover="hover"
@@ -57,11 +57,11 @@ export default function ProjectCard({
             loading="lazy"
             fetchPriority="high"
             decoding="async"
-            onLoad={() => setImageLoaded(true)}
+            // onLoad={() => setImageLoaded(true)}
           />
-          {!imageLoaded && (
+          {/* {!imageLoaded && (
             <div className="w-full h-full bg-df-placeholder-color absolute top-0 right-0" />
-          )}
+          )} */}
         </div>
 
         <div className="p-6 flex-1 flex flex-col justify-between">

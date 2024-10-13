@@ -6,6 +6,7 @@ import { _resetPassword } from "@/network/post-request";
 import Card from "./card";
 import Text from "./text";
 import Button from "./button";
+import { toast } from "react-toastify";
 
 // Yup validation schema
 const resetPasswordValidationSchema = Yup.object().shape({

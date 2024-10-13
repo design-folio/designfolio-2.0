@@ -20,19 +20,19 @@ const stepOneValidationSchema = Yup.object().shape({
 
 const stepTwoValidationSchema = Yup.object().shape({
   answer1: Yup.string()
-    .min(50, "Answer is shorter than 100 characters.")
+    .min(25, "Answer is shorter than 25 characters.")
     .required("Answer is a required field."),
   answer2: Yup.string()
-    .min(50, "Answer is shorter than 100 characters.")
+    .min(25, "Answer is shorter than 25 characters.")
     .required("Answer is a required field."),
 });
 
 const stepThreeValidationSchema = Yup.object().shape({
   answer3: Yup.string()
-    .min(50, "Answer is shorter than 100 characters.")
+    .min(25, "Answer is shorter than 25 characters.")
     .required("Answer is a required field."),
   answer4: Yup.string()
-    .min(50, "Answer is shorter than 100 characters.")
+    .min(25, "Answer is shorter than 25 characters.")
     .required("Answer is a required field."),
 });
 

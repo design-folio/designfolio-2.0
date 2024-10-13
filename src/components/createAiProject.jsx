@@ -72,7 +72,7 @@ export default function CreateAiProject({ openModal }) {
           })
           .catch((err) => {
             console.log(err);
-            setCredits(20);
+            setCredits(2);
           });
       }
     } catch (err) {
@@ -198,7 +198,7 @@ export default function CreateAiProject({ openModal }) {
           >
             <Button
               type="ai"
-              text={`${20 - cred} Credits`}
+              text={`${2 - cred} Credits`}
               size="small"
               style={{ background: "var(--ai-btn-bg-color)" }}
             />
@@ -220,11 +220,11 @@ export default function CreateAiProject({ openModal }) {
                     size="p-small"
                     className="font-semibold text-df-base-text-color"
                   >
-                    {`${20 - cred}`}
+                    {`${2 - cred}`}
                   </Text>
                 </div>
                 <Text size="p-xxsmall" className="mt-2 text-credit-text-color">
-                  You can create 20 AI-generated Case Studies per day.
+                You can create 2 AI-generated Case Studies per day.
                 </Text>
               </div>
             </div>
@@ -238,11 +238,11 @@ export default function CreateAiProject({ openModal }) {
         </div>
       </header>
       <div className={`flex-1 overflow-y-auto p-8 relative `}>
-        {cred == "20" && <Info className={"mb-4"} />}
+        {cred == "2" && <Info className={"mb-4"} />}
         {/* This is the scrollable body */}
         <div
           style={{ height: "200px" }}
-          className={`${(cred == "20" || isLoading) && "opacity-25"}`}
+          className={`${(cred == "2" || isLoading) && "opacity-25"}`}
         >
           <Formik
             innerRef={formikRef}
@@ -471,7 +471,7 @@ export default function CreateAiProject({ openModal }) {
                 text={"Back"}
                 type="secondary"
                 onClick={() => setStep((prev) => prev - 1)}
-                isDisabled={isLoading || cred == 20}
+                isDisabled={isLoading || cred == 2}
               />
             )}
             <Button
@@ -486,7 +486,7 @@ export default function CreateAiProject({ openModal }) {
               type="modal"
               form="aiProjectForm"
               isLoading={isLoading}
-              isDisabled={cred == 20}
+              isDisabled={cred == 2}
               icon={
                 step == 4 && (
                   <AiIcon className="text-modal-btn-text-color w-[22px] h-[22px]" />

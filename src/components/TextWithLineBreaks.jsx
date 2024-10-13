@@ -1,22 +1,44 @@
-import React from "react";
+import React, { useState } from "react";
 
 export default function TextWithLineBreaks({ text, color }) {
-  // Split the text into lines at newline characters
-  const lines = text.split("\n");
+  const splitCount = 100; // Number of characters to show in "View more" mode
+  const [showFullText, setShowFullText] = useState(false);
+
+  // Function to handle "View more/View less"
+  const handleShowMore = () => {
+    setShowFullText(!showFullText);
+  };
+
+  // Replace newline characters with <br /> for HTML rendering
+  const formatTextWithLineBreaks = (str) => {
+    return str.replace(/\n/g, "<br />");
+  };
+
+  // Join lines into a single text block for truncation
+  const fullText = formatTextWithLineBreaks(text);
+  const truncatedText = formatTextWithLineBreaks(
+    text.length > splitCount ? `${text.substring(0, splitCount)}...` : text
+  );
 
   return (
     <div>
-      {lines.map((line, index) => (
-        <React.Fragment key={index}>
-          <p
-            className={`text-[16px] font-medium leading-[22.4px] font-inter ${
-              index < lines.length && "mt-2"
-            } ${color}`}
-          >
-            {line}
-          </p>
-        </React.Fragment>
-      ))}
+      {/* Render formatted text using dangerouslySetInnerHTML to preserve line breaks */}
+      <p
+        className={`text-[16px] font-medium leading-[22.4px] font-inter ${color}`}
+        dangerouslySetInnerHTML={{
+          __html: showFullText ? fullText : truncatedText,
+        }}
+      ></p>
+
+      {text.length > splitCount && ( // Show button only if truncation is needed
+        <button
+          className="text-blue-700 hover:text-blue-900 hover:underline"
+          onClick={handleShowMore}
+          style={{ color: "#5C6486" }}
+        >
+          {showFullText ? "View less" : "View more"}
+        </button>
+      )}
     </div>
   );
 }

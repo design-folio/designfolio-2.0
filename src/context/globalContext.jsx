@@ -84,7 +84,6 @@ export const GlobalProvider = ({ children }) => {
       document.removeEventListener("scroll", handleScroll);
     };
   }, [showModal, popoverMenu]);
-  console.log("userDetails", userDetails);
 
   useEffect(() => {
     if (data && !userDetailsIsState) {

@@ -7,10 +7,10 @@ import MadeWithDesignfolio from "../../public/assets/svgs/madewithdesignfolio.sv
 import { useState } from "react";
 import Button from "./button";
 
-export default function BottomNavigation() {
+export default function BottomNavigation({ userDetails }) {
   const router = useRouter();
   const [isProject, setIsProject] = useState(false);
-  const { userDetails, projectRef } = useGlobalContext();
+  const { projectRef } = useGlobalContext();
 
   const handleHomeNavigation = () => {
     setIsProject(false);
@@ -27,6 +27,8 @@ export default function BottomNavigation() {
       window.scrollTo({ top, behavior: "smooth" });
     }
   };
+
+  console.log(userDetails);
 
   return (
     <div className="bg-gradient-to-b from-transparent px-2  to-df-bg-color fixed bottom-0 left-0 right-0 h-[90px] lg:h-[102px] overflow-hidden  z-10">

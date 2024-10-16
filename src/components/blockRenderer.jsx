@@ -39,7 +39,12 @@ const CustomListRenderer = React.memo(({ items, listType = "unordered" }) => {
 
 const FigmaBlock = ({ block }) => {
   const iframeSrc = block?.data?.url || "";
+  // Regular expression to match the src attribute value
+  var srcRegex = /src="([^"]*)"/;
+  var match = srcRegex.exec(iframeSrc);
 
+  // Extract the src value from the match
+  var srcValue = match ? match[1] : "";
   return (
     <div className="figma-tool">
       <div className="figma-preview">
@@ -48,7 +53,7 @@ const FigmaBlock = ({ block }) => {
             style={{ border: "1px solid rgba(0, 0, 0, 0.1)" }}
             width="800"
             height="450"
-            src={`https://www.figma.com/embed?embed_host=share&url=${iframeSrc}`}
+            src={srcValue}
             allowFullScreen
             title="Figma Embed"
           />

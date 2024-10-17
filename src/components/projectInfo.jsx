@@ -15,7 +15,9 @@ import EyeCloseIcon from "../../public/assets/svgs/eye-close.svg";
 import { ImageWithOverlayAndPicker } from "./ImageWithOverlayAndPicker";
 import queryClient from "@/network/queryClient";
 import { toast } from "react-toastify";
-
+import AnalyzeIcon from "../../public/assets/svgs/analyze.svg";
+import Modal from "./modal";
+import AnalyzeCaseStudy from "./analyzeCaseStudy";
 export default function ProjectInfo({
   projectDetails,
   userDetails,
@@ -38,7 +40,7 @@ export default function ProjectInfo({
   const [isPassword, setPassword] = useState(projectDetails?.protected);
   const [showEye, setShowEye] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
-
+  const [showModal, setShowModal] = useState(false);
   const router = useRouter();
 
   const saveProject = (key, value) => {
@@ -121,138 +123,146 @@ export default function ProjectInfo({
           icon={<LeftArrow className="text-df-icon-color" />}
         />
         {edit && (
-          <div
-            className="mb-3 md:mb-0 relative"
-            data-popover-id={popovers.password}
-          >
+          <div className="flex gap-3">
             <Button
               type="secondary"
-              onClick={() =>
-                setPopoverMenu((prev) =>
-                  prev == popovers.password ? null : popovers.password
-                )
-              }
-              icon={
-                isPassword ? (
-                  <LockIcon className="stroke-bg-df-icon-color" />
-                ) : (
-                  <LockOpenIcon className="stroke-bg-df-icon-color" />
-                )
-              }
+              text="Analyze Project"
+              onClick={() => setShowModal(true)}
+              icon={<AnalyzeIcon />}
             />
-
             <div
-              className={`pt-2 origin-top-right absolute z-20 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${
-                popoverMenu === popovers.password
-                  ? "opacity-100 scale-100"
-                  : "opacity-0 scale-90 pointer-events-none"
-              }`}
+              className="mb-3 md:mb-0 relative"
+              data-popover-id={popovers.password}
             >
-              <div className=" w-[350px] md:w-[386px]  bg-popover-bg-color rounded-2xl shadow-lg border-[5px] border-popover-border-color p-2">
-                <Formik
-                  initialValues={{
-                    password: password,
-                  }}
-                  validateOnChange
-                  validateOnBlur
-                  validationSchema={validationSchema}
-                  onSubmit={(values, actions) => {
-                    _updateProject(router.query.id, {
-                      password: values.password,
-                    }).then((res) => {
-                      updateProjectCache(
-                        "password",
-                        res?.data?.project?.password
-                      );
-                      updateProjectCache(
-                        "protected",
-                        res?.data?.project?.protected
-                      );
-                      actions.setSubmitting(false);
-                      toast.success("Password has been updated.");
-                    });
-                  }}
-                >
-                  {({ isSubmitting, errors, touched, validateField }) => (
-                    <Form id="projectForm" autocomplete="off">
-                      <div className="bg-input-password-bg-color rounded-lg  py-4 px-3 transition-all">
-                        <div className="flex justify-between gap-[12px] items-center">
-                          <div>
-                            <Text
-                              size={"p-xxsmall"}
-                              className="font-medium text-input-password-heading-color"
-                            >
-                              Set Password
-                            </Text>
-                            <Text
-                              size={"p-xxsmall"}
-                              className="font-medium text-input-password-description-color"
-                            >
-                              Protect your project if you&apos;ve an NDA.
-                            </Text>
+              <Button
+                type="secondary"
+                onClick={() =>
+                  setPopoverMenu((prev) =>
+                    prev == popovers.password ? null : popovers.password
+                  )
+                }
+                icon={
+                  isPassword ? (
+                    <LockIcon className="stroke-bg-df-icon-color" />
+                  ) : (
+                    <LockOpenIcon className="stroke-bg-df-icon-color" />
+                  )
+                }
+              />
+
+              <div
+                className={`pt-2 origin-top-right absolute z-20 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${
+                  popoverMenu === popovers.password
+                    ? "opacity-100 scale-100"
+                    : "opacity-0 scale-90 pointer-events-none"
+                }`}
+              >
+                <div className=" w-[350px] md:w-[386px]  bg-popover-bg-color rounded-2xl shadow-lg border-[5px] border-popover-border-color p-2">
+                  <Formik
+                    initialValues={{
+                      password: password,
+                    }}
+                    validateOnChange
+                    validateOnBlur
+                    validationSchema={validationSchema}
+                    onSubmit={(values, actions) => {
+                      _updateProject(router.query.id, {
+                        password: values.password,
+                      }).then((res) => {
+                        updateProjectCache(
+                          "password",
+                          res?.data?.project?.password
+                        );
+                        updateProjectCache(
+                          "protected",
+                          res?.data?.project?.protected
+                        );
+                        actions.setSubmitting(false);
+                        toast.success("Password has been updated.");
+                      });
+                    }}
+                  >
+                    {({ isSubmitting, errors, touched, validateField }) => (
+                      <Form id="projectForm" autocomplete="off">
+                        <div className="bg-input-password-bg-color rounded-lg  py-4 px-3 transition-all">
+                          <div className="flex justify-between gap-[12px] items-center">
+                            <div>
+                              <Text
+                                size={"p-xxsmall"}
+                                className="font-medium text-input-password-heading-color"
+                              >
+                                Set Password
+                              </Text>
+                              <Text
+                                size={"p-xxsmall"}
+                                className="font-medium text-input-password-description-color"
+                              >
+                                Protect your project if you&apos;ve an NDA.
+                              </Text>
+                            </div>
+                            <Toggle
+                              onClick={handlePasswordRadio}
+                              value={isPassword}
+                            />
                           </div>
-                          <Toggle
-                            onClick={handlePasswordRadio}
-                            value={isPassword}
-                          />
+                          {isPassword && (
+                            <>
+                              <div className="relative mt-2">
+                                <Field
+                                  name="password"
+                                  type={showEye ? "text" : "password"}
+                                  className={`text-input mt-2 ${
+                                    errors.password &&
+                                    touched.password &&
+                                    "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
+                                  }`}
+                                  placeholder="Password"
+                                  autocomplete="new-password"
+                                />
+                                <div
+                                  className="absolute top-[24px] right-4 cursor-pointer"
+                                  onClick={(event) => {
+                                    event.stopPropagation(); // Prevent event from bubbling up
+
+                                    setShowEye((prev) => !prev);
+                                    validateField("password");
+                                  }}
+                                >
+                                  {showEye ? (
+                                    <EyeIcon className="text-df-icon-color" />
+                                  ) : (
+                                    <EyeCloseIcon className="text-df-icon-color" />
+                                  )}
+                                </div>
+                              </div>
+                              <ErrorMessage
+                                name="password"
+                                component="div"
+                                className="error-message"
+                              />
+                            </>
+                          )}
                         </div>
                         {isPassword && (
-                          <>
-                            <div className="relative mt-2">
-                              <Field
-                                name="password"
-                                type={showEye ? "text" : "password"}
-                                className={`text-input mt-2 ${
-                                  errors.password &&
-                                  touched.password &&
-                                  "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                                }`}
-                                placeholder="Password"
-                                autocomplete="new-password"
-                              />
-                              <div
-                                className="absolute top-[24px] right-4 cursor-pointer"
-                                onClick={(event) => {
-                                  event.stopPropagation(); // Prevent event from bubbling up
-
-                                  setShowEye((prev) => !prev);
-                                  validateField("password");
-                                }}
-                              >
-                                {showEye ? (
-                                  <EyeIcon className="text-df-icon-color" />
-                                ) : (
-                                  <EyeCloseIcon className="text-df-icon-color" />
-                                )}
-                              </div>
-                            </div>
-                            <ErrorMessage
-                              name="password"
-                              component="div"
-                              className="error-message"
+                          <div className="flex gap-2 justify-end mt-4">
+                            <Button
+                              text="Cancel"
+                              onClick={() => setPopoverMenu(null)}
+                              type="secondary"
                             />
-                          </>
+                            <Button
+                              type="modal"
+                              text={"Change"}
+                              isLoading={isSubmitting}
+                              btnType="submit"
+                              form="projectForm"
+                            />
+                          </div>
                         )}
-                      </div>
-                      {isPassword && (
-                        <div className="flex gap-2 justify-end mt-4">
-                          <Button
-                            text="Cancel"
-                            onClick={() => setPopoverMenu(null)}
-                            type="secondary"
-                          />
-                          <Button
-                            type="modal"
-                            text={"Change"}
-                            isLoading={isSubmitting}
-                            btnType="submit"
-                            form="projectForm"
-                          />
-                        </div>
-                      )}
-                    </Form>
-                  )}
-                </Formik>
+                      </Form>
+                    )}
+                  </Formik>
+                </div>
               </div>
             </div>
           </div>
@@ -400,6 +410,9 @@ export default function ProjectInfo({
           )}
         </figure>
       )}
+      <Modal show={showModal} className={"md:block"}>
+        <AnalyzeCaseStudy setShowModal={() => setShowModal(false)} />
+      </Modal>
     </div>
   );
 }

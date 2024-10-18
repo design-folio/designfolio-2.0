@@ -65,3 +65,10 @@ export const _generateCaseStudy = (data) =>
 
 export const _analyzeCaseStudy = (data) =>
   axiosInstance.post("/ai/analyze/caseStudy", data);
+
+export const _analyzeCaseStudyStatus = (projectId) =>
+  axiosInstance.get(`/analyse/get/analysisReportByProjectId?projectId=${projectId}`);
+
+
+export const _analyzeCaseStudyCredits = (projectId) =>
+  axiosInstance.get(`/ai/get/analyzeCredits?projectId=${projectId}`);

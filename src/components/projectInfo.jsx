@@ -1,6 +1,6 @@
-import { _analyzeCaseStudy, _updateProject } from "@/network/post-request";
+import { _analyzeCaseStudy, _analyzeCaseStudyStatus, _updateProject } from "@/network/post-request";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as Yup from "yup";
 import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
 import LockIcon from "../../public/assets/svgs/lock.svg";
@@ -67,6 +67,20 @@ export default function ProjectInfo({
     // );
   };
 
+  const fetchAnalyzeStatus =async()=>{
+
+    try {
+      const response = await _analyzeCaseStudyStatus(projectDetails._id);
+      console.log(response.data.data.data.response)
+      setSuggestions(response.data.data.data.response);
+      setScore(response.data.data.data.weightedAverageRounded);
+      setRating(response.data.data.data.rating)
+    } catch (e) {
+      console.log(e);
+    }
+
+  }
+
   const handleInput = (e) => {
     const textContent = e.target.textContent;
     if (textContent.length > 110) {
@@ -93,23 +107,50 @@ export default function ProjectInfo({
   const [rating, setRating] = useState("");
 
   const handleAnalyzeClick = async () => {
-    console.log(caseStudy.caseStudy);
-    console.log(userId);
+
+    if(suggestions.length>0)
+    {
+      setShowModal(true)
+
+    }
+    else
+    {
+      const data = {
+        userId: _id,
+        caseStudy: projectDetails,
+        projectId: projectDetails._id
+      };
+      try {
+        const response = await _analyzeCaseStudy(data);
+        setShowModal(true)
+        setSuggestions(response.data.response);
+        setScore(response.data.weightedAverageRounded);
+        setRating(response.data.rating)
+      } catch (e) {
+        console.log(e);
+      }
+    }
+
+  };
+
+  const handleReAnalyze =async ()=>{
+
+    console.log("Re analyzing data ")
     const data = {
       userId: _id,
-      caseStudy: projectDetails.caseStudy,
+      caseStudy: projectDetails,
+      projectId: projectDetails._id
     };
     try {
       const response = await _analyzeCaseStudy(data);
-      console.log(response.data.response);
+      setShowModal(true)
       setSuggestions(response.data.response);
-      setScore(response.data.averageScore);
+      setScore(response.data.weightedAverageRounded);
       setRating(response.data.rating)
-      setShowModal(false)
     } catch (e) {
       console.log(e);
     }
-  };
+  }
 
   const validationSchema = Yup.object().shape({
     password: isPassword
@@ -135,6 +176,10 @@ export default function ProjectInfo({
     );
   };
 
+  useEffect(()=>{
+    fetchAnalyzeStatus()
+  },[])
+
   return (
     <div className="bg-df-section-card-bg-color rounded-[24px] p-[16px] md:p-[32px]">
       <div className="flex justify-between items-center mb-2">
@@ -149,7 +194,7 @@ export default function ProjectInfo({
           <div className="flex gap-3">
             <Button
               type="secondary"
-              text="Analyze Project"
+              text= {suggestions?.length > 0 ? "Show Score Card" : "Analyze AI"}
               onClick={() => handleAnalyzeClick()}
               icon={<AnalyzeIcon />}
             />
@@ -434,7 +479,7 @@ export default function ProjectInfo({
         </figure>
       )}
       <Modal show={showModal} className={"md:block"}>
-        <AnalyzeCaseStudy setShowModal={() => setShowModal(false)} suggestions={suggestions} score={score} rating={rating}/>
+        <AnalyzeCaseStudy setShowModal={() => setShowModal(false)} suggestions={suggestions} rating={rating} projectId={projectDetails._id} analyzeCallback={handleReAnalyze} />
       </Modal>
     </div>
   );

@@ -43,7 +43,7 @@ const status = {
     </div>
   ),
 };
-export default function AnalyzeCaseStudy({ setShowModal }) {
+export default function AnalyzeCaseStudy({ setShowModal,suggestions,score,rating }) {
   return (
     <motion.div
       className="bg-modal-bg-color h-[95%] w-[95%] m-auto md:w-[602px] md:fixed md:top-[2.25%] md:right-4 flex flex-col rounded-2xl"

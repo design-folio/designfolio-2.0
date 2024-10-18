@@ -62,3 +62,6 @@ export const _FileBugfix = () => axiosInstance.patch("/user/filePopup");
 
 export const _generateCaseStudy = (data) =>
   axiosInstance.post("/ai/generate/caseStudy", data);
+
+export const _analyzeCaseStudy = (data) =>
+  axiosInstance.post("/ai/analyze/caseStudy", data);

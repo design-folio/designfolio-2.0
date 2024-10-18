@@ -1,4 +1,4 @@
-import { _updateProject } from "@/network/post-request";
+import { _analyzeCaseStudy, _updateProject } from "@/network/post-request";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import * as Yup from "yup";
@@ -88,6 +88,29 @@ export default function ProjectInfo({
       e.target.textContent.length > 0 ? e.target.textContent : "Type here...";
   };
 
+  const [suggestions, setSuggestions] = useState([]);
+  const [score, setScore] = useState(0);
+  const [rating, setRating] = useState("");
+
+  const handleAnalyzeClick = async () => {
+    console.log(caseStudy.caseStudy);
+    console.log(userId);
+    const data = {
+      userId: _id,
+      caseStudy: projectDetails.caseStudy,
+    };
+    try {
+      const response = await _analyzeCaseStudy(data);
+      console.log(response.data.response);
+      setSuggestions(response.data.response);
+      setScore(response.data.averageScore);
+      setRating(response.data.rating)
+      setShowModal(false)
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const validationSchema = Yup.object().shape({
     password: isPassword
       ? Yup.string()
@@ -127,7 +150,7 @@ export default function ProjectInfo({
             <Button
               type="secondary"
               text="Analyze Project"
-              onClick={() => setShowModal(true)}
+              onClick={() => handleAnalyzeClick()}
               icon={<AnalyzeIcon />}
             />
             <div
@@ -411,7 +434,7 @@ export default function ProjectInfo({
         </figure>
       )}
       <Modal show={showModal} className={"md:block"}>
-        <AnalyzeCaseStudy setShowModal={() => setShowModal(false)} />
+        <AnalyzeCaseStudy setShowModal={() => setShowModal(false)} suggestions={suggestions} score={score} rating={rating}/>
       </Modal>
     </div>
   );

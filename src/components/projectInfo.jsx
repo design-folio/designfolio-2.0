@@ -18,6 +18,7 @@ import { toast } from "react-toastify";
 import AnalyzeIcon from "../../public/assets/svgs/analyze.svg";
 import Modal from "./modal";
 import AnalyzeCaseStudy from "./analyzeCaseStudy";
+import { useGlobalContext } from "@/context/globalContext";
 export default function ProjectInfo({
   projectDetails,
   userDetails,
@@ -42,6 +43,7 @@ export default function ProjectInfo({
   const [imageLoaded, setImageLoaded] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
+  const { characterCount } = useGlobalContext();
 
   const saveProject = (key, value) => {
     _updateProject(router.query.id, { [key]: value }).then(() => {
@@ -71,7 +73,6 @@ export default function ProjectInfo({
 
     try {
       const response = await _analyzeCaseStudyStatus(projectDetails._id);
-      console.log(response.data.data.data.response)
       setSuggestions(response.data.data.data.response);
       setScore(response.data.data.data.weightedAverageRounded);
       setRating(response.data.data.data.rating)
@@ -197,6 +198,7 @@ export default function ProjectInfo({
               text= {suggestions?.length > 0 ? "Show Score Card" : "Analyze AI"}
               onClick={() => handleAnalyzeClick()}
               icon={<AnalyzeIcon />}
+              isDisabled={suggestions?.length === 0 &&  characterCount<400}
             />
             <div
               className="mb-3 md:mb-0 relative"
@@ -479,7 +481,7 @@ export default function ProjectInfo({
         </figure>
       )}
       <Modal show={showModal} className={"md:block"}>
-        <AnalyzeCaseStudy setShowModal={() => setShowModal(false)} suggestions={suggestions} rating={rating} projectId={projectDetails._id} analyzeCallback={handleReAnalyze} />
+        <AnalyzeCaseStudy characterCount={characterCount} setShowModal={() => setShowModal(false)} suggestions={suggestions} rating={rating} projectId={projectDetails._id} analyzeCallback={handleReAnalyze} />
       </Modal>
     </div>
   );

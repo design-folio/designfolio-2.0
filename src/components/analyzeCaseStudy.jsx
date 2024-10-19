@@ -46,7 +46,7 @@ const status = {
     </div>
   ),
 };
-export default function AnalyzeCaseStudy({ setShowModal,suggestions,rating,projectId,analyzeCallback }) {
+export default function AnalyzeCaseStudy({ setShowModal,suggestions,rating,projectId,analyzeCallback, characterCount }) {
 
   const category = {
     good: 'good',
@@ -56,17 +56,30 @@ export default function AnalyzeCaseStudy({ setShowModal,suggestions,rating,proje
 
   const reAnalyze=()=>{
     analyzeCallback()
-    setCredits(credits+1)
+    fetchCredits()
   }
 
   const [credits,setCredits] = useState(0)
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [minutesLeft, setMinutesLeft] = useState(0);
+
 
   const fetchCredits=async ()=>{
 
     try {
       const response = await _analyzeCaseStudyCredits(projectId);
-      console.log(response.data.usedToday)
       setCredits(response.data.usedToday)
+      if(response.data.usedToday<=2)
+      {
+        const usageDateTime = new Date(response.data.usageDate);
+        const currentTime = new Date();
+        const timeDifference = currentTime - usageDateTime;
+        const minutesPassed = Math.round(timeDifference / (1000 * 60));
+        const remainingMinutes = 20 - minutesPassed;
+        setIsButtonDisabled(minutesPassed < 20);
+        setMinutesLeft(remainingMinutes);
+      }
+
     } catch (e) {
       console.log(e);
     }
@@ -134,9 +147,9 @@ export default function AnalyzeCaseStudy({ setShowModal,suggestions,rating,proje
             size="p-xxsmall"
             className="font-medium font-inter text-used-credit-text-color"
           >
-            { credits ===2 ? "All credits used, Try again tomorrow" : credits + "/2 Credits left" }
+            { credits ===2 ? "All credits used, Try again tomorrow" : 2-credits + "/2 Credits left" }
           </Text>
-          <Button text={"Re-analyze Case Study"} type="modal" isDisabled={ credits>=2} onClick={reAnalyze} />
+          <Button text={isButtonDisabled ? `Re-analyze Case Study in ${minutesLeft} minutes.` :  characterCount<400 ? `Re-analyze requires ${400-characterCount} more characters.` : "Re-analyze Case Study"} type="modal" isDisabled={ credits>=2 | isButtonDisabled | characterCount<400} onClick={reAnalyze} />
         </div>
       </footer>
     </motion.div>

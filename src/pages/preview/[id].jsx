@@ -12,6 +12,8 @@ import { useRouter } from "next/router";
 import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
 import { useEffect } from "react";
+import Seo from "@/components/seo";
+import { capitalizeWords } from "@/lib/capitalizeText";
 
 const containerVariants = {
   hidden: {},
@@ -53,6 +55,14 @@ export default function Index({ initialUserDetails }) {
 
   return (
     <BottomLayout userDetails={userDetails}>
+      <Seo
+        title={capitalizeWords(userDetails?.username)}
+        description={userDetails?.introduction}
+        keywords={`${userDetails?.skillsString}`}
+        author={`${userDetails?.firstName} ${userDetails?.lastName}`}
+        imageUrl={userDetails?.avatar?.url ?? "/assets/png/seo-profile.png"}
+        url={`https://${userDetails?.username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`}
+      />
       <main className="min-h-screen bg-df-bg-color">
         <div
           className={`max-w-[890px] mx-auto py-[40px] px-2 md:px-4 lg:px-0 pb-[140px]`}

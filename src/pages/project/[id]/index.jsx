@@ -1,6 +1,7 @@
 import BlockRenderer from "@/components/blockRenderer";
 import ProjectInfo from "@/components/projectInfo";
 import ProjectPassword from "@/components/projectPassword";
+import Seo from "@/components/seo";
 import { _getProjectDetails } from "@/network/get-request";
 import queryClient from "@/network/queryClient";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -47,34 +48,45 @@ export default function Index({ data }) {
     );
   };
   return (
-    <main className="min-h-screen bg-df-bg-color">
-      <div className={`max-w-[890px] mx-auto py-[40px] px-2 md:px-4 lg:px-0`}>
-        <div className="flex-1 flex flex-col gap-4 md:gap-6">
-          {projectDetails && (
-            <>
-              {isProtected ? (
-                <ProjectPassword
-                  status={1}
-                  projectDetails={projectDetails?.project}
-                  id={router.query.id}
-                  updateProjectCache={updateProjectCache}
-                  setIsProtected={setIsProtected}
-                />
-              ) : (
-                <>
-                  <ProjectInfo projectDetails={projectDetails?.project} />
-                  {!!projectDetails?.project?.content && (
-                    <BlockRenderer
-                      editorJsData={projectDetails?.project?.content}
-                    />
-                  )}
-                </>
-              )}
-            </>
-          )}
+    <>
+      <Seo
+        title={capitalizeWords(projectDetails?.title)}
+        description={projectDetails?.description}
+        keywords={projectDetails?.description}
+        imageUrl={
+          projectDetails?.thumbnail?.key ?? "/assets/png/seo-profile.png"
+        }
+        url={`https://${projectDetails?.username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`}
+      />
+      <main className="min-h-screen bg-df-bg-color">
+        <div className={`max-w-[890px] mx-auto py-[40px] px-2 md:px-4 lg:px-0`}>
+          <div className="flex-1 flex flex-col gap-4 md:gap-6">
+            {projectDetails && (
+              <>
+                {isProtected ? (
+                  <ProjectPassword
+                    status={1}
+                    projectDetails={projectDetails?.project}
+                    id={router.query.id}
+                    updateProjectCache={updateProjectCache}
+                    setIsProtected={setIsProtected}
+                  />
+                ) : (
+                  <>
+                    <ProjectInfo projectDetails={projectDetails?.project} />
+                    {!!projectDetails?.project?.content && (
+                      <BlockRenderer
+                        editorJsData={projectDetails?.project?.content}
+                      />
+                    )}
+                  </>
+                )}
+              </>
+            )}
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </>
   );
 }
 

@@ -45,17 +45,12 @@ const Modal = ({ show, onClose, children, className }) => {
     visible: { opacity: 1 },
   };
 
-  const modalContentVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { duration: 0.4, ease: "easeInOut" } },
-  };
-
   return ReactDOM.createPortal(
     <AnimatePresence mode="wait">
       {show && (
         <motion.div
           className={twMerge(
-            "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[999]",
+            "fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-[999] overflow-hidden",
             className
           )}
           onClick={onClose}
@@ -65,7 +60,11 @@ const Modal = ({ show, onClose, children, className }) => {
           exit="hidden"
           transition={{ duration: 0.3, ease: "easeInOut" }}
         >
-          {children}
+          {/* Blurred background */}
+          <div className="absolute inset-0 bg-black bg-opacity-40 backdrop-blur-sm z-[998]" />
+
+          {/* Children remain clear */}
+          <div className="relative z-[999]">{children}</div>
         </motion.div>
       )}
     </AnimatePresence>,

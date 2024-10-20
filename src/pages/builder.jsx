@@ -18,6 +18,9 @@ import AddPortfolioLinks from "@/components/addPortfolioLinks";
 import CreateAiProject from "@/components/createAiProject";
 import useClient from "@/hooks/useClient";
 import { Feedefy } from "@feedefy/react";
+import { useRouter } from "next/router";
+import { _resendOTP } from "@/network/get-request";
+import AddUsername from "@/components/addUsername";
 
 export default function Index() {
   const {
@@ -30,6 +33,7 @@ export default function Index() {
     taskPercentage,
   } = useGlobalContext();
   const { isClient } = useClient();
+  const router = useRouter();
 
   useEffect(() => {
     if (userDetailsIsState) {
@@ -41,10 +45,15 @@ export default function Index() {
 
   useEffect(() => {
     // Check if userDetails.skills exists and its length is 0
+    if (userDetails && !userDetails?.emailVerification) {
+      _resendOTP().then(() => {
+        router.push("/email-verify");
+      });
+    }
     if (userDetails && !userDetails?.username) {
-      openModal("email-verify");
+      openModal(modals.username);
     } else if (userDetails && userDetails?.skills?.length === 0) {
-      openModal("onboarding");
+      openModal(modals.onboarding);
     } else {
       closeModal();
     }
@@ -70,8 +79,14 @@ export default function Index() {
         return <AddSocial />;
       case modals.portfolioLinks:
         return <AddPortfolioLinks />;
+      case modals.username:
+        return <AddUsername />;
     }
   };
+
+  if (!userDetails?.emailVerification) {
+    return <></>;
+  }
 
   return (
     <main className="min-h-screen bg-df-bg-color">

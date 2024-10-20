@@ -1,4 +1,8 @@
-import { _analyzeCaseStudy, _analyzeCaseStudyStatus, _updateProject } from "@/network/post-request";
+import {
+  _analyzeCaseStudy,
+  _analyzeCaseStudyStatus,
+  _updateProject,
+} from "@/network/post-request";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import * as Yup from "yup";
@@ -19,6 +23,7 @@ import AnalyzeIcon from "../../public/assets/svgs/analyze.svg";
 import Modal from "./modal";
 import AnalyzeCaseStudy from "./analyzeCaseStudy";
 import { useGlobalContext } from "@/context/globalContext";
+import AnimatedLoading from "./AnimatedLoading";
 export default function ProjectInfo({
   projectDetails,
   userDetails,
@@ -44,6 +49,7 @@ export default function ProjectInfo({
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
   const { characterCount } = useGlobalContext();
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   const saveProject = (key, value) => {
     _updateProject(router.query.id, { [key]: value }).then(() => {
@@ -69,18 +75,16 @@ export default function ProjectInfo({
     // );
   };
 
-  const fetchAnalyzeStatus =async()=>{
-
+  const fetchAnalyzeStatus = async () => {
     try {
       const response = await _analyzeCaseStudyStatus(projectDetails._id);
       setSuggestions(response.data.data.data.response);
       setScore(response.data.data.data.weightedAverageRounded);
-      setRating(response.data.data.data.rating)
+      setRating(response.data.data.data.rating);
     } catch (e) {
       console.log(e);
     }
-
-  }
+  };
 
   const handleInput = (e) => {
     const textContent = e.target.textContent;
@@ -108,50 +112,48 @@ export default function ProjectInfo({
   const [rating, setRating] = useState("");
 
   const handleAnalyzeClick = async () => {
-
-    if(suggestions.length>0)
-    {
-      setShowModal(true)
-
-    }
-    else
-    {
+    if (suggestions.length > 0) {
+      setShowModal(true);
+    } else {
+      setIsAnalyzing(true);
       const data = {
         userId: _id,
         caseStudy: projectDetails,
-        projectId: projectDetails._id
+        projectId: projectDetails._id,
       };
       try {
         const response = await _analyzeCaseStudy(data);
-        setShowModal(true)
+        setShowModal(true);
         setSuggestions(response.data.response);
         setScore(response.data.weightedAverageRounded);
-        setRating(response.data.rating)
+        setRating(response.data.rating);
       } catch (e) {
         console.log(e);
+      } finally {
+        setIsAnalyzing(false);
       }
     }
-
   };
 
-  const handleReAnalyze =async ()=>{
-
-    console.log("Re analyzing data ")
+  const handleReAnalyze = async () => {
+    setIsAnalyzing(true);
     const data = {
       userId: _id,
       caseStudy: projectDetails,
-      projectId: projectDetails._id
+      projectId: projectDetails._id,
     };
     try {
       const response = await _analyzeCaseStudy(data);
-      setShowModal(true)
+      setShowModal(true);
       setSuggestions(response.data.response);
       setScore(response.data.weightedAverageRounded);
-      setRating(response.data.rating)
+      setRating(response.data.rating);
     } catch (e) {
       console.log(e);
+    } finally {
+      setIsAnalyzing(false);
     }
-  }
+  };
 
   const validationSchema = Yup.object().shape({
     password: isPassword
@@ -177,9 +179,9 @@ export default function ProjectInfo({
     );
   };
 
-  useEffect(()=>{
-    fetchAnalyzeStatus()
-  },[])
+  useEffect(() => {
+    fetchAnalyzeStatus();
+  }, []);
 
   return (
     <div className="bg-df-section-card-bg-color rounded-[24px] p-[16px] md:p-[32px]">
@@ -195,10 +197,11 @@ export default function ProjectInfo({
           <div className="flex gap-3">
             <Button
               type="secondary"
-              text= {suggestions?.length > 0 ? "Show Score Card" : "Analyze AI"}
+              text={suggestions?.length > 0 ? "Show Score Card" : "Analyze AI"}
               onClick={() => handleAnalyzeClick()}
-              icon={<AnalyzeIcon />}
-              isDisabled={suggestions?.length === 0 &&  characterCount<400}
+              iconPosition={isAnalyzing ? "right" : "left"}
+              icon={isAnalyzing ? <AnimatedLoading /> : <AnalyzeIcon />}
+              isDisabled={suggestions?.length === 0 && characterCount < 400}
             />
             <div
               className="mb-3 md:mb-0 relative"
@@ -218,6 +221,7 @@ export default function ProjectInfo({
                     <LockOpenIcon className="stroke-bg-df-icon-color" />
                   )
                 }
+                customClass="py-[18px]"
               />
 
               <div
@@ -481,7 +485,15 @@ export default function ProjectInfo({
         </figure>
       )}
       <Modal show={showModal} className={"md:block"}>
-        <AnalyzeCaseStudy characterCount={characterCount} setShowModal={() => setShowModal(false)} suggestions={suggestions} rating={rating} projectId={projectDetails._id} analyzeCallback={handleReAnalyze} />
+        <AnalyzeCaseStudy
+          characterCount={characterCount}
+          setShowModal={() => setShowModal(false)}
+          suggestions={suggestions}
+          rating={rating}
+          projectId={projectDetails._id}
+          analyzeCallback={handleReAnalyze}
+          isAnalyzing={isAnalyzing}
+        />
       </Modal>
     </div>
   );

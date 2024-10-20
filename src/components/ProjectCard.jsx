@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { hasSubdomain } from "@/lib/constant";
 import customTwMerge from "@/lib/customTailwindMerge";
 import Button from "./button";
 import ViewArrowIcon from "../../public/assets/svgs/viewArrow.svg";
@@ -8,7 +7,6 @@ import DeleteIcon from "../../public/assets/svgs/deleteIcon.svg";
 import DragIcon from "../../public/assets/svgs/drag.svg";
 import Text from "./text";
 import { SortableHandle } from "react-sortable-hoc";
-import { useRouter } from "next/router";
 const imageVariants = {
   hover: {
     scale: 1.13, // Target scale when hovered

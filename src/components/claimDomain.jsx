@@ -14,7 +14,11 @@ const DomainValidationSchema = Yup.object().shape({
     )
     .required("Domain is required"),
 });
-export default function ClaimDomain({ form = "default", className = "" }) {
+export default function ClaimDomain({
+  form = "default",
+  className = "",
+  onClaimWebsite,
+}) {
   const [isAvailable, setIsAvailable] = useState(false);
   const router = useRouter();
   const [domainValue, setDomainValue] = useState("");
@@ -80,7 +84,11 @@ export default function ClaimDomain({ form = "default", className = "" }) {
         initialValues={{ domain: "" }}
         validationSchema={DomainValidationSchema}
         onSubmit={(values, actions) => {
-          handleClaim();
+          if (onClaimWebsite) {
+            onClaimWebsite(values);
+          } else {
+            handleClaim();
+          }
         }}
       >
         {({
@@ -124,9 +132,9 @@ export default function ClaimDomain({ form = "default", className = "" }) {
                       )
                     }
                   />
-                  <div className="flex justify-center items-center gap-[10px] absolute top-[4px] right-[3px]">
+                  <div className="flex justify-center items-center gap-[10px] absolute top-[4px] right-[4px]">
                     <span
-                      className="text-input-button-color flex  gap-2 items-center font-inter font-[500] p-[14px] rounded-xl transition-all"
+                      className="text-input-button-color flex  gap-2 items-center text-[17px] font-inter font-[500] p-[14px] rounded-xl transition-all"
                       style={{
                         background:
                           "linear-gradient(to right, #F1F2F8, #F7F3EB)",

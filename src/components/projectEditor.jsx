@@ -10,7 +10,6 @@ import Underline from "@editorjs/underline";
 import ImageTool from "@editorjs/image";
 import Paragraph from "@editorjs/paragraph";
 import { _updateProject, _uploadImage } from "@/network/post-request";
-import { useGlobalContext } from "@/context/globalContext";
 
 import { useRouter } from "next/router";
 import Undo from "editorjs-undo";
@@ -97,7 +96,6 @@ const ProjectEditor = ({
   const editorContainer = useRef(null);
   const [isClient, setIsClient] = useState(false);
   const router = useRouter();
-  const { setCharacterCount } = useGlobalContext();
 
   useEffect(() => {
     setIsClient(true);
@@ -118,9 +116,6 @@ const ProjectEditor = ({
               console.error("Error initializing Undo plugin:", error);
             }
           }, 500);
-
-          checkCharacterCount(editor);
-
         },
         tools: {
           figma: FigmaTool,
@@ -287,9 +282,6 @@ const ProjectEditor = ({
               );
             });
           })();
-
-          checkCharacterCount(editor);
-
         },
       });
 
@@ -334,19 +326,6 @@ const ProjectEditor = ({
       };
     }
   }, [isClient, projectDetails]);
-
-
-  let checkCharacterCount = async (edit) => {
-    const outputData = await edit.save();
-    let totalText = '';
-    // Loop through all blocks and concatenate their text content
-    outputData.blocks.forEach((block) => {
-      if (block.data.text) {
-        totalText += block.data.text; // Adjust based on block type if needed
-      }
-    });
-    setCharacterCount(totalText.length)
-  };
 
   return (
     <>

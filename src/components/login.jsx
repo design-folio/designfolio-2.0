@@ -47,9 +47,13 @@ export default function Login() {
         };
         _loginWithGmail(data)
           .then(({ data }) => {
-            const { token } = data;
-            setToken(token);
-            router.push("/builder");
+            const { token, emailVerification } = data;
+            if (emailVerification) {
+              setToken(token);
+              router.push("/builder");
+            } else {
+              router.push("/email-verify");
+            }
           })
           .catch((err) => {
             console.log(err, "err");
@@ -64,10 +68,14 @@ export default function Login() {
   const handleLogin = (data) => {
     _loginWithEmail(data)
       .then(({ data }) => {
-        const { token } = data;
-        setLoading(false);
+        const { token, emailVerification } = data;
         setToken(token);
-        router.replace("/builder");
+        if (!emailVerification) {
+          setLoading(false);
+          router.push("/builder");
+        } else {
+          router.push("/email-verify");
+        }
       })
       .catch((err) => {
         setLoading(false);

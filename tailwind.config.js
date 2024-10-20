@@ -220,14 +220,6 @@ module.exports = {
           "var(--bottom-navigation-inactive-stroke)",
         "bottom-navigation-inactive-fill":
           "var(--bottom-navigation-inactive-fill)",
-        "used-credit-text-color": "var(--used-credit-text-color)",
-        "good-bg-color": "var(--good-bg-color)",
-        "good-text-color": "var(--good-text-color)",
-        "not-bad-bg-color": "var(--not-bad-bg-color)",
-        "not-bad-text-color": "var(--not-bad-text-color)",
-        "bad-bg-color": "var(--bad-bg-color)",
-        "bad-text-color": "var(--bad-text-color)",
-        "modal-analyze-bg-color": "var(--modal-analyze-bg-color)",
       },
       boxShadow: {
         // Landing page

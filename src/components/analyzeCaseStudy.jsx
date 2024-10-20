@@ -50,7 +50,7 @@ export default function AnalyzeCaseStudy({
   rating,
   projectId,
   analyzeCallback,
-  characterCount,
+  wordCount,
   isAnalyzing,
 }) {
   const category = {
@@ -59,9 +59,9 @@ export default function AnalyzeCaseStudy({
     bad: "bad",
   };
 
-  const reAnalyze = () => {
-    analyzeCallback();
-    fetchCredits();
+  const reAnalyze = async () => {
+    await analyzeCallback();
+    await fetchCredits();
   };
 
   const [credits, setCredits] = useState(0);
@@ -77,8 +77,8 @@ export default function AnalyzeCaseStudy({
         const currentTime = new Date();
         const timeDifference = currentTime - usageDateTime;
         const minutesPassed = Math.round(timeDifference / (1000 * 60));
-        const remainingMinutes = 20 - minutesPassed;
-        setIsButtonDisabled(minutesPassed < 20);
+        const remainingMinutes = 3 - minutesPassed;
+        setIsButtonDisabled(minutesPassed < 3);
         setMinutesLeft(remainingMinutes);
       }
     } catch (e) {
@@ -175,15 +175,16 @@ export default function AnalyzeCaseStudy({
           </Text>
           <Button
             text={
+              credits===2 ? "Re-analyze Case Study" :
               isButtonDisabled
-                ? `Re-analyze Case Study in ${minutesLeft} minutes`
-                : characterCount < 400
-                ? `Re-analyze requires ${400 - characterCount} more characters`
+                ? `Re-analyze Case Study in ${minutesLeft}  ${minutesLeft==1 ? "minute" : "minutes"}`
+                : wordCount < 400
+                ? `Re-analyze requires ${400 - wordCount} more words`
                 : "Re-analyze Case Study"
             }
             type="modal"
             isDisabled={
-              (credits >= 2) | isButtonDisabled | (characterCount < 400)
+              (credits >= 2) | isButtonDisabled | (wordCount < 400)
             }
             isLoading={isAnalyzing}
             onClick={reAnalyze}

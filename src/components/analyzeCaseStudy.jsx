@@ -77,8 +77,8 @@ export default function AnalyzeCaseStudy({
         const currentTime = new Date();
         const timeDifference = currentTime - usageDateTime;
         const minutesPassed = Math.round(timeDifference / (1000 * 60));
-        const remainingMinutes = 3 - minutesPassed;
-        setIsButtonDisabled(minutesPassed < 3);
+        const remainingMinutes = 20 - minutesPassed;
+        setIsButtonDisabled(minutesPassed < 20);
         setMinutesLeft(remainingMinutes);
       }
     } catch (e) {

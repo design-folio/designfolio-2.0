@@ -2,6 +2,7 @@ import BlockRenderer from "@/components/blockRenderer";
 import ProjectInfo from "@/components/projectInfo";
 import ProjectPassword from "@/components/projectPassword";
 import Seo from "@/components/seo";
+import { capitalizeWords } from "@/lib/capitalizeText";
 import { _getProjectDetails } from "@/network/get-request";
 import queryClient from "@/network/queryClient";
 import { useMutation, useQuery } from "@tanstack/react-query";

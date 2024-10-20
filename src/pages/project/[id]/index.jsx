@@ -51,13 +51,13 @@ export default function Index({ data }) {
   return (
     <>
       <Seo
-        title={capitalizeWords(projectDetails?.title)}
-        description={projectDetails?.description}
-        keywords={projectDetails?.description}
+        title={capitalizeWords(data?.project?.title)}
+        description={data?.project?.description}
+        keywords={data?.project?.description}
         imageUrl={
-          projectDetails?.thumbnail?.key ?? "/assets/png/seo-profile.png"
+          data?.project?.thumbnail?.key ?? "/assets/png/seo-profile.png"
         }
-        url={`https://${projectDetails?.username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`}
+        url={`https://${data?.project?.username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`}
       />
       <main className="min-h-screen bg-df-bg-color">
         <div className={`max-w-[890px] mx-auto py-[40px] px-2 md:px-4 lg:px-0`}>

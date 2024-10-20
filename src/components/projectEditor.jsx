@@ -341,13 +341,9 @@ const ProjectEditor = ({
     let totalText = '';
     // Loop through all blocks and concatenate their text content
     outputData.blocks.forEach((block,index) => {
-
-      console.log(block)
-
       if (block.data.text) {
         const tempElement = document.createElement('div');
         tempElement.textContent = index>=1 ? " "+ block.data.text : block.data.text;
-        console.log(block.data)
         const textWithoutTags = tempElement.innerText;
         totalText += textWithoutTags;
       }
@@ -361,7 +357,6 @@ const ProjectEditor = ({
             totalText += cell+" ";
           });
         });
-        console.log("Word count in table:", wordCount);
       }
 
       if (block.type === "list") {
@@ -374,19 +369,17 @@ const ProjectEditor = ({
           }
 
         });
-        console.log("Word count in list:", wordCount);
       }
 
       if (block.type === "image") {
         // Calculate word count based on image caption
         const imageCaption = block.data.caption
         totalText+=" "+imageCaption
-        console.log("Word count in image:", imageCaption);
       }
 
 
     });
-    setProjectValue(totalText)
+    setProjectValue(totalText.replace("&nbsp;","").trim())
     setWordCount(totalText.replace("&nbsp;","").trim().split(" ").length)
   };
 

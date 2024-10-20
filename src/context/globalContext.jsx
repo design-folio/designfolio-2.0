@@ -39,7 +39,8 @@ export const GlobalProvider = ({ children }) => {
   const [selectedProject, setSelectedProject] = useState(null);
   const [selectedReview, setSelectedReview] = useState(null);
   const [selectedWork, setSelectedWork] = useState(null);
-  const [characterCount, setCharacterCount] = useState(null);
+  const [wordCount, setWordCount] = useState(null);
+  const [projectValue, setProjectValue] = useState(null);
 
   const { setTheme } = useTheme();
 
@@ -179,8 +180,10 @@ export const GlobalProvider = ({ children }) => {
         setSelectedReview,
         selectedWork,
         setSelectedWork,
-        characterCount, 
-        setCharacterCount
+        wordCount,
+        setWordCount,
+        projectValue,
+        setProjectValue
       }}
     >
       {children}

@@ -48,7 +48,7 @@ export default function ProjectInfo({
   const [imageLoaded, setImageLoaded] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
-  const { characterCount } = useGlobalContext();
+  const { wordCount } = useGlobalContext();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   const saveProject = (key, value) => {
@@ -201,7 +201,7 @@ export default function ProjectInfo({
               onClick={() => handleAnalyzeClick()}
               iconPosition={isAnalyzing ? "right" : "left"}
               icon={isAnalyzing ? <AnimatedLoading /> : <AnalyzeIcon />}
-              isDisabled={suggestions?.length === 0 && characterCount < 400}
+              isDisabled={suggestions?.length === 0 && wordCount < 400}
             />
             <div
               className="mb-3 md:mb-0 relative"
@@ -486,7 +486,7 @@ export default function ProjectInfo({
       )}
       <Modal show={showModal} className={"md:block"}>
         <AnalyzeCaseStudy
-          characterCount={characterCount}
+          wordCount={wordCount}
           setShowModal={() => setShowModal(false)}
           suggestions={suggestions}
           rating={rating}

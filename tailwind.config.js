@@ -227,6 +227,7 @@ module.exports = {
         "not-bad-text-color": "var(--not-bad-text-color)",
         "bad-bg-color": "var(--bad-bg-color)",
         "bad-text-color": "var(--bad-text-color)",
+        "modal-analyze-bg-color": "var(--modal-analyze-bg-color)",
       },
       boxShadow: {
         // Landing page

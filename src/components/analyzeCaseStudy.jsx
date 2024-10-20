@@ -92,7 +92,10 @@ export default function AnalyzeCaseStudy({
 
   const renderItems = suggestions.map((item) => {
     return (
-      <div className="mt-8" key={item.metric}>
+      <div
+        className="mt-4 bg-df-section-card-bg-color rounded-2xl p-3 shadow-df-section-card-shadow"
+        key={item.metric}
+      >
         <div className="flex gap-2 items-center">
           {
             status[
@@ -107,10 +110,10 @@ export default function AnalyzeCaseStudy({
             {item.metric}
           </Text>
         </div>
-        <p className="font-inter text-sm mt-4">
+        <p className="font-inter text-sm mt-4 font-medium">
           <span className="font-semibold">Comments:</span> {item.comments}
         </p>
-        <p className="font-inter text-sm mt-6">
+        <p className="font-inter text-sm mt-6 font-medium">
           <span className="font-semibold">Suggestion:</span> {item.suggestion}
         </p>
       </div>
@@ -119,7 +122,7 @@ export default function AnalyzeCaseStudy({
 
   return (
     <motion.div
-      className="bg-modal-bg-color h-[95%] w-[95%] m-auto md:w-[602px] md:fixed md:top-[2.25%] md:right-4 flex flex-col rounded-2xl"
+      className="bg-modal-analyze-bg-color h-[95%] w-[95%] m-auto md:w-[602px] md:fixed md:top-[2.25%] md:right-4 flex flex-col rounded-2xl"
       initial="hidden"
       animate="visible"
       variants={variants}
@@ -138,8 +141,12 @@ export default function AnalyzeCaseStudy({
           />
         </div>
       </header>
-      <div className={`flex-1 overflow-y-auto p-8 relative `}>
-        <div className="flex flex-col justify-center items-center">
+      <main
+        className={`flex-1 overflow-y-auto p-8 relative ${
+          isAnalyzing && "opacity-20"
+        }`}
+      >
+        <div className="flex flex-col justify-center items-center mb-8">
           {rating === 1
             ? states["good"].image
             : rating === 2
@@ -155,7 +162,7 @@ export default function AnalyzeCaseStudy({
         </div>
 
         {renderItems}
-      </div>
+      </main>
       <footer className="bg-modal-footer-bg-color py-4 px-8 rounded-b-2xl">
         <div className="flex justify-between items-center gap-2">
           <Text
@@ -169,9 +176,9 @@ export default function AnalyzeCaseStudy({
           <Button
             text={
               isButtonDisabled
-                ? `Re-analyze Case Study in ${minutesLeft} minutes.`
+                ? `Re-analyze Case Study in ${minutesLeft} minutes`
                 : characterCount < 400
-                ? `Re-analyze requires ${400 - characterCount} more characters.`
+                ? `Re-analyze requires ${400 - characterCount} more characters`
                 : "Re-analyze Case Study"
             }
             type="modal"

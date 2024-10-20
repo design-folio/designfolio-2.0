@@ -196,6 +196,8 @@
   --not-bad-text-color: #784d00;
   --bad-bg-color: #fdceda;
   --bad-text-color: #a5022c;
+
+  --modal-analyze-bg-color: #fafafa;
 }
 
 /* dark mode start*/
@@ -356,5 +358,7 @@
   --bottom-navigation-active-fill: #2f323d;
   --bottom-navigation-inactive-stroke: #738096;
   --bottom-navigation-inactive-fill: #1d1f26;
+
+  --modal-analyze-bg-color: #23252f;
 }
 /* dark mode end*/

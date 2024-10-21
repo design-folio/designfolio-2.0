@@ -201,7 +201,7 @@ export default function ProjectInfo({
               onClick={() => handleAnalyzeClick()}
               iconPosition={isAnalyzing ? "right" : "left"}
               icon={isAnalyzing ? <AnimatedLoading /> : <AnalyzeIcon />}
-              isDisabled={suggestions?.length === 0 && wordCount < 400}
+              isDisabled={isAnalyzing || (suggestions?.length === 0 && wordCount < 400)}
             />
             <div
               className="mb-3 md:mb-0 relative"

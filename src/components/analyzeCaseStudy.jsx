@@ -106,7 +106,7 @@ export default function AnalyzeCaseStudy({
                 : category.bad
             ]
           }
-          <Text as="h3" size="p-xxsmall" className="font-semibold">
+          <Text as="h3" size="p-xsmall" className="font-semibold">
             {item.metric}
           </Text>
         </div>

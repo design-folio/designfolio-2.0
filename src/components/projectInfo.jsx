@@ -50,6 +50,7 @@ export default function ProjectInfo({
   const router = useRouter();
   const { wordCount } = useGlobalContext();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [AnalyzeStatus, setAnalyzeStatus] = useState(false);
 
   const saveProject = (key, value) => {
     _updateProject(router.query.id, { [key]: value }).then(() => {
@@ -81,6 +82,7 @@ export default function ProjectInfo({
       setSuggestions(response.data.data.data.response);
       setScore(response.data.data.data.weightedAverageRounded);
       setRating(response.data.data.data.rating);
+      setAnalyzeStatus(true)
     } catch (e) {
       console.log(e);
     }
@@ -195,6 +197,7 @@ export default function ProjectInfo({
         />
         {edit && (
           <div className="flex gap-3">
+            {AnalyzeStatus && 
             <Button
               type="secondary"
               text={suggestions?.length > 0 ? "Show Score Card" : wordCount<400 ? `Need more ${400-wordCount} words to Analyze AI` : "Analyze Project using AI"}
@@ -202,7 +205,7 @@ export default function ProjectInfo({
               iconPosition={isAnalyzing ? "right" : "left"}
               icon={isAnalyzing ? <AnimatedLoading /> : <AnalyzeIcon />}
               isDisabled={isAnalyzing || (suggestions?.length === 0 && wordCount < 400)}
-            />
+            />}
             <div
               className="mb-3 md:mb-0 relative"
               data-popover-id={popovers.password}

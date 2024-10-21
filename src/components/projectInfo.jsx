@@ -197,7 +197,7 @@ export default function ProjectInfo({
           <div className="flex gap-3">
             <Button
               type="secondary"
-              text={suggestions?.length > 0 ? "Show Score Card" : wordCount<400 ? `Need more ${400-wordCount} words to Analyze AI` : "Analyze AI"}
+              text={suggestions?.length > 0 ? "Show Score Card" : wordCount<400 ? `Need more ${400-wordCount} words to Analyze AI` : "Analyze Project using AI"}
               onClick={() => handleAnalyzeClick()}
               iconPosition={isAnalyzing ? "right" : "left"}
               icon={isAnalyzing ? <AnimatedLoading /> : <AnalyzeIcon />}

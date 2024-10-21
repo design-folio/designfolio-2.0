@@ -69,8 +69,9 @@ export default function Login() {
     _loginWithEmail(data)
       .then(({ data }) => {
         const { token, emailVerification } = data;
+        console.log(token, emailVerification);
         setToken(token);
-        if (!emailVerification) {
+        if (emailVerification) {
           router.push("/builder");
         } else {
           router.push("/email-verify");

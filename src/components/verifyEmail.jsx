@@ -8,6 +8,7 @@ import { _verifyEmail } from "@/network/post-request";
 import Button from "./button";
 import Card from "./card";
 import Text from "./text";
+import Cookies from "js-cookie";
 
 // Yup validation schema
 const verifyPasswordValidationSchema = Yup.object().shape({
@@ -78,12 +79,19 @@ export default function VerifyEmail() {
       });
   }
 
+  const handleBack = () => {
+    Cookies.remove("df-token", {
+      domain: process.env.NEXT_PUBLIC_BASE_DOMAIN,
+    });
+    router.back({ scroll: false });
+  };
+
   return (
     <div className="pt-[16px] pb-20">
       <Card>
         <Button
           text="Go Back"
-          onClick={() => router.back({ scroll: false })}
+          onClick={handleBack}
           type="secondary"
           size="small"
           icon={<img src={"/assets/svgs/left-arrow.svg"} alt="back arrow" />}

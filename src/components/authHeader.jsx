@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Logo from "../../public/assets/svgs/logo.svg";
 import { useRouter } from "next/router";
+import Cookies from "js-cookie";
 
 export default function AuthHeader() {
   const [isVisible, setIsVisible] = useState(true);
@@ -39,7 +40,7 @@ export default function AuthHeader() {
     <div
       className={`flex bg-landing-bg-color justify-center fixed right-0 left-0 p-3 md:px-0 md:py-3 ${headerStyle}`}
     >
-      <div onClick={handleNavigation}>
+      <div onClick={handleNavigation} className="cursor-pointer">
         <Logo className="text-logo-text-color" />
       </div>
     </div>

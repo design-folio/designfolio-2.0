@@ -19,6 +19,7 @@ import EyeCloseIcon from "../../public/assets/svgs/eye-close.svg";
 import { ImageWithOverlayAndPicker } from "./ImageWithOverlayAndPicker";
 import queryClient from "@/network/queryClient";
 import { toast } from "react-toastify";
+import { useTheme } from "next-themes";
 import AnalyzeIcon from "../../public/assets/svgs/analyze.svg";
 import Modal from "./modal";
 import AnalyzeCaseStudy from "./analyzeCaseStudy";
@@ -46,6 +47,7 @@ export default function ProjectInfo({
   const [isPassword, setPassword] = useState(projectDetails?.protected);
   const [showEye, setShowEye] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const { setTheme } = useTheme();
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
   const { wordCount } = useGlobalContext();
@@ -53,27 +55,21 @@ export default function ProjectInfo({
   const [AnalyzeStatus, setAnalyzeStatus] = useState(false);
 
   const saveProject = (key, value) => {
-    _updateProject(router.query.id, { [key]: value }).then(() => {
+    _updateProject(router.query.id, { [key]: value }).then((res) => {
+      setTheme(res?.data?.project?.theme == 1 ? "dark" : "light");
       updateProjectCache(key, value);
     });
   };
 
   const updateProjectCache = (key, value) => {
-    const updatedProjects = userDetails?.projects?.map((item) =>
-      item._id === router.query.id ? { ...item, [key]: value } : item
-    );
-    queryClient.setQueriesData({ queryKey: ["userDetails"] }, (oldData) => {
-      return { user: { ...oldData?.user, projects: updatedProjects } };
-    });
-    // queryClient.setQueriesData(
-    //   { queryKey: [`project-editor-${_id}`] },
-    //   (oldData) => {
-    //     return {
-    //       ...oldData,
-    //       project: { ...oldData.project, [key]: value },
-    //     };
-    //   }
-    // );
+    if (userDetails) {
+      const updatedProjects = userDetails?.projects?.map((item) =>
+        item._id === router.query.id ? { ...item, [key]: value } : item
+      );
+      queryClient.setQueriesData({ queryKey: ["userDetails"] }, (oldData) => {
+        return { user: { ...oldData?.user, projects: updatedProjects } };
+      });
+    }
   };
 
   const fetchAnalyzeStatus = async () => {

@@ -122,7 +122,7 @@ export const GlobalProvider = ({ children }) => {
         return newList;
       });
     }
-  }, [data, setTheme, userDetailsIsState]);
+  }, [data, userDetailsIsState]);
 
   const updateCache = (key, data) => {
     queryClient.setQueriesData({ queryKey: [key] }, (oldData) => {

@@ -79,8 +79,7 @@ export default function ProjectInfo({
   const fetchAnalyzeStatus = async () => {
     try {
       const response = await _analyzeCaseStudyStatus(projectDetails._id);
-
-      if(response.data.data.data.status)
+      if(response.data.status)
       {
         setSuggestions(response.data.data.data.response);
         setScore(response.data.data.data.weightedAverageRounded);

@@ -88,7 +88,10 @@ export default function Index({ initialUserDetails }) {
                   <Reviews userDetails={userDetails} />
                 </motion.div>
               )}
-              <Tools userDetails={userDetails} />
+              <motion.div variants={itemVariants}>
+                <Tools userDetails={userDetails} />
+              </motion.div>
+
               {userDetails?.experiences?.length > 0 && (
                 <motion.div variants={itemVariants}>
                   <Works userDetails={userDetails} />

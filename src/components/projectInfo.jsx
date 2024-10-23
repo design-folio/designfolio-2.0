@@ -79,9 +79,13 @@ export default function ProjectInfo({
   const fetchAnalyzeStatus = async () => {
     try {
       const response = await _analyzeCaseStudyStatus(projectDetails._id);
-      setSuggestions(response.data.data.data.response);
-      setScore(response.data.data.data.weightedAverageRounded);
-      setRating(response.data.data.data.rating);
+
+      if(response.data.data.data.status)
+      {
+        setSuggestions(response.data.data.data.response);
+        setScore(response.data.data.data.weightedAverageRounded);
+        setRating(response.data.data.data.rating);
+      }
       setAnalyzeStatus(true)
     } catch (e) {
       console.log(e);

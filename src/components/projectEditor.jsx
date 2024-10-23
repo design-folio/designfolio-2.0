@@ -10,6 +10,7 @@ import Underline from "@editorjs/underline";
 import ImageTool from "@editorjs/image";
 import Paragraph from "@editorjs/paragraph";
 import { _updateProject, _uploadImage } from "@/network/post-request";
+import { useGlobalContext } from "@/context/globalContext";
 
 import { useRouter } from "next/router";
 import Undo from "editorjs-undo";
@@ -96,6 +97,7 @@ const ProjectEditor = ({
   const editorContainer = useRef(null);
   const [isClient, setIsClient] = useState(false);
   const router = useRouter();
+  const { setWordCount,setProjectValue } = useGlobalContext();
 
   useEffect(() => {
     setIsClient(true);
@@ -116,6 +118,9 @@ const ProjectEditor = ({
               console.error("Error initializing Undo plugin:", error);
             }
           }, 500);
+
+          checkWordCount(editor);
+
         },
         tools: {
           figma: FigmaTool,
@@ -282,6 +287,9 @@ const ProjectEditor = ({
               );
             });
           })();
+
+          checkWordCount(editor);
+
         },
       });
 
@@ -326,6 +334,54 @@ const ProjectEditor = ({
       };
     }
   }, [isClient, projectDetails]);
+
+
+  let checkWordCount = async (edit) => {
+    const outputData = await edit.save();
+    let totalText = '';
+    // Loop through all blocks and concatenate their text content
+    outputData.blocks.forEach((block,index) => {
+      if (block.data.text) {
+        const tempElement = document.createElement('div');
+        tempElement.textContent = index>=1 ? " "+ block.data.text : block.data.text;
+        const textWithoutTags = tempElement.innerText;
+        totalText += textWithoutTags;
+      }
+
+      if (block.type === "table") {
+        let wordCount = 0;
+        totalText+=" "
+        block.data.content.forEach(row => {
+          row.forEach(cell => {
+            if(cell!=="")
+            totalText += cell+" ";
+          });
+        });
+      }
+
+      if (block.type === "list") {
+        let wordCount = 0;
+        block.data.items.forEach(item => {
+          if(item.content!="")
+          {
+            wordCount += item.content;
+            totalText+= " " +wordCount
+          }
+
+        });
+      }
+
+      if (block.type === "image") {
+        // Calculate word count based on image caption
+        const imageCaption = block.data.caption
+        totalText+=" "+imageCaption
+      }
+
+
+    });
+    setProjectValue(totalText.replace("&nbsp;","").trim())
+    setWordCount(totalText.replace("&nbsp;","").trim().split(" ").length)
+  };
 
   return (
     <>

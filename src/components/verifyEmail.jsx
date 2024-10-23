@@ -23,7 +23,7 @@ export default function VerifyEmail() {
   const router = useRouter();
   const [timeLeft, setTimeLeft] = useState(30);
   const [isActive, setIsActive] = useState(true);
-  const { setUserDetails } = useGlobalContext();
+  const { userDetailsRefecth } = useGlobalContext();
 
   useEffect(() => {
     // Only start the timer if it is active
@@ -72,7 +72,7 @@ export default function VerifyEmail() {
     setLoading(true);
     _verifyEmail(data)
       .then(() => {
-        setUserDetails((prev) => ({ ...prev, emailVerification: true }));
+        userDetailsRefecth();
         router.replace("/builder");
         setLoading(false);
         toast.success("Email verified successfully");

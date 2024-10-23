@@ -8,6 +8,8 @@ import { _verifyEmail } from "@/network/post-request";
 import Button from "./button";
 import Card from "./card";
 import Text from "./text";
+import Cookies from "js-cookie";
+import { useGlobalContext } from "@/context/globalContext";
 
 // Yup validation schema
 const verifyPasswordValidationSchema = Yup.object().shape({
@@ -21,6 +23,7 @@ export default function VerifyEmail() {
   const router = useRouter();
   const [timeLeft, setTimeLeft] = useState(30);
   const [isActive, setIsActive] = useState(true);
+  const { setUserDetails } = useGlobalContext();
 
   useEffect(() => {
     // Only start the timer if it is active
@@ -45,7 +48,7 @@ export default function VerifyEmail() {
       setIsActive(false); // Reset the active state to prevent interval overlap
       setTimeLeft(30); // Reset the timer to 30 seconds
       setIsActive(true);
-      toast.success("Verifiycation code sent");
+      toast.success("Verification code sent");
     });
   };
 
@@ -69,6 +72,7 @@ export default function VerifyEmail() {
     setLoading(true);
     _verifyEmail(data)
       .then(() => {
+        setUserDetails((prev) => ({ ...prev, emailVerification: true }));
         router.replace("/builder");
         setLoading(false);
         toast.success("Email verified successfully");
@@ -78,12 +82,19 @@ export default function VerifyEmail() {
       });
   }
 
+  const handleBack = () => {
+    Cookies.remove("df-token", {
+      domain: process.env.NEXT_PUBLIC_BASE_DOMAIN,
+    });
+    router.back({ scroll: false });
+  };
+
   return (
     <div className="pt-[16px] pb-20">
       <Card>
         <Button
           text="Go Back"
-          onClick={() => router.back({ scroll: false })}
+          onClick={handleBack}
           type="secondary"
           size="small"
           icon={<img src={"/assets/svgs/left-arrow.svg"} alt="back arrow" />}

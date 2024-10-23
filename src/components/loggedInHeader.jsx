@@ -91,7 +91,7 @@ export default function LoggedInHeader({
     Cookies.remove("df-token", {
       domain: process.env.NEXT_PUBLIC_BASE_DOMAIN,
     });
-    window.location.reload();
+    router.replace("/");
   };
 
   const handleUpdate = () => {
@@ -138,7 +138,7 @@ export default function LoggedInHeader({
 
   return (
     <div className={`${headerStyle} px-2 md:px-0 py-2 md:py-5 bg-transparent`}>
-      <div className="shadow-header-shadow max-w-[890px] p-3  md:!p-4 rounded-[24px] bg-df-header-bg-color mx-auto flex justify-between items-center">
+      <div className="shadow-df-section-card-shadow max-w-[890px] p-3  md:!p-4 rounded-[24px] bg-df-header-bg-color mx-auto flex justify-between items-center">
         <div className="flex items-center gap-[24px]">
           <Link href={"/builder"}>
             <Logo className="text-df-base-text-color" />

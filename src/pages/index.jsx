@@ -12,7 +12,7 @@ export default function Index({ dfToken }) {
         }
         keywords={`ui ux design portfolio, graphic design portfolio, design portfolio, portfolio website, product design portfolio website`}
         author={`Designfolio`}
-        imageUrl={"https://designfolio.me/images/png/designfolio-thumbnail.png"}
+        imageUrl={"https://designfolio.me/assets/png/designfolio-thumbnail.png"}
         url={`https://designfolio.me`}
       />
       <main className={"pt-[88px] md:pt-[104px] pb-5"}>

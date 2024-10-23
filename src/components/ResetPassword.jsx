@@ -27,7 +27,7 @@ export default function ResetPassword() {
     _resetPassword(email, otp, data)
       .then((res) => {
         toast.success(
-          "OTP successfully reset. Please proceed to log in with the new password."
+          "Password reset successfully. Please log in with the new password."
         );
         router.push("/login");
         setLoading(false);

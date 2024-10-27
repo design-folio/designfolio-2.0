@@ -19,9 +19,17 @@ export default function ReviewCard({ className = "", review, edit = false }) {
       </Text>
       <div className="flex justify-between items-center">
         <div>
-          <Text size="p-xsmall" className="text-review-card-text-color mt-3">
-            {review?.name}
-          </Text>
+        {review.linkedinLink && review.linkedinLink!=="" ? (
+  <a href={review.linkedinLink} target="_blank" rel="noopener noreferrer">
+    <Text size="p-xsmall" className="text-blue-500 mt-3">
+      {review?.name}
+    </Text>
+  </a>
+) : (
+  <Text size="p-xsmall" className="text-review-card-text-color mt-3">
+    {review?.name}
+  </Text>
+)}
           <Text
             size="p-xxsmall"
             className="text-review-card-description-color "

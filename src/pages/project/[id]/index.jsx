@@ -2,6 +2,7 @@ import BlockRenderer from "@/components/blockRenderer";
 import ProjectInfo from "@/components/projectInfo";
 import ProjectPassword from "@/components/projectPassword";
 import Seo from "@/components/seo";
+import { useGlobalContext } from "@/context/globalContext";
 import { capitalizeWords } from "@/lib/capitalizeText";
 import { _getProjectDetails } from "@/network/get-request";
 import queryClient from "@/network/queryClient";
@@ -13,6 +14,7 @@ import React, { useEffect, useState } from "react";
 export default function Index({ data }) {
   const router = useRouter();
   const { setTheme } = useTheme();
+  const { setCursor } = useGlobalContext();
   const [isProtected, setIsProtected] = useState(data.isProtected);
   const [projectDetails, setProjectDetails] = useState(null);
 
@@ -24,6 +26,7 @@ export default function Index({ data }) {
     },
     onSuccess: (data) => {
       setProjectDetails(data);
+      setCursor(data?.project?.cursor ? data?.project?.theme : 0);
       setTheme(data?.project?.theme == 1 ? "dark" : "light");
       setIsProtected(data?.isProtected);
     },

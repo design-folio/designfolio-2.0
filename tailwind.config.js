@@ -13,6 +13,13 @@ module.exports = {
         sfpro: ["var(--font-sfpro)", "sans-serif"],
         inter: ["var(--font-inter)"],
       },
+      cursor: {
+        default: "var(--cursor-default)", // Custom cursor
+        pointer: "var(--cursor-pointer)", // Custom cursor
+        "not-allowed": "var(--cursor-not-allowed)",
+        grabbing: "url(/assets/svgs/move.svg), grabbing", // Custom cursor
+        grab: "url(/assets/svgs/move.svg), grab", // Custom cursor
+      },
       colors: {
         "landing-bg-color": "var(--landing-bg-color)",
         "landing-header-bg-color": "var(--landing-header-bg-color)",
@@ -173,6 +180,12 @@ module.exports = {
         "theme-selected-color": "var(--theme-selected-color)",
         "theme-bg-hover-color": "var(--theme-bg-hover-color)",
 
+        // cursor
+        "default-cursor-box-bg": "var(--default-cursor-box-bg-color)",
+        "default-cursor-box-border": "var(--default-cursor-box-border-color)",
+        "default-cursor-bg-hover": "var(--default-cursor-bg-hover-color)",
+        "selected-cursor-bg-color": "var(--selected-cursor-bg-color)",
+
         // Publish-popover
         "publish-popover-text-color": "var(--publish-popover-text-color)",
         "publish-popover-description-color":
@@ -257,6 +270,10 @@ module.exports = {
         "popver-shadow": "var(--popver-shadow)",
         "df-add-item-shadow": "var(--df-add-item-shadow)",
         "df-section-card-shadow": "var(--df-section-card-shadow)",
+        "default-theme-shadow": "var(--default-theme-shadow)",
+        "theme-shadow": "var(--theme-shadow)",
+        "selected-cursor-shadow": "var(--selected-cursor-shadow)",
+        "default-cursor-shadow": "var(--default-cursor-shadow)",
       },
       fontSize: {
         h1: "61px",

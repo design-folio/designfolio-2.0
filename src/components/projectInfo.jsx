@@ -191,7 +191,7 @@ export default function ProjectInfo({
           onClick={handleBack}
           type="secondary"
           size="small"
-          icon={<LeftArrow className="text-df-icon-color" />}
+          icon={<LeftArrow className="text-df-icon-color cursor-pointer" />}
         />
         {edit && (
           <div className="flex gap-3">
@@ -207,7 +207,13 @@ export default function ProjectInfo({
                 }
                 onClick={() => handleAnalyzeClick()}
                 iconPosition={isAnalyzing ? "right" : "left"}
-                icon={isAnalyzing ? <AnimatedLoading /> : <AnalyzeIcon />}
+                icon={
+                  isAnalyzing ? (
+                    <AnimatedLoading className="cursor-pointer" />
+                  ) : (
+                    <AnalyzeIcon className="cursor-pointer" />
+                  )
+                }
                 isDisabled={
                   isAnalyzing || (suggestions?.length === 0 && wordCount < 400)
                 }
@@ -226,9 +232,9 @@ export default function ProjectInfo({
                 }
                 icon={
                   isPassword ? (
-                    <LockIcon className="stroke-bg-df-icon-color" />
+                    <LockIcon className="stroke-bg-df-icon-color cursor-pointer" />
                   ) : (
-                    <LockOpenIcon className="stroke-bg-df-icon-color" />
+                    <LockOpenIcon className="stroke-bg-df-icon-color cursor-pointer" />
                   )
                 }
                 customClass="py-[18px]"

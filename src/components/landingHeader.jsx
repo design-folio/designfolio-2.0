@@ -97,7 +97,13 @@ export default function LandingHeader({ dfToken }) {
               <Button
                 text="Launch Builder"
                 customClass="w-full md:w-fit"
-                icon={<img src="/assets/svgs/power.svg" alt="launch builder" />}
+                icon={
+                  <img
+                    src="/assets/svgs/power.svg"
+                    alt="launch builder"
+                    className="cursor-pointer"
+                  />
+                }
               />
             </Link>
           ) : (
@@ -121,13 +127,13 @@ export default function LandingHeader({ dfToken }) {
                 className={`mb-[4.67px] transition-transform easeInOut ${
                   popovers.landingMenu === popoverMenu &&
                   "translate-y-3.2 rotate-45"
-                }`}
+                } cursor-pointer`}
               />
               <HamburgerIcon
                 className={`transition-transform easeInOut ${
                   popovers.landingMenu === popoverMenu &&
                   "-rotate-45 -translate-y-3.2"
-                }`}
+                } cursor-pointer`}
               />
             </>
           }

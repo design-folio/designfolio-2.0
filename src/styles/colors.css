@@ -138,15 +138,26 @@
   --popover-heading-color: #202937;
 
   /* theme-popover */
-  --default-theme-box-bg-color: #f6f7f9;
-  --default-theme-box-border-color: #ff553e;
+  --default-theme-box-bg-color: #f9f9fb;
+  --default-theme-box-border-color: #e0e6eb;
   --default-theme-selected-color: #ff553e;
   --default-theme-bg-hover-color: #f6f7f9;
+  --default-theme-shadow: inset 0px 0px 0px 2px #e0e6eb;
 
   --theme-box-bg-color: transparent;
   --theme-box-border-color: #e6e7e9;
   --theme-selected-color: #ff553e;
   --theme-bg-hover-color: #f6f7f9;
+  --theme-shadow: inset 0px 0px 0px 0px #565b6c;
+
+  /* cursor */
+  --default-cursor-box-bg-color: transparent;
+  --default-cursor-box-border-color: #e9eaeb;
+  --default-cursor-bg-hover-color: #f6f7f9;
+  --default-cursor-shadow: inset 0px 0px 0px 0px #e0e6eb;
+
+  --selected-cursor-bg-color: #f9f9fb;
+  --selected-cursor-shadow: inset 0px 0px 0px 2px #e0e6eb;
 
   /* publish-popover */
   --publish-popover-text-color: #202937;
@@ -311,11 +322,22 @@
   --default-theme-box-bg-color: transparent;
   --default-theme-box-border-color: #3f4358;
   --default-theme-bg-hover-color: #2c2e3a;
+  --default-theme-shadow: inset 0px 0px 0px 0px #e0e6eb;
 
-  --theme-box-bg-color: #2c2e3a;
-  --theme-box-border-color: #ff553e;
+  --theme-box-bg-color: #22242b;
+  --theme-box-border-color: #565b6c;
   --theme-selected-color: #ff553e;
   --theme-bg-hover-color: #2c2e3a;
+  --theme-shadow: inset 0px 0px 0px 2px #565b6c;
+
+  /* cursor */
+  --default-cursor-box-bg-color: transparent;
+  --default-cursor-box-border-color: #3f4358;
+  --default-cursor-bg-hover-color: #2c2e3a;
+  --default-cursor-shadow: inset 0px 0px 0px 0px #565b6c;
+
+  --selected-cursor-bg-color: #22242b;
+  --selected-cursor-shadow: inset 0px 0px 0px 2px #565b6c;
 
   /* publish-popover */
   --publish-popover-text-color: #e9eaeb;

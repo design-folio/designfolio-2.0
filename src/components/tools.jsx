@@ -34,7 +34,7 @@ export default function Tools({ userDetails, openModal, edit }) {
           <Button
             type="secondary"
             icon={
-              <PlusIcon className="text-secondary-btn-text-color w-[18px] h-[18px]" />
+              <PlusIcon className="text-secondary-btn-text-color w-[18px] h-[18px] cursor-pointer" />
             }
             onClick={() => openModal("tools")}
           />

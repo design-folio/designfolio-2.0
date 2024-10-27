@@ -35,12 +35,13 @@ export default function BottomTask() {
             )
           }
           style={{ boxShadow: "0px 8.3px 33.2px 0px rgba(32, 41, 55, 0.14)" }}
-          className="bg-popover-bg-color pointer-events-auto shadow-lg border-[5px] border-popover-border-color rounded-[24px] px-[14px] py-[10.42px] flex gap-[8.5px] items-center justify-center"
+          className="bg-popover-bg-color pointer-events-auto shadow-lg border-[5px] border-popover-border-color rounded-[24px] px-[14px] py-[10.42px] flex gap-[8.5px] items-center justify-center cursor-pointer"
         >
-          <div className="w-[47.24px] h-[46.28px]">
+          <div className="w-[47.24px] h-[46.28px] ">
             <CircularProgressbar
               value={taskPercentage}
               text={`${taskPercentage}%`}
+              className="cursor-pointer"
               styles={buildStyles({
                 textColor: "var(--progress-text-color)",
                 pathColor: "var(--progress-active-color)",
@@ -48,7 +49,10 @@ export default function BottomTask() {
               })}
             />
           </div>
-          <Text size="p-xxsmall" className="text-checked-list-item-text-color">
+          <Text
+            size="p-xxsmall"
+            className="text-checked-list-item-text-color cursor-pointer"
+          >
             Complete portfolio
           </Text>
           {/* <p className="text-checked-list-item-text-color font-inter text-[13.28px] font-[600]">

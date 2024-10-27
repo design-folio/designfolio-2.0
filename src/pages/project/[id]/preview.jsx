@@ -1,5 +1,6 @@
 import ProjectPassword from "@/components/projectPassword";
 import ProjectPreview from "@/components/projectPreview";
+import { useGlobalContext } from "@/context/globalContext";
 import { _getProjectDetails } from "@/network/get-request";
 import queryClient from "@/network/queryClient";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -10,6 +11,7 @@ import React, { useEffect, useState } from "react";
 export default function Index() {
   const { setTheme } = useTheme();
   const router = useRouter();
+  const { setCursor } = useGlobalContext();
   const [projectDetails, setProjectDetails] = useState(null);
   const { mutate: refetchProjectDetail } = useMutation({
     mutationKey: [`project-editor-${router.query.id}`],
@@ -19,6 +21,7 @@ export default function Index() {
     },
     onSuccess: (data) => {
       setProjectDetails(data);
+      setCursor(data?.project?.cursor ? data?.project?.theme : 0);
       setTheme(data?.project?.theme == 1 ? "dark" : "light");
       setIsProtected(data?.isProtected);
     },

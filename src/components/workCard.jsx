@@ -45,7 +45,9 @@ export default function WorkCard({ work, onClick, show = true, edit }) {
                 onClick={handleClick}
                 customClass="!p-[13.38px] !flex-shrink-0"
                 type={"secondary"}
-                icon={<EditIcon className="text-df-icon-color" />}
+                icon={
+                  <EditIcon className="text-df-icon-color cursor-pointer" />
+                }
               />
             )}
           </div>

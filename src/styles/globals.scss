@@ -5,6 +5,18 @@
 @import url("./colors.css");
 @import url("./animation.css");
 
+:root {
+  // --cursor-default: url(/assets/svgs/default1.svg), default;
+  // --cursor-pointer: url(/assets/svgs/pointer1.svg), pointer;
+  // --cursor-not-allowed: url(/assets/svgs/stop.svg), not-allowed;
+}
+
+*,
+*:before,
+*:after {
+  @apply cursor-default;
+}
+
 html {
   scroll-behavior: smooth;
   background-color: var(--df-bg-color);

@@ -27,6 +27,78 @@ import { _publish } from "@/network/post-request";
 import Popover from "./popover";
 import queryClient from "@/network/queryClient";
 import useClient from "@/hooks/useClient";
+import { twMerge } from "tailwind-merge";
+
+const cursors = [
+  {
+    id: 1,
+    item: (
+      <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer">
+        Default
+      </p>
+    ),
+  },
+  {
+    id: 2,
+    item: (
+      <img
+        src="/assets/svgs/default1.svg"
+        alt="flight"
+        className="cursor-pointer"
+      />
+    ),
+  },
+  {
+    id: 3,
+    item: (
+      <img
+        src="/assets/svgs/default2.svg"
+        alt="flight"
+        className="cursor-pointer"
+      />
+    ),
+  },
+  {
+    id: 4,
+    item: (
+      <img
+        src="/assets/svgs/default3.svg"
+        alt="flight"
+        className="cursor-pointer"
+      />
+    ),
+  },
+  {
+    id: 5,
+    item: (
+      <img
+        src="/assets/svgs/default4.svg"
+        alt="flight"
+        className="w-8 h-8 cursor-pointer"
+      />
+    ),
+  },
+  {
+    id: 6,
+    item: (
+      <img
+        src="/assets/svgs/default5.svg"
+        alt="flight"
+        className="cursor-pointer"
+      />
+    ),
+  },
+  {
+    id: 7,
+    item: (
+      <img
+        src="/assets/svgs/default6.svg"
+        alt="flight"
+        className="cursor-pointer"
+      />
+    ),
+  },
+];
 
 export default function LoggedInHeader({
   userDetails,
@@ -35,6 +107,8 @@ export default function LoggedInHeader({
   popoverMenu,
   changeTheme,
   updateCache,
+  cursor,
+  changeCursor,
 }) {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -130,6 +204,18 @@ export default function LoggedInHeader({
     router.push("/settings");
   };
 
+  const handleChangeCursor = (i) => {
+    changeCursor(i);
+  };
+
+  const getStyles = (i) => {
+    if (i == cursor) {
+      return `bg-selected-cursor-bg-color hover:bg-selected-cursor-bg-color shadow-selected-cursor-shadow`;
+    } else {
+      return "";
+    }
+  };
+
   const formatedValue = formatTimestamp(latestPublishDate);
 
   const headerStyle = isVisible
@@ -150,7 +236,7 @@ export default function LoggedInHeader({
             data-popover-menu={popovers.themeMenu}
           >
             <Button
-              icon={<ThemeIcon className="text-icon-color" />}
+              icon={<ThemeIcon className="text-icon-color cursor-pointer" />}
               onClick={handleTheme}
               type="secondary"
               customClass="!p-4"
@@ -164,87 +250,76 @@ export default function LoggedInHeader({
                     : "opacity-0 scale-90 pointer-events-none"
                 }`}
               >
-                <div className="w-[545.5px]  rounded-xl shadow-lg bg-popover-bg-color border-4 border-solid border-popover-border-color">
-                  <div className="flex justify-between items-center p-5">
+                <div className="w-[342px] p-4  rounded-xl shadow-lg bg-popover-bg-color border-4 border-solid border-popover-border-color">
+                  <div className="flex justify-between items-center">
                     <Text
                       as="h3"
                       size="p-small"
                       className=" font-medium text-popover-heading-color"
                     >
-                      Appearance Settings
+                      Appearance
                     </Text>
                     <Button
                       type="secondary"
                       customClass="!p-2 rounded-[8px]"
-                      icon={<CloseIcon className="text-df-icon-color" />}
+                      icon={
+                        <CloseIcon className="text-df-icon-color cursor-pointer" />
+                      }
                       onClick={handleCloseTheme}
                     />
                   </div>
-                  <div className="px-5 pb-4">
-                    <Text
-                      size="p-xxsmall"
-                      className="text-df-secondary-text-color"
-                    >
-                      Choose your preferred theme
-                    </Text>
-
-                    <div className="flex gap-[24px] mt-3">
+                  <div>
+                    <div className="flex gap-[16px] mt-3">
                       <div
                         onClick={() => changeTheme(0)}
-                        className={`w-full border bg-default-theme-box-bg-color border-default-theme-box-border-color hover:bg-default-theme-bg-hover-color rounded-[8px] p-[10px] cursor-pointer`}
+                        className={`flex gap-[10px]  items-center border bg-default-theme-box-bg-color border-default-theme-box-border-color hover:bg-default-theme-bg-hover-color shadow-default-theme-shadow rounded-[16px] px-[32px] py-[16px] cursor-pointer`}
                       >
-                        <div className="flex justify-between items-center">
-                          <SunIcon
-                            className={
-                              theme == "dark"
-                                ? "text-icon-color"
-                                : "text-default-theme-selected-color"
-                            }
-                          />
-                          {(theme == "light" || theme == undefined) && (
-                            <img src="/assets/svgs/select.svg" alt="" />
-                          )}
-                        </div>
-                        <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] mt-4">
-                          Light mode
+                        <SunIcon className={"cursor-pointer"} />
+                        <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer">
+                          Light
                         </p>
                       </div>
                       <div
                         onClick={() => changeTheme(1)}
-                        className={`w-full border bg-theme-box-bg-color border-theme-box-border-color hover:bg-theme-bg-hover-color rounded-[8px] p-[10px] cursor-pointer`}
+                        className={`border flex gap-[10px] bg-theme-box-bg-color border-theme-box-border-color hover:bg-theme-bg-hover-color shadow-theme-shadow rounded-[16px] px-[32px] py-[16px] cursor-pointer`}
                       >
-                        <div className="flex justify-between items-center">
-                          <MoonIcon
-                            className={
-                              theme !== "dark"
-                                ? "text-icon-color"
-                                : "text-default-theme-selected-color"
-                            }
-                          />
-                          {theme == "dark" && (
-                            <img src="/assets/svgs/select.svg" alt="" />
-                          )}
-                        </div>
-                        <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] mt-4">
-                          Dark mode
+                        <MoonIcon className={"cursor-pointer"} />
+                        <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer">
+                          Dark
                         </p>
                       </div>
                     </div>
-
+                  </div>
+                  <div className="mt-8">
                     <Text
-                      size="xxsmall"
-                      className="text-xs font-medium text-df-secondary-text-color mt-2"
+                      as="h3"
+                      size="p-small"
+                      className=" font-medium text-popover-heading-color"
                     >
-                      💫 More theme settings and templates coming soon! Keep an
-                      eye.
+                      Cursor
                     </Text>
+                    <div className="mt-4 grid grid-cols-3 gap-4">
+                      {cursors.map((cursor, index) => (
+                        <div
+                          onClick={() => handleChangeCursor(index)}
+                          className={twMerge(
+                            "px-4 py-6 flex justify-center items-center border rounded-[16px] cursor-pointer",
+                            "bg-default-cursor-box-bg border-default-cursor-box-border",
+                            "hover:bg-default-cursor-bg-hover",
+                            getStyles(index) // This will dynamically add classes based on index
+                          )}
+                        >
+                          {cursor.item}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
             )}
           </div>
           <Button
-            icon={<PreviewIcon />}
+            icon={<PreviewIcon className="cursor-pointer" />}
             type="secondary"
             customClass="!p-4"
             animation
@@ -258,7 +333,13 @@ export default function LoggedInHeader({
               text={"Publish Site"}
               onClick={handlePublishBtn}
               customClass="!p-4 mr-0"
-              icon={<img src="/assets/svgs/power.svg" alt="launch builder" />}
+              icon={
+                <img
+                  src="/assets/svgs/power.svg"
+                  alt="launch builder"
+                  className="cursor-pointer"
+                />
+              }
               animation
             />
             {isClient && (
@@ -296,9 +377,9 @@ export default function LoggedInHeader({
                       <Button
                         icon={
                           isCopied ? (
-                            <TickIcon className="text-icon-color" />
+                            <TickIcon className="text-icon-color cursor-pointer" />
                           ) : (
-                            <CopyIcon className="text-icon-color" />
+                            <CopyIcon className="text-icon-color cursor-pointer" />
                           )
                         }
                         type="secondary"
@@ -353,7 +434,9 @@ export default function LoggedInHeader({
                         customClass="w-full text-[14px] justify-start py-[10px] rounded-lg"
                         type="normal"
                         onClick={handlenavigation}
-                        icon={<SettingIcon className="text-df-icon-color" />}
+                        icon={
+                          <SettingIcon className="text-df-icon-color cursor-pointer" />
+                        }
                       />
 
                       <Button
@@ -365,6 +448,7 @@ export default function LoggedInHeader({
                           <img
                             src="/assets/svgs/logout.svg"
                             alt="designfolio logo"
+                            className="cursor-pointer"
                           />
                         }
                       />
@@ -381,13 +465,13 @@ export default function LoggedInHeader({
           icon={
             <>
               <HamburgerIcon
-                className={`mb-[4.67px] transition-transform text-icon-color easeInOut ${
+                className={`mb-[4.67px] transition-transform text-icon-color easeInOut cursor-pointer ${
                   popovers.loggedInMenu === popoverMenu &&
                   "translate-y-3.2 rotate-45"
                 }`}
               />
               <HamburgerIcon
-                className={`transition-transform text-icon-color easeInOut ${
+                className={`transition-transform text-icon-color easeInOut cursor-pointer ${
                   popovers.loggedInMenu === popoverMenu &&
                   "-rotate-45 -translate-y-3.2"
                 }`}
@@ -413,7 +497,9 @@ export default function LoggedInHeader({
                   type="normal"
                   onClick={handlenavigation}
                   iconPosition="right"
-                  icon={<SettingIcon className="text-df-icon-color" />}
+                  icon={
+                    <SettingIcon className="text-df-icon-color cursor-pointer" />
+                  }
                 />
 
                 <Button
@@ -423,11 +509,17 @@ export default function LoggedInHeader({
                   onClick={handleLogout}
                   iconPosition="right"
                   icon={
-                    <img src="/assets/svgs/logout.svg" alt="designfolio logo" />
+                    <img
+                      src="/assets/svgs/logout.svg"
+                      alt="designfolio logo"
+                      className="cursor-pointer"
+                    />
                   }
                 />
                 <Button
-                  icon={<ThemeIcon className="text-icon-color" />}
+                  icon={
+                    <ThemeIcon className="text-icon-color cursor-pointer" />
+                  }
                   onClick={() => setIsMobileThemePopup(true)}
                   type="secondary"
                   customClass="!p-4 w-full mt-4"
@@ -438,7 +530,11 @@ export default function LoggedInHeader({
                   onClick={handleUpdate}
                   customClass="!p-4 mr-0 w-full mt-4"
                   icon={
-                    <img src="/assets/svgs/power.svg" alt="launch builder" />
+                    <img
+                      src="/assets/svgs/power.svg"
+                      alt="launch builder"
+                      className="cursor-pointer"
+                    />
                   }
                   animation
                 />
@@ -479,13 +575,13 @@ export default function LoggedInHeader({
                   type="secondary"
                   size="small"
                   customClass="!transition-none"
-                  icon={<LeftArrow />}
+                  icon={<LeftArrow className="cursor-pointer" />}
                 />
                 <Text
                   size="p-small"
                   className="text-popover-heading-color mt-4"
                 >
-                  Appearance Settings
+                  Appearance
                 </Text>
                 <div>
                   <Text
@@ -500,7 +596,7 @@ export default function LoggedInHeader({
                       onClick={() => changeTheme(0)}
                       className={`w-full border bg-default-theme-box-bg-color border-default-theme-box-border-color hover:bg-default-theme-bg-hover-color rounded-[8px] p-[10px] cursor-pointer`}
                     >
-                      <div className="flex justify-between items-center">
+                      <div className="flex justify-between items-center cursor-pointer">
                         <SunIcon
                           className={
                             theme == "dark"
@@ -520,7 +616,7 @@ export default function LoggedInHeader({
                       onClick={() => changeTheme(1)}
                       className={`w-full border bg-theme-box-bg-color border-theme-box-border-color hover:bg-theme-bg-hover-color rounded-[8px] p-[10px] cursor-pointer`}
                     >
-                      <div className="flex justify-between items-center">
+                      <div className="flex justify-between items-center cursor-pointer">
                         <MoonIcon
                           className={
                             theme !== "dark"

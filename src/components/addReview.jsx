@@ -21,6 +21,8 @@ const validationSchema = Yup.object().shape({
     .required("Description is required"),
   linkedinLink: Yup.string()
     .url('Please enter a valid URL')
+    .matches(/(linkedin.com)/, "Invalid LinkedIn Link"),
+
 });
 
 export default function AddReview() {

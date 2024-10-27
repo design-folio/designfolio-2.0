@@ -3,6 +3,7 @@ import { modals } from "@/lib/constant";
 import Text from "./text";
 import Button from "./button";
 import EditIcon from "../../public/assets/svgs/edit.svg";
+import LinkedInIcon from "../../public/assets/svgs/linkedin.svg";
 
 export default function ReviewCard({ className = "", review, edit = false }) {
   const { openModal, setSelectedReview } = useGlobalContext();
@@ -22,7 +23,7 @@ export default function ReviewCard({ className = "", review, edit = false }) {
         {review.linkedinLink && review.linkedinLink!=="" ? (
   <a href={review.linkedinLink} target="_blank" rel="noopener noreferrer">
     <Text size="p-xsmall" className="text-blue-500 mt-3">
-      {review?.name}
+    <LinkedInIcon className="text-df-icon-color mb-1" /> {review?.name}
     </Text>
   </a>
 ) : (

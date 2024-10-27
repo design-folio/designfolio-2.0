@@ -42,7 +42,7 @@ export const GlobalProvider = ({ children }) => {
   const [selectedWork, setSelectedWork] = useState(null);
   const [wordCount, setWordCount] = useState(null);
   const [projectValue, setProjectValue] = useState(null);
-  const [cursor, setCursor] = useState(1);
+  const [cursor, setCursor] = useState(0);
 
   const { setTheme } = useTheme();
 

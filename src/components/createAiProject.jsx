@@ -184,7 +184,7 @@ export default function CreateAiProject({ openModal }) {
             <Button
               type="ai"
               icon={
-                <AiIcon className="text-secondary-btn-text-color w-[22px] h-[22px] cursor-pointer" />
+                <AiIcon className="text-secondary-btn-text-color w-[22px] h-[22px]" />
               }
               style={{ background: "var(--ai-btn-bg-color)" }}
             />
@@ -224,7 +224,7 @@ export default function CreateAiProject({ openModal }) {
                   </Text>
                 </div>
                 <Text size="p-xxsmall" className="mt-2 text-credit-text-color">
-                  You can create 2 AI-generated Case Studies per day.
+                You can create 2 AI-generated Case Studies per day.
                 </Text>
               </div>
             </div>
@@ -489,7 +489,7 @@ export default function CreateAiProject({ openModal }) {
               isDisabled={cred == 2}
               icon={
                 step == 4 && (
-                  <AiIcon className="text-modal-btn-text-color w-[22px] h-[22px] cursor-pointer" />
+                  <AiIcon className="text-modal-btn-text-color w-[22px] h-[22px]" />
                 )
               }
             />

@@ -32,7 +32,7 @@ export default function Settings() {
             onClick={handleBack}
             type="secondary"
             size="small"
-            icon={<LeftArrow className="text-df-icon-color cursor-pointer" />}
+            icon={<LeftArrow className="text-df-icon-color" />}
           />
           <div className="mt-6">
             {userDetails?.loginMethod == 0 && (

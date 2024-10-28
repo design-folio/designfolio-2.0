@@ -60,7 +60,7 @@ export default function Works({
       btnType="normal"
       icon={
         userDetails?.experiences?.length != 0 && (
-          <SortIcon className="w-4 h-4 text-df-icon-color cursor-pointer" />
+          <SortIcon className="w-4 h-4 text-df-icon-color" />
         )
       }
       onClick={() => {
@@ -89,7 +89,7 @@ export default function Works({
                 <Button
                   type="secondary"
                   icon={
-                    <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                    <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px]" />
                   }
                   onClick={() => openModal(modals.work)}
                   size="small"
@@ -103,7 +103,7 @@ export default function Works({
                 <Button
                   type="secondary"
                   icon={
-                    <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                    <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px]" />
                   }
                   onClick={() => openModal(modals.work)}
                   size="small"
@@ -126,7 +126,7 @@ export default function Works({
               // customClass="lg:hidden"
               type="secondary"
               customClass="!p-2 rounded-[8px]"
-              icon={<CloseIcon className="text-icon-color cursor-pointer" />}
+              icon={<CloseIcon className="text-icon-color" />}
               onClick={() => {
                 document.body.classList.remove("cursor-grab");
                 setShowModal(false);
@@ -171,9 +171,7 @@ const DragHandle = SortableHandle(({ rectFill }) => {
   return (
     <Button
       type="normal"
-      icon={
-        <DragIcon className="text-project-card-reorder-btn-icon-color cursor-pointer" />
-      }
+      icon={<DragIcon className="text-project-card-reorder-btn-icon-color" />}
     />
   );
 });

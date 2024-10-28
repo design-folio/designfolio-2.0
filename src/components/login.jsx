@@ -108,7 +108,7 @@ export default function Login() {
               <img
                 src="/assets/svgs/google.svg"
                 alt="google icon"
-                className="w-[22px] cursor-pointer"
+                className="w-[22px]"
               />
             }
             onClick={googleLogin}

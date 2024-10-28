@@ -45,11 +45,7 @@ export default function ForgotPassword() {
               type="secondary"
               size="small"
               icon={
-                <img
-                  src={"/assets/svgs/left-arrow.svg"}
-                  alt="back arrow"
-                  className="cursor-pointer"
-                />
+                <img src={"/assets/svgs/left-arrow.svg"} alt="back arrow" />
               }
             />
             <Text

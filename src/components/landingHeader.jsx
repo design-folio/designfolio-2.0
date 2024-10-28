@@ -107,7 +107,7 @@ export default function LandingHeader({ dfToken }) {
               />
             </Link>
           ) : (
-            <div className=" hidden lg:flex gap-4">
+            <div className=" hidden md:flex gap-4">
               <Link href="/login">
                 <Button type="secondary" text="Login" />
               </Link>

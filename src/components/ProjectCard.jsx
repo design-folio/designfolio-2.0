@@ -46,7 +46,7 @@ export default function ProjectCard({
           <motion.img
             src={project?.thumbnail?.url}
             alt="project image"
-            className={`w-full h-full object-cover transition-opacity duration-100 ${
+            className={`w-full h-full object-cover transition-opacity duration-100 cursor-pointer ${
               imageLoaded ? "opacity-100" : "opacity-100"
             }`}
             initial="initial"
@@ -62,11 +62,11 @@ export default function ProjectCard({
           )} */}
         </div>
 
-        <div className="p-6 flex-1 flex flex-col justify-between">
+        <div className="p-6 flex-1 flex flex-col justify-between cursor-pointer">
           <div>
             <Text
               size="p-small"
-              className="text-project-card-heading-color font-semibold line-clamp-2"
+              className="text-project-card-heading-color font-semibold line-clamp-2 cursor-pointer"
             >
               {project?.title}
             </Text>

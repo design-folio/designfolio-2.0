@@ -7,6 +7,7 @@ const Button = ({
   size = "large",
   icon = null,
   iconPosition = "left",
+  iconClassName = "",
   isLoading = false,
   isDisabled = false,
   text,
@@ -93,6 +94,7 @@ const Button = ({
     >
       {icon && iconPosition === "left" && !isLoading && (
         <motion.span
+          className={iconClassName}
           animate={{ x: isHovered ? 2 : 0, y: isHovered ? -2 : 0 }} // Use isHovered to control animation
           transition={{ type: "spring", stiffness: 300 }}
         >
@@ -124,6 +126,7 @@ const Button = ({
       {text}
       {icon && iconPosition === "right" && !isLoading && (
         <motion.span
+          className={iconClassName}
           animate={{ x: isHovered ? 2 : 0, y: isHovered ? -2 : 0 }} // Use isHovered to control animation
           transition={{ type: "spring", stiffness: 300 }}
         >

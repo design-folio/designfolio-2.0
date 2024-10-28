@@ -6,9 +6,9 @@
 @import url("./animation.css");
 
 :root {
-  // --cursor-default: url(/assets/svgs/default1.svg), default;
-  // --cursor-pointer: url(/assets/svgs/pointer1.svg), pointer;
-  // --cursor-not-allowed: url(/assets/svgs/stop.svg), not-allowed;
+  --cursor-default: default;
+  --cursor-pointer: pointer;
+  --cursor-not-allowed: not-allowed;
 }
 
 *,

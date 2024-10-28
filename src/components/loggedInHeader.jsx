@@ -168,22 +168,27 @@ export default function LoggedInHeader({
     router.replace("/");
   };
 
-  const handleUpdate = () => {
+  const handleUpdate = (open = false) => {
     setUpdateLoading(true);
     _publish({ status: 1 })
       .then((res) => {
         setUserDetails((prev) => ({ ...prev, ...res?.data?.user }));
-        setPopoverMenu(null);
+
         setIsMobileThemePopup(false);
         updateCache("userDetails", res?.data?.user);
         toast.success("Published successfully.");
+        if (open) {
+          setPopoverMenu(popovers.publishMenu);
+        } else {
+          setPopoverMenu(null);
+        }
       })
       .finally(() => setUpdateLoading(false));
   };
 
   const handlePublishBtn = () => {
     if (!latestPublishDate) {
-      return handleUpdate();
+      return handleUpdate(true);
     }
     setPopoverMenu((prev) =>
       prev == popovers.publishMenu ? null : popovers.publishMenu
@@ -363,13 +368,13 @@ export default function LoggedInHeader({
                         }
                       >
                         <div className="mt-1">
-                          <LinkIcon className="text-icon-color" />
+                          <LinkIcon className="text-icon-color cursor-pointer" />
                         </div>
-                        <div>
-                          <p className="text-base-text text-[14px] font-[500] font-sfpro underline underline-offset-4">
+                        <div className="cursor-pointer">
+                          <p className="text-base-text text-[14px] font-[500] font-sfpro underline underline-offset-4 cursor-pointer">
                             {username}.designfolio.me
                           </p>
-                          <p className="text-description-text text-[12px] font-[400] font-inter mt-1">
+                          <p className="text-description-text text-[12px] font-[400] font-inter mt-1 cursor-pointer">
                             {`Updated: ${formatedValue}`}
                           </p>
                         </div>
@@ -551,20 +556,22 @@ export default function LoggedInHeader({
                   <div className="mt-1">
                     <LinkIcon className="text-icon-color" />
                   </div>
-                  <div>
-                    <Text
-                      size="p-xxsmall"
-                      className="underline underline-offset-4"
-                    >
-                      {username}.designfolio.me
-                    </Text>
-                    <Text
-                      size="p-xxxsmall"
-                      className="text-df-secondary-text-color text-center mt-1"
-                    >
-                      {`Updated: ${formatedValue}`}
-                    </Text>
-                  </div>
+                  {username && (
+                    <div>
+                      <Text
+                        size="p-xxsmall"
+                        className="underline underline-offset-4"
+                      >
+                        {username}.designfolio.me
+                      </Text>
+                      <Text
+                        size="p-xxxsmall"
+                        className="text-df-secondary-text-color text-center mt-1"
+                      >
+                        {`Updated: ${formatedValue}`}
+                      </Text>
+                    </div>
+                  )}
                 </div>
               </div>
             ) : (
@@ -633,14 +640,6 @@ export default function LoggedInHeader({
                       </p>
                     </div>
                   </div>
-
-                  <Text
-                    className="text-df-secondary-text-color mt-4"
-                    size="p-xxsmall"
-                  >
-                    💫 More theme settings and templates coming soon! Keep an
-                    eye.
-                  </Text>
                 </div>
               </div>
             )}

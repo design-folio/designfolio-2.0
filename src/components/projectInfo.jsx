@@ -196,33 +196,51 @@ export default function ProjectInfo({
         {edit && (
           <div className="flex gap-3">
             {AnalyzeStatus && (
-              <Button
-                type="secondary"
-                text={
-                  suggestions?.length > 0
-                    ? "Show Score Card"
-                    : wordCount < 400
-                    ? `Need more ${400 - wordCount} words to Analyze AI`
-                    : "Analyze Project using AI"
-                }
-                onClick={() => handleAnalyzeClick()}
-                iconPosition={isAnalyzing ? "right" : "left"}
-                icon={
-                  isAnalyzing ? (
-                    <AnimatedLoading className="cursor-pointer" />
-                  ) : (
-                    <AnalyzeIcon className="cursor-pointer" />
-                  )
-                }
-                isDisabled={
-                  isAnalyzing || (suggestions?.length === 0 && wordCount < 400)
-                }
-              />
+              <>
+                <Button
+                  type="secondary"
+                  customClass="hidden md:flex"
+                  text={
+                    suggestions?.length > 0
+                      ? "Show Score Card"
+                      : wordCount < 400
+                      ? `Need more ${400 - wordCount} words to Analyze AI`
+                      : "Analyze Project using AI"
+                  }
+                  onClick={() => handleAnalyzeClick()}
+                  iconPosition={isAnalyzing ? "right" : "left"}
+                  icon={
+                    isAnalyzing ? (
+                      <AnimatedLoading className="cursor-pointer" />
+                    ) : (
+                      <AnalyzeIcon className="cursor-pointer" />
+                    )
+                  }
+                  isDisabled={
+                    isAnalyzing ||
+                    (suggestions?.length === 0 && wordCount < 400)
+                  }
+                />
+                <Button
+                  type="secondary"
+                  onClick={() => handleAnalyzeClick()}
+                  customClass="md:hidden p-0 px-4"
+                  iconPosition={isAnalyzing ? "right" : "left"}
+                  icon={
+                    isAnalyzing ? (
+                      <AnimatedLoading className="cursor-pointer" />
+                    ) : (
+                      <AnalyzeIcon className="cursor-pointer" />
+                    )
+                  }
+                  isDisabled={
+                    isAnalyzing ||
+                    (suggestions?.length === 0 && wordCount < 400)
+                  }
+                />
+              </>
             )}
-            <div
-              className="mb-3 md:mb-0 relative"
-              data-popover-id={popovers.password}
-            >
+            <div className=" relative" data-popover-id={popovers.password}>
               <Button
                 type="secondary"
                 onClick={() =>

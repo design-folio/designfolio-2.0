@@ -26,7 +26,7 @@ export default function Index({ data }) {
     },
     onSuccess: (data) => {
       setProjectDetails(data);
-      setCursor(data?.project?.cursor ? data?.project?.theme : 0);
+      setCursor(data?.project?.cursor ? data?.project?.cursor : 0);
       setTheme(data?.project?.theme == 1 ? "dark" : "light");
       setIsProtected(data?.isProtected);
     },

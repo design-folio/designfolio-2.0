@@ -1,8 +1,19 @@
 import Home from "@/components/home";
 import Seo from "@/components/seo";
-import React from "react";
+import { useGlobalContext } from "@/context/globalContext";
+import React, { useEffect } from "react";
 
 export default function Index({ dfToken }) {
+  const { setCursor, userDetails } = useGlobalContext();
+  useEffect(() => {
+    console.log(userDetails);
+    setCursor(0);
+    return () => {
+      console.log("Component unmounted");
+
+      setCursor(userDetails?.cursor ? userDetails?.cursor : 0);
+    };
+  }, [userDetails]);
   return (
     <div className="bg-landing-bg-color min-h-screen">
       <Seo

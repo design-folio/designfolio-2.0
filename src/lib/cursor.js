@@ -18,9 +18,12 @@ export const getCursor = (
 };
 
 const removeCursor = () => {
-  document.documentElement.style.removeProperty("--cursor-default");
-  document.documentElement.style.removeProperty("--cursor-pointer");
-  document.documentElement.style.removeProperty("--cursor-not-allowed");
+  document.documentElement.style.setProperty("--cursor-default", "default");
+  document.documentElement.style.setProperty("--cursor-pointer", "pointer");
+  document.documentElement.style.removeProperty(
+    "--cursor-not-allowed",
+    "not-allowed"
+  );
 };
 
 export const setCursorvalue = (cursorType) => {

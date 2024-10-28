@@ -72,7 +72,7 @@ export default function AddTools() {
         <Button
           type="secondary"
           customClass="!p-2 rounded-[8px]"
-          icon={<CloseIcon className="text-df-icon-color cursor-pointer" />}
+          icon={<CloseIcon className="text-df-icon-color" />}
           onClick={closeModal}
         />
       </div>

@@ -128,13 +128,7 @@ export default function HeroBanner({ dfToken }) {
               <Button
                 text="Launch Builder"
                 customClass="w-full md:w-fit"
-                icon={
-                  <img
-                    src="/assets/svgs/power.svg"
-                    alt="launch builder"
-                    className="cursor-pointer"
-                  />
-                }
+                icon={<img src="/assets/svgs/power.svg" alt="launch builder" />}
               />
             </Link>
           ) : (

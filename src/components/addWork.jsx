@@ -95,7 +95,7 @@ export default function AddWork() {
           // customClass="lg:hidden"
           type="secondary"
           customClass="!p-2 rounded-[8px]"
-          icon={<CloseIcon className="text-icon-color cursor-pointer" />}
+          icon={<CloseIcon className="text-icon-color" />}
           onClick={closeModal}
         />
       </div>
@@ -358,7 +358,7 @@ export default function AddWork() {
                   <Button
                     type="delete"
                     icon={
-                      <DeleteIcon className="stroke-delete-btn-icon-color w-6 h-6 cursor-pointer" />
+                      <DeleteIcon className="stroke-delete-btn-icon-color w-6 h-6" />
                     }
                     onClick={handleDeleteWork}
                   />

@@ -64,7 +64,7 @@ const StepTwoValidationSchema = Yup.object().shape({
 
 const variants = {
   loading: { height: 126 },
-  default: { height: "90vh", maxHeight: 630 },
+  default: { height: 630 },
 };
 
 export default function Onboarding() {
@@ -250,9 +250,7 @@ export default function Onboarding() {
                   // customClass="lg:hidden"
                   type="secondary"
                   customClass="!p-2 rounded-[8px]"
-                  icon={
-                    <CloseIcon className="text-icon-color cursor-pointer" />
-                  }
+                  icon={<CloseIcon className="text-icon-color" />}
                   onClick={closeModal}
                 />
               </div>

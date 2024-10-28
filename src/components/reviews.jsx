@@ -33,7 +33,7 @@ export default function Reviews({ edit = false, userDetails, openModal }) {
             }
             first={userDetails?.reviews?.length !== 0}
             buttonTitle="Add testimonial"
-            icon={<PenIcon className="cursor-pointer" />}
+            icon={<PenIcon />}
           />
         )}
       </div>

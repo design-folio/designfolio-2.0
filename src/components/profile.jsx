@@ -55,7 +55,7 @@ export default function Profile({
             customClass="mb-5"
             type="secondary"
             size="small"
-            icon={<LeftArrow className="text-df-icon-color cursor-pointer" />}
+            icon={<LeftArrow className="text-df-icon-color" />}
           />
         </Link>
       )}
@@ -86,9 +86,7 @@ export default function Profile({
                   onClick={() => openModal("onboarding")}
                   customClass="!p-[13.38px] !flex-shrink-0"
                   type={"secondary"}
-                  icon={
-                    <EditIcon className="text-df-icon-color cursor-pointer" />
-                  }
+                  icon={<EditIcon className="text-df-icon-color" />}
                 />
               </div>
             )}

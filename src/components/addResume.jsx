@@ -50,7 +50,7 @@ export default function AddResume() {
           // customClass="lg:hidden"
           type="secondary"
           customClass="!p-2 rounded-[8px]"
-          icon={<CloseIcon className="text-icon-color cursor-pointer" />}
+          icon={<CloseIcon className="text-icon-color" />}
           onClick={closeModal}
         />
       </div>
@@ -102,7 +102,7 @@ export default function AddResume() {
 
             <Button
               icon={
-                <DeleteIcon className="stroke-delete-btn-icon-color w-6 h-6 cursor-pointer" />
+                <DeleteIcon className="stroke-delete-btn-icon-color w-6 h-6" />
               }
               type="normal"
               className=""

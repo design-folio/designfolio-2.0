@@ -35,11 +35,7 @@ export default function Footer({ dfToken }) {
                   text="Launch Builder"
                   customClass="w-full md:w-fit m-auto"
                   icon={
-                    <img
-                      src="/assets/svgs/power.svg"
-                      alt="launch builder"
-                      className="cursor-pointer"
-                    />
+                    <img src="/assets/svgs/power.svg" alt="launch builder" />
                   }
                 />
               </Link>

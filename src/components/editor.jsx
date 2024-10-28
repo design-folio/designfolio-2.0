@@ -14,7 +14,6 @@ export default function Editor({ edit }) {
   const router = useRouter();
   const { setTheme } = useTheme();
   const [projectDetails, setProjectDetails] = useState(null);
-  const { setCursor } = useGlobalContext();
 
   const {
     userDetails,
@@ -32,7 +31,6 @@ export default function Editor({ edit }) {
     },
     onSuccess: (data) => {
       setProjectDetails(data);
-      setCursor(data?.project?.cursor ? data?.project?.theme : 0);
       setTheme(data?.project?.theme == 1 ? "dark" : "light");
       setIsProtected(data?.isProtected);
     },

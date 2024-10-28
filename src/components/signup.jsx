@@ -84,13 +84,7 @@ export default function Signup() {
           onClick={() => router.back({ scroll: false })}
           type="secondary"
           size="small"
-          icon={
-            <img
-              src="/assets/svgs/left-arrow.svg"
-              alt="back arrow"
-              className="cursor-pointer"
-            />
-          }
+          icon={<img src="/assets/svgs/left-arrow.svg" alt="back arrow" />}
         />
         <Text
           as="h1"
@@ -116,7 +110,7 @@ export default function Signup() {
               <img
                 src="/assets/svgs/google.svg"
                 alt="google icon"
-                className="w-[22px] cursor-pointer"
+                className="w-[22px]"
               />
             }
             onClick={googleLogin}

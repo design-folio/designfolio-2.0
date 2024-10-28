@@ -5,6 +5,18 @@
 @import url("./colors.css");
 @import url("./animation.css");
 
+:root {
+  --cursor-default: default;
+  --cursor-pointer: pointer;
+  --cursor-not-allowed: not-allowed;
+}
+
+*,
+*:before,
+*:after {
+  @apply cursor-default;
+}
+
 html {
   scroll-behavior: smooth;
   background-color: var(--df-bg-color);

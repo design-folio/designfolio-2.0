@@ -6,7 +6,7 @@ import EditIcon from "../../public/assets/svgs/edit.svg";
 export default function Section({
   children,
   title,
-  icon = <EditIcon className="text-df-icon-color" />,
+  icon = <EditIcon className="text-df-icon-color cursor-pointer" />,
   onClick,
   edit,
   btnType = "secondary",

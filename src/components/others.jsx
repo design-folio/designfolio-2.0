@@ -37,7 +37,7 @@ export default function Others({ openModal, userDetails, edit }) {
             <Button
               onClick={() => openModal(modals.resume)}
               type={"secondary"}
-              icon={<EditIcon className="text-df-icon-color" />}
+              icon={<EditIcon className="text-df-icon-color cursor-pointer" />}
             />
           </div>
 
@@ -47,7 +47,9 @@ export default function Others({ openModal, userDetails, edit }) {
                 text={"Download Resume"}
                 customClass="w-full justify-start"
                 type="secondary"
-                icon={<NoteIcon className="text-df-icon-color" />}
+                icon={
+                  <NoteIcon className="text-df-icon-color cursor-pointer" />
+                }
               />
             </a>
           ) : (
@@ -62,7 +64,7 @@ export default function Others({ openModal, userDetails, edit }) {
                     type="secondary"
                     customClass="w-fit gap-0"
                     icon={
-                      <PlusIcon className="text-secondary-btn-text-color w-[14px] h-[14px]" />
+                      <PlusIcon className="text-secondary-btn-text-color w-[14px] h-[14px] cursor-pointer" />
                     }
                   />
                 }
@@ -92,7 +94,9 @@ export default function Others({ openModal, userDetails, edit }) {
               <Button
                 onClick={() => openModal(modals.socialMedia)}
                 type={"secondary"}
-                icon={<EditIcon className="text-df-icon-color" />}
+                icon={
+                  <EditIcon className="text-df-icon-color cursor-pointer" />
+                }
               />
             )}
         </div>
@@ -110,7 +114,9 @@ export default function Others({ openModal, userDetails, edit }) {
                   <Button
                     text={"Instagram"}
                     type="secondary"
-                    icon={<InstagramIcon className="text-df-icon-color" />}
+                    icon={
+                      <InstagramIcon className="text-df-icon-color cursor-pointer" />
+                    }
                   />
                 </Link>
               )}
@@ -124,7 +130,9 @@ export default function Others({ openModal, userDetails, edit }) {
                   <Button
                     text={"Twitter"}
                     type="secondary"
-                    icon={<TwitterIcon className="text-df-icon-color" />}
+                    icon={
+                      <TwitterIcon className="text-df-icon-color cursor-pointer" />
+                    }
                   />
                 </Link>
               )}
@@ -137,7 +145,9 @@ export default function Others({ openModal, userDetails, edit }) {
                   <Button
                     text={"LinkedIn"}
                     type="secondary"
-                    icon={<LinkedInIcon className="text-df-icon-color" />}
+                    icon={
+                      <LinkedInIcon className="text-df-icon-color cursor-pointer" />
+                    }
                   />
                 </Link>
               )}
@@ -154,7 +164,7 @@ export default function Others({ openModal, userDetails, edit }) {
                     type="secondary"
                     customClass="w-fit gap-0"
                     icon={
-                      <PlusIcon className="text-secondary-btn-text-color w-[14px] h-[14px]" />
+                      <PlusIcon className="text-secondary-btn-text-color w-[14px] h-[14px] cursor-pointer" />
                     }
                   />
                 }
@@ -185,7 +195,9 @@ export default function Others({ openModal, userDetails, edit }) {
               <Button
                 onClick={() => openModal(modals.portfolioLinks)}
                 type={"secondary"}
-                icon={<EditIcon className="text-df-icon-color" />}
+                icon={
+                  <EditIcon className="text-df-icon-color cursor-pointer" />
+                }
               />
             )}
         </div>
@@ -204,7 +216,9 @@ export default function Others({ openModal, userDetails, edit }) {
                   <Button
                     text={"Dribbble"}
                     type="secondary"
-                    icon={<DribbbleIcon className="text-df-icon-color" />}
+                    icon={
+                      <DribbbleIcon className="text-df-icon-color cursor-pointer" />
+                    }
                   />
                 </Link>
               )}
@@ -217,7 +231,9 @@ export default function Others({ openModal, userDetails, edit }) {
                   <Button
                     text={"Behance"}
                     type="secondary"
-                    icon={<BehanceIcon className="text-df-icon-color" />}
+                    icon={
+                      <BehanceIcon className="text-df-icon-color cursor-pointer" />
+                    }
                   />
                 </Link>
               )}
@@ -230,7 +246,9 @@ export default function Others({ openModal, userDetails, edit }) {
                   <Button
                     text={"Notion"}
                     type="secondary"
-                    icon={<NotionIcon className="text-df-icon-color" />}
+                    icon={
+                      <NotionIcon className="text-df-icon-color cursor-pointer" />
+                    }
                   />
                 </Link>
               )}
@@ -243,7 +261,9 @@ export default function Others({ openModal, userDetails, edit }) {
                   <Button
                     text={"Medium"}
                     type="secondary"
-                    icon={<MediumIcon className="text-df-icon-color" />}
+                    icon={
+                      <MediumIcon className="text-df-icon-color cursor-pointer" />
+                    }
                   />
                 </Link>
               )}
@@ -260,7 +280,7 @@ export default function Others({ openModal, userDetails, edit }) {
                     type="secondary"
                     customClass="w-fit gap-0"
                     icon={
-                      <PlusIcon className="text-secondary-btn-text-color w-[14px] h-[14px]" />
+                      <PlusIcon className="text-secondary-btn-text-color w-[14px] h-[14px] cursor-pointer" />
                     }
                   />
                 }

@@ -46,7 +46,7 @@ export default function BottomNavigation({ userDetails }) {
                   !isProject
                     ? "text-bottom-navigation-active-stroke hover:text-bottom-navigation-active-stroke"
                     : "text-bottom-navigation-inactive-stroke hover:text-bottom-navigation-inactive-stroke"
-                }`}
+                } cursor-pointer`}
               />
             }
             size="medium"
@@ -67,7 +67,7 @@ export default function BottomNavigation({ userDetails }) {
                     isProject
                       ? "text-bottom-navigation-active-stroke hover:text-bottom-navigation-active-stroke"
                       : "text-bottom-navigation-inactive-stroke hover:text-bottom-navigation-inactive-stroke"
-                  }`}
+                  } cursor-pointer`}
                 />
               }
               size="medium"

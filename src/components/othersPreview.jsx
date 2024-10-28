@@ -39,7 +39,9 @@ export default function OthersPreview({ userDetails }) {
                   <Button
                     text={"Instagram"}
                     type="secondary"
-                    icon={<InstagramIcon className="text-df-icon-color" />}
+                    icon={
+                      <InstagramIcon className="text-df-icon-color cursor-pointer" />
+                    }
                   />
                 </Link>
               )}
@@ -53,7 +55,9 @@ export default function OthersPreview({ userDetails }) {
                   <Button
                     text={"Twitter"}
                     type="secondary"
-                    icon={<TwitterIcon className="text-df-icon-color" />}
+                    icon={
+                      <TwitterIcon className="text-df-icon-color cursor-pointer" />
+                    }
                   />
                 </Link>
               )}
@@ -66,7 +70,9 @@ export default function OthersPreview({ userDetails }) {
                   <Button
                     text={"LinkedIn"}
                     type="secondary"
-                    icon={<LinkedInIcon className="text-df-icon-color" />}
+                    icon={
+                      <LinkedInIcon className="text-df-icon-color cursor-pointer" />
+                    }
                   />
                 </Link>
               )}
@@ -98,7 +104,9 @@ export default function OthersPreview({ userDetails }) {
                     <Button
                       text={"Dribbble"}
                       type="secondary"
-                      icon={<DribbbleIcon className="text-df-icon-color" />}
+                      icon={
+                        <DribbbleIcon className="text-df-icon-color cursor-pointer" />
+                      }
                     />
                   </Link>
                 )}
@@ -111,7 +119,9 @@ export default function OthersPreview({ userDetails }) {
                     <Button
                       text={"Behance"}
                       type="secondary"
-                      icon={<BehanceIcon className="text-df-icon-color" />}
+                      icon={
+                        <BehanceIcon className="text-df-icon-color cursor-pointer" />
+                      }
                     />
                   </Link>
                 )}
@@ -124,7 +134,9 @@ export default function OthersPreview({ userDetails }) {
                     <Button
                       text={"Notion"}
                       type="secondary"
-                      icon={<NotionIcon className="text-df-icon-color" />}
+                      icon={
+                        <NotionIcon className="text-df-icon-color cursor-pointer" />
+                      }
                     />
                   </Link>
                 )}
@@ -137,7 +149,9 @@ export default function OthersPreview({ userDetails }) {
                     <Button
                       text={"Medium"}
                       type="secondary"
-                      icon={<MediumIcon className="text-df-icon-color" />}
+                      icon={
+                        <MediumIcon className="text-df-icon-color cursor-pointer" />
+                      }
                     />
                   </Link>
                 )}

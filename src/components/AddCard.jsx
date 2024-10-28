@@ -44,7 +44,7 @@ export default function AddCard({
               text={buttonTitle}
               customClass="w-fit gap-1 items-center"
               icon={
-                <PlusIcon className="text-primary-btn-text-color w-[20px] h-[20px] mb-[2px]" />
+                <PlusIcon className="text-primary-btn-text-color w-[20px] h-[20px] mb-[2px] cursor-pointer" />
               }
             />
             {secondaryButtonTitle && (
@@ -61,7 +61,7 @@ export default function AddCard({
                 type="secondary"
                 customClass="w-fit gap-1 items-center"
                 icon={
-                  <AiIcon className="text-secondary-btn-text-color w-[22px] h-[22px] mb-[2px]" />
+                  <AiIcon className="text-secondary-btn-text-color w-[22px] h-[22px] mb-[2px] cursor-pointer" />
                 }
               />
             )}
@@ -73,7 +73,7 @@ export default function AddCard({
             text={title}
             customClass="w-fit gap-1 items-center"
             icon={
-              <PlusIcon className="text-primary-btn-text-color w-[20px] h-[20px] mb-[2px]" />
+              <PlusIcon className="text-primary-btn-text-color w-[20px] h-[20px] mb-[2px] cursor-pointer" />
             }
           />
           {secondaryButtonTitle && (
@@ -87,7 +87,7 @@ export default function AddCard({
               type="secondary"
               customClass="w-fit gap-1 items-center"
               icon={
-                <AiIcon className="text-secondary-btn-text-color w-[22px] h-[22px] mb-[2px]" />
+                <AiIcon className="text-secondary-btn-text-color w-[22px] h-[22px] mb-[2px] cursor-pointer" />
               }
             />
           )}

@@ -136,7 +136,7 @@ export default function AnalyzeCaseStudy({
           <Button
             type="secondary"
             customClass="!p-2 rounded-[8px]"
-            icon={<CloseIcon className="text-icon-color" />}
+            icon={<CloseIcon className="text-icon-color cursor-pointer" />}
             onClick={setShowModal}
           />
         </div>
@@ -175,17 +175,18 @@ export default function AnalyzeCaseStudy({
           </Text>
           <Button
             text={
-              credits===2 ? "Re-analyze Case Study" :
-              isButtonDisabled
-                ? `Re-analyze Case Study in ${minutesLeft}  ${minutesLeft==1 ? "minute" : "minutes"}`
+              credits === 2
+                ? "Re-analyze Case Study"
+                : isButtonDisabled
+                ? `Re-analyze Case Study in ${minutesLeft}  ${
+                    minutesLeft == 1 ? "minute" : "minutes"
+                  }`
                 : wordCount < 400
                 ? `Re-analyze requires ${400 - wordCount} more words`
                 : "Re-analyze Case Study"
             }
             type="modal"
-            isDisabled={
-              (credits >= 2) | isButtonDisabled | (wordCount < 400)
-            }
+            isDisabled={(credits >= 2) | isButtonDisabled | (wordCount < 400)}
             isLoading={isAnalyzing}
             onClick={reAnalyze}
           />

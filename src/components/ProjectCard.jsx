@@ -46,7 +46,7 @@ export default function ProjectCard({
           <motion.img
             src={project?.thumbnail?.url}
             alt="project image"
-            className={`w-full h-full object-cover transition-opacity duration-100 ${
+            className={`w-full h-full object-cover transition-opacity duration-100 cursor-pointer ${
               imageLoaded ? "opacity-100" : "opacity-100"
             }`}
             initial="initial"
@@ -62,11 +62,11 @@ export default function ProjectCard({
           )} */}
         </div>
 
-        <div className="p-6 flex-1 flex flex-col justify-between">
+        <div className="p-6 flex-1 flex flex-col justify-between cursor-pointer">
           <div>
             <Text
               size="p-small"
-              className="text-project-card-heading-color font-semibold line-clamp-2"
+              className="text-project-card-heading-color font-semibold line-clamp-2 cursor-pointer"
             >
               {project?.title}
             </Text>
@@ -94,7 +94,7 @@ export default function ProjectCard({
                   animate={{ x: isHovered ? 5 : 0, y: isHovered ? -5 : 0 }} // Use isHovered to control animation
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  <ViewArrowIcon className="text-project-card-description-color" />
+                  <ViewArrowIcon className="text-project-card-description-color cursor-pointer" />
                 </motion.div>
               </motion.div>
             )}
@@ -103,7 +103,7 @@ export default function ProjectCard({
                 <Button
                   type="delete"
                   icon={
-                    <DeleteIcon className="stroke-delete-btn-icon-color w-6 h-6" />
+                    <DeleteIcon className="stroke-delete-btn-icon-color w-6 h-6 cursor-pointer" />
                   }
                   onClick={(e) => {
                     e.stopPropagation(); // Prevent the event from bubbling up
@@ -123,8 +123,8 @@ export default function ProjectCard({
 const DragHandle = SortableHandle(() => (
   <div
     onClick={(e) => e.stopPropagation()}
-    className="!px-[24.5px] !cursor-grab py-[19px] transition-shadow duration-500 ease-out bg-project-card-reorder-btn-bg-color border-project-card-reorder-btn-bg-color hover:border-primary-btn-bg-hover-color hover:bg-primary-btn-bg-hover-color rounded-2xl"
+    className="!px-[24.5px] cursor-grab py-[19px] transition-shadow duration-500 ease-out bg-project-card-reorder-btn-bg-color border-project-card-reorder-btn-bg-color hover:border-primary-btn-bg-hover-color hover:bg-primary-btn-bg-hover-color rounded-2xl"
   >
-    <DragIcon className="text-project-card-reorder-btn-icon-color" />
+    <DragIcon className="text-project-card-reorder-btn-icon-color !cursor-grab" />
   </div>
 ));

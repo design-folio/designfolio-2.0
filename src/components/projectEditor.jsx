@@ -89,15 +89,11 @@ class FigmaTool {
   }
 }
 
-const ProjectEditor = ({
-  projectDetails,
-  userDetails,
-  refetchProjectDetail,
-}) => {
+const ProjectEditor = ({ projectDetails, userDetails }) => {
   const editorContainer = useRef(null);
   const [isClient, setIsClient] = useState(false);
   const router = useRouter();
-  const { setWordCount,setProjectValue } = useGlobalContext();
+  const { setWordCount, setProjectValue } = useGlobalContext();
 
   useEffect(() => {
     setIsClient(true);
@@ -120,7 +116,6 @@ const ProjectEditor = ({
           }, 500);
 
           checkWordCount(editor);
-
         },
         tools: {
           figma: FigmaTool,
@@ -266,30 +261,36 @@ const ProjectEditor = ({
         onChange: () => {
           (async () => {
             const content = await editor?.save();
-            content?.blocks?.forEach((block) => {
-              if (block.type == "image") {
-                block.data.file.url = block.data.file.key;
-              }
-            });
-            _updateProject(router.query.id, { content }).then((res) => {
-              const updatedProjects = userDetails?.projects?.map((item) =>
-                item._id === router.query.id
-                  ? { ...item, content: res?.data?.project?.content }
-                  : item
-              );
-              queryClient.setQueriesData(
-                { queryKey: ["userDetails"] },
-                (oldData) => {
-                  return {
-                    user: { ...oldData?.user, projects: updatedProjects },
-                  };
+            if (
+              JSON.stringify(content.blocks) !==
+              JSON.stringify(projectDetails.content.blocks)
+            ) {
+              content?.blocks?.forEach((block) => {
+                if (block.type == "image") {
+                  block.data.file.url = block.data.file.key;
                 }
-              );
-            });
+              });
+              _updateProject(router.query.id, { content }).then((res) => {
+                if (userDetails) {
+                  const updatedProjects = userDetails?.projects?.map((item) =>
+                    item._id === router.query.id
+                      ? { ...item, content: res?.data?.project?.content }
+                      : item
+                  );
+                  queryClient.setQueriesData(
+                    { queryKey: ["userDetails"] },
+                    (oldData) => {
+                      return {
+                        user: { ...oldData?.user, projects: updatedProjects },
+                      };
+                    }
+                  );
+                }
+              });
+            }
           })();
 
           checkWordCount(editor);
-
         },
       });
 
@@ -335,52 +336,47 @@ const ProjectEditor = ({
     }
   }, [isClient, projectDetails]);
 
-
   let checkWordCount = async (edit) => {
     const outputData = await edit.save();
-    let totalText = '';
+    let totalText = "";
     // Loop through all blocks and concatenate their text content
-    outputData.blocks.forEach((block,index) => {
+    outputData.blocks.forEach((block, index) => {
       if (block.data.text) {
-        const tempElement = document.createElement('div');
-        tempElement.textContent = index>=1 ? " "+ block.data.text : block.data.text;
+        const tempElement = document.createElement("div");
+        tempElement.textContent =
+          index >= 1 ? " " + block.data.text : block.data.text;
         const textWithoutTags = tempElement.innerText;
         totalText += textWithoutTags;
       }
 
       if (block.type === "table") {
         let wordCount = 0;
-        totalText+=" "
-        block.data.content.forEach(row => {
-          row.forEach(cell => {
-            if(cell!=="")
-            totalText += cell+" ";
+        totalText += " ";
+        block.data.content.forEach((row) => {
+          row.forEach((cell) => {
+            if (cell !== "") totalText += cell + " ";
           });
         });
       }
 
       if (block.type === "list") {
         let wordCount = 0;
-        block.data.items.forEach(item => {
-          if(item.content!="")
-          {
+        block.data.items.forEach((item) => {
+          if (item.content != "") {
             wordCount += item.content;
-            totalText+= " " +wordCount
+            totalText += " " + wordCount;
           }
-
         });
       }
 
       if (block.type === "image") {
         // Calculate word count based on image caption
-        const imageCaption = block.data.caption
-        totalText+=" "+imageCaption
+        const imageCaption = block.data.caption;
+        totalText += " " + imageCaption;
       }
-
-
     });
-    setProjectValue(totalText.replace("&nbsp;","").trim())
-    setWordCount(totalText.replace("&nbsp;","").trim().split(" ").length)
+    setProjectValue(totalText.replace("&nbsp;", "").trim());
+    setWordCount(totalText.replace("&nbsp;", "").trim().split(" ").length);
   };
 
   return (

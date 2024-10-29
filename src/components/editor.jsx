@@ -32,7 +32,7 @@ export default function Editor({ edit }) {
     },
     onSuccess: (data) => {
       setProjectDetails(data);
-      setCursor(data?.project?.cursor ? data?.project?.theme : 0);
+      setCursor(data?.project?.cursor ? data?.project?.cursor : 0);
       setTheme(data?.project?.theme == 1 ? "dark" : "light");
       setIsProtected(data?.isProtected);
     },
@@ -41,7 +41,7 @@ export default function Editor({ edit }) {
   });
   useEffect(() => {
     refetchProjectDetail();
-  }, [refetchProjectDetail]);
+  }, []);
 
   return (
     <div className="editor-container flex-1 flex flex-col gap-4 md:gap-6">

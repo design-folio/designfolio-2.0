@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import BlockRenderer from "./blockRenderer";
-import { _getProjectDetails } from "@/network/get-request";
 import ProjectInfo from "./projectInfo";
 
 export default function ProjectRenderer({ projectDetails }) {

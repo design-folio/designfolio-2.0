@@ -14,7 +14,6 @@ export default function Editor({ edit }) {
   const router = useRouter();
   const { setTheme } = useTheme();
   const [projectDetails, setProjectDetails] = useState(null);
-  const { setCursor } = useGlobalContext();
 
   const {
     userDetails,
@@ -22,6 +21,7 @@ export default function Editor({ edit }) {
     setPopoverMenu,
     showModal,
     popoverMenu,
+    setCursor
   } = useGlobalContext();
 
   const { mutate: refetchProjectDetail } = useMutation({

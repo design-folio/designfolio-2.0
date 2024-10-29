@@ -7,7 +7,6 @@ const Button = ({
   size = "large",
   icon = null,
   iconPosition = "left",
-  iconClassName = "",
   isLoading = false,
   isDisabled = false,
   text,
@@ -30,36 +29,36 @@ const Button = ({
 
   const buttonStyles = {
     primary: {
-      base: "bg-primary-btn-bg-color hover:bg-primary-btn-bg-hover-color text-primary-btn-text-color border border-primary-btn-bg-color hover:border-primary-btn-bg-hover-color cursor-pointer",
+      base: "bg-primary-btn-bg-color hover:bg-primary-btn-bg-hover-color text-primary-btn-text-color border border-primary-btn-bg-color hover:border-primary-btn-bg-hover-color",
       disabled:
         "bg-primary-btn-bg-color hover:bg-primary-btn-bg-hover-color text-primary-btn-text-color border border-primary-btn-bg-color opacity-70 cursor-not-allowed",
     },
     secondary: {
-      base: "bg-secondary-btn-bg-color hover:bg-secondary-btn-bg-hover-color text-secondary-btn-text-color  border-solid border border-secondary-btn-border-color hover:secondary-btn-bg-hover-color hover:shadow-secondary-btn cursor-pointer",
+      base: "bg-secondary-btn-bg-color hover:bg-secondary-btn-bg-hover-color text-secondary-btn-text-color  border-solid border border-secondary-btn-border-color hover:secondary-btn-bg-hover-color hover:shadow-secondary-btn",
       disabled:
         "bg-secondary-btn-bg-color  text-secondary-btn-text-color  border-solid border border-secondary-btn-border-color opacity-70 cursor-not-allowed",
     },
     tertiary: {
-      base: "bg-tertiary-btn-bg-color hover:bg-tertiary-btn-bg-hover-color text-tertiary-btn-text-color border-solid border border-tertiary-btn-border-color hover:border-tertiary-btn-bg-hover-color cursor-pointer",
+      base: "bg-tertiary-btn-bg-color hover:bg-tertiary-btn-bg-hover-color text-tertiary-btn-text-color border-solid border border-tertiary-btn-border-color hover:border-tertiary-btn-bg-hover-color",
       disabled:
         "bg-tertiary-btn-bg-color text-tertiary-btn-text-color border-solid border border-tertiary-btn-border-color opacity-70 cursor-not-allowed",
     },
     normal: {
-      base: "hover:bg-normal-btn-bg-hover-color text-normal-btn-text-color cursor-pointer",
+      base: "hover:bg-normal-btn-bg-hover-color text-normal-btn-text-color",
       disabled: "text-normal-btn-text-color opacity-70 cursor-not-allowed",
     },
     delete: {
-      base: "bg-delete-btn-bg-color hover:bg-delete-btn-bg-hover-color text-delete-btn-icon-color border border-solid border-delete-btn-border-color hover:border-delete-btn-border-hover-color hover:shadow-delete-btn cursor-pointer",
+      base: "bg-delete-btn-bg-color hover:bg-delete-btn-bg-hover-color text-delete-btn-icon-color border border-solid border-delete-btn-border-color hover:border-delete-btn-border-hover-color hover:shadow-delete-btn",
       disabled:
         "bg-delete-btn-bg-color  border-delete-btn-border-color  opacity-70 cursor-not-allowed",
     },
     modal: {
-      base: "bg-modal-btn-bg-color hover:bg-modal-btn-bg-hover-color text-modal-btn-text-color border border-modal-btn-border-color hover:border-modal-btn-bg-hover-color cursor-pointer",
+      base: "bg-modal-btn-bg-color hover:bg-modal-btn-bg-hover-color text-modal-btn-text-color border border-modal-btn-border-color hover:border-modal-btn-bg-hover-color",
       disabled:
         "bg-modal-btn-bg-color hover:bg-modal-btn-bg-hover-color text-modal-btn-text-color border border-modal-btn-bg-color opacity-70 cursor-not-allowed",
     },
     ai: {
-      base: "text-ai-btn-text-color border border-ai-btn-border-color cursor-pointer",
+      base: "text-ai-btn-text-color border border-ai-btn-border-color",
       disabled: "text-ai-btn-text-color border border-ai-btn-border-color",
     },
   };
@@ -94,7 +93,6 @@ const Button = ({
     >
       {icon && iconPosition === "left" && !isLoading && (
         <motion.span
-          className={iconClassName}
           animate={{ x: isHovered ? 2 : 0, y: isHovered ? -2 : 0 }} // Use isHovered to control animation
           transition={{ type: "spring", stiffness: 300 }}
         >
@@ -126,7 +124,6 @@ const Button = ({
       {text}
       {icon && iconPosition === "right" && !isLoading && (
         <motion.span
-          className={iconClassName}
           animate={{ x: isHovered ? 2 : 0, y: isHovered ? -2 : 0 }} // Use isHovered to control animation
           transition={{ type: "spring", stiffness: 300 }}
         >

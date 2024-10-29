@@ -29,19 +29,14 @@ export default function Task({ setOpen }) {
       style={{ boxShadow: "0px 8.3px 33.2px 0px rgba(32, 41, 55, 0.14)" }}
     >
       <div className="flex justify-between items-center">
-        <Text
-          size="p-xsmall"
-          className="text-checked-list-item-text-color cursor-pointer"
-        >
+        <Text size="p-xsmall" className="text-checked-list-item-text-color">
           Launch your portfolio
         </Text>
         <Button
           // customClass="lg:hidden"
           type="secondary"
           customClass="!p-2 rounded-[8px]"
-          icon={
-            <CloseIcon className="text-icon-color text-base cursor-pointer" />
-          }
+          icon={<CloseIcon className="text-icon-color text-base" />}
           onClick={setOpen}
         />
       </div>
@@ -58,11 +53,11 @@ export default function Task({ setOpen }) {
             {item?.checked ? (
               <CheckedIcon className="text-checked-list-item-icon-color" />
             ) : (
-              <div className="w-[25px] h-[25px] border border-check-list-empty-border-color rounded-full cursor-pointer"></div>
+              <div className="w-[25px] h-[25px] border border-check-list-empty-border-color rounded-full"></div>
             )}
             <Text
               size={`p-xxxsmall`}
-              className={`text-checked-list-item-text-color cursor-pointer ${
+              className={`text-checked-list-item-text-color ${
                 item?.checked && "line-through"
               }`}
             >

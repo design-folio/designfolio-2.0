@@ -108,7 +108,7 @@ export default function Projects({
                 buttonTitle="Add case study"
                 secondaryButtonTitle="Write using AI"
                 onClick={() => openModal(modals.project)}
-                icon={<ProjectIcon className="cursor-pointer" />}
+                icon={<ProjectIcon />}
                 openModal={openModal}
               />
             )}

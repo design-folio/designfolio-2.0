@@ -1,4 +1,3 @@
-import { setCursorvalue } from "@/lib/cursor";
 import { _getUserDetails } from "@/network/get-request";
 import { _updateUser } from "@/network/post-request";
 import queryClient from "@/network/queryClient";
@@ -42,7 +41,6 @@ export const GlobalProvider = ({ children }) => {
   const [selectedWork, setSelectedWork] = useState(null);
   const [wordCount, setWordCount] = useState(null);
   const [projectValue, setProjectValue] = useState(null);
-  const [cursor, setCursor] = useState(0);
 
   const { setTheme } = useTheme();
 
@@ -94,7 +92,6 @@ export const GlobalProvider = ({ children }) => {
       const userData = data?.user;
 
       setTheme(userData?.theme == 1 ? "dark" : "light");
-      setCursor(userData?.cursor ? userData?.cursor : 0);
       setUserDetails(userData);
       setIsUserDetailsFromCache(true);
       setCheckList((prevList) => {
@@ -127,21 +124,9 @@ export const GlobalProvider = ({ children }) => {
     }
   }, [data, userDetailsIsState]);
 
-  useEffect(() => {
-    setCursorvalue(cursor);
-  }, [cursor]);
-
   const updateCache = (key, data) => {
     queryClient.setQueriesData({ queryKey: [key] }, (oldData) => {
       return { user: { ...oldData?.user, ...data } };
-    });
-  };
-
-  const changeCursor = (cursor) => {
-    _updateUser({ cursor: cursor }).then((res) => {
-      setCursor(cursor);
-      updateCache("userDetails", res?.data?.user);
-      setUserDetails(() => ({ ...userDetails, cursor: cursor }));
     });
   };
 
@@ -199,9 +184,6 @@ export const GlobalProvider = ({ children }) => {
         setWordCount,
         projectValue,
         setProjectValue,
-        cursor,
-        setCursor,
-        changeCursor,
       }}
     >
       {children}

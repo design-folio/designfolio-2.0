@@ -52,7 +52,7 @@ export default function DeleteAccount() {
               // customClass="lg:hidden"
               type="secondary"
               customClass="!p-2 rounded-[8px]"
-              icon={<CloseIcon className="text-icon-color cursor-pointer" />}
+              icon={<CloseIcon className="text-icon-color" />}
               onClick={() => setShowModal(false)}
             />
           </div>

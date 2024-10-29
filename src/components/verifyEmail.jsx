@@ -97,13 +97,7 @@ export default function VerifyEmail() {
           onClick={handleBack}
           type="secondary"
           size="small"
-          icon={
-            <img
-              src={"/assets/svgs/left-arrow.svg"}
-              alt="back arrow"
-              className="cursor-pointer"
-            />
-          }
+          icon={<img src={"/assets/svgs/left-arrow.svg"} alt="back arrow" />}
         />
         <Text
           as="h1"

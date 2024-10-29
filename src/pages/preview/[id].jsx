@@ -45,12 +45,11 @@ export default function Index({ initialUserDetails }) {
     queryFn: _getUser(router.query.id),
     initialData: initialUserDetails,
   });
-  const { projectRef, setCursor } = useGlobalContext();
+  const { projectRef } = useGlobalContext();
 
   useEffect(() => {
     if (userDetails) {
       setTheme(userDetails?.theme == 1 ? "dark" : "light");
-      setCursor(userDetails?.cursor ? userDetails?.cursor : 0);
     }
   }, [userDetails, setTheme]);
 

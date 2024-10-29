@@ -41,7 +41,7 @@ export default function AuthHeader() {
       className={`flex bg-landing-bg-color justify-center fixed right-0 left-0 p-3 md:px-0 md:py-3 ${headerStyle}`}
     >
       <div onClick={handleNavigation} className="cursor-pointer">
-        <Logo className="text-logo-text-color cursor-pointer" />
+        <Logo className="text-logo-text-color" />
       </div>
     </div>
   );

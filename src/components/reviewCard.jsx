@@ -33,7 +33,7 @@ export default function ReviewCard({ className = "", review, edit = false }) {
           <Button
             onClick={handleEdit}
             type={"secondary"}
-            icon={<EditIcon className="text-df-icon-color cursor-pointer" />}
+            icon={<EditIcon className="text-df-icon-color" />}
           />
         )}
       </div>

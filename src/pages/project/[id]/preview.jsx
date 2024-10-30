@@ -32,35 +32,11 @@ export default function Index() {
     refetchProjectDetail();
   }, [refetchProjectDetail]);
 
-  const [isProtected, setIsProtected] = useState(projectDetails?.isProtected);
-
-  const updateProjectCache = (data) => {
-    queryClient.setQueriesData(
-      { queryKey: [`project-editor-${router.query.id}`] },
-      (oldData) => {
-        return {
-          ...oldData,
-          ...data,
-        };
-      }
-    );
-  };
-
   return (
     <main className="min-h-screen bg-df-bg-color">
       {projectDetails && (
         <div className={`max-w-[890px] mx-auto py-[40px] px-2 md:px-4 lg:px-0`}>
-          {isProtected ? (
-            <ProjectPassword
-              status={0}
-              projectDetails={projectDetails?.project}
-              id={router.query.id}
-              updateProjectCache={updateProjectCache}
-              setIsProtected={setIsProtected}
-            />
-          ) : (
-            <ProjectPreview projectDetails={projectDetails} />
-          )}
+          <ProjectPreview projectDetails={projectDetails} />
         </div>
       )}
     </main>

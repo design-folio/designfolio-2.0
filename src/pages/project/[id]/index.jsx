@@ -39,18 +39,7 @@ export default function Index({ data }) {
     refetchProjectDetail();
   }, [refetchProjectDetail]);
 
-  const updateProjectCache = (data) => {
-    setIsProtected(false);
-    queryClient.setQueriesData(
-      { mutationKey: [`project-${router.query.id}`] },
-      (oldData) => {
-        return {
-          ...oldData,
-          ...data,
-        };
-      }
-    );
-  };
+  console.log(projectDetails?.project);
   return (
     <>
       <Seo
@@ -72,13 +61,13 @@ export default function Index({ data }) {
                     status={1}
                     projectDetails={projectDetails?.project}
                     id={router.query.id}
-                    updateProjectCache={updateProjectCache}
                     setIsProtected={setIsProtected}
+                    setProjectDetails={setProjectDetails}
                   />
                 ) : (
                   <>
                     <ProjectInfo projectDetails={projectDetails?.project} />
-                    {!!projectDetails?.project?.content && (
+                    {projectDetails?.project?.content && (
                       <BlockRenderer
                         editorJsData={projectDetails?.project?.content}
                       />

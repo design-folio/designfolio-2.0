@@ -115,6 +115,10 @@ module.exports = {
         "df-tip-color": "var(--df-tip-color)",
         "credit-text-color": "var(--credit-text-color)",
 
+        // Analytics
+        "analytics-profile-url-color" : "var(--analytics-url-color)",
+        "analytics-last-updated-color" : "var(--analytics-last-updated-color)",
+
         // Profile card
         "profile-card-heading-color": "var(--profile-card-heading-color)",
         "profile-card-description-color":

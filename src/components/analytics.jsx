@@ -1,0 +1,132 @@
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { useRouter } from "next/router";
+import Button from "./button";
+import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
+import Dropdown from "./dropdown";
+import Text from "./text";
+import AnalyticsChart from "./analyticsChart";
+
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.1,
+      type: "spring",
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { y: 50 },
+  visible: {
+    y: 0,
+    transition: {
+      type: "spring",
+      stiffness: 180,
+      damping: 15,
+      duration: 0.4,
+    },
+  },
+};
+
+function Analytics({ preview = false, userDetails = null }) {
+  const router = useRouter();
+  const [duration, setDuration] = useState("Week");
+  const [uniqueVisits, setUniqueVisits] = useState(0);
+
+  const handleBack = () => {
+    router.push("/builder");
+  };
+
+  const onDropDownChange = (item) => {
+    setDuration(item);
+  };
+
+  return (
+    <motion.div
+      className="flex flex-col gap-4 md:gap-6"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      <motion.div variants={itemVariants}>
+        <section className="bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words">
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center">
+              <Button
+                text="Back to Builder"
+                onClick={handleBack}
+                type="secondary"
+                size="small"
+                icon={
+                  <LeftArrow className="text-df-icon-color cursor-pointer" />
+                }
+              />
+            </div>
+
+            {/* Title, Link, and Dropdown Row */}
+            <div className="flex items-center justify-between mt-1">
+              <div className="flex flex-col">
+                <h1 className="text-[28px] md:text-[39px] font-inter font-[500] leading-[130%] text-profile-card-heading-color">
+                  Insights
+                </h1>
+
+                {/* Link and Last Updated in One Line */}
+                <div className="flex items-center gap-2 mt-2">
+                  <p
+                    className="text-analytics-profile-url-color text-[14px] font-[500] font-sfpro underline underline-offset-4 cursor-pointer"
+                    onClick={() =>
+                      window.open(
+                        `https://keerat.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`,
+                        "_blank"
+                      )
+                    }
+                  >
+                    keerat.designfolio.me
+                  </p>
+                  <span className="text-analytics-last-updated-color text-[14px] font-[500] font-sfpro">
+                    (Last Updated 4 mins ago)
+                  </span>
+                </div>
+              </div>
+
+              <div className="self-center">
+                {" "}
+                {/* Centers the dropdown */}
+                <Dropdown
+                  data={["Week", "Today", "This Month"]}
+                  defaultValue={"Week"}
+                  theme={"light"}
+                  onClick={onDropDownChange}
+                />
+              </div>
+            </div>
+
+            <div
+              className={`bg-review-card-bg-color p-[16px] border flex flex-col justify-between border-review-card-border-color rounded-[16px] mt-4`}
+            >
+              <h1 className="text-[20px] md:text-[39px] font-inter font-[500] leading-[130%] text-profile-card-heading-color">
+                {uniqueVisits}
+              </h1>
+
+              <Text
+                size="p-xsmall"
+                className="text-analytics-last-updated-color  mt-2"
+              >
+                Unique Visitors
+              </Text>
+            </div>
+
+            <AnalyticsChart
+              duration={duration}
+              setUniqueVisits={setUniqueVisits}
+            ></AnalyticsChart>
+          </div>
+        </section>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+export default Analytics;

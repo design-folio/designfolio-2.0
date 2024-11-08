@@ -3,6 +3,7 @@ import { modals } from "@/lib/constant";
 import Text from "./text";
 import Button from "./button";
 import EditIcon from "../../public/assets/svgs/edit.svg";
+import LinkedInIcon from "../../public/assets/svgs/linkedin.svg";
 
 export default function ReviewCard({ className = "", review, edit = false }) {
   const { openModal, setSelectedReview } = useGlobalContext();
@@ -19,9 +20,17 @@ export default function ReviewCard({ className = "", review, edit = false }) {
       </Text>
       <div className="flex justify-between items-center">
         <div>
-          <Text size="p-xsmall" className="text-review-card-text-color mt-3">
-            {review?.name}
-          </Text>
+        {review.linkedinLink && review.linkedinLink!=="" ? (
+  <a href={review.linkedinLink} target="_blank" rel="noopener noreferrer">
+    <Text size="p-xsmall" className="text-blue-500 mt-3">
+    <LinkedInIcon className="text-df-icon-color mb-1" /> {review?.name}
+    </Text>
+  </a>
+) : (
+  <Text size="p-xsmall" className="text-review-card-text-color mt-3">
+    {review?.name}
+  </Text>
+)}
           <Text
             size="p-xxsmall"
             className="text-review-card-description-color "

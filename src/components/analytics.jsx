@@ -37,11 +37,6 @@ function Analytics({ }) {
   const [uniqueVisits, setUniqueVisits] = useState(0);
 
   const {userDetails,userDetailLoading} = useGlobalContext()
-  //comes as null
-  console.log(userDetails)
-
-  //fetches 
-  console.log(userDetailLoading)
 
   const handleBack = () => {
     router.push("/builder");
@@ -84,12 +79,12 @@ function Analytics({ }) {
                     className="text-analytics-profile-url-color text-[14px] font-[500] font-sfpro underline underline-offset-4 cursor-pointer"
                     onClick={() =>
                       window.open(
-                        `https://keerat.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`,
+                        `https://${userDetails.username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`,
                         "_blank"
                       )
                     }
                   >
-                    hastobefixed.designfolio.me
+                    {userDetails.username}.{process.env.NEXT_PUBLIC_BASE_DOMAIN}.me
                   </p>
                 </div>
               </div>

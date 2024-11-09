@@ -84,7 +84,7 @@ function Analytics({ }) {
                       )
                     }
                   >
-                    {userDetails.username}.{process.env.NEXT_PUBLIC_BASE_DOMAIN}.me
+                    {userDetails?.username?userDetails?.username:"hastobefixed"}.{process.env.NEXT_PUBLIC_BASE_DOMAIN}.me
                   </p>
                 </div>
               </div>

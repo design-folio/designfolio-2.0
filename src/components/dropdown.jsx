@@ -47,7 +47,7 @@ function Dropdown({ data, onClick, defaultValue, theme }) {
 
       {isOpen && (
         <div
-          className={`absolute top-full left-0 w-[250px] rounded-xl shadow-lg bg-popover-bg-color border-2 border-solid border-popover-border-color`}
+          className={`absolute top-full left-0 rounded-xl shadow-lg bg-popover-bg-color border-2 border-solid border-popover-border-color`}
           style={{
             maxHeight: "25vh",
             width: "20vw",

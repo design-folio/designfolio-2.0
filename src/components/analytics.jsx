@@ -6,6 +6,7 @@ import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
 import Dropdown from "./dropdown";
 import Text from "./text";
 import AnalyticsChart from "./analyticsChart";
+import { useGlobalContext } from "@/context/globalContext";
 
 const containerVariants = {
   hidden: {},
@@ -30,10 +31,17 @@ const itemVariants = {
   },
 };
 
-function Analytics({ preview = false, userDetails = null }) {
+function Analytics({ }) {
   const router = useRouter();
   const [duration, setDuration] = useState("Week");
   const [uniqueVisits, setUniqueVisits] = useState(0);
+
+  const {userDetails,userDetailLoading} = useGlobalContext()
+  //comes as null
+  console.log(userDetails)
+
+  //fetches 
+  console.log(userDetailLoading)
 
   const handleBack = () => {
     router.push("/builder");
@@ -65,14 +73,12 @@ function Analytics({ preview = false, userDetails = null }) {
               />
             </div>
 
-            {/* Title, Link, and Dropdown Row */}
             <div className="flex items-center justify-between mt-1">
               <div className="flex flex-col">
                 <h1 className="text-[28px] md:text-[39px] font-inter font-[500] leading-[130%] text-profile-card-heading-color">
                   Insights
                 </h1>
 
-                {/* Link and Last Updated in One Line */}
                 <div className="flex items-center gap-2 mt-2">
                   <p
                     className="text-analytics-profile-url-color text-[14px] font-[500] font-sfpro underline underline-offset-4 cursor-pointer"
@@ -83,17 +89,13 @@ function Analytics({ preview = false, userDetails = null }) {
                       )
                     }
                   >
-                    keerat.designfolio.me
+                    hastobefixed.designfolio.me
                   </p>
-                  <span className="text-analytics-last-updated-color text-[14px] font-[500] font-sfpro">
-                    (Last Updated 4 mins ago)
-                  </span>
                 </div>
               </div>
 
               <div className="self-center">
                 {" "}
-                {/* Centers the dropdown */}
                 <Dropdown
                   data={["Week", "Today", "This Month"]}
                   defaultValue={"Week"}

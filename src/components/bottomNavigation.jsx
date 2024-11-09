@@ -28,8 +28,6 @@ export default function BottomNavigation({ userDetails }) {
     }
   };
 
-  console.log(userDetails);
-
   return (
     <div className="bg-gradient-to-b from-transparent px-2  to-df-bg-color fixed bottom-0 left-0 right-0 h-[90px] lg:h-[102px] overflow-hidden  z-10">
       {!router?.asPath?.includes("project") && (

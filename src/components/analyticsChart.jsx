@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Line } from "react-chartjs-2";
 import { Chart as ChartJS } from "chart.js/auto";
 import { _analytics } from "@/network/post-request";
@@ -21,35 +21,78 @@ function AnalyticsChart({ duration, setUniqueVisits }) {
       },
     ],
   });
+  const [loading, setLoading] = useState(true); // Track loading state
 
-  const options = {
-    responsive: true, // Make the chart responsive
-    maintainAspectRatio: false, // Allow the height to adjust based on the container
-    plugins: {
-      legend: {
-        position: "bottom",
-        labels: {
-          usePointStyle: true,
-          font: {
-            size: 12,
-          },
-          generateLabels: (chart) => {
-            const original =
-              ChartJS.defaults.plugins.legend.labels.generateLabels(chart);
-            return original.map((label) => ({
-              ...label,
-              pointStyle: svgIcon, // Use the loaded SVG image as a point style
-            }));
+  // Use useMemo to memoize options
+  const options = useMemo(() => {
+    return {
+      responsive: true, // Make the chart responsive
+      maintainAspectRatio: false, // Allow the height to adjust based on the container
+      plugins: {
+        legend: {
+          position: "bottom",
+          labels: {
+            usePointStyle: true,
+            font: {
+              size: 14,
+            },
+            generateLabels: (chart) => {
+              const original =
+                ChartJS.defaults.plugins.legend.labels.generateLabels(chart);
+              return original.map((label) => ({
+                ...label,
+                pointStyle: svgIcon, // Use the loaded SVG image as a point style
+              }));
+            },
           },
         },
       },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+          borderColor: '#565656',
+          grid: {
+            display: true, // Keep horizontal grid lines
+            color: "#E1E1E1", // Set the grid lines color to #7E7E7E
+            lineWidth: 1, // Set the line width to 1px
+            borderDash: [], // Remove any dash pattern
+            // Only display grid lines for integer values
+            drawTicks : true
+          },
+          ticks: {
+            display: true,
+            font: {
+              weight: 900, 
+              size: 12, 
+              color: '#17172A',
+            },
+            callback: function (value) {
+              // Only show whole numbers (no decimals)
+              return Number.isInteger(value) ? value : ''; // Removes decimals and shows only whole numbers
+            },
+          },
+          borderColor: 'black',
+        },
+        x: {
+          borderColor: '#565656', // Set the y-axis baseline to black
+          grid: {
+            display: false, // Remove vertical grid lines
+          },
+          ticks: {
+            display: true, 
+            font: {
+              color: '#17172A', 
+            },
+            rotation: 0, 
+            maxRotation: 0, // Prevent label rotation
+            minRotation: 0, // Prevent label rotation
+            autoSkip: true, // Disable auto skipping of labels
+          },
+          borderColor: 'black',
+        },
       },
-    },
-  };
+    };
+  }, [svgIcon]); // Only recompute when svgIcon changes
 
   const fetchAnalytics = async (durationQuery) => {
     const response = await _analytics(durationQuery);
@@ -124,6 +167,7 @@ function AnalyticsChart({ duration, setUniqueVisits }) {
           },
         ],
       });
+      setLoading(false); // Set loading to false once data is fetched and chart is ready
     }
   };
 
@@ -159,9 +203,9 @@ function AnalyticsChart({ duration, setUniqueVisits }) {
     };
   }, [svgIcon, duration]); // Only rerun effect if `duration` or `svgIcon` changes
 
-  // If the SVG is not loaded yet, we can return null or a loading spinner
-  if (!svgIcon) {
-    return <div>Loading...</div>;
+  // If the SVG is not loaded yet, or the data is still loading, we can return a loading spinner
+  if (loading) {
+    return <div></div>; // Or use a spinner component here
   }
 
   return (

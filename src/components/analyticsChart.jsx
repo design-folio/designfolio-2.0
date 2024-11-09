@@ -23,6 +23,8 @@ function AnalyticsChart({ duration, setUniqueVisits }) {
   });
 
   const options = {
+    responsive: true, // Make the chart responsive
+    maintainAspectRatio: false, // Allow the height to adjust based on the container
     plugins: {
       legend: {
         position: "bottom",
@@ -111,7 +113,7 @@ function AnalyticsChart({ duration, setUniqueVisits }) {
         labels,
         datasets: [
           {
-            label: `Unique visitors (Total: ${totalCount})`,
+            label: `Unique visitors`,
             data,
             borderColor: "rgba(141, 186, 248, 0.7)",
             backgroundColor: "rgba(141, 186, 248, 1)",
@@ -163,7 +165,7 @@ function AnalyticsChart({ duration, setUniqueVisits }) {
   }
 
   return (
-    <div className="w-full h-96">
+    <div className="w-full h-[60vh] md:h-[400px]">
       <Line data={chartData} options={options} />
     </div>
   );

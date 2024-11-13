@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 
 import { getServerSideProps } from "@/lib/loggedInServerSideProps";
 import { useGlobalContext } from "@/context/globalContext";
-import Builder from "@/components/builder";
+import Builder1 from "@/components/builder";
 import BottomTask from "@/components/bottomTask";
 import Modal from "@/components/modal";
 import { modals } from "@/lib/constant";
@@ -21,6 +21,7 @@ import { Feedefy } from "@feedefy/react";
 import { useRouter } from "next/router";
 import { _resendOTP } from "@/network/get-request";
 import AddUsername from "@/components/addUsername";
+import Builder2 from "@/components/Builder2";
 
 export default function Index() {
   const {
@@ -31,6 +32,7 @@ export default function Index() {
     showModal,
     closeModal,
     taskPercentage,
+    template,
   } = useGlobalContext();
   const { isClient } = useClient();
   const router = useRouter();
@@ -88,12 +90,24 @@ export default function Index() {
     return <></>;
   }
 
+  const renderTemplate = () => {
+    switch (template) {
+      case 0:
+        return <Builder1 />;
+      case 1:
+        return <Builder2 edit />;
+
+      default:
+        return <Builder1 />;
+    }
+  };
+
   return (
     <main className="min-h-screen bg-df-bg-color">
       <div
         className={`max-w-[890px] mx-auto py-[94px] md:py-[135px] px-2 md:px-4 lg:px-0`}
       >
-        {userDetails && <Builder />}
+        {userDetails && renderTemplate()}
         {userDetails && taskPercentage !== 100 && <BottomTask />}
       </div>
       <Modal show={showModal && showModal != modals.aiProject}>

@@ -241,6 +241,11 @@ module.exports = {
         "bad-bg-color": "var(--bad-bg-color)",
         "bad-text-color": "var(--bad-text-color)",
         "modal-analyze-bg-color": "var(--modal-analyze-bg-color)",
+        "template-text-left-bg-color": "var(--template-text-left-bg-color)",
+        "template-text-left-text-color": "var(--template-text-left-text-color)",
+        "template-text-right-bg-color": "var(--template-text-right-bg-color)",
+        "template-text-right-text-color":
+          "var(--template-text-right-text-color)",
       },
       boxShadow: {
         // Landing page

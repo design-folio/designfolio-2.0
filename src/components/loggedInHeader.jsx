@@ -100,6 +100,25 @@ const cursors = [
   },
 ];
 
+const templates = [
+  {
+    id: 1,
+    item: (
+      <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer">
+        Default
+      </p>
+    ),
+  },
+  {
+    id: 2,
+    item: (
+      <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer">
+        Chat
+      </p>
+    ),
+  },
+];
+
 export default function LoggedInHeader({
   userDetails,
   setUserDetails,
@@ -109,6 +128,8 @@ export default function LoggedInHeader({
   updateCache,
   cursor,
   changeCursor,
+  changeTemplate,
+  template,
 }) {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -221,6 +242,14 @@ export default function LoggedInHeader({
     }
   };
 
+  const getTemplateStyles = (i) => {
+    if (i == template) {
+      return `bg-selected-cursor-bg-color hover:bg-selected-cursor-bg-color shadow-selected-cursor-shadow`;
+    } else {
+      return "";
+    }
+  };
+
   const formatedValue = formatTimestamp(latestPublishDate);
 
   const headerStyle = isVisible
@@ -293,6 +322,30 @@ export default function LoggedInHeader({
                           Dark
                         </p>
                       </div>
+                    </div>
+                  </div>
+                  <div className="mt-8">
+                    <Text
+                      as="h3"
+                      size="p-small"
+                      className=" font-medium text-popover-heading-color"
+                    >
+                      Template
+                    </Text>
+                    <div className="mt-4 grid grid-cols-3 gap-4">
+                      {templates.map((template, index) => (
+                        <div
+                          onClick={() => changeTemplate(index)}
+                          className={twMerge(
+                            "px-4 py-6 flex justify-center items-center border rounded-[16px] cursor-pointer",
+                            "bg-default-cursor-box-bg border-default-cursor-box-border",
+                            "hover:bg-default-cursor-bg-hover",
+                            getTemplateStyles(index) // This will dynamically add classes based on index
+                          )}
+                        >
+                          {template.item}
+                        </div>
+                      ))}
                     </div>
                   </div>
                   <div className="mt-8">

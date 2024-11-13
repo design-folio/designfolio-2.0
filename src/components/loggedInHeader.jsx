@@ -17,6 +17,7 @@ import TickIcon from "../../public/assets/svgs/tick.svg";
 import HamburgerIcon from "../../public/assets/svgs/hamburger.svg";
 import SettingIcon from "../../public/assets/svgs/settings.svg";
 import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
+import AnalyticsIcon from "../../public/assets/svgs/analytics.svg";
 
 import Button from "./button";
 import { useTheme } from "next-themes";
@@ -269,6 +270,17 @@ export default function LoggedInHeader({
             className="relative theme-button"
             data-popover-menu={popovers.themeMenu}
           >
+            <Link href="/analytics">
+              <Button
+                text={"Insights"}
+                customClass="!p-4 mr-4"
+                type="secondary"
+                icon={
+                  <AnalyticsIcon className="text-icon-color cursor-pointer" />
+                }
+                animation
+              />
+            </Link>
             <Button
               icon={<ThemeIcon className="text-icon-color cursor-pointer" />}
               onClick={handleTheme}
@@ -302,6 +314,7 @@ export default function LoggedInHeader({
                       onClick={handleCloseTheme}
                     />
                   </div>
+
                   <div>
                     <div className="flex gap-[16px] mt-3">
                       <div
@@ -574,6 +587,18 @@ export default function LoggedInHeader({
                     />
                   }
                 />
+
+                <Link href="/analytics">
+                  <Button
+                    text={"Insights"}
+                    type="secondary"
+                    customClass="!p-4 mr-0 w-full mt-4"
+                    icon={
+                      <AnalyticsIcon className="text-icon-color cursor-pointer" />
+                    }
+                    animation
+                  />
+                </Link>
                 <Button
                   icon={
                     <ThemeIcon className="text-icon-color cursor-pointer" />

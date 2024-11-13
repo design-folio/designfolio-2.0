@@ -1,10 +1,7 @@
-import { useRouter } from "next/router";
 import BlockRenderer from "./blockRenderer";
 import ProjectInfo from "./projectInfo";
 
 export default function ProjectRenderer({ projectDetails }) {
-  const router = useRouter();
-
   useEffect(() => {
     if (projectDetails?.projects?.theme) {
       setTheme(projectDetails?.projects?.theme == 1 ? "dark" : "light");

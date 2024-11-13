@@ -16,6 +16,8 @@ const Header = ({ dfToken, hideHeader }) => {
     cursor,
     setCursor,
     changeCursor,
+    changeTemplate,
+    template,
   } = useGlobalContext();
 
   // Determine header component based on dfToken and router pathname
@@ -40,6 +42,8 @@ const Header = ({ dfToken, hideHeader }) => {
         cursor={cursor}
         setCursor={setCursor}
         changeCursor={changeCursor}
+        changeTemplate={changeTemplate}
+        template={template}
       />
     );
   }

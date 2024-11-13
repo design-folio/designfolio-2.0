@@ -17,7 +17,7 @@ export default function ProjectPassword({
   projectDetails,
   id,
   status,
-  updateProjectCache,
+  setProjectDetails,
   setIsProtected,
 }) {
   const [showEye, setShowEye] = useState(false);
@@ -46,8 +46,9 @@ export default function ProjectPassword({
           onSubmit={(values, actions) => {
             _getProjectDetails(id, status, { password: values.password })
               .then((res) => {
-                updateProjectCache(res.project);
-                setIsProtected(res?.isProtected);
+                console.log(res);
+                setProjectDetails(res?.data);
+                setIsProtected(res?.data?.isProtected);
               })
               .finally(() => actions.setSubmitting(false));
           }}

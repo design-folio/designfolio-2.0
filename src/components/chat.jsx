@@ -32,7 +32,7 @@ export default function Chat({
       style={{
         transformOrigin: direction == "left" ? "bottom left" : "bottom right",
       }}
-      className={`flex flex-col min-w-min relative z-10 max-w-[680px] ${
+      className={`flex flex-col min-w-min relative  max-w-[680px] ${
         direction == "left"
           ? "bg-template-text-left-bg-color text-template-text-left-text-color mr-auto"
           : "bg-template-text-right-bg-color text-template-text-right-text-color ml-auto"

@@ -74,7 +74,9 @@ export default function Builder2({ edit = false }) {
         {bio}
         {edit && (
           <Button
-            icon={<EditIcon2 className="text-secondary-btn-text-color" />}
+            icon={
+              <EditIcon2 className="text-secondary-btn-text-color cursor-pointer" />
+            }
             customClass="w-fit mt-2"
             type="secondary"
             onClick={() => openModal(modals.onboarding)}
@@ -196,7 +198,9 @@ export default function Builder2({ edit = false }) {
           })}
           {edit && (
             <Button
-              icon={<EditIcon2 className="text-secondary-btn-text-color" />}
+              icon={
+                <EditIcon2 className="text-secondary-btn-text-color cursor-pointer" />
+              }
               customClass="w-fit mt-2"
               type="secondary"
               onClick={() => openModal(modals.work)}
@@ -270,7 +274,9 @@ export default function Builder2({ edit = false }) {
         </div>
         {edit && (
           <Button
-            icon={<EditIcon2 className="text-secondary-btn-text-color" />}
+            icon={
+              <EditIcon2 className="text-secondary-btn-text-color cursor-pointer" />
+            }
             customClass="w-fit mt-2"
             type="secondary"
             onClick={() => openModal(modals.portfolioLinks)}
@@ -328,7 +334,9 @@ export default function Builder2({ edit = false }) {
         </div>
         {edit && (
           <Button
-            icon={<EditIcon2 className="text-secondary-btn-text-color" />}
+            icon={
+              <EditIcon2 className="text-secondary-btn-text-color cursor-pointer" />
+            }
             customClass="w-fit mt-2"
             type="secondary"
             onClick={() => openModal(modals.socialMedia)}

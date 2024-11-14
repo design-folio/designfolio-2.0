@@ -23,6 +23,19 @@ export default function Index({ initialUserDetails }) {
     }
   }, [userDetails, setTheme]);
 
+  const renderTemplate = () => {
+    console.log(userDetails?.template);
+    switch (userDetails?.template) {
+      case 0:
+        return <Template1 userDetails={userDetails} />;
+      case 1:
+        return <Template2 userDetails={userDetails} />;
+
+      default:
+        return <Template1 userDetails={userDetails} />;
+    }
+  };
+
   return (
     <>
       <Seo
@@ -34,11 +47,7 @@ export default function Index({ initialUserDetails }) {
         url={`https://${userDetails?.username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`}
       />
       <main className="min-h-screen bg-df-bg-color">
-        <div
-          className={`max-w-[890px] mx-auto py-[40px] px-2 md:px-4 lg:px-0 pb-[140px]`}
-        >
-          {userDetails && <Template2 userDetails={userDetails} />}
-        </div>
+        {userDetails && renderTemplate()}
       </main>
     </>
   );

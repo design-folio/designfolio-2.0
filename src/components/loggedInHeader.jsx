@@ -28,6 +28,7 @@ import Popover from "./popover";
 import queryClient from "@/network/queryClient";
 import useClient from "@/hooks/useClient";
 import { twMerge } from "tailwind-merge";
+import { removeCursor } from "@/lib/cursor";
 
 const cursors = [
   {
@@ -181,11 +182,13 @@ export default function LoggedInHeader({
   };
 
   const handleLogout = async () => {
+    setUserDetails(null);
     setPopoverMenu(null);
     queryClient.removeQueries();
     Cookies.remove("df-token", {
       domain: process.env.NEXT_PUBLIC_BASE_DOMAIN,
     });
+    removeCursor();
     router.replace("/");
   };
 

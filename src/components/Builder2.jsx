@@ -20,11 +20,13 @@ import GoUp from "../../public/assets/svgs/go-up.svg";
 import EditIcon2 from "../../public/assets/svgs/editIcon2.svg";
 import PlusIcon from "../../public/assets/svgs/plus.svg";
 import AiIcon from "../../public/assets/svgs/ai.svg";
+import ProjectIcon from "../../public/assets/svgs/projectIcon.svg";
 
 import { modals } from "@/lib/constant";
+import AddCard from "./AddCard";
 
 export default function Builder2({ edit = false }) {
-  const { userDetails, openModal } = useGlobalContext();
+  const { userDetails, openModal, setSelectedProject } = useGlobalContext();
 
   const {
     username,
@@ -49,7 +51,10 @@ export default function Builder2({ edit = false }) {
       return `${skills[0]}`;
     }
   };
-  const onDeleteProject = () => {};
+  const onDeleteProject = (project) => {
+    openModal(modals.deleteProject);
+    setSelectedProject(project);
+  };
 
   const handleRouter = (id) => {
     if (edit) {
@@ -131,7 +136,7 @@ export default function Builder2({ edit = false }) {
             <Chat direction="left" className="rounded-tl-none">
               <ProjectCard
                 project={project}
-                onDeleteProject={onDeleteProject}
+                onDeleteProject={() => onDeleteProject(project)}
                 edit={true}
                 handleRouter={handleRouter}
               />
@@ -143,27 +148,21 @@ export default function Builder2({ edit = false }) {
         <div className="max-w-[444px] relative">
           <ProjectShape className="text-template-text-left-bg-color" />
           <Chat direction="left" className="rounded-tl-none">
-            <div className="flex gap-3 justify-center items-center  h-full">
-              <Button
-                text={"Add Case Study"}
-                customClass="w-fit gap-1 items-center"
-                onClick={() => openModal(modals.project)}
-                icon={
-                  <PlusIcon className="text-primary-btn-text-color w-[20px] h-[20px] mb-[2px] cursor-pointer" />
-                }
-              />
-              <p className="text-df-add-card-description-color"> or</p>
-
-              <Button
-                text={"Write with AI"}
-                type="secondary"
-                customClass="w-fit gap-1 items-center"
-                onClick={() => openModal(modals.aiProject)}
-                icon={
-                  <AiIcon className="text-secondary-btn-text-color w-[22px] h-[22px] mb-[2px] cursor-pointer" />
-                }
-              />
-            </div>
+            <AddCard
+              title={`${
+                projects?.length === 0
+                  ? "Upload your first case study"
+                  : "Add case study"
+              }`}
+              subTitle="Show off your best work."
+              first={projects?.length !== 0}
+              buttonTitle="Add case study"
+              secondaryButtonTitle="Write using AI"
+              onClick={() => openModal(modals.project)}
+              icon={<ProjectIcon className="cursor-pointer" />}
+              openModal={openModal}
+              className="flex justify-center items-center flex-col"
+            />
           </Chat>
         </div>
       )}

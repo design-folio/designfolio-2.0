@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import ChatBubble from "./chatBubble";
 import { motion } from "framer-motion";
 import LeftBubble from "../../public/assets/svgs/chat-bubble-left.svg";
+import RightBubble from "../../public/assets/svgs/chat-bubble-right.svg";
 
 export default function Chat({
   direction = "left",
@@ -22,17 +23,11 @@ export default function Chat({
     <motion.div
       initial={{ x: direction == "left" ? -5 : 5, scale: 0.8, opacity: 0 }}
       animate={{ x: 0, scale: 1, opacity: 1 }}
-      transition={{
-        type: "spring",
-        stiffness: 100,
-        damping: 20,
-        mass: 0.5,
-        duration: 0.1,
-      }}
       style={{
         transformOrigin: direction == "left" ? "bottom left" : "bottom right",
+        zIndex: 1,
       }}
-      className={`flex flex-col min-w-min relative  max-w-[680px] ${
+      className={`flex flex-col min-w-min relative  max-w-[680px]  ${
         direction == "left"
           ? "bg-template-text-left-bg-color text-template-text-left-text-color mr-auto"
           : "bg-template-text-right-bg-color text-template-text-right-text-color ml-auto"
@@ -50,10 +45,8 @@ export default function Chat({
           style={{ zIndex: "-1" }}
         />
       ) : (
-        <img
-          src="/assets/svgs/chat-bubble-right.svg"
-          alt="left bubble"
-          className="absolute bottom-0 right-[-10px]"
+        <RightBubble
+          className="absolute bottom-0 right-[-10px] text-template-text-left-bg-color"
           style={{ zIndex: "-1" }}
         />
       )}

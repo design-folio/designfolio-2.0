@@ -17,7 +17,7 @@ export const getCursor = (
   );
 };
 
-const removeCursor = () => {
+export const removeCursor = () => {
   document.documentElement.style.setProperty("--cursor-default", "default");
   document.documentElement.style.setProperty("--cursor-pointer", "pointer");
   document.documentElement.style.removeProperty(

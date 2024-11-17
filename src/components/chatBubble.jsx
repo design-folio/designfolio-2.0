@@ -3,7 +3,7 @@ import React from "react";
 export default function ChatBubble() {
   return (
     <svg
-      className="w-[48px] h-6"
+      className="w-[26px] h-6"
       viewBox="0 0 48 6"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

@@ -28,8 +28,8 @@ export default function Template2({ userDetails, preview = false }) {
     avatar,
     socials,
   } = userDetails || {};
-  const [loadAll, setLoadAll] = useState(true);
   const router = useRouter();
+  const [activeBubbles, setActiveBubbles] = useState(["name"]);
 
   const getSkills = () => {
     if (skills.length > 1) {
@@ -52,6 +52,14 @@ export default function Template2({ userDetails, preview = false }) {
     }
   };
 
+  const isBubbleActive = (name) => {
+    return activeBubbles.includes(name);
+  };
+
+  const handleLoading = (name) => {
+    setActiveBubbles((prev) => [...prev, name]);
+  };
+
   return (
     <div className={`max-w-[890px] mx-auto py-[40px] px-2 md:px-4 lg:px-0`}>
       <div className="flex flex-col gap-6">
@@ -64,106 +72,182 @@ export default function Template2({ userDetails, preview = false }) {
             <Chat
               direction="left"
               delay={1000}
-              onComplete={() => setLoadAll(false)}
+              onComplete={() => handleLoading("bio")}
             >
               Hey there! I'm {username}
             </Chat>
           </div>
         </div>
-        {!loadAll && (
-          <>
-            <Chat direction="left">{bio}</Chat>
+        {isBubbleActive("bio") && (
+          <Chat
+            direction="left"
+            delay={400}
+            onComplete={() => handleLoading("skill-question")}
+          >
+            {bio}
+          </Chat>
+        )}
 
-            <Chat direction="right">Hey! What are your core skills?</Chat>
-            <Chat>I specialize in {getSkills()}</Chat>
-            <Chat>
-              <div className="flex flex-wrap items-center gap-2 mb-2">
-                {tools?.map((tool, i) => (
-                  <div
-                    title={tool?.label}
-                    key={i}
-                    className={`cursor-default h-full flex gap-2 justify-between items-center bg-tools-card-item-bg-color text-tools-card-item-text-color border-tools-card-item-border-color  border border-solid rounded-[16px] p-3`}
-                  >
-                    {tool?.image && (
-                      <img
-                        src={tool?.image}
-                        alt={tool?.label}
-                        className="w-[34px] h-[34px] "
-                      />
-                    )}
-                    <Text
-                      size="p-xsmall"
-                      className="text-tools-card-item-text-color"
-                    >
-                      {tool?.label}
-                    </Text>
-                  </div>
-                ))}
-              </div>
-              These are my toolbox.
-            </Chat>
+        {isBubbleActive("skill-question") && (
+          <Chat
+            delay={100}
+            direction="right"
+            onComplete={() => handleLoading("skills")}
+          >
+            Hey! What are your core skills?
+          </Chat>
+        )}
 
-            <Chat direction="right">
-              Awesome! Can you share any of your recent work? Would love to see
-              them
-            </Chat>
+        {isBubbleActive("skills") && (
+          <Chat delay={1000} onComplete={() => handleLoading("tools")}>
+            I specialize in {getSkills()}
+          </Chat>
+        )}
 
-            <Chat direction="left">Here you go!</Chat>
-            {projects?.map((project, index) => {
-              return (
-                <div className="max-w-[444px] relative">
-                  <ProjectShape className="text-template-text-left-bg-color" />
-                  <Chat
-                    direction="left"
-                    delay={1000}
-                    className="rounded-tl-none"
-                  >
-                    <ProjectCard
-                      project={project}
-                      onDeleteProject={onDeleteProject}
-                      edit={false}
-                      handleRouter={handleRouter}
+        {isBubbleActive("tools") && (
+          <Chat
+            delay={400}
+            onComplete={() => handleLoading("project-question")}
+          >
+            <div className="flex flex-wrap items-center gap-2 mb-2">
+              {tools?.map((tool, i) => (
+                <div
+                  title={tool?.label}
+                  key={i}
+                  className={`cursor-default h-full flex gap-2 justify-between items-center bg-tools-card-item-bg-color text-tools-card-item-text-color border-tools-card-item-border-color  border border-solid rounded-[16px] p-3`}
+                >
+                  {tool?.image && (
+                    <img
+                      src={tool?.image}
+                      alt={tool?.label}
+                      className="w-[34px] h-[34px] "
                     />
-                  </Chat>
+                  )}
+                  <Text
+                    size="p-xsmall"
+                    className="text-tools-card-item-text-color"
+                  >
+                    {tool?.label}
+                  </Text>
                 </div>
-              );
-            })}
-            <Chat direction="left">Also, here's more!</Chat>
-            <Chat direction="left" className="pb-5">
-              <div className="flex flex-col gap-6">
-                {experiences?.map((experience, index) => {
-                  return (
-                    <div key={experience?._id}>
-                      <Text size="p-xsmall" className="font-medium">
-                        {experience?.company}
-                      </Text>
-                      <div className="flex">
-                        <ExperienceShape className="w-[54px]" />
-                        <div className="mt-[14px] flex-1">
-                          <Text size="p-small" className="font-semibold">
-                            {experience?.role}
-                          </Text>
-                          <Text
-                            size="p-xsmall"
-                            className="font-medium mt-[6px]"
-                          >
-                            Jan 2023 - Now
-                          </Text>
-                          <p
-                            className={`text-[16px] font-light leading-[22.4px] font-inter`}
-                            dangerouslySetInnerHTML={{
-                              __html: experience?.description,
-                            }}
-                          ></p>
-                        </div>
+              ))}
+            </div>
+            These are my toolbox.
+          </Chat>
+        )}
+
+        {projects.length != 0 && isBubbleActive("project-question") && (
+          <Chat
+            direction="right"
+            delay={400}
+            onComplete={() => handleLoading("project-chat")}
+          >
+            Awesome! Can you share any of your recent work? Would love to see
+            them
+          </Chat>
+        )}
+
+        {projects.length != 0 && isBubbleActive("project-chat") && (
+          <Chat
+            direction="left"
+            delay={200}
+            onComplete={() => handleLoading("projects")}
+          >
+            Here you go!
+          </Chat>
+        )}
+        {projects.length != 0 &&
+          isBubbleActive("projects") &&
+          projects?.map((project, index) => {
+            return (
+              <div className="max-w-[444px] relative">
+                <ProjectShape className="text-template-text-left-bg-color" />
+                <Chat
+                  direction="left"
+                  className="rounded-tl-none"
+                  onComplete={() => handleLoading("work-experience")}
+                >
+                  <ProjectCard
+                    project={project}
+                    onDeleteProject={onDeleteProject}
+                    edit={false}
+                    handleRouter={handleRouter}
+                  />
+                </Chat>
+              </div>
+            );
+          })}
+        {(isBubbleActive("work-experience") ||
+          (projects?.length == 0 && experiences.length != 0)) && (
+          <Chat
+            direction="left"
+            delay={200}
+            onComplete={() => handleLoading("experience")}
+          >
+            Also, here's more!
+          </Chat>
+        )}
+
+        {(isBubbleActive("experience") ||
+          (projects?.length == 0 && experiences.length != 0)) && (
+          <Chat
+            direction="left"
+            className="pb-5"
+            delay={200}
+            onComplete={() => handleLoading("other-portfolio-question")}
+          >
+            <div className="flex flex-col gap-6">
+              {experiences?.map((experience, index) => {
+                return (
+                  <div key={experience?._id}>
+                    <Text size="p-xsmall" className="font-medium">
+                      {experience?.company}
+                    </Text>
+                    <div className="flex">
+                      <ExperienceShape className="w-[54px]" />
+                      <div className="mt-[14px] flex-1">
+                        <Text size="p-small" className="font-semibold">
+                          {experience?.role}
+                        </Text>
+                        <Text size="p-xsmall" className="font-medium mt-[6px]">
+                          Jan 2023 - Now
+                        </Text>
+                        <p
+                          className={`text-[16px] font-light leading-[22.4px] font-inter`}
+                          dangerouslySetInnerHTML={{
+                            __html: experience?.description,
+                          }}
+                        ></p>
                       </div>
                     </div>
-                  );
-                })}
-              </div>
+                  </div>
+                );
+              })}
+            </div>
+          </Chat>
+        )}
+        {(isBubbleActive("other-portfolio-question") ||
+          projects?.length == 0 ||
+          experiences.length == 0) &&
+          Object?.keys(portfolios)?.length === 0 && (
+            <Chat
+              direction="right"
+              delay={400}
+              onComplete={() => handleLoading("other-portfolios")}
+            >
+              Do you have any other portfolios?
             </Chat>
-            <Chat direction="right">Do you have any other portfolios?</Chat>
-            <Chat direction="left" className="pb-5">
+          )}
+        {(isBubbleActive("other-portfolios") ||
+          projects?.length == 0 ||
+          experiences.length == 0) &&
+          Object?.keys(portfolios)?.length === 0 && (
+            <Chat
+              direction="left"
+              className="pb-5"
+              delay={200}
+              onComplete={() => handleLoading("social-media-question")}
+            >
               <div className="flex flex-col lg:flex-row gap-[24px]">
                 {portfolios?.dribbble && (
                   <Link
@@ -227,8 +311,31 @@ export default function Template2({ userDetails, preview = false }) {
                 )}
               </div>
             </Chat>
-            <Chat direction="right">Where can I reach you?</Chat>
-            <Chat direction="left" className="pb-5">
+          )}
+        {(isBubbleActive("social-media-question") ||
+          projects?.length == 0 ||
+          experiences.length == 0 ||
+          Object?.keys(portfolios)?.length === 0) &&
+          Object?.keys(socials)?.length === 0 && (
+            <Chat
+              direction="right"
+              delay={400}
+              onComplete={() => handleLoading("social-media")}
+            >
+              Where can I reach you?
+            </Chat>
+          )}
+        {projects?.length == 0 ||
+          experiences.length == 0 ||
+          Object?.keys(portfolios)?.length === 0 ||
+          Object?.keys(socials)?.length === 0 ||
+          (isBubbleActive("social-media") && (
+            <Chat
+              direction="left"
+              className="pb-5"
+              delay={200}
+              onComplete={() => handleLoading("scroll-up")}
+            >
               <div className="flex flex-col lg:flex-row gap-[24px]">
                 {socials?.instagram && (
                   <Link
@@ -278,15 +385,19 @@ export default function Template2({ userDetails, preview = false }) {
                 )}
               </div>
             </Chat>
-            <div
-              className="flex justify-center mt-10"
-              style={{ pointerEvent: "all" }}
-            >
-              <a href="#">
-                <GoUp className="animate-bounce cursor-pointer" />
-              </a>
-            </div>
-          </>
+          ))}
+
+        {(isBubbleActive("scroll-up") ||
+          isBubbleActive("other-portfolios") ||
+          isBubbleActive("projects")) && (
+          <div
+            className="flex justify-center mt-10"
+            style={{ pointerEvent: "all" }}
+          >
+            <a href="#">
+              <GoUp className="animate-bounce cursor-pointer" />
+            </a>
+          </div>
         )}
       </div>
     </div>

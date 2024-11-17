@@ -105,17 +105,19 @@ const cursors = [
 const templates = [
   {
     id: 1,
+    value: "default",
     item: (
-      <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer">
+      <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer mb-1">
         Default
       </p>
     ),
   },
   {
     id: 2,
+    value: "chat",
     item: (
-      <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer">
-        Chat
+      <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer mb-1">
+        Chat Box
       </p>
     ),
   },
@@ -238,6 +240,22 @@ export default function LoggedInHeader({
     changeCursor(i);
   };
 
+  const renderTemplate = (template = "default") => {
+    if (template == "default") {
+      if (theme == "light") {
+        return "/assets/png/white-default-theme.png";
+      } else {
+        return "/assets/png/dark-default-theme.png";
+      }
+    } else {
+      if (theme == "light") {
+        return "/assets/png/white-chat-box-theme.png";
+      } else {
+        return "/assets/png/dark-chat-box-theme.png";
+      }
+    }
+  };
+
   const getStyles = (i) => {
     if (i == cursor) {
       return `bg-selected-cursor-bg-color hover:bg-selected-cursor-bg-color shadow-selected-cursor-shadow`;
@@ -299,7 +317,7 @@ export default function LoggedInHeader({
                     : "opacity-0 scale-90 pointer-events-none"
                 }`}
               >
-                <div className="w-[342px] p-4  rounded-xl shadow-lg bg-popover-bg-color border-4 border-solid border-popover-border-color">
+                <div className="w-[408px] max-h-[450px] hide-scrollbar overflow-y-scroll p-4  rounded-xl shadow-lg bg-popover-bg-color border-4 border-solid border-popover-border-color">
                   <div className="flex justify-between items-center">
                     <Text
                       as="h3"
@@ -322,7 +340,7 @@ export default function LoggedInHeader({
                     <div className="flex gap-[16px] mt-3">
                       <div
                         onClick={() => changeTheme(0)}
-                        className={`flex gap-[10px]  items-center border bg-default-theme-box-bg-color border-default-theme-box-border-color hover:bg-default-theme-bg-hover-color shadow-default-theme-shadow rounded-[16px] px-[32px] py-[16px] cursor-pointer`}
+                        className={`flex gap-[10px] w-full justify-center items-center border bg-default-theme-box-bg-color border-default-theme-box-border-color hover:bg-default-theme-bg-hover-color shadow-default-theme-shadow rounded-[16px] px-[32px] py-[16px] cursor-pointer`}
                       >
                         <SunIcon className={"cursor-pointer"} />
                         <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer">
@@ -331,7 +349,7 @@ export default function LoggedInHeader({
                       </div>
                       <div
                         onClick={() => changeTheme(1)}
-                        className={`border flex gap-[10px] bg-theme-box-bg-color border-theme-box-border-color hover:bg-theme-bg-hover-color shadow-theme-shadow rounded-[16px] px-[32px] py-[16px] cursor-pointer`}
+                        className={`border flex gap-[10px] w-full justify-center bg-theme-box-bg-color border-theme-box-border-color hover:bg-theme-bg-hover-color shadow-theme-shadow rounded-[16px] px-[32px] py-[16px] cursor-pointer`}
                       >
                         <MoonIcon className={"cursor-pointer"} />
                         <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer">
@@ -340,30 +358,7 @@ export default function LoggedInHeader({
                       </div>
                     </div>
                   </div>
-                  <div className="mt-8">
-                    <Text
-                      as="h3"
-                      size="p-small"
-                      className=" font-medium text-popover-heading-color"
-                    >
-                      Template
-                    </Text>
-                    <div className="mt-4 grid grid-cols-3 gap-4">
-                      {templates.map((template, index) => (
-                        <div
-                          onClick={() => changeTemplate(index)}
-                          className={twMerge(
-                            "px-4 py-6 flex justify-center items-center border rounded-[16px] cursor-pointer",
-                            "bg-default-cursor-box-bg border-default-cursor-box-border",
-                            "hover:bg-default-cursor-bg-hover",
-                            getTemplateStyles(index) // This will dynamically add classes based on index
-                          )}
-                        >
-                          {template.item}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+
                   <div className="mt-8">
                     <Text
                       as="h3"
@@ -384,6 +379,31 @@ export default function LoggedInHeader({
                           )}
                         >
                           {cursor.item}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="mt-8">
+                    <Text
+                      as="h3"
+                      size="p-small"
+                      className=" font-medium text-popover-heading-color"
+                    >
+                      Template
+                    </Text>
+                    <div className="mt-4 grid grid-cols-2 gap-4">
+                      {templates.map((template, index) => (
+                        <div
+                          onClick={() => changeTemplate(index)}
+                          className={twMerge(
+                            "px-4 py-6 flex flex-col justify-center items-center border rounded-[16px] cursor-pointer",
+                            "bg-default-cursor-box-bg border-default-cursor-box-border",
+                            "hover:bg-default-cursor-bg-hover",
+                            getTemplateStyles(index) // This will dynamically add classes based on index
+                          )}
+                        >
+                          {template.item}
+                          <img src={renderTemplate(template.value)} alt="" />
                         </div>
                       ))}
                     </div>

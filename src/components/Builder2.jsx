@@ -19,14 +19,19 @@ import LinkedInIcon from "../../public/assets/svgs/linkedin.svg";
 import GoUp from "../../public/assets/svgs/go-up.svg";
 import EditIcon2 from "../../public/assets/svgs/editIcon2.svg";
 import PlusIcon from "../../public/assets/svgs/plus.svg";
-import AiIcon from "../../public/assets/svgs/ai.svg";
+import BagIcon from "../../public/assets/svgs/bag.svg";
 import ProjectIcon from "../../public/assets/svgs/projectIcon.svg";
+import OthersIcon from "../../public/assets/svgs/others.svg";
+import PuzzleIcon from "../../public/assets/svgs/puzzle.svg";
 
 import { modals } from "@/lib/constant";
 import AddCard from "./AddCard";
+import AddItem from "./addItem";
+import { useTheme } from "next-themes";
 
 export default function Builder2({ edit = false }) {
   const { userDetails, openModal, setSelectedProject } = useGlobalContext();
+  const { theme } = useTheme();
 
   const {
     username,
@@ -196,13 +201,38 @@ export default function Builder2({ edit = false }) {
             );
           })}
           {edit && (
-            <Button
-              icon={
-                <EditIcon2 className="text-secondary-btn-text-color cursor-pointer" />
-              }
-              customClass="w-fit mt-2"
-              type="secondary"
+            <AddItem
+              title="Add your work experience"
               onClick={() => openModal(modals.work)}
+              iconLeft={
+                experiences?.length > 0 ? (
+                  <Button
+                    type="secondary"
+                    icon={
+                      <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                    }
+                    onClick={() => openModal(modals.work)}
+                    size="small"
+                  />
+                ) : (
+                  <BagIcon />
+                )
+              }
+              iconRight={
+                experiences?.length == 0 ? (
+                  <Button
+                    type="secondary"
+                    icon={
+                      <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                    }
+                    onClick={() => openModal(modals.work)}
+                    size="small"
+                  />
+                ) : (
+                  false
+                )
+              }
+              theme={theme}
             />
           )}
         </div>
@@ -272,13 +302,20 @@ export default function Builder2({ edit = false }) {
           )}
         </div>
         {edit && (
-          <Button
-            icon={
-              <EditIcon2 className="text-secondary-btn-text-color cursor-pointer" />
+          <AddItem
+            title="Add your portfolio links"
+            onClick={() => openModal("portfolio-links")}
+            iconLeft={<OthersIcon className="text-df-icon-color" />}
+            iconRight={
+              <Button
+                size="small"
+                type="secondary"
+                customClass="w-fit gap-0"
+                icon={
+                  <PlusIcon className="text-secondary-btn-text-color w-[14px] h-[14px] cursor-pointer" />
+                }
+              />
             }
-            customClass="w-fit mt-2"
-            type="secondary"
-            onClick={() => openModal(modals.portfolioLinks)}
           />
         )}
       </Chat>
@@ -332,13 +369,20 @@ export default function Builder2({ edit = false }) {
           )}
         </div>
         {edit && (
-          <Button
-            icon={
-              <EditIcon2 className="text-secondary-btn-text-color cursor-pointer" />
-            }
-            customClass="w-fit mt-2"
-            type="secondary"
+          <AddItem
+            title="Add your social media"
             onClick={() => openModal(modals.socialMedia)}
+            iconLeft={<PuzzleIcon className="text-df-icon-color" />}
+            iconRight={
+              <Button
+                size="small"
+                type="secondary"
+                customClass="w-fit gap-0"
+                icon={
+                  <PlusIcon className="text-secondary-btn-text-color w-[14px] h-[14px] cursor-pointer" />
+                }
+              />
+            }
           />
         )}
       </Chat>

@@ -1,7 +1,7 @@
 import { useGlobalContext } from "@/context/globalContext";
 import { useEffect } from "react";
 import Preview1 from "@/components/preview1";
-import Builder2 from "@/components/Builder2";
+import Template2 from "@/components/template2";
 
 export default function Index() {
   const {
@@ -17,7 +17,7 @@ export default function Index() {
       case 0:
         return <Preview1 userDetails={userDetails} projectRef={projectRef} />;
       case 1:
-        return <Builder2 />;
+        return <Template2 userDetails={userDetails} />;
 
       default:
         return <Preview1 userDetails={userDetails} projectRef={projectRef} />;

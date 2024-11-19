@@ -109,7 +109,7 @@ function Analytics({ }) {
 
               <Text
                 size="p-xsmall"
-                className="text-analytics-last-updated-color  mt-2"
+                className="text-analytics-last-updated-color mt-2"
               >
                 Unique Visitors
               </Text>

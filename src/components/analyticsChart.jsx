@@ -2,10 +2,12 @@ import React, { useState, useEffect, useMemo } from "react";
 import { Line } from "react-chartjs-2";
 import { Chart as ChartJS } from "chart.js/auto";
 import { _analytics } from "@/network/post-request";
+import { useTheme } from "next-themes";
 
 function AnalyticsChart({ duration, setUniqueVisits }) {
   const [svgIcon, setSvgIcon] = useState(null);
   const [chartInstance, setChartInstance] = useState(null);
+  const { theme } = useTheme();
   const [chartData, setChartData] = useState({
     labels: [],
     datasets: [
@@ -25,16 +27,24 @@ function AnalyticsChart({ duration, setUniqueVisits }) {
 
   // Use useMemo to memoize options
   const options = useMemo(() => {
+    // Check for dark theme and apply corresponding styles
+    const isDarkMode = theme === "dark";
+    ChartJS.defaults.color = isDarkMode ? "#ffffff" : "#17172A"; // White for dark mode, dark color for light mode
+
     return {
       responsive: true, // Make the chart responsive
       maintainAspectRatio: false, // Allow the height to adjust based on the container
       plugins: {
+        colors: {
+          forceOverride: true,
+          enabled: false
+        },
         legend: {
           position: "bottom",
           labels: {
             usePointStyle: true,
             font: {
-              size: 14,
+              size: 14
             },
             generateLabels: (chart) => {
               const original =
@@ -50,49 +60,47 @@ function AnalyticsChart({ duration, setUniqueVisits }) {
       scales: {
         y: {
           beginAtZero: true,
-          borderColor: '#565656',
+          borderColor: "transparent", // Set the Y-axis border to transparent to hide the vertical line
           grid: {
             display: true, // Keep horizontal grid lines
-            color: "#E1E1E1", // Set the grid lines color to #7E7E7E
+            color: isDarkMode ? "#606273" : "#E1E1E1", // Dark grid lines for dark mode, light grid lines for light mode
             lineWidth: 1, // Set the line width to 1px
             borderDash: [], // Remove any dash pattern
-            // Only display grid lines for integer values
-            drawTicks : true
+            drawTicks: true,
           },
           ticks: {
             display: true,
             font: {
-              weight: 900, 
-              size: 12, 
-              color: '#17172A',
+              weight: 900,
+              size: 12,
             },
             callback: function (value) {
-              // Only show whole numbers (no decimals)
               return Number.isInteger(value) ? value : ''; // Removes decimals and shows only whole numbers
             },
           },
-          borderColor: 'black',
         },
         x: {
-          borderColor: '#565656', // Set the y-axis baseline to black
+          borderColor: isDarkMode ? '#1D1F27' : '#565656', // Dark color for dark mode, lighter color for light mode
           grid: {
             display: false, // Remove vertical grid lines
           },
           ticks: {
-            display: true, 
-            font: {
-              color: '#17172A', 
-            },
-            rotation: 0, 
+            display: true,
+            rotation: 0,
             maxRotation: 0, // Prevent label rotation
             minRotation: 0, // Prevent label rotation
             autoSkip: true, // Disable auto skipping of labels
           },
-          borderColor: 'black',
+        },
+      },
+      elements: {
+        line: {
+          color: isDarkMode ? '#606273' : 'rgba(141, 186, 248, 0.7)', // Line color for dark mode and light mode
         },
       },
     };
-  }, [svgIcon]); // Only recompute when svgIcon changes
+  }, [svgIcon, theme]); // Only recompute when svgIcon or theme changes
+  
 
   const fetchAnalytics = async (durationQuery) => {
     const response = await _analytics(durationQuery);

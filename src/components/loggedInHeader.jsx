@@ -305,7 +305,7 @@ export default function LoggedInHeader({
                     : "opacity-0 scale-90 pointer-events-none"
                 }`}
               >
-                <div className="w-[408px] max-h-[450px] hide-scrollbar overflow-y-scroll p-4  rounded-xl shadow-lg bg-popover-bg-color border-4 border-solid border-popover-border-color">
+                <div className="w-[408px] max-h-[65vh] hide-scrollbar overflow-y-scroll p-4  rounded-xl shadow-lg bg-popover-bg-color border-4 border-solid border-popover-border-color">
                   <div className="flex justify-between items-center">
                     <Text
                       as="h3"
@@ -345,31 +345,6 @@ export default function LoggedInHeader({
                       </div>
                     </div>
                   </div>
-
-                  <div className="mt-8">
-                    <Text
-                      as="h3"
-                      size="p-small"
-                      className=" font-medium text-popover-heading-color"
-                    >
-                      Cursor
-                    </Text>
-                    <div className="mt-4 grid grid-cols-3 gap-4">
-                      {cursors.map((cursor, index) => (
-                        <div
-                          onClick={() => handleChangeCursor(index)}
-                          className={twMerge(
-                            "px-4 py-6 flex justify-center items-center border rounded-[16px] cursor-pointer",
-                            "bg-default-cursor-box-bg border-default-cursor-box-border",
-                            "hover:bg-default-cursor-bg-hover",
-                            getStyles(index) // This will dynamically add classes based on index
-                          )}
-                        >
-                          {cursor.item}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
                   <div className="mt-8">
                     <Text
                       as="h3"
@@ -390,7 +365,35 @@ export default function LoggedInHeader({
                           )}
                         >
                           {template.item}
-                          <img src={renderTemplate(template.value)} alt="" />
+                          <img
+                            src={renderTemplate(template.value)}
+                            alt=""
+                            className="cursor-pointer"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="mt-8">
+                    <Text
+                      as="h3"
+                      size="p-small"
+                      className=" font-medium text-popover-heading-color"
+                    >
+                      Cursor
+                    </Text>
+                    <div className="mt-4 grid grid-cols-3 gap-4">
+                      {cursors.map((cursor, index) => (
+                        <div
+                          onClick={() => handleChangeCursor(index)}
+                          className={twMerge(
+                            "px-4 py-6 flex justify-center items-center border rounded-[16px] cursor-pointer",
+                            "bg-default-cursor-box-bg border-default-cursor-box-border",
+                            "hover:bg-default-cursor-bg-hover",
+                            getStyles(index) // This will dynamically add classes based on index
+                          )}
+                        >
+                          {cursor.item}
                         </div>
                       ))}
                     </div>

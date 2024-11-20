@@ -200,37 +200,29 @@ export default function Builder2({ edit = false }) {
               </div>
             );
           })}
-          {edit && (
+          {edit && experiences?.length > 0 && (
+            <Button
+              icon={
+                <EditIcon2 className="text-secondary-btn-text-color cursor-pointer" />
+              }
+              customClass="w-fit mt-2"
+              type="secondary"
+              onClick={() => openModal(modals.work)}
+            />
+          )}
+          {edit && experiences?.length == 0 && (
             <AddItem
               title="Add your work experience"
               onClick={() => openModal(modals.work)}
-              iconLeft={
-                experiences?.length > 0 ? (
-                  <Button
-                    type="secondary"
-                    icon={
-                      <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
-                    }
-                    onClick={() => openModal(modals.work)}
-                    size="small"
-                  />
-                ) : (
-                  <BagIcon />
-                )
-              }
               iconRight={
-                experiences?.length == 0 ? (
-                  <Button
-                    type="secondary"
-                    icon={
-                      <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
-                    }
-                    onClick={() => openModal(modals.work)}
-                    size="small"
-                  />
-                ) : (
-                  false
-                )
+                <Button
+                  type="secondary"
+                  icon={
+                    <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                  }
+                  onClick={() => openModal(modals.work)}
+                  size="small"
+                />
               }
               theme={theme}
             />
@@ -301,11 +293,20 @@ export default function Builder2({ edit = false }) {
             </Link>
           )}
         </div>
-        {edit && (
+        {edit && portfolios && Object.keys(portfolios).length != 0 && (
+          <Button
+            icon={
+              <EditIcon2 className="text-secondary-btn-text-color cursor-pointer" />
+            }
+            customClass="w-fit mt-2"
+            type="secondary"
+            onClick={() => openModal(modals.portfolioLinks)}
+          />
+        )}
+        {edit && portfolios && Object.keys(portfolios).length == 0 && (
           <AddItem
             title="Add your portfolio links"
             onClick={() => openModal("portfolio-links")}
-            iconLeft={<OthersIcon className="text-df-icon-color" />}
             iconRight={
               <Button
                 size="small"
@@ -368,11 +369,20 @@ export default function Builder2({ edit = false }) {
             </Link>
           )}
         </div>
-        {edit && (
+        {edit && socials && Object.keys(socials).length != 0 && (
+          <Button
+            icon={
+              <EditIcon2 className="text-secondary-btn-text-color cursor-pointer" />
+            }
+            customClass="w-fit mt-2"
+            type="secondary"
+            onClick={() => openModal(modals.socialMedia)}
+          />
+        )}
+        {edit && socials && Object.keys(socials).length == 0 && (
           <AddItem
             title="Add your social media"
             onClick={() => openModal(modals.socialMedia)}
-            iconLeft={<PuzzleIcon className="text-df-icon-color" />}
             iconRight={
               <Button
                 size="small"

@@ -16,6 +16,7 @@ import TwitterIcon from "../../public/assets/svgs/twitter.svg";
 import LinkedInIcon from "../../public/assets/svgs/linkedin.svg";
 import GoUp from "../../public/assets/svgs/go-up.svg";
 import { useRouter } from "next/router";
+import { chatBubbleItems } from "@/lib/constant";
 export default function Template2({ userDetails, preview = false }) {
   const {
     username,
@@ -58,6 +59,71 @@ export default function Template2({ userDetails, preview = false }) {
 
   const handleLoading = (name) => {
     setActiveBubbles((prev) => [...prev, name]);
+  };
+  console.log(activeBubbles);
+
+  const isProjectQuestionPresent = () => {
+    if (
+      isBubbleActive(chatBubbleItems.tools) &&
+      isBubbleActive(chatBubbleItems.projectQuestion) &&
+      projects &&
+      projects.length > 0
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const isWorkExperiencePresent = () => {
+    if (
+      ((isBubbleActive(chatBubbleItems.tools) &&
+        isBubbleActive(chatBubbleItems.projectQuestion) &&
+        !isProjectQuestionPresent()) ||
+        isBubbleActive(chatBubbleItems.workExperience)) &&
+      experiences &&
+      experiences.length != 0
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const isOtherPortfolioPresent = () => {
+    if (
+      (isBubbleActive(chatBubbleItems.tools) &&
+        isBubbleActive(chatBubbleItems.projects) &&
+        isBubbleActive(chatBubbleItems.experience) &&
+        !isWorkExperiencePresent() &&
+        !isProjectQuestionPresent()) ||
+      (isBubbleActive(chatBubbleItems.otherPortfolioQuestion) &&
+        portfolios &&
+        Object?.keys(portfolios)?.length != 0)
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const isSocilaMediaPresent = () => {
+    if (
+      (isBubbleActive(chatBubbleItems.tools) &&
+        isBubbleActive(chatBubbleItems.projects) &&
+        isBubbleActive(chatBubbleItems.experience) &&
+        isBubbleActive(chatBubbleItems.otherPortfolios) &&
+        !isWorkExperiencePresent() &&
+        !isProjectQuestionPresent() &&
+        !isOtherPortfolioPresent()) ||
+      (isBubbleActive(chatBubbleItems.socialMediaQuestion) &&
+        socials &&
+        Object?.keys(socials)?.length != 0)
+    ) {
+      return true;
+    } else {
+      return false;
+    }
   };
 
   return (
@@ -136,7 +202,7 @@ export default function Template2({ userDetails, preview = false }) {
           </Chat>
         )}
 
-        {projects.length != 0 && isBubbleActive("project-question") && (
+        {isProjectQuestionPresent() && (
           <Chat
             direction="right"
             delay={400}
@@ -147,7 +213,7 @@ export default function Template2({ userDetails, preview = false }) {
           </Chat>
         )}
 
-        {projects.length != 0 && isBubbleActive("project-chat") && (
+        {isBubbleActive(chatBubbleItems.projectChat) && (
           <Chat
             direction="left"
             delay={200}
@@ -156,8 +222,7 @@ export default function Template2({ userDetails, preview = false }) {
             Here you go!
           </Chat>
         )}
-        {projects.length != 0 &&
-          isBubbleActive("projects") &&
+        {isBubbleActive(chatBubbleItems.projects) &&
           projects?.map((project, index) => {
             return (
               <div className="max-w-[444px] relative">
@@ -177,8 +242,7 @@ export default function Template2({ userDetails, preview = false }) {
               </div>
             );
           })}
-        {(isBubbleActive("work-experience") ||
-          (projects?.length == 0 && experiences.length != 0)) && (
+        {isWorkExperiencePresent() && (
           <Chat
             direction="left"
             delay={200}
@@ -188,8 +252,7 @@ export default function Template2({ userDetails, preview = false }) {
           </Chat>
         )}
 
-        {(isBubbleActive("experience") ||
-          (projects?.length == 0 && experiences.length != 0)) && (
+        {isBubbleActive("experience") && (
           <Chat
             direction="left"
             className="pb-5"
@@ -226,168 +289,154 @@ export default function Template2({ userDetails, preview = false }) {
             </div>
           </Chat>
         )}
-        {(isBubbleActive("other-portfolio-question") ||
-          projects?.length == 0 ||
-          experiences.length == 0) &&
-          Object?.keys(portfolios)?.length === 0 && (
-            <Chat
-              direction="right"
-              delay={400}
-              onComplete={() => handleLoading("other-portfolios")}
-            >
-              Do you have any other portfolios?
-            </Chat>
-          )}
-        {(isBubbleActive("other-portfolios") ||
-          projects?.length == 0 ||
-          experiences.length == 0) &&
-          Object?.keys(portfolios)?.length === 0 && (
-            <Chat
-              direction="left"
-              className="pb-5"
-              delay={200}
-              onComplete={() => handleLoading("social-media-question")}
-            >
-              <div className="flex flex-col lg:flex-row gap-[24px]">
-                {portfolios?.dribbble && (
-                  <Link
-                    href={portfolios?.dribbble}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Button
-                      text={"Dribbble"}
-                      type="secondary"
-                      icon={
-                        <DribbbleIcon className="text-df-icon-color cursor-pointer" />
-                      }
-                    />
-                  </Link>
-                )}
-                {portfolios?.behance && (
-                  <Link
-                    href={portfolios?.behance}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Button
-                      text={"Behance"}
-                      type="secondary"
-                      icon={
-                        <BehanceIcon className="text-df-icon-color cursor-pointer" />
-                      }
-                    />
-                  </Link>
-                )}
-                {portfolios?.notion && (
-                  <Link
-                    href={portfolios?.notion}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Button
-                      text={"Notion"}
-                      type="secondary"
-                      icon={
-                        <NotionIcon className="text-df-icon-color cursor-pointer" />
-                      }
-                    />
-                  </Link>
-                )}
-                {portfolios?.medium && (
-                  <Link
-                    href={portfolios?.medium}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Button
-                      text={"Medium"}
-                      type="secondary"
-                      icon={
-                        <MediumIcon className="text-df-icon-color cursor-pointer" />
-                      }
-                    />
-                  </Link>
-                )}
-              </div>
-            </Chat>
-          )}
-        {(isBubbleActive("social-media-question") ||
-          projects?.length == 0 ||
-          experiences.length == 0 ||
-          Object?.keys(portfolios)?.length === 0) &&
-          Object?.keys(socials)?.length === 0 && (
-            <Chat
-              direction="right"
-              delay={400}
-              onComplete={() => handleLoading("social-media")}
-            >
-              Where can I reach you?
-            </Chat>
-          )}
-        {projects?.length == 0 ||
-          experiences.length == 0 ||
-          Object?.keys(portfolios)?.length === 0 ||
-          Object?.keys(socials)?.length === 0 ||
-          (isBubbleActive("social-media") && (
-            <Chat
-              direction="left"
-              className="pb-5"
-              delay={200}
-              onComplete={() => handleLoading("scroll-up")}
-            >
-              <div className="flex flex-col lg:flex-row gap-[24px]">
-                {socials?.instagram && (
-                  <Link
-                    href={socials?.instagram}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Button
-                      text={"Instagram"}
-                      type="secondary"
-                      icon={
-                        <InstagramIcon className="text-df-icon-color cursor-pointer" />
-                      }
-                    />
-                  </Link>
-                )}
+        {isOtherPortfolioPresent() && (
+          <Chat
+            direction="right"
+            delay={400}
+            onComplete={() => handleLoading("other-portfolios")}
+          >
+            Do you have any other portfolios?
+          </Chat>
+        )}
+        {isBubbleActive("other-portfolios") && (
+          <Chat
+            direction="left"
+            className="pb-5"
+            delay={200}
+            onComplete={() => handleLoading("social-media-question")}
+          >
+            <div className="flex flex-col lg:flex-row gap-[24px]">
+              {portfolios?.dribbble && (
+                <Link
+                  href={portfolios?.dribbble}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button
+                    text={"Dribbble"}
+                    type="secondary"
+                    icon={
+                      <DribbbleIcon className="text-df-icon-color cursor-pointer" />
+                    }
+                  />
+                </Link>
+              )}
+              {portfolios?.behance && (
+                <Link
+                  href={portfolios?.behance}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button
+                    text={"Behance"}
+                    type="secondary"
+                    icon={
+                      <BehanceIcon className="text-df-icon-color cursor-pointer" />
+                    }
+                  />
+                </Link>
+              )}
+              {portfolios?.notion && (
+                <Link
+                  href={portfolios?.notion}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button
+                    text={"Notion"}
+                    type="secondary"
+                    icon={
+                      <NotionIcon className="text-df-icon-color cursor-pointer" />
+                    }
+                  />
+                </Link>
+              )}
+              {portfolios?.medium && (
+                <Link
+                  href={portfolios?.medium}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button
+                    text={"Medium"}
+                    type="secondary"
+                    icon={
+                      <MediumIcon className="text-df-icon-color cursor-pointer" />
+                    }
+                  />
+                </Link>
+              )}
+            </div>
+          </Chat>
+        )}
+        {isSocilaMediaPresent() && (
+          <Chat
+            direction="right"
+            delay={400}
+            onComplete={() => handleLoading("social-media")}
+          >
+            Where can I reach you?
+          </Chat>
+        )}
+        {isBubbleActive("social-media") && (
+          <Chat
+            direction="left"
+            className="pb-5"
+            delay={200}
+            onComplete={() => handleLoading("scroll-up")}
+          >
+            <div className="flex flex-col lg:flex-row gap-[24px]">
+              {socials?.instagram && (
+                <Link
+                  href={socials?.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button
+                    text={"Instagram"}
+                    type="secondary"
+                    icon={
+                      <InstagramIcon className="text-df-icon-color cursor-pointer" />
+                    }
+                  />
+                </Link>
+              )}
 
-                {socials?.twitter && (
-                  <Link
-                    href={socials?.twitter}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Button
-                      text={"Twitter"}
-                      type="secondary"
-                      icon={
-                        <TwitterIcon className="text-df-icon-color cursor-pointer" />
-                      }
-                    />
-                  </Link>
-                )}
-                {socials?.linkedin && (
-                  <Link
-                    href={socials?.linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Button
-                      text={"LinkedIn"}
-                      type="secondary"
-                      icon={
-                        <LinkedInIcon className="text-df-icon-color cursor-pointer" />
-                      }
-                    />
-                  </Link>
-                )}
-              </div>
-            </Chat>
-          ))}
+              {socials?.twitter && (
+                <Link
+                  href={socials?.twitter}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button
+                    text={"Twitter"}
+                    type="secondary"
+                    icon={
+                      <TwitterIcon className="text-df-icon-color cursor-pointer" />
+                    }
+                  />
+                </Link>
+              )}
+              {socials?.linkedin && (
+                <Link
+                  href={socials?.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button
+                    text={"LinkedIn"}
+                    type="secondary"
+                    icon={
+                      <LinkedInIcon className="text-df-icon-color cursor-pointer" />
+                    }
+                  />
+                </Link>
+              )}
+            </div>
+          </Chat>
+        )}
 
-        {(isBubbleActive("scroll-up") ||
+        {/* {(isBubbleActive("scroll-up") ||
           isBubbleActive("other-portfolios") ||
           isBubbleActive("projects")) && (
           <div
@@ -398,7 +447,7 @@ export default function Template2({ userDetails, preview = false }) {
               <GoUp className="animate-bounce cursor-pointer" />
             </a>
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );

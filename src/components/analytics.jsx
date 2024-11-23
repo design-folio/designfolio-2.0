@@ -101,7 +101,7 @@ function Analytics({ }) {
             </div>
 
             <div
-              className={`bg-review-card-bg-color p-[16px] border flex flex-col justify-between border-review-card-border-color rounded-[16px] mt-4`}
+              className={`bg-review-card-bg-color p-[16px] border flex flex-col justify-between border-review-card-border-color rounded-[16px]`}
             >
               <h1 className="text-[20px] md:text-[39px] font-inter font-[500] leading-[130%] text-profile-card-heading-color">
                 {uniqueVisits}

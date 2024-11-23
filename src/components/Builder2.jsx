@@ -17,20 +17,27 @@ import InstagramIcon from "../../public/assets/svgs/instagram.svg";
 import TwitterIcon from "../../public/assets/svgs/twitter.svg";
 import LinkedInIcon from "../../public/assets/svgs/linkedin.svg";
 import GoUp from "../../public/assets/svgs/go-up.svg";
-import EditIcon2 from "../../public/assets/svgs/editIcon2.svg";
 import PlusIcon from "../../public/assets/svgs/plus.svg";
-import BagIcon from "../../public/assets/svgs/bag.svg";
 import ProjectIcon from "../../public/assets/svgs/projectIcon.svg";
-import OthersIcon from "../../public/assets/svgs/others.svg";
-import PuzzleIcon from "../../public/assets/svgs/puzzle.svg";
-
+import EditIcon from "../../public/assets/svgs/edit.svg";
+import AiIcon from "../../public/assets/svgs/ai.svg";
 import { modals } from "@/lib/constant";
 import AddCard from "./AddCard";
 import AddItem from "./addItem";
 import { useTheme } from "next-themes";
+import TextWithLineBreaks from "./TextWithLineBreaks";
+import Quote from "../../public/assets/svgs/quote.svg";
+import PenIcon from "../../public/assets/svgs/pen-icon.svg";
+import BagIcon from "../../public/assets/svgs/bag.svg";
 
 export default function Builder2({ edit = false }) {
-  const { userDetails, openModal, setSelectedProject } = useGlobalContext();
+  const {
+    userDetails,
+    openModal,
+    setSelectedProject,
+    setSelectedWork,
+    setSelectedReview,
+  } = useGlobalContext();
   const { theme } = useTheme();
 
   const {
@@ -43,6 +50,7 @@ export default function Builder2({ edit = false }) {
     portfolios,
     avatar,
     socials,
+    reviews,
   } = userDetails || {};
   const router = useRouter();
   const getSkills = () => {
@@ -68,6 +76,14 @@ export default function Builder2({ edit = false }) {
       router.push(`/project/${id}/editor`);
     }
   };
+  const handleEditWork = (work) => {
+    setSelectedWork(work);
+    openModal(modals.work);
+  };
+  const handleEditReview = (review) => {
+    openModal(modals.review);
+    setSelectedReview(review);
+  };
   return (
     <div className="flex flex-col gap-6">
       <div className="flex gap-2 items-end">
@@ -84,12 +100,10 @@ export default function Builder2({ edit = false }) {
         {bio}
         {edit && (
           <Button
-            icon={
-              <EditIcon2 className="text-secondary-btn-text-color cursor-pointer" />
-            }
-            customClass="w-fit mt-2"
-            type="secondary"
             onClick={() => openModal(modals.onboarding)}
+            customClass="!p-[13.38px] w-fit mt-2"
+            type={"secondary"}
+            icon={<EditIcon className="text-df-icon-color cursor-pointer" />}
           />
         )}
       </Chat>
@@ -152,62 +166,197 @@ export default function Builder2({ edit = false }) {
       {edit && (
         <div className="max-w-[444px] relative">
           <ProjectShape className="text-template-text-left-bg-color" />
-          <Chat direction="left" className="rounded-tl-none">
-            <AddCard
-              title={`${
-                projects?.length === 0
-                  ? "Upload your first case study"
-                  : "Add case study"
-              }`}
-              subTitle="Show off your best work."
-              first={projects?.length !== 0}
-              buttonTitle="Add case study"
-              secondaryButtonTitle="Write using AI"
-              onClick={() => openModal(modals.project)}
-              icon={<ProjectIcon className="cursor-pointer" />}
-              openModal={openModal}
-              className="flex justify-center items-center flex-col"
-            />
+          <Chat direction="left" className="rounded-tl-none w-fit">
+            {projects.length > 0 ? (
+              <div className="flex items-center gap-3">
+                <Button
+                  text={"Add case study"}
+                  customClass="w-fit gap-1 items-center"
+                  icon={
+                    <PlusIcon className="text-primary-btn-text-color w-[20px] h-[20px] mb-[2px] cursor-pointer" />
+                  }
+                />
+                or
+                <Button
+                  text={"Write with AI"}
+                  type="secondary"
+                  customClass="w-fit gap-1 items-center"
+                  icon={
+                    <AiIcon className="text-secondary-btn-text-color w-[22px] h-[22px] mb-[2px] cursor-pointer" />
+                  }
+                />
+              </div>
+            ) : (
+              <AddCard
+                title={`${
+                  projects?.length === 0
+                    ? "Upload your first case study"
+                    : "Add case study"
+                }`}
+                subTitle="Show off your best work."
+                first={projects?.length !== 0}
+                buttonTitle="Add case study"
+                secondaryButtonTitle="Write using AI"
+                onClick={() => openModal(modals.project)}
+                icon={<ProjectIcon className="cursor-pointer" />}
+                openModal={openModal}
+                className="flex justify-center items-center flex-col p-4"
+              />
+            )}
           </Chat>
         </div>
       )}
+      <Chat direction="left">
+        I’ve always gotten great feedback from my clients & colleagues.
+      </Chat>
+      <Chat direction="left">
+        {edit && reviews?.length == 0 && (
+          <AddCard
+            title={`${
+              userDetails?.reviews?.length == 0
+                ? "My testimonials"
+                : "Add more reviews"
+            } `}
+            subTitle="Share colleague's feedback."
+            onClick={() => openModal(modals.review)}
+            className={
+              "flex justify-center items-center flex-col p-4 w-[340px]"
+            }
+            first={userDetails?.reviews?.length !== 0}
+            buttonTitle="Add testimonial"
+            icon={<PenIcon className="cursor-pointer" />}
+          />
+        )}
+
+        {reviews?.map((review) => (
+          <div className="border border-[#E9ECF1] p-5 rounded-2xl">
+            <Quote />
+            <TextWithLineBreaks
+              text={review?.description}
+              color={"text-df-base-text-color mt-4"}
+            />
+            <div>
+              <div className="flex gap-4 justify-between items-center">
+                <div>
+                  <Text
+                    size="p-xsmall"
+                    className="text-review-card-text-color mt-3"
+                  >
+                    {review?.name}
+                  </Text>
+                  <Text
+                    size="p-xxsmall"
+                    className="text-review-card-description-color"
+                  >
+                    {review?.company}
+                  </Text>
+                </div>
+                {edit && (
+                  <Button
+                    onClick={() => handleEditReview(review)}
+                    type={"secondary"}
+                    icon={
+                      <EditIcon className="text-df-icon-color cursor-pointer text-2xl" />
+                    }
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+        {edit && experiences?.length > 0 && (
+          <AddItem
+            title="Add testimonial"
+            onClick={() => openModal(modals.review)}
+            iconLeft={
+              userDetails?.reviews?.length > 0 ? (
+                <Button
+                  type="secondary"
+                  icon={
+                    <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                  }
+                  onClick={() => openModal(modals.review)}
+                  size="small"
+                />
+              ) : (
+                <BagIcon />
+              )
+            }
+            theme={theme}
+            className="mt-4"
+          />
+        )}
+      </Chat>
+
       <Chat direction="left">Also, here's more!</Chat>
       <Chat direction="left" className="pb-5">
         <div className="flex flex-col gap-6">
           {experiences?.map((experience, index) => {
             return (
               <div key={experience?._id}>
-                <Text size="p-xsmall" className="font-medium">
-                  {experience?.company}
-                </Text>
+                <div className="flex justify-between items-center">
+                  <Text
+                    size="p-xsmall"
+                    className="font-medium text-df-base-text-color"
+                  >
+                    {experience?.company}
+                  </Text>
+                  <Button
+                    onClick={() => handleEditWork(experience)}
+                    customClass="!p-[13.38px] !flex-shrink-0"
+                    type={"secondary"}
+                    icon={
+                      <EditIcon className="text-df-icon-color cursor-pointer" />
+                    }
+                  />
+                </div>
                 <div className="flex">
-                  <ExperienceShape className="w-[54px]" />
-                  <div className="mt-[14px] flex-1">
-                    <Text size="p-small" className="font-semibold">
+                  <ExperienceShape className="w-[54px] relative bottom-2" />{" "}
+                  <div className="mt-[8px] flex-1">
+                    <Text
+                      size="p-small"
+                      className="font-semibold text-df-base-text-color"
+                    >
                       {experience?.role}
                     </Text>
-                    <Text size="p-xsmall" className="font-medium mt-[6px]">
-                      Jan 2023 - Now
+                    <Text
+                      size="p-xsmall"
+                      className="font-medium mt-[6px] text-work-card-description-color"
+                    >
+                      {`${experience?.startMonth} ${experience?.startYear} - ${
+                        experience?.currentlyWorking
+                          ? "Present"
+                          : `${experience?.endMonth} ${experience?.endYear}`
+                      }  `}
                     </Text>
-                    <p
-                      className={`text-[16px] font-light leading-[22.4px] font-inter`}
-                      dangerouslySetInnerHTML={{
-                        __html: experience?.description,
-                      }}
-                    ></p>
+                    <TextWithLineBreaks
+                      text={experience?.description}
+                      color={"text-df-base-text-color mt-4"}
+                    />
                   </div>
                 </div>
               </div>
             );
           })}
           {edit && experiences?.length > 0 && (
-            <Button
-              icon={
-                <EditIcon2 className="text-secondary-btn-text-color cursor-pointer" />
-              }
-              customClass="w-fit mt-2"
-              type="secondary"
+            <AddItem
+              title="Add your work experience"
               onClick={() => openModal(modals.work)}
+              iconLeft={
+                userDetails?.experiences?.length > 0 ? (
+                  <Button
+                    type="secondary"
+                    icon={
+                      <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                    }
+                    onClick={() => openModal(modals.work)}
+                    size="small"
+                  />
+                ) : (
+                  <BagIcon />
+                )
+              }
+              theme={theme}
             />
           )}
           {edit && experiences?.length == 0 && (
@@ -295,12 +444,10 @@ export default function Builder2({ edit = false }) {
         </div>
         {edit && portfolios && Object.keys(portfolios).length != 0 && (
           <Button
-            icon={
-              <EditIcon2 className="text-secondary-btn-text-color cursor-pointer" />
-            }
-            customClass="w-fit mt-2"
-            type="secondary"
             onClick={() => openModal(modals.portfolioLinks)}
+            customClass="!p-[13.38px] w-fit mt-4"
+            type={"secondary"}
+            icon={<EditIcon className="text-df-icon-color cursor-pointer" />}
           />
         )}
         {edit && portfolios && Object.keys(portfolios).length == 0 && (
@@ -371,12 +518,10 @@ export default function Builder2({ edit = false }) {
         </div>
         {edit && socials && Object.keys(socials).length != 0 && (
           <Button
-            icon={
-              <EditIcon2 className="text-secondary-btn-text-color cursor-pointer" />
-            }
-            customClass="w-fit mt-2"
-            type="secondary"
             onClick={() => openModal(modals.socialMedia)}
+            customClass="!p-[13.38px] w-fit mt-4"
+            type={"secondary"}
+            icon={<EditIcon className="text-df-icon-color cursor-pointer" />}
           />
         )}
         {edit && socials && Object.keys(socials).length == 0 && (

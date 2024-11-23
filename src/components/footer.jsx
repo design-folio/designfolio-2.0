@@ -57,7 +57,7 @@ export default function Footer({ dfToken }) {
         transition={{ duration: 0.5, ease: [0.17, 0.55, 0.55, 1] }} // Smooth transition
       >
         <p className="text-[14px] font-[500] text-landing-footer-link-color font-inter">
-          Copyright © 2023 Designfolio
+          Copyright © {new Date().getFullYear()} Designfolio
         </p>
         <div className="flex gap-10">
           <Link href={"/privacy-policy"}>

@@ -17,7 +17,7 @@ import TickIcon from "../../public/assets/svgs/tick.svg";
 import HamburgerIcon from "../../public/assets/svgs/hamburger.svg";
 import SettingIcon from "../../public/assets/svgs/settings.svg";
 import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
-
+import { motion } from "framer-motion";
 import Button from "./button";
 import { useTheme } from "next-themes";
 import Text from "./text";
@@ -29,6 +29,7 @@ import queryClient from "@/network/queryClient";
 import useClient from "@/hooks/useClient";
 import { twMerge } from "tailwind-merge";
 import { removeCursor } from "@/lib/cursor";
+import Modal from "./modal";
 
 const cursors = [
   {
@@ -100,6 +101,10 @@ const cursors = [
     ),
   },
 ];
+const variants = {
+  hidden: { x: "100%" },
+  visible: { x: "0%" },
+};
 
 const templates = [
   {
@@ -298,108 +303,140 @@ export default function LoggedInHeader({
             />
 
             {isClient && (
-              <div
-                className={`pt-[21px] origin-top-right absolute z-20 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${
-                  popoverMenu === popovers.themeMenu
-                    ? "opacity-100 scale-100"
-                    : "opacity-0 scale-90 pointer-events-none"
-                }`}
+              <Modal
+                show={popoverMenu === popovers.themeMenu}
+                className={"md:block"}
               >
-                <div className="w-[408px] max-h-[65vh] hide-scrollbar overflow-y-scroll p-4  rounded-xl shadow-lg bg-popover-bg-color border-4 border-solid border-popover-border-color">
-                  <div className="flex justify-between items-center">
-                    <Text
-                      as="h3"
-                      size="p-small"
-                      className=" font-medium text-popover-heading-color"
-                    >
-                      Appearance
-                    </Text>
-                    <Button
-                      type="secondary"
-                      customClass="!p-2 rounded-[8px]"
-                      icon={
-                        <CloseIcon className="text-df-icon-color cursor-pointer" />
-                      }
-                      onClick={handleCloseTheme}
-                    />
-                  </div>
-                  <div>
-                    <div className="flex gap-[16px] mt-3">
-                      <div
-                        onClick={() => changeTheme(0)}
-                        className={`flex gap-[10px] w-full justify-center items-center border bg-default-theme-box-bg-color border-default-theme-box-border-color hover:bg-default-theme-bg-hover-color shadow-default-theme-shadow rounded-[16px] px-[32px] py-[16px] cursor-pointer`}
-                      >
-                        <SunIcon className={"cursor-pointer"} />
-                        <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer">
-                          Light
-                        </p>
-                      </div>
-                      <div
-                        onClick={() => changeTheme(1)}
-                        className={`border flex gap-[10px] w-full justify-center bg-theme-box-bg-color border-theme-box-border-color hover:bg-theme-bg-hover-color shadow-theme-shadow rounded-[16px] px-[32px] py-[16px] cursor-pointer`}
-                      >
-                        <MoonIcon className={"cursor-pointer"} />
-                        <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer">
-                          Dark
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-8">
-                    <Text
-                      as="h3"
-                      size="p-small"
-                      className=" font-medium text-popover-heading-color"
-                    >
-                      Template
-                    </Text>
-                    <div className="mt-4 grid grid-cols-2 gap-4">
-                      {templates.map((template, index) => (
-                        <div
-                          onClick={() => changeTemplate(index)}
-                          className={twMerge(
-                            "px-4 py-6 flex flex-col justify-center items-center border rounded-[16px] cursor-pointer",
-                            "bg-default-cursor-box-bg border-default-cursor-box-border",
-                            "hover:bg-default-cursor-bg-hover",
-                            getTemplateStyles(index) // This will dynamically add classes based on index
-                          )}
+                <motion.div
+                  className="bg-modal-bg-color h-[95%] w-[95%] m-auto md:w-[602px] md:fixed md:top-[2.25%] md:right-4 flex flex-col rounded-2xl"
+                  initial="hidden"
+                  animate="visible"
+                  variants={variants}
+                  transition={{ duration: 0.5, ease: "easeInOut" }}
+                >
+                  <header className="p-8 text-lg font-bold pb-0">
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex gap-4 items-center">
+                        <Button
+                          type="ai"
+                          icon={
+                            <ThemeIcon className="text-secondary-btn-text-color w-[22px] h-[22px] cursor-pointer" />
+                          }
+                          style={{ background: "var(--ai-btn-bg-color)" }}
+                        />
+                        <Text
+                          size="p-small"
+                          className="font-semibold font-inter"
                         >
-                          {template.item}
-                          <img
-                            src={renderTemplate(template.value)}
-                            alt=""
-                            className="cursor-pointer"
-                          />
-                        </div>
-                      ))}
+                          Write using AI
+                        </Text>
+                      </div>
+                      <Button
+                        type="secondary"
+                        customClass="!p-2 rounded-[8px]"
+                        icon={
+                          <CloseIcon className="text-df-icon-color cursor-pointer" />
+                        }
+                        onClick={handleCloseTheme}
+                      />
                     </div>
-                  </div>
-                  <div className="mt-8">
-                    <Text
-                      as="h3"
-                      size="p-small"
-                      className=" font-medium text-popover-heading-color"
-                    >
-                      Cursor
-                    </Text>
-                    <div className="mt-4 grid grid-cols-3 gap-4">
-                      {cursors.map((cursor, index) => (
+                  </header>
+                  <div className="hide-scrollbar overflow-y-scroll p-4 mt-4">
+                    <div className="flex justify-between items-center">
+                      <Text
+                        as="h3"
+                        size="p-small"
+                        className=" font-medium text-popover-heading-color"
+                      >
+                        Appearance
+                      </Text>
+                      {/* <Button
+                        type="secondary"
+                        customClass="!p-2 rounded-[8px]"
+                        icon={
+                          <CloseIcon className="text-df-icon-color cursor-pointer" />
+                        }
+                        onClick={handleCloseTheme}
+                      /> */}
+                    </div>
+                    <div>
+                      <div className="flex gap-[16px] mt-3">
                         <div
-                          onClick={() => handleChangeCursor(index)}
-                          className={twMerge(
-                            "px-4 py-6 flex justify-center items-center border rounded-[16px] cursor-pointer",
-                            "bg-default-cursor-box-bg border-default-cursor-box-border",
-                            "hover:bg-default-cursor-bg-hover",
-                            getStyles(index) // This will dynamically add classes based on index
-                          )}
+                          onClick={() => changeTheme(0)}
+                          className={`flex gap-[10px] w-full justify-center items-center border bg-default-theme-box-bg-color border-default-theme-box-border-color hover:bg-default-theme-bg-hover-color shadow-default-theme-shadow rounded-[16px] px-[32px] py-[16px] cursor-pointer`}
                         >
-                          {cursor.item}
+                          <SunIcon className={"cursor-pointer"} />
+                          <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer">
+                            Light
+                          </p>
                         </div>
-                      ))}
+                        <div
+                          onClick={() => changeTheme(1)}
+                          className={`border flex gap-[10px] w-full justify-center bg-theme-box-bg-color border-theme-box-border-color hover:bg-theme-bg-hover-color shadow-theme-shadow rounded-[16px] px-[32px] py-[16px] cursor-pointer`}
+                        >
+                          <MoonIcon className={"cursor-pointer"} />
+                          <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer">
+                            Dark
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mt-8">
+                      <Text
+                        as="h3"
+                        size="p-small"
+                        className=" font-medium text-popover-heading-color"
+                      >
+                        Template
+                      </Text>
+                      <div className="mt-4 grid grid-cols-2 gap-4">
+                        {templates.map((template, index) => (
+                          <div
+                            onClick={() => changeTemplate(index)}
+                            className={twMerge(
+                              "px-4 py-6 flex flex-col justify-center items-center border rounded-[16px] cursor-pointer",
+                              "bg-default-cursor-box-bg border-default-cursor-box-border",
+                              "hover:bg-default-cursor-bg-hover",
+                              getTemplateStyles(index) // This will dynamically add classes based on index
+                            )}
+                          >
+                            {template.item}
+                            <img
+                              src={renderTemplate(template.value)}
+                              alt=""
+                              className="cursor-pointer"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="mt-8">
+                      <Text
+                        as="h3"
+                        size="p-small"
+                        className=" font-medium text-popover-heading-color"
+                      >
+                        Cursor
+                      </Text>
+                      <div className="mt-4 grid grid-cols-3 gap-4">
+                        {cursors.map((cursor, index) => (
+                          <div
+                            onClick={() => handleChangeCursor(index)}
+                            className={twMerge(
+                              "px-4 py-6 flex justify-center items-center border rounded-[16px] cursor-pointer",
+                              "bg-default-cursor-box-bg border-default-cursor-box-border",
+                              "hover:bg-default-cursor-bg-hover",
+                              getStyles(index) // This will dynamically add classes based on index
+                            )}
+                          >
+                            {cursor.item}
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
+                </motion.div>
+              </Modal>
             )}
           </div>
           <Button

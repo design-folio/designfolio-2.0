@@ -54,19 +54,24 @@ export default function Chat({
     return () => clearTimeout(timeout);
   }, [isVisible]);
   return (
-    <>
+    <div
+      className={`flex flex-col min-w-min relative  max-w-[680px]  ${
+        direction == "left" ? " mr-auto" : " ml-auto"
+      }`}
+    >
       <motion.div
         initial={{ x: direction == "left" ? -5 : 5, scale: 0.99, opacity: 0 }}
         animate={{ x: 0, scale: 1, opacity: 1 }}
         style={{
           transformOrigin: direction == "left" ? "left" : "right",
           zIndex: 1,
+          wordBreak: "break-word",
         }}
-        className={`flex flex-col min-w-min relative  max-w-[680px]  ${
+        className={`${
           direction == "left"
             ? "bg-template-text-left-bg-color text-template-text-left-text-color mr-auto"
             : "bg-template-text-right-bg-color text-template-text-right-text-color ml-auto"
-        } p-4 rounded-[24px] ${className}`}
+        } p-4 rounded-[24px] break-words ${className}`}
       >
         {show ? (
           children
@@ -87,6 +92,6 @@ export default function Chat({
         )}
       </motion.div>
       <div ref={emptyDivRef}></div>
-    </>
+    </div>
   );
 }

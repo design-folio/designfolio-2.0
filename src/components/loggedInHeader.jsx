@@ -340,7 +340,7 @@ export default function LoggedInHeader({
                           size="p-small"
                           className="font-semibold font-inter"
                         >
-                          Write using AI
+                          Personalisation
                         </Text>
                       </div>
                       <Button

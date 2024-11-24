@@ -29,7 +29,12 @@ import TextWithLineBreaks from "./TextWithLineBreaks";
 import Quote from "../../public/assets/svgs/quote.svg";
 import PenIcon from "../../public/assets/svgs/pen-icon.svg";
 import BagIcon from "../../public/assets/svgs/bag.svg";
-
+import PuzzleIcon from "../../public/assets/svgs/puzzle.svg";
+import OthersIcon from "../../public/assets/svgs/others.svg";
+import SortableList, { SortableItem } from "react-easy-sort";
+import { arrayMoveImmutable as arrayMove } from "array-move";
+import { _updateUser } from "@/network/post-request";
+import Linkedin from "../../public/assets/svgs/linkedinIcon.svg";
 export default function Builder2({ edit = false }) {
   const {
     userDetails,
@@ -37,6 +42,8 @@ export default function Builder2({ edit = false }) {
     setSelectedProject,
     setSelectedWork,
     setSelectedReview,
+    setUserDetails,
+    updateCache,
   } = useGlobalContext();
   const { theme } = useTheme();
 
@@ -70,7 +77,7 @@ export default function Builder2({ edit = false }) {
   };
 
   const handleRouter = (id) => {
-    if (edit) {
+    if (!edit) {
       router.push(`/project/${id}/preview`);
     } else {
       router.push(`/project/${id}/editor`);
@@ -83,6 +90,18 @@ export default function Builder2({ edit = false }) {
   const handleEditReview = (review) => {
     openModal(modals.review);
     setSelectedReview(review);
+  };
+
+  const onSortEnd = (oldIndex, newIndex) => {
+    const sortedProjects = arrayMove(userDetails.projects, oldIndex, newIndex);
+    const payload = { projects: sortedProjects };
+    _updateUser(payload).then((res) => {
+      updateCache("userDetails", res?.data?.user);
+      setUserDetails((prev) => ({
+        ...prev,
+        projects: arrayMove(res?.data?.user?.projects, oldIndex, newIndex),
+      }));
+    });
   };
   return (
     <div className="flex flex-col gap-6">
@@ -99,12 +118,14 @@ export default function Builder2({ edit = false }) {
       <Chat direction="left">
         {bio}
         {edit && (
-          <Button
-            onClick={() => openModal(modals.onboarding)}
-            customClass="!p-[13.38px] w-fit mt-2"
-            type={"secondary"}
-            icon={<EditIcon className="text-df-icon-color cursor-pointer" />}
-          />
+          <div>
+            <Button
+              onClick={() => openModal(modals.onboarding)}
+              customClass="!p-[13.38px] w-fit mt-2"
+              type={"secondary"}
+              icon={<EditIcon className="text-df-icon-color cursor-pointer" />}
+            />
+          </div>
         )}
       </Chat>
 
@@ -140,7 +161,7 @@ export default function Builder2({ edit = false }) {
             />
           )}
         </div>
-        These are my toolbox.
+        This is my toolbox.
       </Chat>
 
       <Chat direction="right">
@@ -148,21 +169,30 @@ export default function Builder2({ edit = false }) {
       </Chat>
 
       <Chat direction="left">Here you go!</Chat>
-      {projects?.map((project, index) => {
-        return (
-          <div className="max-w-[444px] relative">
-            <ProjectShape className="text-template-text-left-bg-color" />
-            <Chat direction="left" className="rounded-tl-none">
-              <ProjectCard
-                project={project}
-                onDeleteProject={() => onDeleteProject(project)}
-                edit={true}
-                handleRouter={handleRouter}
-              />
-            </Chat>
-          </div>
-        );
-      })}
+      <SortableList
+        onSortEnd={onSortEnd}
+        className="list flex flex-col gap-6"
+        draggedItemClassName="dragged"
+      >
+        {projects?.map((project) => {
+          return (
+            <SortableItem key={project._id}>
+              <div className="max-w-[444px] relative">
+                <ProjectShape className="text-template-text-left-bg-color" />
+                <Chat direction="left" className="rounded-tl-none">
+                  <ProjectCard
+                    project={project}
+                    onDeleteProject={() => onDeleteProject(project)}
+                    edit={true}
+                    handleRouter={handleRouter}
+                  />
+                </Chat>
+              </div>
+            </SortableItem>
+          );
+        })}
+      </SortableList>
+
       {edit && (
         <div className="max-w-[444px] relative">
           <ProjectShape className="text-template-text-left-bg-color" />
@@ -172,6 +202,7 @@ export default function Builder2({ edit = false }) {
                 <Button
                   text={"Add case study"}
                   customClass="w-fit gap-1 items-center"
+                  onClick={() => openModal(modals.project)}
                   icon={
                     <PlusIcon className="text-primary-btn-text-color w-[20px] h-[20px] mb-[2px] cursor-pointer" />
                   }
@@ -237,19 +268,22 @@ export default function Builder2({ edit = false }) {
             />
             <div>
               <div className="flex gap-4 justify-between items-center">
-                <div>
-                  <Text
-                    size="p-xsmall"
-                    className="text-review-card-text-color mt-3"
-                  >
-                    {review?.name}
-                  </Text>
-                  <Text
-                    size="p-xxsmall"
-                    className="text-review-card-description-color"
-                  >
-                    {review?.company}
-                  </Text>
+                <div className="flex gap-2  mt-3">
+                  <Linkedin />
+                  <div>
+                    <Text
+                      size="p-xsmall"
+                      className="text-review-card-text-color"
+                    >
+                      {review?.name}
+                    </Text>
+                    <Text
+                      size="p-xxsmall"
+                      className="text-review-card-description-color"
+                    >
+                      {review?.company}
+                    </Text>
+                  </div>
                 </div>
                 {edit && (
                   <Button
@@ -264,7 +298,7 @@ export default function Builder2({ edit = false }) {
             </div>
           </div>
         ))}
-        {edit && experiences?.length > 0 && (
+        {edit && reviews?.length > 0 && (
           <AddItem
             title="Add testimonial"
             onClick={() => openModal(modals.review)}
@@ -338,7 +372,7 @@ export default function Builder2({ edit = false }) {
               </div>
             );
           })}
-          {edit && experiences?.length > 0 && (
+          {edit && (
             <AddItem
               title="Add your work experience"
               onClick={() => openModal(modals.work)}
@@ -356,22 +390,19 @@ export default function Builder2({ edit = false }) {
                   <BagIcon />
                 )
               }
-              theme={theme}
-            />
-          )}
-          {edit && experiences?.length == 0 && (
-            <AddItem
-              title="Add your work experience"
-              onClick={() => openModal(modals.work)}
               iconRight={
-                <Button
-                  type="secondary"
-                  icon={
-                    <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
-                  }
-                  onClick={() => openModal(modals.work)}
-                  size="small"
-                />
+                userDetails?.experiences?.length == 0 ? (
+                  <Button
+                    type="secondary"
+                    icon={
+                      <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                    }
+                    onClick={() => openModal(modals.work)}
+                    size="small"
+                  />
+                ) : (
+                  false
+                )
               }
               theme={theme}
             />
@@ -442,30 +473,35 @@ export default function Builder2({ edit = false }) {
             </Link>
           )}
         </div>
-        {edit && portfolios && Object.keys(portfolios).length != 0 && (
-          <Button
-            onClick={() => openModal(modals.portfolioLinks)}
-            customClass="!p-[13.38px] w-fit mt-4"
-            type={"secondary"}
-            icon={<EditIcon className="text-df-icon-color cursor-pointer" />}
-          />
-        )}
-        {edit && portfolios && Object.keys(portfolios).length == 0 && (
-          <AddItem
-            title="Add your portfolio links"
-            onClick={() => openModal("portfolio-links")}
-            iconRight={
-              <Button
-                size="small"
-                type="secondary"
-                customClass="w-fit gap-0"
-                icon={
-                  <PlusIcon className="text-secondary-btn-text-color w-[14px] h-[14px] cursor-pointer" />
-                }
-              />
-            }
-          />
-        )}
+        {edit &&
+          portfolios &&
+          Object.values(portfolios).some((s) => s != "") && (
+            <Button
+              onClick={() => openModal(modals.portfolioLinks)}
+              customClass="!p-[13.38px] w-fit mt-4"
+              type={"secondary"}
+              icon={<EditIcon className="text-df-icon-color cursor-pointer" />}
+            />
+          )}
+        {edit &&
+          portfolios &&
+          Object.values(portfolios).every((s) => s == "" || s == undefined) && (
+            <AddItem
+              title="Add your portfolio links"
+              onClick={() => openModal("portfolio-links")}
+              iconLeft={<OthersIcon className="text-df-icon-color" />}
+              iconRight={
+                <Button
+                  size="small"
+                  type="secondary"
+                  customClass="w-fit gap-0"
+                  icon={
+                    <PlusIcon className="text-secondary-btn-text-color w-[14px] h-[14px] cursor-pointer" />
+                  }
+                />
+              }
+            />
+          )}
       </Chat>
       <Chat direction="right">Where can I reach you?</Chat>
       <Chat direction="left" className="pb-5">
@@ -516,7 +552,7 @@ export default function Builder2({ edit = false }) {
             </Link>
           )}
         </div>
-        {edit && socials && Object.keys(socials).length != 0 && (
+        {edit && socials && Object.values(socials).some((s) => s != "") && (
           <Button
             onClick={() => openModal(modals.socialMedia)}
             customClass="!p-[13.38px] w-fit mt-4"
@@ -524,22 +560,25 @@ export default function Builder2({ edit = false }) {
             icon={<EditIcon className="text-df-icon-color cursor-pointer" />}
           />
         )}
-        {edit && socials && Object.keys(socials).length == 0 && (
-          <AddItem
-            title="Add your social media"
-            onClick={() => openModal(modals.socialMedia)}
-            iconRight={
-              <Button
-                size="small"
-                type="secondary"
-                customClass="w-fit gap-0"
-                icon={
-                  <PlusIcon className="text-secondary-btn-text-color w-[14px] h-[14px] cursor-pointer" />
-                }
-              />
-            }
-          />
-        )}
+        {edit &&
+          socials &&
+          Object.values(socials).every((s) => s == "" || s == undefined) && (
+            <AddItem
+              title="Add your social media"
+              onClick={() => openModal(modals.socialMedia)}
+              iconLeft={<PuzzleIcon className="text-df-icon-color" />}
+              iconRight={
+                <Button
+                  size="small"
+                  type="secondary"
+                  customClass="w-fit gap-0"
+                  icon={
+                    <PlusIcon className="text-secondary-btn-text-color w-[14px] h-[14px] cursor-pointer" />
+                  }
+                />
+              }
+            />
+          )}
       </Chat>
       <div
         className="flex justify-center mt-10"

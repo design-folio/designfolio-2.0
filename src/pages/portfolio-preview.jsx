@@ -2,6 +2,7 @@ import { useGlobalContext } from "@/context/globalContext";
 import { useEffect } from "react";
 import Preview1 from "@/components/preview1";
 import Template2 from "@/components/template2";
+import BottomNavigation from "@/components/bottomNavigation";
 
 export default function Index() {
   const {
@@ -17,7 +18,17 @@ export default function Index() {
       case 0:
         return <Preview1 userDetails={userDetails} projectRef={projectRef} />;
       case 1:
-        return <Template2 userDetails={userDetails} />;
+        return (
+          <>
+            <Template2 userDetails={userDetails} />
+            <BottomNavigation
+              userDetails={userDetails}
+              className=" to-transparent top-5"
+            >
+              asdasd
+            </BottomNavigation>
+          </>
+        );
 
       default:
         return <Preview1 userDetails={userDetails} projectRef={projectRef} />;

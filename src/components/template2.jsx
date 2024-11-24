@@ -198,7 +198,7 @@ export default function Template2({ userDetails, preview = false }) {
                 </div>
               ))}
             </div>
-            These are my toolbox.
+            This is my toolbox.
           </Chat>
         )}
 

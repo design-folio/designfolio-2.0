@@ -7,6 +7,7 @@ import Seo from "@/components/seo";
 import { capitalizeWords } from "@/lib/capitalizeText";
 import Template1 from "@/components/template";
 import Template2 from "@/components/template2";
+import BottomNavigation from "@/components/bottomNavigation";
 
 export default function Index({ initialUserDetails }) {
   const { setTheme } = useTheme();
@@ -29,7 +30,16 @@ export default function Index({ initialUserDetails }) {
       case 0:
         return <Template1 userDetails={userDetails} />;
       case 1:
-        return <Template2 userDetails={userDetails} />;
+        return (
+          <>
+            <Template2 userDetails={userDetails} />
+            <BottomNavigation
+              userDetails={userDetails}
+              className="bg-gradient-to-t from-transparent top-0 pt-5"
+              watermarkClassName="!top-7"
+            />
+          </>
+        );
 
       default:
         return <Template1 userDetails={userDetails} />;
@@ -47,7 +57,12 @@ export default function Index({ initialUserDetails }) {
         url={`https://${userDetails?.username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`}
       />
       <main className="min-h-screen bg-df-bg-color">
-        {userDetails && renderTemplate()}
+        <div
+          className={`max-w-[890px] mx-auto py-[40px] px-2 md:px-4 lg:px-0 pb-[140px]`}
+        >
+          {" "}
+          {userDetails && renderTemplate()}
+        </div>
       </main>
     </>
   );

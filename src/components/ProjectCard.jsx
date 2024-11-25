@@ -53,7 +53,7 @@ export default function ProjectCard({
             whileHover="hover"
             variants={imageVariants}
             loading="lazy"
-            fetchPriority="high"
+            fetchpriority="high"
             decoding="async"
             // onLoad={() => setImageLoaded(true)}
           />

@@ -23,10 +23,9 @@ export default function Index() {
             <Template2 userDetails={userDetails} />
             <BottomNavigation
               userDetails={userDetails}
-              className=" to-transparent top-5"
-            >
-              asdasd
-            </BottomNavigation>
+              className="bg-gradient-to-t from-transparent top-0 pt-5"
+              watermarkClassName="!top-7"
+            />
           </>
         );
 

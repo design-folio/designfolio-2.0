@@ -484,8 +484,10 @@ export default function Builder2({ edit = false }) {
             />
           )}
         {edit &&
-          portfolios &&
-          Object.values(portfolios).every((s) => s == "" || s == undefined) && (
+          (portfolios == undefined ||
+            Object.values(portfolios).every(
+              (portfolio) => portfolio == ""
+            )) && (
             <AddItem
               title="Add your portfolio links"
               onClick={() => openModal("portfolio-links")}
@@ -561,8 +563,8 @@ export default function Builder2({ edit = false }) {
           />
         )}
         {edit &&
-          socials &&
-          Object.values(socials).every((s) => s == "" || s == undefined) && (
+          (socials == undefined ||
+            Object.values(socials).every((social) => social == "")) && (
             <AddItem
               title="Add your social media"
               onClick={() => openModal(modals.socialMedia)}

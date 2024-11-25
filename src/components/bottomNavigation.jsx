@@ -7,7 +7,11 @@ import MadeWithDesignfolio from "../../public/assets/svgs/madewithdesignfolio.sv
 import { useState } from "react";
 import Button from "./button";
 
-export default function BottomNavigation({ userDetails, className = "" }) {
+export default function BottomNavigation({
+  userDetails,
+  className = "",
+  watermarkClassName = "",
+}) {
   const router = useRouter();
   const [isProject, setIsProject] = useState(false);
   const { projectRef } = useGlobalContext();
@@ -91,7 +95,7 @@ export default function BottomNavigation({ userDetails, className = "" }) {
         </motion.div>
       )}
       <div
-        className="text-center flex justify-center relative top-5 lg:absolute lg:right-[36px] lg:top-[10px] xl:block cursor-pointer"
+        className={`text-center flex justify-center relative top-5 lg:absolute lg:right-[36px] lg:top-[10px] xl:block cursor-pointer ${watermarkClassName}`}
         onClick={() => window.open("https://www.designfolio.me", "_blank")}
       >
         <div className="bg-df-section-card-bg-color shadow-df-section-card-shadow p-2 rounded-2xl">

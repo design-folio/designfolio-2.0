@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DfImage from "./image";
 import Chat from "./chat";
 import Text from "./text";
@@ -17,9 +17,13 @@ import LinkedInIcon from "../../public/assets/svgs/linkedin.svg";
 import GoUp from "../../public/assets/svgs/go-up.svg";
 import { useRouter } from "next/router";
 import { chatBubbleItems } from "@/lib/constant";
+import Quote from "../../public/assets/svgs/quote.svg";
+import TextWithLineBreaks from "./TextWithLineBreaks";
+import Linkedin from "../../public/assets/svgs/linkedinIcon.svg";
+import { useGlobalContext } from "@/context/globalContext";
+
 export default function Template2({ userDetails, preview = false }) {
   const {
-    username,
     bio,
     skills,
     tools,
@@ -28,10 +32,39 @@ export default function Template2({ userDetails, preview = false }) {
     portfolios,
     avatar,
     socials,
+    reviews,
+    introduction,
   } = userDetails || {};
   const router = useRouter();
-  const [activeBubbles, setActiveBubbles] = useState(["name"]);
+  const { projectRef } = useGlobalContext();
 
+  const [activeStep, setActiveStep] = useState(1);
+
+  const portfolioCheck =
+    portfolios &&
+    !Object.values(portfolios).every((portfolio) => portfolio == "");
+
+  useEffect(() => {
+    if (activeStep === 6 && projects && projects.length === 0) {
+      setActiveStep((prev) => prev + 1); // update step when no projects exist
+    } else if (activeStep === 7 && projects && projects.length === 0) {
+      setActiveStep((prev) => prev + 1); // update step when no projects exist
+    } else if (activeStep === 8 && reviews && reviews.length === 0) {
+      setActiveStep((prev) => prev + 1); // update step when no reviews exist
+    } else if (activeStep === 9 && experiences && experiences.length === 0) {
+      setActiveStep((prev) => prev + 1); // update step when no experiences exist
+    } else if (activeStep === 10 && !portfolioCheck) {
+      setActiveStep((prev) => prev + 1);
+    } else if (
+      activeStep === 11 &&
+      socials &&
+      !Object.values(socials).every((social) => social != "")
+    ) {
+      setActiveStep((prev) => prev + 1);
+    }
+  }, [activeStep, projects, reviews, experiences, portfolios]);
+  // Trigger effect when activeStep or projects change
+  console.log(activeStep);
   const getSkills = () => {
     if (skills.length > 1) {
       const labels = skills.map((item) => item.label);
@@ -53,128 +86,47 @@ export default function Template2({ userDetails, preview = false }) {
     }
   };
 
-  const isBubbleActive = (name) => {
-    return activeBubbles.includes(name);
-  };
-
-  const handleLoading = (name) => {
-    setActiveBubbles((prev) => [...prev, name]);
-  };
-  console.log(activeBubbles);
-
-  const isProjectQuestionPresent = () => {
-    if (
-      isBubbleActive(chatBubbleItems.tools) &&
-      isBubbleActive(chatBubbleItems.projectQuestion) &&
-      projects &&
-      projects.length > 0
-    ) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  const isWorkExperiencePresent = () => {
-    if (
-      ((isBubbleActive(chatBubbleItems.tools) &&
-        isBubbleActive(chatBubbleItems.projectQuestion) &&
-        !isProjectQuestionPresent()) ||
-        isBubbleActive(chatBubbleItems.workExperience)) &&
-      experiences &&
-      experiences.length != 0
-    ) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  const isOtherPortfolioPresent = () => {
-    if (
-      (isBubbleActive(chatBubbleItems.tools) &&
-        isBubbleActive(chatBubbleItems.projects) &&
-        isBubbleActive(chatBubbleItems.experience) &&
-        !isWorkExperiencePresent() &&
-        !isProjectQuestionPresent()) ||
-      (isBubbleActive(chatBubbleItems.otherPortfolioQuestion) &&
-        portfolios &&
-        Object?.keys(portfolios)?.length != 0)
-    ) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  const isSocilaMediaPresent = () => {
-    if (
-      (isBubbleActive(chatBubbleItems.tools) &&
-        isBubbleActive(chatBubbleItems.projects) &&
-        isBubbleActive(chatBubbleItems.experience) &&
-        isBubbleActive(chatBubbleItems.otherPortfolios) &&
-        !isWorkExperiencePresent() &&
-        !isProjectQuestionPresent() &&
-        !isOtherPortfolioPresent()) ||
-      (isBubbleActive(chatBubbleItems.socialMediaQuestion) &&
-        socials &&
-        Object?.keys(socials)?.length != 0)
-    ) {
-      return true;
-    } else {
-      return false;
-    }
+  const handleStepCompletion = () => {
+    setActiveStep((prev) => prev + 1);
   };
 
   return (
     <div className={`max-w-[890px] mx-auto py-[40px] px-2 md:px-4 lg:px-0`}>
       <div className="flex flex-col gap-6">
-        <div className="flex gap-2 items-end">
-          <DfImage
-            src={avatar?.url ? avatar?.url : "/assets/svgs/avatar.svg"}
-            className={"w-[76px] h-[76px] rounded-[24px]"}
-          />
-          <div>
+        {activeStep >= 1 && introduction && (
+          <div className="flex gap-2 items-end">
+            <DfImage
+              src={avatar?.url ? avatar?.url : "/assets/svgs/avatar.svg"}
+              className={"w-[76px] h-[76px] rounded-[24px]"}
+            />
             <Chat
               direction="left"
               delay={1000}
-              onComplete={() => handleLoading("bio")}
+              onComplete={handleStepCompletion}
             >
-              Hey there! I'm {username}
+              {introduction}
             </Chat>
           </div>
-        </div>
-        {isBubbleActive("bio") && (
-          <Chat
-            direction="left"
-            delay={400}
-            onComplete={() => handleLoading("skill-question")}
-          >
+        )}
+        {activeStep >= 2 && (
+          <Chat direction="left" delay={400} onComplete={handleStepCompletion}>
             {bio}
           </Chat>
         )}
-
-        {isBubbleActive("skill-question") && (
-          <Chat
-            delay={100}
-            direction="right"
-            onComplete={() => handleLoading("skills")}
-          >
+        {activeStep >= 3 && (
+          <Chat delay={100} direction="right" onComplete={handleStepCompletion}>
             Hey! What are your core skills?
           </Chat>
         )}
 
-        {isBubbleActive("skills") && (
-          <Chat delay={1000} onComplete={() => handleLoading("tools")}>
+        {activeStep >= 4 && (
+          <Chat delay={1000} onComplete={handleStepCompletion}>
             I specialize in {getSkills()}
           </Chat>
         )}
 
-        {isBubbleActive("tools") && (
-          <Chat
-            delay={400}
-            onComplete={() => handleLoading("project-question")}
-          >
+        {activeStep >= 5 && (
+          <Chat delay={400} onComplete={handleStepCompletion}>
             <div className="flex flex-wrap items-center gap-2 mb-2">
               {tools?.map((tool, i) => (
                 <div
@@ -202,243 +154,273 @@ export default function Template2({ userDetails, preview = false }) {
           </Chat>
         )}
 
-        {isProjectQuestionPresent() && (
-          <Chat
-            direction="right"
-            delay={400}
-            onComplete={() => handleLoading("project-chat")}
-          >
+        {activeStep >= 6 && projects && projects?.length > 0 && (
+          <Chat direction="right" delay={400} onComplete={handleStepCompletion}>
             Awesome! Can you share any of your recent work? Would love to see
             them
           </Chat>
         )}
 
-        {isBubbleActive(chatBubbleItems.projectChat) && (
-          <Chat
-            direction="left"
-            delay={200}
-            onComplete={() => handleLoading("projects")}
-          >
-            Here you go!
-          </Chat>
-        )}
-        {isBubbleActive(chatBubbleItems.projects) &&
-          projects?.map((project, index) => {
-            return (
-              <div className="max-w-[444px] relative">
-                <ProjectShape className="text-template-text-left-bg-color" />
-                <Chat
-                  direction="left"
-                  className="rounded-tl-none"
-                  onComplete={() => handleLoading("work-experience")}
+        {activeStep >= 7 && projects && projects?.length > 0 && (
+          <>
+            <Chat
+              direction="left"
+              delay={200}
+              onComplete={handleStepCompletion}
+            >
+              Here you go!
+            </Chat>
+            {projects?.map((project, index) => {
+              return (
+                <div
+                  className="max-w-[444px] relative"
+                  key={project._id}
+                  ref={projectRef}
                 >
-                  <ProjectCard
-                    project={project}
-                    onDeleteProject={onDeleteProject}
-                    edit={false}
-                    handleRouter={handleRouter}
-                  />
-                </Chat>
-              </div>
-            );
-          })}
-        {isWorkExperiencePresent() && (
-          <Chat
-            direction="left"
-            delay={200}
-            onComplete={() => handleLoading("experience")}
-          >
-            Also, here's more!
-          </Chat>
+                  <ProjectShape className="text-template-text-left-bg-color" />
+                  <Chat direction="left" className="rounded-tl-none">
+                    <ProjectCard
+                      project={project}
+                      onDeleteProject={onDeleteProject}
+                      edit={false}
+                      handleRouter={handleRouter}
+                    />
+                  </Chat>
+                </div>
+              );
+            })}
+          </>
         )}
 
-        {isBubbleActive("experience") && (
-          <Chat
-            direction="left"
-            className="pb-5"
-            delay={200}
-            onComplete={() => handleLoading("other-portfolio-question")}
-          >
-            <div className="flex flex-col gap-6">
-              {experiences?.map((experience, index) => {
-                return (
-                  <div key={experience?._id}>
-                    <Text size="p-xsmall" className="font-medium">
-                      {experience?.company}
-                    </Text>
-                    <div className="flex">
-                      <ExperienceShape className="w-[54px]" />
-                      <div className="mt-[14px] flex-1">
-                        <Text size="p-small" className="font-semibold">
-                          {experience?.role}
-                        </Text>
-                        <Text size="p-xsmall" className="font-medium mt-[6px]">
-                          Jan 2023 - Now
-                        </Text>
-                        <p
-                          className={`text-[16px] font-light leading-[22.4px] font-inter`}
-                          dangerouslySetInnerHTML={{
-                            __html: experience?.description,
-                          }}
-                        ></p>
+        {activeStep >= 8 && reviews && reviews.length > 0 && (
+          <>
+            <Chat direction="left">
+              I’ve always gotten great feedback from my clients & colleagues.
+            </Chat>
+            <Chat direction="left" onComplete={handleStepCompletion}>
+              {reviews?.map((review) => (
+                <div className="border border-[#E9ECF1] p-5 rounded-2xl">
+                  <Quote />
+                  <TextWithLineBreaks
+                    text={review?.description}
+                    color={"text-df-base-text-color mt-4"}
+                  />
+                  <div>
+                    <div className="flex gap-4 justify-between items-center">
+                      <div className="flex gap-2  mt-3">
+                        <Linkedin />
+                        <div>
+                          <Text
+                            size="p-xsmall"
+                            className="text-review-card-text-color"
+                          >
+                            {review?.name}
+                          </Text>
+                          <Text
+                            size="p-xxsmall"
+                            className="text-review-card-description-color"
+                          >
+                            {review?.company}
+                          </Text>
+                        </div>
                       </div>
                     </div>
                   </div>
-                );
-              })}
-            </div>
-          </Chat>
-        )}
-        {isOtherPortfolioPresent() && (
-          <Chat
-            direction="right"
-            delay={400}
-            onComplete={() => handleLoading("other-portfolios")}
-          >
-            Do you have any other portfolios?
-          </Chat>
-        )}
-        {isBubbleActive("other-portfolios") && (
-          <Chat
-            direction="left"
-            className="pb-5"
-            delay={200}
-            onComplete={() => handleLoading("social-media-question")}
-          >
-            <div className="flex flex-col lg:flex-row gap-[24px]">
-              {portfolios?.dribbble && (
-                <Link
-                  href={portfolios?.dribbble}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Button
-                    text={"Dribbble"}
-                    type="secondary"
-                    icon={
-                      <DribbbleIcon className="text-df-icon-color cursor-pointer" />
-                    }
-                  />
-                </Link>
-              )}
-              {portfolios?.behance && (
-                <Link
-                  href={portfolios?.behance}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Button
-                    text={"Behance"}
-                    type="secondary"
-                    icon={
-                      <BehanceIcon className="text-df-icon-color cursor-pointer" />
-                    }
-                  />
-                </Link>
-              )}
-              {portfolios?.notion && (
-                <Link
-                  href={portfolios?.notion}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Button
-                    text={"Notion"}
-                    type="secondary"
-                    icon={
-                      <NotionIcon className="text-df-icon-color cursor-pointer" />
-                    }
-                  />
-                </Link>
-              )}
-              {portfolios?.medium && (
-                <Link
-                  href={portfolios?.medium}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Button
-                    text={"Medium"}
-                    type="secondary"
-                    icon={
-                      <MediumIcon className="text-df-icon-color cursor-pointer" />
-                    }
-                  />
-                </Link>
-              )}
-            </div>
-          </Chat>
-        )}
-        {isSocilaMediaPresent() && (
-          <Chat
-            direction="right"
-            delay={400}
-            onComplete={() => handleLoading("social-media")}
-          >
-            Where can I reach you?
-          </Chat>
-        )}
-        {isBubbleActive("social-media") && (
-          <Chat
-            direction="left"
-            className="pb-5"
-            delay={200}
-            onComplete={() => handleLoading("scroll-up")}
-          >
-            <div className="flex flex-col lg:flex-row gap-[24px]">
-              {socials?.instagram && (
-                <Link
-                  href={socials?.instagram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Button
-                    text={"Instagram"}
-                    type="secondary"
-                    icon={
-                      <InstagramIcon className="text-df-icon-color cursor-pointer" />
-                    }
-                  />
-                </Link>
-              )}
-
-              {socials?.twitter && (
-                <Link
-                  href={socials?.twitter}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Button
-                    text={"Twitter"}
-                    type="secondary"
-                    icon={
-                      <TwitterIcon className="text-df-icon-color cursor-pointer" />
-                    }
-                  />
-                </Link>
-              )}
-              {socials?.linkedin && (
-                <Link
-                  href={socials?.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Button
-                    text={"LinkedIn"}
-                    type="secondary"
-                    icon={
-                      <LinkedInIcon className="text-df-icon-color cursor-pointer" />
-                    }
-                  />
-                </Link>
-              )}
-            </div>
-          </Chat>
+                </div>
+              ))}
+            </Chat>
+          </>
         )}
 
-        {/* {(isBubbleActive("scroll-up") ||
-          isBubbleActive("other-portfolios") ||
-          isBubbleActive("projects")) && (
+        {activeStep >= 9 && experiences && experiences?.length > 0 && (
+          <>
+            <Chat direction="left" delay={200}>
+              Also, here's more!
+            </Chat>
+
+            <Chat
+              direction="left"
+              className="pb-5"
+              delay={200}
+              onComplete={handleStepCompletion}
+            >
+              <div className="flex flex-col gap-6">
+                {experiences?.map((experience, index) => {
+                  return (
+                    <div key={experience?._id}>
+                      <Text size="p-xsmall" className="font-medium">
+                        {experience?.company}
+                      </Text>
+                      <div className="flex">
+                        <ExperienceShape className="w-[54px]" />
+                        <div className="mt-[14px] flex-1">
+                          <Text size="p-small" className="font-semibold">
+                            {experience?.role}
+                          </Text>
+                          <Text
+                            size="p-xsmall"
+                            className="font-medium mt-[6px]"
+                          >
+                            Jan 2023 - Now
+                          </Text>
+                          <p
+                            className={`text-[16px] font-light leading-[22.4px] font-inter`}
+                            dangerouslySetInnerHTML={{
+                              __html: experience?.description,
+                            }}
+                          ></p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </Chat>
+          </>
+        )}
+
+        {activeStep >= 10 && portfolioCheck && (
+          <>
+            <Chat direction="right" delay={400}>
+              Do you have any other portfolios?
+            </Chat>
+            <Chat
+              direction="left"
+              className="pb-5"
+              delay={200}
+              onComplete={handleStepCompletion}
+            >
+              <div className="flex flex-col lg:flex-row gap-[24px]">
+                {portfolios?.dribbble && (
+                  <Link
+                    href={portfolios?.dribbble}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button
+                      text={"Dribbble"}
+                      type="secondary"
+                      icon={
+                        <DribbbleIcon className="text-df-icon-color cursor-pointer" />
+                      }
+                    />
+                  </Link>
+                )}
+                {portfolios?.behance && (
+                  <Link
+                    href={portfolios?.behance}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button
+                      text={"Behance"}
+                      type="secondary"
+                      icon={
+                        <BehanceIcon className="text-df-icon-color cursor-pointer" />
+                      }
+                    />
+                  </Link>
+                )}
+                {portfolios?.notion && (
+                  <Link
+                    href={portfolios?.notion}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button
+                      text={"Notion"}
+                      type="secondary"
+                      icon={
+                        <NotionIcon className="text-df-icon-color cursor-pointer" />
+                      }
+                    />
+                  </Link>
+                )}
+                {portfolios?.medium && (
+                  <Link
+                    href={portfolios?.medium}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button
+                      text={"Medium"}
+                      type="secondary"
+                      icon={
+                        <MediumIcon className="text-df-icon-color cursor-pointer" />
+                      }
+                    />
+                  </Link>
+                )}
+              </div>
+            </Chat>
+          </>
+        )}
+
+        {activeStep >= 11 &&
+          socials &&
+          Object.values(socials).every((social) => social != "") && (
+            <>
+              <Chat
+                direction="right"
+                delay={400}
+                onComplete={handleStepCompletion}
+              >
+                Where can I reach you?
+              </Chat>
+              <Chat direction="left" className="pb-5" delay={200}>
+                <div className="flex flex-col lg:flex-row gap-[24px]">
+                  {socials?.instagram && (
+                    <Link
+                      href={socials?.instagram}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Button
+                        text={"Instagram"}
+                        type="secondary"
+                        icon={
+                          <InstagramIcon className="text-df-icon-color cursor-pointer" />
+                        }
+                      />
+                    </Link>
+                  )}
+
+                  {socials?.twitter && (
+                    <Link
+                      href={socials?.twitter}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Button
+                        text={"Twitter"}
+                        type="secondary"
+                        icon={
+                          <TwitterIcon className="text-df-icon-color cursor-pointer" />
+                        }
+                      />
+                    </Link>
+                  )}
+                  {socials?.linkedin && (
+                    <Link
+                      href={socials?.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Button
+                        text={"LinkedIn"}
+                        type="secondary"
+                        icon={
+                          <LinkedInIcon className="text-df-icon-color cursor-pointer" />
+                        }
+                      />
+                    </Link>
+                  )}
+                </div>
+              </Chat>
+            </>
+          )}
+
+        {activeStep == 12 && (
           <div
             className="flex justify-center mt-10"
             style={{ pointerEvent: "all" }}
@@ -447,7 +429,7 @@ export default function Template2({ userDetails, preview = false }) {
               <GoUp className="animate-bounce cursor-pointer" />
             </a>
           </div>
-        )} */}
+        )}
       </div>
     </div>
   );

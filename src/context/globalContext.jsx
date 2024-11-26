@@ -43,7 +43,7 @@ export const GlobalProvider = ({ children }) => {
   const [wordCount, setWordCount] = useState(null);
   const [projectValue, setProjectValue] = useState(null);
   const [cursor, setCursor] = useState(0);
-
+  const [template, setTemplate] = useState(0);
   const { setTheme } = useTheme();
 
   // Fetch user details
@@ -95,6 +95,7 @@ export const GlobalProvider = ({ children }) => {
 
       setTheme(userData?.theme == 1 ? "dark" : "light");
       setCursor(userData?.cursor ? userData?.cursor : 0);
+      setTemplate(userData?.template ? userData?.template : 0);
       setUserDetails(userData);
       setIsUserDetailsFromCache(true);
       setCheckList((prevList) => {
@@ -142,6 +143,14 @@ export const GlobalProvider = ({ children }) => {
       setCursor(cursor);
       updateCache("userDetails", res?.data?.user);
       setUserDetails(() => ({ ...userDetails, cursor: cursor }));
+    });
+  };
+
+  const changeTemplate = (template) => {
+    _updateUser({ template: template }).then((res) => {
+      setTemplate(template);
+      updateCache("userDetails", res?.data?.user);
+      setUserDetails(() => ({ ...userDetails, template: template }));
     });
   };
 
@@ -202,6 +211,8 @@ export const GlobalProvider = ({ children }) => {
         cursor,
         setCursor,
         changeCursor,
+        changeTemplate,
+        template,
       }}
     >
       {children}

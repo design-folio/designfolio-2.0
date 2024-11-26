@@ -353,12 +353,11 @@ export default function LoggedInHeader({
                       />
                     </div>
                   </header>
-                  <div className="hide-scrollbar overflow-y-scroll p-4 mt-4">
+                  <div className="hide-scrollbar overflow-y-scroll p-8 pt-4 mt-4">
                     <div className="flex justify-between items-center">
                       <Text
-                        as="h3"
-                        size="p-small"
-                        className=" font-medium text-popover-heading-color"
+                        size="p-xsmall"
+                        className=" font-semibold text-popover-heading-color"
                       >
                         Appearance
                       </Text>
@@ -395,9 +394,8 @@ export default function LoggedInHeader({
                     </div>
                     <div className="mt-8">
                       <Text
-                        as="h3"
-                        size="p-small"
-                        className=" font-medium text-popover-heading-color"
+                        size="p-xsmall"
+                        className=" font-semibold text-popover-heading-color"
                       >
                         Template
                       </Text>
@@ -424,9 +422,8 @@ export default function LoggedInHeader({
                     </div>
                     <div className="mt-8">
                       <Text
-                        as="h3"
-                        size="p-small"
-                        className=" font-medium text-popover-heading-color"
+                        size="p-xsmall"
+                        className=" font-semibold text-popover-heading-color"
                       >
                         Cursor
                       </Text>
@@ -485,7 +482,7 @@ export default function LoggedInHeader({
               >
                 <div className=" w-[310px] rounded-xl shadow-lg bg-popover-bg-color border-4 border-solid border-popover-border-color">
                   <div className="p-4">
-                    <div className="flex justify-between items-center break-all gap-2">
+                    <div className="flex justify-between items-center truncate  overflow-hidden gap-2">
                       <div
                         className="flex gap-2 cursor-pointer items-center"
                         onClick={() =>
@@ -500,7 +497,7 @@ export default function LoggedInHeader({
                         </div>
                         <div className="cursor-pointer">
                           <p className="text-base-text text-[14px] font-[500] font-sfpro underline underline-offset-4 cursor-pointer">
-                            {username}.designfolio.me
+                            {username}.{process.env.NEXT_PUBLIC_BASE_DOMAIN}
                           </p>
                           <p className="text-description-text text-[12px] font-[400] font-inter mt-1 cursor-pointer">
                             {`Updated: ${formatedValue}`}

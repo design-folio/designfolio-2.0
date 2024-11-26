@@ -20,7 +20,7 @@ export default function Index() {
       case 1:
         return (
           <>
-            <Template2 userDetails={userDetails} />
+            <Template2 userDetails={userDetails} preview />
             <BottomNavigation
               userDetails={userDetails}
               className="bg-gradient-to-t from-transparent top-0 pt-5"
@@ -43,9 +43,7 @@ export default function Index() {
   }, []);
   return (
     <main className="min-h-screen bg-df-bg-color">
-      <div
-        className={`max-w-[890px] mx-auto py-[40px] px-2 md:px-4 lg:px-0 pb-[140px]`}
-      >
+      <div className={`max-w-[890px] mx-auto px-2 md:px-4 lg:px-0`}>
         {renderTemplate()}
       </div>
     </main>

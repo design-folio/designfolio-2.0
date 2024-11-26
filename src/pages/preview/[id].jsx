@@ -57,9 +57,7 @@ export default function Index({ initialUserDetails }) {
         url={`https://${userDetails?.username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`}
       />
       <main className="min-h-screen bg-df-bg-color">
-        <div
-          className={`max-w-[890px] mx-auto py-[40px] px-2 md:px-4 lg:px-0 pb-[140px]`}
-        >
+        <div className={`max-w-[890px] mx-auto px-2 md:px-4 lg:px-0`}>
           {" "}
           {userDetails && renderTemplate()}
         </div>

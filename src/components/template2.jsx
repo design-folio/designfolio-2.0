@@ -21,6 +21,8 @@ import Quote from "../../public/assets/svgs/quote.svg";
 import TextWithLineBreaks from "./TextWithLineBreaks";
 import Linkedin from "../../public/assets/svgs/linkedinIcon.svg";
 import { useGlobalContext } from "@/context/globalContext";
+import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
+import NoteIcon from "../../public/assets/svgs/noteIcon.svg";
 
 export default function Template2({ userDetails, preview = false }) {
   const {
@@ -34,6 +36,7 @@ export default function Template2({ userDetails, preview = false }) {
     socials,
     reviews,
     introduction,
+    resume,
   } = userDetails || {};
   const router = useRouter();
   const { projectRef } = useGlobalContext();
@@ -91,7 +94,18 @@ export default function Template2({ userDetails, preview = false }) {
   };
 
   return (
-    <div className={`max-w-[890px] mx-auto py-[40px] px-2 md:px-4 lg:px-0`}>
+    <div className={`max-w-[890px] mx-auto pt-[100px] px-2 md:px-4 lg:px-0`}>
+      {preview && (
+        <Link href={"/builder"}>
+          <Button
+            text="Exit preview"
+            customClass="mb-5"
+            type="secondary"
+            size="small"
+            icon={<LeftArrow className="text-df-icon-color cursor-pointer" />}
+          />
+        </Link>
+      )}
       <div className="flex flex-col gap-6">
         {activeStep >= 1 && introduction && (
           <div className="flex gap-2 items-end">
@@ -357,8 +371,9 @@ export default function Template2({ userDetails, preview = false }) {
         )}
 
         {activeStep >= 11 &&
-          socials &&
-          Object.values(socials).every((social) => social != "") && (
+          ((socials &&
+            Object.values(socials).every((social) => social == "")) ||
+            resume) && (
             <>
               <Chat
                 direction="right"
@@ -367,56 +382,80 @@ export default function Template2({ userDetails, preview = false }) {
               >
                 Where can I reach you?
               </Chat>
-              <Chat direction="left" className="pb-5" delay={200}>
-                <div className="flex flex-col lg:flex-row gap-[24px]">
-                  {socials?.instagram && (
-                    <Link
-                      href={socials?.instagram}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Button
-                        text={"Instagram"}
-                        type="secondary"
-                        icon={
-                          <InstagramIcon className="text-df-icon-color cursor-pointer" />
-                        }
-                      />
-                    </Link>
-                  )}
+              {resume && (
+                <Chat direction="left" className="pb-5">
+                  <a
+                    href={userDetails?.resume?.url}
+                    download={true}
+                    target="_blank"
+                  >
+                    <Button
+                      text={"Download Resume"}
+                      customClass="w-full justify-start"
+                      type="secondary"
+                      icon={
+                        <NoteIcon className="text-df-icon-color cursor-pointer" />
+                      }
+                    />
+                  </a>
+                </Chat>
+              )}
 
-                  {socials?.twitter && (
-                    <Link
-                      href={socials?.twitter}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Button
-                        text={"Twitter"}
-                        type="secondary"
-                        icon={
-                          <TwitterIcon className="text-df-icon-color cursor-pointer" />
-                        }
-                      />
-                    </Link>
-                  )}
-                  {socials?.linkedin && (
-                    <Link
-                      href={socials?.linkedin}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Button
-                        text={"LinkedIn"}
-                        type="secondary"
-                        icon={
-                          <LinkedInIcon className="text-df-icon-color cursor-pointer" />
-                        }
-                      />
-                    </Link>
-                  )}
-                </div>
-              </Chat>
+              {socials &&
+                Object.values(socials).some(
+                  (social) => social && social != ""
+                ) && (
+                  <Chat direction="left" className="pb-5" delay={200}>
+                    <div className="flex flex-col lg:flex-row gap-[24px]">
+                      {socials?.instagram && (
+                        <Link
+                          href={socials?.instagram}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Button
+                            text={"Instagram"}
+                            type="secondary"
+                            icon={
+                              <InstagramIcon className="text-df-icon-color cursor-pointer" />
+                            }
+                          />
+                        </Link>
+                      )}
+
+                      {socials?.twitter && (
+                        <Link
+                          href={socials?.twitter}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Button
+                            text={"Twitter"}
+                            type="secondary"
+                            icon={
+                              <TwitterIcon className="text-df-icon-color cursor-pointer" />
+                            }
+                          />
+                        </Link>
+                      )}
+                      {socials?.linkedin && (
+                        <Link
+                          href={socials?.linkedin}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Button
+                            text={"LinkedIn"}
+                            type="secondary"
+                            icon={
+                              <LinkedInIcon className="text-df-icon-color cursor-pointer" />
+                            }
+                          />
+                        </Link>
+                      )}
+                    </div>
+                  </Chat>
+                )}
             </>
           )}
 
@@ -426,7 +465,10 @@ export default function Template2({ userDetails, preview = false }) {
             style={{ pointerEvent: "all" }}
           >
             <a href="#">
-              <GoUp className="animate-bounce cursor-pointer" />
+              <GoUp
+                className="animate-bounce cursor-pointer"
+                style={{ cursor: "pointer" }}
+              />
             </a>
           </div>
         )}

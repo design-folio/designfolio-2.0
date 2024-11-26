@@ -17,8 +17,8 @@ module.exports = {
         default: "var(--cursor-default)", // Custom cursor
         pointer: "var(--cursor-pointer)", // Custom cursor
         "not-allowed": "var(--cursor-not-allowed)",
-        grabbing: "url(/assets/svgs/move.svg), grabbing", // Custom cursor
-        grab: "url(/assets/svgs/move.svg), grab", // Custom cursor
+        grabbing: "var(--cursor-grabbing)", // Custom cursor
+        grab: "var(--cursor-grab)", // Custom cursor
       },
       colors: {
         "landing-bg-color": "var(--landing-bg-color)",

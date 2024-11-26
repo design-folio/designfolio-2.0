@@ -64,21 +64,21 @@ function Dropdown({ data, onClick, defaultValue, theme }) {
 
       {isOpen && (
         <div
-          className={`pt-5 absolute z-20 right-0 origin-top-right transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${
-            isOpen ? "opacity-100 scale-100" : "opacity-0 scale-90 pointer-events-none"
+          className={`pt-2 absolute z-20 right-0 origin-top-right transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${
+            isOpen
+              ? "opacity-100 scale-100"
+              : "opacity-0 scale-90 pointer-events-none"
           }`}
           style={{
             maxHeight: "25vh",
-            overflowY: "hidden", // Allow vertical scrolling if content overflows
-            overflowX: "hidden", // Prevent horizontal scrolling
           }}
         >
           <div className="w-[250px] rounded-xl shadow-lg bg-popover-bg-color border-4 border-solid border-popover-border-color">
-            <div className="py-2">
+            <div className="p-4">
               {data.map((item) => (
                 <div
                   key={item}
-                  className={`px-4 py-2 ml-4 cursor-pointer hover:bg-popover-hover-color`}
+                  className={`px-4 py-2 cursor-pointer hover:bg-normal-btn-bg-hover-color rounded-lg text-[14px] font-medium `}
                   onClick={() => handleOptionClick(item)}
                 >
                   {item}

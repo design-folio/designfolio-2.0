@@ -182,7 +182,7 @@ export default function Builder2({ edit = false }) {
             <SortableItem key={project._id}>
               <div className="max-w-[444px] relative">
                 <ProjectShape className="text-template-text-left-bg-color" />
-                <Chat direction="left" className="rounded-tl-none">
+                <Chat direction="left" className="rounded-tl-none w-full">
                   <ProjectCard
                     project={project}
                     onDeleteProject={() => onDeleteProject(project)}

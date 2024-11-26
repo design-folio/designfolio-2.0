@@ -209,13 +209,14 @@
   --bad-text-color: #a5022c;
 
   --modal-analyze-bg-color: #fafafa;
+  --analytics-url-color: #007aff;
+  --analytics-last-updated-color: #596983;
 
   --template-text-left-bg-color: #ffffff;
   --template-text-left-text-color: #202937;
   --template-text-right-bg-color: #278eff;
   --template-text-right-text-color: #ffffff;
-  --analytics-url-color: #007AFF;
-  --analytics-last-updated-color : #596983;
+
 }
 
 /* dark mode start*/
@@ -389,11 +390,11 @@
   --bottom-navigation-inactive-fill: #1d1f26;
 
   --modal-analyze-bg-color: #23252f;
+  --analytics-url-color: #007aff;
+  --analytics-last-updated-color: #b1b5c3;
   --template-text-left-bg-color: #1d1f27;
   --template-text-left-text-color: #ffffff;
   --template-text-right-bg-color: #278eff;
   --template-text-right-text-color: ##ffffff;
-  --analytics-url-color: #007AFF;
-  --analytics-last-updated-color : #B1B5C3;
 }
 /* dark mode end*/

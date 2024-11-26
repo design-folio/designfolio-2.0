@@ -94,7 +94,7 @@ export default function Template2({ userDetails, preview = false }) {
   };
 
   return (
-    <div className={`max-w-[890px] mx-auto pt-[100px] px-2 md:px-4 lg:px-0`}>
+    <div className={`max-w-[890px] mx-auto py-[100px] px-2 md:px-4 lg:px-0`}>
       {preview && (
         <Link href={"/builder"}>
           <Button
@@ -192,7 +192,7 @@ export default function Template2({ userDetails, preview = false }) {
                   ref={projectRef}
                 >
                   <ProjectShape className="text-template-text-left-bg-color" />
-                  <Chat direction="left" className="rounded-tl-none">
+                  <Chat direction="left" className="rounded-tl-none w-full">
                     <ProjectCard
                       project={project}
                       onDeleteProject={onDeleteProject}
@@ -459,7 +459,7 @@ export default function Template2({ userDetails, preview = false }) {
             </>
           )}
 
-        {activeStep == 12 && (
+        {activeStep >= 6 && (
           <div
             className="flex justify-center mt-10"
             style={{ pointerEvent: "all" }}

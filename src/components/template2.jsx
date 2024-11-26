@@ -192,7 +192,7 @@ export default function Template2({ userDetails, preview = false }) {
                   ref={projectRef}
                 >
                   <ProjectShape className="text-template-text-left-bg-color" />
-                  <Chat direction="left" className="rounded-tl-none">
+                  <Chat direction="left" className="rounded-tl-none w-full">
                     <ProjectCard
                       project={project}
                       onDeleteProject={onDeleteProject}

@@ -262,8 +262,8 @@ const ProjectEditor = ({ projectDetails, userDetails }) => {
           (async () => {
             const content = await editor?.save();
             if (
-              JSON.stringify(content?.blocks) !==
-              JSON.stringify(projectDetails?.content?.blocks)
+              JSON.stringify(content.blocks) !==
+              JSON.stringify(projectDetails.content.blocks)
             ) {
               content?.blocks?.forEach((block) => {
                 if (block.type == "image") {

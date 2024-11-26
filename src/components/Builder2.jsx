@@ -35,6 +35,8 @@ import SortableList, { SortableItem } from "react-easy-sort";
 import { arrayMoveImmutable as arrayMove } from "array-move";
 import { _updateUser } from "@/network/post-request";
 import Linkedin from "../../public/assets/svgs/linkedinIcon.svg";
+import ResumeIcon from "../../public/assets/svgs/resume.svg";
+import NoteIcon from "../../public/assets/svgs/noteIcon.svg";
 export default function Builder2({ edit = false }) {
   const {
     userDetails,
@@ -58,6 +60,7 @@ export default function Builder2({ edit = false }) {
     avatar,
     socials,
     reviews,
+    resume,
   } = userDetails || {};
   const router = useRouter();
   const getSkills = () => {
@@ -506,6 +509,46 @@ export default function Builder2({ edit = false }) {
           )}
       </Chat>
       <Chat direction="right">Where can I reach you?</Chat>
+      <Chat direction="left" className="pb-5">
+        {!resume && edit && (
+          <AddItem
+            title="Add your resume"
+            iconLeft={<ResumeIcon className="text-df-icon-color" />}
+            onClick={() => openModal(modals.resume)}
+            iconRight={
+              <Button
+                size="small"
+                type="secondary"
+                customClass="w-fit gap-0"
+                icon={
+                  <PlusIcon className="text-secondary-btn-text-color w-[14px] h-[14px] cursor-pointer" />
+                }
+              />
+            }
+          />
+        )}
+
+        {edit && !!userDetails?.resume && (
+          <>
+            <a href={userDetails?.resume?.url} download={true} target="_blank">
+              <Button
+                text={"Download Resume"}
+                customClass="w-full justify-start"
+                type="secondary"
+                icon={
+                  <NoteIcon className="text-df-icon-color cursor-pointer" />
+                }
+              />
+            </a>
+            <Button
+              onClick={() => openModal(modals.resume)}
+              type={"secondary"}
+              customClass="mt-4"
+              icon={<EditIcon className="text-df-icon-color cursor-pointer" />}
+            />
+          </>
+        )}
+      </Chat>
       <Chat direction="left" className="pb-5">
         <div className="flex flex-col lg:flex-row gap-[24px]">
           {socials?.instagram && (

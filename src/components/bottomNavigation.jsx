@@ -7,11 +7,7 @@ import MadeWithDesignfolio from "../../public/assets/svgs/madewithdesignfolio.sv
 import { useState } from "react";
 import Button from "./button";
 
-export default function BottomNavigation({
-  userDetails,
-  className = "",
-  watermarkClassName = "",
-}) {
+export default function BottomNavigation({ userDetails }) {
   const router = useRouter();
   const [isProject, setIsProject] = useState(false);
   const { projectRef } = useGlobalContext();
@@ -32,10 +28,10 @@ export default function BottomNavigation({
     }
   };
 
+  console.log(userDetails);
+
   return (
-    <div
-      className={`bg-gradient-to-b from-transparent px-2  to-df-bg-color fixed bottom-0 left-0 right-0 h-[90px] lg:h-[102px] overflow-hidden  z-10 ${className}`}
-    >
+    <div className="bg-gradient-to-b from-transparent px-2  to-df-bg-color fixed bottom-0 left-0 right-0 h-[90px] lg:h-[102px] overflow-hidden  z-10">
       {!router?.asPath?.includes("project") && (
         <motion.div
           className="bg-df-section-card-bg-color rounded-[24px] shadow-bottom  p-[10px] w-fit max-w-[400px] md:max-w-[450px] m-auto flex items-center relative gap-4"
@@ -95,7 +91,7 @@ export default function BottomNavigation({
         </motion.div>
       )}
       <div
-        className={`text-center flex justify-center relative top-5 lg:absolute lg:right-[36px] lg:top-[10px] xl:block cursor-pointer ${watermarkClassName}`}
+        className="text-center flex justify-center relative top-5 lg:absolute lg:right-[36px] lg:top-[10px] xl:block cursor-pointer"
         onClick={() => window.open("https://www.designfolio.me", "_blank")}
       >
         <div className="bg-df-section-card-bg-color shadow-df-section-card-shadow p-2 rounded-2xl">

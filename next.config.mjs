@@ -34,7 +34,6 @@ const nextConfig = {
             },
           },
         ],
-        type: "javascript/auto",
       }
     );
 

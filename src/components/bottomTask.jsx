@@ -11,7 +11,7 @@ export default function BottomTask() {
   return (
     <div data-modal-id={popovers.task}>
       <div
-        className={`mb-4 transition-all will-change-transform translateZ(0) origin-bottom duration-120 ease-in-out fixed right-0 left-0 flex justify-center bottom-[88px] z-50 ${
+        className={`mb-4 transition-all will-change-transform translateZ(0) origin-bottom duration-120 ease-in-out fixed right-0 left-0 flex justify-center bottom-[88px] ${
           popoverMenu == popovers.task
             ? "opacity-100 scale-100"
             : "opacity-0 scale-90 pointer-events-none"

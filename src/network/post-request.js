@@ -72,6 +72,3 @@ export const _analyzeCaseStudyStatus = (projectId) =>
 
 export const _analyzeCaseStudyCredits = (projectId) =>
   axiosInstance.get(`/ai/get/analyzeCredits?projectId=${projectId}`);
-
-export const _analytics = (duration) =>
-  axiosInstance.get(`/user/getUserAnalytics?duration=${duration}`);

@@ -19,10 +19,6 @@ const validationSchema = Yup.object().shape({
   description: Yup.string()
     .max(800, "Description must be 800 characters or less")
     .required("Description is required"),
-  linkedinLink: Yup.string()
-    .url('Please enter a valid URL')
-    .matches(/(linkedin.com)/, "Invalid LinkedIn Link"),
-
 });
 
 export default function AddReview() {
@@ -64,7 +60,6 @@ export default function AddReview() {
             name: selectedReview?.name ?? "",
             company: selectedReview?.company ?? "",
             description: selectedReview?.description ?? "",
-            linkedinLink: selectedReview?.linkedinLink ?? "",
           }}
           validationSchema={validationSchema}
           onSubmit={(values, actions) => {
@@ -119,31 +114,6 @@ export default function AddReview() {
                     className="error-message"
                   />
                 </div>
-
-                <div>
-                  <Text
-                    size={"p-xxsmall"}
-                    className="mt-6 font-medium"
-                  >
-                    LinkedIn Link
-                  </Text>
-                  <Field
-                    name="linkedinLink"
-                    type="text"
-                    className={`text-input mt-2  ${
-                      errors.linkedinLink &&
-                      touched.linkedinLink &&
-                      "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                    }`}
-                    autoComplete="off"
-                  />
-                  <ErrorMessage
-                    name="linkedinLink"
-                    component="div"
-                    className="error-message"
-                  />
-                </div>
-
                 <div className="mt-[24px]">
                   <Text
                     size={"p-xxsmall"}

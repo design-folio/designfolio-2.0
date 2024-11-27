@@ -17,8 +17,8 @@ module.exports = {
         default: "var(--cursor-default)", // Custom cursor
         pointer: "var(--cursor-pointer)", // Custom cursor
         "not-allowed": "var(--cursor-not-allowed)",
-        grabbing: "var(--cursor-grabbing)", // Custom cursor
-        grab: "var(--cursor-grab)", // Custom cursor
+        grabbing: "url(/assets/svgs/move.svg), grabbing", // Custom cursor
+        grab: "url(/assets/svgs/move.svg), grab", // Custom cursor
       },
       colors: {
         "landing-bg-color": "var(--landing-bg-color)",
@@ -114,10 +114,6 @@ module.exports = {
         "df-add-card-description-color": "var(--df-add-card-description-color)",
         "df-tip-color": "var(--df-tip-color)",
         "credit-text-color": "var(--credit-text-color)",
-
-        // Analytics
-        "analytics-profile-url-color" : "var(--analytics-url-color)",
-        "analytics-last-updated-color" : "var(--analytics-last-updated-color)",
 
         // Profile card
         "profile-card-heading-color": "var(--profile-card-heading-color)",
@@ -245,11 +241,6 @@ module.exports = {
         "bad-bg-color": "var(--bad-bg-color)",
         "bad-text-color": "var(--bad-text-color)",
         "modal-analyze-bg-color": "var(--modal-analyze-bg-color)",
-        "template-text-left-bg-color": "var(--template-text-left-bg-color)",
-        "template-text-left-text-color": "var(--template-text-left-text-color)",
-        "template-text-right-bg-color": "var(--template-text-right-bg-color)",
-        "template-text-right-text-color":
-          "var(--template-text-right-text-color)",
       },
       boxShadow: {
         // Landing page

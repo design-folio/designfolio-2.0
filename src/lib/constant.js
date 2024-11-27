@@ -55,21 +55,3 @@ export const moveItemInArray = (array, from, to) => {
   array.splice(to, 0, array.splice(from, 1)[0]);
   return array; // This is optional if you're mutating the array directly
 };
-
-export const chatBubbleItems = {
-  name: "name",
-  bio: "bio",
-  skillQuestion: "skill-question",
-  skills: "skills",
-  tools: "tools",
-  projectQuestion: "project-question",
-  projectChat: "project-chat",
-  projects: "projects",
-  workExperience: "work-experience",
-  experience: "experience",
-  otherPortfolioQuestion: "other-portfolio-question",
-  otherPortfolios: "other-portfolios",
-  socialMediaQuestion: "social-media-question",
-  socialMedia: "social-media",
-  scrollUp: "scroll-up",
-};

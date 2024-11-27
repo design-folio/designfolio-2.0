@@ -6,6 +6,7 @@ import React, { useEffect } from "react";
 export default function Index({ dfToken }) {
   const { setCursor, userDetails } = useGlobalContext();
   useEffect(() => {
+    console.log(userDetails);
     setCursor(0);
     return () => {
       console.log("Component unmounted");

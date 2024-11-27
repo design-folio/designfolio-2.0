@@ -17,8 +17,7 @@ import TickIcon from "../../public/assets/svgs/tick.svg";
 import HamburgerIcon from "../../public/assets/svgs/hamburger.svg";
 import SettingIcon from "../../public/assets/svgs/settings.svg";
 import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
-import { motion } from "framer-motion";
-import AnalyticsIcon from "../../public/assets/svgs/analytics.svg";
+
 import Button from "./button";
 import { useTheme } from "next-themes";
 import Text from "./text";
@@ -29,8 +28,6 @@ import Popover from "./popover";
 import queryClient from "@/network/queryClient";
 import useClient from "@/hooks/useClient";
 import { twMerge } from "tailwind-merge";
-import { removeCursor } from "@/lib/cursor";
-import Modal from "./modal";
 
 const cursors = [
   {
@@ -102,31 +99,6 @@ const cursors = [
     ),
   },
 ];
-const variants = {
-  hidden: { x: "100%" },
-  visible: { x: "0%" },
-};
-
-const templates = [
-  {
-    id: 1,
-    value: "default",
-    item: (
-      <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer mb-1">
-        Default
-      </p>
-    ),
-  },
-  {
-    id: 2,
-    value: "chat",
-    item: (
-      <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer mb-1">
-        Chat Box
-      </p>
-    ),
-  },
-];
 
 export default function LoggedInHeader({
   userDetails,
@@ -137,8 +109,6 @@ export default function LoggedInHeader({
   updateCache,
   cursor,
   changeCursor,
-  changeTemplate,
-  template,
 }) {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -190,13 +160,11 @@ export default function LoggedInHeader({
   };
 
   const handleLogout = async () => {
-    setUserDetails(null);
     setPopoverMenu(null);
     queryClient.removeQueries();
     Cookies.remove("df-token", {
       domain: process.env.NEXT_PUBLIC_BASE_DOMAIN,
     });
-    removeCursor();
     router.replace("/");
   };
 
@@ -245,32 +213,8 @@ export default function LoggedInHeader({
     changeCursor(i);
   };
 
-  const renderTemplate = (template = "default") => {
-    if (template == "default") {
-      if (theme == "light") {
-        return "/assets/png/white-default-theme.png";
-      } else {
-        return "/assets/png/dark-default-theme.png";
-      }
-    } else {
-      if (theme == "light") {
-        return "/assets/png/white-chat-box-theme.png";
-      } else {
-        return "/assets/png/dark-chat-box-theme.png";
-      }
-    }
-  };
-
   const getStyles = (i) => {
     if (i == cursor) {
-      return `bg-selected-cursor-bg-color hover:bg-selected-cursor-bg-color shadow-selected-cursor-shadow`;
-    } else {
-      return "";
-    }
-  };
-
-  const getTemplateStyles = (i) => {
-    if (i == template) {
       return `bg-selected-cursor-bg-color hover:bg-selected-cursor-bg-color shadow-selected-cursor-shadow`;
     } else {
       return "";
@@ -296,17 +240,6 @@ export default function LoggedInHeader({
             className="relative theme-button"
             data-popover-menu={popovers.themeMenu}
           >
-            <Link href="/analytics">
-              <Button
-                text={"Insights"}
-                customClass="!p-4 mr-4"
-                type="secondary"
-                icon={
-                  <AnalyticsIcon className="text-icon-color cursor-pointer" />
-                }
-                animation
-              />
-            </Link>
             <Button
               icon={<ThemeIcon className="text-icon-color cursor-pointer" />}
               onClick={handleTheme}
@@ -315,137 +248,79 @@ export default function LoggedInHeader({
             />
 
             {isClient && (
-              <Modal
-                show={popoverMenu === popovers.themeMenu}
-                className={"md:block"}
+              <div
+                className={`pt-[21px] origin-top-right absolute z-20 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${
+                  popoverMenu === popovers.themeMenu
+                    ? "opacity-100 scale-100"
+                    : "opacity-0 scale-90 pointer-events-none"
+                }`}
               >
-                <motion.div
-                  className="bg-modal-bg-color h-[95%] w-[95%] m-auto md:w-[602px] md:fixed md:top-[2.25%] md:right-4 flex flex-col rounded-2xl"
-                  initial="hidden"
-                  animate="visible"
-                  variants={variants}
-                  transition={{ duration: 0.5, ease: "easeInOut" }}
-                >
-                  <header className="p-8 text-lg font-bold pb-0">
-                    <div className="flex items-center justify-between gap-4">
-                      <div className="flex gap-4 items-center">
-                        <Button
-                          type="ai"
-                          icon={
-                            <ThemeIcon className="text-secondary-btn-text-color w-[22px] h-[22px] cursor-pointer" />
-                          }
-                          style={{ background: "var(--ai-btn-bg-color)" }}
-                        />
-                        <Text
-                          size="p-small"
-                          className="font-semibold font-inter"
-                        >
-                          Personalisation
-                        </Text>
-                      </div>
-                      <Button
-                        type="secondary"
-                        customClass="!p-2 rounded-[8px]"
-                        icon={
-                          <CloseIcon className="text-df-icon-color cursor-pointer" />
-                        }
-                        onClick={handleCloseTheme}
-                      />
-                    </div>
-                  </header>
-                  <div className="hide-scrollbar overflow-y-scroll p-8 pt-4 mt-4">
-                    <div className="flex justify-between items-center">
-                      <Text
-                        size="p-xsmall"
-                        className=" font-semibold text-popover-heading-color"
+                <div className="w-[342px] p-4  rounded-xl shadow-lg bg-popover-bg-color border-4 border-solid border-popover-border-color">
+                  <div className="flex justify-between items-center">
+                    <Text
+                      as="h3"
+                      size="p-small"
+                      className=" font-medium text-popover-heading-color"
+                    >
+                      Appearance
+                    </Text>
+                    <Button
+                      type="secondary"
+                      customClass="!p-2 rounded-[8px]"
+                      icon={
+                        <CloseIcon className="text-df-icon-color cursor-pointer" />
+                      }
+                      onClick={handleCloseTheme}
+                    />
+                  </div>
+                  <div>
+                    <div className="flex gap-[16px] mt-3">
+                      <div
+                        onClick={() => changeTheme(0)}
+                        className={`flex gap-[10px]  items-center border bg-default-theme-box-bg-color border-default-theme-box-border-color hover:bg-default-theme-bg-hover-color shadow-default-theme-shadow rounded-[16px] px-[32px] py-[16px] cursor-pointer`}
                       >
-                        Appearance
-                      </Text>
-                      {/* <Button
-                        type="secondary"
-                        customClass="!p-2 rounded-[8px]"
-                        icon={
-                          <CloseIcon className="text-df-icon-color cursor-pointer" />
-                        }
-                        onClick={handleCloseTheme}
-                      /> */}
-                    </div>
-                    <div>
-                      <div className="flex gap-[16px] mt-3">
-                        <div
-                          onClick={() => changeTheme(0)}
-                          className={`flex gap-[10px] w-full justify-center items-center border bg-default-theme-box-bg-color border-default-theme-box-border-color hover:bg-default-theme-bg-hover-color shadow-default-theme-shadow rounded-[16px] px-[32px] py-[16px] cursor-pointer`}
-                        >
-                          <SunIcon className={"cursor-pointer"} />
-                          <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer">
-                            Light
-                          </p>
-                        </div>
-                        <div
-                          onClick={() => changeTheme(1)}
-                          className={`border flex gap-[10px] w-full justify-center bg-theme-box-bg-color border-theme-box-border-color hover:bg-theme-bg-hover-color shadow-theme-shadow rounded-[16px] px-[32px] py-[16px] cursor-pointer`}
-                        >
-                          <MoonIcon className={"cursor-pointer"} />
-                          <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer">
-                            Dark
-                          </p>
-                        </div>
+                        <SunIcon className={"cursor-pointer"} />
+                        <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer">
+                          Light
+                        </p>
                       </div>
-                    </div>
-                    <div className="mt-8">
-                      <Text
-                        size="p-xsmall"
-                        className=" font-semibold text-popover-heading-color"
+                      <div
+                        onClick={() => changeTheme(1)}
+                        className={`border flex gap-[10px] bg-theme-box-bg-color border-theme-box-border-color hover:bg-theme-bg-hover-color shadow-theme-shadow rounded-[16px] px-[32px] py-[16px] cursor-pointer`}
                       >
-                        Template
-                      </Text>
-                      <div className="mt-4 grid grid-cols-2 gap-4">
-                        {templates.map((template, index) => (
-                          <div
-                            onClick={() => changeTemplate(index)}
-                            className={twMerge(
-                              "px-4 py-6 flex flex-col justify-center items-center border rounded-[16px] cursor-pointer",
-                              "bg-default-cursor-box-bg border-default-cursor-box-border",
-                              "hover:bg-default-cursor-bg-hover",
-                              getTemplateStyles(index) // This will dynamically add classes based on index
-                            )}
-                          >
-                            {template.item}
-                            <img
-                              src={renderTemplate(template.value)}
-                              alt=""
-                              className="cursor-pointer"
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="mt-8">
-                      <Text
-                        size="p-xsmall"
-                        className=" font-semibold text-popover-heading-color"
-                      >
-                        Cursor
-                      </Text>
-                      <div className="mt-4 grid grid-cols-3 gap-4">
-                        {cursors.map((cursor, index) => (
-                          <div
-                            onClick={() => handleChangeCursor(index)}
-                            className={twMerge(
-                              "px-4 py-6 flex justify-center items-center border rounded-[16px] cursor-pointer",
-                              "bg-default-cursor-box-bg border-default-cursor-box-border",
-                              "hover:bg-default-cursor-bg-hover",
-                              getStyles(index) // This will dynamically add classes based on index
-                            )}
-                          >
-                            {cursor.item}
-                          </div>
-                        ))}
+                        <MoonIcon className={"cursor-pointer"} />
+                        <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer">
+                          Dark
+                        </p>
                       </div>
                     </div>
                   </div>
-                </motion.div>
-              </Modal>
+                  <div className="mt-8">
+                    <Text
+                      as="h3"
+                      size="p-small"
+                      className=" font-medium text-popover-heading-color"
+                    >
+                      Cursor
+                    </Text>
+                    <div className="mt-4 grid grid-cols-3 gap-4">
+                      {cursors.map((cursor, index) => (
+                        <div
+                          onClick={() => handleChangeCursor(index)}
+                          className={twMerge(
+                            "px-4 py-6 flex justify-center items-center border rounded-[16px] cursor-pointer",
+                            "bg-default-cursor-box-bg border-default-cursor-box-border",
+                            "hover:bg-default-cursor-bg-hover",
+                            getStyles(index) // This will dynamically add classes based on index
+                          )}
+                        >
+                          {cursor.item}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
             )}
           </div>
           <Button
@@ -482,7 +357,7 @@ export default function LoggedInHeader({
               >
                 <div className=" w-[310px] rounded-xl shadow-lg bg-popover-bg-color border-4 border-solid border-popover-border-color">
                   <div className="p-4">
-                    <div className="flex justify-between items-center truncate  overflow-hidden gap-2">
+                    <div className="flex justify-between items-center break-all gap-2">
                       <div
                         className="flex gap-2 cursor-pointer items-center"
                         onClick={() =>
@@ -497,7 +372,7 @@ export default function LoggedInHeader({
                         </div>
                         <div className="cursor-pointer">
                           <p className="text-base-text text-[14px] font-[500] font-sfpro underline underline-offset-4 cursor-pointer">
-                            {username}.{process.env.NEXT_PUBLIC_BASE_DOMAIN}
+                            {username}.designfolio.me
                           </p>
                           <p className="text-description-text text-[12px] font-[400] font-inter mt-1 cursor-pointer">
                             {`Updated: ${formatedValue}`}
@@ -646,18 +521,6 @@ export default function LoggedInHeader({
                     />
                   }
                 />
-
-                <Link href="/analytics">
-                  <Button
-                    text={"Insights"}
-                    type="secondary"
-                    customClass="!p-4 mr-0 w-full mt-4"
-                    icon={
-                      <AnalyticsIcon className="text-icon-color cursor-pointer" />
-                    }
-                    animation
-                  />
-                </Link>
                 <Button
                   icon={
                     <ThemeIcon className="text-icon-color cursor-pointer" />

@@ -34,7 +34,7 @@ export default function TextWithLineBreaks({ text, color }) {
         <button
           className="text-blue-700 hover:text-blue-900 hover:underline font-medium"
           onClick={handleShowMore}
-          style={{ color: "#5C6486", marginTop: "8px" }}
+          style={{ color: "#5C6486" }}
         >
           {showFullText ? "View less" : "View more"}
         </button>

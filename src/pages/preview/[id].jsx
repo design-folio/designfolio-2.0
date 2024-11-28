@@ -1,42 +1,14 @@
-import BottomLayout from "@/components/bottomLayout";
-import OthersPreview from "@/components/othersPreview";
-import Profile from "@/components/profile";
-import Projects from "@/components/Projects";
-import Reviews from "@/components/reviews";
-import Tools from "@/components/tools";
-import Works from "@/components/works";
-import { useGlobalContext } from "@/context/globalContext";
 import { _getUser } from "@/network/get-request";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
-import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
 import { useEffect } from "react";
 import Seo from "@/components/seo";
 import { capitalizeWords } from "@/lib/capitalizeText";
+import Template1 from "@/components/template";
+import Template2 from "@/components/template2";
+import BottomNavigation from "@/components/bottomNavigation";
 
-const containerVariants = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.1, // Children animations start at the same time but staggered
-      type: "spring",
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { y: 50 }, // Starting position of children below their final position
-  visible: {
-    y: 0, // Final position of children
-    transition: {
-      type: "spring",
-      stiffness: 150, // Smoothness adjusted
-      damping: 15, // Controlled bounciness
-      duration: 0.5, // Duration of each child's animation
-    },
-  },
-};
 export default function Index({ initialUserDetails }) {
   const { setTheme } = useTheme();
   const router = useRouter();
@@ -45,17 +17,37 @@ export default function Index({ initialUserDetails }) {
     queryFn: _getUser(router.query.id),
     initialData: initialUserDetails,
   });
-  const { projectRef, setCursor } = useGlobalContext();
 
   useEffect(() => {
     if (userDetails) {
       setTheme(userDetails?.theme == 1 ? "dark" : "light");
-      setCursor(userDetails?.cursor ? userDetails?.cursor : 0);
     }
   }, [userDetails, setTheme]);
 
+  const renderTemplate = () => {
+    console.log(userDetails?.template);
+    switch (userDetails?.template) {
+      case 0:
+        return <Template1 userDetails={userDetails} />;
+      case 1:
+        return (
+          <>
+            <Template2 userDetails={userDetails} />
+            <BottomNavigation
+              userDetails={userDetails}
+              className="bg-gradient-to-t from-transparent top-0 pt-5"
+              watermarkClassName="!top-7"
+            />
+          </>
+        );
+
+      default:
+        return <Template1 userDetails={userDetails} />;
+    }
+  };
+
   return (
-    <BottomLayout userDetails={userDetails}>
+    <>
       <Seo
         title={capitalizeWords(userDetails?.username)}
         description={userDetails?.introduction}
@@ -65,55 +57,12 @@ export default function Index({ initialUserDetails }) {
         url={`https://${userDetails?.username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`}
       />
       <main className="min-h-screen bg-df-bg-color">
-        <div
-          className={`max-w-[890px] mx-auto py-[40px] px-2 md:px-4 lg:px-0 pb-[140px]`}
-        >
-          {userDetails && (
-            <motion.div
-              className="flex-1 flex flex-col gap-4 md:gap-6"
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-            >
-              <motion.div variants={itemVariants}>
-                <Profile userDetails={userDetails} />
-              </motion.div>
-
-              {userDetails?.projects?.length > 0 && (
-                <motion.div variants={itemVariants}>
-                  <Projects userDetails={userDetails} projectRef={projectRef} />
-                </motion.div>
-              )}
-              {userDetails?.reviews?.length > 0 && (
-                <motion.div variants={itemVariants}>
-                  <Reviews userDetails={userDetails} />
-                </motion.div>
-              )}
-              <motion.div variants={itemVariants}>
-                <Tools userDetails={userDetails} />
-              </motion.div>
-
-              {userDetails?.experiences?.length > 0 && (
-                <motion.div variants={itemVariants}>
-                  <Works userDetails={userDetails} />
-                </motion.div>
-              )}
-              {(!!userDetails?.socials?.instagram ||
-                !!userDetails?.socials?.twitter ||
-                !!userDetails?.socials?.linkedin ||
-                !!userDetails?.portfolios?.dribbble ||
-                !!userDetails?.portfolios?.notion ||
-                !!userDetails?.portfolios?.behance ||
-                !!userDetails?.portfolios?.medium) && (
-                <motion.div variants={itemVariants}>
-                  <OthersPreview userDetails={userDetails} />
-                </motion.div>
-              )}
-            </motion.div>
-          )}
+        <div className={`max-w-[890px] mx-auto px-2 md:px-4 lg:px-0`}>
+          {" "}
+          {userDetails && renderTemplate()}
         </div>
       </main>
-    </BottomLayout>
+    </>
   );
 }
 

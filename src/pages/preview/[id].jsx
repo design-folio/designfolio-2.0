@@ -8,6 +8,7 @@ import { capitalizeWords } from "@/lib/capitalizeText";
 import Template1 from "@/components/template";
 import Template2 from "@/components/template2";
 import BottomNavigation from "@/components/bottomNavigation";
+import useClient from "@/hooks/useClient";
 
 export default function Index({ initialUserDetails }) {
   const { setTheme } = useTheme();
@@ -17,6 +18,7 @@ export default function Index({ initialUserDetails }) {
     queryFn: _getUser(router.query.id),
     initialData: initialUserDetails,
   });
+  const { isClient } = useClient();
 
   useEffect(() => {
     if (userDetails) {
@@ -33,11 +35,13 @@ export default function Index({ initialUserDetails }) {
         return (
           <>
             <Template2 userDetails={userDetails} />
-            <BottomNavigation
-              userDetails={userDetails}
-              className="bg-gradient-to-t from-transparent top-0 pt-5"
-              watermarkClassName="!top-7"
-            />
+            {isClient && (
+              <BottomNavigation
+                userDetails={userDetails}
+                className="bg-gradient-to-t from-transparent top-0 pt-5"
+                watermarkClassName="!top-7"
+              />
+            )}
           </>
         );
 

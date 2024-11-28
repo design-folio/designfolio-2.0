@@ -31,12 +31,12 @@ const itemVariants = {
   },
 };
 
-function Analytics({ }) {
+function Analytics({}) {
   const router = useRouter();
   const [duration, setDuration] = useState("Week");
   const [uniqueVisits, setUniqueVisits] = useState(0);
 
-  const {userDetails,userDetailLoading} = useGlobalContext()
+  const { userDetails, userDetailLoading } = useGlobalContext();
 
   const handleBack = () => {
     router.push("/builder");
@@ -84,7 +84,10 @@ function Analytics({ }) {
                       )
                     }
                   >
-                    {userDetails?.username?userDetails?.username:"hastobefixed"}.{process.env.NEXT_PUBLIC_BASE_DOMAIN}.me
+                    {userDetails?.username
+                      ? userDetails?.username
+                      : "hastobefixed"}
+                    .{process.env.NEXT_PUBLIC_BASE_DOMAIN}
                   </p>
                 </div>
               </div>

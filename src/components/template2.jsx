@@ -275,7 +275,13 @@ export default function Template2({ userDetails, preview = false }) {
                             size="p-xsmall"
                             className="font-medium mt-[6px]"
                           >
-                            Jan 2023 - Now
+                            {`${experience?.startMonth} ${
+                              experience?.startYear
+                            } - ${
+                              experience?.currentlyWorking
+                                ? "Present"
+                                : `${experience?.endMonth} ${experience?.endYear}`
+                            }  `}
                           </Text>
                           <p
                             className={`text-[16px] font-light leading-[22.4px] font-inter`}

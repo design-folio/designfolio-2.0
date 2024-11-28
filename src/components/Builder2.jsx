@@ -218,6 +218,7 @@ export default function Builder2({ edit = false }) {
                   icon={
                     <AiIcon className="text-secondary-btn-text-color w-[22px] h-[22px] mb-[2px] cursor-pointer" />
                   }
+                  onClick={() => openModal(modals.aiProject)}
                 />
               </div>
             ) : (

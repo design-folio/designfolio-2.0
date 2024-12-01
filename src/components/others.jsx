@@ -44,7 +44,7 @@ export default function Others({ openModal, userDetails, edit }) {
           {edit && !!userDetails?.resume ? (
             <a href={userDetails?.resume?.url} download={true} target="_blank">
               <Button
-                text={"Download Resume"}
+                text={"Resume"}
                 customClass="w-full justify-start"
                 type="secondary"
                 icon={

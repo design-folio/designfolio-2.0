@@ -86,10 +86,7 @@ export default function BottomNavigation({
 
           {!!userDetails?.resume?.url && (
             <a href={userDetails?.resume?.url} download={true} target="_blank">
-              <Button
-                text={window?.innerWidth > 500 ? "Download resume" : "Resume"}
-                customClass="!px-[16px] !py-[12px]"
-              />
+              <Button text={"Resume"} customClass="!px-[16px] !py-[12px]" />
             </a>
           )}
         </motion.div>

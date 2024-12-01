@@ -94,7 +94,7 @@ export default function Template2({ userDetails, preview = false }) {
   };
 
   return (
-    <div className={`max-w-[890px] mx-auto py-[100px] px-2 md:px-4 lg:px-0`}>
+    <div className={`max-w-[750px] mx-auto py-[100px] px-2 md:px-4 lg:px-0`}>
       {preview && (
         <Link href={"/builder"}>
           <Button
@@ -213,7 +213,7 @@ export default function Template2({ userDetails, preview = false }) {
             </Chat>
             <Chat direction="left" onComplete={handleStepCompletion}>
               {reviews?.map((review) => (
-                <div className="border border-[#E9ECF1] p-5 rounded-2xl">
+                <div className="border border-chat-feedback-border-color p-5 rounded-2xl">
                   <Quote />
                   <TextWithLineBreaks
                     text={review?.description}
@@ -222,7 +222,7 @@ export default function Template2({ userDetails, preview = false }) {
                   <div>
                     <div className="flex gap-4 justify-between items-center">
                       <div className="flex gap-2  mt-3">
-                        <Linkedin />
+                        {review?.linkedin && <Linkedin />}
                         <div>
                           <Text
                             size="p-xsmall"
@@ -262,18 +262,26 @@ export default function Template2({ userDetails, preview = false }) {
                 {experiences?.map((experience, index) => {
                   return (
                     <div key={experience?._id}>
-                      <Text size="p-xsmall" className="font-medium">
-                        {experience?.company}
-                      </Text>
+                      <div className="flex justify-between items-center">
+                        <Text
+                          size="p-xsmall"
+                          className="font-medium text-df-base-text-color"
+                        >
+                          {experience?.company}
+                        </Text>
+                      </div>
                       <div className="flex">
-                        <ExperienceShape className="w-[54px]" />
-                        <div className="mt-[14px] flex-1">
-                          <Text size="p-small" className="font-semibold">
+                        <ExperienceShape className="w-[54px] relative bottom-0 text-chat-experience-shape-color" />{" "}
+                        <div className="mt-[12px] flex-1">
+                          <Text
+                            size="p-small"
+                            className="font-semibold text-chat-experience-heading-color"
+                          >
                             {experience?.role}
                           </Text>
                           <Text
                             size="p-xsmall"
-                            className="font-medium mt-[6px]"
+                            className="font-medium mt-[6px] text-chat-experience-timeline-color"
                           >
                             {`${experience?.startMonth} ${
                               experience?.startYear
@@ -283,12 +291,12 @@ export default function Template2({ userDetails, preview = false }) {
                                 : `${experience?.endMonth} ${experience?.endYear}`
                             }  `}
                           </Text>
-                          <p
-                            className={`text-[16px] font-light leading-[22.4px] font-inter`}
-                            dangerouslySetInnerHTML={{
-                              __html: experience?.description,
-                            }}
-                          ></p>
+                          <TextWithLineBreaks
+                            text={experience?.description}
+                            color={
+                              "text-chat-experience-description-color mt-4"
+                            }
+                          />
                         </div>
                       </div>
                     </div>
@@ -310,7 +318,7 @@ export default function Template2({ userDetails, preview = false }) {
               delay={200}
               onComplete={handleStepCompletion}
             >
-              <div className="flex flex-col lg:flex-row gap-[24px]">
+              <div className="flex flex-col lg:flex-row gap-[20px]">
                 {portfolios?.dribbble && (
                   <Link
                     href={portfolios?.dribbble}
@@ -388,31 +396,13 @@ export default function Template2({ userDetails, preview = false }) {
               >
                 Where can I reach you?
               </Chat>
-              {resume && (
-                <Chat direction="left" className="pb-5">
-                  <a
-                    href={userDetails?.resume?.url}
-                    download={true}
-                    target="_blank"
-                  >
-                    <Button
-                      text={"Download Resume"}
-                      customClass="w-full justify-start"
-                      type="secondary"
-                      icon={
-                        <NoteIcon className="text-df-icon-color cursor-pointer" />
-                      }
-                    />
-                  </a>
-                </Chat>
-              )}
 
               {socials &&
                 Object.values(socials).some(
                   (social) => social && social != ""
                 ) && (
                   <Chat direction="left" className="pb-5" delay={200}>
-                    <div className="flex flex-col lg:flex-row gap-[24px]">
+                    <div className="flex flex-col lg:flex-row gap-[20px]">
                       {socials?.instagram && (
                         <Link
                           href={socials?.instagram}

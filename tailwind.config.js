@@ -116,8 +116,8 @@ module.exports = {
         "credit-text-color": "var(--credit-text-color)",
 
         // Analytics
-        "analytics-profile-url-color" : "var(--analytics-url-color)",
-        "analytics-last-updated-color" : "var(--analytics-last-updated-color)",
+        "analytics-profile-url-color": "var(--analytics-url-color)",
+        "analytics-last-updated-color": "var(--analytics-last-updated-color)",
 
         // Profile card
         "profile-card-heading-color": "var(--profile-card-heading-color)",
@@ -250,6 +250,13 @@ module.exports = {
         "template-text-right-bg-color": "var(--template-text-right-bg-color)",
         "template-text-right-text-color":
           "var(--template-text-right-text-color)",
+        "chat-experience-shape-color": "var(--chat-experience-shape-color)",
+        "chat-experience-heading-color": "var(--chat-experience-heading-color)",
+        "chat-experience-timeline-color":
+          "var(--chat-experience-timeline-color)",
+        "chat-experience-description-color":
+          "var(--chat-experience-description-color)",
+        "chat-feedback-border-color": "var(--chat-feedback-border-color)",
       },
       boxShadow: {
         // Landing page

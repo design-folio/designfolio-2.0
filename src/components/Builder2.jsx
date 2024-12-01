@@ -264,7 +264,7 @@ export default function Builder2({ edit = false }) {
         )}
 
         {reviews?.map((review) => (
-          <div className="border border-[#E9ECF1] p-5 rounded-2xl">
+          <div className="border border-chat-feedback-border-color p-5 rounded-2xl">
             <Quote />
             <TextWithLineBreaks
               text={review?.description}
@@ -273,7 +273,7 @@ export default function Builder2({ edit = false }) {
             <div>
               <div className="flex gap-4 justify-between items-center">
                 <div className="flex gap-2  mt-3">
-                  <Linkedin />
+                  {review?.linkedin && <Linkedin />}
                   <div>
                     <Text
                       size="p-xsmall"
@@ -349,17 +349,17 @@ export default function Builder2({ edit = false }) {
                   />
                 </div>
                 <div className="flex">
-                  <ExperienceShape className="w-[54px] relative bottom-2" />{" "}
+                  <ExperienceShape className="w-[54px] relative bottom-2 text-chat-experience-shape-color" />{" "}
                   <div className="mt-[8px] flex-1">
                     <Text
                       size="p-small"
-                      className="font-semibold text-df-base-text-color"
+                      className="font-semibold text-chat-experience-heading-color"
                     >
                       {experience?.role}
                     </Text>
                     <Text
                       size="p-xsmall"
-                      className="font-medium mt-[6px] text-work-card-description-color"
+                      className="font-medium mt-[6px] text-chat-experience-timeline-color"
                     >
                       {`${experience?.startMonth} ${experience?.startYear} - ${
                         experience?.currentlyWorking
@@ -369,7 +369,7 @@ export default function Builder2({ edit = false }) {
                     </Text>
                     <TextWithLineBreaks
                       text={experience?.description}
-                      color={"text-df-base-text-color mt-4"}
+                      color={"text-chat-experience-description-color mt-4"}
                     />
                   </div>
                 </div>
@@ -415,7 +415,7 @@ export default function Builder2({ edit = false }) {
       </Chat>
       <Chat direction="right">Do you have any other portfolios?</Chat>
       <Chat direction="left" className="pb-5">
-        <div className="flex flex-col lg:flex-row gap-[24px]">
+        <div className="flex flex-col lg:flex-row gap-[20px]">
           {portfolios?.dribbble && (
             <Link
               href={portfolios?.dribbble}
@@ -533,7 +533,7 @@ export default function Builder2({ edit = false }) {
           <>
             <a href={userDetails?.resume?.url} download={true} target="_blank">
               <Button
-                text={"Download Resume"}
+                text={"Resume"}
                 customClass="w-full justify-start"
                 type="secondary"
                 icon={
@@ -551,7 +551,7 @@ export default function Builder2({ edit = false }) {
         )}
       </Chat>
       <Chat direction="left" className="pb-5">
-        <div className="flex flex-col lg:flex-row gap-[24px]">
+        <div className="flex flex-col lg:flex-row gap-[20px]">
           {socials?.instagram && (
             <Link
               href={socials?.instagram}

@@ -217,6 +217,11 @@
   --template-text-right-bg-color: #278eff;
   --template-text-right-text-color: #ffffff;
 
+  --chat-experience-shape-color: #cfd7e3;
+  --chat-experience-heading-color: #202937;
+  --chat-experience-timeline-color: #6f7795;
+  --chat-experience-description-color: #202937;
+  --chat-feedback-border-color: #e9ecf1;
 }
 
 /* dark mode start*/
@@ -396,5 +401,11 @@
   --template-text-left-text-color: #ffffff;
   --template-text-right-bg-color: #278eff;
   --template-text-right-text-color: ##ffffff;
+
+  --chat-experience-shape-color: #2e313e;
+  --chat-experience-heading-color: #ffffff;
+  --chat-experience-timeline-color: #b1b5c3;
+  --chat-experience-description-color: #b1b5c3;
+  --chat-feedback-border-color: #2b2c36;
 }
 /* dark mode end*/

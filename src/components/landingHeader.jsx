@@ -7,6 +7,7 @@ import { popovers } from "@/lib/constant";
 import { useGlobalContext } from "@/context/globalContext";
 import Popover from "./popover";
 import Logo from "../../public/assets/svgs/logo.svg";
+import { useRouter } from "next/router";
 
 const textVariants = {
   initial: {
@@ -23,10 +24,11 @@ const textVariants = {
   },
 };
 
-export default function LandingHeader({ dfToken }) {
+export default function LandingHeader({ dfToken,mode }) {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const { popoverMenu, setPopoverMenu } = useGlobalContext();
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -42,7 +44,6 @@ export default function LandingHeader({ dfToken }) {
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
 
@@ -72,7 +73,11 @@ export default function LandingHeader({ dfToken }) {
     >
       <div className="flex relative justify-between max-w-[1192px] p-3 md:px-0 md:py-3 mx-auto items-center ">
         <nav className=" md:flex gap-7 items-center md:pl-3 lg:pl-0">
-          <Logo className="text-df-icon-color" />
+          <Logo className="text-df-icon-color"  onClick={(e) => {
+                  e.preventDefault();
+                  if(mode!=="homepage")
+                  router.push("/")
+                }}    />
 
           <span className="text-landing-nav-link-base-color text-2xl hidden md:block">
             /
@@ -80,13 +85,24 @@ export default function LandingHeader({ dfToken }) {
           <ul className=" gap-6 list-none items-center p-0 hidden md:flex">
             <li className={commonTextClass}>
               <Link
-                href={"#how-it-works"}
+                href={mode== "homepage" ? "#how-it-works" : "/analytics"}
                 onClick={(e) => {
                   e.preventDefault();
+                  if(mode==="homepage")
                   smoothScroll("how-it-works");
-                }}
+                else
+                  router.push("/")
+                }}                
               >
                 How it works?
+              </Link>
+            </li>
+
+            <li className={commonTextClass}>
+              <Link
+               href={"/tools"}
+              >
+                Tools
               </Link>
             </li>
           </ul>

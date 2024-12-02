@@ -75,3 +75,8 @@ export const _analyzeCaseStudyCredits = (projectId) =>
 
 export const _analytics = (duration) =>
   axiosInstance.get(`/user/getUserAnalytics?duration=${duration}`);
+
+export const _analyzeCaseStudyMedium = (mediumInfo) =>
+  axiosInstance.post(`/user/scrapeMediumPostAi`,mediumInfo);
+
+

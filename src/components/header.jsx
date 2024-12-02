@@ -26,7 +26,7 @@ const Header = ({ dfToken, hideHeader }) => {
   if (hideHeader) {
     return null;
   } else if (path === "/") {
-    headerComponent = <LandingHeader dfToken={dfToken} />;
+    headerComponent = <LandingHeader dfToken={dfToken} mode={"homepage"} />;
   } else if (!dfToken || (dfToken && path === "/email-verify")) {
     headerComponent = <AuthHeader />;
   } else if (dfToken && path !== "/email-verify") {

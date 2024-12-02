@@ -10,11 +10,12 @@ import { _analyzeCaseStudyMedium } from "@/network/post-request";
 const validationSchema = Yup.object({
   medium: Yup.string()
     .matches(
-      /^https:\/\/medium\.com\/.+/,
-      "Please enter a valid Medium link (e.g., https://medium.com/@username/post)"
+      /^(https:\/\/[a-zA-Z0-9-]+\.medium\.com\/.+|https:\/\/medium\.com\/.+)/,
+      "Please enter a valid Medium link (e.g., https://medium.com/@username/post or https://abc.medium.com/post)"
     )
     .required("Medium link is required"),
 });
+
 
 
 const MediumForm = ({ initialMedium = "", isMediumFetched,setIsMediumFetched, setSuggestions,setRating,isAnalyzing}) => (

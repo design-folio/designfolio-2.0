@@ -1,10 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useInView } from "framer-motion";
-import Lottie from "lottie-react";
-import claimUrl from "../../public/lottie/claimurl.json";
-import aboutJson from "../../public/lottie/about.json";
-import casestudyJson from "../../public/lottie/casestuddy.json";
-import publishButtonJson from "../../public/lottie/publishbutton.json";
 import Text from "./text";
 
 // Section Component with CSS Transitions
@@ -36,11 +31,11 @@ const AnimatedSection = ({ children, animationData, className, delay }) => {
   </Text>
 
   {/* SVGs */}
-  <div className="flex pt-[20px] space-x-[80px]">
-    <img src="/assets/svgs/google-trust.svg" alt="Google" className="w-24 h-36" />
-    <img src="/assets/svgs/cisco-trust.svg" alt="Cisco" className="w-24 h-36" />
-    <img src="/assets/svgs/phonepe-trust.svg" alt="PhonePe" className="w-36 h-36" />
-    <img src="/assets/svgs/ola-trust.svg" alt="Ola" className="w-24 h-36" />
+  <div className="flex flex-col md:flex-row items-center pt-[5px] md:pt-[20px] space-y-[10px] md:space-y-0 md:space-x-[80px]">
+    <img src="/assets/svgs/google-trust.svg" alt="Google" className="w-24 h-24" />
+    <img src="/assets/svgs/cisco-trust.svg" alt="Cisco" className="w-24 h-24" />
+    <img src="/assets/svgs/phonepe-trust.svg" alt="PhonePe" className="w-36 h-24" />
+    <img src="/assets/svgs/ola-trust.svg" alt="Ola" className="w-24 h-24" />
   </div>
 </div>
 

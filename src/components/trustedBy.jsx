@@ -36,11 +36,11 @@ const AnimatedSection = ({ children, animationData, className, delay }) => {
   </Text>
 
   {/* SVGs */}
-  <div className="flex pt-[20px] space-x-[60px]">
-    <img src="/assets/svgs/google-trust.svg" alt="Google" className="w-36 h-36" />
-    <img src="/assets/svgs/cisco-trust.svg" alt="Cisco" className="w-36 h-36" />
+  <div className="flex pt-[20px] space-x-[80px]">
+    <img src="/assets/svgs/google-trust.svg" alt="Google" className="w-24 h-36" />
+    <img src="/assets/svgs/cisco-trust.svg" alt="Cisco" className="w-24 h-36" />
     <img src="/assets/svgs/phonepe-trust.svg" alt="PhonePe" className="w-36 h-36" />
-    <img src="/assets/svgs/ola-trust.svg" alt="Ola" className="w-36 h-36" />
+    <img src="/assets/svgs/ola-trust.svg" alt="Ola" className="w-24 h-36" />
   </div>
 </div>
 

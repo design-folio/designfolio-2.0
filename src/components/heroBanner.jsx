@@ -73,7 +73,7 @@ export default function HeroBanner({ dfToken }) {
         variants={containerVariants}
       >
         <motion.span className="inline-block" variants={textVariants}>
-          Build
+          Launch
         </motion.span>{" "}
         <motion.span className="inline-block" variants={textVariants}>
           your
@@ -97,7 +97,7 @@ export default function HeroBanner({ dfToken }) {
         animate="animate"
         variants={textVariants}
       >
-        3000+ designers & devs have launched on Designfolio
+        5,894+ portfolios launched last month
       </motion.p>
       <motion.img
         src="/assets/svgs/left-banner.svg"

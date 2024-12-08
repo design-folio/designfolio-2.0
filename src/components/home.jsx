@@ -17,7 +17,7 @@ export default function Home({ dfToken }) {
       </div>
 
       <div
-        className={`max-w-[1192px] mx-auto mt-[33px] xl:mt-[180px]`}
+        className={`max-w-[1192px] mx-auto mt-[33px] xl:mt-[120px]`}
         id="how-it-works"
       >
         <About />

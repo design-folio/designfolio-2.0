@@ -97,7 +97,7 @@ export default function HeroBanner({ dfToken }) {
         animate="animate"
         variants={textVariants}
       >
-        5894+ portfolios launched on Designfolio last month.
+        5,894+ portfolios launched last month
       </motion.p>
       <motion.img
         src="/assets/svgs/left-banner.svg"

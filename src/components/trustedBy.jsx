@@ -27,14 +27,14 @@ const AnimatedSection = ({ children, animationData, className, delay }) => {
 
 <div className="flex flex-col items-center">
   <Text size="p-small" className="text-landing-heading-text-color font-satoshi font-semibold leading-[1.2] text-center">
-  Trusted by design and product teams
+  Trusted by design & product teams
   </Text>
 
   {/* SVGs */}
   <div className="grid grid-cols-2 justify-items-center md:flex md:flex-row items-center pt-[5px] md:pt-[20px] gap-[10px] md:space-y-0 md:space-x-[80px]">
   <img src="/assets/svgs/google-trust.svg" alt="Google" className="w-24 h-24" />
-  <img src="/assets/svgs/cisco-trust.svg" alt="Cisco" className="w-24 h-24" />
-  <img src="/assets/svgs/phonepe-trust.svg" alt="PhonePe" className="w-36 h-24" />
+  <img src="/assets/svgs/amazon-trust.svg" alt="Amazon" className="w-24 h-24" />
+  <img src="/assets/svgs/swiggy-trust.svg" alt="Swiggy" className="w-36 h-24" />
   <img src="/assets/svgs/ola-trust.svg" alt="Ola" className="w-24 h-24" />
 </div>
 

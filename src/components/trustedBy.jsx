@@ -31,12 +31,13 @@ const AnimatedSection = ({ children, animationData, className, delay }) => {
   </Text>
 
   {/* SVGs */}
-  <div className="grid grid-cols-2 md:flex md:flex-row items-center pt-[5px] md:pt-[20px] gap-[10px] md:space-y-0 md:space-x-[80px]">
+  <div className="grid grid-cols-2 justify-center md:flex md:flex-row items-center pt-[5px] md:pt-[20px] gap-[10px] md:space-y-0 md:space-x-[80px]">
   <img src="/assets/svgs/google-trust.svg" alt="Google" className="w-24 h-24" />
   <img src="/assets/svgs/cisco-trust.svg" alt="Cisco" className="w-24 h-24" />
   <img src="/assets/svgs/phonepe-trust.svg" alt="PhonePe" className="w-36 h-24" />
   <img src="/assets/svgs/ola-trust.svg" alt="Ola" className="w-24 h-24" />
 </div>
+
 </div>
 
 

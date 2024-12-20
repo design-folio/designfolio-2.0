@@ -31,8 +31,6 @@ export default function Home({ dfToken }) {
         id="tools"
       >
         <AiToolsHomePage />
-
-        <InterViewGuru></InterViewGuru>
       </div>
       <Footer dfToken={dfToken} />
     </div>

@@ -5,6 +5,7 @@ import Footer from "./footer";
 import TrustedBy from "./trustedBy";
 import AiTools from "./aiTools";
 import AiToolsHomePage from "@/pages/homepage-tools";
+import InterViewGuru from "./interViewGuru";
 
 export default function Home({ dfToken }) {
   return (
@@ -30,6 +31,8 @@ export default function Home({ dfToken }) {
         id="tools"
       >
         <AiToolsHomePage />
+
+        <InterViewGuru></InterViewGuru>
       </div>
       <Footer dfToken={dfToken} />
     </div>

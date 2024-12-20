@@ -108,6 +108,14 @@ export default function LandingHeader({ dfToken,mode }) {
                 Other Tools
               </Link>
             </li>
+
+            <li className={commonTextClass}>
+              <Link
+               href={mode== "homepage" ? "/interview-ai" : "/interview-ai"}
+              >
+                Interview AI
+              </Link>
+            </li>
           </ul>
         </nav>
         <div className="hidden md:block">

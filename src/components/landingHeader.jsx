@@ -176,8 +176,15 @@ export default function LandingHeader({ dfToken,mode }) {
           <Button customClass="w-full" text="Launch Builder" />
         ) : (
           <>
+
+              <Link
+               href={mode== "homepage" ? "/interview-ai" : "/interview-ai"}
+              >
+                <Button customClass="w-full" text="Interview AI" type="secondary" />
+              </Link>
+
             <Link href={"/login"}>
-              <Button customClass="w-full" text="Login" type="secondary" />
+              <Button customClass="w-full mt-4" text="Login" type="secondary" />
             </Link>
             <Link href={"/claim-link"}>
               <Button customClass="w-full mt-4" text="Start for free" />

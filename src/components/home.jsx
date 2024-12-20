@@ -3,6 +3,8 @@ import HeroBanner from "./heroBanner";
 import About from "./About";
 import Footer from "./footer";
 import TrustedBy from "./trustedBy";
+import AiTools from "./aiTools";
+import AiToolsHomePage from "@/pages/homepage-tools";
 
 export default function Home({ dfToken }) {
   return (
@@ -21,6 +23,13 @@ export default function Home({ dfToken }) {
         id="how-it-works"
       >
         <About />
+      </div>
+
+      <div
+        className={`max-w-[1192px] mx-auto mt-[33px] xl:mt-[115px]`}
+        id="tools"
+      >
+        <AiToolsHomePage />
       </div>
       <Footer dfToken={dfToken} />
     </div>

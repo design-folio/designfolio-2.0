@@ -90,19 +90,22 @@ export default function LandingHeader({ dfToken,mode }) {
                   e.preventDefault();
                   if(mode==="homepage")
                   smoothScroll("how-it-works");
-                else
-                  router.push("/")
                 }}                
               >
-                How it works?
+                Product
               </Link>
             </li>
 
             <li className={commonTextClass}>
               <Link
-               href={"/tools"}
+               href={mode== "homepage" ? "#tools" : ""}
+               onClick={(e) => {
+                 e.preventDefault();
+                 if(mode==="homepage")
+                 smoothScroll("tools");
+               }}       
               >
-                Tools
+                Other Tools
               </Link>
             </li>
           </ul>

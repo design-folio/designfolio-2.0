@@ -3,7 +3,6 @@ import HeroBanner from "./heroBanner";
 import About from "./About";
 import Footer from "./footer";
 import TrustedBy from "./trustedBy";
-import AiTools from "./aiTools";
 import AiToolsHomePage from "@/pages/homepage-tools";
 
 export default function Home({ dfToken }) {

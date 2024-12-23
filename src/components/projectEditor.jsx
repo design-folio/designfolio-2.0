@@ -95,6 +95,7 @@ const ProjectEditor = ({ projectDetails, userDetails }) => {
   const router = useRouter();
   const { setWordCount, setProjectValue } = useGlobalContext();
 
+  console.log(projectDetails)
   useEffect(() => {
     setIsClient(true);
 

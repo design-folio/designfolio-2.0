@@ -55,7 +55,6 @@ function AiToolsHomePage({}) {
     }
 
     const analyzeClick=()=>{
-        alert("Analyze Case Study Flow")
         setShowAnalyzeModal(true)
     }
 

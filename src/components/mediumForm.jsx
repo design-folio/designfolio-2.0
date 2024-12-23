@@ -18,7 +18,7 @@ const validationSchema = Yup.object({
 
 
 
-const MediumForm = ({ initialMedium = "", isMediumFetched,setIsMediumFetched, setSuggestions,setRating,isAnalyzing}) => (
+const MediumForm = ({ initialMedium = "", setSuggestions,setRating,setIsAnalyzing,setProjectDetails}) => (
 
     
     <div>
@@ -35,10 +35,23 @@ const MediumForm = ({ initialMedium = "", isMediumFetched,setIsMediumFetched, se
             let rating = res.data.singlePost.analysisReport.rating
             setSuggestions(suggestion)
             setRating(rating)
-            setIsMediumFetched(true)
+            let obj = {
+              "content" : {
+                "blocks" : res.data.singlePost.editorjsBlocks
+              },
+              "time" : "1728848289380",
+              "version" : "2.30.6"
+          }
+          console.log("Fetched" , obj)
+            setProjectDetails(obj)
+            setIsAnalyzing(false)
             actions.setSubmitting(false)
         })
-        .catch(() => actions.setSubmitting(false));
+        .catch((e) => {
+          console.log(e)
+          actions.setSubmitting(false)
+        
+        });
     }}
   >
     {({ isSubmitting, errors, touched }) => (
@@ -66,7 +79,7 @@ const MediumForm = ({ initialMedium = "", isMediumFetched,setIsMediumFetched, se
                   btnType="submit"
                   isLoading={isSubmitting}
                   form="mediumForm"
-                  text={"Save"}
+                  text={"Fetch"}
                   type="modal"
                   customClass="ml-4"
                 />

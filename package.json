@@ -26,6 +26,7 @@
     "@editorjs/table": "^2.3.0",
     "@editorjs/underline": "^1.1.0",
     "@feedefy/react": "^1.0.0",
+    "@google/generative-ai": "^0.21.0",
     "@react-oauth/google": "^0.12.1",
     "@tanstack/react-query": "^5.56.2",
     "array-move": "^4.0.0",

@@ -116,8 +116,8 @@ module.exports = {
         "credit-text-color": "var(--credit-text-color)",
 
         // Analytics
-        "analytics-profile-url-color" : "var(--analytics-url-color)",
-        "analytics-last-updated-color" : "var(--analytics-last-updated-color)",
+        "analytics-profile-url-color": "var(--analytics-url-color)",
+        "analytics-last-updated-color": "var(--analytics-last-updated-color)",
 
         // Profile card
         "profile-card-heading-color": "var(--profile-card-heading-color)",
@@ -283,6 +283,7 @@ module.exports = {
         "theme-shadow": "var(--theme-shadow)",
         "selected-cursor-shadow": "var(--selected-cursor-shadow)",
         "default-cursor-shadow": "var(--default-cursor-shadow)",
+        tools: "0px 0px 8.8px 3px rgba(0, 0, 0, 0.02)",
       },
       fontSize: {
         h1: "61px",

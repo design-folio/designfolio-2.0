@@ -1,5 +1,7 @@
+import AnalyzeTool from "@/components/analyzeTool";
 import Button from "@/components/button";
 import CaseStudyGenerator from "@/components/caseStudyGenerator";
+import EmailGenerator from "@/components/EmailGenerator";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
@@ -7,6 +9,7 @@ import React, { useEffect } from "react";
 const navigation = {
   caseStudy: "case-study-generator",
   analyze: "analyze-case-study",
+  email: "email-generator",
 };
 
 export default function Index() {
@@ -21,15 +24,17 @@ export default function Index() {
       case navigation.caseStudy:
         return <CaseStudyGenerator />;
       case navigation.analyze:
-        return <div>analyze</div>;
+        return <AnalyzeTool />;
+      case navigation.email:
+        return <EmailGenerator />;
       default:
         return <CaseStudyGenerator />;
     }
   };
 
   return (
-    <main className="bg-[#DBDBD6] h-screen">
-      <div className="flex h-screen">
+    <main className="bg-[#DBDBD6] min-h-screen">
+      <div className="flex gap-[48px] h-screen">
         {/* Sidebar */}
         <div className="w-[280px] bg-[#F2F2F0] p-4 flex flex-col">
           {/* Scrollable content in sidebar */}
@@ -49,7 +54,8 @@ export default function Index() {
                     type="tools"
                     icon={<img src="/assets/svgs/caseStudyToolIcon.svg" />}
                     customClass="w-full justify-start"
-                    iseSelected={router?.query?.type === navigation.caseStudy}
+                    isSelected={router?.query?.type === navigation.caseStudy}
+                    isDisabled
                   />
                 </Link>
               </li>
@@ -60,7 +66,8 @@ export default function Index() {
                     type="tools"
                     icon={<img src="/assets/svgs/startTool.svg" />}
                     customClass="w-full justify-start"
-                    iseSelected={router?.query?.type === navigation.analyze}
+                    isSelected={router?.query?.type === navigation.analyze}
+                    isDisabled
                   />
                 </Link>
               </li>
@@ -72,6 +79,17 @@ export default function Index() {
                   customClass="w-full justify-start"
                   isDisabled
                 />
+              </li>
+              <li className="mb-2">
+                <Link href={`/ai-tools?type=${navigation.email}`}>
+                  <Button
+                    text={"Email Generator"}
+                    type="tools"
+                    icon={<img src="/assets/svgs/email.svg" />}
+                    customClass="w-full justify-start"
+                    isSelected={router?.query?.type === navigation.email}
+                  />
+                </Link>
               </li>
               <li className="mb-2">
                 <Button
@@ -143,11 +161,8 @@ export default function Index() {
             />
           </div>
         </div>
-
         {/* Main Content Area */}
-        <div className="flex-1 p-6 flex flex-col justify-center items-center">
-          {content()}
-        </div>
+        <div className="flex-1 p-6 max-h-screen overflow-auto">{content()}</div>
       </div>
     </main>
   );

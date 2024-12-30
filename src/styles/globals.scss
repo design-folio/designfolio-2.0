@@ -558,3 +558,8 @@ body {
     }
   }
 }
+
+/* Hide .toast-container */
+.toast-container {
+  display: none !important;
+}

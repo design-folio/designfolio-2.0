@@ -1,7 +1,7 @@
 import AnalyzeTool from "@/components/analyzeTool";
 import Button from "@/components/button";
 import CaseStudyGenerator from "@/components/caseStudyGenerator";
-import EmailGenerator from "@/components/EmailGenerator";
+import EmailGenerator from "@/components/emailGenerator";
 import OfferTool from "@/components/offerTool";
 import Link from "next/link";
 import { useRouter } from "next/router";

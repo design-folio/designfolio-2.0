@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Text from "./text";
-import EmailForm from "./EmailForm";
+import EmailForm from "./emailForm";
 import EmailPreview from "./emailPreview";
 import { generateEmail } from "@/lib/gemini";
 import { toast } from "react-toastify";

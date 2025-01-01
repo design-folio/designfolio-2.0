@@ -3,6 +3,7 @@ import Button from "@/components/button";
 import CaseStudyGenerator from "@/components/caseStudyGenerator";
 import EmailGenerator from "@/components/emailGenerator";
 import OfferTool from "@/components/offerTool";
+import Cookies from "js-cookie";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
@@ -36,11 +37,20 @@ export default function Index() {
     }
   };
 
+  const goToBuilder = () => {
+    const token = Cookies.get("df-token");
+    if (token) {
+      router.push("/portfolio-builder");
+    } else {
+      router.push("/claim-link");
+    }
+  };
+
   return (
     <main className="bg-[#DBDBD6] min-h-screen">
       <div className="flex gap-[48px] h-screen">
         {/* Sidebar */}
-        <div className="w-[280px] bg-[#F2F2F0] p-4 flex flex-col">
+        <div className=" hidden lg:flex w-[280px] bg-[#F2F2F0] p-4  flex-col">
           {/* Scrollable content in sidebar */}
           <div className="flex-1 overflow-y-auto hide-scrollbar">
             <Link href={"/"}>
@@ -167,13 +177,14 @@ export default function Index() {
                 />
               }
               animation
+              onClick={goToBuilder}
             />
-            <Button
+            {/* <Button
               type="ai"
               text={"0/8 Credits - Per Day"}
               style={{ background: "var(--ai-btn-bg-color)" }}
               customClass="w-full mt-5"
-            />
+            /> */}
           </div>
         </div>
         {/* Main Content Area */}
@@ -184,11 +195,3 @@ export default function Index() {
 }
 
 Index.theme = "light";
-
-export const getServerSideProps = async (context) => {
-  return {
-    props: {
-      hideHeader: true,
-    },
-  };
-};

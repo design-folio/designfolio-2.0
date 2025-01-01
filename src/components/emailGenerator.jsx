@@ -40,7 +40,7 @@ export default function EmailGenerator() {
       >
         Get personalized emails for any situation—ready to send or tweak.{" "}
       </Text>
-      <div className="grid grid-cols-3 gap-4 mt-10 h-full">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-y-4 lg:gap-4 mt-10 h-full">
         <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 h-full">
           <EmailForm
             generateEmailContent={generateEmailContent}

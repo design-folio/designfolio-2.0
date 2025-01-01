@@ -3,6 +3,7 @@ import LandingHeader from "./landingHeader";
 import AuthHeader from "./authHeader";
 import LoggedInHeader from "./loggedInHeader";
 import { useGlobalContext } from "@/context/globalContext";
+import AiToolsHeader from "./aiToolsHeader";
 
 const Header = ({ dfToken, hideHeader }) => {
   const router = useRouter();
@@ -23,10 +24,14 @@ const Header = ({ dfToken, hideHeader }) => {
   // Determine header component based on dfToken and router pathname
   let headerComponent = null;
   const path = router.pathname;
+  console.log(path.includes("/ai-tools"), hideHeader);
   if (hideHeader) {
     return null;
   } else if (path === "/") {
     headerComponent = <LandingHeader dfToken={dfToken} />;
+  } else if (path.includes("/ai-tools")) {
+    console.log("asdasdasd");
+    headerComponent = <AiToolsHeader />;
   } else if (!dfToken || (dfToken && path === "/email-verify")) {
     headerComponent = <AuthHeader />;
   } else if (dfToken && path !== "/email-verify") {

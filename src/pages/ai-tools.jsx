@@ -2,6 +2,7 @@ import AnalyzeTool from "@/components/analyzeTool";
 import Button from "@/components/button";
 import CaseStudyGenerator from "@/components/caseStudyGenerator";
 import EmailGenerator from "@/components/EmailGenerator";
+import OfferTool from "@/components/offerTool";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
@@ -10,6 +11,7 @@ const navigation = {
   caseStudy: "case-study-generator",
   analyze: "analyze-case-study",
   email: "email-generator",
+  salary: "salary-negotiator",
 };
 
 export default function Index() {
@@ -27,6 +29,8 @@ export default function Index() {
         return <AnalyzeTool />;
       case navigation.email:
         return <EmailGenerator />;
+      case navigation.salary:
+        return <OfferTool />;
       default:
         return <CaseStudyGenerator />;
     }
@@ -79,6 +83,17 @@ export default function Index() {
                   customClass="w-full justify-start"
                   isDisabled
                 />
+              </li>
+              <li className="mb-2">
+                <Link href={`/ai-tools?type=${navigation.salary}`}>
+                  <Button
+                    text={"Salary negotiator"}
+                    type="tools"
+                    icon={<img src="/assets/svgs/walletTool.svg" />}
+                    customClass="w-full justify-start"
+                    isSelected={router?.query?.type === navigation.salary}
+                  />
+                </Link>
               </li>
               <li className="mb-2">
                 <Link href={`/ai-tools?type=${navigation.email}`}>

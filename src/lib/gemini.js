@@ -1,4 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { extractOfferDetails } from "./offerExtractor";
+import { generateAnalysisPrompt } from "./analysisPrompt";
 
 const CACHE_KEY = "email_generation_attempts";
 const MAX_ATTEMPTS = 3;
@@ -98,4 +100,37 @@ BODY: <the email body>`;
   const body = bodyLines.join("\n").replace("BODY:", "").trim();
 
   return { subject, body };
+};
+
+export const analyzeOffer = async (data) => {
+  console.log("Starting offer analysis...");
+  const genAI = new GoogleGenerativeAI(
+    "AIzaSyAyZXZUJ5irogLkCclIE-1jKhKZKOiedUM"
+  );
+
+  if (!genAI) {
+    console.error("AI initialization failed");
+    throw new Error("AI initialization failed");
+  }
+
+  try {
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+
+    // Extract data from offer letter if provided
+    const extractedData = data.offerContent
+      ? await extractOfferDetails(model, data)
+      : data;
+
+    console.log("Preparing analysis with data:", extractedData);
+    const analysisPrompt = generateAnalysisPrompt(extractedData);
+
+    console.log("Sending request to Gemini API...");
+    const result = await model.generateContent(analysisPrompt);
+    const response = await result.response;
+    console.log("Analysis received successfully");
+    return response.text();
+  } catch (error) {
+    console.error("Error during analysis:", error);
+    throw error;
+  }
 };

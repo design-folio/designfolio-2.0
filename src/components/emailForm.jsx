@@ -184,7 +184,7 @@ export default function EmailForm({ generateEmailContent, isGenerating }) {
                 name="additionalContext"
                 type="text"
                 placeholder="Add any additional context or specific points you'd like to include"
-                className={`text-input mt-2  ${
+                className={`text-input mt-2 min-h-[150px]  ${
                   errors.additionalContext &&
                   touched.additionalContext &&
                   "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"

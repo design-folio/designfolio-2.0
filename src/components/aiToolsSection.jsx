@@ -4,14 +4,13 @@ import GeneratorCard from "./generatorCard";
 
 export default function AiToolsSection() {
   return (
-    <div className="max-w-[1192px] mx-auto mt-[33px] xl:mt-[80px]">
+    <div className="max-w-[1192px] mx-auto mt-[75px] xl:mt-[80px]">
       <Text
         as="h2"
         size="p-large"
         className="text-center mt-[75px] leading-[46px] text-landing-card-heading-color"
       >
-        More AI tools to <br />{" "}
-        <span className="ml-5">land your dream job 👇🏼</span>
+        More AI tools to land your dream job ✨
       </Text>
       <Text className="text-center mt-4 text-landing-card-description-color !text-[18px]">
         Your dream career is closer than you think

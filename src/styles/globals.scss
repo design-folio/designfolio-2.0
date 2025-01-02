@@ -563,3 +563,7 @@ body {
 .toast-container {
   display: none !important;
 }
+
+input {
+  cursor: text; /* This ensures the text cursor is used for input fields */
+}

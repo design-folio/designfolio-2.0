@@ -73,20 +73,20 @@ export default function HeroBanner({ dfToken }) {
         variants={containerVariants}
       >
         <motion.span className="inline-block" variants={textVariants}>
-          Launch
+          Build
         </motion.span>{" "}
         <motion.span className="inline-block" variants={textVariants}>
-          your
+          a
         </motion.span>{" "}
         <motion.span className="inline-block" variants={textVariants}>
-          portfolio
+          brag<span className="italic">worthy</span>
         </motion.span>{" "}
         <br />
         <motion.span className="inline-block" variants={textVariants}>
-          website
+          portfolio
         </motion.span>{" "}
         <motion.span className="inline-block" variants={textVariants}>
-          superfast
+          website
         </motion.span>{" "}
       </motion.h1>
 
@@ -97,7 +97,7 @@ export default function HeroBanner({ dfToken }) {
         animate="animate"
         variants={textVariants}
       >
-        5,894+ portfolios launched last month
+        Built for Designers, Product Managers, & Developers
       </motion.p>
       <motion.img
         src="/assets/svgs/left-banner.svg"

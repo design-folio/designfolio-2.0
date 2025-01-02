@@ -108,11 +108,11 @@ export default function ClaimDomain({
                   <Field
                     type="text"
                     name="domain"
-                    placeholder="yourname"
+                    placeholder="Enter your name"
                     autoComplete="off"
                     className={`text-input !rounded-[16px] ${
                       loading ? "!pr-[182px]" : "!pr-[158px]"
-                    } !py-[19.2px] xl:!py-[18.8px] placeholder-[#D1D5D9] ${
+                    } !py-[19.2px] xl:!py-[18.8px] placeholder-[#9CA3AF] ${
                       ((!!errors.domain && values.domain && !loading) ||
                         (!isAvailable && !loading && values.domain)) &&
                       "!text-input-error-color"
@@ -132,7 +132,7 @@ export default function ClaimDomain({
                       )
                     }
                   />
-                  <div className="flex justify-center items-center gap-[10px] absolute top-[4px] right-[4px]">
+                  <div className="flex justify-center items-center gap-[10px] absolute top-[4px] lg:top-[3px] right-[4px]">
                     <span
                       className="text-input-button-color flex  gap-2 items-center text-[17px] font-inter font-[500] p-[14px] rounded-xl transition-all"
                       style={{
@@ -168,11 +168,11 @@ export default function ClaimDomain({
                 </div>
               </div>
               <Button
-                text="Claim domain"
+                text="Start Building — it’s free"
                 type="tertiary"
                 form={form}
                 btnType="submit"
-                customClass="w-full md:w-fit md:py-5"
+                customClass="w-full md:w-fit md:py-[18px]"
                 isDisabled={
                   !(!errors.domain && domainValue && isAvailable && !loading)
                 }

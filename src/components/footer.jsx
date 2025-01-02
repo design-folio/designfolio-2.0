@@ -14,7 +14,7 @@ export default function Footer({ dfToken }) {
     <>
       <motion.div
         ref={ref}
-        className="mt-[66px] w-full xl:mt-[120px] px-[16px] lg:px-0 md:max-w-[1192px] mx-auto"
+        className="mt-[75px] w-full xl:mt-[120px] px-[16px] lg:px-0 md:max-w-[1192px] mx-auto"
         initial={{ opacity: 0, translateY: 80 }} // Initial state
         animate={{ opacity: isInView ? 1 : 0, translateY: isInView ? 0 : 80 }} // Animated state
         transition={{ duration: 0.5, ease: [0.17, 0.55, 0.55, 1] }} // Smooth transition
@@ -25,8 +25,8 @@ export default function Footer({ dfToken }) {
             think!
           </p>
           <p className="text-center hidden text-landing-footer-heading-color md:block px-[40px] text-[22px] xl:text-[39.5px] font-satoshi font-[500] xl:leading-[46.87px]">
-            Build your portfolio website now
-            <br />– it&lsquo;s simpler than you think!
+            <b>Claim your domain and build your</b>
+            <br /> <b>portfolio</b> – it&lsquo;s easier than you think!
           </p>
           <div className="my-10 w-auto">
             {dfToken ? (

@@ -20,6 +20,7 @@ const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  style: ["normal", "italic"],
 });
 
 const satoshi = localFont({

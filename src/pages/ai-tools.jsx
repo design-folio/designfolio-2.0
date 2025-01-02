@@ -152,15 +152,6 @@ export default function Index() {
                   isDisabled
                 />
               </li>
-              <li className="mb-2">
-                <Button
-                  text={"Salary negotiator"}
-                  type="tools"
-                  icon={<img src="/assets/svgs/walletTool.svg" />}
-                  customClass="w-full justify-start"
-                  isDisabled
-                />
-              </li>
             </ul>
           </div>
           {/* Fixed Footer in Sidebar */}

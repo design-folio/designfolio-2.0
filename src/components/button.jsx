@@ -10,6 +10,7 @@ const Button = ({
   iconClassName = "",
   isLoading = false,
   isDisabled = false,
+  isSelected = false,
   text,
   customClass = "",
   onClick,
@@ -62,6 +63,12 @@ const Button = ({
       base: "text-ai-btn-text-color border border-ai-btn-border-color cursor-pointer",
       disabled: "text-ai-btn-text-color border border-ai-btn-border-color",
     },
+    tools: {
+      base: "bg-transparent text-[#404040] hover:bg-[#FFF] rounded-[11px]",
+      selected: "bg-white border border-[#CDCDC6] rounded-[11px]",
+      disabled:
+        "bg-transparent text-[#404040] hover:bg-[#FFF] rounded-[11px] opacity-40",
+    },
   };
 
   // Function to get the final button style
@@ -69,12 +76,14 @@ const Button = ({
     const baseStyle = buttonStyles[type]?.base || "";
     const disabledStyle = buttonStyles[type]?.disabled || "";
     const sizeStyle = buttonSizes[size] || "";
+    const selectedStyle = buttonStyles[type]?.selected || "";
 
     return twMerge(
       "inline-flex gap-2 items-center justify-center transition-shadow duration-500 ease-out rounded-2xl font-inter",
       sizeStyle,
       !isDisabled && !isLoading ? baseStyle : "",
       isDisabled || isLoading ? disabledStyle : "",
+      isSelected && selectedStyle,
       customClass
     );
   };

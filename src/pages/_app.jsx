@@ -12,7 +12,6 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { HydrationBoundary, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import React, { useEffect } from "react";
 import queryClient from "@/network/queryClient";
 import Head from "next/head";
 

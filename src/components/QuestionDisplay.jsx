@@ -116,7 +116,7 @@ export default function QuestionDisplay({
   const remainingChars = MAX_CHAR_LIMIT - userAnswer.length;
 
   return (
-    <div className="container mx-auto max-w-3xl">
+    <div className="container mx-auto max-w-2xl">
       <div className="text-center mb-12" id="initial-title">
         <Text
           size="p-large"
@@ -128,7 +128,7 @@ export default function QuestionDisplay({
           size="p-small"
           className="text-center text-[#475569] font-medium mt-4"
         >
-          Get personalized advice to help you negotiate effectively
+          Ace your next opportunity{" "}
         </Text>
       </div>
       <div className="bg-white shadow-tools border border-[#E5E7EB] rounded-2xl p-6">
@@ -155,6 +155,7 @@ export default function QuestionDisplay({
           <ProgressBar progress={questionNumber >= 2 && 100} />
           <ProgressBar progress={questionNumber >= 3 && 100} />
           <ProgressBar progress={questionNumber >= 4 && 100} />
+          <ProgressBar progress={questionNumber >= 5 && 100} />
         </div>
         <div className="mt-7">
           <Text size="p-xsmall" className=" text-[#20294C] font-bold">

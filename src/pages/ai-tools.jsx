@@ -51,8 +51,8 @@ export default function Index() {
   };
 
   return (
-    <main className="bg-[#DBDBD6] min-h-screen">
-      <div className="flex gap-[48px] h-screen">
+    <main className="bg-[#DBDBD6] lg:min-h-screen">
+      <div className="flex  lg:h-screen">
         {/* Sidebar */}
         <div className=" hidden lg:flex w-[280px] bg-[#F2F2F0] p-4  flex-col">
           {/* Scrollable content in sidebar */}
@@ -187,7 +187,9 @@ export default function Index() {
           </div>
         </div>
         {/* Main Content Area */}
-        <div className="flex-1 p-6 max-h-screen overflow-auto">{content()}</div>
+        <div className="flex-1 p-6 lg:max-h-screen lg:overflow-auto">
+          {content()}
+        </div>
       </div>
     </main>
   );

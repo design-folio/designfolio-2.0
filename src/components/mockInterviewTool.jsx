@@ -142,7 +142,7 @@ export default function MockInterviewTool() {
   }
 
   return (
-    <div className="container mx-auto max-w-3xl">
+    <div className="container mx-auto max-w-2xl">
       <div className="text-center mb-12" id="initial-title">
         <Text
           size="p-large"
@@ -209,7 +209,7 @@ export default function MockInterviewTool() {
                   } ${values.difficulty == "" && "!text-[#7A829D]"}`}
                 >
                   <option value="" className="text-[#7A829D]">
-                    Select country
+                    Select level
                   </option>
                   {difficultyLevels.map((level, i) => (
                     <option value={level.value} key={i}>

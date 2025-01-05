@@ -42,7 +42,7 @@ const DetailedFeedback = ({ feedbackData }) => {
   };
 
   return (
-    <div className="bg-white shadow-tools border border-[#E5E7EB] rounded-2xl p-6">
+    <div className="bg-white shadow-tools border border-[#E5E7EB] rounded-2xl p-6 container mx-auto max-w-3xl">
       {/* Action Buttons at the top */}
       <div className="mb-6 space-x-4 text-center action-buttons">
         <Button
@@ -79,18 +79,37 @@ const DetailedFeedback = ({ feedbackData }) => {
           {/* Overall Score */}
           <div className="mb-8">
             <div className="flex justify-center my-10">
-              <div className="relative inline-flex items-center justify-center">
-                <ProgressBar
-                  progress={feedbackData.score}
-                  className="w-32 h-32 rounded-full"
-                />
-                <span
-                  className={`absolute text-4xl font-bold ${getScoreColor(
-                    feedbackData.score
-                  )}`}
-                >
-                  {feedbackData.score}
-                </span>
+              <div className="relative w-32 h-32">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-2xl font-bold text-gray-900">
+                    {feedbackData.score}%
+                  </span>
+                </div>
+                <svg className="w-32 h-32 transform -rotate-90">
+                  <circle
+                    cx="64"
+                    cy="64"
+                    r="56"
+                    stroke="currentColor"
+                    strokeWidth="8"
+                    fill="none"
+                    className="text-gray-200"
+                  />
+                  <circle
+                    cx="64"
+                    cy="64"
+                    r="56"
+                    stroke="currentColor"
+                    strokeWidth="8"
+                    fill="none"
+                    strokeLinecap="round"
+                    className="text-primary"
+                    strokeDasharray={351.86}
+                    strokeDashoffset={
+                      351.86 - (351.86 * feedbackData.score) / 100
+                    }
+                  />
+                </svg>
               </div>
             </div>
             <p className="text-gray-700 text-center mt-4">

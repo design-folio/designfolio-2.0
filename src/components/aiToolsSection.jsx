@@ -17,13 +17,13 @@ export default function AiToolsSection() {
       </Text>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4  lg:gap-8 mt-[56px] w-[90%] m-auto">
-        {/* <GeneratorCard
+        <GeneratorCard
           title="AI Mock Interview"
           src={"/assets/svgs/aiMock.svg"}
           description={"Land Your Dream Job with 100% Confidence"}
           buttonText="Begin Mock Interview"
-          route="/login"
-        /> */}
+          route="/ai-tools?type=mock-interview"
+        />
         <GeneratorCard
           title="Salary Negotiation Assistant"
           src={"/assets/svgs/salary-negotiate.svg"}

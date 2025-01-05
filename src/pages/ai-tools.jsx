@@ -2,6 +2,7 @@ import AnalyzeTool from "@/components/analyzeTool";
 import Button from "@/components/button";
 import CaseStudyGenerator from "@/components/caseStudyGenerator";
 import EmailGenerator from "@/components/emailGenerator";
+import MockInterviewTool from "@/components/mockInterviewTool";
 import OfferTool from "@/components/offerTool";
 import Cookies from "js-cookie";
 import Link from "next/link";
@@ -13,6 +14,7 @@ const navigation = {
   analyze: "analyze-case-study",
   email: "email-generator",
   salary: "salary-negotiator",
+  MockInterview: "mock-interview",
 };
 
 export default function Index() {
@@ -32,6 +34,8 @@ export default function Index() {
         return <EmailGenerator />;
       case navigation.salary:
         return <OfferTool />;
+      case navigation.MockInterview:
+        return <MockInterviewTool />;
       default:
         return <CaseStudyGenerator />;
     }
@@ -86,13 +90,17 @@ export default function Index() {
                 </Link>
               </li>
               <li className="mb-2">
-                <Button
-                  text={"Mock Interview"}
-                  type="tools"
-                  icon={<img src="/assets/svgs/mockTool.svg" />}
-                  customClass="w-full justify-start"
-                  isDisabled
-                />
+                <Link href={`/ai-tools?type=${navigation.MockInterview}`}>
+                  <Button
+                    text={"Mock Interview"}
+                    type="tools"
+                    icon={<img src="/assets/svgs/mockTool.svg" />}
+                    customClass="w-full justify-start"
+                    isSelected={
+                      router?.query?.type === navigation.MockInterview
+                    }
+                  />
+                </Link>
               </li>
               <li className="mb-2">
                 <Link href={`/ai-tools?type=${navigation.salary}`}>

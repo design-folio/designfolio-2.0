@@ -8,6 +8,7 @@ import Popover from "./popover";
 import Link from "next/link";
 import Wallet from "../../public/assets/svgs/walletTool.svg";
 import EmailIcon from "../../public/assets/svgs/email.svg";
+import MockTool from "../../public/assets/svgs/mockTool.svg";
 
 export default function AiToolsHeader() {
   const { popoverMenu, setPopoverMenu } = useGlobalContext();
@@ -45,9 +46,17 @@ export default function AiToolsHeader() {
           show={popovers.landingMenu === popoverMenu}
           className="right-[4px] mt-2"
         >
-          <Link href={"/ai-tools?type=salary-negotiator"}>
+          <Link href={"/ai-tools?type=mock-interview"}>
             <Button
               customClass="w-full"
+              text="Mock Interview"
+              type="secondary"
+              icon={<MockTool />}
+            />
+          </Link>
+          <Link href={"/ai-tools?type=salary-negotiator"}>
+            <Button
+              customClass="w-full mt-4"
               text="Salary negotiator"
               type="secondary"
               icon={<Wallet />}

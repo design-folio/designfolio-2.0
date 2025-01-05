@@ -20,7 +20,7 @@ const AnimatedSection = ({ children, animationData, className, delay }) => {
       className={`${className} px-[16px] md:px-[32px] transition-all duration-700 ease-out`}
       style={{
         opacity: isInView ? 1 : 0,
-        transform: isInView ? "none" : "translateY(80px)",
+        transform: isInView ? "none" : "translateY(20px)",
         transition: `all 0.2s cubic-bezier(0.17, 0.55, 0.55, 1) ${adjustedDelay}s`,
       }}
     >

@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 
 const ProgressBar = ({
   progress,
-  bg = "linear-gradient(to right, #FFB736, #F86845)",
+  bg = "linear-gradient(to right, #FFB736 0%, #F86845 200%)",
 }) => {
   // Ensure progress is between 0 and 100
   const validProgress = Math.min(Math.max(progress, 0), 100);

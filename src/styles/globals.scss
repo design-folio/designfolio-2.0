@@ -87,12 +87,12 @@ body {
   box-shadow: var(--input-border-hover-shadow);
 }
 
-::placeholder {
+input::placeholder {
   color: var(--input-placeholder-color);
   opacity: 1; /* Firefox */
 }
 
-::-ms-input-placeholder {
+input::-ms-input-placeholder {
   /* Edge 12-18 */
   color: var(--input-placeholder-color);
 }

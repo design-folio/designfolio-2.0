@@ -17,7 +17,7 @@ export default function GeneratorCard({
     router.push(route);
   };
   return (
-    <div className="rounded-[24px] bg-white border border-[#E3E7ED] p-6">
+    <div className="rounded-[24px] bg-white border border-[#E3E7ED] p-6 hover:shadow-ai-card transition-shadow duration-500 ease-out group">
       <div className="flex items-center gap-2">
         <img src={src} alt="generator tool" />
         <Text size="p-small">{title}</Text>
@@ -27,9 +27,8 @@ export default function GeneratorCard({
         {description}
       </Text>
       <Button
-        type="secondary"
         text={buttonText}
-        customClass="w-full mt-4"
+        customClass="w-full mt-4 text-[#293547] bg-[#fff] border-[#E0E6EB] group-hover:!bg-[#293547] group-hover:!text-[#fff] transition-all duration-500 ease-out"
         icon={<PreviewIcon className="cursor-pointer" />}
         animation
         onClick={handleRoute}

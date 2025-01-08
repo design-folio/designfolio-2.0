@@ -85,8 +85,21 @@ export default function LandingHeader({ dfToken }) {
                   e.preventDefault();
                   smoothScroll("how-it-works");
                 }}
+                className="cursor-pointer"
               >
                 How it works?
+              </Link>
+            </li>
+            <li className={commonTextClass}>
+              <Link
+                href={"#other-ai-tools"}
+                onClick={(e) => {
+                  e.preventDefault();
+                  smoothScroll("other-ai-tools");
+                }}
+                className="cursor-pointer"
+              >
+                Other AI Tools
               </Link>
             </li>
           </ul>

@@ -25,8 +25,10 @@ export default function Footer({ dfToken }) {
             think!
           </p>
           <p className="text-center hidden text-landing-footer-heading-color md:block px-[40px] text-[22px] xl:text-[39.5px] font-satoshi font-[500] xl:leading-[46.87px]">
-            <b>Claim your domain and build your</b>
-            <br /> <b>portfolio</b> – it&lsquo;s easier than you think!
+            <b>
+              Your dream port<i>folio</i> is, not days, not{" "}
+            </b>
+            <br /> <b>hours but minutes away</b> – Start now!
           </p>
           <div className="my-10 w-auto">
             {dfToken ? (

@@ -29,7 +29,7 @@ const AnimatedSection = ({ children, animationData, className, delay }) => {
           size="p-small"
           className="text-landing-heading-text-color font-satoshi font-semibold leading-[1.2] text-center"
         >
-          Trusted by design & product teams
+          Places we’ve already reached — humble brag
         </Text>
 
         {/* SVGs */}

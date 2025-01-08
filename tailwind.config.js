@@ -254,7 +254,7 @@ module.exports = {
       boxShadow: {
         // Landing page
         "landing-nav-link-hover": "0 1px 3px rgba(0, 0, 0, 0.1)",
-
+        "ai-card": "inset 0px 0px 0px 2px #293547",
         // Buttons
         "primary-btn": "0 4px 6px rgba(0, 0, 0, 0.1)",
         "secondary-btn": "var(--secondary-btn-shadow)",

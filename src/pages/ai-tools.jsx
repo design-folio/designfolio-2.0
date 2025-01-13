@@ -56,7 +56,7 @@ export default function Index() {
 
   return (
     <main className="bg-[#DBDBD6] lg:min-h-screen">
-      <div className="flex  lg:h-screen">
+      <div className="lg:flex  lg:h-screen">
         {/* Sidebar */}
         <div className=" hidden lg:flex w-[280px] bg-[#F2F2F0] p-4  flex-col">
           {/* Scrollable content in sidebar */}

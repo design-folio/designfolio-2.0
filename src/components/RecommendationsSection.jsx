@@ -27,7 +27,7 @@ const RecommendationsSection = ({ recommendations }) => {
         {recommendations.map((rec, index) => (
           <div
             key={index}
-            className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg"
+            className="flex flex-col lg:flex-row items-start gap-4 p-4 bg-gray-50 rounded-lg"
           >
             <Badge variant="outline" className={getPriorityColor(rec.priority)}>
               {rec.priority}

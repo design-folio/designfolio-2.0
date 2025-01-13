@@ -5,6 +5,7 @@ const nextConfig = {
   },
   experimental: {
     scrollRestoration: true,
+    esmExternals: true, // Enable ESM support
   },
   webpack: (config) => {
     // SVG

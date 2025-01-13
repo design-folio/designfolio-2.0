@@ -6,10 +6,20 @@ import workerSrc from "pdfjs-dist/build/pdf.worker.mjs";
 
 // Setting the worker source for pdf.js
 if (typeof window !== "undefined") {
-  pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-    "pdfjs-dist/build/pdf.worker.mjs",
-    import.meta.url
-  ).toString();
+  // Polyfill for Promise.withResolvers
+  if (typeof Promise.withResolvers === "undefined") {
+    Promise.withResolvers = function () {
+      let resolve;
+      let reject;
+      const promise = new Promise((res, rej) => {
+        resolve = res;
+        reject = rej;
+      });
+      return { promise, resolve, reject };
+    };
+  }
+
+  pdfjsLib.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjsLib.version}/legacy/build/pdf.worker.min.mjs`;
 }
 
 const ResumeUploader = ({ onUpload }) => {

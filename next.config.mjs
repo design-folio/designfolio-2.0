@@ -38,6 +38,8 @@ const nextConfig = {
         type: "javascript/auto",
       }
     );
+    config.resolve.alias.canvas = false;
+    config.resolve.alias.encoding = false;
 
     // Modify the file loader rule to ignore *.svg, since we have it handled now.
     fileLoaderRule.exclude = /\.svg$/i;

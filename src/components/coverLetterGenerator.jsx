@@ -267,7 +267,7 @@ export default function CoverLetterGenerator() {
 
               <Button
                 btnType="submit"
-                text={isAnalyzing ? "Generating..." : "Generate Email"}
+                text={isAnalyzing ? "Analyzing..." : "Perfect my Resume"}
                 form="EmailForm"
                 customClass="mt-4 w-full"
                 isLoading={isAnalyzing}

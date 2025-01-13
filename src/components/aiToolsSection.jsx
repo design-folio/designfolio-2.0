@@ -21,6 +21,15 @@ export default function AiToolsSection() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4  lg:gap-8 mt-[56px] w-[90%] m-auto">
         <GeneratorCard
+          title="Fix your Resume"
+          src={"/assets/svgs/fixResume.svg"}
+          description={
+            "See how your resume stacks up against the \n Job Description."
+          }
+          buttonText="Analyze my Resume"
+          route="/ai-tools?type=optimize-resume"
+        />
+        <GeneratorCard
           title="AI Mock Interview"
           src={"/assets/svgs/aiMock.svg"}
           description={"Land Your Dream Job with 100% Confidence"}

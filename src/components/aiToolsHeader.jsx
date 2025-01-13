@@ -9,6 +9,7 @@ import Link from "next/link";
 import Wallet from "../../public/assets/svgs/walletTool.svg";
 import EmailIcon from "../../public/assets/svgs/email.svg";
 import MockTool from "../../public/assets/svgs/mockTool.svg";
+import OptimizeResume from "../../public/assets/svgs/optimize-resume.svg";
 
 export default function AiToolsHeader() {
   const { popoverMenu, setPopoverMenu } = useGlobalContext();
@@ -68,6 +69,14 @@ export default function AiToolsHeader() {
               text="Email Generator"
               type="secondary"
               icon={<EmailIcon />}
+            />
+          </Link>
+          <Link href={"/ai-tools?type=optimize-resume"}>
+            <Button
+              customClass="w-full mt-4"
+              text="Optimize your Resume"
+              type="secondary"
+              icon={<OptimizeResume />}
             />
           </Link>
         </Popover>

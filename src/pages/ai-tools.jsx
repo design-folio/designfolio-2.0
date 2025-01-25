@@ -3,6 +3,7 @@ import Button from "@/components/button";
 import CaseStudyGenerator from "@/components/caseStudyGenerator";
 import CoverLetterGenerator from "@/components/coverLetterGenerator";
 import EmailGenerator from "@/components/emailGenerator";
+import LinkedinOptimizer from "@/components/linkedinOptimizer";
 import MockInterviewTool from "@/components/mockInterviewTool";
 import OfferTool from "@/components/offerTool";
 import Cookies from "js-cookie";
@@ -17,6 +18,7 @@ const navigation = {
   salary: "salary-negotiator",
   MockInterview: "mock-interview",
   optimizeResume: "optimize-resume",
+  linkedin: "optimize-linkedin",
 };
 
 export default function Index() {
@@ -40,6 +42,8 @@ export default function Index() {
         return <MockInterviewTool />;
       case navigation.optimizeResume:
         return <CoverLetterGenerator />;
+      case navigation.linkedin:
+        return <LinkedinOptimizer />;
       default:
         return <CaseStudyGenerator />;
     }
@@ -138,6 +142,17 @@ export default function Index() {
                     isSelected={
                       router?.query?.type === navigation.optimizeResume
                     }
+                  />
+                </Link>
+              </li>
+              <li className="mb-2">
+                <Link href={`/ai-tools?type=${navigation.linkedin}`}>
+                  <Button
+                    text={"Optimize Linkedin"}
+                    type="tools"
+                    icon={<img src="/assets/svgs/optimize-resume.svg" />}
+                    customClass="w-full justify-start"
+                    isSelected={router?.query?.type === navigation.linkedin}
                   />
                 </Link>
               </li>

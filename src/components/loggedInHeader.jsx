@@ -150,29 +150,37 @@ export default function LoggedInHeader({
 
   const { username, latestPublishDate, _id } = userDetails || {};
   const { isClient } = useClient();
+  console.log(_id);
 
-  if (_id == "67960f7f82a7f254b87ca209") {
-    templates.push(
-      {
-        id: 3,
-        value: "minimal",
-        item: (
-          <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer mb-1">
-            Minimal
-          </p>
-        ),
-      },
-      {
-        id: 4,
-        value: "Portfolio",
-        item: (
-          <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer mb-1">
-            Portfolio
-          </p>
-        ),
-      }
-    );
-  }
+  useEffect(() => {
+    if (
+      _id == "65e4b11132e0f1eb220c8743"
+      // templates.includes((id) => id != 3) &&
+      // templates.includes((id) => id != 4)
+    ) {
+      templates.push(
+        {
+          id: 3,
+          value: "minimal",
+          item: (
+            <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer mb-1">
+              Minimal
+            </p>
+          ),
+        },
+        {
+          id: 4,
+          value: "Portfolio",
+          item: (
+            <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer mb-1">
+              Portfolio
+            </p>
+          ),
+        }
+      );
+    }
+  }, [_id]);
+
   useEffect(() => {
     router.prefetch("/");
     router.prefetch("/account-settings");

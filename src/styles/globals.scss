@@ -2,6 +2,49 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --background: #f2f2f0;
+    --foreground: #202937;
+    --card: #ffffff;
+    --card-foreground: #202937;
+    --card-border: #e5e7eb;
+    --primary: #f5f5f7;
+    --primary-foreground: #202937;
+    --primary-hover: #e5e5e7;
+    --secondary: #fafafa;
+    --secondary-foreground: #202937;
+    --secondary-hover: #f5f5f5;
+    --secondary-border: #e5e7eb;
+    --secondary-border-hover: #d1d5db;
+    --radius: 0.5rem;
+  }
+
+  [data-theme="dark"] {
+    --background: #13151a;
+    --foreground: #e9eaeb;
+    --card: #1d1f27;
+    --card-foreground: #e9eaeb;
+    --card-border: #2f323d;
+    --primary: #262832;
+    --primary-foreground: #f9f9fb;
+    --primary-hover: #4a4e5d;
+    --secondary: #17181d;
+    --secondary-foreground: #f9f9fb;
+    --secondary-hover: #22242b;
+    --secondary-border: #262832;
+    --secondary-border-hover: #565b6c;
+  }
+
+  * {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground transition-colors duration-300;
+  }
+}
+
 @import url("./colors.css");
 @import url("./animation.css");
 

@@ -148,9 +148,31 @@ export default function LoggedInHeader({
   const [updateLoading, setUpdateLoading] = useState(false);
   const [isMobileThemePopup, setIsMobileThemePopup] = useState(false);
 
-  const { username, latestPublishDate } = userDetails || {};
+  const { username, latestPublishDate, _id } = userDetails || {};
   const { isClient } = useClient();
 
+  if (_id == "67960f7f82a7f254b87ca209") {
+    templates.push(
+      {
+        id: 3,
+        value: "minimal",
+        item: (
+          <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer mb-1">
+            Minimal
+          </p>
+        ),
+      },
+      {
+        id: 4,
+        value: "Portfolio",
+        item: (
+          <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer mb-1">
+            Portfolio
+          </p>
+        ),
+      }
+    );
+  }
   useEffect(() => {
     router.prefetch("/");
     router.prefetch("/account-settings");

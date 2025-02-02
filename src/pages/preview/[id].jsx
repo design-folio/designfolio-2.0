@@ -9,6 +9,8 @@ import Template1 from "@/components/template";
 import Template2 from "@/components/template2";
 import BottomNavigation from "@/components/bottomNavigation";
 import useClient from "@/hooks/useClient";
+import Minimal from "@/components/comp/Minimal";
+import Portfolio from "@/components/comp/Portfolio";
 
 export default function Index({ initialUserDetails }) {
   const { setTheme } = useTheme();
@@ -27,7 +29,6 @@ export default function Index({ initialUserDetails }) {
   }, [userDetails, setTheme]);
 
   const renderTemplate = () => {
-    console.log(userDetails?.template);
     switch (userDetails?.template) {
       case 0:
         return <Template1 userDetails={userDetails} />;
@@ -44,6 +45,11 @@ export default function Index({ initialUserDetails }) {
             )}
           </>
         );
+
+      case 2:
+        return <Minimal userDetails={userDetails} />;
+      case 3:
+        return <Portfolio userDetails={userDetails} />;
 
       default:
         return <Template1 userDetails={userDetails} />;

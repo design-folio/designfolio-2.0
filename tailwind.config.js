@@ -7,6 +7,13 @@ module.exports = {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    container: {
+      center: true,
+      padding: "2rem",
+      screens: {
+        "2xl": "1400px",
+      },
+    },
     extend: {
       fontFamily: {
         satoshi: ["var(--font-satoshi)", "sans-serif"],
@@ -250,6 +257,64 @@ module.exports = {
         "template-text-right-bg-color": "var(--template-text-right-bg-color)",
         "template-text-right-text-color":
           "var(--template-text-right-text-color)",
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: {
+          DEFAULT: "var(--background)",
+          dark: "#13151a",
+          light: "#fafaf7",
+        },
+        foreground: {
+          DEFAULT: "var(--foreground)",
+          dark: "#e9eaeb !important",
+          light: "#202937",
+        },
+        primary: {
+          DEFAULT: "var(--primary)",
+          foreground: "var(--primary-foreground)",
+          hover: "var(--primary-hover)",
+          dark: "#262832",
+          light: "#f5f5f7",
+        },
+        secondary: {
+          DEFAULT: "var(--secondary)",
+          foreground: "var(--secondary-foreground)",
+          hover: "var(--secondary-hover)",
+          border: "var(--secondary-border)",
+          "border-hover": "var(--secondary-border-hover)",
+          dark: "#17181d",
+          light: "#fafafa",
+        },
+        tertiary: {
+          DEFAULT: "#ff553e",
+          foreground: "#ffffff",
+          hover: "#e84934",
+          border: "#ff553e",
+          "border-hover": "#e84934",
+        },
+        card: {
+          DEFAULT: "var(--card)",
+          foreground: "var(--card-foreground)",
+          border: "var(--card-border)",
+          dark: "#1d1f27",
+          light: "#ffffff",
+        },
+        gray: {
+          400: {
+            dark: "rgb(156 163 175) !important",
+            light: "rgb(156 163 175)",
+          },
+          600: {
+            dark: "rgb(75 85 99) !important",
+            light: "rgb(75 85 99)",
+          },
+        },
+      },
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
       },
       boxShadow: {
         // Landing page
@@ -312,6 +377,25 @@ module.exports = {
         3.2: "3.2px",
         2.5: "2.5px",
       },
+      keyframes: {
+        "fade-in": {
+          "0%": { opacity: "0", transform: "translateY(10px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        "fade-in-right": {
+          "0%": { opacity: "0", transform: "translateX(10px)" },
+          "100%": { opacity: "1", transform: "translateX(0)" },
+        },
+        shimmer: {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(200%)" },
+        },
+      },
+      animation: {
+        "fade-in": "fade-in 0.5s ease-out",
+        "fade-in-right": "fade-in-right 0.5s ease-out",
+        shimmer: "shimmer 1.5s ease-in-out infinite",
+      },
     },
   },
   variants: {
@@ -322,5 +406,5 @@ module.exports = {
       transitionTimingFunction: ["hover"],
     },
   },
-  plugins: [],
+  plugins: [require("tailwindcss-animate")],
 };

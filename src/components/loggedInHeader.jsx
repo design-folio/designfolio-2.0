@@ -1,4 +1,4 @@
-import { modals, popovers } from "@/lib/constant";
+import { popovers } from "@/lib/constant";
 import { formatTimestamp } from "@/lib/times";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -31,6 +31,7 @@ import useClient from "@/hooks/useClient";
 import { twMerge } from "tailwind-merge";
 import { removeCursor } from "@/lib/cursor";
 import Modal from "./modal";
+import { Badge } from "./ui/badge";
 
 const cursors = [
   {
@@ -111,20 +112,26 @@ const templates = [
   {
     id: 1,
     value: "default",
-    item: (
-      <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer mb-1">
-        Default
-      </p>
-    ),
+    item: "Default",
+    isNew: false,
   },
   {
     id: 2,
     value: "chat",
-    item: (
-      <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer mb-1">
-        Chat Box
-      </p>
-    ),
+    item: "Chat Box",
+    isNew: false,
+  },
+  {
+    id: 3,
+    value: "prism",
+    item: "Prism",
+    isNew: true,
+  },
+  {
+    id: 4,
+    value: "pristine",
+    item: "Pristine",
+    isNew: true,
   },
 ];
 
@@ -148,7 +155,7 @@ export default function LoggedInHeader({
   const [updateLoading, setUpdateLoading] = useState(false);
   const [isMobileThemePopup, setIsMobileThemePopup] = useState(false);
 
-  const { username, latestPublishDate } = userDetails || {};
+  const { username, latestPublishDate, _id } = userDetails || {};
   const { isClient } = useClient();
 
   useEffect(() => {
@@ -252,11 +259,23 @@ export default function LoggedInHeader({
       } else {
         return "/assets/png/dark-default-theme.png";
       }
-    } else {
+    } else if (template == "chat") {
       if (theme == "light") {
         return "/assets/png/white-chat-box-theme.png";
       } else {
         return "/assets/png/dark-chat-box-theme.png";
+      }
+    } else if (template == "prism") {
+      if (theme == "light") {
+        return "/assets/png/prism-light.png";
+      } else {
+        return "/assets/png/prism-dark.png";
+      }
+    } else if (template == "pristine") {
+      if (theme == "light") {
+        return "/assets/png/pristine-light.png";
+      } else {
+        return "/assets/png/pristine-dark.png";
       }
     }
   };
@@ -402,6 +421,7 @@ export default function LoggedInHeader({
                       <div className="mt-4 grid grid-cols-2 gap-4">
                         {templates.map((template, index) => (
                           <div
+                            key={template.value}
                             onClick={() => changeTemplate(index)}
                             className={twMerge(
                               "px-4 py-6 flex flex-col justify-center items-center border rounded-[16px] cursor-pointer",
@@ -410,7 +430,16 @@ export default function LoggedInHeader({
                               getTemplateStyles(index) // This will dynamically add classes based on index
                             )}
                           >
-                            {template.item}
+                            <div className="flex gap-2 items-center mb-2">
+                              <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer">
+                                {template.item}
+                              </p>
+                              {template.isNew && (
+                                <Badge className="bg-[#EE7F70] text-white text-[12px] font-medium">
+                                  New
+                                </Badge>
+                              )}
+                            </div>
                             <img
                               src={renderTemplate(template.value)}
                               alt=""
@@ -430,6 +459,7 @@ export default function LoggedInHeader({
                       <div className="mt-4 grid grid-cols-3 gap-4">
                         {cursors.map((cursor, index) => (
                           <div
+                            key={index}
                             onClick={() => handleChangeCursor(index)}
                             className={twMerge(
                               "px-4 py-6 flex justify-center items-center border rounded-[16px] cursor-pointer",

@@ -3,6 +3,10 @@ import { useEffect } from "react";
 import Preview1 from "@/components/preview1";
 import Template2 from "@/components/template2";
 import BottomNavigation from "@/components/bottomNavigation";
+import Minimal from "@/components/comp/Minimal";
+import Button from "@/components/button";
+import { useRouter } from "next/router";
+import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
 
 export default function Index() {
   const {
@@ -12,6 +16,7 @@ export default function Index() {
     projectRef,
     template,
   } = useGlobalContext();
+  const router = useRouter();
 
   const renderTemplate = () => {
     switch (template) {
@@ -27,6 +32,20 @@ export default function Index() {
               watermarkClassName="!top-7"
             />
           </>
+        );
+      case 2:
+        return (
+          <div>
+            <Button
+              text="Go Back"
+              onClick={() => router.back()}
+              type="secondary"
+              size="small"
+              customClass="!transition-none mt-8"
+              icon={<LeftArrow className="cursor-pointer" />}
+            />
+            <Minimal userDetails={userDetails} edit={false} />
+          </div>
         );
 
       default:

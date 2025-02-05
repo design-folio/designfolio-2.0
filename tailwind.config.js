@@ -18,7 +18,7 @@ module.exports = {
       fontFamily: {
         satoshi: ["var(--font-satoshi)", "sans-serif"],
         sfpro: ["var(--font-sfpro)", "sans-serif"],
-        inter: ["var(--font-inter)"],
+        inter: ["var(--font-inter)", "sans-serif"],
       },
       cursor: {
         default: "var(--cursor-default)", // Custom cursor

@@ -1,10 +1,14 @@
 import { motion } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import Button from "../button";
+import PlusIcon from "../../../public/assets/svgs/plus.svg";
+import { useGlobalContext } from "@/context/globalContext";
 
-export const ToolStack = ({ userDetails }) => {
+export const ToolStack = ({ userDetails, edit }) => {
   const isMobile = useIsMobile();
   const { tools } = userDetails || {};
+  const { openModal } = useGlobalContext();
 
   // Duplicate tools multiple times for smoother infinite scroll
   const scrollTools = [...tools, ...tools, ...tools];
@@ -104,13 +108,37 @@ export const ToolStack = ({ userDetails }) => {
             >
               <div className="bg-card p-4 rounded-2xl flex items-center justify-center transition-colors hover:bg-card/80">
                 {/* <Tool.icon className="size-8" /> */}
-                <img src={tool.image} className="w-8" />
+                <img
+                  src={
+                    tool.image ? tool.image : "/assets/svgs/default-tools.svg"
+                  }
+                  className="w-8"
+                />
               </div>
               <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-sm whitespace-nowrap">
                 {tool.label}
               </div>
             </motion.div>
           ))}
+          {edit && (
+            <motion.div
+              variants={itemVariants}
+              whileHover={{ scale: 1.2, y: -8 }}
+              className="relative group"
+            >
+              <Button
+                type="secondary"
+                icon={
+                  <PlusIcon className="text-secondary-btn-text-color w-[32px] h-[32px] cursor-pointer" />
+                }
+                onClick={() => openModal("tools")}
+                // customClass="px-[22px]"
+              />{" "}
+              <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-sm whitespace-nowrap">
+                Edit
+              </div>
+            </motion.div>
+          )}
         </motion.div>
       )}
     </section>

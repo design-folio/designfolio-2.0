@@ -1,21 +1,25 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  ChevronLeft,
-  ChevronRight,
-  ChevronDown,
-  ChevronUp,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronUp, EditIcon } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Button } from "../ui/button";
+import AddItem from "../addItem";
+import PlusIcon from "../../../public/assets/svgs/plus.svg";
+import BagIcon from "../../../public/assets/svgs/bag.svg";
 
-export const Testimonials = ({ userDetails }) => {
+import { useTheme } from "next-themes";
+import { modals } from "@/lib/constant";
+import { useGlobalContext } from "@/context/globalContext";
+import Button from "../button";
+
+export const Testimonials = ({ userDetails, edit }) => {
   const { reviews } = userDetails || {};
   const [showMore, setShowMore] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [expandedCards, setExpandedCards] = useState([]);
   const isMobile = useIsMobile();
   const visibleTestimonials = showMore ? reviews : reviews?.slice(0, 4);
+  const theme = useTheme();
+  const { openModal, setSelectedReview } = useGlobalContext();
 
   const handleNext = () => {
     setCurrentIndex((prev) =>
@@ -33,6 +37,11 @@ export const Testimonials = ({ userDetails }) => {
     setExpandedCards((prev) =>
       prev.includes(id) ? prev.filter((cardId) => cardId !== id) : [...prev, id]
     );
+  };
+
+  const handleClick = (review) => {
+    setSelectedReview(review);
+    openModal(modals.review);
   };
 
   return (
@@ -142,7 +151,7 @@ export const Testimonials = ({ userDetails }) => {
           <AnimatePresence initial={false}>
             {visibleTestimonials?.map((testimonial, index) => (
               <motion.div
-                key={testimonial.id}
+                key={testimonial.id ?? index}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{
                   opacity: 1,
@@ -185,13 +194,13 @@ export const Testimonials = ({ userDetails }) => {
                     >
                       <p className="dark:text-gray-400 text-gray-600 mt-4">
                         {testimonial.expandedContent}
-                        <button
+                        {/* <button
                           onClick={() => toggleExpand(testimonial.id)}
                           className="ml-1 block mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1"
                         >
                           Show Less
                           <ChevronUp className="h-3 w-3" />
-                        </button>
+                        </button> */}
                       </p>
                     </motion.div>
                   )}
@@ -204,6 +213,16 @@ export const Testimonials = ({ userDetails }) => {
                       {testimonial.company}
                     </p>
                   </div>
+                  {edit && (
+                    <Button
+                      onClick={() => handleClick(testimonial)}
+                      customClass="!p-0 !flex-shrink-0 border-none"
+                      type={"secondary"}
+                      icon={
+                        <EditIcon className="text-df-icon-color cursor-pointer" />
+                      }
+                    />
+                  )}
                 </div>
               </motion.div>
             ))}
@@ -222,6 +241,44 @@ export const Testimonials = ({ userDetails }) => {
             {showMore ? "Show Less" : "View More"}
           </Button>
         </motion.div>
+      )}
+
+      {edit && (
+        <AddItem
+          className="bg-df-section-card-bg-color shadow-df-section-card-shadow mt-6"
+          title="Add your testimonial"
+          onClick={() => openModal(modals.review)}
+          iconLeft={
+            reviews?.length > 0 ? (
+              <Button
+                type="secondary"
+                icon={
+                  <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                }
+                onClick={() => openModal(modals.review)}
+                size="small"
+                text
+              />
+            ) : (
+              <BagIcon />
+            )
+          }
+          iconRight={
+            reviews?.length == 0 ? (
+              <Button
+                type="secondary"
+                icon={
+                  <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                }
+                onClick={() => openModal(modals.review)}
+                size="small"
+              />
+            ) : (
+              false
+            )
+          }
+          theme={theme}
+        />
       )}
     </section>
   );

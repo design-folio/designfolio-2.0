@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
@@ -10,9 +9,26 @@ import DribbbleIcon from "../../../public/assets/svgs/dribbble.svg";
 import BehanceIcon from "../../../public/assets/svgs/behance.svg";
 import NotionIcon from "../../../public/assets/svgs/noteIcon.svg";
 import MediumIcon from "../../../public/assets/svgs/medium.svg";
+import ResumeIcon from "../../../public/assets/svgs/resume.svg";
+import PlusIcon from "../../../public/assets/svgs/plus.svg";
+import DeleteIcon from "../../../public/assets/svgs/deleteIcon.svg";
+import PuzzleIcon from "../../../public/assets/svgs/puzzle.svg";
+import OthersIcon from "../../../public/assets/svgs/others.svg";
 
-export const Footer = ({ userDetails }) => {
+import AddItem from "../addItem";
+import { modals } from "@/lib/constant";
+import { Button } from "../ui/button";
+import Button2 from "../button";
+import { useGlobalContext } from "@/context/globalContext";
+import { _deleteResume } from "@/network/post-request";
+
+export const Footer = ({ userDetails, edit }) => {
   const { portfolios, socials } = userDetails || {};
+  const { openModal, userDetailsRefecth } = useGlobalContext();
+
+  const handleDelete = () => {
+    _deleteResume().then((res) => userDetailsRefecth());
+  };
 
   const ref = useRef(null);
   const isInView = useInView(ref, {
@@ -45,16 +61,49 @@ export const Footer = ({ userDetails }) => {
           <h2 className="text-4xl sm:text-5xl font-bold text-foreground max-w-2xl text-center leading-tight">
             Let's work together
           </h2>
+          {userDetails?.resume?.url && (
+            <div className="flex flex-wrap gap-4 justify-center">
+              <a
+                href={userDetails?.resume?.url}
+                download={true}
+                target="_blank"
+              >
+                <Button size="lg" variant="outline" className="text-lg px-8">
+                  <Download className="mr-2" />
+                  Download Resume
+                </Button>
+              </a>
+              {edit && (
+                <Button2
+                  icon={
+                    <DeleteIcon className="stroke-delete-btn-icon-color w-6 h-6 cursor-pointer" />
+                  }
+                  type="normal"
+                  className=""
+                  onClick={handleDelete}
+                />
+              )}
+            </div>
+          )}
 
-          <div className="flex flex-wrap gap-4 justify-center">
-            <a href={userDetails?.resume?.url} download={true} target="_blank">
-              <Button size="lg" variant="outline" className="text-lg px-8">
-                <Download className="mr-2" />
-                Download Resume
-              </Button>
-            </a>
-          </div>
-
+          {edit && !userDetails?.resume?.url && (
+            <AddItem
+              title="Add your resume"
+              iconLeft={<ResumeIcon className="text-df-icon-color" />}
+              onClick={() => openModal(modals.resume)}
+              iconRight={
+                <Button2
+                  size="small"
+                  type="secondary"
+                  customClass="w-fit gap-0"
+                  icon={
+                    <PlusIcon className="text-secondary-btn-text-color w-[14px] h-[14px] cursor-pointer" />
+                  }
+                />
+              }
+              className="bg-df-section-card-bg-color w-full"
+            />
+          )}
           <div className="flex items-center gap-8 text-foreground/60 dark:text-gray-400">
             {socials?.instagram && (
               <a
@@ -134,6 +183,42 @@ export const Footer = ({ userDetails }) => {
               </a>
             )}
           </div>
+          {edit && (
+            <div className="flex gap-4">
+              <AddItem
+                title="Add your social media"
+                onClick={() => openModal(modals.socialMedia)}
+                iconLeft={<PuzzleIcon className="text-df-icon-color" />}
+                iconRight={
+                  <Button2
+                    size="small"
+                    type="secondary"
+                    customClass="w-fit gap-0"
+                    icon={
+                      <PlusIcon className="text-secondary-btn-text-color w-[14px] h-[14px] cursor-pointer" />
+                    }
+                  />
+                }
+                className="bg-df-section-card-bg-color shadow-df-section-card-shadow w-full"
+              />
+              <AddItem
+                title="Add your portfolio links"
+                onClick={() => openModal(modals.portfolioLinks)}
+                iconLeft={<OthersIcon className="text-df-icon-color" />}
+                iconRight={
+                  <Button2
+                    size="small"
+                    type="secondary"
+                    customClass="w-fit gap-0"
+                    icon={
+                      <PlusIcon className="text-secondary-btn-text-color w-[14px] h-[14px] cursor-pointer" />
+                    }
+                  />
+                }
+                className="bg-df-section-card-bg-color shadow-df-section-card-shadow w-full"
+              />
+            </div>
+          )}
         </motion.div>
       </div>
     </footer>

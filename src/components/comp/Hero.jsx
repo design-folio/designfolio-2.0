@@ -1,10 +1,13 @@
 import { Avatar } from "@/components/ui/avatar";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Button from "../button";
+import { EditIcon } from "lucide-react";
+import { useGlobalContext } from "@/context/globalContext";
 
-export const Hero = ({ userDetails }) => {
+export const Hero = ({ userDetails, edit }) => {
   const [isLoaded, setIsLoaded] = useState(true);
-  console.log(userDetails);
+  const { openModal } = useGlobalContext();
 
   const { avatar, introduction, bio, skills } = userDetails || {};
 
@@ -50,14 +53,24 @@ export const Hero = ({ userDetails }) => {
         </Avatar>
       </motion.div>
 
-      <motion.h1
-        className="text-4xl font-bold mb-4"
+      <motion.div
+        className="mb-4 flex items-start gap-3 relative"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
       >
-        {introduction}
-      </motion.h1>
+        <h1 className="text-4xl font-bold">{introduction} </h1>
+        {edit && (
+          <div className="absolute right-[-54px]">
+            <Button
+              onClick={() => openModal("onboarding")}
+              customClass="!p-[13.38px] !flex-shrink-0"
+              type={"secondary"}
+              icon={<EditIcon className="text-df-icon-color cursor-pointer" />}
+            />
+          </div>
+        )}
+      </motion.div>
 
       <motion.p
         className="dark:text-gray-400 text-gray-600 max-w-xl mb-8"

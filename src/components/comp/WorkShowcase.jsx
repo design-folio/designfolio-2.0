@@ -2,10 +2,19 @@ import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { useRouter } from "next/router";
+import Button from "../button";
+import Text from "../text";
+import ViewArrowIcon from "../../../public/assets/svgs/viewArrow.svg";
+import DeleteIcon from "../../../public/assets/svgs/deleteIcon.svg";
+import ProjectIcon from "../../../public/assets/svgs/projectIcon.svg";
+import { useGlobalContext } from "@/context/globalContext";
+import { modals } from "@/lib/constant";
+import AddCard from "../AddCard";
 
-export const WorkShowcase = ({ userDetails }) => {
+export const WorkShowcase = ({ userDetails, edit }) => {
   const { projects } = userDetails || {};
   const router = useRouter();
+  const { openModal, setSelectedProject } = useGlobalContext();
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -38,7 +47,9 @@ export const WorkShowcase = ({ userDetails }) => {
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setInView(entry.isIntersecting);
+        if (entry.isIntersecting && !inView) {
+          setInView(entry.isIntersecting);
+        }
       }
       // { threshold: 0.5 }
     );
@@ -52,10 +63,16 @@ export const WorkShowcase = ({ userDetails }) => {
         observer.unobserve(ref.current);
       }
     };
-  }, []);
+  }, [inView]);
 
   const handleNavigation = (id) => {
-    router.push(`/project/${id}`);
+    router.push(
+      edit
+        ? `/project/${id}/editor`
+        : router.asPath.includes("/portfolio-preview")
+        ? `/project/${id}/editor`
+        : `/project/${id}`
+    );
   };
 
   // Image Component with Loading State
@@ -78,7 +95,7 @@ export const WorkShowcase = ({ userDetails }) => {
           transition={{ duration: 0.4 }}
           src={src}
           alt={alt}
-          className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
+          className="w-full cursor-pointer h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
           loading="eager"
           decoding="async"
           onLoad={() => setIsLoaded(true)}
@@ -90,6 +107,7 @@ export const WorkShowcase = ({ userDetails }) => {
   // Project Card Component
   const ProjectCard = ({ project }) => {
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
     const cardRef = useRef(null);
 
     const handleMouseMove = (e) => {
@@ -101,23 +119,28 @@ export const WorkShowcase = ({ userDetails }) => {
       });
     };
 
+    const onDeleteProject = (project) => {
+      openModal(modals.deleteProject);
+      setSelectedProject(project);
+    };
+
     return (
       <motion.div
         variants={itemVariants}
         ref={cardRef}
         onMouseMove={handleMouseMove}
         onClick={() => handleNavigation(project?._id)}
-        className="group rounded-3xl bg-card overflow-hidden relative shadow-lg"
+        className="group rounded-3xl bg-card overflow-hidden relative shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] cursor-pointer"
       >
         {/* Hover effect */}
         <div
-          className="pointer-events-none absolute -inset-px opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          className="pointer-events-none cursor-pointer absolute -inset-px opacity-0 group-hover:opacity-100 transition-opacity duration-300"
           style={{
             background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255,255,255,.1), transparent 40%)`,
           }}
         />
         {/* Project Image */}
-        <div className="aspect-[4/3] overflow-hidden bg-secondary/50 relative">
+        <div className="aspect-[4/3] cursor-pointer overflow-hidden bg-secondary/50 relative">
           <ImageWithPreload src={project?.thumbnail?.url} alt={project.title} />
           {/* Project Link */}
           <a
@@ -128,11 +151,36 @@ export const WorkShowcase = ({ userDetails }) => {
           </a>
         </div>
         {/* Project Info */}
-        <div className="p-8 pb-10">
-          <h3 className="text-2xl font-semibold mb-3 leading-tight">
+        <div className="p-8 pb-10 cursor-pointer">
+          <h3 className="text-2xl font-semibold mb-3 leading-tight cursor-pointer">
             {project.title}
           </h3>
-          <p className="text-gray-400 line-clamp-2">{project.description}</p>
+          <p className="text-gray-400 line-clamp-2 cursor-pointer">
+            {project.description}
+          </p>
+          <div className="flex justify-between gap-3  items-center mt-4 cursor-pointer">
+            {edit && (
+              <Button
+                text={"Edit project"}
+                customClass="w-full"
+                type="secondary"
+              />
+            )}
+            {edit && (
+              <div className="flex gap-4">
+                <Button
+                  type="delete"
+                  icon={
+                    <DeleteIcon className="stroke-delete-btn-icon-color w-6 h-6 cursor-pointer" />
+                  }
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent the event from bubbling up
+                    onDeleteProject(project);
+                  }}
+                />
+              </div>
+            )}
+          </div>
         </div>
       </motion.div>
     );
@@ -146,11 +194,35 @@ export const WorkShowcase = ({ userDetails }) => {
         variants={containerVariants}
         initial="hidden"
         animate={inView ? "show" : "hidden"}
-        className="grid grid-cols-1 md:grid-cols-2 gap-6"
+        className={`${
+          userDetails?.projects?.length === 0
+            ? "bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words"
+            : "grid grid-cols-1 md:grid-cols-2 gap-6"
+        } `}
       >
         {projects.map((project, index) => (
           <ProjectCard key={index} project={project} />
         ))}
+        {edit && (
+          <AddCard
+            title={`${
+              userDetails?.projects?.length === 0
+                ? "Upload your first case study"
+                : "Add case study"
+            }`}
+            subTitle="Show off your best work."
+            first={userDetails?.projects?.length !== 0}
+            buttonTitle="Add case study"
+            secondaryButtonTitle="Write using AI"
+            onClick={() => openModal(modals.project)}
+            icon={<ProjectIcon className="cursor-pointer" />}
+            openModal={openModal}
+            className={`flex items-center justify-center ${
+              userDetails?.projects?.length !== 0 &&
+              "bg-df-section-card-bg-color shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] hover:shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
+            }`}
+          />
+        )}
       </motion.div>
     </section>
   );

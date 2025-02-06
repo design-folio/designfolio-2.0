@@ -1,21 +1,26 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  ChevronLeft,
-  ChevronRight,
-  ChevronDown,
-  ChevronUp,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronUp, EditIcon } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Button } from "../ui/button";
+import AddItem from "../addItem";
+import PlusIcon from "../../../public/assets/svgs/plus.svg";
+import BagIcon from "../../../public/assets/svgs/bag.svg";
 
-export const Testimonials = ({ userDetails }) => {
+import { useTheme } from "next-themes";
+import { modals } from "@/lib/constant";
+import { useGlobalContext } from "@/context/globalContext";
+import { Button } from "../ui/button";
+import Button2 from "../button";
+
+export const Testimonials = ({ userDetails, edit }) => {
   const { reviews } = userDetails || {};
   const [showMore, setShowMore] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [expandedCards, setExpandedCards] = useState([]);
   const isMobile = useIsMobile();
   const visibleTestimonials = showMore ? reviews : reviews?.slice(0, 4);
+  const theme = useTheme();
+  const { openModal, setSelectedReview } = useGlobalContext();
 
   const handleNext = () => {
     setCurrentIndex((prev) =>
@@ -35,6 +40,11 @@ export const Testimonials = ({ userDetails }) => {
     );
   };
 
+  const handleClick = (review) => {
+    setSelectedReview(review);
+    openModal(modals.review);
+  };
+
   return (
     <section className="py-16">
       <h2 className="text-3xl font-bold mb-12 text-center">What People Say</h2>
@@ -46,26 +56,28 @@ export const Testimonials = ({ userDetails }) => {
       >
         {isMobile ? (
           <>
-            <AnimatePresence initial={false} custom={currentIndex}>
-              <motion.div
-                key={currentIndex}
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{
-                  scale: 1,
-                  opacity: 1,
-                  rotate: 2,
-                }}
-                exit={{ scale: 0.8, opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                whileHover={{
-                  rotate: 4,
-                  transition: { duration: 0.2 },
-                }}
-                className="bg-card border border-card-border p-6 rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
-              >
-                <p className="dark:text-gray-400 text-gray-600">
-                  {visibleTestimonials[currentIndex]?.description}
-                  {/* {!expandedCards.includes(
+            {visibleTestimonials?.length > 0 && (
+              <>
+                <AnimatePresence initial={false} custom={currentIndex}>
+                  <motion.div
+                    key={currentIndex}
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{
+                      scale: 1,
+                      opacity: 1,
+                      rotate: 2,
+                    }}
+                    exit={{ scale: 0.8, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    whileHover={{
+                      rotate: 4,
+                      transition: { duration: 0.2 },
+                    }}
+                    className="bg-card border border-card-border p-6 rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
+                  >
+                    <p className="dark:text-gray-400 text-gray-600">
+                      {visibleTestimonials[currentIndex]?.description}
+                      {/* {!expandedCards.includes(
                     visibleTestimonials[currentIndex].id
                   ) && (
                     <button
@@ -78,71 +90,75 @@ export const Testimonials = ({ userDetails }) => {
                       <ChevronDown className="h-3 w-3" />
                     </button>
                   )} */}
-                </p>
-
-                <AnimatePresence initial={false}>
-                  {expandedCards.includes(
-                    visibleTestimonials[currentIndex].id
-                  ) && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="overflow-hidden"
-                    >
-                      <p className="dark:text-gray-400 text-gray-600 mt-4">
-                        {visibleTestimonials[currentIndex].expandedContent}
-                        <button
-                          onClick={() =>
-                            toggleExpand(visibleTestimonials[currentIndex].id)
-                          }
-                          className="ml-1 block mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1"
-                        >
-                          Show Less
-                          <ChevronUp className="h-3 w-3" />
-                        </button>
-                      </p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                <div className="flex items-center gap-2 mt-4">
-                  <div className="flex-1">
-                    <h4 className="font-semibold">
-                      {visibleTestimonials[currentIndex].name}
-                    </h4>
-                    <p className="text-sm dark:text-gray-400 text-gray-600">
-                      {visibleTestimonials[currentIndex].company}
                     </p>
-                  </div>
+
+                    <AnimatePresence initial={false}>
+                      {expandedCards.includes(
+                        visibleTestimonials[currentIndex]?.id
+                      ) && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.3 }}
+                          className="overflow-hidden"
+                        >
+                          <p className="dark:text-gray-400 text-gray-600 mt-4">
+                            {visibleTestimonials[currentIndex].expandedContent}
+                            <button
+                              onClick={() =>
+                                toggleExpand(
+                                  visibleTestimonials[currentIndex]?.id
+                                )
+                              }
+                              className="ml-1  mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1"
+                            >
+                              Show Less
+                              <ChevronUp className="h-3 w-3" />
+                            </button>
+                          </p>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
+                    <div className="flex items-center gap-2 mt-4">
+                      <div className="flex-1">
+                        <h4 className="font-semibold">
+                          {visibleTestimonials[currentIndex]?.name}
+                        </h4>
+                        <p className="text-sm dark:text-gray-400 text-gray-600">
+                          {visibleTestimonials[currentIndex]?.company}
+                        </p>
+                      </div>
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+                <div className="flex justify-center gap-4 mt-6">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={handlePrev}
+                    className="rounded-full"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={handleNext}
+                    className="rounded-full"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
                 </div>
-              </motion.div>
-            </AnimatePresence>
-            <div className="flex justify-center gap-4 mt-6">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={handlePrev}
-                className="rounded-full"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={handleNext}
-                className="rounded-full"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </div>
+              </>
+            )}
           </>
         ) : (
           <AnimatePresence initial={false}>
             {visibleTestimonials?.map((testimonial, index) => (
               <motion.div
-                key={testimonial.id}
+                key={testimonial.id ?? index}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{
                   opacity: 1,
@@ -185,13 +201,13 @@ export const Testimonials = ({ userDetails }) => {
                     >
                       <p className="dark:text-gray-400 text-gray-600 mt-4">
                         {testimonial.expandedContent}
-                        <button
+                        {/* <button
                           onClick={() => toggleExpand(testimonial.id)}
                           className="ml-1 block mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1"
                         >
                           Show Less
                           <ChevronUp className="h-3 w-3" />
-                        </button>
+                        </button> */}
                       </p>
                     </motion.div>
                   )}
@@ -204,6 +220,16 @@ export const Testimonials = ({ userDetails }) => {
                       {testimonial.company}
                     </p>
                   </div>
+                  {edit && (
+                    <Button2
+                      onClick={() => handleClick(testimonial)}
+                      customClass="!p-0 !flex-shrink-0 border-none"
+                      type={"secondary"}
+                      icon={
+                        <EditIcon className="text-df-icon-color cursor-pointer" />
+                      }
+                    />
+                  )}
                 </div>
               </motion.div>
             ))}
@@ -222,6 +248,44 @@ export const Testimonials = ({ userDetails }) => {
             {showMore ? "Show Less" : "View More"}
           </Button>
         </motion.div>
+      )}
+
+      {edit && (
+        <AddItem
+          className="bg-df-section-card-bg-color shadow-df-section-card-shadow mt-6"
+          title="Add your testimonial"
+          onClick={() => openModal(modals.review)}
+          iconLeft={
+            reviews?.length > 0 ? (
+              <Button2
+                type="secondary"
+                icon={
+                  <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                }
+                onClick={() => openModal(modals.review)}
+                size="small"
+                text
+              />
+            ) : (
+              <BagIcon />
+            )
+          }
+          iconRight={
+            reviews?.length == 0 ? (
+              <Button2
+                type="secondary"
+                icon={
+                  <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                }
+                onClick={() => openModal(modals.review)}
+                size="small"
+              />
+            ) : (
+              false
+            )
+          }
+          theme={theme}
+        />
       )}
     </section>
   );

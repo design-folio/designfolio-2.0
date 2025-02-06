@@ -22,6 +22,7 @@ import { useRouter } from "next/router";
 import { _resendOTP } from "@/network/get-request";
 import AddUsername from "@/components/addUsername";
 import Builder2 from "@/components/Builder2";
+import Minimal from "@/components/comp/Minimal";
 
 export default function Index() {
   const {
@@ -95,6 +96,10 @@ export default function Index() {
       case 0:
         return <Builder1 />;
       case 1:
+        return <Builder2 edit />;
+      case 2:
+        return <Minimal userDetails={userDetails} edit />;
+      case 3:
         return <Builder2 edit />;
 
       default:

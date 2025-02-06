@@ -24,7 +24,6 @@ const Header = ({ dfToken, hideHeader }) => {
   // Determine header component based on dfToken and router pathname
   let headerComponent = null;
   const path = router.pathname;
-  console.log(path.includes("/ai-tools"), hideHeader);
   if (hideHeader) {
     return null;
   } else if (path === "/") {

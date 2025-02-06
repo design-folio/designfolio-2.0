@@ -1,4 +1,4 @@
-import { modals, popovers } from "@/lib/constant";
+import { popovers } from "@/lib/constant";
 import { formatTimestamp } from "@/lib/times";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -31,6 +31,7 @@ import useClient from "@/hooks/useClient";
 import { twMerge } from "tailwind-merge";
 import { removeCursor } from "@/lib/cursor";
 import Modal from "./modal";
+import { Badge } from "./ui/badge";
 
 const cursors = [
   {
@@ -111,21 +112,51 @@ const templates = [
   {
     id: 1,
     value: "default",
-    item: (
-      <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer mb-1">
-        Default
-      </p>
-    ),
+    item: "Default",
+    isNew: false,
   },
   {
     id: 2,
     value: "chat",
-    item: (
-      <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer mb-1">
-        Chat Box
-      </p>
-    ),
+    item: "Chat Box",
+    isNew: false,
   },
+  // {
+  //   id: 3,
+  //   value: "prism",
+  //   item: "Prism",
+  //   isNew: true,
+  // },
+  // {
+  //   id: 4,
+  //   value: "pristine",
+  //   item: "Pristine",
+  //   isNew: true,
+  // },
+];
+
+const emails = [
+  "sarathdixit29@gmail.com",
+  "heyfromshai@gmail.com",
+  "siddhesh2k@gmail.com",
+  "aadhavanm8@gmail.com",
+  "madhavanu555@gmail.com",
+  "haidar8006@gmail.com",
+  "richardmarx353@gmail.com",
+  "mostafa.saad127@yahoo.com",
+  "yashika.r.gujar@gmail.com",
+  "ayan.workspace4699@gmail.com",
+  "priyams2810@gmail.com",
+  "uiuxhimanshu98@gmail.com",
+  "rajuvegeshana@gmail.com",
+  "ronak.barhanpurkar09@gmail.com",
+  "shyleshs1999@gmail.com",
+  "ashishgoswamimailbox@gmail.com",
+  "hi@vidhunnan.design",
+  "adib.7295@gmail.com ",
+  "chebrolutejopriya29@gmail.com",
+  "prabhakaransuraj12@gmail.com",
+  "arpitaacharya99@gmail.com",
 ];
 
 export default function LoggedInHeader({
@@ -148,38 +179,8 @@ export default function LoggedInHeader({
   const [updateLoading, setUpdateLoading] = useState(false);
   const [isMobileThemePopup, setIsMobileThemePopup] = useState(false);
 
-  const { username, latestPublishDate, _id } = userDetails || {};
+  const { username, latestPublishDate, _id, email } = userDetails || {};
   const { isClient } = useClient();
-  console.log(_id);
-
-  useEffect(() => {
-    if (
-      _id == "65e4b11132e0f1eb220c8743"
-      // templates.includes((id) => id != 3) &&
-      // templates.includes((id) => id != 4)
-    ) {
-      templates.push(
-        {
-          id: 3,
-          value: "minimal",
-          item: (
-            <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer mb-1">
-              Minimal
-            </p>
-          ),
-        },
-        {
-          id: 4,
-          value: "Portfolio",
-          item: (
-            <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer mb-1">
-              Portfolio
-            </p>
-          ),
-        }
-      );
-    }
-  }, [_id]);
 
   useEffect(() => {
     router.prefetch("/");
@@ -187,6 +188,21 @@ export default function LoggedInHeader({
     router.prefetch(`/portfolio-preview`);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
+
+  useEffect(() => {
+    if (
+      emails.includes(email)
+      // templates.includes((id) => id != 3) &&
+      // templates.includes((id) => id != 4)
+    ) {
+      templates.push({
+        id: 3,
+        value: "prism",
+        item: "Prism",
+        isNew: true,
+      });
+    }
+  }, [email]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -282,11 +298,23 @@ export default function LoggedInHeader({
       } else {
         return "/assets/png/dark-default-theme.png";
       }
-    } else {
+    } else if (template == "chat") {
       if (theme == "light") {
         return "/assets/png/white-chat-box-theme.png";
       } else {
         return "/assets/png/dark-chat-box-theme.png";
+      }
+    } else if (template == "prism") {
+      if (theme == "light") {
+        return "/assets/png/prism-light.png";
+      } else {
+        return "/assets/png/prism-dark.png";
+      }
+    } else if (template == "pristine") {
+      if (theme == "light") {
+        return "/assets/png/pristine-light.png";
+      } else {
+        return "/assets/png/pristine-dark.png";
       }
     }
   };
@@ -314,7 +342,9 @@ export default function LoggedInHeader({
     : "fixed top-0 left-0 right-0 md:px-4 xl:px-0 z-10 transform translate-y-[-100%] transition-transform duration-300 ease-out";
 
   return (
-    <div className={`${headerStyle} px-2 md:px-0 py-2 md:py-5 bg-transparent`}>
+    <div
+      className={`${headerStyle} z-50 px-2 md:px-0 py-2 md:py-5 bg-transparent`}
+    >
       <div className="shadow-df-section-card-shadow max-w-[890px] p-3  md:!p-4 rounded-[24px] bg-df-header-bg-color mx-auto flex justify-between items-center">
         <div className="flex items-center gap-[24px]">
           <Link href={"/builder"}>
@@ -432,6 +462,7 @@ export default function LoggedInHeader({
                       <div className="mt-4 grid grid-cols-2 gap-4">
                         {templates.map((template, index) => (
                           <div
+                            key={template.value}
                             onClick={() => changeTemplate(index)}
                             className={twMerge(
                               "px-4 py-6 flex flex-col justify-center items-center border rounded-[16px] cursor-pointer",
@@ -440,7 +471,16 @@ export default function LoggedInHeader({
                               getTemplateStyles(index) // This will dynamically add classes based on index
                             )}
                           >
-                            {template.item}
+                            <div className="flex gap-2 items-center mb-2">
+                              <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer">
+                                {template.item}
+                              </p>
+                              {template.isNew && (
+                                <Badge className="bg-[#EE7F70] text-white text-[12px] font-medium">
+                                  New
+                                </Badge>
+                              )}
+                            </div>
                             <img
                               src={renderTemplate(template.value)}
                               alt=""
@@ -460,6 +500,7 @@ export default function LoggedInHeader({
                       <div className="mt-4 grid grid-cols-3 gap-4">
                         {cursors.map((cursor, index) => (
                           <div
+                            key={index}
                             onClick={() => handleChangeCursor(index)}
                             className={twMerge(
                               "px-4 py-6 flex justify-center items-center border rounded-[16px] cursor-pointer",

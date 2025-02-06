@@ -1,11 +1,23 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, EditIcon } from "lucide-react";
+import AddItem from "../addItem";
+import Button from "../button";
+import { useGlobalContext } from "@/context/globalContext";
+import { modals } from "@/lib/constant";
+import PlusIcon from "../../../public/assets/svgs/plus.svg";
+import BagIcon from "../../../public/assets/svgs/bag.svg";
+import { useTheme } from "next-themes";
 
-export const Spotlight = ({ userDetails }) => {
+export const Spotlight = ({ userDetails, edit }) => {
   const { experiences } = userDetails || {};
-
+  const { openModal, setSelectedWork } = useGlobalContext();
+  const { theme } = useTheme();
   const [expandedCards, setExpandedCards] = useState([]);
+  const handleClick = (work) => {
+    setSelectedWork(work);
+    openModal(modals.work);
+  };
 
   const container = {
     hidden: { opacity: 0 },
@@ -80,13 +92,25 @@ export const Spotlight = ({ userDetails }) => {
               <div className="flex flex-col gap-1">
                 <div className="flex justify-between items-start">
                   <h3 className="font-semibold text-lg">{experience.role}</h3>
-                  <span className="text-sm text-foreground/60">
-                    {`${experience?.startMonth} ${experience?.startYear} - ${
-                      experience?.currentlyWorking
-                        ? "Present"
-                        : `${experience?.endMonth} ${experience?.endYear}`
-                    }  `}
-                  </span>
+                  <div className="flex gap-2 items-center">
+                    <span className="text-sm text-foreground/60">
+                      {`${experience?.startMonth} ${experience?.startYear} - ${
+                        experience?.currentlyWorking
+                          ? "Present"
+                          : `${experience?.endMonth} ${experience?.endYear}`
+                      }  `}
+                    </span>{" "}
+                    {edit && (
+                      <Button
+                        onClick={() => handleClick(experience)}
+                        customClass="!p-0 !flex-shrink-0 border-none"
+                        type={"secondary"}
+                        icon={
+                          <EditIcon className="text-df-icon-color cursor-pointer" />
+                        }
+                      />
+                    )}
+                  </div>
                 </div>
                 <div className="text-base text-foreground/80">
                   {experience.company}
@@ -133,6 +157,42 @@ export const Spotlight = ({ userDetails }) => {
           </motion.div>
         ))}
       </motion.div>
+      {edit && (
+        <AddItem
+          className="bg-df-section-card-bg-color shadow-df-section-card-shadow mt-4"
+          title="Add your work experience"
+          onClick={() => openModal(modals.work)}
+          iconLeft={
+            userDetails?.experiences?.length > 0 ? (
+              <Button
+                type="secondary"
+                icon={
+                  <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                }
+                onClick={() => openModal(modals.work)}
+                size="small"
+              />
+            ) : (
+              <BagIcon />
+            )
+          }
+          iconRight={
+            userDetails?.experiences?.length == 0 ? (
+              <Button
+                type="secondary"
+                icon={
+                  <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                }
+                onClick={() => openModal(modals.work)}
+                size="small"
+              />
+            ) : (
+              false
+            )
+          }
+          theme={theme}
+        />
+      )}
     </section>
   );
 };

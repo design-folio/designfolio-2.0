@@ -8,7 +8,7 @@ import { WorkShowcase } from "@/components/comp/WorkShowcase";
 import { useGlobalContext } from "@/context/globalContext";
 import { useEffect } from "react";
 
-const Minimal = ({ userDetails }) => {
+const Minimal = ({ userDetails, edit }) => {
   const { setCursor } = useGlobalContext();
   useEffect(() => {
     setCursor(userDetails?.cursor ? userDetails?.cursor : 0);
@@ -18,29 +18,29 @@ const Minimal = ({ userDetails }) => {
       <div className="fixed top-8 left-8 z-50">{/* <ThemeToggle /> */}</div>
       <div className="container max-w-3xl mx-auto px-4">
         <section id="hero">
-          <Hero userDetails={userDetails} />
+          <Hero userDetails={userDetails} edit={edit} />
         </section>
-        {userDetails?.projects?.length != 0 && (
+        {(userDetails?.projects?.length != 0 || edit) && (
           <section id="featured-projects">
-            {<WorkShowcase userDetails={userDetails} />}
+            <WorkShowcase userDetails={userDetails} edit={edit} />
           </section>
         )}
         <section id="tools">
-          <ToolStack userDetails={userDetails} />
+          <ToolStack userDetails={userDetails} edit={edit} />
         </section>
-        {userDetails?.experiences?.length != 0 && (
+        {(userDetails?.experiences?.length != 0 || edit) && (
           <section id="work-experience">
-            <Spotlight userDetails={userDetails} />
+            <Spotlight userDetails={userDetails} edit={edit} />
           </section>
         )}
 
-        {userDetails?.reviews?.length != 0 && (
+        {(userDetails?.reviews?.length != 0 || edit) && (
           <section id="testimonials">
-            <Testimonials userDetails={userDetails} />
+            <Testimonials userDetails={userDetails} edit={edit} />
           </section>
         )}
 
-        <Footer userDetails={userDetails} />
+        <Footer userDetails={userDetails} edit={edit} />
       </div>
       <FloatingNav />
     </div>

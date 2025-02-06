@@ -153,6 +153,10 @@ const emails = [
   "shyleshs1999@gmail.com",
   "ashishgoswamimailbox@gmail.com",
   "hi@vidhunnan.design",
+  "adib.7295@gmail.com ",
+  "chebrolutejopriya29@gmail.com",
+  "prabhakaransuraj12@gmail.com",
+  "arpitaacharya99@gmail.com",
 ];
 
 export default function LoggedInHeader({

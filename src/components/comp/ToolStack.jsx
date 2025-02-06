@@ -56,7 +56,9 @@ export const ToolStack = ({ userDetails, edit }) => {
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setInView(entry.isIntersecting);
+        if (entry.isIntersecting && !inView) {
+          setInView(entry.isIntersecting);
+        }
       },
       { threshold: 0.5 }
     );
@@ -70,7 +72,7 @@ export const ToolStack = ({ userDetails, edit }) => {
         observer.unobserve(ref.current);
       }
     };
-  }, []);
+  }, [inView]);
 
   return (
     <section className="py-16 overflow-hidden">

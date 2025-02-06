@@ -47,7 +47,9 @@ export const WorkShowcase = ({ userDetails, edit }) => {
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setInView(entry.isIntersecting);
+        if (entry.isIntersecting && !inView) {
+          setInView(entry.isIntersecting);
+        }
       }
       // { threshold: 0.5 }
     );
@@ -61,7 +63,7 @@ export const WorkShowcase = ({ userDetails, edit }) => {
         observer.unobserve(ref.current);
       }
     };
-  }, []);
+  }, [inView]);
 
   const handleNavigation = (id) => {
     router.push(
@@ -128,7 +130,7 @@ export const WorkShowcase = ({ userDetails, edit }) => {
         ref={cardRef}
         onMouseMove={handleMouseMove}
         onClick={() => handleNavigation(project?._id)}
-        className="group rounded-3xl bg-card overflow-hidden relative shadow-lg cursor-pointer"
+        className="group rounded-3xl bg-card overflow-hidden relative shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] cursor-pointer"
       >
         {/* Hover effect */}
         <div
@@ -149,12 +151,14 @@ export const WorkShowcase = ({ userDetails, edit }) => {
           </a>
         </div>
         {/* Project Info */}
-        <div className="p-8 pb-10">
-          <h3 className="text-2xl font-semibold mb-3 leading-tight">
+        <div className="p-8 pb-10 cursor-pointer">
+          <h3 className="text-2xl font-semibold mb-3 leading-tight cursor-pointer">
             {project.title}
           </h3>
-          <p className="text-gray-400 line-clamp-2">{project.description}</p>
-          <div className="flex justify-between gap-3  items-center mt-4">
+          <p className="text-gray-400 line-clamp-2 cursor-pointer">
+            {project.description}
+          </p>
+          <div className="flex justify-between gap-3  items-center mt-4 cursor-pointer">
             {edit && (
               <Button
                 text={"Edit project"}
@@ -215,7 +219,7 @@ export const WorkShowcase = ({ userDetails, edit }) => {
             openModal={openModal}
             className={`flex items-center justify-center ${
               userDetails?.projects?.length !== 0 &&
-              "bg-df-section-card-bg-color shadow-lg hover:shadow-lg"
+              "bg-df-section-card-bg-color shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] hover:shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
             }`}
           />
         )}

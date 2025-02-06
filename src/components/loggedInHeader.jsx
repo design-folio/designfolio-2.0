@@ -121,18 +121,38 @@ const templates = [
     item: "Chat Box",
     isNew: false,
   },
-  {
-    id: 3,
-    value: "prism",
-    item: "Prism",
-    isNew: true,
-  },
-  {
-    id: 4,
-    value: "pristine",
-    item: "Pristine",
-    isNew: true,
-  },
+  // {
+  //   id: 3,
+  //   value: "prism",
+  //   item: "Prism",
+  //   isNew: true,
+  // },
+  // {
+  //   id: 4,
+  //   value: "pristine",
+  //   item: "Pristine",
+  //   isNew: true,
+  // },
+];
+
+const emails = [
+  "sarathdixit29@gmail.com",
+  "heyfromshai@gmail.com",
+  "siddhesh2k@gmail.com",
+  "aadhavanm8@gmail.com",
+  "madhavanu555@gmail.com",
+  "haidar8006@gmail.com",
+  "richardmarx353@gmail.com",
+  "mostafa.saad127@yahoo.com",
+  "yashika.r.gujar@gmail.com",
+  "ayan.workspace4699@gmail.com",
+  "priyams2810@gmail.com",
+  "uiuxhimanshu98@gmail.com",
+  "rajuvegeshana@gmail.com",
+  "ronak.barhanpurkar09@gmail.com",
+  "shyleshs1999@gmail.com",
+  "ashishgoswamimailbox@gmail.com",
+  "hi@vidhunnan.design",
 ];
 
 export default function LoggedInHeader({
@@ -155,7 +175,7 @@ export default function LoggedInHeader({
   const [updateLoading, setUpdateLoading] = useState(false);
   const [isMobileThemePopup, setIsMobileThemePopup] = useState(false);
 
-  const { username, latestPublishDate, _id } = userDetails || {};
+  const { username, latestPublishDate, _id, email } = userDetails || {};
   const { isClient } = useClient();
 
   useEffect(() => {
@@ -164,6 +184,21 @@ export default function LoggedInHeader({
     router.prefetch(`/portfolio-preview`);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
+
+  useEffect(() => {
+    if (
+      emails.includes(email)
+      // templates.includes((id) => id != 3) &&
+      // templates.includes((id) => id != 4)
+    ) {
+      templates.push({
+        id: 3,
+        value: "prism",
+        item: "Prism",
+        isNew: true,
+      });
+    }
+  }, [email]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -303,7 +338,9 @@ export default function LoggedInHeader({
     : "fixed top-0 left-0 right-0 md:px-4 xl:px-0 z-10 transform translate-y-[-100%] transition-transform duration-300 ease-out";
 
   return (
-    <div className={`${headerStyle} px-2 md:px-0 py-2 md:py-5 bg-transparent`}>
+    <div
+      className={`${headerStyle} z-50 px-2 md:px-0 py-2 md:py-5 bg-transparent`}
+    >
       <div className="shadow-df-section-card-shadow max-w-[890px] p-3  md:!p-4 rounded-[24px] bg-df-header-bg-color mx-auto flex justify-between items-center">
         <div className="flex items-center gap-[24px]">
           <Link href={"/builder"}>

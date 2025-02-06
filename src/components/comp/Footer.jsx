@@ -49,7 +49,7 @@ export const Footer = ({ userDetails, edit }) => {
   };
 
   return (
-    <footer className="pt-16 pb-[160px] border-t border-secondary-border">
+    <footer className="pt-16 pb-[80px] border-t border-secondary-border">
       <div className="container max-w-3xl mx-auto px-4">
         <motion.div
           ref={ref}
@@ -119,11 +119,11 @@ export const Footer = ({ userDetails, edit }) => {
             {socials?.linkedin && (
               <a
                 href={socials?.linkedin}
-                className="hover:text-foreground dark:hover:text-white transition-colors"
+                className="hover:text-foreground dark:hover:text-white transition-colors cursor-pointer"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <LinkedInIcon />
+                <LinkedInIcon className="cursor-pointer" />
                 <span className="sr-only">LinkedIn</span>
               </a>
             )}
@@ -184,7 +184,7 @@ export const Footer = ({ userDetails, edit }) => {
             )}
           </div>
           {edit && (
-            <div className="flex gap-4">
+            <div className="flex flex-col lg:flex-row gap-4">
               <AddItem
                 title="Add your social media"
                 onClick={() => openModal(modals.socialMedia)}

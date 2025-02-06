@@ -78,12 +78,14 @@ export default function AddTools() {
       </div>
       <div>
         <Formik
-          initialValues={initialValues}
+          initialValues={{
+            selectedTools: userDetails?.tools ?? [],
+          }}
           validationSchema={StepOneValidationSchema}
           onSubmit={handleSubmit}
         >
-          {({ isSubmitting, setFieldValue }) => (
-            <Form id="tools">
+          {({ handleSubmit }) => (
+            <Form id="tools" onSubmit={handleSubmit}>
               <div className="px-5 h-[370px] overflow-auto pb-10">
                 <Text size={"p-xxsmall"} className="mb-2" required>
                   Choose the tools you work with
@@ -119,6 +121,7 @@ export default function AddTools() {
                 <Button text="Cancel" type="secondary" onClick={closeModal} />
                 <Button
                   btnType="submit"
+                  onClick={handleSubmit}
                   text={"Save"}
                   form="tools"
                   isLoading={loading}

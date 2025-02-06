@@ -34,7 +34,7 @@ const Minimal = ({ userDetails, edit }) => {
           </section>
         )}
 
-        {userDetails?.reviews?.length != 0 && (
+        {(userDetails?.reviews?.length != 0 || edit) && (
           <section id="testimonials">
             <Testimonials userDetails={userDetails} edit={edit} />
           </section>

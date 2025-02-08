@@ -62,6 +62,11 @@
   @apply cursor-default;
 }
 
+svg,
+svg * {
+  cursor: pointer;
+}
+
 html {
   scroll-behavior: smooth;
   background-color: var(--df-bg-color);

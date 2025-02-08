@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import { Home, Briefcase, Award, Wrench } from "lucide-react";
+import { useRouter } from "next/router";
 
 export const FloatingNav = () => {
   const [activeSection, setActiveSection] = useState("hero");
+  const router = useRouter();
+  console.log(router.asPath);
 
   const sections = [
     { id: "hero", label: "Home", icon: Home },
@@ -106,39 +109,41 @@ export const FloatingNav = () => {
       </nav>
 
       {/* Mobile and Tablet Navigation */}
-      <nav className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 lg:hidden">
-        <div className="bg-card dark:bg-secondary border border-card-border dark:border-secondary-border rounded-xl p-3 shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]">
-          <div className="flex items-center gap-4">
-            {mobileSections.map(({ id, icon: Icon }) => (
-              <button
-                key={id}
-                onClick={() => scrollToSection(id)}
-                className={`group flex flex-col items-center transition-all ${
-                  activeSection === id
-                    ? "opacity-100"
-                    : "opacity-50 hover:opacity-100"
-                }`}
-              >
-                <div
-                  className={`flex items-center justify-center w-10 h-10 rounded-full transition-colors ${
+      {!router.asPath.includes("portfolio-preview") && (
+        <nav className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 lg:hidden">
+          <div className="bg-card dark:bg-secondary border border-card-border dark:border-secondary-border rounded-xl p-3 shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]">
+            <div className="flex items-center gap-4">
+              {mobileSections.map(({ id, icon: Icon }) => (
+                <button
+                  key={id}
+                  onClick={() => scrollToSection(id)}
+                  className={`group flex flex-col items-center transition-all ${
                     activeSection === id
-                      ? "bg-foreground dark:bg-[#2A2D37]"
-                      : "bg-[#e5e5e7] dark:bg-secondary-hover hover:bg-primary-hover dark:hover:bg-primary-hover"
+                      ? "opacity-100"
+                      : "opacity-50 hover:opacity-100"
                   }`}
                 >
-                  <Icon
-                    className={`w-5 h-5 ${
+                  <div
+                    className={`flex items-center justify-center w-10 h-10 rounded-full transition-colors ${
                       activeSection === id
-                        ? "text-background dark:text-white"
-                        : "text-foreground dark:text-foreground-dark"
+                        ? "bg-foreground dark:bg-[#2A2D37]"
+                        : "bg-[#e5e5e7] dark:bg-secondary-hover hover:bg-primary-hover dark:hover:bg-primary-hover"
                     }`}
-                  />
-                </div>
-              </button>
-            ))}
+                  >
+                    <Icon
+                      className={`w-5 h-5 ${
+                        activeSection === id
+                          ? "text-background dark:text-white"
+                          : "text-foreground dark:text-foreground-dark"
+                      }`}
+                    />
+                  </div>
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
-      </nav>
+        </nav>
+      )}
     </>
   );
 };

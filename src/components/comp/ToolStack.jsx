@@ -99,7 +99,7 @@ export const ToolStack = ({ userDetails, edit }) => {
           variants={containerVariants}
           initial="hidden"
           animate={inView ? "show" : "hidden"} // Uses IntersectionObserver-based inView state
-          className="grid grid-cols-9 gap-4"
+          className="flex justify-center flex-wrap gap-4"
         >
           {tools.map((tool, index) => (
             <motion.div

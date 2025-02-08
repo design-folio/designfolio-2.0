@@ -49,7 +49,7 @@ export const Footer = ({ userDetails, edit }) => {
   };
 
   return (
-    <footer className="pt-16 pb-[80px] border-t border-secondary-border">
+    <footer className="pt-16 pb-[160px] lg:pb-[80px] border-t border-secondary-border">
       <div className="container max-w-3xl mx-auto px-4">
         <motion.div
           ref={ref}

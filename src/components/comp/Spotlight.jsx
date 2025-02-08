@@ -70,7 +70,7 @@ export const Spotlight = ({ userDetails, edit }) => {
   };
 
   return (
-    <section className="py-16">
+    <section className="py-12">
       <h2 className="text-2xl font-bold mb-8">Work Experience</h2>
       <motion.div
         ref={ref}
@@ -90,7 +90,7 @@ export const Spotlight = ({ userDetails, edit }) => {
             </div>
             <div className="relative z-10">
               <div className="flex flex-col gap-1">
-                <div className="flex justify-between items-start">
+                <div className="flex flex-col lg:flex-row gap-2 justify-between items-start">
                   <h3 className="font-semibold text-lg">{experience.role}</h3>
                   <div className="flex gap-2 items-center">
                     <span className="text-sm text-foreground/60">
@@ -115,14 +115,9 @@ export const Spotlight = ({ userDetails, edit }) => {
                 <div className="text-base text-foreground/80">
                   {experience.company}
                 </div>
-                <p className="text-sm text-foreground/60 mt-2">
-                  {experience?.description?.split("\n").map((line, index) => (
-                    <span key={index}>
-                      {line}
-                      <br />
-                    </span>
-                  ))}
-                  {/* {!expandedCards.includes(index) && (
+                <p className="text-sm text-foreground/60 mt-2 whitespace-pre-line">
+                  {experience.description.slice(0, 180)}
+                  {!expandedCards.includes(index) && (
                     <button
                       onClick={() => toggleExpand(index)}
                       className="ml-1 text-foreground hover:text-foreground/80 inline-flex items-center gap-1"
@@ -130,7 +125,7 @@ export const Spotlight = ({ userDetails, edit }) => {
                       View More
                       <ChevronDown className="h-3 w-3" />
                     </button>
-                  )} */}
+                  )}
                 </p>
 
                 <motion.div
@@ -140,7 +135,7 @@ export const Spotlight = ({ userDetails, edit }) => {
                   className="overflow-hidden"
                 >
                   <div className="mt-4 text-sm text-foreground/60 whitespace-pre-line">
-                    {experience.expandedContent}
+                    {experience.description.slice(180)}
                     {expandedCards.includes(index) && (
                       <button
                         onClick={() => toggleExpand(index)}

@@ -152,10 +152,10 @@ export const WorkShowcase = ({ userDetails, edit }) => {
         </div>
         {/* Project Info */}
         <div className="p-8 pb-10 cursor-pointer">
-          <h3 className="text-2xl font-semibold mb-3 leading-tight cursor-pointer">
+          <h3 className="text-2xl font-semibold mb-3 leading-tight cursor-pointer line-clamp-2">
             {project.title}
           </h3>
-          <p className="text-gray-400 line-clamp-2 cursor-pointer">
+          <p className="text-gray-400 line-clamp-2 cursor-pointer ">
             {project.description}
           </p>
           <div className="flex justify-between gap-3  items-center mt-4 cursor-pointer">

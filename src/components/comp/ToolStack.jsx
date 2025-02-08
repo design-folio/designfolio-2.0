@@ -75,7 +75,7 @@ export const ToolStack = ({ userDetails, edit }) => {
   }, [inView]);
 
   return (
-    <section className="py-16 overflow-hidden">
+    <section className="py-12 overflow-hidden">
       <h2 className="text-2xl font-bold mb-8 text-center">Tool Stack</h2>
       {isMobile ? (
         <div className="relative w-full">
@@ -99,7 +99,7 @@ export const ToolStack = ({ userDetails, edit }) => {
           variants={containerVariants}
           initial="hidden"
           animate={inView ? "show" : "hidden"} // Uses IntersectionObserver-based inView state
-          className="flex justify-center gap-4"
+          className="grid grid-cols-9 gap-4"
         >
           {tools.map((tool, index) => (
             <motion.div

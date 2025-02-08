@@ -46,7 +46,7 @@ export const Testimonials = ({ userDetails, edit }) => {
   };
 
   return (
-    <section className="py-16">
+    <section className="py-12">
       <h2 className="text-3xl font-bold mb-12 text-center">What People Say</h2>
 
       <div

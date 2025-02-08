@@ -35,7 +35,7 @@ export default function AddProject() {
       .max(160, "App name must be 160 characters or less")
       .required("App name is required"),
     title: Yup.string()
-      .max(60, "Project title must be 60 characters or less")
+      .max(80, "Project title must be 80 characters or less")
       .required("Project title is required"),
 
     picture: Yup.mixed()
@@ -225,7 +225,7 @@ export default function AddProject() {
                       Project title
                     </Text>
                     <Text as="p" size={"p-xxsmall"} className="font-medium">
-                      {values.title.length ?? 0}/60
+                      {values.title.length ?? 0}/80
                     </Text>
                   </div>
                   <Field

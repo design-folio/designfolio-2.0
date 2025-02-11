@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 export const FloatingNav = () => {
   const [activeSection, setActiveSection] = useState("hero");
   const router = useRouter();
-  console.log(router.asPath);
 
   const sections = [
     { id: "hero", label: "Home", icon: Home },
@@ -15,7 +14,7 @@ export const FloatingNav = () => {
   ];
 
   // Filter sections for mobile view (excluding tools)
-  const mobileSections = sections.filter((section) => section.id !== "tools");
+  // const mobileSections = sections;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -110,10 +109,10 @@ export const FloatingNav = () => {
 
       {/* Mobile and Tablet Navigation */}
       {!router.asPath.includes("portfolio-preview") && (
-        <nav className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 lg:hidden">
+        <nav className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 lg:hidden">
           <div className="bg-card dark:bg-secondary border border-card-border dark:border-secondary-border rounded-xl p-3 shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]">
             <div className="flex items-center gap-4">
-              {mobileSections.map(({ id, icon: Icon }) => (
+              {sections.map(({ id, icon: Icon }) => (
                 <button
                   key={id}
                   onClick={() => scrollToSection(id)}

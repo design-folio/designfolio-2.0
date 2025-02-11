@@ -67,7 +67,6 @@ export default function Template2({ userDetails, preview = false }) {
     }
   }, [activeStep, projects, reviews, experiences, portfolios]);
   // Trigger effect when activeStep or projects change
-  console.log(activeStep);
   const getSkills = () => {
     if (skills.length > 1) {
       const labels = skills.map((item) => item.label);

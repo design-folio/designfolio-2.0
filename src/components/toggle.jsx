@@ -10,7 +10,7 @@ export default function Toggle({ onClick, value = false }) {
         onChange={onClick}
         checked={value}
       />
-      <label for="theme-toggle" class="toggle-label">
+      <label htmlFor="theme-toggle" class="toggle-label">
         <div class="toggle-ball"></div>
       </label>
     </div>

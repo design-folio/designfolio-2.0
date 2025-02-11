@@ -11,6 +11,7 @@ import BottomNavigation from "@/components/bottomNavigation";
 import useClient from "@/hooks/useClient";
 import Minimal from "@/components/comp/Minimal";
 import Portfolio from "@/components/comp/Portfolio";
+import MadeWithDesignfolio from "../../../public/assets/svgs/madewithdesignfolio.svg";
 
 export default function Index({ initialUserDetails }) {
   const { setTheme } = useTheme();
@@ -47,9 +48,37 @@ export default function Index({ initialUserDetails }) {
         );
 
       case 2:
-        return <Minimal userDetails={userDetails} />;
+        return (
+          <>
+            <div
+              className={`text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] mb-2 xl:block cursor-pointer`}
+              onClick={() =>
+                window.open("https://www.designfolio.me", "_blank")
+              }
+            >
+              <div className="bg-df-section-card-bg-color shadow-df-section-card-shadow p-2 rounded-2xl">
+                <MadeWithDesignfolio className="text-df-icon-color" />
+              </div>
+            </div>
+            <Minimal userDetails={userDetails} />
+          </>
+        );
       case 3:
-        return <Portfolio userDetails={userDetails} />;
+        return (
+          <>
+            <Portfolio userDetails={userDetails} />
+            <div
+              className={`text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] mb-2 xl:block cursor-pointer`}
+              onClick={() =>
+                window.open("https://www.designfolio.me", "_blank")
+              }
+            >
+              <div className="bg-df-section-card-bg-color shadow-df-section-card-shadow p-2 rounded-2xl">
+                <MadeWithDesignfolio className="text-df-icon-color" />
+              </div>
+            </div>
+          </>
+        );
 
       default:
         return <Template1 userDetails={userDetails} />;

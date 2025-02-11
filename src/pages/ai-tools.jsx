@@ -21,7 +21,6 @@ const navigation = {
 
 export default function Index() {
   const router = useRouter();
-  console.log(router?.query?.type);
   useEffect(() => {
     document.body.style.overflowY = "auto";
   }, []);

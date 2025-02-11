@@ -13,7 +13,6 @@ export default function EmailGenerator() {
 
   const [isGenerating, setIsGenerating] = useState(false);
   const generateEmailContent = async (formData) => {
-    console.log(formData);
     setIsGenerating(true);
     try {
       const result = await generateEmail(formData);

@@ -121,18 +121,18 @@ const templates = [
     item: "Chat Box",
     isNew: false,
   },
-  // {
-  //   id: 3,
-  //   value: "prism",
-  //   item: "Prism",
-  //   isNew: true,
-  // },
-  // {
-  //   id: 4,
-  //   value: "pristine",
-  //   item: "Pristine",
-  //   isNew: true,
-  // },
+  {
+    id: 3,
+    value: "prism",
+    item: "Prism",
+    isNew: true,
+  },
+  {
+    id: 4,
+    value: "pristine",
+    item: "Pristine",
+    isNew: true,
+  },
 ];
 
 const emails = [
@@ -189,20 +189,20 @@ export default function LoggedInHeader({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
-  useEffect(() => {
-    if (
-      emails.includes(email)
-      // templates.includes((id) => id != 3) &&
-      // templates.includes((id) => id != 4)
-    ) {
-      templates.push({
-        id: 3,
-        value: "prism",
-        item: "Prism",
-        isNew: true,
-      });
-    }
-  }, [email]);
+  // useEffect(() => {
+  //   if (
+  //     emails.includes(email)
+  //     // templates.includes((id) => id != 3) &&
+  //     // templates.includes((id) => id != 4)
+  //   ) {
+  //     templates.push({
+  //       id: 3,
+  //       value: "prism",
+  //       item: "Prism",
+  //       isNew: true,
+  //     });
+  //   }
+  // }, [email]);
 
   useEffect(() => {
     const handleScroll = () => {

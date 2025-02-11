@@ -32,7 +32,6 @@ export default function EmailForm({ generateEmailContent, isGenerating }) {
         }}
         validationSchema={validationSchema}
         onSubmit={(values, actions) => {
-          console.log(values);
           generateEmailContent(values);
         }}
       >

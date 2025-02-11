@@ -93,7 +93,7 @@ export const Spotlight = ({ userDetails, edit }) => {
                 <div className="flex flex-col lg:flex-row gap-2 justify-between items-start">
                   <h3 className="font-semibold text-lg">{experience.role}</h3>
                   <div className="flex gap-2 items-center">
-                    <span className="text-sm text-foreground/60">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
                       {`${experience?.startMonth} ${experience?.startYear} - ${
                         experience?.currentlyWorking
                           ? "Present"
@@ -106,18 +106,23 @@ export const Spotlight = ({ userDetails, edit }) => {
                         customClass="!p-0 !flex-shrink-0 border-none"
                         type={"secondary"}
                         icon={
-                          <EditIcon className="text-df-icon-color cursor-pointer" />
+                          <EditIcon className="text-gray-600 dark:text-gray-400 cursor-pointer" />
                         }
                       />
                     )}
                   </div>
                 </div>
-                <div className="text-base text-foreground/80">
+                <div className="text-base text-gray-600 dark:text-gray-400">
                   {experience.company}
                 </div>
-                <p className="text-sm text-foreground/60 mt-2 whitespace-pre-line">
-                  {experience.description.slice(0, 180)}
-                  {!expandedCards.includes(index) && (
+                <p className="text-sm text-gray-600 dark:text-gray-400 whitespace-pre-line">
+                  {experience.description.slice(
+                    0,
+                    !expandedCards.includes(index)
+                      ? 180
+                      : experience.description?.length - 1
+                  )}
+                  {!expandedCards.includes(index) ? (
                     <button
                       onClick={() => toggleExpand(index)}
                       className="ml-1 text-foreground hover:text-foreground/80 inline-flex items-center gap-1"
@@ -125,28 +130,16 @@ export const Spotlight = ({ userDetails, edit }) => {
                       View More
                       <ChevronDown className="h-3 w-3" />
                     </button>
+                  ) : (
+                    <button
+                      onClick={() => toggleExpand(index)}
+                      className="ml-1 text-foreground hover:text-foreground/80 inline-flex items-center gap-1"
+                    >
+                      Show Less
+                      <ChevronUp className="h-3 w-3" />
+                    </button>
                   )}
                 </p>
-
-                <motion.div
-                  variants={expandContent}
-                  initial="hidden"
-                  animate={expandedCards.includes(index) ? "show" : "hidden"}
-                  className="overflow-hidden"
-                >
-                  <div className="mt-4 text-sm text-foreground/60 whitespace-pre-line">
-                    {experience.description.slice(180)}
-                    {expandedCards.includes(index) && (
-                      <button
-                        onClick={() => toggleExpand(index)}
-                        className="ml-1  mt-2 text-foreground hover:text-foreground/80 inline-flex items-center gap-1"
-                      >
-                        Show Less
-                        <ChevronUp className="h-3 w-3" />
-                      </button>
-                    )}
-                  </div>
-                </motion.div>
               </div>
             </div>
           </motion.div>

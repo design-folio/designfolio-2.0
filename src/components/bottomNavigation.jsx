@@ -95,7 +95,7 @@ export default function BottomNavigation({
         </motion.div>
       )}
       <div
-        className={`text-center flex justify-center relative top-5 lg:absolute lg:right-[36px] lg:top-[10px] xl:block cursor-pointer ${watermarkClassName}`}
+        className={`text-center flex justify-center relative top-5 lg:absolute lg:right-[36px] lg:top-[10px] xl:block cursor-pointer `}
         onClick={() => window.open("https://www.designfolio.me", "_blank")}
       >
         <div className="bg-df-section-card-bg-color shadow-df-section-card-shadow p-2 rounded-2xl">

@@ -46,7 +46,6 @@ export default function ProjectPassword({
           onSubmit={(values, actions) => {
             _getProjectDetails(id, status, { password: values.password })
               .then((res) => {
-                console.log(res);
                 setProjectDetails(res?.data);
                 setIsProtected(res?.data?.isProtected);
               })
@@ -54,7 +53,7 @@ export default function ProjectPassword({
           }}
         >
           {({ errors, touched, isSubmitting }) => (
-            <Form id="projectForm" autocomplete="off">
+            <Form id="projectForm" autoComplete="off">
               <div className="relative">
                 <div className="absolute top-[24px] left-4 rounded-[8px] border-[#E9EAEB] dark:border-[#2C2F39] cursor-pointer">
                   <LockIcon className="stroke-bg-df-icon-color" />

@@ -7,6 +7,8 @@ import Minimal from "@/components/comp/Minimal";
 import Button from "@/components/button";
 import { useRouter } from "next/router";
 import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
+import Portfolio from "@/components/comp/Portfolio";
+import MadeWithDesignfolio from "../../public/assets/svgs/madewithdesignfolio.svg";
 
 export default function Index() {
   const {
@@ -45,6 +47,40 @@ export default function Index() {
               icon={<LeftArrow className="cursor-pointer" />}
             />
             <Minimal userDetails={userDetails} edit={false} />
+            <div
+              className={`text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] mb-2 xl:block cursor-pointer`}
+              onClick={() =>
+                window.open("https://www.designfolio.me", "_blank")
+              }
+            >
+              <div className="bg-df-section-card-bg-color shadow-df-section-card-shadow p-2 rounded-2xl">
+                <MadeWithDesignfolio className="text-df-icon-color" />
+              </div>
+            </div>
+          </div>
+        );
+      case 3:
+        return (
+          <div>
+            <Button
+              text="Go Back"
+              onClick={() => router.back()}
+              type="secondary"
+              size="small"
+              customClass="!transition-none mt-8"
+              icon={<LeftArrow className="cursor-pointer" />}
+            />
+            <Portfolio userDetails={userDetails} edit={false} />
+            <div
+              className={`text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] mb-2 xl:block cursor-pointer`}
+              onClick={() =>
+                window.open("https://www.designfolio.me", "_blank")
+              }
+            >
+              <div className="bg-df-section-card-bg-color shadow-df-section-card-shadow p-2 rounded-2xl">
+                <MadeWithDesignfolio className="text-df-icon-color" />
+              </div>
+            </div>
           </div>
         );
 

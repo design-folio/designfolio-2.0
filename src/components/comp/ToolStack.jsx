@@ -78,7 +78,14 @@ export const ToolStack = ({ userDetails, edit }) => {
     <section className="py-12 overflow-hidden">
       <h2 className="text-2xl font-bold mb-8 text-center">Tool Stack</h2>
       {isMobile ? (
-        <div className="relative w-full">
+        <div
+          className="relative w-full"
+          style={{
+            opacity: 1,
+            maskImage:
+              "linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgb(0, 0, 0) 12.5%, rgb(0, 0, 0) 87.5%, rgba(0, 0, 0, 0) 100%)",
+          }}
+        >
           <motion.div className="flex gap-4 px-4" animate={scrollAnimation}>
             {scrollTools.map((tool, index) => (
               <div

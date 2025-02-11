@@ -109,33 +109,11 @@ export default function AnalyzeEditor() {
     }
   };
 
-  // Handle paste text from clipboard
-  const handleClick = async () => {
-    try {
-      // Get clipboard content using the Clipboard API
-      const text = await navigator.clipboard.readText();
-      console.log("Clipboard content:", text);
-
-      // Check if the editorInstance is available and focus the editor
-      if (editor.current) {
-        const editorInstance = editor.current; // Get the editor instance from the ref
-
-        editorInstance.focus(); // Focus on the editor
-        editorInstance.blocks.insert("paragraph", {
-          text: text, // Paste the text into the editor
-        });
-      }
-    } catch (err) {
-      console.error("Failed to read clipboard contents: ", err);
-    }
-  };
-
   const handleAnalyze = (editorInstance) => {
     if (editor.current) {
       const editorInstance = editor.current; // Get the editor instance from the ref
       editorInstance.save().then((data) => {
         if (data && data.blocks && data.blocks.length > 0) {
-          console.log(data);
           scrapeMedium({
             mode: "manual",
             mediumPostURL: "",

@@ -127,12 +127,12 @@ const templates = [
     item: "Prism",
     isNew: true,
   },
-  // {
-  //   id: 4,
-  //   value: "pristine",
-  //   item: "Pristine",
-  //   isNew: true,
-  // },
+  {
+    id: 4,
+    value: "pristine",
+    item: "Pristine",
+    isNew: true,
+  },
 ];
 
 const emails = [

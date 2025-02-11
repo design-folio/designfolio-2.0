@@ -54,14 +54,14 @@ export const Hero = ({ userDetails, edit }) => {
       </motion.div>
 
       <motion.div
-        className="mb-4 flex items-start gap-3 relative"
+        className="mb-4 flex flex-col lg:row justify-center lg:items-start gap-3 relative"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
       >
         <h1 className="text-4xl font-bold">{introduction} </h1>
         {edit && (
-          <div className="absolute right-[-54px]">
+          <div className="lg:absolute lg:right-[-54px]">
             <Button
               onClick={() => openModal("onboarding")}
               customClass="!p-[13.38px] !flex-shrink-0"

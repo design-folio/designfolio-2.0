@@ -116,8 +116,13 @@ export const Spotlight = ({ userDetails, edit }) => {
                   {experience.company}
                 </div>
                 <p className="text-sm text-gray-600 dark:text-gray-400 whitespace-pre-line">
-                  {experience.description.slice(0, 180)}
-                  {!expandedCards.includes(index) && (
+                  {experience.description.slice(
+                    0,
+                    !expandedCards.includes(index)
+                      ? 180
+                      : experience.description?.length - 1
+                  )}
+                  {!expandedCards.includes(index) ? (
                     <button
                       onClick={() => toggleExpand(index)}
                       className="ml-1 text-foreground hover:text-foreground/80 inline-flex items-center gap-1"
@@ -125,28 +130,16 @@ export const Spotlight = ({ userDetails, edit }) => {
                       View More
                       <ChevronDown className="h-3 w-3" />
                     </button>
+                  ) : (
+                    <button
+                      onClick={() => toggleExpand(index)}
+                      className="ml-1 text-foreground hover:text-foreground/80 inline-flex items-center gap-1"
+                    >
+                      Show Less
+                      <ChevronUp className="h-3 w-3" />
+                    </button>
                   )}
                 </p>
-
-                <motion.div
-                  variants={expandContent}
-                  initial="hidden"
-                  animate={expandedCards.includes(index) ? "show" : "hidden"}
-                  className="overflow-hidden"
-                >
-                  <div className="mt-4 text-sm text-gray-600 dark:text-gray-400 whitespace-pre-line">
-                    {experience.description.slice(180)}
-                    {expandedCards.includes(index) && (
-                      <button
-                        onClick={() => toggleExpand(index)}
-                        className="ml-1  mt-2 text-foreground hover:text-foreground/80 inline-flex items-center gap-1"
-                      >
-                        Show Less
-                        <ChevronUp className="h-3 w-3" />
-                      </button>
-                    )}
-                  </div>
-                </motion.div>
               </div>
             </div>
           </motion.div>

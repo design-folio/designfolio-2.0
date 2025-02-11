@@ -23,6 +23,7 @@ import { _resendOTP } from "@/network/get-request";
 import AddUsername from "@/components/addUsername";
 import Builder2 from "@/components/Builder2";
 import Minimal from "@/components/comp/Minimal";
+import Portfolio from "@/components/comp/Portfolio";
 
 export default function Index() {
   const {
@@ -100,7 +101,7 @@ export default function Index() {
       case 2:
         return <Minimal userDetails={userDetails} edit />;
       case 3:
-        return <Builder2 edit />;
+        return <Portfolio userDetails={userDetails} edit />;
 
       default:
         return <Builder1 />;

@@ -62,14 +62,16 @@ export default function Index() {
       case 3:
         return (
           <div>
-            <Button
-              text="Go Back"
-              onClick={() => router.back()}
-              type="secondary"
-              size="small"
-              customClass="!transition-none mt-8"
-              icon={<LeftArrow className="cursor-pointer" />}
-            />
+            <div className="max-w-[768px] m-auto">
+              <Button
+                text="Go Back"
+                onClick={() => router.back()}
+                type="secondary"
+                size="small"
+                customClass="!transition-none mt-8"
+                icon={<LeftArrow className="cursor-pointer" />}
+              />
+            </div>
             <Portfolio userDetails={userDetails} edit={false} />
             <div
               className={`text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] mb-2 xl:block cursor-pointer`}
@@ -98,7 +100,11 @@ export default function Index() {
   }, []);
   return (
     <main className="min-h-screen bg-df-bg-color">
-      <div className={`max-w-[890px] mx-auto px-2 md:px-4 lg:px-0`}>
+      <div
+        className={` mx-auto px-2 md:px-4 lg:px-0 ${
+          template != 3 && "max-w-[890px]"
+        }`}
+      >
         {renderTemplate()}
       </div>
     </main>

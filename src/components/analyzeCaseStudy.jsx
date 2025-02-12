@@ -29,17 +29,17 @@ const states = {
 
 const status = {
   good: (
-    <div class="bg-good-bg-color text-good-text-color text-sm font-semibold p-[10px] rounded-[7px]">
+    <div className="bg-good-bg-color text-good-text-color text-sm font-semibold p-[10px] rounded-[7px]">
       Good 🤟🏼
     </div>
   ),
   notBad: (
-    <div class="bg-not-bad-bg-color text-not-bad-text-color text-sm font-semibold p-[10px] rounded-[7px]">
+    <div className="bg-not-bad-bg-color text-not-bad-text-color text-sm font-semibold p-[10px] rounded-[7px]">
       Not Bad 💡
     </div>
   ),
   bad: (
-    <div class="bg-bad-bg-color text-bad-text-color text-sm font-semibold p-[10px] rounded-[7px]">
+    <div className="bg-bad-bg-color text-bad-text-color text-sm font-semibold p-[10px] rounded-[7px]">
       Needs Work 🚧
     </div>
   ),

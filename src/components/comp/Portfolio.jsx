@@ -1,4 +1,10 @@
-import { Mail, ArrowRight, EditIcon } from "lucide-react";
+import {
+  Mail,
+  ArrowRight,
+  EditIcon,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { Testimonials } from "@/components/comp/Testimonials";
@@ -28,6 +34,8 @@ const Portfolio = ({ userDetails, edit }) => {
     reviews,
   } = userDetails || {};
   const { openModal, setSelectedWork, setSelectedProject } = useGlobalContext();
+  const [expandedCards, setExpandedCards] = useState([]);
+  const [showMore, setShowMore] = useState(false);
   const container = {
     hidden: { opacity: 0 },
     show: {
@@ -92,6 +100,12 @@ const Portfolio = ({ userDetails, edit }) => {
   const onDeleteProject = (project) => {
     openModal(modals.deleteProject);
     setSelectedProject(project);
+  };
+
+  const toggleExpand = (index) => {
+    setExpandedCards((prev) =>
+      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
+    );
   };
 
   return (
@@ -281,8 +295,30 @@ const Portfolio = ({ userDetails, edit }) => {
                       <p className="text-sm dark:text-gray-400 text-gray-600">
                         {exp.company}
                       </p>
-                      <p className="dark:text-gray-400 text-gray-600 whitespace-pre-line mt-2">
-                        {exp?.description}
+                      <p className="text-sm text-gray-600 dark:text-gray-400 whitespace-pre-line">
+                        {exp?.description.slice(
+                          0,
+                          !expandedCards.includes(index)
+                            ? 180
+                            : exp?.description?.length - 1
+                        )}
+                        {!expandedCards.includes(index) ? (
+                          <button
+                            onClick={() => toggleExpand(index)}
+                            className="ml-1 text-foreground hover:text-foreground/80 inline-flex items-center gap-1"
+                          >
+                            View More
+                            <ChevronDown className="h-3 w-3" />
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => toggleExpand(index)}
+                            className="ml-1 text-foreground hover:text-foreground/80 inline-flex items-center gap-1"
+                          >
+                            Show Less
+                            <ChevronUp className="h-3 w-3" />
+                          </button>
+                        )}
                       </p>
                     </div>
                   </div>
@@ -316,24 +352,33 @@ const Portfolio = ({ userDetails, edit }) => {
             )}
           </div>
           <div className="grid grid-cols-2 gap-4">
-            {tools.map((tool, index) => (
-              <motion.div
-                key={index}
-                variants={item}
-                className="group bg-card border border-card-border p-6 rounded-lg hover:bg-card/80 transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-secondary rounded-lg">
-                    <img
-                      src={tool.image ?? "/assets/svgs/default-tools.svg"}
-                      className="w-8"
-                    />
+            {tools
+              .slice(0, showMore ? tools.length - 1 : 4)
+              .map((tool, index) => (
+                <motion.div
+                  key={index}
+                  variants={item}
+                  className="group bg-card border border-card-border p-6 rounded-lg hover:bg-card/80 transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-secondary rounded-lg">
+                      <img
+                        src={tool.image ?? "/assets/svgs/default-tools.svg"}
+                        className="w-8"
+                      />
+                    </div>
+                    <span className="text-sm">{tool.label}</span>
                   </div>
-                  <span className="text-sm">{tool.label}</span>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              ))}
           </div>
+          {tools?.length > 4 && (
+            <div className="flex justify-center mt-4">
+              <Button variant="outline" onClick={() => setShowMore(!showMore)}>
+                {showMore ? "Show Less" : "View More"}
+              </Button>
+            </div>
+          )}
         </motion.section>
 
         {/* Projects Section */}

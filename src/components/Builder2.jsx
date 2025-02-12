@@ -264,7 +264,7 @@ export default function Builder2({ edit = false }) {
         )}
 
         {reviews?.map((review) => (
-          <div className="border border-[#E9ECF1] p-5 rounded-2xl">
+          <div className="border border-tools-card-item-border-color p-5 rounded-2xl">
             <Quote />
             <TextWithLineBreaks
               text={review?.description}

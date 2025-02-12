@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, ChevronUp, EditIcon } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ChevronUp,
+  EditIcon,
+} from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import AddItem from "../addItem";
 import PlusIcon from "../../../public/assets/svgs/plus.svg";
@@ -75,51 +81,41 @@ export const Testimonials = ({ userDetails, edit }) => {
                     }}
                     className="bg-card border border-card-border p-6 rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
                   >
-                    <p className="dark:text-gray-400 text-gray-600">
-                      {visibleTestimonials[currentIndex]?.description}
-                      {/* {!expandedCards.includes(
-                    visibleTestimonials[currentIndex].id
-                  ) && (
-                    <button
-                      onClick={() =>
-                        toggleExpand(visibleTestimonials[currentIndex].id)
-                      }
-                      className="ml-1 text-foreground/80 hover:text-foreground inline-flex items-center gap-1"
-                    >
-                      View More
-                      <ChevronDown className="h-3 w-3" />
-                    </button>
-                  )} */}
-                    </p>
-
-                    <AnimatePresence initial={false}>
-                      {expandedCards.includes(
-                        visibleTestimonials[currentIndex]?.id
-                      ) && (
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: "auto", opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.3 }}
-                          className="overflow-hidden"
-                        >
-                          <p className="dark:text-gray-400 text-gray-600 mt-4">
-                            {visibleTestimonials[currentIndex].expandedContent}
-                            <button
-                              onClick={() =>
-                                toggleExpand(
-                                  visibleTestimonials[currentIndex]?.id
-                                )
-                              }
-                              className="ml-1  mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1"
-                            >
-                              Show Less
-                              <ChevronUp className="h-3 w-3" />
-                            </button>
-                          </p>
-                        </motion.div>
+                    <p className="dark:text-gray-400 text-gray-600 whitespace-pre-line">
+                      {visibleTestimonials[currentIndex]?.description.slice(
+                        0,
+                        !expandedCards.includes(
+                          visibleTestimonials[currentIndex]?._id
+                        )
+                          ? 180
+                          : visibleTestimonials[currentIndex]?.description
+                              ?.length - 1
                       )}
-                    </AnimatePresence>
+
+                      {!expandedCards.includes(
+                        visibleTestimonials[currentIndex]?._id
+                      ) ? (
+                        <button
+                          onClick={() =>
+                            toggleExpand(visibleTestimonials[currentIndex]?._id)
+                          }
+                          className="ml-1 text-foreground hover:text-foreground/80 inline-flex items-center gap-1"
+                        >
+                          View More
+                          <ChevronDown className="h-3 w-3" />
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() =>
+                            toggleExpand(visibleTestimonials[currentIndex]?._id)
+                          }
+                          className="ml-1 text-foreground hover:text-foreground/80 inline-flex items-center gap-1"
+                        >
+                          Show Less
+                          <ChevronUp className="h-3 w-3" />
+                        </button>
+                      )}
+                    </p>
 
                     <div className="flex items-center gap-2 mt-4">
                       <div className="flex-1">
@@ -177,41 +173,32 @@ export const Testimonials = ({ userDetails, edit }) => {
                 }}
                 className="bg-card border border-card-border p-6 rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.06)] transition-shadow duration-300"
               >
-                <p className="dark:text-gray-400 text-gray-600">
-                  {testimonial.description}
-                  {/* {!expandedCards.includes(testimonial.id) && (
+                <p className="dark:text-gray-400 text-gray-600 whitespace-pre-line">
+                  {testimonial.description.slice(
+                    0,
+                    !expandedCards.includes(testimonial._id)
+                      ? 180
+                      : testimonial.description?.length - 1
+                  )}
+
+                  {!expandedCards.includes(testimonial._id) ? (
                     <button
-                      onClick={() => toggleExpand(testimonial.id)}
-                      className="ml-1 text-foreground/80 hover:text-foreground inline-flex items-center gap-1"
+                      onClick={() => toggleExpand(testimonial._id)}
+                      className="ml-1 text-foreground hover:text-foreground/80 inline-flex items-center gap-1"
                     >
                       View More
                       <ChevronDown className="h-3 w-3" />
                     </button>
-                  )} */}
-                </p>
-
-                <AnimatePresence initial={false}>
-                  {expandedCards.includes(testimonial.id) && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="overflow-hidden"
+                  ) : (
+                    <button
+                      onClick={() => toggleExpand(testimonial._id)}
+                      className="ml-1 text-foreground hover:text-foreground/80 inline-flex items-center gap-1"
                     >
-                      <p className="dark:text-gray-400 text-gray-600 mt-4">
-                        {testimonial.expandedContent}
-                        {/* <button
-                          onClick={() => toggleExpand(testimonial.id)}
-                          className="ml-1 block mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1"
-                        >
-                          Show Less
-                          <ChevronUp className="h-3 w-3" />
-                        </button> */}
-                      </p>
-                    </motion.div>
+                      Show Less
+                      <ChevronUp className="h-3 w-3" />
+                    </button>
                   )}
-                </AnimatePresence>
+                </p>
 
                 <div className="flex items-center gap-2 mt-4">
                   <div className="flex-1">

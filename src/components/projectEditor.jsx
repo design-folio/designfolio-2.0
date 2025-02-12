@@ -303,7 +303,7 @@ const ProjectEditor = ({ projectDetails, userDetails }) => {
               // Create the <p> tag
               const div = document.createElement("div");
               div.innerHTML =
-                "💡Embed <img src='/assets/svgs/youtube.svg'  class='w-4'/> or <img src='/assets/svgs/codepen.svg' class='w-4'/> by pasting the link in the editor.";
+                "💡Embed <img src='/assets/svgs/youtube.svg'  className='w-4'/> or <img src='/assets/svgs/codepen.svg' className='w-4'/> by pasting the link in the editor.";
               div.classList.add("!text-[12px]");
               div.classList.add("flex");
               div.classList.add("flex-wrap");

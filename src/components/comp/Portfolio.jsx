@@ -263,46 +263,49 @@ const Portfolio = ({ userDetails, edit }) => {
                   variants={item}
                   className="bg-card border border-card-border p-6 rounded-lg hover:bg-card/80 transition-colors"
                 >
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <div className="flex justify-between">
+                  <div>
+                    <div className="flex justify-between mb-3">
+                      <div>
                         <span className="text-primary-foreground dark:text-white font-medium">
                           {exp.role}
                         </span>
-                        <div className="flex items-center gap-4">
-                          <span className="text-sm dark:text-gray-400 text-gray-600">
-                            {`${exp?.startMonth} ${exp?.startYear} - ${
-                              exp?.currentlyWorking
-                                ? "Present"
-                                : `${exp?.endMonth} ${exp?.endYear}`
-                            }  `}
-                          </span>
-                          {edit && (
-                            <Button2
-                              onClick={() => handleClick(exp)}
-                              customClass="!p-[8px] rounded-[8px] !flex-shrink-0"
-                              type={"secondary"}
-                              icon={
-                                <EditIcon
-                                  className="text-df-icon-color cursor-pointer"
-                                  size={20}
-                                />
-                              }
-                            />
-                          )}
-                        </div>
+                        <p className="text-sm dark:text-gray-400 text-gray-600">
+                          {exp.company}
+                        </p>
                       </div>
-                      <p className="text-sm dark:text-gray-400 text-gray-600">
-                        {exp.company}
-                      </p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 whitespace-pre-line">
-                        {exp?.description.slice(
-                          0,
-                          !expandedCards.includes(index)
-                            ? 180
-                            : exp?.description?.length - 1
+                      <div className="flex items-center gap-4">
+                        <span className="text-sm dark:text-gray-400 text-gray-600">
+                          {`${exp?.startMonth} ${exp?.startYear} - ${
+                            exp?.currentlyWorking
+                              ? "Present"
+                              : `${exp?.endMonth} ${exp?.endYear}`
+                          }  `}
+                        </span>
+                        {edit && (
+                          <Button2
+                            onClick={() => handleClick(exp)}
+                            customClass="!p-[8px] rounded-[8px] !flex-shrink-0"
+                            type={"secondary"}
+                            icon={
+                              <EditIcon
+                                className="text-df-icon-color cursor-pointer"
+                                size={20}
+                              />
+                            }
+                          />
                         )}
-                        {!expandedCards.includes(index) ? (
+                      </div>
+                    </div>
+
+                    <p className="text-sm text-gray-600 dark:text-gray-400 whitespace-pre-line">
+                      {exp?.description.slice(
+                        0,
+                        !expandedCards.includes(index)
+                          ? 180
+                          : exp?.description?.length - 1
+                      )}
+                      {exp?.description?.length > 180 &&
+                        (!expandedCards.includes(index) ? (
                           <button
                             onClick={() => toggleExpand(index)}
                             className="ml-1 text-foreground hover:text-foreground/80 inline-flex items-center gap-1"
@@ -318,9 +321,8 @@ const Portfolio = ({ userDetails, edit }) => {
                             Show Less
                             <ChevronUp className="h-3 w-3" />
                           </button>
-                        )}
-                      </p>
-                    </div>
+                        ))}
+                    </p>
                   </div>
                 </motion.div>
               ))}

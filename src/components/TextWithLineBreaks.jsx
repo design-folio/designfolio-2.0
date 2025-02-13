@@ -10,25 +10,20 @@ export default function TextWithLineBreaks({ text, color }) {
   };
 
   // Replace newline characters with <br /> for HTML rendering
-  const formatTextWithLineBreaks = (str) => {
-    return str.replace(/\n/g, "<br />");
-  };
 
   // Join lines into a single text block for truncation
-  const fullText = formatTextWithLineBreaks(text);
-  const truncatedText = formatTextWithLineBreaks(
-    text.length > splitCount ? `${text.substring(0, splitCount)}...` : text
-  );
+  const fullText = text;
+  const truncatedText =
+    text.length > splitCount ? `${text.substring(0, splitCount)}...` : text;
 
   return (
     <div>
       {/* Render formatted text using dangerouslySetInnerHTML to preserve line breaks */}
       <p
-        className={`text-[16px] font-medium leading-[22.4px] font-inter ${color}`}
-        dangerouslySetInnerHTML={{
-          __html: showFullText ? fullText : truncatedText,
-        }}
-      ></p>
+        className={`text-[16px] font-medium leading-[22.4px] font-inter whitespace-pre-line ${color}`}
+      >
+        {showFullText ? fullText : truncatedText}
+      </p>
 
       {text.length > splitCount && ( // Show button only if truncation is needed
         <button

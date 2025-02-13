@@ -56,7 +56,6 @@ export default function OfferForm({ onSubmit, isAnalyzing }) {
             }}
             validationSchema={validationSchema}
             onSubmit={(values, actions) => {
-              console.log(values);
               onSubmit(values);
             }}
           >

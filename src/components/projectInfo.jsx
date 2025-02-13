@@ -291,7 +291,7 @@ export default function ProjectInfo({
                     }}
                   >
                     {({ isSubmitting, errors, touched, validateField }) => (
-                      <Form id="projectForm" autocomplete="off">
+                      <Form id="projectForm" autoComplete="off">
                         <div className="bg-input-password-bg-color rounded-lg  py-4 px-3 transition-all">
                           <div className="flex justify-between gap-[12px] items-center">
                             <div>

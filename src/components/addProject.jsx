@@ -156,7 +156,7 @@ export default function AddProject() {
             errors,
             touched,
           }) => (
-            <Form id="projectForm" autocomplete="off">
+            <Form id="projectForm" autoComplete="off">
               <div className="px-5 pb-5">
                 <div>
                   <Text

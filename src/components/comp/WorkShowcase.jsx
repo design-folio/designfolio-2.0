@@ -3,8 +3,6 @@ import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { useRouter } from "next/router";
 import Button from "../button";
-import Text from "../text";
-import ViewArrowIcon from "../../../public/assets/svgs/viewArrow.svg";
 import DeleteIcon from "../../../public/assets/svgs/deleteIcon.svg";
 import ProjectIcon from "../../../public/assets/svgs/projectIcon.svg";
 import { useGlobalContext } from "@/context/globalContext";
@@ -70,7 +68,7 @@ export const WorkShowcase = ({ userDetails, edit }) => {
       edit
         ? `/project/${id}/editor`
         : router.asPath.includes("/portfolio-preview")
-        ? `/project/${id}/editor`
+        ? `/project/${id}/preview`
         : `/project/${id}`
     );
   };

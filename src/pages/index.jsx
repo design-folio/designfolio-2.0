@@ -8,8 +8,6 @@ export default function Index({ dfToken }) {
   useEffect(() => {
     setCursor(0);
     return () => {
-      console.log("Component unmounted");
-
       setCursor(userDetails?.cursor ? userDetails?.cursor : 0);
     };
   }, [userDetails]);

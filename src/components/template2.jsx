@@ -67,7 +67,6 @@ export default function Template2({ userDetails, preview = false }) {
     }
   }, [activeStep, projects, reviews, experiences, portfolios]);
   // Trigger effect when activeStep or projects change
-  console.log(activeStep);
   const getSkills = () => {
     if (skills.length > 1) {
       const labels = skills.map((item) => item.label);
@@ -213,7 +212,7 @@ export default function Template2({ userDetails, preview = false }) {
             </Chat>
             <Chat direction="left" onComplete={handleStepCompletion}>
               {reviews?.map((review) => (
-                <div className="border border-[#E9ECF1] p-5 rounded-2xl">
+                <div className="border border-tools-card-item-border-color p-5 rounded-2xl">
                   <Quote />
                   <TextWithLineBreaks
                     text={review?.description}

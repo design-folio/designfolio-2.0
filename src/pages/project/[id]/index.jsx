@@ -5,11 +5,11 @@ import Seo from "@/components/seo";
 import { useGlobalContext } from "@/context/globalContext";
 import { capitalizeWords } from "@/lib/capitalizeText";
 import { _getProjectDetails } from "@/network/get-request";
-import queryClient from "@/network/queryClient";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import MadeWithDesignfolio from "../../../../public/assets/svgs/madewithdesignfolio.svg";
 
 export default function Index({ data }) {
   const router = useRouter();
@@ -39,7 +39,6 @@ export default function Index({ data }) {
     refetchProjectDetail();
   }, [refetchProjectDetail]);
 
-  console.log(projectDetails?.project);
   return (
     <>
       <Seo
@@ -76,6 +75,14 @@ export default function Index({ data }) {
                 )}
               </>
             )}
+          </div>
+        </div>
+        <div
+          className={`text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] mb-2 xl:block cursor-pointer`}
+          onClick={() => window.open("https://www.designfolio.me", "_blank")}
+        >
+          <div className="bg-df-section-card-bg-color shadow-df-section-card-shadow p-2 rounded-2xl">
+            <MadeWithDesignfolio className="text-df-icon-color" />
           </div>
         </div>
       </main>

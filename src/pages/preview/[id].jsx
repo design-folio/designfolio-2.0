@@ -101,7 +101,6 @@ export default function Index({ initialUserDetails }) {
             userDetails?.template != 3 && "max-w-[890px]"
           }`}
         >
-          {" "}
           {userDetails && renderTemplate()}
         </div>
       </main>

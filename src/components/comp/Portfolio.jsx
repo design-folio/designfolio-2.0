@@ -17,6 +17,10 @@ import { modals } from "@/lib/constant";
 import DeleteIcon from "../../../public/assets/svgs/deleteIcon.svg";
 import AddCard from "../AddCard";
 import ProjectIcon from "../../../public/assets/svgs/projectIcon.svg";
+import PlusIcon from "../../../public/assets/svgs/plus.svg";
+import BagIcon from "../../../public/assets/svgs/bag.svg";
+import AddItem from "../addItem";
+import { useTheme } from "next-themes";
 
 const Portfolio = ({ userDetails, edit }) => {
   const router = useRouter();
@@ -36,6 +40,7 @@ const Portfolio = ({ userDetails, edit }) => {
   const { openModal, setSelectedWork, setSelectedProject } = useGlobalContext();
   const [expandedCards, setExpandedCards] = useState([]);
   const [showMore, setShowMore] = useState(false);
+  const theme = useTheme();
   const container = {
     hidden: { opacity: 0 },
     show: {
@@ -326,6 +331,43 @@ const Portfolio = ({ userDetails, edit }) => {
                   </div>
                 </motion.div>
               ))}
+
+              {edit && (
+                <AddItem
+                  className="bg-df-section-card-bg-color shadow-df-section-card-shadow mt-4"
+                  title="Add your work experience"
+                  onClick={() => openModal(modals.work)}
+                  iconLeft={
+                    userDetails?.experiences?.length > 0 ? (
+                      <Button2
+                        type="secondary"
+                        icon={
+                          <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                        }
+                        onClick={() => openModal(modals.work)}
+                        size="small"
+                      />
+                    ) : (
+                      <BagIcon />
+                    )
+                  }
+                  iconRight={
+                    userDetails?.experiences?.length == 0 ? (
+                      <Button2
+                        type="secondary"
+                        icon={
+                          <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                        }
+                        onClick={() => openModal(modals.work)}
+                        size="small"
+                      />
+                    ) : (
+                      false
+                    )
+                  }
+                  theme={theme}
+                />
+              )}
             </div>
           </motion.section>
         )}

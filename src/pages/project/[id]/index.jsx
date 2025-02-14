@@ -51,7 +51,9 @@ export default function Index({ data }) {
         url={`https://${data?.project?.username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`}
       />
       <main className="min-h-screen bg-df-bg-color">
-        <div className={`max-w-[890px] mx-auto py-[40px] px-2 md:px-4 lg:px-0`}>
+        <div
+          className={`max-w-[890px] mx-auto pt-[16px] pb-[80px] lg:py-[40px] px-2 md:px-4 lg:px-0`}
+        >
           <div className="flex-1 flex flex-col gap-4 md:gap-6">
             {projectDetails && (
               <>
@@ -78,10 +80,10 @@ export default function Index({ data }) {
           </div>
         </div>
         <div
-          className={`text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] mb-2 xl:block cursor-pointer`}
+          className={`text-center flex justify-center fixed bottom-0 right-0 left-0 lg:left-[unset] lg:right-[36px] lg:bottom-[10px] mb-2 xl:block cursor-pointer`}
           onClick={() => window.open("https://www.designfolio.me", "_blank")}
         >
-          <div className="bg-df-section-card-bg-color shadow-df-section-card-shadow p-2 rounded-2xl">
+          <div className="bg-df-section-card-bg-color shadow-lg p-2 rounded-2xl">
             <MadeWithDesignfolio className="text-df-icon-color" />
           </div>
         </div>

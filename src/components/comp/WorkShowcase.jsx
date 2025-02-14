@@ -150,21 +150,22 @@ export const WorkShowcase = ({ userDetails, edit }) => {
         </div>
         {/* Project Info */}
         <div className="p-8 pb-10 cursor-pointer">
-          <h3 className="text-2xl font-semibold mb-3 leading-tight cursor-pointer line-clamp-2">
+          <h3 className="text-2xl font-semibold leading-tight cursor-pointer line-clamp-2">
             {project.title}
           </h3>
-          <p className="text-gray-400 line-clamp-2 cursor-pointer ">
-            {project.description}
-          </p>
-          <div className="flex justify-between gap-3  items-center mt-4 cursor-pointer">
-            {edit && (
+          {project.description && (
+            <p className="text-gray-400 line-clamp-2 cursor-pointer mt-3">
+              {project.description}
+            </p>
+          )}
+
+          {edit && (
+            <div className="flex justify-between gap-3  items-center mt-4 cursor-pointer">
               <Button
                 text={"Edit project"}
                 customClass="w-full"
                 type="secondary"
               />
-            )}
-            {edit && (
               <div className="flex gap-4">
                 <Button
                   type="delete"
@@ -177,8 +178,8 @@ export const WorkShowcase = ({ userDetails, edit }) => {
                   }}
                 />
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </motion.div>
     );

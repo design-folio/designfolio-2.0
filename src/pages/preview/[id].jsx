@@ -50,8 +50,9 @@ export default function Index({ initialUserDetails }) {
       case 2:
         return (
           <>
+            <Minimal userDetails={userDetails} />
             <div
-              className={`text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] mb-2 xl:block cursor-pointer`}
+              className={`text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] xl:block cursor-pointer mb-[120px] lg:m-0`}
               onClick={() =>
                 window.open("https://www.designfolio.me", "_blank")
               }
@@ -60,7 +61,6 @@ export default function Index({ initialUserDetails }) {
                 <MadeWithDesignfolio className="text-df-icon-color" />
               </div>
             </div>
-            <Minimal userDetails={userDetails} />
           </>
         );
       case 3:
@@ -68,7 +68,7 @@ export default function Index({ initialUserDetails }) {
           <>
             <Portfolio userDetails={userDetails} />
             <div
-              className={`text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] mb-2 xl:block cursor-pointer`}
+              className={`text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] xl:block cursor-pointer mb-[120px] lg:m-0`}
               onClick={() =>
                 window.open("https://www.designfolio.me", "_blank")
               }

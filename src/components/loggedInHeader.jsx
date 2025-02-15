@@ -157,7 +157,7 @@ const emails = [
   "chebrolutejopriya29@gmail.com",
   "prabhakaransuraj12@gmail.com",
   "arpitaacharya99@gmail.com",
-  "mayuri.gupta3010@gmail.com",
+  "mayurigupta3010@gmail.com",
   "shadesigns369@gmail.com",
   "udeeta1711@gmail.com",
   "ashish174a@gmail.com",

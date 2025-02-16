@@ -4,6 +4,7 @@ import About from "./About";
 import Footer from "./footer";
 import TrustedBy from "./trustedBy";
 import AiToolsSection from "./aiToolsSection";
+import SpotlightUsers from "./spotlight";
 
 export default function Home({ dfToken }) {
   return (
@@ -22,6 +23,10 @@ export default function Home({ dfToken }) {
         <About />
       </div>
       <AiToolsSection />
+
+      <div className={` mx-auto mt-[75px] xl:mt-[115px]`}>
+        <SpotlightUsers />
+      </div>
 
       <Footer dfToken={dfToken} />
     </div>

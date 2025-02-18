@@ -73,16 +73,16 @@ export default function SpotlightUsers() {
   ];
   return (
     <div>
-      <div className="text-center mb-12 lg:pt-8">
+      <div className="text-center mb-12">
         <Text
           as="h2"
           size="p-large"
-          className="text-center lg:mt-[75px] leading-[46px] text-landing-card-heading-color"
+          className="text-center  leading-[46px] text-landing-card-heading-color"
         >
-          Spotlight
+          Created with Designfolio
         </Text>
         <Text className="text-center mt-4 text-landing-card-description-color !text-[18px]">
-          3000+ designers & devs build with Designfolio
+          Explore some of the portfolios powered by Designfolio
         </Text>
         {/* Desktop View */}
         <div

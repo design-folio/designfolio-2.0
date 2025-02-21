@@ -4,11 +4,11 @@ import {
   EditIcon,
   ChevronDown,
   ChevronUp,
+  GripVertical,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
-import { Testimonials } from "@/components/comp/Testimonials";
-import { useRef, useState } from "react";
+import { motion, useInView } from "framer-motion";
+import { useRef, useState, useEffect } from "react";
 import { Footer } from "@/components/comp/Footer";
 import { useRouter } from "next/router";
 import Button2 from "../button";
@@ -17,6 +17,20 @@ import { modals } from "@/lib/constant";
 import DeleteIcon from "../../../public/assets/svgs/deleteIcon.svg";
 import AddCard from "../AddCard";
 import ProjectIcon from "../../../public/assets/svgs/projectIcon.svg";
+import PlusIcon from "../../../public/assets/svgs/plus.svg";
+import BagIcon from "../../../public/assets/svgs/bag.svg";
+import AddItem from "../addItem";
+import { useTheme } from "next-themes";
+import Spotlight from "./Spotlight";
+import DragIcon from "../../../public/assets/svgs/drag.svg";
+
+// DND Kit Imports
+import { DndContext, closestCenter } from "@dnd-kit/core";
+import { SortableContext, arrayMove, useSortable } from "@dnd-kit/sortable";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import { CSS } from "@dnd-kit/utilities";
+import { Testimonials } from "./Testimonials";
+import { _updateUser } from "@/network/post-request";
 
 const Portfolio = ({ userDetails, edit }) => {
   const router = useRouter();
@@ -33,36 +47,24 @@ const Portfolio = ({ userDetails, edit }) => {
     projects,
     reviews,
   } = userDetails || {};
-  const { openModal, setSelectedWork, setSelectedProject } = useGlobalContext();
+  const { openModal, setSelectedWork, setSelectedProject, setUserDetails } =
+    useGlobalContext();
   const [expandedCards, setExpandedCards] = useState([]);
   const [showMore, setShowMore] = useState(false);
+  const theme = useTheme();
+
+  // Motion variants
   const container = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
-      transition: {
-        duration: 0.3,
-        ease: "easeOut",
-        staggerChildren: 0.15,
-      },
+      transition: { duration: 0.3, ease: "easeOut", staggerChildren: 0.15 },
     },
-  };
-
-  const handleClick = (work) => {
-    setSelectedWork(work);
-    openModal(modals.work);
   };
 
   const item = {
     hidden: { opacity: 0, y: 20 },
-    show: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.4,
-        ease: "easeOut",
-      },
-    },
+    show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } },
   };
 
   const textReveal = {
@@ -70,10 +72,7 @@ const Portfolio = ({ userDetails, edit }) => {
     animate: {
       y: 0,
       opacity: 1,
-      transition: {
-        duration: 0.8,
-        ease: [0.33, 1, 0.68, 1], // Custom cubic-bezier for smooth reveal
-      },
+      transition: { duration: 0.8, ease: [0.33, 1, 0.68, 1] },
     },
   };
 
@@ -108,8 +107,131 @@ const Portfolio = ({ userDetails, edit }) => {
     );
   };
 
+  // ---------------------------
+  // Projects Drag & Drop Setup
+  // ---------------------------
+  const [sortedProjects, setSortedProjects] = useState(projects || []);
+  useEffect(() => {
+    setSortedProjects(projects || []);
+  }, [projects]);
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const oldIndex = sortedProjects.findIndex(
+      (project) => project._id === active.id
+    );
+    const newIndex = sortedProjects.findIndex(
+      (project) => project._id === over.id
+    );
+    const newSortedProjects = arrayMove(sortedProjects, oldIndex, newIndex);
+    setSortedProjects(newSortedProjects);
+    setUserDetails((prev) => ({ ...prev, projects: newSortedProjects }));
+    _updateUser({ projects: newSortedProjects });
+  };
+
+  // Sortable Project Card Component – vertical drag handle only
+  const SortableProjectCard = ({ project, index }) => {
+    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+    const cardRef = useRef(null);
+    const handleMouseMove = (e) => {
+      if (!cardRef.current) return;
+      const rect = cardRef.current.getBoundingClientRect();
+      setMousePosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+    };
+
+    const { attributes, listeners, setNodeRef, transform, transition } =
+      useSortable({ id: project._id });
+    const style = { transform: CSS.Transform.toString(transform), transition };
+
+    return (
+      <div ref={setNodeRef} style={style}>
+        <motion.div
+          ref={cardRef}
+          variants={item}
+          onClick={() => handleNavigation(project?._id)}
+          onMouseMove={handleMouseMove}
+          className="group bg-card border border-card-border rounded-lg overflow-hidden hover:bg-card/80 transition-colors relative !cursor-pointer"
+        >
+          <div className="flex flex-col md:flex-row !cursor-pointer">
+            <img
+              src={project?.thumbnail?.url}
+              alt={project.title}
+              className="object-cover group-hover:scale-105 transition-transform duration-300 w-full lg:w-[320px] h-[261px] shrink-0 overflow-hidden !cursor-pointer"
+            />
+            <div className="p-8 flex flex-col justify-between flex-grow !cursor-pointer">
+              <div>
+                <h4 className="text-2xl font-semibold mb-3 line-clamp-2 !cursor-pointer">
+                  {project.title}
+                </h4>
+                <p className="dark:text-gray-400 text-gray-600 line-clamp-2 !cursor-pointer">
+                  {project.description}
+                </p>
+              </div>
+              {edit && (
+                <div className="flex justify-between gap-3 items-center mt-4 cursor-pointer">
+                  <Button2
+                    text={"Edit project"}
+                    customClass="w-full"
+                    type="secondary"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleNavigation(project?._id);
+                    }}
+                  />
+                  <div className="flex gap-4">
+                    <Button2
+                      type="delete"
+                      icon={
+                        <DeleteIcon className="stroke-delete-btn-icon-color w-6 h-6 cursor-pointer" />
+                      }
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDeleteProject(project);
+                      }}
+                    />
+                  </div>
+                  {/* Drag handle: attach drag listeners only here */}
+                  <div
+                    onClick={(e) => e.stopPropagation()}
+                    {...listeners}
+                    style={{ touchAction: "none" }}
+                    className="!px-[24.5px] !cursor-grab py-[19px] transition-shadow duration-500 ease-out bg-project-card-reorder-btn-bg-color border-project-card-reorder-btn-bg-color hover:border-project-card-reorder-btn-bg-hover-color hover:bg-project-card-reorder-btn-bg-hover-color rounded-2xl"
+                  >
+                    <DragIcon className="text-project-card-reorder-btn-icon-color !cursor-grab" />
+                  </div>
+                </div>
+              )}
+              {!edit && (
+                <Button2
+                  variant="outline"
+                  size="sm"
+                  className="self-start mt-6 group/btn relative overflow-hidden"
+                  asChild
+                >
+                  <a href={project.link} className="relative z-10">
+                    <span className="absolute inset-0 group-hover/btn:bg-white/10 transition-colors duration-300" />
+                    View Project
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </a>
+                </Button2>
+              )}
+            </div>
+          </div>
+          <div
+            className="pointer-events-none absolute -inset-px opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            style={{
+              background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255,255,255,.1), transparent 40%)`,
+            }}
+          />
+        </motion.div>
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
+      {/* Header */}
       <header className="border-b border-secondary-border py-6 bg-background transition-colors duration-300">
         <div className="container max-w-3xl mx-auto px-4">
           <motion.div
@@ -118,12 +240,7 @@ const Portfolio = ({ userDetails, edit }) => {
             animate="visible"
             variants={{
               hidden: { opacity: 0 },
-              visible: {
-                opacity: 1,
-                transition: {
-                  staggerChildren: 0.2,
-                },
-              },
+              visible: { opacity: 1, transition: { staggerChildren: 0.2 } },
             }}
           >
             <motion.div
@@ -133,11 +250,7 @@ const Portfolio = ({ userDetails, edit }) => {
                 visible: {
                   opacity: 1,
                   y: 0,
-                  transition: {
-                    type: "spring",
-                    stiffness: 100,
-                    damping: 15,
-                  },
+                  transition: { type: "spring", stiffness: 100, damping: 15 },
                 },
               }}
             >
@@ -157,15 +270,10 @@ const Portfolio = ({ userDetails, edit }) => {
                 visible: {
                   opacity: 1,
                   y: 0,
-                  transition: {
-                    type: "spring",
-                    stiffness: 100,
-                    damping: 15,
-                  },
+                  transition: { type: "spring", stiffness: 100, damping: 15 },
                 },
               }}
             >
-              {/* <ThemeToggle /> */}
               <a href={`mailto:${email}`}>
                 <Button variant="outline" size="sm" className="gap-2">
                   <Mail className="w-4 h-4" />
@@ -199,13 +307,7 @@ const Portfolio = ({ userDetails, edit }) => {
           <motion.div
             initial="initial"
             animate="animate"
-            variants={{
-              animate: {
-                transition: {
-                  staggerChildren: 0.2,
-                },
-              },
-            }}
+            variants={{ animate: { transition: { staggerChildren: 0.2 } } }}
           >
             <motion.h1
               className="text-4xl font-bold mb-4"
@@ -219,7 +321,6 @@ const Portfolio = ({ userDetails, edit }) => {
             >
               {bio}
             </motion.p>
-
             {/* Skills Infinite Scroll */}
             <div className="w-full overflow-hidden relative py-4 before:absolute before:left-0 before:top-0 before:z-10 before:w-20 before:h-full before:bg-gradient-to-r before:from-background before:to-transparent after:absolute after:right-0 after:top-0 after:z-10 after:w-20 after:h-full after:bg-gradient-to-l after:from-background after:to-transparent">
               <motion.div
@@ -249,260 +350,64 @@ const Portfolio = ({ userDetails, edit }) => {
 
         {/* Experience Section */}
         {(experiences.length > 0 || edit) && (
-          <motion.section
-            variants={container}
-            initial="hidden"
-            animate="show"
-            className="py-12 border-b border-secondary-border"
-          >
-            <h3 className="text-2xl font-bold mb-6">Experience</h3>
-            <div className="space-y-4">
-              {experiences.map((exp, index) => (
-                <motion.div
-                  key={index}
-                  variants={item}
-                  className="bg-card border border-card-border p-6 rounded-lg hover:bg-card/80 transition-colors"
-                >
-                  <div>
-                    <div className="flex justify-between mb-3">
-                      <div>
-                        <span className="text-primary-foreground dark:text-white font-medium">
-                          {exp.role}
-                        </span>
-                        <p className="text-sm dark:text-gray-400 text-gray-600">
-                          {exp.company}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <span className="text-sm dark:text-gray-400 text-gray-600">
-                          {`${exp?.startMonth} ${exp?.startYear} - ${
-                            exp?.currentlyWorking
-                              ? "Present"
-                              : `${exp?.endMonth} ${exp?.endYear}`
-                          }  `}
-                        </span>
-                        {edit && (
-                          <Button2
-                            onClick={() => handleClick(exp)}
-                            customClass="!p-[8px] rounded-[8px] !flex-shrink-0"
-                            type={"secondary"}
-                            icon={
-                              <EditIcon
-                                className="text-df-icon-color cursor-pointer"
-                                size={20}
-                              />
-                            }
-                          />
-                        )}
-                      </div>
-                    </div>
-
-                    <p className="text-sm text-gray-600 dark:text-gray-400 whitespace-pre-line">
-                      {exp?.description.slice(
-                        0,
-                        !expandedCards.includes(index)
-                          ? 180
-                          : exp?.description?.length - 1
-                      )}
-                      {exp?.description?.length > 180 &&
-                        (!expandedCards.includes(index) ? (
-                          <button
-                            onClick={() => toggleExpand(index)}
-                            className="ml-1 text-foreground hover:text-foreground/80 inline-flex items-center gap-1"
-                          >
-                            View More
-                            <ChevronDown className="h-3 w-3" />
-                          </button>
-                        ) : (
-                          <button
-                            onClick={() => toggleExpand(index)}
-                            className="ml-1 text-foreground hover:text-foreground/80 inline-flex items-center gap-1"
-                          >
-                            Show Less
-                            <ChevronUp className="h-3 w-3" />
-                          </button>
-                        ))}
-                    </p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.section>
+          <Spotlight userDetails={userDetails} edit={edit} />
         )}
 
-        <motion.section
-          variants={container}
-          initial="hidden"
-          animate="show"
-          className="py-12 border-b border-secondary-border"
-        >
-          <div className="flex items-center justify-between  mb-8">
-            <h3 className="text-2xl font-bold">Tools I Use</h3>
-            {edit && (
-              <Button2
-                type="secondary"
-                customClass="!p-[8px] rounded-[8px] !flex-shrink-0"
-                icon={
-                  <EditIcon
-                    className="text-df-icon-color cursor-pointer"
-                    size={20}
-                  />
-                }
-                onClick={() => openModal("tools")}
-                // customClass="px-[22px]"
-              />
-            )}
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            {tools
-              .slice(0, showMore ? tools.length - 1 : 4)
-              .map((tool, index) => (
-                <motion.div
-                  key={index}
-                  variants={item}
-                  className="group bg-card border border-card-border p-6 rounded-lg hover:bg-card/80 transition-colors"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-secondary rounded-lg">
-                      <img
-                        src={tool.image ?? "/assets/svgs/default-tools.svg"}
-                        className="w-8"
-                      />
-                    </div>
-                    <span className="text-sm">{tool.label}</span>
-                  </div>
-                </motion.div>
-              ))}
-          </div>
-          {tools?.length > 4 && (
-            <div className="flex justify-center mt-4">
-              <Button variant="outline" onClick={() => setShowMore(!showMore)}>
-                {showMore ? "Show Less" : "View More"}
-              </Button>
-            </div>
-          )}
-        </motion.section>
-
-        {/* Projects Section */}
+        {/* Projects Section with Vertical Drag Handle Sorting */}
         {(projects.length > 0 || edit) && (
-          <motion.section
-            variants={container}
-            initial="hidden"
-            animate="show"
-            className="py-12 border-b border-secondary-border"
+          <DndContext
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+            modifiers={[restrictToVerticalAxis]}
           >
-            <h3 className="text-3xl font-bold mb-12">Featured Projects</h3>
-            <div className="flex flex-col gap-6">
-              {projects.map((project, index) => {
-                const [mousePosition, setMousePosition] = useState({
-                  x: 0,
-                  y: 0,
-                });
-                const cardRef = useRef(null);
-
-                const handleMouseMove = (e) => {
-                  if (!cardRef.current) return;
-                  const rect = cardRef.current.getBoundingClientRect();
-                  setMousePosition({
-                    x: e.clientX - rect.left,
-                    y: e.clientY - rect.top,
-                  });
-                };
-
-                return (
-                  <motion.div
-                    key={index}
-                    variants={item}
-                    ref={cardRef}
-                    onClick={() => handleNavigation(project?._id)}
-                    onMouseMove={handleMouseMove}
-                    className="group bg-card border border-card-border rounded-lg overflow-hidden hover:bg-card/80 transition-colors relative !cursor-pointer"
-                  >
-                    <div className="flex flex-col md:flex-row !cursor-pointer">
-                      <img
-                        src={project?.thumbnail?.url}
-                        alt={project.title}
-                        className="object-cover group-hover:scale-105 transition-transform duration-300 w-full lg:w-[320px] h-[261px]  shrink-0 overflow-hidden !cursor-pointer"
-                      />
-                      <div className="p-8 flex flex-col justify-between flex-grow !cursor-pointer">
-                        <div>
-                          <h4 className="text-2xl font-semibold mb-3 line-clamp-2 !cursor-pointer">
-                            {project.title}
-                          </h4>
-                          <p className="dark:text-gray-400 text-gray-600 line-clamp-2 !cursor-pointer">
-                            {project.description}
-                          </p>
-                        </div>
-                        {edit && (
-                          <div className="flex justify-between gap-3  items-center mt-4 cursor-pointer">
-                            <Button2
-                              text={"Edit project"}
-                              customClass="w-full"
-                              type="secondary"
-                            />
-                            <div className="flex gap-4">
-                              <Button2
-                                type="delete"
-                                icon={
-                                  <DeleteIcon className="stroke-delete-btn-icon-color w-6 h-6 cursor-pointer" />
-                                }
-                                onClick={(e) => {
-                                  e.stopPropagation(); // Prevent the event from bubbling up
-                                  onDeleteProject(project);
-                                }}
-                              />
-                            </div>
-                          </div>
-                        )}
-                        {!edit && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="self-start mt-6 group/btn relative overflow-hidden"
-                            asChild
-                          >
-                            <a href={project.link} className="relative z-10">
-                              <span className="absolute inset-0 group-hover/btn:bg-white/10 transition-colors duration-300" />
-                              View Project
-                              <ArrowRight className="w-4 h-4 ml-2" />
-                            </a>
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                    <div
-                      className="pointer-events-none absolute -inset-px opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                      style={{
-                        background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255,255,255,.1), transparent 40%)`,
-                      }}
+            <SortableContext
+              items={sortedProjects.map((project) => project._id)}
+            >
+              <motion.section
+                variants={container}
+                initial="hidden"
+                animate="show"
+                className="py-12 border-b border-secondary-border"
+              >
+                <h3 className="text-3xl font-bold mb-12">Featured Projects</h3>
+                <div className="flex flex-col gap-6">
+                  {sortedProjects.map((project, index) => (
+                    <SortableProjectCard
+                      key={project._id}
+                      project={project}
+                      index={index}
+                      handleNavigation={handleNavigation}
+                      onDeleteProject={onDeleteProject}
+                      edit={edit}
                     />
-                  </motion.div>
-                );
-              })}
-              {edit && (
-                <AddCard
-                  title={`${
-                    userDetails?.projects?.length === 0
-                      ? "Upload your first case study"
-                      : "Add case study"
-                  }`}
-                  subTitle="Show off your best work."
-                  first
-                  buttonTitle="Add case study"
-                  secondaryButtonTitle="Write using AI"
-                  onClick={() => openModal(modals.project)}
-                  icon={<ProjectIcon className="cursor-pointer" />}
-                  openModal={openModal}
-                  className={`flex items-center justify-center min-h-[269px] rounded-lg ${
-                    userDetails?.projects?.length !== 0 &&
-                    "bg-df-section-card-bg-color shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] hover:shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
-                  }`}
-                />
-              )}
-            </div>
-          </motion.section>
+                  ))}
+                  {edit && (
+                    <AddCard
+                      title={`${
+                        userDetails?.projects?.length === 0
+                          ? "Upload your first case study"
+                          : "Add case study"
+                      }`}
+                      subTitle="Show off your best work."
+                      first
+                      buttonTitle="Add case study"
+                      secondaryButtonTitle="Write using AI"
+                      onClick={() => openModal(modals.project)}
+                      icon={<ProjectIcon className="cursor-pointer" />}
+                      openModal={openModal}
+                      className={`flex items-center justify-center min-h-[269px] rounded-lg ${
+                        userDetails?.projects?.length !== 0 &&
+                        "bg-df-section-card-bg-color shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] hover:shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
+                      }`}
+                    />
+                  )}
+                </div>
+              </motion.section>
+            </SortableContext>
+          </DndContext>
         )}
 
+        {/* Reviews Section */}
         {(reviews?.length > 0 || edit) && (
           <Testimonials userDetails={userDetails} edit={edit} />
         )}
@@ -513,7 +418,6 @@ const Portfolio = ({ userDetails, edit }) => {
 };
 
 export default Portfolio;
-// Portfolio.theme = "dark";
 
 export const getServerSideProps = async (context) => {
   return {

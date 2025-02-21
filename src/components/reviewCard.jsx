@@ -11,7 +11,6 @@ export default function ReviewCard({ className = "", review, edit = false }) {
   const { openModal, setSelectedReview } = useGlobalContext();
   const [expandedCards, setExpandedCards] = useState([]);
 
-  console.log(review);
   const handleEdit = () => {
     openModal(modals.review);
     setSelectedReview(review);

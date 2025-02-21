@@ -48,7 +48,7 @@ export default function Index() {
             />
             <Minimal userDetails={userDetails} edit={false} />
             <div
-              className={`text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] mb-2 xl:block cursor-pointer`}
+              className={`text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] xl:block cursor-pointer mb-[120px] lg:m-0`}
               onClick={() =>
                 window.open("https://www.designfolio.me", "_blank")
               }
@@ -74,7 +74,7 @@ export default function Index() {
             </div>
             <Portfolio userDetails={userDetails} edit={false} />
             <div
-              className={`text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] mb-2 xl:block cursor-pointer`}
+              className={`text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] xl:block cursor-pointer mb-[120px] lg:m-0`}
               onClick={() =>
                 window.open("https://www.designfolio.me", "_blank")
               }

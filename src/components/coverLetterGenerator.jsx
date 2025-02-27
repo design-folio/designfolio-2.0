@@ -13,7 +13,7 @@ import { exportToPdf } from "./PdfExporter";
 const RATE_LIMIT_DELAY = 10000;
 let lastRequestTime = 0;
 
-const genAI = new GoogleGenerativeAI("AIzaSyA3OdkRcRU_Sr6ECLJJORsOjUSl-w4eXpc");
+const genAI = new GoogleGenerativeAI("AIzaSyD_5Do0EPlP6K919DNBrzHTKt8xkNrShDs");
 
 const validationSchema = Yup.object().shape({
   resumeText: Yup.string()

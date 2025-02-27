@@ -50,7 +50,7 @@ export default function CoverLetterGenerator() {
     try {
       checkRateLimit();
 
-      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
       const prompt = `
         You are an AI expert in analyzing resumes against job descriptions. Provide a detailed analysis in the following JSON structure:
         {

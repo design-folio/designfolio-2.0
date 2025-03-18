@@ -6,7 +6,7 @@ const CACHE_KEY = "email_generation_attempts";
 const MAX_ATTEMPTS = 3;
 const COOLDOWN_PERIOD = 40000; // 40 seconds in milliseconds
 
-const genAI = new GoogleGenerativeAI("AIzaSyAyZXZUJ5irogLkCclIE-1jKhKZKOiedUM");
+const genAI = new GoogleGenerativeAI("AIzaSyD_5Do0EPlP6K919DNBrzHTKt8xkNrShDs");
 
 const checkRateLimit = () => {
   const cache = localStorage.getItem(CACHE_KEY);
@@ -55,7 +55,7 @@ const checkRateLimit = () => {
 export const generateEmail = async (context) => {
   checkRateLimit();
 
-  const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
   const emailType =
     context.emailType === "custom"
@@ -104,7 +104,7 @@ BODY: <the email body>`;
 export const analyzeOffer = async (data) => {
   console.log("Starting offer analysis...");
   const genAI = new GoogleGenerativeAI(
-    "AIzaSyAyZXZUJ5irogLkCclIE-1jKhKZKOiedUM"
+    "AIzaSyD_5Do0EPlP6K919DNBrzHTKt8xkNrShDs"
   );
 
   if (!genAI) {
@@ -113,7 +113,7 @@ export const analyzeOffer = async (data) => {
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     // Extract data from offer letter if provided
     const extractedData = data.offerContent
@@ -139,7 +139,7 @@ export const generateInterviewQuestions = async (
   role,
   difficulty = "mid"
 ) => {
-  const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
   const difficultyPrompts = {
     entry:
@@ -216,7 +216,7 @@ export const handleFeedbackGeneration = async (
   questions,
   userAnswers
 ) => {
-  const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
   const prompt = generateFeedbackPrompt(role, questions, userAnswers);
 
   try {

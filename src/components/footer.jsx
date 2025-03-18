@@ -4,7 +4,7 @@ import { motion, useInView } from "framer-motion";
 import Link from "next/link";
 import Button from "./button";
 
-export default function Footer({ dfToken }) {
+export default function Footer({ dfToken, innerClass = "" }) {
   const ref = useRef(null);
   const refLink = useRef(null);
   const isInView = useInView(ref, { once: true });
@@ -19,7 +19,9 @@ export default function Footer({ dfToken }) {
         animate={{ opacity: isInView ? 1 : 0, translateY: isInView ? 0 : 80 }} // Animated state
         transition={{ duration: 0.5, ease: [0.17, 0.55, 0.55, 1] }} // Smooth transition
       >
-        <div className="bg-landing-card-bg-color border-[6px] border-solid border-landing-card-border-color py-10 xl:p-0 xl:h-[500px] rounded-[24px] flex flex-col justify-center items-center px-4 md:px-0">
+        <div
+          className={`bg-landing-card-bg-color border-[6px] border-solid border-landing-card-border-color py-10 xl:p-0 xl:h-[500px] rounded-[24px] flex flex-col justify-center items-center px-4 md:px-0 ${innerClass}`}
+        >
           <p className="text-center text-landing-footer-heading-color md:hidden px-[40px] text-[22px] xl:text-[39.5px] font-satoshi font-[500] xl:leading-[46.87px]">
             Build your portfolio website now – it&lsquo;s simpler than you
             think!

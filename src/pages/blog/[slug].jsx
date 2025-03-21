@@ -127,6 +127,8 @@ const BlogPost = ({ post }) => {
   );
 };
 
+BlogPost.theme = "light";
+
 export async function getStaticPaths() {
   return {
     paths: [],

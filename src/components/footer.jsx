@@ -4,7 +4,7 @@ import { motion, useInView } from "framer-motion";
 import Link from "next/link";
 import Button from "./button";
 
-export default function Footer({ dfToken, innerClass = "" }) {
+export default function Footer({ dfToken, innerClass = "", className = "" }) {
   const ref = useRef(null);
   const refLink = useRef(null);
   const isInView = useInView(ref, { once: true });
@@ -14,7 +14,7 @@ export default function Footer({ dfToken, innerClass = "" }) {
     <>
       <motion.div
         ref={ref}
-        className="mt-[75px] w-full xl:mt-[120px] px-[16px] lg:px-0 md:max-w-[1192px] mx-auto"
+        className={`mt-[75px] w-full xl:mt-[120px] px-[16px] lg:px-0 md:max-w-[1192px] mx-auto ${className}`}
         initial={{ opacity: 0, translateY: 80 }} // Initial state
         animate={{ opacity: isInView ? 1 : 0, translateY: isInView ? 0 : 80 }} // Animated state
         transition={{ duration: 0.5, ease: [0.17, 0.55, 0.55, 1] }} // Smooth transition

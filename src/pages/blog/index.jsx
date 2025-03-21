@@ -15,7 +15,7 @@ export default function Index({ posts }) {
   return (
     <>
       <div className="min-h-screen">
-        <main className="container mx-auto px-4 py-16 md:pt-[108px] md:pb-8 relative">
+        <main className="container mx-auto px-4 pt-[108px] pb-10 md:pb-8 relative">
           <header className="text-center mb-12 md:mb-16">
             <h1 className="text-3xl md:text-5xl font-semibold md:font-bold mb-3 md:mb-4">
               <span className="text-black">Lesser known career</span>
@@ -44,7 +44,11 @@ export default function Index({ posts }) {
               );
             })}
           </div>
-          <Footer dfToken={dfToken} innerClass="!bg-landing-bg-color" />
+          <Footer
+            dfToken={dfToken}
+            innerClass="!bg-landing-bg-color"
+            className="!p-0"
+          />
         </main>
       </div>
     </>

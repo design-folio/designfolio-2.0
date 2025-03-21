@@ -76,7 +76,7 @@ const BlogPost = ({ post }) => {
       </Head>
 
       <div className="min-h-screen" style={{ backgroundColor: "#F2F2F0" }}>
-        <main className="container mx-auto px-4 py-12 md:pt-[108px] md:pb-8">
+        <main className="container mx-auto px-4 pb-10 pt-[108px] md:pb-8">
           <article className="max-w-2xl mx-auto">
             <Link href="/" passHref>
               <Button
@@ -116,7 +116,11 @@ const BlogPost = ({ post }) => {
 
             <BlogPostRecommendations postId={post.id} />
           </article>
-          <Footer dfToken={dfToken} innerClass="!bg-landing-bg-color" />
+          <Footer
+            dfToken={dfToken}
+            innerClass="!bg-landing-bg-color"
+            className="!p-0"
+          />
         </main>
       </div>
     </>

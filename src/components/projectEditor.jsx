@@ -9,6 +9,8 @@ import InlineCode from "@editorjs/inline-code";
 import Underline from "@editorjs/underline";
 import ImageTool from "@editorjs/image";
 import Paragraph from "@editorjs/paragraph";
+import BreakLine from "editorjs-break-line";
+
 import { _updateProject, _uploadImage } from "@/network/post-request";
 import { useGlobalContext } from "@/context/globalContext";
 
@@ -255,12 +257,18 @@ const ProjectEditor = ({ projectDetails, userDetails }) => {
               buttonContent: "Select an image",
             },
           },
+          breakLine: {
+            class: BreakLine,
+            inlineToolbar: true,
+            shortcut: "CMD+SHIFT+ENTER",
+          },
         },
         data: projectDetails?.content ?? null,
         // Add the onChange callback here
         onChange: () => {
           (async () => {
             const content = await editor?.save();
+            console.log(content);
             if (
               JSON.stringify(content?.blocks) !==
               JSON.stringify(projectDetails?.content?.blocks)
@@ -303,7 +311,7 @@ const ProjectEditor = ({ projectDetails, userDetails }) => {
               // Create the <p> tag
               const div = document.createElement("div");
               div.innerHTML =
-                "💡Embed <img src='/assets/svgs/youtube.svg'  className='w-4'/> or <img src='/assets/svgs/codepen.svg' className='w-4'/> by pasting the link in the editor.";
+                "💡Embed <img src='/assets/svgs/youtube.svg' style='width:16px'/> or <img src='/assets/svgs/codepen.svg' style='width:16px'/> by pasting the link in the editor.";
               div.classList.add("!text-[12px]");
               div.classList.add("flex");
               div.classList.add("flex-wrap");

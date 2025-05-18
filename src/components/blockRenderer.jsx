@@ -4,7 +4,7 @@ import Blocks from "editorjs-blocks-react-renderer";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import DOMPurify from "dompurify";
-
+import he from "he";
 // Custom list renderer component
 const CustomListRenderer = React.memo(({ items, listType = "unordered" }) => {
   const ListTag = listType === "unordered" ? "ul" : "ol";
@@ -144,10 +144,21 @@ const RenderImageBlock = React.memo(({ block }) => {
       ) : (
         <div className="w-full h-full bg-df-placeholder-color rounded-[18px]" />
       )}
-      <figcaption>{block?.data?.caption || ""}</figcaption>
+      <figcaption
+        dangerouslySetInnerHTML={{
+          __html: DOMPurify.sanitize(he.decode(block?.data?.caption || "")),
+        }}
+      />
     </figure>
   );
 });
+
+const BreakLineBlock = ({ data }) => {
+  if (data.divider) {
+    return <hr style={{ borderColor: "#ccc", margin: "1em 0" }} />;
+  }
+  return <br />;
+};
 
 const BlockRenderer = ({ editorJsData }) => {
   const renderers = useMemo(
@@ -160,21 +171,37 @@ const BlockRenderer = ({ editorJsData }) => {
       ),
       image: (data) => <RenderImageBlock block={data} />,
       table: (data) => (
-        <div className="table-wrapper">
+        <div className="table-wrapper mt-4">
           <table className="border-collapse table-auto w-full text-sm">
             <thead>
               <tr>
-                {data?.data?.content[0]?.map((header, index) => (
-                  <th key={index}>{header}</th>
-                ))}
+                {data?.data?.content[0]?.map((header, index) => {
+                  const decoded = he.decode(he.decode(header)); // decode twice for entities
+                  const cleanHTML = DOMPurify.sanitize(decoded);
+                  return (
+                    <th
+                      key={index}
+                      dangerouslySetInnerHTML={{ __html: cleanHTML }}
+                      className="p-2"
+                    />
+                  );
+                })}
               </tr>
             </thead>
             <tbody>
               {data?.data?.content.slice(1).map((row, rowIndex) => (
                 <tr key={rowIndex}>
-                  {row.map((cell, cellIndex) => (
-                    <td key={cellIndex}>{cell}</td>
-                  ))}
+                  {row.map((cell, cellIndex) => {
+                    const decoded = he.decode(he.decode(cell));
+                    const cleanHTML = DOMPurify.sanitize(decoded);
+                    return (
+                      <td
+                        key={cellIndex}
+                        dangerouslySetInnerHTML={{ __html: cleanHTML }}
+                        className="p-2"
+                      />
+                    );
+                  })}
                 </tr>
               ))}
             </tbody>
@@ -182,6 +209,7 @@ const BlockRenderer = ({ editorJsData }) => {
         </div>
       ),
       figma: (data) => <FigmaBlock block={data} />,
+      breakLine: (data) => <BreakLineBlock data={data.data} />,
     }),
     []
   );

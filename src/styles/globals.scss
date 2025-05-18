@@ -629,6 +629,10 @@ input::-ms-input-placeholder {
       margin-top: 20px;
     }
   }
+
+  [data-tune="divider"] svg {
+    fill: white; /* Change the color to white */
+  }
 }
 
 /* Hide .toast-container */

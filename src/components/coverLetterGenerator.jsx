@@ -13,7 +13,7 @@ import { exportToPdf } from "./PdfExporter";
 const RATE_LIMIT_DELAY = 10000;
 let lastRequestTime = 0;
 
-const genAI = new GoogleGenerativeAI("AIzaSyD_5Do0EPlP6K919DNBrzHTKt8xkNrShDs");
+const genAI = new GoogleGenerativeAI("AIzaSyD6qGWr_Hn_QdjwlxD8jpCC_blaVk5ofYg");
 
 const validationSchema = Yup.object().shape({
   resumeText: Yup.string()
@@ -50,7 +50,7 @@ export default function CoverLetterGenerator() {
     try {
       checkRateLimit();
 
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
       const prompt = `
         You are an AI expert in analyzing resumes against job descriptions. Provide a detailed analysis in the following JSON structure:
         {

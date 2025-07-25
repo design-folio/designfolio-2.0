@@ -79,3 +79,7 @@ export const _analytics = (duration) =>
 
 export const scrapeMedium = (data) =>
   axiosInstance.post(`user/scrapeMediumPostAi`, data);
+
+export const addDomain = (data) => {
+  return axiosInstance.patch(`user/addCustomDomain`, data);
+};

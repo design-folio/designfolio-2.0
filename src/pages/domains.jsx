@@ -22,11 +22,15 @@ export default function Domains() {
     } else {
       setIsUserDetailsFromCache(true);
     }
+    fetchDomainDetails();
+  }, []);
+
+  const fetchDomainDetails = () => {
     _getDomainDetails().then((res) => {
       console.log(res);
       setDomainDetails(res.data);
     });
-  }, []);
+  };
   return (
     <main className="min-h-screen bg-df-bg-color">
       <div
@@ -45,7 +49,10 @@ export default function Domains() {
           </div>
         </div>
         <div className="bg-df-section-card-bg-color p-8 rounded-2xl mt-6">
-          <CustomDomain domainDetails={domainDetails} />
+          <CustomDomain
+            domainDetails={domainDetails}
+            fetchDomainDetails={fetchDomainDetails}
+          />
         </div>
         <div className="bg-df-section-card-bg-color p-8 rounded-2xl mt-6">
           <DeleteAccount />

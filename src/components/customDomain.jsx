@@ -8,7 +8,7 @@ import Button from "./button";
 import { Badge } from "./ui/badge";
 import DotIcon from "../../public/assets/svgs/dots.svg";
 import RefreshIcon from "../../public/assets/svgs/refresh.svg";
-import { addDomain } from "@/network/post-request";
+import { _verifyDomain, addDomain } from "@/network/post-request";
 import Modal from "./modal";
 import Text from "./text";
 const DomainValidationSchema = Yup.object().shape({
@@ -20,11 +20,10 @@ const DomainValidationSchema = Yup.object().shape({
     .required("Domain is required"),
 });
 
-export default function CustomDomain({ domainDetails }) {
+export default function CustomDomain({ domainDetails, fetchDomainDetails }) {
   const { userDetails, setUserDetails } = useGlobalContext();
   const [isEdit, setIsEdit] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
-  const [domainValue, setDomainValue] = useState(null);
   // Formik handleChange function with API call
   const handleChange = (e, setFieldValue) => {
     const { value, name } = e.target;
@@ -55,7 +54,7 @@ export default function CustomDomain({ domainDetails }) {
       <p className="text-[#4d545f] dark:text-[#B4B8C6] text-[12.8px] font-[400] leading-[22.4px] font-inter mt-2">
         Connect a custom domain purchased through web hosting service
       </p>
-      {domainDetails?.customDomain?.domain || domainValue ? (
+      {domainDetails?.customDomain?.domain ? (
         <div className="grid grid-cols-[120px_1fr_120px] mt-6 items-center">
           <div>
             <p className="font-medium text-[14px] text-[#4d545f] dark:text-[#B4B8C6]">
@@ -114,6 +113,9 @@ export default function CustomDomain({ domainDetails }) {
               icon={
                 <RefreshIcon className="stroke-bg-df-icon-color cursor-pointer" />
               }
+              onClick={() => {
+                _verifyDomain();
+              }}
             />
           </div>
           <div></div>
@@ -128,21 +130,15 @@ export default function CustomDomain({ domainDetails }) {
                   </tr>
                 </thead>
                 <tbody className="text-df-section-card-heading-color">
-                  <tr className="border-t border-gray-200">
-                    <td className="px-4 py-3">@</td>
-                    <td className="px-4 py-3">A</td>
-                    <td className="px-4 py-3">31.43.160.6</td>
-                  </tr>
-                  <tr className="border-t border-gray-200">
-                    <td className="px-4 py-3">@</td>
-                    <td className="px-4 py-3">A</td>
-                    <td className="px-4 py-3">31.43.160.6</td>
-                  </tr>
-                  <tr className="border-t border-gray-200">
-                    <td className="px-4 py-3">@</td>
-                    <td className="px-4 py-3">A</td>
-                    <td className="px-4 py-3">31.43.160.6</td>
-                  </tr>
+                  {domainDetails?.customDomain?.verificationData?.map(
+                    (record, index) => (
+                      <tr className="border-t border-gray-200" key={index}>
+                        <td className="px-4 py-3">{record?.domain}</td>
+                        <td className="px-4 py-3">{record?.type}</td>
+                        <td className="px-4 py-3">{record?.value}</td>
+                      </tr>
+                    )
+                  )}
                 </tbody>
               </table>
             </div>
@@ -161,7 +157,7 @@ export default function CustomDomain({ domainDetails }) {
                 actions.setSubmitting(false);
                 console.log(values.domain);
                 addDomain({ customDomain: values.domain }).then((res) =>
-                  setDomainValue(values.domain)
+                  fetchDomainDetails()
                 );
               }
             }}

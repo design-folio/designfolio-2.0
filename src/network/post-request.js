@@ -83,3 +83,7 @@ export const scrapeMedium = (data) =>
 export const addDomain = (data) => {
   return axiosInstance.patch(`user/addCustomDomain`, data);
 };
+
+export const _verifyDomain = () => {
+  return axiosInstance.get(`/user/updateCustomDomainVerification`);
+};

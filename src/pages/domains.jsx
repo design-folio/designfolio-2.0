@@ -1,15 +1,17 @@
 import Button from "@/components/button";
 import { useRouter } from "next/router";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
 import DeleteAccount from "@/components/deleteAccount";
 import DefaultDomain from "@/components/defaultDomain";
 import { useGlobalContext } from "@/context/globalContext";
 import CustomDomain from "@/components/customDomain";
+import { _getDomainDetails } from "@/network/get-request";
 
 export default function Domains() {
   const { userDetails, setIsUserDetailsFromCache, userDetailsIsState } =
     useGlobalContext();
+  const [domainDetails, setDomainDetails] = useState(null);
   const router = useRouter();
   const handleBack = () => {
     router.back({ scroll: false });
@@ -20,6 +22,10 @@ export default function Domains() {
     } else {
       setIsUserDetailsFromCache(true);
     }
+    _getDomainDetails().then((res) => {
+      console.log(res);
+      setDomainDetails(res.data);
+    });
   }, []);
   return (
     <main className="min-h-screen bg-df-bg-color">
@@ -39,7 +45,7 @@ export default function Domains() {
           </div>
         </div>
         <div className="bg-df-section-card-bg-color p-8 rounded-2xl mt-6">
-          <CustomDomain />
+          <CustomDomain domainDetails={domainDetails} />
         </div>
         <div className="bg-df-section-card-bg-color p-8 rounded-2xl mt-6">
           <DeleteAccount />

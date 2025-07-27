@@ -138,7 +138,7 @@ export default function DefaultDomain() {
                     }`}
                     onChange={(e) => handleChange(e, setFieldValue)}
                   />
-                  <div className="bg-[#F4F6FA] dark:bg-[4d545f] p-3 rounded-xl absolute top-[3.5px] right-[3.5px] flex items-center gap-2">
+                  <div className="bg-[#F4F6FA] dark:bg-[#4d545f] p-3 rounded-xl absolute top-[3.5px] right-[3.5px] flex items-center gap-2">
                     <div className="font-inter font-semibold text-base leading-normal text-[#202937] dark:text-[#E9EAEB]">
                       designfolio.me
                     </div>

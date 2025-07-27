@@ -16,3 +16,6 @@ export const _getProjectTypes = () => axiosInstance.get("/projectType/get/all");
 
 export const _getCredits = (userId) =>
   axiosInstance.get("/ai/get/credits?userId=" + userId);
+
+export const _getDomainDetails = () =>
+  axiosInstance.get("/user/getCustomDomainStatus");

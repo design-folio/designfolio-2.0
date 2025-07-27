@@ -14,6 +14,7 @@ import PreviewIcon from "../../public/assets/svgs/previewIcon.svg";
 import LinkIcon from "../../public/assets/svgs/link.svg";
 import CopyIcon from "../../public/assets/svgs/copy.svg";
 import TickIcon from "../../public/assets/svgs/tick.svg";
+import CalendarIcon from "../../public/assets/svgs/calendar.svg";
 import HamburgerIcon from "../../public/assets/svgs/hamburger.svg";
 import SettingIcon from "../../public/assets/svgs/settings.svg";
 import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
@@ -270,6 +271,11 @@ export default function LoggedInHeader({
         }
       })
       .finally(() => setUpdateLoading(false));
+  };
+
+  const goToDomains = () => {
+    router.push("/domains");
+    setPopoverMenu(null);
   };
 
   const handlePublishBtn = () => {
@@ -571,15 +577,11 @@ export default function LoggedInHeader({
                           )
                         }
                       >
-                        <div className="mt-1">
-                          <LinkIcon className="text-icon-color cursor-pointer" />
-                        </div>
+                        <LinkIcon className="text-icon-color cursor-pointer" />
+
                         <div className="cursor-pointer">
                           <p className="text-base-text text-[14px] font-[500] font-sfpro underline underline-offset-4 cursor-pointer">
                             {username}.{process.env.NEXT_PUBLIC_BASE_DOMAIN}
-                          </p>
-                          <p className="text-description-text text-[12px] font-[400] font-inter mt-1 cursor-pointer">
-                            {`Updated: ${formatedValue}`}
                           </p>
                         </div>
                       </div>
@@ -591,12 +593,24 @@ export default function LoggedInHeader({
                             <CopyIcon className="text-icon-color cursor-pointer" />
                           )
                         }
-                        type="secondary"
-                        customClass="p-2 rounded-lg pointer-events"
+                        type="normal"
+                        customClass="hover:bg-transparent p-0"
                         onClick={handleCopyText}
                       />
                     </div>
-
+                    <div className="flex gap-2 items-center mt-1">
+                      <CalendarIcon />
+                      <p className="text-description-text text-[12px] font-[400] font-inter mt-1 cursor-pointer">
+                        {`Updated: ${formatedValue}`}
+                      </p>
+                    </div>{" "}
+                    <Button
+                      customClass="w-full mt-4"
+                      text="Add Domain"
+                      type="secondary"
+                      isDisabled={updateLoading}
+                      onClick={goToDomains}
+                    />
                     <Button
                       customClass="w-full mt-4"
                       text="Update changes"

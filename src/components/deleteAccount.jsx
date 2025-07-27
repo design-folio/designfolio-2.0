@@ -28,18 +28,19 @@ export default function DeleteAccount() {
     });
   };
   return (
-    <div>
-      <p className="text-[20px] text-df-section-card-heading-color font-[500] font-inter ">
-        Danger zone
-      </p>
-      <p className="text-[#4d545f] dark:text-[#B4B8C6] text-[12.8px] font-[400] leading-[22.4px] font-inter mt-2">
-        Delete your account and account data. This can&apos;t be undone.
-      </p>
+    <div className="flex justify-between items-center">
+      <div>
+        <p className="text-[20px] text-df-section-card-heading-color font-[500] font-inter ">
+          Danger zone
+        </p>
+        <p className="text-[#4d545f] dark:text-[#B4B8C6] text-[12.8px] font-[400] leading-[22.4px] font-inter mt-2">
+          Delete your account and account data. This can&apos;t be undone.
+        </p>
+      </div>
 
       <Button
         type="tertiary"
         text="Delete account"
-        customClass="mt-[24px]"
         onClick={() => setShowModal(true)}
       />
       <Modal show={showModal}>

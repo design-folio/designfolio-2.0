@@ -24,7 +24,7 @@ export async function middleware(request) {
 
   // Case 2: Custom domain (e.g., hello.gurkeerat.com)
   try {
-    const apiUrl = `${baseUrl}/api/user/getDomainDetails?domain=${hostname}`;
+    const apiUrl = `${baseUrl}/user/getDomainDetails?domain=${hostname}`;
     const response = await fetch(apiUrl);
 
     if (response.ok) {

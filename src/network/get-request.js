@@ -19,3 +19,6 @@ export const _getCredits = (userId) =>
 
 export const _getDomainDetails = () =>
   axiosInstance.get("/user/getCustomDomainStatus");
+
+export const _removeDomain = () =>
+  axiosInstance.delete("/user/removeCustomDomain");

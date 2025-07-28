@@ -30,7 +30,7 @@ export default function DeleteProject() {
         <Button
           onClick={onDelete}
           text={"Delete"}
-          type="modal"
+          type="tertiary"
           isLoading={loading}
         />
       </div>

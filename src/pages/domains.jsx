@@ -27,7 +27,6 @@ export default function Domains() {
 
   const fetchDomainDetails = () => {
     _getDomainDetails().then((res) => {
-      console.log(res);
       setDomainDetails(res.data);
     });
   };

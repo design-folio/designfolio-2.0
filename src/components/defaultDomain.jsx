@@ -7,6 +7,7 @@ import { useGlobalContext } from "@/context/globalContext";
 import Button from "./button";
 import { Badge } from "./ui/badge";
 import { formatTimestamp } from "@/lib/times";
+import { Clock } from "lucide-react";
 
 // Yup validation schema
 const DomainValidationSchema = Yup.object().shape({
@@ -94,10 +95,8 @@ export default function DefaultDomain() {
         </Badge>
       </div>
       <p className="text-[#4d545f] dark:text-[#B4B8C6] text-[12.8px] font-[400] leading-[22.4px] font-inter mt-2">
-        You can change your username to another username that is not currently
-        in use. Designfolio cannot set up redirects for links to your{" "}
-        <span className="text-[#FF553E]">Designfolio profile</span> that
-        includes your old username.{" "}
+        This is your current Designfolio link. You can change your username
+        anytime (if it's available).
       </p>
       <Formik
         initialValues={{ domain: userDetails?.username ?? "" }}
@@ -188,22 +187,18 @@ export default function DefaultDomain() {
         )}
       </Formik>
 
-      <div className="grid grid-cols-[120px_1fr] mt-6">
-        <div>
-          <p className="font-inter font-medium text-sm text-[#4d545f] dark:text-[#B4B8C6]">
-            Status
-          </p>
-          <p className="mt-6 font-inter font-medium text-sm text-[#4d545f] dark:text-[#B4B8C6]">
-            Version
+      <div className="flex items-center gap-6 mt-6">
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded-full bg-[#22C55E]"></div>
+          <p className=" font-inter font-medium text-sm text-[#4d545f] dark:text-[#B4B8C6]">
+            Published & optimized
           </p>
         </div>
 
-        <div>
-          <p className="font-inter font-medium text-sm text-df-section-card-heading-color">
-            Website is published and optimized
-          </p>
-          <p className="mt-6 font-inter font-medium text-sm text-df-section-card-heading-color">
-            updated {formatedValue}
+        <div className="flex items-center gap-2">
+          <Clock className="w-4 h-4 text-[#4d545f] dark:text-[#B4B8C6]" />
+          <p className="font-inter font-medium text-sm text-[#4d545f] dark:text-[#B4B8C6]">
+            Updated {formatedValue}
           </p>
         </div>
       </div>

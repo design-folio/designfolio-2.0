@@ -14,6 +14,7 @@ import { HydrationBoundary, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import queryClient from "@/network/queryClient";
 import Head from "next/head";
+import UpgradeModal from "@/components/upgradeModal";
 
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 
@@ -128,6 +129,7 @@ function MyApp({ Component, pageProps, dfToken, hideHeader }) {
                   />
                   <Component {...pageProps} />
                   <ToastContainer position="bottom-right" />
+                  <UpgradeModal />
                 </main>
               </GlobalProvider>
             </GoogleOAuthProvider>

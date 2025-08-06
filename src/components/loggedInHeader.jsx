@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-
+import styles from "@/styles/domain.module.css";
 import Logo from "../../public/assets/svgs/logo.svg";
 import ThemeIcon from "../../public/assets/svgs/themeIcon.svg";
 import CloseIcon from "../../public/assets/svgs/close.svg";
@@ -33,6 +33,7 @@ import { twMerge } from "tailwind-merge";
 import { removeCursor } from "@/lib/cursor";
 import Modal from "./modal";
 import { Badge } from "./ui/badge";
+import { Check, Copy } from "lucide-react";
 
 const cursors = [
   {
@@ -183,6 +184,7 @@ export default function LoggedInHeader({
   changeCursor,
   changeTemplate,
   template,
+  setShowUpgradeModal,
 }) {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -274,8 +276,8 @@ export default function LoggedInHeader({
   };
 
   const goToDomains = () => {
-    router.push("/domains");
     setPopoverMenu(null);
+    setShowUpgradeModal(true);
   };
 
   const handlePublishBtn = () => {
@@ -500,6 +502,13 @@ export default function LoggedInHeader({
                               alt=""
                               className="cursor-pointer"
                             />
+                            {template?.id != 1 && (
+                              <div
+                                className={`mt-4 ${styles.templateBadgePro}`}
+                              >
+                                Pro
+                              </div>
+                            )}
                           </div>
                         ))}
                       </div>
@@ -577,10 +586,8 @@ export default function LoggedInHeader({
                           )
                         }
                       >
-                        <LinkIcon className="text-icon-color cursor-pointer" />
-
                         <div className="cursor-pointer">
-                          <p className="text-base-text text-[14px] font-[500] font-sfpro underline underline-offset-4 cursor-pointer">
+                          <p className="text-base-text text-[16px] font-[500] font-sfpro cursor-pointer">
                             {username}.{process.env.NEXT_PUBLIC_BASE_DOMAIN}
                           </p>
                         </div>
@@ -588,29 +595,44 @@ export default function LoggedInHeader({
                       <Button
                         icon={
                           isCopied ? (
-                            <TickIcon className="text-icon-color cursor-pointer" />
+                            // <TickIcon className="text-icon-color cursor-pointer" />
+                            <Check
+                              className="text-icon-color cursor-pointer"
+                              size={12}
+                            />
                           ) : (
-                            <CopyIcon className="text-icon-color cursor-pointer" />
+                            <Copy
+                              className="text-icon-color cursor-pointer"
+                              size={12}
+                            />
                           )
                         }
-                        type="normal"
-                        customClass="hover:bg-transparent p-0"
+                        type="secondary"
+                        customClass="p-2 rounded-lg"
                         onClick={handleCopyText}
                       />
                     </div>
                     <div className="flex gap-2 items-center mt-1">
-                      <CalendarIcon />
-                      <p className="text-description-text text-[12px] font-[400] font-inter mt-1 cursor-pointer">
+                      <p className="text-description-text text-[12px] font-[400] font-inter cursor-pointer">
                         {`Updated: ${formatedValue}`}
                       </p>
                     </div>{" "}
-                    <Button
-                      customClass="w-full mt-4"
-                      text="Add Domain"
-                      type="secondary"
-                      isDisabled={updateLoading}
-                      onClick={goToDomains}
-                    />
+                    {!userDetails?.pro && (
+                      <>
+                        <Button
+                          text="Want your own domain?"
+                          type="secondary"
+                          isDisabled={updateLoading}
+                          onClick={goToDomains}
+                          icon={
+                            <span className={styles.upgradeLink}>Go Pro</span>
+                          }
+                          iconPosition="right"
+                          customClass="w-full mt-4 gap-1 !text-[13px]"
+                        />
+                        <hr className="mt-4" />
+                      </>
+                    )}
                     <Button
                       customClass="w-full mt-4"
                       text="Update changes"

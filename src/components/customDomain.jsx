@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 import Button from "./button";
-
+import styles from "@/styles/domain.module.css";
 import { Badge } from "./ui/badge";
 import DotIcon from "../../public/assets/svgs/dots.svg";
 import RefreshIcon from "../../public/assets/svgs/refresh.svg";
@@ -23,7 +23,8 @@ const DomainValidationSchema = Yup.object().shape({
 });
 
 export default function CustomDomain({ domainDetails, fetchDomainDetails }) {
-  const { userDetails } = useGlobalContext();
+  const { userDetails, setShowUpgradeModal } = useGlobalContext();
+
   const [isDelete, setIsDelete] = useState(false);
   // Formik handleChange function with API call
   const handleChange = (e, setFieldValue) => {
@@ -42,6 +43,8 @@ export default function CustomDomain({ domainDetails, fetchDomainDetails }) {
         <p className="text-[20px] text-df-section-card-heading-color font-[500] font-inter ">
           Custom domain
         </p>
+        <span className={styles.proBadge}>PRO</span>
+
         {domainDetails?.customDomain?.domain &&
           (domainDetails?.customDomain?.isCustomVerified &&
           domainDetails?.customDomain?.isCustomVerified ? (
@@ -79,146 +82,185 @@ export default function CustomDomain({ domainDetails, fetchDomainDetails }) {
           ))}
       </div>
       <p className="text-[#4d545f] dark:text-[#B4B8C6] text-[12.8px] font-[400] leading-[22.4px] font-inter mt-2">
-        Connect a custom domain purchased through web hosting service
+        Use your own domain — make your portfolio truly yours
       </p>
-      {domainDetails?.customDomain?.domain ? (
-        <div className="grid grid-cols-[120px_1fr_120px] mt-6 items-center">
-          <div>
-            <p className="font-medium text-[14px] text-[#4d545f] dark:text-[#B4B8C6]">
-              URL
-            </p>
-          </div>
-          <div>
-            <p className="font-medium text-[14px] text-[#FF553E]">
-              {domainDetails?.customDomain?.domain}
-            </p>
-          </div>
-          <div className="relative flex justify-end">
-            <Button
-              type="normal"
-              icon={
-                <DeleteIcon className="stroke-delete-btn-icon-color w-6 h-6 cursor-pointer" />
-              }
-              onClick={() => setIsDelete(!isDelete)}
-            />
-          </div>
-          <div>
-            <p className="font-medium text-[14px] text-[#4d545f] dark:text-[#B4B8C6]">
-              Status
-            </p>
-          </div>
-          <div className="mt-2">
-            {domainDetails?.customDomain?.isCustomVerified &&
-            domainDetails?.customDomain?.isCustomVerified ? (
-              <p className="font-medium text-[14px] text-df-section-card-heading-color">
-                Website is published and optimized
-              </p>
-            ) : (
-              <p className="font-medium text-[14px] text-df-section-card-heading-color">
-                Your <span className="text-[#FF553E]">DNS records</span> must be
-                set up with the following values. Once done, click the{" "}
-                <span className="text-[#FF553E]">'Verify Domain'</span> button
-                to complete the verification process
-              </p>
-            )}
-          </div>
-          <div className="flex justify-end"></div>
-          {(!domainDetails?.customDomain?.isCustomVerified ||
-            !domainDetails?.customDomain?.isCustomVerified) && (
-            <>
-              <div></div>
-              <div className="col-span-2 mt-6">
-                <div className="overflow-hidden rounded-xl border border-gray-200">
-                  <table className="min-w-full text-sm text-left">
-                    <thead className="bg-[#F4F6FA] dark:bg-[#4d545f] text-[#202937] dark:text-[#E9EAEB] font-medium">
-                      <tr>
-                        <th className="px-4 py-3">Name</th>
-                        <th className="px-4 py-3">Type</th>
-                        <th className="px-4 py-3">Value</th>
-                      </tr>
-                    </thead>
-                    <tbody className="text-df-section-card-heading-color">
-                      {domainDetails?.customDomain?.verificationData?.map(
-                        (record, index) => (
-                          <tr className="border-t border-gray-200" key={index}>
-                            <td className="px-4 py-3">{record?.domain}</td>
-                            <td className="px-4 py-3">{record?.type}</td>
-                            <td className="px-4 py-3">{record?.value}</td>
-                          </tr>
-                        )
-                      )}
-                    </tbody>
-                  </table>
-                </div>
+
+      {userDetails?.pro ? (
+        <>
+          {domainDetails?.customDomain?.domain ? (
+            <div className="grid grid-cols-[120px_1fr_120px] mt-6 items-center">
+              <div>
+                <p className="font-medium text-[14px] text-[#4d545f] dark:text-[#B4B8C6]">
+                  URL
+                </p>
               </div>
-              <div></div>
-              <div className="col-span-2 mt-6">
+              <div>
+                <p className="font-medium text-[14px] text-[#FF553E]">
+                  {domainDetails?.customDomain?.domain}
+                </p>
+              </div>
+              <div className="relative flex justify-end">
                 <Button
-                  onClick={() => {
-                    _verifyDomain().then((res) => fetchDomainDetails());
-                  }}
-                  customClass="w-full"
-                  text={"Verify domain"}
+                  type="normal"
+                  icon={
+                    <DeleteIcon className="stroke-delete-btn-icon-color w-6 h-6 cursor-pointer" />
+                  }
+                  onClick={() => setIsDelete(!isDelete)}
                 />
               </div>
-            </>
-          )}
-        </div>
-      ) : (
-        <div>
-          <Formik
-            initialValues={{
-              domain: domainDetails?.customDomain?.domain ?? "",
-            }}
-            validationSchema={DomainValidationSchema}
-            onSubmit={(values, actions) => {
-              // Handle form submission
-              if (values.domain != 0) {
-                actions.setSubmitting(false);
-                addDomain({ customDomain: values.domain }).then((res) =>
-                  fetchDomainDetails()
-                );
-              }
-            }}
-          >
-            {({ isSubmitting, isValid, setFieldValue, values, errors }) => (
-              <Form
-                id={"domainForm"}
-                className=" w-full mt-[24px] flex items-center gap-6"
-              >
-                <div className="w-full flex-1">
-                  <div className="relative">
-                    <Field
-                      type="text"
-                      name="domain"
-                      placeholder="www.site.com"
-                      autoComplete="off"
-                      className={`text-input`}
-                      onChange={(e) => handleChange(e, setFieldValue)}
+              <div>
+                <p className="font-medium text-[14px] text-[#4d545f] dark:text-[#B4B8C6]">
+                  Status
+                </p>
+              </div>
+              <div className="mt-2">
+                {domainDetails?.customDomain?.isCustomVerified &&
+                domainDetails?.customDomain?.isCustomVerified ? (
+                  <p className="font-medium text-[14px] text-df-section-card-heading-color">
+                    Website is published and optimized
+                  </p>
+                ) : (
+                  <p className="font-medium text-[14px] text-df-section-card-heading-color">
+                    Your <span className="text-[#FF553E]">DNS records</span>{" "}
+                    must be set up with the following values. Once done, click
+                    the <span className="text-[#FF553E]">'Verify Domain'</span>{" "}
+                    button to complete the verification process
+                  </p>
+                )}
+              </div>
+              <div className="flex justify-end"></div>
+              {(!domainDetails?.customDomain?.isCustomVerified ||
+                !domainDetails?.customDomain?.isCustomVerified) && (
+                <>
+                  <div></div>
+                  <div className="col-span-2 mt-6">
+                    <div className="overflow-hidden rounded-xl border border-gray-200">
+                      <table className="min-w-full text-sm text-left">
+                        <thead className="bg-[#F4F6FA] dark:bg-[#4d545f] text-[#202937] dark:text-[#E9EAEB] font-medium">
+                          <tr>
+                            <th className="px-4 py-3">Name</th>
+                            <th className="px-4 py-3">Type</th>
+                            <th className="px-4 py-3">Value</th>
+                          </tr>
+                        </thead>
+                        <tbody className="text-df-section-card-heading-color">
+                          {domainDetails?.customDomain?.verificationData?.map(
+                            (record, index) => (
+                              <tr
+                                className="border-t border-gray-200"
+                                key={index}
+                              >
+                                <td className="px-4 py-3">{record?.domain}</td>
+                                <td className="px-4 py-3">{record?.type}</td>
+                                <td className="px-4 py-3">{record?.value}</td>
+                              </tr>
+                            )
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <div></div>
+                  <div className="col-span-2 mt-6">
+                    <Button
+                      onClick={() => {
+                        _verifyDomain().then((res) => fetchDomainDetails());
+                      }}
+                      customClass="w-full"
+                      text={"Verify domain"}
                     />
                   </div>
-                  <ErrorMessage
-                    name="domain"
-                    component="div"
-                    className="error-message text-[14px] absolute"
-                  />
-                </div>
-                <div className="flex justify-end">
-                  <Button
-                    text={"Add domain"}
-                    form={"domainForm"}
-                    isLoading={isSubmitting}
-                    isDisabled={
-                      isSubmitting ||
-                      !isValid ||
-                      values?.domain == userDetails?.username
-                    }
-                    btnType="submit"
-                  />
-                </div>
-              </Form>
-            )}
-          </Formik>
+                </>
+              )}
+            </div>
+          ) : (
+            <div>
+              <Formik
+                initialValues={{
+                  domain: domainDetails?.customDomain?.domain ?? "",
+                }}
+                validationSchema={DomainValidationSchema}
+                onSubmit={(values, actions) => {
+                  // Handle form submission
+                  if (values.domain != 0) {
+                    actions.setSubmitting(false);
+                    addDomain({ customDomain: values.domain }).then((res) =>
+                      fetchDomainDetails()
+                    );
+                  }
+                }}
+              >
+                {({ isSubmitting, isValid, setFieldValue, values, errors }) => (
+                  <Form
+                    id={"domainForm"}
+                    className=" w-full mt-[24px] flex items-center gap-6"
+                  >
+                    <div className="w-full flex-1">
+                      <div className="relative">
+                        <Field
+                          type="text"
+                          name="domain"
+                          placeholder="www.site.com"
+                          autoComplete="off"
+                          className={`text-input`}
+                          onChange={(e) => handleChange(e, setFieldValue)}
+                        />
+                      </div>
+                      <ErrorMessage
+                        name="domain"
+                        component="div"
+                        className="error-message text-[14px] absolute"
+                      />
+                    </div>
+                    <div className="flex justify-end">
+                      <Button
+                        text={"Add domain"}
+                        form={"domainForm"}
+                        isLoading={isSubmitting}
+                        isDisabled={
+                          isSubmitting ||
+                          !isValid ||
+                          values?.domain == userDetails?.username
+                        }
+                        btnType="submit"
+                      />
+                    </div>
+                  </Form>
+                )}
+              </Formik>
+            </div>
+          )}
+        </>
+      ) : (
+        <div className={`mt-4 ${styles.proFeatureBox}`}>
+          <div className={styles.proFeatureContent}>
+            <h3 className={styles.proFeatureTitle}>
+              Available on Designfolio Pro
+            </h3>
+            <p className={styles.proFeatureDescription}>
+              Want to connect your own domain? Upgrade to Designfolio Pro and
+              make your portfolio look like a real website.
+            </p>
+            <button
+              className={styles.upgradeButton}
+              onClick={() => setShowUpgradeModal(true)}
+            >
+              Upgrade to Pro
+            </button>
+          </div>
+          <div className={styles.proFeaturePreview}>
+            <div className={styles.disabledDomainRow}>
+              <input
+                type="text"
+                className={styles.disabledDomainInput}
+                placeholder="yourdomain.com"
+                disabled
+              />
+              <button className={styles.disabledButton} disabled>
+                Update domain
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

@@ -22,3 +22,5 @@ export const _getDomainDetails = () =>
 
 export const _removeDomain = () =>
   axiosInstance.delete("/user/removeCustomDomain");
+
+export const createOrder = () => axiosInstance.get("/user/createRazorpayOrder");

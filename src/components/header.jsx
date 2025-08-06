@@ -19,6 +19,7 @@ const Header = ({ dfToken, hideHeader }) => {
     changeCursor,
     changeTemplate,
     template,
+    setShowUpgradeModal,
   } = useGlobalContext();
 
   // Determine header component based on dfToken and router pathname
@@ -47,6 +48,7 @@ const Header = ({ dfToken, hideHeader }) => {
         changeCursor={changeCursor}
         changeTemplate={changeTemplate}
         template={template}
+        setShowUpgradeModal={setShowUpgradeModal}
       />
     );
   }

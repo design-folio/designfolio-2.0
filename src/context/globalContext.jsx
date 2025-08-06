@@ -44,6 +44,8 @@ export const GlobalProvider = ({ children }) => {
   const [projectValue, setProjectValue] = useState(null);
   const [cursor, setCursor] = useState(0);
   const [template, setTemplate] = useState(0);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+
   const { setTheme } = useTheme();
 
   // Fetch user details
@@ -213,6 +215,9 @@ export const GlobalProvider = ({ children }) => {
         changeCursor,
         changeTemplate,
         template,
+        setTemplate,
+        showUpgradeModal,
+        setShowUpgradeModal,
       }}
     >
       {children}

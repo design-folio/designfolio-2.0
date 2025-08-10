@@ -63,9 +63,9 @@ export default function Settings() {
               </div>
             )}
 
-            <div className="mt-10">
+            {/* <div className="mt-10">
               <ChangeUsername />
-            </div>
+            </div> */}
             <div className="mt-10">
               <DeleteAccount />
             </div>

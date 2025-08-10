@@ -97,8 +97,9 @@ export default function Projects({
                 preview={preview}
               />
             ))}
+
             {edit &&
-              (!userDetails?.pro || !userDetails?.projects.length > 3) && (
+              (userDetails?.pro || userDetails?.projects.length < 2 ? (
                 <AddCard
                   title={`${
                     userDetails?.projects?.length === 0
@@ -113,8 +114,9 @@ export default function Projects({
                   icon={<ProjectIcon className="cursor-pointer" />}
                   openModal={openModal}
                 />
-              )}
-            <ProjectLock />
+              ) : (
+                <ProjectLock />
+              ))}
           </div>
         </SortableContainerElement>
       </Section>

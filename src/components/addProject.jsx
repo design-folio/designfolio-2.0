@@ -28,7 +28,8 @@ export default function AddProject() {
   const [showEye, setShowEye] = useState(false);
   const [loading, setLoading] = useState(false);
   const { theme } = useTheme();
-  const { closeModal, userDetails, updateCache } = useGlobalContext();
+  const { closeModal, userDetails, updateCache, setUserDetails } =
+    useGlobalContext();
 
   const validationSchema = Yup.object().shape({
     description: Yup.string()
@@ -139,6 +140,8 @@ export default function AddProject() {
               };
               _updateUser(payload)
                 .then((res) => {
+                  console.log(res);
+                  setUserDetails(res?.data?.user);
                   updateCache("userDetails", res?.data?.user);
                   closeModal();
                 })

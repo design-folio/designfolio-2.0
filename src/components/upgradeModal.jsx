@@ -25,11 +25,13 @@ export default function UpgradeModal() {
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, // Your public Key ID
         amount: { amount }, // Amount in paise (e.g., ₹500.00)
-        currency: "INR",
+        // currency: "INR",
+        order_id: id,
         name: "Designfolio",
         description: "Insecure Test Transaction",
         image: "/your-logo.png",
         handler: function (response) {
+          console.log(response);
           // This handler is called on successful payment.
           // 🚨 WITHOUT SERVER-SIDE VERIFICATION, THIS CAN BE FAKED.
           // A user can manually trigger this function without actually paying.
@@ -45,6 +47,7 @@ export default function UpgradeModal() {
         },
         theme: {
           color: "#3399cc",
+          backdrop_color: "rgba(0,0,0,0)",
         },
       };
       const rzp = new window.Razorpay(options);

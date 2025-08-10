@@ -37,6 +37,7 @@ import { _updateUser } from "@/network/post-request";
 import Linkedin from "../../public/assets/svgs/linkedinIcon.svg";
 import ResumeIcon from "../../public/assets/svgs/resume.svg";
 import NoteIcon from "../../public/assets/svgs/noteIcon.svg";
+import ProjectLock from "./projectLock";
 export default function Builder2({ edit = false }) {
   const {
     userDetails,
@@ -201,26 +202,30 @@ export default function Builder2({ edit = false }) {
           <ProjectShape className="text-template-text-left-bg-color" />
           <Chat direction="left" className="rounded-tl-none w-fit">
             {projects.length > 0 ? (
-              <div className="flex items-center gap-3">
-                <Button
-                  text={"Add case study"}
-                  customClass="w-fit gap-1 items-center"
-                  onClick={() => openModal(modals.project)}
-                  icon={
-                    <PlusIcon className="text-primary-btn-text-color w-[20px] h-[20px] mb-[2px] cursor-pointer" />
-                  }
-                />
-                or
-                <Button
-                  text={"Write with AI"}
-                  type="secondary"
-                  customClass="w-fit gap-1 items-center"
-                  icon={
-                    <AiIcon className="text-secondary-btn-text-color w-[22px] h-[22px] mb-[2px] cursor-pointer" />
-                  }
-                  onClick={() => openModal(modals.aiProject)}
-                />
-              </div>
+              userDetails?.pro || userDetails?.projects.length < 2 ? (
+                <div className="flex items-center gap-3">
+                  <Button
+                    text={"Add case study"}
+                    customClass="w-fit gap-1 items-center"
+                    onClick={() => openModal(modals.project)}
+                    icon={
+                      <PlusIcon className="text-primary-btn-text-color w-[20px] h-[20px] mb-[2px] cursor-pointer" />
+                    }
+                  />
+                  or
+                  <Button
+                    text={"Write with AI"}
+                    type="secondary"
+                    customClass="w-fit gap-1 items-center"
+                    icon={
+                      <AiIcon className="text-secondary-btn-text-color w-[22px] h-[22px] mb-[2px] cursor-pointer" />
+                    }
+                    onClick={() => openModal(modals.aiProject)}
+                  />
+                </div>
+              ) : (
+                <ProjectLock />
+              )
             ) : (
               <AddCard
                 title={`${

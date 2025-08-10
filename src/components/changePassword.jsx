@@ -119,13 +119,13 @@ export default function ChangePassword() {
               </div>
             </div>
 
-            <div className="flex justify-end">
+            <div className="lg:flex justify-end">
               <Button
                 form={"resetPasswordForm"}
                 btnType="submit"
                 isLoading={loading}
                 isDisabled={!isValid}
-                customClass="mt-6"
+                customClass="mt-6 w-full lg:w-fit"
                 text="Change password"
               />
             </div>

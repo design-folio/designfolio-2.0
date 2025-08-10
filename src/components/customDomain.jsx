@@ -257,7 +257,7 @@ export default function CustomDomain({ domainDetails, fetchDomainDetails }) {
                 disabled
               />
               <button className={styles.disabledButton} disabled>
-                Update domain
+                Update
               </button>
             </div>
           </div>

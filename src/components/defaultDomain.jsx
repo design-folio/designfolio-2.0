@@ -120,9 +120,9 @@ export default function DefaultDomain() {
         }) => (
           <Form
             id={"usernameForm"}
-            className=" w-full mt-[24px] flex items-center gap-6"
+            className="w-full mt-[24px] flex flex-col lg:flex-row items-center gap-6"
           >
-            <div className="flex-1 flex flex-col xl:flex-row items-end  gap-4  m-auto">
+            <div className="flex-1 flex flex-col xl:flex-row items-end  gap-4  w-full">
               <div className="w-full">
                 <div className="relative">
                   <Field
@@ -170,7 +170,7 @@ export default function DefaultDomain() {
                 />
               </div>
             </div>
-            <div className="flex justify-end">
+            <div className="flex justify-end w-full lg:w-fit">
               <Button
                 text={"Change username"}
                 form={"usernameForm"}
@@ -181,13 +181,14 @@ export default function DefaultDomain() {
                   values?.domain == userDetails?.username
                 }
                 btnType="submit"
+                customClass="w-full lg:w-fit"
               />
             </div>
           </Form>
         )}
       </Formik>
 
-      <div className="flex items-center gap-6 mt-6">
+      <div className="lg:flex items-center gap-6 mt-6">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-[#22C55E]"></div>
           <p className=" font-inter font-medium text-sm text-[#4d545f] dark:text-[#B4B8C6]">
@@ -195,7 +196,7 @@ export default function DefaultDomain() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 mt-2 lg:mt-0">
           <Clock className="w-4 h-4 text-[#4d545f] dark:text-[#B4B8C6]" />
           <p className="font-inter font-medium text-sm text-[#4d545f] dark:text-[#B4B8C6]">
             Updated {formatedValue}

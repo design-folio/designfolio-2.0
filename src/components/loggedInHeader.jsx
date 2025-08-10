@@ -630,13 +630,16 @@ export default function LoggedInHeader({
                           iconPosition="right"
                           customClass="w-full mt-4 gap-1 !text-[13px]"
                         />
-                        <hr className="mt-4" />
+                        <hr className="mt-4 border-tools-card-item-border-color" />
                       </>
                     )}
                     <Button
                       customClass="w-full mt-4"
                       text="Update changes"
-                      isDisabled={updateLoading}
+                      isDisabled={
+                        updateLoading ||
+                        (!userDetails?.pro && userDetails?.template != 0)
+                      }
                       onClick={handleUpdate}
                     />
                   </div>
@@ -793,6 +796,7 @@ export default function LoggedInHeader({
                       className="cursor-pointer"
                     />
                   }
+                  isDisabled={!userDetails?.pro && userDetails?.template != 0}
                   animation
                 />
                 <div className="w-full h-[2px] bg-placeholder-color my-4" />

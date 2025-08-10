@@ -31,6 +31,7 @@ import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { CSS } from "@dnd-kit/utilities";
 import { Testimonials } from "./Testimonials";
 import { _updateUser } from "@/network/post-request";
+import ProjectLock from "../projectLock";
 
 const Portfolio = ({ userDetails, edit }) => {
   const router = useRouter();
@@ -381,26 +382,29 @@ const Portfolio = ({ userDetails, edit }) => {
                       edit={edit}
                     />
                   ))}
-                  {edit && (
-                    <AddCard
-                      title={`${
-                        userDetails?.projects?.length === 0
-                          ? "Upload your first case study"
-                          : "Add case study"
-                      }`}
-                      subTitle="Show off your best work."
-                      first
-                      buttonTitle="Add case study"
-                      secondaryButtonTitle="Write using AI"
-                      onClick={() => openModal(modals.project)}
-                      icon={<ProjectIcon className="cursor-pointer" />}
-                      openModal={openModal}
-                      className={`flex items-center justify-center min-h-[269px] rounded-lg ${
-                        userDetails?.projects?.length !== 0 &&
-                        "bg-df-section-card-bg-color shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] hover:shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
-                      }`}
-                    />
-                  )}
+                  {edit &&
+                    (userDetails?.pro || userDetails?.projects.length < 2 ? (
+                      <AddCard
+                        title={`${
+                          userDetails?.projects?.length === 0
+                            ? "Upload your first case study"
+                            : "Add case study"
+                        }`}
+                        subTitle="Show off your best work."
+                        first
+                        buttonTitle="Add case study"
+                        secondaryButtonTitle="Write using AI"
+                        onClick={() => openModal(modals.project)}
+                        icon={<ProjectIcon className="cursor-pointer" />}
+                        openModal={openModal}
+                        className={`flex items-center justify-center min-h-[269px] rounded-lg ${
+                          userDetails?.projects?.length !== 0 &&
+                          "bg-df-section-card-bg-color shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] hover:shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
+                        }`}
+                      />
+                    ) : (
+                      <ProjectLock />
+                    ))}
                 </div>
               </motion.section>
             </SortableContext>

@@ -2371,3 +2371,23 @@
     grid-template-columns: 1fr;
   }
 }
+
+[data-theme="dark"] .addProjectCardBlocked {
+  border: none;
+  background: linear-gradient(135deg, #000 0%, #000 100%);
+}
+
+[data-theme="dark"] .addProjectBlockedTitle,
+.proFeatureTitle {
+  color: #f9f9fb;
+}
+
+[data-theme="dark"] .addProjectBlockedSubtext,
+.proFeatureDescription {
+  color: #b1b5c3;
+}
+
+[data-theme="dark"] .proFeatureBox {
+  border: none;
+  background: linear-gradient(135deg, #000 0%, #000 100%);
+}

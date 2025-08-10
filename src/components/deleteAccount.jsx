@@ -28,7 +28,7 @@ export default function DeleteAccount() {
     });
   };
   return (
-    <div className="flex justify-between items-center">
+    <div className="flex flex-col lg:flex-row justify-between items-center">
       <div>
         <p className="text-[20px] text-df-section-card-heading-color font-[500] font-inter ">
           Danger zone
@@ -42,6 +42,7 @@ export default function DeleteAccount() {
         type="tertiary"
         text="Delete account"
         onClick={() => setShowModal(true)}
+        customClass="mt-2 w-full lg:w-fit"
       />
       <Modal show={showModal}>
         <div className="rounded-2xl bg-modal-bg-color m-auto max-w-[375px] md:max-w-[500px]">

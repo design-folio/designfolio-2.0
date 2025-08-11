@@ -4,11 +4,11 @@ import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
 import { useRouter } from "next/router";
 import { useGlobalContext } from "@/context/globalContext";
 import ChangePassword from "@/components/changePassword";
-import ChangeUsername from "@/components/changeUsername";
 import DeleteAccount from "@/components/deleteAccount";
 import CustomDomain from "@/components/customDomain";
 import DefaultDomain from "@/components/defaultDomain";
 import { _getDomainDetails } from "@/network/get-request";
+import Transaction from "@/components/transaction";
 
 export default function Settings() {
   const { userDetails, setIsUserDetailsFromCache, userDetailsIsState } =
@@ -54,6 +54,9 @@ export default function Settings() {
             domainDetails={domainDetails}
             fetchDomainDetails={fetchDomainDetails}
           />
+        </div>
+        <div className="bg-df-section-card-bg-color p-8 rounded-2xl mt-6">
+          <Transaction />
         </div>
         <div className="bg-df-section-card-bg-color p-8 rounded-2xl mt-6">
           <div className="mt-6">

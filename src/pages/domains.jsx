@@ -53,6 +53,7 @@ export default function Domains() {
             fetchDomainDetails={fetchDomainDetails}
           />
         </div>
+
         <div className="bg-df-section-card-bg-color p-8 rounded-2xl mt-6">
           <DeleteAccount />
         </div>

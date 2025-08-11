@@ -1,13 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "@/styles/domain.module.css";
 import { useGlobalContext } from "@/context/globalContext";
 import Script from "next/script";
-import { createOrder } from "@/network/get-request";
+import { _getProPlanDetails, createOrder } from "@/network/get-request";
 
 export default function UpgradeModal() {
   const [isModalExiting, setIsModalExiting] = useState(false);
-  const { showUpgradeModal, setShowUpgradeModal, userDetails } =
-    useGlobalContext();
+  const [plan, setPlan] = useState(null);
+  const {
+    showUpgradeModal,
+    setShowUpgradeModal,
+    userDetails,
+    userDetailsRefecth,
+  } = useGlobalContext();
+
+  useEffect(() => {
+    if (showUpgradeModal) {
+      _getProPlanDetails().then((response) => {
+        console.log(response);
+        setPlan(response?.data?.proPlan);
+      });
+    }
+  }, [showUpgradeModal]);
 
   const handleCloseModal = () => {
     setIsModalExiting(true);
@@ -17,44 +31,54 @@ export default function UpgradeModal() {
     }, 300);
   };
 
+  function formatAmount(amount, currencyCode, locale = undefined) {
+    return new Intl.NumberFormat(locale, {
+      style: "currency",
+      currency: currencyCode,
+      minimumFractionDigits: 0, // no decimals
+      maximumFractionDigits: 0,
+    }).format(amount);
+  }
+
   const openCheckout = () => {
     // This is a minimal configuration.
     // A secure app would first fetch an `order_id` from its own server.
     createOrder().then((response) => {
-      const { amount, id } = response?.data?.order; // Assuming the response contains necessary data for Razorpay
+      const { id } = response?.data?.order; // Assuming the response contains necessary data for Razorpay
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, // Your public Key ID
-        amount: { amount }, // Amount in paise (e.g., ₹500.00)
+        // amount: { amount }, // Amount in paise (e.g., ₹500.00)
         // currency: "INR",
         order_id: id,
         name: "Designfolio",
         description: "Insecure Test Transaction",
-        image: "/your-logo.png",
+        image: "../../public/assets/svgs/logo.svg",
         handler: function (response) {
-          console.log(response);
+          // console.log(response);
+          userDetailsRefecth();
+          handleCloseModal();
           // This handler is called on successful payment.
           // 🚨 WITHOUT SERVER-SIDE VERIFICATION, THIS CAN BE FAKED.
           // A user can manually trigger this function without actually paying.
-          alert(
-            `Payment supposedly successful! Payment ID: ${response.razorpay_payment_id}`
-          );
-          alert("Warning: This payment has NOT been securely verified.");
+          // alert(
+          //   `Payment supposedly successful! Payment ID: ${response.razorpay_payment_id}`
+          // );
+          // alert("Warning: This payment has NOT been securely verified.");
         },
         prefill: {
           name: userDetails?.username,
           email: userDetails?.email,
-          contact: "",
+          // contact: "",
         },
         theme: {
           color: "#3399cc",
-          backdrop_color: "rgba(0,0,0,0)",
         },
       };
       const rzp = new window.Razorpay(options);
       rzp.open();
     });
   };
-  if (!showUpgradeModal) return null;
+  if (!showUpgradeModal || !plan) return null;
   return (
     <div
       className={`${styles.modalOverlay} ${
@@ -87,7 +111,9 @@ export default function UpgradeModal() {
 
         <div className={styles.modalContent}>
           <div className={styles.priceSection}>
-            <div className={styles.price}>₹4,999</div>
+            <div className={styles.price}>
+              {formatAmount(plan?.amount, plan?.currency)}
+            </div>
             <div className={styles.priceSubtext}>one-time payment</div>
           </div>
 

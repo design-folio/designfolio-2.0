@@ -129,48 +129,12 @@ const templates = [
     item: "Prism",
     isNew: true,
   },
-  // {
-  //   id: 4,
-  //   value: "pristine",
-  //   item: "Pristine",
-  //   isNew: true,
-  // },
-];
-
-const emails = [
-  "sarathdixit29@gmail.com",
-  "heyfromshai@gmail.com",
-  "siddhesh2k@gmail.com",
-  "aadhavanm8@gmail.com",
-  "madhavanu555@gmail.com",
-  "haidar8006@gmail.com",
-  "richardmarx353@gmail.com",
-  "mostafa.saad127@yahoo.com",
-  "yashika.r.gujar@gmail.com",
-  "ayan.workspace4699@gmail.com",
-  "priyams2810@gmail.com",
-  "uiuxhimanshu98@gmail.com",
-  "rajuvegeshana@gmail.com",
-  "ronak.barhanpurkar09@gmail.com",
-  "shyleshs1999@gmail.com",
-  "ashishgoswamimailbox@gmail.com",
-  "hi@vidhunnan.design",
-  "adib.7295@gmail.com ",
-  "chebrolutejopriya29@gmail.com",
-  "prabhakaransuraj12@gmail.com",
-  "arpitaacharya99@gmail.com",
-  "mayurigupta3010@gmail.com",
-  "shadesigns369@gmail.com",
-  "udeeta1711@gmail.com",
-  "ashish174a@gmail.com",
-  "Siddhesh2k@gmail.com",
-  "asheeryavaibhavy@gmail.com",
-  "pravinuxx@gmail.com",
-  "ramsonkar1895@gmail.com",
-  "designer.khalida@gmail.com",
-  "gokulananad2001929@gmail.com",
-  "chebrolutejopriya29@gmail.com",
-  "Design@joseph.in",
+  {
+    id: 4,
+    value: "pristine",
+    item: "Pristine",
+    isNew: true,
+  },
 ];
 
 export default function LoggedInHeader({
@@ -204,16 +168,16 @@ export default function LoggedInHeader({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
-  useEffect(() => {
-    if (emails.includes(email)) {
-      templates.push({
-        id: 4,
-        value: "pristine",
-        item: "Pristine",
-        isNew: true,
-      });
-    }
-  }, [email]);
+  // useEffect(() => {
+  //   if (emails.includes(email)) {
+  //     templates.push({
+  //       id: 4,
+  //       value: "pristine",
+  //       item: "Pristine",
+  //       isNew: true,
+  //     });
+  //   }
+  // }, [email]);
 
   useEffect(() => {
     const handleScroll = () => {

@@ -27,3 +27,6 @@ export const createOrder = () => axiosInstance.get("/user/createRazorpayOrder");
 
 export const _getProPlanDetails = () =>
   axiosInstance.get("/user/getProPlanDetails");
+
+export const _getPaymentDetails = () =>
+  axiosInstance.get("/user/getAllUserOrders");

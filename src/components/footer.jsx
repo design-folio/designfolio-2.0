@@ -69,13 +69,18 @@ export default function Footer({ dfToken, innerClass = "", className = "" }) {
         </p>
         <div className="flex gap-10">
           <Link href={"/privacy-policy"}>
-            <p className="text-[14px] font-[500] text-landing-footer-link-color font-inter">
+            <p className="text-[14px] font-[500] text-landing-footer-link-color font-inter cursor-pointer">
               Privacy Policy
             </p>
           </Link>
           <Link href={"terms-and-conditions"}>
-            <p className="text-[14px] font-[500] text-landing-footer-link-color font-inter">
+            <p className="text-[14px] font-[500] text-landing-footer-link-color font-inter cursor-pointer">
               Terms & Conditions
+            </p>
+          </Link>
+          <Link href={"refund-policy"}>
+            <p className="text-[14px] font-[500] text-landing-footer-link-color font-inter cursor-pointer">
+              Refund Policy
             </p>
           </Link>
         </div>

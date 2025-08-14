@@ -540,9 +540,9 @@ export default function LoggedInHeader({
               >
                 <div className=" w-[310px] rounded-xl shadow-lg bg-popover-bg-color border-4 border-solid border-popover-border-color">
                   <div className="p-4">
-                    <div className="flex justify-between items-center truncate  overflow-hidden gap-2">
+                    <div className="flex justify-between items-center gap-2 overflow-hidden">
                       <div
-                        className="flex gap-2 cursor-pointer items-center"
+                        className="flex gap-2 cursor-pointer items-center min-w-0 flex-1"
                         onClick={() =>
                           window.open(
                             `https://${username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`,
@@ -550,8 +550,8 @@ export default function LoggedInHeader({
                           )
                         }
                       >
-                        <div className="cursor-pointer">
-                          <p className="text-base-text text-[16px] font-[500] font-sfpro cursor-pointer">
+                        <div className="cursor-pointer min-w-0 flex-1">
+                          <p className="text-base-text text-[16px] font-[500] font-sfpro cursor-pointer truncate">
                             {username}.{process.env.NEXT_PUBLIC_BASE_DOMAIN}
                           </p>
                         </div>
@@ -559,7 +559,6 @@ export default function LoggedInHeader({
                       <Button
                         icon={
                           isCopied ? (
-                            // <TickIcon className="text-icon-color cursor-pointer" />
                             <Check
                               className="text-icon-color cursor-pointer"
                               size={12}
@@ -576,11 +575,12 @@ export default function LoggedInHeader({
                         onClick={handleCopyText}
                       />
                     </div>
+
                     <div className="flex gap-2 items-center mt-1">
                       <p className="text-description-text text-[12px] font-[400] font-inter cursor-pointer">
                         {`Updated: ${formatedValue}`}
                       </p>
-                    </div>{" "}
+                    </div>
                     {!userDetails?.pro && (
                       <>
                         <Button

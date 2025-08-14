@@ -37,6 +37,7 @@ export default function Template2({ userDetails, preview = false }) {
     reviews,
     introduction,
     resume,
+    username,
   } = userDetails || {};
   const router = useRouter();
   const { projectRef } = useGlobalContext();
@@ -117,7 +118,7 @@ export default function Template2({ userDetails, preview = false }) {
               delay={1000}
               onComplete={handleStepCompletion}
             >
-              {introduction}
+              Hey there! I'm {username}
             </Chat>
           </div>
         )}

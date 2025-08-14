@@ -248,27 +248,32 @@ export const WorkShowcase = ({ userDetails, edit }) => {
     <section className="pt-0 pb-16">
       <h2 className="text-2xl font-bold mb-8">Featured Projects</h2>
       {/* Wrap the grid with DND Kit's context */}
-      <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-        <SortableContext items={sortedProjects.map((project) => project._id)}>
-          <motion.div
-            ref={ref}
-            variants={containerVariants}
-            initial="hidden"
-            animate={inView ? "show" : "hidden"}
-            className={`${
-              sortedProjects.length === 0
-                ? "bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words"
-                : "grid grid-cols-1 md:grid-cols-2 gap-6"
-            }`}
-          >
-            {sortedProjects.map((project) => (
-              <ProjectCard key={project._id} project={project} />
-            ))}
-          </motion.div>
-        </SortableContext>
-      </DndContext>
+      {userDetails?.projects.length > 0 && (
+        <DndContext
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext items={sortedProjects.map((project) => project._id)}>
+            <motion.div
+              ref={ref}
+              variants={containerVariants}
+              initial="hidden"
+              animate={inView ? "show" : "hidden"}
+              className={`${
+                sortedProjects.length === 0
+                  ? "bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words"
+                  : "grid grid-cols-1 md:grid-cols-2 gap-6"
+              }`}
+            >
+              {sortedProjects.map((project) => (
+                <ProjectCard key={project._id} project={project} />
+              ))}
+            </motion.div>
+          </SortableContext>
+        </DndContext>
+      )}
       {edit &&
-        (userDetails?.pro || userDetails?.projects.length < 2 ? (
+        (userDetails?.pro || userDetails?.projects.length < 3 ? (
           <AddCard
             title={`${
               sortedProjects.length === 0

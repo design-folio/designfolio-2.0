@@ -99,7 +99,7 @@ export default function Projects({
             ))}
 
             {edit &&
-              (userDetails?.pro || userDetails?.projects.length < 2 ? (
+              (userDetails?.pro || userDetails?.projects.length < 3 ? (
                 <AddCard
                   title={`${
                     userDetails?.projects?.length === 0

@@ -3,7 +3,6 @@ import styles from "@/styles/domain.module.css";
 import { useGlobalContext } from "@/context/globalContext";
 import LockIcon from "../../public/assets/svgs/lock.svg";
 import Button from "./button";
-
 export default function ProjectLock() {
   const { setShowUpgradeModal } = useGlobalContext();
   return (
@@ -19,7 +18,7 @@ export default function ProjectLock() {
         <Button
           text="Upgrade to Pro"
           onClick={() => setShowUpgradeModal(true)}
-          customClass="bg-gradient-to-r from-[#C8780D] to-[#FFBC4B]"
+          customClass={`border-none ${styles.upgradeButton}`}
         />
       </div>
     </div>

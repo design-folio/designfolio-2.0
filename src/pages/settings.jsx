@@ -55,9 +55,11 @@ export default function Settings() {
             fetchDomainDetails={fetchDomainDetails}
           />
         </div>
-        <div className="bg-df-section-card-bg-color p-8 rounded-2xl mt-6">
-          <Transaction />
-        </div>
+        {userDetails?.pro && (
+          <div className="bg-df-section-card-bg-color p-8 rounded-2xl mt-6">
+            <Transaction />
+          </div>
+        )}
         <div className="bg-df-section-card-bg-color p-8 rounded-2xl mt-6">
           <div className="mt-6">
             {userDetails?.loginMethod == 0 && (

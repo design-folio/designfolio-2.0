@@ -245,7 +245,7 @@ export default function LoggedInHeader({
   };
 
   const handlePublishBtn = () => {
-    if (!latestPublishDate) {
+    if (!latestPublishDate && template == 0) {
       return handleUpdate(true);
     }
     setPopoverMenu((prev) =>

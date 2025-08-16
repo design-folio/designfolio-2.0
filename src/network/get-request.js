@@ -16,3 +16,16 @@ export const _getProjectTypes = () => axiosInstance.get("/projectType/get/all");
 
 export const _getCredits = (userId) =>
   axiosInstance.get("/ai/get/credits?userId=" + userId);
+
+export const _getDomainDetails = () =>
+  axiosInstance.get("/user/getCustomDomainStatus");
+
+export const _removeDomain = () =>
+  axiosInstance.delete("/user/removeCustomDomain");
+
+export const createOrder = () => axiosInstance.get("/user/createRazorpayOrder");
+
+export const _getProPlanDetails = () =>
+  axiosInstance.get("/user/getProPlanDetails");
+
+export const _getPaymentDetails = () => axiosInstance.get("/user/getUserOrder");

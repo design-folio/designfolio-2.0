@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-
+import styles from "@/styles/domain.module.css";
 import Logo from "../../public/assets/svgs/logo.svg";
 import ThemeIcon from "../../public/assets/svgs/themeIcon.svg";
 import CloseIcon from "../../public/assets/svgs/close.svg";
@@ -14,6 +14,7 @@ import PreviewIcon from "../../public/assets/svgs/previewIcon.svg";
 import LinkIcon from "../../public/assets/svgs/link.svg";
 import CopyIcon from "../../public/assets/svgs/copy.svg";
 import TickIcon from "../../public/assets/svgs/tick.svg";
+import CalendarIcon from "../../public/assets/svgs/calendar.svg";
 import HamburgerIcon from "../../public/assets/svgs/hamburger.svg";
 import SettingIcon from "../../public/assets/svgs/settings.svg";
 import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
@@ -32,6 +33,7 @@ import { twMerge } from "tailwind-merge";
 import { removeCursor } from "@/lib/cursor";
 import Modal from "./modal";
 import { Badge } from "./ui/badge";
+import { Check, Copy } from "lucide-react";
 
 const cursors = [
   {
@@ -127,48 +129,12 @@ const templates = [
     item: "Prism",
     isNew: true,
   },
-  // {
-  //   id: 4,
-  //   value: "pristine",
-  //   item: "Pristine",
-  //   isNew: true,
-  // },
-];
-
-const emails = [
-  "sarathdixit29@gmail.com",
-  "heyfromshai@gmail.com",
-  "siddhesh2k@gmail.com",
-  "aadhavanm8@gmail.com",
-  "madhavanu555@gmail.com",
-  "haidar8006@gmail.com",
-  "richardmarx353@gmail.com",
-  "mostafa.saad127@yahoo.com",
-  "yashika.r.gujar@gmail.com",
-  "ayan.workspace4699@gmail.com",
-  "priyams2810@gmail.com",
-  "uiuxhimanshu98@gmail.com",
-  "rajuvegeshana@gmail.com",
-  "ronak.barhanpurkar09@gmail.com",
-  "shyleshs1999@gmail.com",
-  "ashishgoswamimailbox@gmail.com",
-  "hi@vidhunnan.design",
-  "adib.7295@gmail.com ",
-  "chebrolutejopriya29@gmail.com",
-  "prabhakaransuraj12@gmail.com",
-  "arpitaacharya99@gmail.com",
-  "mayurigupta3010@gmail.com",
-  "shadesigns369@gmail.com",
-  "udeeta1711@gmail.com",
-  "ashish174a@gmail.com",
-  "Siddhesh2k@gmail.com",
-  "asheeryavaibhavy@gmail.com",
-  "pravinuxx@gmail.com",
-  "ramsonkar1895@gmail.com",
-  "designer.khalida@gmail.com",
-  "gokulananad2001929@gmail.com",
-  "chebrolutejopriya29@gmail.com",
-  "Design@joseph.in",
+  {
+    id: 4,
+    value: "pristine",
+    item: "Pristine",
+    isNew: true,
+  },
 ];
 
 export default function LoggedInHeader({
@@ -182,6 +148,7 @@ export default function LoggedInHeader({
   changeCursor,
   changeTemplate,
   template,
+  setShowUpgradeModal,
 }) {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -201,16 +168,16 @@ export default function LoggedInHeader({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
-  useEffect(() => {
-    if (emails.includes(email)) {
-      templates.push({
-        id: 4,
-        value: "pristine",
-        item: "Pristine",
-        isNew: true,
-      });
-    }
-  }, [email]);
+  // useEffect(() => {
+  //   if (emails.includes(email)) {
+  //     templates.push({
+  //       id: 4,
+  //       value: "pristine",
+  //       item: "Pristine",
+  //       isNew: true,
+  //     });
+  //   }
+  // }, [email]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -272,8 +239,13 @@ export default function LoggedInHeader({
       .finally(() => setUpdateLoading(false));
   };
 
+  const goToDomains = () => {
+    setPopoverMenu(null);
+    setShowUpgradeModal(true);
+  };
+
   const handlePublishBtn = () => {
-    if (!latestPublishDate) {
+    if (!latestPublishDate && template == 0) {
       return handleUpdate(true);
     }
     setPopoverMenu((prev) =>
@@ -494,6 +466,13 @@ export default function LoggedInHeader({
                               alt=""
                               className="cursor-pointer"
                             />
+                            {template?.id != 1 && (
+                              <div
+                                className={`mt-4 ${styles.templateBadgePro}`}
+                              >
+                                Pro
+                              </div>
+                            )}
                           </div>
                         ))}
                       </div>
@@ -549,6 +528,7 @@ export default function LoggedInHeader({
                   className="cursor-pointer"
                 />
               }
+              isDisabled={template != 0 && !userDetails?.pro}
               animation
             />
             {isClient && (
@@ -561,9 +541,9 @@ export default function LoggedInHeader({
               >
                 <div className=" w-[310px] rounded-xl shadow-lg bg-popover-bg-color border-4 border-solid border-popover-border-color">
                   <div className="p-4">
-                    <div className="flex justify-between items-center truncate  overflow-hidden gap-2">
+                    <div className="flex justify-between items-center gap-2 overflow-hidden">
                       <div
-                        className="flex gap-2 cursor-pointer items-center"
+                        className="flex gap-2 cursor-pointer items-center min-w-0 flex-1"
                         onClick={() =>
                           window.open(
                             `https://${username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`,
@@ -571,36 +551,60 @@ export default function LoggedInHeader({
                           )
                         }
                       >
-                        <div className="mt-1">
-                          <LinkIcon className="text-icon-color cursor-pointer" />
-                        </div>
-                        <div className="cursor-pointer">
-                          <p className="text-base-text text-[14px] font-[500] font-sfpro underline underline-offset-4 cursor-pointer">
+                        <div className="cursor-pointer min-w-0 flex-1">
+                          <p className="text-base-text text-[16px] font-[500] font-sfpro cursor-pointer truncate">
                             {username}.{process.env.NEXT_PUBLIC_BASE_DOMAIN}
-                          </p>
-                          <p className="text-description-text text-[12px] font-[400] font-inter mt-1 cursor-pointer">
-                            {`Updated: ${formatedValue}`}
                           </p>
                         </div>
                       </div>
                       <Button
                         icon={
                           isCopied ? (
-                            <TickIcon className="text-icon-color cursor-pointer" />
+                            <Check
+                              className="text-icon-color cursor-pointer"
+                              size={12}
+                            />
                           ) : (
-                            <CopyIcon className="text-icon-color cursor-pointer" />
+                            <Copy
+                              className="text-icon-color cursor-pointer"
+                              size={12}
+                            />
                           )
                         }
                         type="secondary"
-                        customClass="p-2 rounded-lg pointer-events"
+                        customClass="p-2 rounded-lg"
                         onClick={handleCopyText}
                       />
                     </div>
 
+                    <div className="flex gap-2 items-center mt-1">
+                      <p className="text-description-text text-[12px] font-[400] font-inter cursor-pointer">
+                        {`Updated: ${formatedValue}`}
+                      </p>
+                    </div>
+                    {!userDetails?.pro && (
+                      <>
+                        <Button
+                          text="Want your own domain?"
+                          type="secondary"
+                          isDisabled={updateLoading}
+                          onClick={goToDomains}
+                          icon={
+                            <span className={styles.upgradeLink}>Go Pro</span>
+                          }
+                          iconPosition="right"
+                          customClass="w-full mt-4 gap-1 !text-[13px]"
+                        />
+                        <hr className="mt-4 border-tools-card-item-border-color" />
+                      </>
+                    )}
                     <Button
                       customClass="w-full mt-4"
                       text="Update changes"
-                      isDisabled={updateLoading}
+                      isDisabled={
+                        updateLoading ||
+                        (!userDetails?.pro && userDetails?.template != 0)
+                      }
                       onClick={handleUpdate}
                     />
                   </div>
@@ -757,6 +761,7 @@ export default function LoggedInHeader({
                       className="cursor-pointer"
                     />
                   }
+                  isDisabled={!userDetails?.pro && userDetails?.template != 0}
                   animation
                 />
                 <div className="w-full h-[2px] bg-placeholder-color my-4" />

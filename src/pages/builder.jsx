@@ -24,6 +24,7 @@ import AddUsername from "@/components/addUsername";
 import Builder2 from "@/components/Builder2";
 import Minimal from "@/components/comp/Minimal";
 import Portfolio from "@/components/comp/Portfolio";
+import ProWarning from "@/components/proWarning";
 
 export default function Index() {
   const {
@@ -115,6 +116,7 @@ export default function Index() {
           userDetails?.template != 3 && "max-w-[890px]"
         }`}
       >
+        {userDetails && !userDetails?.pro && <ProWarning />}
         {userDetails && renderTemplate()}
         {userDetails && taskPercentage !== 100 && <BottomTask />}
       </div>

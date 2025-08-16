@@ -15,6 +15,7 @@ import { DndContext, closestCenter } from "@dnd-kit/core";
 import { SortableContext, arrayMove, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { _updateUser } from "@/network/post-request";
+import ProjectLock from "../projectLock";
 
 export const WorkShowcase = ({ userDetails, edit }) => {
   const { projects } = userDetails || {};
@@ -247,45 +248,55 @@ export const WorkShowcase = ({ userDetails, edit }) => {
     <section className="pt-0 pb-16">
       <h2 className="text-2xl font-bold mb-8">Featured Projects</h2>
       {/* Wrap the grid with DND Kit's context */}
-      <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-        <SortableContext items={sortedProjects.map((project) => project._id)}>
-          <motion.div
-            ref={ref}
-            variants={containerVariants}
-            initial="hidden"
-            animate={inView ? "show" : "hidden"}
-            className={`${
-              sortedProjects.length === 0
-                ? "bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words"
-                : "grid grid-cols-1 md:grid-cols-2 gap-6"
-            }`}
-          >
-            {sortedProjects.map((project) => (
-              <ProjectCard key={project._id} project={project} />
-            ))}
-          </motion.div>
-        </SortableContext>
-      </DndContext>
-      {edit && (
-        <AddCard
-          title={`${
-            sortedProjects.length === 0
-              ? "Upload your first case study"
-              : "Add case study"
-          }`}
-          subTitle="Show off your best work."
-          first={sortedProjects.length !== 0}
-          buttonTitle="Add case study"
-          secondaryButtonTitle="Write using AI"
-          onClick={() => openModal(modals.project)}
-          icon={<ProjectIcon className="cursor-pointer" />}
-          openModal={openModal}
-          className={`flex items-center justify-center mt-6 ${
-            sortedProjects.length !== 0 &&
-            "bg-df-section-card-bg-color shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] hover:shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
-          }`}
-        />
+      {userDetails?.projects.length > 0 && (
+        <DndContext
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext items={sortedProjects.map((project) => project._id)}>
+            <motion.div
+              ref={ref}
+              variants={containerVariants}
+              initial="hidden"
+              animate={inView ? "show" : "hidden"}
+              className={`${
+                sortedProjects.length === 0
+                  ? "bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words"
+                  : "grid grid-cols-1 md:grid-cols-2 gap-6"
+              }`}
+            >
+              {sortedProjects.map((project) => (
+                <ProjectCard key={project._id} project={project} />
+              ))}
+            </motion.div>
+          </SortableContext>
+        </DndContext>
       )}
+      {edit &&
+        (userDetails?.pro || userDetails?.projects.length < 3 ? (
+          <AddCard
+            title={`${
+              sortedProjects.length === 0
+                ? "Upload your first case study"
+                : "Add case study"
+            }`}
+            subTitle="Show off your best work."
+            first={sortedProjects.length !== 0}
+            buttonTitle="Add case study"
+            secondaryButtonTitle="Write using AI"
+            onClick={() => openModal(modals.project)}
+            icon={<ProjectIcon className="cursor-pointer" />}
+            openModal={openModal}
+            className={`flex items-center justify-center mt-6 ${
+              sortedProjects.length !== 0 &&
+              "bg-df-section-card-bg-color shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] hover:shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
+            }`}
+          />
+        ) : (
+          <div className="mt-6">
+            <ProjectLock />
+          </div>
+        ))}
     </section>
   );
 };

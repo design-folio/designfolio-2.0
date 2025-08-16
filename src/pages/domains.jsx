@@ -1,23 +1,17 @@
-import React, { useEffect, useState } from "react";
 import Button from "@/components/button";
-import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
 import { useRouter } from "next/router";
-import { useGlobalContext } from "@/context/globalContext";
-import ChangePassword from "@/components/changePassword";
+import React, { useEffect, useState } from "react";
+import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
 import DeleteAccount from "@/components/deleteAccount";
-import CustomDomain from "@/components/customDomain";
 import DefaultDomain from "@/components/defaultDomain";
-import Transaction from "@/components/transaction";
+import { useGlobalContext } from "@/context/globalContext";
+import CustomDomain from "@/components/customDomain";
+import { _getDomainDetails } from "@/network/get-request";
 
-export default function Settings() {
-  const {
-    userDetails,
-    setIsUserDetailsFromCache,
-    userDetailsIsState,
-    domainDetails,
-    fetchDomainDetails,
-  } = useGlobalContext();
-
+export default function Domains() {
+  const { userDetails, setIsUserDetailsFromCache, userDetailsIsState } =
+    useGlobalContext();
+  const [domainDetails, setDomainDetails] = useState(null);
   const router = useRouter();
   const handleBack = () => {
     router.back({ scroll: false });
@@ -28,8 +22,14 @@ export default function Settings() {
     } else {
       setIsUserDetailsFromCache(true);
     }
+    fetchDomainDetails();
   }, []);
 
+  const fetchDomainDetails = () => {
+    _getDomainDetails().then((res) => {
+      setDomainDetails(res.data);
+    });
+  };
   return (
     <main className="min-h-screen bg-df-bg-color">
       <div
@@ -53,26 +53,9 @@ export default function Settings() {
             fetchDomainDetails={fetchDomainDetails}
           />
         </div>
-        {userDetails?.pro && (
-          <div className="bg-df-section-card-bg-color p-8 rounded-2xl mt-6">
-            <Transaction />
-          </div>
-        )}
-        <div className="bg-df-section-card-bg-color p-8 rounded-2xl mt-6">
-          <div className="mt-6">
-            {userDetails?.loginMethod == 0 && (
-              <div>
-                <ChangePassword />
-              </div>
-            )}
 
-            {/* <div className="mt-10">
-              <ChangeUsername />
-            </div> */}
-            <div className="mt-10">
-              <DeleteAccount />
-            </div>
-          </div>
+        <div className="bg-df-section-card-bg-color p-8 rounded-2xl mt-6">
+          <DeleteAccount />
         </div>
       </div>
     </main>

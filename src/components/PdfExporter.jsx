@@ -2,7 +2,7 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { toast } from "react-toastify";
 
-export const exportToPdf = async (elementId: string) => {
+export const exportToPdf = async (elementId) => {
   const element = document.getElementById(elementId);
   if (!element) return;
 

@@ -528,6 +528,7 @@ export default function LoggedInHeader({
                   className="cursor-pointer"
                 />
               }
+              isDisabled={template != 0 && !userDetails?.pro}
               animation
             />
             {isClient && (

@@ -1,5 +1,5 @@
 import { setCursorvalue } from "@/lib/cursor";
-import { _getUserDetails } from "@/network/get-request";
+import { _getDomainDetails, _getUserDetails } from "@/network/get-request";
 import { _updateUser } from "@/network/post-request";
 import queryClient from "@/network/queryClient";
 import { useQuery } from "@tanstack/react-query";
@@ -45,7 +45,7 @@ export const GlobalProvider = ({ children }) => {
   const [cursor, setCursor] = useState(0);
   const [template, setTemplate] = useState(0);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
-
+  const [domainDetails, setDomainDetails] = useState(null);
   const { setTheme } = useTheme();
 
   // Fetch user details
@@ -134,6 +134,18 @@ export const GlobalProvider = ({ children }) => {
     setCursorvalue(cursor);
   }, [cursor]);
 
+  useEffect(() => {
+    if (userDetails?.pro) {
+      fetchDomainDetails();
+    }
+  }, [userDetails?.pro]);
+
+  const fetchDomainDetails = () => {
+    _getDomainDetails().then((res) => {
+      setDomainDetails(res.data);
+    });
+  };
+
   const updateCache = (key, data) => {
     queryClient.setQueriesData({ queryKey: [key] }, (oldData) => {
       return { user: { ...oldData?.user, ...data } };
@@ -218,6 +230,9 @@ export const GlobalProvider = ({ children }) => {
         setTemplate,
         showUpgradeModal,
         setShowUpgradeModal,
+        domainDetails,
+        setDomainDetails,
+        fetchDomainDetails,
       }}
     >
       {children}

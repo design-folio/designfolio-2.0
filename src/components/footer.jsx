@@ -65,19 +65,19 @@ export default function Footer({ dfToken }) {
         <p className="text-[14px] font-[500] text-landing-footer-link-color font-inter">
           Copyright © {new Date().getFullYear()} Designfolio
         </p>
-        <div className="flex gap-10">
+        <div className="flex gap-3 lg:gap-10">
           <Link href={"/privacy-policy"}>
-            <p className="text-[14px] font-[500] text-landing-footer-link-color font-inter cursor-pointer">
+            <p className="text-[10px] lg:text-[14px] font-[500] text-landing-footer-link-color font-inter cursor-pointer">
               Privacy Policy
             </p>
           </Link>
           <Link href={"terms-and-conditions"}>
-            <p className="text-[14px] font-[500] text-landing-footer-link-color font-inter cursor-pointer">
+            <p className="text-[10px] lg:text-[14px] font-[500] text-landing-footer-link-color font-inter cursor-pointer">
               Terms & Conditions
             </p>
           </Link>
           <Link href={"refund-policy"}>
-            <p className="text-[14px] font-[500] text-landing-footer-link-color font-inter cursor-pointer">
+            <p className="text-[10px] lg:text-[14px] font-[500] text-landing-footer-link-color font-inter cursor-pointer">
               Refund Policy
             </p>
           </Link>

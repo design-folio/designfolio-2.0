@@ -24,6 +24,7 @@ const DomainValidationSchema = Yup.object().shape({
 
 export default function CustomDomain({ domainDetails, fetchDomainDetails }) {
   const { userDetails, setShowUpgradeModal } = useGlobalContext();
+  const [isDomainLoading, setIsDomainLoading] = useState(false);
 
   const [isDelete, setIsDelete] = useState(false);
   // Formik handleChange function with API call
@@ -164,10 +165,16 @@ export default function CustomDomain({ domainDetails, fetchDomainDetails }) {
                   <div className="col-span-2 mt-6">
                     <Button
                       onClick={() => {
-                        _verifyDomain().then((res) => fetchDomainDetails());
+                        _verifyDomain()
+                          .then((res) => {
+                            setIsDomainLoading(true);
+                            fetchDomainDetails();
+                          })
+                          .finally(() => setIsDomainLoading(false));
                       }}
                       customClass="w-full"
                       text={"Verify domain"}
+                      isLoading={isDomainLoading}
                     />
                   </div>
                 </>

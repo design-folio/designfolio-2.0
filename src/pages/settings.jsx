@@ -7,13 +7,16 @@ import ChangePassword from "@/components/changePassword";
 import DeleteAccount from "@/components/deleteAccount";
 import CustomDomain from "@/components/customDomain";
 import DefaultDomain from "@/components/defaultDomain";
-import { _getDomainDetails } from "@/network/get-request";
 import Transaction from "@/components/transaction";
 
 export default function Settings() {
-  const { userDetails, setIsUserDetailsFromCache, userDetailsIsState } =
-    useGlobalContext();
-  const [domainDetails, setDomainDetails] = useState(null);
+  const {
+    userDetails,
+    setIsUserDetailsFromCache,
+    userDetailsIsState,
+    domainDetails,
+    fetchDomainDetails,
+  } = useGlobalContext();
 
   const router = useRouter();
   const handleBack = () => {
@@ -25,13 +28,8 @@ export default function Settings() {
     } else {
       setIsUserDetailsFromCache(true);
     }
-    fetchDomainDetails();
   }, []);
-  const fetchDomainDetails = () => {
-    _getDomainDetails().then((res) => {
-      setDomainDetails(res.data);
-    });
-  };
+
   return (
     <main className="min-h-screen bg-df-bg-color">
       <div

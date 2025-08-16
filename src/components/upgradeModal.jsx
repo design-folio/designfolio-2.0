@@ -50,7 +50,7 @@ export default function UpgradeModal() {
         // amount: { amount }, // Amount in paise (e.g., ₹500.00)
         // currency: "INR",
         order_id: id,
-        name: "Designfolio",
+        name: "Designfolio by DOT Workspaces",
         description: "Insecure Test Transaction",
         image: "../../public/assets/svgs/logo.svg",
         handler: function (response) {

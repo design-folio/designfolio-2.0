@@ -165,10 +165,13 @@ export default function CustomDomain({ domainDetails, fetchDomainDetails }) {
                   <div className="col-span-2 mt-6">
                     <Button
                       onClick={() => {
+                        setIsDomainLoading(true);
                         _verifyDomain()
                           .then((res) => {
-                            setIsDomainLoading(true);
                             fetchDomainDetails();
+                          })
+                          .catch((err) => {
+                            toast.error(err.response.data.error);
                           })
                           .finally(() => setIsDomainLoading(false));
                       }}

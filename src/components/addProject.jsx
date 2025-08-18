@@ -140,7 +140,6 @@ export default function AddProject() {
               };
               _updateUser(payload)
                 .then((res) => {
-                  console.log(res);
                   setUserDetails(res?.data?.user);
                   updateCache("userDetails", res?.data?.user);
                   closeModal();

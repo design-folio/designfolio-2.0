@@ -28,11 +28,13 @@ export default function Index() {
         return (
           <>
             <Template2 userDetails={userDetails} preview />
-            <BottomNavigation
-              userDetails={userDetails}
-              className="bg-gradient-to-t from-transparent top-0 pt-5"
-              watermarkClassName="!top-7"
-            />
+            {!userDetails?.pro && (
+              <BottomNavigation
+                userDetails={userDetails}
+                className="bg-gradient-to-t from-transparent top-0 pt-5"
+                watermarkClassName="!top-7"
+              />
+            )}
           </>
         );
       case 2:
@@ -47,16 +49,18 @@ export default function Index() {
               icon={<LeftArrow className="cursor-pointer" />}
             />
             <Minimal userDetails={userDetails} edit={false} />
-            <div
-              className={`text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] xl:block cursor-pointer mb-[120px] lg:m-0`}
-              onClick={() =>
-                window.open("https://www.designfolio.me", "_blank")
-              }
-            >
-              <div className="bg-df-section-card-bg-color shadow-df-section-card-shadow p-2 rounded-2xl">
-                <MadeWithDesignfolio className="text-df-icon-color" />
+            {!userDetails?.pro && (
+              <div
+                className={`text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] xl:block cursor-pointer mb-[120px] lg:m-0`}
+                onClick={() =>
+                  window.open("https://www.designfolio.me", "_blank")
+                }
+              >
+                <div className="bg-df-section-card-bg-color shadow-df-section-card-shadow p-2 rounded-2xl">
+                  <MadeWithDesignfolio className="text-df-icon-color" />
+                </div>
               </div>
-            </div>
+            )}
           </div>
         );
       case 3:
@@ -73,16 +77,18 @@ export default function Index() {
               />
             </div>
             <Portfolio userDetails={userDetails} edit={false} />
-            <div
-              className={`text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] xl:block cursor-pointer mb-[120px] lg:m-0`}
-              onClick={() =>
-                window.open("https://www.designfolio.me", "_blank")
-              }
-            >
-              <div className="bg-df-section-card-bg-color shadow-df-section-card-shadow p-2 rounded-2xl">
-                <MadeWithDesignfolio className="text-df-icon-color" />
+            {!userDetails?.pro && (
+              <div
+                className={`text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] xl:block cursor-pointer mb-[120px] lg:m-0`}
+                onClick={() =>
+                  window.open("https://www.designfolio.me", "_blank")
+                }
+              >
+                <div className="bg-df-section-card-bg-color shadow-df-section-card-shadow p-2 rounded-2xl">
+                  <MadeWithDesignfolio className="text-df-icon-color" />
+                </div>
               </div>
-            </div>
+            )}
           </div>
         );
 

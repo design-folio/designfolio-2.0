@@ -79,14 +79,16 @@ export default function Index({ data }) {
             )}
           </div>
         </div>
-        <div
-          className={`text-center flex justify-center fixed bottom-0 right-0 left-0 lg:left-[unset] lg:right-[36px] lg:bottom-[10px] mb-2 xl:block cursor-pointer`}
-          onClick={() => window.open("https://www.designfolio.me", "_blank")}
-        >
-          <div className="bg-df-section-card-bg-color shadow-lg p-2 rounded-2xl">
-            <MadeWithDesignfolio className="text-df-icon-color" />
+        {!data?.project?.pro && (
+          <div
+            className={`text-center flex justify-center fixed bottom-0 right-0 left-0 lg:left-[unset] lg:right-[36px] lg:bottom-[10px] mb-2 xl:block cursor-pointer`}
+            onClick={() => window.open("https://www.designfolio.me", "_blank")}
+          >
+            <div className="bg-df-section-card-bg-color shadow-lg p-2 rounded-2xl">
+              <MadeWithDesignfolio className="text-df-icon-color" />
+            </div>
           </div>
-        </div>
+        )}
       </main>
     </>
   );

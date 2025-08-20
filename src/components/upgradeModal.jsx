@@ -100,6 +100,13 @@ export default function UpgradeModal() {
         </button>
 
         <div className={styles.modalHeader}>
+          <div className={styles.lifetimeDealBanner}>
+            <div className={styles.dealBannerIcon}>⏰</div>
+            <span className={styles.dealBannerText}>
+              Lifetime deal ending soon
+            </span>
+            <div className={styles.dealBannerPulse}></div>
+          </div>
           <div>
             <div className={styles.modalIcon}></div>
             <h2 className={styles.modalTitle}>Designfolio Lifetime Access</h2>
@@ -111,9 +118,13 @@ export default function UpgradeModal() {
 
         <div className={styles.modalContent}>
           <div className={styles.priceSection}>
-            <div className={styles.price}>
-              {formatAmount(plan?.amount, plan?.currency)}
+            <div className={styles.priceContainer}>
+              <div className={styles.price}>
+                {formatAmount(plan?.amount, plan?.currency)}
+              </div>
+              {/* <div className={styles.slashPrice}>₹8,300</div> */}
             </div>
+            <div className={styles.price}></div>
             <div className={styles.priceSubtext}>one-time payment</div>
           </div>
 

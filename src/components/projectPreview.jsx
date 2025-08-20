@@ -5,6 +5,7 @@ import BlockRenderer from "./blockRenderer";
 
 export default function ProjectPreview({ projectDetails }) {
   const { userDetails, showModal } = useGlobalContext();
+  console.log(projectDetails);
 
   return (
     <div className="flex-1 flex flex-col gap-4 md:gap-6">

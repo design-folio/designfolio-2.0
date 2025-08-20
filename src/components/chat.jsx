@@ -55,7 +55,7 @@ export default function Chat({
   }, [isVisible]);
   return (
     <div
-      className={`flex flex-col min-w-min relative  w-full max-w-[680px]  ${
+      className={`flex flex-1 flex-col min-w-min relative  w-full max-w-[680px]  ${
         direction == "left" ? " mr-auto" : " ml-auto"
       }`}
     >

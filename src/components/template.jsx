@@ -39,7 +39,7 @@ export default function Template1({ userDetails }) {
   }, []);
   return (
     <div
-      className={`max-w-[890px] mx-auto pb-[120px] lg:py-[40px] px-2 md:px-4 lg:px-0`}
+      className={`max-w-[890px] mx-auto pb-[120px] lg:py-[32px] px-2 md:px-4 lg:px-0`}
     >
       <BottomLayout userDetails={userDetails}>
         <motion.div
@@ -82,6 +82,7 @@ export default function Template1({ userDetails }) {
               <OthersPreview userDetails={userDetails} />
             </motion.div>
           )}
+          <div className="mb-20"></div>
         </motion.div>
       </BottomLayout>
     </div>

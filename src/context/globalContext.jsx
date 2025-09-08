@@ -189,6 +189,14 @@ export const GlobalProvider = ({ children }) => {
     setStep(1);
   };
 
+  const setTemplateContext = (value) => {
+    setTemplate(value);
+    setUserDetails((prev) => ({
+      ...prev,
+      template: value,
+    }));
+  };
+
   return (
     <GlobalContext.Provider
       value={{
@@ -233,6 +241,7 @@ export const GlobalProvider = ({ children }) => {
         domainDetails,
         setDomainDetails,
         fetchDomainDetails,
+        setTemplateContext
       }}
     >
       {children}

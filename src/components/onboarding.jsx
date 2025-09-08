@@ -169,11 +169,7 @@ export default function Onboarding() {
 
   const handleNetwork = (payload, actions) => {
     setLoading(true);
-    const payloadWithTemplate = {
-      ...payload,
-      template: userDetails?.template,
-    };
-    _updateUser(payloadWithTemplate)
+    _updateUser(payload)
       .then((res) => {
         updateCache("userDetails", res?.data?.user);
         setUserDetails((prev) => ({ ...prev, ...res.data.user }));

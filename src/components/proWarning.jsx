@@ -2,7 +2,7 @@ import { useGlobalContext } from "@/context/globalContext";
 import React from "react";
 import styles from "@/styles/domain.module.css";
 export default function ProWarning() {
-  const { template, setTemplate, setShowUpgradeModal } = useGlobalContext();
+  const { template, setTemplate, setShowUpgradeModal, setTemplateContext } = useGlobalContext();
 
   if (template === 0) return null;
   return (
@@ -29,7 +29,7 @@ export default function ProWarning() {
         </div>
         <button
           className={styles.revertTemplateButton}
-          onClick={() => setTemplate(0)}
+          onClick={() => setTemplateContext(0)}
         >
           Revert to Default
         </button>

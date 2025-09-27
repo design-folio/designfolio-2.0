@@ -20,7 +20,7 @@ export default function TextWithLineBreaks({ text, color }) {
     <div>
       {/* Render formatted text using dangerouslySetInnerHTML to preserve line breaks */}
       <p
-        className={`text-[16px] font-medium leading-[22.4px] font-inter whitespace-pre-line ${color}`}
+        className={`text-[16px] font-medium leading-[22.4px] font-inter whitespace-pre-line break-all ${color}`}
       >
         {showFullText ? fullText : truncatedText}
       </p>

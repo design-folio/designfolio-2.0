@@ -81,7 +81,7 @@ export const Testimonials = ({ userDetails, edit }) => {
                     }}
                     className="bg-card border border-card-border p-6 rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
                   >
-                    <p className="dark:text-gray-400 text-gray-600 whitespace-pre-line">
+                    <p className="dark:text-gray-400 text-gray-600 whitespace-pre-line break-all">
                       {visibleTestimonials[currentIndex]?.description.slice(
                         0,
                         !expandedCards.includes(
@@ -173,7 +173,7 @@ export const Testimonials = ({ userDetails, edit }) => {
                 }}
                 className="bg-card border border-card-border p-6 rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.06)] transition-shadow duration-300"
               >
-                <p className="dark:text-gray-400 text-gray-600 whitespace-pre-line">
+                <p className="dark:text-gray-400 text-gray-600 whitespace-pre-line break-all">
                   {testimonial.description.slice(
                     0,
                     !expandedCards.includes(testimonial._id)

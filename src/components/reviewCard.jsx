@@ -26,7 +26,7 @@ export default function ReviewCard({ className = "", review, edit = false }) {
     >
       <Text
         size="p-xsmall"
-        className="text-review-card-heading-color whitespace-pre-line mt-2"
+        className="text-review-card-heading-color whitespace-pre-line break-all mt-2"
       >
         {review?.description.slice(
           0,

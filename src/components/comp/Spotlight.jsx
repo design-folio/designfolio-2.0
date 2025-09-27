@@ -141,7 +141,7 @@ export const Spotlight = ({ userDetails, edit }) => {
               <div className="text-base text-gray-600 dark:text-gray-400">
                 {experience.company}
               </div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 whitespace-pre-line">
+              <p className="text-sm text-gray-600 dark:text-gray-400 whitespace-pre-line break-all">
                 {experience.description.slice(
                   0,
                   !isExpanded ? 180 : experience.description.length

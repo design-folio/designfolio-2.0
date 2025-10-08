@@ -223,7 +223,6 @@ export default function LoggedInHeader({
 
   const handleUpdate = (open = false) => {
     setUpdateLoading(true);
-    changeTemplate(template)
     _publish({ status: 1 })
       .then((res) => {
         setUserDetails((prev) => ({ ...prev, ...res?.data?.user }));

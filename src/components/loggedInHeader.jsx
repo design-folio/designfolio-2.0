@@ -223,7 +223,7 @@ export default function LoggedInHeader({
 
   const handleUpdate = (open = false) => {
     setUpdateLoading(true);
-    changeTemplate(template)
+    changeTemplate(template);
     _publish({ status: 1 })
       .then((res) => {
         setUserDetails((prev) => ({ ...prev, ...res?.data?.user }));
@@ -529,7 +529,12 @@ export default function LoggedInHeader({
                   className="cursor-pointer"
                 />
               }
-              isDisabled={template != 0 && !userDetails?.pro}
+              isDisabled={
+                (!userDetails?.pro &&
+                  userDetails?.template &&
+                  userDetails?.template !== 0) ||
+                updateLoading
+              }
               animation
             />
             {isClient && (
@@ -603,8 +608,10 @@ export default function LoggedInHeader({
                       customClass="w-full mt-4"
                       text="Update changes"
                       isDisabled={
-                        updateLoading ||
-                        (!userDetails?.pro && userDetails?.template != 0)
+                        (!userDetails?.pro &&
+                          userDetails?.template &&
+                          userDetails?.template !== 0) ||
+                        updateLoading
                       }
                       onClick={handleUpdate}
                     />

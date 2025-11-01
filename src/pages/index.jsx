@@ -12,7 +12,7 @@ export default function Index({ dfToken }) {
     };
   }, [userDetails]);
   return (
-    <div className="bg-landing-bg-color min-h-screen">
+    <div className="min-h-screen bg-background-landing overflow-x-hidden">
       <Seo
         title={"Designfolio - Build your Design Portfolio Website super Fast"}
         description={
@@ -23,7 +23,7 @@ export default function Index({ dfToken }) {
         imageUrl={"https://designfolio.me/assets/png/designfolio-thumbnail.png"}
         url={`https://designfolio.me`}
       />
-      <main className={"pt-[88px] md:pt-[104px] pb-5"}>
+      <main className="pt-16 sm:pt-20">
         <Home dfToken={dfToken} />
       </main>
     </div>

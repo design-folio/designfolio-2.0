@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card"
-import FooterBottom from "@/components/FooterBottom"
+import FooterBottom from "@/components/footerBottom"
 
 export default function PrivacyPolicy() {
 

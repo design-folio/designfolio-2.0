@@ -6,7 +6,7 @@ import BlogPostRecommendations from "@/components/BlogPost/BlogPostRecommendatio
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { fetchPost } from "@/services/contentful";
-import Footer from "@/components/footer";
+import Footer from "@/components/footer-old";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";

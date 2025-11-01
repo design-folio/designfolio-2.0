@@ -19,6 +19,7 @@ module.exports = {
         satoshi: ["var(--font-satoshi)", "sans-serif"],
         sfpro: ["var(--font-sfpro)", "sans-serif"],
         inter: ["var(--font-inter)", "sans-serif"],
+        gsans: "var(--font-gsans)",
       },
       cursor: {
         default: "var(--cursor-default)", // Custom cursor
@@ -257,21 +258,59 @@ module.exports = {
         "template-text-right-bg-color": "var(--template-text-right-bg-color)",
         "template-text-right-text-color":
           "var(--template-text-right-text-color)",
+
+        // System variables
+        "button-outline": "var(--button-outline)",
+        "badge-outline": "var(--badge-outline)",
+
+        // Sidebar
+        sidebar: "hsl(var(--sidebar))",
+        "sidebar-foreground": "hsl(var(--sidebar-foreground))",
+        "sidebar-border": "hsl(var(--sidebar-border))",
+        "sidebar-primary": "hsl(var(--sidebar-primary))",
+        "sidebar-primary-foreground": "hsl(var(--sidebar-primary-foreground))",
+        "sidebar-accent": "hsl(var(--sidebar-accent))",
+        "sidebar-accent-foreground": "hsl(var(--sidebar-accent-foreground))",
+        "sidebar-ring": "hsl(var(--sidebar-ring))",
+
+        // Popover
+        popover: "hsl(var(--popover))",
+        "popover-foreground": "hsl(var(--popover-foreground))",
+        "popover-border": "hsl(var(--popover-border))",
+
+        // Chart colors
+        "chart-1": "hsl(var(--chart-1))",
+        "chart-2": "hsl(var(--chart-2))",
+        "chart-3": "hsl(var(--chart-3))",
+        "chart-4": "hsl(var(--chart-4))",
+        "chart-5": "hsl(var(--chart-5))",
+
+        // Gradient colors
+        "gradient-start": "hsl(var(--gradient-start))",
+        "gradient-end": "hsl(var(--gradient-end))",
+
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: {
           DEFAULT: "var(--background)",
+          landing: "hsl(var(--background-landing))",
           dark: "#13151a",
           light: "#fafaf7",
         },
         foreground: {
           DEFAULT: "var(--foreground)",
+          landing: "hsl(var(--foreground-landing))",
           dark: "#e9eaeb !important",
           light: "#202937",
         },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
         primary: {
           DEFAULT: "var(--primary)",
+          landing: "hsl(var(--primary-landing))",
           foreground: "var(--primary-foreground)",
           hover: "var(--primary-hover)",
           dark: "#262832",
@@ -317,6 +356,16 @@ module.exports = {
         sm: "calc(var(--radius) - 4px)",
       },
       boxShadow: {
+        // Shadow system
+        "2xs": "var(--shadow-2xs)",
+        xs: "var(--shadow-xs)",
+        sm: "var(--shadow-sm)",
+        DEFAULT: "var(--shadow)",
+        md: "var(--shadow-md)",
+        lg: "var(--shadow-lg)",
+        xl: "var(--shadow-xl)",
+        "2xl": "var(--shadow-2xl)",
+
         // Landing page
         "landing-nav-link-hover": "0 1px 3px rgba(0, 0, 0, 0.1)",
         "ai-card": "inset 0px 0px 0px 2px #293547",
@@ -371,6 +420,12 @@ module.exports = {
         "p-xsmall": "22.8px",
         "p-xxsmall": "20.2px",
         "p-xxxsmall": "16px",
+      },
+      letterSpacing: {
+        normal: "var(--tracking-normal)",
+      },
+      spacing: {
+        base: "var(--spacing)",
       },
       translate: {
         4.5: "4.5px", // Custom translate value

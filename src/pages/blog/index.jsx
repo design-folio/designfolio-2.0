@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { fetchPosts } from "@/services/contentful";
 import Link from "next/link";
 import BlogCard from "@/components/BlogCard";
-import Footer from "@/components/footer-old";
+import Footer from "@/components/footer";
 import Cookies from "js-cookie";
 
 export default function Index({ posts }) {

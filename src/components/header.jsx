@@ -27,7 +27,7 @@ const Header = ({ dfToken, hideHeader }) => {
   const path = router.pathname;
   if (hideHeader) {
     return null;
-  } else if (path === "/" || path === "/old-landing" || "privacy-policy") {
+  } else if (path === "/") {
     headerComponent = <LandingHeader dfToken={dfToken} />;
   } else if (path.includes("/ai-tools")) {
     headerComponent = <AiToolsHeader />;

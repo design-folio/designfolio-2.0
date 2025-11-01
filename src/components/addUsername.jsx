@@ -2,7 +2,7 @@ import { useGlobalContext } from "@/context/globalContext";
 import { _updateUsername } from "@/network/post-request";
 import { toast } from "react-toastify";
 import Text from "./text";
-import ClaimDomain from "./claimDomain-old";
+import ClaimDomain from "./claimDomain";
 
 export default function AddUsername() {
   const { closeModal, setUserDetails } = useGlobalContext();

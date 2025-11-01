@@ -189,6 +189,7 @@ export const GlobalProvider = ({ children }) => {
     setStep(1);
   };
 
+
   const setTemplateContext = (value) => {
     setTemplate(value);
     setUserDetails((prev) => ({
@@ -196,6 +197,8 @@ export const GlobalProvider = ({ children }) => {
       template: value,
     }));
   };
+
+
   
   return (
     <GlobalContext.Provider

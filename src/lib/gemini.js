@@ -6,7 +6,7 @@ const CACHE_KEY = "email_generation_attempts";
 const MAX_ATTEMPTS = 3;
 const COOLDOWN_PERIOD = 40000; // 40 seconds in milliseconds
 
-const genAI = new GoogleGenerativeAI("AIzaSyD6qGWr_Hn_QdjwlxD8jpCC_blaVk5ofYg");
+const genAI = new GoogleGenerativeAI("AIzaSyBhUYbz3GfINIQnCShTDEPFy2uPGx9tvrQ");
 
 const checkRateLimit = () => {
   const cache = localStorage.getItem(CACHE_KEY);
@@ -104,7 +104,7 @@ BODY: <the email body>`;
 export const analyzeOffer = async (data) => {
   console.log("Starting offer analysis...");
   const genAI = new GoogleGenerativeAI(
-    "AIzaSyD6qGWr_Hn_QdjwlxD8jpCC_blaVk5ofYg"
+    "AIzaSyBhUYbz3GfINIQnCShTDEPFy2uPGx9tvrQ"
   );
 
   if (!genAI) {

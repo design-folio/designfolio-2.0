@@ -2,7 +2,7 @@ import { useGlobalContext } from "@/context/globalContext";
 import React from "react";
 import styles from "@/styles/domain.module.css";
 export default function ProWarning() {
-  const { template,setShowUpgradeModal,setTemplateContext } = useGlobalContext();
+  const { template, setTemplate, setShowUpgradeModal, setTemplateContext } = useGlobalContext();
 
   if (template === 0) return null;
   return (

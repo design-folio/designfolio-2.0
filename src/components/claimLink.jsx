@@ -221,7 +221,7 @@ export default function ClaimLink() {
             Already have an account?{" "}
             <Link
               href="/login"
-              className="hover:underline font-medium"
+              className="hover:underline font-medium cursor-pointer"
               style={{ color: '#FF553E' }}
               data-testid="link-login"
             >

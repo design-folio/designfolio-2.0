@@ -26,21 +26,8 @@ export default function HeroSection({ dfToken }) {
     const [rightCardWidth, setRightCardWidth] = useState(null)
     const [scrollRange, setScrollRange] = useState(800)
 
-    const names = ["john", "morgan", "sarah", "tom", "brad"]
-    const [currentNameIndex, setCurrentNameIndex] = useState(0)
-    const [inputValue, setInputValue] = useState("")
-    const [isFocused, setIsFocused] = useState(false)
-    const [error, setError] = useState("")
 
-    useEffect(() => {
-        if (inputValue || isFocused) return
 
-        const interval = setInterval(() => {
-            setCurrentNameIndex(prev => (prev + 1) % names.length)
-        }, 1400)
-
-        return () => clearInterval(interval)
-    }, [inputValue, isFocused, names.length])
 
     useEffect(() => {
         const updateCardPositions = (force = false) => {

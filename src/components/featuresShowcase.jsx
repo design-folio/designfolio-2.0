@@ -69,12 +69,11 @@ export default function FeaturesShowcase() {
                                 <Check className="w-5 h-5 text-black flex-shrink-0" />
                                 <span className="text-sm text-foreground">{feature}</span>
                                 <span
-                                    className="px-2 py-0.5 text-xs font-bold tracking-wide uppercase flex-shrink-0"
+                                    className="px-2 py-0.5 text-xs font-bold tracking-wide uppercase flex-shrink-0 font-kalam"
                                     style={{
                                         background: "#10B981",
                                         color: "#fff",
                                         transform: "rotate(-2deg)",
-                                        fontFamily: "'Kalam', cursive",
                                         borderRadius: "4px"
                                     }}
                                     data-testid={`badge-yes-${index}`}

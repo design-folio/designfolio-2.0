@@ -87,7 +87,7 @@ export function AuthLayout({
                     </motion.div>
                 </div>
 
-                <TrustedBySection backgroundColor="transparent" />
+                <TrustedBySection classNames="from-background/30" />
             </div>
         </div>
     );

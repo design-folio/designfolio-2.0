@@ -2,7 +2,7 @@ import FooterBottom from "@/components/footerBottom";
 import { Card } from "@/components/ui/card";
 
 
-export default function RefundPolicy() {
+export default function Index() {
   return (
     <div className="pt-16 sm:pt-20 bg-background-landing ">
       <div className="max-w-4xl mx-auto px-6 py-12">
@@ -142,3 +142,5 @@ export default function RefundPolicy() {
 
   );
 }
+
+Index.theme = "light";

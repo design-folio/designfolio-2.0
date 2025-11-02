@@ -1,4 +1,6 @@
-export default function TrustedBySection({ backgroundColor }) {
+import { cn } from "@/lib/utils"
+
+export default function TrustedBySection({ classNames }) {
   const companyLogos = [
     "/assets/svgs/company logos/companylogos02.svg",
     "/assets/svgs/company logos/companylogos03.svg",
@@ -8,6 +10,7 @@ export default function TrustedBySection({ backgroundColor }) {
     "/assets/svgs/company logos/companylogos06.svg",
     "/assets/svgs/company logos/companylogos07.svg"
   ]
+
 
   return (
     <section className="py-8 sm:py-12 md:py-16 px-4 sm:px-6 overflow-hidden w-full">
@@ -20,9 +23,18 @@ export default function TrustedBySection({ backgroundColor }) {
         </h3>
 
         <div className="relative overflow-hidden">
-          <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 md:w-40 z-10 pointer-events-none bg-gradient-to-r from-background-landing to-transparent" />
+          <div
+            className={cn(
+              "absolute left-0 top-0 bottom-0 w-16 sm:w-24 md:w-40 z-10 pointer-events-none bg-gradient-to-r to-transparent from-background-landing", classNames
+            )}
+          />
 
-          <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 md:w-40 z-10 pointer-events-none bg-gradient-to-l from-background-landing to-transparent" />
+
+          <div
+            className={cn(
+              "absolute right-0 top-0 bottom-0 w-16 sm:w-24 md:w-40 z-10 pointer-events-none bg-gradient-to-l to-transparent from-background-landing", classNames
+            )}
+          />
 
           <div className="flex gap-0 overflow-hidden">
             <div className="flex animate-scroll items-center gap-0 shrink-0">

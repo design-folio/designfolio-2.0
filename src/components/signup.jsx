@@ -224,11 +224,11 @@ export default function Signup() {
                                 touched={touched}
                                 data-testid="input-password"
                             />
-                            {!errors.password && (
+                            {/* {!errors.password && (
                                 <p className="text-xs text-muted-foreground pt-1">
                                     Must be at least 8 characters long
                                 </p>
-                            )}
+                            )} */}
                         </motion.div>
 
                         <FormButton

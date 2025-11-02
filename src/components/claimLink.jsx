@@ -14,7 +14,7 @@ import { FormButton } from "./ui/form-button";
 const DomainValidationSchema = Yup.object().shape({
   domain: Yup.string()
     .matches(
-      /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})?$/,
+      /^[a-z0-9][a-z0-9-]{1,61}[a-z0-9](?:\.[a-z]{2,})?$/,
       "Invalid subdomain"
     )
     .required("Domain is required"),
@@ -61,26 +61,38 @@ export default function ClaimLink() {
     1000 // Delay in milliseconds
   );
 
-  // Handle input change
+  // Handle input change with validation
   const handleDomainChange = (e) => {
-    const value = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '');
-    setDomain(value);
+    const { value } = e.target;
+    setLoading(true);
 
-    // Validate the domain
+    // Filter allowed characters and format
+    const pattern = /^[a-z0-9-\s]+$/;
+    const newValue = value
+      .toLowerCase()
+      .split("")
+      .filter((char) => pattern.test(char))
+      .join("");
+    const formattedValue = newValue.replace(/\s+/g, "-");
+
+    setDomain(formattedValue);
+
+    // Validate with Yup schema
     try {
-      DomainValidationSchema.validateSync({ domain: value });
+      DomainValidationSchema.validateSync({ domain: formattedValue });
       setValidationError("");
-
-      if (value.length > 0) {
-        debouncedCheckUsername(value);
-      } else {
-        setIsAvailable(false);
-        setLoading(false);
+      if (formattedValue) {
+        debouncedCheckUsername(formattedValue);
       }
-    } catch (error) {
-      setValidationError(error.message);
-      setIsAvailable(false);
+    } catch (validationError) {
+      setValidationError(validationError.message);
       setLoading(false);
+    }
+
+    if (!formattedValue) {
+      setValidationError("");
+      setLoading(false);
+      setIsAvailable(false);
     }
   };
 
@@ -112,9 +124,33 @@ export default function ClaimLink() {
                 className="border-0 bg-transparent h-11 px-4 focus-visible:ring-0 focus-visible:ring-offset-0 text-base text-foreground placeholder:text-base placeholder:text-muted-foreground/60 flex-1"
                 data-testid="input-domain"
               />
-              <span className="text-sm text-muted-foreground/60 pr-4 whitespace-nowrap">
-                .designfolio.me
-              </span>
+              <div className="flex items-center gap-2 pr-4">
+                <span className="text-sm text-muted-foreground/60 whitespace-nowrap">
+                  .designfolio.me
+                </span>
+                {loading && domain && (
+                  <svg
+                    className="animate-spin h-4 w-4 text-muted-foreground"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V2.5A9.5 9.5 0 002.5 12H4z"
+                    ></path>
+                  </svg>
+                )}
+              </div>
             </div>
             <AnimatePresence>
               {validationError && (

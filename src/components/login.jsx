@@ -143,7 +143,7 @@ export default function Login() {
 
               <p className="text-center text-sm text-foreground/70 mt-6">
                 Don't have an account?{" "}
-                <Link href="/signup" className="hover:underline font-medium text-[#FF553E]">
+                <Link href="/claim-link" className="hover:underline font-medium text-[#FF553E] cursor-pointer">
                   Sign up
                 </Link>
               </p>
@@ -179,7 +179,7 @@ export default function Login() {
 
       <p className="text-center text-sm text-foreground/70 mt-8">
         Don't have an account?{" "}
-        <Link href="/signup" className="hover:underline font-medium text-[#FF553E]">
+        <Link href="/claim-link" className="hover:underline font-medium text-[#FF553E] cursor-pointer ">
           Sign up
         </Link>
       </p>

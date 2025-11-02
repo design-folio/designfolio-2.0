@@ -24,6 +24,9 @@ export default function Index({ dfToken }) {
         url={`https://designfolio.me`}
       />
       <main className="pt-16 sm:pt-20">
+
+
+
         <Home dfToken={dfToken} />
       </main>
     </div>

@@ -1,6 +1,6 @@
 import "@/styles/globals.scss";
 import localFont from "next/font/local";
-import { Inter } from "next/font/google";
+import { Inter, Kalam } from "next/font/google";
 import Header from "@/components/header";
 import Cookies from "js-cookie";
 import App from "next/app";
@@ -21,6 +21,13 @@ const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  weight: ["400", "500", "600", "700"],
+});
+
+const kalam = Kalam({
+  subsets: ["latin"],
+  variable: "--font-kalam",
+  weight: ["400", "700"],
 });
 
 const satoshi = localFont({
@@ -146,7 +153,7 @@ function MyApp({ Component, pageProps, dfToken, hideHeader }) {
             <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
               <GlobalProvider>
                 <main
-                  className={`${satoshi.variable} ${sfpro.variable} ${inter.variable} ${gsans.variable}`}
+                  className={`${satoshi.variable} ${sfpro.variable} ${inter.variable} ${kalam.variable} ${gsans.variable} `}
                 >
                   {<Header
                     dfToken={dfToken}

@@ -1,6 +1,6 @@
 import Seo from "@/components/seo";
 import React from "react";
-import VerifyEmail from "@/components/verifyEmail";
+import VerifyEmail from "@/components/verifyEmail-old";
 import ChangeEmail from "@/components/changeEmail";
 import { useRouter } from "next/router";
 

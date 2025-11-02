@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 
 export default function Index() {
   return (
-    <div className="min-h-screen w-full bg-background">
+    <div className="min-h-screen w-full bg-background-landing">
       <div className="pt-16 sm:pt-20">
         <div className="max-w-4xl mx-auto px-6 py-12">
           <Card className="p-8 sm:p-12">

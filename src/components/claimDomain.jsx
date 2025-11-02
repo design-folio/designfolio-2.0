@@ -232,9 +232,10 @@ export default function ClaimDomain({
                                 : "translate-y-full h-max max-h-0 opacity-0"
                                 }`}
                         >
-                            <span className="text-sm text-red-500 font-medium">
-                                {error}
-                            </span>
+
+                            <p className="text-center flex text-input-error-color font-sm font-medium">
+                                Domain is already taken.{" "}
+                            </p>
                         </div>
                     </div>
                 </div>

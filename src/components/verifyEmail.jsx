@@ -69,26 +69,21 @@ export default function VerifyEmail() {
         );
     };
 
-    const handleVerifyEmail = async (values) => {
+
+
+    function handleVerifyEmail(data) {
         setLoading(true);
-
-        try {
-            const data = {
-                emailVerificationOTP: values.emailVerificationOTP,
-            };
-
-            await _verifyEmail(data);
-            userDetailsRefecth();
-            router.replace("/builder");
-            toast.success("Email verified successfully");
-        } catch (error) {
-            console.error("Verification error:", error);
-            // Error handling can be done through toast notifications
-            toast.error("Verification failed. Please try again.");
-        } finally {
-            setLoading(false);
-        }
-    };
+        _verifyEmail(data)
+            .then(() => {
+                userDetailsRefecth();
+                router.replace("/builder");
+                setLoading(false);
+                toast.success("Email verified successfully");
+            })
+            .catch(() => {
+                setLoading(false);
+            });
+    }
 
     const handleBack = () => {
         Cookies.remove("df-token", {

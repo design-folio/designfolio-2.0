@@ -9,7 +9,6 @@ export default function Footer({ dfToken, innerClass = "", className = "" }) {
     const [currentNameIndex, setCurrentNameIndex] = useState(0)
     const [inputValue, setInputValue] = useState("")
     const [isFocused, setIsFocused] = useState(false)
-    const [error, setError] = useState("")
 
     useEffect(() => {
         if (inputValue || isFocused) return
@@ -20,7 +19,7 @@ export default function Footer({ dfToken, innerClass = "", className = "" }) {
 
         return () => clearInterval(interval)
     }, [inputValue, isFocused, names.length])
-    console.log(dfToken)
+
     return (
         <footer className={`w-full py-16 px-6 ${className}`} >
             <div className={`max-w-5xl mx-auto ${innerClass}`}>

@@ -286,7 +286,7 @@ export default function HeroSection({ dfToken }) {
 
             <motion.div
                 ref={leftCardRef}
-                className="absolute -left-40 -top-12 lg:-left-8 xl:left-4 2xl:left-16 lg:top-20 xl:top-28 z-[31] will-change-transform"
+                className="absolute -left-40 -top-12  xl:left-4 2xl:left-16  xl:top-28 z-[31] will-change-transform"
                 style={{
                     width: leftCardWidth ? `${leftCardWidth}px` : undefined,
                     y: leftCardTranslateY,
@@ -334,7 +334,7 @@ export default function HeroSection({ dfToken }) {
 
             <motion.div
                 ref={rightCardRef}
-                className="absolute -right-32 -bottom-20 lg:-right-8 xl:right-4 2xl:right-16 lg:top-32 xl:top-40 lg:bottom-auto z-[29] will-change-transform"
+                className="absolute -right-32 -bottom-20 xl:right-4 2xl:right-16  xl:top-40 lg:bottom-auto z-[29] will-change-transform"
                 style={{
                     width: rightCardWidth ? `${rightCardWidth}px` : undefined,
                     y: rightCardTranslateY,

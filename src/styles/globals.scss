@@ -38,6 +38,20 @@
     /* Elevation system */
     --elevate-1: rgba(0, 0, 0, 0.03);
     --elevate-2: rgba(0, 0, 0, 0.08);
+    /* Shadow system */
+    --shadow-2xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.05);
+    --shadow-xs: 0px 1px 3px 0px hsl(0 0% 0% / 0.08);
+    --shadow-sm: 0px 2px 4px -1px hsl(0 0% 0% / 0.06),
+      0px 1px 2px -1px hsl(0 0% 0% / 0.04);
+    --shadow: 0px 4px 6px -1px hsl(0 0% 0% / 0.08),
+      0px 2px 4px -2px hsl(0 0% 0% / 0.05);
+    --shadow-md: 0px 6px 12px -2px hsl(0 0% 0% / 0.1),
+      0px 3px 6px -3px hsl(0 0% 0% / 0.07);
+    --shadow-lg: 0px 10px 20px -3px hsl(0 0% 0% / 0.12),
+      0px 4px 8px -4px hsl(0 0% 0% / 0.08);
+    --shadow-xl: 0px 20px 30px -5px hsl(0 0% 0% / 0.15),
+      0px 8px 12px -6px hsl(0 0% 0% / 0.1);
+    --shadow-2xl: 0px 30px 50px -8px hsl(0 0% 0% / 0.2);
   }
 
   [data-theme="dark"] {
@@ -63,6 +77,21 @@
     /* Elevation system for dark mode */
     --elevate-1: rgba(255, 255, 255, 0.04);
     --elevate-2: rgba(255, 255, 255, 0.09);
+
+    /* Shadow system */
+    --shadow-2xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.4);
+    --shadow-xs: 0px 1px 3px 0px hsl(0 0% 0% / 0.5);
+    --shadow-sm: 0px 2px 4px -1px hsl(0 0% 0% / 0.45),
+      0px 1px 2px -1px hsl(0 0% 0% / 0.35);
+    --shadow: 0px 4px 6px -1px hsl(0 0% 0% / 0.5),
+      0px 2px 4px -2px hsl(0 0% 0% / 0.4);
+    --shadow-md: 0px 6px 12px -2px hsl(0 0% 0% / 0.55),
+      0px 3px 6px -3px hsl(0 0% 0% / 0.45);
+    --shadow-lg: 0px 10px 20px -3px hsl(0 0% 0% / 0.6),
+      0px 4px 8px -4px hsl(0 0% 0% / 0.5);
+    --shadow-xl: 0px 20px 30px -5px hsl(0 0% 0% / 0.65),
+      0px 8px 12px -6px hsl(0 0% 0% / 0.55);
+    --shadow-2xl: 0px 30px 50px -8px hsl(0 0% 0% / 0.7);
   }
 
   * {

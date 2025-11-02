@@ -16,7 +16,7 @@ export default function Index() {
         imageUrl={"https://designfolio.me/images/png/designfolio-thumbnail.png"}
         url={`https://designfolio.me`}
       />
-      <main >
+      <main>
         <Signup />
       </main>
     </div>

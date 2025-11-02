@@ -66,7 +66,7 @@ export default function LandingHeader({ dfToken }) {
                                 <Link href="/login" className="text-sm sm:text-[15px] text-foreground hover-elevate px-2 sm:px-3 py-2 rounded-md cursor-pointer" data-testid="link-login">
                                     Login
                                 </Link>
-                                <Link href="/signup">
+                                <Link href="/claim-link">
                                     <Button
                                         size="medium"
                                         text=" It's Free → Try now!"

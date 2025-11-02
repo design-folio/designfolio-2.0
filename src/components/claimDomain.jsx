@@ -243,7 +243,7 @@ export default function ClaimDomain({
                 variant="tertiary"
                 onClick={handleSubmit}
                 disabled={!(!error && inputValue && isAvailable && !loading)}
-                className="rounded-full h-14 sm:h-16 px-8 sm:px-10 text-base sm:text-lg font-semibold no-default-hover-elevate no-default-active-elevate transition-colors w-full sm:w-auto whitespace-nowrap disabled:opacity-100 disabled:bg-[#FF8A78] disabled:!cursor-not-allowed"
+                className="rounded-full h-14 sm:h-16 px-8 sm:px-10 text-base sm:text-lg font-semibold no-default-hover-elevate no-default-active-elevate transition-colors w-full sm:w-auto whitespace-nowrap disabled:opacity-100 disabled:bg-[#FF8675] disabled:!cursor-not-allowed"
                 data-testid="button-start-building-footer"
             >
                 Get started for free

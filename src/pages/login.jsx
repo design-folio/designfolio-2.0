@@ -5,7 +5,7 @@ import Login from "@/components/login";
 
 export default function Index() {
   return (
-    <div className="bg-landing-bg-color min-h-screen">
+    <div className="bg-background-landing min-h-screen overflow-hidden">
       <Seo
         title={"Designfolio - Build your Design Portfolio Website super Fast"}
         description={
@@ -16,7 +16,7 @@ export default function Index() {
         imageUrl={"https://designfolio.me/images/png/designfolio-thumbnail.png"}
         url={`https://designfolio.me`}
       />
-      <main >
+      <main>
         <Login />
       </main>
     </div>

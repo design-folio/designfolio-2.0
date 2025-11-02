@@ -1,32 +1,29 @@
 import React from "react";
-import Text from "./text";
+import { motion } from "framer-motion";
 
 export default function ForgotPasswordPlaceHolder({ email }) {
-  return (
-    <div className="md:w-[380px] m-auto flex flex-col items-center justify-center relative">
-      <img
-        src="/assets/svgs/email-sent.svg"
-        className="w-[160px] h-[160px]"
-        alt="designfolio logo"
-      />
-      <div>
-        <Text
-          as="h1"
-          size={"p-large"}
-          className="text-landing-heading-text-color font-bold text-center"
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+            className="text-center"
         >
-          Check your inbox!
-        </Text>
-        <Text
-          variant={"medium"}
-          size={"p-xsmall"}
-          className="mt-2 text-landing-description-text-color font-medium text-center leading-6"
-        >
-          We have sent an email to{" "}
-          <span className="text-df-orange-color">{email}</span> please follow
-          the instructions to reset your password
-        </Text>
-      </div>
-    </div>
-  );
+            <div className="mb-8">
+                <img
+                    src="/assets/svgs/email-sent.svg"
+                    className="w-32 h-32 mx-auto mb-6"
+                    alt="Email sent"
+                />
+                <h1 className="font-semibold text-2xl mb-2 text-foreground">
+                    Check your inbox!
+                </h1>
+                <p className="text-sm text-foreground/60 leading-6">
+                    We have sent an email to{" "}
+                    <span style={{ color: "#FF553E" }}>{email}</span>{" "}
+                    please follow the instructions to reset your password
+                </p>
+            </div>
+        </motion.div>
+    );
 }

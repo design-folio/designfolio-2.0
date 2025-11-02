@@ -19,6 +19,7 @@ module.exports = {
         satoshi: ["var(--font-satoshi)", "sans-serif"],
         sfpro: ["var(--font-sfpro)", "sans-serif"],
         inter: ["var(--font-inter)", "sans-serif"],
+        kalam: ["var(--font-kalam)", "cursive"],
         gsans: "var(--font-gsans)",
       },
       cursor: {

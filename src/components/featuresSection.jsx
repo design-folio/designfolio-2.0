@@ -172,13 +172,13 @@ export default function FeaturesSection() {
                                             data-testid={`card-inspiration-${index}`}
                                         >
                                             <div
-                                                className="absolute -top-3 left-6 px-5 py-2 text-xs font-bold tracking-wide uppercase"
+                                                className="absolute -top-3 left-6 px-5 py-2 text-xs font-bold tracking-wide uppercase font-kalam"
                                                 style={{
                                                     background:
                                                         "linear-gradient(135deg, #FF6B35 0%, #FF8A65 100%)",
                                                     color: "#fff",
                                                     transform: "rotate(-2deg)",
-                                                    fontFamily: "'Kalam', cursive"
+
                                                 }}
                                                 data-testid={`badge-step-${index}`}
                                             >
@@ -284,7 +284,6 @@ export default function FeaturesSection() {
                                                         "linear-gradient(135deg, #FF6B35 0%, #FF8A65 100%)",
                                                     color: "#fff",
                                                     transform: "rotate(-2deg)",
-                                                    fontFamily: "'Kalam', cursive"
                                                 }}
                                                 data-testid={`badge-step-${index}`}
                                             >

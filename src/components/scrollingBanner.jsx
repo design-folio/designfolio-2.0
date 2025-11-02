@@ -21,7 +21,7 @@ export default function ScrollingBanner() {
 
     return (
         <div
-            className="w-full bg-foreground py-4 overflow-hidden"
+            className="w-full bg-foreground-landing py-4 overflow-hidden"
             data-testid="banner-scrolling"
         >
             <div className="flex animate-scroll whitespace-nowrap">

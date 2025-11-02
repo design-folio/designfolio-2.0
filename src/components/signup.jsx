@@ -1,291 +1,268 @@
-import React, { useState } from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
+import { useState, useEffect } from "react";
+import { Formik, Form } from "formik";
+import { Mail } from "lucide-react";
+import { motion } from "framer-motion";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useGoogleLogin } from "@react-oauth/google";
 import { _signupEmail, _signupGmail } from "@/network/post-request";
-import Card from "./card";
-import Button from "./button";
-import Text from "./text";
-import Link from "next/link";
 import { setToken } from "@/lib/cooikeManager";
+import { AuthLayout } from "@/components/ui/auth-layout";
+import { FormInput } from "@/components/ui/form-input";
+import { FormButton } from "@/components/ui/form-button";
+import { GoogleButton } from "@/components/ui/google-button";
+import { Divider } from "@/components/ui/divider";
+import * as Yup from "yup";
 
-// Yup validation schema
 const SignupValidationSchema = Yup.object().shape({
-  firstName: Yup.string()
-    .max(50, "Too Long!")
-    .required("First name is required"),
-  lastName: Yup.string().max(50, "Last name is too Long"),
-  email: Yup.string().email("Invalid email").required("Email is required"),
-  password: Yup.string()
-    .min(6, "Password is too short - should be 6 chars minimum.")
-    .required("Password is required."),
+    name: Yup.string()
+        .max(100, "Name is too long")
+        .required("Full name is required"),
+    email: Yup.string()
+        .email("Invalid email address")
+        .required("Email is required"),
+    password: Yup.string()
+        .min(8, "Password must be at least 8 characters")
+        .required("Password is required")
 });
 
+
+
 export default function Signup() {
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
+    const router = useRouter();
+    const [signupStep, setSignupStep] = useState("method");
+    const [domain, setDomain] = useState(router.query.username || "");
+    const [emailLoading, setEmailLoading] = useState(false);
+    const [googleLoading, setGoogleLoading] = useState(false);
 
-  const googleLogin = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      try {
-        const response = await fetch(
-          "https://www.googleapis.com/oauth2/v2/userinfo",
-          {
-            headers: {
-              Authorization: `Bearer ${tokenResponse.access_token}`,
-            },
-          }
-        );
-        const userData = await response.json();
+    useEffect(() => {
+        if (router.query.username) {
+            setDomain(router.query.username);
+        }
+    }, [router.query.username]);
 
-        const data = {
-          loginMethod: 1,
-          googleID: userData.id,
-          username: router.query.username,
-          firstName: userData.given_name,
-          lastName: userData.family_name,
-          email: userData.email,
-        };
-        _signupGmail(data)
-          .then(({ data }) => {
+    const handleEmailSignup = async (values, { setFieldError }) => {
+        setEmailLoading(true);
+
+
+        try {
+            const signupData = {
+                username: domain,
+                loginMethod: 0,
+                firstName: values.name.split(' ')[0] || values.name,
+                lastName: values.name.split(' ').slice(1).join(' ') || "",
+                email: values.email,
+                password: values.password,
+            };
+
+            const { data } = await _signupEmail(signupData);
             const { token } = data;
             setToken(token);
-            router.push("/builder");
-          })
-          .catch((err) => console.log(err, "err"));
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    },
-    onError: () => console.log("google login failed"),
-    // Additional configuration if needed
-  });
+            router.push("/email-verify");
+        } catch (error) {
+            console.error("Signup error:", error);
+        } finally {
+            setEmailLoading(false);
+        }
+    };
 
-  function handleCreateAccount(data) {
-    setLoading(true);
-    _signupEmail(data)
-      .then(({ data }) => {
-        const { token } = data;
-        setToken(token);
-        router.push("/email-verify");
-      })
-      .catch((err) => {
-        console.log(err, "errr");
-      })
-      .finally(() => setLoading(false));
-  }
+    const googleLogin = useGoogleLogin({
+        onSuccess: async (tokenResponse) => {
+            setGoogleLoading(true);
 
-  return (
-    <div className="pt-[16px] pb-20">
-      <Card>
-        <Button
-          text="Go Back"
-          onClick={() => router.back({ scroll: false })}
-          type="secondary"
-          size="small"
-          icon={
-            <img
-              src="/assets/svgs/left-arrow.svg"
-              alt="back arrow"
-              className="cursor-pointer"
-            />
-          }
-        />
-        <Text
-          as="h1"
-          size={"p-large"}
-          className="text-landing-heading-text-color font-bold mt-4"
-        >
-          Now, create your account
-        </Text>
-        <Text
-          size={"p-xsmall"}
-          className="mt-2 text-landing-description-text-color font-medium"
-        >
-          🎉 Just a step away from claiming{" "}
-          <span className="text-df-orange-color">
-            {`${router.query.username}.designfolio.me`}
-          </span>
-        </Text>
-        <div className="mt-[24px]">
-          <Button
-            text="Login with Google"
-            type="secondary"
-            icon={
-              <img
-                src="/assets/svgs/google.svg"
-                alt="google icon"
-                className="w-[22px] cursor-pointer"
-              />
-            }
-            onClick={googleLogin}
-            customClass="w-full"
-          />
-          <div className="flex items-center gap-[24px] my-[24px]">
-            <div className="w-full h-[1px] bg-project-card-border" />
-            or
-            <div className="w-full h-[1px] bg-project-card-border" />
-          </div>
-          <div>
-            <Formik
-              initialValues={{
-                firstName: "",
-                lastName: "",
-                email: "",
-                password: "",
-              }}
-              validationSchema={SignupValidationSchema}
-              onSubmit={(values, actions) => {
-                // Handle form submission
+            try {
+                const response = await fetch(
+                    "https://www.googleapis.com/oauth2/v2/userinfo",
+                    {
+                        headers: {
+                            Authorization: `Bearer ${tokenResponse.access_token}`,
+                        },
+                    }
+                );
+                const userData = await response.json();
 
-                actions.setSubmitting(false);
                 const data = {
-                  username: router.query.username,
-                  loginMethod: 0,
-                  firstName: values.firstName,
-                  lastName: values.lastName,
-                  email: values.email,
-                  password: values.password,
+                    loginMethod: 1,
+                    googleID: userData.id,
+                    username: domain,
+                    firstName: userData.given_name,
+                    lastName: userData.family_name,
+                    email: userData.email,
                 };
-                handleCreateAccount(data);
-              }}
+
+                const { data: signupData } = await _signupGmail(data);
+                const { token } = signupData;
+                setToken(token);
+                router.push("/builder");
+            } catch (error) {
+                console.error("Error with Google signup:", error);
+            } finally {
+                setGoogleLoading(false);
+            }
+        },
+        onError: () => {
+        },
+    });
+
+    const handleGoogleSignup = () => {
+        googleLogin();
+    };
+
+    // Method selection step
+    if (signupStep === "method") {
+        return (
+            <AuthLayout
+                title="Now, create your account."
+                description={
+                    <>
+                        Just a step away from claiming{" "}
+                        <span className="font-medium" style={{ color: "#FF553E" }}>
+                            {domain}.designfolio.me
+                        </span>
+                    </>
+                }
+                showBackButton={true}
+                onBack={() => router.push("/claim-link")}
             >
-              {({ isSubmitting, isValid, errors, touched }) => (
-                <Form id="signupForm">
-                  <div className="md:flex justify-center gap-6">
-                    <div className="flex-1">
-                      <Text
-                        as="p"
-                        size={"p-xxsmall"}
-                        className="mt-6 font-medium"
-                        required
-                      >
-                        First Name
-                      </Text>
-                      <Field
-                        type="text"
-                        name="firstName"
-                        className={`text-input mt-2 ${
-                          errors.firstName &&
-                          touched.firstName &&
-                          "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                        }`}
-                        autoComplete="off"
-                      />
-                      <ErrorMessage
-                        name="firstName"
-                        component="div"
-                        className="error-message text-[14px]"
-                      />
+                <div className="space-y-4">
+                    <GoogleButton
+                        onClick={handleGoogleSignup}
+                        isLoading={googleLoading}
+                    >
+                        Sign up with Google
+                    </GoogleButton>
+
+                    <Divider />
+
+                    <div
+                        className="bg-white border border-border rounded-full px-5 py-3 flex items-center justify-center gap-3 hover-elevate cursor-pointer"
+                        onClick={() => setSignupStep("email")}
+                        data-testid="button-signup-email"
+                    >
+                        <Mail className="w-5 h-5 text-foreground" />
+                        <span className="text-base font-medium text-foreground">
+                            Sign up with Email
+                        </span>
                     </div>
+                </div>
+            </AuthLayout>
+        );
+    }
 
-                    <div className="flex-1 mt-6 md:mt-0">
-                      <Text
-                        as="p"
-                        size={"p-xxsmall"}
-                        className="mt-6 font-medium"
-                      >
-                        Last Name
-                      </Text>
+    // Email signup step
+    return (
+        <AuthLayout
+            title="Now, create your account."
+            description={
+                <>
+                    Just a step away from claiming{" "}
+                    <span className="font-medium" style={{ color: "#FF553E" }}>
+                        {domain}.designfolio.me
+                    </span>
+                </>
+            }
+            showBackButton={true}
+            onBack={() => setSignupStep("method")}
+        >
+            <Formik
+                initialValues={{
+                    name: "",
+                    email: "",
+                    password: ""
+                }}
+                validationSchema={SignupValidationSchema}
+                onSubmit={handleEmailSignup}
+            >
+                {({ errors, touched, isSubmitting }) => (
+                    <Form className="space-y-5">
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.3, delay: 0.1 }}
+                        >
+                            <FormInput
+                                name="name"
+                                type="text"
+                                label="Full name"
+                                placeholder="John Doe"
+                                required
+                                errors={errors}
+                                touched={touched}
+                                data-testid="input-name"
+                            />
+                        </motion.div>
 
-                      <Field
-                        type="text"
-                        name="lastName"
-                        className={`text-input mt-2 ${
-                          errors.lastName &&
-                          touched.lastName &&
-                          "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                        }`}
-                        autoComplete="off"
-                      />
-                      <ErrorMessage
-                        name="lastName"
-                        component="div"
-                        className="error-message text-[14px]"
-                      />
-                    </div>
-                  </div>
-                  <Text
-                    as="p"
-                    size={"p-xxsmall"}
-                    className="mt-6 font-medium"
-                    required
-                  >
-                    Email
-                  </Text>
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.3, delay: 0.2 }}
+                        >
+                            <FormInput
+                                name="email"
+                                type="email"
+                                label="Email address"
+                                placeholder="john@example.com"
+                                required
+                                errors={errors}
+                                touched={touched}
+                                data-testid="input-email"
+                            />
+                        </motion.div>
 
-                  <Field
-                    type="email"
-                    name="email"
-                    className={`text-input mt-2 ${
-                      errors.email &&
-                      touched.email &&
-                      "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                    }`}
-                    autoComplete="off"
-                  />
-                  <ErrorMessage
-                    name="email"
-                    component="div"
-                    className="error-message text-[14px]"
-                  />
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.3, delay: 0.3 }}
+                        >
+                            <FormInput
+                                name="password"
+                                type="password"
+                                label="Password"
+                                placeholder="Create a strong password"
+                                required
+                                errors={errors}
+                                touched={touched}
+                                data-testid="input-password"
+                            />
+                            {!errors.password && (
+                                <p className="text-xs text-muted-foreground pt-1">
+                                    Must be at least 8 characters long
+                                </p>
+                            )}
+                        </motion.div>
 
-                  <Text
-                    as="p"
-                    size={"p-xxsmall"}
-                    className="mt-6 font-medium"
-                    required
-                  >
-                    Password
-                  </Text>
+                        <FormButton
+                            type="submit"
+                            isLoading={emailLoading}
+                            disabled={isSubmitting}
+                            data-testid="button-create-account"
+                        >
+                            Create account
+                        </FormButton>
 
-                  <Field
-                    type="password"
-                    name="password"
-                    className={`text-input mt-2 ${
-                      errors.password &&
-                      touched.password &&
-                      "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                    }`}
-                    autoComplete="off"
-                  />
-                  <ErrorMessage
-                    name="password"
-                    component="div"
-                    className="error-message text-[14px]"
-                  />
 
-                  <Button
-                    text="Create Account"
-                    form="signupForm"
-                    btnType="submit"
-                    customClass="w-full mt-8"
-                    isLoading={loading}
-                  />
-                </Form>
-              )}
+                        <p className="text-center text-xs text-muted-foreground">
+                            By continuing, you agree to Designfolio's{" "}
+                            <Link href="/terms-and-conditions" className="hover:underline" style={{ color: "#FF553E" }} data-testid="link-terms">
+                                Terms and Conditions
+                            </Link>{" "}
+                            and{" "}
+                            <Link href="/privacy-policy" className="hover:underline" style={{ color: "#FF553E" }} data-testid="link-privacy">
+                                Privacy Policy
+                            </Link>
+                        </p>
+
+                        <Divider />
+
+                        <GoogleButton
+                            onClick={handleGoogleSignup}
+                            isLoading={googleLoading}
+                        >
+                            Sign up with Google
+                        </GoogleButton>
+                    </Form>
+                )}
             </Formik>
-            <Text
-              size={"p-xxsmall"}
-              className="text-df-secondary-text-color  text-center mg:w-[60%] m-auto !text-[14px] mt-6 font-medium"
-            >
-              By signing up, you agree to our <br />
-              <Link href={"/terms-and-conditions"}>
-                <span className="text-df-orange-color underline underline-offset-2 cursor-pointer">
-                  Terms and Conditions
-                </span>
-              </Link>{" "}
-              and{" "}
-              <Link href={"/privacy-policy"}>
-                <span className="text-df-orange-color underline underline-offset-2 cursor-pointer">
-                  Privacy Policy
-                </span>
-              </Link>
-            </Text>
-          </div>
-        </div>
-      </Card>
-    </div>
-  );
+        </AuthLayout>
+    );
 }

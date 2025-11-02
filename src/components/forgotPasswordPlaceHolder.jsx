@@ -1,32 +1,58 @@
 import React from "react";
-import Text from "./text";
+import { motion } from "framer-motion";
+import { Check } from "lucide-react";
+import { FormButton } from "./ui/form-button";
 
-export default function ForgotPasswordPlaceHolder({ email }) {
-  return (
-    <div className="md:w-[380px] m-auto flex flex-col items-center justify-center relative">
-      <img
-        src="/assets/svgs/email-sent.svg"
-        className="w-[160px] h-[160px]"
-        alt="designfolio logo"
-      />
-      <div>
-        <Text
-          as="h1"
-          size={"p-large"}
-          className="text-landing-heading-text-color font-bold text-center"
+export default function ForgotPasswordPlaceHolder({ email, onTryAgain, onBackToLogin, isLoading, retryDelay }) {
+    return (
+        <motion.div
+            key="reset-sent"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
         >
-          Check your inbox!
-        </Text>
-        <Text
-          variant={"medium"}
-          size={"p-xsmall"}
-          className="mt-2 text-landing-description-text-color font-medium text-center leading-6"
-        >
-          We have sent an email to{" "}
-          <span className="text-df-orange-color">{email}</span> please follow
-          the instructions to reset your password
-        </Text>
-      </div>
-    </div>
-  );
+            <div className="text-center mb-6">
+                <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                    <Check />
+                </div>
+                <h1 className="font-semibold text-2xl mb-2 text-foreground" data-testid="text-reset-sent-headline">
+                    Check your email
+                </h1>
+                <p className="text-sm text-foreground/60" data-testid="text-reset-sent-description">
+                    We've sent password reset instructions to <strong>{email}</strong>
+                </p>
+            </div>
+
+            <div className="space-y-4">
+                <p className="text-sm text-foreground/70 text-center">
+                    Didn't receive the email? Check your spam folder or{" "}
+                    <button
+                        type="button"
+                        onClick={onTryAgain}
+                        disabled={isLoading || retryDelay > 0}
+                        className="font-medium hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
+                        style={{ color: '#FF553E' }}
+                        data-testid="link-try-again"
+                    >
+                        {isLoading
+                            ? 'Sending...'
+                            : retryDelay > 0
+                                ? `try again (${retryDelay}s)`
+                                : 'try again'
+                        }
+                    </button>
+                </p>
+
+                <FormButton
+                    onClick={onBackToLogin}
+                    data-testid="button-back-to-login"
+                >
+                    Back to login
+                </FormButton>
+            </div>
+        </motion.div>
+    );
 }
+
+

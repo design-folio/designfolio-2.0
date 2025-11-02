@@ -7,7 +7,7 @@ import Link from "next/link";
 
 export default function Index() {
     return (
-        <div className="pt-16 sm:pt-20">
+        <div className="pt-16 sm:pt-20 bg-background-landing">
             <div className="max-w-4xl mx-auto px-6 py-12">
                 <Card className="p-8 sm:p-12">
                     <h1 className="text-4xl font-bold mb-6" data-testid="text-page-title">
@@ -28,7 +28,7 @@ export default function Index() {
                             <div className="p-6 bg-muted/50 rounded-md border border-border">
                                 <div className="flex items-start gap-4">
                                     <div className="p-3 text-primary-landing/10 rounded-md">
-                                        <Mail className="w-6 h-6 " data-testid="icon-email" />
+                                        <Mail className="w-6 h-6 text-primary-landing " data-testid="icon-email" />
                                     </div>
                                     <div>
                                         <h3 className="font-semibold mb-2" data-testid="text-email-title">

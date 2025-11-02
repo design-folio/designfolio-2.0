@@ -1,5 +1,3 @@
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { useState, useEffect, useRef } from "react"
 import {
     motion,
@@ -10,6 +8,8 @@ import {
 } from "framer-motion"
 import { useIsMobile } from "@/hooks/use-mobile"
 import ClaimDomain from "./claimDomain"
+import Link from "next/link"
+import Button from "./button"
 
 export default function HeroSection({ dfToken }) {
     const sectionRef = useRef(null)
@@ -286,7 +286,7 @@ export default function HeroSection({ dfToken }) {
 
             <motion.div
                 ref={leftCardRef}
-                className="absolute -left-40 -top-12 lg:-left-8 xl:left-4 2xl:left-16 lg:top-20 xl:top-28 z-[31] will-change-transform"
+                className="absolute -left-40 -top-12  xl:left-4 2xl:left-16  xl:top-28 z-[31] will-change-transform"
                 style={{
                     width: leftCardWidth ? `${leftCardWidth}px` : undefined,
                     y: leftCardTranslateY,
@@ -317,7 +317,7 @@ export default function HeroSection({ dfToken }) {
                     </div>
                     <div className="p-4 md:p-5 flex-1 flex flex-col">
                         <h3
-                            className="font-gsans text-base md:text-lg lg:text-xl font-semibp text-foreground mb-1 line-clamp-2 min-h-[2.5rem] md:min-h-[3rem]"
+                            className="font-gsans text-base md:text-lg lg:text-xl font-semibold text-foreground mb-1 line-clamp-2 min-h-[2.5rem] md:min-h-[3rem]"
                             data-testid="text-project-left-title"
                         >
                             Redesigning fitness app experience for 4M users.
@@ -334,7 +334,7 @@ export default function HeroSection({ dfToken }) {
 
             <motion.div
                 ref={rightCardRef}
-                className="absolute -right-32 -bottom-20 lg:-right-8 xl:right-4 2xl:right-16 lg:top-32 xl:top-40 lg:bottom-auto z-[29] will-change-transform"
+                className="absolute -right-32 -bottom-20 xl:right-4 2xl:right-16  xl:top-40 lg:bottom-auto z-[29] will-change-transform"
                 style={{
                     width: rightCardWidth ? `${rightCardWidth}px` : undefined,
                     y: rightCardTranslateY,
@@ -416,7 +416,23 @@ export default function HeroSection({ dfToken }) {
                             delay: 0.35,
                             ease: [0.22, 1, 0.36, 1]
                         }}>
-                        <ClaimDomain />
+                        {dfToken ? (
+                            <Link href={"builder"} className="flex items-center justify-center mt-6 ">
+                                <Button
+                                    text="Launch Builder"
+                                    customClass="bg-foreground-landing text-background-landing border border-foreground rounded-full py-2 px-3 sm:px-4 md:px-6 text-xs sm:text-sm md:text-base font-medium hover:bg-foreground-landing/80 transition-colors"
+                                    icon={
+                                        <img
+                                            src="/assets/svgs/power.svg"
+                                            alt="launch builder"
+                                            className="cursor-pointer"
+                                        />
+                                    }
+                                />
+                            </Link>
+                        ) : (
+                            <ClaimDomain form="header" />
+                        )}
                     </motion.div>
                 </div>
             </div>

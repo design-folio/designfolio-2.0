@@ -1,16 +1,18 @@
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { useGoogleLogin } from "@react-oauth/google";
 import { _loginWithEmail, _loginWithGmail } from "@/network/post-request";
 import { setToken } from "@/lib/cooikeManager";
-import Card from "./card";
-import Text from "./text";
-import Button from "./button";
+import { Mail } from "lucide-react";
 import Link from "next/link";
+import { AuthLayout } from "@/components/ui/auth-layout";
+import { FormInput } from "@/components/ui/form-input";
+import { FormButton } from "@/components/ui/form-button";
+import { GoogleButton } from "@/components/ui/google-button";
+import { Divider } from "@/components/ui/divider";
 
-// Yup validation schema
 const LoginValidationSchema = Yup.object().shape({
   email: Yup.string()
     .email("Invalid email address")
@@ -19,213 +21,168 @@ const LoginValidationSchema = Yup.object().shape({
 });
 
 export default function Login() {
-  const [loading, setLoading] = useState(false);
+  const [loginStep, setLoginStep] = useState("method");
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     if (router) {
       router.prefetch("/builder");
+      router.prefetch("/email-verify");
     }
   }, [router]);
+
 
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       try {
-        const response = await fetch(
-          "https://www.googleapis.com/oauth2/v2/userinfo",
-          {
-            headers: {
-              Authorization: `Bearer ${tokenResponse.access_token}`,
-            },
-          }
-        );
+        setIsLoading(true);
+        const response = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
+          headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+        });
         const userData = await response.json();
 
         const data = {
           loginMethod: 1,
           googleID: userData.id,
         };
-        _loginWithGmail(data)
-          .then(({ data }) => {
-            const { token, emailVerification } = data;
-            if (emailVerification) {
-              setToken(token);
-              router.push("/builder");
-            } else {
-              router.push("/email-verify");
-            }
-          })
-          .catch((err) => {
-            console.log(err, "err");
-          });
-      } catch (error) {
-        console.error("Error fetching user data:", error);
+
+        const res = await _loginWithGmail(data);
+        const { token, emailVerification } = res.data;
+
+        setToken(token);
+        router.push(emailVerification ? "/builder" : "/email-verify");
+      } catch (err) {
+        console.error("Google login failed:", err);
+      } finally {
+        setIsLoading(false);
       }
     },
     onError: () => console.log("Google login failed"),
   });
 
-  const handleLogin = (data) => {
-    _loginWithEmail(data)
-      .then(({ data }) => {
-        const { token, emailVerification } = data;
-        setToken(token);
-        if (emailVerification) {
-          router.push("/builder");
-        } else {
-          router.push("/email-verify");
-        }
-        setLoading(false);
-      })
-      .catch((err) => {
-        setLoading(false);
-        console.log(err, "err");
-      });
+  const handleEmailLogin = async (values, actions) => {
+    try {
+      setIsLoading(true);
+      const data = {
+        loginMethod: 0,
+        email: values.email,
+        password: values.password,
+      };
+      const res = await _loginWithEmail(data);
+      const { token, emailVerification } = res.data;
+      setToken(token);
+      router.push(emailVerification ? "/builder" : "/email-verify");
+    } catch (err) {
+      console.error("Email login error:", err);
+    } finally {
+      setIsLoading(false);
+      actions.setSubmitting(false);
+    }
   };
 
-  return (
-    <div className="pt-[16px] pb-20">
-      <Card>
-        <Text
-          as="h1"
-          size={"p-large"}
-          className="text-landing-heading-text-color font-bold"
+  const handleGoogleLogin = () => googleLogin();
+
+  if (loginStep === "email") {
+    return (
+      <AuthLayout
+        title="Log in with email"
+        description="Enter your credentials to continue"
+        showBackButton
+        onBack={() => setLoginStep("method")}
+      >
+        <Formik
+          initialValues={{ email: "", password: "" }}
+          validationSchema={LoginValidationSchema}
+          onSubmit={handleEmailLogin}
         >
-          Welcome back,
-        </Text>
-        <Text
-          size={"p-xsmall"}
-          className="mt-2 text-landing-description-text-color font-medium"
-        >
-          Login to your account to access all the features
-        </Text>
-        <div className="mt-[24px]">
-          <Button
-            text="Login with Google"
-            type="secondary"
-            icon={
-              <img
-                src="/assets/svgs/google.svg"
-                alt="google icon"
-                className="w-[22px] cursor-pointer"
+          {({ errors, touched, isSubmitting }) => (
+            <Form className="space-y-5">
+              <FormInput
+                name="email"
+                type="email"
+                label="Email"
+                placeholder="you@example.com"
+                required
+                errors={errors}
+                touched={touched}
               />
-            }
-            onClick={googleLogin}
-            customClass="w-full "
-          />
-          <div className="flex items-center gap-[24px] my-[24px] text-landing-description-text-color">
-            <div className="w-full h-[1px] bg-landing-card-border-color" />
-            or
-            <div className="w-full h-[1px] bg-landing-card-border-color" />
-          </div>
-          <div>
-            <Formik
-              initialValues={{
-                email: "",
-                password: "",
-              }}
-              validationSchema={LoginValidationSchema}
-              onSubmit={(values, actions) => {
-                // Handle form submission
-                setLoading(true);
 
-                const data = {
-                  loginMethod: 0,
-                  email: values.email,
-                  password: values.password,
-                };
-                handleLogin(data);
-                actions.setSubmitting(false);
-              }}
-            >
-              {({ errors, touched }) => (
-                <Form id="LoginForm">
-                  <Text
-                    as="p"
-                    size={"p-xxsmall"}
-                    className="mt-6 font-medium"
-                    required
-                  >
-                    Email
-                  </Text>
+              <FormInput
+                name="password"
+                type="password"
+                label="Password"
+                placeholder="Enter your password"
+                required
+                errors={errors}
+                touched={touched}
+              />
 
-                  <Field
-                    type="email"
-                    name="email"
-                    placeholder="you@email.com"
-                    className={`text-input mt-2 ${
-                      errors.email &&
-                      touched.email &&
-                      "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                    }`}
-                    autoComplete="off"
-                  />
-                  <ErrorMessage
-                    name="email"
-                    component="div"
-                    className="error-message text-[14px]"
-                  />
+              <div className="flex justify-end">
+                <Link
+                  href="/forgot-password"
+                  className="text-sm font-medium hover:underline text-[#FF553E]"
+                >
+                  Forgot password?
+                </Link>
+              </div>
 
-                  <Text
-                    as="p"
-                    size={"p-xxsmall"}
-                    className="mt-6 font-medium"
-                    required
-                  >
-                    Password
-                  </Text>
+              <FormButton
+                type="submit"
+                isLoading={isLoading}
+                disabled={isSubmitting}
+              >
+                Log in
+              </FormButton>
 
-                  <Field
-                    type="password"
-                    name="password"
-                    placeholder="Enter password"
-                    className={`text-input mt-2 ${
-                      errors.password &&
-                      touched.password &&
-                      "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                    }`}
-                    autoComplete="off"
-                  />
-                  <ErrorMessage
-                    name="password"
-                    component="div"
-                    className="error-message text-[14px]"
-                  />
+              <Divider />
 
-                  <Link href={"/forgot-password"}>
-                    <Text
-                      size={"p-xxsmall"}
-                      className="mt-[8px] text-right w-fit ml-auto cursor-pointer text-landing-description-text-color font-medium"
-                    >
-                      Forgot Password?
-                    </Text>
-                  </Link>
+              <GoogleButton onClick={handleGoogleLogin} isLoading={isLoading}>
+                Log in with Google
+              </GoogleButton>
 
-                  <Button
-                    text="Login"
-                    form={"LoginForm"}
-                    btnType="submit"
-                    customClass="mt-6 w-full"
-                    isLoading={loading}
-                  />
-                </Form>
-              )}
-            </Formik>
-          </div>
+              <p className="text-center text-sm text-foreground/70 mt-6">
+                Don't have an account?{" "}
+                <Link href="/signup" className="hover:underline font-medium text-[#FF553E]">
+                  Sign up
+                </Link>
+              </p>
+            </Form>
+          )}
+        </Formik>
+      </AuthLayout>
+    );
+  }
 
-          <Text
-            size={"p-xxsmall"}
-            className="text-landing-description-text-color mt-[24px] text-center"
-          >
-            Don’t have an account?
-            <Link href={"/claim-link"}>
-              <span className="text-input-error-color underline cursor-pointer ml-2">
-                Create Account
-              </span>
-            </Link>
-          </Text>
+  return (
+    <AuthLayout
+      title="Welcome back"
+      description="Log in to your account to continue"
+    >
+      <div className="space-y-4">
+        <GoogleButton onClick={handleGoogleLogin} isLoading={isLoading}>
+          Log in with Google
+        </GoogleButton>
+
+        <Divider />
+
+        <div
+          className="bg-white border border-border rounded-full px-5 py-3 flex items-center justify-center gap-3 hover-elevate cursor-pointer"
+          onClick={() => setLoginStep("email")}
+        >
+          <Mail className="w-5 h-5 text-foreground" />
+          <span className="text-base font-medium text-foreground">
+            Log in with Email
+          </span>
         </div>
-      </Card>
-    </div>
+      </div>
+
+      <p className="text-center text-sm text-foreground/70 mt-8">
+        Don't have an account?{" "}
+        <Link href="/signup" className="hover:underline font-medium text-[#FF553E]">
+          Sign up
+        </Link>
+      </p>
+    </AuthLayout>
   );
 }

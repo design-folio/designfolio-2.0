@@ -45,12 +45,11 @@ export default function FeaturesShowcase() {
                         >
                             Can telling your story be simple?{" "}
                             <span
-                                className="inline-block px-3 py-1 text-2xl sm:text-3xl lg:text-4xl font-bold tracking-wide uppercase align-middle"
+                                className="inline-block px-3 py-1 text-2xl sm:text-3xl lg:text-4xl font-bold tracking-wide uppercase align-middle font-kalam"
                                 style={{
                                     background: "#FF8C00",
                                     color: "#fff",
                                     transform: "rotate(-2deg)",
-                                    fontFamily: "'Kalam', cursive",
                                     borderRadius: "6px"
                                 }}
                                 data-testid="badge-yes-ai"

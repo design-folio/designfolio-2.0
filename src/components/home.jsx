@@ -1,6 +1,6 @@
 import React from "react";
 import TrustedBySection from "./trustedBySection";
-import Footer from "./footer";;
+import Footer from "./footer";
 import HeroSection from "./heroSection";
 import EmailMockup from "./emailMockup";
 import ScrollingBanner from "./scrollingBanner";
@@ -16,7 +16,7 @@ export default function Home({ dfToken }) {
       <TrustedBySection />
       <FeaturesSection />
       <FeaturesShowcase />
-      <Footer />
+      <Footer dfToken={dfToken} />
       <FooterBottom />
       <ScrollingBanner />
     </React.Fragment>

@@ -1,56 +1,60 @@
 import React, { useState } from "react";
-import { Formik, Form, Field } from "formik";
-import * as Yup from "yup";
 import { useRouter } from "next/router";
 import { useDebouncedCallback } from "use-debounce";
+import { AnimatePresence, motion } from "framer-motion";
+import * as Yup from "yup";
 import { _checkUsername } from "@/network/post-request";
-import Card from "./card";
-import Text from "./text";
-import Button from "./button";
+import { AuthLayout } from "@/components/ui/auth-layout";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import Link from "next/link";
+import { Check } from "lucide-react";
+import { FormButton } from "./ui/form-button";
 
-// Yup validation schema
 const DomainValidationSchema = Yup.object().shape({
   domain: Yup.string()
     .matches(
       /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})?$/,
       "Invalid subdomain"
     )
-    .required("Required"),
+    .required("Domain is required"),
 });
 
 export default function ClaimLink() {
   const [isAvailable, setIsAvailable] = useState(false);
   const router = useRouter();
-  const [domainValue, setDomainValue] = useState("");
-  const [loading, setLoding] = useState(false);
+  const [domain, setDomain] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [validationError, setValidationError] = useState("");
 
   const handleClaim = () => {
     router.push({
       pathname: "/signup",
-      query: { username: domainValue.toLowerCase() },
+      query: { username: domain.toLowerCase() },
     });
+  };
+
+  const handleDomainSubmit = (e) => {
+    e.preventDefault();
+    if (domain.trim() && isAvailable) {
+      handleClaim();
+    }
   };
 
   // Debounced API call
   const debouncedCheckUsername = useDebouncedCallback(
-    async (value, setFieldError) => {
-      setLoding(true);
+    async (value) => {
+      setLoading(true);
       if (value.length !== 0) {
         try {
           const response = await _checkUsername({ username: value });
           const isDomainAvailable = response?.data?.available ?? false;
           setIsAvailable(isDomainAvailable);
-          if (!isDomainAvailable) {
-            setFieldError(
-              "domain",
-              "This domain seems to be taken already. Try something similar."
-            );
-          }
         } catch (error) {
           console.error(error);
+          setIsAvailable(false);
         } finally {
-          setLoding(false);
+          setLoading(false);
         }
       }
     },
@@ -58,200 +62,138 @@ export default function ClaimLink() {
   );
 
   // Handle input change
-  const handleChange = (e, setFieldValue, setFieldError, setFieldTouched) => {
-    const { value, name } = e.target;
-    setLoding(true);
-    setFieldTouched(name, true, false);
-    const pattern = /^[a-zA-Z0-9-\s]+$/;
-    const newValue = value
-      .split("")
-      .filter((char) => pattern.test(char))
-      .join("");
-    const formattedValue = newValue.replace(/\s+/g, "-");
-    setFieldValue(name, formattedValue);
-    setDomainValue(formattedValue);
-    debouncedCheckUsername(formattedValue, setFieldError);
+  const handleDomainChange = (e) => {
+    const value = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '');
+    setDomain(value);
+
+    // Validate the domain
+    try {
+      DomainValidationSchema.validateSync({ domain: value });
+      setValidationError("");
+
+      if (value.length > 0) {
+        debouncedCheckUsername(value);
+      } else {
+        setIsAvailable(false);
+        setLoading(false);
+      }
+    } catch (error) {
+      setValidationError(error.message);
+      setIsAvailable(false);
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="pt-[16px] pb-20">
-      <Card>
-        <Text
-          as="h1"
-          size={"p-large"}
-          className="text-landing-heading-text-color font-bold"
-        >
-          First, claim your unique link
-        </Text>
-        <Text
-          size={"p-xsmall"}
-          className="mt-2 text-landing-description-text-color font-medium"
-        >
-          Check whether we can get you the best domain.
-        </Text>
-        <div className="mt-[24px]">
-          <Formik
-            initialValues={{ domain: "" }}
-            validationSchema={DomainValidationSchema}
-            onSubmit={(actions) => {
-              // Handle form submission
-              handleClaim();
-            }}
-          >
-            {({
-              errors,
-              values,
-              setFieldValue,
-              setFieldError,
-              setFieldTouched,
-            }) => (
-              <Form id="ClaimForm">
-                <Text
-                  as="p"
-                  size={"p-xxsmall"}
-                  className="mt-6 font-medium"
-                  required
+    <AuthLayout
+      title="First, claim your unique link"
+      description="Choose your personal domain to get started"
+    >
+      <motion.div
+        key="domain"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -10 }}
+        transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+      >
+        <form onSubmit={handleDomainSubmit} className="space-y-6">
+          <div className="space-y-2">
+            <Label htmlFor="domain" className="text-sm font-medium text-foreground">
+              Your Domain
+            </Label>
+            <div className="flex items-center bg-white dark:bg-white border-2 border-border rounded-full hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] transition-all duration-300 ease-out overflow-hidden">
+              <Input
+                id="domain"
+                type="text"
+                placeholder="yourname"
+                value={domain}
+                onChange={handleDomainChange}
+                required
+                className="border-0 bg-transparent h-11 px-4 focus-visible:ring-0 focus-visible:ring-offset-0 text-base text-foreground placeholder:text-base placeholder:text-muted-foreground/60 flex-1"
+                data-testid="input-domain"
+              />
+              <span className="text-sm text-muted-foreground/60 pr-4 whitespace-nowrap">
+                .designfolio.me
+              </span>
+            </div>
+            <AnimatePresence>
+              {validationError && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                  animate={{ opacity: 1, height: "auto", marginTop: 8 }}
+                  exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  className="overflow-hidden"
                 >
-                  Your Website
-                </Text>
-                <div className="mt-2">
-                  <div className="w-full">
-                    <div className="relative">
-                      <Field
-                        type="text"
-                        name="domain"
-                        placeholder="yourname"
-                        autoComplete="off"
-                        className={`text-input w-full !rounded-[16px] ${
-                          loading ? "!pr-[182px]" : "!pr-[158px]"
-                        } !py-[19.2px] xl:!py-[18.8px] placeholder-[#D1D5D9] ${
-                          ((!!errors.domain && values.domain && !loading) ||
-                            (!isAvailable && !loading && values.domain)) &&
-                          "!text-input-error-color"
-                        } ${
-                          !errors.domain &&
-                          domainValue &&
-                          isAvailable &&
-                          !loading &&
-                          "!text-input-success-color"
-                        }`}
-                        onChange={(e) =>
-                          handleChange(
-                            e,
-                            setFieldValue,
-                            setFieldError,
-                            setFieldTouched
-                          )
-                        }
-                      />
-                      <div className="flex justify-center items-center gap-[10px] absolute top-[3.5px] right-[3px]">
-                        <span
-                          className="text-input-button-color flex  gap-2 items-center font-inter font-[500]  p-[14px] rounded-xl transition-all"
-                          style={{
-                            background:
-                              "linear-gradient(to right, #F1F2F8, #F7F3EB)",
-                          }}
-                        >
-                          .designfolio.me
-                          {loading && domainValue && (
-                            <svg
-                              className="animate-spin h-4 w-4"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                            >
-                              <circle
-                                className="opacity-25"
-                                cx="12"
-                                cy="12"
-                                r="10"
-                                stroke="currentColor"
-                                strokeWidth="4"
-                              ></circle>
-                              <path
-                                className="opacity-75"
-                                fill="currentColor"
-                                d="M4 12a8 8 0 018-8V2.5A9.5 9.5 0 002.5 12H4z"
-                              ></path>
-                            </svg>
-                          )}
-                        </span>
-                      </div>
-                    </div>
+                  <div className="flex items-center gap-2 text-sm text-red-600">
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                    </svg>
+                    <span>{validationError}</span>
                   </div>
-                </div>
-                <div className="h-6 text-center mt-6">
-                  <div className="flex flex-col justify-center overflow-hidden">
-                    <div
-                      className={`transition flex gap-x-1 justify-center items-center duration-300 ${
-                        !domainValue || loading
-                          ? "h-max animate-slide-up max-h-10 opacity-100"
-                          : "h-max max-h-0 opacity-0"
-                      }`}
-                    >
-                      <img src="/assets/svgs/normal-emoji.svg" alt="" />
-                      <p className="text-input-button-color font-[500] font-inter">
-                        Claim your domain before it&apos;s late!
-                      </p>
-                    </div>
+                </motion.div>
+              )}
 
-                    <div
-                      className={`transition-transform flex gap-x-1 justify-center items-center duration-300 ${
-                        !errors.domain && domainValue && isAvailable && !loading
-                          ? "-translate-y-full h-max animate-slide-down max-h-10 opacity-100"
-                          : "-translate-y-full h-max max-h-0 opacity-0"
-                      }`}
-                    >
-                      <img src="/assets/svgs/success-emoji.svg" alt="" />
-                      <p className="text-center text-input-success-color font-[500] font-inter">
-                        It&apos;s available, claim it now.
-                      </p>
-                    </div>
-
-                    <div
-                      className={`transition-transform flex gap-x-1 justify-center items-center duration-300 ${
-                        (!!errors.domain && values.domain && !loading) ||
-                        (!isAvailable && !loading && values.domain)
-                          ? "translate-y-full h-max  animate-slide-up max-h-10 opacity-100"
-                          : "translate-y-full h-max max-h-0 opacity-0"
-                      }`}
-                    >
-                      <img src="/assets/svgs/error-emoji.svg" alt="" />
-                      <p className="text-center flex  text-input-error-color font-[500] font-inter">
-                        Username is already taken.{" "}
-                        <span className="hidden md:block">
-                          Your clone got here first!
-                        </span>
-                      </p>
-                    </div>
+              {domain && isAvailable && !loading && !validationError && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                  animate={{ opacity: 1, height: "auto", marginTop: 8 }}
+                  exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  className="overflow-hidden"
+                >
+                  <div className="flex items-center gap-2 text-sm text-green-600">
+                    <Check className="w-4 h-4" />
+                    <span>{domain}.designfolio.me is available!</span>
                   </div>
-                </div>
-                <Button
-                  text="Claim domain"
-                  // type="tertiary"
-                  form={"ClaimForm"}
-                  btnType="submit"
-                  customClass="w-full mt-5"
-                  isDisabled={
-                    !(!errors.domain && domainValue && isAvailable && !loading)
-                  }
-                />
-              </Form>
-            )}
-          </Formik>
-        </div>
-        <Text
-          size={"p-xxsmall"}
-          className="text-landing-description-text-color text-center mg:w-[60%] m-auto !text-[14px] mt-6 font-medium"
-        >
-          Already have an account?{" "}
-          <Link href={"/login"}>
-            <span className="text-df-orange-color underline cursor-pointer">
-              Login
-            </span>
-          </Link>
-        </Text>
-      </Card>
-    </div>
+                </motion.div>
+              )}
+
+              {domain && !isAvailable && !loading && !validationError && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                  animate={{ opacity: 1, height: "auto", marginTop: 8 }}
+                  exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  className="overflow-hidden"
+                >
+                  <div className="flex items-center gap-2 text-sm text-red-600">
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                    </svg>
+                    <span>{domain}.designfolio.me is not available!</span>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+
+
+          </div>
+
+
+
+          <FormButton
+            type="submit"
+            disabled={!domain.trim() || !isAvailable || loading || validationError}
+            data-testid="button-claim-domain"
+          >
+            Continue
+          </FormButton>
+
+          <p className="text-center text-sm text-foreground/70 mt-6">
+            Already have an account?{" "}
+            <Link
+              href="/login"
+              className="hover:underline font-medium"
+              style={{ color: '#FF553E' }}
+              data-testid="link-login"
+            >
+              Log in
+            </Link>
+          </p>
+        </form>
+      </motion.div>
+    </AuthLayout>
   );
 }

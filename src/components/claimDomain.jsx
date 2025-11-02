@@ -204,8 +204,8 @@ export default function ClaimDomain({
                         {/* Default message */}
                         <div
                             className={`transition flex gap-x-1 justify-center items-center duration-300 ${!inputValue || loading
-                                    ? "h-max animate-slide-up max-h-10 opacity-100"
-                                    : "h-max max-h-0 opacity-0"
+                                ? "h-max animate-slide-up max-h-10 opacity-100"
+                                : "h-max max-h-0 opacity-0"
                                 }`}
                         >
                             <span className="text-sm text-muted-foreground font-medium">
@@ -216,8 +216,8 @@ export default function ClaimDomain({
                         {/* Success message */}
                         <div
                             className={`transition-transform flex gap-x-1 justify-center items-center duration-300 ${!error && inputValue && isAvailable && !loading
-                                    ? "-translate-y-full h-max animate-slide-down max-h-10 opacity-100"
-                                    : "-translate-y-full h-max max-h-0 opacity-0"
+                                ? "-translate-y-full h-max animate-slide-down max-h-10 opacity-100"
+                                : "-translate-y-full h-max max-h-0 opacity-0"
                                 }`}
                         >
                             <span className="text-sm text-green-600 font-medium">
@@ -228,28 +228,23 @@ export default function ClaimDomain({
                         {/* Error message */}
                         <div
                             className={`transition-transform flex gap-x-1 justify-center items-center duration-300 ${error && inputValue && !loading
-                                    ? "translate-y-full h-max animate-slide-up max-h-10 opacity-100"
-                                    : "translate-y-full h-max max-h-0 opacity-0"
+                                ? "translate-y-full h-max animate-slide-up max-h-10 opacity-100"
+                                : "translate-y-full h-max max-h-0 opacity-0"
                                 }`}
                         >
-                            <span className="text-sm text-red-500 font-medium">
-                                {error}
-                            </span>
+
+                            <p className="text-center flex text-input-error-color font-sm font-medium">
+                                Domain is already taken.{" "}
+                            </p>
                         </div>
                     </div>
                 </div>
             </div>
             <Button
+                variant="tertiary"
                 onClick={handleSubmit}
                 disabled={!(!error && inputValue && isAvailable && !loading)}
-                className="text-white rounded-full h-14 sm:h-16 px-8 sm:px-10 text-base sm:text-lg font-semibold no-default-hover-elevate no-default-active-elevate transition-colors w-full sm:w-auto whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{ backgroundColor: "#FF553E", borderColor: "#FF553E" }}
-                onMouseEnter={e =>
-                    !e.currentTarget.disabled && (e.currentTarget.style.backgroundColor = "#E64935")
-                }
-                onMouseLeave={e =>
-                    !e.currentTarget.disabled && (e.currentTarget.style.backgroundColor = "#FF553E")
-                }
+                className="rounded-full h-14 sm:h-16 px-8 sm:px-10 text-base sm:text-lg font-semibold no-default-hover-elevate no-default-active-elevate transition-colors w-full sm:w-auto whitespace-nowrap disabled:opacity-100 disabled:bg-[#FF8675] disabled:!cursor-not-allowed"
                 data-testid="button-start-building-footer"
             >
                 Get started for free

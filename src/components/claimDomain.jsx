@@ -10,7 +10,7 @@ import * as Yup from "yup";
 const DomainValidationSchema = Yup.object().shape({
     domain: Yup.string()
         .matches(
-            /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})?$/,
+            /^[a-z0-9][a-z0-9-]{1,61}[a-z0-9](?:\.[a-z]{2,})?$/,
             "Invalid subdomain"
         )
         .required("Domain is required"),
@@ -80,8 +80,9 @@ export default function ClaimDomain({
         setLoading(true);
 
         // Filter allowed characters and format
-        const pattern = /^[a-zA-Z0-9-\s]+$/;
+        const pattern = /^[a-z0-9-\s]+$/;
         const newValue = value
+            .toLowerCase()
             .split("")
             .filter((char) => pattern.test(char))
             .join("");

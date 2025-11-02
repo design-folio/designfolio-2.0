@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card"
 import FooterBottom from "@/components/footerBottom"
 
-export default function PrivacyPolicy() {
+export default function Index() {
 
   return (
     <div className="min-h-screen w-full bg-background-landing">
@@ -196,3 +196,5 @@ export default function PrivacyPolicy() {
     </div>
   )
 }
+
+Index.theme = "light";

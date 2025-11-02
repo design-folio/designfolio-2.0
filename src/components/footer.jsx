@@ -68,9 +68,7 @@ export default function Footer({ dfToken, innerClass = "", className = "" }) {
                                     className="text-base font-semibold text-foreground leading-relaxed"
                                     data-testid="text-problem"
                                 >
-                                    Unfortunately, most portfolio builders end up the same way —
-                                    overwhelming, too technical, or simply never finished. You
-                                    know that feeling, right?
+                                    Unfortunately, most portfolio builders offer the same experience—overwhelming, too technical, or simply not motivating enough to finish.
                                 </p>
                             </div>
 

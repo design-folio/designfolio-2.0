@@ -83,11 +83,11 @@ export default function ResetPassword() {
               data-testid="input-confirm-password"
             />
 
-            {!errors.password && (
+            {/* {!errors.password && (
               <p className="text-xs text-muted-foreground -mt-2">
                 Must be at least 8 characters long
               </p>
-            )}
+            )} */}
 
             <FormButton
               type="submit"

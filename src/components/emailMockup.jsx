@@ -1,4 +1,5 @@
 export default function EmailMockup() {
+
     return (
         <section className="py-8 sm:py-12 md:py-16 px-4 sm:px-6">
             <div className="max-w-5xl mx-auto">
@@ -13,9 +14,11 @@ export default function EmailMockup() {
                         <div className="flex flex-col sm:flex-row items-start gap-6 sm:gap-8 pb-8">
                             <div className="flex-shrink-0">
                                 <div className="relative">
-                                    <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full overflow-hidden ring-2 ring-primary/20 shadow-md">
+                                    <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full overflow-hidden shadow-md bg-muted/20 dark:bg-muted/10 relative">
+                                        {/* Shimmer background effect */}
+                                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-muted/30 to-transparent animate-shimmer"></div>
                                         <video
-                                            className="w-full h-full object-cover"
+                                            className="w-full h-full object-cover relative z-10"
                                             autoPlay
                                             loop
                                             muted
@@ -164,6 +167,6 @@ export default function EmailMockup() {
                     </div>
                 </div>
             </div>
-        </section>
+        </section >
     )
 }

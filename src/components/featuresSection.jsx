@@ -104,7 +104,7 @@ export default function FeaturesSection() {
         >
             <div className="max-w-5xl mx-auto">
                 <h2
-                    className="font-gsans font-semibold text-3xl sm:text-4xl md:text-4xl lg:text-5xl xl:text-5xl text-center text-foreground mb-4 sm:mb-6"
+                    className="font-gsans font-semibold text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-5xl text-center text-foreground mb-4 sm:mb-6"
                     data-testid="text-features-heading"
                 >
                     Done fighting with Framer?
@@ -114,7 +114,7 @@ export default function FeaturesSection() {
 
                 <div className="flex justify-center mb-8 sm:mb-12">
                     <div
-                        className="bg-pink-50 border border-pink-200 rounded-full px-4 sm:px-6 py-2.5 sm:py-3.5"
+                        className="bg-pink-50 border border-pink-200 rounded-full px-4 sm:px-6 py-2.5 sm:py-3.5 text-center"
                         data-testid="badge-time-wasted"
                     >
                         <span className="text-sm sm:text-base text-foreground">

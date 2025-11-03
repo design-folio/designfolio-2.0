@@ -21,13 +21,13 @@ const Header = ({ dfToken, hideHeader }) => {
     template,
     setShowUpgradeModal,
   } = useGlobalContext();
-
+  const footerPaths = ["/", "/old-landing", "/contact", "/refund-policy", "/privacy-policy", "/terms-and-conditions"];
   // Determine header component based on dfToken and router pathname
   let headerComponent = null;
   const path = router.pathname;
   if (hideHeader) {
     return null;
-  } else if (path === "/") {
+  } else if (footerPaths.includes(path)) {
     headerComponent = <LandingHeader dfToken={dfToken} />;
   } else if (path.includes("/ai-tools")) {
     headerComponent = <AiToolsHeader />;

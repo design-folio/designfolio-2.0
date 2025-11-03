@@ -1,114 +1,104 @@
-import styles from "@/styles/Policy.module.css";
+import FooterBottom from "@/components/footerBottom";
+import { Card } from "@/components/ui/card";
 
 export default function Index() {
   return (
-    <main className={styles.main}>
-      <div className={styles.content}>
-        <div className={styles.pageHeader}>
-          <div className={styles.pageIcon}>🔒</div>
-          <h1>Privacy Policy</h1>
-          <p className={styles.lastUpdated}>Last updated: January 2025</p>
+    <div className="min-h-screen w-full bg-background-landing">
+      <div className="pt-16 sm:pt-20">
+        <div className="max-w-4xl mx-auto px-6 py-12">
+          <Card className="p-8 sm:p-12">
+            <h1 className="text-4xl font-bold mb-6" data-testid="text-page-title">
+              Terms & Conditions
+            </h1>
+
+            <div className="space-y-6 text-foreground">
+              <p className="text-sm text-muted-foreground" data-testid="text-last-updated">
+                Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+              </p>
+
+              <section>
+                <h2 className="text-2xl font-semibold mb-3" data-testid="text-section-agreement">
+                  Agreement to Terms
+                </h2>
+                <p className="leading-relaxed" data-testid="text-agreement-content">
+                  By accessing and using Designfolio, you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-semibold mb-3" data-testid="text-section-service">
+                  Use of Service
+                </h2>
+                <p className="leading-relaxed mb-3" data-testid="text-service-intro">
+                  Designfolio provides a platform for creating and hosting portfolio websites. You agree to:
+                </p>
+                <ul className="list-disc pl-6 space-y-2" data-testid="list-service-terms">
+                  <li>Provide accurate and complete information when creating your account</li>
+                  <li>Maintain the security of your account credentials</li>
+                  <li>Not use the service for any illegal or unauthorized purpose</li>
+                  <li>Not violate any laws in your jurisdiction</li>
+                  <li>Not upload content that infringes on intellectual property rights</li>
+                  <li>Not transmit viruses, malware, or any harmful code</li>
+                </ul>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-semibold mb-3" data-testid="text-section-content">
+                  Content Ownership
+                </h2>
+                <p className="leading-relaxed" data-testid="text-content-ownership">
+                  You retain all ownership rights to the content you upload to Designfolio. By uploading content, you grant us a license to store, display, and distribute your content as necessary to provide our services. We do not claim ownership of your portfolio content.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-semibold mb-3" data-testid="text-section-account">
+                  Account Termination
+                </h2>
+                <p className="leading-relaxed" data-testid="text-termination-content">
+                  We reserve the right to terminate or suspend your account and access to the service immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms. Upon termination, your right to use the service will immediately cease.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-semibold mb-3" data-testid="text-section-liability">
+                  Limitation of Liability
+                </h2>
+                <p className="leading-relaxed" data-testid="text-liability-content">
+                  Designfolio and its affiliates will not be liable for any indirect, incidental, special, consequential, or punitive damages resulting from your use or inability to use the service. We provide the service "as is" without warranties of any kind.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-semibold mb-3" data-testid="text-section-modifications">
+                  Modifications to Terms
+                </h2>
+                <p className="leading-relaxed" data-testid="text-modifications-content">
+                  We reserve the right to modify or replace these Terms at any time. If a revision is material, we will provide at least 30 days notice prior to any new terms taking effect. Your continued use of the service after such modifications constitutes acceptance of the updated terms.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-semibold mb-3" data-testid="text-section-contact">
+                  Contact Information
+                </h2>
+                <p className="leading-relaxed" data-testid="text-contact-content">
+                  If you have any questions about these Terms & Conditions, please contact us at{" "}
+                  <a
+                    href="mailto:shai@designfolio.me"
+                    className="text-primary-landing  hover:underline cursor-pointer"
+                    data-testid="link-contact-email"
+                  >
+                    shai@designfolio.me
+                  </a>
+                </p>
+              </section>
+            </div>
+          </Card>
         </div>
-
-        <section>
-          <h2>1. Introduction</h2>
-          <p>
-            Welcome to Designfolio ("we," "our," or "us"). We are committed to
-            protecting your privacy and personal information. This Privacy
-            Policy explains how we collect, use, disclose, and safeguard your
-            information when you use our no-code portfolio website builder
-            service.
-          </p>
-        </section>
-
-        <section>
-          <h2>2. Information We Collect</h2>
-          <h3>Personal Information</h3>
-          <ul>
-            <li>Name and contact information (email address)</li>
-            <li>Account credentials (username, password)</li>
-            <li>Portfolio content (text, images, links)</li>
-            <li>
-              Payment information (processed securely through third-party
-              providers)
-            </li>
-          </ul>
-
-          <h3>Usage Information</h3>
-          <ul>
-            <li>Website analytics and usage patterns</li>
-            <li>Device information and browser type</li>
-            <li>IP address and location data</li>
-            <li>Cookies and similar tracking technologies</li>
-          </ul>
-        </section>
-
-        <section>
-          <h2>3. How We Use Your Information</h2>
-          <ul>
-            <li>To provide and maintain our portfolio building service</li>
-            <li>To process transactions and manage your account</li>
-            <li>To communicate with you about our services</li>
-            <li>To improve our platform and user experience</li>
-            <li>To comply with legal obligations</li>
-          </ul>
-        </section>
-
-        <section>
-          <h2>4. Information Sharing</h2>
-          <p>
-            We do not sell, trade, or otherwise transfer your personal
-            information to third parties except:
-          </p>
-          <ul>
-            <li>With your explicit consent</li>
-            <li>
-              To trusted service providers who assist in operating our platform
-            </li>
-            <li>When required by law or to protect our rights</li>
-            <li>In connection with a business transfer or merger</li>
-          </ul>
-        </section>
-
-        <section>
-          <h2>5. Data Security</h2>
-          <p>
-            We implement appropriate security measures to protect your personal
-            information against unauthorized access, alteration, disclosure, or
-            destruction. However, no internet transmission is 100% secure.
-          </p>
-        </section>
-
-        <section>
-          <h2>6. Your Rights</h2>
-          <p>You have the right to:</p>
-          <ul>
-            <li>Access and update your personal information</li>
-            <li>Request deletion of your data</li>
-            <li>Opt-out of marketing communications</li>
-            <li>Export your portfolio data</li>
-          </ul>
-        </section>
-
-        <section>
-          <h2>7. Contact Us</h2>
-          <p>
-            If you have any questions about this Privacy Policy, please contact
-            us:
-          </p>
-          <div className={styles.contactInfo}>
-            <p>
-              Email:{" "}
-              <a href="mailto:shai@designfolio.me">shai@designfolio.me</a>
-            </p>
-            <p>
-              Address: DOT Cowork, 1st Floor D Block (Module 115), TIDEL Park,
-              4, SH 49A, Tharamani, Chennai, Tamil Nadu 600113, India
-            </p>
-          </div>
-        </section>
+        <FooterBottom />
       </div>
-    </main>
+    </div>
   );
 }
 

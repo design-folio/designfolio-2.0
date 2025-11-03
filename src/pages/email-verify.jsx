@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 export default function Index() {
   const router = useRouter();
   return (
-    <div className="bg-landing-bg-color min-h-screen">
+    <div className="bg-background-landing min-h-screen overflow-hidden">
       <Seo
         title={"Designfolio - Build your Design Portfolio Website super Fast"}
         description={
@@ -18,7 +18,7 @@ export default function Index() {
         imageUrl={"https://designfolio.me/images/png/designfolio-thumbnail.png"}
         url={`https://designfolio.me`}
       />
-      <main className={"pt-[64px] md:pt-[104px] pb-5"}>
+      <main>
         {router?.query?.change == "email" ? <ChangeEmail /> : <VerifyEmail />}
       </main>
     </div>
@@ -38,6 +38,9 @@ export const getServerSideProps = async (context) => {
     };
   }
   return {
-    props: { dfToken: !!dfToken },
+    props: { hideHeader: true, dfToken: !!dfToken },
   };
 };
+
+
+

@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
+import { Formik, Form } from "formik";
 import { useRouter } from "next/router";
 import { _changeEmail } from "@/network/post-request";
-import Card from "./card";
-import Text from "./text";
-import Button from "./button";
+import { AuthLayout } from "@/components/ui/auth-layout";
+import { FormInput } from "@/components/ui/form-input";
+import { FormButton } from "@/components/ui/form-button";
+import * as Yup from "yup";
 
 // Yup validation schema
 const changeEmailSchema = Yup.object().shape({
@@ -29,87 +29,64 @@ export default function ChangeEmail() {
     );
   };
 
-  const handleEmailChange = async (data) => {
+  const handleEmailChange = async (values, { setFieldError }) => {
+    setLoading(true);
+
     try {
-      const response = await _changeEmail(data);
+      const response = await _changeEmail(values);
       if (response) {
-        updateQueryParams(data.email);
+        updateQueryParams(values.email);
       }
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.error("Change email error:", error);
+      const errorMessage = error.response?.data?.message || "Failed to change email. Please try again.";
     } finally {
       setLoading(false);
     }
   };
 
-  return (
-    <div className="pt-[16px] pb-20">
-      <Card>
-        <Text
-          as="h1"
-          size={"p-large"}
-          className="text-landing-heading-text-color font-bold"
-        >
-          Change Email
-        </Text>
-        <Text
-          size={"p-xsmall"}
-          className="mt-2 text-landing-description-text-color font-medium"
-        >
-          Please enter your new email address.
-        </Text>
-        <div className="mt-[24px]">
-          <div>
-            <Formik
-              initialValues={{
-                email: "",
-              }}
-              validationSchema={changeEmailSchema}
-              onSubmit={(values, actions) => {
-                handleEmailChange(values);
-                actions.setSubmitting(false);
-              }}
-            >
-              {({ isSubmitting, isValid, errors, touched }) => (
-                <Form id="emailverifyform">
-                  <Text
-                    as="p"
-                    size={"p-xxsmall"}
-                    className="mt-6 font-medium"
-                    required
-                  >
-                    Email
-                  </Text>
+  const handleBack = () => {
+    router.push("/email-verify");
+  };
 
-                  <Field
-                    type="email"
-                    name="email"
-                    className={`text-input mt-2 ${
-                      errors.email &&
-                      touched.email &&
-                      "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                    }`}
-                    autoComplete="off"
-                  />
-                  <ErrorMessage
-                    name="email"
-                    component="div"
-                    className="error-message text-[14px]"
-                  />
-                  <Button
-                    btnType="submit"
-                    disabled={isSubmitting || !isValid}
-                    text="Confirm"
-                    form={"emailverifyform"}
-                    customClass="mt-6 w-full"
-                    isLoading={loading}
-                  />
-                </Form>
-              )}
-            </Formik>
-          </div>
-        </div>
-      </Card>
-    </div>
+  return (
+    <AuthLayout
+      title="Change Email"
+      description="Please enter your new email address."
+      showBackButton={true}
+      onBack={handleBack}
+    >
+      <Formik
+        initialValues={{
+          email: "",
+        }}
+        validationSchema={changeEmailSchema}
+        onSubmit={handleEmailChange}
+      >
+        {({ errors, touched, isSubmitting, values }) => (
+          <Form className="space-y-6">
+            <FormInput
+              name="email"
+              type="email"
+              label="Email address"
+              placeholder="john@example.com"
+              required
+              errors={errors}
+              touched={touched}
+              data-testid="input-email"
+            />
+
+            <FormButton
+              type="submit"
+              isLoading={loading}
+              disabled={isSubmitting || !values.email.trim()}
+              data-testid="button-confirm"
+            >
+              Confirm
+            </FormButton>
+          </Form>
+        )}
+      </Formik>
+    </AuthLayout>
   );
 }

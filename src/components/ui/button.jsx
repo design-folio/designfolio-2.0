@@ -19,6 +19,7 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         tertiary:
           "bg-tertiary text-tertiary-foreground hover:bg-tertiary-hover border-tertiary hover:border-tertiary-border-hover",
+        darker: "bg-foreground-landing text-background-landing hover:bg-foreground-landing/90"
       },
       size: {
         default: "h-10 px-4 py-2",

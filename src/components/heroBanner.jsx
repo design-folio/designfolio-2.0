@@ -2,7 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import Button from "./button";
 import Link from "next/link";
-import ClaimDomain from "./claimDomain";
+import ClaimDomain from "./claimDomain-old";
 
 const textVariants = {
   initial: {

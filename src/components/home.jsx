@@ -1,34 +1,25 @@
 import React from "react";
-import HeroBanner from "./heroBanner";
-import About from "./About";
+import TrustedBySection from "./trustedBySection";
 import Footer from "./footer";
-import TrustedBy from "./trustedBy";
-import AiToolsSection from "./aiToolsSection";
-import SpotlightUsers from "./spotlight";
+import HeroSection from "./heroSection";
+import EmailMockup from "./emailMockup";
+import ScrollingBanner from "./scrollingBanner";
+import FooterBottom from "./footerBottom";
+import FeaturesSection from "./featuresSection";
+import FeaturesShowcase from "./featuresShowcase";
 
 export default function Home({ dfToken }) {
   return (
-    <div className="md:mt-20">
-      <HeroBanner dfToken={dfToken} />
-      <div
-        className={`max-w-[1192px] mx-auto mt-[75px] xl:mt-[180px]`}
-        id="trusted-by"
-      >
-        <TrustedBy />
-      </div>
-      <div
-        className={`max-w-[1192px] mx-auto mt-[75px] xl:mt-[115px]`}
-        id="how-it-works"
-      >
-        <About />
-      </div>
-      <AiToolsSection />
-
-      <div className={` mx-auto mt-[75px] xl:mt-[115px]`}>
-        <SpotlightUsers />
-      </div>
-
+    <React.Fragment>
+      <HeroSection dfToken={dfToken} />
+      <EmailMockup />
+      <TrustedBySection />
+      <FeaturesSection />
+      <FeaturesShowcase />
       <Footer dfToken={dfToken} />
-    </div>
+      <FooterBottom />
+      <ScrollingBanner />
+    </React.Fragment>
+
   );
 }

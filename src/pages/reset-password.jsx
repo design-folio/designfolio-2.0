@@ -1,11 +1,11 @@
 import Seo from "@/components/seo";
 import React from "react";
-import { getServerSideProps } from "@/lib/authServerSideProps";
+import { getServerSideProps as getAuthServerSideProps } from "@/lib/authServerSideProps";
 import ResetPassword from "@/components/ResetPassword";
 
 export default function Index() {
   return (
-    <div className="bg-landing-bg min-h-screen">
+    <div className="bg-background-landing min-h-screen overflow-hidden">
       <Seo
         title={"Designfolio - Build your Design Portfolio Website super Fast"}
         description={
@@ -16,7 +16,7 @@ export default function Index() {
         imageUrl={"https://designfolio.me/images/png/designfolio-thumbnail.png"}
         url={`https://designfolio.me`}
       />
-      <main className={"pt-[64px] md:pt-[104px] pb-5"}>
+      <main>
         <ResetPassword />
       </main>
     </div>
@@ -25,4 +25,15 @@ export default function Index() {
 
 Index.theme = "light";
 
-export { getServerSideProps };
+
+export async function getServerSideProps(context) {
+  const baseProps = await getAuthServerSideProps(context);
+
+  return {
+    ...baseProps,
+    props: {
+      ...baseProps.props,
+      hideHeader: true,
+    },
+  };
+}

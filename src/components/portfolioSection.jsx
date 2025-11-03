@@ -14,7 +14,7 @@ export default function PortfolioSection() {
     <section className="py-12 sm:py-16 md:py-20 px-6 bg-background-landing">
       <div className="max-w-4xl mx-auto">
         <h2
-          className="font-gsans font-semibold text-3xl sm:text-4xl md:text-4xl lg:text-5xl xl:text-5xl text-center text-foreground mb-3 sm:mb-4"
+          className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-5xl text-center text-foreground mb-3 sm:mb-4"
           data-testid="text-portfolio-heading"
         >
           Featured Case Studies

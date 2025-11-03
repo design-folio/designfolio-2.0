@@ -27,7 +27,7 @@ export default function Footer({ dfToken, innerClass = "", className = "" }) {
                     <div className="space-y-8">
                         <div className="space-y-4">
                             <h2
-                                className="text-3xl sm:text-4xl lg:text-5xl font-semibold font-gsans leading-tight text-center"
+                                className="text-2xl min-[430px]:text-3xl sm:text-4xl lg:text-5xl font-semibold font-gsans leading-tight text-center text-balance"
                                 data-testid="text-footer-headline"
                             >
                                 It was supposed to take a weekend,

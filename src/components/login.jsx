@@ -12,6 +12,7 @@ import { FormInput } from "@/components/ui/form-input";
 import { FormButton } from "@/components/ui/form-button";
 import { GoogleButton } from "@/components/ui/google-button";
 import { Divider } from "@/components/ui/divider";
+import { motion } from "framer-motion";
 
 const LoginValidationSchema = Yup.object().shape({
   email: Yup.string()
@@ -91,65 +92,87 @@ export default function Login() {
         showBackButton
         onBack={() => setLoginStep("method")}
       >
-        <Formik
-          initialValues={{ email: "", password: "" }}
-          validationSchema={LoginValidationSchema}
-          onSubmit={handleEmailLogin}
+        <motion.div
+          key="email"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
         >
-          {({ errors, touched, isSubmitting }) => (
-            <Form className="space-y-5">
-              <FormInput
-                name="email"
-                type="email"
-                label="Email"
-                placeholder="you@example.com"
-                required
-                errors={errors}
-                touched={touched}
-              />
-
-              <FormInput
-                name="password"
-                type="password"
-                label="Password"
-                placeholder="Enter your password"
-                required
-                errors={errors}
-                touched={touched}
-              />
-
-              <div className="flex justify-end">
-                <Link
-                  href="/forgot-password"
-                  className="text-sm font-medium hover:underline text-[#FF553E]"
+          <Formik
+            initialValues={{ email: "", password: "" }}
+            validationSchema={LoginValidationSchema}
+            onSubmit={handleEmailLogin}
+          >
+            {({ errors, touched, isSubmitting }) => (
+              <Form className="space-y-5">
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: 0.1 }}
+                  className="space-y-2"
                 >
-                  Forgot password?
-                </Link>
-              </div>
+                  <FormInput
+                    name="email"
+                    type="email"
+                    label="Email"
+                    placeholder="you@example.com"
+                    required
+                    errors={errors}
+                    touched={touched}
+                  />
+                </motion.div>
 
-              <FormButton
-                type="submit"
-                isLoading={isLoading}
-                disabled={isSubmitting}
-              >
-                Log in
-              </FormButton>
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: 0.2 }}
+                  className="space-y-2"
+                >
+                  <FormInput
+                    name="password"
+                    type="password"
+                    label="Password"
+                    placeholder="Enter your password"
+                    required
+                    errors={errors}
+                    touched={touched}
+                  />
+                </motion.div>
 
-              <Divider />
+                <div className="flex justify-end">
+                  <Link
+                    href="/forgot-password"
+                    className="text-sm font-medium hover:underline text-[#FF553E]"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
 
-              <GoogleButton onClick={handleGoogleLogin} isLoading={isLoading}>
-                Log in with Google
-              </GoogleButton>
+                <FormButton
+                  type="submit"
+                  isLoading={isLoading}
+                  disabled={isSubmitting}
+                >
+                  Log in
+                </FormButton>
 
-              <p className="text-center text-sm text-foreground/70 mt-6">
-                Don't have an account?{" "}
-                <Link href="/claim-link" className="hover:underline font-medium text-[#FF553E] cursor-pointer">
-                  Sign up
-                </Link>
-              </p>
-            </Form>
-          )}
-        </Formik>
+                <Divider />
+
+                <GoogleButton onClick={handleGoogleLogin} isLoading={isLoading}>
+                  Log in with Google
+                </GoogleButton>
+
+                <p className="text-center text-sm text-foreground/70 mt-6">
+                  Don't have an account?{" "}
+                  <Link href="/claim-link" className="hover:underline font-medium text-[#FF553E] cursor-pointer">
+                    Sign up
+                  </Link>
+                </p>
+              </Form>
+            )}
+          </Formik>
+        </motion.div>
       </AuthLayout>
     );
   }
@@ -159,30 +182,38 @@ export default function Login() {
       title="Welcome back"
       description="Log in to your account to continue"
     >
-      <div className="space-y-4">
-        <GoogleButton onClick={handleGoogleLogin} isLoading={isLoading}>
-          Log in with Google
-        </GoogleButton>
+      <motion.div
+        key="method"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -10 }}
+        transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+      >
+        <div className="space-y-4">
+          <GoogleButton onClick={handleGoogleLogin} isLoading={isLoading}>
+            Log in with Google
+          </GoogleButton>
 
-        <Divider />
+          <Divider />
 
-        <div
-          className="bg-white border border-border rounded-full px-5 py-3 flex items-center justify-center gap-3 hover-elevate cursor-pointer"
-          onClick={() => setLoginStep("email")}
-        >
-          <Mail className="w-5 h-5 text-foreground" />
-          <span className="text-base font-medium text-foreground">
-            Log in with Email
-          </span>
+          <div
+            className="bg-white border border-border rounded-full px-5 py-3 flex items-center justify-center gap-3 hover-elevate cursor-pointer"
+            onClick={() => setLoginStep("email")}
+          >
+            <Mail className="w-5 h-5 text-foreground" />
+            <span className="text-base font-medium text-foreground">
+              Log in with Email
+            </span>
+          </div>
         </div>
-      </div>
 
-      <p className="text-center text-sm text-foreground/70 mt-8">
-        Don't have an account?{" "}
-        <Link href="/claim-link" className="hover:underline font-medium text-[#FF553E] cursor-pointer ">
-          Sign up
-        </Link>
-      </p>
+        <p className="text-center text-sm text-foreground/70 mt-8">
+          Don't have an account?{" "}
+          <Link href="/claim-link" className="hover:underline font-medium text-[#FF553E] cursor-pointer">
+            Sign up
+          </Link>
+        </p>
+      </motion.div>
     </AuthLayout>
   );
 }

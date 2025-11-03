@@ -124,7 +124,14 @@ export default function Signup() {
                 showBackButton={true}
                 onBack={() => router.push("/claim-link")}
             >
-                <div className="space-y-4">
+                <motion.div
+                    key="method-content"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+                    className="space-y-4"
+                >
                     <GoogleButton
                         onClick={handleGoogleSignup}
                         isLoading={googleLoading}
@@ -144,7 +151,7 @@ export default function Signup() {
                             Sign up with Email
                         </span>
                     </div>
-                </div>
+                </motion.div>
             </AuthLayout>
         );
     }
@@ -164,105 +171,107 @@ export default function Signup() {
             showBackButton={true}
             onBack={() => setSignupStep("method")}
         >
-            <Formik
-                initialValues={{
-                    name: "",
-                    email: "",
-                    password: ""
-                }}
-                validationSchema={SignupValidationSchema}
-                onSubmit={handleEmailSignup}
+            <motion.div
+                key="email-content"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
             >
-                {({ errors, touched, isSubmitting }) => (
-                    <Form className="space-y-5">
-                        <motion.div
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.3, delay: 0.1 }}
-                        >
-                            <FormInput
-                                name="name"
-                                type="text"
-                                label="Full name"
-                                placeholder="John Doe"
-                                required
-                                errors={errors}
-                                touched={touched}
-                                data-testid="input-name"
-                            />
-                        </motion.div>
+                <Formik
+                    initialValues={{
+                        name: "",
+                        email: "",
+                        password: ""
+                    }}
+                    validationSchema={SignupValidationSchema}
+                    onSubmit={handleEmailSignup}
+                >
+                    {({ errors, touched, isSubmitting }) => (
+                        <Form className="space-y-5">
+                            <motion.div
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.3, delay: 0.1 }}
+                            >
+                                <FormInput
+                                    name="name"
+                                    type="text"
+                                    label="Full name"
+                                    placeholder="John Doe"
+                                    required
+                                    errors={errors}
+                                    touched={touched}
+                                    data-testid="input-name"
+                                />
+                            </motion.div>
 
-                        <motion.div
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.3, delay: 0.2 }}
-                        >
-                            <FormInput
-                                name="email"
-                                type="email"
-                                label="Email address"
-                                placeholder="john@example.com"
-                                required
-                                errors={errors}
-                                touched={touched}
-                                data-testid="input-email"
-                            />
-                        </motion.div>
+                            <motion.div
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.3, delay: 0.2 }}
+                            >
+                                <FormInput
+                                    name="email"
+                                    type="email"
+                                    label="Email address"
+                                    placeholder="john@example.com"
+                                    required
+                                    errors={errors}
+                                    touched={touched}
+                                    data-testid="input-email"
+                                />
+                            </motion.div>
 
-                        <motion.div
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.3, delay: 0.3 }}
-                        >
-                            <FormInput
-                                name="password"
-                                type="password"
-                                label="Password"
-                                placeholder="Create a strong password"
-                                required
-                                errors={errors}
-                                touched={touched}
-                                data-testid="input-password"
-                            />
-                            {/* {!errors.password && (
-                                <p className="text-xs text-muted-foreground pt-1">
-                                    Must be at least 8 characters long
-                                </p>
-                            )} */}
-                        </motion.div>
+                            <motion.div
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.3, delay: 0.3 }}
+                            >
+                                <FormInput
+                                    name="password"
+                                    type="password"
+                                    label="Password"
+                                    placeholder="Create a strong password"
+                                    required
+                                    errors={errors}
+                                    touched={touched}
+                                    data-testid="input-password"
+                                />
+                            </motion.div>
 
-                        <FormButton
-                            type="submit"
-                            isLoading={emailLoading}
-                            disabled={isSubmitting}
-                            data-testid="button-create-account"
-                        >
-                            Create account
-                        </FormButton>
+                            <FormButton
+                                type="submit"
+                                isLoading={emailLoading}
+                                disabled={isSubmitting}
+                                data-testid="button-create-account"
+                            >
+                                Create account
+                            </FormButton>
 
+                            <p className="text-center text-xs text-muted-foreground">
+                                By continuing, you agree to Designfolio's{" "}
+                                <Link href="/terms-and-conditions" className="hover:underline" style={{ color: "#FF553E" }} data-testid="link-terms">
+                                    Terms and Conditions
+                                </Link>{" "}
+                                and{" "}
+                                <Link href="/privacy-policy" className="hover:underline" style={{ color: "#FF553E" }} data-testid="link-privacy">
+                                    Privacy Policy
+                                </Link>
+                            </p>
 
-                        <p className="text-center text-xs text-muted-foreground">
-                            By continuing, you agree to Designfolio's{" "}
-                            <Link href="/terms-and-conditions" className="hover:underline" style={{ color: "#FF553E" }} data-testid="link-terms">
-                                Terms and Conditions
-                            </Link>{" "}
-                            and{" "}
-                            <Link href="/privacy-policy" className="hover:underline" style={{ color: "#FF553E" }} data-testid="link-privacy">
-                                Privacy Policy
-                            </Link>
-                        </p>
+                            <Divider />
 
-                        <Divider />
-
-                        <GoogleButton
-                            onClick={handleGoogleSignup}
-                            isLoading={googleLoading}
-                        >
-                            Sign up with Google
-                        </GoogleButton>
-                    </Form>
-                )}
-            </Formik>
+                            <GoogleButton
+                                onClick={handleGoogleSignup}
+                                isLoading={googleLoading}
+                            >
+                                Sign up with Google
+                            </GoogleButton>
+                        </Form>
+                    )}
+                </Formik>
+            </motion.div>
         </AuthLayout>
     );
 }

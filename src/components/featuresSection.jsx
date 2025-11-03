@@ -104,7 +104,7 @@ export default function FeaturesSection() {
         >
             <div className="max-w-5xl mx-auto">
                 <h2
-                    className="font-gsans font-semibold text-3xl sm:text-4xl md:text-4xl lg:text-5xl xl:text-5xl text-center text-foreground mb-4 sm:mb-6"
+                    className="font-gsans font-semibold text-2xl min-[420px]:text-3xl  sm:text-4xl md:text-4xl lg:text-5xl xl:text-5xl text-center text-foreground mb-4 sm:mb-6"
                     data-testid="text-features-heading"
                 >
                     Done fighting with Framer?

@@ -1,10 +1,11 @@
 import React from "react";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Logo from "../../../public/assets/svgs/logo.svg";
 import Link from "next/link";
 import TrustedBySection from "@/components/trustedBySection";
+import { useMeasuredHeight } from "@/hooks/useMeasuredHeight";
 
 export function AuthLayout({
     children,
@@ -14,6 +15,9 @@ export function AuthLayout({
     onBack,
     className = ""
 }) {
+
+    const [contentRef, contentHeight] = useMeasuredHeight();
+    console.log(contentRef)
     return (
         <div className="min-h-screen bg-background-landing flex flex-col relative overflow-hidden">
             {/* Simple 3x3 Grid Background */}
@@ -50,45 +54,51 @@ export function AuthLayout({
                     >
                         <Card className={`bg-white/95 backdrop-blur-sm py-8 px-6 sm:px-8 border-0 rounded-3xl shadow-2xl overflow-hidden ${className}`}>
                             <motion.div
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+                                initial={false}
+                                animate={{ height: contentHeight || "auto" }}
+                                transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
                             >
-                                {showBackButton && (
-                                    <button
-                                        type="button"
-                                        onClick={onBack}
-                                        className="flex items-center gap-2 text-sm text-foreground/70 hover:text-foreground -ml-2 mb-6 hover-elevate px-2 py-1 rounded-md"
-                                        data-testid="button-back"
-                                    >
-                                        <ArrowLeft className="w-4 h-4" />
-                                        Go Back
-                                    </button>
-                                )}
+                                <div ref={contentRef}>
 
-                                {(title || description) && (
-                                    <div className="mb-8">
-                                        {title && (
-                                            <h1 className="font-semibold text-2xl mb-2 text-foreground">
-                                                {title}
-                                            </h1>
-                                        )}
-                                        {description && (
-                                            <p className="text-sm text-foreground/60">
-                                                {description}
-                                            </p>
-                                        )}
-                                    </div>
-                                )}
 
-                                {children}
+
+                                    {showBackButton && (
+                                        <button
+                                            type="button"
+                                            onClick={onBack}
+                                            className="flex items-center gap-2 text-sm text-foreground/70 hover:text-foreground -ml-2 mb-6 hover-elevate px-2 py-1 rounded-md"
+                                            data-testid="button-back"
+                                        >
+                                            <ArrowLeft className="w-4 h-4" />
+                                            Go Back
+                                        </button>
+                                    )}
+
+                                    {(title || description) && (
+                                        <div className="mb-8">
+                                            {title && (
+                                                <h1 className="font-semibold text-2xl mb-2 text-foreground text-center">
+                                                    {title}
+                                                </h1>
+                                            )}
+                                            {description && (
+                                                <p className="text-sm text-foreground/60 text-center">
+                                                    {description}
+                                                </p>
+                                            )}
+                                        </div>
+                                    )}
+                                    <AnimatePresence mode="wait" initial={false}>
+                                        {children}
+                                    </AnimatePresence>
+                                </div>
                             </motion.div>
                         </Card>
                     </motion.div>
                 </div>
 
                 <TrustedBySection classNames="from-background/30" />
-            </div>
-        </div>
+            </div >
+        </div >
     );
 }

@@ -1,28 +1,31 @@
 import { Card } from "@/components/ui/card"
 import { Check, ArrowRight } from "lucide-react"
+import Link from "next/link"
 
-function FeatureCta({ children, testId }) {
+function FeatureCta({ children, testId, href = "/claim-link" }) {
     return (
-        <button
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium border-2 transition-all group"
-            style={{
-                borderColor: "#000000",
-                color: "#000000",
-                backgroundColor: "transparent"
-            }}
-            onMouseEnter={e => {
-                e.currentTarget.style.backgroundColor = "#000000"
-                e.currentTarget.style.color = "#ffffff"
-            }}
-            onMouseLeave={e => {
-                e.currentTarget.style.backgroundColor = "transparent"
-                e.currentTarget.style.color = "#000000"
-            }}
-            data-testid={testId}
-        >
-            {children}
-            <ArrowRight className="w-4 h-4" />
-        </button>
+        <Link href={href}>
+            <button
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium border-2 transition-all group"
+                style={{
+                    borderColor: "#000000",
+                    color: "#000000",
+                    backgroundColor: "transparent"
+                }}
+                onMouseEnter={e => {
+                    e.currentTarget.style.backgroundColor = "#000000"
+                    e.currentTarget.style.color = "#ffffff"
+                }}
+                onMouseLeave={e => {
+                    e.currentTarget.style.backgroundColor = "transparent"
+                    e.currentTarget.style.color = "#000000"
+                }}
+                data-testid={testId}
+            >
+                {children}
+                <ArrowRight className="w-4 h-4" />
+            </button>
+        </Link>
     )
 }
 

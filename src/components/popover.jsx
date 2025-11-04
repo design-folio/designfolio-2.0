@@ -18,7 +18,7 @@ export default function Popover({ children, show, className = "" }) {
 export function TempPopoverForLanding({ children, show, className = "" }) {
   return (
     <div
-      className={`fixed md:hidden px-[12px] top-[64px] shadow-popver-shadow transform origin-top-right w-full z-[60] overflow-hidden transition-all duration-100 ease-out ${show
+      className={`fixed md:hidden px-[12px] top-[72px] shadow-popver-shadow transform origin-top-right w-full z-[60] overflow-hidden transition-all duration-100 ease-out ${show
         ? "opacity-100 scale-100"
         : "opacity-0 scale-90 pointer-events-none"
         } ${className}`}

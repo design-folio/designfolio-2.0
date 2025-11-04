@@ -4,8 +4,9 @@ export function useMeasuredHeight() {
     const ref = React.useRef(null)
     const [height, setHeight] = React.useState(undefined)
 
-    React.useLayoutEffect(() => {
-        if (!ref.current) return
+    React.useEffect(() => {
+        // Only run on client side
+        if (typeof window === 'undefined' || !ref.current) return
 
         const measureHeight = () => {
             if (ref.current) {

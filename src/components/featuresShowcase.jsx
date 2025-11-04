@@ -43,7 +43,7 @@ export default function FeaturesShowcase() {
                 <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
                     <div>
                         <h2
-                            className="text-3xl sm:text-4xl lg:text-5xl font-semibold font-gsans leading-tight"
+                            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-5xl font-semibold font-gsans leading-tight"
                             data-testid="text-showcase-headline"
                         >
                             Can telling your story be simple?{" "}

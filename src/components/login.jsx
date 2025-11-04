@@ -73,7 +73,7 @@ export default function Login() {
       const res = await _loginWithEmail(data);
       const { token, emailVerification } = res.data;
       setToken(token);
-      router.push(emailVerification ? "/builder" : "/email-verify");
+      router.push(emailVerification ? "/builder" : `/email-verify?email=${values.email}`);
     } catch (err) {
       console.error("Email login error:", err);
     } finally {

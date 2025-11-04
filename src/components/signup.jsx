@@ -58,7 +58,8 @@ export default function Signup() {
             const { data } = await _signupEmail(signupData);
             const { token } = data;
             setToken(token);
-            router.push("/email-verify");
+            console.log("Signup successful:", data);
+            router.push(`/email-verify?email=${(values.email)}`);
         } catch (error) {
             console.error("Signup error:", error);
         } finally {

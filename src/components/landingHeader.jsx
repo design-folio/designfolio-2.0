@@ -118,7 +118,7 @@ export default function LandingHeader({ dfToken }) {
                     </div>
                 </div>
             </nav>
-            <TempPopoverForLanding show={popovers.landingMenu === popoverMenu} className="bg-background-landing">
+            <TempPopoverForLanding show={popovers.landingMenu === popoverMenu}>
                 {dfToken ? (
                     <Link href="/builder">
                         <Button

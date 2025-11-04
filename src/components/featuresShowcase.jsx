@@ -118,7 +118,9 @@ export default function FeaturesShowcase() {
                                 into a clear, well-structured case study that actually sounds
                                 like you.
                             </p>
-                            <FeatureCta testId="button-cta-1">Start with AI</FeatureCta>
+                            <div>
+                                <FeatureCta testId="button-cta-1">Start with AI</FeatureCta>
+                            </div>
                         </div>
                     </Card>
 
@@ -151,7 +153,7 @@ export default function FeaturesShowcase() {
                                 gives you an honest, easy-to-read report — what's strong, what's
                                 missing, and how to improve.
                             </p>
-                            <FeatureCta testId="button-cta-2">Try Designfolio AI</FeatureCta>
+                            <div><FeatureCta testId="button-cta-2">Try Designfolio AI</FeatureCta></div>
                         </div>
                     </Card>
                 </div>

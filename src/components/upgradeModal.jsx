@@ -81,15 +81,13 @@ export default function UpgradeModal() {
   if (!showUpgradeModal || !plan) return null;
   return (
     <div
-      className={`${styles.modalOverlay} ${
-        isModalExiting ? styles.modalOverlayExiting : ""
-      }`}
+      className={`${styles.modalOverlay} ${isModalExiting ? styles.modalOverlayExiting : ""
+        }`}
       onClick={() => handleCloseModal()}
     >
       <div
-        className={`${styles.modal} ${
-          isModalExiting ? styles.modalExiting : ""
-        }`}
+        className={`${styles.modal} ${isModalExiting ? styles.modalExiting : ""
+          }`}
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -100,13 +98,6 @@ export default function UpgradeModal() {
         </button>
 
         <div className={styles.modalHeader}>
-          <div className={styles.lifetimeDealBanner}>
-            <div className={styles.dealBannerIcon}>⏰</div>
-            <span className={styles.dealBannerText}>
-              Lifetime deal ending soon
-            </span>
-            <div className={styles.dealBannerPulse}></div>
-          </div>
           <div>
             <div className={styles.modalIcon}></div>
             <h2 className={styles.modalTitle}>Designfolio Lifetime Access</h2>
@@ -136,7 +127,21 @@ export default function UpgradeModal() {
           <button className={styles.upgradeNowButton} onClick={openCheckout}>
             Upgrade Now
           </button>
+          <div className={styles.lifetimeDealBanner}>
+            <div className={styles.dealBannerIcon}>⏰</div>
+            <span className={styles.dealBannerText}>
+              Will be {plan?.currency === "INR" ? "₹6,999" : "$99"} starting next month
+            </span>
+            <div className={styles.dealBannerPulse}></div>
+          </div>
 
+          {/* <div className={styles.lifetimeDealBanner}>
+            <div className={styles.dealBannerIcon}>⏰</div>
+            <span className={styles.dealBannerText}>
+              Lifetime deal ending soon
+            </span>
+            <div className={styles.dealBannerPulse}></div>
+          </div> */}
           <div className={styles.featuresList}>
             <div className={styles.featureItem}>
               <div className={styles.featureIcon}>✓</div>

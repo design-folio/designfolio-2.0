@@ -170,7 +170,7 @@ export default function HeroSection({ dfToken }) {
 
     // Spring configuration - more responsive on mobile for better performance
     const springConfig = isMobile
-        ? { stiffness: 200, damping: 30, mass: 0.5 }
+        ? { stiffness: 230, damping: 45, mass: 0.1 }
         : { stiffness: 100, damping: 30, mass: 1 }
 
     const leftCardTranslateYRaw = useTransform(

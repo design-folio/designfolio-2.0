@@ -1264,7 +1264,7 @@
   cursor: pointer;
   width: 100%;
   transition: all 0.2s ease;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   box-shadow: 0 4px 12px rgba(255, 85, 62, 0.3);
   opacity: 0;
   animation: pulseIn 0.6s ease-out 0.5s forwards;
@@ -2839,6 +2839,10 @@
   font-weight: 600;
   display: flex;
   align-items: center;
+  width: fit-content;
+  content: center;
+  justify-content: center;
+  place-self: center;
   gap: 6px;
   margin-bottom: 1rem;
   position: relative;

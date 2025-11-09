@@ -35,6 +35,12 @@
     --muted-foreground: 0 0% 35%;
     --radius: 0.5rem;
     --border: 38 15% 88%;
+
+    --button-outline: rgba(0, 0, 0, 0.1);
+    --badge-outline: rgba(0, 0, 0, 0.05);
+
+    /* Automatic computation of border around primary / danger buttons */
+    --opaque-button-border-intensity: -8; /* In terms of percentages */
     /* Elevation system */
     --elevate-1: rgba(0, 0, 0, 0.03);
     --elevate-2: rgba(0, 0, 0, 0.08);
@@ -52,6 +58,20 @@
     --shadow-xl: 0px 20px 30px -5px hsl(0 0% 0% / 0.15),
       0px 8px 12px -6px hsl(0 0% 0% / 0.1);
     --shadow-2xl: 0px 30px 50px -8px hsl(0 0% 0% / 0.2);
+
+    /* Skills banner */
+    --skills-banner-bg: linear-gradient(
+      135deg,
+      #f6f3f0 0%,
+      #f9f7f4 25%,
+      #fcfbf9 45%,
+      #ffffff 50%,
+      #fcfbf9 55%,
+      #f9f7f4 75%,
+      #f6f3f0 100%
+    );
+    --skills-banner-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.7),
+      inset 0 -2px 3px rgba(0, 0, 0, 0.04), 0 1px 1px rgba(0, 0, 0, 0.02);
   }
 
   [data-theme="dark"] {
@@ -74,6 +94,11 @@
     --muted: 0 0% 16%;
     --muted-foreground: 0 0% 65%;
     --border: 0 0% 18%;
+
+    --button-outline: rgba(255, 255, 255, 0.1);
+    --badge-outline: rgba(255, 255, 255, 0.05);
+
+    --opaque-button-border-intensity: 9; /* In terms of percentages */
     /* Elevation system for dark mode */
     --elevate-1: rgba(255, 255, 255, 0.04);
     --elevate-2: rgba(255, 255, 255, 0.09);
@@ -87,6 +112,20 @@
       0px 2px 4px -2px hsl(0 0% 0% / 0.4);
     --shadow-md: 0px 6px 12px -2px hsl(0 0% 0% / 0.55),
       0px 3px 6px -3px hsl(0 0% 0% / 0.45);
+
+    /* Skills banner for dark mode */
+    --skills-banner-bg: linear-gradient(
+      135deg,
+      #1a1c22 0%,
+      #1d1f27 25%,
+      #20222a 45%,
+      #23252d 50%,
+      #20222a 55%,
+      #1d1f27 75%,
+      #1a1c22 100%
+    );
+    --skills-banner-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.03),
+      inset 0 -2px 3px rgba(0, 0, 0, 0.2), 0 1px 1px rgba(0, 0, 0, 0.3);
     --shadow-lg: 0px 10px 20px -3px hsl(0 0% 0% / 0.6),
       0px 4px 8px -4px hsl(0 0% 0% / 0.5);
     --shadow-xl: 0px 20px 30px -5px hsl(0 0% 0% / 0.65),

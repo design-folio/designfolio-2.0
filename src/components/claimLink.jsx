@@ -10,15 +10,8 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { Check } from "lucide-react";
 import { FormButton } from "./ui/form-button";
+import { DomainValidationSchema } from "@/lib/validationSchemas";
 
-const DomainValidationSchema = Yup.object().shape({
-  domain: Yup.string()
-    .matches(
-      /^[a-z0-9][a-z0-9-]{1,61}[a-z0-9](?:\.[a-z]{2,})?$/,
-      "Invalid subdomain"
-    )
-    .required("Domain is required"),
-});
 
 export default function ClaimLink() {
   const [isAvailable, setIsAvailable] = useState(false);

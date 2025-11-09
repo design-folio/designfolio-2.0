@@ -1,508 +1,357 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
-
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import useImageCompression from "@/hooks/useImageCompression";
+"use client";
+import React, { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowRight } from "lucide-react";
+import { useRouter } from "next/router";
+import { Button } from "./ui/buttonNew";
+import Stepper from "./Stepper";
+import ErrorBanner from "./ErrorBanner";
+import SectionTitle from "./SectionTitle";
+import RoleGrid from "./RoleGrid";
+import OptionList from "./OptionList";
+import SkillsPicker from "./SkillPicker";
+import { _getSkills, _getPersonas } from "../network/get-request";
+import { _updateUser } from "../network/post-request";
+import { GOALS, EXPERIENCE_LEVELS } from "../lib/onboardingStepData";
 import { useGlobalContext } from "@/context/globalContext";
-import { _getSkills, _getTools } from "@/network/get-request";
-import { _updateUser } from "@/network/post-request";
-import ProgressBar from "./ProgressBar";
-import Button from "./button";
-import Text from "./text";
-import CloseIcon from "../../public/assets/svgs/close.svg";
-import SelectField from "./SelectField";
-import ToolCheckbox from "./ToolCheckbox";
-import { useTheme } from "next-themes";
+import {
+  ExperienceValidationSchema,
+  GoalValidationSchema,
+  RoleValidationSchema,
+  SkillsValidationSchema,
+} from "@/lib/validationSchemas";
 
-const FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png", "image/gif"];
+function toOptionString(x) {
+  if (!x) return "";
+  if (typeof x === "string") return x;
+  if (x?.label) return x.label;
+  if (x?.value) return x.value;
+  if (x?.name) return x.name;
+  return String(x);
+}
 
-// Validation schema for the first step
-const StepOneValidationSchema = Yup.object().shape({
-  picture: Yup.mixed()
-    .nullable() // Allow the field to be null
-    .notRequired() // Explicitly mark the field as not required
-    .test(
-      "fileSize",
-      "File size is too large. Maximum size is 5MB.",
-      (value) => !value || (value && value.size <= FILE_SIZE) // Check size if value exists
-    )
-    .test(
-      "fileType",
-      "Unsupported file format. Only jpg, jpeg, png and gif files are allowed.",
-      (value) => !value || (value && SUPPORTED_FORMATS.includes(value.type)) // Check type if value exists
-    ),
-  introduction: Yup.string()
-    .required("Headline is required")
-    .max(50, "Headline must be 50 characters or less"),
-  bio: Yup.string()
-    .required("Professional summary is required")
-    .max(250, "Professional summary must be 250 characters or less"),
-});
-
-// Validation schema for the second step
-const StepTwoValidationSchema = Yup.object().shape({
-  expertise: Yup.array()
-    .of(
-      Yup.object().shape({
-        label: Yup.string().required(),
-        value: Yup.string().required(),
-      })
-    )
-    .min(3, "Please select at least three expertise")
-    .max(10, "Maximum 10 expertise areas can be selected"),
-  selectedTools: Yup.array()
-    .of(
-      Yup.object().shape({
-        label: Yup.string().required(),
-        value: Yup.string().required(),
-      })
-    )
-    .min(3, "Please select at least three tools"),
-});
-
-const variants = {
-  loading: { height: 126 },
-  default: { height: "90vh", maxHeight: 630 },
-};
+function normalizePersona(p) {
+  return {
+    _id: p._id || p.id,
+    label: p.label || p.name || p.title,
+    image: p.image || "/onboarding-animated-icons/others.png",
+  };
+}
 
 export default function Onboarding() {
-  const {
-    userDetails,
-    step,
-    setStep,
-    closeModal,
-    setUserDetails,
-    updateCache,
-  } = useGlobalContext();
-  const { theme } = useTheme();
-  const [imagePreview, setImagePreview] = useState(null);
-  const [skillOptions, setSkillsOptions] = useState([]);
-  const [toolsOptions, setToolsOptions] = useState([]);
+  const router = useRouter();
+  const { userDetails, updateCache, setUserDetails, closeModal } = useGlobalContext();
 
-  const [isLoadingModal, setIsLoadingModalType] = useState(true);
-
+  const [currentStep, setCurrentStep] = useState(1);
+  const [roles, setRoles] = useState([]);
+  const [skills, setSkills] = useState([]);
+  const [skillsMap, setSkillsMap] = useState(new Map());
+  const [selectedRole, setSelectedRole] = useState("");
+  const [selectedPersonaId, setSelectedPersonaId] = useState("");
+  const [customRole, setCustomRole] = useState("");
+  const [selectedGoalId, setSelectedGoalId] = useState(null);
+  const [selectedExperienceId, setSelectedExperienceId] = useState(null);
+  const [selectedInterests, setSelectedInterests] = useState([]);
+  const [skillsSearch, setSkillsSearch] = useState("");
   const [loading, setLoading] = useState(false);
+  const [skillsLoading, setSkillsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [isPreFilled, setIsPreFilled] = useState(false);
 
-  const { compress, compressedImage, compressionProgress } =
-    useImageCompression();
-  const formikRef = useRef(null);
-  // Create a reference to the div you want to scroll
-  const scrollDivRef = useRef(null);
 
-  // Function to scroll to the top of the div
-  const scrollToTop = () => {
-    if (scrollDivRef.current) {
-      scrollDivRef.current.scrollTop = 0;
-    }
-  };
-  const [initialValues, setInitialValues] = useState({
-    picture: null,
-    introduction: userDetails?.introduction ?? "",
-    expertise: userDetails?.skills ?? [],
-    selectedTools: userDetails?.tools ?? [], // Assuming mappedTools is defined elsewhere
-    avatarUrl: userDetails?.avatar?.url, // Assuming userDetails.avatar.url is defined
-    bio: userDetails?.bio ?? "",
-  });
-
+  // Fetch Personas
   useEffect(() => {
-    const fetchTools = async () => {
-      try {
-        const response = await _getTools();
-        setToolsOptions(response.data.tools);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    fetchTools();
-  }, []);
-
-  useEffect(() => {
-    if (userDetails?.avatar?.url) {
-      fetch(userDetails.avatar.url, { mode: "cors", cache: "no-cache" })
-        .then((response) => response.blob())
-        .then((blob) => {
-          const mimeType = `image/${userDetails.avatar.extension}`; // Simplified, assuming extension is always provided correctly
-          const file = new File([blob], userDetails.avatar.originalName, {
-            type: mimeType,
-          });
-          setInitialValues((prevValues) => ({
-            ...prevValues,
-            picture: file,
-          }));
-          setImagePreview(URL.createObjectURL(file));
-        })
-        .catch((error) =>
-          console.error("Error loading avatar:", error.message)
-        ); // Log error message
-    } else {
-      // Consider setting a default avatar preview if no avatar is present
-      setImagePreview(null); // Adjust path as needed
-    }
-  }, [userDetails?.avatar?.url]);
-
-  useEffect(() => {
-    if (compressionProgress === 100 && compressedImage && formikRef.current) {
-      formikRef.current.setFieldValue("picture", compressedImage);
-      setImagePreview(URL.createObjectURL(compressedImage));
-    }
-  }, [compressionProgress, compressedImage]);
-
-  const handleBack = () => {
-    setStep(step - 1);
-    scrollToTop();
-  };
-
-  const isLastStep = step === 2;
-
-  const handleImageChange = (event, setFieldValue) => {
-    const file = event.currentTarget.files[0];
-    const maxSizeInBytes = 2 * 1024 * 1024;
-    if (file.size > maxSizeInBytes) {
-      compress(file);
-    }
-    setFieldValue("picture", file);
-    setImagePreview(file ? URL.createObjectURL(file) : null);
-  };
-
-  const handleNetwork = (payload, actions) => {
     setLoading(true);
-    const payloadWithTemplate = {
-      ...payload,
-      template: userDetails?.template,
-    };
-    _updateUser(payloadWithTemplate)
-      .then((res) => {
-        updateCache("userDetails", res?.data?.user);
-        setUserDetails((prev) => ({ ...prev, ...res.data.user }));
-        closeModal();
-        actions.setSubmitting(false);
+    _getPersonas()
+      .then((response) => {
+        const personas = response?.data?.personas || [];
+        if (Array.isArray(personas)) setRoles(personas.map(normalizePersona));
       })
-      .catch((err) => actions.setSubmitting(false))
-      .finally(() => {
-        setTimeout(() => {
-          setLoading(false);
-        }, 1200);
-      });
-  };
-
-  const handleSubmit = (values, actions) => {
-    if (isLastStep) {
-      const payload = {
-        tools: values.selectedTools,
-        skills: values.expertise,
-        introduction: values?.introduction,
-        bio: values?.bio,
-      };
-      if (values?.picture) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          const base64Image = reader.result;
-          payload.avatar = {
-            key: base64Image,
-            originalName: values.picture.name,
-            extension: values.picture.type.split("/")[1], // Extracts the extension from the MIME type
-          };
-          handleNetwork(payload, actions);
-        };
-        reader.readAsDataURL(values.picture);
-      } else {
-        handleNetwork(payload, actions);
-      }
-    } else {
-      scrollToTop();
-      setStep(step + 1);
-
-      actions.setSubmitting(false);
-    }
-    formikRef.current.validateForm();
-    formikRef.current.setTouched({});
-  };
-
-  useEffect(() => {
-    _getSkills().then((res) => setSkillsOptions(res?.data?.skills));
-    setTimeout(() => setIsLoadingModalType(false), 1000);
+      .catch(() => setError("Failed to load personas. Please refresh."))
+      .finally(() => setLoading(false));
   }, []);
+
+
+  // Prefill from Context
+  useEffect(() => {
+    if (!userDetails || isPreFilled || roles.length === 0) return;
+
+    const { persona, goal, experienceLevel, skills } = userDetails;
+    if (persona) {
+      // Handles new format { value, label, __isNew__ }
+      if (persona.value && persona.label) {
+        const personaId = persona.value;
+        const personaLabel = persona.label;
+        const isCustom = persona.__isNew__ === true;
+
+        if (isCustom) {
+          setSelectedRole("Others");
+          setCustomRole(personaLabel);
+          // Set personaId even for custom to trigger skills fetch
+          setSelectedPersonaId(personaId);
+        } else {
+          const matchedRole = roles.find((r) => r._id === personaId);
+          if (matchedRole) {
+            setSelectedRole(matchedRole.label);
+            setSelectedPersonaId(matchedRole._id);
+          } else {
+            setSelectedRole(personaLabel);
+            setSelectedPersonaId(personaId);
+          }
+        }
+      }
+    }
+    if (goal !== undefined) setSelectedGoalId(goal);
+    if (experienceLevel !== undefined) setSelectedExperienceId(experienceLevel);
+    if (skills && Array.isArray(skills)) {
+      const labels = skills.map((s) => s.label);
+      const map = new Map();
+      skills.forEach((s) => map.set(s.label, s));
+      setSkillsMap(map);
+      setSelectedInterests(labels);
+    }
+    setIsPreFilled(true);
+  }, [roles, userDetails, isPreFilled]);
+
+
+  // Fetch Skills (Persona + Search)
+  useEffect(() => {
+    if (!selectedPersonaId && !skillsSearch.trim()) return;
+
+    const hasSearch = skillsSearch.trim().length > 0;
+    setSkillsLoading(true);
+
+    const timer = setTimeout(() => {
+      _getSkills(skillsSearch, hasSearch ? "" : selectedPersonaId)
+        .then((res) => {
+          const apiSkills = res?.data?.skills || [];
+          if (!Array.isArray(apiSkills)) return;
+
+          const newMap = new Map(skillsMap);
+          const normalized = apiSkills.map((s) => ({
+            label: toOptionString(s),
+            value: s._id || s.id || s.value,
+            __isNew__: false,
+          }));
+
+          normalized.forEach((s) => newMap.set(s.label, s));
+          setSkillsMap(newMap);
+
+          const preSelected = normalized.filter((s) => s.selected).map(toOptionString);
+          const selected = selectedInterests.length ? selectedInterests : preSelected;
+          const allSkills = [...new Set([...selected, ...normalized.map((s) => s.label)])];
+          setSkills(allSkills.slice(0, 30));
+
+          if (selectedInterests.length === 0 && preSelected.length > 0) {
+            setSelectedInterests(preSelected);
+          }
+        })
+        .catch((err) => console.error("Error loading skills:", err))
+        .finally(() => setSkillsLoading(false));
+    }, hasSearch ? 300 : 0);
+
+    return () => clearTimeout(timer);
+  }, [selectedPersonaId, skillsSearch]);
+
+
+  // Handlers
+  const handleInterestToggle = (interest) => {
+    setSelectedInterests((prev) =>
+      prev.includes(interest)
+        ? prev.filter((i) => i !== interest)
+        : [...prev, interest]
+    );
+  };
+
+  const handleAddCustomSkill = (skill) => {
+    const trimmed = skill.trim();
+    if (!trimmed) return;
+
+    const newSkill = {
+      label: trimmed,
+      value: `custom-${Date.now()}`,
+      __isNew__: true,
+    };
+    setSkillsMap((prev) => new Map(prev).set(trimmed, newSkill));
+    setSkills((prev) => [...new Set([...prev, trimmed])]);
+    setSelectedInterests((prev) =>
+      prev.includes(trimmed) ? prev : [...prev, trimmed]
+    );
+    setSkillsSearch("");
+  };
+
+
+  // Validation + Step Control
+  const validateStep = async () => {
+    try {
+      if (currentStep === 1)
+        await RoleValidationSchema.validate({ selectedRole, customRole });
+      if (currentStep === 2)
+        await GoalValidationSchema.validate({ selectedGoalId });
+      if (currentStep === 3)
+        await ExperienceValidationSchema.validate({ selectedExperienceId });
+      if (currentStep === 4)
+        await SkillsValidationSchema.validate({ selectedInterests });
+      setError("");
+      return true;
+    } catch (err) {
+      setError(err.message);
+      return false;
+    }
+  };
+
+  const handleNext = async () => {
+    const isValid = await validateStep();
+    if (!isValid) return;
+
+    if (currentStep < 4) setCurrentStep((s) => s + 1);
+    else submitAll();
+  };
+
+
+  // Submit Final Data
+  const submitAll = async () => {
+    const valid = await validateStep();
+    if (!valid) return;
+
+    const persona = {
+      value: selectedPersonaId,
+      ...(selectedRole === "Others" && { __isNew__: true, custom: customRole.trim() }),
+    };
+
+    const skillsPayload = selectedInterests.map((label) => {
+      const skill = skillsMap.get(label);
+      return skill || { label, value: label, __isNew__: true };
+    });
+
+    const payload = {
+      persona,
+      goal: selectedGoalId,
+      experienceLevel: selectedExperienceId,
+      skills: skillsPayload,
+    };
+
+    setLoading(true);
+    try {
+      const res = await _updateUser(payload);
+      const updatedUser = res?.data?.user;
+      if (updatedUser) {
+        updateCache("userDetails", updatedUser);
+        setUserDetails(updatedUser);
+        closeModal();
+      }
+    } catch (e) {
+      console.error("Update error:", e);
+      setError("We couldn’t save your details. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <motion.div
-      animate={isLoadingModal ? "loading" : "default"}
-      variants={variants}
-      className="w-[95vw] m-auto lg:w-[577.5px] rounded-2xl flex flex-col  bg-modal-bg-color"
-    >
-      {isLoadingModal ? (
-        <motion.div className="h-full w-[95vw] md:w-full flex justify-center items-center rotating">
-          <img src="/assets/svgs/star.svg" alt="loading state" />
-        </motion.div>
-      ) : (
-        <>
-          <div className="p-5 lg:p-6 ">
-            <div className="mb-4 flex gap-3">
-              <ProgressBar progress={100} />{" "}
-              <ProgressBar
-                progress={step == 2 ? 100 : 0}
-                bg="linear-gradient(to right, #F26855, #EC7DFD)"
+    <div className="min-h-screen w-full flex items-center justify-center p-6 bg-background">
+      <div className="w-full max-w-2xl">
+        <Stepper current={currentStep} />
+        <ErrorBanner message={error} />
+
+        <AnimatePresence mode="wait">
+          {/* Step 1: Role */}
+          {currentStep === 1 && (
+            <motion.div key="step1" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
+              <SectionTitle
+                title="What describes you the best?"
+                subtitle="Help us tailor your experience to match your professional journey"
               />
-            </div>
-            {userDetails && userDetails?.skills?.length !== 0 && (
-              <div className="flex justify-between items-center">
-                <Text size="p-small" className="font-semibold">
-                  Update profile
-                </Text>
-                <Button
-                  // customClass="lg:hidden"
-                  type="secondary"
-                  customClass="!p-2 rounded-[8px]"
-                  icon={
-                    <CloseIcon className="text-icon-color cursor-pointer" />
-                  }
-                  onClick={closeModal}
-                />
-              </div>
-            )}
-
-            {userDetails && userDetails?.skills?.length == 0 && (
-              <>
-                <Text
-                  size="p-medium"
-                  className={"font-semibold text-center mb-2"}
-                >
-                  {step == 1
-                    ? "Welcome to designfolio"
-                    : "Your top skills, roles & tools?"}
-                </Text>
-
-                <Text
-                  size="p-small"
-                  className={"font-inter font-normal text-center"}
-                >
-                  {step == 1
-                    ? "A little bit more about you"
-                    : "Choose your superpowers"}
-                </Text>
-              </>
-            )}
-          </div>
-
-          <Formik
-            initialValues={initialValues}
-            innerRef={formikRef}
-            validationSchema={
-              step === 1 ? StepOneValidationSchema : StepTwoValidationSchema
-            }
-            onSubmit={handleSubmit}
-          >
-            {({ setFieldValue, values, errors, touched }) => (
-              <Form
-                id="onboarding"
-                className="flex-1 overflow-y-auto"
-                ref={scrollDivRef}
-              >
-                <div className="p-5 lg:py-6 lg:px-8 !pt-0">
-                  {step === 1 && (
-                    <div>
-                      <div className="flex items-center gap-4">
-                        <div className="w-[114.75px] h-[114.75px] flex flex-col justify-center items-center gap-1 rounded-full">
-                          {imagePreview ? (
-                            <img
-                              src={imagePreview}
-                              className="w-[100%] h-[100%] rounded-2xl object-cover"
-                              alt="designfolio logo"
-                            />
-                          ) : (
-                            <>
-                              <img
-                                src={"/assets/svgs/avatar.svg"}
-                                className="w-[100%] h-[100%] rounded-2xl object-cover"
-                                alt="designfolio logo"
-                              />
-                            </>
-                          )}
-                        </div>
-                        <label htmlFor="picture" className="cursor-pointer">
-                          <Button
-                            text={`${
-                              imagePreview ? "Change photo" : "Upload photo"
-                            }`}
-                            size="small"
-                            type="secondary"
-                            customClass="pointer-events-none"
-                          />
-                        </label>
-                      </div>
-                      <input
-                        id="picture"
-                        name="picture"
-                        type="file"
-                        accept="image/png, image/jpeg,image/jpg,image/gif"
-                        hidden
-                        onChange={(event) =>
-                          handleImageChange(event, setFieldValue)
-                        }
-                      />
-                      <ErrorMessage
-                        name="picture"
-                        component="div"
-                        className="error-message text-sm"
-                      />
-                      <div className="mt-[24px] flex justify-between">
-                        <Text as="p" size={"p-xxsmall"} className="font-medium">
-                          Headline
-                        </Text>
-                        <Text as="p" size={"p-xxsmall"} className="font-medium">
-                          {values.introduction.length ?? 0}/50
-                        </Text>
-                      </div>
-                      <Field
-                        name="introduction"
-                        autoComplete="off"
-                        type="text"
-                        placeholder="Eg: Hey I’m Bruce, a Product Designer."
-                        className={`text-input mt-2 ${
-                          errors.introduction &&
-                          touched.introduction &&
-                          "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                        }`}
-                      />
-                      <ErrorMessage
-                        name="introduction"
-                        component="div"
-                        className="error-message text-[14px]"
-                      />
-                      <Text
-                        size="p-xxxsmall"
-                        className="text-df-secondary-text-color mt-3"
-                      >
-                        ✏️ <b>Tip:</b> This is the very first thing people read
-                        about you.
-                      </Text>
-
-                      <div className="mt-[16px] flex justify-between">
-                        <Text
-                          as="p"
-                          size={"p-xxsmall"}
-                          className="font-medium"
-                          required
-                        >
-                          {" "}
-                          Professional summary
-                        </Text>
-                        <Text as="p" size={"p-xxsmall"} className="font-medium">
-                          {values.bio.length ?? 0}/250
-                        </Text>
-                      </div>
-                      <Field
-                        name="bio"
-                        as="textarea"
-                        autoComplete="off"
-                        placeholder="Eg: 7 years of building kickass experiences"
-                        className={`text-input mt-2 min-h-[150px] ${
-                          errors.bio &&
-                          touched.bio &&
-                          "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                        }`}
-                      />
-                      <ErrorMessage
-                        name="bio"
-                        component="div"
-                        className="error-message text-[14px] !mt-[2px]"
-                      />
-                      <Text
-                        size="p-xxxsmall"
-                        className="text-df-secondary-text-color mt-3"
-                      >
-                        ✏️ <b>Tip:</b> Mention your role, experience, skills and
-                        achievements
-                      </Text>
-                    </div>
-                  )}
-
-                  {step === 2 && (
-                    <div className="mb-[18px]">
-                      <div className="flex justify-between mb-2">
-                        <Text
-                          as="p"
-                          size={"p-xxsmall"}
-                          className="font-medium"
-                          required
-                        >
-                          Skills
-                        </Text>
-                        <Text as="p" size={"p-xxsmall"} className="font-medium">
-                          {values?.expertise?.length ?? 0}/10
-                        </Text>
-                      </div>
-                      <SelectField
-                        name="expertise"
-                        options={skillOptions}
-                        theme={theme}
-                        placeholder="Search skills"
-                      />
-                      <ErrorMessage
-                        name="expertise"
-                        component="div"
-                        className="error-message text-[14px]"
-                      />
-                      <Text
-                        as="p"
-                        size={"p-xxsmall"}
-                        className="font-medium mt-4 mb-2"
-                        required
-                      >
-                        Choose the tools you work with
-                      </Text>
-                      <SelectField
-                        name="selectedTools"
-                        options={toolsOptions}
-                        theme={theme}
-                      />
-                      <ErrorMessage
-                        name="selectedTools"
-                        component="div"
-                        className="error-message text-[14px]"
-                      />
-                      <div className="flex flex-wrap gap-4 mt-4">
-                        {toolsOptions.map((tool) => (
-                          <Field
-                            key={tool.value}
-                            name="selectedTools"
-                            render={({ field, form }) => (
-                              <ToolCheckbox
-                                tool={tool}
-                                field={field}
-                                form={form}
-                                theme={theme}
-                              />
-                            )}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </Form>
-            )}
-          </Formik>
-
-          <div className="flex justify-end gap-4 py-2 lg:py-[9px] px-5 lg:px-4 rounded-b-2xl  bg-modal-footer-bg-color">
-            {step > 1 && (
+              <RoleGrid
+                roles={roles}
+                selectedRole={selectedRole}
+                onSelect={(role) => {
+                  setSelectedRole(role);
+                  const persona = roles.find((r) => r.label === role);
+                  if (persona?._id) setSelectedPersonaId(persona._id);
+                }}
+                customRole={customRole}
+                setCustomRole={setCustomRole}
+              />
               <Button
-                onClick={() => handleBack()}
-                text={"Back"}
-                type="secondary"
+                onClick={handleNext}
+                disabled={loading}
+                className="w-full mt-4 h-11 rounded-full bg-foreground text-background font-semibold"
+              >
+                Continue
+                <ArrowRight className="ml-2 w-4 h-4" />
+              </Button>
+            </motion.div>
+          )}
+
+          {/* Step 2: Goal */}
+          {currentStep === 2 && (
+            <motion.div key="step2" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
+              <SectionTitle title="What is your main goal?" subtitle="Choose the one that matters most to you" />
+              <OptionList
+                items={GOALS}
+                selected={GOALS.find((g) => g.id === selectedGoalId)?.label || ""}
+                onSelect={(label) => setSelectedGoalId(GOALS.find((g) => g.label === label)?.id)}
               />
-            )}
-            <Button
-              btnType="submit"
-              form="onboarding"
-              text={isLastStep ? "Finish" : "Continue"}
-              isLoading={loading}
-              type="modal"
-            />
-          </div>
-        </>
-      )}
-    </motion.div>
+              <div className="flex gap-3 mt-6">
+                <Button onClick={() => setCurrentStep(1)} variant="outline" className="h-11 rounded-full px-6">
+                  Back
+                </Button>
+                <Button onClick={handleNext} disabled={loading} className="flex-1 h-11 rounded-full bg-foreground text-background font-semibold">
+                  Continue
+                  <ArrowRight className="ml-2 w-4 h-4" />
+                </Button>
+              </div>
+            </motion.div>
+          )}
+
+          {/* Step 3: Experience */}
+          {currentStep === 3 && (
+            <motion.div key="step3" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
+              <SectionTitle title="What's your experience level?" subtitle="This helps us recommend the right features for you" />
+              <OptionList
+                items={EXPERIENCE_LEVELS}
+                selected={EXPERIENCE_LEVELS.find((e) => e.id === selectedExperienceId)?.label || ""}
+                onSelect={(label) => setSelectedExperienceId(EXPERIENCE_LEVELS.find((e) => e.label === label)?.id)}
+              />
+              <div className="flex gap-3 mt-6">
+                <Button onClick={() => setCurrentStep(2)} variant="outline" className="h-11 rounded-full px-6">
+                  Back
+                </Button>
+                <Button onClick={handleNext} disabled={loading} className="flex-1 h-11 rounded-full bg-foreground text-background font-semibold">
+                  Continue
+                  <ArrowRight className="ml-2 w-4 h-4" />
+                </Button>
+              </div>
+            </motion.div>
+          )}
+
+          {/* Step 4: Skills */}
+          {currentStep === 4 && (
+            <motion.div key="step4" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
+              <SectionTitle title="Choose at least 3 strengths" subtitle="Pick three that feel most true right now—add more if you like." />
+              <SkillsPicker
+                skills={skills}
+                selected={selectedInterests}
+                onToggle={handleInterestToggle}
+                onAdd={handleAddCustomSkill}
+                search={skillsSearch}
+                setSearch={setSkillsSearch}
+                loading={skillsLoading}
+              />
+              <div className="flex gap-3 mt-6">
+                <Button onClick={() => setCurrentStep(3)} variant="outline" className="h-11 rounded-full px-6">
+                  Back
+                </Button>
+                <Button onClick={handleNext} disabled={loading} className="flex-1 h-11 rounded-full bg-foreground text-background font-semibold">
+                  {loading ? "Saving..." : "Get Started"}
+                  <ArrowRight className="ml-2 w-4 h-4" />
+                </Button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
   );
 }

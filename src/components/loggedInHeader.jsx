@@ -6,24 +6,19 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import styles from "@/styles/domain.module.css";
 import Logo from "../../public/assets/svgs/logo.svg";
-import ThemeIcon from "../../public/assets/svgs/themeIcon.svg";
+// import ThemeIcon from "../../public/assets/svgs/themeIcon.svg";
 import CloseIcon from "../../public/assets/svgs/close.svg";
 import SunIcon from "../../public/assets/svgs/sun.svg";
 import MoonIcon from "../../public/assets/svgs/moon.svg";
-import PreviewIcon from "../../public/assets/svgs/previewIcon.svg";
 import LinkIcon from "../../public/assets/svgs/link.svg";
-import CopyIcon from "../../public/assets/svgs/copy.svg";
-import TickIcon from "../../public/assets/svgs/tick.svg";
-import CalendarIcon from "../../public/assets/svgs/calendar.svg";
 import HamburgerIcon from "../../public/assets/svgs/hamburger.svg";
 import SettingIcon from "../../public/assets/svgs/settings.svg";
 import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
 import { motion } from "framer-motion";
-import AnalyticsIcon from "../../public/assets/svgs/analytics.svg";
-import Button from "./button";
 import { useTheme } from "next-themes";
 import Text from "./text";
 import DfImage from "./image";
+import { Button } from "@/components/ui/buttonNew"
 import Cookies from "js-cookie";
 import { _publish } from "@/network/post-request";
 import Popover from "./popover";
@@ -34,6 +29,10 @@ import { removeCursor } from "@/lib/cursor";
 import Modal from "./modal";
 import { Badge } from "./ui/badge";
 import { Check, Copy } from "lucide-react";
+import { getUserAvatarImage } from "@/lib/getAvatarUrl";
+import MemoThemeIcon from "./icons/ThemeIcon";
+import MemoAnalytics from "./icons/Analytics";
+import MemoPreviewIcon from "./icons/PreviewIcon";
 
 const cursors = [
   {
@@ -326,7 +325,7 @@ export default function LoggedInHeader({
     <div
       className={`${headerStyle} z-50 px-2 md:px-0 py-2 md:py-5 bg-transparent`}
     >
-      <div className="shadow-df-section-card-shadow max-w-[890px] p-3  md:!p-4 rounded-[24px] bg-df-header-bg-color mx-auto flex justify-between items-center">
+      <div className="shadow-df-section-card-shadow max-w-[890px] p-3 border border-card-border md:!p-4 rounded-2xl bg-df-header-bg-color mx-auto flex justify-between items-center">
         <div className="flex items-center gap-[24px]">
           <Link href={"/builder"}>
             <Logo className="text-df-base-text-color" />
@@ -339,21 +338,21 @@ export default function LoggedInHeader({
           >
             <Link href="/analytics">
               <Button
-                text={"Insights"}
-                customClass="!p-4 mr-4"
-                type="secondary"
-                icon={
-                  <AnalyticsIcon className="text-icon-color cursor-pointer" />
-                }
-                animation
-              />
+                variant="secondary"
+                className="h-11 px-4 mr-4 rounded-full"
+              >
+                <MemoAnalytics className="w-4 h-4" />
+                Insights
+              </Button>
             </Link>
             <Button
-              icon={<ThemeIcon className="text-icon-color cursor-pointer" />}
+              variant="secondary"
+              size="icon"
+              className="h-11 w-11 rounded-full"
               onClick={handleTheme}
-              type="secondary"
-              customClass="!p-4"
-            />
+            >
+              <MemoThemeIcon className="w-4 h-4" />
+            </Button>
 
             {isClient && (
               <Modal
@@ -371,12 +370,12 @@ export default function LoggedInHeader({
                     <div className="flex items-center justify-between gap-4">
                       <div className="flex gap-4 items-center">
                         <Button
-                          type="ai"
-                          icon={
-                            <ThemeIcon className="text-secondary-btn-text-color w-[22px] h-[22px] cursor-pointer" />
-                          }
+                          size="icon"
+                          className="rounded-md"
                           style={{ background: "var(--ai-btn-bg-color)" }}
-                        />
+                        >
+                          <MemoThemeIcon className="text-secondary-btn-text-color w-[22px] h-[22px]" />
+                        </Button>
                         <Text
                           size="p-small"
                           className="font-semibold font-inter"
@@ -385,13 +384,13 @@ export default function LoggedInHeader({
                         </Text>
                       </div>
                       <Button
-                        type="secondary"
-                        customClass="!p-2 rounded-[8px]"
-                        icon={
-                          <CloseIcon className="text-df-icon-color cursor-pointer" />
-                        }
+                        variant="secondary"
+                        size="icon"
+                        className="rounded-lg"
                         onClick={handleCloseTheme}
-                      />
+                      >
+                        <CloseIcon className="w-4 h-4" />
+                      </Button>
                     </div>
                   </header>
                   <div className="hide-scrollbar overflow-y-scroll p-8 pt-4 mt-4">
@@ -508,42 +507,41 @@ export default function LoggedInHeader({
             )}
           </div>
           <Button
-            icon={<PreviewIcon className="cursor-pointer" />}
-            type="secondary"
-            customClass="!p-4"
-            animation
+            variant="outline"
+            size="icon"
+            className="rounded-full h-11 w-11"
+            data-testid="button-share"
             onClick={() => router.push("/portfolio-preview")}
-          />
+          >
+            <MemoPreviewIcon className="w-6 h-6" />
+          </Button>
           <div
             className="relative publish-button"
             data-popover-id={popovers.publishMenu}
           >
             <Button
-              text={"Publish Site"}
+              className="bg-foreground text-background hover:bg-foreground/90 focus-visible:outline-none border-0 rounded-full h-11 px-6 text-base font-semibold no-default-hover-elevate no-default-active-elevate transition-colors"
               onClick={handlePublishBtn}
-              customClass="!p-4 mr-0"
-              icon={
-                <img
-                  src="/assets/svgs/power.svg"
-                  alt="launch builder"
-                  className="cursor-pointer"
-                />
-              }
-              isDisabled={
+              disabled={
                 (!userDetails?.pro &&
                   userDetails?.template &&
                   userDetails?.template !== 0) ||
                 updateLoading
               }
-              animation
-            />
+            >
+              <img
+                src="/assets/svgs/power.svg"
+                alt="launch builder"
+                className="w-4 h-4"
+              />
+              Publish Site
+            </Button>
             {isClient && (
               <div
-                className={`pt-5 origin-top-right absolute z-20 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${
-                  popoverMenu === popovers.publishMenu
-                    ? "opacity-100 scale-100"
-                    : "opacity-0 scale-90 pointer-events-none"
-                }`}
+                className={`pt-5 origin-top-right absolute z-20 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${popoverMenu === popovers.publishMenu
+                  ? "opacity-100 scale-100"
+                  : "opacity-0 scale-90 pointer-events-none"
+                  }`}
               >
                 <div className=" w-[310px] rounded-xl shadow-lg bg-popover-bg-color border-4 border-solid border-popover-border-color">
                   <div className="p-4">
@@ -564,23 +562,17 @@ export default function LoggedInHeader({
                         </div>
                       </div>
                       <Button
-                        icon={
-                          isCopied ? (
-                            <Check
-                              className="text-icon-color cursor-pointer"
-                              size={12}
-                            />
-                          ) : (
-                            <Copy
-                              className="text-icon-color cursor-pointer"
-                              size={12}
-                            />
-                          )
-                        }
-                        type="secondary"
-                        customClass="p-2 rounded-lg"
+                        variant="secondary"
+                        size="icon"
+                        className="rounded-lg h-8 w-8"
                         onClick={handleCopyText}
-                      />
+                      >
+                        {isCopied ? (
+                          <Check className="w-3 h-3" />
+                        ) : (
+                          <Copy className="w-3 h-3" />
+                        )}
+                      </Button>
                     </div>
 
                     <div className="flex gap-2 items-center mt-1">
@@ -591,30 +583,29 @@ export default function LoggedInHeader({
                     {!userDetails?.pro && (
                       <>
                         <Button
-                          text="Want your own domain?"
-                          type="secondary"
-                          isDisabled={updateLoading}
+                          variant="secondary"
+                          className="w-full mt-4 gap-1 text-[13px] rounded-full"
+                          disabled={updateLoading}
                           onClick={goToDomains}
-                          icon={
-                            <span className={styles.upgradeLink}>Go Pro</span>
-                          }
-                          iconPosition="right"
-                          customClass="w-full mt-4 gap-1 !text-[13px]"
-                        />
+                        >
+                          Want your own domain?
+                          <span className={styles.upgradeLink}>Go Pro</span>
+                        </Button>
                         <hr className="mt-4 border-tools-card-item-border-color" />
                       </>
                     )}
                     <Button
-                      customClass="w-full mt-4"
-                      text="Update changes"
-                      isDisabled={
+                      className="w-full mt-4 bg-foreground text-background hover:bg-foreground/90 rounded-full"
+                      disabled={
                         (!userDetails?.pro &&
                           userDetails?.template &&
                           userDetails?.template !== 0) ||
                         updateLoading
                       }
                       onClick={handleUpdate}
-                    />
+                    >
+                      Update changes
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -632,47 +623,42 @@ export default function LoggedInHeader({
                 )
               }
               src={
-                userDetails?.avatar?.url
-                  ? userDetails?.avatar?.url
-                  : "/assets/svgs/avatar.svg"
+                getUserAvatarImage(userDetails)
               }
-              className={"w-[60px] h-[60px] rounded-2xl cursor-pointer"}
+              className={"w-[44px] h-[44px] rounded-2xl cursor-pointer"}
             />
 
             {isClient && (
               <div
-                className={`pt-5 absolute z-20 right-0 origin-top-right transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${
-                  popoverMenu === popovers.userMenu
-                    ? "opacity-100 scale-100"
-                    : "opacity-0 scale-90 pointer-events-none"
-                }`}
+                className={`pt-5 absolute z-20 right-0 origin-top-right transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${popoverMenu === popovers.userMenu
+                  ? "opacity-100 scale-100"
+                  : "opacity-0 scale-90 pointer-events-none"
+                  }`}
               >
                 <div className=" w-[250px] rounded-xl shadow-lg bg-popover-bg-color border-4 border-solid border-popover-border-color">
                   <div className="p-4">
                     <div className="py-1">
                       <Button
-                        text={"Account settings"}
-                        customClass="w-full text-[14px] justify-start py-[10px] rounded-lg"
-                        type="normal"
+                        variant="ghost"
+                        className="w-full text-[14px] justify-start py-[10px] rounded-lg"
                         onClick={handlenavigation}
-                        icon={
-                          <SettingIcon className="text-df-icon-color cursor-pointer" />
-                        }
-                      />
+                      >
+                        <SettingIcon className="w-4 h-4" />
+                        Account settings
+                      </Button>
 
                       <Button
-                        text={"Logout"}
-                        customClass="w-full text-[14px] justify-start py-[10px] rounded-lg"
-                        type="normal"
+                        variant="ghost"
+                        className="w-full text-[14px] justify-start py-[10px] rounded-lg"
                         onClick={handleLogout}
-                        icon={
-                          <img
-                            src="/assets/svgs/logout.svg"
-                            alt="designfolio logo"
-                            className="cursor-pointer"
-                          />
-                        }
-                      />
+                      >
+                        <img
+                          src="/assets/svgs/logout.svg"
+                          alt="designfolio logo"
+                          className="w-4 h-4"
+                        />
+                        Logout
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -681,30 +667,26 @@ export default function LoggedInHeader({
           </div>
         </div>
         <Button
-          customClass="md:hidden"
-          type="secondary"
-          icon={
-            <>
-              <HamburgerIcon
-                className={`mb-[4.67px] transition-transform text-icon-color easeInOut cursor-pointer ${
-                  popovers.loggedInMenu === popoverMenu &&
-                  "translate-y-3.2 rotate-45"
-                }`}
-              />
-              <HamburgerIcon
-                className={`transition-transform text-icon-color easeInOut cursor-pointer ${
-                  popovers.loggedInMenu === popoverMenu &&
-                  "-rotate-45 -translate-y-3.2"
-                }`}
-              />
-            </>
-          }
+          variant="secondary"
+          size="icon"
+          className="md:hidden h-11 w-11 rounded-full flex-col"
           onClick={() =>
             setPopoverMenu((prev) =>
               prev == popovers.loggedInMenu ? null : popovers.loggedInMenu
             )
           }
-        />
+        >
+          <HamburgerIcon
+            className={`mb-[4.67px] transition-transform text-icon-color easeInOut ${popovers.loggedInMenu === popoverMenu &&
+              "translate-y-3.2 rotate-45"
+              }`}
+          />
+          <HamburgerIcon
+            className={`transition-transform text-icon-color easeInOut ${popovers.loggedInMenu === popoverMenu &&
+              "-rotate-45 -translate-y-3.2"
+              }`}
+          />
+        </Button>
         {isClient && (
           <Popover
             show={popovers.loggedInMenu === popoverMenu}
@@ -713,65 +695,56 @@ export default function LoggedInHeader({
             {!isMobileThemePopup ? (
               <div>
                 <Button
-                  text={"Account settings"}
-                  customClass="w-full text-[14px] justify-between py-[10px] rounded-lg px-0 hover:bg-transparent !transition-none"
-                  type="normal"
+                  variant="ghost"
+                  className="w-full text-[14px] justify-between py-[10px] rounded-lg px-0 hover:bg-transparent transition-none"
                   onClick={handlenavigation}
-                  iconPosition="right"
-                  icon={
-                    <SettingIcon className="text-df-icon-color cursor-pointer" />
-                  }
-                />
+                >
+                  Account settings
+                  <SettingIcon className="w-4 h-4" />
+                </Button>
 
                 <Button
-                  text={"Logout"}
-                  customClass="w-full text-[14px]  justify-between py-[10px] rounded-lg px-0 hover:bg-transparent !transition-none"
-                  type="normal"
+                  variant="ghost"
+                  className="w-full text-[14px] justify-between py-[10px] rounded-lg px-0 hover:bg-transparent transition-none"
                   onClick={handleLogout}
-                  iconPosition="right"
-                  icon={
-                    <img
-                      src="/assets/svgs/logout.svg"
-                      alt="designfolio logo"
-                      className="cursor-pointer"
-                    />
-                  }
-                />
+                >
+                  Logout
+                  <img
+                    src="/assets/svgs/logout.svg"
+                    alt="designfolio logo"
+                    className="w-4 h-4"
+                  />
+                </Button>
 
                 <Link href="/analytics">
                   <Button
-                    text={"Insights"}
-                    type="secondary"
-                    customClass="!p-4 mr-0 w-full mt-4"
-                    icon={
-                      <AnalyticsIcon className="text-icon-color cursor-pointer" />
-                    }
-                    animation
-                  />
+                    variant="secondary"
+                    className="h-11 px-4 mr-0 w-full mt-4 rounded-full"
+                  >
+                    <MemoAnalytics className="w-4 h-4" />
+                    Insights
+                  </Button>
                 </Link>
                 <Button
-                  icon={
-                    <ThemeIcon className="text-icon-color cursor-pointer" />
-                  }
+                  variant="secondary"
+                  className="h-11 px-4 w-full mt-4 rounded-full"
                   onClick={() => setIsMobileThemePopup(true)}
-                  type="secondary"
-                  customClass="!p-4 w-full mt-4"
-                  text={"Change theme"}
-                />
+                >
+                  <MemoThemeIcon className="w-4 h-4" />
+                  Change theme
+                </Button>
                 <Button
-                  text={"Publish Site"}
+                  className="h-11 px-4 mr-0 w-full mt-4 bg-foreground text-background hover:bg-foreground/90 rounded-full"
                   onClick={handleUpdate}
-                  customClass="!p-4 mr-0 w-full mt-4"
-                  icon={
-                    <img
-                      src="/assets/svgs/power.svg"
-                      alt="launch builder"
-                      className="cursor-pointer"
-                    />
-                  }
-                  isDisabled={!userDetails?.pro && userDetails?.template != 0}
-                  animation
-                />
+                  disabled={!userDetails?.pro && userDetails?.template != 0}
+                >
+                  <img
+                    src="/assets/svgs/power.svg"
+                    alt="launch builder"
+                    className="w-4 h-4"
+                  />
+                  Publish Site
+                </Button>
                 <div className="w-full h-[2px] bg-placeholder-color my-4" />
                 <div
                   className="flex gap-2 cursor-pointer justify-center items-start mr-5"
@@ -806,13 +779,14 @@ export default function LoggedInHeader({
             ) : (
               <div>
                 <Button
-                  text="Go Back"
+                  variant="secondary"
+                  size="sm"
+                  className="transition-none rounded-full"
                   onClick={() => setIsMobileThemePopup(false)}
-                  type="secondary"
-                  size="small"
-                  customClass="!transition-none"
-                  icon={<LeftArrow className="cursor-pointer" />}
-                />
+                >
+                  <LeftArrow className="w-4 h-4" />
+                  Go Back
+                </Button>
                 <Text
                   size="p-small"
                   className="text-popover-heading-color mt-4"

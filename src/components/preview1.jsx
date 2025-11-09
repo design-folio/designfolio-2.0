@@ -78,10 +78,10 @@ export default function Preview1({ userDetails, projectRef }) {
                 !!userDetails?.portfolios?.notion ||
                 !!userDetails?.portfolios?.behance ||
                 !!userDetails?.portfolios?.medium) && (
-                <motion.div variants={itemVariants}>
-                  <OthersPreview userDetails={userDetails} />
-                </motion.div>
-              )}
+                  <motion.div variants={itemVariants}>
+                    <OthersPreview userDetails={userDetails} />
+                  </motion.div>
+                )}
             </motion.div>
           )}
         </div>

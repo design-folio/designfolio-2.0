@@ -216,6 +216,7 @@ export default function Onboarding() {
 
     const persona = {
       value: selectedPersonaId,
+      label: selectedRole,
       ...(selectedRole === "Others" && { __isNew__: true, custom: customRole.trim() }),
     };
 
@@ -225,6 +226,7 @@ export default function Onboarding() {
     });
 
     const payload = {
+      isNewUser: true,
       persona,
       goal: selectedGoalId,
       experienceLevel: selectedExperienceId,

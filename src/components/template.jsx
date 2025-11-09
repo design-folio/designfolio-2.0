@@ -78,10 +78,10 @@ export default function Template1({ userDetails }) {
             !!userDetails?.portfolios?.notion ||
             !!userDetails?.portfolios?.behance ||
             !!userDetails?.portfolios?.medium) && (
-            <motion.div variants={itemVariants}>
-              <OthersPreview userDetails={userDetails} />
-            </motion.div>
-          )}
+              <motion.div variants={itemVariants}>
+                <OthersPreview userDetails={userDetails} />
+              </motion.div>
+            )}
           <div className="mb-20"></div>
         </motion.div>
       </BottomLayout>

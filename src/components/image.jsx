@@ -8,31 +8,28 @@ const DfImage = ({ src, style, className, alt, onClick }) => {
   useEffect(() => {
     const img = new Image();
     img.src = src;
-    if (img.complete) {
-      setImageLoaded(true);
-    }
+    if (img.complete) setImageLoaded(true);
+    else img.onload = () => setImageLoaded(true);
   }, [src]);
 
   return (
-    <div className="relative">
+    <div className={twMerge("relative w-full h-full", className)}>
       <img
         src={src}
         alt={alt}
         className={twMerge(
-          "w-full h-full rounded-[24px] object-cover transition-opacity duration-100",
-          className,
-          imageLoaded ? "opacity-100" : "opacity-100"
+          "absolute inset-0 w-full h-full object-contain rounded-full transition-opacity duration-300",
+          imageLoaded ? "opacity-100" : "opacity-0"
         )}
         loading="lazy"
-        fetchpriority="high"
         decoding="async"
-        // onLoad={() => setImageLoaded(true)}
+        fetchpriority="high"
         style={style}
         onClick={onClick}
       />
-      {/* {!imageLoaded && (
-        <div className="w-full h-full bg-placeholder-color rounded-[24px] absolute top-0 right-0" />
-      )} */}
+      {!imageLoaded && (
+        <div className="absolute inset-0 bg-placeholder-color rounded-[24px] animate-pulse" />
+      )}
     </div>
   );
 };

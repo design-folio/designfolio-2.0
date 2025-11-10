@@ -53,7 +53,6 @@ export default function ReviewCard({ className = "", review, edit = false, index
       transition={{ duration: 0.5, delay: index * 0.1 }}
       className={`bg-review-card-bg-color border border-border/30 rounded-2xl p-6 flex flex-col relative hover-elevate transition-all`}
       style={{
-        backgroundColor: "#F5F3F1",
         boxShadow:
           "0 0 0 1px rgba(0,0,0,0.03), 0 0 40px rgba(0,0,0,0.015)",
       }}

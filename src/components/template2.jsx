@@ -38,6 +38,8 @@ export default function Template2({ userDetails, preview = false }) {
     introduction,
     resume,
     username,
+    firstName,
+    lastName
   } = userDetails || {};
   const router = useRouter();
   const { projectRef } = useGlobalContext();
@@ -79,7 +81,7 @@ export default function Template2({ userDetails, preview = false }) {
       return `${skills[0]}`;
     }
   };
-  const onDeleteProject = () => {};
+  const onDeleteProject = () => { };
 
   const handleRouter = (id) => {
     if (preview) {
@@ -120,7 +122,7 @@ export default function Template2({ userDetails, preview = false }) {
               delay={1000}
               onComplete={handleStepCompletion}
             >
-              Hey there! I'm {username}
+              Hey there! I'm {firstName} {lastName}
             </Chat>
           </div>
         )}
@@ -277,13 +279,11 @@ export default function Template2({ userDetails, preview = false }) {
                             size="p-xsmall"
                             className="font-medium mt-[6px]"
                           >
-                            {`${experience?.startMonth} ${
-                              experience?.startYear
-                            } - ${
-                              experience?.currentlyWorking
+                            {`${experience?.startMonth} ${experience?.startYear
+                              } - ${experience?.currentlyWorking
                                 ? "Present"
                                 : `${experience?.endMonth} ${experience?.endYear}`
-                            }  `}
+                              }  `}
                           </Text>
                           <p
                             className={`text-[16px] font-light leading-[22.4px] font-inter`}

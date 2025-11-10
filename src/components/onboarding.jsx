@@ -156,11 +156,15 @@ export default function Onboarding() {
 
   // Handlers
   const handleInterestToggle = (interest) => {
-    setSelectedInterests((prev) =>
-      prev.includes(interest)
+    setSelectedInterests((prev) => {
+      const isAdding = !prev.includes(interest);
+      if (isAdding) {
+        setSkillsSearch(""); // Clear search when adding a skill
+      }
+      return prev.includes(interest)
         ? prev.filter((i) => i !== interest)
-        : [...prev, interest]
-    );
+        : [...prev, interest];
+    });
   };
 
   const handleAddCustomSkill = (skill) => {

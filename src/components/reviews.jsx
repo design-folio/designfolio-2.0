@@ -19,11 +19,10 @@ export default function Reviews({ edit = false, userDetails, openModal }) {
         ))}
         {edit && (
           <AddCard
-            title={`${
-              userDetails?.reviews?.length == 0
+            title={`${userDetails?.reviews?.length == 0
                 ? "My testimonials"
                 : "Add more reviews"
-            } `}
+              } `}
             subTitle="Share colleague's feedback."
             onClick={() => openModal(modals.review)}
             className={

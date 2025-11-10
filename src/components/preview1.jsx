@@ -41,7 +41,7 @@ export default function Preview1({ userDetails, projectRef }) {
         >
           {userDetails && (
             <motion.div
-              className="flex-1 flex flex-col gap-4 md:gap-6"
+              className="flex-1 flex flex-col gap-3"
               variants={containerVariants}
               initial="hidden"
               animate="visible"

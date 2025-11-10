@@ -46,7 +46,7 @@ export default function SkillsPicker({ skills, selected, onToggle, onAdd, search
                                 <button
                                     key={interest}
                                     onClick={() => onToggle(interest)}
-                                    className="px-5 py-2.5 rounded-full border-2 text-sm font-medium transition-all hover-elevate relative flex items-center gap-2"
+                                    className="px-5 py-2.5 rounded-full border-2 text-sm font-medium transition-all hover-elevate relative cursor-pointer flex items-center gap-2"
                                     style={
                                         isSelected
                                             ? { backgroundColor: "#FFF5F0", borderColor: "#FF553E", color: "#FF553E" }
@@ -61,7 +61,7 @@ export default function SkillsPicker({ skills, selected, onToggle, onAdd, search
                                             </motion.div>
                                         )}
                                     </AnimatePresence>
-                                    <span>{interest}</span>
+                                    {interest}
                                 </button>
                             );
                         })}

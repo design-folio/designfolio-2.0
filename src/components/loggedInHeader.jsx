@@ -33,6 +33,7 @@ import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import MemoThemeIcon from "./icons/ThemeIcon";
 import MemoAnalytics from "./icons/Analytics";
 import MemoPreviewIcon from "./icons/PreviewIcon";
+import MemoPower from "./icons/Power";
 
 const cursors = [
   {
@@ -323,7 +324,7 @@ export default function LoggedInHeader({
 
   return (
     <div
-      className={`${headerStyle} z-50 px-2 md:px-0 py-2 md:py-5 bg-transparent`}
+      className={`${headerStyle} z-50 px-2 md:px-0 py-2 md:py-6 bg-transparent`}
     >
       <div className="shadow-df-section-card-shadow max-w-[890px] p-3 border border-card-border md:!p-4 rounded-2xl bg-df-header-bg-color mx-auto flex justify-between items-center">
         <div className="flex items-center gap-[24px]">
@@ -529,11 +530,7 @@ export default function LoggedInHeader({
                 updateLoading
               }
             >
-              <img
-                src="/assets/svgs/power.svg"
-                alt="launch builder"
-                className="w-4 h-4"
-              />
+              <MemoPower className="w-4 h-4" />
               Publish Site
             </Button>
             {isClient && (
@@ -625,7 +622,7 @@ export default function LoggedInHeader({
               src={
                 getUserAvatarImage(userDetails)
               }
-              className={"w-[44px] h-[44px] rounded-2xl cursor-pointer"}
+              className={"w-[44px] h-[44px] rounded-full cursor-pointer bg-[#FFB088]"}
             />
 
             {isClient && (

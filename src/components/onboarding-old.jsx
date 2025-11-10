@@ -14,6 +14,7 @@ import CloseIcon from "../../public/assets/svgs/close.svg";
 import SelectField from "./SelectField";
 import ToolCheckbox from "./ToolCheckbox";
 import { useTheme } from "next-themes";
+import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 
 const FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png", "image/gif"];
@@ -77,7 +78,7 @@ export default function Onboarding() {
     updateCache,
   } = useGlobalContext();
   const { theme } = useTheme();
-  const [imagePreview, setImagePreview] = useState(null);
+  const [imagePreview, setImagePreview] = useState();
   const [skillOptions, setSkillsOptions] = useState([]);
   const [toolsOptions, setToolsOptions] = useState([]);
 
@@ -99,7 +100,7 @@ export default function Onboarding() {
   };
   const [initialValues, setInitialValues] = useState({
     picture: null,
-    introduction: userDetails?.introduction ?? "",
+    introduction: userDetails?.introduction ?? `Hey I'm ${userDetails?.firstName}`,
     expertise: userDetails?.skills ?? [],
     selectedTools: userDetails?.tools ?? [], // Assuming mappedTools is defined elsewhere
     avatarUrl: userDetails?.avatar?.url, // Assuming userDetails.avatar.url is defined
@@ -303,18 +304,18 @@ export default function Onboarding() {
                   {step === 1 && (
                     <div>
                       <div className="flex items-center gap-4">
-                        <div className="w-[114.75px] h-[114.75px] flex flex-col justify-center items-center gap-1 rounded-full">
+                        <div className="w-32 h-32 flex flex-col justify-center items-center gap-1 rounded-full relative" style={{ backgroundColor: "#FFB088" }}>
                           {imagePreview ? (
                             <img
                               src={imagePreview}
-                              className="w-[100%] h-[100%] rounded-2xl object-cover"
+                              className="w-24 h-24 rounded-full object-cover"
                               alt="designfolio logo"
                             />
                           ) : (
                             <>
                               <img
-                                src={"/assets/svgs/avatar.svg"}
-                                className="w-[100%] h-[100%] rounded-2xl object-cover"
+                                src={getUserAvatarImage(userDetails)}
+                                className="w-24 h-24  rounded-full object-cover"
                                 alt="designfolio logo"
                               />
                             </>

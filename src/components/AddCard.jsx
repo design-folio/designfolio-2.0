@@ -67,12 +67,11 @@ export default function AddCard({
       ) : (
         <div className="flex flex-col gap-3 justify-center items-center  h-full">
           <Button
-            text={title}
-            customClass="w-fit gap-1 items-center"
-            icon={
-              <PlusIcon className="text-primary-btn-text-color w-[20px] h-[20px] mb-[2px] cursor-pointer" />
-            }
-          />
+            className="w-fit gap-1 items-center"
+          >
+            <PlusIcon className="text-primary-btn-text-color w-[20px] h-[20px] mb-[2px] cursor-pointer" />
+            {title}
+          </Button>
           {secondaryButtonTitle && (
             <p className="text-df-add-card-description-color"> or</p>
           )}
@@ -80,13 +79,12 @@ export default function AddCard({
           {secondaryButtonTitle && (
             <Button
               onClick={handleClick}
-              text={secondaryButtonTitle}
-              type="secondary"
-              customClass="w-fit gap-1 items-center"
-              icon={
-                <AiIcon className="text-secondary-btn-text-color w-[22px] h-[22px] mb-[2px] cursor-pointer" />
-              }
-            />
+              variant="outline"
+              className="w-fit gap-1 items-center rounded-full"
+            >
+              <AiIcon className="text-secondary-btn-text-color w-[22px] h-[22px] mb-[2px] cursor-pointer" />
+              {secondaryButtonTitle}
+            </Button>
           )}
         </div>
       )}

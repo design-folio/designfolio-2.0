@@ -508,10 +508,10 @@ export default function LoggedInHeader({
             )}
           </div>
           <Button
-            variant="outline"
-            size="icon"
+            variant="secondary"
+            // size="icon"
             className="rounded-full h-11 w-11"
-            data-testid="button-share"
+            data-testid="button-preview"
             onClick={() => router.push("/portfolio-preview")}
           >
             <MemoPreviewIcon className="!size-5" />

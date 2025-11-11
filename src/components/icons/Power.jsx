@@ -16,8 +16,8 @@ function Power(props) {
           y2={47.02}
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="var(--background)" />
-          <stop offset={1} stopColor="var(--background)" stopOpacity={0} />
+          <stop stopColor="var(--primary-btn-text-color)" />
+          <stop offset={1} stopColor="var(--primary-btn-text-color)" stopOpacity={0} />
         </linearGradient>
       </defs>
     </svg>

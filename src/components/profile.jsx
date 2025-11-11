@@ -4,13 +4,11 @@ import { motion, useAnimation } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/buttonNew";
 import DfImage from "./image";
-import Text from "./text";
-import EditIcon from "../../public/assets/svgs/edit.svg";
-import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
 import Link from "next/link";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { capitalizeWords } from "@/lib/capitalizeText";
-import { Sparkle } from "lucide-react";
+import { Pencil, PencilIcon, Sparkle } from "lucide-react";
+import MemoLeftArrow from "./icons/LeftArrow";
 
 export default function Profile({
   preview = false,
@@ -57,7 +55,7 @@ export default function Profile({
       transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
     >
       <Card
-        className="bg-df-section-card-bg-color backdrop-blur-sm border-0 rounded-[24px] overflow-hidden mb-3 relative"
+        className="bg-df-section-card-bg-color backdrop-blur-sm border-0 rounded-[24px] overflow-hidden relative"
         style={{
           boxShadow:
             "0 0 0 1px rgba(0,0,0,0.03), 0 0 40px rgba(0,0,0,0.015)",
@@ -68,10 +66,10 @@ export default function Profile({
           <div className="p-4">
             <Link href={"/builder"}>
               <Button
-                variant="outline"
-                className="rounded-full px-4 h-9 text-sm font-medium flex items-center gap-2"
+                variant="secondary"
+                className="rounded-full px-4 h-9 text-sm font-medium"
               >
-                <LeftArrow className="w-4 h-4" />
+                <MemoLeftArrow className="!size-2.5" />
                 Exit preview
               </Button>
             </Link>
@@ -87,7 +85,7 @@ export default function Profile({
               className="rounded-full h-11 w-11"
               onClick={() => openModal("onboarding")}
             >
-              <EditIcon className="w-5 h-5" />
+              <PencilIcon className="w-4 h-4" />
             </Button>
           </div>
         )}
@@ -116,7 +114,7 @@ export default function Profile({
                 className="text-4xl font-semibold mb-2 font-gsans text-profile-card-heading-color"
                 data-testid="text-user-name"
               >
-                {userDetails?.introduction || `Hey, I'm ${capitalizeWords(userDetails?.firstName) || "User"}`}
+                {userDetails?.introduction || `Hey, I'm ${capitalizeWords(userDetails?.firstName) || ""}`}
               </h1>
               <p
                 className="text-base text-profile-card-description-color"
@@ -165,10 +163,10 @@ export default function Profile({
                   key={index}
                   className="flex items-center gap-3 shrink-0 mr-3"
                 >
-                  <span className="text-sm text-foreground/50 whitespace-nowrap">
+                  <span className="text-sm text-foreground-landing/50 whitespace-nowrap">
                     {skill}
                   </span>
-                  <Sparkle className="w-3 h-3 text-foreground/30 fill-foreground/30" />
+                  <Sparkle className="w-3 h-3 text-foreground-landing/30 fill-foreground-landing/30" />
                 </div>
               ))}
             </motion.div>

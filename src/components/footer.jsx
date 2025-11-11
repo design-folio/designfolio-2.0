@@ -3,6 +3,7 @@ import { useState, useEffect } from "react"
 import ClaimDomain from "./claimDomain"
 import Link from "next/link"
 import Button from "./button"
+import MemoPower from "./icons/Power"
 
 export default function Footer({ dfToken, innerClass = "", className = "" }) {
     const names = ["john", "morgan", "sarah", "tom", "brad"]
@@ -125,11 +126,7 @@ export default function Footer({ dfToken, innerClass = "", className = "" }) {
                                     text="Launch Builder"
                                     customClass="bg-foreground-landing text-background-landing border border-foreground rounded-full py-2 px-3 sm:px-4 md:px-6 text-xs sm:text-sm md:text-base font-medium hover:bg-foreground-landing/80 transition-colors"
                                     icon={
-                                        <img
-                                            src="/assets/svgs/power.svg"
-                                            alt="launch builder"
-                                            className="cursor-pointer"
-                                        />
+                                        <MemoPower />
                                     }
                                 />
                             </Link>

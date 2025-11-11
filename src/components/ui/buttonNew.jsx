@@ -4,18 +4,20 @@ import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-    "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+    "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 no-default-hover-elevate no-default-active-elevate",
     {
+
+
         variants: {
             variant: {
                 default:
-                    "bg-primary-landing text-primary-foreground border border-primary-border",
+                    "bg-foreground-landing text-background-landing border border-foreground rounded-full py-2 px-3 sm:px-4 md:px-6 text-xs sm:text-sm md:text-base font-medium hover:bg-foreground-landing/80",
                 destructive:
                     "bg-destructive text-destructive-foreground border border-destructive-border",
                 outline:
                     // Shows the background color of whatever card / sidebar / accent background it is inside of.
                     // Inherits the current text color.
-                    " border [border-color:var(--button-outline)]  shadow-xs active:shadow-none hover:border-secondary-border ",
+                    " border [border-color:var(--button-outline)] hover-elevate active:shadow-none hover:border-secondary-border ",
                 secondary: "border bg-secondary text-secondary-foreground border border-secondary-border hover:bg-secondary-hover",
                 // Add a transparent border so that when someone toggles a border on later, it doesn't shift layout/size.
                 ghost: "border border-transparent ",

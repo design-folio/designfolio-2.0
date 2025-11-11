@@ -342,7 +342,7 @@ export default function LoggedInHeader({
                 variant="secondary"
                 className="h-11 px-4 mr-4 rounded-full"
               >
-                <MemoAnalytics className="w-4 h-4" />
+                <MemoAnalytics className="!size-5" />
                 Insights
               </Button>
             </Link>
@@ -352,7 +352,7 @@ export default function LoggedInHeader({
               className="h-11 w-11 rounded-full"
               onClick={handleTheme}
             >
-              <MemoThemeIcon className="w-4 h-4" />
+              <MemoThemeIcon className="!size-5" />
             </Button>
 
             {isClient && (
@@ -514,14 +514,14 @@ export default function LoggedInHeader({
             data-testid="button-share"
             onClick={() => router.push("/portfolio-preview")}
           >
-            <MemoPreviewIcon className="w-6 h-6" />
+            <MemoPreviewIcon className="!size-5" />
           </Button>
           <div
             className="relative publish-button"
             data-popover-id={popovers.publishMenu}
           >
             <Button
-              className="bg-foreground text-background hover:bg-foreground/90 focus-visible:outline-none border-0 rounded-full h-11 px-6 text-base font-semibold no-default-hover-elevate no-default-active-elevate transition-colors"
+              className=""
               onClick={handlePublishBtn}
               disabled={
                 (!userDetails?.pro &&
@@ -718,7 +718,7 @@ export default function LoggedInHeader({
                     variant="secondary"
                     className="h-11 px-4 mr-0 w-full mt-4 rounded-full"
                   >
-                    <MemoAnalytics className="w-4 h-4" />
+                    <MemoAnalytics className="" />
                     Insights
                   </Button>
                 </Link>

@@ -8,6 +8,7 @@ import CloseIcon from "../../public/assets/svgs/close-tabular.svg";
 import { popovers } from "@/lib/constant";
 import { useGlobalContext } from "@/context/globalContext";
 import { TempPopoverForLanding } from "./popover";
+import MemoPower from "./icons/Power";
 
 export default function LandingHeader({ dfToken }) {
     const [isVisible, setIsVisible] = useState(true);
@@ -62,11 +63,7 @@ export default function LandingHeader({ dfToken }) {
                                         text="Launch Builder"
                                         customClass="bg-foreground-landing text-background-landing border border-foreground rounded-full py-2 px-3 sm:px-4 md:px-6 text-xs sm:text-sm md:text-base font-medium hover:bg-foreground-landing/80 transition-colors"
                                         icon={
-                                            <img
-                                                src="/assets/svgs/power.svg"
-                                                alt="launch builder"
-                                                className="cursor-pointer"
-                                            />
+                                            <MemoPower />
                                         }
                                     />
                                 </Link>

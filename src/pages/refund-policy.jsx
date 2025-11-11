@@ -77,8 +77,12 @@ export default function Index() {
               <p className="leading-relaxed mb-3" data-testid="text-cancellation-intro">
                 As Designfolio operates on a lifetime access model, there is no recurring billing and therefore no cancellation of subscriptions.
               </p>
-              <p className="leading-relaxed" data-testid="text-cancellation-access">
+              <p className="leading-relaxed mb-3" data-testid="text-cancellation-access">
                 Users may choose to discontinue using the service at any time; however, no refunds or partial credits will be issued for unused access.
+              </p>
+
+              <p className="leading-relaxed" data-testid="text-cancellation-access">
+                Timeline for refund: 5 Working Days
               </p>
             </section>
 

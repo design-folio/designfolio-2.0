@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import Button from "../button";
 import { EditIcon } from "lucide-react";
 import { useGlobalContext } from "@/context/globalContext";
+import { getUserAvatarImage } from "@/lib/getAvatarUrl";
+import { cn } from "@/lib/utils";
 
 export const Hero = ({ userDetails, edit }) => {
   const [isLoaded, setIsLoaded] = useState(true);
@@ -21,8 +23,8 @@ export const Hero = ({ userDetails, edit }) => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <Avatar className="w-24 h-24 mb-6 relative rounded-2xl">
-          <div className="relative w-full h-full">
+        <Avatar className="w-24 h-24 mb-6 relative rounded-full">
+          <div className="relative w-full h-full ">
             <AnimatePresence mode="wait">
               {!isLoaded && (
                 <motion.div
@@ -38,9 +40,9 @@ export const Hero = ({ userDetails, edit }) => {
               initial={{ opacity: 0 }}
               animate={{ opacity: isLoaded ? 1 : 0 }}
               transition={{ duration: 0.2 }}
-              src={avatar?.url ?? "/assets/svgs/avatar.svg"}
+              src={getUserAvatarImage(userDetails)}
               alt="Profile"
-              className="rounded-2xl w-full h-full object-cover"
+              className={cn("rounded-full w-full h-full object-cover", !avatar ? "bg-[#FFB088]" : "")}
               loading="eager"
               decoding="async"
               onLoad={() => setIsLoaded(true)}

@@ -9,6 +9,7 @@ import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { capitalizeWords } from "@/lib/capitalizeText";
 import { Pencil, PencilIcon, Sparkle } from "lucide-react";
 import MemoLeftArrow from "./icons/LeftArrow";
+import { cn } from "@/lib/utils";
 
 export default function Profile({
   preview = false,
@@ -95,8 +96,7 @@ export default function Profile({
           <div className="flex items-center gap-6">
             {/* Avatar Container */}
             <div
-              className="w-32 h-32 rounded-full flex items-center justify-center relative overflow-hidden"
-              style={{ backgroundColor: "#FFB088" }}
+              className={cn("w-32 h-32 rounded-full flex items-center justify-center relative overflow-hidden", !userDetails?.avatar ? "bg-[#FFB088]" : "")}
               data-testid="avatar-profile"
             >
               <DfImage

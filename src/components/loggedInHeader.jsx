@@ -34,6 +34,7 @@ import MemoThemeIcon from "./icons/ThemeIcon";
 import MemoAnalytics from "./icons/Analytics";
 import MemoPreviewIcon from "./icons/PreviewIcon";
 import MemoPower from "./icons/Power";
+import { cn } from "@/lib/utils";
 
 const cursors = [
   {
@@ -622,7 +623,7 @@ export default function LoggedInHeader({
               src={
                 getUserAvatarImage(userDetails)
               }
-              className={"w-[44px] h-[44px] rounded-full cursor-pointer bg-[#FFB088]"}
+              className={cn("w-[44px] h-[44px] rounded-full cursor-pointer", !userDetails?.avatar ? "bg-[#FFB088]" : "")}
             />
 
             {isClient && (

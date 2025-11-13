@@ -99,13 +99,12 @@ export default function Projects({
             ))}
 
             {edit &&
-              (userDetails?.pro || userDetails?.projects.length < 3 ? (
+              (userDetails?.pro || userDetails?.projects.length < 1 ? (
                 <AddCard
-                  title={`${
-                    userDetails?.projects?.length === 0
+                  title={`${userDetails?.projects?.length === 0
                       ? "Upload your first case study"
                       : "Add case study"
-                  }`}
+                    }`}
                   subTitle="Show off your best work."
                   first={userDetails?.projects?.length !== 0}
                   buttonTitle="Add case study"

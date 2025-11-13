@@ -92,8 +92,8 @@ const Portfolio = ({ userDetails, edit }) => {
       edit
         ? `/project/${id}/editor`
         : router.asPath.includes("/portfolio-preview")
-        ? `/project/${id}/preview`
-        : `/project/${id}`
+          ? `/project/${id}/preview`
+          : `/project/${id}`
     );
   };
 
@@ -383,13 +383,12 @@ const Portfolio = ({ userDetails, edit }) => {
                     />
                   ))}
                   {edit &&
-                    (userDetails?.pro || userDetails?.projects.length < 3 ? (
+                    (userDetails?.pro || userDetails?.projects.length < 1 ? (
                       <AddCard
-                        title={`${
-                          userDetails?.projects?.length === 0
+                        title={`${userDetails?.projects?.length === 0
                             ? "Upload your first case study"
                             : "Add case study"
-                        }`}
+                          }`}
                         subTitle="Show off your best work."
                         first
                         buttonTitle="Add case study"
@@ -397,10 +396,9 @@ const Portfolio = ({ userDetails, edit }) => {
                         onClick={() => openModal(modals.project)}
                         icon={<ProjectIcon className="cursor-pointer" />}
                         openModal={openModal}
-                        className={`flex items-center justify-center min-h-[269px] rounded-lg ${
-                          userDetails?.projects?.length !== 0 &&
+                        className={`flex items-center justify-center min-h-[269px] rounded-lg ${userDetails?.projects?.length !== 0 &&
                           "bg-df-section-card-bg-color shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] hover:shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
-                        }`}
+                          }`}
                       />
                     ) : (
                       <ProjectLock />

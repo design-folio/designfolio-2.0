@@ -204,7 +204,7 @@ export default function Builder2({ edit = false }) {
           <ProjectShape className="text-template-text-left-bg-color" />
           <Chat direction="left" className="rounded-tl-none w-fit">
             {projects.length > 0 ? (
-              userDetails?.pro || userDetails?.projects.length < 3 ? (
+              userDetails?.pro || userDetails?.projects.length < 1 ? (
                 <div className="flex items-center gap-3">
                   <Button
                     text={"Add case study"}

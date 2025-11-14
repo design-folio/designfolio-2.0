@@ -62,6 +62,8 @@ export default function Builder2({ edit = false }) {
     socials,
     reviews,
     resume,
+    firstName,
+    lastName,
   } = userDetails || {};
   const router = useRouter();
   const getSkills = () => {
@@ -115,7 +117,7 @@ export default function Builder2({ edit = false }) {
           className={"w-[76px] h-[76px] rounded-[24px]"}
         />
         <div>
-          <Chat direction="left">Hey there! I'm {username}</Chat>
+          <Chat direction="left">Hey there! I'm {firstName} {lastName}</Chat>
         </div>
       </div>
 
@@ -202,7 +204,7 @@ export default function Builder2({ edit = false }) {
           <ProjectShape className="text-template-text-left-bg-color" />
           <Chat direction="left" className="rounded-tl-none w-fit">
             {projects.length > 0 ? (
-              userDetails?.pro || userDetails?.projects.length < 3 ? (
+              userDetails?.pro || userDetails?.projects.length < 1 ? (
                 <div className="flex items-center gap-3">
                   <Button
                     text={"Add case study"}
@@ -228,11 +230,10 @@ export default function Builder2({ edit = false }) {
               )
             ) : (
               <AddCard
-                title={`${
-                  projects?.length === 0
-                    ? "Upload your first case study"
-                    : "Add case study"
-                }`}
+                title={`${projects?.length === 0
+                  ? "Upload your first case study"
+                  : "Add case study"
+                  }`}
                 subTitle="Show off your best work."
                 first={projects?.length !== 0}
                 buttonTitle="Add case study"
@@ -252,11 +253,10 @@ export default function Builder2({ edit = false }) {
       <Chat direction="left">
         {edit && reviews?.length == 0 && (
           <AddCard
-            title={`${
-              userDetails?.reviews?.length == 0
-                ? "My testimonials"
-                : "Add more reviews"
-            } `}
+            title={`${userDetails?.reviews?.length == 0
+              ? "My testimonials"
+              : "Add more reviews"
+              } `}
             subTitle="Share colleague's feedback."
             onClick={() => openModal(modals.review)}
             className={
@@ -366,11 +366,10 @@ export default function Builder2({ edit = false }) {
                       size="p-xsmall"
                       className="font-medium mt-[6px] text-work-card-description-color"
                     >
-                      {`${experience?.startMonth} ${experience?.startYear} - ${
-                        experience?.currentlyWorking
-                          ? "Present"
-                          : `${experience?.endMonth} ${experience?.endYear}`
-                      }  `}
+                      {`${experience?.startMonth} ${experience?.startYear} - ${experience?.currentlyWorking
+                        ? "Present"
+                        : `${experience?.endMonth} ${experience?.endYear}`
+                        }  `}
                     </Text>
                     <TextWithLineBreaks
                       text={experience?.description}

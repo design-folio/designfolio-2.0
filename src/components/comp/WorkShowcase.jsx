@@ -72,8 +72,8 @@ export const WorkShowcase = ({ userDetails, edit }) => {
       edit
         ? `/project/${id}/editor`
         : router.asPath.includes("/portfolio-preview")
-        ? `/project/${id}/preview`
-        : `/project/${id}`
+          ? `/project/${id}/preview`
+          : `/project/${id}`
     );
   };
 
@@ -259,11 +259,10 @@ export const WorkShowcase = ({ userDetails, edit }) => {
               variants={containerVariants}
               initial="hidden"
               animate={inView ? "show" : "hidden"}
-              className={`${
-                sortedProjects.length === 0
+              className={`${sortedProjects.length === 0
                   ? "bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words"
                   : "grid grid-cols-1 md:grid-cols-2 gap-6"
-              }`}
+                }`}
             >
               {sortedProjects.map((project) => (
                 <ProjectCard key={project._id} project={project} />
@@ -273,13 +272,12 @@ export const WorkShowcase = ({ userDetails, edit }) => {
         </DndContext>
       )}
       {edit &&
-        (userDetails?.pro || userDetails?.projects.length < 3 ? (
+        (userDetails?.pro || userDetails?.projects.length < 1 ? (
           <AddCard
-            title={`${
-              sortedProjects.length === 0
+            title={`${sortedProjects.length === 0
                 ? "Upload your first case study"
                 : "Add case study"
-            }`}
+              }`}
             subTitle="Show off your best work."
             first={sortedProjects.length !== 0}
             buttonTitle="Add case study"
@@ -287,10 +285,9 @@ export const WorkShowcase = ({ userDetails, edit }) => {
             onClick={() => openModal(modals.project)}
             icon={<ProjectIcon className="cursor-pointer" />}
             openModal={openModal}
-            className={`flex items-center justify-center mt-6 ${
-              sortedProjects.length !== 0 &&
+            className={`flex items-center justify-center mt-6 ${sortedProjects.length !== 0 &&
               "bg-df-section-card-bg-color shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] hover:shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
-            }`}
+              }`}
           />
         ) : (
           <div className="mt-6">

@@ -24,7 +24,7 @@ export default function Footer({ dfToken, innerClass = "", className = "" }) {
     return (
         <footer className={`w-full py-16 px-6 ${className}`} >
             <div className={`max-w-5xl mx-auto ${innerClass}`}>
-                <Card className="p-8 sm:p-12">
+                <Card className="p-8 sm:p-12 bg-card-landing">
                     <div className="space-y-8">
                         <div className="space-y-4">
                             <h2

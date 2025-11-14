@@ -335,6 +335,7 @@ module.exports = {
         },
         card: {
           DEFAULT: "var(--card)",
+          landing: "var(--card-landing)",
           foreground: "var(--card-foreground)",
           border: "var(--card-border)",
           dark: "#1d1f27",

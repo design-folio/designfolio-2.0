@@ -94,8 +94,8 @@ const Portfolio = ({ userDetails, edit }) => {
       edit
         ? `/project/${id}/editor`
         : router.asPath.includes("/portfolio-preview")
-          ? `/project/${id}/preview`
-          : `/project/${id}`
+            ? `/project/${id}/preview`
+            : `/project/${id}`
     );
   };
 
@@ -385,7 +385,7 @@ const Portfolio = ({ userDetails, edit }) => {
                     />
                   ))}
                   {edit &&
-                    (userDetails?.pro || userDetails?.projects.length < 3 ? (
+                    (userDetails?.pro || userDetails?.projects.length < 1 ? (
                       <AddCard
                         title={`${userDetails?.projects?.length === 0
                           ? "Upload your first case study"

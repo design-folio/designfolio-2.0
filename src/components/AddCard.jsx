@@ -56,7 +56,7 @@ export default function AddCard({
             {secondaryButtonTitle && (
               <Button
                 onClick={handleClick}
-                variant="outline"
+                variant="secondary"
                 className="w-fit gap-1 items-center rounded-full"
               ><AiIcon className="text-secondary-btn-text-color w-[22px] h-[22px] mb-[2px] cursor-pointer" />
                 {secondaryButtonTitle}
@@ -79,7 +79,7 @@ export default function AddCard({
           {secondaryButtonTitle && (
             <Button
               onClick={handleClick}
-              variant="outline"
+              variant="secondary"
               className="w-fit gap-1 items-center rounded-full"
             >
               <AiIcon className="text-secondary-btn-text-color w-[22px] h-[22px] mb-[2px] cursor-pointer" />

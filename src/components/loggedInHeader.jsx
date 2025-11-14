@@ -12,7 +12,6 @@ import SunIcon from "../../public/assets/svgs/sun.svg";
 import MoonIcon from "../../public/assets/svgs/moon.svg";
 import LinkIcon from "../../public/assets/svgs/link.svg";
 import HamburgerIcon from "../../public/assets/svgs/hamburger.svg";
-import SettingIcon from "../../public/assets/svgs/settings.svg";
 import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
 import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
@@ -28,7 +27,7 @@ import { twMerge } from "tailwind-merge";
 import { removeCursor } from "@/lib/cursor";
 import Modal from "./modal";
 import { Badge } from "./ui/badge";
-import { Check, Copy } from "lucide-react";
+import { Check, Copy, SettingsIcon } from "lucide-react";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import MemoThemeIcon from "./icons/ThemeIcon";
 import MemoAnalytics from "./icons/Analytics";
@@ -641,7 +640,7 @@ export default function LoggedInHeader({
                         className="w-full text-[14px] justify-start py-[10px] rounded-lg"
                         onClick={handlenavigation}
                       >
-                        <SettingIcon className="w-4 h-4" />
+                        <SettingsIcon className="w-4 h-4" />
                         Account settings
                       </Button>
 
@@ -667,23 +666,27 @@ export default function LoggedInHeader({
         <Button
           variant="secondary"
           size="icon"
-          className="md:hidden h-11 w-11 rounded-full flex-col"
+          className="md:hidden h-11 w-11 rounded-full"
           onClick={() =>
             setPopoverMenu((prev) =>
               prev == popovers.loggedInMenu ? null : popovers.loggedInMenu
             )
           }
         >
-          <HamburgerIcon
-            className={`mb-[4.67px] transition-transform text-icon-color easeInOut ${popovers.loggedInMenu === popoverMenu &&
-              "translate-y-3.2 rotate-45"
-              }`}
-          />
-          <HamburgerIcon
-            className={`transition-transform text-icon-color easeInOut ${popovers.loggedInMenu === popoverMenu &&
-              "-rotate-45 -translate-y-3.2"
-              }`}
-          />
+          <div className="relative w-4 h-4 flex items-center justify-center">
+            <HamburgerIcon
+              className={`absolute transition-all duration-300 ease-in-out cursor-pointer ${popovers.loggedInMenu === popoverMenu
+                  ? "opacity-0 scale-75"
+                  : "opacity-100 scale-100"
+                }`}
+            />
+            <CloseIcon
+              className={`absolute transition-all duration-300 ease-in-out cursor-pointer ${popovers.loggedInMenu === popoverMenu
+                  ? "opacity-100 scale-100"
+                  : "opacity-0 scale-75"
+                }`}
+            />
+          </div>
         </Button>
         {isClient && (
           <Popover
@@ -698,7 +701,7 @@ export default function LoggedInHeader({
                   onClick={handlenavigation}
                 >
                   Account settings
-                  <SettingIcon className="w-4 h-4" />
+                  <SettingsIcon className="w-4 h-4" />
                 </Button>
 
                 <Button

@@ -57,6 +57,7 @@ export default function Profile({
             size="small"
             icon={<LeftArrow className="text-df-icon-color cursor-pointer" />}
           />
+
         </Link>
       )}
       <div className="flex flex-col lg:flex-row gap-[16px] lg:gap-[32px] items-start ">

@@ -197,8 +197,15 @@ svg * {
 
 html {
   scroll-behavior: smooth;
-  // background-color: var(--df-bg-color);  //NOTE:Commented tp solve pull scroll bg issue in LP might need
   min-height: 100vh;
+
+  &.landing-page {
+    background-color: hsl(var(--background-landing));
+  }
+
+  &:not(.landing-page) {
+    background-color: var(--df-bg-color);
+  }
 }
 
 body {

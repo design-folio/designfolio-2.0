@@ -7,6 +7,7 @@ import ProjectShape from "../../public/assets/svgs/project-shape.svg";
 import ExperienceShape from "../../public/assets/svgs/experience-shape.svg";
 import Link from "next/link";
 import Button from "./button";
+import { Button as ButtonNew } from "./ui/buttonNew"
 import DribbbleIcon from "../../public/assets/svgs/dribbble.svg";
 import BehanceIcon from "../../public/assets/svgs/behance.svg";
 import NotionIcon from "../../public/assets/svgs/noteIcon.svg";
@@ -23,6 +24,9 @@ import Linkedin from "../../public/assets/svgs/linkedinIcon.svg";
 import { useGlobalContext } from "@/context/globalContext";
 import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
 import NoteIcon from "../../public/assets/svgs/noteIcon.svg";
+import { getUserAvatarImage } from "@/lib/getAvatarUrl";
+import MemoLeftArrow from "./icons/LeftArrow";
+import { cn } from "@/lib/utils";
 
 export default function Template2({ userDetails, preview = false }) {
   const {
@@ -101,21 +105,21 @@ export default function Template2({ userDetails, preview = false }) {
     >
       {preview && (
         <Link href={"/builder"}>
-          <Button
-            text="Exit preview"
-            customClass="mb-5"
-            type="secondary"
-            size="small"
-            icon={<LeftArrow className="text-df-icon-color cursor-pointer" />}
-          />
+          <ButtonNew
+            variant="secondary"
+            className="rounded-full px-4 h-9 mb-5 text-sm font-medium"
+          >
+            <MemoLeftArrow className="!size-2.5" />
+            Exit preview
+          </ButtonNew>
         </Link>
       )}
       <div className="flex flex-col gap-6">
         {activeStep >= 1 && introduction && (
           <div className="flex gap-2 items-end">
             <DfImage
-              src={avatar?.url ? avatar?.url : "/assets/svgs/avatar.svg"}
-              className={"w-[76px] h-[76px] rounded-[24px]"}
+              src={getUserAvatarImage(userDetails)}
+              className={cn("w-[76px] h-[76px] ", !userDetails?.avatar ? "bg-[#FFB088] rounded-[24px]" : "")}
             />
             <Chat
               direction="left"

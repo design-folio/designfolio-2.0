@@ -1,5 +1,5 @@
 import React from "react";
-
+import { Button as ButtonNew } from "./ui/buttonNew"
 import Button from "./button";
 import EditIcon from "../../public/assets/svgs/edit.svg";
 import NoteIcon from "../../public/assets/svgs/noteIcon.svg";
@@ -18,6 +18,7 @@ import Text from "./text";
 import { modals } from "@/lib/constant";
 import AddItem from "./addItem";
 import Link from "next/link";
+import { PencilIcon } from "lucide-react";
 
 export default function Others({ openModal, userDetails, edit }) {
   const { resume } = userDetails || {};
@@ -34,11 +35,11 @@ export default function Others({ openModal, userDetails, edit }) {
             >
               Resume
             </Text>
-            <Button
+            <ButtonNew
+              className="h-11 w-11"
               onClick={() => openModal(modals.resume)}
-              type={"secondary"}
-              icon={<EditIcon className="text-df-icon-color cursor-pointer" />}
-            />
+              variant={"secondary"}
+            ><PencilIcon className="text-df-icon-color cursor-pointer" /></ButtonNew>
           </div>
 
           {edit && !!userDetails?.resume ? (
@@ -80,13 +81,13 @@ export default function Others({ openModal, userDetails, edit }) {
             !!userDetails?.socials?.twitter ||
             !!userDetails?.socials?.linkedin ||
             edit) && (
-            <Text
-              size="p-small"
-              className="text-modal-heading-color font-semibold"
-            >
-              Connect with me
-            </Text>
-          )}
+              <Text
+                size="p-small"
+                className="text-modal-heading-color font-semibold"
+              >
+                Connect with me
+              </Text>
+            )}
           {edit &&
             (userDetails?.socials?.instagram ||
               userDetails?.socials?.twitter ||
@@ -102,8 +103,8 @@ export default function Others({ openModal, userDetails, edit }) {
         </div>
         <div>
           {!!userDetails?.socials?.instagram ||
-          !!userDetails?.socials?.twitter ||
-          !!userDetails?.socials?.linkedin ? (
+            !!userDetails?.socials?.twitter ||
+            !!userDetails?.socials?.linkedin ? (
             <div className="flex flex-col lg:flex-row gap-[24px]">
               {userDetails?.socials?.instagram && (
                 <Link
@@ -180,13 +181,13 @@ export default function Others({ openModal, userDetails, edit }) {
             !!userDetails?.portfolios?.behance ||
             !!userDetails?.portfolios?.medium ||
             edit) && (
-            <Text
-              size="p-small"
-              className="text-modal-heading-color font-semibold"
-            >
-              Other portfolio
-            </Text>
-          )}
+              <Text
+                size="p-small"
+                className="text-modal-heading-color font-semibold"
+              >
+                Other portfolio
+              </Text>
+            )}
           {edit &&
             (userDetails?.portfolios?.dribbble ||
               userDetails?.portfolios?.notion ||
@@ -203,9 +204,9 @@ export default function Others({ openModal, userDetails, edit }) {
         </div>
         <div>
           {!!userDetails?.portfolios?.dribbble ||
-          !!userDetails?.portfolios?.notion ||
-          !!userDetails?.portfolios?.behance ||
-          !!userDetails?.portfolios?.medium ? (
+            !!userDetails?.portfolios?.notion ||
+            !!userDetails?.portfolios?.behance ||
+            !!userDetails?.portfolios?.medium ? (
             <div className="flex flex-col lg:flex-row gap-[24px]">
               {userDetails?.portfolios?.dribbble && (
                 <Link

@@ -7,7 +7,7 @@ import ReviewCard from "./reviewCard";
 import { modals } from "@/lib/constant";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/buttonNew";
 import { Plus } from "lucide-react";
 
 export default function Reviews({ edit = false, userDetails, openModal }) {
@@ -32,7 +32,7 @@ export default function Reviews({ edit = false, userDetails, openModal }) {
           </h2>
           {edit && (
             <Button
-              variant="outline"
+              variant="secondary"
               size="icon"
               onClick={() => openModal(modals.review)}
               className="rounded-full h-11 w-11"

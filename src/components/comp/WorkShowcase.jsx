@@ -216,6 +216,7 @@ export const WorkShowcase = ({ userDetails, edit }) => {
                 />
                 <div className="flex gap-4">
                   <Button
+                    size="icon"
                     type="delete"
                     icon={
                       <DeleteIcon className="stroke-delete-btn-icon-color w-6 h-6 cursor-pointer" />
@@ -232,7 +233,7 @@ export const WorkShowcase = ({ userDetails, edit }) => {
                   {...listeners}
                   // Disable default touch actions to enable dragging on mobile.
                   style={{ touchAction: "none" }}
-                  className="!px-[24.5px] !cursor-grab py-[19px] transition-shadow duration-500 ease-out bg-project-card-reorder-btn-bg-color border-project-card-reorder-btn-bg-color hover:border-project-card-reorder-btn-bg-hover-color hover:bg-project-card-reorder-btn-bg-hover-color rounded-2xl"
+                  className="!px-[24.5px] !cursor-grab py-[19px] transition-shadow duration-500 ease-out bg-project-card-reorder-btn-bg-color border-project-card-reorder-btn-bg-color hover:border-project-card-reorder-btn-bg-hover-color hover:bg-project-card-reorder-btn-bg-hover-color rounded-full"
                 >
                   <DragIcon className="text-project-card-reorder-btn-icon-color !cursor-grab" />
                 </div>
@@ -260,8 +261,8 @@ export const WorkShowcase = ({ userDetails, edit }) => {
               initial="hidden"
               animate={inView ? "show" : "hidden"}
               className={`${sortedProjects.length === 0
-                  ? "bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words"
-                  : "grid grid-cols-1 md:grid-cols-2 gap-6"
+                ? "bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words"
+                : "grid grid-cols-1 md:grid-cols-2 gap-6"
                 }`}
             >
               {sortedProjects.map((project) => (
@@ -275,8 +276,8 @@ export const WorkShowcase = ({ userDetails, edit }) => {
         (userDetails?.pro || userDetails?.projects.length < 1 ? (
           <AddCard
             title={`${sortedProjects.length === 0
-                ? "Upload your first case study"
-                : "Add case study"
+              ? "Upload your first case study"
+              : "Add case study"
               }`}
             subTitle="Show off your best work."
             first={sortedProjects.length !== 0}

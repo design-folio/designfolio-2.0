@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { twMerge } from "tailwind-merge"; // Import tailwind-merge
+import { twMerge } from "tailwind-merge";
 import { motion } from "framer-motion";
 
 const Button = ({
@@ -20,13 +20,14 @@ const Button = ({
   style,
   ...rest
 }) => {
-  const [isHovered, setIsHovered] = useState(false); // State to track hover
+  const [isHovered, setIsHovered] = useState(false);
 
-  // Define size and style mappings
+  // Define size mappings with rounded-full styling
   const buttonSizes = {
-    small: "p-2  text-sm rounded-[8px] font-medium",
-    medium: "p-3 text-[16px] rounded-2xl font-inter font-medium",
-    large: "p-4 text-[16px] rounded-2xl font-inter font-medium",
+    small: "p-2 text-sm rounded-full font-medium",
+    medium: "px-4 py-2 text-[16px] rounded-full font-inter font-medium",
+    large: "px-6 py-2 text-[16px] rounded-full font-inter font-medium",
+    icon: "p-4 text-[16px] rounded-full font-inter font-medium",
   };
 
   const buttonStyles = {
@@ -36,9 +37,9 @@ const Button = ({
         "bg-primary-btn-bg-color hover:bg-primary-btn-bg-hover-color text-primary-btn-text-color border border-primary-btn-bg-color opacity-70 cursor-not-allowed",
     },
     secondary: {
-      base: "bg-secondary-btn-bg-color hover:bg-secondary-btn-bg-hover-color text-secondary-btn-text-color  border-solid border border-secondary-btn-border-color hover:secondary-btn-bg-hover-color hover:shadow-secondary-btn cursor-pointer",
+      base: "bg-secondary-btn-bg-color hover:bg-secondary-btn-bg-hover-color text-secondary-btn-text-color border-solid border border-secondary-btn-border-color hover:secondary-btn-bg-hover-color hover:shadow-secondary-btn cursor-pointer",
       disabled:
-        "bg-secondary-btn-bg-color  text-secondary-btn-text-color  border-solid border border-secondary-btn-border-color opacity-70 cursor-not-allowed",
+        "bg-secondary-btn-bg-color text-secondary-btn-text-color border-solid border border-secondary-btn-border-color opacity-70 cursor-not-allowed",
     },
     tertiary: {
       base: "bg-tertiary-btn-bg-color hover:bg-tertiary-btn-bg-hover-color text-tertiary-btn-text-color border-solid border border-tertiary-btn-border-color hover:border-tertiary-btn-bg-hover-color cursor-pointer",
@@ -52,7 +53,7 @@ const Button = ({
     delete: {
       base: "bg-delete-btn-bg-color hover:bg-delete-btn-bg-hover-color text-delete-btn-icon-color border border-solid border-delete-btn-border-color hover:border-delete-btn-border-hover-color hover:shadow-delete-btn cursor-pointer",
       disabled:
-        "bg-delete-btn-bg-color  border-delete-btn-border-color  opacity-70 cursor-not-allowed",
+        "bg-delete-btn-bg-color border-delete-btn-border-color opacity-70 cursor-not-allowed",
     },
     modal: {
       base: "bg-modal-btn-bg-color hover:bg-modal-btn-bg-hover-color text-modal-btn-text-color border border-modal-btn-border-color hover:border-modal-btn-bg-hover-color cursor-pointer",
@@ -61,13 +62,13 @@ const Button = ({
     },
     ai: {
       base: "text-ai-btn-text-color border border-ai-btn-border-color cursor-pointer",
-      disabled: "text-ai-btn-text-color border border-ai-btn-border-color",
+      disabled: "text-ai-btn-text-color border border-ai-btn-border-color opacity-70 cursor-not-allowed",
     },
     tools: {
-      base: "bg-transparent text-[#404040] hover:bg-[#FFF] rounded-[11px]",
-      selected: "bg-white border border-[#CDCDC6] rounded-[11px]",
+      base: "bg-transparent text-[#404040] hover:bg-[#FFF] rounded-full",
+      selected: "bg-white border border-[#CDCDC6] rounded-full",
       disabled:
-        "bg-transparent text-[#404040] hover:bg-[#FFF] rounded-[11px] opacity-40",
+        "bg-transparent text-[#404040] hover:bg-[#FFF] rounded-full opacity-40",
     },
   };
 
@@ -79,7 +80,7 @@ const Button = ({
     const selectedStyle = buttonStyles[type]?.selected || "";
 
     return twMerge(
-      "inline-flex gap-2 items-center justify-center transition-shadow duration-500 ease-out rounded-2xl font-inter",
+      "inline-flex gap-2 items-center justify-center transition-shadow duration-500 ease-out font-inter",
       sizeStyle,
       !isDisabled && !isLoading ? baseStyle : "",
       isDisabled || isLoading ? disabledStyle : "",
@@ -99,12 +100,12 @@ const Button = ({
       {...rest}
       form={form}
       type={btnType}
-      aria-disabled={isDisabled || isLoading} // Better practice for disabled state
+      aria-disabled={isDisabled || isLoading}
     >
       {icon && iconPosition === "left" && !isLoading && (
         <motion.span
           className={iconClassName}
-          animate={{ x: isHovered ? 2 : 0, y: isHovered ? -2 : 0 }} // Use isHovered to control animation
+          animate={{ x: isHovered ? 2 : 0, y: isHovered ? -2 : 0 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
           {icon}
@@ -136,7 +137,7 @@ const Button = ({
       {icon && iconPosition === "right" && !isLoading && (
         <motion.span
           className={iconClassName}
-          animate={{ x: isHovered ? 2 : 0, y: isHovered ? -2 : 0 }} // Use isHovered to control animation
+          animate={{ x: isHovered ? 2 : 0, y: isHovered ? -2 : 0 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
           {icon}

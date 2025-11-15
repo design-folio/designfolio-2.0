@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import styles from "@/styles/domain.module.css";
 import Logo from "../../public/assets/svgs/logo.svg";
+import ButtonOld from "./button";
 // import ThemeIcon from "../../public/assets/svgs/themeIcon.svg";
 import CloseIcon from "../../public/assets/svgs/close.svg";
 import SunIcon from "../../public/assets/svgs/sun.svg";
@@ -521,19 +522,21 @@ export default function LoggedInHeader({
             className="relative publish-button"
             data-popover-id={popovers.publishMenu}
           >
-            <Button
-              className=""
+            <ButtonOld
+              text={"Publish Site"}
               onClick={handlePublishBtn}
-              disabled={
+              customClass="mr-0"
+              icon={
+                <MemoPower className="w-4 h-4" />
+              }
+              isDisabled={
                 (!userDetails?.pro &&
                   userDetails?.template &&
                   userDetails?.template !== 0) ||
                 updateLoading
               }
-            >
-              <MemoPower className="w-4 h-4" />
-              Publish Site
-            </Button>
+              animation
+            />
             {isClient && (
               <div
                 className={`pt-5 origin-top-right absolute z-20 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${popoverMenu === popovers.publishMenu

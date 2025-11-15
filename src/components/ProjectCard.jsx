@@ -46,16 +46,15 @@ export default function ProjectCard({
           <motion.img
             src={project?.thumbnail?.url}
             alt="project image"
-            className={`w-full h-full object-cover transition-opacity duration-100 cursor-pointer ${
-              imageLoaded ? "opacity-100" : "opacity-100"
-            }`}
+            className={`w-full h-full object-cover transition-opacity duration-100 cursor-pointer ${imageLoaded ? "opacity-100" : "opacity-100"
+              }`}
             initial="initial"
             whileHover="hover"
             variants={imageVariants}
             loading="lazy"
             fetchpriority="high"
             decoding="async"
-            // onLoad={() => setImageLoaded(true)}
+          // onLoad={() => setImageLoaded(true)}
           />
           {/* {!imageLoaded && (
             <div className="w-full h-full bg-df-placeholder-color absolute top-0 right-0" />
@@ -77,6 +76,7 @@ export default function ProjectCard({
                 text={"Edit project"}
                 customClass="w-full"
                 type="secondary"
+
               />
             ) : (
               <motion.div
@@ -101,6 +101,7 @@ export default function ProjectCard({
             {edit && (
               <div className="flex gap-4">
                 <Button
+                  size="icon"
                   type="delete"
                   icon={
                     <DeleteIcon className="stroke-delete-btn-icon-color w-6 h-6 cursor-pointer" />
@@ -123,7 +124,7 @@ export default function ProjectCard({
 const DragHandle = SortableHandle(() => (
   <div
     onClick={(e) => e.stopPropagation()}
-    className="!px-[24.5px] !cursor-grab py-[19px] transition-shadow duration-500 ease-out bg-project-card-reorder-btn-bg-color border-project-card-reorder-btn-bg-color hover:border-project-card-reorder-btn-bg-hover-color hover:bg-project-card-reorder-btn-bg-hover-color rounded-2xl"
+    className="!px-[24.5px] !cursor-grab py-[19px] transition-shadow duration-500 ease-out bg-project-card-reorder-btn-bg-color border-project-card-reorder-btn-bg-color hover:border-project-card-reorder-btn-bg-hover-color hover:bg-project-card-reorder-btn-bg-hover-color rounded-ful"
   >
     <DragIcon className="text-project-card-reorder-btn-icon-color !cursor-grab" />
   </div>

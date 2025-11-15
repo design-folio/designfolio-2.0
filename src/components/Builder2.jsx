@@ -169,6 +169,7 @@ export default function Builder2({ edit = false }) {
               icon={
                 <PlusIcon className="text-secondary-btn-text-color w-[18px] h-[18px] cursor-pointer" />
               }
+              size="icon"
               onClick={() => openModal(modals.tools)}
             />
           )}
@@ -302,6 +303,7 @@ export default function Builder2({ edit = false }) {
                   </div>
                   {edit && (
                     <Button
+                      size="icon"
                       onClick={() => handleEditReview(review)}
                       type={"secondary"}
                       icon={
@@ -355,6 +357,7 @@ export default function Builder2({ edit = false }) {
                     onClick={() => handleEditWork(experience)}
                     customClass="!p-[13.38px] !flex-shrink-0"
                     type={"secondary"}
+                    size="icon"
                     icon={
                       <EditIcon className="text-df-icon-color cursor-pointer" />
                     }

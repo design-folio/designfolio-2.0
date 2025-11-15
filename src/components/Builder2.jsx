@@ -273,46 +273,47 @@ export default function Builder2({ edit = false }) {
             icon={<PenIcon className="cursor-pointer" />}
           />
         )}
-
-        {reviews?.map((review) => (
-          <div className="border border-tools-card-item-border-color p-5 rounded-2xl">
-            <Quote />
-            <TextWithLineBreaks
-              text={review?.description}
-              color={"text-df-base-text-color mt-4"}
-            />
-            <div>
-              <div className="flex gap-4 justify-between items-center">
-                <div className="flex gap-2  mt-3">
-                  <Linkedin />
-                  <div>
-                    <Text
-                      size="p-xsmall"
-                      className="text-review-card-text-color"
-                    >
-                      {review?.name}
-                    </Text>
-                    <Text
-                      size="p-xxsmall"
-                      className="text-review-card-description-color"
-                    >
-                      {review?.company}
-                    </Text>
+        <div className="space-y-4">
+          {reviews?.map((review) => (
+            <div className="border border-tools-card-item-border-color p-5 rounded-2xl">
+              <Quote />
+              <TextWithLineBreaks
+                text={review?.description}
+                color={"text-df-base-text-color mt-4"}
+              />
+              <div>
+                <div className="flex gap-4 justify-between items-center">
+                  <div className="flex gap-2  mt-3">
+                    <Linkedin />
+                    <div>
+                      <Text
+                        size="p-xsmall"
+                        className="text-review-card-text-color"
+                      >
+                        {review?.name}
+                      </Text>
+                      <Text
+                        size="p-xxsmall"
+                        className="text-review-card-description-color"
+                      >
+                        {review?.company}
+                      </Text>
+                    </div>
                   </div>
+                  {edit && (
+                    <Button
+                      onClick={() => handleEditReview(review)}
+                      type={"secondary"}
+                      icon={
+                        <EditIcon className="text-df-icon-color cursor-pointer text-2xl" />
+                      }
+                    />
+                  )}
                 </div>
-                {edit && (
-                  <Button
-                    onClick={() => handleEditReview(review)}
-                    type={"secondary"}
-                    icon={
-                      <EditIcon className="text-df-icon-color cursor-pointer text-2xl" />
-                    }
-                  />
-                )}
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
         {edit && reviews?.length > 0 && (
           <AddItem
             title="Add testimonial"

@@ -9,7 +9,7 @@ export default function Chat({
   children,
   delay = 0,
   className = "",
-  onComplete = () => {},
+  onComplete = () => { },
 }) {
   const [show, setShow] = useState(delay == 0 ? true : false);
   const emptyDivRef = useRef(null);
@@ -55,9 +55,8 @@ export default function Chat({
   }, [isVisible]);
   return (
     <div
-      className={`flex flex-1 flex-col min-w-min relative  w-full max-w-[680px]  ${
-        direction == "left" ? " mr-auto" : " ml-auto"
-      }`}
+      className={`flex flex-1 flex-col min-w-min relative  w-full max-w-[680px]  ${direction == "left" ? " mr-auto" : " ml-auto"
+        }`}
     >
       <motion.div
         initial={{ x: direction == "left" ? -5 : 5, scale: 0.99, opacity: 0 }}
@@ -67,11 +66,10 @@ export default function Chat({
           zIndex: 1,
           wordBreak: "break-word",
         }}
-        className={`${
-          direction == "left"
+        className={`${direction == "left"
             ? "bg-template-text-left-bg-color text-template-text-left-text-color mr-auto"
             : "bg-template-text-right-bg-color text-template-text-right-text-color ml-auto"
-        } p-4 rounded-[24px] break-words ${className}`}
+          } p-4 rounded-[24px] break-words ${className}`}
       >
         {show ? (
           children

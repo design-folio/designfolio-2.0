@@ -2,12 +2,11 @@ import { useGlobalContext } from "@/context/globalContext";
 import { modals } from "@/lib/constant";
 import { Button } from "./ui/buttonNew";
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { ChevronDown, ChevronUp, PencilIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import MemoLinkedin from "./icons/Linkedin";
 
-export default function ReviewCard({ className = "", review, edit = false, index = 0 }) {
+export default function ReviewCard({ review, edit = false }) {
   const { openModal, setSelectedReview } = useGlobalContext();
   const [expandedCards, setExpandedCards] = useState([]);
 
@@ -47,12 +46,8 @@ export default function ReviewCard({ className = "", review, edit = false, index
   const shouldShowToggle = review?.description?.length > 180;
 
   return (
-    <motion.div
+    <div
       key={review?._id}
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
       className={`bg-review-card-bg-color border border-border/30 rounded-2xl p-6 flex flex-col hover-elevate transition-all`}
       style={{
         boxShadow:
@@ -135,6 +130,6 @@ export default function ReviewCard({ className = "", review, edit = false, index
           </p>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

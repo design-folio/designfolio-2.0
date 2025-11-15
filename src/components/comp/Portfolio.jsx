@@ -94,8 +94,8 @@ const Portfolio = ({ userDetails, edit }) => {
       edit
         ? `/project/${id}/editor`
         : router.asPath.includes("/portfolio-preview")
-            ? `/project/${id}/preview`
-            : `/project/${id}`
+          ? `/project/${id}/preview`
+          : `/project/${id}`
     );
   };
 
@@ -325,7 +325,10 @@ const Portfolio = ({ userDetails, edit }) => {
               {bio}
             </motion.p>
             {/* Skills Infinite Scroll */}
-            <div className="w-full overflow-hidden relative py-4 before:absolute before:left-0 before:top-0 before:z-10 before:w-20 before:h-full before:bg-gradient-to-r before:from-background before:to-transparent after:absolute after:right-0 after:top-0 after:z-10 after:w-20 after:h-full after:bg-gradient-to-l after:from-background after:to-transparent">
+            <motion.div
+              variants={textReveal}
+              className="w-full overflow-hidden relative py-4 before:absolute before:left-0 before:top-0 before:z-10 before:w-20 before:h-full before:bg-gradient-to-r before:from-background before:to-transparent after:absolute after:right-0 after:top-0 after:z-10 after:w-20 after:h-full after:bg-gradient-to-l after:from-background after:to-transparent"
+            >
               <motion.div
                 className="flex gap-4 whitespace-nowrap"
                 animate={{ x: ["0%", "-50%"] }}
@@ -339,15 +342,23 @@ const Portfolio = ({ userDetails, edit }) => {
                 }}
               >
                 {scrollSkills.map((skill, index) => (
-                  <span
+                  <motion.span
                     key={index}
+                    initial={{ opacity: 0, scale: 0.8, y: 10 }}
+                    whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{
+                      duration: 0.4,
+                      delay: (index % skills.length) * 0.05,
+                      ease: [0.25, 0.46, 0.45, 0.94]
+                    }}
                     className="bg-card px-4 py-2 rounded-full text-sm"
                   >
                     {skill?.label}
-                  </span>
+                  </motion.span>
                 ))}
               </motion.div>
-            </div>
+            </motion.div>
           </motion.div>
         </section>
 

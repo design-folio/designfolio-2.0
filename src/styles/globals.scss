@@ -14,7 +14,7 @@
   }
 
   :root {
-    --background: #f2f2f0;
+    --background: #f6f2ef;
     --background-landing: 38 30% 97%;
     --foreground: #202937;
     --foreground-landing: 0 0% 6%;
@@ -144,7 +144,11 @@
     scroll-behavior: smooth;
   }
 
-  body {
+  html:not(.landing-page) body {
+    @apply bg-background text-foreground transition-colors duration-300;
+  }
+
+  html.landing-page body {
     @apply bg-background-landing text-foreground transition-colors duration-300;
   }
 }

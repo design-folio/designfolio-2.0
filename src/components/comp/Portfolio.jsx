@@ -32,6 +32,8 @@ import { CSS } from "@dnd-kit/utilities";
 import { Testimonials } from "./Testimonials";
 import { _updateUser } from "@/network/post-request";
 import ProjectLock from "../projectLock";
+import { getUserAvatarImage } from "@/lib/getAvatarUrl";
+import { cn } from "@/lib/utils";
 
 const Portfolio = ({ userDetails, edit }) => {
   const router = useRouter();
@@ -92,8 +94,8 @@ const Portfolio = ({ userDetails, edit }) => {
       edit
         ? `/project/${id}/editor`
         : router.asPath.includes("/portfolio-preview")
-          ? `/project/${id}/preview`
-          : `/project/${id}`
+            ? `/project/${id}/preview`
+            : `/project/${id}`
     );
   };
 
@@ -256,9 +258,9 @@ const Portfolio = ({ userDetails, edit }) => {
               }}
             >
               <img
-                src={avatar?.url || "/assets/svgs/avatar.svg"}
+                src={getUserAvatarImage(userDetails)}
                 alt="Profile"
-                className="w-10 h-10 rounded-full object-cover"
+                className={cn("w-10 h-10 rounded-full object-cover", !avatar ? 'bg-[#FFB088]' : "")}
               />
               <div>
                 <h2 className="text-foreground font-medium">{`${firstName} ${lastName}`}</h2>
@@ -386,8 +388,8 @@ const Portfolio = ({ userDetails, edit }) => {
                     (userDetails?.pro || userDetails?.projects.length < 1 ? (
                       <AddCard
                         title={`${userDetails?.projects?.length === 0
-                            ? "Upload your first case study"
-                            : "Add case study"
+                          ? "Upload your first case study"
+                          : "Add case study"
                           }`}
                         subTitle="Show off your best work."
                         first

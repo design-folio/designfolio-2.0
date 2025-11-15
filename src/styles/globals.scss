@@ -18,7 +18,8 @@
     --background-landing: 38 30% 97%;
     --foreground: #202937;
     --foreground-landing: 0 0% 6%;
-    --card: #f5f3ef; //#ffffff
+    --card: #ffffff;
+    --card-landing: #f5f3ef;
     --card-foreground: #202937;
     --card-border: #e5e7eb;
     --primary: #f5f5f7;
@@ -86,6 +87,7 @@
     --foreground: #e9eaeb;
     --foreground-landing: 0 0% 95%;
     --card: #1d1f27;
+    --card-landing: #1d1f27;
     --card-foreground: #e9eaeb;
     --card-border: #2f323d;
     --primary: #262832;
@@ -195,8 +197,15 @@ svg * {
 
 html {
   scroll-behavior: smooth;
-  // background-color: var(--df-bg-color);  //NOTE:Commented tp solve pull scroll bg issue in LP might need
   min-height: 100vh;
+
+  &.landing-page {
+    background-color: hsl(var(--background-landing));
+  }
+
+  &:not(.landing-page) {
+    background-color: var(--df-bg-color);
+  }
 }
 
 body {

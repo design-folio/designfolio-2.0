@@ -38,6 +38,10 @@ import Linkedin from "../../public/assets/svgs/linkedinIcon.svg";
 import ResumeIcon from "../../public/assets/svgs/resume.svg";
 import NoteIcon from "../../public/assets/svgs/noteIcon.svg";
 import ProjectLock from "./projectLock";
+import { getUserAvatarImage } from "@/lib/getAvatarUrl";
+import { Button as ButtonNew } from "./ui/buttonNew"
+import { cn } from "@/lib/utils";
+import { PencilIcon } from "lucide-react";
 export default function Builder2({ edit = false }) {
   const {
     userDetails,
@@ -113,8 +117,9 @@ export default function Builder2({ edit = false }) {
     <div className="flex flex-col gap-6">
       <div className="flex gap-2 items-end">
         <DfImage
-          src={avatar?.url ? avatar?.url : "/assets/svgs/avatar.svg"}
-          className={"w-[76px] h-[76px] rounded-[24px]"}
+          src={getUserAvatarImage(userDetails)}
+
+          className={cn("w-[76px] h-[76px] ", !userDetails?.avatar ? "bg-[#FFB088] rounded-[24px]" : "")}
         />
         <div>
           <Chat direction="left">Hey there! I'm {firstName} {lastName}</Chat>
@@ -125,12 +130,13 @@ export default function Builder2({ edit = false }) {
         {bio}
         {edit && (
           <div>
-            <Button
+            <ButtonNew
               onClick={() => openModal(modals.onboarding)}
-              customClass="!p-[13.38px] w-fit mt-2"
-              type={"secondary"}
-              icon={<EditIcon className="text-df-icon-color cursor-pointer" />}
-            />
+              className="h-11 w-11"
+              variant="secondary"
+            >
+              <PencilIcon className="text-df-icon-color cursor-pointer" />
+            </ButtonNew>
           </div>
         )}
       </Chat>

@@ -7,8 +7,9 @@ import DfImage from "./image";
 import Link from "next/link";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { capitalizeWords } from "@/lib/capitalizeText";
-import { Pencil, PencilIcon, Sparkle } from "lucide-react";
+import { PencilIcon, Sparkle } from "lucide-react";
 import MemoLeftArrow from "./icons/LeftArrow";
+import { cn } from "@/lib/utils";
 
 export default function Profile({
   preview = false,
@@ -80,9 +81,9 @@ export default function Profile({
         {edit && (
           <div className="absolute top-4 right-4 z-10">
             <Button
-              variant="outline"
+              variant="secondary"
               size="icon"
-              className="rounded-full h-11 w-11"
+              className="h-11 w-11"
               onClick={() => openModal("onboarding")}
             >
               <PencilIcon className="w-4 h-4" />
@@ -95,15 +96,14 @@ export default function Profile({
           <div className="flex items-center gap-6">
             {/* Avatar Container */}
             <div
-              className="w-32 h-32 rounded-full flex items-center justify-center relative overflow-hidden"
-              style={{ backgroundColor: "#FFB088" }}
+              className={cn("w-36 h-36 rounded-full flex items-center justify-center relative overflow-hidden", !userDetails?.avatar ? "bg-[#FFB088]" : "")}
               data-testid="avatar-profile"
             >
               <DfImage
                 src={getUserAvatarImage(userDetails)}
                 onLoad={() => setImageLoaded(true)}
                 className={
-                  "w-24 h-24 object-contain"
+                  "w-full h-full object-cover"
                 }
               />
             </div>

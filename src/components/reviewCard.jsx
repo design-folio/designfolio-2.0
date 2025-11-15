@@ -1,6 +1,6 @@
 import { useGlobalContext } from "@/context/globalContext";
 import { modals } from "@/lib/constant";
-import Button from "./button";
+import { Button } from "./ui/buttonNew";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { ChevronDown, ChevronUp, PencilIcon } from "lucide-react";
@@ -44,6 +44,8 @@ export default function ReviewCard({ className = "", review, edit = false, index
     });
   };
 
+  const shouldShowToggle = review?.description?.length > 180;
+
   return (
     <motion.div
       key={review?._id}
@@ -51,48 +53,47 @@ export default function ReviewCard({ className = "", review, edit = false, index
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
-      className={`bg-review-card-bg-color border border-border/30 rounded-2xl p-6 flex flex-col relative hover-elevate transition-all`}
+      className={`bg-review-card-bg-color border border-border/30 rounded-2xl p-6 flex flex-col hover-elevate transition-all`}
       style={{
         boxShadow:
           "0 0 0 1px rgba(0,0,0,0.03), 0 0 40px rgba(0,0,0,0.015)",
       }}
     >
-      {/* Edit button */}
-      {edit && (
-        <Button
-          onClick={handleEdit}
-          type={"ghost"}
-          icon={<PencilIcon className="text-df-icon-color w-4 h-4" />}
-          className="absolute top-4 right-4 h-8 w-8 rounded-full hover:bg-foreground/5"
-        />
-      )}
-
-      {/* Review Text */}
-      <p className="text-base leading-relaxed mb-6 flex-1 text-foreground">
-        {highlightText(
-          review?.description.slice(
-            0,
-            isExpanded ? review?.description?.length - 1 : 180
-          )
+      {/* Review Text with Edit button */}
+      <div className="flex items-start gap-2 mb-6 flex-1">
+        <p className="text-base leading-relaxed text-foreground flex-1">
+          {highlightText(
+            isExpanded ? review?.description : review?.description?.slice(0, 180)
+          )}
+          {shouldShowToggle && !isExpanded && review?.description?.length > 180 && "..."}
+          {shouldShowToggle && (
+            <button
+              onClick={() => toggleExpand(review?._id)}
+              className="ml-1 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
+            >
+              {isExpanded ? (
+                <>
+                  Show Less
+                  <ChevronUp className="h-3 w-3" />
+                </>
+              ) : (
+                <>
+                  View More
+                  <ChevronDown className="h-3 w-3" />
+                </>
+              )}
+            </button>
+          )}
+        </p>
+        {edit && (
+          <Button
+            onClick={handleEdit}
+            variant={"secondary"}
+            className="h-8 w-8 rounded-full hover:bg-foreground/5 shrink-0"
+          > <PencilIcon className="text-df-icon-color w-4 h-4" />
+          </Button>
         )}
-        {!isExpanded ? (
-          <button
-            onClick={() => toggleExpand(review?._id)}
-            className="ml-1 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
-          >
-            View More
-            <ChevronDown className="h-3 w-3" />
-          </button>
-        ) : (
-          <button
-            onClick={() => toggleExpand(review?._id)}
-            className="ml-1 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
-          >
-            Show Less
-            <ChevronUp className="h-3 w-3" />
-          </button>
-        )}
-      </p>
+      </div>
 
       {/* Avatar + User Info */}
       <div className="flex items-center gap-3">

@@ -15,6 +15,7 @@ import SelectField from "./SelectField";
 import ToolCheckbox from "./ToolCheckbox";
 import { useTheme } from "next-themes";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
+import { cn } from "@/lib/utils";
 
 const FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png", "image/gif"];
@@ -304,7 +305,7 @@ export default function Onboarding() {
                   {step === 1 && (
                     <div>
                       <div className="flex items-center gap-4">
-                        <div className="w-32 h-32 flex flex-col justify-center items-center gap-1 rounded-full relative" style={{ backgroundColor: "#FFB088" }}>
+                        <div className={cn("w-32 h-32 flex flex-col justify-center items-center gap-1 rounded-full relative", !userDetails?.avatar && !imagePreview ? "bg-[#FFB088]" : "")}>
                           {imagePreview ? (
                             <img
                               src={imagePreview}

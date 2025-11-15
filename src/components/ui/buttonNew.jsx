@@ -17,7 +17,7 @@ const buttonVariants = cva(
                     "bg-destructive text-destructive-foreground border border-destructive-border",
                 outline:
                     "border [border-color:var(--button-outline)] hover-elevate active:shadow-none hover:border-secondary-border",
-                ghost: "border border-transparent ",
+                ghost: "border border-transparent hover-elevate  hover:bg-secondary-btn-bg-hover-color ",
             },
 
             size: {

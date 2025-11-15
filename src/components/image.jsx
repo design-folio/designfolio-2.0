@@ -12,6 +12,8 @@ const DfImage = ({ src, style, className, alt, onClick }) => {
     else img.onload = () => setImageLoaded(true);
   }, [src]);
 
+  const hasPointerCursor = className?.includes("cursor-pointer");
+
   return (
     <div className={twMerge("relative w-full h-full", className)}>
       <img
@@ -19,7 +21,8 @@ const DfImage = ({ src, style, className, alt, onClick }) => {
         alt={alt}
         className={twMerge(
           "absolute inset-0 w-full h-full object-contain rounded-full transition-opacity duration-300",
-          imageLoaded ? "opacity-100" : "opacity-0"
+          imageLoaded ? "opacity-100" : "opacity-0",
+          hasPointerCursor && "cursor-pointer"
         )}
         loading="lazy"
         decoding="async"

@@ -220,36 +220,39 @@ export default function Template2({ userDetails, preview = false }) {
               I’ve always gotten great feedback from my clients & colleagues.
             </Chat>
             <Chat direction="left" onComplete={handleStepCompletion}>
-              {reviews?.map((review) => (
-                <div className="border border-tools-card-item-border-color p-5 rounded-2xl">
-                  <Quote />
-                  <TextWithLineBreaks
-                    text={review?.description}
-                    color={"text-df-base-text-color mt-4"}
-                  />
-                  <div>
-                    <div className="flex gap-4 justify-between items-center">
-                      <div className="flex gap-2  mt-3">
-                        <Linkedin />
-                        <div>
-                          <Text
-                            size="p-xsmall"
-                            className="text-review-card-text-color"
-                          >
-                            {review?.name}
-                          </Text>
-                          <Text
-                            size="p-xxsmall"
-                            className="text-review-card-description-color"
-                          >
-                            {review?.company}
-                          </Text>
+
+              <div className="space-y-4">
+                {reviews?.map((review) => (
+                  <div className="border border-tools-card-item-border-color p-5 rounded-2xl">
+                    <Quote />
+                    <TextWithLineBreaks
+                      text={review?.description}
+                      color={"text-df-base-text-color mt-4"}
+                    />
+                    <div>
+                      <div className="flex gap-4 justify-between items-center">
+                        <div className="flex gap-2  mt-3">
+                          <Linkedin />
+                          <div>
+                            <Text
+                              size="p-xsmall"
+                              className="text-review-card-text-color"
+                            >
+                              {review?.name}
+                            </Text>
+                            <Text
+                              size="p-xxsmall"
+                              className="text-review-card-description-color"
+                            >
+                              {review?.company}
+                            </Text>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </Chat>
           </>
         )}

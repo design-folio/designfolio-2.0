@@ -373,7 +373,7 @@ export default function LoggedInHeader({
                       <div className="flex gap-4 items-center">
                         <Button
                           size="icon"
-                          className="rounded-md"
+                          className="rounded-md border-secondary-btn-border-color pointer-events-none"
                           style={{ background: "var(--ai-btn-bg-color)" }}
                         >
                           <MemoThemeIcon className="text-secondary-btn-text-color w-[22px] h-[22px]" />

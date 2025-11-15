@@ -34,6 +34,7 @@ import MemoAnalytics from "./icons/Analytics";
 import MemoPreviewIcon from "./icons/PreviewIcon";
 import MemoPower from "./icons/Power";
 import { cn } from "@/lib/utils";
+import MobileMenuButton from "./MobileMenuButton";
 
 const cursors = [
   {
@@ -663,31 +664,14 @@ export default function LoggedInHeader({
             )}
           </div>
         </div>
-        <Button
-          variant="secondary"
-          size="icon"
-          className="md:hidden h-11 w-11 rounded-full"
-          onClick={() =>
+        <MobileMenuButton
+          isOpen={popovers.loggedInMenu === popoverMenu}
+          onToggle={() =>
             setPopoverMenu((prev) =>
-              prev == popovers.loggedInMenu ? null : popovers.loggedInMenu
+              prev === popovers.loggedInMenu ? null : popovers.loggedInMenu
             )
           }
-        >
-          <div className="relative w-4 h-4 flex items-center justify-center">
-            <HamburgerIcon
-              className={`absolute transition-all duration-300 ease-in-out cursor-pointer ${popovers.loggedInMenu === popoverMenu
-                  ? "opacity-0 scale-75"
-                  : "opacity-100 scale-100"
-                }`}
-            />
-            <CloseIcon
-              className={`absolute transition-all duration-300 ease-in-out cursor-pointer ${popovers.loggedInMenu === popoverMenu
-                  ? "opacity-100 scale-100"
-                  : "opacity-0 scale-75"
-                }`}
-            />
-          </div>
-        </Button>
+        />
         {isClient && (
           <Popover
             show={popovers.loggedInMenu === popoverMenu}

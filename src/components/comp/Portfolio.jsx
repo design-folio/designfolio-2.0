@@ -199,7 +199,7 @@ const Portfolio = ({ userDetails, edit }) => {
                     onClick={(e) => e.stopPropagation()}
                     {...listeners}
                     style={{ touchAction: "none" }}
-                    className="!px-[24.5px] !cursor-grab py-[19px] transition-shadow duration-500 ease-out bg-project-card-reorder-btn-bg-color border-project-card-reorder-btn-bg-color hover:border-project-card-reorder-btn-bg-hover-color hover:bg-project-card-reorder-btn-bg-hover-color rounded-2xl"
+                    className="!px-[24.5px] !cursor-grab py-[19px] transition-shadow duration-500 ease-out bg-project-card-reorder-btn-bg-color border-project-card-reorder-btn-bg-color hover:border-project-card-reorder-btn-bg-hover-color hover:bg-project-card-reorder-btn-bg-hover-color rounded-full"
                   >
                     <DragIcon className="text-project-card-reorder-btn-icon-color !cursor-grab" />
                   </div>

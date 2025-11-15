@@ -92,13 +92,11 @@ export default function Others({ openModal, userDetails, edit }) {
             (userDetails?.socials?.instagram ||
               userDetails?.socials?.twitter ||
               userDetails?.socials?.linkedin) && (
-              <Button
+              <ButtonNew
+                className="h-11 w-11"
                 onClick={() => openModal(modals.socialMedia)}
-                type={"secondary"}
-                icon={
-                  <EditIcon className="text-df-icon-color cursor-pointer" />
-                }
-              />
+                variant={"secondary"}
+              ><PencilIcon className="text-df-icon-color cursor-pointer" /></ButtonNew>
             )}
         </div>
         <div>
@@ -193,13 +191,11 @@ export default function Others({ openModal, userDetails, edit }) {
               userDetails?.portfolios?.notion ||
               userDetails?.portfolios?.behance ||
               userDetails?.portfolios?.medium) && (
-              <Button
+              <ButtonNew
+                className="h-11 w-11"
                 onClick={() => openModal(modals.portfolioLinks)}
-                type={"secondary"}
-                icon={
-                  <EditIcon className="text-df-icon-color cursor-pointer" />
-                }
-              />
+                variant={"secondary"}
+              ><PencilIcon className="text-df-icon-color cursor-pointer" /></ButtonNew>
             )}
         </div>
         <div>

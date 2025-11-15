@@ -112,8 +112,8 @@ export const ToolStack = ({ userDetails, edit }) => {
             <motion.div
               key={index}
               variants={itemVariants}
-              whileHover={{ scale: 1.2, y: -8 }}
-              className="relative group"
+              whileHover={{ scale: 1.2, y: -8, }}
+              className="relative group hover:z-50"
             >
               <div className="bg-card p-4 rounded-2xl flex items-center justify-center transition-colors hover:bg-card/80">
                 {/* <Tool.icon className="size-8" /> */}
@@ -141,7 +141,7 @@ export const ToolStack = ({ userDetails, edit }) => {
                   <PlusIcon className="text-secondary-btn-text-color w-[32px] h-[32px] cursor-pointer" />
                 }
                 onClick={() => openModal("tools")}
-                // customClass="px-[22px]"
+              // customClass="px-[22px]"
               />{" "}
               <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-sm whitespace-nowrap">
                 Edit

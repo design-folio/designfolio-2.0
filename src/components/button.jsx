@@ -26,7 +26,7 @@ const Button = ({
   const buttonSizes = {
     small: "p-2 text-sm rounded-full font-medium",
     medium: "px-4 py-2 text-[16px] rounded-full font-inter font-medium",
-    large: "px-6 py-2 text-[16px] rounded-full font-inter font-medium",
+    large: "px-6 py-[9px] text-[16px] rounded-full font-inter font-medium",
     icon: "p-4 text-[16px] rounded-full font-inter font-medium",
   };
 

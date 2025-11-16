@@ -11,7 +11,7 @@ const buttonVariants = cva(
         variants: {
             variant: {
                 default:
-                    "bg-primary-btn-bg-color hover:bg-primary-btn-bg-hover-color text-primary-btn-text-color border border-primary-btn-bg-color hover:border-primary-btn-bg-hover-color rounded-full py-2 px-3 sm:px-4 md:px-6 text-xs sm:text-sm md:text-base font-medium",
+                    "bg-primary-btn-bg-color hover:bg-primary-btn-bg-hover-color text-primary-btn-text-color border border-primary-btn-bg-color hover:border-primary-btn-bg-hover-color rounded-full py-2 px-4 px-6 text-base font-medium",
                 secondary: "text-[16px] rounded-full font-inter font-medium bg-secondary-btn-bg-color hover:bg-secondary-btn-bg-hover-color text-secondary-btn-text-color border-solid border border-secondary-btn-border-color hover:secondary-btn-bg-hover-color hover:shadow-secondary-btn",
                 destructive:
                     "bg-destructive text-destructive-foreground border border-destructive-border",

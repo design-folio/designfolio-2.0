@@ -6,7 +6,6 @@ import Button from "../button";
 import { useGlobalContext } from "@/context/globalContext";
 import { modals } from "@/lib/constant";
 import PlusIcon from "../../../public/assets/svgs/plus.svg";
-import BagIcon from "../../../public/assets/svgs/bag.svg";
 import { useTheme } from "next-themes";
 
 // DND Kit Imports
@@ -14,6 +13,7 @@ import { DndContext, closestCenter } from "@dnd-kit/core";
 import { SortableContext, arrayMove, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { _updateUser } from "@/network/post-request";
+import MemoWorkExperience from "../icons/WorkExperience";
 
 export const Spotlight = ({ userDetails, edit }) => {
   const { experiences } = userDetails || {};
@@ -109,11 +109,10 @@ export const Spotlight = ({ userDetails, edit }) => {
                 <h3 className="font-semibold text-lg">{experience.role}</h3>
                 <div className="flex flex-1 gap-2 lg:justify-end w-full items-center">
                   <span className="text-sm text-gray-600 dark:text-gray-400">
-                    {`${experience?.startMonth} ${experience?.startYear} - ${
-                      experience?.currentlyWorking
+                    {`${experience?.startMonth} ${experience?.startYear} - ${experience?.currentlyWorking
                         ? "Present"
                         : `${experience?.endMonth} ${experience?.endYear}`
-                    }`}
+                      }`}
                   </span>
                   {edit && (
                     <div className="flex gap-4">
@@ -213,7 +212,7 @@ export const Spotlight = ({ userDetails, edit }) => {
                 size="small"
               />
             ) : (
-              <BagIcon />
+              <MemoWorkExperience />
             )
           }
           iconRight={

@@ -1,9 +1,9 @@
-import ProjectIcon from "../../public/assets/svgs/projectIcon.svg";
 import Text from "./text";
 import AiIcon from "../../public/assets/svgs/ai.svg";
 import { modals } from "@/lib/constant";
 import { Button } from "./ui/buttonNew";
 import { PlusIcon } from "lucide-react";
+import MemoCasestudy from "./icons/Casestudy";
 
 export default function AddCard({
   title = "title",
@@ -13,7 +13,7 @@ export default function AddCard({
   first = false,
   buttonTitle = "",
   secondaryButtonTitle,
-  icon = <ProjectIcon />,
+  icon = <MemoCasestudy className="w-[52px] h-[52px]" />,
   openModal,
 }) {
   const handleClick = (e) => {

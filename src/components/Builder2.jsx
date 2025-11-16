@@ -18,7 +18,6 @@ import TwitterIcon from "../../public/assets/svgs/twitter.svg";
 import LinkedInIcon from "../../public/assets/svgs/linkedin.svg";
 import GoUp from "../../public/assets/svgs/go-up.svg";
 import PlusIcon from "../../public/assets/svgs/plus.svg";
-import ProjectIcon from "../../public/assets/svgs/projectIcon.svg";
 import EditIcon from "../../public/assets/svgs/edit.svg";
 import AiIcon from "../../public/assets/svgs/ai.svg";
 import { modals } from "@/lib/constant";
@@ -28,20 +27,21 @@ import { useTheme } from "next-themes";
 import TextWithLineBreaks from "./TextWithLineBreaks";
 import Quote from "../../public/assets/svgs/quote.svg";
 import PenIcon from "../../public/assets/svgs/pen-icon.svg";
-import BagIcon from "../../public/assets/svgs/bag.svg";
-import PuzzleIcon from "../../public/assets/svgs/puzzle.svg";
-import OthersIcon from "../../public/assets/svgs/others.svg";
 import SortableList, { SortableItem } from "react-easy-sort";
 import { arrayMoveImmutable as arrayMove } from "array-move";
 import { _updateUser } from "@/network/post-request";
 import Linkedin from "../../public/assets/svgs/linkedinIcon.svg";
-import ResumeIcon from "../../public/assets/svgs/resume.svg";
 import NoteIcon from "../../public/assets/svgs/noteIcon.svg";
 import ProjectLock from "./projectLock";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { Button as ButtonNew } from "./ui/buttonNew"
 import { cn } from "@/lib/utils";
 import { PencilIcon } from "lucide-react";
+import MemoWorkExperience from "./icons/WorkExperience";
+import MemoResume from "./icons/Resume";
+import MemoSocial from "./icons/Social";
+import MemoOtherlinks from "./icons/Otherlinks";
+import MemoCasestudy from "./icons/Casestudy";
 export default function Builder2({ edit = false }) {
   const {
     userDetails,
@@ -246,7 +246,7 @@ export default function Builder2({ edit = false }) {
                 buttonTitle="Add case study"
                 secondaryButtonTitle="Write using AI"
                 onClick={() => openModal(modals.project)}
-                icon={<ProjectIcon className="cursor-pointer" />}
+                icon={<MemoCasestudy className="cursor-pointer size-14" />}
                 openModal={openModal}
                 className="flex justify-center items-center flex-col p-4"
               />
@@ -331,7 +331,7 @@ export default function Builder2({ edit = false }) {
                   size="small"
                 />
               ) : (
-                <BagIcon />
+                <MemoWorkExperience />
               )
             }
             theme={theme}
@@ -405,7 +405,9 @@ export default function Builder2({ edit = false }) {
                     size="small"
                   />
                 ) : (
-                  <BagIcon />
+                  <div className="flex items-center">
+                    <MemoWorkExperience />
+                  </div>
                 )
               }
               iconRight={
@@ -509,7 +511,7 @@ export default function Builder2({ edit = false }) {
             <AddItem
               title="Add your portfolio links"
               onClick={() => openModal("portfolio-links")}
-              iconLeft={<OthersIcon className="text-df-icon-color" />}
+              iconLeft={<MemoOtherlinks />}
               iconRight={
                 <Button
                   size="small"
@@ -528,7 +530,7 @@ export default function Builder2({ edit = false }) {
         {!resume && edit && (
           <AddItem
             title="Add your resume"
-            iconLeft={<ResumeIcon className="text-df-icon-color" />}
+            iconLeft={<MemoResume />}
             onClick={() => openModal(modals.resume)}
             iconRight={
               <Button
@@ -626,7 +628,7 @@ export default function Builder2({ edit = false }) {
             <AddItem
               title="Add your social media"
               onClick={() => openModal(modals.socialMedia)}
-              iconLeft={<PuzzleIcon className="text-df-icon-color" />}
+              iconLeft={<MemoSocial />}
               iconRight={
                 <Button
                   size="small"

@@ -16,10 +16,6 @@ import { useGlobalContext } from "@/context/globalContext";
 import { modals } from "@/lib/constant";
 import DeleteIcon from "../../../public/assets/svgs/deleteIcon.svg";
 import AddCard from "../AddCard";
-import ProjectIcon from "../../../public/assets/svgs/projectIcon.svg";
-import PlusIcon from "../../../public/assets/svgs/plus.svg";
-import BagIcon from "../../../public/assets/svgs/bag.svg";
-import AddItem from "../addItem";
 import { useTheme } from "next-themes";
 import Spotlight from "./Spotlight";
 import DragIcon from "../../../public/assets/svgs/drag.svg";
@@ -34,6 +30,7 @@ import { _updateUser } from "@/network/post-request";
 import ProjectLock from "../projectLock";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { cn } from "@/lib/utils";
+import MemoCasestudy from "../icons/Casestudy";
 
 const Portfolio = ({ userDetails, edit }) => {
   const router = useRouter();
@@ -407,7 +404,7 @@ const Portfolio = ({ userDetails, edit }) => {
                         buttonTitle="Add case study"
                         secondaryButtonTitle="Write using AI"
                         onClick={() => openModal(modals.project)}
-                        icon={<ProjectIcon className="cursor-pointer" />}
+                        icon={<MemoCasestudy className="cursor-pointer size-14" />}
                         openModal={openModal}
                         className={`flex items-center justify-center min-h-[269px] rounded-lg ${userDetails?.projects?.length !== 0 &&
                           "bg-df-section-card-bg-color shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] hover:shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"

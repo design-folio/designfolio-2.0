@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/buttonNew"
 import {
     Accordion,
     AccordionContent,
@@ -7,7 +7,7 @@ import {
     AccordionTrigger
 } from "@/components/ui/accordion"
 
-import FooterBottom from "@/components/FooterBottom"
+import FooterBottom from "@/components/footerBottom"
 import { useEffect } from "react"
 import { Check, X } from "lucide-react"
 import Link from "next/link"

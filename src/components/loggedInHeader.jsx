@@ -406,7 +406,7 @@ export default function LoggedInHeader({
                       </Text>
                       {/* <Button
                         type="secondary"
-                        customClass="!p-2 rounded-[8px]"
+                        customClass="!p-2"
                         icon={
                           <CloseIcon className="text-df-icon-color cursor-pointer" />
                         }

@@ -234,7 +234,7 @@ body {
 
 .text-input {
   padding: 16px;
-  border-radius: 16px;
+  border-radius: 30px;
   border: 2px solid var(--input-border-color);
   background: var(--input-bg-color);
   color: var(--input-text-color);
@@ -246,6 +246,21 @@ body {
   transition-property: all;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 0.15s;
+}
+
+.text-input:focus-visible {
+  outline: none;
+  ring-offset-width: 2px;
+  box-shadow: 0 0 0 2px var(--ring-color, rgba(0, 0, 0, 0.1));
+}
+
+.text-input::placeholder {
+  color: var(--muted-foreground, #9ca3af);
+}
+
+.text-input:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .modal-button {

@@ -4,7 +4,6 @@ import { ArrowUpRight } from "lucide-react";
 import { useRouter } from "next/router";
 import Button from "../button";
 import DeleteIcon from "../../../public/assets/svgs/deleteIcon.svg";
-import ProjectIcon from "../../../public/assets/svgs/projectIcon.svg";
 import AddCard from "../AddCard";
 import { useGlobalContext } from "@/context/globalContext";
 import { modals } from "@/lib/constant";
@@ -16,6 +15,7 @@ import { SortableContext, arrayMove, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { _updateUser } from "@/network/post-request";
 import ProjectLock from "../projectLock";
+import MemoCasestudy from "../icons/Casestudy";
 
 export const WorkShowcase = ({ userDetails, edit }) => {
   const { projects } = userDetails || {};
@@ -284,7 +284,7 @@ export const WorkShowcase = ({ userDetails, edit }) => {
             buttonTitle="Add case study"
             secondaryButtonTitle="Write using AI"
             onClick={() => openModal(modals.project)}
-            icon={<ProjectIcon className="cursor-pointer" />}
+            icon={<MemoCasestudy className="cursor-pointer size-14" />}
             openModal={openModal}
             className={`flex items-center justify-center mt-6 ${sortedProjects.length !== 0 &&
               "bg-df-section-card-bg-color shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] hover:shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"

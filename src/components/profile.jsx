@@ -93,7 +93,7 @@ export default function Profile({
 
         {/* Profile Info */}
         <div className="p-8 pb-6">
-          <div className="flex items-center gap-6">
+          <div className="flex flex-col md:flex-row md:items-center gap-6">
             {/* Avatar Container */}
             <div
               className={cn("w-36 h-36 rounded-full flex items-center justify-center relative overflow-hidden", !userDetails?.avatar ? "bg-[#FFB088]" : "")}

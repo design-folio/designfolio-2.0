@@ -11,7 +11,7 @@ export default function SkillsPicker({ skills, selected, onToggle, onAdd, search
     return (
         <>
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }} className="mb-6">
-                <div className="relative bg-white dark:bg-white border-2 border-border rounded-full hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] transition-all duration-300 ease-out">
+                <div className="relative bg-input-bg-color border-2 border-border rounded-full hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] transition-all duration-300 ease-out">
                     <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
                         <Search className="w-4 h-4 text-muted-foreground/60" />
                     </div>

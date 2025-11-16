@@ -35,11 +35,14 @@ export default function Others({ openModal, userDetails, edit }) {
             >
               Resume
             </Text>
-            <ButtonNew
-              className="h-11 w-11"
-              onClick={() => openModal(modals.resume)}
-              variant={"secondary"}
-            ><PencilIcon className="text-df-icon-color cursor-pointer" /></ButtonNew>
+
+            {edit && resume &&
+              < ButtonNew
+                className="h-11 w-11"
+                onClick={() => openModal(modals.resume)}
+                variant={"secondary"}
+              ><PencilIcon className="text-df-icon-color cursor-pointer" /></ButtonNew>
+            }
           </div>
 
           {edit && !!userDetails?.resume ? (
@@ -73,7 +76,8 @@ export default function Others({ openModal, userDetails, edit }) {
             )
           )}
         </div>
-      )}
+      )
+      }
 
       <div>
         <div className="flex items-center justify-between mb-4">
@@ -286,6 +290,6 @@ export default function Others({ openModal, userDetails, edit }) {
           )}
         </div>
       </div>
-    </div>
+    </div >
   );
 }

@@ -96,7 +96,7 @@ export default function ReviewCard({ review, edit = false }) {
           <AvatarImage src={review?.avatar} alt={review?.name} />
           <AvatarFallback
             style={{
-              backgroundColor: "#FFB088",
+              backgroundColor: "#FF9966",
               color: "#FFFFFF",
               fontWeight: 500,
             }}

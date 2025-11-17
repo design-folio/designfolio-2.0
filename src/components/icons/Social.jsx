@@ -2,7 +2,7 @@ import * as React from "react";
 
 function Social(props) {
   return (
-    <svg width={24} height={24} viewBox="0 0 32 32" fill="none" {...props}>
+    <svg width={31} height={31} viewBox="0 0 32 32" fill="none" {...props}>
       <path
         d="M16 6.031V25.97H3.844a1.75 1.75 0 01-1.75-1.75V7.78c0-.966.783-1.75 1.75-1.75H16z"
         fill="url(#prefix__paint0_linear_18_21780)"

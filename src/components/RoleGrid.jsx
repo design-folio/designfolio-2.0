@@ -58,7 +58,7 @@ export default function RoleGrid({ roles, selectedRole, onSelect, customRole, se
                         <Label htmlFor="custom-role" className="text-sm font-medium text-foreground">
                             Your Role
                         </Label>
-                        <div className="bg-white dark:bg-white border-2 border-border rounded-full hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] transition-all duration-300 ease-out">
+                        <div className="bg-input-bg-color border-2 border-border rounded-full hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] transition-all duration-300 ease-out">
                             <Input
                                 id="custom-role"
                                 type="text"

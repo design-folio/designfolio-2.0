@@ -246,7 +246,7 @@ export default function Builder2({ edit = false }) {
                 buttonTitle="Add case study"
                 secondaryButtonTitle="Write using AI"
                 onClick={() => openModal(modals.project)}
-                icon={<MemoCasestudy className="cursor-pointer size-14" />}
+                icon={<MemoCasestudy className="cursor-pointer size-[72px]" />}
                 openModal={openModal}
                 className="flex justify-center items-center flex-col p-4"
               />

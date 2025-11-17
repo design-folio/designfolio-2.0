@@ -65,7 +65,8 @@ export default function Index() {
       const hasGoal = userDetails.goal !== undefined && userDetails.goal !== null;
       const hasExperienceLevel = userDetails.experienceLevel !== undefined && userDetails.experienceLevel !== null;
       const hasSkills = userDetails.skills && userDetails.skills.length > 0;
-      const needsOnboarding = !hasGoal || !hasExperienceLevel || !hasSkills;
+      const hasPersona = userDetails.persona && userDetails.persona.value && userDetails.persona.label;
+      const needsOnboarding = !hasGoal || !hasExperienceLevel || !hasSkills || !hasPersona;
 
       if (needsOnboarding) {
         openModal(modals.onBoardingNewUser);

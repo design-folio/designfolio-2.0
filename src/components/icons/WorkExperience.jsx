@@ -2,7 +2,7 @@ import * as React from "react";
 
 function WorkExperience(props) {
   return (
-    <svg width={24} height={24} viewBox="0 0 32 32" fill="none" className="flex-shrink-0" {...props}>
+    <svg width={31} height={31} viewBox="0 0 32 32" fill="none" className="flex-shrink-0" {...props}>
       <path
         fillRule="evenodd"
         clipRule="evenodd"

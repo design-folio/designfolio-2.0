@@ -2,7 +2,7 @@ import * as React from "react";
 
 function Resume(props) {
   return (
-    <svg width={24} height={24} viewBox="0 0 32 32" fill="none" {...props}>
+    <svg width={31} height={31} viewBox="0 0 32 32" fill="none" {...props}>
       <path
         d="M2.543 16.383h25.938V8.09a2 2 0 00-2-2H4.543a2 2 0 00-2 2v8.292z"
         fill="url(#prefix__paint0_linear_18_22220)"

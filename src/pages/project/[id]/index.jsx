@@ -1,4 +1,5 @@
 import BlockRenderer from "@/components/blockRenderer";
+import TiptapRenderer from "@/components/tiptapRenderer";
 import ProjectInfo from "@/components/projectInfo";
 import ProjectPassword from "@/components/projectPassword";
 import Seo from "@/components/seo";
@@ -68,11 +69,13 @@ export default function Index({ data }) {
                 ) : (
                   <>
                     <ProjectInfo projectDetails={projectDetails?.project} />
-                    {projectDetails?.project?.content && (
+                    {projectDetails?.project?.contentVersion === 2 && projectDetails?.project?.tiptapContent ? (
+                      <TiptapRenderer content={projectDetails?.project?.tiptapContent} />
+                    ) : projectDetails?.project?.content ? (
                       <BlockRenderer
                         editorJsData={projectDetails?.project?.content}
                       />
-                    )}
+                    ) : null}
                   </>
                 )}
               </>

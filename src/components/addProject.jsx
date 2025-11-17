@@ -135,6 +135,11 @@ export default function AddProject() {
                     platform: values.platform,
                     password: values.password,
                     protected: isPassword,
+                    contentVersion: 2, // Set new projects to use Tiptap
+                    tiptapContent: {
+                      type: "doc",
+                      content: []
+                    }, // Initialize with empty Tiptap document
                   },
                 ],
               };

@@ -9,6 +9,9 @@ import { useTheme } from "next-themes";
 const ProjectEditor = dynamic(() => import("./projectEditor"), {
   ssr: false,
 });
+const TiptapEditor = dynamic(() => import("./tiptapEditor"), {
+  ssr: false,
+});
 
 export default function Editor({ edit }) {
   const router = useRouter();
@@ -57,12 +60,21 @@ export default function Editor({ edit }) {
             popoverMenu={popoverMenu}
             refetchProjectDetail={refetchProjectDetail}
           />
-          <ProjectEditor
-            projectDetails={projectDetails.project}
-            userDetails={userDetails}
-            setUserDetails={setUserDetails}
-            refetchProjectDetail={refetchProjectDetail}
-          />
+          {projectDetails.project.contentVersion === 2 ? (
+            <TiptapEditor
+              projectDetails={projectDetails.project}
+              userDetails={userDetails}
+              setUserDetails={setUserDetails}
+              refetchProjectDetail={refetchProjectDetail}
+            />
+          ) : (
+            <ProjectEditor
+              projectDetails={projectDetails.project}
+              userDetails={userDetails}
+              setUserDetails={setUserDetails}
+              refetchProjectDetail={refetchProjectDetail}
+            />
+          )}
         </>
       )}
     </div>

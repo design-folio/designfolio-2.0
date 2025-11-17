@@ -7,6 +7,7 @@ import ProjectShape from "../../public/assets/svgs/project-shape.svg";
 import ExperienceShape from "../../public/assets/svgs/experience-shape.svg";
 import Link from "next/link";
 import Button from "./button";
+import { Button as ButtonNew } from "./ui/buttonNew"
 import DribbbleIcon from "../../public/assets/svgs/dribbble.svg";
 import BehanceIcon from "../../public/assets/svgs/behance.svg";
 import NotionIcon from "../../public/assets/svgs/noteIcon.svg";
@@ -23,6 +24,9 @@ import Linkedin from "../../public/assets/svgs/linkedinIcon.svg";
 import { useGlobalContext } from "@/context/globalContext";
 import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
 import NoteIcon from "../../public/assets/svgs/noteIcon.svg";
+import { getUserAvatarImage } from "@/lib/getAvatarUrl";
+import MemoLeftArrow from "./icons/LeftArrow";
+import { cn } from "@/lib/utils";
 
 export default function Template2({ userDetails, preview = false }) {
   const {
@@ -38,6 +42,8 @@ export default function Template2({ userDetails, preview = false }) {
     introduction,
     resume,
     username,
+    firstName,
+    lastName
   } = userDetails || {};
   const router = useRouter();
   const { projectRef } = useGlobalContext();
@@ -79,7 +85,7 @@ export default function Template2({ userDetails, preview = false }) {
       return `${skills[0]}`;
     }
   };
-  const onDeleteProject = () => {};
+  const onDeleteProject = () => { };
 
   const handleRouter = (id) => {
     if (preview) {
@@ -99,28 +105,28 @@ export default function Template2({ userDetails, preview = false }) {
     >
       {preview && (
         <Link href={"/builder"}>
-          <Button
-            text="Exit preview"
-            customClass="mb-5"
-            type="secondary"
-            size="small"
-            icon={<LeftArrow className="text-df-icon-color cursor-pointer" />}
-          />
+          <ButtonNew
+            variant="secondary"
+            className="rounded-full px-4 h-9 mb-5 text-sm font-medium"
+          >
+            <MemoLeftArrow className="!size-2.5" />
+            Exit preview
+          </ButtonNew>
         </Link>
       )}
       <div className="flex flex-col gap-6">
         {activeStep >= 1 && introduction && (
           <div className="flex gap-2 items-end">
             <DfImage
-              src={avatar?.url ? avatar?.url : "/assets/svgs/avatar.svg"}
-              className={"w-[76px] h-[76px] rounded-[24px]"}
+              src={getUserAvatarImage(userDetails)}
+              className={cn("w-[76px] h-[76px] ", !userDetails?.avatar ? "bg-[#FFB088] rounded-[24px]" : "")}
             />
             <Chat
               direction="left"
               delay={1000}
               onComplete={handleStepCompletion}
             >
-              Hey there! I'm {username}
+              Hey there! I'm {firstName} {lastName}
             </Chat>
           </div>
         )}
@@ -214,36 +220,39 @@ export default function Template2({ userDetails, preview = false }) {
               I’ve always gotten great feedback from my clients & colleagues.
             </Chat>
             <Chat direction="left" onComplete={handleStepCompletion}>
-              {reviews?.map((review) => (
-                <div className="border border-tools-card-item-border-color p-5 rounded-2xl">
-                  <Quote />
-                  <TextWithLineBreaks
-                    text={review?.description}
-                    color={"text-df-base-text-color mt-4"}
-                  />
-                  <div>
-                    <div className="flex gap-4 justify-between items-center">
-                      <div className="flex gap-2  mt-3">
-                        <Linkedin />
-                        <div>
-                          <Text
-                            size="p-xsmall"
-                            className="text-review-card-text-color"
-                          >
-                            {review?.name}
-                          </Text>
-                          <Text
-                            size="p-xxsmall"
-                            className="text-review-card-description-color"
-                          >
-                            {review?.company}
-                          </Text>
+
+              <div className="space-y-4">
+                {reviews?.map((review) => (
+                  <div className="border border-tools-card-item-border-color p-5 rounded-2xl">
+                    <Quote />
+                    <TextWithLineBreaks
+                      text={review?.description}
+                      color={"text-df-base-text-color mt-4"}
+                    />
+                    <div>
+                      <div className="flex gap-4 justify-between items-center">
+                        <div className="flex gap-2  mt-3">
+                          <Linkedin />
+                          <div>
+                            <Text
+                              size="p-xsmall"
+                              className="text-review-card-text-color"
+                            >
+                              {review?.name}
+                            </Text>
+                            <Text
+                              size="p-xxsmall"
+                              className="text-review-card-description-color"
+                            >
+                              {review?.company}
+                            </Text>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </Chat>
           </>
         )}
@@ -277,13 +286,11 @@ export default function Template2({ userDetails, preview = false }) {
                             size="p-xsmall"
                             className="font-medium mt-[6px]"
                           >
-                            {`${experience?.startMonth} ${
-                              experience?.startYear
-                            } - ${
-                              experience?.currentlyWorking
+                            {`${experience?.startMonth} ${experience?.startYear
+                              } - ${experience?.currentlyWorking
                                 ? "Present"
                                 : `${experience?.endMonth} ${experience?.endYear}`
-                            }  `}
+                              }  `}
                           </Text>
                           <p
                             className={`text-[16px] font-light leading-[22.4px] font-inter`}

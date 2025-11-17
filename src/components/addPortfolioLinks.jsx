@@ -41,7 +41,7 @@ export default function AddPortfolioLinks() {
         <Button
           // customClass="lg:hidden"
           type="secondary"
-          customClass="!p-2 rounded-[8px]"
+          customClass="!p-2"
           icon={<CloseIcon className="text-icon-color cursor-pointer" />}
           onClick={closeModal}
         />
@@ -78,11 +78,10 @@ export default function AddPortfolioLinks() {
                   <Field
                     name="dribbble"
                     type="text"
-                    className={`text-input mt-2  ${
-                      errors.dribbble &&
+                    className={`text-input mt-2  ${errors.dribbble &&
                       touched.dribbble &&
                       "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                    }`}
+                      }`}
                     autoComplete="off"
                   />
                   <ErrorMessage
@@ -99,11 +98,10 @@ export default function AddPortfolioLinks() {
                   <Field
                     name="behance"
                     type="text"
-                    className={`text-input mt-2  ${
-                      errors.behance &&
+                    className={`text-input mt-2  ${errors.behance &&
                       touched.behance &&
                       "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                    }`}
+                      }`}
                     autoComplete="off"
                   />
                   <ErrorMessage
@@ -120,11 +118,10 @@ export default function AddPortfolioLinks() {
                   <Field
                     name="notion"
                     type="text"
-                    className={`text-input mt-2  ${
-                      errors.notion &&
+                    className={`text-input mt-2  ${errors.notion &&
                       touched.notion &&
                       "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                    }`}
+                      }`}
                     autoComplete="off"
                   />
                   <ErrorMessage
@@ -140,11 +137,10 @@ export default function AddPortfolioLinks() {
                   <Field
                     name="medium"
                     type="text"
-                    className={`text-input mt-2  ${
-                      errors.medium &&
+                    className={`text-input mt-2  ${errors.medium &&
                       touched.medium &&
                       "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                    }`}
+                      }`}
                     autoComplete="off"
                   />
                   <ErrorMessage

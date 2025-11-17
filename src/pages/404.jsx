@@ -7,7 +7,7 @@ export default function Error404() {
   return (
     <main className="min-h-screen bg-df-bg-color">
       <div
-        className={`max-w-[890px] mx-auto py-[94px] md:py-[135px] px-2 md:px-4 lg:px-0`}
+        className={`max-w-[890px] mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0`}
       >
         <div className="flex justify-center items-center rounded-2xl p-4 md:p-8">
           <div className="text-center m-auto flex flex-col items-center justify-center">

@@ -3,7 +3,6 @@ import { SortableContainer, SortableElement } from "react-sortable-hoc";
 import ProjectCard from "./ProjectCard";
 import Section from "./section";
 import AddCard from "./AddCard";
-import ProjectIcon from "../../public/assets/svgs/projectIcon.svg";
 import { modals, moveItemInArray } from "@/lib/constant";
 import { _updateUser } from "@/network/post-request";
 import { twMerge } from "tailwind-merge";
@@ -99,19 +98,18 @@ export default function Projects({
             ))}
 
             {edit &&
-              (userDetails?.pro || userDetails?.projects.length < 3 ? (
+              (userDetails?.pro || userDetails?.projects.length < 1 ? (
                 <AddCard
-                  title={`${
-                    userDetails?.projects?.length === 0
-                      ? "Upload your first case study"
-                      : "Add case study"
-                  }`}
+                  title={`${userDetails?.projects?.length === 0
+                    ? "Upload your first case study"
+                    : "Add case study"
+                    }`}
                   subTitle="Show off your best work."
                   first={userDetails?.projects?.length !== 0}
                   buttonTitle="Add case study"
                   secondaryButtonTitle="Write using AI"
                   onClick={() => openModal(modals.project)}
-                  icon={<ProjectIcon className="cursor-pointer" />}
+                  // icon={<MemoCasestudy className="cursor-pointer" />}
                   openModal={openModal}
                 />
               ) : (

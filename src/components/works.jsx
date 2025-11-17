@@ -11,13 +11,13 @@ import WorkCard from "./workCard";
 import AddItem from "./addItem";
 import PlusIcon from "../../public/assets/svgs/plus.svg";
 import Button from "./button";
-import BagIcon from "../../public/assets/svgs/bag.svg";
 import Modal from "./modal";
 import Text from "./text";
 import CloseIcon from "../../public/assets/svgs/close.svg";
 import DragIcon from "../../public/assets/svgs/drag.svg";
 import SortIcon from "../../public/assets/svgs/sort.svg";
 import { useTheme } from "next-themes";
+import MemoWorkExperience from "./icons/WorkExperience";
 
 export default function Works({
   edit,
@@ -95,7 +95,7 @@ export default function Works({
                   size="small"
                 />
               ) : (
-                <BagIcon />
+                <MemoWorkExperience />
               )
             }
             iconRight={
@@ -125,7 +125,7 @@ export default function Works({
             <Button
               // customClass="lg:hidden"
               type="secondary"
-              customClass="!p-2 rounded-[8px]"
+              customClass="!p-2"
               icon={<CloseIcon className="text-icon-color cursor-pointer" />}
               onClick={() => {
                 document.body.classList.remove("cursor-grab");

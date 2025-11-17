@@ -18,7 +18,6 @@ import TwitterIcon from "../../public/assets/svgs/twitter.svg";
 import LinkedInIcon from "../../public/assets/svgs/linkedin.svg";
 import GoUp from "../../public/assets/svgs/go-up.svg";
 import PlusIcon from "../../public/assets/svgs/plus.svg";
-import ProjectIcon from "../../public/assets/svgs/projectIcon.svg";
 import EditIcon from "../../public/assets/svgs/edit.svg";
 import AiIcon from "../../public/assets/svgs/ai.svg";
 import { modals } from "@/lib/constant";
@@ -28,16 +27,21 @@ import { useTheme } from "next-themes";
 import TextWithLineBreaks from "./TextWithLineBreaks";
 import Quote from "../../public/assets/svgs/quote.svg";
 import PenIcon from "../../public/assets/svgs/pen-icon.svg";
-import BagIcon from "../../public/assets/svgs/bag.svg";
-import PuzzleIcon from "../../public/assets/svgs/puzzle.svg";
-import OthersIcon from "../../public/assets/svgs/others.svg";
 import SortableList, { SortableItem } from "react-easy-sort";
 import { arrayMoveImmutable as arrayMove } from "array-move";
 import { _updateUser } from "@/network/post-request";
 import Linkedin from "../../public/assets/svgs/linkedinIcon.svg";
-import ResumeIcon from "../../public/assets/svgs/resume.svg";
 import NoteIcon from "../../public/assets/svgs/noteIcon.svg";
 import ProjectLock from "./projectLock";
+import { getUserAvatarImage } from "@/lib/getAvatarUrl";
+import { Button as ButtonNew } from "./ui/buttonNew"
+import { cn } from "@/lib/utils";
+import { PencilIcon } from "lucide-react";
+import MemoWorkExperience from "./icons/WorkExperience";
+import MemoResume from "./icons/Resume";
+import MemoSocial from "./icons/Social";
+import MemoOtherlinks from "./icons/Otherlinks";
+import MemoCasestudy from "./icons/Casestudy";
 export default function Builder2({ edit = false }) {
   const {
     userDetails,
@@ -62,6 +66,8 @@ export default function Builder2({ edit = false }) {
     socials,
     reviews,
     resume,
+    firstName,
+    lastName,
   } = userDetails || {};
   const router = useRouter();
   const getSkills = () => {
@@ -111,11 +117,12 @@ export default function Builder2({ edit = false }) {
     <div className="flex flex-col gap-6">
       <div className="flex gap-2 items-end">
         <DfImage
-          src={avatar?.url ? avatar?.url : "/assets/svgs/avatar.svg"}
-          className={"w-[76px] h-[76px] rounded-[24px]"}
+          src={getUserAvatarImage(userDetails)}
+
+          className={cn("w-[76px] h-[76px] ", !userDetails?.avatar ? "bg-[#FFB088] rounded-[24px]" : "")}
         />
         <div>
-          <Chat direction="left">Hey there! I'm {username}</Chat>
+          <Chat direction="left">Hey there! I'm {firstName} {lastName}</Chat>
         </div>
       </div>
 
@@ -123,12 +130,13 @@ export default function Builder2({ edit = false }) {
         {bio}
         {edit && (
           <div>
-            <Button
+            <ButtonNew
               onClick={() => openModal(modals.onboarding)}
-              customClass="!p-[13.38px] w-fit mt-2"
-              type={"secondary"}
-              icon={<EditIcon className="text-df-icon-color cursor-pointer" />}
-            />
+              className="h-11 w-11"
+              variant="secondary"
+            >
+              <PencilIcon className="text-df-icon-color cursor-pointer" />
+            </ButtonNew>
           </div>
         )}
       </Chat>
@@ -161,6 +169,7 @@ export default function Builder2({ edit = false }) {
               icon={
                 <PlusIcon className="text-secondary-btn-text-color w-[18px] h-[18px] cursor-pointer" />
               }
+              size="icon"
               onClick={() => openModal(modals.tools)}
             />
           )}
@@ -202,7 +211,7 @@ export default function Builder2({ edit = false }) {
           <ProjectShape className="text-template-text-left-bg-color" />
           <Chat direction="left" className="rounded-tl-none w-fit">
             {projects.length > 0 ? (
-              userDetails?.pro || userDetails?.projects.length < 3 ? (
+              userDetails?.pro || userDetails?.projects.length < 1 ? (
                 <div className="flex items-center gap-3">
                   <Button
                     text={"Add case study"}
@@ -228,17 +237,16 @@ export default function Builder2({ edit = false }) {
               )
             ) : (
               <AddCard
-                title={`${
-                  projects?.length === 0
-                    ? "Upload your first case study"
-                    : "Add case study"
-                }`}
+                title={`${projects?.length === 0
+                  ? "Upload your first case study"
+                  : "Add case study"
+                  }`}
                 subTitle="Show off your best work."
                 first={projects?.length !== 0}
                 buttonTitle="Add case study"
                 secondaryButtonTitle="Write using AI"
                 onClick={() => openModal(modals.project)}
-                icon={<ProjectIcon className="cursor-pointer" />}
+                icon={<MemoCasestudy className="cursor-pointer size-14" />}
                 openModal={openModal}
                 className="flex justify-center items-center flex-col p-4"
               />
@@ -252,11 +260,10 @@ export default function Builder2({ edit = false }) {
       <Chat direction="left">
         {edit && reviews?.length == 0 && (
           <AddCard
-            title={`${
-              userDetails?.reviews?.length == 0
-                ? "My testimonials"
-                : "Add more reviews"
-            } `}
+            title={`${userDetails?.reviews?.length == 0
+              ? "My testimonials"
+              : "Add more reviews"
+              } `}
             subTitle="Share colleague's feedback."
             onClick={() => openModal(modals.review)}
             className={
@@ -267,46 +274,48 @@ export default function Builder2({ edit = false }) {
             icon={<PenIcon className="cursor-pointer" />}
           />
         )}
-
-        {reviews?.map((review) => (
-          <div className="border border-tools-card-item-border-color p-5 rounded-2xl">
-            <Quote />
-            <TextWithLineBreaks
-              text={review?.description}
-              color={"text-df-base-text-color mt-4"}
-            />
-            <div>
-              <div className="flex gap-4 justify-between items-center">
-                <div className="flex gap-2  mt-3">
-                  <Linkedin />
-                  <div>
-                    <Text
-                      size="p-xsmall"
-                      className="text-review-card-text-color"
-                    >
-                      {review?.name}
-                    </Text>
-                    <Text
-                      size="p-xxsmall"
-                      className="text-review-card-description-color"
-                    >
-                      {review?.company}
-                    </Text>
+        <div className="space-y-4">
+          {reviews?.map((review) => (
+            <div className="border border-tools-card-item-border-color p-5 rounded-2xl">
+              <Quote />
+              <TextWithLineBreaks
+                text={review?.description}
+                color={"text-df-base-text-color mt-4"}
+              />
+              <div>
+                <div className="flex gap-4 justify-between items-center">
+                  <div className="flex gap-2  mt-3">
+                    <Linkedin />
+                    <div>
+                      <Text
+                        size="p-xsmall"
+                        className="text-review-card-text-color"
+                      >
+                        {review?.name}
+                      </Text>
+                      <Text
+                        size="p-xxsmall"
+                        className="text-review-card-description-color"
+                      >
+                        {review?.company}
+                      </Text>
+                    </div>
                   </div>
+                  {edit && (
+                    <Button
+                      size="icon"
+                      onClick={() => handleEditReview(review)}
+                      type={"secondary"}
+                      icon={
+                        <EditIcon className="text-df-icon-color cursor-pointer text-2xl" />
+                      }
+                    />
+                  )}
                 </div>
-                {edit && (
-                  <Button
-                    onClick={() => handleEditReview(review)}
-                    type={"secondary"}
-                    icon={
-                      <EditIcon className="text-df-icon-color cursor-pointer text-2xl" />
-                    }
-                  />
-                )}
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
         {edit && reviews?.length > 0 && (
           <AddItem
             title="Add testimonial"
@@ -322,7 +331,7 @@ export default function Builder2({ edit = false }) {
                   size="small"
                 />
               ) : (
-                <BagIcon />
+                <MemoWorkExperience />
               )
             }
             theme={theme}
@@ -348,6 +357,7 @@ export default function Builder2({ edit = false }) {
                     onClick={() => handleEditWork(experience)}
                     customClass="!p-[13.38px] !flex-shrink-0"
                     type={"secondary"}
+                    size="icon"
                     icon={
                       <EditIcon className="text-df-icon-color cursor-pointer" />
                     }
@@ -366,11 +376,10 @@ export default function Builder2({ edit = false }) {
                       size="p-xsmall"
                       className="font-medium mt-[6px] text-work-card-description-color"
                     >
-                      {`${experience?.startMonth} ${experience?.startYear} - ${
-                        experience?.currentlyWorking
-                          ? "Present"
-                          : `${experience?.endMonth} ${experience?.endYear}`
-                      }  `}
+                      {`${experience?.startMonth} ${experience?.startYear} - ${experience?.currentlyWorking
+                        ? "Present"
+                        : `${experience?.endMonth} ${experience?.endYear}`
+                        }  `}
                     </Text>
                     <TextWithLineBreaks
                       text={experience?.description}
@@ -396,7 +405,9 @@ export default function Builder2({ edit = false }) {
                     size="small"
                   />
                 ) : (
-                  <BagIcon />
+                  <div className="flex items-center">
+                    <MemoWorkExperience />
+                  </div>
                 )
               }
               iconRight={
@@ -500,7 +511,7 @@ export default function Builder2({ edit = false }) {
             <AddItem
               title="Add your portfolio links"
               onClick={() => openModal("portfolio-links")}
-              iconLeft={<OthersIcon className="text-df-icon-color" />}
+              iconLeft={<MemoOtherlinks />}
               iconRight={
                 <Button
                   size="small"
@@ -519,7 +530,7 @@ export default function Builder2({ edit = false }) {
         {!resume && edit && (
           <AddItem
             title="Add your resume"
-            iconLeft={<ResumeIcon className="text-df-icon-color" />}
+            iconLeft={<MemoResume />}
             onClick={() => openModal(modals.resume)}
             iconRight={
               <Button
@@ -617,7 +628,7 @@ export default function Builder2({ edit = false }) {
             <AddItem
               title="Add your social media"
               onClick={() => openModal(modals.socialMedia)}
-              iconLeft={<PuzzleIcon className="text-df-icon-color" />}
+              iconLeft={<MemoSocial />}
               iconRight={
                 <Button
                   size="small"

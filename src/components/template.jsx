@@ -43,7 +43,7 @@ export default function Template1({ userDetails }) {
     >
       <BottomLayout userDetails={userDetails}>
         <motion.div
-          className="flex-1 flex flex-col gap-4 md:gap-6"
+          className="flex-1 flex flex-col gap-3"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -78,10 +78,10 @@ export default function Template1({ userDetails }) {
             !!userDetails?.portfolios?.notion ||
             !!userDetails?.portfolios?.behance ||
             !!userDetails?.portfolios?.medium) && (
-            <motion.div variants={itemVariants}>
-              <OthersPreview userDetails={userDetails} />
-            </motion.div>
-          )}
+              <motion.div variants={itemVariants}>
+                <OthersPreview userDetails={userDetails} />
+              </motion.div>
+            )}
           <div className="mb-20"></div>
         </motion.div>
       </BottomLayout>

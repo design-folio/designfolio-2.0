@@ -47,7 +47,7 @@ export default function Editor({ edit }) {
   }, []);
 
   return (
-    <div className="editor-container flex-1 flex flex-col gap-4 md:gap-6">
+    <div className="editor-container flex-1 flex flex-col gap-3">
       {projectDetails && (
         <>
           <ProjectInfo

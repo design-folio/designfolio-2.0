@@ -70,7 +70,7 @@
   --radio-btn-selected-stroke-color: #ffffff;
 
   /* application */
-  --df-bg-color: #f2f2f0;
+  --df-bg-color: #f6f2ef;
   --df-base-text-color: #202937;
   --df-secondary-text-color: #4d545f;
   --df-placeholder-color: #eff0f0;
@@ -80,7 +80,7 @@
   --df-section-card-bg-color: #ffffff;
   --df-section-card-heading-color: #202937;
   --df-section-card-shadow: rgba(0, 0, 0, 0.02) 0px 0px 16.4px;
-  --df-add-card-bg-color: #f2f2f0;
+  --df-add-card-bg-color: rgb(246, 242, 239);
   --df-add-card-border-color: #e9eaeb;
   --df-add-card-heading-color: #202937;
   --df-add-card-description-color: #989da3;
@@ -187,7 +187,7 @@
   --input-error-color: #ff3b30;
   --input-error-shadow: 0px 0px 0px 4px #ff3a3029;
   --input-upload-border-color: #6a7079;
-  --input-upload-bg-color: #f0f1f4;
+  --input-upload-bg-color: rgb(246, 242, 239);
   --input-upload-heading-color: #6a7079;
   --input-upload-description-color: #6a7079;
   --input-upload-icon-color: #ff553e;
@@ -374,7 +374,7 @@
   --input-error-color: #ff3b30;
   --input-error-shadow: 0px 0px 0px 4px #ff3a3029;
   --input-upload-border-color: #6a7079;
-  --input-upload-bg-color: #363a48;
+  --input-upload-bg-color: #13151a;
   --input-upload-heading-color: #e9eaeb;
   --input-upload-description-color: #e9eaeb;
   --input-upload-icon-color: #ff553e;

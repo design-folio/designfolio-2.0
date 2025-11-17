@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
-import Button from "./button";
-import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
+import { Button } from "./ui/buttonNew";
 import Dropdown from "./dropdown";
 import Text from "./text";
 import AnalyticsChart from "./analyticsChart";
 import { useGlobalContext } from "@/context/globalContext";
+import MemoLeftArrow from "./icons/LeftArrow";
 
 const containerVariants = {
   hidden: {},
@@ -31,7 +31,7 @@ const itemVariants = {
   },
 };
 
-function Analytics({}) {
+function Analytics({ }) {
   const router = useRouter();
   const [duration, setDuration] = useState("Week");
   const [uniqueVisits, setUniqueVisits] = useState(0);
@@ -58,14 +58,13 @@ function Analytics({}) {
           <div className="flex flex-col gap-4">
             <div className="flex items-center">
               <Button
-                text="Back to Builder"
                 onClick={handleBack}
-                type="secondary"
-                size="small"
-                icon={
-                  <LeftArrow className="text-df-icon-color cursor-pointer" />
-                }
-              />
+                variant="secondary"
+                className="rounded-full px-4 h-9 text-sm font-medium "
+              >
+                <MemoLeftArrow className="!size-2.5" />
+                Back to Builder
+              </Button>
             </div>
 
             <div className="flex items-center justify-between mt-1">

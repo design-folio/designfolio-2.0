@@ -53,12 +53,12 @@ export default function AddProject() {
       ),
     password: isPassword
       ? Yup.string()
-          .required("Password is required.")
-          .min(6, "Password is too short - should be 6 chars minimum.")
+        .required("Password is required.")
+        .min(6, "Password is too short - should be 6 chars minimum.")
       : Yup.string().min(
-          6,
-          "Password is too short - should be 6 chars minimum."
-        ),
+        6,
+        "Password is too short - should be 6 chars minimum."
+      ),
   });
 
   const { compress, compressedImage, compressionProgress } =
@@ -94,7 +94,7 @@ export default function AddProject() {
         <Button
           // customClass="lg:hidden"
           type="secondary"
-          customClass="!p-2 rounded-[8px]"
+          customClass="!p-2"
           icon={<CloseIcon className="text-icon-color cursor-pointer" />}
           onClick={closeModal}
         />
@@ -238,11 +238,10 @@ export default function AddProject() {
                   <Field
                     name="title"
                     type="text"
-                    className={`text-input mt-2  ${
-                      errors.title &&
+                    className={`text-input mt-2  ${errors.title &&
                       touched.title &&
                       "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                    }`}
+                      }`}
                     autoComplete="off"
                     placeholder="Eg: Designing an onboarding for 1M users"
                   />
@@ -269,11 +268,10 @@ export default function AddProject() {
                   <Field
                     name="description"
                     type="text"
-                    className={`text-input mt-2  ${
-                      errors.description &&
+                    className={`text-input mt-2  ${errors.description &&
                       touched.description &&
                       "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                    }`}
+                      }`}
                     placeholder="Detail the Key Benefits and Target Audience"
                     autoComplete="off"
                   />
@@ -313,11 +311,10 @@ export default function AddProject() {
                         <Field
                           name="password"
                           type={showEye ? "text" : "password"}
-                          className={`text-input mt-2  ${
-                            errors.password &&
+                          className={`text-input mt-2  ${errors.password &&
                             touched.password &&
                             "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                          }`}
+                            }`}
                           placeholder="Password"
                           autocomplete="new-password"
                         />

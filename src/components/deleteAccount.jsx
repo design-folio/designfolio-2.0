@@ -53,7 +53,7 @@ export default function DeleteAccount() {
             <Button
               // customClass="lg:hidden"
               type="secondary"
-              customClass="!p-2 rounded-[8px]"
+              customClass="!p-2"
               icon={<CloseIcon className="text-icon-color cursor-pointer" />}
               onClick={() => setShowModal(false)}
             />

@@ -158,12 +158,12 @@ export default function ProjectInfo({
   const validationSchema = Yup.object().shape({
     password: isPassword
       ? Yup.string()
-          .required("Password is required.")
-          .min(6, "Password is too short - should be 6 chars minimum.")
+        .required("Password is required.")
+        .min(6, "Password is too short - should be 6 chars minimum.")
       : Yup.string().min(
-          6,
-          "Password is too short - should be 6 chars minimum."
-        ),
+        6,
+        "Password is too short - should be 6 chars minimum."
+      ),
   });
 
   const handleBack = () => {
@@ -204,8 +204,8 @@ export default function ProjectInfo({
                     suggestions?.length > 0
                       ? "Show Score Card"
                       : wordCount < 400
-                      ? `Need more ${400 - wordCount} words to Analyze AI`
-                      : "Analyze Project using AI"
+                        ? `Need more ${400 - wordCount} words to Analyze AI`
+                        : "Analyze Project using AI"
                   }
                   onClick={() => handleAnalyzeClick()}
                   iconPosition={isAnalyzing ? "right" : "left"}
@@ -259,11 +259,10 @@ export default function ProjectInfo({
               />
 
               <div
-                className={`pt-2 origin-top-right absolute z-20 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${
-                  popoverMenu === popovers.password
+                className={`pt-2 origin-top-right absolute z-20 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${popoverMenu === popovers.password
                     ? "opacity-100 scale-100"
                     : "opacity-0 scale-90 pointer-events-none"
-                }`}
+                  }`}
               >
                 <div className=" w-[350px] md:w-[386px]  bg-popover-bg-color rounded-2xl shadow-lg border-[5px] border-popover-border-color p-2">
                   <Formik
@@ -319,11 +318,10 @@ export default function ProjectInfo({
                                 <Field
                                   name="password"
                                   type={showEye ? "text" : "password"}
-                                  className={`text-input mt-2 ${
-                                    errors.password &&
+                                  className={`text-input mt-2 ${errors.password &&
                                     touched.password &&
                                     "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                                  }`}
+                                    }`}
                                   placeholder="Password"
                                   autocomplete="new-password"
                                 />
@@ -503,9 +501,8 @@ export default function ProjectInfo({
           <img
             src={thumbnail?.url}
             alt="project image"
-            className={`w-full h-full rounded-[20px] object-cover transition-opacity duration-100 mt-6 md:mt-8 ${
-              imageLoaded ? "opacity-100" : "opacity-0"
-            }`}
+            className={`w-full h-full rounded-[20px] object-cover transition-opacity duration-100 mt-6 md:mt-8 ${imageLoaded ? "opacity-100" : "opacity-0"
+              }`}
             loading="lazy"
             fetchPriority="high"
             decoding="async"

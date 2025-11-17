@@ -4,7 +4,6 @@ import { ArrowUpRight } from "lucide-react";
 import { useRouter } from "next/router";
 import Button from "../button";
 import DeleteIcon from "../../../public/assets/svgs/deleteIcon.svg";
-import ProjectIcon from "../../../public/assets/svgs/projectIcon.svg";
 import AddCard from "../AddCard";
 import { useGlobalContext } from "@/context/globalContext";
 import { modals } from "@/lib/constant";
@@ -16,6 +15,7 @@ import { SortableContext, arrayMove, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { _updateUser } from "@/network/post-request";
 import ProjectLock from "../projectLock";
+import MemoCasestudy from "../icons/Casestudy";
 
 export const WorkShowcase = ({ userDetails, edit }) => {
   const { projects } = userDetails || {};
@@ -72,8 +72,8 @@ export const WorkShowcase = ({ userDetails, edit }) => {
       edit
         ? `/project/${id}/editor`
         : router.asPath.includes("/portfolio-preview")
-        ? `/project/${id}/preview`
-        : `/project/${id}`
+          ? `/project/${id}/preview`
+          : `/project/${id}`
     );
   };
 
@@ -216,6 +216,7 @@ export const WorkShowcase = ({ userDetails, edit }) => {
                 />
                 <div className="flex gap-4">
                   <Button
+                    size="icon"
                     type="delete"
                     icon={
                       <DeleteIcon className="stroke-delete-btn-icon-color w-6 h-6 cursor-pointer" />
@@ -232,7 +233,7 @@ export const WorkShowcase = ({ userDetails, edit }) => {
                   {...listeners}
                   // Disable default touch actions to enable dragging on mobile.
                   style={{ touchAction: "none" }}
-                  className="!px-[24.5px] !cursor-grab py-[19px] transition-shadow duration-500 ease-out bg-project-card-reorder-btn-bg-color border-project-card-reorder-btn-bg-color hover:border-project-card-reorder-btn-bg-hover-color hover:bg-project-card-reorder-btn-bg-hover-color rounded-2xl"
+                  className="!px-[24.5px] !cursor-grab py-[19px] transition-shadow duration-500 ease-out bg-project-card-reorder-btn-bg-color border-project-card-reorder-btn-bg-color hover:border-project-card-reorder-btn-bg-hover-color hover:bg-project-card-reorder-btn-bg-hover-color rounded-full"
                 >
                   <DragIcon className="text-project-card-reorder-btn-icon-color !cursor-grab" />
                 </div>
@@ -259,11 +260,10 @@ export const WorkShowcase = ({ userDetails, edit }) => {
               variants={containerVariants}
               initial="hidden"
               animate={inView ? "show" : "hidden"}
-              className={`${
-                sortedProjects.length === 0
-                  ? "bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words"
-                  : "grid grid-cols-1 md:grid-cols-2 gap-6"
-              }`}
+              className={`${sortedProjects.length === 0
+                ? "bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words"
+                : "grid grid-cols-1 md:grid-cols-2 gap-6"
+                }`}
             >
               {sortedProjects.map((project) => (
                 <ProjectCard key={project._id} project={project} />
@@ -273,24 +273,22 @@ export const WorkShowcase = ({ userDetails, edit }) => {
         </DndContext>
       )}
       {edit &&
-        (userDetails?.pro || userDetails?.projects.length < 3 ? (
+        (userDetails?.pro || userDetails?.projects.length < 1 ? (
           <AddCard
-            title={`${
-              sortedProjects.length === 0
-                ? "Upload your first case study"
-                : "Add case study"
-            }`}
+            title={`${sortedProjects.length === 0
+              ? "Upload your first case study"
+              : "Add case study"
+              }`}
             subTitle="Show off your best work."
             first={sortedProjects.length !== 0}
             buttonTitle="Add case study"
             secondaryButtonTitle="Write using AI"
             onClick={() => openModal(modals.project)}
-            icon={<ProjectIcon className="cursor-pointer" />}
+            icon={<MemoCasestudy className="cursor-pointer size-14" />}
             openModal={openModal}
-            className={`flex items-center justify-center mt-6 ${
-              sortedProjects.length !== 0 &&
+            className={`flex items-center justify-center mt-6 ${sortedProjects.length !== 0 &&
               "bg-df-section-card-bg-color shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] hover:shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
-            }`}
+              }`}
           />
         ) : (
           <div className="mt-6">

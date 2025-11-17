@@ -11,6 +11,7 @@ import { useGlobalContext } from "@/context/globalContext";
 import { _getCredits, _getProjectTypes } from "@/network/get-request";
 import { aiQuestions } from "@/lib/caseStudyQuestions";
 import { _generateCaseStudy, _updateUser } from "@/network/post-request";
+import { convertEditorJSToTiptap } from "@/lib/editorjsToTiptap";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import Info from "./info";
@@ -134,6 +135,14 @@ export default function CreateAiProject({ openModal }) {
     try {
       const response = await _generateCaseStudy(data);
       if (response) {
+        // Convert EditorJS blocks to Tiptap format
+        const editorjsContent = {
+          time: `${Date.now()}`,
+          version: "2.30.6",
+          blocks: response.data.blocks,
+        };
+        const tiptapContent = convertEditorJSToTiptap(editorjsContent);
+
         const payload = {
           projects: [
             ...userDetails?.projects,
@@ -142,11 +151,8 @@ export default function CreateAiProject({ openModal }) {
               password: "",
               description: response.data.description,
               title: response.data.title,
-              content: {
-                time: `${Date.now()}`,
-                version: "2.30.6",
-                blocks: response.data.blocks,
-              },
+              contentVersion: 2, // Use Tiptap for AI-generated projects
+              tiptapContent: tiptapContent,
             },
           ],
         };

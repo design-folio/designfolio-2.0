@@ -1,4 +1,5 @@
 import "@/styles/globals.scss";
+import "@/styles/tiptap.css";
 import localFont from "next/font/local";
 import { Inter, Kalam } from "next/font/google";
 import Header from "@/components/header";

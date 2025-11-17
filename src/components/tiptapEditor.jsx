@@ -1,0 +1,278 @@
+import React, { useEffect, useRef } from "react";
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Image from "@tiptap/extension-image";
+import { Table } from "@tiptap/extension-table";
+import { TableRow } from "@tiptap/extension-table-row";
+import { TableCell } from "@tiptap/extension-table-cell";
+import { TableHeader } from "@tiptap/extension-table-header";
+import Underline from "@tiptap/extension-underline";
+import Link from "@tiptap/extension-link";
+import Youtube from '@tiptap/extension-youtube';
+import TextAlign from '@tiptap/extension-text-align';
+import Highlight from '@tiptap/extension-highlight';
+import Placeholder from '@tiptap/extension-placeholder';
+import { FigmaExtension } from './tiptap/FigmaExtension';
+import { LinkNode } from './tiptap/LinkExtension';
+import { YoutubeNode } from './tiptap/YoutubeExtension';
+import TiptapMenuBar from "./tiptap/TiptapMenuBar";
+import { _updateProject, _uploadImage } from "@/network/post-request";
+import { useGlobalContext } from "@/context/globalContext";
+import { useRouter } from "next/router";
+import Compressor from "compressorjs";
+import queryClient from "@/network/queryClient";
+
+// Ensure Table extensions are properly loaded
+if (!Table || !TableRow || !TableCell || !TableHeader) {
+  console.error('Table extensions not loaded properly');
+}
+
+const TiptapEditor = ({ projectDetails, userDetails }) => {
+  const router = useRouter();
+  const { setWordCount, setProjectValue } = useGlobalContext();
+  const saveTimeoutRef = useRef(null);
+
+  const editor = useEditor({
+    immediatelyRender: false,
+    extensions: [
+      StarterKit.configure({
+        heading: {
+          levels: [2, 3, 4, 5, 6],
+        },
+        bulletList: {
+          HTMLAttributes: {
+            class: 'list-disc pl-5',
+          },
+        },
+        orderedList: {
+          HTMLAttributes: {
+            class: 'list-decimal pl-5',
+          },
+        },
+      }),
+      Image.configure({
+        inline: false,
+        allowBase64: true,
+        HTMLAttributes: {
+          class: 'w-full rounded-[20px] object-cover mt-6 md:mt-8',
+        },
+      }),
+      Table.configure({
+        HTMLAttributes: {
+          class: 'border-collapse table-auto w-full my-4',
+        },
+      }),
+      TableRow.configure({
+        HTMLAttributes: {
+          class: 'border border-gray-300',
+        },
+      }),
+      TableCell.configure({
+        HTMLAttributes: {
+          class: 'border border-gray-300 p-2 min-w-[100px]',
+        },
+      }),
+      TableHeader.configure({
+        HTMLAttributes: {
+          class: 'border border-gray-300 p-2 font-bold bg-gray-100 dark:bg-gray-800',
+        },
+      }),
+      Underline,
+      Link.configure({
+        openOnClick: false,
+        HTMLAttributes: {
+          class: 'text-blue-500 underline',
+        },
+      }),
+      Youtube.configure({
+        controls: true,
+        nocookie: true,
+        HTMLAttributes: {
+          class: 'w-full aspect-video rounded-[20px] mt-6 md:mt-8',
+        },
+      }),
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
+      }),
+      Highlight.configure({
+        HTMLAttributes: {
+          class: 'bg-yellow-200 dark:bg-yellow-600',
+        },
+      }),
+      Placeholder.configure({
+        placeholder: 'Type here...',
+      }),
+      FigmaExtension,
+      LinkNode,
+      YoutubeNode,
+    ],
+    content: projectDetails?.tiptapContent || '',
+    editorProps: {
+      attributes: {
+        class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl focus:outline-none max-w-none',
+      },
+    },
+    onUpdate: ({ editor }) => {
+      // Clear existing timeout
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+
+      // Debounce save to avoid too many API calls
+      saveTimeoutRef.current = setTimeout(() => {
+        const html = editor.getHTML();
+        const json = editor.getJSON();
+
+        _updateProject(router.query.id, {
+          tiptapContent: json,
+          contentVersion: 2,
+        }).then((res) => {
+          if (userDetails) {
+            const updatedProjects = userDetails?.projects?.map((item) =>
+              item._id === router.query.id
+                ? { ...item, tiptapContent: json, contentVersion: 2 }
+                : item
+            );
+            queryClient.setQueriesData(
+              { queryKey: ["userDetails"] },
+              (oldData) => {
+                return {
+                  user: { ...oldData?.user, projects: updatedProjects },
+                };
+              }
+            );
+          }
+        });
+
+        // Update word count
+        const text = editor.getText();
+        setProjectValue(text.trim());
+        setWordCount(text.trim().split(/\s+/).filter(word => word.length > 0).length);
+      }, 1000);
+    },
+  });
+
+  // Image upload handler
+  const handleImageUpload = async (file) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let compressedFile;
+
+        if (file?.type === "image/gif") {
+          compressedFile = file;
+        } else {
+          compressedFile = await new Promise((resolveCompression, rejectCompression) => {
+            new Compressor(file, {
+              quality: 0.8,
+              mimeType: "image/webp",
+              maxHeight: 3840,
+              success(result) {
+                resolveCompression(result);
+              },
+              error(error) {
+                rejectCompression(error);
+              },
+            });
+          });
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const base64 = e.target.result.split(",")[1];
+
+          _uploadImage({
+            file: {
+              key: "data:image/png;base64," + base64,
+              originalName: compressedFile.name,
+              extension: compressedFile.type,
+            },
+          })
+            .then((result) => {
+              resolve(result.data.file.url);
+            })
+            .catch((error) => reject(error));
+        };
+
+        reader.readAsDataURL(compressedFile);
+      } catch (compressionError) {
+        reject(compressionError);
+      }
+    });
+  };
+
+  // Add image upload on paste/drop
+  useEffect(() => {
+    if (!editor || !editor.view || !editor.view.dom) return;
+
+    const handleDrop = async (event) => {
+      const files = event.dataTransfer?.files;
+      if (!files || files.length === 0) return;
+
+      const file = files[0];
+      if (!file.type.startsWith('image/')) return;
+
+      event.preventDefault();
+
+      try {
+        const url = await handleImageUpload(file);
+        editor.chain().focus().setImage({ src: url }).run();
+      } catch (error) {
+        console.error('Error uploading image:', error);
+      }
+    };
+
+    const handlePaste = async (event) => {
+      const files = event.clipboardData?.files;
+      if (!files || files.length === 0) return;
+
+      const file = files[0];
+      if (!file.type.startsWith('image/')) return;
+
+      event.preventDefault();
+
+      try {
+        const url = await handleImageUpload(file);
+        editor.chain().focus().setImage({ src: url }).run();
+      } catch (error) {
+        console.error('Error uploading image:', error);
+      }
+    };
+
+    editor.view.dom.addEventListener('drop', handleDrop);
+    editor.view.dom.addEventListener('paste', handlePaste);
+
+    return () => {
+      if (editor.view && editor.view.dom) {
+        editor.view.dom.removeEventListener('drop', handleDrop);
+        editor.view.dom.removeEventListener('paste', handlePaste);
+      }
+    };
+  }, [editor]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+      if (editor) {
+        editor.destroy();
+      }
+    };
+  }, [editor]);
+
+  if (!editor) {
+    return null;
+  }
+
+  return (
+    <div className="project-editor bg-df-section-card-bg-color rounded-[24px]">
+      <TiptapMenuBar editor={editor} />
+      <div className="tiptap-editor-wrapper p-[16px] md:p-[32px]">
+        <EditorContent editor={editor} />
+      </div>
+    </div>
+  );
+};
+
+export default TiptapEditor;

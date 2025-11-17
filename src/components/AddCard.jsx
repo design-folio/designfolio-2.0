@@ -13,7 +13,7 @@ export default function AddCard({
   first = false,
   buttonTitle = "",
   secondaryButtonTitle,
-  icon = <MemoCasestudy className="w-[52px] h-[52px]" />,
+  icon = <MemoCasestudy className="size-[72px]" />,
   openModal,
 }) {
   const handleClick = (e) => {

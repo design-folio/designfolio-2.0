@@ -78,15 +78,18 @@ export default function Onboarding() {
 
     const { persona, goal, experienceLevel, skills } = userDetails;
     if (persona) {
-      // Handles new format { value, label, __isNew__ }
+      // Handles new format { value, label, __isNew__, custom }
       if (persona.value && persona.label) {
         const personaId = persona.value;
         const personaLabel = persona.label;
-        const isCustom = persona.__isNew__ === true;
+        // Check if it's a custom persona: has __isNew__, label is "Others", or has custom field
+        const isCustom = persona.__isNew__ === true || personaLabel === "Others" || !!persona.custom;
+        const customValue = persona.custom || (personaLabel === "Others" ? "" : personaLabel);
 
         if (isCustom) {
           setSelectedRole("Others");
-          setCustomRole(personaLabel);
+          // Use custom field if available, otherwise use empty string (user can fill it)
+          setCustomRole(customValue);
           // Set personaId even for custom to trigger skills fetch
           setSelectedPersonaId(personaId);
         } else {
@@ -95,8 +98,16 @@ export default function Onboarding() {
             setSelectedRole(matchedRole.label);
             setSelectedPersonaId(matchedRole._id);
           } else {
-            setSelectedRole(personaLabel);
-            setSelectedPersonaId(personaId);
+            // If label doesn't match any standard role, treat as custom
+            const isStandardRole = roles.some((r) => r.label === personaLabel);
+            if (!isStandardRole) {
+              setSelectedRole("Others");
+              setCustomRole(personaLabel);
+              setSelectedPersonaId(personaId);
+            } else {
+              setSelectedRole(personaLabel);
+              setSelectedPersonaId(personaId);
+            }
           }
         }
       }
@@ -221,7 +232,7 @@ export default function Onboarding() {
     const persona = {
       value: selectedPersonaId,
       label: selectedRole,
-      ...(selectedRole === "Others" && { __isNew__: true, custom: customRole.trim() }),
+      ...(selectedRole === "Others" && { __isNew__: true, label: customRole.trim() }),
     };
 
     const skillsPayload = selectedInterests.map((label) => {
@@ -241,6 +252,7 @@ export default function Onboarding() {
     try {
       const res = await _updateUser(payload);
       const updatedUser = res?.data?.user;
+      console.log("Onboarding Line 244: updatedUser", updatedUser?.persona);
       if (updatedUser) {
         updateCache("userDetails", updatedUser);
         setUserDetails(updatedUser);

@@ -74,7 +74,7 @@ export default function ProjectCard({
             {edit ? (
               <Button
                 text={"Edit project"}
-                customClass="w-full"
+                customClass="w-full h-[58px]"
                 type="secondary"
 
               />
@@ -124,7 +124,7 @@ export default function ProjectCard({
 const DragHandle = SortableHandle(() => (
   <div
     onClick={(e) => e.stopPropagation()}
-    className="!px-[24.5px] !cursor-grab py-[19px] transition-shadow duration-500 ease-out bg-project-card-reorder-btn-bg-color border-project-card-reorder-btn-bg-color hover:border-project-card-reorder-btn-bg-hover-color hover:bg-project-card-reorder-btn-bg-hover-color rounded-ful"
+    className="!px-[24.5px] !cursor-grab py-[19px] transition-shadow duration-500 ease-out bg-project-card-reorder-btn-bg-color rounded-full border-project-card-reorder-btn-bg-color hover:border-project-card-reorder-btn-bg-hover-color hover:bg-project-card-reorder-btn-bg-hover-color rounded-ful"
   >
     <DragIcon className="text-project-card-reorder-btn-icon-color !cursor-grab" />
   </div>

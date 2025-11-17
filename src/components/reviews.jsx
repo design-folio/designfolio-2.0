@@ -20,7 +20,7 @@ export default function Reviews({ edit = false, userDetails, openModal }) {
       transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1], delay: 0.3 }}
     >
       <Card
-        className="bg-df-section-card-bg-color backdrop-blur-sm border-0 rounded-2xl p-8"
+        className="bg-df-section-card-bg-color backdrop-blur-sm border-0 rounded-2xl p-4 lg:p-8"
         style={{
           boxShadow:
             "0 0 0 1px rgba(0,0,0,0.03), 0 0 40px rgba(0,0,0,0.015)",

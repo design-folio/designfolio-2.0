@@ -92,7 +92,7 @@ export default function Profile({
         )}
 
         {/* Profile Info */}
-        <div className="p-8 pb-6">
+        <div className="p-4 lg:p-8 pb-6">
           <div className="flex flex-col md:flex-row md:items-center gap-6">
             {/* Avatar Container */}
             <div

@@ -172,7 +172,7 @@ const Portfolio = ({ userDetails, edit }) => {
                 <div className="flex justify-between gap-3 items-center mt-4 cursor-pointer">
                   <Button2
                     text={"Edit project"}
-                    customClass="w-full"
+                    customClass="w-full h-[58px]"
                     type="secondary"
                     onClick={(e) => {
                       e.stopPropagation();

@@ -255,7 +255,7 @@ body {
 }
 
 .text-input::placeholder {
-  color: var(--muted-foreground, #9ca3af);
+  color: var(--muted-foreground/60, #9ca3af);
 }
 
 .text-input:disabled {

@@ -42,6 +42,7 @@ import MemoResume from "./icons/Resume";
 import MemoSocial from "./icons/Social";
 import MemoOtherlinks from "./icons/Otherlinks";
 import MemoCasestudy from "./icons/Casestudy";
+import MemoTestimonial from "./icons/Testimonial";
 export default function Builder2({ edit = false }) {
   const {
     userDetails,
@@ -271,7 +272,7 @@ export default function Builder2({ edit = false }) {
             }
             first={userDetails?.reviews?.length !== 0}
             buttonTitle="Add testimonial"
-            icon={<PenIcon className="cursor-pointer" />}
+            icon={<MemoTestimonial className="cursor-pointer size-[72px]" />}
           />
         )}
         <div className="space-y-4">

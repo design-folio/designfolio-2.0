@@ -212,7 +212,7 @@ export default function AddWork() {
                     <Field
                       as="select"
                       name="startMonth"
-                      className={`text-input !w-full text-[14px] !text-[#989DA3] font-inter !font-[500] custom-select mt-2  ${errors.startMonth &&
+                      className={`text-input !w-full text-[14px] ${!values.startMonth ? "!text-muted-foreground/60" : ""} font-inter !font-[500] custom-select mt-2  ${errors.startMonth &&
                         touched.startMonth &&
                         "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
                         }`}
@@ -231,7 +231,7 @@ export default function AddWork() {
                     <Field
                       as="select"
                       name="startYear"
-                      className={`text-input !w-full text-[14px] !text-[#989DA3] font-inter !font-[500] custom-select mt-2  ${errors.startYear &&
+                      className={`text-input !w-full text-[14px] ${!values.startYear ? "!text-muted-foreground/60" : ""} font-inter !font-[500] custom-select mt-2  ${errors.startYear &&
                         touched.startYear &&
                         "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
                         }`}
@@ -261,7 +261,7 @@ export default function AddWork() {
                       <Field
                         as="select"
                         name="endMonth"
-                        className={`text-input !w-full text-[14px] !text-[#989DA3] font-inter !font-[500] custom-select mt-2  ${errors.endMonth &&
+                        className={`text-input !w-full text-[14px] ${!values.endMonth ? "!text-muted-foreground/60" : ""} font-inter !font-[500] custom-select mt-2  ${errors.endMonth &&
                           touched.endMonth &&
                           "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
                           }`}
@@ -281,7 +281,7 @@ export default function AddWork() {
                       <Field
                         as="select"
                         name="endYear"
-                        className={`text-input !w-full text-[14px] !text-[#989DA3] font-inter !font-[500] custom-select mt-2  ${errors.endYear &&
+                        className={`text-input !w-full text-[14px] ${!values.endYear ? "!text-muted-foreground/60" : ""} font-inter !font-[500] custom-select mt-2  ${errors.endYear &&
                           touched.endYear &&
                           "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
                           }`}

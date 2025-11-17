@@ -8,11 +8,15 @@ import { modals } from "@/lib/constant";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/buttonNew";
-import { Plus } from "lucide-react";
+import Button2 from "./button";
+import { Plus, PlusIcon } from "lucide-react";
+import AddItem from "./addItem";
+import MemoTestimonial from "./icons/Testimonial";
+import { useTheme } from "next-themes";
 
 export default function Reviews({ edit = false, userDetails, openModal }) {
   const reviews = userDetails?.reviews || [];
-
+  const theme = useTheme();
   return (
     <motion.div
       initial={{ y: 20 }}
@@ -30,7 +34,7 @@ export default function Reviews({ edit = false, userDetails, openModal }) {
           <h2 className="text-2xl font-semibold" data-testid="text-testimonials-title">
             Testimonials
           </h2>
-          {edit && (
+          {edit && reviews.length > 0 && (
             <Button
               variant="secondary"
               size="icon"
@@ -54,20 +58,43 @@ export default function Reviews({ edit = false, userDetails, openModal }) {
             <ReviewCard review={review} edit={edit} key={review?._id || i} index={i} />
           ))}
 
-          {/* {edit && (
-            <AddCard
-              title={`${reviews.length == 0 ? "My testimonials" : "Add more reviews"
-                } `}
-              subTitle="Share colleague's feedback."
+          {edit && reviews.length == 0 && (
+            <AddItem
+              className="bg-df-section-card-bg-color shadow-df-section-card-shadow mt-6"
+              title="Add your testimonial"
               onClick={() => openModal(modals.review)}
-              className={
-                reviews.length != 0 ? "w-full !min-h-[208px]" : "w-full"
+              iconLeft={
+                reviews?.length > 0 ? (
+                  <Button2
+                    type="secondary"
+                    icon={
+                      <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                    }
+                    onClick={() => openModal(modals.review)}
+                    size="small"
+                    text
+                  />
+                ) : (
+                  <MemoTestimonial />
+                )
               }
-              first={reviews.length !== 0}
-              buttonTitle="Add testimonial"
-              icon={<PenIcon className="cursor-pointer" />}
+              iconRight={
+                reviews?.length == 0 ? (
+                  <Button2
+                    type="secondary"
+                    icon={
+                      <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                    }
+                    onClick={() => openModal(modals.review)}
+                    size="small"
+                  />
+                ) : (
+                  false
+                )
+              }
+              theme={theme}
             />
-          )} */}
+          )}
         </div>
       </Card>
     </motion.div>

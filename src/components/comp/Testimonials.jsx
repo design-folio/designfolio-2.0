@@ -17,6 +17,7 @@ import { modals } from "@/lib/constant";
 import { useGlobalContext } from "@/context/globalContext";
 import { Button } from "../ui/button";
 import Button2 from "../button";
+import MemoTestimonial from "../icons/Testimonial";
 
 export const Testimonials = ({ userDetails, edit }) => {
   const { reviews } = userDetails || {};
@@ -235,7 +236,7 @@ export const Testimonials = ({ userDetails, edit }) => {
           </Button>
         </motion.div>
       )}
-
+    
       {edit && (
         <AddItem
           className="bg-df-section-card-bg-color shadow-df-section-card-shadow mt-6"
@@ -253,7 +254,7 @@ export const Testimonials = ({ userDetails, edit }) => {
                 text
               />
             ) : (
-              <BagIcon />
+              <MemoTestimonial />
             )
           }
           iconRight={

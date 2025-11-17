@@ -192,9 +192,12 @@ export default function Onboarding() {
 
   const handleSubmit = (values, actions) => {
     if (isLastStep) {
+      //HACK: Remove 'selected' property from tools and skills before sending to backend
+      const cleanSkills = values.expertise?.map(({ selected, ...rest }) => rest) || [];
+
       const payload = {
         tools: values.selectedTools,
-        skills: values.expertise,
+        skills: cleanSkills,
         introduction: values?.introduction,
         bio: values?.bio,
       };

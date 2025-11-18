@@ -101,7 +101,7 @@ export default function Index({ initialUserDetails }) {
       />
       <main className="min-h-screen bg-df-bg-color">
         <div
-          className={` mx-auto mt-10 px-2 md:px-4 lg:px-0 ${userDetails?.template != 3 && "max-w-[890px]"
+          className={` mx-auto px-2 md:px-4 lg:px-0 ${userDetails?.template != 3 && "max-w-[890px]"
             }`}
         >
           {userDetails && renderTemplate()}

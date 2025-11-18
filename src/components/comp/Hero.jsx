@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import Button from "../button";
 import { EditIcon } from "lucide-react";
 import { useGlobalContext } from "@/context/globalContext";
+import { getUserAvatarImage } from "@/lib/getAvatarUrl";
+import { cn } from "@/lib/utils";
 
 export const Hero = ({ userDetails, edit }) => {
   const [isLoaded, setIsLoaded] = useState(true);
@@ -21,8 +23,8 @@ export const Hero = ({ userDetails, edit }) => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <Avatar className="w-24 h-24 mb-6 relative rounded-2xl">
-          <div className="relative w-full h-full">
+        <Avatar className="w-24 h-24 mb-6 relative rounded-full">
+          <div className="relative w-full h-full ">
             <AnimatePresence mode="wait">
               {!isLoaded && (
                 <motion.div
@@ -38,9 +40,9 @@ export const Hero = ({ userDetails, edit }) => {
               initial={{ opacity: 0 }}
               animate={{ opacity: isLoaded ? 1 : 0 }}
               transition={{ duration: 0.2 }}
-              src={avatar?.url ?? "/assets/svgs/avatar.svg"}
+              src={getUserAvatarImage(userDetails)}
               alt="Profile"
-              className="rounded-2xl w-full h-full object-cover"
+              className={cn("rounded-full w-full h-full object-cover", !avatar ? "bg-[#FFB088]" : "")}
               loading="eager"
               decoding="async"
               onLoad={() => setIsLoaded(true)}
@@ -76,13 +78,18 @@ export const Hero = ({ userDetails, edit }) => {
         className="dark:text-gray-400 text-gray-600 max-w-xl mb-8"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.6 }}
+        transition={{ duration: 0.5, delay: 0.5 }}
       >
         {bio}
       </motion.p>
 
       {/* Skills Infinite Scroll */}
-      <div className="w-full overflow-hidden relative py-4 before:absolute before:left-0 before:top-0 before:z-10 before:w-20 before:h-full before:bg-gradient-to-r before:from-background before:to-transparent after:absolute after:right-0 after:top-0 after:z-10 after:w-20 after:h-full after:bg-gradient-to-l after:from-background after:to-transparent">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.7 }}
+        className="w-full overflow-hidden relative py-4 before:absolute before:left-0 before:top-0 before:z-10 before:w-20 before:h-full before:bg-gradient-to-r before:from-background before:to-transparent after:absolute after:right-0 after:top-0 after:z-10 after:w-20 after:h-full after:bg-gradient-to-l after:from-background after:to-transparent"
+      >
         <motion.div
           className="flex gap-4 whitespace-nowrap"
           animate={{ x: ["0%", "-50%"] }}
@@ -96,15 +103,15 @@ export const Hero = ({ userDetails, edit }) => {
           }}
         >
           {scrollSkills.map((skill, index) => (
-            <span
+            <motion.span
               key={index}
               className="bg-card px-4 py-2 rounded-full text-sm"
             >
               {skill?.label}
-            </span>
+            </motion.span>
           ))}
         </motion.div>
-      </div>
+      </motion.div>
     </section>
   );
 };

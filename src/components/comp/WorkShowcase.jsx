@@ -4,7 +4,6 @@ import { ArrowUpRight } from "lucide-react";
 import { useRouter } from "next/router";
 import Button from "../button";
 import DeleteIcon from "../../../public/assets/svgs/deleteIcon.svg";
-import ProjectIcon from "../../../public/assets/svgs/projectIcon.svg";
 import AddCard from "../AddCard";
 import { useGlobalContext } from "@/context/globalContext";
 import { modals } from "@/lib/constant";
@@ -16,11 +15,13 @@ import { SortableContext, arrayMove, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { _updateUser } from "@/network/post-request";
 import ProjectLock from "../projectLock";
+import MemoCasestudy from "../icons/Casestudy";
 
-export const WorkShowcase = ({ userDetails, edit }) => {
-  const { projects } = userDetails || {};
+export const WorkShowcase = ({ userDetails: userDetailsProp, edit }) => {
   const router = useRouter();
-  const { openModal, setSelectedProject, setUserDetails } = useGlobalContext();
+  const { openModal, setSelectedProject, setUserDetails, userDetails: userDetailsFromContext } = useGlobalContext();
+  // Always prioritize context over prop to ensure we get the latest updates
+  const userDetails = userDetailsFromContext ?? userDetailsProp;
 
   // Variants for animation
   const containerVariants = {
@@ -106,12 +107,13 @@ export const WorkShowcase = ({ userDetails, edit }) => {
   };
 
   // Maintain local state for sorted projects
-  const [sortedProjects, setSortedProjects] = useState(projects || []);
+  const [sortedProjects, setSortedProjects] = useState(() => userDetails?.projects || []);
 
-  // Update state when projects prop changes
+  // Update state when userDetails changes
   useEffect(() => {
-    setSortedProjects(projects || []);
-  }, [projects]);
+    const currentProjects = userDetails?.projects || [];
+    setSortedProjects([...currentProjects]);
+  }, [userDetails]);
 
   // Handle drag end event to reorder projects
   const handleDragEnd = (event) => {
@@ -161,7 +163,6 @@ export const WorkShowcase = ({ userDetails, edit }) => {
     };
 
     return (
-      // Outer container receives the node ref and style.
       <div
         ref={(node) => {
           setNodeRef(node);
@@ -169,27 +170,23 @@ export const WorkShowcase = ({ userDetails, edit }) => {
         }}
         style={style}
       >
-        {/* Animated card content */}
         <motion.div
           onMouseMove={handleMouseMove}
           onClick={() => handleNavigation(project?._id)}
           variants={itemVariants}
           className="group rounded-3xl bg-card overflow-hidden relative shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] cursor-pointer"
         >
-          {/* Hover effect */}
           <div
             className="pointer-events-none absolute -inset-px opacity-0 group-hover:opacity-100 transition-opacity duration-300"
             style={{
               background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255,255,255,.1), transparent 40%)`,
             }}
           />
-          {/* Project Image */}
           <div className="aspect-[4/3] cursor-pointer overflow-hidden bg-secondary/50 relative">
             <ImageWithPreload
               src={project?.thumbnail?.url}
               alt={project.title}
             />
-            {/* Project Link */}
             <a
               href={project.link}
               className="absolute top-6 right-6 size-14 rounded-full bg-tertiary flex items-center justify-center opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300 hover:bg-tertiary-hover"
@@ -197,7 +194,6 @@ export const WorkShowcase = ({ userDetails, edit }) => {
               <ArrowUpRight className="size-6 text-white" />
             </a>
           </div>
-          {/* Project Info */}
           <div className="p-8 pb-10 cursor-pointer">
             <h3 className="text-2xl font-semibold leading-tight line-clamp-2">
               {project.title}
@@ -211,11 +207,12 @@ export const WorkShowcase = ({ userDetails, edit }) => {
               <div className="flex justify-between gap-3 items-center mt-4">
                 <Button
                   text={"Edit project"}
-                  customClass="w-full"
+                  customClass="w-full h-[58px]"
                   type="secondary"
                 />
                 <div className="flex gap-4">
                   <Button
+                    size="icon"
                     type="delete"
                     icon={
                       <DeleteIcon className="stroke-delete-btn-icon-color w-6 h-6 cursor-pointer" />
@@ -226,15 +223,13 @@ export const WorkShowcase = ({ userDetails, edit }) => {
                     }}
                   />
                 </div>
-                {/* Drag handle container: attach drag listeners here */}
                 <div
                   onClick={(e) => e.stopPropagation()}
                   {...listeners}
-                  // Disable default touch actions to enable dragging on mobile.
                   style={{ touchAction: "none" }}
-                  className="!px-[24.5px] !cursor-grab py-[19px] transition-shadow duration-500 ease-out bg-project-card-reorder-btn-bg-color border-project-card-reorder-btn-bg-color hover:border-project-card-reorder-btn-bg-hover-color hover:bg-project-card-reorder-btn-bg-hover-color rounded-2xl"
+                  className="px-[24.5px] py-[19px] transition-shadow duration-500 ease-out bg-project-card-reorder-btn-bg-color border-project-card-reorder-btn-bg-color hover:border-project-card-reorder-btn-bg-hover-color hover:bg-project-card-reorder-btn-bg-hover-color rounded-full [cursor:grab] active:[cursor:grabbing]"
                 >
-                  <DragIcon className="text-project-card-reorder-btn-icon-color !cursor-grab" />
+                  <DragIcon className="text-project-card-reorder-btn-icon-color pointer-events-none" />
                 </div>
               </div>
             )}
@@ -247,8 +242,7 @@ export const WorkShowcase = ({ userDetails, edit }) => {
   return (
     <section className="pt-0 pb-16">
       <h2 className="text-2xl font-bold mb-8">Featured Projects</h2>
-      {/* Wrap the grid with DND Kit's context */}
-      {userDetails?.projects.length > 0 && (
+      {sortedProjects.length > 0 && (
         <DndContext
           collisionDetection={closestCenter}
           onDragEnd={handleDragEnd}
@@ -259,10 +253,7 @@ export const WorkShowcase = ({ userDetails, edit }) => {
               variants={containerVariants}
               initial="hidden"
               animate={inView ? "show" : "hidden"}
-              className={`${sortedProjects.length === 0
-                  ? "bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words"
-                  : "grid grid-cols-1 md:grid-cols-2 gap-6"
-                }`}
+              className="grid grid-cols-1 md:grid-cols-2 gap-6"
             >
               {sortedProjects.map((project) => (
                 <ProjectCard key={project._id} project={project} />
@@ -275,18 +266,18 @@ export const WorkShowcase = ({ userDetails, edit }) => {
         (userDetails?.pro || userDetails?.projects.length < 1 ? (
           <AddCard
             title={`${sortedProjects.length === 0
-                ? "Upload your first case study"
-                : "Add case study"
+              ? "Upload your first case study"
+              : "Add case study"
               }`}
             subTitle="Show off your best work."
             first={sortedProjects.length !== 0}
             buttonTitle="Add case study"
             secondaryButtonTitle="Write using AI"
             onClick={() => openModal(modals.project)}
-            icon={<ProjectIcon className="cursor-pointer" />}
+            icon={<MemoCasestudy className="cursor-pointer size-[72px]" />}
             openModal={openModal}
-            className={`flex items-center justify-center mt-6 ${sortedProjects.length !== 0 &&
-              "bg-df-section-card-bg-color shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] hover:shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
+            className={`bg-secondary flex items-center justify-center mt-6 ${sortedProjects.length !== 0 &&
+              "shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] hover:shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
               }`}
           />
         ) : (

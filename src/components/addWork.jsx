@@ -94,7 +94,7 @@ export default function AddWork() {
         <Button
           // customClass="lg:hidden"
           type="secondary"
-          customClass="!p-2 rounded-[8px]"
+          customClass="!p-2"
           icon={<CloseIcon className="text-icon-color cursor-pointer" />}
           onClick={closeModal}
         />
@@ -175,11 +175,10 @@ export default function AddWork() {
                   <Field
                     name="company"
                     type="text"
-                    className={`text-input mt-2  ${
-                      errors.company &&
+                    className={`text-input mt-2  ${errors.company &&
                       touched.company &&
                       "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                    }`}
+                      }`}
                     autoComplete="off"
                   />
                   <ErrorMessage
@@ -194,11 +193,10 @@ export default function AddWork() {
                 <Field
                   name="role"
                   type="text"
-                  className={`text-input mt-2  ${
-                    errors.role &&
+                  className={`text-input mt-2  ${errors.role &&
                     touched.role &&
                     "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                  }`}
+                    }`}
                   autoComplete="off"
                 />
                 <ErrorMessage
@@ -214,11 +212,10 @@ export default function AddWork() {
                     <Field
                       as="select"
                       name="startMonth"
-                      className={`text-input !w-full text-[14px] !text-[#989DA3] font-inter !font-[500] custom-select mt-2  ${
-                        errors.startMonth &&
+                      className={`text-input !w-full text-[14px] ${!values.startMonth ? "!text-muted-foreground/60" : ""} font-inter !font-[500] custom-select mt-2  ${errors.startMonth &&
                         touched.startMonth &&
                         "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                      }`}
+                        }`}
                     >
                       <option value="">Choose Month</option>
                       {monthOptions}
@@ -234,11 +231,10 @@ export default function AddWork() {
                     <Field
                       as="select"
                       name="startYear"
-                      className={`text-input !w-full text-[14px] !text-[#989DA3] font-inter !font-[500] custom-select mt-2  ${
-                        errors.startYear &&
+                      className={`text-input !w-full text-[14px] ${!values.startYear ? "!text-muted-foreground/60" : ""} font-inter !font-[500] custom-select mt-2  ${errors.startYear &&
                         touched.startYear &&
                         "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                      }`}
+                        }`}
                     >
                       <option value="">Choose Year</option>
                       {yearOptions}
@@ -265,11 +261,10 @@ export default function AddWork() {
                       <Field
                         as="select"
                         name="endMonth"
-                        className={`text-input !w-full text-[14px] !text-[#989DA3] font-inter !font-[500] custom-select mt-2  ${
-                          errors.endMonth &&
+                        className={`text-input !w-full text-[14px] ${!values.endMonth ? "!text-muted-foreground/60" : ""} font-inter !font-[500] custom-select mt-2  ${errors.endMonth &&
                           touched.endMonth &&
                           "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                        }`}
+                          }`}
                         disabled={values.currentlyWorking}
                       >
                         <option value="">Choose Month</option>
@@ -286,11 +281,10 @@ export default function AddWork() {
                       <Field
                         as="select"
                         name="endYear"
-                        className={`text-input !w-full text-[14px] !text-[#989DA3] font-inter !font-[500] custom-select mt-2  ${
-                          errors.endYear &&
+                        className={`text-input !w-full text-[14px] ${!values.endYear ? "!text-muted-foreground/60" : ""} font-inter !font-[500] custom-select mt-2  ${errors.endYear &&
                           touched.endYear &&
                           "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                        }`}
+                          }`}
                         disabled={values.currentlyWorking}
                       >
                         <option value="">Choose Year</option>
@@ -334,11 +328,10 @@ export default function AddWork() {
                   <Field
                     name="description"
                     as="textarea"
-                    className={`text-input mt-2 h-[120px] ${
-                      errors.description &&
+                    className={`text-input mt-2 h-[120px] ${errors.description &&
                       touched.description &&
                       "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                    }`}
+                      }`}
                     autoComplete="off"
                   />
                   <ErrorMessage
@@ -350,9 +343,8 @@ export default function AddWork() {
               </div>
 
               <div
-                className={`flex gap-2 py-3  ${
-                  selectedWork?.company ? "justify-between" : "justify-end"
-                }  px-3 rounded-bl-2xl rounded-br-2xl bg-modal-footer-bg-color`}
+                className={`flex gap-2 py-3  ${selectedWork?.company ? "justify-between" : "justify-end"
+                  }  px-3 rounded-bl-2xl rounded-br-2xl bg-modal-footer-bg-color`}
               >
                 {selectedWork?.company && (
                   <Button

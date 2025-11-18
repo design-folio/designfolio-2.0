@@ -10,6 +10,7 @@ export const popovers = {
 
 export const modals = {
   onboarding: "onboarding",
+  onBoardingNewUser: "onboardingNewUser",
   project: "project",
   deleteProject: "delete-project",
   review: "review",

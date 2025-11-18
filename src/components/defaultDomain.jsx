@@ -130,14 +130,13 @@ export default function DefaultDomain() {
                     name="domain"
                     placeholder="Your-name"
                     autoComplete="off"
-                    className={`text-input ${
-                      ((!!errors.domain && values.domain) ||
+                    className={`text-input ${((!!errors.domain && values.domain) ||
                         (!isAvailable && values.domain)) &&
                       "!text-df-error"
-                    }`}
+                      }`}
                     onChange={(e) => handleChange(e, setFieldValue)}
                   />
-                  <div className="bg-[#F4F6FA] dark:bg-[#4d545f] p-3 rounded-xl absolute top-[3.5px] right-[3.5px] flex items-center gap-2">
+                  <div className="bg-[#F4F6FA] dark:bg-[#4d545f] p-3 rounded-full absolute top-[3.5px] right-[3.5px] flex items-center gap-2">
                     <div className="font-inter font-semibold text-base leading-normal text-[#202937] dark:text-[#E9EAEB]">
                       designfolio.me
                     </div>

@@ -124,8 +124,8 @@ export default function ProjectCard({
 const DragHandle = SortableHandle(() => (
   <div
     onClick={(e) => e.stopPropagation()}
-    className="!px-[24.5px] !cursor-grab py-[19px] transition-shadow duration-500 ease-out bg-project-card-reorder-btn-bg-color rounded-full border-project-card-reorder-btn-bg-color hover:border-project-card-reorder-btn-bg-hover-color hover:bg-project-card-reorder-btn-bg-hover-color rounded-ful"
+    className="px-[24.5px] py-[19px] transition-shadow duration-500 ease-out bg-project-card-reorder-btn-bg-color rounded-full border-project-card-reorder-btn-bg-color hover:border-project-card-reorder-btn-bg-hover-color hover:bg-project-card-reorder-btn-bg-hover-color [cursor:grab] active:[cursor:grabbing]"
   >
-    <DragIcon className="text-project-card-reorder-btn-icon-color !cursor-grab" />
+    <DragIcon className="text-project-card-reorder-btn-icon-color pointer-events-none" />
   </div>
 ));

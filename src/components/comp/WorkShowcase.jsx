@@ -227,9 +227,9 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit }) => {
                   onClick={(e) => e.stopPropagation()}
                   {...listeners}
                   style={{ touchAction: "none" }}
-                  className="!px-[24.5px] !cursor-grab py-[19px] transition-shadow duration-500 ease-out bg-project-card-reorder-btn-bg-color border-project-card-reorder-btn-bg-color hover:border-project-card-reorder-btn-bg-hover-color hover:bg-project-card-reorder-btn-bg-hover-color rounded-full"
+                  className="px-[24.5px] py-[19px] transition-shadow duration-500 ease-out bg-project-card-reorder-btn-bg-color border-project-card-reorder-btn-bg-color hover:border-project-card-reorder-btn-bg-hover-color hover:bg-project-card-reorder-btn-bg-hover-color rounded-full [cursor:grab] active:[cursor:grabbing]"
                 >
-                  <DragIcon className="text-project-card-reorder-btn-icon-color !cursor-grab" />
+                  <DragIcon className="text-project-card-reorder-btn-icon-color pointer-events-none" />
                 </div>
               </div>
             )}

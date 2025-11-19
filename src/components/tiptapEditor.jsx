@@ -15,6 +15,7 @@ import Placeholder from '@tiptap/extension-placeholder';
 import { FigmaExtension } from './tiptap/FigmaExtension';
 import { LinkNode } from './tiptap/LinkExtension';
 import { YoutubeNode } from './tiptap/YoutubeExtension';
+import { ResizableImage } from './tiptap/ResizableImage';
 import TiptapMenuBar from "./tiptap/TiptapMenuBar";
 import { _updateProject, _uploadImage } from "@/network/post-request";
 import { useGlobalContext } from "@/context/globalContext";
@@ -53,28 +54,27 @@ const TiptapEditor = ({ projectDetails, userDetails }) => {
       Image.configure({
         inline: false,
         allowBase64: true,
-        HTMLAttributes: {
-          class: 'w-full rounded-[20px] object-cover mt-6 md:mt-8',
-        },
       }),
+      ResizableImage,
       Table.configure({
         HTMLAttributes: {
-          class: 'border-collapse table-auto w-full my-4',
+          class: 'tiptap-table',
         },
+        resizable: true,
       }),
       TableRow.configure({
         HTMLAttributes: {
-          class: 'border border-gray-300',
+          class: 'tiptap-table-row',
         },
       }),
       TableCell.configure({
         HTMLAttributes: {
-          class: 'border border-gray-300 p-2 min-w-[100px]',
+          class: 'tiptap-table-cell',
         },
       }),
       TableHeader.configure({
         HTMLAttributes: {
-          class: 'border border-gray-300 p-2 font-bold bg-gray-100 dark:bg-gray-800',
+          class: 'tiptap-table-header',
         },
       }),
       Underline,
@@ -215,7 +215,10 @@ const TiptapEditor = ({ projectDetails, userDetails }) => {
 
       try {
         const url = await handleImageUpload(file);
-        editor.chain().focus().setImage({ src: url }).run();
+        editor.chain().focus().insertContent({
+          type: 'resizableImage',
+          attrs: { src: url },
+        }).run();
       } catch (error) {
         console.error('Error uploading image:', error);
       }
@@ -232,7 +235,10 @@ const TiptapEditor = ({ projectDetails, userDetails }) => {
 
       try {
         const url = await handleImageUpload(file);
-        editor.chain().focus().setImage({ src: url }).run();
+        editor.chain().focus().insertContent({
+          type: 'resizableImage',
+          attrs: { src: url },
+        }).run();
       } catch (error) {
         console.error('Error uploading image:', error);
       }

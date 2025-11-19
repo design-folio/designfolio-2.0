@@ -39,7 +39,7 @@ const YoutubeNodeView = ({ node, updateAttributes, deleteNode, editor }) => {
 
   return (
     <NodeViewWrapper>
-      <div className="border-2 border-blue-500 dark:border-blue-600 rounded-lg p-4 my-3 bg-slate-50 dark:bg-slate-900">
+      <div className="rounded-lg p-4 my-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 select-none" onMouseDown={(e) => e.stopPropagation()}>
         <div className="mb-3">
           <input
             type="url"
@@ -48,9 +48,10 @@ const YoutubeNodeView = ({ node, updateAttributes, deleteNode, editor }) => {
             onKeyDown={handleKeyDown}
             placeholder="Enter YouTube URL"
             autoFocus
-            className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-md text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600"
+            className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-md text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 select-text"
+            onMouseDown={(e) => e.stopPropagation()}
           />
-          <div className="text-xs text-slate-600 dark:text-slate-400 mt-2">
+          <div className="text-xs text-slate-600 dark:text-slate-400 mt-2" onMouseDown={(e) => e.stopPropagation()}>
             <strong>Supported formats:</strong>
             <ul className="mt-1 pl-5 list-disc">
               <li>https://www.youtube.com/watch?v=VIDEO_ID</li>

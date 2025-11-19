@@ -7,6 +7,7 @@ import DeleteIcon from "../../public/assets/svgs/deleteIcon.svg";
 import DragIcon from "../../public/assets/svgs/drag.svg";
 import Text from "./text";
 import { SortableHandle } from "react-sortable-hoc";
+import Link from "next/link";
 const imageVariants = {
   hover: {
     scale: 1.13, // Target scale when hovered
@@ -30,16 +31,18 @@ export default function ProjectCard({
   onDeleteProject,
   edit = false,
   handleRouter,
+  href,
 }) {
   const [isHovered, setIsHovered] = useState(false);
   const [imageLoaded, setImageLoaded] = React.useState(false);
+  console.log(href);
   return (
-    <div
+    <Link href={href}
       className={customTwMerge(
         `bg-project-card-bg-color border border-project-card-border-color rounded-2xl min-h-[360px] h-full cursor-pointer`,
         className
       )}
-      onClick={() => handleRouter(project._id)}
+    // onClick={() => handleRouter(project._id)}
     >
       <div className="h-full flex flex-col">
         <div className="h-[253.072px] relative  overflow-hidden rounded-t-[15px]">
@@ -91,7 +94,7 @@ export default function ProjectCard({
                   View project
                 </Text>
                 <motion.div
-                  animate={{ x: isHovered ? 5 : 0, y: isHovered ? -5 : 0 }} // Use isHovered to control animation
+                  animate={{ x: isHovered ? 2 : 0, y: isHovered ? -2 : 0 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
                   <ViewArrowIcon className="text-project-card-description-color cursor-pointer" />
@@ -117,7 +120,7 @@ export default function ProjectCard({
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 

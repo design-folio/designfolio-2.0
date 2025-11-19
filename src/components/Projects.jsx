@@ -13,6 +13,7 @@ const SortableItem = SortableElement(
   ({ value, onDeleteProject, edit, preview }) => {
     const router = useRouter();
 
+    //Note:Not using handleRouter as router does not prefetch the page
     const handleRouter = (id) => {
       if (edit) {
         router.push(`/project/${id}/editor`);
@@ -22,7 +23,11 @@ const SortableItem = SortableElement(
         router.push(`/project/${id}`);
       }
     };
-
+    const getHref = (id) => {
+      if (edit) return `/project/${id}/editor`;
+      if (preview) return `/project/${id}/preview`;
+      return `/project/${id}`;
+    };
     return (
       <div className="h-full">
         <ProjectCard
@@ -30,6 +35,7 @@ const SortableItem = SortableElement(
           onDeleteProject={onDeleteProject}
           edit={edit}
           handleRouter={handleRouter}
+          href={getHref(value._id)}
         />
       </div>
     );

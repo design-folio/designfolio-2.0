@@ -184,18 +184,19 @@ export default function ProjectInfo({
     fetchAnalyzeStatus();
   }, []);
 
+  console.log(userDetails);
   return (
     <div className="bg-df-section-card-bg-color rounded-[24px] p-[16px] md:p-[32px]">
       <div className="flex justify-between items-center mb-2">
-        <Link href="/builder">
-          <Button
-            text="Go Back"
-            // onClick={handleBack}
-            type="secondary"
-            size="small"
-            icon={<LeftArrow className="text-df-icon-color cursor-pointer" />}
-          />
-        </Link>
+
+        <Button
+          text="Go Back"
+          onClick={handleBack}
+          type="secondary"
+          size="small"
+          icon={<LeftArrow className="text-df-icon-color cursor-pointer" />}
+        />
+
         {edit && (
           <div className="flex gap-3">
             {AnalyzeStatus && (

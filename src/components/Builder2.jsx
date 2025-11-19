@@ -94,6 +94,14 @@ export default function Builder2({ edit = false }) {
       router.push(`/project/${id}/editor`);
     }
   };
+
+  const getHref = (id) => {
+    if (!edit) {
+      return `/project/${id}/preview`;
+    } else {
+      return `/project/${id}/editor`;
+    }
+  };
   const handleEditWork = (work) => {
     setSelectedWork(work);
     openModal(modals.work);
@@ -199,6 +207,7 @@ export default function Builder2({ edit = false }) {
                     onDeleteProject={() => onDeleteProject(project)}
                     edit={true}
                     handleRouter={handleRouter}
+                    href={getHref(project._id)}
                   />
                 </Chat>
               </div>

@@ -8,6 +8,7 @@ import CustomDomain from "@/components/customDomain";
 import DefaultDomain from "@/components/defaultDomain";
 import Transaction from "@/components/transaction";
 import MemoLeftArrow from "@/components/icons/LeftArrow";
+import Link from "next/link";
 
 export default function Settings() {
   const {

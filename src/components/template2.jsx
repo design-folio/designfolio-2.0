@@ -192,25 +192,27 @@ export default function Template2({ userDetails, preview = false }) {
             >
               Here you go!
             </Chat>
-            {projects?.map((project, index) => {
-              return (
-                <div
-                  className="max-w-[444px] relative"
-                  key={project._id}
-                  ref={projectRef}
-                >
-                  <ProjectShape className="text-template-text-left-bg-color" />
-                  <Chat direction="left" className="rounded-tl-none w-full">
-                    <ProjectCard
-                      project={project}
-                      onDeleteProject={onDeleteProject}
-                      edit={false}
-                      handleRouter={handleRouter}
-                    />
-                  </Chat>
-                </div>
-              );
-            })}
+            <div className="flex flex-row flex-wrap gap-6">
+              {projects?.map((project, index) => {
+                return (
+                  <div
+                    className="w-full md:w-[calc(50%-12px)] max-w-[444px] relative"
+                    key={project._id}
+                    ref={projectRef}
+                  >
+                    <ProjectShape className="text-template-text-left-bg-color" />
+                    <Chat direction="left" className="rounded-tl-none w-full">
+                      <ProjectCard
+                        project={project}
+                        onDeleteProject={onDeleteProject}
+                        edit={false}
+                        handleRouter={handleRouter}
+                      />
+                    </Chat>
+                  </div>
+                );
+              })}
+            </div>
           </>
         )}
 

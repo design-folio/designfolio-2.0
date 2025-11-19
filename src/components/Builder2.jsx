@@ -185,13 +185,13 @@ export default function Builder2({ edit = false }) {
       <Chat direction="left">Here you go!</Chat>
       <SortableList
         onSortEnd={onSortEnd}
-        className="list flex flex-col gap-6"
+        className="list flex flex-row flex-wrap gap-6 "
         draggedItemClassName="dragged"
       >
         {projects?.map((project) => {
           return (
             <SortableItem key={project._id}>
-              <div className="max-w-[444px] relative">
+              <div className="w-full md:w-[calc(50%-12px)] max-w-[444px] relative">
                 <ProjectShape className="text-template-text-left-bg-color" />
                 <Chat direction="left" className="rounded-tl-none w-full">
                   <ProjectCard

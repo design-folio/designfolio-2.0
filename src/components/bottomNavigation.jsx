@@ -59,7 +59,7 @@ export default function BottomNavigation({
 
   return (
     <motion.div
-      className={`bg-gradient-to-b from-transparent px-2  to-df-bg-color fixed bottom-0 left-0 right-0 h-[90px] lg:h-[102px] overflow-hidden  z-10 ${className}`}
+      className={`bg-gradient-to-b from-transparent px-2  to-df-bg-color fixed bottom-0 left-0 right-0 h-[75px] lg:h-[100px] overflow-hidden  z-10 ${className}`}
       initial={{ y: 0 }}
       animate={{ y: isVisible ? 0 : 100 }}
       transition={{ duration: 0.3, ease: "easeInOut" }}

@@ -35,7 +35,6 @@ export default function ProjectCard({
 }) {
   const [isHovered, setIsHovered] = useState(false);
   const [imageLoaded, setImageLoaded] = React.useState(false);
-  console.log(href);
   return (
     <Link href={href}
       className={customTwMerge(

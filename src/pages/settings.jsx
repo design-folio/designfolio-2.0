@@ -38,7 +38,7 @@ export default function Settings() {
         <div className="bg-df-section-card-bg-color p-8 rounded-2xl">
           <Link href="/builder">
             <Button
-              onClick={handleBack}
+              // onClick={handleBack}
               variant="secondary"
               className="rounded-full px-4 h-9 text-sm font-medium "
             >

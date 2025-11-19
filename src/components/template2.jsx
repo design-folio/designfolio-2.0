@@ -94,6 +94,13 @@ export default function Template2({ userDetails, preview = false }) {
       router.push(`/project/${id}`);
     }
   };
+  const getHref = (id) => {
+    if (preview) {
+      return `/project/${id}/preview`;
+    } else {
+      return `/project/${id}`;
+    }
+  };
 
   const handleStepCompletion = () => {
     setActiveStep((prev) => prev + 1);
@@ -207,6 +214,7 @@ export default function Template2({ userDetails, preview = false }) {
                         onDeleteProject={onDeleteProject}
                         edit={false}
                         handleRouter={handleRouter}
+                        href={getHref(project._id)}
                       />
                     </Chat>
                   </div>

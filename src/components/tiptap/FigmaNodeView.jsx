@@ -29,13 +29,14 @@ export default function FigmaNodeView({ node, updateAttributes, deleteNode, edit
   if (isEditing) {
     return (
       <NodeViewWrapper className="figma-tool">
-        <div className="border-2 border-blue-500 dark:border-blue-600 rounded-lg p-4 my-4 bg-slate-50 dark:bg-slate-900">
+        <div className="rounded-lg p-4 my-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 select-none" onMouseDown={(e) => e.stopPropagation()}>
           <textarea
-            className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-md text-sm font-mono resize-y bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 mb-3"
+            className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-md text-sm font-mono resize-y bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 mb-3 select-text"
             placeholder="Paste your Figma embed code here.  Click share on Figma > Click Get embed code > Copy and paste."
             value={embedCode}
             onChange={(e) => setEmbedCode(e.target.value)}
             rows={6}
+            onMouseDown={(e) => e.stopPropagation()}
           />
           <div className="flex gap-2">
             <button 

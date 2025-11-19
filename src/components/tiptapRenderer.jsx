@@ -14,6 +14,7 @@ import Highlight from '@tiptap/extension-highlight';
 import { FigmaExtension } from './tiptap/FigmaExtension';
 import { LinkNode } from './tiptap/LinkExtension';
 import { YoutubeNode } from './tiptap/YoutubeExtension';
+import { ResizableImage } from './tiptap/ResizableImage';
 
 const TiptapRenderer = ({ content }) => {
   const editor = useEditor({
@@ -36,28 +37,26 @@ const TiptapRenderer = ({ content }) => {
       }),
       Image.configure({
         inline: false,
-        HTMLAttributes: {
-          class: 'w-full rounded-[20px] object-cover mt-6 md:mt-8',
-        },
       }),
+      ResizableImage,
       Table.configure({
         HTMLAttributes: {
-          class: 'border-collapse table-auto w-full my-4',
+          class: 'tiptap-table',
         },
       }),
       TableRow.configure({
         HTMLAttributes: {
-          class: 'border border-gray-300',
+          class: 'tiptap-table-row',
         },
       }),
       TableCell.configure({
         HTMLAttributes: {
-          class: 'border border-gray-300 p-2 min-w-[100px]',
+          class: 'tiptap-table-cell',
         },
       }),
       TableHeader.configure({
         HTMLAttributes: {
-          class: 'border border-gray-300 p-2 font-bold bg-gray-100 dark:bg-gray-800',
+          class: 'tiptap-table-header',
         },
       }),
       Underline,

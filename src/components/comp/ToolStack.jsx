@@ -4,8 +4,9 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import Button from "../button";
 import PlusIcon from "../../../public/assets/svgs/plus.svg";
 import { useGlobalContext } from "@/context/globalContext";
+import { cn } from "@/lib/utils";
 
-export const ToolStack = ({ userDetails, edit }) => {
+export const ToolStack = ({ userDetails, edit,titleClasses }) => {
   const isMobile = useIsMobile();
   const { tools } = userDetails || {};
   const { openModal } = useGlobalContext();
@@ -76,7 +77,7 @@ export const ToolStack = ({ userDetails, edit }) => {
 
   return (
     <section className="py-12 overflow-hidden">
-      <h2 className="text-2xl font-bold mb-8 text-center">Tool Stack</h2>
+      <h2 className={cn("text-2xl font-bold mb-8 text-center",titleClasses)}>Tool Stack</h2>
       {isMobile ? (
         <div
           className="relative w-full"
@@ -137,6 +138,7 @@ export const ToolStack = ({ userDetails, edit }) => {
             >
               <Button
                 type="secondary"
+                size="icon"
                 icon={
                   <PlusIcon className="text-secondary-btn-text-color w-[32px] h-[32px] cursor-pointer" />
                 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
@@ -8,14 +8,16 @@ import { TableCell } from "@tiptap/extension-table-cell";
 import { TableHeader } from "@tiptap/extension-table-header";
 import Underline from "@tiptap/extension-underline";
 import Link from "@tiptap/extension-link";
-import Youtube from '@tiptap/extension-youtube';
-import TextAlign from '@tiptap/extension-text-align';
-import Highlight from '@tiptap/extension-highlight';
-import Placeholder from '@tiptap/extension-placeholder';
-import { FigmaExtension } from './tiptap/FigmaExtension';
-import { LinkNode } from './tiptap/LinkExtension';
-import { YoutubeNode } from './tiptap/YoutubeExtension';
-import { ResizableImage } from './tiptap/ResizableImage';
+import Youtube from "@tiptap/extension-youtube";
+import TextAlign from "@tiptap/extension-text-align";
+import Highlight from "@tiptap/extension-highlight";
+import { Color } from "@tiptap/extension-color";
+import { TextStyle } from "@tiptap/extension-text-style";
+import Placeholder from "@tiptap/extension-placeholder";
+import { FigmaExtension } from "./tiptap/FigmaExtension";
+import { LinkNode } from "./tiptap/LinkExtension";
+import { YoutubeNode } from "./tiptap/YoutubeExtension";
+import { ResizableImage } from "./tiptap/ResizableImage";
 import TiptapMenuBar from "./tiptap/TiptapMenuBar";
 import { _updateProject, _uploadImage } from "@/network/post-request";
 import { useGlobalContext } from "@/context/globalContext";
@@ -25,91 +27,94 @@ import queryClient from "@/network/queryClient";
 
 // Ensure Table extensions are properly loaded
 if (!Table || !TableRow || !TableCell || !TableHeader) {
-  console.error('Table extensions not loaded properly');
+  console.error("Table extensions not loaded properly");
 }
 
 const TiptapEditor = ({ projectDetails, userDetails }) => {
   const router = useRouter();
   const { setWordCount, setProjectValue } = useGlobalContext();
   const saveTimeoutRef = useRef(null);
+  const [showToolbar, setShowToolbar] = useState(false);
+  const editorContainerRef = useRef(null);
 
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
+      TextStyle,
+      Color,
       StarterKit.configure({
         heading: {
           levels: [2, 3, 4, 5, 6],
         },
         bulletList: {
           HTMLAttributes: {
-            class: 'list-disc pl-5',
+            class: "list-disc pl-5",
           },
         },
         orderedList: {
           HTMLAttributes: {
-            class: 'list-decimal pl-5',
+            class: "list-decimal pl-5",
           },
-        },
-      }),
-      Image.configure({
-        inline: false,
-        allowBase64: true,
-      }),
-      ResizableImage,
-      Table.configure({
-        HTMLAttributes: {
-          class: 'tiptap-table',
-        },
-        resizable: true,
-      }),
-      TableRow.configure({
-        HTMLAttributes: {
-          class: 'tiptap-table-row',
-        },
-      }),
-      TableCell.configure({
-        HTMLAttributes: {
-          class: 'tiptap-table-cell',
-        },
-      }),
-      TableHeader.configure({
-        HTMLAttributes: {
-          class: 'tiptap-table-header',
         },
       }),
       Underline,
       Link.configure({
         openOnClick: false,
         HTMLAttributes: {
-          class: 'text-blue-500 underline',
+          class: "text-blue-500 underline",
         },
       }),
+      Highlight.configure({
+        multicolor: true,
+      }),
+      TextAlign.configure({
+        types: ["heading", "paragraph"],
+      }),
+      Image.configure({
+        inline: false,
+        allowBase64: true,
+      }),
+      ResizableImage,
       Youtube.configure({
         controls: true,
         nocookie: true,
         HTMLAttributes: {
-          class: 'w-full aspect-video rounded-[20px] mt-6 md:mt-8',
+          class: "w-full aspect-video rounded-[20px] mt-6 md:mt-8",
         },
       }),
-      TextAlign.configure({
-        types: ['heading', 'paragraph'],
-      }),
-      Highlight.configure({
+      Table.configure({
         HTMLAttributes: {
-          class: 'bg-yellow-200 dark:bg-yellow-600',
+          class: "tiptap-table",
+        },
+        resizable: true,
+      }),
+      TableRow.configure({
+        HTMLAttributes: {
+          class: "tiptap-table-row",
+        },
+      }),
+      TableCell.configure({
+        HTMLAttributes: {
+          class: "tiptap-table-cell",
+        },
+      }),
+      TableHeader.configure({
+        HTMLAttributes: {
+          class: "tiptap-table-header",
         },
       }),
       Placeholder.configure({
-        placeholder: 'Type here...',
+        placeholder: "Type here...",
       }),
       FigmaExtension,
       LinkNode,
       YoutubeNode,
     ],
-    content: projectDetails?.tiptapContent || '',
+    content: projectDetails?.tiptapContent || "",
     editorProps: {
       attributes: {
-        class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl focus:outline-none max-w-none',
+        class:
+          "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl focus:outline-none max-w-none",
       },
     },
     onUpdate: ({ editor }) => {
@@ -147,7 +152,12 @@ const TiptapEditor = ({ projectDetails, userDetails }) => {
         // Update word count
         const text = editor.getText();
         setProjectValue(text.trim());
-        setWordCount(text.trim().split(/\s+/).filter(word => word.length > 0).length);
+        setWordCount(
+          text
+            .trim()
+            .split(/\s+/)
+            .filter((word) => word.length > 0).length
+        );
       }, 1000);
     },
   });
@@ -161,19 +171,21 @@ const TiptapEditor = ({ projectDetails, userDetails }) => {
         if (file?.type === "image/gif") {
           compressedFile = file;
         } else {
-          compressedFile = await new Promise((resolveCompression, rejectCompression) => {
-            new Compressor(file, {
-              quality: 0.8,
-              mimeType: "image/webp",
-              maxHeight: 3840,
-              success(result) {
-                resolveCompression(result);
-              },
-              error(error) {
-                rejectCompression(error);
-              },
-            });
-          });
+          compressedFile = await new Promise(
+            (resolveCompression, rejectCompression) => {
+              new Compressor(file, {
+                quality: 0.8,
+                mimeType: "image/webp",
+                maxHeight: 3840,
+                success(result) {
+                  resolveCompression(result);
+                },
+                error(error) {
+                  rejectCompression(error);
+                },
+              });
+            }
+          );
         }
 
         const reader = new FileReader();
@@ -209,18 +221,22 @@ const TiptapEditor = ({ projectDetails, userDetails }) => {
       if (!files || files.length === 0) return;
 
       const file = files[0];
-      if (!file.type.startsWith('image/')) return;
+      if (!file.type.startsWith("image/")) return;
 
       event.preventDefault();
 
       try {
         const url = await handleImageUpload(file);
-        editor.chain().focus().insertContent({
-          type: 'resizableImage',
-          attrs: { src: url },
-        }).run();
+        editor
+          .chain()
+          .focus()
+          .insertContent({
+            type: "resizableImage",
+            attrs: { src: url },
+          })
+          .run();
       } catch (error) {
-        console.error('Error uploading image:', error);
+        console.error("Error uploading image:", error);
       }
     };
 
@@ -229,31 +245,52 @@ const TiptapEditor = ({ projectDetails, userDetails }) => {
       if (!files || files.length === 0) return;
 
       const file = files[0];
-      if (!file.type.startsWith('image/')) return;
+      if (!file.type.startsWith("image/")) return;
 
       event.preventDefault();
 
       try {
         const url = await handleImageUpload(file);
-        editor.chain().focus().insertContent({
-          type: 'resizableImage',
-          attrs: { src: url },
-        }).run();
+        editor
+          .chain()
+          .focus()
+          .insertContent({
+            type: "resizableImage",
+            attrs: { src: url },
+          })
+          .run();
       } catch (error) {
-        console.error('Error uploading image:', error);
+        console.error("Error uploading image:", error);
       }
     };
 
-    editor.view.dom.addEventListener('drop', handleDrop);
-    editor.view.dom.addEventListener('paste', handlePaste);
+    editor.view.dom.addEventListener("drop", handleDrop);
+    editor.view.dom.addEventListener("paste", handlePaste);
 
     return () => {
       if (editor.view && editor.view.dom) {
-        editor.view.dom.removeEventListener('drop', handleDrop);
-        editor.view.dom.removeEventListener('paste', handlePaste);
+        editor.view.dom.removeEventListener("drop", handleDrop);
+        editor.view.dom.removeEventListener("paste", handlePaste);
       }
     };
   }, [editor]);
+
+  // Handle click outside to hide toolbar
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        editorContainerRef.current &&
+        !editorContainerRef.current.contains(event.target)
+      ) {
+        setShowToolbar(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -272,11 +309,19 @@ const TiptapEditor = ({ projectDetails, userDetails }) => {
   }
 
   return (
-    <div className="project-editor bg-df-section-card-bg-color rounded-[24px]">
-      <TiptapMenuBar editor={editor} />
-      <div className="tiptap-editor-wrapper p-[16px] md:p-[32px]">
-        <EditorContent editor={editor} />
+    <div className="project-editor-container" ref={editorContainerRef}>
+      {/* Editor Content */}
+      <div
+        className="project-editor bg-df-section-card-bg-color"
+        onClick={() => setShowToolbar(true)}
+      >
+        <div className="tiptap-editor-wrapper p-[16px] md:p-[32px]">
+          <EditorContent editor={editor} />
+        </div>
       </div>
+
+      {/* Fixed Bottom Toolbar - Shows only when editor is active */}
+      <TiptapMenuBar editor={editor} showToolbar={showToolbar} />
     </div>
   );
 };

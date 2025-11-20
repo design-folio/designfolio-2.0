@@ -3,7 +3,7 @@ import { Check } from "lucide-react";
 
 export default function OptionList({ items, selected, onSelect, testPrefix }) {
     return (
-        <div className="max-h-[50vh] overflow-y-auto mb-8 pr-2 -mr-2">
+        <div className="max-h-[48vh] overflow-y-auto mb-8 pr-2 -mr-2">
             <motion.div
                 className="flex flex-col gap-3"
                 initial={{ opacity: 0, filter: "blur(4px)" }}

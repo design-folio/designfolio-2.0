@@ -241,6 +241,7 @@ module.exports = {
           "var(--input-password-description-color)",
         "bottom-navigation-active-stroke":
           "var(--bottom-navigation-active-stroke)",
+        "bottom-navigation-border": "var(--bottom-navigation-border)",
         "bottom-navigation-active-fill": "var(--bottom-navigation-active-fill)",
         "bottom-navigation-inactive-stroke":
           "var(--bottom-navigation-inactive-stroke)",

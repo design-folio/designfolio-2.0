@@ -31,7 +31,7 @@ export default function SkillsPicker({ skills, selected, onToggle, onAdd, search
                 </div>
             </motion.div>
 
-            <div className="max-h-[50vh] overflow-y-auto mb-8 pr-2 -mr-2">
+            <div className="max-h-[48vh] overflow-y-auto mb-8 pr-2 -mr-2">
                 <motion.div className="flex flex-wrap gap-2" initial={{ opacity: 0, filter: "blur(4px)" }} animate={{ opacity: 1, filter: "blur(0px)" }} transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}>
                     {loading && filtered.length === 0 ? (
                         <div className="px-5 py-2.5 rounded-full border-2 border-border relative overflow-hidden bg-muted/10 flex items-center gap-2">

@@ -67,8 +67,8 @@ export default function Chat({
           wordBreak: "break-word",
         }}
         className={`${direction == "left"
-            ? "bg-template-text-left-bg-color text-template-text-left-text-color mr-auto"
-            : "bg-template-text-right-bg-color text-template-text-right-text-color ml-auto"
+          ? "bg-template-text-left-bg-color text-template-text-left-text-color mr-auto"
+          : "bg-template-text-right-bg-color text-template-text-right-text-color ml-auto"
           } p-4 rounded-[24px] break-words ${className}`}
       >
         {show ? (

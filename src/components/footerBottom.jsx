@@ -37,7 +37,7 @@ export default function FooterBottom() {
             </Link>
             <Link
               href="/pricing"
-              className="text-sm text-muted-foreground hover-elevate px-2 py-1 rounded-md transition-colors"
+              className="text-sm text-muted-foreground hover-elevate px-2 py-1 rounded-md transition-colors cursor-pointer"
               data-testid="link-pricing"
             >
               Pricing

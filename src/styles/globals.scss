@@ -289,6 +289,10 @@ body {
   box-shadow: var(--input-border-hover-shadow);
 }
 
+textarea.text-input {
+  border-radius: 16px;
+}
+
 input::placeholder {
   color: var(--input-placeholder-color);
   opacity: 1; /* Firefox */

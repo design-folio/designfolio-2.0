@@ -31,6 +31,9 @@ import ProjectLock from "../projectLock";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { cn } from "@/lib/utils";
 import MemoCasestudy from "../icons/Casestudy";
+import Tools from "../tools";
+import { ToolStack } from "./ToolStack";
+// import { ToolStack } from "./ToolStack";
 
 const Portfolio = ({ userDetails, edit }) => {
   const router = useRouter();
@@ -419,6 +422,8 @@ const Portfolio = ({ userDetails, edit }) => {
             </SortableContext>
           </DndContext>
         )}
+        {/* Tools Section */}
+        <ToolStack userDetails={userDetails} edit={edit} titleClasses="text-3xl"/>
 
         {/* Reviews Section */}
         {(reviews?.length > 0 || edit) && (

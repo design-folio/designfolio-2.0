@@ -25,6 +25,7 @@ import Modal from "./modal";
 import AnalyzeCaseStudy from "./analyzeCaseStudy";
 import { useGlobalContext } from "@/context/globalContext";
 import AnimatedLoading from "./AnimatedLoading";
+import Link from "next/link";
 export default function ProjectInfo({
   projectDetails,
   userDetails,
@@ -183,9 +184,11 @@ export default function ProjectInfo({
     fetchAnalyzeStatus();
   }, []);
 
+  console.log(userDetails);
   return (
     <div className="bg-df-section-card-bg-color rounded-[24px] p-[16px] md:p-[32px]">
       <div className="flex justify-between items-center mb-2">
+
         <Button
           text="Go Back"
           onClick={handleBack}
@@ -193,6 +196,7 @@ export default function ProjectInfo({
           size="small"
           icon={<LeftArrow className="text-df-icon-color cursor-pointer" />}
         />
+
         {edit && (
           <div className="flex gap-3">
             {AnalyzeStatus && (
@@ -260,8 +264,8 @@ export default function ProjectInfo({
 
               <div
                 className={`pt-2 origin-top-right absolute z-20 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${popoverMenu === popovers.password
-                    ? "opacity-100 scale-100"
-                    : "opacity-0 scale-90 pointer-events-none"
+                  ? "opacity-100 scale-100"
+                  : "opacity-0 scale-90 pointer-events-none"
                   }`}
               >
                 <div className=" w-[350px] md:w-[386px]  bg-popover-bg-color rounded-2xl shadow-lg border-[5px] border-popover-border-color p-2">
@@ -388,21 +392,23 @@ export default function ProjectInfo({
         {title ? title : "Type here..."}
       </h1>
 
-      {(edit || !!description) && (
-        <p
-          className="text-[16px] text-project-info-card-description-color font-inter font-[500] mt-2 min-w-0 webkit-fill"
-          contentEditable={edit}
-          suppressContentEditableWarning
-          onBlur={(e) => handleOnBlur("description", e)}
-          onFocus={(e) => {
-            if (e.target.textContent === "Type here...") {
-              e.target.textContent = "";
-            }
-          }}
-        >
-          {description ? description : "Type here..."}
-        </p>
-      )}
+      {
+        (edit || !!description) && (
+          <p
+            className="text-[16px] text-project-info-card-description-color font-inter font-[500] mt-2 min-w-0 webkit-fill"
+            contentEditable={edit}
+            suppressContentEditableWarning
+            onBlur={(e) => handleOnBlur("description", e)}
+            onFocus={(e) => {
+              if (e.target.textContent === "Type here...") {
+                e.target.textContent = "";
+              }
+            }}
+          >
+            {description ? description : "Type here..."}
+          </p>
+        )
+      }
 
       <div className="flex flex-col gap-4 md:grid md:grid-cols-4 md:gap-6 mt-4">
         {(edit || !!client) && (
@@ -491,30 +497,32 @@ export default function ProjectInfo({
           </div>
         )}
       </div>
-      {edit ? (
-        <ImageWithOverlayAndPicker
-          src={thumbnail?.url}
-          project={projectDetails}
-        />
-      ) : (
-        <figure className="relative">
-          <img
+      {
+        edit ? (
+          <ImageWithOverlayAndPicker
             src={thumbnail?.url}
-            alt="project image"
-            className={`w-full h-full rounded-[20px] object-cover transition-opacity duration-100 mt-6 md:mt-8 ${imageLoaded ? "opacity-100" : "opacity-0"
-              }`}
-            loading="lazy"
-            fetchPriority="high"
-            decoding="async"
-            onLoad={() => {
-              setImageLoaded(true);
-            }}
+            project={projectDetails}
           />
-          {!imageLoaded && (
-            <div className="w-full h-full rounded-[20px] bg-df-placeholder-color absolute top-0 right-0" />
-          )}
-        </figure>
-      )}
+        ) : (
+          <figure className="relative">
+            <img
+              src={thumbnail?.url}
+              alt="project image"
+              className={`w-full h-full rounded-[20px] object-cover transition-opacity duration-100 mt-6 md:mt-8 ${imageLoaded ? "opacity-100" : "opacity-0"
+                }`}
+              loading="lazy"
+              fetchPriority="high"
+              decoding="async"
+              onLoad={() => {
+                setImageLoaded(true);
+              }}
+            />
+            {!imageLoaded && (
+              <div className="w-full h-full rounded-[20px] bg-df-placeholder-color absolute top-0 right-0" />
+            )}
+          </figure>
+        )
+      }
       <Modal show={showModal} className={"md:block"}>
         <AnalyzeCaseStudy
           wordCount={wordCount}
@@ -526,6 +534,6 @@ export default function ProjectInfo({
           isAnalyzing={isAnalyzing}
         />
       </Modal>
-    </div>
+    </div >
   );
 }

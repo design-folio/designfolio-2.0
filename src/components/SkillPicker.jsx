@@ -31,57 +31,59 @@ export default function SkillsPicker({ skills, selected, onToggle, onAdd, search
                 </div>
             </motion.div>
 
-            <motion.div className="flex flex-wrap gap-2 mb-8" initial={{ opacity: 0, filter: "blur(4px)" }} animate={{ opacity: 1, filter: "blur(0px)" }} transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}>
-                {loading && filtered.length === 0 ? (
-                    <div className="px-5 py-2.5 rounded-full border-2 border-border relative overflow-hidden bg-muted/10 flex items-center gap-2">
-                        <Loader2 className="animate-spin h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm text-muted-foreground">Loading</span>
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent shimmer-animation"></div>
-                    </div>
-                ) : (
-                    <>
-                        {filtered.map((interest) => {
-                            const isSelected = selected.includes(interest);
-                            return (
-                                <button
-                                    key={interest}
-                                    onClick={() => onToggle(interest)}
-                                    className="px-5 py-2.5 rounded-full border-2 text-sm font-medium transition-all hover-elevate relative cursor-pointer flex items-center gap-2"
-                                    style={
-                                        isSelected
-                                            ? { backgroundColor: "#FFF5F0", borderColor: "#FF553E", color: "#FF553E" }
-                                            : { backgroundColor: "transparent", borderColor: "hsl(var(--border))", color: "hsl(var(--foreground))" }
-                                    }
-                                    data-testid={`button-interest-${interest.toLowerCase().replace(/\s+/g, "-")}`}
+            <div className="max-h-[50vh] overflow-y-auto mb-8 pr-2 -mr-2">
+                <motion.div className="flex flex-wrap gap-2" initial={{ opacity: 0, filter: "blur(4px)" }} animate={{ opacity: 1, filter: "blur(0px)" }} transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}>
+                    {loading && filtered.length === 0 ? (
+                        <div className="px-5 py-2.5 rounded-full border-2 border-border relative overflow-hidden bg-muted/10 flex items-center gap-2">
+                            <Loader2 className="animate-spin h-4 w-4 text-muted-foreground" />
+                            <span className="text-sm text-muted-foreground">Loading</span>
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent shimmer-animation"></div>
+                        </div>
+                    ) : (
+                        <>
+                            {filtered.map((interest) => {
+                                const isSelected = selected.includes(interest);
+                                return (
+                                    <button
+                                        key={interest}
+                                        onClick={() => onToggle(interest)}
+                                        className="px-5 py-2.5 rounded-full border-2 text-sm font-medium transition-all hover-elevate relative cursor-pointer flex items-center gap-2"
+                                        style={
+                                            isSelected
+                                                ? { backgroundColor: "#FFF5F0", borderColor: "#FF553E", color: "#FF553E" }
+                                                : { backgroundColor: "transparent", borderColor: "hsl(var(--border))", color: "hsl(var(--foreground))" }
+                                        }
+                                        data-testid={`button-interest-${interest.toLowerCase().replace(/\s+/g, "-")}`}
+                                    >
+                                        <AnimatePresence>
+                                            {isSelected && (
+                                                <motion.div initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0, opacity: 0 }} transition={{ duration: 0.2, ease: "easeOut" }}>
+                                                    <Check className="w-4 h-4" style={{ color: "#FF553E" }} />
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
+                                        {interest}
+                                    </button>
+                                );
+                            })}
+                            {showAdd && (
+                                <motion.button
+                                    initial={{ scale: 0.8, opacity: 0 }}
+                                    animate={{ scale: 1, opacity: 1 }}
+                                    exit={{ scale: 0.8, opacity: 0 }}
+                                    transition={{ duration: 0.2 }}
+                                    onClick={() => onAdd(search)}
+                                    className="px-5 py-2.5 rounded-full border-2 border-dashed text-sm font-medium transition-all hover-elevate relative flex items-center gap-2"
+                                    style={{ backgroundColor: "transparent", borderColor: "#FF553E", color: "#FF553E" }}
+                                    data-testid="button-add-custom-skill"
                                 >
-                                    <AnimatePresence>
-                                        {isSelected && (
-                                            <motion.div initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0, opacity: 0 }} transition={{ duration: 0.2, ease: "easeOut" }}>
-                                                <Check className="w-4 h-4" style={{ color: "#FF553E" }} />
-                                            </motion.div>
-                                        )}
-                                    </AnimatePresence>
-                                    {interest}
-                                </button>
-                            );
-                        })}
-                        {showAdd && (
-                            <motion.button
-                                initial={{ scale: 0.8, opacity: 0 }}
-                                animate={{ scale: 1, opacity: 1 }}
-                                exit={{ scale: 0.8, opacity: 0 }}
-                                transition={{ duration: 0.2 }}
-                                onClick={() => onAdd(search)}
-                                className="px-5 py-2.5 rounded-full border-2 border-dashed text-sm font-medium transition-all hover-elevate relative flex items-center gap-2"
-                                style={{ backgroundColor: "transparent", borderColor: "#FF553E", color: "#FF553E" }}
-                                data-testid="button-add-custom-skill"
-                            >
-                                <span>Add "{search}" as new skill</span>
-                            </motion.button>
-                        )}
-                    </>
-                )}
-            </motion.div>
+                                    <span>Add "{search}" as new skill</span>
+                                </motion.button>
+                            )}
+                        </>
+                    )}
+                </motion.div>
+            </div>
 
             <style jsx>{`
                 @keyframes shimmer {

@@ -6,7 +6,6 @@ import TiptapRenderer from "./tiptapRenderer";
 
 export default function ProjectPreview({ projectDetails }) {
   const { userDetails, showModal } = useGlobalContext();
-  console.log(projectDetails);
 
   const contentVersion = projectDetails?.project?.contentVersion || 1;
   const hasTiptapContent = contentVersion === 2 && projectDetails?.project?.tiptapContent;

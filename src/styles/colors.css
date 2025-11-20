@@ -199,6 +199,7 @@
   --bottom-navigation-active-fill: #f3f4f7;
   --bottom-navigation-inactive-stroke: #738096;
   --bottom-navigation-inactive-fill: #f9fafb;
+  --bottom-navigation-border: #e2e1e1;
 
   --used-credit-text-color: #8b919a;
   --good-bg-color: #d3fae2;
@@ -387,6 +388,7 @@
   --bottom-navigation-active-fill: #2f323d;
   --bottom-navigation-inactive-stroke: #738096;
   --bottom-navigation-inactive-fill: #1d1f26;
+  --bottom-navigation-border: #2a2d38;
 
   --modal-analyze-bg-color: #23252f;
   --analytics-url-color: #007aff;

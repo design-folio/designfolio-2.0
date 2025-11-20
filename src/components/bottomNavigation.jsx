@@ -15,31 +15,61 @@ export default function BottomNavigation({
   const router = useRouter();
   const [isProject, setIsProject] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
-  const lastScrollY = useRef(0);
+  const lastY = useRef(0);
+
   const { projectRef } = useGlobalContext();
 
   useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY || window.pageYOffset;
-      const scrollThreshold = 10; // Minimum scroll distance to trigger hide/show
+    let lastWheelEventTime = 0;
+    let lastGestureDirection = null; // "up" or "down"
 
-      if (currentScrollY < scrollThreshold) {
-        // At the top, always show
-        setIsVisible(true);
-      } else if (currentScrollY > lastScrollY.current + scrollThreshold) {
-        // Scrolling down
-        setIsVisible(false);
-      } else if (currentScrollY < lastScrollY.current - scrollThreshold) {
-        // Scrolling up
-        setIsVisible(true);
+    const onWheel = (e) => {
+      const now = performance.now();
+
+      // Ignore momentum: if less than 80ms since last wheel, it's inertia
+      const isMomentum = now - lastWheelEventTime < 80;
+      lastWheelEventTime = now;
+
+      if (!isMomentum) {
+        if (e.deltaY < 0) {
+          lastGestureDirection = "up";
+          setIsVisible(true); // show instantly
+        } else if (e.deltaY > 0) {
+          lastGestureDirection = "down";
+          setIsVisible(false);
+        }
       }
-
-      lastScrollY.current = currentScrollY;
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    const onScroll = () => {
+      const y = window.scrollY;
+      const diff = y - lastY.current;
+
+      const atTop = y < 10;
+      const atBottom =
+        window.innerHeight + y >=
+        (document.documentElement.scrollHeight ||
+          document.body.scrollHeight) - 10;
+
+      if (atTop || atBottom) {
+        setIsVisible(true);
+      } else {
+        if (diff > 2) setIsVisible(false);
+        if (diff < -2) setIsVisible(true);
+      }
+
+      lastY.current = y;
+    };
+
+    window.addEventListener("wheel", onWheel, { passive: true });
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
+
 
   const handleHomeNavigation = () => {
     setIsProject(false);
@@ -50,8 +80,8 @@ export default function BottomNavigation({
     if (projectRef.current) {
       setIsProject(true);
       const elementTop = projectRef.current.getBoundingClientRect().top;
-      const offset = 20; // Adjust the offset as needed
-      const scrollTop = window.scrollY || window.pageYOffset; // For compatibility
+      const offset = 20;
+      const scrollTop = window.scrollY || window.pageYOffset;
       const top = elementTop + scrollTop - offset;
       window.scrollTo({ top, behavior: "smooth" });
     }
@@ -59,16 +89,15 @@ export default function BottomNavigation({
 
   return (
     <motion.div
-      className={`bg-gradient-to-b from-transparent px-2  to-df-bg-color fixed bottom-0 left-0 right-0 h-[75px] lg:h-[100px] overflow-hidden  z-10 ${className}`}
-      initial={{ y: 0 }}
+      className={`bg-gradient-to-b from-transparent px-2 to-df-bg-color fixed bottom-0 left-0 right-0 h-[75px] lg:h-[100px] overflow-hidden z-10 ${className}`}
       animate={{ y: isVisible ? 0 : 100 }}
-      transition={{ duration: 0.3, ease: "easeInOut" }}
+      transition={{ duration: 0.25, ease: "easeInOut" }}
     >
       {!router?.asPath?.includes("project") && (
         <motion.div
-          className="bg-df-section-card-bg-color rounded-[24px] shadow-bottom  p-1 w-fit max-w-[400px] md:max-w-[450px] m-auto flex items-center relative gap-4"
-          initial={{ opacity: 0 }} // Start fully transparent
-          animate={{ opacity: 1 }} // Animate to fully visible
+          className="bg-df-section-card-bg-color border border-bottom-navigation-border rounded-[24px] shadow-bottom p-1 w-fit max-w-[400px] md:max-w-[450px] m-auto flex items-center relative gap-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 0.5 }}
         >
           <Button
@@ -88,6 +117,7 @@ export default function BottomNavigation({
               }`}
             onClick={handleHomeNavigation}
           />
+
           {userDetails?.projects?.length != 0 && (
             <Button
               onClick={handleProjectNavigation}
@@ -109,18 +139,22 @@ export default function BottomNavigation({
           )}
 
           {!!userDetails?.resume?.url && (
-            <a href={userDetails?.resume?.url} download={true} target="_blank">
+            <a href={userDetails?.resume?.url} download target="_blank">
               <Button
-                text={window?.innerWidth > 500 ? "Download resume" : "Resume"}
-                customClass=""
+                text={
+                  typeof window !== "undefined" && window.innerWidth > 500
+                    ? "Download resume"
+                    : "Resume"
+                }
               />
             </a>
           )}
         </motion.div>
       )}
+
       {!userDetails?.pro && (
         <div
-          className={`text-center flex justify-center relative top-5 lg:absolute lg:right-[36px] lg:top-[10px] xl:block cursor-pointer `}
+          className="hidden text-center lg:flex justify-center relative top-5 lg:absolute lg:right-[36px] lg:top-[10px] xl:block cursor-pointer"
           onClick={() => window.open("https://www.designfolio.me", "_blank")}
         >
           <div className="bg-df-section-card-bg-color shadow-df-section-card-shadow p-2 rounded-2xl">

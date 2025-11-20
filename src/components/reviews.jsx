@@ -13,6 +13,7 @@ import { Plus, PlusIcon } from "lucide-react";
 import AddItem from "./addItem";
 import MemoTestimonial from "./icons/Testimonial";
 import { useTheme } from "next-themes";
+import Text from "./text";
 
 export default function Reviews({ edit = false, userDetails, openModal }) {
   const reviews = userDetails?.reviews || [];
@@ -31,9 +32,12 @@ export default function Reviews({ edit = false, userDetails, openModal }) {
         }}
       >
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-semibold" data-testid="text-testimonials-title">
+          <Text
+            size="p-small"
+            className="text-project-card-heading-color font-semibold"
+          >
             Testimonials
-          </h2>
+          </Text>
           {edit && reviews.length > 0 && (
             <Button
               variant="secondary"

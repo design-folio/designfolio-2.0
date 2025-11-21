@@ -38,6 +38,7 @@ import {
 
 const TiptapMenuBar = ({ editor, showToolbar }) => {
   const fileInputRef = useRef(null);
+  const toolbarRef = useRef(null);
   const [isInTable, setIsInTable] = useState(false);
   const [showHeadingMenu, setShowHeadingMenu] = useState(false);
   const [showAlignMenu, setShowAlignMenu] = useState(false);
@@ -46,26 +47,38 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
   const [showColorMenu, setShowColorMenu] = useState(false);
   const [showListMenu, setShowListMenu] = useState(false);
 
+  // Close all dropdowns when toolbar is hidden
+  useEffect(() => {
+    if (!showToolbar) {
+      setShowHeadingMenu(false);
+      setShowAlignMenu(false);
+      setShowInsertMenu(false);
+      setShowMoreMenu(false);
+      setShowColorMenu(false);
+      setShowListMenu(false);
+    }
+  }, [showToolbar]);
+
   const textColors = [
-    { name: 'Default', value: null, display: '#000000', isDefault: true },
-    { name: 'Purple', value: '#9333ea', display: '#9333ea', isDefault: false },
-    { name: 'Red', value: '#dc2626', display: '#dc2626', isDefault: false },
-    { name: 'Orange', value: '#ea580c', display: '#ea580c', isDefault: false },
-    { name: 'Blue', value: '#2563eb', display: '#2563eb', isDefault: false },
-    { name: 'Green', value: '#16a34a', display: '#16a34a', isDefault: false },
-    { name: 'Pink', value: '#db2777', display: '#db2777', isDefault: false },
+    { name: "Default", value: null, display: "#000000", isDefault: true },
+    { name: "Purple", value: "#9333ea", display: "#9333ea", isDefault: false },
+    { name: "Red", value: "#dc2626", display: "#dc2626", isDefault: false },
+    { name: "Orange", value: "#ea580c", display: "#ea580c", isDefault: false },
+    { name: "Blue", value: "#2563eb", display: "#2563eb", isDefault: false },
+    { name: "Green", value: "#16a34a", display: "#16a34a", isDefault: false },
+    { name: "Pink", value: "#db2777", display: "#db2777", isDefault: false },
   ];
 
   const backgroundColors = [
-    { name: 'None', value: null, bgColor: 'transparent', isDefault: true },
-    { name: 'Purple', value: '#e9d5ff', bgColor: '#e9d5ff', isDefault: false },
-    { name: 'Red', value: '#fecaca', bgColor: '#fecaca', isDefault: false },
-    { name: 'Yellow', value: '#fef08a', bgColor: '#fef08a', isDefault: false },
-    { name: 'Blue', value: '#bfdbfe', bgColor: '#bfdbfe', isDefault: false },
-    { name: 'Green', value: '#bbf7d0', bgColor: '#bbf7d0', isDefault: false },
-    { name: 'Orange', value: '#fed7aa', bgColor: '#fed7aa', isDefault: false },
-    { name: 'Pink', value: '#fbcfe8', bgColor: '#fbcfe8', isDefault: false },
-    { name: 'Gray', value: '#e5e7eb', bgColor: '#e5e7eb', isDefault: false },
+    { name: "None", value: null, bgColor: "transparent", isDefault: true },
+    { name: "Purple", value: "#e9d5ff", bgColor: "#e9d5ff", isDefault: false },
+    { name: "Red", value: "#fecaca", bgColor: "#fecaca", isDefault: false },
+    { name: "Yellow", value: "#fef08a", bgColor: "#fef08a", isDefault: false },
+    { name: "Blue", value: "#bfdbfe", bgColor: "#bfdbfe", isDefault: false },
+    { name: "Green", value: "#bbf7d0", bgColor: "#bbf7d0", isDefault: false },
+    { name: "Orange", value: "#fed7aa", bgColor: "#fed7aa", isDefault: false },
+    { name: "Pink", value: "#fbcfe8", bgColor: "#fbcfe8", isDefault: false },
+    { name: "Gray", value: "#e5e7eb", bgColor: "#e5e7eb", isDefault: false },
   ];
 
   // Function to close all dropdowns
@@ -80,33 +93,33 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
 
   // Function to toggle a specific dropdown and close others
   const toggleDropdown = (dropdown) => {
-    switch(dropdown) {
-      case 'heading':
+    switch (dropdown) {
+      case "heading":
         const newHeadingState = !showHeadingMenu;
         closeAllDropdowns();
         setShowHeadingMenu(newHeadingState);
         break;
-      case 'align':
+      case "align":
         const newAlignState = !showAlignMenu;
         closeAllDropdowns();
         setShowAlignMenu(newAlignState);
         break;
-      case 'insert':
+      case "insert":
         const newInsertState = !showInsertMenu;
         closeAllDropdowns();
         setShowInsertMenu(newInsertState);
         break;
-      case 'more':
+      case "more":
         const newMoreState = !showMoreMenu;
         closeAllDropdowns();
         setShowMoreMenu(newMoreState);
         break;
-      case 'color':
+      case "color":
         const newColorState = !showColorMenu;
         closeAllDropdowns();
         setShowColorMenu(newColorState);
         break;
-      case 'list':
+      case "list":
         const newListState = !showListMenu;
         closeAllDropdowns();
         setShowListMenu(newListState);
@@ -189,6 +202,18 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
     };
   }, [editor]);
 
+  // Auto-scroll to table tools when table is active
+  useEffect(() => {
+    if (isInTable && toolbarRef.current) {
+      setTimeout(() => {
+        toolbarRef.current.scrollTo({
+          left: toolbarRef.current.scrollWidth,
+          behavior: "smooth",
+        });
+      }, 100);
+    }
+  }, [isInTable]);
+
   if (!editor) {
     return null;
   }
@@ -264,6 +289,7 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
 
   return (
     <div
+      ref={toolbarRef}
       className={`tiptap-menu-bar ${
         showToolbar ? "toolbar-visible" : "toolbar-hidden"
       }`}
@@ -279,21 +305,21 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
         </button>
         <button
           onClick={() => editor.chain().focus().toggleItalic().run()}
-          className={activeNodes.italic ? 'is-active' : ''}
+          className={activeNodes.italic ? "is-active" : ""}
           title="Italic"
         >
           <Italic size={18} />
         </button>
         <button
           onClick={() => editor.chain().focus().toggleStrike().run()}
-          className={activeNodes.strike ? 'is-active' : ''}
+          className={activeNodes.strike ? "is-active" : ""}
           title="Strikethrough"
         >
           <Strikethrough size={18} />
         </button>
         <button
           onClick={() => editor.chain().focus().toggleUnderline().run()}
-          className={activeNodes.underline ? 'is-active' : ''}
+          className={activeNodes.underline ? "is-active" : ""}
           title="Underline"
         >
           <Underline size={18} />
@@ -303,10 +329,10 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
       {/* Color Picker Dropdown */}
       <div className="menu-group menu-dropdown">
         <button
-          onClick={() => toggleDropdown('color')}
+          onClick={() => toggleDropdown("color")}
           title="Text & Background Color"
         >
-          <Palette size={18} />
+          <Highlighter size={18} />
         </button>
         {showColorMenu && (
           <div className="dropdown-menu color-picker-menu">
@@ -325,7 +351,9 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
                       }
                       closeAllDropdowns();
                     }}
-                    className={`color-button ${color.isDefault ? 'color-default' : ''}`}
+                    className={`color-button ${
+                      color.isDefault ? "color-default" : ""
+                    }`}
                     title={color.name}
                   >
                     <span
@@ -348,13 +376,19 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
                     key={index}
                     onClick={() => {
                       if (color.value) {
-                        editor.chain().focus().setHighlight({ color: color.value }).run();
+                        editor
+                          .chain()
+                          .focus()
+                          .setHighlight({ color: color.value })
+                          .run();
                       } else {
                         editor.chain().focus().unsetHighlight().run();
                       }
                       closeAllDropdowns();
                     }}
-                    className={`color-button ${color.isDefault ? 'color-default' : ''}`}
+                    className={`color-button ${
+                      color.isDefault ? "color-default" : ""
+                    }`}
                     style={{ backgroundColor: color.bgColor }}
                     title={color.name}
                   >
@@ -367,8 +401,37 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
         )}
       </div>
 
+      {/* Headings */}
+      <div className="menu-group">
+        <button
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 2 }).run()
+          }
+          className={activeNodes.heading2 ? "is-active" : ""}
+          title="Heading 1"
+        >
+          <span className="font-bold text-sm">H1</span>
+        </button>
+        <button
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 3 }).run()
+          }
+          className={activeNodes.heading3 ? "is-active" : ""}
+          title="Heading 2"
+        >
+          <span className="font-bold text-sm">H2</span>
+        </button>
+      </div>
+
       {/* Media Group */}
       <div className="menu-group">
+        <button
+          onClick={() => addLink()}
+          className={activeNodes.link ? "is-active" : ""}
+          title="Link"
+        >
+          <Link2 size={18} />
+        </button>
         <button
           onClick={() => addFigmaEmbed()}
           className={activeNodes.figma ? "is-active" : ""}
@@ -384,13 +447,6 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
           <Youtube size={18} />
         </button>
         <button
-          onClick={() => addLink()}
-          className={activeNodes.link ? "is-active" : ""}
-          title="Link"
-        >
-          <Link2 size={18} />
-        </button>
-        <button
           onClick={() => editor.chain().focus().toggleCode().run()}
           className={activeNodes.code ? "is-active" : ""}
           title="Inline Code"
@@ -402,32 +458,6 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
           title="Divider"
         >
           <Minus size={18} />
-        </button>
-        {/* Hidden Image Input */}
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          onChange={handleImageFile}
-          style={{ display: "none" }}
-        />
-      </div>
-
-      {/* Headings Dropdown */}
-      <div className="menu-group">
-        <button
-          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-          className={activeNodes.heading2 ? "is-active" : ""}
-          title="Heading 1"
-        >
-          <span className="font-bold text-sm">H1</span>
-        </button>
-        <button
-          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-          className={activeNodes.heading3 ? "is-active" : ""}
-          title="Heading 2"
-        >
-          <span className="font-bold text-sm">H2</span>
         </button>
       </div>
 
@@ -491,58 +521,67 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
         </button>
       </div>
 
+      {/* Hidden Image Input */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleImageFile}
+        style={{ display: "none" }}
+      />
+
       {/* Table Tools Animation Wrapper */}
-      <div className={`table-tools-wrapper ${isInTable ? 'visible' : ''}`}>
-          {/* Add Column */}
-          <div className="menu-group">
-            <button
-                onClick={() => editor.chain().focus().addColumnAfter().run()}
-                title="Add Column"
-            >
-                <Columns size={18} />
-            </button>
-          </div>
+      <div className={`table-tools-wrapper ${isInTable ? "visible" : ""}`}>
+        {/* Add Column */}
+        <div className="menu-group">
+          <button
+            onClick={() => editor.chain().focus().addColumnAfter().run()}
+            title="Add Column"
+          >
+            <Columns size={18} />
+          </button>
+        </div>
 
-          {/* Delete Column */}
-          <div className="menu-group">
-            <button
-                onClick={() => editor.chain().focus().deleteColumn().run()}
-                title="Delete Column"
-            >
-                <Minus size={18} style={{ transform: 'rotate(90deg)' }} />
-            </button>
-          </div>
+        {/* Delete Column */}
+        <div className="menu-group">
+          <button
+            onClick={() => editor.chain().focus().deleteColumn().run()}
+            title="Delete Column"
+          >
+            <Minus size={18} style={{ transform: "rotate(90deg)" }} />
+          </button>
+        </div>
 
-          {/* Add Row */}
-          <div className="menu-group">
-            <button
-                onClick={() => editor.chain().focus().addRowAfter().run()}
-                title="Add Row"
-            >
-                <Rows size={18} />
-            </button>
-          </div>
+        {/* Add Row */}
+        <div className="menu-group">
+          <button
+            onClick={() => editor.chain().focus().addRowAfter().run()}
+            title="Add Row"
+          >
+            <Rows size={18} />
+          </button>
+        </div>
 
-          {/* Delete Row */}
-          <div className="menu-group">
-            <button
-                onClick={() => editor.chain().focus().deleteRow().run()}
-                title="Delete Row"
-            >
-                <Minus size={18} />
-            </button>
-          </div>
+        {/* Delete Row */}
+        <div className="menu-group">
+          <button
+            onClick={() => editor.chain().focus().deleteRow().run()}
+            title="Delete Row"
+          >
+            <Minus size={18} />
+          </button>
+        </div>
 
-          {/* Delete Table */}
-          <div className="menu-group">
-            <button
-                onClick={() => editor.chain().focus().deleteTable().run()}
-                title="Delete Table"
-                className="text-red-500 hover:bg-red-50 hover:text-red-600"
-            >
-                <Trash2 size={18} />
-            </button>
-          </div>
+        {/* Delete Table */}
+        <div className="menu-group">
+          <button
+            onClick={() => editor.chain().focus().deleteTable().run()}
+            title="Delete Table"
+            className="text-red-500 hover:bg-red-50 hover:text-red-600"
+          >
+            <Trash2 size={18} />
+          </button>
+        </div>
       </div>
 
       {/* Undo/Redo */}

@@ -260,7 +260,6 @@ export default function Onboarding() {
     try {
       const res = await _updateUser(payload);
       const updatedUser = res?.data?.user;
-      console.log("Onboarding Line 244: updatedUser", updatedUser?.persona);
       if (updatedUser) {
         updateCache("userDetails", updatedUser);
         setUserDetails(updatedUser);
@@ -283,8 +282,8 @@ export default function Onboarding() {
       aria-labelledby="onboarding-title"
       aria-describedby="onboarding-description"
     >
-      <div className="min-h-full w-full flex items-center justify-center p-6">
-        <div className="w-full max-w-2xl py-8">
+      <div className="min-h-full w-full flex items-center justify-center p-4 md:p-6">
+        <div className="w-full max-w-2xl md:py-8">
           <Stepper current={currentStep} />
           <ErrorBanner message={error} />
 
@@ -327,7 +326,7 @@ export default function Onboarding() {
                   selected={GOALS.find((g) => g.id === selectedGoalId)?.label || ""}
                   onSelect={(label) => setSelectedGoalId(GOALS.find((g) => g.label === label)?.id)}
                 />
-                <div className="flex gap-3 mt-6">
+                <div className="flex gap-3 md:mt-6 mt-4">
                   <Button onClick={() => setCurrentStep(1)} variant="outline" className="h-11 rounded-full px-6">
                     Back
                   </Button>
@@ -348,7 +347,7 @@ export default function Onboarding() {
                   selected={EXPERIENCE_LEVELS.find((e) => e.id === selectedExperienceId)?.label || ""}
                   onSelect={(label) => setSelectedExperienceId(EXPERIENCE_LEVELS.find((e) => e.label === label)?.id)}
                 />
-                <div className="flex gap-3 mt-6">
+                <div className="flex gap-3 md:mt-6 mt-4">
                   <Button onClick={() => setCurrentStep(2)} variant="outline" className="h-11 rounded-full px-6">
                     Back
                   </Button>
@@ -373,7 +372,7 @@ export default function Onboarding() {
                   setSearch={setSkillsSearch}
                   loading={skillsLoading}
                 />
-                <div className="flex gap-3 mt-6">
+                <div className="flex gap-3 md:mt-6 mt-4">
                   <Button onClick={() => setCurrentStep(3)} variant="outline" className="h-11 rounded-full px-6">
                     Back
                   </Button>

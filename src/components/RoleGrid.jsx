@@ -11,7 +11,7 @@ import { Check, } from "lucide-react";
 export default function RoleGrid({ roles, selectedRole, onSelect, customRole, setCustomRole }) {
     return (
         <>
-            <div className="max-h-[48vh] overflow-y-auto mb-8 pr-2 -mr-2">
+            <div className="overflow-y-auto md:mb-8 mb-4 pr-2 -mr-2 max-h-[calc(100vh-400px)] md:max-h-[calc(100vh-450px)]">
                 <motion.div
                     className="grid grid-cols-2 gap-3"
                     initial={{ opacity: 0, filter: "blur(4px)" }}
@@ -25,7 +25,7 @@ export default function RoleGrid({ roles, selectedRole, onSelect, customRole, se
                             <button
                                 key={role.label}
                                 onClick={() => onSelect(role.label)}
-                                className="px-4 py-3 rounded-2xl border-2 text-sm font-medium transition-all hover-elevate text-left flex items-center gap-3 relative overflow-hidden"
+                                className="px-4 py-3 rounded-2xl border-2 text-sm font-medium transition-all hover-elevate text-left flex items-center md:gap-3 gap-2 relative overflow-hidden"
                                 style={
                                     isSelected
                                         ? { backgroundColor: "#FFF5F0", borderColor: "#FF553E", color: "#FF553E" }
@@ -56,7 +56,7 @@ export default function RoleGrid({ roles, selectedRole, onSelect, customRole, se
 
             <AnimatePresence>
                 {selectedRole === "Others" && (
-                    <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.3 }} className="mb-8 space-y-2">
+                    <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.3 }} className="md:mb-8 mb-4 space-y-2">
                         <Label htmlFor="custom-role" className="text-sm font-medium text-foreground">
                             Your Role
                         </Label>

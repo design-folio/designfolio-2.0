@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
+import { useTheme } from "next-themes";
 import {
   Bold,
   Italic,
@@ -37,6 +38,7 @@ import {
 } from "lucide-react";
 
 const TiptapMenuBar = ({ editor, showToolbar }) => {
+  const { resolvedTheme } = useTheme();
   const fileInputRef = useRef(null);
   const toolbarRef = useRef(null);
   const [isInTable, setIsInTable] = useState(false);
@@ -61,6 +63,12 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
 
   const textColors = [
     { name: "Default", value: null, display: "#000000", isDefault: true },
+    {
+      name: resolvedTheme === "dark" ? "Black" : "White",
+      value: resolvedTheme === "dark" ? "#000000" : "#ffffff",
+      display: resolvedTheme === "dark" ? "#000000" : "#ffffff",
+      isDefault: false,
+    },
     { name: "Purple", value: "#9333ea", display: "#9333ea", isDefault: false },
     { name: "Red", value: "#dc2626", display: "#dc2626", isDefault: false },
     { name: "Orange", value: "#ea580c", display: "#ea580c", isDefault: false },
@@ -71,6 +79,13 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
 
   const backgroundColors = [
     { name: "None", value: null, bgColor: "transparent", isDefault: true },
+    {
+      name: resolvedTheme === "dark" ? "White" : "Black",
+      value: resolvedTheme === "dark" ? "#ffffff" : "#000000",
+      bgColor: resolvedTheme === "dark" ? "#ffffff" : "#000000",
+      isDefault: false,
+      textColor: resolvedTheme === "dark" ? "#000000" : "#ffffff",
+    },
     { name: "Purple", value: "#e9d5ff", bgColor: "#e9d5ff", isDefault: false },
     { name: "Red", value: "#fecaca", bgColor: "#fecaca", isDefault: false },
     { name: "Yellow", value: "#fef08a", bgColor: "#fef08a", isDefault: false },
@@ -195,10 +210,12 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
     // Listen to selection updates
     editor.on("selectionUpdate", updateState);
     editor.on("update", updateState);
+    editor.on("transaction", updateState);
 
     return () => {
       editor.off("selectionUpdate", updateState);
       editor.off("update", updateState);
+      editor.off("transaction", updateState);
     };
   }, [editor]);
 
@@ -213,6 +230,20 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
       }, 100);
     }
   }, [isInTable]);
+
+  // Close dropdowns when clicking outside the toolbar
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (toolbarRef.current && !toolbarRef.current.contains(event.target)) {
+        closeAllDropdowns();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   if (!editor) {
     return null;
@@ -255,6 +286,7 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
         attrs: { embedCode: "" },
       })
       .run();
+    closeAllDropdowns();
   };
 
   const addYoutube = () => {
@@ -266,6 +298,7 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
         attrs: { src: "" },
       })
       .run();
+    closeAllDropdowns();
   };
 
   const addLink = () => {
@@ -277,6 +310,7 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
         attrs: { href: "", text: "" },
       })
       .run();
+    closeAllDropdowns();
   };
 
   const addTable = () => {
@@ -285,6 +319,7 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
       .focus()
       .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
       .run();
+    closeAllDropdowns();
   };
 
   return (
@@ -297,28 +332,44 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
       {/* Primary Text Formatting */}
       <div className="menu-group">
         <button
-          onClick={() => editor.chain().focus().toggleBold().run()}
+          onClick={() => {
+            editor.chain().focus().toggleBold().run();
+            closeAllDropdowns();
+          }}
+          onMouseDown={(e) => e.preventDefault()}
           className={activeNodes.bold ? "is-active" : ""}
           title="Bold"
         >
           <Bold size={18} />
         </button>
         <button
-          onClick={() => editor.chain().focus().toggleItalic().run()}
+          onClick={() => {
+            editor.chain().focus().toggleItalic().run();
+            closeAllDropdowns();
+          }}
+          onMouseDown={(e) => e.preventDefault()}
           className={activeNodes.italic ? "is-active" : ""}
           title="Italic"
         >
           <Italic size={18} />
         </button>
         <button
-          onClick={() => editor.chain().focus().toggleStrike().run()}
+          onClick={() => {
+            editor.chain().focus().toggleStrike().run();
+            closeAllDropdowns();
+          }}
+          onMouseDown={(e) => e.preventDefault()}
           className={activeNodes.strike ? "is-active" : ""}
           title="Strikethrough"
         >
           <Strikethrough size={18} />
         </button>
         <button
-          onClick={() => editor.chain().focus().toggleUnderline().run()}
+          onClick={() => {
+            editor.chain().focus().toggleUnderline().run();
+            closeAllDropdowns();
+          }}
+          onMouseDown={(e) => e.preventDefault()}
           className={activeNodes.underline ? "is-active" : ""}
           title="Underline"
         >
@@ -352,13 +403,25 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
                       closeAllDropdowns();
                     }}
                     className={`color-button ${
-                      color.isDefault ? "color-default" : ""
+                      color.isDefault ? "color-default text-color-default" : ""
                     }`}
+                    style={{ border: "none" }}
                     title={color.name}
                   >
                     <span
                       className="color-letter"
-                      style={{ color: color.display }}
+                      style={{
+                        color: color.display,
+                        WebkitTextStroke:
+                          (resolvedTheme === "dark" &&
+                            color.display === "#000000") ||
+                          (resolvedTheme !== "dark" &&
+                            color.display === "#ffffff")
+                            ? `0.5px ${
+                                resolvedTheme === "dark" ? "#ffffff" : "#000000"
+                              }`
+                            : "unset",
+                      }}
                     >
                       A
                     </span>
@@ -389,10 +452,20 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
                     className={`color-button ${
                       color.isDefault ? "color-default" : ""
                     }`}
-                    style={{ backgroundColor: color.bgColor }}
+                    style={{
+                      backgroundColor: color.bgColor,
+                      borderColor: color.isDefault ? undefined : color.bgColor,
+                    }}
                     title={color.name}
                   >
-                    <span className="color-letter">A</span>
+                    <span
+                      className="color-letter"
+                      style={
+                        color.textColor ? { color: color.textColor } : undefined
+                      }
+                    >
+                      A
+                    </span>
                   </button>
                 ))}
               </div>
@@ -404,22 +477,26 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
       {/* Headings */}
       <div className="menu-group">
         <button
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 2 }).run()
-          }
+          onClick={() => {
+            editor.chain().focus().toggleHeading({ level: 2 }).run();
+            closeAllDropdowns();
+          }}
+          onMouseDown={(e) => e.preventDefault()}
           className={activeNodes.heading2 ? "is-active" : ""}
-          title="Heading 1"
-        >
-          <span className="font-bold text-sm">H1</span>
-        </button>
-        <button
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 3 }).run()
-          }
-          className={activeNodes.heading3 ? "is-active" : ""}
           title="Heading 2"
         >
           <span className="font-bold text-sm">H2</span>
+        </button>
+        <button
+          onClick={() => {
+            editor.chain().focus().toggleHeading({ level: 3 }).run();
+            closeAllDropdowns();
+          }}
+          onMouseDown={(e) => e.preventDefault()}
+          className={activeNodes.heading3 ? "is-active" : ""}
+          title="Heading 3"
+        >
+          <span className="font-bold text-sm">H3</span>
         </button>
       </div>
 
@@ -427,6 +504,7 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
       <div className="menu-group">
         <button
           onClick={() => addLink()}
+          onMouseDown={(e) => e.preventDefault()}
           className={activeNodes.link ? "is-active" : ""}
           title="Link"
         >
@@ -434,6 +512,7 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
         </button>
         <button
           onClick={() => addFigmaEmbed()}
+          onMouseDown={(e) => e.preventDefault()}
           className={activeNodes.figma ? "is-active" : ""}
           title="Figma"
         >
@@ -441,20 +520,29 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
         </button>
         <button
           onClick={() => addYoutube()}
+          onMouseDown={(e) => e.preventDefault()}
           className={activeNodes.youtube ? "is-active" : ""}
           title="YouTube"
         >
           <Youtube size={18} />
         </button>
         <button
-          onClick={() => editor.chain().focus().toggleCode().run()}
+          onClick={() => {
+            editor.chain().focus().toggleCode().run();
+            closeAllDropdowns();
+          }}
+          onMouseDown={(e) => e.preventDefault()}
           className={activeNodes.code ? "is-active" : ""}
           title="Inline Code"
         >
           <Code size={18} />
         </button>
         <button
-          onClick={() => editor.chain().focus().setHorizontalRule().run()}
+          onClick={() => {
+            editor.chain().focus().setHorizontalRule().run();
+            closeAllDropdowns();
+          }}
+          onMouseDown={(e) => e.preventDefault()}
           title="Divider"
         >
           <Minus size={18} />
@@ -502,7 +590,11 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
       {/* Quote */}
       <div className="menu-group">
         <button
-          onClick={() => editor.chain().focus().toggleBlockquote().run()}
+          onClick={() => {
+            editor.chain().focus().toggleBlockquote().run();
+            closeAllDropdowns();
+          }}
+          onMouseDown={(e) => e.preventDefault()}
           className={activeNodes.blockquote ? "is-active" : ""}
           title="Quote"
         >
@@ -514,6 +606,7 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
       <div className="menu-group">
         <button
           onClick={() => addTable()}
+          onMouseDown={(e) => e.preventDefault()}
           className={activeNodes.table ? "is-active" : ""}
           title="Insert Table"
         >
@@ -535,7 +628,10 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
         {/* Add Column */}
         <div className="menu-group">
           <button
-            onClick={() => editor.chain().focus().addColumnAfter().run()}
+            onClick={() => {
+              editor.chain().focus().addColumnAfter().run();
+              closeAllDropdowns();
+            }}
             title="Add Column"
           >
             <Columns size={18} />
@@ -545,7 +641,10 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
         {/* Delete Column */}
         <div className="menu-group">
           <button
-            onClick={() => editor.chain().focus().deleteColumn().run()}
+            onClick={() => {
+              editor.chain().focus().deleteColumn().run();
+              closeAllDropdowns();
+            }}
             title="Delete Column"
           >
             <Minus size={18} style={{ transform: "rotate(90deg)" }} />
@@ -555,7 +654,10 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
         {/* Add Row */}
         <div className="menu-group">
           <button
-            onClick={() => editor.chain().focus().addRowAfter().run()}
+            onClick={() => {
+              editor.chain().focus().addRowAfter().run();
+              closeAllDropdowns();
+            }}
             title="Add Row"
           >
             <Rows size={18} />
@@ -565,7 +667,10 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
         {/* Delete Row */}
         <div className="menu-group">
           <button
-            onClick={() => editor.chain().focus().deleteRow().run()}
+            onClick={() => {
+              editor.chain().focus().deleteRow().run();
+              closeAllDropdowns();
+            }}
             title="Delete Row"
           >
             <Minus size={18} />
@@ -575,7 +680,10 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
         {/* Delete Table */}
         <div className="menu-group">
           <button
-            onClick={() => editor.chain().focus().deleteTable().run()}
+            onClick={() => {
+              editor.chain().focus().deleteTable().run();
+              closeAllDropdowns();
+            }}
             title="Delete Table"
             className="text-red-500 hover:bg-red-50 hover:text-red-600"
           >
@@ -587,14 +695,22 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
       {/* Undo/Redo */}
       <div className="menu-group">
         <button
-          onClick={() => editor.chain().focus().undo().run()}
+          onClick={() => {
+            editor.chain().focus().undo().run();
+            closeAllDropdowns();
+          }}
+          onMouseDown={(e) => e.preventDefault()}
           disabled={!editor.can().undo()}
           title="Undo"
         >
           <Undo2 size={18} />
         </button>
         <button
-          onClick={() => editor.chain().focus().redo().run()}
+          onClick={() => {
+            editor.chain().focus().redo().run();
+            closeAllDropdowns();
+          }}
+          onMouseDown={(e) => e.preventDefault()}
           disabled={!editor.can().redo()}
           title="Redo"
         >

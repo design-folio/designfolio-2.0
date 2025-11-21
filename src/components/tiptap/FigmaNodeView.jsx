@@ -1,9 +1,16 @@
-import { NodeViewWrapper } from '@tiptap/react';
-import { useState, useEffect } from 'react';
+import { NodeViewWrapper } from "@tiptap/react";
+import { useState, useEffect, useRef } from "react";
 
-export default function FigmaNodeView({ node, updateAttributes, deleteNode, editor }) {
+export default function FigmaNodeView({
+  node,
+  updateAttributes,
+  editor,
+  getPos,
+}) {
   const [isEditing, setIsEditing] = useState(!node.attrs.embedCode);
-  const [embedCode, setEmbedCode] = useState(node.attrs.embedCode || '');
+  const [embedCode, setEmbedCode] = useState(node.attrs.embedCode || "");
+  const textareaRef = useRef(null);
+  const wrapperRef = useRef(null);
 
   const extractSrc = (code) => {
     const srcRegex = /src="([^"]*)"/;
@@ -11,12 +18,32 @@ export default function FigmaNodeView({ node, updateAttributes, deleteNode, edit
     return match ? match[1] : code;
   };
 
+  const handleDelete = () => {
+    const pos = getPos();
+    if (typeof pos === "number") {
+      const tr = editor.state.tr.delete(pos, pos + node.nodeSize);
+      editor.view.dispatch(tr);
+    }
+  };
+
   const handleSave = () => {
     if (embedCode.trim()) {
       updateAttributes({ embedCode: embedCode.trim() });
       setIsEditing(false);
     } else {
-      deleteNode();
+      handleDelete();
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && e.ctrlKey) {
+      e.preventDefault();
+      e.stopPropagation();
+      handleSave();
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      e.stopPropagation();
+      handleDelete();
     }
   };
 
@@ -26,27 +53,75 @@ export default function FigmaNodeView({ node, updateAttributes, deleteNode, edit
     }
   }, [node.attrs.embedCode]);
 
+  useEffect(() => {
+    if (isEditing && textareaRef.current) {
+      setTimeout(() => {
+        textareaRef.current?.focus();
+      }, 0);
+    }
+  }, [isEditing]);
+
   if (isEditing) {
     return (
-      <NodeViewWrapper className="figma-tool">
-        <div className="rounded-lg p-4 my-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 select-none" onMouseDown={(e) => e.stopPropagation()}>
+      <NodeViewWrapper as="div" className="figma-tool">
+        <div
+          ref={wrapperRef}
+          contentEditable={false}
+          className="rounded-lg p-4 my-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700"
+          onClick={(e) => {
+            e.stopPropagation();
+            if (textareaRef.current && e.target !== textareaRef.current) {
+              textareaRef.current.focus();
+            }
+          }}
+        >
           <textarea
-            className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-md text-sm font-mono resize-y bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 mb-3 select-text"
-            placeholder="Paste your Figma embed code here.  Click share on Figma > Click Get embed code > Copy and paste."
+            ref={textareaRef}
+            className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-md text-sm font-mono resize-y bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600"
+            placeholder="Paste your Figma embed code here"
             value={embedCode}
             onChange={(e) => setEmbedCode(e.target.value)}
-            rows={6}
+            onKeyDown={handleKeyDown}
+            onClick={(e) => e.stopPropagation()}
             onMouseDown={(e) => e.stopPropagation()}
+            autoFocus
+            rows={6}
           />
+          <div
+            className="text-xs text-slate-600 dark:text-slate-400 mt-2 mb-3"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <strong>Instructions:</strong>
+            <ul className="mt-1 pl-5 list-disc">
+              <li>Click Share on Figma</li>
+              <li>Click Get embed code</li>
+              <li>Copy and paste here</li>
+            </ul>
+            <div className="mt-2">Press Ctrl+Enter to save, Esc to cancel</div>
+          </div>
           <div className="flex gap-2">
-            <button 
-              onClick={handleSave} 
+            <button
+              onMouseDown={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleSave();
+              }}
               className="px-4 py-2 bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-md text-sm font-medium cursor-pointer transition-colors"
             >
               Save
             </button>
-            <button 
-              onClick={deleteNode} 
+            <button
+              onMouseDown={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDelete();
+              }}
               className="px-4 py-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-md text-sm font-medium cursor-pointer transition-colors"
             >
               Cancel
@@ -64,7 +139,7 @@ export default function FigmaNodeView({ node, updateAttributes, deleteNode, edit
       <div className="relative my-4">
         {src ? (
           <iframe
-            className="w-full max-w-[800px] h-[450px] border border-gray-200 dark:border-gray-700 rounded-lg"
+            className="w-full h-[450px] border border-gray-200 dark:border-gray-700 rounded-lg"
             src={src}
             allowFullScreen
             title="Figma Embed"

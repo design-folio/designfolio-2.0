@@ -1,16 +1,16 @@
-import { Node, mergeAttributes } from '@tiptap/core';
-import { ReactNodeViewRenderer } from '@tiptap/react';
-import YoutubeNodeView from './YoutubeNodeView';
+import { Node, mergeAttributes } from "@tiptap/core";
+import { ReactNodeViewRenderer } from "@tiptap/react";
+import YoutubeNodeView from "./YoutubeNodeView";
 
 export const YoutubeNode = Node.create({
-  name: 'youtubeNode',
-  group: 'block',
+  name: "youtubeNode",
+  group: "block",
   atom: true,
 
   addAttributes() {
     return {
       src: {
-        default: '',
+        default: "",
       },
     };
   },
@@ -18,16 +18,21 @@ export const YoutubeNode = Node.create({
   parseHTML() {
     return [
       {
-        tag: 'div[data-youtube-node]',
+        tag: "div[data-youtube-node]",
       },
     ];
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ['div', mergeAttributes(HTMLAttributes, { 'data-youtube-node': '' })];
+    return [
+      "div",
+      mergeAttributes(HTMLAttributes, { "data-youtube-node": "" }),
+    ];
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(YoutubeNodeView);
+    return ReactNodeViewRenderer(YoutubeNodeView, {
+      stopEvent: () => true,
+    });
   },
 });

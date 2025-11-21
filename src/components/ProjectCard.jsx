@@ -109,6 +109,7 @@ export default function ProjectCard({
                       <DeleteIcon className="stroke-delete-btn-icon-color w-6 h-6 cursor-pointer" />
                     }
                     onClick={(e) => {
+                      e.preventDefault();
                       e.stopPropagation(); // Prevent the event from bubbling up
                       onDeleteProject(project);
                     }}

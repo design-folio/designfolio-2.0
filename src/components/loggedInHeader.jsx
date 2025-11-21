@@ -334,7 +334,7 @@ export default function LoggedInHeader({
             <Logo className="text-df-base-text-color" />
           </Link>
         </div>
-        <div className="gap-[16px] items-center hidden md:flex">
+        <div className="gap-3 items-center hidden md:flex">
           <div
             className="relative theme-button"
             data-popover-menu={popovers.themeMenu}
@@ -342,7 +342,7 @@ export default function LoggedInHeader({
             <Link href="/analytics">
               <Button
                 variant="secondary"
-                className="h-11 px-4 mr-4 rounded-full"
+                className="h-11 px-4 mr-3 rounded-full"
               >
                 <MemoAnalytics className="!size-5" />
                 Insights

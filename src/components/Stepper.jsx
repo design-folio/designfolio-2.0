@@ -8,7 +8,7 @@ export default function Stepper({ current }) {
         "linear-gradient(90deg, #D97DD8 0%, #B47EE8 100%)",
     ];
     return (
-        <div className="mb-8">
+        <div className="mb-3 md:mb-8">
             <div className="flex gap-1 mb-3" data-testid="progress-bar">
                 {[1, 2, 3, 4].map((step) => {
                     const isActive = step <= current;

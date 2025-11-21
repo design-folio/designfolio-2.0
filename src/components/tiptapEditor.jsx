@@ -18,6 +18,7 @@ import { FigmaExtension } from "./tiptap/FigmaExtension";
 import { LinkNode } from "./tiptap/LinkExtension";
 import { YoutubeNode } from "./tiptap/YoutubeExtension";
 import { ResizableImage } from "./tiptap/ResizableImage";
+import { SelectAllExtension } from "./tiptap/SelectAllExtension";
 import TiptapMenuBar from "./tiptap/TiptapMenuBar";
 import { _updateProject, _uploadImage } from "@/network/post-request";
 import { useGlobalContext } from "@/context/globalContext";
@@ -105,12 +106,20 @@ const TiptapEditor = ({ projectDetails, userDetails }) => {
       }),
       Placeholder.configure({
         placeholder: "Start writing here...",
+        emptyEditorClass: "is-editor-empty",
+        emptyNodeClass: "is-empty",
+        showOnlyCurrent: true,
       }),
       FigmaExtension,
       LinkNode,
       YoutubeNode,
+      SelectAllExtension,
     ],
-    content: projectDetails?.tiptapContent || "",
+    content:
+      projectDetails?.tiptapContent &&
+      Object.keys(projectDetails.tiptapContent).length > 0
+        ? projectDetails.tiptapContent
+        : "",
     editorProps: {
       attributes: {
         class:
@@ -161,6 +170,20 @@ const TiptapEditor = ({ projectDetails, userDetails }) => {
       }, 1000);
     },
   });
+
+  // Sync content when projectDetails loads
+  useEffect(() => {
+    if (editor && projectDetails?.tiptapContent) {
+      const isEditorEmpty = editor.isEmpty;
+      // Only update if editor is empty and we have content to show
+      if (
+        isEditorEmpty &&
+        Object.keys(projectDetails.tiptapContent).length > 0
+      ) {
+        editor.commands.setContent(projectDetails.tiptapContent);
+      }
+    }
+  }, [editor, projectDetails]);
 
   // Image upload handler
   const handleImageUpload = async (file) => {
@@ -313,7 +336,12 @@ const TiptapEditor = ({ projectDetails, userDetails }) => {
       {/* Editor Content */}
       <div
         className="project-editor bg-df-section-card-bg-color"
-        onClick={() => setShowToolbar(true)}
+        onClick={() => {
+          setShowToolbar(true);
+          if (editor && !editor.isFocused) {
+            editor.chain().focus().run();
+          }
+        }}
       >
         <div className="tiptap-editor-wrapper p-[16px] md:p-[32px]">
           <EditorContent editor={editor} />

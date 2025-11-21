@@ -58,6 +58,14 @@ export default function Onboarding() {
   const [error, setError] = useState("");
   const [isPreFilled, setIsPreFilled] = useState(false);
 
+  // Lock body scroll when component mounts
+  useEffect(() => {
+    const originalStyle = window.getComputedStyle(document.body).overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = originalStyle;
+    };
+  }, []);
 
   // Fetch Personas
   useEffect(() => {
@@ -267,108 +275,117 @@ export default function Onboarding() {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center p-6 bg-background">
-      <div className="w-full max-w-2xl">
-        <Stepper current={currentStep} />
-        <ErrorBanner message={error} />
+    <div
+      className="fixed inset-0 z-[1000] overflow-hidden bg-background"
+      onClick={(e) => e.stopPropagation()}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="onboarding-title"
+      aria-describedby="onboarding-description"
+    >
+      <div className="min-h-full w-full flex items-center justify-center p-6">
+        <div className="w-full max-w-2xl py-8">
+          <Stepper current={currentStep} />
+          <ErrorBanner message={error} />
 
-        <AnimatePresence mode="wait">
-          {/* Step 1: Role */}
-          {currentStep === 1 && (
-            <motion.div key="step1" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
-              <SectionTitle
-                title="What describes you the best?"
-                subtitle="Help us tailor your experience to match your professional journey"
-              />
-              <RoleGrid
-                roles={roles}
-                selectedRole={selectedRole}
-                onSelect={(role) => {
-                  setSelectedRole(role);
-                  const persona = roles.find((r) => r.label === role);
-                  if (persona?._id) setSelectedPersonaId(persona._id);
-                }}
-                customRole={customRole}
-                setCustomRole={setCustomRole}
-              />
-              <Button
-                onClick={handleNext}
-                disabled={loading}
-                className="w-full mt-4 h-11 rounded-full bg-foreground text-background font-semibold"
-              >
-                Continue
-                <ArrowRight className="ml-2 w-4 h-4" />
-              </Button>
-            </motion.div>
-          )}
-
-          {/* Step 2: Goal */}
-          {currentStep === 2 && (
-            <motion.div key="step2" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
-              <SectionTitle title="What is your main goal?" subtitle="Choose the one that matters most to you" />
-              <OptionList
-                items={GOALS}
-                selected={GOALS.find((g) => g.id === selectedGoalId)?.label || ""}
-                onSelect={(label) => setSelectedGoalId(GOALS.find((g) => g.label === label)?.id)}
-              />
-              <div className="flex gap-3 mt-6">
-                <Button onClick={() => setCurrentStep(1)} variant="outline" className="h-11 rounded-full px-6">
-                  Back
-                </Button>
-                <Button onClick={handleNext} disabled={loading} className="flex-1 h-11 rounded-full bg-foreground text-background font-semibold">
+          <AnimatePresence mode="wait">
+            {/* Step 1: Role */}
+            {currentStep === 1 && (
+              <motion.div key="step1" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
+                <SectionTitle
+                  title="What describes you the best?"
+                  subtitle="Help us tailor your experience to match your professional journey"
+                />
+                <RoleGrid
+                  roles={roles}
+                  selectedRole={selectedRole}
+                  onSelect={(role) => {
+                    setSelectedRole(role);
+                    const persona = roles.find((r) => r.label === role);
+                    if (persona?._id) setSelectedPersonaId(persona._id);
+                  }}
+                  customRole={customRole}
+                  setCustomRole={setCustomRole}
+                />
+                <Button
+                  onClick={handleNext}
+                  disabled={loading}
+                  className="w-full mt-4 h-11 rounded-full bg-foreground text-background font-semibold"
+                >
                   Continue
                   <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
-              </div>
-            </motion.div>
-          )}
+              </motion.div>
+            )}
 
-          {/* Step 3: Experience */}
-          {currentStep === 3 && (
-            <motion.div key="step3" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
-              <SectionTitle title="What's your experience level?" subtitle="This helps us recommend the right features for you" />
-              <OptionList
-                items={EXPERIENCE_LEVELS}
-                selected={EXPERIENCE_LEVELS.find((e) => e.id === selectedExperienceId)?.label || ""}
-                onSelect={(label) => setSelectedExperienceId(EXPERIENCE_LEVELS.find((e) => e.label === label)?.id)}
-              />
-              <div className="flex gap-3 mt-6">
-                <Button onClick={() => setCurrentStep(2)} variant="outline" className="h-11 rounded-full px-6">
-                  Back
-                </Button>
-                <Button onClick={handleNext} disabled={loading} className="flex-1 h-11 rounded-full bg-foreground text-background font-semibold">
-                  Continue
-                  <ArrowRight className="ml-2 w-4 h-4" />
-                </Button>
-              </div>
-            </motion.div>
-          )}
+            {/* Step 2: Goal */}
+            {currentStep === 2 && (
+              <motion.div key="step2" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
+                <SectionTitle title="What is your main goal?" subtitle="Choose the one that matters most to you" />
+                <OptionList
+                  items={GOALS}
+                  selected={GOALS.find((g) => g.id === selectedGoalId)?.label || ""}
+                  onSelect={(label) => setSelectedGoalId(GOALS.find((g) => g.label === label)?.id)}
+                />
+                <div className="flex gap-3 mt-6">
+                  <Button onClick={() => setCurrentStep(1)} variant="outline" className="h-11 rounded-full px-6">
+                    Back
+                  </Button>
+                  <Button onClick={handleNext} disabled={loading} className="flex-1 h-11 rounded-full bg-foreground text-background font-semibold">
+                    Continue
+                    <ArrowRight className="ml-2 w-4 h-4" />
+                  </Button>
+                </div>
+              </motion.div>
+            )}
 
-          {/* Step 4: Skills */}
-          {currentStep === 4 && (
-            <motion.div key="step4" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
-              <SectionTitle title="Choose at least 3 strengths" subtitle="Pick three that feel most true right now—add more if you like." />
-              <SkillsPicker
-                skills={skills}
-                selected={selectedInterests}
-                onToggle={handleInterestToggle}
-                onAdd={handleAddCustomSkill}
-                search={skillsSearch}
-                setSearch={setSkillsSearch}
-                loading={skillsLoading}
-              />
-              <div className="flex gap-3 mt-6">
-                <Button onClick={() => setCurrentStep(3)} variant="outline" className="h-11 rounded-full px-6">
-                  Back
-                </Button>
-                <Button onClick={handleNext} disabled={loading} className="flex-1 h-11 rounded-full bg-foreground text-background font-semibold">
-                  {loading ? "Saving..." : "Get Started"}
-                  <ArrowRight className="ml-2 w-4 h-4" />
-                </Button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+            {/* Step 3: Experience */}
+            {currentStep === 3 && (
+              <motion.div key="step3" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
+                <SectionTitle title="What's your experience level?" subtitle="This helps us recommend the right features for you" />
+                <OptionList
+                  items={EXPERIENCE_LEVELS}
+                  selected={EXPERIENCE_LEVELS.find((e) => e.id === selectedExperienceId)?.label || ""}
+                  onSelect={(label) => setSelectedExperienceId(EXPERIENCE_LEVELS.find((e) => e.label === label)?.id)}
+                />
+                <div className="flex gap-3 mt-6">
+                  <Button onClick={() => setCurrentStep(2)} variant="outline" className="h-11 rounded-full px-6">
+                    Back
+                  </Button>
+                  <Button onClick={handleNext} disabled={loading} className="flex-1 h-11 rounded-full bg-foreground text-background font-semibold">
+                    Continue
+                    <ArrowRight className="ml-2 w-4 h-4" />
+                  </Button>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Step 4: Skills */}
+            {currentStep === 4 && (
+              <motion.div key="step4" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
+                <SectionTitle title="Choose at least 3 strengths" subtitle="Pick three that feel most true right now—add more if you like." />
+                <SkillsPicker
+                  skills={skills}
+                  selected={selectedInterests}
+                  onToggle={handleInterestToggle}
+                  onAdd={handleAddCustomSkill}
+                  search={skillsSearch}
+                  setSearch={setSkillsSearch}
+                  loading={skillsLoading}
+                />
+                <div className="flex gap-3 mt-6">
+                  <Button onClick={() => setCurrentStep(3)} variant="outline" className="h-11 rounded-full px-6">
+                    Back
+                  </Button>
+                  <Button onClick={handleNext} disabled={loading} className="flex-1 h-11 rounded-full bg-foreground text-background font-semibold">
+                    {loading ? "Saving..." : "Get Started"}
+                    <ArrowRight className="ml-2 w-4 h-4" />
+                  </Button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </div>
   );

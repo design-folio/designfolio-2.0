@@ -11,7 +11,7 @@ import { Check, } from "lucide-react";
 export default function RoleGrid({ roles, selectedRole, onSelect, customRole, setCustomRole }) {
     return (
         <>
-            <div className="overflow-y-auto md:mb-8 mb-4 pr-2 -mr-2 max-h-[calc(100vh-400px)] md:max-h-[calc(100vh-450px)]">
+            <div className="overflow-y-auto md:mb-8 mb-4 pr-2 -mr-2 max-h-[calc(100vh-420px)] md:max-h-[calc(100vh-450px)]">
                 <motion.div
                     className="grid grid-cols-2 gap-3"
                     initial={{ opacity: 0, filter: "blur(4px)" }}

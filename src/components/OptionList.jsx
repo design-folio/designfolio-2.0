@@ -1,15 +1,18 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Check } from "lucide-react";
+import ErrorBanner from "./ErrorBanner";
 
-export default function OptionList({ items, selected, onSelect, testPrefix }) {
+export default function OptionList({ items, selected, onSelect, testPrefix, message }) {
     return (
         <div className="overflow-y-auto md:mb-8 mb-4 pr-2 -mr-2 max-h-[calc(100vh-420px)] md:max-h-[calc(100vh-450px)]">
+            <ErrorBanner message={message} />
             <motion.div
                 className="flex flex-col gap-3"
                 initial={{ opacity: 0, filter: "blur(4px)" }}
                 animate={{ opacity: 1, filter: "blur(0px)" }}
                 transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
             >
+
                 {items.map((item) => {
                     const isSelected = selected === item.label;
                     return (

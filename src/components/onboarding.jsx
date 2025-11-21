@@ -67,6 +67,11 @@ export default function Onboarding() {
     };
   }, []);
 
+  // Clear error when step changes
+  useEffect(() => {
+    setError("");
+  }, [currentStep]);
+
   // Fetch Personas
   useEffect(() => {
     setLoading(true);
@@ -285,7 +290,6 @@ export default function Onboarding() {
       <div className="min-h-full w-full flex items-center justify-center p-4 md:p-6">
         <div className="w-full max-w-2xl md:py-8">
           <Stepper current={currentStep} />
-          <ErrorBanner message={error} />
 
           <AnimatePresence mode="wait">
             {/* Step 1: Role */}
@@ -305,6 +309,7 @@ export default function Onboarding() {
                   }}
                   customRole={customRole}
                   setCustomRole={setCustomRole}
+                  message={error}
                 />
                 <Button
                   onClick={handleNext}
@@ -322,6 +327,7 @@ export default function Onboarding() {
               <motion.div key="step2" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
                 <SectionTitle title="What is your main goal?" subtitle="Choose the one that matters most to you" />
                 <OptionList
+                  message={error}
                   items={GOALS}
                   selected={GOALS.find((g) => g.id === selectedGoalId)?.label || ""}
                   onSelect={(label) => setSelectedGoalId(GOALS.find((g) => g.label === label)?.id)}
@@ -343,6 +349,7 @@ export default function Onboarding() {
               <motion.div key="step3" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
                 <SectionTitle title="What's your experience level?" subtitle="This helps us recommend the right features for you" />
                 <OptionList
+                  message={error}
                   items={EXPERIENCE_LEVELS}
                   selected={EXPERIENCE_LEVELS.find((e) => e.id === selectedExperienceId)?.label || ""}
                   onSelect={(label) => setSelectedExperienceId(EXPERIENCE_LEVELS.find((e) => e.label === label)?.id)}
@@ -371,6 +378,7 @@ export default function Onboarding() {
                   search={skillsSearch}
                   setSearch={setSkillsSearch}
                   loading={skillsLoading}
+                  message={error}
                 />
                 <div className="flex gap-3 md:mt-6 mt-4">
                   <Button onClick={() => setCurrentStep(3)} variant="outline" className="h-11 rounded-full px-6">

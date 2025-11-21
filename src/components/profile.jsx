@@ -111,13 +111,13 @@ export default function Profile({
             {/* Text Section */}
             <div className="flex-1">
               <h1
-                className="text-3xl md:text-4xl font-semibold mb-2 font-gsans text-profile-card-heading-color"
+                className="text-3xl md:text-4xl font-semibold mb-2 font-gsans text-profile-card-heading-color break-words"
                 data-testid="text-user-name"
               >
                 {userDetails?.introduction || `Hey, I'm ${capitalizeWords(userDetails?.firstName) || ""}`}
               </h1>
               <p
-                className="text-base text-profile-card-description-color"
+                className="text-base text-profile-card-description-color break-words"
                 data-testid="text-user-role"
               >
                 {userDetails?.bio || "Write your intro here..."}

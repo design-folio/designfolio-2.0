@@ -5,19 +5,22 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "@/components/ui/input-new";
 import { Label } from "@/components/ui/label";
 import { Check, } from "lucide-react";
+import ErrorBanner from "./ErrorBanner";
 
 
 
-export default function RoleGrid({ roles, selectedRole, onSelect, customRole, setCustomRole }) {
+export default function RoleGrid({ roles, selectedRole, onSelect, customRole, setCustomRole, message }) {
     return (
         <>
             <div className="overflow-y-auto md:mb-8 mb-4 pr-2 -mr-2 max-h-[calc(100vh-420px)] md:max-h-[calc(100vh-450px)]">
+                <ErrorBanner message={message} />
                 <motion.div
                     className="grid grid-cols-2 gap-3"
                     initial={{ opacity: 0, filter: "blur(4px)" }}
                     animate={{ opacity: 1, filter: "blur(0px)" }}
                     transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
                 >
+
                     {roles.map((role) => {
                         const isSelected = selectedRole === role.label;
                         const isOthers = role.label === "Others";

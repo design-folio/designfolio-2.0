@@ -104,7 +104,7 @@ const TiptapEditor = ({ projectDetails, userDetails }) => {
         },
       }),
       Placeholder.configure({
-        placeholder: "Type here...",
+        placeholder: "Start writing here...",
       }),
       FigmaExtension,
       LinkNode,

@@ -123,6 +123,7 @@ module.exports = {
         "df-add-card-description-color": "var(--df-add-card-description-color)",
         "df-tip-color": "var(--df-tip-color)",
         "credit-text-color": "var(--credit-text-color)",
+        "df-subtle-text-color": "var(--df-subtle-text-color)",
 
         // Analytics
         "analytics-profile-url-color": "var(--analytics-url-color)",

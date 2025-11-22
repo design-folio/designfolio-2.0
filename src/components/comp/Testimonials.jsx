@@ -18,6 +18,8 @@ import { useGlobalContext } from "@/context/globalContext";
 import { Button } from "../ui/button";
 import Button2 from "../button";
 import MemoTestimonial from "../icons/Testimonial";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import MemoLinkedin from "../icons/Linkedin";
 
 export const Testimonials = ({ userDetails, edit }) => {
   const { reviews } = userDetails || {};
@@ -79,50 +81,97 @@ export const Testimonials = ({ userDetails, edit }) => {
                       rotate: 4,
                       transition: { duration: 0.2 },
                     }}
-                    className="bg-card border border-card-border p-6 rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
+                    className="bg-review-card-bg-color border border-border/30 rounded-2xl p-6 flex flex-col hover-elevate transition-all"
+                    style={{
+                      boxShadow:
+                        "0 0 0 1px rgba(0,0,0,0.03), 0 0 40px rgba(0,0,0,0.015)",
+                    }}
                   >
-                    <p className="dark:text-gray-400 text-gray-600 whitespace-pre-line break-all">
-                      {visibleTestimonials[currentIndex]?.description.slice(
-                        0,
-                        !expandedCards.includes(
+                    <div className="flex items-start gap-2 mb-6 flex-1">
+                      <p className="text-base leading-relaxed text-foreground flex-1">
+                        {!expandedCards.includes(
                           visibleTestimonials[currentIndex]?._id
                         )
-                          ? 180
-                          : visibleTestimonials[currentIndex]?.description
-                            ?.length - 1
-                      )}
+                          ? visibleTestimonials[currentIndex]?.description?.slice(0, 180)
+                          : visibleTestimonials[currentIndex]?.description}
+                        {!expandedCards.includes(
+                          visibleTestimonials[currentIndex]?._id
+                        ) &&
+                          visibleTestimonials[currentIndex]?.description?.length > 180 && (
+                            <>
+                              ...
+                              <button
+                                onClick={() =>
+                                  toggleExpand(visibleTestimonials[currentIndex]?._id)
+                                }
+                                className="ml-1 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
+                              >
+                                View More
+                                <ChevronDown className="h-3 w-3" />
+                              </button>
+                            </>
+                          )}
+                        {expandedCards.includes(
+                          visibleTestimonials[currentIndex]?._id
+                        ) && (
+                            <button
+                              onClick={() =>
+                                toggleExpand(visibleTestimonials[currentIndex]?._id)
+                              }
+                              className="ml-1 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
+                            >
+                              Show Less
+                              <ChevronUp className="h-3 w-3" />
+                            </button>
+                          )}
+                      </p>
+                    </div>
 
-                      {!expandedCards.includes(
-                        visibleTestimonials[currentIndex]?._id
-                      ) ? (
-                        <button
-                          onClick={() =>
-                            toggleExpand(visibleTestimonials[currentIndex]?._id)
-                          }
-                          className="ml-1 text-foreground hover:text-foreground/80 inline-flex items-center gap-1"
+                    <div className="flex items-center gap-3">
+                      <Avatar className="w-12 h-12 shrink-0">
+                        <AvatarImage
+                          src={visibleTestimonials[currentIndex]?.avatar}
+                          alt={visibleTestimonials[currentIndex]?.name}
+                        />
+                        <AvatarFallback
+                          style={{
+                            backgroundColor: "#FF9966",
+                            color: "#FFFFFF",
+                            fontWeight: 500,
+                          }}
                         >
-                          View More
-                          <ChevronDown className="h-3 w-3" />
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() =>
-                            toggleExpand(visibleTestimonials[currentIndex]?._id)
-                          }
-                          className="ml-1 text-foreground hover:text-foreground/80 inline-flex items-center gap-1"
-                        >
-                          Show Less
-                          <ChevronUp className="h-3 w-3" />
-                        </button>
-                      )}
-                    </p>
+                          {visibleTestimonials[currentIndex]?.name
+                            ?.split(" ")
+                            .map((n) => n[0])
+                            .join("")
+                            .slice(0, 2)
+                            .toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
 
-                    <div className="flex items-center gap-2 mt-4">
                       <div className="flex-1">
-                        <h4 className="font-semibold">
-                          {visibleTestimonials[currentIndex]?.name}
-                        </h4>
-                        <p className="text-sm dark:text-gray-400 text-gray-600">
+                        {visibleTestimonials[currentIndex]?.linkedinLink &&
+                          visibleTestimonials[currentIndex]?.linkedinLink?.trim() !== "" ? (
+                          <a
+                            href={visibleTestimonials[currentIndex]?.linkedinLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-1 text-blue-500 hover:text-blue-600 transition-colors cursor-pointer"
+                          >
+                            <MemoLinkedin className="text-df-icon-color w-4 h-4 cursor-pointer" />
+                            <span className="font-semibold text-base cursor-pointer">
+                              {visibleTestimonials[currentIndex]?.name}
+                            </span>
+                          </a>
+                        ) : (
+                          <h3 className="font-semibold text-base mb-0">
+                            {visibleTestimonials[currentIndex]?.name}
+                          </h3>
+                        )}
+                        <p className="text-sm text-foreground/50">
+                          {visibleTestimonials[currentIndex]?.role
+                            ? `${visibleTestimonials[currentIndex]?.role}, `
+                            : ""}
                           {visibleTestimonials[currentIndex]?.company}
                         </p>
                       </div>
@@ -171,42 +220,40 @@ export const Testimonials = ({ userDetails, edit }) => {
                   delay: index * 0.1,
                   ease: "easeOut",
                 }}
-                className="bg-card border border-card-border p-6 rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.06)] transition-shadow duration-300"
+                className="bg-review-card-bg-color border border-border/30 rounded-2xl p-6 flex flex-col hover-elevate transition-all"
+                style={{
+                  boxShadow:
+                    "0 0 0 1px rgba(0,0,0,0.03), 0 0 40px rgba(0,0,0,0.015)",
+                }}
               >
-                <p className="dark:text-gray-400 text-gray-600 whitespace-pre-line break-all">
-                  {testimonial.description.slice(
-                    0,
-                    !expandedCards.includes(testimonial._id)
-                      ? 180
-                      : testimonial.description?.length - 1
-                  )}
-
-                  {!expandedCards.includes(testimonial._id) ? (
-                    <button
-                      onClick={() => toggleExpand(testimonial._id)}
-                      className="ml-1 text-foreground hover:text-foreground/80 inline-flex items-center gap-1"
-                    >
-                      View More
-                      <ChevronDown className="h-3 w-3" />
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => toggleExpand(testimonial._id)}
-                      className="ml-1 text-foreground hover:text-foreground/80 inline-flex items-center gap-1"
-                    >
-                      Show Less
-                      <ChevronUp className="h-3 w-3" />
-                    </button>
-                  )}
-                </p>
-
-                <div className="flex items-center gap-2 mt-4">
-                  <div className="flex-1">
-                    <h4 className="font-semibold">{testimonial.name}</h4>
-                    <p className="text-sm dark:text-gray-400 text-gray-600">
-                      {testimonial.company}
-                    </p>
-                  </div>
+                <div className="flex items-start gap-2 mb-6 flex-1">
+                  <p className="text-base leading-relaxed text-foreground flex-1">
+                    {!expandedCards.includes(testimonial._id)
+                      ? testimonial.description?.slice(0, 180)
+                      : testimonial.description}
+                    {!expandedCards.includes(testimonial._id) &&
+                      testimonial.description?.length > 180 && (
+                        <>
+                          ...
+                          <button
+                            onClick={() => toggleExpand(testimonial._id)}
+                            className="ml-1 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
+                          >
+                            View More
+                            <ChevronDown className="h-3 w-3" />
+                          </button>
+                        </>
+                      )}
+                    {expandedCards.includes(testimonial._id) && (
+                      <button
+                        onClick={() => toggleExpand(testimonial._id)}
+                        className="ml-1 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
+                      >
+                        Show Less
+                        <ChevronUp className="h-3 w-3" />
+                      </button>
+                    )}
+                  </p>
                   {edit && (
                     <Button2
                       onClick={() => handleClick(testimonial)}
@@ -217,6 +264,50 @@ export const Testimonials = ({ userDetails, edit }) => {
                       }
                     />
                   )}
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <Avatar className="w-12 h-12 shrink-0">
+                    <AvatarImage src={testimonial?.avatar} alt={testimonial?.name} />
+                    <AvatarFallback
+                      style={{
+                        backgroundColor: "#FF9966",
+                        color: "#FFFFFF",
+                        fontWeight: 500,
+                      }}
+                    >
+                      {testimonial?.name
+                        ?.split(" ")
+                        .map((n) => n[0])
+                        .join("")
+                        .slice(0, 2)
+                        .toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+
+                  <div className="flex-1">
+                    {testimonial.linkedinLink && testimonial.linkedinLink?.trim() !== "" ? (
+                      <a
+                        href={testimonial.linkedinLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1 text-blue-500 hover:text-blue-600 transition-colors cursor-pointer"
+                      >
+                        <MemoLinkedin className="text-df-icon-color w-4 h-4 cursor-pointer" />
+                        <span className="font-semibold text-base cursor-pointer">
+                          {testimonial?.name}
+                        </span>
+                      </a>
+                    ) : (
+                      <h3 className="font-semibold text-base mb-0">
+                        {testimonial?.name}
+                      </h3>
+                    )}
+                    <p className="text-sm text-foreground/50">
+                      {testimonial?.role ? `${testimonial.role}, ` : ""}
+                      {testimonial?.company}
+                    </p>
+                  </div>
                 </div>
               </motion.div>
             ))}
@@ -236,7 +327,7 @@ export const Testimonials = ({ userDetails, edit }) => {
           </Button>
         </motion.div>
       )}
-    
+
       {edit && (
         <AddItem
           className="bg-df-section-card-bg-color shadow-df-section-card-shadow mt-6"

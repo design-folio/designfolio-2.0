@@ -48,7 +48,7 @@ export default function CustomDomain({ domainDetails, fetchDomainDetails }) {
 
         {domainDetails?.customDomain?.domain &&
           (domainDetails?.customDomain?.isCustomVerified &&
-          domainDetails?.customDomain?.isCustomVerified ? (
+            domainDetails?.customDomain?.isCustomVerified ? (
             <Badge
               variant=""
               className={"text-[#15803D] bg-[#DCFCE7] gap-1 items-center"}
@@ -116,7 +116,7 @@ export default function CustomDomain({ domainDetails, fetchDomainDetails }) {
               </div>
               <div className="mt-2">
                 {domainDetails?.customDomain?.isCustomVerified &&
-                domainDetails?.customDomain?.isCustomVerified ? (
+                  domainDetails?.customDomain?.isCustomVerified ? (
                   <p className="font-medium text-[14px] text-df-section-card-heading-color">
                     Website is published and optimized
                   </p>
@@ -132,56 +132,56 @@ export default function CustomDomain({ domainDetails, fetchDomainDetails }) {
               <div className="flex justify-end"></div>
               {(!domainDetails?.customDomain?.isCustomVerified ||
                 !domainDetails?.customDomain?.isCustomVerified) && (
-                <>
-                  <div></div>
-                  <div className="col-span-2 mt-6">
-                    <div className="overflow-hidden rounded-xl border border-gray-200">
-                      <table className="min-w-full text-sm text-left">
-                        <thead className="bg-[#F4F6FA] dark:bg-[#4d545f] text-[#202937] dark:text-[#E9EAEB] font-medium">
-                          <tr>
-                            <th className="px-4 py-3">Name</th>
-                            <th className="px-4 py-3">Type</th>
-                            <th className="px-4 py-3">Value</th>
-                          </tr>
-                        </thead>
-                        <tbody className="text-df-section-card-heading-color">
-                          {domainDetails?.customDomain?.verificationData?.map(
-                            (record, index) => (
-                              <tr
-                                className="border-t border-gray-200"
-                                key={index}
-                              >
-                                <td className="px-4 py-3">{record?.domain}</td>
-                                <td className="px-4 py-3">{record?.type}</td>
-                                <td className="px-4 py-3">{record?.value}</td>
-                              </tr>
-                            )
-                          )}
-                        </tbody>
-                      </table>
+                  <>
+                    <div></div>
+                    <div className="col-span-2 mt-6">
+                      <div className="overflow-hidden rounded-xl border border-gray-200">
+                        <table className="min-w-full text-sm text-left">
+                          <thead className="bg-[#F4F6FA] dark:bg-[#4d545f] text-[#202937] dark:text-[#E9EAEB] font-medium">
+                            <tr>
+                              <th className="px-4 py-3">Name</th>
+                              <th className="px-4 py-3">Type</th>
+                              <th className="px-4 py-3">Value</th>
+                            </tr>
+                          </thead>
+                          <tbody className="text-df-section-card-heading-color">
+                            {domainDetails?.customDomain?.verificationData?.map(
+                              (record, index) => (
+                                <tr
+                                  className="border-t border-gray-200"
+                                  key={index}
+                                >
+                                  <td className="px-4 py-3">{record?.domain}</td>
+                                  <td className="px-4 py-3">{record?.type}</td>
+                                  <td className="px-4 py-3">{record?.value}</td>
+                                </tr>
+                              )
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
-                  </div>
-                  <div></div>
-                  <div className="col-span-2 mt-6">
-                    <Button
-                      onClick={() => {
-                        setIsDomainLoading(true);
-                        _verifyDomain()
-                          .then((res) => {
-                            fetchDomainDetails();
-                          })
-                          .catch((err) => {
-                            toast.error(err.response.data.error);
-                          })
-                          .finally(() => setIsDomainLoading(false));
-                      }}
-                      customClass="w-full"
-                      text={"Verify domain"}
-                      isLoading={isDomainLoading}
-                    />
-                  </div>
-                </>
-              )}
+                    <div></div>
+                    <div className="col-span-2 mt-6">
+                      <Button
+                        onClick={() => {
+                          setIsDomainLoading(true);
+                          _verifyDomain()
+                            .then((res) => {
+                              fetchDomainDetails();
+                            })
+                            .catch((err) => {
+                              toast.error(err.response.data.error);
+                            })
+                            .finally(() => setIsDomainLoading(false));
+                        }}
+                        customClass="w-full"
+                        text={"Verify domain"}
+                        isLoading={isDomainLoading}
+                      />
+                    </div>
+                  </>
+                )}
             </div>
           ) : (
             <div>

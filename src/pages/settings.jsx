@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Button } from "@/components/ui/buttonNew";
+import Button from "@/components/button";
+import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
 import { useRouter } from "next/router";
 import { useGlobalContext } from "@/context/globalContext";
 import ChangePassword from "@/components/changePassword";
@@ -7,8 +8,6 @@ import DeleteAccount from "@/components/deleteAccount";
 import CustomDomain from "@/components/customDomain";
 import DefaultDomain from "@/components/defaultDomain";
 import Transaction from "@/components/transaction";
-import MemoLeftArrow from "@/components/icons/LeftArrow";
-import Link from "next/link";
 
 export default function Settings() {
   const {
@@ -34,19 +33,16 @@ export default function Settings() {
   return (
     <main className="min-h-screen bg-df-bg-color">
       <div
-        className={`max-w-[890px]  mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0`}
+        className={`max-w-[890px]  mx-auto py-[94px] md:py-[135px] px-2 md:px-4 lg:px-0`}
       >
         <div className="bg-df-section-card-bg-color p-8 rounded-2xl">
-          <Link href="/builder">
-            <Button
-              // onClick={handleBack}
-              variant="secondary"
-              className="rounded-full px-4 h-9 text-sm font-medium "
-            >
-              <MemoLeftArrow className="!size-2.5" />
-              Go Back
-            </Button>
-          </Link>
+          <Button
+            text="Go Back"
+            onClick={handleBack}
+            type="secondary"
+            size="small"
+            icon={<LeftArrow className="text-df-icon-color cursor-pointer" />}
+          />
           <div className="mt-8">
             <DefaultDomain />
           </div>

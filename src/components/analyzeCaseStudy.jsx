@@ -99,9 +99,9 @@ export default function AnalyzeCaseStudy({
         <div className="flex gap-2 items-center">
           {
             status[
-            item.score > 8
-              ? category.good
-              : item.score > 6
+              item.score > 8
+                ? category.good
+                : item.score > 6
                 ? category.notBad
                 : category.bad
             ]
@@ -135,28 +135,29 @@ export default function AnalyzeCaseStudy({
           </Text>
           <Button
             type="secondary"
-            customClass="!p-2"
+            customClass="!p-2 rounded-[8px]"
             icon={<CloseIcon className="text-icon-color cursor-pointer" />}
             onClick={setShowModal}
           />
         </div>
       </header>
       <main
-        className={`flex-1 overflow-y-auto p-8 relative ${isAnalyzing && "opacity-20"
-          }`}
+        className={`flex-1 overflow-y-auto p-8 relative ${
+          isAnalyzing && "opacity-20"
+        }`}
       >
         <div className="flex flex-col justify-center items-center mb-8">
           {rating === 1
             ? states["good"].image
             : rating === 2
-              ? states["notBad"].image
-              : states["bad"].image}
+            ? states["notBad"].image
+            : states["bad"].image}
           <Text size="p-xsmall" className="mt-4">
             {rating === 1
               ? states["good"].text
               : rating === 2
-                ? states["notBad"].text
-                : states["bad"].text}
+              ? states["notBad"].text
+              : states["bad"].text}
           </Text>
         </div>
 
@@ -177,11 +178,12 @@ export default function AnalyzeCaseStudy({
               credits === 2
                 ? "Re-analyze Case Study"
                 : isButtonDisabled
-                  ? `Re-analyze Case Study in ${minutesLeft}  ${minutesLeft == 1 ? "minute" : "minutes"
+                ? `Re-analyze Case Study in ${minutesLeft}  ${
+                    minutesLeft == 1 ? "minute" : "minutes"
                   }`
-                  : wordCount < 400
-                    ? `Re-analyze requires ${400 - wordCount} more words`
-                    : "Re-analyze Case Study"
+                : wordCount < 400
+                ? `Re-analyze requires ${400 - wordCount} more words`
+                : "Re-analyze Case Study"
             }
             type="modal"
             isDisabled={(credits >= 2) | isButtonDisabled | (wordCount < 400)}

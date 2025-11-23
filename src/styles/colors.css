@@ -70,7 +70,7 @@
   --radio-btn-selected-stroke-color: #ffffff;
 
   /* application */
-  --df-bg-color: #f6f2ef;
+  --df-bg-color: #f2f2f0;
   --df-base-text-color: #202937;
   --df-secondary-text-color: #4d545f;
   --df-placeholder-color: #eff0f0;
@@ -80,14 +80,13 @@
   --df-section-card-bg-color: #ffffff;
   --df-section-card-heading-color: #202937;
   --df-section-card-shadow: rgba(0, 0, 0, 0.02) 0px 0px 16.4px;
-  --df-add-card-bg-color: rgb(246, 242, 239);
+  --df-add-card-bg-color: #f2f2f0;
   --df-add-card-border-color: #e9eaeb;
   --df-add-card-heading-color: #202937;
   --df-add-card-description-color: #989da3;
   --df-add-item-shadow: inset 0px 0px 0px 2px #e9eaeb;
   --df-orange-color: #ff553e;
   --df-tip-color: #828282;
-  --df-subtle-text-color: rgb(77 84 95 / var(--tw-text-opacity, 1));
 
   --credit-text-color: #7a829d;
 
@@ -188,7 +187,7 @@
   --input-error-color: #ff3b30;
   --input-error-shadow: 0px 0px 0px 4px #ff3a3029;
   --input-upload-border-color: #6a7079;
-  --input-upload-bg-color: rgb(246, 242, 239);
+  --input-upload-bg-color: #f0f1f4;
   --input-upload-heading-color: #6a7079;
   --input-upload-description-color: #6a7079;
   --input-upload-icon-color: #ff553e;
@@ -200,7 +199,6 @@
   --bottom-navigation-active-fill: #f3f4f7;
   --bottom-navigation-inactive-stroke: #738096;
   --bottom-navigation-inactive-fill: #f9fafb;
-  --bottom-navigation-border: #e2e1e1;
 
   --used-credit-text-color: #8b919a;
   --good-bg-color: #d3fae2;
@@ -279,7 +277,6 @@
   --df-add-card-heading-color: #e9eaeb;
   --df-add-card-description-color: #788095;
   --df-add-item-shadow: inset 0px 0px 0px 2px #262832;
-  --df-subtle-text-color: rgb(180 184 198 / var(--tw-text-opacity, 1));
 
   /* profile card */
   --profile-card-heading-color: #e9eaeb;
@@ -377,7 +374,7 @@
   --input-error-color: #ff3b30;
   --input-error-shadow: 0px 0px 0px 4px #ff3a3029;
   --input-upload-border-color: #6a7079;
-  --input-upload-bg-color: #13151a;
+  --input-upload-bg-color: #363a48;
   --input-upload-heading-color: #e9eaeb;
   --input-upload-description-color: #e9eaeb;
   --input-upload-icon-color: #ff553e;
@@ -390,7 +387,6 @@
   --bottom-navigation-active-fill: #2f323d;
   --bottom-navigation-inactive-stroke: #738096;
   --bottom-navigation-inactive-fill: #1d1f26;
-  --bottom-navigation-border: #2a2d38;
 
   --modal-analyze-bg-color: #23252f;
   --analytics-url-color: #007aff;

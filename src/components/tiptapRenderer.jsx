@@ -39,9 +39,17 @@ const TiptapRenderer = ({ content }) => {
         inline: false,
       }),
       ResizableImage,
-      Table.configure({
+      Table.extend({
+        renderHTML({ HTMLAttributes }) {
+          return [
+            "div",
+            { class: "tableWrapper" },
+            ["table", HTMLAttributes, ["tbody", 0]],
+          ];
+        },
+      }).configure({
         HTMLAttributes: {
-          class: 'tiptap-table',
+          class: "tiptap-table",
         },
       }),
       TableRow.configure({

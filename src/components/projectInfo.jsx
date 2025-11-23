@@ -25,7 +25,6 @@ import Modal from "./modal";
 import AnalyzeCaseStudy from "./analyzeCaseStudy";
 import { useGlobalContext } from "@/context/globalContext";
 import AnimatedLoading from "./AnimatedLoading";
-import Link from "next/link";
 export default function ProjectInfo({
   projectDetails,
   userDetails,
@@ -159,12 +158,12 @@ export default function ProjectInfo({
   const validationSchema = Yup.object().shape({
     password: isPassword
       ? Yup.string()
-        .required("Password is required.")
-        .min(6, "Password is too short - should be 6 chars minimum.")
+          .required("Password is required.")
+          .min(6, "Password is too short - should be 6 chars minimum.")
       : Yup.string().min(
-        6,
-        "Password is too short - should be 6 chars minimum."
-      ),
+          6,
+          "Password is too short - should be 6 chars minimum."
+        ),
   });
 
   const handleBack = () => {
@@ -184,11 +183,9 @@ export default function ProjectInfo({
     fetchAnalyzeStatus();
   }, []);
 
-  console.log(userDetails);
   return (
     <div className="bg-df-section-card-bg-color rounded-[24px] p-[16px] md:p-[32px]">
       <div className="flex justify-between items-center mb-2">
-
         <Button
           text="Go Back"
           onClick={handleBack}
@@ -196,7 +193,6 @@ export default function ProjectInfo({
           size="small"
           icon={<LeftArrow className="text-df-icon-color cursor-pointer" />}
         />
-
         {edit && (
           <div className="flex gap-3">
             {AnalyzeStatus && (
@@ -208,8 +204,8 @@ export default function ProjectInfo({
                     suggestions?.length > 0
                       ? "Show Score Card"
                       : wordCount < 400
-                        ? `Need more ${400 - wordCount} words to Analyze AI`
-                        : "Analyze Project using AI"
+                      ? `Need more ${400 - wordCount} words to Analyze AI`
+                      : "Analyze Project using AI"
                   }
                   onClick={() => handleAnalyzeClick()}
                   iconPosition={isAnalyzing ? "right" : "left"}
@@ -263,10 +259,11 @@ export default function ProjectInfo({
               />
 
               <div
-                className={`pt-2 origin-top-right absolute z-20 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${popoverMenu === popovers.password
-                  ? "opacity-100 scale-100"
-                  : "opacity-0 scale-90 pointer-events-none"
-                  }`}
+                className={`pt-2 origin-top-right absolute z-20 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${
+                  popoverMenu === popovers.password
+                    ? "opacity-100 scale-100"
+                    : "opacity-0 scale-90 pointer-events-none"
+                }`}
               >
                 <div className=" w-[350px] md:w-[386px]  bg-popover-bg-color rounded-2xl shadow-lg border-[5px] border-popover-border-color p-2">
                   <Formik
@@ -322,10 +319,11 @@ export default function ProjectInfo({
                                 <Field
                                   name="password"
                                   type={showEye ? "text" : "password"}
-                                  className={`text-input mt-2 ${errors.password &&
+                                  className={`text-input mt-2 ${
+                                    errors.password &&
                                     touched.password &&
                                     "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                                    }`}
+                                  }`}
                                   placeholder="Password"
                                   autocomplete="new-password"
                                 />
@@ -392,23 +390,21 @@ export default function ProjectInfo({
         {title ? title : "Type here..."}
       </h1>
 
-      {
-        (edit || !!description) && (
-          <p
-            className="text-[16px] text-project-info-card-description-color font-inter font-[500] mt-2 min-w-0 webkit-fill"
-            contentEditable={edit}
-            suppressContentEditableWarning
-            onBlur={(e) => handleOnBlur("description", e)}
-            onFocus={(e) => {
-              if (e.target.textContent === "Type here...") {
-                e.target.textContent = "";
-              }
-            }}
-          >
-            {description ? description : "Type here..."}
-          </p>
-        )
-      }
+      {(edit || !!description) && (
+        <p
+          className="text-[16px] text-project-info-card-description-color font-inter font-[500] mt-2 min-w-0 webkit-fill"
+          contentEditable={edit}
+          suppressContentEditableWarning
+          onBlur={(e) => handleOnBlur("description", e)}
+          onFocus={(e) => {
+            if (e.target.textContent === "Type here...") {
+              e.target.textContent = "";
+            }
+          }}
+        >
+          {description ? description : "Type here..."}
+        </p>
+      )}
 
       <div className="flex flex-col gap-4 md:grid md:grid-cols-4 md:gap-6 mt-4">
         {(edit || !!client) && (
@@ -497,32 +493,31 @@ export default function ProjectInfo({
           </div>
         )}
       </div>
-      {
-        edit ? (
-          <ImageWithOverlayAndPicker
+      {edit ? (
+        <ImageWithOverlayAndPicker
+          src={thumbnail?.url}
+          project={projectDetails}
+        />
+      ) : (
+        <figure className="relative">
+          <img
             src={thumbnail?.url}
-            project={projectDetails}
+            alt="project image"
+            className={`w-full h-full rounded-[20px] object-cover transition-opacity duration-100 mt-6 md:mt-8 ${
+              imageLoaded ? "opacity-100" : "opacity-0"
+            }`}
+            loading="lazy"
+            fetchPriority="high"
+            decoding="async"
+            onLoad={() => {
+              setImageLoaded(true);
+            }}
           />
-        ) : (
-          <figure className="relative">
-            <img
-              src={thumbnail?.url}
-              alt="project image"
-              className={`w-full h-full rounded-[20px] object-cover transition-opacity duration-100 mt-6 md:mt-8 ${imageLoaded ? "opacity-100" : "opacity-0"
-                }`}
-              loading="lazy"
-              fetchPriority="high"
-              decoding="async"
-              onLoad={() => {
-                setImageLoaded(true);
-              }}
-            />
-            {!imageLoaded && (
-              <div className="w-full h-full rounded-[20px] bg-df-placeholder-color absolute top-0 right-0" />
-            )}
-          </figure>
-        )
-      }
+          {!imageLoaded && (
+            <div className="w-full h-full rounded-[20px] bg-df-placeholder-color absolute top-0 right-0" />
+          )}
+        </figure>
+      )}
       <Modal show={showModal} className={"md:block"}>
         <AnalyzeCaseStudy
           wordCount={wordCount}
@@ -534,6 +529,6 @@ export default function ProjectInfo({
           isAnalyzing={isAnalyzing}
         />
       </Modal>
-    </div >
+    </div>
   );
 }

@@ -148,11 +148,6 @@ export const GlobalProvider = ({ children }) => {
 
   const updateCache = (key, data) => {
     queryClient.setQueriesData({ queryKey: [key] }, (oldData) => {
-      //INFO: If oldData doesn't exist, initialize it with the new data
-      if (!oldData) {
-        return { user: data };
-      }
-      //INFO: If oldData doesn't exist, initialize it with the new data
       return { user: { ...oldData?.user, ...data } };
     });
   };
@@ -204,7 +199,7 @@ export const GlobalProvider = ({ children }) => {
   };
 
 
-
+  
   return (
     <GlobalContext.Provider
       value={{

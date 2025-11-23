@@ -71,7 +71,7 @@ export default function AddTools() {
         <Text className="text-modal-heading-color">Add your tools</Text>
         <Button
           type="secondary"
-          customClass="!p-2"
+          customClass="!p-2 rounded-[8px]"
           icon={<CloseIcon className="text-df-icon-color cursor-pointer" />}
           onClick={closeModal}
         />

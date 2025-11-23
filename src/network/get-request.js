@@ -10,16 +10,7 @@ export const _getUser = (id) => axiosInstance.get(`/user/user?username=${id}`);
 export const _resendOTP = () =>
   axiosInstance.get("/user/resendEmailVerification");
 
-export const _getSkills = (search = "", personaID = "") => {
-  const params = new URLSearchParams();
-  if (search) params.append("search", search);
-  if (personaID) params.append("personaID", personaID);
-
-  const queryString = params.toString();
-  return axiosInstance.get(`/skill/get/all${queryString ? `?${queryString}` : ""}`);
-};
-
-export const _getPersonas = () => axiosInstance.get("persona/get/all");
+export const _getSkills = () => axiosInstance.get("/skill/get/all");
 
 export const _getProjectTypes = () => axiosInstance.get("/projectType/get/all");
 

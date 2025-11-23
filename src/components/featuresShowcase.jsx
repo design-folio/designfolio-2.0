@@ -89,7 +89,7 @@ export default function FeaturesShowcase() {
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-6">
-                    <Card className="p-4 space-y-4 bg-card-landing">
+                    <Card className="p-4 space-y-4">
                         <video
                             className="rounded-md w-full border"
                             autoPlay
@@ -124,7 +124,7 @@ export default function FeaturesShowcase() {
                         </div>
                     </Card>
 
-                    <Card className="p-4 space-y-4 bg-card-landing">
+                    <Card className="p-4 space-y-4">
                         <video
                             className="rounded-md w-full border"
                             autoPlay

@@ -21,7 +21,7 @@ const Header = ({ dfToken, hideHeader }) => {
     template,
     setShowUpgradeModal,
   } = useGlobalContext();
-  const footerPaths = ["/", "/old-landing", "/contact", "/refund-policy", "/privacy-policy", "/terms-and-conditions", "/pricing"];
+  const footerPaths = ["/", "/old-landing", "/contact", "/refund-policy", "/privacy-policy", "/terms-and-conditions"];
   // Determine header component based on dfToken and router pathname
   let headerComponent = null;
   const path = router.pathname;

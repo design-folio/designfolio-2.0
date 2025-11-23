@@ -3,6 +3,7 @@ import { SortableContainer, SortableElement } from "react-sortable-hoc";
 import ProjectCard from "./ProjectCard";
 import Section from "./section";
 import AddCard from "./AddCard";
+import ProjectIcon from "../../public/assets/svgs/projectIcon.svg";
 import { modals, moveItemInArray } from "@/lib/constant";
 import { _updateUser } from "@/network/post-request";
 import { twMerge } from "tailwind-merge";
@@ -13,7 +14,6 @@ const SortableItem = SortableElement(
   ({ value, onDeleteProject, edit, preview }) => {
     const router = useRouter();
 
-    //Note:Not using handleRouter as router does not prefetch the page
     const handleRouter = (id) => {
       if (edit) {
         router.push(`/project/${id}/editor`);
@@ -23,11 +23,7 @@ const SortableItem = SortableElement(
         router.push(`/project/${id}`);
       }
     };
-    const getHref = (id) => {
-      if (edit) return `/project/${id}/editor`;
-      if (preview) return `/project/${id}/preview`;
-      return `/project/${id}`;
-    };
+
     return (
       <div className="h-full">
         <ProjectCard
@@ -35,7 +31,6 @@ const SortableItem = SortableElement(
           onDeleteProject={onDeleteProject}
           edit={edit}
           handleRouter={handleRouter}
-          href={getHref(value._id)}
         />
       </div>
     );
@@ -104,18 +99,19 @@ export default function Projects({
             ))}
 
             {edit &&
-              (userDetails?.pro || userDetails?.projects.length < 1 ? (
+              (userDetails?.pro || userDetails?.projects.length < 3 ? (
                 <AddCard
-                  title={`${userDetails?.projects?.length === 0
-                    ? "Upload your first case study"
-                    : "Add case study"
-                    }`}
+                  title={`${
+                    userDetails?.projects?.length === 0
+                      ? "Upload your first case study"
+                      : "Add case study"
+                  }`}
                   subTitle="Show off your best work."
                   first={userDetails?.projects?.length !== 0}
                   buttonTitle="Add case study"
                   secondaryButtonTitle="Write using AI"
                   onClick={() => openModal(modals.project)}
-                  // icon={<MemoCasestudy className="cursor-pointer" />}
+                  icon={<ProjectIcon className="cursor-pointer" />}
                   openModal={openModal}
                 />
               ) : (

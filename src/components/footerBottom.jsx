@@ -13,7 +13,7 @@ export default function FooterBottom() {
             © 2025 Designfolio Labs LLP. All rights reserved.
           </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-3.5">
+          <div className="flex flex-wrap items-center justify-center gap-6">
             <Link
               href="/privacy-policy"
               className="text-sm text-muted-foreground hover-elevate px-2 py-1 rounded-md transition-colors cursor-pointer"
@@ -34,13 +34,6 @@ export default function FooterBottom() {
               data-testid="link-refund"
             >
               Refund Policy
-            </Link>
-            <Link
-              href="/pricing"
-              className="text-sm text-muted-foreground hover-elevate px-2 py-1 rounded-md transition-colors cursor-pointer"
-              data-testid="link-pricing"
-            >
-              Pricing
             </Link>
             <Link
               href="/contact"

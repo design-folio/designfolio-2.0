@@ -13,7 +13,7 @@ export default function ProjectLock() {
         </div>
         <span className={styles.addProjectBlockedTitle}>Add More Projects</span>
         <span className={styles.addProjectBlockedSubtext}>
-          You’ve reached the 1-project limit on the free plan
+          You've reached the 3 project limit on the free plan
         </span>
         <Button
           text="Upgrade to Pro"

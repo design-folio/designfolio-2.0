@@ -36,7 +36,7 @@ export default function AddSocial() {
         <Button
           // customClass="lg:hidden"
           type="secondary"
-          customClass="!p-2"
+          customClass="!p-2 rounded-[8px]"
           icon={<CloseIcon className="text-icon-color cursor-pointer" />}
           onClick={closeModal}
         />
@@ -72,10 +72,11 @@ export default function AddSocial() {
                   <Field
                     name="instagram"
                     type="text"
-                    className={`text-input mt-2  ${errors.instagram &&
+                    className={`text-input mt-2  ${
+                      errors.instagram &&
                       touched.instagram &&
                       "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                      }`}
+                    }`}
                     autoComplete="off"
                   />
                   <ErrorMessage
@@ -92,10 +93,11 @@ export default function AddSocial() {
                   <Field
                     name="linkedin"
                     type="text"
-                    className={`text-input mt-2  ${errors.linkedin &&
+                    className={`text-input mt-2  ${
+                      errors.linkedin &&
                       touched.linkedin &&
                       "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                      }`}
+                    }`}
                     autoComplete="off"
                   />
                   <ErrorMessage
@@ -112,10 +114,11 @@ export default function AddSocial() {
                   <Field
                     name="twitter"
                     type="text"
-                    className={`text-input mt-2  ${errors.twitter &&
+                    className={`text-input mt-2  ${
+                      errors.twitter &&
                       touched.twitter &&
                       "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                      }`}
+                    }`}
                     autoComplete="off"
                   />
                   <ErrorMessage

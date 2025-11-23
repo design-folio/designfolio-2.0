@@ -16,6 +16,10 @@ import { useGlobalContext } from "@/context/globalContext";
 import { modals } from "@/lib/constant";
 import DeleteIcon from "../../../public/assets/svgs/deleteIcon.svg";
 import AddCard from "../AddCard";
+import ProjectIcon from "../../../public/assets/svgs/projectIcon.svg";
+import PlusIcon from "../../../public/assets/svgs/plus.svg";
+import BagIcon from "../../../public/assets/svgs/bag.svg";
+import AddItem from "../addItem";
 import { useTheme } from "next-themes";
 import Spotlight from "./Spotlight";
 import DragIcon from "../../../public/assets/svgs/drag.svg";
@@ -28,12 +32,6 @@ import { CSS } from "@dnd-kit/utilities";
 import { Testimonials } from "./Testimonials";
 import { _updateUser } from "@/network/post-request";
 import ProjectLock from "../projectLock";
-import { getUserAvatarImage } from "@/lib/getAvatarUrl";
-import { cn } from "@/lib/utils";
-import MemoCasestudy from "../icons/Casestudy";
-import Tools from "../tools";
-import { ToolStack } from "./ToolStack";
-// import { ToolStack } from "./ToolStack";
 
 const Portfolio = ({ userDetails, edit }) => {
   const router = useRouter();
@@ -94,8 +92,8 @@ const Portfolio = ({ userDetails, edit }) => {
       edit
         ? `/project/${id}/editor`
         : router.asPath.includes("/portfolio-preview")
-          ? `/project/${id}/preview`
-          : `/project/${id}`
+        ? `/project/${id}/preview`
+        : `/project/${id}`
     );
   };
 
@@ -175,7 +173,7 @@ const Portfolio = ({ userDetails, edit }) => {
                 <div className="flex justify-between gap-3 items-center mt-4 cursor-pointer">
                   <Button2
                     text={"Edit project"}
-                    customClass="w-full h-[58px]"
+                    customClass="w-full"
                     type="secondary"
                     onClick={(e) => {
                       e.stopPropagation();
@@ -184,7 +182,6 @@ const Portfolio = ({ userDetails, edit }) => {
                   />
                   <div className="flex gap-4">
                     <Button2
-                      size="icon"
                       type="delete"
                       icon={
                         <DeleteIcon className="stroke-delete-btn-icon-color w-6 h-6 cursor-pointer" />
@@ -200,9 +197,9 @@ const Portfolio = ({ userDetails, edit }) => {
                     onClick={(e) => e.stopPropagation()}
                     {...listeners}
                     style={{ touchAction: "none" }}
-                    className="px-[24.5px] py-[19px] transition-shadow duration-500 ease-out bg-project-card-reorder-btn-bg-color border-project-card-reorder-btn-bg-color hover:border-project-card-reorder-btn-bg-hover-color hover:bg-project-card-reorder-btn-bg-hover-color rounded-full [cursor:grab] active:[cursor:grabbing]"
+                    className="!px-[24.5px] !cursor-grab py-[19px] transition-shadow duration-500 ease-out bg-project-card-reorder-btn-bg-color border-project-card-reorder-btn-bg-color hover:border-project-card-reorder-btn-bg-hover-color hover:bg-project-card-reorder-btn-bg-hover-color rounded-2xl"
                   >
-                    <DragIcon className="text-project-card-reorder-btn-icon-color pointer-events-none" />
+                    <DragIcon className="text-project-card-reorder-btn-icon-color !cursor-grab" />
                   </div>
                 </div>
               )}
@@ -259,9 +256,9 @@ const Portfolio = ({ userDetails, edit }) => {
               }}
             >
               <img
-                src={getUserAvatarImage(userDetails)}
+                src={avatar?.url || "/assets/svgs/avatar.svg"}
                 alt="Profile"
-                className={cn("w-10 h-10 rounded-full object-cover", !avatar ? 'bg-[#FFB088]' : "")}
+                className="w-10 h-10 rounded-full object-cover"
               />
               <div>
                 <h2 className="text-foreground font-medium">{`${firstName} ${lastName}`}</h2>
@@ -326,10 +323,7 @@ const Portfolio = ({ userDetails, edit }) => {
               {bio}
             </motion.p>
             {/* Skills Infinite Scroll */}
-            <motion.div
-              variants={textReveal}
-              className="w-full overflow-hidden relative py-4 before:absolute before:left-0 before:top-0 before:z-10 before:w-20 before:h-full before:bg-gradient-to-r before:from-background before:to-transparent after:absolute after:right-0 after:top-0 after:z-10 after:w-20 after:h-full after:bg-gradient-to-l after:from-background after:to-transparent"
-            >
+            <div className="w-full overflow-hidden relative py-4 before:absolute before:left-0 before:top-0 before:z-10 before:w-20 before:h-full before:bg-gradient-to-r before:from-background before:to-transparent after:absolute after:right-0 after:top-0 after:z-10 after:w-20 after:h-full after:bg-gradient-to-l after:from-background after:to-transparent">
               <motion.div
                 className="flex gap-4 whitespace-nowrap"
                 animate={{ x: ["0%", "-50%"] }}
@@ -343,23 +337,15 @@ const Portfolio = ({ userDetails, edit }) => {
                 }}
               >
                 {scrollSkills.map((skill, index) => (
-                  <motion.span
+                  <span
                     key={index}
-                    initial={{ opacity: 0, scale: 0.8, y: 10 }}
-                    whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-50px" }}
-                    transition={{
-                      duration: 0.4,
-                      delay: (index % skills.length) * 0.05,
-                      ease: [0.25, 0.46, 0.45, 0.94]
-                    }}
                     className="bg-card px-4 py-2 rounded-full text-sm"
                   >
                     {skill?.label}
-                  </motion.span>
+                  </span>
                 ))}
               </motion.div>
-            </motion.div>
+            </div>
           </motion.div>
         </section>
 
@@ -397,22 +383,24 @@ const Portfolio = ({ userDetails, edit }) => {
                     />
                   ))}
                   {edit &&
-                    (userDetails?.pro || userDetails?.projects.length < 1 ? (
+                    (userDetails?.pro || userDetails?.projects.length < 3 ? (
                       <AddCard
-                        title={`${userDetails?.projects?.length === 0
-                          ? "Upload your first case study"
-                          : "Add case study"
-                          }`}
+                        title={`${
+                          userDetails?.projects?.length === 0
+                            ? "Upload your first case study"
+                            : "Add case study"
+                        }`}
                         subTitle="Show off your best work."
                         first
                         buttonTitle="Add case study"
                         secondaryButtonTitle="Write using AI"
                         onClick={() => openModal(modals.project)}
-                        icon={<MemoCasestudy className="cursor-pointer size-[72px]" />}
+                        icon={<ProjectIcon className="cursor-pointer" />}
                         openModal={openModal}
-                        className={`bg-df-section-card-bg-color flex items-center justify-center min-h-[269px] rounded-lg ${userDetails?.projects?.length !== 0 &&
-                          " shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] hover:shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
-                          }`}
+                        className={`flex items-center justify-center min-h-[269px] rounded-lg ${
+                          userDetails?.projects?.length !== 0 &&
+                          "bg-df-section-card-bg-color shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] hover:shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
+                        }`}
                       />
                     ) : (
                       <ProjectLock />
@@ -422,8 +410,6 @@ const Portfolio = ({ userDetails, edit }) => {
             </SortableContext>
           </DndContext>
         )}
-        {/* Tools Section */}
-        <ToolStack userDetails={userDetails} edit={edit} titleClasses="text-3xl"/>
 
         {/* Reviews Section */}
         {(reviews?.length > 0 || edit) && (

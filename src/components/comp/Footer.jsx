@@ -21,9 +21,6 @@ import { Button } from "../ui/button";
 import Button2 from "../button";
 import { useGlobalContext } from "@/context/globalContext";
 import { _deleteResume } from "@/network/post-request";
-import MemoResume from "../icons/Resume";
-import MemoSocial from "../icons/Social";
-import MemoOtherlinks from "../icons/Otherlinks";
 
 export const Footer = ({ userDetails, edit }) => {
   const { portfolios, socials } = userDetails || {};
@@ -61,7 +58,7 @@ export const Footer = ({ userDetails, edit }) => {
           animate={isInView ? "visible" : "hidden"}
           className="flex flex-col items-center gap-8"
         >
-          <h2 className="text-3xl font-bold text-foreground max-w-2xl text-center leading-tight">
+          <h2 className="text-4xl sm:text-5xl font-bold text-foreground max-w-2xl text-center leading-tight">
             Let's work together
           </h2>
           {userDetails?.resume?.url && (
@@ -92,7 +89,7 @@ export const Footer = ({ userDetails, edit }) => {
           {edit && !userDetails?.resume?.url && (
             <AddItem
               title="Add your resume"
-              iconLeft={<MemoResume />}
+              iconLeft={<ResumeIcon className="text-df-icon-color" />}
               onClick={() => openModal(modals.resume)}
               iconRight={
                 <Button2
@@ -191,7 +188,7 @@ export const Footer = ({ userDetails, edit }) => {
               <AddItem
                 title="Add your social media"
                 onClick={() => openModal(modals.socialMedia)}
-                iconLeft={<MemoSocial />}
+                iconLeft={<PuzzleIcon className="text-df-icon-color" />}
                 iconRight={
                   <Button2
                     size="small"
@@ -207,7 +204,7 @@ export const Footer = ({ userDetails, edit }) => {
               <AddItem
                 title="Add your portfolio links"
                 onClick={() => openModal(modals.portfolioLinks)}
-                iconLeft={<MemoOtherlinks />}
+                iconLeft={<OthersIcon className="text-df-icon-color" />}
                 iconRight={
                   <Button2
                     size="small"

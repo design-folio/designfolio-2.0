@@ -1,5 +1,5 @@
 import React from "react";
-import { Button as ButtonNew } from "./ui/buttonNew"
+
 import Button from "./button";
 import EditIcon from "../../public/assets/svgs/edit.svg";
 import NoteIcon from "../../public/assets/svgs/noteIcon.svg";
@@ -18,10 +18,6 @@ import Text from "./text";
 import { modals } from "@/lib/constant";
 import AddItem from "./addItem";
 import Link from "next/link";
-import { PencilIcon } from "lucide-react";
-import MemoResume from "./icons/Resume";
-import MemoSocial from "./icons/Social";
-import MemoOtherlinks from "./icons/Otherlinks";
 
 export default function Others({ openModal, userDetails, edit }) {
   const { resume } = userDetails || {};
@@ -38,14 +34,11 @@ export default function Others({ openModal, userDetails, edit }) {
             >
               Resume
             </Text>
-
-            {edit && resume &&
-              < ButtonNew
-                className="h-11 w-11"
-                onClick={() => openModal(modals.resume)}
-                variant={"secondary"}
-              ><PencilIcon className="text-df-icon-color cursor-pointer" /></ButtonNew>
-            }
+            <Button
+              onClick={() => openModal(modals.resume)}
+              type={"secondary"}
+              icon={<EditIcon className="text-df-icon-color cursor-pointer" />}
+            />
           </div>
 
           {edit && !!userDetails?.resume ? (
@@ -63,7 +56,7 @@ export default function Others({ openModal, userDetails, edit }) {
             edit && (
               <AddItem
                 title="Add your resume"
-                iconLeft={<MemoResume />}
+                iconLeft={<ResumeIcon className="text-df-icon-color" />}
                 onClick={() => openModal(modals.resume)}
                 iconRight={
                   <Button
@@ -79,8 +72,7 @@ export default function Others({ openModal, userDetails, edit }) {
             )
           )}
         </div>
-      )
-      }
+      )}
 
       <div>
         <div className="flex items-center justify-between mb-4">
@@ -88,28 +80,30 @@ export default function Others({ openModal, userDetails, edit }) {
             !!userDetails?.socials?.twitter ||
             !!userDetails?.socials?.linkedin ||
             edit) && (
-              <Text
-                size="p-small"
-                className="text-modal-heading-color font-semibold"
-              >
-                Connect with me
-              </Text>
-            )}
+            <Text
+              size="p-small"
+              className="text-modal-heading-color font-semibold"
+            >
+              Connect with me
+            </Text>
+          )}
           {edit &&
             (userDetails?.socials?.instagram ||
               userDetails?.socials?.twitter ||
               userDetails?.socials?.linkedin) && (
-              <ButtonNew
-                className="h-11 w-11"
+              <Button
                 onClick={() => openModal(modals.socialMedia)}
-                variant={"secondary"}
-              ><PencilIcon className="text-df-icon-color cursor-pointer" /></ButtonNew>
+                type={"secondary"}
+                icon={
+                  <EditIcon className="text-df-icon-color cursor-pointer" />
+                }
+              />
             )}
         </div>
         <div>
           {!!userDetails?.socials?.instagram ||
-            !!userDetails?.socials?.twitter ||
-            !!userDetails?.socials?.linkedin ? (
+          !!userDetails?.socials?.twitter ||
+          !!userDetails?.socials?.linkedin ? (
             <div className="flex flex-col lg:flex-row gap-[24px]">
               {userDetails?.socials?.instagram && (
                 <Link
@@ -163,7 +157,7 @@ export default function Others({ openModal, userDetails, edit }) {
               <AddItem
                 title="Add your social media"
                 onClick={() => openModal(modals.socialMedia)}
-                iconLeft={<MemoSocial />}
+                iconLeft={<PuzzleIcon className="text-df-icon-color" />}
                 iconRight={
                   <Button
                     size="small"
@@ -186,30 +180,32 @@ export default function Others({ openModal, userDetails, edit }) {
             !!userDetails?.portfolios?.behance ||
             !!userDetails?.portfolios?.medium ||
             edit) && (
-              <Text
-                size="p-small"
-                className="text-modal-heading-color font-semibold"
-              >
-                Other portfolio
-              </Text>
-            )}
+            <Text
+              size="p-small"
+              className="text-modal-heading-color font-semibold"
+            >
+              Other portfolio
+            </Text>
+          )}
           {edit &&
             (userDetails?.portfolios?.dribbble ||
               userDetails?.portfolios?.notion ||
               userDetails?.portfolios?.behance ||
               userDetails?.portfolios?.medium) && (
-              <ButtonNew
-                className="h-11 w-11"
+              <Button
                 onClick={() => openModal(modals.portfolioLinks)}
-                variant={"secondary"}
-              ><PencilIcon className="text-df-icon-color cursor-pointer" /></ButtonNew>
+                type={"secondary"}
+                icon={
+                  <EditIcon className="text-df-icon-color cursor-pointer" />
+                }
+              />
             )}
         </div>
         <div>
           {!!userDetails?.portfolios?.dribbble ||
-            !!userDetails?.portfolios?.notion ||
-            !!userDetails?.portfolios?.behance ||
-            !!userDetails?.portfolios?.medium ? (
+          !!userDetails?.portfolios?.notion ||
+          !!userDetails?.portfolios?.behance ||
+          !!userDetails?.portfolios?.medium ? (
             <div className="flex flex-col lg:flex-row gap-[24px]">
               {userDetails?.portfolios?.dribbble && (
                 <Link
@@ -277,7 +273,7 @@ export default function Others({ openModal, userDetails, edit }) {
               <AddItem
                 title="Add your portfolio links"
                 onClick={() => openModal("portfolio-links")}
-                iconLeft={<MemoOtherlinks />}
+                iconLeft={<OthersIcon className="text-df-icon-color" />}
                 iconRight={
                   <Button
                     size="small"
@@ -293,6 +289,6 @@ export default function Others({ openModal, userDetails, edit }) {
           )}
         </div>
       </div>
-    </div >
+    </div>
   );
 }

@@ -83,7 +83,15 @@ const TiptapEditor = ({ projectDetails, userDetails }) => {
           class: "w-full aspect-video rounded-[20px] mt-6 md:mt-8",
         },
       }),
-      Table.configure({
+      Table.extend({
+        renderHTML({ HTMLAttributes }) {
+          return [
+            "div",
+            { class: "tableWrapper" },
+            ["table", HTMLAttributes, ["tbody", 0]],
+          ];
+        },
+      }).configure({
         HTMLAttributes: {
           class: "tiptap-table",
         },

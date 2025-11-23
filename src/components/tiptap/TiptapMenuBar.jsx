@@ -36,6 +36,40 @@ import {
   Columns,
   Rows,
 } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
+const MenuButton = ({
+  onClick,
+  onMouseDown,
+  isActive,
+  disabled,
+  title,
+  children,
+  className,
+  style,
+}) => (
+  <Tooltip>
+    <TooltipTrigger asChild>
+      <button
+        onClick={onClick}
+        onMouseDown={onMouseDown}
+        disabled={disabled}
+        className={`${isActive ? "is-active" : ""} ${className || ""}`.trim()}
+        style={style}
+      >
+        {children}
+      </button>
+    </TooltipTrigger>
+    <TooltipContent side="top">
+      <p>{title}</p>
+    </TooltipContent>
+  </Tooltip>
+);
 
 const TiptapMenuBar = ({ editor, showToolbar }) => {
   const { resolvedTheme } = useTheme();
@@ -323,401 +357,409 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
   };
 
   return (
-    <div
-      ref={toolbarRef}
-      className={`tiptap-menu-bar ${
-        showToolbar ? "toolbar-visible" : "toolbar-hidden"
-      }`}
-    >
-      {/* Primary Text Formatting */}
-      <div className="menu-group">
-        <button
-          onClick={() => {
-            editor.chain().focus().toggleBold().run();
-            closeAllDropdowns();
-          }}
-          onMouseDown={(e) => e.preventDefault()}
-          className={activeNodes.bold ? "is-active" : ""}
-          title="Bold"
-        >
-          <Bold size={18} />
-        </button>
-        <button
-          onClick={() => {
-            editor.chain().focus().toggleItalic().run();
-            closeAllDropdowns();
-          }}
-          onMouseDown={(e) => e.preventDefault()}
-          className={activeNodes.italic ? "is-active" : ""}
-          title="Italic"
-        >
-          <Italic size={18} />
-        </button>
-        <button
-          onClick={() => {
-            editor.chain().focus().toggleStrike().run();
-            closeAllDropdowns();
-          }}
-          onMouseDown={(e) => e.preventDefault()}
-          className={activeNodes.strike ? "is-active" : ""}
-          title="Strikethrough"
-        >
-          <Strikethrough size={18} />
-        </button>
-        <button
-          onClick={() => {
-            editor.chain().focus().toggleUnderline().run();
-            closeAllDropdowns();
-          }}
-          onMouseDown={(e) => e.preventDefault()}
-          className={activeNodes.underline ? "is-active" : ""}
-          title="Underline"
-        >
-          <Underline size={18} />
-        </button>
-      </div>
+    <TooltipProvider delayDuration={0}>
+      <div
+        ref={toolbarRef}
+        className={`tiptap-menu-bar ${
+          showToolbar ? "toolbar-visible" : "toolbar-hidden"
+        }`}
+      >
+        {/* Primary Text Formatting */}
+        <div className="menu-group">
+          <MenuButton
+            onClick={() => {
+              editor.chain().focus().toggleBold().run();
+              closeAllDropdowns();
+            }}
+            onMouseDown={(e) => e.preventDefault()}
+            isActive={activeNodes.bold}
+            title="Bold"
+          >
+            <Bold size={18} />
+          </MenuButton>
+          <MenuButton
+            onClick={() => {
+              editor.chain().focus().toggleItalic().run();
+              closeAllDropdowns();
+            }}
+            onMouseDown={(e) => e.preventDefault()}
+            isActive={activeNodes.italic}
+            title="Italic"
+          >
+            <Italic size={18} />
+          </MenuButton>
+          <MenuButton
+            onClick={() => {
+              editor.chain().focus().toggleStrike().run();
+              closeAllDropdowns();
+            }}
+            onMouseDown={(e) => e.preventDefault()}
+            isActive={activeNodes.strike}
+            title="Strikethrough"
+          >
+            <Strikethrough size={18} />
+          </MenuButton>
+          <MenuButton
+            onClick={() => {
+              editor.chain().focus().toggleUnderline().run();
+              closeAllDropdowns();
+            }}
+            onMouseDown={(e) => e.preventDefault()}
+            isActive={activeNodes.underline}
+            title="Underline"
+          >
+            <Underline size={18} />
+          </MenuButton>
+        </div>
 
-      {/* Color Picker Dropdown */}
-      <div className="menu-group menu-dropdown">
-        <button
-          onClick={() => toggleDropdown("color")}
-          title="Text & Background Color"
-        >
-          <Highlighter size={18} />
-        </button>
-        {showColorMenu && (
-          <div className="dropdown-menu color-picker-menu">
-            {/* Text Color Section */}
-            <div className="color-section">
-              <div className="color-section-title">Color</div>
-              <div className="color-row">
-                {textColors.map((color, index) => (
-                  <button
-                    key={index}
-                    onClick={() => {
-                      if (color.value) {
-                        editor.chain().focus().setColor(color.value).run();
-                      } else {
-                        editor.chain().focus().unsetColor().run();
-                      }
-                      closeAllDropdowns();
-                    }}
-                    className={`color-button ${
-                      color.isDefault ? "color-default text-color-default" : ""
-                    }`}
-                    style={{ border: "none" }}
-                    title={color.name}
-                  >
-                    <span
-                      className="color-letter"
-                      style={{
-                        color: color.display,
-                        WebkitTextStroke:
-                          (resolvedTheme === "dark" &&
-                            color.display === "#000000") ||
-                          (resolvedTheme !== "dark" &&
-                            color.display === "#ffffff")
-                            ? `0.5px ${
-                                resolvedTheme === "dark" ? "#ffffff" : "#000000"
-                              }`
-                            : "unset",
+        {/* Color Picker Dropdown */}
+        <div className="menu-group menu-dropdown">
+          <MenuButton
+            onClick={() => toggleDropdown("color")}
+            title="Text & Background Color"
+          >
+            <Highlighter size={18} />
+          </MenuButton>
+          {showColorMenu && (
+            <div className="dropdown-menu color-picker-menu">
+              {/* Text Color Section */}
+              <div className="color-section">
+                <div className="color-section-title">Color</div>
+                <div className="color-row">
+                  {textColors.map((color, index) => (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        if (color.value) {
+                          editor.chain().focus().setColor(color.value).run();
+                        } else {
+                          editor.chain().focus().unsetColor().run();
+                        }
+                        closeAllDropdowns();
                       }}
+                      className={`color-button ${
+                        color.isDefault
+                          ? "color-default text-color-default"
+                          : ""
+                      }`}
+                      style={{ border: "none" }}
+                      title={color.name}
                     >
-                      A
-                    </span>
-                  </button>
-                ))}
+                      <span
+                        className="color-letter"
+                        style={{
+                          color: color.display,
+                          WebkitTextStroke:
+                            (resolvedTheme === "dark" &&
+                              color.display === "#000000") ||
+                            (resolvedTheme !== "dark" &&
+                              color.display === "#ffffff")
+                              ? `0.5px ${
+                                  resolvedTheme === "dark"
+                                    ? "#ffffff"
+                                    : "#000000"
+                                }`
+                              : "unset",
+                        }}
+                      >
+                        A
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Background Color Section */}
+              <div className="color-section">
+                <div className="color-section-title">Background</div>
+                <div className="color-row">
+                  {backgroundColors.map((color, index) => (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        if (color.value) {
+                          editor
+                            .chain()
+                            .focus()
+                            .setHighlight({ color: color.value })
+                            .run();
+                        } else {
+                          editor.chain().focus().unsetHighlight().run();
+                        }
+                        closeAllDropdowns();
+                      }}
+                      className={`color-button ${
+                        color.isDefault ? "color-default" : ""
+                      }`}
+                      style={{
+                        backgroundColor: color.bgColor,
+                        borderColor: color.isDefault
+                          ? undefined
+                          : color.bgColor,
+                      }}
+                      title={color.name}
+                    >
+                      <span
+                        className="color-letter"
+                        style={
+                          color.textColor
+                            ? { color: color.textColor }
+                            : undefined
+                        }
+                      >
+                        A
+                      </span>
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
-
-            {/* Background Color Section */}
-            <div className="color-section">
-              <div className="color-section-title">Background</div>
-              <div className="color-row">
-                {backgroundColors.map((color, index) => (
-                  <button
-                    key={index}
-                    onClick={() => {
-                      if (color.value) {
-                        editor
-                          .chain()
-                          .focus()
-                          .setHighlight({ color: color.value })
-                          .run();
-                      } else {
-                        editor.chain().focus().unsetHighlight().run();
-                      }
-                      closeAllDropdowns();
-                    }}
-                    className={`color-button ${
-                      color.isDefault ? "color-default" : ""
-                    }`}
-                    style={{
-                      backgroundColor: color.bgColor,
-                      borderColor: color.isDefault ? undefined : color.bgColor,
-                    }}
-                    title={color.name}
-                  >
-                    <span
-                      className="color-letter"
-                      style={
-                        color.textColor ? { color: color.textColor } : undefined
-                      }
-                    >
-                      A
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Headings */}
-      <div className="menu-group">
-        <button
-          onClick={() => {
-            editor.chain().focus().toggleHeading({ level: 2 }).run();
-            closeAllDropdowns();
-          }}
-          onMouseDown={(e) => e.preventDefault()}
-          className={activeNodes.heading2 ? "is-active" : ""}
-          title="Heading 2"
-        >
-          <span className="font-bold text-sm">H2</span>
-        </button>
-        <button
-          onClick={() => {
-            editor.chain().focus().toggleHeading({ level: 3 }).run();
-            closeAllDropdowns();
-          }}
-          onMouseDown={(e) => e.preventDefault()}
-          className={activeNodes.heading3 ? "is-active" : ""}
-          title="Heading 3"
-        >
-          <span className="font-bold text-sm">H3</span>
-        </button>
-      </div>
-
-      {/* Media Group */}
-      <div className="menu-group">
-        <button
-          onClick={() => addLink()}
-          onMouseDown={(e) => e.preventDefault()}
-          className={activeNodes.link ? "is-active" : ""}
-          title="Link"
-        >
-          <Link2 size={18} />
-        </button>
-        <button
-          onClick={() => addFigmaEmbed()}
-          onMouseDown={(e) => e.preventDefault()}
-          className={activeNodes.figma ? "is-active" : ""}
-          title="Figma"
-        >
-          <Figma size={18} />
-        </button>
-        <button
-          onClick={() => addYoutube()}
-          onMouseDown={(e) => e.preventDefault()}
-          className={activeNodes.youtube ? "is-active" : ""}
-          title="YouTube"
-        >
-          <Youtube size={18} />
-        </button>
-        <button
-          onClick={() => {
-            editor.chain().focus().toggleCode().run();
-            closeAllDropdowns();
-          }}
-          onMouseDown={(e) => e.preventDefault()}
-          className={activeNodes.code ? "is-active" : ""}
-          title="Inline Code"
-        >
-          <Code size={18} />
-        </button>
-        <button
-          onClick={() => {
-            editor.chain().focus().setHorizontalRule().run();
-            closeAllDropdowns();
-          }}
-          onMouseDown={(e) => e.preventDefault()}
-          title="Divider"
-        >
-          <Minus size={18} />
-        </button>
-      </div>
-
-      {/* Lists */}
-      <div className="menu-group menu-dropdown">
-        <button
-          onClick={() => toggleDropdown("list")}
-          className={
-            activeNodes.bulletList || activeNodes.orderedList ? "is-active" : ""
-          }
-          title="Lists"
-        >
-          <List size={18} />
-          <ChevronDown size={14} className="dropdown-icon" />
-        </button>
-        {showListMenu && (
-          <div className="dropdown-menu">
-            <button
-              onClick={() => {
-                editor.chain().focus().toggleBulletList().run();
-                closeAllDropdowns();
-              }}
-              className={activeNodes.bulletList ? "is-active" : ""}
-            >
-              <List size={18} />
-              <span>Bullet List</span>
-            </button>
-            <button
-              onClick={() => {
-                editor.chain().focus().toggleOrderedList().run();
-                closeAllDropdowns();
-              }}
-              className={activeNodes.orderedList ? "is-active" : ""}
-            >
-              <ListOrdered size={18} />
-              <span>Numbered List</span>
-            </button>
-          </div>
-        )}
-      </div>
-
-      {/* Quote */}
-      <div className="menu-group">
-        <button
-          onClick={() => {
-            editor.chain().focus().toggleBlockquote().run();
-            closeAllDropdowns();
-          }}
-          onMouseDown={(e) => e.preventDefault()}
-          className={activeNodes.blockquote ? "is-active" : ""}
-          title="Quote"
-        >
-          <Quote size={18} />
-        </button>
-      </div>
-
-      {/* Table */}
-      <div className="menu-group">
-        <button
-          onClick={() => addTable()}
-          onMouseDown={(e) => e.preventDefault()}
-          className={activeNodes.table ? "is-active" : ""}
-          title="Insert Table"
-        >
-          <TableIcon size={18} />
-        </button>
-      </div>
-
-      {/* Hidden Image Input */}
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*"
-        onChange={handleImageFile}
-        style={{ display: "none" }}
-      />
-
-      {/* Table Tools Animation Wrapper */}
-      <div className={`table-tools-wrapper ${isInTable ? "visible" : ""}`}>
-        {/* Add Column */}
-        <div className="menu-group">
-          <button
-            onClick={() => {
-              editor.chain().focus().addColumnAfter().run();
-              closeAllDropdowns();
-            }}
-            title="Add Column"
-          >
-            <Columns size={18} />
-          </button>
+          )}
         </div>
 
-        {/* Delete Column */}
+        {/* Headings */}
         <div className="menu-group">
-          <button
+          <MenuButton
             onClick={() => {
-              editor.chain().focus().deleteColumn().run();
+              editor.chain().focus().toggleHeading({ level: 2 }).run();
               closeAllDropdowns();
             }}
-            title="Delete Column"
+            onMouseDown={(e) => e.preventDefault()}
+            isActive={activeNodes.heading2}
+            title="Heading 2"
           >
-            <Minus size={18} style={{ transform: "rotate(90deg)" }} />
-          </button>
+            <span className="font-bold text-sm">H2</span>
+          </MenuButton>
+          <MenuButton
+            onClick={() => {
+              editor.chain().focus().toggleHeading({ level: 3 }).run();
+              closeAllDropdowns();
+            }}
+            onMouseDown={(e) => e.preventDefault()}
+            isActive={activeNodes.heading3}
+            title="Heading 3"
+          >
+            <span className="font-bold text-sm">H3</span>
+          </MenuButton>
         </div>
 
-        {/* Add Row */}
+        {/* Media Group */}
         <div className="menu-group">
-          <button
-            onClick={() => {
-              editor.chain().focus().addRowAfter().run();
-              closeAllDropdowns();
-            }}
-            title="Add Row"
+          <MenuButton
+            onClick={() => addLink()}
+            onMouseDown={(e) => e.preventDefault()}
+            isActive={activeNodes.link}
+            title="Link"
           >
-            <Rows size={18} />
-          </button>
-        </div>
-
-        {/* Delete Row */}
-        <div className="menu-group">
-          <button
+            <Link2 size={18} />
+          </MenuButton>
+          <MenuButton
+            onClick={() => addFigmaEmbed()}
+            onMouseDown={(e) => e.preventDefault()}
+            isActive={activeNodes.figma}
+            title="Figma"
+          >
+            <Figma size={18} />
+          </MenuButton>
+          <MenuButton
+            onClick={() => addYoutube()}
+            onMouseDown={(e) => e.preventDefault()}
+            isActive={activeNodes.youtube}
+            title="YouTube"
+          >
+            <Youtube size={18} />
+          </MenuButton>
+          <MenuButton
             onClick={() => {
-              editor.chain().focus().deleteRow().run();
+              editor.chain().focus().toggleCode().run();
               closeAllDropdowns();
             }}
-            title="Delete Row"
+            onMouseDown={(e) => e.preventDefault()}
+            isActive={activeNodes.code}
+            title="Inline Code"
+          >
+            <Code size={18} />
+          </MenuButton>
+          <MenuButton
+            onClick={() => {
+              editor.chain().focus().setHorizontalRule().run();
+              closeAllDropdowns();
+            }}
+            onMouseDown={(e) => e.preventDefault()}
+            title="Divider"
           >
             <Minus size={18} />
-          </button>
+          </MenuButton>
         </div>
 
-        {/* Delete Table */}
+        {/* Lists */}
+        <div className="menu-group menu-dropdown">
+          <MenuButton
+            onClick={() => toggleDropdown("list")}
+            isActive={activeNodes.bulletList || activeNodes.orderedList}
+            title="Lists"
+          >
+            <List size={18} />
+            <ChevronDown size={14} className="dropdown-icon" />
+          </MenuButton>
+          {showListMenu && (
+            <div className="dropdown-menu">
+              <button
+                onClick={() => {
+                  editor.chain().focus().toggleBulletList().run();
+                  closeAllDropdowns();
+                }}
+                className={activeNodes.bulletList ? "is-active" : ""}
+              >
+                <List size={18} />
+                <span>Bullet List</span>
+              </button>
+              <button
+                onClick={() => {
+                  editor.chain().focus().toggleOrderedList().run();
+                  closeAllDropdowns();
+                }}
+                className={activeNodes.orderedList ? "is-active" : ""}
+              >
+                <ListOrdered size={18} />
+                <span>Numbered List</span>
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Quote */}
         <div className="menu-group">
-          <button
+          <MenuButton
             onClick={() => {
-              editor.chain().focus().deleteTable().run();
+              editor.chain().focus().toggleBlockquote().run();
               closeAllDropdowns();
             }}
-            title="Delete Table"
-            className="text-red-500 hover:bg-red-50 hover:text-red-600"
+            onMouseDown={(e) => e.preventDefault()}
+            isActive={activeNodes.blockquote}
+            title="Quote"
           >
-            <Trash2 size={18} />
-          </button>
+            <Quote size={18} />
+          </MenuButton>
+        </div>
+
+        {/* Table */}
+        <div className="menu-group">
+          <MenuButton
+            onClick={() => addTable()}
+            onMouseDown={(e) => e.preventDefault()}
+            isActive={activeNodes.table}
+            title="Insert Table"
+          >
+            <TableIcon size={18} />
+          </MenuButton>
+        </div>
+
+        {/* Hidden Image Input */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleImageFile}
+          style={{ display: "none" }}
+        />
+
+        {/* Table Tools Animation Wrapper */}
+        <div className={`table-tools-wrapper ${isInTable ? "visible" : ""}`}>
+          {/* Add Column */}
+          <div className="menu-group">
+            <MenuButton
+              onClick={() => {
+                editor.chain().focus().addColumnAfter().run();
+                closeAllDropdowns();
+              }}
+              title="Add Column"
+            >
+              <Columns size={18} />
+            </MenuButton>
+          </div>
+
+          {/* Delete Column */}
+          <div className="menu-group">
+            <MenuButton
+              onClick={() => {
+                editor.chain().focus().deleteColumn().run();
+                closeAllDropdowns();
+              }}
+              title="Delete Column"
+            >
+              <Minus size={18} style={{ transform: "rotate(90deg)" }} />
+            </MenuButton>
+          </div>
+
+          {/* Add Row */}
+          <div className="menu-group">
+            <MenuButton
+              onClick={() => {
+                editor.chain().focus().addRowAfter().run();
+                closeAllDropdowns();
+              }}
+              title="Add Row"
+            >
+              <Rows size={18} />
+            </MenuButton>
+          </div>
+
+          {/* Delete Row */}
+          <div className="menu-group">
+            <MenuButton
+              onClick={() => {
+                editor.chain().focus().deleteRow().run();
+                closeAllDropdowns();
+              }}
+              title="Delete Row"
+            >
+              <Minus size={18} />
+            </MenuButton>
+          </div>
+
+          {/* Delete Table */}
+          <div className="menu-group">
+            <MenuButton
+              onClick={() => {
+                editor.chain().focus().deleteTable().run();
+                closeAllDropdowns();
+              }}
+              title="Delete Table"
+              className="text-red-500 hover:bg-red-50 hover:text-red-600"
+            >
+              <Trash2 size={18} />
+            </MenuButton>
+          </div>
+        </div>
+
+        {/* Undo/Redo */}
+        <div className="menu-group">
+          <MenuButton
+            onClick={() => {
+              editor.chain().focus().undo().run();
+              closeAllDropdowns();
+            }}
+            onMouseDown={(e) => e.preventDefault()}
+            disabled={!editor.can().undo()}
+            title="Undo"
+          >
+            <Undo2 size={18} />
+          </MenuButton>
+          <MenuButton
+            onClick={() => {
+              editor.chain().focus().redo().run();
+              closeAllDropdowns();
+            }}
+            onMouseDown={(e) => e.preventDefault()}
+            disabled={!editor.can().redo()}
+            title="Redo"
+          >
+            <Redo2 size={18} />
+          </MenuButton>
         </div>
       </div>
-
-      {/* Undo/Redo */}
-      <div className="menu-group">
-        <button
-          onClick={() => {
-            editor.chain().focus().undo().run();
-            closeAllDropdowns();
-          }}
-          onMouseDown={(e) => e.preventDefault()}
-          disabled={!editor.can().undo()}
-          title="Undo"
-        >
-          <Undo2 size={18} />
-        </button>
-        <button
-          onClick={() => {
-            editor.chain().focus().redo().run();
-            closeAllDropdowns();
-          }}
-          onMouseDown={(e) => e.preventDefault()}
-          disabled={!editor.can().redo()}
-          title="Redo"
-        >
-          <Redo2 size={18} />
-        </button>
-      </div>
-    </div>
+    </TooltipProvider>
   );
 };
 

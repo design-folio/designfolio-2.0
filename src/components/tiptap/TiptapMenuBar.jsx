@@ -202,6 +202,8 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
     horizontalRule: false,
     canMerge: false,
     canSplit: false,
+    textColor: null,
+    highlightColor: null,
   });
 
   useEffect(() => {
@@ -235,6 +237,8 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
         horizontalRule: editor.isActive("horizontalRule"),
         canMerge: editor.can().mergeCells(),
         canSplit: editor.can().splitCell(),
+        textColor: editor.getAttributes("textStyle").color || null,
+        highlightColor: editor.getAttributes("highlight").color || null,
       });
     };
 
@@ -360,9 +364,8 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
     <TooltipProvider delayDuration={0}>
       <div
         ref={toolbarRef}
-        className={`tiptap-menu-bar ${
-          showToolbar ? "toolbar-visible" : "toolbar-hidden"
-        }`}
+        className={`tiptap-menu-bar ${showToolbar ? "toolbar-visible" : "toolbar-hidden"
+          }`}
       >
         {/* Primary Text Formatting */}
         <div className="menu-group">
@@ -415,6 +418,7 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
         {/* Color Picker Dropdown */}
         <div className="menu-group menu-dropdown">
           <MenuButton
+            isActive={activeNodes.textColor !== null || activeNodes.highlightColor !== null}
             onClick={() => toggleDropdown("color")}
             title="Text & Background Color"
           >
@@ -426,46 +430,49 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
               <div className="color-section">
                 <div className="color-section-title">Color</div>
                 <div className="color-row">
-                  {textColors.map((color, index) => (
-                    <button
-                      key={index}
-                      onClick={() => {
-                        if (color.value) {
-                          editor.chain().focus().setColor(color.value).run();
-                        } else {
-                          editor.chain().focus().unsetColor().run();
-                        }
-                        closeAllDropdowns();
-                      }}
-                      className={`color-button ${
-                        color.isDefault
+                  {textColors.map((color, index) => {
+                    const isActive = color.isDefault
+                      ? activeNodes.textColor === null
+                      : activeNodes.textColor === color.value;
+                    return (
+                      <button
+                        key={index}
+                        onClick={() => {
+                          if (color.value) {
+                            editor.chain().focus().setColor(color.value).run();
+                          } else {
+                            editor.chain().focus().unsetColor().run();
+                          }
+                          closeAllDropdowns();
+                        }}
+                        className={`color-button ${color.isDefault
                           ? "color-default text-color-default"
                           : ""
-                      }`}
-                      style={{ border: "none" }}
-                      title={color.name}
-                    >
-                      <span
-                        className="color-letter"
-                        style={{
-                          color: color.display,
-                          WebkitTextStroke:
-                            (resolvedTheme === "dark" &&
-                              color.display === "#000000") ||
-                            (resolvedTheme !== "dark" &&
-                              color.display === "#ffffff")
-                              ? `0.5px ${
-                                  resolvedTheme === "dark"
-                                    ? "#ffffff"
-                                    : "#000000"
-                                }`
-                              : "unset",
-                        }}
+                          } ${isActive ? "is-active" : ""}`}
+                        style={{ border: "none" }}
+                        title={color.name}
                       >
-                        A
-                      </span>
-                    </button>
-                  ))}
+                        <span
+                          className="color-letter"
+                          style={{
+                            color: color.display,
+                            WebkitTextStroke:
+                              (resolvedTheme === "dark" &&
+                                color.display === "#000000") ||
+                                (resolvedTheme !== "dark" &&
+                                  color.display === "#ffffff")
+                                ? `0.5px ${resolvedTheme === "dark"
+                                  ? "#ffffff"
+                                  : "#000000"
+                                }`
+                                : "unset",
+                          }}
+                        >
+                          A
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -473,44 +480,48 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
               <div className="color-section">
                 <div className="color-section-title">Background</div>
                 <div className="color-row">
-                  {backgroundColors.map((color, index) => (
-                    <button
-                      key={index}
-                      onClick={() => {
-                        if (color.value) {
-                          editor
-                            .chain()
-                            .focus()
-                            .setHighlight({ color: color.value })
-                            .run();
-                        } else {
-                          editor.chain().focus().unsetHighlight().run();
-                        }
-                        closeAllDropdowns();
-                      }}
-                      className={`color-button ${
-                        color.isDefault ? "color-default" : ""
-                      }`}
-                      style={{
-                        backgroundColor: color.bgColor,
-                        borderColor: color.isDefault
-                          ? undefined
-                          : color.bgColor,
-                      }}
-                      title={color.name}
-                    >
-                      <span
-                        className="color-letter"
-                        style={
-                          color.textColor
-                            ? { color: color.textColor }
-                            : undefined
-                        }
+                  {backgroundColors.map((color, index) => {
+                    const isActive = color.isDefault
+                      ? activeNodes.highlightColor === null
+                      : activeNodes.highlightColor === color.value;
+                    return (
+                      <button
+                        key={index}
+                        onClick={() => {
+                          if (color.value) {
+                            editor
+                              .chain()
+                              .focus()
+                              .setHighlight({ color: color.value })
+                              .run();
+                          } else {
+                            editor.chain().focus().unsetHighlight().run();
+                          }
+                          closeAllDropdowns();
+                        }}
+                        className={`color-button ${color.isDefault ? "color-default" : ""
+                          } ${isActive ? "is-active" : ""}`}
+                        style={{
+                          backgroundColor: color.bgColor,
+                          borderColor: color.isDefault
+                            ? undefined
+                            : color.bgColor,
+                        }}
+                        title={color.name}
                       >
-                        A
-                      </span>
-                    </button>
-                  ))}
+                        <span
+                          className="color-letter"
+                          style={
+                            color.textColor
+                              ? { color: color.textColor }
+                              : undefined
+                          }
+                        >
+                          A
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </div>

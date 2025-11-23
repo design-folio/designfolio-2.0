@@ -569,9 +569,9 @@
 .ProseMirror table {
   border-collapse: separate;
   border-spacing: 0;
-  table-layout: auto;
+  table-layout: fixed;
   width: 100%;
-  min-width: 100%;
+  margin: 0;
   overflow: hidden;
   border: 2px solid var(--df-table-border-color, #e5e7eb);
   border-radius: 8px;
@@ -579,8 +579,7 @@
 
 .ProseMirror table td,
 .ProseMirror table th {
-  min-width: 150px;
-  max-width: 300px;
+  min-width: 1em;
   border-right: 1px solid var(--df-table-border-color, #e5e7eb);
   border-bottom: 1px solid var(--df-table-border-color, #e5e7eb);
   padding: 0.75rem;

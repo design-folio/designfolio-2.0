@@ -1,9 +1,9 @@
+import ProjectIcon from "../../public/assets/svgs/projectIcon.svg";
+import Button from "./button";
 import Text from "./text";
+import PlusIcon from "../../public/assets/svgs/plus.svg";
 import AiIcon from "../../public/assets/svgs/ai.svg";
 import { modals } from "@/lib/constant";
-import { Button } from "./ui/buttonNew";
-import { PlusIcon } from "lucide-react";
-import MemoCasestudy from "./icons/Casestudy";
 
 export default function AddCard({
   title = "title",
@@ -13,7 +13,7 @@ export default function AddCard({
   first = false,
   buttonTitle = "",
   secondaryButtonTitle,
-  icon = <MemoCasestudy className="size-[72px]" />,
+  icon = <ProjectIcon />,
   openModal,
 }) {
   const handleClick = (e) => {
@@ -22,7 +22,7 @@ export default function AddCard({
   };
   return (
     <div
-      className={`bg-df-add-card-bg-color transition-shadow duration-500 ease-in   border-border/30  hover:shadow-df-add-item-shadow rounded-2xl min-h-[344px] cursor-pointer ${className}`}
+      className={`bg-df-add-card-bg-color transition-shadow duration-500 ease-in   border border-df-add-card-border-color  hover:shadow-df-add-item-shadow rounded-[24px] min-h-[344px] cursor-pointer ${className}`}
       onClick={onClick}
     >
       {!first ? (
@@ -41,11 +41,12 @@ export default function AddCard({
 
           <div className="flex flex-col md:flex-row gap-2">
             <Button
-              className="w-fit gap-1 items-center"
-            >
-              <PlusIcon className="" />
-              {buttonTitle}
-            </Button>
+              text={buttonTitle}
+              customClass="w-fit gap-1 items-center"
+              icon={
+                <PlusIcon className="text-primary-btn-text-color w-[20px] h-[20px] mb-[2px] cursor-pointer" />
+              }
+            />
             {secondaryButtonTitle && (
               <p className="text-df-add-card-description-color text-center md:hidden">
                 {" "}
@@ -56,22 +57,25 @@ export default function AddCard({
             {secondaryButtonTitle && (
               <Button
                 onClick={handleClick}
-                variant="secondary"
-                className="w-fit gap-1 items-center rounded-full"
-              ><AiIcon className="text-secondary-btn-text-color w-[22px] h-[22px] mb-[2px] cursor-pointer" />
-                {secondaryButtonTitle}
-              </Button>
+                text={secondaryButtonTitle}
+                type="secondary"
+                customClass="w-fit gap-1 items-center"
+                icon={
+                  <AiIcon className="text-secondary-btn-text-color w-[22px] h-[22px] mb-[2px] cursor-pointer" />
+                }
+              />
             )}
           </div>
         </div>
       ) : (
         <div className="flex flex-col gap-3 justify-center items-center  h-full">
           <Button
-            className="w-fit gap-1 items-center"
-          >
-            <PlusIcon className="text-primary-btn-text-color w-[20px] h-[20px] mb-[2px] cursor-pointer" />
-            {title}
-          </Button>
+            text={title}
+            customClass="w-fit gap-1 items-center"
+            icon={
+              <PlusIcon className="text-primary-btn-text-color w-[20px] h-[20px] mb-[2px] cursor-pointer" />
+            }
+          />
           {secondaryButtonTitle && (
             <p className="text-df-add-card-description-color"> or</p>
           )}
@@ -79,12 +83,13 @@ export default function AddCard({
           {secondaryButtonTitle && (
             <Button
               onClick={handleClick}
-              variant="secondary"
-              className="w-fit gap-1 items-center rounded-full"
-            >
-              <AiIcon className="text-secondary-btn-text-color w-[22px] h-[22px] mb-[2px] cursor-pointer" />
-              {secondaryButtonTitle}
-            </Button>
+              text={secondaryButtonTitle}
+              type="secondary"
+              customClass="w-fit gap-1 items-center"
+              icon={
+                <AiIcon className="text-secondary-btn-text-color w-[22px] h-[22px] mb-[2px] cursor-pointer" />
+              }
+            />
           )}
         </div>
       )}

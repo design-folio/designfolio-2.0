@@ -1,12 +1,7 @@
 import FooterBottom from "@/components/footerBottom";
 import { Card } from "@/components/ui/card";
-import { useEffect } from "react";
 
 export default function Index() {
-  useEffect(() => {
-    document.documentElement.classList.add('landing-page');
-  }, []);
-
   return (
     <div className="min-h-screen w-full bg-background-landing">
       <div className="pt-16 sm:pt-20">

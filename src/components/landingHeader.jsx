@@ -3,11 +3,11 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import Button from "./button";
 import Logo from "../../public/assets/svgs/logo.svg";
+import MenuIcon from "../../public/assets/svgs/menu-tabular.svg";
+import CloseIcon from "../../public/assets/svgs/close-tabular.svg";
 import { popovers } from "@/lib/constant";
 import { useGlobalContext } from "@/context/globalContext";
 import { TempPopoverForLanding } from "./popover";
-import MemoPower from "./icons/Power";
-import MobileMenuButton from "./MobileMenuButton";
 
 export default function LandingHeader({ dfToken }) {
     const [isVisible, setIsVisible] = useState(true);
@@ -62,7 +62,11 @@ export default function LandingHeader({ dfToken }) {
                                         text="Launch Builder"
                                         customClass="bg-foreground-landing text-background-landing border border-foreground rounded-full py-2 px-3 sm:px-4 md:px-6 text-xs sm:text-sm md:text-base font-medium hover:bg-foreground-landing/80 transition-colors"
                                         icon={
-                                            <MemoPower />
+                                            <img
+                                                src="/assets/svgs/power.svg"
+                                                alt="launch builder"
+                                                className="cursor-pointer"
+                                            />
                                         }
                                     />
                                 </Link>
@@ -83,11 +87,29 @@ export default function LandingHeader({ dfToken }) {
                             )}
                         </div>
 
-                        <MobileMenuButton
-                            isOpen={popovers.landingMenu === popoverMenu}
-                            onToggle={() =>
+                        <Button
+                            size="medium"
+                            customClass="md:hidden border-border hover:boder-border"
+                            type="secondary"
+                            icon={
+                                <div className="relative w-4 h-4 flex items-center justify-center">
+                                    <MenuIcon
+                                        className={`absolute transition-all duration-300 ease-in-out cursor-pointer ${popovers.landingMenu === popoverMenu
+                                            ? "opacity-0 scale-75"
+                                            : "opacity-100 scale-100"
+                                            }`}
+                                    />
+                                    <CloseIcon
+                                        className={`absolute transition-all duration-300 ease-in-out cursor-pointer ${popovers.landingMenu === popoverMenu
+                                            ? "opacity-100 scale-100"
+                                            : "opacity-0 scale-75"
+                                            }`}
+                                    />
+                                </div>
+                            }
+                            onClick={() =>
                                 setPopoverMenu((prev) =>
-                                    prev === popovers.landingMenu ? null : popovers.landingMenu
+                                    prev == popovers.landingMenu ? null : popovers.landingMenu
                                 )
                             }
                         />

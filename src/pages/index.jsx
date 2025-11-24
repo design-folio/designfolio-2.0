@@ -7,7 +7,6 @@ export default function Index({ dfToken }) {
   const { setCursor, userDetails } = useGlobalContext();
   useEffect(() => {
     setCursor(0);
-    document.documentElement.classList.add('landing-page');
     return () => {
       setCursor(userDetails?.cursor ? userDetails?.cursor : 0);
     };

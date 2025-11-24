@@ -1,10 +1,8 @@
 import { useGlobalContext } from "@/context/globalContext";
 import Text from "./text";
-
-
+import Button from "./button";
+import EditIcon from "../../public/assets/svgs/edit.svg";
 import TextWithLineBreaks from "./TextWithLineBreaks";
-import { Button } from "./ui/buttonNew";
-import { PencilIcon } from "lucide-react";
 
 export default function WorkCard({ work, onClick, show = true, edit }) {
   const { setSelectedWork } = useGlobalContext();
@@ -17,10 +15,11 @@ export default function WorkCard({ work, onClick, show = true, edit }) {
     <div className="flex flex-col-reverse lg:flex-row gap-2 lg:gap-10">
       <div className="lg:w-[25%] hidden md:block">
         <Text size="p-xsmall" className="text-work-card-description-color">
-          {`${work?.startMonth} ${work?.startYear} - ${work?.currentlyWorking
-            ? "Present"
-            : `${work?.endMonth} ${work?.endYear}`
-            }  `}
+          {`${work?.startMonth} ${work?.startYear} - ${
+            work?.currentlyWorking
+              ? "Present"
+              : `${work?.endMonth} ${work?.endYear}`
+          }  `}
         </Text>
       </div>
 
@@ -34,18 +33,22 @@ export default function WorkCard({ work, onClick, show = true, edit }) {
               size="p-xsmall"
               className="text-work-card-description-color md:hidden"
             >
-              {`${work?.startMonth} ${work?.startYear} - ${work?.currentlyWorking
-                ? "Present"
-                : `${work?.endMonth} ${work?.endYear}`
-                }  `}
+              {`${work?.startMonth} ${work?.startYear} - ${
+                work?.currentlyWorking
+                  ? "Present"
+                  : `${work?.endMonth} ${work?.endYear}`
+              }  `}
             </Text>
 
             {edit && show && (
               <Button
-                className="h-11 w-11"
                 onClick={handleClick}
-                variant={"secondary"}
-              ><PencilIcon className="text-df-icon-color cursor-pointer" /></Button>
+                customClass="!p-[13.38px] !flex-shrink-0"
+                type={"secondary"}
+                icon={
+                  <EditIcon className="text-df-icon-color cursor-pointer" />
+                }
+              />
             )}
           </div>
           <Text size="p-small" className="text-work-card-heading-color my-2">

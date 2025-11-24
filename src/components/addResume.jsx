@@ -49,7 +49,7 @@ export default function AddResume() {
         <Button
           // customClass="lg:hidden"
           type="secondary"
-          customClass="!p-2"
+          customClass="!p-2 rounded-[8px]"
           icon={<CloseIcon className="text-icon-color cursor-pointer" />}
           onClick={closeModal}
         />

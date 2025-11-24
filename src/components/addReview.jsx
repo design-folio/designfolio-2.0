@@ -53,7 +53,7 @@ export default function AddReview() {
         <Button
           // customClass="lg:hidden"
           type="secondary"
-          customClass="!p-2"
+          customClass="!p-2 rounded-[8px]"
           icon={<CloseIcon className="text-icon-color cursor-pointer" />}
           onClick={handleCloseModal}
         />
@@ -106,10 +106,11 @@ export default function AddReview() {
                   <Field
                     name="name"
                     type="text"
-                    className={`text-input mt-2  ${errors.name &&
+                    className={`text-input mt-2  ${
+                      errors.name &&
                       touched.name &&
                       "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                      }`}
+                    }`}
                     autoComplete="off"
                   />
                   <ErrorMessage
@@ -129,10 +130,11 @@ export default function AddReview() {
                   <Field
                     name="linkedinLink"
                     type="text"
-                    className={`text-input mt-2  ${errors.linkedinLink &&
+                    className={`text-input mt-2  ${
+                      errors.linkedinLink &&
                       touched.linkedinLink &&
                       "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                      }`}
+                    }`}
                     autoComplete="off"
                   />
                   <ErrorMessage
@@ -153,10 +155,11 @@ export default function AddReview() {
                   <Field
                     name="company"
                     type="text"
-                    className={`text-input mt-2  ${errors.company &&
+                    className={`text-input mt-2  ${
+                      errors.company &&
                       touched.company &&
                       "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                      }`}
+                    }`}
                     autoComplete="off"
                   />
                   <ErrorMessage
@@ -176,10 +179,11 @@ export default function AddReview() {
                   <Field
                     name="description"
                     as="textarea"
-                    className={`text-input mt-2  min-h-[80px] border-b ${errors.description &&
+                    className={`text-input mt-2  min-h-[80px] border-b ${
+                      errors.description &&
                       touched.description &&
                       "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                      }`}
+                    }`}
                     autoComplete="off"
                   />
                   <ErrorMessage
@@ -190,8 +194,9 @@ export default function AddReview() {
                 </div>
               </div>
               <div
-                className={`flex gap-2 py-3  ${selectedReview?.name ? "justify-between" : "justify-end"
-                  }  px-3 rounded-bl-2xl rounded-br-2xl bg-modal-footer-bg-color`}
+                className={`flex gap-2 py-3  ${
+                  selectedReview?.name ? "justify-between" : "justify-end"
+                }  px-3 rounded-bl-2xl rounded-br-2xl bg-modal-footer-bg-color`}
               >
                 {selectedReview?.name && (
                   <Button

@@ -40,18 +40,7 @@ const Minimal = ({ userDetails, edit }) => {
           </section>
         )}
 
-
-        {(edit || userDetails?.resume?.url || userDetails?.socials?.instagram ||
-          userDetails?.socials?.twitter ||
-          userDetails?.socials?.linkedin ||
-          userDetails?.portfolios?.dribbble ||
-          userDetails?.portfolios?.notion ||
-          userDetails?.portfolios?.behance ||
-          userDetails?.portfolios?.medium) && (
-            <section id="footer">
-              <Footer userDetails={userDetails} edit={edit} />
-            </section>
-          )}
+        <Footer userDetails={userDetails} edit={edit} />
       </div>
       <FloatingNav />
     </div>

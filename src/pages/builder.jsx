@@ -6,8 +6,7 @@ import Builder1 from "@/components/builder";
 import BottomTask from "@/components/bottomTask";
 import Modal from "@/components/modal";
 import { modals } from "@/lib/constant";
-import Onboarding from "@/components/onboarding-old";
-import OnboardingNewUser from "@/components/onboarding";
+import Onboarding from "@/components/onboarding";
 import AddProject from "@/components/addProject";
 import DeleteProject from "@/components/deleteProject";
 import AddReview from "@/components/addReview";
@@ -55,24 +54,11 @@ export default function Index() {
       _resendOTP().then(() => {
         router.push("/email-verify");
       });
-      return;
     }
-
     if (userDetails && !userDetails?.username) {
       openModal(modals.username);
-    } else if (userDetails) {
-      // Note: goal and experienceLevel can be 0, so we check for null/undefined specifically
-      const hasGoal = userDetails.goal !== undefined && userDetails.goal !== null;
-      const hasExperienceLevel = userDetails.experienceLevel !== undefined && userDetails.experienceLevel !== null;
-      const hasSkills = userDetails.skills && userDetails.skills.length > 0;
-      const hasPersona = userDetails.persona && userDetails.persona.value && userDetails.persona.label;
-      const needsOnboarding = !hasGoal || !hasExperienceLevel || !hasSkills || !hasPersona;
-
-      if (needsOnboarding) {
-        openModal(modals.onBoardingNewUser);
-      } else {
-        closeModal();
-      }
+    } else if (userDetails && userDetails?.skills?.length === 0) {
+      openModal(modals.onboarding);
     } else {
       closeModal();
     }
@@ -82,8 +68,6 @@ export default function Index() {
     switch (showModal) {
       case modals.onboarding:
         return <Onboarding />;
-      case modals.onBoardingNewUser:
-        return <OnboardingNewUser />;
       case modals.project:
         return <AddProject />;
       case modals.deleteProject:
@@ -128,8 +112,9 @@ export default function Index() {
   return (
     <main className="min-h-screen bg-df-bg-color">
       <div
-        className={` mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0 ${userDetails?.template != 3 && "max-w-[890px]"
-          }`}
+        className={` mx-auto py-[94px] md:py-[135px] px-2 md:px-4 lg:px-0 ${
+          userDetails?.template != 3 && "max-w-[890px]"
+        }`}
       >
         {userDetails && !userDetails?.pro && <ProWarning />}
         {userDetails && renderTemplate()}

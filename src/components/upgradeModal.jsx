@@ -155,7 +155,7 @@ export default function UpgradeModal() {
 
             <div className={styles.featureItem}>
               <div className={styles.featureIcon}>✓</div>
-              <span>Create unlimited projects (not just 1)</span>
+              <span>Create unlimited projects (not just 3)</span>
             </div>
 
             <div className={styles.featureItem}>

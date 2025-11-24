@@ -1,13 +1,12 @@
 import React from "react";
 import Text from "./text";
-import { PencilIcon } from "lucide-react";
-import { Button } from "./ui/buttonNew";
-
+import Button from "./button";
+import EditIcon from "../../public/assets/svgs/edit.svg";
 
 export default function Section({
   children,
   title,
-  icon = <PencilIcon className="text-df-icon-color cursor-pointer" />,
+  icon = <EditIcon className="text-df-icon-color cursor-pointer" />,
   onClick,
   edit,
   btnType = "secondary",
@@ -24,7 +23,7 @@ export default function Section({
           {title}
         </Text>
         {edit && icon && (
-          <Button variant="secondary" className="h-11 w-11" onClick={onClick} type={btnType} size="icon" >{icon}</Button>
+          <Button onClick={onClick} type={btnType} icon={icon} />
         )}
       </div>
       <div className="mt-4 md:mt-5">{children}</div>

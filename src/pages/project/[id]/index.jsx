@@ -1,4 +1,5 @@
 import BlockRenderer from "@/components/blockRenderer";
+import TiptapRenderer from "@/components/tiptapRenderer";
 import ProjectInfo from "@/components/projectInfo";
 import ProjectPassword from "@/components/projectPassword";
 import Seo from "@/components/seo";
@@ -54,7 +55,7 @@ export default function Index({ data }) {
         <div
           className={`max-w-[890px] mx-auto pt-[16px] pb-[80px] lg:py-[40px] px-2 md:px-4 lg:px-0`}
         >
-          <div className="flex-1 flex flex-col gap-3">
+          <div className="flex-1 flex flex-col gap-4 md:gap-6">
             {projectDetails && (
               <>
                 {isProtected ? (
@@ -68,11 +69,13 @@ export default function Index({ data }) {
                 ) : (
                   <>
                     <ProjectInfo projectDetails={projectDetails?.project} />
-                    {projectDetails?.project?.content && (
+                    {projectDetails?.project?.contentVersion === 2 && projectDetails?.project?.tiptapContent ? (
+                      <TiptapRenderer content={projectDetails?.project?.tiptapContent} />
+                    ) : projectDetails?.project?.content ? (
                       <BlockRenderer
                         editorJsData={projectDetails?.project?.content}
                       />
-                    )}
+                    ) : null}
                   </>
                 )}
               </>

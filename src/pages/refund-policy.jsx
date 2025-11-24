@@ -1,13 +1,8 @@
 import FooterBottom from "@/components/footerBottom";
 import { Card } from "@/components/ui/card";
-import { useEffect } from "react";
 
 
 export default function Index() {
-  useEffect(() => {
-    document.documentElement.classList.add('landing-page');
-  }, []);
-
   return (
     <div className="pt-16 sm:pt-20 bg-background-landing ">
       <div className="max-w-4xl mx-auto px-6 py-12">
@@ -62,7 +57,7 @@ export default function Index() {
                 <li>Duplicate payments due to a technical error.</li>
                 <li>Payment deducted but access not delivered within 24 hours.</li>
               </ul>
-              <p className="leading-relaxed mb-3" data-testid="text-refund-request">
+              <p className="leading-relaxed" data-testid="text-refund-request">
                 If any such case arises, users must email{" "}
                 <a
                   href="mailto:shai@designfolio.me"
@@ -72,9 +67,6 @@ export default function Index() {
                   shai@designfolio.me
                 </a>
                 {" "}within 48 hours of the transaction, including payment proof and account details. Each request will be reviewed individually.
-              </p>
-              <p className="leading-relaxed" data-testid="text-cancellation-access">
-                Timeline for refund: 5 Working Days
               </p>
             </section>
 
@@ -88,7 +80,6 @@ export default function Index() {
               <p className="leading-relaxed" data-testid="text-cancellation-access">
                 Users may choose to discontinue using the service at any time; however, no refunds or partial credits will be issued for unused access.
               </p>
-
             </section>
 
             <section>

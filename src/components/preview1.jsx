@@ -41,7 +41,7 @@ export default function Preview1({ userDetails, projectRef }) {
         >
           {userDetails && (
             <motion.div
-              className="flex-1 flex flex-col gap-3"
+              className="flex-1 flex flex-col gap-4 md:gap-6"
               variants={containerVariants}
               initial="hidden"
               animate="visible"
@@ -78,10 +78,10 @@ export default function Preview1({ userDetails, projectRef }) {
                 !!userDetails?.portfolios?.notion ||
                 !!userDetails?.portfolios?.behance ||
                 !!userDetails?.portfolios?.medium) && (
-                  <motion.div variants={itemVariants}>
-                    <OthersPreview userDetails={userDetails} />
-                  </motion.div>
-                )}
+                <motion.div variants={itemVariants}>
+                  <OthersPreview userDetails={userDetails} />
+                </motion.div>
+              )}
             </motion.div>
           )}
         </div>

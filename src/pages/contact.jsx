@@ -2,15 +2,10 @@ import FooterBottom from "@/components/footerBottom";
 import { Card } from "@/components/ui/card";
 import { Mail, MessageCircle, FileQuestion, MapPin } from "lucide-react";
 import Link from "next/link";
-import { useEffect } from "react";
 
 
 
 export default function Index() {
-    useEffect(() => {
-        document.documentElement.classList.add('landing-page');
-    }, []);
-
     return (
         <div className="pt-16 sm:pt-20 bg-background-landing">
             <div className="max-w-4xl mx-auto px-6 py-12">

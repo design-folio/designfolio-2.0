@@ -123,7 +123,6 @@ module.exports = {
         "df-add-card-description-color": "var(--df-add-card-description-color)",
         "df-tip-color": "var(--df-tip-color)",
         "credit-text-color": "var(--credit-text-color)",
-        "df-subtle-text-color": "var(--df-subtle-text-color)",
 
         // Analytics
         "analytics-profile-url-color": "var(--analytics-url-color)",
@@ -242,7 +241,6 @@ module.exports = {
           "var(--input-password-description-color)",
         "bottom-navigation-active-stroke":
           "var(--bottom-navigation-active-stroke)",
-        "bottom-navigation-border": "var(--bottom-navigation-border)",
         "bottom-navigation-active-fill": "var(--bottom-navigation-active-fill)",
         "bottom-navigation-inactive-stroke":
           "var(--bottom-navigation-inactive-stroke)",
@@ -337,7 +335,6 @@ module.exports = {
         },
         card: {
           DEFAULT: "var(--card)",
-          landing: "var(--card-landing)",
           foreground: "var(--card-foreground)",
           border: "var(--card-border)",
           dark: "#1d1f27",

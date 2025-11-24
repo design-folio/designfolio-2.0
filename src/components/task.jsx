@@ -38,7 +38,7 @@ export default function Task({ setOpen }) {
         <Button
           // customClass="lg:hidden"
           type="secondary"
-          customClass="!p-2"
+          customClass="!p-2 rounded-[8px]"
           icon={
             <CloseIcon className="text-icon-color text-base cursor-pointer" />
           }
@@ -51,8 +51,9 @@ export default function Task({ setOpen }) {
           <div
             key={i}
             onClick={() => handleClick(i)}
-            className={`border group border-checked-list-item-border-color bg-checked-list-item-bg-color  transition-all duration-200 ease-in-out hover:bg-checked-list-item-bg-hover-color rounded-2xl flex gap-[10px] items-center p-[10px]  ${!item?.checked ? "cursor-pointer " : "cursor-default"
-              }`}
+            className={`border group border-checked-list-item-border-color bg-checked-list-item-bg-color  transition-all duration-200 ease-in-out hover:bg-checked-list-item-bg-hover-color rounded-2xl flex gap-[10px] items-center p-[10px]  ${
+              !item?.checked ? "cursor-pointer " : "cursor-default"
+            }`}
           >
             {item?.checked ? (
               <CheckedIcon className="text-checked-list-item-icon-color" />
@@ -61,8 +62,9 @@ export default function Task({ setOpen }) {
             )}
             <Text
               size={`p-xxxsmall`}
-              className={`text-checked-list-item-text-color cursor-pointer ${item?.checked && "line-through"
-                }`}
+              className={`text-checked-list-item-text-color cursor-pointer ${
+                item?.checked && "line-through"
+              }`}
             >
               {item.name}
             </Text>

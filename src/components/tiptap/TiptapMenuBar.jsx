@@ -65,7 +65,7 @@ const MenuButton = ({
         {children}
       </button>
     </TooltipTrigger>
-    <TooltipContent side="top">
+    <TooltipContent side="top" className="bg-white dark:bg-[#262A34] border-none">
       <p>{title}</p>
     </TooltipContent>
   </Tooltip>

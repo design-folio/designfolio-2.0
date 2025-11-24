@@ -87,7 +87,6 @@
   --df-add-item-shadow: inset 0px 0px 0px 2px #e9eaeb;
   --df-orange-color: #ff553e;
   --df-tip-color: #828282;
-  --df-subtle-text-color: rgb(77 84 95 / var(--tw-text-opacity, 1));
 
   --credit-text-color: #7a829d;
 
@@ -279,7 +278,6 @@
   --df-add-card-heading-color: #e9eaeb;
   --df-add-card-description-color: #788095;
   --df-add-item-shadow: inset 0px 0px 0px 2px #262832;
-  --df-subtle-text-color: rgb(180 184 198 / var(--tw-text-opacity, 1));
 
   /* profile card */
   --profile-card-heading-color: #e9eaeb;

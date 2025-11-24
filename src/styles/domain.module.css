@@ -2380,12 +2380,12 @@
 
 [data-theme="dark"] .addProjectBlockedTitle,
 .proFeatureTitle {
-  color: var(--df-section-card-heading-color);
+  color: #f9f9fb;
 }
 
 [data-theme="dark"] .addProjectBlockedSubtext,
 .proFeatureDescription {
-  color: var(--df-subtle-text-color);
+  color: #b1b5c3;
 }
 
 [data-theme="dark"] .proFeatureBox {

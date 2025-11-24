@@ -61,7 +61,7 @@ export const Footer = ({ userDetails, edit }) => {
           animate={isInView ? "visible" : "hidden"}
           className="flex flex-col items-center gap-8"
         >
-          <h2 className="text-3xl font-bold text-foreground max-w-2xl text-center leading-tight">
+          <h2 className="text-4xl sm:text-5xl font-bold text-foreground max-w-2xl text-center leading-tight">
             Let's work together
           </h2>
           {userDetails?.resume?.url && (

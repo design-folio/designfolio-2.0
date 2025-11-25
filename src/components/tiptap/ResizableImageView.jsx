@@ -26,7 +26,7 @@ const ResizableImageView = ({ node, updateAttributes, editor, selected }) => {
     const handleMouseMove = (e) => {
       const diff = e.clientX - startXRef.current;
       const newWidth = Math.max(100, startWidthRef.current + diff);
-      
+
       if (imageRef.current) {
         updateAttributes({
           width: newWidth,
@@ -78,7 +78,7 @@ const ResizableImageView = ({ node, updateAttributes, editor, selected }) => {
       >
         <img
           ref={imageRef}
-          src={node.attrs.src}
+          src={node.attrs.src || node.attrs.url || node.attrs.key}
           alt={node.attrs.alt || ''}
           title={node.attrs.title || ''}
           className={`block w-full h-auto rounded-lg ${selected ? 'shadow-xl' : ''}`}
@@ -86,7 +86,7 @@ const ResizableImageView = ({ node, updateAttributes, editor, selected }) => {
             cursor: isResizing ? 'ew-resize' : 'default',
           }}
         />
-        
+
         {editor.isEditable && selected && !showAltInput && (
           <>
             {/* Resize handle */}
@@ -102,33 +102,30 @@ const ResizableImageView = ({ node, updateAttributes, editor, selected }) => {
             <div className="absolute top-2 right-2 flex gap-1 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 p-1">
               <button
                 onClick={() => setAlignment('left')}
-                className={`p-1.5 rounded transition-colors ${
-                  alignment === 'left'
-                    ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
-                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
-                }`}
+                className={`p-1.5 rounded transition-colors ${alignment === 'left'
+                  ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
+                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  }`}
                 title="Align left"
               >
                 <AlignLeft size={14} />
               </button>
               <button
                 onClick={() => setAlignment('center')}
-                className={`p-1.5 rounded transition-colors ${
-                  alignment === 'center'
-                    ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
-                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
-                }`}
+                className={`p-1.5 rounded transition-colors ${alignment === 'center'
+                  ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
+                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  }`}
                 title="Align center"
               >
                 <AlignCenter size={14} />
               </button>
               <button
                 onClick={() => setAlignment('right')}
-                className={`p-1.5 rounded transition-colors ${
-                  alignment === 'right'
-                    ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
-                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
-                }`}
+                className={`p-1.5 rounded transition-colors ${alignment === 'right'
+                  ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
+                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  }`}
                 title="Align right"
               >
                 <AlignRight size={14} />

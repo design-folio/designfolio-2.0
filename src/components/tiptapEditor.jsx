@@ -125,7 +125,7 @@ const TiptapEditor = ({ projectDetails, userDetails }) => {
     ],
     content:
       projectDetails?.tiptapContent &&
-      Object.keys(projectDetails.tiptapContent).length > 0
+        Object.keys(projectDetails.tiptapContent).length > 0
         ? projectDetails.tiptapContent
         : "",
     editorProps: {
@@ -231,7 +231,8 @@ const TiptapEditor = ({ projectDetails, userDetails }) => {
             },
           })
             .then((result) => {
-              resolve(result.data.file.url);
+              const { key, url } = result.data.file;
+              resolve({ key, url });
             })
             .catch((error) => reject(error));
         };
@@ -257,13 +258,13 @@ const TiptapEditor = ({ projectDetails, userDetails }) => {
       event.preventDefault();
 
       try {
-        const url = await handleImageUpload(file);
+        const { key, url } = await handleImageUpload(file);
         editor
           .chain()
           .focus()
           .insertContent({
             type: "resizableImage",
-            attrs: { src: url },
+            attrs: { key, url },
           })
           .run();
       } catch (error) {
@@ -281,13 +282,13 @@ const TiptapEditor = ({ projectDetails, userDetails }) => {
       event.preventDefault();
 
       try {
-        const url = await handleImageUpload(file);
+        const { key, url } = await handleImageUpload(file);
         editor
           .chain()
           .focus()
           .insertContent({
             type: "resizableImage",
-            attrs: { src: url },
+            attrs: { key, url },
           })
           .run();
       } catch (error) {

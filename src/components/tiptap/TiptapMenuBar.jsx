@@ -71,7 +71,7 @@ const MenuButton = ({
   </Tooltip>
 );
 
-const TiptapMenuBar = ({ editor, showToolbar }) => {
+const TiptapMenuBar = ({ editor, showToolbar, onImageUpload }) => {
   const { resolvedTheme } = useTheme();
   const fileInputRef = useRef(null);
   const toolbarRef = useRef(null);
@@ -292,24 +292,41 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
     fileInputRef.current?.click();
   };
 
-  const handleImageFile = (e) => {
+  const handleImageFile = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Convert to base64 for display
-    const reader = new FileReader();
-    reader.onload = () => {
-      const url = reader.result;
-      editor
-        .chain()
-        .focus()
-        .insertContent({
-          type: "resizableImage",
-          attrs: { src: url },
-        })
-        .run();
-    };
-    reader.readAsDataURL(file);
+    if (onImageUpload) {
+      try {
+        const response = await onImageUpload(file);
+        const { key, url } = response.file;
+        editor
+          .chain()
+          .focus()
+          .insertContent({
+            type: "resizableImage",
+            attrs: { key, url },
+          })
+          .run();
+      } catch (error) {
+        console.error("Error uploading image:", error);
+      }
+    } else {
+      // Fallback to base64 if no upload handler provided
+      const reader = new FileReader();
+      reader.onload = () => {
+        const url = reader.result;
+        editor
+          .chain()
+          .focus()
+          .insertContent({
+            type: "resizableImage",
+            attrs: { src: url },
+          })
+          .run();
+      };
+      reader.readAsDataURL(file);
+    }
 
     // Reset file input
     e.target.value = "";
@@ -556,6 +573,14 @@ const TiptapMenuBar = ({ editor, showToolbar }) => {
 
         {/* Media Group */}
         <div className="menu-group">
+          <MenuButton
+            onClick={() => addImage()}
+            onMouseDown={(e) => e.preventDefault()}
+            isActive={activeNodes.image}
+            title="Image"
+          >
+            <Image size={18} />
+          </MenuButton>
           <MenuButton
             onClick={() => addLink()}
             onMouseDown={(e) => e.preventDefault()}

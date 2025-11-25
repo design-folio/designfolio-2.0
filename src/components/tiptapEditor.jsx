@@ -196,27 +196,41 @@ const TiptapEditor = ({ projectDetails, userDetails }) => {
   // Image upload handler
   const handleImageUpload = async (file) => {
     return new Promise(async (resolve, reject) => {
+      const MAX_SIZE_MB = 2; // Maximum file size in MB
+      const fileSizeMB = file.size / (1024 * 1024); // Convert file size to MB
+
+      // if (fileSizeMB > MAX_SIZE_MB) {
+      //   alert(
+      //     "The file size exceeds the 2 MB limit. Please choose a smaller file"
+      //   );
+      //   return reject(new Error("File size exceeds 2 MB limit."));
+      // }
+
       try {
         let compressedFile;
 
         if (file?.type === "image/gif") {
           compressedFile = file;
         } else {
-          compressedFile = await new Promise(
-            (resolveCompression, rejectCompression) => {
-              new Compressor(file, {
-                quality: 0.8,
-                mimeType: "image/webp",
-                maxHeight: 3840,
-                success(result) {
-                  resolveCompression(result);
-                },
-                error(error) {
-                  rejectCompression(error);
-                },
-              });
-            }
-          );
+          try {
+            compressedFile = await new Promise(
+              (resolveCompression, rejectCompression) => {
+                new Compressor(file, {
+                  quality: 0.8,
+                  mimeType: "image/webp",
+                  maxHeight: 3840,
+                  success(result) {
+                    resolveCompression(result);
+                  },
+                  error(error) {
+                    rejectCompression(error);
+                  },
+                });
+              }
+            );
+          } catch (e) {
+            return reject(e);
+          }
         }
 
         const reader = new FileReader();
@@ -231,8 +245,7 @@ const TiptapEditor = ({ projectDetails, userDetails }) => {
             },
           })
             .then((result) => {
-              const { key, url } = result.data.file;
-              resolve({ key, url });
+              resolve(result.data);
             })
             .catch((error) => reject(error));
         };
@@ -258,7 +271,8 @@ const TiptapEditor = ({ projectDetails, userDetails }) => {
       event.preventDefault();
 
       try {
-        const { key, url } = await handleImageUpload(file);
+        const response = await handleImageUpload(file);
+        const { key, url } = response.file;
         editor
           .chain()
           .focus()
@@ -282,7 +296,8 @@ const TiptapEditor = ({ projectDetails, userDetails }) => {
       event.preventDefault();
 
       try {
-        const { key, url } = await handleImageUpload(file);
+        const response = await handleImageUpload(file);
+        const { key, url } = response.file;
         editor
           .chain()
           .focus()
@@ -358,7 +373,11 @@ const TiptapEditor = ({ projectDetails, userDetails }) => {
       </div>
 
       {/* Fixed Bottom Toolbar - Shows only when editor is active */}
-      <TiptapMenuBar editor={editor} showToolbar={showToolbar} />
+      <TiptapMenuBar
+        editor={editor}
+        showToolbar={showToolbar}
+        onImageUpload={handleImageUpload}
+      />
     </div>
   );
 };

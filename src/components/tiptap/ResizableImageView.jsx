@@ -9,6 +9,7 @@ const ResizableImageView = ({ node, updateAttributes, editor, selected }) => {
   const imageRef = useRef(null);
   const startXRef = useRef(0);
   const startWidthRef = useRef(0);
+  const inputRef = useRef(null);
 
   // Default alignment to 'left' if not set
   const alignment = node.attrs.alignment || 'left';
@@ -47,14 +48,33 @@ const ResizableImageView = ({ node, updateAttributes, editor, selected }) => {
     };
   }, [isResizing, updateAttributes]);
 
-  const handleAltSave = () => {
+  useEffect(() => {
+    if (showAltInput) {
+      setAltText(node.attrs.alt || '');
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 50);
+    }
+  }, [showAltInput, node.attrs.alt]);
+
+  const handleAltSave = (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     updateAttributes({ alt: altText });
     setShowAltInput(false);
+    editor.commands.focus();
   };
 
-  const handleAltCancel = () => {
+  const handleAltCancel = (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     setAltText(node.attrs.alt || '');
     setShowAltInput(false);
+    editor.commands.focus();
   };
 
   const setAlignment = (align) => {
@@ -143,7 +163,12 @@ const ResizableImageView = ({ node, updateAttributes, editor, selected }) => {
         )}
 
         {showAltInput && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm">
+          <div 
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm"
+            onMouseDown={(e) => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => e.stopPropagation()}
+          >
             <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-2xl max-w-md w-full">
               <h3 className="text-base font-semibold mb-3 text-gray-900 dark:text-gray-100">
                 Image Alt Text
@@ -152,15 +177,16 @@ const ResizableImageView = ({ node, updateAttributes, editor, selected }) => {
                 Describe this image for accessibility and SEO
               </p>
               <input
+                ref={inputRef}
                 type="text"
                 value={altText}
                 onChange={(e) => setAltText(e.target.value)}
                 placeholder="e.g., Product screenshot showing dashboard..."
-                autoFocus
                 className="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 mb-4"
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter') handleAltSave();
-                  if (e.key === 'Escape') handleAltCancel();
+                  e.stopPropagation();
+                  if (e.key === 'Enter') handleAltSave(e);
+                  if (e.key === 'Escape') handleAltCancel(e);
                 }}
               />
               <div className="flex gap-2 justify-end">

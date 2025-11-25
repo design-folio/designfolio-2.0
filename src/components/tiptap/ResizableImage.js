@@ -13,6 +13,12 @@ export const ResizableImage = Node.create({
       src: {
         default: null,
       },
+      url: {
+        default: null,
+      },
+      key: {
+        default: null,
+      },
       alt: {
         default: null,
       },

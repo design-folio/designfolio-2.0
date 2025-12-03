@@ -132,8 +132,7 @@ export default function UpgradeModal() {
           <div className={styles.lifetimeDealBanner}>
             <div className={styles.dealBannerIcon}>⏰</div>
             <span className={styles.dealBannerText}>
-              Price increases to {plan?.currency === "INR" ? "₹6,999" : "$149"}{" "}
-              on Dec 1
+              Will be {plan?.currency === "INR" ? "₹7,999" : "$115"} starting next month
             </span>
             <div className={styles.dealBannerPulse}></div>
           </div>

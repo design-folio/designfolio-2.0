@@ -81,13 +81,15 @@ export default function UpgradeModal() {
   if (!showUpgradeModal || !plan) return null;
   return (
     <div
-      className={`${styles.modalOverlay} ${isModalExiting ? styles.modalOverlayExiting : ""
-        }`}
+      className={`${styles.modalOverlay} ${
+        isModalExiting ? styles.modalOverlayExiting : ""
+      }`}
       onClick={() => handleCloseModal()}
     >
       <div
-        className={`${styles.modal} ${isModalExiting ? styles.modalExiting : ""
-          }`}
+        className={`${styles.modal} ${
+          isModalExiting ? styles.modalExiting : ""
+        }`}
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -130,7 +132,8 @@ export default function UpgradeModal() {
           <div className={styles.lifetimeDealBanner}>
             <div className={styles.dealBannerIcon}>⏰</div>
             <span className={styles.dealBannerText}>
-              Will be {plan?.currency === "INR" ? "₹7,999" : "$115"} starting next month
+              Will be {plan?.currency === "INR" ? "₹7,999" : "$115"} starting
+              next month
             </span>
             <div className={styles.dealBannerPulse}></div>
           </div>
@@ -155,7 +158,7 @@ export default function UpgradeModal() {
 
             <div className={styles.featureItem}>
               <div className={styles.featureIcon}>✓</div>
-              <span>Create unlimited projects (not just 1)</span>
+              <span>Create unlimited projects (not just 2)</span>
             </div>
 
             <div className={styles.featureItem}>

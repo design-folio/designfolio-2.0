@@ -94,8 +94,8 @@ const Portfolio = ({ userDetails, edit }) => {
       edit
         ? `/project/${id}/editor`
         : router.asPath.includes("/portfolio-preview")
-          ? `/project/${id}/preview`
-          : `/project/${id}`
+        ? `/project/${id}/preview`
+        : `/project/${id}`
     );
   };
 
@@ -261,7 +261,10 @@ const Portfolio = ({ userDetails, edit }) => {
               <img
                 src={getUserAvatarImage(userDetails)}
                 alt="Profile"
-                className={cn("w-10 h-10 rounded-full object-cover", !avatar ? 'bg-[#FFB088]' : "")}
+                className={cn(
+                  "w-10 h-10 rounded-full object-cover",
+                  !avatar ? "bg-[#FFB088]" : ""
+                )}
               />
               <div>
                 <h2 className="text-foreground font-medium">{`${firstName} ${lastName}`}</h2>
@@ -351,7 +354,7 @@ const Portfolio = ({ userDetails, edit }) => {
                     transition={{
                       duration: 0.4,
                       delay: (index % skills.length) * 0.05,
-                      ease: [0.25, 0.46, 0.45, 0.94]
+                      ease: [0.25, 0.46, 0.45, 0.94],
                     }}
                     className="bg-card px-4 py-2 rounded-full text-sm"
                   >
@@ -397,22 +400,26 @@ const Portfolio = ({ userDetails, edit }) => {
                     />
                   ))}
                   {edit &&
-                    (userDetails?.pro || userDetails?.projects.length < 1 ? (
+                    (userDetails?.pro || userDetails?.projects.length < 2 ? (
                       <AddCard
-                        title={`${userDetails?.projects?.length === 0
-                          ? "Upload your first case study"
-                          : "Add case study"
-                          }`}
+                        title={`${
+                          userDetails?.projects?.length === 0
+                            ? "Upload your first case study"
+                            : "Add case study"
+                        }`}
                         subTitle="Show off your best work."
                         first
                         buttonTitle="Add case study"
                         secondaryButtonTitle="Write using AI"
                         onClick={() => openModal(modals.project)}
-                        icon={<MemoCasestudy className="cursor-pointer size-[72px]" />}
+                        icon={
+                          <MemoCasestudy className="cursor-pointer size-[72px]" />
+                        }
                         openModal={openModal}
-                        className={`bg-df-section-card-bg-color flex items-center justify-center min-h-[269px] rounded-lg ${userDetails?.projects?.length !== 0 &&
+                        className={`bg-df-section-card-bg-color flex items-center justify-center min-h-[269px] rounded-lg ${
+                          userDetails?.projects?.length !== 0 &&
                           " shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] hover:shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
-                          }`}
+                        }`}
                       />
                     ) : (
                       <ProjectLock />
@@ -423,7 +430,11 @@ const Portfolio = ({ userDetails, edit }) => {
           </DndContext>
         )}
         {/* Tools Section */}
-        <ToolStack userDetails={userDetails} edit={edit} titleClasses="text-3xl"/>
+        <ToolStack
+          userDetails={userDetails}
+          edit={edit}
+          titleClasses="text-3xl"
+        />
 
         {/* Reviews Section */}
         {(reviews?.length > 0 || edit) && (

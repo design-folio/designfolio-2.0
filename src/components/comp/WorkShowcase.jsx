@@ -19,7 +19,12 @@ import MemoCasestudy from "../icons/Casestudy";
 
 export const WorkShowcase = ({ userDetails: userDetailsProp, edit }) => {
   const router = useRouter();
-  const { openModal, setSelectedProject, setUserDetails, userDetails: userDetailsFromContext } = useGlobalContext();
+  const {
+    openModal,
+    setSelectedProject,
+    setUserDetails,
+    userDetails: userDetailsFromContext,
+  } = useGlobalContext();
   // Always prioritize context over prop to ensure we get the latest updates
   const userDetails = userDetailsFromContext ?? userDetailsProp;
 
@@ -73,8 +78,8 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit }) => {
       edit
         ? `/project/${id}/editor`
         : router.asPath.includes("/portfolio-preview")
-          ? `/project/${id}/preview`
-          : `/project/${id}`
+        ? `/project/${id}/preview`
+        : `/project/${id}`
     );
   };
 
@@ -107,7 +112,9 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit }) => {
   };
 
   // Maintain local state for sorted projects
-  const [sortedProjects, setSortedProjects] = useState(() => userDetails?.projects || []);
+  const [sortedProjects, setSortedProjects] = useState(
+    () => userDetails?.projects || []
+  );
 
   // Update state when userDetails changes
   useEffect(() => {
@@ -263,12 +270,13 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit }) => {
         </DndContext>
       )}
       {edit &&
-        (userDetails?.pro || userDetails?.projects.length < 1 ? (
+        (userDetails?.pro || userDetails?.projects.length < 2 ? (
           <AddCard
-            title={`${sortedProjects.length === 0
-              ? "Upload your first case study"
-              : "Add case study"
-              }`}
+            title={`${
+              sortedProjects.length === 0
+                ? "Upload your first case study"
+                : "Add case study"
+            }`}
             subTitle="Show off your best work."
             first={sortedProjects.length !== 0}
             buttonTitle="Add case study"
@@ -276,9 +284,10 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit }) => {
             onClick={() => openModal(modals.project)}
             icon={<MemoCasestudy className="cursor-pointer size-[72px]" />}
             openModal={openModal}
-            className={`bg-secondary flex items-center justify-center mt-6 ${sortedProjects.length !== 0 &&
+            className={`bg-secondary flex items-center justify-center mt-6 ${
+              sortedProjects.length !== 0 &&
               "shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] hover:shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
-              }`}
+            }`}
           />
         ) : (
           <div className="mt-6">

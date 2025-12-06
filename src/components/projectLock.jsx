@@ -27,7 +27,7 @@ export default function ProjectLock() {
           Upgrade to PRO
         </h3>
         <p className="text-sm text-df-add-card-description-color mb-4">
-          You've reached the 1-project limit on the free plan. Get lifetime
+          You've reached the 2-project limit on the free plan. Get lifetime
           access to add unlimited projects and unlock all premium features.
         </p>
 
@@ -37,7 +37,7 @@ export default function ProjectLock() {
 
         <div className="mt-6 flex items-center gap-2 text-xs text-df-add-card-description-color opacity-70">
           <Lock className="w-3 h-3" />
-          <span>Free plan: 1 project only</span>
+          <span>Free plan: 2 project only</span>
         </div>
       </div>
     </div>

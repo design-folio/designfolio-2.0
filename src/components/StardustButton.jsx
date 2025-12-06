@@ -11,7 +11,7 @@ export const StardustButton = ({
     "--bg": "linear-gradient(135deg, #f9d423 0%, #e8b923 50%, #d4a017 100%)",
     "--radius": "100px",
     outline: "none",
-    cursor: "pointer !important",
+    cursor: "pointer",
     border: 0,
     position: "relative",
     borderRadius: "var(--radius)",
@@ -36,6 +36,7 @@ export const StardustButton = ({
     position: "relative",
     overflow: "hidden",
     textShadow: "0 1px 2px rgba(255, 255, 255, 0.3)",
+    pointerEvents: "none",
   };
 
   const pStyle = {
@@ -49,6 +50,10 @@ export const StardustButton = ({
   };
 
   const beforeAfterStyles = `
+    .pearl-button {
+      cursor: pointer !important;
+    }
+    
     .pearl-button .wrap::before,
     .pearl-button .wrap::after {
       content: "";

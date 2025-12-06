@@ -11,6 +11,8 @@ import Link from '@tiptap/extension-link';
 import Youtube from '@tiptap/extension-youtube';
 import TextAlign from '@tiptap/extension-text-align';
 import Highlight from '@tiptap/extension-highlight';
+import { Color } from '@tiptap/extension-color';
+import { TextStyle } from '@tiptap/extension-text-style';
 import { FigmaExtension } from './tiptap/FigmaExtension';
 import { LinkNode } from './tiptap/LinkExtension';
 import { YoutubeNode } from './tiptap/YoutubeExtension';
@@ -20,6 +22,8 @@ const TiptapRenderer = ({ content }) => {
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
+      TextStyle,
+      Color,
       StarterKit.configure({
         heading: {
           levels: [2, 3, 4, 5, 6],
@@ -35,10 +39,31 @@ const TiptapRenderer = ({ content }) => {
           },
         },
       }),
+      Underline,
+      Link.configure({
+        openOnClick: true,
+        HTMLAttributes: {
+          class: 'text-blue-500 underline cursor-pointer',
+        },
+      }),
+      Highlight.configure({
+        multicolor: true,
+      }),
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
+      }),
       Image.configure({
         inline: false,
+        allowBase64: true,
       }),
       ResizableImage,
+      Youtube.configure({
+        controls: true,
+        nocookie: true,
+        HTMLAttributes: {
+          class: 'w-full aspect-video rounded-[20px] mt-6 md:mt-8',
+        },
+      }),
       Table.extend({
         renderHTML({ HTMLAttributes }) {
           return [
@@ -65,28 +90,6 @@ const TiptapRenderer = ({ content }) => {
       TableHeader.configure({
         HTMLAttributes: {
           class: 'tiptap-table-header',
-        },
-      }),
-      Underline,
-      Link.configure({
-        openOnClick: true,
-        HTMLAttributes: {
-          class: 'text-blue-500 underline cursor-pointer',
-        },
-      }),
-      Youtube.configure({
-        controls: true,
-        nocookie: true,
-        HTMLAttributes: {
-          class: 'w-full aspect-video rounded-[20px] mt-6 md:mt-8',
-        },
-      }),
-      TextAlign.configure({
-        types: ['heading', 'paragraph'],
-      }),
-      Highlight.configure({
-        HTMLAttributes: {
-          class: 'bg-yellow-200 dark:bg-yellow-600',
         },
       }),
       FigmaExtension,

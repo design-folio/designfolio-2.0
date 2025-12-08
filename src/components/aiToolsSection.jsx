@@ -4,18 +4,15 @@ import GeneratorCard from "./generatorCard";
 
 export default function AiToolsSection() {
   return (
-    <div
-      className="max-w-[1192px] mx-auto mt-[75px] xl:mt-[80px]"
-      id="other-ai-tools"
-    >
+    <div className="max-w-[1192px] mx-auto py-16 px-6" id="other-ai-tools">
       <Text
         as="h2"
         size="p-large"
-        className="text-center mt-[75px] leading-[46px] text-landing-card-heading-color"
+        className="font-gsans font-semibold text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-5xl text-center text-foreground mb-4 sm:mb-6"
       >
         ...and so much more ✨
       </Text>
-      <Text className="text-center mt-4 text-landing-card-description-color !text-[18px]">
+      <Text className="text-center mt-4 text-sm sm:text-base text-foreground">
         Use these AI tools and save all your time — thank us later!
       </Text>
 

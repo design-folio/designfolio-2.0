@@ -7,6 +7,7 @@ import ScrollingBanner from "./scrollingBanner";
 import FooterBottom from "./footerBottom";
 import FeaturesSection from "./featuresSection";
 import FeaturesShowcase from "./featuresShowcase";
+import AiToolsSection from "./aiToolsSection";
 
 export default function Home({ dfToken }) {
   return (
@@ -16,10 +17,11 @@ export default function Home({ dfToken }) {
       <TrustedBySection />
       <FeaturesSection />
       <FeaturesShowcase />
+      <AiToolsSection />
       <Footer dfToken={dfToken} />
+
       <FooterBottom />
       <ScrollingBanner />
     </React.Fragment>
-
   );
 }

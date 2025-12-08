@@ -20,10 +20,18 @@ export default function GeneratorCard({
     <div className="rounded-[24px] bg-white border border-[#E3E7ED] p-6 hover:shadow-ai-card transition-shadow duration-500 ease-out group">
       <div className="flex items-center gap-2">
         <img src={src} alt="generator tool" />
-        <Text size="p-small">{title}</Text>
+        <Text
+          size="p-small"
+          className="font-gsans font-semibold text-xl sm:text-2xl text-foreground"
+        >
+          {title}
+        </Text>
       </div>
 
-      <Text size="p-xsmall" className="mt-4">
+      <Text
+        size="p-xsmall"
+        className="mt-4 text-sm sm:text-base text-muted-foreground"
+      >
         {description}
       </Text>
       <Button

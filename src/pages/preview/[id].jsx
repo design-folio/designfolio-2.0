@@ -12,9 +12,10 @@ import useClient from "@/hooks/useClient";
 import Minimal from "@/components/comp/Minimal";
 import Portfolio from "@/components/comp/Portfolio";
 import MadeWithDesignfolio from "../../../public/assets/svgs/madewithdesignfolio.svg";
+import { getWallpaperUrl } from "@/lib/wallpaper";
 
 export default function Index({ initialUserDetails }) {
-  const { setTheme } = useTheme();
+  const { setTheme, theme, resolvedTheme } = useTheme();
   const router = useRouter();
   const { data: userDetails } = useQuery({
     queryKey: [`portfolio-${router.query.id}`],
@@ -22,6 +23,10 @@ export default function Index({ initialUserDetails }) {
     initialData: initialUserDetails,
   });
   const { isClient } = useClient();
+  
+  const wp = userDetails?.wallpaper;
+  const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
+  const wallpaperUrl = getWallpaperUrl(wpValue !== undefined ? wpValue : 0, resolvedTheme || theme);
 
   useEffect(() => {
     if (userDetails) {
@@ -30,7 +35,8 @@ export default function Index({ initialUserDetails }) {
   }, [userDetails, setTheme]);
 
   const renderTemplate = () => {
-    switch (userDetails?.template) {
+     // ... (keep existing renderTemplate logic unchanged) ...
+     switch (userDetails?.template) {
       case 0:
         return <Template1 userDetails={userDetails} />;
       case 1:
@@ -99,7 +105,25 @@ export default function Index({ initialUserDetails }) {
         imageUrl={userDetails?.avatar?.url ?? "/assets/png/seo-profile.png"}
         url={`https://${userDetails?.username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`}
       />
-      <main className="min-h-screen bg-df-bg-color">
+      {wallpaperUrl && (
+        <div 
+          suppressHydrationWarning
+          style={{ 
+            position: 'fixed', 
+            top: 0, 
+            left: 0, 
+            width: '100vw', 
+            height: '100vh', 
+            zIndex: -1, 
+            backgroundSize: 'cover', 
+            backgroundPosition: 'center', 
+            backgroundRepeat: 'no-repeat', 
+            backgroundImage: `url(${wallpaperUrl})`,
+            pointerEvents: 'none'
+          }} 
+        />
+      )}
+      <main className="min-h-screen">
         <div
           className={` mx-auto px-2 md:px-4 lg:px-0 ${userDetails?.template != 3 && "max-w-[890px]"
             }`}

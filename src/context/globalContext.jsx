@@ -1,4 +1,5 @@
 import { setCursorvalue } from "@/lib/cursor";
+import { setWallpaperValue } from "@/lib/wallpaper";
 import { _getDomainDetails, _getUserDetails } from "@/network/get-request";
 import { _updateUser } from "@/network/post-request";
 import queryClient from "@/network/queryClient";
@@ -46,7 +47,8 @@ export const GlobalProvider = ({ children }) => {
   const [template, setTemplate] = useState(0);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [domainDetails, setDomainDetails] = useState(null);
-  const { setTheme } = useTheme();
+  const [wallpaper, setWallpaper] = useState(0);
+  const { setTheme, theme, resolvedTheme } = useTheme();
 
   // Fetch user details
   const {
@@ -98,6 +100,11 @@ export const GlobalProvider = ({ children }) => {
       setTheme(userData?.theme == 1 ? "dark" : "light");
       setCursor(userData?.cursor ? userData?.cursor : 0);
       setTemplate(userData?.template ? userData?.template : 0);
+      
+      const wp = userData?.wallpaper;
+      const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
+      setWallpaper(wpValue !== undefined ? wpValue : 0);
+      
       setUserDetails(userData);
       setIsUserDetailsFromCache(true);
       setCheckList((prevList) => {
@@ -140,6 +147,10 @@ export const GlobalProvider = ({ children }) => {
     }
   }, [userDetails?.pro]);
 
+  useEffect(() => {
+    setWallpaperValue(wallpaper, resolvedTheme || theme);
+  }, [wallpaper, resolvedTheme, theme]);
+
   const fetchDomainDetails = () => {
     _getDomainDetails().then((res) => {
       setDomainDetails(res.data);
@@ -162,6 +173,63 @@ export const GlobalProvider = ({ children }) => {
       setCursor(cursor);
       updateCache("userDetails", res?.data?.user);
       setUserDetails(() => ({ ...userDetails, cursor: cursor }));
+    });
+  };
+
+  const changeWallpaper = (wallpaper, filename) => {
+    let wallpaperPayload;
+    
+    // Check for custom wallpaper object (Base64)
+    if (typeof wallpaper === 'object' && wallpaper.base64) {
+      wallpaperPayload = {
+        key: wallpaper.base64,
+        extension: wallpaper.type,
+        originalName: wallpaper.name, // or filename argument
+        __isNew__: true
+      };
+      // Set local state to valid CSS string (Base64)
+      wallpaper = wallpaper.base64; 
+    } 
+    // Handle string URL
+    else if (typeof wallpaper === 'string') {
+      let key = wallpaper;
+      
+      // If it's a full URL (existing S3 URL), extract the key component
+      if (wallpaper.startsWith('http') || wallpaper.startsWith('/')) {
+         const match = wallpaper.match(/(wallpaper\/.*?)(\?|$)/);
+         if (match) {
+             key = match[1];
+         }
+      }
+      // If filename provided, construct new key (for fresh non-base64 uploads logic if used)
+      else if (filename && userDetails) {
+        const userId = userDetails._id || userDetails.id;
+        key = `wallpaper/${userId}/${filename}`;
+      }
+
+      wallpaperPayload = {
+        key: key,
+        __isNew__: true
+      };
+    } 
+    // Handle Preset (number)
+    else {
+      wallpaperPayload = {
+        value: wallpaper
+      };
+    }
+
+    _updateUser({ wallpaper: wallpaperPayload }).then((res) => {
+      const updatedUser = res?.data?.user;
+      
+      // Extract authoritative wallpaper value from response
+      const wp = updatedUser?.wallpaper;
+      const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
+      
+      // Update local state and context
+      setWallpaper(wpValue || wallpaper);
+      updateCache("userDetails", updatedUser);
+      setUserDetails(updatedUser);
     });
   };
 
@@ -249,7 +317,10 @@ export const GlobalProvider = ({ children }) => {
         domainDetails,
         setDomainDetails,
         fetchDomainDetails,
-        setTemplateContext
+        setTemplateContext,
+        wallpaper,
+        setWallpaper,
+        changeWallpaper,
       }}
     >
       {children}

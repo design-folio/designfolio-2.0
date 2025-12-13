@@ -36,6 +36,8 @@ import MemoPreviewIcon from "./icons/PreviewIcon";
 import MemoPower from "./icons/Power";
 import { cn } from "@/lib/utils";
 import MobileMenuButton from "./MobileMenuButton";
+import ThemePanel from "./ThemePanel";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const cursors = [
   {
@@ -139,6 +141,8 @@ const templates = [
   },
 ];
 
+  /* Wallpapers definition moved inside component to access theme */
+
 export default function LoggedInHeader({
   userDetails,
   setUserDetails,
@@ -151,8 +155,13 @@ export default function LoggedInHeader({
   changeTemplate,
   template,
   setShowUpgradeModal,
+  wallpaper,
+  setWallpaper,
+  changeWallpaper,
 }) {
   const [isVisible, setIsVisible] = useState(true);
+  const isMobile = useIsMobile();
+  const isThemePanelOpen = popoverMenu === popovers.themeMenu;
   const [lastScrollY, setLastScrollY] = useState(0);
   const router = useRouter();
   const { theme } = useTheme();
@@ -162,6 +171,54 @@ export default function LoggedInHeader({
 
   const { username, latestPublishDate, _id, email } = userDetails || {};
   const { isClient } = useClient();
+
+  const wpPath = theme === 'dark' ? '/wallpaper/darkui' : '/wallpaper';
+  const wallpapers = [
+    {
+      id: 1,
+      value: 0,
+      item: (
+        <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer">
+          Default
+        </p>
+      ),
+    },
+    {
+      id: 1,
+      value: 1,
+      item: <div className="w-full h-8 rounded" style={{backgroundImage: `url(${wpPath}/wall1.png)`, backgroundSize: "cover"}}></div>,
+    },
+    {
+      id: 2,
+      value: 2,
+      item: <div className="w-full h-8 rounded" style={{backgroundImage: `url(${wpPath}/wall2.png)`, backgroundSize: "cover"}}></div>,
+    },
+    {
+      id: 3,
+      value: 3,
+      item: <div className="w-full h-8 rounded" style={{backgroundImage: `url(${wpPath}/wall3.png)`, backgroundSize: "cover"}}></div>,
+    },
+    {
+      id: 4,
+      value: 4,
+      item: <div className="w-full h-8 rounded" style={{backgroundImage: `url(${wpPath}/wall4.png)`, backgroundSize: "cover"}}></div>,
+    },
+    {
+      id: 5,
+      value: 5,
+      item: <div className="w-full h-8 rounded" style={{backgroundImage: `url(${wpPath}/wall5.png)`, backgroundSize: "cover"}}></div>,
+    },
+    {
+      id: 6,
+      value: 6,
+      item: <div className="w-full h-8 rounded" style={{backgroundImage: `url(${wpPath}/wall6.png)`, backgroundSize: "cover"}}></div>,
+    },
+    {
+      id: 7,
+      value: 7,
+      item: <div className="w-full h-8 rounded" style={{backgroundImage: `url(${wpPath}/wall7.png)`, backgroundSize: "cover"}}></div>,
+    },
+  ];
 
   useEffect(() => {
     router.prefetch("/");
@@ -321,12 +378,13 @@ export default function LoggedInHeader({
   const formatedValue = formatTimestamp(latestPublishDate);
 
   const headerStyle = isVisible
-    ? "fixed top-0 left-0 right-0 md:px-4 xl:px-0 z-10 transition-transform duration-300 ease-out"
-    : "fixed top-0 left-0 right-0 md:px-4 xl:px-0 z-10 transform translate-y-[-100%] transition-transform duration-300 ease-out";
+    ? "fixed top-0 left-0 transition-all duration-300 ease-out"
+    : "fixed top-0 left-0 transform translate-y-[-100%] transition-all duration-300 ease-out";
 
   return (
     <div
       className={`${headerStyle} z-50 px-2 md:px-0 py-2 md:py-6 bg-transparent`}
+      style={{ right: isThemePanelOpen && !isMobile ? '320px' : '0' }}
     >
       <div className="shadow-df-section-card-shadow max-w-[890px] p-3 border border-card-border md:!p-4 rounded-2xl bg-df-header-bg-color mx-auto flex justify-between items-center">
         <div className="flex items-center gap-[24px]">
@@ -358,155 +416,24 @@ export default function LoggedInHeader({
             </Button>
 
             {isClient && (
-              <Modal
+              <ThemePanel
                 show={popoverMenu === popovers.themeMenu}
-                className={"md:block"}
-              >
-                <motion.div
-                  className="bg-modal-bg-color h-[95%] w-[95%] m-auto md:w-[602px] md:fixed md:top-[2.25%] md:right-4 flex flex-col rounded-2xl"
-                  initial="hidden"
-                  animate="visible"
-                  variants={variants}
-                  transition={{ duration: 0.5, ease: "easeInOut" }}
-                >
-                  <header className="p-8 text-lg font-bold pb-0">
-                    <div className="flex items-center justify-between gap-4">
-                      <div className="flex gap-4 items-center">
-                        <Button
-                          size="icon"
-                          className="rounded-md border-secondary-btn-border-color pointer-events-none"
-                          style={{ background: "var(--ai-btn-bg-color)" }}
-                        >
-                          <MemoThemeIcon className="text-secondary-btn-text-color w-[22px] h-[22px]" />
-                        </Button>
-                        <Text
-                          size="p-small"
-                          className="font-semibold font-inter"
-                        >
-                          Personalisation
-                        </Text>
-                      </div>
-                      <Button
-                        variant="secondary"
-                        size="icon"
-                        className="rounded-lg"
-                        onClick={handleCloseTheme}
-                      >
-                        <CloseIcon className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </header>
-                  <div className="hide-scrollbar overflow-y-scroll p-8 pt-4 mt-4">
-                    <div className="flex justify-between items-center">
-                      <Text
-                        size="p-xsmall"
-                        className=" font-semibold text-popover-heading-color"
-                      >
-                        Appearance
-                      </Text>
-                      {/* <Button
-                        type="secondary"
-                        customClass="!p-2"
-                        icon={
-                          <CloseIcon className="text-df-icon-color cursor-pointer" />
-                        }
-                        onClick={handleCloseTheme}
-                      /> */}
-                    </div>
-                    <div>
-                      <div className="flex gap-[16px] mt-3">
-                        <div
-                          onClick={() => changeTheme(0)}
-                          className={`flex gap-[10px] w-full justify-center items-center border bg-default-theme-box-bg-color border-default-theme-box-border-color hover:bg-default-theme-bg-hover-color shadow-default-theme-shadow rounded-[16px] px-[32px] py-[16px] cursor-pointer`}
-                        >
-                          <SunIcon className={"cursor-pointer"} />
-                          <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer">
-                            Light
-                          </p>
-                        </div>
-                        <div
-                          onClick={() => changeTheme(1)}
-                          className={`border flex gap-[10px] w-full justify-center bg-theme-box-bg-color border-theme-box-border-color hover:bg-theme-bg-hover-color shadow-theme-shadow rounded-[16px] px-[32px] py-[16px] cursor-pointer`}
-                        >
-                          <MoonIcon className={"cursor-pointer"} />
-                          <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer">
-                            Dark
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="mt-8">
-                      <Text
-                        size="p-xsmall"
-                        className=" font-semibold text-popover-heading-color"
-                      >
-                        Template
-                      </Text>
-                      <div className="mt-4 grid grid-cols-2 gap-4">
-                        {templates.map((template, index) => (
-                          <div
-                            key={template.value}
-                            onClick={() => changeTemplate(index)}
-                            className={twMerge(
-                              "px-4 py-6 flex flex-col justify-center items-center border rounded-[16px] cursor-pointer",
-                              "bg-default-cursor-box-bg border-default-cursor-box-border",
-                              "hover:bg-default-cursor-bg-hover",
-                              getTemplateStyles(index) // This will dynamically add classes based on index
-                            )}
-                          >
-                            <div className="flex gap-2 items-center mb-2">
-                              <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer">
-                                {template.item}
-                              </p>
-                              {template.isNew && (
-                                <Badge className="bg-[#EE7F70] text-white text-[12px] font-medium">
-                                  New
-                                </Badge>
-                              )}
-                            </div>
-                            <img
-                              src={renderTemplate(template.value)}
-                              alt=""
-                              className="cursor-pointer"
-                            />
-                            {template?.id != 1 && (
-                              <div
-                                className={`mt-4 ${styles.templateBadgePro}`}
-                              >
-                                Pro
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="mt-8">
-                      <Text
-                        size="p-xsmall"
-                        className=" font-semibold text-popover-heading-color"
-                      >
-                        Cursor
-                      </Text>
-                      <div className="mt-4 grid grid-cols-3 gap-4">
-                        {cursors.map((cursor, index) => (
-                          <div
-                            key={index}
-                            onClick={() => handleChangeCursor(index)}
-                            className={twMerge(
-                              "px-4 py-6 flex justify-center items-center border rounded-[16px] cursor-pointer",
-                              "bg-default-cursor-box-bg border-default-cursor-box-border",
-                              "hover:bg-default-cursor-bg-hover",
-                              getStyles(index) // This will dynamically add classes based on index
-                            )}
-                          >
-                            {cursor.item}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              </Modal>
+                handleClose={handleCloseTheme}
+                theme={theme}
+                changeTheme={changeTheme}
+                template={template}
+                changeTemplate={changeTemplate}
+                templates={templates}
+                renderTemplate={renderTemplate}
+                getTemplateStyles={getTemplateStyles}
+                cursor={cursor}
+                handleChangeCursor={handleChangeCursor}
+                cursors={cursors}
+                getStyles={getStyles}
+                wallpaper={wallpaper}
+                changeWallpaper={changeWallpaper}
+                wallpapers={wallpapers}
+              />
             )}
           </div>
           <Button

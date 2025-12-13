@@ -126,7 +126,7 @@ export default function Index() {
   };
 
   return (
-    <main className="min-h-screen bg-df-bg-color">
+    <main className="min-h-screen">
       <div
         className={` mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0 ${userDetails?.template != 3 && "max-w-[890px]"
           }`}

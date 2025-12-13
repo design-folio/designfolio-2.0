@@ -20,6 +20,9 @@ const Header = ({ dfToken, hideHeader }) => {
     changeTemplate,
     template,
     setShowUpgradeModal,
+    wallpaper,
+    setWallpaper,
+    changeWallpaper,
   } = useGlobalContext();
   const footerPaths = ["/", "/old-landing", "/contact", "/refund-policy", "/privacy-policy", "/terms-and-conditions", "/pricing"];
   // Determine header component based on dfToken and router pathname
@@ -49,6 +52,9 @@ const Header = ({ dfToken, hideHeader }) => {
         changeTemplate={changeTemplate}
         template={template}
         setShowUpgradeModal={setShowUpgradeModal}
+        wallpaper={wallpaper}
+        setWallpaper={setWallpaper}
+        changeWallpaper={changeWallpaper}
       />
     );
   }

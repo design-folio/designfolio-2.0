@@ -11,13 +11,17 @@ import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import MadeWithDesignfolio from "../../../../public/assets/svgs/madewithdesignfolio.svg";
+import { getWallpaperUrl } from "@/lib/wallpaper";
 
 export default function Index({ data }) {
   const router = useRouter();
-  const { setTheme } = useTheme();
+  const { setTheme,theme, resolvedTheme  } = useTheme();
   const { setCursor } = useGlobalContext();
   const [isProtected, setIsProtected] = useState(data.isProtected);
   const [projectDetails, setProjectDetails] = useState(null);
+  const wp = projectDetails?.project?.wallpaper;
+  const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
+  const wallpaperUrl = getWallpaperUrl(wpValue !== undefined ? wpValue : 0, resolvedTheme || theme);
 
   const { mutate: refetchProjectDetail } = useMutation({
     mutationKey: [`project-${router.query.id}`],
@@ -51,7 +55,25 @@ export default function Index({ data }) {
         }
         url={`https://${data?.project?.username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`}
       />
-      <main className="min-h-screen bg-df-bg-color">
+     {wallpaperUrl && (
+        <div 
+          suppressHydrationWarning
+          style={{ 
+            position: 'fixed', 
+            top: 0, 
+            left: 0, 
+            width: '100vw', 
+            height: '100vh', 
+            zIndex: -1, 
+            backgroundSize: 'cover', 
+            backgroundPosition: 'center', 
+            backgroundRepeat: 'no-repeat', 
+            backgroundImage: `url(${wallpaperUrl})`,
+            pointerEvents: 'none'
+          }} 
+        />
+      )}
+      <main className="min-h-screen">
         <div
           className={`max-w-[890px] mx-auto pt-[16px] pb-[80px] lg:py-[40px] px-2 md:px-4 lg:px-0`}
         >

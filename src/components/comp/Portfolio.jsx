@@ -234,9 +234,10 @@ const Portfolio = ({ userDetails, edit }) => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
+    <div className="min-h-screen bg-background text-foreground transition-colors duration-300 max-w-[890px] mx-auto rounded-2xl">
       {/* Header */}
-      <header className="border-b border-secondary-border py-6 bg-background transition-colors duration-300">
+      
+      <header className="border-b border-secondary-border py-6 bg-background transition-colors duration-300 rounded-t-2xl">
         <div className="container max-w-3xl mx-auto px-4">
           <motion.div
             className="flex items-center justify-between"
@@ -305,7 +306,7 @@ const Portfolio = ({ userDetails, edit }) => {
         </div>
       </header>
 
-      <div className="container max-w-3xl mx-auto px-4 relative">
+      <div className="container max-w-3xl mx-auto px-4 relative rounded-b-2xl">
         <div className="absolute left-0 top-0 w-px h-full bg-secondary-border" />
         <div className="absolute right-0 top-0 w-px h-full bg-secondary-border" />
 

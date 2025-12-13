@@ -14,7 +14,7 @@ const Minimal = ({ userDetails, edit }) => {
     setCursor(userDetails?.cursor ? userDetails?.cursor : 0);
   }, []);
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground rounded-2xl">
       <div className="fixed top-8 left-8 z-50">{/* <ThemeToggle /> */}</div>
       <div className="container max-w-3xl mx-auto px-4">
         <section id="hero">

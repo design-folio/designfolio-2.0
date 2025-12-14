@@ -102,11 +102,6 @@ const ThemePanel = ({
     setIsCompressing(true);
 
     try {
-      // Check image dimensions - must be exactly 1920x1080 or larger with same aspect ratio
-      const targetWidth = 1920;
-      const targetHeight = 1080;
-      const targetAspectRatio = targetWidth / targetHeight; // 16:9
-
       const img = new Image();
       const imageUrl = URL.createObjectURL(file);
 
@@ -116,54 +111,33 @@ const ThemePanel = ({
         img.src = imageUrl;
       });
 
-      const imageAspectRatio = img.width / img.height;
-      const isCorrectAspectRatio = Math.abs(imageAspectRatio - targetAspectRatio) < 0.01; // Allow small tolerance
-      const isLargerOrEqual = img.width >= targetWidth && img.height >= targetHeight;
-      const isExactSize = img.width === targetWidth && img.height === targetHeight;
-
-      let fileToCompress = file;
-
-      // If image is larger with correct aspect ratio, resize it down to 1920x1080
-      if (!isExactSize && isLargerOrEqual && isCorrectAspectRatio) {
-        // Resize to exactly 1920x1080
-        const canvas = document.createElement('canvas');
-        canvas.width = targetWidth;
-        canvas.height = targetHeight;
-        const ctx = canvas.getContext('2d');
-
-        // Draw image resized to exactly 1920x1080
-        ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
-
-        // Convert canvas to blob
-        const resizedBlob = await new Promise((resolve) => {
-          canvas.toBlob(resolve, file.type.includes('png') ? 'image/png' : 'image/jpeg', 1.0);
-        });
-
-        fileToCompress = new File([resizedBlob], file.name, { type: resizedBlob.type });
-      } else if (!isExactSize) {
-        // Reject if not exact size and not larger with correct aspect ratio
+      // Simple minimum size check
+      if (img.width < 500 || img.height < 300) {
         URL.revokeObjectURL(imageUrl);
         setIsCompressing(false);
-        if (!isCorrectAspectRatio) {
-          alert(`Image must have a 16:9 aspect ratio (1920x1080). Your image is ${img.width}x${img.height}.`);
-        } else {
-          alert(`Image dimensions must be at least ${targetWidth}x${targetHeight}. Your image is ${img.width}x${img.height}.`);
-        }
+        alert("Image is too small. Please use an image at least 500x300 pixels.");
         return;
       }
 
-      // Clean up the object URL
+      // Always resize to 1920x1080
+      const canvas = document.createElement('canvas');
+      canvas.width = 1920;
+      canvas.height = 1080;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, 1920, 1080);
+
+      const resizedBlob = await new Promise((resolve) => {
+        canvas.toBlob(resolve, file.type.includes('png') ? 'image/png' : 'image/jpeg', 0.9);
+      });
+
+      const fileToCompress = new File([resizedBlob], file.name, { type: resizedBlob.type });
       URL.revokeObjectURL(imageUrl);
 
       // Compress the image
-      const options = {
-        maxSizeMB: 4, // Compress to max 2MB (well under 5MB limit)
+      const compressedFile = await imageCompression(fileToCompress, {
+        maxSizeMB: 2,
         useWebWorker: true,
-        fileType: fileToCompress.type.includes('png') ? 'image/png' : 'image/jpeg',
-        initialQuality: 0.92, // High quality (92%) for minimal quality loss
-      };
-
-      const compressedFile = await imageCompression(fileToCompress, options);
+      });
 
       // Create preview URL from compressed file
       const url = URL.createObjectURL(compressedFile);
@@ -294,7 +268,7 @@ const ThemePanel = ({
               <div className="flex-1">
                 <h4 className="text-sm font-semibold mb-1">Upload Custom Background</h4>
                 <p className="text-xs text-foreground/60 mb-2">
-                  Upload your own image as background. Recommended ratio: 1920x1080. Maximum file size: 5MB.
+                  Upload your own image. Minimum: 500x300. Maximum file size: 5MB. Image will be resized to 1920x1080.
                 </p>
                 <input
                   type="file"

@@ -26,6 +26,7 @@ import Builder2 from "@/components/Builder2";
 import Minimal from "@/components/comp/Minimal";
 import Portfolio from "@/components/comp/Portfolio";
 import ProWarning from "@/components/proWarning";
+import { Loader2 } from "lucide-react";
 
 export default function Index() {
   const {
@@ -37,6 +38,7 @@ export default function Index() {
     closeModal,
     taskPercentage,
     template,
+    isLoadingTemplate,
   } = useGlobalContext();
   const { isClient } = useClient();
   const router = useRouter();
@@ -132,7 +134,17 @@ export default function Index() {
           }`}
       >
         {userDetails && !userDetails?.pro && <ProWarning />}
-        {userDetails && renderTemplate()}
+        {userDetails && (
+          <>
+            {isLoadingTemplate ? (
+              <div className="flex items-center justify-center min-h-[calc(100vh-126px)]">
+                <Loader2 className="animate-spin h-8 w-8 text-df-orange-color" />
+              </div>
+            ) : (
+              renderTemplate()
+            )}
+          </>
+        )}
         {userDetails && taskPercentage !== 100 && <BottomTask />}
       </div>
       <Modal show={showModal && showModal != modals.aiProject}>

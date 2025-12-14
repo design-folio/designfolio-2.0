@@ -48,6 +48,7 @@ export const GlobalProvider = ({ children }) => {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [domainDetails, setDomainDetails] = useState(null);
   const [wallpaper, setWallpaper] = useState(0);
+  const [isLoadingTemplate, setIsLoadingTemplate] = useState(false);
   const { setTheme, theme, resolvedTheme } = useTheme();
 
   // Fetch user details
@@ -100,11 +101,11 @@ export const GlobalProvider = ({ children }) => {
       setTheme(userData?.theme == 1 ? "dark" : "light");
       setCursor(userData?.cursor ? userData?.cursor : 0);
       setTemplate(userData?.template ? userData?.template : 0);
-      
+
       const wp = userData?.wallpaper;
       const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
       setWallpaper(wpValue !== undefined ? wpValue : 0);
-      
+
       setUserDetails(userData);
       setIsUserDetailsFromCache(true);
       setCheckList((prevList) => {
@@ -178,7 +179,7 @@ export const GlobalProvider = ({ children }) => {
 
   const changeWallpaper = (wallpaper, filename) => {
     let wallpaperPayload;
-    
+
     // Check for custom wallpaper object (Base64)
     if (typeof wallpaper === 'object' && wallpaper.base64) {
       wallpaperPayload = {
@@ -188,18 +189,18 @@ export const GlobalProvider = ({ children }) => {
         __isNew__: true
       };
       // Set local state to valid CSS string (Base64)
-      wallpaper = wallpaper.base64; 
-    } 
+      wallpaper = wallpaper.base64;
+    }
     // Handle string URL
     else if (typeof wallpaper === 'string') {
       let key = wallpaper;
-      
+
       // If it's a full URL (existing S3 URL), extract the key component
       if (wallpaper.startsWith('http') || wallpaper.startsWith('/')) {
-         const match = wallpaper.match(/(wallpaper\/.*?)(\?|$)/);
-         if (match) {
-             key = match[1];
-         }
+        const match = wallpaper.match(/(wallpaper\/.*?)(\?|$)/);
+        if (match) {
+          key = match[1];
+        }
       }
       // If filename provided, construct new key (for fresh non-base64 uploads logic if used)
       else if (filename && userDetails) {
@@ -211,7 +212,7 @@ export const GlobalProvider = ({ children }) => {
         key: key,
         __isNew__: true
       };
-    } 
+    }
     // Handle Preset (number)
     else {
       wallpaperPayload = {
@@ -221,11 +222,11 @@ export const GlobalProvider = ({ children }) => {
 
     _updateUser({ wallpaper: wallpaperPayload }).then((res) => {
       const updatedUser = res?.data?.user;
-      
+
       // Extract authoritative wallpaper value from response
       const wp = updatedUser?.wallpaper;
       const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
-      
+
       // Update local state and context
       setWallpaper(wpValue || wallpaper);
       updateCache("userDetails", updatedUser);
@@ -234,11 +235,19 @@ export const GlobalProvider = ({ children }) => {
   };
 
   const changeTemplate = (template) => {
-    _updateUser({ template: template }).then((res) => {
-      setTemplate(template);
-      updateCache("userDetails", res?.data?.user);
-      setUserDetails(() => ({ ...userDetails, template: template }));
-    });
+    setIsLoadingTemplate(true);
+    _updateUser({ template: template })
+      .then((res) => {
+        setTemplate(template);
+        updateCache("userDetails", res?.data?.user);
+        setUserDetails(() => ({ ...userDetails, template: template }));
+      })
+      .catch((error) => {
+        console.error("Error changing template:", error);
+      })
+      .finally(() => {
+        setIsLoadingTemplate(false);
+      });
   };
 
   const changeTheme = (theme) => {
@@ -321,6 +330,7 @@ export const GlobalProvider = ({ children }) => {
         wallpaper,
         setWallpaper,
         changeWallpaper,
+        isLoadingTemplate,
       }}
     >
       {children}

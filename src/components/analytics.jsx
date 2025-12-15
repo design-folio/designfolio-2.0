@@ -37,7 +37,6 @@ function Analytics({ }) {
   const [uniqueVisits, setUniqueVisits] = useState(0);
 
   const { userDetails, userDetailLoading } = useGlobalContext();
-  console.log("userDetails from analytics component ", userDetails);
   const handleBack = () => {
     router.push("/builder");
   };

@@ -39,12 +39,10 @@ export default function Index({ initialUserDetails }) {
     if (wpValue === undefined || wpValue === null || wpValue === 0) {
       return null;
     }
-    // Wait for client-side rendering and use resolvedTheme if available, otherwise fall back to theme or userDetails theme
     const currentTheme = isClient && resolvedTheme
       ? resolvedTheme
       : theme || (userDetails?.theme == 1 ? "dark" : "light");
     const url = getWallpaperUrl(wpValue, currentTheme);
-    console.log("wallpaperUrl calculated:", url, "currentTheme:", currentTheme, "resolvedTheme:", resolvedTheme, "theme:", theme, "isClient:", isClient);
     return url;
   }, [wpValue, resolvedTheme, theme, userDetails?.theme, isClient]);
   const renderTemplate = () => {

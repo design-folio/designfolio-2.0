@@ -2,7 +2,7 @@ import { _getUser } from "@/network/get-request";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useTheme } from "next-themes";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import Seo from "@/components/seo";
 import { capitalizeWords } from "@/lib/capitalizeText";
 import Template1 from "@/components/template";
@@ -13,6 +13,7 @@ import Minimal from "@/components/comp/Minimal";
 import Portfolio from "@/components/comp/Portfolio";
 import MadeWithDesignfolio from "../../../public/assets/svgs/madewithdesignfolio.svg";
 import { getWallpaperUrl } from "@/lib/wallpaper";
+import { cn } from "@/lib/utils";
 
 export default function Index({ initialUserDetails }) {
   const { setTheme, theme, resolvedTheme } = useTheme();
@@ -23,10 +24,6 @@ export default function Index({ initialUserDetails }) {
     initialData: initialUserDetails,
   });
   const { isClient } = useClient();
-  
-  const wp = userDetails?.wallpaper;
-  const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
-  const wallpaperUrl = getWallpaperUrl(wpValue !== undefined ? wpValue : 0, resolvedTheme || theme);
 
   useEffect(() => {
     if (userDetails) {
@@ -34,9 +31,24 @@ export default function Index({ initialUserDetails }) {
     }
   }, [userDetails, setTheme]);
 
+  const wp = userDetails?.wallpaper;
+  const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
+
+  // Use useMemo to recalculate wallpaper URL when theme or wallpaper changes
+  const wallpaperUrl = useMemo(() => {
+    if (wpValue === undefined || wpValue === null || wpValue === 0) {
+      return null;
+    }
+    // Wait for client-side rendering and use resolvedTheme if available, otherwise fall back to theme or userDetails theme
+    const currentTheme = isClient && resolvedTheme
+      ? resolvedTheme
+      : theme || (userDetails?.theme == 1 ? "dark" : "light");
+    const url = getWallpaperUrl(wpValue, currentTheme);
+    console.log("wallpaperUrl calculated:", url, "currentTheme:", currentTheme, "resolvedTheme:", resolvedTheme, "theme:", theme, "isClient:", isClient);
+    return url;
+  }, [wpValue, resolvedTheme, theme, userDetails?.theme, isClient]);
   const renderTemplate = () => {
-     // ... (keep existing renderTemplate logic unchanged) ...
-     switch (userDetails?.template) {
+    switch (userDetails?.template) {
       case 0:
         return <Template1 userDetails={userDetails} />;
       case 1:
@@ -106,24 +118,30 @@ export default function Index({ initialUserDetails }) {
         url={`https://${userDetails?.username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`}
       />
       {wallpaperUrl && (
-        <div 
+        <div
+          key={wallpaperUrl}
           suppressHydrationWarning
-          style={{ 
-            position: 'fixed', 
-            top: 0, 
-            left: 0, 
-            width: '100vw', 
-            height: '100vh', 
-            zIndex: -1, 
-            backgroundSize: 'cover', 
-            backgroundPosition: 'center', 
-            backgroundRepeat: 'no-repeat', 
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            zIndex: -1,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
             backgroundImage: `url(${wallpaperUrl})`,
             pointerEvents: 'none'
-          }} 
+          }}
         />
       )}
-      <main className="min-h-screen">
+      <main className={cn(
+        "min-h-screen",
+        userDetails?.wallpaper && userDetails?.wallpaper?.value != 0
+          ? "bg-transparent"
+          : "bg-df-bg-color"
+      )}>
         <div
           className={` mx-auto px-2 md:px-4 lg:px-0 ${userDetails?.template != 3 && "max-w-[890px]"
             }`}

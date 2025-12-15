@@ -12,10 +12,11 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import MadeWithDesignfolio from "../../../../public/assets/svgs/madewithdesignfolio.svg";
 import { getWallpaperUrl } from "@/lib/wallpaper";
+import { cn } from "@/lib/utils";
 
 export default function Index({ data }) {
   const router = useRouter();
-  const { setTheme,theme, resolvedTheme  } = useTheme();
+  const { setTheme, theme, resolvedTheme } = useTheme();
   const { setCursor } = useGlobalContext();
   const [isProtected, setIsProtected] = useState(data.isProtected);
   const [projectDetails, setProjectDetails] = useState(null);
@@ -55,25 +56,30 @@ export default function Index({ data }) {
         }
         url={`https://${data?.project?.username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`}
       />
-     {wallpaperUrl && (
-        <div 
+      {wallpaperUrl && (
+        <div
           suppressHydrationWarning
-          style={{ 
-            position: 'fixed', 
-            top: 0, 
-            left: 0, 
-            width: '100vw', 
-            height: '100vh', 
-            zIndex: -1, 
-            backgroundSize: 'cover', 
-            backgroundPosition: 'center', 
-            backgroundRepeat: 'no-repeat', 
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            zIndex: -1,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
             backgroundImage: `url(${wallpaperUrl})`,
             pointerEvents: 'none'
-          }} 
+          }}
         />
       )}
-      <main className="min-h-screen">
+      <main className={cn(
+        "min-h-screen",
+        projectDetails?.project?.wallpaper && projectDetails?.project?.wallpaper?.value != 0
+          ? "bg-transparent"
+          : "bg-df-bg-color"
+      )}>
         <div
           className={`max-w-[890px] mx-auto pt-[16px] pb-[80px] lg:py-[40px] px-2 md:px-4 lg:px-0`}
         >

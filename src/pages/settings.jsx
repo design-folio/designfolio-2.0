@@ -9,6 +9,7 @@ import DefaultDomain from "@/components/defaultDomain";
 import Transaction from "@/components/transaction";
 import MemoLeftArrow from "@/components/icons/LeftArrow";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 export default function Settings() {
   const {
@@ -32,7 +33,12 @@ export default function Settings() {
   }, []);
 
   return (
-    <main className="min-h-screen">
+    <main className={cn(
+      "min-h-screen",
+      userDetails?.wallpaper && userDetails?.wallpaper?.value != 0
+        ? "bg-transparent"
+        : "bg-df-bg-color"
+    )}>
       <div
         className={`max-w-[890px]  mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0`}
       >

@@ -6,6 +6,7 @@ import { Testimonials } from "@/components/comp/Testimonials";
 import { ToolStack } from "@/components/comp/ToolStack";
 import { WorkShowcase } from "@/components/comp/WorkShowcase";
 import { useGlobalContext } from "@/context/globalContext";
+import { cn } from "@/lib/utils";
 import { useEffect } from "react";
 
 const Minimal = ({ userDetails, edit }) => {
@@ -14,7 +15,7 @@ const Minimal = ({ userDetails, edit }) => {
     setCursor(userDetails?.cursor ? userDetails?.cursor : 0);
   }, []);
   return (
-    <div className="min-h-screen bg-background text-foreground rounded-2xl">
+    <div className={cn("min-h-screen bg-background text-foreground rounded-2xl my-8", userDetails?.wallpaper && userDetails?.wallpaper?.value != 0 ? "my-8" : "")}>
       <div className="fixed top-8 left-8 z-50">{/* <ThemeToggle /> */}</div>
       <div className="container max-w-3xl mx-auto px-4">
         <section id="hero">

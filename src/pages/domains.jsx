@@ -7,6 +7,7 @@ import DefaultDomain from "@/components/defaultDomain";
 import { useGlobalContext } from "@/context/globalContext";
 import CustomDomain from "@/components/customDomain";
 import { _getDomainDetails } from "@/network/get-request";
+import { cn } from "@/lib/utils";
 
 export default function Domains() {
   const { userDetails, setIsUserDetailsFromCache, userDetailsIsState } =
@@ -31,7 +32,12 @@ export default function Domains() {
     });
   };
   return (
-    <main className="min-h-screen">
+    <main className={cn(
+      "min-h-screen",
+      userDetails?.wallpaper && userDetails?.wallpaper?.value != 0
+        ? "bg-transparent"
+        : "bg-df-bg-color"
+    )}>
       <div
         className={`max-w-[890px]  mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0`}
       >

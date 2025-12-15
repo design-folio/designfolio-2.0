@@ -94,8 +94,8 @@ const Portfolio = ({ userDetails, edit }) => {
       edit
         ? `/project/${id}/editor`
         : router.asPath.includes("/portfolio-preview")
-        ? `/project/${id}/preview`
-        : `/project/${id}`
+          ? `/project/${id}/preview`
+          : `/project/${id}`
     );
   };
 
@@ -234,9 +234,9 @@ const Portfolio = ({ userDetails, edit }) => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground transition-colors duration-300 max-w-[890px] mx-auto rounded-2xl">
+    <div className={cn("min-h-screen bg-background text-foreground transition-colors duration-300", userDetails?.wallpaper && userDetails?.wallpaper?.value != 0 && "max-w-[890px] mx-auto rounded-2xl mb-8")}>
       {/* Header */}
-      
+
       <header className="border-b border-secondary-border py-6 bg-background transition-colors duration-300 rounded-t-2xl">
         <div className="container max-w-3xl mx-auto px-4">
           <motion.div
@@ -403,11 +403,10 @@ const Portfolio = ({ userDetails, edit }) => {
                   {edit &&
                     (userDetails?.pro || userDetails?.projects.length < 2 ? (
                       <AddCard
-                        title={`${
-                          userDetails?.projects?.length === 0
-                            ? "Upload your first case study"
-                            : "Add case study"
-                        }`}
+                        title={`${userDetails?.projects?.length === 0
+                          ? "Upload your first case study"
+                          : "Add case study"
+                          }`}
                         subTitle="Show off your best work."
                         first
                         buttonTitle="Add case study"
@@ -417,10 +416,9 @@ const Portfolio = ({ userDetails, edit }) => {
                           <MemoCasestudy className="cursor-pointer size-[72px]" />
                         }
                         openModal={openModal}
-                        className={`bg-df-section-card-bg-color flex items-center justify-center min-h-[269px] rounded-lg ${
-                          userDetails?.projects?.length !== 0 &&
+                        className={`bg-df-section-card-bg-color flex items-center justify-center min-h-[269px] rounded-lg ${userDetails?.projects?.length !== 0 &&
                           " shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] hover:shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
-                        }`}
+                          }`}
                       />
                     ) : (
                       <ProjectLock />

@@ -141,7 +141,7 @@ const templates = [
   },
 ];
 
-  /* Wallpapers definition moved inside component to access theme */
+/* Wallpapers definition moved inside component to access theme */
 
 export default function LoggedInHeader({
   userDetails,
@@ -186,37 +186,37 @@ export default function LoggedInHeader({
     {
       id: 1,
       value: 1,
-      item: <div className="w-full h-8 rounded" style={{backgroundImage: `url(${wpPath}/wall1.png)`, backgroundSize: "cover"}}></div>,
+      item: <div className="w-full h-8 rounded" style={{ backgroundImage: `url(${wpPath}/wall1.png)`, backgroundSize: "cover" }}></div>,
     },
     {
       id: 2,
       value: 2,
-      item: <div className="w-full h-8 rounded" style={{backgroundImage: `url(${wpPath}/wall2.png)`, backgroundSize: "cover"}}></div>,
+      item: <div className="w-full h-8 rounded" style={{ backgroundImage: `url(${wpPath}/wall2.png)`, backgroundSize: "cover" }}></div>,
     },
     {
       id: 3,
       value: 3,
-      item: <div className="w-full h-8 rounded" style={{backgroundImage: `url(${wpPath}/wall3.png)`, backgroundSize: "cover"}}></div>,
+      item: <div className="w-full h-8 rounded" style={{ backgroundImage: `url(${wpPath}/wall3.png)`, backgroundSize: "cover" }}></div>,
     },
     {
       id: 4,
       value: 4,
-      item: <div className="w-full h-8 rounded" style={{backgroundImage: `url(${wpPath}/wall4.png)`, backgroundSize: "cover"}}></div>,
+      item: <div className="w-full h-8 rounded" style={{ backgroundImage: `url(${wpPath}/wall4.png)`, backgroundSize: "cover" }}></div>,
     },
     {
       id: 5,
       value: 5,
-      item: <div className="w-full h-8 rounded" style={{backgroundImage: `url(${wpPath}/wall5.png)`, backgroundSize: "cover"}}></div>,
+      item: <div className="w-full h-8 rounded" style={{ backgroundImage: `url(${wpPath}/wall5.png)`, backgroundSize: "cover" }}></div>,
     },
     {
       id: 6,
       value: 6,
-      item: <div className="w-full h-8 rounded" style={{backgroundImage: `url(${wpPath}/wall6.png)`, backgroundSize: "cover"}}></div>,
+      item: <div className="w-full h-8 rounded" style={{ backgroundImage: `url(${wpPath}/wall6.png)`, backgroundSize: "cover" }}></div>,
     },
     {
       id: 7,
       value: 7,
-      item: <div className="w-full h-8 rounded" style={{backgroundImage: `url(${wpPath}/wall7.png)`, backgroundSize: "cover"}}></div>,
+      item: <div className="w-full h-8 rounded" style={{ backgroundImage: `url(${wpPath}/wall7.png)`, backgroundSize: "cover" }}></div>,
     },
   ];
 
@@ -383,7 +383,13 @@ export default function LoggedInHeader({
 
   return (
     <div
-      className={`${headerStyle} z-50 px-2 md:px-0 py-2 md:py-6 bg-transparent`}
+      className={cn(
+        headerStyle,
+        "z-50 px-2 md:px-0 py-2 md:py-6",
+        userDetails?.wallpaper && userDetails?.wallpaper?.value != 0
+          ? "bg-transparent"
+          : "bg-df-bg-color"
+      )}
       style={{ right: isThemePanelOpen && !isMobile ? '320px' : '0' }}
     >
       <div className="shadow-df-section-card-shadow max-w-[890px] p-3 border border-card-border md:!p-4 rounded-2xl bg-df-header-bg-color mx-auto flex justify-between items-center">

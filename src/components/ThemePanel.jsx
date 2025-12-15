@@ -127,7 +127,15 @@ const ThemePanel = ({
       ctx.drawImage(img, 0, 0, 1920, 1080);
 
       const resizedBlob = await new Promise((resolve) => {
-        canvas.toBlob(resolve, file.type.includes('png') ? 'image/png' : 'image/jpeg', 0.9);
+        let mimeType = 'image/jpeg'; // default
+        if (file.type.includes('png')) {
+          mimeType = 'image/png';
+        } else if (file.type.includes('gif')) {
+          mimeType = 'image/gif';
+        } else if (file.type.includes('jpeg') || file.type.includes('jpg')) {
+          mimeType = 'image/jpeg';
+        }
+        canvas.toBlob(resolve, mimeType, 0.9);
       });
 
       const fileToCompress = new File([resizedBlob], file.name, { type: resizedBlob.type });
@@ -174,7 +182,7 @@ const ThemePanel = ({
 
   const renderContent = (isMobile) => (
     <Tabs defaultValue="layouts" className="w-full h-full flex flex-col">
-      <div className={`sticky top-0 z-50 bg-background px-6 ${isMobile ? 'pb-2' : 'pt-4 pb-2'} border-b border-border/30`}>
+      <div className={`sticky top-0 z-50 px-6 ${isMobile ? 'pb-2' : 'pt-4 pb-2'} border-b border-border/30`}>
         <TabsList className="w-full bg-transparent p-0 h-auto gap-6 justify-start">
           <TabsTrigger
             value="layouts"
@@ -252,7 +260,7 @@ const ThemePanel = ({
               <span className="text-sm font-medium">Light Mode</span>
             </div>
             <Switch
-              className="data-[state=unchecked]:bg-[#CFC4AF] data-[state=checked]:bg-df-orange-color"
+              className="data-[state=unchecked]:bg-[#CFC4AF] data-[state=checked]:bg-df-orange-color "
               checked={theme === 'dark' || theme === 1}
               onCheckedChange={(checked) => changeTheme(checked ? 1 : 0)}
               data-testid={isMobile ? "switch-wallpaper-mode-mobile" : "switch-wallpaper-mode"}

@@ -105,7 +105,6 @@ export default function Index() {
       setIsUserDetailsFromCache(true);
     }
   }, []);
-  console.log(userDetails?.wallpaper && userDetails?.wallpaper?.value != 0);
   return (
     <main className={cn(
       "min-h-screen",

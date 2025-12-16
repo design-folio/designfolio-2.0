@@ -22,12 +22,13 @@ import { PencilIcon } from "lucide-react";
 import MemoResume from "./icons/Resume";
 import MemoSocial from "./icons/Social";
 import MemoOtherlinks from "./icons/Otherlinks";
+import { cn } from "@/lib/utils";
 
 export default function Others({ openModal, userDetails, edit }) {
   const { resume } = userDetails || {};
   return (
     <div
-      className={` flex flex-col gap-8 bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words`}
+      className={cn(" flex flex-col gap-8 bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words")}
     >
       {(!!resume || edit) && (
         <div>

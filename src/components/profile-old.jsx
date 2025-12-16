@@ -7,6 +7,7 @@ import EditIcon from "../../public/assets/svgs/edit.svg";
 import Link from "next/link";
 import Text from "./text";
 import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
+import { cn } from "@/lib/utils";
 
 export default function Profile({
   preview = false,
@@ -46,7 +47,7 @@ export default function Profile({
 
   return (
     <section
-      className={`bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words`}
+      className={cn("bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words")}
     >
       {preview && (
         <Link href={"/builder"}>

@@ -7,6 +7,7 @@ import Text from "./text";
 import AnalyticsChart from "./analyticsChart";
 import { useGlobalContext } from "@/context/globalContext";
 import MemoLeftArrow from "./icons/LeftArrow";
+import { cn } from "@/lib/utils";
 
 const containerVariants = {
   hidden: {},
@@ -37,7 +38,6 @@ function Analytics({ }) {
   const [uniqueVisits, setUniqueVisits] = useState(0);
 
   const { userDetails, userDetailLoading } = useGlobalContext();
-
   const handleBack = () => {
     router.push("/builder");
   };
@@ -54,7 +54,7 @@ function Analytics({ }) {
       animate="visible"
     >
       <motion.div variants={itemVariants}>
-        <section className="bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words">
+        <section className={cn("bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words")}>
           <div className="flex flex-col gap-4">
             <div className="flex items-center">
               <Button

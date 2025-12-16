@@ -54,6 +54,7 @@ export default function Works({
 
   return (
     <Section
+      wallpaper={userDetails?.wallpaper}
       title={"Work experience"}
       edit={edit}
       className="!w-fit !h-fit"

@@ -56,7 +56,7 @@ export default function Profile({
       transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
     >
       <Card
-        className="bg-df-section-card-bg-color backdrop-blur-sm border-0 rounded-[24px] overflow-hidden relative"
+        className={cn("bg-df-section-card-bg-color backdrop-blur-sm border-0 rounded-[24px] overflow-hidden relative")}
         style={{
           boxShadow:
             "0 0 0 1px rgba(0,0,0,0.03), 0 0 40px rgba(0,0,0,0.015)",

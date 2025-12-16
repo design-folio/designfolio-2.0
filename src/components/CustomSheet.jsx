@@ -1,0 +1,68 @@
+import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { cn } from "@/lib/utils";
+
+const CustomSheet = ({
+  open,
+  onClose,
+  children,
+  width = '320px',
+  className = "",
+  showOverlay = false,
+  template = null
+}) => {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Push layout by adding margin to body
+  useEffect(() => {
+    const body = document.body;
+    body.style.transition = 'margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+
+    if (open) {
+      body.style.marginRight = width;
+    } else {
+      body.style.marginRight = '0px';
+    }
+
+    return () => {
+      body.style.marginRight = '0px';
+      body.style.transition = '';
+    };
+  }, [open, width]);
+
+  if (!mounted) return null;
+
+  return createPortal(
+    <>
+      {/* Overlay - Visual only, no click to close */}
+      {showOverlay && (
+        <div
+          className={cn(
+            "fixed inset-0 bg-black/20 z-40 transition-opacity duration-300 pointer-events-none",
+            open ? "opacity-100 visible" : "opacity-0 invisible"
+          )}
+        />
+      )}
+
+      {/* Main Panel */}
+      <div
+        className={cn(
+          "fixed right-0 top-0 h-full bg-white dark:bg-background border-l border-border transition-transform duration-300 z-50 shadow-xl",
+          open ? "translate-x-0" : "translate-x-full",
+          className
+        )}
+        style={{ width }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {children}
+      </div>
+    </>,
+    document.body
+  );
+};
+
+export default CustomSheet;

@@ -7,6 +7,7 @@ import PlusIcon from "../../public/assets/svgs/plus.svg";
 export default function Tools({ userDetails, openModal, edit }) {
   return (
     <Section
+      wallpaper={userDetails?.wallpaper}
       title={"My toolbox"}
       onClick={() => openModal(modals.tools)}
       edit={edit}

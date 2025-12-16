@@ -78,7 +78,7 @@ export default function Projects({
   };
   return (
     <div ref={projectRef}>
-      <Section title={"My works"}>
+      <Section title={"My works"} wallpaper={userDetails?.wallpaper}>
         <SortableContainerElement
           onSortEnd={onSortEnd}
           onSortStart={onSortStart}
@@ -106,11 +106,10 @@ export default function Projects({
             {edit &&
               (userDetails?.pro || userDetails?.projects.length < 2 ? (
                 <AddCard
-                  title={`${
-                    userDetails?.projects?.length === 0
+                  title={`${userDetails?.projects?.length === 0
                       ? "Upload your first case study"
                       : "Add case study"
-                  }`}
+                    }`}
                   subTitle="Show off your best work."
                   first={userDetails?.projects?.length !== 0}
                   buttonTitle="Add case study"

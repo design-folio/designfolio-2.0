@@ -15,7 +15,7 @@ const Minimal = ({ userDetails, edit }) => {
     setCursor(userDetails?.cursor ? userDetails?.cursor : 0);
   }, []);
   return (
-    <div className={cn("min-h-screen bg-background text-foreground rounded-2xl my-8", userDetails?.wallpaper && userDetails?.wallpaper?.value != 0 ? "my-8" : "")}>
+    <div className={cn("min-h-screen bg-background text-foreground rounded-2xl my-8", userDetails?.wallpaper && userDetails?.wallpaper?.value != 0 ? "my-8 bg-[#f6f2ef]/95 dark:bg-[#13151a]/95  backdrop-blur-sm" : "")}>
       <div className="fixed top-8 left-8 z-50">{/* <ThemeToggle /> */}</div>
       <div className="container max-w-3xl mx-auto px-4">
         <section id="hero">

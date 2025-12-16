@@ -2,6 +2,8 @@ import React from "react";
 import Text from "./text";
 import { PencilIcon } from "lucide-react";
 import { Button } from "./ui/buttonNew";
+import { cn } from "@/lib/utils";
+
 
 
 export default function Section({
@@ -11,10 +13,12 @@ export default function Section({
   onClick,
   edit,
   btnType = "secondary",
+  wallpaper,
 }) {
+
   return (
     <div
-      className={`bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words`}
+      className={cn("bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words", wallpaper && wallpaper?.value != 0 && "bg-white/95 dark:bg-[#1d1f27]/95  backdrop-blur-sm")}
     >
       <div className="flex items-center justify-between">
         <Text

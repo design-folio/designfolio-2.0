@@ -47,7 +47,7 @@ export default function Profile({
 
   return (
     <section
-      className={cn("bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words", userDetails?.wallpaper && userDetails?.wallpaper?.value != 0 && "bg-white/95 dark:bg-[#1d1f27]/95  backdrop-blur-sm")}
+      className={cn("bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words")}
     >
       {preview && (
         <Link href={"/builder"}>

@@ -28,7 +28,7 @@ export default function Others({ openModal, userDetails, edit }) {
   const { resume } = userDetails || {};
   return (
     <div
-      className={cn(" flex flex-col gap-8 bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words", userDetails?.wallpaper && userDetails?.wallpaper?.value != 0 && "bg-white/95 dark:bg-[#1d1f27]/95  backdrop-blur-sm")}
+      className={cn(" flex flex-col gap-8 bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words")}
     >
       {(!!resume || edit) && (
         <div>

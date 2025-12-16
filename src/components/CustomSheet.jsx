@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { cn } from "@/lib/utils";
 
@@ -34,47 +34,17 @@ const CustomSheet = ({
     };
   }, [open, width]);
 
-  // Simple: disable page scroll when sheet is open
-  // Re-apply when template changes (template prop tracks template changes)
-  // Use useLayoutEffect to run synchronously before paint
-  useLayoutEffect(() => {
-    const body = document.body;
-
-    if (open) {
-      // Always set to hidden when open, regardless of current value
-      body.style.overflow = 'hidden';
-    } else {
-      body.style.overflow = '';
-    }
-  }, [open, template]);
-
-  // Additional safeguard: ensure overflow stays hidden during re-renders when open
-  useEffect(() => {
-    if (!open) return;
-
-    const body = document.body;
-    // Double-check after a brief delay to catch any code that removes it
-    const timeout = setTimeout(() => {
-      if (body.style.overflow !== 'hidden') {
-        body.style.overflow = 'hidden';
-      }
-    }, 0);
-
-    return () => clearTimeout(timeout);
-  }, [open, template]);
-
   if (!mounted) return null;
 
   return createPortal(
     <>
-      {/* Overlay - Click to close (Only if showOverlay is true) */}
+      {/* Overlay - Visual only, no click to close */}
       {showOverlay && (
         <div
           className={cn(
-            "fixed inset-0 bg-black/20 z-40 transition-opacity duration-300",
-            open ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
+            "fixed inset-0 bg-black/20 z-40 transition-opacity duration-300 pointer-events-none",
+            open ? "opacity-100 visible" : "opacity-0 invisible"
           )}
-          onClick={onClose}
         />
       )}
 
@@ -86,6 +56,7 @@ const CustomSheet = ({
           className
         )}
         style={{ width }}
+        onClick={(e) => e.stopPropagation()}
       >
         {children}
       </div>

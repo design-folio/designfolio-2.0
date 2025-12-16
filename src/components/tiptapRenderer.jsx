@@ -17,8 +17,10 @@ import { FigmaExtension } from './tiptap/FigmaExtension';
 import { LinkNode } from './tiptap/LinkExtension';
 import { YoutubeNode } from './tiptap/YoutubeExtension';
 import { ResizableImage } from './tiptap/ResizableImage';
+import { cn } from '@/lib/utils';
 
 const TiptapRenderer = ({ content }) => {
+  const { userDetails } = useGlobalContext();
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
@@ -106,7 +108,7 @@ const TiptapRenderer = ({ content }) => {
   });
 
   return (
-    <div className="bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words project-editor">
+    <div className={cn("bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words project-editor", userDetails?.wallpaper && userDetails?.wallpaper?.value != 0 && "bg-white/95 dark:bg-[#1d1f27]/95  backdrop-blur-sm")}>
       <EditorContent editor={editor} />
     </div>
   );

@@ -14,6 +14,7 @@ import AddItem from "./addItem";
 import MemoTestimonial from "./icons/Testimonial";
 import { useTheme } from "next-themes";
 import Text from "./text";
+import { cn } from "@/lib/utils";
 
 export default function Reviews({ edit = false, userDetails, openModal }) {
   const reviews = userDetails?.reviews || [];
@@ -25,7 +26,7 @@ export default function Reviews({ edit = false, userDetails, openModal }) {
       transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1], delay: 0.3 }}
     >
       <Card
-        className="bg-df-section-card-bg-color backdrop-blur-sm border-0 rounded-2xl p-4 lg:p-8"
+        className={cn("bg-df-section-card-bg-color backdrop-blur-sm border-0 rounded-2xl p-4 lg:p-8", userDetails?.wallpaper && userDetails?.wallpaper?.value != 0 && "bg-white/95 dark:bg-[#1d1f27]/95  backdrop-blur-sm")}
         style={{
           boxShadow:
             "0 0 0 1px rgba(0,0,0,0.03), 0 0 40px rgba(0,0,0,0.015)",

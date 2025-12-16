@@ -2817,10 +2817,10 @@
 }
 
 [data-theme="dark"] .paymentDescription,
-.paymentDetailLabel,
-.paymentDetailValue,
-.paymentAmount,
-.paymentDate {
+[data-theme="dark"] .paymentDetailLabel,
+[data-theme="dark"] .paymentDetailValue,
+[data-theme="dark"] .paymentAmount,
+[data-theme="dark"] .paymentDate {
   color: #b1b5c3;
 }
 

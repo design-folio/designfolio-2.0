@@ -6,6 +6,7 @@ import queryClient from "@/network/queryClient";
 import { useQuery } from "@tanstack/react-query";
 import Cookies from "js-cookie";
 import { useTheme } from "next-themes";
+import { popovers } from "@/lib/constant";
 import React, {
   createContext,
   useState,
@@ -80,7 +81,9 @@ export const GlobalProvider = ({ children }) => {
     };
 
     const handleScroll = () => {
-      setPopoverMenu(null);
+      if (popoverMenu !== popovers.themeMenu) {
+        setPopoverMenu(null);
+      }
     };
 
     if (showModal || popoverMenu) {

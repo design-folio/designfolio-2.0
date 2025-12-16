@@ -17,7 +17,7 @@ export default function Home({ dfToken }) {
       <TrustedBySection />
       <FeaturesSection />
       <FeaturesShowcase />
-      <AiToolsSection />
+      {/* <AiToolsSection /> */}
       <Footer dfToken={dfToken} />
 
       <FooterBottom />

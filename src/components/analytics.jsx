@@ -54,7 +54,7 @@ function Analytics({ }) {
       animate="visible"
     >
       <motion.div variants={itemVariants}>
-        <section className={cn("bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words", userDetails?.wallpaper && userDetails?.wallpaper?.value != 0 && "bg-white/95 dark:bg-[#1d1f27]/95  backdrop-blur-sm")}>
+        <section className={cn("bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words")}>
           <div className="flex flex-col gap-4">
             <div className="flex items-center">
               <Button

@@ -234,10 +234,10 @@ const Portfolio = ({ userDetails, edit }) => {
   };
 
   return (
-    <div className={cn("min-h-screen bg-background text-foreground transition-colors duration-300", userDetails?.wallpaper && userDetails?.wallpaper?.value != 0 && "max-w-[890px] mx-auto rounded-2xl mb-8 bg-white/95 dark:bg-[#1d1f27]/95  backdrop-blur-sm")}>
+    <div className={cn("min-h-screen bg-background text-foreground transition-colors duration-300", userDetails?.wallpaper && userDetails?.wallpaper?.value != 0 && "max-w-[890px] mx-auto rounded-2xl mb-8")}>
       {/* Header */}
 
-      <header className="border-b border-secondary-border py-6 bg-background transition-colors duration-300 rounded-t-2xl">
+      <header className={cn("border-b border-secondary-border py-6 bg-background transition-colors duration-300 rounded-t-2xl",)}>
         <div className="container max-w-3xl mx-auto px-4">
           <motion.div
             className="flex items-center justify-between"

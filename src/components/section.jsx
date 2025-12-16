@@ -18,7 +18,7 @@ export default function Section({
 
   return (
     <div
-      className={cn("bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words", wallpaper && wallpaper?.value != 0 && "bg-white/95 dark:bg-[#1d1f27]/95  backdrop-blur-sm")}
+      className={cn("bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words")}
     >
       <div className="flex items-center justify-between">
         <Text

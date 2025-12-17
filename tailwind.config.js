@@ -402,6 +402,7 @@ module.exports = {
         "selected-cursor-shadow": "var(--selected-cursor-shadow)",
         "default-cursor-shadow": "var(--default-cursor-shadow)",
         tools: "0px 0px 8.8px 3px rgba(0, 0, 0, 0.02)",
+        "bottom-nav-floating": "0 6px 20px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.04)",
       },
       fontSize: {
         h1: "61px",

@@ -20,7 +20,6 @@ import { ResizableImage } from './tiptap/ResizableImage';
 import { cn } from '@/lib/utils';
 
 const TiptapRenderer = ({ content }) => {
-  const { userDetails } = useGlobalContext();
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [

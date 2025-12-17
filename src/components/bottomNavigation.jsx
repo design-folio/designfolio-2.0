@@ -89,13 +89,13 @@ export default function BottomNavigation({
 
   return (
     <motion.div
-      className={`bg-gradient-to-b from-transparent px-2 to-df-bg-color fixed bottom-0 left-0 right-0 h-[75px] lg:h-[100px] overflow-hidden z-10 ${className}`}
+      className={`bottom-nav-gradient px-2 fixed bottom-0 left-0 right-0 h-[60px] lg:h-[80px] overflow-hidden z-10 ${className}`}
       animate={{ y: isVisible ? 0 : 100 }}
       transition={{ duration: 0.25, ease: "easeInOut" }}
     >
       {!router?.asPath?.includes("project") && (
         <motion.div
-          className="bg-df-section-card-bg-color border border-bottom-navigation-border rounded-[24px] shadow-bottom p-1 w-fit max-w-[400px] md:max-w-[450px] m-auto flex items-center relative gap-4"
+          className="bg-df-section-card-bg-color border border-bottom-navigation-border rounded-[24px] shadow-bottom-nav-floating p-1 w-fit max-w-[400px] md:max-w-[450px] m-auto flex items-center relative gap-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 0.5 }}

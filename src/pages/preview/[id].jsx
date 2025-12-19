@@ -113,7 +113,7 @@ export default function Index({ initialUserDetails }) {
       {wallpaperUrl && (
         <div
           key={`wallpaper-${wallpaperUrl}`}
-          suppressHydrationWarning
+          className="wallpaper-transition"
           style={{
             position: 'fixed',
             top: 0,

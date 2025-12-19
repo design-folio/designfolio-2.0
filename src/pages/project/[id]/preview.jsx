@@ -8,20 +8,14 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { getWallpaperUrl } from "@/lib/wallpaper";
 
 export default function Index() {
-  const { setTheme, theme, resolvedTheme } = useTheme();
+  const { setTheme } = useTheme();
   const router = useRouter();
-  const { setCursor } = useGlobalContext();
+  const { setCursor, setWallpaper, wallpaperUrl } = useGlobalContext();
   const [projectDetails, setProjectDetails] = useState(null);
   const [isProtected, setIsProtected] = useState(false);
 
-  const wp = projectDetails?.project?.wallpaper;
-  const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
-  const wallpaperUrl = (wpValue !== undefined && wpValue !== null && wpValue !== 0)
-    ? getWallpaperUrl(wpValue, resolvedTheme || theme)
-    : null;
 
   const { mutate: refetchProjectDetail } = useMutation({
     mutationKey: [`project-editor-${router.query.id}`],
@@ -33,6 +27,7 @@ export default function Index() {
       setProjectDetails(data);
       setCursor(data?.project?.cursor ? data?.project?.theme : 0);
       setTheme(data?.project?.theme == 1 ? "dark" : "light");
+      setWallpaper(data?.project?.wallpaper);
       setIsProtected(data?.isProtected);
     },
     cacheTime: 300000, // Cache for 5 minutes (300,000 milliseconds)
@@ -41,7 +36,6 @@ export default function Index() {
   useEffect(() => {
     refetchProjectDetail();
   }, [refetchProjectDetail]);
-
   return (
     <>
       {wallpaperUrl && (
@@ -64,7 +58,7 @@ export default function Index() {
       )}
       <main className={cn(
         "min-h-screen",
-        wallpaperUrl ? "bg-transparent" : "bg-df-bg-color"
+        // wallpaperUrl ? "bg-transparent" : "bg-df-bg-color"
       )}>
         {projectDetails && (
           <div className={`max-w-[890px] mx-auto py-[40px] px-2 md:px-4 lg:px-0`}>

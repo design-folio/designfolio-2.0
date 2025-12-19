@@ -11,18 +11,16 @@ import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import MadeWithDesignfolio from "../../../../public/assets/svgs/madewithdesignfolio.svg";
-import { getWallpaperUrl } from "@/lib/wallpaper";
 import { cn } from "@/lib/utils";
 
 export default function Index({ data }) {
   const router = useRouter();
-  const { setTheme, theme, resolvedTheme } = useTheme();
-  const { setCursor } = useGlobalContext();
+  const { setTheme } = useTheme();
+  const { setCursor, setWallpaper, wallpaperUrl } = useGlobalContext();
   const [isProtected, setIsProtected] = useState(data.isProtected);
   const [projectDetails, setProjectDetails] = useState(null);
-  const wp = projectDetails?.project?.wallpaper;
-  const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
-  const wallpaperUrl = getWallpaperUrl(wpValue !== undefined ? wpValue : 0, resolvedTheme || theme);
+
+
 
   const { mutate: refetchProjectDetail } = useMutation({
     mutationKey: [`project-${router.query.id}`],
@@ -34,6 +32,7 @@ export default function Index({ data }) {
       setProjectDetails(data);
       setCursor(data?.project?.cursor ? data?.project?.cursor : 0);
       setTheme(data?.project?.theme == 1 ? "dark" : "light");
+      setWallpaper(data?.project?.wallpaper);
       setIsProtected(data?.isProtected);
     },
     initialData: data,
@@ -42,9 +41,12 @@ export default function Index({ data }) {
   });
 
   useEffect(() => {
+    // Initialize wallpaper from initial data
+    if (data?.project?.wallpaper) {
+      setWallpaper(data.project.wallpaper);
+    }
     refetchProjectDetail();
-  }, [refetchProjectDetail]);
-
+  }, [refetchProjectDetail, data?.project?.wallpaper, setWallpaper]);
   return (
     <>
       <Seo
@@ -58,6 +60,7 @@ export default function Index({ data }) {
       />
       {wallpaperUrl && (
         <div
+          className="wallpaper-transition"
           suppressHydrationWarning
           style={{
             position: 'fixed',

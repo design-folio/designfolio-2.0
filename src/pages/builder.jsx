@@ -130,11 +130,7 @@ export default function Index() {
 
   return (
     <main className={cn(
-      "min-h-screen",
-      userDetails?.wallpaper && userDetails?.wallpaper?.value != 0
-        ? "bg-transparent"
-        : "bg-df-bg-color"
-    )}>
+      "min-h-screen")}>
       <div
         className={` mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0 ${userDetails?.template != 3 && "max-w-[890px]"
           }`}

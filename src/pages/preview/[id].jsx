@@ -2,7 +2,7 @@ import { _getUser } from "@/network/get-request";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useTheme } from "next-themes";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import Seo from "@/components/seo";
 import { capitalizeWords } from "@/lib/capitalizeText";
 import Template1 from "@/components/template";
@@ -20,8 +20,11 @@ export default function Index({ initialUserDetails }) {
   const router = useRouter();
   const { data: userDetails } = useQuery({
     queryKey: [`portfolio-${router.query.id}`],
-    queryFn: _getUser(router.query.id),
-    initialData: initialUserDetails,
+    queryFn: async () => {
+      const response = await _getUser(router.query.id);
+      return response?.data?.user;
+    },
+    placeholderData: initialUserDetails,
   });
   const { isClient } = useClient();
 
@@ -33,18 +36,10 @@ export default function Index({ initialUserDetails }) {
 
   const wp = userDetails?.wallpaper;
   const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
-
-  // Use useMemo to recalculate wallpaper URL when theme or wallpaper changes
-  const wallpaperUrl = useMemo(() => {
-    if (wpValue === undefined || wpValue === null || wpValue === 0) {
-      return null;
-    }
-    const currentTheme = isClient && resolvedTheme
-      ? resolvedTheme
-      : theme || (userDetails?.theme == 1 ? "dark" : "light");
-    const url = getWallpaperUrl(wpValue, currentTheme);
-    return url;
-  }, [wpValue, resolvedTheme, theme, userDetails?.theme, isClient]);
+  const currentTheme = resolvedTheme || theme || (userDetails?.theme == 1 ? "dark" : "light");
+  const wallpaperUrl = wpValue && wpValue !== 0
+    ? getWallpaperUrl(wpValue, currentTheme)
+    : null;
   const renderTemplate = () => {
     switch (userDetails?.template) {
       case 0:
@@ -117,7 +112,7 @@ export default function Index({ initialUserDetails }) {
       />
       {wallpaperUrl && (
         <div
-          key={wallpaperUrl}
+          key={`wallpaper-${wallpaperUrl}`}
           suppressHydrationWarning
           style={{
             position: 'fixed',
@@ -136,9 +131,7 @@ export default function Index({ initialUserDetails }) {
       )}
       <main className={cn(
         "min-h-screen",
-        userDetails?.wallpaper && userDetails?.wallpaper?.value != 0
-          ? "bg-transparent"
-          : "bg-df-bg-color"
+        wallpaperUrl ? "bg-transparent" : "bg-df-bg-color"
       )}>
         <div
           className={` mx-auto px-2 md:px-4 lg:px-0 ${userDetails?.template != 3 && "max-w-[890px]"

@@ -1,5 +1,5 @@
 import { setCursorvalue } from "@/lib/cursor";
-import { setWallpaperValue } from "@/lib/wallpaper";
+import { setWallpaperValue, getWallpaperUrl } from "@/lib/wallpaper";
 import { _getDomainDetails, _getUserDetails } from "@/network/get-request";
 import { _updateUser } from "@/network/post-request";
 import queryClient from "@/network/queryClient";
@@ -13,6 +13,7 @@ import React, {
   useContext,
   useEffect,
   useRef,
+  useMemo,
 } from "react";
 
 // Create a new context instance
@@ -153,6 +154,17 @@ export const GlobalProvider = ({ children }) => {
 
   useEffect(() => {
     setWallpaperValue(wallpaper, resolvedTheme || theme);
+  }, [wallpaper, resolvedTheme, theme]);
+
+  // Compute wallpaper URL centrally - handles object and primitive values
+  const wallpaperUrl = useMemo(() => {
+    const wp = wallpaper;
+    const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
+    const currentTheme = resolvedTheme || theme;
+    
+    return wpValue && wpValue !== 0
+      ? getWallpaperUrl(wpValue, currentTheme)
+      : null;
   }, [wallpaper, resolvedTheme, theme]);
 
   const fetchDomainDetails = () => {
@@ -333,6 +345,7 @@ export const GlobalProvider = ({ children }) => {
         wallpaper,
         setWallpaper,
         changeWallpaper,
+        wallpaperUrl,
         isLoadingTemplate,
       }}
     >

@@ -46,13 +46,17 @@ export default function Template2({ userDetails, preview = false }) {
     lastName
   } = userDetails || {};
   const router = useRouter();
-  const { projectRef } = useGlobalContext();
+  const { projectRef, setCursor } = useGlobalContext();
 
   const [activeStep, setActiveStep] = useState(1);
 
   const portfolioCheck =
     portfolios &&
     !Object.values(portfolios).every((portfolio) => portfolio == "");
+
+  useEffect(() => {
+    setCursor(userDetails?.cursor ? userDetails?.cursor : 0);
+  }, [userDetails?.cursor, setCursor]);
 
   useEffect(() => {
     if (activeStep === 6 && projects && projects.length === 0) {

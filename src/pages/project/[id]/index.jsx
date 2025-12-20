@@ -1,20 +1,19 @@
 import BlockRenderer from "@/components/blockRenderer";
-import TiptapRenderer from "@/components/tiptapRenderer";
 import ProjectInfo from "@/components/projectInfo";
 import ProjectPassword from "@/components/projectPassword";
 import Seo from "@/components/seo";
-import WallpaperBackground from "@/components/WallpaperBackground";
+import TiptapRenderer from "@/components/tiptapRenderer";
 import { useGlobalContext } from "@/context/globalContext";
+import { containerVariants, itemVariants } from "@/lib/animationVariants";
 import { capitalizeWords } from "@/lib/capitalizeText";
+import { cn } from "@/lib/utils";
 import { _getProjectDetails } from "@/network/get-request";
 import { useQuery } from "@tanstack/react-query";
+import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import MadeWithDesignfolio from "../../../../public/assets/svgs/madewithdesignfolio.svg";
-import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
-import { containerVariants, itemVariants } from "@/lib/animationVariants";
 
 export default function Index({ data }) {
   const router = useRouter();
@@ -120,7 +119,6 @@ export default function Index({ data }) {
         }
         url={`https://${project?.username || data?.project?.username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`}
       />
-      <WallpaperBackground wallpaperUrl={wallpaperUrl} />
       <main className={cn(
         "min-h-screen",
         wpValue && wpValue !== 0

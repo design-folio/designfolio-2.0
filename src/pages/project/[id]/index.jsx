@@ -3,6 +3,7 @@ import TiptapRenderer from "@/components/tiptapRenderer";
 import ProjectInfo from "@/components/projectInfo";
 import ProjectPassword from "@/components/projectPassword";
 import Seo from "@/components/seo";
+import WallpaperBackground from "@/components/WallpaperBackground";
 import { useGlobalContext } from "@/context/globalContext";
 import { capitalizeWords } from "@/lib/capitalizeText";
 import { _getProjectDetails } from "@/network/get-request";
@@ -58,25 +59,7 @@ export default function Index({ data }) {
         }
         url={`https://${data?.project?.username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`}
       />
-      {wallpaperUrl && (
-        <div
-          className="wallpaper-transition"
-          suppressHydrationWarning
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100vw',
-            height: '100vh',
-            zIndex: -1,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            backgroundImage: `url(${wallpaperUrl})`,
-            pointerEvents: 'none'
-          }}
-        />
-      )}
+      <WallpaperBackground wallpaperUrl={wallpaperUrl} />
       <main className={cn(
         "min-h-screen",
         projectDetails?.project?.wallpaper && projectDetails?.project?.wallpaper?.value != 0

@@ -133,10 +133,6 @@ export default function Index({ initialUserDetails }) {
         imageUrl={finalUserDetails?.avatar?.url ?? "/assets/png/seo-profile.png"}
         url={`https://${finalUserDetails?.username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`}
       />
-      <WallpaperBackground
-        wallpaperUrl={wallpaperUrl}
-        key={`wallpaper-${wallpaperUrl}`}
-      />
       <main className={cn(
         "min-h-screen",
         wallpaperUrl ? "bg-transparent" : "bg-df-bg-color"

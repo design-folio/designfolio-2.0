@@ -2,7 +2,7 @@ import { _getUser } from "@/network/get-request";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useTheme } from "next-themes";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import Seo from "@/components/seo";
 import WallpaperBackground from "@/components/WallpaperBackground";
 import { capitalizeWords } from "@/lib/capitalizeText";
@@ -15,10 +15,16 @@ import Portfolio from "@/components/comp/Portfolio";
 import MadeWithDesignfolio from "../../../public/assets/svgs/madewithdesignfolio.svg";
 import { getWallpaperUrl } from "@/lib/wallpaper";
 import { cn } from "@/lib/utils";
+import { useGlobalContext } from "@/context/globalContext";
 
 export default function Index({ initialUserDetails }) {
   const { setTheme, theme, resolvedTheme } = useTheme();
   const router = useRouter();
+  const { isClient } = useClient();
+  const {
+    setWallpaper,
+  } = useGlobalContext();
+
   const { data: userDetails } = useQuery({
     queryKey: [`portfolio-${router.query.id}`],
     queryFn: async () => {
@@ -26,32 +32,48 @@ export default function Index({ initialUserDetails }) {
       return response?.data?.user;
     },
     placeholderData: initialUserDetails,
+    enabled: !!router.query.id,
+    cacheTime: 300000,
+    staleTime: 60000,
   });
-  const { isClient } = useClient();
 
+  // Use fetched data or initialUserDetails (from SSR)
+  const finalUserDetails = userDetails || initialUserDetails;
+
+  // Apply theme and wallpaper from finalUserDetails
   useEffect(() => {
-    if (userDetails) {
-      setTheme(userDetails?.theme == 1 ? "dark" : "light");
-    }
-  }, [userDetails, setTheme]);
+    if (!finalUserDetails) return;
 
-  const wp = userDetails?.wallpaper;
+    // Set theme
+    if (finalUserDetails?.theme !== undefined) {
+      setTheme(finalUserDetails.theme == 1 ? "dark" : "light");
+    }
+
+    // Set wallpaper
+    if (finalUserDetails?.wallpaper !== undefined) {
+      const wp = finalUserDetails.wallpaper;
+      const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
+      setWallpaper(wpValue !== undefined ? wpValue : 0);
+    }
+  }, [finalUserDetails, setTheme, setWallpaper]);
+
+  const wp = finalUserDetails?.wallpaper;
   const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
-  const currentTheme = resolvedTheme || theme || (userDetails?.theme == 1 ? "dark" : "light");
+  const currentTheme = resolvedTheme || theme || (finalUserDetails?.theme == 1 ? "dark" : "light");
   const wallpaperUrl = wpValue && wpValue !== 0
     ? getWallpaperUrl(wpValue, currentTheme)
     : null;
   const renderTemplate = () => {
-    switch (userDetails?.template) {
+    switch (finalUserDetails?.template) {
       case 0:
-        return <Template1 userDetails={userDetails} />;
+        return <Template1 userDetails={finalUserDetails} />;
       case 1:
         return (
           <>
-            <Template2 userDetails={userDetails} />
-            {isClient && !userDetails?.pro && (
+            <Template2 userDetails={finalUserDetails} />
+            {isClient && !finalUserDetails?.pro && (
               <BottomNavigation
-                userDetails={userDetails}
+                userDetails={finalUserDetails}
                 className="bg-gradient-to-t from-transparent top-0 pt-5"
                 watermarkClassName="!top-7"
               />
@@ -62,8 +84,8 @@ export default function Index({ initialUserDetails }) {
       case 2:
         return (
           <>
-            <Minimal userDetails={userDetails} />
-            {!userDetails?.pro && (
+            <Minimal userDetails={finalUserDetails} />
+            {!finalUserDetails?.pro && (
               <div
                 className={`text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] xl:block cursor-pointer mb-[120px] lg:m-0`}
                 onClick={() =>
@@ -80,8 +102,8 @@ export default function Index({ initialUserDetails }) {
       case 3:
         return (
           <>
-            <Portfolio userDetails={userDetails} />
-            {!userDetails?.pro && (
+            <Portfolio userDetails={finalUserDetails} />
+            {!finalUserDetails?.pro && (
               <div
                 className={`text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] xl:block cursor-pointer mb-[120px] lg:m-0`}
                 onClick={() =>
@@ -97,19 +119,19 @@ export default function Index({ initialUserDetails }) {
         );
 
       default:
-        return <Template1 userDetails={userDetails} />;
+        return <Template1 userDetails={finalUserDetails} />;
     }
   };
 
   return (
     <>
       <Seo
-        title={`${userDetails?.firstName} ${userDetails?.lastName}`}
-        description={userDetails?.introduction}
-        keywords={`${userDetails?.skillsString}`}
-        author={`${userDetails?.firstName} ${userDetails?.lastName}`}
-        imageUrl={userDetails?.avatar?.url ?? "/assets/png/seo-profile.png"}
-        url={`https://${userDetails?.username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`}
+        title={`${finalUserDetails?.firstName} ${finalUserDetails?.lastName}`}
+        description={finalUserDetails?.introduction}
+        keywords={`${finalUserDetails?.skillsString}`}
+        author={`${finalUserDetails?.firstName} ${finalUserDetails?.lastName}`}
+        imageUrl={finalUserDetails?.avatar?.url ?? "/assets/png/seo-profile.png"}
+        url={`https://${finalUserDetails?.username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`}
       />
       <WallpaperBackground
         wallpaperUrl={wallpaperUrl}
@@ -120,10 +142,10 @@ export default function Index({ initialUserDetails }) {
         wallpaperUrl ? "bg-transparent" : "bg-df-bg-color"
       )}>
         <div
-          className={` mx-auto px-2 md:px-4 lg:px-0 ${userDetails?.template != 3 && "max-w-[890px]"
+          className={` mx-auto px-2 md:px-4 lg:px-0 ${finalUserDetails?.template != 3 && "max-w-[890px]"
             }`}
         >
-          {userDetails && renderTemplate()}
+          {finalUserDetails && renderTemplate()}
         </div>
       </main>
     </>

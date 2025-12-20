@@ -1,8 +1,10 @@
 import React from "react";
+import { motion } from "framer-motion";
 import ProjectInfo from "./projectInfo";
 import { useGlobalContext } from "@/context/globalContext";
 import BlockRenderer from "./blockRenderer";
 import TiptapRenderer from "./tiptapRenderer";
+import { containerVariants, itemVariants } from "@/lib/animationVariants";
 
 export default function ProjectPreview({ projectDetails }) {
   const { userDetails, showModal } = useGlobalContext();
@@ -12,22 +14,33 @@ export default function ProjectPreview({ projectDetails }) {
   const hasEditorJSContent = contentVersion === 1 && projectDetails?.project?.content;
 
   return (
-    <div className="flex-1 flex flex-col gap-3">
+    <motion.div
+      className="flex-1 flex flex-col gap-3"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
       {projectDetails && (
         <>
-          <ProjectInfo
-            projectDetails={projectDetails?.project}
-            userDetails={userDetails}
-            showModal={showModal}
-          />
+          <motion.div variants={itemVariants}>
+            <ProjectInfo
+              projectDetails={projectDetails?.project}
+              userDetails={userDetails}
+              showModal={showModal}
+            />
+          </motion.div>
           {hasTiptapContent && (
-            <TiptapRenderer content={projectDetails?.project?.tiptapContent} />
+            <motion.div variants={itemVariants}>
+              <TiptapRenderer content={projectDetails?.project?.tiptapContent} />
+            </motion.div>
           )}
           {hasEditorJSContent && (
-            <BlockRenderer editorJsData={projectDetails?.project?.content} />
+            <motion.div variants={itemVariants}>
+              <BlockRenderer editorJsData={projectDetails?.project?.content} />
+            </motion.div>
           )}
         </>
       )}
-    </div>
+    </motion.div>
   );
 }

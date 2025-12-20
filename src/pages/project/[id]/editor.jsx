@@ -1,17 +1,45 @@
 import Editor from "@/components/editor";
-import React, { useEffect, useState } from "react";
+import WallpaperBackground from "@/components/WallpaperBackground";
 import { useGlobalContext } from "@/context/globalContext";
 import { cn } from "@/lib/utils";
 import { _getProjectDetails } from "@/network/get-request";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useTheme } from "next-themes";
+import React, { useEffect, useRef, useState } from "react";
 
 export default function Index() {
   const router = useRouter();
   const { setTheme } = useTheme();
   const { userDetails, setCursor, setWallpaper, wallpaperUrl } = useGlobalContext();
   const [projectDetails, setProjectDetails] = useState(null);
+  const initializedRef = useRef(false);
+
+  const setProjectData = (project, isFromRefetch = false) => {
+    setProjectDetails({ project: project });
+
+    if (isFromRefetch) {
+      setTheme(project?.theme == 1 ? "dark" : "light");
+      setWallpaper(project?.wallpaper);
+    } else {
+      if (project?.theme !== undefined) {
+        setTheme(project.theme == 1 ? "dark" : "light");
+      } else if (userDetails?.theme !== undefined) {
+        setTheme(userDetails.theme == 1 ? "dark" : "light");
+      }
+
+      if (project?.wallpaper !== undefined) {
+        setWallpaper(project.wallpaper);
+      } else if (userDetails?.wallpaper !== undefined) {
+        setWallpaper(userDetails.wallpaper);
+      }
+    }
+
+    const cursor = project?.cursor != null
+      ? project.cursor
+      : (project?.theme != null ? project.theme : (userDetails?.cursor || 0));
+    setCursor(cursor);
+  };
 
   const { mutate: refetchProjectDetail } = useMutation({
     mutationKey: [`project-editor-${router.query.id}`],
@@ -20,44 +48,39 @@ export default function Index() {
       return response.data;
     },
     onSuccess: (data) => {
-      setProjectDetails(data);
-      setCursor(data?.project?.cursor ? data?.project?.cursor : 0);
-      setTheme(data?.project?.theme == 1 ? "dark" : "light");
-      setWallpaper(data?.project?.wallpaper);
+      setProjectData(data?.project, true);
     },
-    cacheTime: 300000, // Cache for 5 minutes (300,000 milliseconds)
-    staleTime: 60000, // Allow data to be considered stale after 1 minute (60,000 milliseconds)
+    cacheTime: 300000,
+    staleTime: 60000,
   });
 
   useEffect(() => {
-    if (router.query.id) {
-      refetchProjectDetail();
+    const projectId = router.query.id;
+    if (!projectId) return;
+
+    if (initializedRef.current && initializedRef.current !== projectId) {
+      initializedRef.current = false;
     }
-  }, [router.query.id]);
+
+    if (initializedRef.current) return;
+
+    const cachedProject = userDetails?.projects?.find(
+      (project) => project._id === projectId
+    );
+
+    if (cachedProject) {
+      setProjectData(cachedProject);
+      initializedRef.current = projectId;
+    } else {
+      refetchProjectDetail();
+      initializedRef.current = projectId;
+    }
+  }, [router.query.id, userDetails?.projects, refetchProjectDetail]);
 
   return (
     <>
-      {wallpaperUrl && (
-        <div
-          className="wallpaper-transition"
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100vw',
-            height: '100vh',
-            zIndex: -1,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            backgroundImage: `url(${wallpaperUrl})`,
-            pointerEvents: 'none'
-          }}
-        />
-      )}
-      <main className={cn(
-        "min-h-screen",
-      )}>
+      <WallpaperBackground wallpaperUrl={wallpaperUrl} />
+      <main className={cn("min-h-screen")}>
         <div
           className={`max-w-[890px] mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0`}
         >

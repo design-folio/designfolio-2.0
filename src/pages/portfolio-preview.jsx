@@ -18,8 +18,18 @@ export default function Index() {
     userDetails,
     projectRef,
     template,
+    setWallpaper,
   } = useGlobalContext();
   const router = useRouter();
+
+  // Restore wallpaper from userDetails when component mounts
+  useEffect(() => {
+    if (userDetails?.wallpaper !== undefined) {
+      const wp = userDetails.wallpaper;
+      const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
+      setWallpaper(wpValue !== undefined ? wpValue : 0);
+    }
+  }, [userDetails?.wallpaper, setWallpaper]);
 
   const renderTemplate = () => {
     switch (template) {

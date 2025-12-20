@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { useTheme } from "next-themes";
 import { useEffect } from "react";
 import Seo from "@/components/seo";
+import WallpaperBackground from "@/components/WallpaperBackground";
 import { capitalizeWords } from "@/lib/capitalizeText";
 import Template1 from "@/components/template";
 import Template2 from "@/components/template2";
@@ -110,25 +111,10 @@ export default function Index({ initialUserDetails }) {
         imageUrl={userDetails?.avatar?.url ?? "/assets/png/seo-profile.png"}
         url={`https://${userDetails?.username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`}
       />
-      {wallpaperUrl && (
-        <div
-          key={`wallpaper-${wallpaperUrl}`}
-          className="wallpaper-transition"
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100vw',
-            height: '100vh',
-            zIndex: -1,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            backgroundImage: `url(${wallpaperUrl})`,
-            pointerEvents: 'none'
-          }}
-        />
-      )}
+      <WallpaperBackground
+        wallpaperUrl={wallpaperUrl}
+        key={`wallpaper-${wallpaperUrl}`}
+      />
       <main className={cn(
         "min-h-screen",
         wallpaperUrl ? "bg-transparent" : "bg-df-bg-color"

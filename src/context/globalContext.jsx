@@ -273,8 +273,9 @@ export const GlobalProvider = ({ children }) => {
   const changeTheme = (theme) => {
     _updateUser({ theme: theme }).then((res) => {
       setTheme(theme == 1 ? "dark" : "light");
-      updateCache("userDetails", res?.data?.user);
-      setUserDetails(() => ({ ...userDetails, theme: theme }));
+      // Only update theme field in cache, not the whole user object
+      updateCache("userDetails", { theme: theme });
+      setUserDetails((prev) => ({ ...prev, theme: theme }));
     });
   };
 

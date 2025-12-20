@@ -1,5 +1,5 @@
 import { setCursorvalue } from "@/lib/cursor";
-import { setWallpaperValue } from "@/lib/wallpaper";
+import { setWallpaperValue, getWallpaperUrl } from "@/lib/wallpaper";
 import { _getDomainDetails, _getUserDetails } from "@/network/get-request";
 import { _updateUser } from "@/network/post-request";
 import queryClient from "@/network/queryClient";
@@ -13,6 +13,7 @@ import React, {
   useContext,
   useEffect,
   useRef,
+  useMemo,
 } from "react";
 
 // Create a new context instance
@@ -155,6 +156,17 @@ export const GlobalProvider = ({ children }) => {
     setWallpaperValue(wallpaper, resolvedTheme || theme);
   }, [wallpaper, resolvedTheme, theme]);
 
+  // Compute wallpaper URL centrally - handles object and primitive values
+  const wallpaperUrl = useMemo(() => {
+    const wp = wallpaper;
+    const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
+    const currentTheme = resolvedTheme || theme;
+
+    return wpValue && wpValue !== 0
+      ? getWallpaperUrl(wpValue, currentTheme)
+      : null;
+  }, [wallpaper, resolvedTheme, theme]);
+
   const fetchDomainDetails = () => {
     _getDomainDetails().then((res) => {
       setDomainDetails(res.data);
@@ -230,10 +242,15 @@ export const GlobalProvider = ({ children }) => {
       const wp = updatedUser?.wallpaper;
       const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
 
-      // Update local state and context
+      // Update local state and context - only update wallpaper field to prevent signed URL changes
       setWallpaper(wpValue || wallpaper);
-      updateCache("userDetails", updatedUser);
-      setUserDetails(updatedUser);
+      // Only update wallpaper in cache to prevent flickers from new signed URLs
+      updateCache("userDetails", { wallpaper: wp });
+      // Only update wallpaper field in userDetails, not the entire object
+      setUserDetails((prev) => ({
+        ...prev,
+        wallpaper: wp,
+      }));
     });
   };
 
@@ -256,8 +273,9 @@ export const GlobalProvider = ({ children }) => {
   const changeTheme = (theme) => {
     _updateUser({ theme: theme }).then((res) => {
       setTheme(theme == 1 ? "dark" : "light");
-      updateCache("userDetails", res?.data?.user);
-      setUserDetails(() => ({ ...userDetails, theme: theme }));
+      // Only update theme field in cache, not the whole user object
+      updateCache("userDetails", { theme: theme });
+      setUserDetails((prev) => ({ ...prev, theme: theme }));
     });
   };
 
@@ -333,6 +351,7 @@ export const GlobalProvider = ({ children }) => {
         wallpaper,
         setWallpaper,
         changeWallpaper,
+        wallpaperUrl,
         isLoadingTemplate,
       }}
     >

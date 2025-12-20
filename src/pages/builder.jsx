@@ -40,6 +40,7 @@ export default function Index() {
     taskPercentage,
     template,
     isLoadingTemplate,
+    setWallpaper,
   } = useGlobalContext();
   const { isClient } = useClient();
   const router = useRouter();
@@ -51,6 +52,15 @@ export default function Index() {
       setIsUserDetailsFromCache(true);
     }
   }, []);
+
+  // Restore wallpaper from userDetails when component mounts
+  useEffect(() => {
+    if (userDetails?.wallpaper !== undefined) {
+      const wp = userDetails.wallpaper;
+      const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
+      setWallpaper(wpValue !== undefined ? wpValue : 0);
+    }
+  }, [userDetails?.wallpaper, setWallpaper]);
 
   useEffect(() => {
     // Check if userDetails.skills exists and its length is 0

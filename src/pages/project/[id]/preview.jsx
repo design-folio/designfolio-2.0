@@ -1,71 +1,92 @@
 import ProjectPassword from "@/components/projectPassword";
 import ProjectPreview from "@/components/projectPreview";
+import WallpaperBackground from "@/components/WallpaperBackground";
 import { useGlobalContext } from "@/context/globalContext";
 import { cn } from "@/lib/utils";
 import { _getProjectDetails } from "@/network/get-request";
-import queryClient from "@/network/queryClient";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-import { getWallpaperUrl } from "@/lib/wallpaper";
+import React, { useEffect, useState, useRef } from "react";
 
 export default function Index() {
-  const { setTheme, theme, resolvedTheme } = useTheme();
+  const { setTheme } = useTheme();
   const router = useRouter();
-  const { setCursor } = useGlobalContext();
+  const { setCursor, setWallpaper, wallpaperUrl, userDetails } = useGlobalContext();
   const [projectDetails, setProjectDetails] = useState(null);
   const [isProtected, setIsProtected] = useState(false);
+  const initializedRef = useRef(false);
 
-  const wp = projectDetails?.project?.wallpaper;
-  const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
-  const wallpaperUrl = (wpValue !== undefined && wpValue !== null && wpValue !== 0)
-    ? getWallpaperUrl(wpValue, resolvedTheme || theme)
-    : null;
+  const setProjectData = (project, isProtectedValue = false, isFromRefetch = false) => {
+    setProjectDetails({
+      project: project,
+      isProtected: isProtectedValue,
+    });
+
+    if (isFromRefetch) {
+      setTheme(project?.theme == 1 ? "dark" : "light");
+      setWallpaper(project?.wallpaper);
+    } else {
+      if (project?.theme !== undefined) {
+        setTheme(project.theme == 1 ? "dark" : "light");
+      } else if (userDetails?.theme !== undefined) {
+        setTheme(userDetails.theme == 1 ? "dark" : "light");
+      }
+
+      if (project?.wallpaper !== undefined) {
+        setWallpaper(project.wallpaper);
+      } else if (userDetails?.wallpaper !== undefined) {
+        setWallpaper(userDetails.wallpaper);
+      }
+    }
+
+    const cursor = project?.cursor != null
+      ? project.cursor
+      : (project?.theme != null ? project.theme : (userDetails?.cursor || 0));
+    setCursor(cursor);
+    setIsProtected(isProtectedValue);
+  };
 
   const { mutate: refetchProjectDetail } = useMutation({
     mutationKey: [`project-editor-${router.query.id}`],
     mutationFn: async () => {
-      const response = await _getProjectDetails(router.query.id, 0); // Adjust the endpoint
+      const response = await _getProjectDetails(router.query.id, 0);
       return response.data;
     },
     onSuccess: (data) => {
-      setProjectDetails(data);
-      setCursor(data?.project?.cursor ? data?.project?.theme : 0);
-      setTheme(data?.project?.theme == 1 ? "dark" : "light");
-      setIsProtected(data?.isProtected);
+      setProjectData(data?.project, data?.isProtected, true);
     },
-    cacheTime: 300000, // Cache for 5 minutes (300,000 milliseconds)
-    staleTime: 60000, // Allow data to be considered stale after 1 minute (60,000 milliseconds)
+    cacheTime: 300000,
+    staleTime: 60000,
   });
+
   useEffect(() => {
-    refetchProjectDetail();
-  }, [refetchProjectDetail]);
+    const projectId = router.query.id;
+    if (!projectId) return;
+
+    if (initializedRef.current && initializedRef.current !== projectId) {
+      initializedRef.current = false;
+    }
+
+    if (initializedRef.current) return;
+
+    const cachedProject = userDetails?.projects?.find(
+      (project) => project._id === projectId
+    );
+
+    if (cachedProject) {
+      setProjectData(cachedProject, cachedProject.protected || false);
+      initializedRef.current = projectId;
+    } else {
+      refetchProjectDetail();
+      initializedRef.current = projectId;
+    }
+  }, [router.query.id, userDetails?.projects, refetchProjectDetail]);
 
   return (
     <>
-      {wallpaperUrl && (
-        <div
-          suppressHydrationWarning
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100vw',
-            height: '100vh',
-            zIndex: -1,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            backgroundImage: `url(${wallpaperUrl})`,
-            pointerEvents: 'none'
-          }}
-        />
-      )}
-      <main className={cn(
-        "min-h-screen",
-        wallpaperUrl ? "bg-transparent" : "bg-df-bg-color"
-      )}>
+      <WallpaperBackground wallpaperUrl={wallpaperUrl} />
+      <main className={cn("min-h-screen")}>
         {projectDetails && (
           <div className={`max-w-[890px] mx-auto py-[40px] px-2 md:px-4 lg:px-0`}>
             <ProjectPreview projectDetails={projectDetails} />

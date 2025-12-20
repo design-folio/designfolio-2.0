@@ -96,7 +96,7 @@ export default function Profile({
           <div className="flex flex-col md:flex-row md:items-center gap-6">
             {/* Avatar Container */}
             <div
-              className={cn("w-28 h-28 md:w-36 md:h-36 rounded-full flex items-center justify-center relative overflow-hidden", !userDetails?.avatar ? "bg-[#FFB088]" : "")}
+              className={cn("w-28 h-28 md:w-36 md:h-36 rounded-3xl flex items-center justify-center relative overflow-hidden", !userDetails?.avatar ? "bg-[#FFB088]" : "")}
               data-testid="avatar-profile"
             >
               <DfImage

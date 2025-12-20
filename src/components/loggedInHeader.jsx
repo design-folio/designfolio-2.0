@@ -386,9 +386,6 @@ export default function LoggedInHeader({
       className={cn(
         headerStyle,
         "z-50 px-2 md:px-0 py-2 md:py-6",
-        userDetails?.wallpaper && userDetails?.wallpaper?.value != 0
-          ? "bg-transparent"
-          : "bg-df-bg-color"
       )}
       style={{ right: isThemePanelOpen && !isMobile ? '320px' : '0' }}
     >

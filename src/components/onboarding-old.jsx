@@ -18,23 +18,50 @@ import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { cn } from "@/lib/utils";
 
 const FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png", "image/gif"];
+const SUPPORTED_MIME_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/gif",
+];
+
+const SUPPORTED_EXTENSIONS = [
+  "jpg",
+  "jpeg",
+  "png",
+  "gif",
+];
 
 // Validation schema for the first step
 const StepOneValidationSchema = Yup.object().shape({
   picture: Yup.mixed()
-    .nullable() // Allow the field to be null
-    .notRequired() // Explicitly mark the field as not required
+    .nullable()
+    .notRequired()
     .test(
       "fileSize",
       "File size is too large. Maximum size is 5MB.",
-      (value) => !value || (value && value.size <= FILE_SIZE) // Check size if value exists
+      (value) => !value || value.size <= FILE_SIZE
     )
     .test(
       "fileType",
       "Unsupported file format. Only jpg, jpeg, png and gif files are allowed.",
-      (value) => !value || (value && SUPPORTED_FORMATS.includes(value.type)) // Check type if value exists
+      (value) => {
+        if (!value) return true;
+
+        const mimeValid = SUPPORTED_MIME_TYPES.includes(value.type);
+
+        const extension = value.name
+          ?.split(".")
+          .pop()
+          ?.toLowerCase();
+
+        const extensionValid =
+          extension && SUPPORTED_EXTENSIONS.includes(extension);
+
+        return mimeValid || extensionValid;
+      }
     ),
+
+
   introduction: Yup.string()
     .required("Headline is required")
     .max(50, "Headline must be 50 characters or less"),
@@ -159,7 +186,7 @@ export default function Onboarding() {
 
   const isLastStep = step === 2;
 
-  const handleImageChange = (event, setFieldValue) => {
+  const handleImageChange = (event, setFieldValue, setFieldError) => {
     const file = event.currentTarget.files[0];
     const maxSizeInBytes = 2 * 1024 * 1024;
     if (file.size > maxSizeInBytes) {

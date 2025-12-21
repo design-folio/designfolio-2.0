@@ -8,9 +8,10 @@ import { useGlobalContext } from "@/context/globalContext";
 import CustomDomain from "@/components/customDomain";
 import { _getDomainDetails } from "@/network/get-request";
 import { cn } from "@/lib/utils";
+import { hasNoWallpaper } from "@/lib/wallpaper";
 
 export default function Domains() {
-  const { userDetails, setIsUserDetailsFromCache, userDetailsIsState } =
+  const { userDetails, setIsUserDetailsFromCache, userDetailsIsState, wallpaper } =
     useGlobalContext();
   const [domainDetails, setDomainDetails] = useState(null);
   const router = useRouter();
@@ -34,9 +35,7 @@ export default function Domains() {
   return (
     <main className={cn(
       "min-h-screen",
-      userDetails?.wallpaper && userDetails?.wallpaper?.value != 0
-        ? "bg-transparent"
-        : "bg-df-bg-color"
+      hasNoWallpaper(wallpaper) ? "bg-df-bg-color" : "bg-transparent"
     )}>
       <div
         className={`max-w-[890px]  mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0`}

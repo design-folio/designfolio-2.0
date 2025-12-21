@@ -4,15 +4,14 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import React from "react";
 import { useGlobalContext } from "@/context/globalContext";
+import { hasNoWallpaper } from "@/lib/wallpaper";
 
 export default function Error404() {
-  const { userDetails } = useGlobalContext();
+  const { wallpaper } = useGlobalContext();
   return (
     <main className={cn(
       "min-h-screen",
-      userDetails?.wallpaper && userDetails?.wallpaper?.value != 0
-        ? "bg-transparent"
-        : "bg-df-bg-color"
+      hasNoWallpaper(wallpaper) ? "bg-df-bg-color" : "bg-transparent"
     )}>
       <div
         className={`max-w-[890px] mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0`}

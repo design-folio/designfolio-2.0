@@ -43,7 +43,7 @@ const applyWallpaper = (url) => {
 };
 
 export const setWallpaperValue = (value, theme = "light") => {
-    if (value === 0 || value === null) {
+    if (hasNoWallpaper(value)) {
         removeWallpaper();
         return;
     }
@@ -79,4 +79,15 @@ export const getWallpaperUrl = (value, theme = "light") => {
         default:
             return null;
     }
+};
+
+export const extractWallpaperValue = (wallpaper) => {
+    if (!wallpaper) return undefined;
+    return (wallpaper && typeof wallpaper === 'object')
+        ? (wallpaper.url || wallpaper.value)
+        : wallpaper;
+};
+
+export const hasNoWallpaper = (value) => {
+    return !value || value === 0 || value === null || value === undefined || value === "";
 };

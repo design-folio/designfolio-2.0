@@ -28,6 +28,7 @@ import Portfolio from "@/components/comp/Portfolio";
 import ProWarning from "@/components/proWarning";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { extractWallpaperValue, hasNoWallpaper } from "@/lib/wallpaper";
 
 export default function Index() {
   const {
@@ -140,7 +141,7 @@ export default function Index() {
 
   return (
     <main className={cn(
-      "min-h-screen")}>
+      "min-h-screen", hasNoWallpaper(extractWallpaperValue(userDetails?.wallpaper)) && "bg-df-bg-color")}>
       <div
         className={` mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0 ${userDetails?.template != 3 && "max-w-[890px]"
           }`}

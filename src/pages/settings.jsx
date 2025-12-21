@@ -10,6 +10,7 @@ import Transaction from "@/components/transaction";
 import MemoLeftArrow from "@/components/icons/LeftArrow";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { hasNoWallpaper } from "@/lib/wallpaper";
 
 export default function Settings() {
   const {
@@ -18,6 +19,7 @@ export default function Settings() {
     userDetailsIsState,
     domainDetails,
     fetchDomainDetails,
+    wallpaper,
   } = useGlobalContext();
 
   const router = useRouter();
@@ -35,9 +37,7 @@ export default function Settings() {
   return (
     <main className={cn(
       "min-h-screen",
-      userDetails?.wallpaper && userDetails?.wallpaper?.value != 0
-        ? "bg-transparent"
-        : "bg-df-bg-color"
+      hasNoWallpaper(wallpaper) ? "bg-df-bg-color" : "bg-transparent"
     )}>
       <div
         className={`max-w-[890px]  mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0`}

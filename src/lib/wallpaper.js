@@ -3,6 +3,9 @@ export const removeWallpaper = () => {
     if (wallpaperElement) {
         wallpaperElement.remove();
     }
+    // Restore background color by removing inline styles
+    document.body.style.backgroundColor = "";
+    document.documentElement.style.backgroundColor = "";
 };
 
 const applyWallpaper = (url) => {

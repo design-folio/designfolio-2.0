@@ -38,6 +38,8 @@ import { cn } from "@/lib/utils";
 import MobileMenuButton from "./MobileMenuButton";
 import ThemePanel from "./ThemePanel";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useGlobalContext } from "@/context/globalContext";
+import { modals } from "@/lib/constant";
 
 const cursors = [
   {
@@ -168,6 +170,21 @@ export default function LoggedInHeader({
   const [isCopied, setCopied] = useState(false);
   const [updateLoading, setUpdateLoading] = useState(false);
   const [isMobileThemePopup, setIsMobileThemePopup] = useState(false);
+
+  // Get showModal from context to check if review or work modal is open
+  const { showModal } = useGlobalContext();
+  const isReviewModalOpen = showModal === modals.review;
+  const isWorkModalOpen = showModal === modals.work;
+  // Header should shift when either ThemePanel, Review modal, or Work modal is open (desktop only)
+  const shouldShiftHeader = (isThemePanelOpen || isReviewModalOpen || isWorkModalOpen) && !isMobile;
+
+  // Calculate shift width based on which modal is open
+  const getShiftWidth = () => {
+    if (isWorkModalOpen) return '500px'; // Work modal uses 500px width
+    if (isReviewModalOpen) return '320px'; // Review modal uses 320px width
+    if (isThemePanelOpen) return '320px'; // ThemePanel uses 320px width
+    return '0';
+  };
 
   const { username, latestPublishDate, _id, email } = userDetails || {};
   const { isClient } = useClient();
@@ -387,7 +404,7 @@ export default function LoggedInHeader({
         headerStyle,
         "z-50 px-2 md:px-0 py-2 md:py-6",
       )}
-      style={{ right: isThemePanelOpen && !isMobile ? '320px' : '0' }}
+      style={{ right: shouldShiftHeader ? getShiftWidth() : '0' }}
     >
       <div className="shadow-df-section-card-shadow max-w-[890px] p-3 border border-card-border md:!p-4 rounded-2xl bg-df-header-bg-color mx-auto flex justify-between items-center">
         <div className="flex items-center gap-[24px]">

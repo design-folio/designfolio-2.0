@@ -4,55 +4,12 @@ import { Badge } from "./ui/badge";
 import { twMerge } from "tailwind-merge";
 import styles from "@/styles/domain.module.css";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Sheet, SheetHeader, SheetTitle, SheetPortal, SheetOverlay } from "@/components/ui/sheet";
-import { X, Upload } from "lucide-react";
-import * as SheetPrimitive from "@radix-ui/react-dialog";
-import { cva } from "class-variance-authority";
+import { Upload } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
 import imageCompression from "browser-image-compression";
-
-// Locally defined variants to ensure styling matches without needing to export it from ui/sheet
-const sheetVariants = cva(
-  "fixed z-50 gap-4 bg-background p-6 shadow-lg transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:duration-500",
-  {
-    variants: {
-      side: {
-        top: "inset-x-0 top-0 border-b border-border data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top",
-        bottom:
-          "inset-x-0 bottom-0 border-t border-border data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",
-        left: "inset-y-0 left-0 h-full w-3/4 border-r border-border data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-sm",
-        right:
-          "inset-y-0 right-0 h-full w-3/4 border-l border-border data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-sm",
-      },
-    },
-    defaultVariants: {
-      side: "right",
-    },
-  }
-);
-
-const SheetContent = React.forwardRef(({ side = "right", className, children, ...props }, ref) => (
-  <SheetPortal>
-    <SheetOverlay />
-    <SheetPrimitive.Content
-      ref={ref}
-      className={cn(sheetVariants({ side }), className)}
-      {...props}
-    >
-      {children}
-      <SheetPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
-        <X className="h-4 w-4" />
-        <span className="sr-only">Close</span>
-      </SheetPrimitive.Close>
-    </SheetPrimitive.Content>
-  </SheetPortal>
-));
-SheetContent.displayName = SheetPrimitive.Content.displayName;
-
-
 import { useIsMobile } from "@/hooks/use-mobile";
-import CustomSheet from "./CustomSheet";
+import { SheetWrapper } from "./ui/SheetWrapper";
 
 const ThemePanel = ({
   show,
@@ -405,46 +362,14 @@ const ThemePanel = ({
 
 
   return (
-    <>
-      {/* Desktop Panel */}
-      {!isMobileOrTablet && (
-        <CustomSheet open={show} onClose={handleClose} template={template}>
-          <div className="flex flex-col h-full">
-            <div className="flex items-center justify-between p-6 border-b border-border pt-4 pb-4">
-              <h2 className="text-lg font-semibold" data-testid="text-theme-panel-title">Theme Settings</h2>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleClose}
-                className="h-8 w-8"
-                data-testid="button-close-theme-panel"
-              >
-                <X className="w-4 h-4" />
-              </Button>
-            </div>
-            <div className="flex-1 overflow-hidden">
-              {renderContent(false)}
-            </div>
-          </div>
-        </CustomSheet>
-      )}
-
-      {/* Mobile/Tablet Panel */}
-      {isMobileOrTablet && (
-        <Sheet open={show} onOpenChange={(open) => !open && handleClose()}>
-          <SheetContent className="w-full sm:max-w-md p-0 flex flex-col">
-            <SheetHeader className="px-6 py-4 border-b border-border/30 flex-row items-center justify-between space-y-0">
-              <SheetTitle className="flex items-center gap-3">
-                <span className="font-semibold font-inter" data-testid="text-theme-panel-title-mobile">Theme Settings</span>
-              </SheetTitle>
-            </SheetHeader>
-            <div className="flex-1 overflow-hidden flex flex-col h-full bg-background">
-              {renderContent(true)}
-            </div>
-          </SheetContent>
-        </Sheet>
-      )}
-    </>
+    <SheetWrapper
+      open={show}
+      onClose={handleClose}
+      title="Theme Settings"
+      width="320px"
+    >
+      {renderContent(isMobileOrTablet)}
+    </SheetWrapper>
   );
 };
 

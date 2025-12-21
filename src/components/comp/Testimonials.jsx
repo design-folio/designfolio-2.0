@@ -20,6 +20,7 @@ import Button2 from "../button";
 import MemoTestimonial from "../icons/Testimonial";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import MemoLinkedin from "../icons/Linkedin";
+import SimpleTiptapRenderer from "../SimpleTiptapRenderer";
 
 export const Testimonials = ({ userDetails, edit }) => {
   const { reviews } = userDetails || {};
@@ -47,6 +48,23 @@ export const Testimonials = ({ userDetails, edit }) => {
     setExpandedCards((prev) =>
       prev.includes(id) ? prev.filter((cardId) => cardId !== id) : [...prev, id]
     );
+  };
+
+  // Helper function to get plain text length from HTML for truncation check
+  const getPlainTextLength = (html) => {
+    if (!html) return 0;
+    // Check if it's already plain text (no HTML tags)
+    if (!/<[a-z][\s\S]*>/i.test(html)) {
+      return html.length;
+    }
+    // Remove HTML tags and get text length
+    if (typeof window !== 'undefined') {
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = html;
+      return tempDiv.textContent?.length || 0;
+    }
+    // Fallback for SSR
+    return html.replace(/<[^>]*>/g, '').length;
   };
 
   const handleClick = (review) => {
@@ -88,49 +106,47 @@ export const Testimonials = ({ userDetails, edit }) => {
                     }}
                   >
                     <div className="flex items-start gap-2 mb-6 flex-1">
-                      <p className="text-base leading-relaxed text-foreground flex-1">
-                        {!expandedCards.includes(
-                          visibleTestimonials[currentIndex]?._id
-                        )
-                          ? visibleTestimonials[currentIndex]?.description?.slice(0, 180)
-                          : visibleTestimonials[currentIndex]?.description}
-                        {!expandedCards.includes(
-                          visibleTestimonials[currentIndex]?._id
-                        ) &&
-                          visibleTestimonials[currentIndex]?.description?.length > 180 && (
-                            <>
-                              ...
-                              <button
-                                onClick={() =>
-                                  toggleExpand(visibleTestimonials[currentIndex]?._id)
-                                }
-                                className="ml-1 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
-                              >
-                                View More
-                                <ChevronDown className="h-3 w-3" />
-                              </button>
-                            </>
+                      <div className="flex-1">
+                        <div className={!expandedCards.includes(visibleTestimonials[currentIndex]?._id) ? "max-h-24 overflow-hidden relative" : ""}>
+                          <SimpleTiptapRenderer
+                            content={visibleTestimonials[currentIndex]?.description || ""}
+                            mode="review"
+                            enableBulletList={false}
+                          />
+                          {!expandedCards.includes(visibleTestimonials[currentIndex]?._id) && (
+                            <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-review-card-bg-color to-transparent pointer-events-none" />
                           )}
-                        {expandedCards.includes(
-                          visibleTestimonials[currentIndex]?._id
-                        ) && (
+                        </div>
+                        {(!expandedCards.includes(visibleTestimonials[currentIndex]?._id) &&
+                          getPlainTextLength(visibleTestimonials[currentIndex]?.description || "") > 180) && (
                             <button
                               onClick={() =>
                                 toggleExpand(visibleTestimonials[currentIndex]?._id)
                               }
-                              className="ml-1 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
+                              className="mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
                             >
-                              Show Less
-                              <ChevronUp className="h-3 w-3" />
+                              View More
+                              <ChevronDown className="h-3 w-3" />
                             </button>
                           )}
-                      </p>
+                        {expandedCards.includes(visibleTestimonials[currentIndex]?._id) && (
+                          <button
+                            onClick={() =>
+                              toggleExpand(visibleTestimonials[currentIndex]?._id)
+                            }
+                            className="mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
+                          >
+                            Show Less
+                            <ChevronUp className="h-3 w-3" />
+                          </button>
+                        )}
+                      </div>
                     </div>
 
                     <div className="flex items-center gap-3">
                       <Avatar className="w-12 h-12 shrink-0">
                         <AvatarImage
-                          src={visibleTestimonials[currentIndex]?.avatar}
+                          src={visibleTestimonials[currentIndex]?.avatar?.url || visibleTestimonials[currentIndex]?.avatar}
                           alt={visibleTestimonials[currentIndex]?.name}
                         />
                         <AvatarFallback
@@ -227,33 +243,37 @@ export const Testimonials = ({ userDetails, edit }) => {
                 }}
               >
                 <div className="flex items-start gap-2 mb-6 flex-1">
-                  <p className="text-base leading-relaxed text-foreground flex-1">
-                    {!expandedCards.includes(testimonial._id)
-                      ? testimonial.description?.slice(0, 180)
-                      : testimonial.description}
-                    {!expandedCards.includes(testimonial._id) &&
-                      testimonial.description?.length > 180 && (
-                        <>
-                          ...
-                          <button
-                            onClick={() => toggleExpand(testimonial._id)}
-                            className="ml-1 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
-                          >
-                            View More
-                            <ChevronDown className="h-3 w-3" />
-                          </button>
-                        </>
+                  <div className="flex-1">
+                    <div className={!expandedCards.includes(testimonial._id) ? "max-h-24 overflow-hidden relative" : ""}>
+                      <SimpleTiptapRenderer
+                        content={testimonial.description || ""}
+                        mode="review"
+                        enableBulletList={false}
+                      />
+                      {!expandedCards.includes(testimonial._id) && (
+                        <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-review-card-bg-color to-transparent pointer-events-none" />
+                      )}
+                    </div>
+                    {(!expandedCards.includes(testimonial._id) &&
+                      getPlainTextLength(testimonial.description || "") > 180) && (
+                        <button
+                          onClick={() => toggleExpand(testimonial._id)}
+                          className="mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
+                        >
+                          View More
+                          <ChevronDown className="h-3 w-3" />
+                        </button>
                       )}
                     {expandedCards.includes(testimonial._id) && (
                       <button
                         onClick={() => toggleExpand(testimonial._id)}
-                        className="ml-1 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
+                        className="mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
                       >
                         Show Less
                         <ChevronUp className="h-3 w-3" />
                       </button>
                     )}
-                  </p>
+                  </div>
                   {edit && (
                     <Button2
                       onClick={() => handleClick(testimonial)}
@@ -268,7 +288,7 @@ export const Testimonials = ({ userDetails, edit }) => {
 
                 <div className="flex items-center gap-3">
                   <Avatar className="w-12 h-12 shrink-0">
-                    <AvatarImage src={testimonial?.avatar} alt={testimonial?.name} />
+                    <AvatarImage src={testimonial?.avatar?.url || testimonial?.avatar} alt={testimonial?.name} />
                     <AvatarFallback
                       style={{
                         backgroundColor: "#FF9966",

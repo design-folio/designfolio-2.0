@@ -25,6 +25,44 @@
   min-height: 300px;
 }
 
+/* Override min-height for review mode */
+.ProseMirror.tiptap-review-mode {
+  min-height: 120px;
+}
+
+/* Reduce paragraph margins for review mode */
+.ProseMirror.tiptap-review-mode p {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.ProseMirror.tiptap-review-mode p:first-child {
+  margin-top: 0;
+}
+
+.ProseMirror.tiptap-review-mode p:last-child {
+  margin-bottom: 0;
+}
+
+/* Override min-height for work mode */
+.ProseMirror.tiptap-work-mode {
+  min-height: 120px;
+}
+
+/* Reduce paragraph margins for work mode */
+.ProseMirror.tiptap-work-mode p {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.ProseMirror.tiptap-work-mode p:first-child {
+  margin-top: 0;
+}
+
+.ProseMirror.tiptap-work-mode p:last-child {
+  margin-bottom: 0;
+}
+
 /* Prevent text selection in custom node views */
 .ProseMirror .figma-tool,
 .ProseMirror [data-node-view-wrapper] {
@@ -510,12 +548,24 @@
   color: #202937;
 }
 
+[data-theme="dark"] .ProseMirror h2,
+[data-theme="dark"] .ProseMirror h3,
+[data-theme="dark"] .ProseMirror h4,
+[data-theme="dark"] .ProseMirror h5,
+[data-theme="dark"] .ProseMirror h6 {
+  color: #e9eaeb;
+}
+
 /* Tiptap Paragraphs */
 .ProseMirror p {
   margin-top: 0.75rem;
   margin-bottom: 0.75rem;
   line-height: 1.75;
   color: #4d545f;
+}
+
+[data-theme="dark"] .ProseMirror p {
+  color: #e9eaeb;
 }
 
 /* Tiptap Lists */
@@ -525,6 +575,11 @@
   margin-top: 0.75rem;
   margin-bottom: 0.75rem;
   color: #4d545f;
+}
+
+[data-theme="dark"] .ProseMirror ul,
+[data-theme="dark"] .ProseMirror ol {
+  color: #e9eaeb;
 }
 
 .ProseMirror ul {
@@ -539,6 +594,10 @@
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
   color: #4d545f;
+}
+
+[data-theme="dark"] .ProseMirror li {
+  color: #e9eaeb;
 }
 
 .ProseMirror li > p {
@@ -592,6 +651,10 @@
   color: #4d545f;
 }
 
+[data-theme="dark"] .ProseMirror table td {
+  color: #e9eaeb;
+}
+
 .ProseMirror table td:last-child,
 .ProseMirror table th:last-child {
   border-right: none;
@@ -607,6 +670,10 @@
   background-color: var(--df-table-header-bg, #f9fafb);
   border-bottom: 2px solid var(--df-table-border-color, #e5e7eb);
   color: #202937;
+}
+
+[data-theme="dark"] .ProseMirror table th {
+  color: #e9eaeb;
 }
 
 .ProseMirror table .selectedCell:after {
@@ -680,14 +747,14 @@
 
 /* Tiptap Highlight/Marker */
 .ProseMirror mark {
-  background-color: #fef08a;
+  background-color: #ffd89b;
   padding: 0.125rem 0;
   border-radius: 0.125rem;
   color: inherit;
 }
 
 [data-theme="dark"] .ProseMirror mark {
-  background-color: #ca8a04;
+  background-color: #ff9500;
   color: inherit;
 }
 
@@ -1156,4 +1223,42 @@
 
 .ProseMirror [style*="text-align: justify"] {
   text-align: justify;
+}
+
+/* SimpleTiptapEditor Input Wrapper Styles - Matches text-input styling */
+.tiptap-input-wrapper {
+  padding: 0;
+  border-radius: 16px;
+  border: 2px solid var(--input-border-color);
+  background: var(--input-bg-color);
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 0.15s;
+}
+
+.tiptap-input-wrapper:hover {
+  box-shadow: var(--input-border-hover-shadow);
+}
+
+.tiptap-input-wrapper:focus-within {
+  border-color: var(--input-border-focus-color);
+  box-shadow: var(--input-border-focus-shadow);
+}
+
+[data-theme="dark"] .tiptap-input-wrapper {
+  background-color: #363a48;
+  border-color: #363a48;
+}
+
+[data-theme="dark"] .tiptap-input-wrapper:focus-within {
+  border-color: #b4bace !important;
+}
+
+.tiptap-toolbar {
+  border-color: var(--input-border-color);
+  background-color: hsl(var(--muted) / 0.5);
+}
+
+[data-theme="dark"] .tiptap-toolbar {
+  background-color: hsl(var(--muted) / 0.3);
 }

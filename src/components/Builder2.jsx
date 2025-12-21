@@ -24,7 +24,7 @@ import { modals } from "@/lib/constant";
 import AddCard from "./AddCard";
 import AddItem from "./addItem";
 import { useTheme } from "next-themes";
-import TextWithLineBreaks from "./TextWithLineBreaks";
+import SimpleTiptapRenderer from "./SimpleTiptapRenderer";
 import Quote from "../../public/assets/svgs/quote.svg";
 import PenIcon from "../../public/assets/svgs/pen-icon.svg";
 import SortableList, { SortableItem } from "react-easy-sort";
@@ -251,11 +251,10 @@ export default function Builder2({ edit = false }) {
               )
             ) : (
               <AddCard
-                title={`${
-                  projects?.length === 0
-                    ? "Upload your first case study"
-                    : "Add case study"
-                }`}
+                title={`${projects?.length === 0
+                  ? "Upload your first case study"
+                  : "Add case study"
+                  }`}
                 subTitle="Show off your best work."
                 first={projects?.length !== 0}
                 buttonTitle="Add case study"
@@ -275,11 +274,10 @@ export default function Builder2({ edit = false }) {
       <Chat direction="left">
         {edit && reviews?.length == 0 && (
           <AddCard
-            title={`${
-              userDetails?.reviews?.length == 0
-                ? "My testimonials"
-                : "Add more reviews"
-            } `}
+            title={`${userDetails?.reviews?.length == 0
+              ? "My testimonials"
+              : "Add more reviews"
+              } `}
             subTitle="Share colleague's feedback."
             onClick={() => openModal(modals.review)}
             className={
@@ -294,10 +292,13 @@ export default function Builder2({ edit = false }) {
           {reviews?.map((review) => (
             <div className="border border-tools-card-item-border-color p-5 rounded-2xl">
               <Quote />
-              <TextWithLineBreaks
-                text={review?.description}
-                color={"text-df-base-text-color mt-4"}
-              />
+              <div className="mt-4 text-df-base-text-color">
+                <SimpleTiptapRenderer
+                  content={review?.description || ""}
+                  mode="review"
+                  enableBulletList={false}
+                />
+              </div>
               <div>
                 <div className="flex gap-4 justify-between items-center">
                   <div className="flex gap-2  mt-3">
@@ -392,16 +393,18 @@ export default function Builder2({ edit = false }) {
                       size="p-xsmall"
                       className="font-medium mt-[6px] text-work-card-description-color"
                     >
-                      {`${experience?.startMonth} ${experience?.startYear} - ${
-                        experience?.currentlyWorking
-                          ? "Present"
-                          : `${experience?.endMonth} ${experience?.endYear}`
-                      }  `}
+                      {`${experience?.startMonth} ${experience?.startYear} - ${experience?.currentlyWorking
+                        ? "Present"
+                        : `${experience?.endMonth} ${experience?.endYear}`
+                        }  `}
                     </Text>
-                    <TextWithLineBreaks
-                      text={experience?.description}
-                      color={"text-df-base-text-color mt-4"}
-                    />
+                    <div className="text-df-base-text-color mt-4">
+                      <SimpleTiptapRenderer
+                        content={experience?.description || ""}
+                        mode="work"
+                        enableBulletList={true}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

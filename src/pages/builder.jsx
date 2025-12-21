@@ -104,11 +104,11 @@ export default function Index() {
       case modals.deleteProject:
         return <DeleteProject />;
       case modals.review:
-        return <AddReview />;
+        return null; // Review modal is handled by CustomSheet/Sheet in AddReview component
       case modals.tools:
         return <AddTools />;
       case modals.work:
-        return <AddWork />;
+        return null; // Work modal is handled by CustomSheet/Sheet in AddWork component
       case modals.resume:
         return <AddResume />;
       case modals.socialMedia:
@@ -161,12 +161,15 @@ export default function Index() {
         )}
         {userDetails && taskPercentage !== 100 && <BottomTask />}
       </div>
-      <Modal show={showModal && showModal != modals.aiProject}>
+      <Modal show={showModal && showModal !== modals.aiProject && showModal !== modals.review && showModal !== modals.work}>
         {modalContent()}
       </Modal>
       <Modal show={modals.aiProject == showModal} className={"md:block"}>
         <CreateAiProject openModal={openModal} />
       </Modal>
+      {/* Review and Work modals are rendered outside Modal wrapper since they use CustomSheet/Sheet */}
+      {showModal === modals.review && <AddReview />}
+      {showModal === modals.work && <AddWork />}
       {isClient && userDetails && (
         <Feedefy
           projectId="a72769ea-5ab2-4ac9-81bd-1abe180d4b66"

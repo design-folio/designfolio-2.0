@@ -1,8 +1,6 @@
 import { useGlobalContext } from "@/context/globalContext";
 import Text from "./text";
-
-
-import TextWithLineBreaks from "./TextWithLineBreaks";
+import SimpleTiptapRenderer from "./SimpleTiptapRenderer";
 import { Button } from "./ui/buttonNew";
 import { PencilIcon } from "lucide-react";
 
@@ -52,10 +50,13 @@ export default function WorkCard({ work, onClick, show = true, edit }) {
             {work?.role}
           </Text>
 
-          <TextWithLineBreaks
-            text={work?.description}
-            color={"text-work-card-description-color"}
-          />
+          <div className="text-work-card-description-color">
+            <SimpleTiptapRenderer
+              content={work?.description || ""}
+              mode="work"
+              enableBulletList={true}
+            />
+          </div>
         </div>
       </div>
     </div>

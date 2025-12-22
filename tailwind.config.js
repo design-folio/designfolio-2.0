@@ -343,6 +343,11 @@ module.exports = {
           dark: "#1d1f27",
           light: "#ffffff",
         },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+          border: "var(--destructive-border)",
+        },
         gray: {
           400: {
             dark: "rgb(156 163 175) !important",

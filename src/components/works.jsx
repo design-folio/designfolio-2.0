@@ -1,4 +1,4 @@
-import { modals, moveItemInArray } from "@/lib/constant";
+import { sidebars, moveItemInArray } from "@/lib/constant";
 import { _updateUser } from "@/network/post-request";
 import React, { useContext, useRef, useState } from "react";
 import {
@@ -21,7 +21,7 @@ import MemoWorkExperience from "./icons/WorkExperience";
 
 export default function Works({
   edit,
-  openModal,
+  openSidebar,
   userDetails,
   setUserDetails,
   updateCache,
@@ -75,7 +75,7 @@ export default function Works({
             <WorkCard
               work={experience}
               key={experience?._id}
-              onClick={() => openModal(modals.work)}
+              onClick={() => openSidebar(sidebars.work)}
               edit={edit}
             />
           );
@@ -84,7 +84,7 @@ export default function Works({
         {edit && (
           <AddItem
             title="Add your work experience"
-            onClick={() => openModal(modals.work)}
+            onClick={() => openSidebar(sidebars.work)}
             iconLeft={
               userDetails?.experiences?.length > 0 ? (
                 <Button
@@ -92,7 +92,7 @@ export default function Works({
                   icon={
                     <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
                   }
-                  onClick={() => openModal(modals.work)}
+                  onClick={() => openSidebar(sidebars.work)}
                   size="small"
                 />
               ) : (
@@ -106,7 +106,7 @@ export default function Works({
                   icon={
                     <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
                   }
-                  onClick={() => openModal(modals.work)}
+                  onClick={() => openSidebar(sidebars.work)}
                   size="small"
                 />
               ) : (

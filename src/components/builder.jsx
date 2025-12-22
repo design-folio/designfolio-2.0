@@ -7,6 +7,7 @@ import Tools from "./tools";
 import Works from "./works";
 import Others from "./others";
 import { motion } from "framer-motion";
+import { sidebars } from "@/lib/constant";
 
 const containerVariants = {
   hidden: {},
@@ -38,8 +39,18 @@ export default function Builder() {
     setUserDetails,
     setSelectedProject,
     openModal,
+    openSidebar,
     updateCache,
   } = useGlobalContext();
+
+  // Wrapper function that routes work/review to openSidebar, others to openModal
+  const handleOpen = (type) => {
+    if (type === sidebars.work || type === sidebars.review) {
+      openSidebar(type);
+    } else {
+      openModal(type);
+    }
+  };
 
   return (
     <motion.div
@@ -62,7 +73,7 @@ export default function Builder() {
         />
       </motion.div>
       <motion.div variants={itemVariants}>
-        <Reviews edit userDetails={userDetails} openModal={openModal} />
+        <Reviews edit userDetails={userDetails} openModal={handleOpen} />
       </motion.div>
       <motion.div variants={itemVariants}>
         <Tools userDetails={userDetails} openModal={openModal} edit />
@@ -70,7 +81,7 @@ export default function Builder() {
       <motion.div variants={itemVariants}>
         <Works
           edit
-          openModal={openModal}
+          openSidebar={handleOpen}
           userDetails={userDetails}
           setUserDetails={setUserDetails}
           updateCache={updateCache}

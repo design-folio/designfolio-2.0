@@ -17,22 +17,6 @@ const CustomSheet = ({
     setMounted(true);
   }, []);
 
-  // Push layout by adding margin to body
-  useEffect(() => {
-    const body = document.body;
-    body.style.transition = 'margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-
-    if (open) {
-      body.style.marginRight = width;
-    } else {
-      body.style.marginRight = '0px';
-    }
-
-    return () => {
-      body.style.marginRight = '0px';
-      body.style.transition = '';
-    };
-  }, [open, width]);
 
   if (!mounted) return null;
 
@@ -48,14 +32,18 @@ const CustomSheet = ({
         />
       )}
 
-      {/* Main Panel */}
       <div
         className={cn(
-          "fixed right-0 top-0 h-full bg-white dark:bg-background border-l border-border transition-transform duration-300 z-50 shadow-xl",
-          open ? "translate-x-0" : "translate-x-full",
+          "fixed right-0 top-0 h-full bg-white dark:bg-background border-l border-border z-50 shadow-xl",
           className
         )}
-        style={{ width }}
+        style={{
+          width,
+          transform: open ? 'translateX(0)' : 'translateX(100%)',
+          transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          willChange: 'transform',
+          pointerEvents: open ? 'auto' : 'none'
+        }}
         onClick={(e) => e.stopPropagation()}
       >
         {children}

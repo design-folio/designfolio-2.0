@@ -6,7 +6,7 @@ import queryClient from "@/network/queryClient";
 import { useQuery } from "@tanstack/react-query";
 import Cookies from "js-cookie";
 import { useTheme } from "next-themes";
-import { popovers } from "@/lib/constant";
+import { popovers, sidebars } from "@/lib/constant";
 import React, {
   createContext,
   useState,
@@ -51,6 +51,11 @@ export const GlobalProvider = ({ children }) => {
   const [domainDetails, setDomainDetails] = useState(null);
   const [wallpaper, setWallpaper] = useState(0);
   const [isLoadingTemplate, setIsLoadingTemplate] = useState(false);
+  const [activeSidebar, setActiveSidebar] = useState(null);
+  const [showUnsavedWarning, setShowUnsavedWarning] = useState(false);
+  const [pendingSidebarAction, setPendingSidebarAction] = useState(null);
+  const [isSwitchingSidebar, setIsSwitchingSidebar] = useState(false);
+  const unsavedChangesCheckers = useRef({});
   const { setTheme, theme, resolvedTheme } = useTheme();
 
   // Fetch user details
@@ -301,6 +306,88 @@ export const GlobalProvider = ({ children }) => {
     }));
   };
 
+  // Register unsaved changes checker for a sidebar
+  const registerUnsavedChangesChecker = (sidebarType, checker) => {
+    unsavedChangesCheckers.current[sidebarType] = checker;
+  };
+
+  // Unregister unsaved changes checker for a sidebar
+  const unregisterUnsavedChangesChecker = (sidebarType) => {
+    delete unsavedChangesCheckers.current[sidebarType];
+  };
+
+  // Check if current sidebar has unsaved changes
+  const hasUnsavedChanges = () => {
+    if (!activeSidebar) return false;
+    const checker = unsavedChangesCheckers.current[activeSidebar];
+    return checker ? checker() : false;
+  };
+
+  // Open sidebar with unsaved changes check
+  const openSidebar = (sidebarType) => {
+    // If trying to open the same sidebar, do nothing
+    if (activeSidebar === sidebarType) return;
+
+    // If another sidebar is open, check for unsaved changes
+    if (activeSidebar) {
+      const hasChanges = hasUnsavedChanges();
+      if (hasChanges) {
+        // Show warning and store the pending action
+        setIsSwitchingSidebar(true);
+        setShowUnsavedWarning(true);
+        setPendingSidebarAction({ type: "open", sidebarType });
+        return;
+      }
+    }
+
+    // No unsaved changes or no active sidebar, proceed to open
+    setActiveSidebar(sidebarType);
+    setPopoverMenu(null);
+  };
+
+  // Close sidebar with unsaved changes check
+  const closeSidebar = (force = false) => {
+    if (!activeSidebar) return;
+
+    // Check for unsaved changes unless forced
+    if (!force) {
+      const hasChanges = hasUnsavedChanges();
+      if (hasChanges) {
+        setShowUnsavedWarning(true);
+        setPendingSidebarAction({ type: "close" });
+        return;
+      }
+    }
+
+    // No unsaved changes or forced, proceed to close
+    setActiveSidebar(null);
+  };
+
+  // Handle unsaved changes dialog confirmation
+  const handleConfirmDiscardSidebar = () => {
+    setShowUnsavedWarning(false);
+    setIsSwitchingSidebar(false);
+
+    if (pendingSidebarAction) {
+      if (pendingSidebarAction.type === "open") {
+        // Close current sidebar and open new one
+        setActiveSidebar(pendingSidebarAction.sidebarType);
+        setPopoverMenu(null);
+      } else if (pendingSidebarAction.type === "close") {
+        // Close current sidebar
+        setActiveSidebar(null);
+      }
+      setPendingSidebarAction(null);
+    }
+  };
+
+  // Handle unsaved changes dialog cancel
+  const handleCancelDiscardSidebar = () => {
+    setShowUnsavedWarning(false);
+    setIsSwitchingSidebar(false);
+    setPendingSidebarAction(null);
+  };
+
 
 
   return (
@@ -353,6 +440,17 @@ export const GlobalProvider = ({ children }) => {
         changeWallpaper,
         wallpaperUrl,
         isLoadingTemplate,
+        activeSidebar,
+        openSidebar,
+        closeSidebar,
+        registerUnsavedChangesChecker,
+        unregisterUnsavedChangesChecker,
+        showUnsavedWarning,
+        setShowUnsavedWarning,
+        handleConfirmDiscardSidebar,
+        handleCancelDiscardSidebar,
+        isSwitchingSidebar,
+        pendingSidebarAction,
       }}
     >
       {children}

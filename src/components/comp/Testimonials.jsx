@@ -13,7 +13,7 @@ import PlusIcon from "../../../public/assets/svgs/plus.svg";
 import BagIcon from "../../../public/assets/svgs/bag.svg";
 
 import { useTheme } from "next-themes";
-import { modals } from "@/lib/constant";
+import { sidebars } from "@/lib/constant";
 import { useGlobalContext } from "@/context/globalContext";
 import { Button } from "../ui/button";
 import Button2 from "../button";
@@ -30,7 +30,7 @@ export const Testimonials = ({ userDetails, edit }) => {
   const isMobile = useIsMobile();
   const visibleTestimonials = showMore ? reviews : reviews?.slice(0, 4);
   const theme = useTheme();
-  const { openModal, setSelectedReview } = useGlobalContext();
+  const { openSidebar, setSelectedReview } = useGlobalContext();
 
   const handleNext = () => {
     setCurrentIndex((prev) =>
@@ -69,7 +69,7 @@ export const Testimonials = ({ userDetails, edit }) => {
 
   const handleClick = (review) => {
     setSelectedReview(review);
-    openModal(modals.review);
+    openSidebar(sidebars.review);
   };
 
   return (
@@ -352,7 +352,7 @@ export const Testimonials = ({ userDetails, edit }) => {
         <AddItem
           className="bg-df-section-card-bg-color shadow-df-section-card-shadow mt-6"
           title="Add your testimonial"
-          onClick={() => openModal(modals.review)}
+          onClick={() => openSidebar(sidebars.review)}
           iconLeft={
             reviews?.length > 0 ? (
               <Button2
@@ -360,7 +360,7 @@ export const Testimonials = ({ userDetails, edit }) => {
                 icon={
                   <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
                 }
-                onClick={() => openModal(modals.review)}
+                onClick={() => openSidebar(sidebars.review)}
                 size="small"
                 text
               />
@@ -375,7 +375,7 @@ export const Testimonials = ({ userDetails, edit }) => {
                 icon={
                   <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
                 }
-                onClick={() => openModal(modals.review)}
+                onClick={() => openSidebar(sidebars.review)}
                 size="small"
               />
             ) : (

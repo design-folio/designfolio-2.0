@@ -39,6 +39,8 @@
     );
     --muted: 38 14% 90%;
     --muted-foreground: 0 0% 35%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
     --radius: 0.5rem;
     --border: 38 15% 88%;
 
@@ -47,6 +49,11 @@
 
     /* Automatic computation of border around primary / danger buttons */
     --opaque-button-border-intensity: -8; /* In terms of percentages */
+    --destructive-border: hsl(var(--destructive));
+    --destructive-border: hsl(
+      from hsl(var(--destructive)) h s
+        calc(l + var(--opaque-button-border-intensity)) / alpha
+    );
     /* Elevation system */
     --elevate-1: rgba(0, 0, 0, 0.03);
     --elevate-2: rgba(0, 0, 0, 0.08);
@@ -101,7 +108,8 @@
     --muted: 0 0% 16%;
     --muted-foreground: 0 0% 65%;
     --border: 0 0% 18%;
-
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
     --button-outline: rgba(255, 255, 255, 0.1);
     --badge-outline: rgba(255, 255, 255, 0.05);
 

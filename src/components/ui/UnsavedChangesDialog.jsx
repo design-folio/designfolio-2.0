@@ -8,7 +8,7 @@ import {
   AlertDialogTitle,
 } from "./alert-dialog";
 import Button from "../button";
-
+import { Button as ButtonNew } from "./buttonNew";
 /**
  * Reusable unsaved changes warning dialog
  */
@@ -60,14 +60,11 @@ export const UnsavedChangesDialog = ({
             onClick={() => onOpenChange(false)}
             text={cancelText}
           />
-          <Button
-            type="delete"
+          <ButtonNew className="rounded-full" variant="destructive"
             onClick={() => {
               onConfirmDiscard();
               onOpenChange(false);
-            }}
-            text={confirmText}
-          />
+            }}>{confirmText}</ButtonNew>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

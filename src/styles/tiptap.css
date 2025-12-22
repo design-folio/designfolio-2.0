@@ -747,15 +747,13 @@
 
 /* Tiptap Highlight/Marker */
 .ProseMirror mark {
-  background-color: #ffd89b;
+  background-color: #f9daa3;
   padding: 0.125rem 0;
   border-radius: 0.125rem;
-  color: inherit;
 }
 
 [data-theme="dark"] .ProseMirror mark {
-  background-color: #ff9500;
-  color: inherit;
+  background-color: #f9daa3;
 }
 
 /* Remove forced text colors to allow user selection */

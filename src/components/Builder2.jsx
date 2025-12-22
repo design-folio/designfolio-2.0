@@ -20,7 +20,7 @@ import GoUp from "../../public/assets/svgs/go-up.svg";
 import PlusIcon from "../../public/assets/svgs/plus.svg";
 import EditIcon from "../../public/assets/svgs/edit.svg";
 import AiIcon from "../../public/assets/svgs/ai.svg";
-import { modals } from "@/lib/constant";
+import { modals, sidebars } from "@/lib/constant";
 import AddCard from "./AddCard";
 import AddItem from "./addItem";
 import { useTheme } from "next-themes";
@@ -47,6 +47,7 @@ export default function Builder2({ edit = false }) {
   const {
     userDetails,
     openModal,
+    openSidebar,
     setSelectedProject,
     setSelectedWork,
     setSelectedReview,
@@ -104,11 +105,11 @@ export default function Builder2({ edit = false }) {
   };
   const handleEditWork = (work) => {
     setSelectedWork(work);
-    openModal(modals.work);
+    openSidebar(sidebars.work);
   };
   const handleEditReview = (review) => {
-    openModal(modals.review);
     setSelectedReview(review);
+    openSidebar(sidebars.review);
   };
 
   const onSortEnd = (oldIndex, newIndex) => {
@@ -279,7 +280,7 @@ export default function Builder2({ edit = false }) {
               : "Add more reviews"
               } `}
             subTitle="Share colleague's feedback."
-            onClick={() => openModal(modals.review)}
+            onClick={() => openSidebar(sidebars.review)}
             className={
               "flex justify-center items-center flex-col p-4 w-[340px]"
             }
@@ -336,7 +337,7 @@ export default function Builder2({ edit = false }) {
         {edit && reviews?.length > 0 && (
           <AddItem
             title="Add testimonial"
-            onClick={() => openModal(modals.review)}
+            onClick={() => openSidebar(sidebars.review)}
             iconLeft={
               userDetails?.reviews?.length > 0 ? (
                 <Button
@@ -344,7 +345,7 @@ export default function Builder2({ edit = false }) {
                   icon={
                     <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
                   }
-                  onClick={() => openModal(modals.review)}
+                  onClick={() => openSidebar(sidebars.review)}
                   size="small"
                 />
               ) : (
@@ -413,7 +414,7 @@ export default function Builder2({ edit = false }) {
           {edit && (
             <AddItem
               title="Add your work experience"
-              onClick={() => openModal(modals.work)}
+              onClick={() => openSidebar(sidebars.work)}
               iconLeft={
                 userDetails?.experiences?.length > 0 ? (
                   <Button
@@ -421,7 +422,7 @@ export default function Builder2({ edit = false }) {
                     icon={
                       <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
                     }
-                    onClick={() => openModal(modals.work)}
+                    onClick={() => openSidebar(sidebars.work)}
                     size="small"
                   />
                 ) : (
@@ -437,7 +438,7 @@ export default function Builder2({ edit = false }) {
                     icon={
                       <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
                     }
-                    onClick={() => openModal(modals.work)}
+                    onClick={() => openSidebar(sidebars.work)}
                     size="small"
                   />
                 ) : (

@@ -5,10 +5,10 @@ import CloseIcon from "../../public/assets/svgs/close.svg";
 import Button from "./button";
 import CheckedIcon from "../../public/assets/svgs/checked.svg";
 import Text from "./text";
-import { modals } from "@/lib/constant";
+import { modals, sidebars } from "@/lib/constant";
 
 export default function Task({ setOpen }) {
-  const { checkList, openModal, setStep } = useGlobalContext();
+  const { checkList, openModal, openSidebar, setStep } = useGlobalContext();
 
   const handleClick = (i) => {
     if (i == 0 && !checkList[0].checked) {
@@ -17,9 +17,9 @@ export default function Task({ setOpen }) {
       openModal(modals.onboarding);
       setStep(2);
     } else if (i == 2 && !checkList[2].checked) {
-      openModal(modals.work);
+      openSidebar(sidebars.work);
     } else if (i == 3 && !checkList[3].checked) {
-      openModal(modals.review);
+      openSidebar(sidebars.review);
     }
   };
 

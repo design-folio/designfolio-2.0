@@ -10,7 +10,7 @@ import { useState, useRef, useEffect } from "react";
 import SimpleTiptapEditor from "./SimpleTiptapEditor";
 import { SheetWrapper } from "./ui/SheetWrapper";
 import { UnsavedChangesDialog } from "./ui/UnsavedChangesDialog";
-import { modals } from "@/lib/constant";
+import { sidebars } from "@/lib/constant";
 import { Upload } from "lucide-react";
 import useImageCompression from "@/hooks/useImageCompression";
 import { ReviewValidationSchema as validationSchema } from "@/lib/validationSchemas";
@@ -21,15 +21,20 @@ export default function AddReview() {
     selectedReview,
     userDetails,
     setSelectedReview,
-    closeModal,
     updateCache,
     userDetailsRefecth,
-    showModal,
+    activeSidebar,
+    closeSidebar,
+    registerUnsavedChangesChecker,
+    unregisterUnsavedChangesChecker,
+    showUnsavedWarning,
+    handleConfirmDiscardSidebar,
+    handleCancelDiscardSidebar,
+    isSwitchingSidebar,
+    pendingSidebarAction,
   } = useGlobalContext();
 
   const [loading, setLoading] = useState(false);
-  const [showUnsavedWarning, setShowUnsavedWarning] = useState(false);
-  const [pendingAction, setPendingAction] = useState(null);
   const [editingValues, setEditingValues] = useState(null);
 
   const formikRef = useRef(null);
@@ -40,7 +45,7 @@ export default function AddReview() {
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [avatarFile, setAvatarFile] = useState(null);
 
-  const isOpen = showModal === modals.review;
+  const isOpen = activeSidebar === sidebars.review;
 
 
   useEffect(() => {
@@ -73,8 +78,20 @@ export default function AddReview() {
   };
 
   const hasUnsavedChanges = () => {
-    if (!editingValues || !selectedReview) return false;
+    if (!editingValues) return false;
 
+    // If creating a new review (selectedReview is null), check if any fields have values
+    if (!selectedReview) {
+      return !!(
+        editingValues.name ||
+        editingValues.company ||
+        editingValues.linkedinLink ||
+        editingValues.description ||
+        avatarFile !== null
+      );
+    }
+
+    // If editing existing review, compare with original values
     return (
       editingValues.name !== selectedReview.name ||
       editingValues.company !== selectedReview.company ||
@@ -85,7 +102,7 @@ export default function AddReview() {
   };
 
   const resetStateAndClose = () => {
-    closeModal();
+    closeSidebar(true); // Force close since we're handling unsaved changes separately
     setSelectedReview(null);
     setEditingValues(null);
     setAvatarPreview(null);
@@ -93,28 +110,22 @@ export default function AddReview() {
   };
 
   const handleCloseModal = () => {
-    if (hasUnsavedChanges()) {
-      setShowUnsavedWarning(true);
-      setPendingAction("close");
-    } else {
-      resetStateAndClose();
-    }
+    closeSidebar(); // This will check for unsaved changes
   };
 
   const handleCancel = () => {
-    if (hasUnsavedChanges()) {
-      setShowUnsavedWarning(true);
-      setPendingAction("cancel");
-    } else {
-      resetStateAndClose();
-    }
+    closeSidebar(); // This will check for unsaved changes
   };
 
-  const handleConfirmDiscard = () => {
-    setShowUnsavedWarning(false);
-    setPendingAction(null);
-    resetStateAndClose();
-  };
+  // Register unsaved changes checker
+  useEffect(() => {
+    if (isOpen) {
+      registerUnsavedChangesChecker(sidebars.review, hasUnsavedChanges);
+    }
+    return () => {
+      unregisterUnsavedChangesChecker(sidebars.review);
+    };
+  }, [isOpen, editingValues, selectedReview, avatarFile, registerUnsavedChangesChecker, unregisterUnsavedChangesChecker]);
 
   const handleDelete = () => {
     _deleteReview(selectedReview?._id)
@@ -142,7 +153,9 @@ export default function AddReview() {
 
   const renderFormContent = () => (
     <Formik
+      key={selectedReview?._id || 'new'}
       innerRef={formikRef}
+      enableReinitialize
       initialValues={{
         name: selectedReview?.name || "",
         company: selectedReview?.company || "",
@@ -380,9 +393,16 @@ export default function AddReview() {
       </SheetWrapper>
 
       <UnsavedChangesDialog
-        open={showUnsavedWarning}
-        onOpenChange={setShowUnsavedWarning}
-        onConfirmDiscard={handleConfirmDiscard}
+        open={showUnsavedWarning && isOpen && !isSwitchingSidebar && pendingSidebarAction?.type === "close"}
+        onOpenChange={(open) => {
+          if (!open) {
+            handleCancelDiscardSidebar();
+          }
+        }}
+        onConfirmDiscard={() => {
+          resetStateAndClose();
+          handleConfirmDiscardSidebar();
+        }}
       />
     </>
   );

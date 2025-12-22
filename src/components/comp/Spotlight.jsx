@@ -4,7 +4,7 @@ import { ChevronDown, ChevronUp, EditIcon, GripVertical } from "lucide-react";
 import AddItem from "../addItem";
 import Button from "../button";
 import { useGlobalContext } from "@/context/globalContext";
-import { modals } from "@/lib/constant";
+import { sidebars } from "@/lib/constant";
 import PlusIcon from "../../../public/assets/svgs/plus.svg";
 import { useTheme } from "next-themes";
 import SimpleTiptapRenderer from "../SimpleTiptapRenderer";
@@ -18,7 +18,7 @@ import MemoWorkExperience from "../icons/WorkExperience";
 
 export const Spotlight = ({ userDetails, edit }) => {
   const { experiences } = userDetails || {};
-  const { openModal, setSelectedWork, updateCache, setUserDetails } =
+  const { openSidebar, setSelectedWork, updateCache, setUserDetails } =
     useGlobalContext();
   const { theme } = useTheme();
 
@@ -33,7 +33,7 @@ export const Spotlight = ({ userDetails, edit }) => {
 
   const handleClick = (work) => {
     setSelectedWork(work);
-    openModal(modals.work);
+    openSidebar(sidebars.work);
   };
 
   const containerVariants = {
@@ -226,7 +226,7 @@ export const Spotlight = ({ userDetails, edit }) => {
         <AddItem
           className="bg-df-section-card-bg-color shadow-df-section-card-shadow mt-4"
           title="Add your work experience"
-          onClick={() => openModal(modals.work)}
+          onClick={() => openSidebar(sidebars.work)}
           iconLeft={
             sortedExperiences?.length > 0 ? (
               <Button
@@ -234,7 +234,7 @@ export const Spotlight = ({ userDetails, edit }) => {
                 icon={
                   <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
                 }
-                onClick={() => openModal(modals.work)}
+                onClick={() => openSidebar(sidebars.work)}
                 size="small"
               />
             ) : (
@@ -248,7 +248,7 @@ export const Spotlight = ({ userDetails, edit }) => {
                 icon={
                   <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
                 }
-                onClick={() => openModal(modals.work)}
+                onClick={() => openSidebar(sidebars.work)}
                 size="small"
               />
             ) : (

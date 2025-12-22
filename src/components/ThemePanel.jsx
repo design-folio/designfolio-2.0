@@ -1,19 +1,18 @@
-import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/buttonNew";
-import { Badge } from "./ui/badge";
-import { twMerge } from "tailwind-merge";
-import styles from "@/styles/domain.module.css";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Upload } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
-import imageCompression from "browser-image-compression";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useGlobalContext } from "@/context/globalContext";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { sidebars } from "@/lib/constant";
+import styles from "@/styles/domain.module.css";
+import imageCompression from "browser-image-compression";
+import { Upload } from "lucide-react";
+import { useEffect, useState } from "react";
+import { twMerge } from "tailwind-merge";
+import { Badge } from "./ui/badge";
 import { SheetWrapper } from "./ui/SheetWrapper";
 
 const ThemePanel = ({
-  show,
-  handleClose,
   theme,
   changeTheme,
   template,
@@ -29,10 +28,29 @@ const ThemePanel = ({
   changeWallpaper,
   wallpapers,
 }) => {
+  const {
+    activeSidebar,
+    closeSidebar,
+    registerUnsavedChangesChecker,
+    unregisterUnsavedChangesChecker,
+  } = useGlobalContext();
   const [customWallpaper, setCustomWallpaper] = useState(null);
   const [isCompressing, setIsCompressing] = useState(false);
   const isMobileOrTablet = useIsMobile();
   const [isDarkWallpapers, setIsDarkWallpapers] = useState(theme === 'dark' || theme === 1);
+  const show = activeSidebar === sidebars.theme;
+
+
+  useEffect(() => {
+    registerUnsavedChangesChecker(sidebars.theme, () => false);
+    return () => {
+      unregisterUnsavedChangesChecker(sidebars.theme);
+    };
+  }, [registerUnsavedChangesChecker, unregisterUnsavedChangesChecker]);
+
+  const handleClose = () => {
+    closeSidebar();
+  };
 
   // Sync isDarkWallpapers with theme prop changes
   useEffect(() => {

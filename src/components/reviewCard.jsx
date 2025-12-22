@@ -1,5 +1,5 @@
 import { useGlobalContext } from "@/context/globalContext";
-import { modals } from "@/lib/constant";
+import { sidebars } from "@/lib/constant";
 import { Button } from "./ui/buttonNew";
 import { useState } from "react";
 import { ChevronDown, ChevronUp, PencilIcon } from "lucide-react";
@@ -8,14 +8,14 @@ import MemoLinkedin from "./icons/Linkedin";
 import SimpleTiptapRenderer from "./SimpleTiptapRenderer";
 
 export default function ReviewCard({ review, edit = false }) {
-  const { openModal, setSelectedReview, selectedReview, showModal } = useGlobalContext();
+  const { openSidebar, setSelectedReview, selectedReview, activeSidebar } = useGlobalContext();
   const [expandedCards, setExpandedCards] = useState([]);
 
-  // Check if this review is currently being edited (modal is open and this review is selected)
-  const isEditing = showModal === modals.review && selectedReview?._id === review?._id;
+  // Check if this review is currently being edited (sidebar is open and this review is selected)
+  const isEditing = activeSidebar === sidebars.review && selectedReview?._id === review?._id;
 
   const handleEdit = () => {
-    openModal(modals.review);
+    openSidebar(sidebars.review);
     setSelectedReview(review);
   };
 
@@ -51,7 +51,7 @@ export default function ReviewCard({ review, edit = false }) {
     <div
       key={review?._id}
       className={`bg-review-card-bg-color border-2 rounded-2xl p-6 flex flex-col hover-elevate transition-all ${isEditing
-        ? "border-input-border-color shadow-review-card-editing focus-within:shadow-review-card-focus-ring"
+        ? "border-default-cursor-box-border shadow-review-card-editing focus-within:shadow-review-card-focus-ring"
         : "border-border/30 shadow-review-card-default"
         }`}
     >

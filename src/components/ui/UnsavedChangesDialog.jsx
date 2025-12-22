@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -21,6 +21,32 @@ export const UnsavedChangesDialog = ({
   confirmText = "Discard Changes",
   cancelText = "Keep Editing",
 }) => {
+  // Prevent Radix UI from adding padding-right (conflicts with CustomSheet's margin-right)
+  useEffect(() => {
+    if (open) {
+      const bodyStyle = document.body.style;
+      const computedStyle = window.getComputedStyle(document.body);
+      const initialPaddingRight = computedStyle.paddingRight;
+
+      const observer = new MutationObserver(() => {
+        const currentComputed = window.getComputedStyle(document.body);
+        if (currentComputed.paddingRight !== initialPaddingRight && bodyStyle.marginRight) {
+          document.body.style.paddingRight = initialPaddingRight;
+        }
+      });
+
+      observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['style'],
+      });
+
+      return () => {
+        observer.disconnect();
+        document.body.style.paddingRight = initialPaddingRight;
+      };
+    }
+  }, [open]);
+
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent className="border-border">

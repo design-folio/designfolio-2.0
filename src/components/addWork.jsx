@@ -9,7 +9,7 @@ import { useState, useRef, useEffect } from "react";
 import SimpleTiptapEditor from "./SimpleTiptapEditor";
 import { SheetWrapper } from "./ui/SheetWrapper";
 import { UnsavedChangesDialog } from "./ui/UnsavedChangesDialog";
-import { modals } from "@/lib/constant";
+import { sidebars } from "@/lib/constant";
 import { WorkValidationSchema as validationSchema } from "@/lib/validationSchemas";
 
 
@@ -48,21 +48,24 @@ export default function AddWork() {
     selectedWork,
     userDetails,
     setSelectedWork,
-    closeModal,
     userDetailsRefecth,
     updateCache,
-    showModal,
+    activeSidebar,
+    closeSidebar,
+    registerUnsavedChangesChecker,
+    unregisterUnsavedChangesChecker,
+    showUnsavedWarning,
+    handleConfirmDiscardSidebar,
+    handleCancelDiscardSidebar,
+    isSwitchingSidebar,
+    pendingSidebarAction,
   } = useGlobalContext();
   const [loading, setLoading] = useState(false);
-  const [showUnsavedWarning, setShowUnsavedWarning] = useState(false);
-  const [pendingAction, setPendingAction] = useState(null);
   const [editingValues, setEditingValues] = useState(null);
 
   const formikRef = useRef(null);
 
-  const isOpen = showModal === modals.work;
-
-  /* ---------------- Helpers ---------------- */
+  const isOpen = activeSidebar === sidebars.work;
 
   // Helper to compare Tiptap JSON objects
   const compareDescription = (desc1, desc2) => {
@@ -72,8 +75,23 @@ export default function AddWork() {
   };
 
   const hasUnsavedChanges = () => {
-    if (!editingValues || !selectedWork) return false;
+    if (!editingValues) return false;
 
+    // If creating a new work (selectedWork is null), check if any fields have values
+    if (!selectedWork) {
+      return !!(
+        editingValues.role ||
+        editingValues.company ||
+        editingValues.description ||
+        editingValues.startMonth ||
+        editingValues.startYear ||
+        editingValues.endMonth ||
+        editingValues.endYear ||
+        editingValues.currentlyWorking
+      );
+    }
+
+    // If editing existing work, compare with original values
     const originalEndMonth = selectedWork.currentlyWorking ? "" : (selectedWork.endMonth || "");
     const originalEndYear = selectedWork.currentlyWorking ? "" : (selectedWork.endYear || "");
 
@@ -90,34 +108,36 @@ export default function AddWork() {
   };
 
   const resetStateAndClose = () => {
-    closeModal();
+    closeSidebar(true); // Force close since we're handling unsaved changes separately
     setSelectedWork(null);
     setEditingValues(null);
   };
 
   const handleCloseModal = () => {
-    if (hasUnsavedChanges()) {
-      setShowUnsavedWarning(true);
-      setPendingAction("close");
-    } else {
-      resetStateAndClose();
-    }
+    closeSidebar(); // This will check for unsaved changes
   };
 
   const handleCancel = () => {
-    if (hasUnsavedChanges()) {
-      setShowUnsavedWarning(true);
-      setPendingAction("cancel");
-    } else {
-      resetStateAndClose();
-    }
+    closeSidebar(); // This will check for unsaved changes
   };
 
-  const handleConfirmDiscard = () => {
-    setShowUnsavedWarning(false);
-    setPendingAction(null);
-    resetStateAndClose();
-  };
+  // Register unsaved changes checker
+  useEffect(() => {
+    if (isOpen) {
+      registerUnsavedChangesChecker(sidebars.work, hasUnsavedChanges);
+    }
+    return () => {
+      unregisterUnsavedChangesChecker(sidebars.work);
+    };
+  }, [isOpen, editingValues, selectedWork, registerUnsavedChangesChecker, unregisterUnsavedChangesChecker]);
+
+  // Handle confirm discard from global context
+  useEffect(() => {
+    if (showUnsavedWarning && isOpen) {
+      // The global context will handle the dialog, but we need to reset our state when confirmed
+      // This is handled by the global context's handleConfirmDiscardSidebar
+    }
+  }, [showUnsavedWarning, isOpen]);
 
   const handleDeleteWork = () => {
     _deleteExperience(selectedWork?._id)
@@ -135,7 +155,9 @@ export default function AddWork() {
 
   const renderFormContent = () => (
     <Formik
+      key={selectedWork?._id || 'new'}
       innerRef={formikRef}
+      enableReinitialize
       initialValues={{
         role: selectedWork?.role ?? "",
         company: selectedWork?.company ?? "",
@@ -429,9 +451,16 @@ export default function AddWork() {
       </SheetWrapper>
 
       <UnsavedChangesDialog
-        open={showUnsavedWarning}
-        onOpenChange={setShowUnsavedWarning}
-        onConfirmDiscard={handleConfirmDiscard}
+        open={showUnsavedWarning && isOpen && !isSwitchingSidebar && pendingSidebarAction?.type === "close"}
+        onOpenChange={(open) => {
+          if (!open) {
+            handleCancelDiscardSidebar();
+          }
+        }}
+        onConfirmDiscard={() => {
+          resetStateAndClose();
+          handleConfirmDiscardSidebar();
+        }}
         title="Unsaved Changes"
         description="You have made changes to this work experience. Are you sure you want to discard them?"
       />

@@ -4,7 +4,7 @@ import { twMerge } from "tailwind-merge";
 import AddCard from "./AddCard";
 import PenIcon from "../../public/assets/svgs/pen-icon.svg";
 import ReviewCard from "./reviewCard";
-import { modals } from "@/lib/constant";
+import { sidebars } from "@/lib/constant";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/buttonNew";
@@ -43,7 +43,7 @@ export default function Reviews({ edit = false, userDetails, openModal }) {
             <Button
               variant="secondary"
               size="icon"
-              onClick={() => openModal(modals.review)}
+              onClick={() => openModal(sidebars.review)}
               className="rounded-full h-11 w-11"
               data-testid="button-add-testimonial"
             >
@@ -67,7 +67,7 @@ export default function Reviews({ edit = false, userDetails, openModal }) {
             <AddItem
               className="bg-df-section-card-bg-color shadow-df-section-card-shadow mt-6"
               title="Add your testimonial"
-              onClick={() => openModal(modals.review)}
+              onClick={() => openModal(sidebars.review)}
               iconLeft={
                 reviews?.length > 0 ? (
                   <Button2
@@ -75,7 +75,7 @@ export default function Reviews({ edit = false, userDetails, openModal }) {
                     icon={
                       <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
                     }
-                    onClick={() => openModal(modals.review)}
+                    onClick={() => openModal(sidebars.review)}
                     size="small"
                     text
                   />
@@ -90,7 +90,7 @@ export default function Reviews({ edit = false, userDetails, openModal }) {
                     icon={
                       <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
                     }
-                    onClick={() => openModal(modals.review)}
+                    onClick={() => openModal(sidebars.review)}
                     size="small"
                   />
                 ) : (

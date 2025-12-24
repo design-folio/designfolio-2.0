@@ -420,24 +420,26 @@ export default function LoggedInHeader({
             className="relative theme-button"
             data-popover-menu={popovers.themeMenu}
           >
+
+            <Button
+              onClick={handleTheme}
+              variant="secondary"
+              className="h-11 px-4 mr-3 rounded-full"
+            >
+              <MemoThemeIcon className="!size-5" />
+              Theme
+            </Button>
+
             <Link href="/analytics">
               <Button
                 variant="secondary"
-                className="h-11 px-4 mr-3 rounded-full"
+                size="icon"
+                className="h-11 w-11 rounded-full"
+
               >
                 <MemoAnalytics className="!size-5" />
-                Insights
               </Button>
             </Link>
-            <Button
-              variant="secondary"
-              size="icon"
-              className="h-11 w-11 rounded-full"
-              onClick={handleTheme}
-            >
-              <MemoThemeIcon className="!size-5" />
-            </Button>
-
             {isClient && (
               <ThemePanel
                 theme={theme}
@@ -785,6 +787,6 @@ export default function LoggedInHeader({
           </Popover>
         )}
       </div>
-    </div>
+    </div >
   );
 }

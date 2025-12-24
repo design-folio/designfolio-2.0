@@ -23,6 +23,12 @@ export const modals = {
   username: "username",
 };
 
+export const sidebars = {
+  theme: "theme",
+  work: "work",
+  review: "review",
+};
+
 export function hasSubdomain() {
   let hostname = window.location.hostname;
   hostname = hostname.split(":")[0];

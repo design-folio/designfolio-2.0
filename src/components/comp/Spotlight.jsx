@@ -4,9 +4,10 @@ import { ChevronDown, ChevronUp, EditIcon, GripVertical } from "lucide-react";
 import AddItem from "../addItem";
 import Button from "../button";
 import { useGlobalContext } from "@/context/globalContext";
-import { modals } from "@/lib/constant";
+import { sidebars } from "@/lib/constant";
 import PlusIcon from "../../../public/assets/svgs/plus.svg";
 import { useTheme } from "next-themes";
+import SimpleTiptapRenderer from "../SimpleTiptapRenderer";
 
 // DND Kit Imports
 import { DndContext, closestCenter } from "@dnd-kit/core";
@@ -17,7 +18,7 @@ import MemoWorkExperience from "../icons/WorkExperience";
 
 export const Spotlight = ({ userDetails, edit }) => {
   const { experiences } = userDetails || {};
-  const { openModal, setSelectedWork, updateCache, setUserDetails } =
+  const { openSidebar, setSelectedWork, updateCache, setUserDetails } =
     useGlobalContext();
   const { theme } = useTheme();
 
@@ -32,7 +33,7 @@ export const Spotlight = ({ userDetails, edit }) => {
 
   const handleClick = (work) => {
     setSelectedWork(work);
-    openModal(modals.work);
+    openSidebar(sidebars.work);
   };
 
   const containerVariants = {
@@ -84,6 +85,25 @@ export const Spotlight = ({ userDetails, edit }) => {
     // (Optional) Update global context or API here if needed.
   };
 
+  // Helper to get plain text length from Tiptap JSON
+  const getTextLength = (content) => {
+    if (!content) return 0;
+    if (typeof content === 'string') return content.length;
+    if (typeof content === 'object' && content.type === 'doc') {
+      const extractText = (node) => {
+        if (!node) return '';
+        if (typeof node === 'string') return node;
+        if (node.type === 'text') return node.text || '';
+        if (node.content && Array.isArray(node.content)) {
+          return node.content.map(extractText).join('');
+        }
+        return '';
+      };
+      return extractText(content).length;
+    }
+    return 0;
+  };
+
   // Sortable card for each work experience
   const SortableExperienceCard = ({ experience, index }) => {
     const { attributes, listeners, setNodeRef, transform, transition } =
@@ -92,6 +112,8 @@ export const Spotlight = ({ userDetails, edit }) => {
       });
     const style = { transform: CSS.Transform.toString(transform), transition };
     const isExpanded = expandedCards.includes(index);
+    const descriptionLength = getTextLength(experience.description);
+    const shouldShowToggle = descriptionLength > 180;
 
     return (
       <div ref={setNodeRef} style={style}>
@@ -110,8 +132,8 @@ export const Spotlight = ({ userDetails, edit }) => {
                 <div className="flex flex-1 gap-2 lg:justify-end w-full items-center">
                   <span className="text-sm text-gray-600 dark:text-gray-400">
                     {`${experience?.startMonth} ${experience?.startYear} - ${experience?.currentlyWorking
-                        ? "Present"
-                        : `${experience?.endMonth} ${experience?.endYear}`
+                      ? "Present"
+                      : `${experience?.endMonth} ${experience?.endYear}`
                       }`}
                   </span>
                   {edit && (
@@ -140,33 +162,37 @@ export const Spotlight = ({ userDetails, edit }) => {
               <div className="text-base text-gray-600 dark:text-gray-400">
                 {experience.company}
               </div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 whitespace-pre-line break-all">
-                {experience.description.slice(
-                  0,
-                  !isExpanded ? 180 : experience.description.length
-                )}
-                {!isExpanded ? (
+              <div className="text-sm text-gray-600 dark:text-gray-400 relative">
+                <div className={shouldShowToggle && !isExpanded ? "max-h-24 overflow-hidden relative" : ""}>
+                  <SimpleTiptapRenderer
+                    content={experience.description || ""}
+                    mode="work"
+                    enableBulletList={true}
+                  />
+                  {shouldShowToggle && !isExpanded && (
+                    <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-card to-transparent pointer-events-none" />
+                  )}
+                </div>
+                {shouldShowToggle && (
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       toggleExpand(index);
                     }}
-                    className="ml-1 text-foreground hover:text-foreground/80 inline-flex items-center gap-1"
+                    className="mt-2 text-foreground hover:text-foreground/80 inline-flex items-center gap-1 underline underline-offset-4"
                   >
-                    View More <ChevronDown className="h-3 w-3" />
-                  </button>
-                ) : (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleExpand(index);
-                    }}
-                    className="ml-1 text-foreground hover:text-foreground/80 inline-flex items-center gap-1"
-                  >
-                    Show Less <ChevronUp className="h-3 w-3" />
+                    {isExpanded ? (
+                      <>
+                        Show Less <ChevronUp className="h-3 w-3" />
+                      </>
+                    ) : (
+                      <>
+                        View More <ChevronDown className="h-3 w-3" />
+                      </>
+                    )}
                   </button>
                 )}
-              </p>
+              </div>
             </div>
           </div>
         </motion.div>
@@ -200,7 +226,7 @@ export const Spotlight = ({ userDetails, edit }) => {
         <AddItem
           className="bg-df-section-card-bg-color shadow-df-section-card-shadow mt-4"
           title="Add your work experience"
-          onClick={() => openModal(modals.work)}
+          onClick={() => openSidebar(sidebars.work)}
           iconLeft={
             sortedExperiences?.length > 0 ? (
               <Button
@@ -208,7 +234,7 @@ export const Spotlight = ({ userDetails, edit }) => {
                 icon={
                   <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
                 }
-                onClick={() => openModal(modals.work)}
+                onClick={() => openSidebar(sidebars.work)}
                 size="small"
               />
             ) : (
@@ -222,7 +248,7 @@ export const Spotlight = ({ userDetails, edit }) => {
                 icon={
                   <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
                 }
-                onClick={() => openModal(modals.work)}
+                onClick={() => openSidebar(sidebars.work)}
                 size="small"
               />
             ) : (

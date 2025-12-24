@@ -343,6 +343,11 @@ module.exports = {
           dark: "#1d1f27",
           light: "#ffffff",
         },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+          border: "var(--destructive-border)",
+        },
         gray: {
           400: {
             dark: "rgb(156 163 175) !important",
@@ -403,6 +408,11 @@ module.exports = {
         "default-cursor-shadow": "var(--default-cursor-shadow)",
         tools: "0px 0px 8.8px 3px rgba(0, 0, 0, 0.02)",
         "bottom-nav-floating": "0 6px 20px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.04)",
+
+        // Review card shadows - using border color variable (adapts to light/dark mode)
+        "review-card-default": "0 0 0 1px rgba(0,0,0,0.03), 0 0 40px rgba(0,0,0,0.015)",
+        "review-card-editing": "0 0 0 1px hsl(var(--border)), 0 0 40px rgba(0,0,0,0.015)",
+        "review-card-focus-ring": "0 0 0 4px hsla(var(--border) / 0.12)",
       },
       fontSize: {
         h1: "61px",

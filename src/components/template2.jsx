@@ -19,7 +19,7 @@ import GoUp from "../../public/assets/svgs/go-up.svg";
 import { useRouter } from "next/router";
 import { chatBubbleItems } from "@/lib/constant";
 import Quote from "../../public/assets/svgs/quote.svg";
-import TextWithLineBreaks from "./TextWithLineBreaks";
+import SimpleTiptapRenderer from "./SimpleTiptapRenderer";
 import Linkedin from "../../public/assets/svgs/linkedinIcon.svg";
 import { useGlobalContext } from "@/context/globalContext";
 import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
@@ -239,10 +239,13 @@ export default function Template2({ userDetails, preview = false }) {
                 {reviews?.map((review) => (
                   <div className="border border-tools-card-item-border-color p-5 rounded-2xl">
                     <Quote />
-                    <TextWithLineBreaks
-                      text={review?.description}
-                      color={"text-df-base-text-color mt-4"}
-                    />
+                    <div className="mt-4 text-df-base-text-color">
+                      <SimpleTiptapRenderer
+                        content={review?.description || ""}
+                        mode="review"
+                        enableBulletList={false}
+                      />
+                    </div>
                     <div>
                       <div className="flex gap-4 justify-between items-center">
                         <div className="flex gap-2  mt-3">
@@ -306,12 +309,13 @@ export default function Template2({ userDetails, preview = false }) {
                                 : `${experience?.endMonth} ${experience?.endYear}`
                               }  `}
                           </Text>
-                          <p
-                            className={`text-[16px] font-light leading-[22.4px] font-inter`}
-                            dangerouslySetInnerHTML={{
-                              __html: experience?.description,
-                            }}
-                          ></p>
+                          <div className={`text-[16px] font-light leading-[22.4px] font-inter`}>
+                            <SimpleTiptapRenderer
+                              content={experience?.description || ""}
+                              mode="work"
+                              enableBulletList={true}
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>

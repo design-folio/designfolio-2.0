@@ -233,8 +233,9 @@ const Portfolio = ({ userDetails, edit }) => {
     );
   };
 
+  const wallpaperExists = userDetails?.wallpaper && userDetails?.wallpaper?.value != 0;
   return (
-    <div className={cn("min-h-screen bg-background text-foreground transition-colors duration-300", userDetails?.wallpaper && userDetails?.wallpaper?.value != 0 && "max-w-[890px] mx-auto rounded-2xl mb-8")}>
+    <div className={cn("min-h-screen bg-background text-foreground transition-colors duration-300", wallpaperExists && "max-w-[890px] mx-auto rounded-2xl mb-8", !edit && wallpaperExists && "mt-8")}>
       {/* Header */}
 
       <header className={cn("border-b border-secondary-border py-6 bg-background transition-colors duration-300 rounded-t-2xl",)}>
@@ -263,7 +264,7 @@ const Portfolio = ({ userDetails, edit }) => {
                 src={getUserAvatarImage(userDetails)}
                 alt="Profile"
                 className={cn(
-                  "w-10 h-10 rounded-full object-cover",
+                  "w-10 h-10 rounded-xl object-cover",
                   !avatar ? "bg-[#FFB088]" : ""
                 )}
               />

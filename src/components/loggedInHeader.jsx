@@ -1,4 +1,4 @@
-import { popovers } from "@/lib/constant";
+import { popovers, sidebars } from "@/lib/constant";
 import { formatTimestamp } from "@/lib/times";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -38,6 +38,8 @@ import { cn } from "@/lib/utils";
 import MobileMenuButton from "./MobileMenuButton";
 import ThemePanel from "./ThemePanel";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useGlobalContext } from "@/context/globalContext";
+import { modals } from "@/lib/constant";
 
 const cursors = [
   {
@@ -168,6 +170,22 @@ export default function LoggedInHeader({
   const [isCopied, setCopied] = useState(false);
   const [updateLoading, setUpdateLoading] = useState(false);
   const [isMobileThemePopup, setIsMobileThemePopup] = useState(false);
+
+  // Get activeSidebar from context to check if review or work sidebar is open
+  const { activeSidebar, openSidebar, closeSidebar } = useGlobalContext();
+  const isReviewSidebarOpen = activeSidebar === sidebars.review;
+  const isWorkSidebarOpen = activeSidebar === sidebars.work;
+  const isThemeSidebarOpen = activeSidebar === sidebars.theme;
+  // Header should shift when either ThemePanel, Review sidebar, or Work sidebar is open (desktop only)
+  const shouldShiftHeader = (isThemeSidebarOpen || isReviewSidebarOpen || isWorkSidebarOpen) && !isMobile;
+
+  // Calculate shift width based on which sidebar is open
+  const getShiftWidth = () => {
+    if (isWorkSidebarOpen) return '500px'; // Work sidebar uses 500px width
+    if (isReviewSidebarOpen) return '320px'; // Review sidebar uses 320px width
+    if (isThemeSidebarOpen) return '320px'; // ThemePanel uses 320px width
+    return '0';
+  };
 
   const { username, latestPublishDate, _id, email } = userDetails || {};
   const { isClient } = useClient();
@@ -314,13 +332,15 @@ export default function LoggedInHeader({
   };
 
   const handleTheme = () => {
-    setPopoverMenu((prev) =>
-      prev == popovers.themeMenu ? null : popovers.themeMenu
-    );
+    if (activeSidebar === sidebars.theme) {
+      closeSidebar(true); // Force close if already open
+    } else {
+      openSidebar(sidebars.theme); // Open theme sidebar
+    }
   };
 
   const handleCloseTheme = () => {
-    setPopoverMenu(null);
+    closeSidebar(); // Close theme sidebar (will check for unsaved changes)
   };
   const handlenavigation = () => {
     setPopoverMenu(null);
@@ -387,7 +407,7 @@ export default function LoggedInHeader({
         headerStyle,
         "z-50 px-2 md:px-0 py-2 md:py-6",
       )}
-      style={{ right: isThemePanelOpen && !isMobile ? '320px' : '0' }}
+      style={{ right: shouldShiftHeader ? getShiftWidth() : '0' }}
     >
       <div className="shadow-df-section-card-shadow max-w-[890px] p-3 border border-card-border md:!p-4 rounded-2xl bg-df-header-bg-color mx-auto flex justify-between items-center">
         <div className="flex items-center gap-[24px]">
@@ -400,28 +420,28 @@ export default function LoggedInHeader({
             className="relative theme-button"
             data-popover-menu={popovers.themeMenu}
           >
+
+            <Button
+              onClick={handleTheme}
+              variant="secondary"
+              className="h-11 px-4 mr-3 rounded-full"
+            >
+              <MemoThemeIcon className="!size-5" />
+              Theme
+            </Button>
+
             <Link href="/analytics">
               <Button
                 variant="secondary"
-                className="h-11 px-4 mr-3 rounded-full"
+                size="icon"
+                className="h-11 w-11 rounded-full"
+
               >
                 <MemoAnalytics className="!size-5" />
-                Insights
               </Button>
             </Link>
-            <Button
-              variant="secondary"
-              size="icon"
-              className="h-11 w-11 rounded-full"
-              onClick={handleTheme}
-            >
-              <MemoThemeIcon className="!size-5" />
-            </Button>
-
             {isClient && (
               <ThemePanel
-                show={popoverMenu === popovers.themeMenu}
-                handleClose={handleCloseTheme}
                 theme={theme}
                 changeTheme={changeTheme}
                 template={template}
@@ -767,6 +787,6 @@ export default function LoggedInHeader({
           </Popover>
         )}
       </div>
-    </div>
+    </div >
   );
 }

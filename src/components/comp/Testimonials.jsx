@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   ChevronDown,
   ChevronLeft,
@@ -7,19 +7,19 @@ import {
   ChevronUp,
   EditIcon,
 } from "lucide-react";
-import { useIsMobile } from "@/hooks/use-mobile";
-import AddItem from "../addItem";
+import { useState } from "react";
 import PlusIcon from "../../../public/assets/svgs/plus.svg";
-import BagIcon from "../../../public/assets/svgs/bag.svg";
-
-import { useTheme } from "next-themes";
-import { modals } from "@/lib/constant";
-import { useGlobalContext } from "@/context/globalContext";
-import { Button } from "../ui/button";
-import Button2 from "../button";
-import MemoTestimonial from "../icons/Testimonial";
+import AddItem from "../addItem";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useGlobalContext } from "@/context/globalContext";
+import { sidebars } from "@/lib/constant";
+import { useTheme } from "next-themes";
+import Button2 from "../button";
 import MemoLinkedin from "../icons/Linkedin";
+import MemoTestimonial from "../icons/Testimonial";
+import SimpleTiptapRenderer from "../SimpleTiptapRenderer";
+import { Button } from "../ui/button";
+import { getPlainTextLength } from "@/lib/tiptapUtils";
 
 export const Testimonials = ({ userDetails, edit }) => {
   const { reviews } = userDetails || {};
@@ -29,7 +29,7 @@ export const Testimonials = ({ userDetails, edit }) => {
   const isMobile = useIsMobile();
   const visibleTestimonials = showMore ? reviews : reviews?.slice(0, 4);
   const theme = useTheme();
-  const { openModal, setSelectedReview } = useGlobalContext();
+  const { openSidebar, setSelectedReview } = useGlobalContext();
 
   const handleNext = () => {
     setCurrentIndex((prev) =>
@@ -51,7 +51,7 @@ export const Testimonials = ({ userDetails, edit }) => {
 
   const handleClick = (review) => {
     setSelectedReview(review);
-    openModal(modals.review);
+    openSidebar(sidebars.review);
   };
 
   return (
@@ -88,49 +88,53 @@ export const Testimonials = ({ userDetails, edit }) => {
                     }}
                   >
                     <div className="flex items-start gap-2 mb-6 flex-1">
-                      <p className="text-base leading-relaxed text-foreground flex-1">
-                        {!expandedCards.includes(
-                          visibleTestimonials[currentIndex]?._id
-                        )
-                          ? visibleTestimonials[currentIndex]?.description?.slice(0, 180)
-                          : visibleTestimonials[currentIndex]?.description}
-                        {!expandedCards.includes(
-                          visibleTestimonials[currentIndex]?._id
-                        ) &&
-                          visibleTestimonials[currentIndex]?.description?.length > 180 && (
+                      <div className="flex-1">
+                        {(() => {
+                          const currentTestimonial = visibleTestimonials[currentIndex];
+                          const isExpanded = expandedCards.includes(currentTestimonial?._id);
+                          const plainTextLength = getPlainTextLength(currentTestimonial?.description || "");
+                          const shouldShowToggle = plainTextLength > 180;
+
+                          return (
                             <>
-                              ...
-                              <button
-                                onClick={() =>
-                                  toggleExpand(visibleTestimonials[currentIndex]?._id)
-                                }
-                                className="ml-1 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
-                              >
-                                View More
-                                <ChevronDown className="h-3 w-3" />
-                              </button>
+                              <div className={shouldShowToggle && !isExpanded ? "max-h-24 overflow-hidden relative" : ""}>
+                                <SimpleTiptapRenderer
+                                  content={currentTestimonial?.description || ""}
+                                  mode="review"
+                                  enableBulletList={false}
+                                />
+                                {shouldShowToggle && !isExpanded && (
+                                  <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-review-card-bg-color to-transparent pointer-events-none" />
+                                )}
+                              </div>
+                              {shouldShowToggle && (
+                                <button
+                                  onClick={() => toggleExpand(currentTestimonial?._id)}
+                                  className="mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
+                                >
+                                  {isExpanded ? (
+                                    <>
+                                      Show Less
+                                      <ChevronUp className="h-3 w-3" />
+                                    </>
+                                  ) : (
+                                    <>
+                                      View More
+                                      <ChevronDown className="h-3 w-3" />
+                                    </>
+                                  )}
+                                </button>
+                              )}
                             </>
-                          )}
-                        {expandedCards.includes(
-                          visibleTestimonials[currentIndex]?._id
-                        ) && (
-                            <button
-                              onClick={() =>
-                                toggleExpand(visibleTestimonials[currentIndex]?._id)
-                              }
-                              className="ml-1 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
-                            >
-                              Show Less
-                              <ChevronUp className="h-3 w-3" />
-                            </button>
-                          )}
-                      </p>
+                          );
+                        })()}
+                      </div>
                     </div>
 
                     <div className="flex items-center gap-3">
                       <Avatar className="w-12 h-12 shrink-0">
                         <AvatarImage
-                          src={visibleTestimonials[currentIndex]?.avatar}
+                          src={visibleTestimonials[currentIndex]?.avatar?.url || visibleTestimonials[currentIndex]?.avatar}
                           alt={visibleTestimonials[currentIndex]?.name}
                         />
                         <AvatarFallback
@@ -227,33 +231,46 @@ export const Testimonials = ({ userDetails, edit }) => {
                 }}
               >
                 <div className="flex items-start gap-2 mb-6 flex-1">
-                  <p className="text-base leading-relaxed text-foreground flex-1">
-                    {!expandedCards.includes(testimonial._id)
-                      ? testimonial.description?.slice(0, 180)
-                      : testimonial.description}
-                    {!expandedCards.includes(testimonial._id) &&
-                      testimonial.description?.length > 180 && (
+                  <div className="flex-1">
+                    {(() => {
+                      const isExpanded = expandedCards.includes(testimonial._id);
+                      const plainTextLength = getPlainTextLength(testimonial.description || "");
+                      const shouldShowToggle = plainTextLength > 180;
+
+                      return (
                         <>
-                          ...
-                          <button
-                            onClick={() => toggleExpand(testimonial._id)}
-                            className="ml-1 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
-                          >
-                            View More
-                            <ChevronDown className="h-3 w-3" />
-                          </button>
+                          <div className={shouldShowToggle && !isExpanded ? "max-h-24 overflow-hidden relative" : ""}>
+                            <SimpleTiptapRenderer
+                              content={testimonial.description || ""}
+                              mode="review"
+                              enableBulletList={false}
+                            />
+                            {shouldShowToggle && !isExpanded && (
+                              <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-review-card-bg-color to-transparent pointer-events-none" />
+                            )}
+                          </div>
+                          {shouldShowToggle && (
+                            <button
+                              onClick={() => toggleExpand(testimonial._id)}
+                              className="mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
+                            >
+                              {isExpanded ? (
+                                <>
+                                  Show Less
+                                  <ChevronUp className="h-3 w-3" />
+                                </>
+                              ) : (
+                                <>
+                                  View More
+                                  <ChevronDown className="h-3 w-3" />
+                                </>
+                              )}
+                            </button>
+                          )}
                         </>
-                      )}
-                    {expandedCards.includes(testimonial._id) && (
-                      <button
-                        onClick={() => toggleExpand(testimonial._id)}
-                        className="ml-1 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
-                      >
-                        Show Less
-                        <ChevronUp className="h-3 w-3" />
-                      </button>
-                    )}
-                  </p>
+                      );
+                    })()}
+                  </div>
                   {edit && (
                     <Button2
                       onClick={() => handleClick(testimonial)}
@@ -268,7 +285,7 @@ export const Testimonials = ({ userDetails, edit }) => {
 
                 <div className="flex items-center gap-3">
                   <Avatar className="w-12 h-12 shrink-0">
-                    <AvatarImage src={testimonial?.avatar} alt={testimonial?.name} />
+                    <AvatarImage src={testimonial?.avatar?.url || testimonial?.avatar} alt={testimonial?.name} />
                     <AvatarFallback
                       style={{
                         backgroundColor: "#FF9966",
@@ -332,7 +349,7 @@ export const Testimonials = ({ userDetails, edit }) => {
         <AddItem
           className="bg-df-section-card-bg-color shadow-df-section-card-shadow mt-6"
           title="Add your testimonial"
-          onClick={() => openModal(modals.review)}
+          onClick={() => openSidebar(sidebars.review)}
           iconLeft={
             reviews?.length > 0 ? (
               <Button2
@@ -340,7 +357,7 @@ export const Testimonials = ({ userDetails, edit }) => {
                 icon={
                   <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
                 }
-                onClick={() => openModal(modals.review)}
+                onClick={() => openSidebar(sidebars.review)}
                 size="small"
                 text
               />
@@ -355,7 +372,7 @@ export const Testimonials = ({ userDetails, edit }) => {
                 icon={
                   <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
                 }
-                onClick={() => openModal(modals.review)}
+                onClick={() => openSidebar(sidebars.review)}
                 size="small"
               />
             ) : (

@@ -5,7 +5,7 @@ import { useGlobalContext } from "@/context/globalContext";
 import Builder1 from "@/components/builder";
 import BottomTask from "@/components/bottomTask";
 import Modal from "@/components/modal";
-import { modals } from "@/lib/constant";
+import { modals, sidebars } from "@/lib/constant";
 import Onboarding from "@/components/onboarding-old";
 import OnboardingNewUser from "@/components/onboarding";
 import AddProject from "@/components/addProject";
@@ -29,6 +29,7 @@ import ProWarning from "@/components/proWarning";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { hasNoWallpaper } from "@/lib/wallpaper";
+import { UnsavedChangesDialog } from "@/components/ui/UnsavedChangesDialog";
 
 export default function Index() {
   const {
@@ -43,9 +44,35 @@ export default function Index() {
     isLoadingTemplate,
     setWallpaper,
     wallpaper,
+    activeSidebar,
+    showUnsavedWarning,
+    handleConfirmDiscardSidebar,
+    handleCancelDiscardSidebar,
+    isSwitchingSidebar,
+    pendingSidebarAction,
   } = useGlobalContext();
   const { isClient } = useClient();
   const router = useRouter();
+
+  // Manage body margin-right based on active sidebar to prevent layout shift during switching
+  useEffect(() => {
+    const body = document.body;
+    body.style.transition = 'margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+
+    let marginWidth = '0px';
+    if (activeSidebar === sidebars.work) {
+      marginWidth = '500px';
+    } else if (activeSidebar === sidebars.review || activeSidebar === sidebars.theme) {
+      marginWidth = '320px';
+    }
+
+    body.style.marginRight = marginWidth;
+
+    return () => {
+      body.style.marginRight = '0px';
+      body.style.transition = '';
+    };
+  }, [activeSidebar]);
 
   useEffect(() => {
     if (userDetailsIsState) {
@@ -65,7 +92,6 @@ export default function Index() {
   }, [userDetails?.wallpaper, setWallpaper]);
 
   useEffect(() => {
-    // Check if userDetails.skills exists and its length is 0
     if (userDetails && !userDetails?.emailVerification) {
       _resendOTP().then(() => {
         router.push("/email-verify");
@@ -104,11 +130,11 @@ export default function Index() {
       case modals.deleteProject:
         return <DeleteProject />;
       case modals.review:
-        return <AddReview />;
+        return null; // Review modal is handled by CustomSheet/Sheet in AddReview component
       case modals.tools:
         return <AddTools />;
       case modals.work:
-        return <AddWork />;
+        return null; // Work modal is handled by CustomSheet/Sheet in AddWork component
       case modals.resume:
         return <AddResume />;
       case modals.socialMedia:
@@ -149,6 +175,7 @@ export default function Index() {
       >
         {userDetails && !userDetails?.pro && <ProWarning />}
         {userDetails && (
+
           <>
             {isLoadingTemplate ? (
               <div className="flex items-center justify-center min-h-[calc(100vh-126px)]">
@@ -161,12 +188,26 @@ export default function Index() {
         )}
         {userDetails && taskPercentage !== 100 && <BottomTask />}
       </div>
-      <Modal show={showModal && showModal != modals.aiProject}>
+      <Modal show={showModal && showModal !== modals.aiProject && showModal !== modals.review && showModal !== modals.work}>
         {modalContent()}
       </Modal>
       <Modal show={modals.aiProject == showModal} className={"md:block"}>
         <CreateAiProject openModal={openModal} />
       </Modal>
+      <AddReview />
+      <AddWork />
+      {/* Unsaved changes dialog */}
+      <UnsavedChangesDialog
+        open={showUnsavedWarning && isSwitchingSidebar && pendingSidebarAction?.type === "open"}
+        onOpenChange={(open) => {
+          if (!open) {
+            handleCancelDiscardSidebar();
+          }
+        }}
+        onConfirmDiscard={handleConfirmDiscardSidebar}
+        title="Unsaved Changes"
+        description="You have unsaved changes. Are you sure you want to switch sidebars and discard them?"
+      />
       {isClient && userDetails && (
         <Feedefy
           projectId="a72769ea-5ab2-4ac9-81bd-1abe180d4b66"

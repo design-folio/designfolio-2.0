@@ -41,3 +41,62 @@ export const DomainValidationSchema = Yup.object().shape({
         )
         .required("Domain is required"),
 });
+
+
+
+
+export const ReviewValidationSchema = Yup.object().shape({
+    name: Yup.string()
+        .max(100, "Person name must be 100 characters or less")
+        .required("Person name is required"),
+    company: Yup.string()
+        .max(100, "Company name must be 100 characters or less")
+        .required("Company Name is required"),
+    description: Yup.mixed()
+        .test('is-valid-content', 'Description is required', (value) => {
+            // Accept JSON objects or non-empty strings
+            if (!value) return false;
+            if (typeof value === 'object' && value !== null && value.type === 'doc') return true;
+            if (typeof value === 'string' && value.trim() !== '') return true;
+            return false;
+        }),
+    linkedinLink: Yup.string()
+        .url("Please enter a valid URL")
+        .matches(/(linkedin.com)/, "Invalid LinkedIn Link"),
+});
+
+
+
+export const WorkValidationSchema = Yup.object().shape({
+    role: Yup.string()
+      .max(50, "Role must be 50 characters or less")
+      .required("Role is required"),
+    company: Yup.string()
+      .max(150, "Company name must be 150 characters or less")
+      .required("Company Name is required"),
+    description: Yup.mixed()
+      .test('is-valid-content', 'Description is required', (value) => {
+        // Accept JSON objects or non-empty strings
+        if (!value) return false;
+        if (typeof value === 'object' && value !== null && value.type === 'doc') return true;
+        if (typeof value === 'string' && value.trim() !== '') return true;
+        return false;
+      }),
+    startMonth: Yup.string().required("Month is required"),
+    startYear: Yup.string().required("Year is required"),
+    currentlyWorking: Yup.boolean(),
+    // Initially, do not make endMonth and endYear required
+    endMonth: Yup.string(),
+    endYear: Yup.string().test(
+      "endDate-test",
+      "End year must be greater than or equal to start year",
+      function (endYear) {
+        const { startYear, currentlyWorking } = this.parent;
+        if (currentlyWorking) {
+          return true; // Skip validation if currently working or endMonth/endYear is not provided
+        }
+  
+        return +startYear <= +endYear;
+      }
+    ),
+  });

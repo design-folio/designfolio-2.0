@@ -20,11 +20,11 @@ import GoUp from "../../public/assets/svgs/go-up.svg";
 import PlusIcon from "../../public/assets/svgs/plus.svg";
 import EditIcon from "../../public/assets/svgs/edit.svg";
 import AiIcon from "../../public/assets/svgs/ai.svg";
-import { modals } from "@/lib/constant";
+import { modals, sidebars } from "@/lib/constant";
 import AddCard from "./AddCard";
 import AddItem from "./addItem";
 import { useTheme } from "next-themes";
-import TextWithLineBreaks from "./TextWithLineBreaks";
+import SimpleTiptapRenderer from "./SimpleTiptapRenderer";
 import Quote from "../../public/assets/svgs/quote.svg";
 import PenIcon from "../../public/assets/svgs/pen-icon.svg";
 import SortableList, { SortableItem } from "react-easy-sort";
@@ -43,10 +43,13 @@ import MemoSocial from "./icons/Social";
 import MemoOtherlinks from "./icons/Otherlinks";
 import MemoCasestudy from "./icons/Casestudy";
 import MemoTestimonial from "./icons/Testimonial";
+import MemoLinkedin from "./icons/Linkedin";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 export default function Builder2({ edit = false }) {
   const {
     userDetails,
     openModal,
+    openSidebar,
     setSelectedProject,
     setSelectedWork,
     setSelectedReview,
@@ -104,11 +107,11 @@ export default function Builder2({ edit = false }) {
   };
   const handleEditWork = (work) => {
     setSelectedWork(work);
-    openModal(modals.work);
+    openSidebar(sidebars.work);
   };
   const handleEditReview = (review) => {
-    openModal(modals.review);
     setSelectedReview(review);
+    openSidebar(sidebars.review);
   };
 
   const onSortEnd = (oldIndex, newIndex) => {
@@ -251,11 +254,10 @@ export default function Builder2({ edit = false }) {
               )
             ) : (
               <AddCard
-                title={`${
-                  projects?.length === 0
-                    ? "Upload your first case study"
-                    : "Add case study"
-                }`}
+                title={`${projects?.length === 0
+                  ? "Upload your first case study"
+                  : "Add case study"
+                  }`}
                 subTitle="Show off your best work."
                 first={projects?.length !== 0}
                 buttonTitle="Add case study"
@@ -275,13 +277,12 @@ export default function Builder2({ edit = false }) {
       <Chat direction="left">
         {edit && reviews?.length == 0 && (
           <AddCard
-            title={`${
-              userDetails?.reviews?.length == 0
-                ? "My testimonials"
-                : "Add more reviews"
-            } `}
+            title={`${userDetails?.reviews?.length == 0
+              ? "My testimonials"
+              : "Add more reviews"
+              } `}
             subTitle="Share colleague's feedback."
-            onClick={() => openModal(modals.review)}
+            onClick={() => openSidebar(sidebars.review)}
             className={
               "flex justify-center items-center flex-col p-4 w-[340px]"
             }
@@ -294,40 +295,61 @@ export default function Builder2({ edit = false }) {
           {reviews?.map((review) => (
             <div className="border border-tools-card-item-border-color p-5 rounded-2xl">
               <Quote />
-              <TextWithLineBreaks
-                text={review?.description}
-                color={"text-df-base-text-color mt-4"}
-              />
-              <div>
-                <div className="flex gap-4 justify-between items-center">
-                  <div className="flex gap-2  mt-3">
-                    <Linkedin />
-                    <div>
-                      <Text
-                        size="p-xsmall"
-                        className="text-review-card-text-color"
-                      >
-                        {review?.name}
-                      </Text>
-                      <Text
-                        size="p-xxsmall"
-                        className="text-review-card-description-color"
-                      >
-                        {review?.company}
-                      </Text>
-                    </div>
-                  </div>
-                  {edit && (
-                    <Button
-                      size="icon"
-                      onClick={() => handleEditReview(review)}
-                      type={"secondary"}
-                      icon={
-                        <EditIcon className="text-df-icon-color cursor-pointer text-2xl" />
-                      }
-                    />
+              <div className="mt-4 text-df-base-text-color">
+                <SimpleTiptapRenderer
+                  content={review?.description || ""}
+                  mode="review"
+                  enableBulletList={false}
+                />
+              </div>
+              <div className="flex items-center gap-3 mt-4">
+                <Avatar className="w-12 h-12 shrink-0">
+                  <AvatarImage src={review?.avatar?.url || review?.avatar} alt={review?.name} />
+                  <AvatarFallback
+                    style={{
+                      backgroundColor: "#FF9966",
+                      color: "#FFFFFF",
+                      fontWeight: 500,
+                    }}
+                  >
+                    {review?.name
+                      ?.split(" ")
+                      .map((n) => n[0])
+                      .join("")
+                      .slice(0, 2)
+                      .toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+
+                <div className="flex-1">
+                  {review.linkedinLink && review.linkedinLink !== "" ? (
+                    <a
+                      href={review.linkedinLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1 text-blue-500"
+                    >
+                      <MemoLinkedin className="text-df-icon-color w-4 h-4" />
+                      <span className="font-semibold cursor-pointer text-base">{review?.name}</span>
+                    </a>
+                  ) : (
+                    <h3 className="font-semibold text-base mb-0">{review?.name}</h3>
                   )}
+                  <p className="text-sm text-foreground/50">
+                    {review?.role ? `${review.role}, ` : ""}
+                    {review?.company}
+                  </p>
                 </div>
+                {edit && (
+                  <Button
+                    size="icon"
+                    onClick={() => handleEditReview(review)}
+                    type={"secondary"}
+                    icon={
+                      <EditIcon className="text-df-icon-color cursor-pointer text-2xl" />
+                    }
+                  />
+                )}
               </div>
             </div>
           ))}
@@ -335,7 +357,7 @@ export default function Builder2({ edit = false }) {
         {edit && reviews?.length > 0 && (
           <AddItem
             title="Add testimonial"
-            onClick={() => openModal(modals.review)}
+            onClick={() => openSidebar(sidebars.review)}
             iconLeft={
               userDetails?.reviews?.length > 0 ? (
                 <Button
@@ -343,7 +365,7 @@ export default function Builder2({ edit = false }) {
                   icon={
                     <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
                   }
-                  onClick={() => openModal(modals.review)}
+                  onClick={() => openSidebar(sidebars.review)}
                   size="small"
                 />
               ) : (
@@ -392,16 +414,18 @@ export default function Builder2({ edit = false }) {
                       size="p-xsmall"
                       className="font-medium mt-[6px] text-work-card-description-color"
                     >
-                      {`${experience?.startMonth} ${experience?.startYear} - ${
-                        experience?.currentlyWorking
-                          ? "Present"
-                          : `${experience?.endMonth} ${experience?.endYear}`
-                      }  `}
+                      {`${experience?.startMonth} ${experience?.startYear} - ${experience?.currentlyWorking
+                        ? "Present"
+                        : `${experience?.endMonth} ${experience?.endYear}`
+                        }  `}
                     </Text>
-                    <TextWithLineBreaks
-                      text={experience?.description}
-                      color={"text-df-base-text-color mt-4"}
-                    />
+                    <div className="text-df-base-text-color mt-4">
+                      <SimpleTiptapRenderer
+                        content={experience?.description || ""}
+                        mode="work"
+                        enableBulletList={true}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -410,7 +434,7 @@ export default function Builder2({ edit = false }) {
           {edit && (
             <AddItem
               title="Add your work experience"
-              onClick={() => openModal(modals.work)}
+              onClick={() => openSidebar(sidebars.work)}
               iconLeft={
                 userDetails?.experiences?.length > 0 ? (
                   <Button
@@ -418,7 +442,7 @@ export default function Builder2({ edit = false }) {
                     icon={
                       <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
                     }
-                    onClick={() => openModal(modals.work)}
+                    onClick={() => openSidebar(sidebars.work)}
                     size="small"
                   />
                 ) : (
@@ -434,7 +458,7 @@ export default function Builder2({ edit = false }) {
                     icon={
                       <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
                     }
-                    onClick={() => openModal(modals.work)}
+                    onClick={() => openSidebar(sidebars.work)}
                     size="small"
                   />
                 ) : (

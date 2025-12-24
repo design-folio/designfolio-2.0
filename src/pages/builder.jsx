@@ -149,7 +149,7 @@ export default function Index() {
   if (!userDetails?.emailVerification) {
     return <></>;
   }
-
+  console.log(template);
   const renderTemplate = () => {
     switch (template) {
       case 0:

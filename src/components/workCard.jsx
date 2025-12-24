@@ -2,14 +2,28 @@ import { useGlobalContext } from "@/context/globalContext";
 import Text from "./text";
 import SimpleTiptapRenderer from "./SimpleTiptapRenderer";
 import { Button } from "./ui/buttonNew";
-import { PencilIcon } from "lucide-react";
+import { PencilIcon, ChevronDown, ChevronUp } from "lucide-react";
+import { useState } from "react";
+import { getPlainTextLength } from "@/lib/tiptapUtils";
 
 export default function WorkCard({ work, onClick, show = true, edit }) {
   const { setSelectedWork } = useGlobalContext();
+  const [expandedCards, setExpandedCards] = useState([]);
+
   const handleClick = () => {
     setSelectedWork(work);
     onClick();
   };
+
+  const toggleExpand = (id) => {
+    setExpandedCards((prev) =>
+      prev.includes(id) ? prev.filter((cardId) => cardId !== id) : [...prev, id]
+    );
+  };
+
+  const isExpanded = expandedCards.includes(work?._id);
+  const plainTextLength = getPlainTextLength(work?.description || "");
+  const shouldShowToggle = plainTextLength > 180;
 
   return (
     <div className="flex flex-col-reverse lg:flex-row gap-2 lg:gap-10">
@@ -51,11 +65,34 @@ export default function WorkCard({ work, onClick, show = true, edit }) {
           </Text>
 
           <div className="text-work-card-description-color">
-            <SimpleTiptapRenderer
-              content={work?.description || ""}
-              mode="work"
-              enableBulletList={true}
-            />
+            <div className={shouldShowToggle && !isExpanded ? "max-h-24 overflow-hidden relative" : ""}>
+              <SimpleTiptapRenderer
+                content={work?.description || ""}
+                mode="work"
+                enableBulletList={true}
+              />
+              {shouldShowToggle && !isExpanded && (
+                <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-df-section-card-bg-color to-transparent pointer-events-none" />
+              )}
+            </div>
+            {shouldShowToggle && (
+              <button
+                onClick={() => toggleExpand(work?._id)}
+                className="mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
+              >
+                {isExpanded ? (
+                  <>
+                    Show Less
+                    <ChevronUp className="h-3 w-3" />
+                  </>
+                ) : (
+                  <>
+                    View More
+                    <ChevronDown className="h-3 w-3" />
+                  </>
+                )}
+              </button>
+            )}
           </div>
         </div>
       </div>

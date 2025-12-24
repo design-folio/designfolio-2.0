@@ -36,7 +36,7 @@ import ProjectLock from "./projectLock";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { Button as ButtonNew } from "./ui/buttonNew";
 import { cn } from "@/lib/utils";
-import { PencilIcon } from "lucide-react";
+import { PencilIcon, ChevronDown, ChevronUp } from "lucide-react";
 import MemoWorkExperience from "./icons/WorkExperience";
 import MemoResume from "./icons/Resume";
 import MemoSocial from "./icons/Social";
@@ -45,6 +45,7 @@ import MemoCasestudy from "./icons/Casestudy";
 import MemoTestimonial from "./icons/Testimonial";
 import MemoLinkedin from "./icons/Linkedin";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getPlainTextLength } from "@/lib/tiptapUtils";
 export default function Builder2({ edit = false }) {
   const {
     userDetails,
@@ -112,6 +113,22 @@ export default function Builder2({ edit = false }) {
   const handleEditReview = (review) => {
     setSelectedReview(review);
     openSidebar(sidebars.review);
+  };
+
+  const [expandedReviewCards, setExpandedReviewCards] = useState([]);
+
+  const toggleExpandReview = (id) => {
+    setExpandedReviewCards((prev) =>
+      prev.includes(id) ? prev.filter((cardId) => cardId !== id) : [...prev, id]
+    );
+  };
+
+  const [expandedExperienceCards, setExpandedExperienceCards] = useState([]);
+
+  const toggleExpandExperience = (id) => {
+    setExpandedExperienceCards((prev) =>
+      prev.includes(id) ? prev.filter((cardId) => cardId !== id) : [...prev, id]
+    );
   };
 
   const onSortEnd = (oldIndex, newIndex) => {
@@ -292,67 +309,97 @@ export default function Builder2({ edit = false }) {
           />
         )}
         <div className="space-y-4">
-          {reviews?.map((review) => (
-            <div className="border border-tools-card-item-border-color p-5 rounded-2xl">
-              <Quote />
-              <div className="mt-4 text-df-base-text-color">
-                <SimpleTiptapRenderer
-                  content={review?.description || ""}
-                  mode="review"
-                  enableBulletList={false}
-                />
-              </div>
-              <div className="flex items-center gap-3 mt-4">
-                <Avatar className="w-12 h-12 shrink-0">
-                  <AvatarImage src={review?.avatar?.url || review?.avatar} alt={review?.name} />
-                  <AvatarFallback
-                    style={{
-                      backgroundColor: "#FF9966",
-                      color: "#FFFFFF",
-                      fontWeight: 500,
-                    }}
-                  >
-                    {review?.name
-                      ?.split(" ")
-                      .map((n) => n[0])
-                      .join("")
-                      .slice(0, 2)
-                      .toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
+          {reviews?.map((review) => {
+            const isExpanded = expandedReviewCards.includes(review?._id);
+            const plainTextLength = getPlainTextLength(review?.description || "");
+            const shouldShowToggle = plainTextLength > 180;
 
-                <div className="flex-1">
-                  {review.linkedinLink && review.linkedinLink !== "" ? (
-                    <a
-                      href={review.linkedinLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1 text-blue-500"
+            return (
+              <div key={review?._id} className="border border-tools-card-item-border-color p-5 rounded-2xl">
+                <Quote />
+                <div className="mt-4 text-df-base-text-color">
+                  <div className={shouldShowToggle && !isExpanded ? "max-h-24 overflow-hidden relative" : ""}>
+                    <SimpleTiptapRenderer
+                      content={review?.description || ""}
+                      mode="review"
+                      enableBulletList={false}
+                      className="bg-card"
+                    />
+                    {shouldShowToggle && !isExpanded && (
+                      <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-card to-transparent pointer-events-none" />
+                    )}
+                  </div>
+                  {shouldShowToggle && (
+                    <button
+                      onClick={() => toggleExpandReview(review?._id)}
+                      className="mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
                     >
-                      <MemoLinkedin className="text-df-icon-color w-4 h-4" />
-                      <span className="font-semibold cursor-pointer text-base">{review?.name}</span>
-                    </a>
-                  ) : (
-                    <h3 className="font-semibold text-base mb-0">{review?.name}</h3>
+                      {isExpanded ? (
+                        <>
+                          Show Less
+                          <ChevronUp className="h-3 w-3" />
+                        </>
+                      ) : (
+                        <>
+                          View More
+                          <ChevronDown className="h-3 w-3" />
+                        </>
+                      )}
+                    </button>
                   )}
-                  <p className="text-sm text-foreground/50">
-                    {review?.role ? `${review.role}, ` : ""}
-                    {review?.company}
-                  </p>
                 </div>
-                {edit && (
-                  <Button
-                    size="icon"
-                    onClick={() => handleEditReview(review)}
-                    type={"secondary"}
-                    icon={
-                      <EditIcon className="text-df-icon-color cursor-pointer text-2xl" />
-                    }
-                  />
-                )}
+                <div className="flex items-center gap-3 mt-4">
+                  <Avatar className="w-12 h-12 shrink-0">
+                    <AvatarImage src={review?.avatar?.url || review?.avatar} alt={review?.name} />
+                    <AvatarFallback
+                      style={{
+                        backgroundColor: "#FF9966",
+                        color: "#FFFFFF",
+                        fontWeight: 500,
+                      }}
+                    >
+                      {review?.name
+                        ?.split(" ")
+                        .map((n) => n[0])
+                        .join("")
+                        .slice(0, 2)
+                        .toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+
+                  <div className="flex-1">
+                    {review.linkedinLink && review.linkedinLink !== "" ? (
+                      <a
+                        href={review.linkedinLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1 text-blue-500"
+                      >
+                        <MemoLinkedin className="text-df-icon-color w-4 h-4" />
+                        <span className="font-semibold cursor-pointer text-base">{review?.name}</span>
+                      </a>
+                    ) : (
+                      <h3 className="font-semibold text-base mb-0">{review?.name}</h3>
+                    )}
+                    <p className="text-sm text-foreground/50">
+                      {review?.role ? `${review.role}, ` : ""}
+                      {review?.company}
+                    </p>
+                  </div>
+                  {edit && (
+                    <Button
+                      size="icon"
+                      onClick={() => handleEditReview(review)}
+                      type={"secondary"}
+                      icon={
+                        <EditIcon className="text-df-icon-color cursor-pointer text-2xl" />
+                      }
+                    />
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
         {edit && reviews?.length > 0 && (
           <AddItem
@@ -382,6 +429,10 @@ export default function Builder2({ edit = false }) {
       <Chat direction="left" className="pb-5">
         <div className="flex flex-col gap-6">
           {experiences?.map((experience, index) => {
+            const isExpanded = expandedExperienceCards.includes(experience?._id);
+            const plainTextLength = getPlainTextLength(experience?.description || "");
+            const shouldShowToggle = plainTextLength > 180;
+
             return (
               <div key={experience?._id}>
                 <div className="flex justify-between items-center">
@@ -420,11 +471,34 @@ export default function Builder2({ edit = false }) {
                         }  `}
                     </Text>
                     <div className="text-df-base-text-color mt-4">
-                      <SimpleTiptapRenderer
-                        content={experience?.description || ""}
-                        mode="work"
-                        enableBulletList={true}
-                      />
+                      <div className={shouldShowToggle && !isExpanded ? "max-h-24 overflow-hidden relative" : ""}>
+                        <SimpleTiptapRenderer
+                          content={experience?.description || ""}
+                          mode="work"
+                          enableBulletList={true}
+                        />
+                        {shouldShowToggle && !isExpanded && (
+                          <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-card to-transparent pointer-events-none" />
+                        )}
+                      </div>
+                      {shouldShowToggle && (
+                        <button
+                          onClick={() => toggleExpandExperience(experience?._id)}
+                          className="mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
+                        >
+                          {isExpanded ? (
+                            <>
+                              Show Less
+                              <ChevronUp className="h-3 w-3" />
+                            </>
+                          ) : (
+                            <>
+                              View More
+                              <ChevronDown className="h-3 w-3" />
+                            </>
+                          )}
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>

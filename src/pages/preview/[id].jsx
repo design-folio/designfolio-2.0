@@ -1,21 +1,19 @@
-import { _getUser } from "@/network/get-request";
-import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/router";
-import { useTheme } from "next-themes";
-import { useEffect, useMemo } from "react";
-import Seo from "@/components/seo";
-import WallpaperBackground from "@/components/WallpaperBackground";
-import { capitalizeWords } from "@/lib/capitalizeText";
-import Template1 from "@/components/template";
-import Template2 from "@/components/template2";
 import BottomNavigation from "@/components/bottomNavigation";
-import useClient from "@/hooks/useClient";
 import Minimal from "@/components/comp/Minimal";
 import Portfolio from "@/components/comp/Portfolio";
-import MadeWithDesignfolio from "../../../public/assets/svgs/madewithdesignfolio.svg";
-import { getWallpaperUrl } from "@/lib/wallpaper";
-import { cn } from "@/lib/utils";
+import Seo from "@/components/seo";
+import Template1 from "@/components/template";
+import Template2 from "@/components/template2";
 import { useGlobalContext } from "@/context/globalContext";
+import useClient from "@/hooks/useClient";
+import { cn } from "@/lib/utils";
+import { getWallpaperUrl } from "@/lib/wallpaper";
+import { _getUser } from "@/network/get-request";
+import { useQuery } from "@tanstack/react-query";
+import { useTheme } from "next-themes";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import MadeWithDesignfolio from "../../../public/assets/svgs/madewithdesignfolio.svg";
 
 export default function Index({ initialUserDetails }) {
   const { setTheme, theme, resolvedTheme } = useTheme();

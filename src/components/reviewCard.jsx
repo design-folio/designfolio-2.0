@@ -6,6 +6,7 @@ import { ChevronDown, ChevronUp, PencilIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import MemoLinkedin from "./icons/Linkedin";
 import SimpleTiptapRenderer from "./SimpleTiptapRenderer";
+import { getPlainTextLength } from "@/lib/tiptapUtils";
 
 export default function ReviewCard({ review, edit = false }) {
   const { openSidebar, setSelectedReview, selectedReview, activeSidebar } = useGlobalContext();
@@ -26,24 +27,6 @@ export default function ReviewCard({ review, edit = false }) {
   };
 
   const isExpanded = expandedCards.includes(review?._id);
-
-  // Helper function to get plain text length from HTML for truncation check
-  const getPlainTextLength = (html) => {
-    if (!html) return 0;
-    // Check if it's already plain text (no HTML tags)
-    if (!/<[a-z][\s\S]*>/i.test(html)) {
-      return html.length;
-    }
-    // Remove HTML tags and get text length
-    if (typeof window !== 'undefined') {
-      const tempDiv = document.createElement("div");
-      tempDiv.innerHTML = html;
-      return tempDiv.textContent?.length || 0;
-    }
-    // Fallback for SSR
-    return html.replace(/<[^>]*>/g, '').length;
-  };
-
   const plainTextLength = getPlainTextLength(review?.description || "");
   const shouldShowToggle = plainTextLength > 180;
 

@@ -278,7 +278,7 @@ const SimpleTiptapEditor = ({
                 )}
             </div>
             {/* Editor Content */}
-            <div className="tiptap-editor-wrapper p-3" >
+            <div className="simple-tiptap-editor-wrapper" >
                 <EditorContent editor={editor} />
             </div>
         </div>

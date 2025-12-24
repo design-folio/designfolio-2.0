@@ -25,6 +25,13 @@
   min-height: 300px;
 }
 
+.simple-tiptap-editor-wrapper {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 12px;
+}
+
 /* Override min-height for review mode */
 .ProseMirror.tiptap-review-mode {
   min-height: 120px;

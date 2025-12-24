@@ -175,6 +175,7 @@ export default function Index() {
       >
         {userDetails && !userDetails?.pro && <ProWarning />}
         {userDetails && (
+
           <>
             {isLoadingTemplate ? (
               <div className="flex items-center justify-center min-h-[calc(100vh-126px)]">

@@ -1,51 +1,48 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useGlobalContext } from "@/context/globalContext";
-import { useRouter } from "next/router";
-import React, { useState } from "react";
-import DfImage from "./image";
-import Chat from "./chat";
-import Text from "./text";
-import ProjectCard from "./ProjectCard";
-import ProjectShape from "../../public/assets/svgs/project-shape.svg";
-import ExperienceShape from "../../public/assets/svgs/experience-shape.svg";
-import Link from "next/link";
-import Button from "./button";
-import DribbbleIcon from "../../public/assets/svgs/dribbble.svg";
-import BehanceIcon from "../../public/assets/svgs/behance.svg";
-import NotionIcon from "../../public/assets/svgs/noteIcon.svg";
-import MediumIcon from "../../public/assets/svgs/medium.svg";
-import InstagramIcon from "../../public/assets/svgs/instagram.svg";
-import TwitterIcon from "../../public/assets/svgs/twitter.svg";
-import LinkedInIcon from "../../public/assets/svgs/linkedin.svg";
-import GoUp from "../../public/assets/svgs/go-up.svg";
-import PlusIcon from "../../public/assets/svgs/plus.svg";
-import EditIcon from "../../public/assets/svgs/edit.svg";
-import AiIcon from "../../public/assets/svgs/ai.svg";
 import { modals, sidebars } from "@/lib/constant";
+import { getUserAvatarImage } from "@/lib/getAvatarUrl";
+import { getPlainTextLength } from "@/lib/tiptapUtils";
+import { cn } from "@/lib/utils";
+import { _updateUser } from "@/network/post-request";
+import { arrayMoveImmutable as arrayMove } from "array-move";
+import { ChevronDown, ChevronUp, PencilIcon } from "lucide-react";
+import { useTheme } from "next-themes";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import SortableList, { SortableItem } from "react-easy-sort";
+import AiIcon from "../../public/assets/svgs/ai.svg";
+import BehanceIcon from "../../public/assets/svgs/behance.svg";
+import DribbbleIcon from "../../public/assets/svgs/dribbble.svg";
+import EditIcon from "../../public/assets/svgs/edit.svg";
+import ExperienceShape from "../../public/assets/svgs/experience-shape.svg";
+import GoUp from "../../public/assets/svgs/go-up.svg";
+import InstagramIcon from "../../public/assets/svgs/instagram.svg";
+import LinkedInIcon from "../../public/assets/svgs/linkedin.svg";
+import MediumIcon from "../../public/assets/svgs/medium.svg";
+import { default as NoteIcon, default as NotionIcon } from "../../public/assets/svgs/noteIcon.svg";
+import PlusIcon from "../../public/assets/svgs/plus.svg";
+import ProjectShape from "../../public/assets/svgs/project-shape.svg";
+import Quote from "../../public/assets/svgs/quote.svg";
+import TwitterIcon from "../../public/assets/svgs/twitter.svg";
 import AddCard from "./AddCard";
 import AddItem from "./addItem";
-import { useTheme } from "next-themes";
-import SimpleTiptapRenderer from "./SimpleTiptapRenderer";
-import Quote from "../../public/assets/svgs/quote.svg";
-import PenIcon from "../../public/assets/svgs/pen-icon.svg";
-import SortableList, { SortableItem } from "react-easy-sort";
-import { arrayMoveImmutable as arrayMove } from "array-move";
-import { _updateUser } from "@/network/post-request";
-import Linkedin from "../../public/assets/svgs/linkedinIcon.svg";
-import NoteIcon from "../../public/assets/svgs/noteIcon.svg";
-import ProjectLock from "./projectLock";
-import { getUserAvatarImage } from "@/lib/getAvatarUrl";
-import { Button as ButtonNew } from "./ui/buttonNew";
-import { cn } from "@/lib/utils";
-import { PencilIcon, ChevronDown, ChevronUp } from "lucide-react";
-import MemoWorkExperience from "./icons/WorkExperience";
+import Button from "./button";
+import Chat from "./chat";
+import MemoCasestudy from "./icons/Casestudy";
+import MemoLinkedin from "./icons/Linkedin";
+import MemoOtherlinks from "./icons/Otherlinks";
 import MemoResume from "./icons/Resume";
 import MemoSocial from "./icons/Social";
-import MemoOtherlinks from "./icons/Otherlinks";
-import MemoCasestudy from "./icons/Casestudy";
 import MemoTestimonial from "./icons/Testimonial";
-import MemoLinkedin from "./icons/Linkedin";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getPlainTextLength } from "@/lib/tiptapUtils";
+import MemoWorkExperience from "./icons/WorkExperience";
+import DfImage from "./image";
+import ProjectCard from "./ProjectCard";
+import ProjectLock from "./projectLock";
+import SimpleTiptapRenderer from "./SimpleTiptapRenderer";
+import Text from "./text";
+import { Button as ButtonNew } from "./ui/buttonNew";
 export default function Builder2({ edit = false }) {
   const {
     userDetails,
@@ -318,7 +315,7 @@ export default function Builder2({ edit = false }) {
               <div key={review?._id} className="border border-tools-card-item-border-color p-5 rounded-2xl">
                 <Quote />
                 <div className="mt-4 text-df-base-text-color">
-                  <div className={shouldShowToggle && !isExpanded ? "max-h-24 overflow-hidden relative" : ""}>
+                  <div className={shouldShowToggle && !isExpanded ? "max-h-[110px] overflow-hidden relative" : ""}>
                     <SimpleTiptapRenderer
                       content={review?.description || ""}
                       mode="review"
@@ -431,7 +428,7 @@ export default function Builder2({ edit = false }) {
           {experiences?.map((experience, index) => {
             const isExpanded = expandedExperienceCards.includes(experience?._id);
             const plainTextLength = getPlainTextLength(experience?.description || "");
-            const shouldShowToggle = plainTextLength > 180;
+            const shouldShowToggle = plainTextLength > 200;
 
             return (
               <div key={experience?._id}>
@@ -471,7 +468,7 @@ export default function Builder2({ edit = false }) {
                         }  `}
                     </Text>
                     <div className="text-df-base-text-color mt-4">
-                      <div className={shouldShowToggle && !isExpanded ? "max-h-24 overflow-hidden relative" : ""}>
+                      <div className={shouldShowToggle && !isExpanded ? "max-h-[110px]  overflow-hidden relative" : ""}>
                         <SimpleTiptapRenderer
                           content={experience?.description || ""}
                           mode="work"

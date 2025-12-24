@@ -163,7 +163,7 @@ export const Spotlight = ({ userDetails, edit }) => {
                 {experience.company}
               </div>
               <div className="text-sm text-gray-600 dark:text-gray-400 relative">
-                <div className={shouldShowToggle && !isExpanded ? "max-h-24 overflow-hidden relative" : ""}>
+                <div className={shouldShowToggle && !isExpanded ? "max-h-[110px] overflow-hidden relative" : ""}>
                   <SimpleTiptapRenderer
                     content={experience.description || ""}
                     mode="work"

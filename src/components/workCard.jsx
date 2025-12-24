@@ -65,7 +65,7 @@ export default function WorkCard({ work, onClick, show = true, edit }) {
           </Text>
 
           <div className="text-work-card-description-color">
-            <div className={shouldShowToggle && !isExpanded ? "max-h-24 overflow-hidden relative" : ""}>
+            <div className={shouldShowToggle && !isExpanded ? "max-h-[110px] overflow-hidden relative" : ""}>
               <SimpleTiptapRenderer
                 content={work?.description || ""}
                 mode="work"

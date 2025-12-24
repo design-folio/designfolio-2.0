@@ -97,7 +97,7 @@ export const Testimonials = ({ userDetails, edit }) => {
 
                           return (
                             <>
-                              <div className={shouldShowToggle && !isExpanded ? "max-h-24 overflow-hidden relative" : ""}>
+                              <div className={shouldShowToggle && !isExpanded ? "max-h-[110px] overflow-hidden relative" : ""}>
                                 <SimpleTiptapRenderer
                                   content={currentTestimonial?.description || ""}
                                   mode="review"
@@ -239,7 +239,7 @@ export const Testimonials = ({ userDetails, edit }) => {
 
                       return (
                         <>
-                          <div className={shouldShowToggle && !isExpanded ? "max-h-24 overflow-hidden relative" : ""}>
+                          <div className={shouldShowToggle && !isExpanded ? "max-h-[110px]  overflow-hidden relative" : ""}>
                             <SimpleTiptapRenderer
                               content={testimonial.description || ""}
                               mode="review"

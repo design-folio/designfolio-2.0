@@ -41,7 +41,7 @@ export default function ReviewCard({ review, edit = false }) {
       {/* Review Text with Edit button */}
       <div className="flex items-start gap-2 mb-6 flex-1">
         <div className="flex-1">
-          <div className={shouldShowToggle && !isExpanded ? "max-h-24 overflow-hidden relative" : ""}>
+          <div className={shouldShowToggle && !isExpanded ? "max-h-[110px]  overflow-hidden relative" : ""}>
             <SimpleTiptapRenderer
               content={review?.description || ""}
               mode="review"

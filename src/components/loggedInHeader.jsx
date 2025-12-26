@@ -666,7 +666,10 @@ export default function LoggedInHeader({
                 <Button
                   variant="secondary"
                   className="h-11 px-4 w-full mt-4 rounded-full"
-                  onClick={() => setIsMobileThemePopup(true)}
+                  onClick={() => {
+                    setPopoverMenu(null); // Close mobile menu
+                    handleTheme(); // Open theme sidebar
+                  }}
                 >
                   <MemoThemeIcon className="w-4 h-4" />
                   Change theme

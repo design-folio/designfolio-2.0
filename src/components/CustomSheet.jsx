@@ -22,13 +22,14 @@ const CustomSheet = ({
 
   return createPortal(
     <>
-      {/* Overlay - Visual only, no click to close */}
+      {/* Overlay - Click to close on mobile */}
       {showOverlay && (
         <div
           className={cn(
-            "fixed inset-0 bg-black/20 z-40 transition-opacity duration-300 pointer-events-none",
+            "fixed inset-0 bg-black/20 z-40 transition-opacity duration-300",
             open ? "opacity-100 visible" : "opacity-0 invisible"
           )}
+          onClick={onClose}
         />
       )}
 

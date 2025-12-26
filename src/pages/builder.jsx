@@ -30,6 +30,7 @@ import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { hasNoWallpaper } from "@/lib/wallpaper";
 import { UnsavedChangesDialog } from "@/components/ui/UnsavedChangesDialog";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function Index() {
   const {
@@ -53,16 +54,22 @@ export default function Index() {
   } = useGlobalContext();
   const { isClient } = useClient();
   const router = useRouter();
+  const isMobile = useIsMobile();
 
-  // Manage body margin-right based on active sidebar to prevent layout shift during switching
+  // Manage body margin-right based on active sidebar to prevent layout shift during switching (desktop only)
   useEffect(() => {
+    // Only apply margin on desktop, not mobile
+    if (isMobile) {
+      return;
+    }
+
     const body = document.body;
     body.style.transition = 'margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
 
     let marginWidth = '0px';
-    if (activeSidebar === sidebars.work) {
+    if (activeSidebar === sidebars.work || activeSidebar === sidebars.review) {
       marginWidth = '500px';
-    } else if (activeSidebar === sidebars.review || activeSidebar === sidebars.theme) {
+    } else if (activeSidebar === sidebars.theme) {
       marginWidth = '320px';
     }
 
@@ -72,7 +79,7 @@ export default function Index() {
       body.style.marginRight = '0px';
       body.style.transition = '';
     };
-  }, [activeSidebar]);
+  }, [activeSidebar, isMobile]);
 
   useEffect(() => {
     if (userDetailsIsState) {

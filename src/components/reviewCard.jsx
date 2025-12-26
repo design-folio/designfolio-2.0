@@ -16,8 +16,8 @@ export default function ReviewCard({ review, edit = false }) {
   const isEditing = activeSidebar === sidebars.review && selectedReview?._id === review?._id;
 
   const handleEdit = () => {
-    openSidebar(sidebars.review);
     setSelectedReview(review);
+    openSidebar(sidebars.review);
   };
 
   const toggleExpand = (id) => {

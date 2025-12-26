@@ -11,6 +11,7 @@ import MemoLeftArrow from "@/components/icons/LeftArrow";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { hasNoWallpaper } from "@/lib/wallpaper";
+import { sidebars } from "@/lib/constant";
 
 export default function Settings() {
   const {
@@ -20,7 +21,27 @@ export default function Settings() {
     domainDetails,
     fetchDomainDetails,
     wallpaper,
+    activeSidebar,
   } = useGlobalContext();
+
+  useEffect(() => {
+    const body = document.body;
+    body.style.transition = 'margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+
+    let marginWidth = '0px';
+    if (activeSidebar === sidebars.work || activeSidebar === sidebars.review) {
+      marginWidth = '500px';
+    } else if (activeSidebar === sidebars.theme) {
+      marginWidth = '320px';
+    }
+
+    body.style.marginRight = marginWidth;
+
+    return () => {
+      body.style.marginRight = '0px';
+      body.style.transition = '';
+    };
+  }, [activeSidebar]);
 
   const router = useRouter();
   const handleBack = () => {

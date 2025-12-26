@@ -182,7 +182,7 @@ export default function LoggedInHeader({
   // Calculate shift width based on which sidebar is open
   const getShiftWidth = () => {
     if (isWorkSidebarOpen) return '500px'; // Work sidebar uses 500px width
-    if (isReviewSidebarOpen) return '320px'; // Review sidebar uses 320px width
+    if (isReviewSidebarOpen) return '500px'; // Review sidebar uses 500px width
     if (isThemeSidebarOpen) return '320px'; // ThemePanel uses 320px width
     return '0';
   };

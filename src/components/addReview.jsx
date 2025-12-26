@@ -387,7 +387,7 @@ export default function AddReview() {
         open={isOpen}
         onClose={handleCloseModal}
         title="Add review details"
-        width="320px"
+        width="500px"
       >
         {renderFormContent()}
       </SheetWrapper>

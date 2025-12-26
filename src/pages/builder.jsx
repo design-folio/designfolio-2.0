@@ -60,9 +60,9 @@ export default function Index() {
     body.style.transition = 'margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
 
     let marginWidth = '0px';
-    if (activeSidebar === sidebars.work) {
+    if (activeSidebar === sidebars.work || activeSidebar === sidebars.review) {
       marginWidth = '500px';
-    } else if (activeSidebar === sidebars.review || activeSidebar === sidebars.theme) {
+    } else if (activeSidebar === sidebars.theme) {
       marginWidth = '320px';
     }
 

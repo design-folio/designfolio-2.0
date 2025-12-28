@@ -1,35 +1,32 @@
-import React, { useEffect, useState } from "react";
-import DfImage from "./image";
-import Chat from "./chat";
-import Text from "./text";
-import ProjectCard from "./ProjectCard";
-import ProjectShape from "../../public/assets/svgs/project-shape.svg";
-import ExperienceShape from "../../public/assets/svgs/experience-shape.svg";
-import Link from "next/link";
-import Button from "./button";
-import { Button as ButtonNew } from "./ui/buttonNew"
-import DribbbleIcon from "../../public/assets/svgs/dribbble.svg";
-import BehanceIcon from "../../public/assets/svgs/behance.svg";
-import NotionIcon from "../../public/assets/svgs/noteIcon.svg";
-import MediumIcon from "../../public/assets/svgs/medium.svg";
-import InstagramIcon from "../../public/assets/svgs/instagram.svg";
-import TwitterIcon from "../../public/assets/svgs/twitter.svg";
-import LinkedInIcon from "../../public/assets/svgs/linkedin.svg";
-import GoUp from "../../public/assets/svgs/go-up.svg";
-import { useRouter } from "next/router";
-import { chatBubbleItems } from "@/lib/constant";
-import Quote from "../../public/assets/svgs/quote.svg";
-import SimpleTiptapRenderer from "./SimpleTiptapRenderer";
-import Linkedin from "../../public/assets/svgs/linkedinIcon.svg";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useGlobalContext } from "@/context/globalContext";
-import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
-import NoteIcon from "../../public/assets/svgs/noteIcon.svg";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
-import MemoLeftArrow from "./icons/LeftArrow";
-import { cn } from "@/lib/utils";
 import { getPlainTextLength } from "@/lib/tiptapUtils";
+import { cn } from "@/lib/utils";
 import { ChevronDown, ChevronUp } from "lucide-react";
-
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import BehanceIcon from "../../public/assets/svgs/behance.svg";
+import DribbbleIcon from "../../public/assets/svgs/dribbble.svg";
+import ExperienceShape from "../../public/assets/svgs/experience-shape.svg";
+import GoUp from "../../public/assets/svgs/go-up.svg";
+import InstagramIcon from "../../public/assets/svgs/instagram.svg";
+import LinkedInIcon from "../../public/assets/svgs/linkedin.svg";
+import MediumIcon from "../../public/assets/svgs/medium.svg";
+import { default as NoteIcon, default as NotionIcon } from "../../public/assets/svgs/noteIcon.svg";
+import ProjectShape from "../../public/assets/svgs/project-shape.svg";
+import Quote from "../../public/assets/svgs/quote.svg";
+import TwitterIcon from "../../public/assets/svgs/twitter.svg";
+import Button from "./button";
+import Chat from "./chat";
+import MemoLeftArrow from "./icons/LeftArrow";
+import DfImage from "./image";
+import ProjectCard from "./ProjectCard";
+import SimpleTiptapRenderer from "./SimpleTiptapRenderer";
+import Text from "./text";
+import { Button as ButtonNew } from "./ui/buttonNew";
+import MemoLinkedin from "./icons/Linkedin";
 export default function Template2({ userDetails, preview = false }) {
   const {
     bio,
@@ -256,7 +253,6 @@ export default function Template2({ userDetails, preview = false }) {
                   const isExpanded = expandedReviewCards.includes(review?._id);
                   const plainTextLength = getPlainTextLength(review?.description || "");
                   const shouldShowToggle = plainTextLength > 180;
-                  console.log(plainTextLength);
                   return (
                     <div key={review?._id} className="border border-tools-card-item-border-color p-5 rounded-2xl">
                       <Quote />
@@ -291,25 +287,43 @@ export default function Template2({ userDetails, preview = false }) {
                           </button>
                         )}
                       </div>
-                      <div>
-                        <div className="flex gap-4 justify-between items-center">
-                          <div className="flex gap-2  mt-3">
-                            <Linkedin />
-                            <div>
-                              <Text
-                                size="p-xsmall"
-                                className="text-review-card-text-color"
-                              >
-                                {review?.name}
-                              </Text>
-                              <Text
-                                size="p-xxsmall"
-                                className="text-review-card-description-color"
-                              >
-                                {review?.company}
-                              </Text>
-                            </div>
-                          </div>
+                      <div className="flex items-center gap-3 mt-4">
+                        <Avatar className="w-12 h-12 shrink-0">
+                          <AvatarImage src={review?.avatar?.url || review?.avatar} alt={review?.name} />
+                          <AvatarFallback
+                            style={{
+                              backgroundColor: "#FF9966",
+                              color: "#FFFFFF",
+                              fontWeight: 500,
+                            }}
+                          >
+                            {review?.name
+                              ?.split(" ")
+                              .map((n) => n[0])
+                              .join("")
+                              .slice(0, 2)
+                              .toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+
+                        <div className="flex-1">
+                          {review.linkedinLink && review.linkedinLink !== "" ? (
+                            <a
+                              href={review.linkedinLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-1 text-blue-500"
+                            >
+                              <MemoLinkedin className="text-df-icon-color w-4 h-4" />
+                              <span className="font-semibold cursor-pointer text-base">{review?.name}</span>
+                            </a>
+                          ) : (
+                            <h3 className="font-semibold text-base mb-0">{review?.name}</h3>
+                          )}
+                          <p className="text-sm text-foreground/50">
+                            {review?.role ? `${review.role}, ` : ""}
+                            {review?.company}
+                          </p>
                         </div>
                       </div>
                     </div>

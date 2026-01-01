@@ -62,6 +62,7 @@ export default function AddWork() {
   } = useGlobalContext();
   const [loading, setLoading] = useState(false);
   const [editingValues, setEditingValues] = useState(null);
+  const [showDeleteWarning, setShowDeleteWarning] = useState(false);
 
   const formikRef = useRef(null);
 
@@ -107,19 +108,36 @@ export default function AddWork() {
     );
   };
 
-  const resetStateAndClose = () => {
-    closeSidebar(true); // Force close since we're handling unsaved changes separately
+  const resetState = () => {
     setSelectedWork(null);
     setEditingValues(null);
+    setShowDeleteWarning(false);
+  };
+
+  const resetStateAndClose = () => {
+    resetState();
+    closeSidebar(true); // Force close since we're handling unsaved changes separately
   };
 
   const handleCloseModal = () => {
-    closeSidebar(); // This will check for unsaved changes
+    // closeSidebar will check for unsaved changes and show dialog if needed
+    // If no unsaved changes, it will close immediately and useEffect will call resetStateAndClose
+    closeSidebar();
   };
 
   const handleCancel = () => {
-    closeSidebar(); // This will check for unsaved changes
+    // closeSidebar will check for unsaved changes and show dialog if needed
+    // If no unsaved changes, it will close immediately and useEffect will call resetStateAndClose
+    closeSidebar();
   };
+
+  // Clear state when sidebar closes using resetState
+  useEffect(() => {
+    if (!isOpen) {
+      // Reset state when sidebar closes (after unsaved changes dialog is handled if needed)
+      resetState();
+    }
+  }, [isOpen]);
 
   // Register unsaved changes checker
   useEffect(() => {
@@ -140,9 +158,16 @@ export default function AddWork() {
   }, [showUnsavedWarning, isOpen]);
 
   const handleDeleteWork = () => {
+    setShowDeleteWarning(true);
+  };
+
+  const confirmDelete = () => {
     _deleteExperience(selectedWork?._id)
       .then(() => userDetailsRefecth())
-      .finally(resetStateAndClose);
+      .finally(() => {
+        resetStateAndClose();
+        setShowDeleteWarning(false);
+      });
   };
   /* ---------------- Form ---------------- */
 
@@ -458,11 +483,25 @@ export default function AddWork() {
           }
         }}
         onConfirmDiscard={() => {
-          resetStateAndClose();
           handleConfirmDiscardSidebar();
+          resetStateAndClose();
         }}
         title="Unsaved Changes"
         description="You have made changes to this work experience. Are you sure you want to discard them?"
+      />
+
+      <UnsavedChangesDialog
+        open={showDeleteWarning}
+        onOpenChange={(open) => {
+          if (!open) {
+            setShowDeleteWarning(false);
+          }
+        }}
+        onConfirmDiscard={confirmDelete}
+        title="Delete Work Experience"
+        description="Are you sure you want to delete this work experience? This action cannot be undone."
+        confirmText="Delete"
+        cancelText="Cancel"
       />
     </>
   );

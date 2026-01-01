@@ -238,21 +238,25 @@ export default function Builder2({ edit = false }) {
       </SortableList>
 
       {edit && (
-        <div className="max-w-[444px] relative">
+        <div className="w-full md:w-[calc(50%-12px)] max-w-[444px] relative">
           <ProjectShape className="text-template-text-left-bg-color" />
-          <Chat direction="left" className="rounded-tl-none w-fit">
+          <Chat direction="left" className={cn("rounded-tl-none", projects.length <= 1 ? "w-full" : "w-fit")}>
             {projects.length > 1 ? (
               userDetails?.pro || userDetails?.projects.length < 1 ? (
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
                   <Button
+
                     text={"Add case study"}
-                    customClass="w-fit gap-1 items-center"
+                    customClass="w-fit gap-1  items-center"
                     onClick={() => openModal(modals.project)}
                     icon={
                       <PlusIcon className="text-primary-btn-text-color w-[20px] h-[20px] mb-[2px] cursor-pointer" />
                     }
                   />
-                  or
+                  <span className="inline-flex items-center leading-none h-full">
+                    or
+                  </span>
+
                   <Button
                     text={"Write with AI"}
                     type="secondary"
@@ -263,6 +267,7 @@ export default function Builder2({ edit = false }) {
                     onClick={() => openModal(modals.aiProject)}
                   />
                 </div>
+
               ) : (
                 <ProjectLock />
               )
@@ -279,7 +284,7 @@ export default function Builder2({ edit = false }) {
                 onClick={() => openModal(modals.project)}
                 icon={<MemoCasestudy className="cursor-pointer size-[72px]" />}
                 openModal={openModal}
-                className="flex justify-center items-center flex-col p-4"
+                className="flex justify-center items-center flex-col p-4 w-full"
               />
             )}
           </Chat>

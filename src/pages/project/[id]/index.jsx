@@ -29,20 +29,23 @@ export default function Index({ data }) {
     );
   }, [router.query.id, userDetails?.projects]);
 
-  // Use useQuery instead of useMutation for proper caching
+  const shouldFetch = router.isReady &&
+    !!router.query.id &&
+    userDetails !== null && // Context has been checked
+    !contextProject; // Project not in context
+
   const { data: fetchedData } = useQuery({
     queryKey: [`project-${router.query.id}`],
     queryFn: async () => {
       const response = await _getProjectDetails(router.query.id, 1);
       return response.data;
     },
-    enabled: !!router.query.id && !contextProject, // Only fetch if not in context
-    placeholderData: data, // Use SSR data as placeholder
+    enabled: shouldFetch, 
+    placeholderData: data, 
     cacheTime: 300000,
     staleTime: 60000,
   });
 
-  // Prioritize: unlocked > context > fetched > SSR data
   const projectData = useMemo(() => {
     if (unlockedProjectData) {
       return {

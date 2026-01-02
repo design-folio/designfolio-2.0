@@ -5,6 +5,15 @@ import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import DOMPurify from "dompurify";
 import he from "he";
+
+// Safe sanitize function that works in both server and client
+const sanitize = (dirty) => {
+  if (typeof window === "undefined") {
+    // On server, return empty string or basic HTML escape
+    return dirty || "";
+  }
+  return DOMPurify.sanitize(dirty || "");
+};
 // Custom list renderer component
 const CustomListRenderer = React.memo(({ items, listType = "unordered" }) => {
   const ListTag = listType === "unordered" ? "ul" : "ol";
@@ -21,7 +30,7 @@ const CustomListRenderer = React.memo(({ items, listType = "unordered" }) => {
             <>
               <span
                 dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(item.content),
+                  __html: sanitize(item.content),
                 }}
               />
               <CustomListRenderer items={item.items} listType={listType} />
@@ -127,9 +136,8 @@ const RenderImageBlock = React.memo(({ block }) => {
           <img
             src={block?.data?.file?.url}
             alt="project image"
-            className={`w-full h-full ${getClassNames} rounded-[20px] object-cover transition-opacity duration-100 mt-6 md:mt-8 ${
-              isImageLoaded ? "opacity-100" : "opacity-0"
-            }`}
+            className={`w-full h-full ${getClassNames} rounded-[20px] object-cover transition-opacity duration-100 mt-6 md:mt-8 ${isImageLoaded ? "opacity-100" : "opacity-0"
+              }`}
             loading="lazy"
             fetchPriority="high"
             decoding="async"
@@ -146,7 +154,7 @@ const RenderImageBlock = React.memo(({ block }) => {
       )}
       <figcaption
         dangerouslySetInnerHTML={{
-          __html: DOMPurify.sanitize(he.decode(block?.data?.caption || "")),
+          __html: sanitize(he.decode(block?.data?.caption || "")),
         }}
       />
     </figure>
@@ -177,7 +185,7 @@ const BlockRenderer = ({ editorJsData }) => {
               <tr>
                 {data?.data?.content[0]?.map((header, index) => {
                   const decoded = he.decode(he.decode(header)); // decode twice for entities
-                  const cleanHTML = DOMPurify.sanitize(decoded);
+                  const cleanHTML = sanitize(decoded);
                   return (
                     <th
                       key={index}
@@ -193,7 +201,7 @@ const BlockRenderer = ({ editorJsData }) => {
                 <tr key={rowIndex}>
                   {row.map((cell, cellIndex) => {
                     const decoded = he.decode(he.decode(cell));
-                    const cleanHTML = DOMPurify.sanitize(decoded);
+                    const cleanHTML = sanitize(decoded);
                     return (
                       <td
                         key={cellIndex}

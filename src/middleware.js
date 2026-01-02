@@ -6,8 +6,13 @@ export async function middleware(request) {
   const baseDomain = process.env.NEXT_PUBLIC_BASE_DOMAIN;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
-  // Skip for localhost and beta.<domain>
-  if (hostname === "localhost" || hostname === `beta.${baseDomain}`) {
+  // Skip for localhost, beta.<domain>, and www.<baseDomain> (root domain)
+  if (
+    hostname === "localhost" ||
+    hostname === `beta.${baseDomain}` ||
+    hostname === `www.${baseDomain}` ||
+    hostname === baseDomain
+  ) {
     return NextResponse.next();
   }
 

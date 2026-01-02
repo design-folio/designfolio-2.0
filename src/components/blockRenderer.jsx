@@ -3,7 +3,10 @@ import React, { useMemo, useState, useRef } from "react";
 import Blocks from "editorjs-blocks-react-renderer";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-import DOMPurify from "dompurify";
+import DOMPurifyLib from "dompurify";
+
+// DOMPurify requires window, so we need to handle SSR
+const DOMPurify = typeof window !== "undefined" ? DOMPurifyLib : { sanitize: (html) => html };
 import he from "he";
 
 // Safe sanitize function that works in both server and client

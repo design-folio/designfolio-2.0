@@ -3,17 +3,17 @@ export const removeWallpaper = () => {
     if (wallpaperElement) {
         wallpaperElement.remove();
     }
-    // Restore background color by removing inline styles
-    document.body.style.backgroundColor = "";
-    document.documentElement.style.backgroundColor = "";
+    // Restore background color by removing inline styles to allow CSS rules to apply
+    document.body.style.removeProperty("background-color");
+    document.documentElement.style.removeProperty("background-color");
 };
 
 const applyWallpaper = (url) => {
     const oldWallpaper = document.getElementById("global-wallpaper");
 
-    // Set background to transparent to ensure wallpaper is visible
+    // Set body background to transparent to ensure wallpaper is visible
+    // Don't set HTML background to avoid inheritance issues
     document.body.style.backgroundColor = "transparent";
-    document.documentElement.style.backgroundColor = "transparent";
 
     // Create new wallpaper element
     const newWallpaper = document.createElement("div");

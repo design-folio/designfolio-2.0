@@ -73,7 +73,10 @@ export default function Builder() {
         />
       </motion.div>
       <motion.div variants={itemVariants}>
-        <Reviews edit userDetails={userDetails} openModal={handleOpen} />
+        <Reviews
+          edit
+          openModal={handleOpen}
+        />
       </motion.div>
       <motion.div variants={itemVariants}>
         <Tools userDetails={userDetails} openModal={openModal} edit />

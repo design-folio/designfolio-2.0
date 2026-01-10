@@ -8,7 +8,7 @@ import MemoLinkedin from "./icons/Linkedin";
 import SimpleTiptapRenderer from "./SimpleTiptapRenderer";
 import { getPlainTextLength } from "@/lib/tiptapUtils";
 
-export default function ReviewCard({ review, edit = false }) {
+export default function ReviewCard({ review, edit = false, sorting = false }) {
   const { openSidebar, setSelectedReview, selectedReview, activeSidebar } = useGlobalContext();
   const [expandedCards, setExpandedCards] = useState([]);
 
@@ -33,54 +33,56 @@ export default function ReviewCard({ review, edit = false }) {
   return (
     <div
       key={review?._id}
-      className={`bg-review-card-bg-color border-2 rounded-3xl p-6 flex flex-col hover-elevate transition-all ${isEditing
+      className={`bg-review-card-bg-color border-2 ${sorting ? 'rounded-2xl p-4' : 'rounded-3xl p-6'} flex flex-col ${sorting ? '' : 'hover-elevate transition-all'} ${isEditing
         ? "border-default-cursor-box-border shadow-review-card-editing focus-within:shadow-review-card-focus-ring"
         : "border-border/30 shadow-review-card-default"
         }`}
     >
       {/* Review Text with Edit button */}
-      <div className="flex items-start gap-2 mb-6 flex-1">
-        <div className="flex-1">
-          <div className={shouldShowToggle && !isExpanded ? "max-h-[110px]  overflow-hidden relative" : ""}>
-            <SimpleTiptapRenderer
-              content={review?.description || ""}
-              mode="review"
-              enableBulletList={false}
-              className="rounded-none shadow-none"
-            />
-            {shouldShowToggle && !isExpanded && (
-              <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-review-card-bg-color to-transparent pointer-events-none" />
+      {!sorting && (
+        <div className="flex items-start gap-2 mb-6 flex-1">
+          <div className="flex-1">
+            <div className={shouldShowToggle && !isExpanded ? "max-h-[110px]  overflow-hidden relative" : ""}>
+              <SimpleTiptapRenderer
+                content={review?.description || ""}
+                mode="review"
+                enableBulletList={false}
+                className="rounded-none shadow-none"
+              />
+              {shouldShowToggle && !isExpanded && (
+                <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-review-card-bg-color to-transparent pointer-events-none" />
+              )}
+            </div>
+            {shouldShowToggle && (
+              <button
+                onClick={() => toggleExpand(review?._id)}
+                className="mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
+              >
+                {isExpanded ? (
+                  <>
+                    Show Less
+                    <ChevronUp className="h-3 w-3" />
+                  </>
+                ) : (
+                  <>
+                    View More
+                    <ChevronDown className="h-3 w-3" />
+                  </>
+                )}
+              </button>
             )}
           </div>
-          {shouldShowToggle && (
-            <button
-              onClick={() => toggleExpand(review?._id)}
-              className="mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
+          {edit && (
+            <Button
+              onClick={handleEdit}
+              variant={"secondary"}
+              className="h-8 w-8 rounded-full hover:bg-foreground/5 shrink-0"
             >
-              {isExpanded ? (
-                <>
-                  Show Less
-                  <ChevronUp className="h-3 w-3" />
-                </>
-              ) : (
-                <>
-                  View More
-                  <ChevronDown className="h-3 w-3" />
-                </>
-              )}
-            </button>
+              <PencilIcon className="text-df-icon-color w-4 h-4" />
+            </Button>
           )}
         </div>
-        {edit && (
-          <Button
-            onClick={handleEdit}
-            variant={"secondary"}
-            className="h-8 w-8 rounded-full hover:bg-foreground/5 shrink-0"
-          >
-            <PencilIcon className="text-df-icon-color w-4 h-4" />
-          </Button>
-        )}
-      </div>
+      )}
 
       {/* Avatar + User Info */}
       <div className="flex items-center gap-3">

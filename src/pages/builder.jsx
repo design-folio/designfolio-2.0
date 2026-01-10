@@ -31,6 +31,7 @@ import { cn } from "@/lib/utils";
 import { hasNoWallpaper } from "@/lib/wallpaper";
 import { UnsavedChangesDialog } from "@/components/ui/UnsavedChangesDialog";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { CourseCard } from "@/components/CourceCard";
 
 export default function Index() {
   const {
@@ -221,6 +222,7 @@ export default function Index() {
           data-feedefy-userid={userDetails?.email}
         ></Feedefy>
       )}
+      {!isMobile && <CourseCard />}
     </main>
   );
 }

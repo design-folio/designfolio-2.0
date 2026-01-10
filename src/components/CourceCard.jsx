@@ -38,17 +38,17 @@ export function CourseCard() {
     return (
         <>
             <div
-                className={`fixed bottom-0 z-50 w-[calc(100%-2rem)] md:w-[300px] bg-white border border-border rounded-t-2xl shadow-[0_-8px_30px_rgb(0,0,0,0.04)] transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] transform ${isExpanded ? "translate-y-0" : "translate-y-[calc(100%-60px)]"
+                className={`fixed bottom-0 z-50 w-[calc(100%-2rem)] md:w-[300px] bg-white dark:bg-[#23252F] border border-border rounded-t-2xl shadow-[0_-8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_-8px_30px_rgb(0,0,0,0.3)] transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] transform ${isExpanded ? "translate-y-0" : "translate-y-[calc(100%-60px)]"
                     }`}
                 style={{ right: getRightPosition() }}
             >
                 {/* Minimized Header / Toggle Area */}
                 <button
                     onClick={() => setIsExpanded(!isExpanded)}
-                    className="w-full h-[60px] flex items-center justify-between px-5 bg-white text-foreground rounded-t-2xl hover:bg-muted/30 transition-colors group"
+                    className="w-full h-[60px] flex items-center justify-between px-5 bg-white dark:bg-[#23252F] text-foreground rounded-t-2xl hover:bg-muted/30 dark:hover:bg-muted/20 transition-colors group"
                 >
                     <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-[#FAF8F5] border border-border/50 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+                        <div className="w-9 h-9 rounded-xl bg-[#FAF8F5] dark:bg-[#262832] border border-border/50 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
                             <GraduationCap className="w-4.5 h-4.5 text-foreground/80" />
                         </div>
                         <div className="flex flex-col items-start leading-none">
@@ -82,7 +82,7 @@ export function CourseCard() {
 
                     <div className="space-y-2 pt-2">
                         <div className="flex items-center justify-between">
-                            <p className="text-[11px] uppercase tracking-wider font-bold text-[#8c8c8c]">
+                            <p className="text-[11px] uppercase tracking-wider font-bold text-foreground/60">
                                 Seats Available
                             </p>
                             <div className="flex items-center gap-2">
@@ -94,11 +94,11 @@ export function CourseCard() {
                         </div>
 
                         <div className="relative">
-                            <div className="h-1.5 w-full bg-[#efeee9] rounded-full overflow-hidden">
+                            <div className="h-1.5 w-full bg-[#efeee9] dark:bg-[#383A47] rounded-full overflow-hidden">
                                 <div className="h-full w-[45%] bg-[#f97316] rounded-full transition-all duration-1000 ease-out"></div>
                             </div>
                         </div>
-                        <p className="text-[12px] font-bold text-[#1a1c20] tracking-tight">
+                        <p className="text-[12px] font-bold text-foreground tracking-tight">
                             13 of 30 seats remaining
                         </p>
                     </div>

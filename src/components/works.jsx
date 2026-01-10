@@ -1,11 +1,23 @@
-import { sidebars, moveItemInArray } from "@/lib/constant";
+import { sidebars } from "@/lib/constant";
 import { _updateUser } from "@/network/post-request";
 import React, { useContext, useRef, useState } from "react";
 import {
-  SortableContainer,
-  SortableElement,
-  SortableHandle,
-} from "react-sortable-hoc";
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import Section from "./section";
 import WorkCard from "./workCard";
 import AddItem from "./addItem";
@@ -14,10 +26,10 @@ import Button from "./button";
 import Modal from "./modal";
 import Text from "./text";
 import CloseIcon from "../../public/assets/svgs/close.svg";
-import DragIcon from "../../public/assets/svgs/drag.svg";
 import SortIcon from "../../public/assets/svgs/sort.svg";
 import { useTheme } from "next-themes";
 import MemoWorkExperience from "./icons/WorkExperience";
+import DragHandle from "./DragHandle";
 
 export default function Works({
   edit,
@@ -27,20 +39,28 @@ export default function Works({
   updateCache,
 }) {
   const scrollContainerRef = useRef(null); // Ref for the scrollable container
-
-  const getContainer = () => scrollContainerRef.current;
   const [showModal, setShowModal] = useState(false);
   const { theme } = useTheme();
-  const onSortStart = () => {
-    document.body.classList.add("cursor-grabbing");
-    document.body.classList.remove("cursor-grab");
-  };
 
-  const onSortEnd = ({ oldIndex, newIndex }) => {
-    document.body.classList.remove("cursor-grabbing");
-    document.body.classList.add("cursor-grab");
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
-    const sortedExperiences = moveItemInArray(
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = userDetails.experiences.findIndex(
+      (exp) => exp._id === active.id
+    );
+    const newIndex = userDetails.experiences.findIndex(
+      (exp) => exp._id === over.id
+    );
+
+    const sortedExperiences = arrayMove(
       userDetails.experiences,
       oldIndex,
       newIndex
@@ -129,37 +149,33 @@ export default function Works({
               customClass="!p-2"
               icon={<CloseIcon className="text-icon-color cursor-pointer" />}
               onClick={() => {
-                document.body.classList.remove("cursor-grab");
                 setShowModal(false);
               }}
             />
           </div>
-          <SortableContainerElement
-            onSortEnd={onSortEnd}
-            onSortStart={onSortStart}
-            useDragHandle
-            axis="y"
-            lockAxis="y"
-            helperClass="z-[100000] list-none"
-            getContainer={getContainer}
-            lockToContainerEdges={true}
-            lockOffset={["0%", "100%"]} // Lock the movement to the container edges
-            helperContainer={getContainer}
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
           >
-            <div
-              ref={scrollContainerRef}
-              className="flex flex-col gap-[24px] py-5 list-none max-h-[450px] overflow-auto "
+            <SortableContext
+              items={userDetails?.experiences?.map((exp) => exp._id) || []}
+              strategy={verticalListSortingStrategy}
             >
-              {userDetails?.experiences?.map((experience, index) => (
-                <SortableItem
-                  key={`item-${experience._id}`} // Assuming each project has a unique id for better key handling
-                  index={index}
-                  value={experience}
-                  edit={edit}
-                />
-              ))}
-            </div>
-          </SortableContainerElement>
+              <div
+                ref={scrollContainerRef}
+                className="flex flex-col gap-[24px] py-5 list-none max-h-[450px] overflow-auto "
+              >
+                {userDetails?.experiences?.map((experience) => (
+                  <SortableItem
+                    key={experience._id}
+                    experience={experience}
+                    edit={edit}
+                  />
+                ))}
+              </div>
+            </SortableContext>
+          </DndContext>
 
           <div className="h-5" />
         </div>
@@ -168,35 +184,34 @@ export default function Works({
   );
 }
 
-const DragHandle = SortableHandle(({ rectFill }) => {
-  return (
-    <Button
-      type="normal"
-      icon={
-        <DragIcon className="text-project-card-reorder-btn-icon-color cursor-pointer" />
-      }
-    />
-  );
-});
-
-const SortableItem = SortableElement(({ value }) => {
-  const [grabbing, setGrabbing] = useState(false);
+const SortableItem = ({ experience, edit }) => {
   const { theme } = useTheme();
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: experience._id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 9999 : 1,
+  };
+
   return (
     <div
-      className={`bg-white px-5 flex justify-between gap-5 items-start dark:bg-[#23252F]`}
+      ref={setNodeRef}
+      style={style}
+      className={`bg-white px-5 flex justify-between gap-5 items-start dark:bg-[#23252F] ${isDragging ? 'relative' : ''}`}
     >
       <div className="flex-1">
-        <WorkCard work={value} show={false} />
+        <WorkCard work={experience} show={false} sorting={true} />
       </div>
-      <DragHandle
-        setGrabbing={() => setGrabbing(true)}
-        rectFill={theme == "dark" ? "#383A47" : "#EFF0F0"}
-      />
+      <DragHandle listeners={listeners} attributes={attributes} />
     </div>
   );
-});
-
-const SortableContainerElement = SortableContainer(({ children }) => {
-  return <>{children}</>;
-});
+};

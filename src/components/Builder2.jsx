@@ -5,13 +5,27 @@ import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { getPlainTextLength } from "@/lib/tiptapUtils";
 import { cn } from "@/lib/utils";
 import { _updateUser } from "@/network/post-request";
-import { arrayMoveImmutable as arrayMove } from "array-move";
 import { ChevronDown, ChevronUp, PencilIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
-import SortableList, { SortableItem } from "react-easy-sort";
+import React, { useState } from "react";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  rectSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import AiIcon from "../../public/assets/svgs/ai.svg";
 import BehanceIcon from "../../public/assets/svgs/behance.svg";
 import DribbbleIcon from "../../public/assets/svgs/dribbble.svg";
@@ -43,6 +57,67 @@ import ProjectLock from "./projectLock";
 import SimpleTiptapRenderer from "./SimpleTiptapRenderer";
 import Text from "./text";
 import { Button as ButtonNew } from "./ui/buttonNew";
+import DragHandle from "./DragHandle";
+
+// Move SortableProjectItem outside to prevent recreation on each render
+const SortableProjectItem = React.memo(({ project, onDeleteProject, handleRouter, getHref, recentlyMovedIds }) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: project._id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 9999 : 1,
+  };
+
+  const wasRecentlyMoved = recentlyMovedIds?.has(project._id) ?? false;
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`w-full md:w-[calc(50%-12px)] max-w-[444px] relative ${isDragging ? 'relative' : ''}`}
+    >
+      <ProjectShape className="text-template-text-left-bg-color" />
+      <Chat direction="left" className="rounded-tl-none w-full">
+        <ProjectCard
+          project={project}
+          onDeleteProject={() => onDeleteProject(project)}
+          edit={true}
+          handleRouter={handleRouter}
+          href={getHref(project._id)}
+          dragHandleListeners={listeners}
+          dragHandleAttributes={attributes}
+          isDragging={isDragging}
+          wasRecentlyMoved={wasRecentlyMoved}
+        />
+      </Chat>
+    </div>
+  );
+}, (prevProps, nextProps) => {
+  // Return true if props are equal (skip re-render)
+  // Compare project object reference to prevent re-renders when only order changes
+  const prevWasMoved = prevProps.recentlyMovedIds?.has(prevProps.project._id) ?? false;
+  const nextWasMoved = nextProps.recentlyMovedIds?.has(nextProps.project._id) ?? false;
+
+  // Only skip re-render if project object is the same AND moved status hasn't changed
+  // AND function references are the same (they should be with useCallback)
+  return (
+    prevProps.project === nextProps.project &&
+    prevWasMoved === nextWasMoved &&
+    prevProps.onDeleteProject === nextProps.onDeleteProject &&
+    prevProps.handleRouter === nextProps.handleRouter &&
+    prevProps.getHref === nextProps.getHref
+  );
+});
+
 export default function Builder2({ edit = false }) {
   const {
     userDetails,
@@ -128,16 +203,75 @@ export default function Builder2({ edit = false }) {
     );
   };
 
-  const onSortEnd = (oldIndex, newIndex) => {
-    const sortedProjects = arrayMove(userDetails.projects, oldIndex, newIndex);
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 0, // Activate immediately on drag handle
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  // Track recently moved items to prevent navigation after drag
+  const [recentlyMovedIds, setRecentlyMovedIds] = useState(new Set());
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = userDetails.projects.findIndex(
+      (project) => project._id === active.id
+    );
+    const newIndex = userDetails.projects.findIndex(
+      (project) => project._id === over.id
+    );
+
+    const sortedProjects = arrayMove(
+      userDetails.projects,
+      oldIndex,
+      newIndex
+    );
+
+    // Mark all items that were in the affected range as recently moved
+    const minIndex = Math.min(oldIndex, newIndex);
+    const maxIndex = Math.max(oldIndex, newIndex);
+    const movedIds = new Set();
+    for (let i = minIndex; i <= maxIndex; i++) {
+      movedIds.add(sortedProjects[i]._id);
+    }
+
+    // Update state to trigger re-render with new recently moved IDs
+    setRecentlyMovedIds(movedIds);
+
     const payload = { projects: sortedProjects };
+
+    // Update state optimistically first (before API call) to prevent remounts
+    setUserDetails((prev) => ({
+      ...prev,
+      projects: sortedProjects,
+    }));
+
     _updateUser(payload).then((res) => {
-      updateCache("userDetails", res?.data?.user);
+      // Update cache with only the projects array order, preserving existing project objects
+      // This prevents remounts while keeping cache in sync
+      if (res?.data?.user?.projects) {
+        updateCache("userDetails", { projects: sortedProjects });
+      }
+    }).catch((err) => {
+      console.error("Error updating project order:", err);
+      // On error, revert to previous state
       setUserDetails((prev) => ({
         ...prev,
-        projects: arrayMove(res?.data?.user?.projects, oldIndex, newIndex),
+        projects: userDetails.projects,
       }));
     });
+
+    // Clear the recently moved set after a delay
+    setTimeout(() => {
+      setRecentlyMovedIds(new Set());
+    }, 300);
   };
   return (
     <div className="flex flex-col gap-6">
@@ -212,30 +346,29 @@ export default function Builder2({ edit = false }) {
       </Chat>
 
       <Chat direction="left">Here you go!</Chat>
-      <SortableList
-        onSortEnd={onSortEnd}
-        className="list flex flex-row flex-wrap gap-6 "
-        draggedItemClassName="dragged"
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
       >
-        {projects?.map((project) => {
-          return (
-            <SortableItem key={project._id}>
-              <div className="w-full md:w-[calc(50%-12px)] max-w-[444px] relative">
-                <ProjectShape className="text-template-text-left-bg-color" />
-                <Chat direction="left" className="rounded-tl-none w-full">
-                  <ProjectCard
-                    project={project}
-                    onDeleteProject={() => onDeleteProject(project)}
-                    edit={true}
-                    handleRouter={handleRouter}
-                    href={getHref(project._id)}
-                  />
-                </Chat>
-              </div>
-            </SortableItem>
-          );
-        })}
-      </SortableList>
+        <SortableContext
+          items={projects?.map((p) => p._id) || []}
+          strategy={rectSortingStrategy}
+        >
+          <div className="list flex flex-row flex-wrap gap-6">
+            {projects?.map((project) => (
+              <SortableProjectItem
+                key={project._id}
+                project={project}
+                onDeleteProject={onDeleteProject}
+                handleRouter={handleRouter}
+                getHref={getHref}
+                recentlyMovedIds={recentlyMovedIds}
+              />
+            ))}
+          </div>
+        </SortableContext>
+      </DndContext>
 
       {edit && (
         <div className="w-full md:w-[calc(50%-12px)] max-w-[444px] relative">

@@ -18,13 +18,26 @@ import DeleteIcon from "../../../public/assets/svgs/deleteIcon.svg";
 import AddCard from "../AddCard";
 import { useTheme } from "next-themes";
 import Spotlight from "./Spotlight";
-import DragIcon from "../../../public/assets/svgs/drag.svg";
+import DragHandle from "../DragHandle";
 
 // DND Kit Imports
-import { DndContext, closestCenter } from "@dnd-kit/core";
-import { SortableContext, arrayMove, useSortable } from "@dnd-kit/sortable";
-import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
-import { CSS } from "@dnd-kit/utilities";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { Testimonials } from "./Testimonials";
 import { _updateUser } from "@/network/post-request";
 import ProjectLock from "../projectLock";
@@ -118,6 +131,13 @@ const Portfolio = ({ userDetails, edit }) => {
     setSortedProjects(projects || []);
   }, [projects]);
 
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
   const handleDragEnd = (event) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
@@ -143,12 +163,16 @@ const Portfolio = ({ userDetails, edit }) => {
       setMousePosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
     };
 
-    const { attributes, listeners, setNodeRef, transform, transition } =
+    const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
       useSortable({ id: project._id });
-    const style = { transform: CSS.Transform.toString(transform), transition };
+    const style = {
+      transform: CSS.Transform.toString(transform),
+      transition,
+      zIndex: isDragging ? 9999 : 1,
+    };
 
     return (
-      <div ref={setNodeRef} style={style}>
+      <div ref={setNodeRef} style={style} className={isDragging ? 'relative' : ''}>
         <motion.div
           ref={cardRef}
           variants={item}
@@ -196,14 +220,7 @@ const Portfolio = ({ userDetails, edit }) => {
                     />
                   </div>
                   {/* Drag handle: attach drag listeners only here */}
-                  <div
-                    onClick={(e) => e.stopPropagation()}
-                    {...listeners}
-                    style={{ touchAction: "none" }}
-                    className="px-[24.5px] py-[19px] transition-shadow duration-500 ease-out bg-project-card-reorder-btn-bg-color border-project-card-reorder-btn-bg-color hover:border-project-card-reorder-btn-bg-hover-color hover:bg-project-card-reorder-btn-bg-hover-color rounded-full [cursor:grab] active:[cursor:grabbing]"
-                  >
-                    <DragIcon className="text-project-card-reorder-btn-icon-color pointer-events-none" />
-                  </div>
+                  <DragHandle listeners={listeners} attributes={attributes} />
                 </div>
               )}
               {!edit && (
@@ -376,12 +393,13 @@ const Portfolio = ({ userDetails, edit }) => {
         {/* Projects Section with Vertical Drag Handle Sorting */}
         {(projects.length > 0 || edit) && (
           <DndContext
+            sensors={sensors}
             collisionDetection={closestCenter}
             onDragEnd={handleDragEnd}
-            modifiers={[restrictToVerticalAxis]}
           >
             <SortableContext
               items={sortedProjects.map((project) => project._id)}
+              strategy={verticalListSortingStrategy}
             >
               <motion.section
                 variants={container}

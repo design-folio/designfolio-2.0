@@ -6,7 +6,7 @@ import { PencilIcon, ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 import { getPlainTextLength } from "@/lib/tiptapUtils";
 
-export default function WorkCard({ work, onClick, show = true, edit }) {
+export default function WorkCard({ work, onClick, show = true, edit, sorting = false }) {
   const { setSelectedWork } = useGlobalContext();
   const [expandedCards, setExpandedCards] = useState([]);
 
@@ -64,36 +64,38 @@ export default function WorkCard({ work, onClick, show = true, edit }) {
             {work?.role}
           </Text>
 
-          <div className="text-work-card-description-color">
-            <div className={shouldShowToggle && !isExpanded ? "max-h-[110px] overflow-hidden relative" : ""}>
-              <SimpleTiptapRenderer
-                content={work?.description || ""}
-                mode="work"
-                enableBulletList={true}
-              />
-              {shouldShowToggle && !isExpanded && (
-                <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-df-section-card-bg-color to-transparent pointer-events-none" />
+          {!sorting && (
+            <div className="text-work-card-description-color">
+              <div className={shouldShowToggle && !isExpanded ? "max-h-[110px] overflow-hidden relative" : ""}>
+                <SimpleTiptapRenderer
+                  content={work?.description || ""}
+                  mode="work"
+                  enableBulletList={true}
+                />
+                {shouldShowToggle && !isExpanded && (
+                  <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-df-section-card-bg-color to-transparent pointer-events-none" />
+                )}
+              </div>
+              {shouldShowToggle && (
+                <button
+                  onClick={() => toggleExpand(work?._id)}
+                  className="mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
+                >
+                  {isExpanded ? (
+                    <>
+                      Show Less
+                      <ChevronUp className="h-3 w-3" />
+                    </>
+                  ) : (
+                    <>
+                      View More
+                      <ChevronDown className="h-3 w-3" />
+                    </>
+                  )}
+                </button>
               )}
             </div>
-            {shouldShowToggle && (
-              <button
-                onClick={() => toggleExpand(work?._id)}
-                className="mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
-              >
-                {isExpanded ? (
-                  <>
-                    Show Less
-                    <ChevronUp className="h-3 w-3" />
-                  </>
-                ) : (
-                  <>
-                    View More
-                    <ChevronDown className="h-3 w-3" />
-                  </>
-                )}
-              </button>
-            )}
-          </div>
+          )}
         </div>
       </div>
     </div>

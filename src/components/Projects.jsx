@@ -1,50 +1,81 @@
 import React from "react";
-import { SortableContainer, SortableElement } from "react-sortable-hoc";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  rectSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import ProjectCard from "./ProjectCard";
 import Section from "./section";
 import AddCard from "./AddCard";
-import { modals, moveItemInArray } from "@/lib/constant";
+import { modals } from "@/lib/constant";
 import { _updateUser } from "@/network/post-request";
 import { twMerge } from "tailwind-merge";
 import { useRouter } from "next/router";
 import ProjectLock from "./projectLock";
 
-const SortableItem = SortableElement(
-  ({ value, onDeleteProject, edit, preview }) => {
-    const router = useRouter();
+const SortableItem = ({ project, onDeleteProject, edit, preview, recentlyMovedIds }) => {
+  const router = useRouter();
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: project._id });
 
-    //Note:Not using handleRouter as router does not prefetch the page
-    const handleRouter = (id) => {
-      if (edit) {
-        router.push(`/project/${id}/editor`);
-      } else if (preview) {
-        router.push(`/project/${id}/preview`);
-      } else {
-        router.push(`/project/${id}`);
-      }
-    };
-    const getHref = (id) => {
-      if (edit) return `/project/${id}/editor`;
-      if (preview) return `/project/${id}/preview`;
-      return `/project/${id}`;
-    };
-    return (
-      <div className="h-full">
-        <ProjectCard
-          project={value}
-          onDeleteProject={onDeleteProject}
-          edit={edit}
-          handleRouter={handleRouter}
-          href={getHref(value._id)}
-        />
-      </div>
-    );
-  }
-);
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 9999 : 1,
+  };
 
-const SortableContainerElement = SortableContainer(({ children }) => {
-  return <>{children}</>;
-});
+  const handleRouter = (id) => {
+    if (edit) {
+      router.push(`/project/${id}/editor`);
+    } else if (preview) {
+      router.push(`/project/${id}/preview`);
+    } else {
+      router.push(`/project/${id}`);
+    }
+  };
+  const getHref = (id) => {
+    if (edit) return `/project/${id}/editor`;
+    if (preview) return `/project/${id}/preview`;
+    return `/project/${id}`;
+  };
+
+  // Check if this item was recently moved (to prevent navigation after drag)
+  const wasRecentlyMoved = recentlyMovedIds?.has(project._id) ?? false;
+
+  return (
+    <div ref={setNodeRef} style={style} className={`h-full ${isDragging ? 'relative' : ''}`}>
+      <ProjectCard
+        project={project}
+        onDeleteProject={onDeleteProject}
+        edit={edit}
+        handleRouter={handleRouter}
+        href={getHref(project._id)}
+        dragHandleListeners={listeners}
+        dragHandleAttributes={attributes}
+        isDragging={isDragging}
+        wasRecentlyMoved={wasRecentlyMoved}
+      />
+    </div>
+  );
+};
 
 export default function Projects({
   edit = false,
@@ -55,74 +86,110 @@ export default function Projects({
   openModal,
   preview,
 }) {
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 0, // Activate immediately on drag handle
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  // Track recently moved items to prevent navigation after drag (use state to trigger re-renders)
+  const [recentlyMovedIds, setRecentlyMovedIds] = React.useState(new Set());
+
   const onDeleteProject = (project) => {
     openModal(modals.deleteProject);
     setSelectedProject(project);
   };
 
-  const onSortStart = () => {
-    document.body.classList.add("cursor-grabbing");
-  };
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
 
-  const onSortEnd = ({ oldIndex, newIndex }) => {
-    document.body.classList.remove("cursor-grabbing");
+    const oldIndex = userDetails.projects.findIndex(
+      (project) => project._id === active.id
+    );
+    const newIndex = userDetails.projects.findIndex(
+      (project) => project._id === over.id
+    );
 
-    const sortedProject = moveItemInArray(
+    const sortedProject = arrayMove(
       userDetails.projects,
       oldIndex,
       newIndex
     );
 
+    // Mark all items that were in the affected range as recently moved
+    const minIndex = Math.min(oldIndex, newIndex);
+    const maxIndex = Math.max(oldIndex, newIndex);
+    const movedIds = new Set();
+    for (let i = minIndex; i <= maxIndex; i++) {
+      movedIds.add(sortedProject[i]._id);
+    }
+
+    // Update state to trigger re-render with new recently moved IDs
+    setRecentlyMovedIds(movedIds);
     setUserDetails((prev) => ({ ...prev, projects: sortedProject }));
     _updateUser({ projects: sortedProject });
+
+    // Clear the recently moved set after a delay
+    setTimeout(() => {
+      setRecentlyMovedIds(new Set());
+    }, 300);
   };
   return (
     <div ref={projectRef}>
       <Section title={"My works"} wallpaper={userDetails?.wallpaper}>
-        <SortableContainerElement
-          onSortEnd={onSortEnd}
-          onSortStart={onSortStart}
-          useDragHandle
-          axis="xy"
-          helperClass="!z-[100000] list-none"
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
         >
-          <div
-            className={twMerge(
-              "grid gap-4 md:grid-cols-2",
-              userDetails?.projects?.length === 0 && "md:grid-cols-1"
-            )}
+          <SortableContext
+            items={userDetails?.projects?.map((p) => p._id) || []}
+            strategy={rectSortingStrategy}
           >
-            {userDetails?.projects?.map((project, index) => (
-              <SortableItem
-                key={`item-${project._id}`} // Assuming each project has a unique id for better key handling
-                index={index}
-                value={project}
-                onDeleteProject={onDeleteProject}
-                edit={edit}
-                preview={preview}
-              />
-            ))}
+            <div
+              className={twMerge(
+                "grid gap-4 md:grid-cols-2",
+                userDetails?.projects?.length === 0 && "md:grid-cols-1"
+              )}
+            >
+              {userDetails?.projects?.map((project) => (
+                <SortableItem
+                  key={project._id}
+                  project={project}
+                  onDeleteProject={onDeleteProject}
+                  edit={edit}
+                  preview={preview}
+                  recentlyMovedIds={recentlyMovedIds}
+                />
+              ))}
 
-            {edit &&
-              (userDetails?.pro || userDetails?.projects.length < 2 ? (
-                <AddCard
-                  title={`${userDetails?.projects?.length === 0
+              {edit &&
+                (userDetails?.pro || userDetails?.projects.length < 2 ? (
+                  <AddCard
+                    title={`${userDetails?.projects?.length === 0
                       ? "Upload your first case study"
                       : "Add case study"
-                    }`}
-                  subTitle="Show off your best work."
-                  first={userDetails?.projects?.length !== 0}
-                  buttonTitle="Add case study"
-                  secondaryButtonTitle="Write using AI"
-                  onClick={() => openModal(modals.project)}
-                  // icon={<MemoCasestudy className="cursor-pointer" />}
-                  openModal={openModal}
-                />
-              ) : (
-                <ProjectLock />
-              ))}
-          </div>
-        </SortableContainerElement>
+                      }`}
+                    subTitle="Show off your best work."
+                    first={userDetails?.projects?.length !== 0}
+                    buttonTitle="Add case study"
+                    secondaryButtonTitle="Write using AI"
+                    onClick={() => openModal(modals.project)}
+                    // icon={<MemoCasestudy className="cursor-pointer" />}
+                    openModal={openModal}
+                  />
+                ) : (
+                  <ProjectLock />
+                ))}
+            </div>
+          </SortableContext>
+        </DndContext>
       </Section>
     </div>
   );

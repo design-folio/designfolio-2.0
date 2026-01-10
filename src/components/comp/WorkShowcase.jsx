@@ -7,12 +7,26 @@ import DeleteIcon from "../../../public/assets/svgs/deleteIcon.svg";
 import AddCard from "../AddCard";
 import { useGlobalContext } from "@/context/globalContext";
 import { modals } from "@/lib/constant";
-import DragIcon from "../../../public/assets/svgs/drag.svg";
+import DragHandle from "../DragHandle";
 
 // DND Kit Imports
-import { DndContext, closestCenter } from "@dnd-kit/core";
-import { SortableContext, arrayMove, useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  rectSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { _updateUser } from "@/network/post-request";
 import ProjectLock from "../projectLock";
 import MemoCasestudy from "../icons/Casestudy";
@@ -78,8 +92,8 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit }) => {
       edit
         ? `/project/${id}/editor`
         : router.asPath.includes("/portfolio-preview")
-        ? `/project/${id}/preview`
-        : `/project/${id}`
+          ? `/project/${id}/preview`
+          : `/project/${id}`
     );
   };
 
@@ -122,6 +136,13 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit }) => {
     setSortedProjects([...currentProjects]);
   }, [userDetails]);
 
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
   // Handle drag end event to reorder projects
   const handleDragEnd = (event) => {
     const { active, over } = event;
@@ -148,11 +169,12 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit }) => {
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const containerRef = useRef(null);
     // Setup DND Kit sortable functionality.
-    const { attributes, listeners, setNodeRef, transform, transition } =
+    const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
       useSortable({ id: project._id });
     const style = {
       transform: CSS.Transform.toString(transform),
       transition,
+      zIndex: isDragging ? 9999 : 1,
     };
 
     const handleMouseMove = (e) => {
@@ -176,6 +198,7 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit }) => {
           containerRef.current = node;
         }}
         style={style}
+        className={isDragging ? 'relative' : ''}
       >
         <motion.div
           onMouseMove={handleMouseMove}
@@ -230,14 +253,7 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit }) => {
                     }}
                   />
                 </div>
-                <div
-                  onClick={(e) => e.stopPropagation()}
-                  {...listeners}
-                  style={{ touchAction: "none" }}
-                  className="px-[24.5px] py-[19px] transition-shadow duration-500 ease-out bg-project-card-reorder-btn-bg-color border-project-card-reorder-btn-bg-color hover:border-project-card-reorder-btn-bg-hover-color hover:bg-project-card-reorder-btn-bg-hover-color rounded-full [cursor:grab] active:[cursor:grabbing]"
-                >
-                  <DragIcon className="text-project-card-reorder-btn-icon-color pointer-events-none" />
-                </div>
+                <DragHandle listeners={listeners} attributes={attributes} />
               </div>
             )}
           </div>
@@ -251,10 +267,14 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit }) => {
       <h2 className="text-2xl font-bold mb-8">Featured Projects</h2>
       {sortedProjects.length > 0 && (
         <DndContext
+          sensors={sensors}
           collisionDetection={closestCenter}
           onDragEnd={handleDragEnd}
         >
-          <SortableContext items={sortedProjects.map((project) => project._id)}>
+          <SortableContext
+            items={sortedProjects.map((project) => project._id)}
+            strategy={rectSortingStrategy}
+          >
             <motion.div
               ref={ref}
               variants={containerVariants}
@@ -272,11 +292,10 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit }) => {
       {edit &&
         (userDetails?.pro || userDetails?.projects.length < 2 ? (
           <AddCard
-            title={`${
-              sortedProjects.length === 0
+            title={`${sortedProjects.length === 0
                 ? "Upload your first case study"
                 : "Add case study"
-            }`}
+              }`}
             subTitle="Show off your best work."
             first={sortedProjects.length !== 0}
             buttonTitle="Add case study"
@@ -284,10 +303,9 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit }) => {
             onClick={() => openModal(modals.project)}
             icon={<MemoCasestudy className="cursor-pointer size-[72px]" />}
             openModal={openModal}
-            className={`bg-secondary flex items-center justify-center mt-6 ${
-              sortedProjects.length !== 0 &&
+            className={`bg-secondary flex items-center justify-center mt-6 ${sortedProjects.length !== 0 &&
               "shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] hover:shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
-            }`}
+              }`}
           />
         ) : (
           <div className="mt-6">

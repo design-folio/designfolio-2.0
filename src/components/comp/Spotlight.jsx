@@ -1,6 +1,6 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
-import { ChevronDown, ChevronUp, EditIcon, GripVertical } from "lucide-react";
+import { ChevronDown, ChevronUp, EditIcon } from "lucide-react";
 import AddItem from "../addItem";
 import Button from "../button";
 import { useGlobalContext } from "@/context/globalContext";
@@ -8,11 +8,26 @@ import { sidebars } from "@/lib/constant";
 import PlusIcon from "../../../public/assets/svgs/plus.svg";
 import { useTheme } from "next-themes";
 import SimpleTiptapRenderer from "../SimpleTiptapRenderer";
+import DragHandle from "../DragHandle";
 
 // DND Kit Imports
-import { DndContext, closestCenter } from "@dnd-kit/core";
-import { SortableContext, arrayMove, useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { _updateUser } from "@/network/post-request";
 import MemoWorkExperience from "../icons/WorkExperience";
 
@@ -62,6 +77,13 @@ export const Spotlight = ({ userDetails, edit }) => {
     );
   };
 
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
   // Update the sorted order when a drag ends
   const handleDragEnd = (event) => {
     const { active, over } = event;
@@ -106,17 +128,21 @@ export const Spotlight = ({ userDetails, edit }) => {
 
   // Sortable card for each work experience
   const SortableExperienceCard = ({ experience, index }) => {
-    const { attributes, listeners, setNodeRef, transform, transition } =
+    const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
       useSortable({
         id: experience._id,
       });
-    const style = { transform: CSS.Transform.toString(transform), transition };
+    const style = {
+      transform: CSS.Transform.toString(transform),
+      transition,
+      zIndex: isDragging ? 9999 : 1,
+    };
     const isExpanded = expandedCards.includes(index);
     const descriptionLength = getTextLength(experience.description);
     const shouldShowToggle = descriptionLength > 180;
 
     return (
-      <div ref={setNodeRef} style={style}>
+      <div ref={setNodeRef} style={style} className={isDragging ? 'relative' : ''}>
         <motion.div
           variants={itemVariants}
           className="group bg-card p-6 rounded-lg hover:bg-card/80 transition-colors relative overflow-hidden shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
@@ -147,14 +173,11 @@ export const Spotlight = ({ userDetails, edit }) => {
                         }
                       />
                       {/* Drag handle: attach the drag listeners only here */}
-                      <div
-                        onClick={(e) => e.stopPropagation()}
-                        {...listeners}
-                        style={{ touchAction: "none" }}
-                        className="cursor-grab"
-                      >
-                        <GripVertical className="text-gray-600 dark:text-gray-400" />
-                      </div>
+                      <DragHandle
+                        listeners={listeners}
+                        attributes={attributes}
+                        className="!px-3 !py-2"
+                      />
                     </div>
                   )}
                 </div>
@@ -203,8 +226,15 @@ export const Spotlight = ({ userDetails, edit }) => {
   return (
     <section className="py-12">
       <h2 className="text-2xl font-bold mb-8">Work Experience</h2>
-      <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-        <SortableContext items={sortedExperiences.map((exp) => exp._id)}>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext
+          items={sortedExperiences.map((exp) => exp._id)}
+          strategy={verticalListSortingStrategy}
+        >
           <motion.div
             ref={ref}
             variants={containerVariants}

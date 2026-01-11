@@ -7,6 +7,8 @@ import DeleteIcon from "../../public/assets/svgs/deleteIcon.svg";
 import DragHandle from "./DragHandle";
 import Text from "./text";
 import Link from "next/link";
+import { Button as ButtonNew } from "./ui/buttonNew";
+import { Eye, EyeOff, Pencil } from "lucide-react";
 const imageVariants = {
   hover: {
     scale: 1.13, // Target scale when hovered
@@ -35,6 +37,7 @@ export default function ProjectCard({
   dragHandleAttributes,
   isDragging = false,
   wasRecentlyMoved = false,
+  onToggleVisibility,
 }) {
   const [isHovered, setIsHovered] = useState(false);
   const [imageLoaded, setImageLoaded] = React.useState(false);
@@ -79,6 +82,12 @@ export default function ProjectCard({
             fetchpriority="high"
             decoding="async"
           />
+          {project?.hidden && (
+            <div className="absolute top-3 right-3 bg-amber-100 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1.5">
+              <EyeOff className="w-3 h-3" />
+              Hidden from live site
+            </div>
+          )}
         </div>
 
         <div className="p-6 flex-1 flex flex-col justify-between cursor-pointer">
@@ -90,17 +99,12 @@ export default function ProjectCard({
               {project?.title}
             </Text>
           </div>
-          <div className="flex justify-between gap-3  items-center mt-4">
+          <div className="mt-4 flex">
             {edit ? (
-              <Button
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleRouter(project?._id);
-                }}
-                text={"Edit project"}
-                customClass="w-full h-[58px]"
-                type="secondary"
+              <DragHandle
+                isButton
+                listeners={dragHandleListeners}
+                attributes={dragHandleAttributes}
               />
             ) : (
               <motion.div
@@ -123,22 +127,41 @@ export default function ProjectCard({
               </motion.div>
             )}
             {edit && (
-              <div className="flex gap-4">
+              <div className="flex gap-2 ml-auto">
                 <Button
-                  size="icon"
+                  size="medium"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleRouter(project?._id);
+                  }}
+                  icon={<Pencil className="w-4 h-4" />}
+                  text={"Edit"}
+                  type="secondary"
+                />
+                <Button
+                  size="medium"
+                  type="toggleVisibility"
+                  isSelected={project?.hidden}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onToggleVisibility?.(project?._id);
+                  }}
+                  icon={project?.hidden ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  text={project?.hidden ? "Hidden" : "Visible"}
+                />
+                <Button
+                  size="medium"
                   type="delete"
                   icon={
-                    <DeleteIcon className="stroke-delete-btn-icon-color w-6 h-6 cursor-pointer" />
+                    <DeleteIcon className="stroke-delete-btn-icon-color h-6 w-6 cursor-pointer rounded-full" />
                   }
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
                     onDeleteProject(project);
                   }}
-                />
-                <DragHandle
-                  listeners={dragHandleListeners}
-                  attributes={dragHandleAttributes}
                 />
               </div>
             )}

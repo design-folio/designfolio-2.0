@@ -217,7 +217,7 @@ export default function Template2({ userDetails, preview = false }) {
               Here you go!
             </Chat>
             <div className="flex flex-row flex-wrap gap-6">
-              {projects?.map((project, index) => {
+              {projects?.filter((project) => !project.hidden || !preview).map((project, index) => {
                 return (
                   <div
                     className="w-full md:w-[calc(50%-12px)] max-w-[444px] relative"

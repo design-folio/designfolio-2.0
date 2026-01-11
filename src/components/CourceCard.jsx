@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/buttonNew";
 import { ChevronUp, GraduationCap, Calendar, X } from "lucide-react";
 import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog";
 import { useGlobalContext } from "@/context/globalContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { sidebars } from "@/lib/constant";
+
+const COURSE_CARD_SEEN_KEY = "courseCardSeen";
 
 export function CourseCard() {
     const [isExpanded, setIsExpanded] = useState(false);
@@ -16,6 +18,26 @@ export function CourseCard() {
     const isThemeSidebarOpen = activeSidebar === sidebars.theme;
     // CourseCard should shift when either ThemePanel, Review sidebar, or Work sidebar is open (desktop only)
     const shouldShiftCard = (isThemeSidebarOpen || isReviewSidebarOpen || isWorkSidebarOpen) && !isMobile;
+
+    // Check localStorage on mount to determine initial expanded state
+    useEffect(() => {
+        const hasSeenCard = localStorage.getItem(COURSE_CARD_SEEN_KEY);
+        if (!hasSeenCard) {
+            // First time user - expand automatically
+            setIsExpanded(true);
+        }
+    }, []);
+
+    // Handle toggle and save to localStorage when closing
+    const handleToggle = () => {
+        const newExpandedState = !isExpanded;
+        setIsExpanded(newExpandedState);
+
+        // If user is closing the card, mark it as seen in localStorage
+        if (!newExpandedState) {
+            localStorage.setItem(COURSE_CARD_SEEN_KEY, "true");
+        }
+    };
 
     // Calculate shift width based on which sidebar is open
     const getShiftWidth = () => {
@@ -44,7 +66,7 @@ export function CourseCard() {
             >
                 {/* Minimized Header / Toggle Area */}
                 <button
-                    onClick={() => setIsExpanded(!isExpanded)}
+                    onClick={handleToggle}
                     className="w-full h-[60px] flex items-center justify-between px-5 bg-white dark:bg-[#23252F] text-foreground rounded-t-2xl hover:bg-muted/30 dark:hover:bg-muted/20 transition-colors group"
                 >
                     <div className="flex items-center gap-3">

@@ -19,12 +19,12 @@ import ProjectCard from "./ProjectCard";
 import Section from "./section";
 import AddCard from "./AddCard";
 import { modals } from "@/lib/constant";
-import { _updateUser } from "@/network/post-request";
+import { _updateUser, _updateProject } from "@/network/post-request";
 import { twMerge } from "tailwind-merge";
 import { useRouter } from "next/router";
 import ProjectLock from "./projectLock";
 
-const SortableItem = ({ project, onDeleteProject, edit, preview, recentlyMovedIds }) => {
+const SortableItem = ({ project, onDeleteProject, edit, preview, recentlyMovedIds, onToggleVisibility }) => {
   const router = useRouter();
   const {
     attributes,
@@ -72,6 +72,7 @@ const SortableItem = ({ project, onDeleteProject, edit, preview, recentlyMovedId
         dragHandleAttributes={attributes}
         isDragging={isDragging}
         wasRecentlyMoved={wasRecentlyMoved}
+        onToggleVisibility={onToggleVisibility}
       />
     </div>
   );
@@ -100,9 +101,34 @@ export default function Projects({
   // Track recently moved items to prevent navigation after drag (use state to trigger re-renders)
   const [recentlyMovedIds, setRecentlyMovedIds] = React.useState(new Set());
 
+  // Filter out hidden projects in preview mode
+  const visibleProjects = React.useMemo(() => {
+    if (preview && userDetails?.projects) {
+      return userDetails.projects.filter((project) => !project.hidden);
+    }
+    return userDetails?.projects || [];
+  }, [userDetails?.projects, preview]);
+
   const onDeleteProject = (project) => {
     openModal(modals.deleteProject);
     setSelectedProject(project);
+  };
+
+  const handleToggleVisibility = (projectId) => {
+    const updatedProjects = userDetails.projects.map((project) => {
+      if (project._id === projectId) {
+        const updatedProject = { ...project, hidden: !project.hidden };
+        // Update individual project on server
+        _updateProject(projectId, { hidden: updatedProject.hidden });
+        return updatedProject;
+      }
+      return project;
+    });
+
+    // Update local state
+    setUserDetails((prev) => ({ ...prev, projects: updatedProjects }));
+    // Also update the entire projects array to keep it in sync
+    _updateUser({ projects: updatedProjects });
   };
 
   const handleDragEnd = (event) => {
@@ -149,16 +175,16 @@ export default function Projects({
           onDragEnd={handleDragEnd}
         >
           <SortableContext
-            items={userDetails?.projects?.map((p) => p._id) || []}
+            items={visibleProjects?.map((p) => p._id) || []}
             strategy={rectSortingStrategy}
           >
             <div
               className={twMerge(
                 "grid gap-4 md:grid-cols-2",
-                userDetails?.projects?.length === 0 && "md:grid-cols-1"
+                visibleProjects?.length === 0 && "md:grid-cols-1"
               )}
             >
-              {userDetails?.projects?.map((project) => (
+              {visibleProjects?.map((project) => (
                 <SortableItem
                   key={project._id}
                   project={project}
@@ -166,18 +192,19 @@ export default function Projects({
                   edit={edit}
                   preview={preview}
                   recentlyMovedIds={recentlyMovedIds}
+                  onToggleVisibility={handleToggleVisibility}
                 />
               ))}
 
               {edit &&
-                (userDetails?.pro || userDetails?.projects.length < 2 ? (
+                (userDetails?.pro || visibleProjects.length < 2 ? (
                   <AddCard
-                    title={`${userDetails?.projects?.length === 0
+                    title={`${visibleProjects?.length === 0
                       ? "Upload your first case study"
                       : "Add case study"
                       }`}
                     subTitle="Show off your best work."
-                    first={userDetails?.projects?.length !== 0}
+                    first={visibleProjects?.length !== 0}
                     buttonTitle="Add case study"
                     secondaryButtonTitle="Write using AI"
                     onClick={() => openModal(modals.project)}

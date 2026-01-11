@@ -70,6 +70,12 @@ const Button = ({
       disabled:
         "bg-transparent text-[#404040] hover:bg-[#FFF] rounded-full opacity-40",
     },
+    toggleVisibility: {
+      base: "bg-secondary-btn-bg-color hover:bg-secondary-btn-bg-hover-color text-secondary-btn-text-color border-solid border border-secondary-btn-border-color hover:secondary-btn-bg-hover-color hover:shadow-secondary-btn cursor-pointer",
+      selected: "bg-amber-50 border-amber-200 text-amber-700 dark:bg-amber-950/20 dark:border-amber-800 dark:text-amber-400 hover:bg-amber-100 hover:dark:bg-amber-950/30 hover:text-amber-700 hover:dark:text-amber-400 border rounded-full",
+      disabled:
+        "bg-white dark:bg-[#23252F] border-border text-foreground border rounded-full opacity-40",
+    },
   };
 
   // Function to get the final button style

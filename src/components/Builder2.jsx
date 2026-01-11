@@ -9,7 +9,7 @@ import { ChevronDown, ChevronUp, PencilIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   DndContext,
   closestCenter,
@@ -24,6 +24,7 @@ import {
   sortableKeyboardCoordinates,
   useSortable,
   rectSortingStrategy,
+  verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import AiIcon from "../../public/assets/svgs/ai.svg";
@@ -58,6 +59,9 @@ import SimpleTiptapRenderer from "./SimpleTiptapRenderer";
 import Text from "./text";
 import { Button as ButtonNew } from "./ui/buttonNew";
 import DragHandle from "./DragHandle";
+import SortIcon from "../../public/assets/svgs/sort.svg";
+import ReviewCard from "./reviewCard";
+import SortableModal from "./SortableModal";
 
 // Move SortableProjectItem outside to prevent recreation on each render
 const SortableProjectItem = React.memo(({ project, onDeleteProject, handleRouter, getHref, recentlyMovedIds }) => {
@@ -200,6 +204,39 @@ export default function Builder2({ edit = false }) {
   const toggleExpandExperience = (id) => {
     setExpandedExperienceCards((prev) =>
       prev.includes(id) ? prev.filter((cardId) => cardId !== id) : [...prev, id]
+    );
+  };
+
+  // Reviews sorting state and handlers
+  const [showReviewSortModal, setShowReviewSortModal] = useState(false);
+
+  const reviewSortSensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleReviewSortEnd = (event) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = userDetails.reviews.findIndex(
+      (review) => review._id === active.id
+    );
+    const newIndex = userDetails.reviews.findIndex(
+      (review) => review._id === over.id
+    );
+
+    const sortedReviews = arrayMove(
+      userDetails.reviews,
+      oldIndex,
+      newIndex
+    );
+
+    setUserDetails((prev) => ({ ...prev, reviews: sortedReviews }));
+    _updateUser({ reviews: sortedReviews }).then((res) =>
+      updateCache("userDetails", res?.data?.user)
     );
   };
 
@@ -537,26 +574,41 @@ export default function Builder2({ edit = false }) {
           })}
         </div>
         {edit && reviews?.length > 0 && (
-          <AddItem
-            title="Add testimonial"
-            onClick={() => openSidebar(sidebars.review)}
-            iconLeft={
-              userDetails?.reviews?.length > 0 ? (
-                <Button
-                  type="secondary"
-                  icon={
-                    <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
-                  }
-                  onClick={() => openSidebar(sidebars.review)}
-                  size="small"
-                />
-              ) : (
-                <MemoWorkExperience />
-              )
-            }
-            theme={theme}
-            className="mt-4"
-          />
+          <div className="flex items-center gap-2 mt-4">
+
+            <AddItem
+              className="flex-1"
+              title="Add testimonial"
+              onClick={() => openSidebar(sidebars.review)}
+              iconLeft={
+                userDetails?.reviews?.length > 0 ? (
+                  <Button
+                    type="secondary"
+                    icon={
+                      <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                    }
+                    onClick={() => openSidebar(sidebars.review)}
+                    size="small"
+                  />
+                ) : (
+                  <MemoWorkExperience />
+                )
+              }
+              theme={theme}
+            />
+            {reviews.length > 1 && (
+              <ButtonNew
+                variant="secondary"
+                size="icon"
+                onClick={() => {
+                  setShowReviewSortModal(true);
+                }}
+                className="rounded-full h-14 w-14"
+              >
+                <SortIcon className="w-4 h-4 text-df-icon-color cursor-pointer" />
+              </ButtonNew>
+            )}
+          </div>
         )}
       </Chat>
 
@@ -892,6 +944,24 @@ export default function Builder2({ edit = false }) {
             />
           )}
       </Chat>
+
+      {/* Reviews Sort Modal */}
+      <SortableModal
+        show={showReviewSortModal}
+        onClose={() => setShowReviewSortModal(false)}
+        items={userDetails?.reviews?.map((review) => review._id) || []}
+        onSortEnd={handleReviewSortEnd}
+        sensors={reviewSortSensors}
+      >
+        {userDetails?.reviews?.map((review) => (
+          <SortableReviewItemBuilder2
+            key={review._id}
+            review={review}
+            edit={edit}
+          />
+        ))}
+      </SortableModal>
+
       <div
         className="flex justify-center mt-10"
         style={{ pointerEvent: "all" }}
@@ -903,3 +973,36 @@ export default function Builder2({ edit = false }) {
     </div>
   );
 }
+
+const SortableReviewItemBuilder2 = ({ review, edit }) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: review._id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 9999 : 1,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`flex justify-between gap-4 items-center ${isDragging ? 'relative' : ''}`}
+    >
+      <div className="flex-1 min-w-0">
+        <ReviewCard review={review} sorting={true} edit={edit} />
+      </div>
+      <div className="flex-shrink-0">
+        <DragHandle listeners={listeners} attributes={attributes} />
+      </div>
+    </div>
+  );
+};

@@ -9,8 +9,6 @@ import PlusIcon from "../../../public/assets/svgs/plus.svg";
 import { useTheme } from "next-themes";
 import SimpleTiptapRenderer from "../SimpleTiptapRenderer";
 import DragHandle from "../DragHandle";
-
-// DND Kit Imports
 import {
   DndContext,
   closestCenter,

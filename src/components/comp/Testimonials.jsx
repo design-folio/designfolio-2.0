@@ -7,8 +7,9 @@ import {
   ChevronUp,
   EditIcon,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import PlusIcon from "../../../public/assets/svgs/plus.svg";
+import SortIcon from "../../../public/assets/svgs/sort.svg";
 import AddItem from "../addItem";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useGlobalContext } from "@/context/globalContext";
@@ -20,16 +21,67 @@ import MemoTestimonial from "../icons/Testimonial";
 import SimpleTiptapRenderer from "../SimpleTiptapRenderer";
 import { Button } from "../ui/button";
 import { getPlainTextLength } from "@/lib/tiptapUtils";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { _updateUser } from "@/network/post-request";
+import SortableModal from "../SortableModal";
+import ReviewCard from "../reviewCard";
+import DragHandle from "../DragHandle";
+import { Button as ButtonNew } from "../ui/buttonNew";
 
 export const Testimonials = ({ userDetails, edit }) => {
   const { reviews } = userDetails || {};
   const [showMore, setShowMore] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [expandedCards, setExpandedCards] = useState([]);
+  const [showSortModal, setShowSortModal] = useState(false);
   const isMobile = useIsMobile();
   const visibleTestimonials = showMore ? reviews : reviews?.slice(0, 4);
   const theme = useTheme();
-  const { openSidebar, setSelectedReview } = useGlobalContext();
+  const { openSidebar, setSelectedReview, setUserDetails, updateCache } = useGlobalContext();
+
+  const sortSensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleSortEnd = (event) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = userDetails.reviews.findIndex(
+      (review) => review._id === active.id
+    );
+    const newIndex = userDetails.reviews.findIndex(
+      (review) => review._id === over.id
+    );
+
+    const sortedReviews = arrayMove(
+      userDetails.reviews,
+      oldIndex,
+      newIndex
+    );
+
+    setUserDetails((prev) => ({ ...prev, reviews: sortedReviews }));
+    _updateUser({ reviews: sortedReviews }).then((res) =>
+      updateCache("userDetails", res?.data?.user)
+    );
+  };
 
   const handleNext = () => {
     setCurrentIndex((prev) =>
@@ -346,42 +398,107 @@ export const Testimonials = ({ userDetails, edit }) => {
       )}
 
       {edit && (
-        <AddItem
-          className="bg-df-section-card-bg-color shadow-df-section-card-shadow mt-6"
-          title="Add your testimonial"
-          onClick={() => openSidebar(sidebars.review)}
-          iconLeft={
-            reviews?.length > 0 ? (
-              <Button2
-                type="secondary"
-                icon={
-                  <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
-                }
-                onClick={() => openSidebar(sidebars.review)}
-                size="small"
-                text
-              />
-            ) : (
-              <MemoTestimonial />
-            )
-          }
-          iconRight={
-            reviews?.length == 0 ? (
-              <Button2
-                type="secondary"
-                icon={
-                  <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
-                }
-                onClick={() => openSidebar(sidebars.review)}
-                size="small"
-              />
-            ) : (
-              false
-            )
-          }
-          theme={theme}
-        />
+        <div className="flex items-center gap-2 mt-6">
+          <AddItem
+            className="bg-df-section-card-bg-color shadow-df-section-card-shadow flex-1"
+            title="Add your testimonial"
+            onClick={() => openSidebar(sidebars.review)}
+            iconLeft={
+              reviews?.length > 0 ? (
+                <Button2
+                  type="secondary"
+                  icon={
+                    <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                  }
+                  onClick={() => openSidebar(sidebars.review)}
+                  size="small"
+                  text
+                />
+              ) : (
+                <MemoTestimonial />
+              )
+            }
+            iconRight={
+              reviews?.length == 0 ? (
+                <Button2
+                  type="secondary"
+                  icon={
+                    <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                  }
+                  onClick={() => openSidebar(sidebars.review)}
+                  size="small"
+                />
+              ) : (
+                false
+              )
+            }
+            theme={theme}
+          />
+          {reviews?.length > 1 && (
+            <ButtonNew
+              variant="secondary"
+              size="icon"
+              onClick={() => {
+                setShowSortModal(true);
+              }}
+              className="rounded-full h-14 w-14"
+            >
+              <SortIcon className="w-4 h-4 text-df-icon-color cursor-pointer" />
+            </ButtonNew>
+          )}
+        </div>
       )}
+
+      {/* Sort Modal */}
+      <SortableModal
+        show={showSortModal}
+        onClose={() => setShowSortModal(false)}
+        items={userDetails?.reviews?.map((review) => review._id) || []}
+        onSortEnd={handleSortEnd}
+        sensors={sortSensors}
+        useButton2={true}
+      >
+        {userDetails?.reviews?.map((review) => (
+          <SortableTestimonialItem
+            key={review._id}
+            review={review}
+            edit={edit}
+          />
+        ))}
+      </SortableModal>
     </section>
+  );
+};
+
+const SortableTestimonialItem = ({ review, edit }) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: review._id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 9999 : 1,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`flex justify-between gap-4 items-center ${isDragging ? 'relative' : ''}`}
+    >
+      <div className="flex-1 min-w-0">
+        <ReviewCard review={review} sorting={true} edit={edit} />
+      </div>
+      <div className="flex-shrink-0">
+        <DragHandle listeners={listeners} attributes={attributes} />
+      </div>
+    </div>
   );
 };

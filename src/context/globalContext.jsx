@@ -107,6 +107,18 @@ export const GlobalProvider = ({ children }) => {
     if (data && !userDetailsIsState) {
       const userData = data?.user;
 
+      // Skip update if projects are ONLY reordered (same IDs, different order, same data)
+      const oldProjectIds = userDetails?.projects?.map(p => p._id) || [];
+      const newProjectIds = userData?.projects?.map(p => p._id) || [];
+      const sameIdsDifferentOrder = userDetails &&
+        oldProjectIds.length === newProjectIds.length &&
+        oldProjectIds.every(id => newProjectIds.includes(id)) &&
+        JSON.stringify(oldProjectIds) !== JSON.stringify(newProjectIds); // Different order
+
+      if (sameIdsDifferentOrder) {
+        return;
+      }
+
       setTheme(userData?.theme == 1 ? "dark" : "light");
       setCursor(userData?.cursor ? userData?.cursor : 0);
       setTemplate(userData?.template ? userData?.template : 0);

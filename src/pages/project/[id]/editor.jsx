@@ -7,13 +7,16 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useTheme } from "next-themes";
 import React, { useEffect, useRef, useState } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { sidebars } from "@/lib/constant";
 
 export default function Index() {
   const router = useRouter();
   const { setTheme } = useTheme();
-  const { userDetails, setCursor, setWallpaper, wallpaperUrl } = useGlobalContext();
+  const { userDetails, setCursor, setWallpaper, wallpaperUrl, activeSidebar } = useGlobalContext();
   const [projectDetails, setProjectDetails] = useState(null);
   const initializedRef = useRef(false);
+  const isMobile = useIsMobile();
 
   const setProjectData = (project, isFromRefetch = false) => {
     setProjectDetails({ project: project });
@@ -76,6 +79,31 @@ export default function Index() {
       initializedRef.current = projectId;
     }
   }, [router.query.id, userDetails?.projects, refetchProjectDetail]);
+
+  // Manage body margin-right based on active sidebar to prevent layout shift during switching (desktop only)
+  useEffect(() => {
+    // Only apply margin on desktop, not mobile
+    if (isMobile) {
+      return;
+    }
+
+    const body = document.body;
+    body.style.transition = 'margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+
+    let marginWidth = '0px';
+    if (activeSidebar === sidebars.work || activeSidebar === sidebars.review) {
+      marginWidth = '500px';
+    } else if (activeSidebar === sidebars.theme) {
+      marginWidth = '320px';
+    }
+
+    body.style.marginRight = marginWidth;
+
+    return () => {
+      body.style.marginRight = '0px';
+      body.style.transition = '';
+    };
+  }, [activeSidebar, isMobile]);
 
   return (
     <>

@@ -76,6 +76,7 @@ export default function Builder() {
         <Reviews
           edit
           openModal={handleOpen}
+          userDetails={userDetails}
         />
       </motion.div>
       <motion.div variants={itemVariants}>

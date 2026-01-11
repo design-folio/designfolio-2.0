@@ -294,6 +294,7 @@ export default function LoggedInHeader({
     Cookies.remove("df-token", {
       domain: process.env.NEXT_PUBLIC_BASE_DOMAIN,
     });
+    localStorage.removeItem("bottom_notification_seen");
     removeCursor();
     router.replace("/");
   };

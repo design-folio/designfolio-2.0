@@ -17,7 +17,7 @@ export function AuthLayout({
 }) {
 
     const [contentRef, contentHeight] = useMeasuredHeight();
-    console.log(contentRef)
+
     return (
         <div className="min-h-screen bg-background-landing flex flex-col relative overflow-hidden">
             {/* Simple 3x3 Grid Background */}

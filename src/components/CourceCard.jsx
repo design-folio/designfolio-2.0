@@ -4,7 +4,7 @@ import { ChevronUp, GraduationCap, Calendar, X } from "lucide-react";
 import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog";
 import { useGlobalContext } from "@/context/globalContext";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { sidebars } from "@/lib/constant";
+import { modals, sidebars } from "@/lib/constant";
 
 const COURSE_CARD_SEEN_KEY = "bottom_notification_seen";
 
@@ -12,21 +12,33 @@ export function CourseCard() {
     const [isExpanded, setIsExpanded] = useState(false);
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
     const isMobile = useIsMobile();
-    const { activeSidebar } = useGlobalContext();
+    const { activeSidebar, showModal, userDetails } = useGlobalContext();
     const isReviewSidebarOpen = activeSidebar === sidebars.review;
     const isWorkSidebarOpen = activeSidebar === sidebars.work;
     const isThemeSidebarOpen = activeSidebar === sidebars.theme;
-    // CourseCard should shift when either ThemePanel, Review sidebar, or Work sidebar is open (desktop only)
+    const isOnboardingModalOpen = showModal === modals.onBoardingNewUser || showModal === modals.onboarding;
     const shouldShiftCard = (isThemeSidebarOpen || isReviewSidebarOpen || isWorkSidebarOpen) && !isMobile;
 
-    // Check localStorage on mount to determine initial expanded state
     useEffect(() => {
         const hasSeenCard = localStorage.getItem(COURSE_CARD_SEEN_KEY);
-        if (!hasSeenCard) {
-            // First time user - expand automatically
+
+        // Check if user was created less than 24 hours ago
+        const isNewUser = (() => {
+            if (!userDetails?.createdAt) return false;
+            const createdAt = new Date(userDetails.createdAt);
+            const now = new Date();
+            const hoursSinceCreation = (now - createdAt) / (1000 * 60 * 60);
+            return hoursSinceCreation < 24;
+        })();
+        if (!hasSeenCard && !isOnboardingModalOpen && !isNewUser) {
             setIsExpanded(true);
         }
-    }, []);
+    }, [isOnboardingModalOpen, userDetails?.createdAt]);
+
+    // Don't render if onboarding modal is open or if user hasn't completed onboarding
+    if (isOnboardingModalOpen) {
+        return null;
+    }
 
     // Handle toggle and save to localStorage when closing
     const handleToggle = () => {

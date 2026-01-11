@@ -1,45 +1,38 @@
-import { useGlobalContext } from "@/context/globalContext";
-import Section from "./section";
-import { twMerge } from "tailwind-merge";
-import AddCard from "./AddCard";
-import PenIcon from "../../public/assets/svgs/pen-icon.svg";
-import ReviewCard from "./reviewCard";
-import { sidebars } from "@/lib/constant";
-import { motion } from "framer-motion";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/buttonNew";
-import Button2 from "./button";
-import { Plus, PlusIcon } from "lucide-react";
-import AddItem from "./addItem";
-import MemoTestimonial from "./icons/Testimonial";
-import { useTheme } from "next-themes";
-import Text from "./text";
+import { Card } from "@/components/ui/card";
+import { useGlobalContext } from "@/context/globalContext";
+import { sidebars } from "@/lib/constant";
 import { cn } from "@/lib/utils";
-import React, { useRef, useState } from "react";
+import { _updateUser } from "@/network/post-request";
 import {
-  DndContext,
-  closestCenter,
   KeyboardSensor,
   PointerSensor,
   useSensor,
-  useSensors,
+  useSensors
 } from '@dnd-kit/core';
 import {
   arrayMove,
-  SortableContext,
   sortableKeyboardCoordinates,
-  useSortable,
-  verticalListSortingStrategy,
+  useSortable
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { _updateUser } from "@/network/post-request";
+import { motion } from "framer-motion";
+import { Plus, PlusIcon } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useState } from "react";
+import { twMerge } from "tailwind-merge";
 import SortIcon from "../../public/assets/svgs/sort.svg";
+import AddItem from "./addItem";
+import Button2 from "./button";
 import DragHandle from "./DragHandle";
+import MemoTestimonial from "./icons/Testimonial";
+import ReviewCard from "./reviewCard";
 import SortableModal from "./SortableModal";
+import Text from "./text";
 
-export default function Reviews({ edit = false, openModal }) {
+export default function Reviews({ edit = false, openModal, userDetails }) {
 
-  const { setUserDetails, updateCache, userDetails } = useGlobalContext();
+  const { setUserDetails, updateCache } = useGlobalContext();
   const reviews = userDetails?.reviews || [];
   const theme = useTheme();
   const [showModal, setShowModal] = useState(false);

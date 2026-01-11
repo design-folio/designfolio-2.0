@@ -33,17 +33,15 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { _updateUser } from "@/network/post-request";
-import Modal from "./modal";
-import CloseIcon from "../../public/assets/svgs/close.svg";
 import SortIcon from "../../public/assets/svgs/sort.svg";
 import DragHandle from "./DragHandle";
+import SortableModal from "./SortableModal";
 
 export default function Reviews({ edit = false, openModal }) {
 
   const { setUserDetails, updateCache, userDetails } = useGlobalContext();
   const reviews = userDetails?.reviews || [];
   const theme = useTheme();
-  const scrollContainerRef = useRef(null);
   const [showModal, setShowModal] = useState(false);
 
   const sensors = useSensors(
@@ -98,16 +96,18 @@ export default function Reviews({ edit = false, openModal }) {
           </Text>
           {edit && reviews.length > 0 && (
             <div className="flex items-center gap-2">
-              <Button
-                variant="secondary"
-                size="icon"
-                onClick={() => {
-                  setShowModal(true);
-                }}
-                className="rounded-full h-11 w-11"
-              >
-                <SortIcon className="w-4 h-4 text-df-icon-color cursor-pointer" />
-              </Button>
+              {reviews.length > 1 && (
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  onClick={() => {
+                    setShowModal(true);
+                  }}
+                  className="rounded-full h-11 w-11"
+                >
+                  <SortIcon className="w-4 h-4 text-df-icon-color cursor-pointer" />
+                </Button>
+              )}
               <Button
                 variant="secondary"
                 size="icon"
@@ -171,48 +171,22 @@ export default function Reviews({ edit = false, openModal }) {
           )}
         </div>
       </Card>
-      <Modal show={showModal}>
-        <div className="rounded-2xl flex flex-col justify-between  m-auto lg:w-[500px] max-h-[550px] my-auto overflow-hidden bg-modal-bg-color">
-          <div className="flex p-5 justify-between items-center">
-            <Text size="p-small" className="font-semibold">
-              Change the order
-            </Text>
-            <Button2
-              type="secondary"
-              customClass="!p-2"
-              icon={<CloseIcon className="text-icon-color cursor-pointer" />}
-              onClick={() => {
-                setShowModal(false);
-              }}
-            />
-          </div>
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-          >
-            <SortableContext
-              items={userDetails?.reviews?.map((review) => review._id) || []}
-              strategy={verticalListSortingStrategy}
-            >
-              <div
-                ref={scrollContainerRef}
-                className="flex flex-col gap-4 py-5 px-5 list-none max-h-[450px] overflow-auto "
-              >
-                {userDetails?.reviews?.map((review) => (
-                  <SortableReviewItem
-                    key={review._id}
-                    review={review}
-                    edit={edit}
-                  />
-                ))}
-              </div>
-            </SortableContext>
-          </DndContext>
-
-          <div className="h-5" />
-        </div>
-      </Modal>
+      <SortableModal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        items={userDetails?.reviews?.map((review) => review._id) || []}
+        onSortEnd={handleDragEnd}
+        sensors={sensors}
+        useButton2={true}
+      >
+        {userDetails?.reviews?.map((review) => (
+          <SortableReviewItem
+            key={review._id}
+            review={review}
+            edit={edit}
+          />
+        ))}
+      </SortableModal>
     </motion.div>
   );
 }

@@ -6,7 +6,7 @@ import { useGlobalContext } from "@/context/globalContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { sidebars } from "@/lib/constant";
 
-const COURSE_CARD_SEEN_KEY = "courseCardSeen";
+const COURSE_CARD_SEEN_KEY = "bottom_notification_seen";
 
 export function CourseCard() {
     const [isExpanded, setIsExpanded] = useState(false);

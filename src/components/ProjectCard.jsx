@@ -90,21 +90,21 @@ export default function ProjectCard({
           )}
         </div>
 
-        <div className="p-6 flex-1 flex flex-col justify-between cursor-pointer">
-          <div>
+        <div className="flex-1 flex flex-col justify-between cursor-pointer">
+          <div className="p-6 pb-0">
             <p
-              className="text-project-card-heading-color font-semibold line-clamp-2 cursor-pointer text-lg"
+              className="text-project-card-heading-color font-semibold line-clamp-2 cursor-pointer text-lg mb-2"
             >
               {project?.title}
             </p>
             <Text
               size="p-xxsmall"
-              className="text-project-card-heading-color font-normal line-clamp-3 leading-relaxed cursor-pointer"
+              className="text-foreground-landing/60 font-normal line-clamp-3 leading-relaxed cursor-pointer"
             >
               {project?.description}
             </Text>
           </div>
-          <div className="mt-4 flex">
+          <div className="flex px-4 py-4">
             {edit ? (
               <DragHandle
                 isButton
@@ -134,19 +134,19 @@ export default function ProjectCard({
             {edit && (
               <div className="flex gap-2 ml-auto">
                 <Button
-                  size="medium"
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
                     handleRouter(project?._id);
                   }}
+                  customClass="!py-2"
                   icon={<Pencil className="w-4 h-4" />}
                   text={"Edit"}
                   type="secondary"
                 />
                 <Button
-                  size="medium"
                   type="toggleVisibility"
+                  customClass="!py-2"
                   isSelected={project?.hidden}
                   onClick={(e) => {
                     e.preventDefault();
@@ -157,11 +157,11 @@ export default function ProjectCard({
                   text={project?.hidden ? "Hidden" : "Visible"}
                 />
                 <Button
-                  size="medium"
                   type="delete"
                   icon={
-                    <DeleteIcon className="stroke-delete-btn-icon-color h-6 w-6 cursor-pointer rounded-full" />
+                    <DeleteIcon className="stroke-delete-btn-icon-color h-5 w-5 cursor-pointer" />
                   }
+                  customClass="!p-2.5"
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -172,6 +172,7 @@ export default function ProjectCard({
             )}
           </div>
         </div>
+
       </div>
     </div>
   );

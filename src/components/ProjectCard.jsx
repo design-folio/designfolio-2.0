@@ -104,12 +104,13 @@ export default function ProjectCard({
               {project?.description}
             </Text>
           </div>
-          <div className="flex px-4 py-4">
+          <div className="flex px-4 py-4 items-center">
             {edit ? (
               <DragHandle
                 isButton
                 listeners={dragHandleListeners}
                 attributes={dragHandleAttributes}
+                className={"max-h-[34px]"}
               />
             ) : (
               <motion.div
@@ -139,14 +140,14 @@ export default function ProjectCard({
                     e.stopPropagation();
                     handleRouter(project?._id);
                   }}
-                  customClass="!py-2"
+                  customClass="!py-2 text-sm max-h-[38px] "
                   icon={<Pencil className="w-4 h-4" />}
                   text={"Edit"}
                   type="secondary"
                 />
                 <Button
                   type="toggleVisibility"
-                  customClass="!py-2"
+                  customClass="!py-2 text-sm max-h-[38px]"
                   isSelected={project?.hidden}
                   onClick={(e) => {
                     e.preventDefault();
@@ -161,7 +162,7 @@ export default function ProjectCard({
                   icon={
                     <DeleteIcon className="stroke-delete-btn-icon-color h-5 w-5 cursor-pointer" />
                   }
-                  customClass="!p-2.5"
+                  customClass="!p-2.5 max-h-10"
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();

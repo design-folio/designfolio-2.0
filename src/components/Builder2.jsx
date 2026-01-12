@@ -87,22 +87,26 @@ const SortableProjectItem = React.memo(({ project, onDeleteProject, handleRouter
     <div
       ref={setNodeRef}
       style={style}
-      className={`w-full md:w-[calc(50%-12px)] max-w-[444px] relative ${isDragging ? 'relative' : ''}`}
+      className={`w-full relative h-full flex flex-col ${isDragging ? 'relative' : ''}`}
     >
       <ProjectShape className="text-template-text-left-bg-color" />
-      <Chat direction="left" className="rounded-tl-none w-full">
-        <ProjectCard
-          project={project}
-          onDeleteProject={() => onDeleteProject(project)}
-          edit={true}
-          handleRouter={handleRouter}
-          href={getHref(project._id)}
-          dragHandleListeners={listeners}
-          dragHandleAttributes={attributes}
-          isDragging={isDragging}
-          wasRecentlyMoved={wasRecentlyMoved}
-        />
-      </Chat>
+      <div className="flex-1 flex flex-col min-h-0">
+        <Chat direction="left" className="rounded-tl-none w-full h-full flex-1 flex flex-col min-h-0">
+          <div className="h-full flex flex-col">
+            <ProjectCard
+              project={project}
+              onDeleteProject={() => onDeleteProject(project)}
+              edit={true}
+              handleRouter={handleRouter}
+              href={getHref(project._id)}
+              dragHandleListeners={listeners}
+              dragHandleAttributes={attributes}
+              isDragging={isDragging}
+              wasRecentlyMoved={wasRecentlyMoved}
+            />
+          </div>
+        </Chat>
+      </div>
     </div>
   );
 }, (prevProps, nextProps) => {
@@ -392,7 +396,7 @@ export default function Builder2({ edit = false }) {
           items={projects?.map((p) => p._id) || []}
           strategy={rectSortingStrategy}
         >
-          <div className="list flex flex-row flex-wrap gap-6">
+          <div className="list grid grid-cols-1 md:grid-cols-2 gap-6">
             {projects?.map((project) => (
               <SortableProjectItem
                 key={project._id}

@@ -92,11 +92,16 @@ export default function ProjectCard({
 
         <div className="p-6 flex-1 flex flex-col justify-between cursor-pointer">
           <div>
-            <Text
-              size="p-small"
-              className="text-project-card-heading-color font-semibold line-clamp-2 cursor-pointer"
+            <p
+              className="text-project-card-heading-color font-semibold line-clamp-2 cursor-pointer text-lg"
             >
               {project?.title}
+            </p>
+            <Text
+              size="p-xxsmall"
+              className="text-project-card-heading-color font-normal line-clamp-3 leading-relaxed cursor-pointer"
+            >
+              {project?.description}
             </Text>
           </div>
           <div className="mt-4 flex">

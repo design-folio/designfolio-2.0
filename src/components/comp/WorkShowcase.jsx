@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Eye, EyeOff, Pencil } from "lucide-react";
 import { useRouter } from "next/router";
 import Button from "../button";
 import DeleteIcon from "../../../public/assets/svgs/deleteIcon.svg";
@@ -8,6 +8,7 @@ import AddCard from "../AddCard";
 import { useGlobalContext } from "@/context/globalContext";
 import { modals } from "@/lib/constant";
 import DragHandle from "../DragHandle";
+import { _updateUser, _updateProject } from "@/network/post-request";
 
 // DND Kit Imports
 import {
@@ -27,7 +28,6 @@ import {
   rectSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { _updateUser } from "@/network/post-request";
 import ProjectLock from "../projectLock";
 import MemoCasestudy from "../icons/Casestudy";
 
@@ -136,6 +136,14 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit }) => {
     setSortedProjects([...currentProjects]);
   }, [userDetails]);
 
+  // Filter out hidden projects in preview mode (when edit is false)
+  const visibleProjects = React.useMemo(() => {
+    if (!edit && sortedProjects) {
+      return sortedProjects.filter((project) => !project.hidden);
+    }
+    return sortedProjects;
+  }, [sortedProjects, edit]);
+
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -191,6 +199,24 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit }) => {
       setSelectedProject(project);
     };
 
+    const handleToggleVisibility = (projectId) => {
+      const updatedProjects = sortedProjects.map((project) => {
+        if (project._id === projectId) {
+          const updatedProject = { ...project, hidden: !project.hidden };
+          // Update individual project on server
+          _updateProject(projectId, { hidden: updatedProject.hidden });
+          return updatedProject;
+        }
+        return project;
+      });
+
+      // Update local state
+      setSortedProjects(updatedProjects);
+      setUserDetails((prev) => ({ ...prev, projects: updatedProjects }));
+      // Also update the entire projects array to keep it in sync
+      _updateUser({ projects: updatedProjects });
+    };
+
     return (
       <div
         ref={(node) => {
@@ -198,13 +224,13 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit }) => {
           containerRef.current = node;
         }}
         style={style}
-        className={isDragging ? 'relative' : ''}
+        className={`${isDragging ? 'relative' : ''} h-full`}
       >
         <motion.div
           onMouseMove={handleMouseMove}
           onClick={() => handleNavigation(project?._id)}
           variants={itemVariants}
-          className="group rounded-3xl bg-card overflow-hidden relative shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] cursor-pointer"
+          className="group rounded-3xl bg-card overflow-hidden relative shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] cursor-pointer h-full flex flex-col"
         >
           <div
             className="pointer-events-none absolute -inset-px opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -217,6 +243,12 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit }) => {
               src={project?.thumbnail?.url}
               alt={project.title}
             />
+            {project?.hidden && (
+              <div className="absolute top-3 right-3 bg-amber-100 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1.5 z-10">
+                <EyeOff className="w-3 h-3" />
+                Hidden from live site
+              </div>
+            )}
             <a
               href={project.link}
               className="absolute top-6 right-6 size-14 rounded-full bg-tertiary flex items-center justify-center opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300 hover:bg-tertiary-hover"
@@ -224,36 +256,61 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit }) => {
               <ArrowUpRight className="size-6 text-white" />
             </a>
           </div>
-          <div className="p-8 pb-10 cursor-pointer">
-            <h3 className="text-2xl font-semibold leading-tight line-clamp-2">
-              {project.title}
-            </h3>
-            {project.description && (
-              <p className="text-gray-400 line-clamp-2 mt-3">
-                {project.description}
-              </p>
-            )}
+          <div className="p-8 pb-10 cursor-pointer flex flex-col flex-1">
+            <div className="flex-1">
+              <h3 className="text-2xl font-semibold leading-tight line-clamp-2">
+                {project.title}
+              </h3>
+              {project.description && (
+                <p className="text-gray-400 line-clamp-2 mt-3">
+                  {project.description}
+                </p>
+              )}
+            </div>
             {edit && (
-              <div className="flex justify-between gap-3 items-center mt-4">
-                <Button
-                  text={"Edit project"}
-                  customClass="w-full h-[58px]"
-                  type="secondary"
+              <div className="mt-4 flex">
+                <DragHandle
+                  isButton
+                  listeners={listeners}
+                  attributes={attributes}
                 />
-                <div className="flex gap-4">
+                <div className="flex gap-2 ml-auto">
                   <Button
-                    size="icon"
+                    size="small"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleNavigation(project?._id);
+                    }}
+                    icon={<Pencil className="w-4 h-4" />}
+                    text={"Edit"}
+                    type="secondary"
+                  />
+                  <Button
+                    size="small"
+                    type="toggleVisibility"
+                    isSelected={project?.hidden}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleToggleVisibility(project?._id);
+                    }}
+                    icon={project?.hidden ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    text={project?.hidden ? "Hidden" : "Visible"}
+                  />
+                  <Button
+                    size="small"
                     type="delete"
                     icon={
-                      <DeleteIcon className="stroke-delete-btn-icon-color w-6 h-6 cursor-pointer" />
+                      <DeleteIcon className="stroke-delete-btn-icon-color h-6 w-6 cursor-pointer rounded-full" />
                     }
                     onClick={(e) => {
+                      e.preventDefault();
                       e.stopPropagation();
                       onDeleteProject(project);
                     }}
                   />
                 </div>
-                <DragHandle listeners={listeners} attributes={attributes} />
               </div>
             )}
           </div>
@@ -272,7 +329,7 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit }) => {
           onDragEnd={handleDragEnd}
         >
           <SortableContext
-            items={sortedProjects.map((project) => project._id)}
+            items={visibleProjects.map((project) => project._id)}
             strategy={rectSortingStrategy}
           >
             <motion.div
@@ -282,7 +339,7 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit }) => {
               animate={inView ? "show" : "hidden"}
               className="grid grid-cols-1 md:grid-cols-2 gap-6"
             >
-              {sortedProjects.map((project) => (
+              {visibleProjects.map((project) => (
                 <ProjectCard key={project._id} project={project} />
               ))}
             </motion.div>
@@ -292,9 +349,9 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit }) => {
       {edit &&
         (userDetails?.pro || userDetails?.projects.length < 2 ? (
           <AddCard
-            title={`${sortedProjects.length === 0
-                ? "Upload your first case study"
-                : "Add case study"
+            title={`${visibleProjects.length === 0
+              ? "Upload your first case study"
+              : "Add case study"
               }`}
             subTitle="Show off your best work."
             first={sortedProjects.length !== 0}
@@ -303,7 +360,7 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit }) => {
             onClick={() => openModal(modals.project)}
             icon={<MemoCasestudy className="cursor-pointer size-[72px]" />}
             openModal={openModal}
-            className={`bg-secondary flex items-center justify-center mt-6 ${sortedProjects.length !== 0 &&
+            className={`bg-secondary flex items-center justify-center mt-6 ${visibleProjects.length !== 0 &&
               "shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] hover:shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
               }`}
           />

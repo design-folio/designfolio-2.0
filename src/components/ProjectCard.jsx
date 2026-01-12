@@ -7,6 +7,8 @@ import DeleteIcon from "../../public/assets/svgs/deleteIcon.svg";
 import DragHandle from "./DragHandle";
 import Text from "./text";
 import Link from "next/link";
+import { Button as ButtonNew } from "./ui/buttonNew";
+import { Eye, EyeOff, Pencil } from "lucide-react";
 const imageVariants = {
   hover: {
     scale: 1.13, // Target scale when hovered
@@ -35,6 +37,7 @@ export default function ProjectCard({
   dragHandleAttributes,
   isDragging = false,
   wasRecentlyMoved = false,
+  onToggleVisibility,
 }) {
   const [isHovered, setIsHovered] = useState(false);
   const [imageLoaded, setImageLoaded] = React.useState(false);
@@ -79,28 +82,35 @@ export default function ProjectCard({
             fetchpriority="high"
             decoding="async"
           />
+          {project?.hidden && (
+            <div className="absolute top-3 right-3 bg-amber-100 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1.5">
+              <EyeOff className="w-3 h-3" />
+              Hidden from live site
+            </div>
+          )}
         </div>
 
-        <div className="p-6 flex-1 flex flex-col justify-between cursor-pointer">
-          <div>
-            <Text
-              size="p-small"
-              className="text-project-card-heading-color font-semibold line-clamp-2 cursor-pointer"
+        <div className="flex-1 flex flex-col justify-between cursor-pointer">
+          <div className="p-6 pb-0">
+            <p
+              className="text-project-card-heading-color font-semibold line-clamp-2 cursor-pointer text-lg mb-2"
             >
               {project?.title}
+            </p>
+            <Text
+              size="p-xxsmall"
+              className="text-foreground-landing/60 font-normal line-clamp-3 leading-relaxed cursor-pointer"
+            >
+              {project?.description}
             </Text>
           </div>
-          <div className="flex justify-between gap-3  items-center mt-4">
+          <div className="flex px-4 py-4 items-center">
             {edit ? (
-              <Button
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleRouter(project?._id);
-                }}
-                text={"Edit project"}
-                customClass="w-full h-[58px]"
-                type="secondary"
+              <DragHandle
+                isButton
+                listeners={dragHandleListeners}
+                attributes={dragHandleAttributes}
+                className={"max-h-[34px]"}
               />
             ) : (
               <motion.div
@@ -123,27 +133,47 @@ export default function ProjectCard({
               </motion.div>
             )}
             {edit && (
-              <div className="flex gap-4">
+              <div className="flex gap-2 ml-auto">
                 <Button
-                  size="icon"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleRouter(project?._id);
+                  }}
+                  customClass="!py-2 text-sm max-h-[38px] "
+                  icon={<Pencil className="w-4 h-4" />}
+                  text={"Edit"}
+                  type="secondary"
+                />
+                <Button
+                  type="toggleVisibility"
+                  customClass="!py-2 text-sm max-h-[38px]"
+                  isSelected={project?.hidden}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onToggleVisibility?.(project?._id);
+                  }}
+                  icon={project?.hidden ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  text={project?.hidden ? "Hidden" : "Visible"}
+                />
+                <Button
                   type="delete"
                   icon={
-                    <DeleteIcon className="stroke-delete-btn-icon-color w-6 h-6 cursor-pointer" />
+                    <DeleteIcon className="stroke-delete-btn-icon-color h-5 w-5 cursor-pointer" />
                   }
+                  customClass="!p-2.5 max-h-10"
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
                     onDeleteProject(project);
                   }}
                 />
-                <DragHandle
-                  listeners={dragHandleListeners}
-                  attributes={dragHandleAttributes}
-                />
               </div>
             )}
           </div>
         </div>
+
       </div>
     </div>
   );

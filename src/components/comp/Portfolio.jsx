@@ -5,10 +5,13 @@ import {
   ChevronDown,
   ChevronUp,
   GripVertical,
+  Eye,
+  EyeOff,
+  Pencil,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, useInView } from "framer-motion";
-import { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Footer } from "@/components/comp/Footer";
 import { useRouter } from "next/router";
 import Button2 from "../button";
@@ -39,7 +42,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Testimonials } from "./Testimonials";
-import { _updateUser } from "@/network/post-request";
+import { _updateUser, _updateProject } from "@/network/post-request";
 import ProjectLock from "../projectLock";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { cn } from "@/lib/utils";
@@ -117,6 +120,24 @@ const Portfolio = ({ userDetails, edit }) => {
     setSelectedProject(project);
   };
 
+  const handleToggleVisibility = (projectId) => {
+    const updatedProjects = sortedProjects.map((project) => {
+      if (project._id === projectId) {
+        const updatedProject = { ...project, hidden: !project.hidden };
+        // Update individual project on server
+        _updateProject(projectId, { hidden: updatedProject.hidden });
+        return updatedProject;
+      }
+      return project;
+    });
+
+    // Update local state
+    setSortedProjects(updatedProjects);
+    setUserDetails((prev) => ({ ...prev, projects: updatedProjects }));
+    // Also update the entire projects array to keep it in sync
+    _updateUser({ projects: updatedProjects });
+  };
+
   const toggleExpand = (index) => {
     setExpandedCards((prev) =>
       prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
@@ -130,6 +151,14 @@ const Portfolio = ({ userDetails, edit }) => {
   useEffect(() => {
     setSortedProjects(projects || []);
   }, [projects]);
+
+  // Filter out hidden projects in preview mode (when edit is false)
+  const visibleProjects = React.useMemo(() => {
+    if (!edit && sortedProjects) {
+      return sortedProjects.filter((project) => !project.hidden);
+    }
+    return sortedProjects;
+  }, [sortedProjects, edit]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -181,11 +210,19 @@ const Portfolio = ({ userDetails, edit }) => {
           className="group bg-card border border-card-border rounded-lg overflow-hidden hover:bg-card/80 transition-colors relative !cursor-pointer"
         >
           <div className="flex flex-col md:flex-row !cursor-pointer">
-            <img
-              src={project?.thumbnail?.url}
-              alt={project.title}
-              className="object-cover group-hover:scale-105 transition-transform duration-300 w-full lg:w-[320px] h-[261px] shrink-0 overflow-hidden !cursor-pointer"
-            />
+            <div className="relative w-full lg:w-[320px] h-[261px] shrink-0 overflow-hidden">
+              <img
+                src={project?.thumbnail?.url}
+                alt={project.title}
+                className="object-cover group-hover:scale-105 transition-transform duration-300 w-full h-full !cursor-pointer"
+              />
+              {project?.hidden && (
+                <div className="absolute top-3 right-3 bg-amber-100 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1.5 z-10">
+                  <EyeOff className="w-3 h-3" />
+                  Hidden from live site
+                </div>
+              )}
+            </div>
             <div className="p-8 flex flex-col justify-between flex-grow !cursor-pointer">
               <div>
                 <h4 className="text-2xl font-semibold mb-3 line-clamp-2 !cursor-pointer">
@@ -196,31 +233,49 @@ const Portfolio = ({ userDetails, edit }) => {
                 </p>
               </div>
               {edit && (
-                <div className="flex justify-between gap-3 items-center mt-4 cursor-pointer">
-                  <Button2
-                    text={"Edit project"}
-                    customClass="w-full h-[58px]"
-                    type="secondary"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleNavigation(project?._id);
-                    }}
+                <div className="mt-4 flex">
+                  <DragHandle
+                    isButton
+                    listeners={listeners}
+                    attributes={attributes}
                   />
-                  <div className="flex gap-4">
+                  <div className="flex gap-2 ml-auto">
                     <Button2
-                      size="icon"
+                      size="medium"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleNavigation(project?._id);
+                      }}
+                      icon={<Pencil className="w-4 h-4" />}
+                      text={"Edit"}
+                      type="secondary"
+                    />
+                    <Button2
+                      size="medium"
+                      type="toggleVisibility"
+                      isSelected={project?.hidden}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleToggleVisibility(project?._id);
+                      }}
+                      icon={project?.hidden ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      text={project?.hidden ? "Hidden" : "Visible"}
+                    />
+                    <Button2
+                      size="medium"
                       type="delete"
                       icon={
-                        <DeleteIcon className="stroke-delete-btn-icon-color w-6 h-6 cursor-pointer" />
+                        <DeleteIcon className="stroke-delete-btn-icon-color h-6 w-6 cursor-pointer rounded-full" />
                       }
                       onClick={(e) => {
+                        e.preventDefault();
                         e.stopPropagation();
                         onDeleteProject(project);
                       }}
                     />
                   </div>
-                  {/* Drag handle: attach drag listeners only here */}
-                  <DragHandle listeners={listeners} attributes={attributes} />
                 </div>
               )}
               {!edit && (
@@ -398,7 +453,7 @@ const Portfolio = ({ userDetails, edit }) => {
             onDragEnd={handleDragEnd}
           >
             <SortableContext
-              items={sortedProjects.map((project) => project._id)}
+              items={visibleProjects.map((project) => project._id)}
               strategy={verticalListSortingStrategy}
             >
               <motion.section
@@ -409,7 +464,7 @@ const Portfolio = ({ userDetails, edit }) => {
               >
                 <h3 className="text-3xl font-bold mb-12">Featured Projects</h3>
                 <div className="flex flex-col gap-6">
-                  {sortedProjects.map((project, index) => (
+                  {visibleProjects.map((project, index) => (
                     <SortableProjectCard
                       key={project._id}
                       project={project}

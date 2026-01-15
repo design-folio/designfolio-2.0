@@ -11,6 +11,8 @@ import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { Badge } from "./ui/badge";
 import { SheetWrapper } from "./ui/SheetWrapper";
+import { Slider } from "./ui/slider";
+import { AnimatePresence, motion } from "framer-motion";
 
 const ThemePanel = ({
   theme,
@@ -27,6 +29,8 @@ const ThemePanel = ({
   wallpaper,
   changeWallpaper,
   wallpapers,
+  effects,
+  updateWallpaperEffect,
 }) => {
   const {
     activeSidebar,
@@ -39,6 +43,20 @@ const ThemePanel = ({
   const isMobileOrTablet = useIsMobile();
   const [isDarkWallpapers, setIsDarkWallpapers] = useState(theme === 'dark' || theme === 1);
   const show = activeSidebar === sidebars.theme;
+
+  // Fallback to local state if effects is not provided (backward compatibility)
+  const [localEffects, setLocalEffects] = useState({
+    blur: 0,
+    effectType: 'blur',
+    grainIntensity: 30,
+    motion: false
+  });
+
+  // Use provided effects or fall back to local state
+  const currentEffects = effects || localEffects;
+  const currentUpdateWallpaperEffect = updateWallpaperEffect || ((key, value) => {
+    setLocalEffects(prev => ({ ...prev, [key]: value }));
+  });
 
 
   useEffect(() => {
@@ -183,14 +201,14 @@ const ThemePanel = ({
         </TabsList>
       </div>
 
-      <TabsContent value="layouts" className="flex-1 overflow-y-auto p-6 m-0" data-testid={isMobile ? "content-layouts-mobile" : "content-layouts"}>
+      <TabsContent value="layouts" className="flex-1 overflow-y-auto p-6 m-0 thin-scrollbar" data-testid={isMobile ? "content-layouts-mobile" : "content-layouts"}>
         <div className="space-y-4">
           <div className="flex items-center justify-between p-3 rounded-md bg-muted/50 mb-4">
             <div className="flex items-center gap-2">
               <span className="text-sm font-medium">Light Mode</span>
             </div>
             <Switch
-              className="data-[state=unchecked]:bg-[#CFC4AF] data-[state=checked]:bg-df-orange-color"
+              className="data-[state=unchecked]:bg-[#CFC4AF] data-[state=checked]:bg-df-orange-color "
               checked={theme === 'dark' || theme === 1}
               onCheckedChange={(checked) => changeTheme(checked ? 1 : 0)}
               data-testid={isMobile ? "switch-theme-mode-layouts-mobile" : "switch-theme-mode-layouts"}
@@ -245,6 +263,94 @@ const ThemePanel = ({
             </div>
           </div>
 
+          <AnimatePresence mode="wait">
+            {wallpaper && wallpaper !== 0 && (
+              <motion.div
+                key="bg-effects"
+                initial={{ height: 0, opacity: 0, marginTop: 0 }}
+                animate={{ height: "auto", opacity: 1, marginTop: 16 }}
+                exit={{ height: 0, opacity: 0, marginTop: 0 }}
+                transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+                className="overflow-hidden"
+              >
+                <div className="p-4 rounded-xl border border-border bg-muted/50 mb-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-xs font-semibold uppercase tracking-wider ">Background Texture</span>
+                  </div>
+                  <div className="flex p-1 bg-muted/50 rounded-lg gap-1 mb-4">
+                    <button
+                      onClick={() => currentUpdateWallpaperEffect('effectType', 'blur')}
+                      className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 ${currentEffects.effectType === 'blur'
+                        ? 'bg-background text-foreground shadow-sm'
+                        : ' hover:text-foreground'
+                        }`}
+                      data-testid={isMobileOrTablet ? "button-effect-blur-mobile" : "button-effect-blur"}
+                    >
+                      Soft Blur
+                    </button>
+                    <button
+                      onClick={() => currentUpdateWallpaperEffect('effectType', 'grain')}
+                      className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 ${currentEffects.effectType === 'grain'
+                        ? 'bg-background text-foreground shadow-sm'
+                        : ' hover:text-foreground'
+                        }`}
+                      data-testid={isMobileOrTablet ? "button-effect-grain-mobile" : "button-effect-grain"}
+                    >
+                      Fine Grain
+                    </button>
+                  </div>
+
+                  <div className="space-y-4">
+                    {currentEffects.effectType === 'blur' ? (
+                      <div className="animate-in fade-in slide-in-from-top-1 duration-300">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-[11px] font-medium text-foreground/60">Depth</span>
+                          <span className="text-[11px] tabular-nums text-foreground/40">{currentEffects.blur}px</span>
+                        </div>
+                        <Slider
+
+                          value={[currentEffects.blur]}
+                          onValueChange={(value) => currentUpdateWallpaperEffect('blur', value[0])}
+                          max={20}
+                          step={1}
+                          className="w-full"
+                          data-testid={isMobileOrTablet ? "slider-background-blur-mobile" : "slider-background-blur"}
+                        />
+                      </div>
+                    ) : (
+                      <div className="animate-in fade-in slide-in-from-top-1 duration-300">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-[11px] font-medium text-foreground/60">Opacity</span>
+                          <span className="text-[11px] tabular-nums text-foreground/40">{currentEffects.grainIntensity}%</span>
+                        </div>
+                        <Slider
+                          value={[currentEffects.grainIntensity]}
+                          onValueChange={(value) => currentUpdateWallpaperEffect('grainIntensity', value[0])}
+                          max={100}
+                          step={5}
+                          className="w-full"
+                          data-testid={isMobileOrTablet ? "slider-grain-intensity-mobile" : "slider-grain-intensity"}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between p-4 rounded-xl border border-border bg-muted/50 mb-4">
+                  <div>
+                    <span className="text-xs font-semibold uppercase tracking-wider">Dynamic Motion</span>
+                    <p className="text-[11px]  mt-0.5 font-medium text-foreground/60">Parallax zoom interaction</p>
+                  </div>
+                  <Switch
+                    checked={currentEffects.motion}
+                    onCheckedChange={(checked) => currentUpdateWallpaperEffect('motion', checked)}
+                    data-testid={isMobileOrTablet ? "switch-background-motion-mobile" : "switch-background-motion"}
+                    className="scale-90 data-[state=unchecked]:bg-[#CFC4AF] data-[state=checked]:bg-df-orange-color "
+                  />
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
           <div className="p-4 rounded-md border border-border bg-card/50 mb-4">
             <div className="flex items-start gap-3 mb-3">
               <Upload className="w-5 h-5 text-primary-landing  mt-0.5" />

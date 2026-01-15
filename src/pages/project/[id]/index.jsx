@@ -6,7 +6,6 @@ import TiptapRenderer from "@/components/tiptapRenderer";
 import { useGlobalContext } from "@/context/globalContext";
 import { containerVariants, itemVariants } from "@/lib/animationVariants";
 import { capitalizeWords } from "@/lib/capitalizeText";
-import { cn } from "@/lib/utils";
 import { _getProjectDetails } from "@/network/get-request";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
@@ -14,11 +13,13 @@ import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import MadeWithDesignfolio from "../../../../public/assets/svgs/madewithdesignfolio.svg";
+import WallpaperBackground from "@/components/WallpaperBackground";
+import { getWallpaperUrl } from "@/lib/wallpaper";
 
 export default function Index({ data }) {
   const router = useRouter();
-  const { setTheme } = useTheme();
-  const { setCursor, setWallpaper, wallpaperUrl, userDetails } = useGlobalContext();
+  const { setTheme, theme, resolvedTheme } = useTheme();
+  const { setCursor, setWallpaper, userDetails, wallpaperEffects } = useGlobalContext();
   const [unlockedProjectData, setUnlockedProjectData] = useState(null);
 
   // Try to get project from context first (fastest)
@@ -110,6 +111,15 @@ export default function Index({ data }) {
   const wpValue = projectWallpaper && typeof projectWallpaper === 'object'
     ? (projectWallpaper.url || projectWallpaper.value)
     : projectWallpaper;
+  
+  // Compute wallpaper URL for this project
+  const currentTheme = resolvedTheme || theme || (project?.theme == 1 ? "dark" : "light");
+  const wallpaperUrl = wpValue && wpValue !== 0
+    ? getWallpaperUrl(wpValue, currentTheme)
+    : null;
+  
+  // Get wallpaper effects from project or userDetails
+  const effects = project?.wallpaper?.effects || userDetails?.wallpaper?.effects || null;
 
   return (
     <>
@@ -122,12 +132,8 @@ export default function Index({ data }) {
         }
         url={`https://${project?.username || data?.project?.username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`}
       />
-      <main className={cn(
-        "min-h-screen",
-        wpValue && wpValue !== 0
-          ? "bg-transparent"
-          : "bg-df-bg-color"
-      )}>
+      <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={effects} />
+      <main className="min-h-screen">
         <div
           className={`max-w-[890px] mx-auto pt-[16px] pb-[80px] lg:py-[40px] px-2 md:px-4 lg:px-0`}
         >

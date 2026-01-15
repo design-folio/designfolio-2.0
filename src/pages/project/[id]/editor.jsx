@@ -13,7 +13,7 @@ import { sidebars } from "@/lib/constant";
 export default function Index() {
   const router = useRouter();
   const { setTheme } = useTheme();
-  const { userDetails, setCursor, setWallpaper, wallpaperUrl, activeSidebar } = useGlobalContext();
+  const { userDetails, setCursor, setWallpaper, wallpaperUrl, activeSidebar, wallpaperEffects } = useGlobalContext();
   const [projectDetails, setProjectDetails] = useState(null);
   const initializedRef = useRef(false);
   const isMobile = useIsMobile();
@@ -107,7 +107,7 @@ export default function Index() {
 
   return (
     <>
-      <WallpaperBackground wallpaperUrl={wallpaperUrl} />
+      <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
       <main className={cn("min-h-screen")}>
         <div
           className={`max-w-[890px] mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0`}

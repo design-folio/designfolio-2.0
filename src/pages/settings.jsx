@@ -9,9 +9,8 @@ import DefaultDomain from "@/components/defaultDomain";
 import Transaction from "@/components/transaction";
 import MemoLeftArrow from "@/components/icons/LeftArrow";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
-import { hasNoWallpaper } from "@/lib/wallpaper";
 import { sidebars } from "@/lib/constant";
+import WallpaperBackground from "@/components/WallpaperBackground";
 
 export default function Settings() {
   const {
@@ -20,7 +19,8 @@ export default function Settings() {
     userDetailsIsState,
     domainDetails,
     fetchDomainDetails,
-    wallpaper,
+    wallpaperUrl,
+    wallpaperEffects,
     activeSidebar,
   } = useGlobalContext();
 
@@ -56,10 +56,9 @@ export default function Settings() {
   }, []);
 
   return (
-    <main className={cn(
-      "min-h-screen",
-      hasNoWallpaper(wallpaper) ? "bg-df-bg-color" : "bg-transparent"
-    )}>
+    <>
+      <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
+      <main className="min-h-screen">
       <div
         className={`max-w-[890px]  mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0`}
       >
@@ -106,7 +105,8 @@ export default function Settings() {
           </div>
         </div>
       </div>
-    </main>
+      </main>
+    </>
   );
 }
 

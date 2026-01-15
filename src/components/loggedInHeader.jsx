@@ -171,8 +171,8 @@ export default function LoggedInHeader({
   const [updateLoading, setUpdateLoading] = useState(false);
   const [isMobileThemePopup, setIsMobileThemePopup] = useState(false);
 
-  // Get activeSidebar from context to check if review or work sidebar is open
-  const { activeSidebar, openSidebar, closeSidebar } = useGlobalContext();
+  // Get activeSidebar and wallpaper effects from context
+  const { activeSidebar, openSidebar, closeSidebar, wallpaperEffects, updateWallpaperEffect } = useGlobalContext();
   const isReviewSidebarOpen = activeSidebar === sidebars.review;
   const isWorkSidebarOpen = activeSidebar === sidebars.work;
   const isThemeSidebarOpen = activeSidebar === sidebars.theme;
@@ -457,6 +457,8 @@ export default function LoggedInHeader({
                 wallpaper={wallpaper}
                 changeWallpaper={changeWallpaper}
                 wallpapers={wallpapers}
+                effects={wallpaperEffects}
+                updateWallpaperEffect={updateWallpaperEffect}
               />
             )}
           </div>

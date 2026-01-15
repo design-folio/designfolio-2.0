@@ -6,7 +6,6 @@ import Template1 from "@/components/template";
 import Template2 from "@/components/template2";
 import { useGlobalContext } from "@/context/globalContext";
 import useClient from "@/hooks/useClient";
-import { cn } from "@/lib/utils";
 import { getWallpaperUrl } from "@/lib/wallpaper";
 import { _getUser } from "@/network/get-request";
 import { useQuery } from "@tanstack/react-query";
@@ -14,6 +13,7 @@ import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import MadeWithDesignfolio from "../../../public/assets/svgs/madewithdesignfolio.svg";
+import WallpaperBackground from "@/components/WallpaperBackground";
 
 export default function Index({ initialUserDetails }) {
   const { setTheme, theme, resolvedTheme } = useTheme();
@@ -21,6 +21,8 @@ export default function Index({ initialUserDetails }) {
   const { isClient } = useClient();
   const {
     setWallpaper,
+    setWallpaperEffects,
+    wallpaperEffects,
   } = useGlobalContext();
 
   const { data: userDetails } = useQuery({
@@ -52,8 +54,13 @@ export default function Index({ initialUserDetails }) {
       const wp = finalUserDetails.wallpaper;
       const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
       setWallpaper(wpValue !== undefined ? wpValue : 0);
+
+      // Set wallpaper effects if available
+      if (wp && typeof wp === 'object' && wp.effects) {
+        setWallpaperEffects(wp.effects);
+      }
     }
-  }, [finalUserDetails, setTheme, setWallpaper]);
+  }, [finalUserDetails, setTheme, setWallpaper, setWallpaperEffects]);
 
   const wp = finalUserDetails?.wallpaper;
   const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
@@ -131,10 +138,8 @@ export default function Index({ initialUserDetails }) {
         imageUrl={finalUserDetails?.avatar?.url ?? "/assets/png/seo-profile.png"}
         url={`https://${finalUserDetails?.username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`}
       />
-      <main className={cn(
-        "min-h-screen",
-        wallpaperUrl ? "bg-transparent" : "bg-df-bg-color"
-      )}>
+      <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
+      <main className="min-h-screen">
         <div
           className={` mx-auto px-2 md:px-4 lg:px-0 ${finalUserDetails?.template != 3 && "max-w-[890px]"
             }`}

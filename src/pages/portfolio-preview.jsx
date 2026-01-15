@@ -9,8 +9,7 @@ import { useRouter } from "next/router";
 import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
 import Portfolio from "@/components/comp/Portfolio";
 import MadeWithDesignfolio from "../../public/assets/svgs/madewithdesignfolio.svg";
-import { cn } from "@/lib/utils";
-import { hasNoWallpaper } from "@/lib/wallpaper";
+import WallpaperBackground from "@/components/WallpaperBackground";
 
 export default function Index() {
   const {
@@ -20,7 +19,8 @@ export default function Index() {
     projectRef,
     template,
     setWallpaper,
-    wallpaper,
+    wallpaperUrl,
+    wallpaperEffects,
   } = useGlobalContext();
   const router = useRouter();
 
@@ -118,17 +118,17 @@ export default function Index() {
     }
   }, []);
   return (
-    <main className={cn(
-      "min-h-screen",
-      hasNoWallpaper(wallpaper) ? "bg-df-bg-color" : "bg-transparent"
-    )}>
+    <>
+      <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
+      <main className="min-h-screen">
       <div
         className={` mx-auto px-2 md:px-4 lg:px-0 ${template != 3 && "max-w-[890px]"
           }`}
       >
         {renderTemplate()}
       </div>
-    </main>
+      </main>
+    </>
   );
 }
 

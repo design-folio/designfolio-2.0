@@ -12,7 +12,7 @@ import React, { useEffect, useState, useRef } from "react";
 export default function Index() {
   const { setTheme } = useTheme();
   const router = useRouter();
-  const { setCursor, setWallpaper, wallpaperUrl, userDetails } = useGlobalContext();
+  const { setCursor, setWallpaper, wallpaperUrl, userDetails, wallpaperEffects } = useGlobalContext();
   const [projectDetails, setProjectDetails] = useState(null);
   const [isProtected, setIsProtected] = useState(false);
   const initializedRef = useRef(false);
@@ -85,7 +85,7 @@ export default function Index() {
 
   return (
     <>
-      <WallpaperBackground wallpaperUrl={wallpaperUrl} />
+      <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
       <main className={cn("min-h-screen")}>
         {projectDetails && (
           <div className={`max-w-[890px] mx-auto py-[40px] px-2 md:px-4 lg:px-0`}>

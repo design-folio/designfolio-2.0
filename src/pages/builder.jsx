@@ -32,6 +32,7 @@ import { hasNoWallpaper } from "@/lib/wallpaper";
 import { UnsavedChangesDialog } from "@/components/ui/UnsavedChangesDialog";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { CourseCard } from "@/components/CourceCard";
+import WallpaperBackground from "@/components/WallpaperBackground";
 
 export default function Index() {
   const {
@@ -46,6 +47,8 @@ export default function Index() {
     isLoadingTemplate,
     setWallpaper,
     wallpaper,
+    wallpaperUrl,
+    wallpaperEffects,
     activeSidebar,
     showUnsavedWarning,
     handleConfirmDiscardSidebar,
@@ -174,56 +177,59 @@ export default function Index() {
   };
 
   return (
-    <main className={cn(
-      "min-h-screen", hasNoWallpaper(wallpaper) && "bg-df-bg-color")}>
-      <div
-        className={` mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0 ${userDetails?.template != 3 && "max-w-[890px]"
-          }`}
-      >
-        {userDetails && !userDetails?.pro && <ProWarning />}
-        {userDetails && (
+    <>
+      <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
+      <main className={cn(
+        "min-h-screen", hasNoWallpaper(wallpaper) && "bg-df-bg-color")}>
+        <div
+          className={` mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0 ${userDetails?.template != 3 && "max-w-[890px]"
+            }`}
+        >
+          {userDetails && !userDetails?.pro && <ProWarning />}
+          {userDetails && (
 
-          <>
-            {isLoadingTemplate ? (
-              <div className="flex items-center justify-center min-h-[calc(100vh-126px)]">
-                <Loader2 className="animate-spin h-8 w-8 text-df-orange-color" />
-              </div>
-            ) : (
-              renderTemplate()
-            )}
-          </>
+            <>
+              {isLoadingTemplate ? (
+                <div className="flex items-center justify-center min-h-[calc(100vh-126px)]">
+                  <Loader2 className="animate-spin h-8 w-8 text-df-orange-color" />
+                </div>
+              ) : (
+                renderTemplate()
+              )}
+            </>
+          )}
+          {userDetails && taskPercentage !== 100 && <BottomTask />}
+        </div>
+        <Modal show={showModal && showModal !== modals.aiProject && showModal !== modals.review && showModal !== modals.work}>
+          {modalContent()}
+        </Modal>
+        <Modal show={modals.aiProject == showModal} className={"md:block"}>
+          <CreateAiProject openModal={openModal} />
+        </Modal>
+        <AddReview />
+        <AddWork />
+        {/* Unsaved changes dialog */}
+        <UnsavedChangesDialog
+          open={showUnsavedWarning && isSwitchingSidebar && pendingSidebarAction?.type === "open"}
+          onOpenChange={(open) => {
+            if (!open) {
+              handleCancelDiscardSidebar();
+            }
+          }}
+          onConfirmDiscard={handleConfirmDiscardSidebar}
+          title="Unsaved Changes"
+          description="You have unsaved changes. Are you sure you want to switch sidebars and discard them?"
+        />
+        {isClient && userDetails && (
+          <Feedefy
+            projectId="a72769ea-5ab2-4ac9-81bd-1abe180d4b66"
+            data-feedefy
+            data-feedefy-userid={userDetails?.email}
+          ></Feedefy>
         )}
-        {userDetails && taskPercentage !== 100 && <BottomTask />}
-      </div>
-      <Modal show={showModal && showModal !== modals.aiProject && showModal !== modals.review && showModal !== modals.work}>
-        {modalContent()}
-      </Modal>
-      <Modal show={modals.aiProject == showModal} className={"md:block"}>
-        <CreateAiProject openModal={openModal} />
-      </Modal>
-      <AddReview />
-      <AddWork />
-      {/* Unsaved changes dialog */}
-      <UnsavedChangesDialog
-        open={showUnsavedWarning && isSwitchingSidebar && pendingSidebarAction?.type === "open"}
-        onOpenChange={(open) => {
-          if (!open) {
-            handleCancelDiscardSidebar();
-          }
-        }}
-        onConfirmDiscard={handleConfirmDiscardSidebar}
-        title="Unsaved Changes"
-        description="You have unsaved changes. Are you sure you want to switch sidebars and discard them?"
-      />
-      {isClient && userDetails && (
-        <Feedefy
-          projectId="a72769ea-5ab2-4ac9-81bd-1abe180d4b66"
-          data-feedefy
-          data-feedefy-userid={userDetails?.email}
-        ></Feedefy>
-      )}
-      {!isMobile && <CourseCard />}
-    </main>
+        {!isMobile && <CourseCard />}
+      </main>
+    </>
   );
 }
 export { getServerSideProps };

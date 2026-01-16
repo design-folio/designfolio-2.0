@@ -183,37 +183,39 @@ export const Spotlight = ({ userDetails, edit }) => {
               <div className="text-base text-gray-600 dark:text-gray-400">
                 {experience.company}
               </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400 relative">
-                <div className={shouldShowToggle && !isExpanded ? "max-h-[110px] overflow-hidden relative" : ""}>
-                  <SimpleTiptapRenderer
-                    content={experience.description || ""}
-                    mode="work"
-                    enableBulletList={true}
-                  />
-                  {shouldShowToggle && !isExpanded && (
-                    <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-card to-transparent pointer-events-none" />
+              {descriptionLength > 0 && (
+                <div className="text-sm text-gray-600 dark:text-gray-400 relative">
+                  <div className={shouldShowToggle && !isExpanded ? "max-h-[110px] overflow-hidden relative" : ""}>
+                    <SimpleTiptapRenderer
+                      content={experience.description}
+                      mode="work"
+                      enableBulletList={true}
+                    />
+                    {shouldShowToggle && !isExpanded && (
+                      <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-card to-transparent pointer-events-none" />
+                    )}
+                  </div>
+                  {shouldShowToggle && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleExpand(index);
+                      }}
+                      className="mt-2 text-foreground hover:text-foreground/80 inline-flex items-center gap-1 underline underline-offset-4"
+                    >
+                      {isExpanded ? (
+                        <>
+                          Show Less <ChevronUp className="h-3 w-3" />
+                        </>
+                      ) : (
+                        <>
+                          View More <ChevronDown className="h-3 w-3" />
+                        </>
+                      )}
+                    </button>
                   )}
                 </div>
-                {shouldShowToggle && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleExpand(index);
-                    }}
-                    className="mt-2 text-foreground hover:text-foreground/80 inline-flex items-center gap-1 underline underline-offset-4"
-                  >
-                    {isExpanded ? (
-                      <>
-                        Show Less <ChevronUp className="h-3 w-3" />
-                      </>
-                    ) : (
-                      <>
-                        View More <ChevronDown className="h-3 w-3" />
-                      </>
-                    )}
-                  </button>
-                )}
-              </div>
+              )}
             </div>
           </div>
         </motion.div>

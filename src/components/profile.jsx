@@ -96,7 +96,7 @@ export default function Profile({
           <div className="flex flex-col md:flex-row md:items-center gap-6">
             {/* Avatar Container */}
             <div
-              className={cn("w-28 h-28 md:w-36 md:h-36 rounded-3xl flex items-center justify-center relative overflow-hidden", !userDetails?.avatar ? "bg-[#FFB088]" : "")}
+              className={cn("w-28 h-28 md:w-36 md:h-36 rounded-3xl flex items-center justify-center relative overflow-hidden", !userDetails?.avatar ? "bg-df-bg-color" : "")}
               data-testid="avatar-profile"
             >
               <DfImage
@@ -131,7 +131,7 @@ export default function Profile({
         {/* Skills Banner Strip */}
         {skills?.length > 0 && (
           <div
-            className="relative overflow-hidden border-t border-border/20 py-4"
+            className="relative overflow-hidden border-t border-border/20 py-3"
             style={{
               background: "var(--skills-banner-bg)",
               boxShadow: "var(--skills-banner-shadow)",
@@ -163,7 +163,7 @@ export default function Profile({
                   key={index}
                   className="flex items-center gap-3 shrink-0 mr-3"
                 >
-                  <span className="text-sm text-foreground-landing/50 whitespace-nowrap">
+                  <span className="text-xs font-medium tracking-normal text-foreground-landing/50 whitespace-nowrap uppercase">
                     {skill}
                   </span>
                   <Sparkle className="w-3 h-3 text-foreground-landing/30 fill-foreground-landing/30" />

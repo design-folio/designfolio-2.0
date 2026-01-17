@@ -21,6 +21,7 @@ module.exports = {
         inter: ["var(--font-inter)", "sans-serif"],
         kalam: ["var(--font-kalam)", "cursive"],
         gsans: "var(--font-gsans)",
+        
       },
       cursor: {
         default: "var(--cursor-default)", // Custom cursor

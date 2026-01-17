@@ -183,6 +183,8 @@ const TiptapMenuBar = ({ editor, showToolbar, onImageUpload }) => {
     strike: false,
     heading2: false,
     heading3: false,
+    heading4: false,
+    heading5: false,
     bulletList: false,
     orderedList: false,
     blockquote: false,
@@ -218,6 +220,8 @@ const TiptapMenuBar = ({ editor, showToolbar, onImageUpload }) => {
         strike: editor.isActive("strike"),
         heading2: editor.isActive("heading", { level: 2 }),
         heading3: editor.isActive("heading", { level: 3 }),
+        heading4: editor.isActive("heading", { level: 4 }),
+        heading5: editor.isActive("heading", { level: 5 }),
         bulletList: editor.isActive("bulletList"),
         orderedList: editor.isActive("orderedList"),
         blockquote: editor.isActive("blockquote"),
@@ -568,6 +572,28 @@ const TiptapMenuBar = ({ editor, showToolbar, onImageUpload }) => {
             title="Heading 3"
           >
             <span className="font-bold text-sm">H3</span>
+          </MenuButton>
+          <MenuButton
+            onClick={() => {
+              editor.chain().focus().toggleHeading({ level: 4 }).run();
+              closeAllDropdowns();
+            }}
+            onMouseDown={(e) => e.preventDefault()}
+            isActive={activeNodes.heading4}
+            title="Heading 4"
+          >
+            <span className="font-bold text-sm">H4</span>
+          </MenuButton>
+          <MenuButton
+            onClick={() => {
+              editor.chain().focus().toggleHeading({ level: 5 }).run();
+              closeAllDropdowns();
+            }}
+            onMouseDown={(e) => e.preventDefault()}
+            isActive={activeNodes.heading5}
+            title="Heading 5"
+          >
+            <span className="font-bold text-sm">H5</span>
           </MenuButton>
         </div>
 

@@ -128,13 +128,17 @@ export default function Index({ initialUserDetails }) {
     }
   };
 
+
+  const fullName = [finalUserDetails?.firstName, finalUserDetails?.lastName].filter(Boolean).join(' ');
+
+  console.log("fullName", fullName);
   return (
     <>
       <Seo
-        title={`${finalUserDetails?.firstName} ${finalUserDetails?.lastName}`}
+        title={fullName}
         description={finalUserDetails?.introduction}
         keywords={`${finalUserDetails?.skillsString}`}
-        author={`${finalUserDetails?.firstName} ${finalUserDetails?.lastName}`}
+        author={fullName}
         imageUrl={finalUserDetails?.avatar?.url ?? "/assets/png/seo-profile.png"}
         url={`https://${finalUserDetails?.username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`}
       />

@@ -32,11 +32,50 @@ const itemVariants = {
   },
 };
 
+// Template-specific default section orders
+const TEMPLATE_DEFAULTS = {
+  0: ['projects', 'reviews', 'tools', 'works'],
+};
+
+const getDefaultSectionOrder = (template) => {
+  return TEMPLATE_DEFAULTS[template] || TEMPLATE_DEFAULTS[0];
+};
+
 export default function Template1({ userDetails }) {
   const { projectRef, setCursor } = useGlobalContext();
   useEffect(() => {
     setCursor(userDetails?.cursor ? userDetails?.cursor : 0);
   }, []);
+
+  // Get section order from userDetails or use template default
+  const sectionOrder = userDetails?.sectionOrder && Array.isArray(userDetails.sectionOrder)
+    ? userDetails.sectionOrder.filter(section => getDefaultSectionOrder(0).includes(section))
+    : getDefaultSectionOrder(0);
+
+  // Section component mapping
+  const sectionComponents = {
+    projects: userDetails?.projects?.length > 0 && (
+      <motion.div variants={itemVariants} id="section-projects">
+        <Projects userDetails={userDetails} projectRef={projectRef} />
+      </motion.div>
+    ),
+    reviews: userDetails?.reviews?.length > 0 && (
+      <motion.div variants={itemVariants} id="section-reviews">
+        <Reviews userDetails={userDetails} />
+      </motion.div>
+    ),
+    tools: (
+      <motion.div variants={itemVariants} id="section-tools">
+        <Tools userDetails={userDetails} />
+      </motion.div>
+    ),
+    works: userDetails?.experiences?.length > 0 && (
+      <motion.div variants={itemVariants} id="section-works">
+        <Works userDetails={userDetails} />
+      </motion.div>
+    ),
+  };
+
   return (
     <div
       className={`max-w-[890px] mx-auto pb-[120px] py-[32px] px-2 md:px-4 lg:px-0`}
@@ -52,25 +91,8 @@ export default function Template1({ userDetails }) {
             <Profile userDetails={userDetails} />
           </motion.div>
 
-          {userDetails?.projects?.length > 0 && (
-            <motion.div variants={itemVariants}>
-              <Projects userDetails={userDetails} projectRef={projectRef} />
-            </motion.div>
-          )}
-          {userDetails?.reviews?.length > 0 && (
-            <motion.div variants={itemVariants}>
-              <Reviews userDetails={userDetails} />
-            </motion.div>
-          )}
-          <motion.div variants={itemVariants}>
-            <Tools userDetails={userDetails} />
-          </motion.div>
+          {sectionOrder.map((sectionId) => sectionComponents[sectionId])}
 
-          {userDetails?.experiences?.length > 0 && (
-            <motion.div variants={itemVariants}>
-              <Works userDetails={userDetails} />
-            </motion.div>
-          )}
           {(!!userDetails?.socials?.instagram ||
             !!userDetails?.socials?.twitter ||
             !!userDetails?.socials?.linkedin ||

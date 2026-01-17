@@ -172,32 +172,34 @@ export default function Template2({ userDetails, preview = false }) {
         )}
 
         {activeStep >= 5 && (
-          <Chat delay={400} onComplete={handleStepCompletion}>
-            <div className="flex flex-wrap items-center gap-2 mb-2">
-              {tools?.map((tool, i) => (
-                <div
-                  title={tool?.label}
-                  key={i}
-                  className={`cursor-default h-full flex gap-2 justify-between items-center bg-tools-card-item-bg-color text-tools-card-item-text-color border-tools-card-item-border-color  border border-solid rounded-[16px] p-3`}
-                >
-                  {tool?.image && (
-                    <img
-                      src={tool?.image}
-                      alt={tool?.label}
-                      className="w-[34px] h-[34px] "
-                    />
-                  )}
-                  <Text
-                    size="p-xsmall"
-                    className="text-tools-card-item-text-color"
+          <div id="section-tools">
+            <Chat delay={400} onComplete={handleStepCompletion}>
+              <div className="flex flex-wrap items-center gap-2 mb-2">
+                {tools?.map((tool, i) => (
+                  <div
+                    title={tool?.label}
+                    key={i}
+                    className={`cursor-default h-full flex gap-2 justify-between items-center bg-tools-card-item-bg-color text-tools-card-item-text-color border-tools-card-item-border-color  border border-solid rounded-[16px] p-3`}
                   >
-                    {tool?.label}
-                  </Text>
-                </div>
-              ))}
-            </div>
-            This is my toolbox.
-          </Chat>
+                    {tool?.image && (
+                      <img
+                        src={tool?.image}
+                        alt={tool?.label}
+                        className="w-[34px] h-[34px] "
+                      />
+                    )}
+                    <Text
+                      size="p-xsmall"
+                      className="text-tools-card-item-text-color"
+                    >
+                      {tool?.label}
+                    </Text>
+                  </div>
+                ))}
+              </div>
+              This is my toolbox.
+            </Chat>
+          </div>
         )}
 
         {activeStep >= 6 && projects && projects?.length > 0 && (
@@ -208,7 +210,7 @@ export default function Template2({ userDetails, preview = false }) {
         )}
 
         {activeStep >= 7 && projects && projects?.length > 0 && (
-          <>
+          <div id="section-projects">
             <Chat
               direction="left"
               delay={200}
@@ -238,13 +240,13 @@ export default function Template2({ userDetails, preview = false }) {
                 );
               })}
             </div>
-          </>
+          </div>
         )}
 
         {activeStep >= 8 && reviews && reviews.length > 0 && (
-          <>
+          <div id="section-reviews">
             <Chat direction="left">
-              I’ve always gotten great feedback from my clients & colleagues.
+              I've always gotten great feedback from my clients & colleagues.
             </Chat>
             <Chat direction="left" onComplete={handleStepCompletion}>
 
@@ -331,11 +333,11 @@ export default function Template2({ userDetails, preview = false }) {
                 })}
               </div>
             </Chat>
-          </>
+          </div>
         )}
 
         {activeStep >= 9 && experiences && experiences?.length > 0 && (
-          <>
+          <div id="section-works">
             <Chat direction="left" delay={200}>
               Also, here's more!
             </Chat>
@@ -410,7 +412,7 @@ export default function Template2({ userDetails, preview = false }) {
                 })}
               </div>
             </Chat>
-          </>
+          </div>
         )}
 
         {activeStep >= 10 && portfolioCheck && (

@@ -6,7 +6,8 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { sidebars } from "@/lib/constant";
 import styles from "@/styles/domain.module.css";
 import imageCompression from "browser-image-compression";
-import { Upload } from "lucide-react";
+import { Upload, RotateCcw } from "lucide-react";
+import DragHandle from "./DragHandle";
 import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { Badge } from "./ui/badge";
@@ -14,6 +15,91 @@ import { SheetWrapper } from "./ui/SheetWrapper";
 import { Slider } from "./ui/slider";
 import { AnimatePresence, motion } from "framer-motion";
 import Text from "./text";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  rectSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { _updateUser } from "@/network/post-request";
+
+// Template-specific default section orders
+const TEMPLATE_DEFAULTS = {
+  0: ['projects', 'reviews', 'tools', 'works'],  // builder.jsx
+  1: ['tools', 'projects', 'reviews', 'works'],  // Builder2.jsx (chat-based)
+  2: ['projects', 'tools', 'works', 'reviews'],   // Minimal.jsx
+  3: ['works', 'projects', 'tools', 'reviews']    // Portfolio.jsx
+};
+
+// Helper function to get default order for a template
+const getDefaultSectionOrder = (template) => {
+  return TEMPLATE_DEFAULTS[template] || TEMPLATE_DEFAULTS[0];
+};
+
+// Section display names mapping
+const SECTION_NAMES = {
+  projects: 'Projects',
+  reviews: 'Testimonials',
+  tools: 'Toolbox',
+  works: 'Works/Experience'
+};
+
+// Get available sections for a template
+const getAvailableSections = (template) => {
+  return getDefaultSectionOrder(template);
+};
+
+// SortableSectionItem Component
+const SortableSectionItem = ({ id, isMobile }) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={twMerge(
+        "flex items-center gap-3 p-3 rounded-xl border transition-all cursor-pointer",
+        "bg-card/50 border-border",
+        "hover:bg-card/80",
+        isDragging && "shadow-lg z-50 opacity-50"
+      )}
+      data-testid={isMobile ? `section-item-${id}-mobile` : `section-item-${id}`}
+    >
+      <DragHandle
+        listeners={listeners}
+        attributes={attributes}
+        isButton={true}
+        className="cursor-grab active:cursor-grabbing text-foreground/40 hover:text-foreground/60 transition-colors"
+      />
+      <span className="flex-1 text-sm font-medium">
+        {SECTION_NAMES[id] || id}
+      </span>
+    </div>
+  );
+};
 
 const ThemePanel = ({
   theme,
@@ -38,12 +124,93 @@ const ThemePanel = ({
     closeSidebar,
     registerUnsavedChangesChecker,
     unregisterUnsavedChangesChecker,
+    userDetails,
+    updateCache,
+    setUserDetails,
   } = useGlobalContext();
   const [customWallpaper, setCustomWallpaper] = useState(null);
   const [isCompressing, setIsCompressing] = useState(false);
   const isMobileOrTablet = useIsMobile();
   const [isDarkWallpapers, setIsDarkWallpapers] = useState(theme === 'dark' || theme === 1);
   const show = activeSidebar === sidebars.theme;
+
+  // Get available sections for current template
+  const availableSections = getAvailableSections(template);
+
+  // Initialize sectionOrder from userDetails or use template default
+  const [sectionOrder, setSectionOrder] = useState(() => {
+    if (userDetails?.sectionOrder && Array.isArray(userDetails.sectionOrder)) {
+      // Filter to only include sections available in current template
+      return userDetails.sectionOrder.filter(section => availableSections.includes(section));
+    }
+    return [...availableSections];
+  });
+
+  // Update sectionOrder when template or userDetails changes
+  useEffect(() => {
+    const newAvailableSections = getAvailableSections(template);
+    if (userDetails?.sectionOrder && Array.isArray(userDetails.sectionOrder)) {
+      // Filter to only include sections available in current template
+      const filtered = userDetails.sectionOrder.filter(section => newAvailableSections.includes(section));
+      // If filtered order is valid, use it; otherwise use template default
+      if (filtered.length === newAvailableSections.length) {
+        setSectionOrder(filtered);
+      } else {
+        setSectionOrder([...newAvailableSections]);
+      }
+    } else {
+      setSectionOrder([...newAvailableSections]);
+    }
+  }, [template, userDetails?.sectionOrder]);
+
+  // DnD sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  // Change section order function
+  const changeSectionOrder = (newOrder) => {
+    _updateUser({ sectionOrder: newOrder })
+      .then((res) => {
+        const updatedUser = res?.data?.user;
+        updateCache("userDetails", { sectionOrder: newOrder });
+        setUserDetails((prev) => ({ ...prev, sectionOrder: newOrder }));
+        setSectionOrder(newOrder);
+      })
+      .catch((error) => {
+        console.error("Error updating section order:", error);
+      });
+  };
+
+  // Reset to template default
+  const resetSectionOrder = () => {
+    const defaultOrder = getDefaultSectionOrder(template);
+    changeSectionOrder(defaultOrder);
+  };
+
+  // Handle drag end
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = sectionOrder.indexOf(active.id);
+    const newIndex = sectionOrder.indexOf(over.id);
+    const newOrder = arrayMove(sectionOrder, oldIndex, newIndex);
+
+    setSectionOrder(newOrder);
+    changeSectionOrder(newOrder);
+
+    // Scroll to moved section
+    setTimeout(() => {
+      const sectionElement = document.getElementById(`section-${active.id}`);
+      if (sectionElement) {
+        sectionElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 100);
+  };
 
   // Fallback to local state if effects is not provided (backward compatibility)
   const [localEffects, setLocalEffects] = useState({
@@ -176,30 +343,39 @@ const ThemePanel = ({
 
   const renderContent = (isMobile) => (
     <Tabs defaultValue="layouts" className="w-full h-full flex flex-col">
-      <div className={`sticky top-0 z-50 px-6 ${isMobile ? 'pb-2' : 'pt-4 pb-2'} border-b border-border/30`}>
-        <TabsList className="w-full bg-transparent p-0 h-auto gap-6 justify-start">
-          <TabsTrigger
-            value="layouts"
-            className="bg-transparent border-b-2 border-transparent rounded-none px-0 pb-2 data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none text-foreground/60 data-[state=active]:text-foreground font-medium transition-all"
-            data-testid={isMobile ? "tab-layouts-mobile" : "tab-layouts"}
-          >
-            Layouts
-          </TabsTrigger>
-          <TabsTrigger
-            value="background"
-            className="bg-transparent border-b-2 border-transparent rounded-none px-0 pb-2 data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none text-foreground/60 data-[state=active]:text-foreground font-medium transition-all"
-            data-testid={isMobile ? "tab-background-mobile" : "tab-background"}
-          >
-            Background
-          </TabsTrigger>
-          <TabsTrigger
-            value="cursors"
-            className="bg-transparent border-b-2 border-transparent rounded-none px-0 pb-2 data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none text-foreground/60 data-[state=active]:text-foreground font-medium transition-all"
-            data-testid={isMobile ? "tab-cursors-mobile" : "tab-cursors"}
-          >
-            Cursors
-          </TabsTrigger>
-        </TabsList>
+      <div className={`sticky top-0 z-50 px-6 ${isMobile ? 'pb-2' : 'pt-4 pb-2'} border-b border-border/30 bg-background/95 backdrop-blur-sm`}>
+        <div className="overflow-x-auto hide-scrollbar -mx-6 px-6">
+          <TabsList className="w-full bg-transparent p-0 h-auto gap-6 justify-start min-w-fit">
+            <TabsTrigger
+              value="layouts"
+              className="bg-transparent border-b-2 border-transparent rounded-none px-0 pb-2 data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none text-foreground/60 data-[state=active]:text-foreground font-medium transition-all"
+              data-testid={isMobile ? "tab-layouts-mobile" : "tab-layouts"}
+            >
+              Layouts
+            </TabsTrigger>
+            <TabsTrigger
+              value="background"
+              className="bg-transparent border-b-2 border-transparent rounded-none px-0 pb-2 data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none text-foreground/60 data-[state=active]:text-foreground font-medium transition-all"
+              data-testid={isMobile ? "tab-background-mobile" : "tab-background"}
+            >
+              Background
+            </TabsTrigger>
+            <TabsTrigger
+              value="blocks"
+              className="bg-transparent border-b-2 border-transparent rounded-none px-0 pb-2 data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none text-foreground/60 data-[state=active]:text-foreground font-medium transition-all"
+              data-testid={isMobile ? "tab-blocks-mobile" : "tab-blocks"}
+            >
+              Layout
+            </TabsTrigger>
+            <TabsTrigger
+              value="cursors"
+              className="bg-transparent border-b-2 border-transparent rounded-none px-0 pb-2 data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none text-foreground/60 data-[state=active]:text-foreground font-medium transition-all"
+              data-testid={isMobile ? "tab-cursors-mobile" : "tab-cursors"}
+            >
+              Cursors
+            </TabsTrigger>
+          </TabsList>
+        </div>
       </div>
 
       <TabsContent value="layouts" className="flex-1 overflow-y-auto p-6 m-0 thin-scrollbar" data-testid={isMobile ? "content-layouts-mobile" : "content-layouts"}>
@@ -459,6 +635,37 @@ const ThemePanel = ({
               );
             })}
           </div>
+        </div>
+      </TabsContent>
+
+      <TabsContent value="blocks" className="flex-1 overflow-y-auto p-6 m-0" data-testid={isMobile ? "content-blocks-mobile" : "content-blocks"}>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-sm font-medium text-foreground/60">Re-arrange your portfolio sections</p>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={resetSectionOrder}
+              className="h-8 px-2 text-xs gap-1.5 text-foreground/40 hover:text-foreground"
+              data-testid={isMobile ? "button-reset-blocks-mobile" : "button-reset-blocks"}
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              Reset
+            </Button>
+          </div>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext items={sectionOrder} strategy={rectSortingStrategy}>
+              <div className="space-y-4">
+                {sectionOrder.map((id) => (
+                  <SortableSectionItem key={id} id={id} isMobile={isMobile} />
+                ))}
+              </div>
+            </SortableContext>
+          </DndContext>
         </div>
       </TabsContent>
 

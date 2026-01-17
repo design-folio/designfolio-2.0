@@ -13,6 +13,7 @@ import { Badge } from "./ui/badge";
 import { SheetWrapper } from "./ui/SheetWrapper";
 import { Slider } from "./ui/slider";
 import { AnimatePresence, motion } from "framer-motion";
+import Text from "./text";
 
 const ThemePanel = ({
   theme,
@@ -253,7 +254,6 @@ const ThemePanel = ({
               <span className="text-sm font-medium">Light Mode</span>
             </div>
             <Switch
-              className="data-[state=unchecked]:bg-[#CFC4AF] data-[state=checked]:bg-df-orange-color "
               checked={theme === 'dark' || theme === 1}
               onCheckedChange={(checked) => changeTheme(checked ? 1 : 0)}
               data-testid={isMobile ? "switch-wallpaper-mode-mobile" : "switch-wallpaper-mode"}
@@ -273,15 +273,15 @@ const ThemePanel = ({
                 transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
                 className="overflow-hidden"
               >
-                <div className="p-4 rounded-xl border border-border bg-muted/50 mb-4">
+                <div className="p-4 rounded-xl bg-muted/50 mb-4">
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-xs font-semibold uppercase tracking-wider ">Background Texture</span>
+                    <Text size="p-xs-uppercase">Background Texture</Text>
                   </div>
                   <div className="flex p-1 bg-muted/50 rounded-lg gap-1 mb-4">
                     <button
                       onClick={() => currentUpdateWallpaperEffect('effectType', 'blur')}
                       className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 ${currentEffects.effectType === 'blur'
-                        ? 'bg-background text-foreground shadow-sm'
+                        ? 'bg-tab-active-bg text-foreground shadow-sm'
                         : ' hover:text-foreground'
                         }`}
                       data-testid={isMobileOrTablet ? "button-effect-blur-mobile" : "button-effect-blur"}
@@ -291,7 +291,7 @@ const ThemePanel = ({
                     <button
                       onClick={() => currentUpdateWallpaperEffect('effectType', 'grain')}
                       className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 ${currentEffects.effectType === 'grain'
-                        ? 'bg-background text-foreground shadow-sm'
+                        ? 'bg-tab-active-bg text-foreground shadow-sm'
                         : ' hover:text-foreground'
                         }`}
                       data-testid={isMobileOrTablet ? "button-effect-grain-mobile" : "button-effect-grain"}
@@ -336,16 +336,16 @@ const ThemePanel = ({
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between p-4 rounded-xl border border-border bg-muted/50 mb-4">
+                <div className="flex items-center justify-between p-4 rounded-xl  bg-muted/50 mb-4">
                   <div>
-                    <span className="text-xs font-semibold uppercase tracking-wider">Dynamic Motion</span>
-                    <p className="text-[11px]  mt-0.5 font-medium text-foreground/60">Parallax zoom interaction</p>
+                    <Text size="p-xs-uppercase" className="text-profile-card-heading-color">Dynamic Motion</Text>
+                    <p className="text-[11px] text-profile-card-description-color mt-0.5 font-medium">Parallax zoom interaction</p>
                   </div>
                   <Switch
                     checked={currentEffects.motion}
                     onCheckedChange={(checked) => currentUpdateWallpaperEffect('motion', checked)}
                     data-testid={isMobileOrTablet ? "switch-background-motion-mobile" : "switch-background-motion"}
-                    className="scale-90 data-[state=unchecked]:bg-[#CFC4AF] data-[state=checked]:bg-df-orange-color "
+                    className="scale-90"
                   />
                 </div>
               </motion.div>
@@ -353,10 +353,10 @@ const ThemePanel = ({
           </AnimatePresence>
           <div className="p-4 rounded-md border border-border bg-card/50 mb-4">
             <div className="flex items-start gap-3 mb-3">
-              <Upload className="w-5 h-5 text-primary-landing  mt-0.5" />
+              <Upload className="w-5 h-5 text-profile-card-heading-color  mt-0.5" />
               <div className="flex-1">
                 <h4 className="text-sm font-semibold mb-1">Upload Custom Background</h4>
-                <p className="text-xs text-foreground/60 mb-2">
+                <p className="text-xs text-profile-card-description-color mb-2">
                   Upload your own image. Minimum: 500x300. Maximum file size: 5MB. Image will be resized to 1920x1080.
                 </p>
                 <input

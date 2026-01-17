@@ -137,6 +137,7 @@ export default function WallpaperBackground({
             <div
                 {...props}
                 data-wallpaper-background
+                data-wallpaper-loaded="true"
                 className={className}
                 suppressHydrationWarning={suppressHydrationWarning}
                 style={style}

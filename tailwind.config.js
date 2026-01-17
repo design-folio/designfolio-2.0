@@ -21,6 +21,7 @@ module.exports = {
         inter: ["var(--font-inter)", "sans-serif"],
         kalam: ["var(--font-kalam)", "cursive"],
         gsans: "var(--font-gsans)",
+        
       },
       cursor: {
         default: "var(--cursor-default)", // Custom cursor
@@ -265,6 +266,10 @@ module.exports = {
         // System variables
         "button-outline": "var(--button-outline)",
         "badge-outline": "var(--badge-outline)",
+        "tab-active-bg": "var(--tab-active-bg)",
+        "slider-thumb-border": "var(--slider-thumb-border)",
+        "slider-thumb-bg": "var(--slider-thumb-bg)",
+        "switch-unchecked-bg": "var(--switch-unchecked-bg)",
 
         // Sidebar
         sidebar: "hsl(var(--sidebar))",

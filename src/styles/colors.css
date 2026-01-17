@@ -93,7 +93,7 @@
 
   /* profile card */
   --profile-card-heading-color: #202937;
-  --profile-card-description-color: #788095;
+  --profile-card-description-color: #0f0f0f80;
   --profile-card-skill-color: #788095;
 
   /* project card */
@@ -107,7 +107,7 @@
 
   /* project Info card */
   --project-info-card-heading-color: #202937;
-  --project-info-card-description-color: #8d98af;
+  --project-info-card-description-color: #0f0f0f80;
 
   /* review card */
   --review-card-bg-color: #fff;
@@ -283,7 +283,7 @@
 
   /* profile card */
   --profile-card-heading-color: #e9eaeb;
-  --profile-card-description-color: #b4b8c6;
+  --profile-card-description-color: #F2F2F280;
   --profile-card-skill-color: #b4b8c6;
 
   /* project card */
@@ -297,7 +297,7 @@
 
   /* project Info card */
   --project-info-card-heading-color: #e9eaeb;
-  --project-info-card-description-color: #788095;
+  --project-info-card-description-color: #F2F2F280;
 
   /* review card */
   --review-card-bg-color: #2f323d;

@@ -93,13 +93,13 @@ export default function ProjectCard({
         <div className="flex-1 flex flex-col justify-between cursor-pointer">
           <div className="p-6 pb-0">
             <p
-              className="text-project-card-heading-color font-semibold line-clamp-2 cursor-pointer text-lg mb-2"
+              className="project-info-card-heading-color font-semibold line-clamp-2 cursor-pointer text-lg mb-2"
             >
               {project?.title}
             </p>
             <Text
               size="p-xxsmall"
-              className="text-foreground-landing/60 font-normal line-clamp-3 leading-relaxed cursor-pointer"
+              className="text-project-info-card-description-color font-normal line-clamp-3 leading-relaxed cursor-pointer"
             >
               {project?.description}
             </Text>

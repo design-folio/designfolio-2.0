@@ -579,7 +579,7 @@ export default function LoggedInHeader({
               src={
                 getUserAvatarImage(userDetails)
               }
-              className={cn("w-[44px] h-[44px] rounded-full cursor-pointer", !userDetails?.avatar ? "bg-[#FFB088]" : "")}
+              className={cn("w-[44px] h-[44px] rounded-full cursor-pointer", !userDetails?.avatar ? "bg-df-bg-color" : "")}
             />
 
             {isClient && (

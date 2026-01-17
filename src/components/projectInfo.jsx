@@ -378,7 +378,7 @@ export default function ProjectInfo({
         )}
       </div>
       <h1
-        className="text-[28px] md:text-[39px] font-inter font-[500] leading-[130%] text-profile-card-heading-color"
+        className="text-[28px] md:text-[39px] font-inter font-[500] leading-[130%] text-project-info-card-heading-color"
         contentEditable={edit}
         suppressContentEditableWarning
         onBlur={(e) => handleOnBlur("title", e)}

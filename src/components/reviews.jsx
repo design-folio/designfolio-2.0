@@ -1,8 +1,6 @@
 import { Button } from "@/components/ui/buttonNew";
-import { Card } from "@/components/ui/card";
 import { useGlobalContext } from "@/context/globalContext";
 import { sidebars } from "@/lib/constant";
-import { cn } from "@/lib/utils";
 import { _updateUser } from "@/network/post-request";
 import {
   KeyboardSensor,
@@ -27,8 +25,8 @@ import Button2 from "./button";
 import DragHandle from "./DragHandle";
 import MemoTestimonial from "./icons/Testimonial";
 import ReviewCard from "./reviewCard";
+import Section from "./section";
 import SortableModal from "./SortableModal";
-import Text from "./text";
 
 export default function Reviews({ edit = false, openModal, userDetails }) {
 
@@ -73,21 +71,11 @@ export default function Reviews({ edit = false, openModal, userDetails }) {
       animate={{ y: 0 }}
       transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1], delay: 0.3 }}
     >
-      <Card
-        className={cn("bg-df-section-card-bg-color backdrop-blur-sm border-0 rounded-2xl p-4 lg:p-8")}
-        style={{
-          boxShadow:
-            "0 0 0 1px rgba(0,0,0,0.03), 0 0 40px rgba(0,0,0,0.015)",
-        }}
-      >
-        <div className="flex items-center justify-between mb-6">
-          <Text
-            size="p-small"
-            className="text-project-card-heading-color font-semibold"
-          >
-            Testimonials
-          </Text>
-          {edit && reviews.length > 0 && (
+      <Section
+        title="Testimonials"
+        edit={edit && reviews.length > 0}
+        actions={
+          edit && reviews.length > 0 ? (
             <div className="flex items-center gap-2">
               {reviews.length > 1 && (
                 <Button
@@ -111,9 +99,10 @@ export default function Reviews({ edit = false, openModal, userDetails }) {
                 <Plus className="w-5 h-5" />
               </Button>
             </div>
-          )}
-        </div>
-
+          ) : null
+        }
+        wallpaper={userDetails?.wallpaper}
+      >
         <div
           className={twMerge(
             "grid grid-cols-1 md:grid-cols-2 gap-4",
@@ -163,7 +152,7 @@ export default function Reviews({ edit = false, openModal, userDetails }) {
             />
           )}
         </div>
-      </Card>
+      </Section>
       <SortableModal
         show={showModal}
         onClose={() => setShowModal(false)}

@@ -14,21 +14,27 @@ export default function Section({
   edit,
   btnType = "secondary",
   wallpaper,
+  actions, // Custom actions element (for multiple buttons)
 }) {
 
   return (
     <div
-      className={cn("bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words")}
+      className={cn("bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-6 break-words")}
     >
       <div className="flex items-center justify-between">
         <Text
-          size="p-small"
-          className="text-project-card-heading-color font-semibold"
+          size="p-xs-uppercase"
         >
           {title}
         </Text>
-        {edit && icon && (
-          <Button variant="secondary" className="h-11 w-11" onClick={onClick} type={btnType} size="icon" >{icon}</Button>
+        {edit && (
+          actions ? (
+            actions
+          ) : (
+            icon && (
+              <Button variant="secondary" className="h-11 w-11" onClick={onClick} type={btnType} size="icon" >{icon}</Button>
+            )
+          )
         )}
       </div>
       <div className="mt-4 md:mt-5">{children}</div>

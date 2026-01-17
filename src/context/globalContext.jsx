@@ -54,9 +54,9 @@ export const GlobalProvider = ({ children }) => {
   const [wallpaper, setWallpaper] = useState(0);
   const [wallpaperEffects, setWallpaperEffects] = useState({
     blur: 0,
-    effectType: 'blur',
-    grainIntensity: 0,
-    motion: false
+    effectType: 'grain',
+    grainIntensity: 25,
+    motion: true
   });
   const [isLoadingTemplate, setIsLoadingTemplate] = useState(false);
   const [activeSidebar, setActiveSidebar] = useState(null);
@@ -145,7 +145,7 @@ export const GlobalProvider = ({ children }) => {
 
       const wpEffects = userData?.wallpaper?.effects;
 
-  
+
       if (!effectsInitializedRef.current) {
         if (wpEffects) {
           // Set flag to prevent updateWallpaperEffects useEffect from triggering during initial load
@@ -157,9 +157,9 @@ export const GlobalProvider = ({ children }) => {
           isUpdatingEffectsFromAPI.current = true;
           setWallpaperEffects({
             blur: 0,
-            effectType: 'blur',
-            grainIntensity: 0,
-            motion: false
+            effectType: 'grain',
+            grainIntensity: 25,
+            motion: true
           });
           effectsInitializedRef.current = true;
         }
@@ -246,8 +246,14 @@ export const GlobalProvider = ({ children }) => {
   const changeWallpaper = (wallpaper, filename) => {
     let wallpaperPayload;
 
-    // Preserve existing effects if they exist
+    // Preserve existing effects if they exist, otherwise use defaults
     const existingEffects = userDetails?.wallpaper?.effects;
+    const defaultEffects = {
+      blur: 0,
+      effectType: 'grain',
+      grainIntensity: 25,
+      motion: true
+    };
 
     // Check for custom wallpaper object (Base64)
     if (typeof wallpaper === 'object' && wallpaper.base64) {
@@ -256,10 +262,8 @@ export const GlobalProvider = ({ children }) => {
         originalName: wallpaper.name, // or filename argument
         __isNew__: true
       };
-      // Preserve effects if they exist
-      if (existingEffects) {
-        wallpaperPayload.effects = existingEffects;
-      }
+      // Preserve effects if they exist, otherwise use defaults
+      wallpaperPayload.effects = existingEffects || defaultEffects;
       // Set local state to valid CSS string (Base64)
       wallpaper = wallpaper.base64;
     }
@@ -284,20 +288,16 @@ export const GlobalProvider = ({ children }) => {
         key: key,
         __isNew__: true
       };
-      // Preserve effects if they exist
-      if (existingEffects) {
-        wallpaperPayload.effects = existingEffects;
-      }
+      // Preserve effects if they exist, otherwise use defaults
+      wallpaperPayload.effects = existingEffects || defaultEffects;
     }
     // Handle Preset (number)
     else {
       wallpaperPayload = {
         value: wallpaper
       };
-      // Preserve effects if they exist
-      if (existingEffects) {
-        wallpaperPayload.effects = existingEffects;
-      }
+      // Preserve effects if they exist, otherwise use defaults
+      wallpaperPayload.effects = existingEffects || defaultEffects;
     }
 
     _updateUser({ wallpaper: wallpaperPayload }).then((res) => {

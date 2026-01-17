@@ -51,6 +51,15 @@ import Tools from "../tools";
 import { ToolStack } from "./ToolStack";
 // import { ToolStack } from "./ToolStack";
 
+// Template-specific default section orders
+const TEMPLATE_DEFAULTS = {
+  3: ['works', 'projects', 'tools', 'reviews'],
+};
+
+const getDefaultSectionOrder = (template) => {
+  return TEMPLATE_DEFAULTS[template] || TEMPLATE_DEFAULTS[3];
+};
+
 const Portfolio = ({ userDetails, edit }) => {
   const router = useRouter();
   const {
@@ -68,6 +77,11 @@ const Portfolio = ({ userDetails, edit }) => {
   } = userDetails || {};
   const { openModal, setSelectedWork, setSelectedProject, setUserDetails } =
     useGlobalContext();
+
+  // Get section order from userDetails or use template default
+  const sectionOrder = userDetails?.sectionOrder && Array.isArray(userDetails.sectionOrder)
+    ? userDetails.sectionOrder.filter(section => getDefaultSectionOrder(3).includes(section))
+    : getDefaultSectionOrder(3);
   const [expandedCards, setExpandedCards] = useState([]);
   const [showMore, setShowMore] = useState(false);
   const theme = useTheme();
@@ -440,79 +454,105 @@ const Portfolio = ({ userDetails, edit }) => {
           </motion.div>
         </section>
 
-        {/* Experience Section */}
-        {(experiences.length > 0 || edit) && (
-          <Spotlight userDetails={userDetails} edit={edit} />
-        )}
-
-        {/* Projects Section with Vertical Drag Handle Sorting */}
-        {(projects.length > 0 || edit) && (
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-          >
-            <SortableContext
-              items={visibleProjects.map((project) => project._id)}
-              strategy={verticalListSortingStrategy}
-            >
-              <motion.section
-                variants={container}
-                initial="hidden"
-                animate="show"
-                className="py-12 border-b border-secondary-border"
-              >
-                <h3 className="text-3xl font-bold mb-12">Featured Projects</h3>
-                <div className="flex flex-col gap-6">
-                  {visibleProjects.map((project, index) => (
-                    <SortableProjectCard
-                      key={project._id}
-                      project={project}
-                      index={index}
-                      handleNavigation={handleNavigation}
-                      onDeleteProject={onDeleteProject}
-                      edit={edit}
-                    />
-                  ))}
-                  {edit &&
-                    (userDetails?.pro || userDetails?.projects.length < 2 ? (
-                      <AddCard
-                        title={`${userDetails?.projects?.length === 0
-                          ? "Upload your first case study"
-                          : "Add case study"
-                          }`}
-                        subTitle="Show off your best work."
-                        first
-                        buttonTitle="Add case study"
-                        secondaryButtonTitle="Write using AI"
-                        onClick={() => openModal(modals.project)}
-                        icon={
-                          <MemoCasestudy className="cursor-pointer size-[72px]" />
-                        }
-                        openModal={openModal}
-                        className={`bg-df-section-card-bg-color flex items-center justify-center min-h-[269px] rounded-lg ${userDetails?.projects?.length !== 0 &&
-                          " shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] hover:shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
-                          }`}
-                      />
-                    ) : (
-                      <ProjectLock />
-                    ))}
-                </div>
-              </motion.section>
-            </SortableContext>
-          </DndContext>
-        )}
-        {/* Tools Section */}
-        <ToolStack
-          userDetails={userDetails}
-          edit={edit}
-          titleClasses="text-3xl"
-        />
-
-        {/* Reviews Section */}
-        {(reviews?.length > 0 || edit) && (
-          <Testimonials userDetails={userDetails} edit={edit} />
-        )}
+        {/* Sections rendered in order based on sectionOrder */}
+        {sectionOrder.map((sectionId) => {
+          if (sectionId === 'works') {
+            return (
+              <div key="works" id="section-works">
+                {(experiences.length > 0 || edit) && (
+                  <Spotlight userDetails={userDetails} edit={edit} />
+                )}
+              </div>
+            );
+          }
+          
+          if (sectionId === 'projects') {
+            return (
+              <div key="projects" id="section-projects">
+                {(projects.length > 0 || edit) && (
+                  <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={handleDragEnd}
+                  >
+                    <SortableContext
+                      items={visibleProjects.map((project) => project._id)}
+                      strategy={verticalListSortingStrategy}
+                    >
+                      <motion.section
+                        variants={container}
+                        initial="hidden"
+                        animate="show"
+                        className="py-12 border-b border-secondary-border"
+                      >
+                        <h3 className="text-3xl font-bold mb-12">Featured Projects</h3>
+                        <div className="flex flex-col gap-6">
+                          {visibleProjects.map((project, index) => (
+                            <SortableProjectCard
+                              key={project._id}
+                              project={project}
+                              index={index}
+                              handleNavigation={handleNavigation}
+                              onDeleteProject={onDeleteProject}
+                              edit={edit}
+                            />
+                          ))}
+                          {edit &&
+                            (userDetails?.pro || userDetails?.projects.length < 2 ? (
+                              <AddCard
+                                title={`${userDetails?.projects?.length === 0
+                                  ? "Upload your first case study"
+                                  : "Add case study"
+                                  }`}
+                                subTitle="Show off your best work."
+                                first
+                                buttonTitle="Add case study"
+                                secondaryButtonTitle="Write using AI"
+                                onClick={() => openModal(modals.project)}
+                                icon={
+                                  <MemoCasestudy className="cursor-pointer size-[72px]" />
+                                }
+                                openModal={openModal}
+                                className={`bg-df-section-card-bg-color flex items-center justify-center min-h-[269px] rounded-lg ${userDetails?.projects?.length !== 0 &&
+                                  " shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] hover:shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
+                                  }`}
+                              />
+                            ) : (
+                              <ProjectLock />
+                            ))}
+                        </div>
+                      </motion.section>
+                    </SortableContext>
+                  </DndContext>
+                )}
+              </div>
+            );
+          }
+          
+          if (sectionId === 'tools') {
+            return (
+              <div key="tools" id="section-tools">
+                <ToolStack
+                  userDetails={userDetails}
+                  edit={edit}
+                  titleClasses="text-3xl"
+                />
+              </div>
+            );
+          }
+          
+          if (sectionId === 'reviews') {
+            return (
+              <div key="reviews" id="section-reviews">
+                {(reviews?.length > 0 || edit) && (
+                  <Testimonials userDetails={userDetails} edit={edit} />
+                )}
+              </div>
+            );
+          }
+          
+          return null;
+        })}
         <Footer userDetails={userDetails} edit={edit} />
       </div>
     </div>

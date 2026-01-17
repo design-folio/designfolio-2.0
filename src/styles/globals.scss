@@ -45,6 +45,10 @@
     --destructive-foreground: 0 0% 100%;
     --radius: 0.5rem;
     --border: 38 15% 88%;
+    --tab-active-bg: #ffffff;
+    --slider-thumb-border: #CFC4AF;
+    --slider-thumb-bg: #fafafa;
+    --switch-unchecked-bg: #CFC4AF;
 
     --button-outline: rgba(0, 0, 0, 0.1);
     --badge-outline: rgba(0, 0, 0, 0.05);
@@ -112,6 +116,10 @@
     --border: 0 0% 18%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
+    --tab-active-bg: #13151a;
+    --slider-thumb-border: #f6f2ef;
+    --slider-thumb-bg: #f6f2ef;
+    --switch-unchecked-bg: #3f4358;
     --button-outline: rgba(255, 255, 255, 0.1);
     --badge-outline: rgba(255, 255, 255, 0.05);
 
@@ -154,12 +162,9 @@
     scroll-behavior: smooth;
   }
 
-  html:not(.landing-page) body {
+  /* Apply body text colors and transitions */
+  body {
     @apply text-foreground transition-colors duration-300;
-  }
-
-  html.landing-page body {
-    @apply bg-background-landing text-foreground transition-colors duration-300;
   }
 }
 

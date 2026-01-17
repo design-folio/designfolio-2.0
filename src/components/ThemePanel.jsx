@@ -253,7 +253,6 @@ const ThemePanel = ({
               <span className="text-sm font-medium">Light Mode</span>
             </div>
             <Switch
-              className="data-[state=unchecked]:bg-[#CFC4AF] data-[state=checked]:bg-df-orange-color "
               checked={theme === 'dark' || theme === 1}
               onCheckedChange={(checked) => changeTheme(checked ? 1 : 0)}
               data-testid={isMobile ? "switch-wallpaper-mode-mobile" : "switch-wallpaper-mode"}
@@ -273,7 +272,7 @@ const ThemePanel = ({
                 transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
                 className="overflow-hidden"
               >
-                <div className="p-4 rounded-xl border border-border bg-muted/50 mb-4">
+                <div className="p-4 rounded-xl bg-muted/50 mb-4">
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-xs font-semibold uppercase tracking-wider ">Background Texture</span>
                   </div>
@@ -281,7 +280,7 @@ const ThemePanel = ({
                     <button
                       onClick={() => currentUpdateWallpaperEffect('effectType', 'blur')}
                       className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 ${currentEffects.effectType === 'blur'
-                        ? 'bg-background text-foreground shadow-sm'
+                        ? 'bg-tab-active-bg text-foreground shadow-sm'
                         : ' hover:text-foreground'
                         }`}
                       data-testid={isMobileOrTablet ? "button-effect-blur-mobile" : "button-effect-blur"}
@@ -291,7 +290,7 @@ const ThemePanel = ({
                     <button
                       onClick={() => currentUpdateWallpaperEffect('effectType', 'grain')}
                       className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 ${currentEffects.effectType === 'grain'
-                        ? 'bg-background text-foreground shadow-sm'
+                        ? 'bg-tab-active-bg text-foreground shadow-sm'
                         : ' hover:text-foreground'
                         }`}
                       data-testid={isMobileOrTablet ? "button-effect-grain-mobile" : "button-effect-grain"}
@@ -336,7 +335,7 @@ const ThemePanel = ({
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between p-4 rounded-xl border border-border bg-muted/50 mb-4">
+                <div className="flex items-center justify-between p-4 rounded-xl  bg-muted/50 mb-4">
                   <div>
                     <span className="text-xs font-semibold uppercase tracking-wider">Dynamic Motion</span>
                     <p className="text-[11px]  mt-0.5 font-medium text-foreground/60">Parallax zoom interaction</p>
@@ -345,7 +344,7 @@ const ThemePanel = ({
                     checked={currentEffects.motion}
                     onCheckedChange={(checked) => currentUpdateWallpaperEffect('motion', checked)}
                     data-testid={isMobileOrTablet ? "switch-background-motion-mobile" : "switch-background-motion"}
-                    className="scale-90 data-[state=unchecked]:bg-[#CFC4AF] data-[state=checked]:bg-df-orange-color "
+                    className="scale-90"
                   />
                 </div>
               </motion.div>

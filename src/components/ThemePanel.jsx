@@ -149,11 +149,12 @@ const ThemePanel = ({
   // Update sectionOrder when template or userDetails changes
   useEffect(() => {
     const newAvailableSections = getAvailableSections(template);
-    if (userDetails?.sectionOrder && Array.isArray(userDetails.sectionOrder)) {
+    // Guard against empty or invalid sectionOrder from backend
+    if (userDetails?.sectionOrder && Array.isArray(userDetails.sectionOrder) && userDetails.sectionOrder.length > 0) {
       // Filter to only include sections available in current template
       const filtered = userDetails.sectionOrder.filter(section => newAvailableSections.includes(section));
-      // If filtered order is valid, use it; otherwise use template default
-      if (filtered.length === newAvailableSections.length) {
+      // If filtered order is valid and not empty, use it; otherwise use template default
+      if (filtered.length === newAvailableSections.length && filtered.length > 0) {
         setSectionOrder(filtered);
       } else {
         setSectionOrder([...newAvailableSections]);
@@ -173,6 +174,12 @@ const ThemePanel = ({
 
   // Change section order function
   const changeSectionOrder = (newOrder) => {
+    // Guard against empty arrays - use default order instead
+    if (!newOrder || !Array.isArray(newOrder) || newOrder.length === 0) {
+      const defaultOrder = getDefaultSectionOrder(template);
+      newOrder = defaultOrder;
+    }
+
     _updateUser({ sectionOrder: newOrder })
       .then((res) => {
         const updatedUser = res?.data?.user;
@@ -196,9 +203,31 @@ const ThemePanel = ({
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
+    // Guard against empty sectionOrder
+    if (!sectionOrder || sectionOrder.length === 0) {
+      const defaultOrder = getDefaultSectionOrder(template);
+      setSectionOrder(defaultOrder);
+      changeSectionOrder(defaultOrder);
+      return;
+    }
+
     const oldIndex = sectionOrder.indexOf(active.id);
     const newIndex = sectionOrder.indexOf(over.id);
+
+    // Guard against invalid indices
+    if (oldIndex === -1 || newIndex === -1) {
+      return;
+    }
+
     const newOrder = arrayMove(sectionOrder, oldIndex, newIndex);
+
+    // Guard against empty result
+    if (!newOrder || newOrder.length === 0) {
+      const defaultOrder = getDefaultSectionOrder(template);
+      setSectionOrder(defaultOrder);
+      changeSectionOrder(defaultOrder);
+      return;
+    }
 
     setSectionOrder(newOrder);
     changeSectionOrder(newOrder);
@@ -365,7 +394,7 @@ const ThemePanel = ({
               className="bg-transparent border-b-2 border-transparent rounded-none px-0 pb-2 data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none text-foreground/60 data-[state=active]:text-foreground font-medium transition-all"
               data-testid={isMobile ? "tab-blocks-mobile" : "tab-blocks"}
             >
-              Layout
+              Blocks
             </TabsTrigger>
             <TabsTrigger
               value="cursors"
@@ -514,8 +543,8 @@ const ThemePanel = ({
 
                 <div className="flex items-center justify-between p-4 rounded-xl  bg-muted/50 mb-4">
                   <div>
-                    <Text size="p-xs-uppercase" className="text-profile-card-heading-color">Dynamic Motion</Text>
-                    <p className="text-[11px] text-profile-card-description-color mt-0.5 font-medium">Parallax zoom interaction</p>
+                    <Text size="p-xs-uppercase" className="text-df-heading-color">Dynamic Motion</Text>
+                    <p className="text-[11px] text-df-description-color mt-0.5 font-medium">Parallax zoom interaction</p>
                   </div>
                   <Switch
                     checked={currentEffects.motion}
@@ -529,10 +558,10 @@ const ThemePanel = ({
           </AnimatePresence>
           <div className="p-4 rounded-md border border-border bg-card/50 mb-4">
             <div className="flex items-start gap-3 mb-3">
-              <Upload className="w-5 h-5 text-profile-card-heading-color  mt-0.5" />
+              <Upload className="w-5 h-5 text-df-heading-color  mt-0.5" />
               <div className="flex-1">
                 <h4 className="text-sm font-semibold mb-1">Upload Custom Background</h4>
-                <p className="text-xs text-profile-card-description-color mb-2">
+                <p className="text-xs text-df-description-color mb-2">
                   Upload your own image. Minimum: 500x300. Maximum file size: 5MB. Image will be resized to 1920x1080.
                 </p>
                 <input

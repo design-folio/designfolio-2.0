@@ -24,6 +24,7 @@ export default function Section({
       <div className="flex items-center justify-between">
         <Text
           size="p-xs-uppercase"
+          className="text-sm text-df-description-color"
         >
           {title}
         </Text>

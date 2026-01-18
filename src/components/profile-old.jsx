@@ -78,7 +78,7 @@ export default function Profile({
             <Text
               as="h1"
               size="h3"
-              className="text-profile-card-heading-color min-w-0 webkit-fil font-medium"
+              className="text-df-heading-color min-w-0 webkit-fil font-medium"
             >
               {userDetails?.introduction}
             </Text>
@@ -97,7 +97,7 @@ export default function Profile({
           </div>
           <Text
             size="p-xsmall"
-            className="min-w-0 webkit-fill mt-[12px] text-profile-card-description-color"
+            className="min-w-0 webkit-fill mt-[12px] text-df-description-color"
           >
             {userDetails?.bio ? userDetails?.bio : "Write your Intro here.."}
           </Text>

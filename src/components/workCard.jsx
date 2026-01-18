@@ -28,7 +28,7 @@ export default function WorkCard({ work, onClick, show = true, edit, sorting = f
   return (
     <div className="flex flex-col-reverse lg:flex-row gap-2 lg:gap-10">
       <div className="lg:w-[25%] hidden md:block">
-        <Text size="p-xsmall" className="text-work-card-description-color">
+        <Text size="p-xsmall" className="text-df-description-color">
           {`${work?.startMonth} ${work?.startYear} - ${work?.currentlyWorking
             ? "Present"
             : `${work?.endMonth} ${work?.endYear}`
@@ -44,7 +44,7 @@ export default function WorkCard({ work, onClick, show = true, edit, sorting = f
             </Text>
             <Text
               size="p-xsmall"
-              className="text-work-card-description-color md:hidden"
+              className="text-df-description-color md:hidden"
             >
               {`${work?.startMonth} ${work?.startYear} - ${work?.currentlyWorking
                 ? "Present"
@@ -60,12 +60,12 @@ export default function WorkCard({ work, onClick, show = true, edit, sorting = f
               ><PencilIcon className="text-df-icon-color cursor-pointer" /></Button>
             )}
           </div>
-          <Text size="p-small" className="text-work-card-heading-color my-2">
+          <Text size="p-small" className="text-df-heading-color my-2">
             {work?.role}
           </Text>
 
           {!sorting && (
-            <div className="text-work-card-description-color">
+            <div className="text-df-description-color">
               <div className={shouldShowToggle && !isExpanded ? "max-h-[110px] overflow-hidden relative" : ""}>
                 <SimpleTiptapRenderer
                   content={work?.description || ""}

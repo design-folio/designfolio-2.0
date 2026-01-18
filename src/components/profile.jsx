@@ -96,7 +96,7 @@ export default function Profile({
           <div className="flex flex-col md:flex-row md:items-center gap-6">
             {/* Avatar Container */}
             <div
-              className={cn("w-28 h-28 md:w-36 md:h-36 rounded-3xl flex items-center justify-center relative overflow-hidden", !userDetails?.avatar ? "bg-df-bg-color" : "")}
+              className={cn("w-28 h-28 md:w-32 md:h-32 rounded-3xl flex items-center justify-center relative overflow-hidden", !userDetails?.avatar ? "bg-df-bg-color" : "")}
               data-testid="avatar-profile"
             >
               <DfImage
@@ -111,13 +111,13 @@ export default function Profile({
             {/* Text Section */}
             <div className="flex-1">
               <h1
-                className="text-3xl md:text-4xl font-semibold mb-2 font-gsans text-profile-card-heading-color break-words"
+                className="text-3xl font-semibold mb-2 font-gsans text-df-heading-color break-words"
                 data-testid="text-user-name"
               >
                 {userDetails?.introduction || `Hey, I'm ${capitalizeWords(userDetails?.firstName) || ""}`}
               </h1>
               <p
-                className="text-base text-profile-card-description-color break-words"
+                className="text-base text-df-description-color break-words"
                 data-testid="text-user-role"
               >
                 {userDetails?.bio || "Write your intro here..."}

@@ -149,9 +149,13 @@ export default function Builder2({ edit = false }) {
   const { theme } = useTheme();
 
   // Get section order from userDetails or use template default
-  const sectionOrder = userDetails?.sectionOrder && Array.isArray(userDetails.sectionOrder)
-    ? userDetails.sectionOrder.filter(section => getDefaultSectionOrder(1).includes(section))
-    : getDefaultSectionOrder(1);
+  const _defaultOrder = getDefaultSectionOrder(1);
+  const _raw = userDetails?.sectionOrder;
+  const _filtered = _raw && Array.isArray(_raw) && _raw.length > 0 ? _raw.filter(section => _defaultOrder.includes(section)) : null;
+  // Use filtered result only if it's not empty, otherwise fall back to default
+  const sectionOrder = _raw && Array.isArray(_raw) && _raw.length > 0 && _filtered && _filtered.length > 0
+    ? _filtered
+    : _defaultOrder;
 
   const {
     username,
@@ -362,7 +366,7 @@ export default function Builder2({ edit = false }) {
 
       <Chat direction="right">Hey! What are your core skills?</Chat>
       <Chat>I specialize in {getSkills()}</Chat>
-      
+
       {/* Sections rendered in order based on sectionOrder */}
       {sectionOrder.map((sectionId) => {
         if (sectionId === 'tools') {
@@ -404,7 +408,7 @@ export default function Builder2({ edit = false }) {
             </div>
           );
         }
-        
+
         if (sectionId === 'projects') {
           return (
             <div key="projects" id="section-projects">
@@ -488,7 +492,7 @@ export default function Builder2({ edit = false }) {
             </div>
           );
         }
-        
+
         if (sectionId === 'reviews') {
           return (
             <div key="reviews" id="section-reviews">
@@ -584,7 +588,7 @@ export default function Builder2({ edit = false }) {
                             ) : (
                               <h3 className="font-semibold text-base mb-0">{review?.name}</h3>
                             )}
-                            <p className="text-sm text-foreground/50">
+                            <p className="text-sm text-df-description-color">
                               {review?.role ? `${review.role}, ` : ""}
                               {review?.company}
                             </p>
@@ -644,7 +648,7 @@ export default function Builder2({ edit = false }) {
             </div>
           );
         }
-        
+
         if (sectionId === 'works') {
           return (
             <div key="works" id="section-works">
@@ -686,7 +690,7 @@ export default function Builder2({ edit = false }) {
                             </Text>
                             <Text
                               size="p-xsmall"
-                              className="font-medium mt-[6px] text-work-card-description-color"
+                              className="font-medium mt-[6px] text-df-description-color"
                             >
                               {`${experience?.startMonth} ${experience?.startYear} - ${experience?.currentlyWorking
                                 ? "Present"

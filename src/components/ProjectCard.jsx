@@ -99,7 +99,7 @@ export default function ProjectCard({
             </p>
             <Text
               size="p-xxsmall"
-              className="text-project-info-card-description-color font-normal line-clamp-3 leading-relaxed cursor-pointer"
+              className="text-df-description-color font-normal line-clamp-3 leading-relaxed cursor-pointer"
             >
               {project?.description}
             </Text>
@@ -120,7 +120,7 @@ export default function ProjectCard({
               >
                 <Text
                   size="p-xsmall"
-                  className="text-project-card-description-color"
+                  className="text-df-description-color"
                 >
                   View project
                 </Text>
@@ -128,7 +128,7 @@ export default function ProjectCard({
                   animate={{ x: isHovered ? 2 : 0, y: isHovered ? -2 : 0 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  <ViewArrowIcon className="text-project-card-description-color cursor-pointer" />
+                  <ViewArrowIcon className="text-df-description-color cursor-pointer" />
                 </motion.div>
               </motion.div>
             )}

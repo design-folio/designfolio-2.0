@@ -12,7 +12,7 @@ export default function AiToolsSection() {
       >
         ...and so much more ✨
       </Text>
-      <Text className="text-center mt-4 text-sm sm:text-base text-foreground">
+      <Text className="text-center mt-4 text-sm sm:text-base md:text-lg text-foreground/60 font-normal">
         Use these AI tools and save all your time — thank us later!
       </Text>
 

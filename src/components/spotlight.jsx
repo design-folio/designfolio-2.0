@@ -77,11 +77,14 @@ export default function SpotlightUsers() {
         <Text
           as="h2"
           size="p-large"
-          className="text-center  leading-[46px] text-landing-card-heading-color"
+          className="text-center font-gsans font-semibold text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-5xl leading-[46px] text-landing-card-heading-color "
         >
           Created with Designfolio
         </Text>
-        <Text className="text-center mt-4 text-landing-card-description-color !text-[18px]">
+
+
+
+        <Text className="text-center mt-4 text-sm sm:text-base md:text-lg text-foreground/60 font-normal">
           Explore some of the portfolios powered by Designfolio
         </Text>
         {/* Desktop View */}

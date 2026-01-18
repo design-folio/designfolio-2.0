@@ -425,7 +425,7 @@ export default function Builder2({ edit = false }) {
                   items={projects?.map((p) => p._id) || []}
                   strategy={rectSortingStrategy}
                 >
-                  <div className="list grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="list grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
                     {projects?.map((project) => (
                       <SortableProjectItem
                         key={project._id}

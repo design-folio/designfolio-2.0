@@ -886,6 +886,9 @@ input {
 }
 
 @layer utilities {
+  .hide-cursor-children * {
+    cursor: none !important;
+  }
   /* Hide ugly search cancel button in Chrome until we can style it properly */
   input[type="search"]::-webkit-search-cancel-button {
     @apply hidden;

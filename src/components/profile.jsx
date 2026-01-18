@@ -42,7 +42,7 @@ export default function Profile({
         x: {
           repeat: Infinity,
           repeatType: "loop",
-          duration: totalWidth / 30, // Adjust for desired speed
+          duration: totalWidth / 20, // Adjust for desired speed
           ease: "linear",
         },
       },

@@ -186,7 +186,9 @@ export default function ProjectCard({
                   className={"max-h-[34px]"}
                 />
               ) : (
-                <motion.div
+
+                <>
+                  {/* <motion.div
                   className="flex gap-1 flex-1 w-fit"
                   onHoverStart={() => setIsHovered(true)}
                   onHoverEnd={() => setIsHovered(false)}
@@ -203,7 +205,8 @@ export default function ProjectCard({
                   >
                     <ViewArrowIcon className={`text-df-description-color ${shouldShowTooltip ? '' : 'cursor-pointer'}`} />
                   </motion.div>
-                </motion.div>
+                </motion.div> */}
+                </>
               )}
               {edit && (
                 <div className="flex gap-2 ml-auto">

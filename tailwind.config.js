@@ -185,6 +185,10 @@ module.exports = {
         "popover-border-color": "var(--popover-border-color)",
         "popover-heading-color": "var(--popover-heading-color)",
 
+        // Tooltip
+        "tooltip-bg-color": "var(--tooltip-bg-color)",
+        "tooltip-text-color": "var(--tooltip-text-color)",
+
         // Theme-popover
         "default-theme-box-bg-color": "var(--default-theme-box-bg-color)",
         "default-theme-box-border-color":

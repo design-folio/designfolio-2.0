@@ -79,9 +79,12 @@ const Portfolio = ({ userDetails, edit }) => {
     useGlobalContext();
 
   // Get section order from userDetails or use template default
-  const sectionOrder = userDetails?.sectionOrder && Array.isArray(userDetails.sectionOrder)
-    ? userDetails.sectionOrder.filter(section => getDefaultSectionOrder(3).includes(section))
-    : getDefaultSectionOrder(3);
+  const _raw = userDetails?.sectionOrder;
+  const _defaultOrder = getDefaultSectionOrder(3);
+  const _filtered = _raw && Array.isArray(_raw) && _raw.length > 0 ? _raw.filter(section => _defaultOrder.includes(section)) : null;
+  const sectionOrder = _raw && Array.isArray(_raw) && _raw.length > 0 && _filtered && _filtered.length > 0
+    ? _filtered
+    : _defaultOrder;
   const [expandedCards, setExpandedCards] = useState([]);
   const [showMore, setShowMore] = useState(false);
   const theme = useTheme();

@@ -8,6 +8,7 @@ import FooterBottom from "./footerBottom";
 import FeaturesSection from "./featuresSection";
 import FeaturesShowcase from "./featuresShowcase";
 import AiToolsSection from "./aiToolsSection";
+import SpotlightUsers from "./spotlight";
 
 export default function Home({ dfToken }) {
   return (
@@ -16,8 +17,11 @@ export default function Home({ dfToken }) {
       <EmailMockup />
       <TrustedBySection />
       <FeaturesSection />
-      <FeaturesShowcase />
-      {/* <AiToolsSection /> */}
+      {/* <FeaturesShowcase /> */}
+      <AiToolsSection />
+      <div className={` mx-auto mt-[75px] xl:mt-[115px]`}>
+        <SpotlightUsers />
+      </div>
       <Footer dfToken={dfToken} />
 
       <FooterBottom />

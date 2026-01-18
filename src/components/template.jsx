@@ -48,9 +48,12 @@ export default function Template1({ userDetails }) {
   }, []);
 
   // Get section order from userDetails or use template default
-  const sectionOrder = userDetails?.sectionOrder && Array.isArray(userDetails.sectionOrder)
-    ? userDetails.sectionOrder.filter(section => getDefaultSectionOrder(0).includes(section))
-    : getDefaultSectionOrder(0);
+  const _raw = userDetails?.sectionOrder;
+  const _defaultOrder = getDefaultSectionOrder(0);
+  const _filtered = _raw && Array.isArray(_raw) && _raw.length > 0 ? _raw.filter(section => _defaultOrder.includes(section)) : null;
+  const sectionOrder = _raw && Array.isArray(_raw) && _raw.length > 0 && _filtered && _filtered.length > 0
+    ? _filtered
+    : _defaultOrder;
 
   // Section component mapping
   const sectionComponents = {

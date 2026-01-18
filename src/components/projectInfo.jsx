@@ -378,7 +378,7 @@ export default function ProjectInfo({
         )}
       </div>
       <h1
-        className="text-[28px] md:text-[39px] font-inter font-[500] leading-[130%] text-project-info-card-heading-color"
+        className="text-3xl font-semibold text-df-heading-color"
         contentEditable={edit}
         suppressContentEditableWarning
         onBlur={(e) => handleOnBlur("title", e)}
@@ -394,7 +394,7 @@ export default function ProjectInfo({
       {
         (edit || !!description) && (
           <p
-            className="text-[16px] text-project-info-card-description-color font-inter font-[500] mt-2 min-w-0 webkit-fill"
+            className="text-[16px] text-df-description-color font-inter font-[500] mt-2 min-w-0 webkit-fill"
             contentEditable={edit}
             suppressContentEditableWarning
             onBlur={(e) => handleOnBlur("description", e)}
@@ -412,11 +412,11 @@ export default function ProjectInfo({
       <div className="flex flex-col gap-4 md:grid md:grid-cols-4 md:gap-6 mt-4">
         {(edit || !!client) && (
           <div>
-            <p className="text-[14px] text-project-info-card-heading-color font-inter font-[500]">
+            <p className="text-[14px] text-df-heading-color font-inter font-[500]">
               App name / Client
             </p>
             <p
-              className="text-[14px] text-project-info-card-description-color font-inter font-[500]"
+              className="text-[14px] text-df-description-color font-inter font-[500]"
               contentEditable={edit}
               suppressContentEditableWarning
               onBlur={(e) => handleOnBlur("client", e)}
@@ -434,11 +434,11 @@ export default function ProjectInfo({
 
         {(edit || !!role) && (
           <div>
-            <p className="text-[14px] text-project-info-card-heading-color font-inter font-[500]">
+            <p className="text-[14px] text-df-heading-color font-inter font-[500]">
               My Role
             </p>
             <p
-              className="text-[14px] text-project-info-card-description-color font-inter font-[500]"
+              className="text-[14px] text-df-description-color font-inter font-[500]"
               contentEditable={edit}
               suppressContentEditableWarning
               onBlur={(e) => handleOnBlur("role", e)}
@@ -455,11 +455,11 @@ export default function ProjectInfo({
         )}
         {(edit || !!industry) && (
           <div>
-            <p className="text-[14px] text-project-info-card-heading-color font-inter font-[500]">
+            <p className="text-[14px] text-df-heading-color font-inter font-[500]">
               Industry
             </p>
             <p
-              className="text-[14px] text-project-info-card-description-color font-inter font-[500]"
+              className="text-[14px] text-df-description-color font-inter font-[500]"
               contentEditable={edit}
               suppressContentEditableWarning
               onBlur={(e) => handleOnBlur("industry", e)}
@@ -476,11 +476,11 @@ export default function ProjectInfo({
         )}
         {(edit || !!platform) && (
           <div>
-            <p className="text-[14px] text-project-info-card-heading-color font-inter font-[500]">
+            <p className="text-[14px] text-df-heading-color font-inter font-[500]">
               Platform
             </p>
             <p
-              className="text-[14px] text-project-info-card-description-color font-inter font-[500]"
+              className="text-[14px] text-df-description-color font-inter font-[500]"
               contentEditable={edit}
               suppressContentEditableWarning
               onBlur={(e) => handleOnBlur("platform", e)}

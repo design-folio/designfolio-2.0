@@ -53,9 +53,13 @@ export default function Builder() {
   } = useGlobalContext();
 
   // Get section order from userDetails or use template default
-  const sectionOrder = userDetails?.sectionOrder && Array.isArray(userDetails.sectionOrder)
-    ? userDetails.sectionOrder.filter(section => getDefaultSectionOrder(0).includes(section))
-    : getDefaultSectionOrder(0);
+  const _raw = userDetails?.sectionOrder;
+  const _defaultOrder = getDefaultSectionOrder(0);
+  const _filtered = _raw && Array.isArray(_raw) && _raw.length > 0 ? _raw.filter(section => _defaultOrder.includes(section)) : null;
+  // Use filtered result only if it's not empty, otherwise fall back to default
+  const sectionOrder = _raw && Array.isArray(_raw) && _raw.length > 0 && _filtered && _filtered.length > 0
+    ? _filtered
+    : _defaultOrder;
 
   // Wrapper function that routes work/review to openSidebar, others to openModal
   const handleOpen = (type) => {

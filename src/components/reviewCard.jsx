@@ -118,7 +118,7 @@ export default function ReviewCard({ review, edit = false, sorting = false }) {
           ) : (
             <h3 className="font-semibold text-base mb-0">{review?.name}</h3>
           )}
-          <p className="text-sm text-foreground/50">
+          <p className="text-sm text-df-description-color">
             {review?.role ? `${review.role}, ` : ""}
             {review?.company}
           </p>

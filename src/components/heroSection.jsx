@@ -310,7 +310,7 @@ export default function HeroSection({ dfToken }) {
                             Redesigning fitness app experience for 4M users.
                         </h3>
                         <p
-                            className="text-xs md:text-sm text-foreground/50"
+                            className="text-xs md:text-sm text-df-description-color"
                             data-testid="text-project-left-category"
                         >
                             AI Fitness Tracker
@@ -358,7 +358,7 @@ export default function HeroSection({ dfToken }) {
                             Built a blockchain crypto app using Next.js
                         </h3>
                         <p
-                            className="text-xs md:text-sm text-foreground/50"
+                            className="text-xs md:text-sm text-df-description-color"
                             data-testid="text-project-right-category"
                         >
                             Launched on Product Hunt

@@ -88,7 +88,8 @@
   --df-orange-color: #ff553e;
   --df-tip-color: #828282;
   --df-subtle-text-color: rgb(77 84 95 / var(--tw-text-opacity, 1));
-
+  --df-heading-color: #202937;
+  --df-description-color: #0f0f0f80;
   --credit-text-color: #7a829d;
 
   /* profile card */
@@ -123,7 +124,7 @@
 
   /* work experience card */
   --work-card-heading-color: #202937;
-  --work-card-description-color: #788095;
+  --text-df-description-color: #788095;
   --work-card-company-color: #ff553e;
   --work-card-sort-icon-color: #9b9bac;
 
@@ -280,6 +281,8 @@
   --df-add-card-description-color: #788095;
   --df-add-item-shadow: inset 0px 0px 0px 2px #262832;
   --df-subtle-text-color: rgb(180 184 198 / var(--tw-text-opacity, 1));
+  --df-heading-color: #e9eaeb;
+  --df-description-color: #F2F2F280;
 
   /* profile card */
   --profile-card-heading-color: #e9eaeb;
@@ -291,6 +294,10 @@
   --project-card-border-color: #2f323d;
   --project-card-heading-color: #e9eaeb;
   --project-card-description-color: #788095;
+
+  /* df tokens - reusable colors based on profile/project cards */
+  --df-heading: #e9eaeb;
+  --df-description: #F2F2F280;
   --project-card-reorder-btn-bg-color: #262832;
   --project-card-reorder-btn-bg-hover-color: #22242b;
   --project-card-reorder-btn-icon-color: #aebeca;
@@ -313,7 +320,7 @@
 
   /* work experience card */
   --work-card-heading-color: #e9eaeb;
-  --work-card-description-color: #b4b8c6;
+  --text-df-description-color: #b4b8c6;
   --work-card-company-color: #ff553e;
   --work-card-sort-icon-color: #9b9bac;
 

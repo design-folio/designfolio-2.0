@@ -112,6 +112,7 @@ export default function ProjectInfo({
   const [score, setScore] = useState(0);
   const [rating, setRating] = useState("");
 
+
   const handleAnalyzeClick = async () => {
     if (suggestions.length > 0) {
       setShowModal(true);
@@ -197,11 +198,12 @@ export default function ProjectInfo({
         />
 
         {edit && (
-          <div className="flex gap-3">
+          <div className="flex gap-3 items-center justify-center">
             {AnalyzeStatus && (
               <>
                 <Button
                   type="secondary"
+                  size="small"
                   customClass="hidden md:flex"
                   text={
                     suggestions?.length > 0
@@ -226,14 +228,15 @@ export default function ProjectInfo({
                 />
                 <Button
                   type="secondary"
+                  size="small"
                   onClick={() => handleAnalyzeClick()}
-                  customClass="md:hidden p-0 px-4"
+                  customClass="md:hidden"
                   iconPosition={isAnalyzing ? "right" : "left"}
                   icon={
                     isAnalyzing ? (
-                      <AnimatedLoading className="cursor-pointer" />
-                    ) : (
                       <AnalyzeIcon className="cursor-pointer" />
+                    ) : (
+                      <AnimatedLoading className="cursor-pointer" />
                     )
                   }
                   isDisabled={
@@ -246,6 +249,7 @@ export default function ProjectInfo({
             <div className=" relative" data-popover-id={popovers.password}>
               <Button
                 type="secondary"
+                size="small"
                 onClick={() =>
                   setPopoverMenu((prev) =>
                     prev == popovers.password ? null : popovers.password
@@ -258,7 +262,7 @@ export default function ProjectInfo({
                     <LockOpenIcon className="stroke-bg-df-icon-color cursor-pointer" />
                   )
                 }
-                customClass="py-[18px]"
+                customClass="p-2.5"
               />
 
               <div

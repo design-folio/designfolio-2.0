@@ -9,6 +9,7 @@ import {
   EyeOff,
   Pencil,
 } from "lucide-react";
+import { HoverTooltip } from "../HoverTooltip";
 import { Button } from "@/components/ui/button";
 import { motion, useInView } from "framer-motion";
 import React, { useRef, useState, useEffect } from "react";
@@ -202,6 +203,8 @@ const Portfolio = ({ userDetails, edit }) => {
   // Sortable Project Card Component – vertical drag handle only
   const SortableProjectCard = ({ project, index }) => {
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+    const [isHovered, setIsHovered] = useState(false);
+    const [isHoveringInteractive, setIsHoveringInteractive] = useState(false);
     const cardRef = useRef(null);
     const handleMouseMove = (e) => {
       if (!cardRef.current) return;
@@ -224,8 +227,22 @@ const Portfolio = ({ userDetails, edit }) => {
           variants={item}
           onClick={() => handleNavigation(project?._id)}
           onMouseMove={handleMouseMove}
-          className="group bg-card border border-card-border rounded-lg overflow-hidden hover:bg-card/80 transition-colors relative !cursor-pointer"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => {
+            setIsHovered(false);
+            setIsHoveringInteractive(false);
+          }}
+          className={cn(
+            "group bg-card border border-card-border rounded-lg overflow-hidden hover:bg-card/80 transition-colors relative !cursor-pointer",
+            isHovered && !isDragging && !isHoveringInteractive && "hide-cursor-children"
+          )}
         >
+          <HoverTooltip
+            isHovered={isHovered}
+            isDragging={isDragging}
+            isHoveringInteractive={isHoveringInteractive}
+            text="View Project"
+          />
           <div className="flex flex-col md:flex-row !cursor-pointer">
             <div className="relative w-full lg:w-[320px] h-[261px] shrink-0 overflow-hidden">
               <img
@@ -250,7 +267,11 @@ const Portfolio = ({ userDetails, edit }) => {
                 </p>
               </div>
               {edit && (
-                <div className="mt-4 flex">
+                <div
+                  className="mt-4 flex"
+                  onMouseEnter={() => setIsHoveringInteractive(true)}
+                  onMouseLeave={() => setIsHoveringInteractive(false)}
+                >
                   <DragHandle
                     isButton
                     listeners={listeners}

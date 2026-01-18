@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Eye, EyeOff, Pencil } from "lucide-react";
+import { HoverTooltip } from "../HoverTooltip";
 import { useRouter } from "next/router";
 import Button from "../button";
 import DeleteIcon from "../../../public/assets/svgs/deleteIcon.svg";
@@ -175,6 +176,8 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit }) => {
   // Draggable Project Card Component
   const ProjectCard = ({ project }) => {
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+    const [isHovered, setIsHovered] = useState(false);
+    const [isHoveringInteractive, setIsHoveringInteractive] = useState(false);
     const containerRef = useRef(null);
     // Setup DND Kit sortable functionality.
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
@@ -229,9 +232,20 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit }) => {
         <motion.div
           onMouseMove={handleMouseMove}
           onClick={() => handleNavigation(project?._id)}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => {
+            setIsHovered(false);
+            setIsHoveringInteractive(false);
+          }}
           variants={itemVariants}
-          className="group rounded-3xl bg-card overflow-hidden relative shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] cursor-pointer h-full flex flex-col"
+          className={`group rounded-3xl bg-card overflow-hidden relative shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] cursor-pointer h-full flex flex-col ${isHovered && !isDragging && !isHoveringInteractive ? 'hide-cursor-children' : ''}`}
         >
+          <HoverTooltip
+            isHovered={isHovered}
+            isDragging={isDragging}
+            isHoveringInteractive={isHoveringInteractive}
+            text="View Case Study"
+          />
           <div
             className="pointer-events-none absolute -inset-px opacity-0 group-hover:opacity-100 transition-opacity duration-300"
             style={{
@@ -268,7 +282,11 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit }) => {
               )}
             </div>
             {edit && (
-              <div className="mt-4 flex">
+              <div
+                className="mt-4 flex"
+                onMouseEnter={() => setIsHoveringInteractive(true)}
+                onMouseLeave={() => setIsHoveringInteractive(false)}
+              >
                 <DragHandle
                   isButton
                   listeners={listeners}

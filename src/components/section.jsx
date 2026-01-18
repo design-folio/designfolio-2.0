@@ -19,7 +19,7 @@ export default function Section({
 
   return (
     <div
-      className={cn("bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-6 break-words")}
+      className={cn("bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-6 break-words border-0 backdrop-blur-sm")}
     >
       <div className="flex items-center justify-between">
         <Text

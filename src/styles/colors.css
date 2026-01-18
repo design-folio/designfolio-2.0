@@ -79,7 +79,7 @@
   --df-icon-color: #000000;
   --df-section-card-bg-color: #ffffff;
   --df-section-card-heading-color: #202937;
-  --df-section-card-shadow: rgba(0, 0, 0, 0.02) 0px 0px 16.4px;
+  --df-section-card-shadow: 0 0 0 1px rgba(0,0,0,0.03), 0 0 40px rgba(0,0,0,0.015);
   --df-add-card-bg-color: rgb(246, 242, 239);
   --df-add-card-border-color: #e9eaeb;
   --df-add-card-heading-color: #202937;
@@ -138,6 +138,10 @@
   --popover-border-color: #f0f1f4;
   --popver-shadow: "0px 8.3px 33.2px 0px rgba(32, 41, 55, 0.15)";
   --popover-heading-color: #202937;
+
+  /* Tooltip */
+  --tooltip-bg-color: #1A1A1A;
+  --tooltip-text-color: #ffffff;
 
   /* theme-popover */
   --default-theme-box-bg-color: #f9f9fb;
@@ -274,7 +278,7 @@
   --df-icon-color: #f9f9fb;
   --df-section-card-bg-color: #1d1f27;
   --df-section-card-heading-color: #e9eaeb;
-  --df-section-card-shadow: rgba(0, 0, 0, 0.02) 0px 0px 16.4px;
+  --df-section-card-shadow: 0 0 0 1px rgba(0,0,0,0.03), 0 0 40px rgba(0,0,0,0.015);
   --df-add-card-bg-color: #13151a;
   --df-add-card-border-color: #262832;
   --df-add-card-heading-color: #e9eaeb;
@@ -334,6 +338,10 @@
   --popover-border-color: #262832;
   --popver-shadow: "0px 8.3px 33.2px 0px rgba(32, 41, 55, 0.15)";
   --popover-heading-color: #e9eaeb;
+
+  /* Tooltip */
+  --tooltip-bg-color: #ffffff;
+  --tooltip-text-color: #1a1a1a;
 
   /* theme-popover */
   --default-theme-box-bg-color: transparent;

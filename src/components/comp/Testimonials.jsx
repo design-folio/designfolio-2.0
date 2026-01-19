@@ -293,6 +293,7 @@ export const Testimonials = ({ userDetails, edit }) => {
                         <>
                           <div className={shouldShowToggle && !isExpanded ? "max-h-[110px]  overflow-hidden relative" : ""}>
                             <SimpleTiptapRenderer
+                              className="rounded-none shadow-none"
                               content={testimonial.description || ""}
                               mode="review"
                               enableBulletList={false}

@@ -283,7 +283,7 @@ export default function Template2({ userDetails, preview = false }) {
                         <div className="mt-4 text-df-base-text-color">
                           <div className={shouldShowToggle && !isExpanded ? "max-h-[110px] overflow-hidden relative" : ""}>
                             <SimpleTiptapRenderer
-                              className="bg-card"
+                              className="bg-card "
                               content={review?.description || ""}
                               mode="review"
                               enableBulletList={false}

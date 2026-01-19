@@ -80,3 +80,6 @@ export const chatBubbleItems = {
   socialMedia: "social-media",
   scrollUp: "scroll-up",
 };
+
+
+export const DEFAULT_SECTION_ORDER = ['projects', 'reviews', 'tools', 'works'];

@@ -3,12 +3,12 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGlobalContext } from "@/context/globalContext";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { sidebars } from "@/lib/constant";
+import { sidebars, DEFAULT_SECTION_ORDER } from "@/lib/constant";
 import styles from "@/styles/domain.module.css";
 import imageCompression from "browser-image-compression";
 import { Upload, RotateCcw } from "lucide-react";
 import DragHandle from "./DragHandle";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { Badge } from "./ui/badge";
 import { SheetWrapper } from "./ui/SheetWrapper";
@@ -33,18 +33,6 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { _updateUser } from "@/network/post-request";
 
-// Template-specific default section orders
-const TEMPLATE_DEFAULTS = {
-  0: ['projects', 'reviews', 'tools', 'works'],  // builder.jsx
-  1: ['tools', 'projects', 'reviews', 'works'],  // Builder2.jsx (chat-based)
-  2: ['projects', 'tools', 'works', 'reviews'],   // Minimal.jsx
-  3: ['works', 'projects', 'tools', 'reviews']    // Portfolio.jsx
-};
-
-// Helper function to get default order for a template
-const getDefaultSectionOrder = (template) => {
-  return TEMPLATE_DEFAULTS[template] || TEMPLATE_DEFAULTS[0];
-};
 
 // Section display names mapping
 const SECTION_NAMES = {
@@ -55,8 +43,9 @@ const SECTION_NAMES = {
 };
 
 // Get available sections for a template
+// All templates use the same default order
 const getAvailableSections = (template) => {
-  return getDefaultSectionOrder(template);
+  return DEFAULT_SECTION_ORDER;
 };
 
 // SortableSectionItem Component
@@ -176,7 +165,7 @@ const ThemePanel = ({
   const changeSectionOrder = (newOrder) => {
     // Guard against empty arrays - use default order instead
     if (!newOrder || !Array.isArray(newOrder) || newOrder.length === 0) {
-      const defaultOrder = getDefaultSectionOrder(template);
+      const defaultOrder = DEFAULT_SECTION_ORDER;
       newOrder = defaultOrder;
     }
 
@@ -194,7 +183,9 @@ const ThemePanel = ({
 
   // Reset to template default
   const resetSectionOrder = () => {
-    const defaultOrder = getDefaultSectionOrder(template);
+    // Filter default order to only include available sections for current template
+    const defaultOrder = DEFAULT_SECTION_ORDER.filter(section => availableSections.includes(section));
+    setSectionOrder(defaultOrder);
     changeSectionOrder(defaultOrder);
   };
 
@@ -205,7 +196,7 @@ const ThemePanel = ({
 
     // Guard against empty sectionOrder
     if (!sectionOrder || sectionOrder.length === 0) {
-      const defaultOrder = getDefaultSectionOrder(template);
+      const defaultOrder = DEFAULT_SECTION_ORDER;
       setSectionOrder(defaultOrder);
       changeSectionOrder(defaultOrder);
       return;
@@ -223,7 +214,7 @@ const ThemePanel = ({
 
     // Guard against empty result
     if (!newOrder || newOrder.length === 0) {
-      const defaultOrder = getDefaultSectionOrder(template);
+      const defaultOrder = DEFAULT_SECTION_ORDER;
       setSectionOrder(defaultOrder);
       changeSectionOrder(defaultOrder);
       return;

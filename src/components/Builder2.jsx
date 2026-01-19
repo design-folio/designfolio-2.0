@@ -10,6 +10,7 @@ import { useTheme } from "next-themes";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState, useRef } from "react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   DndContext,
   closestCenter,
@@ -333,21 +334,39 @@ export default function Builder2({ edit = false }) {
     }, 300);
   };
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex gap-2 items-end">
-        <DfImage
-          src={getUserAvatarImage(userDetails)}
-          className={cn(
-            "w-[76px] h-[76px] ",
-            !userDetails?.avatar ? "bg-[#FFB088] rounded-[24px]" : ""
-          )}
-        />
-        <div>
-          <Chat direction="left">
-            Hey there! I'm {firstName} {lastName}
-          </Chat>
+    <TooltipProvider>
+      <div className="flex flex-col gap-6">
+        <div className="flex gap-2 items-end">
+          <Tooltip delayDuration={300}>
+            <TooltipTrigger asChild>
+              <div
+                className={cn(
+                  "w-[76px] h-[76px] rounded-[24px] flex items-center justify-center relative overflow-hidden",
+                  !userDetails?.avatar ? "bg-[#FFB088]" : ""
+                )}
+              >
+                <DfImage
+                  src={getUserAvatarImage(userDetails)}
+                  className="w-full h-full"
+                />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent
+              side="top"
+              sideOffset={8}
+              avoidCollisions={true}
+              className="bg-tooltip-bg-color text-tooltip-text-color border-0 px-4 py-2 rounded-xl flex items-center gap-2 shadow-xl"
+            >
+              <span className="text-sm font-medium">Happy to have you here</span>
+              <img src="/assets/png/handshake.png" alt="Handshake" className="w-5 h-5 object-contain" />
+            </TooltipContent>
+          </Tooltip>
+          <div>
+            <Chat direction="left">
+              Hey there! I'm {firstName} {lastName}
+            </Chat>
+          </div>
         </div>
-      </div>
 
       <Chat direction="left">
         {bio}
@@ -1015,7 +1034,8 @@ export default function Builder2({ edit = false }) {
           <GoUp className="animate-bounce cursor-pointer" />
         </a>
       </div>
-    </div>
+      </div>
+    </TooltipProvider>
   );
 }
 

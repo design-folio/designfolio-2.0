@@ -263,12 +263,12 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit }) => {
                 Hidden from live site
               </div>
             )}
-            <a
+            {/* <a
               href={project.link}
               className="absolute top-6 right-6 size-14 rounded-full bg-tertiary flex items-center justify-center opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300 hover:bg-tertiary-hover"
             >
               <ArrowUpRight className="size-6 text-white" />
-            </a>
+            </a> */}
           </div>
           <div className="p-8 pb-10 cursor-pointer flex flex-col flex-1">
             <div className="flex-1">

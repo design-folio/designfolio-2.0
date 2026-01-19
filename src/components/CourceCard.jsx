@@ -104,24 +104,24 @@ export function CourseCard() {
                     className={`p-6 space-y-8 overflow-y-auto max-h-[80vh] transition-opacity duration-300 ${isExpanded ? "opacity-100" : "opacity-0"
                         }`}
                 >
-                    <div className="space-y-3">
-                        <h2 className="text-2xl font-bold tracking-tight text-foreground leading-tight">
+                    <div className="space-y-1">
+                        <h2 className="text-base font-semibold tracking-tight text-foreground-landing leading-tight">
                             Vibe coding for Designers
                         </h2>
-                        <div className="flex items-center gap-2 text-foreground/60">
+                        <div className="flex items-center gap-1.5 text-muted-foreground">
                             <Calendar className="w-4 h-4" />
-                            <span className="text-sm font-semibold">January 18th, 2026</span>
+                            <span className="text-[12px] font-medium">February 15th, 2026</span>
                         </div>
                     </div>
 
-                    <div className="space-y-2 pt-2">
+                    <div className="space-y-2 pt-1">
                         <div className="flex items-center justify-between">
-                            <p className="text-[11px] uppercase tracking-wider font-bold text-foreground/60">
+                            <p className="text-[11px] font-semibold text-muted-foreground">
                                 Seats Available
                             </p>
                             <div className="flex items-center gap-2">
                                 <div className="w-1.5 h-1.5 rounded-full bg-[#f97316] animate-[pulse_2s_cubic-bezier(0.4,0,0.6,1)_infinite]"></div>
-                                <p className="text-[11px] uppercase tracking-wider font-bold text-[#f97316]">
+                                <p className="text-[11px] font-semibold text-[#f97316]">
                                     Filling Fast
                                 </p>
                             </div>
@@ -132,8 +132,8 @@ export function CourseCard() {
                                 <div className="h-full w-[45%] bg-[#f97316] rounded-full transition-all duration-1000 ease-out"></div>
                             </div>
                         </div>
-                        <p className="text-[12px] font-bold text-foreground tracking-tight">
-                            13 of 30 seats remaining
+                        <p className="text-[12px] font-medium text-foreground">
+                            19 of 30 seats remaining
                         </p>
                     </div>
 

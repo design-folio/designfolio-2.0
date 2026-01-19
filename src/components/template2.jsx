@@ -59,18 +59,18 @@ export default function Template2({ userDetails, preview = false }) {
   }, [userDetails?.cursor, setCursor]);
 
   useEffect(() => {
-    if (activeStep === 6 && projects && projects.length === 0) {
+    if (activeStep === 3 && projects && projects.length === 0) {
       setActiveStep((prev) => prev + 1); // update step when no projects exist
-    } else if (activeStep === 7 && projects && projects.length === 0) {
+    } else if (activeStep === 4 && projects && projects.length === 0) {
       setActiveStep((prev) => prev + 1); // update step when no projects exist
-    } else if (activeStep === 8 && reviews && reviews.length === 0) {
+    } else if (activeStep === 5 && reviews && reviews.length === 0) {
       setActiveStep((prev) => prev + 1); // update step when no reviews exist
-    } else if (activeStep === 9 && experiences && experiences.length === 0) {
+    } else if (activeStep === 7 && experiences && experiences.length === 0) {
       setActiveStep((prev) => prev + 1); // update step when no experiences exist
-    } else if (activeStep === 10 && !portfolioCheck) {
+    } else if (activeStep === 8 && !portfolioCheck) {
       setActiveStep((prev) => prev + 1);
     } else if (
-      activeStep === 11 &&
+      activeStep === 9 &&
       socials &&
       !Object.values(socials).every((social) => social != "")
     ) {
@@ -181,64 +181,21 @@ export default function Template2({ userDetails, preview = false }) {
               {bio}
             </Chat>
           )}
-          {activeStep >= 3 && (
-            <Chat delay={100} direction="right" onComplete={handleStepCompletion}>
-              Hey! What are your core skills?
-            </Chat>
-          )}
-
-          {activeStep >= 4 && (
-            <Chat delay={1000} onComplete={handleStepCompletion}>
-              I specialize in {getSkills()}
-            </Chat>
-          )}
-
-          {activeStep >= 5 && (
-            <div id="section-tools">
-              <Chat delay={400} onComplete={handleStepCompletion}>
-                <div className="flex flex-wrap items-center gap-2 mb-2">
-                  {tools?.map((tool, i) => (
-                    <div
-                      title={tool?.label}
-                      key={i}
-                      className={`cursor-default h-full flex gap-2 justify-between items-center bg-tools-card-item-bg-color text-tools-card-item-text-color border-tools-card-item-border-color  border border-solid rounded-[16px] p-3`}
-                    >
-                      {tool?.image && (
-                        <img
-                          src={tool?.image}
-                          alt={tool?.label}
-                          className="w-[34px] h-[34px] "
-                        />
-                      )}
-                      <Text
-                        size="p-xsmall"
-                        className="text-tools-card-item-text-color"
-                      >
-                        {tool?.label}
-                      </Text>
-                    </div>
-                  ))}
-                </div>
-                This is my toolbox.
-              </Chat>
-            </div>
-          )}
-
-          {activeStep >= 6 && projects && projects?.length > 0 && (
+          {activeStep >= 3 && projects && projects?.length > 0 && (
             <Chat direction="right" delay={400} onComplete={handleStepCompletion}>
-              Awesome! Can you share any of your recent work? Would love to see
-              them
+              So… what have you been working on lately?
             </Chat>
           )}
 
-          {activeStep >= 7 && projects && projects?.length > 0 && (
-            <div id="section-projects">
+          {activeStep >= 4 && projects && projects?.length > 0 && (
+            <div id="section-projects" className="flex flex-col gap-6">
               <Chat
                 direction="left"
                 delay={200}
                 onComplete={handleStepCompletion}
               >
-                Here you go!
+                Glad you asked 😌 <br />
+                Here are a few things I've built.
               </Chat>
               <div className="flex flex-row flex-wrap gap-6">
                 {projects?.filter((project) => !project.hidden || !preview).map((project, index) => {
@@ -265,12 +222,15 @@ export default function Template2({ userDetails, preview = false }) {
             </div>
           )}
 
-          {activeStep >= 8 && reviews && reviews.length > 0 && (
-            <div id="section-reviews">
-              <Chat direction="left">
-                I've always gotten great feedback from my clients & colleagues.
+          {activeStep >= 5 && reviews && reviews.length > 0 && (
+            <div id="section-reviews" className="flex flex-col gap-6">
+              <Chat direction="right" delay={400} onComplete={handleStepCompletion}>
+                What do people usually say about working with you?
               </Chat>
-              <Chat direction="left" onComplete={handleStepCompletion}>
+              <Chat direction="left" delay={300}>
+                Here's what some very kind humans had to say 🫶
+              </Chat>
+              <Chat direction="left" delay={200} onComplete={handleStepCompletion}>
 
                 <div className="space-y-4">
                   {reviews?.map((review) => {
@@ -358,12 +318,55 @@ export default function Template2({ userDetails, preview = false }) {
             </div>
           )}
 
-          {activeStep >= 9 && experiences && experiences?.length > 0 && (
-            <div id="section-works">
-              <Chat direction="left" delay={200}>
-                Also, here's more!
+          {activeStep >= 6 && (
+            <div id="section-tools" className="flex flex-col gap-6">
+              <Chat direction="right" delay={400} onComplete={handleStepCompletion}>
+                What do you actually use to build all this?
               </Chat>
+              <Chat delay={300} onComplete={handleStepCompletion}>
+                A mix of design, code, and a bit of chaos 😄<br />
+                But mostly:
+              </Chat>
+              <Chat delay={300} onComplete={handleStepCompletion}>
+                <div className="flex flex-wrap items-center gap-2 mb-2">
+                  {tools?.map((tool, i) => (
+                    <div
+                      title={tool?.label}
+                      key={i}
+                      className={`cursor-default h-full flex gap-2 justify-between items-center bg-tools-card-item-bg-color text-tools-card-item-text-color border-tools-card-item-border-color  border border-solid rounded-[16px] p-3`}
+                    >
+                      {tool?.image && (
+                        <img
+                          src={tool?.image}
+                          alt={tool?.label}
+                          className="w-[34px] h-[34px] "
+                        />
+                      )}
+                      <Text
+                        size="p-xsmall"
+                        className="text-tools-card-item-text-color"
+                      >
+                        {tool?.label}
+                      </Text>
+                    </div>
+                  ))}
+                </div>
+                This is my toolbox.
+              </Chat>
+              <Chat delay={300} onComplete={handleStepCompletion}>
+                I specialize in {getSkills()}
+              </Chat>
+            </div>
+          )}
 
+          {activeStep >= 7 && experiences && experiences?.length > 0 && (
+            <div id="section-works" className="flex flex-col gap-6">
+              <Chat direction="right" delay={400} onComplete={handleStepCompletion}>
+                Where have you worked so far?
+              </Chat>
+              <Chat direction="left" delay={300}>
+                Here's a quick look at my design journey 👇
+              </Chat>
               <Chat
                 direction="left"
                 className="pb-5"
@@ -437,15 +440,15 @@ export default function Template2({ userDetails, preview = false }) {
             </div>
           )}
 
-          {activeStep >= 10 && portfolioCheck && (
+          {activeStep >= 8 && portfolioCheck && (
             <>
-              <Chat direction="right" delay={400}>
-                Do you have any other portfolios?
+              <Chat direction="right" delay={400} onComplete={handleStepCompletion}>
+                Got any other places I should check out?
               </Chat>
               <Chat
                 direction="left"
                 className="pb-5"
-                delay={200}
+                delay={300}
                 onComplete={handleStepCompletion}
               >
                 <div className="flex flex-col lg:flex-row gap-[24px]">
@@ -514,7 +517,7 @@ export default function Template2({ userDetails, preview = false }) {
             </>
           )}
 
-          {activeStep >= 11 &&
+          {activeStep >= 9 &&
             ((socials &&
               Object.values(socials).every((social) => social == "")) ||
               resume) && (
@@ -524,7 +527,7 @@ export default function Template2({ userDetails, preview = false }) {
                   delay={400}
                   onComplete={handleStepCompletion}
                 >
-                  Where can I reach you?
+                  Slide into my DMs (professionally 😄)
                 </Chat>
                 {resume && (
                   <Chat direction="left" className="pb-5">
@@ -603,7 +606,7 @@ export default function Template2({ userDetails, preview = false }) {
               </>
             )}
 
-          {activeStep >= 6 && (
+          {activeStep >= 3 && (
             <div
               className="flex justify-center mt-10"
               style={{ pointerEvent: "all" }}

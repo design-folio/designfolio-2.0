@@ -381,7 +381,7 @@ export default function Builder2({ edit = false }) {
         {sectionOrder.map((sectionId) => {
           if (sectionId === 'tools') {
             return (
-              <div key="tools" id="section-tools">
+              <div key="tools" id="section-tools" className="flex flex-col gap-6">
                 <Chat>
                   <div className="flex flex-wrap items-center gap-2 mb-2">
                     {tools?.map((tool, i) => (
@@ -421,7 +421,7 @@ export default function Builder2({ edit = false }) {
 
           if (sectionId === 'projects') {
             return (
-              <div key="projects" id="section-projects">
+              <div key="projects" id="section-projects" className="flex flex-col gap-6">
                 <Chat direction="right">
                   Awesome! Can you share any of your recent work? Would love to see them
                 </Chat>
@@ -505,7 +505,7 @@ export default function Builder2({ edit = false }) {
 
           if (sectionId === 'reviews') {
             return (
-              <div key="reviews" id="section-reviews">
+              <div key="reviews" id="section-reviews" className="flex flex-col gap-6">
                 <Chat direction="left">
                   I've always gotten great feedback from my clients & colleagues.
                 </Chat>
@@ -661,7 +661,7 @@ export default function Builder2({ edit = false }) {
 
           if (sectionId === 'works') {
             return (
-              <div key="works" id="section-works">
+              <div key="works" id="section-works" className="flex flex-col gap-6">
                 <Chat direction="left">Also, here's more!</Chat>
                 <Chat direction="left" className="pb-5">
                   <div className="flex flex-col gap-6">

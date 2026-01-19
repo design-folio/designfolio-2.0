@@ -374,9 +374,6 @@ export default function Builder2({ edit = false }) {
           )}
         </Chat>
 
-        <Chat direction="right">Hey! What are your core skills?</Chat>
-        <Chat>I specialize in {getSkills()}</Chat>
-
         {/* Sections rendered in order based on sectionOrder */}
         {sectionOrder.map((sectionId) => {
           if (sectionId === 'tools') {
@@ -423,9 +420,10 @@ export default function Builder2({ edit = false }) {
             return (
               <div key="projects" id="section-projects" className="flex flex-col gap-6">
                 <Chat direction="right">
-                  Awesome! Can you share any of your recent work? Would love to see them
+                  So… what have you been working on lately?
                 </Chat>
-                <Chat direction="left">Here you go!</Chat>
+                <Chat direction="left">  Glad you asked 😌 <br />
+                  Here are a few things I’ve built.</Chat>
                 <DndContext
                   sensors={sensors}
                   collisionDetection={closestCenter}
@@ -506,8 +504,10 @@ export default function Builder2({ edit = false }) {
           if (sectionId === 'reviews') {
             return (
               <div key="reviews" id="section-reviews" className="flex flex-col gap-6">
+                <Chat direction="right">What do people usually say about working with you?
+                </Chat>
                 <Chat direction="left">
-                  I've always gotten great feedback from my clients & colleagues.
+                  Here’s what some very kind humans had to say 🫶
                 </Chat>
                 <Chat direction="left">
                   {edit && reviews?.length == 0 && (
@@ -659,10 +659,13 @@ export default function Builder2({ edit = false }) {
             );
           }
 
+
           if (sectionId === 'works') {
             return (
               <div key="works" id="section-works" className="flex flex-col gap-6">
-                <Chat direction="left">Also, here's more!</Chat>
+                <Chat direction="right"> Where have you worked so far?
+                </Chat>
+                <Chat direction="left"> Here’s a quick look at my design journey 👇</Chat>
                 <Chat direction="left" className="pb-5">
                   <div className="flex flex-col gap-6">
                     {experiences?.map((experience, index) => {
@@ -786,7 +789,12 @@ export default function Builder2({ edit = false }) {
           }
           return null;
         })}
-        <Chat direction="right">Do you have any other portfolios?</Chat>
+        <Chat direction="right">What do you actually use to build all this?
+        </Chat>
+        <Chat direction="left"> A mix of design, code, and a bit of chaos 😄<br />
+          But mostly:</Chat>
+        <Chat>I specialize in {getSkills()}</Chat>
+        <Chat direction="right">Got any other places I should check out?</Chat>
         <Chat direction="left" className="pb-5">
           <div className="flex flex-col lg:flex-row gap-[24px]">
             {portfolios?.dribbble && (
@@ -882,7 +890,7 @@ export default function Builder2({ edit = false }) {
               />
             )}
         </Chat>
-        <Chat direction="right">Where can I reach you?</Chat>
+        <Chat direction="right">Slide into my DMs (professionally 😄)</Chat>
         <Chat direction="left" className="pb-5">
           {!resume && edit && (
             <AddItem

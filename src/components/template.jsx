@@ -1,4 +1,5 @@
 import { useGlobalContext } from "@/context/globalContext";
+import { DEFAULT_SECTION_ORDER } from "@/lib/constant";
 import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import OthersPreview from "@/components/othersPreview";
@@ -32,15 +33,6 @@ const itemVariants = {
   },
 };
 
-// Template-specific default section orders
-const TEMPLATE_DEFAULTS = {
-  0: ['projects', 'reviews', 'tools', 'works'],
-};
-
-const getDefaultSectionOrder = (template) => {
-  return TEMPLATE_DEFAULTS[template] || TEMPLATE_DEFAULTS[0];
-};
-
 export default function Template1({ userDetails }) {
   const { projectRef, setCursor } = useGlobalContext();
   useEffect(() => {
@@ -49,7 +41,7 @@ export default function Template1({ userDetails }) {
 
   // Get section order from userDetails or use template default
   const _raw = userDetails?.sectionOrder;
-  const _defaultOrder = getDefaultSectionOrder(0);
+  const _defaultOrder = DEFAULT_SECTION_ORDER;
   const _filtered = _raw && Array.isArray(_raw) && _raw.length > 0 ? _raw.filter(section => _defaultOrder.includes(section)) : null;
   const sectionOrder = _raw && Array.isArray(_raw) && _raw.length > 0 && _filtered && _filtered.length > 0
     ? _filtered

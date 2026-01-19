@@ -18,7 +18,7 @@ import { Footer } from "@/components/comp/Footer";
 import { useRouter } from "next/router";
 import Button2 from "../button";
 import { useGlobalContext } from "@/context/globalContext";
-import { modals } from "@/lib/constant";
+import { modals, DEFAULT_SECTION_ORDER } from "@/lib/constant";
 import DeleteIcon from "../../../public/assets/svgs/deleteIcon.svg";
 import AddCard from "../AddCard";
 import { useTheme } from "next-themes";
@@ -53,15 +53,6 @@ import Tools from "../tools";
 import { ToolStack } from "./ToolStack";
 // import { ToolStack } from "./ToolStack";
 
-// Template-specific default section orders
-const TEMPLATE_DEFAULTS = {
-  3: ['works', 'projects', 'tools', 'reviews'],
-};
-
-const getDefaultSectionOrder = (template) => {
-  return TEMPLATE_DEFAULTS[template] || TEMPLATE_DEFAULTS[3];
-};
-
 const Portfolio = ({ userDetails, edit }) => {
   const router = useRouter();
   const {
@@ -82,7 +73,7 @@ const Portfolio = ({ userDetails, edit }) => {
 
   // Get section order from userDetails or use template default
   const _raw = userDetails?.sectionOrder;
-  const _defaultOrder = getDefaultSectionOrder(3);
+  const _defaultOrder = DEFAULT_SECTION_ORDER;
   const _filtered = _raw && Array.isArray(_raw) && _raw.length > 0 ? _raw.filter(section => _defaultOrder.includes(section)) : null;
   const sectionOrder = _raw && Array.isArray(_raw) && _raw.length > 0 && _filtered && _filtered.length > 0
     ? _filtered

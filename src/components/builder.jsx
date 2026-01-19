@@ -7,7 +7,7 @@ import Tools from "./tools";
 import Works from "./works";
 import Others from "./others";
 import { motion } from "framer-motion";
-import { sidebars } from "@/lib/constant";
+import { sidebars, DEFAULT_SECTION_ORDER } from "@/lib/constant";
 
 const containerVariants = {
   hidden: {},
@@ -32,15 +32,6 @@ const itemVariants = {
   },
 };
 
-// Template-specific default section orders
-const TEMPLATE_DEFAULTS = {
-  0: ['projects', 'reviews', 'tools', 'works'],
-};
-
-const getDefaultSectionOrder = (template) => {
-  return TEMPLATE_DEFAULTS[template] || TEMPLATE_DEFAULTS[0];
-};
-
 export default function Builder() {
   const {
     projectRef,
@@ -52,9 +43,9 @@ export default function Builder() {
     updateCache,
   } = useGlobalContext();
 
-  // Get section order from userDetails or use template default
+  // Get section order from userDetails or use default
   const _raw = userDetails?.sectionOrder;
-  const _defaultOrder = getDefaultSectionOrder(0);
+  const _defaultOrder = DEFAULT_SECTION_ORDER;
   const _filtered = _raw && Array.isArray(_raw) && _raw.length > 0 ? _raw.filter(section => _defaultOrder.includes(section)) : null;
   // Use filtered result only if it's not empty, otherwise fall back to default
   const sectionOrder = _raw && Array.isArray(_raw) && _raw.length > 0 && _filtered && _filtered.length > 0

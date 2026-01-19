@@ -9,20 +9,12 @@ import Reviews from "@/components/reviews";
 import Tools from "@/components/tools";
 import Works from "@/components/works";
 import { containerVariants, itemVariants } from "@/lib/animationVariants";
-
-// Template-specific default section orders
-const TEMPLATE_DEFAULTS = {
-  0: ['projects', 'reviews', 'tools', 'works'],
-};
-
-const getDefaultSectionOrder = (template) => {
-  return TEMPLATE_DEFAULTS[template] || TEMPLATE_DEFAULTS[0];
-};
+import { DEFAULT_SECTION_ORDER } from "@/lib/constant";
 
 export default function Preview1({ userDetails, projectRef }) {
   // Get section order from userDetails or use template default
   const _raw = userDetails?.sectionOrder;
-  const _defaultOrder = getDefaultSectionOrder(0);
+  const _defaultOrder = DEFAULT_SECTION_ORDER;
   const _filtered = _raw && Array.isArray(_raw) && _raw.length > 0 ? _raw.filter(section => _defaultOrder.includes(section)) : null;
   const sectionOrder = _raw && Array.isArray(_raw) && _raw.length > 0 && _filtered && _filtered.length > 0
     ? _filtered

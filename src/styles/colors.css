@@ -79,7 +79,7 @@
   --df-icon-color: #000000;
   --df-section-card-bg-color: #ffffff;
   --df-section-card-heading-color: #202937;
-  --df-section-card-shadow: rgba(0, 0, 0, 0.02) 0px 0px 16.4px;
+  --df-section-card-shadow: 0 0 0 1px rgba(0,0,0,0.03), 0 0 40px rgba(0,0,0,0.015);
   --df-add-card-bg-color: rgb(246, 242, 239);
   --df-add-card-border-color: #e9eaeb;
   --df-add-card-heading-color: #202937;
@@ -88,12 +88,13 @@
   --df-orange-color: #ff553e;
   --df-tip-color: #828282;
   --df-subtle-text-color: rgb(77 84 95 / var(--tw-text-opacity, 1));
-
+  --df-heading-color: #202937;
+  --df-description-color: #0f0f0f80;
   --credit-text-color: #7a829d;
 
   /* profile card */
   --profile-card-heading-color: #202937;
-  --profile-card-description-color: #788095;
+  --profile-card-description-color: #0f0f0f80;
   --profile-card-skill-color: #788095;
 
   /* project card */
@@ -107,7 +108,7 @@
 
   /* project Info card */
   --project-info-card-heading-color: #202937;
-  --project-info-card-description-color: #8d98af;
+  --project-info-card-description-color: #0f0f0f80;
 
   /* review card */
   --review-card-bg-color: #fff;
@@ -123,7 +124,7 @@
 
   /* work experience card */
   --work-card-heading-color: #202937;
-  --work-card-description-color: #788095;
+  --text-df-description-color: #788095;
   --work-card-company-color: #ff553e;
   --work-card-sort-icon-color: #9b9bac;
 
@@ -137,6 +138,10 @@
   --popover-border-color: #f0f1f4;
   --popver-shadow: "0px 8.3px 33.2px 0px rgba(32, 41, 55, 0.15)";
   --popover-heading-color: #202937;
+
+  /* Tooltip */
+  --tooltip-bg-color: #1A1A1A;
+  --tooltip-text-color: #ffffff;
 
   /* theme-popover */
   --default-theme-box-bg-color: #f9f9fb;
@@ -273,17 +278,19 @@
   --df-icon-color: #f9f9fb;
   --df-section-card-bg-color: #1d1f27;
   --df-section-card-heading-color: #e9eaeb;
-  --df-section-card-shadow: rgba(0, 0, 0, 0.02) 0px 0px 16.4px;
+  --df-section-card-shadow: 0 0 0 1px rgba(0,0,0,0.03), 0 0 40px rgba(0,0,0,0.015);
   --df-add-card-bg-color: #13151a;
   --df-add-card-border-color: #262832;
   --df-add-card-heading-color: #e9eaeb;
   --df-add-card-description-color: #788095;
   --df-add-item-shadow: inset 0px 0px 0px 2px #262832;
   --df-subtle-text-color: rgb(180 184 198 / var(--tw-text-opacity, 1));
+  --df-heading-color: #e9eaeb;
+  --df-description-color: #F2F2F280;
 
   /* profile card */
   --profile-card-heading-color: #e9eaeb;
-  --profile-card-description-color: #b4b8c6;
+  --profile-card-description-color: #F2F2F280;
   --profile-card-skill-color: #b4b8c6;
 
   /* project card */
@@ -291,13 +298,17 @@
   --project-card-border-color: #2f323d;
   --project-card-heading-color: #e9eaeb;
   --project-card-description-color: #788095;
+
+  /* df tokens - reusable colors based on profile/project cards */
+  --df-heading: #e9eaeb;
+  --df-description: #F2F2F280;
   --project-card-reorder-btn-bg-color: #262832;
   --project-card-reorder-btn-bg-hover-color: #22242b;
   --project-card-reorder-btn-icon-color: #aebeca;
 
   /* project Info card */
   --project-info-card-heading-color: #e9eaeb;
-  --project-info-card-description-color: #788095;
+  --project-info-card-description-color: #F2F2F280;
 
   /* review card */
   --review-card-bg-color: #2f323d;
@@ -313,7 +324,7 @@
 
   /* work experience card */
   --work-card-heading-color: #e9eaeb;
-  --work-card-description-color: #b4b8c6;
+  --text-df-description-color: #b4b8c6;
   --work-card-company-color: #ff553e;
   --work-card-sort-icon-color: #9b9bac;
 
@@ -327,6 +338,10 @@
   --popover-border-color: #262832;
   --popver-shadow: "0px 8.3px 33.2px 0px rgba(32, 41, 55, 0.15)";
   --popover-heading-color: #e9eaeb;
+
+  /* Tooltip */
+  --tooltip-bg-color: #ffffff;
+  --tooltip-text-color: #1a1a1a;
 
   /* theme-popover */
   --default-theme-box-bg-color: transparent;

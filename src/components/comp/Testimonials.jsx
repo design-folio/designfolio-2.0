@@ -224,7 +224,7 @@ export const Testimonials = ({ userDetails, edit }) => {
                             {visibleTestimonials[currentIndex]?.name}
                           </h3>
                         )}
-                        <p className="text-sm text-foreground/50">
+                        <p className="text-sm text-df-description-color">
                           {visibleTestimonials[currentIndex]?.role
                             ? `${visibleTestimonials[currentIndex]?.role}, `
                             : ""}
@@ -293,6 +293,7 @@ export const Testimonials = ({ userDetails, edit }) => {
                         <>
                           <div className={shouldShowToggle && !isExpanded ? "max-h-[110px]  overflow-hidden relative" : ""}>
                             <SimpleTiptapRenderer
+                              className="rounded-none shadow-none"
                               content={testimonial.description || ""}
                               mode="review"
                               enableBulletList={false}
@@ -372,7 +373,7 @@ export const Testimonials = ({ userDetails, edit }) => {
                         {testimonial?.name}
                       </h3>
                     )}
-                    <p className="text-sm text-foreground/50">
+                    <p className="text-sm text-df-description-color">
                       {testimonial?.role ? `${testimonial.role}, ` : ""}
                       {testimonial?.company}
                     </p>

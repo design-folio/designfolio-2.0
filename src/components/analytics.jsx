@@ -69,7 +69,7 @@ function Analytics({ }) {
 
             <div className="flex items-center justify-between mt-1">
               <div className="flex flex-col">
-                <h1 className="text-[28px] md:text-[39px] font-inter font-[500] leading-[130%] text-profile-card-heading-color">
+                <h1 className="text-[28px] md:text-[39px] font-inter font-[500] leading-[130%] text-df-heading-color">
                   Insights
                 </h1>
 
@@ -105,7 +105,7 @@ function Analytics({ }) {
             <div
               className={`bg-review-card-bg-color p-[16px] border flex flex-col justify-between border-review-card-border-color rounded-[16px]`}
             >
-              <h1 className="text-[20px] md:text-[39px] font-inter font-[500] leading-[130%] text-profile-card-heading-color">
+              <h1 className="text-[20px] md:text-[39px] font-inter font-[500] leading-[130%] text-df-heading-color">
                 {uniqueVisits}
               </h1>
 

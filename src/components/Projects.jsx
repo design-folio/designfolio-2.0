@@ -61,7 +61,7 @@ const SortableItem = ({ project, onDeleteProject, edit, preview, recentlyMovedId
   const wasRecentlyMoved = recentlyMovedIds?.has(project._id) ?? false;
 
   return (
-    <div ref={setNodeRef} style={style} className={`h-full ${isDragging ? 'relative' : ''}`}>
+    <div ref={setNodeRef} style={style} className={`h-full w-full flex ${isDragging ? 'relative' : ''}`}>
       <ProjectCard
         project={project}
         onDeleteProject={onDeleteProject}
@@ -168,7 +168,7 @@ export default function Projects({
   };
   return (
     <div ref={projectRef}>
-      <Section title={"My works"} wallpaper={userDetails?.wallpaper}>
+      <Section title={"My works"} wallpaper={userDetails?.wallpaper} showStar={true}>
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
@@ -180,9 +180,10 @@ export default function Projects({
           >
             <div
               className={twMerge(
-                "grid gap-4 md:grid-cols-2",
+                "grid gap-4 md:grid-cols-2 items-stretch",
                 visibleProjects?.length === 0 && "md:grid-cols-1"
               )}
+              style={{ gridTemplateColumns: visibleProjects?.length === 0 ? undefined : '1fr 1fr' }}
             >
               {visibleProjects?.map((project) => (
                 <SortableItem

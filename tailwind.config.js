@@ -21,6 +21,7 @@ module.exports = {
         inter: ["var(--font-inter)", "sans-serif"],
         kalam: ["var(--font-kalam)", "cursive"],
         gsans: "var(--font-gsans)",
+
       },
       cursor: {
         default: "var(--cursor-default)", // Custom cursor
@@ -124,6 +125,8 @@ module.exports = {
         "df-tip-color": "var(--df-tip-color)",
         "credit-text-color": "var(--credit-text-color)",
         "df-subtle-text-color": "var(--df-subtle-text-color)",
+        "df-heading-color": "var(--df-heading-color)",
+        "df-description-color": "var(--df-description-color)",
 
         // Analytics
         "analytics-profile-url-color": "var(--analytics-url-color)",
@@ -168,7 +171,7 @@ module.exports = {
 
         // Work experience card
         "work-card-heading-color": "var(--work-card-heading-color)",
-        "work-card-description-color": "var(--work-card-description-color)",
+        "text-df-description-color": "var(--text-df-description-color)",
         "work-card-company-color": "var(--work-card-company-color)",
         "work-card-sort-icon-color": "var(--work-card-sort-icon-color)",
 
@@ -181,6 +184,10 @@ module.exports = {
         "popover-bg-color": "var(--popover-bg-color)",
         "popover-border-color": "var(--popover-border-color)",
         "popover-heading-color": "var(--popover-heading-color)",
+
+        // Tooltip
+        "tooltip-bg-color": "var(--tooltip-bg-color)",
+        "tooltip-text-color": "var(--tooltip-text-color)",
 
         // Theme-popover
         "default-theme-box-bg-color": "var(--default-theme-box-bg-color)",
@@ -265,6 +272,10 @@ module.exports = {
         // System variables
         "button-outline": "var(--button-outline)",
         "badge-outline": "var(--badge-outline)",
+        "tab-active-bg": "var(--tab-active-bg)",
+        "slider-thumb-border": "var(--slider-thumb-border)",
+        "slider-thumb-bg": "var(--slider-thumb-bg)",
+        "switch-unchecked-bg": "var(--switch-unchecked-bg)",
 
         // Sidebar
         sidebar: "hsl(var(--sidebar))",

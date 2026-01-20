@@ -1,5 +1,5 @@
 import { setCursorvalue } from "@/lib/cursor";
-import { setWallpaperValue, getWallpaperUrl } from "@/lib/wallpaper";
+import { getWallpaperUrl, hasNoWallpaper } from "@/lib/wallpaper";
 import { _getDomainDetails, _getUserDetails } from "@/network/get-request";
 import { _updateUser } from "@/network/post-request";
 import queryClient from "@/network/queryClient";
@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import Cookies from "js-cookie";
 import { useTheme } from "next-themes";
 import { popovers, sidebars } from "@/lib/constant";
+import { useDebouncedCallback } from "use-debounce";
 import React, {
   createContext,
   useState,
@@ -14,6 +15,7 @@ import React, {
   useEffect,
   useRef,
   useMemo,
+  useCallback,
 } from "react";
 
 // Create a new context instance
@@ -50,12 +52,21 @@ export const GlobalProvider = ({ children }) => {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [domainDetails, setDomainDetails] = useState(null);
   const [wallpaper, setWallpaper] = useState(0);
+  const [wallpaperEffects, setWallpaperEffects] = useState({
+    blur: 0,
+    effectType: 'grain',
+    grainIntensity: 25,
+    motion: true
+  });
   const [isLoadingTemplate, setIsLoadingTemplate] = useState(false);
   const [activeSidebar, setActiveSidebar] = useState(null);
   const [showUnsavedWarning, setShowUnsavedWarning] = useState(false);
   const [pendingSidebarAction, setPendingSidebarAction] = useState(null);
   const [isSwitchingSidebar, setIsSwitchingSidebar] = useState(false);
   const unsavedChangesCheckers = useRef({});
+  const userDetailsRef = useRef(userDetails);
+  const isUpdatingEffectsFromAPI = useRef(false);
+  const effectsInitializedRef = useRef(false);
   const { setTheme, theme, resolvedTheme } = useTheme();
 
   // Fetch user details
@@ -103,6 +114,11 @@ export const GlobalProvider = ({ children }) => {
     };
   }, [showModal, popoverMenu]);
 
+  // Keep userDetailsRef in sync with userDetails
+  useEffect(() => {
+    userDetailsRef.current = userDetails;
+  }, [userDetails]);
+
   useEffect(() => {
     if (data && !userDetailsIsState) {
       const userData = data?.user;
@@ -126,6 +142,28 @@ export const GlobalProvider = ({ children }) => {
       const wp = userData?.wallpaper;
       const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
       setWallpaper(wpValue !== undefined ? wpValue : 0);
+
+      const wpEffects = userData?.wallpaper?.effects;
+
+
+      if (!effectsInitializedRef.current) {
+        if (wpEffects) {
+          // Set flag to prevent updateWallpaperEffects useEffect from triggering during initial load
+          isUpdatingEffectsFromAPI.current = true;
+          setWallpaperEffects(wpEffects);
+          effectsInitializedRef.current = true;
+        } else {
+          // Only set defaults if effects haven't been initialized yet
+          isUpdatingEffectsFromAPI.current = true;
+          setWallpaperEffects({
+            blur: 0,
+            effectType: 'grain',
+            grainIntensity: 25,
+            motion: true
+          });
+          effectsInitializedRef.current = true;
+        }
+      }
 
       setUserDetails(userData);
       setIsUserDetailsFromCache(true);
@@ -169,10 +207,6 @@ export const GlobalProvider = ({ children }) => {
     }
   }, [userDetails?.pro]);
 
-  useEffect(() => {
-    setWallpaperValue(wallpaper, resolvedTheme || theme);
-  }, [wallpaper, resolvedTheme, theme]);
-
   // Compute wallpaper URL centrally - handles object and primitive values
   const wallpaperUrl = useMemo(() => {
     const wp = wallpaper;
@@ -212,14 +246,24 @@ export const GlobalProvider = ({ children }) => {
   const changeWallpaper = (wallpaper, filename) => {
     let wallpaperPayload;
 
+    // Preserve existing effects if they exist, otherwise use defaults
+    const existingEffects = userDetails?.wallpaper?.effects;
+    const defaultEffects = {
+      blur: 0,
+      effectType: 'grain',
+      grainIntensity: 25,
+      motion: true
+    };
+
     // Check for custom wallpaper object (Base64)
     if (typeof wallpaper === 'object' && wallpaper.base64) {
       wallpaperPayload = {
         key: wallpaper.base64,
-        extension: wallpaper.type,
         originalName: wallpaper.name, // or filename argument
         __isNew__: true
       };
+      // Preserve effects if they exist, otherwise use defaults
+      wallpaperPayload.effects = existingEffects || defaultEffects;
       // Set local state to valid CSS string (Base64)
       wallpaper = wallpaper.base64;
     }
@@ -244,12 +288,16 @@ export const GlobalProvider = ({ children }) => {
         key: key,
         __isNew__: true
       };
+      // Preserve effects if they exist, otherwise use defaults
+      wallpaperPayload.effects = existingEffects || defaultEffects;
     }
     // Handle Preset (number)
     else {
       wallpaperPayload = {
         value: wallpaper
       };
+      // Preserve effects if they exist, otherwise use defaults
+      wallpaperPayload.effects = existingEffects || defaultEffects;
     }
 
     _updateUser({ wallpaper: wallpaperPayload }).then((res) => {
@@ -294,6 +342,96 @@ export const GlobalProvider = ({ children }) => {
       updateCache("userDetails", { theme: theme });
       setUserDetails((prev) => ({ ...prev, theme: theme }));
     });
+  };
+
+  // Function to save effects to backend (used by debounced and immediate calls)
+  const saveWallpaperEffectsToBackend = useCallback((effectsToSave) => {
+    // Get current wallpaper object from ref (always has latest value)
+    const currentWallpaper = userDetailsRef.current?.wallpaper || {};
+
+    // Build wallpaper payload - exclude 'type' field, only include relevant fields
+    const wallpaperPayload = {};
+
+    // For preset wallpapers, only include 'value'
+    if (currentWallpaper.value !== undefined) {
+      wallpaperPayload.value = currentWallpaper.value;
+    }
+
+    // For custom wallpapers, include key, originalName, __isNew__
+    if (currentWallpaper.key !== undefined) {
+      wallpaperPayload.key = currentWallpaper.key;
+    }
+    if (currentWallpaper.originalName !== undefined) {
+      wallpaperPayload.originalName = currentWallpaper.originalName;
+    }
+    if (currentWallpaper.__isNew__ !== undefined) {
+      wallpaperPayload.__isNew__ = currentWallpaper.__isNew__;
+    }
+
+    // Only save if we have a valid wallpaper (value or key), otherwise just update local state
+    if (wallpaperPayload.value !== undefined || wallpaperPayload.key !== undefined) {
+      // Always include effects when we have a valid wallpaper
+      wallpaperPayload.effects = effectsToSave;
+
+      // Save to backend as part of wallpaper object
+      _updateUser({ wallpaper: wallpaperPayload }).then((res) => {
+        if (res?.data?.user) {
+          const updatedUser = res?.data?.user;
+          // Update cache with wallpaper including effects
+          updateCache("userDetails", { wallpaper: updatedUser.wallpaper });
+          // Update userDetails with wallpaper including effects
+          setUserDetails((prev) => ({
+            ...prev,
+            wallpaper: updatedUser.wallpaper
+          }));
+          // Update local effects state from response
+          // Only update if effects have actually changed (prevent unnecessary updates)
+          if (updatedUser.wallpaper?.effects) {
+            const newEffects = updatedUser.wallpaper.effects;
+            const currentEffects = wallpaperEffects;
+            const effectsChanged = (
+              currentEffects.blur !== newEffects.blur ||
+              currentEffects.effectType !== newEffects.effectType ||
+              currentEffects.grainIntensity !== newEffects.grainIntensity ||
+              currentEffects.motion !== newEffects.motion
+            );
+
+            // Only update if effects have actually changed
+            if (effectsChanged) {
+              // Set flag to prevent updateWallpaperEffects useEffect from triggering
+              isUpdatingEffectsFromAPI.current = true;
+              setWallpaperEffects(newEffects);
+            }
+          }
+        }
+      }).catch((err) => {
+        console.error("Error updating wallpaper effects:", err);
+      });
+    }
+  }, [updateCache]);
+
+  // Debounced version for slider updates (blur and grainIntensity)
+  const debouncedSaveEffects = useDebouncedCallback(
+    (effectsToSave) => {
+      saveWallpaperEffectsToBackend(effectsToSave);
+    },
+    500 // 500ms delay
+  );
+
+  const updateWallpaperEffect = (key, value) => {
+    const updatedEffects = { ...wallpaperEffects, [key]: value };
+
+    // Always update local state immediately for responsive UI
+    setWallpaperEffects(updatedEffects);
+
+    // Debounce API calls for slider values (blur and grainIntensity)
+    // Immediate API calls for toggles (effectType and motion)
+    if (key === 'blur' || key === 'grainIntensity') {
+      debouncedSaveEffects(updatedEffects);
+    } else {
+      // Immediate save for effectType and motion
+      saveWallpaperEffectsToBackend(updatedEffects);
+    }
   };
 
   const openModal = (type = null) => {
@@ -451,6 +589,9 @@ export const GlobalProvider = ({ children }) => {
         setWallpaper,
         changeWallpaper,
         wallpaperUrl,
+        wallpaperEffects,
+        setWallpaperEffects,
+        updateWallpaperEffect,
         isLoadingTemplate,
         activeSidebar,
         openSidebar,

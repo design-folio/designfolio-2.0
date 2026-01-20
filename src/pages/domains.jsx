@@ -7,11 +7,10 @@ import DefaultDomain from "@/components/defaultDomain";
 import { useGlobalContext } from "@/context/globalContext";
 import CustomDomain from "@/components/customDomain";
 import { _getDomainDetails } from "@/network/get-request";
-import { cn } from "@/lib/utils";
-import { hasNoWallpaper } from "@/lib/wallpaper";
+import WallpaperBackground from "@/components/WallpaperBackground";
 
 export default function Domains() {
-  const { userDetails, setIsUserDetailsFromCache, userDetailsIsState, wallpaper } =
+  const { userDetails, setIsUserDetailsFromCache, userDetailsIsState, wallpaperUrl, wallpaperEffects } =
     useGlobalContext();
   const [domainDetails, setDomainDetails] = useState(null);
   const router = useRouter();
@@ -33,10 +32,9 @@ export default function Domains() {
     });
   };
   return (
-    <main className={cn(
-      "min-h-screen",
-      hasNoWallpaper(wallpaper) ? "bg-df-bg-color" : "bg-transparent"
-    )}>
+    <>
+      <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
+      <main className="min-h-screen">
       <div
         className={`max-w-[890px]  mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0`}
       >
@@ -63,7 +61,8 @@ export default function Domains() {
           <DeleteAccount />
         </div>
       </div>
-    </main>
+      </main>
+    </>
   );
 }
 

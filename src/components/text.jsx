@@ -20,6 +20,7 @@ const Text = ({
     "p-xsmall": "text-p-xsmall leading-p-xsmall font-medium",
     "p-xxsmall": "text-p-xxsmall leading-p-xxsmall font-medium",
     "p-xxxsmall": "text-p-xxxsmall leading-p-xxxsmall font-medium",
+    "p-xs-uppercase": "text-xs font-medium uppercase tracking-wider",
   };
 
   const Element = as;
@@ -40,3 +41,6 @@ const Text = ({
 };
 
 export default Text;
+
+
+

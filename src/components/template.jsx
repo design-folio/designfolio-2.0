@@ -1,4 +1,5 @@
 import { useGlobalContext } from "@/context/globalContext";
+import { DEFAULT_SECTION_ORDER } from "@/lib/constant";
 import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import OthersPreview from "@/components/othersPreview";
@@ -37,6 +38,39 @@ export default function Template1({ userDetails }) {
   useEffect(() => {
     setCursor(userDetails?.cursor ? userDetails?.cursor : 0);
   }, []);
+
+  // Get section order from userDetails or use template default
+  const _raw = userDetails?.sectionOrder;
+  const _defaultOrder = DEFAULT_SECTION_ORDER;
+  const _filtered = _raw && Array.isArray(_raw) && _raw.length > 0 ? _raw.filter(section => _defaultOrder.includes(section)) : null;
+  const sectionOrder = _raw && Array.isArray(_raw) && _raw.length > 0 && _filtered && _filtered.length > 0
+    ? _filtered
+    : _defaultOrder;
+
+  // Section component mapping
+  const sectionComponents = {
+    projects: userDetails?.projects?.length > 0 && (
+      <motion.div variants={itemVariants} id="section-projects">
+        <Projects userDetails={userDetails} projectRef={projectRef} />
+      </motion.div>
+    ),
+    reviews: userDetails?.reviews?.length > 0 && (
+      <motion.div variants={itemVariants} id="section-reviews">
+        <Reviews userDetails={userDetails} />
+      </motion.div>
+    ),
+    tools: (
+      <motion.div variants={itemVariants} id="section-tools">
+        <Tools userDetails={userDetails} />
+      </motion.div>
+    ),
+    works: userDetails?.experiences?.length > 0 && (
+      <motion.div variants={itemVariants} id="section-works">
+        <Works userDetails={userDetails} />
+      </motion.div>
+    ),
+  };
+
   return (
     <div
       className={`max-w-[890px] mx-auto pb-[120px] py-[32px] px-2 md:px-4 lg:px-0`}
@@ -52,25 +86,8 @@ export default function Template1({ userDetails }) {
             <Profile userDetails={userDetails} />
           </motion.div>
 
-          {userDetails?.projects?.length > 0 && (
-            <motion.div variants={itemVariants}>
-              <Projects userDetails={userDetails} projectRef={projectRef} />
-            </motion.div>
-          )}
-          {userDetails?.reviews?.length > 0 && (
-            <motion.div variants={itemVariants}>
-              <Reviews userDetails={userDetails} />
-            </motion.div>
-          )}
-          <motion.div variants={itemVariants}>
-            <Tools userDetails={userDetails} />
-          </motion.div>
+          {sectionOrder.map((sectionId) => sectionComponents[sectionId])}
 
-          {userDetails?.experiences?.length > 0 && (
-            <motion.div variants={itemVariants}>
-              <Works userDetails={userDetails} />
-            </motion.div>
-          )}
           {(!!userDetails?.socials?.instagram ||
             !!userDetails?.socials?.twitter ||
             !!userDetails?.socials?.linkedin ||

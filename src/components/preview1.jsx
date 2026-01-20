@@ -9,8 +9,45 @@ import Reviews from "@/components/reviews";
 import Tools from "@/components/tools";
 import Works from "@/components/works";
 import { containerVariants, itemVariants } from "@/lib/animationVariants";
+import { DEFAULT_SECTION_ORDER } from "@/lib/constant";
 
 export default function Preview1({ userDetails, projectRef }) {
+  // Get section order from userDetails or use template default
+  const _raw = userDetails?.sectionOrder;
+  const _defaultOrder = DEFAULT_SECTION_ORDER;
+  const _filtered = _raw && Array.isArray(_raw) && _raw.length > 0 ? _raw.filter(section => _defaultOrder.includes(section)) : null;
+  const sectionOrder = _raw && Array.isArray(_raw) && _raw.length > 0 && _filtered && _filtered.length > 0
+    ? _filtered
+    : _defaultOrder;
+
+  // Section component mapping
+  const sectionComponents = {
+    projects: userDetails?.projects?.length > 0 && (
+      <motion.div variants={itemVariants} id="section-projects">
+        <Projects
+          userDetails={userDetails}
+          projectRef={projectRef}
+          preview
+        />
+      </motion.div>
+    ),
+    reviews: userDetails?.reviews?.length > 0 && (
+      <motion.div variants={itemVariants} id="section-reviews">
+        <Reviews userDetails={userDetails} />
+      </motion.div>
+    ),
+    tools: (
+      <motion.div variants={itemVariants} id="section-tools">
+        <Tools userDetails={userDetails} />
+      </motion.div>
+    ),
+    works: userDetails?.experiences?.length > 0 && (
+      <motion.div variants={itemVariants} id="section-works">
+        <Works userDetails={userDetails} />
+      </motion.div>
+    ),
+  };
+
   return (
     <BottomLayout userDetails={userDetails}>
       <main className="min-h-screen">
@@ -27,28 +64,7 @@ export default function Preview1({ userDetails, projectRef }) {
               <motion.div variants={itemVariants}>
                 <Profile userDetails={userDetails} preview />
               </motion.div>
-              {userDetails?.projects?.length > 0 && (
-                <motion.div variants={itemVariants}>
-                  <Projects
-                    userDetails={userDetails}
-                    projectRef={projectRef}
-                    preview
-                  />
-                </motion.div>
-              )}
-              {userDetails?.reviews?.length > 0 && (
-                <motion.div variants={itemVariants}>
-                  <Reviews userDetails={userDetails} />
-                </motion.div>
-              )}
-              <motion.div variants={itemVariants}>
-                <Tools userDetails={userDetails} />
-              </motion.div>
-              {userDetails?.experiences?.length > 0 && (
-                <motion.div variants={itemVariants}>
-                  <Works userDetails={userDetails} />
-                </motion.div>
-              )}
+              {sectionOrder.map((sectionId) => sectionComponents[sectionId])}
               {(!!userDetails?.socials?.instagram ||
                 !!userDetails?.socials?.twitter ||
                 !!userDetails?.socials?.linkedin ||

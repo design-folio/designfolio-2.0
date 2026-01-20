@@ -9,14 +9,16 @@ import {
   EyeOff,
   Pencil,
 } from "lucide-react";
+import { HoverTooltip } from "../HoverTooltip";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { motion, useInView } from "framer-motion";
 import React, { useRef, useState, useEffect } from "react";
 import { Footer } from "@/components/comp/Footer";
 import { useRouter } from "next/router";
 import Button2 from "../button";
 import { useGlobalContext } from "@/context/globalContext";
-import { modals } from "@/lib/constant";
+import { modals, DEFAULT_SECTION_ORDER } from "@/lib/constant";
 import DeleteIcon from "../../../public/assets/svgs/deleteIcon.svg";
 import AddCard from "../AddCard";
 import { useTheme } from "next-themes";
@@ -68,6 +70,14 @@ const Portfolio = ({ userDetails, edit }) => {
   } = userDetails || {};
   const { openModal, setSelectedWork, setSelectedProject, setUserDetails } =
     useGlobalContext();
+
+  // Get section order from userDetails or use template default
+  const _raw = userDetails?.sectionOrder;
+  const _defaultOrder = DEFAULT_SECTION_ORDER;
+  const _filtered = _raw && Array.isArray(_raw) && _raw.length > 0 ? _raw.filter(section => _defaultOrder.includes(section)) : null;
+  const sectionOrder = _raw && Array.isArray(_raw) && _raw.length > 0 && _filtered && _filtered.length > 0
+    ? _filtered
+    : _defaultOrder;
   const [expandedCards, setExpandedCards] = useState([]);
   const [showMore, setShowMore] = useState(false);
   const theme = useTheme();
@@ -185,6 +195,8 @@ const Portfolio = ({ userDetails, edit }) => {
   // Sortable Project Card Component – vertical drag handle only
   const SortableProjectCard = ({ project, index }) => {
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+    const [isHovered, setIsHovered] = useState(false);
+    const [isHoveringInteractive, setIsHoveringInteractive] = useState(false);
     const cardRef = useRef(null);
     const handleMouseMove = (e) => {
       if (!cardRef.current) return;
@@ -207,8 +219,22 @@ const Portfolio = ({ userDetails, edit }) => {
           variants={item}
           onClick={() => handleNavigation(project?._id)}
           onMouseMove={handleMouseMove}
-          className="group bg-card border border-card-border rounded-lg overflow-hidden hover:bg-card/80 transition-colors relative !cursor-pointer"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => {
+            setIsHovered(false);
+            setIsHoveringInteractive(false);
+          }}
+          className={cn(
+            "group bg-card border border-card-border rounded-lg overflow-hidden hover:bg-card/80 transition-colors relative !cursor-pointer",
+            isHovered && !isDragging && !isHoveringInteractive && "hide-cursor-children"
+          )}
         >
+          <HoverTooltip
+            isHovered={isHovered}
+            isDragging={isDragging}
+            isHoveringInteractive={isHoveringInteractive}
+            text="View Project"
+          />
           <div className="flex flex-col md:flex-row !cursor-pointer">
             <div className="relative w-full lg:w-[320px] h-[261px] shrink-0 overflow-hidden">
               <img
@@ -233,7 +259,11 @@ const Portfolio = ({ userDetails, edit }) => {
                 </p>
               </div>
               {edit && (
-                <div className="mt-4 flex">
+                <div
+                  className="mt-4 flex"
+                  onMouseEnter={() => setIsHoveringInteractive(true)}
+                  onMouseLeave={() => setIsHoveringInteractive(false)}
+                >
                   <DragHandle
                     isButton
                     listeners={listeners}
@@ -307,215 +337,260 @@ const Portfolio = ({ userDetails, edit }) => {
 
   const wallpaperExists = userDetails?.wallpaper && userDetails?.wallpaper?.value != 0;
   return (
-    <div className={cn("min-h-screen bg-background text-foreground transition-colors duration-300", wallpaperExists && "max-w-[890px] mx-auto rounded-2xl mb-8", !edit && wallpaperExists && "mt-8")}>
-      {/* Header */}
+    <TooltipProvider>
+      <div className={cn("min-h-screen bg-background text-foreground transition-colors duration-300", wallpaperExists && "max-w-[890px] mx-auto rounded-2xl mb-8", !edit && wallpaperExists && "mt-8")}>
+        {/* Header */}
 
-      <header className={cn("border-b border-secondary-border py-6 bg-background transition-colors duration-300 rounded-t-2xl",)}>
-        <div className="container max-w-3xl mx-auto px-4">
-          <motion.div
-            className="flex items-center justify-between"
-            initial="hidden"
-            animate="visible"
-            variants={{
-              hidden: { opacity: 0 },
-              visible: { opacity: 1, transition: { staggerChildren: 0.2 } },
-            }}
-          >
+        <header className={cn("border-b border-secondary-border py-6 bg-background transition-colors duration-300 rounded-t-2xl",)}>
+          <div className="container max-w-3xl mx-auto px-4">
             <motion.div
-              className="flex items-center gap-3"
+              className="flex items-center justify-between"
+              initial="hidden"
+              animate="visible"
               variants={{
-                hidden: { opacity: 0, y: -50 },
-                visible: {
-                  opacity: 1,
-                  y: 0,
-                  transition: { type: "spring", stiffness: 100, damping: 15 },
-                },
+                hidden: { opacity: 0 },
+                visible: { opacity: 1, transition: { staggerChildren: 0.2 } },
               }}
-            >
-              <img
-                src={getUserAvatarImage(userDetails)}
-                alt="Profile"
-                className={cn(
-                  "w-10 h-10 rounded-xl object-cover",
-                  !avatar ? "bg-[#FFB088]" : ""
-                )}
-              />
-              <div>
-                <h2 className="text-foreground font-medium">{`${firstName} ${lastName}`}</h2>
-              </div>
-            </motion.div>
-            <motion.div
-              className="flex items-center gap-3"
-              variants={{
-                hidden: { opacity: 0, y: -50 },
-                visible: {
-                  opacity: 1,
-                  y: 0,
-                  transition: { type: "spring", stiffness: 100, damping: 15 },
-                },
-              }}
-            >
-              <a href={`mailto:${email}`}>
-                <Button variant="outline" size="sm" className="gap-2">
-                  <Mail className="w-4 h-4" />
-                  E-mail
-                </Button>
-              </a>
-              {edit && (
-                <Button2
-                  onClick={() => openModal("onboarding")}
-                  customClass="!p-[8px] rounded-[8px] !flex-shrink-0"
-                  type={"secondary"}
-                  icon={
-                    <EditIcon
-                      className="text-df-icon-color cursor-pointer"
-                      size={20}
-                    />
-                  }
-                />
-              )}
-            </motion.div>
-          </motion.div>
-        </div>
-      </header>
-
-      <div className="container max-w-3xl mx-auto px-4 relative rounded-b-2xl">
-        <div className="absolute left-0 top-0 w-px h-full bg-secondary-border" />
-        <div className="absolute right-0 top-0 w-px h-full bg-secondary-border" />
-
-        {/* Hero Section with Text Reveal */}
-        <section className="py-12 border-b border-secondary-border overflow-hidden">
-          <motion.div
-            initial="initial"
-            animate="animate"
-            variants={{ animate: { transition: { staggerChildren: 0.2 } } }}
-          >
-            <motion.h1
-              className="text-4xl font-bold mb-4"
-              variants={textReveal}
-            >
-              {introduction}
-            </motion.h1>
-            <motion.p
-              className="dark:text-gray-400 text-gray-600 mb-6"
-              variants={textReveal}
-            >
-              {bio}
-            </motion.p>
-            {/* Skills Infinite Scroll */}
-            <motion.div
-              variants={textReveal}
-              className="w-full overflow-hidden relative py-4 before:absolute before:left-0 before:top-0 before:z-10 before:w-20 before:h-full before:bg-gradient-to-r before:from-background before:to-transparent after:absolute after:right-0 after:top-0 after:z-10 after:w-20 after:h-full after:bg-gradient-to-l after:from-background after:to-transparent"
             >
               <motion.div
-                className="flex gap-4 whitespace-nowrap"
-                animate={{ x: ["0%", "-50%"] }}
-                transition={{
-                  x: {
-                    repeat: Infinity,
-                    repeatType: "loop",
-                    duration: 20,
-                    ease: "linear",
+                className="flex items-center gap-3"
+                variants={{
+                  hidden: { opacity: 0, y: -50 },
+                  visible: {
+                    opacity: 1,
+                    y: 0,
+                    transition: { type: "spring", stiffness: 100, damping: 15 },
                   },
                 }}
               >
-                {scrollSkills.map((skill, index) => (
-                  <motion.span
-                    key={index}
-                    initial={{ opacity: 0, scale: 0.8, y: 10 }}
-                    whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-50px" }}
-                    transition={{
-                      duration: 0.4,
-                      delay: (index % skills.length) * 0.05,
-                      ease: [0.25, 0.46, 0.45, 0.94],
-                    }}
-                    className="bg-card px-4 py-2 rounded-full text-sm"
+                <Tooltip delayDuration={300}>
+                  <TooltipTrigger asChild>
+                    <div
+                      className={cn(
+                        "w-10 h-10 rounded-xl flex items-center justify-center relative overflow-hidden",
+                        !avatar ? "bg-[#FFB088]" : ""
+                      )}
+                    >
+                      <img
+                        src={getUserAvatarImage(userDetails)}
+                        alt="Profile"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent
+                    side="top"
+                    sideOffset={8}
+                    avoidCollisions={true}
+                    className="bg-tooltip-bg-color text-tooltip-text-color border-0 px-4 py-2 rounded-xl flex items-center gap-2 shadow-xl"
                   >
-                    {skill?.label}
-                  </motion.span>
-                ))}
+                    <span className="text-sm font-medium">Happy to have you here</span>
+                    <img src="/assets/png/handshake.png" alt="Handshake" className="w-5 h-5 object-contain" />
+                  </TooltipContent>
+                </Tooltip>
+                <div>
+                  <h2 className="text-foreground font-medium">{`${firstName} ${lastName}`}</h2>
+                </div>
+              </motion.div>
+              <motion.div
+                className="flex items-center gap-3"
+                variants={{
+                  hidden: { opacity: 0, y: -50 },
+                  visible: {
+                    opacity: 1,
+                    y: 0,
+                    transition: { type: "spring", stiffness: 100, damping: 15 },
+                  },
+                }}
+              >
+                <a href={`mailto:${email}`}>
+                  <Button variant="outline" size="sm" className="gap-2">
+                    <Mail className="w-4 h-4" />
+                    E-mail
+                  </Button>
+                </a>
+                {edit && (
+                  <Button2
+                    onClick={() => openModal("onboarding")}
+                    customClass="!p-[8px] rounded-[8px] !flex-shrink-0"
+                    type={"secondary"}
+                    icon={
+                      <EditIcon
+                        className="text-df-icon-color cursor-pointer"
+                        size={20}
+                      />
+                    }
+                  />
+                )}
               </motion.div>
             </motion.div>
-          </motion.div>
-        </section>
+          </div>
+        </header>
 
-        {/* Experience Section */}
-        {(experiences.length > 0 || edit) && (
-          <Spotlight userDetails={userDetails} edit={edit} />
-        )}
+        <div className="container max-w-3xl mx-auto px-4 relative rounded-b-2xl">
+          <div className="absolute left-0 top-0 w-px h-full bg-secondary-border" />
+          <div className="absolute right-0 top-0 w-px h-full bg-secondary-border" />
 
-        {/* Projects Section with Vertical Drag Handle Sorting */}
-        {(projects.length > 0 || edit) && (
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-          >
-            <SortableContext
-              items={visibleProjects.map((project) => project._id)}
-              strategy={verticalListSortingStrategy}
+          {/* Hero Section with Text Reveal */}
+          <section className="py-12 border-b border-secondary-border overflow-hidden">
+            <motion.div
+              initial="initial"
+              animate="animate"
+              variants={{ animate: { transition: { staggerChildren: 0.2 } } }}
             >
-              <motion.section
-                variants={container}
-                initial="hidden"
-                animate="show"
-                className="py-12 border-b border-secondary-border"
+              <motion.h1
+                className="text-4xl font-bold mb-4"
+                variants={textReveal}
               >
-                <h3 className="text-3xl font-bold mb-12">Featured Projects</h3>
-                <div className="flex flex-col gap-6">
-                  {visibleProjects.map((project, index) => (
-                    <SortableProjectCard
-                      key={project._id}
-                      project={project}
-                      index={index}
-                      handleNavigation={handleNavigation}
-                      onDeleteProject={onDeleteProject}
-                      edit={edit}
-                    />
+                {introduction}
+              </motion.h1>
+              <motion.p
+                className="dark:text-gray-400 text-gray-600 mb-6"
+                variants={textReveal}
+              >
+                {bio}
+              </motion.p>
+              {/* Skills Infinite Scroll */}
+              <motion.div
+                variants={textReveal}
+                className="w-full overflow-hidden relative py-4 before:absolute before:left-0 before:top-0 before:z-10 before:w-20 before:h-full before:bg-gradient-to-r before:from-background before:to-transparent after:absolute after:right-0 after:top-0 after:z-10 after:w-20 after:h-full after:bg-gradient-to-l after:from-background after:to-transparent"
+              >
+                <motion.div
+                  className="flex gap-4 whitespace-nowrap"
+                  animate={{ x: ["0%", "-50%"] }}
+                  transition={{
+                    x: {
+                      repeat: Infinity,
+                      repeatType: "loop",
+                      duration: 20,
+                      ease: "linear",
+                    },
+                  }}
+                >
+                  {scrollSkills.map((skill, index) => (
+                    <motion.span
+                      key={index}
+                      initial={{ opacity: 0, scale: 0.8, y: 10 }}
+                      whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                      viewport={{ once: true, margin: "-50px" }}
+                      transition={{
+                        duration: 0.4,
+                        delay: (index % skills.length) * 0.05,
+                        ease: [0.25, 0.46, 0.45, 0.94],
+                      }}
+                      className="bg-card px-4 py-2 rounded-full text-sm"
+                    >
+                      {skill?.label}
+                    </motion.span>
                   ))}
-                  {edit &&
-                    (userDetails?.pro || userDetails?.projects.length < 2 ? (
-                      <AddCard
-                        title={`${userDetails?.projects?.length === 0
-                          ? "Upload your first case study"
-                          : "Add case study"
-                          }`}
-                        subTitle="Show off your best work."
-                        first
-                        buttonTitle="Add case study"
-                        secondaryButtonTitle="Write using AI"
-                        onClick={() => openModal(modals.project)}
-                        icon={
-                          <MemoCasestudy className="cursor-pointer size-[72px]" />
-                        }
-                        openModal={openModal}
-                        className={`bg-df-section-card-bg-color flex items-center justify-center min-h-[269px] rounded-lg ${userDetails?.projects?.length !== 0 &&
-                          " shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] hover:shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
-                          }`}
-                      />
-                    ) : (
-                      <ProjectLock />
-                    ))}
-                </div>
-              </motion.section>
-            </SortableContext>
-          </DndContext>
-        )}
-        {/* Tools Section */}
-        <ToolStack
-          userDetails={userDetails}
-          edit={edit}
-          titleClasses="text-3xl"
-        />
+                </motion.div>
+              </motion.div>
+            </motion.div>
+          </section>
 
-        {/* Reviews Section */}
-        {(reviews?.length > 0 || edit) && (
-          <Testimonials userDetails={userDetails} edit={edit} />
-        )}
-        <Footer userDetails={userDetails} edit={edit} />
+          {/* Sections rendered in order based on sectionOrder */}
+          {sectionOrder.map((sectionId) => {
+            if (sectionId === 'works') {
+              return (
+                <div key="works" id="section-works">
+                  {(experiences.length > 0 || edit) && (
+                    <Spotlight userDetails={userDetails} edit={edit} />
+                  )}
+                </div>
+              );
+            }
+
+            if (sectionId === 'projects') {
+              return (
+                <div key="projects" id="section-projects">
+                  {(projects.length > 0 || edit) && (
+                    <DndContext
+                      sensors={sensors}
+                      collisionDetection={closestCenter}
+                      onDragEnd={handleDragEnd}
+                    >
+                      <SortableContext
+                        items={visibleProjects.map((project) => project._id)}
+                        strategy={verticalListSortingStrategy}
+                      >
+                        <motion.section
+                          variants={container}
+                          initial="hidden"
+                          animate="show"
+                          className="py-12 border-b border-secondary-border"
+                        >
+                          <h3 className="text-3xl font-bold mb-12">Featured Projects</h3>
+                          <div className="flex flex-col gap-6">
+                            {visibleProjects.map((project, index) => (
+                              <SortableProjectCard
+                                key={project._id}
+                                project={project}
+                                index={index}
+                                handleNavigation={handleNavigation}
+                                onDeleteProject={onDeleteProject}
+                                edit={edit}
+                              />
+                            ))}
+                            {edit &&
+                              (userDetails?.pro || userDetails?.projects.length < 2 ? (
+                                <AddCard
+                                  title={`${userDetails?.projects?.length === 0
+                                    ? "Upload your first case study"
+                                    : "Add case study"
+                                    }`}
+                                  subTitle="Show off your best work."
+                                  first
+                                  buttonTitle="Add case study"
+                                  secondaryButtonTitle="Write using AI"
+                                  onClick={() => openModal(modals.project)}
+                                  icon={
+                                    <MemoCasestudy className="cursor-pointer size-[72px]" />
+                                  }
+                                  openModal={openModal}
+                                  className={`bg-df-section-card-bg-color flex items-center justify-center min-h-[269px] rounded-lg ${userDetails?.projects?.length !== 0 &&
+                                    " shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] hover:shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
+                                    }`}
+                                />
+                              ) : (
+                                <ProjectLock />
+                              ))}
+                          </div>
+                        </motion.section>
+                      </SortableContext>
+                    </DndContext>
+                  )}
+                </div>
+              );
+            }
+
+            if (sectionId === 'tools') {
+              return (
+                <div key="tools" id="section-tools">
+                  <ToolStack
+                    userDetails={userDetails}
+                    edit={edit}
+                    titleClasses="text-3xl"
+                  />
+                </div>
+              );
+            }
+
+            if (sectionId === 'reviews') {
+              return (
+                <div key="reviews" id="section-reviews">
+                  {(reviews?.length > 0 || edit) && (
+                    <Testimonials userDetails={userDetails} edit={edit} />
+                  )}
+                </div>
+              );
+            }
+
+            return null;
+          })}
+          <Footer userDetails={userDetails} edit={edit} />
+        </div>
       </div>
-    </div>
+    </TooltipProvider>
   );
 };
 

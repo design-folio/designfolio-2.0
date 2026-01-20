@@ -7,7 +7,7 @@ import Tools from "./tools";
 import Works from "./works";
 import Others from "./others";
 import { motion } from "framer-motion";
-import { sidebars } from "@/lib/constant";
+import { sidebars, DEFAULT_SECTION_ORDER } from "@/lib/constant";
 
 const containerVariants = {
   hidden: {},
@@ -43,6 +43,15 @@ export default function Builder() {
     updateCache,
   } = useGlobalContext();
 
+  // Get section order from userDetails or use default
+  const _raw = userDetails?.sectionOrder;
+  const _defaultOrder = DEFAULT_SECTION_ORDER;
+  const _filtered = _raw && Array.isArray(_raw) && _raw.length > 0 ? _raw.filter(section => _defaultOrder.includes(section)) : null;
+  // Use filtered result only if it's not empty, otherwise fall back to default
+  const sectionOrder = _raw && Array.isArray(_raw) && _raw.length > 0 && _filtered && _filtered.length > 0
+    ? _filtered
+    : _defaultOrder;
+
   // Wrapper function that routes work/review to openSidebar, others to openModal
   const handleOpen = (type) => {
     if (type === sidebars.work || type === sidebars.review) {
@@ -50,6 +59,39 @@ export default function Builder() {
     } else {
       openModal(type);
     }
+  };
+
+  // Section component mapping
+  const sectionComponents = {
+    projects: (
+      <Projects
+        edit
+        userDetails={userDetails}
+        projectRef={projectRef}
+        setUserDetails={setUserDetails}
+        setSelectedProject={setSelectedProject}
+        openModal={openModal}
+      />
+    ),
+    reviews: (
+      <Reviews
+        edit
+        openModal={handleOpen}
+        userDetails={userDetails}
+      />
+    ),
+    tools: (
+      <Tools userDetails={userDetails} openModal={openModal} edit />
+    ),
+    works: (
+      <Works
+        edit
+        openSidebar={handleOpen}
+        userDetails={userDetails}
+        setUserDetails={setUserDetails}
+        updateCache={updateCache}
+      />
+    ),
   };
 
   return (
@@ -62,35 +104,15 @@ export default function Builder() {
       <motion.div variants={itemVariants}>
         <Profile edit userDetails={userDetails} openModal={openModal} />
       </motion.div>
-      <motion.div variants={itemVariants}>
-        <Projects
-          edit
-          userDetails={userDetails}
-          projectRef={projectRef}
-          setUserDetails={setUserDetails}
-          setSelectedProject={setSelectedProject}
-          openModal={openModal}
-        />
-      </motion.div>
-      <motion.div variants={itemVariants}>
-        <Reviews
-          edit
-          openModal={handleOpen}
-          userDetails={userDetails}
-        />
-      </motion.div>
-      <motion.div variants={itemVariants}>
-        <Tools userDetails={userDetails} openModal={openModal} edit />
-      </motion.div>
-      <motion.div variants={itemVariants}>
-        <Works
-          edit
-          openSidebar={handleOpen}
-          userDetails={userDetails}
-          setUserDetails={setUserDetails}
-          updateCache={updateCache}
-        />
-      </motion.div>
+      {sectionOrder.map((sectionId) => (
+        <motion.div
+          key={sectionId}
+          id={`section-${sectionId}`}
+          variants={itemVariants}
+        >
+          {sectionComponents[sectionId]}
+        </motion.div>
+      ))}
       <motion.div variants={itemVariants}>
         <Others edit openModal={openModal} userDetails={userDetails} />
       </motion.div>

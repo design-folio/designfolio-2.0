@@ -518,17 +518,20 @@ export default function Template2({ userDetails, preview = false }) {
           )}
 
           {activeStep >= 9 &&
-            ((socials &&
-              Object.values(socials).every((social) => social == "")) ||
-              resume) && (
+            (resume ||
+              (socials &&
+                Object.values(socials).some(
+                  (social) => social && social != ""
+                ))) && (
               <>
                 <Chat
                   direction="right"
                   delay={400}
                   onComplete={handleStepCompletion}
                 >
-                  Slide into my DMs (professionally 😄)
+                  Where can I reach you?
                 </Chat>
+                <Chat direction="left">You can reach me here 👇🏻</Chat>
                 {resume && (
                   <Chat direction="left" className="pb-5">
                     <a

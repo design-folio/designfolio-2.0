@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Eye } from "lucide-react";
@@ -12,6 +12,7 @@ export const HoverTooltip = ({
 }) => {
   const [mounted, setMounted] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const lastMousePosRef = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     setMounted(true);
@@ -22,15 +23,35 @@ export const HoverTooltip = ({
 
     const handleMouseMove = (e) => {
       // Use viewport coordinates for fixed positioning
-      setMousePos({
+      const newPos = {
         x: e.clientX,
         y: e.clientY,
-      });
+      };
+      lastMousePosRef.current = newPos;
+      setMousePos(newPos);
     };
+
+    // Initialize mousePos with last known position when hover starts
+    // This fixes the issue where scrolling lands cursor on card without mousemove event
+    if (lastMousePosRef.current.x !== 0 || lastMousePosRef.current.y !== 0) {
+      setMousePos(lastMousePosRef.current);
+    }
 
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, [isHovered, isDragging, isHoveringInteractive]);
+
+  // Track mouse position globally to capture it even when not hovered
+  useEffect(() => {
+    const handleGlobalMouseMove = (e) => {
+      lastMousePosRef.current = {
+        x: e.clientX,
+        y: e.clientY,
+      };
+    };
+    window.addEventListener('mousemove', handleGlobalMouseMove);
+    return () => window.removeEventListener('mousemove', handleGlobalMouseMove);
+  }, []);
 
   const shouldShowTooltip = isHovered && !isDragging && !isHoveringInteractive;
 

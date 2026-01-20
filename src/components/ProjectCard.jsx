@@ -89,7 +89,17 @@ export default function ProjectCard({
         shouldShowTooltip && "hide-cursor-children"
       )}
       onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovered(true)}
+      onMouseEnter={(e) => {
+        setIsHovered(true);
+        // Initialize mousePos with current position if it's still 0,0
+        // This fixes the issue where scrolling lands cursor on card without mousemove event
+        if (mousePos.x === 0 && mousePos.y === 0) {
+          setMousePos({
+            x: e.clientX,
+            y: e.clientY,
+          });
+        }
+      }}
       onMouseLeave={() => {
         setIsHovered(false);
         setIsHoveringInteractive(false);

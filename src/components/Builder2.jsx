@@ -890,7 +890,8 @@ export default function Builder2({ edit = false }) {
               />
             )}
         </Chat>
-        <Chat direction="right">Slide into my DMs (professionally 😄)</Chat>
+        <Chat direction="right">Where can I reach you?</Chat>
+        <Chat direction="left">You can reach me here 👇🏻</Chat>
         <Chat direction="left" className="pb-5">
           {!resume && edit && (
             <AddItem

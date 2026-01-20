@@ -141,9 +141,6 @@ export default function ProjectCard({
         initial={{ scale: 1, rotateX: 0, rotateY: 0 }}
         animate={isDragging ? { scale: 1.02 } : { scale: 1 }}
         style={{
-          boxShadow: isDragging
-            ? '0 0 0 1px rgba(0,0,0,0.1), 0 20px 40px rgba(0,0,0,0.15)'
-            : '0 0 0 1px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.04)',
           opacity: isDragging ? 0.9 : 1,
         }}
       >

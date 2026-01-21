@@ -236,8 +236,8 @@ const ThemePanel = ({
   const [localEffects, setLocalEffects] = useState({
     blur: 0,
     effectType: 'blur',
-    grainIntensity: 30,
-    motion: false
+    grainIntensity: 25,
+    motion: true
   });
 
   // Use provided effects or fall back to local state
@@ -485,7 +485,13 @@ const ThemePanel = ({
                       Soft Blur
                     </button>
                     <button
-                      onClick={() => currentUpdateWallpaperEffect('effectType', 'grain')}
+                      onClick={() => {
+                        // When switching to grain, ensure default opacity 25 if currently zero/undefined
+                        if (currentEffects.grainIntensity === 0 || currentEffects.grainIntensity === undefined || currentEffects.grainIntensity === null) {
+                          currentUpdateWallpaperEffect('grainIntensity', 25);
+                        }
+                        currentUpdateWallpaperEffect('effectType', 'grain');
+                      }}
                       className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 ${currentEffects.effectType === 'grain'
                         ? 'bg-tab-active-bg text-foreground shadow-sm'
                         : ' hover:text-foreground'

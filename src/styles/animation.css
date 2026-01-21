@@ -57,3 +57,20 @@
 .wallpaper-transition {
   animation: wallpaperFade 0.5s ease-in-out;
 }
+
+/* Wallpaper motion effect - parallax zoom on scroll */
+.wallpaper-motion {
+  transition: transform 0.3s ease-out;
+}
+
+.wallpaper-motion:hover {
+  transform: scale(1.05);
+}
+
+/* Parallax effect on scroll */
+@media (prefers-reduced-motion: no-preference) {
+  .wallpaper-motion {
+    will-change: transform;
+  }
+}
+

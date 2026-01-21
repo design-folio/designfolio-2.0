@@ -35,10 +35,10 @@ const SpotlightUsersMobile = ({ projects }) => {
   const currentProject = projects[currentIndex];
 
   return (
-    <div className="md:hidden w-full px-6 mt-6">
+    <div className="md:hidden w-full px-6 mt-6 ">
       <div
         onClick={() => setIsOpen(true)}
-        className={`w-full bg-white rounded-3xl p-6 transition-opacity duration-300 cursor-pointer ${
+        className={`w-full border border-[#E3E7ED] bg-white rounded-3xl p-6 transition-opacity duration-300 cursor-pointer ${
           isAnimating ? "opacity-0" : "opacity-100"
         }`}
       >

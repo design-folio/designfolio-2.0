@@ -34,7 +34,7 @@ const SpotlightUsersDesktop = ({ title, projectUrl, imageSrc, onHover }) => {
       onClick={handleCardClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className="flex-none w-[408px] bg-white rounded-3xl p-6 transition-all duration-500 ease-in-out border-2 border-transparent hover:border-[#FF553E] cursor-pointer group [backface-visibility:hidden] [-webkit-font-smoothing:antialiased] [transform:translateZ(0)]"
+      className="flex-none w-[408px] bg-white rounded-3xl p-6 transition-all duration-500 ease-in-out hover:border-2 border border-[#E3E7ED] hover:border-[#FF553E] cursor-pointer group [backface-visibility:hidden] [-webkit-font-smoothing:antialiased] [transform:translateZ(0)]"
     >
       <div className="h-full flex flex-col justify-between">
         <div className="space-y-4 ">

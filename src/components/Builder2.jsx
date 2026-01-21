@@ -4,7 +4,7 @@ import { modals, sidebars, DEFAULT_SECTION_ORDER } from "@/lib/constant";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { getPlainTextLength } from "@/lib/tiptapUtils";
 import { cn } from "@/lib/utils";
-import { _updateUser } from "@/network/post-request";
+import { _updateProject, _updateUser } from "@/network/post-request";
 import { ChevronDown, ChevronUp, PencilIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
@@ -65,7 +65,7 @@ import ReviewCard from "./reviewCard";
 import SortableModal from "./SortableModal";
 
 // Move SortableProjectItem outside to prevent recreation on each render
-const SortableProjectItem = React.memo(({ project, onDeleteProject, handleRouter, getHref, recentlyMovedIds }) => {
+const SortableProjectItem = React.memo(({ project, onDeleteProject, handleRouter, getHref, recentlyMovedIds, onToggleVisibility }) => {
   const {
     attributes,
     listeners,
@@ -104,6 +104,7 @@ const SortableProjectItem = React.memo(({ project, onDeleteProject, handleRouter
               dragHandleAttributes={attributes}
               isDragging={isDragging}
               wasRecentlyMoved={wasRecentlyMoved}
+              onToggleVisibility={onToggleVisibility}
             />
           </div>
         </Chat>
@@ -324,6 +325,22 @@ export default function Builder2({ edit = false }) {
       setRecentlyMovedIds(new Set());
     }, 300);
   };
+  const handleToggleVisibility = (projectId) => {
+    const updatedProjects = userDetails.projects.map((project) => {
+      if (project._id === projectId) {
+        const updatedProject = { ...project, hidden: !project.hidden };
+        // Update individual project on server
+        _updateProject(projectId, { hidden: updatedProject.hidden });
+        return updatedProject;
+      }
+      return project;
+    });
+
+    // Update local state
+    setUserDetails((prev) => ({ ...prev, projects: updatedProjects }));
+    // Also update the entire projects array to keep it in sync
+    _updateUser({ projects: updatedProjects });
+  };
   return (
     <TooltipProvider>
       <div className="flex flex-col gap-6">
@@ -402,6 +419,7 @@ export default function Builder2({ edit = false }) {
                           handleRouter={handleRouter}
                           getHref={getHref}
                           recentlyMovedIds={recentlyMovedIds}
+                          onToggleVisibility={handleToggleVisibility}
                         />
                       ))}
                     </div>

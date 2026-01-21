@@ -5,13 +5,12 @@ import GeneratorCard from "./generatorCard";
 export default function AiToolsSection() {
   return (
     <div className="max-w-[1192px] mx-auto py-16 px-6" id="other-ai-tools">
-      <Text
-        as="h2"
-        size="p-large"
+      <h2
         className="font-gsans font-semibold text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-5xl text-center text-foreground mb-4 sm:mb-6"
       >
+
         ...and so much more ✨
-      </Text>
+      </h2>
       <Text className="text-center mt-4 text-sm sm:text-base md:text-lg text-foreground/60 font-normal">
         Use these AI tools and save all your time — thank us later!
       </Text>

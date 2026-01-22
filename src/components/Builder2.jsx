@@ -481,161 +481,159 @@ export default function Builder2({ edit = false }) {
 
           if (sectionId === 'reviews') {
             return (
-              <>
-                <div key="reviews" id="section-reviews" className="flex flex-col gap-6">
-                  <Chat direction="right">What do people usually say about working with you?
-                  </Chat>
-                  <Chat direction="left">
-                    Here’s what some very kind humans had to say 🫶
-                  </Chat>
-                  <Chat direction="left">
-                    {edit && reviews?.length == 0 && (
-                      <AddCard
-                        title={`${userDetails?.reviews?.length == 0
-                          ? "My testimonials"
-                          : "Add more reviews"
-                          } `}
-                        subTitle="Share colleague's feedback."
-                        onClick={() => openSidebar(sidebars.review)}
-                        className={
-                          "flex justify-center items-center flex-col p-4 w-[340px]"
-                        }
-                        first={userDetails?.reviews?.length !== 0}
-                        buttonTitle="Add testimonial"
-                        icon={<MemoTestimonial className="cursor-pointer size-[72px]" />}
-                      />
-                    )}
-                    <div className="space-y-4">
-                      {reviews?.map((review) => {
-                        const isExpanded = expandedReviewCards.includes(review?._id);
-                        const plainTextLength = getPlainTextLength(review?.description || "");
-                        const shouldShowToggle = plainTextLength > 180;
+              <div key="reviews" id="section-reviews" className="flex flex-col gap-6">
+                <Chat direction="right">What do people usually say about working with you?
+                </Chat>
+                <Chat direction="left">
+                  Here’s what some very kind humans had to say 🫶
+                </Chat>
+                <Chat direction="left">
+                  {edit && reviews?.length == 0 && (
+                    <AddCard
+                      title={`${userDetails?.reviews?.length == 0
+                        ? "My testimonials"
+                        : "Add more reviews"
+                        } `}
+                      subTitle="Share colleague's feedback."
+                      onClick={() => openSidebar(sidebars.review)}
+                      className={
+                        "flex justify-center items-center flex-col p-4 w-[340px]"
+                      }
+                      first={userDetails?.reviews?.length !== 0}
+                      buttonTitle="Add testimonial"
+                      icon={<MemoTestimonial className="cursor-pointer size-[72px]" />}
+                    />
+                  )}
+                  <div className="space-y-4">
+                    {reviews?.map((review) => {
+                      const isExpanded = expandedReviewCards.includes(review?._id);
+                      const plainTextLength = getPlainTextLength(review?.description || "");
+                      const shouldShowToggle = plainTextLength > 180;
 
-                        return (
-                          <div key={review?._id} className="border border-tools-card-item-border-color p-5 rounded-2xl">
-                            <Quote />
-                            <div className="mt-4 text-df-base-text-color">
-                              <div className={shouldShowToggle && !isExpanded ? "max-h-[110px] overflow-hidden relative" : ""}>
-                                <SimpleTiptapRenderer
-                                  content={review?.description || ""}
-                                  mode="review"
-                                  enableBulletList={false}
-                                  className="bg-card rounded-none shadow-none"
-                                />
-                                {shouldShowToggle && !isExpanded && (
-                                  <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-card to-transparent pointer-events-none" />
-                                )}
-                              </div>
-                              {shouldShowToggle && (
-                                <button
-                                  onClick={() => toggleExpandReview(review?._id)}
-                                  className="mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
-                                >
-                                  {isExpanded ? (
-                                    <>
-                                      Show Less
-                                      <ChevronUp className="h-3 w-3" />
-                                    </>
-                                  ) : (
-                                    <>
-                                      View More
-                                      <ChevronDown className="h-3 w-3" />
-                                    </>
-                                  )}
-                                </button>
-                              )}
-                            </div>
-                            <div className="flex items-center gap-3 mt-4">
-                              <Avatar className="w-12 h-12 shrink-0">
-                                <AvatarImage src={review?.avatar?.url || review?.avatar} alt={review?.name} />
-                                <AvatarFallback
-                                  style={{
-                                    backgroundColor: "#FF9966",
-                                    color: "#FFFFFF",
-                                    fontWeight: 500,
-                                  }}
-                                >
-                                  {review?.name
-                                    ?.split(" ")
-                                    .map((n) => n[0])
-                                    .join("")
-                                    .slice(0, 2)
-                                    .toUpperCase()}
-                                </AvatarFallback>
-                              </Avatar>
-                              <div className="flex-1">
-                                {review.linkedinLink && review.linkedinLink !== "" ? (
-                                  <a
-                                    href={review.linkedinLink}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex items-center gap-1 text-blue-500"
-                                  >
-                                    <MemoLinkedin className="text-df-icon-color w-4 h-4" />
-                                    <span className="font-semibold cursor-pointer text-base">{review?.name}</span>
-                                  </a>
-                                ) : (
-                                  <h3 className="font-semibold text-base mb-0">{review?.name}</h3>
-                                )}
-                                <p className="text-sm text-df-description-color">
-                                  {review?.role ? `${review.role}, ` : ""}
-                                  {review?.company}
-                                </p>
-                              </div>
-                              {edit && (
-                                <Button
-                                  size="icon"
-                                  onClick={() => handleEditReview(review)}
-                                  type={"secondary"}
-                                  icon={
-                                    <EditIcon className="text-df-icon-color cursor-pointer text-2xl" />
-                                  }
-                                />
-                              )}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                    {edit && reviews?.length > 0 && (
-                      <div className="flex items-center gap-2 mt-4">
-                        <AddItem
-                          className="flex-1"
-                          title="Add testimonial"
-                          onClick={() => openSidebar(sidebars.review)}
-                          iconLeft={
-                            userDetails?.reviews?.length > 0 ? (
-                              <Button
-                                type="secondary"
-                                icon={
-                                  <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
-                                }
-                                onClick={() => openSidebar(sidebars.review)}
-                                size="small"
+                      return (
+                        <div key={review?._id} className="border border-tools-card-item-border-color p-5 rounded-2xl">
+                          <Quote />
+                          <div className="mt-4 text-df-base-text-color">
+                            <div className={shouldShowToggle && !isExpanded ? "max-h-[110px] overflow-hidden relative" : ""}>
+                              <SimpleTiptapRenderer
+                                content={review?.description || ""}
+                                mode="review"
+                                enableBulletList={false}
+                                className="bg-card rounded-none shadow-none"
                               />
-                            ) : (
-                              <MemoWorkExperience />
-                            )
-                          }
-                          theme={theme}
-                        />
-                        {reviews.length > 1 && (
-                          <ButtonNew
-                            variant="secondary"
-                            size="icon"
-                            onClick={() => {
-                              setShowReviewSortModal(true);
-                            }}
-                            className="rounded-full h-14 w-14"
-                          >
-                            <SortIcon className="w-4 h-4 text-df-icon-color cursor-pointer" />
-                          </ButtonNew>
-                        )}
-                      </div>
-                    )}
-                  </Chat>
-                </div>
-              </>
+                              {shouldShowToggle && !isExpanded && (
+                                <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-card to-transparent pointer-events-none" />
+                              )}
+                            </div>
+                            {shouldShowToggle && (
+                              <button
+                                onClick={() => toggleExpandReview(review?._id)}
+                                className="mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
+                              >
+                                {isExpanded ? (
+                                  <>
+                                    Show Less
+                                    <ChevronUp className="h-3 w-3" />
+                                  </>
+                                ) : (
+                                  <>
+                                    View More
+                                    <ChevronDown className="h-3 w-3" />
+                                  </>
+                                )}
+                              </button>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-3 mt-4">
+                            <Avatar className="w-12 h-12 shrink-0">
+                              <AvatarImage src={review?.avatar?.url || review?.avatar} alt={review?.name} />
+                              <AvatarFallback
+                                style={{
+                                  backgroundColor: "#FF9966",
+                                  color: "#FFFFFF",
+                                  fontWeight: 500,
+                                }}
+                              >
+                                {review?.name
+                                  ?.split(" ")
+                                  .map((n) => n[0])
+                                  .join("")
+                                  .slice(0, 2)
+                                  .toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1">
+                              {review.linkedinLink && review.linkedinLink !== "" ? (
+                                <a
+                                  href={review.linkedinLink}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="flex items-center gap-1 text-blue-500"
+                                >
+                                  <MemoLinkedin className="text-df-icon-color w-4 h-4" />
+                                  <span className="font-semibold cursor-pointer text-base">{review?.name}</span>
+                                </a>
+                              ) : (
+                                <h3 className="font-semibold text-base mb-0">{review?.name}</h3>
+                              )}
+                              <p className="text-sm text-df-description-color">
+                                {review?.role ? `${review.role}, ` : ""}
+                                {review?.company}
+                              </p>
+                            </div>
+                            {edit && (
+                              <Button
+                                size="icon"
+                                onClick={() => handleEditReview(review)}
+                                type={"secondary"}
+                                icon={
+                                  <EditIcon className="text-df-icon-color cursor-pointer text-2xl" />
+                                }
+                              />
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  {edit && reviews?.length > 0 && (
+                    <div className="flex items-center gap-2 mt-4">
+                      <AddItem
+                        className="flex-1"
+                        title="Add testimonial"
+                        onClick={() => openSidebar(sidebars.review)}
+                        iconLeft={
+                          userDetails?.reviews?.length > 0 ? (
+                            <Button
+                              type="secondary"
+                              icon={
+                                <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                              }
+                              onClick={() => openSidebar(sidebars.review)}
+                              size="small"
+                            />
+                          ) : (
+                            <MemoWorkExperience />
+                          )
+                        }
+                        theme={theme}
+                      />
+                      {reviews.length > 1 && (
+                        <ButtonNew
+                          variant="secondary"
+                          size="icon"
+                          onClick={() => {
+                            setShowReviewSortModal(true);
+                          }}
+                          className="rounded-full h-14 w-14"
+                        >
+                          <SortIcon className="w-4 h-4 text-df-icon-color cursor-pointer" />
+                        </ButtonNew>
+                      )}
+                    </div>
+                  )}
+                </Chat>
+              </div>
             );
           }
 

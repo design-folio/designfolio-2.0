@@ -131,7 +131,6 @@ export default function Index({ initialUserDetails }) {
 
   const fullName = [finalUserDetails?.firstName, finalUserDetails?.lastName].filter(Boolean).join(' ');
 
-  console.log("fullName", fullName);
   return (
     <>
       <Seo

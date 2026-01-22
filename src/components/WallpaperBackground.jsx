@@ -1,24 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
-
-let previousWallpaperId = null;
-
-function getWallpaperIdentifier(url) {
-    if (!url) return null;
-    try {
-        if (url.startsWith('http://') || url.startsWith('https://')) {
-            const urlObj = new URL(url);
-            return urlObj.pathname;
-        }
-
-        if (url.includes('?')) {
-            return url.split('?')[0];
-        }
-
-        return url;
-    } catch (e) {
-        return url.split('?')[0];
-    }
-}
+import React, { useEffect, useLayoutEffect, useState, useRef } from "react";
 
 export default function WallpaperBackground({
     wallpaperUrl,
@@ -30,28 +10,47 @@ export default function WallpaperBackground({
     const [previousWallpaperUrl, setPreviousWallpaperUrl] = useState(null);
     const [scrollOffset, setScrollOffset] = useState(0);
     const rafRef = useRef(null);
+    const previousWallpaperUrlRef = useRef(null); // Track actual previous URL
+
+    // Initialize ref on mount with current wallpaper
+    useLayoutEffect(() => {
+        if (wallpaperUrl && !previousWallpaperUrlRef.current) {
+            previousWallpaperUrlRef.current = wallpaperUrl;
+        }
+    }, []);
 
     // Track wallpaper changes for smooth transitions
-    useEffect(() => {
-        const wallpaperId = getWallpaperIdentifier(wallpaperUrl);
+    useLayoutEffect(() => {
+        // Capture the previous URL BEFORE checking for changes
+        const currentPreviousUrl = previousWallpaperUrlRef.current;
 
-        // Only animate if wallpaper identifier has actually changed
-        if (previousWallpaperId !== null && previousWallpaperId !== wallpaperId) {
+        let fadeOutTimer;
+        let cleanupTimer;
+
+        // Only animate if the wallpaper actually changed and we have a previous URL
+        if (currentPreviousUrl && wallpaperUrl && currentPreviousUrl !== wallpaperUrl) {
             setShouldAnimate(true);
-            // Store previous wallpaper for crossfade
-            setPreviousWallpaperUrl(previousWallpaperId);
-            // Reset animation flag after transition completes
-            const timer = setTimeout(() => {
+            setPreviousWallpaperUrl(currentPreviousUrl);
+            fadeOutTimer = setTimeout(() => {
                 setShouldAnimate(false);
+            }, 400); // allow opacity transition
+            cleanupTimer = setTimeout(() => {
                 setPreviousWallpaperUrl(null);
-            }, 500); // Match animation duration
-            return () => clearTimeout(timer);
+            }, 600); // remove after fade-out completes
         } else {
             setShouldAnimate(false);
         }
 
-        // Update previous wallpaper identifier
-        previousWallpaperId = wallpaperId;
+        // IMPORTANT: Update the ref with the current wallpaper AFTER we've captured it above
+        // This ensures the next change will have the correct previous wallpaper
+        if (wallpaperUrl) {
+            previousWallpaperUrlRef.current = wallpaperUrl;
+        }
+
+        return () => {
+            if (fadeOutTimer) clearTimeout(fadeOutTimer);
+            if (cleanupTimer) clearTimeout(cleanupTimer);
+        };
     }, [wallpaperUrl]);
 
     // Handle scroll offset for motion effect (simple scale on scroll, no parallax)
@@ -82,7 +81,6 @@ export default function WallpaperBackground({
     }, [effects?.motion]);
 
     if (!wallpaperUrl) {
-        previousWallpaperId = null;
         return null;
     }
 
@@ -115,20 +113,24 @@ export default function WallpaperBackground({
     // Build className (only wallpaper-transition, matching Dashboard)
     const className = shouldAnimate ? "wallpaper-transition" : "";
 
+    // Use ref value directly to avoid render delay - ensures previous wallpaper is always available
+    const previousWallpaperToShow = previousWallpaperUrl || (shouldAnimate ? previousWallpaperUrlRef.current : null);
+
     return (
         <>
             {/* Previous wallpaper layer (stays visible during transition) */}
-            {previousWallpaperUrl && (
+            {previousWallpaperToShow && previousWallpaperToShow !== wallpaperUrl && (
                 <div
                     className="fixed inset-0"
                     style={{
-                        backgroundImage: `url(${previousWallpaperUrl})`,
+                        backgroundImage: `url(${previousWallpaperToShow})`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
-                        zIndex: 0,
+                        zIndex: -2, // keep previous layer below the current layer
+                        opacity: shouldAnimate ? 1 : 0,
                         filter: effects?.effectType === 'blur' && effects?.blur > 0 ? `blur(${effects.blur}px)` : 'none',
                         transform: effects?.motion ? `scale(${1.05 + (scrollOffset * 0.00008)})` : 'none',
-                        transition: 'transform 0.1s ease-out'
+                        transition: 'opacity 0.35s ease-in-out, transform 0.1s ease-out'
                     }}
                 />
             )}

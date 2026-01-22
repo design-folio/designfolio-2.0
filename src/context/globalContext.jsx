@@ -54,7 +54,7 @@ export const GlobalProvider = ({ children }) => {
   const [wallpaper, setWallpaper] = useState(0);
   const [wallpaperEffects, setWallpaperEffects] = useState({
     blur: 0,
-    effectType: 'grain',
+    effectType: 'blur',
     grainIntensity: 25,
     motion: true
   });
@@ -145,19 +145,45 @@ export const GlobalProvider = ({ children }) => {
 
       const wpEffects = userData?.wallpaper?.effects;
 
+      // Helper to check if effects object has valid values (not all null/undefined)
+      const hasValidEffects = wpEffects && typeof wpEffects === 'object' && (
+        (wpEffects.blur !== null && wpEffects.blur !== undefined) ||
+        (wpEffects.effectType !== null && wpEffects.effectType !== undefined) ||
+        (wpEffects.grainIntensity !== null && wpEffects.grainIntensity !== undefined) ||
+        (wpEffects.motion !== null && wpEffects.motion !== undefined)
+      );
 
       if (!effectsInitializedRef.current) {
-        if (wpEffects) {
+        if (hasValidEffects) {
           // Set flag to prevent updateWallpaperEffects useEffect from triggering during initial load
           isUpdatingEffectsFromAPI.current = true;
-          setWallpaperEffects(wpEffects);
+          // Sanitize wpEffects: remove null/undefined values, and also remove false for motion (treat as "not set")
+          // This ensures defaults are used when backend doesn't provide proper values
+          const sanitizedEffects = Object.fromEntries(
+            Object.entries(wpEffects).filter(([key, v]) => {
+              if (v === null || v === undefined) return false;
+              // Treat motion: false as "not set" so default (true) is used
+              if (key === 'motion' && v === false) return false;
+              // Treat grainIntensity 0 as "not set" so default (25) is used
+              if (key === 'grainIntensity' && v === 0) return false;
+              return true;
+            })
+          );
+          // Merge with defaults: defaults first, then sanitized effects override (only valid values)
+          setWallpaperEffects({
+            blur: 0,
+            effectType: 'blur',
+            grainIntensity: 25,
+            motion: true,
+            ...sanitizedEffects
+          });
           effectsInitializedRef.current = true;
         } else {
           // Only set defaults if effects haven't been initialized yet
           isUpdatingEffectsFromAPI.current = true;
           setWallpaperEffects({
             blur: 0,
-            effectType: 'grain',
+            effectType: 'blur',
             grainIntensity: 25,
             motion: true
           });
@@ -250,7 +276,7 @@ export const GlobalProvider = ({ children }) => {
     const existingEffects = userDetails?.wallpaper?.effects;
     const defaultEffects = {
       blur: 0,
-      effectType: 'grain',
+      effectType: 'blur',
       grainIntensity: 25,
       motion: true
     };

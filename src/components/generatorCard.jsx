@@ -21,7 +21,8 @@ export default function GeneratorCard({
       <div className="flex items-center gap-2">
         <img src={src} alt="generator tool" />
         <Text
-          size="section-heading-sm"
+          as="h3"
+          size="section-card-title"
         >
           {title}
         </Text>
@@ -29,7 +30,7 @@ export default function GeneratorCard({
 
       <Text
         size="p-xsmall"
-        className="mt-4 text-sm sm:text-base text-muted-foreground"
+        className="mt-4 text-sm font-normal text-muted-foreground"
       >
         {description}
       </Text>

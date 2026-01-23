@@ -21,8 +21,7 @@ export default function GeneratorCard({
       <div className="flex items-center gap-2">
         <img src={src} alt="generator tool" />
         <Text
-          size="p-small"
-          className="font-gsans font-semibold text-xl sm:text-2xl text-foreground"
+          size="section-heading-sm"
         >
           {title}
         </Text>

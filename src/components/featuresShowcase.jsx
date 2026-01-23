@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card"
 import { Check, ArrowRight } from "lucide-react"
 import Link from "next/link"
+import Text from "./text"
 
 function FeatureCta({ children, testId, href = "/claim-link" }) {
     return (
@@ -42,8 +43,10 @@ export default function FeaturesShowcase() {
             <div className="max-w-5xl mx-auto space-y-12">
                 <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
                     <div>
-                        <h2
-                            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-5xl font-semibold font-gsans leading-tight"
+                        <Text
+                            as="h2"
+                            size="section-heading"
+                            className="leading-tight"
                             data-testid="text-showcase-headline"
                         >
                             Can telling your story be simple?{" "}
@@ -59,7 +62,7 @@ export default function FeaturesShowcase() {
                             >
                                 YES WITH AI
                             </span>
-                        </h2>
+                        </Text>
                     </div>
 
                     <div className="space-y-3">

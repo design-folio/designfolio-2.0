@@ -1,15 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { createPortal } from "react-dom";
-import { motion, AnimatePresence } from "framer-motion";
 import customTwMerge from "@/lib/customTailwindMerge";
-import Button from "./button";
-import ViewArrowIcon from "../../public/assets/svgs/viewArrow.svg";
+import { AnimatePresence, motion } from "framer-motion";
+import { Eye, EyeOff, Pencil } from "lucide-react";
+import Link from "next/link";
+import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import DeleteIcon from "../../public/assets/svgs/deleteIcon.svg";
+import Button from "./button";
 import DragHandle from "./DragHandle";
 import Text from "./text";
-import Link from "next/link";
-import { Button as ButtonNew } from "./ui/buttonNew";
-import { Eye, EyeOff, Pencil } from "lucide-react";
 const imageVariants = {
   hover: {
     scale: 1.13, // Target scale when hovered

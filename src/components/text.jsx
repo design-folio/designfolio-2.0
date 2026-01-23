@@ -14,6 +14,8 @@ const Text = ({
     h1: "text-h1 leading-h1",
     h2: "text-h2 leading-h2",
     h3: "text-h3 leading-h3",
+    "section-heading": "font-gsans font-semibold text-2xl sm:text-3xl md:text-4xl text-foreground",
+    "section-heading-sm": "font-gsans font-semibold text-xl sm:text-2xl text-foreground",
     "p-large": "text-p-large leading-p-large font-semibold",
     "p-medium": "text-p-medium leading-p-medium",
     "p-small": "text-p-small leading-p-small font-medium",
@@ -23,12 +25,18 @@ const Text = ({
     "p-xs-uppercase": "text-xs font-medium uppercase tracking-wider",
   };
 
+  // Determine default classes based on size type
+  const isHeadingVariant = size === "section-heading" || size === "section-heading-sm";
+  const defaultClasses = isHeadingVariant
+    ? ""
+    : "font-inter text-base-text-color text-left font-medium";
+
   const Element = as;
 
   return (
     <Element
       className={customTwMerge(
-        "font-inter text-base-text-color text-left font-medium",
+        defaultClasses,
         textSizes[size] || textSizes["p-medium"], // Default to medium paragraph size
         className
       )}

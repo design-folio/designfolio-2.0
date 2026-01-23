@@ -1,3 +1,5 @@
+import Text from "./text";
+
 export default function EmailMockup() {
 
     return (
@@ -32,12 +34,14 @@ export default function EmailMockup() {
                             </div>
 
                             <div className="flex-1 min-w-0">
-                                <h3
-                                    className="font-gsans text-2xl sm:text-3xl md:text-4xl font-semibold text-foreground mb-2"
+                                <Text
+                                    as="h3"
+                                    size="section-heading-sm"
+                                    className="text-xl sm:text-2xl md:text-3xl font-semibold mb-2"
                                     data-testid="text-portfolio-name"
                                 >
                                     Hey, I'm Morgan.
-                                </h3>
+                                </Text>
                                 <p
                                     className="text-sm sm:text-base md:text-lg text-foreground/60 mb-4"
                                     data-testid="text-portfolio-role"

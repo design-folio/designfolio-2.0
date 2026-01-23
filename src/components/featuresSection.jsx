@@ -6,6 +6,7 @@ import {
     CalendarX
 } from "lucide-react"
 import { Card } from "@/components/ui/card"
+import Text from "./text"
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
@@ -103,14 +104,16 @@ export default function FeaturesSection() {
             className="py-8 sm:py-12 md:py-16 px-6 bg-background-landing"
         >
             <div className="max-w-5xl mx-auto">
-                <h2
-                    className="font-gsans font-semibold text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-5xl text-center text-foreground mb-4 sm:mb-6"
+                <Text
+                    as="h2"
+                    size="section-heading"
+                    className="text-center mb-4 sm:mb-6"
                     data-testid="text-features-heading"
                 >
                     Done fighting with Framer?
                     <br />
                     Meet Designfolio!
-                </h2>
+                </Text>
 
                 <div className="flex justify-center mb-8 sm:mb-12">
                     <div
@@ -185,12 +188,14 @@ export default function FeaturesSection() {
                                                 {card.step}
                                             </div>
 
-                                            <h3
-                                                className="font-gsans font-semibold text-xl sm:text-2xl text-foreground mb-2"
+                                            <Text
+                                                as="h3"
+                                                size="section-heading-sm"
+                                                className="mb-2"
                                                 data-testid={`text-card-title-${index}`}
                                             >
                                                 {card.title}
-                                            </h3>
+                                            </Text>
 
                                             <p
                                                 className="text-sm sm:text-base text-muted-foreground mb-6"
@@ -290,12 +295,14 @@ export default function FeaturesSection() {
                                                 {card.step}
                                             </div>
 
-                                            <h3
-                                                className="font-gsans font-semibold text-xl sm:text-2xl text-foreground mb-2"
+                                            <Text
+                                                as="h3"
+                                                size="section-heading-sm"
+                                                className="mb-2"
                                                 data-testid={`text-card-title-${index}`}
                                             >
                                                 {card.title}
-                                            </h3>
+                                            </Text>
 
                                             <p
                                                 className="text-sm sm:text-base text-muted-foreground mb-6"

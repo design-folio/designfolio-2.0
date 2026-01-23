@@ -180,10 +180,9 @@ export default function Projects({
           >
             <div
               className={twMerge(
-                "grid gap-4 md:grid-cols-2 items-stretch",
+                "grid grid-cols-1 gap-4 md:grid-cols-2 items-stretch",
                 visibleProjects?.length === 0 && "md:grid-cols-1"
               )}
-              style={{ gridTemplateColumns: visibleProjects?.length === 0 ? undefined : '1fr 1fr' }}
             >
               {visibleProjects?.map((project) => (
                 <SortableItem

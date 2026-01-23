@@ -4,6 +4,7 @@ import ClaimDomain from "./claimDomain"
 import Link from "next/link"
 import Button from "./button"
 import MemoPower from "./icons/Power"
+import Text from "./text"
 
 export default function Footer({ dfToken, innerClass = "", className = "" }) {
     const names = ["john", "morgan", "sarah", "tom", "brad"]
@@ -27,14 +28,16 @@ export default function Footer({ dfToken, innerClass = "", className = "" }) {
                 <Card className="p-8 sm:p-12 bg-card-landing">
                     <div className="space-y-8">
                         <div className="space-y-4">
-                            <h2
-                                className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-5xl  font-semibold font-gsans leading-tight text-center text-balance"
+                            <Text
+                                as="h2"
+                                size="section-heading"
+                                className="leading-tight text-center text-balance"
                                 data-testid="text-footer-headline"
                             >
                                 It was supposed to take a weekend,
                                 <br />
                                 not a quarter.
-                            </h2>
+                            </Text>
                             <div className="pt-4">
                                 <img
                                     src="/assets/svgs/footerimage.svg"

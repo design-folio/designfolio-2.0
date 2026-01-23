@@ -74,11 +74,13 @@ export default function SpotlightUsers() {
   return (
     <div>
       <div className="text-center mb-12">
-        <h2
-          className="text-center font-gsans font-semibold text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-5xl leading-[46px] text-landing-card-heading-color "
+        <Text
+          as="h2"
+          size="section-heading"
+          className="text-center leading-[46px] text-landing-card-heading-color"
         >
           Created with Designfolio
-        </h2>
+        </Text>
 
 
 

@@ -10,6 +10,7 @@ import { useIsMobile } from "@/hooks/use-mobile"
 import ClaimDomain from "./claimDomain"
 import Link from "next/link"
 import Button from "./button"
+import Text from "./text"
 
 export default function HeroSection({ dfToken }) {
     const sectionRef = useRef(null)
@@ -369,9 +370,7 @@ export default function HeroSection({ dfToken }) {
 
             <div className="max-w-5xl mx-auto relative z-50">
                 <div className="max-w-3xl mx-auto text-center px-4 sm:px-6 md:px-12 lg:px-0">
-                    <motion.h1
-                        className="font-gsans font-semibold text-2xl min-[420px]:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl leading-tight mb-4 sm:mb-6 text-foreground"
-                        data-testid="text-hero-headline"
+                    <motion.div
                         initial={{ opacity: 0, filter: "blur(4px)", y: 8 }}
                         animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
                         transition={{
@@ -380,8 +379,15 @@ export default function HeroSection({ dfToken }) {
                             ease: [0.22, 1, 0.36, 1]
                         }}
                     >
-                        Building a portfolio was never meant to be hard.
-                    </motion.h1>
+                        <Text
+                            as="h1"
+                            size="section-heading"
+                            className="min-[420px]:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl leading-tight mb-4 sm:mb-6"
+                            data-testid="text-hero-headline"
+                        >
+                            Building a portfolio was never meant to be hard.
+                        </Text>
+                    </motion.div>
 
                     <motion.p
                         className="text-sm sm:text-base md:text-lg lg:text-xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-6 sm:mb-8"

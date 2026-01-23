@@ -16,6 +16,7 @@ const Text = ({
     h3: "text-h3 leading-h3",
     "section-heading": "font-gsans font-semibold text-2xl sm:text-3xl md:text-4xl text-foreground",
     "section-heading-sm": "font-gsans font-semibold text-xl sm:text-2xl text-foreground",
+    'section-card-title': "font-semibold text-lg text-foreground-title",
     "p-large": "text-p-large leading-p-large font-semibold",
     "p-medium": "text-p-medium leading-p-medium",
     "p-small": "text-p-small leading-p-small font-medium",

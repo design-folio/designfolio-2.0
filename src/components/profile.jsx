@@ -93,7 +93,10 @@ export default function Profile({
               {/* Avatar Container */}
               <Tooltip delayDuration={300}>
                 <TooltipTrigger asChild>
-                  <div
+                  <motion.div
+                    initial={{ opacity: 0, filter: "blur(10px)", scale: 0.95 }}
+                    animate={{ opacity: 1, filter: "blur(0px)", scale: 1 }}
+                    transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1], delay: 0.1 }}
                     className={cn("w-28 h-28 md:w-32 md:h-32 rounded-3xl flex items-center justify-center relative overflow-hidden", !userDetails?.avatar ? "bg-df-bg-color" : "")}
                     data-testid="avatar-profile"
                   >
@@ -101,7 +104,7 @@ export default function Profile({
                       src={getUserAvatarImage(userDetails)}
                       className="w-full h-full"
                     />
-                  </div>
+                  </motion.div>
                 </TooltipTrigger>
                 <TooltipContent
                   side="top"
@@ -116,18 +119,24 @@ export default function Profile({
 
               {/* Text Section */}
               <div className="flex-1">
-                <h1
+                <motion.h1
+                  initial={{ opacity: 0, filter: "blur(10px)", y: 10 }}
+                  animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
+                  transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1], delay: 0.2 }}
                   className="text-3xl font-semibold mb-2 font-gsans text-df-heading-color break-words"
                   data-testid="text-user-name"
                 >
                   {userDetails?.introduction || `Hey, I'm ${capitalizeWords(userDetails?.firstName) || ""}`}
-                </h1>
-                <p
+                </motion.h1>
+                <motion.p
+                  initial={{ opacity: 0, filter: "blur(10px)", y: 10 }}
+                  animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
+                  transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1], delay: 0.3 }}
                   className="text-base text-df-description-color break-words"
                   data-testid="text-user-role"
                 >
                   {userDetails?.bio || "Write your intro here..."}
-                </p>
+                </motion.p>
               </div>
             </div>
           </div>

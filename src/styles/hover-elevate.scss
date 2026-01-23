@@ -96,7 +96,7 @@
   /* Ensure hover overlay matches border-radius for rounded-2xl elements */
   .rounded-2xl.hover-elevate:not(.no-default-hover-elevate)::after,
   .rounded-2xl.hover-elevate-2:not(.no-default-hover-elevate)::after {
-    border-radius: 24px;
+    border-radius: 1rem; /* Matches Tailwind's rounded-2xl value (16px) */
   }
 
   /* Ensure hover overlay matches border-radius for rounded-3xl elements */
@@ -113,7 +113,7 @@
       .no-default-hover-elevate
     )::after {
     inset: -2px;
-    border-radius: 24px;
+    border-radius: 1rem; /* Matches Tailwind's rounded-2xl value (16px) */
   }
 
   /* Adjust inset for border-2 elements with rounded-3xl to cover the 2px border and match border-radius */
@@ -124,6 +124,12 @@
       .no-default-hover-elevate
     )::after {
     inset: -2px;
-    border-radius: 24px;
+    border-radius: 1.5rem; /* Matches Tailwind's rounded-3xl value (24px) */
+  }
+
+  /* Fix border-radius for rounded-2xl with border (1px) to match actual Tailwind value (1rem = 16px) */
+  .border.rounded-2xl.hover-elevate:not(.no-default-hover-elevate)::after,
+  .border.rounded-2xl.hover-elevate-2:not(.no-default-hover-elevate)::after {
+    border-radius: 1rem; /* Matches Tailwind's rounded-2xl value */
   }
 }

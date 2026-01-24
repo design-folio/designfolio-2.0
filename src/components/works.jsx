@@ -196,7 +196,7 @@ export default function Works({
 
 const WorkExperienceCard = ({ experience, index, edit, setSelectedWork, openSidebar }) => {
   const [expandedCards, setExpandedCards] = useState([]);
-  
+
   const toggleExpand = (id) => {
     setExpandedCards((prev) =>
       prev.includes(id) ? prev.filter((cardId) => cardId !== id) : [...prev, id]
@@ -218,20 +218,20 @@ const WorkExperienceCard = ({ experience, index, edit, setSelectedWork, openSide
     >
       <div className="shrink-0">
         <Avatar className="w-12 h-12 rounded-xl border border-border/50">
-          <AvatarImage 
+          <AvatarImage
             src={
               experience?.logo && !experience.logo.includes('dicebear')
                 ? experience.logo
                 : `https://api.dicebear.com/7.x/initials/svg?seed=${experience?.company?.substring(0, 2)?.toUpperCase() || 'CO'}`
-            } 
-            alt={experience?.company} 
+            }
+            alt={experience?.company}
           />
           <AvatarFallback className="bg-muted text-xs">
             {experience?.company?.substring(0, 2)?.toUpperCase()}
           </AvatarFallback>
         </Avatar>
       </div>
-      
+
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between mb-1">
           <h3 className="font-semibold text-base truncate">

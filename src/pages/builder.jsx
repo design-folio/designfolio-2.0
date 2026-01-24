@@ -33,6 +33,7 @@ import { UnsavedChangesDialog } from "@/components/ui/UnsavedChangesDialog";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { CourseCard } from "@/components/CourceCard";
 import WallpaperBackground from "@/components/WallpaperBackground";
+import FooterSettingsPanel from "@/components/FooterSettingsPanel";
 
 export default function Index() {
   const {
@@ -73,7 +74,7 @@ export default function Index() {
     let marginWidth = '0px';
     if (activeSidebar === sidebars.work || activeSidebar === sidebars.review) {
       marginWidth = '500px';
-    } else if (activeSidebar === sidebars.theme) {
+    } else if (activeSidebar === sidebars.theme || activeSidebar === sidebars.footer) {
       marginWidth = '320px';
     }
 
@@ -228,6 +229,7 @@ export default function Index() {
           ></Feedefy>
         )}
         {!isMobile && <CourseCard />}
+        <FooterSettingsPanel />
       </main>
     </>
   );

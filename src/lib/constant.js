@@ -27,6 +27,7 @@ export const sidebars = {
   theme: "theme",
   work: "work",
   review: "review",
+  footer: "footer",
 };
 
 export function hasSubdomain() {

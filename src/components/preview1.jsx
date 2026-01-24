@@ -1,8 +1,9 @@
 import React from "react";
 import { motion } from "framer-motion";
 import BottomLayout from "@/components/bottomLayout";
-import Others from "@/components/others";
-import OthersPreview from "@/components/othersPreview";
+// import Others from "@/components/others";
+// import OthersPreview from "@/components/othersPreview";
+import PortfolioFooter from "@/components/portfolioFooter";
 import Profile from "@/components/profile";
 import Projects from "@/components/Projects";
 import Reviews from "@/components/reviews";
@@ -65,7 +66,8 @@ export default function Preview1({ userDetails, projectRef }) {
                 <Profile userDetails={userDetails} preview />
               </motion.div>
               {sectionOrder.map((sectionId) => sectionComponents[sectionId])}
-              {(!!userDetails?.socials?.instagram ||
+              {/* Old Footer - Commented out */}
+              {/* {(!!userDetails?.socials?.instagram ||
                 !!userDetails?.socials?.twitter ||
                 !!userDetails?.socials?.linkedin ||
                 !!userDetails?.portfolios?.dribbble ||
@@ -75,7 +77,12 @@ export default function Preview1({ userDetails, projectRef }) {
                   <motion.div variants={itemVariants}>
                     <OthersPreview userDetails={userDetails} />
                   </motion.div>
-                )}
+                )} */}
+              
+              {/* New Footer */}
+              <motion.div variants={itemVariants}>
+                <PortfolioFooter edit={false} userDetails={userDetails} />
+              </motion.div>
             </motion.div>
           )}
         </div>

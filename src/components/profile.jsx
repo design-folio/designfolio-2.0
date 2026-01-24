@@ -10,6 +10,7 @@ import { PencilIcon, Sparkle } from "lucide-react";
 import MemoLeftArrow from "./icons/LeftArrow";
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Magnetic } from "@/components/ui/magnetic";
 
 export default function Profile({
   preview = false,
@@ -19,6 +20,9 @@ export default function Profile({
 }) {
   const controls = useAnimation();
   const skillsRef = useRef(null);
+  const [isHovering, setIsHovering] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   const skills = useMemo(
     () =>
@@ -88,24 +92,69 @@ export default function Profile({
           )}
 
           {/* Profile Info */}
-          <div className="p-4 lg:p-8 pb-6">
+          <div className="p-6 sm:p-8 pb-6">
             <div className="flex flex-col md:flex-row md:items-center gap-6">
               {/* Avatar Container */}
               <Tooltip delayDuration={300}>
-                <TooltipTrigger asChild>
-                  <motion.div
-                    initial={{ opacity: 0, filter: "blur(10px)", scale: 0.95 }}
-                    animate={{ opacity: 1, filter: "blur(0px)", scale: 1 }}
-                    transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1], delay: 0.1 }}
-                    className={cn("w-28 h-28 md:w-32 md:h-32 rounded-3xl flex items-center justify-center relative overflow-hidden", !userDetails?.avatar ? "bg-df-bg-color" : "")}
-                    data-testid="avatar-profile"
-                  >
-                    <DfImage
-                      src={getUserAvatarImage(userDetails)}
-                      className="w-full h-full"
-                    />
-                  </motion.div>
-                </TooltipTrigger>
+                <Magnetic intensity={0.2} range={100}>
+                  <TooltipTrigger asChild>
+                    <motion.div
+                      initial={{ opacity: 0, filter: "blur(10px)", scale: 0.95 }}
+                      animate={{
+                        opacity: 1,
+                        filter: "blur(0px)",
+                        scale: 1,
+                        rotateX: isHovering ? mousePosition.y * -20 : 0,
+                        rotateY: isHovering ? mousePosition.x * 20 : 0,
+                      }}
+                      whileHover={{
+                        scale: 1.05,
+                        boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03)"
+                      }}
+                      onMouseMove={(e) => {
+                        const rect = e.currentTarget.getBoundingClientRect();
+                        const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+                        const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+                        setMousePosition({ x, y });
+                      }}
+                      onMouseEnter={() => setIsHovering(true)}
+                      onMouseLeave={() => {
+                        setIsHovering(false);
+                        setMousePosition({ x: 0, y: 0 });
+                      }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 150,
+                        damping: 20,
+                        mass: 0.5
+                      }}
+                      className={cn("w-28 h-28 md:w-32 md:h-32 rounded-2xl flex items-center justify-center relative overflow-hidden shrink-0", !userDetails?.avatar ? "bg-df-bg-color" : "")}
+                      style={{
+                        backgroundColor: !userDetails?.avatar ? undefined : '#F5F3F1',
+                        perspective: "1000px",
+                        transformStyle: "preserve-3d"
+                      }}
+                      data-testid="avatar-profile"
+                    >
+                      {!imageLoaded && (
+                        <div
+                          className="absolute inset-0 rounded-2xl"
+                          style={{
+                            background: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%)',
+                            animation: 'shimmer 1.5s infinite'
+                          }}
+                        />
+                      )}
+                      <img
+                        src={getUserAvatarImage(userDetails)}
+                        alt={userDetails?.firstName || "Avatar"}
+                        className="w-full h-full object-contain"
+                        onLoad={() => setImageLoaded(true)}
+                        style={{ opacity: imageLoaded ? 1 : 0, transition: 'opacity 0.3s' }}
+                      />
+                    </motion.div>
+                  </TooltipTrigger>
+                </Magnetic>
                 <TooltipContent
                   side="top"
                   sideOffset={8}
@@ -132,7 +181,7 @@ export default function Profile({
                   initial={{ opacity: 0, filter: "blur(10px)", y: 10 }}
                   animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
                   transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1], delay: 0.3 }}
-                  className="text-base text-df-description-color break-words"
+                  className="text-sm sm:text-base text-df-description-color break-words"
                   data-testid="text-user-role"
                 >
                   {userDetails?.bio || "Write your intro here..."}

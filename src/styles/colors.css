@@ -71,6 +71,7 @@
 
   /* application */
   --df-bg-color: #f6f2ef;
+  --work-experience-bg-color: #f5f3f1;
   --df-base-text-color: #202937;
   --df-secondary-text-color: #4d545f;
   --df-placeholder-color: #eff0f0;
@@ -79,7 +80,8 @@
   --df-icon-color: #000000;
   --df-section-card-bg-color: #ffffff;
   --df-section-card-heading-color: #202937;
-  --df-section-card-shadow: 0 0 0 1px rgba(0,0,0,0.03), 0 0 40px rgba(0,0,0,0.015);
+  --df-section-card-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.03), 0 0 40px rgba(0, 0, 0, 0.015);
   --df-add-card-bg-color: rgb(246, 242, 239);
   --df-add-card-border-color: #e9eaeb;
   --df-add-card-heading-color: #202937;
@@ -140,7 +142,7 @@
   --popover-heading-color: #202937;
 
   /* Tooltip */
-  --tooltip-bg-color: #1A1A1A;
+  --tooltip-bg-color: #1a1a1a;
   --tooltip-text-color: #ffffff;
 
   /* theme-popover */
@@ -270,6 +272,7 @@
 
   /* application */
   --df-bg-color: #13151a;
+  --work-experience-bg-color: #2a2d38;
   --df-base-text-color: #e9eaeb;
   --df-secondary-text-color: #b4b8c6;
   --df-placeholder-color: #383a47;
@@ -278,7 +281,8 @@
   --df-icon-color: #f9f9fb;
   --df-section-card-bg-color: #1d1f27;
   --df-section-card-heading-color: #e9eaeb;
-  --df-section-card-shadow: 0 0 0 1px rgba(0,0,0,0.03), 0 0 40px rgba(0,0,0,0.015);
+  --df-section-card-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.03), 0 0 40px rgba(0, 0, 0, 0.015);
   --df-add-card-bg-color: #13151a;
   --df-add-card-border-color: #262832;
   --df-add-card-heading-color: #e9eaeb;
@@ -286,11 +290,11 @@
   --df-add-item-shadow: inset 0px 0px 0px 2px #262832;
   --df-subtle-text-color: rgb(180 184 198 / var(--tw-text-opacity, 1));
   --df-heading-color: #e9eaeb;
-  --df-description-color: #F2F2F280;
+  --df-description-color: #f2f2f280;
 
   /* profile card */
   --profile-card-heading-color: #e9eaeb;
-  --profile-card-description-color: #F2F2F280;
+  --profile-card-description-color: #f2f2f280;
   --profile-card-skill-color: #b4b8c6;
 
   /* project card */
@@ -301,14 +305,14 @@
 
   /* df tokens - reusable colors based on profile/project cards */
   --df-heading: #e9eaeb;
-  --df-description: #F2F2F280;
+  --df-description: #f2f2f280;
   --project-card-reorder-btn-bg-color: #262832;
   --project-card-reorder-btn-bg-hover-color: #22242b;
   --project-card-reorder-btn-icon-color: #aebeca;
 
   /* project Info card */
   --project-info-card-heading-color: #e9eaeb;
-  --project-info-card-description-color: #F2F2F280;
+  --project-info-card-description-color: #f2f2f280;
 
   /* review card */
   --review-card-bg-color: #2f323d;

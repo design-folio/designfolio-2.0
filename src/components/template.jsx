@@ -2,7 +2,8 @@ import { useGlobalContext } from "@/context/globalContext";
 import { DEFAULT_SECTION_ORDER } from "@/lib/constant";
 import React, { useEffect } from "react";
 import { motion } from "framer-motion";
-import OthersPreview from "@/components/othersPreview";
+// import OthersPreview from "@/components/othersPreview";
+import PortfolioFooter from "@/components/portfolioFooter";
 import Profile from "@/components/profile";
 import Projects from "@/components/Projects";
 import Reviews from "@/components/reviews";
@@ -88,7 +89,8 @@ export default function Template1({ userDetails }) {
 
           {sectionOrder.map((sectionId) => sectionComponents[sectionId])}
 
-          {(!!userDetails?.socials?.instagram ||
+          {/* Old Footer - Commented out */}
+          {/* {(!!userDetails?.socials?.instagram ||
             !!userDetails?.socials?.twitter ||
             !!userDetails?.socials?.linkedin ||
             !!userDetails?.portfolios?.dribbble ||
@@ -98,7 +100,12 @@ export default function Template1({ userDetails }) {
               <motion.div variants={itemVariants}>
                 <OthersPreview userDetails={userDetails} />
               </motion.div>
-            )}
+            )} */}
+          
+          {/* New Footer */}
+          <motion.div variants={itemVariants}>
+            <PortfolioFooter edit={false} userDetails={userDetails} />
+          </motion.div>
           <div className="mb-20"></div>
         </motion.div>
       </BottomLayout>

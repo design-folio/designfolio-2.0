@@ -5,7 +5,8 @@ import Reviews from "./reviews";
 import { useGlobalContext } from "@/context/globalContext";
 import Tools from "./tools";
 import Works from "./works";
-import Others from "./others";
+// import Others from "./others";
+import PortfolioFooter from "./portfolioFooter";
 import { motion } from "framer-motion";
 import { sidebars, DEFAULT_SECTION_ORDER } from "@/lib/constant";
 
@@ -113,8 +114,14 @@ export default function Builder() {
           {sectionComponents[sectionId]}
         </motion.div>
       ))}
-      <motion.div variants={itemVariants}>
+      {/* Old Footer - Commented out */}
+      {/* <motion.div variants={itemVariants}>
         <Others edit openModal={openModal} userDetails={userDetails} />
+      </motion.div> */}
+      
+      {/* New Footer */}
+      <motion.div variants={itemVariants}>
+        <PortfolioFooter edit openModal={openModal} openSidebar={openSidebar} userDetails={userDetails} />
       </motion.div>
     </motion.div>
   );

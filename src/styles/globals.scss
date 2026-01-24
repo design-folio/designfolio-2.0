@@ -378,6 +378,22 @@ body {
   color: white !important;
   border-color: #363a48;
 }
+[data-theme="dark"] .text-input::placeholder {
+  color: #9ca3af !important;
+  opacity: 1;
+}
+[data-theme="dark"] .text-input::-webkit-input-placeholder {
+  color: #9ca3af !important;
+  opacity: 1;
+}
+[data-theme="dark"] .text-input::-moz-placeholder {
+  color: #9ca3af !important;
+  opacity: 1;
+}
+[data-theme="dark"] .text-input:-ms-input-placeholder {
+  color: #9ca3af !important;
+  opacity: 1;
+}
 [data-theme="dark"] .text-input:focus {
   border-color: #b4bace !important;
 }

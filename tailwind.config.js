@@ -109,6 +109,7 @@ module.exports = {
 
         // Application
         "df-bg-color": "var(--df-bg-color)",
+        "work-experience-bg-color": "var(--work-experience-bg-color)",
         "df-base-text-color": "var(--df-base-text-color)",
         "df-orange-color": "var(--df-orange-color)",
         "df-secondary-text-color": "var(--df-secondary-text-color)",

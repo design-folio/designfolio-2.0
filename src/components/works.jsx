@@ -214,7 +214,7 @@ const WorkExperienceCard = ({ experience, index, edit, setSelectedWork, openSide
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
-      className="group flex gap-5 p-3 rounded-2xl border border-border/30 bg-[#F5F3F1] hover-elevate transition-all duration-300"
+      className="group flex gap-5 p-3 rounded-2xl border border-border/30 bg-work-experience-bg-color hover-elevate transition-all duration-300"
     >
       <div className="shrink-0">
         <Avatar className="w-12 h-12 rounded-xl border border-border/50">

@@ -79,7 +79,7 @@ export default function WorkCard({ work, onClick, show = true, edit, sorting = f
               {shouldShowToggle && (
                 <button
                   onClick={() => toggleExpand(work?._id)}
-                  className="mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
+                  className="mt-2 text-foreground-landing/80 hover:text-foreground-landing inline-flex items-center gap-1 underline underline-offset-4"
                 >
                   {isExpanded ? (
                     <>

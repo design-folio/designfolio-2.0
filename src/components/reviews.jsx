@@ -114,18 +114,18 @@ export default function Reviews({ edit = false, openModal, userDetails }) {
         wallpaper={userDetails?.wallpaper}
       >
         {reviews.length > 0 ? (
-          <div className="mt-6 -mx-10 px-10 overflow-visible">
+          <div className="mt-6 -mx-4 lg:-mx-6 px-4 lg:px-6 overflow-visible relative">
             <Carousel
               opts={{
                 align: "start",
-                loop: true,
+                loop: reviews.length >= 2,
               }}
               className="w-full overflow-visible"
             >
               <div className="overflow-visible">
-                <CarouselContent className="-ml-6">
-                  {reviews.map((review, idx) => (
-                    <CarouselItem key={review._id} className="pl-6 md:basis-1/2 overflow-visible py-4">
+                <CarouselContent className="-ml-4 lg:-ml-6 pr-4 lg:pr-6">
+                  {(reviews.length >= 2 ? [...reviews, ...reviews, ...reviews] : reviews).map((review, idx) => (
+                    <CarouselItem key={`${review._id}-${idx}`} className="pl-4 lg:pl-6 md:basis-1/2 overflow-visible py-4">
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
@@ -200,10 +200,12 @@ export default function Reviews({ edit = false, openModal, userDetails }) {
                   ))}
                 </CarouselContent>
               </div>
-              <div className="flex justify-center gap-1.5 mt-4">
-                <CarouselPrevious className="static h-10 w-10 rounded-full border-border/50 bg-white shadow-sm transition-all translate-y-0" />
-                <CarouselNext className="static h-10 w-10 rounded-full border-border/50 bg-white shadow-sm transition-all translate-y-0" />
-              </div>
+              {reviews.length >= 2 && (
+                <div className="flex justify-center gap-16 mt-4">
+                  <CarouselPrevious className="static h-10 w-10 rounded-full border-border/50 bg-df-bg-color shadow-sm transition-all translate-y-0" />
+                  <CarouselNext className="static bg-df-bg-color h-10 w-10 rounded-full border-border/50 shadow-sm transition-all translate-y-0" />
+                </div>
+              )}
             </Carousel>
           </div>
         ) : (

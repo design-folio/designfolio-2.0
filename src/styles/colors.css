@@ -71,6 +71,7 @@
 
   /* application */
   --df-bg-color: #f6f2ef;
+  --work-experience-bg-color: #F5F3F1;
   --df-base-text-color: #202937;
   --df-secondary-text-color: #4d545f;
   --df-placeholder-color: #eff0f0;
@@ -270,6 +271,7 @@
 
   /* application */
   --df-bg-color: #13151a;
+  --work-experience-bg-color: #2a2d38;
   --df-base-text-color: #e9eaeb;
   --df-secondary-text-color: #b4b8c6;
   --df-placeholder-color: #383a47;

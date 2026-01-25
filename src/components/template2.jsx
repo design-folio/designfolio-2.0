@@ -367,14 +367,14 @@ export default function Template2({ userDetails, preview = false }) {
               <Chat direction="right" delay={400} onComplete={handleStepCompletion}>
                 Tell me a little about yourself?
               </Chat>
-              <div>
+              <Chat direction="left" delay={200} onComplete={handleStepCompletion}>
                 <AboutMeContent
                   userDetails={userDetails}
                   edit={false}
                   variant="default"
                   textClassName="text-df-base-text-color"
                 />
-              </div>
+              </Chat>
             </div>
           )}
 

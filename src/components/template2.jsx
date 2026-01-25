@@ -28,7 +28,7 @@ import SimpleTiptapRenderer from "./SimpleTiptapRenderer";
 import Text from "./text";
 import { Button as ButtonNew } from "./ui/buttonNew";
 import MemoLinkedin from "./icons/Linkedin";
-import AboutMe from "./aboutMe";
+import { AboutMeContent } from "./aboutMe";
 export default function Template2({ userDetails, preview = false }) {
   const {
     bio,
@@ -368,7 +368,12 @@ export default function Template2({ userDetails, preview = false }) {
                 Tell me a little about yourself?
               </Chat>
               <div>
-                <AboutMe userDetails={userDetails} edit={false} />
+                <AboutMeContent
+                  userDetails={userDetails}
+                  edit={false}
+                  variant="default"
+                  textClassName="text-df-base-text-color"
+                />
               </div>
             </div>
           )}

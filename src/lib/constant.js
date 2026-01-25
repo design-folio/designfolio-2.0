@@ -100,4 +100,4 @@ export const chatBubbleItems = {
 };
 
 
-export const DEFAULT_SECTION_ORDER = ['about', 'projects', 'reviews', 'tools', 'works'];
+export const DEFAULT_SECTION_ORDER = ['projects', 'reviews', 'tools', 'about','works', ];

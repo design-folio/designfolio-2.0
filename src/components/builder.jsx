@@ -8,7 +8,8 @@ import Works from "./works";
 // import Others from "./others";
 import PortfolioFooter from "./portfolioFooter";
 import { motion } from "framer-motion";
-import { sidebars, DEFAULT_SECTION_ORDER } from "@/lib/constant";
+import { sidebars, DEFAULT_SECTION_ORDER, normalizeSectionOrder } from "@/lib/constant";
+import AboutMe from "./aboutMe";
 
 const containerVariants = {
   hidden: {},
@@ -45,13 +46,7 @@ export default function Builder() {
   } = useGlobalContext();
 
   // Get section order from userDetails or use default
-  const _raw = userDetails?.sectionOrder;
-  const _defaultOrder = DEFAULT_SECTION_ORDER;
-  const _filtered = _raw && Array.isArray(_raw) && _raw.length > 0 ? _raw.filter(section => _defaultOrder.includes(section)) : null;
-  // Use filtered result only if it's not empty, otherwise fall back to default
-  const sectionOrder = _raw && Array.isArray(_raw) && _raw.length > 0 && _filtered && _filtered.length > 0
-    ? _filtered
-    : _defaultOrder;
+  const sectionOrder = normalizeSectionOrder(userDetails?.sectionOrder, DEFAULT_SECTION_ORDER);
 
   // Wrapper function that routes work/review to openSidebar, others to openModal
   const handleOpen = (type) => {
@@ -64,6 +59,9 @@ export default function Builder() {
 
   // Section component mapping
   const sectionComponents = {
+    about: (
+      <AboutMe edit userDetails={userDetails} openModal={openModal} />
+    ),
     projects: (
       <Projects
         edit

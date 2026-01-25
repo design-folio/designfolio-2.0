@@ -7,6 +7,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 
 export default function Tools({ userDetails, openModal, edit }) {
   const tools = userDetails?.tools || [];
+  const shouldScroll = tools.length > 8;
 
   return (
     <motion.div
@@ -41,29 +42,45 @@ export default function Tools({ userDetails, openModal, edit }) {
       </div>
 
       <div className="relative mt-2 overflow-x-hidden overflow-y-visible -mx-6 px-6">
-        {/* Left fade */}
-        <div
-          className="absolute left-0 top-0 bottom-0 w-24 md:w-20 z-10 pointer-events-none"
-          style={{
-            background: 'linear-gradient(to right, var(--df-section-card-bg-color) 0%, var(--df-section-card-bg-color) 30%, transparent 100%)'
-          }}
-        />
-        {/* Right fade */}
-        <div
-          className="absolute right-0 top-0 bottom-0 w-24 md:w-20 z-10 pointer-events-none"
-          style={{
-            background: 'linear-gradient(to left, var(--df-section-card-bg-color) 0%, var(--df-section-card-bg-color) 30%, transparent 100%)'
-          }}
-        />
+        {shouldScroll && (
+          <>
+            {/* Left fade */}
+            <div
+              className="absolute left-0 top-0 bottom-0 w-24 md:w-20 z-10 pointer-events-none"
+              style={{
+                background:
+                  "linear-gradient(to right, var(--df-section-card-bg-color) 0%, var(--df-section-card-bg-color) 30%, transparent 100%)",
+              }}
+            />
+            {/* Right fade */}
+            <div
+              className="absolute right-0 top-0 bottom-0 w-24 md:w-20 z-10 pointer-events-none"
+              style={{
+                background:
+                  "linear-gradient(to left, var(--df-section-card-bg-color) 0%, var(--df-section-card-bg-color) 30%, transparent 100%)",
+              }}
+            />
+          </>
+        )}
 
         <div className="flex group">
-          <div className="flex animate-scroll group-hover:[animation-play-state:paused] py-4">
-            {[...tools, ...tools].map((tool, idx) => (
+          <div
+            className={
+              shouldScroll
+                ? "flex animate-scroll group-hover:[animation-play-state:paused] py-4"
+                : "flex flex-wrap gap-3 py-4"
+            }
+          >
+            {(shouldScroll ? [...tools, ...tools] : tools).map((tool, idx) => (
               <TooltipProvider key={`${tool?.label || tool?.name || idx}-${idx}`}>
                 <Tooltip delayDuration={0}>
                   <TooltipTrigger asChild>
                     <div
-                      className="bg-tools-card-item-bg-color border border-tools-card-item-border-color rounded-2xl p-3 md:p-4 hover-elevate mx-2 shrink-0 flex items-center justify-center w-16 h-16 md:w-20 md:h-20 cursor-default"
+                      className={
+                        shouldScroll
+                          ? "bg-tools-card-item-bg-color border border-tools-card-item-border-color rounded-2xl p-3 md:p-4 hover-elevate mx-2 shrink-0 flex items-center justify-center w-16 h-16 md:w-20 md:h-20 cursor-default"
+                          : "bg-tools-card-item-bg-color border border-tools-card-item-border-color rounded-2xl p-3 md:p-4 hover-elevate shrink-0 flex items-center justify-center w-16 h-16 md:w-20 md:h-20 cursor-default"
+                      }
                       data-testid={`card-tool-${tool?.label || tool?.name || idx}-${idx}`}
                     >
                       <img

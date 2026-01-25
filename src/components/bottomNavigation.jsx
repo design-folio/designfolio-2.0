@@ -1,11 +1,11 @@
 import { useGlobalContext } from "@/context/globalContext";
 import { useRouter } from "next/router";
-import { motion } from "framer-motion";
-import FolderIcon from "../../public/assets/svgs/folder.svg";
-import HomeIcon from "../../public/assets/svgs/home.svg";
 import MadeWithDesignfolio from "../../public/assets/svgs/madewithdesignfolio.svg";
-import { useState, useEffect, useRef } from "react";
-import Button from "./button";
+import { useState } from "react";
+import Dock from "@/components/ui/dock";
+import { Home, Layers, MessageSquare, FileText, Mail } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 export default function BottomNavigation({
   userDetails,
@@ -13,72 +13,20 @@ export default function BottomNavigation({
   watermarkClassName = "",
 }) {
   const router = useRouter();
-  const [isProject, setIsProject] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
-  const lastY = useRef(0);
+  const [activeTab, setActiveTab] = useState("home");
+  const [isResumeDialogOpen, setIsResumeDialogOpen] = useState(false);
 
   const { projectRef } = useGlobalContext();
 
-  useEffect(() => {
-    let lastWheelEventTime = 0;
-    let lastGestureDirection = null; // "up" or "down"
-
-    const onWheel = (e) => {
-      const now = performance.now();
-
-      // Ignore momentum: if less than 80ms since last wheel, it's inertia
-      const isMomentum = now - lastWheelEventTime < 80;
-      lastWheelEventTime = now;
-
-      if (!isMomentum) {
-        if (e.deltaY < 0) {
-          lastGestureDirection = "up";
-          setIsVisible(true); // show instantly
-        } else if (e.deltaY > 0) {
-          lastGestureDirection = "down";
-          setIsVisible(false);
-        }
-      }
-    };
-
-    const onScroll = () => {
-      const y = window.scrollY;
-      const diff = y - lastY.current;
-
-      const atTop = y < 10;
-      const atBottom =
-        window.innerHeight + y >=
-        (document.documentElement.scrollHeight ||
-          document.body.scrollHeight) - 10;
-
-      if (atTop || atBottom) {
-        setIsVisible(true);
-      } else {
-        if (diff > 2) setIsVisible(false);
-        if (diff < -2) setIsVisible(true);
-      }
-
-      lastY.current = y;
-    };
-
-    window.addEventListener("wheel", onWheel, { passive: true });
-    window.addEventListener("scroll", onScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener("wheel", onWheel);
-      window.removeEventListener("scroll", onScroll);
-    };
-  }, []);
-
 
   const handleHomeNavigation = () => {
-    setIsProject(false);
+    setActiveTab("home");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleProjectNavigation = () => {
     if (projectRef.current) {
-      setIsProject(true);
+      setActiveTab("projects");
       const elementTop = projectRef.current.getBoundingClientRect().top;
       const offset = 20;
       const scrollTop = window.scrollY || window.pageYOffset;
@@ -87,74 +35,98 @@ export default function BottomNavigation({
     }
   };
 
+  const scrollToId = (id, block = "center") => {
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block });
+  };
+
+  const hasReviews = (userDetails?.reviews?.length || 0) > 0;
+  const hasResume = !!userDetails?.resume?.url;
+  const hasContact =
+    hasResume ||
+    !!userDetails?.socials?.instagram ||
+    !!userDetails?.socials?.twitter ||
+    !!userDetails?.socials?.linkedin ||
+    !!userDetails?.portfolios?.dribbble ||
+    !!userDetails?.portfolios?.notion ||
+    !!userDetails?.portfolios?.behance ||
+    !!userDetails?.portfolios?.medium;
+
   return (
-    <motion.div
-      className={`bottom-nav-gradient px-2 fixed bottom-0 left-0 right-0 h-[60px] lg:h-[80px] overflow-hidden z-10 ${className}`}
-      animate={{ y: isVisible ? 0 : 100 }}
-      transition={{ duration: 0.25, ease: "easeInOut" }}
-    >
+    <>
+      {/* Floating Dock (v3-style) */}
       {!router?.asPath?.includes("project") && (
-        <motion.div
-          className="bg-df-section-card-bg-color border border-bottom-navigation-border rounded-[24px] shadow-bottom-nav-floating p-1 w-fit max-w-[400px] md:max-w-[450px] m-auto flex items-center relative gap-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5, duration: 0.5 }}
+        <div
+          className={`fixed bottom-1 sm:bottom-4 left-0 right-0 z-[100] flex justify-center pointer-events-none ${className}`}
         >
-          <Button
-            icon={
-              <HomeIcon
-                className={`${!isProject
-                  ? "text-bottom-navigation-active-stroke hover:text-bottom-navigation-active-stroke"
-                  : "text-bottom-navigation-inactive-stroke hover:text-bottom-navigation-inactive-stroke"
-                  } cursor-pointer`}
-              />
-            }
-            size="medium"
-            type="normal"
-            customClass={`${!isProject
-              ? "bg-bottom-navigation-active-fill hover:bg-bottom-navigation-active-fill"
-              : "bottom-navigation-inactive-fill hover:bg-bottom-navigation-inactive-fill"
-              }`}
-            onClick={handleHomeNavigation}
-          />
-
-          {userDetails?.projects?.length != 0 && (
-            <Button
-              onClick={handleProjectNavigation}
-              icon={
-                <FolderIcon
-                  className={`${isProject
-                    ? "text-bottom-navigation-active-stroke hover:text-bottom-navigation-active-stroke"
-                    : "text-bottom-navigation-inactive-stroke hover:text-bottom-navigation-inactive-stroke"
-                    } cursor-pointer`}
-                />
-              }
-              size="medium"
-              type="normal"
-              customClass={`${isProject
-                ? "bg-bottom-navigation-active-fill hover:bg-bottom-navigation-active-fill"
-                : "bottom-navigation-inactive-fill hover:bg-bottom-navigation-inactive-fill"
-                }`}
+          <div className="pointer-events-auto">
+            <Dock
+              items={[
+                {
+                  icon: Home,
+                  label: "Home",
+                  active: activeTab === "home",
+                  onClick: handleHomeNavigation,
+                },
+                ...(userDetails?.projects?.length
+                  ? [
+                    {
+                      icon: Layers,
+                      label: "Works",
+                      active: activeTab === "projects",
+                      onClick: () => {
+                        handleProjectNavigation();
+                      },
+                    },
+                  ]
+                  : []),
+                ...(hasReviews
+                  ? [
+                    {
+                      icon: MessageSquare,
+                      label: "Testimonials",
+                      active: activeTab === "reviews",
+                      onClick: () => {
+                        setActiveTab("reviews");
+                        scrollToId("section-reviews", "center");
+                      },
+                    },
+                  ]
+                  : []),
+                ...(hasResume
+                  ? [
+                    {
+                      icon: FileText,
+                      label: "Resume",
+                      active: isResumeDialogOpen,
+                      onClick: () => setIsResumeDialogOpen(true),
+                    },
+                  ]
+                  : []),
+                ...(hasContact
+                  ? [
+                    {
+                      icon: Mail,
+                      label: "Contact",
+                      active: activeTab === "contact",
+                      onClick: () => {
+                        setActiveTab("contact");
+                        window.scrollTo({
+                          top: document.documentElement.scrollHeight,
+                          behavior: "smooth",
+                        });
+                      },
+                    },
+                  ]
+                  : []),
+              ]}
             />
-          )}
-
-          {!!userDetails?.resume?.url && (
-            <a href={userDetails?.resume?.url} download target="_blank">
-              <Button
-                text={
-                  typeof window !== "undefined" && window.innerWidth > 500
-                    ? "Download resume"
-                    : "Resume"
-                }
-              />
-            </a>
-          )}
-        </motion.div>
+          </div>
+        </div>
       )}
 
       {!userDetails?.pro && (
         <div
-          className="hidden text-center lg:flex justify-center relative top-5 lg:absolute lg:right-[36px] lg:top-[10px] xl:block cursor-pointer"
+          className={`hidden text-center lg:flex justify-center relative top-5 lg:absolute lg:right-[36px] lg:top-[10px] xl:block cursor-pointer ${watermarkClassName}`}
           onClick={() => window.open("https://www.designfolio.me", "_blank")}
         >
           <div className="bg-df-section-card-bg-color shadow-df-section-card-shadow p-2 rounded-2xl">
@@ -162,6 +134,44 @@ export default function BottomNavigation({
           </div>
         </div>
       )}
-    </motion.div>
+      {/* Resume Dialog */}
+      <Dialog open={isResumeDialogOpen} onOpenChange={setIsResumeDialogOpen}>
+        <DialogContent className="max-w-3xl p-0 overflow-hidden">
+          <div className="p-6 border-b border-border">
+            <DialogHeader>
+              <DialogTitle>Resume Preview</DialogTitle>
+            </DialogHeader>
+          </div>
+          <div className="p-4">
+            {userDetails?.resume?.url ? (
+              <iframe
+                title="Resume Preview"
+                src={userDetails.resume.url}
+                className="w-full h-[70vh] rounded-xl border border-border"
+              />
+            ) : (
+              <div className="p-6 text-sm text-muted-foreground">
+                No resume uploaded.
+              </div>
+            )}
+          </div>
+          {userDetails?.resume?.url && (
+            <div className="p-4 border-t border-border flex gap-2 justify-end">
+              <a href={userDetails.resume.url} target="_blank" rel="noreferrer">
+                <Button variant="outline" className="rounded-full h-11">
+                  Download
+                </Button>
+              </a>
+              <Button
+                className="rounded-full h-11 bg-foreground-landing text-background-landing hover:bg-foreground-landing/90"
+                onClick={() => setIsResumeDialogOpen(false)}
+              >
+                Close
+              </Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

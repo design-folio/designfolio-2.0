@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useGlobalContext } from "@/context/globalContext";
-import { modals, sidebars, DEFAULT_SECTION_ORDER } from "@/lib/constant";
+import { modals, sidebars, DEFAULT_SECTION_ORDER, normalizeSectionOrder } from "@/lib/constant";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { getPlainTextLength } from "@/lib/tiptapUtils";
 import { cn } from "@/lib/utils";
@@ -63,6 +63,7 @@ import DragHandle from "./DragHandle";
 import SortIcon from "../../public/assets/svgs/sort.svg";
 import ReviewCard from "./reviewCard";
 import SortableModal from "./SortableModal";
+import AboutMe from "./aboutMe";
 
 // Move SortableProjectItem outside to prevent recreation on each render
 const SortableProjectItem = React.memo(({ project, onDeleteProject, handleRouter, getHref, recentlyMovedIds, onToggleVisibility }) => {
@@ -142,13 +143,7 @@ export default function Builder2({ edit = false }) {
   const { theme } = useTheme();
 
   // Get section order from userDetails or use template default
-  const _defaultOrder = DEFAULT_SECTION_ORDER;
-  const _raw = userDetails?.sectionOrder;
-  const _filtered = _raw && Array.isArray(_raw) && _raw.length > 0 ? _raw.filter(section => _defaultOrder.includes(section)) : null;
-  // Use filtered result only if it's not empty, otherwise fall back to default
-  const sectionOrder = _raw && Array.isArray(_raw) && _raw.length > 0 && _filtered && _filtered.length > 0
-    ? _filtered
-    : _defaultOrder;
+  const sectionOrder = normalizeSectionOrder(userDetails?.sectionOrder, DEFAULT_SECTION_ORDER);
 
   const {
     username,
@@ -393,6 +388,13 @@ export default function Builder2({ edit = false }) {
 
         {/* Sections rendered in order based on sectionOrder */}
         {sectionOrder.map((sectionId) => {
+          if (sectionId === 'about') {
+            return (
+              <div key="about" id="section-about" className="flex flex-col gap-6">
+                <AboutMe userDetails={userDetails} edit={edit} openModal={openModal} />
+              </div>
+            );
+          }
           if (sectionId === 'projects') {
             return (
               <div key="projects" id="section-projects" className="flex flex-col gap-6">

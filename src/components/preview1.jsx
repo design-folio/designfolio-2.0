@@ -10,19 +10,20 @@ import Reviews from "@/components/reviews";
 import Tools from "@/components/tools";
 import Works from "@/components/works";
 import { containerVariants, itemVariants } from "@/lib/animationVariants";
-import { DEFAULT_SECTION_ORDER } from "@/lib/constant";
+import { DEFAULT_SECTION_ORDER, normalizeSectionOrder } from "@/lib/constant";
+import AboutMe from "@/components/aboutMe";
 
 export default function Preview1({ userDetails, projectRef }) {
   // Get section order from userDetails or use template default
-  const _raw = userDetails?.sectionOrder;
-  const _defaultOrder = DEFAULT_SECTION_ORDER;
-  const _filtered = _raw && Array.isArray(_raw) && _raw.length > 0 ? _raw.filter(section => _defaultOrder.includes(section)) : null;
-  const sectionOrder = _raw && Array.isArray(_raw) && _raw.length > 0 && _filtered && _filtered.length > 0
-    ? _filtered
-    : _defaultOrder;
+  const sectionOrder = normalizeSectionOrder(userDetails?.sectionOrder, DEFAULT_SECTION_ORDER);
 
   // Section component mapping
   const sectionComponents = {
+    about: (
+      <motion.div variants={itemVariants} id="section-about">
+        <AboutMe userDetails={userDetails} />
+      </motion.div>
+    ),
     projects: userDetails?.projects?.length > 0 && (
       <motion.div variants={itemVariants} id="section-projects">
         <Projects

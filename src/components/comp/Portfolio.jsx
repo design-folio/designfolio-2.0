@@ -18,7 +18,7 @@ import { Footer } from "@/components/comp/Footer";
 import { useRouter } from "next/router";
 import Button2 from "../button";
 import { useGlobalContext } from "@/context/globalContext";
-import { modals, DEFAULT_SECTION_ORDER } from "@/lib/constant";
+import { modals, DEFAULT_SECTION_ORDER, normalizeSectionOrder } from "@/lib/constant";
 import DeleteIcon from "../../../public/assets/svgs/deleteIcon.svg";
 import AddCard from "../AddCard";
 import { useTheme } from "next-themes";
@@ -51,6 +51,7 @@ import { cn } from "@/lib/utils";
 import MemoCasestudy from "../icons/Casestudy";
 import Tools from "../tools";
 import { ToolStack } from "./ToolStack";
+import AboutMe from "../aboutMe";
 // import { ToolStack } from "./ToolStack";
 
 const Portfolio = ({ userDetails, edit }) => {
@@ -72,12 +73,7 @@ const Portfolio = ({ userDetails, edit }) => {
     useGlobalContext();
 
   // Get section order from userDetails or use template default
-  const _raw = userDetails?.sectionOrder;
-  const _defaultOrder = DEFAULT_SECTION_ORDER;
-  const _filtered = _raw && Array.isArray(_raw) && _raw.length > 0 ? _raw.filter(section => _defaultOrder.includes(section)) : null;
-  const sectionOrder = _raw && Array.isArray(_raw) && _raw.length > 0 && _filtered && _filtered.length > 0
-    ? _filtered
-    : _defaultOrder;
+  const sectionOrder = normalizeSectionOrder(userDetails?.sectionOrder, DEFAULT_SECTION_ORDER);
   const [expandedCards, setExpandedCards] = useState([]);
   const [showMore, setShowMore] = useState(false);
   const theme = useTheme();
@@ -490,6 +486,13 @@ const Portfolio = ({ userDetails, edit }) => {
 
           {/* Sections rendered in order based on sectionOrder */}
           {sectionOrder.map((sectionId) => {
+            if (sectionId === 'about') {
+              return (
+                <div key="about" id="section-about">
+                  <AboutMe userDetails={userDetails} edit={edit} openModal={openModal} />
+                </div>
+              );
+            }
             if (sectionId === 'works') {
               return (
                 <div key="works" id="section-works">

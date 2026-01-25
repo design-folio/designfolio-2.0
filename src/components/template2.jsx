@@ -28,6 +28,7 @@ import SimpleTiptapRenderer from "./SimpleTiptapRenderer";
 import Text from "./text";
 import { Button as ButtonNew } from "./ui/buttonNew";
 import MemoLinkedin from "./icons/Linkedin";
+import AboutMe from "./aboutMe";
 export default function Template2({ userDetails, preview = false }) {
   const {
     bio,
@@ -65,12 +66,14 @@ export default function Template2({ userDetails, preview = false }) {
       setActiveStep((prev) => prev + 1); // update step when no projects exist
     } else if (activeStep === 5 && reviews && reviews.length === 0) {
       setActiveStep((prev) => prev + 1); // update step when no reviews exist
-    } else if (activeStep === 7 && experiences && experiences.length === 0) {
+    } else if (activeStep === 7 && (!userDetails?.about || userDetails?.about?.trim?.() === "")) {
+      setActiveStep((prev) => prev + 1); // skip about if empty
+    } else if (activeStep === 8 && experiences && experiences.length === 0) {
       setActiveStep((prev) => prev + 1); // update step when no experiences exist
-    } else if (activeStep === 8 && !portfolioCheck) {
+    } else if (activeStep === 9 && !portfolioCheck) {
       setActiveStep((prev) => prev + 1);
     } else if (
-      activeStep === 9 &&
+      activeStep === 10 &&
       socials &&
       !Object.values(socials).every((social) => social != "")
     ) {
@@ -359,7 +362,18 @@ export default function Template2({ userDetails, preview = false }) {
             </div>
           )}
 
-          {activeStep >= 7 && experiences && experiences?.length > 0 && (
+          {activeStep >= 7 && (
+            <div id="section-about" className="flex flex-col gap-6">
+              <Chat direction="right" delay={400} onComplete={handleStepCompletion}>
+                Tell me a little about yourself?
+              </Chat>
+              <div>
+                <AboutMe userDetails={userDetails} edit={false} />
+              </div>
+            </div>
+          )}
+
+          {activeStep >= 8 && experiences && experiences?.length > 0 && (
             <div id="section-works" className="flex flex-col gap-6">
               <Chat direction="right" delay={400} onComplete={handleStepCompletion}>
                 Where have you worked so far?
@@ -440,7 +454,7 @@ export default function Template2({ userDetails, preview = false }) {
             </div>
           )}
 
-          {activeStep >= 8 && portfolioCheck && (
+          {activeStep >= 9 && portfolioCheck && (
             <>
               <Chat direction="right" delay={400} onComplete={handleStepCompletion}>
                 Got any other places I should check out?
@@ -517,7 +531,7 @@ export default function Template2({ userDetails, preview = false }) {
             </>
           )}
 
-          {activeStep >= 9 &&
+          {activeStep >= 10 &&
             (resume ||
               (socials &&
                 Object.values(socials).some(

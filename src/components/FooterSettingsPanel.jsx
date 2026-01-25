@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/buttonNew";
 import { Label } from "@/components/ui/label";
 import { SheetWrapper } from "@/components/ui/SheetWrapper";
@@ -11,6 +11,7 @@ import { _updateUser } from "@/network/post-request";
 import { FooterValidationSchema } from "@/lib/validationSchemas";
 import Text from "./text";
 import { Formik, Form, Field, ErrorMessage } from "formik";
+import { toast } from "react-toastify";
 
 const FooterSettingsPanel = () => {
   const {
@@ -25,25 +26,80 @@ const FooterSettingsPanel = () => {
   const show = activeSidebar === sidebars.footer;
 
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploadingResume, setIsUploadingResume] = useState(false);
+  const resumeInputRef = useRef(null);
 
   const handleClose = () => {
     closeSidebar();
   };
 
   const handleResumeUpload = () => {
-    openModal(modals.resume);
-    handleClose();
+    resumeInputRef.current?.click?.();
   };
 
-  const getInitialValues = () => ({
-    email: userDetails?.email || "",
-    phone: userDetails?.phone || "",
-    blogs: userDetails?.portfolios?.medium || "",
-    linkedin: userDetails?.socials?.linkedin || "",
-    x: userDetails?.socials?.twitter || "",
-    instagram: userDetails?.socials?.instagram || "",
-    dribbble: userDetails?.portfolios?.dribbble || "",
-  });
+  const handleResumeFileChange = async (event) => {
+    const file = event?.currentTarget?.files?.[0];
+    // allow re-selecting same file
+    event.currentTarget.value = "";
+    if (!file) return;
+
+    // Basic constraints (match old UX copy: PDF only, max 5MB)
+    if (file.type !== "application/pdf") {
+      toast.error("Please upload a PDF file.");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Maximum size should be 5MB.");
+      return;
+    }
+
+    setIsUploadingResume(true);
+    try {
+      const base64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error("Failed to read file"));
+        reader.readAsDataURL(file);
+      });
+
+      const payload = {
+        resume: {
+          key: base64,
+          originalName: file.name,
+          extension: file.type,
+        },
+      };
+
+      const res = await _updateUser(payload);
+      if (res?.data?.user) {
+        updateCache("userDetails", res.data.user);
+        setUserDetails(res.data.user);
+        toast.success("Resume updated successfully");
+      }
+    } catch (error) {
+      console.error("Error uploading resume:", error);
+      toast.error("Failed to upload resume");
+    } finally {
+      setIsUploadingResume(false);
+    }
+  };
+
+  const getInitialValues = () => {
+    const rawContactEmail = userDetails?.contact_email;
+    const contactEmail =
+      typeof rawContactEmail === "string" ? rawContactEmail.trim() : "";
+
+    return {
+      // If contact_email is empty/missing/null, show account email by default
+      contact_email: contactEmail ? rawContactEmail : (userDetails?.email || ""),
+      phone: userDetails?.phone || "",
+      blogs: userDetails?.portfolios?.medium || "",
+      linkedin: userDetails?.socials?.linkedin || "",
+      x: userDetails?.socials?.twitter || "",
+      instagram: userDetails?.socials?.instagram || "",
+      dribbble: userDetails?.portfolios?.dribbble || "",
+    };
+  };
 
   const renderContent = (isMobile) => {
     return (
@@ -55,7 +111,10 @@ const FooterSettingsPanel = () => {
         onSubmit={async (values, actions) => {
           setIsSaving(true);
           try {
+            const contactEmail = (values.contact_email || "").trim();
             const updatePayload = {
+              // Keep as string ("" allowed) to match backend Joi allow("")
+              contact_email: contactEmail,
               phone: values.phone,
               socials: {
                 linkedin: values.linkedin,
@@ -113,9 +172,23 @@ const FooterSettingsPanel = () => {
                       variant="outline"
                       size="lg"
                       className="w-full rounded-full h-12 border-2 border-border/50 bg-white dark:bg-df-section-card-bg-color hover:bg-muted/50 font-semibold"
+                      type="button"
+                      disabled={isUploadingResume}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleResumeUpload();
+                      }}
                     >
-                      Choose File
+                      {isUploadingResume ? "Uploading..." : "Choose File"}
                     </Button>
+                    <input
+                      ref={resumeInputRef}
+                      type="file"
+                      hidden
+                      accept="application/pdf"
+                      onChange={handleResumeFileChange}
+                    />
                   </div>
                 </div>
               </div>
@@ -131,16 +204,23 @@ const FooterSettingsPanel = () => {
                       size={"p-xxsmall"}
                       className="font-medium"
                     >
-                      Email
+                      Contact Email
                     </Text>
                     <Field
-                      name="email"
+                      name="contact_email"
                       type="email"
-                      disabled
-                      className="text-input mt-2 opacity-60 cursor-not-allowed"
+                      className={`text-input mt-2 ${errors.contact_email &&
+                        touched.contact_email &&
+                        "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
+                        }`}
                       data-testid="input-footer-mail"
                       placeholder="your.email@example.com"
                       autoComplete="off"
+                    />
+                    <ErrorMessage
+                      name="contact_email"
+                      component="div"
+                      className="error-message"
                     />
                   </div>
                   <div>

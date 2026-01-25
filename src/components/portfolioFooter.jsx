@@ -74,7 +74,7 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
 
   const { resume, socials, portfolios } = userDetails || {};
   // Get email and phone from userDetails (may need to be added to userDetails structure)
-  const email = userDetails?.email || userDetails?.contact?.email;
+  const email = userDetails?.contact_email || userDetails?.email || userDetails?.contact?.email;
   const phone = userDetails?.phone || userDetails?.contact?.phone;
 
   // Get wallpaper URL for mask effect

@@ -105,6 +105,13 @@ export const WorkValidationSchema = Yup.object().shape({
 
 
 export const FooterValidationSchema = Yup.object().shape({
+  contact_email: Yup.string()
+    .nullable()
+    .notRequired()
+    .test("email-or-empty", "Invalid contact email", (value) => {
+      if (!value || value.trim() === "") return true;
+      return Yup.string().email().isValidSync(value);
+    }),
   phone: Yup.string()
     .nullable()
     .notRequired()

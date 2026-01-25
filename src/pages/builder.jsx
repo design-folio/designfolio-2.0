@@ -22,6 +22,7 @@ import { Feedefy } from "@feedefy/react";
 import { useRouter } from "next/router";
 import { _resendOTP } from "@/network/get-request";
 import AddUsername from "@/components/addUsername";
+import AddAbout from "@/components/addAbout";
 import Builder2 from "@/components/Builder2";
 import Minimal from "@/components/comp/Minimal";
 import Portfolio from "@/components/comp/Portfolio";
@@ -155,6 +156,8 @@ export default function Index() {
         return <AddPortfolioLinks />;
       case modals.username:
         return <AddUsername />;
+      case modals.about:
+        return <AddAbout />;
     }
   };
 

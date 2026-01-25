@@ -104,7 +104,7 @@ const Button = ({
       onMouseLeave={() => animation && setIsHovered(false)}
       disabled={isDisabled || isLoading}
       {...rest}
-      form={form}
+      form={form || undefined}
       type={btnType}
       aria-disabled={isDisabled || isLoading}
     >

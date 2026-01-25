@@ -20,9 +20,25 @@ export default function Profile({
 }) {
   const controls = useAnimation();
   const skillsRef = useRef(null);
+  const avatarImgRef = useRef(null);
   const [isHovering, setIsHovering] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [imageLoaded, setImageLoaded] = useState(false);
+
+  const avatarSrc = useMemo(() => getUserAvatarImage(userDetails), [userDetails]);
+
+  // Ensure avatar never stays invisible (cached images may not fire onLoad)
+  useEffect(() => {
+    setImageLoaded(false);
+  }, [avatarSrc]);
+
+  useEffect(() => {
+    // If the image is already cached/complete, reveal it immediately.
+    const img = avatarImgRef.current;
+    if (img && img.complete) {
+      setImageLoaded(true);
+    }
+  }, [avatarSrc]);
 
   const skills = useMemo(
     () =>
@@ -60,7 +76,7 @@ export default function Profile({
         transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
       >
         <div
-          className={cn("bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] overflow-hidden relative backdrop-blur-sm border-0")}
+          className={cn("bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] overflow-hidden items-center relative backdrop-blur-sm border-0")}
         >
           {/* Preview Mode */}
           {preview && (
@@ -93,7 +109,7 @@ export default function Profile({
 
           {/* Profile Info */}
           <div className="p-6 sm:p-8 pb-6">
-            <div className="flex flex-col md:flex-row md:items-center gap-6">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
               {/* Avatar Container */}
               <Tooltip delayDuration={300}>
                 <Magnetic intensity={0.2} range={100}>
@@ -128,7 +144,8 @@ export default function Profile({
                         damping: 20,
                         mass: 0.5
                       }}
-                      className={cn("w-28 h-28 md:w-32 md:h-32 rounded-2xl flex items-center justify-center relative overflow-hidden shrink-0", !userDetails?.avatar ? "bg-df-bg-color" : "")}
+
+                      className={cn("w-24 h-24 sm:w-32 sm:h-32 rounded-2xl flex items-center justify-center relative overflow-hidden shrink-0", !userDetails?.avatar ? "bg-df-bg-color" : "")}
                       style={{
                         backgroundColor: !userDetails?.avatar ? undefined : '#F5F3F1',
                         perspective: "1000px",
@@ -146,10 +163,12 @@ export default function Profile({
                         />
                       )}
                       <img
-                        src={getUserAvatarImage(userDetails)}
+                        ref={avatarImgRef}
+                        src={avatarSrc}
                         alt={userDetails?.firstName || "Avatar"}
                         className="w-full h-full object-contain"
                         onLoad={() => setImageLoaded(true)}
+                        onError={() => setImageLoaded(true)}
                         style={{ opacity: imageLoaded ? 1 : 0, transition: 'opacity 0.3s' }}
                       />
                     </motion.div>
@@ -196,12 +215,6 @@ export default function Profile({
           {skills?.length > 0 && (
             <div
               className="relative overflow-hidden border-t border-border/20 py-3"
-              style={{
-                background: "var(--skills-banner-bg)",
-                boxShadow: "var(--skills-banner-shadow)",
-                maskImage:
-                  "linear-gradient(to right, rgba(0,0,0,0) 0%, rgb(0,0,0) 12.5%, rgb(0,0,0) 87.5%, rgba(0,0,0,0) 100%)",
-              }}
             >
               <motion.div
                 ref={skillsRef}

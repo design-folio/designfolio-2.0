@@ -30,9 +30,8 @@ import SortIcon from "../../public/assets/svgs/sort.svg";
 import { useTheme } from "next-themes";
 import MemoWorkExperience from "./icons/WorkExperience";
 import DragHandle from "./DragHandle";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { motion } from "framer-motion";
-import { PencilIcon, ChevronDown, ChevronUp } from "lucide-react";
+import { PencilIcon, ChevronDown, ChevronUp, Building } from "lucide-react";
 import SimpleTiptapRenderer from "./SimpleTiptapRenderer";
 import { useGlobalContext } from "@/context/globalContext";
 import { Button as ButtonNew } from "./ui/buttonNew";
@@ -85,7 +84,7 @@ export default function Works({
       wallpaper={userDetails?.wallpaper}
       title={"Work experience"}
       edit={edit}
-      className="!w-fit !h-fit"
+      className="!h-fit"
       btnType="normal"
       icon={
         userDetails?.experiences?.length != 0 && (
@@ -104,6 +103,7 @@ export default function Works({
               key={experience?._id}
               experience={experience}
               index={index}
+              showDivider={index < (userDetails?.experiences?.length || 0) - 1}
               edit={edit}
               setSelectedWork={setSelectedWork}
               openSidebar={openSidebar}
@@ -194,7 +194,7 @@ export default function Works({
   );
 }
 
-const WorkExperienceCard = ({ experience, index, edit, setSelectedWork, openSidebar }) => {
+const WorkExperienceCard = ({ experience, index, edit, setSelectedWork, openSidebar, showDivider }) => {
   const [expandedCards, setExpandedCards] = useState([]);
 
   const toggleExpand = (id) => {
@@ -214,93 +214,93 @@ const WorkExperienceCard = ({ experience, index, edit, setSelectedWork, openSide
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
-      className="group flex gap-5 p-3 rounded-2xl border border-border/30 bg-work-experience-bg-color hover-elevate transition-all duration-300"
+      className="group"
     >
-      <div className="shrink-0">
-        <Avatar className="w-12 h-12 rounded-xl border border-border/50">
-          <AvatarImage
-            src={
-              experience?.logo && !experience.logo.includes('dicebear')
-                ? experience.logo
-                : `https://api.dicebear.com/7.x/initials/svg?seed=${experience?.company?.substring(0, 2)?.toUpperCase() || 'CO'}`
-            }
-            alt={experience?.company}
-          />
-          <AvatarFallback className="bg-muted text-xs">
-            {experience?.company?.substring(0, 2)?.toUpperCase()}
-          </AvatarFallback>
-        </Avatar>
-      </div>
-
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center justify-between mb-1">
-          <h3 className="font-semibold text-base truncate">
-            {experience?.role}
-          </h3>
-          <span className="text-xs font-medium text-foreground-landing/40 shrink-0">
+      <div className="grid grid-cols-1 md:grid-cols-[150px_1fr] gap-1 md:gap-6">
+        <div className="shrink-0">
+          <span className="text-xs font-medium text-foreground-landing/40 uppercase tracking-wider">
             {`${experience?.startMonth} ${experience?.startYear} - ${experience?.currentlyWorking
               ? "Present"
               : `${experience?.endMonth} ${experience?.endYear}`
               }`}
           </span>
         </div>
-        <div className={`flex items-center gap-2 ${hasDescription ? 'mb-2' : ''}`}>
-          <span className="text-sm font-medium text-foreground-landing/60">
-            {experience?.company}
-          </span>
-        </div>
-        {hasDescription && (
-          <div className="text-sm text-foreground-landing/50 leading-relaxed">
-            {shouldShowToggle && !isExpanded ? (
-              <div className="line-clamp-2">
-                <SimpleTiptapRenderer
-                  content={experience?.description || ""}
-                  mode="work"
-                  enableBulletList={true}
-                />
+
+        <div className="flex-1 min-w-0">
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-2">
+                <h3 className="font-semibold text-base text-foreground-landing truncate">
+                  {experience?.role}
+                </h3>
+                <span className="text-foreground-landing/30">at</span>
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <Building className="w-4 h-4 text-foreground-landing/40 shrink-0" />
+                  <span className="font-semibold text-base text-foreground-landing truncate">
+                    {experience?.company}
+                  </span>
+                </div>
               </div>
-            ) : (
-              <SimpleTiptapRenderer
-                content={experience?.description || ""}
-                mode="work"
-                enableBulletList={true}
-              />
-            )}
-            {shouldShowToggle && (
-              <button
-                onClick={() => toggleExpand(experience?._id)}
-                className="mt-2 text-foreground-landing/80 hover:text-foreground-landing inline-flex items-center gap-1 underline underline-offset-4"
+
+              {hasDescription && (
+                <div className="text-sm text-foreground-landing/60 leading-relaxed max-w-xl">
+                  {shouldShowToggle && !isExpanded ? (
+                    <div className="max-h-[110px] overflow-hidden relative">
+                      <SimpleTiptapRenderer
+                        content={experience?.description || ""}
+                        mode="work"
+                        enableBulletList={true}
+                      />
+                      <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-card to-transparent pointer-events-none" />
+                    </div>
+                  ) : (
+                    <SimpleTiptapRenderer
+                      content={experience?.description || ""}
+                      mode="work"
+                      enableBulletList={true}
+                    />
+                  )}
+
+                  {shouldShowToggle && (
+                    <button
+                      onClick={() => toggleExpand(experience?._id)}
+                      className="mt-2 text-foreground-landing/80 hover:text-foreground-landing inline-flex items-center gap-1 underline underline-offset-4"
+                    >
+                      {isExpanded ? (
+                        <>
+                          Show Less
+                          <ChevronUp className="h-3 w-3" />
+                        </>
+                      ) : (
+                        <>
+                          View More
+                          <ChevronDown className="h-3 w-3" />
+                        </>
+                      )}
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {edit && (
+              <ButtonNew
+                className="h-11 w-11 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                onClick={() => {
+                  setSelectedWork(experience);
+                  openSidebar(sidebars.work);
+                }}
+                variant={"secondary"}
+                size="icon"
               >
-                {isExpanded ? (
-                  <>
-                    Show Less
-                    <ChevronUp className="h-3 w-3" />
-                  </>
-                ) : (
-                  <>
-                    View More
-                    <ChevronDown className="h-3 w-3" />
-                  </>
-                )}
-              </button>
+                <PencilIcon className="text-df-icon-color cursor-pointer" />
+              </ButtonNew>
             )}
           </div>
-        )}
+        </div>
       </div>
 
-      {edit && (
-        <ButtonNew
-          className="h-11 w-11 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
-          onClick={() => {
-            setSelectedWork(experience);
-            openSidebar(sidebars.work);
-          }}
-          variant={"secondary"}
-          size="icon"
-        >
-          <PencilIcon className="text-df-icon-color cursor-pointer" />
-        </ButtonNew>
-      )}
+      {showDivider && <div className="mt-6 border-b border-border/10" />}
     </motion.div>
   );
 };

@@ -18,7 +18,7 @@ import { Footer } from "@/components/comp/Footer";
 import { useRouter } from "next/router";
 import Button2 from "../button";
 import { useGlobalContext } from "@/context/globalContext";
-import { modals, DEFAULT_SECTION_ORDER } from "@/lib/constant";
+import { modals, DEFAULT_SECTION_ORDER, normalizeSectionOrder } from "@/lib/constant";
 import DeleteIcon from "../../../public/assets/svgs/deleteIcon.svg";
 import AddCard from "../AddCard";
 import { useTheme } from "next-themes";
@@ -51,6 +51,7 @@ import { cn } from "@/lib/utils";
 import MemoCasestudy from "../icons/Casestudy";
 import Tools from "../tools";
 import { ToolStack } from "./ToolStack";
+import { AboutMeContent } from "../aboutMe";
 // import { ToolStack } from "./ToolStack";
 
 const Portfolio = ({ userDetails, edit }) => {
@@ -68,16 +69,18 @@ const Portfolio = ({ userDetails, edit }) => {
     projects,
     reviews,
   } = userDetails || {};
+
+  const about =
+    userDetails?.about ??
+    userDetails?.aboutMe ??
+    userDetails?.about_me ??
+    "";
+  const hasAbout = typeof about === "string" && about.trim().length > 0;
   const { openModal, setSelectedWork, setSelectedProject, setUserDetails } =
     useGlobalContext();
 
   // Get section order from userDetails or use template default
-  const _raw = userDetails?.sectionOrder;
-  const _defaultOrder = DEFAULT_SECTION_ORDER;
-  const _filtered = _raw && Array.isArray(_raw) && _raw.length > 0 ? _raw.filter(section => _defaultOrder.includes(section)) : null;
-  const sectionOrder = _raw && Array.isArray(_raw) && _raw.length > 0 && _filtered && _filtered.length > 0
-    ? _filtered
-    : _defaultOrder;
+  const sectionOrder = normalizeSectionOrder(userDetails?.sectionOrder, DEFAULT_SECTION_ORDER);
   const [expandedCards, setExpandedCards] = useState([]);
   const [showMore, setShowMore] = useState(false);
   const theme = useTheme();
@@ -490,6 +493,37 @@ const Portfolio = ({ userDetails, edit }) => {
 
           {/* Sections rendered in order based on sectionOrder */}
           {sectionOrder.map((sectionId) => {
+            if (sectionId === 'about') {
+              if (!edit && !hasAbout) return null;
+              return (
+                <motion.section
+                  key="about"
+                  id="section-about"
+                  variants={container}
+                  initial="hidden"
+                  animate="show"
+                  className="py-12 border-b border-secondary-border"
+                >
+                  <div className="flex items-center justify-between mb-8">
+                    <h3 className="text-3xl font-bold">About</h3>
+                    {edit && (
+                      <Button2
+                        onClick={() => openModal(modals.about)}
+                        customClass="!p-[8px] rounded-[10px] !flex-shrink-0"
+                        type={"secondary"}
+                        icon={<EditIcon className="text-df-icon-color cursor-pointer" size={20} />}
+                      />
+                    )}
+                  </div>
+                  <AboutMeContent
+                    userDetails={userDetails}
+                    edit={edit}
+                    variant="default"
+                    textClassName="dark:text-gray-400 text-gray-600"
+                  />
+                </motion.section>
+              );
+            }
             if (sectionId === 'works') {
               return (
                 <div key="works" id="section-works">

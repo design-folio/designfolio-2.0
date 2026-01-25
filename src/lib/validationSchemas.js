@@ -200,3 +200,10 @@ export const FooterValidationSchema = Yup.object().shape({
       return value.includes("dribbble.com");
     }),
 });
+
+
+export const AboutSchema = Yup.object().shape({
+  about: Yup.string()
+    .max(1200, "About me must be 1200 characters or less")
+    .nullable(),
+});

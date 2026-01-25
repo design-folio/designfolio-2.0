@@ -17,13 +17,19 @@ export default function Section({
   wallpaper,
   actions, // Custom actions element (for multiple buttons)
   showStar = false,
+  className = "",
+  headerClassName = "",
+  contentClassName = "",
 }) {
 
   return (
     <div
-      className={cn("bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-6 break-words border-0 backdrop-blur-sm")}
+      className={cn(
+        "bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-6 break-words border-0 backdrop-blur-sm",
+        className
+      )}
     >
-      <div className="flex items-center justify-between">
+      <div className={cn("flex items-center justify-between", headerClassName)}>
         <Text
           size="p-xs-uppercase"
           className="text-sm text-df-description-color"
@@ -57,7 +63,7 @@ export default function Section({
           </motion.svg>
         )}
       </div>
-      <div className="mt-4 md:mt-5">{children}</div>
+      <div className={cn("mt-4 md:mt-5", contentClassName)}>{children}</div>
     </div>
   );
 }

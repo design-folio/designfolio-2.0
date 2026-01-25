@@ -11,6 +11,7 @@ export const popovers = {
 export const modals = {
   onboarding: "onboarding",
   onBoardingNewUser: "onboardingNewUser",
+  about: "about",
   project: "project",
   deleteProject: "delete-project",
   review: "review",
@@ -28,6 +29,22 @@ export const sidebars = {
   work: "work",
   review: "review",
   footer: "footer",
+};
+
+// Ensure sectionOrder always contains all available sections (e.g. after adding new blocks)
+export const normalizeSectionOrder = (rawOrder, availableSections = DEFAULT_SECTION_ORDER) => {
+  if (!Array.isArray(availableSections) || availableSections.length === 0) return [];
+
+  if (!Array.isArray(rawOrder) || rawOrder.length === 0) {
+    return [...availableSections];
+  }
+
+  // Keep only known sections, preserve user ordering
+  const filtered = rawOrder.filter((id) => availableSections.includes(id));
+  // Append any newly-added sections the user doesn't have yet
+  const missing = availableSections.filter((id) => !filtered.includes(id));
+
+  return [...filtered, ...missing];
 };
 
 export function hasSubdomain() {
@@ -83,4 +100,4 @@ export const chatBubbleItems = {
 };
 
 
-export const DEFAULT_SECTION_ORDER = ['projects', 'reviews', 'tools', 'works'];
+export const DEFAULT_SECTION_ORDER = ['projects', 'reviews', 'tools', 'about','works', ];

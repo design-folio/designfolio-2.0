@@ -412,7 +412,7 @@ export default function LoggedInHeader({
       )}
       style={{ right: shouldShiftHeader ? getShiftWidth() : '0' }}
     >
-      <div className="shadow-df-section-card-shadow max-w-[890px] p-3 border border-card-border md:!p-4 rounded-2xl bg-df-header-bg-color mx-auto flex justify-between items-center">
+      <div className="shadow-df-section-card-shadow max-w-[890px] p-3 border border-card-border md:px-8 md:py-4 rounded-2xl bg-df-header-bg-color mx-auto flex justify-between items-center">
         <div className="flex items-center gap-[24px]">
           <Link href={"/builder"}>
             <Logo className="text-df-base-text-color" />
@@ -581,7 +581,7 @@ export default function LoggedInHeader({
               src={
                 getUserAvatarImage(userDetails)
               }
-              className={cn("w-[44px] h-[44px] rounded-full cursor-pointer", !userDetails?.avatar ? "bg-df-bg-color" : "")}
+              className={cn("w-[44px] h-[44px] rounded-2xl cursor-pointer", !userDetails?.avatar ? "bg-df-bg-color" : "")}
             />
 
             {isClient && (

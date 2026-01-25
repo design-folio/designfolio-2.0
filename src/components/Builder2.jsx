@@ -63,7 +63,7 @@ import DragHandle from "./DragHandle";
 import SortIcon from "../../public/assets/svgs/sort.svg";
 import ReviewCard from "./reviewCard";
 import SortableModal from "./SortableModal";
-import AboutMe from "./aboutMe";
+import { AboutMeContent } from "./aboutMe";
 
 // Move SortableProjectItem outside to prevent recreation on each render
 const SortableProjectItem = React.memo(({ project, onDeleteProject, handleRouter, getHref, recentlyMovedIds, onToggleVisibility }) => {
@@ -160,6 +160,13 @@ export default function Builder2({ edit = false }) {
     firstName,
     lastName,
   } = userDetails || {};
+
+  const about =
+    userDetails?.about ??
+    userDetails?.aboutMe ??
+    userDetails?.about_me ??
+    "";
+  const hasAbout = typeof about === "string" && about.trim().length > 0;
   const router = useRouter();
   const getSkills = () => {
     if (skills.length > 1) {
@@ -389,9 +396,32 @@ export default function Builder2({ edit = false }) {
         {/* Sections rendered in order based on sectionOrder */}
         {sectionOrder.map((sectionId) => {
           if (sectionId === 'about') {
+            if (!edit && !hasAbout) return null;
             return (
               <div key="about" id="section-about" className="flex flex-col gap-6">
-                <AboutMe userDetails={userDetails} edit={edit} openModal={openModal} />
+                <Chat direction="right">Tell me a little about yourself?</Chat>
+                <Chat direction="left">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      <AboutMeContent
+                        userDetails={userDetails}
+                        edit={edit}
+                        variant="default"
+                        textClassName="text-df-base-text-color"
+                      />
+                    </div>
+                    {edit && (
+                      <ButtonNew
+                        onClick={() => openModal(modals.about)}
+                        className="h-11 w-11 shrink-0"
+                        variant="secondary"
+                        size="icon"
+                      >
+                        <PencilIcon className="text-df-icon-color cursor-pointer" />
+                      </ButtonNew>
+                    )}
+                  </div>
+                </Chat>
               </div>
             );
           }

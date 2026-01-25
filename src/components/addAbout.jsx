@@ -5,22 +5,13 @@ import * as Yup from "yup";
 import Button from "./button";
 import Text from "./text";
 import CloseIcon from "../../public/assets/svgs/close.svg";
-
-const AboutSchema = Yup.object().shape({
-  about: Yup.string()
-    .max(1200, "About me must be 1200 characters or less")
-    .nullable(),
-});
+import { AboutSchema } from "@/lib/validationSchemas";
 
 export default function AddAbout() {
   const { closeModal, userDetails, updateCache, setUserDetails } =
     useGlobalContext();
 
-  const initialAbout =
-    userDetails?.about ??
-    userDetails?.aboutMe ??
-    userDetails?.about_me ??
-    "";
+  const initialAbout = userDetails?.about ?? "";
 
   const handleSubmit = (values, actions) => {
     const about = values?.about ?? "";

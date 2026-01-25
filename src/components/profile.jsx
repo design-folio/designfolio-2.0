@@ -144,7 +144,7 @@ export default function Profile({
                         damping: 20,
                         mass: 0.5
                       }}
-                     
+
                       className={cn("w-24 h-24 sm:w-32 sm:h-32 rounded-2xl flex items-center justify-center relative overflow-hidden shrink-0", !userDetails?.avatar ? "bg-df-bg-color" : "")}
                       style={{
                         backgroundColor: !userDetails?.avatar ? undefined : '#F5F3F1',
@@ -215,12 +215,6 @@ export default function Profile({
           {skills?.length > 0 && (
             <div
               className="relative overflow-hidden border-t border-border/20 py-3"
-              style={{
-                background: "var(--skills-banner-bg)",
-                boxShadow: "var(--skills-banner-shadow)",
-                maskImage:
-                  "linear-gradient(to right, rgba(0,0,0,0) 0%, rgb(0,0,0) 12.5%, rgb(0,0,0) 87.5%, rgba(0,0,0,0) 100%)",
-              }}
             >
               <motion.div
                 ref={skillsRef}

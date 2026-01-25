@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/buttonNew";
 import { useGlobalContext } from "@/context/globalContext";
 import { sidebars } from "@/lib/constant";
+import { getPlainTextLength } from "@/lib/tiptapUtils";
 import { _updateUser } from "@/network/post-request";
 import {
   KeyboardSensor,
@@ -15,7 +16,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { motion } from "framer-motion";
-import { Plus, PlusIcon, Pencil, Linkedin, QuoteIcon } from "lucide-react";
+import { Plus, PlusIcon, Pencil, Linkedin, QuoteIcon, ChevronDown, ChevronUp } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useState } from "react";
 import { twMerge } from "tailwind-merge";
@@ -44,6 +45,13 @@ export default function Reviews({ edit = false, openModal, userDetails }) {
   const reviews = userDetails?.reviews || [];
   const theme = useTheme();
   const [showModal, setShowModal] = useState(false);
+  const [expandedReviewIds, setExpandedReviewIds] = useState([]);
+
+  const toggleExpandReview = (id) => {
+    setExpandedReviewIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  };
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -131,10 +139,10 @@ export default function Reviews({ edit = false, openModal, userDetails }) {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, amount: 0.2 }}
                         transition={{ duration: 0.5, delay: idx * 0.1 }}
-                        className="group rounded-2xl p-6 flex flex-col relative transition-all duration-300 h-full bg-review-card-bg-color hover-elevate"
-                        style={{
-                          boxShadow: '0 0 0 1px rgba(0,0,0,0.03), 0 0 40px rgba(0,0,0,0.015)'
-                        }}
+                        className="group rounded-2xl p-6 flex flex-col relative transition-all duration-300 h-full bg-review-card-bg-color hover-elevate border border-border/50"
+                      // style={{
+                      //   boxShadow: '0 0 0 1px rgba(0,0,0,0.03), 0 0 40px rgba(0,0,0,0.015)'
+                      // }}
                       >
                         <div className="mb-4 mt-2 flex items-center justify-between">
                           <MemoQuoteIcon className="text-df-icon-color opacity-20" />
@@ -156,12 +164,48 @@ export default function Reviews({ edit = false, openModal, userDetails }) {
 
                         <div className="flex-1 mb-8">
                           <div className="text-base leading-relaxed text-df-description-color">
-                            <SimpleTiptapRenderer
-                              content={review?.description || ""}
-                              mode="review"
-                              enableBulletList={false}
-                              className="rounded-none shadow-none"
-                            />
+                            {(() => {
+                              const id = review?._id ?? `${idx}`;
+                              const plainTextLength = getPlainTextLength(review?.description || "");
+                              const shouldShowToggle = plainTextLength > 180;
+                              const isExpanded = expandedReviewIds.includes(id);
+
+                              return (
+                                <>
+                                  <div className={shouldShowToggle && !isExpanded ? "max-h-[110px] overflow-hidden relative" : ""}>
+                                    <SimpleTiptapRenderer
+                                      content={review?.description || ""}
+                                      mode="review"
+                                      enableBulletList={false}
+                                      className="rounded-none shadow-none"
+                                    />
+                                    {shouldShowToggle && !isExpanded && (
+                                      <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-review-card-bg-color to-transparent pointer-events-none" />
+                                    )}
+                                  </div>
+
+                                  {shouldShowToggle && (
+                                    <button
+                                      type="button"
+                                      onClick={() => toggleExpandReview(id)}
+                                      className="mt-2 text-df-description-color hover:text-df-heading-color inline-flex items-center gap-1 underline underline-offset-4"
+                                    >
+                                      {isExpanded ? (
+                                        <>
+                                          Show Less
+                                          <ChevronUp className="h-3 w-3" />
+                                        </>
+                                      ) : (
+                                        <>
+                                          View More
+                                          <ChevronDown className="h-3 w-3" />
+                                        </>
+                                      )}
+                                    </button>
+                                  )}
+                                </>
+                              );
+                            })()}
                           </div>
                         </div>
 

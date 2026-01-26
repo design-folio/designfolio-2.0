@@ -9,9 +9,9 @@ import { useGlobalContext } from "@/context/globalContext";
 import { DEFAULT_SECTION_ORDER, normalizeSectionOrder } from "@/lib/constant";
 import { cn } from "@/lib/utils";
 import { useEffect } from "react";
-import { AboutMeContent } from "@/components/aboutMe";
-import { Button as ButtonNew } from "@/components/ui/buttonNew";
-import { PencilIcon } from "lucide-react";
+// import { AboutMeContent } from "@/components/aboutMe";
+// import { Button as ButtonNew } from "@/components/ui/buttonNew";
+// import { PencilIcon } from "lucide-react";
 
 const Minimal = ({ userDetails, edit }) => {
   const { setCursor, openModal } = useGlobalContext();
@@ -19,18 +19,21 @@ const Minimal = ({ userDetails, edit }) => {
     setCursor(userDetails?.cursor ? userDetails?.cursor : 0);
   }, []);
 
+  /*
   const about =
     userDetails?.about ??
     userDetails?.aboutMe ??
     userDetails?.about_me ??
     "";
   const hasAbout = typeof about === "string" && about.trim().length > 0;
+  */
 
   // Get section order from userDetails or use template default
   const sectionOrder = normalizeSectionOrder(userDetails?.sectionOrder, DEFAULT_SECTION_ORDER);
 
   // Section component mapping
   const sectionComponents = {
+    /*
     about: (edit || hasAbout) && (
       <section id="section-about" className="py-12">
         <div className="flex items-center justify-between mb-8">
@@ -54,6 +57,7 @@ const Minimal = ({ userDetails, edit }) => {
         />
       </section>
     ),
+    */
     projects: (userDetails?.projects?.length != 0 || edit) && (
       <section id="section-projects">
         <WorkShowcase userDetails={userDetails} edit={edit} />

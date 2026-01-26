@@ -9,7 +9,7 @@ import Projects from "@/components/Projects";
 import Reviews from "@/components/reviews";
 import Tools from "@/components/tools";
 import Works from "@/components/works";
-import AboutMe from "@/components/aboutMe";
+// import AboutMe from "@/components/aboutMe";
 import BottomLayout from "./bottomLayout";
 import { normalizeSectionOrder } from "@/lib/constant";
 
@@ -47,11 +47,13 @@ export default function Template1({ userDetails }) {
 
   // Section component mapping
   const sectionComponents = {
+    /*
     about: (
       <motion.div variants={itemVariants} id="section-about">
         <AboutMe userDetails={userDetails} />
       </motion.div>
     ),
+    */
     projects: userDetails?.projects?.length > 0 && (
       <motion.div variants={itemVariants} id="section-projects">
         <Projects userDetails={userDetails} projectRef={projectRef} />

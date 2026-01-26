@@ -11,6 +11,9 @@ import ClaimDomain from "./claimDomain"
 import Link from "next/link"
 import Button from "./button"
 import Text from "./text"
+import { Sun } from "lucide-react"
+import { Typewriter } from "./ui/typewriter"
+import { TextEffect } from "./ui/text-effect"
 
 export default function HeroSection({ dfToken }) {
     const sectionRef = useRef(null)
@@ -379,14 +382,38 @@ export default function HeroSection({ dfToken }) {
                             ease: [0.22, 1, 0.36, 1]
                         }}
                     >
-                        <Text
+                        <motion.div
+                            initial={{ opacity: 0, y: 8 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.6, delay: 0.1 }}
+                            className="flex items-center justify-center gap-2 mb-4"
+                        >
+                            <Sun className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                            <p className="text-xs sm:text-sm font-medium text-foreground-landing/60 uppercase tracking-wider">
+                                Built for{" "}
+                                <Typewriter
+                                    text={["Product Designers", "Product Managers", "DEVs"]}
+                                    speed={40}
+                                    className="text-foreground-landing font-semibold"
+                                    waitTime={1000}
+                                    deleteSpeed={25}
+                                    loop={true}
+                                    cursorChar={"_"}
+                                />
+                            </p>
+                        </motion.div>
+
+
+                        <TextEffect
                             as="h1"
-                            size="section-heading"
-                            className="min-[420px]:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl leading-tight mb-4 sm:mb-6"
+                            preset="blur"
+                            per="word"
+                            className="min-[420px]:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl leading-tight mb-4 sm:mb-6 font-gsans font-semibold text-2xl text-foreground-landing"
                             data-testid="text-hero-headline"
+                            delay={0.1}
                         >
                             Building a portfolio was never meant to be hard.
-                        </Text>
+                        </TextEffect>
                     </motion.div>
 
                     <motion.p

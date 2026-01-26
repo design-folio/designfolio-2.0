@@ -11,7 +11,7 @@ import Tools from "@/components/tools";
 import Works from "@/components/works";
 import { containerVariants, itemVariants } from "@/lib/animationVariants";
 import { DEFAULT_SECTION_ORDER, normalizeSectionOrder } from "@/lib/constant";
-import AboutMe from "@/components/aboutMe";
+// import AboutMe from "@/components/aboutMe";
 
 export default function Preview1({ userDetails, projectRef }) {
   // Get section order from userDetails or use template default
@@ -19,11 +19,13 @@ export default function Preview1({ userDetails, projectRef }) {
 
   // Section component mapping
   const sectionComponents = {
+    /*
     about: (
       <motion.div variants={itemVariants} id="section-about">
         <AboutMe userDetails={userDetails} />
       </motion.div>
     ),
+    */
     projects: userDetails?.projects?.length > 0 && (
       <motion.div variants={itemVariants} id="section-projects">
         <Projects

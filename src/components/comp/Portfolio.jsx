@@ -51,7 +51,7 @@ import { cn } from "@/lib/utils";
 import MemoCasestudy from "../icons/Casestudy";
 import Tools from "../tools";
 import { ToolStack } from "./ToolStack";
-import { AboutMeContent } from "../aboutMe";
+// import { AboutMeContent } from "../aboutMe";
 // import { ToolStack } from "./ToolStack";
 
 const Portfolio = ({ userDetails, edit }) => {
@@ -70,12 +70,14 @@ const Portfolio = ({ userDetails, edit }) => {
     reviews,
   } = userDetails || {};
 
+  /*
   const about =
     userDetails?.about ??
     userDetails?.aboutMe ??
     userDetails?.about_me ??
     "";
   const hasAbout = typeof about === "string" && about.trim().length > 0;
+  */
   const { openModal, setSelectedWork, setSelectedProject, setUserDetails } =
     useGlobalContext();
 
@@ -493,6 +495,7 @@ const Portfolio = ({ userDetails, edit }) => {
 
           {/* Sections rendered in order based on sectionOrder */}
           {sectionOrder.map((sectionId) => {
+            /*
             if (sectionId === 'about') {
               if (!edit && !hasAbout) return null;
               return (
@@ -524,6 +527,7 @@ const Portfolio = ({ userDetails, edit }) => {
                 </motion.section>
               );
             }
+            */
             if (sectionId === 'works') {
               return (
                 <div key="works" id="section-works">

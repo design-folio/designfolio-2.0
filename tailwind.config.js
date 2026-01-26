@@ -472,6 +472,11 @@ module.exports = {
           "0%": { opacity: "0", transform: "translateX(10px)" },
           "100%": { opacity: "1", transform: "translateX(0)" },
         },
+        "border-beam": {
+          "100%": {
+            "offset-distance": "100%",
+          },
+        },
         shimmer: {
           "0%": { transform: "translateX(-100%)" },
           "100%": { transform: "translateX(200%)" },
@@ -480,6 +485,7 @@ module.exports = {
       animation: {
         "fade-in": "fade-in 0.5s ease-out",
         "fade-in-right": "fade-in-right 0.5s ease-out",
+        "border-beam": "border-beam calc(var(--duration) * 1s) infinite linear",
         shimmer: "shimmer 1.5s ease-in-out infinite",
       },
     },

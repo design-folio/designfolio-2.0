@@ -22,7 +22,7 @@ export default function AddCard({
   };
   return (
     <div
-      className={`bg-df-add-card-bg-color transition-shadow duration-500 ease-in   border-border/30  hover:shadow-df-add-item-shadow rounded-2xl min-h-[344px] cursor-pointer ${className}`}
+      className={`bg-df-add-card-bg-color shadow-df-add-card-inset-shadow transition-shadow duration-500 ease-in border-border/30 hover:shadow-df-add-item-shadow rounded-2xl min-h-[344px] cursor-pointer ${className}`}
       onClick={onClick}
     >
       {!first ? (

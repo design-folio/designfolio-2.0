@@ -83,11 +83,15 @@
   --df-section-card-heading-color: #202937;
   --df-section-card-shadow:
     rgba(0, 0, 0, 0.03) 0px 0px 0px 1px, rgba(0, 0, 0, 0.016) 0px 0px 40px;
+  --df-card-soft-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04),
+    0 2px 12px rgba(0, 0, 0, 0.04);
   --df-add-card-bg-color: rgb(246, 242, 239);
   --df-add-card-border-color: #e9eaeb;
   --df-add-card-heading-color: #202937;
   --df-add-card-description-color: #989da3;
   --df-add-item-shadow: inset 0px 0px 0px 2px #e9eaeb;
+  --df-add-card-inset-shadow: rgba(0, 0, 0, 0.03) 0px 3px 8px 0px inset,
+    rgba(0, 0, 0, 0.02) 0px -3px 8px 0px inset;
   --df-orange-color: #ff553e;
   --df-tip-color: #828282;
   --df-subtle-text-color: rgb(77 84 95 / var(--tw-text-opacity, 1));
@@ -286,11 +290,15 @@
   --df-section-card-heading-color: #e9eaeb;
   --df-section-card-shadow:
     0 0 0 1px rgba(0, 0, 0, 0.03), 0 0 40px rgba(0, 0, 0, 0.015);
+  --df-card-soft-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04),
+    0 2px 12px rgba(0, 0, 0, 0.04);
   --df-add-card-bg-color: #13151a;
   --df-add-card-border-color: #262832;
   --df-add-card-heading-color: #e9eaeb;
   --df-add-card-description-color: #788095;
   --df-add-item-shadow: inset 0px 0px 0px 2px #262832;
+  --df-add-card-inset-shadow: rgba(0, 0, 0, 0.03) 0px 3px 8px 0px inset,
+    rgba(0, 0, 0, 0.02) 0px -3px 8px 0px inset;
   --df-subtle-text-color: rgb(180 184 198 / var(--tw-text-opacity, 1));
   --df-heading-color: #e9eaeb;
   --df-description-color: #f2f2f280;

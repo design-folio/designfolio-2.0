@@ -111,7 +111,7 @@ export default function Profile({
 
           {/* Profile Info */}
           <div className="p-6 sm:p-8 pb-6">
-            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
+            <div className="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
               {/* Avatar Container */}
               <Tooltip delayDuration={300}>
                 <Magnetic intensity={0.2} range={100}>

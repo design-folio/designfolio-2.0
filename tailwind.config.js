@@ -416,6 +416,8 @@ module.exports = {
         "popver-shadow": "var(--popver-shadow)",
         "df-add-item-shadow": "var(--df-add-item-shadow)",
         "df-section-card-shadow": "var(--df-section-card-shadow)",
+        "df-card-soft-shadow": "var(--df-card-soft-shadow)",
+        "df-add-card-inset-shadow": "var(--df-add-card-inset-shadow)",
         "default-theme-shadow": "var(--default-theme-shadow)",
         "theme-shadow": "var(--theme-shadow)",
         "selected-cursor-shadow": "var(--selected-cursor-shadow)",

@@ -76,7 +76,7 @@ function Pegboard() {
 
       <div
         ref={pinBoardRef}
-        className="relative w-full aspect-[4/3] sm:aspect-[16/10] lg:aspect-[16/9] bg-white dark:bg-df-bg-color rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.02)] z-10 overflow-visible border border-black/[0.03]"
+        className="relative w-full aspect-[4/3] sm:aspect-[16/10] lg:aspect-[16/9] bg-white dark:bg-review-card-bg-color rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.02)] z-10 overflow-visible border border-black/[0.03]"
       >
         {/* Pegboard holes */}
         <div

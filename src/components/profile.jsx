@@ -147,9 +147,8 @@ export default function Profile({
                         mass: 0.5
                       }}
 
-                      className={cn("w-24 h-24 sm:w-32 sm:h-32 rounded-2xl flex items-center justify-center relative overflow-hidden shrink-0", !userDetails?.avatar ? "bg-df-bg-color" : "")}
+                      className={cn("w-24 h-24 sm:w-32 sm:h-32 rounded-2xl flex items-center justify-center relative overflow-hidden shrink-0", !userDetails?.avatar ? "bf-[#F5F3F1] dark:bg-df-bg-color" : "")}
                       style={{
-                        backgroundColor: !userDetails?.avatar ? undefined : '#F5F3F1',
                         perspective: "1000px",
                         transformStyle: "preserve-3d"
                       }}

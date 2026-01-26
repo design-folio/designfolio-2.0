@@ -72,6 +72,7 @@
   /* application */
   --df-bg-color: #f6f2ef;
   --work-experience-bg-color: #f5f3f1;
+  --df-profile-strip-bg-color: #f8f7f5;
   --df-base-text-color: #202937;
   --df-secondary-text-color: #4d545f;
   --df-placeholder-color: #eff0f0;
@@ -81,17 +82,22 @@
   --df-section-card-bg-color: #ffffff;
   --df-section-card-heading-color: #202937;
   --df-section-card-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.03), 0 0 40px rgba(0, 0, 0, 0.015);
+    rgba(0, 0, 0, 0.03) 0px 0px 0px 1px, rgba(0, 0, 0, 0.016) 0px 0px 40px;
+  --df-card-soft-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04),
+    0 2px 12px rgba(0, 0, 0, 0.04);
   --df-add-card-bg-color: rgb(246, 242, 239);
   --df-add-card-border-color: #e9eaeb;
   --df-add-card-heading-color: #202937;
   --df-add-card-description-color: #989da3;
   --df-add-item-shadow: inset 0px 0px 0px 2px #e9eaeb;
+  --df-add-card-inset-shadow: rgba(0, 0, 0, 0.03) 0px 3px 8px 0px inset,
+    rgba(0, 0, 0, 0.02) 0px -3px 8px 0px inset;
   --df-orange-color: #ff553e;
   --df-tip-color: #828282;
   --df-subtle-text-color: rgb(77 84 95 / var(--tw-text-opacity, 1));
   --df-heading-color: #202937;
   --df-description-color: #0f0f0f80;
+  --df-ink-color: #0a0a0a;
   --credit-text-color: #7a829d;
 
   /* profile card */
@@ -273,6 +279,7 @@
   /* application */
   --df-bg-color: #13151a;
   --work-experience-bg-color: #2a2d38;
+  --df-profile-strip-bg-color: #23252f;
   --df-base-text-color: #e9eaeb;
   --df-secondary-text-color: #b4b8c6;
   --df-placeholder-color: #383a47;
@@ -283,15 +290,19 @@
   --df-section-card-heading-color: #e9eaeb;
   --df-section-card-shadow:
     0 0 0 1px rgba(0, 0, 0, 0.03), 0 0 40px rgba(0, 0, 0, 0.015);
+  --df-card-soft-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04),
+    0 2px 12px rgba(0, 0, 0, 0.04);
   --df-add-card-bg-color: #13151a;
   --df-add-card-border-color: #262832;
   --df-add-card-heading-color: #e9eaeb;
   --df-add-card-description-color: #788095;
   --df-add-item-shadow: inset 0px 0px 0px 2px #262832;
+  --df-add-card-inset-shadow: rgba(0, 0, 0, 0.03) 0px 3px 8px 0px inset,
+    rgba(0, 0, 0, 0.02) 0px -3px 8px 0px inset;
   --df-subtle-text-color: rgb(180 184 198 / var(--tw-text-opacity, 1));
   --df-heading-color: #e9eaeb;
   --df-description-color: #f2f2f280;
-
+  --df-ink-color: #ffffff99;
   /* profile card */
   --profile-card-heading-color: #e9eaeb;
   --profile-card-description-color: #f2f2f280;

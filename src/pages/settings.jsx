@@ -59,52 +59,52 @@ export default function Settings() {
     <>
       <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
       <main className="min-h-screen">
-      <div
-        className={`max-w-[890px]  mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0`}
-      >
-        <div className="bg-df-section-card-bg-color p-8 rounded-2xl">
-          <Link href="/builder">
-            <Button
-              // onClick={handleBack}
-              variant="secondary"
-              className="rounded-full px-4 h-9 text-sm font-medium "
-            >
-              <MemoLeftArrow className="!size-2.5" />
-              Go Back
-            </Button>
-          </Link>
-          <div className="mt-8">
-            <DefaultDomain />
+        <div
+          className={`max-w-[848px]  mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0`}
+        >
+          <div className="bg-df-section-card-bg-color p-8 rounded-2xl">
+            <Link href="/builder">
+              <Button
+                // onClick={handleBack}
+                variant="secondary"
+                className="rounded-full px-4 h-9 text-sm font-medium "
+              >
+                <MemoLeftArrow className="!size-2.5" />
+                Go Back
+              </Button>
+            </Link>
+            <div className="mt-8">
+              <DefaultDomain />
+            </div>
           </div>
-        </div>
-        <div className="bg-df-section-card-bg-color p-8 rounded-2xl mt-6">
-          <CustomDomain
-            domainDetails={domainDetails}
-            fetchDomainDetails={fetchDomainDetails}
-          />
-        </div>
-        {userDetails?.pro && (
           <div className="bg-df-section-card-bg-color p-8 rounded-2xl mt-6">
-            <Transaction />
+            <CustomDomain
+              domainDetails={domainDetails}
+              fetchDomainDetails={fetchDomainDetails}
+            />
           </div>
-        )}
-        <div className="bg-df-section-card-bg-color p-8 rounded-2xl mt-6">
-          <div className="mt-6">
-            {userDetails?.loginMethod == 0 && (
-              <div>
-                <ChangePassword />
-              </div>
-            )}
+          {userDetails?.pro && (
+            <div className="bg-df-section-card-bg-color p-8 rounded-2xl mt-6">
+              <Transaction />
+            </div>
+          )}
+          <div className="bg-df-section-card-bg-color p-8 rounded-2xl mt-6">
+            <div className="mt-6">
+              {userDetails?.loginMethod == 0 && (
+                <div>
+                  <ChangePassword />
+                </div>
+              )}
 
-            {/* <div className="mt-10">
+              {/* <div className="mt-10">
               <ChangeUsername />
             </div> */}
-            <div className="mt-10">
-              <DeleteAccount />
+              <div className="mt-10">
+                <DeleteAccount />
+              </div>
             </div>
           </div>
         </div>
-      </div>
       </main>
     </>
   );

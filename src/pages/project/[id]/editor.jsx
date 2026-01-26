@@ -110,7 +110,7 @@ export default function Index() {
       <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
       <main className={cn("min-h-screen")}>
         <div
-          className={`max-w-[890px] mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0`}
+          className={`max-w-[848px] mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0`}
         >
           <Editor
             edit

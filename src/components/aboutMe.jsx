@@ -5,6 +5,7 @@ import { modals } from "@/lib/constant";
 import { motion } from "framer-motion";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
+import { usePegboardSounds } from "@/hooks/use-pegboard-sounds";
 
 
 export default function AboutMe({
@@ -32,9 +33,9 @@ export function AboutMeContent({
   variant, // "default" | "pegboard"
   showCaption = true,
   className = "",
-  textClassName = "text-df-description-color",
+  textClassName = "text-foreground-landing/80",
 }) {
-  const effectiveVariant = variant ?? (edit ? "pegboard" : "default");
+  const effectiveVariant = variant ?? "pegboard";
 
   const about = userDetails?.about ?? "";
 
@@ -43,7 +44,7 @@ export function AboutMeContent({
   return (
     <div className={cn("space-y-4", className)}>
       <div className={cn("space-y-4 leading-relaxed", textClassName)}>
-        <p className="whitespace-pre-wrap" data-testid="text-about-description-1">
+        <p className="leading-relaxed whitespace-pre-wrap text-foreground-landing/80" data-testid="text-about-description-1">
           {hasAbout ? about : edit ? "Write something about yourself here..." : ""}
         </p>
       </div>
@@ -66,9 +67,7 @@ function Pegboard() {
   const isMobile = useIsMobile();
   const pinBoardRef = useRef(null);
 
-  // No audio assets in this repo; keep hooks as no-ops.
-  const playPick = () => { };
-  const playPlace = () => { };
+  const { playPick, playPlace } = usePegboardSounds();
 
   return (
     <div className="relative group/pegboard mb-8">
@@ -77,7 +76,7 @@ function Pegboard() {
 
       <div
         ref={pinBoardRef}
-        className="relative w-full aspect-[4/3] sm:aspect-[16/10] lg:aspect-[16/9] bg-df-bg-color rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.02)] z-10 overflow-visible border border-black/[0.06]"
+        className="relative w-full aspect-[4/3] sm:aspect-[16/10] lg:aspect-[16/9] bg-white dark:bg-df-bg-color rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.02)] z-10 overflow-visible border border-black/[0.03]"
       >
         {/* Pegboard holes */}
         <div

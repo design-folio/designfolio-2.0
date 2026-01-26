@@ -341,7 +341,7 @@ const Portfolio = ({ userDetails, edit }) => {
   const wallpaperExists = userDetails?.wallpaper && userDetails?.wallpaper?.value != 0;
   return (
     <TooltipProvider>
-      <div className={cn("min-h-screen bg-background text-foreground transition-colors duration-300", wallpaperExists && "max-w-[890px] mx-auto rounded-2xl mb-8", !edit && wallpaperExists && "mt-8")}>
+      <div className={cn("min-h-screen bg-background text-foreground transition-colors duration-300", wallpaperExists && "max-w-[848px] mx-auto rounded-2xl mb-8", !edit && wallpaperExists && "mt-8")}>
         {/* Header */}
 
         <header className={cn("border-b border-secondary-border py-6 bg-background transition-colors duration-300 rounded-t-2xl",)}>
@@ -518,7 +518,7 @@ const Portfolio = ({ userDetails, edit }) => {
                   <AboutMeContent
                     userDetails={userDetails}
                     edit={edit}
-                    variant="default"
+                    variant="pegboard"
                     textClassName="dark:text-gray-400 text-gray-600"
                   />
                 </motion.section>

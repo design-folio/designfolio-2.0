@@ -31,6 +31,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import ProjectLock from "../projectLock";
 import MemoCasestudy from "../icons/Casestudy";
+import Text from "../text";
 
 export const WorkShowcase = ({ userDetails: userDetailsProp, edit }) => {
   const router = useRouter();
@@ -272,13 +273,16 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit }) => {
           </div>
           <div className="flex-1 flex flex-col justify-between cursor-pointer">
             <div className="p-6 pb-0">
-              <h3 className="text-2xl font-semibold leading-tight line-clamp-2">
+              <h3 className="text-lg font-semibold line-clamp-2 project-info-card-heading-color">
                 {project.title}
               </h3>
               {project.description && (
-                <p className="text-gray-400 line-clamp-2 mt-3">
+                <Text
+                  size="p-xxsmall"
+                  className="text-df-description-color font-normal line-clamp-3 leading-relaxed "
+                >
                   {project.description}
-                </p>
+                </Text>
               )}
             </div>
             {edit && (

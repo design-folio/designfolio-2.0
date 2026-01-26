@@ -31,10 +31,10 @@ export default function Index({ initialUserDetails }) {
       const response = await _getUser(router.query.id);
       return response?.data?.user;
     },
-    placeholderData: initialUserDetails,
+    initialData: initialUserDetails,
     enabled: !!router.query.id,
     cacheTime: 300000,
-    staleTime: 60000,
+    staleTime: 300000,
   });
 
   // Use fetched data or initialUserDetails (from SSR)

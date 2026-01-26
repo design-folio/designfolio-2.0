@@ -155,6 +155,8 @@ export default function ProjectCard({
               loading="lazy"
               fetchpriority="high"
               decoding="async"
+              onLoad={() => setImageLoaded(true)}
+              onError={() => setImageLoaded(true)}
             />
             {project?.hidden && (
               <div className="absolute top-3 right-3 bg-amber-100 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1.5">

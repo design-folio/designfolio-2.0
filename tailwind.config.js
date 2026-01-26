@@ -112,6 +112,7 @@ module.exports = {
         "work-experience-bg-color": "var(--work-experience-bg-color)",
         "df-base-text-color": "var(--df-base-text-color)",
         "df-orange-color": "var(--df-orange-color)",
+        "df-ink-color": "var(--df-ink-color)",
         "df-secondary-text-color": "var(--df-secondary-text-color)",
         "df-placeholder-color": "var(--df-placeholder-color)",
         "df-logo-text-color": "var(--df-logo-text-color)",
@@ -138,6 +139,7 @@ module.exports = {
         "profile-card-description-color":
           "var(--profile-card-description-color)",
         "profile-card-skill-color": "var(--profile-card-skill-color)",
+        "df-profile-strip-bg-color": "var(--df-profile-strip-bg-color)",
 
         // Project card
         "project-card-bg-color": "var(--project-card-bg-color)",

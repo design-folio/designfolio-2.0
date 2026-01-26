@@ -121,12 +121,12 @@ export default function Index() {
     <>
       <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
       <main className="min-h-screen">
-      <div
-        className={` mx-auto px-2 md:px-4 lg:px-0 ${template != 3 && "max-w-[890px]"
-          }`}
-      >
-        {renderTemplate()}
-      </div>
+        <div
+          className={` mx-auto px-2 md:px-4 lg:px-0 ${template != 3 && "max-w-[848px]"
+            }`}
+        >
+          {renderTemplate()}
+        </div>
       </main>
     </>
   );

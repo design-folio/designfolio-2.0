@@ -43,6 +43,7 @@ export default function Reviews({ edit = false, openModal, userDetails }) {
 
   const { setUserDetails, updateCache, setSelectedReview } = useGlobalContext();
   const reviews = userDetails?.reviews || [];
+  const hasMultipleReviews = reviews.length >= 2;
   const theme = useTheme();
   const [showModal, setShowModal] = useState(false);
   const [expandedReviewIds, setExpandedReviewIds] = useState([]);
@@ -122,27 +123,31 @@ export default function Reviews({ edit = false, openModal, userDetails }) {
         wallpaper={userDetails?.wallpaper}
       >
         {reviews.length > 0 ? (
-          <div className="mt-6 -mx-4 lg:-mx-6 px-4 lg:px-6 overflow-visible relative">
+          <div className="mt-6 -mx-6 lg:-mx-10 px-6 lg:px-10 overflow-visible relative">
             <Carousel
               opts={{
-                align: "start",
-                loop: reviews.length >= 2,
+                align: hasMultipleReviews ? "start" : "center",
+                loop: hasMultipleReviews,
               }}
               className="w-full overflow-visible"
             >
               <div className="overflow-visible">
-                <CarouselContent className="-ml-4 lg:-ml-6 pr-4 lg:pr-6">
-                  {(reviews.length >= 2 ? [...reviews, ...reviews, ...reviews] : reviews).map((review, idx) => (
-                    <CarouselItem key={`${review._id}-${idx}`} className="pl-4 lg:pl-6 md:basis-1/2 overflow-visible py-4">
+                <CarouselContent className={hasMultipleReviews ? "-ml-6" : "justify-center ml-0"}>
+                  {(hasMultipleReviews ? [...reviews, ...reviews, ...reviews] : reviews).map((review, idx) => (
+                    <CarouselItem
+                      key={`${review._id}-${idx}`}
+                      className={
+                        hasMultipleReviews
+                          ? "pl-6 md:basis-1/2 overflow-visible py-4"
+                          : "pl-0 md:basis-full overflow-visible py-4 max-w-2xl mx-auto"
+                      }
+                    >
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, amount: 0.2 }}
                         transition={{ duration: 0.5, delay: idx * 0.1 }}
                         className="group rounded-2xl p-6 flex flex-col relative transition-all duration-300 h-full bg-review-card-bg-color hover-elevate border border-border/50"
-                      // style={{
-                      //   boxShadow: '0 0 0 1px rgba(0,0,0,0.03), 0 0 40px rgba(0,0,0,0.015)'
-                      // }}
                       >
                         <div className="mb-4 mt-2 flex items-center justify-between">
                           <MemoQuoteIcon className="text-df-icon-color opacity-20" />
@@ -244,8 +249,8 @@ export default function Reviews({ edit = false, openModal, userDetails }) {
                   ))}
                 </CarouselContent>
               </div>
-              {reviews.length >= 2 && (
-                <div className="flex justify-center gap-16 mt-4">
+              {hasMultipleReviews && (
+                <div className="flex justify-center gap-20 mt-4">
                   <CarouselPrevious className="static h-10 w-10 rounded-full border-border/50 bg-df-bg-color shadow-sm transition-all translate-y-0" />
                   <CarouselNext className="static bg-df-bg-color h-10 w-10 rounded-full border-border/50 shadow-sm transition-all translate-y-0" />
                 </div>

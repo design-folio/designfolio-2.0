@@ -87,11 +87,11 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
   // Generate wallpaper mask pattern (pegboard effect)
   const getWallpaperMask = () => {
     if (!selectedWallpaper) return {};
-    
+
     const positions = [];
     const stepY = 5.882352941176471;
     const stepX = 2.5641025641025643;
-    
+
     // Left side positions (0% to 100% vertical)
     for (let i = stepY; i < 100; i += stepY) {
       positions.push(`radial-gradient(circle at 0% ${i}%, transparent 5.5px, black 5.5px)`);
@@ -144,7 +144,7 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
         transition={{ duration: 0.6 }}
         className="pb-20"
       >
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-[848px] mx-auto">
           <div
             className="relative bg-df-section-card-bg-color p-8 shadow-df-section-card-shadow rounded-2xl overflow-hidden"
             style={selectedWallpaper ? getWallpaperMask() : {}}
@@ -272,10 +272,10 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
                   >
                     <span className="text-sm sm:text-base text-foreground-landing/50 dark:text-foreground-landing/60">Blogs</span>
                     {portfolios?.medium ? (
-                      <a 
-                        href={portfolios.medium} 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
+                      <a
+                        href={portfolios.medium}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="text-sm sm:text-base font-medium hover:underline underline-offset-4 text-left sm:text-right"
                       >
                         Medium
@@ -305,10 +305,10 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
                     <div className="flex items-center gap-2 flex-wrap">
                       {socials?.linkedin ? (
                         <>
-                          <a 
-                            href={socials.linkedin} 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
+                          <a
+                            href={socials.linkedin}
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="text-sm sm:text-base font-medium hover:underline underline-offset-4"
                           >
                             LinkedIn
@@ -320,10 +320,10 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
                       ) : null}
                       {socials?.twitter ? (
                         <>
-                          <a 
-                            href={socials.twitter} 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
+                          <a
+                            href={socials.twitter}
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="text-sm sm:text-base font-medium hover:underline underline-offset-4"
                           >
                             X
@@ -335,10 +335,10 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
                       ) : null}
                       {socials?.instagram ? (
                         <>
-                          <a 
-                            href={socials.instagram} 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
+                          <a
+                            href={socials.instagram}
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="text-sm sm:text-base font-medium hover:underline underline-offset-4"
                           >
                             Instagram
@@ -349,10 +349,10 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
                         </>
                       ) : null}
                       {portfolios?.dribbble ? (
-                        <a 
-                          href={portfolios.dribbble} 
-                          target="_blank" 
-                          rel="noopener noreferrer" 
+                        <a
+                          href={portfolios.dribbble}
+                          target="_blank"
+                          rel="noopener noreferrer"
                           className="text-sm sm:text-base font-medium hover:underline underline-offset-4"
                         >
                           Dribbble
@@ -373,8 +373,8 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
 
               <div className="pt-6 flex flex-col items-center justify-center gap-4">
                 {edit && (
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     size="icon"
                     className="rounded-full h-11 w-11"
                     onClick={() => openSidebar?.("footer")}
@@ -406,9 +406,9 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
                     }}
                   />
                 </svg>
-                <CrypticText 
-                  text={`© ${getUserName()}`} 
-                  className="text-[11px] font-bold uppercase tracking-[0.3em] text-foreground-landing/20 dark:text-foreground-landing/30" 
+                <CrypticText
+                  text={`© ${getUserName()}`}
+                  className="text-[11px] font-bold uppercase tracking-[0.3em] text-foreground-landing/20 dark:text-foreground-landing/30"
                 />
               </div>
             </div>

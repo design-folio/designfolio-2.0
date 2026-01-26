@@ -111,7 +111,7 @@ export const Testimonials = ({ userDetails, edit }) => {
       <h2 className="text-3xl font-bold mb-12 text-center">What People Say</h2>
 
       <div
-        className={`relative ${isMobile ? "px-4" : "grid grid-cols-2 gap-6 max-w-4xl mx-auto px-4"
+        className={`relative ${isMobile ? "px-4" : "grid grid-cols-2 gap-6 max-w-[848px] mx-auto px-4"
           }`}
       >
         {isMobile ? (

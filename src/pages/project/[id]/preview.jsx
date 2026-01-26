@@ -88,7 +88,7 @@ export default function Index() {
       <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
       <main className={cn("min-h-screen")}>
         {projectDetails && (
-          <div className={`max-w-[890px] mx-auto py-[40px] px-2 md:px-4 lg:px-0`}>
+          <div className={`max-w-[848px] mx-auto py-[40px] px-2 md:px-4 lg:px-0`}>
             <ProjectPreview projectDetails={projectDetails} />
           </div>
         )}

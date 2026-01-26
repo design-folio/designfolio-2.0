@@ -35,32 +35,32 @@ export default function Domains() {
     <>
       <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
       <main className="min-h-screen">
-      <div
-        className={`max-w-[890px]  mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0`}
-      >
-        <div className="bg-df-section-card-bg-color p-8 rounded-2xl">
-          <Button
-            text="Go Back"
-            onClick={handleBack}
-            type="secondary"
-            size="small"
-            icon={<LeftArrow className="text-df-icon-color cursor-pointer" />}
-          />
-          <div className="mt-8">
-            <DefaultDomain />
+        <div
+          className={`max-w-[848px]  mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0`}
+        >
+          <div className="bg-df-section-card-bg-color p-8 rounded-2xl">
+            <Button
+              text="Go Back"
+              onClick={handleBack}
+              type="secondary"
+              size="small"
+              icon={<LeftArrow className="text-df-icon-color cursor-pointer" />}
+            />
+            <div className="mt-8">
+              <DefaultDomain />
+            </div>
+          </div>
+          <div className="bg-df-section-card-bg-color p-8 rounded-2xl mt-6">
+            <CustomDomain
+              domainDetails={domainDetails}
+              fetchDomainDetails={fetchDomainDetails}
+            />
+          </div>
+
+          <div className="bg-df-section-card-bg-color p-8 rounded-2xl mt-6">
+            <DeleteAccount />
           </div>
         </div>
-        <div className="bg-df-section-card-bg-color p-8 rounded-2xl mt-6">
-          <CustomDomain
-            domainDetails={domainDetails}
-            fetchDomainDetails={fetchDomainDetails}
-          />
-        </div>
-
-        <div className="bg-df-section-card-bg-color p-8 rounded-2xl mt-6">
-          <DeleteAccount />
-        </div>
-      </div>
       </main>
     </>
   );

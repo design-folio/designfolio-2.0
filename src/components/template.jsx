@@ -76,7 +76,7 @@ export default function Template1({ userDetails }) {
 
   return (
     <div
-      className={`max-w-[890px] mx-auto pb-[120px] py-[32px] px-2 md:px-4 lg:px-0`}
+      className={`max-w-[848px] mx-auto pb-[120px] py-[32px] px-2 md:px-4 lg:px-0`}
     >
       <BottomLayout userDetails={userDetails}>
         <motion.div

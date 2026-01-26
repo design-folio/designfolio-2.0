@@ -49,7 +49,7 @@ const Minimal = ({ userDetails, edit }) => {
         <AboutMeContent
           userDetails={userDetails}
           edit={edit}
-          variant="default"
+          variant="pegboard"
           textClassName="text-muted-foreground"
         />
       </section>

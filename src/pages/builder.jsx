@@ -186,7 +186,7 @@ export default function Index() {
       <main className={cn(
         "min-h-screen", hasNoWallpaper(wallpaper) && "bg-df-bg-color")}>
         <div
-          className={` mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0 ${userDetails?.template != 3 && "max-w-[890px]"
+          className={` mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0 ${userDetails?.template != 3 && "max-w-[848px]"
             }`}
         >
           {userDetails && !userDetails?.pro && <ProWarning />}

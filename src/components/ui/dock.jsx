@@ -56,7 +56,7 @@ export default function Dock({ items, className }) {
                       <item.icon
                         className={cn(
                           "h-6 w-6 transition-colors",
-                          isActive ? "text-[#FF553E]" : "text-[#0A0A0A]/60 dark:text-white/60"
+                          isActive ? "text-df-orange-color" : "text-df-ink-color"
                         )}
                       />
                       {isHovered && (

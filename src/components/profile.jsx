@@ -76,7 +76,9 @@ export default function Profile({
         transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
       >
         <div
-          className={cn("bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] overflow-hidden items-center relative backdrop-blur-sm border-0")}
+          className={cn(
+            "bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-2xl overflow-hidden items-center relative backdrop-blur-sm border-0"
+          )}
         >
           {/* Preview Mode */}
           {preview && (
@@ -99,7 +101,7 @@ export default function Profile({
               <Button
                 variant="secondary"
                 size="icon"
-                className="h-11 w-11"
+                className="h-11 w-11 rounded-full"
                 onClick={() => openModal("onboarding")}
               >
                 <PencilIcon className="w-4 h-4" />
@@ -166,7 +168,7 @@ export default function Profile({
                         ref={avatarImgRef}
                         src={avatarSrc}
                         alt={userDetails?.firstName || "Avatar"}
-                        className="w-full h-full object-contain"
+                        className="w-full h-full object-cover"
                         onLoad={() => setImageLoaded(true)}
                         onError={() => setImageLoaded(true)}
                         style={{ opacity: imageLoaded ? 1 : 0, transition: 'opacity 0.3s' }}
@@ -191,7 +193,7 @@ export default function Profile({
                   initial={{ opacity: 0, filter: "blur(10px)", y: 10 }}
                   animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
                   transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1], delay: 0.2 }}
-                  className="text-3xl font-semibold mb-2 font-gsans text-df-heading-color break-words"
+                  className="text-2xl sm:text-3xl font-semibold mb-2 font-gsans text-df-heading-color break-words"
                   data-testid="text-user-name"
                 >
                   {userDetails?.introduction || `Hey, I'm ${capitalizeWords(userDetails?.firstName) || ""}`}
@@ -200,7 +202,7 @@ export default function Profile({
                   initial={{ opacity: 0, filter: "blur(10px)", y: 10 }}
                   animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
                   transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1], delay: 0.3 }}
-                  className="text-sm sm:text-base text-df-description-color break-words"
+                  className="text-sm sm:text-base text-df-description-color break-words leading-relaxed max-w-2xl"
                   data-testid="text-user-role"
                 >
                   {userDetails?.bio || "Write your intro here..."}
@@ -214,13 +216,13 @@ export default function Profile({
           {/* Skills Banner Strip */}
           {skills?.length > 0 && (
             <div
-              className="relative overflow-hidden border-t border-border/20 py-3"
+              className="relative overflow-hidden border-t border-border/10 py-3 bg-df-profile-strip-bg-color rounded-b-2xl"
             >
               <motion.div
                 ref={skillsRef}
                 animate={controls}
                 initial={{ x: 0 }}
-                className="flex px-8 whitespace-nowrap"
+                className="flex px-8 whitespace-nowrap opacity-40"
               >
                 {[
                   ...skills,
@@ -240,10 +242,10 @@ export default function Profile({
                     key={index}
                     className="flex items-center gap-3 shrink-0 mr-3"
                   >
-                    <span className="text-xs font-medium tracking-normal text-foreground-landing/50 whitespace-nowrap uppercase">
+                    <span className="text-xs font-medium tracking-normal text-df-ink-color whitespace-nowrap uppercase">
                       {skill}
                     </span>
-                    <Sparkle className="w-3 h-3 text-foreground-landing/30 fill-foreground-landing/30" />
+                    <Sparkle className="w-2.5 h-2.5 text-df-ink-color fill-df-ink-color" />
                   </div>
                 ))}
               </motion.div>

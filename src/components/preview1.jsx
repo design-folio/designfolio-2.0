@@ -54,7 +54,7 @@ export default function Preview1({ userDetails, projectRef }) {
     <BottomLayout userDetails={userDetails}>
       <main className="min-h-screen">
         <div
-          className={`max-w-[890px] mx-auto py-[40px] px-2 md:px-4 lg:px-0 pb-[140px]`}
+          className={`max-w-[848px] mx-auto py-[40px] px-2 md:px-4 lg:px-0 pb-[140px]`}
         >
           {userDetails && (
             <motion.div
@@ -79,7 +79,7 @@ export default function Preview1({ userDetails, projectRef }) {
                     <OthersPreview userDetails={userDetails} />
                   </motion.div>
                 )} */}
-              
+
               {/* New Footer */}
               <motion.div variants={itemVariants}>
                 <PortfolioFooter edit={false} userDetails={userDetails} />

@@ -400,13 +400,13 @@ export default function Builder2({ edit = false }) {
             return (
               <div key="about" id="section-about" className="flex flex-col gap-6">
                 <Chat direction="right">Tell me a little about yourself?</Chat>
-                <Chat direction="left">
+                <Chat direction="left" className="w-full">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
                       <AboutMeContent
                         userDetails={userDetails}
                         edit={edit}
-                        variant="default"
+                        variant="pegboard"
                         textClassName="text-df-base-text-color"
                       />
                     </div>
@@ -431,7 +431,7 @@ export default function Builder2({ edit = false }) {
                 <Chat direction="right">
                   So… what have you been working on lately?
                 </Chat>
-                <Chat direction="left">  Glad you asked 😌 <br />
+                <Chat direction="left" className="w-full">  Glad you asked 😌 <br />
                   Here are a few things I’ve built.</Chat>
                 <DndContext
                   sensors={sensors}
@@ -460,7 +460,7 @@ export default function Builder2({ edit = false }) {
                 {edit && (
                   <div className="w-full md:w-[calc(50%-12px)] max-w-[444px] relative">
                     <ProjectShape className="text-template-text-left-bg-color" />
-                    <Chat direction="left" className={cn("rounded-tl-none", projects.length <= 1 ? "w-full" : "w-fit")}>
+                    <Chat direction="left" className={cn("rounded-tl-none", "w-full")}>
                       {projects.length > 1 ? (
                         userDetails?.pro || userDetails?.projects.length < 1 ? (
                           <div className="flex items-center gap-2">
@@ -516,10 +516,10 @@ export default function Builder2({ edit = false }) {
               <div key="reviews" id="section-reviews" className="flex flex-col gap-6">
                 <Chat direction="right">What do people usually say about working with you?
                 </Chat>
-                <Chat direction="left">
+                <Chat direction="left" className="w-full">
                   Here’s what some very kind humans had to say 🫶
                 </Chat>
-                <Chat direction="left">
+                <Chat direction="left" className="w-full">
                   {edit && reviews?.length == 0 && (
                     <AddCard
                       title={`${userDetails?.reviews?.length == 0
@@ -673,9 +673,9 @@ export default function Builder2({ edit = false }) {
             return (
               <div key="tools" id="section-tools" className="flex flex-col gap-6">
                 <Chat direction="right">What do you actually use to build all this?</Chat>
-                <Chat direction="left"> A mix of design, code, and a bit of chaos 😄<br />
+                <Chat direction="left" className="w-full"> A mix of design, code, and a bit of chaos 😄<br />
                   But mostly:</Chat>
-                <Chat>
+                <Chat className="w-full">
                   <div className="flex flex-wrap items-center gap-2 mb-2">
                     {tools?.map((tool, i) => (
                       <div
@@ -708,7 +708,7 @@ export default function Builder2({ edit = false }) {
                   </div>
                   This is my toolbox.
                 </Chat>
-                <Chat>I specialize in {getSkills()}</Chat>
+                <Chat className="w-full">I specialize in {getSkills()}</Chat>
               </div>
             );
           }
@@ -718,8 +718,8 @@ export default function Builder2({ edit = false }) {
               <div key="works" id="section-works" className="flex flex-col gap-6">
                 <Chat direction="right"> Where have you worked so far?
                 </Chat>
-                <Chat direction="left"> Here’s a quick look at my design journey 👇</Chat>
-                <Chat direction="left" className="pb-5">
+                <Chat direction="left" className="w-full"> Here’s a quick look at my design journey 👇</Chat>
+                <Chat direction="left" className="w-full pb-5">
                   <div className="flex flex-col gap-6">
                     {experiences?.map((experience, index) => {
                       const isExpanded = expandedExperienceCards.includes(experience?._id);
@@ -843,7 +843,7 @@ export default function Builder2({ edit = false }) {
           return null;
         })}
         <Chat direction="right">Got any other places I should check out?</Chat>
-        <Chat direction="left" className="pb-5">
+        <Chat direction="left" className="w-full pb-5">
           <div className="flex flex-col lg:flex-row gap-[24px]">
             {portfolios?.dribbble && (
               <Link
@@ -939,8 +939,8 @@ export default function Builder2({ edit = false }) {
             )}
         </Chat>
         <Chat direction="right">Where can I reach you?</Chat>
-        <Chat direction="left">You can reach me here 👇🏻</Chat>
-        <Chat direction="left" className="pb-5">
+        <Chat direction="left" className="w-full">You can reach me here 👇🏻</Chat>
+        <Chat direction="left" className="w-full pb-5">
           {!resume && edit && (
             <AddItem
               title="Add your resume"
@@ -980,7 +980,7 @@ export default function Builder2({ edit = false }) {
             </>
           )}
         </Chat>
-        <Chat direction="left" className="pb-5">
+        <Chat direction="left" className="w-full pb-5">
           <div className="flex flex-col lg:flex-row gap-[24px]">
             {socials?.instagram && (
               <Link

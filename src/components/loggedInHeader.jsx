@@ -412,7 +412,7 @@ export default function LoggedInHeader({
       )}
       style={{ right: shouldShiftHeader ? getShiftWidth() : '0' }}
     >
-      <div className="shadow-df-section-card-shadow max-w-[890px] p-3 border border-card-border md:px-8 md:py-4 rounded-2xl bg-df-header-bg-color mx-auto flex justify-between items-center">
+      <div className="shadow-df-section-card-shadow max-w-[848px] p-3  md:px-8 md:py-4 rounded-2xl bg-df-header-bg-color mx-auto flex justify-between items-center">
         <div className="flex items-center gap-[24px]">
           <Link href={"/builder"}>
             <Logo className="text-df-base-text-color" />

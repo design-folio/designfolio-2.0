@@ -29,6 +29,7 @@ export const sidebars = {
   work: "work",
   review: "review",
   footer: "footer",
+  about: "about",
 };
 
 // Ensure sectionOrder always contains all available sections (e.g. after adding new blocks)
@@ -100,11 +101,4 @@ export const chatBubbleItems = {
 };
 
 
-// NOTE: About block temporarily disabled (kept for easy re-enable)
-export const DEFAULT_SECTION_ORDER = [
-  "projects",
-  "reviews",
-  "tools",
-  // "about",
-  "works",
-];
+export const DEFAULT_SECTION_ORDER = ['projects', 'reviews', 'tools', 'about', 'works',];

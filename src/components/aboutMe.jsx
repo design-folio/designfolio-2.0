@@ -1,11 +1,11 @@
-/* eslint-disable @next/next/no-img-element */
 import React, { useRef } from "react";
 import Section from "./section";
-import { modals } from "@/lib/constant";
+import { sidebars } from "@/lib/constant";
 import { motion } from "framer-motion";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { usePegboardSounds } from "@/hooks/use-pegboard-sounds";
+import { DEFAULT_PEGBOARD_IMAGES, DEFAULT_PEGBOARD_STICKERS } from "@/lib/aboutConstants";
 
 
 export default function AboutMe({
@@ -18,8 +18,7 @@ export default function AboutMe({
     <Section
       title="About me"
       edit={edit}
-      onClick={() => openModal?.(modals.about)}
-      // Keep base section styling consistent with other sections (Projects/Reviews/Works)
+      onClick={() => openModal?.(sidebars.about)}
       className="mt-0 mb-3"
     >
       <AboutMeContent userDetails={userDetails} edit={edit} variant={variant} />
@@ -35,26 +34,26 @@ export function AboutMeContent({
   className = "",
   textClassName = "text-foreground-landing/80",
 }) {
-  // Pegboard temporarily disabled (kept for easy re-enable)
-  void variant;
-  // const effectiveVariant = variant ?? "pegboard";
+  const effectiveVariant = variant ?? "pegboard";
 
-  const about = userDetails?.about ?? "";
+  const aboutObj = userDetails?.about;
+  const description = aboutObj?.description || "";
+  const images = aboutObj?.pegboardImages?.length > 0 ? aboutObj.pegboardImages : DEFAULT_PEGBOARD_IMAGES;
+  const stickers = aboutObj?.pegboardStickers?.length > 0 ? aboutObj.pegboardStickers : DEFAULT_PEGBOARD_STICKERS;
 
-  const hasAbout = typeof about === "string" && about.trim().length > 0;
+  const hasDescription = description.trim().length > 0;
 
   return (
     <div className={cn("space-y-4", className)}>
       <div className={cn("space-y-4 leading-relaxed", textClassName)}>
         <p className="leading-relaxed whitespace-pre-wrap text-foreground-landing/80" data-testid="text-about-description-1">
-          {hasAbout ? about : edit ? "Write something about yourself here..." : ""}
+          {hasDescription ? description : edit ? "Write something about yourself here..." : ""}
         </p>
       </div>
 
-      {/*
       {effectiveVariant === "pegboard" && (
         <div className="mt-6">
-          <Pegboard />
+          <Pegboard images={images} stickers={stickers} />
           {showCaption && (
             <div className={cn("mb-4 text-center text-[10px] font-medium tracking-widest uppercase pointer-events-none", textClassName, "text-foreground-landing/20")}>
               Try moving things around :)
@@ -62,16 +61,56 @@ export function AboutMeContent({
           )}
         </div>
       )}
-      */}
     </div>
   );
 }
 
-function Pegboard() {
+function Pegboard({ images = [], stickers = [] }) {
   const isMobile = useIsMobile();
   const pinBoardRef = useRef(null);
 
   const { playPick, playPlace } = usePegboardSounds();
+
+  // Configuration for image positions and sizes to match original design
+  const imageConfigs = [
+    {
+      initial: { rotate: -5, left: isMobile ? "15%" : "20%", top: isMobile ? "18%" : "25%", x: "-50%", y: "-50%" },
+      className: "w-24 sm:w-28 md:w-36 lg:w-40 aspect-[4/3]",
+      fallbackSrc: "/assets/png/project1.png",
+      pinColor: "#FF553E"
+    },
+    {
+      initial: { rotate: 3, left: isMobile ? "72%" : "80%", top: isMobile ? "22%" : "30%", x: "-50%", y: "-50%" },
+      className: "w-28 sm:w-32 md:w-40 lg:w-44 aspect-square",
+      fallbackSrc: "/assets/png/project3.png",
+      pinColor: "#FF553E"
+    },
+    {
+      initial: { rotate: -2, left: isMobile ? "18%" : "25%", top: isMobile ? "58%" : "75%", x: "-50%", y: "-50%" },
+      className: "w-24 sm:w-28 md:w-36 lg:w-40 aspect-[3/4]",
+      fallbackSrc: "/assets/png/project4.png",
+      pinColor: "#FF553E"
+    },
+    {
+      initial: { rotate: 4, left: isMobile ? "68%" : "75%", top: isMobile ? "68%" : "75%", x: "-50%", y: "-50%" },
+      className: "w-20 sm:w-24 md:w-32 lg:w-36 aspect-[4/3]",
+      fallbackSrc: "/assets/png/project5.png",
+      pinColor: "#FF553E"
+    }
+  ];
+
+  const stickerConfigs = [
+    {
+      initial: { rotate: -15, left: isMobile ? "45%" : "44%", top: isMobile ? "40%" : "48%", x: "-50%", y: "-50%" },
+      className: "absolute w-20 sm:w-24 md:w-32 lg:w-36 aspect-square cursor-grab active:cursor-grabbing z-50",
+      fallbackSrc: "/assets/svgs/star.svg"
+    },
+    {
+      initial: { rotate: 10, left: isMobile ? "50%" : "55%", top: isMobile ? "85%" : "60%", x: "-50%", y: "-50%" },
+      className: "absolute w-24 sm:w-28 md:w-36 lg:w-40 aspect-square cursor-grab active:cursor-grabbing z-50",
+      fallbackSrc: "/assets/svgs/quote.svg"
+    }
+  ];
 
   return (
     <div className="relative group/pegboard mb-8">
@@ -98,142 +137,56 @@ function Pegboard() {
         {/* Lighting */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden bg-gradient-to-tr from-black/[0.01] via-transparent to-white/[0.05]" />
 
-        <PegboardItem
-          pinBoardRef={pinBoardRef}
-          onDragStart={playPick}
-          onDragEnd={playPlace}
-          initial={{
-            rotate: -5,
-            left: isMobile ? "15%" : "20%",
-            top: isMobile ? "18%" : "25%",
-            x: "-50%",
-            y: "-50%",
-          }}
-          className="w-24 sm:w-28 md:w-36 lg:w-40 aspect-[4/3]"
-          imgSrc="/assets/portraits/portrait1.png"
-          fallbackSrc="/assets/png/project1.png"
-          alt="Portrait 1"
-          pinColor="#FF553E"
-        />
+        {/* Render Images */}
+        {imageConfigs.map((config, index) => {
+          const img = images[index];
+          if (!img) return null;
+          return (
+            <PegboardItem
+              key={`img-${index}`}
+              pinBoardRef={pinBoardRef}
+              onDragStart={playPick}
+              onDragEnd={playPlace}
+              initial={config.initial}
+              className={config.className}
+              imgSrc={img.src}
+              fallbackSrc={config.fallbackSrc}
+              pinColor={config.pinColor}
+            />
+          );
+        })}
 
-        <PegboardItem
-          pinBoardRef={pinBoardRef}
-          onDragStart={playPick}
-          onDragEnd={playPlace}
-          initial={{
-            rotate: 3,
-            left: isMobile ? "72%" : "80%",
-            top: isMobile ? "22%" : "30%",
-            x: "-50%",
-            y: "-50%",
-          }}
-          className="w-28 sm:w-32 md:w-40 lg:w-44 aspect-square"
-          imgSrc="/assets/portraits/portrait2.png"
-          fallbackSrc="/assets/png/project3.png"
-          alt="Portrait 2"
-          pinColor="#FF553E"
-        />
-
-        <PegboardItem
-          pinBoardRef={pinBoardRef}
-          onDragStart={playPick}
-          onDragEnd={playPlace}
-          initial={{
-            rotate: -2,
-            left: isMobile ? "18%" : "25%",
-            top: isMobile ? "58%" : "75%",
-            x: "-50%",
-            y: "-50%",
-          }}
-          className="w-24 sm:w-28 md:w-36 lg:w-40 aspect-[3/4]"
-          imgSrc="/assets/portraits/portrait3.png"
-          fallbackSrc="/assets/png/project4.png"
-          alt="Portrait 3"
-          pinColor="#FF553E"
-        />
-
-        <PegboardItem
-          pinBoardRef={pinBoardRef}
-          onDragStart={playPick}
-          onDragEnd={playPlace}
-          initial={{
-            rotate: 4,
-            left: isMobile ? "68%" : "75%",
-            top: isMobile ? "68%" : "75%",
-            x: "-50%",
-            y: "-50%",
-          }}
-          className="w-20 sm:w-24 md:w-32 lg:w-36 aspect-[4/3]"
-          imgSrc="/assets/portraits/portrait4.png"
-          fallbackSrc="/assets/png/project5.png"
-          alt="Portrait 4"
-          pinColor="#FF553E"
-        />
-
-        {/* Sticker 1 */}
-        <motion.div
-          drag
-          dragMomentum={false}
-          dragConstraints={pinBoardRef}
-          dragElastic={0.1}
-          onDragStart={playPick}
-          onDragEnd={playPlace}
-          initial={{
-            rotate: -15,
-            left: isMobile ? "45%" : "44%",
-            top: isMobile ? "40%" : "48%",
-            x: "-50%",
-            y: "-50%",
-          }}
-          animate={{
-            left: isMobile ? "45%" : "44%",
-            top: isMobile ? "40%" : "48%",
-            x: "-50%",
-            y: "-50%",
-          }}
-          className="absolute w-20 sm:w-24 md:w-32 lg:w-36 aspect-square cursor-grab active:cursor-grabbing z-50"
-          whileDrag={{ scale: 1.1, zIndex: 60 }}
-        >
-          <img
-            src="/assets/portraits/sticker1.png"
-            alt="Sticker 1"
-            className="w-full h-full object-contain pointer-events-none drop-shadow-[0_4px_8px_rgba(0,0,0,0.1)]"
-            onError={(e) => {
-              e.currentTarget.onerror = null;
-              e.currentTarget.src = "/assets/svgs/star.svg";
-            }}
-          />
-          <Pin color="#3B82F6" small />
-        </motion.div>
-
-        {/* Sticker 2 */}
-        <motion.div
-          drag
-          dragMomentum={false}
-          dragConstraints={pinBoardRef}
-          dragElastic={0.1}
-          onDragStart={playPick}
-          onDragEnd={playPlace}
-          initial={{
-            rotate: 10,
-            left: isMobile ? "50%" : "55%",
-            top: isMobile ? "85%" : "60%",
-          }}
-          style={{ x: "-50%", y: "-50%" }}
-          className="absolute w-24 sm:w-28 md:w-36 lg:w-40 aspect-square cursor-grab active:cursor-grabbing z-50"
-          whileDrag={{ scale: 1.1, zIndex: 60 }}
-        >
-          <img
-            src="/assets/portraits/sticker2.png"
-            alt="Sticker 2"
-            className="w-full h-full object-contain pointer-events-none drop-shadow-[0_4px_8px_rgba(0,0,0,0.1)]"
-            onError={(e) => {
-              e.currentTarget.onerror = null;
-              e.currentTarget.src = "/assets/svgs/quote.svg";
-            }}
-          />
-          <Pin color="#3B82F6" small />
-        </motion.div>
+        {/* Render Stickers */}
+        {stickerConfigs.map((config, index) => {
+          const sticker = stickers[index];
+          if (!sticker) return null;
+          return (
+            <motion.div
+              key={`sticker-${index}`}
+              drag
+              dragMomentum={false}
+              dragConstraints={pinBoardRef}
+              dragElastic={0.1}
+              onDragStart={playPick}
+              onDragEnd={playPlace}
+              initial={config.initial}
+              animate={config.initial}
+              className={config.className}
+              whileDrag={{ scale: 1.1, zIndex: 60 }}
+            >
+              <img
+                src={sticker.src}
+                alt={`Sticker ${index + 1}`}
+                className="w-full h-full object-contain pointer-events-none drop-shadow-[0_4px_8px_rgba(0,0,0,0.1)]"
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = config.fallbackSrc;
+                }}
+              />
+              <Pin color="#3B82F6" small />
+            </motion.div>
+          );
+        })}
       </div>
     </div>
   );

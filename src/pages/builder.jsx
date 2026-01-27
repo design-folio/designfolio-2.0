@@ -75,7 +75,7 @@ export default function Index() {
     let marginWidth = '0px';
     if (activeSidebar === sidebars.work || activeSidebar === sidebars.review) {
       marginWidth = '500px';
-    } else if (activeSidebar === sidebars.theme || activeSidebar === sidebars.footer) {
+    } else if (activeSidebar === sidebars.theme || activeSidebar === sidebars.footer || activeSidebar === sidebars.about) {
       marginWidth = '320px';
     }
 
@@ -157,7 +157,7 @@ export default function Index() {
       case modals.username:
         return <AddUsername />;
       case modals.about:
-        return <AddAbout />;
+        return null; // About modal is handled by CustomSheet/Sheet in AddAbout component
     }
   };
 
@@ -212,6 +212,7 @@ export default function Index() {
         </Modal>
         <AddReview />
         <AddWork />
+        <AddAbout />
         {/* Unsaved changes dialog */}
         <UnsavedChangesDialog
           open={showUnsavedWarning && isSwitchingSidebar && pendingSidebarAction?.type === "open"}

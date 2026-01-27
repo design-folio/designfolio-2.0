@@ -177,8 +177,9 @@ export default function LoggedInHeader({
   const isWorkSidebarOpen = activeSidebar === sidebars.work;
   const isThemeSidebarOpen = activeSidebar === sidebars.theme;
   const isFooterSidebarOpen = activeSidebar === sidebars.footer;
-  // Header should shift when either ThemePanel, Review sidebar, or Work sidebar is open (desktop only)
-  const shouldShiftHeader = (isThemeSidebarOpen || isReviewSidebarOpen || isWorkSidebarOpen || isFooterSidebarOpen) && !isMobile;
+  const isAboutSidebarOpen = activeSidebar === sidebars.about;
+  // Header should shift when either ThemePanel, Review sidebar, Work sidebar, About sidebar, or Footer sidebar is open (desktop only)
+  const shouldShiftHeader = (isThemeSidebarOpen || isReviewSidebarOpen || isWorkSidebarOpen || isFooterSidebarOpen || isAboutSidebarOpen) && !isMobile;
 
   // Calculate shift width based on which sidebar is open
   const getShiftWidth = () => {
@@ -186,6 +187,7 @@ export default function LoggedInHeader({
     if (isReviewSidebarOpen) return '500px'; // Review sidebar uses 500px width
     if (isThemeSidebarOpen) return '320px';
     if (isFooterSidebarOpen) return '320px'; // Footer sidebar uses 320px width
+    if (isAboutSidebarOpen) return '320px'; // About sidebar uses 320px width
     return '0';
   };
 

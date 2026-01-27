@@ -185,7 +185,7 @@ export default function Index({ data }) {
         </div>
         {!project?.pro && (
           <div
-            className={`text-center flex justify-center fixed bottom-0 right-0 left-0 lg:left-[unset] lg:right-[36px] lg:bottom-[10px] mb-2 xl:block cursor-pointer`}
+            className={`text-center flex justify-center fixed bottom-0 left-0 right-0 lg:left-1/2 lg:-translate-x-1/2 lg:bottom-[24px] lg:right-[unset] mb-2 xl:block cursor-pointer`}
             onClick={() => window.open("https://www.designfolio.me", "_blank")}
           >
             <div className="bg-df-section-card-bg-color shadow-lg p-2 rounded-2xl">

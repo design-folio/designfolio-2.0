@@ -9,7 +9,7 @@ import Works from "./works";
 import PortfolioFooter from "./portfolioFooter";
 import { motion } from "framer-motion";
 import { sidebars, DEFAULT_SECTION_ORDER, normalizeSectionOrder } from "@/lib/constant";
-// import AboutMe from "./aboutMe";
+import AboutMe from "./aboutMe";
 
 const containerVariants = {
   hidden: {},
@@ -59,11 +59,9 @@ export default function Builder() {
 
   // Section component mapping
   const sectionComponents = {
-    /*
     about: (
       <AboutMe edit userDetails={userDetails} openModal={openModal} />
     ),
-    */
     projects: (
       <Projects
         edit

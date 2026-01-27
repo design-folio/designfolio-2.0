@@ -28,7 +28,7 @@ import SimpleTiptapRenderer from "./SimpleTiptapRenderer";
 import Text from "./text";
 import { Button as ButtonNew } from "./ui/buttonNew";
 import MemoLinkedin from "./icons/Linkedin";
-// import { AboutMeContent } from "./aboutMe";
+import { AboutMeContent } from "./aboutMe";
 export default function Template2({ userDetails, preview = false }) {
   const {
     bio,
@@ -66,9 +66,8 @@ export default function Template2({ userDetails, preview = false }) {
       setActiveStep((prev) => prev + 1); // update step when no projects exist
     } else if (activeStep === 5 && reviews && reviews.length === 0) {
       setActiveStep((prev) => prev + 1); // update step when no reviews exist
-    // About step temporarily disabled — always skip step 7
-    } else if (activeStep === 7) {
-      setActiveStep((prev) => prev + 1);
+    } else if (activeStep === 7 && (!userDetails?.about || userDetails?.about?.trim?.() === "")) {
+      setActiveStep((prev) => prev + 1); // skip about if empty
     } else if (activeStep === 8 && experiences && experiences.length === 0) {
       setActiveStep((prev) => prev + 1); // update step when no experiences exist
     } else if (activeStep === 9 && !portfolioCheck) {
@@ -364,7 +363,6 @@ export default function Template2({ userDetails, preview = false }) {
             </div>
           )}
 
-          {/*
           {activeStep >= 7 && (
             <div id="section-about" className="flex flex-col gap-6">
               <Chat direction="right" delay={400} onComplete={handleStepCompletion}>
@@ -380,7 +378,6 @@ export default function Template2({ userDetails, preview = false }) {
               </Chat>
             </div>
           )}
-          */}
 
           {activeStep >= 8 && experiences && experiences?.length > 0 && (
             <div id="section-works" className="flex flex-col gap-6">

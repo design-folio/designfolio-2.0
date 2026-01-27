@@ -35,9 +35,7 @@ export function AboutMeContent({
   className = "",
   textClassName = "text-foreground-landing/80",
 }) {
-  // Pegboard temporarily disabled (kept for easy re-enable)
-  void variant;
-  // const effectiveVariant = variant ?? "pegboard";
+  const effectiveVariant = variant ?? "pegboard";
 
   const about = userDetails?.about ?? "";
 
@@ -51,7 +49,6 @@ export function AboutMeContent({
         </p>
       </div>
 
-      {/*
       {effectiveVariant === "pegboard" && (
         <div className="mt-6">
           <Pegboard />
@@ -62,7 +59,6 @@ export function AboutMeContent({
           )}
         </div>
       )}
-      */}
     </div>
   );
 }

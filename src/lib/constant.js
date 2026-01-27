@@ -100,11 +100,4 @@ export const chatBubbleItems = {
 };
 
 
-// NOTE: About block temporarily disabled (kept for easy re-enable)
-export const DEFAULT_SECTION_ORDER = [
-  "projects",
-  "reviews",
-  "tools",
-  // "about",
-  "works",
-];
+export const DEFAULT_SECTION_ORDER = ['projects', 'reviews', 'tools', 'about','works', ];

@@ -126,7 +126,7 @@ export default function BottomNavigation({
 
       {!userDetails?.pro && (
         <div
-          className={`hidden text-center lg:flex justify-center lg:fixed lg:right-[36px] lg:bottom-[36px] xl:block cursor-pointer ${watermarkClassName}`}
+          className={`hidden text-center lg:flex justify-center lg:fixed lg:right-[36px] lg:bottom-[24px] xl:block cursor-pointer ${watermarkClassName}`}
           onClick={() => window.open("https://www.designfolio.me", "_blank")}
         >
           <div className="bg-df-section-card-bg-color shadow-df-section-card-shadow p-2 rounded-2xl">

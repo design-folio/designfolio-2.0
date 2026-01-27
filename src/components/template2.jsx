@@ -28,6 +28,7 @@ import SimpleTiptapRenderer from "./SimpleTiptapRenderer";
 import Text from "./text";
 import { Button as ButtonNew } from "./ui/buttonNew";
 import MemoLinkedin from "./icons/Linkedin";
+// import { AboutMeContent } from "./aboutMe";
 export default function Template2({ userDetails, preview = false }) {
   const {
     bio,
@@ -65,12 +66,15 @@ export default function Template2({ userDetails, preview = false }) {
       setActiveStep((prev) => prev + 1); // update step when no projects exist
     } else if (activeStep === 5 && reviews && reviews.length === 0) {
       setActiveStep((prev) => prev + 1); // update step when no reviews exist
-    } else if (activeStep === 7 && experiences && experiences.length === 0) {
+    // About step temporarily disabled — always skip step 7
+    } else if (activeStep === 7) {
+      setActiveStep((prev) => prev + 1);
+    } else if (activeStep === 8 && experiences && experiences.length === 0) {
       setActiveStep((prev) => prev + 1); // update step when no experiences exist
-    } else if (activeStep === 8 && !portfolioCheck) {
+    } else if (activeStep === 9 && !portfolioCheck) {
       setActiveStep((prev) => prev + 1);
     } else if (
-      activeStep === 9 &&
+      activeStep === 10 &&
       socials &&
       !Object.values(socials).every((social) => social != "")
     ) {
@@ -127,7 +131,7 @@ export default function Template2({ userDetails, preview = false }) {
   return (
     <TooltipProvider>
       <div
-        className={`max-w-[890px] mx-auto py-[32px] lg:py-[100px] px-2 md:px-4 lg:px-0`}
+        className={`max-w-[848px] mx-auto py-[32px] lg:py-[100px] px-2 md:px-4 lg:px-0`}
       >
         {preview && (
           <Link href={"/builder"}>
@@ -193,6 +197,7 @@ export default function Template2({ userDetails, preview = false }) {
                 direction="left"
                 delay={200}
                 onComplete={handleStepCompletion}
+                className="w-full"
               >
                 Glad you asked 😌 <br />
                 Here are a few things I've built.
@@ -230,7 +235,7 @@ export default function Template2({ userDetails, preview = false }) {
               <Chat direction="left" delay={300}>
                 Here's what some very kind humans had to say 🫶
               </Chat>
-              <Chat direction="left" delay={200} onComplete={handleStepCompletion}>
+              <Chat direction="left" delay={200} onComplete={handleStepCompletion} className="w-full">
 
                 <div className="space-y-4">
                   {reviews?.map((review) => {
@@ -327,7 +332,7 @@ export default function Template2({ userDetails, preview = false }) {
                 A mix of design, code, and a bit of chaos 😄<br />
                 But mostly:
               </Chat>
-              <Chat delay={300} onComplete={handleStepCompletion}>
+              <Chat delay={300} onComplete={handleStepCompletion} className="w-full">
                 <div className="flex flex-wrap items-center gap-2 mb-2">
                   {tools?.map((tool, i) => (
                     <div
@@ -353,13 +358,31 @@ export default function Template2({ userDetails, preview = false }) {
                 </div>
                 This is my toolbox.
               </Chat>
-              <Chat delay={300} onComplete={handleStepCompletion}>
+              <Chat delay={300} onComplete={handleStepCompletion} className="w-full">
                 I specialize in {getSkills()}
               </Chat>
             </div>
           )}
 
-          {activeStep >= 7 && experiences && experiences?.length > 0 && (
+          {/*
+          {activeStep >= 7 && (
+            <div id="section-about" className="flex flex-col gap-6">
+              <Chat direction="right" delay={400} onComplete={handleStepCompletion}>
+                Tell me a little about yourself?
+              </Chat>
+              <Chat direction="left" delay={200} onComplete={handleStepCompletion} className="w-full">
+                <AboutMeContent
+                  userDetails={userDetails}
+                  edit={false}
+                  variant="pegboard"
+                  textClassName="text-df-base-text-color"
+                />
+              </Chat>
+            </div>
+          )}
+          */}
+
+          {activeStep >= 8 && experiences && experiences?.length > 0 && (
             <div id="section-works" className="flex flex-col gap-6">
               <Chat direction="right" delay={400} onComplete={handleStepCompletion}>
                 Where have you worked so far?
@@ -369,7 +392,7 @@ export default function Template2({ userDetails, preview = false }) {
               </Chat>
               <Chat
                 direction="left"
-                className="pb-5"
+                className="w-full pb-5"
                 delay={200}
                 onComplete={handleStepCompletion}
               >
@@ -440,14 +463,14 @@ export default function Template2({ userDetails, preview = false }) {
             </div>
           )}
 
-          {activeStep >= 8 && portfolioCheck && (
+          {activeStep >= 9 && portfolioCheck && (
             <>
               <Chat direction="right" delay={400} onComplete={handleStepCompletion}>
                 Got any other places I should check out?
               </Chat>
               <Chat
                 direction="left"
-                className="pb-5"
+                className="w-full pb-5"
                 delay={300}
                 onComplete={handleStepCompletion}
               >
@@ -517,7 +540,7 @@ export default function Template2({ userDetails, preview = false }) {
             </>
           )}
 
-          {activeStep >= 9 &&
+          {activeStep >= 10 &&
             (resume ||
               (socials &&
                 Object.values(socials).some(
@@ -531,9 +554,9 @@ export default function Template2({ userDetails, preview = false }) {
                 >
                   Where can I reach you?
                 </Chat>
-                <Chat direction="left">You can reach me here 👇🏻</Chat>
+                <Chat direction="left" className="w-full">You can reach me here 👇🏻</Chat>
                 {resume && (
-                  <Chat direction="left" className="pb-5">
+                  <Chat direction="left" className="w-full pb-5">
                     <a
                       href={userDetails?.resume?.url}
                       download={true}
@@ -555,7 +578,7 @@ export default function Template2({ userDetails, preview = false }) {
                   Object.values(socials).some(
                     (social) => social && social != ""
                   ) && (
-                    <Chat direction="left" className="pb-5" delay={200}>
+                    <Chat direction="left" className="w-full pb-5" delay={200}>
                       <div className="flex flex-col lg:flex-row gap-[24px]">
                         {socials?.instagram && (
                           <Link

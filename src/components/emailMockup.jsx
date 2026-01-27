@@ -1,4 +1,5 @@
 import Text from "./text";
+import { BorderBeam } from "@/components/ui/border-beam";
 
 export default function EmailMockup() {
 
@@ -6,32 +7,59 @@ export default function EmailMockup() {
         <section className="py-8 sm:py-12 md:py-16 px-4 sm:px-6">
             <div className="max-w-5xl mx-auto">
                 <div
-                    className="rounded-[1.25rem] sm:rounded-[1.75rem] p-1 sm:p-1.5 gradient-border-animate relative z-10"
+                    className="rounded-[1.25rem] sm:rounded-[1.75rem] p-[2px] relative z-10 bg-gradient-to-r from-border/80 via-border/20 to-border/80 shadow-xl"
                     data-testid="container-portfolio-gradient"
                 >
+                    <BorderBeam size={400} duration={8} delay={0} borderWidth={4} colorFrom="#ffaa40" colorTo="#9c40ff" />
                     <div
-                        className="bg-white rounded-[1.125rem] sm:rounded-[1.625rem] p-8 sm:p-10 md:p-12"
+                        className="bg-white dark:bg-background rounded-[1.125rem] sm:rounded-[1.625rem] overflow-hidden flex flex-col"
                         data-testid="container-portfolio-mockup"
                     >
-                        <div className="flex flex-col sm:flex-row items-start gap-6 sm:gap-8 pb-8">
-                            <div className="flex-shrink-0">
-                                <div className="relative">
-                                    <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full overflow-hidden shadow-md bg-muted/20 dark:bg-muted/10 relative">
-                                        {/* Shimmer background effect */}
-                                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-muted/30 to-transparent animate-shimmer"></div>
-                                        <video
-                                            className="w-full h-full object-cover relative z-10"
-                                            autoPlay
-                                            loop
-                                            muted
-                                            playsInline
-                                            data-testid="video-avatar"
-                                        >
-                                            <source src="/videos/avatarui1.mp4" type="video/mp4" />
-                                        </video>
+                        {/* Mac Chrome Frame Header */}
+                        <div className="bg-[#f6f6f6] dark:bg-[#1a1a1a] border-b border-border px-4 py-3 flex items-center gap-2">
+                            <div className="flex gap-2">
+                                <div className="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e]"></div>
+                                <div className="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123]"></div>
+                                <div className="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29]"></div>
+                            </div>
+                            <div className="flex-1 flex justify-center">
+                                <div className="relative rounded-md">
+                                    <BorderBeam
+                                        className="rounded-md"
+                                        size={140}
+                                        duration={10}
+                                        borderWidth={2}
+                                        colorFrom="#ffaa40"
+                                        colorTo="#9c40ff"
+                                    />
+                                    <div className="relative bg-white dark:bg-[#2a2a2a] rounded-md px-3 py-1 text-[10px] text-foreground/40 border border-border/40 min-w-[200px] text-center truncate">
+                                        morgan.designfolio.me
                                     </div>
                                 </div>
                             </div>
+                            <div className="w-12"></div>
+                        </div>
+
+                        <div className="p-8 sm:p-10 md:p-12">
+                            <div className="flex flex-col sm:flex-row items-start gap-6 sm:gap-8 pb-8">
+                                <div className="flex-shrink-0">
+                                    <div className="relative">
+                                        <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full overflow-hidden shadow-md bg-muted/20 dark:bg-muted/10 relative">
+                                            {/* Shimmer background effect */}
+                                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-muted/30 to-transparent animate-shimmer"></div>
+                                            <video
+                                                className="w-full h-full object-cover relative z-10"
+                                                autoPlay
+                                                loop
+                                                muted
+                                                playsInline
+                                                data-testid="video-avatar"
+                                            >
+                                                <source src="/videos/avatarui1.mp4" type="video/mp4" />
+                                            </video>
+                                        </div>
+                                    </div>
+                                </div>
 
                             <div className="flex-1 min-w-0">
                                 <Text
@@ -171,6 +199,7 @@ export default function EmailMockup() {
                     </div>
                 </div>
             </div>
-        </section >
+            </div>
+        </section>
     )
 }

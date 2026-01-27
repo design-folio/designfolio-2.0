@@ -6,26 +6,58 @@ import { Testimonials } from "@/components/comp/Testimonials";
 import { ToolStack } from "@/components/comp/ToolStack";
 import { WorkShowcase } from "@/components/comp/WorkShowcase";
 import { useGlobalContext } from "@/context/globalContext";
-import { DEFAULT_SECTION_ORDER } from "@/lib/constant";
+import { DEFAULT_SECTION_ORDER, normalizeSectionOrder } from "@/lib/constant";
 import { cn } from "@/lib/utils";
 import { useEffect } from "react";
+// import { AboutMeContent } from "@/components/aboutMe";
+// import { Button as ButtonNew } from "@/components/ui/buttonNew";
+// import { PencilIcon } from "lucide-react";
 
 const Minimal = ({ userDetails, edit }) => {
-  const { setCursor } = useGlobalContext();
+  const { setCursor, openModal } = useGlobalContext();
   useEffect(() => {
     setCursor(userDetails?.cursor ? userDetails?.cursor : 0);
   }, []);
 
+  /*
+  const about =
+    userDetails?.about ??
+    userDetails?.aboutMe ??
+    userDetails?.about_me ??
+    "";
+  const hasAbout = typeof about === "string" && about.trim().length > 0;
+  */
+
   // Get section order from userDetails or use template default
-  const _raw = userDetails?.sectionOrder;
-  const _defaultOrder = DEFAULT_SECTION_ORDER;
-  const _filtered = _raw && Array.isArray(_raw) && _raw.length > 0 ? _raw.filter(section => _defaultOrder.includes(section)) : null;
-  const sectionOrder = _raw && Array.isArray(_raw) && _raw.length > 0 && _filtered && _filtered.length > 0
-    ? _filtered
-    : _defaultOrder;
+  const sectionOrder = normalizeSectionOrder(userDetails?.sectionOrder, DEFAULT_SECTION_ORDER);
 
   // Section component mapping
   const sectionComponents = {
+    /*
+    about: (edit || hasAbout) && (
+      <section id="section-about" className="py-12">
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-2xl font-bold text-center flex-1">About</h2>
+          {edit && (
+            <ButtonNew
+              variant="secondary"
+              size="icon"
+              className="h-10 w-10 rounded-full"
+              onClick={() => openModal("about")}
+            >
+              <PencilIcon className="w-4 h-4 text-df-icon-color" />
+            </ButtonNew>
+          )}
+        </div>
+        <AboutMeContent
+          userDetails={userDetails}
+          edit={edit}
+          variant="pegboard"
+          textClassName="text-muted-foreground"
+        />
+      </section>
+    ),
+    */
     projects: (userDetails?.projects?.length != 0 || edit) && (
       <section id="section-projects">
         <WorkShowcase userDetails={userDetails} edit={edit} />

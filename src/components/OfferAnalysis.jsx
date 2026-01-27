@@ -13,10 +13,10 @@ export default function OfferAnalysis() {
     toast.error("Rate limit reached.");
     setAnalysis(
       "⚠️ Rate Limit Reached\n\n" +
-        "The demo API key has reached its limit. To continue:\n\n" +
-        "1. Get your free API key from https://makersuite.google.com/app/apikey\n" +
-        "2. Enter it in the field above\n\n" +
-        "Your key will be saved locally for future use."
+      "The demo API key has reached its limit. To continue:\n\n" +
+      "1. Get your free API key from https://makersuite.google.com/app/apikey\n" +
+      "2. Enter it in the field above\n\n" +
+      "Your key will be saved locally for future use."
     );
   };
 
@@ -57,7 +57,7 @@ export default function OfferAnalysis() {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className="w-full max-w-[848px] mx-auto">
       {!analysis ? (
         <div className="w-full  mx-auto p-6 bg-white backdrop-blur-sm shadow-tools border border-[#E5E7EB] rounded-2xl">
           <OfferForm onSubmit={handleSubmit} isAnalyzing={isAnalyzing} />

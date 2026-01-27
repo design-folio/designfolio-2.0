@@ -102,7 +102,7 @@ export default function ClaimDomain({
             id={form}
             className={`w-full xl:w-[836px] md:pr-5 m-auto ${className}`}
           >
-            <div className="flex flex-col md:flex-row items-end justify-center gap-4 md:max-w-[890px] m-auto">
+            <div className="flex flex-col md:flex-row items-end justify-center gap-4 md:max-w-[848px] m-auto">
               <div className="w-full md:w-[432px]">
                 <div className="relative">
                   <Field
@@ -110,19 +110,16 @@ export default function ClaimDomain({
                     name="domain"
                     placeholder="Enter your name"
                     autoComplete="off"
-                    className={`text-input !rounded-[16px] ${
-                      loading ? "!pr-[182px]" : "!pr-[158px]"
-                    } !py-[19.2px] xl:!py-[18.8px] placeholder-[#9CA3AF] ${
-                      ((!!errors.domain && values.domain && !loading) ||
+                    className={`text-input !rounded-[16px] ${loading ? "!pr-[182px]" : "!pr-[158px]"
+                      } !py-[19.2px] xl:!py-[18.8px] placeholder-[#9CA3AF] ${((!!errors.domain && values.domain && !loading) ||
                         (!isAvailable && !loading && values.domain)) &&
                       "!text-input-error-color"
-                    } ${
-                      !errors.domain &&
+                      } ${!errors.domain &&
                       domainValue &&
                       isAvailable &&
                       !loading &&
                       "!text-input-success-color"
-                    }`}
+                      }`}
                     onChange={(e) =>
                       handleChange(
                         e,
@@ -181,11 +178,10 @@ export default function ClaimDomain({
             <div className="h-6 text-center mt-6">
               <div className="flex flex-col justify-center overflow-hidden">
                 <div
-                  className={`transition flex gap-x-1 justify-center items-center duration-300 ${
-                    !domainValue || loading
-                      ? "h-max animate-slide-up max-h-10 opacity-100"
-                      : "h-max max-h-0 opacity-0"
-                  }`}
+                  className={`transition flex gap-x-1 justify-center items-center duration-300 ${!domainValue || loading
+                    ? "h-max animate-slide-up max-h-10 opacity-100"
+                    : "h-max max-h-0 opacity-0"
+                    }`}
                 >
                   <img src="/assets/svgs/normal-emoji.svg" alt="" />
                   <p className="text-input-button-color font-[500] font-inter">
@@ -194,11 +190,10 @@ export default function ClaimDomain({
                 </div>
 
                 <div
-                  className={`transition-transform flex gap-x-1 justify-center items-center duration-300 ${
-                    !errors.domain && domainValue && isAvailable && !loading
-                      ? "-translate-y-full h-max animate-slide-down max-h-10 opacity-100"
-                      : "-translate-y-full h-max max-h-0 opacity-0"
-                  }`}
+                  className={`transition-transform flex gap-x-1 justify-center items-center duration-300 ${!errors.domain && domainValue && isAvailable && !loading
+                    ? "-translate-y-full h-max animate-slide-down max-h-10 opacity-100"
+                    : "-translate-y-full h-max max-h-0 opacity-0"
+                    }`}
                 >
                   <img src="/assets/svgs/success-emoji.svg" alt="" />
                   <p className="text-center text-input-success-color font-[500] font-inter">
@@ -207,12 +202,11 @@ export default function ClaimDomain({
                 </div>
 
                 <div
-                  className={`transition-transform flex gap-x-1 justify-center items-center duration-300 ${
-                    (!!errors.domain && values.domain && !loading) ||
+                  className={`transition-transform flex gap-x-1 justify-center items-center duration-300 ${(!!errors.domain && values.domain && !loading) ||
                     (!isAvailable && !loading && values.domain)
-                      ? "translate-y-full h-max  animate-slide-up max-h-10 opacity-100"
-                      : "translate-y-full h-max max-h-0 opacity-0"
-                  }`}
+                    ? "translate-y-full h-max  animate-slide-up max-h-10 opacity-100"
+                    : "translate-y-full h-max max-h-0 opacity-0"
+                    }`}
                 >
                   <img src="/assets/svgs/error-emoji.svg" alt="" />
                   <p className="text-center flex text-input-error-color font-[500] font-inter">

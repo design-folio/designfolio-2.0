@@ -41,8 +41,8 @@ export default function Index({ data }) {
       const response = await _getProjectDetails(router.query.id, 1);
       return response.data;
     },
-    enabled: shouldFetch, 
-    placeholderData: data, 
+    enabled: shouldFetch,
+    placeholderData: data,
     cacheTime: 300000,
     staleTime: 60000,
   });
@@ -111,13 +111,13 @@ export default function Index({ data }) {
   const wpValue = projectWallpaper && typeof projectWallpaper === 'object'
     ? (projectWallpaper.url || projectWallpaper.value)
     : projectWallpaper;
-  
+
   // Compute wallpaper URL for this project
   const currentTheme = resolvedTheme || theme || (project?.theme == 1 ? "dark" : "light");
   const wallpaperUrl = wpValue && wpValue !== 0
     ? getWallpaperUrl(wpValue, currentTheme)
     : null;
-  
+
   // Get wallpaper effects from project or userDetails
   const effects = project?.wallpaper?.effects || userDetails?.wallpaper?.effects || null;
 
@@ -135,7 +135,7 @@ export default function Index({ data }) {
       <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={effects} />
       <main className="min-h-screen">
         <div
-          className={`max-w-[890px] mx-auto pt-[16px] pb-[80px] lg:py-[40px] px-2 md:px-4 lg:px-0`}
+          className={`max-w-[848px] mx-auto pt-[16px] pb-[80px] lg:py-[40px] px-2 md:px-4 lg:px-0`}
         >
           <motion.div
             className="flex-1 flex flex-col gap-3"

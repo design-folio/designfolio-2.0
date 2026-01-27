@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/buttonNew";
 import { useGlobalContext } from "@/context/globalContext";
 import { sidebars } from "@/lib/constant";
+import { getPlainTextLength } from "@/lib/tiptapUtils";
 import { _updateUser } from "@/network/post-request";
 import {
   KeyboardSensor,
@@ -15,7 +16,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { motion } from "framer-motion";
-import { Plus, PlusIcon } from "lucide-react";
+import { Plus, PlusIcon, Pencil, Linkedin, QuoteIcon, ChevronDown, ChevronUp } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useState } from "react";
 import { twMerge } from "tailwind-merge";
@@ -27,13 +28,34 @@ import MemoTestimonial from "./icons/Testimonial";
 import ReviewCard from "./reviewCard";
 import Section from "./section";
 import SortableModal from "./SortableModal";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext
+} from "@/components/ui/carousel";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import SimpleTiptapRenderer from "./SimpleTiptapRenderer";
+import MemoQuoteIcon from "./icons/QuoteIcon";
 
 export default function Reviews({ edit = false, openModal, userDetails }) {
 
-  const { setUserDetails, updateCache } = useGlobalContext();
+  const { setUserDetails, updateCache, setSelectedReview } = useGlobalContext();
   const reviews = userDetails?.reviews || [];
+  const hasMultipleReviews = reviews.length >= 2;
   const theme = useTheme();
   const [showModal, setShowModal] = useState(false);
+  const [expandedReviewIds, setExpandedReviewIds] = useState([]);
+
+  const buttonStyles =
+    "static h-10 w-10 rounded-full border border-border/20 bg-df-section-card-bg-color text-df-icon-color shadow-sm hover:bg-df-section-card-bg-color/80 active:scale-[0.98] transition-all translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed";
+
+  const toggleExpandReview = (id) => {
+    setExpandedReviewIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  };
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -103,73 +125,201 @@ export default function Reviews({ edit = false, openModal, userDetails }) {
         }
         wallpaper={userDetails?.wallpaper}
       >
-        <div
-          className={twMerge(
-            "grid grid-cols-1 md:grid-cols-2 gap-4",
-            reviews.length == 0 && "md:grid-cols-1"
-          )}
-          style={{ gridAutoRows: "auto" }}
-        >
-          {reviews.map((review, i) => (
-            <ReviewCard review={review} edit={edit} key={review?._id || i} index={i} />
-          ))}
+        {reviews.length > 0 ? (
+          <div className="mt-6 -mx-6 lg:-mx-10 px-6 lg:px-10 overflow-visible relative">
+            <Carousel
+              opts={{
+                align: hasMultipleReviews ? "start" : "center",
+                loop: hasMultipleReviews,
+              }}
+              className="w-full overflow-visible"
+            >
+              <div className="overflow-visible">
+                <CarouselContent className={hasMultipleReviews ? "-ml-6" : "justify-center ml-0"}>
+                  {(hasMultipleReviews ? [...reviews, ...reviews, ...reviews] : reviews).map((review, idx) => (
+                    <CarouselItem
+                      key={`${review._id}-${idx}`}
+                      className={
+                        hasMultipleReviews
+                          ? "pl-6 md:basis-1/2 overflow-visible py-4"
+                          : "pl-0 md:basis-full overflow-visible py-4 max-w-2xl mx-auto"
+                      }
+                    >
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, amount: 0.2 }}
+                        transition={{ duration: 0.5, delay: idx * 0.1 }}
+                        className="group rounded-2xl p-6 flex flex-col relative transition-all duration-300 h-full bg-review-card-bg-color hover-elevate border border-border/50 shadow-df-card-soft-shadow"
+                      >
+                      <div className="mb-4 mt-2 flex items-center justify-between">
+                        <MemoQuoteIcon className="text-df-icon-color opacity-20" />
 
-          {edit && reviews.length == 0 && (
-            <AddItem
-              className="bg-df-section-card-bg-color shadow-df-section-card-shadow mt-6"
-              title="Add your testimonial"
-              onClick={() => openModal(sidebars.review)}
-              iconLeft={
-                reviews?.length > 0 ? (
-                  <Button2
-                    type="secondary"
-                    icon={
-                      <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
-                    }
-                    onClick={() => openModal(sidebars.review)}
-                    size="small"
-                    text
-                  />
-                ) : (
-                  <MemoTestimonial />
-                )
-              }
-              iconRight={
-                reviews?.length == 0 ? (
-                  <Button2
-                    type="secondary"
-                    icon={
-                      <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
-                    }
-                    onClick={() => openModal(sidebars.review)}
-                    size="small"
-                  />
-                ) : (
-                  false
-                )
-              }
-              theme={theme}
-            />
-          )}
-        </div>
-      </Section>
-      <SortableModal
-        show={showModal}
-        onClose={() => setShowModal(false)}
-        items={userDetails?.reviews?.map((review) => review._id) || []}
-        onSortEnd={handleDragEnd}
-        sensors={sensors}
-        useButton2={true}
-      >
-        {userDetails?.reviews?.map((review) => (
-          <SortableReviewItem
-            key={review._id}
-            review={review}
-            edit={edit}
-          />
-        ))}
-      </SortableModal>
-    </motion.div>
+                        {edit && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={() => {
+                              setSelectedReview(review);
+                              openModal(sidebars.review);
+                            }}
+                          >
+                            <Pencil className="w-4 h-4 text-df-icon-color" />
+                          </Button>
+                        )}
+                      </div>
+
+                      <div className="flex-1 mb-8">
+                        <div className="text-base leading-relaxed text-df-description-color">
+                          {(() => {
+                            const id = review?._id ?? `${idx}`;
+                            const plainTextLength = getPlainTextLength(review?.description || "");
+                            const shouldShowToggle = plainTextLength > 180;
+                            const isExpanded = expandedReviewIds.includes(id);
+
+                            return (
+                              <>
+                                <div className={shouldShowToggle && !isExpanded ? "max-h-[110px] overflow-hidden relative" : ""}>
+                                  <SimpleTiptapRenderer
+                                    content={review?.description || ""}
+                                    mode="review"
+                                    enableBulletList={false}
+                                    className="rounded-none shadow-none"
+                                  />
+                                  {shouldShowToggle && !isExpanded && (
+                                    <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-review-card-bg-color to-transparent pointer-events-none" />
+                                  )}
+                                </div>
+
+                                {shouldShowToggle && (
+                                  <button
+                                    type="button"
+                                    onClick={() => toggleExpandReview(id)}
+                                    className="mt-2 text-df-description-color hover:text-df-heading-color inline-flex items-center gap-1 underline underline-offset-4"
+                                  >
+                                    {isExpanded ? (
+                                      <>
+                                        Show Less
+                                        <ChevronUp className="h-3 w-3" />
+                                      </>
+                                    ) : (
+                                      <>
+                                        View More
+                                        <ChevronDown className="h-3 w-3" />
+                                      </>
+                                    )}
+                                  </button>
+                                )}
+                              </>
+                            );
+                          })()}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between gap-3 mt-auto">
+                        <div className="flex items-center gap-3">
+                          <Avatar className="w-10 h-10 shrink-0 rounded-xl">
+                            <AvatarImage src={review?.avatar?.url || review?.avatar} alt={review?.name} />
+                            <AvatarFallback className="rounded-none" style={{ backgroundColor: '#FF9966', color: '#FFFFFF' }}>
+                              {review?.name?.split(' ').map(n => n[0]).join('')}
+                            </AvatarFallback>
+                          </Avatar>
+
+                          <div>
+                            <h3 className="font-semibold text-sm mb-0.5 text-df-heading-color">
+                              {review?.name}
+                            </h3>
+                            <p className="text-xs text-df-description-color">
+                              {review?.role ? `${review.role}, ` : ""}
+                              {review?.company}
+                            </p>
+                          </div>
+                        </div>
+                        {review.linkedinLink && review.linkedinLink?.trim() !== "" && (
+                          <a
+                            href={review.linkedinLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-foreground-landing/20 hover:text-[#0077B5] transition-colors p-2 -mr-2"
+                          >
+                            <Linkedin className="w-5 h-5" />
+                          </a>
+                        )}
+                      </div>
+                    </motion.div>
+                    </CarouselItem>
+                  ))}
+              </CarouselContent>
+          </div>
+              {hasMultipleReviews && (
+          <div className="flex justify-center gap-2 mt-4">
+            <CarouselPrevious className={buttonStyles} />
+            <CarouselNext className={buttonStyles} />
+          </div>
+        )}
+      </Carousel>
+    </div>
+  ) : (
+    edit && (
+      <div className="mt-6">
+        <AddItem
+          className="bg-df-section-card-bg-color shadow-df-section-card-shadow"
+          title="Add your testimonial"
+          onClick={() => openModal(sidebars.review)}
+          iconLeft={
+            reviews?.length > 0 ? (
+              <Button2
+                type="secondary"
+                icon={
+                  <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                }
+                onClick={() => openModal(sidebars.review)}
+                size="small"
+                text
+              />
+            ) : (
+              <MemoTestimonial />
+            )
+          }
+          iconRight={
+            reviews?.length == 0 ? (
+              <Button2
+                type="secondary"
+                icon={
+                  <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                }
+                onClick={() => openModal(sidebars.review)}
+                size="small"
+              />
+            ) : (
+              false
+            )
+          }
+          theme={theme}
+        />
+      </div>
+    )
+  )
+}
+      </Section >
+  <SortableModal
+    show={showModal}
+    onClose={() => setShowModal(false)}
+    items={userDetails?.reviews?.map((review) => review._id) || []}
+    onSortEnd={handleDragEnd}
+    sensors={sensors}
+    useButton2={true}
+  >
+    {userDetails?.reviews?.map((review) => (
+      <SortableReviewItem
+        key={review._id}
+        review={review}
+        edit={edit}
+      />
+    ))}
+  </SortableModal>
+    </motion.div >
   );
 }
 

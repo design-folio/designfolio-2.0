@@ -67,7 +67,7 @@ const SimpleTiptapRenderer = ({
     editable: false,
     editorProps: {
       attributes: {
-        class: `prose prose-sm dark:prose-invert max-w-none focus:outline-none ${mode === "review" ? "tiptap-review-mode" : mode === "work" ? "tiptap-work-mode" : ""}`,
+        class: `prose prose-sm dark:prose-invert max-w-none focus:outline-none ${mode === "review" ? "tiptap-review-mode" : mode === "work" ? "tiptap-work-mode" : mode === "work-small" ? "tiptap-work-small-mode" : ""}`,
       },
     },
   });

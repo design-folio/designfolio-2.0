@@ -111,7 +111,7 @@ export const Testimonials = ({ userDetails, edit }) => {
       <h2 className="text-3xl font-bold mb-12 text-center">What People Say</h2>
 
       <div
-        className={`relative ${isMobile ? "px-4" : "grid grid-cols-2 gap-6 max-w-4xl mx-auto px-4"
+        className={`relative ${isMobile ? "px-4" : "grid grid-cols-2 gap-6 max-w-[848px] mx-auto px-4"
           }`}
       >
         {isMobile ? (
@@ -133,11 +133,7 @@ export const Testimonials = ({ userDetails, edit }) => {
                       rotate: 4,
                       transition: { duration: 0.2 },
                     }}
-                    className="bg-review-card-bg-color border border-border/30 rounded-2xl p-6 flex flex-col hover-elevate transition-all"
-                    style={{
-                      boxShadow:
-                        "0 0 0 1px rgba(0,0,0,0.03), 0 0 40px rgba(0,0,0,0.015)",
-                    }}
+                    className="bg-review-card-bg-color border border-border/30 rounded-2xl p-6 flex flex-col hover-elevate transition-all shadow-df-card-soft-shadow"
                   >
                     <div className="flex items-start gap-2 mb-6 flex-1">
                       <div className="flex-1">
@@ -276,11 +272,7 @@ export const Testimonials = ({ userDetails, edit }) => {
                   delay: index * 0.1,
                   ease: "easeOut",
                 }}
-                className="bg-review-card-bg-color border border-border/30 rounded-2xl p-6 flex flex-col hover-elevate transition-all"
-                style={{
-                  boxShadow:
-                    "0 0 0 1px rgba(0,0,0,0.03), 0 0 40px rgba(0,0,0,0.015)",
-                }}
+                className="bg-review-card-bg-color border border-border/30 rounded-2xl p-6 flex flex-col hover-elevate transition-all shadow-df-card-soft-shadow"
               >
                 <div className="flex items-start gap-2 mb-6 flex-1">
                   <div className="flex-1">

@@ -13,7 +13,7 @@ export default function Index() {
 
     return (
         <div className="pt-16 sm:pt-20 bg-background-landing">
-            <div className="max-w-4xl mx-auto px-6 py-12">
+            <div className="max-w-[848px] mx-auto px-6 py-12">
                 <Card className="p-8 sm:p-12">
                     <h1 className="text-4xl font-bold mb-6" data-testid="text-page-title">
                         Contact & Support

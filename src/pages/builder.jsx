@@ -22,6 +22,7 @@ import { Feedefy } from "@feedefy/react";
 import { useRouter } from "next/router";
 import { _resendOTP } from "@/network/get-request";
 import AddUsername from "@/components/addUsername";
+import AddAbout from "@/components/addAbout";
 import Builder2 from "@/components/Builder2";
 import Minimal from "@/components/comp/Minimal";
 import Portfolio from "@/components/comp/Portfolio";
@@ -33,6 +34,7 @@ import { UnsavedChangesDialog } from "@/components/ui/UnsavedChangesDialog";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { CourseCard } from "@/components/CourceCard";
 import WallpaperBackground from "@/components/WallpaperBackground";
+import FooterSettingsPanel from "@/components/FooterSettingsPanel";
 
 export default function Index() {
   const {
@@ -73,7 +75,7 @@ export default function Index() {
     let marginWidth = '0px';
     if (activeSidebar === sidebars.work || activeSidebar === sidebars.review) {
       marginWidth = '500px';
-    } else if (activeSidebar === sidebars.theme) {
+    } else if (activeSidebar === sidebars.theme || activeSidebar === sidebars.footer) {
       marginWidth = '320px';
     }
 
@@ -154,6 +156,8 @@ export default function Index() {
         return <AddPortfolioLinks />;
       case modals.username:
         return <AddUsername />;
+      case modals.about:
+        return <AddAbout />;
     }
   };
 
@@ -182,7 +186,7 @@ export default function Index() {
       <main className={cn(
         "min-h-screen", hasNoWallpaper(wallpaper) && "bg-df-bg-color")}>
         <div
-          className={` mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0 ${userDetails?.template != 3 && "max-w-[890px]"
+          className={` mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0 ${userDetails?.template != 3 && "max-w-[848px]"
             }`}
         >
           {userDetails && !userDetails?.pro && <ProWarning />}
@@ -228,6 +232,7 @@ export default function Index() {
           ></Feedefy>
         )}
         {!isMobile && <CourseCard />}
+        <FooterSettingsPanel />
       </main>
     </>
   );

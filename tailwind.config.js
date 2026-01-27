@@ -109,8 +109,10 @@ module.exports = {
 
         // Application
         "df-bg-color": "var(--df-bg-color)",
+        "work-experience-bg-color": "var(--work-experience-bg-color)",
         "df-base-text-color": "var(--df-base-text-color)",
         "df-orange-color": "var(--df-orange-color)",
+        "df-ink-color": "var(--df-ink-color)",
         "df-secondary-text-color": "var(--df-secondary-text-color)",
         "df-placeholder-color": "var(--df-placeholder-color)",
         "df-logo-text-color": "var(--df-logo-text-color)",
@@ -137,6 +139,7 @@ module.exports = {
         "profile-card-description-color":
           "var(--profile-card-description-color)",
         "profile-card-skill-color": "var(--profile-card-skill-color)",
+        "df-profile-strip-bg-color": "var(--df-profile-strip-bg-color)",
 
         // Project card
         "project-card-bg-color": "var(--project-card-bg-color)",
@@ -413,6 +416,8 @@ module.exports = {
         "popver-shadow": "var(--popver-shadow)",
         "df-add-item-shadow": "var(--df-add-item-shadow)",
         "df-section-card-shadow": "var(--df-section-card-shadow)",
+        "df-card-soft-shadow": "var(--df-card-soft-shadow)",
+        "df-add-card-inset-shadow": "var(--df-add-card-inset-shadow)",
         "default-theme-shadow": "var(--default-theme-shadow)",
         "theme-shadow": "var(--theme-shadow)",
         "selected-cursor-shadow": "var(--selected-cursor-shadow)",
@@ -467,6 +472,11 @@ module.exports = {
           "0%": { opacity: "0", transform: "translateX(10px)" },
           "100%": { opacity: "1", transform: "translateX(0)" },
         },
+        "border-beam": {
+          "100%": {
+            "offset-distance": "100%",
+          },
+        },
         shimmer: {
           "0%": { transform: "translateX(-100%)" },
           "100%": { transform: "translateX(200%)" },
@@ -475,6 +485,7 @@ module.exports = {
       animation: {
         "fade-in": "fade-in 0.5s ease-out",
         "fade-in-right": "fade-in-right 0.5s ease-out",
+        "border-beam": "border-beam calc(var(--duration) * 1s) infinite linear",
         shimmer: "shimmer 1.5s ease-in-out infinite",
       },
     },

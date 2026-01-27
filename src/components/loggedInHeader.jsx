@@ -176,14 +176,16 @@ export default function LoggedInHeader({
   const isReviewSidebarOpen = activeSidebar === sidebars.review;
   const isWorkSidebarOpen = activeSidebar === sidebars.work;
   const isThemeSidebarOpen = activeSidebar === sidebars.theme;
+  const isFooterSidebarOpen = activeSidebar === sidebars.footer;
   // Header should shift when either ThemePanel, Review sidebar, or Work sidebar is open (desktop only)
-  const shouldShiftHeader = (isThemeSidebarOpen || isReviewSidebarOpen || isWorkSidebarOpen) && !isMobile;
+  const shouldShiftHeader = (isThemeSidebarOpen || isReviewSidebarOpen || isWorkSidebarOpen || isFooterSidebarOpen) && !isMobile;
 
   // Calculate shift width based on which sidebar is open
   const getShiftWidth = () => {
     if (isWorkSidebarOpen) return '500px'; // Work sidebar uses 500px width
     if (isReviewSidebarOpen) return '500px'; // Review sidebar uses 500px width
-    if (isThemeSidebarOpen) return '320px'; // ThemePanel uses 320px width
+    if (isThemeSidebarOpen) return '320px';
+    if (isFooterSidebarOpen) return '320px'; // Footer sidebar uses 320px width
     return '0';
   };
 
@@ -410,7 +412,7 @@ export default function LoggedInHeader({
       )}
       style={{ right: shouldShiftHeader ? getShiftWidth() : '0' }}
     >
-      <div className="shadow-df-section-card-shadow max-w-[890px] p-3 border border-card-border md:!p-4 rounded-2xl bg-df-header-bg-color mx-auto flex justify-between items-center">
+      <div className="shadow-df-section-card-shadow max-w-[848px] p-3  md:px-8 md:py-4 rounded-2xl bg-df-header-bg-color mx-auto flex justify-between items-center">
         <div className="flex items-center gap-[24px]">
           <Link href={"/builder"}>
             <Logo className="text-df-base-text-color" />
@@ -579,7 +581,7 @@ export default function LoggedInHeader({
               src={
                 getUserAvatarImage(userDetails)
               }
-              className={cn("w-[44px] h-[44px] rounded-full cursor-pointer", !userDetails?.avatar ? "bg-df-bg-color" : "")}
+              className={cn("w-[44px] h-[44px] rounded-2xl cursor-pointer", !userDetails?.avatar ? "bg-df-bg-color" : "")}
             />
 
             {isClient && (

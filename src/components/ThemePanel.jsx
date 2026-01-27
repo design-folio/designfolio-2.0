@@ -3,7 +3,7 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGlobalContext } from "@/context/globalContext";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { sidebars, DEFAULT_SECTION_ORDER } from "@/lib/constant";
+import { sidebars, DEFAULT_SECTION_ORDER, normalizeSectionOrder } from "@/lib/constant";
 import styles from "@/styles/domain.module.css";
 import imageCompression from "browser-image-compression";
 import { Upload, RotateCcw } from "lucide-react";
@@ -36,6 +36,7 @@ import { _updateUser } from "@/network/post-request";
 
 // Section display names mapping
 const SECTION_NAMES = {
+  // about: 'About me',
   projects: 'Projects',
   reviews: 'Testimonials',
   tools: 'Toolbox',
@@ -128,29 +129,13 @@ const ThemePanel = ({
 
   // Initialize sectionOrder from userDetails or use template default
   const [sectionOrder, setSectionOrder] = useState(() => {
-    if (userDetails?.sectionOrder && Array.isArray(userDetails.sectionOrder)) {
-      // Filter to only include sections available in current template
-      return userDetails.sectionOrder.filter(section => availableSections.includes(section));
-    }
-    return [...availableSections];
+    return normalizeSectionOrder(userDetails?.sectionOrder, availableSections);
   });
 
   // Update sectionOrder when template or userDetails changes
   useEffect(() => {
     const newAvailableSections = getAvailableSections(template);
-    // Guard against empty or invalid sectionOrder from backend
-    if (userDetails?.sectionOrder && Array.isArray(userDetails.sectionOrder) && userDetails.sectionOrder.length > 0) {
-      // Filter to only include sections available in current template
-      const filtered = userDetails.sectionOrder.filter(section => newAvailableSections.includes(section));
-      // If filtered order is valid and not empty, use it; otherwise use template default
-      if (filtered.length === newAvailableSections.length && filtered.length > 0) {
-        setSectionOrder(filtered);
-      } else {
-        setSectionOrder([...newAvailableSections]);
-      }
-    } else {
-      setSectionOrder([...newAvailableSections]);
-    }
+    setSectionOrder(normalizeSectionOrder(userDetails?.sectionOrder, newAvailableSections));
   }, [template, userDetails?.sectionOrder]);
 
   // DnD sensors

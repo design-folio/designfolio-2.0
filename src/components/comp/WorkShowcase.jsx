@@ -31,6 +31,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import ProjectLock from "../projectLock";
 import MemoCasestudy from "../icons/Casestudy";
+import Text from "../text";
 
 export const WorkShowcase = ({ userDetails: userDetailsProp, edit }) => {
   const router = useRouter();
@@ -270,20 +271,23 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit }) => {
               <ArrowUpRight className="size-6 text-white" />
             </a> */}
           </div>
-          <div className="p-8 pb-10 cursor-pointer flex flex-col flex-1">
-            <div className="flex-1">
-              <h3 className="text-2xl font-semibold leading-tight line-clamp-2">
+          <div className="flex-1 flex flex-col justify-between cursor-pointer">
+            <div className="p-6 pb-0">
+              <h3 className="text-lg font-semibold line-clamp-2 project-info-card-heading-color">
                 {project.title}
               </h3>
               {project.description && (
-                <p className="text-gray-400 line-clamp-2 mt-3">
+                <Text
+                  size="p-xxsmall"
+                  className="text-df-description-color font-normal line-clamp-3 leading-relaxed "
+                >
                   {project.description}
-                </p>
+                </Text>
               )}
             </div>
             {edit && (
               <div
-                className="mt-4 flex"
+                className="flex px-4 py-4 items-center"
                 onMouseEnter={() => setIsHoveringInteractive(true)}
                 onMouseLeave={() => setIsHoveringInteractive(false)}
               >
@@ -291,22 +295,23 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit }) => {
                   isButton
                   listeners={listeners}
                   attributes={attributes}
+                  className={"max-h-[34px]"}
                 />
                 <div className="flex gap-2 ml-auto">
                   <Button
-                    size="small"
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
                       handleNavigation(project?._id);
                     }}
+                    customClass="!py-2 text-sm max-h-[38px] "
                     icon={<Pencil className="w-4 h-4" />}
                     text={"Edit"}
                     type="secondary"
                   />
                   <Button
-                    size="small"
                     type="toggleVisibility"
+                    customClass="!py-2 text-sm max-h-[38px]"
                     isSelected={project?.hidden}
                     onClick={(e) => {
                       e.preventDefault();
@@ -317,11 +322,11 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit }) => {
                     text={project?.hidden ? "Hidden" : "Visible"}
                   />
                   <Button
-                    size="small"
                     type="delete"
                     icon={
-                      <DeleteIcon className="stroke-delete-btn-icon-color h-6 w-6 cursor-pointer rounded-full" />
+                      <DeleteIcon className="stroke-delete-btn-icon-color h-5 w-5 cursor-pointer" />
                     }
+                    customClass="!p-2.5 max-h-10"
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();

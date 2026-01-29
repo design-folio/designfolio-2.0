@@ -44,9 +44,12 @@ export default function Template2({ userDetails, preview = false }) {
     resume,
     username,
     firstName,
-    lastName
+    lastName,
+    hiddenSections = [],
   } = userDetails || {};
   const router = useRouter();
+  // Only apply hiddenSections in preview; builder always shows all sections
+  const isSectionVisible = (id) => !preview || !hiddenSections.includes(id);
   const { projectRef, setCursor } = useGlobalContext();
 
   const [activeStep, setActiveStep] = useState(1);
@@ -184,13 +187,13 @@ export default function Template2({ userDetails, preview = false }) {
               {bio}
             </Chat>
           )}
-          {activeStep >= 3 && projects && projects?.length > 0 && (
+          {activeStep >= 3 && projects && projects?.length > 0 && isSectionVisible('projects') && (
             <Chat direction="right" delay={400} onComplete={handleStepCompletion}>
               So… what have you been working on lately?
             </Chat>
           )}
 
-          {activeStep >= 4 && projects && projects?.length > 0 && (
+          {activeStep >= 4 && projects && projects?.length > 0 && isSectionVisible('projects') && (
             <div id="section-projects" className="flex flex-col gap-6">
               <Chat
                 direction="left"
@@ -226,7 +229,7 @@ export default function Template2({ userDetails, preview = false }) {
             </div>
           )}
 
-          {activeStep >= 5 && reviews && reviews.length > 0 && (
+          {activeStep >= 5 && reviews && reviews.length > 0 && isSectionVisible('reviews') && (
             <div id="section-reviews" className="flex flex-col gap-6">
               <Chat direction="right" delay={400} onComplete={handleStepCompletion}>
                 What do people usually say about working with you?
@@ -322,7 +325,7 @@ export default function Template2({ userDetails, preview = false }) {
             </div>
           )}
 
-          {activeStep >= 6 && (
+          {activeStep >= 6 && isSectionVisible('tools') && (
             <div id="section-tools" className="flex flex-col gap-6">
               <Chat direction="right" delay={400} onComplete={handleStepCompletion}>
                 What do you actually use to build all this?
@@ -363,7 +366,7 @@ export default function Template2({ userDetails, preview = false }) {
             </div>
           )}
 
-          {activeStep >= 7 && (
+          {activeStep >= 7 && isSectionVisible('about') && (
             <div id="section-about" className="flex flex-col gap-6">
               <Chat direction="right" delay={400} onComplete={handleStepCompletion}>
                 Tell me a little about yourself?
@@ -379,7 +382,7 @@ export default function Template2({ userDetails, preview = false }) {
             </div>
           )}
 
-          {activeStep >= 8 && experiences && experiences?.length > 0 && (
+          {activeStep >= 8 && experiences && experiences?.length > 0 && isSectionVisible('works') && (
             <div id="section-works" className="flex flex-col gap-6">
               <Chat direction="right" delay={400} onComplete={handleStepCompletion}>
                 Where have you worked so far?

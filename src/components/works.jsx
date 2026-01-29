@@ -85,6 +85,7 @@ export default function Works({
       title={"Work experience"}
       edit={edit}
       className="!h-fit"
+      sectionId="works"
       btnType="normal"
       icon={
         userDetails?.experiences?.length != 0 && (

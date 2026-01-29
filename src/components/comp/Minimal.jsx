@@ -29,9 +29,13 @@ const Minimal = ({ userDetails, edit }) => {
   // Get section order from userDetails or use template default
   const sectionOrder = normalizeSectionOrder(userDetails?.sectionOrder, DEFAULT_SECTION_ORDER);
 
+  // Get hidden sections array (only applied in preview; builder always shows all sections)
+  const hiddenSections = userDetails?.hiddenSections || [];
+  const isSectionVisible = (id) => edit || !hiddenSections.includes(id);
+
   // Section component mapping
   const sectionComponents = {
-    about: (edit || hasAbout) && (
+    about: isSectionVisible('about') && (edit || hasAbout) && (
       <section id="section-about" className="py-12">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-2xl font-bold text-center flex-1">About</h2>
@@ -39,7 +43,7 @@ const Minimal = ({ userDetails, edit }) => {
             <ButtonNew
               variant="secondary"
               size="icon"
-              className="h-10 w-10 rounded-full"
+              className="h-11 w-11 rounded-full"
               onClick={() => openModal("about")}
             >
               <PencilIcon className="w-4 h-4 text-df-icon-color" />
@@ -54,22 +58,22 @@ const Minimal = ({ userDetails, edit }) => {
         />
       </section>
     ),
-    projects: (userDetails?.projects?.length != 0 || edit) && (
+    projects: isSectionVisible('projects') && (userDetails?.projects?.length != 0 || edit) && (
       <section id="section-projects">
         <WorkShowcase userDetails={userDetails} edit={edit} />
       </section>
     ),
-    tools: (
+    tools: isSectionVisible('tools') && (
       <section id="section-tools">
         <ToolStack userDetails={userDetails} edit={edit} />
       </section>
     ),
-    works: (userDetails?.experiences?.length != 0 || edit) && (
+    works: isSectionVisible('works') && (userDetails?.experiences?.length != 0 || edit) && (
       <section id="section-works">
         <Spotlight userDetails={userDetails} edit={edit} />
       </section>
     ),
-    reviews: (userDetails?.reviews?.length != 0 || edit) && (
+    reviews: isSectionVisible('reviews') && (userDetails?.reviews?.length != 0 || edit) && (
       <section id="section-reviews">
         <Testimonials userDetails={userDetails} edit={edit} />
       </section>

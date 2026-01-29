@@ -81,6 +81,9 @@ const Portfolio = ({ userDetails, edit }) => {
 
   // Get section order from userDetails or use template default
   const sectionOrder = normalizeSectionOrder(userDetails?.sectionOrder, DEFAULT_SECTION_ORDER);
+  // Only apply hiddenSections in preview; builder always shows all sections
+  const hiddenSections = userDetails?.hiddenSections || [];
+  const isSectionVisible = (id) => edit || !hiddenSections.includes(id);
   const [expandedCards, setExpandedCards] = useState([]);
   const [showMore, setShowMore] = useState(false);
   const theme = useTheme();
@@ -493,6 +496,7 @@ const Portfolio = ({ userDetails, edit }) => {
 
           {/* Sections rendered in order based on sectionOrder */}
           {sectionOrder.map((sectionId) => {
+            if (!isSectionVisible(sectionId)) return null;
             if (sectionId === 'about') {
               if (!edit && !hasAbout) return null;
               return (

@@ -20,6 +20,7 @@ export default function AboutMe({
       edit={edit}
       onClick={() => openModal?.(sidebars.about)}
       className="mt-0 mb-3"
+      sectionId="about"
     >
       <AboutMeContent userDetails={userDetails} edit={edit} variant={variant} />
     </Section>

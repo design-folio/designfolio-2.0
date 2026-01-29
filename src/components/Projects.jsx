@@ -168,7 +168,7 @@ export default function Projects({
   };
   return (
     <div ref={projectRef}>
-      <Section title={"My works"} wallpaper={userDetails?.wallpaper} showStar={true}>
+      <Section title={"My works"} wallpaper={userDetails?.wallpaper} showStar={true} sectionId="projects" edit={edit}>
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}

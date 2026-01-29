@@ -2,12 +2,13 @@ import React from "react";
 import Text from "./text";
 import { PencilIcon, Eye, EyeOff } from "lucide-react";
 import { Button } from "./ui/buttonNew";
+import Button2 from "./button";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { useGlobalContext } from "@/context/globalContext";
 import { _updateUser } from "@/network/post-request";
 
-/** Reusable hide/show section button for templates that don't use Section wrapper (Minimal, Builder2, Portfolio) */
+/** Reusable hide/show section button for templates that don't use Section wrapper (Builder2 (Chat),Minimal,Portfolio) */
 export function SectionVisibilityButton({ sectionId, className = "" }) {
   const { userDetails, setUserDetails, updateCache } = useGlobalContext();
   const hiddenSections = userDetails?.hiddenSections || [];
@@ -16,33 +17,38 @@ export function SectionVisibilityButton({ sectionId, className = "" }) {
   const handleToggleVisibility = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    let updatedHiddenSections;
-    if (isSectionHidden) {
-      updatedHiddenSections = hiddenSections.filter((id) => id !== sectionId);
-    } else {
-      updatedHiddenSections = [...hiddenSections, sectionId];
-    }
-    setUserDetails((prev) => ({ ...prev, hiddenSections: updatedHiddenSections }));
-    _updateUser({ hiddenSections: updatedHiddenSections }).then((res) =>
-      updateCache("userDetails", res?.data?.user)
-    );
-  }
+
+    const updatedHiddenSections = isSectionHidden
+      ? hiddenSections.filter(id => id !== sectionId)
+      : [...hiddenSections, sectionId];
+
+    // Update locally (no flicker)
+    setUserDetails(prev => ({
+      ...prev,
+      hiddenSections: updatedHiddenSections,
+    }));
+
+    // Update cache without replacing full user
+    updateCache("userDetails", prev => ({
+      ...prev,
+      hiddenSections: updatedHiddenSections,
+    }));
+
+    // Fire and forget backend update
+    _updateUser({ hiddenSections: updatedHiddenSections });
+  };
+
 
   return (
-    <Button
-      variant="secondary"
-      size="sm"
+    <Button2
+      icon={isSectionHidden ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+      text={isSectionHidden ? "Hidden" : "Hide"}
       onClick={handleToggleVisibility}
-      title={isSectionHidden ? "Show section" : "Hide section"}
-      className={cn(
-        "h-11 min-h-11 rounded-full px-3 flex items-center gap-2",
+      type="secondary"
+      customClass={cn(
         isSectionHidden && "text-[#F59E0b]",
-        className
       )}
-    >
-      {isSectionHidden ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-      <span>{isSectionHidden ? "Hidden" : "Hide"}</span>
-    </Button>
+    />
   );
 }
 
@@ -61,29 +67,6 @@ export default function Section({
   contentClassName = "",
   sectionId, // Section identifier for visibility toggle (e.g., 'projects', 'reviews', 'tools', 'works', 'about')
 }) {
-  const { userDetails, setUserDetails, updateCache } = useGlobalContext();
-
-  const hiddenSections = userDetails?.hiddenSections || [];
-  const isSectionHidden = hiddenSections.includes(sectionId);
-
-  const handleToggleVisibility = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    let updatedHiddenSections;
-    if (isSectionHidden) {
-      // Remove from hidden array
-      updatedHiddenSections = hiddenSections.filter(id => id !== sectionId);
-    } else {
-      // Add to hidden array
-      updatedHiddenSections = [...hiddenSections, sectionId];
-    }
-
-    setUserDetails((prev) => ({ ...prev, hiddenSections: updatedHiddenSections }));
-    _updateUser({ hiddenSections: updatedHiddenSections }).then((res) =>
-      updateCache("userDetails", res?.data?.user)
-    );
-  };
 
   return (
     <div
@@ -103,19 +86,7 @@ export default function Section({
         {edit && (
           <div className="flex items-center gap-2">
             {sectionId && (
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={handleToggleVisibility}
-                title={isSectionHidden ? "Show section" : "Hide section"}
-                className={cn(
-                  "h-11 min-h-11 rounded-full px-3 flex items-center gap-2",
-                  isSectionHidden && "text-[#F59E0b]"
-                )}
-              >
-                {isSectionHidden ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                <span>{isSectionHidden ? "Hidden" : "Hide"}</span>
-              </Button>
+              <SectionVisibilityButton sectionId={sectionId} />
             )}
             {actions ? (
               actions

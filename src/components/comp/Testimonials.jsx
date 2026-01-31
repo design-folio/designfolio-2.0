@@ -42,7 +42,7 @@ import ReviewCard from "../reviewCard";
 import DragHandle from "../DragHandle";
 import { Button as ButtonNew } from "../ui/buttonNew";
 
-export const Testimonials = ({ userDetails, edit }) => {
+export const Testimonials = ({ userDetails, edit, headerActions }) => {
   const { reviews } = userDetails || {};
   const [showMore, setShowMore] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -108,7 +108,10 @@ export const Testimonials = ({ userDetails, edit }) => {
 
   return (
     <section className="py-12">
-      <h2 className="text-3xl font-bold mb-12 text-center">What People Say</h2>
+      <div className="flex items-center justify-between gap-4 mb-12">
+        <h2 className="text-3xl font-bold flex-1">What People Say</h2>
+        {headerActions && <div className="flex-shrink-0">{headerActions}</div>}
+      </div>
 
       <div
         className={`relative ${isMobile ? "px-4" : "grid grid-cols-2 gap-6 max-w-[848px] mx-auto px-4"

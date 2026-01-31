@@ -11,48 +11,24 @@ export default function Chat({
   className = "",
   onComplete = () => { },
 }) {
-  const [show, setShow] = useState(delay == 0 ? true : false);
-  const emptyDivRef = useRef(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const [show, setShow] = useState(delay === 0);
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
 
+  // Reveal on mount after delay (no IntersectionObserver – works on both pages and avoids zero-height div)
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        // Set visibility state to true only once when the element is in view
-        if (entry.isIntersecting && !isVisible) {
-          setIsVisible(true);
-        }
-      },
-      {
-        root: null, // Use the viewport as the root
-        rootMargin: "0px",
-        threshold: 0.1, // Trigger when at least 10% of the element is visible
-      }
-    );
-
-    if (emptyDivRef.current) {
-      observer.observe(emptyDivRef.current);
+    if (delay === 0) {
+      setShow(true);
+      onCompleteRef.current();
+      return;
     }
+    const t = setTimeout(() => {
+      setShow(true);
+      onCompleteRef.current();
+    }, delay);
+    return () => clearTimeout(t);
+  }, [delay]);
 
-    // Clean up observer on component unmount
-    return () => {
-      if (emptyDivRef.current) {
-        observer.unobserve(emptyDivRef.current);
-      }
-    };
-  }, [isVisible]);
-
-  useEffect(() => {
-    let timeout;
-    if (isVisible) {
-      timeout = setTimeout(() => {
-        setShow(true);
-        onComplete();
-      }, delay);
-    }
-
-    return () => clearTimeout(timeout);
-  }, [isVisible]);
   return (
     <div
       className={`flex flex-1 flex-col min-w-min relative  w-full max-w-[680px]  ${direction == "left" ? " mr-auto" : " ml-auto"
@@ -89,7 +65,6 @@ export default function Chat({
           />
         )}
       </motion.div>
-      <div ref={emptyDivRef}></div>
     </div>
   );
 }

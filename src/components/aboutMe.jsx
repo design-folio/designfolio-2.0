@@ -2,7 +2,6 @@ import React, { useRef } from "react";
 import Section from "./section";
 import { sidebars } from "@/lib/constant";
 import { motion } from "framer-motion";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { usePegboardSounds } from "@/hooks/use-pegboard-sounds";
 import { DEFAULT_PEGBOARD_IMAGES, DEFAULT_PEGBOARD_STICKERS } from "@/lib/aboutConstants";
@@ -67,33 +66,31 @@ export function AboutMeContent({
 }
 
 function Pegboard({ images = [], stickers = [] }) {
-  const isMobile = useIsMobile();
   const pinBoardRef = useRef(null);
-
   const { playPick, playPlace } = usePegboardSounds();
 
-  // Configuration for image positions and sizes to match original design
+  // Same layout on mobile and desktop: four corners + center stickers (avoids mobile overlap)
   const imageConfigs = [
     {
-      initial: { rotate: -5, left: isMobile ? "15%" : "20%", top: isMobile ? "18%" : "25%", x: "-50%", y: "-50%" },
+      initial: { rotate: -5, left: "20%", top: "25%", x: "-50%", y: "-50%" },
       className: "w-24 sm:w-28 md:w-36 lg:w-40 aspect-[4/3]",
       fallbackSrc: "/assets/png/project1.png",
       pinColor: "#FF553E"
     },
     {
-      initial: { rotate: 3, left: isMobile ? "72%" : "80%", top: isMobile ? "22%" : "30%", x: "-50%", y: "-50%" },
+      initial: { rotate: 3, left: "80%", top: "30%", x: "-50%", y: "-50%" },
       className: "w-28 sm:w-32 md:w-40 lg:w-44 aspect-square",
       fallbackSrc: "/assets/png/project3.png",
       pinColor: "#FF553E"
     },
     {
-      initial: { rotate: -2, left: isMobile ? "18%" : "25%", top: isMobile ? "58%" : "75%", x: "-50%", y: "-50%" },
+      initial: { rotate: -2, left: "25%", top: "75%", x: "-50%", y: "-50%" },
       className: "w-24 sm:w-28 md:w-36 lg:w-40 aspect-[3/4]",
       fallbackSrc: "/assets/png/project4.png",
       pinColor: "#FF553E"
     },
     {
-      initial: { rotate: 4, left: isMobile ? "68%" : "75%", top: isMobile ? "68%" : "75%", x: "-50%", y: "-50%" },
+      initial: { rotate: 4, left: "75%", top: "75%", x: "-50%", y: "-50%" },
       className: "w-20 sm:w-24 md:w-32 lg:w-36 aspect-[4/3]",
       fallbackSrc: "/assets/png/project5.png",
       pinColor: "#FF553E"
@@ -102,12 +99,12 @@ function Pegboard({ images = [], stickers = [] }) {
 
   const stickerConfigs = [
     {
-      initial: { rotate: -15, left: isMobile ? "45%" : "44%", top: isMobile ? "40%" : "48%", x: "-50%", y: "-50%" },
+      initial: { rotate: -15, left: "44%", top: "48%", x: "-50%", y: "-50%" },
       className: "absolute w-20 sm:w-24 md:w-32 lg:w-36 aspect-square cursor-grab active:cursor-grabbing z-50",
       fallbackSrc: "/assets/svgs/star.svg"
     },
     {
-      initial: { rotate: 10, left: isMobile ? "50%" : "55%", top: isMobile ? "85%" : "60%", x: "-50%", y: "-50%" },
+      initial: { rotate: 10, left: "55%", top: "60%", x: "-50%", y: "-50%" },
       className: "absolute w-24 sm:w-28 md:w-36 lg:w-40 aspect-square cursor-grab active:cursor-grabbing z-50",
       fallbackSrc: "/assets/svgs/quote.svg"
     }
@@ -120,19 +117,11 @@ function Pegboard({ images = [], stickers = [] }) {
 
       <div
         ref={pinBoardRef}
-        className="relative w-full aspect-[4/3] sm:aspect-[16/10] lg:aspect-[16/9] bg-white dark:bg-review-card-bg-color rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.02)] z-10 overflow-visible border border-black/[0.03]"
+        className="relative w-full aspect-[4/3] sm:aspect-[16/10] lg:aspect-[16/9] bg-white dark:bg-df-add-card-bg-color rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.02)] z-10 overflow-visible border border-black/[0.03]"
       >
         {/* Pegboard holes */}
         <div
-          className="absolute inset-0 pointer-events-none rounded-2xl"
-          style={{
-            backgroundImage: "radial-gradient(circle, rgba(0,0,0,0.10) 2px, transparent 2px)",
-            backgroundSize: "36px 36px",
-            backgroundPosition: "center",
-            padding: "18px",
-            backgroundOrigin: "content-box",
-            backgroundClip: "content-box",
-          }}
+          className="absolute inset-0 pointer-events-none rounded-2xl bg-center p-[18px] [background-size:36px_36px] [background-origin:content-box] [background-clip:content-box] bg-[radial-gradient(circle,rgba(0,0,0,0.10)_2px,transparent_2px)] dark:bg-[radial-gradient(circle,#30323C_2px,transparent_2px)]"
         />
 
         {/* Lighting */}

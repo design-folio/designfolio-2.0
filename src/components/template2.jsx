@@ -29,7 +29,7 @@ import Text from "./text";
 import { Button as ButtonNew } from "./ui/buttonNew";
 import MemoLinkedin from "./icons/Linkedin";
 import { AboutMeContent } from "./aboutMe";
-export default function Template2({ userDetails, preview = false }) {
+export default function Template2({ userDetails, preview = false, activeStep: activeStepProp, onStepComplete }) {
   const {
     bio,
     skills,
@@ -48,11 +48,19 @@ export default function Template2({ userDetails, preview = false }) {
     hiddenSections = [],
   } = userDetails || {};
   const router = useRouter();
-  // Only apply hiddenSections in preview; builder always shows all sections
-  const isSectionVisible = (id) => !preview || !hiddenSections.includes(id);
+
+  const isSectionVisible = (id) => !hiddenSections.includes(id);
   const { projectRef, setCursor } = useGlobalContext();
 
-  const [activeStep, setActiveStep] = useState(1);
+  const [internalStep, setInternalStep] = useState(1);
+  const isControlled = activeStepProp != null && typeof onStepComplete === "function";
+  const activeStep = isControlled ? activeStepProp : internalStep;
+  const setActiveStep = isControlled
+    ? (fn) => {
+        const next = typeof fn === "function" ? fn(activeStepProp) : fn;
+        onStepComplete(next);
+      }
+    : setInternalStep;
 
   const portfolioCheck =
     portfolios &&
@@ -62,27 +70,32 @@ export default function Template2({ userDetails, preview = false }) {
     setCursor(userDetails?.cursor ? userDetails?.cursor : 0);
   }, [userDetails?.cursor, setCursor]);
 
+
   useEffect(() => {
-    if (activeStep === 3 && projects && projects.length === 0) {
-      setActiveStep((prev) => prev + 1); // update step when no projects exist
-    } else if (activeStep === 4 && projects && projects.length === 0) {
-      setActiveStep((prev) => prev + 1); // update step when no projects exist
-    } else if (activeStep === 5 && reviews && reviews.length === 0) {
-      setActiveStep((prev) => prev + 1); // update step when no reviews exist
-    } else if (activeStep === 7 && (!userDetails?.about || userDetails?.about?.trim?.() === "")) {
-      setActiveStep((prev) => prev + 1); // skip about if empty
-    } else if (activeStep === 8 && experiences && experiences.length === 0) {
-      setActiveStep((prev) => prev + 1); // update step when no experiences exist
-    } else if (activeStep === 9 && !portfolioCheck) {
-      setActiveStep((prev) => prev + 1);
-    } else if (
-      activeStep === 10 &&
-      socials &&
-      !Object.values(socials).every((social) => social != "")
-    ) {
-      setActiveStep((prev) => prev + 1);
+    const shouldSkipStep = (step) => {
+      if (step === 3 || step === 4) return !isSectionVisible("projects") || !projects || projects.length === 0;
+      if (step === 5) return !isSectionVisible("reviews") || !reviews || reviews.length === 0;
+      if (step === 6) return !isSectionVisible("tools");
+      if (step === 7) return !isSectionVisible("about") || !userDetails?.about || userDetails?.about?.trim?.() === "";
+      if (step === 8) return !isSectionVisible("works") || !experiences || experiences.length === 0;
+      if (step === 9) return !portfolioCheck;
+      if (step === 10) return socials && !Object.values(socials).every((social) => social != "");
+      return false;
+    };
+    let step = activeStep;
+    const skippedSteps = [];
+    const maxIterations = 15;
+    let iterations = 0;
+    while (shouldSkipStep(step) && step <= 10 && iterations < maxIterations) {
+      skippedSteps.push(step);
+      step += 1;
+      iterations += 1;
     }
-  }, [activeStep, projects, reviews, experiences, portfolios]);
+    if (skippedSteps.length > 0) {
+      setActiveStep(step);
+    }
+  }, [activeStep, projects, reviews, experiences, portfolios, userDetails?.about, portfolioCheck, socials, hiddenSections]);
+
   // Trigger effect when activeStep or projects change
   const getSkills = () => {
     if (skills.length > 1) {
@@ -130,6 +143,7 @@ export default function Template2({ userDetails, preview = false }) {
       prev.includes(id) ? prev.filter((cardId) => cardId !== id) : [...prev, id]
     );
   };
+
   return (
     <TooltipProvider>
       <div

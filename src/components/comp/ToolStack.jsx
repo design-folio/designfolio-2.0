@@ -6,7 +6,7 @@ import PlusIcon from "../../../public/assets/svgs/plus.svg";
 import { useGlobalContext } from "@/context/globalContext";
 import { cn } from "@/lib/utils";
 
-export const ToolStack = ({ userDetails, edit, titleClasses }) => {
+export const ToolStack = ({ userDetails, edit, titleClasses, headerActions }) => {
   const isMobile = useIsMobile();
   const { tools } = userDetails || {};
   const { openModal } = useGlobalContext();
@@ -77,7 +77,10 @@ export const ToolStack = ({ userDetails, edit, titleClasses }) => {
 
   return (
     <section className="py-12 overflow-hidden">
-      <h2 className={cn("text-2xl font-bold mb-8 text-center", titleClasses)}>Tool Stack</h2>
+      <div className="flex items-center justify-between mb-8">
+        <h2 className={cn("text-2xl font-bold", titleClasses)}>Tool Stack</h2>
+        {headerActions && <div className="flex-shrink-0">{headerActions}</div>}
+      </div>
       {isMobile ? (
         <div
           className="relative w-full"

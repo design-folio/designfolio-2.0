@@ -29,7 +29,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { _updateUser } from "@/network/post-request";
 import MemoWorkExperience from "../icons/WorkExperience";
 
-export const Spotlight = ({ userDetails, edit }) => {
+export const Spotlight = ({ userDetails, edit, headerActions }) => {
   const { experiences } = userDetails || {};
   const { openSidebar, setSelectedWork, updateCache, setUserDetails } =
     useGlobalContext();
@@ -225,7 +225,10 @@ export const Spotlight = ({ userDetails, edit }) => {
 
   return (
     <section className="py-12">
-      <h2 className="text-2xl font-bold mb-8">Work Experience</h2>
+      <div className="flex items-center justify-between mb-8">
+        <h2 className="text-2xl font-bold">Work Experience</h2>
+        {headerActions && <div className="flex-shrink-0">{headerActions}</div>}
+      </div>
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}

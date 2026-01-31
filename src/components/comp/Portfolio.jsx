@@ -52,6 +52,7 @@ import MemoCasestudy from "../icons/Casestudy";
 import Tools from "../tools";
 import { ToolStack } from "./ToolStack";
 import { AboutMeContent } from "../aboutMe";
+import { SectionVisibilityButton } from "../section";
 // import { ToolStack } from "./ToolStack";
 
 const Portfolio = ({ userDetails, edit }) => {
@@ -511,12 +512,15 @@ const Portfolio = ({ userDetails, edit }) => {
                   <div className="flex items-center justify-between mb-8">
                     <h3 className="text-3xl font-bold">About</h3>
                     {edit && (
-                      <Button2
-                        onClick={() => openModal(modals.about)}
-                        customClass="!p-[8px] rounded-[10px] !flex-shrink-0"
-                        type={"secondary"}
-                        icon={<EditIcon className="text-df-icon-color cursor-pointer" size={20} />}
-                      />
+                      <div className="flex items-center gap-2 justify-end">
+                        <SectionVisibilityButton sectionId="about" />
+                        <Button2
+                          onClick={() => openModal(modals.about)}
+                          customClass="!p-[8px] rounded-[10px] !flex-shrink-0"
+                          type={"secondary"}
+                          icon={<EditIcon className="text-df-icon-color cursor-pointer" size={20} />}
+                        />
+                      </div>
                     )}
                   </div>
                   <AboutMeContent
@@ -532,7 +536,11 @@ const Portfolio = ({ userDetails, edit }) => {
               return (
                 <div key="works" id="section-works">
                   {(experiences.length > 0 || edit) && (
-                    <Spotlight userDetails={userDetails} edit={edit} />
+                    <Spotlight
+                      userDetails={userDetails}
+                      edit={edit}
+                      headerActions={edit ? <SectionVisibilityButton sectionId="works" /> : null}
+                    />
                   )}
                 </div>
               );
@@ -557,7 +565,14 @@ const Portfolio = ({ userDetails, edit }) => {
                           animate="show"
                           className="py-12 border-b border-secondary-border"
                         >
-                          <h3 className="text-3xl font-bold mb-12">Featured Projects</h3>
+                          <div className="flex items-center justify-between mb-12">
+                            <h3 className="text-3xl font-bold">Featured Projects</h3>
+                            {edit && (
+                              <div className="flex items-center justify-end">
+                                <SectionVisibilityButton sectionId="projects" />
+                              </div>
+                            )}
+                          </div>
                           <div className="flex flex-col gap-6">
                             {visibleProjects.map((project, index) => (
                               <SortableProjectCard
@@ -608,6 +623,7 @@ const Portfolio = ({ userDetails, edit }) => {
                     userDetails={userDetails}
                     edit={edit}
                     titleClasses="text-3xl"
+                    headerActions={edit ? <SectionVisibilityButton sectionId="tools" /> : null}
                   />
                 </div>
               );
@@ -617,7 +633,11 @@ const Portfolio = ({ userDetails, edit }) => {
               return (
                 <div key="reviews" id="section-reviews">
                   {(reviews?.length > 0 || edit) && (
-                    <Testimonials userDetails={userDetails} edit={edit} />
+                    <Testimonials
+                      userDetails={userDetails}
+                      edit={edit}
+                      headerActions={edit ? <SectionVisibilityButton sectionId="reviews" /> : null}
+                    />
                   )}
                 </div>
               );

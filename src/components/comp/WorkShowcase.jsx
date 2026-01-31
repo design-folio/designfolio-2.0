@@ -33,7 +33,7 @@ import ProjectLock from "../projectLock";
 import MemoCasestudy from "../icons/Casestudy";
 import Text from "../text";
 
-export const WorkShowcase = ({ userDetails: userDetailsProp, edit }) => {
+export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions }) => {
   const router = useRouter();
   const {
     openModal,
@@ -344,7 +344,10 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit }) => {
 
   return (
     <section className="pt-0 pb-16">
-      <h2 className="text-2xl font-bold mb-8">Featured Projects</h2>
+      <div className="flex items-center justify-between mb-8">
+        <h2 className="text-2xl font-bold">Featured Projects</h2>
+        {headerActions && <div className="flex-shrink-0">{headerActions}</div>}
+      </div>
       {sortedProjects.length > 0 && (
         <DndContext
           sensors={sensors}

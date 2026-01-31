@@ -252,12 +252,12 @@ export const GlobalProvider = ({ children }) => {
 
   const updateCache = (key, data) => {
     queryClient.setQueriesData({ queryKey: [key] }, (oldData) => {
-      //INFO: If oldData doesn't exist, initialize it with the new data
-      if (!oldData) {
-        return { user: data };
-      }
-      //INFO: If oldData doesn't exist, initialize it with the new data
-      return { user: { ...oldData?.user, ...data } };
+      const existingUser = oldData?.user;
+      const newUser =
+        typeof data === "function"
+          ? data(existingUser)
+          : { ...existingUser, ...data };
+      return { user: newUser };
     });
   };
 
@@ -361,12 +361,15 @@ export const GlobalProvider = ({ children }) => {
       });
   };
 
-  const changeTheme = (theme) => {
-    _updateUser({ theme: theme }).then((res) => {
-      setTheme(theme == 1 ? "dark" : "light");
-      // Only update theme field in cache, not the whole user object
-      updateCache("userDetails", { theme: theme });
-      setUserDetails((prev) => ({ ...prev, theme: theme }));
+  const changeTheme = (themeValue) => {
+    // Optimistic update: UI and cache first to prevent flicker and keep ThemePanel switch in sync
+    setTheme(themeValue == 1 ? "dark" : "light");
+    setUserDetails((prev) => ({ ...prev, theme: themeValue }));
+    updateCache("userDetails", (prev) => ({ ...prev, theme: themeValue }));
+
+    // Fire and forget backend update
+    _updateUser({ theme: themeValue }).catch((err) => {
+      console.error("Error updating theme:", err);
     });
   };
 

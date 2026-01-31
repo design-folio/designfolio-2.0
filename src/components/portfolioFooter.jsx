@@ -420,7 +420,7 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
       {resume?.url && (
         <Dialog open={isResumeDialogOpen} onOpenChange={setIsResumeDialogOpen}>
           <DialogContent className="max-w-[90vw] w-[90vw] h-[90vh] p-0 overflow-hidden border-none bg-background shadow-2xl rounded-2xl">
-            <div className="relative w-full h-full flex flex-col">
+            <div className="relative w-full h-full flex flex-col min-h-0">
               <div className="absolute top-4 right-4 z-50">
                 <Button
                   variant="outline"
@@ -431,11 +431,16 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
                   <X className="w-4 h-4" />
                 </Button>
               </div>
-              <iframe
-                src={resume.url}
-                className="w-full h-full border-0"
-                title="Resume PDF"
-              />
+              <div className="flex-1 min-h-0 overflow-hidden">
+                {/* On mobile, scale PDF out so it’s not zoomed in; desktop unchanged */}
+                <div className="w-[130%] h-[130%] origin-top-left scale-[0.769] md:w-full md:h-full md:scale-100">
+                  <iframe
+                    src={resume.url}
+                    className="w-full h-full border-0"
+                    title="Resume PDF"
+                  />
+                </div>
+              </div>
             </div>
           </DialogContent>
         </Dialog>

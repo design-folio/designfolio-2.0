@@ -4,7 +4,7 @@ import { ChevronUp, GraduationCap, Calendar, X } from "lucide-react";
 import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog";
 import { useGlobalContext } from "@/context/globalContext";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { modals, sidebars } from "@/lib/constant";
+import { modals, isSidebarThatShifts, getSidebarShiftWidth } from "@/lib/constant";
 
 const COURSE_CARD_SEEN_KEY = "bottom_notification_seen";
 
@@ -13,11 +13,8 @@ export function CourseCard() {
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
     const isMobile = useIsMobile();
     const { activeSidebar, showModal, userDetails } = useGlobalContext();
-    const isReviewSidebarOpen = activeSidebar === sidebars.review;
-    const isWorkSidebarOpen = activeSidebar === sidebars.work;
-    const isThemeSidebarOpen = activeSidebar === sidebars.theme;
     const isOnboardingModalOpen = showModal === modals.onBoardingNewUser || showModal === modals.onboarding;
-    const shouldShiftCard = (isThemeSidebarOpen || isReviewSidebarOpen || isWorkSidebarOpen) && !isMobile;
+    const shouldShiftCard = !isMobile && isSidebarThatShifts(activeSidebar);
 
     useEffect(() => {
         const hasSeenCard = localStorage.getItem(COURSE_CARD_SEEN_KEY);
@@ -51,18 +48,10 @@ export function CourseCard() {
         }
     };
 
-    // Calculate shift width based on which sidebar is open
-    const getShiftWidth = () => {
-        if (isWorkSidebarOpen) return '500px'; // Work sidebar uses 500px width
-        if (isReviewSidebarOpen) return '500px'; // Review sidebar uses 500px width
-        if (isThemeSidebarOpen) return '320px'; // ThemePanel uses 320px width
-        return '0';
-    };
-
     // Calculate right position: base offset (16px mobile, 24px desktop) + shift width
     const getRightPosition = () => {
         const baseOffset = isMobile ? '16px' : '24px';
-        const shiftWidth = getShiftWidth();
+        const shiftWidth = getSidebarShiftWidth(activeSidebar);
         if (shouldShiftCard) {
             return `calc(${baseOffset} + ${shiftWidth})`;
         }

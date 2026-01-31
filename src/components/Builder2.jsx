@@ -411,7 +411,7 @@ export default function Builder2({ edit = false }) {
                       <div className="flex justify-end gap-2">
                         <SectionVisibilityButton sectionId="about" className="h-11" />
                         <ButtonNew
-                          onClick={() => openModal(modals.about)}
+                          onClick={() => openSidebar?.(sidebars.about)}
                           className="h-11 w-11"
                           variant="secondary"
                           size="icon"

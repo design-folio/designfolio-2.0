@@ -1,4 +1,4 @@
-import { popovers, sidebars } from "@/lib/constant";
+import { popovers, sidebars, isSidebarThatShifts, getSidebarShiftWidth } from "@/lib/constant";
 import { formatTimestamp } from "@/lib/times";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -173,23 +173,7 @@ export default function LoggedInHeader({
 
   // Get activeSidebar and wallpaper effects from context
   const { activeSidebar, openSidebar, closeSidebar, wallpaperEffects, updateWallpaperEffect } = useGlobalContext();
-  const isReviewSidebarOpen = activeSidebar === sidebars.review;
-  const isWorkSidebarOpen = activeSidebar === sidebars.work;
-  const isThemeSidebarOpen = activeSidebar === sidebars.theme;
-  const isFooterSidebarOpen = activeSidebar === sidebars.footer;
-  const isAboutSidebarOpen = activeSidebar === sidebars.about;
-  // Header should shift when either ThemePanel, Review sidebar, Work sidebar, About sidebar, or Footer sidebar is open (desktop only)
-  const shouldShiftHeader = (isThemeSidebarOpen || isReviewSidebarOpen || isWorkSidebarOpen || isFooterSidebarOpen || isAboutSidebarOpen) && !isMobile;
-
-  // Calculate shift width based on which sidebar is open
-  const getShiftWidth = () => {
-    if (isWorkSidebarOpen) return '500px'; // Work sidebar uses 500px width
-    if (isReviewSidebarOpen) return '500px'; // Review sidebar uses 500px width
-    if (isThemeSidebarOpen) return '320px';
-    if (isFooterSidebarOpen) return '320px'; // Footer sidebar uses 320px width
-    if (isAboutSidebarOpen) return '320px'; // About sidebar uses 320px width
-    return '0';
-  };
+  const shouldShiftHeader = !isMobile && isSidebarThatShifts(activeSidebar);
 
   const { username, latestPublishDate, _id, email } = userDetails || {};
   const { isClient } = useClient();
@@ -412,7 +396,7 @@ export default function LoggedInHeader({
         headerStyle,
         "z-50 px-2 md:px-0 py-2 md:py-6",
       )}
-      style={{ right: shouldShiftHeader ? getShiftWidth() : '0' }}
+      style={{ right: shouldShiftHeader ? getSidebarShiftWidth(activeSidebar) : '0' }}
     >
       <div className="shadow-df-section-card-shadow max-w-[848px] p-3  md:px-8 md:py-4 rounded-2xl bg-df-header-bg-color mx-auto flex justify-between items-center">
         <div className="flex items-center gap-[24px]">

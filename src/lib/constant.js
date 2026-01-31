@@ -32,6 +32,30 @@ export const sidebars = {
   about: "about",
 };
 
+/** Sidebars that cause header/card layout to shift on desktop (used by loggedInHeader and CourseCard) */
+export const SIDEBARS_THAT_SHIFT = [
+  sidebars.theme,
+  sidebars.review,
+  sidebars.work,
+  sidebars.footer,
+  sidebars.about,
+];
+
+export const isSidebarThatShifts = (activeSidebar) =>
+  SIDEBARS_THAT_SHIFT.includes(activeSidebar);
+
+/** Shift width (px) per sidebar for header/card layout (used by loggedInHeader and CourseCard) */
+export const SIDEBAR_SHIFT_WIDTHS = {
+  [sidebars.work]: "500px",
+  [sidebars.review]: "500px",
+  [sidebars.theme]: "320px",
+  [sidebars.footer]: "320px",
+  [sidebars.about]: "320px",
+};
+
+export const getSidebarShiftWidth = (activeSidebar) =>
+  SIDEBAR_SHIFT_WIDTHS[activeSidebar] ?? "0";
+
 // Ensure sectionOrder always contains all available sections (e.g. after adding new blocks)
 export const normalizeSectionOrder = (rawOrder, availableSections = DEFAULT_SECTION_ORDER) => {
   if (!Array.isArray(availableSections) || availableSections.length === 0) return [];

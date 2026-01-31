@@ -1,4 +1,3 @@
-import BottomNavigation from "@/components/bottomNavigation";
 import Minimal from "@/components/comp/Minimal";
 import Portfolio from "@/components/comp/Portfolio";
 import Seo from "@/components/seo";
@@ -76,12 +75,17 @@ export default function Index({ initialUserDetails }) {
         return (
           <>
             <Template2 userDetails={finalUserDetails} />
-            {isClient && !finalUserDetails?.pro && (
-              <BottomNavigation
-                userDetails={finalUserDetails}
-                className="bg-gradient-to-t from-transparent top-0 pt-5"
-                watermarkClassName="!top-7"
-              />
+            {!finalUserDetails?.pro && (
+              <div
+                className={`text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] xl:block cursor-pointer mb-[120px] lg:m-0`}
+                onClick={() =>
+                  window.open("https://www.designfolio.me", "_blank")
+                }
+              >
+                <div className="bg-df-section-card-bg-color shadow-df-section-card-shadow p-2 rounded-2xl">
+                  <MadeWithDesignfolio className="text-df-icon-color" />
+                </div>
+              </div>
             )}
           </>
         );

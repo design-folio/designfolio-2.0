@@ -42,11 +42,16 @@ export default function Index() {
           <>
             <Template2 userDetails={userDetails} preview />
             {!userDetails?.pro && (
-              <BottomNavigation
-                userDetails={userDetails}
-                className="bg-gradient-to-t from-transparent top-0 pt-5"
-                watermarkClassName="!top-7"
-              />
+              <div
+                className={`text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] xl:block cursor-pointer mb-[120px] lg:m-0`}
+                onClick={() =>
+                  window.open("https://www.designfolio.me", "_blank")
+                }
+              >
+                <div className="bg-df-section-card-bg-color shadow-df-section-card-shadow p-2 rounded-2xl">
+                  <MadeWithDesignfolio className="text-df-icon-color" />
+                </div>
+              </div>
             )}
           </>
         );

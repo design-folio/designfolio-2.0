@@ -6,7 +6,7 @@ import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useGlobalContext } from "@/context/globalContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { sidebars, modals } from "@/lib/constant";
-import { Upload, X } from "lucide-react";
+import { Upload, X, FileText } from "lucide-react";
 import { _updateUser } from "@/network/post-request";
 import { FooterValidationSchema } from "@/lib/validationSchemas";
 import Text from "./text";
@@ -27,7 +27,18 @@ const FooterSettingsPanel = () => {
 
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingResume, setIsUploadingResume] = useState(false);
+  const [uploadedResume, setUploadedResume] = useState(null); // { name: string, size: string } | null
   const resumeInputRef = useRef(null);
+
+  // Sync uploadedResume from userDetails when they have an existing resume (no size from API)
+  useEffect(() => {
+    const name = userDetails?.resume?.originalName;
+    if (name) {
+      setUploadedResume({ name, size: null });
+    } else {
+      setUploadedResume(null);
+    }
+  }, [userDetails?.resume?.originalName]);
 
   const handleClose = () => {
     closeSidebar();
@@ -74,6 +85,10 @@ const FooterSettingsPanel = () => {
       if (res?.data?.user) {
         updateCache("userDetails", res.data.user);
         setUserDetails(res.data.user);
+        setUploadedResume({
+          name: file.name,
+          size: (file.size / (1024 * 1024)).toFixed(2) + "MB",
+        });
         toast.success("Resume updated successfully");
       }
     } catch (error) {
@@ -152,21 +167,46 @@ const FooterSettingsPanel = () => {
                 <Label className="text-xs font-semibold uppercase tracking-wider text-foreground-landing/40 px-1">
                   Resume
                 </Label>
+                <input
+                  ref={resumeInputRef}
+                  type="file"
+                  className="hidden"
+                  accept="application/pdf"
+                  onChange={handleResumeFileChange}
+                />
                 <div
-                  className="p-8 rounded-[2rem] border-2 border-border/40 bg-white dark:bg-df-section-card-bg-color hover-elevate transition-all duration-300 group cursor-pointer"
+                  className={`p-8 rounded-[2rem] border-2 transition-all duration-300 group cursor-pointer ${
+                    uploadedResume
+                      ? "border-df-orange-color/20 bg-df-orange-color/[0.02]"
+                      : "border-border/40 bg-white dark:bg-df-section-card-bg-color hover-elevate"
+                  }`}
                   onClick={handleResumeUpload}
                 >
                   <div className="flex flex-col items-center gap-4 text-center">
-                    <div className="w-14 h-14 rounded-2xl bg-muted/30 flex items-center justify-center">
-                      <Upload className="w-7 h-7 text-foreground-landing/30 group-hover:text-primary transition-colors" />
+                    <div
+                      className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-colors ${
+                        uploadedResume ? "bg-df-orange-color/10" : "bg-muted/30"
+                      }`}
+                    >
+                      {uploadedResume ? (
+                        <FileText className="w-7 h-7 text-df-orange-color" />
+                      ) : (
+                        <Upload className="w-7 h-7 text-foreground-landing/30 group-hover:text-df-orange-color transition-colors" />
+                      )}
                     </div>
                     <div>
                       <h4 className="text-base font-semibold text-foreground-landing">
-                        Update Resume
+                        {uploadedResume ? uploadedResume.name : "Update Resume"}
                       </h4>
-                      <p className="text-sm text-foreground-landing/40 mt-1 font-medium">
-                        PDF format only • Max 5MB
-                      </p>
+                      {uploadedResume?.size ? (
+                        <p className="text-sm text-foreground-landing/40 mt-1 font-medium">
+                          Size: {uploadedResume.size}
+                        </p>
+                      ) : !uploadedResume ? (
+                        <p className="text-sm text-foreground-landing/40 mt-1 font-medium">
+                          PDF format only • Max 5MB
+                        </p>
+                      ) : null}
                     </div>
                     <Button
                       variant="outline"
@@ -180,15 +220,13 @@ const FooterSettingsPanel = () => {
                         handleResumeUpload();
                       }}
                     >
-                      {isUploadingResume ? "Uploading..." : "Choose File"}
+                      <Upload className="w-4 h-4" />
+                      {isUploadingResume
+                        ? "Uploading..."
+                        : uploadedResume
+                          ? "Change File"
+                          : "Choose File"}
                     </Button>
-                    <input
-                      ref={resumeInputRef}
-                      type="file"
-                      hidden
-                      accept="application/pdf"
-                      onChange={handleResumeFileChange}
-                    />
                   </div>
                 </div>
               </div>

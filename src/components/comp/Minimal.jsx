@@ -6,7 +6,7 @@ import { Testimonials } from "@/components/comp/Testimonials";
 import { ToolStack } from "@/components/comp/ToolStack";
 import { WorkShowcase } from "@/components/comp/WorkShowcase";
 import { useGlobalContext } from "@/context/globalContext";
-import { DEFAULT_SECTION_ORDER, normalizeSectionOrder } from "@/lib/constant";
+import { DEFAULT_SECTION_ORDER, normalizeSectionOrder, sidebars } from "@/lib/constant";
 import { cn } from "@/lib/utils";
 import { useEffect } from "react";
 import { AboutMeContent } from "@/components/aboutMe";
@@ -15,7 +15,7 @@ import { SectionVisibilityButton } from "@/components/section";
 import { PencilIcon } from "lucide-react";
 
 const Minimal = ({ userDetails, edit }) => {
-  const { setCursor, openModal } = useGlobalContext();
+  const { setCursor, openSidebar } = useGlobalContext();
   useEffect(() => {
     setCursor(userDetails?.cursor ? userDetails?.cursor : 0);
   }, []);
@@ -47,7 +47,7 @@ const Minimal = ({ userDetails, edit }) => {
                 variant="secondary"
                 size="icon"
                 className="h-11 w-11 rounded-full"
-                onClick={() => openModal("about")}
+                onClick={() => openSidebar?.(sidebars.about)}
               >
                 <PencilIcon className="w-4 h-4 text-df-icon-color" />
               </ButtonNew>

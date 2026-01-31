@@ -47,6 +47,7 @@ export function SectionVisibilityButton({ sectionId, className = "" }) {
       type="secondary"
       customClass={cn(
         isSectionHidden && "text-[#F59E0b]",
+        className,
       )}
     />
   );

@@ -64,6 +64,7 @@ import SortIcon from "../../public/assets/svgs/sort.svg";
 import ReviewCard from "./reviewCard";
 import SortableModal from "./SortableModal";
 import { AboutMeContent } from "./aboutMe";
+import { SectionVisibilityButton } from "./section";
 
 // Move SortableProjectItem outside to prevent recreation on each render
 const SortableProjectItem = React.memo(({ project, onDeleteProject, handleRouter, getHref, recentlyMovedIds, onToggleVisibility }) => {
@@ -144,6 +145,9 @@ export default function Builder2({ edit = false }) {
 
   // Get section order from userDetails or use template default
   const sectionOrder = normalizeSectionOrder(userDetails?.sectionOrder, DEFAULT_SECTION_ORDER);
+  // Only apply hiddenSections in preview; builder always shows all sections
+  const hiddenSections = userDetails?.hiddenSections || [];
+  const isSectionVisible = (id) => edit || !hiddenSections.includes(id);
 
   const {
     username,
@@ -396,13 +400,27 @@ export default function Builder2({ edit = false }) {
         {/* Sections rendered in order based on sectionOrder */}
         {sectionOrder.map((sectionId) => {
           if (sectionId === 'about') {
+            if (!isSectionVisible('about')) return null;
             if (!edit && !hasAbout) return null;
             return (
               <div key="about" id="section-about" className="flex flex-col gap-6">
                 <Chat direction="right">Tell me a little about yourself?</Chat>
                 <Chat direction="left" className="w-full">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1 min-w-0">
+                  <div className="flex flex-col gap-3 w-full">
+                    {edit && (
+                      <div className="flex justify-end gap-2">
+                        <SectionVisibilityButton sectionId="about" className="h-11" />
+                        <ButtonNew
+                          onClick={() => openModal(modals.about)}
+                          className="h-11 w-11"
+                          variant="secondary"
+                          size="icon"
+                        >
+                          <PencilIcon className="text-df-icon-color cursor-pointer" />
+                        </ButtonNew>
+                      </div>
+                    )}
+                    <div className="min-w-0">
                       <AboutMeContent
                         userDetails={userDetails}
                         edit={edit}
@@ -410,22 +428,13 @@ export default function Builder2({ edit = false }) {
                         textClassName="text-df-base-text-color"
                       />
                     </div>
-                    {edit && (
-                      <ButtonNew
-                        onClick={() => openModal(modals.about)}
-                        className="h-11 w-11 shrink-0"
-                        variant="secondary"
-                        size="icon"
-                      >
-                        <PencilIcon className="text-df-icon-color cursor-pointer" />
-                      </ButtonNew>
-                    )}
                   </div>
                 </Chat>
               </div>
             );
           }
           if (sectionId === 'projects') {
+            if (!isSectionVisible('projects')) return null;
             return (
               <div key="projects" id="section-projects" className="flex flex-col gap-6">
                 <Chat direction="right">
@@ -463,46 +472,50 @@ export default function Builder2({ edit = false }) {
                     <Chat direction="left" className={cn("rounded-tl-none", "w-full")}>
                       {projects.length > 1 ? (
                         userDetails?.pro || userDetails?.projects.length < 1 ? (
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center justify-center gap-2 flex-wrap">
                             <Button
                               text={"Add case study"}
-                              customClass="w-fit gap-1  items-center"
+                              customClass="w-fit gap-1 items-center h-11"
                               onClick={() => openModal(modals.project)}
                               icon={
                                 <PlusIcon className="text-primary-btn-text-color w-[20px] h-[20px] mb-[2px] cursor-pointer" />
                               }
                             />
-                            <span className="inline-flex items-center leading-none h-full">
+                            <span className="inline-flex items-center leading-none h-full shrink-0">
                               or
                             </span>
                             <Button
                               text={"Write with AI"}
                               type="secondary"
-                              customClass="w-fit gap-1 items-center"
+                              customClass="w-fit gap-1 items-center h-11"
                               icon={
                                 <AiIcon className="text-secondary-btn-text-color w-[22px] h-[22px] mb-[2px] cursor-pointer" />
                               }
                               onClick={() => openModal(modals.aiProject)}
                             />
+                            <SectionVisibilityButton sectionId="projects" className="h-11" />
                           </div>
                         ) : (
                           <ProjectLock />
                         )
                       ) : (
-                        <AddCard
-                          title={`${projects?.length === 0
-                            ? "Upload your first case study"
-                            : "Add case study"
-                            }`}
-                          subTitle="Show off your best work."
-                          first={projects?.length !== 0}
-                          buttonTitle="Add case study"
-                          secondaryButtonTitle="Write using AI"
-                          onClick={() => openModal(modals.project)}
-                          icon={<MemoCasestudy className="cursor-pointer size-[72px]" />}
-                          openModal={openModal}
-                          className="flex justify-center items-center flex-col p-4 w-full"
-                        />
+                        <div className="flex items-start gap-2 w-full">
+                          <AddCard
+                            title={`${projects?.length === 0
+                              ? "Upload your first case study"
+                              : "Add case study"
+                              }`}
+                            subTitle="Show off your best work."
+                            first={projects?.length !== 0}
+                            buttonTitle="Add case study"
+                            secondaryButtonTitle="Write using AI"
+                            onClick={() => openModal(modals.project)}
+                            icon={<MemoCasestudy className="cursor-pointer size-[72px]" />}
+                            openModal={openModal}
+                            className="flex justify-center items-center flex-col p-4 flex-1 min-w-0"
+                          />
+                          <SectionVisibilityButton sectionId="projects" />
+                        </div>
                       )}
                     </Chat>
                   </div>
@@ -512,6 +525,7 @@ export default function Builder2({ edit = false }) {
           }
 
           if (sectionId === 'reviews') {
+            if (!isSectionVisible('reviews')) return null;
             return (
               <div key="reviews" id="section-reviews" className="flex flex-col gap-6">
                 <Chat direction="right">What do people usually say about working with you?
@@ -521,20 +535,23 @@ export default function Builder2({ edit = false }) {
                 </Chat>
                 <Chat direction="left" className="w-full">
                   {edit && reviews?.length == 0 && (
-                    <AddCard
-                      title={`${userDetails?.reviews?.length == 0
-                        ? "My testimonials"
-                        : "Add more reviews"
-                        } `}
-                      subTitle="Share colleague's feedback."
-                      onClick={() => openSidebar(sidebars.review)}
-                      className={
-                        "flex justify-center items-center flex-col p-4 w-[340px]"
-                      }
-                      first={userDetails?.reviews?.length !== 0}
-                      buttonTitle="Add testimonial"
-                      icon={<MemoTestimonial className="cursor-pointer size-[72px]" />}
-                    />
+                    <div className="flex items-start gap-2 flex-wrap">
+                      <AddCard
+                        title={`${userDetails?.reviews?.length == 0
+                          ? "My testimonials"
+                          : "Add more reviews"
+                          } `}
+                        subTitle="Share colleague's feedback."
+                        onClick={() => openSidebar(sidebars.review)}
+                        className={
+                          "flex justify-center items-center flex-col p-4 w-[340px] flex-1 min-w-0"
+                        }
+                        first={userDetails?.reviews?.length !== 0}
+                        buttonTitle="Add testimonial"
+                        icon={<MemoTestimonial className="cursor-pointer size-[72px]" />}
+                      />
+                      <SectionVisibilityButton sectionId="reviews" />
+                    </div>
                   )}
                   <div className="space-y-4">
                     {reviews?.map((review) => {
@@ -629,7 +646,8 @@ export default function Builder2({ edit = false }) {
                     })}
                   </div>
                   {edit && reviews?.length > 0 && (
-                    <div className="flex items-center gap-2 mt-4">
+                    <div className="flex items-center gap-2 mt-4 flex-wrap">
+                      <SectionVisibilityButton sectionId="reviews" className="h-14" />
                       <AddItem
                         className="flex-1"
                         title="Add testimonial"
@@ -670,6 +688,7 @@ export default function Builder2({ edit = false }) {
           }
 
           if (sectionId === 'tools') {
+            if (!isSectionVisible('tools')) return null;
             return (
               <div key="tools" id="section-tools" className="flex flex-col gap-6">
                 <Chat direction="right">What do you actually use to build all this?</Chat>
@@ -696,14 +715,17 @@ export default function Builder2({ edit = false }) {
                       </div>
                     ))}
                     {edit && (
-                      <Button
-                        type="secondary"
-                        icon={
-                          <PlusIcon className="text-secondary-btn-text-color w-[18px] h-[18px] cursor-pointer" />
-                        }
-                        size="icon"
-                        onClick={() => openModal(modals.tools)}
-                      />
+                      <>
+                        <Button
+                          type="secondary"
+                          icon={
+                            <PlusIcon className="text-secondary-btn-text-color w-[18px] h-[18px] cursor-pointer" />
+                          }
+                          size="icon"
+                          onClick={() => openModal(modals.tools)}
+                        />
+                        <SectionVisibilityButton sectionId="tools" className="h-[52px]" />
+                      </>
                     )}
                   </div>
                   This is my toolbox.
@@ -714,6 +736,7 @@ export default function Builder2({ edit = false }) {
           }
 
           if (sectionId === 'works') {
+            if (!isSectionVisible('works')) return null;
             return (
               <div key="works" id="section-works" className="flex flex-col gap-6">
                 <Chat direction="right"> Where have you worked so far?
@@ -799,41 +822,45 @@ export default function Builder2({ edit = false }) {
                       );
                     })}
                     {edit && (
-                      <AddItem
-                        title="Add your work experience"
-                        onClick={() => openSidebar(sidebars.work)}
-                        iconLeft={
-                          userDetails?.experiences?.length > 0 ? (
-                            <Button
-                              type="secondary"
-                              icon={
-                                <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
-                              }
-                              onClick={() => openSidebar(sidebars.work)}
-                              size="small"
-                            />
-                          ) : (
-                            <div className="flex items-center">
-                              <MemoWorkExperience />
-                            </div>
-                          )
-                        }
-                        iconRight={
-                          userDetails?.experiences?.length == 0 ? (
-                            <Button
-                              type="secondary"
-                              icon={
-                                <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
-                              }
-                              onClick={() => openSidebar(sidebars.work)}
-                              size="small"
-                            />
-                          ) : (
-                            false
-                          )
-                        }
-                        theme={theme}
-                      />
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <SectionVisibilityButton sectionId="works" className="h-14" />
+                        <AddItem
+                          className="flex-1 min-w-0"
+                          title="Add your work experience"
+                          onClick={() => openSidebar(sidebars.work)}
+                          iconLeft={
+                            userDetails?.experiences?.length > 0 ? (
+                              <Button
+                                type="secondary"
+                                icon={
+                                  <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                                }
+                                onClick={() => openSidebar(sidebars.work)}
+                                size="small"
+                              />
+                            ) : (
+                              <div className="flex items-center">
+                                <MemoWorkExperience />
+                              </div>
+                            )
+                          }
+                          iconRight={
+                            userDetails?.experiences?.length == 0 ? (
+                              <Button
+                                type="secondary"
+                                icon={
+                                  <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                                }
+                                onClick={() => openSidebar(sidebars.work)}
+                                size="small"
+                              />
+                            ) : (
+                              false
+                            )
+                          }
+                          theme={theme}
+                        />
+                      </div>
                     )}
                   </div>
                 </Chat>
@@ -945,7 +972,7 @@ export default function Builder2({ edit = false }) {
             <AddItem
               title="Add your resume"
               iconLeft={<MemoResume />}
-              onClick={() => openModal(modals.resume)}
+              onClick={() => openSidebar(sidebars.footer)}
               iconRight={
                 <Button
                   size="small"
@@ -972,7 +999,7 @@ export default function Builder2({ edit = false }) {
                 />
               </a>
               <Button
-                onClick={() => openModal(modals.resume)}
+                onClick={() => openSidebar(sidebars.footer)}
                 type={"secondary"}
                 customClass="mt-4"
                 icon={<EditIcon className="text-df-icon-color cursor-pointer" />}

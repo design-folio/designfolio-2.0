@@ -203,7 +203,27 @@ export const FooterValidationSchema = Yup.object().shape({
 
 
 export const AboutSchema = Yup.object().shape({
-  about: Yup.string()
+  description: Yup.string()
     .max(1200, "About me must be 1200 characters or less")
+    .nullable(),
+  pegboardImages: Yup.array()
+    .of(
+      Yup.object().shape({
+        src: Yup.string().required(),
+        isDefault: Yup.boolean(),
+        file: Yup.mixed().nullable(), // For new uploads
+      })
+    )
+    .max(4, "Maximum 4 pegboard images allowed")
+    .nullable(),
+  pegboardStickers: Yup.array()
+    .of(
+      Yup.object().shape({
+        src: Yup.string().required(),
+        isDefault: Yup.boolean(),
+        file: Yup.mixed().nullable(), // For new uploads
+      })
+    )
+    .max(2, "Maximum 2 stickers allowed")
     .nullable(),
 });

@@ -11,22 +11,23 @@ import Tools from "@/components/tools";
 import Works from "@/components/works";
 import { containerVariants, itemVariants } from "@/lib/animationVariants";
 import { DEFAULT_SECTION_ORDER, normalizeSectionOrder } from "@/lib/constant";
-// import AboutMe from "@/components/aboutMe";
+import AboutMe from "@/components/aboutMe";
 
 export default function Preview1({ userDetails, projectRef }) {
   // Get section order from userDetails or use template default
   const sectionOrder = normalizeSectionOrder(userDetails?.sectionOrder, DEFAULT_SECTION_ORDER);
 
+  // Get hidden sections array
+  const hiddenSections = userDetails?.hiddenSections || [];
+
   // Section component mapping
   const sectionComponents = {
-    /*
-    about: (
+    about: !hiddenSections.includes('about') && (
       <motion.div variants={itemVariants} id="section-about">
         <AboutMe userDetails={userDetails} />
       </motion.div>
     ),
-    */
-    projects: userDetails?.projects?.length > 0 && (
+    projects: userDetails?.projects?.length > 0 && !hiddenSections.includes('projects') && (
       <motion.div variants={itemVariants} id="section-projects">
         <Projects
           userDetails={userDetails}
@@ -35,17 +36,17 @@ export default function Preview1({ userDetails, projectRef }) {
         />
       </motion.div>
     ),
-    reviews: userDetails?.reviews?.length > 0 && (
+    reviews: userDetails?.reviews?.length > 0 && !hiddenSections.includes('reviews') && (
       <motion.div variants={itemVariants} id="section-reviews">
         <Reviews userDetails={userDetails} />
       </motion.div>
     ),
-    tools: (
+    tools: !hiddenSections.includes('tools') && (
       <motion.div variants={itemVariants} id="section-tools">
         <Tools userDetails={userDetails} />
       </motion.div>
     ),
-    works: userDetails?.experiences?.length > 0 && (
+    works: userDetails?.experiences?.length > 0 && !hiddenSections.includes('works') && (
       <motion.div variants={itemVariants} id="section-works">
         <Works userDetails={userDetails} />
       </motion.div>

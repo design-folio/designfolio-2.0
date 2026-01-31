@@ -6,47 +6,52 @@ import { Testimonials } from "@/components/comp/Testimonials";
 import { ToolStack } from "@/components/comp/ToolStack";
 import { WorkShowcase } from "@/components/comp/WorkShowcase";
 import { useGlobalContext } from "@/context/globalContext";
-import { DEFAULT_SECTION_ORDER, normalizeSectionOrder } from "@/lib/constant";
+import { DEFAULT_SECTION_ORDER, normalizeSectionOrder, sidebars } from "@/lib/constant";
 import { cn } from "@/lib/utils";
 import { useEffect } from "react";
-// import { AboutMeContent } from "@/components/aboutMe";
-// import { Button as ButtonNew } from "@/components/ui/buttonNew";
-// import { PencilIcon } from "lucide-react";
+import { AboutMeContent } from "@/components/aboutMe";
+import { Button as ButtonNew } from "@/components/ui/buttonNew";
+import { SectionVisibilityButton } from "@/components/section";
+import { PencilIcon } from "lucide-react";
 
 const Minimal = ({ userDetails, edit }) => {
-  const { setCursor, openModal } = useGlobalContext();
+  const { setCursor, openSidebar } = useGlobalContext();
   useEffect(() => {
     setCursor(userDetails?.cursor ? userDetails?.cursor : 0);
   }, []);
 
-  /*
   const about =
     userDetails?.about ??
     userDetails?.aboutMe ??
     userDetails?.about_me ??
     "";
   const hasAbout = typeof about === "string" && about.trim().length > 0;
-  */
 
   // Get section order from userDetails or use template default
   const sectionOrder = normalizeSectionOrder(userDetails?.sectionOrder, DEFAULT_SECTION_ORDER);
 
+  // Get hidden sections array (only applied in preview; builder always shows all sections)
+  const hiddenSections = userDetails?.hiddenSections || [];
+  const isSectionVisible = (id) => edit || !hiddenSections.includes(id);
+
   // Section component mapping
   const sectionComponents = {
-    /*
-    about: (edit || hasAbout) && (
+    about: isSectionVisible('about') && (edit || hasAbout) && (
       <section id="section-about" className="py-12">
         <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-bold text-center flex-1">About</h2>
+          <h2 className="text-2xl font-bold  flex-1">About</h2>
           {edit && (
-            <ButtonNew
-              variant="secondary"
-              size="icon"
-              className="h-10 w-10 rounded-full"
-              onClick={() => openModal("about")}
-            >
-              <PencilIcon className="w-4 h-4 text-df-icon-color" />
-            </ButtonNew>
+            <div className="flex items-center gap-2 justify-end">
+              <SectionVisibilityButton sectionId="about" />
+              <ButtonNew
+                variant="secondary"
+                size="icon"
+                className="h-11 w-11 rounded-full"
+                onClick={() => openSidebar?.(sidebars.about)}
+              >
+                <PencilIcon className="w-4 h-4 text-df-icon-color" />
+              </ButtonNew>
+            </div>
           )}
         </div>
         <AboutMeContent
@@ -57,25 +62,40 @@ const Minimal = ({ userDetails, edit }) => {
         />
       </section>
     ),
-    */
-    projects: (userDetails?.projects?.length != 0 || edit) && (
+    projects: isSectionVisible('projects') && (userDetails?.projects?.length != 0 || edit) && (
       <section id="section-projects">
-        <WorkShowcase userDetails={userDetails} edit={edit} />
+        <WorkShowcase
+          userDetails={userDetails}
+          edit={edit}
+          headerActions={edit ? <SectionVisibilityButton sectionId="projects" /> : null}
+        />
       </section>
     ),
-    tools: (
+    tools: isSectionVisible('tools') && (
       <section id="section-tools">
-        <ToolStack userDetails={userDetails} edit={edit} />
+        <ToolStack
+          userDetails={userDetails}
+          edit={edit}
+          headerActions={edit ? <SectionVisibilityButton sectionId="tools" /> : null}
+        />
       </section>
     ),
-    works: (userDetails?.experiences?.length != 0 || edit) && (
+    works: isSectionVisible('works') && (userDetails?.experiences?.length != 0 || edit) && (
       <section id="section-works">
-        <Spotlight userDetails={userDetails} edit={edit} />
+        <Spotlight
+          userDetails={userDetails}
+          edit={edit}
+          headerActions={edit ? <SectionVisibilityButton sectionId="works" /> : null}
+        />
       </section>
     ),
-    reviews: (userDetails?.reviews?.length != 0 || edit) && (
+    reviews: isSectionVisible('reviews') && (userDetails?.reviews?.length != 0 || edit) && (
       <section id="section-reviews">
-        <Testimonials userDetails={userDetails} edit={edit} />
+        <Testimonials
+          userDetails={userDetails}
+          edit={edit}
+          headerActions={edit ? <SectionVisibilityButton sectionId="reviews" /> : null}
+        />
       </section>
     ),
   };

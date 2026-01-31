@@ -27,6 +27,7 @@ export default function Tools({ userDetails, openModal, edit }) {
       <Section
         title="Toolbox"
         edit={edit}
+        sectionId="tools"
         actions={
           <Button
             variant="outline"

@@ -27,8 +27,9 @@ export default function LandingHeader({ dfToken }) {
 
     return (
         <header>
+            {/* isolate + translateZ(0) force a compositing layer so Safari keeps header above overscroll/bounce */}
             <div
-                className="fixed top-0 left-0 right-0 z-[999999] transition-all duration-700 pt-3 px-4 pointer-events-none"
+                className="fixed top-0 left-0 right-0 z-[999999] isolate transition-all duration-700 pt-3 px-4 pointer-events-none [transform:translateZ(0)]"
             >
                 <nav
                     className="w-full mx-auto transition-all duration-700 ease-in-out border border-border backdrop-blur-md rounded-full shadow-sm max-w-[640px] bg-white/80 dark:bg-[#1a1a1a]/80 pointer-events-auto"

@@ -36,7 +36,7 @@ import { _updateUser } from "@/network/post-request";
 
 // Section display names mapping
 const SECTION_NAMES = {
-  // about: 'About me',
+  about: 'About me',
   projects: 'Projects',
   reviews: 'Testimonials',
   tools: 'Toolbox',

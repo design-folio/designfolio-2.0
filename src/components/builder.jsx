@@ -9,7 +9,7 @@ import Works from "./works";
 import PortfolioFooter from "./portfolioFooter";
 import { motion } from "framer-motion";
 import { sidebars, DEFAULT_SECTION_ORDER, normalizeSectionOrder } from "@/lib/constant";
-// import AboutMe from "./aboutMe";
+import AboutMe from "./aboutMe";
 
 const containerVariants = {
   hidden: {},
@@ -48,9 +48,9 @@ export default function Builder() {
   // Get section order from userDetails or use default
   const sectionOrder = normalizeSectionOrder(userDetails?.sectionOrder, DEFAULT_SECTION_ORDER);
 
-  // Wrapper function that routes work/review to openSidebar, others to openModal
+  // Wrapper function that routes work/review/about to openSidebar, others to openModal
   const handleOpen = (type) => {
-    if (type === sidebars.work || type === sidebars.review) {
+    if (type === sidebars.work || type === sidebars.review || type === sidebars.about) {
       openSidebar(type);
     } else {
       openModal(type);
@@ -59,11 +59,9 @@ export default function Builder() {
 
   // Section component mapping
   const sectionComponents = {
-    /*
     about: (
-      <AboutMe edit userDetails={userDetails} openModal={openModal} />
+      <AboutMe edit userDetails={userDetails} openModal={handleOpen} />
     ),
-    */
     projects: (
       <Projects
         edit

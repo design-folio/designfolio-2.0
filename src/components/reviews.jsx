@@ -96,6 +96,7 @@ export default function Reviews({ edit = false, openModal, userDetails }) {
       <Section
         title="Testimonials"
         edit={edit && reviews.length > 0}
+        sectionId="reviews"
         actions={
           edit && reviews.length > 0 ? (
             <div className="flex items-center gap-2">
@@ -152,173 +153,173 @@ export default function Reviews({ edit = false, openModal, userDetails }) {
                         transition={{ duration: 0.5, delay: idx * 0.1 }}
                         className="group rounded-2xl p-6 flex flex-col relative transition-all duration-300 h-full bg-review-card-bg-color hover-elevate border border-border/50 shadow-df-card-soft-shadow"
                       >
-                      <div className="mb-4 mt-2 flex items-center justify-between">
-                        <MemoQuoteIcon className="text-df-icon-color opacity-20" />
+                        <div className="mb-4 mt-2 flex items-center justify-between">
+                          <MemoQuoteIcon className="text-df-icon-color opacity-20" />
 
-                        {edit && (
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
-                            onClick={() => {
-                              setSelectedReview(review);
-                              openModal(sidebars.review);
-                            }}
-                          >
-                            <Pencil className="w-4 h-4 text-df-icon-color" />
-                          </Button>
-                        )}
-                      </div>
-
-                      <div className="flex-1 mb-8">
-                        <div className="text-base leading-relaxed text-df-description-color">
-                          {(() => {
-                            const id = review?._id ?? `${idx}`;
-                            const plainTextLength = getPlainTextLength(review?.description || "");
-                            const shouldShowToggle = plainTextLength > 180;
-                            const isExpanded = expandedReviewIds.includes(id);
-
-                            return (
-                              <>
-                                <div className={shouldShowToggle && !isExpanded ? "max-h-[110px] overflow-hidden relative" : ""}>
-                                  <SimpleTiptapRenderer
-                                    content={review?.description || ""}
-                                    mode="review"
-                                    enableBulletList={false}
-                                    className="rounded-none shadow-none"
-                                  />
-                                  {shouldShowToggle && !isExpanded && (
-                                    <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-review-card-bg-color to-transparent pointer-events-none" />
-                                  )}
-                                </div>
-
-                                {shouldShowToggle && (
-                                  <button
-                                    type="button"
-                                    onClick={() => toggleExpandReview(id)}
-                                    className="mt-2 text-df-description-color hover:text-df-heading-color inline-flex items-center gap-1 underline underline-offset-4"
-                                  >
-                                    {isExpanded ? (
-                                      <>
-                                        Show Less
-                                        <ChevronUp className="h-3 w-3" />
-                                      </>
-                                    ) : (
-                                      <>
-                                        View More
-                                        <ChevronDown className="h-3 w-3" />
-                                      </>
-                                    )}
-                                  </button>
-                                )}
-                              </>
-                            );
-                          })()}
+                          {edit && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                              onClick={() => {
+                                setSelectedReview(review);
+                                openModal(sidebars.review);
+                              }}
+                            >
+                              <Pencil className="w-4 h-4 text-df-icon-color" />
+                            </Button>
+                          )}
                         </div>
-                      </div>
 
-                      <div className="flex items-center justify-between gap-3 mt-auto">
-                        <div className="flex items-center gap-3">
-                          <Avatar className="w-10 h-10 shrink-0 rounded-xl">
-                            <AvatarImage src={review?.avatar?.url || review?.avatar} alt={review?.name} />
-                            <AvatarFallback className="rounded-none" style={{ backgroundColor: '#FF9966', color: '#FFFFFF' }}>
-                              {review?.name?.split(' ').map(n => n[0]).join('')}
-                            </AvatarFallback>
-                          </Avatar>
+                        <div className="flex-1 mb-8">
+                          <div className="text-base leading-relaxed text-df-description-color">
+                            {(() => {
+                              const id = review?._id ?? `${idx}`;
+                              const plainTextLength = getPlainTextLength(review?.description || "");
+                              const shouldShowToggle = plainTextLength > 180;
+                              const isExpanded = expandedReviewIds.includes(id);
 
-                          <div>
-                            <h3 className="font-semibold text-sm mb-0.5 text-df-heading-color">
-                              {review?.name}
-                            </h3>
-                            <p className="text-xs text-df-description-color">
-                              {review?.role ? `${review.role}, ` : ""}
-                              {review?.company}
-                            </p>
+                              return (
+                                <>
+                                  <div className={shouldShowToggle && !isExpanded ? "max-h-[110px] overflow-hidden relative" : ""}>
+                                    <SimpleTiptapRenderer
+                                      content={review?.description || ""}
+                                      mode="review"
+                                      enableBulletList={false}
+                                      className="rounded-none shadow-none"
+                                    />
+                                    {shouldShowToggle && !isExpanded && (
+                                      <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-review-card-bg-color to-transparent pointer-events-none" />
+                                    )}
+                                  </div>
+
+                                  {shouldShowToggle && (
+                                    <button
+                                      type="button"
+                                      onClick={() => toggleExpandReview(id)}
+                                      className="mt-2 text-df-description-color hover:text-df-heading-color inline-flex items-center gap-1 underline underline-offset-4"
+                                    >
+                                      {isExpanded ? (
+                                        <>
+                                          Show Less
+                                          <ChevronUp className="h-3 w-3" />
+                                        </>
+                                      ) : (
+                                        <>
+                                          View More
+                                          <ChevronDown className="h-3 w-3" />
+                                        </>
+                                      )}
+                                    </button>
+                                  )}
+                                </>
+                              );
+                            })()}
                           </div>
                         </div>
-                        {review.linkedinLink && review.linkedinLink?.trim() !== "" && (
-                          <a
-                            href={review.linkedinLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-foreground-landing/20 hover:text-[#0077B5] transition-colors p-2 -mr-2"
-                          >
-                            <Linkedin className="w-5 h-5" />
-                          </a>
-                        )}
-                      </div>
-                    </motion.div>
+
+                        <div className="flex items-center justify-between gap-3 mt-auto">
+                          <div className="flex items-center gap-3">
+                            <Avatar className="w-10 h-10 shrink-0 rounded-xl">
+                              <AvatarImage src={review?.avatar?.url || review?.avatar} alt={review?.name} />
+                              <AvatarFallback className="rounded-none" style={{ backgroundColor: '#FF9966', color: '#FFFFFF' }}>
+                                {review?.name?.split(' ').map(n => n[0]).join('')}
+                              </AvatarFallback>
+                            </Avatar>
+
+                            <div>
+                              <h3 className="font-semibold text-sm mb-0.5 text-df-heading-color">
+                                {review?.name}
+                              </h3>
+                              <p className="text-xs text-df-description-color">
+                                {review?.role ? `${review.role}, ` : ""}
+                                {review?.company}
+                              </p>
+                            </div>
+                          </div>
+                          {review.linkedinLink && review.linkedinLink?.trim() !== "" && (
+                            <a
+                              href={review.linkedinLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-foreground-landing/20 hover:text-[#0077B5] transition-colors p-2 -mr-2"
+                            >
+                              <Linkedin className="w-5 h-5" />
+                            </a>
+                          )}
+                        </div>
+                      </motion.div>
                     </CarouselItem>
                   ))}
-              </CarouselContent>
-          </div>
+                </CarouselContent>
+              </div>
               {hasMultipleReviews && (
-          <div className="flex justify-center gap-2 mt-4">
-            <CarouselPrevious className={buttonStyles} />
-            <CarouselNext className={buttonStyles} />
+                <div className="flex justify-center gap-2 mt-4">
+                  <CarouselPrevious className={buttonStyles} />
+                  <CarouselNext className={buttonStyles} />
+                </div>
+              )}
+            </Carousel>
           </div>
-        )}
-      </Carousel>
-    </div>
-  ) : (
-    edit && (
-      <div className="mt-6">
-        <AddItem
-          className="bg-df-section-card-bg-color shadow-df-section-card-shadow"
-          title="Add your testimonial"
-          onClick={() => openModal(sidebars.review)}
-          iconLeft={
-            reviews?.length > 0 ? (
-              <Button2
-                type="secondary"
-                icon={
-                  <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
-                }
+        ) : (
+          edit && (
+            <div className="mt-6">
+              <AddItem
+                className="bg-df-section-card-bg-color shadow-df-section-card-shadow"
+                title="Add your testimonial"
                 onClick={() => openModal(sidebars.review)}
-                size="small"
-                text
-              />
-            ) : (
-              <MemoTestimonial />
-            )
-          }
-          iconRight={
-            reviews?.length == 0 ? (
-              <Button2
-                type="secondary"
-                icon={
-                  <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                iconLeft={
+                  reviews?.length > 0 ? (
+                    <Button2
+                      type="secondary"
+                      icon={
+                        <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                      }
+                      onClick={() => openModal(sidebars.review)}
+                      size="small"
+                      text
+                    />
+                  ) : (
+                    <MemoTestimonial />
+                  )
                 }
-                onClick={() => openModal(sidebars.review)}
-                size="small"
+                iconRight={
+                  reviews?.length == 0 ? (
+                    <Button2
+                      type="secondary"
+                      icon={
+                        <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                      }
+                      onClick={() => openModal(sidebars.review)}
+                      size="small"
+                    />
+                  ) : (
+                    false
+                  )
+                }
+                theme={theme}
               />
-            ) : (
-              false
-            )
-          }
-          theme={theme}
-        />
-      </div>
-    )
-  )
-}
+            </div>
+          )
+        )
+        }
       </Section >
-  <SortableModal
-    show={showModal}
-    onClose={() => setShowModal(false)}
-    items={userDetails?.reviews?.map((review) => review._id) || []}
-    onSortEnd={handleDragEnd}
-    sensors={sensors}
-    useButton2={true}
-  >
-    {userDetails?.reviews?.map((review) => (
-      <SortableReviewItem
-        key={review._id}
-        review={review}
-        edit={edit}
-      />
-    ))}
-  </SortableModal>
+      <SortableModal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        items={userDetails?.reviews?.map((review) => review._id) || []}
+        onSortEnd={handleDragEnd}
+        sensors={sensors}
+        useButton2={true}
+      >
+        {userDetails?.reviews?.map((review) => (
+          <SortableReviewItem
+            key={review._id}
+            review={review}
+            edit={edit}
+          />
+        ))}
+      </SortableModal>
     </motion.div >
   );
 }

@@ -70,7 +70,6 @@ export default function Template2({ userDetails, preview = false, activeStep: ac
     setCursor(userDetails?.cursor ? userDetails?.cursor : 0);
   }, [userDetails?.cursor, setCursor]);
 
-C
   useEffect(() => {
     const shouldSkipStep = (step) => {
       if (step === 3 || step === 4) return !isSectionVisible("projects") || !projects || projects.length === 0;

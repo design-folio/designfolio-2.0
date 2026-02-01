@@ -17,6 +17,7 @@ export default function Profile({
   edit = false,
   userDetails = null,
   openModal,
+  embeddedPreview = false,
 }) {
   const controls = useAnimation();
   const skillsRef = useRef(null);
@@ -49,19 +50,16 @@ export default function Profile({
   );
 
   useEffect(() => {
-    // Assuming each skill element and its margin take up 100px for simplicity
     const skillElementWidthIncludingMargin = 100;
-    // Adjust the totalWidth calculation based on the actual elements
     const totalWidth =
-      (userDetails?.skills?.length || 0) * skillElementWidthIncludingMargin * 3; // *3 for the duplicated list
-
+      (userDetails?.skills?.length || 0) * skillElementWidthIncludingMargin * 3;
     controls.start({
       x: [0, -totalWidth],
       transition: {
         x: {
           repeat: Infinity,
           repeatType: "loop",
-          duration: totalWidth / 20, // Adjust for desired speed
+          duration: totalWidth / 20,
           ease: "linear",
         },
       },
@@ -80,8 +78,8 @@ export default function Profile({
             "bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-2xl overflow-hidden items-center relative backdrop-blur-sm border-0"
           )}
         >
-          {/* Preview Mode */}
-          {preview && (
+          {/* Preview Mode: show Exit preview only when not embedded (e.g. ResultPopup) */}
+          {preview && !embeddedPreview && (
             <div className="p-4">
               <Link href={"/builder"}>
                 <Button
@@ -212,7 +210,7 @@ export default function Profile({
 
 
 
-          {/* Skills Banner Strip */}
+          {/* Skills banner strip */}
           {skills?.length > 0 && (
             <div
               className="relative overflow-hidden border-t border-border/10 py-3 bg-df-profile-strip-bg-color rounded-b-2xl"

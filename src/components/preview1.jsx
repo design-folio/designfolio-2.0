@@ -13,7 +13,7 @@ import { containerVariants, itemVariants } from "@/lib/animationVariants";
 import { DEFAULT_SECTION_ORDER, normalizeSectionOrder } from "@/lib/constant";
 import AboutMe from "@/components/aboutMe";
 
-export default function Preview1({ userDetails, projectRef }) {
+export default function Preview1({ userDetails, projectRef, embeddedPreview = false }) {
   // Get section order from userDetails or use template default
   const sectionOrder = normalizeSectionOrder(userDetails?.sectionOrder, DEFAULT_SECTION_ORDER);
 
@@ -41,7 +41,7 @@ export default function Preview1({ userDetails, projectRef }) {
         <Reviews userDetails={userDetails} />
       </motion.div>
     ),
-    tools: !hiddenSections.includes('tools') && (
+    tools: !embeddedPreview && !hiddenSections.includes('tools') && (
       <motion.div variants={itemVariants} id="section-tools">
         <Tools userDetails={userDetails} />
       </motion.div>
@@ -53,44 +53,38 @@ export default function Preview1({ userDetails, projectRef }) {
     ),
   };
 
+  const mainContent = (
+    <main className="min-h-screen">
+      <div
+        className={`max-w-[848px] mx-auto py-[40px] px-2 md:px-4 lg:px-0 pb-[140px]`}
+      >
+        {userDetails && (
+          <motion.div
+            className="flex-1 flex flex-col gap-3"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            <motion.div variants={itemVariants}>
+              <Profile userDetails={userDetails} preview embeddedPreview={embeddedPreview} />
+            </motion.div>
+            {sectionOrder.map((sectionId) => sectionComponents[sectionId])}
+            <motion.div variants={itemVariants}>
+              <PortfolioFooter edit={false} userDetails={userDetails} />
+            </motion.div>
+          </motion.div>
+        )}
+      </div>
+    </main>
+  );
+
+  if (embeddedPreview) {
+    return mainContent;
+  }
+
   return (
     <BottomLayout userDetails={userDetails}>
-      <main className="min-h-screen">
-        <div
-          className={`max-w-[848px] mx-auto py-[40px] px-2 md:px-4 lg:px-0 pb-[140px]`}
-        >
-          {userDetails && (
-            <motion.div
-              className="flex-1 flex flex-col gap-3"
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-            >
-              <motion.div variants={itemVariants}>
-                <Profile userDetails={userDetails} preview />
-              </motion.div>
-              {sectionOrder.map((sectionId) => sectionComponents[sectionId])}
-              {/* Old Footer - Commented out */}
-              {/* {(!!userDetails?.socials?.instagram ||
-                !!userDetails?.socials?.twitter ||
-                !!userDetails?.socials?.linkedin ||
-                !!userDetails?.portfolios?.dribbble ||
-                !!userDetails?.portfolios?.notion ||
-                !!userDetails?.portfolios?.behance ||
-                !!userDetails?.portfolios?.medium) && (
-                  <motion.div variants={itemVariants}>
-                    <OthersPreview userDetails={userDetails} />
-                  </motion.div>
-                )} */}
-
-              {/* New Footer */}
-              <motion.div variants={itemVariants}>
-                <PortfolioFooter edit={false} userDetails={userDetails} />
-              </motion.div>
-            </motion.div>
-          )}
-        </div>
-      </main>
+      {mainContent}
     </BottomLayout>
   );
 }

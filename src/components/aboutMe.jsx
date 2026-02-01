@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { usePegboardSounds } from "@/hooks/use-pegboard-sounds";
 import { DEFAULT_PEGBOARD_IMAGES, DEFAULT_PEGBOARD_STICKERS } from "@/lib/aboutConstants";
+import { extractTextFromTipTap } from "@/lib/tiptapUtils";
 
 
 export default function AboutMe({

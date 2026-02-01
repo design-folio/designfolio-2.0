@@ -24,14 +24,16 @@ import { extractResumeText } from "@/lib/extractResumeText"
 const LANDING_ANALYZE_USED_KEY = "DESIGNFOLIO_LANDING_ANALYZE_USED"
 const LAST_ANALYZE_RESULT_KEY = "DESIGNFOLIO_LAST_ANALYZE_RESULT"
 
-export default function HeroSection({ dfToken }) {
+export default function HeroSection({ dfToken, activeTab, setActiveTab }) {
     const sectionRef = useRef(null)
     const leftCardRef = useRef(null)
     const rightCardRef = useRef(null)
     const isMobile = useIsMobile()
     const lastWidthRef = useRef(0)
 
-    const [activeTab, setActiveTab] = useState("scratch")
+    const [internalTab, setInternalTab] = useState("scratch")
+    const effectiveTab = activeTab ?? internalTab
+    const setEffectiveTab = setActiveTab ?? setInternalTab
     const [isConverting, setIsConverting] = useState(false)
     const [resultContent, setResultContent] = useState(null)
     const [conversionError, setConversionError] = useState(null)
@@ -46,7 +48,7 @@ export default function HeroSection({ dfToken }) {
     const [rightCardWidth, setRightCardWidth] = useState(null)
     const [scrollRange, setScrollRange] = useState(800)
 
-    const isResumeMode = activeTab === "resume"
+    const isResumeMode = effectiveTab === "resume"
 
     useEffect(() => {
         if (typeof window === "undefined") return
@@ -270,6 +272,12 @@ export default function HeroSection({ dfToken }) {
 
     const { scrollY } = useScroll()
 
+    // Cloud parallax transforms (Resume tab sky background)
+    const cloud1Y = useTransform(scrollY, [0, 500], [0, 120])
+    const cloud2Y = useTransform(scrollY, [0, 500], [0, -40])
+    const cloud3Y = useTransform(scrollY, [0, 500], [0, 160])
+    const cloud4Y = useTransform(scrollY, [0, 500], [0, 60])
+
     // Spring configuration - more responsive on mobile for better performance
     const springConfig = isMobile
         ? { stiffness: 230, damping: 45, mass: 0.1 }
@@ -374,6 +382,30 @@ export default function HeroSection({ dfToken }) {
                                 background:
                                     "linear-gradient(180deg, #7DD3FC 0%, #BAE6FD 20%, #E0F2FE 45%, #F0F9FF 70%, hsl(var(--background-landing)) 100%)"
                             }}
+                        />
+                        <motion.img
+                            src="/cloud.avif"
+                            alt=""
+                            className="absolute left-0 top-20 w-48 sm:w-64 opacity-90 z-[1]"
+                            style={{ transform: "scaleX(-1)", y: cloud1Y }}
+                        />
+                        <motion.img
+                            src="/cloud.avif"
+                            alt=""
+                            className="absolute right-0 top-28 w-56 sm:w-72 opacity-90 z-[1]"
+                            style={{ y: cloud2Y }}
+                        />
+                        <motion.img
+                            src="/cloud.avif"
+                            alt=""
+                            className="absolute left-[10%] bottom-0 w-40 sm:w-52 opacity-80 z-[1]"
+                            style={{ y: cloud3Y }}
+                        />
+                        <motion.img
+                            src="/cloud.avif"
+                            alt=""
+                            className="absolute right-[15%] bottom-10 w-36 sm:w-48 opacity-70 z-[1]"
+                            style={{ transform: "scaleX(-1)", y: cloud4Y }}
                         />
                     </motion.div>
                 ) : (
@@ -507,23 +539,25 @@ export default function HeroSection({ dfToken }) {
                     >
                         <SegmentedControl
                             options={["Start from Scratch", "Use my Resume"]}
-                            value={activeTab === "scratch" ? "Start from Scratch" : "Use my Resume"}
+                            value={effectiveTab === "scratch" ? "Start from Scratch" : "Use my Resume"}
                             onChange={(val) => {
                                 setConversionError(null)
-                                setActiveTab(val === "Start from Scratch" ? "scratch" : "resume")
+                                setEffectiveTab(val === "Start from Scratch" ? "scratch" : "resume")
                             }}
                         />
                     </motion.div>
 
-                    <AnimatePresence mode="wait">
-                        {isResumeMode ? (
-                            <motion.div
-                                key="resume-content"
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                                transition={{ duration: 0.4 }}
-                            >
+                    <div className="relative min-h-[420px] w-full">
+                        <AnimatePresence mode="sync">
+                            {isResumeMode ? (
+                                <motion.div
+                                    key="resume-content"
+                                    className="absolute inset-0 w-full"
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    transition={{ duration: 0.25 }}
+                                >
                                 <TextEffect
                                     as="h1"
                                     preset="blur"
@@ -669,14 +703,15 @@ export default function HeroSection({ dfToken }) {
                                     </a>
                                 </p>
                             </motion.div>
-                        ) : (
-                            <motion.div
-                                key="domain-content"
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                                transition={{ duration: 0.4 }}
-                            >
+                            ) : (
+                                <motion.div
+                                    key="domain-content"
+                                    className="absolute inset-0 w-full"
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    transition={{ duration: 0.4 }}
+                                >
                                 <motion.div
                                     initial={{ opacity: 0, filter: "blur(4px)", y: 8 }}
                                     animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
@@ -757,9 +792,10 @@ export default function HeroSection({ dfToken }) {
                                         <ClaimDomain form="header" />
                                     )}
                                 </motion.div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
                 </div>
             </div>
         </section>

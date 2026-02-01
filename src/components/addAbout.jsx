@@ -318,8 +318,8 @@ export default function AddAbout() {
                   autoComplete="off"
                   placeholder="Tell visitors about yourself..."
                   className={`text-input mt-2 min-h-[120px] ${errors.description && touched.description
-                      ? "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                      : ""
+                    ? "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
+                    : ""
                     }`}
                 />
                 <ErrorMessage

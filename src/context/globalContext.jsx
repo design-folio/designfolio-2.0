@@ -1,5 +1,6 @@
 import { setCursorvalue } from "@/lib/cursor";
 import { getWallpaperUrl, hasNoWallpaper } from "@/lib/wallpaper";
+import { mapPendingPortfolioToUpdatePayload } from "@/lib/mapPendingPortfolioToUpdatePayload";
 import { _getDomainDetails, _getUserDetails } from "@/network/get-request";
 import { _updateUser } from "@/network/post-request";
 import queryClient from "@/network/queryClient";
@@ -67,6 +68,7 @@ export const GlobalProvider = ({ children }) => {
   const userDetailsRef = useRef(userDetails);
   const isUpdatingEffectsFromAPI = useRef(false);
   const effectsInitializedRef = useRef(false);
+  const pendingPrefillAppliedRef = useRef(false);
   const { setTheme, theme, resolvedTheme } = useTheme();
 
   // Fetch user details
@@ -260,6 +262,43 @@ export const GlobalProvider = ({ children }) => {
       return { user: newUser };
     });
   };
+
+  // Post-signup prefill: apply pending-portfolio-data (from landing Analyze flow) once
+  useEffect(() => {
+    if (
+      typeof window === "undefined" ||
+      !userDetails ||
+      pendingPrefillAppliedRef.current ||
+      !Cookies.get("df-token")
+    ) {
+      return;
+    }
+    const raw = localStorage.getItem("pending-portfolio-data");
+    if (!raw) return;
+    try {
+      const content = JSON.parse(raw);
+      const payload = mapPendingPortfolioToUpdatePayload(content);
+      pendingPrefillAppliedRef.current = true;
+      if (payload) {
+        _updateUser(payload)
+          .then((res) => {
+            localStorage.removeItem("pending-portfolio-data");
+            if (res?.data?.user) {
+              updateCache("userDetails", res.data.user);
+              setUserDetails(res.data.user);
+            }
+            userDetailsRefecth();
+          })
+          .catch(() => {
+            pendingPrefillAppliedRef.current = false;
+          });
+      } else {
+        localStorage.removeItem("pending-portfolio-data");
+      }
+    } catch {
+      localStorage.removeItem("pending-portfolio-data");
+    }
+  }, [userDetails, setUserDetails, updateCache, userDetailsRefecth]);
 
   const changeCursor = (cursor) => {
     _updateUser({ cursor: cursor }).then((res) => {

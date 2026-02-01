@@ -19,18 +19,21 @@ import AIThinkingBlock from "./ui/ai-thinking-block"
 import { SegmentedControl } from "./ui/segmented-control"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
+import { extractResumeText } from "@/lib/extractResumeText"
 
 const LANDING_ANALYZE_USED_KEY = "DESIGNFOLIO_LANDING_ANALYZE_USED"
 const LAST_ANALYZE_RESULT_KEY = "DESIGNFOLIO_LAST_ANALYZE_RESULT"
 
-export default function HeroSection({ dfToken }) {
+export default function HeroSection({ dfToken, activeTab, setActiveTab }) {
     const sectionRef = useRef(null)
     const leftCardRef = useRef(null)
     const rightCardRef = useRef(null)
     const isMobile = useIsMobile()
     const lastWidthRef = useRef(0)
 
-    const [activeTab, setActiveTab] = useState("scratch")
+    const [internalTab, setInternalTab] = useState("scratch")
+    const effectiveTab = activeTab ?? internalTab
+    const setEffectiveTab = setActiveTab ?? setInternalTab
     const [isConverting, setIsConverting] = useState(false)
     const [resultContent, setResultContent] = useState(null)
     const [conversionError, setConversionError] = useState(null)
@@ -45,7 +48,7 @@ export default function HeroSection({ dfToken }) {
     const [rightCardWidth, setRightCardWidth] = useState(null)
     const [scrollRange, setScrollRange] = useState(800)
 
-    const isResumeMode = activeTab === "resume"
+    const isResumeMode = effectiveTab === "resume"
 
     useEffect(() => {
         if (typeof window === "undefined") return
@@ -57,12 +60,15 @@ export default function HeroSection({ dfToken }) {
         if (analyzeUsed) return
         setIsConverting(true)
         setConversionError(null)
-        const formData = new FormData()
-        formData.append("resume", file)
         try {
+            const text = await extractResumeText(file)
+            if (!text || text.trim().length < 50) {
+                throw new Error("The file appears to be empty or too short. Please use a PDF or TXT file with at least 50 characters.")
+            }
             const response = await fetch("/api/convert-resume", {
                 method: "POST",
-                body: formData
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text: text.trim() })
             })
             if (!response.ok) {
                 const errData = await response.json().catch(() => ({}))
@@ -74,7 +80,7 @@ export default function HeroSection({ dfToken }) {
                 localStorage.setItem(LANDING_ANALYZE_USED_KEY, "true")
                 try {
                     localStorage.setItem(LAST_ANALYZE_RESULT_KEY, JSON.stringify(data.content))
-                } catch (_) {}
+                } catch (_) { }
             }
             setAnalyzeUsed(true)
         } catch (err) {
@@ -111,18 +117,17 @@ export default function HeroSection({ dfToken }) {
         if (isConverting || analyzeUsed) return
         const file = e.dataTransfer.files?.[0]
         if (file) {
-            const validExt = [".pdf", ".docx", ".txt"]
+            const validExt = [".pdf", ".txt"]
             const ext = file.name.substring(file.name.lastIndexOf(".")).toLowerCase()
             if (
                 validExt.includes(ext) ||
                 file.type === "application/pdf" ||
-                file.type === "text/plain" ||
-                file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                file.type === "text/plain"
             ) {
                 processFile(file)
             } else {
                 setConversionError(
-                    "Invalid file type. Please upload a PDF, DOCX, or TXT file."
+                    "Invalid file type. Please upload a PDF or TXT file."
                 )
             }
         }
@@ -267,6 +272,12 @@ export default function HeroSection({ dfToken }) {
 
     const { scrollY } = useScroll()
 
+    // Cloud parallax transforms (Resume tab sky background)
+    const cloud1Y = useTransform(scrollY, [0, 500], [0, 120])
+    const cloud2Y = useTransform(scrollY, [0, 500], [0, -40])
+    const cloud3Y = useTransform(scrollY, [0, 500], [0, 160])
+    const cloud4Y = useTransform(scrollY, [0, 500], [0, 60])
+
     // Spring configuration - more responsive on mobile for better performance
     const springConfig = isMobile
         ? { stiffness: 230, damping: 45, mass: 0.1 }
@@ -371,6 +382,30 @@ export default function HeroSection({ dfToken }) {
                                 background:
                                     "linear-gradient(180deg, #7DD3FC 0%, #BAE6FD 20%, #E0F2FE 45%, #F0F9FF 70%, hsl(var(--background-landing)) 100%)"
                             }}
+                        />
+                        <motion.img
+                            src="/cloud.avif"
+                            alt=""
+                            className="absolute left-0 top-20 w-48 sm:w-64 opacity-90 z-[1]"
+                            style={{ transform: "scaleX(-1)", y: cloud1Y }}
+                        />
+                        <motion.img
+                            src="/cloud.avif"
+                            alt=""
+                            className="absolute right-0 top-28 w-56 sm:w-72 opacity-90 z-[1]"
+                            style={{ y: cloud2Y }}
+                        />
+                        <motion.img
+                            src="/cloud.avif"
+                            alt=""
+                            className="absolute left-[10%] bottom-0 w-40 sm:w-52 opacity-80 z-[1]"
+                            style={{ y: cloud3Y }}
+                        />
+                        <motion.img
+                            src="/cloud.avif"
+                            alt=""
+                            className="absolute right-[15%] bottom-10 w-36 sm:w-48 opacity-70 z-[1]"
+                            style={{ transform: "scaleX(-1)", y: cloud4Y }}
                         />
                     </motion.div>
                 ) : (
@@ -504,23 +539,25 @@ export default function HeroSection({ dfToken }) {
                     >
                         <SegmentedControl
                             options={["Start from Scratch", "Use my Resume"]}
-                            value={activeTab === "scratch" ? "Start from Scratch" : "Use my Resume"}
+                            value={effectiveTab === "scratch" ? "Start from Scratch" : "Use my Resume"}
                             onChange={(val) => {
                                 setConversionError(null)
-                                setActiveTab(val === "Start from Scratch" ? "scratch" : "resume")
+                                setEffectiveTab(val === "Start from Scratch" ? "scratch" : "resume")
                             }}
                         />
                     </motion.div>
 
-                    <AnimatePresence mode="wait">
-                        {isResumeMode ? (
-                            <motion.div
-                                key="resume-content"
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                                transition={{ duration: 0.4 }}
-                            >
+                    <div className="relative min-h-[420px] w-full">
+                        <AnimatePresence mode="sync">
+                            {isResumeMode ? (
+                                <motion.div
+                                    key="resume-content"
+                                    className="absolute inset-0 w-full"
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    transition={{ duration: 0.25 }}
+                                >
                                 <TextEffect
                                     as="h1"
                                     preset="blur"
@@ -549,7 +586,7 @@ export default function HeroSection({ dfToken }) {
                                                     try {
                                                         const raw = typeof window !== "undefined" && localStorage.getItem(LAST_ANALYZE_RESULT_KEY)
                                                         if (raw) setResultContent(JSON.parse(raw))
-                                                    } catch (_) {}
+                                                    } catch (_) { }
                                                 }}
                                             >
                                                 Continue to sign up
@@ -618,7 +655,7 @@ export default function HeroSection({ dfToken }) {
                                                                         : "Click to upload or drag and drop"}
                                                                 </p>
                                                                 <p className="text-muted-foreground text-sm">
-                                                                    PDF, DOCX, or TXT (max. 10MB)
+                                                                    PDF or TXT (max. 10MB)
                                                                 </p>
                                                             </div>
                                                         )}
@@ -627,7 +664,7 @@ export default function HeroSection({ dfToken }) {
                                                                 type="file"
                                                                 className="hidden"
                                                                 id="resume-upload"
-                                                                accept=".pdf,.docx,.txt"
+                                                                accept=".pdf,.txt"
                                                                 data-testid="input-resume-file"
                                                                 onChange={handleFileUpload}
                                                                 disabled={isConverting || analyzeUsed}
@@ -666,14 +703,15 @@ export default function HeroSection({ dfToken }) {
                                     </a>
                                 </p>
                             </motion.div>
-                        ) : (
-                            <motion.div
-                                key="domain-content"
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                                transition={{ duration: 0.4 }}
-                            >
+                            ) : (
+                                <motion.div
+                                    key="domain-content"
+                                    className="absolute inset-0 w-full"
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    transition={{ duration: 0.4 }}
+                                >
                                 <motion.div
                                     initial={{ opacity: 0, filter: "blur(4px)", y: 8 }}
                                     animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
@@ -754,9 +792,10 @@ export default function HeroSection({ dfToken }) {
                                         <ClaimDomain form="header" />
                                     )}
                                 </motion.div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
                 </div>
             </div>
         </section>

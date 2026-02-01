@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import TrustedBySection from "./trustedBySection";
 import Footer from "./footer";
 import HeroSection from "./heroSection";
@@ -11,10 +11,15 @@ import AiToolsSection from "./aiToolsSection";
 import SpotlightUsers from "./spotlight";
 
 export default function Home({ dfToken }) {
+  const [activeTab, setActiveTab] = useState("scratch");
+
   return (
     <React.Fragment>
-      <HeroSection dfToken={dfToken} />
-      <EmailMockup />
+      <HeroSection dfToken={dfToken} activeTab={activeTab} setActiveTab={setActiveTab} />
+      {activeTab !== "resume" && <EmailMockup />}
+      {activeTab === "resume" && (
+        <div className="py-8 sm:py-12 md:py-16" aria-hidden="true" />
+      )}
       <TrustedBySection />
       <FeaturesSection />
       {/* <FeaturesShowcase /> */}

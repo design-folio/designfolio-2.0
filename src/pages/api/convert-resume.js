@@ -91,7 +91,6 @@ const RESUME_PROMPT = `Based on the following resume text, extract and generate 
     "name": "Hey, I'm [First Name]!",
     "role": "A single, powerful, and slightly edgy one-liner (max 25 words) that captures the person's professional essence with confidence and 'swag'. It should sound like a bold personal brand statement, avoiding corporate cliches. Use a mix of technical authority and human personality. NO exclamation marks.",
     "aboutMe": "A friendly, humane 2-3 sentence introduction about the person's interests and professional philosophy.",
-    "categories": ["Skill Category 1", "Skill Category 2", "Skill Category 3", "Skill Category 4", "Skill Category 5", "Skill Category 6"],
     "skills": [{"name": "Skill Name", "level": 0-100}],
     "contact": {"email": "Email address", "phone": "Phone number or null", "location": "City, Country or null"}
   },
@@ -121,11 +120,10 @@ const RESUME_PROMPT = `Based on the following resume text, extract and generate 
 
 CRITICAL RULES:
 1. "name" MUST be exactly: "Hey, I'm [First Name]!".
-2. "categories" MUST have at least 6 items.
-3. "aboutMe" must be first person and natural.
-4. For each workExperience: startMonth and endMonth MUST be one of: Jan, Feb, Mar, Apr, May, June, July, Aug, Sept, Oct, Nov, Dec. startYear and endYear MUST be 4-digit strings (e.g. "2020"). If the person is still in the role, set currentlyWorking to true and set endMonth/endYear to the current month/year.
-5. For each caseStudy: include client, role, platform when inferable from the resume; otherwise use null.
-6. Extract contact details; if not found, use realistic placeholders.
+2. "aboutMe" must be first person and natural.
+3. For each workExperience: startMonth and endMonth MUST be one of: Jan, Feb, Mar, Apr, May, June, July, Aug, Sept, Oct, Nov, Dec. startYear and endYear MUST be 4-digit strings (e.g. "2020"). If the person is still in the role, set currentlyWorking to true and set endMonth/endYear to the current month/year.
+4. For each caseStudy: include client, role, platform when inferable from the resume; otherwise use null.
+5. Extract contact details; if not found, use realistic placeholders.
 
 Resume Text: `;
 

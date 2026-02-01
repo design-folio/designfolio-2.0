@@ -1,3 +1,5 @@
+import { DEFAULT_SECTION_ORDER } from "@/lib/constant";
+
 /**
  * Maps convert-resume API response to PATCH /user/update payload for prefilled builder.
  * Keeps shapes minimal and aligned with what the API expects.
@@ -27,9 +29,14 @@ export function mapPendingPortfolioToUpdatePayload(content) {
 
   const payload = {};
 
-  // Introduction (tagline only)
+  // Introduction (name / greeting)
   if (user.name) {
     payload.introduction = String(user.name).trim();
+  }
+
+  // Bio (role / tagline) – shown under name in Profile
+  if (user.role) {
+    payload.bio = String(user.role).trim();
   }
 
   // About: description + empty pegboard (required shape)
@@ -40,17 +47,11 @@ export function mapPendingPortfolioToUpdatePayload(content) {
     pegboardStickers: [],
   };
 
-  // Skills: custom skills format { label, value, __isNew__: true }
+  // Skills: custom skills format { label, value, __isNew__: true } (no categories)
   const skillLabels = [];
   if (Array.isArray(user.skills) && user.skills.length) {
     user.skills.forEach((s) => {
       const label = getSkillLabel(s);
-      if (label) skillLabels.push(label);
-    });
-  }
-  if (skillLabels.length === 0 && Array.isArray(user.categories) && user.categories.length) {
-    user.categories.forEach((c) => {
-      const label = getSkillLabel(c);
       if (label) skillLabels.push(label);
     });
   }
@@ -105,4 +106,43 @@ export function mapPendingPortfolioToUpdatePayload(content) {
   }
 
   return Object.keys(payload).length ? payload : null;
+}
+
+/** Placeholder case study image paths for preview (no real thumbnail from AI). */
+const CASESTUDY_PLACEHOLDER_URLS = [
+  "/assets/svgs/casestudyux1.svg",
+  "/assets/svgs/casestudyux2.svg",
+];
+
+/**
+ * Maps convert-resume API response to full userDetails shape for template 0 (Preview1).
+ * Use in ResultPopup to render the actual portfolio template.
+ * Adds placeholder thumbnails (casestudyux1/2) and stable _id for projects.
+ */
+export function mapContentToUserDetails(content) {
+  const payload = mapPendingPortfolioToUpdatePayload(content);
+  if (!payload) return null;
+
+  const user = content?.user || {};
+
+  // Enrich projects with _id (required by Projects/SortableContext) and placeholder thumbnails
+  const projects = (payload.projects || []).map((proj, i) => ({
+    ...proj,
+    _id: proj._id || `preview-project-${i}`,
+    thumbnail:
+      proj.thumbnail?.url != null
+        ? proj.thumbnail
+        : { url: CASESTUDY_PLACEHOLDER_URLS[i % CASESTUDY_PLACEHOLDER_URLS.length] },
+  }));
+
+  return {
+    ...payload,
+    projects,
+    sectionOrder: DEFAULT_SECTION_ORDER,
+    hiddenSections: [],
+    contact: user.contact || {},
+    contact_email: user.contact?.email,
+    email: user.contact?.email,
+    phone: user.contact?.phone,
+  };
 }

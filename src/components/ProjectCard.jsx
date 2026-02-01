@@ -30,6 +30,7 @@ export default function ProjectCard({
   project,
   onDeleteProject,
   edit = false,
+  preview = false,
   handleRouter,
   href,
   dragHandleListeners,
@@ -77,8 +78,8 @@ export default function ProjectCard({
   // Use a wrapper div to intercept all pointer events when needed
   const shouldBlockNavigation = isDragging || wasRecentlyMoved;
 
-  // Determine if tooltip should be shown (and cursor should be hidden)
-  const shouldShowTooltip = isHovered && !isDragging && !isHoveringInteractive;
+  // In preview mode: no click, no hover tooltip
+  const shouldShowTooltip = !preview && isHovered && !isDragging && !isHoveringInteractive;
 
   const cardContent = (
     <div
@@ -127,10 +128,11 @@ export default function ProjectCard({
       <motion.div
         className={customTwMerge(
           `bg-project-card-bg-color border border-project-card-border-color rounded-2xl min-h-[360px] h-full w-full flex flex-col overflow-hidden relative`,
-          shouldShowTooltip ? '' : 'cursor-pointer',
+          !preview && (shouldShowTooltip ? '' : 'cursor-pointer'),
+          preview && 'cursor-default',
           className
         )}
-        whileHover={!isDragging && !isHoveringInteractive ? {
+        whileHover={!preview && !isDragging && !isHoveringInteractive ? {
           scale: 1.02,
           rotateX: 2,
           rotateY: -2,
@@ -143,39 +145,56 @@ export default function ProjectCard({
         }}
       >
         <div className="h-full flex flex-col min-h-full">
-          <div className="h-[253.072px] relative  overflow-hidden rounded-t-[15px]">
-            <motion.img
-              src={project?.thumbnail?.url}
-              alt="project image"
-              className={`w-full h-full object-cover transition-opacity duration-100 ${shouldShowTooltip ? '' : 'cursor-pointer'} ${imageLoaded ? "opacity-100" : "opacity-100"
-                }`}
-              initial="initial"
-              whileHover="hover"
-              variants={imageVariants}
-              loading="lazy"
-              fetchpriority="high"
-              decoding="async"
-              onLoad={() => setImageLoaded(true)}
-              onError={() => setImageLoaded(true)}
-            />
-            {project?.hidden && (
-              <div className="absolute top-3 right-3 bg-amber-100 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1.5">
-                <EyeOff className="w-3 h-3" />
-                Hidden from live site
-              </div>
-            )}
-          </div>
+          {preview ? (
+            <div
+              className="w-full h-48 flex items-center justify-center relative overflow-hidden rounded-t-[15px]"
+              style={{
+                background: 'linear-gradient(135deg, rgb(252, 249, 246) 0%, rgb(249, 245, 241) 50%, rgb(245, 241, 237) 100%)',
+              }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-t from-black/[0.02] to-transparent pointer-events-none" />
+              <img
+                src={project?.thumbnail?.url}
+                alt={project?.title || 'Project'}
+                className="w-24 h-24 object-contain opacity-20 transition-transform duration-500 group-hover:scale-110"
+              />
+            </div>
+          ) : (
+            <div className="h-[253.072px] relative overflow-hidden rounded-t-[15px]">
+              <motion.img
+                src={project?.thumbnail?.url}
+                alt="project image"
+                className={`w-full h-full object-cover transition-opacity duration-100 ${shouldShowTooltip ? '' : 'cursor-pointer'} ${imageLoaded ? "opacity-100" : "opacity-100"
+                  }`}
+                initial="initial"
+                whileHover="hover"
+                variants={imageVariants}
+                loading="lazy"
+                fetchpriority="high"
+                decoding="async"
+                onLoad={() => setImageLoaded(true)}
+                onError={() => setImageLoaded(true)}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/[0.02] to-transparent pointer-events-none" />
+              {project?.hidden && (
+                <div className="absolute top-3 right-3 bg-amber-100 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1.5">
+                  <EyeOff className="w-3 h-3" />
+                  Hidden from live site
+                </div>
+              )}
+            </div>
+          )}
 
-          <div className={`flex-1 flex flex-col justify-between ${shouldShowTooltip ? '' : 'cursor-pointer'}`}>
+          <div className={`flex-1 flex flex-col justify-between ${!preview && (shouldShowTooltip ? '' : 'cursor-pointer')}`}>
             <div className="p-6 pb-0">
               <p
-                className={`project-info-card-heading-color font-semibold line-clamp-2 ${shouldShowTooltip ? '' : 'cursor-pointer'} text-lg mb-2`}
+                className={`project-info-card-heading-color font-semibold line-clamp-2 ${!preview && !shouldShowTooltip ? 'cursor-pointer' : ''} text-lg mb-2`}
               >
                 {project?.title}
               </p>
               <Text
                 size="p-xxsmall"
-                className={`text-df-description-color font-normal line-clamp-3 leading-relaxed ${shouldShowTooltip ? '' : 'cursor-pointer'}`}
+                className={`text-df-description-color font-normal line-clamp-3 leading-relaxed ${!preview && !shouldShowTooltip ? 'cursor-pointer' : ''}`}
               >
                 {project?.description}
               </Text>
@@ -286,6 +305,10 @@ export default function ProjectCard({
         {cardContent}
       </div>
     );
+  }
+
+  if (preview) {
+    return <div className="w-full h-full block">{cardContent}</div>;
   }
 
   return (

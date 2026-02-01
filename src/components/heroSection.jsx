@@ -19,6 +19,7 @@ import AIThinkingBlock from "./ui/ai-thinking-block"
 import { SegmentedControl } from "./ui/segmented-control"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
+import { extractResumeText } from "@/lib/extractResumeText"
 
 const LANDING_ANALYZE_USED_KEY = "DESIGNFOLIO_LANDING_ANALYZE_USED"
 const LAST_ANALYZE_RESULT_KEY = "DESIGNFOLIO_LAST_ANALYZE_RESULT"
@@ -57,12 +58,15 @@ export default function HeroSection({ dfToken }) {
         if (analyzeUsed) return
         setIsConverting(true)
         setConversionError(null)
-        const formData = new FormData()
-        formData.append("resume", file)
         try {
+            const text = await extractResumeText(file)
+            if (!text || text.trim().length < 50) {
+                throw new Error("The file appears to be empty or too short. Please use a PDF or TXT file with at least 50 characters.")
+            }
             const response = await fetch("/api/convert-resume", {
                 method: "POST",
-                body: formData
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text: text.trim() })
             })
             if (!response.ok) {
                 const errData = await response.json().catch(() => ({}))
@@ -74,7 +78,7 @@ export default function HeroSection({ dfToken }) {
                 localStorage.setItem(LANDING_ANALYZE_USED_KEY, "true")
                 try {
                     localStorage.setItem(LAST_ANALYZE_RESULT_KEY, JSON.stringify(data.content))
-                } catch (_) {}
+                } catch (_) { }
             }
             setAnalyzeUsed(true)
         } catch (err) {
@@ -111,18 +115,17 @@ export default function HeroSection({ dfToken }) {
         if (isConverting || analyzeUsed) return
         const file = e.dataTransfer.files?.[0]
         if (file) {
-            const validExt = [".pdf", ".docx", ".txt"]
+            const validExt = [".pdf", ".txt"]
             const ext = file.name.substring(file.name.lastIndexOf(".")).toLowerCase()
             if (
                 validExt.includes(ext) ||
                 file.type === "application/pdf" ||
-                file.type === "text/plain" ||
-                file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                file.type === "text/plain"
             ) {
                 processFile(file)
             } else {
                 setConversionError(
-                    "Invalid file type. Please upload a PDF, DOCX, or TXT file."
+                    "Invalid file type. Please upload a PDF or TXT file."
                 )
             }
         }
@@ -549,7 +552,7 @@ export default function HeroSection({ dfToken }) {
                                                     try {
                                                         const raw = typeof window !== "undefined" && localStorage.getItem(LAST_ANALYZE_RESULT_KEY)
                                                         if (raw) setResultContent(JSON.parse(raw))
-                                                    } catch (_) {}
+                                                    } catch (_) { }
                                                 }}
                                             >
                                                 Continue to sign up
@@ -618,7 +621,7 @@ export default function HeroSection({ dfToken }) {
                                                                         : "Click to upload or drag and drop"}
                                                                 </p>
                                                                 <p className="text-muted-foreground text-sm">
-                                                                    PDF, DOCX, or TXT (max. 10MB)
+                                                                    PDF or TXT (max. 10MB)
                                                                 </p>
                                                             </div>
                                                         )}
@@ -627,7 +630,7 @@ export default function HeroSection({ dfToken }) {
                                                                 type="file"
                                                                 className="hidden"
                                                                 id="resume-upload"
-                                                                accept=".pdf,.docx,.txt"
+                                                                accept=".pdf,.txt"
                                                                 data-testid="input-resume-file"
                                                                 onChange={handleFileUpload}
                                                                 disabled={isConverting || analyzeUsed}

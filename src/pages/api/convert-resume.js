@@ -1,7 +1,3 @@
-import formidable from "formidable";
-import fs from "fs";
-import path from "path";
-import pdf from "pdf-parse";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // Rate limit: same as gemini.js (3 attempts per 40s), but server-side per IP
@@ -42,47 +38,6 @@ function checkRateLimit(ip) {
 
   entry.attempts += 1;
   return { allowed: true };
-}
-
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
-const ALLOWED_MIMES = [
-  "application/pdf",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  "text/plain",
-];
-const ALLOWED_EXT = [".pdf", ".docx", ".txt"];
-
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
-function getFileFromForm(files) {
-  const resume = files.resume ?? files.Resume;
-  if (!resume) return null;
-  return Array.isArray(resume) ? resume[0] : resume;
-}
-
-async function extractTextFromBuffer(buffer, mimetype) {
-  if (mimetype === "application/pdf") {
-    try {
-      if (!buffer || buffer.length === 0) throw new Error("Empty file buffer");
-      const data = await pdf(buffer);
-      return data.text ?? "";
-    } catch (pdfError) {
-      try {
-        const text = buffer.toString("utf-8").replace(/[^\x20-\x7E\n\r\t]/g, " ");
-        if (text.trim().length < 100) throw new Error("Fallback text extraction failed");
-        return text;
-      } catch {
-        throw new Error(
-          "This PDF file appears to be corrupted or in an unsupported format. Please try saving it again as a PDF or use a .txt/.docx file."
-        );
-      }
-    }
-  }
-  return buffer.toString("utf-8");
 }
 
 const RESUME_PROMPT = `Based on the following resume text, extract and generate professional portfolio content. You MUST return the data in the following JSON format only (no markdown, no extra text):
@@ -129,32 +84,35 @@ Resume Text: `;
 
 const GEMINI_MODEL = "gemini-2.5-flash";
 
-// Use GEMINI_API_KEY (server-only, not in client bundle). Fallback: NEXT_PUBLIC_GEMINI_API_KEY.
 async function getAiCompletion(prompt) {
   const apiKey =
     process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY;
   if (!apiKey) {
     throw new Error("GEMINI_API_KEY is not configured");
   }
-  try {
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: GEMINI_MODEL });
-    const result = await model.generateContent(prompt);
-    const response = result.response;
-    if (!response) {
-      throw new Error("No response from Gemini");
-    }
-    const text = response.text();
-    return text ?? null;
-  } catch (error) {
-    console.error("Gemini API Error:", error);
-    throw error;
+  const genAI = new GoogleGenerativeAI(apiKey);
+  const model = genAI.getGenerativeModel({ model: GEMINI_MODEL });
+  const result = await model.generateContent(prompt);
+  const response = result.response;
+  if (!response) {
+    throw new Error("No response from Gemini");
   }
+  const text = response.text();
+  return text ?? null;
 }
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Method not allowed" });
+  }
+
+  // Fail fast if Gemini API key is missing (avoids FUNCTION_INVOCATION_FAILED)
+  const apiKey = process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+  if (!apiKey || apiKey.trim() === "") {
+    console.error("convert-resume: GEMINI_API_KEY (or NEXT_PUBLIC_GEMINI_API_KEY) is not set");
+    return res.status(503).json({
+      message: "Resume conversion is not configured. Please set GEMINI_API_KEY in your environment.",
+    });
   }
 
   const ip = getClientIp(req);
@@ -165,44 +123,14 @@ export default async function handler(req, res) {
     });
   }
 
-  let tmpFilePath = null;
-
   try {
-    const form = formidable({
-      maxFileSize: MAX_FILE_SIZE,
-      keepExtensions: true,
-    });
+    // Client sends JSON { text } (file reading & extraction done in browser)
+    const body = typeof req.body === "string" ? JSON.parse(req.body || "{}") : req.body || {};
+    const text = typeof body.text === "string" ? body.text.trim() : "";
 
-    const [fields, files] = await new Promise((resolve, reject) => {
-      form.parse(req, (err, fields, files) => {
-        if (err) reject(err);
-        else resolve([fields, files]);
-      });
-    });
-
-    const file = getFileFromForm(files);
-    if (!file?.filepath) {
-      return res.status(400).json({ message: "No resume file uploaded" });
-    }
-
-    tmpFilePath = file.filepath;
-    const ext = path.extname(file.originalFilename || "").toLowerCase();
-    const mimetype = file.mimetype || "";
-
-    const mimeOk = ALLOWED_MIMES.includes(mimetype);
-    const extOk = ALLOWED_EXT.includes(ext);
-    if (!mimeOk && !extOk) {
+    if (!text || text.length < 50) {
       return res.status(400).json({
-        message: "Invalid file type. Please upload a PDF, DOCX, or TXT file.",
-      });
-    }
-
-    const buffer = fs.readFileSync(file.filepath);
-    const text = await extractTextFromBuffer(buffer, mimetype);
-
-    if (!text || text.trim().length < 50) {
-      return res.status(400).json({
-        message: "The uploaded file appears to be empty or too short.",
+        message: "Resume text is missing or too short. Please upload a PDF or TXT file with at least 50 characters.",
       });
     }
 
@@ -224,14 +152,10 @@ export default async function handler(req, res) {
     return res.status(200).json({ content });
   } catch (error) {
     console.error("Conversion error:", error);
-    return res.status(500).json({ message: error.message || "Failed to convert resume" });
-  } finally {
-    if (tmpFilePath && fs.existsSync(tmpFilePath)) {
-      try {
-        fs.unlinkSync(tmpFilePath);
-      } catch (e) {
-        console.warn("Could not delete temp file:", tmpFilePath, e);
-      }
-    }
+    const message = error.message || "Failed to convert resume";
+    const isEnvError = message.includes("GEMINI_API_KEY") || message.includes("not configured");
+    return res
+      .status(isEnvError ? 503 : 500)
+      .json({ message: isEnvError ? "Resume conversion is not configured. Please set GEMINI_API_KEY." : message });
   }
 }

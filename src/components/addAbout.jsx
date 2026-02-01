@@ -43,9 +43,9 @@ export default function AddAbout() {
   const getInitialImages = () => {
     const userImages = userDetails?.about?.pegboardImages;
     if (userImages && userImages.length > 0) {
-      return userImages.map(img => img ? { 
-        src: img.src, 
-        isDefault: !!img.isDefault 
+      return userImages.map(img => img ? {
+        src: img.src,
+        isDefault: !!img.isDefault
       } : null);
     }
     return DEFAULT_PEGBOARD_IMAGES.map(img => ({ ...img, isDefault: true }));
@@ -54,9 +54,9 @@ export default function AddAbout() {
   const getInitialStickers = () => {
     const userStickers = userDetails?.about?.pegboardStickers;
     if (userStickers && userStickers.length > 0) {
-      return userStickers.map(s => s ? { 
-        src: s.src, 
-        isDefault: !!s.isDefault 
+      return userStickers.map(s => s ? {
+        src: s.src,
+        isDefault: !!s.isDefault
       } : null);
     }
     return DEFAULT_PEGBOARD_STICKERS.map(s => ({ ...s, isDefault: true }));
@@ -79,13 +79,13 @@ export default function AddAbout() {
       const fieldName = type === 'image' ? 'pegboardImages' : 'pegboardStickers';
       const currentItems = formikRef.current.values[fieldName];
       const updatedItems = [...currentItems];
-      
+
       updatedItems[index] = {
         src: URL.createObjectURL(compressedImage),
         isDefault: false,
         file: compressedImage // Store File object for submission
       };
-      
+
       formikRef.current.setFieldValue(fieldName, updatedItems);
       setLastCompressedTarget(null);
       if (type === 'image') setUploadingImageIndex(null);
@@ -98,7 +98,7 @@ export default function AddAbout() {
     if (!arr1 && !arr2) return true;
     if (!arr1 || !arr2) return false;
     if (arr1.length !== arr2.length) return false;
-    
+
     return arr1.every((item, index) => {
       const item2 = arr2[index];
       if (!item && !item2) return true;
@@ -164,7 +164,7 @@ export default function AddAbout() {
   const handleImageUpload = async (file, index, setFieldValue, currentImages) => {
     setUploadingImageIndex(index);
     setLastCompressedTarget({ type: 'image', index });
-    
+
     const maxSizeInBytes = 2 * 1024 * 1024;
     if (file.size > maxSizeInBytes) {
       compress(file);
@@ -317,11 +317,10 @@ export default function AddAbout() {
                   as="textarea"
                   autoComplete="off"
                   placeholder="Tell visitors about yourself..."
-                  className={`text-input mt-2 min-h-[120px] ${
-                    errors.description && touched.description
+                  className={`text-input mt-2 min-h-[120px] ${errors.description && touched.description
                       ? "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
                       : ""
-                  }`}
+                    }`}
                 />
                 <ErrorMessage
                   name="description"

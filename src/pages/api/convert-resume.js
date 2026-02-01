@@ -1,5 +1,8 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
+// Allow up to 60s for Gemini to respond (avoids 504 Gateway Timeout on serverless)
+export const config = { maxDuration: 90 };
+
 // Rate limit: same as gemini.js (3 attempts per 40s), but server-side per IP
 const RATE_LIMIT_MAX_ATTEMPTS = 3;
 const RATE_LIMIT_COOLDOWN_MS = 40000; // 40 seconds

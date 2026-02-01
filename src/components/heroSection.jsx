@@ -72,7 +72,11 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab }) {
             })
             if (!response.ok) {
                 const errData = await response.json().catch(() => ({}))
-                throw new Error(errData.message || "Conversion failed")
+                const message =
+                    response.status === 504
+                        ? "Conversion took too long. Please try again or use a shorter resume."
+                        : (errData.message || "Conversion failed")
+                throw new Error(message)
             }
             const data = await response.json()
             setResultContent(data.content)

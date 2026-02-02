@@ -31,11 +31,11 @@ import { useTheme } from "next-themes";
 import MemoWorkExperience from "./icons/WorkExperience";
 import DragHandle from "./DragHandle";
 import { motion } from "framer-motion";
-import { PencilIcon, ChevronDown, ChevronUp, Building } from "lucide-react";
-import SimpleTiptapRenderer from "./SimpleTiptapRenderer";
+import { PencilIcon, Building } from "lucide-react";
+import ClampableTiptapContent from "./ClampableTiptapContent";
+import { getPlainTextLength } from "@/lib/tiptapUtils";
 import { useGlobalContext } from "@/context/globalContext";
 import { Button as ButtonNew } from "./ui/buttonNew";
-import { getPlainTextLength } from "@/lib/tiptapUtils";
 
 export default function Works({
   edit,
@@ -204,10 +204,7 @@ const WorkExperienceCard = ({ experience, index, edit, setSelectedWork, openSide
     );
   };
 
-  const isExpanded = expandedCards.includes(experience?._id);
-  const plainTextLength = getPlainTextLength(experience?.description || "");
-  const hasDescription = experience?.description && plainTextLength > 0;
-  const shouldShowToggle = plainTextLength > 100; // Show toggle for descriptions longer than ~2 lines
+  const hasDescription = experience?.description && getPlainTextLength(experience?.description || "") > 0;
 
   return (
     <motion.div
@@ -245,41 +242,16 @@ const WorkExperienceCard = ({ experience, index, edit, setSelectedWork, openSide
 
               {hasDescription && (
                 <div className="text-sm text-foreground-landing/60 leading-relaxed max-w-xl">
-                  {shouldShowToggle && !isExpanded ? (
-                    <div className="max-h-[110px] overflow-hidden relative">
-                      <SimpleTiptapRenderer
-                        content={experience?.description || ""}
-                        mode="work"
-                        enableBulletList={true}
-                      />
-                      <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-card to-transparent pointer-events-none" />
-                    </div>
-                  ) : (
-                    <SimpleTiptapRenderer
-                      content={experience?.description || ""}
-                      mode="work"
-                      enableBulletList={true}
-                    />
-                  )}
-
-                  {shouldShowToggle && (
-                    <button
-                      onClick={() => toggleExpand(experience?._id)}
-                      className="mt-2 text-foreground-landing/80 hover:text-foreground-landing inline-flex items-center gap-1 underline underline-offset-4"
-                    >
-                      {isExpanded ? (
-                        <>
-                          Show Less
-                          <ChevronUp className="h-3 w-3" />
-                        </>
-                      ) : (
-                        <>
-                          View More
-                          <ChevronDown className="h-3 w-3" />
-                        </>
-                      )}
-                    </button>
-                  )}
+                  <ClampableTiptapContent
+                    content={experience?.description || ""}
+                    mode="work"
+                    enableBulletList={true}
+                    maxLines={3}
+                    itemId={experience?._id}
+                    expandedIds={expandedCards}
+                    onToggleExpand={toggleExpand}
+                    buttonClassName="mt-2 text-foreground-landing/80 hover:text-foreground-landing inline-flex items-center gap-1 underline underline-offset-4"
+                  />
                 </div>
               )}
             </div>

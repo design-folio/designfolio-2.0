@@ -2,10 +2,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useGlobalContext } from "@/context/globalContext";
 import { modals, sidebars, DEFAULT_SECTION_ORDER, normalizeSectionOrder } from "@/lib/constant";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
-import { getPlainTextLength } from "@/lib/tiptapUtils";
 import { cn } from "@/lib/utils";
 import { _updateProject, _updateUser } from "@/network/post-request";
-import { ChevronDown, ChevronUp, PencilIcon } from "lucide-react";
+import { PencilIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -56,7 +55,7 @@ import MemoWorkExperience from "./icons/WorkExperience";
 import DfImage from "./image";
 import ProjectCard from "./ProjectCard";
 import ProjectLock from "./projectLock";
-import SimpleTiptapRenderer from "./SimpleTiptapRenderer";
+import ClampableTiptapContent from "./ClampableTiptapContent";
 import Text from "./text";
 import { Button as ButtonNew } from "./ui/buttonNew";
 import DragHandle from "./DragHandle";
@@ -554,96 +553,71 @@ export default function Builder2({ edit = false }) {
                     </div>
                   )}
                   <div className="space-y-4">
-                    {reviews?.map((review) => {
-                      const isExpanded = expandedReviewCards.includes(review?._id);
-                      const plainTextLength = getPlainTextLength(review?.description || "");
-                      const shouldShowToggle = plainTextLength > 180;
-
-                      return (
-                        <div key={review?._id} className="border border-tools-card-item-border-color p-5 rounded-2xl">
-                          <Quote />
-                          <div className="mt-4 text-df-base-text-color">
-                            <div className={shouldShowToggle && !isExpanded ? "max-h-[110px] overflow-hidden relative" : ""}>
-                              <SimpleTiptapRenderer
-                                content={review?.description || ""}
-                                mode="review"
-                                enableBulletList={false}
-                                className="bg-card rounded-none shadow-none"
-                              />
-                              {shouldShowToggle && !isExpanded && (
-                                <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-card to-transparent pointer-events-none" />
-                              )}
-                            </div>
-                            {shouldShowToggle && (
-                              <button
-                                onClick={() => toggleExpandReview(review?._id)}
-                                className="mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
-                              >
-                                {isExpanded ? (
-                                  <>
-                                    Show Less
-                                    <ChevronUp className="h-3 w-3" />
-                                  </>
-                                ) : (
-                                  <>
-                                    View More
-                                    <ChevronDown className="h-3 w-3" />
-                                  </>
-                                )}
-                              </button>
-                            )}
-                          </div>
-                          <div className="flex items-center gap-3 mt-4">
-                            <Avatar className="w-12 h-12 shrink-0">
-                              <AvatarImage src={review?.avatar?.url || review?.avatar} alt={review?.name} />
-                              <AvatarFallback
-                                style={{
-                                  backgroundColor: "#FF9966",
-                                  color: "#FFFFFF",
-                                  fontWeight: 500,
-                                }}
-                              >
-                                {review?.name
-                                  ?.split(" ")
-                                  .map((n) => n[0])
-                                  .join("")
-                                  .slice(0, 2)
-                                  .toUpperCase()}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div className="flex-1">
-                              {review.linkedinLink && review.linkedinLink !== "" ? (
-                                <a
-                                  href={review.linkedinLink}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="flex items-center gap-1 text-blue-500"
-                                >
-                                  <MemoLinkedin className="text-df-icon-color w-4 h-4" />
-                                  <span className="font-semibold cursor-pointer text-base">{review?.name}</span>
-                                </a>
-                              ) : (
-                                <h3 className="font-semibold text-base mb-0">{review?.name}</h3>
-                              )}
-                              <p className="text-sm text-df-description-color">
-                                {review?.role ? `${review.role}, ` : ""}
-                                {review?.company}
-                              </p>
-                            </div>
-                            {edit && (
-                              <Button
-                                size="icon"
-                                onClick={() => handleEditReview(review)}
-                                type={"secondary"}
-                                icon={
-                                  <EditIcon className="text-df-icon-color cursor-pointer text-2xl" />
-                                }
-                              />
-                            )}
-                          </div>
+                    {reviews?.map((review) => (
+                      <div key={review?._id} className="border border-tools-card-item-border-color p-5 rounded-2xl">
+                        <Quote />
+                        <div className="mt-4 text-df-base-text-color">
+                          <ClampableTiptapContent
+                            content={review?.description || ""}
+                            mode="review"
+                            enableBulletList={false}
+                            maxLines={3}
+                            itemId={review?._id}
+                            expandedIds={expandedReviewCards}
+                            onToggleExpand={toggleExpandReview}
+                            buttonClassName="mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
+                          />
                         </div>
-                      );
-                    })}
+                        <div className="flex items-center gap-3 mt-4">
+                          <Avatar className="w-12 h-12 shrink-0">
+                            <AvatarImage src={review?.avatar?.url || review?.avatar} alt={review?.name} />
+                            <AvatarFallback
+                              style={{
+                                backgroundColor: "#FF9966",
+                                color: "#FFFFFF",
+                                fontWeight: 500,
+                              }}
+                            >
+                              {review?.name
+                                ?.split(" ")
+                                .map((n) => n[0])
+                                .join("")
+                                .slice(0, 2)
+                                .toUpperCase()}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1">
+                            {review.linkedinLink && review.linkedinLink !== "" ? (
+                              <a
+                                href={review.linkedinLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-1 text-blue-500"
+                              >
+                                <MemoLinkedin className="text-df-icon-color w-4 h-4" />
+                                <span className="font-semibold cursor-pointer text-base">{review?.name}</span>
+                              </a>
+                            ) : (
+                              <h3 className="font-semibold text-base mb-0">{review?.name}</h3>
+                            )}
+                            <p className="text-sm text-df-description-color">
+                              {review?.role ? `${review.role}, ` : ""}
+                              {review?.company}
+                            </p>
+                          </div>
+                          {edit && (
+                            <Button
+                              size="icon"
+                              onClick={() => handleEditReview(review)}
+                              type={"secondary"}
+                              icon={
+                                <EditIcon className="text-df-icon-color cursor-pointer text-2xl" />
+                              }
+                            />
+                          )}
+                        </div>
+                      </div>
+                    ))}
                   </div>
                   {edit && reviews?.length > 0 && (
                     <div className="flex items-center gap-2 mt-4 flex-wrap">
@@ -744,83 +718,59 @@ export default function Builder2({ edit = false }) {
                 <Chat direction="left" className="w-full"> Here’s a quick look at my design journey 👇</Chat>
                 <Chat direction="left" className="w-full pb-5">
                   <div className="flex flex-col gap-6">
-                    {experiences?.map((experience, index) => {
-                      const isExpanded = expandedExperienceCards.includes(experience?._id);
-                      const plainTextLength = getPlainTextLength(experience?.description || "");
-                      const shouldShowToggle = plainTextLength > 200;
-
-                      return (
-                        <div key={experience?._id}>
-                          <div className="flex justify-between items-center">
+                    {experiences?.map((experience) => (
+                      <div key={experience?._id}>
+                        <div className="flex justify-between items-center">
+                          <Text
+                            size="p-xsmall"
+                            className="font-medium text-df-base-text-color"
+                          >
+                            {experience?.company}
+                          </Text>
+                          <Button
+                            onClick={() => handleEditWork(experience)}
+                            customClass="!p-[13.38px] !flex-shrink-0"
+                            type={"secondary"}
+                            size="icon"
+                            icon={
+                              <EditIcon className="text-df-icon-color cursor-pointer" />
+                            }
+                          />
+                        </div>
+                        <div className="flex">
+                          <ExperienceShape className="w-[54px] relative bottom-2" />{" "}
+                          <div className="mt-[8px] flex-1">
+                            <Text
+                              size="p-small"
+                              className="font-semibold text-df-base-text-color"
+                            >
+                              {experience?.role}
+                            </Text>
                             <Text
                               size="p-xsmall"
-                              className="font-medium text-df-base-text-color"
+                              className="font-medium mt-[6px] text-df-description-color"
                             >
-                              {experience?.company}
+                              {`${experience?.startMonth} ${experience?.startYear} - ${experience?.currentlyWorking
+                                ? "Present"
+                                : `${experience?.endMonth} ${experience?.endYear}`
+                                }  `}
                             </Text>
-                            <Button
-                              onClick={() => handleEditWork(experience)}
-                              customClass="!p-[13.38px] !flex-shrink-0"
-                              type={"secondary"}
-                              size="icon"
-                              icon={
-                                <EditIcon className="text-df-icon-color cursor-pointer" />
-                              }
-                            />
-                          </div>
-                          <div className="flex">
-                            <ExperienceShape className="w-[54px] relative bottom-2" />{" "}
-                            <div className="mt-[8px] flex-1">
-                              <Text
-                                size="p-small"
-                                className="font-semibold text-df-base-text-color"
-                              >
-                                {experience?.role}
-                              </Text>
-                              <Text
-                                size="p-xsmall"
-                                className="font-medium mt-[6px] text-df-description-color"
-                              >
-                                {`${experience?.startMonth} ${experience?.startYear} - ${experience?.currentlyWorking
-                                  ? "Present"
-                                  : `${experience?.endMonth} ${experience?.endYear}`
-                                  }  `}
-                              </Text>
-                              <div className="text-df-base-text-color mt-4">
-                                <div className={shouldShowToggle && !isExpanded ? "max-h-[110px]  overflow-hidden relative" : ""}>
-                                  <SimpleTiptapRenderer
-                                    content={experience?.description || ""}
-                                    mode="work"
-                                    enableBulletList={true}
-                                  />
-                                  {shouldShowToggle && !isExpanded && (
-                                    <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-card to-transparent pointer-events-none" />
-                                  )}
-                                </div>
-                                {shouldShowToggle && (
-                                  <button
-                                    onClick={() => toggleExpandExperience(experience?._id)}
-                                    className="mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
-                                  >
-                                    {isExpanded ? (
-                                      <>
-                                        Show Less
-                                        <ChevronUp className="h-3 w-3" />
-                                      </>
-                                    ) : (
-                                      <>
-                                        View More
-                                        <ChevronDown className="h-3 w-3" />
-                                      </>
-                                    )}
-                                  </button>
-                                )}
-                              </div>
+                            <div className="text-df-base-text-color mt-4">
+                              <ClampableTiptapContent
+                                content={experience?.description || ""}
+                                mode="work"
+                                enableBulletList={true}
+                                maxLines={3}
+                                itemId={experience?._id}
+                                expandedIds={expandedExperienceCards}
+                                onToggleExpand={toggleExpandExperience}
+                                buttonClassName="mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
+                              />
                             </div>
                           </div>
                         </div>
-                      );
-                    })}
+                      </div>
+                    ))}
                     {edit && (
                       <div className="flex items-center gap-2 flex-wrap">
                         <SectionVisibilityButton sectionId="works" className="h-14" />

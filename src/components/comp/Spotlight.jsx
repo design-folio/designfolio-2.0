@@ -1,13 +1,13 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
-import { ChevronDown, ChevronUp, EditIcon } from "lucide-react";
+import { EditIcon } from "lucide-react";
 import AddItem from "../addItem";
 import Button from "../button";
 import { useGlobalContext } from "@/context/globalContext";
 import { sidebars } from "@/lib/constant";
 import PlusIcon from "../../../public/assets/svgs/plus.svg";
 import { useTheme } from "next-themes";
-import SimpleTiptapRenderer from "../SimpleTiptapRenderer";
+import ClampableTiptapContent from "../ClampableTiptapContent";
 import DragHandle from "../DragHandle";
 import {
   DndContext,
@@ -135,9 +135,7 @@ export const Spotlight = ({ userDetails, edit, headerActions }) => {
       transition,
       zIndex: isDragging ? 9999 : 1,
     };
-    const isExpanded = expandedCards.includes(index);
     const descriptionLength = getTextLength(experience.description);
-    const shouldShowToggle = descriptionLength > 180;
 
     return (
       <div ref={setNodeRef} style={style} className={isDragging ? 'relative' : ''}>
@@ -185,35 +183,16 @@ export const Spotlight = ({ userDetails, edit, headerActions }) => {
               </div>
               {descriptionLength > 0 && (
                 <div className="text-sm text-gray-600 dark:text-gray-400 relative">
-                  <div className={shouldShowToggle && !isExpanded ? "max-h-[110px] overflow-hidden relative" : ""}>
-                    <SimpleTiptapRenderer
-                      content={experience.description}
-                      mode="work"
-                      enableBulletList={true}
-                    />
-                    {shouldShowToggle && !isExpanded && (
-                      <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-card to-transparent pointer-events-none" />
-                    )}
-                  </div>
-                  {shouldShowToggle && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleExpand(index);
-                      }}
-                      className="mt-2 text-foreground hover:text-foreground/80 inline-flex items-center gap-1 underline underline-offset-4"
-                    >
-                      {isExpanded ? (
-                        <>
-                          Show Less <ChevronUp className="h-3 w-3" />
-                        </>
-                      ) : (
-                        <>
-                          View More <ChevronDown className="h-3 w-3" />
-                        </>
-                      )}
-                    </button>
-                  )}
+                  <ClampableTiptapContent
+                    content={experience.description}
+                    mode="work"
+                    enableBulletList={true}
+                    maxLines={3}
+                    itemId={index}
+                    expandedIds={expandedCards}
+                    onToggleExpand={toggleExpand}
+                    buttonClassName="mt-2 text-foreground hover:text-foreground/80 inline-flex items-center gap-1 underline underline-offset-4"
+                  />
                 </div>
               )}
             </div>

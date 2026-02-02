@@ -31,7 +31,7 @@ export function ResultPopup({ content, onClose }) {
 
   return createPortal(
     <AnimatePresence>
-      <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4 sm:p-8">
+      <div className="fixed inset-0 z-[999999] flex items-center justify-center p-2 sm:p-4 md:p-8">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -43,38 +43,38 @@ export function ResultPopup({ content, onClose }) {
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          className="relative w-full max-w-5xl h-[90vh] bg-background border-[6px] border-white/20 rounded-2xl shadow-2xl flex flex-col overflow-hidden backdrop-blur-md"
+          className="relative w-full max-w-5xl h-[90vh] bg-df-section-card-bg-color border border-project-card-border-color rounded-2xl shadow-df-section-card-shadow flex flex-col overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Chrome-style Top Bar */}
-          <div className="bg-[#f1f3f4] dark:bg-[#202124] border-b border-border/50 flex items-center h-12 px-4 shrink-0">
-            <div className="flex gap-1.5 w-[72px]">
+          {/* Top Bar - matches project card border */}
+          <div className="bg-df-section-card-bg-color border-b border-project-card-border-color flex items-center h-12 px-4 lg:px-6 shrink-0 gap-2 min-w-0">
+            <div className="hidden sm:flex gap-1.5 w-[72px] shrink-0">
               <div className="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e]" />
               <div className="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123]" />
               <div className="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29]" />
             </div>
-            <div className="flex-1 flex justify-center px-4">
-              <div className="bg-white dark:bg-[#2a2a2a] rounded-lg h-8 px-4 flex items-center gap-2 border border-black/5 dark:border-white/5 w-fit min-w-[240px] shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
-                <Lock className="w-3 h-3 text-foreground/40" />
+            <div className="flex-1 min-w-0 flex justify-center overflow-hidden">
+              <div className="bg-project-card-bg-color rounded-lg h-8 px-3 sm:px-4 flex items-center gap-2 border border-project-card-border-color min-w-0 max-w-full">
+                <Lock className="w-3 h-3 text-foreground/40 shrink-0" />
                 <span className="text-[11px] text-foreground/40 font-medium truncate">
                   your-new-portfolio.designfolio.me
                 </span>
               </div>
             </div>
-            <div className="flex items-center gap-2 justify-end">
+            <div className="flex items-center gap-2 justify-end shrink-0">
               {isStructured && (
                 <>
                   <Button
                     variant="outline"
                     onClick={onClose}
-                    className="rounded-full h-8 px-4 text-xs font-bold border-border/50 transition-all focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                    className="rounded-full h-8 px-3 sm:px-4 text-xs font-bold border-border/50 transition-all focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 shrink-0"
                     data-testid="button-discard"
                   >
                     Discard
                   </Button>
                   <Button
                     onClick={handleContinueToSignup}
-                    className="bg-[#FF553E] hover:bg-[#FF553E]/90 text-white rounded-full h-8 px-4 text-xs font-bold shadow-sm transition-all focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                    className="bg-[#FF553E] hover:bg-[#FF553E]/90 text-white rounded-full h-8 px-3 sm:px-4 text-xs font-bold shadow-sm transition-all focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 shrink-0"
                     data-testid="button-continue-signup"
                   >
                     Open Editor
@@ -84,7 +84,7 @@ export function ResultPopup({ content, onClose }) {
             </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto min-h-0">
+          <div className="flex-1 overflow-y-auto min-h-0 bg-df-bg-color">
             {isStructured && userDetails ? (
               <Preview1
                 userDetails={userDetails}
@@ -92,8 +92,8 @@ export function ResultPopup({ content, onClose }) {
                 embeddedPreview
               />
             ) : (
-              <div className="p-6 sm:p-10 bg-[#F8F7F5]">
-                <pre className="p-4 bg-muted rounded-lg overflow-x-auto whitespace-pre-wrap font-mono text-sm">
+              <div className="p-4 lg:p-6">
+                <pre className="p-4 lg:p-6 bg-df-section-card-bg-color border border-project-card-border-color rounded-2xl overflow-x-auto whitespace-pre-wrap font-mono text-sm">
                   {content?.raw || JSON.stringify(content, null, 2)}
                 </pre>
               </div>
@@ -102,8 +102,8 @@ export function ResultPopup({ content, onClose }) {
 
           {isStructured && (
             <div className="relative shrink-0">
-              <div className="absolute inset-x-0 -top-8 h-8 bg-gradient-to-t from-[#F8F7F5] to-transparent pointer-events-none" />
-              <div className="bg-[#F8F7F5] px-4 py-3 flex items-center justify-center">
+              <div className="absolute inset-x-0 -top-8 h-8 bg-gradient-to-t from-df-bg-color to-transparent pointer-events-none" />
+              <div className="bg-df-bg-color border-t border-project-card-border-color px-4 lg:px-6 py-4 flex items-center justify-center">
                 <span className="text-[11px] text-foreground/50 tracking-wide">
                   This is a preview —{" "}
                   <button

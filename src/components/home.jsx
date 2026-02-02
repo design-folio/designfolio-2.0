@@ -12,13 +12,19 @@ import SpotlightUsers from "./spotlight";
 
 export default function Home({ dfToken }) {
   const [activeTab, setActiveTab] = useState("scratch");
+  const [isResumeCompact, setIsResumeCompact] = useState(false);
 
   return (
     <React.Fragment>
-      <HeroSection dfToken={dfToken} activeTab={activeTab} setActiveTab={setActiveTab} />
+      <HeroSection
+        dfToken={dfToken}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        onResumeCompactChange={setIsResumeCompact}
+      />
       {activeTab !== "resume" && <EmailMockup />}
-      {activeTab === "resume" && (
-        <div className="py-8 sm:py-12 md:py-16" aria-hidden="true" />
+      {activeTab === "resume" && !isResumeCompact && (
+        <div className="py-24 md:py-16" aria-hidden="true" />
       )}
       <TrustedBySection />
       <FeaturesSection />

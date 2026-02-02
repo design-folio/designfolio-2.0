@@ -31,7 +31,7 @@ export function ResultPopup({ content, onClose }) {
 
   return createPortal(
     <AnimatePresence>
-      <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4 sm:p-8">
+      <div className="fixed inset-0 z-[999999] flex items-center justify-center p-2 sm:p-4 md:p-8">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -47,34 +47,34 @@ export function ResultPopup({ content, onClose }) {
           onClick={(e) => e.stopPropagation()}
         >
           {/* Chrome-style Top Bar */}
-          <div className="bg-[#f1f3f4] dark:bg-[#202124] border-b border-border/50 flex items-center h-12 px-4 shrink-0">
-            <div className="flex gap-1.5 w-[72px]">
+          <div className="bg-[#f1f3f4] dark:bg-[#202124] border-b border-border/50 flex items-center h-12 px-3 sm:px-4 shrink-0 gap-2 min-w-0">
+            <div className="hidden sm:flex gap-1.5 w-[72px] shrink-0">
               <div className="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e]" />
               <div className="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123]" />
               <div className="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29]" />
             </div>
-            <div className="flex-1 flex justify-center px-4">
-              <div className="bg-white dark:bg-[#2a2a2a] rounded-lg h-8 px-4 flex items-center gap-2 border border-black/5 dark:border-white/5 w-fit min-w-[240px] shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
-                <Lock className="w-3 h-3 text-foreground/40" />
+            <div className="flex-1 min-w-0 flex justify-center overflow-hidden">
+              <div className="bg-white dark:bg-[#2a2a2a] rounded-lg h-8 px-3 sm:px-4 flex items-center gap-2 border border-black/5 dark:border-white/5 min-w-0 max-w-full shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+                <Lock className="w-3 h-3 text-foreground/40 shrink-0" />
                 <span className="text-[11px] text-foreground/40 font-medium truncate">
                   your-new-portfolio.designfolio.me
                 </span>
               </div>
             </div>
-            <div className="flex items-center gap-2 justify-end">
+            <div className="flex items-center gap-2 justify-end shrink-0">
               {isStructured && (
                 <>
                   <Button
                     variant="outline"
                     onClick={onClose}
-                    className="rounded-full h-8 px-4 text-xs font-bold border-border/50 transition-all focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                    className="rounded-full h-8 px-3 sm:px-4 text-xs font-bold border-border/50 transition-all focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 shrink-0"
                     data-testid="button-discard"
                   >
                     Discard
                   </Button>
                   <Button
                     onClick={handleContinueToSignup}
-                    className="bg-[#FF553E] hover:bg-[#FF553E]/90 text-white rounded-full h-8 px-4 text-xs font-bold shadow-sm transition-all focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                    className="bg-[#FF553E] hover:bg-[#FF553E]/90 text-white rounded-full h-8 px-3 sm:px-4 text-xs font-bold shadow-sm transition-all focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 shrink-0"
                     data-testid="button-continue-signup"
                   >
                     Open Editor

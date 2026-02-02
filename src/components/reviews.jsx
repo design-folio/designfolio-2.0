@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/buttonNew";
 import { useGlobalContext } from "@/context/globalContext";
 import { sidebars } from "@/lib/constant";
-import { getPlainTextLength } from "@/lib/tiptapUtils";
 import { _updateUser } from "@/network/post-request";
 import {
   KeyboardSensor,
@@ -16,7 +15,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { motion } from "framer-motion";
-import { Plus, PlusIcon, Pencil, Linkedin, QuoteIcon, ChevronDown, ChevronUp } from "lucide-react";
+import { Plus, PlusIcon, Pencil, Linkedin, QuoteIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useState } from "react";
 import { twMerge } from "tailwind-merge";
@@ -36,7 +35,7 @@ import {
   CarouselNext
 } from "@/components/ui/carousel";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import SimpleTiptapRenderer from "./SimpleTiptapRenderer";
+import ClampableTiptapContent from "./ClampableTiptapContent";
 import MemoQuoteIcon from "./icons/QuoteIcon";
 
 export default function Reviews({ edit = false, openModal, userDetails }) {
@@ -172,50 +171,15 @@ export default function Reviews({ edit = false, openModal, userDetails }) {
                         </div>
 
                         <div className="flex-1 mb-8">
-                          <div className="text-base leading-relaxed text-df-description-color">
-                            {(() => {
-                              const id = review?._id ?? `${idx}`;
-                              const plainTextLength = getPlainTextLength(review?.description || "");
-                              const shouldShowToggle = plainTextLength > 180;
-                              const isExpanded = expandedReviewIds.includes(id);
-
-                              return (
-                                <>
-                                  <div className={shouldShowToggle && !isExpanded ? "max-h-[110px] overflow-hidden relative" : ""}>
-                                    <SimpleTiptapRenderer
-                                      content={review?.description || ""}
-                                      mode="review"
-                                      enableBulletList={false}
-                                      className="rounded-none shadow-none"
-                                    />
-                                    {shouldShowToggle && !isExpanded && (
-                                      <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-review-card-bg-color to-transparent pointer-events-none" />
-                                    )}
-                                  </div>
-
-                                  {shouldShowToggle && (
-                                    <button
-                                      type="button"
-                                      onClick={() => toggleExpandReview(id)}
-                                      className="mt-2 text-df-description-color hover:text-df-heading-color inline-flex items-center gap-1 underline underline-offset-4"
-                                    >
-                                      {isExpanded ? (
-                                        <>
-                                          Show Less
-                                          <ChevronUp className="h-3 w-3" />
-                                        </>
-                                      ) : (
-                                        <>
-                                          View More
-                                          <ChevronDown className="h-3 w-3" />
-                                        </>
-                                      )}
-                                    </button>
-                                  )}
-                                </>
-                              );
-                            })()}
-                          </div>
+                          <ClampableTiptapContent
+                            content={review?.description || ""}
+                            mode="review"
+                            enableBulletList={false}
+                            maxLines={3}
+                            itemId={review?._id ?? `${idx}`}
+                            expandedIds={expandedReviewIds}
+                            onToggleExpand={toggleExpandReview}
+                          />
                         </div>
 
                         <div className="flex items-center justify-between gap-3 mt-auto">

@@ -24,7 +24,7 @@ import { extractResumeText } from "@/lib/extractResumeText"
 const LANDING_ANALYZE_USED_KEY = "DESIGNFOLIO_LANDING_ANALYZE_USED"
 const LAST_ANALYZE_RESULT_KEY = "DESIGNFOLIO_LAST_ANALYZE_RESULT"
 
-export default function HeroSection({ dfToken, activeTab, setActiveTab }) {
+export default function HeroSection({ dfToken, activeTab, setActiveTab, onResumeCompactChange }) {
     const sectionRef = useRef(null)
     const leftCardRef = useRef(null)
     const rightCardRef = useRef(null)
@@ -55,6 +55,11 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab }) {
         const used = localStorage.getItem(LANDING_ANALYZE_USED_KEY) === "true"
         setAnalyzeUsed(used)
     }, [])
+
+    useEffect(() => {
+        const compact = isResumeMode && analyzeUsed && !resultContent
+        onResumeCompactChange?.(compact)
+    }, [isResumeMode, analyzeUsed, resultContent, onResumeCompactChange])
 
     const processFile = async (file) => {
         if (analyzeUsed) return

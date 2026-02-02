@@ -47,11 +47,11 @@
   margin-bottom: 0.25rem;
 }
 
-.ProseMirror.tiptap-review-mode p:first-child {
+.ProseMirror.tiptap-review-mode-edit p:first-child {
   margin-top: 0;
 }
 
-.ProseMirror.tiptap-review-mode p:last-child {
+.ProseMirror.tiptap-review-mode-edit p:last-child {
   margin-bottom: 0;
 }
 
@@ -70,11 +70,11 @@
   margin-bottom: 0.25rem;
 }
 
-.ProseMirror.tiptap-work-mode p:first-child {
+.ProseMirror.tiptap-work-mode-edit p:first-child {
   margin-top: 0;
 }
 
-.ProseMirror.tiptap-work-mode p:last-child {
+.ProseMirror.tiptap-work-mode-edit p:last-child {
   margin-bottom: 0;
 }
 

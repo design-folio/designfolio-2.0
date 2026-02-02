@@ -106,21 +106,20 @@ export default function Onboarding() {
           // Set personaId even for custom to trigger skills fetch
           setSelectedPersonaId(personaId);
         } else {
-          const matchedRole = roles.find((r) => r._id === personaId);
-          if (matchedRole) {
-            setSelectedRole(matchedRole.label);
-            setSelectedPersonaId(matchedRole._id);
+          const matchedById = roles.find((r) => r._id === personaId);
+          const matchedByLabel = roles.find((r) => r.label === personaLabel);
+          if (matchedById) {
+            setSelectedRole(matchedById.label);
+            setSelectedPersonaId(matchedById._id);
+          } else if (matchedByLabel) {
+            // LLM persona (from resume) uses label; resolve to backend _id for skills fetch
+            setSelectedRole(matchedByLabel.label);
+            setSelectedPersonaId(matchedByLabel._id);
           } else {
-            // If label doesn't match any standard role, treat as custom
-            const isStandardRole = roles.some((r) => r.label === personaLabel);
-            if (!isStandardRole) {
-              setSelectedRole("Others");
-              setCustomRole(personaLabel);
-              setSelectedPersonaId(personaId);
-            } else {
-              setSelectedRole(personaLabel);
-              setSelectedPersonaId(personaId);
-            }
+            // No match - treat as custom (e.g. LLM returned "Growth Marketer" not in backend list)
+            setSelectedRole("Others");
+            setCustomRole(personaLabel);
+            setSelectedPersonaId(personaId);
           }
         }
       }

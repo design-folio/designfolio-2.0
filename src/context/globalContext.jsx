@@ -1,7 +1,7 @@
 import { setCursorvalue } from "@/lib/cursor";
 import { getWallpaperUrl, hasNoWallpaper } from "@/lib/wallpaper";
 import { mapPendingPortfolioToUpdatePayload } from "@/lib/mapPendingPortfolioToUpdatePayload";
-import { _getDomainDetails, _getUserDetails } from "@/network/get-request";
+import { _getDomainDetails, _getUserDetails, _getPersonas, _getTools } from "@/network/get-request";
 import { _updateUser } from "@/network/post-request";
 import queryClient from "@/network/queryClient";
 import { useQuery } from "@tanstack/react-query";
@@ -277,24 +277,30 @@ export const GlobalProvider = ({ children }) => {
     if (!raw) return;
     try {
       const content = JSON.parse(raw);
-      const payload = mapPendingPortfolioToUpdatePayload(content);
-      pendingPrefillAppliedRef.current = true;
-      if (payload) {
-        _updateUser(payload)
-          .then((res) => {
+      Promise.all([
+        _getPersonas().then((res) => res?.data?.personas || []).catch(() => []),
+        _getTools().then((res) => res?.data?.tools || []).catch(() => []),
+      ])
+        .then(([personas, tools]) => {
+          const payload = mapPendingPortfolioToUpdatePayload(content, personas, tools);
+          pendingPrefillAppliedRef.current = true;
+          if (payload) {
+            return _updateUser(payload);
+          }
+          localStorage.removeItem("pending-portfolio-data");
+        })
+        .then((res) => {
+          if (res?.data?.user) {
             localStorage.removeItem("pending-portfolio-data");
-            if (res?.data?.user) {
-              updateCache("userDetails", res.data.user);
-              setUserDetails(res.data.user);
-            }
+            updateCache("userDetails", res.data.user);
+            setUserDetails(res.data.user);
             userDetailsRefecth();
-          })
-          .catch(() => {
-            pendingPrefillAppliedRef.current = false;
-          });
-      } else {
-        localStorage.removeItem("pending-portfolio-data");
-      }
+          }
+        })
+        .catch(() => {
+          pendingPrefillAppliedRef.current = false;
+          localStorage.removeItem("pending-portfolio-data");
+        });
     } catch {
       localStorage.removeItem("pending-portfolio-data");
     }

@@ -122,15 +122,22 @@ export default function Index() {
       const hasPersona = userDetails.persona && userDetails.persona.value && userDetails.persona.label;
       const needsOnboarding = !hasGoal || !hasExperienceLevel || !hasSkills || !hasPersona;
 
-      if (needsOnboarding) {
+      const hasPendingResumePrefill =
+        typeof window !== "undefined" && !!localStorage.getItem("pending-portfolio-data");
+
+      if (needsOnboarding && !hasPendingResumePrefill) {
         openModal(modals.onBoardingNewUser);
-      } else {
+      } else if (
+        (!needsOnboarding || hasPendingResumePrefill) &&
+        showModal === modals.onBoardingNewUser
+      ) {
+        // Only close onboarding modal—never close project/tools/other modals
         closeModal();
       }
     } else {
       closeModal();
     }
-  }, [userDetails]);
+  }, [userDetails, showModal]);
 
   const modalContent = () => {
     switch (showModal) {

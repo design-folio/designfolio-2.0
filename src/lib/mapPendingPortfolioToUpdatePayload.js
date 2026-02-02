@@ -1,10 +1,5 @@
 import { DEFAULT_SECTION_ORDER } from "@/lib/constant";
 
-/**
- * Maps convert-resume API response to PATCH /user/update payload for prefilled builder.
- * Keeps shapes minimal and aligned with what the API expects.
- */
-
 function toTiptapDoc(text) {
   const t = String(text || "").trim();
   return {
@@ -19,15 +14,67 @@ function getSkillLabel(s) {
   return s.name || s.label || String(s);
 }
 
-export function mapPendingPortfolioToUpdatePayload(content) {
+const GOAL_GET_HIRED_ID = 0;
+
+function resolvePersona(personaLabel, personas) {
+  if (!personaLabel || !Array.isArray(personas) || personas.length === 0) return null;
+  const label = personaLabel.trim();
+  const matched = personas.find(
+    (p) =>
+      (p.label || p.name || p.title || "").trim().toLowerCase() === label.toLowerCase()
+  );
+  if (matched && matched._id) {
+    return { value: matched._id, label: matched.label || matched.name || matched.title || label };
+  }
+  return null;
+}
+
+function resolveTool(toolName, tools) {
+  if (!toolName || !Array.isArray(tools) || tools.length === 0) return null;
+  const name = String(toolName).trim();
+  const matched = tools.find(
+    (t) =>
+      (t.label || t.name || "").trim().toLowerCase() === name.toLowerCase()
+  );
+  if (matched && (matched.value || matched._id)) {
+    const id = matched.value || matched._id;
+    return { value: id, label: matched.label || matched.name || name };
+  }
+  return null;
+}
+
+export function mapPendingPortfolioToUpdatePayload(content, personas, tools) {
   if (!content || typeof content !== "object" || content.raw) return null;
 
   const user = content.user || {};
   const workExperiences = content.workExperiences || [];
-  const caseStudies = content.caseStudies || [];
+  // LLM returns caseStudies; fallback to content.projects if caseStudies empty
+  const caseStudies =
+    content.caseStudies?.length > 0
+      ? content.caseStudies
+      : content.projects?.length > 0
+        ? content.projects
+        : [];
   const MAX_PROJECTS = 2;
 
   const payload = {};
+
+  // Resume prefill flow (same as onboarding)
+  payload.isNewUser = true;
+
+  // Persona from LLM: value must be MongoDB _id (fetched from DB). Only set when we can resolve.
+  const personaLabel = (content.persona || "").toString().trim();
+  if (personaLabel) {
+    const resolved = resolvePersona(personaLabel, personas || []);
+    if (resolved) payload.persona = resolved;
+  }
+  payload.goal = GOAL_GET_HIRED_ID;
+
+  // Experience level from LLM (0=Just starting out, 1=Intermediate, 2=Advanced)
+  const expLevel = content.experienceLevel;
+  if (typeof expLevel === "number" && expLevel >= 0 && expLevel <= 2) {
+    payload.experienceLevel = expLevel;
+  }
 
   // Introduction (name / greeting)
   if (user.name) {
@@ -37,6 +84,33 @@ export function mapPendingPortfolioToUpdatePayload(content) {
   // Bio (role / tagline) – shown under name in Profile
   if (user.role) {
     payload.bio = String(user.role).trim();
+  }
+
+  // Contact (email, phone) – backend expects contact_email, phone
+  const contact = user.contact || {};
+  if (contact.email) payload.contact_email = String(contact.email).trim();
+  if (contact.phone) payload.phone = contact.phone;
+
+  // Socials & portfolios – pass ANY accepted links found in resume (not just LinkedIn)
+  // Backend expects socials.{linkedin,twitter,instagram}, portfolios.{medium,dribbble}
+  const socials = {};
+  const portfolios = {};
+  const link = (v) => (v && String(v).trim()) || "";
+  if (link(contact.linkedin)) socials.linkedin = link(contact.linkedin);
+  if (link(contact.twitter) || link(contact.x)) socials.twitter = link(contact.twitter) || link(contact.x);
+  if (link(contact.instagram)) socials.instagram = link(contact.instagram);
+  if (link(contact.medium)) portfolios.medium = link(contact.medium);
+  if (link(contact.dribbble)) portfolios.dribbble = link(contact.dribbble);
+  if (Object.keys(socials).length) payload.socials = socials;
+  if (Object.keys(portfolios).length) payload.portfolios = portfolios;
+
+  // Resume file – if user uploaded PDF, include for prefill (FooterSettingsPanel format)
+  if (content.resumeFile && content.resumeFile.key && content.resumeFile.originalName) {
+    payload.resume = {
+      key: content.resumeFile.key,
+      originalName: content.resumeFile.originalName,
+      extension: content.resumeFile.extension || "pdf",
+    };
   }
 
   // About: description + empty pegboard (required shape)
@@ -88,9 +162,29 @@ export function mapPendingPortfolioToUpdatePayload(content) {
     });
   }
 
-  // Projects: max 2, with tiptapContent from description so body is populated
-  if (caseStudies.length) {
-    payload.projects = caseStudies.slice(0, MAX_PROJECTS).map((proj) => {
+  // Projects: map caseStudies (or content.projects fallback) to payload.projects.
+  // If both empty, derive from work experiences so portfolio has project-like entries.
+  const projectSources =
+    caseStudies.length > 0
+      ? caseStudies.slice(0, MAX_PROJECTS).map((proj) => ({
+        title: proj.title ?? "",
+        description: proj.description || "",
+        category: proj.category ?? "",
+        client: proj.client ?? "",
+        role: proj.role ?? "",
+        platform: proj.platform ?? "",
+      }))
+      : workExperiences.slice(0, MAX_PROJECTS).map((exp) => ({
+        title: `${exp.role ?? ""} at ${exp.company ?? ""}`.trim() || "Project",
+        description: exp.description || "",
+        category: "",
+        client: exp.company ?? "",
+        role: exp.role ?? "",
+        platform: "",
+      }));
+
+  if (projectSources.length) {
+    payload.projects = projectSources.map((proj) => {
       const desc = proj.description || "";
       return {
         title: proj.title ?? "",
@@ -105,6 +199,27 @@ export function mapPendingPortfolioToUpdatePayload(content) {
     });
   }
 
+  // Testimonials -> reviews
+  const testimonials = content.testimonials || [];
+  if (testimonials.length) {
+    payload.reviews = testimonials.map((t) => ({
+      name: t.name ?? "",
+      company: t.company ?? "",
+      description: toTiptapDoc(t.description),
+      linkedinLink: t.linkedinLink || "",
+    }));
+  }
+
+  const toolNames = content.tools || [];
+  if (Array.isArray(toolNames) && toolNames.length && Array.isArray(tools) && tools.length) {
+    const resolved = toolNames
+      .filter((t) => t && String(t).trim())
+      .slice(0, 15)
+      .map((name) => resolveTool(name, tools))
+      .filter(Boolean);
+    if (resolved.length) payload.tools = resolved;
+  }
+
   return Object.keys(payload).length ? payload : null;
 }
 
@@ -114,11 +229,6 @@ const CASESTUDY_PLACEHOLDER_URLS = [
   "/assets/svgs/casestudyux2.svg",
 ];
 
-/**
- * Maps convert-resume API response to full userDetails shape for template 0 (Preview1).
- * Use in ResultPopup to render the actual portfolio template.
- * Adds placeholder thumbnails (casestudyux1/2) and stable _id for projects.
- */
 export function mapContentToUserDetails(content) {
   const payload = mapPendingPortfolioToUpdatePayload(content);
   if (!payload) return null;

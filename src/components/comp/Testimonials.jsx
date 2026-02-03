@@ -1,12 +1,6 @@
 import { useIsMobile } from "@/hooks/use-mobile";
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  ChevronUp,
-  EditIcon,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, EditIcon } from "lucide-react";
 import { useState, useRef } from "react";
 import PlusIcon from "../../../public/assets/svgs/plus.svg";
 import SortIcon from "../../../public/assets/svgs/sort.svg";
@@ -18,9 +12,8 @@ import { useTheme } from "next-themes";
 import Button2 from "../button";
 import MemoLinkedin from "../icons/Linkedin";
 import MemoTestimonial from "../icons/Testimonial";
-import SimpleTiptapRenderer from "../SimpleTiptapRenderer";
+import ClampableTiptapContent from "../ClampableTiptapContent";
 import { Button } from "../ui/button";
-import { getPlainTextLength } from "@/lib/tiptapUtils";
 import {
   DndContext,
   closestCenter,
@@ -140,45 +133,16 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
                   >
                     <div className="flex items-start gap-2 mb-6 flex-1">
                       <div className="flex-1">
-                        {(() => {
-                          const currentTestimonial = visibleTestimonials[currentIndex];
-                          const isExpanded = expandedCards.includes(currentTestimonial?._id);
-                          const plainTextLength = getPlainTextLength(currentTestimonial?.description || "");
-                          const shouldShowToggle = plainTextLength > 180;
-
-                          return (
-                            <>
-                              <div className={shouldShowToggle && !isExpanded ? "max-h-[110px] overflow-hidden relative" : ""}>
-                                <SimpleTiptapRenderer
-                                  content={currentTestimonial?.description || ""}
-                                  mode="review"
-                                  enableBulletList={false}
-                                />
-                                {shouldShowToggle && !isExpanded && (
-                                  <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-review-card-bg-color to-transparent pointer-events-none" />
-                                )}
-                              </div>
-                              {shouldShowToggle && (
-                                <button
-                                  onClick={() => toggleExpand(currentTestimonial?._id)}
-                                  className="mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
-                                >
-                                  {isExpanded ? (
-                                    <>
-                                      Show Less
-                                      <ChevronUp className="h-3 w-3" />
-                                    </>
-                                  ) : (
-                                    <>
-                                      View More
-                                      <ChevronDown className="h-3 w-3" />
-                                    </>
-                                  )}
-                                </button>
-                              )}
-                            </>
-                          );
-                        })()}
+                        <ClampableTiptapContent
+                          content={visibleTestimonials[currentIndex]?.description || ""}
+                          mode="review"
+                          enableBulletList={false}
+                          maxLines={3}
+                          itemId={visibleTestimonials[currentIndex]?._id}
+                          expandedIds={expandedCards}
+                          onToggleExpand={toggleExpand}
+                          buttonClassName="mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
+                        />
                       </div>
                     </div>
 
@@ -279,45 +243,16 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
               >
                 <div className="flex items-start gap-2 mb-6 flex-1">
                   <div className="flex-1">
-                    {(() => {
-                      const isExpanded = expandedCards.includes(testimonial._id);
-                      const plainTextLength = getPlainTextLength(testimonial.description || "");
-                      const shouldShowToggle = plainTextLength > 180;
-
-                      return (
-                        <>
-                          <div className={shouldShowToggle && !isExpanded ? "max-h-[110px]  overflow-hidden relative" : ""}>
-                            <SimpleTiptapRenderer
-                              className="rounded-none shadow-none"
-                              content={testimonial.description || ""}
-                              mode="review"
-                              enableBulletList={false}
-                            />
-                            {shouldShowToggle && !isExpanded && (
-                              <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-review-card-bg-color to-transparent pointer-events-none" />
-                            )}
-                          </div>
-                          {shouldShowToggle && (
-                            <button
-                              onClick={() => toggleExpand(testimonial._id)}
-                              className="mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
-                            >
-                              {isExpanded ? (
-                                <>
-                                  Show Less
-                                  <ChevronUp className="h-3 w-3" />
-                                </>
-                              ) : (
-                                <>
-                                  View More
-                                  <ChevronDown className="h-3 w-3" />
-                                </>
-                              )}
-                            </button>
-                          )}
-                        </>
-                      );
-                    })()}
+                    <ClampableTiptapContent
+                      content={testimonial.description || ""}
+                      mode="review"
+                      enableBulletList={false}
+                      maxLines={3}
+                      itemId={testimonial._id}
+                      expandedIds={expandedCards}
+                      onToggleExpand={toggleExpand}
+                      buttonClassName="mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
+                    />
                   </div>
                   {edit && (
                     <Button2

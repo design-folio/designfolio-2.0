@@ -34,6 +34,10 @@
 
 /* Override min-height for review mode */
 .ProseMirror.tiptap-review-mode {
+  min-height: auto;
+}
+
+.ProseMirror.tiptap-review-mode-edit {
   min-height: 120px;
 }
 
@@ -43,16 +47,20 @@
   margin-bottom: 0.25rem;
 }
 
-.ProseMirror.tiptap-review-mode p:first-child {
+.ProseMirror.tiptap-review-mode-edit p:first-child {
   margin-top: 0;
 }
 
-.ProseMirror.tiptap-review-mode p:last-child {
+.ProseMirror.tiptap-review-mode-edit p:last-child {
   margin-bottom: 0;
 }
 
 /* Override min-height for work mode */
 .ProseMirror.tiptap-work-mode {
+  min-height: auto;
+}
+
+.ProseMirror.tiptap-work-mode-edit {
   min-height: 120px;
 }
 
@@ -62,11 +70,11 @@
   margin-bottom: 0.25rem;
 }
 
-.ProseMirror.tiptap-work-mode p:first-child {
+.ProseMirror.tiptap-work-mode-edit p:first-child {
   margin-top: 0;
 }
 
-.ProseMirror.tiptap-work-mode p:last-child {
+.ProseMirror.tiptap-work-mode-edit p:last-child {
   margin-bottom: 0;
 }
 
@@ -586,7 +594,7 @@
 
 /* Editor-specific dark mode paragraph colors */
 [data-theme="dark"] .ProseMirror.tiptap-work-mode p {
-  color: #F2F2F280 !important;
+  color: #f2f2f280 !important;
 }
 
 [data-theme="dark"] .ProseMirror.tiptap-review-mode p {
@@ -621,7 +629,7 @@
 /* Editor-specific dark mode list colors */
 [data-theme="dark"] .ProseMirror.tiptap-work-mode ul,
 [data-theme="dark"] .ProseMirror.tiptap-work-mode ol {
-  color: #F2F2F280 !important;
+  color: #f2f2f280 !important;
 }
 
 [data-theme="dark"] .ProseMirror.tiptap-review-mode ul,
@@ -658,7 +666,7 @@
 
 /* Editor-specific dark mode list item colors */
 [data-theme="dark"] .ProseMirror.tiptap-work-mode li {
-  color: #F2F2F280 !important;
+  color: #f2f2f280 !important;
 }
 
 [data-theme="dark"] .ProseMirror.tiptap-review-mode li {
@@ -734,7 +742,7 @@
 /* Editor-specific dark mode table cell colors */
 [data-theme="dark"] .ProseMirror.tiptap-work-mode table td,
 [data-theme="dark"] .ProseMirror.tiptap-work-mode table th {
-  color: #F2F2F280 !important;
+  color: #f2f2f280 !important;
 }
 
 [data-theme="dark"] .ProseMirror.tiptap-review-mode table td,
@@ -843,7 +851,7 @@
 
 /* Editor-specific dark mode code colors */
 [data-theme="dark"] .ProseMirror.tiptap-work-mode code {
-  color: #F2F2F280 !important;
+  color: #f2f2f280 !important;
 }
 
 [data-theme="dark"] .ProseMirror.tiptap-review-mode code {
@@ -892,7 +900,7 @@
 
 /* Editor-specific dark mode blockquote colors */
 [data-theme="dark"] .ProseMirror.tiptap-work-mode blockquote {
-  color: #F2F2F280 !important;
+  color: #f2f2f280 !important;
 }
 
 [data-theme="dark"] .ProseMirror.tiptap-review-mode blockquote {

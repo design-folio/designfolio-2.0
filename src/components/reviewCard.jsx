@@ -2,11 +2,10 @@ import { useGlobalContext } from "@/context/globalContext";
 import { sidebars } from "@/lib/constant";
 import { Button } from "./ui/buttonNew";
 import { useState } from "react";
-import { ChevronDown, ChevronUp, PencilIcon } from "lucide-react";
+import { PencilIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import MemoLinkedin from "./icons/Linkedin";
-import SimpleTiptapRenderer from "./SimpleTiptapRenderer";
-import { getPlainTextLength } from "@/lib/tiptapUtils";
+import ClampableTiptapContent from "./ClampableTiptapContent";
 
 export default function ReviewCard({ review, edit = false, sorting = false }) {
   const { openSidebar, setSelectedReview, selectedReview, activeSidebar } = useGlobalContext();
@@ -26,10 +25,6 @@ export default function ReviewCard({ review, edit = false, sorting = false }) {
     );
   };
 
-  const isExpanded = expandedCards.includes(review?._id);
-  const plainTextLength = getPlainTextLength(review?.description || "");
-  const shouldShowToggle = plainTextLength > 180;
-
   return (
     <div
       key={review?._id}
@@ -42,35 +37,16 @@ export default function ReviewCard({ review, edit = false, sorting = false }) {
       {!sorting && (
         <div className="flex items-start gap-2 mb-6 flex-1">
           <div className="flex-1">
-            <div className={shouldShowToggle && !isExpanded ? "max-h-[110px]  overflow-hidden relative" : ""}>
-              <SimpleTiptapRenderer
-                content={review?.description || ""}
-                mode="review"
-                enableBulletList={false}
-                className="rounded-none shadow-none"
-              />
-              {shouldShowToggle && !isExpanded && (
-                <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-review-card-bg-color to-transparent pointer-events-none" />
-              )}
-            </div>
-            {shouldShowToggle && (
-              <button
-                onClick={() => toggleExpand(review?._id)}
-                className="mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
-              >
-                {isExpanded ? (
-                  <>
-                    Show Less
-                    <ChevronUp className="h-3 w-3" />
-                  </>
-                ) : (
-                  <>
-                    View More
-                    <ChevronDown className="h-3 w-3" />
-                  </>
-                )}
-              </button>
-            )}
+            <ClampableTiptapContent
+              content={review?.description || ""}
+              mode="review"
+              enableBulletList={false}
+              maxLines={3}
+              itemId={review?._id}
+              expandedIds={expandedCards}
+              onToggleExpand={toggleExpand}
+              buttonClassName="mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
+            />
           </div>
           {edit && (
             <Button

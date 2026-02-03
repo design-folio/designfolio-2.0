@@ -1,6 +1,7 @@
 import { setCursorvalue } from "@/lib/cursor";
 import { getWallpaperUrl, hasNoWallpaper } from "@/lib/wallpaper";
-import { _getDomainDetails, _getUserDetails } from "@/network/get-request";
+import { mapPendingPortfolioToUpdatePayload } from "@/lib/mapPendingPortfolioToUpdatePayload";
+import { _getDomainDetails, _getUserDetails, _getPersonas, _getTools } from "@/network/get-request";
 import { _updateUser } from "@/network/post-request";
 import queryClient from "@/network/queryClient";
 import { useQuery } from "@tanstack/react-query";
@@ -67,6 +68,7 @@ export const GlobalProvider = ({ children }) => {
   const userDetailsRef = useRef(userDetails);
   const isUpdatingEffectsFromAPI = useRef(false);
   const effectsInitializedRef = useRef(false);
+  const pendingPrefillAppliedRef = useRef(false);
   const { setTheme, theme, resolvedTheme } = useTheme();
 
   // Fetch user details
@@ -260,6 +262,49 @@ export const GlobalProvider = ({ children }) => {
       return { user: newUser };
     });
   };
+
+  // Post-signup prefill: apply pending-portfolio-data (from landing Analyze flow) once
+  useEffect(() => {
+    if (
+      typeof window === "undefined" ||
+      !userDetails ||
+      pendingPrefillAppliedRef.current ||
+      !Cookies.get("df-token")
+    ) {
+      return;
+    }
+    const raw = localStorage.getItem("pending-portfolio-data");
+    if (!raw) return;
+    try {
+      const content = JSON.parse(raw);
+      Promise.all([
+        _getPersonas().then((res) => res?.data?.personas || []).catch(() => []),
+        _getTools().then((res) => res?.data?.tools || []).catch(() => []),
+      ])
+        .then(([personas, tools]) => {
+          const payload = mapPendingPortfolioToUpdatePayload(content, personas, tools);
+          pendingPrefillAppliedRef.current = true;
+          if (payload) {
+            return _updateUser(payload);
+          }
+          localStorage.removeItem("pending-portfolio-data");
+        })
+        .then((res) => {
+          if (res?.data?.user) {
+            localStorage.removeItem("pending-portfolio-data");
+            updateCache("userDetails", res.data.user);
+            setUserDetails(res.data.user);
+            userDetailsRefecth();
+          }
+        })
+        .catch(() => {
+          pendingPrefillAppliedRef.current = false;
+          localStorage.removeItem("pending-portfolio-data");
+        });
+    } catch {
+      localStorage.removeItem("pending-portfolio-data");
+    }
+  }, [userDetails, setUserDetails, updateCache, userDetailsRefecth]);
 
   const changeCursor = (cursor) => {
     _updateUser({ cursor: cursor }).then((res) => {

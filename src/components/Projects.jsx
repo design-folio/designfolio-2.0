@@ -24,7 +24,7 @@ import { twMerge } from "tailwind-merge";
 import { useRouter } from "next/router";
 import ProjectLock from "./projectLock";
 
-const SortableItem = ({ project, onDeleteProject, edit, preview, recentlyMovedIds, onToggleVisibility }) => {
+const SortableItem = ({ project, onDeleteProject, edit, preview = false, recentlyMovedIds, onToggleVisibility }) => {
   const router = useRouter();
   const {
     attributes,
@@ -66,6 +66,7 @@ const SortableItem = ({ project, onDeleteProject, edit, preview, recentlyMovedId
         project={project}
         onDeleteProject={onDeleteProject}
         edit={edit}
+        preview={preview}
         handleRouter={handleRouter}
         href={getHref(project._id)}
         dragHandleListeners={listeners}

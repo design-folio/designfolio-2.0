@@ -1,10 +1,9 @@
 import { useGlobalContext } from "@/context/globalContext";
 import Text from "./text";
-import SimpleTiptapRenderer from "./SimpleTiptapRenderer";
+import ClampableTiptapContent from "./ClampableTiptapContent";
 import { Button } from "./ui/buttonNew";
-import { PencilIcon, ChevronDown, ChevronUp } from "lucide-react";
+import { PencilIcon } from "lucide-react";
 import { useState } from "react";
-import { getPlainTextLength } from "@/lib/tiptapUtils";
 
 export default function WorkCard({ work, onClick, show = true, edit, sorting = false }) {
   const { setSelectedWork } = useGlobalContext();
@@ -20,10 +19,6 @@ export default function WorkCard({ work, onClick, show = true, edit, sorting = f
       prev.includes(id) ? prev.filter((cardId) => cardId !== id) : [...prev, id]
     );
   };
-
-  const isExpanded = expandedCards.includes(work?._id);
-  const plainTextLength = getPlainTextLength(work?.description || "");
-  const shouldShowToggle = plainTextLength > 180;
 
   return (
     <div className="flex flex-col-reverse lg:flex-row gap-2 lg:gap-10">
@@ -66,34 +61,16 @@ export default function WorkCard({ work, onClick, show = true, edit, sorting = f
 
           {!sorting && (
             <div className="text-df-description-color">
-              <div className={shouldShowToggle && !isExpanded ? "max-h-[110px] overflow-hidden relative" : ""}>
-                <SimpleTiptapRenderer
-                  content={work?.description || ""}
-                  mode="work"
-                  enableBulletList={true}
-                />
-                {shouldShowToggle && !isExpanded && (
-                  <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-df-section-card-bg-color to-transparent pointer-events-none" />
-                )}
-              </div>
-              {shouldShowToggle && (
-                <button
-                  onClick={() => toggleExpand(work?._id)}
-                  className="mt-2 text-foreground-landing/80 hover:text-foreground-landing inline-flex items-center gap-1 underline underline-offset-4"
-                >
-                  {isExpanded ? (
-                    <>
-                      Show Less
-                      <ChevronUp className="h-3 w-3" />
-                    </>
-                  ) : (
-                    <>
-                      View More
-                      <ChevronDown className="h-3 w-3" />
-                    </>
-                  )}
-                </button>
-              )}
+              <ClampableTiptapContent
+                content={work?.description || ""}
+                mode="work"
+                enableBulletList={true}
+                maxLines={3}
+                itemId={work?._id}
+                expandedIds={expandedCards}
+                onToggleExpand={toggleExpand}
+                buttonClassName="mt-2 text-foreground-landing/80 hover:text-foreground-landing inline-flex items-center gap-1 underline underline-offset-4"
+              />
             </div>
           )}
         </div>

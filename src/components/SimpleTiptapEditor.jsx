@@ -76,7 +76,7 @@ const SimpleTiptapEditor = ({
         content: normalizedContent,
         editorProps: {
             attributes: {
-                class: `prose prose-sm sm:prose lg:prose-lg xl:prose-2xl focus:outline-none max-w-none tiptap-${mode}-mode`,
+                class: `prose prose-sm sm:prose lg:prose-lg xl:prose-2xl focus:outline-none max-w-none tiptap-${mode}-mode-edit`,
                 style: "color: var(--input-text-color);",
             },
         },

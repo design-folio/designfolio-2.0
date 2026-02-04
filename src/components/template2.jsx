@@ -27,7 +27,7 @@ import Text from "./text";
 import { Button as ButtonNew } from "./ui/buttonNew";
 import MemoLinkedin from "./icons/Linkedin";
 import { AboutMeContent } from "./aboutMe";
-export default function Template2({ userDetails, preview = false, activeStep: activeStepProp, onStepComplete }) {
+export default function Template2({ userDetails, preview = false, edit = false, activeStep: activeStepProp, onStepComplete }) {
   const {
     bio,
     skills,
@@ -353,7 +353,7 @@ export default function Template2({ userDetails, preview = false, activeStep: ac
             </div>
           )}
 
-          {activeStep >= 7 && isSectionVisible('about') && (
+          {activeStep >= 7 && isSectionVisible('about') && (edit || (userDetails?.about !== null && userDetails?.about !== undefined)) && (
             <div id="section-about" className="flex flex-col gap-6">
               <Chat direction="right" delay={400} onComplete={handleStepCompletion}>
                 Tell me a little about yourself?

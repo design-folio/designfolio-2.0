@@ -13,16 +13,19 @@ import { containerVariants, itemVariants } from "@/lib/animationVariants";
 import { DEFAULT_SECTION_ORDER, normalizeSectionOrder } from "@/lib/constant";
 import AboutMe from "@/components/aboutMe";
 
-export default function Preview1({ userDetails, projectRef, embeddedPreview = false }) {
+export default function Preview1({ userDetails, projectRef, embeddedPreview = false, edit = false }) {
   // Get section order from userDetails or use template default
   const sectionOrder = normalizeSectionOrder(userDetails?.sectionOrder, DEFAULT_SECTION_ORDER);
 
   // Get hidden sections array
   const hiddenSections = userDetails?.hiddenSections || [];
 
+  const hasAbout = userDetails?.about !== null && userDetails?.about !== undefined;
+  const showAbout = !hiddenSections.includes('about') && (edit || hasAbout);
+
   // Section component mapping
   const sectionComponents = {
-    about: !hiddenSections.includes('about') && (
+    about: showAbout && (
       <motion.div variants={itemVariants} id="section-about">
         <AboutMe userDetails={userDetails} />
       </motion.div>

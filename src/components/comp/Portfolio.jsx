@@ -71,12 +71,7 @@ const Portfolio = ({ userDetails, edit }) => {
     reviews,
   } = userDetails || {};
 
-  const about =
-    userDetails?.about ??
-    userDetails?.aboutMe ??
-    userDetails?.about_me ??
-    "";
-  const hasAbout = typeof about === "string" && about.trim().length > 0;
+  const hasAbout = userDetails?.about !== null && userDetails?.about !== undefined;
   const { openModal, setSelectedWork, setSelectedProject, setUserDetails } =
     useGlobalContext();
 

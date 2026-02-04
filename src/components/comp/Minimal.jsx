@@ -20,12 +20,7 @@ const Minimal = ({ userDetails, edit }) => {
     setCursor(userDetails?.cursor ? userDetails?.cursor : 0);
   }, []);
 
-  const about =
-    userDetails?.about ??
-    userDetails?.aboutMe ??
-    userDetails?.about_me ??
-    "";
-  const hasAbout = typeof about === "string" && about.trim().length > 0;
+  const hasAbout = userDetails?.about !== null && userDetails?.about !== undefined;
 
   // Get section order from userDetails or use template default
   const sectionOrder = normalizeSectionOrder(userDetails?.sectionOrder, DEFAULT_SECTION_ORDER);

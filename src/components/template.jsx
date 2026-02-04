@@ -36,7 +36,7 @@ const itemVariants = {
   },
 };
 
-export default function Template1({ userDetails }) {
+export default function Template1({ userDetails, edit = false }) {
   const { projectRef, setCursor } = useGlobalContext();
   useEffect(() => {
     setCursor(userDetails?.cursor ? userDetails?.cursor : 0);
@@ -48,9 +48,12 @@ export default function Template1({ userDetails }) {
   // Get hidden sections array
   const hiddenSections = userDetails?.hiddenSections || [];
 
+  const hasAbout = userDetails?.about !== null && userDetails?.about !== undefined;
+  const showAbout = !hiddenSections.includes('about') && (edit || hasAbout);
+
   // Section component mapping
   const sectionComponents = {
-    about: !hiddenSections.includes('about') && (
+    about: showAbout && (
       <motion.div variants={itemVariants} id="section-about">
         <AboutMe userDetails={userDetails} />
       </motion.div>

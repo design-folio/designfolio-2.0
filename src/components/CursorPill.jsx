@@ -26,6 +26,8 @@ export function CursorPill() {
     return () => document.body.classList.remove("cursor-pill-active");
   }, [show]);
 
+  if (!show) return null;
+
   return (
     <div
       className="fixed top-0 left-0 z-[99999] pointer-events-none mix-blend-normal will-change-transform"
@@ -36,9 +38,7 @@ export function CursorPill() {
       <div
         className="flex items-center gap-2 bg-df-orange-color text-white px-3 py-1.5 rounded-full shadow-lg whitespace-nowrap"
         style={{
-          opacity: show ? 1 : 0,
-          transform: `scale(${show ? 1 : 0.92})`,
-          transition: "opacity 0.06s ease-out, transform 0.06s ease-out",
+          transition: "opacity 0.1s ease-out, transform 0.1s ease-out",
         }}
       >
         {icon ?? <Eye className="w-4 h-4" />}

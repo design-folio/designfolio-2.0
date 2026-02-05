@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Eye, EyeOff, Pencil } from "lucide-react";
-import { HoverTooltip } from "../HoverTooltip";
+import { useCursorTooltip } from "@/context/cursorTooltipContext";
 import { useRouter } from "next/router";
 import Button from "../button";
 import DeleteIcon from "../../../public/assets/svgs/deleteIcon.svg";
@@ -180,6 +180,7 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
     const [isHovered, setIsHovered] = useState(false);
     const [isHoveringInteractive, setIsHoveringInteractive] = useState(false);
     const containerRef = useRef(null);
+    const { setCursorPill } = useCursorTooltip();
     // Setup DND Kit sortable functionality.
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
       useSortable({ id: project._id });
@@ -221,6 +222,11 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
       _updateUser({ projects: updatedProjects });
     };
 
+    const shouldShowTooltip = isHovered && !isDragging && !isHoveringInteractive;
+    useEffect(() => {
+      setCursorPill(shouldShowTooltip, "View Case Study");
+    }, [shouldShowTooltip, setCursorPill]);
+
     return (
       <div
         ref={(node) => {
@@ -231,22 +237,16 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
         className={`${isDragging ? 'relative' : ''} h-full`}
       >
         <motion.div
-          onMouseMove={handleMouseMove}
-          onClick={() => handleNavigation(project?._id)}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => {
-            setIsHovered(false);
-            setIsHoveringInteractive(false);
-          }}
-          variants={itemVariants}
-          className={`group rounded-3xl bg-card overflow-hidden relative shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] cursor-pointer h-full flex flex-col ${isHovered && !isDragging && !isHoveringInteractive ? 'hide-cursor-children' : ''}`}
-        >
-          <HoverTooltip
-            isHovered={isHovered}
-            isDragging={isDragging}
-            isHoveringInteractive={isHoveringInteractive}
-            text="View Case Study"
-          />
+            onMouseMove={handleMouseMove}
+            onClick={() => handleNavigation(project?._id)}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => {
+              setIsHovered(false);
+              setIsHoveringInteractive(false);
+            }}
+            variants={itemVariants}
+            className="group rounded-3xl bg-card overflow-hidden relative shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] cursor-pointer h-full flex flex-col"
+          >
           <div
             className="pointer-events-none absolute -inset-px opacity-0 group-hover:opacity-100 transition-opacity duration-300"
             style={{

@@ -9,7 +9,7 @@ import {
   EyeOff,
   Pencil,
 } from "lucide-react";
-import { HoverTooltip } from "../HoverTooltip";
+import { useCursorTooltip } from "@/context/cursorTooltipContext";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { motion, useInView } from "framer-motion";
@@ -200,6 +200,7 @@ const Portfolio = ({ userDetails, edit }) => {
     const [isHovered, setIsHovered] = useState(false);
     const [isHoveringInteractive, setIsHoveringInteractive] = useState(false);
     const cardRef = useRef(null);
+    const { setCursorPill } = useCursorTooltip();
     const handleMouseMove = (e) => {
       if (!cardRef.current) return;
       const rect = cardRef.current.getBoundingClientRect();
@@ -214,29 +215,25 @@ const Portfolio = ({ userDetails, edit }) => {
       zIndex: isDragging ? 9999 : 1,
     };
 
+    const shouldShowTooltip = isHovered && !isDragging && !isHoveringInteractive;
+    useEffect(() => {
+      setCursorPill(shouldShowTooltip, "View Project");
+    }, [shouldShowTooltip, setCursorPill]);
+
     return (
       <div ref={setNodeRef} style={style} className={isDragging ? 'relative' : ''}>
         <motion.div
-          ref={cardRef}
-          variants={item}
-          onClick={() => handleNavigation(project?._id)}
-          onMouseMove={handleMouseMove}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => {
-            setIsHovered(false);
-            setIsHoveringInteractive(false);
-          }}
-          className={cn(
-            "group bg-card border border-card-border rounded-lg overflow-hidden hover:bg-card/80 transition-colors relative !cursor-pointer",
-            isHovered && !isDragging && !isHoveringInteractive && "hide-cursor-children"
-          )}
-        >
-          <HoverTooltip
-            isHovered={isHovered}
-            isDragging={isDragging}
-            isHoveringInteractive={isHoveringInteractive}
-            text="View Project"
-          />
+            ref={cardRef}
+            variants={item}
+            onClick={() => handleNavigation(project?._id)}
+            onMouseMove={handleMouseMove}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => {
+              setIsHovered(false);
+              setIsHoveringInteractive(false);
+            }}
+            className="group bg-card border border-card-border rounded-lg overflow-hidden hover:bg-card/80 transition-colors relative !cursor-pointer"
+          >
           <div className="flex flex-col md:flex-row !cursor-pointer">
             <div className="relative w-full lg:w-[320px] h-[261px] shrink-0 overflow-hidden">
               <img

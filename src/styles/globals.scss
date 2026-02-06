@@ -901,10 +901,13 @@ input {
   cursor: text; /* This ensures the text cursor is used for input fields */
 }
 
+/* Cursor becomes pill when hovering project cards */
+body.cursor-pill-active,
+body.cursor-pill-active * {
+  cursor: none !important;
+}
+
 @layer utilities {
-  .hide-cursor-children * {
-    cursor: none !important;
-  }
   /* Hide ugly search cancel button in Chrome until we can style it properly */
   input[type="search"]::-webkit-search-cancel-button {
     @apply hidden;

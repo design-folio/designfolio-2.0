@@ -16,6 +16,8 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import queryClient from "@/network/queryClient";
 import Head from "next/head";
 import UpgradeModal from "@/components/upgradeModal";
+import { CursorTooltipProvider } from "@/context/cursorTooltipContext";
+import { CursorPill } from "@/components/CursorPill";
 
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 
@@ -153,6 +155,8 @@ function MyApp({ Component, pageProps, dfToken, hideHeader }) {
             `}</style>
             <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
               <GlobalProvider>
+                <CursorTooltipProvider>
+                  <CursorPill />
                 <main
                   className={`${satoshi.variable} ${sfpro.variable} ${inter.variable} ${kalam.variable} ${gsans.variable} `}
                 >
@@ -164,6 +168,7 @@ function MyApp({ Component, pageProps, dfToken, hideHeader }) {
                   <ToastContainer position="bottom-right" />
                   <UpgradeModal />
                 </main>
+                </CursorTooltipProvider>
               </GlobalProvider>
             </GoogleOAuthProvider>
           </ThemeProvider>

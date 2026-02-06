@@ -1,10 +1,10 @@
 import customTwMerge from "@/lib/customTailwindMerge";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { Eye, EyeOff, Pencil } from "lucide-react";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
+import React, { useState, useEffect } from "react";
 import DeleteIcon from "../../public/assets/svgs/deleteIcon.svg";
+import { useCursorTooltip } from "@/context/cursorTooltipContext";
 import Button from "./button";
 import DragHandle from "./DragHandle";
 import Text from "./text";
@@ -41,21 +41,7 @@ export default function ProjectCard({
 }) {
   const [isHovered, setIsHovered] = useState(false);
   const [imageLoaded, setImageLoaded] = React.useState(false);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isHoveringInteractive, setIsHoveringInteractive] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const handleMouseMove = (e) => {
-    // Use viewport coordinates for fixed positioning
-    setMousePos({
-      x: e.clientX,
-      y: e.clientY,
-    });
-  };
 
   const handleLinkClick = (e) => {
     // Always prevent Link navigation when dragging, recently moved, or clicking drag handle
@@ -75,56 +61,23 @@ export default function ProjectCard({
     }
   };
 
-  // Use a wrapper div to intercept all pointer events when needed
   const shouldBlockNavigation = isDragging || wasRecentlyMoved;
-
-  // In preview mode: no click, no hover tooltip
   const shouldShowTooltip = !preview && isHovered && !isDragging && !isHoveringInteractive;
+  const { setCursorPill } = useCursorTooltip();
+
+  useEffect(() => {
+    setCursorPill(shouldShowTooltip, "View Case Study");
+  }, [shouldShowTooltip, setCursorPill]);
 
   const cardContent = (
     <div
-      className={customTwMerge(
-        "group relative w-full h-full",
-        shouldShowTooltip && "hide-cursor-children"
-      )}
-      onMouseMove={handleMouseMove}
-      onMouseEnter={(e) => {
-        setIsHovered(true);
-        // Initialize mousePos with current position if it's still 0,0
-        // This fixes the issue where scrolling lands cursor on card without mousemove event
-        if (mousePos.x === 0 && mousePos.y === 0) {
-          setMousePos({
-            x: e.clientX,
-            y: e.clientY,
-          });
-        }
-      }}
-      onMouseLeave={() => {
-        setIsHovered(false);
-        setIsHoveringInteractive(false);
-      }}
-    >
-      {mounted && createPortal(
-        <AnimatePresence>
-          {shouldShowTooltip && (
-            <motion.div
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0, opacity: 0 }}
-              className="fixed pointer-events-none z-[99999] flex items-center gap-2 bg-df-orange-color text-white px-3 py-1.5 rounded-full shadow-lg whitespace-nowrap"
-              style={{
-                left: `${mousePos.x}px`,
-                top: `${mousePos.y}px`,
-                transform: 'translate(-50%, -50%)',
-              }}
-            >
-              <Eye className="w-4 h-4" />
-              <span className="text-[10px] font-bold uppercase tracking-wider">View Case Study</span>
-            </motion.div>
-          )}
-        </AnimatePresence>,
-        document.body
-      )}
+        className="group relative w-full h-full"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => {
+          setIsHovered(false);
+          setIsHoveringInteractive(false);
+        }}
+      >
       <motion.div
         className={customTwMerge(
           `bg-project-card-bg-color border border-project-card-border-color rounded-2xl min-h-[360px] h-full w-full flex flex-col overflow-hidden relative`,

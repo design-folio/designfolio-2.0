@@ -142,7 +142,6 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
-        className="pb-20"
       >
         <div className="max-w-[848px] mx-auto">
           <div

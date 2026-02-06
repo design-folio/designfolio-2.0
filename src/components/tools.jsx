@@ -40,7 +40,7 @@ export default function Tools({ userDetails, openModal, edit }) {
           </Button>
         }
       >
-        <div className="relative mt-2 overflow-x-hidden overflow-y-visible -mx-4 lg:-mx-6 px-4 lg:px-6">
+        <div className="relative mt-2 overflow-x-hidden overflow-y-visible -mx-2 lg:-mx-6 px-4 lg:px-6">
           {shouldScroll && (
             <>
               {/* Left fade */}

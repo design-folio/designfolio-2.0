@@ -1,5 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useGlobalContext } from "@/context/globalContext";
+import { DEFAULT_SECTION_ORDER, normalizeSectionOrder } from "@/lib/constant";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -47,6 +48,23 @@ export default function Template2({ userDetails, preview = false, edit = false, 
   } = userDetails || {};
   const router = useRouter();
 
+  const sectionOrder = normalizeSectionOrder(userDetails?.sectionOrder, DEFAULT_SECTION_ORDER);
+
+  function buildContentSteps(order) {
+    const steps = [];
+    for (const id of order) {
+      if (id === "projects") steps.push("projects_chat", "projects_content");
+      else steps.push(id);
+    }
+    return steps;
+  }
+  const contentSteps = buildContentSteps(sectionOrder);
+
+  function getStepForContentItem(item) {
+    const idx = contentSteps.indexOf(item);
+    return idx === -1 ? 999 : 3 + idx;
+  }
+
   const isSectionVisible = (id) => !hiddenSections.includes(id);
   const { projectRef, setCursor } = useGlobalContext();
 
@@ -70,13 +88,20 @@ export default function Template2({ userDetails, preview = false, edit = false, 
 
   useEffect(() => {
     const shouldSkipStep = (step) => {
-      if (step === 3 || step === 4) return !isSectionVisible("projects") || !projects || projects.length === 0;
-      if (step === 5) return !isSectionVisible("reviews") || !reviews || reviews.length === 0;
-      if (step === 6) return !isSectionVisible("tools");
-      if (step === 7) return !isSectionVisible("about") || !userDetails?.about || userDetails?.about?.trim?.() === "";
-      if (step === 8) return !isSectionVisible("works") || !experiences || experiences.length === 0;
-      if (step === 9) return !portfolioCheck;
-      if (step === 10) return socials && !Object.values(socials).every((social) => social != "");
+      if (step < 3 || step > 8) {
+        if (step === 9) return !portfolioCheck;
+        if (step === 10) return socials && !Object.values(socials).every((s) => s != "");
+        return false;
+      }
+      const item = contentSteps[step - 3];
+      if (!item) return true;
+      if (item === "projects_chat" || item === "projects_content")
+        return !isSectionVisible("projects") || !projects || projects.length === 0;
+      if (item === "reviews") return !isSectionVisible("reviews") || !reviews || reviews.length === 0;
+      if (item === "tools") return !isSectionVisible("tools");
+      if (item === "about")
+        return !isSectionVisible("about") || !userDetails?.about || userDetails?.about?.trim?.() === "";
+      if (item === "works") return !isSectionVisible("works") || !experiences || experiences.length === 0;
       return false;
     };
     let step = activeStep;
@@ -91,7 +116,7 @@ export default function Template2({ userDetails, preview = false, edit = false, 
     if (skippedSteps.length > 0) {
       setActiveStep(step);
     }
-  }, [activeStep, projects, reviews, experiences, portfolios, userDetails?.about, portfolioCheck, socials, hiddenSections]);
+  }, [activeStep, projects, reviews, experiences, portfolios, userDetails?.about, portfolioCheck, socials, hiddenSections, sectionOrder, contentSteps]);
 
   // Trigger effect when activeStep or projects change
   const getSkills = () => {
@@ -198,233 +223,240 @@ export default function Template2({ userDetails, preview = false, edit = false, 
               {bio}
             </Chat>
           )}
-          {activeStep >= 3 && projects && projects?.length > 0 && isSectionVisible('projects') && (
-            <Chat direction="right" delay={400} onComplete={handleStepCompletion}>
-              So… what have you been working on lately?
-            </Chat>
-          )}
-
-          {activeStep >= 4 && projects && projects?.length > 0 && isSectionVisible('projects') && (
-            <div id="section-projects" className="flex flex-col gap-6">
-              <Chat
-                direction="left"
-                delay={200}
-                onComplete={handleStepCompletion}
-                className="w-full"
-              >
-                Glad you asked 😌 <br />
-                Here are a few things I've built.
-              </Chat>
-              <div className="flex flex-row flex-wrap gap-6">
-                {projects?.filter((project) => !project.hidden || !preview).map((project, index) => {
-                  return (
-                    <div
-                      className="w-full md:w-[calc(50%-12px)] max-w-[444px] relative"
-                      key={project._id}
-                      ref={projectRef}
-                    >
-                      <ProjectShape className="text-template-text-left-bg-color" />
-                      <Chat direction="left" className="rounded-tl-none w-full">
-                        <ProjectCard
-                          project={project}
-                          onDeleteProject={onDeleteProject}
-                          edit={false}
-                          handleRouter={handleRouter}
-                          href={getHref(project._id)}
-                        />
-                      </Chat>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {activeStep >= 5 && reviews && reviews.length > 0 && isSectionVisible('reviews') && (
-            <div id="section-reviews" className="flex flex-col gap-6">
-              <Chat direction="right" delay={400} onComplete={handleStepCompletion}>
-                What do people usually say about working with you?
-              </Chat>
-              <Chat direction="left" delay={300}>
-                Here's what some very kind humans had to say 🫶
-              </Chat>
-              <Chat direction="left" delay={200} onComplete={handleStepCompletion} className="w-full">
-
-                <div className="space-y-4">
-                  {reviews?.map((review) => (
-                    <div key={review?._id} className="border border-tools-card-item-border-color p-5 rounded-2xl">
-                      <Quote />
-                      <div className="mt-4 text-df-base-text-color">
-                        <ClampableTiptapContent
-                          content={review?.description || ""}
-                          mode="review"
-                          enableBulletList={false}
-                          maxLines={3}
-                          itemId={review?._id}
-                          expandedIds={expandedReviewCards}
-                          onToggleExpand={toggleExpandReview}
-                          buttonClassName="mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
-                        />
-                      </div>
-                      <div className="flex items-center gap-3 mt-4">
-                        <Avatar className="w-12 h-12 shrink-0">
-                          <AvatarImage src={review?.avatar?.url || review?.avatar} alt={review?.name} />
-                          <AvatarFallback
-                            style={{
-                              backgroundColor: "#FF9966",
-                              color: "#FFFFFF",
-                              fontWeight: 500,
-                            }}
-                          >
-                            {review?.name
-                              ?.split(" ")
-                              .map((n) => n[0])
-                              .join("")
-                              .slice(0, 2)
-                              .toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
-
-                        <div className="flex-1">
-                          {review.linkedinLink && review.linkedinLink !== "" ? (
-                            <a
-                              href={review.linkedinLink}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex items-center gap-1 text-blue-500"
-                            >
-                              <MemoLinkedin className="text-df-icon-color w-4 h-4" />
-                              <span className="font-semibold cursor-pointer text-base">{review?.name}</span>
-                            </a>
-                          ) : (
-                            <h3 className="font-semibold text-base mb-0">{review?.name}</h3>
-                          )}
-                          <p className="text-sm text-df-description-color">
-                            {review?.role ? `${review.role}, ` : ""}
-                            {review?.company}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </Chat>
-            </div>
-          )}
-
-          {activeStep >= 6 && isSectionVisible('tools') && (
-            <div id="section-tools" className="flex flex-col gap-6">
-              <Chat direction="right" delay={400} onComplete={handleStepCompletion}>
-                What do you actually use to build all this?
-              </Chat>
-              <Chat delay={300} onComplete={handleStepCompletion}>
-                A mix of design, code, and a bit of chaos 😄<br />
-                But mostly:
-              </Chat>
-              <Chat delay={300} onComplete={handleStepCompletion} className="w-full">
-                <div className="flex flex-wrap items-center gap-2 mb-2">
-                  {tools?.map((tool, i) => (
-                    <div
-                      title={tool?.label}
-                      key={i}
-                      className={`cursor-default h-full flex gap-2 justify-between items-center bg-tools-card-item-bg-color text-tools-card-item-text-color border-tools-card-item-border-color  border border-solid rounded-[16px] p-3`}
-                    >
-                      {tool?.image && (
-                        <img
-                          src={tool?.image}
-                          alt={tool?.label}
-                          className="w-[34px] h-[34px] "
-                        />
-                      )}
-                      <Text
-                        size="p-xsmall"
-                        className="text-tools-card-item-text-color"
+          {contentSteps.map((item) => {
+            const step = getStepForContentItem(item);
+            if (item === "projects_chat") {
+              return activeStep >= step && projects && projects?.length > 0 && isSectionVisible("projects") ? (
+                <Chat key={item} direction="right" delay={400} onComplete={handleStepCompletion}>
+                  So… what have you been working on lately?
+                </Chat>
+              ) : null;
+            }
+            if (item === "projects_content") {
+              return activeStep >= step && projects && projects?.length > 0 && isSectionVisible("projects") ? (
+                <div key={item} id="section-projects" className="flex flex-col gap-6">
+                  <Chat
+                    direction="left"
+                    delay={200}
+                    onComplete={handleStepCompletion}
+                    className="w-full"
+                  >
+                    Glad you asked 😌 <br />
+                    Here are a few things I&apos;ve built.
+                  </Chat>
+                  <div className="flex flex-row flex-wrap gap-6">
+                    {projects?.filter((project) => !project.hidden || !preview).map((project) => (
+                      <div
+                        className="w-full md:w-[calc(50%-12px)] max-w-[444px] relative"
+                        key={project._id}
+                        ref={projectRef}
                       >
-                        {tool?.label}
-                      </Text>
-                    </div>
-                  ))}
+                        <ProjectShape className="text-template-text-left-bg-color" />
+                        <Chat direction="left" className="rounded-tl-none w-full">
+                          <ProjectCard
+                            project={project}
+                            onDeleteProject={onDeleteProject}
+                            edit={false}
+                            handleRouter={handleRouter}
+                            href={getHref(project._id)}
+                          />
+                        </Chat>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                This is my toolbox.
-              </Chat>
-              <Chat delay={300} onComplete={handleStepCompletion} className="w-full">
-                I specialize in {getSkills()}
-              </Chat>
-            </div>
-          )}
-
-          {activeStep >= 7 && isSectionVisible('about') && (edit || (userDetails?.about !== null && userDetails?.about !== undefined)) && (
-            <div id="section-about" className="flex flex-col gap-6">
-              <Chat direction="right" delay={400} onComplete={handleStepCompletion}>
-                Tell me a little about yourself?
-              </Chat>
-              <Chat direction="left" delay={200} onComplete={handleStepCompletion} className="w-full">
-                <AboutMeContent
-                  userDetails={userDetails}
-                  edit={false}
-                  variant="pegboard"
-                  textClassName="text-df-base-text-color"
-                />
-              </Chat>
-            </div>
-          )}
-
-          {activeStep >= 8 && experiences && experiences?.length > 0 && isSectionVisible('works') && (
-            <div id="section-works" className="flex flex-col gap-6">
-              <Chat direction="right" delay={400} onComplete={handleStepCompletion}>
-                Where have you worked so far?
-              </Chat>
-              <Chat direction="left" delay={300}>
-                Here's a quick look at my design journey 👇
-              </Chat>
-              <Chat
-                direction="left"
-                className="w-full pb-5"
-                delay={200}
-                onComplete={handleStepCompletion}
-              >
-                <div className="flex flex-col gap-6">
-                  {experiences?.map((experience) => (
-                    <div key={experience?._id}>
-                      <Text size="p-xsmall" className="font-medium">
-                        {experience?.company}
-                      </Text>
-                      <div className="flex">
-                        <ExperienceShape className="w-[54px]" />
-                        <div className="mt-[14px] flex-1">
-                          <Text size="p-small" className="font-semibold">
-                            {experience?.role}
-                          </Text>
-                          <Text
-                            size="p-xsmall"
-                            className="font-medium mt-[6px]"
-                          >
-                            {`${experience?.startMonth} ${experience?.startYear
-                              } - ${experience?.currentlyWorking
-                                ? "Present"
-                                : `${experience?.endMonth} ${experience?.endYear}`
-                              }  `}
-                          </Text>
-                          <div className={`text-[16px] font-light leading-[22.4px] font-inter`}>
+              ) : null;
+            }
+            if (item === "reviews") {
+              return activeStep >= step && reviews && reviews.length > 0 && isSectionVisible("reviews") ? (
+                <div key={item} id="section-reviews" className="flex flex-col gap-6">
+                  <Chat direction="right" delay={400} onComplete={handleStepCompletion}>
+                    What do people usually say about working with you?
+                  </Chat>
+                  <Chat direction="left" delay={300}>
+                    Here&apos;s what some very kind humans had to say 🫶
+                  </Chat>
+                  <Chat direction="left" delay={200} onComplete={handleStepCompletion} className="w-full">
+                    <div className="space-y-4">
+                      {reviews?.map((review) => (
+                        <div key={review?._id} className="border border-tools-card-item-border-color p-5 rounded-2xl">
+                          <Quote />
+                          <div className="mt-4 text-df-base-text-color">
                             <ClampableTiptapContent
-                              content={experience?.description || ""}
-                              mode="work"
-                              enableBulletList={true}
+                              content={review?.description || ""}
+                              mode="review"
+                              enableBulletList={false}
                               maxLines={3}
-                              itemId={experience?._id}
-                              expandedIds={expandedExperienceCards}
-                              onToggleExpand={toggleExpandExperience}
+                              itemId={review?._id}
+                              expandedIds={expandedReviewCards}
+                              onToggleExpand={toggleExpandReview}
                               buttonClassName="mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
                             />
                           </div>
+                          <div className="flex items-center gap-3 mt-4">
+                            <Avatar className="w-12 h-12 shrink-0">
+                              <AvatarImage src={review?.avatar?.url || review?.avatar} alt={review?.name} />
+                              <AvatarFallback
+                                style={{
+                                  backgroundColor: "#FF9966",
+                                  color: "#FFFFFF",
+                                  fontWeight: 500,
+                                }}
+                              >
+                                {review?.name
+                                  ?.split(" ")
+                                  .map((n) => n[0])
+                                  .join("")
+                                  .slice(0, 2)
+                                  .toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1">
+                              {review.linkedinLink && review.linkedinLink !== "" ? (
+                                <a
+                                  href={review.linkedinLink}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="flex items-center gap-1 text-blue-500"
+                                >
+                                  <MemoLinkedin className="text-df-icon-color w-4 h-4" />
+                                  <span className="font-semibold cursor-pointer text-base">{review?.name}</span>
+                                </a>
+                              ) : (
+                                <h3 className="font-semibold text-base mb-0">{review?.name}</h3>
+                              )}
+                              <p className="text-sm text-df-description-color">
+                                {review?.role ? `${review.role}, ` : ""}
+                                {review?.company}
+                              </p>
+                            </div>
+                          </div>
                         </div>
-                      </div>
+                      ))}
                     </div>
-                  ))}
+                  </Chat>
                 </div>
-              </Chat>
-            </div>
-          )}
+              ) : null;
+            }
+            if (item === "tools") {
+              return activeStep >= step && isSectionVisible("tools") ? (
+                <div key={item} id="section-tools" className="flex flex-col gap-6">
+                  <Chat direction="right" delay={400} onComplete={handleStepCompletion}>
+                    What do you actually use to build all this?
+                  </Chat>
+                  <Chat delay={300} onComplete={handleStepCompletion}>
+                    A mix of design, code, and a bit of chaos 😄<br />
+                    But mostly:
+                  </Chat>
+                  <Chat delay={300} onComplete={handleStepCompletion} className="w-full">
+                    <div className="flex flex-wrap items-center gap-2 mb-2">
+                      {tools?.map((tool, i) => (
+                        <div
+                          title={tool?.label}
+                          key={i}
+                          className={`cursor-default h-full flex gap-2 justify-between items-center bg-tools-card-item-bg-color text-tools-card-item-text-color border-tools-card-item-border-color  border border-solid rounded-[16px] p-3`}
+                        >
+                          {tool?.image && (
+                            <img
+                              src={tool?.image}
+                              alt={tool?.label}
+                              className="w-[34px] h-[34px] "
+                            />
+                          )}
+                          <Text
+                            size="p-xsmall"
+                            className="text-tools-card-item-text-color"
+                          >
+                            {tool?.label}
+                          </Text>
+                        </div>
+                      ))}
+                    </div>
+                    This is my toolbox.
+                  </Chat>
+                  <Chat delay={300} onComplete={handleStepCompletion} className="w-full">
+                    I specialize in {getSkills()}
+                  </Chat>
+                </div>
+              ) : null;
+            }
+            if (item === "about") {
+              return activeStep >= step && isSectionVisible("about") && (edit || (userDetails?.about !== null && userDetails?.about !== undefined)) ? (
+                <div key={item} id="section-about" className="flex flex-col gap-6">
+                  <Chat direction="right" delay={400} onComplete={handleStepCompletion}>
+                    Tell me a little about yourself?
+                  </Chat>
+                  <Chat direction="left" delay={200} onComplete={handleStepCompletion} className="w-full">
+                    <AboutMeContent
+                      userDetails={userDetails}
+                      edit={false}
+                      variant="pegboard"
+                      textClassName="text-df-base-text-color"
+                    />
+                  </Chat>
+                </div>
+              ) : null;
+            }
+            if (item === "works") {
+              return activeStep >= step && experiences && experiences?.length > 0 && isSectionVisible("works") ? (
+                <div key={item} id="section-works" className="flex flex-col gap-6">
+                  <Chat direction="right" delay={400} onComplete={handleStepCompletion}>
+                    Where have you worked so far?
+                  </Chat>
+                  <Chat direction="left" delay={300}>
+                    Here&apos;s a quick look at my design journey 👇
+                  </Chat>
+                  <Chat
+                    direction="left"
+                    className="w-full pb-5"
+                    delay={200}
+                    onComplete={handleStepCompletion}
+                  >
+                    <div className="flex flex-col gap-6">
+                      {experiences?.map((experience) => (
+                        <div key={experience?._id}>
+                          <Text size="p-xsmall" className="font-medium">
+                            {experience?.company}
+                          </Text>
+                          <div className="flex">
+                            <ExperienceShape className="w-[54px]" />
+                            <div className="mt-[14px] flex-1">
+                              <Text size="p-small" className="font-semibold">
+                                {experience?.role}
+                              </Text>
+                              <Text
+                                size="p-xsmall"
+                                className="font-medium mt-[6px]"
+                              >
+                                {`${experience?.startMonth} ${experience?.startYear
+                                  } - ${experience?.currentlyWorking
+                                    ? "Present"
+                                    : `${experience?.endMonth} ${experience?.endYear}`
+                                  }  `}
+                              </Text>
+                              <div className={`text-[16px] font-light leading-[22.4px] font-inter`}>
+                                <ClampableTiptapContent
+                                  content={experience?.description || ""}
+                                  mode="work"
+                                  enableBulletList={true}
+                                  maxLines={3}
+                                  itemId={experience?._id}
+                                  expandedIds={expandedExperienceCards}
+                                  onToggleExpand={toggleExpandExperience}
+                                  buttonClassName="mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </Chat>
+                </div>
+              ) : null;
+            }
+            return null;
+          })}
 
           {activeStep >= 9 && portfolioCheck && (
             <>

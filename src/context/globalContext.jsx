@@ -7,7 +7,7 @@ import queryClient from "@/network/queryClient";
 import { useQuery } from "@tanstack/react-query";
 import Cookies from "js-cookie";
 import { useTheme } from "next-themes";
-import { popovers, sidebars } from "@/lib/constant";
+import { popovers, sidebars, DEFAULT_SECTION_ORDER } from "@/lib/constant";
 import { useDebouncedCallback } from "use-debounce";
 import React, {
   createContext,
@@ -193,7 +193,21 @@ export const GlobalProvider = ({ children }) => {
         }
       }
 
-      setUserDetails(userData);
+      // Merge sectionOrder: prefer existing custom order when API returns default (avoids overwriting with stale refetch)
+      const mergedUserData = { ...userData };
+      const incomingOrder = userData?.sectionOrder;
+      const prevOrder = userDetails?.sectionOrder;
+      const defaultStr = JSON.stringify(DEFAULT_SECTION_ORDER);
+      if (incomingOrder && prevOrder) {
+        const incomingStr = JSON.stringify(incomingOrder);
+        const prevStr = JSON.stringify(prevOrder);
+        if (incomingStr === defaultStr && prevStr !== defaultStr) {
+          mergedUserData.sectionOrder = prevOrder;
+        }
+      } else if (!incomingOrder && prevOrder) {
+        mergedUserData.sectionOrder = prevOrder;
+      }
+      setUserDetails(mergedUserData);
       setIsUserDetailsFromCache(true);
       setCheckList((prevList) => {
         const newList = prevList.map((item) => {

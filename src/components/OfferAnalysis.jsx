@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import OfferForm from "./OfferForm";
-import { analyzeOffer } from "@/lib/gemini";
 import { toast } from "react-toastify";
 import AnalysisReport from "./AnalysisReport";
 
@@ -9,34 +8,35 @@ export default function OfferAnalysis() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   const handleRateLimitError = () => {
-    console.log("Rate limit exceeded - showing API key input");
     toast.error("Rate limit reached.");
     setAnalysis(
       "⚠️ Rate Limit Reached\n\n" +
-      "The demo API key has reached its limit. To continue:\n\n" +
-      "1. Get your free API key from https://makersuite.google.com/app/apikey\n" +
-      "2. Enter it in the field above\n\n" +
-      "Your key will be saved locally for future use."
+      "Please try again in a few moments."
     );
   };
 
   const handleRestart = () => {
-    console.log("Restarting analysis flow");
     setAnalysis("");
   };
 
   const handleSubmit = async (data) => {
-    console.log("Form submitted with data:", data);
     setIsAnalyzing(true);
 
     try {
-      console.log("Starting analysis with data:", data);
-      const result = await analyzeOffer(data);
-      setAnalysis(result);
+      const res = await fetch("/api/analyze-offer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const result = await res.json();
+      if (!res.ok) {
+        throw new Error(result.message || "Failed to analyze offer");
+      }
+      setAnalysis(result.analysis);
     } catch (error) {
       console.error("Analysis error:", error);
 
-      if (error?.status === 429 || error?.message?.includes("429")) {
+      if (error?.message?.includes("Rate limit")) {
         handleRateLimitError();
       } else if (error?.message?.includes("network")) {
         toast.error("Please check your internet connection and try again.");
@@ -57,11 +57,9 @@ export default function OfferAnalysis() {
   };
 
   return (
-    <div className="w-full max-w-[848px] mx-auto">
+    <div className="w-full">
       {!analysis ? (
-        <div className="w-full  mx-auto p-6 bg-white backdrop-blur-sm shadow-tools border border-[#E5E7EB] rounded-2xl">
-          <OfferForm onSubmit={handleSubmit} isAnalyzing={isAnalyzing} />
-        </div>
+        <OfferForm onSubmit={handleSubmit} isAnalyzing={isAnalyzing} />
       ) : (
         <AnalysisReport analysis={analysis} onRestart={handleRestart} />
       )}

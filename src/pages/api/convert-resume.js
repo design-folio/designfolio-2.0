@@ -1,47 +1,8 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { checkRateLimit } from "@/lib/api-rate-limit";
 
 // Allow up to 60s for Gemini to respond (avoids 504 Gateway Timeout on serverless)
 export const config = { maxDuration: 90 };
-
-// Rate limit: same as gemini.js (3 attempts per 40s), but server-side per IP
-const RATE_LIMIT_MAX_ATTEMPTS = 3;
-const RATE_LIMIT_COOLDOWN_MS = 40000; // 40 seconds
-const rateLimitMap = new Map(); // ip -> { attempts, timestamp }
-
-function getClientIp(req) {
-  const forwarded = req.headers["x-forwarded-for"];
-  if (forwarded) {
-    const first = forwarded.split(",")[0].trim();
-    if (first) return first;
-  }
-  return req.socket?.remoteAddress ?? "unknown";
-}
-
-function checkRateLimit(ip) {
-  const now = Date.now();
-  const entry = rateLimitMap.get(ip);
-
-  if (!entry) {
-    rateLimitMap.set(ip, { attempts: 1, timestamp: now });
-    return { allowed: true };
-  }
-
-  const { attempts, timestamp } = entry;
-  const elapsed = now - timestamp;
-
-  if (elapsed > RATE_LIMIT_COOLDOWN_MS) {
-    rateLimitMap.set(ip, { attempts: 1, timestamp: now });
-    return { allowed: true };
-  }
-
-  if (attempts >= RATE_LIMIT_MAX_ATTEMPTS) {
-    const remainingSec = Math.ceil((RATE_LIMIT_COOLDOWN_MS - elapsed) / 1000);
-    return { allowed: false, remainingSec };
-  }
-
-  entry.attempts += 1;
-  return { allowed: true };
-}
 
 const PERSONA_LABELS = [
   "Product Designers",
@@ -142,7 +103,7 @@ const GEMINI_MODEL = "gemini-2.5-flash";
 
 async function getAiCompletion(prompt) {
   const apiKey =
-    process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+    process.env.GEMINI_API_KEY;
   if (!apiKey) {
     throw new Error("GEMINI_API_KEY is not configured");
   }
@@ -163,16 +124,15 @@ export default async function handler(req, res) {
   }
 
   // Fail fast if Gemini API key is missing (avoids FUNCTION_INVOCATION_FAILED)
-  const apiKey = process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey || apiKey.trim() === "") {
-    console.error("convert-resume: GEMINI_API_KEY (or NEXT_PUBLIC_GEMINI_API_KEY) is not set");
+    console.error("convert-resume: GEMINI_API_KEY is not set");
     return res.status(503).json({
       message: "Resume conversion is not configured. Please set GEMINI_API_KEY in your environment.",
     });
   }
 
-  const ip = getClientIp(req);
-  const rateLimit = checkRateLimit(ip);
+  const rateLimit = checkRateLimit(req, "convert-resume");
   if (!rateLimit.allowed) {
     return res.status(429).json({
       message: `Rate limit reached. Please try again in ${rateLimit.remainingSec} seconds.`,

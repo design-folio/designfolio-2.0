@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Text from "./text";
-import Button from "./button";
 import ProgressBar from "./ProgressBar";
 
 const MAX_CHAR_LIMIT = 500;
@@ -116,39 +114,24 @@ export default function QuestionDisplay({
   const remainingChars = MAX_CHAR_LIMIT - userAnswer.length;
 
   return (
-    <div className="container mx-auto max-w-2xl">
-      <div className="text-center mb-12" id="initial-title">
-        <Text
-          size="p-large"
-          className="text-center text-[#202937] font-satoshi"
-        >
-          Practice Mock Interview
-        </Text>
-        <Text
-          size="p-small"
-          className="text-center text-[#475569] font-medium mt-4"
-        >
-          Ace your next opportunity{" "}
-        </Text>
-      </div>
-      <div className="bg-white shadow-tools border border-[#E5E7EB] rounded-2xl p-6">
+    <div className="w-full space-y-4">
+      <div className="space-y-4">
         <div className="flex justify-between items-center">
-          <Text size="p-small" className=" text-[#20294C] font-semibold">
+          <span className="text-sm font-semibold text-foreground">
             Q. {questionNumber} of {totalQuestions}
-          </Text>
-
-          <Button
-            text={
-              questionNumber === totalQuestions
-                ? isGeneratingFeedback
-                  ? "Generating Report..."
-                  : "Finish Interview"
-                : "Next Question"
-            }
-            isLoading={isGeneratingFeedback}
+          </span>
+          <button
+            type="button"
+            disabled={isGeneratingFeedback}
             onClick={onNext}
-            isDisabled={isGeneratingFeedback}
-          />
+            className="rounded-full h-11 px-6 text-base font-semibold bg-foreground text-background hover:bg-foreground/90 disabled:opacity-50 transition-colors"
+          >
+            {questionNumber === totalQuestions
+              ? isGeneratingFeedback
+                ? "Generating Report..."
+                : "Finish Interview"
+              : "Next Question"}
+          </button>
         </div>
         <div className="flex gap-2 mt-4">
           <ProgressBar progress={100} />
@@ -157,31 +140,23 @@ export default function QuestionDisplay({
           <ProgressBar progress={questionNumber >= 4 && 100} />
           <ProgressBar progress={questionNumber >= 5 && 100} />
         </div>
-        <div className="mt-7">
-          <Text size="p-xsmall" className=" text-[#20294C] font-bold">
+        <div className="mt-6 space-y-2">
+          <p className="text-sm font-semibold text-foreground">
             {currentQuestion || "Loading question..."}
-          </Text>
-          <textarea
-            className={`text-input mt-5  min-h-[200px] border-b`}
-            maxLength={MAX_CHAR_LIMIT}
-            placeholder="Type your answer here..."
-            value={userAnswer}
-            onChange={handleAnswerChange}
-          />
+          </p>
+          <div className="bg-white dark:bg-white border-2 border-border rounded-2xl hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] transition-all duration-300 ease-out overflow-hidden">
+            <textarea
+              className="border-0 bg-transparent min-h-[200px] px-4 py-3 w-full focus:outline-none text-base text-foreground placeholder:text-muted-foreground/60 resize-none"
+              maxLength={MAX_CHAR_LIMIT}
+              placeholder="Type your answer here..."
+              value={userAnswer}
+              onChange={handleAnswerChange}
+            />
+          </div>
         </div>
-        <div className="flex items-center justify-between mt-3">
-          <Text
-            size="p-xxsmall"
-            className=" text-[#20294C] font-semibold text-[12px]"
-          >
-            Characters remaining: {remainingChars}
-          </Text>
-          <Text
-            size="p-xxsmall"
-            className=" text-[#20294C] font-semibold text-[12px]"
-          >
-            💡 Tip: {tip}
-          </Text>
+        <div className="flex items-center justify-between mt-3 text-xs text-muted-foreground font-medium">
+          <span>Characters remaining: {remainingChars}</span>
+          <span>💡 Tip: {tip}</span>
         </div>
       </div>
     </div>

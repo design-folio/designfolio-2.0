@@ -5,18 +5,7 @@ import NestedList from "@editorjs/nested-list";
 import Table from "@editorjs/table";
 import EditorJS from "@editorjs/editorjs";
 import Undo from "editorjs-undo";
-import Text from "./text";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import Button from "./button";
 import { scrapeMedium } from "@/network/post-request";
-
-const validationSchema = Yup.object().shape({
-  medium: Yup.string()
-    .required()
-    .url("Invalid URL")
-    .matches(/(medium.com)/, "Invalid Medium link"),
-});
 
 export default function AnalyzeEditor() {
   const editorContainer = useRef(null);
@@ -124,10 +113,10 @@ export default function AnalyzeEditor() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-full">
+    <div className="flex flex-col items-stretch w-full h-full">
       <div
-        className="project-editor bg-df-section-card-bg-color rounded-[24px] p-[16px] md:p-[32px] w-full flex-1 overflow-hidden"
-        style={{ maxHeight: "calc(100vh - 122px)" }}
+        className="project-editor bg-white border-2 border-border rounded-2xl py-4 md:py-6 w-full hover:border-foreground/20 focus-within:border-foreground/30 transition-all duration-300"
+        style={{ minHeight: "280px" }}
       >
         <div
           ref={editorContainer}
@@ -221,11 +210,13 @@ export default function AnalyzeEditor() {
         )} */}
         </div>
       </div>
-      <Button
-        text={"Analyze"}
-        customClass="w-full mt-4"
-        onClick={handleAnalyze}
-      />
+      <button
+        type="button"
+        onClick={() => handleAnalyze(editor.current)}
+        className="w-full mt-4 bg-foreground text-background hover:bg-foreground/90 focus-visible:outline-none border-0 rounded-full h-11 px-6 text-base font-semibold transition-colors"
+      >
+        Analyze
+      </button>
     </div>
   );
 }

@@ -2,10 +2,6 @@ import React, { useRef, useState } from "react";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import Button from "./button";
-import {
-  generateInterviewQuestions,
-  handleFeedbackGeneration,
-} from "@/lib/gemini";
 import { toast } from "react-toastify";
 import QuestionDisplay from "./QuestionDisplay";
 import DetailedFeedback from "./DetailedFeedback";
@@ -52,12 +48,16 @@ export default function MockInterviewTool() {
   const initializeQuestions = async () => {
     try {
       setIsLoading(true);
-      const generatedQuestions = await generateInterviewQuestions(
-        jobDescription,
-        role,
-        difficulty
-      );
-      setQuestions(generatedQuestions);
+      const res = await fetch("/api/interview-questions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jobDescription, role, difficulty }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to generate questions");
+      }
+      setQuestions(data.questions);
       setIsInterviewStarted(true);
     } catch (error) {
       console.error("Error generating questions:", error);
@@ -79,12 +79,20 @@ export default function MockInterviewTool() {
     if (currentQuestionIndex === questions.length - 1) {
       try {
         setIsGeneratingFeedback(true);
-        const feedbackResult = await handleFeedbackGeneration(
-          role,
-          questions,
-          newUserAnswers
-        );
-        setFeedback(feedbackResult);
+        const res = await fetch("/api/interview-feedback", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            role,
+            questions,
+            userAnswers: newUserAnswers,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.message || "Failed to generate feedback");
+        }
+        setFeedback(data.feedback);
         setIsFinished(true);
       } catch (error) {
         console.error("Error generating feedback:", error);

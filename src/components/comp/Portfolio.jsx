@@ -225,7 +225,11 @@ const Portfolio = ({ userDetails, edit }) => {
         <motion.div
             ref={cardRef}
             variants={item}
-            onClick={() => handleNavigation(project?._id)}
+            onClick={() => {
+              setCursorPill(false);
+              handleNavigation(project?._id);
+            }}
+            onMouseDown={() => setCursorPill(false)}
             onMouseMove={handleMouseMove}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => {

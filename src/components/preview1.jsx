@@ -36,6 +36,7 @@ export default function Preview1({ userDetails, projectRef, embeddedPreview = fa
           userDetails={userDetails}
           projectRef={projectRef}
           preview
+          embeddedPreview={embeddedPreview}
         />
       </motion.div>
     ),

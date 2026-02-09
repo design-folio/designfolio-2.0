@@ -57,11 +57,9 @@ export default function OfferAnalysis() {
   };
 
   return (
-    <div className="w-full max-w-[848px] mx-auto">
+    <div className="w-full">
       {!analysis ? (
-        <div className="w-full  mx-auto p-6 bg-white backdrop-blur-sm shadow-tools border border-[#E5E7EB] rounded-2xl">
-          <OfferForm onSubmit={handleSubmit} isAnalyzing={isAnalyzing} />
-        </div>
+        <OfferForm onSubmit={handleSubmit} isAnalyzing={isAnalyzing} />
       ) : (
         <AnalysisReport analysis={analysis} onRestart={handleRestart} />
       )}

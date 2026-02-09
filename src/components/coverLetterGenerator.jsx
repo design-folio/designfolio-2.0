@@ -1,11 +1,9 @@
 import { useState } from "react";
-import Text from "./text";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { toast } from "react-toastify";
 import ResumeUploader from "./resumeUploader";
-import Button from "./button";
 import AnalysisResult from "./analysisResult";
 import { Download, RefreshCcw } from "lucide-react";
 import { exportToPdf } from "./PdfExporter";
@@ -24,7 +22,7 @@ const validationSchema = Yup.object().shape({
     .min(50, "Job description should be at least 50 characters"),
 });
 
-export default function CoverLetterGenerator() {
+export default function CoverLetterGenerator({ onViewChange }) {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysis, setAnalysis] = useState(null);
 
@@ -140,6 +138,7 @@ export default function CoverLetterGenerator() {
         const cleanedText = text.replace(/```json\n?|\n?```/g, "").trim();
         const parsedAnalysis = JSON.parse(cleanedText);
         setAnalysis(parsedAnalysis);
+        onViewChange?.(true);
         toast.success("Analysis complete");
         // navigate("/results", { state: { analysis: parsedAnalysis } });
       } catch (parseError) {
@@ -174,36 +173,27 @@ export default function CoverLetterGenerator() {
 
   if (analysis) {
     return (
-      <div className="container mx-auto">
-        <div className="text-center mb-12" id="initial-title">
-          <Text
-            size="p-large"
-            className="text-center text-[#202937] font-satoshi"
+      <div className="w-full space-y-8">
+        <div className="flex justify-between flex-wrap gap-4">
+          <button
+            onClick={() => {
+              setAnalysis(null);
+              onViewChange?.(false);
+            }}
+            className="rounded-full border-2 border-foreground/20 bg-white/50 backdrop-blur-sm px-4 py-2 text-sm font-medium text-foreground hover:bg-foreground/10 transition-colors flex items-center gap-2"
           >
-            Analysis Results
-          </Text>
+            <RefreshCcw className="h-4 w-4 text-foreground/60" />
+            Start New Analysis
+          </button>
+          <button
+            onClick={() => exportToPdf("pdf-content")}
+            className="rounded-full border-2 border-foreground/20 bg-white/50 backdrop-blur-sm px-4 py-2 text-sm font-medium text-foreground hover:bg-foreground/10 transition-colors flex items-center gap-2"
+          >
+            <Download className="h-4 w-4 text-foreground/60" />
+            Download Report (PDF)
+          </button>
         </div>
-        <div
-          id="pdf-content"
-          className="space-y-8 bg-white shadow-tools border border-[#E5E7EB] rounded-3xl p-6"
-        >
-          {" "}
-          <div className="flex justify-end gap-4 mb-8">
-            <button
-              onClick={() => exportToPdf("pdf-content")}
-              className="flex items-center gap-2"
-            >
-              <Download className="h-4 w-4" />
-              Export PDF
-            </button>
-            <button
-              onClick={() => setAnalysis(null)}
-              className="flex items-center gap-2"
-            >
-              <RefreshCcw className="h-4 w-4" />
-              New Analysis
-            </button>
-          </div>
+        <div id="pdf-content" className="space-y-8">
           <AnalysisResult analysis={analysis} />
         </div>
       </div>
@@ -211,71 +201,44 @@ export default function CoverLetterGenerator() {
   }
 
   return (
-    <div className="container mx-auto max-w-3xl">
-      <div className="text-center mb-12" id="initial-title">
-        <Text
-          size="p-large"
-          className="text-center text-[#202937] font-satoshi"
-        >
-          Turn Good Resumes Into Great Ones
-        </Text>
-        <Text
-          size="p-small"
-          className="text-center text-[#475569] font-medium mt-4"
-        >
-          See how your resume stacks up against the Job Description.{" "}
-        </Text>
-      </div>
-      <div className="bg-white shadow-tools border border-[#E5E7EB] rounded-3xl p-6">
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={handleSubmit}
-        >
-          {({ errors, touched, setFieldValue, values }) => (
-            <Form id="EmailForm">
-              <Text size={"p-xxsmall"} className="font-medium mb-2" required>
-                Upload Resume (PDF Only)
-              </Text>
+    <div className="w-full space-y-4">
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+      >
+        {({ errors, touched, setFieldValue }) => (
+          <Form id="EmailForm" className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-foreground ml-1">Upload Resume (PDF Only)<span className="text-[#FF553E] ml-0.5">*</span></label>
               <ResumeUploader
                 onUpload={(text) => handleResumeUpload(text, setFieldValue)}
               />
-              <ErrorMessage
-                name="resumeText"
-                component="div"
-                className="error-message text-[14px]"
-              />
-              <Text size={"p-xxsmall"} className="font-medium mt-4" required>
-                Paste the Job Description
-              </Text>
-              <Field
-                placeholder="Paste the job description here..."
-                name="jobDescription"
-                as="textarea"
-                className={`text-input mt-2  min-h-[180px] border-b ${
-                  errors.jobDescription &&
-                  touched.jobDescription &&
-                  "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                }`}
-                autoComplete="off"
-              />
-              <ErrorMessage
-                name="jobDescription"
-                component="div"
-                className="error-message text-[14px]"
-              />
-
-              <Button
-                btnType="submit"
-                text={isAnalyzing ? "Analyzing..." : "Perfect my Resume"}
-                form="EmailForm"
-                customClass="mt-4 w-full"
-                isLoading={isAnalyzing}
-              />
-            </Form>
-          )}
-        </Formik>
-      </div>
+              <ErrorMessage name="resumeText" component="p" className="text-sm text-red-500 ml-1" />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-foreground ml-1">Paste the Job Description<span className="text-[#FF553E] ml-0.5">*</span></label>
+              <div className={`bg-white dark:bg-white border-2 border-border rounded-2xl hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] transition-all duration-300 ease-out overflow-hidden ${errors.jobDescription && touched.jobDescription ? "border-red-500" : ""}`}>
+                <Field
+                  placeholder="Paste the job description here..."
+                  name="jobDescription"
+                  as="textarea"
+                  className="border-0 bg-transparent min-h-[100px] px-4 py-3 focus-visible:ring-0 focus-visible:ring-offset-0 text-base text-foreground placeholder:text-muted-foreground/60 resize-none w-full"
+                  autoComplete="off"
+                />
+              </div>
+              <ErrorMessage name="jobDescription" component="p" className="text-sm text-red-500 ml-1" />
+            </div>
+            <button
+              type="submit"
+              disabled={isAnalyzing}
+              className="w-full bg-foreground text-background hover:bg-foreground/90 focus-visible:outline-none border-0 rounded-full h-11 px-6 text-base font-semibold transition-colors disabled:opacity-50"
+            >
+              {isAnalyzing ? "Analyzing..." : "Analyze Resume"}
+            </button>
+          </Form>
+        )}
+      </Formik>
     </div>
   );
 }

@@ -1,5 +1,4 @@
 import React, { useRef, useState } from "react";
-import Text from "./text";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import Button from "./button";
@@ -106,8 +105,8 @@ export default function MockInterviewTool() {
     } catch (error) {
       console.error("Feedback parse error:", error);
       return (
-        <div className="max-w-3xl mx-auto p-4">
-          <div className="p-6 bg-red-50 rounded-lg">
+        <div className="max-w-lg mx-auto p-4">
+          <div className="p-6 bg-red-50 rounded-2xl border-2 border-red-200">
             <h2 className="text-2xl font-bold mb-4 text-red-700">
               Error Processing Feedback
             </h2>
@@ -116,7 +115,7 @@ export default function MockInterviewTool() {
               again.
             </p>
             <button
-              className="mt-6 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+              className="mt-6 px-6 py-3 bg-foreground text-background rounded-full font-semibold hover:bg-foreground/90"
               onClick={() => window.location.reload()}
             >
               Start New Interview
@@ -142,23 +141,8 @@ export default function MockInterviewTool() {
   }
 
   return (
-    <div className="container mx-auto max-w-2xl">
-      <div className="text-center mb-12" id="initial-title">
-        <Text
-          size="p-large"
-          className="text-center text-[#202937] font-satoshi"
-        >
-          Practice Mock Interview
-        </Text>
-        <Text
-          size="p-small"
-          className="text-center text-[#475569] font-medium mt-4"
-        >
-          Ace your next opportunity
-        </Text>
-      </div>
-      <div className="bg-white shadow-tools border border-[#E5E7EB] rounded-2xl p-6">
-        <Formik
+    <div className="w-full space-y-4">
+      <Formik
           initialValues={{
             role: "",
             difficulty: "",
@@ -173,114 +157,74 @@ export default function MockInterviewTool() {
           innerRef={formikRef}
         >
           {({ errors, touched, values }) => (
-            <Form id="InterviewForm">
-              <>
-                <Text size={"p-xxsmall"} className="font-medium" required>
-                  Role you're applying for
-                </Text>
-                <Field
-                  name="role"
-                  type="text"
-                  placeholder="e.g. Senior Product Designer"
-                  className={`text-input mt-2  ${
-                    errors.role &&
-                    touched.role &&
-                    "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                  }`}
-                  autoComplete="off"
-                />
-                <ErrorMessage
-                  name="role"
-                  component="div"
-                  className="error-message"
-                />
-              </>
-              <>
-                <Text size={"p-xxsmall"} className="font-medium mt-4" required>
-                  Experience Level
-                </Text>
-                <Field
-                  as="select"
-                  name="difficulty"
-                  className={`text-input !w-full text-[14px]  font-inter !font-[500] custom-select mt-2  ${
-                    errors.difficulty &&
-                    touched.difficulty &&
-                    "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                  } ${values.difficulty == "" && "!text-[#7A829D]"}`}
-                >
-                  <option value="" className="text-[#7A829D]">
-                    Select level
-                  </option>
-                  {difficultyLevels.map((level, i) => (
-                    <option value={level.value} key={i}>
-                      {level.label}
-                    </option>
-                  ))}
-                </Field>
-                <ErrorMessage
-                  name="difficulty"
-                  component="div"
-                  className="error-message"
-                />
-              </>
-              <>
-                <Text size={"p-xxsmall"} className="font-medium mt-4" required>
-                  Interview Round
-                </Text>
-                <Field
-                  name="round"
-                  type="text"
-                  placeholder="e.g. Design Challenge, Portfolio Review"
-                  className={`text-input mt-2  ${
-                    errors.round &&
-                    touched.round &&
-                    "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                  }`}
-                  autoComplete="off"
-                />
-                <ErrorMessage
-                  name="round"
-                  component="div"
-                  className="error-message"
-                />
-              </>
-              <>
-                <Text size={"p-xxsmall"} className="font-medium mt-4" required>
-                  Paste Job Description
-                </Text>
-                <Field
-                  name="jobDescription"
-                  as="textarea"
-                  type="text"
-                  placeholder="Copy and paste the JD from Linkedin, WellFound or any job platform"
-                  className={`text-input mt-2 min-h-[200px] ${
-                    errors.jobDescription &&
-                    touched.jobDescription &&
-                    "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                  }`}
-                  autoComplete="off"
-                />
-                <ErrorMessage
-                  name="jobDescription"
-                  component="div"
-                  className="error-message"
-                />
-              </>
-              <Button
-                btnType="submit"
-                text={
-                  isLoading
-                    ? "Preparing your interview question..."
-                    : "Start Mock Interview"
-                }
-                form="InterviewForm"
-                customClass="mt-4 w-full"
-                isLoading={isLoading}
-              />
+            <Form id="InterviewForm" className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground ml-1">Role you're applying for<span className="text-[#FF553E] ml-0.5">*</span></label>
+                <div className={`bg-white dark:bg-white border-2 border-border rounded-full hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] transition-all duration-300 ease-out overflow-hidden ${errors.role && touched.role ? "border-red-500" : ""}`}>
+                  <Field
+                    name="role"
+                    type="text"
+                    placeholder="e.g. Senior Product Designer"
+                    className="border-0 bg-transparent h-11 px-4 focus-visible:ring-0 focus-visible:ring-offset-0 text-base text-foreground placeholder:text-muted-foreground/60 w-full"
+                    autoComplete="off"
+                  />
+                </div>
+                <ErrorMessage name="role" component="p" className="text-sm text-red-500 ml-1" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground ml-1">Experience Level<span className="text-[#FF553E] ml-0.5">*</span></label>
+                <div className={`bg-white dark:bg-white border-2 border-border rounded-full hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] transition-all duration-300 ease-out overflow-hidden ${errors.difficulty && touched.difficulty ? "border-red-500" : ""}`}>
+                  <Field
+                    as="select"
+                    name="difficulty"
+                    className="border-0 bg-transparent h-11 px-4 focus:outline-none text-base text-foreground w-full appearance-none cursor-pointer"
+                  >
+                    <option value="" className="text-muted-foreground">Select level</option>
+                    {difficultyLevels.map((level, i) => (
+                      <option value={level.value} key={i}>
+                        {level.label}
+                      </option>
+                    ))}
+                  </Field>
+                </div>
+                <ErrorMessage name="difficulty" component="p" className="text-sm text-red-500 ml-1" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground ml-1">Interview Round<span className="text-[#FF553E] ml-0.5">*</span></label>
+                <div className={`bg-white dark:bg-white border-2 border-border rounded-full hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] transition-all duration-300 ease-out overflow-hidden ${errors.round && touched.round ? "border-red-500" : ""}`}>
+                  <Field
+                    name="round"
+                    type="text"
+                    placeholder="e.g. Design Challenge, Portfolio Review"
+                    className="border-0 bg-transparent h-11 px-4 focus-visible:ring-0 focus-visible:ring-offset-0 text-base text-foreground placeholder:text-muted-foreground/60 w-full"
+                    autoComplete="off"
+                  />
+                </div>
+                <ErrorMessage name="round" component="p" className="text-sm text-red-500 ml-1" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground ml-1">Paste Job Description<span className="text-[#FF553E] ml-0.5">*</span></label>
+                <div className={`bg-white dark:bg-white border-2 border-border rounded-2xl hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] transition-all duration-300 ease-out overflow-hidden ${errors.jobDescription && touched.jobDescription ? "border-red-500" : ""}`}>
+                  <Field
+                    name="jobDescription"
+                    as="textarea"
+                    placeholder="Copy and paste the JD from Linkedin, WellFound or any job platform"
+                    className="border-0 bg-transparent min-h-[100px] px-4 py-3 focus-visible:ring-0 focus-visible:ring-offset-0 text-base text-foreground placeholder:text-muted-foreground/60 resize-none w-full"
+                    autoComplete="off"
+                  />
+                </div>
+                <ErrorMessage name="jobDescription" component="p" className="text-sm text-red-500 ml-1" />
+              </div>
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full bg-foreground text-background hover:bg-foreground/90 focus-visible:outline-none border-0 rounded-full h-11 px-6 text-base font-semibold transition-colors disabled:opacity-50"
+              >
+                {isLoading ? "Preparing your interview question..." : "Start Mock Interview"}
+              </button>
             </Form>
           )}
         </Formik>
-      </div>
     </div>
   );
 }

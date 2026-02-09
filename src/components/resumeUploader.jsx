@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import * as pdfjsLib from "pdfjs-dist";
 import { getDocument } from "pdfjs-dist";
 import { toast } from "react-toastify";
-import workerSrc from "pdfjs-dist/build/pdf.worker.mjs";
+import { FileText, Upload } from "lucide-react";
 
 // Setting the worker source for pdf.js
 if (typeof window !== "undefined") {
@@ -96,65 +96,37 @@ const ResumeUploader = ({ onUpload }) => {
         id="resume-upload"
       />
       <div
-        className={`w-full min-h-[200px] border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer transition-colors ${
-          isDragging ? "border-primary bg-primary/5" : "border-gray-300"
-        } ${
+        className={`p-6 rounded-2xl border-2 border-dashed transition-all duration-300 group cursor-pointer ${
           fileName
-            ? "bg-green-50 border-green-500"
-            : "hover:border-primary hover:bg-primary/5"
-        }`}
+            ? "border-[#FF553E]/20 bg-[#FF553E]/[0.02]"
+            : "border-border/40 bg-white/50 hover:border-[#FF553E]/20 hover:bg-[#FF553E]/[0.01]"
+        } ${isDragging ? "border-[#FF553E] bg-[#FF553E]/[0.02]" : ""}`}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onClick={() => document.getElementById("resume-upload")?.click()}
       >
-        {fileName ? (
-          <div className="text-center space-y-2">
-            <div className="flex items-center justify-center text-green-600">
-              <svg
-                className="w-6 h-6 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-              <span className="font-medium">File uploaded successfully</span>
-            </div>
-            <p className="text-sm text-gray-600">{fileName}</p>
+        <div className="flex items-center gap-4">
+          <div
+            className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
+              fileName ? "bg-[#FF553E]/10" : "bg-muted/30 group-hover:bg-[#FF553E]/10"
+            }`}
+          >
+            {fileName ? (
+              <FileText className="w-5 h-5 text-[#FF553E]" />
+            ) : (
+              <Upload className="w-5 h-5 text-foreground/30 group-hover:text-[#FF553E] transition-colors" />
+            )}
           </div>
-        ) : (
-          <div className="text-center space-y-2">
-            <div className="flex items-center justify-center text-gray-400">
-              <svg
-                className="w-12 h-12 mb-3"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                />
-              </svg>
-            </div>
-            <div className="space-y-1">
-              <p className="text-base font-medium text-gray-700">
-                Click to upload or drag and drop
-              </p>
-              <p className="text-sm text-gray-500">PDF Only</p>
-            </div>
+          <div className="flex-1 text-left">
+            <h4 className="text-sm font-semibold text-foreground">
+              {fileName ? fileName : "Upload Resume"}
+            </h4>
+            <p className="text-[11px] text-foreground/40 font-medium">
+              {fileName ? "PDF uploaded • Click to replace" : "PDF Only • Max 5MB"}
+            </p>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

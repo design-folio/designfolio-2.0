@@ -238,7 +238,11 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
       >
         <motion.div
             onMouseMove={handleMouseMove}
-            onClick={() => handleNavigation(project?._id)}
+            onClick={() => {
+              setCursorPill(false);
+              handleNavigation(project?._id);
+            }}
+            onMouseDown={() => setCursorPill(false)}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => {
               setIsHovered(false);

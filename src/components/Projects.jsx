@@ -24,7 +24,7 @@ import { twMerge } from "tailwind-merge";
 import { useRouter } from "next/router";
 import ProjectLock from "./projectLock";
 
-const SortableItem = ({ project, onDeleteProject, edit, preview = false, recentlyMovedIds, onToggleVisibility }) => {
+const SortableItem = ({ project, onDeleteProject, edit, preview = false, embeddedPreview = false, recentlyMovedIds, onToggleVisibility }) => {
   const router = useRouter();
   const {
     attributes,
@@ -67,6 +67,7 @@ const SortableItem = ({ project, onDeleteProject, edit, preview = false, recentl
         onDeleteProject={onDeleteProject}
         edit={edit}
         preview={preview}
+        embeddedPreview={embeddedPreview}
         handleRouter={handleRouter}
         href={getHref(project._id)}
         dragHandleListeners={listeners}
@@ -87,6 +88,7 @@ export default function Projects({
   setSelectedProject,
   openModal,
   preview,
+  embeddedPreview = false,
 }) {
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -192,6 +194,7 @@ export default function Projects({
                   onDeleteProject={onDeleteProject}
                   edit={edit}
                   preview={preview}
+                  embeddedPreview={embeddedPreview}
                   recentlyMovedIds={recentlyMovedIds}
                   onToggleVisibility={handleToggleVisibility}
                 />

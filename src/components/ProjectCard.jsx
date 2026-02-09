@@ -31,6 +31,7 @@ export default function ProjectCard({
   onDeleteProject,
   edit = false,
   preview = false,
+  embeddedPreview = false,
   handleRouter,
   href,
   dragHandleListeners,
@@ -44,6 +45,7 @@ export default function ProjectCard({
   const [isHoveringInteractive, setIsHoveringInteractive] = useState(false);
 
   const handleLinkClick = (e) => {
+    setCursorPill(false);
     // Always prevent Link navigation when dragging, recently moved, or clicking drag handle
     const isDragHandle = !!e.target.closest('[data-drag-handle]');
     const isButton = e.target.closest('button');
@@ -59,6 +61,10 @@ export default function ProjectCard({
       e.preventDefault();
       e.stopPropagation();
     }
+  };
+
+  const handleCardMouseDown = () => {
+    setCursorPill(false);
   };
 
   const shouldBlockNavigation = isDragging || wasRecentlyMoved;
@@ -77,6 +83,7 @@ export default function ProjectCard({
           setIsHovered(false);
           setIsHoveringInteractive(false);
         }}
+        onMouseDown={handleCardMouseDown}
       >
       <motion.div
         className={customTwMerge(
@@ -98,7 +105,7 @@ export default function ProjectCard({
         }}
       >
         <div className="h-full flex flex-col min-h-full">
-          {preview ? (
+          {preview && embeddedPreview ? (
             <div
               className="w-full h-48 flex items-center justify-center relative overflow-hidden rounded-t-[15px]"
               style={{
@@ -111,6 +118,24 @@ export default function ProjectCard({
                 alt={project?.title || 'Project'}
                 className="w-24 h-24 object-contain opacity-20 transition-transform duration-500 group-hover:scale-110"
               />
+            </div>
+          ) : preview ? (
+            <div className="h-[253.072px] relative overflow-hidden rounded-t-[15px]">
+              <motion.img
+                src={project?.thumbnail?.url}
+                alt="project image"
+                className={`w-full h-full object-cover transition-opacity duration-100 ${shouldShowTooltip ? '' : 'cursor-pointer'} ${imageLoaded ? "opacity-100" : "opacity-100"
+                  }`}
+                initial="initial"
+                whileHover="hover"
+                variants={imageVariants}
+                loading="lazy"
+                fetchpriority="high"
+                decoding="async"
+                onLoad={() => setImageLoaded(true)}
+                onError={() => setImageLoaded(true)}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/[0.02] to-transparent pointer-events-none" />
             </div>
           ) : (
             <div className="h-[253.072px] relative overflow-hidden rounded-t-[15px]">
@@ -239,6 +264,7 @@ export default function ProjectCard({
       <div
         className="w-full h-full"
         onClick={(e) => {
+          setCursorPill(false);
           // Allow buttons and drag handle to work
           const isButton = e.target.closest('button');
           const isDragHandle = !!e.target.closest('[data-drag-handle]');
@@ -248,6 +274,7 @@ export default function ProjectCard({
           }
         }}
         onMouseDown={(e) => {
+          setCursorPill(false);
           const isButton = e.target.closest('button');
           if (!isButton) {
             e.preventDefault();

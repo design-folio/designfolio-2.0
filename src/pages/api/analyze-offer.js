@@ -5,7 +5,7 @@ import { checkRateLimit } from "@/lib/api-rate-limit";
 export const config = { maxDuration: 90 };
 
 async function extractOfferDetails(genAI, data) {
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
   const extractionPrompt = `
     You are an expert at analyzing job offer letters. Extract the following information from this offer letter. Be precise and only extract what is explicitly stated:
 
@@ -117,7 +117,7 @@ export default async function handler(req, res) {
     }
 
     const analysisPrompt = generateAnalysisPrompt(data);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
     const result = await model.generateContent(analysisPrompt);
     const response = result.response;
     const text = response.text();

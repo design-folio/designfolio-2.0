@@ -64,6 +64,7 @@ export const GlobalProvider = ({ children }) => {
   const [showUnsavedWarning, setShowUnsavedWarning] = useState(false);
   const [pendingSidebarAction, setPendingSidebarAction] = useState(null);
   const [isSwitchingSidebar, setIsSwitchingSidebar] = useState(false);
+  const [pendingReplaceAwaitingConfirmation, setPendingReplaceAwaitingConfirmation] = useState(false);
   const unsavedChangesCheckers = useRef({});
   const userDetailsRef = useRef(userDetails);
   const isUpdatingEffectsFromAPI = useRef(false);
@@ -277,30 +278,21 @@ export const GlobalProvider = ({ children }) => {
     });
   };
 
-  // Post-signup prefill: apply pending-portfolio-data (from landing Analyze flow) once
-  useEffect(() => {
-    if (
-      typeof window === "undefined" ||
-      !userDetails ||
-      pendingPrefillAppliedRef.current ||
-      !Cookies.get("df-token")
-    ) {
-      return;
-    }
+  const applyPendingPortfolio = useCallback(() => {
+    if (pendingPrefillAppliedRef.current || typeof window === "undefined") return;
     const raw = localStorage.getItem("pending-portfolio-data");
     if (!raw) return;
     try {
       const content = JSON.parse(raw);
+      pendingPrefillAppliedRef.current = true;
+      setPendingReplaceAwaitingConfirmation(false);
       Promise.all([
         _getPersonas().then((res) => res?.data?.personas || []).catch(() => []),
         _getTools().then((res) => res?.data?.tools || []).catch(() => []),
       ])
         .then(([personas, tools]) => {
           const payload = mapPendingPortfolioToUpdatePayload(content, personas, tools);
-          pendingPrefillAppliedRef.current = true;
-          if (payload) {
-            return _updateUser(payload);
-          }
+          if (payload) return _updateUser(payload);
           localStorage.removeItem("pending-portfolio-data");
         })
         .then((res) => {
@@ -318,7 +310,36 @@ export const GlobalProvider = ({ children }) => {
     } catch {
       localStorage.removeItem("pending-portfolio-data");
     }
-  }, [userDetails, setUserDetails, updateCache, userDetailsRefecth]);
+  }, [setUserDetails, updateCache, userDetailsRefecth]);
+
+  const discardPendingPortfolio = useCallback(() => {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("pending-portfolio-data");
+    }
+    setPendingReplaceAwaitingConfirmation(false);
+  }, []);
+
+  // Post-signup prefill: apply pending-portfolio-data (from landing Analyze flow) once, or ask on builder if user has existing profile
+  useEffect(() => {
+    if (
+      typeof window === "undefined" ||
+      !userDetails ||
+      pendingPrefillAppliedRef.current ||
+      !Cookies.get("df-token")
+    ) {
+      return;
+    }
+    const raw = localStorage.getItem("pending-portfolio-data");
+    if (!raw) return;
+    const hasExistingProfile =
+      (Array.isArray(userDetails.projects) && userDetails.projects.length > 0) ||
+      !!(userDetails.user?.aboutMe || userDetails.user?.name || userDetails.aboutMe);
+    if (hasExistingProfile) {
+      setPendingReplaceAwaitingConfirmation(true);
+      return;
+    }
+    applyPendingPortfolio();
+  }, [userDetails, applyPendingPortfolio]);
 
   const changeCursor = (cursor) => {
     _updateUser({ cursor: cursor }).then((res) => {
@@ -692,6 +713,10 @@ export const GlobalProvider = ({ children }) => {
         handleCancelDiscardSidebar,
         isSwitchingSidebar,
         pendingSidebarAction,
+        pendingReplaceAwaitingConfirmation,
+        setPendingReplaceAwaitingConfirmation,
+        applyPendingPortfolio,
+        discardPendingPortfolio,
       }}
     >
       {children}

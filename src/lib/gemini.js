@@ -55,7 +55,7 @@ const checkRateLimit = () => {
 export const generateEmail = async (context) => {
   checkRateLimit();
 
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
   const emailType =
     context.emailType === "custom"
@@ -111,7 +111,7 @@ export const analyzeOffer = async (data) => {
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     // Extract data from offer letter if provided
     const extractedData = data.offerContent
@@ -137,7 +137,7 @@ export const generateInterviewQuestions = async (
   role,
   difficulty = "mid"
 ) => {
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
   const difficultyPrompts = {
     entry:
@@ -214,7 +214,7 @@ export const handleFeedbackGeneration = async (
   questions,
   userAnswers
 ) => {
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
   const prompt = generateFeedbackPrompt(role, questions, userAnswers);
 
   try {

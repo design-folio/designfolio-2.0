@@ -50,7 +50,7 @@ export default function CoverLetterGenerator() {
     try {
       checkRateLimit();
 
-      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
       const prompt = `
         You are an AI expert in analyzing resumes against job descriptions. Provide a detailed analysis in the following JSON structure:
         {
@@ -252,11 +252,10 @@ export default function CoverLetterGenerator() {
                 placeholder="Paste the job description here..."
                 name="jobDescription"
                 as="textarea"
-                className={`text-input mt-2  min-h-[180px] border-b ${
-                  errors.jobDescription &&
+                className={`text-input mt-2  min-h-[180px] border-b ${errors.jobDescription &&
                   touched.jobDescription &&
                   "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                }`}
+                  }`}
                 autoComplete="off"
               />
               <ErrorMessage

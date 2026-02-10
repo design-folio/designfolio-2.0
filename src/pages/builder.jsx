@@ -31,6 +31,7 @@ import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { hasNoWallpaper } from "@/lib/wallpaper";
 import { UnsavedChangesDialog } from "@/components/ui/UnsavedChangesDialog";
+import { ReplacePortfolioDialog } from "@/components/ui/ReplacePortfolioDialog";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { CourseCard } from "@/components/CourceCard";
 import WallpaperBackground from "@/components/WallpaperBackground";
@@ -57,6 +58,10 @@ export default function Index() {
     handleCancelDiscardSidebar,
     isSwitchingSidebar,
     pendingSidebarAction,
+    pendingReplaceAwaitingConfirmation,
+    setPendingReplaceAwaitingConfirmation,
+    applyPendingPortfolio,
+    discardPendingPortfolio,
   } = useGlobalContext();
   const { isClient } = useClient();
   const router = useRouter();
@@ -231,6 +236,12 @@ export default function Index() {
           onConfirmDiscard={handleConfirmDiscardSidebar}
           title="Unsaved Changes"
           description="You have unsaved changes. Are you sure you want to switch sidebars and discard them?"
+        />
+        <ReplacePortfolioDialog
+          open={pendingReplaceAwaitingConfirmation}
+          onOpenChange={setPendingReplaceAwaitingConfirmation}
+          onKeepCurrent={discardPendingPortfolio}
+          onReplace={applyPendingPortfolio}
         />
         {isClient && userDetails && (
           <Feedefy

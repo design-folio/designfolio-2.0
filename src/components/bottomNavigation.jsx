@@ -146,7 +146,7 @@ export default function BottomNavigation({
             {userDetails?.resume?.url ? (
               <iframe
                 title="Resume Preview"
-                src={userDetails.resume.url}
+                src={`https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(userDetails.resume.url)}#zoom=page-width&pagemode=none`}
                 className="w-full h-[70vh] rounded-xl border border-border"
               />
             ) : (

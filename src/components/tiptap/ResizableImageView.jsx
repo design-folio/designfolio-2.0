@@ -101,9 +101,9 @@ const ResizableImageView = ({ node, updateAttributes, editor, selected }) => {
           src={node.attrs.src || node.attrs.url || node.attrs.key}
           alt={node.attrs.alt || ''}
           title={node.attrs.title || ''}
-          className={`block w-full h-auto rounded-lg ${selected ? 'shadow-xl' : ''}`}
+          className={`block w-full h-auto rounded-lg ${selected ? 'shadow-xl' : ''} ${!editor.isEditable ? 'cursor-pointer' : ''}`}
           style={{
-            cursor: isResizing ? 'ew-resize' : 'default',
+            cursor: isResizing ? 'ew-resize' : (editor.isEditable ? 'default' : 'pointer'),
           }}
         />
 

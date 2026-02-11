@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/buttonNew";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useGlobalContext } from "@/context/globalContext";
 import { sidebars } from "@/lib/constant";
 import { _updateUser } from "@/network/post-request";
@@ -100,16 +101,26 @@ export default function Reviews({ edit = false, openModal, userDetails }) {
           edit && reviews.length > 0 ? (
             <div className="flex items-center gap-2">
               {reviews.length > 1 && (
-                <Button
-                  variant="secondary"
-                  size="icon"
-                  onClick={() => {
-                    setShowModal(true);
-                  }}
-                  className="rounded-full h-11 w-11"
-                >
-                  <SortIcon className="w-4 h-4 text-df-icon-color cursor-pointer" />
-                </Button>
+                <TooltipProvider delayDuration={300}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="secondary"
+                        size="icon"
+                        onClick={() => {
+                          setShowModal(true);
+                        }}
+                        className="rounded-full h-11 w-11"
+                        aria-label="Reorder Testimonials"
+                      >
+                        <SortIcon className="w-4 h-4 text-df-icon-color cursor-pointer" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" sideOffset={8} className="bg-tooltip-bg-color text-tooltip-text-color border-0 px-4 py-2 rounded-xl shadow-xl">
+                      <span className="text-sm font-medium">Reorder Testimonials</span>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               )}
               <Button
                 variant="secondary"

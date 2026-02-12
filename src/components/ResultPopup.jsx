@@ -7,25 +7,33 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/router";
 import { mapContentToUserDetails } from "@/lib/mapPendingPortfolioToUpdatePayload";
 import Preview1 from "@/components/preview1";
+import Cookies from "js-cookie";
 
 const PENDING_PORTFOLIO_KEY = "pending-portfolio-data";
 
 export function ResultPopup({ content, onClose }) {
   const router = useRouter();
   const isStructured = content && typeof content === "object" && !content.raw;
-  const userDetails = isStructured ? mapContentToUserDetails(content) : null;
+  const userDetailsFromContent = isStructured
+    ? mapContentToUserDetails(content)
+    : null;
 
   if (typeof document === "undefined" || !content) return null;
 
-  const handleContinueToSignup = () => {
-    if (isStructured) {
-      if (typeof window !== "undefined") {
-        localStorage.setItem(PENDING_PORTFOLIO_KEY, JSON.stringify(content));
-      }
+  const handleContinueClick = () => {
+    if (!isStructured) {
       onClose();
-      router.push("/claim-link");
+      return;
+    }
+    if (typeof window !== "undefined") {
+      localStorage.setItem(PENDING_PORTFOLIO_KEY, JSON.stringify(content));
+    }
+    onClose();
+    const isLoggedIn = !!Cookies.get("df-token");
+    if (isLoggedIn) {
+      router.push("/builder");
     } else {
-      onClose();
+      router.push("/login?redirect=/builder");
     }
   };
 
@@ -73,7 +81,7 @@ export function ResultPopup({ content, onClose }) {
                     Discard
                   </Button>
                   <Button
-                    onClick={handleContinueToSignup}
+                    onClick={handleContinueClick}
                     className="bg-[#FF553E] hover:bg-[#FF553E]/90 text-white rounded-full h-8 px-3 sm:px-4 text-xs font-bold shadow-sm transition-all focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 shrink-0"
                     data-testid="button-continue-signup"
                   >
@@ -85,9 +93,9 @@ export function ResultPopup({ content, onClose }) {
           </div>
 
           <div className="flex-1 overflow-y-auto min-h-0 bg-df-bg-color">
-            {isStructured && userDetails ? (
+            {isStructured && userDetailsFromContent ? (
               <Preview1
-                userDetails={userDetails}
+                userDetails={userDetailsFromContent}
                 projectRef={null}
                 embeddedPreview
               />
@@ -108,7 +116,7 @@ export function ResultPopup({ content, onClose }) {
                   This is a preview —{" "}
                   <button
                     type="button"
-                    onClick={handleContinueToSignup}
+                    onClick={handleContinueClick}
                     className="text-[#FF553E] hover:text-[#E64935] font-medium underline underline-offset-2 transition-colors"
                     data-testid="link-open-editor-footer"
                   >

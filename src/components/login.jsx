@@ -52,8 +52,8 @@ export default function Login() {
         const { token, emailVerification } = res.data;
 
         setToken(token);
-        const redirectTo = router.query.redirect;
-        router.push(emailVerification ? (redirectTo || "/builder") : "/email-verify");
+        const redirect = (router.query.redirect && typeof router.query.redirect === "string") ? router.query.redirect : "/builder";
+        router.push(emailVerification ? redirect : "/email-verify");
       } catch (err) {
         console.error("Google login failed:", err);
       } finally {
@@ -74,8 +74,8 @@ export default function Login() {
       const res = await _loginWithEmail(data);
       const { token, emailVerification } = res.data;
       setToken(token);
-      const redirectTo = router.query.redirect;
-      router.push(emailVerification ? (redirectTo || "/builder") : `/email-verify?email=${values.email}`);
+      const redirect = (router.query.redirect && typeof router.query.redirect === "string") ? router.query.redirect : "/builder";
+      router.push(emailVerification ? redirect : `/email-verify?email=${values.email}`);
     } catch (err) {
       console.error("Email login error:", err);
     } finally {

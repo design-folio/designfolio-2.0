@@ -68,7 +68,7 @@ export default function ProjectCard({
   };
 
   const shouldBlockNavigation = isDragging || wasRecentlyMoved;
-  const shouldShowTooltip = !preview && isHovered && !isDragging && !isHoveringInteractive;
+  const shouldShowTooltip = isHovered && !isDragging && !isHoveringInteractive && !embeddedPreview;
   const { setCursorPill } = useCursorTooltip();
 
   useEffect(() => {
@@ -88,11 +88,11 @@ export default function ProjectCard({
       <motion.div
         className={customTwMerge(
           `bg-project-card-bg-color border border-project-card-border-color rounded-2xl min-h-[360px] h-full w-full flex flex-col overflow-hidden relative`,
-          !preview && (shouldShowTooltip ? '' : 'cursor-pointer'),
-          preview && 'cursor-default',
+          !edit && !embeddedPreview && (shouldShowTooltip ? '' : 'cursor-pointer'),
+          embeddedPreview && 'cursor-default',
           className
         )}
-        whileHover={!preview && !isDragging && !isHoveringInteractive ? {
+        whileHover={!edit && !embeddedPreview && !isDragging && !isHoveringInteractive ? {
           scale: 1.02,
           rotateX: 2,
           rotateY: -2,
@@ -163,16 +163,16 @@ export default function ProjectCard({
             </div>
           )}
 
-          <div className={`flex-1 flex flex-col justify-between ${!preview && (shouldShowTooltip ? '' : 'cursor-pointer')}`}>
+          <div className={`flex-1 flex flex-col justify-between ${!edit && !embeddedPreview && (shouldShowTooltip ? '' : 'cursor-pointer')}`}>
             <div className="p-6 pb-0">
               <p
-                className={`project-info-card-heading-color font-semibold line-clamp-2 ${!preview && !shouldShowTooltip ? 'cursor-pointer' : ''} text-lg mb-2`}
+                className={`project-info-card-heading-color font-semibold line-clamp-2 ${!edit && !embeddedPreview && !shouldShowTooltip ? 'cursor-pointer' : ''} text-lg mb-2`}
               >
                 {project?.title}
               </p>
               <Text
                 size="p-xxsmall"
-                className={`text-df-description-color font-normal line-clamp-3 leading-relaxed ${!preview && !shouldShowTooltip ? 'cursor-pointer' : ''}`}
+                className={`text-df-description-color font-normal line-clamp-3 leading-relaxed ${!edit && !embeddedPreview && !shouldShowTooltip ? 'cursor-pointer' : ''}`}
               >
                 {project?.description}
               </Text>
@@ -287,10 +287,12 @@ export default function ProjectCard({
     );
   }
 
-  if (preview) {
+  // Embedded preview (e.g. iframe in builder): no link, no hover, no tooltip
+  if (embeddedPreview) {
     return <div className="w-full h-full block">{cardContent}</div>;
   }
 
+  // Preview mode: use Link so the project card is clickable (e.g. portfolio-preview, Preview1)
   return (
     <Link
       href={href}

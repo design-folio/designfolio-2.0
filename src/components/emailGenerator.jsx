@@ -4,7 +4,7 @@ import EmailForm from "./emailForm";
 import EmailPreview from "./emailPreview";
 import { toast } from "react-toastify";
 
-export default function EmailGenerator() {
+export default function EmailGenerator({ onToolUsed }) {
   const [generatedEmail, setGeneratedEmail] = useState({
     subject: "",
     body: "",
@@ -24,6 +24,7 @@ export default function EmailGenerator() {
         throw new Error(data.message || "Failed to generate email");
       }
       setGeneratedEmail({ subject: data.subject, body: data.body });
+      onToolUsed?.();
     } catch (error) {
       toast.error(error?.message || "Failed to generate email");
     } finally {

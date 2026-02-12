@@ -1,8 +1,8 @@
 import React, { useRef, useState } from "react";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
-import Button from "./button";
 import { toast } from "react-toastify";
+import TetrisLoading from "./ui/tetris-loader";
 import QuestionDisplay from "./QuestionDisplay";
 import DetailedFeedback from "./DetailedFeedback";
 
@@ -32,7 +32,7 @@ const difficultyLevels = [
   },
 ];
 
-export default function MockInterviewTool() {
+export default function MockInterviewTool({ onToolUsed }) {
   const [isInterviewStarted, setIsInterviewStarted] = useState(false);
   const formikRef = useRef(null); // Create a ref to access Formik instance
   const [values, setValues] = useState({});
@@ -59,6 +59,7 @@ export default function MockInterviewTool() {
       }
       setQuestions(data.questions);
       setIsInterviewStarted(true);
+      onToolUsed?.();
     } catch (error) {
       console.error("Error generating questions:", error);
       toast.error("Failed to generate questions. Please try again.");
@@ -228,11 +229,18 @@ export default function MockInterviewTool() {
                 disabled={isLoading}
                 className="w-full bg-foreground text-background hover:bg-foreground/90 focus-visible:outline-none border-0 rounded-full h-11 px-6 text-base font-semibold transition-colors disabled:opacity-50"
               >
-                {isLoading ? "Preparing your interview question..." : "Start Mock Interview"}
+                {isLoading ? "Preparing..." : "Start Mock Interview"}
               </button>
             </Form>
           )}
         </Formik>
+        {isLoading && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
+            <div className="bg-white p-8 rounded-3xl shadow-xl flex flex-col items-center gap-4 border border-border/40">
+              <TetrisLoading loadingText="Initializing your interview session..." />
+            </div>
+          </div>
+        )}
     </div>
   );
 }

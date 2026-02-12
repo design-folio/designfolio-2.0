@@ -36,9 +36,10 @@ export default async function handler(req, res) {
 
   const rateLimit = checkRateLimit(req, "generate-email");
   if (!rateLimit.allowed) {
-    return res.status(429).json({
-      message: `Rate limit reached. Please try again in ${rateLimit.remainingSec} seconds.`,
-    });
+    const message = rateLimit.dailyLimit
+      ? "Daily limit reached for this tool. Try again tomorrow."
+      : `Rate limit reached. Please try again in ${rateLimit.remainingSec ?? 60} seconds.`;
+    return res.status(429).json({ message });
   }
 
   try {

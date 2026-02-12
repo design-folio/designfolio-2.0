@@ -1,8 +1,9 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import ProgressBar from "./ProgressBar";
 
-const DetailedFeedback = ({ feedbackData }) => {
+const DetailedFeedback = ({ feedbackData, onStartNew }) => {
   const reportRef = useRef(null);
+  const [isStartingOver, setIsStartingOver] = useState(false);
 
   const getScoreColor = (score) => {
     if (score >= 80) return "text-green-500";
@@ -36,11 +37,17 @@ const DetailedFeedback = ({ feedbackData }) => {
   };
 
   const handleStartOver = () => {
-    window.location.reload();
+    if (isStartingOver) return;
+    setIsStartingOver(true);
+    if (typeof onStartNew === "function") {
+      onStartNew();
+    } else {
+      window.location.reload();
+    }
   };
 
   return (
-    <div className="w-full max-w-3xl space-y-6">
+    <div className="w-full max-w-6xl mx-auto space-y-6">
       <div className="flex flex-wrap gap-4 justify-center action-buttons">
         <button
           onClick={handleDownloadPDF}
@@ -49,10 +56,12 @@ const DetailedFeedback = ({ feedbackData }) => {
           Download PDF
         </button>
         <button
+          type="button"
           onClick={handleStartOver}
-          className="rounded-full h-11 px-6 text-base font-semibold bg-foreground text-background hover:bg-foreground/90 transition-colors"
+          disabled={isStartingOver}
+          className="rounded-full h-11 px-6 text-base font-semibold bg-foreground text-background hover:bg-foreground/90 transition-colors disabled:opacity-70 disabled:pointer-events-none"
         >
-          Start New Interview
+          {isStartingOver ? "Loading…" : "Start New Interview"}
         </button>
       </div>
 

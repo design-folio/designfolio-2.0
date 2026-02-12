@@ -20,7 +20,7 @@ const validationSchema = Yup.object().shape({
 const OffervalidationSchema = Yup.object().shape({
   offerContent: Yup.string().required("Offer content salary is required"),
 });
-export default function OfferForm({ onSubmit, isAnalyzing }) {
+export default function OfferForm({ onSubmit, isAnalyzing, guestUsageLimitReached = false }) {
   const [currentTab, setCurrentTab] = useState("manual");
 
   return (
@@ -123,8 +123,8 @@ export default function OfferForm({ onSubmit, isAnalyzing }) {
                 </div>
                 <ErrorMessage name="country" component="p" className="text-sm text-red-500 ml-1" />
               </div>
-              <AiToolButton disabled={isAnalyzing}>
-                {isAnalyzing ? "Analyzing Offer..." : "Analyze Offer"}
+              <AiToolButton disabled={isAnalyzing || guestUsageLimitReached}>
+                {guestUsageLimitReached ? "Sign up to analyze again" : isAnalyzing ? "Analyzing Offer..." : "Analyze Offer"}
               </AiToolButton>
             </Form>
           )}
@@ -151,8 +151,8 @@ export default function OfferForm({ onSubmit, isAnalyzing }) {
                 </div>
                 <ErrorMessage name="offerContent" component="p" className="text-sm text-red-500 ml-1" />
               </div>
-              <AiToolButton disabled={isAnalyzing}>
-                {isAnalyzing ? "Analyzing Offer..." : "Analyze Offer"}
+              <AiToolButton disabled={isAnalyzing || guestUsageLimitReached}>
+                {guestUsageLimitReached ? "Sign up to analyze again" : isAnalyzing ? "Analyzing Offer..." : "Analyze Offer"}
               </AiToolButton>
             </Form>
           )}

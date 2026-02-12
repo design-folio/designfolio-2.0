@@ -24,6 +24,38 @@ import { twMerge } from "tailwind-merge";
 import { useRouter } from "next/router";
 import ProjectLock from "./projectLock";
 
+const getHref = (id, edit, preview) => {
+  if (edit) return `/project/${id}/editor`;
+  if (preview) return `/project/${id}/preview`;
+  return `/project/${id}`;
+};
+
+const PreviewProjectCard = ({ project, preview, embeddedPreview }) => {
+  const router = useRouter();
+  const handleRouter = (id) => {
+    if (preview) {
+      router.push(`/project/${id}/preview`);
+    } else {
+      router.push(`/project/${id}`);
+    }
+  };
+  return (
+    <div className="h-full w-full flex">
+      <ProjectCard
+        project={project}
+        onDeleteProject={() => {}}
+        edit={false}
+        preview={preview}
+        embeddedPreview={embeddedPreview}
+        handleRouter={handleRouter}
+        href={getHref(project._id, false, preview)}
+        isDragging={false}
+        wasRecentlyMoved={false}
+      />
+    </div>
+  );
+};
+
 const SortableItem = ({ project, onDeleteProject, edit, preview = false, embeddedPreview = false, recentlyMovedIds, onToggleVisibility }) => {
   const router = useRouter();
   const {
@@ -51,13 +83,7 @@ const SortableItem = ({ project, onDeleteProject, edit, preview = false, embedde
       router.push(`/project/${id}`);
     }
   };
-  const getHref = (id) => {
-    if (edit) return `/project/${id}/editor`;
-    if (preview) return `/project/${id}/preview`;
-    return `/project/${id}`;
-  };
 
-  // Check if this item was recently moved (to prevent navigation after drag)
   const wasRecentlyMoved = recentlyMovedIds?.has(project._id) ?? false;
 
   return (
@@ -69,7 +95,7 @@ const SortableItem = ({ project, onDeleteProject, edit, preview = false, embedde
         preview={preview}
         embeddedPreview={embeddedPreview}
         handleRouter={handleRouter}
-        href={getHref(project._id)}
+        href={getHref(project._id, edit, preview)}
         dragHandleListeners={listeners}
         dragHandleAttributes={attributes}
         isDragging={isDragging}
@@ -169,6 +195,30 @@ export default function Projects({
       setRecentlyMovedIds(new Set());
     }, 300);
   };
+  const gridClassName = twMerge(
+    "grid grid-cols-1 gap-4 md:grid-cols-2 items-stretch",
+    visibleProjects?.length === 0 && "md:grid-cols-1"
+  );
+
+  if (preview && !edit) {
+    return (
+      <div ref={projectRef}>
+        <Section title={"My works"} wallpaper={userDetails?.wallpaper} showStar={true} sectionId="projects" edit={edit}>
+          <div className={gridClassName}>
+            {visibleProjects?.map((project) => (
+              <PreviewProjectCard
+                key={project._id}
+                project={project}
+                preview={preview}
+                embeddedPreview={embeddedPreview}
+              />
+            ))}
+          </div>
+        </Section>
+      </div>
+    );
+  }
+
   return (
     <div ref={projectRef}>
       <Section title={"My works"} wallpaper={userDetails?.wallpaper} showStar={true} sectionId="projects" edit={edit}>
@@ -181,12 +231,7 @@ export default function Projects({
             items={visibleProjects?.map((p) => p._id) || []}
             strategy={rectSortingStrategy}
           >
-            <div
-              className={twMerge(
-                "grid grid-cols-1 gap-4 md:grid-cols-2 items-stretch",
-                visibleProjects?.length === 0 && "md:grid-cols-1"
-              )}
-            >
+            <div className={gridClassName}>
               {visibleProjects?.map((project) => (
                 <SortableItem
                   key={project._id}

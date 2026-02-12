@@ -54,7 +54,7 @@ const ResumeUploader = ({ onUpload }) => {
       }
 
       setFileName(file.name);
-      onUpload(text);
+      onUpload(text, file);
       toast.success("Resume uploaded successfully");
     } catch (error) {
       console.error("Error reading file:", error);

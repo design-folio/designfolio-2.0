@@ -22,6 +22,7 @@ export default function CoverLetterGenerator({ onViewChange, onToolUsed }) {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisProgress, setAnalysisProgress] = useState(0);
   const [analysis, setAnalysis] = useState(null);
+  const [uploadedResumeFile, setUploadedResumeFile] = useState(null);
 
   useEffect(() => {
     if (!isAnalyzing) {
@@ -45,8 +46,9 @@ export default function CoverLetterGenerator({ onViewChange, onToolUsed }) {
     return () => clearInterval(timer);
   }, [isAnalyzing]);
 
-  const handleResumeUpload = async (text, setFieldValue) => {
-    setFieldValue("resumeText", text);
+  const handleResumeUpload = (text, setFieldValue, file = null) => {
+    setFieldValue("resumeText", typeof text === "string" ? text.trim() : "");
+    setUploadedResumeFile(file || null);
   };
 
   const handleSubmit = async (values, { setSubmitting }) => {
@@ -94,6 +96,7 @@ export default function CoverLetterGenerator({ onViewChange, onToolUsed }) {
         <div className="flex justify-between flex-wrap gap-4">
           <button
             onClick={() => {
+              setUploadedResumeFile(null);
               setAnalysis(null);
               onViewChange?.(false);
             }}
@@ -135,7 +138,7 @@ export default function CoverLetterGenerator({ onViewChange, onToolUsed }) {
                   exit={{ opacity: 0, scale: 0.95 }}
                   className="flex flex-col items-center justify-center py-4 space-y-6"
                 >
-                  <ScannerCardStream isScanning={true} />
+                  <ScannerCardStream isScanning={true} file={uploadedResumeFile} />
                   <div className="w-full max-w-xs space-y-3 text-center">
                     <div className="flex items-center justify-center gap-2 text-foreground font-medium">
                       <Loader2 className="w-4 h-4 animate-spin text-[#FF553E]" />
@@ -143,10 +146,9 @@ export default function CoverLetterGenerator({ onViewChange, onToolUsed }) {
                     </div>
                     <div className="h-1.5 w-full bg-foreground/5 rounded-full overflow-hidden">
                       <motion.div
-                        className="h-full bg-[#FF553E] rounded-full"
+                        className="h-full bg-[#FF553E]"
                         initial={{ width: 0 }}
                         animate={{ width: `${analysisProgress}%` }}
-                        transition={{ duration: 0.3 }}
                       />
                     </div>
                     <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">
@@ -166,7 +168,7 @@ export default function CoverLetterGenerator({ onViewChange, onToolUsed }) {
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-foreground ml-1">Upload Resume (PDF Only)<span className="text-[#FF553E] ml-0.5">*</span></label>
                       <ResumeUploader
-                        onUpload={(text) => handleResumeUpload(text, setFieldValue)}
+                        onUpload={(text, file) => handleResumeUpload(text, setFieldValue, file)}
                       />
                       <ErrorMessage name="resumeText" component="p" className="text-sm text-red-500 ml-1" />
                     </div>

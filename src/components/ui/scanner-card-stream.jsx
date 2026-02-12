@@ -15,10 +15,20 @@ const generateCode = (width, height) => {
   return out;
 };
 
-export default function ScannerCardStream({ isScanning = true }) {
+export default function ScannerCardStream({ file = null, isScanning = true }) {
   const scannerCanvasRef = useRef(null);
   const [scanProgress, setScanProgress] = useState(0);
+  const [previewUrl, setPreviewUrl] = useState(null);
   const asciiCode = useMemo(() => generateCode(40, 25), []);
+
+  useEffect(() => {
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+      return () => URL.revokeObjectURL(url);
+    }
+    setPreviewUrl(null);
+  }, [file]);
 
   useEffect(() => {
     const scannerCanvas = scannerCanvasRef.current;
@@ -82,18 +92,44 @@ export default function ScannerCardStream({ isScanning = true }) {
 
   return (
     <div className="relative w-full h-[300px] flex items-center justify-center overflow-hidden bg-black rounded-3xl border border-white/5 shadow-2xl">
-      <div className="absolute inset-0 w-full h-full bg-zinc-950 overflow-hidden flex items-center justify-center">
+      <div className="relative w-full h-full bg-zinc-950 overflow-hidden flex items-center justify-center">
+        {/* Digital code layer */}
         <div
           className="absolute inset-0 p-4 font-mono text-[9px] leading-[1.2] text-white/30 overflow-hidden whitespace-pre pointer-events-none flex items-center justify-center text-center break-all"
         >
           <div className="max-w-full">{asciiCode}</div>
         </div>
+
+        {/* PDF preview layer – revealed by scan (match v3) */}
         <div
-          className="absolute inset-0 bg-white/5"
+          className="absolute inset-0 bg-white"
           style={{
             clipPath: isScanning ? `inset(${scanProgress * 100}% 0 0 0)` : 'none',
           }}
-        />
+        >
+          {previewUrl ? (
+            <iframe
+              src={`${previewUrl}#toolbar=0&navpanes=0&scrollbar=0`}
+              className="w-full h-full border-0 pointer-events-none"
+              title="Resume Preview"
+            />
+          ) : (
+            <div className="w-full h-full bg-white flex items-center justify-center p-8">
+              <div className="space-y-4 w-full max-w-sm">
+                <div className="h-4 w-2/3 bg-slate-100 rounded mx-auto" />
+                <div className="h-2 w-full bg-slate-50 rounded" />
+                <div className="h-2 w-full bg-slate-50 rounded" />
+                <div className="pt-8 space-y-2">
+                  <div className="h-3 w-1/2 bg-slate-100 rounded mx-auto" />
+                  <div className="h-2 w-full bg-slate-50 rounded" />
+                  <div className="h-2 w-5/6 bg-slate-50 rounded mx-auto" />
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Scanner line and particles canvas */}
         <canvas
           ref={scannerCanvasRef}
           className="absolute inset-0 pointer-events-none z-30 w-full h-full"

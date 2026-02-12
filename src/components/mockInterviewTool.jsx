@@ -1,10 +1,13 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 import TetrisLoading from "./ui/tetris-loader";
 import QuestionDisplay from "./QuestionDisplay";
 import DetailedFeedback from "./DetailedFeedback";
+import { getAiToolResult, setAiToolResult } from "@/lib/ai-tools-usage";
+
+const MOCK_INTERVIEW_STORAGE_KEY = "mock-interview";
 
 const validationSchema = Yup.object().shape({
   role: Yup.string().required("Role is required"),
@@ -32,7 +35,7 @@ const difficultyLevels = [
   },
 ];
 
-export default function MockInterviewTool({ onToolUsed }) {
+export default function MockInterviewTool({ onToolUsed, onViewChange, onStartNewAnalysis, guestUsageLimitReached = false, skipRestore = false }) {
   const [isInterviewStarted, setIsInterviewStarted] = useState(false);
   const formikRef = useRef(null); // Create a ref to access Formik instance
   const [values, setValues] = useState({});
@@ -45,13 +48,42 @@ export default function MockInterviewTool({ onToolUsed }) {
   const [userAnswers, setUserAnswers] = useState([]);
   const [isGeneratingFeedback, setIsGeneratingFeedback] = useState(false);
   const { jobDescription, role, round, difficulty } = values || {};
-  const initializeQuestions = async () => {
+  const hasResult = isInterviewStarted || isFinished;
+
+  useEffect(() => {
+    if (skipRestore) return;
+    const stored = getAiToolResult(MOCK_INTERVIEW_STORAGE_KEY);
+    if (stored && typeof stored === "object" && stored.feedback) {
+      try {
+        JSON.parse(stored.feedback);
+        setFeedback(stored.feedback);
+        setIsFinished(true);
+        onViewChange?.(true);
+      } catch (_) {}
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [skipRestore]);
+
+  useEffect(() => {
+    onViewChange?.(hasResult);
+  }, [hasResult, onViewChange]);
+
+  const initializeQuestions = async (formValues) => {
+    if (guestUsageLimitReached) {
+      toast.error("You've already used this tool once. Sign up to start another mock interview.");
+      return;
+    }
+    const { jobDescription: jd, role: r, difficulty: diff } = formValues || values || {};
+    if (!jd?.trim() || !r?.trim()) {
+      toast.error("Role and job description are required.");
+      return;
+    }
     try {
       setIsLoading(true);
       const res = await fetch("/api/interview-questions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ jobDescription, role, difficulty }),
+        body: JSON.stringify({ jobDescription: jd.trim(), role: r.trim(), difficulty: diff || "mid" }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -59,7 +91,6 @@ export default function MockInterviewTool({ onToolUsed }) {
       }
       setQuestions(data.questions);
       setIsInterviewStarted(true);
-      onToolUsed?.();
     } catch (error) {
       console.error("Error generating questions:", error);
       toast.error("Failed to generate questions. Please try again.");
@@ -95,6 +126,8 @@ export default function MockInterviewTool({ onToolUsed }) {
         }
         setFeedback(data.feedback);
         setIsFinished(true);
+        setAiToolResult(MOCK_INTERVIEW_STORAGE_KEY, { feedback: data.feedback });
+        onToolUsed?.();
       } catch (error) {
         console.error("Error generating feedback:", error);
         toast.error("Failed to generate feedback. Please try again.");
@@ -107,10 +140,15 @@ export default function MockInterviewTool({ onToolUsed }) {
     }
   };
 
+  const handleStartNewInterview = () => {
+    onViewChange?.(false);
+    onStartNewAnalysis?.();
+  };
+
   if (isFinished) {
     try {
       const feedbackData = JSON.parse(feedback);
-      return <DetailedFeedback feedbackData={feedbackData} />;
+      return <DetailedFeedback feedbackData={feedbackData} onStartNew={handleStartNewInterview} />;
     } catch (error) {
       console.error("Feedback parse error:", error);
       return (
@@ -161,7 +199,7 @@ export default function MockInterviewTool({ onToolUsed }) {
           validationSchema={validationSchema}
           onSubmit={(values, actions) => {
             setValues(values);
-            initializeQuestions();
+            initializeQuestions(values);
           }}
           innerRef={formikRef}
         >
@@ -226,10 +264,10 @@ export default function MockInterviewTool({ onToolUsed }) {
               </div>
               <button
                 type="submit"
-                disabled={isLoading}
+                disabled={isLoading || guestUsageLimitReached}
                 className="w-full bg-foreground text-background hover:bg-foreground/90 focus-visible:outline-none border-0 rounded-full h-11 px-6 text-base font-semibold transition-colors disabled:opacity-50"
               >
-                {isLoading ? "Preparing..." : "Start Mock Interview"}
+                {guestUsageLimitReached ? "Sign up to start again" : isLoading ? "Preparing..." : "Start Mock Interview"}
               </button>
             </Form>
           )}

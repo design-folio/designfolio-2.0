@@ -4,8 +4,10 @@
  */
 
 const STORAGE_KEY = "DESIGNFOLIO_AI_TOOLS_USAGE";
-const USES_PER_DAY_PER_TOOL = 2;
+export const USES_PER_DAY_PER_TOOL = 1;
 const DATE_KEY = "date";
+
+const RESULT_KEY_PREFIX = "DESIGNFOLIO_AI_RESULT_";
 
 function getDateKey() {
   return new Date().toISOString().slice(0, 10);
@@ -62,4 +64,46 @@ export function incrementAiToolUsage(toolType) {
   }
   const next = (data[toolType] || 0) + 1;
   setStored({ ...data, [toolType]: next });
+}
+
+/**
+ * Persist AI tool result to localStorage (so we can restore state on return/refresh).
+ * @param {string} toolType - e.g. "optimize-resume", "email-generator", "salary-negotiator"
+ * @param {object|string} result - Result to store (will be JSON.stringify'd)
+ */
+export function setAiToolResult(toolType, result) {
+  if (typeof window === "undefined") return;
+  try {
+    const key = RESULT_KEY_PREFIX + toolType;
+    const value = typeof result === "string" ? result : JSON.stringify(result);
+    localStorage.setItem(key, value);
+  } catch (_) {}
+}
+
+/**
+ * Get stored AI tool result, if any.
+ * @param {string} toolType - same as setAiToolResult
+ * @returns {object|string|null} Parsed result or null
+ */
+export function getAiToolResult(toolType) {
+  if (typeof window === "undefined") return null;
+  try {
+    const key = RESULT_KEY_PREFIX + toolType;
+    const raw = localStorage.getItem(key);
+    if (raw == null) return null;
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return raw;
+    }
+  } catch (_) {
+    return null;
+  }
+}
+
+export function clearAiToolResult(toolType) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.removeItem(RESULT_KEY_PREFIX + toolType);
+  } catch (_) {}
 }

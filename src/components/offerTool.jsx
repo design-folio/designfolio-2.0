@@ -1,10 +1,22 @@
 import React from "react";
 import OfferAnalysis from "./OfferAnalysis";
 
-export default function OfferTool() {
+export default function OfferTool({
+  onToolUsed,
+  onViewChange,
+  onStartNewAnalysis,
+  skipRestore = false,
+  guestUsageLimitReached = false,
+}) {
   return (
     <div className="w-full">
-      <OfferAnalysis />
+      <OfferAnalysis
+        onToolUsed={onToolUsed}
+        onViewChange={onViewChange}
+        onStartNewAnalysis={onStartNewAnalysis}
+        skipRestore={skipRestore}
+        guestUsageLimitReached={guestUsageLimitReached}
+      />
     </div>
   );
 }

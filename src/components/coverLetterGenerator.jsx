@@ -8,6 +8,7 @@ import AnalysisResult from "./analysisResult";
 import { Download, RefreshCcw, Loader2 } from "lucide-react";
 import ScannerCardStream from "./ui/scanner-card-stream";
 import { exportToPdf } from "./PdfExporter";
+import { setAiToolResult, getAiToolResult } from "@/lib/ai-tools-usage";
 
 const validationSchema = Yup.object().shape({
   resumeText: Yup.string()
@@ -18,11 +19,24 @@ const validationSchema = Yup.object().shape({
     .min(50, "Job description should be at least 50 characters"),
 });
 
-export default function CoverLetterGenerator({ onViewChange, onToolUsed }) {
+const RESULT_STORAGE_KEY = "optimize-resume";
+
+export default function CoverLetterGenerator({ onViewChange, onToolUsed, onStartNewAnalysis, guestUsageLimitReached = false, skipRestore = false }) {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisProgress, setAnalysisProgress] = useState(0);
   const [analysis, setAnalysis] = useState(null);
   const [uploadedResumeFile, setUploadedResumeFile] = useState(null);
+  const [isStartingNew, setIsStartingNew] = useState(false);
+
+  useEffect(() => {
+    if (skipRestore) return;
+    const stored = getAiToolResult(RESULT_STORAGE_KEY);
+    if (stored && typeof stored === "object" && stored.matchScore != null) {
+      setAnalysis(stored);
+      onViewChange?.(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [skipRestore]);
 
   useEffect(() => {
     if (!isAnalyzing) {
@@ -52,6 +66,10 @@ export default function CoverLetterGenerator({ onViewChange, onToolUsed }) {
   };
 
   const handleSubmit = async (values, { setSubmitting }) => {
+    if (guestUsageLimitReached) {
+      toast.error("You've already used this tool once. Sign up to analyze again.");
+      return;
+    }
     setIsAnalyzing(true);
     try {
       const res = await fetch("/api/analyze-resume", {
@@ -71,6 +89,7 @@ export default function CoverLetterGenerator({ onViewChange, onToolUsed }) {
 
       setAnalysisProgress(100);
       setAnalysis(data.analysis);
+      setAiToolResult(RESULT_STORAGE_KEY, data.analysis);
       onViewChange?.(true);
       onToolUsed?.();
       toast.success("Analysis complete");
@@ -95,15 +114,21 @@ export default function CoverLetterGenerator({ onViewChange, onToolUsed }) {
       <div className="w-full space-y-8">
         <div className="flex justify-between flex-wrap gap-4">
           <button
+            type="button"
+            disabled={isStartingNew}
             onClick={() => {
-              setUploadedResumeFile(null);
+              if (isStartingNew) return;
+              setIsStartingNew(true);
               setAnalysis(null);
+              setUploadedResumeFile(null);
               onViewChange?.(false);
+              onStartNewAnalysis?.();
+              setIsStartingNew(false);
             }}
-            className="rounded-full border-2 border-foreground/20 bg-white/50 backdrop-blur-sm px-4 py-2 text-sm font-medium text-foreground hover:bg-foreground/10 transition-colors flex items-center gap-2"
+            className="rounded-full border-2 border-foreground/20 bg-white/50 backdrop-blur-sm px-4 py-2 text-sm font-medium text-foreground hover:bg-foreground/10 transition-colors flex items-center gap-2 disabled:opacity-70 disabled:pointer-events-none"
           >
             <RefreshCcw className="h-4 w-4 text-foreground/60" />
-            Start New Analysis
+            {isStartingNew ? "Loading…" : "Start New Analysis"}
           </button>
           <button
             onClick={() => exportToPdf("pdf-content")}
@@ -169,6 +194,7 @@ export default function CoverLetterGenerator({ onViewChange, onToolUsed }) {
                       <label className="text-sm font-medium text-foreground ml-1">Upload Resume (PDF Only)<span className="text-[#FF553E] ml-0.5">*</span></label>
                       <ResumeUploader
                         onUpload={(text, file) => handleResumeUpload(text, setFieldValue, file)}
+                        disabled={guestUsageLimitReached}
                       />
                       <ErrorMessage name="resumeText" component="p" className="text-sm text-red-500 ml-1" />
                     </div>
@@ -187,10 +213,10 @@ export default function CoverLetterGenerator({ onViewChange, onToolUsed }) {
                     </div>
                     <button
                       type="submit"
-                      disabled={isAnalyzing}
+                      disabled={isAnalyzing || guestUsageLimitReached}
                       className="w-full bg-foreground text-background hover:bg-foreground/90 focus-visible:outline-none border-0 rounded-full h-11 px-6 text-base font-semibold transition-colors disabled:opacity-50"
                     >
-                      Analyze Resume
+                      {guestUsageLimitReached ? "Sign up to analyze again" : "Analyze Resume"}
                     </button>
                   </Form>
                 </motion.div>

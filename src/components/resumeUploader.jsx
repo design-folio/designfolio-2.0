@@ -22,7 +22,7 @@ if (typeof window !== "undefined") {
   pdfjsLib.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjsLib.version}/legacy/build/pdf.worker.min.mjs`;
 }
 
-const ResumeUploader = ({ onUpload }) => {
+const ResumeUploader = ({ onUpload, disabled = false }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [fileName, setFileName] = useState(null);
 
@@ -42,7 +42,7 @@ const ResumeUploader = ({ onUpload }) => {
   };
 
   const handleFile = async (file) => {
-    if (!file) return;
+    if (!file || disabled) return;
 
     try {
       let text;
@@ -65,6 +65,7 @@ const ResumeUploader = ({ onUpload }) => {
   const handleDrop = (e) => {
     e.preventDefault();
     setIsDragging(false);
+    if (disabled) return;
     const file = e.dataTransfer.files[0];
     handleFile(file);
   };
@@ -80,6 +81,7 @@ const ResumeUploader = ({ onUpload }) => {
   };
 
   const handleFileInput = (event) => {
+    if (disabled) return;
     const file = event.target.files?.[0];
     if (file) {
       handleFile(file);
@@ -92,19 +94,26 @@ const ResumeUploader = ({ onUpload }) => {
         type="file"
         accept=".pdf"
         onChange={handleFileInput}
+        disabled={disabled}
         className="hidden"
         id="resume-upload"
       />
       <div
-        className={`p-6 rounded-2xl border-2 border-dashed transition-all duration-300 group cursor-pointer ${
-          fileName
+        className={`p-6 rounded-2xl border-2 border-dashed transition-all duration-300 group ${
+          disabled
+            ? "cursor-not-allowed opacity-60 border-border/40 bg-muted/30"
+            : "cursor-pointer"
+        } ${
+          !disabled && fileName
             ? "border-[#FF553E]/20 bg-[#FF553E]/[0.02]"
-            : "border-border/40 bg-white/50 hover:border-[#FF553E]/20 hover:bg-[#FF553E]/[0.01]"
-        } ${isDragging ? "border-[#FF553E] bg-[#FF553E]/[0.02]" : ""}`}
+            : !disabled
+              ? "border-border/40 bg-white/50 hover:border-[#FF553E]/20 hover:bg-[#FF553E]/[0.01]"
+              : ""
+        } ${!disabled && isDragging ? "border-[#FF553E] bg-[#FF553E]/[0.02]" : ""}`}
         onDrop={handleDrop}
-        onDragOver={handleDragOver}
+        onDragOver={disabled ? (e) => e.preventDefault() : handleDragOver}
         onDragLeave={handleDragLeave}
-        onClick={() => document.getElementById("resume-upload")?.click()}
+        onClick={disabled ? undefined : () => document.getElementById("resume-upload")?.click()}
       >
         <div className="flex items-center gap-4">
           <div

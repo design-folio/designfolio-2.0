@@ -24,7 +24,7 @@ const validationSchema = Yup.object().shape({
   name: Yup.string().required("Your name is required"),
 });
 
-export default function EmailForm({ generateEmailContent, isGenerating }) {
+export default function EmailForm({ generateEmailContent, isGenerating, disableGenerate = false }) {
   return (
     <div className="space-y-4">
       <Formik
@@ -209,10 +209,10 @@ export default function EmailForm({ generateEmailContent, isGenerating }) {
 
             <button
               type="submit"
-              disabled={isGenerating}
+              disabled={isGenerating || disableGenerate}
               className="w-full bg-foreground text-background hover:bg-foreground/90 focus-visible:outline-none border-0 rounded-full h-12 px-6 text-base font-semibold transition-colors gap-2 flex items-center justify-center disabled:opacity-50"
             >
-              {isGenerating ? "Generating..." : "Generate Email"}
+              {disableGenerate ? "Sign up to generate again" : isGenerating ? "Generating..." : "Generate Email"}
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
               </svg>

@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button";
 import Cookies from "js-cookie";
 import { Home, Lock, ArrowRight } from "lucide-react";
 import { getAiWorkspaceToolIcon } from "@/components/ui/ai-workspace-icons";
-import { getAiToolUsage, incrementAiToolUsage } from "@/lib/ai-tools-usage";
+import { getAiToolUsage, getAiToolResult, incrementAiToolUsage, USES_PER_DAY_PER_TOOL } from "@/lib/ai-tools-usage";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useState } from "react";
@@ -95,9 +95,11 @@ export default function Index() {
   }, [selectedIndex]);
 
   useEffect(() => {
-    if (router.query?.type !== navigation.optimizeResume) {
-      setOptimizeResumeHasResult(false);
-    }
+    if (router.query?.type !== navigation.optimizeResume) setOptimizeResumeHasResult(false);
+    if (router.query?.type !== navigation.salary) setSalaryHasResult(false);
+    if (router.query?.type !== navigation.email) setEmailHasResult(false);
+    if (router.query?.type !== navigation.MockInterview) setMockInterviewHasResult(false);
+    setHasClickedStartNewAnalysis(false);
   }, [router.query?.type]);
 
   useEffect(() => {
@@ -121,14 +123,47 @@ export default function Index() {
   const currentTypeForLock = router.query?.type || navigation.caseStudy;
   const isToolLocked = !isLoggedIn && LOCKED_TOOL_TYPES.includes(currentTypeForLock);
 
-  const usageForCurrent =
-    typeof currentTypeForLock === "string" && GUEST_USAGE_TOOL_TYPES.includes(currentTypeForLock)
-      ? getAiToolUsage(currentTypeForLock)
-      : { allowed: true, usedToday: 0, limit: 2 };
+  const [optimizeResumeHasResult, setOptimizeResumeHasResult] = useState(false);
+  const [salaryHasResult, setSalaryHasResult] = useState(false);
+  const [emailHasResult, setEmailHasResult] = useState(false);
+  const [mockInterviewHasResult, setMockInterviewHasResult] = useState(false);
+  const [hasClickedStartNewAnalysis, setHasClickedStartNewAnalysis] = useState(false);
+  const [usageKey, setUsageKey] = useState(0);
+
+  const defaultUsage = { allowed: true, usedToday: 0, limit: USES_PER_DAY_PER_TOOL };
+  const [usageForCurrent, setUsageForCurrent] = useState(defaultUsage);
+  useEffect(() => {
+    if (!router.isReady) return;
+    if (typeof currentTypeForLock === "string" && GUEST_USAGE_TOOL_TYPES.includes(currentTypeForLock)) {
+      setUsageForCurrent(getAiToolUsage(currentTypeForLock));
+    } else {
+      setUsageForCurrent(defaultUsage);
+    }
+  }, [currentTypeForLock, usageKey, router.isReady]);
   const isUsageLimitReached =
     !isLoggedIn && GUEST_USAGE_TOOL_TYPES.includes(currentTypeForLock) && !usageForCurrent.allowed;
 
-  const [usageKey, setUsageKey] = useState(0);
+  const currentToolStorageKey =
+    router.query?.type === navigation.optimizeResume
+      ? "optimize-resume"
+      : router.query?.type === navigation.salary
+        ? "salary-negotiator"
+        : router.query?.type === navigation.email
+          ? "email-generator"
+          : router.query?.type === navigation.MockInterview
+            ? "mock-interview"
+            : null;
+  const [hasStoredResult, setHasStoredResult] = useState(false);
+  useEffect(() => {
+    setHasStoredResult(!!(currentToolStorageKey && getAiToolResult(currentToolStorageKey)));
+  }, [currentToolStorageKey, usageKey]);
+
+  const currentToolHasResult =
+    (router.query?.type === navigation.optimizeResume && optimizeResumeHasResult) ||
+    (router.query?.type === navigation.salary && salaryHasResult) ||
+    (router.query?.type === navigation.email && emailHasResult) ||
+    (router.query?.type === navigation.MockInterview && mockInterviewHasResult);
+
   const recordToolUsed = () => {
     if (currentTypeForLock && GUEST_USAGE_TOOL_TYPES.includes(currentTypeForLock)) {
       incrementAiToolUsage(currentTypeForLock);
@@ -162,65 +197,88 @@ export default function Index() {
         </motion.div>
       );
     }
-    if (isUsageLimitReached) {
-      return (
-        <motion.div
-          key={`usage-${usageKey}`}
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
-          className="flex flex-col items-center justify-center py-12 text-center space-y-6"
-        >
-          <div className="max-w-xl mx-auto rounded-2xl p-6 bg-foreground/5 border border-foreground/10">
-            <p className="text-sm text-foreground/80">
-              You&apos;ve used this tool {usageForCurrent.usedToday} time
-              {usageForCurrent.usedToday !== 1 ? "s" : ""} today.{" "}
-              <Link
-                href={`/login?redirect=${encodeURIComponent(router.asPath || "/ai-tools")}`}
-                className="text-[#FF553E] hover:underline font-medium"
-              >
-                Login or sign up
+    const loginUrl = `/login?redirect=${encodeURIComponent(router.asPath || "/ai-tools")}`;
+    const showLimitBanner =
+      isUsageLimitReached ||
+      (!isLoggedIn &&
+        currentTypeForLock === navigation.optimizeResume &&
+        hasStoredResult);
+
+    return (
+      <div className="space-y-4">
+        {showLimitBanner && (
+          <div className="rounded-2xl p-4 sm:p-5 bg-foreground/5 border border-foreground/10">
+            <p className="text-sm text-foreground/80 mb-3">
+              You&apos;ve already used this tool once on this visit.{" "}
+              <Link href={loginUrl} className="text-[#FF553E] hover:underline font-medium">
+                Continue to sign up
               </Link>{" "}
-              to continue using AI tools.
+              to keep using AI tools.
             </p>
+            {hasStoredResult && !currentToolHasResult && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="rounded-full border-foreground/20 bg-white/80 hover:bg-white"
+                onClick={() => setHasClickedStartNewAnalysis(false)}
+              >
+                View generated report
+              </Button>
+            )}
           </div>
-          <Link href={`/login?redirect=${encodeURIComponent(router.asPath || "/ai-tools")}`}>
-            <Button className="bg-foreground text-background hover:bg-foreground/90 rounded-full px-8">
-              Continue to login
-            </Button>
-          </Link>
-        </motion.div>
-      );
-    }
-    switch (router.query?.type) {
-      case navigation.caseStudy:
-        return <CaseStudyGenerator />;
-      case navigation.analyze:
-        return <AnalyzeTool />;
-      case navigation.email:
-        return (
-          <EmailGenerator
-            onToolUsed={!isLoggedIn ? recordToolUsed : undefined}
-          />
-        );
-      case navigation.salary:
-        return <OfferTool />;
-      case navigation.MockInterview:
-        return (
-          <MockInterviewTool
-            onToolUsed={!isLoggedIn ? recordToolUsed : undefined}
-          />
-        );
-      case navigation.optimizeResume:
-        return (
-          <CoverLetterGenerator
-            onViewChange={setOptimizeResumeHasResult}
-            onToolUsed={!isLoggedIn ? recordToolUsed : undefined}
-          />
-        );
-      default:
-        return <CaseStudyGenerator />;
-    }
+        )}
+        <div key={`${currentToolStorageKey ?? "tool"}-${hasClickedStartNewAnalysis}`}>
+          {(() => {
+            switch (router.query?.type) {
+              case navigation.caseStudy:
+                return <CaseStudyGenerator />;
+              case navigation.analyze:
+                return <AnalyzeTool />;
+              case navigation.email:
+                return (
+                  <EmailGenerator
+                    onToolUsed={!isLoggedIn ? recordToolUsed : undefined}
+                    onViewChange={setEmailHasResult}
+                    guestUsageLimitReached={router.query?.type === navigation.email && isUsageLimitReached}
+                  />
+                );
+              case navigation.salary:
+                return (
+                  <OfferTool
+                    onToolUsed={!isLoggedIn ? recordToolUsed : undefined}
+                    onViewChange={setSalaryHasResult}
+                    onStartNewAnalysis={!isLoggedIn ? () => setHasClickedStartNewAnalysis(true) : undefined}
+                    skipRestore={hasClickedStartNewAnalysis}
+                    guestUsageLimitReached={router.query?.type === navigation.salary && isUsageLimitReached}
+                  />
+                );
+              case navigation.MockInterview:
+                return (
+                  <MockInterviewTool
+                    onToolUsed={!isLoggedIn ? recordToolUsed : undefined}
+                    onViewChange={setMockInterviewHasResult}
+                    onStartNewAnalysis={!isLoggedIn ? () => setHasClickedStartNewAnalysis(true) : undefined}
+                    guestUsageLimitReached={router.query?.type === navigation.MockInterview && isUsageLimitReached}
+                    skipRestore={hasClickedStartNewAnalysis}
+                  />
+                );
+              case navigation.optimizeResume:
+                return (
+                  <CoverLetterGenerator
+                    onViewChange={setOptimizeResumeHasResult}
+                    onToolUsed={!isLoggedIn ? recordToolUsed : undefined}
+                    onStartNewAnalysis={!isLoggedIn ? () => setHasClickedStartNewAnalysis(true) : undefined}
+                    guestUsageLimitReached={router.query?.type === navigation.optimizeResume && isUsageLimitReached}
+                    skipRestore={hasClickedStartNewAnalysis}
+                  />
+                );
+              default:
+                return <CaseStudyGenerator />;
+            }
+          })()}
+        </div>
+      </div>
+    );
   };
 
   const goToBuilder = () => {
@@ -238,12 +296,13 @@ export default function Index() {
   };
 
   const currentTool = navItems[selectedTool];
-  const [optimizeResumeHasResult, setOptimizeResumeHasResult] = useState(false);
 
   const isWideLayout =
     router.query?.type === navigation.email ||
     router.query?.type === navigation.analyze ||
-    (router.query?.type === navigation.optimizeResume && optimizeResumeHasResult);
+    (router.query?.type === navigation.optimizeResume && optimizeResumeHasResult) ||
+    (router.query?.type === navigation.salary && salaryHasResult) ||
+    (router.query?.type === navigation.MockInterview && mockInterviewHasResult);
 
   const ToolIconComponent = getAiWorkspaceToolIcon(currentTypeForLock);
 
@@ -280,8 +339,7 @@ export default function Index() {
       {/* Main Content */}
       <main className="flex-1 p-6 overflow-y-auto pb-32 flex justify-center">
         <div
-          className={`w-full transition-all duration-500 ease-[0.23,1,0.32,1] ${isWideLayout ? "max-w-6xl" : "max-w-lg"
-            }`}
+          className={`w-full transition-all duration-500 ease-[0.23,1,0.32,1] ${isWideLayout ? "max-w-6xl" : "max-w-lg"}`}
         >
           <Card className="border border-border/40 rounded-[2rem] bg-[#E5E1D5] shadow-none overflow-hidden p-2">
             <AnimatePresence mode="wait" initial={false}>

@@ -184,7 +184,7 @@ export default function Index() {
             <Lock className="w-8 h-8 text-[#FF553E]" />
           </div>
           <div className="space-y-2">
-            <h3 className="text-xl font-serif text-foreground">Ready to level up?</h3>
+            <h3 className="text-xl text-foreground">Ready to level up?</h3>
             <p className="text-muted-foreground text-sm max-w-[280px]">
               Login to unlock these powerful tools and supercharge your career.
             </p>
@@ -368,7 +368,7 @@ export default function Index() {
                     )}
                   </div>
                   <div className="flex flex-col">
-                    <h1 className="text-xl font-serif text-foreground/90 leading-tight whitespace-nowrap">
+                    <h1 className="text-xl font-inter text-foreground/90 leading-tight whitespace-nowrap">
                       {currentTool?.title || "Write Case Study using AI"}
                     </h1>
                     <p className="text-muted-foreground text-xs whitespace-nowrap">

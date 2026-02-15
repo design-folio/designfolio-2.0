@@ -24,10 +24,10 @@ export default function AnalysisReport({ analysis, onRestart, isRestarting = fal
   // Filter out the Score: line from the analysis text
   const filteredAnalysis = analysis.replace(/Score:\s*\d+\n*/i, "");
   return (
-    <div className="w-full max-w-6xl mx-auto p-8 bg-white/80 backdrop-blur-sm shadow-lg animate-fadeIn">
+    <div className="w-full max-w-6xl mx-auto p-8 animate-fadeIn">
       <div className="flex justify-end gap-4 mb-8">
         <button
-          onClick={() => exportToPdf("pdf-content")}
+          onClick={() => exportToPdf("pdf-content", { analysis, score })}
           className="flex items-center gap-2"
         >
           <Download className="h-4 w-4" />

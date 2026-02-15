@@ -301,8 +301,7 @@ export default function Index() {
     router.query?.type === navigation.email ||
     router.query?.type === navigation.analyze ||
     (router.query?.type === navigation.optimizeResume && optimizeResumeHasResult) ||
-    (router.query?.type === navigation.salary && salaryHasResult) ||
-    (router.query?.type === navigation.MockInterview && mockInterviewHasResult);
+    (router.query?.type === navigation.salary && salaryHasResult);
 
   const ToolIconComponent = getAiWorkspaceToolIcon(currentTypeForLock);
 

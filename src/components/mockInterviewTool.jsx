@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import TetrisLoading from "./ui/tetris-loader";
 import QuestionDisplay from "./QuestionDisplay";
 import DetailedFeedback from "./DetailedFeedback";
+import { Button } from "@/components/ui/button";
 import { getAiToolResult, setAiToolResult } from "@/lib/ai-tools-usage";
 
 const MOCK_INTERVIEW_STORAGE_KEY = "mock-interview";
@@ -206,12 +207,13 @@ export default function MockInterviewTool({ onToolUsed, onViewChange, onStartNew
           {({ errors, touched, values }) => (
             <Form id="InterviewForm" className="space-y-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground ml-1">Role you're applying for<span className="text-[#FF553E] ml-0.5">*</span></label>
-                <div className={`bg-white dark:bg-white border-2 border-border rounded-full hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] transition-all duration-300 ease-out overflow-hidden ${errors.role && touched.role ? "border-red-500" : ""}`}>
+                <label htmlFor="role" className="text-sm font-medium text-foreground ml-1">Role you're applying for*</label>
+                <div className={`bg-white dark:bg-white border-2 border-border rounded-2xl hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] transition-all duration-300 ease-out ${errors.role && touched.role ? "border-red-500" : ""}`}>
                   <Field
+                    id="role"
                     name="role"
                     type="text"
-                    placeholder="e.g. Senior Product Designer"
+                    placeholder="e.g. SPD"
                     className="border-0 bg-transparent h-11 px-4 focus-visible:ring-0 focus-visible:ring-offset-0 text-base text-foreground placeholder:text-muted-foreground/60 w-full"
                     autoComplete="off"
                   />
@@ -219,9 +221,10 @@ export default function MockInterviewTool({ onToolUsed, onViewChange, onStartNew
                 <ErrorMessage name="role" component="p" className="text-sm text-red-500 ml-1" />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground ml-1">Experience Level<span className="text-[#FF553E] ml-0.5">*</span></label>
-                <div className={`bg-white dark:bg-white border-2 border-border rounded-full hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] transition-all duration-300 ease-out overflow-hidden ${errors.difficulty && touched.difficulty ? "border-red-500" : ""}`}>
+                <label htmlFor="experience" className="text-sm font-medium text-foreground ml-1">Experience Level*</label>
+                <div className={`bg-white dark:bg-white border-2 border-border rounded-2xl hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] transition-all duration-300 ease-out ${errors.difficulty && touched.difficulty ? "border-red-500" : ""}`}>
                   <Field
+                    id="experience"
                     as="select"
                     name="difficulty"
                     className="border-0 bg-transparent h-11 px-4 focus:outline-none text-base text-foreground w-full appearance-none cursor-pointer"
@@ -237,9 +240,10 @@ export default function MockInterviewTool({ onToolUsed, onViewChange, onStartNew
                 <ErrorMessage name="difficulty" component="p" className="text-sm text-red-500 ml-1" />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground ml-1">Interview Round<span className="text-[#FF553E] ml-0.5">*</span></label>
-                <div className={`bg-white dark:bg-white border-2 border-border rounded-full hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] transition-all duration-300 ease-out overflow-hidden ${errors.round && touched.round ? "border-red-500" : ""}`}>
+                <label htmlFor="round" className="text-sm font-medium text-foreground ml-1">Interview Round*</label>
+                <div className={`bg-white dark:bg-white border-2 border-border rounded-2xl hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] transition-all duration-300 ease-out ${errors.round && touched.round ? "border-red-500" : ""}`}>
                   <Field
+                    id="round"
                     name="round"
                     type="text"
                     placeholder="e.g. Design Challenge, Portfolio Review"
@@ -250,32 +254,34 @@ export default function MockInterviewTool({ onToolUsed, onViewChange, onStartNew
                 <ErrorMessage name="round" component="p" className="text-sm text-red-500 ml-1" />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground ml-1">Paste Job Description<span className="text-[#FF553E] ml-0.5">*</span></label>
+                <label htmlFor="mock-job-desc" className="text-sm font-medium text-foreground ml-1">Paste Job Description*</label>
                 <div className={`bg-white dark:bg-white border-2 border-border rounded-2xl hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] transition-all duration-300 ease-out overflow-hidden ${errors.jobDescription && touched.jobDescription ? "border-red-500" : ""}`}>
                   <Field
+                    id="mock-job-desc"
                     name="jobDescription"
                     as="textarea"
                     placeholder="Copy and paste the JD from Linkedin, WellFound or any job platform"
-                    className="border-0 bg-transparent min-h-[100px] px-4 py-3 focus-visible:ring-0 focus-visible:ring-offset-0 text-base text-foreground placeholder:text-muted-foreground/60 resize-none w-full"
+                    className="border-0 bg-transparent min-h-[120px] px-4 py-3 focus-visible:ring-0 focus-visible:ring-offset-0 text-base text-foreground placeholder:text-muted-foreground/60 resize-none w-full"
                     autoComplete="off"
                   />
                 </div>
                 <ErrorMessage name="jobDescription" component="p" className="text-sm text-red-500 ml-1" />
               </div>
-              <button
+              <Button
                 type="submit"
                 disabled={isLoading || guestUsageLimitReached}
-                className="w-full bg-foreground text-background hover:bg-foreground/90 focus-visible:outline-none border-0 rounded-full h-11 px-6 text-base font-semibold transition-colors disabled:opacity-50"
+                className="w-full rounded-2xl h-12 px-6 text-base font-semibold bg-[#1A1F2C] text-white hover:bg-[#1A1F2C]/90 border-0 mt-2"
               >
                 {guestUsageLimitReached ? "Sign up to start again" : isLoading ? "Preparing..." : "Start Mock Interview"}
-              </button>
+              </Button>
             </Form>
           )}
         </Formik>
         {isLoading && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
-            <div className="bg-white p-8 rounded-3xl shadow-xl flex flex-col items-center gap-4 border border-border/40">
-              <TetrisLoading loadingText="Initializing your interview session..." />
+            <div className="bg-white p-8 rounded-3xl shadow-xl flex flex-col items-center gap-4">
+              <TetrisLoading />
+              <p className="text-sm font-medium text-foreground animate-pulse">Initializing your interview session...</p>
             </div>
           </div>
         )}

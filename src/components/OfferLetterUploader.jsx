@@ -88,53 +88,55 @@ const OfferLetterUploader = ({ onUpload, disabled = false }) => {
     if (file) handleFile(file);
   };
 
+  const baseClass =
+    "rounded-2xl border-2 border-dashed transition-all duration-300 flex flex-col items-center justify-center gap-3";
+  const disabledClass = disabled
+    ? "cursor-not-allowed opacity-60 border-border/40 bg-muted/30"
+    : "cursor-pointer";
+  const stateClass = !disabled && fileName
+    ? "border-[#FF553E]/20 bg-[#FF553E]/[0.02]"
+    : !disabled
+      ? "border-border/40 bg-white/50 hover:border-[#FF553E]/20 hover:bg-[#FF553E]/[0.01]"
+      : "";
+  const dragClass = !disabled && isDragging ? "border-[#FF553E] bg-[#FF553E]/[0.02]" : "";
+
   return (
     <div className="w-full">
       <input
         type="file"
-        accept=".pdf"
+        accept=".pdf,.docx"
         onChange={handleFileInput}
         disabled={disabled}
         className="hidden"
         id="offer-letter-upload"
       />
       <div
-        className={`p-6 rounded-2xl border-2 border-dashed transition-all duration-300 group ${
-          disabled
-            ? "cursor-not-allowed opacity-60 border-border/40 bg-muted/30"
-            : "cursor-pointer"
-        } ${
-          !disabled && fileName
-            ? "border-[#FF553E]/20 bg-[#FF553E]/[0.02]"
-            : !disabled
-              ? "border-border/40 bg-white/50 hover:border-[#FF553E]/20 hover:bg-[#FF553E]/[0.01]"
-              : ""
-        } ${!disabled && isDragging ? "border-[#FF553E] bg-[#FF553E]/[0.02]" : ""}`}
+        className={`p-8 ${baseClass} ${disabledClass} ${stateClass} ${dragClass} group`}
         onDrop={handleDrop}
         onDragOver={disabled ? (e) => e.preventDefault() : handleDragOver}
         onDragLeave={handleDragLeave}
         onClick={disabled ? undefined : () => document.getElementById("offer-letter-upload")?.click()}
       >
-        <div className="flex items-center gap-4">
-          <div
-            className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
-              fileName ? "bg-[#FF553E]/10" : "bg-muted/30 group-hover:bg-[#FF553E]/10"
-            }`}
-          >
-            {fileName ? (
-              <FileText className="w-5 h-5 text-[#FF553E]" />
-            ) : (
-              <Upload className="w-5 h-5 text-foreground/30 group-hover:text-[#FF553E] transition-colors" />
-            )}
-          </div>
-          <div className="flex-1 text-left">
-            <h4 className="text-sm font-semibold text-foreground">
-              {fileName ? fileName : "Upload Offer Letter"}
-            </h4>
-            <p className="text-[11px] text-foreground/40 font-medium">
-              {fileName ? "PDF uploaded • Click to replace" : "PDF Only • Max 5MB"}
-            </p>
-          </div>
+        <div
+          className={`flex items-center justify-center rounded-xl transition-colors ${
+            fileName ? "w-12 h-12 bg-[#FF553E]/10" : "w-12 h-12 bg-muted/30 group-hover:bg-[#FF553E]/10"
+          }`}
+        >
+          {fileName ? (
+            <FileText className="w-6 h-6 text-[#FF553E]" />
+          ) : (
+            <Upload className="w-6 h-6 text-foreground/30 group-hover:text-[#FF553E] transition-colors" />
+          )}
+        </div>
+        <div className="text-center">
+          <h4 className="text-sm font-semibold text-foreground">
+            {fileName ? fileName : "Upload Offer Letter"}
+          </h4>
+          <p className="text-[11px] text-foreground/40 font-medium">
+            {fileName
+              ? "PDF uploaded • Click to replace"
+              : "PDF or DOCX • Max 5MB"}
+          </p>
         </div>
       </div>
     </div>

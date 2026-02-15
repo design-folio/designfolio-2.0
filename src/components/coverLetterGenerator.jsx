@@ -112,7 +112,7 @@ export default function CoverLetterGenerator({ onViewChange, onToolUsed, onStart
   if (analysis) {
     return (
       <div className="w-full space-y-8">
-        <div className="flex justify-between flex-wrap gap-4">
+        <div className="flex justify-between flex-wrap gap-4 max-w-5xl mx-auto">
           <button
             type="button"
             disabled={isStartingNew}
@@ -125,18 +125,18 @@ export default function CoverLetterGenerator({ onViewChange, onToolUsed, onStart
               onStartNewAnalysis?.();
               setIsStartingNew(false);
             }}
-            className="rounded-full border-2 border-foreground/20 bg-white/50 backdrop-blur-sm px-4 py-2 text-sm font-medium text-foreground hover:bg-foreground/10 transition-colors flex items-center gap-2 disabled:opacity-70 disabled:pointer-events-none"
+            className="rounded-full border-2 border-foreground/20 bg-white/50 backdrop-blur-sm px-4 py-2 text-sm font-medium text-foreground hover:bg-foreground/10 transition-colors flex items-center gap-2 disabled:opacity-70 disabled:pointer-events-none ml-auto"
           >
             <RefreshCcw className="h-4 w-4 text-foreground/60" />
             {isStartingNew ? "Loading…" : "Start New Analysis"}
           </button>
-          <button
+          {/* <button
             onClick={() => exportToPdf("pdf-content")}
             className="rounded-full border-2 border-foreground/20 bg-white/50 backdrop-blur-sm px-4 py-2 text-sm font-medium text-foreground hover:bg-foreground/10 transition-colors flex items-center gap-2"
           >
             <Download className="h-4 w-4 text-foreground/60" />
             Download Report (PDF)
-          </button>
+          </button> */}
         </div>
         <div id="pdf-content" className="space-y-8">
           <AnalysisResult analysis={analysis} />

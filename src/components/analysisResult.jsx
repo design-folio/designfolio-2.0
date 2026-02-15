@@ -47,7 +47,7 @@ function Gauge({ value, size = 120, strokeWidth = 12 }) {
           className="transition-all duration-700 ease-out"
         />
       </svg>
-      <span className="absolute bottom-2 text-2xl font-bold font-serif text-foreground">
+      <span className="absolute bottom-2 text-2xl font-bold text-foreground">
         {Math.round(value)}%
       </span>
     </div>
@@ -87,7 +87,7 @@ export default function AnalysisResult({ analysis }) {
         <CardContent className="p-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-8">
             <div className="space-y-3 text-center md:text-left">
-              <h2 className="text-2xl font-serif font-semibold tracking-tight text-foreground">
+              <h2 className="text-2xl font-semibold tracking-tight text-foreground">
                 Overall Match Score
               </h2>
               <p className="text-muted-foreground text-sm max-w-xl leading-relaxed">
@@ -103,7 +103,7 @@ export default function AnalysisResult({ analysis }) {
         <Card className="border-emerald-100 bg-emerald-50/30 shadow-sm rounded-[2rem]">
           <CardHeader className="flex flex-row items-center space-x-2 pb-2">
             <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-            <CardTitle className="text-emerald-700 text-lg font-serif">Strengths</CardTitle>
+            <CardTitle className="text-emerald-700 text-lg ">Strengths</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {(analysis.strengths || []).map((s, i) => (
@@ -118,7 +118,7 @@ export default function AnalysisResult({ analysis }) {
         <Card className="border-rose-100 bg-rose-50/30 shadow-sm rounded-[2rem]">
           <CardHeader className="flex flex-row items-center space-x-2 pb-2">
             <AlertCircle className="w-5 h-5 text-rose-600" />
-            <CardTitle className="text-rose-700 text-lg font-serif">Gaps</CardTitle>
+            <CardTitle className="text-rose-700 text-lg ">Gaps</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {(analysis.gaps || []).map((g, i) => (
@@ -135,7 +135,7 @@ export default function AnalysisResult({ analysis }) {
       {(analysis.metrics?.length > 0) && (
         <Card className="border-border/40 bg-white shadow-sm rounded-[2rem]">
           <CardHeader>
-            <CardTitle className="text-xl text-foreground font-serif">Skills Analysis</CardTitle>
+            <CardTitle className="text-xl text-foreground ">Skills Analysis</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
@@ -208,7 +208,7 @@ export default function AnalysisResult({ analysis }) {
                   <div className="p-2.5 rounded-2xl bg-slate-50 border border-slate-100 shadow-sm">
                     {getSectionIcon(section.name)}
                   </div>
-                  <h3 className="text-lg font-serif font-semibold text-foreground">{section.name}</h3>
+                  <h3 className="text-lg  font-semibold text-foreground">{section.name}</h3>
                 </div>
                 {section.matchPercentage != null && (
                   <div className="flex items-center gap-2">
@@ -253,7 +253,7 @@ export default function AnalysisResult({ analysis }) {
         <Card className="border-orange-100 bg-[#FFFAF5] shadow-sm rounded-[2rem]">
           <CardHeader className="flex flex-row items-center space-x-2 pb-2">
             <UserCircle2 className="w-5 h-5 text-[#FF553E]" />
-            <CardTitle className="text-foreground text-xl font-serif">
+            <CardTitle className="text-foreground text-xl ">
               Priority Recommendations
             </CardTitle>
           </CardHeader>

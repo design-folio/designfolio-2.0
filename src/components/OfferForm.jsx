@@ -4,12 +4,11 @@ import * as Yup from "yup";
 import { Label } from "@/components/ui/label";
 import {
   inputWrapperClass,
-  textareaWrapperClass,
   inputInnerClass,
-  textareaInnerClass,
   selectInnerClass,
   AiToolButton,
 } from "./ai-tools/AiToolFormField";
+import OfferLetterUploader from "./OfferLetterUploader";
 import { cn } from "@/lib/utils";
 
 const validationSchema = Yup.object().shape({
@@ -17,8 +16,10 @@ const validationSchema = Yup.object().shape({
   offeredSalary: Yup.string().required("Offered salary is required"),
 });
 
-const OffervalidationSchema = Yup.object().shape({
-  offerContent: Yup.string().required("Offer content salary is required"),
+const OfferValidationSchema = Yup.object().shape({
+  offerContent: Yup.string()
+    .required("Please upload your offer letter (PDF)")
+    .min(50, "Offer letter text is too short. Try a different PDF."),
 });
 export default function OfferForm({ onSubmit, isAnalyzing, guestUsageLimitReached = false }) {
   const [currentTab, setCurrentTab] = useState("manual");
@@ -133,22 +134,17 @@ export default function OfferForm({ onSubmit, isAnalyzing, guestUsageLimitReache
       <div className={currentTab === "offer" ? "block space-y-4" : "hidden"}>
         <Formik
           initialValues={{ offerContent: "" }}
-          validationSchema={OffervalidationSchema}
+          validationSchema={OfferValidationSchema}
           onSubmit={(values) => onSubmit(values)}
         >
-          {({ errors, touched }) => (
+          {({ errors, touched, setFieldValue }) => (
             <Form id="offerForm" className="space-y-4">
               <div className="space-y-2">
-                <Label className="text-sm font-medium text-foreground ml-1">Paste Your Offer Letter</Label>
-                <div className={cn(textareaWrapperClass, "min-h-[250px]", errors.offerContent && touched.offerContent && "border-red-500")}>
-                  <Field
-                    name="offerContent"
-                    as="textarea"
-                    placeholder="Copy and paste your offer letter content here. Our AI will analyze & extract relevant details"
-                    className={cn(textareaInnerClass, "min-h-[250px]")}
-                    autoComplete="off"
-                  />
-                </div>
+                <Label className="text-sm font-medium text-foreground ml-1">Upload Offer Letter<span className="text-[#FF553E] ml-0.5">*</span></Label>
+                <OfferLetterUploader
+                  onUpload={(text) => setFieldValue("offerContent", text)}
+                  disabled={isAnalyzing || guestUsageLimitReached}
+                />
                 <ErrorMessage name="offerContent" component="p" className="text-sm text-red-500 ml-1" />
               </div>
               <AiToolButton disabled={isAnalyzing || guestUsageLimitReached}>

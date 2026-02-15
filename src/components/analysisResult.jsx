@@ -81,7 +81,7 @@ export default function AnalysisResult({ analysis }) {
   const recText = (rec) => [rec.action, rec.impact].filter(Boolean).join(" ");
 
   return (
-    <div className="w-full max-w-5xl mx-auto space-y-6 pb-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="w-full max-w-5xl mx-auto space-y-6 pb-12 animate-in fade-in slide-in-from-bottom-4 duration-700 items-center" >
       {/* Header Score section */}
       <Card className="border-border/40 bg-white shadow-sm overflow-hidden rounded-[2rem]">
         <CardContent className="p-8">

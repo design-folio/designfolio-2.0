@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
@@ -18,8 +18,19 @@ import { LinkNode } from './tiptap/LinkExtension';
 import { YoutubeNode } from './tiptap/YoutubeExtension';
 import { ResizableImage } from './tiptap/ResizableImage';
 import { cn } from '@/lib/utils';
+import { X } from 'lucide-react';
 
 const TiptapRenderer = ({ content }) => {
+  const [fullscreenImageSrc, setFullscreenImageSrc] = useState(null);
+
+  const handleContentClick = useCallback((e) => {
+    const img = e.target.closest?.('img');
+    if (img?.src) {
+      e.preventDefault();
+      setFullscreenImageSrc(img.src);
+    }
+  }, []);
+
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
@@ -56,6 +67,9 @@ const TiptapRenderer = ({ content }) => {
       Image.configure({
         inline: false,
         allowBase64: true,
+        HTMLAttributes: {
+          class: 'cursor-pointer',
+        },
       }),
       ResizableImage,
       Youtube.configure({
@@ -107,9 +121,35 @@ const TiptapRenderer = ({ content }) => {
   });
 
   return (
-    <div className={cn("bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words project-editor")}>
-      <EditorContent editor={editor} />
-    </div>
+    <>
+      <div
+        className={cn("bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words project-editor")}
+        onClick={handleContentClick}
+        role="presentation"
+      >
+        <EditorContent editor={editor} />
+      </div>
+
+      {fullscreenImageSrc && (
+        <button
+          type="button"
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 p-4 outline-none"
+          onClick={() => setFullscreenImageSrc(null)}
+          aria-label="Close fullscreen image"
+        >
+          <img
+            src={fullscreenImageSrc}
+            alt="Fullscreen"
+            className="max-h-full max-w-full object-contain rounded-lg"
+            onClick={(e) => e.stopPropagation()}
+            draggable={false}
+          />
+          <span className="absolute top-4 right-4 rounded-full bg-white/10 p-2 text-white hover:bg-white/20 transition-colors">
+            <X className="w-6 h-6" />
+          </span>
+        </button>
+      )}
+    </>
   );
 };
 

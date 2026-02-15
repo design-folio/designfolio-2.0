@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import Text from "./text";
-import Button from "./button";
-import ProgressBar from "./ProgressBar";
+import { motion } from "framer-motion";
+import { Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const MAX_CHAR_LIMIT = 500;
 
@@ -91,6 +91,8 @@ const generateTip = (question) => {
   return "Context → Approach → Implementation → Results → Learning";
 };
 
+const STREAM_SPEED_MS = 40;
+
 export default function QuestionDisplay({
   currentQuestion,
   questionNumber,
@@ -101,9 +103,24 @@ export default function QuestionDisplay({
   isGeneratingFeedback = false,
 }) {
   const [tip, setTip] = useState("");
+  const [streamedText, setStreamedText] = useState("");
 
   useEffect(() => {
     setTip(generateTip(currentQuestion));
+  }, [currentQuestion]);
+
+  // Stream question text (typewriter effect)
+  useEffect(() => {
+    const full = currentQuestion || "";
+    setStreamedText("");
+    if (!full) return;
+    let index = 0;
+    const timer = setInterval(() => {
+      index += 1;
+      setStreamedText(full.slice(0, index));
+      if (index >= full.length) clearInterval(timer);
+    }, STREAM_SPEED_MS);
+    return () => clearInterval(timer);
   }, [currentQuestion]);
 
   const handleAnswerChange = (e) => {
@@ -114,76 +131,78 @@ export default function QuestionDisplay({
   };
 
   const remainingChars = MAX_CHAR_LIMIT - userAnswer.length;
+  const totalCount = Math.max(totalQuestions, 1);
 
   return (
-    <div className="container mx-auto max-w-2xl">
-      <div className="text-center mb-12" id="initial-title">
-        <Text
-          size="p-large"
-          className="text-center text-[#202937] font-satoshi"
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="w-full space-y-6"
+    >
+      <div className="flex items-center justify-between">
+        <h3 className="text-xl font-semibold text-foreground">
+          Q. {questionNumber} of {totalQuestions}
+        </h3>
+        <Button
+          type="button"
+          disabled={isGeneratingFeedback || !userAnswer.trim()}
+          onClick={onNext}
+          className="bg-[#1A1F2C] text-white hover:bg-[#1A1F2C]/90 rounded-full px-8 h-11 font-medium"
         >
-          Practice Mock Interview
-        </Text>
-        <Text
-          size="p-small"
-          className="text-center text-[#475569] font-medium mt-4"
-        >
-          Ace your next opportunity{" "}
-        </Text>
+          {questionNumber === totalQuestions
+            ? isGeneratingFeedback
+              ? "Generating Report..."
+              : "Finish Interview"
+            : "Next Question"}
+        </Button>
       </div>
-      <div className="bg-white shadow-tools border border-[#E5E7EB] rounded-2xl p-6">
-        <div className="flex justify-between items-center">
-          <Text size="p-small" className=" text-[#20294C] font-semibold">
-            Q. {questionNumber} of {totalQuestions}
-          </Text>
 
-          <Button
-            text={
-              questionNumber === totalQuestions
-                ? isGeneratingFeedback
-                  ? "Generating Report..."
-                  : "Finish Interview"
-                : "Next Question"
-            }
-            isLoading={isGeneratingFeedback}
-            onClick={onNext}
-            isDisabled={isGeneratingFeedback}
+      {/* Progress indicator */}
+      <div className="flex gap-2 w-full">
+        {Array.from({ length: totalCount }).map((_, i) => (
+          <div
+            key={i}
+            className={`h-1.5 flex-1 rounded-full transition-all duration-500 ${
+              i === questionNumber - 1
+                ? "bg-[#FF553E]"
+                : i < questionNumber - 1
+                  ? "bg-[#FF553E]/40"
+                  : "bg-muted/30"
+            }`}
           />
+        ))}
+      </div>
+
+      <div className="space-y-6 pt-4">
+        <p className="text-base font-medium text-foreground leading-relaxed">
+          {streamedText || (currentQuestion ? "" : "Loading question...")}
+          {currentQuestion && streamedText.length < (currentQuestion?.length || 0) ? (
+            <span className="inline-block w-0.5 h-4 bg-foreground/70 align-middle animate-pulse ml-0.5" aria-hidden />
+          ) : null}
+        </p>
+
+        <div className="relative group">
+          <div className="bg-white dark:bg-white border-2 border-border rounded-2xl hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] transition-all duration-300 ease-out overflow-hidden">
+            <textarea
+              className="border-0 bg-transparent min-h-[240px] px-6 py-5 w-full focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 text-base text-foreground placeholder:text-muted-foreground/40 resize-none"
+              maxLength={MAX_CHAR_LIMIT}
+              placeholder="Type your answer here..."
+              value={userAnswer}
+              onChange={handleAnswerChange}
+            />
+          </div>
         </div>
-        <div className="flex gap-2 mt-4">
-          <ProgressBar progress={100} />
-          <ProgressBar progress={questionNumber >= 2 && 100} />
-          <ProgressBar progress={questionNumber >= 3 && 100} />
-          <ProgressBar progress={questionNumber >= 4 && 100} />
-          <ProgressBar progress={questionNumber >= 5 && 100} />
-        </div>
-        <div className="mt-7">
-          <Text size="p-xsmall" className=" text-[#20294C] font-bold">
-            {currentQuestion || "Loading question..."}
-          </Text>
-          <textarea
-            className={`text-input mt-5  min-h-[200px] border-b`}
-            maxLength={MAX_CHAR_LIMIT}
-            placeholder="Type your answer here..."
-            value={userAnswer}
-            onChange={handleAnswerChange}
-          />
-        </div>
-        <div className="flex items-center justify-between mt-3">
-          <Text
-            size="p-xxsmall"
-            className=" text-[#20294C] font-semibold text-[12px]"
-          >
+
+        <div className="flex items-center justify-between pt-2">
+          <div className="text-sm font-medium text-foreground/60">
             Characters remaining: {remainingChars}
-          </Text>
-          <Text
-            size="p-xxsmall"
-            className=" text-[#20294C] font-semibold text-[12px]"
-          >
-            💡 Tip: {tip}
-          </Text>
+          </div>
+          <div className="flex items-center gap-2 text-sm text-foreground/60">
+            <Sparkles className="w-4 h-4 text-yellow-500 shrink-0" />
+            <span className="font-medium italic">Tip: {tip}</span>
+          </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

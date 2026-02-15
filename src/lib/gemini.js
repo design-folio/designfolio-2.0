@@ -6,7 +6,7 @@ const CACHE_KEY = "email_generation_attempts";
 const MAX_ATTEMPTS = 3;
 const COOLDOWN_PERIOD = 40000; // 40 seconds in milliseconds
 
-const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY);
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 const checkRateLimit = () => {
   const cache = localStorage.getItem(CACHE_KEY);
@@ -103,9 +103,7 @@ BODY: <the email body>`;
 
 export const analyzeOffer = async (data) => {
   console.log("Starting offer analysis...");
-  const genAI = new GoogleGenerativeAI(
-    process.env.NEXT_PUBLIC_GEMINI_API_KEY
-  );
+  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
   if (!genAI) {
     console.error("AI initialization failed");

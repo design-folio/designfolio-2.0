@@ -434,7 +434,7 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
                 {/* On mobile, scale PDF out so it’s not zoomed in; desktop unchanged */}
                 <div className="w-[130%] h-[130%] origin-top-left scale-[0.769] md:w-full md:h-full md:scale-100">
                   <iframe
-                    src={resume.url}
+                    src={`https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(resume.url)}#zoom=page-width&pagemode=none`}
                     className="w-full h-full border-0"
                     title="Resume PDF"
                   />

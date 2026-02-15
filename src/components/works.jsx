@@ -31,7 +31,7 @@ import { useTheme } from "next-themes";
 import MemoWorkExperience from "./icons/WorkExperience";
 import DragHandle from "./DragHandle";
 import { motion } from "framer-motion";
-import { PencilIcon, Building } from "lucide-react";
+import { PencilIcon, Building, ChevronDown } from "lucide-react";
 import ClampableTiptapContent from "./ClampableTiptapContent";
 import { getPlainTextLength } from "@/lib/tiptapUtils";
 import { useGlobalContext } from "@/context/globalContext";
@@ -46,7 +46,12 @@ export default function Works({
 }) {
   const scrollContainerRef = useRef(null); // Ref for the scrollable container
   const [showModal, setShowModal] = useState(false);
+  const [showAllExperience, setShowAllExperience] = useState(false);
   const { theme } = useTheme();
+  const workExperiences = userDetails?.experiences || [];
+  const displayedExperiences = showAllExperience || workExperiences.length <= 3
+    ? workExperiences
+    : workExperiences.slice(0, 3);
   const { setSelectedWork } = useGlobalContext();
 
   const sensors = useSensors(
@@ -92,25 +97,40 @@ export default function Works({
           <SortIcon className="w-4 h-4 text-df-icon-color cursor-pointer" />
         )
       }
+      tooltip="Reorder experience"
       onClick={() => {
         setShowModal(true);
       }}
       imageClassName={"pr-4"}
     >
       <div className="space-y-4">
-        {userDetails?.experiences?.map((experience, index) => {
+        {displayedExperiences.map((experience, index) => {
           return (
             <WorkExperienceCard
               key={experience?._id}
               experience={experience}
               index={index}
-              showDivider={index < (userDetails?.experiences?.length || 0) - 1}
+              showDivider={index < displayedExperiences.length - 1}
               edit={edit}
               setSelectedWork={setSelectedWork}
               openSidebar={openSidebar}
             />
           );
         })}
+
+        {!showAllExperience && workExperiences.length > 3 && (
+          <div className="mt-4 flex justify-center">
+            <ButtonNew
+              variant="ghost"
+              size="sm"
+              className="text-foreground/40 hover:text-foreground text-xs font-medium uppercase tracking-widest gap-2 group transition-all"
+              onClick={() => setShowAllExperience(true)}
+            >
+              View More Experience
+              <ChevronDown className="w-3 h-3 transition-transform group-hover:translate-y-0.5" />
+            </ButtonNew>
+          </div>
+        )}
 
         {edit && (
           <AddItem

@@ -2,7 +2,7 @@ import React from "react";
 import Text from "./text";
 import { PencilIcon, Eye, EyeOff } from "lucide-react";
 import { Button } from "./ui/buttonNew";
-import Button2 from "./button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { useGlobalContext } from "@/context/globalContext";
@@ -38,18 +38,26 @@ export function SectionVisibilityButton({ sectionId, className = "" }) {
     _updateUser({ hiddenSections: updatedHiddenSections });
   };
 
-
   return (
-    <Button2
-      icon={isSectionHidden ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-      text={isSectionHidden ? "Hidden" : "Hide"}
-      onClick={handleToggleVisibility}
-      type="secondary"
-      customClass={cn(
-        isSectionHidden && "text-[#F59E0b]",
-        className,
-      )}
-    />
+    <TooltipProvider delayDuration={300}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="secondary"
+            size="icon"
+            className={cn("h-11 w-11", isSectionHidden && "text-[#F59E0b]", className)}
+            onClick={handleToggleVisibility}
+            type="button"
+            aria-label={isSectionHidden ? "Hidden" : "Hide"}
+          >
+            {isSectionHidden ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent side="top" sideOffset={8} className="bg-tooltip-bg-color text-tooltip-text-color border-0 px-4 py-2 rounded-xl shadow-xl">
+          <span className="text-sm font-medium">{isSectionHidden ? "Hidden" : "Hide"}</span>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }
 
@@ -67,6 +75,7 @@ export default function Section({
   headerClassName = "",
   contentClassName = "",
   sectionId, // Section identifier for visibility toggle (e.g., 'projects', 'reviews', 'tools', 'works', 'about')
+  tooltip,
 }) {
 
   return (
@@ -93,7 +102,20 @@ export default function Section({
               actions
             ) : (
               icon && (
-                <Button variant="secondary" className="h-11 w-11" onClick={onClick} type={btnType} size="icon" >{icon}</Button>
+                tooltip ? (
+                  <TooltipProvider delayDuration={200}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button variant="secondary" className="h-11 w-11" onClick={onClick} type={btnType} size="icon" aria-label={tooltip}>{icon}</Button>
+                      </TooltipTrigger>
+                      <TooltipContent side="top" sideOffset={8} className="bg-tooltip-bg-color text-tooltip-text-color border-0 px-4 py-2 rounded-xl shadow-xl">
+                        <span className="text-sm font-medium">{tooltip}</span>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                ) : (
+                  <Button variant="secondary" className="h-11 w-11" onClick={onClick} type={btnType} size="icon" >{icon}</Button>
+                )
               )
             )}
           </div>

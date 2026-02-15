@@ -1,10 +1,9 @@
-import { useRef } from "react";
-// import html2pdf from "html2pdf.js";
-import Button from "./button";
+import { useRef, useState } from "react";
 import ProgressBar from "./ProgressBar";
 
-const DetailedFeedback = ({ feedbackData }) => {
+const DetailedFeedback = ({ feedbackData, onStartNew }) => {
   const reportRef = useRef(null);
+  const [isStartingOver, setIsStartingOver] = useState(false);
 
   const getScoreColor = (score) => {
     if (score >= 80) return "text-green-500";
@@ -38,20 +37,32 @@ const DetailedFeedback = ({ feedbackData }) => {
   };
 
   const handleStartOver = () => {
-    window.location.reload();
+    if (isStartingOver) return;
+    setIsStartingOver(true);
+    if (typeof onStartNew === "function") {
+      onStartNew();
+    } else {
+      window.location.reload();
+    }
   };
 
   return (
-    <div className="bg-white shadow-tools border border-[#E5E7EB] rounded-2xl p-6 container mx-auto max-w-3xl">
-      {/* Action Buttons at the top */}
-      <div className="mb-6 space-x-4 text-center action-buttons">
-        <Button
+    <div className="w-full max-w-6xl mx-auto space-y-6">
+      <div className="flex flex-wrap gap-4 justify-center action-buttons">
+        <button
           onClick={handleDownloadPDF}
-          text="Download PDF"
-          type="secondary"
-        />
-
-        <Button onClick={handleStartOver} text="Start New Interview" />
+          className="rounded-full border-2 border-foreground/20 bg-white/50 backdrop-blur-sm px-4 py-2 text-sm font-medium text-foreground hover:bg-foreground/10 transition-colors"
+        >
+          Download PDF
+        </button>
+        <button
+          type="button"
+          onClick={handleStartOver}
+          disabled={isStartingOver}
+          className="rounded-full h-11 px-6 text-base font-semibold bg-foreground text-background hover:bg-foreground/90 transition-colors disabled:opacity-70 disabled:pointer-events-none"
+        >
+          {isStartingOver ? "Loading…" : "Start New Interview"}
+        </button>
       </div>
 
       <div ref={reportRef}>

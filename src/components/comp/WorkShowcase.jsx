@@ -32,6 +32,7 @@ import { CSS } from '@dnd-kit/utilities';
 import ProjectLock from "../projectLock";
 import MemoCasestudy from "../icons/Casestudy";
 import Text from "../text";
+import { cn } from "@/lib/utils";
 
 export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions }) => {
   const router = useRouter();
@@ -237,20 +238,20 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
         className={`${isDragging ? 'relative' : ''} h-full`}
       >
         <motion.div
-            onMouseMove={handleMouseMove}
-            onClick={() => {
-              setCursorPill(false);
-              handleNavigation(project?._id);
-            }}
-            onMouseDown={() => setCursorPill(false)}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => {
-              setIsHovered(false);
-              setIsHoveringInteractive(false);
-            }}
-            variants={itemVariants}
-            className="group rounded-3xl bg-card overflow-hidden relative shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] cursor-pointer h-full flex flex-col"
-          >
+          onMouseMove={handleMouseMove}
+          onClick={() => {
+            setCursorPill(false);
+            handleNavigation(project?._id);
+          }}
+          onMouseDown={() => setCursorPill(false)}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => {
+            setIsHovered(false);
+            setIsHoveringInteractive(false);
+          }}
+          variants={itemVariants}
+          className="group rounded-3xl bg-card overflow-hidden relative shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] cursor-pointer h-full flex flex-col"
+        >
           <div
             className="pointer-events-none absolute -inset-px opacity-0 group-hover:opacity-100 transition-opacity duration-300"
             style={{
@@ -276,7 +277,7 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
             </a> */}
           </div>
           <div className="flex-1 flex flex-col justify-between cursor-pointer">
-            <div className="p-6 pb-0">
+            <div className={cn('p-6', edit && 'pb-0')}>
               <h3 className="text-lg font-semibold line-clamp-2 project-info-card-heading-color">
                 {project.title}
               </h3>

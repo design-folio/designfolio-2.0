@@ -4,7 +4,7 @@ import ReactMarkdown from "react-markdown";
 import { TableRenderer } from "./TableRenderer";
 import { exportToPdf } from "./PdfExporter";
 
-export default function AnalysisReport({ analysis, onRestart }) {
+export default function AnalysisReport({ analysis, onRestart, isRestarting = false }) {
   const scoreMatch = analysis.match(/Score:\s*(\d+)/i);
   const score = scoreMatch ? parseInt(scoreMatch[1]) : 0;
 
@@ -24,18 +24,23 @@ export default function AnalysisReport({ analysis, onRestart }) {
   // Filter out the Score: line from the analysis text
   const filteredAnalysis = analysis.replace(/Score:\s*\d+\n*/i, "");
   return (
-    <div className="w-full max-w-[848px] mx-auto p-8 bg-white/80 backdrop-blur-sm shadow-lg animate-fadeIn">
+    <div className="w-full max-w-6xl mx-auto p-8 animate-fadeIn">
       <div className="flex justify-end gap-4 mb-8">
         <button
-          onClick={() => exportToPdf("pdf-content")}
+          onClick={() => exportToPdf("pdf-content", { analysis, score })}
           className="flex items-center gap-2"
         >
           <Download className="h-4 w-4" />
           Export PDF
         </button>
-        <button onClick={onRestart} className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={onRestart}
+          disabled={isRestarting}
+          className="flex items-center gap-2 disabled:opacity-70 disabled:pointer-events-none"
+        >
           <RefreshCcw className="h-4 w-4" />
-          New Analysis
+          {isRestarting ? "Loading…" : "New Analysis"}
         </button>
       </div>
       <div id="pdf-content">

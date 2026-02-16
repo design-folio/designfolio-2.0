@@ -21,6 +21,8 @@ import { CursorTooltipProvider } from '@/context/cursorTooltipContext';
 import { CursorPill } from '@/components/CursorPill';
 import posthog from '@/lib/postHog';
 import { PostHogProvider } from '@posthog/react';
+import { usePostHogEvent } from '@/hooks/usePostHogEvent';
+import { POSTHOG_EVENT_NAMES } from '@/lib/posthogEventNames';
 
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 
@@ -125,6 +127,26 @@ const gsans = localFont({
 
 function MyApp({ Component, pageProps, dfToken, hideHeader }) {
   const { theme } = useTheme();
+  const phEvent = usePostHogEvent();
+
+  useEffect(() => {
+    const sessionCount = Number(localStorage.getItem('session_count') || '0');
+    const newSessionCount = sessionCount + 1;
+    phEvent(POSTHOG_EVENT_NAMES.SESSION_STARTED, {
+      session_number: newSessionCount,
+      logged_in: !!dfToken,
+      session_path: window.location.pathname,
+      referrer: document.referrer,
+    });
+    // if (newSessionCount === 2) {
+    //   phEvent(POSTHOG_EVENT_NAMES.SECOND_SESSION_STARTED, {
+    //     logged_in: !!dfToken,
+    //     session_path: window.location.pathname,
+    //     referrer: document.referrer,
+    //   });
+    // }
+    localStorage.setItem('session_count', newSessionCount);
+  }, []);
 
   return (
     <>

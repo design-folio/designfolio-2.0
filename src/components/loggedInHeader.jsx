@@ -1,45 +1,52 @@
-import { popovers, sidebars, isSidebarThatShifts, getSidebarShiftWidth } from "@/lib/constant";
-import { formatTimestamp } from "@/lib/times";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
-import styles from "@/styles/domain.module.css";
-import Logo from "../../public/assets/svgs/logo.svg";
-import ButtonOld from "./button";
+import {
+  popovers,
+  sidebars,
+  isSidebarThatShifts,
+  getSidebarShiftWidth,
+} from '@/lib/constant';
+import { formatTimestamp } from '@/lib/times';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+import styles from '@/styles/domain.module.css';
+import Logo from '../../public/assets/svgs/logo.svg';
+import ButtonOld from './button';
 // import ThemeIcon from "../../public/assets/svgs/themeIcon.svg";
-import CloseIcon from "../../public/assets/svgs/close.svg";
-import SunIcon from "../../public/assets/svgs/sun.svg";
-import MoonIcon from "../../public/assets/svgs/moon.svg";
-import LinkIcon from "../../public/assets/svgs/link.svg";
-import HamburgerIcon from "../../public/assets/svgs/hamburger.svg";
-import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
-import { motion } from "framer-motion";
-import { useTheme } from "next-themes";
-import Text from "./text";
-import DfImage from "./image";
-import { Button } from "@/components/ui/buttonNew"
-import Cookies from "js-cookie";
-import { _publish } from "@/network/post-request";
-import Popover from "./popover";
-import queryClient from "@/network/queryClient";
-import useClient from "@/hooks/useClient";
-import { twMerge } from "tailwind-merge";
-import { removeCursor } from "@/lib/cursor";
-import Modal from "./modal";
-import { Badge } from "./ui/badge";
-import { Check, Copy, SettingsIcon } from "lucide-react";
-import { getUserAvatarImage } from "@/lib/getAvatarUrl";
-import MemoThemeIcon from "./icons/ThemeIcon";
-import MemoAnalytics from "./icons/Analytics";
-import MemoPreviewIcon from "./icons/PreviewIcon";
-import MemoPower from "./icons/Power";
-import { cn } from "@/lib/utils";
-import MobileMenuButton from "./MobileMenuButton";
-import ThemePanel from "./ThemePanel";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { useGlobalContext } from "@/context/globalContext";
-import { modals } from "@/lib/constant";
+import CloseIcon from '../../public/assets/svgs/close.svg';
+import SunIcon from '../../public/assets/svgs/sun.svg';
+import MoonIcon from '../../public/assets/svgs/moon.svg';
+import LinkIcon from '../../public/assets/svgs/link.svg';
+import HamburgerIcon from '../../public/assets/svgs/hamburger.svg';
+import LeftArrow from '../../public/assets/svgs/left-arrow.svg';
+import { motion } from 'framer-motion';
+import { useTheme } from 'next-themes';
+import Text from './text';
+import DfImage from './image';
+import { Button } from '@/components/ui/buttonNew';
+import Cookies from 'js-cookie';
+import { _publish } from '@/network/post-request';
+import Popover from './popover';
+import queryClient from '@/network/queryClient';
+import useClient from '@/hooks/useClient';
+import { twMerge } from 'tailwind-merge';
+import { removeCursor } from '@/lib/cursor';
+import Modal from './modal';
+import { Badge } from './ui/badge';
+import { Check, Copy, SettingsIcon } from 'lucide-react';
+import { getUserAvatarImage } from '@/lib/getAvatarUrl';
+import MemoThemeIcon from './icons/ThemeIcon';
+import MemoAnalytics from './icons/Analytics';
+import MemoPreviewIcon from './icons/PreviewIcon';
+import MemoPower from './icons/Power';
+import { cn } from '@/lib/utils';
+import MobileMenuButton from './MobileMenuButton';
+import ThemePanel from './ThemePanel';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { useGlobalContext } from '@/context/globalContext';
+import { modals } from '@/lib/constant';
+import { usePostHogEvent } from '@/hooks/usePostHogEvent';
+import { POSTHOG_EVENT_NAMES } from '@/lib/posthogEventNames';
 
 const cursors = [
   {
@@ -112,33 +119,33 @@ const cursors = [
   },
 ];
 const variants = {
-  hidden: { x: "100%" },
-  visible: { x: "0%" },
+  hidden: { x: '100%' },
+  visible: { x: '0%' },
 };
 
 const templates = [
   {
     id: 1,
-    value: "default",
-    item: "Default",
+    value: 'default',
+    item: 'Default',
     isNew: false,
   },
   {
     id: 2,
-    value: "chat",
-    item: "Chat Box",
+    value: 'chat',
+    item: 'Chat Box',
     isNew: false,
   },
   {
     id: 3,
-    value: "prism",
-    item: "Prism",
+    value: 'prism',
+    item: 'Prism',
     isNew: true,
   },
   {
     id: 4,
-    value: "pristine",
-    item: "Pristine",
+    value: 'pristine',
+    item: 'Pristine',
     isNew: true,
   },
 ];
@@ -171,8 +178,16 @@ export default function LoggedInHeader({
   const [updateLoading, setUpdateLoading] = useState(false);
   const [isMobileThemePopup, setIsMobileThemePopup] = useState(false);
 
+  const phEvent = usePostHogEvent();
+
   // Get activeSidebar and wallpaper effects from context
-  const { activeSidebar, openSidebar, closeSidebar, wallpaperEffects, updateWallpaperEffect } = useGlobalContext();
+  const {
+    activeSidebar,
+    openSidebar,
+    closeSidebar,
+    wallpaperEffects,
+    updateWallpaperEffect,
+  } = useGlobalContext();
   const shouldShiftHeader = !isMobile && isSidebarThatShifts(activeSidebar);
 
   const { username, latestPublishDate, _id, email } = userDetails || {};
@@ -192,43 +207,99 @@ export default function LoggedInHeader({
     {
       id: 1,
       value: 1,
-      item: <div className="w-full h-8 rounded" style={{ backgroundImage: `url(${wpPath}/wall1.png)`, backgroundSize: "cover" }}></div>,
+      item: (
+        <div
+          className="w-full h-8 rounded"
+          style={{
+            backgroundImage: `url(${wpPath}/wall1.png)`,
+            backgroundSize: 'cover',
+          }}
+        ></div>
+      ),
     },
     {
       id: 2,
       value: 2,
-      item: <div className="w-full h-8 rounded" style={{ backgroundImage: `url(${wpPath}/wall2.png)`, backgroundSize: "cover" }}></div>,
+      item: (
+        <div
+          className="w-full h-8 rounded"
+          style={{
+            backgroundImage: `url(${wpPath}/wall2.png)`,
+            backgroundSize: 'cover',
+          }}
+        ></div>
+      ),
     },
     {
       id: 3,
       value: 3,
-      item: <div className="w-full h-8 rounded" style={{ backgroundImage: `url(${wpPath}/wall3.png)`, backgroundSize: "cover" }}></div>,
+      item: (
+        <div
+          className="w-full h-8 rounded"
+          style={{
+            backgroundImage: `url(${wpPath}/wall3.png)`,
+            backgroundSize: 'cover',
+          }}
+        ></div>
+      ),
     },
     {
       id: 4,
       value: 4,
-      item: <div className="w-full h-8 rounded" style={{ backgroundImage: `url(${wpPath}/wall4.png)`, backgroundSize: "cover" }}></div>,
+      item: (
+        <div
+          className="w-full h-8 rounded"
+          style={{
+            backgroundImage: `url(${wpPath}/wall4.png)`,
+            backgroundSize: 'cover',
+          }}
+        ></div>
+      ),
     },
     {
       id: 5,
       value: 5,
-      item: <div className="w-full h-8 rounded" style={{ backgroundImage: `url(${wpPath}/wall5.png)`, backgroundSize: "cover" }}></div>,
+      item: (
+        <div
+          className="w-full h-8 rounded"
+          style={{
+            backgroundImage: `url(${wpPath}/wall5.png)`,
+            backgroundSize: 'cover',
+          }}
+        ></div>
+      ),
     },
     {
       id: 6,
       value: 6,
-      item: <div className="w-full h-8 rounded" style={{ backgroundImage: `url(${wpPath}/wall6.png)`, backgroundSize: "cover" }}></div>,
+      item: (
+        <div
+          className="w-full h-8 rounded"
+          style={{
+            backgroundImage: `url(${wpPath}/wall6.png)`,
+            backgroundSize: 'cover',
+          }}
+        ></div>
+      ),
     },
     {
       id: 7,
       value: 7,
-      item: <div className="w-full h-8 rounded" style={{ backgroundImage: `url(${wpPath}/wall7.png)`, backgroundSize: "cover" }}></div>,
+      item: (
+        <div
+          className="w-full h-8 rounded"
+          style={{
+            backgroundImage: `url(${wpPath}/wall7.png)`,
+            backgroundSize: 'cover',
+          }}
+        ></div>
+      ),
     },
   ];
 
   useEffect(() => {
-    router.prefetch("/");
-    router.prefetch("/account-settings");
+    router.prefetch('/');
+    router.prefetch('/account-settings');
     router.prefetch(`/portfolio-preview`);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
@@ -257,9 +328,9 @@ export default function LoggedInHeader({
       setLastScrollY(currentScrollY);
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener('scroll', handleScroll, { passive: true });
 
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, [lastScrollY]);
 
   const handleCopyText = async () => {
@@ -269,9 +340,9 @@ export default function LoggedInHeader({
       );
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-      toast.success("URL copied successfully");
+      toast.success('URL copied successfully');
     } catch (err) {
-      console.error("Failed to copy: ", err);
+      console.error('Failed to copy: ', err);
     }
   };
 
@@ -279,24 +350,40 @@ export default function LoggedInHeader({
     setUserDetails(null);
     setPopoverMenu(null);
     queryClient.removeQueries();
-    Cookies.remove("df-token", {
+    Cookies.remove('df-token', {
       domain: process.env.NEXT_PUBLIC_BASE_DOMAIN,
     });
-    localStorage.removeItem("bottom_notification_seen");
+    localStorage.removeItem('bottom_notification_seen');
     removeCursor();
-    router.replace("/");
+    router.replace('/');
   };
 
   const handleUpdate = (open = false) => {
     setUpdateLoading(true);
     changeTemplate(template);
+
+    const isFirstPublished = !latestPublishDate;
     _publish({ status: 1 })
-      .then((res) => {
-        setUserDetails((prev) => ({ ...prev, ...res?.data?.user }));
+      .then(res => {
+        setUserDetails(prev => ({ ...prev, ...res?.data?.user }));
 
         setIsMobileThemePopup(false);
-        updateCache("userDetails", res?.data?.user);
-        toast.success("Published successfully.");
+        updateCache('userDetails', res?.data?.user);
+        if (isFirstPublished) {
+          phEvent(POSTHOG_EVENT_NAMES.PORTFOLIO_PUBLISHED, {
+            email,
+            username,
+            publish_type: 'first_publish',
+          });
+        } else {
+          phEvent(POSTHOG_EVENT_NAMES.EDIT_AFTER_PUBLISH, {
+            email,
+            username,
+            publish_type: 'updated',
+          });
+        }
+
+        toast.success('Published successfully.');
         if (open) {
           setPopoverMenu(popovers.publishMenu);
         } else {
@@ -315,7 +402,7 @@ export default function LoggedInHeader({
     if (!latestPublishDate && template == 0) {
       return handleUpdate(true);
     }
-    setPopoverMenu((prev) =>
+    setPopoverMenu(prev =>
       prev == popovers.publishMenu ? null : popovers.publishMenu
     );
   };
@@ -333,74 +420,73 @@ export default function LoggedInHeader({
   };
   const handlenavigation = () => {
     setPopoverMenu(null);
-    router.push("/settings");
+    router.push('/settings');
   };
 
-  const handleChangeCursor = (i) => {
+  const handleChangeCursor = i => {
     changeCursor(i);
   };
 
-  const renderTemplate = (template = "default") => {
-    if (template == "default") {
-      if (theme == "light") {
-        return "/assets/png/white-default-theme.png";
+  const renderTemplate = (template = 'default') => {
+    if (template == 'default') {
+      if (theme == 'light') {
+        return '/assets/png/white-default-theme.png';
       } else {
-        return "/assets/png/dark-default-theme.png";
+        return '/assets/png/dark-default-theme.png';
       }
-    } else if (template == "chat") {
-      if (theme == "light") {
-        return "/assets/png/white-chat-box-theme.png";
+    } else if (template == 'chat') {
+      if (theme == 'light') {
+        return '/assets/png/white-chat-box-theme.png';
       } else {
-        return "/assets/png/dark-chat-box-theme.png";
+        return '/assets/png/dark-chat-box-theme.png';
       }
-    } else if (template == "prism") {
-      if (theme == "light") {
-        return "/assets/png/prism-light.png";
+    } else if (template == 'prism') {
+      if (theme == 'light') {
+        return '/assets/png/prism-light.png';
       } else {
-        return "/assets/png/prism-dark.png";
+        return '/assets/png/prism-dark.png';
       }
-    } else if (template == "pristine") {
-      if (theme == "light") {
-        return "/assets/png/pristine-light.png";
+    } else if (template == 'pristine') {
+      if (theme == 'light') {
+        return '/assets/png/pristine-light.png';
       } else {
-        return "/assets/png/pristine-dark.png";
+        return '/assets/png/pristine-dark.png';
       }
     }
   };
 
-  const getStyles = (i) => {
+  const getStyles = i => {
     if (i == cursor) {
       return `bg-selected-cursor-bg-color hover:bg-selected-cursor-bg-color shadow-selected-cursor-shadow`;
     } else {
-      return "";
+      return '';
     }
   };
 
-  const getTemplateStyles = (i) => {
+  const getTemplateStyles = i => {
     if (i == template) {
       return `bg-selected-cursor-bg-color hover:bg-selected-cursor-bg-color shadow-selected-cursor-shadow`;
     } else {
-      return "";
+      return '';
     }
   };
 
   const formatedValue = formatTimestamp(latestPublishDate);
 
   const headerStyle = isVisible
-    ? "fixed top-0 left-0 transition-all duration-300 ease-out"
-    : "fixed top-0 left-0 transform translate-y-[-100%] transition-all duration-300 ease-out";
+    ? 'fixed top-0 left-0 transition-all duration-300 ease-out'
+    : 'fixed top-0 left-0 transform translate-y-[-100%] transition-all duration-300 ease-out';
 
   return (
     <div
-      className={cn(
-        headerStyle,
-        "z-50 px-2 md:px-0 py-2 md:py-6",
-      )}
-      style={{ right: shouldShiftHeader ? getSidebarShiftWidth(activeSidebar) : '0' }}
+      className={cn(headerStyle, 'z-50 px-2 md:px-0 py-2 md:py-6')}
+      style={{
+        right: shouldShiftHeader ? getSidebarShiftWidth(activeSidebar) : '0',
+      }}
     >
       <div className="shadow-df-section-card-shadow max-w-[848px] p-3  md:px-8 md:py-4 rounded-2xl bg-df-header-bg-color mx-auto flex justify-between items-center">
         <div className="flex items-center gap-[24px]">
-          <Link href={"/builder"}>
+          <Link href={'/builder'}>
             <Logo className="text-df-base-text-color" />
           </Link>
         </div>
@@ -409,7 +495,6 @@ export default function LoggedInHeader({
             className="relative theme-button"
             data-popover-menu={popovers.themeMenu}
           >
-
             <Button
               onClick={handleTheme}
               variant="secondary"
@@ -424,7 +509,6 @@ export default function LoggedInHeader({
                 variant="secondary"
                 size="icon"
                 className="h-11 w-11 rounded-full"
-
               >
                 <MemoAnalytics className="!size-5" />
               </Button>
@@ -455,7 +539,7 @@ export default function LoggedInHeader({
             // size="icon"
             className="rounded-full h-11 w-11"
             data-testid="button-preview"
-            onClick={() => router.push("/portfolio-preview")}
+            onClick={() => router.push('/portfolio-preview')}
           >
             <MemoPreviewIcon className="!size-5" />
           </Button>
@@ -464,12 +548,10 @@ export default function LoggedInHeader({
             data-popover-id={popovers.publishMenu}
           >
             <ButtonOld
-              text={"Publish Site"}
+              text={'Publish Site'}
               onClick={handlePublishBtn}
               customClass="mr-0"
-              icon={
-                <MemoPower className="w-4 h-4" />
-              }
+              icon={<MemoPower className="w-4 h-4" />}
               isDisabled={
                 (!userDetails?.pro &&
                   userDetails?.template &&
@@ -480,10 +562,11 @@ export default function LoggedInHeader({
             />
             {isClient && (
               <div
-                className={`pt-5 origin-top-right absolute z-20 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${popoverMenu === popovers.publishMenu
-                  ? "opacity-100 scale-100"
-                  : "opacity-0 scale-90 pointer-events-none"
-                  }`}
+                className={`pt-5 origin-top-right absolute z-20 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${
+                  popoverMenu === popovers.publishMenu
+                    ? 'opacity-100 scale-100'
+                    : 'opacity-0 scale-90 pointer-events-none'
+                }`}
               >
                 <div className=" w-[310px] rounded-xl shadow-lg bg-popover-bg-color border-4 border-solid border-popover-border-color">
                   <div className="p-4">
@@ -493,7 +576,7 @@ export default function LoggedInHeader({
                         onClick={() =>
                           window.open(
                             `https://${username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`,
-                            "_blank"
+                            '_blank'
                           )
                         }
                       >
@@ -560,22 +643,24 @@ export default function LoggedInHeader({
           >
             <DfImage
               onClick={() =>
-                setPopoverMenu((prev) =>
+                setPopoverMenu(prev =>
                   prev == popovers.userMenu ? null : popovers.userMenu
                 )
               }
-              src={
-                getUserAvatarImage(userDetails)
-              }
-              className={cn("w-[44px] h-[44px] rounded-2xl cursor-pointer", !userDetails?.avatar ? "bg-df-bg-color" : "")}
+              src={getUserAvatarImage(userDetails)}
+              className={cn(
+                'w-[44px] h-[44px] rounded-2xl cursor-pointer',
+                !userDetails?.avatar ? 'bg-df-bg-color' : ''
+              )}
             />
 
             {isClient && (
               <div
-                className={`pt-5 absolute z-20 right-0 origin-top-right transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${popoverMenu === popovers.userMenu
-                  ? "opacity-100 scale-100"
-                  : "opacity-0 scale-90 pointer-events-none"
-                  }`}
+                className={`pt-5 absolute z-20 right-0 origin-top-right transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${
+                  popoverMenu === popovers.userMenu
+                    ? 'opacity-100 scale-100'
+                    : 'opacity-0 scale-90 pointer-events-none'
+                }`}
               >
                 <div className=" w-[250px] rounded-xl shadow-lg bg-popover-bg-color border-4 border-solid border-popover-border-color">
                   <div className="p-4">
@@ -611,7 +696,7 @@ export default function LoggedInHeader({
         <MobileMenuButton
           isOpen={popovers.loggedInMenu === popoverMenu}
           onToggle={() =>
-            setPopoverMenu((prev) =>
+            setPopoverMenu(prev =>
               prev === popovers.loggedInMenu ? null : popovers.loggedInMenu
             )
           }
@@ -683,7 +768,7 @@ export default function LoggedInHeader({
                   onClick={() =>
                     window.open(
                       `https://${username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`,
-                      "_blank"
+                      '_blank'
                     )
                   }
                 >
@@ -741,12 +826,12 @@ export default function LoggedInHeader({
                       <div className="flex justify-between items-center cursor-pointer">
                         <SunIcon
                           className={
-                            theme == "dark"
-                              ? "text-icon-color"
-                              : "text-default-theme-selected-color"
+                            theme == 'dark'
+                              ? 'text-icon-color'
+                              : 'text-default-theme-selected-color'
                           }
                         />
-                        {(theme == "light" || theme == undefined) && (
+                        {(theme == 'light' || theme == undefined) && (
                           <img src="/assets/svgs/select.svg" alt="" />
                         )}
                       </div>
@@ -761,12 +846,12 @@ export default function LoggedInHeader({
                       <div className="flex justify-between items-center cursor-pointer">
                         <MoonIcon
                           className={
-                            theme !== "dark"
-                              ? "text-icon-color"
-                              : "text-default-theme-selected-color"
+                            theme !== 'dark'
+                              ? 'text-icon-color'
+                              : 'text-default-theme-selected-color'
                           }
                         />
-                        {theme == "dark" && (
+                        {theme == 'dark' && (
                           <img src="/assets/svgs/select.svg" alt="" />
                         )}
                       </div>
@@ -781,6 +866,6 @@ export default function LoggedInHeader({
           </Popover>
         )}
       </div>
-    </div >
+    </div>
   );
 }

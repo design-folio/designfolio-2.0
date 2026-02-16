@@ -1,4 +1,6 @@
 export const POSTHOG_EVENT_NAMES = {
+  SESSION_STARTED: 'session_started',
+  SECOND_SESSION_STARTED: 'second_session_started',
   SIGNUP_METHOD_SELECTED: 'signup_method_selected',
   SIGNUP_STARTED: 'signup_started',
   SIGNUP_SUCCESS: 'signup_success',
@@ -7,4 +9,12 @@ export const POSTHOG_EVENT_NAMES = {
   LOGIN_STARTED: 'login_started',
   LOGIN_SUCCESS: 'login_success',
   LOGIN_FAILED: 'login_failed',
+  PROJECT_ADDED: 'project_added',
+  PROJECT_EDITED: 'project_edited',
+  PORTFOLIO_PUBLISHED: 'portfolio_published',
+  EDIT_AFTER_PUBLISH: 'edit_after_publish',
+  PRICING_VIEWED: 'pricing_viewed',
+  UPGRADE_MODAL_VIEWED: 'upgrade_modal_viewed',
+  UPGRADE_MODAL_CLICKED: 'upgrade_modal_clicked',
+  PAYMENT_COMPLETED: 'payment_completed',
 };

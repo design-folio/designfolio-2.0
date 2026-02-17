@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import styles from "@/styles/domain.module.css";
+import Logo from "../../public/assets/svgs/logo.svg";
 import ButtonOld from "./button";
 // import ThemeIcon from "../../public/assets/svgs/themeIcon.svg";
 import CloseIcon from "../../public/assets/svgs/close.svg";
@@ -398,22 +399,31 @@ export default function LoggedInHeader({
       )}
       style={{ right: shouldShiftHeader ? getSidebarShiftWidth(activeSidebar) : '0' }}
     >
-      <div className="shadow-df-section-card-shadow max-w-[848px] p-3 md:px-8 md:py-4 rounded-full bg-df-header-bg-color mx-auto flex justify-between items-center">
+      <div className={cn(
+        "shadow-df-section-card-shadow max-w-[848px] p-3 md:px-8 md:py-4 bg-df-header-bg-color mx-auto flex justify-between items-center",
+        router.pathname === "/builder" ? "rounded-full" : "rounded-2xl"
+      )}>
         <div className="flex items-center gap-[24px]">
-          <div className="rounded-full bg-[#F6F2EF] p-1 border border-black/[0.03] dark:bg-muted/30 dark:border-border/50">
-            <SegmentedControl
-              options={["Portfolio Builder", "AI Tools"]}
-              value={router.pathname.includes("/ai-tools") ? "AI Tools" : "Portfolio Builder"}
-              onChange={(id) => {
-                if (id === "AI Tools") {
-                  router.push("/ai-tools");
-                } else {
-                  router.push("/builder");
-                }
-              }}
-              className="!p-0 !bg-transparent !border-0 !backdrop-blur-none"
-            />
-          </div>
+          {router.pathname === "/builder" ? (
+            <div className="rounded-full bg-[#F6F2EF] p-1 border border-black/[0.03] dark:bg-muted/30 dark:border-border/50">
+              <SegmentedControl
+                options={["Portfolio Builder", "AI Tools"]}
+                value={router.pathname.includes("/ai-tools") ? "AI Tools" : "Portfolio Builder"}
+                onChange={(id) => {
+                  if (id === "AI Tools") {
+                    router.push("/ai-tools");
+                  } else {
+                    router.push("/builder");
+                  }
+                }}
+                className="!p-0 !bg-transparent !border-0 !backdrop-blur-none"
+              />
+            </div>
+          ) : (
+            <Link href="/builder">
+              <Logo className="text-df-base-text-color" />
+            </Link>
+          )}
         </div>
         <div className="gap-3 items-center hidden md:flex">
           <div

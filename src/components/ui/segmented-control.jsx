@@ -29,7 +29,7 @@ export function SegmentedControl({ options, value, onChange, className }) {
                 transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
               />
             )}
-            <span className="relative z-10">{option}</span>
+            <span className="relative cursor-pointer z-10">{option}</span>
           </button>
         );
       })}

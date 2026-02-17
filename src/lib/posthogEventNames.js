@@ -1,6 +1,6 @@
 export const POSTHOG_EVENT_NAMES = {
   SESSION_STARTED: 'session_started',
-  SECOND_SESSION_STARTED: 'second_session_started',
+  // SECOND_SESSION_STARTED: 'second_session_started',
   SIGNUP_METHOD_SELECTED: 'signup_method_selected',
   SIGNUP_STARTED: 'signup_started',
   SIGNUP_SUCCESS: 'signup_success',

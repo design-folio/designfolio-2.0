@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
-import styles from "@/styles/domain.module.css";
-import { useGlobalContext } from "@/context/globalContext";
-import Script from "next/script";
-import { _getProPlanDetails, createOrder } from "@/network/get-request";
+import React, { useEffect, useState } from 'react';
+import styles from '@/styles/domain.module.css';
+import { useGlobalContext } from '@/context/globalContext';
+import Script from 'next/script';
+import { _getProPlanDetails, createOrder } from '@/network/get-request';
+import { usePostHogEvent } from '@/hooks/usePostHogEvent';
+import { POSTHOG_EVENT_NAMES } from '@/lib/posthogEventNames';
 
 export default function UpgradeModal() {
   const [isModalExiting, setIsModalExiting] = useState(false);
@@ -14,11 +16,17 @@ export default function UpgradeModal() {
     userDetailsRefecth,
   } = useGlobalContext();
 
+  const phEvent = usePostHogEvent();
+
   useEffect(() => {
     if (showUpgradeModal) {
-      _getProPlanDetails().then((response) => {
+      _getProPlanDetails().then(response => {
         console.log(response);
         setPlan(response?.data?.proPlan);
+        phEvent(POSTHOG_EVENT_NAMES.UPGRADE_MODAL_VIEWED, {
+          plan_amount: plan?.amount,
+          plan_currency: plan?.currency,
+        });
       });
     }
   }, [showUpgradeModal]);
@@ -33,7 +41,7 @@ export default function UpgradeModal() {
 
   function formatAmount(amount, currencyCode, locale = undefined) {
     return new Intl.NumberFormat(locale, {
-      style: "currency",
+      style: 'currency',
       currency: currencyCode,
       minimumFractionDigits: 0, // no decimals
       maximumFractionDigits: 0,
@@ -43,19 +51,28 @@ export default function UpgradeModal() {
   const openCheckout = () => {
     // This is a minimal configuration.
     // A secure app would first fetch an `order_id` from its own server.
-    createOrder().then((response) => {
+    phEvent(POSTHOG_EVENT_NAMES.UPGRADE_MODAL_CLICKED, {
+      plan_amount: plan?.amount,
+      plan_currency: plan?.currency,
+    });
+    createOrder().then(response => {
       const { id } = response?.data?.order; // Assuming the response contains necessary data for Razorpay
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, // Your public Key ID
         // amount: { amount }, // Amount in paise (e.g., ₹500.00)
         // currency: "INR",
         order_id: id,
-        name: "Designfolio by DOT Workspaces",
-        description: "Insecure Test Transaction",
-        image: "../../public/assets/svgs/logo.svg",
+        name: 'Designfolio by DOT Workspaces',
+        description: 'Insecure Test Transaction',
+        image: '../../public/assets/svgs/logo.svg',
         handler: function (response) {
           // console.log(response);
           userDetailsRefecth();
+          phEvent(POSTHOG_EVENT_NAMES.PAYMENT_COMPLETED, {
+            order_id: id,
+            amount: plan.amount,
+            currency: plan.currency,
+          });
           handleCloseModal();
           // This handler is called on successful payment.
           // 🚨 WITHOUT SERVER-SIDE VERIFICATION, THIS CAN BE FAKED.
@@ -71,7 +88,7 @@ export default function UpgradeModal() {
           // contact: "",
         },
         theme: {
-          color: "#3399cc",
+          color: '#3399cc',
         },
       };
       const rzp = new window.Razorpay(options);
@@ -82,15 +99,15 @@ export default function UpgradeModal() {
   return (
     <div
       className={`${styles.modalOverlay} ${
-        isModalExiting ? styles.modalOverlayExiting : ""
+        isModalExiting ? styles.modalOverlayExiting : ''
       }`}
       onClick={() => handleCloseModal()}
     >
       <div
         className={`${styles.modal} ${
-          isModalExiting ? styles.modalExiting : ""
+          isModalExiting ? styles.modalExiting : ''
         }`}
-        onClick={(e) => e.stopPropagation()}
+        onClick={e => e.stopPropagation()}
       >
         <button
           className={styles.modalClose}
@@ -132,7 +149,7 @@ export default function UpgradeModal() {
           <div className={styles.lifetimeDealBanner}>
             <div className={styles.dealBannerIcon}>⏰</div>
             <span className={styles.dealBannerText}>
-              Will be {plan?.currency === "INR" ? "₹7,999" : "$115"} starting
+              Will be {plan?.currency === 'INR' ? '₹7,999' : '$115'} starting
               next month
             </span>
             <div className={styles.dealBannerPulse}></div>

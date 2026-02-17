@@ -1,19 +1,26 @@
-import Editor from "@/components/editor";
-import WallpaperBackground from "@/components/WallpaperBackground";
-import { useGlobalContext } from "@/context/globalContext";
-import { cn } from "@/lib/utils";
-import { _getProjectDetails } from "@/network/get-request";
-import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/router";
-import { useTheme } from "next-themes";
-import React, { useEffect, useRef, useState } from "react";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { sidebars } from "@/lib/constant";
+import Editor from '@/components/editor';
+import WallpaperBackground from '@/components/WallpaperBackground';
+import { useGlobalContext } from '@/context/globalContext';
+import { cn } from '@/lib/utils';
+import { _getProjectDetails } from '@/network/get-request';
+import { useMutation } from '@tanstack/react-query';
+import { useRouter } from 'next/router';
+import { useTheme } from 'next-themes';
+import React, { useEffect, useRef, useState } from 'react';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { sidebars } from '@/lib/constant';
 
 export default function Index() {
   const router = useRouter();
   const { setTheme } = useTheme();
-  const { userDetails, setCursor, setWallpaper, wallpaperUrl, activeSidebar, wallpaperEffects } = useGlobalContext();
+  const {
+    userDetails,
+    setCursor,
+    setWallpaper,
+    wallpaperUrl,
+    activeSidebar,
+    wallpaperEffects,
+  } = useGlobalContext();
   const [projectDetails, setProjectDetails] = useState(null);
   const initializedRef = useRef(false);
   const isMobile = useIsMobile();
@@ -22,13 +29,13 @@ export default function Index() {
     setProjectDetails({ project: project });
 
     if (isFromRefetch) {
-      setTheme(project?.theme == 1 ? "dark" : "light");
+      setTheme(project?.theme == 1 ? 'dark' : 'light');
       setWallpaper(project?.wallpaper);
     } else {
       if (project?.theme !== undefined) {
-        setTheme(project.theme == 1 ? "dark" : "light");
+        setTheme(project.theme == 1 ? 'dark' : 'light');
       } else if (userDetails?.theme !== undefined) {
-        setTheme(userDetails.theme == 1 ? "dark" : "light");
+        setTheme(userDetails.theme == 1 ? 'dark' : 'light');
       }
 
       if (project?.wallpaper !== undefined) {
@@ -38,9 +45,12 @@ export default function Index() {
       }
     }
 
-    const cursor = project?.cursor != null
-      ? project.cursor
-      : (project?.theme != null ? project.theme : (userDetails?.cursor || 0));
+    const cursor =
+      project?.cursor != null
+        ? project.cursor
+        : project?.theme != null
+          ? project.theme
+          : userDetails?.cursor || 0;
     setCursor(cursor);
   };
 
@@ -50,7 +60,7 @@ export default function Index() {
       const response = await _getProjectDetails(router.query.id, 0);
       return response.data;
     },
-    onSuccess: (data) => {
+    onSuccess: data => {
       setProjectData(data?.project, true);
     },
     cacheTime: 300000,
@@ -68,7 +78,7 @@ export default function Index() {
     if (initializedRef.current) return;
 
     const cachedProject = userDetails?.projects?.find(
-      (project) => project._id === projectId
+      project => project._id === projectId
     );
 
     if (cachedProject) {
@@ -107,8 +117,11 @@ export default function Index() {
 
   return (
     <>
-      <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
-      <main className={cn("min-h-screen")}>
+      <WallpaperBackground
+        wallpaperUrl={wallpaperUrl}
+        effects={wallpaperEffects}
+      />
+      <main className={cn('min-h-screen')}>
         <div
           className={`max-w-[848px] mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0`}
         >

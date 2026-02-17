@@ -1,46 +1,54 @@
-import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
-import { Formik, Form } from "formik";
-import * as Yup from "yup";
-import { useGoogleLogin } from "@react-oauth/google";
-import { _loginWithEmail, _loginWithGmail } from "@/network/post-request";
-import { setToken } from "@/lib/cooikeManager";
-import { Mail } from "lucide-react";
-import Link from "next/link";
-import { AuthLayout } from "@/components/ui/auth-layout";
-import { FormInput } from "@/components/ui/form-input";
-import { FormButton } from "@/components/ui/form-button";
-import { GoogleButton } from "@/components/ui/google-button";
-import { Divider } from "@/components/ui/divider";
-import { motion } from "framer-motion";
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { Formik, Form } from 'formik';
+import * as Yup from 'yup';
+import { useGoogleLogin } from '@react-oauth/google';
+import { _loginWithEmail, _loginWithGmail } from '@/network/post-request';
+import { setToken } from '@/lib/cooikeManager';
+import { Mail } from 'lucide-react';
+import Link from 'next/link';
+import { AuthLayout } from '@/components/ui/auth-layout';
+import { FormInput } from '@/components/ui/form-input';
+import { FormButton } from '@/components/ui/form-button';
+import { GoogleButton } from '@/components/ui/google-button';
+import { Divider } from '@/components/ui/divider';
+import { motion } from 'framer-motion';
+import { usePostHogEvent } from '@/hooks/usePostHogEvent';
+import { usePostHogIdentify } from '@/hooks/usePostHogIdentify';
+import { POSTHOG_EVENT_NAMES } from '@/lib/posthogEventNames';
 
 const LoginValidationSchema = Yup.object().shape({
   email: Yup.string()
-    .email("Invalid email address")
-    .required("Email is required"),
-  password: Yup.string().required("Password is required"),
+    .email('Invalid email address')
+    .required('Email is required'),
+  password: Yup.string().required('Password is required'),
 });
 
 export default function Login() {
-  const [loginStep, setLoginStep] = useState("method");
+  const [loginStep, setLoginStep] = useState('method');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
+  const event = usePostHogEvent();
+  const identify = usePostHogIdentify();
+
   useEffect(() => {
     if (router) {
-      router.prefetch("/builder");
-      router.prefetch("/email-verify");
+      router.prefetch('/builder');
+      router.prefetch('/email-verify');
     }
   }, [router]);
 
-
   const googleLogin = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
+    onSuccess: async tokenResponse => {
       try {
         setIsLoading(true);
-        const response = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
-          headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
-        });
+        const response = await fetch(
+          'https://www.googleapis.com/oauth2/v2/userinfo',
+          {
+            headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+          }
+        );
         const userData = await response.json();
 
         const data = {
@@ -52,15 +60,30 @@ export default function Login() {
         const { token, emailVerification } = res.data;
 
         setToken(token);
-        const redirect = (router.query.redirect && typeof router.query.redirect === "string") ? router.query.redirect : "/builder";
-        router.push(emailVerification ? redirect : "/email-verify");
+        const redirect =
+          router.query.redirect && typeof router.query.redirect === 'string'
+            ? router.query.redirect
+            : '/builder';
+        router.push(emailVerification ? redirect : '/email-verify');
+
+        identify(userData.email, {
+          email: userData.email,
+        });
+        event(POSTHOG_EVENT_NAMES.LOGIN_SUCCESS, {
+          method: 'google',
+          email: userData.email,
+        });
       } catch (err) {
-        console.error("Google login failed:", err);
+        event(POSTHOG_EVENT_NAMES.LOGIN_FAILED, {
+          method: 'google',
+          error: err?.response?.data?.message || err.message,
+        });
+        console.error('Google login failed:', err);
       } finally {
         setIsLoading(false);
       }
     },
-    onError: () => console.log("Google login failed"),
+    onError: () => console.log('Google login failed'),
   });
 
   const handleEmailLogin = async (values, actions) => {
@@ -74,25 +97,49 @@ export default function Login() {
       const res = await _loginWithEmail(data);
       const { token, emailVerification } = res.data;
       setToken(token);
-      const redirect = (router.query.redirect && typeof router.query.redirect === "string") ? router.query.redirect : "/builder";
-      router.push(emailVerification ? redirect : `/email-verify?email=${values.email}`);
+      const redirect =
+        router.query.redirect && typeof router.query.redirect === 'string'
+          ? router.query.redirect
+          : '/builder';
+      router.push(
+        emailVerification ? redirect : `/email-verify?email=${values.email}`
+      );
+
+      identify(data.email, {
+        email: data.email,
+      });
+      event(POSTHOG_EVENT_NAMES.LOGIN_SUCCESS, {
+        method: 'email',
+        email: data.email,
+      });
     } catch (err) {
-      console.error("Email login error:", err);
+      event(POSTHOG_EVENT_NAMES.LOGIN_FAILED, {
+        method: 'email',
+        error: err?.response?.data?.message || err.message,
+      });
+
+      console.error('Email login error:', err);
     } finally {
       setIsLoading(false);
       actions.setSubmitting(false);
     }
   };
 
-  const handleGoogleLogin = () => googleLogin();
+  const handleGoogleLogin = () => {
+    event(POSTHOG_EVENT_NAMES.LOGIN_STARTED);
+    event(POSTHOG_EVENT_NAMES.LOGIN_METHOD_SELECTED, {
+      method: 'google',
+    });
+    googleLogin();
+  };
 
-  if (loginStep === "email") {
+  if (loginStep === 'email') {
     return (
       <AuthLayout
         title="Log in with email"
         description="Enter your credentials to continue"
         showBackButton
-        onBack={() => setLoginStep("method")}
+        onBack={() => setLoginStep('method')}
       >
         <motion.div
           key="email"
@@ -102,7 +149,7 @@ export default function Login() {
           transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
         >
           <Formik
-            initialValues={{ email: "", password: "" }}
+            initialValues={{ email: '', password: '' }}
             validationSchema={LoginValidationSchema}
             onSubmit={handleEmailLogin}
           >
@@ -166,8 +213,11 @@ export default function Login() {
                 </GoogleButton>
 
                 <p className="text-center text-sm text-foreground/70 mt-6">
-                  Don't have an account?{" "}
-                  <Link href="/claim-link" className="hover:underline font-medium text-[#FF553E] cursor-pointer">
+                  Don't have an account?{' '}
+                  <Link
+                    href="/claim-link"
+                    className="hover:underline font-medium text-[#FF553E] cursor-pointer"
+                  >
                     Sign up
                   </Link>
                 </p>
@@ -200,7 +250,13 @@ export default function Login() {
 
           <div
             className="bg-white border border-border rounded-full px-5 py-3 flex items-center justify-center gap-3 hover-elevate cursor-pointer"
-            onClick={() => setLoginStep("email")}
+            onClick={() => {
+              event(POSTHOG_EVENT_NAMES.LOGIN_STARTED);
+              event(POSTHOG_EVENT_NAMES.LOGIN_METHOD_SELECTED, {
+                method: 'email',
+              });
+              setLoginStep('email');
+            }}
           >
             <Mail className="w-5 h-5 text-foreground" />
             <span className="text-base font-medium text-foreground">
@@ -210,8 +266,11 @@ export default function Login() {
         </div>
 
         <p className="text-center text-sm text-foreground/70 mt-8">
-          Don't have an account?{" "}
-          <Link href="/claim-link" className="hover:underline font-medium text-[#FF553E] cursor-pointer">
+          Don't have an account?{' '}
+          <Link
+            href="/claim-link"
+            className="hover:underline font-medium text-[#FF553E] cursor-pointer"
+          >
             Sign up
           </Link>
         </p>

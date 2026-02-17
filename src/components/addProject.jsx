@@ -1,24 +1,28 @@
-import useImageCompression from "@/hooks/useImageCompression";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import { useTheme } from "next-themes";
-import { useEffect, useRef, useState } from "react";
-import * as Yup from "yup";
-import Button from "./button";
-import CloseIcon from "../../public/assets/svgs/close.svg";
-import { _updateUser } from "@/network/post-request";
-import EyeIcon from "../../public/assets/svgs/eye.svg";
-import EyeCloseIcon from "../../public/assets/svgs/eye-close.svg";
-import Toggle from "./toggle";
-import Text from "./text";
-import { useGlobalContext } from "@/context/globalContext";
+import useImageCompression from '@/hooks/useImageCompression';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { useTheme } from 'next-themes';
+import { useEffect, useRef, useState } from 'react';
+import * as Yup from 'yup';
+import Button from './button';
+import CloseIcon from '../../public/assets/svgs/close.svg';
+import { _updateUser } from '@/network/post-request';
+import EyeIcon from '../../public/assets/svgs/eye.svg';
+import EyeCloseIcon from '../../public/assets/svgs/eye-close.svg';
+import Toggle from './toggle';
+import Text from './text';
+import { useGlobalContext } from '@/context/globalContext';
 const FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const SUPPORTED_FORMATS = [
-  "image/jpg",
-  "image/jpeg",
-  "image/png",
-  "image/gif",
-  "image/webp",
+  'image/jpg',
+  'image/jpeg',
+  'image/png',
+  'image/gif',
+  'image/webp',
 ];
+
+import { usePostHogEvent } from '@/hooks/usePostHogEvent';
+import { POSTHOG_EVENT_NAMES } from '@/lib/posthogEventNames';
+import posthog from 'posthog-js';
 
 // Yup validation schema
 
@@ -31,34 +35,36 @@ export default function AddProject() {
   const { closeModal, userDetails, updateCache, setUserDetails } =
     useGlobalContext();
 
+  const phEvent = usePostHogEvent();
+
   const validationSchema = Yup.object().shape({
     description: Yup.string()
-      .max(160, "App name must be 160 characters or less")
-      .required("App name is required"),
+      .max(160, 'App name must be 160 characters or less')
+      .required('App name is required'),
     title: Yup.string()
-      .max(80, "Project title must be 80 characters or less")
-      .required("Project title is required"),
+      .max(80, 'Project title must be 80 characters or less')
+      .required('Project title is required'),
 
     picture: Yup.mixed()
-      .required("A file is required")
+      .required('A file is required')
       .test(
-        "fileSize",
-        "File size is too large. Maximum size is 5MB.",
-        (value) => value && value.size <= FILE_SIZE
+        'fileSize',
+        'File size is too large. Maximum size is 5MB.',
+        value => value && value.size <= FILE_SIZE
       )
       .test(
-        "fileType",
-        "Unsupported file format. Only jpg, jpeg, png and gif files are allowed.",
-        (value) => value && SUPPORTED_FORMATS.includes(value.type)
+        'fileType',
+        'Unsupported file format. Only jpg, jpeg, png and gif files are allowed.',
+        value => value && SUPPORTED_FORMATS.includes(value.type)
       ),
     password: isPassword
       ? Yup.string()
-        .required("Password is required.")
-        .min(6, "Password is too short - should be 6 chars minimum.")
+          .required('Password is required.')
+          .min(6, 'Password is too short - should be 6 chars minimum.')
       : Yup.string().min(
-        6,
-        "Password is too short - should be 6 chars minimum."
-      ),
+          6,
+          'Password is too short - should be 6 chars minimum.'
+        ),
   });
 
   const { compress, compressedImage, compressionProgress } =
@@ -67,20 +73,20 @@ export default function AddProject() {
 
   const handleImageChange = (event, setFieldValue) => {
     const file = event.currentTarget.files[0];
-    const isGif = file.type === "image/gif";
+    const isGif = file.type === 'image/gif';
     if (isGif) {
-      setFieldValue("picture", file);
+      setFieldValue('picture', file);
       setImagePreview(file ? URL.createObjectURL(file) : null);
     } else {
       compress(file);
-      setFieldValue("picture", file);
+      setFieldValue('picture', file);
       setImagePreview(file ? URL.createObjectURL(file) : null);
     }
   };
 
   useEffect(() => {
     if (compressionProgress === 100 && compressedImage && formikRef.current) {
-      formikRef.current.setFieldValue("picture", compressedImage);
+      formikRef.current.setFieldValue('picture', compressedImage);
       setImagePreview(URL.createObjectURL(compressedImage));
     }
   }, [compressionProgress, compressedImage]);
@@ -103,10 +109,10 @@ export default function AddProject() {
         <Formik
           innerRef={formikRef}
           initialValues={{
-            description: "",
-            title: "",
+            description: '',
+            title: '',
             picture: null,
-            password: "",
+            password: '',
           }}
           validateOnChange
           validateOnBlur
@@ -137,16 +143,27 @@ export default function AddProject() {
                     protected: isPassword,
                     contentVersion: 2, // Set new projects to use Tiptap
                     tiptapContent: {
-                      type: "doc",
-                      content: []
+                      type: 'doc',
+                      content: [],
                     }, // Initialize with empty Tiptap document
                   },
                 ],
               };
               _updateUser(payload)
-                .then((res) => {
+                .then(res => {
                   setUserDetails(res?.data?.user);
-                  updateCache("userDetails", res?.data?.user);
+                  updateCache('userDetails', res?.data?.user);
+                  phEvent(POSTHOG_EVENT_NAMES.PROJECT_ADDED, {
+                    project_title: values.title,
+                    industry: values.industry || null,
+                    client: values.client || null,
+                    role: values.role || null,
+                    has_password: isPassword,
+                  });
+                  posthog.people.set({
+                    project_count: res.data.user.projects.length,
+                  });
+
                   closeModal();
                 })
                 .finally(() => setLoading(false));
@@ -168,7 +185,7 @@ export default function AddProject() {
                 <div>
                   <Text
                     as="p"
-                    size={"p-xxsmall"}
+                    size={'p-xxsmall'}
                     className="font-medium"
                     required
                   >
@@ -197,7 +214,7 @@ export default function AddProject() {
                           Maximum size should be 400 X 300 px
                         </Text>
                         <Button
-                          text={"Browse and choose"}
+                          text={'Browse and choose'}
                           size="small"
                           type="secondary"
                           customClass="mt-4 pointer-events-none"
@@ -210,9 +227,7 @@ export default function AddProject() {
                     name="picture"
                     type="file"
                     hidden
-                    onChange={(event) =>
-                      handleImageChange(event, setFieldValue)
-                    }
+                    onChange={event => handleImageChange(event, setFieldValue)}
                     accept="image/png, image/jpeg,image/jpg,image/gif"
                   />
                   <ErrorMessage
@@ -225,23 +240,24 @@ export default function AddProject() {
                   <div className="flex justify-between">
                     <Text
                       as="p"
-                      size={"p-xxsmall"}
+                      size={'p-xxsmall'}
                       className="font-medium"
                       required
                     >
                       Project title
                     </Text>
-                    <Text as="p" size={"p-xxsmall"} className="font-medium">
+                    <Text as="p" size={'p-xxsmall'} className="font-medium">
                       {values.title.length ?? 0}/80
                     </Text>
                   </div>
                   <Field
                     name="title"
                     type="text"
-                    className={`text-input mt-2  ${errors.title &&
+                    className={`text-input mt-2  ${
+                      errors.title &&
                       touched.title &&
-                      "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                      }`}
+                      '!text-input-error-color !border-input-error-color !shadow-input-error-shadow'
+                    }`}
                     autoComplete="off"
                     placeholder="Eg: Designing an onboarding for 1M users"
                   />
@@ -255,23 +271,24 @@ export default function AddProject() {
                   <div className="flex justify-between">
                     <Text
                       as="p"
-                      size={"p-xxsmall"}
+                      size={'p-xxsmall'}
                       className="font-medium"
                       required
                     >
                       Description
                     </Text>
-                    <Text as="p" size={"p-xxsmall"} className="font-medium">
+                    <Text as="p" size={'p-xxsmall'} className="font-medium">
                       {values.description.length ?? 0}/160
                     </Text>
                   </div>
                   <Field
                     name="description"
                     type="text"
-                    className={`text-input mt-2  ${errors.description &&
+                    className={`text-input mt-2  ${
+                      errors.description &&
                       touched.description &&
-                      "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                      }`}
+                      '!text-input-error-color !border-input-error-color !shadow-input-error-shadow'
+                    }`}
                     placeholder="Detail the Key Benefits and Target Audience"
                     autoComplete="off"
                   />
@@ -287,21 +304,21 @@ export default function AddProject() {
                     <div>
                       <Text
                         as="p"
-                        size={"p-xxsmall"}
+                        size={'p-xxsmall'}
                         className="font-medium text-input-password-heading-color"
                       >
                         Set Password
                       </Text>
                       <Text
                         as="p"
-                        size={"p-xxsmall"}
+                        size={'p-xxsmall'}
                         className="font-medium text-input-password-description-color"
                       >
                         Protect your project if you&apos;ve an NDA.
                       </Text>
                     </div>
                     <Toggle
-                      onClick={() => setPassword((prev) => !prev)}
+                      onClick={() => setPassword(prev => !prev)}
                       value={isPassword}
                     />
                   </div>
@@ -310,19 +327,20 @@ export default function AddProject() {
                       <div className="relative mt-2">
                         <Field
                           name="password"
-                          type={showEye ? "text" : "password"}
-                          className={`text-input mt-2  ${errors.password &&
+                          type={showEye ? 'text' : 'password'}
+                          className={`text-input mt-2  ${
+                            errors.password &&
                             touched.password &&
-                            "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                            }`}
+                            '!text-input-error-color !border-input-error-color !shadow-input-error-shadow'
+                          }`}
                           placeholder="Password"
                           autocomplete="new-password"
                         />
                         <div
                           className="absolute top-[24px] right-4 cursor-pointer"
                           onClick={() => {
-                            setShowEye((prev) => !prev);
-                            validateField("password");
+                            setShowEye(prev => !prev);
+                            validateField('password');
                           }}
                         >
                           {showEye ? (
@@ -346,10 +364,10 @@ export default function AddProject() {
         </Formik>
       </div>
       <div className="flex gap-2 px-3 py-4 justify-end bg-modal-footer-bg-color">
-        <Button text={"Cancel"} type="secondary" onClick={closeModal} />
+        <Button text={'Cancel'} type="secondary" onClick={closeModal} />
         <Button
           btnType="submit"
-          text={"Save case study"}
+          text={'Save case study'}
           form="projectForm"
           type="modal"
           isLoading={loading}

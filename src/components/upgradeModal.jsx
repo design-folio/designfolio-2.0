@@ -23,9 +23,10 @@ export default function UpgradeModal() {
       _getProPlanDetails().then(response => {
         console.log(response);
         setPlan(response?.data?.proPlan);
+        const proPlan = response?.data?.proPlan;
         phEvent(POSTHOG_EVENT_NAMES.UPGRADE_MODAL_VIEWED, {
-          plan_amount: plan?.amount,
-          plan_currency: plan?.currency,
+          plan_amount: Number(proPlan?.amount),
+          plan_currency: proPlan?.currency,
         });
       });
     }
@@ -52,7 +53,7 @@ export default function UpgradeModal() {
     // This is a minimal configuration.
     // A secure app would first fetch an `order_id` from its own server.
     phEvent(POSTHOG_EVENT_NAMES.UPGRADE_MODAL_CLICKED, {
-      plan_amount: plan?.amount,
+      plan_amount: Number(plan?.amount),
       plan_currency: plan?.currency,
     });
     createOrder().then(response => {
@@ -70,8 +71,8 @@ export default function UpgradeModal() {
           userDetailsRefecth();
           phEvent(POSTHOG_EVENT_NAMES.PAYMENT_COMPLETED, {
             order_id: id,
-            amount: plan.amount,
-            currency: plan.currency,
+            plan_amount: Number(plan?.amount),
+            plan_currency: plan?.currency,
           });
           handleCloseModal();
           // This handler is called on successful payment.

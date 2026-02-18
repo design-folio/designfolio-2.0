@@ -47,6 +47,7 @@ import { useGlobalContext } from '@/context/globalContext';
 import { modals } from '@/lib/constant';
 import { usePostHogEvent } from '@/hooks/usePostHogEvent';
 import { POSTHOG_EVENT_NAMES } from '@/lib/posthogEventNames';
+import { SegmentedControl } from './ui/segmented-control';
 
 const cursors = [
   {
@@ -582,11 +583,10 @@ export default function LoggedInHeader({
             />
             {isClient && (
               <div
-                className={`pt-5 origin-top-right absolute z-20 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${
-                  popoverMenu === popovers.publishMenu
+                className={`pt-5 origin-top-right absolute z-20 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${popoverMenu === popovers.publishMenu
                     ? 'opacity-100 scale-100'
                     : 'opacity-0 scale-90 pointer-events-none'
-                }`}
+                  }`}
               >
                 <div className=" w-[310px] rounded-xl shadow-lg bg-popover-bg-color border-4 border-solid border-popover-border-color">
                   <div className="p-4">
@@ -676,11 +676,10 @@ export default function LoggedInHeader({
 
             {isClient && (
               <div
-                className={`pt-5 absolute z-20 right-0 origin-top-right transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${
-                  popoverMenu === popovers.userMenu
+                className={`pt-5 absolute z-20 right-0 origin-top-right transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${popoverMenu === popovers.userMenu
                     ? 'opacity-100 scale-100'
                     : 'opacity-0 scale-90 pointer-events-none'
-                }`}
+                  }`}
               >
                 <div className=" w-[250px] rounded-xl shadow-lg bg-popover-bg-color border-4 border-solid border-popover-border-color">
                   <div className="p-4">

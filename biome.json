@@ -1,0 +1,23 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "files": {
+    "includes": ["src/**/*"]
+  },
+
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "a11y": "off",
+      "suspicious": "off",
+      "complexity": "off",
+      "style": "off",
+      "correctness": {
+        "recommended": false
+      }
+    },
+    "domains": {
+      "react": "none",
+      "next": "none"
+    }
+  }
+}

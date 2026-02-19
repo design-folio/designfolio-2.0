@@ -98,7 +98,10 @@ export default function Index() {
     if (router.query?.type !== navigation.optimizeResume) setOptimizeResumeHasResult(false);
     if (router.query?.type !== navigation.salary) setSalaryHasResult(false);
     if (router.query?.type !== navigation.email) setEmailHasResult(false);
-    if (router.query?.type !== navigation.MockInterview) setMockInterviewHasResult(false);
+    if (router.query?.type !== navigation.MockInterview) {
+      setMockInterviewHasResult(false);
+      setMockInterviewShowingReport(false);
+    }
     setHasClickedStartNewAnalysis(false);
   }, [router.query?.type]);
 
@@ -127,6 +130,7 @@ export default function Index() {
   const [salaryHasResult, setSalaryHasResult] = useState(false);
   const [emailHasResult, setEmailHasResult] = useState(false);
   const [mockInterviewHasResult, setMockInterviewHasResult] = useState(false);
+  const [mockInterviewShowingReport, setMockInterviewShowingReport] = useState(false);
   const [hasClickedStartNewAnalysis, setHasClickedStartNewAnalysis] = useState(false);
   const [usageKey, setUsageKey] = useState(0);
 
@@ -257,6 +261,7 @@ export default function Index() {
                   <MockInterviewTool
                     onToolUsed={!isLoggedIn ? recordToolUsed : undefined}
                     onViewChange={setMockInterviewHasResult}
+                    onReportView={setMockInterviewShowingReport}
                     onStartNewAnalysis={!isLoggedIn ? () => setHasClickedStartNewAnalysis(true) : undefined}
                     guestUsageLimitReached={router.query?.type === navigation.MockInterview && isUsageLimitReached}
                     skipRestore={hasClickedStartNewAnalysis}
@@ -301,7 +306,8 @@ export default function Index() {
     router.query?.type === navigation.email ||
     router.query?.type === navigation.analyze ||
     (router.query?.type === navigation.optimizeResume && optimizeResumeHasResult) ||
-    (router.query?.type === navigation.salary && salaryHasResult);
+    (router.query?.type === navigation.salary && salaryHasResult) ||
+    (router.query?.type === navigation.MockInterview && mockInterviewShowingReport);
 
   const ToolIconComponent = getAiWorkspaceToolIcon(currentTypeForLock);
 

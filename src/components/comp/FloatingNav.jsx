@@ -1,13 +1,18 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Home, Briefcase, Award, Wrench } from "lucide-react";
 import { useRouter } from "next/router";
 import { FLOATING_NAV_SECTIONS } from "@/lib/constant";
 
 const NAV_ICONS = { hero: Home, spotlight: Award, tools: Wrench, work: Briefcase };
 
+const SCROLL_IGNORE_MS = 800; // ignore scroll-based updates after a click (smooth scroll duration)
+
 export const FloatingNav = () => {
   const [activeSection, setActiveSection] = useState("hero");
   const router = useRouter();
+  const lastActiveRef = useRef("hero");
+  const ignoreScrollUntilRef = useRef(0);
+  const rafIdRef = useRef(null);
 
   const sections = FLOATING_NAV_SECTIONS.map(({ navId, label }) => ({
     id: navId,
@@ -24,31 +29,51 @@ export const FloatingNav = () => {
   );
 
   useEffect(() => {
-    const handleScroll = () => {
-      const sectionElements = SECTION_IDS.map((id) => document.getElementById(id));
+    lastActiveRef.current = activeSection;
+  }, [activeSection]);
 
+  useEffect(() => {
+    const run = () => {
+      rafIdRef.current = null;
+      if (Date.now() < ignoreScrollUntilRef.current) return;
+
+      const sectionElements = SECTION_IDS.map((id) => document.getElementById(id));
       const currentSection = sectionElements.find((element) => {
         if (!element) return false;
         const rect = element.getBoundingClientRect();
         return rect.top <= 100 && rect.bottom >= 100;
       });
 
-      if (currentSection) {
-        setActiveSection(SECTION_TO_NAV[currentSection.id] || currentSection.id);
+      if (!currentSection) return;
+      const newNavId = SECTION_TO_NAV[currentSection.id] || currentSection.id;
+      if (newNavId !== lastActiveRef.current) {
+        lastActiveRef.current = newNavId;
+        setActiveSection(newNavId);
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
-    handleScroll(); // run once on mount to set initial active section
-    return () => window.removeEventListener("scroll", handleScroll);
+    const handleScroll = () => {
+      if (rafIdRef.current != null) return;
+      rafIdRef.current = requestAnimationFrame(run);
+    };
+
+    run(); // initial
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (rafIdRef.current != null) cancelAnimationFrame(rafIdRef.current);
+    };
+    // SECTION_IDS, SECTION_TO_NAV from FLOATING_NAV_SECTIONS (stable)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const scrollToSection = (id) => {
+    lastActiveRef.current = id;
     setActiveSection(id);
+    ignoreScrollUntilRef.current = Date.now() + SCROLL_IGNORE_MS;
 
     const targetId = NAV_TO_SECTION[id] || id;
     const element = document.getElementById(targetId);
-
     if (element) {
       element.scrollIntoView({ behavior: "smooth", block: "start" });
     }

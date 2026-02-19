@@ -36,7 +36,7 @@ const difficultyLevels = [
   },
 ];
 
-export default function MockInterviewTool({ onToolUsed, onViewChange, onStartNewAnalysis, guestUsageLimitReached = false, skipRestore = false }) {
+export default function MockInterviewTool({ onToolUsed, onViewChange, onReportView, onStartNewAnalysis, guestUsageLimitReached = false, skipRestore = false }) {
   const [isInterviewStarted, setIsInterviewStarted] = useState(false);
   const formikRef = useRef(null); // Create a ref to access Formik instance
   const [values, setValues] = useState({});
@@ -68,6 +68,10 @@ export default function MockInterviewTool({ onToolUsed, onViewChange, onStartNew
   useEffect(() => {
     onViewChange?.(hasResult);
   }, [hasResult, onViewChange]);
+
+  useEffect(() => {
+    onReportView?.(isFinished);
+  }, [isFinished, onReportView]);
 
   const initializeQuestions = async (formValues) => {
     if (guestUsageLimitReached) {
@@ -143,6 +147,7 @@ export default function MockInterviewTool({ onToolUsed, onViewChange, onStartNew
 
   const handleStartNewInterview = () => {
     onViewChange?.(false);
+    onReportView?.(false);
     onStartNewAnalysis?.();
   };
 

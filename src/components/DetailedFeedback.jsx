@@ -47,7 +47,7 @@ const DetailedFeedback = ({ feedbackData, onStartNew }) => {
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto space-y-6">
+    <div className="w-full max-w-6xl 2xl:max-w-7xl mx-auto space-y-6 px-4">
       <div className="flex flex-wrap gap-4 justify-center action-buttons">
         <button
           onClick={handleDownloadPDF}

@@ -126,3 +126,14 @@ export const chatBubbleItems = {
 
 
 export const DEFAULT_SECTION_ORDER = ['projects', 'reviews', 'tools', 'about', 'works',];
+
+/**
+ * Floating nav sections (Minimal/Portfolio template).
+ * sectionId is the DOM id used in Minimal.jsx / Portfolio.jsx (section-* matches DEFAULT_SECTION_ORDER keys).
+ */
+export const FLOATING_NAV_SECTIONS = [
+  { navId: 'hero', sectionId: 'hero', label: 'Home' },
+  { navId: 'spotlight', sectionId: 'section-projects', label: 'Projects' },
+  { navId: 'tools', sectionId: 'section-tools', label: 'Tools' },
+  { navId: 'work', sectionId: 'section-works', label: 'Work' },
+];

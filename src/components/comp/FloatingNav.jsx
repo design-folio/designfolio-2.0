@@ -1,29 +1,31 @@
 import { useState, useEffect } from "react";
 import { Home, Briefcase, Award, Wrench } from "lucide-react";
 import { useRouter } from "next/router";
+import { FLOATING_NAV_SECTIONS } from "@/lib/constant";
+
+const NAV_ICONS = { hero: Home, spotlight: Award, tools: Wrench, work: Briefcase };
 
 export const FloatingNav = () => {
   const [activeSection, setActiveSection] = useState("hero");
   const router = useRouter();
 
-  const sections = [
-    { id: "hero", label: "Home", icon: Home },
-    { id: "spotlight", label: "Projects", icon: Award },
-    { id: "tools", label: "Tools", icon: Wrench },
-    { id: "work", label: "Work", icon: Briefcase },
-  ];
+  const sections = FLOATING_NAV_SECTIONS.map(({ navId, label }) => ({
+    id: navId,
+    label,
+    icon: NAV_ICONS[navId],
+  }));
 
-  // Filter sections for mobile view (excluding tools)
-  // const mobileSections = sections;
+  const SECTION_IDS = FLOATING_NAV_SECTIONS.map((s) => s.sectionId);
+  const SECTION_TO_NAV = Object.fromEntries(
+    FLOATING_NAV_SECTIONS.map((s) => [s.sectionId, s.navId])
+  );
+  const NAV_TO_SECTION = Object.fromEntries(
+    FLOATING_NAV_SECTIONS.map((s) => [s.navId, s.sectionId])
+  );
 
   useEffect(() => {
     const handleScroll = () => {
-      const sectionElements = [
-        document.getElementById("hero"),
-        document.getElementById("featured-projects"),
-        document.getElementById("tools"),
-        document.getElementById("work-experience"),
-      ];
+      const sectionElements = SECTION_IDS.map((id) => document.getElementById(id));
 
       const currentSection = sectionElements.find((element) => {
         if (!element) return false;
@@ -32,38 +34,23 @@ export const FloatingNav = () => {
       });
 
       if (currentSection) {
-        // Map section IDs back to nav IDs
-        const sectionToNavMapping = {
-          hero: "hero",
-          "featured-projects": "spotlight",
-          tools: "tools",
-          "work-experience": "work",
-        };
-        setActiveSection(
-          sectionToNavMapping[currentSection.id] || currentSection.id
-        );
+        setActiveSection(SECTION_TO_NAV[currentSection.id] || currentSection.id);
       }
     };
 
     window.addEventListener("scroll", handleScroll);
+    handleScroll(); // run once on mount to set initial active section
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const scrollToSection = (id) => {
-    // Map the navigation IDs to their corresponding section IDs
-    const sectionMapping = {
-      hero: "hero",
-      spotlight: "featured-projects",
-      tools: "tools",
-      work: "work-experience",
-    };
+    setActiveSection(id);
 
-    // Use the mapped ID if it exists, otherwise use the original ID
-    const targetId = sectionMapping[id] || id;
+    const targetId = NAV_TO_SECTION[id] || id;
     const element = document.getElementById(targetId);
 
     if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
 

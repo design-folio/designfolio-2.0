@@ -51,6 +51,8 @@ export const GlobalProvider = ({ children }) => {
   const [cursor, setCursor] = useState(0);
   const [template, setTemplate] = useState(0);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  /** When set, upgrade modal shows "Unhide [title]?" and message about 2 visible projects limit */
+  const [upgradeModalUnhideProject, setUpgradeModalUnhideProject] = useState(null);
   const [domainDetails, setDomainDetails] = useState(null);
   const [wallpaper, setWallpaper] = useState(0);
   const [wallpaperEffects, setWallpaperEffects] = useState({
@@ -690,6 +692,8 @@ export const GlobalProvider = ({ children }) => {
         setTemplate,
         showUpgradeModal,
         setShowUpgradeModal,
+        upgradeModalUnhideProject,
+        setUpgradeModalUnhideProject,
         domainDetails,
         setDomainDetails,
         fetchDomainDetails,

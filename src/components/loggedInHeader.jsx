@@ -172,7 +172,7 @@ export default function LoggedInHeader({
   const [isMobileThemePopup, setIsMobileThemePopup] = useState(false);
 
   // Get activeSidebar and wallpaper effects from context
-  const { activeSidebar, openSidebar, closeSidebar, wallpaperEffects, updateWallpaperEffect } = useGlobalContext();
+  const { activeSidebar, openSidebar, closeSidebar, wallpaperEffects, updateWallpaperEffect, setUpgradeModalUnhideProject } = useGlobalContext();
   const shouldShiftHeader = !isMobile && isSidebarThatShifts(activeSidebar);
 
   const { username, latestPublishDate, _id, email } = userDetails || {};
@@ -308,6 +308,7 @@ export default function LoggedInHeader({
 
   const goToDomains = () => {
     setPopoverMenu(null);
+    setUpgradeModalUnhideProject?.(null);
     setShowUpgradeModal(true);
   };
 

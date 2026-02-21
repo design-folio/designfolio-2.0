@@ -5,13 +5,19 @@ import Script from 'next/script';
 import { _getProPlanDetails, createOrder } from '@/network/get-request';
 import { usePostHogEvent } from '@/hooks/usePostHogEvent';
 import { POSTHOG_EVENT_NAMES } from '@/lib/posthogEventNames';
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+const PLAN_LABELS = { "1m": "1 Month", "3m": "3 Months", lifetime: "Lifetime" };
 
 export default function UpgradeModal() {
   const [isModalExiting, setIsModalExiting] = useState(false);
-  const [plan, setPlan] = useState(null);
+  const [proPlans, setProPlans] = useState([]);
+  const [selectedPlan, setSelectedPlan] = useState(null);
   const {
     showUpgradeModal,
     setShowUpgradeModal,
+    upgradeModalUnhideProject,
+    setUpgradeModalUnhideProject,
     userDetails,
     userDetailsRefecth,
   } = useGlobalContext();
@@ -20,14 +26,12 @@ export default function UpgradeModal() {
 
   useEffect(() => {
     if (showUpgradeModal) {
-      _getProPlanDetails().then(response => {
-        console.log(response);
-        setPlan(response?.data?.proPlan);
-        const proPlan = response?.data?.proPlan;
-        phEvent(POSTHOG_EVENT_NAMES.UPGRADE_MODAL_VIEWED, {
-          plan_amount: Number(proPlan?.amount),
-          plan_currency: proPlan?.currency,
-        });
+      _getProPlanDetails().then((response) => {
+        const plans = response?.data?.proPlans;
+        if (Array.isArray(plans) && plans.length > 0) {
+          setProPlans(plans);
+          setSelectedPlan(plans.find((p) => p.plan === "lifetime") || plans[0]);
+        }
       });
     }
   }, [showUpgradeModal]);
@@ -36,27 +40,26 @@ export default function UpgradeModal() {
     setIsModalExiting(true);
     setTimeout(() => {
       setShowUpgradeModal(false);
+      setUpgradeModalUnhideProject(null);
       setIsModalExiting(false);
     }, 300);
   };
 
-  function formatAmount(amount, currencyCode, locale = undefined) {
-    return new Intl.NumberFormat(locale, {
-      style: 'currency',
+  function formatAmount(amount, currencyCode) {
+    if (currencyCode === "USD") {
+      return `$${Number(amount).toFixed(0)}`;
+    }
+    return new Intl.NumberFormat(undefined, {
+      style: "currency",
       currency: currencyCode,
-      minimumFractionDigits: 0, // no decimals
+      minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount);
   }
 
   const openCheckout = () => {
-    // This is a minimal configuration.
-    // A secure app would first fetch an `order_id` from its own server.
-    phEvent(POSTHOG_EVENT_NAMES.UPGRADE_MODAL_CLICKED, {
-      plan_amount: Number(plan?.amount),
-      plan_currency: plan?.currency,
-    });
-    createOrder().then(response => {
+    if (!selectedPlan?.plan) return;
+    createOrder(selectedPlan.plan).then((response) => {
       const { id } = response?.data?.order; // Assuming the response contains necessary data for Razorpay
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, // Your public Key ID
@@ -96,19 +99,17 @@ export default function UpgradeModal() {
       rzp.open();
     });
   };
-  if (!showUpgradeModal || !plan) return null;
+  if (!showUpgradeModal || proPlans.length === 0 || !selectedPlan) return null;
   return (
     <div
-      className={`${styles.modalOverlay} ${
-        isModalExiting ? styles.modalOverlayExiting : ''
-      }`}
+      className={`${styles.modalOverlay} ${isModalExiting ? styles.modalOverlayExiting : ""
+        }`}
       onClick={() => handleCloseModal()}
     >
       <div
-        className={`${styles.modal} ${
-          isModalExiting ? styles.modalExiting : ''
-        }`}
-        onClick={e => e.stopPropagation()}
+        className={`${styles.modal} ${isModalExiting ? styles.modalExiting : ""
+          }`}
+        onClick={(e) => e.stopPropagation()}
       >
         <button
           className={styles.modalClose}
@@ -120,22 +121,45 @@ export default function UpgradeModal() {
         <div className={styles.modalHeader}>
           <div>
             <div className={styles.modalIcon}></div>
-            <h2 className={styles.modalTitle}>Designfolio Lifetime Access</h2>
+            <h2 className={styles.modalTitle}>
+              {upgradeModalUnhideProject
+                ? `Unhide ${upgradeModalUnhideProject.title || "Project"}?`
+                : "Designfolio Lifetime Access"}
+            </h2>
             <p className={styles.modalSubtitle}>
-              Just one payment. That's it. You get everything, forever.
+              {upgradeModalUnhideProject
+                ? "Free users can only have 2 visible projects. Go Pro to add unlimited and unhide this project."
+                : "Just one payment. That's it. You get everything, forever."}
             </p>
           </div>
         </div>
 
         <div className={styles.modalContent}>
+          <Tabs
+            value={selectedPlan?.plan ?? ""}
+            onValueChange={(value) => setSelectedPlan(proPlans.find((p) => p.plan === value))}
+            className="mb-6"
+          >
+            <TabsList className="flex p-1 bg-muted/50 rounded-lg gap-1 w-full h-auto">
+              {proPlans.map((p) => (
+                <TabsTrigger
+                  key={p.plan}
+                  value={p.plan}
+                  className="flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 data-[state=active]:bg-tab-active-bg data-[state=active]:text-foreground data-[state=active]:shadow-sm hover:text-foreground"
+                >
+                  {PLAN_LABELS[p.plan] ?? p.plan}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
+
           <div className={styles.priceSection}>
             <div className={styles.priceContainer}>
               <div className={styles.price}>
-                {formatAmount(plan?.amount, plan?.currency)}
+                {formatAmount(selectedPlan?.amount, selectedPlan?.currency)}
               </div>
               {/* <div className={styles.slashPrice}>₹8,300</div> */}
             </div>
-            <div className={styles.price}></div>
             <div className={styles.priceSubtext}>one-time payment</div>
           </div>
 
@@ -147,14 +171,19 @@ export default function UpgradeModal() {
           <button className={styles.upgradeNowButton} onClick={openCheckout}>
             Upgrade Now
           </button>
-          <div className={styles.lifetimeDealBanner}>
-            <div className={styles.dealBannerIcon}>⏰</div>
-            <span className={styles.dealBannerText}>
-              Will be {plan?.currency === 'INR' ? '₹7,999' : '$115'} starting
-              next month
-            </span>
-            <div className={styles.dealBannerPulse}></div>
-          </div>
+          {(() => {
+            const lifetimePlan = proPlans.find((p) => p.plan === "lifetime");
+            if (!lifetimePlan) return null;
+            return (
+              <div className={styles.lifetimeDealBanner}>
+                <div className={styles.dealBannerIcon}>⏰</div>
+                <span className={styles.dealBannerText}>
+                  Best value: Lifetime at {formatAmount(lifetimePlan.amount, lifetimePlan.currency)} — unlock forever
+                </span>
+                <div className={styles.dealBannerPulse}></div>
+              </div>
+            );
+          })()}
 
           {/* <div className={styles.lifetimeDealBanner}>
             <div className={styles.dealBannerIcon}>⏰</div>

@@ -32,7 +32,8 @@ export const _getDomainDetails = () =>
 export const _removeDomain = () =>
   axiosInstance.delete("/user/removeCustomDomain");
 
-export const createOrder = () => axiosInstance.get("/user/createRazorpayOrder");
+export const createOrder = (plan) =>
+  axiosInstance.get(`/user/createRazorpayOrder${plan ? `?plan=${encodeURIComponent(plan)}` : ""}`);
 
 export const _getProPlanDetails = () =>
   axiosInstance.get("/user/getProPlanDetails");

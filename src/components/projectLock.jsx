@@ -3,7 +3,7 @@ import { useGlobalContext } from "@/context/globalContext";
 import { Crown, Lock } from "lucide-react";
 import { StardustButton } from "./StardustButton";
 export default function ProjectLock() {
-  const { setShowUpgradeModal } = useGlobalContext();
+  const { setShowUpgradeModal, setUpgradeModalUnhideProject } = useGlobalContext();
 
   return (
     <div
@@ -31,7 +31,7 @@ export default function ProjectLock() {
           access to add unlimited projects and unlock all premium features.
         </p>
 
-        <StardustButton onClick={() => setShowUpgradeModal(true)}>
+        <StardustButton onClick={() => { setUpgradeModalUnhideProject(null); setShowUpgradeModal(true); }}>
           Get Lifetime Access
         </StardustButton>
 

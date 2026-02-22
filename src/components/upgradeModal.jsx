@@ -7,6 +7,21 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const PLAN_LABELS = { "1m": "1 Month", "3m": "3 Months", lifetime: "Lifetime" };
 
+const PLAN_HEADINGS = {
+  "1m": {
+    title: "For Beginners",
+    subtitle: "Build your first serious portfolio. Explore what's possible.",
+  },
+  "3m": {
+    title: "For Job Seekers",
+    subtitle: "Build a complete portfolio and start landing interviews fast.",
+  },
+  lifetime: {
+    title: "Lifetime Access",
+    subtitle: "Own your portfolio forever. No expiry. No resets.",
+  },
+};
+
 export default function UpgradeModal() {
   const [isModalExiting, setIsModalExiting] = useState(false);
   const [proPlans, setProPlans] = useState([]);
@@ -115,12 +130,12 @@ export default function UpgradeModal() {
             <h2 className={styles.modalTitle}>
               {upgradeModalUnhideProject
                 ? `Unhide ${upgradeModalUnhideProject.title || "Project"}?`
-                : "Designfolio Lifetime Access"}
+                : (PLAN_HEADINGS[selectedPlan?.plan] ?? PLAN_HEADINGS.lifetime).title}
             </h2>
             <p className={styles.modalSubtitle}>
               {upgradeModalUnhideProject
                 ? "Free users can only have 2 visible projects. Go Pro to add unlimited and unhide this project."
-                : "Just one payment. That's it. You get everything, forever."}
+                : (PLAN_HEADINGS[selectedPlan?.plan] ?? PLAN_HEADINGS.lifetime).subtitle}
             </p>
           </div>
         </div>
@@ -164,7 +179,7 @@ export default function UpgradeModal() {
           </button>
           {(() => {
             const lifetimePlan = proPlans.find((p) => p.plan === "lifetime");
-            if (!lifetimePlan) return null;
+            if (!lifetimePlan || selectedPlan?.plan !== "lifetime") return null;
             return (
               <div className={styles.lifetimeDealBanner}>
                 <div className={styles.dealBannerIcon}>⏰</div>

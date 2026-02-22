@@ -150,23 +150,33 @@ export default function UpgradeModal() {
         </div>
 
         <div className={styles.modalContent}>
-          <Tabs
-            value={selectedPlan?.plan ?? ""}
-            onValueChange={(value) => setSelectedPlan(proPlans.find((p) => p.plan === value))}
-            className="mb-6"
-          >
-            <TabsList className="flex p-1 rounded-lg gap-1 w-full h-auto bg-[#f0f0f0]">
-              {proPlans.map((p) => (
-                <TabsTrigger
-                  key={p.plan}
-                  value={p.plan}
-                  className="flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 text-[#525252] hover:text-[#0a0a0a] data-[state=active]:bg-[#ffffff] data-[state=active]:text-[#0a0a0a] data-[state=active]:shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] dark:text-[#525252] dark:hover:text-[#0a0a0a] dark:data-[state=active]:bg-[#ffffff] dark:data-[state=active]:text-[#0a0a0a] dark:data-[state=active]:shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]"
-                >
-                  {PLAN_LABELS[p.plan] ?? p.plan}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </Tabs>
+          <div className="relative mb-6">
+            {proPlans.some((p) => p.plan === "3m") && (
+              <span
+                className="absolute -top-3 left-1/2 -translate-x-1/2 z-10 px-1.5 py-0.5 text-[10px] font-semibold rounded-full whitespace-nowrap"
+                style={{ backgroundColor: "#22c55e", color: "#ffffff" }}
+              >
+                Save 25%
+              </span>
+            )}
+            <Tabs
+              value={selectedPlan?.plan ?? ""}
+              onValueChange={(value) => setSelectedPlan(proPlans.find((p) => p.plan === value))}
+              className="mb-0"
+            >
+              <TabsList className="flex p-1 rounded-lg gap-1 w-full h-auto bg-[#f0f0f0]">
+                {proPlans.map((p) => (
+                  <TabsTrigger
+                    key={p.plan}
+                    value={p.plan}
+                    className="flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 text-[#525252] hover:text-[#0a0a0a] data-[state=active]:bg-[#ffffff] data-[state=active]:text-[#0a0a0a] data-[state=active]:shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] dark:text-[#525252] dark:hover:text-[#0a0a0a] dark:data-[state=active]:bg-[#ffffff] dark:data-[state=active]:text-[#0a0a0a] dark:data-[state=active]:shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]"
+                  >
+                    {PLAN_LABELS[p.plan] ?? p.plan}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </Tabs>
+          </div>
 
           <div className={styles.priceSection}>
             <div className={styles.priceContainer}>

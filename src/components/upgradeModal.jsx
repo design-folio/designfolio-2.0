@@ -9,7 +9,7 @@ const PLAN_LABELS = { "1m": "1 Month", "3m": "3 Months", lifetime: "Lifetime" };
 
 const PLAN_HEADINGS = {
   "1m": {
-    title: "For Beginners",
+    title: "For ",
     subtitle: "Build your first serious portfolio. Explore what's possible.",
   },
   "3m": {
@@ -141,15 +141,18 @@ export default function UpgradeModal() {
         </div>
 
         <div className={styles.modalContent}>
-          <div className="relative mb-6">
+          <div className="mb-6">
             {proPlans.some((p) => p.plan === "3m") && (
-              <span
-                className="absolute -top-3 left-1/2 -translate-x-1/2 z-10 px-1.5 py-0.5 text-[10px] font-semibold rounded-full whitespace-nowrap"
-                style={{ backgroundColor: "#22c55e", color: "#ffffff" }}
-              >
-                Save 25%
-              </span>
+              <div className="relative z-10 text-center -mb-2.5">
+                <span
+                  className="inline-block px-2 py-1 text-[10px] font-semibold rounded-full whitespace-nowrap"
+                  style={{ backgroundColor: "#22c55e", color: "#ffffff" }}
+                >
+                  Save 20%
+                </span>
+              </div>
             )}
+            <div className="relative z-0">
             <Tabs
               value={selectedPlan?.plan ?? ""}
               onValueChange={(value) => setSelectedPlan(proPlans.find((p) => p.plan === value))}
@@ -167,6 +170,7 @@ export default function UpgradeModal() {
                 ))}
               </TabsList>
             </Tabs>
+            </div>
           </div>
 
           <div className={styles.priceSection}>

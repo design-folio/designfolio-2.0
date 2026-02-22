@@ -32,7 +32,7 @@ const Header = ({ dfToken, hideHeader }) => {
     return null;
   } else if (footerPaths.includes(path)) {
     headerComponent = <LandingHeader dfToken={dfToken} />;
-  } else if (path.includes("/ai-tools")) {
+  } else if (path.includes("/ai-tools") && !dfToken) {
     headerComponent = <AiToolsHeader />;
   } else if (!dfToken || (dfToken && path === "/email-verify")) {
     headerComponent = <AuthHeader />;

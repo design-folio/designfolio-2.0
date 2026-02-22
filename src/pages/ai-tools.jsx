@@ -23,6 +23,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 const navigation = {
   caseStudy: "case-study-generator",
@@ -313,36 +314,38 @@ export default function Index() {
 
   return (
     <div className="flex flex-col min-h-screen" style={{ background: "#F1EDE2" }}>
-      {/* Breadcrumb Navigation */}
-      <header className="p-4 flex items-center justify-between">
-        <Breadcrumb>
-          <BreadcrumbList className="rounded-lg border border-border bg-background px-3 py-2 shadow-sm shadow-black/5">
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link href="/">
-                  <Home size={16} strokeWidth={2} aria-hidden="true" />
-                  <span className="sr-only">Home</span>
-                </Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Career Workspace</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-        <Link href={isLoggedIn ? "/builder" : "/claim-link"}>
-          <Button
-            className="rounded-full bg-[#FF553E] text-white hover:bg-[#E64935] border-0 shadow-sm hover:shadow transition-all duration-200 px-6 h-10 font-semibold gap-2 group"
-          >
-            Try Portfolio Builder
-            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
-          </Button>
-        </Link>
-      </header>
+      {/* Breadcrumb Navigation — only for guests; logged-in users use the same header as builder */}
+      {!isLoggedIn && (
+        <header className="p-4 flex items-center justify-between">
+          <Breadcrumb>
+            <BreadcrumbList className="rounded-lg border border-border bg-background px-3 py-2 shadow-sm shadow-black/5">
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link href="/">
+                    <Home size={16} strokeWidth={2} aria-hidden="true" />
+                    <span className="sr-only">Home</span>
+                  </Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>Career Workspace</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+          <Link href="/claim-link">
+            <Button
+              className="rounded-full bg-[#FF553E] text-white hover:bg-[#E64935] border-0 shadow-sm hover:shadow transition-all duration-200 px-6 h-10 font-semibold gap-2 group"
+            >
+              Try Portfolio Builder
+              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+            </Button>
+          </Link>
+        </header>
+      )}
 
-      {/* Main Content */}
-      <main className="flex-1 p-6 overflow-y-auto pb-32 flex justify-center">
+      {/* Main Content — when logged in, add top padding to clear the shared fixed header (same as builder) */}
+      <main className={cn("flex-1 p-6 overflow-y-auto pb-32 flex justify-center", isLoggedIn && "pt-[94px] md:pt-[124px]")}>
         <div
           className={`w-full transition-all duration-500 ease-[0.23,1,0.32,1] ${isWideLayout ? "max-w-6xl" : "max-w-lg"}`}
         >

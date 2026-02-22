@@ -9,6 +9,21 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const PLAN_LABELS = { "1m": "1 Month", "3m": "3 Months", lifetime: "Lifetime" };
 
+const PLAN_HEADINGS = {
+  "1m": {
+    title: "For Beginners",
+    subtitle: "Build your first serious portfolio. Explore what's possible.",
+  },
+  "3m": {
+    title: "For Job Seekers",
+    subtitle: "Build a complete portfolio and start landing interviews fast.",
+  },
+  lifetime: {
+    title: "Lifetime Access",
+    subtitle: "Own your portfolio forever. No expiry. No resets.",
+  },
+};
+
 export default function UpgradeModal() {
   const [isModalExiting, setIsModalExiting] = useState(false);
   const [proPlans, setProPlans] = useState([]);
@@ -124,34 +139,44 @@ export default function UpgradeModal() {
             <h2 className={styles.modalTitle}>
               {upgradeModalUnhideProject
                 ? `Unhide ${upgradeModalUnhideProject.title || "Project"}?`
-                : "Designfolio Lifetime Access"}
+                : (PLAN_HEADINGS[selectedPlan?.plan] ?? PLAN_HEADINGS.lifetime).title}
             </h2>
             <p className={styles.modalSubtitle}>
               {upgradeModalUnhideProject
                 ? "Free users can only have 2 visible projects. Go Pro to add unlimited and unhide this project."
-                : "Just one payment. That's it. You get everything, forever."}
+                : (PLAN_HEADINGS[selectedPlan?.plan] ?? PLAN_HEADINGS.lifetime).subtitle}
             </p>
           </div>
         </div>
 
         <div className={styles.modalContent}>
-          <Tabs
-            value={selectedPlan?.plan ?? ""}
-            onValueChange={(value) => setSelectedPlan(proPlans.find((p) => p.plan === value))}
-            className="mb-6"
-          >
-            <TabsList className="flex p-1 rounded-lg gap-1 w-full h-auto bg-[#f0f0f0]">
-              {proPlans.map((p) => (
-                <TabsTrigger
-                  key={p.plan}
-                  value={p.plan}
-                  className="flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 text-[#525252] hover:text-[#0a0a0a] data-[state=active]:bg-[#ffffff] data-[state=active]:text-[#0a0a0a] data-[state=active]:shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] dark:text-[#525252] dark:hover:text-[#0a0a0a] dark:data-[state=active]:bg-[#ffffff] dark:data-[state=active]:text-[#0a0a0a] dark:data-[state=active]:shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]"
-                >
-                  {PLAN_LABELS[p.plan] ?? p.plan}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </Tabs>
+          <div className="relative mb-6">
+            {proPlans.some((p) => p.plan === "3m") && (
+              <span
+                className="absolute -top-3 left-1/2 -translate-x-1/2 z-10 px-1.5 py-0.5 text-[10px] font-semibold rounded-full whitespace-nowrap"
+                style={{ backgroundColor: "#22c55e", color: "#ffffff" }}
+              >
+                Save 25%
+              </span>
+            )}
+            <Tabs
+              value={selectedPlan?.plan ?? ""}
+              onValueChange={(value) => setSelectedPlan(proPlans.find((p) => p.plan === value))}
+              className="mb-0"
+            >
+              <TabsList className="flex p-1 rounded-lg gap-1 w-full h-auto bg-[#f0f0f0]">
+                {proPlans.map((p) => (
+                  <TabsTrigger
+                    key={p.plan}
+                    value={p.plan}
+                    className="flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 text-[#525252] hover:text-[#0a0a0a] data-[state=active]:bg-[#ffffff] data-[state=active]:text-[#0a0a0a] data-[state=active]:shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] dark:text-[#525252] dark:hover:text-[#0a0a0a] dark:data-[state=active]:bg-[#ffffff] dark:data-[state=active]:text-[#0a0a0a] dark:data-[state=active]:shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]"
+                  >
+                    {PLAN_LABELS[p.plan] ?? p.plan}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </Tabs>
+          </div>
 
           <div className={styles.priceSection}>
             <div className={styles.priceContainer}>
@@ -173,7 +198,7 @@ export default function UpgradeModal() {
           </button>
           {(() => {
             const lifetimePlan = proPlans.find((p) => p.plan === "lifetime");
-            if (!lifetimePlan) return null;
+            if (!lifetimePlan || selectedPlan?.plan !== "lifetime") return null;
             return (
               <div className={styles.lifetimeDealBanner}>
                 <div className={styles.dealBannerIcon}>⏰</div>

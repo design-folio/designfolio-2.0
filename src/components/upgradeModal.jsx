@@ -198,7 +198,7 @@ export default function UpgradeModal() {
               <div className={styles.lifetimeDealBanner}>
                 <div className={styles.dealBannerIcon}>⏰</div>
                 <span className={styles.dealBannerText}>
-                  Best value: Lifetime at {formatAmount(lifetimePlan.amount, lifetimePlan.currency)} — unlock forever
+                  Lifetime price increasing next month
                 </span>
                 <div className={styles.dealBannerPulse}></div>
               </div>

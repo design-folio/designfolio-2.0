@@ -35,30 +35,30 @@ const navigation = {
 };
 
 const navItems = [
-  { id: 1, title: "Write Case Study using AI", description: "Write compelling case studies with AI assistance." },
-  { id: 2, title: "Case Study Audit", description: "Get critical feedback on your design case studies." },
-  { id: 3, title: "Mock Interview", description: "Practice with AI-driven interview questions." },
-  { id: 4, title: "Salary Negotiation", description: "Get data-backed negotiation strategies." },
-  { id: 5, title: "Email Generator", description: "Draft professional outreach and follow-ups." },
-  { id: 6, title: "Resume Fixer", description: "Optimize your resume for ATS and impact." },
+  { id: 1, title: "Resume Fixer", description: "Optimize your resume for ATS and impact." },
+  { id: 2, title: "Write Case Study using AI", description: "Write compelling case studies with AI assistance." },
+  { id: 3, title: "Case Study Audit", description: "Get critical feedback on your design case studies." },
+  { id: 4, title: "Mock Interview", description: "Practice with AI-driven interview questions." },
+  { id: 5, title: "Salary Negotiation", description: "Get data-backed negotiation strategies." },
+  { id: 6, title: "Email Generator", description: "Draft professional outreach and follow-ups." },
 ];
 
 const typeToIndex = {
-  [navigation.caseStudy]: 0,
-  [navigation.analyze]: 1,
-  [navigation.MockInterview]: 2,
-  [navigation.salary]: 3,
-  [navigation.email]: 4,
-  [navigation.optimizeResume]: 5,
+  [navigation.optimizeResume]: 0,
+  [navigation.caseStudy]: 1,
+  [navigation.analyze]: 2,
+  [navigation.MockInterview]: 3,
+  [navigation.salary]: 4,
+  [navigation.email]: 5,
 };
 
 const indexToType = [
+  navigation.optimizeResume,
   navigation.caseStudy,
   navigation.analyze,
   navigation.MockInterview,
   navigation.salary,
   navigation.email,
-  navigation.optimizeResume,
 ];
 
 /** Tools that require login to use (show lock screen when not authenticated) */
@@ -90,6 +90,14 @@ export default function Index() {
   useEffect(() => {
     document.body.style.overflowY = "auto";
   }, []);
+
+  // Default to first tool (Resume Fixer) when no type in URL
+  useEffect(() => {
+    if (!router.isReady) return;
+    if (router.query?.type === undefined) {
+      router.replace("/ai-tools?type=optimize-resume", undefined, { shallow: true });
+    }
+  }, [router.isReady, router.query?.type]);
 
   useEffect(() => {
     setSelectedTool(selectedIndex);
@@ -124,7 +132,7 @@ export default function Index() {
   }, [lastScrollY]);
 
   const isLoggedIn = !!Cookies.get("df-token");
-  const currentTypeForLock = router.query?.type || navigation.caseStudy;
+  const currentTypeForLock = router.query?.type || navigation.optimizeResume;
   const isToolLocked = !isLoggedIn && LOCKED_TOOL_TYPES.includes(currentTypeForLock);
 
   const [optimizeResumeHasResult, setOptimizeResumeHasResult] = useState(false);
@@ -279,7 +287,15 @@ export default function Index() {
                   />
                 );
               default:
-                return <CaseStudyGenerator />;
+                return (
+                  <CoverLetterGenerator
+                    onViewChange={setOptimizeResumeHasResult}
+                    onToolUsed={!isLoggedIn ? recordToolUsed : undefined}
+                    onStartNewAnalysis={!isLoggedIn ? () => setHasClickedStartNewAnalysis(true) : undefined}
+                    guestUsageLimitReached={currentTypeForLock === navigation.optimizeResume && isUsageLimitReached}
+                    skipRestore={hasClickedStartNewAnalysis}
+                  />
+                );
             }
           })()}
         </div>

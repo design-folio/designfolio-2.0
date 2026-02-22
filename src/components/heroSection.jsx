@@ -565,6 +565,7 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab, onResume
                         transition={{ duration: 0.6, delay: 0.05 }}
                     >
                         <SegmentedControl
+                            layoutId="segmented-control-hero"
                             options={["Start from Scratch", "Use my Resume"]}
                             value={effectiveTab === "scratch" ? "Start from Scratch" : "Use my Resume"}
                             onChange={(val) => {

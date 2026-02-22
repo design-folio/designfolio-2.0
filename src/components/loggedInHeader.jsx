@@ -194,6 +194,15 @@ export default function LoggedInHeader({
   const { username, latestPublishDate, _id, email } = userDetails || {};
   const { isClient } = useClient();
 
+  // Prefetch the other page when on builder or ai-tools for faster SegmentedControl switching
+  useEffect(() => {
+    if (router.pathname === "/builder") {
+      router.prefetch("/ai-tools?type=optimize-resume");
+    } else if (router.pathname.includes("/ai-tools")) {
+      router.prefetch("/builder");
+    }
+  }, [router.pathname]);
+
   const wpPath = theme === 'dark' ? '/wallpaper/darkui' : '/wallpaper';
   const wallpapers = [
     {
@@ -493,6 +502,7 @@ export default function LoggedInHeader({
           {(router.pathname === "/builder" || router.pathname.includes("/ai-tools")) ? (
             <div className="rounded-full bg-[#F6F2EF] p-1 border border-black/[0.03] dark:bg-muted/30 dark:border-border/50">
               <SegmentedControl
+                layoutId="segmented-control-header"
                 options={["Portfolio Builder", "AI Tools"]}
                 value={router.pathname.includes("/ai-tools") ? "AI Tools" : "Portfolio Builder"}
                 onChange={(id) => {
@@ -516,9 +526,8 @@ export default function LoggedInHeader({
             <>
               <Link href="/builder">
                 <Button
-                  className="rounded-full bg-foreground text-background hover:bg-foreground/90 px-6 h-11 font-medium gap-2"
+                  variant="secondary"
                 >
-                  <MemoPower className="w-4 h-4" />
                   Go to Builder
                 </Button>
               </Link>
@@ -800,9 +809,10 @@ export default function LoggedInHeader({
                   <>
                     <Link href="/builder" onClick={() => setPopoverMenu(null)}>
                       <Button
-                        className="h-11 px-4 w-full mb-4 bg-foreground text-background hover:bg-foreground/90 rounded-full gap-2"
+                        variant="secondary"
+
                       >
-                        <MemoPower className="w-4 h-4" />
+
                         Go to Builder
                       </Button>
                     </Link>

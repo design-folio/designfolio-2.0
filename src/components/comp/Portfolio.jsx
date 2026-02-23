@@ -136,7 +136,8 @@ const Portfolio = ({ userDetails, edit }) => {
     const project = sortedProjects.find((p) => p._id === projectId);
     const visibleCount = (sortedProjects || []).filter((p) => !p.hidden).length;
     const isUnhiding = project?.hidden === true;
-    if (!userDetails?.pro && isUnhiding && visibleCount >= 2) {
+    // Temporarily disabled: free user 2-project limit
+    if (false && !userDetails?.pro && isUnhiding && visibleCount >= 2) {
       setUpgradeModalUnhideProject({ projectId, title: project?.title || "Project" });
       setShowUpgradeModal(true);
       return;

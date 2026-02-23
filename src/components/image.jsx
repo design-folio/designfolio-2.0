@@ -28,7 +28,7 @@ const DfImage = ({ src, style, className, alt, onClick }) => {
             src={src}
             alt={alt ?? ""}
             className={twMerge(
-              "absolute inset-0 w-full h-full object-cover rounded-2xl transition-opacity duration-300",
+              "absolute inset-0 w-full h-full object-cover rounded-full transition-opacity duration-300",
               imageLoaded ? "opacity-100" : "opacity-0",
               hasPointerCursor && "cursor-pointer"
             )}
@@ -39,11 +39,11 @@ const DfImage = ({ src, style, className, alt, onClick }) => {
             onClick={onClick}
           />
           {!imageLoaded && (
-            <div className="absolute inset-0 bg-placeholder-color rounded-2xl animate-pulse" aria-hidden />
+            <div className="absolute inset-0 bg-placeholder-color rounded-full animate-pulse" aria-hidden />
           )}
         </>
       ) : (
-        <div className="absolute inset-0 bg-placeholder-color rounded-2xl animate-pulse" aria-hidden />
+        <div className="absolute inset-0 bg-placeholder-color rounded-full animate-pulse" aria-hidden />
       )}
     </div>
   );

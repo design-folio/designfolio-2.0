@@ -47,9 +47,17 @@ export default function AiToolsHeader() {
           show={popovers.landingMenu === popoverMenu}
           className="right-[4px] mt-2"
         >
-          <Link href={"/ai-tools?type=mock-interview"}>
+          <Link href={"/ai-tools?type=optimize-resume"}>
             <Button
               customClass="w-full"
+              text="Resume Fixer"
+              type="secondary"
+              icon={<OptimizeResume />}
+            />
+          </Link>
+          <Link href={"/ai-tools?type=mock-interview"}>
+            <Button
+              customClass="w-full mt-4"
               text="Mock Interview"
               type="secondary"
               icon={<MockTool />}
@@ -69,14 +77,6 @@ export default function AiToolsHeader() {
               text="Email Generator"
               type="secondary"
               icon={<EmailIcon />}
-            />
-          </Link>
-          <Link href={"/ai-tools?type=optimize-resume"}>
-            <Button
-              customClass="w-full mt-4"
-              text="Optimize your Resume"
-              type="secondary"
-              icon={<OptimizeResume />}
             />
           </Link>
         </Popover>

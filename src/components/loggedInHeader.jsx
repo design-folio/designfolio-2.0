@@ -22,7 +22,7 @@ import LeftArrow from '../../public/assets/svgs/left-arrow.svg';
 import { motion } from 'framer-motion';
 import { useTheme } from 'next-themes';
 import Text from './text';
-import DfImage from './image';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/buttonNew';
 import Cookies from 'js-cookie';
 import { _publish } from '@/network/post-request';
@@ -194,7 +194,7 @@ export default function LoggedInHeader({
     fetch("/lottie/diamond-lottie.json")
       .then((res) => res.json())
       .then(setDiamondLottie)
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   const phEvent = usePostHogEvent();
@@ -498,6 +498,7 @@ export default function LoggedInHeader({
         right: shouldShiftHeader ? getSidebarShiftWidth(activeSidebar) : '0',
       }}
     >
+
       <div className={cn(
         "shadow-df-section-card-shadow max-w-[848px] p-2 bg-df-header-bg-color mx-auto flex justify-between items-center",
         router.pathname === "/builder" ? "rounded-full" : "rounded-2xl"
@@ -539,18 +540,29 @@ export default function LoggedInHeader({
                 className="relative inline-block text-left"
                 data-popover-id={popovers.userMenu}
               >
-                <DfImage
+                <button
+                  type="button"
                   onClick={() =>
                     setPopoverMenu(prev =>
                       prev == popovers.userMenu ? null : popovers.userMenu
                     )
                   }
-                  src={getUserAvatarImage(userDetails)}
-                  className={cn(
-                    'w-[44px] h-[44px] rounded-full cursor-pointer',
-                    !userDetails?.avatar ? 'bg-df-bg-color' : ''
-                  )}
-                />
+                  className="rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-popover-border-color"
+                >
+                  <div className="relative">
+                    <Avatar className="w-11 h-11 rounded-full border-2 border-background shadow-sm">
+                      <AvatarImage src={getUserAvatarImage(userDetails)} alt={username || "User"} className="rounded-full" />
+                      <AvatarFallback className="text-base rounded-full" style={{ backgroundColor: "#FF553E", color: "#FFFFFF" }}>
+                        {(username || email || "U").charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    {!userDetails?.pro && (
+                      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-white dark:bg-zinc-800 border border-black/10 dark:border-white/10 px-1.5 py-0.5 rounded-full shadow-sm whitespace-nowrap">
+                        <span className="text-[8px] font-bold uppercase tracking-wider text-black dark:text-white leading-none block">Free</span>
+                      </div>
+                    )}
+                  </div>
+                </button>
 
                 {isClient && (
                   <div
@@ -737,72 +749,81 @@ export default function LoggedInHeader({
                 )}
               </div>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button
-                type="button"
-                className="rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-popover-border-color"
-              >
-                <DfImage
-                  src={getUserAvatarImage(userDetails)}
-                  className={cn("w-[44px] h-[44px] rounded-full cursor-pointer", !userDetails?.avatar ? "bg-df-bg-color" : "")}
-                />
-              </button>
-            </DropdownMenuTrigger>
-            {isClient && (
-              <DropdownMenuContent
-                align="end"
-                className="w-64 p-2 rounded-2xl shadow-xl bg-white border-black/5 dark:bg-zinc-950 dark:border-white/5"
-              >
-                <DropdownMenuItem
-                  className="flex items-center gap-3 p-3 rounded-xl cursor-pointer focus:bg-black/[0.03] dark:focus:bg-white/[0.03]"
-                  onClick={() => setShowUpgradeModal(true)}
-                >
-                  <div className="w-8 h-8 rounded-full bg-black/[0.03] dark:bg-white/[0.03] flex items-center justify-center overflow-hidden cursor-pointer">
-                    <Suspense fallback={<Crown className="w-4 h-4 text-[#FF553E]" />}>
-                      {diamondLottie ? (
-                        <Lottie
-                          animationData={diamondLottie}
-                          style={{ width: 44, height: 44 }}
-                          loop={true}
-                        />
-                      ) : (
-                        <Crown className="w-4 h-4 text-[#FF553E]" />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    type="button"
+                    className="rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-popover-border-color"
+                  >
+                    <div className="relative">
+                      <Avatar className="w-11 h-11 rounded-full border-2 border-background shadow-sm">
+                        <AvatarImage src={getUserAvatarImage(userDetails)} alt={username || "User"} className="rounded-full" />
+                        <AvatarFallback className="text-base rounded-full" style={{ backgroundColor: "#FF553E", color: "#FFFFFF" }}>
+                          {(username || email || "U").charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      {!userDetails?.pro && (
+                        <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-white dark:bg-zinc-800 border border-black/10 dark:border-white/10 px-1.5 py-0.5 rounded-full shadow-sm whitespace-nowrap">
+                          <span className="text-[8px] font-bold uppercase tracking-wider text-black dark:text-white leading-none block">Free</span>
+                        </div>
                       )}
-                    </Suspense>
-                  </div>
-                  <div className="flex flex-col cursor-pointer">
-                    <span className="font-semibold text-sm cursor-pointer">Upgrade PRO</span>
-                  </div>
-                </DropdownMenuItem>
+                    </div>
+                  </button>
+                </DropdownMenuTrigger>
+                {isClient && (
+                  <DropdownMenuContent
+                    align="end"
+                    className="w-64 p-2 rounded-2xl shadow-xl bg-white border-black/5 dark:bg-zinc-950 dark:border-white/5"
+                  >
+                    <DropdownMenuItem
+                      className="flex items-center gap-3 p-3 rounded-xl cursor-pointer focus:bg-black/[0.03] dark:focus:bg-white/[0.03]"
+                      onClick={() => setShowUpgradeModal(true)}
+                    >
+                      <div className="w-8 h-8 rounded-full bg-black/[0.03] dark:bg-white/[0.03] flex items-center justify-center overflow-hidden cursor-pointer">
+                        <Suspense fallback={<Crown className="w-4 h-4 text-[#FF553E]" />}>
+                          {diamondLottie ? (
+                            <Lottie
+                              animationData={diamondLottie}
+                              style={{ width: 44, height: 44 }}
+                              loop={true}
+                            />
+                          ) : (
+                            <Crown className="w-4 h-4 text-[#FF553E]" />
+                          )}
+                        </Suspense>
+                      </div>
+                      <div className="flex flex-col cursor-pointer">
+                        <span className="font-semibold text-sm cursor-pointer">Upgrade PRO</span>
+                      </div>
+                    </DropdownMenuItem>
 
-                <DropdownMenuItem
-                  className="flex items-center gap-3 p-3 rounded-xl cursor-pointer focus:bg-black/[0.03] dark:focus:bg-white/[0.03]"
-                  onClick={handlenavigation}
-                >
-                  <div className="w-8 h-8 rounded-full bg-black/[0.03] dark:bg-white/[0.03] flex items-center justify-center text-foreground/60 cursor-pointer">
-                    <Settings className="w-4 h-4" />
-                  </div>
-                  <div className="flex flex-col cursor-pointer">
-                    <span className="font-semibold text-sm cursor-pointer">Settings</span>
-                    <span className="text-[10px] text-foreground/50 cursor-pointer">Custom Domain, Billing and more</span>
-                  </div>
-                </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="flex items-center gap-3 p-3 rounded-xl cursor-pointer focus:bg-black/[0.03] dark:focus:bg-white/[0.03]"
+                      onClick={handlenavigation}
+                    >
+                      <div className="w-8 h-8 rounded-full bg-black/[0.03] dark:bg-white/[0.03] flex items-center justify-center text-foreground/60 cursor-pointer">
+                        <Settings className="w-4 h-4" />
+                      </div>
+                      <div className="flex flex-col cursor-pointer">
+                        <span className="font-semibold text-sm cursor-pointer">Settings</span>
+                        <span className="text-[10px] text-foreground/50 cursor-pointer">Custom Domain, Billing and more</span>
+                      </div>
+                    </DropdownMenuItem>
 
-                <DropdownMenuSeparator className="my-1 bg-black/5 dark:bg-white/5" />
+                    <DropdownMenuSeparator className="my-1 bg-black/5 dark:bg-white/5" />
 
-                <DropdownMenuItem
-                  className="flex items-center gap-3 p-3 rounded-xl cursor-pointer text-destructive focus:bg-destructive/5 focus:text-destructive"
-                  onClick={handleLogout}
-                >
-                  <div className="w-8 h-8 rounded-full bg-destructive/10 flex items-center justify-center cursor-pointer">
-                    <LogOut className="w-4 h-4" />
-                  </div>
-                  <span className="font-semibold text-sm cursor-pointer">Logout</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            )}
-          </DropdownMenu>
+                    <DropdownMenuItem
+                      className="flex items-center gap-3 p-3 rounded-xl cursor-pointer text-destructive focus:bg-destructive/5 focus:text-destructive"
+                      onClick={handleLogout}
+                    >
+                      <div className="w-8 h-8 rounded-full bg-destructive/10 flex items-center justify-center cursor-pointer">
+                        <LogOut className="w-4 h-4" />
+                      </div>
+                      <span className="font-semibold text-sm cursor-pointer">Logout</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                )}
+              </DropdownMenu>
             </>
           )}
         </div>

@@ -1,7 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 
 import { getServerSideProps } from "@/lib/loggedInServerSideProps";
 import { useGlobalContext } from "@/context/globalContext";
+import { useTheme } from "next-themes";
 import Builder1 from "@/components/builder";
 import BottomTask from "@/components/bottomTask";
 import Modal from "@/components/modal";
@@ -67,6 +68,23 @@ export default function Index() {
   const { isClient } = useClient();
   const router = useRouter();
   const isMobile = useIsMobile();
+  const { setTheme, resolvedTheme } = useTheme();
+  const themeBeforeAiToolsRef = useRef(null);
+
+  // AI tools view has no dark mode UI: force light when entering, restore when leaving
+  useEffect(() => {
+    if (router.query?.view === "ai-tools") {
+      if (themeBeforeAiToolsRef.current === null && resolvedTheme) {
+        themeBeforeAiToolsRef.current = resolvedTheme;
+      }
+      setTheme("light");
+    } else {
+      if (themeBeforeAiToolsRef.current) {
+        setTheme(themeBeforeAiToolsRef.current);
+        themeBeforeAiToolsRef.current = null;
+      }
+    }
+  }, [router.query?.view, setTheme, resolvedTheme]);
 
   // Manage body margin-right based on active sidebar to prevent layout shift during switching (desktop only)
   useEffect(() => {

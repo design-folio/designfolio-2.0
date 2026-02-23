@@ -36,6 +36,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { CourseCard } from "@/components/CourceCard";
 import WallpaperBackground from "@/components/WallpaperBackground";
 import FooterSettingsPanel from "@/components/FooterSettingsPanel";
+import AiToolsWorkspace from "@/components/AiToolsWorkspace";
 
 export default function Index() {
   const {
@@ -192,6 +193,47 @@ export default function Index() {
     }
   };
 
+  // Logged-in: AI tools live inside builder via ?view=ai-tools (no navigation)
+  if (router.query?.view === "ai-tools") {
+    return (
+      <>
+        <AiToolsWorkspace embedInBuilder />
+        <Modal show={showModal && showModal !== modals.aiProject && showModal !== modals.review && showModal !== modals.work}>
+          {modalContent()}
+        </Modal>
+        <Modal show={modals.aiProject == showModal} className={"md:block"}>
+          <CreateAiProject openModal={openModal} />
+        </Modal>
+        <AddReview />
+        <AddWork />
+        <AddAbout />
+        <UnsavedChangesDialog
+          open={showUnsavedWarning && isSwitchingSidebar && pendingSidebarAction?.type === "open"}
+          onOpenChange={(open) => {
+            if (!open) handleCancelDiscardSidebar();
+          }}
+          onConfirmDiscard={handleConfirmDiscardSidebar}
+          title="Unsaved Changes"
+          description="You have unsaved changes. Are you sure you want to switch sidebars and discard them?"
+        />
+        <ReplacePortfolioDialog
+          open={pendingReplaceAwaitingConfirmation}
+          onOpenChange={setPendingReplaceAwaitingConfirmation}
+          onKeepCurrent={discardPendingPortfolio}
+          onReplace={applyPendingPortfolio}
+        />
+        {isClient && userDetails && (
+          <Feedefy
+            projectId="a72769ea-5ab2-4ac9-81bd-1abe180d4b66"
+            data-feedefy
+            data-feedefy-userid={userDetails?.email}
+          />
+        )}
+        <FooterSettingsPanel />
+      </>
+    );
+  }
+
   return (
     <>
       <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
@@ -203,7 +245,6 @@ export default function Index() {
         >
           {userDetails && !userDetails?.pro && <ProWarning />}
           {userDetails && (
-
             <>
               {isLoadingTemplate ? (
                 <div className="flex items-center justify-center min-h-[calc(100vh-126px)]">
@@ -225,7 +266,6 @@ export default function Index() {
         <AddReview />
         <AddWork />
         <AddAbout />
-        {/* Unsaved changes dialog */}
         <UnsavedChangesDialog
           open={showUnsavedWarning && isSwitchingSidebar && pendingSidebarAction?.type === "open"}
           onOpenChange={(open) => {

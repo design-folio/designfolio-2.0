@@ -194,15 +194,6 @@ export default function LoggedInHeader({
   const { username, latestPublishDate, _id, email } = userDetails || {};
   const { isClient } = useClient();
 
-  // Prefetch the other page when on builder or ai-tools for faster SegmentedControl switching
-  useEffect(() => {
-    if (router.pathname === "/builder") {
-      router.prefetch("/ai-tools?type=optimize-resume");
-    } else if (router.pathname.includes("/ai-tools")) {
-      router.prefetch("/builder");
-    }
-  }, [router.pathname]);
-
   const wpPath = theme === 'dark' ? '/wallpaper/darkui' : '/wallpaper';
   const wallpapers = [
     {
@@ -496,20 +487,20 @@ export default function LoggedInHeader({
     >
       <div className={cn(
         "shadow-df-section-card-shadow max-w-[848px] p-2 bg-df-header-bg-color mx-auto flex justify-between items-center",
-        (router.pathname === "/builder" || router.pathname.includes("/ai-tools")) ? "rounded-full" : "rounded-2xl"
+        router.pathname === "/builder" ? "rounded-full" : "rounded-2xl"
       )}>
         <div className="flex items-center gap-[24px]">
-          {(router.pathname === "/builder" || router.pathname.includes("/ai-tools")) ? (
+          {router.pathname === "/builder" ? (
             <div className="rounded-full bg-[#F6F2EF] p-1 border border-black/[0.03] dark:bg-muted/30 dark:border-border/50">
               <SegmentedControl
                 layoutId="segmented-control-header"
                 options={["Portfolio Builder", "AI Tools"]}
-                value={router.pathname.includes("/ai-tools") ? "AI Tools" : "Portfolio Builder"}
+                value={router.query?.view === "ai-tools" ? "AI Tools" : "Portfolio Builder"}
                 onChange={(id) => {
                   if (id === "AI Tools") {
-                    router.push("/ai-tools");
+                    router.push("/builder?view=ai-tools&type=optimize-resume", undefined, { shallow: true });
                   } else {
-                    router.push("/builder");
+                    router.push("/builder", undefined, { shallow: true });
                   }
                 }}
                 className="!p-0 !bg-transparent !border-0 !backdrop-blur-none"
@@ -522,7 +513,7 @@ export default function LoggedInHeader({
           )}
         </div>
         <div className="gap-3 items-center hidden md:flex">
-          {router.pathname.includes("/ai-tools") ? (
+          {router.pathname === "/builder" && router.query?.view === "ai-tools" ? (
             <>
               <Link href="/builder">
                 <Button
@@ -805,7 +796,7 @@ export default function LoggedInHeader({
           >
             {!isMobileThemePopup ? (
               <div>
-                {router.pathname.includes("/ai-tools") ? (
+                {router.pathname === "/builder" && router.query?.view === "ai-tools" ? (
                   <>
                     <Link href="/builder" onClick={() => setPopoverMenu(null)}>
                       <Button

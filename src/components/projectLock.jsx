@@ -24,7 +24,7 @@ export default function ProjectLock() {
         </div>
 
         <h3 className="text-xl font-semibold mb-2 text-df-add-card-heading-color">
-          Upgrade to PRO
+          Designfolio PRO
         </h3>
         <p className="text-sm text-df-add-card-description-color mb-4">
           You've reached the 2-projects limit on the free plan. Get lifetime
@@ -32,7 +32,7 @@ export default function ProjectLock() {
         </p>
 
         <StardustButton onClick={() => { setUpgradeModalUnhideProject(null); setShowUpgradeModal(true); }}>
-          Get Lifetime Access
+          Upgrade to PRO
         </StardustButton>
 
         <div className="mt-6 flex items-center gap-2 text-xs text-df-add-card-description-color opacity-70">

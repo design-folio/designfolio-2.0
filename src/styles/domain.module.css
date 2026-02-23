@@ -922,7 +922,10 @@
   background: #ffffff;
   border-radius: 20px;
   max-width: 420px;
+  max-height: 90vh;
   width: 100%;
+  display: flex;
+  flex-direction: column;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   position: relative;
   overflow: hidden;
@@ -1145,6 +1148,7 @@
   padding: 2rem 2rem 0 2rem;
   position: relative;
   flex-direction: column;
+  flex-shrink: 0;
 }
 
 .modalIcon {
@@ -1219,6 +1223,9 @@
 
 .modalContent {
   padding: 0 2rem 2rem 2rem;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .priceSection {
@@ -1916,6 +1923,7 @@
   .modalContent {
     padding: 0 1.5rem 2rem 1.5rem;
     flex: 1;
+    min-height: 0;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;

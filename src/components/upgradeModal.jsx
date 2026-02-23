@@ -22,6 +22,16 @@ const PLAN_HEADINGS = {
   },
 };
 
+const TRUSTED_BY_LOGOS = [
+  "/assets/svgs/company logos/companylogos02.svg",
+  "/assets/svgs/company logos/companylogos03.svg",
+  "/assets/svgs/company logos/companylogos01.svg",
+  "/assets/svgs/company logos/companylogos04.svg",
+  "/assets/svgs/company logos/companylogos05.svg",
+  "/assets/svgs/company logos/companylogos06.svg",
+  "/assets/svgs/company logos/companylogos07.svg",
+];
+
 export default function UpgradeModal() {
   const [isModalExiting, setIsModalExiting] = useState(false);
   const [proPlans, setProPlans] = useState([]);
@@ -41,7 +51,7 @@ export default function UpgradeModal() {
         const plans = response?.data?.proPlans;
         if (Array.isArray(plans) && plans.length > 0) {
           setProPlans(plans);
-          setSelectedPlan(plans.find((p) => p.plan === "lifetime") || plans[0]);
+          setSelectedPlan(plans.find((p) => p.plan === "3m") || plans[0]);
         }
       });
     }
@@ -103,6 +113,7 @@ export default function UpgradeModal() {
       };
       const rzp = new window.Razorpay(options);
       rzp.open();
+      handleCloseModal();
     });
   };
   if (!showUpgradeModal || proPlans.length === 0 || !selectedPlan) return null;
@@ -231,6 +242,53 @@ export default function UpgradeModal() {
             <div className={styles.featureItem}>
               <div className={styles.featureIcon}>✓</div>
               <span>Track views with built-in analytics</span>
+            </div>
+          </div>
+
+          <div className="mt-6 pt-4 border-t border-[#e5e7eb] min-h-[64px]">
+            <p className="text-center text-[10px] font-medium text-[#9ca3af] mb-2">
+              Trusted by 20000+ designers
+            </p>
+            <div className="relative min-h-8 py-1">
+              <div className="absolute left-0 top-0 bottom-0 w-6 sm:w-8 z-10 pointer-events-none bg-gradient-to-r from-white to-transparent" />
+              <div className="absolute right-0 top-0 bottom-0 w-6 sm:w-8 z-10 pointer-events-none bg-gradient-to-l from-white to-transparent" />
+              <div className="flex gap-0 overflow-x-hidden min-h-8 px-1">
+                <div className="flex animate-scroll items-center gap-0 shrink-0 min-h-8 py-0.5">
+                  {TRUSTED_BY_LOGOS.map((logo, index) => (
+                    <div
+                      key={`first-${index}`}
+                      className="flex items-center justify-center px-2 sm:px-3 flex-shrink-0 min-h-8 min-w-[48px]"
+                    >
+                      <img
+                        src={logo}
+                        alt=""
+                        width={32}
+                        height={16}
+                        className="h-4 w-auto max-h-6 opacity-50 grayscale object-contain"
+                      />
+                    </div>
+                  ))}
+                </div>
+                <div
+                  className="flex animate-scroll items-center gap-0 shrink-0 min-h-8 py-0.5"
+                  aria-hidden="true"
+                >
+                  {TRUSTED_BY_LOGOS.map((logo, index) => (
+                    <div
+                      key={`second-${index}`}
+                      className="flex items-center justify-center px-2 sm:px-3 flex-shrink-0 min-h-8 min-w-[48px]"
+                    >
+                      <img
+                        src={logo}
+                        alt=""
+                        width={32}
+                        height={16}
+                        className="h-4 w-auto max-h-6 opacity-50 grayscale object-contain"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>

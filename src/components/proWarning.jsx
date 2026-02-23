@@ -2,7 +2,7 @@ import { useGlobalContext } from "@/context/globalContext";
 import React from "react";
 import styles from "@/styles/domain.module.css";
 export default function ProWarning() {
-  const { template, setTemplate, setShowUpgradeModal, setTemplateContext } = useGlobalContext();
+  const { template, setTemplate, setShowUpgradeModal, setUpgradeModalUnhideProject, setTemplateContext } = useGlobalContext();
 
   if (template === 0) return null;
   return (
@@ -22,7 +22,7 @@ export default function ProWarning() {
           You're using a Pro template. Some features might be limited.{" "}
           <span
             className="underline underline-offset-1 cursor-pointer"
-            onClick={() => setShowUpgradeModal(true)}
+            onClick={() => { setUpgradeModalUnhideProject(null); setShowUpgradeModal(true); }}
           >
             Upgrade now
           </span>

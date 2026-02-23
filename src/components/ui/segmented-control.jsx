@@ -2,7 +2,7 @@ import * as React from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-export function SegmentedControl({ options, value, onChange, className }) {
+export function SegmentedControl({ options, value, onChange, className, layoutId = "segmented-control-active" }) {
   return (
     <div
       className={cn(
@@ -24,12 +24,12 @@ export function SegmentedControl({ options, value, onChange, className }) {
           >
             {isActive && (
               <motion.div
-                layoutId="segmented-control-active"
-                className="absolute inset-0 bg-white dark:bg-[#1a1a1a] rounded-full shadow-sm border border-border/50"
+                layoutId={layoutId}
+                className="absolute inset-0 bg-white dark:bg-project-card-bg-color rounded-full shadow-sm border border-border/50"
                 transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
               />
             )}
-            <span className="relative z-10">{option}</span>
+            <span className="relative cursor-pointer z-10">{option}</span>
           </button>
         );
       })}

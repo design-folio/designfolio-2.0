@@ -40,6 +40,8 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
     openModal,
     setSelectedProject,
     setUserDetails,
+    setShowUpgradeModal,
+    setUpgradeModalUnhideProject,
     userDetails: userDetailsFromContext,
   } = useGlobalContext();
   // Always prioritize context over prop to ensure we get the latest updates
@@ -206,6 +208,16 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
     };
 
     const handleToggleVisibility = (projectId) => {
+      const project = sortedProjects.find((p) => p._id === projectId);
+      const visibleCount = (sortedProjects || []).filter((p) => !p.hidden).length;
+      const isUnhiding = project?.hidden === true;
+      // Temporarily disabled: free user 2-project limit
+      if (false && !userDetails?.pro && isUnhiding && visibleCount >= 2) {
+        setUpgradeModalUnhideProject({ projectId, title: project?.title || "Project" });
+        setShowUpgradeModal(true);
+        return;
+      }
+
       const updatedProjects = sortedProjects.map((project) => {
         if (project._id === projectId) {
           const updatedProject = { ...project, hidden: !project.hidden };

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Eye } from "lucide-react";
 import { useCursorTooltip } from "@/context/cursorTooltipContext";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const PILL_OFFSET_X = 14;
 const PILL_OFFSET_Y = 14;
@@ -25,8 +26,9 @@ export function CursorPill() {
     }
     return () => document.body.classList.remove("cursor-pill-active");
   }, [show]);
+  const isMobile = useIsMobile();
 
-  if (!show) return null;
+  if (!show || isMobile) return null;
 
   return (
     <div

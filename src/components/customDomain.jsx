@@ -23,7 +23,7 @@ const DomainValidationSchema = Yup.object().shape({
 });
 
 export default function CustomDomain({ domainDetails, fetchDomainDetails }) {
-  const { userDetails, setShowUpgradeModal } = useGlobalContext();
+  const { userDetails, setShowUpgradeModal, setUpgradeModalUnhideProject } = useGlobalContext();
   const [isDomainLoading, setIsDomainLoading] = useState(false);
 
   const [isDelete, setIsDelete] = useState(false);
@@ -253,7 +253,7 @@ export default function CustomDomain({ domainDetails, fetchDomainDetails }) {
             </p>
             <button
               className={styles.upgradeButton}
-              onClick={() => setShowUpgradeModal(true)}
+              onClick={() => { setUpgradeModalUnhideProject(null); setShowUpgradeModal(true); }}
             >
               Upgrade to Pro
             </button>

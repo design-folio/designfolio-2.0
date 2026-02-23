@@ -1,24 +1,62 @@
-import React, { useEffect, useState } from "react";
-import styles from "@/styles/domain.module.css";
-import { useGlobalContext } from "@/context/globalContext";
-import Script from "next/script";
-import { _getProPlanDetails, createOrder } from "@/network/get-request";
+import React, { useEffect, useState } from 'react';
+import styles from '@/styles/domain.module.css';
+import { useGlobalContext } from '@/context/globalContext';
+import Script from 'next/script';
+import { _getProPlanDetails, createOrder } from '@/network/get-request';
+import { usePostHogEvent } from '@/hooks/usePostHogEvent';
+import { POSTHOG_EVENT_NAMES } from '@/lib/posthogEventNames';
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+const PLAN_LABELS = { "1m": "1 Month", "3m": "3 Months", lifetime: "Lifetime" };
+
+const PLAN_HEADINGS = {
+  "1m": {
+    title: "For Students",
+    subtitle: "Build your first serious portfolio. Explore what's possible.",
+  },
+  "3m": {
+    title: "For Job Seekers",
+    subtitle: "Build a complete portfolio and start landing interviews fast.",
+  },
+  lifetime: {
+    title: "Lifetime Access",
+    subtitle: "Own your portfolio forever. No expiry. No resets.",
+  },
+};
+
+const TRUSTED_BY_LOGOS = [
+  "/assets/svgs/company logos/companylogos02.svg",
+  "/assets/svgs/company logos/companylogos03.svg",
+  "/assets/svgs/company logos/companylogos01.svg",
+  "/assets/svgs/company logos/companylogos04.svg",
+  "/assets/svgs/company logos/companylogos05.svg",
+  "/assets/svgs/company logos/companylogos06.svg",
+  "/assets/svgs/company logos/companylogos07.svg",
+];
 
 export default function UpgradeModal() {
   const [isModalExiting, setIsModalExiting] = useState(false);
-  const [plan, setPlan] = useState(null);
+  const [proPlans, setProPlans] = useState([]);
+  const [selectedPlan, setSelectedPlan] = useState(null);
   const {
     showUpgradeModal,
     setShowUpgradeModal,
+    upgradeModalUnhideProject,
+    setUpgradeModalUnhideProject,
     userDetails,
     userDetailsRefecth,
   } = useGlobalContext();
 
+  const phEvent = usePostHogEvent();
+
   useEffect(() => {
     if (showUpgradeModal) {
       _getProPlanDetails().then((response) => {
-        console.log(response);
-        setPlan(response?.data?.proPlan);
+        const plans = response?.data?.proPlans;
+        if (Array.isArray(plans) && plans.length > 0) {
+          setProPlans(plans);
+          setSelectedPlan(plans.find((p) => p.plan === "3m") || plans[0]);
+        }
       });
     }
   }, [showUpgradeModal]);
@@ -27,35 +65,43 @@ export default function UpgradeModal() {
     setIsModalExiting(true);
     setTimeout(() => {
       setShowUpgradeModal(false);
+      setUpgradeModalUnhideProject(null);
       setIsModalExiting(false);
     }, 300);
   };
 
-  function formatAmount(amount, currencyCode, locale = undefined) {
-    return new Intl.NumberFormat(locale, {
+  function formatAmount(amount, currencyCode) {
+    if (currencyCode === "USD") {
+      return `$${Number(amount).toFixed(0)}`;
+    }
+    return new Intl.NumberFormat(undefined, {
       style: "currency",
       currency: currencyCode,
-      minimumFractionDigits: 0, // no decimals
+      minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount);
   }
 
   const openCheckout = () => {
-    // This is a minimal configuration.
-    // A secure app would first fetch an `order_id` from its own server.
-    createOrder().then((response) => {
+    if (!selectedPlan?.plan) return;
+    createOrder(selectedPlan.plan).then((response) => {
       const { id } = response?.data?.order; // Assuming the response contains necessary data for Razorpay
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, // Your public Key ID
         // amount: { amount }, // Amount in paise (e.g., ₹500.00)
         // currency: "INR",
         order_id: id,
-        name: "Designfolio by DOT Workspaces",
-        description: "Insecure Test Transaction",
-        image: "../../public/assets/svgs/logo.svg",
+        name: 'Designfolio by DOT Workspaces',
+        description: 'Insecure Test Transaction',
+        image: '../../public/assets/svgs/logo.svg',
         handler: function (response) {
           // console.log(response);
           userDetailsRefecth();
+          phEvent(POSTHOG_EVENT_NAMES.PAYMENT_COMPLETED, {
+            order_id: id,
+            plan_amount: Number(plan?.amount),
+            plan_currency: plan?.currency,
+          });
           handleCloseModal();
           // This handler is called on successful payment.
           // 🚨 WITHOUT SERVER-SIDE VERIFICATION, THIS CAN BE FAKED.
@@ -71,25 +117,24 @@ export default function UpgradeModal() {
           // contact: "",
         },
         theme: {
-          color: "#3399cc",
+          color: '#3399cc',
         },
       };
       const rzp = new window.Razorpay(options);
       rzp.open();
+      handleCloseModal();
     });
   };
-  if (!showUpgradeModal || !plan) return null;
+  if (!showUpgradeModal || proPlans.length === 0 || !selectedPlan) return null;
   return (
     <div
-      className={`${styles.modalOverlay} ${
-        isModalExiting ? styles.modalOverlayExiting : ""
-      }`}
+      className={`${styles.modalOverlay} ${isModalExiting ? styles.modalOverlayExiting : ""
+        }`}
       onClick={() => handleCloseModal()}
     >
       <div
-        className={`${styles.modal} ${
-          isModalExiting ? styles.modalExiting : ""
-        }`}
+        className={`${styles.modal} ${isModalExiting ? styles.modalExiting : ""
+          }`}
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -102,22 +147,59 @@ export default function UpgradeModal() {
         <div className={styles.modalHeader}>
           <div>
             <div className={styles.modalIcon}></div>
-            <h2 className={styles.modalTitle}>Designfolio Lifetime Access</h2>
+            <h2 className={styles.modalTitle}>
+              {upgradeModalUnhideProject
+                ? `Unhide ${upgradeModalUnhideProject.title || "Project"}?`
+                : (PLAN_HEADINGS[selectedPlan?.plan] ?? PLAN_HEADINGS.lifetime).title}
+            </h2>
             <p className={styles.modalSubtitle}>
-              Just one payment. That's it. You get everything, forever.
+              {upgradeModalUnhideProject
+                ? "Free users can only have 2 visible projects. Go Pro to add unlimited and unhide this project."
+                : (PLAN_HEADINGS[selectedPlan?.plan] ?? PLAN_HEADINGS.lifetime).subtitle}
             </p>
           </div>
         </div>
 
         <div className={styles.modalContent}>
+          <div className="mb-6">
+            {proPlans.some((p) => p.plan === "3m") && (
+              <div className="relative z-10 text-center -mb-2.5">
+                <span
+                  className="inline-block px-2 py-1 text-[10px] font-semibold rounded-full whitespace-nowrap"
+                  style={{ backgroundColor: "#22c55e", color: "#ffffff" }}
+                >
+                  Save 20%
+                </span>
+              </div>
+            )}
+            <div className="relative z-0">
+              <Tabs
+                value={selectedPlan?.plan ?? ""}
+                onValueChange={(value) => setSelectedPlan(proPlans.find((p) => p.plan === value))}
+                className="mb-0"
+              >
+                <TabsList className="flex p-1 rounded-lg gap-1 w-full h-auto bg-[#f0f0f0]">
+                  {proPlans.map((p) => (
+                    <TabsTrigger
+                      key={p.plan}
+                      value={p.plan}
+                      className="flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 text-[#525252] hover:text-[#0a0a0a] data-[state=active]:bg-[#ffffff] data-[state=active]:text-[#0a0a0a] data-[state=active]:shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] dark:text-[#525252] dark:hover:text-[#0a0a0a] dark:data-[state=active]:bg-[#ffffff] dark:data-[state=active]:text-[#0a0a0a] dark:data-[state=active]:shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]"
+                    >
+                      {PLAN_LABELS[p.plan] ?? p.plan}
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+              </Tabs>
+            </div>
+          </div>
+
           <div className={styles.priceSection}>
             <div className={styles.priceContainer}>
               <div className={styles.price}>
-                {formatAmount(plan?.amount, plan?.currency)}
+                {formatAmount(selectedPlan?.amount, selectedPlan?.currency)}
               </div>
               {/* <div className={styles.slashPrice}>₹8,300</div> */}
             </div>
-            <div className={styles.price}></div>
             <div className={styles.priceSubtext}>one-time payment</div>
           </div>
 
@@ -129,14 +211,19 @@ export default function UpgradeModal() {
           <button className={styles.upgradeNowButton} onClick={openCheckout}>
             Upgrade Now
           </button>
-          <div className={styles.lifetimeDealBanner}>
-            <div className={styles.dealBannerIcon}>⏰</div>
-            <span className={styles.dealBannerText}>
-              Will be {plan?.currency === "INR" ? "₹7,999" : "$115"} starting
-              next month
-            </span>
-            <div className={styles.dealBannerPulse}></div>
-          </div>
+          {(() => {
+            const lifetimePlan = proPlans.find((p) => p.plan === "lifetime");
+            if (!lifetimePlan || selectedPlan?.plan !== "lifetime") return null;
+            return (
+              <div className={styles.lifetimeDealBanner}>
+                <div className={styles.dealBannerIcon}>⏰</div>
+                <span className={styles.dealBannerText}>
+                  Lifetime price increasing next month
+                </span>
+                <div className={styles.dealBannerPulse}></div>
+              </div>
+            );
+          })()}
 
           {/* <div className={styles.lifetimeDealBanner}>
             <div className={styles.dealBannerIcon}>⏰</div>
@@ -164,6 +251,53 @@ export default function UpgradeModal() {
             <div className={styles.featureItem}>
               <div className={styles.featureIcon}>✓</div>
               <span>Track views with built-in analytics</span>
+            </div>
+          </div>
+
+          <div className="mt-6 pt-4 border-t border-[#e5e7eb] min-h-[64px]">
+            <p className="text-center text-[10px] font-medium text-[#9ca3af] mb-2">
+              Trusted by 20000+ designers
+            </p>
+            <div className="relative min-h-8 py-1">
+              <div className="absolute left-0 top-0 bottom-0 w-6 sm:w-8 z-10 pointer-events-none bg-gradient-to-r from-white to-transparent" />
+              <div className="absolute right-0 top-0 bottom-0 w-6 sm:w-8 z-10 pointer-events-none bg-gradient-to-l from-white to-transparent" />
+              <div className="flex gap-0 overflow-x-hidden min-h-8 px-1">
+                <div className="flex animate-scroll items-center gap-0 shrink-0 min-h-8 py-0.5">
+                  {TRUSTED_BY_LOGOS.map((logo, index) => (
+                    <div
+                      key={`first-${index}`}
+                      className="flex items-center justify-center px-2 sm:px-3 flex-shrink-0 min-h-8 min-w-[48px]"
+                    >
+                      <img
+                        src={logo}
+                        alt=""
+                        width={32}
+                        height={16}
+                        className="h-4 w-auto max-h-6 opacity-50 grayscale object-contain"
+                      />
+                    </div>
+                  ))}
+                </div>
+                <div
+                  className="flex animate-scroll items-center gap-0 shrink-0 min-h-8 py-0.5"
+                  aria-hidden="true"
+                >
+                  {TRUSTED_BY_LOGOS.map((logo, index) => (
+                    <div
+                      key={`second-${index}`}
+                      className="flex items-center justify-center px-2 sm:px-3 flex-shrink-0 min-h-8 min-w-[48px]"
+                    >
+                      <img
+                        src={logo}
+                        alt=""
+                        width={32}
+                        height={16}
+                        className="h-4 w-auto max-h-6 opacity-50 grayscale object-contain"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>

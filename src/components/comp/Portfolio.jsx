@@ -72,7 +72,7 @@ const Portfolio = ({ userDetails, edit }) => {
   } = userDetails || {};
 
   const hasAbout = userDetails?.about !== null && userDetails?.about !== undefined;
-  const { openModal, setSelectedWork, setSelectedProject, setUserDetails } =
+  const { openModal, setSelectedWork, setSelectedProject, setUserDetails, setShowUpgradeModal, setUpgradeModalUnhideProject } =
     useGlobalContext();
 
   // Get section order from userDetails or use template default
@@ -133,6 +133,16 @@ const Portfolio = ({ userDetails, edit }) => {
   };
 
   const handleToggleVisibility = (projectId) => {
+    const project = sortedProjects.find((p) => p._id === projectId);
+    const visibleCount = (sortedProjects || []).filter((p) => !p.hidden).length;
+    const isUnhiding = project?.hidden === true;
+    // Temporarily disabled: free user 2-project limit
+    if (false && !userDetails?.pro && isUnhiding && visibleCount >= 2) {
+      setUpgradeModalUnhideProject({ projectId, title: project?.title || "Project" });
+      setShowUpgradeModal(true);
+      return;
+    }
+
     const updatedProjects = sortedProjects.map((project) => {
       if (project._id === projectId) {
         const updatedProject = { ...project, hidden: !project.hidden };

@@ -23,6 +23,7 @@ import { _updateUser, _updateProject } from "@/network/post-request";
 import { twMerge } from "tailwind-merge";
 import { useRouter } from "next/router";
 import ProjectLock from "./projectLock";
+import { useGlobalContext } from "@/context/globalContext";
 
 const getHref = (id, edit, preview) => {
   if (edit) return `/project/${id}/editor`;
@@ -138,12 +139,24 @@ export default function Projects({
     return userDetails?.projects || [];
   }, [userDetails?.projects, preview]);
 
+  const { setShowUpgradeModal, setUpgradeModalUnhideProject } = useGlobalContext();
+
   const onDeleteProject = (project) => {
     openModal(modals.deleteProject);
     setSelectedProject(project);
   };
 
   const handleToggleVisibility = (projectId) => {
+    const project = userDetails.projects.find((p) => p._id === projectId);
+    const visibleCount = (userDetails.projects || []).filter((p) => !p.hidden).length;
+    const isUnhiding = project?.hidden === true;
+    // Temporarily disabled: free user 2-project limit
+    if (false && !userDetails?.pro && isUnhiding && visibleCount >= 2) {
+      setUpgradeModalUnhideProject({ projectId, title: project?.title || "Project" });
+      setShowUpgradeModal(true);
+      return;
+    }
+
     const updatedProjects = userDetails.projects.map((project) => {
       if (project._id === projectId) {
         const updatedProject = { ...project, hidden: !project.hidden };

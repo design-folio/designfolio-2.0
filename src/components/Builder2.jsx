@@ -138,6 +138,8 @@ export default function Builder2({ edit = false }) {
     setSelectedWork,
     setSelectedReview,
     setUserDetails,
+    setShowUpgradeModal,
+    setUpgradeModalUnhideProject,
     updateCache,
   } = useGlobalContext();
   const { theme } = useTheme();
@@ -331,6 +333,16 @@ export default function Builder2({ edit = false }) {
     }, 300);
   };
   const handleToggleVisibility = (projectId) => {
+    const project = userDetails.projects.find((p) => p._id === projectId);
+    const visibleCount = (userDetails.projects || []).filter((p) => !p.hidden).length;
+    const isUnhiding = project?.hidden === true;
+    // Temporarily disabled: free user 2-project limit
+    if (false && !userDetails?.pro && isUnhiding && visibleCount >= 2) {
+      setUpgradeModalUnhideProject({ projectId, title: project?.title || "Project" });
+      setShowUpgradeModal(true);
+      return;
+    }
+
     const updatedProjects = userDetails.projects.map((project) => {
       if (project._id === projectId) {
         const updatedProject = { ...project, hidden: !project.hidden };

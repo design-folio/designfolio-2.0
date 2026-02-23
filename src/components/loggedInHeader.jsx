@@ -690,6 +690,7 @@ export default function LoggedInHeader({
                     align="end"
                     className="w-64 p-2 rounded-2xl shadow-xl bg-white border-black/5 dark:bg-zinc-950 dark:border-white/5"
                   >
+                    {!userDetails?.pro && (
                     <DropdownMenuItem
                       className="flex items-center gap-3 p-3 rounded-xl cursor-pointer focus:bg-black/[0.03] dark:focus:bg-white/[0.03]"
                       onClick={() => setShowUpgradeModal(true)}
@@ -711,6 +712,7 @@ export default function LoggedInHeader({
                         <span className="font-semibold text-sm cursor-pointer">Upgrade PRO</span>
                       </div>
                     </DropdownMenuItem>
+                    )}
 
                     <DropdownMenuItem
                       className="flex items-center gap-3 p-3 rounded-xl cursor-pointer focus:bg-black/[0.03] dark:focus:bg-white/[0.03]"

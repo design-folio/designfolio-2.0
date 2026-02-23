@@ -1,45 +1,20 @@
 import {
+  getSidebarShiftWidth,
+  isSidebarThatShifts,
   popovers,
   sidebars,
-  isSidebarThatShifts,
-  getSidebarShiftWidth,
 } from '@/lib/constant';
 import { formatTimestamp } from '@/lib/times';
+import styles from '@/styles/domain.module.css';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { Suspense, useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import styles from '@/styles/domain.module.css';
 import Logo from '../../public/assets/svgs/logo.svg';
 import ButtonOld from './button';
 // import ThemeIcon from "../../public/assets/svgs/themeIcon.svg";
-import CloseIcon from '../../public/assets/svgs/close.svg';
-import SunIcon from '../../public/assets/svgs/sun.svg';
-import MoonIcon from '../../public/assets/svgs/moon.svg';
-import LinkIcon from '../../public/assets/svgs/link.svg';
-import HamburgerIcon from '../../public/assets/svgs/hamburger.svg';
-import LeftArrow from '../../public/assets/svgs/left-arrow.svg';
-import { motion } from 'framer-motion';
-import { useTheme } from 'next-themes';
-import Text from './text';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import DfImage from './image';
 import { Button } from '@/components/ui/buttonNew';
-import Cookies from 'js-cookie';
-import { _publish } from '@/network/post-request';
-import Popover from './popover';
-import queryClient from '@/network/queryClient';
-import useClient from '@/hooks/useClient';
-import { twMerge } from 'tailwind-merge';
-import { removeCursor } from '@/lib/cursor';
-import Modal from './modal';
-import { Badge } from './ui/badge';
-import { Check, Copy, SettingsIcon, Crown, Settings, LogOut } from 'lucide-react';
-import { getUserAvatarImage } from '@/lib/getAvatarUrl';
-import MemoThemeIcon from './icons/ThemeIcon';
-import MemoAnalytics from './icons/Analytics';
-import MemoPreviewIcon from './icons/PreviewIcon';
-import MemoPower from './icons/Power';
-import { cn } from '@/lib/utils';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -47,15 +22,33 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import MobileMenuButton from './MobileMenuButton';
-import ThemePanel from './ThemePanel';
-import { useIsMobile } from '@/hooks/use-mobile';
 import { useGlobalContext } from '@/context/globalContext';
-import { modals } from '@/lib/constant';
+import { useIsMobile } from '@/hooks/use-mobile';
+import useClient from '@/hooks/useClient';
 import { usePostHogEvent } from '@/hooks/usePostHogEvent';
+import { removeCursor } from '@/lib/cursor';
+import { getUserAvatarImage } from '@/lib/getAvatarUrl';
 import { POSTHOG_EVENT_NAMES } from '@/lib/posthogEventNames';
-import { SegmentedControl } from './ui/segmented-control';
+import { cn } from '@/lib/utils';
+import { _publish } from '@/network/post-request';
+import queryClient from '@/network/queryClient';
+import Cookies from 'js-cookie';
+import { Check, Copy, Crown, LogOut, Settings, SettingsIcon } from 'lucide-react';
+import { useTheme } from 'next-themes';
 import dynamic from "next/dynamic";
+import LeftArrow from '../../public/assets/svgs/left-arrow.svg';
+import LinkIcon from '../../public/assets/svgs/link.svg';
+import MoonIcon from '../../public/assets/svgs/moon.svg';
+import SunIcon from '../../public/assets/svgs/sun.svg';
+import MemoAnalytics from './icons/Analytics';
+import MemoPower from './icons/Power';
+import MemoPreviewIcon from './icons/PreviewIcon';
+import MemoThemeIcon from './icons/ThemeIcon';
+import MobileMenuButton from './MobileMenuButton';
+import Popover from './popover';
+import Text from './text';
+import ThemePanel from './ThemePanel';
+import { SegmentedControl } from './ui/segmented-control';
 
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
@@ -550,12 +543,13 @@ export default function LoggedInHeader({
                   className="rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-popover-border-color"
                 >
                   <div className="relative">
-                    <Avatar className="w-11 h-11 rounded-full border-2 border-background shadow-sm">
-                      <AvatarImage src={getUserAvatarImage(userDetails)} alt={username || "User"} className="rounded-full" />
-                      <AvatarFallback className="text-base rounded-full" style={{ backgroundColor: "#FF553E", color: "#FFFFFF" }}>
-                        {(username || email || "U").charAt(0).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
+                    <DfImage
+                      src={getUserAvatarImage(userDetails)}
+                      className={cn(
+                        'w-[44px] h-[44px] rounded-full cursor-pointer',
+                        !userDetails?.avatar ? 'bg-df-bg-color' : ''
+                      )}
+                    />
                     {!userDetails?.pro && (
                       <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-white dark:bg-zinc-800 border border-black/10 dark:border-white/10 px-1.5 py-0.5 rounded-full shadow-sm whitespace-nowrap">
                         <span className="text-[8px] font-bold uppercase tracking-wider text-black dark:text-white leading-none block">Free</span>
@@ -756,12 +750,10 @@ export default function LoggedInHeader({
                     className="rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-popover-border-color"
                   >
                     <div className="relative">
-                      <Avatar className="w-11 h-11 rounded-full border-2 border-background shadow-sm">
-                        <AvatarImage src={getUserAvatarImage(userDetails)} alt={username || "User"} className="rounded-full" />
-                        <AvatarFallback className="text-base rounded-full" style={{ backgroundColor: "#FF553E", color: "#FFFFFF" }}>
-                          {(username || email || "U").charAt(0).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
+                      <DfImage
+                        src={getUserAvatarImage(userDetails)}
+                        className={cn("w-[44px] h-[44px] rounded-full cursor-pointer", !userDetails?.avatar ? "bg-df-bg-color" : "")}
+                      />
                       {!userDetails?.pro && (
                         <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-white dark:bg-zinc-800 border border-black/10 dark:border-white/10 px-1.5 py-0.5 rounded-full shadow-sm whitespace-nowrap">
                           <span className="text-[8px] font-bold uppercase tracking-wider text-black dark:text-white leading-none block">Free</span>

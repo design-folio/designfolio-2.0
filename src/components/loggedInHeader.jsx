@@ -522,13 +522,6 @@ export default function LoggedInHeader({
         <div className="gap-3 items-center hidden md:flex">
           {router.pathname === "/builder" && router.query?.view === "ai-tools" ? (
             <>
-              <Link href="/builder">
-                <Button
-                  variant="secondary"
-                >
-                  Go to Builder
-                </Button>
-              </Link>
               <div
                 className="relative inline-block text-left"
                 data-popover-id={popovers.userMenu}

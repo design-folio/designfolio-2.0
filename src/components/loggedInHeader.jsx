@@ -7,7 +7,7 @@ import {
 import { formatTimestamp } from '@/lib/times';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import styles from '@/styles/domain.module.css';
 import Logo from '../../public/assets/svgs/logo.svg';
@@ -33,13 +33,20 @@ import { twMerge } from 'tailwind-merge';
 import { removeCursor } from '@/lib/cursor';
 import Modal from './modal';
 import { Badge } from './ui/badge';
-import { Check, Copy, SettingsIcon } from 'lucide-react';
+import { Check, Copy, SettingsIcon, Crown, Settings, LogOut } from 'lucide-react';
 import { getUserAvatarImage } from '@/lib/getAvatarUrl';
 import MemoThemeIcon from './icons/ThemeIcon';
 import MemoAnalytics from './icons/Analytics';
 import MemoPreviewIcon from './icons/PreviewIcon';
 import MemoPower from './icons/Power';
 import { cn } from '@/lib/utils';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import MobileMenuButton from './MobileMenuButton';
 import ThemePanel from './ThemePanel';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -48,6 +55,9 @@ import { modals } from '@/lib/constant';
 import { usePostHogEvent } from '@/hooks/usePostHogEvent';
 import { POSTHOG_EVENT_NAMES } from '@/lib/posthogEventNames';
 import { SegmentedControl } from './ui/segmented-control';
+import dynamic from "next/dynamic";
+
+const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
 const cursors = [
   {
@@ -178,6 +188,14 @@ export default function LoggedInHeader({
   const [isCopied, setCopied] = useState(false);
   const [updateLoading, setUpdateLoading] = useState(false);
   const [isMobileThemePopup, setIsMobileThemePopup] = useState(false);
+  const [diamondLottie, setDiamondLottie] = useState(null);
+
+  useEffect(() => {
+    fetch("/lottie/diamond-lottie.json")
+      .then((res) => res.json())
+      .then(setDiamondLottie)
+      .catch(() => {});
+  }, []);
 
   const phEvent = usePostHogEvent();
 
@@ -187,15 +205,6 @@ export default function LoggedInHeader({
 
   const { username, latestPublishDate, _id, email } = userDetails || {};
   const { isClient } = useClient();
-
-  // Prefetch the other page when on builder or ai-tools for faster SegmentedControl switching
-  useEffect(() => {
-    if (router.pathname === "/builder") {
-      router.prefetch("/ai-tools?type=optimize-resume");
-    } else if (router.pathname.includes("/ai-tools")) {
-      router.prefetch("/builder");
-    }
-  }, [router.pathname]);
 
   const wpPath = theme === 'dark' ? '/wallpaper/darkui' : '/wallpaper';
   const wallpapers = [
@@ -491,20 +500,20 @@ export default function LoggedInHeader({
     >
       <div className={cn(
         "shadow-df-section-card-shadow max-w-[848px] p-2 bg-df-header-bg-color mx-auto flex justify-between items-center",
-        (router.pathname === "/builder" || router.pathname.includes("/ai-tools")) ? "rounded-full" : "rounded-2xl"
+        router.pathname === "/builder" ? "rounded-full" : "rounded-2xl"
       )}>
         <div className="flex items-center gap-[24px]">
-          {(router.pathname === "/builder" || router.pathname.includes("/ai-tools")) ? (
+          {router.pathname === "/builder" ? (
             <div className="rounded-full bg-[#F6F2EF] p-1 border border-black/[0.03] dark:bg-muted/30 dark:border-border/50">
               <SegmentedControl
                 layoutId="segmented-control-header"
                 options={["Portfolio Builder", "AI Tools"]}
-                value={router.pathname.includes("/ai-tools") ? "AI Tools" : "Portfolio Builder"}
+                value={router.query?.view === "ai-tools" ? "AI Tools" : "Portfolio Builder"}
                 onChange={(id) => {
                   if (id === "AI Tools") {
-                    router.push("/ai-tools");
+                    router.push("/builder?view=ai-tools&type=optimize-resume", undefined, { shallow: true });
                   } else {
-                    router.push("/builder");
+                    router.push("/builder", undefined, { shallow: true });
                   }
                 }}
                 className="!p-0 !bg-transparent !border-0 !backdrop-blur-none"
@@ -517,7 +526,7 @@ export default function LoggedInHeader({
           )}
         </div>
         <div className="gap-3 items-center hidden md:flex">
-          {router.pathname.includes("/ai-tools") ? (
+          {router.pathname === "/builder" && router.query?.view === "ai-tools" ? (
             <>
               <Link href="/builder">
                 <Button
@@ -728,60 +737,72 @@ export default function LoggedInHeader({
                 )}
               </div>
 
-              <div
-                className="relative inline-block text-left"
-                data-popover-id={popovers.userMenu}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
+                className="rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-popover-border-color"
               >
                 <DfImage
-                  onClick={() =>
-                    setPopoverMenu(prev =>
-                      prev == popovers.userMenu ? null : popovers.userMenu
-                    )
-                  }
                   src={getUserAvatarImage(userDetails)}
-                  className={cn(
-                    'w-[44px] h-[44px] rounded-full cursor-pointer',
-                    !userDetails?.avatar ? 'bg-df-bg-color' : ''
-                  )}
+                  className={cn("w-[44px] h-[44px] rounded-full cursor-pointer", !userDetails?.avatar ? "bg-df-bg-color" : "")}
                 />
-
-                {isClient && (
-                  <div
-                    className={`pt-5 absolute z-20 right-0 origin-top-right transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${popoverMenu === popovers.userMenu
-                      ? 'opacity-100 scale-100'
-                      : 'opacity-0 scale-90 pointer-events-none'
-                      }`}
-                  >
-                    <div className=" w-[250px] rounded-xl shadow-lg bg-popover-bg-color border-4 border-solid border-popover-border-color">
-                      <div className="p-4">
-                        <div className="py-1">
-                          <Button
-                            variant="ghost"
-                            className="w-full text-[14px] justify-start py-[10px] rounded-lg"
-                            onClick={handlenavigation}
-                          >
-                            <SettingsIcon className="w-4 h-4" />
-                            Account settings
-                          </Button>
-
-                          <Button
-                            variant="ghost"
-                            className="w-full text-[14px] justify-start py-[10px] rounded-lg"
-                            onClick={handleLogout}
-                          >
-                            <img
-                              src="/assets/svgs/logout.svg"
-                              alt="designfolio logo"
-                              className="w-4 h-4"
-                            />
-                            Logout
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
+              </button>
+            </DropdownMenuTrigger>
+            {isClient && (
+              <DropdownMenuContent
+                align="end"
+                className="w-64 p-2 rounded-2xl shadow-xl bg-white border-black/5 dark:bg-zinc-950 dark:border-white/5"
+              >
+                <DropdownMenuItem
+                  className="flex items-center gap-3 p-3 rounded-xl cursor-pointer focus:bg-black/[0.03] dark:focus:bg-white/[0.03]"
+                  onClick={() => setShowUpgradeModal(true)}
+                >
+                  <div className="w-8 h-8 rounded-full bg-black/[0.03] dark:bg-white/[0.03] flex items-center justify-center overflow-hidden cursor-pointer">
+                    <Suspense fallback={<Crown className="w-4 h-4 text-[#FF553E]" />}>
+                      {diamondLottie ? (
+                        <Lottie
+                          animationData={diamondLottie}
+                          style={{ width: 44, height: 44 }}
+                          loop={true}
+                        />
+                      ) : (
+                        <Crown className="w-4 h-4 text-[#FF553E]" />
+                      )}
+                    </Suspense>
                   </div>
-                )}
-              </div>
+                  <div className="flex flex-col cursor-pointer">
+                    <span className="font-semibold text-sm cursor-pointer">Upgrade PRO</span>
+                  </div>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem
+                  className="flex items-center gap-3 p-3 rounded-xl cursor-pointer focus:bg-black/[0.03] dark:focus:bg-white/[0.03]"
+                  onClick={handlenavigation}
+                >
+                  <div className="w-8 h-8 rounded-full bg-black/[0.03] dark:bg-white/[0.03] flex items-center justify-center text-foreground/60 cursor-pointer">
+                    <Settings className="w-4 h-4" />
+                  </div>
+                  <div className="flex flex-col cursor-pointer">
+                    <span className="font-semibold text-sm cursor-pointer">Settings</span>
+                    <span className="text-[10px] text-foreground/50 cursor-pointer">Custom Domain, Billing and more</span>
+                  </div>
+                </DropdownMenuItem>
+
+                <DropdownMenuSeparator className="my-1 bg-black/5 dark:bg-white/5" />
+
+                <DropdownMenuItem
+                  className="flex items-center gap-3 p-3 rounded-xl cursor-pointer text-destructive focus:bg-destructive/5 focus:text-destructive"
+                  onClick={handleLogout}
+                >
+                  <div className="w-8 h-8 rounded-full bg-destructive/10 flex items-center justify-center cursor-pointer">
+                    <LogOut className="w-4 h-4" />
+                  </div>
+                  <span className="font-semibold text-sm cursor-pointer">Logout</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            )}
+          </DropdownMenu>
             </>
           )}
         </div>
@@ -800,7 +821,7 @@ export default function LoggedInHeader({
           >
             {!isMobileThemePopup ? (
               <div>
-                {router.pathname.includes("/ai-tools") ? (
+                {router.pathname === "/builder" && router.query?.view === "ai-tools" ? (
                   <>
                     <Link href="/builder" onClick={() => setPopoverMenu(null)}>
                       <Button

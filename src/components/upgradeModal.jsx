@@ -168,7 +168,7 @@ export default function UpgradeModal() {
                   className="inline-block px-2 py-1 text-[10px] font-semibold rounded-full whitespace-nowrap"
                   style={{ backgroundColor: "#22c55e", color: "#ffffff" }}
                 >
-                  Save 20%
+                  Save 25%
                 </span>
               </div>
             )}

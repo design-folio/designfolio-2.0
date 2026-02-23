@@ -520,77 +520,7 @@ export default function LoggedInHeader({
           )}
         </div>
         <div className="gap-3 items-center hidden md:flex">
-          {router.pathname === "/builder" && router.query?.view === "ai-tools" ? (
-            <>
-              <div
-                className="relative inline-block text-left"
-                data-popover-id={popovers.userMenu}
-              >
-                <button
-                  type="button"
-                  onClick={() =>
-                    setPopoverMenu(prev =>
-                      prev == popovers.userMenu ? null : popovers.userMenu
-                    )
-                  }
-                  className="rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-popover-border-color"
-                >
-                  <div className="relative">
-                    <DfImage
-                      src={getUserAvatarImage(userDetails)}
-                      className={cn(
-                        'w-[44px] h-[44px] rounded-full cursor-pointer',
-                        !userDetails?.avatar ? 'bg-df-bg-color' : ''
-                      )}
-                    />
-                    {!userDetails?.pro && (
-                      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-white dark:bg-zinc-800 border border-black/10 dark:border-white/10 px-1.5 py-0.5 rounded-full shadow-sm whitespace-nowrap">
-                        <span className="text-[8px] font-bold uppercase tracking-wider text-black dark:text-white leading-none block">Free</span>
-                      </div>
-                    )}
-                  </div>
-                </button>
-
-                {isClient && (
-                  <div
-                    className={`pt-5 absolute z-20 right-0 origin-top-right transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${popoverMenu === popovers.userMenu
-                      ? 'opacity-100 scale-100'
-                      : 'opacity-0 scale-90 pointer-events-none'
-                      }`}
-                  >
-                    <div className=" w-[250px] rounded-xl shadow-lg bg-popover-bg-color border-4 border-solid border-popover-border-color">
-                      <div className="p-4">
-                        <div className="py-1">
-                          <Button
-                            variant="ghost"
-                            className="w-full text-[14px] justify-start py-[10px] rounded-lg"
-                            onClick={handlenavigation}
-                          >
-                            <SettingsIcon className="w-4 h-4" />
-                            Account settings
-                          </Button>
-
-                          <Button
-                            variant="ghost"
-                            className="w-full text-[14px] justify-start py-[10px] rounded-lg"
-                            onClick={handleLogout}
-                          >
-                            <img
-                              src="/assets/svgs/logout.svg"
-                              alt="designfolio logo"
-                              className="w-4 h-4"
-                            />
-                            Logout
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </>
-          ) : (
-            <>
+          <>
               <div
                 className="relative theme-button"
                 data-popover-menu={popovers.themeMenu}
@@ -747,11 +677,11 @@ export default function LoggedInHeader({
                         src={getUserAvatarImage(userDetails)}
                         className={cn("w-[44px] h-[44px] rounded-full cursor-pointer", !userDetails?.avatar ? "bg-df-bg-color" : "")}
                       />
-                      {!userDetails?.pro && (
+                      
                         <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-white dark:bg-zinc-800 border border-black/10 dark:border-white/10 px-1.5 py-0.5 rounded-full shadow-sm whitespace-nowrap">
-                          <span className="text-[8px] font-bold uppercase tracking-wider text-black dark:text-white leading-none block">Free</span>
+                          <span className="text-[8px] font-bold uppercase tracking-wider text-black dark:text-white leading-none block">{userDetails?.pro ? "PRO" : "Free"}</span>
                         </div>
-                      )}
+                      
                     </div>
                   </button>
                 </DropdownMenuTrigger>
@@ -810,7 +740,6 @@ export default function LoggedInHeader({
                 )}
               </DropdownMenu>
             </>
-          )}
         </div>
         <MobileMenuButton
           isOpen={popovers.loggedInMenu === popoverMenu}
@@ -827,127 +756,92 @@ export default function LoggedInHeader({
           >
             {!isMobileThemePopup ? (
               <div>
-                {router.pathname === "/builder" && router.query?.view === "ai-tools" ? (
-                  <>
-                    <Link href="/builder" onClick={() => setPopoverMenu(null)}>
-                      <Button
-                        variant="secondary"
+                <>
+                  <Button
+                    variant="ghost"
+                    className="w-full text-[14px] justify-between py-[10px] rounded-lg px-0 hover:bg-transparent transition-none"
+                    onClick={handlenavigation}
+                  >
+                    Account settings
+                    <SettingsIcon className="w-4 h-4" />
+                  </Button>
 
-                      >
+                  <Button
+                    variant="ghost"
+                    className="w-full text-[14px] justify-between py-[10px] rounded-lg px-0 hover:bg-transparent transition-none"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                    <img
+                      src="/assets/svgs/logout.svg"
+                      alt="designfolio logo"
+                      className="w-4 h-4"
+                    />
+                  </Button>
 
-                        Go to Builder
-                      </Button>
-                    </Link>
-                    <div className="w-full h-[2px] bg-placeholder-color my-2" />
-                    <Button
-                      variant="ghost"
-                      className="w-full text-[14px] justify-between py-[10px] rounded-lg px-0 hover:bg-transparent transition-none"
-                      onClick={handlenavigation}
-                    >
-                      Account settings
-                      <SettingsIcon className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      className="w-full text-[14px] justify-between py-[10px] rounded-lg px-0 hover:bg-transparent transition-none"
-                      onClick={handleLogout}
-                    >
-                      Logout
-                      <img
-                        src="/assets/svgs/logout.svg"
-                        alt="designfolio logo"
-                        className="w-4 h-4"
-                      />
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <Button
-                      variant="ghost"
-                      className="w-full text-[14px] justify-between py-[10px] rounded-lg px-0 hover:bg-transparent transition-none"
-                      onClick={handlenavigation}
-                    >
-                      Account settings
-                      <SettingsIcon className="w-4 h-4" />
-                    </Button>
-
-                    <Button
-                      variant="ghost"
-                      className="w-full text-[14px] justify-between py-[10px] rounded-lg px-0 hover:bg-transparent transition-none"
-                      onClick={handleLogout}
-                    >
-                      Logout
-                      <img
-                        src="/assets/svgs/logout.svg"
-                        alt="designfolio logo"
-                        className="w-4 h-4"
-                      />
-                    </Button>
-
-                    <Link href="/analytics">
-                      <Button
-                        variant="secondary"
-                        className="h-11 px-4 mr-0 w-full mt-4 rounded-full"
-                      >
-                        <MemoAnalytics className="" />
-                        Insights
-                      </Button>
-                    </Link>
+                  <Link href="/analytics">
                     <Button
                       variant="secondary"
-                      className="h-11 px-4 w-full mt-4 rounded-full"
-                      onClick={() => {
-                        setPopoverMenu(null); // Close mobile menu
-                        handleTheme(); // Open theme sidebar
-                      }}
+                      className="h-11 px-4 mr-0 w-full mt-4 rounded-full"
                     >
-                      <MemoThemeIcon className="w-4 h-4" />
-                      Change theme
+                      <MemoAnalytics className="" />
+                      Insights
                     </Button>
-                    <Button
-                      className="h-11 px-4 mr-0 w-full mt-4 bg-foreground text-background hover:bg-foreground/90 rounded-full"
-                      onClick={handleUpdate}
-                      disabled={!userDetails?.pro && userDetails?.template != 0}
-                    >
-                      <img
-                        src="/assets/svgs/power.svg"
-                        alt="launch builder"
-                        className="w-4 h-4"
-                      />
-                      Publish Site
-                    </Button>
-                    <div className="w-full h-[2px] bg-placeholder-color my-4" />
-                    <div
-                      className="flex gap-2 cursor-pointer justify-center items-start mr-5"
-                      onClick={() =>
-                        window.open(
-                          `https://${username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`,
-                          '_blank'
-                        )
-                      }
-                    >
-                      <div className="mt-1">
-                        <LinkIcon className="text-icon-color" />
-                      </div>
-                      {username && (
-                        <div>
-                          <Text
-                            size="p-xxsmall"
-                            className="underline underline-offset-4"
-                          >
-                            {username}.designfolio.me
-                          </Text>
-                          <Text
-                            size="p-xxxsmall"
-                            className="text-df-secondary-text-color text-center mt-1"
-                          >
-                            {`Updated: ${formatedValue}`}
-                          </Text>
-                        </div>
-                      )}
+                  </Link>
+                  <Button
+                    variant="secondary"
+                    className="h-11 px-4 w-full mt-4 rounded-full"
+                    onClick={() => {
+                      setPopoverMenu(null); // Close mobile menu
+                      handleTheme(); // Open theme sidebar
+                    }}
+                  >
+                    <MemoThemeIcon className="w-4 h-4" />
+                    Change theme
+                  </Button>
+                  <Button
+                    className="h-11 px-4 mr-0 w-full mt-4 bg-foreground text-background hover:bg-foreground/90 rounded-full"
+                    onClick={handleUpdate}
+                    disabled={!userDetails?.pro && userDetails?.template != 0}
+                  >
+                    <img
+                      src="/assets/svgs/power.svg"
+                      alt="launch builder"
+                      className="w-4 h-4"
+                    />
+                    Publish Site
+                  </Button>
+                  <div className="w-full h-[2px] bg-placeholder-color my-4" />
+                  <div
+                    className="flex gap-2 cursor-pointer justify-center items-start mr-5"
+                    onClick={() =>
+                      window.open(
+                        `https://${username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`,
+                        '_blank'
+                      )
+                    }
+                  >
+                    <div className="mt-1">
+                      <LinkIcon className="text-icon-color" />
                     </div>
-                  </>
-                )}
+                    {username && (
+                      <div>
+                        <Text
+                          size="p-xxsmall"
+                          className="underline underline-offset-4"
+                        >
+                          {username}.designfolio.me
+                        </Text>
+                        <Text
+                          size="p-xxxsmall"
+                          className="text-df-secondary-text-color text-center mt-1"
+                        >
+                          {`Updated: ${formatedValue}`}
+                        </Text>
+                      </div>
+                    )}
+                  </div>
+                </>
               </div>
             ) : (
               <div>

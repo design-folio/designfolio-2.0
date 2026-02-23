@@ -99,7 +99,7 @@ export function CourseCard() {
                         </h2>
                         <div className="flex items-center gap-1.5 text-muted-foreground">
                             <Calendar className="w-4 h-4" />
-                            <span className="text-[12px] font-medium">February 15th, 2026</span>
+                            <span className="text-[12px] font-medium">March 16th, 2026</span>
                         </div>
                     </div>
 
@@ -122,7 +122,7 @@ export function CourseCard() {
                             </div>
                         </div>
                         <p className="text-[12px] font-medium text-foreground">
-                            19 of 30 seats remaining
+                            24 of 30 seats remaining
                         </p>
                     </div>
 

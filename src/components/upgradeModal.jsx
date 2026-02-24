@@ -9,18 +9,22 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const PLAN_LABELS = { "1m": "1 Month", "3m": "3 Months", lifetime: "Lifetime" };
 
+
 const PLAN_HEADINGS = {
   "1m": {
     title: "For Students",
     subtitle: "Build your first serious portfolio. Explore what's possible.",
+    buttonText: "Get PRO for 1 Month",
   },
   "3m": {
     title: "For Job Seekers",
     subtitle: "Build a complete portfolio and start landing interviews fast.",
+    buttonText: "Get PRO for 3 Months",
   },
   lifetime: {
     title: "Lifetime Access",
     subtitle: "Own your portfolio forever. No expiry. No resets.",
+    buttonText: "Get PRO for Lifetime",
   },
 };
 
@@ -209,7 +213,7 @@ export default function UpgradeModal() {
           />
 
           <button className={styles.upgradeNowButton} onClick={openCheckout}>
-            Upgrade Now
+            {PLAN_HEADINGS[selectedPlan?.plan]?.buttonText ?? "Upgrade Now"}
           </button>
           {(() => {
             const lifetimePlan = proPlans.find((p) => p.plan === "lifetime");

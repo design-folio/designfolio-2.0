@@ -14,7 +14,9 @@ export const POSTHOG_EVENT_NAMES = {
   PORTFOLIO_PUBLISHED: 'portfolio_published',
   EDIT_AFTER_PUBLISH: 'edit_after_publish',
   PRICING_VIEWED: 'pricing_viewed',
+  UPGRADE_PRO_CLICKED: 'upgrade_pro_clicked',
   UPGRADE_MODAL_VIEWED: 'upgrade_modal_viewed',
+  UPGRADE_PLAN_SELECTED: 'upgrade_plan_selected',
   UPGRADE_MODAL_CLICKED: 'upgrade_modal_clicked',
   PAYMENT_COMPLETED: 'payment_completed',
 };

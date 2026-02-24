@@ -24,11 +24,10 @@ export default function ProjectLock() {
         </div>
 
         <h3 className="text-xl font-semibold mb-2 text-df-add-card-heading-color">
-          Designfolio PRO
+          Unlock Unlimited Projects
         </h3>
         <p className="text-sm text-df-add-card-description-color mb-4">
-          You've reached the 2-projects limit on the free plan. Get lifetime
-          access to add unlimited projects and unlock all premium features.
+          You've reached the 2-projects limit on the free plan. Upgrade to PRO to add unlimited projects and unlock all premium features.
         </p>
 
         <StardustButton onClick={() => { setUpgradeModalUnhideProject(null); setShowUpgradeModal(true); }}>

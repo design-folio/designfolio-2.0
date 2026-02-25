@@ -56,6 +56,7 @@ import Popover from './popover';
 import Text from './text';
 import ThemePanel from './ThemePanel';
 import { SegmentedControl } from './ui/segmented-control';
+import MemoDFLogo from './icons/DFLogo';
 
 const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
 
@@ -194,7 +195,7 @@ export default function LoggedInHeader({
     fetch('/lottie/diamond-lottie.json')
       .then(res => res.json())
       .then(setDiamondLottie)
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   const phEvent = usePostHogEvent();
@@ -508,7 +509,7 @@ export default function LoggedInHeader({
       <div
         className={cn(
           'shadow-df-section-card-shadow max-w-[848px] p-2 bg-df-header-bg-color mx-auto flex justify-between items-center',
-          router.pathname === '/builder' ? 'rounded-full' : 'rounded-2xl'
+          'rounded-full'
         )}
       >
         <div className="flex items-center gap-[24px]">
@@ -538,7 +539,8 @@ export default function LoggedInHeader({
             </div>
           ) : (
             <Link href="/builder">
-              <Logo className="text-df-base-text-color" />
+              <MemoDFLogo className="text-df-icon-color h-5 sm:h-7 w-auto cursor-pointer ml-2" />
+              {/* <Logo className="text-df-base-text-color" /> */}
             </Link>
           )}
         </div>
@@ -614,11 +616,10 @@ export default function LoggedInHeader({
               />
               {isClient && (
                 <div
-                  className={`pt-5 origin-top-right absolute z-20 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${
-                    popoverMenu === popovers.publishMenu
-                      ? 'opacity-100 scale-100'
-                      : 'opacity-0 scale-90 pointer-events-none'
-                  }`}
+                  className={`pt-5 origin-top-right absolute z-20 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${popoverMenu === popovers.publishMenu
+                    ? 'opacity-100 scale-100'
+                    : 'opacity-0 scale-90 pointer-events-none'
+                    }`}
                 >
                   <div className=" w-[310px] rounded-xl shadow-lg bg-popover-bg-color border-4 border-solid border-popover-border-color">
                     <div className="p-4">

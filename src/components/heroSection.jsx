@@ -392,7 +392,7 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab, onResume
     return (
         <section
             ref={sectionRef}
-            className="relative overflow-visible pb-8 pt-10 sm:py-12 md:py-16 px-6"
+            className="relative overflow-visible py-8 sm:py-12 md:py-16 px-6"
         >
             <AnimatePresence mode="wait">
                 {isResumeMode ? (
@@ -460,7 +460,7 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab, onResume
                 <>
                     <motion.div
                         ref={leftCardRef}
-                        className="absolute -left-40 -top-12  xl:left-4 2xl:left-16  xl:top-28 z-[31] will-change-transform"
+                        className="absolute -left-40 -top-12 lg:-left-8 xl:left-4 2xl:left-16 lg:top-20 xl:top-28 z-[31] will-change-transform"
                         style={{
                             width: leftCardWidth ? `${leftCardWidth}px` : undefined,
                             y: leftCardTranslateY,
@@ -508,7 +508,7 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab, onResume
 
                     <motion.div
                         ref={rightCardRef}
-                        className="absolute -right-32 -bottom-20 xl:right-4 2xl:right-16  xl:top-40 lg:bottom-auto z-[29] will-change-transform"
+                        className="absolute -right-32 -bottom-20 lg:-right-8 xl:right-4 2xl:right-16 lg:top-32 xl:top-40 lg:bottom-auto z-[29] will-change-transform"
                         style={{
                             width: rightCardWidth ? `${rightCardWidth}px` : undefined,
                             y: rightCardTranslateY,
@@ -575,7 +575,7 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab, onResume
                         />
                     </motion.div>
 
-                    <div className="relative min-h-[420px] w-full">
+                    <div className={cn("relative min-h-[350px] w-full", isResumeMode ? "min-h-[550px]" : "")}>
                         <AnimatePresence mode="sync">
                             {isResumeMode ? (
                                 <motion.div
@@ -597,7 +597,7 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab, onResume
                                         Turn your resume into a personal website
                                     </TextEffect>
                                     <motion.p
-                                        className="text-sm sm:text-base md:text-lg lg:text-xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-6 sm:mb-8"
+                                        className="text-sm sm:text-base md:text-lg lg:text-xl text-[rgb(125,125,125)] leading-relaxed max-w-3xl mx-auto mb-6 sm:mb-8"
                                         data-testid="text-resume-description"
                                     >
                                         Skip the busywork with Designfolio — publish in hours, not weeks.
@@ -773,7 +773,7 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab, onResume
                                             as="h1"
                                             preset="blur"
                                             per="word"
-                                            className="min-[420px]:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl leading-tight mb-4 sm:mb-6 font-gsans font-semibold text-2xl text-foreground-landing"
+                                            className="min-[420px]:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl leading-[1.1] mb-4 sm:mb-6 font-eudoxus font-bold text-2xl text-foreground-landing"
                                             data-testid="text-hero-headline"
                                             delay={0.1}
                                         >
@@ -781,7 +781,7 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab, onResume
                                         </TextEffect>
                                     </motion.div>
                                     <motion.p
-                                        className="text-sm sm:text-base md:text-lg lg:text-xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-6 sm:mb-8"
+                                        className="sm:text-base md:text-[1rem] text-[rgb(125,125,125)] leading-relaxed max-w-3xl mx-auto mb-6 sm:mb-8"
                                         data-testid="text-hero-description"
                                         initial={{ opacity: 0, filter: "blur(4px)", y: 8 }}
                                         animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}

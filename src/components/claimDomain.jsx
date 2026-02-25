@@ -144,7 +144,7 @@ export default function ClaimDomain({
                 <div
                     className={`flex items-center bg-white dark:bg-white border-2 rounded-full w-full transition-all duration-300 ease-out cursor-text overflow-hidden ${getBorderColor()}`}
                 >
-                    <div className="relative flex-1 h-14 sm:h-16">
+                    <div className="relative flex-1 h-12 sm:h-14">
                         <Input
                             type="text"
                             value={inputValue}
@@ -164,7 +164,7 @@ export default function ClaimDomain({
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -10 }}
                                 transition={{ duration: 0.3 }}
-                                className="absolute left-5 sm:left-6 top-0 h-full flex items-center pointer-events-none text-lg text-foreground"
+                                className="absolute left-5 sm:left-6 top-0 h-full flex items-center pointer-events-none text-lg text-muted-foreground/60 "
                             >
                                 {names[currentNameIndex]}
                             </motion.span>

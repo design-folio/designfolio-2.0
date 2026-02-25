@@ -22,11 +22,12 @@ export default function Home({ dfToken }) {
         setActiveTab={setActiveTab}
         onResumeCompactChange={setIsResumeCompact}
       />
+      <TrustedBySection />
       {activeTab !== "resume" && <EmailMockup />}
       {activeTab === "resume" && !isResumeCompact && (
-        <div className="py-24 md:py-16" aria-hidden="true" />
+        <div className="py-0 md:py-0" aria-hidden="true" />
       )}
-      <TrustedBySection />
+
       <FeaturesSection />
       {/* <FeaturesShowcase /> */}
       <AiToolsSection />

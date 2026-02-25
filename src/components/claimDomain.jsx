@@ -144,7 +144,7 @@ export default function ClaimDomain({
                 <div
                     className={`flex items-center bg-white dark:bg-white border-2 rounded-full w-full transition-all duration-300 ease-out cursor-text overflow-hidden ${getBorderColor()}`}
                 >
-                    <div className="relative flex-1 h-14 sm:h-16">
+                    <div className="relative flex-1 h-12 sm:h-14">
                         <Input
                             type="text"
                             value={inputValue}

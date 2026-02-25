@@ -11,6 +11,8 @@ import Text from "./text"
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import dynamic from "next/dynamic";
+import { TestimonialsMinimal } from "./ui/minimal-testimonial"
+import { FlickeringGrid } from "./ui/flickering-grid"
 const Lottie = dynamic(() => import("lottie-react"), {
     ssr: false,
     loading: () => <></>
@@ -104,6 +106,21 @@ export default function FeaturesSection() {
             className="py-8 sm:py-12 md:py-16 px-6 bg-background-landing"
         >
             <div className="max-w-5xl mx-auto">
+                <div className="mt-8 mb-8 relative">
+                    <div className="absolute inset-0 z-0 pointer-events-none opacity-40 overflow-hidden rounded-3xl">
+                        <FlickeringGrid
+                            squareSize={4}
+                            gridGap={6}
+                            color="#6B7280"
+                            maxOpacity={0.4}
+                            flickerChance={0.25}
+                            className="w-full h-full [mask-image:radial-gradient(ellipse_at_center,black_80%,transparent_100%)]"
+                        />
+                    </div>
+                    <div className="relative z-10">
+                        <TestimonialsMinimal />
+                    </div>
+                </div>
                 <Text
                     as="h2"
                     size="section-heading"
@@ -368,3 +385,11 @@ export default function FeaturesSection() {
         </section>
     )
 }
+
+
+
+
+
+
+
+

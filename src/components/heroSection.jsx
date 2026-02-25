@@ -575,7 +575,7 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab, onResume
                         />
                     </motion.div>
 
-                    <div className={cn("relative min-h-[350px] w-full", isResumeMode ? "min-h-[550px]" : "")}>
+                    <div className={cn("relative w-full", isResumeMode && !analyzeUsed ? "min-h-[550px]" : "min-h-[350px]")}>
                         <AnimatePresence mode="sync">
                             {isResumeMode ? (
                                 <motion.div

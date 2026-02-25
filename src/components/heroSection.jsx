@@ -597,7 +597,7 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab, onResume
                                         Turn your resume into a personal website
                                     </TextEffect>
                                     <motion.p
-                                        className="text-sm sm:text-base md:text-lg lg:text-xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-6 sm:mb-8"
+                                        className="text-sm sm:text-base md:text-lg lg:text-xl text-[rgb(125,125,125)] leading-relaxed max-w-3xl mx-auto mb-6 sm:mb-8"
                                         data-testid="text-resume-description"
                                     >
                                         Skip the busywork with Designfolio — publish in hours, not weeks.
@@ -773,7 +773,7 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab, onResume
                                             as="h1"
                                             preset="blur"
                                             per="word"
-                                            className="min-[420px]:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl leading-tight mb-4 sm:mb-6 font-gsans font-semibold text-2xl text-foreground-landing"
+                                            className="min-[420px]:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl leading-[1.1] mb-4 sm:mb-6 font-eudoxus font-bold text-2xl text-foreground-landing"
                                             data-testid="text-hero-headline"
                                             delay={0.1}
                                         >
@@ -781,7 +781,7 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab, onResume
                                         </TextEffect>
                                     </motion.div>
                                     <motion.p
-                                        className="text-sm sm:text-base md:text-lg lg:text-xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-6 sm:mb-8"
+                                        className="sm:text-base md:text-[1rem] text-[rgb(125,125,125)] leading-relaxed max-w-3xl mx-auto mb-6 sm:mb-8"
                                         data-testid="text-hero-description"
                                         initial={{ opacity: 0, filter: "blur(4px)", y: 8 }}
                                         animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}

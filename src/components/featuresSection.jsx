@@ -115,7 +115,7 @@ export default function FeaturesSection() {
                     Meet Designfolio!
                 </Text>
 
-                <div className="flex justify-center mb-8 sm:mb-12">
+                {/* <div className="flex justify-center mb-8 sm:mb-12">
                     <div
                         className="bg-pink-50 border border-pink-200 rounded-full px-4 sm:px-6 py-2.5 sm:py-3.5 text-center"
                         data-testid="badge-time-wasted"
@@ -125,7 +125,7 @@ export default function FeaturesSection() {
                             still lives in random Figma links.
                         </span>
                     </div>
-                </div>
+                </div> */}
 
                 <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-8 sm:mb-12">
                     {features.map((feature, index) => (

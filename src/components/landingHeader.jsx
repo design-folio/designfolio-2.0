@@ -8,6 +8,7 @@ import { useGlobalContext } from "@/context/globalContext";
 import { TempPopoverForLanding } from "./popover";
 import MemoPower from "./icons/Power";
 import MobileMenuButton from "./MobileMenuButton";
+import MemoDFLogo from "./icons/DFLogo";
 
 export default function LandingHeader({ dfToken }) {
     const [isScrolled, setIsScrolled] = useState(false);
@@ -40,7 +41,7 @@ export default function LandingHeader({ dfToken }) {
                             }`}
                         >
                             <Link href="/" data-testid="logo-icon">
-                                <Logo className="text-df-icon-color" />
+                                <MemoDFLogo className="text-df-icon-color h-5 sm:h-7 w-auto cursor-pointer" />
                             </Link>
 
                             {/* {router.pathname === "/" && (

@@ -21,7 +21,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu';
 import { useGlobalContext } from '@/context/globalContext';
 import { useIsMobile } from '@/hooks/use-mobile';
 import useClient from '@/hooks/useClient';
@@ -33,9 +33,16 @@ import { cn } from '@/lib/utils';
 import { _publish } from '@/network/post-request';
 import queryClient from '@/network/queryClient';
 import Cookies from 'js-cookie';
-import { Check, Copy, Crown, LogOut, Settings, SettingsIcon } from 'lucide-react';
+import {
+  Check,
+  Copy,
+  Crown,
+  LogOut,
+  Settings,
+  SettingsIcon,
+} from 'lucide-react';
 import { useTheme } from 'next-themes';
-import dynamic from "next/dynamic";
+import dynamic from 'next/dynamic';
 import LeftArrow from '../../public/assets/svgs/left-arrow.svg';
 import LinkIcon from '../../public/assets/svgs/link.svg';
 import MoonIcon from '../../public/assets/svgs/moon.svg';
@@ -49,8 +56,9 @@ import Popover from './popover';
 import Text from './text';
 import ThemePanel from './ThemePanel';
 import { SegmentedControl } from './ui/segmented-control';
+import MemoDFLogo from './icons/DFLogo';
 
-const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
+const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
 
 const cursors = [
   {
@@ -184,8 +192,8 @@ export default function LoggedInHeader({
   const [diamondLottie, setDiamondLottie] = useState(null);
 
   useEffect(() => {
-    fetch("/lottie/diamond-lottie.json")
-      .then((res) => res.json())
+    fetch('/lottie/diamond-lottie.json')
+      .then(res => res.json())
       .then(setDiamondLottie)
       .catch(() => { });
   }, []);
@@ -193,7 +201,14 @@ export default function LoggedInHeader({
   const phEvent = usePostHogEvent();
 
   // Get activeSidebar and wallpaper effects from context
-  const { activeSidebar, openSidebar, closeSidebar, wallpaperEffects, updateWallpaperEffect, setUpgradeModalUnhideProject } = useGlobalContext();
+  const {
+    activeSidebar,
+    openSidebar,
+    closeSidebar,
+    wallpaperEffects,
+    updateWallpaperEffect,
+    setUpgradeModalUnhideProject,
+  } = useGlobalContext();
   const shouldShiftHeader = !isMobile && isSidebarThatShifts(activeSidebar);
 
   const { username, latestPublishDate, _id, email } = userDetails || {};
@@ -491,23 +506,32 @@ export default function LoggedInHeader({
         right: shouldShiftHeader ? getSidebarShiftWidth(activeSidebar) : '0',
       }}
     >
-
-      <div className={cn(
-        "shadow-df-section-card-shadow max-w-[848px] p-2 bg-df-header-bg-color mx-auto flex justify-between items-center",
-        router.pathname === "/builder" ? "rounded-full" : "rounded-2xl"
-      )}>
+      <div
+        className={cn(
+          'shadow-df-section-card-shadow max-w-[848px] p-2 bg-df-header-bg-color mx-auto flex justify-between items-center',
+          'rounded-full'
+        )}
+      >
         <div className="flex items-center gap-[24px]">
-          {router.pathname === "/builder" ? (
+          {router.pathname === '/builder' ? (
             <div className="rounded-full bg-[#F6F2EF] p-1 border border-black/[0.03] dark:bg-muted/30 dark:border-border/50">
               <SegmentedControl
                 layoutId="segmented-control-header"
-                options={["Portfolio Builder", "AI Tools"]}
-                value={router.query?.view === "ai-tools" ? "AI Tools" : "Portfolio Builder"}
-                onChange={(id) => {
-                  if (id === "AI Tools") {
-                    router.push("/builder?view=ai-tools&type=optimize-resume", undefined, { shallow: true });
+                options={['Portfolio Builder', 'AI Tools']}
+                value={
+                  router.query?.view === 'ai-tools'
+                    ? 'AI Tools'
+                    : 'Portfolio Builder'
+                }
+                onChange={id => {
+                  if (id === 'AI Tools') {
+                    router.push(
+                      '/builder?view=ai-tools&type=optimize-resume',
+                      undefined,
+                      { shallow: true }
+                    );
                   } else {
-                    router.push("/builder", undefined, { shallow: true });
+                    router.push('/builder', undefined, { shallow: true });
                   }
                 }}
                 className="!p-0 !bg-transparent !border-0 !backdrop-blur-none"
@@ -515,188 +539,204 @@ export default function LoggedInHeader({
             </div>
           ) : (
             <Link href="/builder">
-              <Logo className="text-df-base-text-color" />
+              <MemoDFLogo className="text-df-icon-color h-5 sm:h-7 w-auto cursor-pointer ml-2" />
+              {/* <Logo className="text-df-base-text-color" /> */}
             </Link>
           )}
         </div>
         <div className="gap-3 items-center hidden md:flex">
           <>
-              <div
-                className="relative theme-button"
-                data-popover-menu={popovers.themeMenu}
-              >
-                <Button
-                  onClick={handleTheme}
-                  variant="secondary"
-                  className="h-11 w-11 mr-3 rounded-full"
-                >
-                  <MemoThemeIcon className="!size-5" />
-
-                </Button>
-
-                <Link href="/analytics">
-                  <Button
-                    variant="secondary"
-                    size="icon"
-                    className="h-11 w-11 rounded-full"
-                  >
-                    <MemoAnalytics className="!size-5" />
-                  </Button>
-                </Link>
-                {isClient && (
-                  <ThemePanel
-                    theme={theme}
-                    changeTheme={changeTheme}
-                    template={template}
-                    changeTemplate={changeTemplate}
-                    templates={templates}
-                    renderTemplate={renderTemplate}
-                    getTemplateStyles={getTemplateStyles}
-                    cursor={cursor}
-                    handleChangeCursor={handleChangeCursor}
-                    cursors={cursors}
-                    getStyles={getStyles}
-                    wallpaper={wallpaper}
-                    changeWallpaper={changeWallpaper}
-                    wallpapers={wallpapers}
-                    effects={wallpaperEffects}
-                    updateWallpaperEffect={updateWallpaperEffect}
-                  />
-                )}
-              </div>
+            <div
+              className="relative theme-button"
+              data-popover-menu={popovers.themeMenu}
+            >
               <Button
+                onClick={handleTheme}
                 variant="secondary"
-                // size="icon"
-                className="rounded-full h-11 w-11"
-                data-testid="button-preview"
-                onClick={() => router.push('/portfolio-preview')}
+                className="h-11 w-11 mr-3 rounded-full"
               >
-                <MemoPreviewIcon className="!size-5" />
+                <MemoThemeIcon className="!size-5" />
               </Button>
-              <div
-                className="relative publish-button"
-                data-popover-id={popovers.publishMenu}
-              >
-                <ButtonOld
-                  text={'Publish Site'}
-                  onClick={handlePublishBtn}
-                  customClass="mr-0"
-                  icon={<MemoPower className="w-4 h-4" />}
-                  isDisabled={
-                    (!userDetails?.pro &&
-                      userDetails?.template &&
-                      userDetails?.template !== 0) ||
-                    updateLoading
-                  }
-                  animation
-                />
-                {isClient && (
-                  <div
-                    className={`pt-5 origin-top-right absolute z-20 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${popoverMenu === popovers.publishMenu
-                      ? 'opacity-100 scale-100'
-                      : 'opacity-0 scale-90 pointer-events-none'
-                      }`}
-                  >
-                    <div className=" w-[310px] rounded-xl shadow-lg bg-popover-bg-color border-4 border-solid border-popover-border-color">
-                      <div className="p-4">
-                        <div className="flex justify-between items-center gap-2 overflow-hidden">
-                          <div
-                            className="flex gap-2 cursor-pointer items-center min-w-0 flex-1"
-                            onClick={() =>
-                              window.open(
-                                `https://${username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`,
-                                '_blank'
-                              )
-                            }
-                          >
-                            <div className="cursor-pointer min-w-0 flex-1">
-                              <p className="text-base-text text-[16px] font-[500] font-sfpro cursor-pointer truncate">
-                                {username}.{process.env.NEXT_PUBLIC_BASE_DOMAIN}
-                              </p>
-                            </div>
-                          </div>
-                          <Button
-                            variant="secondary"
-                            size="icon"
-                            className="rounded-lg h-8 w-8"
-                            onClick={handleCopyText}
-                          >
-                            {isCopied ? (
-                              <Check className="w-3 h-3" />
-                            ) : (
-                              <Copy className="w-3 h-3" />
-                            )}
-                          </Button>
-                        </div>
 
-                        <div className="flex gap-2 items-center mt-1">
-                          <p className="text-description-text text-[12px] font-[400] font-inter cursor-pointer">
-                            {`Updated: ${formatedValue}`}
-                          </p>
-                        </div>
-                        {!userDetails?.pro && (
-                          <>
-                            <Button
-                              variant="secondary"
-                              className="w-full mt-4 gap-1 text-[13px] rounded-full"
-                              disabled={updateLoading}
-                              onClick={goToDomains}
-                            >
-                              Want your own domain?
-                              <span className={styles.upgradeLink}>Go Pro</span>
-                            </Button>
-                            <hr className="mt-4 border-tools-card-item-border-color" />
-                          </>
-                        )}
-                        <Button
-                          className="w-full mt-4 bg-foreground text-background hover:bg-foreground/90 rounded-full"
-                          disabled={
-                            (!userDetails?.pro &&
-                              userDetails?.template &&
-                              userDetails?.template !== 0) ||
-                            updateLoading
+              <Link href="/analytics">
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="h-11 w-11 rounded-full"
+                >
+                  <MemoAnalytics className="!size-5" />
+                </Button>
+              </Link>
+              {isClient && (
+                <ThemePanel
+                  theme={theme}
+                  changeTheme={changeTheme}
+                  template={template}
+                  changeTemplate={changeTemplate}
+                  templates={templates}
+                  renderTemplate={renderTemplate}
+                  getTemplateStyles={getTemplateStyles}
+                  cursor={cursor}
+                  handleChangeCursor={handleChangeCursor}
+                  cursors={cursors}
+                  getStyles={getStyles}
+                  wallpaper={wallpaper}
+                  changeWallpaper={changeWallpaper}
+                  wallpapers={wallpapers}
+                  effects={wallpaperEffects}
+                  updateWallpaperEffect={updateWallpaperEffect}
+                />
+              )}
+            </div>
+            <Button
+              variant="secondary"
+              // size="icon"
+              className="rounded-full h-11 w-11"
+              data-testid="button-preview"
+              onClick={() => router.push('/portfolio-preview')}
+            >
+              <MemoPreviewIcon className="!size-5" />
+            </Button>
+            <div
+              className="relative publish-button"
+              data-popover-id={popovers.publishMenu}
+            >
+              <ButtonOld
+                text={'Publish Site'}
+                onClick={handlePublishBtn}
+                customClass="mr-0"
+                icon={<MemoPower className="w-4 h-4" />}
+                isDisabled={
+                  (!userDetails?.pro &&
+                    userDetails?.template &&
+                    userDetails?.template !== 0) ||
+                  updateLoading
+                }
+                animation
+              />
+              {isClient && (
+                <div
+                  className={`pt-5 origin-top-right absolute z-20 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${popoverMenu === popovers.publishMenu
+                    ? 'opacity-100 scale-100'
+                    : 'opacity-0 scale-90 pointer-events-none'
+                    }`}
+                >
+                  <div className=" w-[310px] rounded-xl shadow-lg bg-popover-bg-color border-4 border-solid border-popover-border-color">
+                    <div className="p-4">
+                      <div className="flex justify-between items-center gap-2 overflow-hidden">
+                        <div
+                          className="flex gap-2 cursor-pointer items-center min-w-0 flex-1"
+                          onClick={() =>
+                            window.open(
+                              `https://${username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`,
+                              '_blank'
+                            )
                           }
-                          onClick={handleUpdate}
                         >
-                          Update changes
+                          <div className="cursor-pointer min-w-0 flex-1">
+                            <p className="text-base-text text-[16px] font-[500] font-sfpro cursor-pointer truncate">
+                              {username}.{process.env.NEXT_PUBLIC_BASE_DOMAIN}
+                            </p>
+                          </div>
+                        </div>
+                        <Button
+                          variant="secondary"
+                          size="icon"
+                          className="rounded-lg h-8 w-8"
+                          onClick={handleCopyText}
+                        >
+                          {isCopied ? (
+                            <Check className="w-3 h-3" />
+                          ) : (
+                            <Copy className="w-3 h-3" />
+                          )}
                         </Button>
                       </div>
+
+                      <div className="flex gap-2 items-center mt-1">
+                        <p className="text-description-text text-[12px] font-[400] font-inter cursor-pointer">
+                          {`Updated: ${formatedValue}`}
+                        </p>
+                      </div>
+                      {!userDetails?.pro && (
+                        <>
+                          <Button
+                            variant="secondary"
+                            className="w-full mt-4 gap-1 text-[13px] rounded-full"
+                            disabled={updateLoading}
+                            onClick={goToDomains}
+                          >
+                            Want your own domain?
+                            <span className={styles.upgradeLink}>Go Pro</span>
+                          </Button>
+                          <hr className="mt-4 border-tools-card-item-border-color" />
+                        </>
+                      )}
+                      <Button
+                        className="w-full mt-4 bg-foreground text-background hover:bg-foreground/90 rounded-full"
+                        disabled={
+                          (!userDetails?.pro &&
+                            userDetails?.template &&
+                            userDetails?.template !== 0) ||
+                          updateLoading
+                        }
+                        onClick={handleUpdate}
+                      >
+                        Update changes
+                      </Button>
                     </div>
                   </div>
-                )}
-              </div>
+                </div>
+              )}
+            </div>
 
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button
-                    type="button"
-                    className="rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-popover-border-color"
-                  >
-                    <div className="relative">
-                      <DfImage
-                        src={getUserAvatarImage(userDetails)}
-                        className={cn("w-[44px] h-[44px] rounded-full cursor-pointer", !userDetails?.avatar ? "bg-df-bg-color" : "")}
-                      />
-                      
-                        <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-white dark:bg-zinc-800 border border-black/10 dark:border-white/10 px-1.5 py-0.5 rounded-full shadow-sm whitespace-nowrap">
-                          <span className="text-[8px] font-bold uppercase tracking-wider text-black dark:text-white leading-none block">{userDetails?.pro ? "PRO" : "Free"}</span>
-                        </div>
-                      
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  type="button"
+                  className="rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-popover-border-color"
+                >
+                  <div className="relative">
+                    <DfImage
+                      src={getUserAvatarImage(userDetails)}
+                      className={cn(
+                        'w-[44px] h-[44px] rounded-full cursor-pointer',
+                        !userDetails?.avatar ? 'bg-df-bg-color' : ''
+                      )}
+                    />
+
+                    <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-white dark:bg-zinc-800 border border-black/10 dark:border-white/10 px-1.5 py-0.5 rounded-full shadow-sm whitespace-nowrap">
+                      <span className="text-[8px] font-bold uppercase tracking-wider text-black dark:text-white leading-none block">
+                        {userDetails?.pro ? 'PRO' : 'Free'}
+                      </span>
                     </div>
-                  </button>
-                </DropdownMenuTrigger>
-                {isClient && (
-                  <DropdownMenuContent
-                    align="end"
-                    className="w-64 p-2 rounded-2xl shadow-xl bg-white border-black/5 dark:bg-zinc-950 dark:border-white/5"
-                  >
-                    {!userDetails?.pro && (
+                  </div>
+                </button>
+              </DropdownMenuTrigger>
+              {isClient && (
+                <DropdownMenuContent
+                  align="end"
+                  className="w-64 p-2 rounded-2xl shadow-xl bg-white border-black/5 dark:bg-zinc-950 dark:border-white/5"
+                >
+                  {!userDetails?.pro && (
                     <DropdownMenuItem
                       className="flex items-center gap-3 p-3 rounded-xl cursor-pointer focus:bg-black/[0.03] dark:focus:bg-white/[0.03]"
-                      onClick={() => setShowUpgradeModal(true)}
+                      onClick={() => {
+                        setShowUpgradeModal(true);
+                        phEvent(POSTHOG_EVENT_NAMES.UPGRADE_PRO_CLICKED, {
+                          premium_user: userDetails?.pro,
+                          user_email: userDetails?.email,
+                          username: userDetails?.username,
+                          source: 'dropdown',
+                        });
+                      }}
                     >
                       <div className="w-8 h-8 rounded-full bg-black/[0.03] dark:bg-white/[0.03] flex items-center justify-center overflow-hidden cursor-pointer">
-                        <Suspense fallback={<Crown className="w-4 h-4 text-[#FF553E]" />}>
+                        <Suspense
+                          fallback={
+                            <Crown className="w-4 h-4 text-[#FF553E]" />
+                          }
+                        >
                           {diamondLottie ? (
                             <Lottie
                               animationData={diamondLottie}
@@ -709,39 +749,47 @@ export default function LoggedInHeader({
                         </Suspense>
                       </div>
                       <div className="flex flex-col cursor-pointer">
-                        <span className="font-semibold text-sm cursor-pointer">Upgrade PRO</span>
+                        <span className="font-semibold text-sm cursor-pointer">
+                          Upgrade PRO
+                        </span>
                       </div>
                     </DropdownMenuItem>
-                    )}
+                  )}
 
-                    <DropdownMenuItem
-                      className="flex items-center gap-3 p-3 rounded-xl cursor-pointer focus:bg-black/[0.03] dark:focus:bg-white/[0.03]"
-                      onClick={handlenavigation}
-                    >
-                      <div className="w-8 h-8 rounded-full bg-black/[0.03] dark:bg-white/[0.03] flex items-center justify-center text-foreground/60 cursor-pointer">
-                        <Settings className="w-4 h-4" />
-                      </div>
-                      <div className="flex flex-col cursor-pointer">
-                        <span className="font-semibold text-sm cursor-pointer">Settings</span>
-                        <span className="text-[10px] text-foreground/50 cursor-pointer">Custom Domain, Billing and more</span>
-                      </div>
-                    </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="flex items-center gap-3 p-3 rounded-xl cursor-pointer focus:bg-black/[0.03] dark:focus:bg-white/[0.03]"
+                    onClick={handlenavigation}
+                  >
+                    <div className="w-8 h-8 rounded-full bg-black/[0.03] dark:bg-white/[0.03] flex items-center justify-center text-foreground/60 cursor-pointer">
+                      <Settings className="w-4 h-4" />
+                    </div>
+                    <div className="flex flex-col cursor-pointer">
+                      <span className="font-semibold text-sm cursor-pointer">
+                        Settings
+                      </span>
+                      <span className="text-[10px] text-foreground/50 cursor-pointer">
+                        Custom Domain, Billing and more
+                      </span>
+                    </div>
+                  </DropdownMenuItem>
 
-                    <DropdownMenuSeparator className="my-1 bg-black/5 dark:bg-white/5" />
+                  <DropdownMenuSeparator className="my-1 bg-black/5 dark:bg-white/5" />
 
-                    <DropdownMenuItem
-                      className="flex items-center gap-3 p-3 rounded-xl cursor-pointer text-destructive focus:bg-destructive/5 focus:text-destructive"
-                      onClick={handleLogout}
-                    >
-                      <div className="w-8 h-8 rounded-full bg-destructive/10 flex items-center justify-center cursor-pointer">
-                        <LogOut className="w-4 h-4" />
-                      </div>
-                      <span className="font-semibold text-sm cursor-pointer">Logout</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                )}
-              </DropdownMenu>
-            </>
+                  <DropdownMenuItem
+                    className="flex items-center gap-3 p-3 rounded-xl cursor-pointer text-destructive focus:bg-destructive/5 focus:text-destructive"
+                    onClick={handleLogout}
+                  >
+                    <div className="w-8 h-8 rounded-full bg-destructive/10 flex items-center justify-center cursor-pointer">
+                      <LogOut className="w-4 h-4" />
+                    </div>
+                    <span className="font-semibold text-sm cursor-pointer">
+                      Logout
+                    </span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              )}
+            </DropdownMenu>
+          </>
         </div>
         <MobileMenuButton
           isOpen={popovers.loggedInMenu === popoverMenu}

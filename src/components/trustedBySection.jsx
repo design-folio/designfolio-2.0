@@ -19,7 +19,7 @@ export default function TrustedBySection({ classNames }) {
           className="text-center text-xs sm:text-sm md:text-base font-medium text-foreground-landing/50 mb-6 sm:mb-8 md:mb-10"
           data-testid="text-trusted-heading"
         >
-          Trusted by 20000+ designers—humble brag
+          Helping 25,000+ Product Folks to Land their Dream Roles
         </h3>
 
         <div className="relative overflow-hidden">

@@ -42,8 +42,14 @@ export default function Footer({ dfToken, innerClass = "", className = "" }) {
                                 <img
                                     src="/assets/svgs/footerimage.svg"
                                     alt="Footer illustration"
-                                    className="w-full h-auto"
+                                    className="hidden sm:block w-full h-auto"
                                     data-testid="image-footer-illustration"
+                                />
+                                <img
+                                    src="/assets/svgs/footerimageformob.svg"
+                                    alt="Footer illustration mobile"
+                                    className="block sm:hidden w-full h-auto"
+                                    data-testid="image-footer-illustration-mobile"
                                 />
                             </div>
                         </div>

@@ -125,6 +125,24 @@ const gsans = localFont({
   variable: '--font-gsans',
 });
 
+const eudoxus = localFont({
+  src: [
+
+    {
+      path: './fonts/exodus/EudoxusSans-Bold.ttf',
+      weight: '400',
+      style: 'normal',
+    },
+
+    {
+      path: './fonts/exodus/EudoxusSans-Bold.ttf',
+      weight: '700',
+      style: 'normal',
+    },
+  ],
+  variable: '--font-eudoxus',
+});
+
 function MyApp({ Component, pageProps, dfToken, hideHeader }) {
   const { theme } = useTheme();
   const phEvent = usePostHogEvent();
@@ -185,7 +203,7 @@ function MyApp({ Component, pageProps, dfToken, hideHeader }) {
                   <CursorTooltipProvider>
                     <CursorPill />
                     <main
-                      className={`${satoshi.variable} ${sfpro.variable} ${inter.variable} ${kalam.variable} ${gsans.variable} `}
+                      className={`${satoshi.variable} ${sfpro.variable} ${inter.variable} ${kalam.variable} ${gsans.variable} ${eudoxus.variable} `}
                     >
                       {
                         <Header

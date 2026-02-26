@@ -1,41 +1,40 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styles from '@/styles/domain.module.css';
 import { useGlobalContext } from '@/context/globalContext';
 import Script from 'next/script';
 import { _getProPlanDetails, createOrder } from '@/network/get-request';
 import { usePostHogEvent } from '@/hooks/usePostHogEvent';
 import { POSTHOG_EVENT_NAMES } from '@/lib/posthogEventNames';
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-const PLAN_LABELS = { "1m": "1 Month", "3m": "3 Months", lifetime: "Lifetime" };
-
+const PLAN_LABELS = { '1m': '1 Month', '3m': '3 Months', lifetime: 'Lifetime' };
 
 const PLAN_HEADINGS = {
-  "1m": {
-    title: "For Students",
+  '1m': {
+    title: 'For Students',
     subtitle: "Build your first serious portfolio. Explore what's possible.",
-    buttonText: "Get PRO for 1 Month",
+    buttonText: 'Get PRO for 1 Month',
   },
-  "3m": {
-    title: "For Job Seekers",
-    subtitle: "Build a complete portfolio and start landing interviews fast.",
-    buttonText: "Get PRO for 3 Months",
+  '3m': {
+    title: 'For Job Seekers',
+    subtitle: 'Build a complete portfolio and start landing interviews fast.',
+    buttonText: 'Get PRO for 3 Months',
   },
   lifetime: {
-    title: "Lifetime Access",
-    subtitle: "Own your portfolio forever. No expiry. No resets.",
-    buttonText: "Get PRO for Lifetime",
+    title: 'Lifetime Access',
+    subtitle: 'Own your portfolio forever. No expiry. No resets.',
+    buttonText: 'Get PRO for Lifetime',
   },
 };
 
 const TRUSTED_BY_LOGOS = [
-  "/assets/svgs/company logos/companylogos02.svg",
-  "/assets/svgs/company logos/companylogos03.svg",
-  "/assets/svgs/company logos/companylogos01.svg",
-  "/assets/svgs/company logos/companylogos04.svg",
-  "/assets/svgs/company logos/companylogos05.svg",
-  "/assets/svgs/company logos/companylogos06.svg",
-  "/assets/svgs/company logos/companylogos07.svg",
+  '/assets/svgs/company logos/companylogos02.svg',
+  '/assets/svgs/company logos/companylogos03.svg',
+  '/assets/svgs/company logos/companylogos01.svg',
+  '/assets/svgs/company logos/companylogos04.svg',
+  '/assets/svgs/company logos/companylogos05.svg',
+  '/assets/svgs/company logos/companylogos06.svg',
+  '/assets/svgs/company logos/companylogos07.svg',
 ];
 
 export default function UpgradeModal() {
@@ -52,16 +51,35 @@ export default function UpgradeModal() {
   } = useGlobalContext();
 
   const phEvent = usePostHogEvent();
+  const hasTrackedView = useRef(false);
 
   useEffect(() => {
     if (showUpgradeModal) {
-      _getProPlanDetails().then((response) => {
+      _getProPlanDetails().then(response => {
         const plans = response?.data?.proPlans;
         if (Array.isArray(plans) && plans.length > 0) {
           setProPlans(plans);
-          setSelectedPlan(plans.find((p) => p.plan === "3m") || plans[0]);
+          setSelectedPlan(plans.find(p => p.plan === '3m') || plans[0]);
         }
       });
+    }
+  }, [showUpgradeModal]);
+
+  useEffect(() => {
+    if (showUpgradeModal && selectedPlan && !hasTrackedView.current) {
+      phEvent(POSTHOG_EVENT_NAMES.UPGRADE_MODAL_VIEWED, {
+        source: 'dropdown',
+        default_plan: selectedPlan?.plan,
+        default_plan_amount: Number(selectedPlan?.amount),
+        default_plan_currency: selectedPlan?.currency,
+      });
+      hasTrackedView.current = true;
+    }
+  }, [showUpgradeModal, selectedPlan]);
+
+  useEffect(() => {
+    if (!showUpgradeModal) {
+      hasTrackedView.current = false;
     }
   }, [showUpgradeModal]);
 
@@ -75,11 +93,11 @@ export default function UpgradeModal() {
   };
 
   function formatAmount(amount, currencyCode) {
-    if (currencyCode === "USD") {
+    if (currencyCode === 'USD') {
       return `$${Number(amount).toFixed(0)}`;
     }
     return new Intl.NumberFormat(undefined, {
-      style: "currency",
+      style: 'currency',
       currency: currencyCode,
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
@@ -88,7 +106,13 @@ export default function UpgradeModal() {
 
   const openCheckout = () => {
     if (!selectedPlan?.plan) return;
-    createOrder(selectedPlan.plan).then((response) => {
+    phEvent(POSTHOG_EVENT_NAMES.UPGRADE_MODAL_CLICKED, {
+      source: 'dropdown',
+      selected_plan: selectedPlan?.plan,
+      selected_amount: Number(selectedPlan?.amount),
+      selected_currency: selectedPlan?.currency,
+    });
+    createOrder(selectedPlan.plan).then(response => {
       const { id } = response?.data?.order; // Assuming the response contains necessary data for Razorpay
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, // Your public Key ID
@@ -103,8 +127,9 @@ export default function UpgradeModal() {
           userDetailsRefecth();
           phEvent(POSTHOG_EVENT_NAMES.PAYMENT_COMPLETED, {
             order_id: id,
-            plan_amount: Number(plan?.amount),
-            plan_currency: plan?.currency,
+            plan_amount: Number(selectedPlan?.amount),
+            plan_currency: selectedPlan?.currency,
+            plan_month: selectedPlan?.plan,
           });
           handleCloseModal();
           // This handler is called on successful payment.
@@ -132,14 +157,16 @@ export default function UpgradeModal() {
   if (!showUpgradeModal || proPlans.length === 0 || !selectedPlan) return null;
   return (
     <div
-      className={`${styles.modalOverlay} ${isModalExiting ? styles.modalOverlayExiting : ""
-        }`}
+      className={`${styles.modalOverlay} ${
+        isModalExiting ? styles.modalOverlayExiting : ''
+      }`}
       onClick={() => handleCloseModal()}
     >
       <div
-        className={`${styles.modal} ${isModalExiting ? styles.modalExiting : ""
-          }`}
-        onClick={(e) => e.stopPropagation()}
+        className={`${styles.modal} ${
+          isModalExiting ? styles.modalExiting : ''
+        }`}
+        onClick={e => e.stopPropagation()}
       >
         <button
           className={styles.modalClose}
@@ -153,24 +180,26 @@ export default function UpgradeModal() {
             <div className={styles.modalIcon}></div>
             <h2 className={styles.modalTitle}>
               {upgradeModalUnhideProject
-                ? `Unhide ${upgradeModalUnhideProject.title || "Project"}?`
-                : (PLAN_HEADINGS[selectedPlan?.plan] ?? PLAN_HEADINGS.lifetime).title}
+                ? `Unhide ${upgradeModalUnhideProject.title || 'Project'}?`
+                : (PLAN_HEADINGS[selectedPlan?.plan] ?? PLAN_HEADINGS.lifetime)
+                    .title}
             </h2>
             <p className={styles.modalSubtitle}>
               {upgradeModalUnhideProject
-                ? "Free users can only have 2 visible projects. Go Pro to add unlimited and unhide this project."
-                : (PLAN_HEADINGS[selectedPlan?.plan] ?? PLAN_HEADINGS.lifetime).subtitle}
+                ? 'Free users can only have 2 visible projects. Go Pro to add unlimited and unhide this project.'
+                : (PLAN_HEADINGS[selectedPlan?.plan] ?? PLAN_HEADINGS.lifetime)
+                    .subtitle}
             </p>
           </div>
         </div>
 
         <div className={styles.modalContent}>
           <div className="mb-6">
-            {proPlans.some((p) => p.plan === "3m") && (
+            {proPlans.some(p => p.plan === '3m') && (
               <div className="relative z-10 text-center -mb-2.5">
                 <span
                   className="inline-block px-2 py-1 text-[10px] font-semibold rounded-full whitespace-nowrap"
-                  style={{ backgroundColor: "#22c55e", color: "#ffffff" }}
+                  style={{ backgroundColor: '#22c55e', color: '#ffffff' }}
                 >
                   Save 25%
                 </span>
@@ -178,12 +207,21 @@ export default function UpgradeModal() {
             )}
             <div className="relative z-0">
               <Tabs
-                value={selectedPlan?.plan ?? ""}
-                onValueChange={(value) => setSelectedPlan(proPlans.find((p) => p.plan === value))}
+                value={selectedPlan?.plan ?? ''}
+                onValueChange={value => {
+                  const newPlan = proPlans.find(p => p.plan === value);
+                  setSelectedPlan(proPlans.find(p => p.plan === value));
+                  phEvent(POSTHOG_EVENT_NAMES.UPGRADE_PLAN_SELECTED, {
+                    source: 'dropdown',
+                    selected_plan: newPlan?.plan,
+                    selected_amount: Number(newPlan?.amount),
+                    selected_currency: newPlan?.currency,
+                  });
+                }}
                 className="mb-0"
               >
                 <TabsList className="flex p-1 rounded-lg gap-1 w-full h-auto bg-[#f0f0f0]">
-                  {proPlans.map((p) => (
+                  {proPlans.map(p => (
                     <TabsTrigger
                       key={p.plan}
                       value={p.plan}
@@ -213,11 +251,11 @@ export default function UpgradeModal() {
           />
 
           <button className={styles.upgradeNowButton} onClick={openCheckout}>
-            {PLAN_HEADINGS[selectedPlan?.plan]?.buttonText ?? "Upgrade Now"}
+            {PLAN_HEADINGS[selectedPlan?.plan]?.buttonText ?? 'Upgrade Now'}
           </button>
           {(() => {
-            const lifetimePlan = proPlans.find((p) => p.plan === "lifetime");
-            if (!lifetimePlan || selectedPlan?.plan !== "lifetime") return null;
+            const lifetimePlan = proPlans.find(p => p.plan === 'lifetime');
+            if (!lifetimePlan || selectedPlan?.plan !== 'lifetime') return null;
             return (
               <div className={styles.lifetimeDealBanner}>
                 <div className={styles.dealBannerIcon}>⏰</div>

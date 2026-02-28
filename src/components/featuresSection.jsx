@@ -121,15 +121,15 @@ export default function FeaturesSection() {
                         <TestimonialsMinimal />
                     </div>
                 </div>
+                <p className="text-muted-foreground text-lg mb-2 text-center ">I know what you're thinking...</p>
+
                 <Text
                     as="h2"
                     size="section-heading"
-                    className="text-center mb-4 sm:mb-6"
+                    className="text-center mb-8 sm:mb-12"
                     data-testid="text-features-heading"
                 >
-                    Done fighting with Framer?
-                    <br />
-                    Meet Designfolio!
+                    How does it work?
                 </Text>
 
                 {/* <div className="flex justify-center mb-8 sm:mb-12">

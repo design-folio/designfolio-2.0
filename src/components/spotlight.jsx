@@ -84,7 +84,7 @@ export default function SpotlightUsers() {
 
 
 
-        <Text className="text-center mt-4 text-sm sm:text-base md:text-lg text-foreground/60 font-normal">
+        <Text className="text-center sm:mt-4 text-sm sm:text-base md:text-lg text-foreground/60 font-normal">
           Explore some of the portfolios powered by Designfolio
         </Text>
         {/* Desktop View */}

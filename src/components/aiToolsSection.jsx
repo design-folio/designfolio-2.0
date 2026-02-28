@@ -5,14 +5,14 @@ import GeneratorCard from "./generatorCard";
 export default function AiToolsSection() {
   return (
     <div className="max-w-[1192px] mx-auto py-16 px-6" id="other-ai-tools">
-      <Text as="h2" size="section-heading" className="text-center mb-4 sm:mb-6">
+      <Text as="h2" size="section-heading" className="text-center mb-2 sm:mb-6">
         ...and so much more ✨
       </Text>
-      <Text className="text-center mt-4 text-sm sm:text-base md:text-lg text-foreground/60 font-normal">
+      <Text className="text-center sm:mt-4 text-sm sm:text-base md:text-lg text-foreground/60 font-normal">
         Use these AI tools and save all your time — thank us later!
       </Text>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4  lg:gap-8 mt-[56px] w-[90%] m-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4  lg:gap-8 mt-[56px] lg:w-[90%] m-auto">
         <GeneratorCard
           title="Fix your Resume"
           src={"/assets/svgs/fixResume.svg"}

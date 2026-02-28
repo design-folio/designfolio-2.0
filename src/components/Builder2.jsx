@@ -4,7 +4,7 @@ import { modals, sidebars, DEFAULT_SECTION_ORDER, normalizeSectionOrder } from "
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { cn } from "@/lib/utils";
 import { _updateProject, _updateUser } from "@/network/post-request";
-import { PencilIcon } from "lucide-react";
+import { PencilIcon, ChevronDown } from "lucide-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -214,6 +214,7 @@ export default function Builder2({ edit = false }) {
   };
 
   const [expandedReviewCards, setExpandedReviewCards] = useState([]);
+  const [showAllReviews, setShowAllReviews] = useState(false);
 
   const toggleExpandReview = (id) => {
     setExpandedReviewCards((prev) =>
@@ -222,6 +223,7 @@ export default function Builder2({ edit = false }) {
   };
 
   const [expandedExperienceCards, setExpandedExperienceCards] = useState([]);
+  const [showAllExperiences, setShowAllExperiences] = useState(false);
 
   const toggleExpandExperience = (id) => {
     setExpandedExperienceCards((prev) =>
@@ -565,7 +567,7 @@ export default function Builder2({ edit = false }) {
                     </div>
                   )}
                   <div className="space-y-4">
-                    {reviews?.map((review) => (
+                    {(showAllReviews ? reviews : reviews?.slice(0, 3))?.map((review) => (
                       <div key={review?._id} className="border border-tools-card-item-border-color p-5 rounded-2xl">
                         <Quote />
                         <div className="mt-4 text-df-base-text-color">
@@ -630,6 +632,19 @@ export default function Builder2({ edit = false }) {
                         </div>
                       </div>
                     ))}
+                    {!showAllReviews && reviews?.length > 3 && (
+                      <div className="flex justify-center mt-2">
+                        <ButtonNew
+                          variant="ghost"
+                          size="sm"
+                          className="text-foreground/40 hover:text-foreground text-xs font-medium uppercase tracking-widest gap-2 group transition-all"
+                          onClick={() => setShowAllReviews(true)}
+                        >
+                          View More Testimonials
+                          <ChevronDown className="w-3 h-3 transition-transform group-hover:translate-y-0.5" />
+                        </ButtonNew>
+                      </div>
+                    )}
                   </div>
                   {edit && reviews?.length > 0 && (
                     <div className="flex items-center gap-2 mt-4 flex-wrap">
@@ -730,15 +745,38 @@ export default function Builder2({ edit = false }) {
                 <Chat direction="left" className="w-full"> Here’s a quick look at my design journey 👇</Chat>
                 <Chat direction="left" className="w-full pb-5">
                   <div className="flex flex-col gap-6">
-                    {experiences?.map((experience) => (
+                    {(showAllExperiences ? experiences : experiences?.slice(0, 3))?.map((experience) => (
                       <div key={experience?._id}>
-                        <div className="flex justify-between items-center">
-                          <Text
-                            size="p-xsmall"
-                            className="font-medium text-df-base-text-color"
-                          >
-                            {experience?.company}
-                          </Text>
+                        <div className="flex justify-between items-start">
+                          <div className="flex">
+                            <ExperienceShape className="w-[54px] relative bottom-2" />{" "}
+                            <div className="mt-[8px] flex-1">
+                              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-2">
+                                <span className="font-semibold text-base text-foreground">
+                                  {experience?.role}
+                                </span>
+                                <span className="text-foreground/30">at</span>
+                                <span className="font-semibold text-base text-foreground">
+                                  {experience?.company}
+                                </span>
+                              </div>
+                              <span className="text-xs font-medium text-foreground/40 uppercase tracking-wider">
+                                {`${experience?.startMonth} ${experience?.startYear} - ${experience?.currentlyWorking ? "Present" : `${experience?.endMonth} ${experience?.endYear}`}`}
+                              </span>
+                              <div className="text-sm text-foreground/60 leading-relaxed mt-2">
+                                <ClampableTiptapContent
+                                  content={experience?.description || ""}
+                                  mode="work"
+                                  enableBulletList={true}
+                                  maxLines={3}
+                                  itemId={experience?._id}
+                                  expandedIds={expandedExperienceCards}
+                                  onToggleExpand={toggleExpandExperience}
+                                  buttonClassName="mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
+                                />
+                              </div>
+                            </div>
+                          </div>
                           <Button
                             onClick={() => handleEditWork(experience)}
                             customClass="!p-[13.38px] !flex-shrink-0"
@@ -749,40 +787,21 @@ export default function Builder2({ edit = false }) {
                             }
                           />
                         </div>
-                        <div className="flex">
-                          <ExperienceShape className="w-[54px] relative bottom-2" />{" "}
-                          <div className="mt-[8px] flex-1">
-                            <Text
-                              size="p-small"
-                              className="font-semibold text-df-base-text-color"
-                            >
-                              {experience?.role}
-                            </Text>
-                            <Text
-                              size="p-xsmall"
-                              className="font-medium mt-[6px] text-df-description-color"
-                            >
-                              {`${experience?.startMonth} ${experience?.startYear} - ${experience?.currentlyWorking
-                                ? "Present"
-                                : `${experience?.endMonth} ${experience?.endYear}`
-                                }  `}
-                            </Text>
-                            <div className="text-df-base-text-color mt-4">
-                              <ClampableTiptapContent
-                                content={experience?.description || ""}
-                                mode="work"
-                                enableBulletList={true}
-                                maxLines={3}
-                                itemId={experience?._id}
-                                expandedIds={expandedExperienceCards}
-                                onToggleExpand={toggleExpandExperience}
-                                buttonClassName="mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
-                              />
-                            </div>
-                          </div>
-                        </div>
                       </div>
                     ))}
+                    {!showAllExperiences && experiences?.length > 3 && (
+                      <div className="flex justify-center">
+                        <ButtonNew
+                          variant="ghost"
+                          size="sm"
+                          className="text-foreground/40 hover:text-foreground text-xs font-medium uppercase tracking-widest gap-2 group transition-all"
+                          onClick={() => setShowAllExperiences(true)}
+                        >
+                          View More Experience
+                          <ChevronDown className="w-3 h-3 transition-transform group-hover:translate-y-0.5" />
+                        </ButtonNew>
+                      </div>
+                    )}
                     {edit && (
                       <div className="flex items-center gap-2 flex-wrap">
                         <SectionVisibilityButton sectionId="works" className="h-14" />

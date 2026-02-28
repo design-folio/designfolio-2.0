@@ -566,11 +566,11 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab, onResume
                     >
                         <SegmentedControl
                             layoutId="segmented-control-hero"
-                            options={["Start from Scratch", "Use my Resume"]}
-                            value={effectiveTab === "scratch" ? "Start from Scratch" : "Use my Resume"}
+                            options={["From Scratch", "Use Resume"]}
+                            value={effectiveTab === "scratch" ? "From Scratch" : "Use Resume"}
                             onChange={(val) => {
                                 setConversionError(null)
-                                setEffectiveTab(val === "Start from Scratch" ? "scratch" : "resume")
+                                setEffectiveTab(val === "From Scratch" ? "scratch" : "resume")
                             }}
                         />
                     </motion.div>

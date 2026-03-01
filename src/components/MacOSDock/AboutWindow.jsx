@@ -1,5 +1,5 @@
 import React from 'react';
-import ImgStack from '../image-stack';
+import ImgStack from '../ui/image-stack';
 
 const AboutWindow = ({ userDetails, fullName }) => (
   <div className="w-full h-full bg-[#1e3d2f] relative font-chalkboard flex flex-col">

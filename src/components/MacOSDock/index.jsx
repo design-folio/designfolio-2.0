@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { X, Minus, Square, RefreshCw, Lock } from 'lucide-react';
-import Button3D from '../button-3d';
+import Button3D from '../ui/button-3d';
 import WindowContent from './WindowContent';
 import DockBar from './DockBar';
 

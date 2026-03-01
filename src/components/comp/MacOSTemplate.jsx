@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import MacOSMenuBar from "@/components/ui/MacOSMenuBar";
-import MacOSDock from "@/components/ui/MacOSDock";
+import MacOSDock from "@/components/MacOSDock";
 import { DivOrigami } from "@/components/ui/animated-logo-rolodex";
 import { useGlobalContext } from "@/context/globalContext";
 import { getSidebarShiftWidth, isSidebarThatShifts, modals, sidebars } from "@/lib/constant";
@@ -13,8 +13,8 @@ import { _updateUser } from "@/network/post-request";
 import {
   TestimonialWidget,
   SortableTestimonialItem,
-} from "@/components/ui/MacOSDock/TestimonialWidget";
-import { SortableWorkExperienceItem } from "@/components/ui/MacOSDock/WorkExperienceWindow";
+} from "@/components/MacOSDock/TestimonialWidget";
+import { SortableWorkExperienceItem } from "@/components/MacOSDock/WorkExperienceWindow";
 
 
 

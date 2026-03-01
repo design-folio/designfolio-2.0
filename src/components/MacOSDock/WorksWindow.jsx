@@ -1,5 +1,5 @@
 import React from 'react';
-import { AnimatedFolder } from '../3d-folder';
+import { AnimatedFolder } from '../ui/3d-folder';
 
 const FAVORITES = [
   { name: 'AirDrop', icon: '📡' },

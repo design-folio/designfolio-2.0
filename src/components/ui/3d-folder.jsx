@@ -17,6 +17,12 @@ export function AnimatedFolder({ title, projects, className, onProjectClick }) {
     setHiddenCardId(project.id);
   };
 
+  const handleFolderClick = () => {
+    if (projects.length > 0) {
+      handleProjectClick(projects[0], 0);
+    }
+  };
+
   const handleCloseLightbox = () => {
     setSelectedIndex(null);
   };
@@ -35,6 +41,7 @@ export function AnimatedFolder({ title, projects, className, onProjectClick }) {
         style={{ minWidth: "120px", minHeight: "140px", perspective: "1000px" }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        onClick={handleFolderClick}
       >
         <div className="relative flex items-center justify-center mb-2" style={{ height: "80px", width: "100px" }}>
           {/* Folder back layer */}
@@ -68,7 +75,7 @@ export function AnimatedFolder({ title, projects, className, onProjectClick }) {
               <div
                 key={project.id}
                 ref={(el) => { cardRefs.current[index] = el; }}
-                onClick={(e) => { e.stopPropagation(); handleProjectClick(project, index); }}
+                onClick={(e) => { e.stopPropagation(); handleFolderClick(); }}
                 className={cn(
                   "absolute w-12 h-12 bg-white rounded-sm shadow-sm border border-black/5 overflow-hidden transition-all duration-500",
                   hiddenCardId === project.id ? "opacity-0 scale-90" : "opacity-100 scale-100"
@@ -81,9 +88,13 @@ export function AnimatedFolder({ title, projects, className, onProjectClick }) {
                   zIndex: 20 - index,
                 }}
               >
-                <div className="w-full h-full flex items-center justify-center text-xs bg-gray-100">
-                  {project.image}
-                </div>
+                {project.image?.startsWith?.('http') ? (
+                  <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-xs bg-gray-100">
+                    {project.image}
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -168,8 +179,10 @@ function BrowserWindow({ projects, currentIndex, isOpen, onClose, onCloseComplet
         {/* Title Bar */}
         <div className="h-10 bg-[#e7e7e7] flex items-center justify-between px-3 border-b border-gray-300 shrink-0 select-none">
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded-sm flex items-center justify-center bg-gray-200 text-[10px] text-gray-500">
-              {currentProject?.image}
+            <div className="w-4 h-4 rounded-sm overflow-hidden bg-gray-200 flex items-center justify-center text-[10px] text-gray-500">
+              {currentProject?.image?.startsWith?.('http') ? (
+                <img src={currentProject.image} alt={currentProject.title} className="w-full h-full object-cover" />
+              ) : currentProject?.image}
             </div>
             <span className="text-[11px] text-gray-600 truncate max-w-[200px]">
               {currentProject?.title || "New Tab"}
@@ -210,8 +223,16 @@ function BrowserWindow({ projects, currentIndex, isOpen, onClose, onCloseComplet
         </div>
         {/* Content */}
         <div className="flex-1 bg-white overflow-auto flex flex-col items-center justify-center text-center p-8">
-          <div className="max-w-md space-y-6">
-            <div className="text-8xl mb-8 opacity-20 grayscale">{currentProject?.image}</div>
+          <div className="max-w-md space-y-6 w-full">
+            {currentProject?.image?.startsWith?.('http') ? (
+              <img
+                src={currentProject.image}
+                alt={currentProject.title}
+                className="w-full max-h-64 object-cover rounded-xl shadow-md mb-4"
+              />
+            ) : (
+              <div className="text-8xl mb-8 opacity-20 grayscale">{currentProject?.image}</div>
+            )}
             <h1 className="text-2xl font-semibold text-gray-800">{currentProject?.title}</h1>
             <p className="text-gray-500 leading-relaxed">
               Preview for {currentProject?.title}. This is a case study preview window.

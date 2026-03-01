@@ -1,20 +1,36 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { SiAmazon, SiGithub, SiGoogle, SiMeta, SiTwitch } from "react-icons/si";
 import { twMerge } from "tailwind-merge";
+import { useGlobalContext } from "@/context/globalContext";
+
+const BG_COLORS = [
+  "bg-[#FEF9C3]",
+  "bg-[#FFEDD5]",
+  "bg-[#DCFCE7]",
+  "bg-[#DBEAFE]",
+  "bg-[#F3E8FF]",
+  "bg-[#FCE7F3]",
+  "bg-[#E0F2FE]",
+  "bg-[#FEF3C7]",
+];
 
 export const DivOrigami = () => {
+  const { userDetails } = useGlobalContext();
+  const tools = userDetails?.tools || [];
+
+  const items = tools.map((tool, i) => (
+    <LogoItem key={tool?.value || tool?.label || i} className={BG_COLORS[i % BG_COLORS.length]}>
+      <img
+        src={tool?.image || tool?.logo}
+        alt={tool?.label || tool?.name}
+        className="w-12 h-12 object-contain"
+      />
+    </LogoItem>
+  ));
+
   return (
     <div className="flex flex-col items-center justify-center bg-transparent">
-      <LogoRolodex
-        items={[
-          <LogoItem key={1} className="bg-[#FEF9C3] text-yellow-900/50"><SiAmazon /></LogoItem>,
-          <LogoItem key={2} className="bg-[#FFEDD5] text-orange-900/50"><SiGoogle /></LogoItem>,
-          <LogoItem key={3} className="bg-[#DCFCE7] text-green-900/50"><SiMeta /></LogoItem>,
-          <LogoItem key={4} className="bg-[#DBEAFE] text-blue-900/50"><SiGithub /></LogoItem>,
-          <LogoItem key={5} className="bg-[#F3E8FF] text-purple-900/50"><SiTwitch /></LogoItem>,
-        ]}
-      />
+      <LogoRolodex items={items} />
     </div>
   );
 };

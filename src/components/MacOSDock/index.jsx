@@ -3,9 +3,13 @@ import { X, Minus, Square, RefreshCw, Lock } from 'lucide-react';
 import Button3D from '../ui/button-3d';
 import WindowContent from './WindowContent';
 import DockBar from './DockBar';
+import { _updateUser } from '@/network/post-request';
+import { useGlobalContext } from '@/context/globalContext';
 
 
 const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetails, edit = false, onEditBio, onEditHome, onEditContact, onEditWorkExperience, onAddWorkExperience }) => {
+  const { setUserDetails, updateCache } = useGlobalContext();
+
   // ── Magnification ────────────────────────────────────────────────────────────
   const [mouseX, setMouseX] = useState(null);
   const [currentScales, setCurrentScales] = useState(apps.map(() => 1));
@@ -128,28 +132,17 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
   const dragOffset = useRef({ x: 0, y: 0 });
 
   // ── Projects ─────────────────────────────────────────────────────────────────
-  const userProjects = userDetails?.projects?.slice(0, 5) || [];
-  const [projects, setProjects] = useState(
-    userProjects.length > 0
-      ? userProjects.map((p, i) => ({
-        id: `proj${i}`,
-        name: p.title || `Project ${i + 1}`,
-        icon: p.thumbnail?.url || '📂',
-        category: p.category || 'Design',
-        date: '',
-        slug: p.slug || p._id || '',
-      }))
-      : [
-        { id: 'proj1', name: 'Project 1', icon: '🧠', category: 'Design', date: '', slug: '' },
-        { id: 'proj2', name: 'Project 2', icon: '⚡', category: 'Dev', date: '', slug: '' },
-        { id: 'proj3', name: 'Project 3', icon: '🎨', category: 'Design', date: '', slug: '' },
-      ]
-  );
+  const rawProjects = userDetails?.projects || [];
+  const [orderedProjects, setOrderedProjects] = useState(rawProjects);
   const [draggedProjectIndex, setDraggedProjectIndex] = useState(null);
+
+  // Keep orderedProjects in sync when userDetails changes externally
+  useEffect(() => {
+    setOrderedProjects(userDetails?.projects || []);
+  }, [userDetails?.projects]);
 
   const handleDragStart = (e, index) => {
     setDraggedProjectIndex(index);
-    e.dataTransfer.setData('text/plain', index.toString());
     e.dataTransfer.effectAllowed = 'move';
     e.currentTarget.style.opacity = '0.5';
   };
@@ -161,21 +154,30 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
     if (draggedProjectIndex !== null && draggedProjectIndex !== index) {
-      const newProjects = [...projects];
-      const dragged = newProjects[draggedProjectIndex];
-      newProjects.splice(draggedProjectIndex, 1);
-      newProjects.splice(index, 0, dragged);
-      setProjects(newProjects);
+      setOrderedProjects((prev) => {
+        const next = [...prev];
+        const [moved] = next.splice(draggedProjectIndex, 1);
+        next.splice(index, 0, moved);
+        return next;
+      });
       setDraggedProjectIndex(index);
     }
   };
-  const handleDrop = (e) => { e.preventDefault(); setDraggedProjectIndex(null); };
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setDraggedProjectIndex(null);
+    // Persist new order to the backend
+    setUserDetails((prev) => ({ ...prev, projects: orderedProjects }));
+    _updateUser({ projects: orderedProjects }).then((res) =>
+      updateCache('userDetails', res?.data?.user)
+    );
+  };
 
   // ── Browser windows ──────────────────────────────────────────────────────────
   const handleOpenBrowser = useCallback((project) => {
     const browserId = `browser-${project.id}-${Date.now()}`;
     const offset = (openWindows.length + browserWindows.length) * 20;
-    setBrowserWindows(prev => [...prev, { ...project, browserId }]);
+    setBrowserWindows(prev => [...prev, { ...project, browserId, slug: project.slug }]);
     setWindowPositions(prev => ({ ...prev, [browserId]: { x: window.innerWidth / 2 + offset, y: window.innerHeight * 0.45 + offset } }));
     setActiveWindowId(browserId);
   }, [openWindows.length, browserWindows.length]);
@@ -470,7 +472,7 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
                       appId={app.id}
                       userDetails={userDetails}
                       isMobile={isMobile}
-                      projects={projects}
+                      projects={orderedProjects}
                       draggedProjectIndex={draggedProjectIndex}
                       onDragStart={handleDragStart}
                       onDragEnd={handleDragEnd}
@@ -601,7 +603,7 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
                     <div className="w-3 h-3 rounded-full bg-[#28c940] border border-[#1aab29]" />
                   </div>
                   <div className="text-[12px] font-medium text-[#444] flex items-center gap-1 ml-2">
-                    <span className="opacity-70">🌐</span><span>{browser.title}</span>
+                    <span className="opacity-70">🌐</span><span>{browser.name}</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -611,13 +613,13 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
               <div className="h-10 bg-[#f6f6f6] border-b border-[#d1d1d1] flex items-center px-3 gap-3">
                 <div className="flex-1 flex items-center bg-[#e3e3e3]/50 border border-[#c8c8c8] rounded-md h-7 px-3 shadow-inner">
                   <Lock size={10} className="text-[#666] mr-2" />
-                  <span className="text-[11px] text-[#444] truncate">{browser.title?.toLowerCase()?.replace(/\s+/g, '-')}.com</span>
+                  <span className="text-[11px] text-[#444] truncate">designfolio.me/projects/{browser.slug}</span>
                 </div>
               </div>
               <div className="flex-1 bg-white overflow-auto flex flex-col items-center justify-center text-center p-8">
-                <div className="text-8xl mb-8 opacity-20 grayscale">{browser.image}</div>
-                <h1 className="text-2xl font-semibold text-gray-800">{browser.title}</h1>
-                <p className="text-gray-500 leading-relaxed mt-4">Case study preview for {browser.title}</p>
+                <div className="text-8xl mb-8 opacity-20 grayscale">{browser.icon}</div>
+                <h1 className="text-2xl font-semibold text-gray-800">{browser.name}</h1>
+                <p className="text-gray-500 leading-relaxed mt-4">Case study preview for {browser.name}</p>
               </div>
             </div>
           );

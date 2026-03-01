@@ -1,5 +1,7 @@
 import React from 'react';
+import { Info } from 'lucide-react';
 import { AnimatedFolder } from '../ui/3d-folder';
+import { Alert } from '../ui/alert';
 
 const FAVORITES = [
   { name: 'AirDrop', icon: '📡' },
@@ -20,6 +22,7 @@ const WorksWindow = ({
   onDragOver,
   onDrop,
   onProjectClick,
+  edit,
 }) => (
   <div className="flex h-full bg-[#faf9f6]">
     {/* Finder Sidebar */}
@@ -71,31 +74,38 @@ const WorksWindow = ({
       </div>
 
       <div className="flex-1 p-8 overflow-y-auto">
+        {edit && (
+          <Alert className="max-w-4xl mx-auto mb-6 bg-blue-50/50 border-blue-200/50 text-blue-700 py-2 shadow-sm">
+            <Info size={16} className="text-blue-500" />
+            <span className="text-xs font-medium">Tip: You can re-arrange projects by dragging them into your preferred order.</span>
+          </Alert>
+        )}
         <div className={`grid ${isMobile ? 'grid-cols-2' : 'grid-cols-3'} gap-x-6 gap-y-10 max-w-4xl mx-auto`}>
-          {projects.map((proj, index) => (
-            <div
-              key={proj.id}
-              className={`transform scale-110 origin-center cursor-move transition-all duration-500 ease-in-out ${draggedProjectIndex === index ? 'opacity-50 scale-100 z-50' : 'opacity-100'
-                }`}
-              draggable
-              onDragStart={(e) => onDragStart(e, index)}
-              onDragEnd={onDragEnd}
-              onDragOver={(e) => onDragOver(e, index)}
-              onDrop={onDrop}
-            >
-              <AnimatedFolder
-                title={proj.name}
-                projects={[
-                  { id: `${proj.id}-1`, title: proj.name, image: proj.icon },
-                  { id: `${proj.id}-2`, title: 'Documentation', image: '📄' },
-                  { id: `${proj.id}-3`, title: 'Assets', image: '🎨' },
-                ]}
-                onProjectClick={(project) =>
-                  onProjectClick({ ...project, title: proj.name, image: proj.icon, slug: proj.slug })
-                }
-              />
-            </div>
-          ))}
+          {projects.map((proj, index) => {
+            const id = proj._id || proj.id;
+            const title = proj.title || proj.name || `Project ${index + 1}`;
+            const thumbnail = proj.thumbnail?.url || proj.icon;
+            const slug = proj.slug || proj._id || proj.id;
+            return (
+              <div
+                key={id}
+                className={`transform scale-110 origin-center transition-all duration-500 ease-in-out ${edit ? 'cursor-move' : 'cursor-pointer'} ${draggedProjectIndex === index ? 'opacity-50 scale-100 z-50' : 'opacity-100'}`}
+                draggable={edit}
+                onDragStart={edit ? (e) => onDragStart(e, index) : undefined}
+                onDragEnd={edit ? onDragEnd : undefined}
+                onDragOver={edit ? (e) => onDragOver(e, index) : undefined}
+                onDrop={edit ? onDrop : undefined}
+              >
+                <AnimatedFolder
+                  title={title}
+                  projects={[{ id, title, image: thumbnail }]}
+                  onProjectClick={() =>
+                    onProjectClick({ id, title, image: thumbnail, slug })
+                  }
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

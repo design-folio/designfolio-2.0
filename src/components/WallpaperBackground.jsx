@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 export default function WallpaperBackground({
     wallpaperUrl,
@@ -13,14 +13,14 @@ export default function WallpaperBackground({
     const previousWallpaperUrlRef = useRef(null); // Track actual previous URL
 
     // Initialize ref on mount with current wallpaper
-    useLayoutEffect(() => {
+    useEffect(() => {
         if (wallpaperUrl && !previousWallpaperUrlRef.current) {
             previousWallpaperUrlRef.current = wallpaperUrl;
         }
     }, []);
 
     // Track wallpaper changes for smooth transitions
-    useLayoutEffect(() => {
+    useEffect(() => {
         // Capture the previous URL BEFORE checking for changes
         const currentPreviousUrl = previousWallpaperUrlRef.current;
 

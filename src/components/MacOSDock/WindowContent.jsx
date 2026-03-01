@@ -27,15 +27,17 @@ const WindowContent = ({
 }) => {
   const fullName = [userDetails?.firstName, userDetails?.lastName].filter(Boolean).join(' ') || 'Portfolio';
   const workExperiences = userDetails?.experiences || [];
+  const rawContactEmail = userDetails?.contact_email;
+  const contactEmail = typeof rawContactEmail === 'string' ? rawContactEmail.trim() : '';
   const contactInfo = {
-    email: userDetails?.socials?.email || 'hello@example.com',
-    github: userDetails?.socials?.github || '',
+    contact_email: contactEmail ? rawContactEmail : (userDetails?.email || ''),
+    phone: userDetails?.phone || '',
+    blogs: userDetails?.portfolios?.medium || '',
     linkedin: userDetails?.socials?.linkedin || '',
     twitter: userDetails?.socials?.twitter || '',
-    dribbble: userDetails?.socials?.dribbble || '',
-    behance: userDetails?.socials?.behance || '',
+    instagram: userDetails?.socials?.instagram || '',
+    dribbble: userDetails?.portfolios?.dribbble || '',
   };
-  console.log(contactInfo)
   switch (appId) {
     case 'works':
       return (
@@ -49,6 +51,7 @@ const WindowContent = ({
           onDragOver={onDragOver}
           onDrop={onDrop}
           onProjectClick={onProjectClick}
+          edit={edit}
         />
       );
     case 'work_experience':

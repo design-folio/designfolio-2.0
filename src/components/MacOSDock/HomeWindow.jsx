@@ -10,7 +10,7 @@ const HomeWindow = ({ userDetails, fullName, onViewProjects }) => {
   const textControls = useAnimation();
   const buttonControls = useAnimation();
 
-  const headline = `${userDetails?.introductionName || "Hey, I'm"} ${fullName}`;
+  const headline = userDetails?.introduction ? userDetails?.introduction : `${"Hey, I'm"} ${fullName}`;
 
   useEffect(() => {
     textControls.start(i => ({

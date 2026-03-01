@@ -150,8 +150,8 @@ export default function Projects({
     const project = userDetails.projects.find((p) => p._id === projectId);
     const visibleCount = (userDetails.projects || []).filter((p) => !p.hidden).length;
     const isUnhiding = project?.hidden === true;
-    // Temporarily disabled: free user 2-project limit
-    if (false && !userDetails?.pro && isUnhiding && visibleCount >= 2) {
+
+    if (!userDetails?.pro && isUnhiding && visibleCount >= 2) {
       setUpgradeModalUnhideProject({ projectId, title: project?.title || "Project" });
       setShowUpgradeModal(true);
       return;

@@ -27,6 +27,7 @@ import AddAbout from "@/components/addAbout";
 import Builder2 from "@/components/Builder2";
 import Minimal from "@/components/comp/Minimal";
 import Portfolio from "@/components/comp/Portfolio";
+import MacOSTemplate from "@/components/comp/MacOSTemplate";
 import ProWarning from "@/components/proWarning";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -205,6 +206,8 @@ export default function Index() {
         return <Minimal userDetails={userDetails} edit />;
       case 3:
         return <Portfolio userDetails={userDetails} edit />;
+      case 4:
+        return <MacOSTemplate userDetails={userDetails} edit />;
 
       default:
         return <Builder1 />;
@@ -258,7 +261,7 @@ export default function Index() {
       <main className={cn(
         "min-h-screen", hasNoWallpaper(wallpaper) && "bg-df-bg-color")}>
         <div
-          className={` mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0 ${userDetails?.template != 3 && "max-w-[848px]"
+          className={` mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0 ${userDetails?.template != 3 && userDetails?.template != 4 && "max-w-[848px]"
             }`}
         >
           {userDetails && !userDetails?.pro && <ProWarning />}

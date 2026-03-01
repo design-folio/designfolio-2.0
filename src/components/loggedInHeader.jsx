@@ -160,6 +160,12 @@ const templates = [
     item: 'Pristine',
     isNew: true,
   },
+  {
+    id: 5,
+    value: 'macos',
+    item: 'MacOS',
+    isNew: true,
+  },
 ];
 
 /* Wallpapers definition moved inside component to access theme */
@@ -474,6 +480,8 @@ export default function LoggedInHeader({
       } else {
         return '/assets/png/pristine-dark.png';
       }
+    } else if (template == 'macos') {
+      return '/assets/png/macos-theme.png';
     }
   };
 

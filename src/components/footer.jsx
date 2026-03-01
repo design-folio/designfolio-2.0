@@ -34,9 +34,9 @@ export default function Footer({ dfToken, innerClass = "", className = "" }) {
                                 className="leading-tight text-center text-balance"
                                 data-testid="text-footer-headline"
                             >
-                                It was supposed to take a weekend,
+                                Yo. I'm Shai
                                 <br />
-                                not a quarter.
+                                (I built Designfolio)
                             </Text>
                             <div className="pt-4">
                                 <img

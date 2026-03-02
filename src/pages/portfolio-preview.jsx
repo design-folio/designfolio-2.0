@@ -20,19 +20,23 @@ export default function Index() {
     projectRef,
     template,
     setWallpaper,
+    setWallpaperEffects,
     wallpaperUrl,
     wallpaperEffects,
   } = useGlobalContext();
   const router = useRouter();
 
-  // Restore wallpaper from userDetails when component mounts
+  // Restore wallpaper and effects from userDetails
   useEffect(() => {
     if (userDetails?.wallpaper !== undefined) {
       const wp = userDetails.wallpaper;
       const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
       setWallpaper(wpValue !== undefined ? wpValue : 0);
+      if (wp && typeof wp === 'object' && wp.effects) {
+        setWallpaperEffects(wp.effects);
+      }
     }
-  }, [userDetails?.wallpaper, setWallpaper]);
+  }, [userDetails?.wallpaper, setWallpaper, setWallpaperEffects]);
 
   const renderTemplate = () => {
     switch (template) {
@@ -113,7 +117,7 @@ export default function Index() {
       case 4:
         return (
           <div>
-            <MacOSTemplate userDetails={userDetails} edit={false} />
+            <MacOSTemplate userDetails={userDetails} edit={false} preview />
             {!userDetails?.pro && (
               <div
                 className={`text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] xl:block cursor-pointer mb-[120px] lg:m-0`}

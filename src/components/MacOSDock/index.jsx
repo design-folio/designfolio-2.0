@@ -1,14 +1,17 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { X, Minus, Square, RefreshCw, Lock } from 'lucide-react';
+import { createPortal } from 'react-dom';
+import { X, Minus, Square, RefreshCw, ChevronDown } from 'lucide-react';
 import Button3D from '../ui/button-3d';
 import WindowContent from './WindowContent';
 import DockBar from './DockBar';
 import { _updateUser } from '@/network/post-request';
 import { useGlobalContext } from '@/context/globalContext';
+import { useRouter } from 'next/router';
 
 
-const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetails, edit = false, onEditBio, onEditHome, onEditContact, onEditWorkExperience, onAddWorkExperience }) => {
+const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetails, edit = false, preview = false, onEditBio, onEditHome, onEditContact, onEditWorkExperience, onAddWorkExperience, onEditTools, onEditSkills }) => {
   const { setUserDetails, updateCache } = useGlobalContext();
+  const router = useRouter();
 
   // ── Magnification ────────────────────────────────────────────────────────────
   const [mouseX, setMouseX] = useState(null);
@@ -113,21 +116,25 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
   };
 
   // ── Window state ─────────────────────────────────────────────────────────────
-  const [openWindows, setOpenWindows] = useState(apps.slice(0, 1).map(a => a.id));
+  // Start with no open windows — opened after mount so window dimensions are available
+  const [openWindows, setOpenWindows] = useState([]);
   const [activeWindowId, setActiveWindowId] = useState(apps[0]?.id || null);
   const [minimizedWindows, setMinimizedWindows] = useState([]);
   const [maximizedWindows, setMaximizedWindows] = useState([]);
   const [animatingWindow, setAnimatingWindow] = useState(null);
-  const [browserWindows, setBrowserWindows] = useState([]);
   const [pdfWindows, setPdfWindows] = useState([]);
   const [animatingPdf, setAnimatingPdf] = useState(null);
-  const [windowPositions, setWindowPositions] = useState(() => {
-    const initialPositions = {};
-    if (typeof window !== 'undefined' && apps.length > 0) {
-      initialPositions[apps[0].id] = { x: window.innerWidth / 2, y: window.innerHeight * 0.45 };
+  const [windowPositions, setWindowPositions] = useState({});
+
+  // After mount, set the initial window position and open the first window
+  useEffect(() => {
+    if (apps.length > 0) {
+      const firstId = apps[0].id;
+      setWindowPositions({ [firstId]: { x: window.innerWidth / 2, y: window.innerHeight * 0.45 } });
+      setOpenWindows([firstId]);
     }
-    return initialPositions;
-  });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const [isDragging, setIsDragging] = useState(null);
   const dragOffset = useRef({ x: 0, y: 0 });
 
@@ -135,6 +142,9 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
   const rawProjects = userDetails?.projects || [];
   const [orderedProjects, setOrderedProjects] = useState(rawProjects);
   const [draggedProjectIndex, setDraggedProjectIndex] = useState(null);
+  // Ref keeps the current dragged index synchronously accessible across
+  // drag events without stale-closure issues.
+  const draggedProjectIndexRef = useRef(null);
 
   // Keep orderedProjects in sync when userDetails changes externally
   useEffect(() => {
@@ -142,61 +152,80 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
   }, [userDetails?.projects]);
 
   const handleDragStart = (e, index) => {
+    draggedProjectIndexRef.current = index;
     setDraggedProjectIndex(index);
     e.dataTransfer.effectAllowed = 'move';
-    e.currentTarget.style.opacity = '0.5';
   };
-  const handleDragEnd = (e) => {
+  const handleDragEnd = () => {
+    draggedProjectIndexRef.current = null;
     setDraggedProjectIndex(null);
-    e.currentTarget.style.opacity = '1';
   };
-  const handleDragOver = (e, index) => {
+  const handleDragOver = (e, targetIndex) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
-    if (draggedProjectIndex !== null && draggedProjectIndex !== index) {
-      setOrderedProjects((prev) => {
-        const next = [...prev];
-        const [moved] = next.splice(draggedProjectIndex, 1);
-        next.splice(index, 0, moved);
-        return next;
-      });
-      setDraggedProjectIndex(index);
-    }
+    const fromIndex = draggedProjectIndexRef.current;
+    if (fromIndex === null || fromIndex === targetIndex) return;
+    setOrderedProjects((prev) => {
+      const next = [...prev];
+      const [moved] = next.splice(fromIndex, 1);
+      next.splice(targetIndex, 0, moved);
+      return next;
+    });
+    draggedProjectIndexRef.current = targetIndex;
+    setDraggedProjectIndex(targetIndex);
   };
   const handleDrop = (e) => {
     e.preventDefault();
+    draggedProjectIndexRef.current = null;
     setDraggedProjectIndex(null);
-    // Persist new order to the backend
-    setUserDetails((prev) => ({ ...prev, projects: orderedProjects }));
-    _updateUser({ projects: orderedProjects }).then((res) =>
-      updateCache('userDetails', res?.data?.user)
-    );
+    // Use functional updater so we always persist the latest ordered array,
+    // not a potentially stale closure value.
+    setOrderedProjects((prev) => {
+      const sortedProjects = [...prev];
+
+      // Optimistically update global userDetails so all templates stay in sync
+      setUserDetails((u) => ({ ...u, projects: sortedProjects }));
+
+      const payload = { projects: sortedProjects };
+
+      _updateUser(payload)
+        .then((res) => {
+          if (res?.data?.user?.projects) {
+            // Only update the projects array order in cache, mirroring Builder2/Projects
+            updateCache('userDetails', { projects: sortedProjects });
+          }
+        })
+        .catch((err) => {
+          console.error('Error updating project order (macOS dock):', err);
+        });
+
+      return sortedProjects;
+    });
   };
 
-  // ── Browser windows ──────────────────────────────────────────────────────────
-  const handleOpenBrowser = useCallback((project) => {
-    const browserId = `browser-${project.id}-${Date.now()}`;
-    const offset = (openWindows.length + browserWindows.length) * 20;
-    setBrowserWindows(prev => [...prev, { ...project, browserId, slug: project.slug }]);
-    setWindowPositions(prev => ({ ...prev, [browserId]: { x: window.innerWidth / 2 + offset, y: window.innerHeight * 0.45 + offset } }));
-    setActiveWindowId(browserId);
-  }, [openWindows.length, browserWindows.length]);
-
-  const closeBrowser = (browserId) => {
-    setBrowserWindows(prev => prev.filter(b => b.browserId !== browserId));
-    if (activeWindowId === browserId) setActiveWindowId(null);
-  };
+  // ── Project navigation ────────────────────────────────────────────────────────
+  const handleOpenProject = useCallback((project) => {
+    const id = project._id || project.id;
+    if (!id) return;
+    if (edit) {
+      router.push(`/project/${id}/editor`);
+    } else if (preview) {
+      router.push(`/project/${id}/preview`);
+    } else {
+      router.push(`/project/${id}`);
+    }
+  }, [edit, preview, router]);
 
   // ── PDF windows ──────────────────────────────────────────────────────────────
   const handleOpenPdf = useCallback((title) => {
     const pdfId = `pdf-${Date.now()}`;
-    const offset = (openWindows.length + browserWindows.length + pdfWindows.length) * 20;
+    const offset = (openWindows.length + pdfWindows.length) * 20;
     setPdfWindows(prev => [...prev, { id: pdfId, title }]);
     setAnimatingPdf({ id: pdfId, type: 'open' });
     setWindowPositions(prev => ({ ...prev, [pdfId]: { x: window.innerWidth / 2 + offset, y: window.innerHeight * 0.45 + offset } }));
     setActiveWindowId(pdfId);
     setTimeout(() => setAnimatingPdf(null), 500);
-  }, [openWindows.length, browserWindows.length, pdfWindows.length]);
+  }, [openWindows.length, pdfWindows.length]);
 
   const closePdf = (pdfId) => {
     setAnimatingPdf({ id: pdfId, type: 'minimize' });
@@ -316,6 +345,22 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
   };
   const fullName = [userDetails?.firstName, userDetails?.lastName].filter(Boolean).join(' ') || 'Portfolio';
 
+  const [aboutEditMenuOpen, setAboutEditMenuOpen] = useState(false);
+  const [aboutDropdownRect, setAboutDropdownRect] = useState(null);
+  const aboutEditTriggerRef = useRef(null);
+
+  // Close About dropdown on outside click
+  useEffect(() => {
+    if (!aboutEditMenuOpen) return;
+    const handleClick = (e) => {
+      const menu = document.getElementById('about-edit-dropdown');
+      if (menu?.contains(e.target) || aboutEditTriggerRef.current?.contains(e.target)) return;
+      setAboutEditMenuOpen(false);
+      setAboutDropdownRect(null);
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [aboutEditMenuOpen]);
 
   return (
     <div className="flex flex-col items-center w-full h-full relative pointer-events-none">
@@ -330,7 +375,7 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
 
           if (!isOpen || (isMinimized && !isAnimating)) return null;
 
-          const pos = windowPositions[app.id] || { x: 0, y: 0 };
+          const pos = windowPositions[app.id] || { x: window.innerWidth / 2, y: window.innerHeight * 0.45 };
           const isActive = activeWindowId === app.id;
 
           let animationStyles = {};
@@ -442,13 +487,87 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
                     )}
                   </div>
                   {edit && app.id === 'about' && (
-                    <Button3D onClick={onEditBio}>EDIT</Button3D>
+                    <div className="relative">
+                      <button
+                        ref={aboutEditTriggerRef}
+                        type="button"
+                        className="focus:outline-none"
+                        onClick={() => {
+                          if (aboutEditMenuOpen) {
+                            setAboutEditMenuOpen(false);
+                            setAboutDropdownRect(null);
+                          } else {
+                            const rect = aboutEditTriggerRef.current?.getBoundingClientRect();
+                            if (rect) {
+                              setAboutDropdownRect({ top: rect.bottom + 6, left: rect.right - 160 });
+                              setAboutEditMenuOpen(true);
+                            }
+                          }
+                        }}
+                      >
+                        <Button3D>
+                          <span className="flex items-center gap-1">
+                            EDIT
+                            <ChevronDown
+                              className={`w-3 h-3 transition-transform ${aboutEditMenuOpen ? 'rotate-180' : ''}`}
+                            />
+                          </span>
+                        </Button3D>
+                      </button>
+                      {aboutEditMenuOpen && aboutDropdownRect && typeof document !== 'undefined' &&
+                        createPortal(
+                          <div
+                            id="about-edit-dropdown"
+                            className="fixed w-40 bg-white rounded-md shadow-lg border border-black/5 text-xs text-[#444]"
+                            style={{
+                              top: aboutDropdownRect.top,
+                              left: aboutDropdownRect.left,
+                              zIndex: 9999,
+                            }}
+                          >
+                            <button
+                              className="w-full text-left px-3 py-2 hover:bg-[#f5f3ef] rounded-t-md"
+                              onClick={() => {
+                                setAboutEditMenuOpen(false);
+                                setAboutDropdownRect(null);
+                                onEditBio?.();
+                              }}
+                            >
+                              Edit about
+                            </button>
+                            <button
+                              className="w-full text-left px-3 py-2 hover:bg-[#f5f3ef]"
+                              onClick={() => {
+                                setAboutEditMenuOpen(false);
+                                setAboutDropdownRect(null);
+                                onEditSkills?.();
+                              }}
+                            >
+                              Edit skills
+                            </button>
+                            <button
+                              className="w-full text-left px-3 py-2 hover:bg-[#f5f3ef] rounded-b-md"
+                              onClick={() => {
+                                setAboutEditMenuOpen(false);
+                                setAboutDropdownRect(null);
+                                onEditTools?.();
+                              }}
+                            >
+                              Edit tools
+                            </button>
+                          </div>,
+                          document.body
+                        )}
+                    </div>
                   )}
                   {edit && app.id === 'home' && (
                     <Button3D onClick={onEditHome}>EDIT</Button3D>
                   )}
                   {edit && app.id === 'contact' && (
                     <Button3D onClick={onEditContact}>EDIT</Button3D>
+                  )}
+                  {edit && app.id === 'tools' && (
+                    <Button3D onClick={onEditTools}>EDIT</Button3D>
                   )}
                   {edit && app.id === 'work_experience' && (
                     <div className="flex items-center gap-2">
@@ -478,11 +597,12 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
                       onDragEnd={handleDragEnd}
                       onDragOver={handleDragOver}
                       onDrop={handleDrop}
-                      onProjectClick={handleOpenBrowser}
+                      onProjectClick={handleOpenProject}
                       onOpenPdf={handleOpenPdf}
                       onViewProjects={() => handleAppClick('works', apps.findIndex(a => a.id === 'works'))}
                       edit={edit}
                       onEditContact={onEditContact}
+                      onEditTools={onEditTools}
                     />
                   </div>
                 </div>
@@ -493,7 +613,7 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
 
         {/* ── PDF Windows ── */}
         {pdfWindows.map((pdf) => {
-          const pos = windowPositions[pdf.id] || { x: 0, y: 0 };
+          const pos = windowPositions[pdf.id] || { x: window.innerWidth / 2, y: window.innerHeight * 0.45 };
           const isActive = activeWindowId === pdf.id;
           const isMinimized = minimizedWindows.includes(pdf.id);
           const isAnimating = animatingPdf?.id === pdf.id;
@@ -580,50 +700,6 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
           );
         })}
 
-        {/* ── Browser Windows ── */}
-        {browserWindows.map((browser) => {
-          const pos = windowPositions[browser.browserId] || { x: 0, y: 0 };
-          const isActive = activeWindowId === browser.browserId;
-          const isMinimized = minimizedWindows.includes(browser.browserId);
-          if (isMinimized) return null;
-
-          return (
-            <div
-              key={browser.browserId}
-              onMouseDown={() => setActiveWindowId(browser.browserId)}
-              onWheel={(e) => e.stopPropagation()}
-              className={`fixed z-40 overflow-hidden bg-[#faf9f6] border border-[#d1d1d1] shadow-2xl flex flex-col pointer-events-auto ${isMobile ? 'max-w-none rounded-xl' : 'w-[896px] h-[70vh] rounded-lg'} ${isActive ? 'shadow-2xl ring-1 ring-black/5' : 'shadow-lg opacity-95'}`}
-              style={isMobile ? { zIndex: isActive ? 60 : 40, left: '2.5%', top: '50px', width: '95vw', height: 'calc(100vh - 160px)', transform: 'none', borderRadius: '12px' } : { left: pos.x, top: pos.y, transform: 'translate(-50%, -50%)', zIndex: isActive ? 60 : 40 }}
-            >
-              <div onMouseDown={(e) => handleMouseDown(browser.browserId, e)} className="h-9 bg-[#f6f6f6] border-b border-[#d1d1d1] flex items-center px-3 justify-between select-none cursor-move active:cursor-grabbing rounded-t-lg">
-                <div className="flex gap-2 items-center">
-                  <div className="flex gap-1.5 px-1">
-                    <div className="w-3 h-3 rounded-full bg-[#ff5f57] border border-[#e0443e]" />
-                    <div className="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123]" />
-                    <div className="w-3 h-3 rounded-full bg-[#28c940] border border-[#1aab29]" />
-                  </div>
-                  <div className="text-[12px] font-medium text-[#444] flex items-center gap-1 ml-2">
-                    <span className="opacity-70">🌐</span><span>{browser.name}</span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="p-1 hover:bg-red-500 hover:text-white rounded text-[#666] transition-colors" onClick={() => closeBrowser(browser.browserId)}><X className="w-3.5 h-3.5" /></div>
-                </div>
-              </div>
-              <div className="h-10 bg-[#f6f6f6] border-b border-[#d1d1d1] flex items-center px-3 gap-3">
-                <div className="flex-1 flex items-center bg-[#e3e3e3]/50 border border-[#c8c8c8] rounded-md h-7 px-3 shadow-inner">
-                  <Lock size={10} className="text-[#666] mr-2" />
-                  <span className="text-[11px] text-[#444] truncate">designfolio.me/projects/{browser.slug}</span>
-                </div>
-              </div>
-              <div className="flex-1 bg-white overflow-auto flex flex-col items-center justify-center text-center p-8">
-                <div className="text-8xl mb-8 opacity-20 grayscale">{browser.icon}</div>
-                <h1 className="text-2xl font-semibold text-gray-800">{browser.name}</h1>
-                <p className="text-gray-500 leading-relaxed mt-4">Case study preview for {browser.name}</p>
-              </div>
-            </div>
-          );
-        })}
       </div>
 
       {/* ── Dock Bar ── */}

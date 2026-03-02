@@ -18,7 +18,7 @@ import { SortableWorkExperienceItem } from "@/components/MacOSDock/WorkExperienc
 
 
 
-const MacOSTemplate = ({ userDetails, edit = false, showHeaderInside = false }) => {
+const MacOSTemplate = ({ userDetails, edit = false, preview = false, showHeaderInside = false }) => {
   const { setCursor, openSidebar, openModal, setSelectedReview, setSelectedWork, setUserDetails, updateCache, activeSidebar } = useGlobalContext();
   const isMobile = useIsMobile();
 
@@ -179,9 +179,10 @@ const MacOSTemplate = ({ userDetails, edit = false, showHeaderInside = false }) 
               onEditClick={handleWidgetEditClick}
             />
             <div className="w-80 h-64 bg-transparent p-0 flex items-center justify-center">
-              <DivOrigami />
+              <DivOrigami userDetails={userDetails} />
             </div>
           </motion.div>
+
         </div>
 
         {/* Empty desktop surface — the windows float above via MacOSDock's fixed positioning */}
@@ -203,11 +204,14 @@ const MacOSTemplate = ({ userDetails, edit = false, showHeaderInside = false }) 
               onAppClick={handleAppClick}
               userDetails={userDetails}
               edit={edit}
+              preview={preview}
               onEditHome={() => openModal(modals.onboarding)}
               onEditBio={() => openSidebar(sidebars.about)}
               onEditContact={() => openSidebar(sidebars.footer)}
               onEditWorkExperience={() => setShowWorkSortModal(true)}
               onAddWorkExperience={handleAddWork}
+              onEditTools={() => openModal(modals.tools)}
+              onEditSkills={() => openModal(modals.onboarding)}
             />
           </div>
         </div>

@@ -14,8 +14,9 @@ const BG_COLORS = [
   "bg-[#FEF3C7]",
 ];
 
-export const DivOrigami = () => {
-  const { userDetails } = useGlobalContext();
+export const DivOrigami = ({ userDetails: userDetailsProp } = {}) => {
+  const { userDetails: contextUserDetails } = useGlobalContext();
+  const userDetails = userDetailsProp || contextUserDetails;
   const tools = userDetails?.tools || [];
 
   const items = tools.map((tool, i) => (

@@ -4,6 +4,7 @@ import WorksWindow from './WorksWindow';
 import WorkExperienceWindow from './WorkExperienceWindow';
 import AboutWindow from './AboutWindow';
 import ContactWindow from './ContactWindow';
+import ToolsWindow from './ToolsWindow';
 
 /**
  * Routes to the correct window content component based on appId.
@@ -24,6 +25,7 @@ const WindowContent = ({
   onViewProjects,
   edit,
   onEditContact,
+  onEditTools,
 }) => {
   const fullName = [userDetails?.firstName, userDetails?.lastName].filter(Boolean).join(' ') || 'Portfolio';
   const workExperiences = userDetails?.experiences || [];
@@ -60,6 +62,8 @@ const WindowContent = ({
       return <AboutWindow userDetails={userDetails} fullName={fullName} />;
     case 'contact':
       return <ContactWindow contactInfo={contactInfo} fullName={fullName} onOpenPdf={onOpenPdf} edit={edit} onEdit={onEditContact} />;
+    case 'tools':
+      return <ToolsWindow tools={userDetails?.tools} edit={edit} onEdit={onEditTools} />;
     default:
       return (
         <HomeWindow

@@ -35,6 +35,9 @@ if (!Table || !TableRow || !TableCell || !TableHeader) {
 
 const TiptapEditor = ({ projectDetails, userDetails }) => {
   const router = useRouter();
+  // Use the project's own _id when available (e.g. inside a floating ProjectWindow
+  // where router.query.id is not set).
+  const projectId = projectDetails?._id || router.query.id;
   const { setWordCount, setProjectValue } = useGlobalContext();
   const saveTimeoutRef = useRef(null);
   const lastSavedContentRef = useRef(null);
@@ -150,13 +153,13 @@ const TiptapEditor = ({ projectDetails, userDetails }) => {
         const html = editor.getHTML();
         const json = editor.getJSON();
 
-        _updateProject(router.query.id, {
+        _updateProject(projectId, {
           tiptapContent: json,
           contentVersion: 2,
         }).then(res => {
           if (userDetails) {
             const updatedProjects = userDetails?.projects?.map(item =>
-              item._id === router.query.id
+              item._id === projectId
                 ? { ...item, tiptapContent: json, contentVersion: 2 }
                 : item
             );
@@ -176,7 +179,7 @@ const TiptapEditor = ({ projectDetails, userDetails }) => {
             ) {
               lastSavedContentRef.current = json;
               phEvent(POSTHOG_EVENT_NAMES.PROJECT_EDITED, {
-                project_id: router.query.id,
+                project_id: projectId,
                 user_email: userDetails?.email,
                 editor_type: 'tiptap',
               });

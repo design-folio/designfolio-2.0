@@ -219,7 +219,11 @@ export default function LoggedInHeader({
 
   const { username, latestPublishDate, _id, email } = userDetails || {};
   const { isClient } = useClient();
-  const isMacOSTemplate = template == 4 && router.pathname === '/builder';
+  const isMacOSTemplate = template == 4 && (
+    router.pathname === '/builder' ||
+    router.pathname === '/project/[id]/editor' ||
+    router.pathname === '/project/[id]/preview'
+  );
 
   const wpPath = theme === 'dark' ? '/wallpaper/darkui' : '/wallpaper';
   const wallpapers = [

@@ -140,7 +140,9 @@ export const GlobalProvider = ({ children }) => {
         return;
       }
 
-      setTheme(userData?.theme == 1 ? "dark" : "light");
+      // Template 4 (macOS) is always light mode
+      const isTemplate4 = userData?.template === 4;
+      setTheme(isTemplate4 ? "light" : (userData?.theme == 1 ? "dark" : "light"));
       setCursor(userData?.cursor ? userData?.cursor : 0);
       setTemplate(userData?.template ? userData?.template : 0);
 
@@ -428,6 +430,10 @@ export const GlobalProvider = ({ children }) => {
   };
 
   const changeTemplate = (template) => {
+    // Template 4 (macOS) is always light mode
+    if (template === 4) {
+      setTheme("light");
+    }
     setIsLoadingTemplate(true);
     _updateUser({ template: template })
       .then((res) => {
@@ -444,6 +450,12 @@ export const GlobalProvider = ({ children }) => {
   };
 
   const changeTheme = (themeValue) => {
+    // Template 4 (macOS) is always light mode — ignore dark mode requests
+    if (userDetails?.template === 4) {
+      setTheme("light");
+      return;
+    }
+
     // Optimistic update: UI and cache first to prevent flicker and keep ThemePanel switch in sync
     setTheme(themeValue == 1 ? "dark" : "light");
     setUserDetails((prev) => ({ ...prev, theme: themeValue }));

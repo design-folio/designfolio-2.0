@@ -100,7 +100,8 @@ const WorksWindow = ({
                   title={title}
                   projects={[{ id, title, image: thumbnail }]}
                   onProjectClick={() =>
-                    onProjectClick({ id, title, image: thumbnail, slug })
+                   
+                    onProjectClick({ ...proj, id, title, image: thumbnail, slug })
                   }
                 />
               </div>

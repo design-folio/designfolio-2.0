@@ -1,15 +1,19 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { X, Minus, Square, RefreshCw, ChevronDown } from 'lucide-react';
+import { X, Minus, Square, RefreshCw, ChevronDown, ZoomIn, ZoomOut } from 'lucide-react';
 import Button3D from '../ui/button-3d';
 import WindowContent from './WindowContent';
 import DockBar from './DockBar';
 import { _updateUser } from '@/network/post-request';
 import { useGlobalContext } from '@/context/globalContext';
 import { useRouter } from 'next/router';
+import { clampWindowPosition, MOBILE_HEADER_SAFE_TOP_PX } from '@/lib/utils';
 
+const ZOOM_MIN = 50;
+const ZOOM_MAX = 150;
+const ZOOM_STEP = 10;
 
-const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetails, edit = false, preview = false, onEditBio, onEditHome, onEditContact, onEditWorkExperience, onAddWorkExperience, onEditTools, onEditSkills }) => {
+const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetails, edit = false, preview = false, onEditBio, onEditHome, onEditContact, onEditWorkExperience, onAddWorkExperience, onEditTools, onEditSkills, onEditResume, sidebarOffsetPx = 0, topOffsetPx = 0 }) => {
   const { setUserDetails, updateCache } = useGlobalContext();
   const router = useRouter();
 
@@ -126,15 +130,39 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
   const [animatingPdf, setAnimatingPdf] = useState(null);
   const [windowPositions, setWindowPositions] = useState({});
 
-  // After mount, set the initial window position and open the first window
+  // After mount, set the initial window position and open the first window (clamped so it doesn't sit in sidebar area)
   useEffect(() => {
     if (apps.length > 0) {
       const firstId = apps[0].id;
-      setWindowPositions({ [firstId]: { x: window.innerWidth / 2, y: window.innerHeight * 0.45 } });
+      const clamped = clampWindowPosition(window.innerWidth / 2, window.innerHeight * 0.45, sidebarOffsetPx, topOffsetPx);
+      setWindowPositions({ [firstId]: clamped });
       setOpenWindows([firstId]);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Re-clamp all window positions to current viewport/sidebar/top bounds (shared logic)
+  const reclampAllPositions = useCallback(() => {
+    setWindowPositions(prev => {
+      const next = {};
+      for (const [id, pos] of Object.entries(prev)) {
+        next[id] = clampWindowPosition(pos.x, pos.y, sidebarOffsetPx, topOffsetPx);
+      }
+      return next;
+    });
+  }, [sidebarOffsetPx, topOffsetPx]);
+
+  // When sidebar or top offset changes, re-clamp all window positions
+  useEffect(() => {
+    reclampAllPositions();
+  }, [sidebarOffsetPx, topOffsetPx, reclampAllPositions]);
+
+  // When browser window is resized, re-clamp so windows stay within the new viewport
+  useEffect(() => {
+    const handleResize = () => reclampAllPositions();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [reclampAllPositions]);
   const [isDragging, setIsDragging] = useState(null);
   const dragOffset = useRef({ x: 0, y: 0 });
 
@@ -222,10 +250,11 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
     const offset = (openWindows.length + pdfWindows.length) * 20;
     setPdfWindows(prev => [...prev, { id: pdfId, title }]);
     setAnimatingPdf({ id: pdfId, type: 'open' });
-    setWindowPositions(prev => ({ ...prev, [pdfId]: { x: window.innerWidth / 2 + offset, y: window.innerHeight * 0.45 + offset } }));
+    const clamped = clampWindowPosition(window.innerWidth / 2 + offset, window.innerHeight * 0.45 + offset, sidebarOffsetPx, topOffsetPx);
+    setWindowPositions(prev => ({ ...prev, [pdfId]: clamped }));
     setActiveWindowId(pdfId);
     setTimeout(() => setAnimatingPdf(null), 500);
-  }, [openWindows.length, pdfWindows.length]);
+  }, [openWindows.length, pdfWindows.length, sidebarOffsetPx]);
 
   const closePdf = (pdfId) => {
     setAnimatingPdf({ id: pdfId, type: 'minimize' });
@@ -260,7 +289,8 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
       setOpenWindows(prev => [...prev, appId]);
       if (!windowPositions[appId]) {
         const offset = openWindows.length * 20;
-        setWindowPositions(prev => ({ ...prev, [appId]: { x: window.innerWidth / 2 + offset, y: window.innerHeight * 0.45 + offset } }));
+        const clamped = clampWindowPosition(window.innerWidth / 2 + offset, window.innerHeight * 0.45 + offset, sidebarOffsetPx, topOffsetPx);
+        setWindowPositions(prev => ({ ...prev, [appId]: clamped }));
       }
       setTimeout(() => setAnimatingWindow(null), 500);
     }
@@ -308,9 +338,12 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
 
   const handleMouseMoveGlobal = useCallback((e) => {
     if (isDragging) {
-      setWindowPositions(prev => ({ ...prev, [isDragging]: { x: e.clientX - dragOffset.current.x, y: e.clientY - dragOffset.current.y } }));
+      const rawX = e.clientX - dragOffset.current.x;
+      const rawY = e.clientY - dragOffset.current.y;
+      const clamped = clampWindowPosition(rawX, rawY, sidebarOffsetPx, topOffsetPx);
+      setWindowPositions(prev => ({ ...prev, [isDragging]: clamped }));
     }
-  }, [isDragging]);
+  }, [isDragging, sidebarOffsetPx, topOffsetPx]);
 
   useEffect(() => {
     const handleMouseUpGlobal = () => setIsDragging(null);
@@ -348,6 +381,9 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
   const [aboutEditMenuOpen, setAboutEditMenuOpen] = useState(false);
   const [aboutDropdownRect, setAboutDropdownRect] = useState(null);
   const aboutEditTriggerRef = useRef(null);
+
+  // PDF (Resume) window zoom
+  const [pdfZoom, setPdfZoom] = useState(100);
 
   // Close About dropdown on outside click
   useEffect(() => {
@@ -402,10 +438,11 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
                 ...(isMaximized || isMobile
                   ? {
                     zIndex: isActive ? 50 : 40,
-                    left: isMobile ? '2.5%' : '0',
-                    top: isMobile ? '50px' : '40px',
-                    width: isMobile ? '95vw' : '100vw',
-                    height: isMobile ? 'calc(100vh - 160px)' : 'calc(100vh - 140px)',
+                    left: isMobile ? '2.5%' : 0,
+                    right: isMobile ? undefined : (sidebarOffsetPx > 0 ? `${sidebarOffsetPx}px` : undefined),
+                    top: isMobile ? `calc(${MOBILE_HEADER_SAFE_TOP_PX}px + env(safe-area-inset-top, 0px))` : `${topOffsetPx}px`,
+                    width: isMobile ? '95vw' : (sidebarOffsetPx > 0 ? `calc(100vw - ${sidebarOffsetPx}px)` : '100vw'),
+                    height: isMobile ? `calc(100vh - ${MOBILE_HEADER_SAFE_TOP_PX + 104}px - env(safe-area-inset-top, 0px))` : `calc(100vh - ${topOffsetPx}px - 80px)`,
                     transform: 'none',
                     borderRadius: isMobile ? '12px' : '0',
                   }
@@ -414,12 +451,24 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
                     top: pos.y,
                     transform: 'translate(-50%, -50%)',
                     zIndex: isActive ? 50 : 40,
+                    transition: isDragging === app.id ? undefined : 'left 0.25s ease-out, top 0.25s ease-out',
                   }),
                 ...animationStyles,
               }}
             >
               <style dangerouslySetInnerHTML={{
-                __html: `
+                __html: isMobile
+                  ? `
+                @keyframes macWindowOpen {
+                  0% { transform: translate(0, calc(100vh - ${MOBILE_HEADER_SAFE_TOP_PX + 74}px)) scale(0.1); opacity: 0; }
+                  100% { transform: translate(0, 0) scale(1); opacity: 1; }
+                }
+                @keyframes macWindowMinimize {
+                  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+                  100% { transform: translate(0, calc(100vh - ${MOBILE_HEADER_SAFE_TOP_PX + 74}px)) scale(0.1); opacity: 0; }
+                }
+              `
+                  : `
                 @keyframes macWindowOpen {
                   0% { transform: translate(calc(${currentPositions[index] || 0}px - ${pos.x}px), calc(100vh - ${pos.y}px)) scale(0.1); opacity: 0; }
                   100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
@@ -443,10 +492,16 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
                     <span className="opacity-50 text-[10px]">⌄</span>
                   </div>
                 </div>
-                <div className={`flex items-center gap-4 ${app.id === 'work_experience' ? 'text-[#aaa]' : 'text-[#666]'}`}>
-                  <Minus className="w-4 h-4 cursor-pointer hover:opacity-70" onClick={(e) => toggleMinimize(app.id, e)} />
-                  <Square className="w-3 h-3 cursor-pointer hover:opacity-70" onClick={(e) => toggleMaximize(app.id, e)} />
-                  <X className="w-4 h-4 cursor-pointer hover:opacity-70" onClick={() => closeWindow(app.id)} />
+                <div className={`flex items-center gap-1 ${app.id === 'work_experience' ? 'text-[#aaa]' : 'text-[#666]'}`}>
+                  <button type="button" className={`p-1 rounded transition-colors ${app.id === 'work_experience' ? 'hover:bg-white/10' : 'hover:bg-black/10'}`} onClick={(e) => toggleMinimize(app.id, e)} title="Minimize">
+                    <Minus className="w-4 h-4" />
+                  </button>
+                  <button type="button" className={`p-1 rounded transition-colors ${app.id === 'work_experience' ? 'hover:bg-white/10' : 'hover:bg-black/10'}`} onClick={(e) => toggleMaximize(app.id, e)} title="Maximize">
+                    <Square className="w-3 h-3" />
+                  </button>
+                  <button type="button" className={`p-1 rounded transition-colors ${app.id === 'work_experience' ? 'hover:bg-red-500/30 hover:text-red-400' : 'hover:bg-red-500/20 hover:text-red-600'}`} onClick={() => closeWindow(app.id)} title="Close">
+                    <X className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
 
@@ -632,11 +687,14 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
               onWheel={(e) => e.stopPropagation()}
               className={`fixed z-40 overflow-hidden bg-[#525659] border border-[#333] shadow-2xl flex flex-col pointer-events-auto ${isMobile ? 'max-w-none rounded-xl' : 'w-[800px] h-[85vh] rounded-lg'} ${isActive ? 'shadow-2xl ring-1 ring-black/5' : 'shadow-lg opacity-95'}`}
               style={{
-                ...(isMobile ? { zIndex: isActive ? 60 : 40, left: '2.5%', top: '50px', width: '95vw', height: 'calc(100vh - 160px)', transform: 'none', borderRadius: '12px' } : { left: pos.x, top: pos.y, transform: 'translate(-50%, -50%)', zIndex: isActive ? 60 : 40 }),
+                ...(isMobile ? { zIndex: isActive ? 60 : 40, left: '2.5%', top: `calc(${MOBILE_HEADER_SAFE_TOP_PX}px + env(safe-area-inset-top, 0px))`, width: '95vw', height: `calc(100vh - ${MOBILE_HEADER_SAFE_TOP_PX + 104}px - env(safe-area-inset-top, 0px))`, transform: 'none', borderRadius: '12px' } : { left: pos.x, top: pos.y, transform: 'translate(-50%, -50%)', zIndex: isActive ? 60 : 40 }),
                 ...animationStyles,
               }}
             >
-              <style dangerouslySetInnerHTML={{ __html: `@keyframes pdfWindowOpen { 0% { transform: translate(-50%, calc(100vh - ${pos.y}px)) scale(0.1); opacity: 0; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; } } @keyframes pdfWindowMinimize { 0% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 100% { transform: translate(-50%, calc(100vh - ${pos.y}px)) scale(0.1); opacity: 0; } }` }} />
+              <style dangerouslySetInnerHTML={{ __html: isMobile
+  ? `@keyframes pdfWindowOpen { 0% { transform: translate(0, calc(100vh - ${MOBILE_HEADER_SAFE_TOP_PX + 74}px)) scale(0.1); opacity: 0; } 100% { transform: translate(0, 0) scale(1); opacity: 1; } } @keyframes pdfWindowMinimize { 0% { transform: translate(0, 0) scale(1); opacity: 1; } 100% { transform: translate(0, calc(100vh - ${MOBILE_HEADER_SAFE_TOP_PX + 74}px)) scale(0.1); opacity: 0; } }`
+  : `@keyframes pdfWindowOpen { 0% { transform: translate(-50%, calc(100vh - ${pos.y}px)) scale(0.1); opacity: 0; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; } } @keyframes pdfWindowMinimize { 0% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 100% { transform: translate(-50%, calc(100vh - ${pos.y}px)) scale(0.1); opacity: 0; } }`
+}} />
               <div onMouseDown={(e) => handleMouseDown(pdf.id, e)} className="h-9 bg-[#323639] border-b border-[#1a1a1a] flex items-center px-3 justify-between select-none cursor-move active:cursor-grabbing rounded-t-lg">
                 <div className="flex gap-2 items-center">
 
@@ -644,56 +702,84 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
                     <span className="opacity-70">📄</span><span>{pdf.title}</span>
                   </div>
                 </div>
-                <div className="p-1 hover:bg-white/10 rounded text-[#ccc]" onClick={() => closePdf(pdf.id)}><X className="w-3.5 h-3.5" /></div>
+                <button type="button" className="p-1 rounded transition-colors hover:bg-red-500/30 hover:text-red-400 text-[#ccc]" onClick={() => closePdf(pdf.id)} title="Close">
+                  <X className="w-3.5 h-3.5" />
+                </button>
               </div>
-              <div className="h-12 bg-[#323639] border-b border-[#1a1a1a] flex items-center px-4 justify-between">
-                <div className="flex items-center gap-4 text-[#eee]">
-                  <div className="flex items-center gap-2 bg-[#202124] px-3 py-1 rounded border border-[#444] text-xs"><span>1 / 1</span></div>
+              <div className="h-12 bg-[#323639] border-b border-[#1a1a1a] flex items-center px-3 md:px-4 justify-between gap-2 flex-wrap sm:flex-nowrap">
+                <div className="flex items-center gap-2 md:gap-4 text-[#eee] shrink-0">
+                  <div className="flex items-center gap-2 bg-[#202124] px-2 md:px-3 py-1 rounded border border-[#444] text-xs"><span>1 / 1</span></div>
                   <div className="h-4 w-[1px] bg-[#444]" />
-                  <div className="flex items-center gap-3">
-                    <Minus size={14} className="cursor-pointer hover:text-white" />
-                    <span className="text-xs w-8 text-center">100%</span>
-                    <Square size={12} className="cursor-pointer hover:text-white" />
+                  <div className="flex items-center gap-1">
+                    <button type="button" className="p-1.5 rounded transition-colors hover:bg-white/10 text-[#eee] disabled:opacity-40 disabled:cursor-not-allowed" title="Zoom out" onClick={() => setPdfZoom(z => Math.max(ZOOM_MIN, z - ZOOM_STEP))} disabled={pdfZoom <= ZOOM_MIN}>
+                      <ZoomOut size={14} />
+                    </button>
+                    <span className="text-xs w-10 md:w-12 text-center tabular-nums">{pdfZoom}%</span>
+                    <button type="button" className="p-1.5 rounded transition-colors hover:bg-white/10 text-[#eee] disabled:opacity-40 disabled:cursor-not-allowed" title="Zoom in" onClick={() => setPdfZoom(z => Math.min(ZOOM_MAX, z + ZOOM_STEP))} disabled={pdfZoom >= ZOOM_MAX}>
+                      <ZoomIn size={14} />
+                    </button>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <button className="bg-[#007aff] text-white px-3 py-1 rounded text-xs font-medium hover:bg-[#0062cc]">Download</button>
+                <div className="flex items-center gap-2 shrink-0">
+                  {edit && <Button3D onClick={onEditResume}>EDIT</Button3D>}
+                  {userDetails?.resume?.url ? (
+                    <a href={userDetails.resume.url} target="_blank" rel="noreferrer" download>
+                      <Button3D>DOWNLOAD</Button3D>
+                    </a>
+                  ) : edit ? (
+                    <Button3D onClick={onEditResume}>ADD RESUME</Button3D>
+                  ) : null}
                 </div>
               </div>
-              <div className="flex-1 bg-[#525659] overflow-auto p-8 flex justify-center">
-                <div className="bg-white w-full max-w-[600px] shadow-2xl p-12 text-[#333] font-serif min-h-[842px]">
-                  <div className="border-b-2 border-black pb-4 mb-8">
-                    <h1 className="text-3xl font-bold uppercase tracking-tighter">{fullName}</h1>
-                    <p className="text-sm italic mt-1">{userDetails?.introduction || 'Portfolio'}</p>
-                    <div className="flex gap-4 text-[10px] mt-2 opacity-70">
-                      {contactInfo.email && <span>{contactInfo.email}</span>}
-                      {contactInfo.github && <><span>•</span><span>{contactInfo.github}</span></>}
-                    </div>
-                  </div>
-                  {(userDetails?.about?.description || (typeof userDetails?.about === 'string' && userDetails.about)) && (
-                    <section className="mb-8">
-                      <h2 className="text-sm font-bold uppercase border-b border-black/10 mb-3">Summary</h2>
-                      <p className="text-xs leading-relaxed">
-                        {userDetails.about?.description ?? userDetails.about}
-                      </p>
-                    </section>
-                  )}
-                  {workExperiences.length > 0 && (
-                    <section className="mb-8">
-                      <h2 className="text-sm font-bold uppercase border-b border-black/10 mb-3">Experience</h2>
-                      {workExperiences.slice(0, 3).map((exp, i) => (
-                        <div key={i} className="mb-4">
-                          <div className="flex justify-between items-baseline">
-                            <h3 className="text-xs font-bold">{exp.role || exp.position} @ {exp.company || exp.name}</h3>
-                            <span className="text-[10px] opacity-60">{exp.startDate || exp.duration}</span>
-                          </div>
+              <div className="flex-1 bg-[#525659] overflow-auto p-4 md:p-8 flex justify-center min-h-0">
+                <div className="origin-top transition-transform duration-150" style={{ transform: `scale(${pdfZoom / 100})` }}>
+                  {userDetails?.resume?.url ? (
+                    <iframe
+                      title="Resume"
+                      src={`https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(userDetails.resume.url)}#zoom=page-width&pagemode=none`}
+                      className="w-[min(90vw,800px)] h-[min(75vh,900px)] md:w-[800px] md:h-[85vh] rounded border-0 bg-[#525659]"
+                    />
+                  ) : (
+                    <div className="bg-white w-full max-w-[600px] shadow-2xl p-8 md:p-12 text-[#333] font-serif min-h-[600px] md:min-h-[842px]">
+                      {edit ? (
+                        <div className="flex flex-col items-center justify-center min-h-[400px] text-center px-4">
+                          <p className="text-sm text-[#666] mb-4">No resume uploaded yet.</p>
+                          <Button3D onClick={onEditResume}>ADD RESUME</Button3D>
                         </div>
-                      ))}
-                    </section>
+                      ) : (
+                        <>
+                          <div className="border-b-2 border-black pb-4 mb-8">
+                            <h1 className="text-2xl md:text-3xl font-bold uppercase tracking-tighter">{fullName}</h1>
+                            <p className="text-sm italic mt-1">{userDetails?.introduction || 'Portfolio'}</p>
+                            <div className="flex flex-wrap gap-x-4 gap-y-1 text-[10px] mt-2 opacity-70">
+                              {contactInfo.email && <span>{contactInfo.email}</span>}
+                              {contactInfo.github && <><span>•</span><span>{contactInfo.github}</span></>}
+                            </div>
+                          </div>
+                          {(userDetails?.about?.description || (typeof userDetails?.about === 'string' && userDetails.about)) && (
+                            <section className="mb-8">
+                              <h2 className="text-sm font-bold uppercase border-b border-black/10 mb-3">Summary</h2>
+                              <p className="text-xs leading-relaxed">{userDetails.about?.description ?? userDetails.about}</p>
+                            </section>
+                          )}
+                          {workExperiences.length > 0 && (
+                            <section className="mb-8">
+                              <h2 className="text-sm font-bold uppercase border-b border-black/10 mb-3">Experience</h2>
+                              {workExperiences.slice(0, 3).map((exp, i) => (
+                                <div key={i} className="mb-4">
+                                  <div className="flex flex-wrap justify-between items-baseline gap-1">
+                                    <h3 className="text-xs font-bold">{exp.role || exp.position} @ {exp.company || exp.name}</h3>
+                                    <span className="text-[10px] opacity-60">{exp.startDate || exp.duration}</span>
+                                  </div>
+                                </div>
+                              ))}
+                            </section>
+                          )}
+                          <div className="mt-12 pt-8 border-t border-black/5 text-center opacity-30 text-[8px]">Generated by Designfolio</div>
+                        </>
+                      )}
+                    </div>
                   )}
-                  <div className="mt-12 pt-8 border-t border-black/5 text-center opacity-30 text-[8px]">
-                    Generated by Designfolio
-                  </div>
                 </div>
               </div>
             </div>

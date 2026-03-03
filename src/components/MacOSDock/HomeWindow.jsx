@@ -30,10 +30,12 @@ const HomeWindow = ({ userDetails, fullName, onViewProjects }) => {
 
   return (
     <div
-      className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-[#1a0033]"
+      className="relative flex h-full w-full min-h-0 flex-col items-center justify-center overflow-hidden bg-[#1a0033]"
       style={{ fontFamily: "'Press Start 2P', system-ui" }}
     >
-      <PixelVoyagerCanvas />
+      <div className="absolute inset-0 z-0 w-full h-full">
+        <PixelVoyagerCanvas />
+      </div>
       <div className="relative z-10 text-center px-4">
         {userDetails?.avatar?.url && (
           <img

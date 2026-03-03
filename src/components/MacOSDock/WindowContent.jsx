@@ -61,7 +61,7 @@ const WindowContent = ({
     case 'about':
       return <AboutWindow userDetails={userDetails} fullName={fullName} />;
     case 'contact':
-      return <ContactWindow contactInfo={contactInfo} fullName={fullName} onOpenPdf={onOpenPdf} edit={edit} onEdit={onEditContact} />;
+      return <ContactWindow contactInfo={contactInfo} fullName={fullName} onOpenPdf={onOpenPdf} edit={edit} onEdit={onEditContact} hasResume={!!userDetails?.resume?.url} />;
     case 'tools':
       return <ToolsWindow tools={userDetails?.tools} edit={edit} onEdit={onEditTools} />;
     default:

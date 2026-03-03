@@ -158,15 +158,21 @@ export default function PixelVoyagerCanvas() {
             if (!mountRef.current) return;
             const w = mountRef.current.clientWidth;
             const h = mountRef.current.clientHeight;
+            if (w === 0 || h === 0) return;
             camera.aspect = w / h;
             camera.updateProjectionMatrix();
             renderer.setSize(w, h);
+            bloomPass.resolution.set(w, h);
             composer.setSize(w, h);
+            composer.setPixelRatio(renderer.getPixelRatio());
         };
         window.addEventListener('resize', handleResize);
+        const resizeObserver = new ResizeObserver(handleResize);
+        resizeObserver.observe(mountRef.current);
 
         return () => {
             cancelAnimationFrame(animationId);
+            resizeObserver.disconnect();
             window.removeEventListener('resize', handleResize);
             window.removeEventListener('mousemove', handleMouseMove);
             if (mountRef.current && renderer.domElement.parentNode === mountRef.current) {
@@ -176,5 +182,5 @@ export default function PixelVoyagerCanvas() {
         };
     }, []);
 
-    return <div ref={mountRef} className="absolute inset-0 z-0" />;
+    return <div ref={mountRef} className="absolute inset-0 z-0 w-full h-full min-w-0 min-h-0" />;
 };

@@ -257,7 +257,7 @@ export default function Index() {
 
   return (
     <>
-      <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
+      <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={userDetails?.template === 4 ? { ...(wallpaperEffects || {}), motion: false } : wallpaperEffects} />
       <main className={cn(
         "min-h-screen", hasNoWallpaper(wallpaper) && "bg-df-bg-color")}>
         <div

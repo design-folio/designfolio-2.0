@@ -167,7 +167,7 @@ const MacOSTemplate = ({ userDetails, edit = false, preview = false, showHeaderI
         <div
           className="fixed left-0 bottom-0 pointer-events-none z-10 overflow-hidden"
           style={{
-            top: `${macOSMenuBarTop + 28}px`,
+            top: `${macOSMenuBarTop}px`,
             right: sidebarShiftWidth,
             transition: sidebarTransition,
           }}
@@ -177,14 +177,14 @@ const MacOSTemplate = ({ userDetails, edit = false, preview = false, showHeaderI
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
-            className="absolute left-8 top-16 flex flex-col gap-6 pointer-events-auto"
+            className="absolute left-0 right-0 top-0 bottom-0 md:right-auto md:left-8 md:top-16 md:bottom-auto flex flex-col gap-6 pointer-events-auto items-center justify-center md:items-stretch md:justify-start min-w-0 max-w-full md:max-w-none px-4 md:px-0"
           >
             <TestimonialWidget
               reviews={userDetails?.reviews}
               edit={edit}
               onEditClick={handleWidgetEditClick}
             />
-            <div className="w-80 h-64 bg-transparent p-0 flex items-center justify-center">
+            <div className="w-80 bg-transparent p-0 flex items-center justify-center">
               <DivOrigami userDetails={userDetails} />
             </div>
           </motion.div>
@@ -211,6 +211,8 @@ const MacOSTemplate = ({ userDetails, edit = false, preview = false, showHeaderI
               userDetails={userDetails}
               edit={edit}
               preview={preview}
+              sidebarOffsetPx={parseInt(sidebarShiftWidth, 10) || 0}
+              topOffsetPx={desktopTopMargin}
               onEditHome={() => openModal(modals.onboarding)}
               onEditBio={() => openSidebar(sidebars.about)}
               onEditContact={() => openSidebar(sidebars.footer)}
@@ -218,6 +220,7 @@ const MacOSTemplate = ({ userDetails, edit = false, preview = false, showHeaderI
               onAddWorkExperience={handleAddWork}
               onEditTools={() => openModal(modals.tools)}
               onEditSkills={() => openModal(modals.onboarding)}
+              onEditResume={() => openModal(modals.resume)}
             />
           </div>
         </div>

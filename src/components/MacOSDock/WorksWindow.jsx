@@ -75,9 +75,9 @@ const WorksWindow = ({
 
       <div className="flex-1 p-8 overflow-y-auto">
         {edit && (
-          <Alert className="max-w-4xl mx-auto mb-6 bg-blue-50/50 border-blue-200/50 text-blue-700 py-2 shadow-sm">
-            <Info size={16} className="text-blue-500" />
-            <span className="text-xs font-medium">Tip: You can re-arrange projects by dragging them into your preferred order.</span>
+          <Alert className="max-w-4xl mx-auto mb-6 bg-blue-50/50 border-blue-200/50 text-blue-700 py-2 shadow-sm flex items-center gap-2 [&>svg]:static [&>svg]:!left-auto [&>svg]:!top-auto [&>svg~*]:!pl-0">
+            <Info size={14} className="text-blue-500 shrink-0" />
+            <span className="text-xs font-medium">You can re-arrange projects by dragging them into your preferred order.</span>
           </Alert>
         )}
         <div className={`grid ${isMobile ? 'grid-cols-2' : 'grid-cols-3'} gap-x-6 gap-y-10 max-w-4xl mx-auto`}>
@@ -100,7 +100,7 @@ const WorksWindow = ({
                   title={title}
                   projects={[{ id, title, image: thumbnail }]}
                   onProjectClick={() =>
-                   
+
                     onProjectClick({ ...proj, id, title, image: thumbnail, slug })
                   }
                 />

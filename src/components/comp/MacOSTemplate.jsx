@@ -26,6 +26,12 @@ const MacOSTemplate = ({ userDetails, edit = false, preview = false, showHeaderI
     setCursor(userDetails?.cursor ? userDetails.cursor : 0);
   }, []);
 
+  // Hide body scrollbar on MacOS desktop so the desktop doesn’t show unnecessary scroll
+  useEffect(() => {
+    document.body.classList.add("macos-desktop");
+    return () => document.body.classList.remove("macos-desktop");
+  }, []);
+
   const appName =
     [userDetails?.firstName, userDetails?.lastName].filter(Boolean).join(" ") + "'s Portfolio" ||
     "Portfolio";

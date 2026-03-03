@@ -328,8 +328,15 @@ html {
 }
 
 body {
-  overflow-y: scroll;
+  overflow-y: auto;
   min-height: 100vh;
+}
+
+/* MacOS desktop view: no body scrollbar; content is fixed within viewport */
+body.macos-desktop {
+  overflow: hidden !important;
+  height: 100vh;
+  max-height: 100vh;
 }
 
 *:focus {

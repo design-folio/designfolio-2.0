@@ -43,7 +43,7 @@ const HomeWindow = ({ userDetails, fullName, onViewProjects }) => {
           />
         )}
         <h1
-          className="text-2xl font-bold tracking-tighter text-white md:text-4xl"
+          className="text-2xl font-bold tracking-tighter text-white md:text-4xl px-4"
           style={{ textShadow: '2px 2px 0px #ff00ff' }}
         >
           {headline.split('').map((char, i) => (

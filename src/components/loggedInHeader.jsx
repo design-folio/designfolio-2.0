@@ -327,6 +327,19 @@ export default function LoggedInHeader({
         ></div>
       ),
     },
+    {
+      id: 8,
+      value: 8,
+      item: (
+        <div
+          className="w-full h-8 rounded"
+          style={{
+            backgroundImage: `url(${wpPath}/wall8.png)`,
+            backgroundSize: 'cover',
+          }}
+        ></div>
+      ),
+    },
   ];
 
   useEffect(() => {

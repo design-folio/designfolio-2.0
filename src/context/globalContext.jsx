@@ -435,11 +435,35 @@ export const GlobalProvider = ({ children }) => {
       setTheme("light");
     }
     setIsLoadingTemplate(true);
-    _updateUser({ template: template })
+
+    // When switching to Mac OS from another template, apply the Replit wallpaper (wall8)
+    const isSwitchingToMacOS = template === 4 && userDetails?.template !== 4;
+    const payload = { template };
+    if (isSwitchingToMacOS) {
+      const existingEffects = userDetails?.wallpaper?.effects;
+      const defaultEffects = {
+        blur: 0,
+        effectType: 'blur',
+        grainIntensity: 25,
+        motion: true
+      };
+      payload.wallpaper = {
+        value: 8,
+        effects: existingEffects || defaultEffects
+      };
+    }
+
+    _updateUser(payload)
       .then((res) => {
+        const updatedUser = res?.data?.user;
         setTemplate(template);
-        updateCache("userDetails", res?.data?.user);
-        setUserDetails(() => ({ ...userDetails, template: template }));
+        updateCache("userDetails", updatedUser);
+        setUserDetails((prev) => ({ ...prev, template, ...(updatedUser?.wallpaper && { wallpaper: updatedUser.wallpaper }) }));
+        if (isSwitchingToMacOS && updatedUser?.wallpaper) {
+          const wp = updatedUser.wallpaper;
+          const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
+          setWallpaper(wpValue !== undefined ? wpValue : 8);
+        }
       })
       .catch((error) => {
         console.error("Error changing template:", error);

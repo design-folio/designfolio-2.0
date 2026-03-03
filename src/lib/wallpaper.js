@@ -21,6 +21,8 @@ export const getWallpaperUrl = (value, theme = "light") => {
             return `${basePath}/wall6.png`;
         case 7:
             return `${basePath}/wall7.png`;
+        case 8:
+            return `${basePath}/wall8.png`;
         default:
             return null;
     }

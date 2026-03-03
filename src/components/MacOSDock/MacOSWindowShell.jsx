@@ -10,6 +10,7 @@ import {
   Trash2,
   Eye,
   EyeOff,
+  Copy,
 } from 'lucide-react';
 import { useRouter } from 'next/router';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -23,6 +24,7 @@ import { useGlobalContext } from '@/context/globalContext';
 import Toggle from '@/components/toggle';
 import Button from '@/components/button';
 import Text from '@/components/text';
+import { projectPassword as validationSchema } from '@/lib/validationSchemas';
 
 /**
  * MacOSWindowShell
@@ -33,6 +35,7 @@ import Text from '@/components/text';
  *
  * Props:
  *   title       – window title shown in the title bar
+ *   projectUrl  – optional; when set, shown in the address bar (e.g. https://username.designfolio.me/project/id)
  *   children    – page content to render inside the window
  *   tabs        – optional array of { label, href } for tab switching (Preview / Editor)
  *   activeTab   – currently active tab label
@@ -49,6 +52,8 @@ const MacOSWindowShell = ({
   isHidden = false,
   hasPassword = false,
   projectId,
+  /** When set, shown in the address bar instead of the title-based fake URL */
+  projectUrl = '',
   initialPassword = '',
   onDelete,
   onToggleVisibility,
@@ -209,10 +214,16 @@ const MacOSWindowShell = ({
         </div>
 
         {/* Right-side controls */}
-        <div className="flex items-center gap-2 text-[#666] shrink-0">
-          <Minus className="w-4 h-4 cursor-pointer hover:opacity-70" onClick={handleMinimize} />
-          <Square className="w-3 h-3 cursor-pointer hover:opacity-70" onClick={handleMaximize} />
-          <X className="w-4 h-4 cursor-pointer hover:opacity-70" onClick={handleClose} />
+        <div className="flex items-center gap-1 text-[#666] shrink-0">
+          <button type="button" className="p-1 rounded hover:bg-black/10 transition-colors" onClick={handleMinimize} title="Minimize">
+            <Minus className="w-4 h-4" />
+          </button>
+          <button type="button" className="p-1 rounded hover:bg-black/10 transition-colors" onClick={handleMaximize} title="Maximize">
+            <Square className="w-3 h-3" />
+          </button>
+          <button type="button" className="p-1 rounded hover:bg-red-500/20 hover:text-red-600 transition-colors" onClick={handleClose} title="Close">
+            <X className="w-4 h-4" />
+          </button>
         </div>
       </div>
 
@@ -235,14 +246,32 @@ const MacOSWindowShell = ({
           </button>
         </div>
 
-        <div className="flex-1 flex items-center bg-[#e3e3e3]/50 border border-[#c8c8c8] rounded-md h-7 px-3 shadow-inner">
-          <Lock size={10} className="text-[#666] mr-2" />
-          <span className="text-[11px] text-[#444] font-sans truncate">
-            {`https://${(title || 'project').toLowerCase().replace(/\s+/g, '-')}.com`}
+        <div className="flex-1 flex items-center bg-[#e3e3e3]/50 border border-[#c8c8c8] rounded-md h-7 px-3 shadow-inner gap-2">
+          <Lock size={10} className="text-[#666] shrink-0" />
+          <span className="text-[11px] text-[#444] font-sans truncate flex-1 min-w-0">
+            {projectUrl
+              ? `${projectUrl}${activeTab ? `/${activeTab.toLowerCase()}` : ''}`
+              : `https://${(title || 'project').toLowerCase().replace(/\s+/g, '-')}.com`}
           </span>
-          <div className="ml-auto">
-            <RefreshCw size={10} className="text-[#888]" />
-          </div>
+          <button
+            type="button"
+            className="p-1 hover:bg-black/5 rounded text-[#666] hover:text-[#444] shrink-0"
+            title="Copy URL"
+            onClick={async () => {
+              const url = projectUrl
+                ? `${projectUrl}${activeTab ? `/${activeTab.toLowerCase()}` : ''}`
+                : `https://${(title || 'project').toLowerCase().replace(/\s+/g, '-')}.com`;
+              try {
+                await navigator.clipboard.writeText(url);
+                toast.success('URL copied to clipboard');
+              } catch {
+                toast.error('Could not copy URL');
+              }
+            }}
+          >
+            <Copy size={10} className="text-[#888]" />
+          </button>
+          <RefreshCw size={10} className="text-[#888] shrink-0" />
         </div>
 
         {canManage && (

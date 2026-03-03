@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 
 // Default Finder menus
 const DEFAULT_MENUS = [
@@ -122,7 +123,7 @@ const MenuDropdown = ({ isOpen, onClose, items, position, onAction }) => {
   return (
     <div
       ref={dropdownRef}
-      className="fixed backdrop-blur-md z-[110]"
+      className="fixed backdrop-blur-md z-[1100]"
       style={{
         left: `${position.x}px`,
         top: `${position.y}px`,
@@ -163,14 +164,8 @@ const MenuDropdown = ({ isOpen, onClose, items, position, onAction }) => {
   );
 };
 
-/**
- * MacOSMenuBar
- *
- * @param {string}   appName      - Bold app name shown after the Apple logo. Default: 'Finder'
- * @param {Array}    menus        - Array of { label, items[] } menu configs. Default: DEFAULT_MENUS
- * @param {Function} onMenuAction - Callback called with the action string when a menu item is clicked
- * @param {string}   className    - Extra CSS classes applied to the bar root element
- */
+const DROPDOWN_GAP = 4;
+
 export default function MacOSMenuBar({
   appName = 'Finder',
   menus = DEFAULT_MENUS,
@@ -203,7 +198,7 @@ export default function MacOSMenuBar({
     } else {
       if (appleLogoRef.current) {
         const rect = appleLogoRef.current.getBoundingClientRect();
-        setDropdownPosition({ x: rect.left, y: rect.bottom + 4 });
+        setDropdownPosition({ x: rect.left, y: rect.bottom + DROPDOWN_GAP });
       }
       setActiveMenu('apple');
     }
@@ -216,7 +211,7 @@ export default function MacOSMenuBar({
       const menuRef = menuRefs.current[menuLabel];
       if (menuRef) {
         const rect = menuRef.getBoundingClientRect();
-        setDropdownPosition({ x: rect.left, y: rect.bottom + 4 });
+        setDropdownPosition({ x: rect.left, y: rect.bottom + DROPDOWN_GAP });
         setActiveMenu(menuLabel);
       }
     }
@@ -224,7 +219,7 @@ export default function MacOSMenuBar({
 
   return (
     <div
-      className={`fixed left-0 h-7 backdrop-blur-md z-[99] flex justify-between items-center px-4 select-none ${className}`}
+      className={`fixed left-0 h-7 backdrop-blur-md z-[10000] flex justify-between items-center px-4 select-none ${className}`}
       style={{
         top: 0,
         right: 0,
@@ -304,26 +299,30 @@ export default function MacOSMenuBar({
         <span className="text-white text-[13px] font-medium cursor-default">{currentTime}</span>
       </div>
 
-      {/* Apple Menu Dropdown */}
-      <MenuDropdown
-        isOpen={activeMenu === 'apple'}
-        onClose={() => setActiveMenu(null)}
-        items={APPLE_MENU_ITEMS}
-        position={dropdownPosition}
-        onAction={onMenuAction}
-      />
-
-      {/* App Menu Dropdowns */}
-      {menus.map((menu) => (
-        <MenuDropdown
-          key={menu.label}
-          isOpen={activeMenu === menu.label}
-          onClose={() => setActiveMenu(null)}
-          items={menu.items}
-          position={dropdownPosition}
-          onAction={onMenuAction}
-        />
-      ))}
+      {/* Dropdowns portaled to body so position:fixed is viewport-relative and matches getBoundingClientRect() */}
+      {typeof document !== 'undefined' &&
+        createPortal(
+          <>
+            <MenuDropdown
+              isOpen={activeMenu === 'apple'}
+              onClose={() => setActiveMenu(null)}
+              items={APPLE_MENU_ITEMS}
+              position={dropdownPosition}
+              onAction={onMenuAction}
+            />
+            {menus.map((menu) => (
+              <MenuDropdown
+                key={menu.label}
+                isOpen={activeMenu === menu.label}
+                onClose={() => setActiveMenu(null)}
+                items={menu.items}
+                position={dropdownPosition}
+                onAction={onMenuAction}
+              />
+            ))}
+          </>,
+          document.body
+        )}
     </div>
   );
 }

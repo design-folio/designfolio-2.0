@@ -1,6 +1,7 @@
 import Editor from '@/components/editor';
 import WallpaperBackground from '@/components/WallpaperBackground';
 import { useGlobalContext } from '@/context/globalContext';
+import { getProjectUrl } from '@/lib/utils';
 import { cn } from '@/lib/utils';
 import { _getProjectDetails } from '@/network/get-request';
 import { _updateProject, _updateUser } from '@/network/post-request';
@@ -32,6 +33,7 @@ export default function Index() {
     setUserDetails,
     setShowUpgradeModal,
     setUpgradeModalUnhideProject,
+    domainDetails,
   } = useGlobalContext();
   const [projectDetails, setProjectDetails] = useState(null);
   const initializedRef = useRef(false);
@@ -212,6 +214,13 @@ export default function Index() {
           {/* Project window floats on top as a fixed overlay */}
           <MacOSWindowShell
             title={projectTitle}
+            projectUrl={getProjectUrl({
+              username: userDetails?.username,
+              baseDomain: process.env.NEXT_PUBLIC_BASE_DOMAIN,
+              customDomain: domainDetails?.customDomain?.domain,
+              isCustomVerified: domainDetails?.customDomain?.isCustomVerified,
+              projectId: router.query.id,
+            })}
             tabs={[
               { label: 'Preview', href: `/project/${router.query.id}/preview` },
               { label: 'Editor', href: `/project/${router.query.id}/editor` },

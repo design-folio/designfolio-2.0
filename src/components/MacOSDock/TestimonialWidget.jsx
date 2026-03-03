@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { LayoutGroup, motion } from "framer-motion";
 import { Pencil } from "lucide-react";
 import { CSS } from "@dnd-kit/utilities";
@@ -55,8 +55,26 @@ export const SortableTestimonialItem = ({ review, edit, onEdit }) => {
 
 const COLLAPSED_CHARS = 120;
 
+const PADDING = 32; // horizontal padding so widget doesn't touch screen edges
+const COLLAPSED_WIDTH = 320;
+const EXPANDED_WIDTH = 480;
+
 export const TestimonialWidget = ({ reviews, edit, onEditClick }) => {
   const [expanded, setExpanded] = useState(false);
+  const [widths, setWidths] = useState({ collapsed: COLLAPSED_WIDTH, expanded: EXPANDED_WIDTH });
+
+  useEffect(() => {
+    const updateWidths = () => {
+      const maxW = typeof window !== "undefined" ? window.innerWidth - PADDING : 9999;
+      setWidths({
+        collapsed: Math.min(COLLAPSED_WIDTH, maxW),
+        expanded: Math.min(EXPANDED_WIDTH, maxW),
+      });
+    };
+    updateWidths();
+    window.addEventListener("resize", updateWidths);
+    return () => window.removeEventListener("resize", updateWidths);
+  }, []);
 
   const testimonials =
     reviews?.length > 0
@@ -77,11 +95,11 @@ export const TestimonialWidget = ({ reviews, edit, onEditClick }) => {
   );
 
   return (
-    // Only animate width — height stays h-auto and is naturally controlled by content
+    // Only animate width — height stays h-auto and is naturally controlled by content; widths respect viewport on small screens
     <motion.div
-      animate={{ width: expanded ? 480 : 320 }}
+      animate={{ width: expanded ? widths.expanded : widths.collapsed }}
       transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-      className="bg-[#F5C75D] rounded-2xl p-1 shadow-lg font-sans"
+      className="bg-[#F5C75D] rounded-2xl p-1 shadow-lg font-sans max-w-[calc(100vw-32px)]"
       style={{ overflow: "hidden" }}
     >
       {/* Header */}

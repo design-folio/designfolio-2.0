@@ -16,6 +16,7 @@ import MadeWithDesignfolio from "../../../../public/assets/svgs/madewithdesignfo
 import WallpaperBackground from "@/components/WallpaperBackground";
 import { getWallpaperUrl } from "@/lib/wallpaper";
 import MacOSWindowShell from "@/components/MacOSDock/MacOSWindowShell";
+import { getProjectUrl } from "@/lib/utils";
 import MacOSTemplate from "@/components/comp/MacOSTemplate";
 
 export default function Index({ data, ownerTemplate, ownerWallpaper, ownerUser }) {
@@ -201,7 +202,14 @@ export default function Index({ data, ownerTemplate, ownerWallpaper, ownerUser }
             />
           )}
           {/* Project window floats on top as a fixed overlay */}
-          <MacOSWindowShell title={project?.title || data?.project?.title || 'Project'}>
+          <MacOSWindowShell
+            title={project?.title || data?.project?.title || 'Project'}
+            projectUrl={getProjectUrl({
+              username: project?.username || data?.project?.username,
+              baseDomain: process.env.NEXT_PUBLIC_BASE_DOMAIN,
+              projectId: router.query.id,
+            })}
+          >
             {projectContent}
           </MacOSWindowShell>
         </>

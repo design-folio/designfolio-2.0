@@ -19,7 +19,7 @@ const DockBar = ({
 }) => (
   <div
     ref={dockRef}
-    className={`backdrop-blur-md mb-4 pointer-events-auto ${className}`}
+    className={`backdrop-blur-md mb-0 pointer-events-auto ${className}`}
     style={{
       width: `${contentWidth + padding * 2}px`,
       background: 'rgba(45, 45, 45, 0.75)',

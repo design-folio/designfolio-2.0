@@ -140,9 +140,7 @@ export const GlobalProvider = ({ children }) => {
         return;
       }
 
-      // Template 4 (macOS) is always light mode
-      const isTemplate4 = userData?.template === 4;
-      setTheme(isTemplate4 ? "light" : (userData?.theme == 1 ? "dark" : "light"));
+      setTheme(userData?.theme == 1 ? "dark" : "light");
       setCursor(userData?.cursor ? userData?.cursor : 0);
       setTemplate(userData?.template ? userData?.template : 0);
 
@@ -430,44 +428,12 @@ export const GlobalProvider = ({ children }) => {
   };
 
   const changeTemplate = (template) => {
-    if (template === 4) {
-      setTheme("light");
-    }
     setIsLoadingTemplate(true);
-
-    const isSwitchingToMacOS = template === 4 && userDetails?.template !== 4;
-    const payload = { template };
-    if (template === 4) {
-      payload.theme = 0;
-    }
-    if (isSwitchingToMacOS) {
-      const existingEffects = userDetails?.wallpaper?.effects;
-      const defaultEffects = {
-        blur: 0,
-        effectType: 'blur',
-        grainIntensity: 25,
-        motion: true
-      };
-      payload.wallpaper = {
-        value: 8,
-        effects: existingEffects || defaultEffects
-      };
-    }
-
-    _updateUser(payload)
+    _updateUser({ template: template })
       .then((res) => {
-        const updatedUser = res?.data?.user;
         setTemplate(template);
-        updateCache("userDetails", updatedUser);
-        const merge = { template };
-        if (template === 4) merge.theme = 0;
-        if (updatedUser?.wallpaper) merge.wallpaper = updatedUser.wallpaper;
-        setUserDetails((prev) => ({ ...prev, ...merge }));
-        if (isSwitchingToMacOS && updatedUser?.wallpaper) {
-          const wp = updatedUser.wallpaper;
-          const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
-          setWallpaper(wpValue !== undefined ? wpValue : 8);
-        }
+        updateCache("userDetails", res?.data?.user);
+        setUserDetails(() => ({ ...userDetails, template: template }));
       })
       .catch((error) => {
         console.error("Error changing template:", error);
@@ -478,12 +444,6 @@ export const GlobalProvider = ({ children }) => {
   };
 
   const changeTheme = (themeValue) => {
-    // Template 4 (macOS) is always light mode — ignore dark mode requests
-    if (userDetails?.template === 4) {
-      setTheme("light");
-      return;
-    }
-
     // Optimistic update: UI and cache first to prevent flicker and keep ThemePanel switch in sync
     setTheme(themeValue == 1 ? "dark" : "light");
     setUserDetails((prev) => ({ ...prev, theme: themeValue }));

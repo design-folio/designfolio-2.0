@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/buttonNew";
 import { Pencil, ThumbsUp, X } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { getWallpaperUrl } from "@/lib/wallpaper" ;
+import { getWallpaperUrl } from "@/lib/wallpaper";
 import { useTheme } from "next-themes";
 import { modals } from "@/lib/constant";
 

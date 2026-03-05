@@ -5,9 +5,8 @@ export default function ProWarning() {
   const { template, setTemplate, setShowUpgradeModal, setUpgradeModalUnhideProject, setTemplateContext } = useGlobalContext();
 
   if (template === 0) return null;
-  const isMacOS = template === 4;
   return (
-    <div className={`${styles.proTemplateBanner} ${isMacOS ? 'mt-[100px]' : ''}`}>
+    <div className={styles.proTemplateBanner}>
       <div className={styles.proTemplateBannerContent}>
         <div className={styles.proTemplateBannerText}>
           <svg

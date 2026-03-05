@@ -6,7 +6,7 @@ import TiptapRenderer from "@/components/tiptapRenderer";
 import { useGlobalContext } from "@/context/globalContext";
 import { containerVariants, itemVariants } from "@/lib/animationVariants";
 import { capitalizeWords } from "@/lib/capitalizeText";
-import { _getProjectDetails, _getUser } from "@/network/get-request";
+import { _getProjectDetails } from "@/network/get-request";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
@@ -15,11 +15,8 @@ import { useEffect, useMemo, useState } from "react";
 import MadeWithDesignfolio from "../../../../public/assets/svgs/madewithdesignfolio.svg";
 import WallpaperBackground from "@/components/WallpaperBackground";
 import { getWallpaperUrl } from "@/lib/wallpaper";
-import MacOSWindowShell from "@/components/MacOSDock/MacOSWindowShell";
-import { getProjectUrl } from "@/lib/utils";
-import MacOSTemplate from "@/components/comp/MacOSTemplate";
 
-export default function Index({ data, ownerTemplate, ownerWallpaper, ownerUser }) {
+export default function Index({ data }) {
   const router = useRouter();
   const { setTheme, theme, resolvedTheme } = useTheme();
   const { setCursor, setWallpaper, userDetails, wallpaperEffects } = useGlobalContext();
@@ -110,16 +107,10 @@ export default function Index({ data, ownerTemplate, ownerWallpaper, ownerUser }
   }, [projectData?.project, userDetails, setTheme, setWallpaper, setCursor]);
   const project = projectData?.project;
   const isProtected = projectData?.isProtected || false;
-  const isMacOS = userDetails?.template === 4 || ownerTemplate === 4;
-  // Use owner's profile when viewer has no userDetails (e.g. public visitor) so MacOS desktop still shows
-  const effectiveUserDetails = userDetails ?? ownerUser ?? null;
-
-  // Wallpaper priority: project wallpaper → owner wallpaper (for MacOS) → userDetails wallpaper
   const projectWallpaper = project?.wallpaper;
-  const rawWp = projectWallpaper || (isMacOS ? ownerWallpaper : null) || userDetails?.wallpaper;
-  const wpValue = rawWp && typeof rawWp === 'object'
-    ? (rawWp.url || rawWp.value)
-    : rawWp;
+  const wpValue = projectWallpaper && typeof projectWallpaper === 'object'
+    ? (projectWallpaper.url || projectWallpaper.value)
+    : projectWallpaper;
 
   // Compute wallpaper URL for this project
   const currentTheme = resolvedTheme || theme || (project?.theme == 1 ? "dark" : "light");
@@ -127,56 +118,8 @@ export default function Index({ data, ownerTemplate, ownerWallpaper, ownerUser }
     ? getWallpaperUrl(wpValue, currentTheme)
     : null;
 
-  // Get wallpaper effects from project → owner → userDetails
-  const effects = project?.wallpaper?.effects || (isMacOS ? ownerWallpaper?.effects : null) || userDetails?.wallpaper?.effects || null;
-
-  const projectContent = (
-    <div className={`max-w-[848px] mx-auto pt-[16px] pb-[80px] lg:py-[40px] px-2 md:px-4 lg:px-0`}>
-      <motion.div
-        className="flex-1 flex flex-col gap-3"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        {projectData && project && (
-          <>
-            {isProtected ? (
-              <motion.div variants={itemVariants}>
-                <ProjectPassword
-                  status={1}
-                  projectDetails={project}
-                  id={router.query.id}
-                  setIsProtected={(value) => {
-                    if (!value && unlockedProjectData) {
-                      setUnlockedProjectData(prev => ({ ...prev, isProtected: false }));
-                    }
-                  }}
-                  setProjectDetails={(newData) => {
-                    setUnlockedProjectData(newData);
-                  }}
-                />
-              </motion.div>
-            ) : (
-              <>
-                <motion.div variants={itemVariants}>
-                  <ProjectInfo projectDetails={project} />
-                </motion.div>
-                {project?.contentVersion === 2 && project?.tiptapContent ? (
-                  <motion.div variants={itemVariants}>
-                    <TiptapRenderer content={project.tiptapContent} />
-                  </motion.div>
-                ) : project?.content ? (
-                  <motion.div variants={itemVariants}>
-                    <BlockRenderer editorJsData={project.content} />
-                  </motion.div>
-                ) : null}
-              </>
-            )}
-          </>
-        )}
-      </motion.div>
-    </div>
-  );
+  // Get wallpaper effects from project or userDetails
+  const effects = project?.wallpaper?.effects || userDetails?.wallpaper?.effects || null;
 
   return (
     <>
@@ -190,44 +133,67 @@ export default function Index({ data, ownerTemplate, ownerWallpaper, ownerUser }
         url={`https://${project?.username || data?.project?.username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`}
       />
       <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={effects} />
-
-      {isMacOS ? (
-        <>
-          {/* Full macOS desktop: use owner's profile when visitor has no userDetails */}
-          {effectiveUserDetails && (
-            <MacOSTemplate
-              userDetails={effectiveUserDetails}
-              edit={!!userDetails}
-              preview={false}
-            />
-          )}
-          {/* Project window floats on top as a fixed overlay */}
-          <MacOSWindowShell
-            title={project?.title || data?.project?.title || 'Project'}
-            projectUrl={getProjectUrl({
-              username: project?.username || data?.project?.username,
-              baseDomain: process.env.NEXT_PUBLIC_BASE_DOMAIN,
-              projectId: router.query.id,
-            })}
+      <main className="min-h-screen">
+        <div
+          className={`max-w-[848px] mx-auto pt-[16px] pb-[80px] lg:py-[40px] px-2 md:px-4 lg:px-0`}
+        >
+          <motion.div
+            className="flex-1 flex flex-col gap-3"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
           >
-            {projectContent}
-          </MacOSWindowShell>
-        </>
-      ) : (
-        <main className="min-h-screen">
-          {projectContent}
-          {!project?.pro && (
-            <div
-              className={`text-center flex justify-center fixed bottom-0 left-0 right-0 lg:left-1/2 lg:-translate-x-1/2 lg:bottom-[24px] lg:right-[unset] mb-2 xl:block cursor-pointer`}
-              onClick={() => window.open("https://www.designfolio.me", "_blank")}
-            >
-              <div className="bg-df-section-card-bg-color shadow-lg p-2 rounded-2xl">
-                <MadeWithDesignfolio className="text-df-icon-color" />
-              </div>
+            {projectData && project && (
+              <>
+                {isProtected ? (
+                  <motion.div variants={itemVariants}>
+                    <ProjectPassword
+                      status={1}
+                      projectDetails={project}
+                      id={router.query.id}
+                      setIsProtected={(value) => {
+                        if (!value && unlockedProjectData) {
+                          setUnlockedProjectData(prev => ({ ...prev, isProtected: false }));
+                        }
+                      }}
+                      setProjectDetails={(newData) => {
+                        setUnlockedProjectData(newData);
+                      }}
+                    />
+                  </motion.div>
+                ) : (
+                  <>
+                    <motion.div variants={itemVariants}>
+                      <ProjectInfo projectDetails={project} />
+                    </motion.div>
+                    {project?.contentVersion === 2 && project?.tiptapContent ? (
+                      <motion.div variants={itemVariants}>
+                        <TiptapRenderer content={project.tiptapContent} />
+                      </motion.div>
+                    ) : project?.content ? (
+                      <motion.div variants={itemVariants}>
+                        <BlockRenderer
+                          editorJsData={project.content}
+                        />
+                      </motion.div>
+                    ) : null}
+                  </>
+                )}
+              </>
+            )}
+          </motion.div>
+        </div>
+        {!project?.pro && (
+          <div
+            className={`text-center flex justify-center fixed bottom-0 left-0 right-0 lg:left-1/2 lg:-translate-x-1/2 lg:bottom-[24px] lg:right-[unset] mb-2 xl:block cursor-pointer`}
+            onClick={() => window.open("https://www.designfolio.me", "_blank")}
+          >
+            <div className="bg-df-section-card-bg-color shadow-lg p-2 rounded-2xl">
+              <MadeWithDesignfolio className="text-df-icon-color" />
             </div>
-          )}
-        </main>
-      )}
+          </div>
+        )}
+      </main>
     </>
   );
 }
@@ -238,33 +204,14 @@ export async function getServerSideProps(context) {
     const projectDetails = await _getProjectDetails(id, 1);
 
     if (projectDetails) {
-      const projectData = projectDetails?.data;
-      // Fetch the owner's user details for template, wallpaper, and MacOS desktop (testimonials, tools, etc.)
-      let ownerTemplate = null;
-      let ownerWallpaper = null;
-      let ownerUser = null;
-      try {
-        const username = projectData?.project?.username;
-        if (username) {
-          const userResponse = await _getUser(username);
-          const owner = userResponse?.data?.user;
-          if (owner) {
-            ownerTemplate = owner.template ?? null;
-            ownerWallpaper = owner.wallpaper ?? null;
-            ownerUser = owner;
-          }
-        }
-      } catch (_) {}
       return {
         props: {
-          data: projectData,
-          ownerTemplate,
-          ownerWallpaper,
-          ownerUser,
+          data: projectDetails?.data,
           hideHeader: true,
         },
       };
     } else {
+      // If no user is found, redirect or handle accordingly
       return {
         redirect: {
           destination: "https://designfolio.me",
@@ -273,6 +220,7 @@ export async function getServerSideProps(context) {
       };
     }
   } catch (error) {
+    // Handle the error or redirect if necessary
     return {
       redirect: {
         destination: "https://designfolio.me",

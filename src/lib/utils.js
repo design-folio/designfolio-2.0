@@ -70,14 +70,18 @@ export function getProjectUrl({ username, baseDomain, customDomain, isCustomVeri
 export const MACOS_WINDOW_WIDTH = 896;
 export const MACOS_WINDOW_HEIGHT_VH = 0.7;
 
+/** PDF/Resume window dimensions in dock (different from app windows) */
+export const MACOS_PDF_WINDOW_WIDTH = 800;
+export const MACOS_PDF_WINDOW_HEIGHT_VH = 0.85;
+
 /** Minimum top offset on mobile so the window stays below status bar + header (desktop unchanged) */
 export const MOBILE_HEADER_SAFE_TOP_PX = 92;
 
 /** Clamp window center position so the window stays within viewport, below the header/menu bar, and left of the sidebar */
-export function clampWindowPosition(x, y, sidebarOffsetPx = 0, topOffsetPx = 0) {
+export function clampWindowPosition(x, y, sidebarOffsetPx = 0, topOffsetPx = 0, windowWidthPx = MACOS_WINDOW_WIDTH, windowHeightVh = MACOS_WINDOW_HEIGHT_VH) {
   if (typeof window === 'undefined') return { x, y };
-  const halfW = MACOS_WINDOW_WIDTH / 2;
-  const halfH = (window.innerHeight * MACOS_WINDOW_HEIGHT_VH) / 2;
+  const halfW = windowWidthPx / 2;
+  const halfH = (window.innerHeight * windowHeightVh) / 2;
   const minX = halfW;
   const maxX = Math.max(minX, window.innerWidth - sidebarOffsetPx - halfW);
   const isMobile = window.innerWidth < 768;

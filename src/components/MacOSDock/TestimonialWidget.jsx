@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { LayoutGroup, motion } from "framer-motion";
+import { LayoutGroup } from "framer-motion";
 import { Pencil } from "lucide-react";
 import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
@@ -13,8 +13,6 @@ const defaultTestimonials = [
   { text: "An exceptional designer who brings ideas to life.", author: "Happy Client" },
   { text: "Delivered beyond expectations, every time.", author: "Satisfied Partner" },
 ];
-
-// ─── SortableTestimonialItem ──────────────────────────────────────────────────
 
 export const SortableTestimonialItem = ({ review, edit, onEdit }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
@@ -51,29 +49,26 @@ export const SortableTestimonialItem = ({ review, edit, onEdit }) => {
   );
 };
 
-// ─── TestimonialWidget ────────────────────────────────────────────────────────
-
 const COLLAPSED_CHARS = 120;
-
-const PADDING = 32; // horizontal padding so widget doesn't touch screen edges
-const COLLAPSED_WIDTH = 320;
-const EXPANDED_WIDTH = 480;
+const VIEW_MORE_THRESHOLD = 165;
+const COLLAPSED_BODY_HEIGHT = 150;
+const BODY_PX = 20;
+const PADDING = 32;
+const WIDGET_WIDTH = 320;
 
 export const TestimonialWidget = ({ reviews, edit, onEditClick }) => {
   const [expanded, setExpanded] = useState(false);
-  const [widths, setWidths] = useState({ collapsed: COLLAPSED_WIDTH, expanded: EXPANDED_WIDTH });
+  const [width, setWidth] = useState(WIDGET_WIDTH);
+  const [currentQuoteIndex, setCurrentQuoteIndex] = useState(0);
 
   useEffect(() => {
-    const updateWidths = () => {
+    const updateWidth = () => {
       const maxW = typeof window !== "undefined" ? window.innerWidth - PADDING : 9999;
-      setWidths({
-        collapsed: Math.min(COLLAPSED_WIDTH, maxW),
-        expanded: Math.min(EXPANDED_WIDTH, maxW),
-      });
+      setWidth(Math.min(WIDGET_WIDTH, maxW));
     };
-    updateWidths();
-    window.addEventListener("resize", updateWidths);
-    return () => window.removeEventListener("resize", updateWidths);
+    updateWidth();
+    window.addEventListener("resize", updateWidth);
+    return () => window.removeEventListener("resize", updateWidth);
   }, []);
 
   const testimonials =
@@ -87,22 +82,21 @@ export const TestimonialWidget = ({ reviews, edit, onEditClick }) => {
   const validTestimonials = testimonials.filter((t) => t.text);
   if (validTestimonials.length === 0) return null;
 
-  // Truncate text in collapsed state so TextRotate never grows past one read
   const displayTexts = validTestimonials.map((t) =>
     !expanded && t.text.length > COLLAPSED_CHARS
       ? t.text.slice(0, COLLAPSED_CHARS).trimEnd() + "…"
       : t.text
   );
 
+  const currentTestimonial = validTestimonials[currentQuoteIndex];
+  const isCurrentLong = currentTestimonial && currentTestimonial.text.length > VIEW_MORE_THRESHOLD;
+
+
   return (
-    // Only animate width — height stays h-auto and is naturally controlled by content; widths respect viewport on small screens
-    <motion.div
-      animate={{ width: expanded ? widths.expanded : widths.collapsed }}
-      transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+    <div
       className="bg-[#F5C75D] rounded-2xl p-1 shadow-lg font-sans max-w-[calc(100vw-32px)]"
-      style={{ overflow: "hidden" }}
+      style={{ width, overflow: "hidden" }}
     >
-      {/* Header */}
       <div className="px-4 py-3 flex justify-between items-center text-[#4A3708] font-medium text-[13px]">
         <span>Testimonials</span>
         <div className="flex items-center gap-3">
@@ -124,11 +118,11 @@ export const TestimonialWidget = ({ reviews, edit, onEditClick }) => {
         </div>
       </div>
 
-      {/* Body — fixed height in collapsed state, auto when expanded */}
       <div
-        className="bg-white rounded-xl p-5 relative"
+        className="bg-white rounded-xl relative overflow-x-hidden flex flex-col py-5"
         style={{
-          height: expanded ? "auto" : 130,
+          height: expanded ? "auto" : COLLAPSED_BODY_HEIGHT,
+          maxHeight: expanded ? "min(70vh, 420px)" : undefined,
           overflow: "hidden",
           transition: "height 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
         }}
@@ -141,43 +135,60 @@ export const TestimonialWidget = ({ reviews, edit, onEditClick }) => {
           }}
         />
         <LayoutGroup>
-          <div className="relative z-10 flex flex-col gap-3">
-            <TextRotate
-              texts={displayTexts}
-              staggerFrom="first"
-              staggerDuration={0.01}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ type: "spring", damping: 30, stiffness: 400 }}
-              rotationInterval={4000}
-              splitBy="words"
-              mainClassName={`font-medium text-black/90 leading-relaxed italic ${
-                expanded ? "text-[16px]" : "text-[14px]"
-              }`}
-            />
-            <div className="h-px w-full bg-black/5" />
-            <TextRotate
-              texts={validTestimonials.map((t) => t.author)}
-              staggerFrom="first"
-              staggerDuration={0.025}
-              initial={{ opacity: 0, x: 10 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -10 }}
-              transition={{ type: "spring", damping: 30, stiffness: 400 }}
-              rotationInterval={4000}
-              splitBy="characters"
-              mainClassName="text-[11px] text-black/50 font-bold uppercase tracking-wider"
-            />
-            <button
-              onClick={() => setExpanded((v) => !v)}
-              className="text-[11px] text-[#4A3708]/60 hover:text-[#4A3708] font-semibold uppercase tracking-wider self-start transition-colors"
+          <div className="relative z-10 flex flex-col gap-3 flex-1 min-h-0">
+            <div
+              className="flex-1 min-h-0 w-full overflow-y-auto overflow-x-hidden"
+              style={{ maxHeight: expanded ? "min(70vh, 380px)" : undefined }}
             >
-              {expanded ? "← Less" : "View more →"}
-            </button>
+              <div style={{ paddingLeft: BODY_PX, paddingRight: BODY_PX }}>
+                <TextRotate
+                  texts={displayTexts}
+                  staggerFrom="first"
+                  staggerDuration={0.01}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ type: "spring", damping: 30, stiffness: 400 }}
+                  rotationInterval={4000}
+                  auto={!expanded}
+                  onNext={setCurrentQuoteIndex}
+                  splitBy="words"
+                  mainClassName={`font-medium text-black/90 leading-relaxed italic ${
+                    expanded ? "text-[16px]" : "text-[14px]"
+                  }`}
+                />
+              </div>
+            </div>
+            <div className="h-px w-full bg-black/5 flex-shrink-0" />
+            <div
+              className="flex flex-col gap-2 flex-shrink-0"
+              style={{ paddingLeft: BODY_PX, paddingRight: BODY_PX }}
+            >
+              <TextRotate
+                texts={validTestimonials.map((t) => t.author)}
+                staggerFrom="first"
+                staggerDuration={0.025}
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -10 }}
+                transition={{ type: "spring", damping: 30, stiffness: 400 }}
+                rotationInterval={4000}
+                auto={!expanded}
+                splitBy="characters"
+                mainClassName="text-[11px] text-black/50 font-bold uppercase tracking-wider"
+              />
+              {isCurrentLong && (
+                <button
+                  onClick={() => setExpanded((v) => !v)}
+                  className="text-[11px] text-[#4A3708]/60 hover:text-[#4A3708] font-semibold uppercase tracking-wider self-start transition-colors"
+                >
+                  {expanded ? "← Less" : "View more →"}
+                </button>
+              )}
+            </div>
           </div>
         </LayoutGroup>
       </div>
-    </motion.div>
+    </div>
   );
 };

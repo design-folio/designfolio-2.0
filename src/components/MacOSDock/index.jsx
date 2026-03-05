@@ -7,7 +7,7 @@ import DockBar from './DockBar';
 import { _updateUser } from '@/network/post-request';
 import { useGlobalContext } from '@/context/globalContext';
 import { useRouter } from 'next/router';
-import { clampWindowPosition, MOBILE_HEADER_SAFE_TOP_PX } from '@/lib/utils';
+import { clampWindowPosition, MOBILE_HEADER_SAFE_TOP_PX, MACOS_PDF_WINDOW_WIDTH, MACOS_PDF_WINDOW_HEIGHT_VH } from '@/lib/utils';
 
 const ZOOM_MIN = 50;
 const ZOOM_MAX = 150;
@@ -146,7 +146,10 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
     setWindowPositions(prev => {
       const next = {};
       for (const [id, pos] of Object.entries(prev)) {
-        next[id] = clampWindowPosition(pos.x, pos.y, sidebarOffsetPx, topOffsetPx);
+        const isPdf = id.startsWith('pdf-');
+        const w = isPdf ? MACOS_PDF_WINDOW_WIDTH : undefined;
+        const vh = isPdf ? MACOS_PDF_WINDOW_HEIGHT_VH : undefined;
+        next[id] = clampWindowPosition(pos.x, pos.y, sidebarOffsetPx, topOffsetPx, w, vh);
       }
       return next;
     });
@@ -250,7 +253,7 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
     const offset = (openWindows.length + pdfWindows.length) * 20;
     setPdfWindows(prev => [...prev, { id: pdfId, title }]);
     setAnimatingPdf({ id: pdfId, type: 'open' });
-    const clamped = clampWindowPosition(window.innerWidth / 2 + offset, window.innerHeight * 0.45 + offset, sidebarOffsetPx, topOffsetPx);
+    const clamped = clampWindowPosition(window.innerWidth / 2 + offset, window.innerHeight * 0.45 + offset, sidebarOffsetPx, topOffsetPx, MACOS_PDF_WINDOW_WIDTH, MACOS_PDF_WINDOW_HEIGHT_VH);
     setWindowPositions(prev => ({ ...prev, [pdfId]: clamped }));
     setActiveWindowId(pdfId);
     setTimeout(() => setAnimatingPdf(null), 500);
@@ -340,7 +343,10 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
     if (isDragging) {
       const rawX = e.clientX - dragOffset.current.x;
       const rawY = e.clientY - dragOffset.current.y;
-      const clamped = clampWindowPosition(rawX, rawY, sidebarOffsetPx, topOffsetPx);
+      const isPdf = isDragging.startsWith('pdf-');
+      const w = isPdf ? MACOS_PDF_WINDOW_WIDTH : undefined;
+      const vh = isPdf ? MACOS_PDF_WINDOW_HEIGHT_VH : undefined;
+      const clamped = clampWindowPosition(rawX, rawY, sidebarOffsetPx, topOffsetPx, w, vh);
       setWindowPositions(prev => ({ ...prev, [isDragging]: clamped }));
     }
   }, [isDragging, sidebarOffsetPx, topOffsetPx]);

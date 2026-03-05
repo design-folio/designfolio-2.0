@@ -525,9 +525,13 @@ export default function LoggedInHeader({
     ? 'fixed top-0 left-0'
     : 'fixed top-0 left-0 -translate-y-full';
 
+  const headerZ = isMacOSTemplate
+    ? (popoverMenu ? 'z-[10050]' : 'z-[110]')
+    : 'z-50 py-2 md:py-6 px-2 md:px-0';
+
   return (
     <div
-      className={cn(headerStyle, isMacOSTemplate ? 'z-[110]' : 'z-50 py-2 md:py-6 px-2 md:px-0')}
+      className={cn(headerStyle, headerZ)}
       style={{
         right: shouldShiftHeader ? getSidebarShiftWidth(activeSidebar) : '0',
         transition: 'transform 0.3s ease-out, right 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -643,7 +647,7 @@ export default function LoggedInHeader({
               />
               {isClient && (
                 <div
-                  className={`pt-5 origin-top-right absolute z-20 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${popoverMenu === popovers.publishMenu
+                  className={`pt-5 origin-top-right absolute right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${popoverMenu === popovers.publishMenu
                     ? 'opacity-100 scale-100'
                     : 'opacity-0 scale-90 pointer-events-none'
                     }`}
@@ -743,7 +747,7 @@ export default function LoggedInHeader({
               {isClient && (
                 <DropdownMenuContent
                   align="end"
-                  className="w-64 p-2 rounded-2xl shadow-xl bg-white border-black/5 z-[100] dark:bg-zinc-950 dark:border-white/5"
+                  className="w-64 p-2 rounded-2xl shadow-xl bg-white border-black/5 z-[10001] dark:bg-zinc-950 dark:border-white/5"
                 >
                   {!userDetails?.pro && (
                     <DropdownMenuItem

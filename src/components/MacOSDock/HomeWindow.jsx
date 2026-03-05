@@ -13,15 +13,15 @@ const HomeWindow = ({ userDetails, fullName, onViewProjects }) => {
   const headline = userDetails?.introduction ? userDetails?.introduction : `${"Hey, I'm"} ${fullName}`;
 
   useEffect(() => {
-    textControls.start(i => ({
+    textControls.start({
       opacity: 1,
       y: 0,
       transition: {
-        delay: i * 0.05 + 1.5,
+        delay: 1.5,
         duration: 1.2,
         ease: [0.2, 0.65, 0.3, 0.9],
       },
-    }));
+    });
     buttonControls.start({
       opacity: 1,
       transition: { delay: 2.5, duration: 1 },
@@ -44,24 +44,17 @@ const HomeWindow = ({ userDetails, fullName, onViewProjects }) => {
             className="w-24 h-24 rounded-full mx-auto mb-6 object-cover border-4 border-white/20 shadow-xl"
           />
         )}
-        <h1
-          className="text-2xl font-bold tracking-tighter text-white md:text-4xl px-4"
+        <motion.h1
+          className="text-2xl font-bold tracking-tighter text-white md:text-4xl max-w-3xl mx-auto"
           style={{ textShadow: '2px 2px 0px #ff00ff' }}
+          initial={{ opacity: 0, y: 50 }}
+          animate={textControls}
         >
-          {headline.split('').map((char, i) => (
-            <motion.span
-              key={i}
-              custom={i}
-              initial={{ opacity: 0, y: 50 }}
-              animate={textControls}
-              style={{ display: 'inline-block' }}
-            >
-              {char === ' ' ? '\u00A0' : char}
-            </motion.span>
-          ))}
-        </h1>
+          Hi, I’m Shai – Design Wizard who Codes ✨
+
+          {/* {headline} */}
+        </motion.h1>
         <motion.p
-          custom={headline.length}
           initial={{ opacity: 0, y: 30 }}
           animate={textControls}
           className="mx-auto mt-4 max-w-lg text-xs leading-relaxed text-slate-300"

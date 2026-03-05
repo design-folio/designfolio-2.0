@@ -430,15 +430,16 @@ export const GlobalProvider = ({ children }) => {
   };
 
   const changeTemplate = (template) => {
-    // Template 4 (macOS) is always light mode
     if (template === 4) {
       setTheme("light");
     }
     setIsLoadingTemplate(true);
 
-    // When switching to Mac OS from another template, apply the Replit wallpaper (wall8)
     const isSwitchingToMacOS = template === 4 && userDetails?.template !== 4;
     const payload = { template };
+    if (template === 4) {
+      payload.theme = 0;
+    }
     if (isSwitchingToMacOS) {
       const existingEffects = userDetails?.wallpaper?.effects;
       const defaultEffects = {
@@ -458,7 +459,10 @@ export const GlobalProvider = ({ children }) => {
         const updatedUser = res?.data?.user;
         setTemplate(template);
         updateCache("userDetails", updatedUser);
-        setUserDetails((prev) => ({ ...prev, template, ...(updatedUser?.wallpaper && { wallpaper: updatedUser.wallpaper }) }));
+        const merge = { template };
+        if (template === 4) merge.theme = 0;
+        if (updatedUser?.wallpaper) merge.wallpaper = updatedUser.wallpaper;
+        setUserDetails((prev) => ({ ...prev, ...merge }));
         if (isSwitchingToMacOS && updatedUser?.wallpaper) {
           const wp = updatedUser.wallpaper;
           const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;

@@ -124,7 +124,7 @@ const ThemePanel = ({
   const [isDarkWallpapers, setIsDarkWallpapers] = useState(theme === 'dark' || theme === 1);
   const show = activeSidebar === sidebars.theme;
 
-  const isMacOSTemplate = template === 4;
+  // Get available sections for current template
   const availableSections = getAvailableSections(template);
 
   // Initialize sectionOrder from userDetails or use template default
@@ -391,9 +391,8 @@ const ThemePanel = ({
             </div>
             <Switch
               className="data-[state=unchecked]:bg-[#CFC4AF] data-[state=checked]:bg-df-orange-color "
-              checked={isMacOSTemplate ? false : (theme === 'dark' || theme === 1)}
+              checked={theme === 'dark' || theme === 1}
               onCheckedChange={(checked) => changeTheme(checked ? 1 : 0)}
-              disabled={isMacOSTemplate}
               data-testid={isMobile ? "switch-theme-mode-layouts-mobile" : "switch-theme-mode-layouts"}
             />
             <div className="flex items-center gap-2">
@@ -436,9 +435,8 @@ const ThemePanel = ({
               <span className="text-sm font-medium">Light Mode</span>
             </div>
             <Switch
-              checked={isMacOSTemplate ? false : (theme === 'dark' || theme === 1)}
+              checked={theme === 'dark' || theme === 1}
               onCheckedChange={(checked) => changeTheme(checked ? 1 : 0)}
-              disabled={isMacOSTemplate}
               data-testid={isMobile ? "switch-wallpaper-mode-mobile" : "switch-wallpaper-mode"}
             />
             <div className="flex items-center gap-2">

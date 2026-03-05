@@ -50,9 +50,7 @@ const HomeWindow = ({ userDetails, fullName, onViewProjects }) => {
           initial={{ opacity: 0, y: 50 }}
           animate={textControls}
         >
-          Hi, I’m Shai – Design Wizard who Codes ✨
-
-          {/* {headline} */}
+          {headline}
         </motion.h1>
         <motion.p
           initial={{ opacity: 0, y: 30 }}

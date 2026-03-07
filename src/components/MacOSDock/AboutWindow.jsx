@@ -2,7 +2,7 @@ import React from 'react';
 import ImgStack from '../ui/image-stack';
 import { DEFAULT_PEGBOARD_IMAGES, DEFAULT_PEGBOARD_STICKERS } from '@/lib/aboutConstants';
 
-const AboutWindow = ({ userDetails, fullName }) => {
+const AboutWindow = ({ userDetails, fullName, edit = false, onEdit }) => {
   const aboutObj = userDetails?.about;
   const pegboardImages =
     aboutObj?.pegboardImages?.length > 0
@@ -30,7 +30,7 @@ const AboutWindow = ({ userDetails, fullName }) => {
           }}
         />
         <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]" />
-        <div className="absolute top-10 right-10 w-32 h-32 border-4 border-white/5 rounded-full opacity-20 -rotate-12" />
+        {/* <div className="absolute top-10 right-10 w-32 h-32 border-4 border-white/5 rounded-full opacity-20 -rotate-12" /> */}
         <div className="absolute bottom-20 left-10 w-48 h-1 bg-white/5 rotate-3 opacity-20" />
       </div>
 
@@ -48,12 +48,28 @@ const AboutWindow = ({ userDetails, fullName }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
             {/* Left — text sections */}
             <div className="space-y-8">
-              {userDetails?.about?.description && (
-                <section>
-                  <h2 className="text-2xl font-bold text-[#fef08a] mb-3 underline decoration-wavy">Background</h2>
+              <section>
+                <h2 className="text-2xl font-bold text-[#fef08a] mb-3 underline decoration-wavy">Background</h2>
+                {userDetails?.about?.description ? (
                   <p className="text-lg leading-relaxed italic">{userDetails.about.description}</p>
-                </section>
-              )}
+                ) : (
+                  <button
+                    type="button"
+                    onClick={edit && onEdit ? onEdit : undefined}
+                    disabled={!edit || !onEdit}
+                    className={`min-h-[4.5rem] w-full rounded-lg border-2 border-dashed border-[#fef08a]/30 bg-white/[0.06] flex items-center justify-center px-5 py-4 text-left transition-colors ${edit && onEdit
+                        ? 'cursor-pointer hover:bg-white/[0.1] hover:border-[#fef08a]/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#fef08a]/50'
+                        : 'cursor-default'
+                      }`}
+                  >
+                    <p className="text-white/45 text-base leading-relaxed italic text-center">
+                      {edit && onEdit
+                        ? 'Click to add your background — where you’re from, what drives you, and where you’re headed.'
+                        : 'Your story goes here — where you’re from, what drives you, and where you’re headed.'}
+                    </p>
+                  </button>
+                )}
+              </section>
 
               {userDetails?.skills?.length > 0 && (
                 <section>

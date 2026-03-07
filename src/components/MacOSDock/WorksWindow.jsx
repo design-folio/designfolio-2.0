@@ -12,6 +12,8 @@ const FAVORITES = [
   { name: 'Downloads', icon: '⬇️' },
 ];
 
+const ADD_PROJECT_PLACEHOLDER = { id: 'add-project', title: 'Add Project', image: '+' };
+
 const WorksWindow = ({
   isMobile,
   fullName,
@@ -22,6 +24,7 @@ const WorksWindow = ({
   onDragOver,
   onDrop,
   onProjectClick,
+  onAddProject,
   edit,
 }) => (
   <div className="flex h-full bg-[#faf9f6]">
@@ -107,6 +110,15 @@ const WorksWindow = ({
               </div>
             );
           })}
+          {edit && onAddProject && (
+            <div className="transform scale-110 origin-center transition-all duration-500 ease-in-out cursor-pointer">
+              <AnimatedFolder
+                title="Add Project"
+                projects={[ADD_PROJECT_PLACEHOLDER]}
+                onProjectClick={onAddProject}
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>

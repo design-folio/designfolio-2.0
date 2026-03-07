@@ -276,7 +276,7 @@ export default function Index() {
               )}
             </>
           )}
-          {userDetails && taskPercentage !== 100 && <BottomTask />}
+          {userDetails && taskPercentage !== 100 && !template === 4 && <BottomTask />}
         </div>
         <Modal show={showModal && showModal !== modals.aiProject && showModal !== modals.review && showModal !== modals.work}>
           {modalContent()}

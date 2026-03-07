@@ -15,7 +15,7 @@ const AboutWindow = ({ userDetails, fullName, edit = false, onEdit }) => {
 
   const stackImages = [
     ...pegboardImages.map((img) => img?.src).filter(Boolean),
-    ...pegboardStickers.map((sticker) => sticker?.src).filter(Boolean),
+    // ...pegboardStickers.map((sticker) => sticker?.src).filter(Boolean),
   ];
 
   return (
@@ -58,8 +58,8 @@ const AboutWindow = ({ userDetails, fullName, edit = false, onEdit }) => {
                     onClick={edit && onEdit ? onEdit : undefined}
                     disabled={!edit || !onEdit}
                     className={`min-h-[4.5rem] w-full rounded-lg border-2 border-dashed border-[#fef08a]/30 bg-white/[0.06] flex items-center justify-center px-5 py-4 text-left transition-colors ${edit && onEdit
-                        ? 'cursor-pointer hover:bg-white/[0.1] hover:border-[#fef08a]/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#fef08a]/50'
-                        : 'cursor-default'
+                      ? 'cursor-pointer hover:bg-white/[0.1] hover:border-[#fef08a]/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#fef08a]/50'
+                      : 'cursor-default'
                       }`}
                   >
                     <p className="text-white/45 text-base leading-relaxed italic text-center">

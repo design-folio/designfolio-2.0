@@ -46,7 +46,7 @@ const HomeWindow = ({ userDetails, fullName, onViewProjects }) => {
         )}
         <motion.h1
           className="text-2xl font-bold tracking-tighter text-white md:text-4xl max-w-3xl mx-auto"
-          style={{ textShadow: '2px 2px 0px #ff00ff' }}
+          style={{ textShadow: '2px 2px 0px #ff00ff', lineHeight: '3rem' }}
           initial={{ opacity: 0, y: 50 }}
           animate={textControls}
         >

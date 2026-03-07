@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Pencil, Plus } from "lucide-react";
+import { Pencil, Plus, ChevronDown, ChevronUp } from "lucide-react";
 import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
 import ReviewCard from "@/components/reviewCard";
@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/buttonNew";
 import { extractTextFromTipTap } from "@/lib/tiptapUtils";
 import SimpleTiptapRenderer from "@/components/SimpleTiptapRenderer";
 import { cn } from "@/lib/utils";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import MemoLinkedin from "@/components/icons/Linkedin";
 
 export const SortableTestimonialItem = ({ review, edit, onEdit }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
@@ -45,24 +47,21 @@ export const SortableTestimonialItem = ({ review, edit, onEdit }) => {
   );
 };
 
-const VIEW_MORE_THRESHOLD = 165;
 const BODY_PX = 20;
 const PADDING = 32;
 const WIDGET_WIDTH = 320;
 
-// Collapsed card total height — never changes during animation
-const COLLAPSED_CARD_H = 200;
-// Max quote text height in collapsed state
-const COLLAPSED_QUOTE_H = 72;
-// Footer height (divider + author + optional button) — fixed so it's always pinned
-const FOOTER_H = 60;
-// Expanded card height cap
+// Max height caps (card sizes to content up to these)
+const COLLAPSED_MAX_H = 200;
 const EXPANDED_CARD_H = 420;
+/** Roughly 3 lines; above this, Expand is useful to read more */
+const LONG_TEXT_THRESHOLD = 165;
 
 export const TestimonialWidget = ({ reviews, edit, onEditClick, onAddReview }) => {
   const [expanded, setExpanded] = useState(false);
   const [width, setWidth] = useState(WIDGET_WIDTH);
   const [currentQuoteIndex, setCurrentQuoteIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     const updateWidth = () => {
@@ -87,20 +86,19 @@ export const TestimonialWidget = ({ reviews, edit, onEditClick, onAddReview }) =
   const validTestimonials = testimonials.filter((t) => t.text);
 
   useEffect(() => {
-    if (!expanded && validReviews.length > 1) {
+    if (!expanded && !isHovered && validReviews.length > 1) {
       const id = setInterval(() => {
         setCurrentQuoteIndex((i) => (i + 1) % validReviews.length);
       }, 4000);
       return () => clearInterval(id);
     }
-  }, [expanded, validReviews.length]);
+  }, [expanded, isHovered, validReviews.length]);
 
   if (validTestimonials.length === 0 && hasReviews) return null;
 
   const quoteIndex = Math.min(currentQuoteIndex, Math.max(0, validReviews.length - 1));
   const currentReview = validReviews[quoteIndex] ?? validReviews[0];
   const currentTestimonial = validTestimonials[quoteIndex] ?? validTestimonials[0];
-  const isCurrentLong = currentTestimonial && currentTestimonial.text.length > VIEW_MORE_THRESHOLD;
 
   const isEmpty = !hasReviews;
   const outerProps = isEmpty
@@ -119,9 +117,13 @@ export const TestimonialWidget = ({ reviews, edit, onEditClick, onAddReview }) =
     }
     : { className: "bg-[#F5C75D] rounded-2xl p-1 shadow-lg font-sans max-w-[calc(100vw-32px)]" };
 
-  const cardHeight = expanded
-    ? Math.min(EXPANDED_CARD_H, (typeof window !== "undefined" ? window.innerHeight : 800) * 0.7)
-    : COLLAPSED_CARD_H;
+  const expandedMaxHeight =
+    typeof window !== "undefined"
+      ? Math.min(EXPANDED_CARD_H, window.innerHeight * 0.7)
+      : EXPANDED_CARD_H;
+
+  const isCurrentLong = (currentTestimonial?.text?.length ?? 0) > LONG_TEXT_THRESHOLD;
+  const showExpandShrink = expanded || isCurrentLong;
 
   return (
     <div {...outerProps} style={{ width, overflow: "hidden" }}>
@@ -129,11 +131,29 @@ export const TestimonialWidget = ({ reviews, edit, onEditClick, onAddReview }) =
       <div className="px-4 py-3 flex justify-between items-center text-[#4A3708] font-medium text-[13px]">
         <span>Testimonials</span>
         <div className="flex items-center gap-3">
-          <div className="flex gap-1">
-            <div className="w-1 h-1 rounded-full bg-[#4A3708]/40" />
-            <div className="w-1 h-1 rounded-full bg-[#4A3708]/40" />
-            <div className="w-1 h-1 rounded-full bg-[#4A3708]/40" />
-          </div>
+          {!isEmpty && showExpandShrink ? (
+            <button
+              type="button"
+              onClick={() => setExpanded((v) => !v)}
+              className="flex items-center gap-1.5 text-[#4A3708] font-medium text-[13px] hover:underline cursor-pointer"
+            >
+              {expanded ? (
+                <>
+                  Shrink <ChevronUp className="w-3.5 h-3.5" />
+                </>
+              ) : (
+                <>
+                  Expand <ChevronDown className="w-3.5 h-3.5" />
+                </>
+              )}
+            </button>
+          ) : (
+            <div className="flex gap-1" aria-hidden>
+              <div className="w-1 h-1 rounded-full bg-[#4A3708]/40" />
+              <div className="w-1 h-1 rounded-full bg-[#4A3708]/40" />
+              <div className="w-1 h-1 rounded-full bg-[#4A3708]/40" />
+            </div>
+          )}
           {edit && !isEmpty && (
             <button
               onClick={onEditClick}
@@ -151,38 +171,37 @@ export const TestimonialWidget = ({ reviews, edit, onEditClick, onAddReview }) =
         <div
           className="bg-white rounded-xl relative overflow-hidden flex flex-col"
           style={{
-            height: cardHeight,
-            transition: "height 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+            height: "auto",
+            maxHeight: expanded ? expandedMaxHeight : COLLAPSED_MAX_H,
+            transition: "max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
           }}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
         >
-          {/* Dot pattern */}
-          <div
-            className="absolute inset-0 opacity-[0.03] pointer-events-none rounded-xl z-0"
-            style={{
-              backgroundImage: "radial-gradient(#000 1px, transparent 1px)",
-              backgroundSize: "16px 16px",
-            }}
-            aria-hidden
-          />
-
-          {/* ── Quote zone ── fills available space, scrollable when expanded */}
+          {/* ── Quote zone ── both states: size to content; scroll when over max */}
           <div
             className={cn(
-              "relative z-10 flex-1 min-h-0 pt-5",
+              "relative z-10 min-h-0",
+              isCurrentLong ? "pt-5" : "py-5",
               expanded ? "overflow-y-auto custom-scrollbar" : "overflow-hidden"
             )}
-            style={{ paddingLeft: BODY_PX, paddingRight: BODY_PX, scrollbarWidth: "thin", scrollbarColor: "#C1C1C1 transparent" }}
+            style={{
+              paddingLeft: BODY_PX,
+              paddingRight: BODY_PX,
+              scrollbarWidth: "thin",
+              scrollbarColor: "#C1C1C1 transparent",
+              maxHeight: expanded ? expandedMaxHeight - 80 : COLLAPSED_MAX_H - 80,
+            }}
           >
             {/*
-             * Collapsed: clip text to COLLAPSED_QUOTE_H with a fade.
-             * Expanded:  let text render at full height inside the scrollable zone.
+             * Collapsed: CSS line-clamp so text truncates with "..." (no height-based clip).
+             * Expanded: full text, scrollable.
              */}
             <div
               className={cn(
-                "testimonial-widget-tiptap font-medium text-black/90 leading-relaxed relative",
-                !expanded && "overflow-hidden"
+                "font-medium text-black/90 leading-relaxed relative",
+                !expanded && "line-clamp-3 [&_.ProseMirror]:line-clamp-3 [&_.ProseMirror]:overflow-hidden [&_.ProseMirror]:break-words"
               )}
-              style={!expanded ? { maxHeight: COLLAPSED_QUOTE_H } : undefined}
             >
               <AnimatePresence mode="wait">
                 <motion.div
@@ -191,6 +210,7 @@ export const TestimonialWidget = ({ reviews, edit, onEditClick, onAddReview }) =
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -8 }}
                   transition={{ type: "spring", damping: 30, stiffness: 400 }}
+                  className={!expanded ? "line-clamp-3 overflow-hidden" : undefined}
                 >
                   <SimpleTiptapRenderer
                     content={currentReview?.description ?? ""}
@@ -199,59 +219,62 @@ export const TestimonialWidget = ({ reviews, edit, onEditClick, onAddReview }) =
                     className={cn(
                       "rounded-none shadow-none bg-transparent min-w-0 [&_.ProseMirror]:min-h-0 [&_.ProseMirror]:p-0",
                       !expanded
-                        ? "[&_.ProseMirror]:text-[14px]"
-                        : "[&_.ProseMirror]:text-[15px]"
+                        ? "[&_.ProseMirror]:text-[14px] [&_.ProseMirror]:line-clamp-3 [&_.ProseMirror]:overflow-hidden"
+                        : "[&_.ProseMirror]:text-[14px]"
                     )}
                   />
                 </motion.div>
               </AnimatePresence>
-
-              {/* Bottom fade-out when collapsed + long text */}
-              {!expanded && isCurrentLong && (
-                <div
-                  className="absolute bottom-0 left-0 right-0 h-10 pointer-events-none"
-                  style={{
-                    background:
-                      "linear-gradient(to top, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.6) 50%, transparent 100%)",
-                  }}
-                  aria-hidden
-                />
-              )}
             </div>
           </div>
 
-          {/* ── Pinned footer ── always at bottom, never scrolls away */}
+          {/* ── Pinned footer ── avatar, author, LinkedIn */}
           <div
             className="relative z-10 flex-shrink-0"
-            style={{ height: FOOTER_H }}
           >
             <div className="h-px w-full bg-black/5" />
             <div
-              className="flex flex-col justify-center gap-2 h-full"
+              className="flex items-center gap-3 h-full flex-wrap py-2"
               style={{ paddingLeft: BODY_PX, paddingRight: BODY_PX }}
             >
-              <AnimatePresence mode="wait">
-                <motion.span
-                  key={quoteIndex}
-                  initial={{ opacity: 0, x: 10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -10 }}
-                  transition={{ type: "spring", damping: 30, stiffness: 400 }}
-                  className="text-[11px] text-black/50 font-bold uppercase tracking-wider leading-none"
-                >
-                  {currentTestimonial?.author ?? "Client"}
-                </motion.span>
-              </AnimatePresence>
-
-              {isCurrentLong && (
-                <button
-                  type="button"
-                  onClick={() => setExpanded((v) => !v)}
-                  className="text-[11px] leading-none text-[#4A3708] hover:text-[#2d2204] font-semibold uppercase tracking-wider self-start transition-colors whitespace-nowrap cursor-pointer"
-                >
-                  {expanded ? "← Less" : "View more →"}
-                </button>
-              )}
+              <Avatar className="w-9 h-9 shrink-0">
+                <AvatarImage src={currentReview?.avatar?.url || currentReview?.avatar} alt={currentReview?.name} />
+                <AvatarFallback className="bg-[#F5C75D]/50 text-[#4A3708] text-xs font-medium">
+                  {currentReview?.name
+                    ?.split(" ")
+                    .map((n) => n[0])
+                    .join("")
+                    .slice(0, 2)
+                    .toUpperCase() || "?"}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1 min-w-0 flex flex-col justify-center gap-0.5">
+                <div className="flex items-center gap-1.5">
+                  <AnimatePresence mode="wait">
+                    <motion.span
+                      key={quoteIndex}
+                      initial={{ opacity: 0, x: 10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -10 }}
+                      transition={{ type: "spring", damping: 30, stiffness: 400 }}
+                      className="text-[11px] text-black/50 font-bold uppercase tracking-wider leading-none"
+                    >
+                      {currentTestimonial?.author ?? "Client"}
+                    </motion.span>
+                  </AnimatePresence>
+                  {currentReview?.linkedinLink && currentReview.linkedinLink.trim() !== "" && (
+                    <a
+                      href={currentReview.linkedinLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[#0A66C2] hover:opacity-80 p-0.5 rounded transition-opacity"
+                      aria-label="LinkedIn profile"
+                    >
+                      <MemoLinkedin className="w-3.5 h-3.5" />
+                    </a>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -272,10 +272,6 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
   const handleAppClick = (appId, index) => {
     if (appId === 'resume') {
       if (iconRefs.current[index]) createBounceAnimation(iconRefs.current[index]);
-      if (!userDetails?.resume?.url) {
-        onEditContact?.();
-        return;
-      }
       const name = [userDetails?.firstName, userDetails?.lastName].filter(Boolean).join(' ') || 'Resume';
       handleOpenPdf(`${name}_Resume.pdf`);
       return;
@@ -637,7 +633,10 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
                   {edit && app.id === 'work_experience' && (
                     <div className="flex items-center gap-2">
                       <Button3D onClick={onAddWorkExperience}>ADD</Button3D>
-                      <Button3D onClick={onEditWorkExperience}>EDIT</Button3D>
+                      {
+                        (userDetails?.experiences?.length ?? 0) > 0 && (<Button3D onClick={onEditWorkExperience}>EDIT</Button3D>)
+                      }
+
                     </div>
                   )}
                 </div>
@@ -720,7 +719,7 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
                 </button>
               </div>
               <div className="h-12 bg-[#323639] border-b border-[#1a1a1a] flex items-center px-3 md:px-4 justify-between gap-2 flex-wrap sm:flex-nowrap">
-                <div className="flex items-center gap-2 md:gap-4 text-[#eee] shrink-0">
+                {/* <div className="flex items-center gap-2 md:gap-4 text-[#eee] shrink-0">
                   <div className="flex items-center gap-2 bg-[#202124] px-2 md:px-3 py-1 rounded border border-[#444] text-xs"><span>1 / 1</span></div>
                   <div className="h-4 w-[1px] bg-[#444]" />
                   <div className="flex items-center gap-1">
@@ -732,17 +731,17 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
                       <ZoomIn size={14} />
                     </button>
                   </div>
-                </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  {edit && <Button3D onClick={onEditContact}>EDIT</Button3D>}
-                  {userDetails?.resume?.url && (
+                </div> */}
+                <div className="flex items-center gap-2 shrink-0 ml-auto">
+                  {edit && userDetails?.resume?.url && <Button3D onClick={onEditContact}>EDIT</Button3D>}
+                  {/* {userDetails?.resume?.url && (
                     <a href={userDetails.resume.url} target="_blank" rel="noreferrer" download>
                       <Button3D>DOWNLOAD</Button3D>
                     </a>
-                  )}
+                  )} */}
                 </div>
               </div>
-              <div className="flex-1 bg-[#525659] overflow-auto p-4 md:p-8 flex justify-center min-h-0">
+              <div className="flex-1 bg-[#525659] overflow-auto flex justify-center min-h-0">
                 <div className="origin-top transition-transform duration-150" style={{ transform: `scale(${pdfZoom / 100})` }}>
                   {userDetails?.resume?.url ? (
                     <iframe
@@ -751,10 +750,14 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
                       className="w-[min(90vw,800px)] h-[min(75vh,900px)] md:w-[800px] md:h-[85vh] rounded border-0 bg-[#525659]"
                     />
                   ) : (
-                    <div className="bg-white w-full max-w-[600px] shadow-2xl p-5 md:p-6 min-h-[600px] md:min-h-[842px]">
-                      <div className="flex flex-col items-center justify-center min-h-[400px] text-center px-4">
-                        <p className="text-sm text-[#666] mb-4 font-serif">No resume uploaded yet.</p>
-                        <Button3D onClick={onEditContact}>Footer settings</Button3D>
+                    <div className="bg-white w-full min-w-0 max-w-[600px] min-h-full shadow-2xl p-5 md:p-6 box-border flex flex-col">
+                      <div className="flex flex-col items-center justify-center flex-1 py-8 text-center px-4 sm:px-6 w-full min-w-0 box-border">
+                        <span className="text-4xl mb-4 opacity-60 shrink-0" aria-hidden>📄</span>
+                        <h3 className="text-lg font-semibold text-[#333] mb-2 w-full">Resume</h3>
+                        <p className="text-sm text-[#666] mb-2 w-full max-w-md mx-auto">
+                          Add your resume in Footer settings to show it here.
+                        </p>
+                        <Button3D onClick={onEditContact} className="shrink-0">UPLOAD RESUME</Button3D>
                       </div>
                     </div>
                   )}

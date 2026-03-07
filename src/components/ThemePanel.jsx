@@ -402,15 +402,15 @@ const ThemePanel = ({
           </div>
 
           <div className="grid grid-cols-1 gap-4">
-            {templates.map((tmpl, index) => (
+            {templates.map((tmpl) => (
               <div
                 key={tmpl.value}
-                onClick={() => changeTemplate(index)}
+                onClick={() => changeTemplate(tmpl.id)}
                 className={twMerge(
                   "px-4 py-6 flex flex-col justify-center items-center border rounded-[16px] cursor-pointer transition-all",
                   "bg-default-cursor-box-bg border-default-cursor-box-border",
                   "hover:bg-default-cursor-bg-hover",
-                  getTemplateStyles(index)
+                  getTemplateStyles(tmpl.id)
                 )}
               >
                 <div className="flex gap-2 items-center mb-2">
@@ -421,8 +421,8 @@ const ThemePanel = ({
                     <Badge className="bg-[#EE7F70] text-white text-[12px] font-medium">New</Badge>
                   )}
                 </div>
-                <img src={renderTemplate(tmpl.value)} alt="" className="cursor-pointer" />
-                {tmpl.id !== 1 && <div className={`mt-4 ${styles.templateBadgePro}`}>Pro</div>}
+                <img src={renderTemplate(tmpl.id)} alt="" className="cursor-pointer" />
+                {tmpl.id !== 0 && <div className={`mt-4 ${styles.templateBadgePro}`}>Pro</div>}
               </div>
             ))}
           </div>

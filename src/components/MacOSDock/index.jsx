@@ -13,7 +13,7 @@ const ZOOM_MIN = 50;
 const ZOOM_MAX = 150;
 const ZOOM_STEP = 10;
 
-const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetails, edit = false, preview = false, onEditBio, onEditHome, onEditContact, onEditWorkExperience, onAddWorkExperience, onEditTools, onEditSkills, onEditResume, sidebarOffsetPx = 0, topOffsetPx = 0 }) => {
+const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetails, edit = false, preview = false, onEditBio, onEditHome, onEditContact, onEditWorkExperience, onAddWorkExperience, onAddProject, onEditTools, onEditSkills, onEditResume, sidebarOffsetPx = 0, topOffsetPx = 0 }) => {
   const { setUserDetails, updateCache } = useGlobalContext();
   const router = useRouter();
 
@@ -138,7 +138,7 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
       setWindowPositions({ [firstId]: clamped });
       setOpenWindows([firstId]);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Re-clamp all window positions to current viewport/sidebar/top bounds (shared logic)
@@ -271,9 +271,13 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
   // ── App click / window management ────────────────────────────────────────────
   const handleAppClick = (appId, index) => {
     if (appId === 'resume') {
+      if (iconRefs.current[index]) createBounceAnimation(iconRefs.current[index]);
+      if (!userDetails?.resume?.url) {
+        onEditContact?.();
+        return;
+      }
       const name = [userDetails?.firstName, userDetails?.lastName].filter(Boolean).join(' ') || 'Resume';
       handleOpenPdf(`${name}_Resume.pdf`);
-      if (iconRefs.current[index]) createBounceAnimation(iconRefs.current[index]);
       return;
     }
 
@@ -659,11 +663,13 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
                       onDragOver={handleDragOver}
                       onDrop={handleDrop}
                       onProjectClick={handleOpenProject}
+                      onAddProject={onAddProject}
                       onOpenPdf={handleOpenPdf}
                       onViewProjects={() => handleAppClick('works', apps.findIndex(a => a.id === 'works'))}
                       edit={edit}
                       onEditContact={onEditContact}
                       onEditTools={onEditTools}
+                      onEditBio={onEditBio}
                     />
                   </div>
                 </div>
@@ -697,10 +703,11 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
                 ...animationStyles,
               }}
             >
-              <style dangerouslySetInnerHTML={{ __html: isMobile
-  ? `@keyframes pdfWindowOpen { 0% { transform: translate(0, calc(100vh - ${MOBILE_HEADER_SAFE_TOP_PX + 74}px)) scale(0.1); opacity: 0; } 100% { transform: translate(0, 0) scale(1); opacity: 1; } } @keyframes pdfWindowMinimize { 0% { transform: translate(0, 0) scale(1); opacity: 1; } 100% { transform: translate(0, calc(100vh - ${MOBILE_HEADER_SAFE_TOP_PX + 74}px)) scale(0.1); opacity: 0; } }`
-  : `@keyframes pdfWindowOpen { 0% { transform: translate(-50%, calc(100vh - ${pos.y}px)) scale(0.1); opacity: 0; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; } } @keyframes pdfWindowMinimize { 0% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 100% { transform: translate(-50%, calc(100vh - ${pos.y}px)) scale(0.1); opacity: 0; } }`
-}} />
+              <style dangerouslySetInnerHTML={{
+                __html: isMobile
+                  ? `@keyframes pdfWindowOpen { 0% { transform: translate(0, calc(100vh - ${MOBILE_HEADER_SAFE_TOP_PX + 74}px)) scale(0.1); opacity: 0; } 100% { transform: translate(0, 0) scale(1); opacity: 1; } } @keyframes pdfWindowMinimize { 0% { transform: translate(0, 0) scale(1); opacity: 1; } 100% { transform: translate(0, calc(100vh - ${MOBILE_HEADER_SAFE_TOP_PX + 74}px)) scale(0.1); opacity: 0; } }`
+                  : `@keyframes pdfWindowOpen { 0% { transform: translate(-50%, calc(100vh - ${pos.y}px)) scale(0.1); opacity: 0; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; } } @keyframes pdfWindowMinimize { 0% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 100% { transform: translate(-50%, calc(100vh - ${pos.y}px)) scale(0.1); opacity: 0; } }`
+              }} />
               <div onMouseDown={(e) => handleMouseDown(pdf.id, e)} className="h-9 bg-[#323639] border-b border-[#1a1a1a] flex items-center px-3 justify-between select-none cursor-move active:cursor-grabbing rounded-t-lg">
                 <div className="flex gap-2 items-center">
 
@@ -727,14 +734,12 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
                   </div>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
-                  {edit && <Button3D onClick={onEditResume}>EDIT</Button3D>}
-                  {userDetails?.resume?.url ? (
+                  {edit && <Button3D onClick={onEditContact}>EDIT</Button3D>}
+                  {userDetails?.resume?.url && (
                     <a href={userDetails.resume.url} target="_blank" rel="noreferrer" download>
                       <Button3D>DOWNLOAD</Button3D>
                     </a>
-                  ) : edit ? (
-                    <Button3D onClick={onEditResume}>ADD RESUME</Button3D>
-                  ) : null}
+                  )}
                 </div>
               </div>
               <div className="flex-1 bg-[#525659] overflow-auto p-4 md:p-8 flex justify-center min-h-0">
@@ -746,44 +751,11 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
                       className="w-[min(90vw,800px)] h-[min(75vh,900px)] md:w-[800px] md:h-[85vh] rounded border-0 bg-[#525659]"
                     />
                   ) : (
-                    <div className="bg-white w-full max-w-[600px] shadow-2xl p-8 md:p-12 text-[#333] font-serif min-h-[600px] md:min-h-[842px]">
-                      {edit ? (
-                        <div className="flex flex-col items-center justify-center min-h-[400px] text-center px-4">
-                          <p className="text-sm text-[#666] mb-4">No resume uploaded yet.</p>
-                          <Button3D onClick={onEditResume}>ADD RESUME</Button3D>
-                        </div>
-                      ) : (
-                        <>
-                          <div className="border-b-2 border-black pb-4 mb-8">
-                            <h1 className="text-2xl md:text-3xl font-bold uppercase tracking-tighter">{fullName}</h1>
-                            <p className="text-sm italic mt-1">{userDetails?.introduction || 'Portfolio'}</p>
-                            <div className="flex flex-wrap gap-x-4 gap-y-1 text-[10px] mt-2 opacity-70">
-                              {contactInfo.email && <span>{contactInfo.email}</span>}
-                              {contactInfo.github && <><span>•</span><span>{contactInfo.github}</span></>}
-                            </div>
-                          </div>
-                          {(userDetails?.about?.description || (typeof userDetails?.about === 'string' && userDetails.about)) && (
-                            <section className="mb-8">
-                              <h2 className="text-sm font-bold uppercase border-b border-black/10 mb-3">Summary</h2>
-                              <p className="text-xs leading-relaxed">{userDetails.about?.description ?? userDetails.about}</p>
-                            </section>
-                          )}
-                          {workExperiences.length > 0 && (
-                            <section className="mb-8">
-                              <h2 className="text-sm font-bold uppercase border-b border-black/10 mb-3">Experience</h2>
-                              {workExperiences.slice(0, 3).map((exp, i) => (
-                                <div key={i} className="mb-4">
-                                  <div className="flex flex-wrap justify-between items-baseline gap-1">
-                                    <h3 className="text-xs font-bold">{exp.role || exp.position} @ {exp.company || exp.name}</h3>
-                                    <span className="text-[10px] opacity-60">{exp.startDate || exp.duration}</span>
-                                  </div>
-                                </div>
-                              ))}
-                            </section>
-                          )}
-                          <div className="mt-12 pt-8 border-t border-black/5 text-center opacity-30 text-[8px]">Generated by Designfolio</div>
-                        </>
-                      )}
+                    <div className="bg-white w-full max-w-[600px] shadow-2xl p-5 md:p-6 min-h-[600px] md:min-h-[842px]">
+                      <div className="flex flex-col items-center justify-center min-h-[400px] text-center px-4">
+                        <p className="text-sm text-[#666] mb-4 font-serif">No resume uploaded yet.</p>
+                        <Button3D onClick={onEditContact}>Footer settings</Button3D>
+                      </div>
                     </div>
                   )}
                 </div>

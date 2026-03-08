@@ -21,11 +21,13 @@ const WindowContent = ({
   onDragOver,
   onDrop,
   onProjectClick,
+  onAddProject,
   onOpenPdf,
   onViewProjects,
   edit,
   onEditContact,
   onEditTools,
+  onEditBio,
 }) => {
   const fullName = [userDetails?.firstName, userDetails?.lastName].filter(Boolean).join(' ') || 'Portfolio';
   const workExperiences = userDetails?.experiences || [];
@@ -53,13 +55,14 @@ const WindowContent = ({
           onDragOver={onDragOver}
           onDrop={onDrop}
           onProjectClick={onProjectClick}
+          onAddProject={onAddProject}
           edit={edit}
         />
       );
     case 'work_experience':
       return <WorkExperienceWindow workExperiences={workExperiences} />;
     case 'about':
-      return <AboutWindow userDetails={userDetails} fullName={fullName} />;
+      return <AboutWindow userDetails={userDetails} fullName={fullName} edit={edit} onEdit={onEditBio} />;
     case 'contact':
       return <ContactWindow contactInfo={contactInfo} fullName={fullName} onOpenPdf={onOpenPdf} edit={edit} onEdit={onEditContact} hasResume={!!userDetails?.resume?.url} />;
     case 'tools':

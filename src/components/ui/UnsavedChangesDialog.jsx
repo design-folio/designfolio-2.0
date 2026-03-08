@@ -48,7 +48,7 @@ export const UnsavedChangesDialog = ({
   }, [open]);
 
   return (
-    <AlertDialog open={open} onOpenChange={onOpenChange}>
+    <AlertDialog open={open} onOpenChange={onOpenChange} className="z-50">
       <AlertDialogContent className="border-border">
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>

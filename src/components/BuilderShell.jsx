@@ -24,16 +24,7 @@ import { useGlobalContext } from '@/context/globalContext';
 import useClient from '@/hooks/useClient';
 import { useIsMobile } from '@/hooks/use-mobile';
 
-/**
- * BuilderShell
- *
- * All the shared modals, sidebars, panels and overlays that must be present
- * on every authenticated editing page (builder + macOS project pages).
- *
- * Renders nothing visible on its own — it only mounts the portals/overlays.
- * Drop it anywhere inside a page that needs the full editing experience.
- */
-export default function BuilderShell({ showProWarning = false }) {
+export default function BuilderShell({ showProWarning = false, hideCourseCard = false }) {
   const {
     showModal,
     taskPercentage,
@@ -85,7 +76,8 @@ export default function BuilderShell({ showProWarning = false }) {
 
   return (
     <>
-      {showProWarning && userDetails && !userDetails?.pro && <ProWarning />}
+      {/* //HACK: Allow all templates to be free */}
+      {/* {showProWarning && userDetails && !userDetails?.pro && <ProWarning />} */}
 
       <Modal show={showModal && showModal !== modals.aiProject && showModal !== modals.review && showModal !== modals.work}>
         {modalContent()}
@@ -120,8 +112,8 @@ export default function BuilderShell({ showProWarning = false }) {
         />
       )}
 
-      {userDetails && taskPercentage !== 100 && <BottomTask />}
-      {!isMobile && <CourseCard />}
+      {/* {userDetails && taskPercentage !== 100 && !template === 4 && <BottomTask />} */}
+      {!isMobile && !hideCourseCard && <CourseCard />}
       <FooterSettingsPanel />
     </>
   );

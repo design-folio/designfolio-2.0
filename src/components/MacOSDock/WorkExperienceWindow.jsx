@@ -3,6 +3,7 @@ import { X, Pencil } from 'lucide-react';
 import { CSS } from '@dnd-kit/utilities';
 import { useSortable } from '@dnd-kit/sortable';
 import { formatDuration } from '@/lib/utils';
+import { tiptapToDisplayString } from '@/lib/tiptapUtils';
 import { Button } from '@/components/ui/buttonNew';
 import DragHandle from '@/components/DragHandle';
 
@@ -25,8 +26,13 @@ export const SortableWorkExperienceItem = ({ exp, edit, onEdit }) => {
         <p className="text-sm font-semibold text-df-base-text-color truncate">{exp.company || exp.name}</p>
         <p className="text-xs text-df-secondary-text-color truncate">{exp.role || exp.position}</p>
         <p className="text-xs text-df-secondary-text-color opacity-60 mt-0.5">{formatDuration(exp)}</p>
+        {exp.description && tiptapToDisplayString(exp.description).trim() && (
+          <p className="text-xs text-df-secondary-text-color mt-1.5 line-clamp-2 whitespace-pre-line">
+            {tiptapToDisplayString(exp.description).trim()}
+          </p>
+        )}
       </div>
-      <div className="flex items-center gap-2 flex-shrink-0">
+      <div className="flex items-center flex-col gap-2 flex-shrink-0">
         {edit && (
           <Button
             variant="secondary"
@@ -37,11 +43,43 @@ export const SortableWorkExperienceItem = ({ exp, edit, onEdit }) => {
             <Pencil className="w-4 h-4 text-df-icon-color" />
           </Button>
         )}
-        <DragHandle listeners={listeners} attributes={attributes} />
+        <DragHandle size="sm" listeners={listeners} attributes={attributes} />
       </div>
     </div>
   );
 };
+
+function renderExperienceJsonEntry(exp, index, total) {
+  const descStr = exp.description ? tiptapToDisplayString(exp.description).trim() : '';
+  const isLast = index === total - 1;
+
+  return (
+    <div key={exp._id ?? index} className="pl-4 mt-2">
+      <span className="text-[#abb2bf]">{'{'}</span>
+      <div className="pl-4">
+        <span className="text-[#d19a66]">company</span>:{' '}
+        <span className="text-[#98c379]">"{exp.company || exp.name}"</span>,
+      </div>
+      <div className="pl-4">
+        <span className="text-[#d19a66]">role</span>:{' '}
+        <span className="text-[#98c379]">"{exp.role || exp.position}"</span>,
+      </div>
+      <div className="pl-4">
+        <span className="text-[#d19a66]">duration</span>:{' '}
+        <span className="text-[#98c379]">"{formatDuration(exp)}"</span>,
+      </div>
+      {descStr !== '' && (
+        <div className="pl-4">
+          <span className="text-[#d19a66]">description</span>:{' '}
+          <span className="text-[#98c379] whitespace-pre-line break-words">"{descStr}"</span>,
+        </div>
+      )}
+      <span className="text-[#abb2bf]">
+        {'}'}{!isLast ? ',' : ''}
+      </span>
+    </div>
+  );
+}
 
 const WorkExperienceWindow = ({ workExperiences }) => (
   <div className="w-full h-full bg-[#1e1e1e] text-[#d4d4d4] font-mono text-xs p-0 flex flex-col overflow-hidden">
@@ -69,26 +107,7 @@ const WorkExperienceWindow = ({ workExperiences }) => (
         </div>
 
         {workExperiences.length > 0 ? (
-          workExperiences.map((exp, i) => (
-            <div key={i} className="pl-4 mt-2">
-              <span className="text-[#abb2bf]">{'{'}</span>
-              <div className="pl-4">
-                <span className="text-[#d19a66]">company</span>:{' '}
-                <span className="text-[#98c379]">"{exp.company || exp.name}"</span>,
-              </div>
-              <div className="pl-4">
-                <span className="text-[#d19a66]">role</span>:{' '}
-                <span className="text-[#98c379]">"{exp.role || exp.position}"</span>,
-              </div>
-              <div className="pl-4">
-                <span className="text-[#d19a66]">duration</span>:{' '}
-                <span className="text-[#98c379]">"{formatDuration(exp)}"</span>,
-              </div>
-              <span className="text-[#abb2bf]">
-                {'}'}{i < workExperiences.length - 1 ? ',' : ''}
-              </span>
-            </div>
-          ))
+          workExperiences.map((exp, i) => renderExperienceJsonEntry(exp, i, workExperiences.length))
         ) : (
           <div className="pl-4 mt-2 text-[#5c6370]">// Add work experience to see it here</div>
         )}

@@ -78,9 +78,11 @@ export default function Index({ data, ownerTemplate, ownerWallpaper, ownerUser }
     return null;
   }, [unlockedProjectData, contextProject, fetchedData, data]);
 
-  // Apply theme and wallpaper from project or userDetails
+  const isEmbed = router.query.embed === '1';
+
+  // Apply theme and wallpaper from project or userDetails (skip in embed to keep iframe minimal)
   useEffect(() => {
-    if (!projectData?.project) return;
+    if (isEmbed || !projectData?.project) return;
 
     const project = projectData.project;
 
@@ -107,7 +109,7 @@ export default function Index({ data, ownerTemplate, ownerWallpaper, ownerUser }
       ? project.cursor
       : (project?.theme != null ? project.theme : (userDetails?.cursor || 0));
     setCursor(cursor);
-  }, [projectData?.project, userDetails, setTheme, setWallpaper, setCursor]);
+  }, [isEmbed, projectData?.project, userDetails, setTheme, setWallpaper, setCursor]);
   const project = projectData?.project;
   const isProtected = projectData?.isProtected || false;
   const isMacOS = userDetails?.template === 4 || ownerTemplate === 4;
@@ -177,6 +179,15 @@ export default function Index({ data, ownerTemplate, ownerWallpaper, ownerUser }
       </motion.div>
     </div>
   );
+
+  // Embed mode: only render project content (for in-place dock window iframe)
+  if (isEmbed) {
+    return (
+      <div className="min-h-full bg-white overflow-auto">
+        {projectContent}
+      </div>
+    );
+  }
 
   return (
     <>

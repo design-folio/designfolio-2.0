@@ -4,6 +4,7 @@ import {
   popovers,
   sidebars,
 } from '@/lib/constant';
+import { TEMPLATES_LIST, getTemplatePreviewImage } from '@/lib/templates';
 import { formatTimestamp } from '@/lib/times';
 import styles from '@/styles/domain.module.css';
 import Link from 'next/link';
@@ -135,38 +136,7 @@ const variants = {
   visible: { x: '0%' },
 };
 
-const templates = [
-  {
-    id: 1,
-    value: 'default',
-    item: 'Default',
-    isNew: false,
-  },
-  {
-    id: 2,
-    value: 'chat',
-    item: 'Chat Box',
-    isNew: false,
-  },
-  {
-    id: 3,
-    value: 'prism',
-    item: 'Prism',
-    isNew: true,
-  },
-  {
-    id: 4,
-    value: 'pristine',
-    item: 'Pristine',
-    isNew: true,
-  },
-  {
-    id: 5,
-    value: 'macos',
-    item: 'MacOS',
-    isNew: true,
-  },
-];
+const templates = TEMPLATES_LIST;
 
 /* Wallpapers definition moved inside component to access theme */
 
@@ -473,35 +443,8 @@ export default function LoggedInHeader({
     changeCursor(i);
   };
 
-  const renderTemplate = (template = 'default') => {
-    if (template == 'default') {
-      if (theme == 'light') {
-        return '/assets/png/white-default-theme.png';
-      } else {
-        return '/assets/png/dark-default-theme.png';
-      }
-    } else if (template == 'chat') {
-      if (theme == 'light') {
-        return '/assets/png/white-chat-box-theme.png';
-      } else {
-        return '/assets/png/dark-chat-box-theme.png';
-      }
-    } else if (template == 'prism') {
-      if (theme == 'light') {
-        return '/assets/png/prism-light.png';
-      } else {
-        return '/assets/png/prism-dark.png';
-      }
-    } else if (template == 'pristine') {
-      if (theme == 'light') {
-        return '/assets/png/pristine-light.png';
-      } else {
-        return '/assets/png/pristine-dark.png';
-      }
-    } else if (template == 'macos') {
-      return '/assets/png/macos-theme.png';
-    }
-  };
+  const renderTemplate = (templateId = 0) =>
+    getTemplatePreviewImage(templateId, theme === 'light' ? 'light' : 'dark');
 
   const getStyles = i => {
     if (i == cursor) {
@@ -540,7 +483,7 @@ export default function LoggedInHeader({
       <div
         className={cn(
           'shadow-df-section-card-shadow p-2 bg-df-header-bg-color flex justify-between items-center rounded-full',
-          isMacOSTemplate ? 'w-full rounded-none' : 'max-w-[848px] mx-auto'
+          isMacOSTemplate ? 'w-full rounded-none h-[62px]' : 'max-w-[848px] mx-auto'
         )}
       >
         <div className="flex items-center gap-[24px]">
@@ -638,9 +581,10 @@ export default function LoggedInHeader({
                 customClass="mr-0"
                 icon={<MemoPower className="w-4 h-4" />}
                 isDisabled={
-                  (!userDetails?.pro &&
-                    userDetails?.template &&
-                    userDetails?.template !== 0) ||
+                  // //HACK: Allow all templates to be free
+                  // (!userDetails?.pro &&
+                  //   userDetails?.template &&
+                  //   userDetails?.template !== 0) ||
                   updateLoading
                 }
                 animation
@@ -706,9 +650,10 @@ export default function LoggedInHeader({
                       <Button
                         className="w-full mt-4 bg-foreground text-background hover:bg-foreground/90 rounded-full"
                         disabled={
-                          (!userDetails?.pro &&
-                            userDetails?.template &&
-                            userDetails?.template !== 0) ||
+                          //HACK: Allow all templates to be free
+                          // (!userDetails?.pro &&
+                          //   userDetails?.template &&
+                          //   userDetails?.template !== 0) ||
                           updateLoading
                         }
                         onClick={handleUpdate}
@@ -883,7 +828,8 @@ export default function LoggedInHeader({
                   <Button
                     className="h-11 px-4 mr-0 w-full mt-4 bg-foreground text-background hover:bg-foreground/90 rounded-full"
                     onClick={handleUpdate}
-                    disabled={!userDetails?.pro && userDetails?.template != 0}
+                    // disabled={!userDetails?.pro && userDetails?.template != 0}
+                    // //HACK: Allow all templates to be free
                   >
                     <img
                       src="/assets/svgs/power.svg"

@@ -55,7 +55,7 @@ const Modal = ({ show, onClose, children, className }) => {
       {show && (
         <motion.div
           className={twMerge(
-            "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[999]",
+            "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[10000]",
             className
           )}
           onClick={onClose}

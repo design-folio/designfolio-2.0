@@ -1,18 +1,16 @@
 import { useState, useEffect } from "react";
-import { LayoutGroup } from "framer-motion";
-import { Pencil } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Pencil, Plus, ChevronDown, ChevronUp } from "lucide-react";
 import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
 import ReviewCard from "@/components/reviewCard";
 import DragHandle from "@/components/DragHandle";
 import { Button } from "@/components/ui/buttonNew";
-import { TextRotate } from "@/components/ui/text-rotate";
 import { extractTextFromTipTap } from "@/lib/tiptapUtils";
-
-const defaultTestimonials = [
-  { text: "An exceptional designer who brings ideas to life.", author: "Happy Client" },
-  { text: "Delivered beyond expectations, every time.", author: "Satisfied Partner" },
-];
+import SimpleTiptapRenderer from "@/components/SimpleTiptapRenderer";
+import { cn } from "@/lib/utils";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import MemoLinkedin from "@/components/icons/Linkedin";
 
 export const SortableTestimonialItem = ({ review, edit, onEdit }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
@@ -32,7 +30,7 @@ export const SortableTestimonialItem = ({ review, edit, onEdit }) => {
       <div className="flex-1 min-w-0">
         <ReviewCard review={review} sorting={true} edit={edit} />
       </div>
-      <div className="flex items-center gap-2 flex-shrink-0">
+      <div className="flex items-center flex-col gap-2 flex-shrink-0">
         {edit && (
           <Button
             variant="secondary"
@@ -43,23 +41,27 @@ export const SortableTestimonialItem = ({ review, edit, onEdit }) => {
             <Pencil className="w-4 h-4 text-df-icon-color" />
           </Button>
         )}
-        <DragHandle listeners={listeners} attributes={attributes} />
+        <DragHandle size="sm" listeners={listeners} attributes={attributes} />
       </div>
     </div>
   );
 };
 
-const COLLAPSED_CHARS = 120;
-const VIEW_MORE_THRESHOLD = 165;
-const COLLAPSED_BODY_HEIGHT = 150;
 const BODY_PX = 20;
 const PADDING = 32;
 const WIDGET_WIDTH = 320;
 
-export const TestimonialWidget = ({ reviews, edit, onEditClick }) => {
+// Max height caps (card sizes to content up to these)
+const COLLAPSED_MAX_H = 200;
+const EXPANDED_CARD_H = 420;
+/** Roughly 3 lines; above this, Expand is useful to read more */
+const LONG_TEXT_THRESHOLD = 165;
+
+export const TestimonialWidget = ({ reviews, edit, onEditClick, onAddReview }) => {
   const [expanded, setExpanded] = useState(false);
   const [width, setWidth] = useState(WIDGET_WIDTH);
   const [currentQuoteIndex, setCurrentQuoteIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     const updateWidth = () => {
@@ -71,124 +73,226 @@ export const TestimonialWidget = ({ reviews, edit, onEditClick }) => {
     return () => window.removeEventListener("resize", updateWidth);
   }, []);
 
-  const testimonials =
-    reviews?.length > 0
-      ? reviews.map((r) => ({
-          text: extractTextFromTipTap(r.description) || "",
-          author: r.name || r.author || "Client",
-        }))
-      : defaultTestimonials;
-
+  const hasReviews = reviews && reviews.length > 0;
+  const validReviews = hasReviews
+    ? reviews.filter((r) => extractTextFromTipTap(r.description)?.trim())
+    : [];
+  const testimonials = hasReviews
+    ? reviews.map((r) => ({
+      text: extractTextFromTipTap(r.description) || "",
+      author: r.name || r.author || "Client",
+    }))
+    : [];
   const validTestimonials = testimonials.filter((t) => t.text);
-  if (validTestimonials.length === 0) return null;
 
-  const displayTexts = validTestimonials.map((t) =>
-    !expanded && t.text.length > COLLAPSED_CHARS
-      ? t.text.slice(0, COLLAPSED_CHARS).trimEnd() + "…"
-      : t.text
-  );
+  useEffect(() => {
+    if (!expanded && !isHovered && validReviews.length > 1) {
+      const id = setInterval(() => {
+        setCurrentQuoteIndex((i) => (i + 1) % validReviews.length);
+      }, 4000);
+      return () => clearInterval(id);
+    }
+  }, [expanded, isHovered, validReviews.length]);
 
-  const currentTestimonial = validTestimonials[currentQuoteIndex];
-  const isCurrentLong = currentTestimonial && currentTestimonial.text.length > VIEW_MORE_THRESHOLD;
+  if (validTestimonials.length === 0 && hasReviews) return null;
 
+  const quoteIndex = Math.min(currentQuoteIndex, Math.max(0, validReviews.length - 1));
+  const currentReview = validReviews[quoteIndex] ?? validReviews[0];
+  const currentTestimonial = validTestimonials[quoteIndex] ?? validTestimonials[0];
+
+  const isEmpty = !hasReviews;
+  const outerProps = isEmpty
+    ? {
+      role: "button",
+      tabIndex: 0,
+      onClick: () => onAddReview?.(),
+      onKeyDown: (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onAddReview?.();
+        }
+      },
+      className:
+        "bg-[#F5C75D] rounded-2xl p-1 shadow-lg font-sans max-w-[calc(100vw-32px)] cursor-pointer hover:opacity-95 transition-opacity",
+    }
+    : { className: "bg-[#F5C75D] rounded-2xl p-1 shadow-lg font-sans max-w-[calc(100vw-32px)]" };
+
+  const expandedMaxHeight =
+    typeof window !== "undefined"
+      ? Math.min(EXPANDED_CARD_H, window.innerHeight * 0.7)
+      : EXPANDED_CARD_H;
+
+  const isCurrentLong = (currentTestimonial?.text?.length ?? 0) > LONG_TEXT_THRESHOLD;
+  const showExpandShrink = expanded || isCurrentLong;
 
   return (
-    <div
-      className="bg-[#F5C75D] rounded-2xl p-1 shadow-lg font-sans max-w-[calc(100vw-32px)]"
-      style={{ width, overflow: "hidden" }}
-    >
+    <div {...outerProps} style={{ width, overflow: "hidden" }}>
+      {/* Header */}
       <div className="px-4 py-3 flex justify-between items-center text-[#4A3708] font-medium text-[13px]">
         <span>Testimonials</span>
         <div className="flex items-center gap-3">
-          <div className="flex gap-1">
-            <div className="w-1 h-1 rounded-full bg-[#4A3708]/40" />
-            <div className="w-1 h-1 rounded-full bg-[#4A3708]/40" />
-            <div className="w-1 h-1 rounded-full bg-[#4A3708]/40" />
-          </div>
-          {edit ? (
+          {!isEmpty && showExpandShrink ? (
+            <button
+              type="button"
+              onClick={() => setExpanded((v) => !v)}
+              className="flex items-center gap-1.5 text-[#4A3708] font-medium text-[13px] hover:underline cursor-pointer"
+            >
+              {expanded ? (
+                <>
+                  Shrink <ChevronUp className="w-3.5 h-3.5" />
+                </>
+              ) : (
+                <>
+                  Expand <ChevronDown className="w-3.5 h-3.5" />
+                </>
+              )}
+            </button>
+          ) : (
+            <div className="flex gap-1" aria-hidden>
+              <div className="w-1 h-1 rounded-full bg-[#4A3708]/40" />
+              <div className="w-1 h-1 rounded-full bg-[#4A3708]/40" />
+              <div className="w-1 h-1 rounded-full bg-[#4A3708]/40" />
+            </div>
+          )}
+          {edit && !isEmpty && (
             <button
               onClick={onEditClick}
               className="text-[#4A3708] font-medium text-[13px] hover:underline cursor-pointer"
             >
               Edit
             </button>
-          ) : (
-            <span>Done</span>
           )}
         </div>
       </div>
 
-      <div
-        className="bg-white rounded-xl relative overflow-x-hidden flex flex-col py-5"
-        style={{
-          height: expanded ? "auto" : COLLAPSED_BODY_HEIGHT,
-          maxHeight: expanded ? "min(70vh, 420px)" : undefined,
-          overflow: "hidden",
-          transition: "height 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-        }}
-      >
+      {isEmpty ? (
+        <TestimonialEmptyState />
+      ) : (
         <div
-          className="absolute inset-0 opacity-[0.03] pointer-events-none rounded-xl"
+          className="bg-white rounded-xl relative overflow-hidden flex flex-col"
           style={{
-            backgroundImage: "radial-gradient(#000 1px, transparent 1px)",
-            backgroundSize: "16px 16px",
+            height: "auto",
+            maxHeight: expanded ? expandedMaxHeight : COLLAPSED_MAX_H,
+            transition: "max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
           }}
-        />
-        <LayoutGroup>
-          <div className="relative z-10 flex flex-col gap-3 flex-1 min-h-0">
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          {/* ── Quote zone ── both states: size to content; scroll when over max */}
+          <div
+            className={cn(
+              "relative z-10 min-h-0",
+              isCurrentLong ? "pt-5" : "py-5",
+              expanded ? "overflow-y-auto custom-scrollbar" : "overflow-hidden"
+            )}
+            style={{
+              paddingLeft: BODY_PX,
+              paddingRight: BODY_PX,
+              scrollbarWidth: "thin",
+              scrollbarColor: "#C1C1C1 transparent",
+              maxHeight: expanded ? expandedMaxHeight - 80 : COLLAPSED_MAX_H - 80,
+            }}
+          >
+            {/*
+             * Collapsed: CSS line-clamp so text truncates with "..." (no height-based clip).
+             * Expanded: full text, scrollable.
+             */}
             <div
-              className="flex-1 min-h-0 w-full overflow-y-auto overflow-x-hidden"
-              style={{ maxHeight: expanded ? "min(70vh, 380px)" : undefined }}
-            >
-              <div style={{ paddingLeft: BODY_PX, paddingRight: BODY_PX }}>
-                <TextRotate
-                  texts={displayTexts}
-                  staggerFrom="first"
-                  staggerDuration={0.01}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ type: "spring", damping: 30, stiffness: 400 }}
-                  rotationInterval={4000}
-                  auto={!expanded}
-                  onNext={setCurrentQuoteIndex}
-                  splitBy="words"
-                  mainClassName={`font-medium text-black/90 leading-relaxed italic ${
-                    expanded ? "text-[16px]" : "text-[14px]"
-                  }`}
-                />
-              </div>
-            </div>
-            <div className="h-px w-full bg-black/5 flex-shrink-0" />
-            <div
-              className="flex flex-col gap-2 flex-shrink-0"
-              style={{ paddingLeft: BODY_PX, paddingRight: BODY_PX }}
-            >
-              <TextRotate
-                texts={validTestimonials.map((t) => t.author)}
-                staggerFrom="first"
-                staggerDuration={0.025}
-                initial={{ opacity: 0, x: 10 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -10 }}
-                transition={{ type: "spring", damping: 30, stiffness: 400 }}
-                rotationInterval={4000}
-                auto={!expanded}
-                splitBy="characters"
-                mainClassName="text-[11px] text-black/50 font-bold uppercase tracking-wider"
-              />
-              {isCurrentLong && (
-                <button
-                  onClick={() => setExpanded((v) => !v)}
-                  className="text-[11px] text-[#4A3708]/60 hover:text-[#4A3708] font-semibold uppercase tracking-wider self-start transition-colors"
-                >
-                  {expanded ? "← Less" : "View more →"}
-                </button>
+              className={cn(
+                "font-medium text-black/90 leading-relaxed relative",
+                !expanded && "line-clamp-3 [&_.ProseMirror]:line-clamp-3 [&_.ProseMirror]:overflow-hidden [&_.ProseMirror]:break-words"
               )}
+            >
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentReview?._id ?? quoteIndex}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ type: "spring", damping: 30, stiffness: 400 }}
+                  className={!expanded ? "line-clamp-3 overflow-hidden" : undefined}
+                >
+                  <SimpleTiptapRenderer
+                    content={currentReview?.description ?? ""}
+                    mode="review"
+                    enableBulletList={false}
+                    className={cn(
+                      "rounded-none shadow-none bg-transparent min-w-0 [&_.ProseMirror]:min-h-0 [&_.ProseMirror]:p-0",
+                      !expanded
+                        ? "[&_.ProseMirror]:text-[14px] [&_.ProseMirror]:line-clamp-3 [&_.ProseMirror]:overflow-hidden"
+                        : "[&_.ProseMirror]:text-[14px]"
+                    )}
+                  />
+                </motion.div>
+              </AnimatePresence>
             </div>
           </div>
-        </LayoutGroup>
-      </div>
+
+          {/* ── Pinned footer ── avatar, author, LinkedIn */}
+          <div
+            className="relative z-10 flex-shrink-0"
+          >
+            <div className="h-px w-full bg-black/5" />
+            <div
+              className="flex items-center gap-3 h-full flex-wrap py-2"
+              style={{ paddingLeft: BODY_PX, paddingRight: BODY_PX }}
+            >
+              <Avatar className="w-9 h-9 shrink-0">
+                <AvatarImage src={currentReview?.avatar?.url || currentReview?.avatar} alt={currentReview?.name} />
+                <AvatarFallback className="bg-[#F5C75D]/50 text-[#4A3708] text-xs font-medium">
+                  {currentReview?.name
+                    ?.split(" ")
+                    .map((n) => n[0])
+                    .join("")
+                    .slice(0, 2)
+                    .toUpperCase() || "?"}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1 min-w-0 flex flex-col justify-center gap-0.5">
+                <div className="flex items-center gap-1.5">
+                  <AnimatePresence mode="wait">
+                    <motion.span
+                      key={quoteIndex}
+                      initial={{ opacity: 0, x: 10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -10 }}
+                      transition={{ type: "spring", damping: 30, stiffness: 400 }}
+                      className="text-[11px] text-black/50 font-bold uppercase tracking-wider leading-none"
+                    >
+                      {currentTestimonial?.author ?? "Client"}
+                    </motion.span>
+                  </AnimatePresence>
+                  {currentReview?.linkedinLink && currentReview.linkedinLink.trim() !== "" && (
+                    <a
+                      href={currentReview.linkedinLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[#0A66C2] hover:opacity-80 p-0.5 rounded transition-opacity"
+                      aria-label="LinkedIn profile"
+                    >
+                      <MemoLinkedin className="w-3.5 h-3.5" />
+                    </a>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
+
+function TestimonialEmptyState() {
+  return (
+    <div className="bg-white rounded-xl flex flex-col items-center justify-center gap-3 min-h-[120px] py-8 px-6">
+      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#4A3708]/10 text-[#4A3708]/70">
+        <Plus className="h-5 w-5" strokeWidth={2.5} />
+      </div>
+      <div className="text-center space-y-0.5">
+        <p className="text-[#4A3708] font-semibold text-sm">No testimonials yet</p>
+        <p className="text-[#4A3708]/60 text-xs">Tap to add your first review</p>
+      </div>
+    </div>
+  );
+}

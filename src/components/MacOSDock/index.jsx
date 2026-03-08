@@ -5,8 +5,11 @@ import Button3D from '../ui/button-3d';
 import WindowContent from './WindowContent';
 import DockBar from './DockBar';
 import { _updateUser } from '@/network/post-request';
+import { _getProjectDetails } from '@/network/get-request';
+import queryClient from '@/network/queryClient';
 import { useGlobalContext } from '@/context/globalContext';
 import { useRouter } from 'next/router';
+import ProjectContentView from './ProjectContentView';
 import { clampWindowPosition, MOBILE_HEADER_SAFE_TOP_PX, MACOS_PDF_WINDOW_WIDTH, MACOS_PDF_WINDOW_HEIGHT_VH } from '@/lib/utils';
 
 const ZOOM_MIN = 50;
@@ -128,6 +131,8 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
   const [animatingWindow, setAnimatingWindow] = useState(null);
   const [pdfWindows, setPdfWindows] = useState([]);
   const [animatingPdf, setAnimatingPdf] = useState(null);
+  const [projectWindows, setProjectWindows] = useState([]);
+  const [animatingProjectWindow, setAnimatingProjectWindow] = useState(null);
   const [windowPositions, setWindowPositions] = useState({});
 
   // After mount, set the initial window position and open the first window (clamped so it doesn't sit in sidebar area)
@@ -182,6 +187,23 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
     setOrderedProjects(userDetails?.projects || []);
   }, [userDetails?.projects]);
 
+  // Prefetch project data so dock project windows show content immediately (no white screen delay)
+  useEffect(() => {
+    if (edit || preview || !orderedProjects?.length) return;
+    orderedProjects.forEach((proj) => {
+      const id = proj._id || proj.id;
+      if (!id) return;
+      queryClient.prefetchQuery({
+        queryKey: [`project-${id}`],
+        queryFn: async () => {
+          const res = await _getProjectDetails(id, 1);
+          return res?.data ?? null;
+        },
+        staleTime: 60000,
+      });
+    });
+  }, [edit, preview, orderedProjects]);
+
   const handleDragStart = (e, index) => {
     draggedProjectIndexRef.current = index;
     setDraggedProjectIndex(index);
@@ -234,18 +256,50 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
     });
   };
 
-  // ── Project navigation ────────────────────────────────────────────────────────
+  // ── Project windows (in-place, no navigation in view mode) ───────────────────
+  const closeProjectWindow = useCallback((windowId) => {
+    setAnimatingProjectWindow({ id: windowId, type: 'minimize' });
+    setTimeout(() => {
+      setProjectWindows(prev => prev.filter(w => w.id !== windowId));
+      setMinimizedWindows(prev => prev.filter(id => id !== windowId));
+      setMaximizedWindows(prev => prev.filter(id => id !== windowId));
+      setAnimatingProjectWindow(null);
+      setActiveWindowId(prev => (prev === windowId ? null : prev));
+    }, 500);
+  }, []);
+
   const handleOpenProject = useCallback((project) => {
     const id = project._id || project.id;
     if (!id) return;
     if (edit) {
       router.push(`/project/${id}/editor`);
-    } else if (preview) {
-      router.push(`/project/${id}/preview`);
-    } else {
-      router.push(`/project/${id}`);
+      return;
     }
-  }, [edit, preview, router]);
+    if (preview) {
+      router.push(`/project/${id}/preview`);
+      return;
+    }
+    // View mode: open project in a dock window (no navigation)
+    const windowId = `project-${id}`;
+    const existing = projectWindows.find(w => w.projectId === id);
+    if (existing) {
+      setActiveWindowId(existing.id);
+      if (minimizedWindows.includes(existing.id)) {
+        setAnimatingProjectWindow({ id: existing.id, type: 'open' });
+        setMinimizedWindows(prev => prev.filter(w => w !== existing.id));
+        setTimeout(() => setAnimatingProjectWindow(null), 500);
+      }
+      return;
+    }
+    const title = project.title || project.name || 'Project';
+    setProjectWindows(prev => [...prev, { id: windowId, projectId: id, title }]);
+    setAnimatingProjectWindow({ id: windowId, type: 'open' });
+    const offset = (openWindows.length + pdfWindows.length + projectWindows.length) * 20;
+    const clamped = clampWindowPosition(window.innerWidth / 2 + offset, window.innerHeight * 0.45 + offset, sidebarOffsetPx, topOffsetPx);
+    setWindowPositions(prev => ({ ...prev, [windowId]: clamped }));
+    setActiveWindowId(windowId);
+    setTimeout(() => setAnimatingProjectWindow(null), 500);
+  }, [edit, preview, router, projectWindows, minimizedWindows, openWindows.length, pdfWindows.length, sidebarOffsetPx, topOffsetPx]);
 
   // ── PDF windows ──────────────────────────────────────────────────────────────
   const handleOpenPdf = useCallback((title) => {
@@ -672,6 +726,107 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
                     />
                   </div>
                 </div>
+              </div>
+            </div>
+          );
+        })}
+
+        {/* ── Project Windows (in-place, no reload) ── */}
+        {projectWindows.map((pw) => {
+          const pos = windowPositions[pw.id] || { x: window.innerWidth / 2, y: window.innerHeight * 0.45 };
+          const isActive = activeWindowId === pw.id;
+          const isMinimized = minimizedWindows.includes(pw.id);
+          const isAnimating = animatingProjectWindow?.id === pw.id;
+          if (isMinimized && !isAnimating) return null;
+
+          let animationStyles = {};
+          if (isAnimating) {
+            const isOpening = animatingProjectWindow.type === 'open';
+            animationStyles = {
+              animation: isOpening
+                ? 'macWindowOpen 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards'
+                : 'macWindowMinimize 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+            };
+          }
+
+          const isMaximizedPw = maximizedWindows.includes(pw.id);
+          return (
+            <div
+              key={`window-${pw.id}`}
+              onMouseDown={() => setActiveWindowId(pw.id)}
+              onWheel={(e) => e.stopPropagation()}
+              className={`fixed z-40 overflow-hidden border shadow-2xl flex flex-col pointer-events-auto bg-[#faf9f6] border-[#d1d1d1] ${isMaximizedPw || isMobile
+                ? 'max-w-none rounded-none border-0 transition-all duration-300'
+                : 'w-[896px] h-[70vh] rounded-lg transition-shadow'
+                } ${isActive ? 'shadow-2xl ring-1 ring-black/5' : 'shadow-lg opacity-95'}`}
+              style={{
+                ...(isMaximizedPw || isMobile
+                  ? {
+                    zIndex: isActive ? 50 : 40,
+                    left: isMobile ? '2.5%' : 0,
+                    right: isMobile ? undefined : (sidebarOffsetPx > 0 ? `${sidebarOffsetPx}px` : undefined),
+                    top: isMobile ? `calc(${MOBILE_HEADER_SAFE_TOP_PX}px + env(safe-area-inset-top, 0px))` : `${topOffsetPx}px`,
+                    width: isMobile ? '95vw' : (sidebarOffsetPx > 0 ? `calc(100vw - ${sidebarOffsetPx}px)` : '100vw'),
+                    height: isMobile ? `calc(100vh - ${MOBILE_HEADER_SAFE_TOP_PX + 104}px - env(safe-area-inset-top, 0px))` : `calc(100vh - ${topOffsetPx}px - 80px)`,
+                    transform: 'none',
+                    borderRadius: isMobile ? '12px' : '0',
+                  }
+                  : {
+                    left: pos.x,
+                    top: pos.y,
+                    transform: 'translate(-50%, -50%)',
+                    zIndex: isActive ? 50 : 40,
+                    transition: isDragging === pw.id ? undefined : 'left 0.25s ease-out, top 0.25s ease-out',
+                  }),
+                ...animationStyles,
+              }}
+            >
+              <style dangerouslySetInnerHTML={{
+                __html: isMobile
+                  ? `
+                @keyframes macWindowOpen {
+                  0% { transform: translate(0, calc(100vh - ${MOBILE_HEADER_SAFE_TOP_PX + 74}px)) scale(0.1); opacity: 0; }
+                  100% { transform: translate(0, 0) scale(1); opacity: 1; }
+                }
+                @keyframes macWindowMinimize {
+                  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+                  100% { transform: translate(0, calc(100vh - ${MOBILE_HEADER_SAFE_TOP_PX + 74}px)) scale(0.1); opacity: 0; }
+                }
+              `
+                  : `
+                @keyframes macWindowOpen {
+                  0% { transform: translate(-50%, calc(100vh - ${pos.y}px)) scale(0.1); opacity: 0; }
+                  100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+                }
+                @keyframes macWindowMinimize {
+                  0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+                  100% { transform: translate(-50%, calc(100vh - ${pos.y}px)) scale(0.1); opacity: 0; }
+                }
+              `}} />
+              <div
+                onMouseDown={(e) => !isMobile && !isMaximizedPw && handleMouseDown(pw.id, e)}
+                className={`h-10 border-b flex items-center px-4 justify-between select-none bg-[#e8e6e1] border-[#d1d1d1] ${isMobile || maximizedWindows.includes(pw.id) ? 'cursor-default' : 'cursor-move active:cursor-grabbing'}`}
+              >
+                <div className="flex gap-2 items-center">
+                  <div className="text-sm font-medium flex items-center gap-2 text-[#444]">
+                    <span className="opacity-70">🌐</span>
+                    <span className="truncate max-w-[200px]">{pw.title}</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1 text-[#666]">
+                  <button type="button" className="p-1 rounded transition-colors hover:bg-black/10" onClick={(e) => toggleMinimize(pw.id, e)} title="Minimize">
+                    <Minus className="w-4 h-4" />
+                  </button>
+                  <button type="button" className="p-1 rounded transition-colors hover:bg-black/10" onClick={(e) => toggleMaximize(pw.id, e)} title="Maximize">
+                    <Square className="w-4 h-4" />
+                  </button>
+                  <button type="button" className="p-1 rounded transition-colors hover:bg-red-500/20 hover:text-red-600" onClick={() => closeProjectWindow(pw.id)} title="Close">
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+              <div className="flex-1 overflow-y-auto bg-white min-h-0">
+                <ProjectContentView projectId={pw.projectId} userDetails={userDetails} />
               </div>
             </div>
           );

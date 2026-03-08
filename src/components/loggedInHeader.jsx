@@ -483,7 +483,7 @@ export default function LoggedInHeader({
       <div
         className={cn(
           'shadow-df-section-card-shadow p-2 bg-df-header-bg-color flex justify-between items-center rounded-full',
-          isMacOSTemplate ? 'w-full rounded-none' : 'max-w-[848px] mx-auto'
+          isMacOSTemplate ? 'w-full rounded-none h-[62px]' : 'max-w-[848px] mx-auto'
         )}
       >
         <div className="flex items-center gap-[24px]">

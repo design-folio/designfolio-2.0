@@ -414,7 +414,7 @@ const ThemePanel = ({
                 )}
               >
                 <div className="flex gap-2 items-center mb-2">
-                  <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer">
+                  <p className="text-[14px] text-popover-heading-color font-inter font-[500] cursor-pointer">
                     {tmpl.item}
                   </p>
                   {tmpl.isNew && (

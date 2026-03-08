@@ -11,32 +11,32 @@ export const TEMPLATE_IDS = {
 export const TEMPLATES_BY_ID = {
   [TEMPLATE_IDS.DEFAULT]: {
     id: TEMPLATE_IDS.DEFAULT,
-    value: "default",
-    item: "Default",
+    value: "canvas",
+    item: "Canvas",
     isNew: false,
   },
   [TEMPLATE_IDS.CHAT]: {
     id: TEMPLATE_IDS.CHAT,
-    value: "chat",
-    item: "Chat Box",
+    value: "chatfolio",
+    item: "Chatfolio",
     isNew: false,
   },
   [TEMPLATE_IDS.PRISM]: {
     id: TEMPLATE_IDS.PRISM,
-    value: "prism",
-    item: "Prism",
+    value: "spotlight",
+    item: "Spotlight",
     isNew: true,
   },
   [TEMPLATE_IDS.PRISTINE]: {
     id: TEMPLATE_IDS.PRISTINE,
-    value: "pristine",
-    item: "Pristine",
+    value: "mono",
+    item: "Mono",
     isNew: true,
   },
   [TEMPLATE_IDS.MACOS]: {
     id: TEMPLATE_IDS.MACOS,
-    value: "macos",
-    item: "MacOS",
+    value: "retro-os",
+    item: "Retro OS",
     isNew: true,
   },
 };
@@ -55,22 +55,22 @@ export const TEMPLATES_LIST = TEMPLATE_DISPLAY_ORDER.map((id) => TEMPLATES_BY_ID
 
 export const TEMPLATE_PREVIEW_IMAGES = {
   [TEMPLATE_IDS.DEFAULT]: {
-    light: "/assets/png/white-default-theme.png",
-    dark: "/assets/png/dark-default-theme.png",
+    light: "/assets/png/template-thumbnails/canvas.png",
+    dark: "/assets/png/template-thumbnails/canvas-dark.png",
   },
   [TEMPLATE_IDS.CHAT]: {
-    light: "/assets/png/white-chat-box-theme.png",
-    dark: "/assets/png/dark-chat-box-theme.png",
+    light: "/assets/png/template-thumbnails/chatfolio.png",
+    dark: "/assets/png/template-thumbnails/chatfolio-dark.png",
   },
   [TEMPLATE_IDS.PRISM]: {
-    light: "/assets/png/prism-light.png",
-    dark: "/assets/png/prism-dark.png",
+    light: "/assets/png/template-thumbnails/spotlight.png",
+    dark: "/assets/png/template-thumbnails/spotlight-dark.png",
   },
   [TEMPLATE_IDS.PRISTINE]: {
-    light: "/assets/png/pristine-light.png",
-    dark: "/assets/png/pristine-dark.png",
+    light: "/assets/png/template-thumbnails/mono.png",
+    dark: "/assets/png/template-thumbnails/mono-dark.png",
   },
-  [TEMPLATE_IDS.MACOS]: "/assets/png/macos-theme.png",
+  [TEMPLATE_IDS.MACOS]: "/assets/png/template-thumbnails/retro-os.png",
 };
 
 export function getTemplatePreviewImage(templateId = TEMPLATE_IDS.DEFAULT, theme = "light") {

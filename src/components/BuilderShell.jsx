@@ -76,7 +76,8 @@ export default function BuilderShell({ showProWarning = false, hideCourseCard = 
 
   return (
     <>
-      {showProWarning && userDetails && !userDetails?.pro && <ProWarning />}
+      {/* //HACK: Allow all templates to be free */}
+      {/* {showProWarning && userDetails && !userDetails?.pro && <ProWarning />} */}
 
       <Modal show={showModal && showModal !== modals.aiProject && showModal !== modals.review && showModal !== modals.work}>
         {modalContent()}

@@ -8,6 +8,7 @@ import Button from "@/components/button";
 import { useRouter } from "next/router";
 import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
 import Portfolio from "@/components/comp/Portfolio";
+import MacOSTemplate from "@/components/comp/MacOSTemplate";
 import MadeWithDesignfolio from "../../public/assets/svgs/madewithdesignfolio.svg";
 import WallpaperBackground from "@/components/WallpaperBackground";
 
@@ -19,19 +20,23 @@ export default function Index() {
     projectRef,
     template,
     setWallpaper,
+    setWallpaperEffects,
     wallpaperUrl,
     wallpaperEffects,
   } = useGlobalContext();
   const router = useRouter();
 
-  // Restore wallpaper from userDetails when component mounts
+  // Restore wallpaper and effects from userDetails
   useEffect(() => {
     if (userDetails?.wallpaper !== undefined) {
       const wp = userDetails.wallpaper;
       const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
       setWallpaper(wpValue !== undefined ? wpValue : 0);
+      if (wp && typeof wp === 'object' && wp.effects) {
+        setWallpaperEffects(wp.effects);
+      }
     }
-  }, [userDetails?.wallpaper, setWallpaper]);
+  }, [userDetails?.wallpaper, setWallpaper, setWallpaperEffects]);
 
   const renderTemplate = () => {
     switch (template) {
@@ -109,6 +114,24 @@ export default function Index() {
             )}
           </div>
         );
+      case 4:
+        return (
+          <div>
+            <MacOSTemplate userDetails={userDetails} edit={false} preview />
+            {!userDetails?.pro && (
+              <div
+                className={`text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] xl:block cursor-pointer mb-[120px] lg:m-0`}
+                onClick={() =>
+                  window.open("https://www.designfolio.me", "_blank")
+                }
+              >
+                <div className="bg-df-section-card-bg-color shadow-df-section-card-shadow p-2 rounded-2xl">
+                  <MadeWithDesignfolio className="text-df-icon-color" />
+                </div>
+              </div>
+            )}
+          </div>
+        );
 
       default:
         return <Preview1 userDetails={userDetails} projectRef={projectRef} />;
@@ -127,7 +150,7 @@ export default function Index() {
       <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
       <main className="min-h-screen">
         <div
-          className={` mx-auto px-2 md:px-4 lg:px-0 ${template != 3 && "max-w-[848px]"
+          className={` mx-auto px-2 md:px-4 lg:px-0 ${template != 3 && template != 4 && "max-w-[848px]"
             }`}
         >
           {renderTemplate()}

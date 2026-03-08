@@ -98,6 +98,9 @@ const ProjectEditor = ({ projectDetails, userDetails }) => {
   const editorContainer = useRef(null);
   const [isClient, setIsClient] = useState(false);
   const router = useRouter();
+  // Use the project's own _id when available (e.g. inside a floating ProjectWindow
+  // where router.query.id is not set).
+  const projectId = projectDetails?._id || router.query.id;
   const { setWordCount, setProjectValue } = useGlobalContext();
   const phEvent = usePostHogEvent();
 
@@ -272,7 +275,6 @@ const ProjectEditor = ({ projectDetails, userDetails }) => {
         onChange: () => {
           (async () => {
             const content = await editor?.save();
-            console.log(content);
             if (
               JSON.stringify(content?.blocks) !==
               JSON.stringify(projectDetails?.content?.blocks)
@@ -282,10 +284,10 @@ const ProjectEditor = ({ projectDetails, userDetails }) => {
                   block.data.file.url = block.data.file.key;
                 }
               });
-              _updateProject(router.query.id, { content }).then(res => {
+              _updateProject(projectId, { content }).then(res => {
                 if (userDetails) {
                   const updatedProjects = userDetails?.projects?.map(item =>
-                    item._id === router.query.id
+                    item._id === projectId
                       ? { ...item, content: res?.data?.project?.content }
                       : item
                   );
@@ -300,7 +302,7 @@ const ProjectEditor = ({ projectDetails, userDetails }) => {
 
                   // Track event
                   phEvent(POSTHOG_EVENT_NAMES.PROJECT_EDITED, {
-                    project_id: router.query.id,
+                    project_id: projectId,
                     user_email: userDetails?.email,
                     editor_type: 'project_editor',
                   });

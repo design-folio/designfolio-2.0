@@ -422,7 +422,9 @@ const ThemePanel = ({
                   )}
                 </div>
                 <img src={renderTemplate(tmpl.id)} alt="" className="cursor-pointer" />
-                {tmpl.id !== 0 && <div className={`mt-4 ${styles.templateBadgePro}`}>Pro</div>}
+
+                {/* //HACK: Allow all templates to be free */}
+                {/* {tmpl.id !== 0 && <div className={`mt-4 ${styles.templateBadgePro}`}>Pro</div>} */}
               </div>
             ))}
           </div>

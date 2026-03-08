@@ -581,9 +581,10 @@ export default function LoggedInHeader({
                 customClass="mr-0"
                 icon={<MemoPower className="w-4 h-4" />}
                 isDisabled={
-                  (!userDetails?.pro &&
-                    userDetails?.template &&
-                    userDetails?.template !== 0) ||
+                  // //HACK: Allow all templates to be free
+                  // (!userDetails?.pro &&
+                  //   userDetails?.template &&
+                  //   userDetails?.template !== 0) ||
                   updateLoading
                 }
                 animation
@@ -649,9 +650,10 @@ export default function LoggedInHeader({
                       <Button
                         className="w-full mt-4 bg-foreground text-background hover:bg-foreground/90 rounded-full"
                         disabled={
-                          (!userDetails?.pro &&
-                            userDetails?.template &&
-                            userDetails?.template !== 0) ||
+                          //HACK: Allow all templates to be free
+                          // (!userDetails?.pro &&
+                          //   userDetails?.template &&
+                          //   userDetails?.template !== 0) ||
                           updateLoading
                         }
                         onClick={handleUpdate}
@@ -826,7 +828,8 @@ export default function LoggedInHeader({
                   <Button
                     className="h-11 px-4 mr-0 w-full mt-4 bg-foreground text-background hover:bg-foreground/90 rounded-full"
                     onClick={handleUpdate}
-                    disabled={!userDetails?.pro && userDetails?.template != 0}
+                    // disabled={!userDetails?.pro && userDetails?.template != 0}
+                    // //HACK: Allow all templates to be free
                   >
                     <img
                       src="/assets/svgs/power.svg"

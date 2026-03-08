@@ -124,7 +124,7 @@ const ThemePanel = ({
   const [isDarkWallpapers, setIsDarkWallpapers] = useState(theme === 'dark' || theme === 1);
   const show = activeSidebar === sidebars.theme;
 
-  // Get available sections for current template
+  const isMacOSTemplate = template === 4;
   const availableSections = getAvailableSections(template);
 
   // Initialize sectionOrder from userDetails or use template default
@@ -391,8 +391,9 @@ const ThemePanel = ({
             </div>
             <Switch
               className="data-[state=unchecked]:bg-[#CFC4AF] data-[state=checked]:bg-df-orange-color "
-              checked={theme === 'dark' || theme === 1}
+              checked={isMacOSTemplate ? false : (theme === 'dark' || theme === 1)}
               onCheckedChange={(checked) => changeTheme(checked ? 1 : 0)}
+              disabled={isMacOSTemplate}
               data-testid={isMobile ? "switch-theme-mode-layouts-mobile" : "switch-theme-mode-layouts"}
             />
             <div className="flex items-center gap-2">
@@ -401,27 +402,29 @@ const ThemePanel = ({
           </div>
 
           <div className="grid grid-cols-1 gap-4">
-            {templates.map((tmpl, index) => (
+            {templates.map((tmpl) => (
               <div
                 key={tmpl.value}
-                onClick={() => changeTemplate(index)}
+                onClick={() => changeTemplate(tmpl.id)}
                 className={twMerge(
                   "px-4 py-6 flex flex-col justify-center items-center border rounded-[16px] cursor-pointer transition-all",
                   "bg-default-cursor-box-bg border-default-cursor-box-border",
                   "hover:bg-default-cursor-bg-hover",
-                  getTemplateStyles(index)
+                  getTemplateStyles(tmpl.id)
                 )}
               >
                 <div className="flex gap-2 items-center mb-2">
-                  <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer">
+                  <p className="text-[14px] text-popover-heading-color font-inter font-[500] cursor-pointer">
                     {tmpl.item}
                   </p>
                   {tmpl.isNew && (
                     <Badge className="bg-[#EE7F70] text-white text-[12px] font-medium">New</Badge>
                   )}
                 </div>
-                <img src={renderTemplate(tmpl.value)} alt="" className="cursor-pointer" />
-                {tmpl.id !== 1 && <div className={`mt-4 ${styles.templateBadgePro}`}>Pro</div>}
+                <img src={renderTemplate(tmpl.id)} alt="" className="cursor-pointer" />
+
+                {/* //HACK: Allow all templates to be free */}
+                {/* {tmpl.id !== 0 && <div className={`mt-4 ${styles.templateBadgePro}`}>Pro</div>} */}
               </div>
             ))}
           </div>
@@ -435,8 +438,9 @@ const ThemePanel = ({
               <span className="text-sm font-medium">Light Mode</span>
             </div>
             <Switch
-              checked={theme === 'dark' || theme === 1}
+              checked={isMacOSTemplate ? false : (theme === 'dark' || theme === 1)}
               onCheckedChange={(checked) => changeTheme(checked ? 1 : 0)}
+              disabled={isMacOSTemplate}
               data-testid={isMobile ? "switch-wallpaper-mode-mobile" : "switch-wallpaper-mode"}
             />
             <div className="flex items-center gap-2">

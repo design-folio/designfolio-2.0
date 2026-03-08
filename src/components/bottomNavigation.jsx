@@ -64,7 +64,7 @@ export default function BottomNavigation({
                 {
                   icon: Home,
                   label: "Home",
-                  active: activeTab === "home",
+                  active: activeTab === "home" && !isResumeDialogOpen,
                   onClick: handleHomeNavigation,
                 },
                 ...(userDetails?.projects?.length
@@ -72,7 +72,7 @@ export default function BottomNavigation({
                     {
                       icon: Layers,
                       label: "Works",
-                      active: activeTab === "projects",
+                      active: activeTab === "projects" && !isResumeDialogOpen,
                       onClick: () => {
                         handleProjectNavigation();
                       },
@@ -84,7 +84,7 @@ export default function BottomNavigation({
                     {
                       icon: MessageSquare,
                       label: "Testimonials",
-                      active: activeTab === "reviews",
+                      active: activeTab === "reviews" && !isResumeDialogOpen,
                       onClick: () => {
                         setActiveTab("reviews");
                         scrollToId("section-reviews", "center");
@@ -107,7 +107,7 @@ export default function BottomNavigation({
                     {
                       icon: Mail,
                       label: "Contact",
-                      active: activeTab === "contact",
+                      active: activeTab === "contact" && !isResumeDialogOpen,
                       onClick: () => {
                         setActiveTab("contact");
                         window.scrollTo({

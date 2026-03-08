@@ -8,6 +8,7 @@ export default function DragHandle({
     attributes,
     className,
     isButton = false,
+    size, // "sm" = compact (h-8 w-8), matches icon buttons
     ...props
 }) {
     const handleClick = (e) => {
@@ -15,6 +16,8 @@ export default function DragHandle({
         e.preventDefault();
         e.stopPropagation();
     };
+
+    const isCompact = size === "sm";
 
     return (
 
@@ -38,6 +41,23 @@ export default function DragHandle({
                     {...props}
                 >
                     <GripVertical className="pointer-events-none size-4" />
+                </div>
+            ) : isCompact ? (
+                <div
+                    data-drag-handle
+                    {...(listeners || {})}
+                    {...(attributes || {})}
+                    style={{ touchAction: "none" }}
+                    onClick={handleClick}
+                    className={cn(
+                        "h-8 w-8 rounded-full flex items-center justify-center transition-colors duration-200",
+                        "bg-secondary-btn-bg-color hover:bg-secondary-btn-bg-hover-color border border-secondary-btn-border-color",
+                        "text-secondary-btn-text-color [cursor:grab] active:[cursor:grabbing]",
+                        className
+                    )}
+                    {...props}
+                >
+                    <GripVertical className="pointer-events-none w-4 h-4" />
                 </div>
             ) : (
                 <div

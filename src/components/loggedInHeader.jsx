@@ -4,6 +4,7 @@ import {
   popovers,
   sidebars,
 } from '@/lib/constant';
+import { TEMPLATES_LIST, getTemplatePreviewImage } from '@/lib/templates';
 import { formatTimestamp } from '@/lib/times';
 import styles from '@/styles/domain.module.css';
 import Link from 'next/link';
@@ -135,32 +136,7 @@ const variants = {
   visible: { x: '0%' },
 };
 
-const templates = [
-  {
-    id: 1,
-    value: 'default',
-    item: 'Default',
-    isNew: false,
-  },
-  {
-    id: 2,
-    value: 'chat',
-    item: 'Chat Box',
-    isNew: false,
-  },
-  {
-    id: 3,
-    value: 'prism',
-    item: 'Prism',
-    isNew: true,
-  },
-  {
-    id: 4,
-    value: 'pristine',
-    item: 'Pristine',
-    isNew: true,
-  },
-];
+const templates = TEMPLATES_LIST;
 
 /* Wallpapers definition moved inside component to access theme */
 
@@ -213,6 +189,11 @@ export default function LoggedInHeader({
 
   const { username, latestPublishDate, _id, email } = userDetails || {};
   const { isClient } = useClient();
+  const isMacOSTemplate = template == 4 && (
+    router.pathname === '/builder' ||
+    router.pathname === '/project/[id]/editor' ||
+    router.pathname === '/project/[id]/preview'
+  );
 
   const wpPath = theme === 'dark' ? '/wallpaper/darkui' : '/wallpaper';
   const wallpapers = [
@@ -311,6 +292,19 @@ export default function LoggedInHeader({
           className="w-full h-8 rounded"
           style={{
             backgroundImage: `url(${wpPath}/wall7.png)`,
+            backgroundSize: 'cover',
+          }}
+        ></div>
+      ),
+    },
+    {
+      id: 8,
+      value: 8,
+      item: (
+        <div
+          className="w-full h-8 rounded"
+          style={{
+            backgroundImage: `url(${wpPath}/wall8.png)`,
             backgroundSize: 'cover',
           }}
         ></div>
@@ -449,33 +443,8 @@ export default function LoggedInHeader({
     changeCursor(i);
   };
 
-  const renderTemplate = (template = 'default') => {
-    if (template == 'default') {
-      if (theme == 'light') {
-        return '/assets/png/white-default-theme.png';
-      } else {
-        return '/assets/png/dark-default-theme.png';
-      }
-    } else if (template == 'chat') {
-      if (theme == 'light') {
-        return '/assets/png/white-chat-box-theme.png';
-      } else {
-        return '/assets/png/dark-chat-box-theme.png';
-      }
-    } else if (template == 'prism') {
-      if (theme == 'light') {
-        return '/assets/png/prism-light.png';
-      } else {
-        return '/assets/png/prism-dark.png';
-      }
-    } else if (template == 'pristine') {
-      if (theme == 'light') {
-        return '/assets/png/pristine-light.png';
-      } else {
-        return '/assets/png/pristine-dark.png';
-      }
-    }
-  };
+  const renderTemplate = (templateId = 0) =>
+    getTemplatePreviewImage(templateId, theme === 'light' ? 'light' : 'dark');
 
   const getStyles = i => {
     if (i == cursor) {
@@ -499,9 +468,13 @@ export default function LoggedInHeader({
     ? 'fixed top-0 left-0'
     : 'fixed top-0 left-0 -translate-y-full';
 
+  const headerZ = isMacOSTemplate
+    ? (popoverMenu ? 'z-[10050]' : 'z-[110]')
+    : 'z-50 py-2 md:py-6 px-2 md:px-0';
+
   return (
     <div
-      className={cn(headerStyle, 'z-50 px-2 md:px-0 py-2 md:py-6')}
+      className={cn(headerStyle, headerZ)}
       style={{
         right: shouldShiftHeader ? getSidebarShiftWidth(activeSidebar) : '0',
         transition: 'transform 0.3s ease-out, right 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -509,8 +482,8 @@ export default function LoggedInHeader({
     >
       <div
         className={cn(
-          'shadow-df-section-card-shadow max-w-[848px] p-2 bg-df-header-bg-color mx-auto flex justify-between items-center',
-          'rounded-full'
+          'shadow-df-section-card-shadow p-2 bg-df-header-bg-color flex justify-between items-center rounded-full',
+          isMacOSTemplate ? 'w-full rounded-none h-[62px]' : 'max-w-[848px] mx-auto'
         )}
       >
         <div className="flex items-center gap-[24px]">
@@ -608,16 +581,17 @@ export default function LoggedInHeader({
                 customClass="mr-0"
                 icon={<MemoPower className="w-4 h-4" />}
                 isDisabled={
-                  (!userDetails?.pro &&
-                    userDetails?.template &&
-                    userDetails?.template !== 0) ||
+                  // //HACK: Allow all templates to be free
+                  // (!userDetails?.pro &&
+                  //   userDetails?.template &&
+                  //   userDetails?.template !== 0) ||
                   updateLoading
                 }
                 animation
               />
               {isClient && (
                 <div
-                  className={`pt-5 origin-top-right absolute z-20 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${popoverMenu === popovers.publishMenu
+                  className={`pt-5 origin-top-right absolute right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${popoverMenu === popovers.publishMenu
                     ? 'opacity-100 scale-100'
                     : 'opacity-0 scale-90 pointer-events-none'
                     }`}
@@ -676,9 +650,10 @@ export default function LoggedInHeader({
                       <Button
                         className="w-full mt-4 bg-foreground text-background hover:bg-foreground/90 rounded-full"
                         disabled={
-                          (!userDetails?.pro &&
-                            userDetails?.template &&
-                            userDetails?.template !== 0) ||
+                          //HACK: Allow all templates to be free
+                          // (!userDetails?.pro &&
+                          //   userDetails?.template &&
+                          //   userDetails?.template !== 0) ||
                           updateLoading
                         }
                         onClick={handleUpdate}
@@ -691,7 +666,7 @@ export default function LoggedInHeader({
               )}
             </div>
 
-            <DropdownMenu modal={false}>
+            <DropdownMenu modal={false} >
               <DropdownMenuTrigger asChild>
                 <button
                   type="button"
@@ -717,7 +692,7 @@ export default function LoggedInHeader({
               {isClient && (
                 <DropdownMenuContent
                   align="end"
-                  className="w-64 p-2 rounded-2xl shadow-xl bg-white border-black/5 dark:bg-zinc-950 dark:border-white/5"
+                  className="w-64 p-2 rounded-2xl shadow-xl bg-white border-black/5 z-[10001] dark:bg-zinc-950 dark:border-white/5"
                 >
                   {!userDetails?.pro && (
                     <DropdownMenuItem
@@ -853,7 +828,8 @@ export default function LoggedInHeader({
                   <Button
                     className="h-11 px-4 mr-0 w-full mt-4 bg-foreground text-background hover:bg-foreground/90 rounded-full"
                     onClick={handleUpdate}
-                    disabled={!userDetails?.pro && userDetails?.template != 0}
+                    // disabled={!userDetails?.pro && userDetails?.template != 0}
+                    // //HACK: Allow all templates to be free
                   >
                     <img
                       src="/assets/svgs/power.svg"

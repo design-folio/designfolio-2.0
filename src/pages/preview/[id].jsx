@@ -1,5 +1,6 @@
 import Minimal from "@/components/comp/Minimal";
 import Portfolio from "@/components/comp/Portfolio";
+import MacOSTemplate from "@/components/comp/MacOSTemplate";
 import Seo from "@/components/seo";
 import Template1 from "@/components/template";
 import Template2 from "@/components/template2";
@@ -126,6 +127,24 @@ export default function Index({ initialUserDetails }) {
             )}
           </>
         );
+      case 4:
+        return (
+          <>
+            <MacOSTemplate userDetails={finalUserDetails} />
+            {!finalUserDetails?.pro && (
+              <div
+                className={`text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] xl:block cursor-pointer mb-[120px] lg:m-0`}
+                onClick={() =>
+                  window.open("https://www.designfolio.me", "_blank")
+                }
+              >
+                <div className="bg-df-section-card-bg-color shadow-df-section-card-shadow p-2 rounded-2xl">
+                  <MadeWithDesignfolio className="text-df-icon-color" />
+                </div>
+              </div>
+            )}
+          </>
+        );
 
       default:
         return <Template1 userDetails={finalUserDetails} />;
@@ -148,7 +167,7 @@ export default function Index({ initialUserDetails }) {
       <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
       <main className="min-h-screen">
         <div
-          className={` mx-auto px-2 md:px-4 lg:px-0 ${finalUserDetails?.template != 3 && "max-w-[848px]"
+          className={` mx-auto px-2 md:px-4 lg:px-0 ${finalUserDetails?.template != 3 && finalUserDetails?.template != 4 && "max-w-[848px]"
             }`}
         >
           {finalUserDetails && renderTemplate()}

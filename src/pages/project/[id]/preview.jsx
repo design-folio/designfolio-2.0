@@ -180,7 +180,7 @@ export default function Index() {
       {isMacOS ? (
         <>
           {/* Full macOS desktop as background — menu bar, dock, widgets */}
-          <MacOSTemplate userDetails={userDetails} edit />
+          <MacOSTemplate userDetails={userDetails} edit noTopNavbar />
           {/* Project window floats on top as a fixed overlay */}
           <MacOSWindowShell
             title={projectTitle}
@@ -206,7 +206,7 @@ export default function Index() {
             {previewContent}
           </MacOSWindowShell>
           {/* All modals, sidebars, panels — same as builder page */}
-          <BuilderShell />
+          <BuilderShell hideCourseCard />
         </>
       ) : (
         <main className={cn("min-h-screen")}>
@@ -228,6 +228,6 @@ export const getServerSideProps = async (context) => {
     };
   }
   return {
-    props: { dfToken: !!dfToken },
+    props: { dfToken: !!dfToken, hideHeader: true },
   };
 };

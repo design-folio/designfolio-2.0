@@ -19,7 +19,7 @@ import { SortableWorkExperienceItem } from "@/components/MacOSDock/WorkExperienc
 
 
 
-const MacOSTemplate = ({ userDetails, edit = false, preview = false, showHeaderInside = false }) => {
+const MacOSTemplate = ({ userDetails, edit = false, preview = false, showHeaderInside = false, noTopNavbar = false }) => {
   const { setCursor, openSidebar, openModal, setSelectedReview, setSelectedWork, setUserDetails, updateCache, activeSidebar, showModal, template } = useGlobalContext();
   const isProWarningVisible = template !== 0;
   const isOnboardingOpen = showModal === modals.onboarding || showModal === modals.onBoardingNewUser;
@@ -39,9 +39,9 @@ const MacOSTemplate = ({ userDetails, edit = false, preview = false, showHeaderI
     [userDetails?.firstName, userDetails?.lastName].filter(Boolean).join(" ") + "'s Portfolio" ||
     "Portfolio";
 
-  const loggedInHeaderOffset = edit ? 62 : 0;
+  const loggedInHeaderOffset = (edit && !noTopNavbar) ? 62 : 0;
   const macOSMenuBarTop = loggedInHeaderOffset;
-  const desktopTopMargin = edit ? loggedInHeaderOffset + 28 : (showHeaderInside ? 152 : 28);
+  const desktopTopMargin = (edit && !noTopNavbar) ? loggedInHeaderOffset + 28 : (showHeaderInside ? 152 : 28);
 
   // Sidebar shift: when a sidebar opens, shift the fixed-position elements to the left
   const sidebarShiftWidth = edit && !isMobile && isSidebarThatShifts(activeSidebar)

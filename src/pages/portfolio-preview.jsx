@@ -130,6 +130,14 @@ export default function Index() {
                 </div>
               </div>
             )}
+            <Button
+              text="Go Back"
+              onClick={() => router.back()}
+              type="secondary"
+              size="small"
+              customClass="!transition-none mt-8 absolute top-4 left-8"
+              icon={<LeftArrow className="cursor-pointer" />}
+            />
           </div>
         );
 

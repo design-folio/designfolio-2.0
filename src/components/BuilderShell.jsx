@@ -24,7 +24,7 @@ import { useGlobalContext } from '@/context/globalContext';
 import useClient from '@/hooks/useClient';
 import { useIsMobile } from '@/hooks/use-mobile';
 
-export default function BuilderShell({ showProWarning = false }) {
+export default function BuilderShell({ showProWarning = false, hideCourseCard = false }) {
   const {
     showModal,
     taskPercentage,
@@ -112,7 +112,7 @@ export default function BuilderShell({ showProWarning = false }) {
       )}
 
       {/* {userDetails && taskPercentage !== 100 && !template === 4 && <BottomTask />} */}
-      {!isMobile && <CourseCard />}
+      {!isMobile && !hideCourseCard && <CourseCard />}
       <FooterSettingsPanel />
     </>
   );

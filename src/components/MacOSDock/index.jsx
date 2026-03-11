@@ -10,7 +10,8 @@ import queryClient from '@/network/queryClient';
 import { useGlobalContext } from '@/context/globalContext';
 import { useRouter } from 'next/router';
 import ProjectContentView from './ProjectContentView';
-import { clampWindowPosition, MOBILE_HEADER_SAFE_TOP_PX, MACOS_PDF_WINDOW_WIDTH, MACOS_PDF_WINDOW_HEIGHT_VH } from '@/lib/utils';
+import MacOSProjectToolbar from './MacOSProjectToolbar';
+import { clampWindowPosition, MOBILE_HEADER_SAFE_TOP_PX, MACOS_PDF_WINDOW_WIDTH, MACOS_PDF_WINDOW_HEIGHT_VH, getProjectUrl } from '@/lib/utils';
 
 const ZOOM_MIN = 50;
 const ZOOM_MAX = 150;
@@ -189,7 +190,7 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
 
   // Prefetch project data so dock project windows show content immediately (no white screen delay)
   useEffect(() => {
-    if (edit || preview || !orderedProjects?.length) return;
+    if (edit || !orderedProjects?.length) return;
     orderedProjects.forEach((proj) => {
       const id = proj._id || proj.id;
       if (!id) return;
@@ -202,7 +203,7 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
         staleTime: 60000,
       });
     });
-  }, [edit, preview, orderedProjects]);
+  }, [edit, orderedProjects]);
 
   const handleDragStart = (e, index) => {
     draggedProjectIndexRef.current = index;
@@ -275,11 +276,7 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
       router.push(`/project/${id}/editor`);
       return;
     }
-    if (preview) {
-      router.push(`/project/${id}/preview`);
-      return;
-    }
-    // View mode: open project in a dock window (no navigation)
+    // View and preview: open project in a dock window (no navigation); only editor navigates
     const windowId = `project-${id}`;
     const existing = projectWindows.find(w => w.projectId === id);
     if (existing) {
@@ -291,15 +288,27 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
       }
       return;
     }
+    // Close any open project windows before opening the new one (avoids stacking/state issues)
+    const projectIds = projectWindows.map(w => w.id);
+    setProjectWindows([]);
+    setAnimatingProjectWindow(null);
+    setMinimizedWindows(prev => prev.filter(wid => !projectIds.includes(wid)));
+    setMaximizedWindows(prev => prev.filter(wid => !projectIds.includes(wid)));
+    setWindowPositions(prev => {
+      const next = { ...prev };
+      projectIds.forEach(wid => delete next[wid]);
+      return next;
+    });
+    if (projectIds.some(wid => activeWindowId === wid)) setActiveWindowId(null);
+
     const title = project.title || project.name || 'Project';
-    setProjectWindows(prev => [...prev, { id: windowId, projectId: id, title }]);
+    setProjectWindows([{ id: windowId, projectId: id, title }]);
     setAnimatingProjectWindow({ id: windowId, type: 'open' });
-    const offset = (openWindows.length + pdfWindows.length + projectWindows.length) * 20;
-    const clamped = clampWindowPosition(window.innerWidth / 2 + offset, window.innerHeight * 0.45 + offset, sidebarOffsetPx, topOffsetPx);
+    const clamped = clampWindowPosition(window.innerWidth / 2, window.innerHeight * 0.45, sidebarOffsetPx, topOffsetPx);
     setWindowPositions(prev => ({ ...prev, [windowId]: clamped }));
     setActiveWindowId(windowId);
     setTimeout(() => setAnimatingProjectWindow(null), 500);
-  }, [edit, preview, router, projectWindows, minimizedWindows, openWindows.length, pdfWindows.length, sidebarOffsetPx, topOffsetPx]);
+  }, [edit, router, projectWindows, minimizedWindows, openWindows.length, pdfWindows.length, sidebarOffsetPx, topOffsetPx]);
 
   // ── PDF windows ──────────────────────────────────────────────────────────────
   const handleOpenPdf = useCallback((title) => {
@@ -731,38 +740,40 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
           );
         })}
 
-        {/* ── Project Windows (in-place, no reload) ── */}
-        {projectWindows.map((pw) => {
-          const pos = windowPositions[pw.id] || { x: window.innerWidth / 2, y: window.innerHeight * 0.45 };
-          const isActive = activeWindowId === pw.id;
-          const isMinimized = minimizedWindows.includes(pw.id);
-          const isAnimating = animatingProjectWindow?.id === pw.id;
-          if (isMinimized && !isAnimating) return null;
+        {/* ── Project Windows (in-place, no reload) — portaled so they always stack on top and animate ── */}
+        {typeof document !== 'undefined' && projectWindows.length > 0 && createPortal(
+          <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 260 }}>
+            {projectWindows.map((pw) => {
+              const pos = windowPositions[pw.id] || { x: window.innerWidth / 2, y: window.innerHeight * 0.45 };
+              const isActive = activeWindowId === pw.id;
+              const isMinimized = minimizedWindows.includes(pw.id);
+              const isAnimating = animatingProjectWindow?.id === pw.id;
+              if (isMinimized && !isAnimating) return null;
 
-          let animationStyles = {};
-          if (isAnimating) {
-            const isOpening = animatingProjectWindow.type === 'open';
-            animationStyles = {
-              animation: isOpening
-                ? 'macWindowOpen 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards'
-                : 'macWindowMinimize 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards',
-            };
-          }
+              let animationStyles = {};
+              if (isAnimating) {
+                const isOpening = animatingProjectWindow.type === 'open';
+                animationStyles = {
+                  animation: isOpening
+                    ? 'macWindowOpen 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards'
+                    : 'macWindowMinimize 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+                };
+              }
 
-          const isMaximizedPw = maximizedWindows.includes(pw.id);
-          return (
-            <div
-              key={`window-${pw.id}`}
-              onMouseDown={() => setActiveWindowId(pw.id)}
-              onWheel={(e) => e.stopPropagation()}
-              className={`fixed z-40 overflow-hidden border shadow-2xl flex flex-col pointer-events-auto bg-[#faf9f6] border-[#d1d1d1] ${isMaximizedPw || isMobile
-                ? 'max-w-none rounded-none border-0 transition-all duration-300'
-                : 'w-[896px] h-[70vh] rounded-lg transition-shadow'
-                } ${isActive ? 'shadow-2xl ring-1 ring-black/5' : 'shadow-lg opacity-95'}`}
-              style={{
-                ...(isMaximizedPw || isMobile
-                  ? {
-                    zIndex: isActive ? 50 : 40,
+              const isMaximizedPw = maximizedWindows.includes(pw.id);
+              return (
+                <div
+                  key={`window-${pw.id}`}
+                  onMouseDown={() => setActiveWindowId(pw.id)}
+                  onWheel={(e) => e.stopPropagation()}
+                  className={`fixed overflow-hidden border shadow-2xl flex flex-col pointer-events-auto bg-[#faf9f6] border-[#d1d1d1] ${isMaximizedPw || isMobile
+                    ? 'max-w-none rounded-none border-0 transition-all duration-300'
+                    : 'w-[896px] h-[70vh] rounded-lg transition-shadow'
+                    } ${isActive ? 'shadow-2xl ring-1 ring-black/5' : 'shadow-lg opacity-95'}`}
+                  style={{
+                    ...(isMaximizedPw || isMobile
+                      ? {
+                        zIndex: isActive ? 2 : 1,
                     left: isMobile ? '2.5%' : 0,
                     right: isMobile ? undefined : (sidebarOffsetPx > 0 ? `${sidebarOffsetPx}px` : undefined),
                     top: isMobile ? `calc(${MOBILE_HEADER_SAFE_TOP_PX}px + env(safe-area-inset-top, 0px))` : `${topOffsetPx}px`,
@@ -775,7 +786,7 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
                     left: pos.x,
                     top: pos.y,
                     transform: 'translate(-50%, -50%)',
-                    zIndex: isActive ? 50 : 40,
+                    zIndex: isActive ? 2 : 1,
                     transition: isDragging === pw.id ? undefined : 'left 0.25s ease-out, top 0.25s ease-out',
                   }),
                 ...animationStyles,
@@ -825,12 +836,30 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
                   </button>
                 </div>
               </div>
-              <div className="flex-1 overflow-y-auto bg-white min-h-0">
-                <ProjectContentView projectId={pw.projectId} userDetails={userDetails} />
-              </div>
-            </div>
-          );
-        })}
+              {/* Status / toolbar: back, forward, URL, copy, refresh; edit button only in edit mode */}
+              <MacOSProjectToolbar
+                projectUrl={getProjectUrl({
+                  username: userDetails?.username,
+                  baseDomain: process.env.NEXT_PUBLIC_BASE_DOMAIN,
+                  projectId: pw.projectId,
+                }) || (typeof window !== 'undefined' ? `${window.location.origin}/project/${pw.projectId}` : '')}
+                onBack={() => router.back()}
+                onRefresh={() => queryClient.invalidateQueries({ queryKey: [`project-${pw.projectId}`] })}
+                rightSlot={edit ? (
+                  <Button3D onClick={() => router.push(`/project/${pw.projectId}/editor`)}>
+                    EDIT
+                  </Button3D>
+                ) : null}
+              />
+                  <div className="flex-1 overflow-y-auto bg-white min-h-0">
+                    <ProjectContentView projectId={pw.projectId} userDetails={userDetails} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>,
+          document.body
+        )}
 
         {/* ── PDF Windows ── */}
         {pdfWindows.map((pdf) => {

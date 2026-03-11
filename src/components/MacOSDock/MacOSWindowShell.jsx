@@ -1,17 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import {
-  Minus,
-  Square,
-  X,
-  ChevronLeft,
-  ChevronRight,
-  Lock,
-  RefreshCw,
-  Trash2,
-  Eye,
-  EyeOff,
-  Copy,
-} from 'lucide-react';
+import { Minus, Square, X, Trash2, Eye, EyeOff, Lock } from 'lucide-react';
+import MacOSProjectToolbar from './MacOSProjectToolbar';
 import { useRouter } from 'next/router';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
@@ -228,53 +217,10 @@ const MacOSWindowShell = ({
       </div>
 
       {/* ── Toolbar (address bar + actions) ── */}
-      <div className="h-10 bg-[#f6f6f6] border-b border-[#d1d1d1] flex items-center px-3 gap-3">
-        <div className="flex items-center gap-1">
-          <button
-            className="p-1.5 hover:bg-black/5 rounded text-[#555]"
-            type="button"
-            onClick={() => router.back()}
-          >
-            <ChevronLeft size={16} />
-          </button>
-          <button
-            className="p-1.5 hover:bg-black/5 rounded text-[#555] opacity-40 cursor-default"
-            type="button"
-            aria-disabled="true"
-          >
-            <ChevronRight size={16} />
-          </button>
-        </div>
-
-        <div className="flex-1 flex items-center bg-[#e3e3e3]/50 border border-[#c8c8c8] rounded-md h-7 px-3 shadow-inner gap-2">
-          <Lock size={10} className="text-[#666] shrink-0" />
-          <span className="text-[11px] text-[#444] font-sans truncate flex-1 min-w-0">
-            {projectUrl
-              ? `${projectUrl}${activeTab ? `/${activeTab.toLowerCase()}` : ''}`
-              : `https://${(title || 'project').toLowerCase().replace(/\s+/g, '-')}.com`}
-          </span>
-          <button
-            type="button"
-            className="p-1 hover:bg-black/5 rounded text-[#666] hover:text-[#444] shrink-0"
-            title="Copy URL"
-            onClick={async () => {
-              const url = projectUrl
-                ? `${projectUrl}${activeTab ? `/${activeTab.toLowerCase()}` : ''}`
-                : `https://${(title || 'project').toLowerCase().replace(/\s+/g, '-')}.com`;
-              try {
-                await navigator.clipboard.writeText(url);
-                toast.success('URL copied to clipboard');
-              } catch {
-                toast.error('Could not copy URL');
-              }
-            }}
-          >
-            <Copy size={10} className="text-[#888]" />
-          </button>
-          <RefreshCw size={10} className="text-[#888] shrink-0" />
-        </div>
-
-        {canManage && (
+      <MacOSProjectToolbar
+        projectUrl={projectUrl ? `${projectUrl}${activeTab ? `/${activeTab.toLowerCase()}` : ''}` : `https://${(title || 'project').toLowerCase().replace(/\s+/g, '-')}.com`}
+        onBack={() => router.back()}
+        rightSlot={canManage && (
           <div className="flex items-center gap-1 border-l border-[#d1d1d1] ml-1 pl-2">
             {onDelete && (
               <button
@@ -442,7 +388,7 @@ const MacOSWindowShell = ({
             )}
           </div>
         )}
-      </div>
+      />
       {/* ── Content ── */}
       <div className="flex-1 overflow-y-auto bg-white">
         {children}

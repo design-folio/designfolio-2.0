@@ -117,7 +117,7 @@ export default function Index() {
       case 4:
         return (
           <div>
-            <MacOSTemplate userDetails={userDetails} edit={false} preview />
+            <MacOSTemplate userDetails={userDetails} edit={false} preview={false} />
             {!userDetails?.pro && (
               <div
                 className={`text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] xl:block cursor-pointer mb-[120px] lg:m-0`}

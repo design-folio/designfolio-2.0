@@ -59,7 +59,6 @@ const MacOSWindowShell = ({
   const [pos, setPos] = useState(null); // null = not yet initialised (SSR safe)
   const [isMaximized, setIsMaximized] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
-
   const [isPasswordEnabled, setIsPasswordEnabled] = useState(!!hasPassword);
   const [showEye, setShowEye] = useState(false);
 

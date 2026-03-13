@@ -1,7 +1,7 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { X, Minus, Square, RefreshCw, ChevronDown, ZoomIn, ZoomOut } from 'lucide-react';
-import Button3D from '../ui/button-3d';
+import Button3D from '../../ui/button-3d';
 import WindowContent from './WindowContent';
 import DockBar from './DockBar';
 import { _updateUser } from '@/network/post-request';

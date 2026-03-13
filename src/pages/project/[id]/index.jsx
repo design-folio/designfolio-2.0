@@ -15,25 +15,32 @@ import { useEffect, useMemo, useState } from "react";
 import MadeWithDesignfolio from "../../../../public/assets/svgs/madewithdesignfolio.svg";
 import WallpaperBackground from "@/components/WallpaperBackground";
 import { getWallpaperUrl } from "@/lib/wallpaper";
-import MacOSWindowShell from "@/components/MacOSDock/MacOSWindowShell";
+import MacOSWindowShell from "@/components/templates/MacOSDock/MacOSWindowShell";
 import { getProjectUrl } from "@/lib/utils";
 import MacOSTemplate from "@/components/comp/MacOSTemplate";
 
-export default function Index({ data, ownerTemplate, ownerWallpaper, ownerUser }) {
+export default function Index({
+  data,
+  ownerTemplate,
+  ownerWallpaper,
+  ownerUser,
+}) {
   const router = useRouter();
   const { setTheme, theme, resolvedTheme } = useTheme();
-  const { setCursor, setWallpaper, userDetails, wallpaperEffects } = useGlobalContext();
+  const { setCursor, setWallpaper, userDetails, wallpaperEffects } =
+    useGlobalContext();
   const [unlockedProjectData, setUnlockedProjectData] = useState(null);
 
   // Try to get project from context first (fastest)
   const contextProject = useMemo(() => {
     if (!router.query.id || !userDetails?.projects) return null;
     return userDetails.projects.find(
-      (project) => project._id === router.query.id
+      (project) => project._id === router.query.id,
     );
   }, [router.query.id, userDetails?.projects]);
 
-  const shouldFetch = router.isReady &&
+  const shouldFetch =
+    router.isReady &&
     !!router.query.id &&
     userDetails !== null && // Context has been checked
     !contextProject; // Project not in context
@@ -94,18 +101,21 @@ export default function Index({ data, ownerTemplate, ownerWallpaper, ownerUser }
     // Set wallpaper: project wallpaper > userDetails wallpaper
     if (project?.wallpaper !== undefined) {
       const wp = project.wallpaper;
-      const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
+      const wpValue = wp && typeof wp === "object" ? wp.url || wp.value : wp;
       setWallpaper(wpValue !== undefined ? wpValue : 0);
     } else if (userDetails?.wallpaper !== undefined) {
       const wp = userDetails.wallpaper;
-      const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
+      const wpValue = wp && typeof wp === "object" ? wp.url || wp.value : wp;
       setWallpaper(wpValue !== undefined ? wpValue : 0);
     }
 
     // Set cursor: project cursor > project theme > userDetails cursor
-    const cursor = project?.cursor != null
-      ? project.cursor
-      : (project?.theme != null ? project.theme : (userDetails?.cursor || 0));
+    const cursor =
+      project?.cursor != null
+        ? project.cursor
+        : project?.theme != null
+          ? project.theme
+          : userDetails?.cursor || 0;
     setCursor(cursor);
   }, [projectData?.project, userDetails, setTheme, setWallpaper, setCursor]);
   const project = projectData?.project;
@@ -116,22 +126,30 @@ export default function Index({ data, ownerTemplate, ownerWallpaper, ownerUser }
 
   // Wallpaper priority: project wallpaper → owner wallpaper (for MacOS) → userDetails wallpaper
   const projectWallpaper = project?.wallpaper;
-  const rawWp = projectWallpaper || (isMacOS ? ownerWallpaper : null) || userDetails?.wallpaper;
-  const wpValue = rawWp && typeof rawWp === 'object'
-    ? (rawWp.url || rawWp.value)
-    : rawWp;
+  const rawWp =
+    projectWallpaper ||
+    (isMacOS ? ownerWallpaper : null) ||
+    userDetails?.wallpaper;
+  const wpValue =
+    rawWp && typeof rawWp === "object" ? rawWp.url || rawWp.value : rawWp;
 
   // Compute wallpaper URL for this project
-  const currentTheme = resolvedTheme || theme || (project?.theme == 1 ? "dark" : "light");
-  const wallpaperUrl = wpValue && wpValue !== 0
-    ? getWallpaperUrl(wpValue, currentTheme)
-    : null;
+  const currentTheme =
+    resolvedTheme || theme || (project?.theme == 1 ? "dark" : "light");
+  const wallpaperUrl =
+    wpValue && wpValue !== 0 ? getWallpaperUrl(wpValue, currentTheme) : null;
 
   // Get wallpaper effects from project → owner → userDetails
-  const effects = project?.wallpaper?.effects || (isMacOS ? ownerWallpaper?.effects : null) || userDetails?.wallpaper?.effects || null;
+  const effects =
+    project?.wallpaper?.effects ||
+    (isMacOS ? ownerWallpaper?.effects : null) ||
+    userDetails?.wallpaper?.effects ||
+    null;
 
   const projectContent = (
-    <div className={`max-w-[848px] mx-auto pt-[16px] pb-[80px] lg:py-[40px] px-2 md:px-4 lg:px-0`}>
+    <div
+      className={`max-w-[848px] mx-auto pt-[16px] pb-[80px] lg:py-[40px] px-2 md:px-4 lg:px-0`}
+    >
       <motion.div
         className="flex-1 flex flex-col gap-3"
         variants={containerVariants}
@@ -148,7 +166,10 @@ export default function Index({ data, ownerTemplate, ownerWallpaper, ownerUser }
                   id={router.query.id}
                   setIsProtected={(value) => {
                     if (!value && unlockedProjectData) {
-                      setUnlockedProjectData(prev => ({ ...prev, isProtected: false }));
+                      setUnlockedProjectData((prev) => ({
+                        ...prev,
+                        isProtected: false,
+                      }));
                     }
                   }}
                   setProjectDetails={(newData) => {
@@ -185,7 +206,9 @@ export default function Index({ data, ownerTemplate, ownerWallpaper, ownerUser }
         description={project?.description || data?.project?.description}
         keywords={project?.description || data?.project?.description}
         imageUrl={
-          project?.thumbnail?.key || data?.project?.thumbnail?.key || "/assets/png/seo-profile.png"
+          project?.thumbnail?.key ||
+          data?.project?.thumbnail?.key ||
+          "/assets/png/seo-profile.png"
         }
         url={`https://${project?.username || data?.project?.username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`}
       />
@@ -203,7 +226,7 @@ export default function Index({ data, ownerTemplate, ownerWallpaper, ownerUser }
           )}
           {/* Project window floats on top as a fixed overlay */}
           <MacOSWindowShell
-            title={project?.title || data?.project?.title || 'Project'}
+            title={project?.title || data?.project?.title || "Project"}
             projectUrl={getProjectUrl({
               username: project?.username || data?.project?.username,
               baseDomain: process.env.NEXT_PUBLIC_BASE_DOMAIN,
@@ -219,7 +242,9 @@ export default function Index({ data, ownerTemplate, ownerWallpaper, ownerUser }
           {!project?.pro && (
             <div
               className={`text-center flex justify-center fixed bottom-0 left-0 right-0 lg:left-1/2 lg:-translate-x-1/2 lg:bottom-[24px] lg:right-[unset] mb-2 xl:block cursor-pointer`}
-              onClick={() => window.open("https://www.designfolio.me", "_blank")}
+              onClick={() =>
+                window.open("https://www.designfolio.me", "_blank")
+              }
             >
               <div className="bg-df-section-card-bg-color shadow-lg p-2 rounded-2xl">
                 <MadeWithDesignfolio className="text-df-icon-color" />

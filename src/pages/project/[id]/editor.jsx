@@ -1,19 +1,19 @@
-import Editor from '@/components/editor';
-import WallpaperBackground from '@/components/WallpaperBackground';
-import { useGlobalContext } from '@/context/globalContext';
-import { getProjectUrl } from '@/lib/utils';
-import { cn } from '@/lib/utils';
-import { _getProjectDetails } from '@/network/get-request';
-import { _updateProject, _updateUser } from '@/network/post-request';
-import { useMutation } from '@tanstack/react-query';
-import { useRouter } from 'next/router';
-import { useTheme } from 'next-themes';
-import React, { useEffect, useRef, useState } from 'react';
-import { useIsMobile } from '@/hooks/use-mobile';
-import { modals, sidebars } from '@/lib/constant';
-import MacOSWindowShell from '@/components/MacOSDock/MacOSWindowShell';
-import MacOSTemplate from '@/components/comp/MacOSTemplate';
-import BuilderShell from '@/components/BuilderShell';
+import Editor from "@/components/editor";
+import WallpaperBackground from "@/components/WallpaperBackground";
+import { useGlobalContext } from "@/context/globalContext";
+import { getProjectUrl } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+import { _getProjectDetails } from "@/network/get-request";
+import { _updateProject, _updateUser } from "@/network/post-request";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/router";
+import { useTheme } from "next-themes";
+import React, { useEffect, useRef, useState } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { modals, sidebars } from "@/lib/constant";
+import MacOSWindowShell from "@/components/templates/MacOSDock/MacOSWindowShell";
+import MacOSTemplate from "@/components/comp/MacOSTemplate";
+import BuilderShell from "@/components/BuilderShell";
 
 export default function Index() {
   const router = useRouter();
@@ -52,13 +52,13 @@ export default function Index() {
     setProjectDetails({ project: project });
 
     if (isFromRefetch) {
-      setTheme(project?.theme == 1 ? 'dark' : 'light');
+      setTheme(project?.theme == 1 ? "dark" : "light");
       setWallpaper(project?.wallpaper);
     } else {
       if (project?.theme !== undefined) {
-        setTheme(project.theme == 1 ? 'dark' : 'light');
+        setTheme(project.theme == 1 ? "dark" : "light");
       } else if (userDetails?.theme !== undefined) {
-        setTheme(userDetails.theme == 1 ? 'dark' : 'light');
+        setTheme(userDetails.theme == 1 ? "dark" : "light");
       }
 
       if (project?.wallpaper !== undefined) {
@@ -83,7 +83,7 @@ export default function Index() {
       const response = await _getProjectDetails(router.query.id, 0);
       return response.data;
     },
-    onSuccess: data => {
+    onSuccess: (data) => {
       setProjectData(data?.project, true);
     },
     cacheTime: 300000,
@@ -101,7 +101,7 @@ export default function Index() {
     if (initializedRef.current) return;
 
     const cachedProject = userDetails.projects?.find(
-      project => project._id === projectId
+      (project) => project._id === projectId,
     );
 
     if (cachedProject) {
@@ -121,20 +121,20 @@ export default function Index() {
     }
 
     const body = document.body;
-    body.style.transition = 'margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+    body.style.transition = "margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1)";
 
-    let marginWidth = '0px';
+    let marginWidth = "0px";
     if (activeSidebar === sidebars.work || activeSidebar === sidebars.review) {
-      marginWidth = '500px';
+      marginWidth = "500px";
     } else if (activeSidebar === sidebars.theme) {
-      marginWidth = '320px';
+      marginWidth = "320px";
     }
 
     body.style.marginRight = marginWidth;
 
     return () => {
-      body.style.marginRight = '0px';
-      body.style.transition = '';
+      body.style.marginRight = "0px";
+      body.style.transition = "";
     };
   }, [activeSidebar, isMobile]);
 
@@ -143,7 +143,10 @@ export default function Index() {
   if (!userDetails && userDetailLoading) {
     return (
       <>
-        <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
+        <WallpaperBackground
+          wallpaperUrl={wallpaperUrl}
+          effects={wallpaperEffects}
+        />
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div className="w-8 h-8 border-2 border-[#888] border-t-transparent rounded-full animate-spin" />
         </div>
@@ -154,12 +157,14 @@ export default function Index() {
   if (!userDetails) return null;
 
   const isMacOS = userDetails.template === 4;
-  const isEmbed = router.query.embed === '1';
-  const projectTitle = projectDetails?.project?.title || 'Project';
+  const isEmbed = router.query.embed === "1";
+  const projectTitle = projectDetails?.project?.title || "Project";
   const currentProject = projectDetails?.project;
 
   const editorContent = (
-    <div className={`max-w-[848px] mx-auto ${isMacOS ? 'py-6' : 'py-[94px] md:py-[124px]'} px-2 md:px-4 lg:px-0`}>
+    <div
+      className={`max-w-[848px] mx-auto ${isMacOS ? "py-6" : "py-[94px] md:py-[124px]"} px-2 md:px-4 lg:px-0`}
+    >
       <Editor
         edit
         projectDetails={projectDetails}
@@ -186,36 +191,44 @@ export default function Index() {
 
     // Free-tier 2-project visibility limit currently disabled, but keep logic for future use
     if (false && !userDetails.pro && isUnhiding && visibleCount >= 2) {
-      setUpgradeModalUnhideProject({ projectId, title: existing.title || 'Project' });
+      setUpgradeModalUnhideProject({
+        projectId,
+        title: existing.title || "Project",
+      });
       setShowUpgradeModal(true);
       return;
     }
 
     const updatedProjects = projects.map((p) =>
-      p._id === projectId ? { ...p, hidden: !p.hidden } : p
+      p._id === projectId ? { ...p, hidden: !p.hidden } : p,
     );
 
-    setUserDetails((prev) => (prev ? { ...prev, projects: updatedProjects } : prev));
+    setUserDetails((prev) =>
+      prev ? { ...prev, projects: updatedProjects } : prev,
+    );
     _updateProject(projectId, { hidden: !existing.hidden });
     _updateUser({ projects: updatedProjects });
 
     setProjectDetails((prev) =>
-      prev ? { project: { ...prev.project, hidden: !prev.project.hidden } } : prev
+      prev
+        ? { project: { ...prev.project, hidden: !prev.project.hidden } }
+        : prev,
     );
   };
 
   // Embed mode: only render editor content (no shell, no background)
   if (isEmbed) {
     return (
-      <div className="min-h-full bg-white overflow-auto">
-        {editorContent}
-      </div>
+      <div className="min-h-full bg-white overflow-auto">{editorContent}</div>
     );
   }
 
   return (
     <>
-      <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
+      <WallpaperBackground
+        wallpaperUrl={wallpaperUrl}
+        effects={wallpaperEffects}
+      />
 
       {isMacOS ? (
         <>
@@ -232,15 +245,15 @@ export default function Index() {
               projectId: router.query.id,
             })}
             tabs={[
-              { label: 'Preview', href: `/project/${router.query.id}/preview` },
-              { label: 'Editor', href: `/project/${router.query.id}/editor` },
+              { label: "Preview", href: `/project/${router.query.id}/preview` },
+              { label: "Editor", href: `/project/${router.query.id}/editor` },
             ]}
             activeTab="Editor"
             canManage={!!currentProject}
             isHidden={!!currentProject?.hidden}
             hasPassword={!!currentProject?.protected}
             projectId={currentProject?._id}
-            initialPassword={currentProject?.password || ''}
+            initialPassword={currentProject?.password || ""}
             onDelete={handleDeleteProject}
             onToggleVisibility={handleToggleVisibility}
           >
@@ -250,9 +263,7 @@ export default function Index() {
           <BuilderShell />
         </>
       ) : (
-        <main className={cn('min-h-screen')}>
-          {editorContent}
-        </main>
+        <main className={cn("min-h-screen")}>{editorContent}</main>
       )}
     </>
   );
@@ -268,7 +279,7 @@ export const getServerSideProps = async (context) => {
       },
     };
   }
-  const isEmbed = context.query.embed === '1';
+  const isEmbed = context.query.embed === "1";
   return {
     props: { dfToken: !!dfToken, ...(isEmbed && { hideHeader: true }) },
   };

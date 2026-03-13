@@ -3,37 +3,37 @@ import {
   isSidebarThatShifts,
   popovers,
   sidebars,
-} from '@/lib/constant';
-import { TEMPLATES_LIST, getTemplatePreviewImage } from '@/lib/templates';
-import { formatTimestamp } from '@/lib/times';
-import styles from '@/styles/domain.module.css';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { Suspense, useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
-import Logo from '../../public/assets/svgs/logo.svg';
-import ButtonOld from './button';
+} from "@/lib/constant";
+import { TEMPLATES_LIST, getTemplatePreviewImage } from "@/lib/templates";
+import { formatTimestamp } from "@/lib/times";
+import styles from "@/styles/domain.module.css";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { Suspense, useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import Logo from "../../public/assets/svgs/logo.svg";
+import ButtonOld from "./button";
 // import ThemeIcon from "../../public/assets/svgs/themeIcon.svg";
-import DfImage from './image';
-import { Button } from '@/components/ui/buttonNew';
+import DfImage from "./image";
+import { Button } from "@/components/ui/buttonNew";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { useGlobalContext } from '@/context/globalContext';
-import { useIsMobile } from '@/hooks/use-mobile';
-import useClient from '@/hooks/useClient';
-import { usePostHogEvent } from '@/hooks/usePostHogEvent';
-import { removeCursor } from '@/lib/cursor';
-import { getUserAvatarImage } from '@/lib/getAvatarUrl';
-import { POSTHOG_EVENT_NAMES } from '@/lib/posthogEventNames';
-import { cn } from '@/lib/utils';
-import { _publish } from '@/network/post-request';
-import queryClient from '@/network/queryClient';
-import Cookies from 'js-cookie';
+} from "@/components/ui/dropdown-menu";
+import { useGlobalContext } from "@/context/globalContext";
+import { useIsMobile } from "@/hooks/use-mobile";
+import useClient from "@/hooks/useClient";
+import { usePostHogEvent } from "@/hooks/usePostHogEvent";
+import { removeCursor } from "@/lib/cursor";
+import { getUserAvatarImage } from "@/lib/getAvatarUrl";
+import { POSTHOG_EVENT_NAMES } from "@/lib/posthogEventNames";
+import { cn } from "@/lib/utils";
+import { _publish } from "@/network/post-request";
+import queryClient from "@/network/queryClient";
+import Cookies from "js-cookie";
 import {
   Check,
   Copy,
@@ -41,25 +41,26 @@ import {
   LogOut,
   Settings,
   SettingsIcon,
-} from 'lucide-react';
-import { useTheme } from 'next-themes';
-import dynamic from 'next/dynamic';
-import LeftArrow from '../../public/assets/svgs/left-arrow.svg';
-import LinkIcon from '../../public/assets/svgs/link.svg';
-import MoonIcon from '../../public/assets/svgs/moon.svg';
-import SunIcon from '../../public/assets/svgs/sun.svg';
-import MemoAnalytics from './icons/Analytics';
-import MemoPower from './icons/Power';
-import MemoPreviewIcon from './icons/PreviewIcon';
-import MemoThemeIcon from './icons/ThemeIcon';
-import MobileMenuButton from './MobileMenuButton';
-import Popover from './popover';
-import Text from './text';
-import ThemePanel from './ThemePanel';
-import { SegmentedControl } from './ui/segmented-control';
-import MemoDFLogo from './icons/DFLogo';
+} from "lucide-react";
+import { useTheme } from "next-themes";
+import dynamic from "next/dynamic";
+import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
+import LinkIcon from "../../public/assets/svgs/link.svg";
+import MoonIcon from "../../public/assets/svgs/moon.svg";
+import SunIcon from "../../public/assets/svgs/sun.svg";
+import MemoAnalytics from "./icons/Analytics";
+import MemoPower from "./icons/Power";
+import MemoPreviewIcon from "./icons/PreviewIcon";
+import MemoThemeIcon from "./icons/ThemeIcon";
+import MobileMenuButton from "./MobileMenuButton";
+import Popover from "./popover";
+import Text from "./text";
+import ThemePanel from "./ThemePanel";
+import { SegmentedControl } from "./ui/segmented-control";
+import MemoDFLogo from "./icons/DFLogo";
+import Navbar from "./comp/navbar";
 
-const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
+const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
 const cursors = [
   {
@@ -132,8 +133,8 @@ const cursors = [
   },
 ];
 const variants = {
-  hidden: { x: '100%' },
-  visible: { x: '0%' },
+  hidden: { x: "100%" },
+  visible: { x: "0%" },
 };
 
 const templates = TEMPLATES_LIST;
@@ -168,10 +169,10 @@ export default function LoggedInHeader({
   const [diamondLottie, setDiamondLottie] = useState(null);
 
   useEffect(() => {
-    fetch('/lottie/diamond-lottie.json')
-      .then(res => res.json())
+    fetch("/lottie/diamond-lottie.json")
+      .then((res) => res.json())
       .then(setDiamondLottie)
-      .catch(() => { });
+      .catch(() => {});
   }, []);
 
   const phEvent = usePostHogEvent();
@@ -189,13 +190,13 @@ export default function LoggedInHeader({
 
   const { username, latestPublishDate, _id, email } = userDetails || {};
   const { isClient } = useClient();
-  const isMacOSTemplate = template == 4 && (
-    router.pathname === '/builder' ||
-    router.pathname === '/project/[id]/editor' ||
-    router.pathname === '/project/[id]/preview'
-  );
+  const isMacOSTemplate =
+    template == 4 &&
+    (router.pathname === "/builder" ||
+      router.pathname === "/project/[id]/editor" ||
+      router.pathname === "/project/[id]/preview");
 
-  const wpPath = theme === 'dark' ? '/wallpaper/darkui' : '/wallpaper';
+  const wpPath = theme === "dark" ? "/wallpaper/darkui" : "/wallpaper";
   const wallpapers = [
     {
       id: 1,
@@ -214,7 +215,7 @@ export default function LoggedInHeader({
           className="w-full h-8 rounded"
           style={{
             backgroundImage: `url(${wpPath}/wall1.png)`,
-            backgroundSize: 'cover',
+            backgroundSize: "cover",
           }}
         ></div>
       ),
@@ -227,7 +228,7 @@ export default function LoggedInHeader({
           className="w-full h-8 rounded"
           style={{
             backgroundImage: `url(${wpPath}/wall2.png)`,
-            backgroundSize: 'cover',
+            backgroundSize: "cover",
           }}
         ></div>
       ),
@@ -240,7 +241,7 @@ export default function LoggedInHeader({
           className="w-full h-8 rounded"
           style={{
             backgroundImage: `url(${wpPath}/wall3.png)`,
-            backgroundSize: 'cover',
+            backgroundSize: "cover",
           }}
         ></div>
       ),
@@ -253,7 +254,7 @@ export default function LoggedInHeader({
           className="w-full h-8 rounded"
           style={{
             backgroundImage: `url(${wpPath}/wall4.png)`,
-            backgroundSize: 'cover',
+            backgroundSize: "cover",
           }}
         ></div>
       ),
@@ -266,7 +267,7 @@ export default function LoggedInHeader({
           className="w-full h-8 rounded"
           style={{
             backgroundImage: `url(${wpPath}/wall5.png)`,
-            backgroundSize: 'cover',
+            backgroundSize: "cover",
           }}
         ></div>
       ),
@@ -279,7 +280,7 @@ export default function LoggedInHeader({
           className="w-full h-8 rounded"
           style={{
             backgroundImage: `url(${wpPath}/wall6.png)`,
-            backgroundSize: 'cover',
+            backgroundSize: "cover",
           }}
         ></div>
       ),
@@ -292,7 +293,7 @@ export default function LoggedInHeader({
           className="w-full h-8 rounded"
           style={{
             backgroundImage: `url(${wpPath}/wall7.png)`,
-            backgroundSize: 'cover',
+            backgroundSize: "cover",
           }}
         ></div>
       ),
@@ -305,7 +306,7 @@ export default function LoggedInHeader({
           className="w-full h-8 rounded"
           style={{
             backgroundImage: `url(${wpPath}/wall8.png)`,
-            backgroundSize: 'cover',
+            backgroundSize: "cover",
           }}
         ></div>
       ),
@@ -313,8 +314,8 @@ export default function LoggedInHeader({
   ];
 
   useEffect(() => {
-    router.prefetch('/');
-    router.prefetch('/account-settings');
+    router.prefetch("/");
+    router.prefetch("/account-settings");
     router.prefetch(`/portfolio-preview`);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
@@ -343,21 +344,21 @@ export default function LoggedInHeader({
       setLastScrollY(currentScrollY);
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener("scroll", handleScroll, { passive: true });
 
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
 
   const handleCopyText = async () => {
     try {
       await navigator.clipboard.writeText(
-        `${username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`
+        `${username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`,
       );
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-      toast.success('URL copied successfully');
+      toast.success("URL copied successfully");
     } catch (err) {
-      console.error('Failed to copy: ', err);
+      console.error("Failed to copy: ", err);
     }
   };
 
@@ -365,12 +366,12 @@ export default function LoggedInHeader({
     setUserDetails(null);
     setPopoverMenu(null);
     queryClient.removeQueries();
-    Cookies.remove('df-token', {
+    Cookies.remove("df-token", {
       domain: process.env.NEXT_PUBLIC_BASE_DOMAIN,
     });
-    localStorage.removeItem('bottom_notification_seen');
+    localStorage.removeItem("bottom_notification_seen");
     removeCursor();
-    router.replace('/');
+    router.replace("/");
   };
 
   const handleUpdate = (open = false) => {
@@ -379,26 +380,26 @@ export default function LoggedInHeader({
 
     const isFirstPublished = !latestPublishDate;
     _publish({ status: 1 })
-      .then(res => {
-        setUserDetails(prev => ({ ...prev, ...res?.data?.user }));
+      .then((res) => {
+        setUserDetails((prev) => ({ ...prev, ...res?.data?.user }));
 
         setIsMobileThemePopup(false);
-        updateCache('userDetails', res?.data?.user);
+        updateCache("userDetails", res?.data?.user);
         if (isFirstPublished) {
           phEvent(POSTHOG_EVENT_NAMES.PORTFOLIO_PUBLISHED, {
             email,
             username,
-            publish_type: 'first_publish',
+            publish_type: "first_publish",
           });
         } else {
           phEvent(POSTHOG_EVENT_NAMES.EDIT_AFTER_PUBLISH, {
             email,
             username,
-            publish_type: 'updated',
+            publish_type: "updated",
           });
         }
 
-        toast.success('Published successfully.');
+        toast.success("Published successfully.");
         if (open) {
           setPopoverMenu(popovers.publishMenu);
         } else {
@@ -418,8 +419,8 @@ export default function LoggedInHeader({
     if (!latestPublishDate && template == 0) {
       return handleUpdate(true);
     }
-    setPopoverMenu(prev =>
-      prev == popovers.publishMenu ? null : popovers.publishMenu
+    setPopoverMenu((prev) =>
+      prev == popovers.publishMenu ? null : popovers.publishMenu,
     );
   };
 
@@ -436,76 +437,83 @@ export default function LoggedInHeader({
   };
   const handlenavigation = () => {
     setPopoverMenu(null);
-    router.push('/settings');
+    router.push("/settings");
   };
 
-  const handleChangeCursor = i => {
+  const handleChangeCursor = (i) => {
     changeCursor(i);
   };
 
   const renderTemplate = (templateId = 0) =>
-    getTemplatePreviewImage(templateId, theme === 'light' ? 'light' : 'dark');
+    getTemplatePreviewImage(templateId, theme === "light" ? "light" : "dark");
 
-  const getStyles = i => {
+  const getStyles = (i) => {
     if (i == cursor) {
       return `bg-selected-cursor-bg-color hover:bg-selected-cursor-bg-color shadow-selected-cursor-shadow`;
     } else {
-      return '';
+      return "";
     }
   };
 
-  const getTemplateStyles = i => {
+  const getTemplateStyles = (i) => {
     if (i == template) {
       return `bg-selected-cursor-bg-color hover:bg-selected-cursor-bg-color shadow-selected-cursor-shadow`;
     } else {
-      return '';
+      return "";
     }
   };
 
   const formatedValue = formatTimestamp(latestPublishDate);
 
   const headerStyle = isVisible
-    ? 'fixed top-0 left-0'
-    : 'fixed top-0 left-0 -translate-y-full';
+    ? "fixed top-0 left-0"
+    : "fixed top-0 left-0 -translate-y-full";
 
   const headerZ = isMacOSTemplate
-    ? (popoverMenu ? 'z-[10050]' : 'z-[110]')
-    : 'z-50 py-2 md:py-6 px-2 md:px-0';
+    ? popoverMenu
+      ? "z-[10050]"
+      : "z-[110]"
+    : "z-50 py-2 md:py-6 px-2 md:px-0";
+
+  // return <Navbar />; New navbar component
 
   return (
     <div
       className={cn(headerStyle, headerZ)}
       style={{
-        right: shouldShiftHeader ? getSidebarShiftWidth(activeSidebar) : '0',
-        transition: 'transform 0.3s ease-out, right 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        right: shouldShiftHeader ? getSidebarShiftWidth(activeSidebar) : "0",
+        transition:
+          "transform 0.3s ease-out, right 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
       }}
     >
       <div
         className={cn(
-          'shadow-df-section-card-shadow p-2 bg-df-header-bg-color flex justify-between items-center rounded-full',
-          isMacOSTemplate ? 'w-full rounded-none h-[62px]' : 'max-w-[848px] mx-auto'
+          "shadow-df-section-card-shadow p-2 bg-df-header-bg-color flex justify-between items-center rounded-full",
+          isMacOSTemplate
+            ? "w-full rounded-none h-[62px]"
+            : "max-w-[848px] mx-auto",
         )}
       >
         <div className="flex items-center gap-[24px]">
-          {router.pathname === '/builder' ? (
+          {router.pathname === "/builder" ? (
             <div className="rounded-full bg-[#F6F2EF] p-1 border border-black/[0.03] dark:bg-muted/30 dark:border-border/50">
               <SegmentedControl
                 layoutId="segmented-control-header"
-                options={['Portfolio Builder', 'AI Tools']}
+                options={["Portfolio Builder", "AI Tools"]}
                 value={
-                  router.query?.view === 'ai-tools'
-                    ? 'AI Tools'
-                    : 'Portfolio Builder'
+                  router.query?.view === "ai-tools"
+                    ? "AI Tools"
+                    : "Portfolio Builder"
                 }
-                onChange={id => {
-                  if (id === 'AI Tools') {
+                onChange={(id) => {
+                  if (id === "AI Tools") {
                     router.push(
-                      '/builder?view=ai-tools&type=optimize-resume',
+                      "/builder?view=ai-tools&type=optimize-resume",
                       undefined,
-                      { shallow: true }
+                      { shallow: true },
                     );
                   } else {
-                    router.push('/builder', undefined, { shallow: true });
+                    router.push("/builder", undefined, { shallow: true });
                   }
                 }}
                 className="!p-0 !bg-transparent !border-0 !backdrop-blur-none"
@@ -567,7 +575,7 @@ export default function LoggedInHeader({
               // size="icon"
               className="rounded-full h-11 w-11"
               data-testid="button-preview"
-              onClick={() => router.push('/portfolio-preview')}
+              onClick={() => router.push("/portfolio-preview")}
             >
               <MemoPreviewIcon className="!size-5" />
             </Button>
@@ -576,7 +584,7 @@ export default function LoggedInHeader({
               data-popover-id={popovers.publishMenu}
             >
               <ButtonOld
-                text={'Publish Site'}
+                text={"Publish Site"}
                 onClick={handlePublishBtn}
                 customClass="mr-0"
                 icon={<MemoPower className="w-4 h-4" />}
@@ -591,10 +599,11 @@ export default function LoggedInHeader({
               />
               {isClient && (
                 <div
-                  className={`pt-5 origin-top-right absolute right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${popoverMenu === popovers.publishMenu
-                    ? 'opacity-100 scale-100'
-                    : 'opacity-0 scale-90 pointer-events-none'
-                    }`}
+                  className={`pt-5 origin-top-right absolute right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${
+                    popoverMenu === popovers.publishMenu
+                      ? "opacity-100 scale-100"
+                      : "opacity-0 scale-90 pointer-events-none"
+                  }`}
                 >
                   <div className=" w-[310px] rounded-xl shadow-lg bg-popover-bg-color border-4 border-solid border-popover-border-color">
                     <div className="p-4">
@@ -604,7 +613,7 @@ export default function LoggedInHeader({
                           onClick={() =>
                             window.open(
                               `https://${username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`,
-                              '_blank'
+                              "_blank",
                             )
                           }
                         >
@@ -666,7 +675,7 @@ export default function LoggedInHeader({
               )}
             </div>
 
-            <DropdownMenu modal={false} >
+            <DropdownMenu modal={false}>
               <DropdownMenuTrigger asChild>
                 <button
                   type="button"
@@ -676,14 +685,14 @@ export default function LoggedInHeader({
                     <DfImage
                       src={getUserAvatarImage(userDetails)}
                       className={cn(
-                        'w-[44px] h-[44px] rounded-full cursor-pointer',
-                        !userDetails?.avatar ? 'bg-df-bg-color' : ''
+                        "w-[44px] h-[44px] rounded-full cursor-pointer",
+                        !userDetails?.avatar ? "bg-df-bg-color" : "",
                       )}
                     />
 
                     <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-white dark:bg-zinc-800 border border-black/10 dark:border-white/10 px-1.5 py-0.5 rounded-full shadow-sm whitespace-nowrap">
                       <span className="text-[8px] font-bold uppercase tracking-wider text-black dark:text-white leading-none block">
-                        {userDetails?.pro ? 'PRO' : 'Free'}
+                        {userDetails?.pro ? "PRO" : "Free"}
                       </span>
                     </div>
                   </div>
@@ -703,7 +712,7 @@ export default function LoggedInHeader({
                           premium_user: userDetails?.pro,
                           user_email: userDetails?.email,
                           username: userDetails?.username,
-                          source: 'dropdown',
+                          source: "dropdown",
                         });
                       }}
                     >
@@ -770,8 +779,8 @@ export default function LoggedInHeader({
         <MobileMenuButton
           isOpen={popovers.loggedInMenu === popoverMenu}
           onToggle={() =>
-            setPopoverMenu(prev =>
-              prev === popovers.loggedInMenu ? null : popovers.loggedInMenu
+            setPopoverMenu((prev) =>
+              prev === popovers.loggedInMenu ? null : popovers.loggedInMenu,
             )
           }
         />
@@ -844,7 +853,7 @@ export default function LoggedInHeader({
                     onClick={() =>
                       window.open(
                         `https://${username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`,
-                        '_blank'
+                        "_blank",
                       )
                     }
                   >
@@ -903,12 +912,12 @@ export default function LoggedInHeader({
                       <div className="flex justify-between items-center cursor-pointer">
                         <SunIcon
                           className={
-                            theme == 'dark'
-                              ? 'text-icon-color'
-                              : 'text-default-theme-selected-color'
+                            theme == "dark"
+                              ? "text-icon-color"
+                              : "text-default-theme-selected-color"
                           }
                         />
-                        {(theme == 'light' || theme == undefined) && (
+                        {(theme == "light" || theme == undefined) && (
                           <img src="/assets/svgs/select.svg" alt="" />
                         )}
                       </div>
@@ -923,12 +932,12 @@ export default function LoggedInHeader({
                       <div className="flex justify-between items-center cursor-pointer">
                         <MoonIcon
                           className={
-                            theme !== 'dark'
-                              ? 'text-icon-color'
-                              : 'text-default-theme-selected-color'
+                            theme !== "dark"
+                              ? "text-icon-color"
+                              : "text-default-theme-selected-color"
                           }
                         />
-                        {theme == 'dark' && (
+                        {theme == "dark" && (
                           <img src="/assets/svgs/select.svg" alt="" />
                         )}
                       </div>

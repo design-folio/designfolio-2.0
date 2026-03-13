@@ -39,6 +39,7 @@ import { CourseCard } from "@/components/CourceCard";
 import WallpaperBackground from "@/components/WallpaperBackground";
 import FooterSettingsPanel from "@/components/FooterSettingsPanel";
 import AiToolsWorkspace from "@/components/AiToolsWorkspace";
+import Canvas from "@/components/templates/Canvas";
 
 export default function Index() {
   const {
@@ -95,20 +96,24 @@ export default function Index() {
     }
 
     const body = document.body;
-    body.style.transition = 'margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+    body.style.transition = "margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1)";
 
-    let marginWidth = '0px';
+    let marginWidth = "0px";
     if (activeSidebar === sidebars.work || activeSidebar === sidebars.review) {
-      marginWidth = '500px';
-    } else if (activeSidebar === sidebars.theme || activeSidebar === sidebars.footer || activeSidebar === sidebars.about) {
-      marginWidth = '320px';
+      marginWidth = "500px";
+    } else if (
+      activeSidebar === sidebars.theme ||
+      activeSidebar === sidebars.footer ||
+      activeSidebar === sidebars.about
+    ) {
+      marginWidth = "320px";
     }
 
     body.style.marginRight = marginWidth;
 
     return () => {
-      body.style.marginRight = '0px';
-      body.style.transition = '';
+      body.style.marginRight = "0px";
+      body.style.transition = "";
     };
   }, [activeSidebar, isMobile]);
 
@@ -124,7 +129,7 @@ export default function Index() {
   useEffect(() => {
     if (userDetails?.wallpaper !== undefined) {
       const wp = userDetails.wallpaper;
-      const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
+      const wpValue = wp && typeof wp === "object" ? wp.url || wp.value : wp;
       setWallpaper(wpValue !== undefined ? wpValue : 0);
     }
   }, [userDetails?.wallpaper, setWallpaper]);
@@ -141,14 +146,22 @@ export default function Index() {
       openModal(modals.username);
     } else if (userDetails) {
       // Note: goal and experienceLevel can be 0, so we check for null/undefined specifically
-      const hasGoal = userDetails.goal !== undefined && userDetails.goal !== null;
-      const hasExperienceLevel = userDetails.experienceLevel !== undefined && userDetails.experienceLevel !== null;
+      const hasGoal =
+        userDetails.goal !== undefined && userDetails.goal !== null;
+      const hasExperienceLevel =
+        userDetails.experienceLevel !== undefined &&
+        userDetails.experienceLevel !== null;
       const hasSkills = userDetails.skills && userDetails.skills.length > 0;
-      const hasPersona = userDetails.persona && userDetails.persona.value && userDetails.persona.label;
-      const needsOnboarding = !hasGoal || !hasExperienceLevel || !hasSkills || !hasPersona;
+      const hasPersona =
+        userDetails.persona &&
+        userDetails.persona.value &&
+        userDetails.persona.label;
+      const needsOnboarding =
+        !hasGoal || !hasExperienceLevel || !hasSkills || !hasPersona;
 
       const hasPendingResumePrefill =
-        typeof window !== "undefined" && !!localStorage.getItem("pending-portfolio-data");
+        typeof window !== "undefined" &&
+        !!localStorage.getItem("pending-portfolio-data");
 
       if (needsOnboarding && !hasPendingResumePrefill) {
         openModal(modals.onBoardingNewUser);
@@ -199,7 +212,7 @@ export default function Index() {
   const renderTemplate = () => {
     switch (template) {
       case 0:
-        return <Builder1 />;
+        return <Canvas isEditing={true} />;
       case 1:
         return <Builder2 edit />;
       case 2:
@@ -219,7 +232,14 @@ export default function Index() {
     return (
       <>
         <AiToolsWorkspace embedInBuilder />
-        <Modal show={showModal && showModal !== modals.aiProject && showModal !== modals.review && showModal !== modals.work}>
+        <Modal
+          show={
+            showModal &&
+            showModal !== modals.aiProject &&
+            showModal !== modals.review &&
+            showModal !== modals.work
+          }
+        >
           {modalContent()}
         </Modal>
         <Modal show={modals.aiProject == showModal} className={"md:block"}>
@@ -229,7 +249,11 @@ export default function Index() {
         <AddWork />
         <AddAbout />
         <UnsavedChangesDialog
-          open={showUnsavedWarning && isSwitchingSidebar && pendingSidebarAction?.type === "open"}
+          open={
+            showUnsavedWarning &&
+            isSwitchingSidebar &&
+            pendingSidebarAction?.type === "open"
+          }
           onOpenChange={(open) => {
             if (!open) handleCancelDiscardSidebar();
           }}
@@ -257,12 +281,27 @@ export default function Index() {
 
   return (
     <>
-      <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={userDetails?.template === 4 ? { ...(wallpaperEffects || {}), motion: false } : wallpaperEffects} />
-      <main className={cn(
-        "min-h-screen", hasNoWallpaper(wallpaper) && "bg-df-bg-color")}>
+      <WallpaperBackground
+        wallpaperUrl={wallpaperUrl}
+        effects={
+          userDetails?.template === 4
+            ? { ...(wallpaperEffects || {}), motion: false }
+            : wallpaperEffects
+        }
+      />
+      <main
+        className={cn(
+          "min-h-screen",
+          hasNoWallpaper(wallpaper) &&
+            "bg-[#F0EDE7] dark:bg-[#1A1A1A] flex justify-center font-inter text-[#1A1A1A] dark:text-[#F0EDE7] selection:bg-[#1A1A1A] dark:selection:bg-[#F0EDE7] selection:text-[#F0EDE7] dark:selection:text-[#1A1A1A] transition-colors duration-700",
+        )}
+      >
         <div
-          className={` mx-auto ${userDetails?.template == 4 ? "" : "py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0"} ${userDetails?.template != 3 && userDetails?.template != 4 && "max-w-[848px]"
-            }`}
+          className={` mx-auto ${userDetails?.template == 4 ? "" : "py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0"} ${
+            userDetails?.template != 3 &&
+            userDetails?.template != 4 &&
+            "max-w-[848px]"
+          }`}
         >
           {/* //HACK: Allow all templates to be free */}
           {/* {userDetails && !userDetails?.pro && <ProWarning />} */}
@@ -277,9 +316,18 @@ export default function Index() {
               )}
             </>
           )}
-          {userDetails && taskPercentage !== 100 && !template === 4 && <BottomTask />}
+          {userDetails && taskPercentage !== 100 && !template === 4 && (
+            <BottomTask />
+          )}
         </div>
-        <Modal show={showModal && showModal !== modals.aiProject && showModal !== modals.review && showModal !== modals.work}>
+        <Modal
+          show={
+            showModal &&
+            showModal !== modals.aiProject &&
+            showModal !== modals.review &&
+            showModal !== modals.work
+          }
+        >
           {modalContent()}
         </Modal>
         <Modal show={modals.aiProject == showModal} className={"md:block"}>
@@ -289,7 +337,11 @@ export default function Index() {
         <AddWork />
         <AddAbout />
         <UnsavedChangesDialog
-          open={showUnsavedWarning && isSwitchingSidebar && pendingSidebarAction?.type === "open"}
+          open={
+            showUnsavedWarning &&
+            isSwitchingSidebar &&
+            pendingSidebarAction?.type === "open"
+          }
           onOpenChange={(open) => {
             if (!open) {
               handleCancelDiscardSidebar();

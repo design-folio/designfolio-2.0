@@ -50,10 +50,10 @@
     --input: 38 25% 75%;
     --ring: 221 83% 53%;
     --tab-active-bg: #ffffff;
-    --slider-thumb-border: #CFC4AF;
+    --slider-thumb-border: #cfc4af;
     --slider-thumb-bg: #fafafa;
-    --switch-unchecked-bg: #CFC4AF;
-    
+    --switch-unchecked-bg: #cfc4af;
+
     /* Sidebar variables */
     --sidebar: 38 22% 93%;
     --sidebar-foreground: 0 0% 10%;
@@ -63,29 +63,33 @@
     --sidebar-accent: 38 18% 88%;
     --sidebar-accent-foreground: 0 0% 15%;
     --sidebar-ring: 221 83% 53%;
-    
+
     /* Popover variables */
     --popover: 38 20% 92%;
     --popover-foreground: 0 0% 10%;
     --popover-border: 38 16% 86%;
-    
+
     /* Chart colors */
     --chart-1: 221 83% 53%;
     --chart-2: 158 64% 52%;
     --chart-3: 271 81% 56%;
     --chart-4: 0 84% 60%;
     --chart-5: 38 92% 50%;
-    
+
     /* Gradient colors */
     --gradient-start: 14 100% 60%;
     --gradient-end: 340 100% 65%;
-    
+
     /* Font families - using Next.js font variables from _app.jsx */
-    --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-sans:
+      var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      sans-serif;
     --font-serif: var(--font-inter), Georgia, serif;
-    --font-heading: var(--font-eudoxus), var(--font-gsans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-heading:
+      var(--font-eudoxus), var(--font-gsans), -apple-system, BlinkMacSystemFont,
+      "Segoe UI", Roboto, sans-serif;
     --font-mono: Menlo, Monaco, "Courier New", monospace;
-    
+
     /* Tracking and spacing */
     --tracking-normal: 0em;
     --spacing: 0.25rem;
@@ -95,25 +99,37 @@
 
     /* Automatic computation of border around primary / danger buttons */
     --opaque-button-border-intensity: -8; /* In terms of percentages */
-    
+
     /* Fallback for older browsers - computed borders */
     --sidebar-primary-border: hsl(var(--sidebar-primary));
-    --sidebar-primary-border: hsl(from hsl(var(--sidebar-primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-    
+    --sidebar-primary-border: hsl(
+      from hsl(var(--sidebar-primary)) h s
+        calc(l + var(--opaque-button-border-intensity)) / alpha
+    );
+
     /* Fallback for older browsers */
     --sidebar-accent-border: hsl(var(--sidebar-accent));
-    --sidebar-accent-border: hsl(from hsl(var(--sidebar-accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-    
+    --sidebar-accent-border: hsl(
+      from hsl(var(--sidebar-accent)) h s
+        calc(l + var(--opaque-button-border-intensity)) / alpha
+    );
+
     /* Note: --primary-border and --secondary-border are already defined above with existing values */
-    
+
     /* Fallback for older browsers */
     --muted-border: hsl(var(--muted));
-    --muted-border: hsl(from hsl(var(--muted)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-    
+    --muted-border: hsl(
+      from hsl(var(--muted)) h s
+        calc(l + var(--opaque-button-border-intensity)) / alpha
+    );
+
     /* Fallback for older browsers */
     --accent-border: hsl(var(--accent));
-    --accent-border: hsl(from hsl(var(--accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-    
+    --accent-border: hsl(
+      from hsl(var(--accent)) h s
+        calc(l + var(--opaque-button-border-intensity)) / alpha
+    );
+
     /* Fallback for older browsers */
     --destructive-border: hsl(var(--destructive));
     --destructive-border: hsl(
@@ -126,15 +142,17 @@
     /* Shadow system */
     --shadow-2xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.05);
     --shadow-xs: 0px 1px 3px 0px hsl(0 0% 0% / 0.08);
-    --shadow-sm: 0px 2px 4px -1px hsl(0 0% 0% / 0.06),
-      0px 1px 2px -1px hsl(0 0% 0% / 0.04);
-    --shadow: 0px 4px 6px -1px hsl(0 0% 0% / 0.08),
-      0px 2px 4px -2px hsl(0 0% 0% / 0.05);
-    --shadow-md: 0px 6px 12px -2px hsl(0 0% 0% / 0.1),
-      0px 3px 6px -3px hsl(0 0% 0% / 0.07);
-    --shadow-lg: 0px 10px 20px -3px hsl(0 0% 0% / 0.12),
+    --shadow-sm:
+      0px 2px 4px -1px hsl(0 0% 0% / 0.06), 0px 1px 2px -1px hsl(0 0% 0% / 0.04);
+    --shadow:
+      0px 4px 6px -1px hsl(0 0% 0% / 0.08), 0px 2px 4px -2px hsl(0 0% 0% / 0.05);
+    --shadow-md:
+      0px 6px 12px -2px hsl(0 0% 0% / 0.1), 0px 3px 6px -3px hsl(0 0% 0% / 0.07);
+    --shadow-lg:
+      0px 10px 20px -3px hsl(0 0% 0% / 0.12),
       0px 4px 8px -4px hsl(0 0% 0% / 0.08);
-    --shadow-xl: 0px 20px 30px -5px hsl(0 0% 0% / 0.15),
+    --shadow-xl:
+      0px 20px 30px -5px hsl(0 0% 0% / 0.15),
       0px 8px 12px -6px hsl(0 0% 0% / 0.1);
     --shadow-2xl: 0px 30px 50px -8px hsl(0 0% 0% / 0.2);
 
@@ -149,7 +167,8 @@
       #f9f7f4 75%,
       #f6f3f0 100%
     );
-    --skills-banner-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.7),
+    --skills-banner-shadow:
+      inset 0 2px 3px rgba(255, 255, 255, 0.7),
       inset 0 -2px 3px rgba(0, 0, 0, 0.04), 0 1px 1px rgba(0, 0, 0, 0.02);
   }
 
@@ -184,7 +203,7 @@
     --slider-thumb-border: #f6f2ef;
     --slider-thumb-bg: #f6f2ef;
     --switch-unchecked-bg: #3f4358;
-    
+
     /* Sidebar variables */
     --sidebar: 0 0% 12%;
     --sidebar-foreground: 0 0% 92%;
@@ -194,19 +213,19 @@
     --sidebar-accent: 0 0% 16%;
     --sidebar-accent-foreground: 0 0% 90%;
     --sidebar-ring: 221 83% 53%;
-    
+
     /* Popover variables */
     --popover: 0 0% 14%;
     --popover-foreground: 0 0% 92%;
     --popover-border: 0 0% 18%;
-    
+
     /* Chart colors */
     --chart-1: 221 83% 65%;
     --chart-2: 158 64% 65%;
     --chart-3: 271 81% 70%;
     --chart-4: 0 84% 70%;
     --chart-5: 38 92% 65%;
-    
+
     /* Gradient colors */
     --gradient-start: 14 100% 65%;
     --gradient-end: 340 100% 70%;
@@ -221,11 +240,12 @@
     /* Shadow system */
     --shadow-2xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.4);
     --shadow-xs: 0px 1px 3px 0px hsl(0 0% 0% / 0.5);
-    --shadow-sm: 0px 2px 4px -1px hsl(0 0% 0% / 0.45),
-      0px 1px 2px -1px hsl(0 0% 0% / 0.35);
-    --shadow: 0px 4px 6px -1px hsl(0 0% 0% / 0.5),
-      0px 2px 4px -2px hsl(0 0% 0% / 0.4);
-    --shadow-md: 0px 6px 12px -2px hsl(0 0% 0% / 0.55),
+    --shadow-sm:
+      0px 2px 4px -1px hsl(0 0% 0% / 0.45), 0px 1px 2px -1px hsl(0 0% 0% / 0.35);
+    --shadow:
+      0px 4px 6px -1px hsl(0 0% 0% / 0.5), 0px 2px 4px -2px hsl(0 0% 0% / 0.4);
+    --shadow-md:
+      0px 6px 12px -2px hsl(0 0% 0% / 0.55),
       0px 3px 6px -3px hsl(0 0% 0% / 0.45);
 
     /* Skills banner for dark mode */
@@ -239,11 +259,13 @@
       #1d1f27 75%,
       #1a1c22 100%
     );
-    --skills-banner-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.03),
+    --skills-banner-shadow:
+      inset 0 2px 3px rgba(255, 255, 255, 0.03),
       inset 0 -2px 3px rgba(0, 0, 0, 0.2), 0 1px 1px rgba(0, 0, 0, 0.3);
-    --shadow-lg: 0px 10px 20px -3px hsl(0 0% 0% / 0.6),
-      0px 4px 8px -4px hsl(0 0% 0% / 0.5);
-    --shadow-xl: 0px 20px 30px -5px hsl(0 0% 0% / 0.65),
+    --shadow-lg:
+      0px 10px 20px -3px hsl(0 0% 0% / 0.6), 0px 4px 8px -4px hsl(0 0% 0% / 0.5);
+    --shadow-xl:
+      0px 20px 30px -5px hsl(0 0% 0% / 0.65),
       0px 8px 12px -6px hsl(0 0% 0% / 0.55);
     --shadow-2xl: 0px 30px 50px -8px hsl(0 0% 0% / 0.7);
   }
@@ -287,12 +309,12 @@
 
 /* Chalkboard font — used in MacOS AboutWindow chalkboard theme */
 @font-face {
-  font-family: 'Chalkboard';
-  src: url('https://fonts.cdnfonts.com/s/14873/Chalkboard.woff') format('woff');
+  font-family: "Chalkboard";
+  src: url("https://fonts.cdnfonts.com/s/14873/Chalkboard.woff") format("woff");
 }
 
 .font-chalkboard {
-  font-family: 'Chalkboard', 'Comic Sans MS', 'Marker Felt', sans-serif;
+  font-family: "Chalkboard", "Comic Sans MS", "Marker Felt", sans-serif;
 }
 
 :root {
@@ -1027,8 +1049,12 @@ body.cursor-pill-active * {
 
 /* ── Tooltip animations ──────────────────────────────────────────────────── */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .tooltip-content {
@@ -1053,44 +1079,79 @@ body.cursor-pill-active * {
   transition: all 800ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.tooltip-content[data-state='closed'] {
+.tooltip-content[data-state="closed"] {
   opacity: 0;
   transition: opacity 150ms ease-out;
 }
 
-.tooltip-content[data-state='open'] {
+.tooltip-content[data-state="open"] {
   opacity: 1;
-  transition: opacity 150ms ease-out, width 800ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition:
+    opacity 150ms ease-out,
+    width 800ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 @keyframes slideIn {
-  from { transform: translateX(100%); opacity: 0; }
-  to   { transform: translateX(0);    opacity: 1; }
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 @keyframes slideOut {
-  from { transform: translateX(0);     opacity: 1; }
-  to   { transform: translateX(-100%); opacity: 0; }
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
 }
 
-.tooltip-content.slide-in  { animation: slideIn  150ms ease-out; }
-.tooltip-content.slide-out { animation: slideOut 150ms ease-out; }
+.tooltip-content.slide-in {
+  animation: slideIn 150ms ease-out;
+}
+.tooltip-content.slide-out {
+  animation: slideOut 150ms ease-out;
+}
 
 @keyframes slideInUp {
-  from { transform: translateY(-5px); opacity: 0; }
-  to   { transform: translateY(0);    opacity: 1; }
+  from {
+    transform: translateY(-5px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .tooltip-animation {
-  animation: fadeIn 0.3s ease-in-out, slideInUp 0.3s ease-in-out;
+  animation:
+    fadeIn 0.3s ease-in-out,
+    slideInUp 0.3s ease-in-out;
 }
 
 /* ── Wallpaper & desktop background animations ───────────────────────────── */
 @keyframes subtleDrift {
-  0%, 100% { transform: scale(1.05) translateY(0)    translateX(0);   }
-  25%       { transform: scale(1.05) translateY(-8px) translateX(4px);  }
-  50%       { transform: scale(1.05) translateY(-4px) translateX(-4px); }
-  75%       { transform: scale(1.05) translateY(-12px) translateX(2px); }
+  0%,
+  100% {
+    transform: scale(1.05) translateY(0) translateX(0);
+  }
+  25% {
+    transform: scale(1.05) translateY(-8px) translateX(4px);
+  }
+  50% {
+    transform: scale(1.05) translateY(-4px) translateX(-4px);
+  }
+  75% {
+    transform: scale(1.05) translateY(-12px) translateX(2px);
+  }
 }
 
 .animate-subtle-drift {
@@ -1113,4 +1174,15 @@ body.cursor-pill-active * {
     transparent 0%,
     var(--df-bg-color) 100%
   );
+}
+
+/* Next.js root container */
+#__next {
+  transition: padding-right 500ms cubic-bezier(0.32, 0.72, 0, 1);
+  will-change: padding-right;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 100vh;
+  position: relative;
+  background-color: hsl(var(--background));
 }

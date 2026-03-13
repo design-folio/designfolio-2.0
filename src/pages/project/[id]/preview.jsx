@@ -10,7 +10,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
 import React, { useEffect, useState, useRef } from "react";
-import MacOSWindowShell from "@/components/MacOSDock/MacOSWindowShell";
+import MacOSWindowShell from "@/components/templates/MacOSDock/MacOSWindowShell";
 import MacOSTemplate from "@/components/comp/MacOSTemplate";
 import BuilderShell from "@/components/BuilderShell";
 import { modals } from "@/lib/constant";
@@ -47,7 +47,11 @@ export default function Index() {
     }
   }, []);
 
-  const setProjectData = (project, isProtectedValue = false, isFromRefetch = false) => {
+  const setProjectData = (
+    project,
+    isProtectedValue = false,
+    isFromRefetch = false,
+  ) => {
     setProjectDetails({
       project: project,
       isProtected: isProtectedValue,
@@ -70,9 +74,12 @@ export default function Index() {
       }
     }
 
-    const cursor = project?.cursor != null
-      ? project.cursor
-      : (project?.theme != null ? project.theme : (userDetails?.cursor || 0));
+    const cursor =
+      project?.cursor != null
+        ? project.cursor
+        : project?.theme != null
+          ? project.theme
+          : userDetails?.cursor || 0;
     setCursor(cursor);
     setIsProtected(isProtectedValue);
   };
@@ -101,7 +108,7 @@ export default function Index() {
     if (initializedRef.current) return;
 
     const cachedProject = userDetails.projects?.find(
-      (project) => project._id === projectId
+      (project) => project._id === projectId,
     );
 
     if (cachedProject) {
@@ -118,7 +125,10 @@ export default function Index() {
   if (!userDetails && userDetailLoading) {
     return (
       <>
-        <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
+        <WallpaperBackground
+          wallpaperUrl={wallpaperUrl}
+          effects={wallpaperEffects}
+        />
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div className="w-8 h-8 border-2 border-[#888] border-t-transparent rounded-full animate-spin" />
         </div>
@@ -129,7 +139,7 @@ export default function Index() {
   if (!userDetails) return null;
 
   const isMacOS = userDetails.template === 4;
-  const projectTitle = projectDetails?.project?.title || 'Project';
+  const projectTitle = projectDetails?.project?.title || "Project";
   const currentProject = projectDetails?.project;
 
   const previewContent = projectDetails && (
@@ -155,27 +165,40 @@ export default function Index() {
     const isUnhiding = existing.hidden === true;
 
     if (false && !userDetails.pro && isUnhiding && visibleCount >= 2) {
-      setUpgradeModalUnhideProject({ projectId, title: existing.title || 'Project' });
+      setUpgradeModalUnhideProject({
+        projectId,
+        title: existing.title || "Project",
+      });
       setShowUpgradeModal(true);
       return;
     }
 
     const updatedProjects = projects.map((p) =>
-      p._id === projectId ? { ...p, hidden: !p.hidden } : p
+      p._id === projectId ? { ...p, hidden: !p.hidden } : p,
     );
 
-    setUserDetails((prev) => (prev ? { ...prev, projects: updatedProjects } : prev));
+    setUserDetails((prev) =>
+      prev ? { ...prev, projects: updatedProjects } : prev,
+    );
     _updateProject(projectId, { hidden: !existing.hidden });
     _updateUser({ projects: updatedProjects });
 
     setProjectDetails((prev) =>
-      prev ? { ...prev, project: { ...prev.project, hidden: !prev.project.hidden } } : prev
+      prev
+        ? {
+            ...prev,
+            project: { ...prev.project, hidden: !prev.project.hidden },
+          }
+        : prev,
     );
   };
 
   return (
     <>
-      <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
+      <WallpaperBackground
+        wallpaperUrl={wallpaperUrl}
+        effects={wallpaperEffects}
+      />
 
       {isMacOS ? (
         <>
@@ -192,14 +215,14 @@ export default function Index() {
               projectId: router.query.id,
             })}
             tabs={[
-              { label: 'Preview', href: `/project/${router.query.id}/preview` },
-              { label: 'Editor', href: `/project/${router.query.id}/editor` },
+              { label: "Preview", href: `/project/${router.query.id}/preview` },
+              { label: "Editor", href: `/project/${router.query.id}/editor` },
             ]}
             activeTab="Preview"
             isHidden={!!currentProject?.hidden}
             hasPassword={!!currentProject?.protected}
             projectId={currentProject?._id}
-            initialPassword={currentProject?.password || ''}
+            initialPassword={currentProject?.password || ""}
             onDelete={handleDeleteProject}
             onToggleVisibility={handleToggleVisibility}
           >
@@ -209,9 +232,7 @@ export default function Index() {
           <BuilderShell hideCourseCard />
         </>
       ) : (
-        <main className={cn("min-h-screen")}>
-          {previewContent}
-        </main>
+        <main className={cn("min-h-screen")}>{previewContent}</main>
       )}
     </>
   );

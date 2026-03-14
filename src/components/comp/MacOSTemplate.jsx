@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
 import { motion } from "framer-motion";
 import MacOSMenuBar from "@/components/ui/MacOSMenuBar";
 import MacOSDock from "@/components/MacOSDock";
@@ -51,6 +51,16 @@ const MacOSTemplate = ({ userDetails, edit = false, preview = false, showHeaderI
 
   const [activeTab, setActiveTab] = useState("home");
   const [isResumeDialogOpen, setIsResumeDialogOpen] = useState(false);
+
+  // Dynamic z-index: dock wrapper goes to 260 when a dock window is active (beats project portal at 250),
+  // and drops to 200 when a project window is active (project portal at 250 wins).
+  const dockWrapperRef = useRef(null);
+  const bringDockToFront = useCallback(() => {
+    if (dockWrapperRef.current) dockWrapperRef.current.style.zIndex = '400';
+  }, []);
+  const bringProjectToFront = useCallback(() => {
+    if (dockWrapperRef.current) dockWrapperRef.current.style.zIndex = '200';
+  }, []);
   const [showSortModal, setShowSortModal] = useState(false);
   const [showWorkSortModal, setShowWorkSortModal] = useState(false);
 
@@ -208,6 +218,7 @@ const MacOSTemplate = ({ userDetails, edit = false, preview = false, showHeaderI
 
         {/* MacOS Dock — fixed at bottom, shifts with sidebar */}
         <div
+          ref={dockWrapperRef}
           className="fixed bottom-0 sm:bottom-2 left-0 flex justify-center pointer-events-none"
           style={{
             zIndex: 200,
@@ -225,6 +236,8 @@ const MacOSTemplate = ({ userDetails, edit = false, preview = false, showHeaderI
               preview={preview}
               sidebarOffsetPx={parseInt(sidebarShiftWidth, 10) || 0}
               topOffsetPx={desktopTopMargin}
+              onDockWindowFocus={bringDockToFront}
+              onProjectWindowFocus={bringProjectToFront}
               onEditHome={() => openModal(modals.onboarding)}
               onEditBio={() => openSidebar(sidebars.about)}
               onEditContact={() => openSidebar(sidebars.footer)}

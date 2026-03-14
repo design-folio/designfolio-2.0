@@ -154,6 +154,7 @@ export default function Index() {
   if (!userDetails) return null;
 
   const isMacOS = userDetails.template === 4;
+  const isEmbed = router.query.embed === '1';
   const projectTitle = projectDetails?.project?.title || 'Project';
   const currentProject = projectDetails?.project;
 
@@ -202,6 +203,15 @@ export default function Index() {
       prev ? { project: { ...prev.project, hidden: !prev.project.hidden } } : prev
     );
   };
+
+  // Embed mode: only render editor content (no shell, no background)
+  if (isEmbed) {
+    return (
+      <div className="min-h-full bg-white overflow-auto">
+        {editorContent}
+      </div>
+    );
+  }
 
   return (
     <>
@@ -258,7 +268,8 @@ export const getServerSideProps = async (context) => {
       },
     };
   }
+  const isEmbed = context.query.embed === '1';
   return {
-    props: { dfToken: !!dfToken },
+    props: { dfToken: !!dfToken, ...(isEmbed && { hideHeader: true }) },
   };
 };

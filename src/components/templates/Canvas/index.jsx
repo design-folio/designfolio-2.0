@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { Switch } from "./switch-button";
@@ -15,10 +15,58 @@ import {
   Pencil,
   Plus,
   Trash2,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import { AtSignIcon, DribbbleIcon, TwitterIcon } from "lucide-animated";
 import { Button } from "../../ui/button";
 import { useTheme } from "next-themes";
+import { useGlobalContext } from "@/context/globalContext";
+import { getUserAvatarImage } from "@/lib/getAvatarUrl";
+import { _updateUser } from "@/network/post-request";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { modals, sidebars } from "@/lib/constant";
+import ProjectLock from "@/components/projectLock";
+import { useRouter } from "next/router";
+import { getPlainTextLength } from "@/lib/tiptapUtils";
+import ClampableTiptapContent from "@/components/ClampableTiptapContent";
+import {
+  DEFAULT_PEGBOARD_IMAGES,
+  DEFAULT_PEGBOARD_STICKERS,
+} from "@/lib/aboutConstants";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
+const getHref = (id, edit, preview) => {
+  if (edit) return `/project/${id}/editor`;
+  if (preview) return `/project/${id}/preview`;
+  return `/project/${id}`;
+};
+
+function getTextFromTiptap(node) {
+  if (!node) return "";
+
+  // Text node
+  if (node.type === "text") {
+    return node.text || "";
+  }
+
+  // Hard line break
+  if (node.type === "hardBreak") {
+    return "\n";
+  }
+
+  // If node has children
+  if (node.content && Array.isArray(node.content)) {
+    return node.content.map(getTextFromTiptap).join("");
+  }
+
+  return "";
+}
 
 // static assets
 // import project1 from "@/assets/images/temp/project1.png";
@@ -45,7 +93,18 @@ const creativeTestimonials = [
   },
 ];
 
-export default function Canvas({ isEditing }) {
+export default function Canvas({ isEditing, preview = false }) {
+  const {
+    projectRef,
+    userDetails,
+    setUserDetails,
+    setSelectedProject,
+    openModal,
+    openSidebar,
+    updateCache,
+    setSelectedWork,
+    setSelectedReview,
+  } = useGlobalContext();
   const [currentTime, setCurrentTime] = useState(new Date());
   const careerLadderRef = useRef(null);
   const ladderContainerRef = useRef(null);
@@ -55,12 +114,24 @@ export default function Canvas({ isEditing }) {
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
   const [isHoveringTestimonial, setIsHoveringTestimonial] = useState(false);
   const [playingTestimonial, setPlayingTestimonial] = useState(null);
+  const [isProjectsAddDropdownOpen, setIsProjectsAddDropdownOpen] =
+    useState(false);
+  const [expandedCards, setExpandedCards] = useState([]);
+  const [expandedReviewIds, setExpandedReviewIds] = useState([]);
+
   const { theme, setTheme } = useTheme();
+  const router = useRouter();
 
   const isDark = theme === "dark";
 
   const toggleTheme = () => {
     setTheme(isDark ? "light" : "dark");
+  };
+
+  const toggleExpandReview = (id) => {
+    setExpandedReviewIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+    );
   };
 
   // Auto carousel effect
@@ -76,6 +147,238 @@ export default function Canvas({ isEditing }) {
     return () => clearInterval(timer);
   }, [creativeTestimonials.length, isHoveringTestimonial]);
 
+  useEffect(() => {
+    let rafId;
+
+    const updatePosition = () => {
+      if (!careerLadderRef.current || !ladderContainerRef.current) return;
+
+      const sectionRect = careerLadderRef.current.getBoundingClientRect();
+      const containerHeight = ladderContainerRef.current.offsetHeight;
+      const viewportHeight = window.innerHeight;
+
+      // When does the section start entering the viewport?
+      // When sectionRect.bottom reaches viewportHeight (bottom of viewport)
+      // Progress: 0 = section entering from bottom, 1 = section exiting from top
+
+      const sectionTop = sectionRect.top;
+      const sectionHeight = sectionRect.height;
+
+      let progress = 0;
+
+      // Calculate when the section is in viewport
+      // We want progress to be 0 when the section top reaches the middle of the screen
+      // and 1 when the section bottom reaches the middle of the screen
+
+      const middleOfScreen = viewportHeight / 2;
+
+      // Calculate how far the top of the section is from the middle of the screen
+      // Positive when below middle, negative when above middle
+      const distanceFromMiddle = sectionTop - middleOfScreen;
+
+      // We start when top reaches middle (distance = 0)
+      // We end when bottom reaches middle (distance = -sectionHeight)
+
+      // Map the distance to a 0-1 progress value
+      // 0 = sectionTop is at middleOfScreen
+      // 1 = sectionTop is at middleOfScreen - sectionHeight (so section bottom is at middle)
+      if (distanceFromMiddle > 0) {
+        progress = 0; // Section is below the middle
+      } else if (distanceFromMiddle < -sectionHeight) {
+        progress = 1; // Section is above the middle
+      } else {
+        // Section is passing through the middle
+        progress = Math.abs(distanceFromMiddle) / sectionHeight;
+      }
+      progress = Math.max(0, Math.min(1, progress));
+
+      // Get the max available height for character movement
+      const maxPosition = containerHeight - 54; // 54px is character height
+
+      // Apply progress to move character across full ladder height
+      const newPosition = progress * maxPosition;
+
+      setCharacterPosition(newPosition);
+    };
+
+    const handleScroll = () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(updatePosition);
+    };
+
+    updatePosition();
+    const timeoutId = setTimeout(updatePosition, 50);
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (rafId) cancelAnimationFrame(rafId);
+      clearTimeout(timeoutId);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleEnd = () => setPlayingTestimonial(null);
+    window.speechSynthesis.addEventListener("voiceschanged", () => {}); // Just to initialize
+    return () => {
+      window.speechSynthesis.cancel();
+    };
+  }, []);
+
+  const currentDate = currentTime.toLocaleDateString("en-US", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+  });
+
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const handlePlayTestimonial = (text, id) => {
+    if (playingTestimonial === id) {
+      window.speechSynthesis.cancel();
+      setPlayingTestimonial(null);
+    } else {
+      window.speechSynthesis.cancel();
+      const textContent = getTextFromTiptap(text);
+      console.log("Playing testimonial:", textContent, text);
+      const utterance = new SpeechSynthesisUtterance(textContent);
+      utterance.onend = () => setPlayingTestimonial(null);
+      window.speechSynthesis.speak(utterance);
+      setPlayingTestimonial(id);
+    }
+  };
+
+  const {
+    bio,
+    introduction,
+    skills = [],
+    hiddenSections,
+    projects,
+    experiences = [],
+    tools = [],
+    about,
+    reviews,
+  } = userDetails || {};
+
+  const aboutObj = userDetails?.about;
+  const description = aboutObj?.description || "";
+  const images =
+    aboutObj?.pegboardImages?.length > 0
+      ? aboutObj.pegboardImages
+      : DEFAULT_PEGBOARD_IMAGES;
+  const stickers =
+    aboutObj?.pegboardStickers?.length > 0
+      ? aboutObj.pegboardStickers
+      : DEFAULT_PEGBOARD_STICKERS;
+  const avatarSrc = useMemo(
+    () => getUserAvatarImage(userDetails),
+    [userDetails],
+  );
+  const sectionId = "works";
+  const isSectionHidden = hiddenSections?.includes(sectionId);
+
+  const handleToggleVisibility = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const updatedHiddenSections = isSectionHidden
+      ? hiddenSections.filter((id) => id !== sectionId)
+      : [...hiddenSections, sectionId];
+
+    // Update locally (no flicker)
+    setUserDetails((prev) => ({
+      ...prev,
+      hiddenSections: updatedHiddenSections,
+    }));
+
+    // Update cache without replacing full user
+    updateCache("userDetails", (prev) => ({
+      ...prev,
+      hiddenSections: updatedHiddenSections,
+    }));
+
+    // Fire and forget backend update
+    _updateUser({ hiddenSections: updatedHiddenSections });
+  };
+
+  // Filter out hidden projects in preview mode
+  const visibleProjects = React.useMemo(() => {
+    if (preview && projects) {
+      return projects.filter((project) => !project.hidden);
+    }
+    return projects || [];
+  }, [projects, preview]);
+
+  const handleNavigation = (route) => {
+    router.push(route);
+  };
+
+  const onDeleteProject = (project) => {
+    openModal(modals.deleteProject);
+    setSelectedProject(project);
+  };
+
+  const toggleExpand = (id) => {
+    setExpandedCards((prev) =>
+      prev.includes(id)
+        ? prev.filter((cardId) => cardId !== id)
+        : [...prev, id],
+    );
+  };
+  const repeatedTools = Array(12).fill(tools).flat();
+
+  const bringToFront = (id) => {
+    setZIndexes((prev) => {
+      const maxZ = Math.max(...Object.values(prev));
+      return { ...prev, [id]: maxZ + 1 };
+    });
+  };
+
+  const playPegboardClick = (type) => {
+    try {
+      const audioContext =
+        new window.AudioContext() || window.webkitAudioContext();
+      const now = audioContext.currentTime;
+
+      if (type === "grab") {
+        // Quick peek sound when grabbing
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(1000, now);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.03);
+
+        osc.start(now);
+        osc.stop(now + 0.03);
+      } else {
+        // Quick pop sound when dropping
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(600, now);
+        gain.gain.setValueAtTime(0.22, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.04);
+
+        osc.start(now);
+        osc.stop(now + 0.04);
+      }
+    } catch (e) {
+      // Audio context not available or blocked
+    }
+  };
+  const review = reviews[currentTestimonialIndex];
+  // console.log(about, userDetails);
+
   return (
     <div className="w-full flex-1 flex flex-col gap-3 pb-20 pt-0 px-4 md:px-0 max-w-[640px] mx-auto">
       {/* Header / Date */}
@@ -87,11 +390,11 @@ export default function Canvas({ isEditing }) {
       >
         <div className="flex items-center gap-2">
           <span className="text-[#1A1A1A] dark:text-[#F0EDE7] font-medium text-sm">
-            Mon, Mar 9
+            {currentDate}
           </span>
           <div className="w-2 h-2 bg-[#E37941] rotate-45"></div>
           <span className="text-[#1A1A1A] dark:text-[#F0EDE7] font-medium text-sm">
-            {currentTime.toLocaleTimeString([], {
+            {currentTime.toLocaleTimeString("en-US", {
               hour: "2-digit",
               minute: "2-digit",
               second: "2-digit",
@@ -125,6 +428,7 @@ export default function Canvas({ isEditing }) {
             <Button
               variant="outline"
               size="icon"
+              onClick={() => openModal("onboarding")}
               className="w-8 h-8 rounded-full bg-white dark:bg-[#2A2520] shadow-md border border-[#E5D7C4] dark:border-white/10 hover:bg-gray-50 dark:hover:bg-[#35302A]"
             >
               <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
@@ -133,18 +437,17 @@ export default function Canvas({ isEditing }) {
         )}
         <div className="w-28 h-28 rounded-2xl overflow-hidden shrink-0 border border-black/5 dark:border-white/10 shadow-sm bg-[#A1C2D8]">
           <img
-            src={"asd"}
+            src={avatarSrc}
             alt="Profile"
             className="w-full h-full object-cover"
           />
         </div>
         <div className="flex flex-col gap-2">
           <h1 className="text-[24px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7] tracking-tight leading-tight">
-            Hey I'm Matt.
+            {introduction}
           </h1>
           <p className="text-[#7A736C] dark:text-[#B5AFA5] text-[16px] leading-relaxed max-w-[480px]">
-            I'm a Design Engineer focused on crafting meaningful digital
-            experiences where design meets code.
+            {bio}
           </p>
         </div>
       </motion.div>
@@ -163,42 +466,20 @@ export default function Canvas({ isEditing }) {
           animate={{ x: [0, "-50%"] }}
           transition={{ ease: "linear", duration: 20, repeat: Infinity }}
         >
-          {[...Array(2)].map((_, i) => (
-            <div key={i} className="flex gap-4 items-center">
-              <span className="text-[#7A736C] dark:text-[#B5AFA5] font-medium text-[12px] uppercase tracking-wider">
-                Interaction Design
-              </span>
-              <div className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 0l2 9 9 2-9 2-2 9-2-9-9-2 9-2 2-9z" />
-                </svg>
+          {[...skills, ...skills, ...skills, ...skills, ...skills].map(
+            (skill, index) => (
+              <div key={index} className="flex gap-4 items-center">
+                <span className="text-[#7A736C] dark:text-[#B5AFA5] font-medium text-[12px] uppercase tracking-wider">
+                  {skill.label}
+                </span>
+                <div className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0l2 9 9 2-9 2-2 9-2-9-9-2 9-2 2-9z" />
+                  </svg>
+                </div>
               </div>
-              <span className="text-[#7A736C] dark:text-[#B5AFA5] font-medium text-[12px] uppercase tracking-wider">
-                3D Design
-              </span>
-              <div className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 0l2 9 9 2-9 2-2 9-2-9-9-2 9-2 2-9z" />
-                </svg>
-              </div>
-              <span className="text-[#7A736C] dark:text-[#B5AFA5] font-medium text-[12px] uppercase tracking-wider">
-                User Research
-              </span>
-              <div className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 0l2 9 9 2-9 2-2 9-2-9-9-2 9-2 2-9z" />
-                </svg>
-              </div>
-              <span className="text-[#7A736C] dark:text-[#B5AFA5] font-medium text-[12px] uppercase tracking-wider">
-                UI/UX Design
-              </span>
-              <div className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 0l2 9 9 2-9 2-2 9-2-9-9-2 9-2 2-9z" />
-                </svg>
-              </div>
-            </div>
-          ))}
+            ),
+          )}
         </motion.div>
       </motion.div>
 
@@ -215,20 +496,68 @@ export default function Canvas({ isEditing }) {
         className="bg-white/80 dark:bg-[#2A2520]/80 backdrop-blur-md rounded-[32px] border border-[#E5D7C4] dark:border-white/10 p-4 w-full relative group/section"
       >
         {isEditing && (
-          <div className="absolute -top-3 -right-3 opacity-100 md:opacity-0 md:group-hover/section:opacity-100 transition-opacity z-10 flex gap-2">
+          <div
+            className={`absolute -top-3 -right-3 transition-opacity z-10 flex gap-2
+            ${
+              isProjectsAddDropdownOpen
+                ? "opacity-100"
+                : "opacity-100 md:opacity-0 md:group-hover/section:opacity-100"
+            }`}
+          >
+            <DropdownMenu
+              open={isProjectsAddDropdownOpen}
+              onOpenChange={setIsProjectsAddDropdownOpen}
+            >
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="w-8 h-8 rounded-full bg-white dark:bg-[#2A2520] shadow-md border border-[#E5D7C4] dark:border-white/10 hover:bg-gray-50 dark:hover:bg-[#35302A]"
+                >
+                  <Plus className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="end"
+                className="w-48 bg-white dark:bg-[#2A2520] border border-black/10 dark:border-white/10 shadow-lg rounded-xl overflow-hidden p-1"
+              >
+                <DropdownMenuItem
+                  onClick={() => openModal(modals.project)}
+                  className="flex items-center gap-2 px-3 py-2 text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer rounded-lg focus:bg-black/5 dark:focus:bg-white/5"
+                >
+                  <Pencil className="w-3.5 h-3.5" />
+                  <span>Write from Scratch</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => openModal(modals.aiProject)}
+                  className="flex items-center gap-2 px-3 py-2 text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer rounded-lg focus:bg-black/5 dark:focus:bg-white/5"
+                >
+                  <svg
+                    className="w-3.5 h-3.5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                  </svg>
+                  <span>Write using AI</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Button
               variant="outline"
               size="icon"
+              onClick={handleToggleVisibility}
               className="w-8 h-8 rounded-full bg-white dark:bg-[#2A2520] shadow-md border border-[#E5D7C4] dark:border-white/10 hover:bg-gray-50 dark:hover:bg-[#35302A]"
             >
-              <Plus className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              className="w-8 h-8 rounded-full bg-white dark:bg-[#2A2520] shadow-md border border-[#E5D7C4] dark:border-white/10 hover:bg-gray-50 dark:hover:bg-[#35302A]"
-            >
-              <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+              {isSectionHidden ? (
+                <EyeOff className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+              ) : (
+                <Eye className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+              )}
             </Button>
           </div>
         )}
@@ -244,99 +573,123 @@ export default function Canvas({ isEditing }) {
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Project 1 */}
-          <div
-            className="flex flex-col gap-4 group/card cursor-pointer relative"
-            onClick={() => handleProjectClick("slate")}
-          >
-            {isEditing && (
-              <div className="absolute top-4 right-4 z-20 transition-opacity flex gap-2 opacity-100 md:opacity-0 md:group-hover/card:opacity-100">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                  }}
+          {visibleProjects?.length === 0 ? (
+            <div className="flex flex-col items-center justify-center md:col-span-2 py-16 px-4 text-center rounded-2xl border border-dashed border-black/10 dark:border-white/10 bg-white/50 dark:bg-[#2A2520]/50 backdrop-blur-sm">
+              <div className="w-12 h-12 rounded-full bg-black/[0.03] dark:bg-white/[0.03] flex items-center justify-center mb-4">
+                <svg
+                  className="w-6 h-6 text-[#7A736C] dark:text-[#9E9893]"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
                 >
-                  <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-red-50 dark:hover:bg-red-950/30 hover:border-red-200 dark:hover:border-red-900/50 hover:text-red-600 dark:hover:text-red-400"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                  }}
-                >
-                  <Trash2 className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                </Button>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                  />
+                </svg>
               </div>
-            )}
-            <div className="rounded-2xl overflow-hidden aspect-[4/3] border border-black/5 dark:border-white/10 bg-[#F5F5F5] dark:bg-[#1A1A1A]">
-              <img
-                src={"project1"}
-                alt="Project 1"
-                className="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-105"
-              />
-            </div>
-            <div>
-              <h3 className="text-base font-medium text-[#1A1A1A] dark:text-[#F0EDE7] mb-2 leading-snug line-clamp-2">
-                Redesigning Quote Builder at Freshworks for 1,900+ Enterprise
-                U...
+              <h3 className="text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] mb-1">
+                No projects yet
               </h3>
-              <p className="text-[#7A736C] dark:text-[#B5AFA5] text-sm leading-relaxed line-clamp-2">
-                A sleek and responsive landing page designed for modern startups
-                to showca...
+              <p className="text-[13px] text-[#7A736C] dark:text-[#9E9893] max-w-[250px] mb-5">
+                Add some projects to showcase your work and experience.
               </p>
+              {isEditing && (
+                <div className="flex flex-col sm:flex-row items-center gap-3">
+                  <Button
+                    onClick={() => openModal(modals.project)}
+                    className="h-9 px-5 rounded-full text-[13px] font-medium bg-[#1A1A1A] dark:bg-white text-white dark:text-black hover:bg-black/80 dark:hover:bg-white/90 transition-colors shadow-sm flex items-center gap-2"
+                  >
+                    <Pencil className="w-3.5 h-3.5" />
+                    Write from Scratch
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => openModal(modals.aiProject)}
+                    className="h-9 px-5 rounded-full text-[13px] font-medium bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors flex items-center gap-2 text-[#1A1A1A] dark:text-[#F0EDE7]"
+                  >
+                    <svg
+                      className="w-3.5 h-3.5"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                    </svg>
+                    Write using AI
+                  </Button>
+                </div>
+              )}
             </div>
-          </div>
+          ) : (
+            <>
+              {visibleProjects?.map((project) => {
+                return (
+                  <div
+                    className="flex flex-col gap-4 group/card cursor-pointer relative"
+                    onClick={() =>
+                      handleNavigation(getHref(project._id, true, false))
+                    }
+                  >
+                    {isEditing && (
+                      <div className="absolute top-4 right-4 z-20 transition-opacity flex gap-2 opacity-100 md:opacity-0 md:group-hover/card:opacity-100">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleNavigation(getHref(project._id, true, false));
+                          }}
+                        >
+                          <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-red-50 dark:hover:bg-red-950/30 hover:border-red-200 dark:hover:border-red-900/50 hover:text-red-600 dark:hover:text-red-400"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onDeleteProject(project);
+                          }}
+                        >
+                          <Trash2 className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                        </Button>
+                      </div>
+                    )}
+                    <div className="rounded-2xl overflow-hidden aspect-[4/3] border border-black/5 dark:border-white/10 bg-[#F5F5F5] dark:bg-[#1A1A1A]">
+                      <img
+                        src={project?.thumbnail?.url}
+                        alt={project?.title || "project image"}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-105"
+                      />
+                    </div>
+                    <div>
+                      <h3 className="text-base font-medium text-[#1A1A1A] dark:text-[#F0EDE7] mb-2 leading-snug line-clamp-2">
+                        {project?.title}
+                      </h3>
+                      <p className="text-[#7A736C] dark:text-[#B5AFA5] text-sm leading-relaxed line-clamp-2">
+                        {project?.description}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+              {isEditing &&
+                !(userDetails?.pro || visibleProjects.length < 2) && (
+                  <div className={"md:col-span-2"}>
+                    <ProjectLock />
+                  </div>
+                )}
+            </>
+          )}
 
-          {/* Project 2 */}
-          <div
-            className="flex flex-col gap-4 group/card cursor-pointer relative"
-            onClick={() => handleProjectClick("antimetal")}
-          >
-            {isEditing && (
-              <div className="absolute top-4 right-4 z-20 transition-opacity flex gap-2 opacity-100 md:opacity-0 md:group-hover/card:opacity-100">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                  }}
-                >
-                  <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-red-50 dark:hover:bg-red-950/30 hover:border-red-200 dark:hover:border-red-900/50 hover:text-red-600 dark:hover:text-red-400"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                  }}
-                >
-                  <Trash2 className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                </Button>
-              </div>
-            )}
-            <div className="rounded-2xl overflow-hidden aspect-[4/3] border border-black/5 dark:border-white/10 bg-[#F5F5F5] dark:bg-[#1A1A1A]">
-              <img
-                src={"project2"}
-                alt="Project 2"
-                className="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-105"
-              />
-            </div>
-            <div>
-              <h3 className="text-base font-medium text-[#1A1A1A] dark:text-[#F0EDE7] mb-2 leading-snug line-clamp-2">
-                Designfolio: No-Code Portfolio Builder for 9,000+ Users
-              </h3>
-              <p className="text-[#7A736C] dark:text-[#B5AFA5] text-sm leading-relaxed line-clamp-2">
-                Helping Product folks build bragworthy portfolio websites.
-              </p>
-            </div>
-          </div>
+          {/* Project Lock */}
         </div>
       </motion.div>
 
@@ -353,6 +706,7 @@ export default function Canvas({ isEditing }) {
             <Button
               variant="outline"
               size="sm"
+              onClick={() => openSidebar(sidebars.work)}
               className="h-8 flex items-center gap-1.5 px-3 rounded-full bg-white dark:bg-[#2A2520] shadow-md border border-[#E5D7C4] dark:border-white/10 hover:bg-gray-50 dark:hover:bg-[#35302A]"
             >
               <Plus className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
@@ -380,14 +734,14 @@ export default function Canvas({ isEditing }) {
             style={{ top: `${characterPosition}px`, willChange: "transform" }}
           >
             <img
-              src="/character-me.svg"
+              src="/assets/svgs/character-me.svg"
               alt="Character climbing"
               className="w-full h-full object-contain"
             />
           </div>
           {/* Timeline Line */}
           <div className="absolute left-0 top-3 bottom-0 w-[42px] flex flex-col justify-between items-start border-x-[5px] border-[#F0EDE7] dark:border-[#3A352E] py-1 bg-transparent">
-            {[...Array(38)].map((_, i) => (
+            {[...Array(30)].map((_, i) => (
               <div
                 key={i}
                 className="w-full h-[5px] bg-[#F0EDE7] dark:bg-[#3A352E]"
@@ -396,182 +750,77 @@ export default function Canvas({ isEditing }) {
           </div>
 
           <div className="space-y-12 pl-16 relative z-10 w-full pt-1 pb-2">
-            {/* Experience 1 */}
-            <div className="relative group cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 p-4 -mx-4 rounded-2xl transition-colors">
-              {isEditing && (
-                <div className="absolute top-4 right-4 z-20 transition-opacity flex gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                  >
-                    <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-red-50 dark:hover:bg-red-950/30 hover:border-red-200 dark:hover:border-red-900/50 hover:text-red-600 dark:hover:text-red-400"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                  >
-                    <Trash2 className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                  </Button>
+            {experiences.map((experience) => {
+              const {
+                role,
+                company,
+                startMonth,
+                startYear,
+                endMonth,
+                endYear,
+                currentlyWorking,
+                description,
+                _id,
+              } = experience;
+              const hasDescription =
+                description && getPlainTextLength(description || "") > 0;
+              return (
+                <div
+                  key={_id}
+                  className="relative group cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 p-4 -mx-4 rounded-2xl transition-colors"
+                >
+                  {isEditing && (
+                    <div className="absolute top-4 right-4 z-20 transition-opacity flex gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
+                        onClick={(e) => {
+                          setSelectedWork(experience);
+                          openSidebar(sidebars.work);
+                        }}
+                      >
+                        <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-red-50 dark:hover:bg-red-950/30 hover:border-red-200 dark:hover:border-red-900/50 hover:text-red-600 dark:hover:text-red-400"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                      >
+                        <Trash2 className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                      </Button>
+                    </div>
+                  )}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 gap-2 sm:gap-0">
+                    <h3 className="text-[18px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
+                      {role} @ {company}
+                    </h3>
+                    <div className="bg-[#F0EDE7] dark:bg-[#3A352E] px-3 py-1 rounded-full text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] w-fit whitespace-nowrap">
+                      {`${startMonth} ${startYear}  — ${
+                        currentlyWorking ? "Present" : `${endMonth} ${endYear}`
+                      }`}
+                    </div>
+                  </div>
+                  {hasDescription && (
+                    <div className="text-sm text-foreground-landing/60 leading-relaxed max-w-xl">
+                      <ClampableTiptapContent
+                        content={description || ""}
+                        mode="work"
+                        enableBulletList={true}
+                        maxLines={3}
+                        itemId={_id}
+                        expandedIds={expandedCards}
+                        onToggleExpand={toggleExpand}
+                        buttonClassName="text-[#7A736C] dark:text-[#B5AFA5] text-[15px] leading-relaxed mb-4"
+                      />
+                    </div>
+                  )}
                 </div>
-              )}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 gap-2 sm:gap-0">
-                <h3 className="text-[18px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
-                  Product Designer @ Sense Hq
-                </h3>
-                <div className="bg-[#F0EDE7] dark:bg-[#3A352E] px-3 py-1 rounded-full text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] w-fit whitespace-nowrap">
-                  2025 — Present
-                </div>
-              </div>
-              <p className="text-[#7A736C] dark:text-[#B5AFA5] text-[15px] leading-relaxed mb-4">
-                Currently designing AI-powered recruiter tools that help HR
-                teams create conversational talent workflows and automate
-                engagement.
-              </p>
-              <ul className="space-y-2.5 text-[#7A736C] dark:text-[#B5AFA5] text-[15px]">
-                <li className="flex items-start gap-2">
-                  <span className="mt-[7px] w-1.5 h-1.5 rounded-full bg-[#7A736C] dark:bg-[#B5AFA5] shrink-0"></span>
-                  <span>AI agents for recruiters</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="mt-[7px] w-1.5 h-1.5 rounded-full bg-[#7A736C] dark:bg-[#B5AFA5] shrink-0"></span>
-                  <span>Simplifying complex AI workflows</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="mt-[7px] w-1.5 h-1.5 rounded-full bg-[#7A736C] dark:bg-[#B5AFA5] shrink-0"></span>
-                  <span>
-                    Scaling interaction patterns for enterprise hiring tools
-                  </span>
-                </li>
-              </ul>
-            </div>
-
-            {/* Experience 2 */}
-            <div className="relative group cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 p-4 -mx-4 rounded-2xl transition-colors">
-              {isEditing && (
-                <div className="absolute top-4 right-4 z-20 transition-opacity flex gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                  >
-                    <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-red-50 dark:hover:bg-red-950/30 hover:border-red-200 dark:hover:border-red-900/50 hover:text-red-600 dark:hover:text-red-400"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                  >
-                    <Trash2 className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                  </Button>
-                </div>
-              )}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 gap-2 sm:gap-0">
-                <h3 className="text-[18px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
-                  Product Designer @ Sense Hq
-                </h3>
-                <div className="bg-[#F0EDE7] dark:bg-[#3A352E] px-3 py-1 rounded-full text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] w-fit whitespace-nowrap">
-                  2025 — Present
-                </div>
-              </div>
-              <p className="text-[#7A736C] dark:text-[#B5AFA5] text-[15px] leading-relaxed mb-4">
-                Currently designing AI-powered recruiter tools that help HR
-                teams create conversational talent workflows and automate
-                engagement.
-              </p>
-              <div className="text-[#7A736C] dark:text-[#B5AFA5] text-[15px] mb-3">
-                Focus areas:
-              </div>
-              <ul className="space-y-2.5 text-[#7A736C] dark:text-[#B5AFA5] text-[15px]">
-                <li className="flex items-start gap-2">
-                  <span className="mt-[7px] w-1.5 h-1.5 rounded-full bg-[#7A736C] dark:bg-[#B5AFA5] shrink-0"></span>
-                  <span>AI agents for recruiters</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="mt-[7px] w-1.5 h-1.5 rounded-full bg-[#7A736C] dark:bg-[#B5AFA5] shrink-0"></span>
-                  <span>Simplifying complex AI workflows</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="mt-[7px] w-1.5 h-1.5 rounded-full bg-[#7A736C] dark:bg-[#B5AFA5] shrink-0"></span>
-                  <span>
-                    Scaling interaction patterns for enterprise hiring tools
-                  </span>
-                </li>
-              </ul>
-            </div>
-
-            {/* Experience 3 */}
-            <div className="relative group cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 p-4 -mx-4 rounded-2xl transition-colors">
-              {isEditing && (
-                <div className="absolute top-4 right-4 z-20 transition-opacity flex gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                  >
-                    <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-red-50 dark:hover:bg-red-950/30 hover:border-red-200 dark:hover:border-red-900/50 hover:text-red-600 dark:hover:text-red-400"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                  >
-                    <Trash2 className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                  </Button>
-                </div>
-              )}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 gap-2 sm:gap-0">
-                <h3 className="text-[18px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
-                  Product Designer @ Sense Hq
-                </h3>
-                <div className="bg-[#F0EDE7] dark:bg-[#3A352E] px-3 py-1 rounded-full text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] w-fit whitespace-nowrap">
-                  2025 — Present
-                </div>
-              </div>
-              <p className="text-[#7A736C] dark:text-[#B5AFA5] text-[15px] leading-relaxed mb-4">
-                Currently designing AI-powered recruiter tools that help HR
-                teams create conversational talent workflows and automate
-                engagement.
-              </p>
-              <div className="text-[#7A736C] dark:text-[#B5AFA5] text-[15px] mb-3">
-                Focus areas:
-              </div>
-              <ul className="space-y-2.5 text-[#7A736C] dark:text-[#B5AFA5] text-[15px]">
-                <li className="flex items-start gap-2">
-                  <span className="mt-[7px] w-1.5 h-1.5 rounded-full bg-[#7A736C] dark:bg-[#B5AFA5] shrink-0"></span>
-                  <span>AI agents for recruiters</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="mt-[7px] w-1.5 h-1.5 rounded-full bg-[#7A736C] dark:bg-[#B5AFA5] shrink-0"></span>
-                  <span>Simplifying complex AI workflows</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="mt-[7px] w-1.5 h-1.5 rounded-full bg-[#7A736C] dark:bg-[#B5AFA5] shrink-0"></span>
-                  <span>
-                    Scaling interaction patterns for enterprise hiring tools
-                  </span>
-                </li>
-              </ul>
-            </div>
+              );
+            })}
           </div>
         </div>
       </motion.div>
@@ -593,6 +842,7 @@ export default function Canvas({ isEditing }) {
             <Button
               variant="outline"
               size="sm"
+              onClick={() => openModal?.(modals.tools)}
               className="h-8 flex items-center gap-1.5 px-3 rounded-full bg-white dark:bg-[#2A2520] shadow-md border border-[#E5D7C4] dark:border-white/10 hover:bg-gray-50 dark:hover:bg-[#35302A]"
             >
               <Plus className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
@@ -607,29 +857,15 @@ export default function Canvas({ isEditing }) {
           <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-white/80 dark:from-[#2A2520]/80 to-transparent z-10"></div>
 
           <motion.div
-            className="flex gap-8 py-1"
-            animate={{ x: [0, "-50%"] }}
+            className="flex gap-8 py-1 w-max"
+            animate={{ x: ["0%", "-50%"] }}
             transition={{ ease: "linear", duration: 25, repeat: Infinity }}
           >
-            {[
-              { name: "Figma", image: "/tools/image 4.png" },
-              { name: "Notion", image: "/tools/image 5.png" },
-              { name: "Procreate", image: "/tools/image 6.png" },
-              { name: "Plasticity", image: "/tools/image 7.png" },
-              { name: "Reeder", image: "/tools/image 8.png" },
-              { name: "Anthropic", image: "/tools/image 9.png" },
-              { name: "Sketch", image: "/tools/image 10.png" },
-              { name: "Figma", image: "/tools/image 4.png" },
-              { name: "Notion", image: "/tools/image 5.png" },
-              { name: "Procreate", image: "/tools/image 6.png" },
-              { name: "Plasticity", image: "/tools/image 7.png" },
-              { name: "Reeder", image: "/tools/image 8.png" },
-              { name: "Anthropic", image: "/tools/image 9.png" },
-            ].map((tool, i) => (
+            {repeatedTools.map((tool, i) => (
               <img
                 key={i}
                 src={tool.image}
-                alt={tool.name}
+                alt={tool.label}
                 className="flex-shrink-0 w-9 h-9 hover:scale-110 transition-transform cursor-pointer"
               />
             ))}
@@ -649,6 +885,7 @@ export default function Canvas({ isEditing }) {
             <Button
               variant="outline"
               size="sm"
+              onClick={() => openSidebar?.(sidebars.about)}
               className="h-8 flex items-center gap-1.5 px-3 rounded-full bg-white dark:bg-[#2A2520] shadow-md border border-[#E5D7C4] dark:border-white/10 hover:bg-gray-50 dark:hover:bg-[#35302A]"
             >
               <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
@@ -699,244 +936,63 @@ export default function Canvas({ isEditing }) {
           ></div>
 
           <div className="relative h-[260px] md:h-[320px] flex flex-row items-center justify-center px-2 md:p-4 gap-4 md:gap-10">
-            {/* Image 1 - Left with L-shape tape (Portrait) */}
-            <motion.div
-              drag
-              dragConstraints={pegboardRef}
-              dragMomentum={false}
-              dragElastic={0}
-              onDragStart={() => {
-                bringToFront(1);
-                playPegboardClick("grab");
-              }}
-              onDragEnd={() => playPegboardClick("drop")}
-              onPointerDown={() => bringToFront(1)}
-              whileDrag={{ scale: 1.05, cursor: "grabbing" }}
-              initial={{ y: 10 }}
-              style={{ zIndex: zIndexes[1] }}
-              className="relative w-28 md:w-36 aspect-[3/4] group cursor-grab"
-            >
-              {isEditing && (
-                <div className="absolute -top-2 -right-2 z-40 transition-opacity flex gap-1.5 opacity-100 md:opacity-0 md:group-hover:opacity-100">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                  >
-                    <Pencil className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-red-50 dark:hover:bg-red-950/30 hover:border-red-200 dark:hover:border-red-900/50 hover:text-red-600 dark:hover:text-red-400"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                  >
-                    <Trash2 className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                  </Button>
-                </div>
-              )}
-              <div
-                className="w-full h-full pointer-events-none relative"
-                style={{ transform: "rotate(-4deg)" }}
+            {images.map((img, index) => (
+              <motion.div
+                key={img._id || index}
+                drag
+                dragConstraints={pegboardRef}
+                dragMomentum={false}
+                dragElastic={0}
+                onDragStart={() => {
+                  bringToFront(index);
+                  playPegboardClick("grab");
+                }}
+                onDragEnd={() => playPegboardClick("drop")}
+                onPointerDown={() => bringToFront(index)}
+                whileDrag={{ scale: 1.05, cursor: "grabbing" }}
+                initial={{ y: index % 2 === 0 ? 10 : -10 }}
+                style={{ zIndex: zIndexes[index] }}
+                className={`relative ${
+                  index === 1
+                    ? "w-32 md:w-44 aspect-square"
+                    : "w-28 md:w-36 aspect-[3/4]"
+                } group cursor-grab`}
               >
-                <div className="w-full h-full bg-white dark:bg-[#2A2520] p-1.5 md:p-2 rounded-[12px] md:rounded-[16px] shadow-sm border border-black/5 dark:border-white/10 flex flex-col relative group-hover:shadow-md transition-shadow">
-                  <div className="relative w-full h-full">
-                    <img
-                      src={"story1"}
-                      alt="My workspace"
-                      className="w-full h-full object-cover rounded-[6px] md:rounded-[8px]"
-                      draggable="false"
-                    />
-                    <div className="absolute inset-0 bg-black/5 dark:bg-black/20 rounded-[6px] md:rounded-[8px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 pointer-events-none">
-                      <div className="bg-white/80 dark:bg-black/60 backdrop-blur-md p-2 md:p-2.5 rounded-full shadow-sm scale-90 group-hover:scale-100 transition-transform duration-300">
-                        <Move className="w-4 h-4 md:w-5 md:h-5 text-gray-800 dark:text-gray-200" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {/* Top tape part */}
                 <div
-                  className="absolute -top-1 -left-2 w-12 md:w-16 h-5 md:h-6 bg-[#E8CF82]/90 dark:bg-[#B89B4D]/90 backdrop-blur-sm shadow-sm z-20"
-                  style={{ transform: "rotate(-2deg)" }}
-                ></div>
-                {/* Side tape part */}
-                <div
-                  className="absolute top-3 md:top-4 -left-2 md:-left-3 w-5 md:w-6 h-10 md:h-12 bg-[#E8CF82]/90 dark:bg-[#B89B4D]/90 backdrop-blur-sm shadow-sm z-20"
-                  style={{ transform: "rotate(2deg)" }}
-                ></div>
-              </div>
-            </motion.div>
-
-            {/* Image 2 - Center with Top Tape and Figma Logo (Squircle) */}
-            <motion.div
-              drag
-              dragConstraints={pegboardRef}
-              dragMomentum={false}
-              dragElastic={0}
-              onDragStart={() => {
-                bringToFront(2);
-                playPegboardClick("grab");
-              }}
-              onDragEnd={() => playPegboardClick("drop")}
-              onPointerDown={() => bringToFront(2)}
-              whileDrag={{ scale: 1.05, cursor: "grabbing" }}
-              initial={{ y: 15 }}
-              style={{ zIndex: zIndexes[2] }}
-              className="relative w-32 md:w-44 aspect-square group cursor-grab"
-            >
-              {isEditing && (
-                <div className="absolute -top-2 -right-2 z-40 transition-opacity flex gap-1.5 opacity-100 md:opacity-0 md:group-hover:opacity-100">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                  >
-                    <Pencil className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-red-50 dark:hover:bg-red-950/30 hover:border-red-200 dark:hover:border-red-900/50 hover:text-red-600 dark:hover:text-red-400"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                  >
-                    <Trash2 className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                  </Button>
-                </div>
-              )}
-              <div
-                className="w-full h-full pointer-events-none relative"
-                style={{ transform: "rotate(6deg)" }}
-              >
-                <div className="w-full h-full bg-white dark:bg-[#2A2520] p-1.5 md:p-2 rounded-[24px] md:rounded-[32px] shadow-md border border-black/5 dark:border-white/10 flex flex-col relative group-hover:shadow-lg transition-shadow">
-                  <div className="relative w-full h-full">
-                    <img
-                      src={"story2"}
-                      alt="Designing"
-                      className="w-full h-full object-cover rounded-[16px] md:rounded-[24px]"
-                      draggable="false"
-                    />
-                    <div className="absolute inset-0 bg-black/5 dark:bg-black/20 rounded-[16px] md:rounded-[24px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 pointer-events-none">
-                      <div className="bg-white/80 dark:bg-black/60 backdrop-blur-md p-2 md:p-2.5 rounded-full shadow-sm scale-90 group-hover:scale-100 transition-transform duration-300">
-                        <Move className="w-5 h-5 md:w-6 md:h-6 text-gray-800 dark:text-gray-200" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {/* Center tape */}
-                <div
-                  className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 md:w-20 h-5 md:h-6 bg-[#DFCDAA]/90 dark:bg-[#9B8C73]/90 backdrop-blur-sm shadow-sm z-20"
-                  style={{ transform: "rotate(-3deg)" }}
-                ></div>
-
-                {/* Figma Logo Accent */}
-                <div
-                  className="absolute -bottom-3 md:-bottom-5 -right-3 md:-right-5 w-12 md:w-16 h-12 md:h-16 z-30"
-                  style={{ transform: "rotate(-10deg)" }}
+                  className="w-full h-full pointer-events-none relative"
+                  style={{
+                    transform: `rotate(${index % 2 === 0 ? "-4deg" : "6deg"})`,
+                  }}
                 >
-                  <img
-                    src="/stickerfigma.png"
-                    alt="Figma Sticker"
-                    className="w-full h-full object-contain drop-shadow-md"
-                    draggable="false"
-                  />
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Image 3 - Right with Long Top Tape (Portrait) */}
-            <motion.div
-              drag
-              dragConstraints={pegboardRef}
-              dragMomentum={false}
-              dragElastic={0}
-              onDragStart={() => {
-                bringToFront(3);
-                playPegboardClick("grab");
-              }}
-              onDragEnd={() => playPegboardClick("drop")}
-              onPointerDown={() => bringToFront(3)}
-              whileDrag={{ scale: 1.05, cursor: "grabbing" }}
-              initial={{ y: -10 }}
-              style={{ zIndex: zIndexes[3] }}
-              className="relative w-28 md:w-36 aspect-[3/4] group cursor-grab"
-            >
-              {isEditing && (
-                <div className="absolute -top-2 -right-2 z-40 transition-opacity flex gap-1.5 opacity-100 md:opacity-0 md:group-hover:opacity-100">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                  >
-                    <Pencil className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-red-50 dark:hover:bg-red-950/30 hover:border-red-200 dark:hover:border-red-900/50 hover:text-red-600 dark:hover:text-red-400"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                  >
-                    <Trash2 className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                  </Button>
-                </div>
-              )}
-              <div
-                className="w-full h-full pointer-events-none relative"
-                style={{ transform: "rotate(-2deg)" }}
-              >
-                <div className="w-full h-full bg-white dark:bg-[#2A2520] p-1.5 md:p-2 rounded-[12px] md:rounded-[16px] shadow-sm border border-black/5 dark:border-white/10 flex flex-col relative group-hover:shadow-md transition-shadow">
-                  <div className="relative w-full h-full">
+                  <div className="w-full h-full bg-white dark:bg-[#2A2520] p-2 rounded-[16px] shadow-sm border border-black/5 dark:border-white/10 relative group-hover:shadow-md transition-shadow">
                     <img
-                      src={"story3"}
-                      alt="Coffee and notes"
-                      className="w-full h-full object-cover rounded-[6px] md:rounded-[8px]"
+                      src={img.src || img.key}
+                      alt={`pegboard-${index}`}
+                      className="w-full h-full object-cover rounded-[8px]"
                       draggable="false"
                     />
-                    <div className="absolute inset-0 bg-black/5 dark:bg-black/20 rounded-[6px] md:rounded-[8px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 pointer-events-none">
-                      <div className="bg-white/80 dark:bg-black/60 backdrop-blur-md p-2 md:p-2.5 rounded-full shadow-sm scale-90 group-hover:scale-100 transition-transform duration-300">
-                        <Move className="w-4 h-4 md:w-5 md:h-5 text-gray-800 dark:text-gray-200" />
-                      </div>
-                    </div>
                   </div>
+
+                  {/* Tape */}
+                  <div
+                    className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 h-6 bg-[#DFCDAA]/90 dark:bg-[#9B8C73]/90 backdrop-blur-sm shadow-sm z-20"
+                    style={{ transform: "rotate(-3deg)" }}
+                  ></div>
                 </div>
-                {/* Long horizontal tape */}
-                <div
-                  className="absolute -top-3 md:-top-4 -left-2 md:-left-4 w-32 md:w-44 h-5 md:h-6 bg-[#D3C4A9]/90 dark:bg-[#8D826B]/90 backdrop-blur-sm shadow-sm z-20"
-                  style={{ transform: "rotate(1deg)" }}
-                ></div>
-              </div>
-            </motion.div>
+              </motion.div>
+            ))}
           </div>
         </div>
 
         {/* Story Text */}
         <div className="space-y-4">
           <p className="text-[#7A736C] dark:text-[#B5AFA5] text-[16px] leading-relaxed">
-            I'm Matt Chen, a passionate Design Engineer focused on crafting
-            meaningful digital experiences where design meets code. Currently
-            exploring new ways to create intuitive interfaces that users love,
-            I'm driven by curiosity and a deep appreciation for thoughtful,
-            purposeful design.
-          </p>
-          <p className="text-[#7A736C] dark:text-[#B5AFA5] text-[16px] leading-relaxed">
-            I thrive on transforming complex ideas into reality — whether it's
-            designing seamless user experiences, building interactive
-            prototypes, creating distinctive brand experiences, or developing
-            websites that feel effortless to use.
+            {about?.description?.split("\n").map((line, i) => (
+              <span key={i}>
+                {line}
+                <br />
+              </span>
+            ))}
           </p>
         </div>
       </motion.div>
@@ -958,6 +1014,7 @@ export default function Canvas({ isEditing }) {
             <Button
               variant="outline"
               size="sm"
+              onClick={() => openSidebar?.(sidebars.review)}
               className="h-8 flex items-center gap-1.5 px-3 rounded-full bg-white dark:bg-[#2A2520] shadow-md border border-[#E5D7C4] dark:border-white/10 hover:bg-gray-50 dark:hover:bg-[#35302A]"
             >
               <Plus className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
@@ -979,107 +1036,134 @@ export default function Canvas({ isEditing }) {
         </h2>
 
         <div className="space-y-4">
-          <div className="relative w-full">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentTestimonialIndex}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
-                onMouseEnter={() => setIsHoveringTestimonial(true)}
-                onMouseLeave={() => setIsHoveringTestimonial(false)}
-                className="group border border-[#E5D7C4] dark:border-white/10 p-6 rounded-2xl bg-white/50 dark:bg-[#2A2520]/50 hover:bg-white dark:hover:bg-[#35302A] transition-colors relative"
-              >
-                {isEditing && (
-                  <div className="absolute top-4 right-4 z-20 transition-opacity flex gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                      }}
-                    >
-                      <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-red-50 dark:hover:bg-red-950/30 hover:border-red-200 dark:hover:border-red-900/50 hover:text-red-600 dark:hover:text-red-400"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                      }}
-                    >
-                      <Trash2 className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                    </Button>
-                  </div>
-                )}
-                <p className="font-['Inter'] text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed mb-6 italic relative z-10">
-                  "{creativeTestimonials[currentTestimonialIndex].text}"
-                </p>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-[#E5D7C4] dark:bg-white/10 overflow-hidden shrink-0">
-                      <img
-                        src={
-                          creativeTestimonials[currentTestimonialIndex].image
-                        }
-                        alt={creativeTestimonials[currentTestimonialIndex].name}
-                        className="w-full h-full object-cover"
-                      />
+          {reviews.length === 0 ? (
+            <>sdasd</>
+          ) : (
+            <div className="relative w-full">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentTestimonialIndex}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                  onMouseEnter={() => setIsHoveringTestimonial(true)}
+                  onMouseLeave={() => setIsHoveringTestimonial(false)}
+                  className="group border border-[#E5D7C4] dark:border-white/10 p-6 rounded-2xl bg-white/50 dark:bg-[#2A2520]/50 hover:bg-white dark:hover:bg-[#35302A] transition-colors relative"
+                >
+                  {isEditing && (
+                    <div className="absolute top-4 right-4 z-20 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedReview(review);
+                          openSidebar(sidebars.review);
+                        }}
+                      >
+                        <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-red-50 dark:hover:bg-red-950/30 hover:border-red-200 dark:hover:border-red-900/50 hover:text-red-600 dark:hover:text-red-400"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedReview(review);
+                          openSidebar(sidebars.review);
+                        }}
+                      >
+                        <Trash2 className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                      </Button>
                     </div>
-                    <div>
-                      <h4 className="font-medium text-[#1A1A1A] dark:text-[#F0EDE7] text-[14px]">
-                        {creativeTestimonials[currentTestimonialIndex].name}
-                      </h4>
-                      <p className="text-[#7A736C] dark:text-[#B5AFA5] text-[13px]">
-                        {creativeTestimonials[currentTestimonialIndex].title}
-                      </p>
+                  )}
+
+                  <ClampableTiptapContent
+                    content={review?.description || ""}
+                    mode="review"
+                    enableBulletList={false}
+                    maxLines={3}
+                    itemId={review?._id ?? `${idx}`}
+                    expandedIds={expandedReviewIds}
+                    onToggleExpand={toggleExpandReview}
+                    className="font-inter text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed mb-6 italic"
+                  />
+
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <Avatar className="w-10 h-10 shrink-0 rounded-xl">
+                        <AvatarImage
+                          src={review?.avatar?.url || review?.avatar}
+                          alt={review?.name}
+                        />
+                        <AvatarFallback
+                          className="rounded-none"
+                          style={{
+                            backgroundColor: "#FF9966",
+                            color: "#FFFFFF",
+                          }}
+                        >
+                          {review?.name
+                            ?.split(" ")
+                            .map((n) => n[0])
+                            .join("")}
+                        </AvatarFallback>
+                      </Avatar>
+
+                      <div>
+                        <h4 className="font-medium text-[14px]">
+                          {review.name}
+                        </h4>
+                        <p className="text-[13px] text-[#7A736C] dark:text-[#B5AFA5]">
+                          {review.company}
+                        </p>
+                      </div>
                     </div>
+                    <button
+                      onClick={() =>
+                        handlePlayTestimonial(
+                          reviews[currentTestimonialIndex].description,
+                          reviews[currentTestimonialIndex]._id,
+                        )
+                      }
+                      className="flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-[#2A2520] border border-[#E5D7C4] dark:border-white/10 rounded-full text-[#1A1A1A] dark:text-[#F0EDE7] hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors shadow-sm"
+                    >
+                      {playingTestimonial ===
+                      creativeTestimonials[currentTestimonialIndex].id ? (
+                        <>
+                          <Square size={14} className="fill-current" />
+                          <div className="flex items-center justify-center gap-[2px] h-[14px] w-[30px]">
+                            {[...Array(4)].map((_, i) => (
+                              <motion.div
+                                key={i}
+                                className="w-[2px] bg-current rounded-full"
+                                animate={{ height: ["4px", "12px", "4px"] }}
+                                transition={{
+                                  duration: 0.6,
+                                  repeat: Infinity,
+                                  delay: i * 0.1,
+                                  ease: "easeInOut",
+                                }}
+                              />
+                            ))}
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <Play size={14} className="fill-current" />
+                          <span className="text-[12px] font-medium w-[30px] text-center">
+                            Play
+                          </span>
+                        </>
+                      )}
+                    </button>
                   </div>
-                  <button
-                    onClick={() =>
-                      handlePlayTestimonial(
-                        creativeTestimonials[currentTestimonialIndex].text,
-                        creativeTestimonials[currentTestimonialIndex].id,
-                      )
-                    }
-                    className="flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-[#2A2520] border border-[#E5D7C4] dark:border-white/10 rounded-full text-[#1A1A1A] dark:text-[#F0EDE7] hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors shadow-sm"
-                  >
-                    {playingTestimonial ===
-                    creativeTestimonials[currentTestimonialIndex].id ? (
-                      <>
-                        <Square size={14} className="fill-current" />
-                        <div className="flex items-center justify-center gap-[2px] h-[14px] w-[30px]">
-                          {[...Array(4)].map((_, i) => (
-                            <motion.div
-                              key={i}
-                              className="w-[2px] bg-current rounded-full"
-                              animate={{ height: ["4px", "12px", "4px"] }}
-                              transition={{
-                                duration: 0.6,
-                                repeat: Infinity,
-                                delay: i * 0.1,
-                                ease: "easeInOut",
-                              }}
-                            />
-                          ))}
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <Play size={14} className="fill-current" />
-                        <span className="text-[12px] font-medium w-[30px] text-center">
-                          Play
-                        </span>
-                      </>
-                    )}
-                  </button>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          )}
 
           {/* Progress Indicators */}
           <div className="flex justify-center gap-2 mt-4 pt-2">

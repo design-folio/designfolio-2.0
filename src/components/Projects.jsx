@@ -6,15 +6,15 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-} from '@dnd-kit/core';
+} from "@dnd-kit/core";
 import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   useSortable,
   rectSortingStrategy,
-} from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import ProjectCard from "./ProjectCard";
 import Section from "./section";
 import AddCard from "./AddCard";
@@ -57,7 +57,15 @@ const PreviewProjectCard = ({ project, preview, embeddedPreview }) => {
   );
 };
 
-const SortableItem = ({ project, onDeleteProject, edit, preview = false, embeddedPreview = false, recentlyMovedIds, onToggleVisibility }) => {
+const SortableItem = ({
+  project,
+  onDeleteProject,
+  edit,
+  preview = false,
+  embeddedPreview = false,
+  recentlyMovedIds,
+  onToggleVisibility,
+}) => {
   const router = useRouter();
   const {
     attributes,
@@ -88,7 +96,11 @@ const SortableItem = ({ project, onDeleteProject, edit, preview = false, embedde
   const wasRecentlyMoved = recentlyMovedIds?.has(project._id) ?? false;
 
   return (
-    <div ref={setNodeRef} style={style} className={`h-full w-full flex ${isDragging ? 'relative' : ''}`}>
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`h-full w-full flex ${isDragging ? "relative" : ""}`}
+    >
       <ProjectCard
         project={project}
         onDeleteProject={onDeleteProject}
@@ -125,7 +137,7 @@ export default function Projects({
     }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 
   // Track recently moved items to prevent navigation after drag (use state to trigger re-renders)
@@ -139,7 +151,8 @@ export default function Projects({
     return userDetails?.projects || [];
   }, [userDetails?.projects, preview]);
 
-  const { setShowUpgradeModal, setUpgradeModalUnhideProject } = useGlobalContext();
+  const { setShowUpgradeModal, setUpgradeModalUnhideProject } =
+    useGlobalContext();
 
   const onDeleteProject = (project) => {
     openModal(modals.deleteProject);
@@ -148,11 +161,16 @@ export default function Projects({
 
   const handleToggleVisibility = (projectId) => {
     const project = userDetails.projects.find((p) => p._id === projectId);
-    const visibleCount = (userDetails.projects || []).filter((p) => !p.hidden).length;
+    const visibleCount = (userDetails.projects || []).filter(
+      (p) => !p.hidden,
+    ).length;
     const isUnhiding = project?.hidden === true;
 
     if (!userDetails?.pro && isUnhiding && visibleCount >= 2) {
-      setUpgradeModalUnhideProject({ projectId, title: project?.title || "Project" });
+      setUpgradeModalUnhideProject({
+        projectId,
+        title: project?.title || "Project",
+      });
       setShowUpgradeModal(true);
       return;
     }
@@ -178,17 +196,13 @@ export default function Projects({
     if (!over || active.id === over.id) return;
 
     const oldIndex = userDetails.projects.findIndex(
-      (project) => project._id === active.id
+      (project) => project._id === active.id,
     );
     const newIndex = userDetails.projects.findIndex(
-      (project) => project._id === over.id
+      (project) => project._id === over.id,
     );
 
-    const sortedProject = arrayMove(
-      userDetails.projects,
-      oldIndex,
-      newIndex
-    );
+    const sortedProject = arrayMove(userDetails.projects, oldIndex, newIndex);
 
     // Mark all items that were in the affected range as recently moved
     const minIndex = Math.min(oldIndex, newIndex);
@@ -210,13 +224,19 @@ export default function Projects({
   };
   const gridClassName = twMerge(
     "grid grid-cols-1 gap-4 md:grid-cols-2 items-stretch",
-    visibleProjects?.length === 0 && "md:grid-cols-1"
+    visibleProjects?.length === 0 && "md:grid-cols-1",
   );
 
   if (preview && !edit) {
     return (
       <div ref={projectRef}>
-        <Section title={"My works"} wallpaper={userDetails?.wallpaper} showStar={true} sectionId="projects" edit={edit}>
+        <Section
+          title={"My works"}
+          wallpaper={userDetails?.wallpaper}
+          showStar={true}
+          sectionId="projects"
+          edit={edit}
+        >
           <div className={gridClassName}>
             {visibleProjects?.map((project) => (
               <PreviewProjectCard
@@ -234,7 +254,13 @@ export default function Projects({
 
   return (
     <div ref={projectRef}>
-      <Section title={"My works"} wallpaper={userDetails?.wallpaper} showStar={true} sectionId="projects" edit={edit}>
+      <Section
+        title={"My works"}
+        wallpaper={userDetails?.wallpaper}
+        showStar={true}
+        sectionId="projects"
+        edit={edit}
+      >
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
@@ -261,10 +287,11 @@ export default function Projects({
               {edit &&
                 (userDetails?.pro || visibleProjects.length < 2 ? (
                   <AddCard
-                    title={`${visibleProjects?.length === 0
-                      ? "Upload your first case study"
-                      : "Add case study"
-                      }`}
+                    title={`${
+                      visibleProjects?.length === 0
+                        ? "Upload your first case study"
+                        : "Add case study"
+                    }`}
                     subTitle="Show off your best work."
                     first={visibleProjects?.length !== 0}
                     buttonTitle="Add case study"

@@ -3,10 +3,10 @@ import { motion } from "framer-motion";
 import { Plus } from "lucide-react";
 import { Button } from "../../ui/button";
 import { useGlobalContext } from "@/context/globalContext";
-import { modals } from "@/lib/constant";
+import { sidebars } from "@/lib/constant";
 
 function CanvasToolsMarquee({ isEditing }) {
-  const { userDetails, openModal } = useGlobalContext();
+  const { userDetails, openSidebar } = useGlobalContext();
   const { tools = [] } = userDetails || {};
 
   const repeatedTools = useMemo(() => Array(12).fill(tools).flat(), [tools]);
@@ -30,7 +30,7 @@ function CanvasToolsMarquee({ isEditing }) {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => openModal?.(modals.tools)}
+            onClick={() => openSidebar(sidebars.tools)}
             className="h-8 flex items-center gap-1.5 px-3 rounded-full bg-white dark:bg-[#2A2520] shadow-md border border-[#E5D7C4] dark:border-white/10 hover:bg-gray-50 dark:hover:bg-[#35302A]"
           >
             <Plus className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />

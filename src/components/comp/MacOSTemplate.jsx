@@ -289,8 +289,8 @@ const MacOSTemplate = ({
               onEditContact={() => openSidebar(sidebars.footer)}
               onEditWorkExperience={() => setShowWorkSortModal(true)}
               onAddWorkExperience={handleAddWork}
-              onAddProject={() => openModal(modals.project)}
-              onEditTools={() => openModal(modals.tools)}
+              onAddProject={() => openSidebar(sidebars.project)}
+              onEditTools={() => openSidebar(sidebars.tools)}
               onEditSkills={() => openModal(modals.onboarding)}
               onEditResume={() => openModal(modals.resume)}
             />

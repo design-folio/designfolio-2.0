@@ -18,7 +18,7 @@ import { Footer } from "@/components/comp/Footer";
 import { useRouter } from "next/router";
 import Button2 from "../button";
 import { useGlobalContext } from "@/context/globalContext";
-import { modals, DEFAULT_SECTION_ORDER, normalizeSectionOrder } from "@/lib/constant";
+import { modals, sidebars, DEFAULT_SECTION_ORDER, normalizeSectionOrder } from "@/lib/constant";
 import DeleteIcon from "../../../public/assets/svgs/deleteIcon.svg";
 import AddCard from "../AddCard";
 import { useTheme } from "next-themes";
@@ -72,7 +72,7 @@ const Portfolio = ({ userDetails, edit }) => {
   } = userDetails || {};
 
   const hasAbout = userDetails?.about !== null && userDetails?.about !== undefined;
-  const { openModal, setSelectedWork, setSelectedProject, setUserDetails, setShowUpgradeModal, setUpgradeModalUnhideProject } =
+  const { openModal, openSidebar, setSelectedWork, setSelectedProject, setUserDetails, setShowUpgradeModal, setUpgradeModalUnhideProject } =
     useGlobalContext();
 
   // Get section order from userDetails or use template default
@@ -601,7 +601,7 @@ const Portfolio = ({ userDetails, edit }) => {
                                   first
                                   buttonTitle="Add case study"
                                   secondaryButtonTitle="Write using AI"
-                                  onClick={() => openModal(modals.project)}
+                                  onClick={() => openSidebar(sidebars.project)}
                                   icon={
                                     <MemoCasestudy className="cursor-pointer size-[72px]" />
                                   }

@@ -4,7 +4,8 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import { _checkUsername, _updateUsername } from "@/network/post-request";
 import { toast } from "react-toastify";
 import { useGlobalContext } from "@/context/globalContext";
-import Button from "./button";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 
 // Yup validation schema
 const DomainValidationSchema = Yup.object().shape({
@@ -101,18 +102,19 @@ export default function ChangeUsername() {
             <div className="flex flex-col xl:flex-row items-end  gap-4  m-auto">
               <div className="w-full">
                 <div className="relative">
-                  <Field
-                    type="text"
-                    name="domain"
-                    placeholder="Your-name"
-                    autoComplete="off"
-                    className={`text-input ${
-                      ((!!errors.domain && values.domain) ||
-                        (!isAvailable && values.domain)) &&
-                      "!text-df-error"
-                    }`}
-                    onChange={(e) => handleChange(e, setFieldValue)}
-                  />
+                  <Field name="domain">
+                    {({ field }) => (
+                      <Input
+                        {...field}
+                        id="domain"
+                        type="text"
+                        placeholder="Your-name"
+                        autoComplete="off"
+                        className={((!!errors.domain && values.domain) || (!isAvailable && values.domain)) ? "border-destructive focus-visible:ring-destructive" : ""}
+                        onChange={(e) => handleChange(e, setFieldValue)}
+                      />
+                    )}
+                  </Field>
                   <div className="flex justify-center items-center gap-[10px] absolute top-[18px] right-[20px]">
                     {domainValue &&
                       values?.domain !== userDetails?.username && (
@@ -143,17 +145,11 @@ export default function ChangeUsername() {
             </div>
             <div className="flex justify-end">
               <Button
-                text={"Change username"}
-                form={"usernameForm"}
-                customClass="mt-6"
-                isLoading={isSubmitting}
-                isDisabled={
-                  isSubmitting ||
-                  !isValid ||
-                  values?.domain == userDetails?.username
-                }
-                btnType="submit"
-              />
+                type="submit"
+                form="usernameForm"
+                className="mt-6"
+                disabled={isSubmitting || !isValid || values?.domain == userDetails?.username}
+              >{isSubmitting ? "Saving…" : "Change username"}</Button>
             </div>
           </Form>
         )}

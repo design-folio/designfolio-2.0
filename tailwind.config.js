@@ -283,6 +283,7 @@ module.exports = {
 
         // Sidebar
         sidebar: "hsl(var(--sidebar))",
+        "sidebar-background": "var(--sidebar-background)",
         "sidebar-foreground": "hsl(var(--sidebar-foreground))",
         "sidebar-border": "hsl(var(--sidebar-border))",
         "sidebar-primary": "hsl(var(--sidebar-primary))",

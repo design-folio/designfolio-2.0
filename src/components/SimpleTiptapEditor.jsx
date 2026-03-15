@@ -77,7 +77,7 @@ const SimpleTiptapEditor = ({
         editorProps: {
             attributes: {
                 class: `prose prose-sm sm:prose lg:prose-lg xl:prose-2xl focus:outline-none max-w-none tiptap-${mode}-mode-edit`,
-                style: "color: var(--input-text-color);",
+                style: "color: var(--foreground);",
             },
         },
         onUpdate: ({ editor }) => {
@@ -222,7 +222,7 @@ const SimpleTiptapEditor = ({
     return (
         <div
             className={cn(
-                "tiptap-input-wrapper rounded-[30px] p-0 overflow-hidden transition-all duration-150",
+                "tiptap-input-wrapper rounded-xl p-0 overflow-hidden transition-all duration-150",
                 className
             )}
         >

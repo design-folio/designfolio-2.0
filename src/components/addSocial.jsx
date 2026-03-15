@@ -2,7 +2,8 @@ import { useGlobalContext } from "@/context/globalContext";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import Text from "./text";
-import Button from "./button";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 import CloseIcon from "../../public/assets/svgs/close.svg";
 import { _updateUser } from "@/network/post-request";
 
@@ -28,18 +29,14 @@ export default function AddSocial() {
   const { userDetails, closeModal, updateCache } = useGlobalContext();
 
   return (
-    <div className="rounded-2xl bg-modal-bg-color flex flex-col justify-between  m-auto lg:w-[500px] max-h-[550px] my-auto overflow-hidden">
+    <div className="rounded-2xl bg-card flex flex-col justify-between  m-auto lg:w-[500px] max-h-[550px] my-auto overflow-hidden">
       <div className="flex p-5 justify-between items-center">
         <Text size="p-small" className="font-semibold">
           Add Social Links
         </Text>
-        <Button
-          // customClass="lg:hidden"
-          type="secondary"
-          customClass="!p-2"
-          icon={<CloseIcon className="text-icon-color cursor-pointer" />}
-          onClick={closeModal}
-        />
+        <Button variant="outline" size="icon" type="button" onClick={closeModal}>
+          <CloseIcon className="text-icon-color" />
+        </Button>
       </div>
       <div>
         <Formik
@@ -69,15 +66,17 @@ export default function AddSocial() {
                   <Text size={"p-xxsmall"} className="font-medium">
                     Instagram
                   </Text>
-                  <Field
-                    name="instagram"
-                    type="text"
-                    className={`text-input mt-2  ${errors.instagram &&
-                      touched.instagram &&
-                      "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                      }`}
-                    autoComplete="off"
-                  />
+                  <Field name="instagram">
+                    {({ field }) => (
+                      <Input
+                        {...field}
+                        id="instagram"
+                        type="text"
+                        autoComplete="off"
+                        className={`mt-2 ${errors.instagram && touched.instagram ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                      />
+                    )}
+                  </Field>
                   <ErrorMessage
                     name="instagram"
                     component="div"
@@ -89,15 +88,17 @@ export default function AddSocial() {
                   <Text size={"p-xxsmall"} className="font-medium">
                     LinkedIn
                   </Text>
-                  <Field
-                    name="linkedin"
-                    type="text"
-                    className={`text-input mt-2  ${errors.linkedin &&
-                      touched.linkedin &&
-                      "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                      }`}
-                    autoComplete="off"
-                  />
+                  <Field name="linkedin">
+                    {({ field }) => (
+                      <Input
+                        {...field}
+                        id="linkedin"
+                        type="text"
+                        autoComplete="off"
+                        className={`mt-2 ${errors.linkedin && touched.linkedin ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                      />
+                    )}
+                  </Field>
                   <ErrorMessage
                     name="linkedin"
                     component="div"
@@ -109,15 +110,17 @@ export default function AddSocial() {
                   <Text size={"p-xxsmall"} className="font-medium">
                     Twitter
                   </Text>
-                  <Field
-                    name="twitter"
-                    type="text"
-                    className={`text-input mt-2  ${errors.twitter &&
-                      touched.twitter &&
-                      "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                      }`}
-                    autoComplete="off"
-                  />
+                  <Field name="twitter">
+                    {({ field }) => (
+                      <Input
+                        {...field}
+                        id="twitter"
+                        type="text"
+                        autoComplete="off"
+                        className={`mt-2 ${errors.twitter && touched.twitter ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                      />
+                    )}
+                  </Field>
                   <ErrorMessage
                     name="twitter"
                     component="div"
@@ -127,14 +130,8 @@ export default function AddSocial() {
               </div>
 
               <div className="flex gap-2 mt-[26px] justify-end p-3 bg-modal-footer-bg-color rounded-br-[24px] rounded-bl-[24px]">
-                <Button text={"Cancel"} type="secondary" onClick={closeModal} />
-                <Button
-                  btnType="submit"
-                  text={"Save"}
-                  form="socialForm"
-                  type="modal"
-                  isLoading={isSubmitting}
-                />
+                <Button variant="outline" type="button" onClick={closeModal}>Cancel</Button>
+                <Button type="submit" form="socialForm" disabled={isSubmitting}>{isSubmitting ? "Saving…" : "Save"}</Button>
               </div>
             </Form>
           )}

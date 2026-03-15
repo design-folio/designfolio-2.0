@@ -2,7 +2,8 @@ import { useGlobalContext } from "@/context/globalContext";
 import { _deleteReview, _updateUser } from "@/network/post-request";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
-import Button from "./button";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 import CloseIcon from "../../public/assets/svgs/close.svg";
 import Text from "./text";
 import DeleteIcon from "../../public/assets/svgs/deleteIcon.svg";
@@ -245,15 +246,16 @@ export default function AddReview() {
                 >
                   Name of the Person
                 </Text>
-                <Field
-                  name="name"
-                  type="text"
-                  className={`text-input mt-2  ${errors.name &&
-                    touched.name &&
-                    "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                    }`}
-                  autoComplete="off"
-                />
+                <Field name="name">
+                  {({ field }) => (
+                    <Input
+                      {...field}
+                      type="text"
+                      autoComplete="off"
+                      className={`mt-2 ${errors.name && touched.name ? "!border-[var(--input-error-color)] focus-visible:!shadow-[var(--input-error-shadow)]" : ""}`}
+                    />
+                  )}
+                </Field>
                 <ErrorMessage
                   name="name"
                   component="div"
@@ -268,16 +270,17 @@ export default function AddReview() {
                 >
                   LinkedIn Link
                 </Text>
-                <Field
-                  name="linkedinLink"
-                  type="text"
-                  className={`text-input mt-2  ${errors.linkedinLink &&
-                    touched.linkedinLink &&
-                    "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                    }`}
-                  autoComplete="off"
-                  placeholder="https://linkedin.com/in/..."
-                />
+                <Field name="linkedinLink">
+                  {({ field }) => (
+                    <Input
+                      {...field}
+                      type="text"
+                      autoComplete="off"
+                      placeholder="https://linkedin.com/in/..."
+                      className={`mt-2 ${errors.linkedinLink && touched.linkedinLink ? "!border-[var(--input-error-color)] focus-visible:!shadow-[var(--input-error-shadow)]" : ""}`}
+                    />
+                  )}
+                </Field>
                 <ErrorMessage
                   name="linkedinLink"
                   component="div"
@@ -293,15 +296,16 @@ export default function AddReview() {
                 >
                   Company Name
                 </Text>
-                <Field
-                  name="company"
-                  type="text"
-                  className={`text-input mt-2  ${errors.company &&
-                    touched.company &&
-                    "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                    }`}
-                  autoComplete="off"
-                />
+                <Field name="company">
+                  {({ field }) => (
+                    <Input
+                      {...field}
+                      type="text"
+                      autoComplete="off"
+                      className={`mt-2 ${errors.company && touched.company ? "!border-[var(--input-error-color)] focus-visible:!shadow-[var(--input-error-shadow)]" : ""}`}
+                    />
+                  )}
+                </Field>
                 <ErrorMessage
                   name="company"
                   component="div"
@@ -375,27 +379,37 @@ export default function AddReview() {
             >
               {selectedReview?.name && (
                 <Button
-                  type="delete"
-                  icon={
-                    <DeleteIcon className="stroke-delete-btn-icon-color w-6 h-6 cursor-pointer" />
-                  }
+                  variant="outline"
+                  size="icon"
+                  type="button"
                   onClick={handleDelete}
-                />
+                  className="border-destructive/40 hover:border-destructive hover:bg-destructive/10"
+                >
+                  <DeleteIcon className="stroke-destructive w-5 h-5" />
+                </Button>
               )}
 
               <div className="flex gap-2">
                 <Button
-                  text={"Cancel"}
+                  variant="outline"
+                  type="button"
                   onClick={handleCancel}
-                  type="secondary"
-                />
+                >
+                  Cancel
+                </Button>
                 <Button
-                  btnType="submit"
-                  text={"Save"}
-                  type="modal"
+                  type="submit"
                   form="reviewForm"
-                  isLoading={loading}
-                />
+                  disabled={loading}
+                >
+                  {loading && (
+                    <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V2.5A9.5 9.5 0 002.5 12H4z" />
+                    </svg>
+                  )}
+                  Save
+                </Button>
               </div>
             </div>
           </Form>

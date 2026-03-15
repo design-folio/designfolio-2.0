@@ -18,7 +18,7 @@ export default function DeleteProject() {
       .finally(() => setLoading(false));
   };
   return (
-    <div className="p-[24px] rounded-2xl bg-modal-bg-color  w-[400px]">
+    <div className="p-[24px] rounded-2xl bg-card  w-[400px]">
       <Text className="text-modal-heading-color">Confirm Deletion</Text>
       <Text size="p-xsmall" className="text-df-secondary-text-color mt-2">
         Are you sure you want to delete this case study from your portfolio?

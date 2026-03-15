@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/buttonNew";
+import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGlobalContext } from "@/context/globalContext";
@@ -6,7 +6,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { sidebars, DEFAULT_SECTION_ORDER, normalizeSectionOrder } from "@/lib/constant";
 import styles from "@/styles/domain.module.css";
 import imageCompression from "browser-image-compression";
-import { Upload, RotateCcw } from "lucide-react";
+import { Upload, RotateCcw, Check, Sun, Moon } from "lucide-react";
 import DragHandle from "./DragHandle";
 import React, { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
@@ -72,8 +72,8 @@ const SortableSectionItem = ({ id, isMobile }) => {
       style={style}
       className={twMerge(
         "flex items-center gap-3 p-3 rounded-xl border transition-all cursor-pointer",
-        "bg-card/50 border-border",
-        "hover:bg-card/80",
+        "bg-muted/50 border-border",
+        "hover:bg-muted",
         isDragging && "shadow-lg z-50 opacity-50"
       )}
       data-testid={isMobile ? `section-item-${id}-mobile` : `section-item-${id}`}
@@ -385,66 +385,114 @@ const ThemePanel = ({
 
       <TabsContent value="layouts" className="flex-1 overflow-y-auto p-6 m-0 thin-scrollbar" data-testid={isMobile ? "content-layouts-mobile" : "content-layouts"}>
         <div className="space-y-4">
-          <div className="flex items-center justify-between p-3 rounded-md bg-muted/50 mb-4">
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-medium">Light Mode</span>
-            </div>
-            <Switch
-              className="data-[state=unchecked]:bg-[#CFC4AF] data-[state=checked]:bg-df-orange-color "
-              checked={isMacOSTemplate ? false : (theme === 'dark' || theme === 1)}
-              onCheckedChange={(checked) => changeTheme(checked ? 1 : 0)}
-              disabled={isMacOSTemplate}
-              data-testid={isMobile ? "switch-theme-mode-layouts-mobile" : "switch-theme-mode-layouts"}
-            />
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-medium">Dark Mode</span>
+          <div className="flex items-center justify-between p-4 border border-border rounded-[16px] bg-black/[0.02] dark:bg-white/[0.02] mb-4">
+            <span className="text-[13px] font-medium text-foreground">Appearance</span>
+            <div className="inline-flex items-center gap-2">
+              <span
+                className={twMerge("cursor-pointer transition-colors", (theme === 'dark' || theme === 1) ? "text-muted-foreground" : "text-foreground")}
+                onClick={() => !isMacOSTemplate && changeTheme(0)}
+              >
+                <Sun className="size-4" />
+              </span>
+              <Switch
+                checked={isMacOSTemplate ? false : (theme === 'dark' || theme === 1)}
+                onCheckedChange={(checked) => changeTheme(checked ? 1 : 0)}
+                disabled={isMacOSTemplate}
+                data-testid={isMobile ? "switch-theme-mode-layouts-mobile" : "switch-theme-mode-layouts"}
+              />
+              <span
+                className={twMerge("cursor-pointer transition-colors", !(theme === 'dark' || theme === 1) ? "text-muted-foreground" : "text-foreground")}
+                onClick={() => !isMacOSTemplate && changeTheme(1)}
+              >
+                <Moon className="size-4" />
+              </span>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-4">
-            {templates.map((tmpl) => (
-              <div
-                key={tmpl.value}
-                onClick={() => changeTemplate(tmpl.id)}
-                className={twMerge(
-                  "px-4 py-6 flex flex-col justify-center items-center border rounded-[16px] cursor-pointer transition-all",
-                  "bg-default-cursor-box-bg border-default-cursor-box-border",
-                  "hover:bg-default-cursor-bg-hover",
-                  getTemplateStyles(tmpl.id)
-                )}
-              >
-                <div className="flex gap-2 items-center mb-2">
-                  <p className="text-[14px] text-popover-heading-color font-inter font-[500] cursor-pointer">
-                    {tmpl.item}
-                  </p>
-                  {tmpl.isNew && (
-                    <Badge className="bg-[#EE7F70] text-white text-[12px] font-medium">New</Badge>
-                  )}
-                </div>
-                <img src={renderTemplate(tmpl.id)} alt="" className="cursor-pointer" />
+          <div className="text-[13px] font-medium text-muted-foreground px-1">Templates</div>
+          <div className="grid grid-cols-2 gap-x-4 gap-y-6 pb-4">
+            {templates.map((tmpl) => {
+              const isSelected = template === tmpl.id;
+              return (
+                <div key={tmpl.value} className="flex flex-col gap-3 items-center">
+                  <div className="relative w-full">
+                    <button
+                      onClick={() => changeTemplate(tmpl.id)}
+                      className={twMerge(
+                        "w-full aspect-square rounded-[24px] transition-all focus:outline-none cursor-pointer group",
+                        isSelected
+                          ? "border-[2.5px] border-df-orange-color p-1.5"
+                          : "border-[2.5px] border-transparent p-1.5 hover:bg-black/5 dark:hover:bg-white/5"
+                      )}
+                    >
+                      <div className={twMerge(
+                        "w-full h-full rounded-[14px] overflow-hidden transition-all shadow-sm border border-black/5 dark:border-white/5 relative",
+                        isSelected
+                          ? "bg-accent"
+                          : "bg-card group-hover:shadow-md"
+                      )}>
+                        <div className="absolute inset-0 p-3 flex flex-col gap-2 opacity-40">
+                          <div className="flex items-center gap-2">
+                            <div className="w-5 h-5 rounded-full bg-black/20 dark:bg-white/20" />
+                            <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
+                          </div>
+                          <div className="w-full h-12 mt-1 rounded-md bg-black/10 dark:bg-white/10" />
+                          <div className="flex gap-2 mt-auto">
+                            <div className="w-full h-8 rounded-md bg-black/10 dark:bg-white/10" />
+                            <div className="w-full h-8 rounded-md bg-black/10 dark:bg-white/10" />
+                          </div>
+                        </div>
+                      </div>
+                    </button>
 
-                {/* //HACK: Allow all templates to be free */}
-                {/* {tmpl.id !== 0 && <div className={`mt-4 ${styles.templateBadgePro}`}>Pro</div>} */}
-              </div>
-            ))}
+                    {isSelected && (
+                      <div className="absolute -bottom-1 -left-1 bg-df-orange-color text-primary-foreground rounded-full p-1.5 shadow-sm flex items-center justify-center border-[2px] border-sidebar-background z-10">
+                        <Check size={14} strokeWidth={3.5} />
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-1.5">
+                    <span className={twMerge(
+                      "text-[14px] text-center transition-colors font-medium",
+                      isSelected ? "text-primary" : "text-muted-foreground"
+                    )}>
+                      {tmpl.item}
+                    </span>
+                    {tmpl.isNew && (
+                      <Badge className="bg-[#EE7F70] text-white text-[10px] font-medium px-1.5 py-0">New</Badge>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </TabsContent>
 
       <TabsContent value="background" className="flex-1 overflow-y-auto p-6 m-0" data-testid={isMobile ? "content-background-mobile" : "content-background"}>
         <div className="space-y-4">
-          <div className="flex items-center justify-between p-3 rounded-md bg-muted/50 mb-4">
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-medium">Light Mode</span>
-            </div>
-            <Switch
-              checked={isMacOSTemplate ? false : (theme === 'dark' || theme === 1)}
-              onCheckedChange={(checked) => changeTheme(checked ? 1 : 0)}
-              disabled={isMacOSTemplate}
-              data-testid={isMobile ? "switch-wallpaper-mode-mobile" : "switch-wallpaper-mode"}
-            />
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-medium">Dark Mode</span>
+          <div className="flex items-center justify-between p-4 border border-border rounded-[16px] bg-black/[0.02] dark:bg-white/[0.02] mb-4">
+            <span className="text-[13px] font-medium text-foreground">Appearance</span>
+            <div className="inline-flex items-center gap-2">
+              <span
+                className={twMerge("cursor-pointer transition-colors", (theme === 'dark' || theme === 1) ? "text-muted-foreground" : "text-foreground")}
+                onClick={() => !isMacOSTemplate && changeTheme(0)}
+              >
+                <Sun className="size-4" />
+              </span>
+              <Switch
+                checked={isMacOSTemplate ? false : (theme === 'dark' || theme === 1)}
+                onCheckedChange={(checked) => changeTheme(checked ? 1 : 0)}
+                disabled={isMacOSTemplate}
+                data-testid={isMobile ? "switch-wallpaper-mode-mobile" : "switch-wallpaper-mode"}
+              />
+              <span
+                className={twMerge("cursor-pointer transition-colors", !(theme === 'dark' || theme === 1) ? "text-muted-foreground" : "text-foreground")}
+                onClick={() => !isMacOSTemplate && changeTheme(1)}
+              >
+                <Moon className="size-4" />
+              </span>
             </div>
           </div>
 
@@ -463,32 +511,29 @@ const ThemePanel = ({
                     <Text size="p-xs-uppercase">Background Texture</Text>
                   </div>
                   <div className="flex p-1 bg-muted/50 rounded-lg gap-1 mb-4">
-                    <button
+                    <Button
+                      variant={currentEffects.effectType === 'blur' ? 'secondary' : 'ghost'}
+                      size="sm"
                       onClick={() => currentUpdateWallpaperEffect('effectType', 'blur')}
-                      className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 ${currentEffects.effectType === 'blur'
-                        ? 'bg-tab-active-bg text-foreground shadow-sm'
-                        : ' hover:text-foreground'
-                        }`}
+                      className="flex-1 text-xs rounded-md"
                       data-testid={isMobileOrTablet ? "button-effect-blur-mobile" : "button-effect-blur"}
                     >
                       Soft Blur
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                      variant={currentEffects.effectType === 'grain' ? 'secondary' : 'ghost'}
+                      size="sm"
                       onClick={() => {
-                        // When switching to grain, ensure default opacity 25 if currently zero/undefined
                         if (currentEffects.grainIntensity === 0 || currentEffects.grainIntensity === undefined || currentEffects.grainIntensity === null) {
                           currentUpdateWallpaperEffect('grainIntensity', 25);
                         }
                         currentUpdateWallpaperEffect('effectType', 'grain');
                       }}
-                      className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 ${currentEffects.effectType === 'grain'
-                        ? 'bg-tab-active-bg text-foreground shadow-sm'
-                        : ' hover:text-foreground'
-                        }`}
+                      className="flex-1 text-xs rounded-md"
                       data-testid={isMobileOrTablet ? "button-effect-grain-mobile" : "button-effect-grain"}
                     >
                       Fine Grain
-                    </button>
+                    </Button>
                   </div>
 
                   <div className="space-y-4">
@@ -692,8 +737,8 @@ const ThemePanel = ({
               onClick={() => handleChangeCursor(index)}
               className={twMerge(
                 "px-4 py-6 flex justify-center items-center border rounded-[16px] cursor-pointer transition-all hover:scale-[1.02] active:scale-[0.98]",
-                "bg-default-cursor-box-bg border-default-cursor-box-border",
-                "hover:bg-default-cursor-bg-hover",
+                "bg-transparent border-border",
+                "hover:bg-muted",
                 getStyles(index)
               )}
             >
@@ -712,7 +757,7 @@ const ThemePanel = ({
       open={show}
       onClose={handleClose}
       title="Theme Settings"
-      width="320px"
+      width="400px"
     >
       {renderContent(isMobileOrTablet)}
     </SheetWrapper>

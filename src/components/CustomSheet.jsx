@@ -35,7 +35,7 @@ const CustomSheet = ({
 
       <div
         className={cn(
-          "fixed right-0 top-0 h-full bg-white dark:bg-background border-l border-border z-50 shadow-xl",
+          "fixed right-0 top-0 h-full bg-sidebar-background border-l border-border z-50 shadow-xl",
           className
         )}
         style={{

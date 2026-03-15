@@ -508,13 +508,13 @@
 .ProseMirror > .is-empty:first-child:last-child::before {
   content: attr(data-placeholder);
   float: left;
-  color: #9ca3af !important;
+  color: rgba(0, 0, 0, 0.3) !important;
   pointer-events: none;
   height: 0;
 }
 
 [data-theme="dark"] .ProseMirror > .is-empty:first-child:last-child::before {
-  color: #94a3b8 !important;
+  color: rgba(255, 255, 255, 0.3) !important;
 }
 
 /* Tiptap Headings */
@@ -1354,40 +1354,40 @@
   text-align: justify;
 }
 
-/* SimpleTiptapEditor Input Wrapper Styles - Matches text-input styling */
+/* SimpleTiptapEditor Input Wrapper Styles - Matches shadcn Input styling */
 .tiptap-input-wrapper {
   padding: 0;
-  border-radius: 16px;
-  border: 2px solid var(--input-border-color);
-  background: var(--input-bg-color);
-  transition-property: all;
+  border: 1px solid transparent;
+  background-color: rgba(0, 0, 0, 0.03);
+  transition-property: border-color, box-shadow, background-color;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 0.15s;
 }
 
-.tiptap-input-wrapper:hover {
-  box-shadow: var(--input-border-hover-shadow);
-}
-
 .tiptap-input-wrapper:focus-within {
-  border-color: var(--input-border-focus-color);
-  box-shadow: var(--input-border-focus-shadow);
+  outline: none;
+  background-color: transparent;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+  border-color: rgba(0, 0, 0, 0.2);
 }
 
 [data-theme="dark"] .tiptap-input-wrapper {
-  background-color: #363a48;
-  border-color: #363a48;
+  background-color: rgba(255, 255, 255, 0.03);
+  border-color: transparent;
 }
 
 [data-theme="dark"] .tiptap-input-wrapper:focus-within {
-  border-color: #b4bace !important;
+  background-color: transparent;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .tiptap-toolbar {
-  border-color: var(--input-border-color);
-  background-color: hsl(var(--muted) / 0.5);
+  border-color: rgba(0, 0, 0, 0.05);
+  background-color: transparent;
 }
 
 [data-theme="dark"] .tiptap-toolbar {
-  background-color: hsl(var(--muted) / 0.3);
+  border-color: rgba(255, 255, 255, 0.05);
+  background-color: transparent;
 }

@@ -275,7 +275,7 @@ export default function CustomDomain({ domainDetails, fetchDomainDetails }) {
       )}
 
       <Modal show={isDelete}>
-        <div className="p-[24px] rounded-2xl bg-modal-bg-color  w-[400px]">
+        <div className="p-[24px] rounded-2xl bg-card  w-[400px]">
           <Text className="text-modal-heading-color">Remove domain</Text>
           <Text size="p-xsmall" className="text-df-secondary-text-color mt-2">
             Are you sure you want to remove this domain? Your visitors will no

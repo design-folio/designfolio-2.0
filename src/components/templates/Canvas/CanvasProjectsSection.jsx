@@ -184,6 +184,8 @@ function CanvasProjectsSection({ isEditing, preview }) {
     [isSectionHidden, hiddenSections, setUserDetails, updateCache],
   );
 
+  const showControls = isSectionHidden || isDropdownOpen;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 40 }}
@@ -194,27 +196,22 @@ function CanvasProjectsSection({ isEditing, preview }) {
         damping: 12,
         delay: 0.45,
       }}
-      className="bg-white/80 dark:bg-[#2A2520]/80 backdrop-blur-md rounded-[32px] border border-[#E5D7C4] dark:border-white/10 p-4 w-full relative group/section"
+      className="bg-white/80 dark:bg-[#2A2520]/80 backdrop-blur-md rounded-[24px] border border-[#E5D7C4] dark:border-white/10 p-4 md:p-6 w-full relative group/section"
     >
       {isEditing && (
-        <div
-          className={`absolute -top-3 -right-3 transition-opacity z-10 flex gap-2
-            ${
-              isDropdownOpen
-                ? "opacity-100"
-                : "opacity-100 md:opacity-0 md:group-hover/section:opacity-100"
-            }`}
-        >
+        <div className="absolute -top-3 -right-3 z-10 flex gap-2">
           <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
                 size="icon"
-                className="w-8 h-8 rounded-full bg-white dark:bg-[#2A2520] shadow-md border border-[#E5D7C4] dark:border-white/10 hover:bg-gray-50 dark:hover:bg-[#35302A]"
+                className={`w-8 h-8 rounded-full bg-white dark:bg-[#2A2520] shadow-md border border-[#E5D7C4] dark:border-white/10 hover:bg-gray-50 dark:hover:bg-[#35302A] transition-opacity
+          opacity-0 md:group-hover/section:opacity-100`}
               >
                 <Plus className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
               </Button>
             </DropdownMenuTrigger>
+
             <DropdownMenuContent
               align="end"
               className="w-48 bg-white dark:bg-[#2A2520] border border-black/10 dark:border-white/10 shadow-lg rounded-xl overflow-hidden p-1"
@@ -226,6 +223,7 @@ function CanvasProjectsSection({ isEditing, preview }) {
                 <Pencil className="w-3.5 h-3.5" />
                 <span>Write from Scratch</span>
               </DropdownMenuItem>
+
               <DropdownMenuItem
                 onClick={() => openModal(modals.aiProject)}
                 className="flex items-center gap-2 px-3 py-2 text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer rounded-lg focus:bg-black/5 dark:focus:bg-white/5"
@@ -245,11 +243,17 @@ function CanvasProjectsSection({ isEditing, preview }) {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+
           <Button
             variant="outline"
             size="icon"
             onClick={handleToggleVisibility}
-            className="w-8 h-8 rounded-full bg-white dark:bg-[#2A2520] shadow-md border border-[#E5D7C4] dark:border-white/10 hover:bg-gray-50 dark:hover:bg-[#35302A]"
+            className={`w-8 h-8 rounded-full bg-white dark:bg-[#2A2520] shadow-md border border-[#E5D7C4] dark:border-white/10 hover:bg-gray-50 dark:hover:bg-[#35302A] transition-opacity
+      ${
+        isSectionHidden
+          ? "opacity-100"
+          : "opacity-0 md:group-hover/section:opacity-100"
+      }`}
           >
             {isSectionHidden ? (
               <EyeOff className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />

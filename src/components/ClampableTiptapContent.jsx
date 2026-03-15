@@ -24,6 +24,7 @@ export default function ClampableTiptapContent({
   expandedIds = [],
   onToggleExpand,
   itemId,
+  noCardStyle = false,
 }) {
   const containerRef = useRef(null);
   const [exceedsLines, setExceedsLines] = useState(false);
@@ -84,6 +85,7 @@ export default function ClampableTiptapContent({
           mode={mode}
           enableBulletList={enableBulletList}
           className="rounded-none shadow-none"
+          noCardStyle={noCardStyle}
         />
       </div>
       {showButton && (

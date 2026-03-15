@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
@@ -6,11 +6,14 @@ import Link from "@tiptap/extension-link";
 import Highlight from "@tiptap/extension-highlight";
 import { cn } from "@/lib/utils";
 
+let hasHydrated = false;
+
 const SimpleTiptapRenderer = ({
   content = "",
   mode = "review",
   enableBulletList = false,
   className = "",
+  noCardStyle = false,
 }) => {
   // Normalize content - only accept Tiptap JSON format
   const normalizeContent = (content) => {
@@ -34,6 +37,13 @@ const SimpleTiptapRenderer = ({
   };
 
   const editorContent = normalizeContent(content);
+
+  const [isMounted, setIsMounted] = useState(hasHydrated);
+
+  useEffect(() => {
+    hasHydrated = true;
+    setIsMounted(true);
+  }, []);
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -84,15 +94,17 @@ const SimpleTiptapRenderer = ({
     }
   }, [editorContent, editor]);
 
-  if (!editor) {
+  if (!editor || !isMounted) {
     return null;
   }
 
   return (
     <div className={cn(
-      mode === "work"
+      noCardStyle
         ? "break-words"
-        : "bg-review-card-bg-color shadow-df-section-card-shadow rounded-[24px] break-words",
+        : mode === "work"
+          ? "break-words"
+          : "bg-review-card-bg-color shadow-df-section-card-shadow rounded-[24px] break-words",
       className
     )}>
       <EditorContent editor={editor} />

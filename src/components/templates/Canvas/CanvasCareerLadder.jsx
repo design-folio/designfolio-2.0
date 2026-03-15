@@ -63,9 +63,8 @@ function ExperienceCard({
           {role} @ {company}
         </h3>
         <div className="bg-[#F0EDE7] dark:bg-[#3A352E] px-3 py-1 rounded-full text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] w-fit whitespace-nowrap">
-          {`${startMonth} ${startYear}  — ${
-            currentlyWorking ? "Present" : `${endMonth} ${endYear}`
-          }`}
+          {`${startMonth} ${startYear}  — ${currentlyWorking ? "Present" : `${endMonth} ${endYear}`
+            }`}
         </div>
       </div>
       {hasDescription && (
@@ -78,7 +77,7 @@ function ExperienceCard({
             itemId={_id}
             expandedIds={expandedCards}
             onToggleExpand={onToggleExpand}
-            buttonClassName="text-[#7A736C] dark:text-[#B5AFA5] text-[15px] leading-relaxed mb-4"
+            buttonClassName="mt-2 text-[#7A736C] dark:text-[#B5AFA5] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7] text-[15px] leading-relaxed mb-4 inline-flex items-center gap-1 transition-colors"
           />
         </div>
       )}
@@ -157,7 +156,7 @@ function CanvasCareerLadder({ isEditing }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 100, damping: 12, delay: 0.6 }}
       ref={careerLadderRef}
-      className="bg-white/80 dark:bg-[#2A2520]/80 backdrop-blur-md rounded-[32px] border border-[#E5D7C4] dark:border-white/10 p-4 md:p-6 w-full mt-2 relative group/section"
+      className="bg-white/80 dark:bg-[#2A2520]/80 backdrop-blur-md rounded-[24px] border border-[#E5D7C4] dark:border-white/10 p-4 md:p-6 w-full mt-2 relative group/section"
     >
       {isEditing && experiences.length > 0 && (
         <div className="absolute -top-3 -right-3 opacity-100 md:opacity-0 md:group-hover/section:opacity-100 transition-opacity z-10 flex gap-2">
@@ -220,26 +219,35 @@ function CanvasCareerLadder({ isEditing }) {
         </div>
       ) : (
         <div ref={ladderContainerRef} className="relative flex">
-          <div
-            className="absolute left-[1px] z-20 w-[40px] h-[54px]"
-            style={{ top: `${characterPosition}px`, willChange: "transform" }}
-          >
-            <img
-              src="/assets/svgs/character-me.svg"
-              alt="Character climbing"
-              className="w-full h-full object-contain"
-            />
-          </div>
-          <div className="absolute left-0 top-3 bottom-0 w-[42px] flex flex-col justify-between items-start border-x-[5px] border-[#F0EDE7] dark:border-[#3A352E] py-1 bg-transparent">
-            {[...Array(30)].map((_, i) => (
+          {experiences.length > 1 && (
+            <>
               <div
-                key={i}
-                className="w-full h-[5px] bg-[#F0EDE7] dark:bg-[#3A352E]"
-              ></div>
-            ))}
-          </div>
+                className="absolute left-[1px] z-20 w-[40px] h-[54px]"
+                style={{
+                  top: `${characterPosition}px`,
+                  willChange: "transform",
+                }}
+              >
+                <img
+                  src="/assets/svgs/character-me.svg"
+                  alt="Character climbing"
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <div className="absolute left-0 top-3 bottom-0 w-[42px] flex flex-col justify-between items-start border-x-[5px] border-[#F0EDE7] dark:border-[#3A352E] py-1 bg-transparent">
+                {[...Array(30)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="w-full h-[5px] bg-[#F0EDE7] dark:bg-[#3A352E]"
+                  ></div>
+                ))}
+              </div>
+            </>
+          )}
 
-          <div className="space-y-12 pl-16 relative z-10 w-full pt-1 pb-2">
+          <div
+            className={`space-y-12 ${experiences.length !== 1 ? "pl-16" : ""} relative z-10 w-full pt-1 pb-2`}
+          >
             {experiences.map((experience) => (
               <MemoizedExperienceCard
                 key={experience._id}

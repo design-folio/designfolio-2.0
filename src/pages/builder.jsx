@@ -294,15 +294,14 @@ export default function Index() {
         className={cn(
           "min-h-screen",
           hasNoWallpaper(wallpaper) &&
-            "bg-[#F0EDE7] dark:bg-[#1A1A1A] flex justify-center font-inter text-[#1A1A1A] dark:text-[#F0EDE7] selection:bg-[#1A1A1A] dark:selection:bg-[#F0EDE7] selection:text-[#F0EDE7] dark:selection:text-[#1A1A1A] transition-colors duration-700",
+          "bg-[#F0EDE7] dark:bg-[#1A1A1A] flex justify-center font-inter text-[#1A1A1A] dark:text-[#F0EDE7] selection:bg-[#1A1A1A] dark:selection:bg-[#F0EDE7] selection:text-[#F0EDE7] dark:selection:text-[#1A1A1A] transition-colors duration-700",
         )}
       >
         <div
-          className={` mx-auto ${userDetails?.template == 4 ? "" : "py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0"} ${
-            userDetails?.template != 3 &&
+          className={` mx-auto ${userDetails?.template == 4 ? "" : "py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0"} ${userDetails?.template != 3 &&
             userDetails?.template != 4 &&
             "max-w-[848px]"
-          }`}
+            }`}
         >
           {/* //HACK: Allow all templates to be free */}
           {/* {userDetails && !userDetails?.pro && <ProWarning />} */}

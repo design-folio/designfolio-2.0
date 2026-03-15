@@ -196,7 +196,7 @@ function CanvasContactSection({ isEditing }) {
         damping: 12,
         delay: 1.05,
       }}
-      className="bg-white/80 dark:bg-[#2A2520]/80 backdrop-blur-md rounded-[32px] border border-[#E5D7C4] dark:border-white/10 p-6 w-full relative group/section"
+      className="bg-white/80 dark:bg-[#2A2520]/80 backdrop-blur-md rounded-[24px] border border-[#E5D7C4] dark:border-white/10 p-6 w-full relative group/section"
     >
       {isEditing && (
         <div className="absolute -top-3 -right-3 opacity-100 md:opacity-0 md:group-hover/section:opacity-100 transition-opacity z-10 flex gap-2">
@@ -227,54 +227,103 @@ function CanvasContactSection({ isEditing }) {
       {/* Primary contacts (email / phone) */}
       {primaryLinks.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
-          {primaryLinks.map((link) => (
-            <MemoizedContactLinkButton
+          {primaryLinks.map((link, idx) => (
+            <motion.div
+              whileHover="hover"
+              initial="rest"
+              className="w-full"
               key={link.label}
-              label={link.label}
-              icon={link.icon}
-              iconRotate={link.iconRotate}
-              isEditing={isEditing}
-              onClick={link.onClick}
-            />
+            >
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={link.onClick}
+                className="w-full flex items-center justify-between px-4 py-4 bg-white dark:bg-[#2A2520] rounded-xl border border-black/5 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors group h-auto"
+              >
+                <span className="text-[#1A1A1A] dark:text-[#F0EDE7] font-medium text-sm">
+                  {link.label}
+                </span>
+                <motion.div
+                  variants={{
+                    rest: { scale: 1, rotate: 0 },
+                    hover: { scale: 1.3, rotate: link.iconRotate },
+                  }}
+                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                >
+                  <link.icon
+                    size={14}
+                    className="text-[#7A736C] dark:text-[#9E9893] group-hover:text-[#1A1A1A] dark:group-hover:text-[#F0EDE7]"
+                  />
+                </motion.div>
+              </Button>
+            </motion.div>
           ))}
         </div>
       )}
 
       {/* Social & portfolio links */}
       {socialLinks.length > 0 && (
-        <div
-          className={`grid gap-3 mb-3 ${
-            socialLinks.length === 1
-              ? "grid-cols-1"
-              : socialLinks.length === 2
-                ? "grid-cols-2"
-                : socialLinks.length === 3
-                  ? "grid-cols-3"
-                  : "grid-cols-2 md:grid-cols-4"
-          }`}
-        >
+        <div className={`grid grid-cols-2 md:grid-cols-4 gap-3 mb-3`}>
           {socialLinks.map((link) => (
-            <MemoizedContactLinkButton
+            <motion.div
+              whileHover="hover"
+              initial="rest"
+              className="w-full"
               key={link.label}
-              label={link.label}
-              icon={link.icon}
-              iconRotate={link.iconRotate}
-              isEditing={isEditing}
-              href={link.href}
-            />
+            >
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => link.href && window.open(link.href, "_blank", "noopener,noreferrer")}
+                className="w-full flex items-center justify-between px-4 py-4 bg-white dark:bg-[#2A2520] rounded-xl border border-black/5 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors group h-auto"
+              >
+                <span className="text-[#1A1A1A] dark:text-[#F0EDE7] font-medium text-sm">
+                  {link.label}
+                </span>
+                <motion.div
+                  variants={{
+                    rest: { scale: 1, rotate: 0 },
+                    hover: { scale: 1.3, rotate: link.iconRotate },
+                  }}
+                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                >
+                  <link.icon
+                    size={14}
+                    className="text-[#7A736C] dark:text-[#9E9893] group-hover:text-[#1A1A1A] dark:group-hover:text-[#F0EDE7]"
+                  />
+                </motion.div>
+              </Button>
+            </motion.div>
           ))}
         </div>
       )}
 
       {/* Resume link */}
       {hasResume && (
-        <MemoizedContactLinkButton
-          label="View resume"
-          icon={FileText}
-          iconRotate={-15}
-          isEditing={isEditing}
-          href={resume.url}
-        />
+        <motion.div whileHover="hover" initial="rest" className="w-full">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => window.open(resume.url, "_blank", "noopener,noreferrer")}
+            className="w-full flex items-center justify-between px-4 py-4 bg-white dark:bg-[#2A2520] rounded-xl border border-black/5 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors group h-auto"
+          >
+            <span className="text-[#1A1A1A] dark:text-[#F0EDE7] font-medium text-sm">
+              View resume
+            </span>
+            <motion.div
+              variants={{
+                rest: { scale: 1, rotate: 0 },
+                hover: { scale: 1.3, rotate: -15 },
+              }}
+              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+            >
+              <FileText
+                size={14}
+                className="text-[#7A736C] dark:text-[#9E9893] group-hover:text-[#1A1A1A] dark:group-hover:text-[#F0EDE7]"
+              />
+            </motion.div>
+          </Button>
+        </motion.div>
       )}
 
       {/* Empty state for editing mode */}

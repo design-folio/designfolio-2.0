@@ -302,11 +302,10 @@ export default function Index() {
         )}
       >
         <div
-          className={` mx-auto ${userDetails?.template == 4 ? "" : "py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0"} ${
-            userDetails?.template != 3 &&
+          className={` mx-auto ${userDetails?.template == 4 ? "" : "py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0"} ${userDetails?.template != 3 &&
             userDetails?.template != 4 &&
             "max-w-[848px]"
-          }`}
+            }`}
         >
           {/* //HACK: Allow all templates to be free */}
           {/* {userDetails && !userDetails?.pro && <ProWarning />} */}

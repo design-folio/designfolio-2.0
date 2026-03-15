@@ -169,7 +169,7 @@ export default function Works({
         )}
       </div>
       <Modal show={showModal}>
-        <div className="rounded-2xl flex flex-col justify-between  m-auto lg:w-[500px] max-h-[550px] my-auto overflow-hidden bg-modal-bg-color">
+        <div className="rounded-2xl flex flex-col justify-between  m-auto lg:w-[500px] max-h-[550px] my-auto overflow-hidden bg-card">
           <div className="flex p-5 justify-between items-center">
             <Text size="p-small" className="font-semibold">
               Change the order

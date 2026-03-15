@@ -12,7 +12,7 @@ export default function Task({ setOpen }) {
 
   const handleClick = (i) => {
     if (i == 0 && !checkList[0].checked) {
-      openModal(modals.project);
+      openSidebar(sidebars.project);
     } else if (i == 1 && !checkList[1].checked) {
       openModal(modals.onboarding);
       setStep(2);

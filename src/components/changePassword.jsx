@@ -4,7 +4,8 @@ import * as Yup from "yup";
 import { toast } from "react-toastify";
 import { _changePassword } from "@/network/post-request";
 import Text from "./text";
-import Button from "./button";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 
 const resetPasswordValidationSchema = Yup.object().shape({
   password: Yup.string()
@@ -58,16 +59,13 @@ export default function ChangePassword() {
               Old password
             </Text>
 
-            <Field
-              type="password"
-              name="oldPassword"
-              className={`text-input mt-2 ${
-                errors.oldPassword &&
-                touched.oldPassword &&
-                "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-              }`}
-              autoComplete="off"
-            />
+            <Field name="oldPassword">
+              {({ field }) => (
+                <Input {...field} id="oldPassword" type="password" autoComplete="off"
+                  className={`mt-2 ${errors.oldPassword && touched.oldPassword ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                />
+              )}
+            </Field>
             <ErrorMessage
               name="oldPassword"
               component="div"
@@ -79,16 +77,13 @@ export default function ChangePassword() {
                   New password
                 </Text>
 
-                <Field
-                  type="password"
-                  name="password"
-                  className={`text-input mt-2 ${
-                    errors.password &&
-                    touched.password &&
-                    "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                  }`}
-                  autoComplete="off"
-                />
+                <Field name="password">
+                  {({ field }) => (
+                    <Input {...field} id="password" type="password" autoComplete="off"
+                      className={`mt-2 ${errors.password && touched.password ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                    />
+                  )}
+                </Field>
                 <ErrorMessage
                   name="password"
                   component="div"
@@ -101,16 +96,13 @@ export default function ChangePassword() {
                   Confirm password
                 </Text>
 
-                <Field
-                  type="password"
-                  name="confirmPassword"
-                  className={`text-input mt-2 ${
-                    errors.confirmPassword &&
-                    touched.confirmPassword &&
-                    "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                  }`}
-                  autoComplete="off"
-                />
+                <Field name="confirmPassword">
+                  {({ field }) => (
+                    <Input {...field} id="confirmPassword" type="password" autoComplete="off"
+                      className={`mt-2 ${errors.confirmPassword && touched.confirmPassword ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                    />
+                  )}
+                </Field>
                 <ErrorMessage
                   name="confirmPassword"
                   component="div"
@@ -121,13 +113,11 @@ export default function ChangePassword() {
 
             <div className="lg:flex justify-end">
               <Button
-                form={"resetPasswordForm"}
-                btnType="submit"
-                isLoading={loading}
-                isDisabled={!isValid}
-                customClass="mt-6 w-full lg:w-fit"
-                text="Change password"
-              />
+                type="submit"
+                form="resetPasswordForm"
+                disabled={loading || !isValid}
+                className="mt-6 w-full lg:w-fit"
+              >{loading ? "Saving…" : "Change password"}</Button>
             </div>
           </Form>
         )}

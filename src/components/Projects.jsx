@@ -18,7 +18,7 @@ import { CSS } from "@dnd-kit/utilities";
 import ProjectCard from "./ProjectCard";
 import Section from "./section";
 import AddCard from "./AddCard";
-import { modals } from "@/lib/constant";
+import { modals, sidebars } from "@/lib/constant";
 import { _updateUser, _updateProject } from "@/network/post-request";
 import { twMerge } from "tailwind-merge";
 import { useRouter } from "next/router";
@@ -151,7 +151,7 @@ export default function Projects({
     return userDetails?.projects || [];
   }, [userDetails?.projects, preview]);
 
-  const { setShowUpgradeModal, setUpgradeModalUnhideProject } =
+  const { setShowUpgradeModal, setUpgradeModalUnhideProject, openSidebar } =
     useGlobalContext();
 
   const onDeleteProject = (project) => {
@@ -296,7 +296,7 @@ export default function Projects({
                     first={visibleProjects?.length !== 0}
                     buttonTitle="Add case study"
                     secondaryButtonTitle="Write using AI"
-                    onClick={() => openModal(modals.project)}
+                    onClick={() => openSidebar(sidebars.project)}
                     // icon={<MemoCasestudy className="cursor-pointer" />}
                     openModal={openModal}
                   />

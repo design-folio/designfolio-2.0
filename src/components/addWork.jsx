@@ -3,7 +3,8 @@ import { _deleteExperience, _updateUser } from "@/network/post-request";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import Text from "./text";
-import Button from "./button";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 import DeleteIcon from "../../public/assets/svgs/deleteIcon.svg";
 import { useState, useRef, useEffect } from "react";
 import SimpleTiptapEditor from "./SimpleTiptapEditor";
@@ -259,15 +260,17 @@ export default function AddWork() {
                 <Text size={"p-xxsmall"} className="font-medium" required>
                   Name of the Company
                 </Text>
-                <Field
-                  name="company"
-                  type="text"
-                  className={`text-input mt-2  ${errors.company &&
-                    touched.company &&
-                    "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                    }`}
-                  autoComplete="off"
-                />
+                <Field name="company">
+                  {({ field }) => (
+                    <Input
+                      {...field}
+                      id="company"
+                      type="text"
+                      autoComplete="off"
+                      className={`mt-2 ${errors.company && touched.company ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                    />
+                  )}
+                </Field>
                 <ErrorMessage
                   name="company"
                   component="div"
@@ -277,15 +280,17 @@ export default function AddWork() {
               <Text size={"p-xxsmall"} className="font-medium mt-4" required>
                 Your Role
               </Text>
-              <Field
-                name="role"
-                type="text"
-                className={`text-input mt-2  ${errors.role &&
-                  touched.role &&
-                  "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                  }`}
-                autoComplete="off"
-              />
+              <Field name="role">
+                {({ field }) => (
+                  <Input
+                    {...field}
+                    id="role"
+                    type="text"
+                    autoComplete="off"
+                    className={`mt-2 ${errors.role && touched.role ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                  />
+                )}
+              </Field>
               <ErrorMessage
                 name="role"
                 component="div"
@@ -299,10 +304,7 @@ export default function AddWork() {
                   <Field
                     as="select"
                     name="startMonth"
-                    className={`text-input !w-full text-[14px] ${!values.startMonth ? "!text-muted-foreground/60" : ""} font-inter !font-[500] custom-select mt-2  ${errors.startMonth &&
-                      touched.startMonth &&
-                      "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                      }`}
+                    className={`h-10 w-full rounded-xl border border-transparent bg-black/[0.03] dark:bg-white/[0.03] px-3.5 text-sm font-inter font-medium custom-select mt-2 shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10 focus:border-black/20 dark:focus:border-white/20 ${!values.startMonth ? "text-black/30 dark:text-white/30" : "text-foreground"} ${errors.startMonth && touched.startMonth ? "!border-destructive" : ""}`}
                   >
                     <option value="">Choose Month</option>
                     {monthOptions}
@@ -318,10 +320,7 @@ export default function AddWork() {
                   <Field
                     as="select"
                     name="startYear"
-                    className={`text-input !w-full text-[14px] ${!values.startYear ? "!text-muted-foreground/60" : ""} font-inter !font-[500] custom-select mt-2  ${errors.startYear &&
-                      touched.startYear &&
-                      "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                      }`}
+                    className={`h-10 w-full rounded-xl border border-transparent bg-black/[0.03] dark:bg-white/[0.03] px-3.5 text-sm font-inter font-medium custom-select mt-2 shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10 focus:border-black/20 dark:focus:border-white/20 ${!values.startYear ? "text-black/30 dark:text-white/30" : "text-foreground"} ${errors.startYear && touched.startYear ? "!border-destructive" : ""}`}
                   >
                     <option value="">Choose Year</option>
                     {yearOptions}
@@ -348,10 +347,7 @@ export default function AddWork() {
                     <Field
                       as="select"
                       name="endMonth"
-                      className={`text-input !w-full text-[14px] ${!values.endMonth ? "!text-muted-foreground/60" : ""} font-inter !font-[500] custom-select mt-2  ${errors.endMonth &&
-                        touched.endMonth &&
-                        "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                        }`}
+                      className={`h-10 w-full rounded-xl border border-transparent bg-black/[0.03] dark:bg-white/[0.03] px-3.5 text-sm font-inter font-medium custom-select mt-2 shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10 focus:border-black/20 dark:focus:border-white/20 ${!values.endMonth ? "text-black/30 dark:text-white/30" : "text-foreground"} ${errors.endMonth && touched.endMonth ? "!border-destructive" : ""}`}
                       disabled={values.currentlyWorking}
                     >
                       <option value="">Choose Month</option>
@@ -368,10 +364,7 @@ export default function AddWork() {
                     <Field
                       as="select"
                       name="endYear"
-                      className={`text-input !w-full text-[14px] ${!values.endYear ? "!text-muted-foreground/60" : ""} font-inter !font-[500] custom-select mt-2  ${errors.endYear &&
-                        touched.endYear &&
-                        "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                        }`}
+                      className={`h-10 w-full rounded-xl border border-transparent bg-black/[0.03] dark:bg-white/[0.03] px-3.5 text-sm font-inter font-medium custom-select mt-2 shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10 focus:border-black/20 dark:focus:border-white/20 ${!values.endYear ? "text-black/30 dark:text-white/30" : "text-foreground"} ${errors.endYear && touched.endYear ? "!border-destructive" : ""}`}
                       disabled={values.currentlyWorking}
                     >
                       <option value="">Choose Year</option>
@@ -433,27 +426,26 @@ export default function AddWork() {
             >
               {selectedWork?.company && (
                 <Button
-                  type="delete"
-                  icon={
-                    <DeleteIcon className="stroke-delete-btn-icon-color w-6 h-6 cursor-pointer" />
-                  }
+                  variant="outline"
+                  type="button"
+                  className="border-[var(--delete-btn-border-color)] bg-[var(--delete-btn-bg-color)] hover:bg-[var(--delete-btn-bg-hover-color)] hover:border-[var(--delete-btn-border-hover-color)]"
                   onClick={handleDeleteWork}
-                />
+                >
+                  <DeleteIcon className="stroke-delete-btn-icon-color w-5 h-5" />
+                </Button>
               )}
 
               <div className="flex gap-2">
                 <Button
-                  text={"Cancel"}
+                  variant="outline"
+                  type="button"
                   onClick={handleCancel}
-                  type="secondary"
-                />
+                >Cancel</Button>
                 <Button
-                  btnType="submit"
-                  text={"Save"}
-                  type="modal"
+                  type="submit"
                   form="workForm"
-                  isLoading={loading}
-                />
+                  disabled={loading}
+                >{loading ? "Saving…" : "Save"}</Button>
               </div>
             </div>
           </Form>

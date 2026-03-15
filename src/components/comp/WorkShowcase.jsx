@@ -7,7 +7,7 @@ import Button from "../button";
 import DeleteIcon from "../../../public/assets/svgs/deleteIcon.svg";
 import AddCard from "../AddCard";
 import { useGlobalContext } from "@/context/globalContext";
-import { modals } from "@/lib/constant";
+import { modals, sidebars } from "@/lib/constant";
 import DragHandle from "../DragHandle";
 import { _updateUser, _updateProject } from "@/network/post-request";
 
@@ -38,6 +38,7 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
   const router = useRouter();
   const {
     openModal,
+    openSidebar,
     setSelectedProject,
     setUserDetails,
     setShowUpgradeModal,
@@ -400,7 +401,7 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
             first={sortedProjects.length !== 0}
             buttonTitle="Add case study"
             secondaryButtonTitle="Write using AI"
-            onClick={() => openModal(modals.project)}
+            onClick={() => openSidebar(sidebars.project)}
             icon={<MemoCasestudy className="cursor-pointer size-[72px]" />}
             openModal={openModal}
             className={`bg-secondary flex items-center justify-center mt-6 ${visibleProjects.length !== 0 &&

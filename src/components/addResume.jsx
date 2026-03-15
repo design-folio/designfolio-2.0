@@ -1,7 +1,7 @@
 import { useGlobalContext } from "@/context/globalContext";
 import { _deleteResume, _updateUser } from "@/network/post-request";
 import { useState } from "react";
-import Button from "./button";
+import { Button } from "./ui/button";
 import Text from "./text";
 import CloseIcon from "../../public/assets/svgs/close.svg";
 import NoteIcon from "../../public/assets/svgs/noteIcon.svg";
@@ -41,23 +41,19 @@ export default function AddResume() {
     _deleteResume().then((res) => userDetailsRefecth());
   };
   return (
-    <div className="rounded-2xl bg-modal-bg-color flex flex-col justify-between  m-auto lg:w-[500px] max-h-[550px] my-auto overflow-hidden">
+    <div className="rounded-2xl bg-card flex flex-col justify-between  m-auto lg:w-[500px] max-h-[550px] my-auto overflow-hidden">
       <div className="flex p-5 justify-between items-center">
         <Text size="p-small" className="font-semibold">
           Upload your resume
         </Text>
-        <Button
-          // customClass="lg:hidden"
-          type="secondary"
-          customClass="!p-2"
-          icon={<CloseIcon className="text-icon-color cursor-pointer" />}
-          onClick={closeModal}
-        />
+        <Button variant="outline" size="icon" type="button" onClick={closeModal}>
+          <CloseIcon className="text-icon-color" />
+        </Button>
       </div>
       <div className="px-5">
         <div>
           <label htmlFor="picture">
-            <div className="bg-input-upload-bg-color rounded-[18px] p-4 m-auto text-center flex flex-col items-center  w-full justify-center border border-dashed border-input-upload-border-color h-[250px] mt-2 ">
+            <div className="bg-background rounded-[18px] p-4 m-auto text-center flex flex-col items-center  w-full justify-center border border-dashed border-input-upload-border-color h-[250px] mt-2 ">
               <img src="/assets/svgs/upload-red.svg" alt="" />
               <Text
                 size="p-xsmall"
@@ -71,12 +67,7 @@ export default function AddResume() {
               >
                 Maximum size should be 5MB.
               </Text>
-              <Button
-                text={"Browse and choose"}
-                size="small"
-                type="secondary"
-                customClass="mt-4 pointer-events-none"
-              />
+              <Button variant="outline" type="button" className="mt-4 pointer-events-none">Browse and choose</Button>
             </div>
           </label>
           <input
@@ -101,26 +92,25 @@ export default function AddResume() {
             </div>
 
             <Button
-              icon={
-                <DeleteIcon className="stroke-delete-btn-icon-color w-6 h-6 cursor-pointer" />
-              }
-              type="normal"
-              className=""
+              variant="outline"
+              size="icon"
+              type="button"
+              className="border-[var(--delete-btn-border-color)] bg-[var(--delete-btn-bg-color)] hover:bg-[var(--delete-btn-bg-hover-color)] hover:border-[var(--delete-btn-border-hover-color)]"
               onClick={handleDelete}
-            />
+            >
+              <DeleteIcon className="stroke-delete-btn-icon-color w-5 h-5" />
+            </Button>
           </div>
         )}
       </div>
 
       <div className="flex gap-2 mt-[26px] justify-end p-3 bg-modal-footer-bg-color rounded-br-[24px] rounded-bl-[24px]">
-        <Button text={"Cancel"} onClick={closeModal} type="secondary" />
+        <Button variant="outline" type="button" onClick={closeModal}>Cancel</Button>
         <Button
-          text={"Save resume"}
+          type="button"
           onClick={handleSubmit}
-          isLoading={loading}
-          isDisabled={!resume || resume?.extension}
-          type="modal"
-        />
+          disabled={loading || !resume || !!resume?.extension}
+        >{loading ? "Saving…" : "Save resume"}</Button>
       </div>
     </div>
   );

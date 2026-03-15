@@ -1,7 +1,7 @@
 import React from "react";
 import { GripVertical } from "lucide-react";
 import { cn } from "@/lib/utils";
-import Button from "./button";
+import { Button } from "@/components/ui/button";
 
 export default function DragHandle({
     listeners,
@@ -23,7 +23,9 @@ export default function DragHandle({
 
         <>
             {isButton ? (
-                <div
+                <Button
+                    variant="outline"
+                    size="icon"
                     style={{ touchAction: "none" }}
                     {...(listeners || {})}
                     {...(attributes || {})}
@@ -32,16 +34,11 @@ export default function DragHandle({
                         e.preventDefault();
                         e.stopPropagation();
                     }}
-                    className={cn(
-                        "inline-flex gap-2 items-center justify-center transition-shadow duration-500 ease-out",
-                        "px-3 py-2 rounded-full",
-                        "bg-secondary-btn-bg-color hover:bg-secondary-btn-bg-hover-color text-secondary-btn-text-color border-solid border border-secondary-btn-border-color hover:secondary-btn-bg-hover-color hover:shadow-secondary-btn [cursor:grab] active:[cursor:grabbing]",
-                        className
-                    )}
+                    className={cn("[cursor:grab] active:[cursor:grabbing] rounded-full", className)}
                     {...props}
                 >
                     <GripVertical className="pointer-events-none size-4" />
-                </div>
+                </Button>
             ) : isCompact ? (
                 <div
                     data-drag-handle

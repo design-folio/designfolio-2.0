@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import useImageCompression from "@/hooks/useImageCompression";
@@ -8,7 +7,8 @@ import { useGlobalContext } from "@/context/globalContext";
 import { _getSkills, _getTools } from "@/network/get-request";
 import { _updateUser } from "@/network/post-request";
 import ProgressBar from "./ProgressBar";
-import Button from "./button";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 import Text from "./text";
 import CloseIcon from "../../public/assets/svgs/close.svg";
 import SelectField from "./SelectField";
@@ -18,50 +18,20 @@ import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { cn } from "@/lib/utils";
 
 const FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const SUPPORTED_MIME_TYPES = [
-  "image/jpeg",
-  "image/png",
-  "image/gif",
-];
+const SUPPORTED_MIME_TYPES = ["image/jpeg", "image/png", "image/gif"];
+const SUPPORTED_EXTENSIONS = ["jpg", "jpeg", "png", "gif"];
 
-const SUPPORTED_EXTENSIONS = [
-  "jpg",
-  "jpeg",
-  "png",
-  "gif",
-];
-
-// Validation schema for the first step
 const StepOneValidationSchema = Yup.object().shape({
   picture: Yup.mixed()
     .nullable()
     .notRequired()
-    .test(
-      "fileSize",
-      "File size is too large. Maximum size is 5MB.",
-      (value) => !value || value.size <= FILE_SIZE
-    )
-    .test(
-      "fileType",
-      "Unsupported file format. Only jpg, jpeg, png and gif files are allowed.",
-      (value) => {
-        if (!value) return true;
-
-        const mimeValid = SUPPORTED_MIME_TYPES.includes(value.type);
-
-        const extension = value.name
-          ?.split(".")
-          .pop()
-          ?.toLowerCase();
-
-        const extensionValid =
-          extension && SUPPORTED_EXTENSIONS.includes(extension);
-
-        return mimeValid || extensionValid;
-      }
-    ),
-
-
+    .test("fileSize", "File size is too large. Maximum size is 5MB.", (value) => !value || value.size <= FILE_SIZE)
+    .test("fileType", "Unsupported file format. Only jpg, jpeg, png and gif files are allowed.", (value) => {
+      if (!value) return true;
+      const mimeValid = SUPPORTED_MIME_TYPES.includes(value.type);
+      const extension = value.name?.split(".").pop()?.toLowerCase();
+      return mimeValid || (extension && SUPPORTED_EXTENSIONS.includes(extension));
+    }),
   introduction: Yup.string()
     .required("Headline is required")
     .max(50, "Headline must be 50 characters or less"),
@@ -70,24 +40,13 @@ const StepOneValidationSchema = Yup.object().shape({
     .max(250, "Professional summary must be 250 characters or less"),
 });
 
-// Validation schema for the second step
 const StepTwoValidationSchema = Yup.object().shape({
   expertise: Yup.array()
-    .of(
-      Yup.object().shape({
-        label: Yup.string().required(),
-        value: Yup.string().required(),
-      })
-    )
+    .of(Yup.object().shape({ label: Yup.string().required(), value: Yup.string().required() }))
     .min(3, "Please select at least three expertise")
     .max(10, "Maximum 10 expertise areas can be selected"),
   selectedTools: Yup.array()
-    .of(
-      Yup.object().shape({
-        label: Yup.string().required(),
-        value: Yup.string().required(),
-      })
-    )
+    .of(Yup.object().shape({ label: Yup.string().required(), value: Yup.string().required() }))
     .min(3, "Please select at least three tools"),
 });
 
@@ -96,79 +55,58 @@ const variants = {
   default: { height: "90vh", maxHeight: 630 },
 };
 
+const textareaClass =
+  "mt-2 min-h-[150px] flex w-full rounded-xl border border-transparent bg-black/[0.03] dark:bg-white/[0.03] px-3.5 py-2 text-sm text-foreground shadow-none transition-all resize-none " +
+  "placeholder:text-black/30 dark:placeholder:text-white/30 " +
+  "focus-visible:outline-none focus-visible:bg-transparent focus-visible:ring-2 focus-visible:ring-black/10 dark:focus-visible:ring-white/10 focus-visible:border-black/20 dark:focus-visible:border-white/20 " +
+  "disabled:cursor-not-allowed disabled:opacity-50";
+
 export default function Onboarding() {
-  const {
-    userDetails,
-    step,
-    setStep,
-    closeModal,
-    setUserDetails,
-    updateCache,
-  } = useGlobalContext();
+  const { userDetails, step, setStep, closeModal, setUserDetails, updateCache } = useGlobalContext();
   const { theme } = useTheme();
   const [imagePreview, setImagePreview] = useState();
   const [skillOptions, setSkillsOptions] = useState([]);
   const [toolsOptions, setToolsOptions] = useState([]);
-
   const [isLoadingModal, setIsLoadingModalType] = useState(true);
-
   const [loading, setLoading] = useState(false);
 
-  const { compress, compressedImage, compressionProgress } =
-    useImageCompression();
+  const { compress, compressedImage, compressionProgress } = useImageCompression();
   const formikRef = useRef(null);
-  // Create a reference to the div you want to scroll
   const scrollDivRef = useRef(null);
 
-  // Function to scroll to the top of the div
   const scrollToTop = () => {
-    if (scrollDivRef.current) {
-      scrollDivRef.current.scrollTop = 0;
-    }
+    if (scrollDivRef.current) scrollDivRef.current.scrollTop = 0;
   };
+
   const [initialValues, setInitialValues] = useState({
     picture: null,
     introduction: userDetails?.introduction ?? `Hey I'm ${userDetails?.firstName}`,
     expertise: userDetails?.skills ?? [],
-    selectedTools: userDetails?.tools ?? [], // Assuming mappedTools is defined elsewhere
-    avatarUrl: userDetails?.avatar?.url, // Assuming userDetails.avatar.url is defined
+    selectedTools: userDetails?.tools ?? [],
+    avatarUrl: userDetails?.avatar?.url,
     bio: userDetails?.bio ?? "",
   });
 
   useEffect(() => {
-    const fetchTools = async () => {
-      try {
-        const response = await _getTools();
-        setToolsOptions(response.data.tools);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    fetchTools();
+    _getTools()
+      .then((res) => setToolsOptions(res.data.tools))
+      .catch(() => { });
   }, []);
 
   useEffect(() => {
     if (userDetails?.avatar?.url) {
       fetch(userDetails.avatar.url, { mode: "cors", cache: "no-cache" })
-        .then((response) => response.blob())
+        .then((res) => res.blob())
         .then((blob) => {
-          const mimeType = `image/${userDetails.avatar.extension}`; // Simplified, assuming extension is always provided correctly
           const file = new File([blob], userDetails.avatar.originalName, {
-            type: mimeType,
+            type: `image/${userDetails.avatar.extension}`,
           });
-          setInitialValues((prevValues) => ({
-            ...prevValues,
-            picture: file,
-          }));
+          setInitialValues((prev) => ({ ...prev, picture: file }));
           setImagePreview(URL.createObjectURL(file));
         })
-        .catch((error) =>
-          console.error("Error loading avatar:", error.message)
-        ); // Log error message
+        .catch(() => { });
     } else {
-      // Consider setting a default avatar preview if no avatar is present
-      setImagePreview(null); // Adjust path as needed
+      setImagePreview(null);
     }
   }, [userDetails?.avatar?.url]);
 
@@ -186,57 +124,34 @@ export default function Onboarding() {
 
   const isLastStep = step === 2;
 
-  const handleImageChange = (event, setFieldValue, setFieldError) => {
+  const handleImageChange = (event, setFieldValue) => {
     const file = event.currentTarget.files[0];
-    const maxSizeInBytes = 2 * 1024 * 1024;
-    if (file.size > maxSizeInBytes) {
-      compress(file);
-    }
+    if (file.size > 2 * 1024 * 1024) compress(file);
     setFieldValue("picture", file);
     setImagePreview(file ? URL.createObjectURL(file) : null);
   };
 
   const handleNetwork = (payload, actions) => {
     setLoading(true);
-    const payloadWithTemplate = {
-      ...payload,
-      template: userDetails?.template,
-    };
-    _updateUser(payloadWithTemplate)
+    _updateUser({ ...payload, template: userDetails?.template })
       .then((res) => {
         updateCache("userDetails", res?.data?.user);
         setUserDetails((prev) => ({ ...prev, ...res.data.user }));
         closeModal();
         actions.setSubmitting(false);
       })
-      .catch((err) => actions.setSubmitting(false))
-      .finally(() => {
-        setTimeout(() => {
-          setLoading(false);
-        }, 1200);
-      });
+      .catch(() => actions.setSubmitting(false))
+      .finally(() => setTimeout(() => setLoading(false), 1200));
   };
 
   const handleSubmit = (values, actions) => {
     if (isLastStep) {
-      //HACK: Remove 'selected' property from tools and skills before sending to backend
       const cleanSkills = values.expertise?.map(({ selected, ...rest }) => rest) || [];
-
-      const payload = {
-        tools: values.selectedTools,
-        skills: cleanSkills,
-        introduction: values?.introduction,
-        bio: values?.bio,
-      };
+      const payload = { tools: values.selectedTools, skills: cleanSkills, introduction: values?.introduction, bio: values?.bio };
       if (values?.picture) {
         const reader = new FileReader();
         reader.onloadend = () => {
-          const base64Image = reader.result;
-          payload.avatar = {
-            key: base64Image,
-            originalName: values.picture.name,
-            extension: values.picture.type.split("/")[1], // Extracts the extension from the MIME type
-          };
+          payload.avatar = { key: reader.result, originalName: values.picture.name, extension: values.picture.type.split("/")[1] };
           handleNetwork(payload, actions);
         };
         reader.readAsDataURL(values.picture);
@@ -246,7 +161,6 @@ export default function Onboarding() {
     } else {
       scrollToTop();
       setStep(step + 1);
-
       actions.setSubmitting(false);
     }
     formikRef.current.validateForm();
@@ -257,11 +171,12 @@ export default function Onboarding() {
     _getSkills().then((res) => setSkillsOptions(res?.data?.skills));
     setTimeout(() => setIsLoadingModalType(false), 1000);
   }, []);
+
   return (
     <motion.div
       animate={isLoadingModal ? "loading" : "default"}
       variants={variants}
-      className="w-[95vw] m-auto lg:w-[577.5px] rounded-2xl flex flex-col  bg-modal-bg-color"
+      className="w-[95vw] m-auto lg:w-[577.5px] rounded-2xl flex flex-col bg-card"
     >
       {isLoadingModal ? (
         <motion.div className="h-full w-[95vw] md:w-full flex justify-center items-center rotating">
@@ -269,49 +184,26 @@ export default function Onboarding() {
         </motion.div>
       ) : (
         <>
-          <div className="p-5 lg:p-6 ">
+          <div className="p-5 lg:p-6">
             <div className="mb-4 flex gap-3">
-              <ProgressBar progress={100} />{" "}
-              <ProgressBar
-                progress={step == 2 ? 100 : 0}
-                bg="linear-gradient(to right, #F26855, #EC7DFD)"
-              />
+              <ProgressBar progress={100} />
+              <ProgressBar progress={step == 2 ? 100 : 0} bg="linear-gradient(to right, #F26855, #EC7DFD)" />
             </div>
             {userDetails && userDetails?.skills?.length !== 0 && (
               <div className="flex justify-between items-center">
-                <Text size="p-small" className="font-semibold">
-                  Update profile
-                </Text>
-                <Button
-                  // customClass="lg:hidden"
-                  type="secondary"
-                  customClass="!p-2"
-                  icon={
-                    <CloseIcon className="text-icon-color cursor-pointer" />
-                  }
-                  onClick={closeModal}
-                />
+                <Text size="p-small" className="font-semibold">Update profile</Text>
+                <Button variant="outline" size="icon" type="button" onClick={closeModal}>
+                  <CloseIcon className="text-foreground/60" />
+                </Button>
               </div>
             )}
-
             {userDetails && userDetails?.skills?.length == 0 && (
               <>
-                <Text
-                  size="p-medium"
-                  className={"font-semibold text-center mb-2"}
-                >
-                  {step == 1
-                    ? "Welcome to designfolio"
-                    : "Your top skills, roles & tools?"}
+                <Text size="p-medium" className="font-semibold text-center mb-2">
+                  {step == 1 ? "Welcome to designfolio" : "Your top skills, roles & tools?"}
                 </Text>
-
-                <Text
-                  size="p-small"
-                  className={"font-inter font-normal text-center"}
-                >
-                  {step == 1
-                    ? "A little bit more about you"
-                    : "Choose your superpowers"}
+                <Text size="p-small" className="font-inter font-normal text-center">
+                  {step == 1 ? "A little bit more about you" : "Choose your superpowers"}
                 </Text>
               </>
             )}
@@ -320,129 +212,76 @@ export default function Onboarding() {
           <Formik
             initialValues={initialValues}
             innerRef={formikRef}
-            validationSchema={
-              step === 1 ? StepOneValidationSchema : StepTwoValidationSchema
-            }
+            validationSchema={step === 1 ? StepOneValidationSchema : StepTwoValidationSchema}
             onSubmit={handleSubmit}
           >
             {({ setFieldValue, values, errors, touched }) => (
-              <Form
-                id="onboarding"
-                className="flex-1 overflow-y-auto"
-                ref={scrollDivRef}
-              >
+              <Form id="onboarding" className="flex-1 overflow-y-auto" ref={scrollDivRef}>
                 <div className="p-5 lg:py-6 lg:px-8 !pt-0">
                   {step === 1 && (
                     <div>
                       <div className="flex items-center gap-4">
                         <div className={cn("w-32 h-32 flex flex-col justify-center items-center gap-1 rounded-full relative", !userDetails?.avatar && !imagePreview ? "bg-[#FFB088]" : "")}>
-                          {imagePreview ? (
-                            <img
-                              src={imagePreview}
-                              className="w-24 h-24 rounded-full object-cover"
-                              alt="designfolio logo"
-                            />
-                          ) : (
-                            <>
-                              <img
-                                src={getUserAvatarImage(userDetails)}
-                                className="w-24 h-24  rounded-full object-cover"
-                                alt="designfolio logo"
-                              />
-                            </>
-                          )}
+                          <img
+                            src={imagePreview || getUserAvatarImage(userDetails)}
+                            className="w-24 h-24 rounded-full object-cover"
+                            alt="avatar"
+                          />
                         </div>
                         <label htmlFor="picture" className="cursor-pointer">
-                          <Button
-                            text={`${imagePreview ? "Change photo" : "Upload photo"
-                              }`}
-                            size="small"
-                            type="secondary"
-                            customClass="pointer-events-none"
-                          />
+                          <Button variant="secondary" size="sm" type="button" className="pointer-events-none rounded-full">
+                            {imagePreview ? "Change photo" : "Upload photo"}
+                          </Button>
                         </label>
                       </div>
                       <input
                         id="picture"
                         name="picture"
                         type="file"
-                        accept="image/png, image/jpeg,image/jpg,image/gif"
+                        accept="image/png, image/jpeg, image/jpg, image/gif"
                         hidden
-                        onChange={(event) =>
-                          handleImageChange(event, setFieldValue)
-                        }
+                        onChange={(e) => handleImageChange(e, setFieldValue)}
                       />
-                      <ErrorMessage
-                        name="picture"
-                        component="div"
-                        className="error-message text-sm"
-                      />
-                      <div className="mt-[24px] flex justify-between">
-                        <Text as="p" size={"p-xxsmall"} className="font-medium">
-                          Headline
-                        </Text>
-                        <Text as="p" size={"p-xxsmall"} className="font-medium">
-                          {values.introduction.length ?? 0}/50
-                        </Text>
+                      <ErrorMessage name="picture" component="div" className="error-message text-sm" />
+
+                      <div className="mt-6 flex justify-between">
+                        <Text as="p" size="p-xxsmall" className="font-medium">Headline</Text>
+                        <Text as="p" size="p-xxsmall" className="font-medium">{values.introduction.length ?? 0}/50</Text>
                       </div>
-                      <Field
-                        name="introduction"
-                        autoComplete="off"
-                        type="text"
-                        placeholder="Eg: Hey I’m Bruce, a Product Designer."
-                        className={`text-input mt-2 ${errors.introduction &&
-                          touched.introduction &&
-                          "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                          }`}
-                      />
-                      <ErrorMessage
-                        name="introduction"
-                        component="div"
-                        className="error-message text-[14px]"
-                      />
-                      <Text
-                        size="p-xxxsmall"
-                        className="text-df-secondary-text-color mt-3"
-                      >
-                        ✏️ <b>Tip:</b> This is the very first thing people read
-                        about you.
+                      <Field name="introduction">
+                        {({ field }) => (
+                          <Input
+                            {...field}
+                            id="introduction"
+                            autoComplete="off"
+                            placeholder="Eg: Hey I'm Bruce, a Product Designer."
+                            className={cn("mt-2", errors.introduction && touched.introduction && "border-destructive focus-visible:ring-destructive")}
+                          />
+                        )}
+                      </Field>
+                      <ErrorMessage name="introduction" component="div" className="error-message text-[14px]" />
+                      <Text size="p-xxxsmall" className="text-muted-foreground mt-3">
+                        ✏️ <b>Tip:</b> This is the very first thing people read about you.
                       </Text>
 
-                      <div className="mt-[16px] flex justify-between">
-                        <Text
-                          as="p"
-                          size={"p-xxsmall"}
-                          className="font-medium"
-                          required
-                        >
-                          {" "}
-                          Professional summary
-                        </Text>
-                        <Text as="p" size={"p-xxsmall"} className="font-medium">
-                          {values.bio.length ?? 0}/250
-                        </Text>
+                      <div className="mt-4 flex justify-between">
+                        <Text as="p" size="p-xxsmall" className="font-medium" required>Professional summary</Text>
+                        <Text as="p" size="p-xxsmall" className="font-medium">{values.bio.length ?? 0}/250</Text>
                       </div>
-                      <Field
-                        name="bio"
-                        as="textarea"
-                        autoComplete="off"
-                        placeholder="Eg: 7 years of building kickass experiences"
-                        className={`text-input mt-2 min-h-[150px] ${errors.bio &&
-                          touched.bio &&
-                          "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                          }`}
-                      />
-                      <ErrorMessage
-                        name="bio"
-                        component="div"
-                        className="error-message text-[14px] !mt-[2px]"
-                      />
-                      <Text
-                        size="p-xxxsmall"
-                        className="text-df-secondary-text-color mt-3"
-                      >
-                        ✏️ <b>Tip:</b> Mention your role, experience, skills and
-                        achievements
+                      <Field name="bio">
+                        {({ field }) => (
+                          <textarea
+                            {...field}
+                            id="bio"
+                            autoComplete="off"
+                            placeholder="Eg: 7 years of building kickass experiences"
+                            className={cn(textareaClass, errors.bio && touched.bio && "border-destructive focus-visible:ring-destructive")}
+                          />
+                        )}
+                      </Field>
+                      <ErrorMessage name="bio" component="div" className="error-message text-[14px] !mt-[2px]" />
+                      <Text size="p-xxxsmall" className="text-muted-foreground mt-3">
+                        ✏️ <b>Tip:</b> Mention your role, experience, skills and achievements
                       </Text>
                     </div>
                   )}
@@ -450,59 +289,25 @@ export default function Onboarding() {
                   {step === 2 && (
                     <div className="mb-[18px]">
                       <div className="flex justify-between mb-2">
-                        <Text
-                          as="p"
-                          size={"p-xxsmall"}
-                          className="font-medium"
-                          required
-                        >
-                          Skills
-                        </Text>
-                        <Text as="p" size={"p-xxsmall"} className="font-medium">
-                          {values?.expertise?.length ?? 0}/10
-                        </Text>
+                        <Text as="p" size="p-xxsmall" className="font-medium" required>Skills</Text>
+                        <Text as="p" size="p-xxsmall" className="font-medium">{values?.expertise?.length ?? 0}/10</Text>
                       </div>
-                      <SelectField
-                        name="expertise"
-                        options={skillOptions}
-                        theme={theme}
-                        placeholder="Search skills"
-                      />
-                      <ErrorMessage
-                        name="expertise"
-                        component="div"
-                        className="error-message text-[14px]"
-                      />
-                      <Text
-                        as="p"
-                        size={"p-xxsmall"}
-                        className="font-medium mt-4 mb-2"
-                        required
-                      >
+                      <SelectField name="expertise" options={skillOptions} theme={theme} placeholder="Search skills" />
+                      <ErrorMessage name="expertise" component="div" className="error-message text-[14px]" />
+
+                      <Text as="p" size="p-xxsmall" className="font-medium mt-4 mb-2" required>
                         Choose the tools you work with
                       </Text>
-                      <SelectField
-                        name="selectedTools"
-                        options={toolsOptions}
-                        theme={theme}
-                      />
-                      <ErrorMessage
-                        name="selectedTools"
-                        component="div"
-                        className="error-message text-[14px]"
-                      />
+                      <SelectField name="selectedTools" options={toolsOptions} theme={theme} />
+                      <ErrorMessage name="selectedTools" component="div" className="error-message text-[14px]" />
+
                       <div className="flex flex-wrap gap-4 mt-4">
                         {toolsOptions.map((tool) => (
                           <Field
                             key={tool.value}
                             name="selectedTools"
                             render={({ field, form }) => (
-                              <ToolCheckbox
-                                tool={tool}
-                                field={field}
-                                form={form}
-                                theme={theme}
-                              />
+                              <ToolCheckbox tool={tool} field={field} form={form} theme={theme} />
                             )}
                           />
                         ))}
@@ -514,21 +319,15 @@ export default function Onboarding() {
             )}
           </Formik>
 
-          <div className="flex justify-end gap-4 py-2 lg:py-[9px] px-5 lg:px-4 rounded-b-2xl  bg-modal-footer-bg-color">
+          <div className="flex justify-end gap-3 py-3 px-5 rounded-b-2xl border-t border-border bg-card">
             {step > 1 && (
-              <Button
-                onClick={() => handleBack()}
-                text={"Back"}
-                type="secondary"
-              />
+              <Button variant="outline" type="button" onClick={handleBack}>
+                Back
+              </Button>
             )}
-            <Button
-              btnType="submit"
-              form="onboarding"
-              text={isLastStep ? "Finish" : "Continue"}
-              isLoading={loading}
-              type="modal"
-            />
+            <Button type="submit" form="onboarding" disabled={loading}>
+              {loading ? "Saving…" : isLastStep ? "Finish" : "Continue"}
+            </Button>
           </div>
         </>
       )}

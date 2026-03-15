@@ -45,7 +45,7 @@ export default function DeleteAccount() {
         customClass="mt-2 w-full lg:w-fit"
       />
       <Modal show={showModal}>
-        <div className="rounded-2xl bg-modal-bg-color m-auto max-w-[375px] md:max-w-[500px]">
+        <div className="rounded-2xl bg-card m-auto max-w-[375px] md:max-w-[500px]">
           <div className="flex justify-between items-center p-5">
             <p className="text-[18px] md:text-[25px] text-df-section-card-heading-color font-[500]">
               Delete Account

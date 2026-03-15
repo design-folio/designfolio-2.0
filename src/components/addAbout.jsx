@@ -3,7 +3,7 @@ import { _updateUser } from "@/network/post-request";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useState, useRef, useEffect } from "react";
 import Text from "./text";
-import Button from "./button";
+import { Button } from "./ui/button";
 import { SheetWrapper } from "./ui/SheetWrapper";
 import { UnsavedChangesDialog } from "./ui/UnsavedChangesDialog";
 import { sidebars } from "@/lib/constant";
@@ -312,16 +312,17 @@ export default function AddAbout() {
                     {(values?.description?.length || 0)}/1200
                   </Text>
                 </div>
-                <Field
-                  name="description"
-                  as="textarea"
-                  autoComplete="off"
-                  placeholder="Tell visitors about yourself..."
-                  className={`text-input mt-2 min-h-[120px] ${errors.description && touched.description
-                    ? "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                    : ""
-                    }`}
-                />
+                <Field name="description">
+                  {({ field }) => (
+                    <textarea
+                      {...field}
+                      id="description"
+                      autoComplete="off"
+                      placeholder="Tell visitors about yourself..."
+                      className={`mt-2 min-h-[120px] flex w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 ${errors.description && touched.description ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                    />
+                  )}
+                </Field>
                 <ErrorMessage
                   name="description"
                   component="div"
@@ -366,14 +367,8 @@ export default function AddAbout() {
 
             {/* Footer */}
             <div className="flex gap-2 py-3 px-6 border-t border-border justify-end">
-              <Button text="Cancel" onClick={handleCancel} type="secondary" />
-              <Button
-                btnType="submit"
-                text="Save"
-                type="modal"
-                form="aboutForm"
-                isLoading={loading}
-              />
+              <Button variant="outline" type="button" onClick={handleCancel}>Cancel</Button>
+              <Button type="submit" form="aboutForm" disabled={loading}>{loading ? "Saving…" : "Save"}</Button>
             </div>
           </Form>
         );

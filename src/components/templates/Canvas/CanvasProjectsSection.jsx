@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useGlobalContext } from "@/context/globalContext";
-import { modals } from "@/lib/constant";
+import { modals, sidebars } from "@/lib/constant";
 import { _updateUser } from "@/network/post-request";
 import ProjectLock from "@/components/projectLock";
 import { useRouter } from "next/router";
@@ -73,7 +73,7 @@ function ProjectCard({ project, isEditing, onNavigate, onDelete }) {
 
 const MemoizedProjectCard = React.memo(ProjectCard);
 
-function ProjectsEmptyState({ isEditing, openModal }) {
+function ProjectsEmptyState({ isEditing, openModal, openSidebar }) {
   return (
     <div className="flex flex-col items-center justify-center md:col-span-2 py-16 px-4 text-center rounded-2xl border border-dashed border-black/10 dark:border-white/10 bg-white/50 dark:bg-[#2A2520]/50 backdrop-blur-sm">
       <div className="w-12 h-12 rounded-full bg-black/[0.03] dark:bg-white/[0.03] flex items-center justify-center mb-4">
@@ -100,7 +100,7 @@ function ProjectsEmptyState({ isEditing, openModal }) {
       {isEditing && (
         <div className="flex flex-col sm:flex-row items-center gap-3">
           <Button
-            onClick={() => openModal(modals.project)}
+            onClick={() => openSidebar(sidebars.project)}
             className="h-9 px-5 rounded-full text-[13px] font-medium bg-[#1A1A1A] dark:bg-white text-white dark:text-black hover:bg-black/80 dark:hover:bg-white/90 transition-colors shadow-sm flex items-center gap-2"
           >
             <Pencil className="w-3.5 h-3.5" />
@@ -136,6 +136,7 @@ function CanvasProjectsSection({ isEditing, preview }) {
     setUserDetails,
     setSelectedProject,
     openModal,
+    openSidebar,
     updateCache,
   } = useGlobalContext();
   const router = useRouter();
@@ -220,7 +221,7 @@ function CanvasProjectsSection({ isEditing, preview }) {
               className="w-48 bg-white dark:bg-[#2A2520] border border-black/10 dark:border-white/10 shadow-lg rounded-xl overflow-hidden p-1"
             >
               <DropdownMenuItem
-                onClick={() => openModal(modals.project)}
+                onClick={() => openSidebar(sidebars.project)}
                 className="flex items-center gap-2 px-3 py-2 text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer rounded-lg focus:bg-black/5 dark:focus:bg-white/5"
               >
                 <Pencil className="w-3.5 h-3.5" />
@@ -272,7 +273,7 @@ function CanvasProjectsSection({ isEditing, preview }) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {visibleProjects?.length === 0 ? (
-          <ProjectsEmptyState isEditing={isEditing} openModal={openModal} />
+          <ProjectsEmptyState isEditing={isEditing} openModal={openModal} openSidebar={openSidebar} />
         ) : (
           <>
             {visibleProjects?.map((project) => (

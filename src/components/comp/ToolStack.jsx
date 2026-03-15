@@ -4,12 +4,13 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import Button from "../button";
 import PlusIcon from "../../../public/assets/svgs/plus.svg";
 import { useGlobalContext } from "@/context/globalContext";
+import { sidebars } from "@/lib/constant";
 import { cn } from "@/lib/utils";
 
 export const ToolStack = ({ userDetails, edit, titleClasses, headerActions }) => {
   const isMobile = useIsMobile();
   const { tools } = userDetails || {};
-  const { openModal } = useGlobalContext();
+  const { openSidebar } = useGlobalContext();
 
   // Duplicate tools multiple times for smoother infinite scroll
   const scrollTools = [...tools, ...tools, ...tools];
@@ -145,7 +146,7 @@ export const ToolStack = ({ userDetails, edit, titleClasses, headerActions }) =>
                 icon={
                   <PlusIcon className="text-secondary-btn-text-color w-[32px] h-[32px] cursor-pointer" />
                 }
-                onClick={() => openModal("tools")}
+                onClick={() => openSidebar(sidebars.tools)}
               // customClass="px-[22px]"
               />{" "}
               <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-sm whitespace-nowrap">

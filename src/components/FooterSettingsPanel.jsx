@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Button } from "@/components/ui/buttonNew";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SheetWrapper } from "@/components/ui/SheetWrapper";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
@@ -178,7 +179,7 @@ const FooterSettingsPanel = () => {
                   className={`p-8 rounded-[2rem] border-2 transition-all duration-300 group cursor-pointer ${
                     uploadedResume
                       ? "border-df-orange-color/20 bg-df-orange-color/[0.02]"
-                      : "border-border/40 bg-white dark:bg-df-section-card-bg-color hover-elevate"
+                      : "border-border/40 bg-card hover-elevate"
                   }`}
                   onClick={handleResumeUpload}
                 >
@@ -211,7 +212,7 @@ const FooterSettingsPanel = () => {
                     <Button
                       variant="outline"
                       size="lg"
-                      className="w-full rounded-full h-12 border-2 border-border/50 bg-white dark:bg-df-section-card-bg-color hover:bg-muted/50 font-semibold"
+                      className="w-full rounded-full h-12 border-2 border-border/50 bg-card hover:bg-accent font-semibold"
                       type="button"
                       disabled={isUploadingResume}
                       onClick={(e) => {
@@ -244,17 +245,18 @@ const FooterSettingsPanel = () => {
                     >
                       Contact Email
                     </Text>
-                    <Field
-                      name="contact_email"
-                      type="email"
-                      className={`text-input mt-2 ${errors.contact_email &&
-                        touched.contact_email &&
-                        "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                        }`}
-                      data-testid="input-footer-mail"
-                      placeholder="your.email@example.com"
-                      autoComplete="off"
-                    />
+                    <Field name="contact_email">
+                      {({ field }) => (
+                        <Input
+                          {...field}
+                          type="email"
+                          className={`mt-2 ${errors.contact_email && touched.contact_email ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                          data-testid="input-footer-mail"
+                          placeholder="your.email@example.com"
+                          autoComplete="off"
+                        />
+                      )}
+                    </Field>
                     <ErrorMessage
                       name="contact_email"
                       component="div"
@@ -269,17 +271,18 @@ const FooterSettingsPanel = () => {
                     >
                       Phone Number
                     </Text>
-                    <Field
-                      name="phone"
-                      type="tel"
-                      className={`text-input mt-2 ${errors.phone &&
-                        touched.phone &&
-                        "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                        }`}
-                      data-testid="input-footer-phone"
-                      placeholder="+1 (123) 456-7890"
-                      autoComplete="off"
-                    />
+                    <Field name="phone">
+                      {({ field }) => (
+                        <Input
+                          {...field}
+                          type="tel"
+                          className={`mt-2 ${errors.phone && touched.phone ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                          data-testid="input-footer-phone"
+                          placeholder="+1 (123) 456-7890"
+                          autoComplete="off"
+                        />
+                      )}
+                    </Field>
                     <ErrorMessage
                       name="phone"
                       component="div"
@@ -302,17 +305,18 @@ const FooterSettingsPanel = () => {
                     >
                       Blogs (Medium)
                     </Text>
-                    <Field
-                      name="blogs"
-                      type="url"
-                      className={`text-input mt-2 ${errors.blogs &&
-                        touched.blogs &&
-                        "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                        }`}
-                      data-testid="input-footer-blogs"
-                      placeholder="https://medium.com"
-                      autoComplete="off"
-                    />
+                    <Field name="blogs">
+                      {({ field }) => (
+                        <Input
+                          {...field}
+                          type="url"
+                          className={`mt-2 ${errors.blogs && touched.blogs ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                          data-testid="input-footer-blogs"
+                          placeholder="https://medium.com"
+                          autoComplete="off"
+                        />
+                      )}
+                    </Field>
                     <ErrorMessage
                       name="blogs"
                       component="div"
@@ -326,17 +330,18 @@ const FooterSettingsPanel = () => {
                     >
                       LinkedIn
                     </Text>
-                    <Field
-                      name="linkedin"
-                      type="url"
-                      className={`text-input mt-2 ${errors.linkedin &&
-                        touched.linkedin &&
-                        "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                        }`}
-                      data-testid="input-footer-linkedin"
-                      placeholder="https://linkedin.com"
-                      autoComplete="off"
-                    />
+                    <Field name="linkedin">
+                      {({ field }) => (
+                        <Input
+                          {...field}
+                          type="url"
+                          className={`mt-2 ${errors.linkedin && touched.linkedin ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                          data-testid="input-footer-linkedin"
+                          placeholder="https://linkedin.com"
+                          autoComplete="off"
+                        />
+                      )}
+                    </Field>
                     <ErrorMessage
                       name="linkedin"
                       component="div"
@@ -350,17 +355,18 @@ const FooterSettingsPanel = () => {
                     >
                       X (Twitter)
                     </Text>
-                    <Field
-                      name="x"
-                      type="url"
-                      className={`text-input mt-2 ${errors.x &&
-                        touched.x &&
-                        "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                        }`}
-                      data-testid="input-footer-x"
-                      placeholder="https://x.com"
-                      autoComplete="off"
-                    />
+                    <Field name="x">
+                      {({ field }) => (
+                        <Input
+                          {...field}
+                          type="url"
+                          className={`mt-2 ${errors.x && touched.x ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                          data-testid="input-footer-x"
+                          placeholder="https://x.com"
+                          autoComplete="off"
+                        />
+                      )}
+                    </Field>
                     <ErrorMessage
                       name="x"
                       component="div"
@@ -374,17 +380,18 @@ const FooterSettingsPanel = () => {
                     >
                       Instagram
                     </Text>
-                    <Field
-                      name="instagram"
-                      type="url"
-                      className={`text-input mt-2 ${errors.instagram &&
-                        touched.instagram &&
-                        "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                        }`}
-                      data-testid="input-footer-instagram"
-                      placeholder="https://instagram.com"
-                      autoComplete="off"
-                    />
+                    <Field name="instagram">
+                      {({ field }) => (
+                        <Input
+                          {...field}
+                          type="url"
+                          className={`mt-2 ${errors.instagram && touched.instagram ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                          data-testid="input-footer-instagram"
+                          placeholder="https://instagram.com"
+                          autoComplete="off"
+                        />
+                      )}
+                    </Field>
                     <ErrorMessage
                       name="instagram"
                       component="div"
@@ -398,17 +405,18 @@ const FooterSettingsPanel = () => {
                     >
                       Dribbble
                     </Text>
-                    <Field
-                      name="dribbble"
-                      type="url"
-                      className={`text-input mt-2 ${errors.dribbble &&
-                        touched.dribbble &&
-                        "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                        }`}
-                      data-testid="input-footer-dribbble"
-                      placeholder="https://dribbble.com"
-                      autoComplete="off"
-                    />
+                    <Field name="dribbble">
+                      {({ field }) => (
+                        <Input
+                          {...field}
+                          type="url"
+                          className={`mt-2 ${errors.dribbble && touched.dribbble ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                          data-testid="input-footer-dribbble"
+                          placeholder="https://dribbble.com"
+                          autoComplete="off"
+                        />
+                      )}
+                    </Field>
                     <ErrorMessage
                       name="dribbble"
                       component="div"
@@ -418,7 +426,7 @@ const FooterSettingsPanel = () => {
                 </div>
               </div>
             </div>
-            <div className="p-6 border-t border-border bg-white dark:bg-df-section-card-bg-color sticky bottom-0">
+            <div className="p-6 border-t border-border bg-sidebar-background sticky bottom-0">
               <Button
                 type="submit"
                 form="footerForm"

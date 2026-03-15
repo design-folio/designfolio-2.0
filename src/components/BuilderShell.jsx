@@ -50,13 +50,13 @@ export default function BuilderShell({ showProWarning = false, hideCourseCard = 
       case modals.onBoardingNewUser:
         return <OnboardingNewUser />;
       case modals.project:
-        return <AddProject />;
+        return null; // Project is handled by SheetWrapper/sidebar in AddProject component
       case modals.deleteProject:
         return <DeleteProject />;
       case modals.review:
         return null;
       case modals.tools:
-        return <AddTools />;
+        return null; // Tools is handled by SheetWrapper/sidebar in AddTools component
       case modals.work:
         return null;
       case modals.resume:
@@ -79,7 +79,7 @@ export default function BuilderShell({ showProWarning = false, hideCourseCard = 
       {/* //HACK: Allow all templates to be free */}
       {/* {showProWarning && userDetails && !userDetails?.pro && <ProWarning />} */}
 
-      <Modal show={showModal && showModal !== modals.aiProject && showModal !== modals.review && showModal !== modals.work}>
+      <Modal show={showModal && showModal !== modals.aiProject && showModal !== modals.review && showModal !== modals.work && showModal !== modals.project}>
         {modalContent()}
       </Modal>
       <Modal show={modals.aiProject === showModal} className="md:block">
@@ -89,6 +89,8 @@ export default function BuilderShell({ showProWarning = false, hideCourseCard = 
       <AddReview />
       <AddWork />
       <AddAbout />
+      <AddTools />
+      <AddProject />
 
       <UnsavedChangesDialog
         open={showUnsavedWarning && isSwitchingSidebar && pendingSidebarAction?.type === 'open'}

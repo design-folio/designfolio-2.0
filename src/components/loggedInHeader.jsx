@@ -172,7 +172,7 @@ export default function LoggedInHeader({
     fetch("/lottie/diamond-lottie.json")
       .then((res) => res.json())
       .then(setDiamondLottie)
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   const phEvent = usePostHogEvent();
@@ -449,7 +449,7 @@ export default function LoggedInHeader({
 
   const getStyles = (i) => {
     if (i == cursor) {
-      return `bg-selected-cursor-bg-color hover:bg-selected-cursor-bg-color shadow-selected-cursor-shadow`;
+      return `bg-muted border-primary hover:bg-muted`;
     } else {
       return "";
     }
@@ -475,7 +475,9 @@ export default function LoggedInHeader({
       : "z-[110]"
     : "z-50 py-2 md:py-6 px-2 md:px-0";
 
-  // return <Navbar />; New navbar component
+  // if (template === 0) {
+  //   return <Navbar />;
+  // }
 
   return (
     <div
@@ -599,11 +601,10 @@ export default function LoggedInHeader({
               />
               {isClient && (
                 <div
-                  className={`pt-5 origin-top-right absolute right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${
-                    popoverMenu === popovers.publishMenu
-                      ? "opacity-100 scale-100"
-                      : "opacity-0 scale-90 pointer-events-none"
-                  }`}
+                  className={`pt-5 origin-top-right absolute right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${popoverMenu === popovers.publishMenu
+                    ? "opacity-100 scale-100"
+                    : "opacity-0 scale-90 pointer-events-none"
+                    }`}
                 >
                   <div className=" w-[310px] rounded-xl shadow-lg bg-popover-bg-color border-4 border-solid border-popover-border-color">
                     <div className="p-4">
@@ -837,8 +838,8 @@ export default function LoggedInHeader({
                   <Button
                     className="h-11 px-4 mr-0 w-full mt-4 bg-foreground text-background hover:bg-foreground/90 rounded-full"
                     onClick={handleUpdate}
-                    // disabled={!userDetails?.pro && userDetails?.template != 0}
-                    // //HACK: Allow all templates to be free
+                  // disabled={!userDetails?.pro && userDetails?.template != 0}
+                  // //HACK: Allow all templates to be free
                   >
                     <img
                       src="/assets/svgs/power.svg"

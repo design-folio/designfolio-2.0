@@ -24,16 +24,15 @@
     --card-landing: #f5f3ef;
     --card-foreground: #202937;
     --card-border: #e5e7eb;
-    --primary: #f5f5f7;
-    --primary: 221 83% 53%;
+    --primary: #202937;
     --primary-landing: 221 83% 53%;
-    --primary-foreground: #202937;
-    --primary-hover: #e5e5e7;
-    --secondary: #fafafa;
+    --primary-foreground: #ffffff;
+    --primary-hover: #35435a;
+    --secondary: #ffffff;
     --secondary-foreground: #202937;
-    --secondary-hover: #f5f5f5;
-    --secondary-border: #dbdde4;
-    --secondary-border-hover: #d1d5db;
+    --secondary-hover: #f9f9fb;
+    --secondary-border: #e0e6eb;
+    --secondary-border-hover: #cdd1d8;
     --primary-border: hsl(var(--primary));
     --primary-border: hsl(
       from hsl(var(--primary)) h s
@@ -47,8 +46,8 @@
     --destructive-foreground: 0 0% 100%;
     --radius: 0.5rem;
     --border: 38 15% 88%;
-    --input: 38 25% 75%;
-    --ring: 221 83% 53%;
+    --input: 220 13% 91%;
+    --ring:  217 26% 17%;
     --tab-active-bg: #ffffff;
     --slider-thumb-border: #cfc4af;
     --slider-thumb-bg: #fafafa;
@@ -56,13 +55,14 @@
 
     /* Sidebar variables */
     --sidebar: 38 22% 93%;
+    --sidebar-background: #f6f2ef;
     --sidebar-foreground: 0 0% 10%;
     --sidebar-border: 38 18% 87%;
-    --sidebar-primary: 221 83% 53%;
-    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-primary: 217 26% 17%;
+    --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 38 18% 88%;
     --sidebar-accent-foreground: 0 0% 15%;
-    --sidebar-ring: 221 83% 53%;
+    --sidebar-ring: 217 26% 17%;
 
     /* Popover variables */
     --popover: 38 20% 92%;
@@ -182,9 +182,9 @@
     --card-landing: #1d1f27;
     --card-foreground: #e9eaeb;
     --card-border: #2f323d;
-    --primary: #262832;
-    --primary-foreground: #f9f9fb;
-    --primary-hover: #4a4e5d;
+    --primary: #f9f9fb;
+    --primary-foreground: #202937;
+    --primary-hover: #ffffff;
     --secondary: #17181d;
     --secondary-foreground: #f9f9fb;
     --secondary-hover: #22242b;
@@ -196,7 +196,7 @@
     --accent-foreground: 0 0% 90%;
     --border: 0 0% 18%;
     --input: 0 0% 25%;
-    --ring: 221 83% 53%;
+    --ring: 210 10% 91%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
     --tab-active-bg: #13151a;
@@ -206,13 +206,14 @@
 
     /* Sidebar variables */
     --sidebar: 0 0% 12%;
+    --sidebar-background: #13151a;
     --sidebar-foreground: 0 0% 92%;
     --sidebar-border: 0 0% 16%;
-    --sidebar-primary: 221 83% 53%;
+    --sidebar-primary: 210 10% 95%;
     --sidebar-primary-foreground: 0 0% 98%;
     --sidebar-accent: 0 0% 16%;
     --sidebar-accent-foreground: 0 0% 90%;
-    --sidebar-ring: 221 83% 53%;
+    --sidebar-ring: 210 10% 91%;
 
     /* Popover variables */
     --popover: 0 0% 14%;
@@ -306,6 +307,7 @@
 
 @import url("./colors.css");
 @import url("./animation.css");
+@import url("./theme.css");
 
 /* Chalkboard font — used in MacOS AboutWindow chalkboard theme */
 @font-face {
@@ -376,6 +378,7 @@ body.macos-desktop {
   scrollbar-width: none; /* Firefox */
 }
 
+/* DEPRECATED — all app forms now use shadcn Input. Remove once landing pages are migrated. */
 .text-input {
   padding: 16px;
   border-radius: 30px;

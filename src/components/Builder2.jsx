@@ -488,7 +488,7 @@ export default function Builder2({ edit = false }) {
                             <Button
                               text={"Add case study"}
                               customClass="w-fit gap-1 items-center h-11"
-                              onClick={() => openModal(modals.project)}
+                              onClick={() => openSidebar(sidebars.project)}
                               icon={
                                 <PlusIcon className="text-primary-btn-text-color w-[20px] h-[20px] mb-[2px] cursor-pointer" />
                               }
@@ -521,7 +521,7 @@ export default function Builder2({ edit = false }) {
                             first={projects?.length !== 0}
                             buttonTitle="Add case study"
                             secondaryButtonTitle="Write using AI"
-                            onClick={() => openModal(modals.project)}
+                            onClick={() => openSidebar(sidebars.project)}
                             icon={<MemoCasestudy className="cursor-pointer size-[72px]" />}
                             openModal={openModal}
                             className="flex justify-center items-center flex-col p-4 flex-1 min-w-0"
@@ -722,7 +722,7 @@ export default function Builder2({ edit = false }) {
                             <PlusIcon className="text-secondary-btn-text-color w-[18px] h-[18px] cursor-pointer" />
                           }
                           size="icon"
-                          onClick={() => openModal(modals.tools)}
+                          onClick={() => openSidebar(sidebars.tools)}
                         />
                         <SectionVisibilityButton sectionId="tools" className="h-[52px]" />
                       </>

@@ -99,10 +99,11 @@ export default function Index() {
     body.style.transition = "margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1)";
 
     let marginWidth = "0px";
-    if (activeSidebar === sidebars.work || activeSidebar === sidebars.review) {
+    if (activeSidebar === sidebars.work || activeSidebar === sidebars.review || activeSidebar === sidebars.project) {
       marginWidth = "500px";
+    } else if (activeSidebar === sidebars.theme || activeSidebar === sidebars.tools) {
+      marginWidth = "400px";
     } else if (
-      activeSidebar === sidebars.theme ||
       activeSidebar === sidebars.footer ||
       activeSidebar === sidebars.about
     ) {
@@ -184,13 +185,13 @@ export default function Index() {
       case modals.onBoardingNewUser:
         return <OnboardingNewUser />;
       case modals.project:
-        return <AddProject />;
+        return null; // Project is handled by SheetWrapper/sidebar in AddProject component
       case modals.deleteProject:
         return <DeleteProject />;
       case modals.review:
         return null; // Review modal is handled by CustomSheet/Sheet in AddReview component
       case modals.tools:
-        return <AddTools />;
+        return null; // Tools is handled by SheetWrapper/sidebar in AddTools component
       case modals.work:
         return null; // Work modal is handled by CustomSheet/Sheet in AddWork component
       case modals.resume:
@@ -238,7 +239,8 @@ export default function Index() {
             showModal &&
             showModal !== modals.aiProject &&
             showModal !== modals.review &&
-            showModal !== modals.work
+            showModal !== modals.work &&
+            showModal !== modals.project
           }
         >
           {modalContent()}
@@ -249,6 +251,8 @@ export default function Index() {
         <AddReview />
         <AddWork />
         <AddAbout />
+        <AddTools />
+        <AddProject />
         <UnsavedChangesDialog
           open={
             showUnsavedWarning &&
@@ -294,7 +298,7 @@ export default function Index() {
         className={cn(
           "min-h-screen",
           hasNoWallpaper(wallpaper) &&
-            "bg-[#F0EDE7] dark:bg-[#1A1A1A] flex justify-center font-inter text-[#1A1A1A] dark:text-[#F0EDE7] selection:bg-[#1A1A1A] dark:selection:bg-[#F0EDE7] selection:text-[#F0EDE7] dark:selection:text-[#1A1A1A] transition-colors duration-700",
+            "bg-background flex justify-center font-inter text-foreground selection:bg-foreground selection:text-background transition-colors duration-700",
         )}
       >
         <div
@@ -326,7 +330,8 @@ export default function Index() {
             showModal &&
             showModal !== modals.aiProject &&
             showModal !== modals.review &&
-            showModal !== modals.work
+            showModal !== modals.work &&
+            showModal !== modals.project
           }
         >
           {modalContent()}
@@ -337,6 +342,8 @@ export default function Index() {
         <AddReview />
         <AddWork />
         <AddAbout />
+        <AddTools />
+        <AddProject />
         <UnsavedChangesDialog
           open={
             showUnsavedWarning &&

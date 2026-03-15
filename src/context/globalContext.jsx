@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import Cookies from "js-cookie";
 import { useTheme } from "next-themes";
 import { popovers, sidebars, DEFAULT_SECTION_ORDER } from "@/lib/constant";
+import { TEMPLATES_BY_ID } from "@/lib/templates";
 import { useDebouncedCallback } from "use-debounce";
 import React, {
   createContext,
@@ -50,6 +51,13 @@ export const GlobalProvider = ({ children }) => {
   const [projectValue, setProjectValue] = useState(null);
   const [cursor, setCursor] = useState(0);
   const [template, setTemplate] = useState(0);
+
+  // Sync data-template attribute on <html> for theme.css accent overrides
+  useEffect(() => {
+    const templateValue = TEMPLATES_BY_ID[template]?.value ?? 'canvas';
+    document.documentElement.dataset.template = templateValue;
+  }, [template]);
+
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   /** When set, upgrade modal shows "Unhide [title]?" and message about 2 visible projects limit */
   const [upgradeModalUnhideProject, setUpgradeModalUnhideProject] = useState(null);

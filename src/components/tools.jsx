@@ -1,12 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
-import { modals } from "@/lib/constant";
+import { sidebars } from "@/lib/constant";
+import { useGlobalContext } from "@/context/globalContext";
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/buttonNew";
+import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import Section from "./section";
 
-export default function Tools({ userDetails, openModal, edit }) {
+export default function Tools({ userDetails, edit }) {
+  const { openSidebar } = useGlobalContext();
   const tools = userDetails?.tools || [];
   const shouldScroll = tools.length > 8;
 
@@ -34,7 +36,7 @@ export default function Tools({ userDetails, openModal, edit }) {
             size="icon"
             className="rounded-full h-11 w-11"
             data-testid="button-add-tool"
-            onClick={() => openModal?.(modals.tools)}
+            onClick={() => openSidebar(sidebars.tools)}
           >
             <Plus className="w-5 h-5" />
           </Button>

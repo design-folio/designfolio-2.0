@@ -212,6 +212,7 @@ export default function Index() {
   const renderTemplate = () => {
     switch (template) {
       case 0:
+        // return <Builder1 />;
         return <Canvas isEditing={true} />;
       case 1:
         return <Builder2 edit />;

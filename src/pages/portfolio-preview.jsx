@@ -11,6 +11,7 @@ import Portfolio from "@/components/comp/Portfolio";
 import MacOSTemplate from "@/components/comp/MacOSTemplate";
 import MadeWithDesignfolio from "../../public/assets/svgs/madewithdesignfolio.svg";
 import WallpaperBackground from "@/components/WallpaperBackground";
+import Canvas from "@/components/templates/Canvas";
 
 export default function Index() {
   const {
@@ -30,9 +31,9 @@ export default function Index() {
   useEffect(() => {
     if (userDetails?.wallpaper !== undefined) {
       const wp = userDetails.wallpaper;
-      const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
+      const wpValue = wp && typeof wp === "object" ? wp.url || wp.value : wp;
       setWallpaper(wpValue !== undefined ? wpValue : 0);
-      if (wp && typeof wp === 'object' && wp.effects) {
+      if (wp && typeof wp === "object" && wp.effects) {
         setWallpaperEffects(wp.effects);
       }
     }
@@ -41,7 +42,12 @@ export default function Index() {
   const renderTemplate = () => {
     switch (template) {
       case 0:
-        return <Preview1 userDetails={userDetails} projectRef={projectRef} />;
+        // return <Preview1 userDetails={userDetails} projectRef={projectRef} />;
+        return (
+          <div className="pt-6">
+            <Canvas isEditing={false} preview={true} />
+          </div>
+        );
       case 1:
         return (
           <>
@@ -117,7 +123,11 @@ export default function Index() {
       case 4:
         return (
           <div>
-            <MacOSTemplate userDetails={userDetails} edit={false} preview={false} />
+            <MacOSTemplate
+              userDetails={userDetails}
+              edit={false}
+              preview={false}
+            />
             {!userDetails?.pro && (
               <div
                 className={`text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] xl:block cursor-pointer mb-[120px] lg:m-0`}
@@ -155,11 +165,15 @@ export default function Index() {
   }, []);
   return (
     <>
-      <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
+      <WallpaperBackground
+        wallpaperUrl={wallpaperUrl}
+        effects={wallpaperEffects}
+      />
       <main className="min-h-screen">
         <div
-          className={` mx-auto px-2 md:px-4 lg:px-0 ${template != 3 && template != 4 && "max-w-[848px]"
-            }`}
+          className={` mx-auto px-2 md:px-4 lg:px-0 ${
+            template != 3 && template != 4 && "max-w-[848px]"
+          }`}
         >
           {renderTemplate()}
         </div>

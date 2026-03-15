@@ -47,10 +47,14 @@ const IconWrapper = ({ icon: Icon }) => (
 
 export function FluidDropdown() {
   const [isOpen, setIsOpen] = React.useState(false);
-  const [selectedCategory, setSelectedCategory] = React.useState(categories[0]);
   const [hoveredCategory, setHoveredCategory] = React.useState(null);
   const dropdownRef = React.useRef(null);
   const router = useRouter();
+
+  const selectedCategory = React.useMemo(
+    () => categories.find((c) => router.asPath.startsWith(c.navigation)) ?? categories[0],
+    [router.asPath]
+  );
 
   useClickAway(dropdownRef, () => setIsOpen(false));
 
@@ -66,7 +70,7 @@ export function FluidDropdown() {
         <Button
           variant="secondary"
           onClick={() => setIsOpen(!isOpen)}
-          className="bg-[#F5F5F5] hover:bg-[#E8E8E8] dark:bg-[#3A3531] dark:hover:bg-[#4A4540] border border-black/10 dark:border-white/10 text-[#1A1A1A] dark:text-[#F0EDE7] font-medium px-3 text-sm rounded-full flex items-center gap-1 hover:cursor-pointer transition-all duration-200"
+          className="bg-secondary hover:bg-secondary-hover border border-border text-foreground font-medium px-3 text-sm rounded-full flex items-center gap-1 hover:cursor-pointer transition-all duration-200"
           aria-expanded={isOpen}
           aria-haspopup="true"
         >
@@ -98,10 +102,10 @@ export function FluidDropdown() {
               onKeyDown={handleKeyDown}
               style={{ transformOrigin: "top left" }}
             >
-              <div className="w-full rounded-2xl border border-black/10 dark:border-white/10 bg-white dark:bg-[#2A2520] p-1.5 shadow-lg overflow-hidden">
+              <div className="w-full rounded-2xl border border-border bg-card p-1.5 shadow-lg overflow-hidden">
                 <div className="relative flex flex-col">
                   <motion.div
-                    className="absolute top-0 left-0 right-0 bg-black/5 dark:bg-white/5 rounded-xl z-0"
+                    className="absolute top-0 left-0 right-0 bg-secondary/50 rounded-xl z-0"
                     initial={false}
                     animate={{
                       y:
@@ -124,8 +128,7 @@ export function FluidDropdown() {
                       <button
                         key={category.id}
                         onClick={() => {
-                          setSelectedCategory(category);
-                          router.push(category.navigation);
+                          router.push(category.navigation, undefined, { shallow: true });
                           setIsOpen(false);
                         }}
                         onMouseEnter={() => setHoveredCategory(category.id)}
@@ -135,8 +138,8 @@ export function FluidDropdown() {
                           "transition-colors duration-150",
                           "focus:outline-none cursor-pointer",
                           isActive
-                            ? "text-[#1A1A1A] dark:text-[#F0EDE7]"
-                            : "text-[#7A736C] dark:text-[#9E9893]",
+                            ? "text-foreground"
+                            : "text-muted-foreground",
                         )}
                       >
                         <div className="flex items-center justify-start w-full">

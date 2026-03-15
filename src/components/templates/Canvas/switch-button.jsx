@@ -89,7 +89,7 @@ export function Switch({ value, onToggle, iconOn, iconOff, className = "" }) {
   return (
     <button
       ref={toggleRef}
-      className={`flex w-12 cursor-pointer rounded-full p-0.5 bg-[#E5D7C4] dark:bg-card-foreground/15 ${
+      className={`flex w-12 cursor-pointer rounded-full p-0.5 bg-[#E5D7C4] dark:bg-[#6D5F4C] ${
         value ? "justify-end" : "justify-start"
       } ${className}`}
       onClick={handleToggle}

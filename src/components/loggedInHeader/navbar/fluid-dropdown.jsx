@@ -52,8 +52,10 @@ export function FluidDropdown() {
   const router = useRouter();
 
   const selectedCategory = React.useMemo(
-    () => categories.find((c) => router.asPath.startsWith(c.navigation)) ?? categories[0],
-    [router.asPath]
+    () =>
+      categories.find((c) => router.asPath.startsWith(c.navigation)) ??
+      categories[0],
+    [router.asPath],
   );
 
   useClickAway(dropdownRef, () => setIsOpen(false));
@@ -70,7 +72,7 @@ export function FluidDropdown() {
         <Button
           variant="secondary"
           onClick={() => setIsOpen(!isOpen)}
-          className="bg-secondary hover:bg-secondary-hover border border-border text-foreground font-medium px-3 text-sm rounded-full flex items-center gap-1 hover:cursor-pointer transition-all duration-200"
+          className="bg-[#F5F5F5] hover:bg-[#E8E8E8] dark:bg-[#3A3531] dark:hover:bg-[#4A4540] border border-border text-foreground font-medium px-3 text-sm rounded-full flex items-center gap-1 hover:cursor-pointer transition-all duration-200"
           aria-expanded={isOpen}
           aria-haspopup="true"
         >
@@ -105,7 +107,7 @@ export function FluidDropdown() {
               <div className="w-full rounded-2xl border border-border bg-card p-1.5 shadow-lg overflow-hidden">
                 <div className="relative flex flex-col">
                   <motion.div
-                    className="absolute top-0 left-0 right-0 bg-secondary/50 rounded-xl z-0"
+                    className="absolute top-0 left-0 right-0  bg-[#F5F5F5] hover:bg-[#E8E8E8] dark:bg-[#3A3531] dark:hover:bg-[#4A4540] rounded-xl z-0"
                     initial={false}
                     animate={{
                       y:
@@ -128,7 +130,9 @@ export function FluidDropdown() {
                       <button
                         key={category.id}
                         onClick={() => {
-                          router.push(category.navigation, undefined, { shallow: true });
+                          router.push(category.navigation, undefined, {
+                            shallow: true,
+                          });
                           setIsOpen(false);
                         }}
                         onMouseEnter={() => setHoveredCategory(category.id)}

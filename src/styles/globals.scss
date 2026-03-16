@@ -16,7 +16,7 @@
   }
 
   :root {
-    --background: #f6f2ef;
+    --background: #f0ede7;
     --background-landing: 38 30% 97%;
     --foreground: #202937;
     --foreground-landing: 0 0% 6%;
@@ -47,7 +47,7 @@
     --radius: 0.5rem;
     --border: 38 15% 88%;
     --input: 220 13% 91%;
-    --ring:  217 26% 17%;
+    --ring: 217 26% 17%;
     --tab-active-bg: #ffffff;
     --slider-thumb-border: #cfc4af;
     --slider-thumb-bg: #fafafa;
@@ -173,7 +173,7 @@
   }
 
   [data-theme="dark"] {
-    --background: #13151a;
+    --background: #1a1a1a;
     --background-landing: 0 0% 7%;
     --primary-landing: 221 83% 53%;
     --foreground: #e9eaeb;

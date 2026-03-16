@@ -21,7 +21,8 @@ module.exports = {
         inter: ["var(--font-inter)", "sans-serif"],
         kalam: ["var(--font-kalam)", "cursive"],
         gsans: "var(--font-gsans)",
-        eudoxus: "var(--font-eudoxus)"
+        eudoxus: "var(--font-eudoxus)",
+        "dm-mono": "var(--font-dm-mono)",
 
       },
       cursor: {

@@ -23,8 +23,19 @@ import posthog from '@/lib/postHog';
 import { PostHogProvider } from '@posthog/react';
 import { usePostHogEvent } from '@/hooks/usePostHogEvent';
 import { POSTHOG_EVENT_NAMES } from '@/lib/posthogEventNames';
+import {
 
+  DM_Mono,
+} from "next/font/google";
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+
+
+const dmMono = DM_Mono({
+  subsets: ["latin"],
+  weight: ["300", "400", "500"],
+  style: ["normal", "italic"],
+  variable: "--font-dm-mono",
+});
 
 const inter = Inter({
   subsets: ['latin'],
@@ -203,7 +214,7 @@ function MyApp({ Component, pageProps, dfToken, hideHeader }) {
                   <CursorTooltipProvider>
                     <CursorPill />
                     <main
-                      className={`${satoshi.variable} ${sfpro.variable} ${inter.variable} ${kalam.variable} ${gsans.variable} ${eudoxus.variable} `}
+                      className={`${satoshi.variable} ${sfpro.variable} ${inter.variable} ${kalam.variable} ${gsans.variable} ${eudoxus.variable}   ${dmMono.variable}`}
                     >
                       {
                         <Header

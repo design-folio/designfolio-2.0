@@ -40,6 +40,7 @@ import WallpaperBackground from "@/components/WallpaperBackground";
 import FooterSettingsPanel from "@/components/FooterSettingsPanel";
 import AiToolsWorkspace from "@/components/AiToolsWorkspace";
 import Canvas from "@/components/templates/Canvas";
+import Mono from "@/components/templates/Mono";
 
 export default function Index() {
   const {
@@ -99,9 +100,16 @@ export default function Index() {
     body.style.transition = "margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1)";
 
     let marginWidth = "0px";
-    if (activeSidebar === sidebars.work || activeSidebar === sidebars.review || activeSidebar === sidebars.project) {
+    if (
+      activeSidebar === sidebars.work ||
+      activeSidebar === sidebars.review ||
+      activeSidebar === sidebars.project
+    ) {
       marginWidth = "500px";
-    } else if (activeSidebar === sidebars.theme || activeSidebar === sidebars.tools) {
+    } else if (
+      activeSidebar === sidebars.theme ||
+      activeSidebar === sidebars.tools
+    ) {
       marginWidth = "400px";
     } else if (
       activeSidebar === sidebars.footer ||
@@ -220,7 +228,8 @@ export default function Index() {
       case 2:
         return <Minimal userDetails={userDetails} edit />;
       case 3:
-        return <Portfolio userDetails={userDetails} edit />;
+        // return <Portfolio userDetails={userDetails} edit />;
+        return <Mono isEditing={true} />;
       case 4:
         return <MacOSTemplate userDetails={userDetails} edit />;
 
@@ -302,10 +311,16 @@ export default function Index() {
         )}
       >
         <div
-          className={` mx-auto ${userDetails?.template == 4 ? "" : "py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0"} ${userDetails?.template != 3 &&
-            userDetails?.template != 4 &&
-            "max-w-[848px]"
-            }`}
+          className={cn(
+            "mx-auto",
+            userDetails?.template !== 4 && "px-2 md:px-4 lg:px-0",
+            userDetails?.template === 3 || userDetails?.template === 0
+              ? "pt-24 pb-0"
+              : userDetails?.template !== 4 && "py-[94px] md:py-[124px]",
+            userDetails?.template !== 3 &&
+              userDetails?.template !== 4 &&
+              "max-w-[848px]",
+          )}
         >
           {/* //HACK: Allow all templates to be free */}
           {/* {userDetails && !userDetails?.pro && <ProWarning />} */}

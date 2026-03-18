@@ -104,7 +104,7 @@ export const Footer = ({ userDetails, edit }) => {
                   }
                 />
               }
-              className="bg-df-section-card-bg-color w-full"
+              className="bg-card w-full"
             />
           )}
           <div className="flex items-center gap-8 text-foreground/60 dark:text-gray-400">
@@ -202,7 +202,7 @@ export const Footer = ({ userDetails, edit }) => {
                     }
                   />
                 }
-                className="bg-df-section-card-bg-color shadow-df-section-card-shadow w-full"
+                className="bg-card shadow-df-section-card-shadow w-full"
               />
               <AddItem
                 title="Add your portfolio links"
@@ -218,7 +218,7 @@ export const Footer = ({ userDetails, edit }) => {
                     }
                   />
                 }
-                className="bg-df-section-card-bg-color shadow-df-section-card-shadow w-full"
+                className="bg-card shadow-df-section-card-shadow w-full"
               />
             </div>
           )}

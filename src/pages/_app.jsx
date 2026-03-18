@@ -1,7 +1,10 @@
 import '@/styles/globals.scss';
 import '@/styles/tiptap.css';
+import '@/styles/templates/canvas.css';
+import '@/styles/templates/mono.css';
+import '@/styles/templates/retroos.css';
 import localFont from 'next/font/local';
-import { Inter, Kalam } from 'next/font/google';
+import { Inter, Kalam, Cedarville_Cursive } from 'next/font/google';
 import Header from '@/components/header';
 import { useEffect } from 'react';
 import Cookies from 'js-cookie';
@@ -47,6 +50,12 @@ const kalam = Kalam({
   subsets: ['latin'],
   variable: '--font-kalam',
   weight: ['400', '700'],
+});
+
+const cedarvilleCursive = Cedarville_Cursive({
+  subsets: ['latin'],
+  variable: '--font-cedarville',
+  weight: ['400'],
 });
 
 const satoshi = localFont({
@@ -214,7 +223,7 @@ function MyApp({ Component, pageProps, dfToken, hideHeader }) {
                   <CursorTooltipProvider>
                     <CursorPill />
                     <main
-                      className={`${satoshi.variable} ${sfpro.variable} ${inter.variable} ${kalam.variable} ${gsans.variable} ${eudoxus.variable}   ${dmMono.variable}`}
+                      className={`${satoshi.variable} ${sfpro.variable} ${inter.variable} ${kalam.variable} ${gsans.variable} ${eudoxus.variable} ${dmMono.variable} ${cedarvilleCursive.variable}`}
                     >
                       {
                         <Header

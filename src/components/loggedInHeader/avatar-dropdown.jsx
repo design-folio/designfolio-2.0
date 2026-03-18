@@ -43,7 +43,7 @@ export function AvatarDropdown({ onClose }) {
     fetch("/lottie/diamond-lottie.json")
       .then((res) => res.json())
       .then(setDiamondLottie)
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   useClickAway(dropdownRef, () => setIsOpen(false));
@@ -97,10 +97,10 @@ export function AvatarDropdown({ onClose }) {
         >
           <div className="relative">
             <Avatar className="h-9 w-9 border border-border flex-shrink-0 transition-transform hover:scale-105">
-              <AvatarImage src={getUserAvatarImage(userDetails)} alt="Profile" className="object-cover" />
+              <AvatarImage src={getUserAvatarImage(userDetails)} alt="Profile" className="object-cover cursor-pointer" />
               <AvatarFallback>{userDetails?.username?.[0]?.toUpperCase() ?? "U"}</AvatarFallback>
             </Avatar>
-            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-white dark:bg-zinc-800 border border-border px-1.5 py-0.5 rounded-full shadow-sm whitespace-nowrap">
+            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-white dark:bg-zinc-800 border border-border px-1.5 py-0.5 rounded-full shadow-sm whitespace-nowrap cursor-pointer">
               <span className="text-[8px] font-bold uppercase tracking-wider text-black dark:text-white leading-none block">
                 {userDetails?.pro ? "PRO" : "Free"}
               </span>

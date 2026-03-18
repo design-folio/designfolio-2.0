@@ -1,6 +1,7 @@
 import Editor from "@/components/editor";
 import WallpaperBackground from "@/components/WallpaperBackground";
 import { useGlobalContext } from "@/context/globalContext";
+import { TEMPLATE_IDS } from "@/lib/templates";
 import { getProjectUrl } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import { _getProjectDetails } from "@/network/get-request";
@@ -156,15 +157,27 @@ export default function Index() {
 
   if (!userDetails) return null;
 
-  const isMacOS = userDetails.template === 4;
+  const template = userDetails.template;
+  const isMacOS = template === TEMPLATE_IDS.RETRO_OS;
   const isEmbed = router.query.embed === "1";
   const projectTitle = projectDetails?.project?.title || "Project";
   const currentProject = projectDetails?.project;
 
+  const projectContainerClass = (() => {
+    switch (template) {
+      case TEMPLATE_IDS.CANVAS:
+        return "max-w-[640px] mx-auto flex flex-col gap-3 pb-20 pt-[80px] px-4 md:px-0";
+      case TEMPLATE_IDS.MONO:
+        return "max-w-[640px] mx-auto pb-20 pt-[80px] custom-dashed-x bg-[#F0EDE7] dark:bg-[#1A1A1A] min-h-screen";
+      case TEMPLATE_IDS.RETRO_OS:
+        return "max-w-[848px] mx-auto py-6 px-2 md:px-4 lg:px-0";
+      default:
+        return "max-w-[848px] mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0";
+    }
+  })();
+
   const editorContent = (
-    <div
-      className={`max-w-[848px] mx-auto ${isMacOS ? "py-6" : "py-[94px] md:py-[124px]"} px-2 md:px-4 lg:px-0`}
-    >
+    <div className={projectContainerClass}>
       <Editor
         edit
         projectDetails={projectDetails}

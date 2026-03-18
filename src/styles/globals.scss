@@ -55,7 +55,7 @@
 
     /* Sidebar variables */
     --sidebar: 38 22% 93%;
-    --sidebar-background: #f6f2ef;
+    --sidebar-background: #fff;
     --sidebar-foreground: 0 0% 10%;
     --sidebar-border: 38 18% 87%;
     --sidebar-primary: 217 26% 17%;
@@ -346,14 +346,20 @@ html {
     background-color: hsl(var(--background-landing));
   }
 
+  /* Match #__next so builder/app pages don't show a different color (no html/body banding) */
   &:not(.landing-page) {
-    background-color: var(--df-bg-color);
+    background-color: var(--background);
   }
 }
 
 body {
   overflow-y: auto;
   min-height: 100vh;
+}
+
+/* Same as html/#__next when not landing so scroll/overscroll never shows a different band */
+html:not(.landing-page) body {
+  background-color: var(--background);
 }
 
 /* MacOS desktop view: no body scrollbar; content is fixed within viewport */
@@ -1179,7 +1185,7 @@ body.cursor-pill-active * {
   );
 }
 
-/* Next.js root container */
+/* Next.js root container — use same token as html/body to avoid background banding on builder */
 #__next {
   transition: padding-right 500ms cubic-bezier(0.32, 0.72, 0, 1);
   will-change: padding-right;
@@ -1187,5 +1193,5 @@ body.cursor-pill-active * {
   box-sizing: border-box;
   min-height: 100vh;
   position: relative;
-  background-color: hsl(var(--background));
+  background-color: var(--background);
 }

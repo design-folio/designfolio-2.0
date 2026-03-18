@@ -68,18 +68,17 @@ function ExperienceCard({
         </div>
       </div>
       {hasDescription && (
-        <div className="text-sm text-foreground-landing/60 leading-relaxed max-w-xl">
-          <ClampableTiptapContent
-            content={description || ""}
-            mode="work"
-            enableBulletList={true}
-            maxLines={3}
-            itemId={_id}
-            expandedIds={expandedCards}
-            onToggleExpand={onToggleExpand}
-            buttonClassName="mt-2 text-[#7A736C] dark:text-[#B5AFA5] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7] text-[15px] leading-relaxed mb-4 inline-flex items-center gap-1 transition-colors"
-          />
-        </div>
+        <ClampableTiptapContent
+          content={description || ""}
+          mode="work"
+          enableBulletList={true}
+          maxLines={3}
+          itemId={_id}
+          expandedIds={expandedCards}
+          onToggleExpand={onToggleExpand}
+          buttonClassName="mt-2 !text-[#7A736C] dark:!text-[#B5AFA5] hover:!text-[#1A1A1A] dark:hover:!text-[#F0EDE7] text-[15px] leading-relaxed mb-4 inline-flex items-center gap-1 transition-colors"
+        />
+
       )}
     </div>
   );

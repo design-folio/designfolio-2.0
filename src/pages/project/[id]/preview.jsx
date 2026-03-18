@@ -1,6 +1,7 @@
 import ProjectPassword from "@/components/projectPassword";
 import ProjectPreview from "@/components/projectPreview";
 import WallpaperBackground from "@/components/WallpaperBackground";
+import { TEMPLATE_IDS } from "@/lib/templates";
 import { useGlobalContext } from "@/context/globalContext";
 import { getProjectUrl } from "@/lib/utils";
 import { cn } from "@/lib/utils";
@@ -138,12 +139,26 @@ export default function Index() {
 
   if (!userDetails) return null;
 
-  const isMacOS = userDetails.template === 4;
+  const template = userDetails.template;
+  const isMacOS = template === TEMPLATE_IDS.RETRO_OS;
   const projectTitle = projectDetails?.project?.title || "Project";
   const currentProject = projectDetails?.project;
 
+  const projectContainerClass = (() => {
+    switch (template) {
+      case TEMPLATE_IDS.CANVAS:
+        return "max-w-[640px] mx-auto flex flex-col gap-3 pb-20 pt-[80px] px-4 md:px-0";
+      case TEMPLATE_IDS.MONO:
+        return "max-w-[640px] mx-auto pb-20 pt-[80px] custom-dashed-x bg-[#F0EDE7] dark:bg-[#1A1A1A] min-h-screen";
+      case TEMPLATE_IDS.RETRO_OS:
+        return "max-w-[848px] mx-auto py-6 px-2 md:px-4 lg:px-0";
+      default:
+        return "max-w-[848px] mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0";
+    }
+  })();
+
   const previewContent = projectDetails && (
-    <div className={`max-w-[848px] mx-auto py-[40px] px-2 md:px-4 lg:px-0`}>
+    <div className={projectContainerClass}>
       <ProjectPreview projectDetails={projectDetails} />
     </div>
   );

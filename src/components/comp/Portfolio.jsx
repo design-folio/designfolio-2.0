@@ -606,7 +606,7 @@ const Portfolio = ({ userDetails, edit }) => {
                                     <MemoCasestudy className="cursor-pointer size-[72px]" />
                                   }
                                   openModal={openModal}
-                                  className={`bg-df-section-card-bg-color flex items-center justify-center min-h-[269px] rounded-lg ${userDetails?.projects?.length !== 0 &&
+                                  className={`bg-card flex items-center justify-center min-h-[269px] rounded-lg ${userDetails?.projects?.length !== 0 &&
                                     " shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] hover:shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
                                     }`}
                                 />

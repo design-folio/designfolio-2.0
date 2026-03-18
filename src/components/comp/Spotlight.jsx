@@ -236,7 +236,7 @@ export const Spotlight = ({ userDetails, edit, headerActions }) => {
       </DndContext>
       {edit && (
         <AddItem
-          className="bg-df-section-card-bg-color shadow-df-section-card-shadow mt-4"
+          className="bg-card shadow-df-section-card-shadow mt-4"
           title="Add your work experience"
           onClick={() => openSidebar(sidebars.work)}
           iconLeft={

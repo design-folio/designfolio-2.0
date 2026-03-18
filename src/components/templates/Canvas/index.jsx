@@ -10,7 +10,7 @@ import CanvasAboutSection from "./CanvasAboutSection";
 import CanvasTestimonialsSection from "./CanvasTestimonialsSection";
 import CanvasContactSection from "./CanvasContactSection";
 
-export default function Canvas({ isEditing, preview = false }) {
+export default function Canvas({ isEditing, preview = false, publicView = false }) {
   const { userDetails } = useGlobalContext();
   const { skills = [] } = userDetails || {};
 
@@ -19,7 +19,7 @@ export default function Canvas({ isEditing, preview = false }) {
       <CanvasHeader />
       <CanvasProfileCard isEditing={isEditing} />
       <CanvasSkillsMarquee skills={skills} />
-      <CanvasProjectsSection isEditing={isEditing} preview={preview} />
+      <CanvasProjectsSection isEditing={isEditing} preview={preview} publicView={publicView} />
       <CanvasCareerLadder isEditing={isEditing} />
       <CanvasToolsMarquee isEditing={isEditing} />
       <CanvasAboutSection isEditing={isEditing} />

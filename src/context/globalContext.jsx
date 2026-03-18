@@ -1,5 +1,6 @@
 import { setCursorvalue } from "@/lib/cursor";
 import { getWallpaperUrl, hasNoWallpaper } from "@/lib/wallpaper";
+import { useRouter } from "next/router";
 import { mapPendingPortfolioToUpdatePayload } from "@/lib/mapPendingPortfolioToUpdatePayload";
 import { _getDomainDetails, _getUserDetails, _getPersonas, _getTools } from "@/network/get-request";
 import { _updateUser } from "@/network/post-request";
@@ -30,6 +31,7 @@ export const useGlobalContext = () => {
 
 // Provider component to wrap your app and provide the context
 export const GlobalProvider = ({ children }) => {
+  const router = useRouter();
   const [popoverMenu, setPopoverMenu] = useState(null);
   const [userDetails, setUserDetails] = useState(null);
   const [isUserDetailsFromCache, setIsUserDetailsFromCache] = useState(false);
@@ -57,6 +59,17 @@ export const GlobalProvider = ({ children }) => {
     const templateValue = TEMPLATES_BY_ID[template]?.value ?? 'canvas';
     document.documentElement.dataset.template = templateValue;
   }, [template]);
+
+  // Re-set data-template after every client-side navigation. Public pages (project/[id]/index)
+  // clean up the attribute on unmount; this ensures globalContext restores it for the next page.
+  useEffect(() => {
+    const handleRouteChangeComplete = () => {
+      const templateValue = TEMPLATES_BY_ID[template]?.value ?? 'canvas';
+      document.documentElement.dataset.template = templateValue;
+    };
+    router.events.on('routeChangeComplete', handleRouteChangeComplete);
+    return () => router.events.off('routeChangeComplete', handleRouteChangeComplete);
+  }, [router.events, template]);
 
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   /** When set, upgrade modal shows "Unhide [title]?" and message about 2 visible projects limit */

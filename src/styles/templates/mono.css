@@ -1,0 +1,132 @@
+/* Mono template theme tokens (light + dark + structural accents) */
+
+/* Mono light: pure neutral grays */
+[data-template="mono"] {
+  --card: #ffffff;
+  --secondary: #ffffff;
+  --secondary-hover: #f5f5f5;
+  --secondary-border: #e2e2e2;
+  --secondary-border-hover: #cacaca;
+  --accent: 0 0% 91%;
+  --muted: 0 0% 93%;
+  --border: 0 0% 89%;
+  --sidebar: 0 0% 96%;
+  --sidebar-accent: 0 0% 91%;
+  --primary: #1a1a1a;
+  --primary-foreground: #ffffff;
+  --primary-hover: #2d2d2d;
+  --ring: 0 0% 10%;
+  --sidebar-primary: 0 0% 10%;
+  --sidebar-ring: 0 0% 10%;
+  --sidebar-background: #fff;
+  /* Tiptap text tokens */
+  --tiptap-work-paragraph: #7a736c;
+  --tiptap-review-paragraph: #1a1a1a;
+  --tiptap-work-list: #7a736c;
+  --tiptap-review-list: #1a1a1a;
+}
+
+/* Mono dark: neutral gray */
+[data-theme="dark"][data-template="mono"] {
+  --background: #1a1a1a;
+  --card: #2a2520;
+  --secondary: #302b25;
+  --secondary-hover: #3a342d;
+  --secondary-border: #4a4238;
+  --secondary-border-hover: #5e5449;
+  --accent: 25 15% 22%;
+  --muted: 25 12% 20%;
+  --border: 25 12% 24%;
+  --sidebar: 25 10% 18%;
+  --sidebar-accent: 25 15% 22%;
+  --primary: #f0f0f0;
+  --primary-foreground: #1a1a1a;
+  --primary-hover: #ffffff;
+  --sidebar-primary: 0 0% 90%;
+  --sidebar-background: #2a2520;
+  --sidebar-ring: 0 0% 90%;
+  /* Tiptap dark tokens (Mono warm) */
+  --tiptap-work-paragraph: #b5afa5;
+  --tiptap-review-paragraph: #f0f0f0;
+  --tiptap-work-list: #b5afa5;
+  --tiptap-review-list: #f0f0f0;
+}
+
+/* Mono structural accents (migrated from inline template CSS) */
+[data-template="mono"] .custom-dashed-x {
+  position: relative;
+}
+
+[data-template="mono"] .custom-dashed-x::before,
+[data-template="mono"] .custom-dashed-x::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-image: linear-gradient(to bottom, #e5d7c4 50%, transparent 50%);
+  background-size: 1px 10px;
+  z-index: 0;
+  pointer-events: none;
+}
+
+[data-template="mono"] .custom-dashed-x::before {
+  left: 0;
+}
+
+[data-template="mono"] .custom-dashed-x::after {
+  right: 0;
+}
+
+[data-template="mono"] .custom-dashed-t {
+  height: 1px;
+  width: 100%;
+  background-image: linear-gradient(to right, #e5d7c4 50%, transparent 50%);
+  background-size: 10px 1px;
+}
+
+[data-template="mono"] .dino-color {
+  fill: #535353;
+}
+
+[data-template="mono"] .custom-solid-x {
+  position: relative;
+}
+
+[data-template="mono"] .custom-solid-x::before,
+[data-template="mono"] .custom-solid-x::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-color: #d5d0c6;
+  pointer-events: none;
+  z-index: 50;
+}
+
+[data-template="mono"] .custom-solid-x::before {
+  left: 0;
+}
+
+[data-template="mono"] .custom-solid-x::after {
+  right: 0;
+}
+
+[data-theme="dark"][data-template="mono"] .custom-dashed-x::before,
+[data-theme="dark"][data-template="mono"] .custom-dashed-x::after {
+  background-image: linear-gradient(to bottom, #3a352e 50%, transparent 50%);
+}
+
+[data-theme="dark"][data-template="mono"] .custom-dashed-t {
+  background-image: linear-gradient(to right, #3a352e 50%, transparent 50%);
+}
+
+[data-theme="dark"][data-template="mono"] .dino-color {
+  fill: #b5afa5;
+}
+
+[data-theme="dark"][data-template="mono"] .custom-solid-x::before,
+[data-theme="dark"][data-template="mono"] .custom-solid-x::after {
+  background-color: #3a352e;
+}

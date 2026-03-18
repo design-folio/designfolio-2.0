@@ -18,6 +18,10 @@ import { getWallpaperUrl } from "@/lib/wallpaper";
 import MacOSWindowShell from "@/components/templates/MacOSDock/MacOSWindowShell";
 import { getProjectUrl } from "@/lib/utils";
 import MacOSTemplate from "@/components/comp/MacOSTemplate";
+import { ChevronLeft } from "lucide-react";
+import { TEMPLATE_IDS, TEMPLATES_BY_ID } from "@/lib/templates";
+import CanvasProjectCta from "@/components/templates/Canvas/CanvasProjectCta";
+import MonoProjectFooter from "@/components/templates/Mono/MonoProjectFooter";
 
 export default function Index({
   data,
@@ -120,7 +124,24 @@ export default function Index({
   }, [projectData?.project, userDetails, setTheme, setWallpaper, setCursor]);
   const project = projectData?.project;
   const isProtected = projectData?.isProtected || false;
-  const isMacOS = userDetails?.template === 4 || ownerTemplate === 4;
+  // Always use the owner's portfolio template for layout — never the viewer's own template
+  const effectiveTemplate = ownerTemplate ?? TEMPLATE_IDS.CHATFOLIO;
+  const isMacOS = effectiveTemplate === TEMPLATE_IDS.RETRO_OS;
+  const isCanvas = effectiveTemplate === TEMPLATE_IDS.CANVAS;
+  const isMono = effectiveTemplate === TEMPLATE_IDS.MONO;
+
+  // Set data-template on <html> so template-scoped CSS (canvas.css, mono.css etc.) works on the public page
+  useEffect(() => {
+    const templateValue = TEMPLATES_BY_ID[effectiveTemplate]?.value;
+    if (templateValue) {
+      document.documentElement.dataset.template = templateValue;
+    } else {
+      document.documentElement.removeAttribute("data-template");
+    }
+    return () => {
+      document.documentElement.removeAttribute("data-template");
+    };
+  }, [effectiveTemplate]);
   // Use owner's profile when viewer has no userDetails (e.g. public visitor) so MacOS desktop still shows
   const effectiveUserDetails = userDetails ?? ownerUser ?? null;
 
@@ -146,12 +167,29 @@ export default function Index({
     userDetails?.wallpaper?.effects ||
     null;
 
+  const canvasCta = isCanvas && !isProtected && project && (
+    <CanvasProjectCta ownerUser={ownerUser} />
+  );
+
+  const monoCta = isMono && !isProtected && project && (
+    <MonoProjectFooter ownerUser={ownerUser} />
+  );
+
   const projectContent = (
     <div
-      className={`max-w-[848px] mx-auto pt-[16px] pb-[80px] lg:py-[40px] px-2 md:px-4 lg:px-0`}
+      className={(() => {
+        switch (effectiveTemplate) {
+          case TEMPLATE_IDS.CANVAS:
+            return "max-w-[640px] mx-auto flex flex-col gap-3 pb-20 pt-[80px] px-4 md:px-0";
+          case TEMPLATE_IDS.MONO:
+            return "max-w-[640px] mx-auto pb-20 pt-[80px] custom-dashed-x bg-[#F0EDE7] dark:bg-[#1A1A1A] min-h-screen";
+          default:
+            return "max-w-[848px] mx-auto pt-[16px] pb-[80px] lg:py-[40px] px-2 md:px-4 lg:px-0";
+        }
+      })()}
     >
       <motion.div
-        className="flex-1 flex flex-col gap-3"
+        className={`flex-1 flex flex-col ${isMono ? "" : "gap-3"}`}
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -180,17 +218,19 @@ export default function Index({
             ) : (
               <>
                 <motion.div variants={itemVariants}>
-                  <ProjectInfo projectDetails={project} />
+                  <ProjectInfo projectDetails={project} ownerTemplate={ownerTemplate} />
                 </motion.div>
                 {project?.contentVersion === 2 && project?.tiptapContent ? (
-                  <motion.div variants={itemVariants}>
-                    <TiptapRenderer content={project.tiptapContent} />
+                  <motion.div variants={itemVariants} className={isMono ? "px-5 md:px-8 py-6" : ""}>
+                    <TiptapRenderer key={project._id} content={project.tiptapContent} />
                   </motion.div>
                 ) : project?.content ? (
-                  <motion.div variants={itemVariants}>
+                  <motion.div variants={itemVariants} className={isMono ? "px-5 md:px-8 py-6" : ""}>
                     <BlockRenderer editorJsData={project.content} />
                   </motion.div>
                 ) : null}
+                {canvasCta}
+                {monoCta}
               </>
             )}
           </>

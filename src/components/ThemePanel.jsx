@@ -8,7 +8,7 @@ import styles from "@/styles/domain.module.css";
 import imageCompression from "browser-image-compression";
 import { Upload, RotateCcw, Check, Sun, Moon } from "lucide-react";
 import DragHandle from "./DragHandle";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { Badge } from "./ui/badge";
 import { SheetWrapper } from "./ui/SheetWrapper";
@@ -32,6 +32,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { _updateUser } from "@/network/post-request";
+import { runThemeTransition, hasThemeSwitchEffect } from "@/hooks/use-theme-switch-audio";
 
 
 // Section display names mapping
@@ -125,6 +126,19 @@ const ThemePanel = ({
   const show = activeSidebar === sidebars.theme;
 
   const isMacOSTemplate = template === 4;
+  const useThemeSwitchEffect = hasThemeSwitchEffect(template);
+  const appearanceSwitchRefLayouts = useRef(null);
+  const appearanceSwitchRefBackground = useRef(null);
+
+  const applyThemeChange = (checked, originElement) => {
+    const apply = () => changeTheme(checked ? 1 : 0);
+    if (useThemeSwitchEffect && !isMacOSTemplate) {
+      runThemeTransition(originElement, apply, { playSound: true, ripple: true });
+    } else {
+      apply();
+    }
+  };
+
   const availableSections = getAvailableSections(template);
 
   // Initialize sectionOrder from userDetails or use template default
@@ -394,12 +408,14 @@ const ThemePanel = ({
               >
                 <Sun className="size-4" />
               </span>
-              <Switch
-                checked={isMacOSTemplate ? false : (theme === 'dark' || theme === 1)}
-                onCheckedChange={(checked) => changeTheme(checked ? 1 : 0)}
-                disabled={isMacOSTemplate}
-                data-testid={isMobile ? "switch-theme-mode-layouts-mobile" : "switch-theme-mode-layouts"}
-              />
+              <div ref={appearanceSwitchRefLayouts} className="inline-flex">
+                <Switch
+                  checked={isMacOSTemplate ? false : (theme === 'dark' || theme === 1)}
+                  onCheckedChange={(checked) => applyThemeChange(checked, appearanceSwitchRefLayouts.current)}
+                  disabled={isMacOSTemplate}
+                  data-testid={isMobile ? "switch-theme-mode-layouts-mobile" : "switch-theme-mode-layouts"}
+                />
+              </div>
               <span
                 className={twMerge("cursor-pointer transition-colors", !(theme === 'dark' || theme === 1) ? "text-muted-foreground" : "text-foreground")}
                 onClick={() => !isMacOSTemplate && changeTheme(1)}
@@ -481,12 +497,14 @@ const ThemePanel = ({
               >
                 <Sun className="size-4" />
               </span>
-              <Switch
-                checked={isMacOSTemplate ? false : (theme === 'dark' || theme === 1)}
-                onCheckedChange={(checked) => changeTheme(checked ? 1 : 0)}
-                disabled={isMacOSTemplate}
-                data-testid={isMobile ? "switch-wallpaper-mode-mobile" : "switch-wallpaper-mode"}
-              />
+              <div ref={appearanceSwitchRefBackground} className="inline-flex">
+                <Switch
+                  checked={isMacOSTemplate ? false : (theme === 'dark' || theme === 1)}
+                  onCheckedChange={(checked) => applyThemeChange(checked, appearanceSwitchRefBackground.current)}
+                  disabled={isMacOSTemplate}
+                  data-testid={isMobile ? "switch-wallpaper-mode-mobile" : "switch-wallpaper-mode"}
+                />
+              </div>
               <span
                 className={twMerge("cursor-pointer transition-colors", !(theme === 'dark' || theme === 1) ? "text-muted-foreground" : "text-foreground")}
                 onClick={() => !isMacOSTemplate && changeTheme(1)}

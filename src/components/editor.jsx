@@ -18,6 +18,8 @@ export default function Editor({ edit, projectDetails, refetchProjectDetail }) {
     popoverMenu,
   } = useGlobalContext();
 
+  const isMono = userDetails?.template === 3;
+
   return (
     <div className="editor-container flex-1 flex flex-col gap-3">
       {projectDetails && (
@@ -32,21 +34,23 @@ export default function Editor({ edit, projectDetails, refetchProjectDetail }) {
             popoverMenu={popoverMenu}
             refetchProjectDetail={refetchProjectDetail}
           />
-          {projectDetails.project.contentVersion === 2 ? (
-            <TiptapEditor
-              projectDetails={projectDetails.project}
-              userDetails={userDetails}
-              setUserDetails={setUserDetails}
-              refetchProjectDetail={refetchProjectDetail}
-            />
-          ) : (
-            <ProjectEditor
-              projectDetails={projectDetails.project}
-              userDetails={userDetails}
-              setUserDetails={setUserDetails}
-              refetchProjectDetail={refetchProjectDetail}
-            />
-          )}
+          <div className={isMono ? "px-5 md:px-8 py-6" : ""}>
+            {projectDetails.project.contentVersion === 2 ? (
+              <TiptapEditor
+                projectDetails={projectDetails.project}
+                userDetails={userDetails}
+                setUserDetails={setUserDetails}
+                refetchProjectDetail={refetchProjectDetail}
+              />
+            ) : (
+              <ProjectEditor
+                projectDetails={projectDetails.project}
+                userDetails={userDetails}
+                setUserDetails={setUserDetails}
+                refetchProjectDetail={refetchProjectDetail}
+              />
+            )}
+          </div>
         </>
       )}
     </div>

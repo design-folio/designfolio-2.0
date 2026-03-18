@@ -1,4 +1,4 @@
-import { useRef, useCallback } from "react"
+import { useRef, useCallback, useState, useEffect } from "react"
 import { flushSync } from "react-dom"
 import { useTheme } from "next-themes"
 
@@ -11,7 +11,11 @@ import { cn } from "@/lib/utils"
 export const AnimatedThemeToggler = ({ className }) => {
     const buttonRef = useRef(null)
     const { resolvedTheme, setTheme } = useTheme()
-    const darkMode = resolvedTheme === "dark"
+    const [mounted, setMounted] = useState(false)
+
+    useEffect(() => setMounted(true), [])
+
+    const darkMode = mounted && resolvedTheme === "dark"
 
     const playHeartbeat = useCallback(() => {
         try {
@@ -97,6 +101,26 @@ export const AnimatedThemeToggler = ({ className }) => {
             }
         )
     }, [darkMode, playHeartbeat, setTheme])
+
+    // Avoid hydration mismatch: server and first client render don't know theme (no localStorage)
+    if (!mounted) {
+        return (
+            <button
+                ref={buttonRef}
+                aria-label="Switch theme"
+                className={cn(
+                    "flex items-center justify-center p-2 rounded-full outline-none focus:outline-none active:outline-none focus:ring-0 cursor-pointer hover:bg-black/10 dark:hover:bg-white/10 transition-all",
+                    className
+                )}
+                type="button"
+                data-testid="button-toggle-theme"
+            >
+                <span className="text-[#1A1A1A]">
+                    <Moon size={18} />
+                </span>
+            </button>
+        )
+    }
 
     return (
         <button

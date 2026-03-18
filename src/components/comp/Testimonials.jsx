@@ -331,7 +331,7 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
       {edit && (
         <div className="flex items-center gap-2 mt-6">
           <AddItem
-            className="bg-df-section-card-bg-color shadow-df-section-card-shadow flex-1"
+            className="bg-card shadow-df-section-card-shadow flex-1"
             title="Add your testimonial"
             onClick={() => openSidebar(sidebars.review)}
             iconLeft={

@@ -133,7 +133,7 @@ const TiptapEditor = ({ projectDetails, userDetails }) => {
     ],
     content:
       projectDetails?.tiptapContent &&
-      Object.keys(projectDetails.tiptapContent).length > 0
+        Object.keys(projectDetails.tiptapContent).length > 0
         ? projectDetails.tiptapContent
         : '',
     editorProps: {
@@ -380,7 +380,7 @@ const TiptapEditor = ({ projectDetails, userDetails }) => {
     <div className="project-editor-container" ref={editorContainerRef}>
       {/* Editor Content */}
       <div
-        className="project-editor bg-df-section-card-bg-color"
+        className="project-editor bg-card"
         onClick={() => {
           setShowToolbar(true);
           if (editor && !editor.isFocused) {

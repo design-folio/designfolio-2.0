@@ -5,20 +5,23 @@ import { useTheme } from "next-themes";
 import { Switch } from "./switch-button";
 
 function CanvasHeader() {
-  const [currentTime, setCurrentTime] = useState(new Date());
+  const [currentTime, setCurrentTime] = useState(null);
+  const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
-  const isDark = theme === "dark";
+  const isDark = mounted && theme === "dark";
 
   useEffect(() => {
+    setMounted(true);
+    setCurrentTime(new Date());
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
 
-  const currentDate = currentTime.toLocaleDateString("en-US", {
+  const currentDate = currentTime?.toLocaleDateString("en-US", {
     weekday: "short",
     day: "numeric",
     month: "short",
-  });
+  }) ?? "";
 
   return (
     <motion.div
@@ -33,11 +36,11 @@ function CanvasHeader() {
         </span>
         <div className="w-2 h-2 bg-[#E37941] rotate-45"></div>
         <span className="text-[#1A1A1A] dark:text-[#F0EDE7] font-medium text-sm">
-          {currentTime.toLocaleTimeString("en-US", {
+          {currentTime?.toLocaleTimeString("en-US", {
             hour: "2-digit",
             minute: "2-digit",
             second: "2-digit",
-          })}
+          }) ?? ""}
         </span>
       </div>
       <div className="flex items-center gap-3">

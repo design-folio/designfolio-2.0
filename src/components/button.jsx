@@ -31,15 +31,16 @@ const Button = ({
   };
 
   const buttonStyles = {
+    // Uses design-system tokens — respond to data-template overrides
     primary: {
-      base: "bg-primary-btn-bg-color hover:bg-primary-btn-bg-hover-color text-primary-btn-text-color border border-primary-btn-bg-color hover:border-primary-btn-bg-hover-color cursor-pointer",
+      base: "bg-primary hover:bg-primary-hover text-primary-foreground border border-primary hover:border-primary-hover cursor-pointer",
       disabled:
-        "bg-primary-btn-bg-color hover:bg-primary-btn-bg-hover-color text-primary-btn-text-color border border-primary-btn-bg-color opacity-70 cursor-not-allowed",
+        "bg-primary text-primary-foreground border border-primary opacity-70 cursor-not-allowed",
     },
     secondary: {
-      base: "bg-secondary-btn-bg-color hover:bg-secondary-btn-bg-hover-color text-secondary-btn-text-color border-solid border border-secondary-btn-border-color hover:secondary-btn-bg-hover-color hover:shadow-secondary-btn cursor-pointer",
+      base: "bg-secondary hover:bg-secondary-hover text-foreground border border-secondary-border hover:border-secondary-border-hover hover:shadow-secondary-btn cursor-pointer",
       disabled:
-        "bg-secondary-btn-bg-color text-secondary-btn-text-color border-solid border border-secondary-btn-border-color opacity-70 cursor-not-allowed",
+        "bg-secondary text-foreground border border-secondary-border opacity-70 cursor-not-allowed",
     },
     tertiary: {
       base: "bg-tertiary-btn-bg-color hover:bg-tertiary-btn-bg-hover-color text-tertiary-btn-text-color border-solid border border-tertiary-btn-border-color hover:border-tertiary-btn-bg-hover-color cursor-pointer",
@@ -47,8 +48,8 @@ const Button = ({
         "bg-tertiary-btn-bg-color text-tertiary-btn-text-color border-solid border border-tertiary-btn-border-color opacity-70 cursor-not-allowed",
     },
     normal: {
-      base: "hover:bg-normal-btn-bg-hover-color text-normal-btn-text-color cursor-pointer",
-      disabled: "text-normal-btn-text-color opacity-70 cursor-not-allowed",
+      base: "hover:bg-secondary-hover text-foreground cursor-pointer",
+      disabled: "text-foreground opacity-70 cursor-not-allowed",
     },
     delete: {
       base: "bg-delete-btn-bg-color hover:bg-delete-btn-bg-hover-color text-delete-btn-icon-color border border-solid border-delete-btn-border-color hover:border-delete-btn-border-hover-color hover:shadow-delete-btn cursor-pointer",
@@ -56,9 +57,9 @@ const Button = ({
         "bg-delete-btn-bg-color border-delete-btn-border-color opacity-70 cursor-not-allowed",
     },
     modal: {
-      base: "bg-modal-btn-bg-color hover:bg-modal-btn-bg-hover-color text-modal-btn-text-color border border-modal-btn-border-color hover:border-modal-btn-bg-hover-color cursor-pointer",
+      base: "bg-primary hover:bg-primary-hover text-primary-foreground border border-primary hover:border-primary-hover cursor-pointer",
       disabled:
-        "bg-modal-btn-bg-color hover:bg-modal-btn-bg-hover-color text-modal-btn-text-color border border-modal-btn-bg-color opacity-70 cursor-not-allowed",
+        "bg-primary text-primary-foreground border border-primary opacity-70 cursor-not-allowed",
     },
     ai: {
       base: "text-ai-btn-text-color border border-ai-btn-border-color cursor-pointer",
@@ -71,10 +72,10 @@ const Button = ({
         "bg-transparent text-[#404040] hover:bg-[#FFF] rounded-full opacity-40",
     },
     toggleVisibility: {
-      base: "bg-secondary-btn-bg-color hover:bg-secondary-btn-bg-hover-color text-secondary-btn-text-color border-solid border border-secondary-btn-border-color hover:secondary-btn-bg-hover-color hover:shadow-secondary-btn cursor-pointer",
+      base: "bg-secondary hover:bg-secondary-hover text-foreground border border-secondary-border hover:border-secondary-border-hover hover:shadow-secondary-btn cursor-pointer",
       selected: "bg-amber-50 border-amber-200 text-amber-700 dark:bg-amber-950/20 dark:border-amber-800 dark:text-amber-400 hover:bg-amber-100 hover:dark:bg-amber-950/30 hover:text-amber-700 hover:dark:text-amber-400 border rounded-full",
       disabled:
-        "bg-white dark:bg-[#23252F] border-border text-foreground border rounded-full opacity-40",
+        "bg-secondary border-secondary-border text-foreground border rounded-full opacity-40",
     },
   };
 

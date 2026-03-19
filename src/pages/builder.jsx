@@ -307,7 +307,7 @@ export default function Index() {
         className={cn(
           "min-h-screen",
           hasNoWallpaper(wallpaper) &&
-            "bg-background flex justify-center font-inter text-foreground selection:bg-foreground selection:text-background transition-colors duration-700",
+          "bg-background flex justify-center font-inter text-foreground selection:bg-foreground selection:text-background transition-colors duration-700",
         )}
       >
         <div
@@ -318,8 +318,8 @@ export default function Index() {
               ? "pt-24 pb-0"
               : userDetails?.template !== 4 && "py-[94px] md:py-[124px]",
             userDetails?.template !== 3 &&
-              userDetails?.template !== 4 &&
-              "max-w-[848px]",
+            userDetails?.template !== 4 &&
+            "max-w-[848px]",
           )}
         >
           {/* //HACK: Allow all templates to be free */}

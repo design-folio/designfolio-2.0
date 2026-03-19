@@ -1195,3 +1195,9 @@ body.cursor-pill-active * {
   position: relative;
   background-color: var(--background);
 }
+
+/* When a wallpaper is active, make the opaque backgrounds transparent so z-index: -1 wallpaper shows through */
+body.has-wallpaper,
+body.has-wallpaper #__next {
+  background-color: transparent !important;
+}

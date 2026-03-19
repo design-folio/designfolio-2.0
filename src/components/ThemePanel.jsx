@@ -13,6 +13,7 @@ import { twMerge } from "tailwind-merge";
 import { Badge } from "./ui/badge";
 import { SheetWrapper } from "./ui/SheetWrapper";
 import { Slider } from "./ui/slider";
+import { Switch as SwitchCanvas } from "./templates/Canvas/switch-button";
 import { AnimatePresence, motion } from "framer-motion";
 import Text from "./text";
 import {
@@ -33,6 +34,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { _updateUser } from "@/network/post-request";
 import { runThemeTransition, hasThemeSwitchEffect } from "@/hooks/use-theme-switch-audio";
+import { TEMPLATE_IDS, TEMPLATES_BY_ID, TEMPLATES_LIST } from "@/lib/templates";
 
 
 // Section display names mapping
@@ -401,28 +403,37 @@ const ThemePanel = ({
         <div className="space-y-4">
           <div className="flex items-center justify-between p-4 border border-border rounded-[16px] bg-black/[0.02] dark:bg-white/[0.02] mb-4">
             <span className="text-[13px] font-medium text-foreground">Appearance</span>
-            <div className="inline-flex items-center gap-2">
-              <span
-                className={twMerge("cursor-pointer transition-colors", (theme === 'dark' || theme === 1) ? "text-muted-foreground" : "text-foreground")}
-                onClick={() => !isMacOSTemplate && changeTheme(0)}
-              >
-                <Sun className="size-4" />
-              </span>
-              <div ref={appearanceSwitchRefLayouts} className="inline-flex">
-                <Switch
-                  checked={isMacOSTemplate ? false : (theme === 'dark' || theme === 1)}
-                  onCheckedChange={(checked) => applyThemeChange(checked, appearanceSwitchRefLayouts.current)}
-                  disabled={isMacOSTemplate}
-                  data-testid={isMobile ? "switch-theme-mode-layouts-mobile" : "switch-theme-mode-layouts"}
+            {
+              template === TEMPLATE_IDS.CANVAS ? (<div className="flex items-center gap-3">
+                <SwitchCanvas
+                  value={isMacOSTemplate ? false : (theme === 'dark' || theme === 1)}
+                  onToggle={() => !isMacOSTemplate && changeTheme((theme === 'dark' || theme === 1) ? 0 : 1)}
+                  iconOn={<Moon className="size-4" />}
+                  iconOff={<Sun className="size-4" />}
                 />
-              </div>
-              <span
-                className={twMerge("cursor-pointer transition-colors", !(theme === 'dark' || theme === 1) ? "text-muted-foreground" : "text-foreground")}
-                onClick={() => !isMacOSTemplate && changeTheme(1)}
-              >
-                <Moon className="size-4" />
-              </span>
-            </div>
+              </div>) : (<div className="inline-flex items-center gap-2">
+                <span
+                  className={twMerge("cursor-pointer transition-colors", (theme === 'dark' || theme === 1) ? "text-muted-foreground" : "text-foreground")}
+                  onClick={() => !isMacOSTemplate && changeTheme(0)}
+                >
+                  <Sun className="size-4" />
+                </span>
+                <div ref={appearanceSwitchRefLayouts} className="inline-flex">
+                  <Switch
+                    checked={isMacOSTemplate ? false : (theme === 'dark' || theme === 1)}
+                    onCheckedChange={(checked) => applyThemeChange(checked, appearanceSwitchRefLayouts.current)}
+                    disabled={isMacOSTemplate}
+                    data-testid={isMobile ? "switch-theme-mode-layouts-mobile" : "switch-theme-mode-layouts"}
+                  />
+                </div>
+                <span
+                  className={twMerge("cursor-pointer transition-colors", !(theme === 'dark' || theme === 1) ? "text-muted-foreground" : "text-foreground")}
+                  onClick={() => !isMacOSTemplate && changeTheme(1)}
+                >
+                  <Moon className="size-4" />
+                </span>
+              </div>)
+            }
           </div>
 
           <div className="text-[13px] font-medium text-muted-foreground px-1">Templates</div>

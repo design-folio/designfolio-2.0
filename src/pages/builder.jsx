@@ -41,6 +41,7 @@ import FooterSettingsPanel from "@/components/FooterSettingsPanel";
 import AiToolsWorkspace from "@/components/AiToolsWorkspace";
 import Canvas from "@/components/templates/Canvas";
 import Mono from "@/components/templates/Mono";
+import Chat from "@/components/templates/Chat";
 
 export default function Index() {
   const {
@@ -224,6 +225,7 @@ export default function Index() {
         // return <Builder1 />;
         return <Canvas isEditing={true} />;
       case 1:
+        return <Chat isEditing={true} />;
         return <Builder2 edit />;
       case 2:
         return <Minimal userDetails={userDetails} edit />;
@@ -312,7 +314,7 @@ export default function Index() {
       >
         <div
           className={cn(
-            "mx-auto",
+            "mx-auto w-full",
             userDetails?.template !== 4 && "px-2 md:px-4 lg:px-0",
             userDetails?.template === 3 || userDetails?.template === 0
               ? "pt-24 pb-0"

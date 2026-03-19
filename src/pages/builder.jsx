@@ -38,6 +38,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { getSidebarShiftWidth } from "@/lib/constant";
 import Canvas from "@/components/templates/Canvas";
 import Mono from "@/components/templates/Mono";
+import Chat from "@/components/templates/Chat";
 
 export default function Index() {
   const {
@@ -206,6 +207,7 @@ export default function Index() {
         // return <Builder1 />;
         return <Canvas isEditing={true} />;
       case 1:
+        return <Chat isEditing={true} />;
         return <Builder2 edit />;
       case 2:
         return <Minimal userDetails={userDetails} edit />;
@@ -297,16 +299,16 @@ export default function Index() {
             "min-h-screen",
             hasNoWallpaper(wallpaper) &&
             "bg-background flex justify-center font-inter text-foreground selection:bg-foreground selection:text-background transition-colors duration-700",
-          )}
-        >
-          <div
-            className={cn(
-              "mx-auto",
-              userDetails?.template !== 4 && "px-2 md:px-4 lg:px-0",
-              userDetails?.template === 3 || userDetails?.template === 0
-                ? "pt-24 pb-0"
-                : userDetails?.template !== 4 && "py-[94px] md:py-[124px]",
-              userDetails?.template !== 3 &&
+        )}
+      >
+        <div
+          className={cn(
+            "mx-auto w-full",
+            userDetails?.template !== 4 && "px-2 md:px-4 lg:px-0",
+            userDetails?.template === 3 || userDetails?.template === 0
+              ? "pt-24 pb-0"
+              : userDetails?.template !== 4 && "py-[94px] md:py-[124px]",
+            userDetails?.template !== 3 &&
               userDetails?.template !== 4 &&
               "max-w-[848px]",
             )}

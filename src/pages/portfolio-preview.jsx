@@ -12,6 +12,7 @@ import WallpaperBackground from "@/components/WallpaperBackground";
 import Canvas from "@/components/templates/Canvas";
 import Mono from "@/components/templates/Mono";
 import { TEMPLATE_IDS } from "@/lib/templates";
+import Chat from "@/components/templates/Chat";
 
 export default function Index() {
   const {
@@ -55,7 +56,8 @@ export default function Index() {
       case TEMPLATE_IDS.CANVAS:
         return <Canvas isEditing={false} preview />;
       case TEMPLATE_IDS.CHATFOLIO:
-        return <><Template2 userDetails={userDetails} preview />{ProBadge}</>;
+        return <Chat preview />;
+      // return <><Template2 userDetails={userDetails} preview />{ProBadge}</>;
       case TEMPLATE_IDS.SPOTLIGHT:
         return (
           <>
@@ -72,11 +74,20 @@ export default function Index() {
           </>
         );
       case TEMPLATE_IDS.MONO:
-        return <><Mono preview />{ProBadge}</>;
+        return (
+          <>
+            <Mono preview />
+            {ProBadge}
+          </>
+        );
       case TEMPLATE_IDS.RETRO_OS:
         return (
           <>
-            <MacOSTemplate userDetails={userDetails} edit={false} preview={false} />
+            <MacOSTemplate
+              userDetails={userDetails}
+              edit={false}
+              preview={false}
+            />
             {ProBadge}
             <Button
               text="Go Back"
@@ -89,7 +100,12 @@ export default function Index() {
           </>
         );
       default:
-        return <><Template2 userDetails={userDetails} preview />{ProBadge}</>;
+        return (
+          <>
+            <Template2 userDetails={userDetails} preview />
+            {ProBadge}
+          </>
+        );
     }
   };
 
@@ -103,13 +119,21 @@ export default function Index() {
 
   if (!userDetails && userDetailLoading) return null;
 
-  const fullWidth = template === TEMPLATE_IDS.MONO || template === TEMPLATE_IDS.RETRO_OS || template === TEMPLATE_IDS.CANVAS;
+  const fullWidth =
+    template === TEMPLATE_IDS.MONO ||
+    template === TEMPLATE_IDS.RETRO_OS ||
+    template === TEMPLATE_IDS.CANVAS;
 
   return (
     <>
-      <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
+      <WallpaperBackground
+        wallpaperUrl={wallpaperUrl}
+        effects={wallpaperEffects}
+      />
       <main className="min-h-screen">
-        <div className={`mx-auto px-2 md:px-4 lg:px-0 ${fullWidth ? "" : "max-w-[848px]"}`}>
+        <div
+          className={`mx-auto px-2 md:px-4 lg:px-0 ${fullWidth ? "" : "max-w-[848px]"}`}
+        >
           {userDetails && renderTemplate()}
         </div>
       </main>

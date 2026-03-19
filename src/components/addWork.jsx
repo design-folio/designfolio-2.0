@@ -8,7 +8,6 @@ import { Input } from "./ui/input";
 import DeleteIcon from "../../public/assets/svgs/deleteIcon.svg";
 import { useState, useRef, useEffect } from "react";
 import SimpleTiptapEditor from "./SimpleTiptapEditor";
-import { SheetWrapper } from "./ui/SheetWrapper";
 import { UnsavedChangesDialog } from "./ui/UnsavedChangesDialog";
 import { sidebars } from "@/lib/constant";
 import { WorkValidationSchema as validationSchema } from "@/lib/validationSchemas";
@@ -458,14 +457,7 @@ export default function AddWork() {
 
   return (
     <>
-      <SheetWrapper
-        open={isOpen}
-        onClose={handleCloseModal}
-        title="Work Experience"
-        width="500px"
-      >
-        {renderFormContent()}
-      </SheetWrapper>
+      {renderFormContent()}
 
       <UnsavedChangesDialog
         open={showUnsavedWarning && isOpen && !isSwitchingSidebar && pendingSidebarAction?.type === "close"}

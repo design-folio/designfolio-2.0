@@ -328,7 +328,7 @@ export default function Navbar() {
           transition: "transform 0.3s ease-out, right 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       >
-        <nav className="bg-white dark:bg-[#2A2520] border border-black/[0.08] dark:border-white/10 rounded-full shadow-sm pointer-events-auto max-w-[640px] w-full h-[62px]">
+        <nav className="bg-white dark:bg-[#2A2520] border border-black/[0.08] dark:border-white/10 rounded-full shadow-sm pointer-events-auto max-w-[640px] w-full h-[56px]">
           {navContent}
         </nav>
       </div>

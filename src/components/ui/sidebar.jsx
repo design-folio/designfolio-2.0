@@ -20,9 +20,8 @@ import {
 const SIDEBAR_COOKIE_NAME = "sidebar:state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 const SIDEBAR_WIDTH = "16rem";
-const SIDEBAR_WIDTH_MOBILE = "18rem";
+const SIDEBAR_WIDTH_MOBILE = "100svw";
 const SIDEBAR_WIDTH_ICON = "3rem";
-const SIDEBAR_KEYBOARD_SHORTCUT = "b";
 
 const SidebarContext = React.createContext(null);
 
@@ -48,7 +47,7 @@ const SidebarProvider = React.forwardRef(
     ref
   ) => {
     const isMobile = useIsMobile();
-    const [openMobile, setOpenMobile] = React.useState(false);
+    const [openMobile, _setOpenMobile] = React.useState(false);
     const [_open, _setOpen] = React.useState(defaultOpen);
     const open = openProp ?? _open;
 
@@ -65,25 +64,37 @@ const SidebarProvider = React.forwardRef(
       [setOpenProp, open]
     );
 
+    // Sync openMobile with controlled open prop when on mobile
+    React.useEffect(() => {
+      if (isMobile) _setOpenMobile(open);
+    }, [isMobile, open]);
+
+    // When mobile sheet closes, propagate back to onOpenChange
+    const setOpenMobile = React.useCallback(
+      (value) => {
+        const v = typeof value === "function" ? value(openMobile) : value;
+        _setOpenMobile(v);
+        if (!v && setOpenProp) setOpenProp(false);
+      },
+      [openMobile, setOpenProp]
+    );
+
     const toggleSidebar = React.useCallback(() => {
       return isMobile
         ? setOpenMobile((open) => !open)
         : setOpen((open) => !open);
     }, [isMobile, setOpen, setOpenMobile]);
 
+    // Close sidebar on Escape key
     React.useEffect(() => {
-      const handleKeyDown = (event) => {
-        if (
-          event.key === SIDEBAR_KEYBOARD_SHORTCUT &&
-          (event.metaKey || event.ctrlKey)
-        ) {
-          event.preventDefault();
-          toggleSidebar();
+      const handleKeyDown = (e) => {
+        if (e.key === "Escape" && open) {
+          setOpen(false);
         }
       };
-      window.addEventListener("keydown", handleKeyDown);
-      return () => window.removeEventListener("keydown", handleKeyDown);
-    }, [toggleSidebar]);
+      document.addEventListener("keydown", handleKeyDown);
+      return () => document.removeEventListener("keydown", handleKeyDown);
+    }, [open, setOpen]);
 
     const state = open ? "expanded" : "collapsed";
 
@@ -191,7 +202,7 @@ const Sidebar = React.forwardRef(
         />
         <div
           className={cn(
-            "duration-200 fixed inset-y-0 z-10 hidden h-svh w-[--sidebar-width] transition-[left,right,width] ease-linear md:flex",
+            "duration-200 fixed inset-y-0 z-50 hidden h-svh w-[--sidebar-width] transition-[left,right,width] ease-linear md:flex",
             side === "left"
               ? "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]"
               : "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
@@ -336,7 +347,7 @@ const SidebarContent = React.forwardRef(({ className, ...props }, ref) => {
       ref={ref}
       data-sidebar="content"
       className={cn(
-        "flex min-h-0 flex-1 flex-col gap-2 overflow-auto group-data-[collapsible=icon]:overflow-hidden",
+        "flex min-h-0 flex-1 flex-col gap-2 overflow-auto group-data-[collapsible=icon]:overflow-hidden custom-thin-scrollbar",
         className
       )}
       {...props}

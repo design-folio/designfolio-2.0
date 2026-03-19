@@ -11,7 +11,6 @@ import DragHandle from "./DragHandle";
 import React, { useEffect, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { Badge } from "./ui/badge";
-import { SheetWrapper } from "./ui/SheetWrapper";
 import { Slider } from "./ui/slider";
 import { Switch as SwitchCanvas } from "./templates/Canvas/switch-button";
 import { AnimatePresence, motion } from "framer-motion";
@@ -113,8 +112,6 @@ const ThemePanel = ({
   updateWallpaperEffect,
 }) => {
   const {
-    activeSidebar,
-    closeSidebar,
     registerUnsavedChangesChecker,
     unregisterUnsavedChangesChecker,
     userDetails,
@@ -125,7 +122,6 @@ const ThemePanel = ({
   const [isCompressing, setIsCompressing] = useState(false);
   const isMobileOrTablet = useIsMobile();
   const [isDarkWallpapers, setIsDarkWallpapers] = useState(theme === 'dark' || theme === 1);
-  const show = activeSidebar === sidebars.theme;
 
   const isMacOSTemplate = template === 4;
   const useThemeSwitchEffect = hasThemeSwitchEffect(template);
@@ -254,10 +250,6 @@ const ThemePanel = ({
       unregisterUnsavedChangesChecker(sidebars.theme);
     };
   }, [registerUnsavedChangesChecker, unregisterUnsavedChangesChecker]);
-
-  const handleClose = () => {
-    closeSidebar();
-  };
 
   // Sync isDarkWallpapers with theme prop changes
   useEffect(() => {
@@ -473,7 +465,7 @@ const ThemePanel = ({
                     </button>
 
                     {isSelected && (
-                      <div className="absolute -bottom-1 -left-1 bg-df-orange-color text-primary-foreground rounded-full p-1.5 shadow-sm flex items-center justify-center border-[2px] border-sidebar-background z-10">
+                      <div className="absolute -bottom-1 -left-1 bg-df-orange-color text-primary-foreground rounded-full p-1.5 shadow-sm flex items-center justify-center border-[2px] border-sidebar z-10">
                         <Check size={14} strokeWidth={3.5} />
                       </div>
                     )}
@@ -781,16 +773,7 @@ const ThemePanel = ({
 
 
 
-  return (
-    <SheetWrapper
-      open={show}
-      onClose={handleClose}
-      title="Theme Settings"
-      width="400px"
-    >
-      {renderContent(isMobileOrTablet)}
-    </SheetWrapper>
-  );
+  return renderContent(isMobileOrTablet);
 };
 
 export default ThemePanel;

@@ -11,7 +11,10 @@ import { useRouter } from "next/router";
 import { useTheme } from "next-themes";
 import React, { useEffect, useRef, useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { modals, sidebars } from "@/lib/constant";
+import { modals } from "@/lib/constant";
+import AppSidebar from "@/components/AppSidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { getSidebarShiftWidth } from "@/lib/constant";
 import MacOSWindowShell from "@/components/templates/MacOSDock/MacOSWindowShell";
 import MacOSTemplate from "@/components/comp/MacOSTemplate";
 import BuilderShell from "@/components/BuilderShell";
@@ -35,9 +38,13 @@ export default function Index() {
     setShowUpgradeModal,
     setUpgradeModalUnhideProject,
     domainDetails,
+    activeSidebar,
+    closeSidebar,
   } = useGlobalContext();
   const [projectDetails, setProjectDetails] = useState(null);
   const initializedRef = useRef(false);
+  const lastSidebarRef = useRef(null);
+  if (activeSidebar) lastSidebarRef.current = activeSidebar;
   const isMobile = useIsMobile();
 
   // Enable the userDetails query — required on every authenticated page
@@ -114,28 +121,17 @@ export default function Index() {
     }
   }, [router.query.id, userDetails, refetchProjectDetail]);
 
-  // Manage body margin-right based on active sidebar to prevent layout shift during switching (desktop only)
+  // Compensate for scrollbar gutter when sidebar opens so content doesn't shift.
   useEffect(() => {
-    // Only apply margin on desktop, not mobile
-    if (isMobile) {
-      return;
+    if (activeSidebar && !isMobile) {
+      const el = document.documentElement;
+      const scrollbarWidth = window.innerWidth - el.clientWidth;
+      el.style.paddingRight = scrollbarWidth > 0 ? `${scrollbarWidth}px` : "";
+    } else {
+      document.documentElement.style.paddingRight = "";
     }
-
-    const body = document.body;
-    body.style.transition = "margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1)";
-
-    let marginWidth = "0px";
-    if (activeSidebar === sidebars.work || activeSidebar === sidebars.review) {
-      marginWidth = "500px";
-    } else if (activeSidebar === sidebars.theme) {
-      marginWidth = "320px";
-    }
-
-    body.style.marginRight = marginWidth;
-
     return () => {
-      body.style.marginRight = "0px";
-      body.style.transition = "";
+      document.documentElement.style.paddingRight = "";
     };
   }, [activeSidebar, isMobile]);
 
@@ -160,6 +156,15 @@ export default function Index() {
   const template = userDetails.template;
   const isMacOS = template === TEMPLATE_IDS.RETRO_OS;
   const isEmbed = router.query.embed === "1";
+
+  const sidebarProviderProps = {
+    open: !!activeSidebar,
+    onOpenChange: (open) => !open && closeSidebar(true),
+    style: {
+      "--sidebar-width": getSidebarShiftWidth(lastSidebarRef.current) || "400px",
+    },
+    defaultOpen: false,
+  };
   const projectTitle = projectDetails?.project?.title || "Project";
   const currentProject = projectDetails?.project;
 
@@ -237,48 +242,51 @@ export default function Index() {
   }
 
   return (
-    <>
-      <WallpaperBackground
-        wallpaperUrl={wallpaperUrl}
-        effects={wallpaperEffects}
-      />
+    <SidebarProvider {...sidebarProviderProps}>
+      <div className="flex-1 min-w-0">
+        <WallpaperBackground
+          wallpaperUrl={wallpaperUrl}
+          effects={wallpaperEffects}
+        />
 
-      {isMacOS ? (
-        <>
-          {/* Full macOS desktop as background — menu bar, dock, widgets */}
-          <MacOSTemplate userDetails={userDetails} edit />
-          {/* Project window floats on top as a fixed overlay */}
-          <MacOSWindowShell
-            title={projectTitle}
-            projectUrl={getProjectUrl({
-              username: userDetails?.username,
-              baseDomain: process.env.NEXT_PUBLIC_BASE_DOMAIN,
-              customDomain: domainDetails?.customDomain?.domain,
-              isCustomVerified: domainDetails?.customDomain?.isCustomVerified,
-              projectId: router.query.id,
-            })}
-            tabs={[
-              { label: "Preview", href: `/project/${router.query.id}/preview` },
-              { label: "Editor", href: `/project/${router.query.id}/editor` },
-            ]}
-            activeTab="Editor"
-            canManage={!!currentProject}
-            isHidden={!!currentProject?.hidden}
-            hasPassword={!!currentProject?.protected}
-            projectId={currentProject?._id}
-            initialPassword={currentProject?.password || ""}
-            onDelete={handleDeleteProject}
-            onToggleVisibility={handleToggleVisibility}
-          >
-            {editorContent}
-          </MacOSWindowShell>
-          {/* All modals, sidebars, panels — same as builder page */}
-          <BuilderShell />
-        </>
-      ) : (
-        <main className={cn("min-h-screen")}>{editorContent}</main>
-      )}
-    </>
+        {isMacOS ? (
+          <>
+            {/* Full macOS desktop as background — menu bar, dock, widgets */}
+            <MacOSTemplate userDetails={userDetails} edit />
+            {/* Project window floats on top as a fixed overlay */}
+            <MacOSWindowShell
+              title={projectTitle}
+              projectUrl={getProjectUrl({
+                username: userDetails?.username,
+                baseDomain: process.env.NEXT_PUBLIC_BASE_DOMAIN,
+                customDomain: domainDetails?.customDomain?.domain,
+                isCustomVerified: domainDetails?.customDomain?.isCustomVerified,
+                projectId: router.query.id,
+              })}
+              tabs={[
+                { label: "Preview", href: `/project/${router.query.id}/preview` },
+                { label: "Editor", href: `/project/${router.query.id}/editor` },
+              ]}
+              activeTab="Editor"
+              canManage={!!currentProject}
+              isHidden={!!currentProject?.hidden}
+              hasPassword={!!currentProject?.protected}
+              projectId={currentProject?._id}
+              initialPassword={currentProject?.password || ""}
+              onDelete={handleDeleteProject}
+              onToggleVisibility={handleToggleVisibility}
+            >
+              {editorContent}
+            </MacOSWindowShell>
+            {/* All modals, dialogs — same as builder page */}
+            <BuilderShell />
+          </>
+        ) : (
+          <main className={cn("min-h-screen")}>{editorContent}</main>
+        )}
+      </div>
+      <AppSidebar />
+    </SidebarProvider>
   );
 }
 

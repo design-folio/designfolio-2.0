@@ -6,14 +6,10 @@ import { useTheme } from "next-themes";
 import Builder1 from "@/components/builder";
 import BottomTask from "@/components/bottomTask";
 import Modal from "@/components/modal";
-import { modals, sidebars } from "@/lib/constant";
+import { modals } from "@/lib/constant";
 import Onboarding from "@/components/onboarding-old";
 import OnboardingNewUser from "@/components/onboarding";
-import AddProject from "@/components/addProject";
 import DeleteProject from "@/components/deleteProject";
-import AddReview from "@/components/addReview";
-import AddTools from "@/components/addTools";
-import AddWork from "@/components/addWork";
 import AddResume from "@/components/addResume";
 import AddSocial from "@/components/addSocial";
 import AddPortfolioLinks from "@/components/addPortfolioLinks";
@@ -23,7 +19,6 @@ import { Feedefy } from "@feedefy/react";
 import { useRouter } from "next/router";
 import { _resendOTP } from "@/network/get-request";
 import AddUsername from "@/components/addUsername";
-import AddAbout from "@/components/addAbout";
 import Builder2 from "@/components/Builder2";
 import Minimal from "@/components/comp/Minimal";
 import Portfolio from "@/components/comp/Portfolio";
@@ -37,8 +32,10 @@ import { ReplacePortfolioDialog } from "@/components/ui/ReplacePortfolioDialog";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { CourseCard } from "@/components/CourceCard";
 import WallpaperBackground from "@/components/WallpaperBackground";
-import FooterSettingsPanel from "@/components/FooterSettingsPanel";
 import AiToolsWorkspace from "@/components/AiToolsWorkspace";
+import AppSidebar from "@/components/AppSidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { getSidebarShiftWidth } from "@/lib/constant";
 import Canvas from "@/components/templates/Canvas";
 import Mono from "@/components/templates/Mono";
 
@@ -58,6 +55,7 @@ export default function Index() {
     wallpaperUrl,
     wallpaperEffects,
     activeSidebar,
+    closeSidebar,
     showUnsavedWarning,
     handleConfirmDiscardSidebar,
     handleCancelDiscardSidebar,
@@ -73,6 +71,27 @@ export default function Index() {
   const isMobile = useIsMobile();
   const { setTheme, resolvedTheme } = useTheme();
   const themeBeforeAiToolsRef = useRef(null);
+  // Keep last known sidebar width so closing animation has a non-zero right offset
+  const lastSidebarRef = useRef(null);
+  if (activeSidebar) lastSidebarRef.current = activeSidebar;
+
+  // Lock page scroll when sidebar is open on desktop.
+  // Compensates for scrollbar gutter width so content doesn't shift (same trick
+  // Compensate for scrollbar gutter when sidebar opens so content doesn't shift.
+  // The sidebar panel (position:fixed, bg-sidebar, z-50) covers the native scrollbar
+  // visually, so there's no double-scrollbar flicker while the page stays scrollable.
+  useEffect(() => {
+    if (activeSidebar && !isMobile) {
+      const el = document.documentElement;
+      const scrollbarWidth = window.innerWidth - el.clientWidth;
+      el.style.paddingRight = scrollbarWidth > 0 ? `${scrollbarWidth}px` : "";
+    } else {
+      document.documentElement.style.paddingRight = "";
+    }
+    return () => {
+      document.documentElement.style.paddingRight = "";
+    };
+  }, [activeSidebar, isMobile]);
 
   // AI tools view has no dark mode UI: force light when entering, restore when leaving
   useEffect(() => {
@@ -88,43 +107,6 @@ export default function Index() {
       }
     }
   }, [router.query?.view, setTheme, resolvedTheme]);
-
-  // Manage body margin-right based on active sidebar to prevent layout shift during switching (desktop only)
-  useEffect(() => {
-    // Only apply margin on desktop, not mobile
-    if (isMobile) {
-      return;
-    }
-
-    const body = document.body;
-    body.style.transition = "margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1)";
-
-    let marginWidth = "0px";
-    if (
-      activeSidebar === sidebars.work ||
-      activeSidebar === sidebars.review ||
-      activeSidebar === sidebars.project
-    ) {
-      marginWidth = "500px";
-    } else if (
-      activeSidebar === sidebars.theme ||
-      activeSidebar === sidebars.tools
-    ) {
-      marginWidth = "400px";
-    } else if (
-      activeSidebar === sidebars.footer ||
-      activeSidebar === sidebars.about
-    ) {
-      marginWidth = "320px";
-    }
-
-    body.style.marginRight = marginWidth;
-
-    return () => {
-      body.style.marginRight = "0px";
-      body.style.transition = "";
-    };
-  }, [activeSidebar, isMobile]);
 
   useEffect(() => {
     if (userDetailsIsState) {
@@ -193,15 +175,15 @@ export default function Index() {
       case modals.onBoardingNewUser:
         return <OnboardingNewUser />;
       case modals.project:
-        return null; // Project is handled by SheetWrapper/sidebar in AddProject component
+        return null; // Handled by AppSidebar
       case modals.deleteProject:
         return <DeleteProject />;
       case modals.review:
-        return null; // Review modal is handled by CustomSheet/Sheet in AddReview component
+        return null; // Handled by AppSidebar
       case modals.tools:
-        return null; // Tools is handled by SheetWrapper/sidebar in AddTools component
+        return null; // Handled by AppSidebar
       case modals.work:
-        return null; // Work modal is handled by CustomSheet/Sheet in AddWork component
+        return null; // Handled by AppSidebar
       case modals.resume:
         return <AddResume />;
       case modals.socialMedia:
@@ -211,7 +193,7 @@ export default function Index() {
       case modals.username:
         return <AddUsername />;
       case modals.about:
-        return null; // About modal is handled by CustomSheet/Sheet in AddAbout component
+        return null; // Handled by AppSidebar
     }
   };
 
@@ -238,158 +220,161 @@ export default function Index() {
     }
   };
 
+  const sidebarProviderProps = {
+    open: !!activeSidebar,
+    onOpenChange: (open) => !open && closeSidebar(true),
+    style: {
+      "--sidebar-width": getSidebarShiftWidth(lastSidebarRef.current) || "400px",
+    },
+    defaultOpen: false,
+  };
+
   // Logged-in: AI tools live inside builder via ?view=ai-tools (no navigation)
   if (router.query?.view === "ai-tools") {
     return (
-      <>
-        <AiToolsWorkspace embedInBuilder />
-        <Modal
-          show={
-            showModal &&
-            showModal !== modals.aiProject &&
-            showModal !== modals.review &&
-            showModal !== modals.work &&
-            showModal !== modals.project
-          }
-        >
-          {modalContent()}
-        </Modal>
-        <Modal show={modals.aiProject == showModal} className={"md:block"}>
-          <CreateAiProject openModal={openModal} />
-        </Modal>
-        <AddReview />
-        <AddWork />
-        <AddAbout />
-        <AddTools />
-        <AddProject />
-        <UnsavedChangesDialog
-          open={
-            showUnsavedWarning &&
-            isSwitchingSidebar &&
-            pendingSidebarAction?.type === "open"
-          }
-          onOpenChange={(open) => {
-            if (!open) handleCancelDiscardSidebar();
-          }}
-          onConfirmDiscard={handleConfirmDiscardSidebar}
-          title="Unsaved Changes"
-          description="You have unsaved changes. Are you sure you want to switch sidebars and discard them?"
-        />
-        <ReplacePortfolioDialog
-          open={pendingReplaceAwaitingConfirmation}
-          onOpenChange={setPendingReplaceAwaitingConfirmation}
-          onKeepCurrent={discardPendingPortfolio}
-          onReplace={applyPendingPortfolio}
-        />
-        {isClient && userDetails && (
-          <Feedefy
-            projectId="a72769ea-5ab2-4ac9-81bd-1abe180d4b66"
-            data-feedefy
-            data-feedefy-userid={userDetails?.email}
+      <SidebarProvider {...sidebarProviderProps}>
+        <div className="flex-1 min-w-0">
+          <AiToolsWorkspace embedInBuilder />
+          <Modal
+            show={
+              showModal &&
+              showModal !== modals.aiProject &&
+              showModal !== modals.review &&
+              showModal !== modals.work &&
+              showModal !== modals.project
+            }
+          >
+            {modalContent()}
+          </Modal>
+          <Modal show={modals.aiProject == showModal} className={"md:block"}>
+            <CreateAiProject openModal={openModal} />
+          </Modal>
+          <UnsavedChangesDialog
+            open={
+              showUnsavedWarning &&
+              isSwitchingSidebar &&
+              pendingSidebarAction?.type === "open"
+            }
+            onOpenChange={(open) => {
+              if (!open) handleCancelDiscardSidebar();
+            }}
+            onConfirmDiscard={handleConfirmDiscardSidebar}
+            title="Unsaved Changes"
+            description="You have unsaved changes. Are you sure you want to switch sidebars and discard them?"
           />
-        )}
-        <FooterSettingsPanel />
-      </>
+          <ReplacePortfolioDialog
+            open={pendingReplaceAwaitingConfirmation}
+            onOpenChange={setPendingReplaceAwaitingConfirmation}
+            onKeepCurrent={discardPendingPortfolio}
+            onReplace={applyPendingPortfolio}
+          />
+          {isClient && userDetails && (
+            <Feedefy
+              projectId="a72769ea-5ab2-4ac9-81bd-1abe180d4b66"
+              data-feedefy
+              data-feedefy-userid={userDetails?.email}
+            />
+          )}
+        </div>
+        <AppSidebar />
+      </SidebarProvider>
     );
   }
 
   return (
-    <>
-      <WallpaperBackground
-        wallpaperUrl={wallpaperUrl}
-        effects={
-          userDetails?.template === 4
-            ? { ...(wallpaperEffects || {}), motion: false }
-            : wallpaperEffects
-        }
-      />
-      <main
-        className={cn(
-          "min-h-screen",
-          hasNoWallpaper(wallpaper) &&
-          "bg-background flex justify-center font-inter text-foreground selection:bg-foreground selection:text-background transition-colors duration-700",
-        )}
-      >
-        <div
+    <SidebarProvider {...sidebarProviderProps}>
+      <div className="flex-1 min-w-0">
+        <WallpaperBackground
+          wallpaperUrl={wallpaperUrl}
+          effects={
+            userDetails?.template === 4
+              ? { ...(wallpaperEffects || {}), motion: false }
+              : wallpaperEffects
+          }
+        />
+        <main
           className={cn(
-            "mx-auto",
-            userDetails?.template !== 4 && "px-2 md:px-4 lg:px-0",
-            userDetails?.template === 3 || userDetails?.template === 0
-              ? "pt-24 pb-0"
-              : userDetails?.template !== 4 && "py-[94px] md:py-[124px]",
-            userDetails?.template !== 3 &&
-            userDetails?.template !== 4 &&
-            "max-w-[848px]",
+            "min-h-screen",
+            hasNoWallpaper(wallpaper) &&
+            "bg-background flex justify-center font-inter text-foreground selection:bg-foreground selection:text-background transition-colors duration-700",
           )}
         >
-          {/* //HACK: Allow all templates to be free */}
-          {/* {userDetails && !userDetails?.pro && <ProWarning />} */}
-          {userDetails && (
-            <>
-              {isLoadingTemplate ? (
-                <div className="flex items-center justify-center min-h-[calc(100vh-126px)]">
-                  <Loader2 className="animate-spin h-8 w-8 text-df-orange-color" />
-                </div>
-              ) : (
-                renderTemplate()
-              )}
-            </>
-          )}
-          {userDetails && taskPercentage !== 100 && !template === 4 && (
-            <BottomTask />
-          )}
-        </div>
-        <Modal
-          show={
-            showModal &&
-            showModal !== modals.aiProject &&
-            showModal !== modals.review &&
-            showModal !== modals.work &&
-            showModal !== modals.project
-          }
-        >
-          {modalContent()}
-        </Modal>
-        <Modal show={modals.aiProject == showModal} className={"md:block"}>
-          <CreateAiProject openModal={openModal} />
-        </Modal>
-        <AddReview />
-        <AddWork />
-        <AddAbout />
-        <AddTools />
-        <AddProject />
-        <UnsavedChangesDialog
-          open={
-            showUnsavedWarning &&
-            isSwitchingSidebar &&
-            pendingSidebarAction?.type === "open"
-          }
-          onOpenChange={(open) => {
-            if (!open) {
-              handleCancelDiscardSidebar();
+          <div
+            className={cn(
+              "mx-auto",
+              userDetails?.template !== 4 && "px-2 md:px-4 lg:px-0",
+              userDetails?.template === 3 || userDetails?.template === 0
+                ? "pt-24 pb-0"
+                : userDetails?.template !== 4 && "py-[94px] md:py-[124px]",
+              userDetails?.template !== 3 &&
+              userDetails?.template !== 4 &&
+              "max-w-[848px]",
+            )}
+          >
+            {/* //HACK: Allow all templates to be free */}
+            {/* {userDetails && !userDetails?.pro && <ProWarning />} */}
+            {userDetails && (
+              <>
+                {isLoadingTemplate ? (
+                  <div className="flex items-center justify-center min-h-[calc(100vh-126px)]">
+                    <Loader2 className="animate-spin h-8 w-8 text-df-orange-color" />
+                  </div>
+                ) : (
+                  renderTemplate()
+                )}
+              </>
+            )}
+            {userDetails && taskPercentage !== 100 && !template === 4 && (
+              <BottomTask />
+            )}
+          </div>
+          <Modal
+            show={
+              showModal &&
+              showModal !== modals.aiProject &&
+              showModal !== modals.review &&
+              showModal !== modals.work &&
+              showModal !== modals.project
             }
-          }}
-          onConfirmDiscard={handleConfirmDiscardSidebar}
-          title="Unsaved Changes"
-          description="You have unsaved changes. Are you sure you want to switch sidebars and discard them?"
-        />
-        <ReplacePortfolioDialog
-          open={pendingReplaceAwaitingConfirmation}
-          onOpenChange={setPendingReplaceAwaitingConfirmation}
-          onKeepCurrent={discardPendingPortfolio}
-          onReplace={applyPendingPortfolio}
-        />
-        {isClient && userDetails && (
-          <Feedefy
-            projectId="a72769ea-5ab2-4ac9-81bd-1abe180d4b66"
-            data-feedefy
-            data-feedefy-userid={userDetails?.email}
-          ></Feedefy>
-        )}
-        {!isMobile && <CourseCard />}
-        <FooterSettingsPanel />
-      </main>
-    </>
+          >
+            {modalContent()}
+          </Modal>
+          <Modal show={modals.aiProject == showModal} className={"md:block"}>
+            <CreateAiProject openModal={openModal} />
+          </Modal>
+          <UnsavedChangesDialog
+            open={
+              showUnsavedWarning &&
+              isSwitchingSidebar &&
+              pendingSidebarAction?.type === "open"
+            }
+            onOpenChange={(open) => {
+              if (!open) {
+                handleCancelDiscardSidebar();
+              }
+            }}
+            onConfirmDiscard={handleConfirmDiscardSidebar}
+            title="Unsaved Changes"
+            description="You have unsaved changes. Are you sure you want to switch sidebars and discard them?"
+          />
+          <ReplacePortfolioDialog
+            open={pendingReplaceAwaitingConfirmation}
+            onOpenChange={setPendingReplaceAwaitingConfirmation}
+            onKeepCurrent={discardPendingPortfolio}
+            onReplace={applyPendingPortfolio}
+          />
+          {isClient && userDetails && (
+            <Feedefy
+              projectId="a72769ea-5ab2-4ac9-81bd-1abe180d4b66"
+              data-feedefy
+              data-feedefy-userid={userDetails?.email}
+            />
+          )}
+          {!isMobile && <CourseCard />}
+        </main>
+      </div>
+      <AppSidebar />
+    </SidebarProvider>
   );
 }
 export { getServerSideProps };

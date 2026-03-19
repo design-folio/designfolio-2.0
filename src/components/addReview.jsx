@@ -9,7 +9,6 @@ import Text from "./text";
 import DeleteIcon from "../../public/assets/svgs/deleteIcon.svg";
 import { useState, useRef, useEffect } from "react";
 import SimpleTiptapEditor from "./SimpleTiptapEditor";
-import { SheetWrapper } from "./ui/SheetWrapper";
 import { UnsavedChangesDialog } from "./ui/UnsavedChangesDialog";
 import { sidebars } from "@/lib/constant";
 import { Upload } from "lucide-react";
@@ -422,14 +421,7 @@ export default function AddReview() {
 
   return (
     <>
-      <SheetWrapper
-        open={isOpen}
-        onClose={handleCloseModal}
-        title="Add review details"
-        width="500px"
-      >
-        {renderFormContent()}
-      </SheetWrapper>
+      {renderFormContent()}
 
       <UnsavedChangesDialog
         open={showUnsavedWarning && isOpen && !isSwitchingSidebar && pendingSidebarAction?.type === "close"}

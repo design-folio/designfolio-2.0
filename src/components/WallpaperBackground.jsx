@@ -12,6 +12,16 @@ export default function WallpaperBackground({
     const rafRef = useRef(null);
     const previousWallpaperUrlRef = useRef(null); // Track actual previous URL
 
+    // Add/remove has-wallpaper class on body so CSS can make #__next transparent
+    useEffect(() => {
+        if (wallpaperUrl) {
+            document.body.classList.add("has-wallpaper");
+        } else {
+            document.body.classList.remove("has-wallpaper");
+        }
+        return () => document.body.classList.remove("has-wallpaper");
+    }, [wallpaperUrl]);
+
     // Initialize ref on mount with current wallpaper
     useEffect(() => {
         if (wallpaperUrl && !previousWallpaperUrlRef.current) {

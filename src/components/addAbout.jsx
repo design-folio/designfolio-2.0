@@ -4,7 +4,6 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useState, useRef, useEffect } from "react";
 import Text from "./text";
 import { Button } from "./ui/button";
-import { SheetWrapper } from "./ui/SheetWrapper";
 import { UnsavedChangesDialog } from "./ui/UnsavedChangesDialog";
 import { sidebars } from "@/lib/constant";
 import { AboutSchema } from "@/lib/validationSchemas";
@@ -378,14 +377,7 @@ export default function AddAbout() {
 
   return (
     <>
-      <SheetWrapper
-        open={isOpen}
-        onClose={handleCloseModal}
-        title="Edit About Me"
-        width="320px"
-      >
-        {renderFormContent()}
-      </SheetWrapper>
+      {renderFormContent()}
 
       <UnsavedChangesDialog
         open={

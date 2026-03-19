@@ -11,7 +11,7 @@
   --accent: 38 16% 88%;
   --muted: 38 14% 90%;
   --border: 38 15% 88%;
-  --sidebar: 38 22% 93%;
+  --sidebar: 0 0% 100%;
   --sidebar-accent: 38 18% 88%;
   --primary: #202937;
   --primary-foreground: #ffffff;
@@ -19,7 +19,6 @@
   --ring: 217 26% 17%;
   --sidebar-primary: 217 26% 17%;
   --sidebar-ring: 217 26% 17%;
-  --sidebar-background: #fff;
   /* Tiptap text tokens */
   --tiptap-work-paragraph: #7a736c;
   --tiptap-review-paragraph: #202937;
@@ -38,13 +37,12 @@
   --accent: 25 15% 22%;
   --muted: 25 12% 20%;
   --border: 25 12% 24%;
-  --sidebar: 25 10% 18%;
+  --sidebar: 30 14% 15%;
   --sidebar-accent: 25 15% 22%;
   --primary: #f0f0f0;
   --primary-foreground: #1a1a1a;
   --primary-hover: #ffffff;
   --sidebar-primary: 0 0% 90%;
-  --sidebar-background: #2a2520;
   --sidebar-ring: 0 0% 90%;
   /* Tiptap dark tokens (Canvas warm) */
   --tiptap-work-paragraph: #b5afa5;

@@ -7,7 +7,6 @@ import * as Yup from "yup";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { SheetWrapper } from "./ui/SheetWrapper";
 import { UnsavedChangesDialog } from "./ui/UnsavedChangesDialog";
 import { sidebars } from "@/lib/constant";
 import { motion } from "framer-motion";
@@ -204,7 +203,7 @@ export default function AddTools() {
               )}
             </div>
 
-            <div className="flex gap-2 py-3 px-6 border-t border-border justify-end flex-shrink-0 bg-sidebar-background">
+            <div className="flex gap-2 py-3 px-6 border-t border-border justify-end flex-shrink-0 bg-sidebar">
               <Button variant="outline" type="button" onClick={() => closeSidebar()}>
                 Cancel
               </Button>
@@ -220,14 +219,7 @@ export default function AddTools() {
 
   return (
     <>
-      <SheetWrapper
-        open={isOpen}
-        onClose={() => closeSidebar()}
-        title="Edit Stack"
-        width="400px"
-      >
-        {renderFormContent()}
-      </SheetWrapper>
+      {renderFormContent()}
 
       <UnsavedChangesDialog
         open={

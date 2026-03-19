@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/buttonNew";
 import { useGlobalContext } from "@/context/globalContext";
 import ChangePassword from "@/components/changePassword";
@@ -8,9 +8,12 @@ import DefaultDomain from "@/components/defaultDomain";
 import Transaction from "@/components/transaction";
 import MemoLeftArrow from "@/components/icons/LeftArrow";
 import Link from "next/link";
-import { sidebars } from "@/lib/constant";
 import { TEMPLATE_IDS } from "@/lib/templates";
 import WallpaperBackground from "@/components/WallpaperBackground";
+import AppSidebar from "@/components/AppSidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { getSidebarShiftWidth } from "@/lib/constant";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function Settings() {
   const {
@@ -22,26 +25,26 @@ export default function Settings() {
     wallpaperUrl,
     wallpaperEffects,
     activeSidebar,
+    closeSidebar,
   } = useGlobalContext();
 
+  const isMobile = useIsMobile();
+  const lastSidebarRef = useRef(null);
+  if (activeSidebar) lastSidebarRef.current = activeSidebar;
+
+  // Compensate for scrollbar gutter when sidebar opens so content doesn't shift.
   useEffect(() => {
-    const body = document.body;
-    body.style.transition = 'margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-
-    let marginWidth = '0px';
-    if (activeSidebar === sidebars.work || activeSidebar === sidebars.review) {
-      marginWidth = '500px';
-    } else if (activeSidebar === sidebars.theme) {
-      marginWidth = '320px';
+    if (activeSidebar && !isMobile) {
+      const el = document.documentElement;
+      const scrollbarWidth = window.innerWidth - el.clientWidth;
+      el.style.paddingRight = scrollbarWidth > 0 ? `${scrollbarWidth}px` : "";
+    } else {
+      document.documentElement.style.paddingRight = "";
     }
-
-    body.style.marginRight = marginWidth;
-
     return () => {
-      body.style.marginRight = '0px';
-      body.style.transition = '';
+      document.documentElement.style.paddingRight = "";
     };
-  }, [activeSidebar]);
+  }, [activeSidebar, isMobile]);
 
   useEffect(() => {
     if (userDetailsIsState) {
@@ -77,62 +80,74 @@ export default function Settings() {
 
   const isMono = template === TEMPLATE_IDS.MONO;
 
+  const sidebarProviderProps = {
+    open: !!activeSidebar,
+    onOpenChange: (open) => !open && closeSidebar(true),
+    style: {
+      "--sidebar-width": getSidebarShiftWidth(lastSidebarRef.current) || "400px",
+    },
+    defaultOpen: false,
+  };
+
   return (
-    <>
-      <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
-      <main className="min-h-screen">
-        <div className={containerClass}>
-          {isMono && <div className="custom-dashed-t" />}
-          <div className={cardClass}>
-            <Link href="/builder">
-              <Button
-                variant="secondary"
-                className="rounded-full px-4 h-9 text-sm font-medium"
-              >
-                <MemoLeftArrow className="!size-2.5" />
-                Go Back
-              </Button>
-            </Link>
-            <div className="mt-8">
-              <DefaultDomain />
-            </div>
-          </div>
-
-          {isMono && <div className="custom-dashed-t" />}
-          <div className={`${cardClass} ${!isMono ? "mt-6" : ""}`}>
-            <CustomDomain
-              domainDetails={domainDetails}
-              fetchDomainDetails={fetchDomainDetails}
-            />
-          </div>
-
-          {userDetails?.pro && (
-            <>
-              {isMono && <div className="custom-dashed-t" />}
-              <div className={`${cardClass} ${!isMono ? "mt-6" : ""}`}>
-                <Transaction />
+    <SidebarProvider {...sidebarProviderProps}>
+      <div className="flex-1 min-w-0">
+        <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
+        <main className="min-h-screen">
+          <div className={containerClass}>
+            {isMono && <div className="custom-dashed-t" />}
+            <div className={cardClass}>
+              <Link href="/builder">
+                <Button
+                  variant="secondary"
+                  className="rounded-full px-4 h-9 text-sm font-medium"
+                >
+                  <MemoLeftArrow className="!size-2.5" />
+                  Go Back
+                </Button>
+              </Link>
+              <div className="mt-8">
+                <DefaultDomain />
               </div>
-            </>
-          )}
+            </div>
 
-          {isMono && <div className="custom-dashed-t" />}
-          <div className={`${cardClass} ${!isMono ? "mt-6" : ""}`}>
-            <div className="mt-6">
-              {userDetails?.loginMethod == 0 && (
-                <div>
-                  <ChangePassword />
+            {isMono && <div className="custom-dashed-t" />}
+            <div className={`${cardClass} ${!isMono ? "mt-6" : ""}`}>
+              <CustomDomain
+                domainDetails={domainDetails}
+                fetchDomainDetails={fetchDomainDetails}
+              />
+            </div>
+
+            {userDetails?.pro && (
+              <>
+                {isMono && <div className="custom-dashed-t" />}
+                <div className={`${cardClass} ${!isMono ? "mt-6" : ""}`}>
+                  <Transaction />
                 </div>
-              )}
-              <div className="mt-10">
-                <DeleteAccount />
+              </>
+            )}
+
+            {isMono && <div className="custom-dashed-t" />}
+            <div className={`${cardClass} ${!isMono ? "mt-6" : ""}`}>
+              <div className="mt-6">
+                {userDetails?.loginMethod == 0 && (
+                  <div>
+                    <ChangePassword />
+                  </div>
+                )}
+                <div className="mt-10">
+                  <DeleteAccount />
+                </div>
               </div>
             </div>
-          </div>
 
-          {isMono && <div className="custom-dashed-t" />}
-        </div>
-      </main>
-    </>
+            {isMono && <div className="custom-dashed-t" />}
+          </div>
+        </main>
+      </div>
+      <AppSidebar />
+    </SidebarProvider>
   );
 }
 

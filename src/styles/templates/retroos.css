@@ -9,7 +9,7 @@
   --accent: 25 35% 88%;
   --muted: 25 25% 91%;
   --border: 25 28% 86%;
-  --sidebar: 25 30% 92%;
+  --sidebar: 0 0% 100%;
   --sidebar-accent: 25 30% 88%;
   --primary: #8b5e3c;
   --primary-foreground: #ffffff;
@@ -17,5 +17,4 @@
   --ring: 25 38% 28%;
   --sidebar-primary: 25 38% 38%;
   --sidebar-ring: 25 38% 28%;
-  --sidebar-background: #fff;
 }

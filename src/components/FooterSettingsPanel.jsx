@@ -2,11 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { SheetWrapper } from "@/components/ui/SheetWrapper";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useGlobalContext } from "@/context/globalContext";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { sidebars, modals } from "@/lib/constant";
 import { Upload, X, FileText } from "lucide-react";
 import { _updateUser } from "@/network/post-request";
 import { FooterValidationSchema } from "@/lib/validationSchemas";
@@ -16,15 +12,11 @@ import { toast } from "react-toastify";
 
 const FooterSettingsPanel = () => {
   const {
-    activeSidebar,
     closeSidebar,
     userDetails,
     updateCache,
     setUserDetails,
-    openModal,
   } = useGlobalContext();
-  const isMobileOrTablet = useIsMobile();
-  const show = activeSidebar === sidebars.footer;
 
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingResume, setIsUploadingResume] = useState(false);
@@ -117,7 +109,7 @@ const FooterSettingsPanel = () => {
     };
   };
 
-  const renderContent = (isMobile) => {
+  const renderContent = () => {
     return (
       <Formik
         key={userDetails?._id || 'footer-form'}
@@ -426,7 +418,7 @@ const FooterSettingsPanel = () => {
                 </div>
               </div>
             </div>
-            <div className="p-6 border-t border-border bg-sidebar-background sticky bottom-0">
+            <div className="p-6 border-t border-border bg-sidebar sticky bottom-0">
               <Button
                 type="submit"
                 form="footerForm"
@@ -442,29 +434,7 @@ const FooterSettingsPanel = () => {
     );
   };
 
-  if (isMobileOrTablet) {
-    return (
-      <Sheet open={show} onOpenChange={(open) => !open && handleClose()}>
-        <SheetContent className="w-full sm:max-w-md p-0 flex flex-col h-full">
-          <div className="flex items-center justify-between p-6 border-b border-border pt-[16px] pb-[16px]">
-            <h2 className="text-lg font-semibold">Footer Settings</h2>
-          </div>
-          {renderContent(true)}
-        </SheetContent>
-      </Sheet>
-    );
-  }
-
-  return (
-    <SheetWrapper
-      open={show}
-      onClose={handleClose}
-      title="Footer Settings"
-      width="320px"
-    >
-      {renderContent(false)}
-    </SheetWrapper>
-  );
+  return renderContent();
 };
 
 export default FooterSettingsPanel;

@@ -1,10 +1,13 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import Analytics from "@/components/analytics";
 import { useGlobalContext } from "@/context/globalContext";
 import { getServerSideProps } from "@/lib/loggedInServerSideProps";
-import { sidebars } from "@/lib/constant";
 import { TEMPLATE_IDS } from "@/lib/templates";
 import WallpaperBackground from "@/components/WallpaperBackground";
+import AppSidebar from "@/components/AppSidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { getSidebarShiftWidth } from "@/lib/constant";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 function AnalyticsPage() {
   const {
@@ -14,28 +17,27 @@ function AnalyticsPage() {
     setWallpaper,
     setIsUserDetailsFromCache,
     userDetailsIsState,
-    activeSidebar
+    activeSidebar,
+    closeSidebar,
   } = useGlobalContext();
 
-  // Manage body margin-right based on active sidebar to prevent layout shift during switching
+  const isMobile = useIsMobile();
+  const lastSidebarRef = useRef(null);
+  if (activeSidebar) lastSidebarRef.current = activeSidebar;
+
+  // Compensate for scrollbar gutter when sidebar opens so content doesn't shift.
   useEffect(() => {
-    const body = document.body;
-    body.style.transition = 'margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-
-    let marginWidth = '0px';
-    if (activeSidebar === sidebars.work || activeSidebar === sidebars.review) {
-      marginWidth = '500px';
-    } else if (activeSidebar === sidebars.theme) {
-      marginWidth = '320px';
+    if (activeSidebar && !isMobile) {
+      const el = document.documentElement;
+      const scrollbarWidth = window.innerWidth - el.clientWidth;
+      el.style.paddingRight = scrollbarWidth > 0 ? `${scrollbarWidth}px` : "";
+    } else {
+      document.documentElement.style.paddingRight = "";
     }
-
-    body.style.marginRight = marginWidth;
-
     return () => {
-      body.style.marginRight = '0px';
-      body.style.transition = '';
+      document.documentElement.style.paddingRight = "";
     };
-  }, [activeSidebar]);
+  }, [activeSidebar, isMobile]);
 
   useEffect(() => {
     if (userDetailsIsState) {
@@ -43,9 +45,8 @@ function AnalyticsPage() {
     } else {
       setIsUserDetailsFromCache(true);
     }
-  }, [userDetailsIsState, setIsUserDetailsFromCache]);
+  }, []);
 
-  // Restore wallpaper from userDetails when component mounts or userDetails changes
   useEffect(() => {
     if (userDetails?.wallpaper !== undefined) {
       const wp = userDetails.wallpaper;
@@ -78,17 +79,29 @@ function AnalyticsPage() {
     }
   })();
 
+  const sidebarProviderProps = {
+    open: !!activeSidebar,
+    onOpenChange: (open) => !open && closeSidebar(true),
+    style: {
+      "--sidebar-width": getSidebarShiftWidth(lastSidebarRef.current) || "400px",
+    },
+    defaultOpen: false,
+  };
+
   return (
-    <>
-      <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
-      <div className={containerClass}>
-        {template === TEMPLATE_IDS.MONO && <div className="custom-dashed-t" />}
-        <div className={cardClass}>
-          <Analytics />
+    <SidebarProvider {...sidebarProviderProps}>
+      <div className="flex-1 min-w-0">
+        <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
+        <div className={containerClass}>
+          {template === TEMPLATE_IDS.MONO && <div className="custom-dashed-t" />}
+          <div className={cardClass}>
+            <Analytics />
+          </div>
+          {template === TEMPLATE_IDS.MONO && <div className="custom-dashed-t" />}
         </div>
-        {template === TEMPLATE_IDS.MONO && <div className="custom-dashed-t" />}
       </div>
-    </>
+      <AppSidebar />
+    </SidebarProvider>
   );
 }
 

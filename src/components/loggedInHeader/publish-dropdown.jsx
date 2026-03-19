@@ -95,24 +95,25 @@ export function PublishDropdown({ onClose }) {
         <AnimatePresence>
           {isOpen && (
             <motion.div
+              key="publish-dropdown"
               initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0, transition: { duration: 0.15, ease: "easeOut" } }}
-              exit={{ opacity: 0, y: -4, transition: { duration: 0.15, ease: "easeIn" } }}
+              exit={{ opacity: 0, y: -4, pointerEvents: "none", transition: { duration: 0.15, ease: "easeIn" } }}
               className="absolute right-0 top-full mt-2 z-50 min-w-[260px]"
               onKeyDown={(e) => e.key === "Escape" && setIsOpen(false)}
               style={{ transformOrigin: "top right" }}
             >
-              <div className="w-full rounded-2xl border border-border bg-card p-1.5 shadow-lg overflow-hidden">
+              <div className="w-full rounded-2xl border border-black/10 dark:border-white/10 bg-white dark:bg-[#2A2520] p-1.5 shadow-lg overflow-hidden">
                 <div className="flex flex-col">
                   <div className="flex items-center justify-between gap-3 px-3 py-2">
                     <div
                       className="flex flex-col gap-0.5 overflow-hidden cursor-pointer"
                       onClick={() => window.open(`https://${domain}`, "_blank")}
                     >
-                      <span className="text-[13px] font-medium text-foreground truncate hover:underline underline-offset-2">
+                      <span className="text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] truncate hover:underline underline-offset-2">
                         {domain}
                       </span>
-                      <span className="text-[12px] text-muted-foreground">
+                      <span className="text-[12px] text-[#7A736C] dark:text-[#9E9893]">
                         {latestPublishDate ? `Updated ${formattedDate}` : "Not published yet"}
                       </span>
                     </div>
@@ -120,15 +121,15 @@ export function PublishDropdown({ onClose }) {
                       variant="ghost"
                       size="icon"
                       onClick={handleCopy}
-                      className="h-8 w-8 rounded-xl shrink-0 cursor-pointer text-muted-foreground hover:bg-secondary/50 hover:text-foreground relative"
+                      className="h-8 w-8 rounded-xl shrink-0 cursor-pointer text-[#7A736C] dark:text-[#9E9893] hover:bg-black/5 dark:hover:bg-white/5 hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7] relative"
                     >
                       <AnimatePresence mode="wait" initial={false}>
                         {copied ? (
-                          <motion.div key="check" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} transition={{ duration: 0.15 }} className="absolute inset-0 flex items-center justify-center text-foreground">
+                          <motion.div key="check" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} transition={{ duration: 0.15 }} className="absolute inset-0 flex items-center justify-center text-[#1A1A1A] dark:text-[#F0EDE7] ">
                             <Check className="h-4 w-4" />
                           </motion.div>
                         ) : (
-                          <motion.div key="copy" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} transition={{ duration: 0.15 }} className="absolute inset-0 flex items-center justify-center">
+                          <motion.div key="copy" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} transition={{ duration: 0.15 }} className="absolute inset-0 flex items-center justify-center cursor-pointer">
                             <Copy className="h-4 w-4" />
                           </motion.div>
                         )}
@@ -140,10 +141,10 @@ export function PublishDropdown({ onClose }) {
                     onClick={handlePublish}
                     disabled={isPublishing}
                     className={cn(
-                      "relative z-10 flex w-full items-center justify-center px-3 h-[44px] text-[13px] font-medium rounded-xl transition-colors duration-150 focus:outline-none cursor-pointer mt-1",
+                      "relative z-10 flex w-full items-center justify-center px-3 h-[44px] text-[13px] font-medium rounded-xl transition-colors duration-150 focus:outline-none mt-1 cursor-pointer",
                       isPublishing
-                        ? "bg-secondary/50 text-muted-foreground"
-                        : "bg-secondary/50 hover:bg-secondary text-foreground"
+                        ? "bg-black/5 dark:bg-white/5 text-[#7A736C] dark:text-[#9E9893]"
+                        : "bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-[#1A1A1A] dark:text-[#F0EDE7]"
                     )}
                   >
                     {isPublishing ? "Updating…" : "Update changes"}

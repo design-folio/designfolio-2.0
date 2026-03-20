@@ -4,7 +4,7 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useState, useRef, useEffect } from "react";
 import Text from "./text";
 import { Button } from "./ui/button";
-import { SheetWrapper } from "./ui/SheetWrapper";
+import { Textarea } from "./ui/textarea";
 import { UnsavedChangesDialog } from "./ui/UnsavedChangesDialog";
 import { sidebars } from "@/lib/constant";
 import { AboutSchema } from "@/lib/validationSchemas";
@@ -31,7 +31,6 @@ export default function AddAbout() {
   const [loading, setLoading] = useState(false);
   const [editingValues, setEditingValues] = useState(null);
   const [uploadingImageIndex, setUploadingImageIndex] = useState(null);
-  const [uploadingStickerIndex, setUploadingStickerIndex] = useState(null);
   const [lastCompressedTarget, setLastCompressedTarget] = useState(null);
   const formikRef = useRef(null);
 
@@ -89,7 +88,6 @@ export default function AddAbout() {
       formikRef.current.setFieldValue(fieldName, updatedItems);
       setLastCompressedTarget(null);
       if (type === 'image') setUploadingImageIndex(null);
-      else setUploadingStickerIndex(null);
     }
   }, [compressionProgress, compressedImage]);
 
@@ -126,17 +124,12 @@ export default function AddAbout() {
   const resetState = () => {
     setEditingValues(null);
     setUploadingImageIndex(null);
-    setUploadingStickerIndex(null);
     setLastCompressedTarget(null);
   };
 
   const resetStateAndClose = () => {
     resetState();
     closeSidebar(true);
-  };
-
-  const handleCloseModal = () => {
-    closeSidebar();
   };
 
   const handleCancel = () => {
@@ -182,39 +175,11 @@ export default function AddAbout() {
     }
   };
 
-  // Handle sticker upload
-  const handleStickerUpload = async (file, index, setFieldValue, currentStickers) => {
-    setUploadingStickerIndex(index);
-    setLastCompressedTarget({ type: 'sticker', index });
-
-    const maxSizeInBytes = 2 * 1024 * 1024;
-    if (file.size > maxSizeInBytes) {
-      compress(file);
-    } else {
-      const updatedStickers = [...currentStickers];
-      updatedStickers[index] = {
-        src: URL.createObjectURL(file),
-        isDefault: false,
-        file: file
-      };
-      setFieldValue("pegboardStickers", updatedStickers);
-      setUploadingStickerIndex(null);
-      setLastCompressedTarget(null);
-    }
-  };
-
   // Handle image delete
   const handleImageDelete = (index, setFieldValue, currentImages) => {
     const updatedImages = [...currentImages];
     updatedImages[index] = null;
     setFieldValue("pegboardImages", updatedImages);
-  };
-
-  // Handle sticker delete
-  const handleStickerDelete = (index, setFieldValue, currentStickers) => {
-    const updatedStickers = [...currentStickers];
-    updatedStickers[index] = null;
-    setFieldValue("pegboardStickers", updatedStickers);
   };
 
   const renderFormContent = () => (
@@ -294,7 +259,7 @@ export default function AddAbout() {
         }
       }}
     >
-      {({ isSubmitting, errors, touched, values, setFieldValue }) => {
+      {({ errors, touched, values, setFieldValue }) => {
         useEffect(() => {
           setEditingValues(values);
         }, [values]);
@@ -314,12 +279,12 @@ export default function AddAbout() {
                 </div>
                 <Field name="description">
                   {({ field }) => (
-                    <textarea
+                    <Textarea
                       {...field}
                       id="description"
                       autoComplete="off"
                       placeholder="Tell visitors about yourself..."
-                      className={`mt-2 min-h-[120px] flex w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 ${errors.description && touched.description ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                      className={`mt-2 min-h-[120px] ${errors.description && touched.description ? "border-destructive focus-visible:ring-destructive" : ""}`}
                     />
                   )}
                 </Field>
@@ -347,22 +312,7 @@ export default function AddAbout() {
                 />
               </div>
 
-              {/* Stickers Section */}
-              <div className="mt-6">
-                <ImageGrid
-                  items={values.pegboardStickers}
-                  maxItems={2}
-                  onUpload={(file, index) =>
-                    handleStickerUpload(file, index, setFieldValue, values.pegboardStickers)
-                  }
-                  onDelete={(index) =>
-                    handleStickerDelete(index, setFieldValue, values.pegboardStickers)
-                  }
-                  type="sticker"
-                  label="Stickers"
-                  uploadingIndex={uploadingStickerIndex}
-                />
-              </div>
+              {/* Stickers Section — temporarily hidden */}
             </div>
 
             {/* Footer */}
@@ -378,14 +328,7 @@ export default function AddAbout() {
 
   return (
     <>
-      <SheetWrapper
-        open={isOpen}
-        onClose={handleCloseModal}
-        title="Edit About Me"
-        width="320px"
-      >
-        {renderFormContent()}
-      </SheetWrapper>
+      {renderFormContent()}
 
       <UnsavedChangesDialog
         open={

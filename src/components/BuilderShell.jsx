@@ -1,11 +1,6 @@
 import Modal from '@/components/modal';
-import { modals, sidebars } from '@/lib/constant';
-import AddReview from '@/components/addReview';
-import AddWork from '@/components/addWork';
-import AddAbout from '@/components/addAbout';
-import AddProject from '@/components/addProject';
+import { modals } from '@/lib/constant';
 import DeleteProject from '@/components/deleteProject';
-import AddTools from '@/components/addTools';
 import AddResume from '@/components/addResume';
 import AddSocial from '@/components/addSocial';
 import AddPortfolioLinks from '@/components/addPortfolioLinks';
@@ -15,19 +10,15 @@ import Onboarding from '@/components/onboarding-old';
 import OnboardingNewUser from '@/components/onboarding';
 import { UnsavedChangesDialog } from '@/components/ui/UnsavedChangesDialog';
 import { ReplacePortfolioDialog } from '@/components/ui/ReplacePortfolioDialog';
-import FooterSettingsPanel from '@/components/FooterSettingsPanel';
-import BottomTask from '@/components/bottomTask';
-import ProWarning from '@/components/proWarning';
 import { CourseCard } from '@/components/CourceCard';
 import { Feedefy } from '@feedefy/react';
 import { useGlobalContext } from '@/context/globalContext';
 import useClient from '@/hooks/useClient';
 import { useIsMobile } from '@/hooks/use-mobile';
 
-export default function BuilderShell({ showProWarning = false, hideCourseCard = false }) {
+export default function BuilderShell({ hideCourseCard = false }) {
   const {
     showModal,
-    taskPercentage,
     userDetails,
     showUnsavedWarning,
     handleConfirmDiscardSidebar,
@@ -50,15 +41,15 @@ export default function BuilderShell({ showProWarning = false, hideCourseCard = 
       case modals.onBoardingNewUser:
         return <OnboardingNewUser />;
       case modals.project:
-        return null; // Project is handled by SheetWrapper/sidebar in AddProject component
+        return null; // Handled by AppSidebar
       case modals.deleteProject:
         return <DeleteProject />;
       case modals.review:
-        return null;
+        return null; // Handled by AppSidebar
       case modals.tools:
-        return null; // Tools is handled by SheetWrapper/sidebar in AddTools component
+        return null; // Handled by AppSidebar
       case modals.work:
-        return null;
+        return null; // Handled by AppSidebar
       case modals.resume:
         return <AddResume />;
       case modals.socialMedia:
@@ -68,7 +59,7 @@ export default function BuilderShell({ showProWarning = false, hideCourseCard = 
       case modals.username:
         return <AddUsername />;
       case modals.about:
-        return null;
+        return null; // Handled by AppSidebar
       default:
         return null;
     }
@@ -76,21 +67,12 @@ export default function BuilderShell({ showProWarning = false, hideCourseCard = 
 
   return (
     <>
-      {/* //HACK: Allow all templates to be free */}
-      {/* {showProWarning && userDetails && !userDetails?.pro && <ProWarning />} */}
-
       <Modal show={showModal && showModal !== modals.aiProject && showModal !== modals.review && showModal !== modals.work && showModal !== modals.project}>
         {modalContent()}
       </Modal>
       <Modal show={modals.aiProject === showModal} className="md:block">
         <CreateAiProject />
       </Modal>
-
-      <AddReview />
-      <AddWork />
-      <AddAbout />
-      <AddTools />
-      <AddProject />
 
       <UnsavedChangesDialog
         open={showUnsavedWarning && isSwitchingSidebar && pendingSidebarAction?.type === 'open'}
@@ -114,9 +96,7 @@ export default function BuilderShell({ showProWarning = false, hideCourseCard = 
         />
       )}
 
-      {/* {userDetails && taskPercentage !== 100 && !template === 4 && <BottomTask />} */}
       {!isMobile && !hideCourseCard && <CourseCard />}
-      <FooterSettingsPanel />
     </>
   );
 }

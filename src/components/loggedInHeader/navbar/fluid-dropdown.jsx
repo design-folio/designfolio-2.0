@@ -89,6 +89,7 @@ export function FluidDropdown() {
         <AnimatePresence>
           {isOpen && (
             <motion.div
+              key="fluid-dropdown"
               initial={{ opacity: 0, y: -4 }}
               animate={{
                 opacity: 1,
@@ -98,6 +99,7 @@ export function FluidDropdown() {
               exit={{
                 opacity: 0,
                 y: -4,
+                pointerEvents: "none",
                 transition: { duration: 0.15, ease: "easeIn" },
               }}
               className="absolute -left-1.5 top-full mt-2 z-50 min-w-[200px]"

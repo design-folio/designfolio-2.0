@@ -203,7 +203,7 @@ export default function ProjectInfo({
     return (
       <div className="flex flex-col gap-3 w-full">
         {/* Toolbar card: Back + editing controls */}
-        <div className="bg-white/80 dark:bg-[#2A2520]/80 backdrop-blur-md rounded-[24px] border border-[#E5D7C4] dark:border-white/10 py-2 px-4 flex justify-between items-center w-full">
+        <div className="bg-white/80 dark:bg-[#2A2520]/80 backdrop-blur-md rounded-[24px] border border-[#E5D7C4] dark:border-white/10 py-2 px-4 flex justify-between items-center w-full relative z-10">
           {!isMacOS ? (
             <button
               onClick={handleBack}
@@ -247,7 +247,7 @@ export default function ProjectInfo({
                     icon={isPassword ? <LockIcon className="stroke-bg-df-icon-color cursor-pointer" /> : <LockOpenIcon className="stroke-bg-df-icon-color cursor-pointer" />}
                     customClass="p-2.5"
                   />
-                  <div className={`pt-2 origin-top-right absolute z-20 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${popoverMenu === popovers.password ? "opacity-100 scale-100" : "opacity-0 scale-90 pointer-events-none"}`}>
+                  <div className={`pt-2 origin-top-right absolute z-50 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${popoverMenu === popovers.password ? "opacity-100 scale-100" : "opacity-0 scale-90 pointer-events-none"}`}>
                     <div className="w-[350px] md:w-[386px] bg-popover-bg-color rounded-2xl shadow-lg border-[5px] border-popover-border-color p-2">
                       <Formik
                         initialValues={{ password: password }}
@@ -441,7 +441,7 @@ export default function ProjectInfo({
                       icon={isPassword ? <LockIcon className="stroke-bg-df-icon-color cursor-pointer" /> : <LockOpenIcon className="stroke-bg-df-icon-color cursor-pointer" />}
                       customClass="p-2.5"
                     />
-                    <div className={`pt-2 origin-top-right absolute z-20 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${popoverMenu === popovers.password ? "opacity-100 scale-100" : "opacity-0 scale-90 pointer-events-none"}`}>
+                    <div className={`pt-2 origin-top-right absolute z-50 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${popoverMenu === popovers.password ? "opacity-100 scale-100" : "opacity-0 scale-90 pointer-events-none"}`}>
                       <div className="w-[350px] md:w-[386px] bg-popover-bg-color rounded-2xl shadow-lg border-[5px] border-popover-border-color p-2">
                         <Formik
                           initialValues={{ password: password }}
@@ -679,7 +679,7 @@ export default function ProjectInfo({
                 />
 
                 <div
-                  className={`pt-2 origin-top-right absolute z-20 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${popoverMenu === popovers.password
+                  className={`pt-2 origin-top-right absolute z-50 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${popoverMenu === popovers.password
                     ? "opacity-100 scale-100"
                     : "opacity-0 scale-90 pointer-events-none"
                     }`}

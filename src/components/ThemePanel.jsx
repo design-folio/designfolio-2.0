@@ -11,8 +11,65 @@ import DragHandle from "./DragHandle";
 import React, { useEffect, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { Badge } from "./ui/badge";
-import { SheetWrapper } from "./ui/SheetWrapper";
+
+function TemplateCard({ tmpl, isSelected, onChange }) {
+  return (
+    <div className="flex flex-col gap-3 items-center">
+      <div className="relative w-full">
+        <button
+          onClick={() => onChange(tmpl.id)}
+          className={twMerge(
+            "w-full aspect-square rounded-[24px] transition-all focus:outline-none cursor-pointer group",
+            isSelected
+              ? "border-[2.5px] border-df-orange-color p-1.5"
+              : "border-[2.5px] border-transparent p-1.5 hover:bg-black/5 dark:hover:bg-white/5"
+          )}
+        >
+          <div
+            className={twMerge(
+              "w-full h-full rounded-[14px] overflow-hidden transition-all shadow-sm border border-black/5 dark:border-white/5 relative pointer-events-none",
+              isSelected ? "bg-accent" : "bg-card group-hover:shadow-md"
+            )}
+          >
+            <div className="absolute inset-0 p-3 flex flex-col gap-2 opacity-40">
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 rounded-full bg-black/20 dark:bg-white/20" />
+                <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
+              </div>
+              <div className="w-full h-12 mt-1 rounded-md bg-black/10 dark:bg-white/10" />
+              <div className="flex gap-2 mt-auto">
+                <div className="w-full h-8 rounded-md bg-black/10 dark:bg-white/10" />
+                <div className="w-full h-8 rounded-md bg-black/10 dark:bg-white/10" />
+              </div>
+            </div>
+          </div>
+        </button>
+
+        {isSelected && (
+          <div className="absolute -bottom-1 -left-1 bg-df-orange-color text-primary-foreground rounded-full p-1.5 shadow-sm flex items-center justify-center border-[2px] border-sidebar z-10 pointer-events-none">
+            <Check size={14} strokeWidth={3.5} />
+          </div>
+        )}
+      </div>
+
+      <div className="flex items-center gap-1.5 pointer-events-none">
+        <span
+          className={twMerge(
+            "text-[14px] text-center transition-colors font-medium",
+            isSelected ? "text-primary" : "text-muted-foreground"
+          )}
+        >
+          {tmpl.item}
+        </span>
+        {tmpl.isNew && (
+          <Badge className="bg-[#EE7F70] text-white text-[10px] font-medium px-1.5 py-0">New</Badge>
+        )}
+      </div>
+    </div>
+  );
+}
 import { Slider } from "./ui/slider";
+import { Switch as SwitchCanvas } from "./templates/Canvas/switch-button";
 import { AnimatePresence, motion } from "framer-motion";
 import Text from "./text";
 import {
@@ -33,6 +90,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { _updateUser } from "@/network/post-request";
 import { runThemeTransition, hasThemeSwitchEffect } from "@/hooks/use-theme-switch-audio";
+import { TEMPLATE_IDS, TEMPLATES_BY_ID, TEMPLATES_LIST } from "@/lib/templates";
 
 
 // Section display names mapping
@@ -111,8 +169,6 @@ const ThemePanel = ({
   updateWallpaperEffect,
 }) => {
   const {
-    activeSidebar,
-    closeSidebar,
     registerUnsavedChangesChecker,
     unregisterUnsavedChangesChecker,
     userDetails,
@@ -123,7 +179,6 @@ const ThemePanel = ({
   const [isCompressing, setIsCompressing] = useState(false);
   const isMobileOrTablet = useIsMobile();
   const [isDarkWallpapers, setIsDarkWallpapers] = useState(theme === 'dark' || theme === 1);
-  const show = activeSidebar === sidebars.theme;
 
   const isMacOSTemplate = template === 4;
   const useThemeSwitchEffect = hasThemeSwitchEffect(template);
@@ -252,10 +307,6 @@ const ThemePanel = ({
       unregisterUnsavedChangesChecker(sidebars.theme);
     };
   }, [registerUnsavedChangesChecker, unregisterUnsavedChangesChecker]);
-
-  const handleClose = () => {
-    closeSidebar();
-  };
 
   // Sync isDarkWallpapers with theme prop changes
   useEffect(() => {
@@ -401,87 +452,49 @@ const ThemePanel = ({
         <div className="space-y-4">
           <div className="flex items-center justify-between p-4 border border-border rounded-[16px] bg-black/[0.02] dark:bg-white/[0.02] mb-4">
             <span className="text-[13px] font-medium text-foreground">Appearance</span>
-            <div className="inline-flex items-center gap-2">
-              <span
-                className={twMerge("cursor-pointer transition-colors", (theme === 'dark' || theme === 1) ? "text-muted-foreground" : "text-foreground")}
-                onClick={() => !isMacOSTemplate && changeTheme(0)}
-              >
-                <Sun className="size-4" />
-              </span>
-              <div ref={appearanceSwitchRefLayouts} className="inline-flex">
-                <Switch
-                  checked={isMacOSTemplate ? false : (theme === 'dark' || theme === 1)}
-                  onCheckedChange={(checked) => applyThemeChange(checked, appearanceSwitchRefLayouts.current)}
-                  disabled={isMacOSTemplate}
-                  data-testid={isMobile ? "switch-theme-mode-layouts-mobile" : "switch-theme-mode-layouts"}
+            {
+              template === TEMPLATE_IDS.CANVAS ? (<div className="flex items-center gap-3">
+                <SwitchCanvas
+                  value={isMacOSTemplate ? false : (theme === 'dark' || theme === 1)}
+                  onToggle={() => !isMacOSTemplate && changeTheme((theme === 'dark' || theme === 1) ? 0 : 1)}
+                  iconOn={<Moon className="size-4" />}
+                  iconOff={<Sun className="size-4" />}
                 />
-              </div>
-              <span
-                className={twMerge("cursor-pointer transition-colors", !(theme === 'dark' || theme === 1) ? "text-muted-foreground" : "text-foreground")}
-                onClick={() => !isMacOSTemplate && changeTheme(1)}
-              >
-                <Moon className="size-4" />
-              </span>
-            </div>
+              </div>) : (<div className="inline-flex items-center gap-2">
+                <span
+                  className={twMerge("cursor-pointer transition-colors", (theme === 'dark' || theme === 1) ? "text-muted-foreground" : "text-foreground")}
+                  onClick={() => !isMacOSTemplate && changeTheme(0)}
+                >
+                  <Sun className="size-4" />
+                </span>
+                <div ref={appearanceSwitchRefLayouts} className="inline-flex">
+                  <Switch
+                    checked={isMacOSTemplate ? false : (theme === 'dark' || theme === 1)}
+                    onCheckedChange={(checked) => applyThemeChange(checked, appearanceSwitchRefLayouts.current)}
+                    disabled={isMacOSTemplate}
+                    data-testid={isMobile ? "switch-theme-mode-layouts-mobile" : "switch-theme-mode-layouts"}
+                  />
+                </div>
+                <span
+                  className={twMerge("cursor-pointer transition-colors", !(theme === 'dark' || theme === 1) ? "text-muted-foreground" : "text-foreground")}
+                  onClick={() => !isMacOSTemplate && changeTheme(1)}
+                >
+                  <Moon className="size-4" />
+                </span>
+              </div>)
+            }
           </div>
 
           <div className="text-[13px] font-medium text-muted-foreground px-1">Templates</div>
           <div className="grid grid-cols-2 gap-x-4 gap-y-6 pb-4">
-            {templates.map((tmpl) => {
-              const isSelected = template === tmpl.id;
-              return (
-                <div key={tmpl.value} className="flex flex-col gap-3 items-center">
-                  <div className="relative w-full">
-                    <button
-                      onClick={() => changeTemplate(tmpl.id)}
-                      className={twMerge(
-                        "w-full aspect-square rounded-[24px] transition-all focus:outline-none cursor-pointer group",
-                        isSelected
-                          ? "border-[2.5px] border-df-orange-color p-1.5"
-                          : "border-[2.5px] border-transparent p-1.5 hover:bg-black/5 dark:hover:bg-white/5"
-                      )}
-                    >
-                      <div className={twMerge(
-                        "w-full h-full rounded-[14px] overflow-hidden transition-all shadow-sm border border-black/5 dark:border-white/5 relative",
-                        isSelected
-                          ? "bg-accent"
-                          : "bg-card group-hover:shadow-md"
-                      )}>
-                        <div className="absolute inset-0 p-3 flex flex-col gap-2 opacity-40">
-                          <div className="flex items-center gap-2">
-                            <div className="w-5 h-5 rounded-full bg-black/20 dark:bg-white/20" />
-                            <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
-                          </div>
-                          <div className="w-full h-12 mt-1 rounded-md bg-black/10 dark:bg-white/10" />
-                          <div className="flex gap-2 mt-auto">
-                            <div className="w-full h-8 rounded-md bg-black/10 dark:bg-white/10" />
-                            <div className="w-full h-8 rounded-md bg-black/10 dark:bg-white/10" />
-                          </div>
-                        </div>
-                      </div>
-                    </button>
-
-                    {isSelected && (
-                      <div className="absolute -bottom-1 -left-1 bg-df-orange-color text-primary-foreground rounded-full p-1.5 shadow-sm flex items-center justify-center border-[2px] border-sidebar-background z-10">
-                        <Check size={14} strokeWidth={3.5} />
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="flex items-center gap-1.5">
-                    <span className={twMerge(
-                      "text-[14px] text-center transition-colors font-medium",
-                      isSelected ? "text-primary" : "text-muted-foreground"
-                    )}>
-                      {tmpl.item}
-                    </span>
-                    {tmpl.isNew && (
-                      <Badge className="bg-[#EE7F70] text-white text-[10px] font-medium px-1.5 py-0">New</Badge>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
+            {templates.map((tmpl) => (
+              <TemplateCard
+                key={tmpl.value}
+                tmpl={tmpl}
+                isSelected={template === tmpl.id}
+                onChange={changeTemplate}
+              />
+            ))}
           </div>
         </div>
       </TabsContent>
@@ -770,16 +783,7 @@ const ThemePanel = ({
 
 
 
-  return (
-    <SheetWrapper
-      open={show}
-      onClose={handleClose}
-      title="Theme Settings"
-      width="400px"
-    >
-      {renderContent(isMobileOrTablet)}
-    </SheetWrapper>
-  );
+  return renderContent(isMobileOrTablet);
 };
 
 export default ThemePanel;

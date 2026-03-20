@@ -14,7 +14,6 @@ import { _updateUser } from '@/network/post-request';
 import { usePostHogEvent } from '@/hooks/usePostHogEvent';
 import { POSTHOG_EVENT_NAMES } from '@/lib/posthogEventNames';
 import posthog from 'posthog-js';
-import { SheetWrapper } from './ui/SheetWrapper';
 import { UnsavedChangesDialog } from './ui/UnsavedChangesDialog';
 import { sidebars } from '@/lib/constant';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -139,13 +138,7 @@ export default function AddProject() {
 
   return (
     <>
-      <SheetWrapper
-        open={isOpen}
-        onClose={() => closeSidebar()}
-        title="Add Case Study"
-        width="500px"
-      >
-        <Formik
+      <Formik
           innerRef={formikRef}
           initialValues={{
             description: '',
@@ -322,7 +315,7 @@ export default function AddProject() {
                         transition={{ duration: 0.2 }}
                         className="overflow-hidden"
                       >
-                        <div className="relative px-1">
+                        <div className="relative p-0.5">
                           <Field name="password">
                             {({ field }) => (
                               <Input
@@ -331,12 +324,12 @@ export default function AddProject() {
                                 type={showEye ? 'text' : 'password'}
                                 placeholder="Password"
                                 autoComplete="new-password"
-                                className={errors.password && touched.password ? 'border-destructive focus-visible:ring-destructive' : ''}
+                                className={`pr-10 ${errors.password && touched.password ? 'border-destructive focus-visible:ring-destructive' : ''}`}
                               />
                             )}
                           </Field>
                           <div
-                            className="absolute top-[10px] right-4 cursor-pointer"
+                            className="absolute top-[10px] right-3 cursor-pointer"
                             onClick={() => {
                               setShowEye(prev => !prev);
                               validateField('password');
@@ -356,7 +349,7 @@ export default function AddProject() {
                 </div>
               </div>
 
-              <div className="flex gap-2 py-3 px-6 border-t border-border justify-end flex-shrink-0 bg-sidebar-background">
+              <div className="flex gap-2 py-3 px-6 border-t border-border justify-end flex-shrink-0 bg-sidebar">
                 <Button variant="outline" type="button" onClick={() => closeSidebar()}>
                   Cancel
                 </Button>
@@ -366,8 +359,7 @@ export default function AddProject() {
               </div>
             </Form>
           )}
-        </Formik>
-      </SheetWrapper>
+      </Formik>
 
       <UnsavedChangesDialog
         open={

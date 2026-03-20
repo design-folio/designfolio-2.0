@@ -125,7 +125,7 @@ export default function AppSidebar() {
       className="border-l border-border"
     >
       <SidebarHeader className="flex flex-row items-center justify-between px-6 border-b border-border py-4">
-        <h2 className="text-lg font-semibold">{title}</h2>
+        <h2 className=" text-[15px] font-medium">{title}</h2>
         <Button
           variant="ghost"
           size="icon"

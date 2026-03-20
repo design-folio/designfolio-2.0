@@ -315,7 +315,7 @@ export default function AddProject() {
                         transition={{ duration: 0.2 }}
                         className="overflow-hidden"
                       >
-                        <div className="relative px-1">
+                        <div className="relative p-0.5">
                           <Field name="password">
                             {({ field }) => (
                               <Input
@@ -324,12 +324,12 @@ export default function AddProject() {
                                 type={showEye ? 'text' : 'password'}
                                 placeholder="Password"
                                 autoComplete="new-password"
-                                className={errors.password && touched.password ? 'border-destructive focus-visible:ring-destructive' : ''}
+                                className={`pr-10 ${errors.password && touched.password ? 'border-destructive focus-visible:ring-destructive' : ''}`}
                               />
                             )}
                           </Field>
                           <div
-                            className="absolute top-[10px] right-4 cursor-pointer"
+                            className="absolute top-[10px] right-3 cursor-pointer"
                             onClick={() => {
                               setShowEye(prev => !prev);
                               validateField('password');

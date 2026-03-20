@@ -40,6 +40,7 @@ import {
   Trash2,
   Search,
   ChevronsUpDown,
+  X,
 } from "lucide-react";
 import {
   AtSignIcon,
@@ -49,6 +50,7 @@ import {
 } from "lucide-animated";
 import { motion, AnimatePresence } from "framer-motion";
 import { AnimatedThemeToggler } from "./animated-theme-toggler";
+import SimpleTiptapRenderer from "@/components/SimpleTiptapRenderer";
 import { useRouter } from "next/router";
 import { useGlobalContext } from "@/context/globalContext";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
@@ -119,6 +121,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
     useState(false);
   const [isProjectPasswordEnabled, setIsProjectPasswordEnabled] =
     useState(false);
+  const [lightboxImage, setLightboxImage] = useState(null);
   const mappedProjects = useMemo(
     () =>
       (userDetails?.projects || []).map((project, index) => ({
@@ -174,7 +177,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
         year: String(exp.startYear || ""),
         company: exp.company || "",
         role: exp.role || "",
-        description: extractText(exp.description || ""),
+        description: exp.description || "",
         raw: exp,
       })),
     [userDetails?.experiences],
@@ -201,6 +204,18 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
   const avatarFallbackText = useMemo(
     () => getInitials(displayName, "U"),
     [displayName],
+  );
+
+  const sectionOrder = useMemo(
+    () =>
+      userDetails?.sectionOrder || [
+        "tools",
+        "projects",
+        "works",
+        "reviews",
+        "about",
+      ],
+    [userDetails?.sectionOrder],
   );
 
   const allTools = [
@@ -731,6 +746,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
           </p>
         </motion.div>
 
+        <div style={{ order: sectionOrder.indexOf('works') }}>
         <motion.div
           variants={itemVariants}
           className="custom-dashed-t"
@@ -855,55 +871,24 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                         className="overflow-hidden"
                       >
                         <div className="pb-4 pl-7 pr-4">
-                          <motion.p
-                            variants={{
-                              hidden: { opacity: 0 },
-                              show: {
-                                opacity: 1,
-                                transition: {
-                                  staggerChildren: 0.015,
-                                },
-                              },
-                            }}
-                            initial="hidden"
-                            animate="show"
+                          <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.3 }}
                             className="text-[#7A736C] dark:text-[#B5AFA5] text-[15px] leading-relaxed break-words whitespace-normal"
                           >
-                            {(exp.description || "")
-                              .split(" ")
-                              .map((word, wordIndex) => (
-                                <span
-                                  key={wordIndex}
-                                  className="inline-block whitespace-nowrap"
-                                >
-                                  {word.split("").map((char, charIndex) => (
-                                    <motion.span
-                                      key={charIndex}
-                                      variants={{
-                                        hidden: {
-                                          opacity: 0,
-                                          filter: "blur(10px)",
-                                        },
-                                        show: {
-                                          opacity: 1,
-                                          filter: "blur(0px)",
-                                        },
-                                      }}
-                                      transition={{ duration: 0.3 }}
-                                      className="inline-block"
-                                    >
-                                      {char}
-                                    </motion.span>
-                                  ))}
-                                  {/* Add space after each word except the last one */}
-                                  {wordIndex <
-                                    (exp.description || "").split(" ").length -
-                                    1 && (
-                                      <span className="inline-block">&nbsp;</span>
-                                    )}
-                                </span>
-                              ))}
-                          </motion.p>
+                            {typeof exp.description === 'object' && exp.description?.type === 'doc' ? (
+                              <SimpleTiptapRenderer
+                                content={exp.description}
+                                mode="work"
+                                enableBulletList
+                                noCardStyle
+                                className="rounded-none shadow-none"
+                              />
+                            ) : (
+                              <p>{typeof exp.description === 'string' ? exp.description : extractText(exp.description)}</p>
+                            )}
+                          </motion.div>
                         </div>
                       </motion.div>
                     )}
@@ -913,7 +898,9 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
             </div>
           )}
         </motion.div>
+        </div>
 
+        <div style={{ order: sectionOrder.indexOf('projects') }}>
         <motion.div
           variants={itemVariants}
           className="custom-dashed-t"
@@ -1236,7 +1223,9 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
             </>
           )}
         </motion.div>
+        </div>
 
+        <div style={{ order: sectionOrder.indexOf('reviews') }}>
         <motion.div
           variants={itemVariants}
           className="custom-dashed-t"
@@ -1411,7 +1400,9 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
             </div>
           )}
         </motion.div>
+        </div>
 
+        <div style={{ order: sectionOrder.indexOf('about') }}>
         <motion.div
           variants={itemVariants}
           className="custom-dashed-t"
@@ -1442,7 +1433,8 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
             <motion.div
               initial={{ rotate: -8, x: -120, y: 0 }}
               whileHover={{ rotate: -2, scale: 1.1, zIndex: 50 }}
-              className="absolute w-32 h-40 rounded-xl overflow-hidden border-4 border-white dark:border-[#2A2520] shadow-lg z-0"
+              onClick={() => setLightboxImage(storyImages[0])}
+              className="absolute w-32 h-40 rounded-xl overflow-hidden border-4 border-white dark:border-[#2A2520] shadow-lg z-0 cursor-pointer"
             >
               <img
                 src={storyImages[0]}
@@ -1453,7 +1445,8 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
             <motion.div
               initial={{ rotate: 12, x: -40, y: 15 }}
               whileHover={{ rotate: 5, scale: 1.1, zIndex: 50 }}
-              className="absolute w-36 h-36 rounded-xl overflow-hidden border-4 border-white dark:border-[#2A2520] shadow-lg z-10"
+              onClick={() => setLightboxImage(storyImages[1])}
+              className="absolute w-36 h-36 rounded-xl overflow-hidden border-4 border-white dark:border-[#2A2520] shadow-lg z-10 cursor-pointer"
             >
               <img
                 src={storyImages[1]}
@@ -1464,7 +1457,8 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
             <motion.div
               initial={{ rotate: -5, x: 40, y: -10 }}
               whileHover={{ rotate: 0, scale: 1.1, zIndex: 50 }}
-              className="absolute w-32 h-40 rounded-xl overflow-hidden border-4 border-white dark:border-[#2A2520] shadow-lg z-20"
+              onClick={() => setLightboxImage(storyImages[2])}
+              className="absolute w-32 h-40 rounded-xl overflow-hidden border-4 border-white dark:border-[#2A2520] shadow-lg z-20 cursor-pointer"
             >
               <img
                 src={storyImages[2]}
@@ -1475,7 +1469,8 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
             <motion.div
               initial={{ rotate: 8, x: 120, y: 20 }}
               whileHover={{ rotate: 3, scale: 1.1, zIndex: 50 }}
-              className="absolute w-36 h-36 rounded-xl overflow-hidden border-4 border-white dark:border-[#2A2520] shadow-lg z-30"
+              onClick={() => setLightboxImage(storyImages[3])}
+              className="absolute w-36 h-36 rounded-xl overflow-hidden border-4 border-white dark:border-[#2A2520] shadow-lg z-30 cursor-pointer"
             >
               <img
                 src={storyImages[3]}
@@ -1494,7 +1489,9 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               ))}
           </div>
         </motion.div>
+        </div>
 
+        <div style={{ order: sectionOrder.indexOf('tools') }}>
         <motion.div
           variants={itemVariants}
           className="custom-dashed-t"
@@ -1703,7 +1700,9 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
             </div>
           )}
         </motion.div>
+        </div>
 
+        <div style={{ order: 10 }}>
         <motion.div
           variants={itemVariants}
           className="custom-dashed-t"
@@ -1977,7 +1976,9 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
             </motion.div>
           )}
         </motion.div>
+        </div>
 
+        <div style={{ order: 11 }}>
         <motion.div
           variants={itemVariants}
           className="custom-dashed-t"
@@ -2097,7 +2098,39 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
             )}
           </div>
         </motion.div>
+        </div>
       </div>
+
+      {/* Lightbox Overlay */}
+      <AnimatePresence>
+        {lightboxImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 md:p-8"
+            onClick={() => setLightboxImage(null)}
+          >
+            <button
+              onClick={() => setLightboxImage(null)}
+              className="absolute top-4 right-4 z-[110] w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center transition-colors"
+            >
+              <X className="w-5 h-5 text-white" />
+            </button>
+            <motion.img
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              src={lightboxImage}
+              alt="Full view"
+              className="max-w-full max-h-full rounded-2xl object-contain shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

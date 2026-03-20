@@ -10,23 +10,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useGlobalContext } from "@/context/globalContext";
 import { modals, sidebars } from "@/lib/constant";
+import { CanvasSectionControls, CanvasSectionButton } from "./CanvasSectionControls";
 import { _updateUser } from "@/network/post-request";
 import ProjectLock from "@/components/projectLock";
 import { useRouter } from "next/router";
-import {
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import {
-  arrayMove,
-  sortableKeyboardCoordinates,
-  useSortable,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import SortableModal from "@/components/SortableModal";
-import DragHandle from "@/components/DragHandle";
 
 const getHref = (id, isEditing, isPreview) => {
   if (isEditing) return `/project/${id}/editor`;
@@ -45,35 +32,35 @@ function ProjectCard({ project, isEditing, isPreview, onNavigate, onDelete }) {
           <Button
             variant="outline"
             size="sm"
-            className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
+            className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] cursor-pointer"
             onClick={(e) => {
               e.stopPropagation();
               onNavigate(getHref(project._id, isEditing, isPreview));
             }}
           >
-            <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+            <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7] pointer-events-none" />
           </Button>
           <Button
             variant="outline"
             size="sm"
-            className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-red-50 dark:hover:bg-red-950/30 hover:border-red-200 dark:hover:border-red-900/50 hover:text-red-600 dark:hover:text-red-400"
+            className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-red-50 dark:hover:bg-red-950/30 hover:border-red-200 dark:hover:border-red-900/50 hover:text-red-600 dark:hover:text-red-400 cursor-pointer"
             onClick={(e) => {
               e.stopPropagation();
               onDelete(project);
             }}
           >
-            <Trash2 className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+            <Trash2 className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7] pointer-events-none" />
           </Button>
         </div>
       )}
-      <div className="rounded-2xl overflow-hidden aspect-[4/3] border border-black/5 dark:border-white/10 bg-[#F5F5F5] dark:bg-[#1A1A1A]">
+      <div className="rounded-2xl overflow-hidden aspect-[4/3] border border-black/5 dark:border-white/10 bg-[#F5F5F5] dark:bg-[#1A1A1A] pointer-events-none">
         <img
           src={project?.thumbnail?.url}
           alt={project?.title || "project image"}
           className="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-105"
         />
       </div>
-      <div>
+      <div className="pointer-events-none">
         <h3 className="text-base font-medium text-[#1A1A1A] dark:text-[#F0EDE7] mb-2 leading-snug line-clamp-2">
           {project?.title}
         </h3>
@@ -87,42 +74,6 @@ function ProjectCard({ project, isEditing, isPreview, onNavigate, onDelete }) {
 
 const MemoizedProjectCard = React.memo(ProjectCard);
 
-function SortableProjectItem({ project }) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: project._id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-    zIndex: isDragging ? 9999 : 1,
-  };
-
-  return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className={`flex justify-between gap-4 items-center rounded-xl border border-[#E5D7C4] dark:border-white/10 bg-white dark:bg-[#2A2520] p-3 ${
-        isDragging ? "relative shadow-lg" : ""
-      }`}
-    >
-      <div className="flex-1 min-w-0">
-        <p className="text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] truncate">
-          {project?.title || "Untitled project"}
-        </p>
-      </div>
-      <div className="flex-shrink-0">
-        <DragHandle listeners={listeners} attributes={attributes} size="sm" />
-      </div>
-    </div>
-  );
-}
 
 function ProjectsEmptyState({ isEditing, openModal, openSidebar }) {
   return (
@@ -194,7 +145,6 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
   } = useGlobalContext();
   const router = useRouter();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [showProjectsRearrangeModal, setShowProjectsRearrangeModal] = useState(false);
 
   const { hiddenSections, projects } = userDetails || {};
   const sectionId = "works";
@@ -239,37 +189,6 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
     [isSectionHidden, hiddenSections, setUserDetails, updateCache],
   );
 
-  const projectSortSensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    }),
-  );
-
-  const handleProjectsSortEnd = useCallback(
-    (event) => {
-      const { active, over } = event;
-      if (!over || active.id === over.id) return;
-      const projectList = userDetails?.projects || [];
-      const oldIndex = projectList.findIndex((p) => p._id === active.id);
-      const newIndex = projectList.findIndex((p) => p._id === over.id);
-      if (oldIndex === -1 || newIndex === -1) return;
-      const sortedProjects = arrayMove(projectList, oldIndex, newIndex);
-      setUserDetails((prev) => ({ ...prev, projects: sortedProjects }));
-      _updateUser({ projects: sortedProjects }).then((res) => {
-        if (res?.data?.user?.projects) {
-          updateCache("userDetails", { projects: sortedProjects });
-        }
-      }).catch((err) => {
-        console.error("Error updating project order:", err);
-        setUserDetails((prev) => ({ ...prev, projects: projectList }));
-      });
-    },
-    [userDetails?.projects, setUserDetails, updateCache],
-  );
-
-  const showControls = isSectionHidden || isDropdownOpen || showProjectsRearrangeModal;
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 40 }}
@@ -283,33 +202,17 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
       className="bg-white/80 dark:bg-[#2A2520]/80 backdrop-blur-md rounded-[24px] border border-[#E5D7C4] dark:border-white/10 p-4 md:p-6 w-full relative group/section"
     >
       {isEditing && (
-        <div
-          className={`absolute -top-3 -right-3 z-10 flex gap-2 transition-opacity ${
-            isDropdownOpen || isSectionHidden || showProjectsRearrangeModal
-              ? "opacity-100"
-              : "opacity-100 md:opacity-0 md:group-hover/section:opacity-100"
-          }`}
-        >
+        <CanvasSectionControls forceVisible={isDropdownOpen || isSectionHidden}>
           {(projects?.length ?? 0) >= 2 && (
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setShowProjectsRearrangeModal(true)}
-              className="w-8 h-8 rounded-full bg-white dark:bg-[#2A2520] shadow-md border border-[#E5D7C4] dark:border-white/10 hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors"
-              aria-label="Rearrange projects"
-            >
-              <ChevronsUpDown className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-            </Button>
+            <CanvasSectionButton
+              icon={<ChevronsUpDown className="w-3.5 h-3.5" />}
+              ariaLabel="Rearrange projects"
+              onClick={() => openSidebar(sidebars.sortProjects)}
+            />
           )}
           <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
             <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                size="icon"
-                className="w-8 h-8 rounded-full bg-white dark:bg-[#2A2520] shadow-md border border-[#E5D7C4] dark:border-white/10 hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors"
-              >
-                <Plus className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-              </Button>
+              <CanvasSectionButton icon={<Plus className="w-3.5 h-3.5" />} ariaLabel="Add project" />
             </DropdownMenuTrigger>
 
             <DropdownMenuContent
@@ -344,34 +247,13 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <Button
-            variant="outline"
-            size="icon"
+          <CanvasSectionButton
+            icon={isSectionHidden ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+            ariaLabel={isSectionHidden ? "Show section" : "Hide section"}
             onClick={handleToggleVisibility}
-            className="w-8 h-8 rounded-full bg-white dark:bg-[#2A2520] shadow-md border border-[#E5D7C4] dark:border-white/10 hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors"
-          >
-            {isSectionHidden ? (
-              <EyeOff className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-            ) : (
-              <Eye className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-            )}
-          </Button>
-        </div>
+          />
+        </CanvasSectionControls>
       )}
-
-      <SortableModal
-        show={showProjectsRearrangeModal}
-        onClose={() => setShowProjectsRearrangeModal(false)}
-        items={(userDetails?.projects || []).map((p) => p._id)}
-        onSortEnd={handleProjectsSortEnd}
-        sensors={projectSortSensors}
-        title="Rearrange Projects"
-        useButton2
-      >
-        {(userDetails?.projects || []).map((project) => (
-          <SortableProjectItem key={project._id} project={project} />
-        ))}
-      </SortableModal>
 
       <h2
         className="text-[#7A736C] dark:text-[#B5AFA5] text-xs font-mono mb-3"

@@ -64,20 +64,20 @@ function AnalyticsPage() {
       case TEMPLATE_IDS.MONO:
         return "max-w-[640px] mx-auto py-[94px] md:py-[124px] custom-dashed-x bg-[#F0EDE7] dark:bg-[#1A1A1A] min-h-screen";
       default:
-        return "max-w-[848px] mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0";
+        return "max-w-[640px]  mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0";
     }
   })();
 
-  const cardClass = (() => {
-    switch (template) {
-      case TEMPLATE_IDS.CANVAS:
-        return "bg-white/80 dark:bg-[#2A2520]/80 backdrop-blur-md rounded-[32px] border border-[#E5D7C4] dark:border-white/10 p-8";
-      case TEMPLATE_IDS.MONO:
-        return "px-5 md:px-8 py-8";
-      default:
-        return "bg-df-section-card-bg-color p-8 rounded-2xl";
-    }
-  })();
+  // const cardClass = (() => {
+  //   switch (template) {
+  //     case TEMPLATE_IDS.CANVAS:
+  //       return "bg-white/80 dark:bg-[#2A2520]/80 backdrop-blur-md rounded-[32px] border border-[#E5D7C4] dark:border-white/10";
+  //     case TEMPLATE_IDS.MONO:
+  //       return "px-5 md:px-8 py-8";
+  //     default:
+  //       return "bg-df-section-card-bg-color p-8 rounded-2xl";
+  //   }
+  // })();
 
   const sidebarProviderProps = {
     open: !!activeSidebar,
@@ -94,9 +94,9 @@ function AnalyticsPage() {
         <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
         <div className={containerClass}>
           {template === TEMPLATE_IDS.MONO && <div className="custom-dashed-t" />}
-          <div className={cardClass}>
-            <Analytics />
-          </div>
+
+          <Analytics />
+          {/* </div> */}
           {template === TEMPLATE_IDS.MONO && <div className="custom-dashed-t" />}
         </div>
       </div>

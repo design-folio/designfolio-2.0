@@ -4,6 +4,7 @@ import { Move, Pencil, Trash2 } from "lucide-react";
 import { Button } from "../../ui/button";
 import { useGlobalContext } from "@/context/globalContext";
 import { sidebars } from "@/lib/constant";
+import { CanvasSectionControls, CanvasSectionButton } from "./CanvasSectionControls";
 import {
   DEFAULT_PEGBOARD_IMAGES,
   DEFAULT_PEGBOARD_STICKERS,
@@ -114,19 +115,13 @@ function CanvasAboutSection({ isEditing }) {
       className="bg-white/80 dark:bg-[#2A2520]/80 backdrop-blur-md rounded-[32px] border border-[#E5D7C4] dark:border-white/10 p-6 w-full relative group/section"
     >
       {isEditing && (
-        <div className="absolute -top-3 -right-3 opacity-100 md:opacity-0 md:group-hover/section:opacity-100 transition-opacity z-10 flex gap-2">
-          <Button
-            variant="outline"
-            size="sm"
+        <CanvasSectionControls>
+          <CanvasSectionButton
+            icon={<Pencil className="w-3.5 h-3.5" />}
+            label="Edit Story"
             onClick={() => openSidebar?.(sidebars.about)}
-            className="h-8 flex items-center gap-1.5 px-3 rounded-full bg-white dark:bg-[#2A2520] shadow-md border border-[#E5D7C4] dark:border-white/10 hover:bg-gray-50 dark:hover:bg-[#35302A]"
-          >
-            <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-            <span className="text-xs font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
-              Edit Story
-            </span>
-          </Button>
-        </div>
+          />
+        </CanvasSectionControls>
       )}
       <h2
         className="text-[#7A736C] dark:text-[#B5AFA5] text-xs font-mono mb-6"
@@ -260,20 +255,7 @@ function CanvasAboutSection({ isEditing }) {
                   style={{ transform: "rotate(-3deg)" }}
                 ></div>
 
-                {/* Sticker Accent */}
-                {stickers[0] && (
-                  <div
-                    className="absolute -bottom-3 md:-bottom-5 -right-3 md:-right-5 w-12 md:w-16 h-12 md:h-16 z-30"
-                    style={{ transform: "rotate(-10deg)" }}
-                  >
-                    <img
-                      src={stickers[0].src || stickers[0].key}
-                      alt="Sticker"
-                      className="w-full h-full object-contain drop-shadow-md"
-                      draggable="false"
-                    />
-                  </div>
-                )}
+                {/* Sticker Accent — temporarily hidden */}
               </div>
             </motion.div>
           )}

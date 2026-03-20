@@ -4,6 +4,7 @@ import { Pencil, Plus, Trash2 } from "lucide-react";
 import { Button } from "../../ui/button";
 import { useGlobalContext } from "@/context/globalContext";
 import { sidebars } from "@/lib/constant";
+import { CanvasSectionControls, CanvasSectionButton } from "./CanvasSectionControls";
 import { getPlainTextLength } from "@/lib/tiptapUtils";
 import ClampableTiptapContent from "@/components/ClampableTiptapContent";
 
@@ -158,19 +159,13 @@ function CanvasCareerLadder({ isEditing }) {
       className="bg-white/80 dark:bg-[#2A2520]/80 backdrop-blur-md rounded-[24px] border border-[#E5D7C4] dark:border-white/10 p-4 md:p-6 w-full mt-2 relative group/section"
     >
       {isEditing && experiences.length > 0 && (
-        <div className="absolute -top-3 -right-3 opacity-100 md:opacity-0 md:group-hover/section:opacity-100 transition-opacity z-10 flex gap-2">
-          <Button
-            variant="outline"
-            size="sm"
+        <CanvasSectionControls>
+          <CanvasSectionButton
+            icon={<Plus className="w-3.5 h-3.5" />}
+            label="Add Experience"
             onClick={() => openSidebar(sidebars.work)}
-            className="h-8 flex items-center gap-1.5 px-3 rounded-full bg-white dark:bg-[#2A2520] shadow-md border border-[#E5D7C4] dark:border-white/10 hover:bg-gray-50 dark:hover:bg-[#35302A]"
-          >
-            <Plus className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-            <span className="text-xs font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
-              Add Experience
-            </span>
-          </Button>
-        </div>
+          />
+        </CanvasSectionControls>
       )}
       <h2
         className="text-[#7A736C] dark:text-[#B5AFA5] text-xs font-mono mb-6"

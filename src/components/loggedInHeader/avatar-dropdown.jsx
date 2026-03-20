@@ -119,7 +119,7 @@ export function AvatarDropdown({ onClose }) {
               onKeyDown={(e) => e.key === "Escape" && setIsOpen(false)}
               style={{ transformOrigin: "top right" }}
             >
-              <div className="w-full rounded-2xl border border-black/10 dark:border-white/10 bg-white dark:bg-[#2A2520] p-1.5 shadow-lg overflow-hidden">
+              <div className="w-full rounded-2xl border border-black/10 dark:border-white/10 bg-card p-1.5 shadow-lg overflow-hidden">
                 <div className="relative flex flex-col" onMouseLeave={() => setHoveredId(null)}>
                   {menuItems.map((item) => {
                     const isActive = hoveredId === item.id;

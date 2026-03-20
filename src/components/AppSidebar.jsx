@@ -18,15 +18,14 @@ import FooterSettingsPanel from "./FooterSettingsPanel";
 import AddAbout from "./addAbout";
 import AddTools from "./addTools";
 import AddProject from "./addProject";
+import RearrangeProjectsSidebar from "./RearrangeProjectsSidebar";
 
 const SIDEBAR_TITLES = {
   [sidebars.theme]: "Theme Settings",
-  [sidebars.work]: "Work / Experience",
-  [sidebars.review]: "Reviews",
   [sidebars.footer]: "Footer Settings",
   [sidebars.about]: "About",
   [sidebars.tools]: "Toolbox",
-  [sidebars.project]: "Project",
+  [sidebars.sortProjects]: "Rearrange Projects",
 };
 
 export default function AppSidebar() {
@@ -42,6 +41,9 @@ export default function AppSidebar() {
     changeTheme,
     wallpaperEffects,
     updateWallpaperEffect,
+    selectedWork,
+    selectedReview,
+    selectedProject,
   } = useGlobalContext();
 
   const { theme } = useTheme();
@@ -94,12 +96,27 @@ export default function AppSidebar() {
         return <AddTools />;
       case sidebars.project:
         return <AddProject />;
+      case sidebars.sortProjects:
+        return <RearrangeProjectsSidebar />;
       default:
         return null;
     }
   };
 
-  const title = SIDEBAR_TITLES[activeSidebar] || "";
+  const getDynamicTitle = () => {
+    switch (activeSidebar) {
+      case sidebars.work:
+        return selectedWork?.role ? "Edit Work Experience" : "Work Experience";
+      case sidebars.review:
+        return selectedReview?.name ? "Edit Review" : "Reviews";
+      case sidebars.project:
+        return selectedProject?._id ? "Edit Project" : "Add Project";
+      default:
+        return SIDEBAR_TITLES[activeSidebar] || "";
+    }
+  };
+
+  const title = getDynamicTitle();
 
   return (
     <Sidebar

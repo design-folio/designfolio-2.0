@@ -1,9 +1,9 @@
 import React, { useMemo } from "react";
 import { motion } from "framer-motion";
 import { Pencil } from "lucide-react";
-import { Button } from "../../ui/button";
 import { useGlobalContext } from "@/context/globalContext";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
+import { CanvasSectionControls, CanvasSectionButton } from "./CanvasSectionControls";
 
 function CanvasProfileCard({ isEditing }) {
   const { userDetails, openModal } = useGlobalContext();
@@ -24,19 +24,16 @@ function CanvasProfileCard({ isEditing }) {
         damping: 12,
         delay: 0.15,
       }}
-      className="bg-white/80 dark:bg-[#2A2520]/80 backdrop-blur-md rounded-[24px] border border-[#E5D7C4] dark:border-white/10 p-4 flex flex-col md:flex-row gap-6 items-start md:items-center w-full relative group"
+      className="bg-white/80 dark:bg-[#2A2520]/80 backdrop-blur-md rounded-[24px] border border-[#E5D7C4] dark:border-white/10 p-4 flex flex-col md:flex-row gap-6 items-start md:items-center w-full relative group/section"
     >
       {isEditing && (
-        <div className="absolute -top-3 -right-3 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10">
-          <Button
-            variant="outline"
-            size="icon"
+        <CanvasSectionControls>
+          <CanvasSectionButton
+            icon={<Pencil className="w-3.5 h-3.5" />}
+            ariaLabel="Edit profile"
             onClick={() => openModal("onboarding")}
-            className="w-8 h-8 rounded-full bg-white dark:bg-[#2A2520] shadow-md border border-[#E5D7C4] dark:border-white/10 hover:bg-gray-50 dark:hover:bg-[#35302A]"
-          >
-            <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-          </Button>
-        </div>
+          />
+        </CanvasSectionControls>
       )}
       <div className="w-28 h-28 rounded-2xl overflow-hidden shrink-0 border border-black/5 dark:border-white/10 shadow-sm ">
         <img

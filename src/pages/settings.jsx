@@ -63,7 +63,7 @@ export default function Settings() {
       case TEMPLATE_IDS.MONO:
         return "max-w-[640px] mx-auto py-[94px] md:py-[124px] custom-dashed-x bg-[#F0EDE7] dark:bg-[#1A1A1A] min-h-screen";
       default:
-        return "max-w-[848px] mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0";
+        return "max-w-[640px] mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0";
     }
   })();
 

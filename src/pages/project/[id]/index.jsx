@@ -180,7 +180,7 @@ export default function Index({
       className={(() => {
         switch (effectiveTemplate) {
           case TEMPLATE_IDS.CANVAS:
-            return "max-w-[640px] mx-auto flex flex-col gap-3 pb-20 pt-[80px] px-4 md:px-0";
+            return "max-w-[640px] mx-auto flex flex-col gap-3 pb-20 pt-[40px] px-4 md:px-0";
           case TEMPLATE_IDS.MONO:
             return "max-w-[640px] mx-auto pb-20 pt-[80px] custom-dashed-x bg-[#F0EDE7] dark:bg-[#1A1A1A] min-h-screen";
           default:
@@ -319,7 +319,7 @@ export async function getServerSideProps(context) {
             ownerUser = owner;
           }
         }
-      } catch (_) {}
+      } catch (_) { }
       return {
         props: {
           data: projectData,

@@ -1,11 +1,10 @@
 import { useGlobalContext } from "@/context/globalContext";
 import { useEffect } from "react";
 import Template2 from "@/components/template2";
-import BottomNavigation from "@/components/bottomNavigation";
 import Minimal from "@/components/comp/Minimal";
-import Button from "@/components/button";
+import { Button } from "@/components/ui/button";
 import { useRouter } from "next/router";
-import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
+import { ArrowLeft } from "lucide-react";
 import MacOSTemplate from "@/components/comp/MacOSTemplate";
 import MadeWithDesignfolio from "../../public/assets/svgs/madewithdesignfolio.svg";
 import WallpaperBackground from "@/components/WallpaperBackground";
@@ -20,7 +19,6 @@ export default function Index() {
     userDetailsIsState,
     userDetails,
     userDetailLoading,
-    projectRef,
     template,
     setWallpaper,
     setWallpaperEffects,
@@ -54,21 +52,28 @@ export default function Index() {
   const renderTemplate = () => {
     switch (template) {
       case TEMPLATE_IDS.CANVAS:
-        return <Canvas isEditing={false} preview />;
+
+        return (
+          <>
+            <div className="max-w-[640px] mx-auto w-full px-4 md:px-0 pt-6 pb-2">
+              <Button variant="outline" className="bg-white/80 dark:bg-[#2A2520]/80 backdrop-blur-md rounded-full hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors border border-[#E5D7C4] dark:border-white/10" size="sm" onClick={() => router.back()}>
+                <ArrowLeft className="w-4 h-4" />
+                Exit Preview
+              </Button>
+            </div>
+            <Canvas isEditing={false} preview />
+          </>
+        );
       case TEMPLATE_IDS.CHATFOLIO:
         return <Chat preview />;
       // return <><Template2 userDetails={userDetails} preview />{ProBadge}</>;
       case TEMPLATE_IDS.SPOTLIGHT:
         return (
           <>
-            <Button
-              text="Go Back"
-              onClick={() => router.back()}
-              type="secondary"
-              size="small"
-              customClass="!transition-none mt-8"
-              icon={<LeftArrow className="cursor-pointer" />}
-            />
+            <Button variant="outline" size="sm" onClick={() => router.back()} className="mt-8">
+              <ArrowLeft className="w-4 h-4" />
+              Go Back
+            </Button>
             <Minimal userDetails={userDetails} edit={false} />
             {ProBadge}
           </>
@@ -89,14 +94,10 @@ export default function Index() {
               preview={false}
             />
             {ProBadge}
-            <Button
-              text="Go Back"
-              onClick={() => router.back()}
-              type="secondary"
-              size="small"
-              customClass="!transition-none mt-8 absolute top-4 left-8"
-              icon={<LeftArrow className="cursor-pointer" />}
-            />
+            <Button variant="outline" size="sm" onClick={() => router.back()} className="absolute top-4 left-8">
+              <ArrowLeft className="w-4 h-4" />
+              Go Back
+            </Button>
           </>
         );
       default:

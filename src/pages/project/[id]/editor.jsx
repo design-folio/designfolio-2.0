@@ -38,7 +38,6 @@ export default function Index() {
     setShowUpgradeModal,
     setUpgradeModalUnhideProject,
     domainDetails,
-    activeSidebar,
     closeSidebar,
   } = useGlobalContext();
   const [projectDetails, setProjectDetails] = useState(null);

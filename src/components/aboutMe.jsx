@@ -149,7 +149,7 @@ function Pegboard({ images = [], stickers = [] }) {
 
         {/* Render Stickers */}
         {/* OLD: <motion.div initial={config.initial} animate={config.initial} style={config.style} className={config.className} ...> (no wrapper) */}
-        {stickerConfigs.map((config, index) => {
+        {/* {stickerConfigs.map((config, index) => {
           const sticker = stickers[index];
           if (!sticker) return null;
           return (
@@ -181,7 +181,7 @@ function Pegboard({ images = [], stickers = [] }) {
               </motion.div>
             </div>
           );
-        })}
+        })} */}
       </div>
     </div>
   );

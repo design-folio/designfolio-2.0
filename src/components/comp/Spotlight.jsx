@@ -205,7 +205,7 @@ export const Spotlight = ({ userDetails, edit, headerActions }) => {
   return (
     <section className="py-12">
       <div className="flex items-center justify-between mb-8">
-        <h2 className="text-2xl font-bold">Work Experience</h2>
+        <h2 className="text-2xl font-bold">Work Experiencexxxx</h2>
         {headerActions && <div className="flex-shrink-0">{headerActions}</div>}
       </div>
       <DndContext

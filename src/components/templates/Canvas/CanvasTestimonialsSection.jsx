@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Pencil, Plus, Trash2, Play, Square } from "lucide-react";
+import { Eye, EyeOff, Pencil, Plus, Trash2, Play, Square } from "lucide-react";
 import { Button } from "../../ui/button";
 import { useGlobalContext } from "@/context/globalContext";
 import { sidebars } from "@/lib/constant";
+import { _updateUser } from "@/network/post-request";
 import { CanvasSectionControls, CanvasSectionButton } from "./CanvasSectionControls";
 import ClampableTiptapContent from "@/components/ClampableTiptapContent";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -19,8 +20,21 @@ function getTextFromTiptap(node) {
 }
 
 function CanvasTestimonialsSection({ isEditing }) {
-  const { userDetails, setSelectedReview, openSidebar } = useGlobalContext();
-  const { reviews = [] } = userDetails || {};
+  const { userDetails, setSelectedReview, openSidebar, setUserDetails, updateCache } = useGlobalContext();
+  const { reviews = [], hiddenSections = [] } = userDetails || {};
+
+  const sectionId = "reviews";
+  const isSectionHidden = hiddenSections.includes(sectionId);
+  const handleToggleVisibility = useCallback((e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const updated = isSectionHidden
+      ? hiddenSections.filter((id) => id !== sectionId)
+      : [...hiddenSections, sectionId];
+    setUserDetails((prev) => ({ ...prev, hiddenSections: updated }));
+    updateCache("userDetails", (prev) => ({ ...prev, hiddenSections: updated }));
+    _updateUser({ hiddenSections: updated });
+  }, [isSectionHidden, hiddenSections, setUserDetails, updateCache]);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
@@ -80,12 +94,20 @@ function CanvasTestimonialsSection({ isEditing }) {
       }}
       className="bg-white/80 dark:bg-[#2A2520]/80 backdrop-blur-md rounded-[24px] border border-[#E5D7C4] dark:border-white/10 p-6 w-full relative group/section"
     >
-      {isEditing && reviews.length > 0 && (
+      {isEditing && (
         <CanvasSectionControls>
+          {reviews.length > 0 && (
+            <CanvasSectionButton
+              icon={<Plus className="w-3.5 h-3.5" />}
+              label="Add Testimonial"
+              onClick={() => openSidebar?.(sidebars.review)}
+            />
+          )}
           <CanvasSectionButton
-            icon={<Plus className="w-3.5 h-3.5" />}
-            label="Add Testimonial"
-            onClick={() => openSidebar?.(sidebars.review)}
+            icon={isSectionHidden ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+            ariaLabel={isSectionHidden ? "Show section" : "Hide section"}
+            onClick={handleToggleVisibility}
+            alwaysVisible={isSectionHidden}
           />
         </CanvasSectionControls>
       )}

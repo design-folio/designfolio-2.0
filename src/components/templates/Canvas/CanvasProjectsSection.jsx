@@ -202,7 +202,7 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
       className="bg-white/80 dark:bg-[#2A2520]/80 backdrop-blur-md rounded-[24px] border border-[#E5D7C4] dark:border-white/10 p-4 md:p-6 w-full relative group/section"
     >
       {isEditing && (
-        <CanvasSectionControls forceVisible={isDropdownOpen || isSectionHidden}>
+        <CanvasSectionControls>
           {(projects?.length ?? 0) >= 2 && (
             <CanvasSectionButton
               icon={<ChevronsUpDown className="w-3.5 h-3.5" />}
@@ -212,7 +212,7 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
           )}
           <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
             <DropdownMenuTrigger asChild>
-              <CanvasSectionButton icon={<Plus className="w-3.5 h-3.5" />} ariaLabel="Add project" />
+              <CanvasSectionButton icon={<Plus className="w-3.5 h-3.5" />} ariaLabel="Add project" alwaysVisible={isDropdownOpen} />
             </DropdownMenuTrigger>
 
             <DropdownMenuContent
@@ -251,6 +251,7 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
             icon={isSectionHidden ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
             ariaLabel={isSectionHidden ? "Show section" : "Hide section"}
             onClick={handleToggleVisibility}
+            alwaysVisible={isSectionHidden}
           />
         </CanvasSectionControls>
       )}

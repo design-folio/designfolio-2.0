@@ -170,7 +170,7 @@ export default function Index() {
   const projectContainerClass = (() => {
     switch (template) {
       case TEMPLATE_IDS.CANVAS:
-        return "max-w-[640px] mx-auto flex flex-col gap-3 pb-20 pt-[80px] px-4 md:px-0";
+        return "max-w-[640px] mx-auto flex flex-col gap-3 pb-20 pt-24 px-4 md:px-0";
       case TEMPLATE_IDS.MONO:
         return "max-w-[640px] mx-auto pb-20 pt-[80px] custom-dashed-x bg-[#F0EDE7] dark:bg-[#1A1A1A] min-h-screen";
       case TEMPLATE_IDS.RETRO_OS:

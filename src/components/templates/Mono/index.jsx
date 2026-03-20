@@ -29,7 +29,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import React, { useRef, useState, useEffect, useCallback, useMemo } from "react";
+import React, {
+  useRef,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+} from "react";
 import {
   Phone,
   Linkedin,
@@ -40,6 +46,7 @@ import {
   Trash2,
   Search,
   ChevronsUpDown,
+  X,
 } from "lucide-react";
 import {
   AtSignIcon,
@@ -53,8 +60,14 @@ import { useRouter } from "next/router";
 import { useGlobalContext } from "@/context/globalContext";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { DEFAULT_PEGBOARD_IMAGES } from "@/lib/aboutConstants";
-import { modals, sidebars, normalizeSectionOrder, DEFAULT_SECTION_ORDER } from "@/lib/constant";
+import {
+  modals,
+  sidebars,
+  normalizeSectionOrder,
+  DEFAULT_SECTION_ORDER,
+} from "@/lib/constant";
 import { SectionVisibilityButton } from "@/components/section";
+import SimpleTiptapRenderer from "@/components/SimpleTiptapRenderer";
 
 const itemVariants = {
   hidden: {
@@ -142,6 +155,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
     return images.map((image) => image?.src || image?.key || "").slice(0, 4);
   }, [userDetails?.about?.pegboardImages]);
   const [storyImages, setStoryImages] = useState(mappedStoryImages);
+  const [selectedStoryImage, setSelectedStoryImage] = useState(null);
   const [toolSearchQuery, setToolSearchQuery] = useState("");
   const mappedRecommendations = useMemo(
     () =>
@@ -385,7 +399,8 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
 
   const handleProjectClick = (projectId) => {
     if (isEditing) router.push(`/project/${projectId}/editor`);
-    else if (preview && !publicView) router.push(`/project/${projectId}/preview`);
+    else if (preview && !publicView)
+      router.push(`/project/${projectId}/preview`);
     else router.push(`/project/${projectId}`);
   };
 
@@ -534,7 +549,10 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
 
   const experiences = mappedExperiences;
 
-  const sectionOrder = normalizeSectionOrder(userDetails?.sectionOrder, DEFAULT_SECTION_ORDER);
+  const sectionOrder = normalizeSectionOrder(
+    userDetails?.sectionOrder,
+    DEFAULT_SECTION_ORDER,
+  );
   const hiddenSections = userDetails?.hiddenSections || [];
   const isSectionVisible = (id) => isEditing || !hiddenSections.includes(id);
 
@@ -561,7 +579,10 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               >
                 <Plus className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
               </Button>
-              <SectionVisibilityButton sectionId="works" className="h-8 w-8 rounded-full border-black/10 dark:border-white/10 shadow-sm bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A]" />
+              <SectionVisibilityButton
+                sectionId="works"
+                className="h-8 w-8 rounded-full border-black/10 dark:border-white/10 shadow-sm bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A]"
+              />
             </div>
           )}
           <h2 className="text-[14px] font-bold text-[#463B34] dark:text-[#D4C9BC] font-dm-mono uppercase tracking-widest mb-4">
@@ -666,55 +687,19 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                         className="overflow-hidden"
                       >
                         <div className="pb-4 pl-7 pr-4">
-                          <motion.p
-                            variants={{
-                              hidden: { opacity: 0 },
-                              show: {
-                                opacity: 1,
-                                transition: {
-                                  staggerChildren: 0.015,
-                                },
-                              },
-                            }}
-                            initial="hidden"
-                            animate="show"
+                          <motion.div
+                            initial={{ opacity: 0, filter: "blur(10px)" }}
+                            animate={{ opacity: 1, filter: "blur(0px)" }}
+                            transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
                             className="text-[#7A736C] dark:text-[#B5AFA5] text-[15px] leading-relaxed break-words whitespace-normal"
                           >
-                            {(exp.description || "")
-                              .split(" ")
-                              .map((word, wordIndex) => (
-                                <span
-                                  key={wordIndex}
-                                  className="inline-block whitespace-nowrap"
-                                >
-                                  {word.split("").map((char, charIndex) => (
-                                    <motion.span
-                                      key={charIndex}
-                                      variants={{
-                                        hidden: {
-                                          opacity: 0,
-                                          filter: "blur(10px)",
-                                        },
-                                        show: {
-                                          opacity: 1,
-                                          filter: "blur(0px)",
-                                        },
-                                      }}
-                                      transition={{ duration: 0.3 }}
-                                      className="inline-block"
-                                    >
-                                      {char}
-                                    </motion.span>
-                                  ))}
-                                  {/* Add space after each word except the last one */}
-                                  {wordIndex <
-                                    (exp.description || "").split(" ").length -
-                                    1 && (
-                                      <span className="inline-block">&nbsp;</span>
-                                    )}
-                                </span>
-                              ))}
-                          </motion.p>
+                            <SimpleTiptapRenderer
+                              content={exp.raw?.description || exp.description}
+                              noCardStyle
+                              enableBulletList
+                              className="rounded-none shadow-none"
+                            />
+                          </motion.div>
                         </div>
                       </motion.div>
                     )}
@@ -740,10 +725,11 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
         >
           {isEditing && (
             <div
-              className={`absolute top-4 right-4 z-10 transition-opacity flex gap-2 ${isProjectsAddDropdownOpen
-                ? "opacity-100"
-                : "opacity-100 md:opacity-0 md:group-hover/section:opacity-100"
-                }`}
+              className={`absolute top-4 right-4 z-10 transition-opacity flex gap-2 ${
+                isProjectsAddDropdownOpen
+                  ? "opacity-100"
+                  : "opacity-100 md:opacity-0 md:group-hover/section:opacity-100"
+              }`}
             >
               <Button
                 variant="outline"
@@ -869,8 +855,8 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                               Protect Project
                             </Label>
                             <p className="text-[12px] text-[#7A736C] dark:text-[#9E9893] ml-1">
-                              Require a password to view this project (e.g.,
-                              for NDAs).
+                              Require a password to view this project (e.g., for
+                              NDAs).
                             </p>
                           </div>
                           <Switch
@@ -927,7 +913,10 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                   </div>
                 </SheetContent>
               </Sheet>
-              <SectionVisibilityButton sectionId="projects" className="h-8 w-8 rounded-full border-black/10 dark:border-white/10 shadow-sm bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A]" />
+              <SectionVisibilityButton
+                sectionId="projects"
+                className="h-8 w-8 rounded-full border-black/10 dark:border-white/10 shadow-sm bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A]"
+              />
             </div>
           )}
           <h2 className="text-[14px] font-bold text-[#463B34] dark:text-[#D4C9BC] font-dm-mono uppercase tracking-widest mb-4">
@@ -1083,7 +1072,10 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               >
                 <Plus className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
               </Button>
-              <SectionVisibilityButton sectionId="reviews" className="h-8 w-8 rounded-full border-black/10 dark:border-white/10 shadow-sm bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A]" />
+              <SectionVisibilityButton
+                sectionId="reviews"
+                className="h-8 w-8 rounded-full border-black/10 dark:border-white/10 shadow-sm bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A]"
+              />
             </div>
           )}
           <h2 className="text-[14px] font-bold text-[#463B34] dark:text-[#D4C9BC] font-dm-mono uppercase tracking-widest mb-6">
@@ -1254,7 +1246,10 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               >
                 <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
               </Button>
-              <SectionVisibilityButton sectionId="about" className="h-8 w-8 rounded-full border-black/10 dark:border-white/10 shadow-sm bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A]" />
+              <SectionVisibilityButton
+                sectionId="about"
+                className="h-8 w-8 rounded-full border-black/10 dark:border-white/10 shadow-sm bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A]"
+              />
             </div>
           )}
           <h2 className="text-[14px] font-bold text-[#463B34] dark:text-[#D4C9BC] font-dm-mono uppercase tracking-widest mb-6">
@@ -1265,7 +1260,8 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
             <motion.div
               initial={{ rotate: -8, x: -120, y: 0 }}
               whileHover={{ rotate: -2, scale: 1.1, zIndex: 50 }}
-              className="absolute w-32 h-40 rounded-xl overflow-hidden border-4 border-white dark:border-[#2A2520] shadow-lg z-0"
+              onClick={() => storyImages[0] && setSelectedStoryImage(storyImages[0])}
+              className="absolute w-32 h-40 rounded-xl overflow-hidden border-4 border-white dark:border-[#2A2520] shadow-lg z-0 cursor-pointer"
             >
               <img
                 src={storyImages[0]}
@@ -1276,7 +1272,8 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
             <motion.div
               initial={{ rotate: 12, x: -40, y: 15 }}
               whileHover={{ rotate: 5, scale: 1.1, zIndex: 50 }}
-              className="absolute w-36 h-36 rounded-xl overflow-hidden border-4 border-white dark:border-[#2A2520] shadow-lg z-10"
+              onClick={() => storyImages[1] && setSelectedStoryImage(storyImages[1])}
+              className="absolute w-36 h-36 rounded-xl overflow-hidden border-4 border-white dark:border-[#2A2520] shadow-lg z-10 cursor-pointer"
             >
               <img
                 src={storyImages[1]}
@@ -1287,7 +1284,8 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
             <motion.div
               initial={{ rotate: -5, x: 40, y: -10 }}
               whileHover={{ rotate: 0, scale: 1.1, zIndex: 50 }}
-              className="absolute w-32 h-40 rounded-xl overflow-hidden border-4 border-white dark:border-[#2A2520] shadow-lg z-20"
+              onClick={() => storyImages[2] && setSelectedStoryImage(storyImages[2])}
+              className="absolute w-32 h-40 rounded-xl overflow-hidden border-4 border-white dark:border-[#2A2520] shadow-lg z-20 cursor-pointer"
             >
               <img
                 src={storyImages[2]}
@@ -1298,7 +1296,8 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
             <motion.div
               initial={{ rotate: 8, x: 120, y: 20 }}
               whileHover={{ rotate: 3, scale: 1.1, zIndex: 50 }}
-              className="absolute w-36 h-36 rounded-xl overflow-hidden border-4 border-white dark:border-[#2A2520] shadow-lg z-30"
+              onClick={() => storyImages[3] && setSelectedStoryImage(storyImages[3])}
+              className="absolute w-36 h-36 rounded-xl overflow-hidden border-4 border-white dark:border-[#2A2520] shadow-lg z-30 cursor-pointer"
             >
               <img
                 src={storyImages[3]}
@@ -1418,19 +1417,21 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                                     ? handleRemoveTool(tool)
                                     : handleAddTool(tool)
                                 }
-                                className={`group h-[34px] px-3.5 rounded-xl flex items-center gap-2.5 text-[13px] font-medium transition-colors border ${isSelected
-                                  ? "bg-[#EFECE6] dark:bg-[#1A1A1A] border-black/5 dark:border-white/5 text-[#1A1A1A] dark:text-[#F0EDE7] shadow-sm"
-                                  : "bg-transparent border-transparent text-[#7A736C] dark:text-[#9E9893] hover:bg-black/5 dark:hover:bg-white/5 hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7]"
-                                  }`}
+                                className={`group h-[34px] px-3.5 rounded-xl flex items-center gap-2.5 text-[13px] font-medium transition-colors border ${
+                                  isSelected
+                                    ? "bg-[#EFECE6] dark:bg-[#1A1A1A] border-black/5 dark:border-white/5 text-[#1A1A1A] dark:text-[#F0EDE7] shadow-sm"
+                                    : "bg-transparent border-transparent text-[#7A736C] dark:text-[#9E9893] hover:bg-black/5 dark:hover:bg-white/5 hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7]"
+                                }`}
                               >
                                 <div className="relative w-4 h-4 flex items-center justify-center shrink-0">
                                   <img
                                     src={tool.icon}
                                     alt={tool.name}
-                                    className={`absolute inset-0 w-4 h-4 object-contain transition-all duration-200 ${isSelected
-                                      ? "grayscale-0 opacity-100"
-                                      : "grayscale opacity-50 group-hover:opacity-0 group-hover:scale-50 group-hover:-rotate-45"
-                                      }`}
+                                    className={`absolute inset-0 w-4 h-4 object-contain transition-all duration-200 ${
+                                      isSelected
+                                        ? "grayscale-0 opacity-100"
+                                        : "grayscale opacity-50 group-hover:opacity-0 group-hover:scale-50 group-hover:-rotate-45"
+                                    }`}
                                   />
                                   {!isSelected && (
                                     <Plus className="absolute inset-0 w-4 h-4 opacity-0 group-hover:opacity-100 transition-all duration-200 scale-50 group-hover:scale-100 rotate-45 group-hover:rotate-0" />
@@ -1456,7 +1457,10 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                   </div>
                 </SheetContent>
               </Sheet>
-              <SectionVisibilityButton sectionId="tools" className="h-8 w-8 rounded-full border-black/10 dark:border-white/10 shadow-sm bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A]" />
+              <SectionVisibilityButton
+                sectionId="tools"
+                className="h-8 w-8 rounded-full border-black/10 dark:border-white/10 shadow-sm bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A]"
+              />
             </div>
           )}
           <h2 className="text-[14px] font-bold text-[#463B34] dark:text-[#D4C9BC] font-dm-mono uppercase tracking-widest mb-6">
@@ -1688,11 +1692,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                 if (!socials.linkedin) e.preventDefault();
               }}
             >
-              <svg
-                viewBox="0 0 24 24"
-                className="w-4 h-4"
-                fill="currentColor"
-              >
+              <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor">
                 <path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42c1.87 0 3.38 2.88 3.38 6.42zM24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z" />
               </svg>
             </a>
@@ -1732,7 +1732,9 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
           </p>
         </motion.div>
 
-        {sectionOrder.map((id) => isSectionVisible(id) ? sectionComponents[id] : null)}
+        {sectionOrder.map((id) =>
+          isSectionVisible(id) ? sectionComponents[id] : null,
+        )}
 
         <motion.div
           variants={itemVariants}
@@ -1836,145 +1838,145 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
             portfolios.dribbble ||
             socials.twitter ||
             portfolios.medium) && (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
-                {socials.linkedin && (
-                  <motion.div
-                    whileHover="hover"
-                    initial="rest"
-                    className="w-full"
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
+              {socials.linkedin && (
+                <motion.div
+                  whileHover="hover"
+                  initial="rest"
+                  className="w-full"
+                >
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => openExternalLink(socials.linkedin)}
+                    className="w-full flex items-center justify-between px-4 py-4 bg-white dark:bg-[#2A2520] rounded-xl border border-black/5 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors group h-auto"
                   >
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => openExternalLink(socials.linkedin)}
-                      className="w-full flex items-center justify-between px-4 py-4 bg-white dark:bg-[#2A2520] rounded-xl border border-black/5 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors group h-auto"
+                    <span className="text-[#1A1A1A] dark:text-[#F0EDE7] font-medium text-sm">
+                      Linkedin
+                    </span>
+                    <motion.div
+                      variants={{
+                        rest: { scale: 1, rotate: 0 },
+                        hover: { scale: 1.3, rotate: -10 },
+                      }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 400,
+                        damping: 10,
+                      }}
                     >
-                      <span className="text-[#1A1A1A] dark:text-[#F0EDE7] font-medium text-sm">
-                        Linkedin
-                      </span>
-                      <motion.div
-                        variants={{
-                          rest: { scale: 1, rotate: 0 },
-                          hover: { scale: 1.3, rotate: -10 },
-                        }}
-                        transition={{
-                          type: "spring",
-                          stiffness: 400,
-                          damping: 10,
-                        }}
-                      >
-                        <Linkedin
-                          size={14}
-                          className="text-[#7A736C] dark:text-[#9E9893] group-hover:text-[#1A1A1A] dark:group-hover:text-[#F0EDE7]"
-                        />
-                      </motion.div>
-                    </Button>
-                  </motion.div>
-                )}
-                {portfolios.dribbble && (
-                  <motion.div
-                    whileHover="hover"
-                    initial="rest"
-                    className="w-full"
+                      <Linkedin
+                        size={14}
+                        className="text-[#7A736C] dark:text-[#9E9893] group-hover:text-[#1A1A1A] dark:group-hover:text-[#F0EDE7]"
+                      />
+                    </motion.div>
+                  </Button>
+                </motion.div>
+              )}
+              {portfolios.dribbble && (
+                <motion.div
+                  whileHover="hover"
+                  initial="rest"
+                  className="w-full"
+                >
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => openExternalLink(portfolios.dribbble)}
+                    className="w-full flex items-center justify-between px-4 py-4 bg-white dark:bg-[#2A2520] rounded-xl border border-black/5 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors group h-auto"
                   >
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => openExternalLink(portfolios.dribbble)}
-                      className="w-full flex items-center justify-between px-4 py-4 bg-white dark:bg-[#2A2520] rounded-xl border border-black/5 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors group h-auto"
+                    <span className="text-[#1A1A1A] dark:text-[#F0EDE7] font-medium text-sm">
+                      Dribbble
+                    </span>
+                    <motion.div
+                      variants={{
+                        rest: { scale: 1, rotate: 0 },
+                        hover: { scale: 1.3, rotate: 20 },
+                      }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 400,
+                        damping: 10,
+                      }}
                     >
-                      <span className="text-[#1A1A1A] dark:text-[#F0EDE7] font-medium text-sm">
-                        Dribbble
-                      </span>
-                      <motion.div
-                        variants={{
-                          rest: { scale: 1, rotate: 0 },
-                          hover: { scale: 1.3, rotate: 20 },
-                        }}
-                        transition={{
-                          type: "spring",
-                          stiffness: 400,
-                          damping: 10,
-                        }}
-                      >
-                        <DribbbleIcon
-                          size={14}
-                          className="text-[#7A736C] dark:text-[#9E9893] group-hover:text-[#1A1A1A] dark:group-hover:text-[#F0EDE7]"
-                        />
-                      </motion.div>
-                    </Button>
-                  </motion.div>
-                )}
-                {socials.twitter && (
-                  <motion.div
-                    whileHover="hover"
-                    initial="rest"
-                    className="w-full"
+                      <DribbbleIcon
+                        size={14}
+                        className="text-[#7A736C] dark:text-[#9E9893] group-hover:text-[#1A1A1A] dark:group-hover:text-[#F0EDE7]"
+                      />
+                    </motion.div>
+                  </Button>
+                </motion.div>
+              )}
+              {socials.twitter && (
+                <motion.div
+                  whileHover="hover"
+                  initial="rest"
+                  className="w-full"
+                >
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => openExternalLink(socials.twitter)}
+                    className="w-full flex items-center justify-between px-4 py-4 bg-white dark:bg-[#2A2520] rounded-xl border border-black/5 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors group h-auto"
                   >
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => openExternalLink(socials.twitter)}
-                      className="w-full flex items-center justify-between px-4 py-4 bg-white dark:bg-[#2A2520] rounded-xl border border-black/5 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors group h-auto"
+                    <span className="text-[#1A1A1A] dark:text-[#F0EDE7] font-medium text-sm">
+                      X
+                    </span>
+                    <motion.div
+                      variants={{
+                        rest: { scale: 1, rotate: 0 },
+                        hover: { scale: 1.3, rotate: -20 },
+                      }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 400,
+                        damping: 10,
+                      }}
                     >
-                      <span className="text-[#1A1A1A] dark:text-[#F0EDE7] font-medium text-sm">
-                        X
-                      </span>
-                      <motion.div
-                        variants={{
-                          rest: { scale: 1, rotate: 0 },
-                          hover: { scale: 1.3, rotate: -20 },
-                        }}
-                        transition={{
-                          type: "spring",
-                          stiffness: 400,
-                          damping: 10,
-                        }}
-                      >
-                        <TwitterIcon
-                          size={14}
-                          className="text-[#7A736C] dark:text-[#9E9893] group-hover:text-[#1A1A1A] dark:group-hover:text-[#F0EDE7]"
-                        />
-                      </motion.div>
-                    </Button>
-                  </motion.div>
-                )}
-                {portfolios.medium && (
-                  <motion.div
-                    whileHover="hover"
-                    initial="rest"
-                    className="w-full"
+                      <TwitterIcon
+                        size={14}
+                        className="text-[#7A736C] dark:text-[#9E9893] group-hover:text-[#1A1A1A] dark:group-hover:text-[#F0EDE7]"
+                      />
+                    </motion.div>
+                  </Button>
+                </motion.div>
+              )}
+              {portfolios.medium && (
+                <motion.div
+                  whileHover="hover"
+                  initial="rest"
+                  className="w-full"
+                >
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => openExternalLink(portfolios.medium)}
+                    className="w-full flex items-center justify-between px-4 py-4 bg-white dark:bg-[#2A2520] rounded-xl border border-black/5 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors group h-auto"
                   >
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => openExternalLink(portfolios.medium)}
-                      className="w-full flex items-center justify-between px-4 py-4 bg-white dark:bg-[#2A2520] rounded-xl border border-black/5 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors group h-auto"
+                    <span className="text-[#1A1A1A] dark:text-[#F0EDE7] font-medium text-sm">
+                      Medium
+                    </span>
+                    <motion.div
+                      variants={{
+                        rest: { scale: 1, rotate: 0 },
+                        hover: { scale: 1.3, rotate: 15 },
+                      }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 400,
+                        damping: 10,
+                      }}
                     >
-                      <span className="text-[#1A1A1A] dark:text-[#F0EDE7] font-medium text-sm">
-                        Medium
-                      </span>
-                      <motion.div
-                        variants={{
-                          rest: { scale: 1, rotate: 0 },
-                          hover: { scale: 1.3, rotate: 15 },
-                        }}
-                        transition={{
-                          type: "spring",
-                          stiffness: 400,
-                          damping: 10,
-                        }}
-                      >
-                        <Globe
-                          size={14}
-                          className="text-[#7A736C] dark:text-[#9E9893] group-hover:text-[#1A1A1A] dark:group-hover:text-[#F0EDE7]"
-                        />
-                      </motion.div>
-                    </Button>
-                  </motion.div>
-                )}
-              </div>
-            )}
+                      <Globe
+                        size={14}
+                        className="text-[#7A736C] dark:text-[#9E9893] group-hover:text-[#1A1A1A] dark:group-hover:text-[#F0EDE7]"
+                      />
+                    </motion.div>
+                  </Button>
+                </motion.div>
+              )}
+            </div>
+          )}
 
           {resumeUrl && (
             <motion.div whileHover="hover" initial="rest" className="w-full">
@@ -2020,11 +2022,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
         >
           <div className="absolute top-6 left-8 right-8 flex justify-between z-10 font-dm-mono text-[10px] uppercase tracking-widest text-[#463B34] dark:text-[#C4B5A0] pointer-events-none">
             <span>
-              {isGameOver
-                ? "Game Over"
-                : isPlaying
-                  ? "Playing"
-                  : "Tap to play"}
+              {isGameOver ? "Game Over" : isPlaying ? "Playing" : "Tap to play"}
             </span>
             <div className="flex gap-4">
               <span>HI {String(highScore).padStart(5, "0")}</span>
@@ -2128,6 +2126,40 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
           </div>
         </motion.div>
       </div>
+
+      {/* Image Lightbox */}
+      <AnimatePresence>
+        {selectedStoryImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedStoryImage(null)}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-8 cursor-zoom-out"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.9, y: 20, opacity: 0 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="relative max-w-4xl max-h-[90vh] rounded-2xl overflow-hidden shadow-2xl border border-white/10"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setSelectedStoryImage(null)}
+                className="absolute top-4 right-4 z-10 w-10 h-10 bg-black/50 hover:bg-black/70 backdrop-blur-md rounded-full flex items-center justify-center text-white transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+              <img
+                src={selectedStoryImage}
+                alt="Story full view"
+                className="w-auto h-auto max-w-full max-h-[90vh] object-contain"
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

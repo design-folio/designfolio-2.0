@@ -1,9 +1,10 @@
 import React, { useCallback, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Move, Pencil, Trash2 } from "lucide-react";
+import { Eye, EyeOff, Move, Pencil, Trash2 } from "lucide-react";
 import { Button } from "../../ui/button";
 import { useGlobalContext } from "@/context/globalContext";
 import { sidebars } from "@/lib/constant";
+import { _updateUser } from "@/network/post-request";
 import { CanvasSectionControls, CanvasSectionButton } from "./CanvasSectionControls";
 import {
   DEFAULT_PEGBOARD_IMAGES,
@@ -85,8 +86,21 @@ function MoveOverlay({ rounded = "rounded-[6px] md:rounded-[8px]", size = "w-4 h
 }
 
 function CanvasAboutSection({ isEditing }) {
-  const { userDetails, openSidebar } = useGlobalContext();
-  const { about } = userDetails || {};
+  const { userDetails, openSidebar, setUserDetails, updateCache } = useGlobalContext();
+  const { about, hiddenSections = [] } = userDetails || {};
+
+  const sectionId = "about";
+  const isSectionHidden = hiddenSections.includes(sectionId);
+  const handleToggleVisibility = useCallback((e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const updated = isSectionHidden
+      ? hiddenSections.filter((id) => id !== sectionId)
+      : [...hiddenSections, sectionId];
+    setUserDetails((prev) => ({ ...prev, hiddenSections: updated }));
+    updateCache("userDetails", (prev) => ({ ...prev, hiddenSections: updated }));
+    _updateUser({ hiddenSections: updated });
+  }, [isSectionHidden, hiddenSections, setUserDetails, updateCache]);
   const pegboardRef = useRef(null);
   const [zIndexes, setZIndexes] = useState({ 0: 10, 1: 20, 2: 10 });
 
@@ -120,6 +134,12 @@ function CanvasAboutSection({ isEditing }) {
             icon={<Pencil className="w-3.5 h-3.5" />}
             label="Edit Story"
             onClick={() => openSidebar?.(sidebars.about)}
+          />
+          <CanvasSectionButton
+            icon={isSectionHidden ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+            ariaLabel={isSectionHidden ? "Show section" : "Hide section"}
+            onClick={handleToggleVisibility}
+            alwaysVisible={isSectionHidden}
           />
         </CanvasSectionControls>
       )}

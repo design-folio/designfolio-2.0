@@ -147,7 +147,7 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const { hiddenSections, projects } = userDetails || {};
-  const sectionId = "works";
+  const sectionId = "projects";
   const isSectionHidden = hiddenSections?.includes(sectionId);
 
   const visibleProjects = useMemo(() => {

@@ -1,13 +1,27 @@
 import React, { useMemo } from "react";
 import { motion } from "framer-motion";
-import { Plus } from "lucide-react";
+import { Eye, EyeOff, Plus } from "lucide-react";
 import { useGlobalContext } from "@/context/globalContext";
 import { sidebars } from "@/lib/constant";
+import { _updateUser } from "@/network/post-request";
 import { CanvasSectionControls, CanvasSectionButton } from "./CanvasSectionControls";
 
 function CanvasToolsMarquee({ isEditing }) {
-  const { userDetails, openSidebar } = useGlobalContext();
-  const { tools = [] } = userDetails || {};
+  const { userDetails, openSidebar, setUserDetails, updateCache } = useGlobalContext();
+  const { tools = [], hiddenSections = [] } = userDetails || {};
+
+  const sectionId = "tools";
+  const isSectionHidden = hiddenSections.includes(sectionId);
+  const handleToggleVisibility = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const updated = isSectionHidden
+      ? hiddenSections.filter((id) => id !== sectionId)
+      : [...hiddenSections, sectionId];
+    setUserDetails((prev) => ({ ...prev, hiddenSections: updated }));
+    updateCache("userDetails", (prev) => ({ ...prev, hiddenSections: updated }));
+    _updateUser({ hiddenSections: updated });
+  };
 
   const repeatedTools = useMemo(() => Array(12).fill(tools).flat(), [tools]);
 
@@ -31,6 +45,12 @@ function CanvasToolsMarquee({ isEditing }) {
             icon={<Plus className="w-3.5 h-3.5" />}
             label="Add Tool"
             onClick={() => openSidebar(sidebars.tools)}
+          />
+          <CanvasSectionButton
+            icon={isSectionHidden ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+            ariaLabel={isSectionHidden ? "Show section" : "Hide section"}
+            onClick={handleToggleVisibility}
+            alwaysVisible={isSectionHidden}
           />
         </CanvasSectionControls>
       )}

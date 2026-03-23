@@ -19,11 +19,12 @@
   --ring: 217 26% 17%;
   --sidebar-primary: 217 26% 17%;
   --sidebar-ring: 217 26% 17%;
-  /* Tiptap text tokens */
-  --tiptap-work-paragraph: #7a736c;
-  --tiptap-review-paragraph: #202937;
-  --tiptap-work-list: #7a736c;
-  --tiptap-review-list: #202937;
+  /* Tiptap text tokens — all modes share one colour in Canvas */
+  --tiptap-text: #7a736c;
+  --tiptap-work-paragraph: var(--tiptap-text);
+  --tiptap-review-paragraph: var(--tiptap-text);
+  --tiptap-work-list: var(--tiptap-text);
+  --tiptap-review-list: var(--tiptap-text);
 }
 
 /* Canvas dark: warm dark — sepia-tinted secondary buttons */
@@ -44,9 +45,10 @@
   --primary-hover: #ffffff;
   --sidebar-primary: 0 0% 90%;
   --sidebar-ring: 0 0% 90%;
-  /* Tiptap dark tokens (Canvas warm) */
-  --tiptap-work-paragraph: #b5afa5;
-  --tiptap-review-paragraph: #f0f0f0;
-  --tiptap-work-list: #b5afa5;
-  --tiptap-review-list: #f0f0f0;
+  /* Tiptap dark tokens — all modes share one colour in Canvas */
+  --tiptap-text: #b5afa5;
+  --tiptap-work-paragraph: var(--tiptap-text);
+  --tiptap-review-paragraph: var(--tiptap-text);
+  --tiptap-work-list: var(--tiptap-text);
+  --tiptap-review-list: var(--tiptap-text);
 }

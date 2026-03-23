@@ -144,12 +144,7 @@ function CanvasAboutSection({ isEditing }) {
         </CanvasSectionControls>
       )}
       <h2
-        className="text-[#7A736C] dark:text-[#B5AFA5] text-xs font-mono mb-6"
-        style={{
-          fontFamily: "DM Mono, monospace",
-          fontSize: "14px",
-          fontWeight: "500",
-        }}
+        className="text-[#7A736C] dark:text-[#B5AFA5] font-dm-mono font-medium text-[14px] mb-6"
       >
         MY STORY
       </h2>

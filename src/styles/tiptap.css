@@ -559,9 +559,19 @@
   color: var(--tiptap-work-paragraph, #7a736c) !important;
 }
 
+[data-template="canvas"] .ProseMirror.tiptap-review-mode p,
+[data-template="mono"] .ProseMirror.tiptap-review-mode p {
+  color: var(--tiptap-review-paragraph, #202937) !important;
+}
+
 [data-theme="dark"][data-template="canvas"] .ProseMirror.tiptap-work-mode p,
 [data-theme="dark"][data-template="mono"] .ProseMirror.tiptap-work-mode p {
   color: var(--tiptap-work-paragraph, #b5afa5) !important;
+}
+
+[data-theme="dark"][data-template="canvas"] .ProseMirror.tiptap-review-mode p,
+[data-theme="dark"][data-template="mono"] .ProseMirror.tiptap-review-mode p {
+  color: var(--tiptap-review-paragraph, #f0f0f0) !important;
 }
 
 /* Editor-specific dark mode paragraph colors (non-canvas/mono keep defaults) */
@@ -606,11 +616,25 @@
   color: var(--tiptap-work-list, #7a736c) !important;
 }
 
+[data-template="canvas"] .ProseMirror.tiptap-review-mode ul,
+[data-template="canvas"] .ProseMirror.tiptap-review-mode ol,
+[data-template="mono"] .ProseMirror.tiptap-review-mode ul,
+[data-template="mono"] .ProseMirror.tiptap-review-mode ol {
+  color: var(--tiptap-review-list, #202937) !important;
+}
+
 [data-theme="dark"][data-template="canvas"] .ProseMirror.tiptap-work-mode ul,
 [data-theme="dark"][data-template="canvas"] .ProseMirror.tiptap-work-mode ol,
 [data-theme="dark"][data-template="mono"] .ProseMirror.tiptap-work-mode ul,
 [data-theme="dark"][data-template="mono"] .ProseMirror.tiptap-work-mode ol {
   color: var(--tiptap-work-list, #b5afa5) !important;
+}
+
+[data-theme="dark"][data-template="canvas"] .ProseMirror.tiptap-review-mode ul,
+[data-theme="dark"][data-template="canvas"] .ProseMirror.tiptap-review-mode ol,
+[data-theme="dark"][data-template="mono"] .ProseMirror.tiptap-review-mode ul,
+[data-theme="dark"][data-template="mono"] .ProseMirror.tiptap-review-mode ol {
+  color: var(--tiptap-review-list, #f0f0f0) !important;
 }
 
 /* Editor-specific dark mode list colors (non-canvas/mono keep defaults) */

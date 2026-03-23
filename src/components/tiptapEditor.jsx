@@ -27,13 +27,14 @@ import Compressor from 'compressorjs';
 import queryClient from '@/network/queryClient';
 import { usePostHogEvent } from '@/hooks/usePostHogEvent';
 import { POSTHOG_EVENT_NAMES } from '@/lib/posthogEventNames';
+import { cn } from '@/lib/utils';
 
 // Ensure Table extensions are properly loaded
 if (!Table || !TableRow || !TableCell || !TableHeader) {
   console.error('Table extensions not loaded properly');
 }
 
-const TiptapEditor = ({ projectDetails, userDetails }) => {
+const TiptapEditor = ({ projectDetails, userDetails, classNames }) => {
   const router = useRouter();
   // Use the project's own _id when available (e.g. inside a floating ProjectWindow
   // where router.query.id is not set).
@@ -377,10 +378,10 @@ const TiptapEditor = ({ projectDetails, userDetails }) => {
   }
 
   return (
-    <div className="project-editor-container" ref={editorContainerRef}>
+    <div className={cn("project-editor-container", classNames.container)} ref={editorContainerRef}>
       {/* Editor Content */}
       <div
-        className="project-editor bg-card"
+        className={cn("project-editor bg-card", classNames.editor)}
         onClick={() => {
           setShowToolbar(true);
           if (editor && !editor.isFocused) {
@@ -388,7 +389,7 @@ const TiptapEditor = ({ projectDetails, userDetails }) => {
           }
         }}
       >
-        <div className="tiptap-editor-wrapper p-[16px] md:p-[32px]">
+        <div className={cn("tiptap-editor-wrapper p-[16px] md:p-[32px]", classNames.wrapper)}>
           <EditorContent editor={editor} />
         </div>
       </div>

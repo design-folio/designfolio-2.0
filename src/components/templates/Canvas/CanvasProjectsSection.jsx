@@ -257,12 +257,7 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
       )}
 
       <h2
-        className="text-[#7A736C] dark:text-[#B5AFA5] text-xs font-mono mb-3"
-        style={{
-          fontFamily: "DM Mono, monospace",
-          fontSize: "14px",
-          fontWeight: "500",
-        }}
+        className="text-[#7A736C] dark:text-[#B5AFA5] font-dm-mono font-medium text-[14px] mb-3"
       >
         PROJECTS
       </h2>

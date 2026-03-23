@@ -60,8 +60,8 @@ function CanvasToolsMarquee({ isEditing }) {
 
         <motion.div
           className="flex gap-8 py-1 w-max"
-          animate={{ x: ["0%", "-50%"] }}
-          transition={{ ease: "linear", duration: 25, repeat: Infinity }}
+          animate={{ x: [0, "-50%"] }}
+          transition={{ ease: "linear", duration: 75, repeat: Infinity }}
         >
           {repeatedTools.map((tool, i) => (
             <img

@@ -48,7 +48,7 @@ export default function AppSidebar() {
 
   const { theme } = useTheme();
   const isDark = theme === "dark";
-  const wallpapers = getWallpapers(isDark);
+  const wallpapers = getWallpapers(isDark, template);
 
   const renderTemplate = (templateId = 0) =>
     getTemplatePreviewImage(templateId, isDark ? "dark" : "light");

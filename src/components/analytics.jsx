@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
-import { Button } from "./ui/buttonNew";
+import { Button } from "./ui/button";
 import Dropdown from "./dropdown";
 import Text from "./text";
 import AnalyticsChart from "./analyticsChart";
@@ -69,7 +69,7 @@ function Analytics({ }) {
 
             <div className="flex items-center justify-between mt-1">
               <div className="flex flex-col">
-                <h1 className="text-[28px] md:text-[39px] font-inter font-[500] leading-[130%] text-df-heading-color">
+                <h1 className="text-[24px] font-semibold text-primary tracking-tight leading-tight">
                   Insights
                 </h1>
 

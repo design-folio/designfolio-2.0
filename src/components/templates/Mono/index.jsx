@@ -1538,6 +1538,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
     ),
   };
 
+  console.log(userDetails?.persona);
   return (
     <div className="w-full flex-1 flex flex-col gap-3 pb-0 pt-0 px-4 md:px-0 max-w-[640px] mx-auto">
       <div
@@ -1580,7 +1581,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
           </div>
 
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4 sm:gap-0">
-            <div>
+            <div className="min-w-0">
               <h1 className="text-[24px] font-semibold mb-0.5 tracking-tight text-[#1A1A1A] dark:text-[#F0EDE7]">
                 {introduction}
               </h1>
@@ -1588,17 +1589,16 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                 className="text-[#7A736C] dark:text-[#B5AFA5] text-base"
                 style={{ fontWeight: 450 }}
               >
-                {userDetails?.designation ||
-                  userDetails?.profession ||
-                  experiences[0]?.role ||
-                  "Portfolio"}
+                {
+                  userDetails?.persona?.label === "Others" ? userDetails?.persona?.custom : userDetails?.persona?.label
+                }
               </p>
             </div>
             <a
               href={resumeUrl || "#"}
               target={resumeUrl ? "_blank" : undefined}
               rel={resumeUrl ? "noopener noreferrer" : undefined}
-              className="text-[13px] font-medium flex items-center gap-1.5 border-b border-[#1A1A1A] dark:border-[#F0EDE7] pb-0.5 hover:opacity-70 transition-opacity w-fit group/download text-[#1A1A1A] dark:text-[#F0EDE7]"
+              className="text-[13px] font-medium flex items-center gap-1.5 border-b border-[#1A1A1A] dark:border-[#F0EDE7] pb-0.5 hover:opacity-70 transition-opacity w-fit shrink-0 group/download text-[#1A1A1A] dark:text-[#F0EDE7]"
               onMouseEnter={() => downloadRef.current?.startAnimation()}
               onMouseLeave={() => downloadRef.current?.stopAnimation()}
               onClick={(e) => {

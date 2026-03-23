@@ -7,7 +7,8 @@ import { sidebars } from "@/lib/constant";
 import { _updateUser } from "@/network/post-request";
 import { CanvasSectionControls, CanvasSectionButton } from "./CanvasSectionControls";
 import { getPlainTextLength } from "@/lib/tiptapUtils";
-import ClampableTiptapContent from "@/components/ClampableTiptapContent";
+import SimpleTiptapRenderer from "@/components/SimpleTiptapRenderer";
+import { cn } from "@/lib/utils";
 
 function ExperienceCard({
   experience,
@@ -15,7 +16,7 @@ function ExperienceCard({
   expandedCards,
   onToggleExpand,
 }) {
-  const { setSelectedWork, openSidebar } = useGlobalContext();
+  const { setSelectedWork, openSidebar, activeSidebar, selectedWork } = useGlobalContext();
 
   const {
     role,
@@ -29,13 +30,22 @@ function ExperienceCard({
     _id,
   } = experience;
 
-  const hasDescription =
-    description && getPlainTextLength(description || "") > 0;
+  const textLength = getPlainTextLength(description || "");
+  const hasDescription = description && textLength > 0;
+  // ~150 chars ≈ 3 lines at typical card width — only clamp & show button beyond that
+  const needsExpand = textLength > 150;
+  const isExpanded = expandedCards.includes(_id);
+  // Retain bg when this card's sidebar is actively open
+  const isActive = isEditing && activeSidebar === sidebars.work && selectedWork?._id === _id;
 
   return (
     <div
       key={_id}
-      className="relative group cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 p-4 -mx-4 rounded-2xl transition-colors"
+      className={cn(
+        "relative group cursor-pointer p-4 -mx-4 rounded-2xl transition-colors",
+        "hover:bg-black/5 dark:hover:bg-white/5",
+        isActive && "bg-black/5 dark:bg-white/5"
+      )}
     >
       {isEditing && (
         <div className="absolute top-4 right-4 z-20 transition-opacity flex gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100">
@@ -65,22 +75,59 @@ function ExperienceCard({
           {role} @ {company}
         </h3>
         <div className="bg-[#F0EDE7] dark:bg-[#3A352E] px-3 py-1 rounded-full text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] w-fit whitespace-nowrap">
-          {`${startMonth} ${startYear}  — ${currentlyWorking ? "Present" : `${endMonth} ${endYear}`
-            }`}
+          {`${startMonth} ${startYear}  — ${currentlyWorking ? "Present" : `${endMonth} ${endYear}`}`}
         </div>
       </div>
       {hasDescription && (
-        <ClampableTiptapContent
-          content={description || ""}
-          mode="work"
-          enableBulletList={true}
-          maxLines={3}
-          itemId={_id}
-          expandedIds={expandedCards}
-          onToggleExpand={onToggleExpand}
-          buttonClassName="mt-2 !text-[#7A736C] dark:!text-[#B5AFA5] hover:!text-[#1A1A1A] dark:hover:!text-[#F0EDE7] text-[15px] leading-relaxed mb-4 inline-flex items-center gap-1 transition-colors"
-        />
-
+        needsExpand ? (
+          <>
+            <motion.div
+              initial={false}
+              animate={{ height: isExpanded ? "auto" : "4.875em" }}
+              transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+              className="overflow-hidden"
+            >
+              <SimpleTiptapRenderer
+                content={description || ""}
+                mode="work"
+                enableBulletList={true}
+                className="text-[#7A736C] dark:text-[#B5AFA5] text-[15px] leading-relaxed"
+                noCardStyle
+              />
+            </motion.div>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleExpand(_id);
+              }}
+              className="text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] mt-3 flex items-center gap-1.5 opacity-70 hover:opacity-100 transition-opacity"
+            >
+              {isExpanded ? "View less" : "View more"}
+              <motion.svg
+                animate={{ rotate: isExpanded ? 180 : 0 }}
+                transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+                width="10"
+                height="10"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="m6 9 6 6 6-6" />
+              </motion.svg>
+            </button>
+          </>
+        ) : (
+          <SimpleTiptapRenderer
+            content={description || ""}
+            mode="work"
+            enableBulletList={true}
+            className="text-[#7A736C] dark:text-[#B5AFA5] text-[15px] leading-relaxed"
+            noCardStyle
+          />
+        )
       )}
     </div>
   );
@@ -190,12 +237,7 @@ function CanvasCareerLadder({ isEditing }) {
         </CanvasSectionControls>
       )}
       <h2
-        className="text-[#7A736C] dark:text-[#B5AFA5] text-xs font-mono mb-6"
-        style={{
-          fontFamily: "DM Mono, monospace",
-          fontSize: "14px",
-          fontWeight: "500",
-        }}
+        className="text-[#7A736C] dark:text-[#B5AFA5] font-dm-mono font-medium text-[14px] mb-6"
       >
         CAREER LADDER
       </h2>

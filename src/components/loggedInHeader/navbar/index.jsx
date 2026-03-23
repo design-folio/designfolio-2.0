@@ -41,6 +41,7 @@ import Cookies from "js-cookie";
 import queryClient from "@/network/queryClient";
 import { removeCursor } from "@/lib/cursor";
 import MemoDFLogoV2 from "@/components/icons/DFLogoV2";
+import Link from "next/link";
 
 const MACOS_ROUTES = ["/builder", "/project/[id]/editor", "/project/[id]/preview"];
 
@@ -130,7 +131,9 @@ export default function Navbar() {
     <div className="px-2 md:px-2 py-2 flex items-center justify-between gap-4 md:gap-8">
       {/* Logo + mode switcher */}
       <div className="flex items-center gap-3">
-        <MemoDFLogoV2 className="flex-shrink-0" />
+        <Link href="/builder">
+          <MemoDFLogoV2 className="flex-shrink-0" />
+        </Link>
         <div className="hidden md:block">
           <FluidDropdown />
         </div>

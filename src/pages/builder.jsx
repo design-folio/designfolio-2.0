@@ -226,7 +226,7 @@ export default function Index() {
     open: !!activeSidebar,
     onOpenChange: (open) => !open && closeSidebar(true),
     style: {
-      "--sidebar-width": getSidebarShiftWidth(lastSidebarRef.current) || "400px",
+      "--sidebar-width": getSidebarShiftWidth(lastSidebarRef.current || activeSidebar) || "400px",
     },
     defaultOpen: false,
   };

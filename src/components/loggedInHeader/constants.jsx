@@ -1,3 +1,5 @@
+import { TEMPLATE_IDS } from "@/lib/templates";
+
 export const cursors = [
   {
     id: 1,
@@ -33,7 +35,7 @@ export const cursors = [
   },
 ];
 
-export function getWallpapers(isDark) {
+export function getWallpapers(isDark, templateId) {
   const wpPath = isDark ? "/wallpaper/darkui" : "/wallpaper";
 
   const wallpaperImage = (src) => (
@@ -43,7 +45,7 @@ export function getWallpapers(isDark) {
     />
   );
 
-  return [
+  const wallpapers = [
     {
       id: 1,
       value: 0,
@@ -60,6 +62,11 @@ export function getWallpapers(isDark) {
     { id: 5, value: 5, item: wallpaperImage(`${wpPath}/wall5.png`) },
     { id: 6, value: 6, item: wallpaperImage(`${wpPath}/wall6.png`) },
     { id: 7, value: 7, item: wallpaperImage(`${wpPath}/wall7.png`) },
-    { id: 8, value: 8, item: wallpaperImage(`${wpPath}/wall8.png`) },
   ];
+
+  if (templateId === TEMPLATE_IDS.RETRO_OS) {
+    wallpapers.push({ id: 8, value: 8, item: wallpaperImage(`${wpPath}/wall8.png`) });
+  }
+
+  return wallpapers;
 }

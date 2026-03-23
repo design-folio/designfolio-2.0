@@ -71,9 +71,7 @@ export default function Index({ initialUserDetails }) {
   const wp = finalUserDetails?.wallpaper;
   const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
   const currentTheme = resolvedTheme || theme || (finalUserDetails?.theme == 1 ? "dark" : "light");
-  const wallpaperUrl = wpValue && wpValue !== 0
-    ? getWallpaperUrl(wpValue, currentTheme)
-    : null;
+  const wallpaperUrl = getWallpaperUrl(wpValue ?? 0, currentTheme, finalUserDetails?.template);
   const ProBadge = !finalUserDetails?.pro && (
     <div
       className="text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] xl:block cursor-pointer mb-[120px] lg:m-0"

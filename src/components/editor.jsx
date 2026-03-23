@@ -37,6 +37,10 @@ export default function Editor({ edit, projectDetails, refetchProjectDetail }) {
           <div className={isMono ? "px-5 md:px-8 py-6" : ""}>
             {projectDetails.project.contentVersion === 2 ? (
               <TiptapEditor
+                classNames={{
+                  editor: isMono ? 'bg-background' : '',
+                  wrapper: isMono ? 'p-0 md:p-0' : '',
+                }}
                 projectDetails={projectDetails.project}
                 userDetails={userDetails}
                 setUserDetails={setUserDetails}

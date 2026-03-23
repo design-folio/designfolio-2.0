@@ -1,5 +1,5 @@
 import { setCursorvalue } from "@/lib/cursor";
-import { getWallpaperUrl, hasNoWallpaper } from "@/lib/wallpaper";
+import { getWallpaperUrl, hasNoWallpaper, extractWallpaperValue } from "@/lib/wallpaper";
 import { useRouter } from "next/router";
 import { mapPendingPortfolioToUpdatePayload } from "@/lib/mapPendingPortfolioToUpdatePayload";
 import { _getDomainDetails, _getUserDetails, _getPersonas, _getTools } from "@/network/get-request";
@@ -280,11 +280,8 @@ export const GlobalProvider = ({ children }) => {
     const wp = wallpaper;
     const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
     const currentTheme = resolvedTheme || theme;
-
-    return wpValue && wpValue !== 0
-      ? getWallpaperUrl(wpValue, currentTheme)
-      : null;
-  }, [wallpaper, resolvedTheme, theme]);
+    return getWallpaperUrl(wpValue ?? 0, currentTheme, template);
+  }, [wallpaper, resolvedTheme, theme, template]);
 
   const fetchDomainDetails = () => {
     _getDomainDetails().then((res) => {
@@ -450,48 +447,44 @@ export const GlobalProvider = ({ children }) => {
     });
   };
 
-  const changeTemplate = (template) => {
-    if (template === 4) {
+  const changeTemplate = (newTemplate) => {
+    if (newTemplate === 4) {
       setTheme("light");
     }
     setIsLoadingTemplate(true);
 
-    const isSwitchingToMacOS = template === 4 && userDetails?.template !== 4;
-    const payload = { template };
-    if (template === 4) {
+    const isSwitchingFromMacOS = userDetails?.template === 4 && newTemplate !== 4;
+    const previousTemplate = template;
+
+    // Optimistic update — template state drives wallpaperUrl immediately
+    setTemplate(newTemplate);
+
+    const payload = { template: newTemplate };
+    if (newTemplate === 4) {
       payload.theme = 0;
     }
-    if (isSwitchingToMacOS) {
-      const existingEffects = userDetails?.wallpaper?.effects;
-      const defaultEffects = {
-        blur: 0,
-        effectType: 'blur',
-        grainIntensity: 25,
-        motion: true
-      };
-      payload.wallpaper = {
-        value: 8,
-        effects: existingEffects || defaultEffects
-      };
+    // Legacy cleanup: if user has 8 stored and is leaving Retro OS, reset to 0 in DB
+    if (isSwitchingFromMacOS) {
+      const currentWpValue = extractWallpaperValue(userDetails?.wallpaper);
+      if (currentWpValue === 8) {
+        payload.wallpaper = { value: 0 };
+        setWallpaper(0); // optimistic local reset
+      }
     }
 
     _updateUser(payload)
       .then((res) => {
         const updatedUser = res?.data?.user;
-        setTemplate(template);
         updateCache("userDetails", updatedUser);
-        const merge = { template };
-        if (template === 4) merge.theme = 0;
+        const merge = { template: newTemplate };
+        if (newTemplate === 4) merge.theme = 0;
         if (updatedUser?.wallpaper) merge.wallpaper = updatedUser.wallpaper;
         setUserDetails((prev) => ({ ...prev, ...merge }));
-        if (isSwitchingToMacOS && updatedUser?.wallpaper) {
-          const wp = updatedUser.wallpaper;
-          const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
-          setWallpaper(wpValue !== undefined ? wpValue : 8);
-        }
       })
       .catch((error) => {
         console.error("Error changing template:", error);
+        // Roll back optimistic update on failure
+        setTemplate(previousTemplate);
       })
       .finally(() => {
         setIsLoadingTemplate(false);

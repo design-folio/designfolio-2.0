@@ -6,7 +6,8 @@ import { useGlobalContext } from "@/context/globalContext";
 import { sidebars } from "@/lib/constant";
 import { _updateUser } from "@/network/post-request";
 import { CanvasSectionControls, CanvasSectionButton } from "./CanvasSectionControls";
-import ClampableTiptapContent from "@/components/ClampableTiptapContent";
+import { getPlainTextLength } from "@/lib/tiptapUtils";
+import SimpleTiptapRenderer from "@/components/SimpleTiptapRenderer";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 function getTextFromTiptap(node) {
@@ -81,6 +82,10 @@ function CanvasTestimonialsSection({ isEditing }) {
   );
 
   const review = reviews[currentIndex];
+  const reviewTextLength = getPlainTextLength(review?.description || "");
+  const needsExpand = reviewTextLength > 150;
+  const reviewId = review?._id ?? `review-${currentIndex}`;
+  const isExpanded = expandedReviewIds.includes(reviewId);
 
   return (
     <motion.div
@@ -112,12 +117,7 @@ function CanvasTestimonialsSection({ isEditing }) {
         </CanvasSectionControls>
       )}
       <h2
-        className="text-[#7A736C] dark:text-[#B5AFA5] text-xs font-mono mb-6"
-        style={{
-          fontFamily: "DM Mono, monospace",
-          fontSize: "14px",
-          fontWeight: "500",
-        }}
+        className="text-[#7A736C] dark:text-[#B5AFA5] font-dm-mono font-medium text-[14px] mb-6"
       >
         TESTIMONIALS
       </h2>
@@ -169,7 +169,7 @@ function CanvasTestimonialsSection({ isEditing }) {
                 className="group border border-[#E5D7C4] dark:border-white/10 p-6 rounded-2xl bg-white/50 dark:bg-[#2A2520]/50 hover:bg-white dark:hover:bg-[#35302A] transition-colors relative"
               >
                 {isEditing && (
-                  <div className="absolute top-4 right-4 z-20 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                  <div className="absolute top-4 right-4 z-20 transition-opacity flex gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100">
                     <Button
                       variant="outline"
                       size="sm"
@@ -197,16 +197,63 @@ function CanvasTestimonialsSection({ isEditing }) {
                   </div>
                 )}
 
-                <ClampableTiptapContent
-                  content={review?.description || ""}
-                  mode="review"
-                  enableBulletList={false}
-                  maxLines={3}
-                  itemId={review?._id ?? `review-${currentIndex}`}
-                  expandedIds={expandedReviewIds}
-                  onToggleExpand={toggleExpandReview}
-                  className="font-inter text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed mb-6 italic"
-                />
+                <div className="mb-6 relative z-10">
+                  <span className="text-[#7A736C] dark:text-[#B5AFA5] text-[18px] leading-none align-top">
+                    "
+                  </span>
+                  {needsExpand ? (
+                    <>
+                      <motion.div
+                        initial={false}
+                        animate={{ height: isExpanded ? "auto" : "4.875em" }}
+                        transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+                        className="block overflow-hidden"
+                      >
+                        <SimpleTiptapRenderer
+                          content={review?.description || ""}
+                          mode="review"
+                          enableBulletList={false}
+                          className="text-[#7A736C] dark:text-[#B5AFA5] text-[15px] leading-relaxed"
+                          noCardStyle
+                        />
+                      </motion.div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleExpandReview(reviewId);
+                        }}
+                        className="text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] mt-3 flex items-center gap-1.5 opacity-70 hover:opacity-100 transition-opacity"
+                      >
+                        {isExpanded ? "View less" : "View more"}
+                        <motion.svg
+                          animate={{ rotate: isExpanded ? 180 : 0 }}
+                          transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+                          width="10"
+                          height="10"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="m6 9 6 6 6-6" />
+                        </motion.svg>
+                      </button>
+                    </>
+                  ) : (
+                    <SimpleTiptapRenderer
+                      content={review?.description || ""}
+                      mode="review"
+                      enableBulletList={false}
+                      className="inline text-[#7A736C] dark:text-[#B5AFA5] text-[15px] leading-relaxed"
+                      noCardStyle
+                    />
+                  )}
+                  <span className="text-[#7A736C] dark:text-[#B5AFA5] text-[18px] leading-none align-top">
+                    "
+                  </span>
+                </div>
 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
@@ -230,10 +277,28 @@ function CanvasTestimonialsSection({ isEditing }) {
                     </Avatar>
 
                     <div>
-                      <h4 className="font-medium text-[14px]">{review.name}</h4>
-                      <p className="text-[13px] text-[#7A736C] dark:text-[#B5AFA5]">
-                        {review.company}
-                      </p>
+                      <h4 className="font-medium text-[#1A1A1A] dark:text-[#F0EDE7] text-[14px]">
+                        {review.name}
+                      </h4>
+                      <div className="flex items-center gap-1.5 mt-0.5">
+                        {review?.linkedinLink && review?.linkedinLink?.trim() !== "" && (
+                          <a
+                            href={review.linkedinLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[#0077b5] opacity-60 hover:opacity-100 transition-opacity"
+                            onClick={(e) => e.stopPropagation()}
+                            aria-label={`Open ${review.name}'s LinkedIn`}
+                          >
+                            <svg className="w-[13px] h-[13px]" viewBox="0 0 24 24" fill="currentColor">
+                              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                            </svg>
+                          </a>
+                        )}
+                        <p className="text-[#7A736C] dark:text-[#B5AFA5] text-[13px]">
+                          {review.company}
+                        </p>
+                      </div>
                     </div>
                   </div>
                   <button

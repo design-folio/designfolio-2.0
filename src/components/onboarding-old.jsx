@@ -4,8 +4,9 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import useImageCompression from "@/hooks/useImageCompression";
 import { useGlobalContext } from "@/context/globalContext";
-import { _getSkills, _getTools } from "@/network/get-request";
+import { _getSkills, _getTools, _getPersonas } from "@/network/get-request";
 import { _updateUser } from "@/network/post-request";
+import RoleGrid from "./RoleGrid";
 import ProgressBar from "./ProgressBar";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -61,6 +62,14 @@ const textareaClass =
   "focus-visible:outline-none focus-visible:bg-transparent focus-visible:ring-2 focus-visible:ring-black/10 dark:focus-visible:ring-white/10 focus-visible:border-black/20 dark:focus-visible:border-white/20 " +
   "disabled:cursor-not-allowed disabled:opacity-50";
 
+function normalizePersona(p) {
+  return {
+    _id: p._id || p.id,
+    label: p.label || p.name || p.title,
+    image: p.image || "/onboarding-animated-icons/others.png",
+  };
+}
+
 export default function Onboarding() {
   const { userDetails, step, setStep, closeModal, setUserDetails, updateCache } = useGlobalContext();
   const { theme } = useTheme();
@@ -69,6 +78,13 @@ export default function Onboarding() {
   const [toolsOptions, setToolsOptions] = useState([]);
   const [isLoadingModal, setIsLoadingModalType] = useState(true);
   const [loading, setLoading] = useState(false);
+
+  // Persona state
+  const [roles, setRoles] = useState([]);
+  const [selectedRole, setSelectedRole] = useState("");
+  const [selectedPersonaId, setSelectedPersonaId] = useState("");
+  const [customRole, setCustomRole] = useState("");
+  const [personaError, setPersonaError] = useState("");
 
   const { compress, compressedImage, compressionProgress } = useImageCompression();
   const formikRef = useRef(null);
@@ -122,7 +138,7 @@ export default function Onboarding() {
     scrollToTop();
   };
 
-  const isLastStep = step === 2;
+  const isLastStep = step === 3;
 
   const handleImageChange = (event, setFieldValue) => {
     const file = event.currentTarget.files[0];
@@ -146,8 +162,28 @@ export default function Onboarding() {
 
   const handleSubmit = (values, actions) => {
     if (isLastStep) {
+      if (selectedRole === "Others" && !customRole.trim()) {
+        setPersonaError("Please tell us your role.");
+        actions.setSubmitting(false);
+        return;
+      }
+      setPersonaError("");
+
       const cleanSkills = values.expertise?.map(({ selected, ...rest }) => rest) || [];
-      const payload = { tools: values.selectedTools, skills: cleanSkills, introduction: values?.introduction, bio: values?.bio };
+      const persona = selectedRole
+        ? {
+            value: selectedPersonaId,
+            label: selectedRole,
+            ...(selectedRole === "Others" && { __isNew__: true, label: customRole.trim() }),
+          }
+        : undefined;
+      const payload = {
+        tools: values.selectedTools,
+        skills: cleanSkills,
+        introduction: values?.introduction,
+        bio: values?.bio,
+        ...(persona && { persona }),
+      };
       if (values?.picture) {
         const reader = new FileReader();
         reader.onloadend = () => {
@@ -172,6 +208,40 @@ export default function Onboarding() {
     setTimeout(() => setIsLoadingModalType(false), 1000);
   }, []);
 
+  // Fetch personas
+  useEffect(() => {
+    _getPersonas()
+      .then((res) => {
+        const personas = res?.data?.personas || [];
+        if (Array.isArray(personas)) setRoles(personas.map(normalizePersona));
+      })
+      .catch(() => {});
+  }, []);
+
+  // Prefill persona from userDetails
+  useEffect(() => {
+    if (!userDetails?.persona || roles.length === 0) return;
+    const { persona } = userDetails;
+    if (persona?.value && persona?.label) {
+      const isCustom = persona.__isNew__ === true || persona.label === "Others" || !!persona.custom;
+      if (isCustom) {
+        setSelectedRole("Others");
+        setCustomRole(persona.custom || (persona.label === "Others" ? "" : persona.label));
+        setSelectedPersonaId(persona.value);
+      } else {
+        const matched = roles.find((r) => r._id === persona.value) || roles.find((r) => r.label === persona.label);
+        if (matched) {
+          setSelectedRole(matched.label);
+          setSelectedPersonaId(matched._id);
+        } else {
+          setSelectedRole("Others");
+          setCustomRole(persona.label);
+          setSelectedPersonaId(persona.value);
+        }
+      }
+    }
+  }, [roles, userDetails?.persona]);
+
   return (
     <motion.div
       animate={isLoadingModal ? "loading" : "default"}
@@ -187,11 +257,14 @@ export default function Onboarding() {
           <div className="p-5 lg:p-6">
             <div className="mb-4 flex gap-3">
               <ProgressBar progress={100} />
-              <ProgressBar progress={step == 2 ? 100 : 0} bg="linear-gradient(to right, #F26855, #EC7DFD)" />
+              <ProgressBar progress={step >= 2 ? 100 : 0} bg="linear-gradient(to right, #F26855, #EC7DFD)" />
+              <ProgressBar progress={step === 3 ? 100 : 0} bg="linear-gradient(to right, #6EE7B7, #3B82F6)" />
             </div>
             {userDetails && userDetails?.skills?.length !== 0 && (
               <div className="flex justify-between items-center">
-                <Text size="p-small" className="font-semibold">Update profile</Text>
+                <Text size="p-small" className="font-semibold">
+                  {step === 1 ? "Update profile" : step === 2 ? "Skills & Tools" : "Your Role"}
+                </Text>
                 <Button variant="outline" size="icon" type="button" onClick={closeModal}>
                   <CloseIcon className="text-foreground/60" />
                 </Button>
@@ -200,10 +273,10 @@ export default function Onboarding() {
             {userDetails && userDetails?.skills?.length == 0 && (
               <>
                 <Text size="p-medium" className="font-semibold text-center mb-2">
-                  {step == 1 ? "Welcome to designfolio" : "Your top skills, roles & tools?"}
+                  {step === 1 ? "Welcome to designfolio" : step === 2 ? "Your top skills, roles & tools?" : "What describes you best?"}
                 </Text>
                 <Text size="p-small" className="font-inter font-normal text-center">
-                  {step == 1 ? "A little bit more about you" : "Choose your superpowers"}
+                  {step === 1 ? "A little bit more about you" : step === 2 ? "Choose your superpowers" : "Help us tailor your experience"}
                 </Text>
               </>
             )}
@@ -212,7 +285,7 @@ export default function Onboarding() {
           <Formik
             initialValues={initialValues}
             innerRef={formikRef}
-            validationSchema={step === 1 ? StepOneValidationSchema : StepTwoValidationSchema}
+            validationSchema={step === 1 ? StepOneValidationSchema : step === 2 ? StepTwoValidationSchema : undefined}
             onSubmit={handleSubmit}
           >
             {({ setFieldValue, values, errors, touched }) => (
@@ -312,6 +385,27 @@ export default function Onboarding() {
                           />
                         ))}
                       </div>
+                    </div>
+                  )}
+
+                  {step === 3 && (
+                    <div className="mb-[18px]">
+                      <RoleGrid
+                        roles={roles}
+                        selectedRole={selectedRole}
+                        onSelect={(role) => {
+                          setSelectedRole(role);
+                          setPersonaError("");
+                          const persona = roles.find((r) => r.label === role);
+                          if (persona?._id) setSelectedPersonaId(persona._id);
+                        }}
+                        customRole={customRole}
+                        setCustomRole={(val) => {
+                          setCustomRole(val);
+                          if (val.trim()) setPersonaError("");
+                        }}
+                        message={personaError}
+                      />
                     </div>
                   )}
                 </div>

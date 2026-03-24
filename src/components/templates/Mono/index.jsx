@@ -690,7 +690,10 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                           <motion.div
                             initial={{ opacity: 0, filter: "blur(10px)" }}
                             animate={{ opacity: 1, filter: "blur(0px)" }}
-                            transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+                            transition={{
+                              duration: 0.5,
+                              ease: [0.23, 1, 0.32, 1],
+                            }}
                             className="text-[#7A736C] dark:text-[#B5AFA5] text-[15px] leading-relaxed break-words whitespace-normal"
                           >
                             <SimpleTiptapRenderer
@@ -1260,7 +1263,9 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
             <motion.div
               initial={{ rotate: -8, x: -120, y: 0 }}
               whileHover={{ rotate: -2, scale: 1.1, zIndex: 50 }}
-              onClick={() => storyImages[0] && setSelectedStoryImage(storyImages[0])}
+              onClick={() =>
+                storyImages[0] && setSelectedStoryImage(storyImages[0])
+              }
               className="absolute w-32 h-40 rounded-xl overflow-hidden border-4 border-white dark:border-[#2A2520] shadow-lg z-0 cursor-pointer"
             >
               <img
@@ -1272,7 +1277,9 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
             <motion.div
               initial={{ rotate: 12, x: -40, y: 15 }}
               whileHover={{ rotate: 5, scale: 1.1, zIndex: 50 }}
-              onClick={() => storyImages[1] && setSelectedStoryImage(storyImages[1])}
+              onClick={() =>
+                storyImages[1] && setSelectedStoryImage(storyImages[1])
+              }
               className="absolute w-36 h-36 rounded-xl overflow-hidden border-4 border-white dark:border-[#2A2520] shadow-lg z-10 cursor-pointer"
             >
               <img
@@ -1284,7 +1291,9 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
             <motion.div
               initial={{ rotate: -5, x: 40, y: -10 }}
               whileHover={{ rotate: 0, scale: 1.1, zIndex: 50 }}
-              onClick={() => storyImages[2] && setSelectedStoryImage(storyImages[2])}
+              onClick={() =>
+                storyImages[2] && setSelectedStoryImage(storyImages[2])
+              }
               className="absolute w-32 h-40 rounded-xl overflow-hidden border-4 border-white dark:border-[#2A2520] shadow-lg z-20 cursor-pointer"
             >
               <img
@@ -1296,7 +1305,9 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
             <motion.div
               initial={{ rotate: 8, x: 120, y: 20 }}
               whileHover={{ rotate: 3, scale: 1.1, zIndex: 50 }}
-              onClick={() => storyImages[3] && setSelectedStoryImage(storyImages[3])}
+              onClick={() =>
+                storyImages[3] && setSelectedStoryImage(storyImages[3])
+              }
               className="absolute w-36 h-36 rounded-xl overflow-hidden border-4 border-white dark:border-[#2A2520] shadow-lg z-30 cursor-pointer"
             >
               <img
@@ -1538,7 +1549,6 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
     ),
   };
 
-  console.log(userDetails?.persona);
   return (
     <div className="w-full flex-1 flex flex-col gap-3 pb-0 pt-0 px-4 md:px-0 max-w-[640px] mx-auto">
       <div
@@ -1581,7 +1591,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
           </div>
 
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4 sm:gap-0">
-            <div className="min-w-0">
+            <div>
               <h1 className="text-[24px] font-semibold mb-0.5 tracking-tight text-[#1A1A1A] dark:text-[#F0EDE7]">
                 {introduction}
               </h1>
@@ -1589,16 +1599,17 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                 className="text-[#7A736C] dark:text-[#B5AFA5] text-base"
                 style={{ fontWeight: 450 }}
               >
-                {
-                  userDetails?.persona?.label === "Others" ? userDetails?.persona?.custom : userDetails?.persona?.label
-                }
+                {userDetails?.designation ||
+                  userDetails?.profession ||
+                  experiences[0]?.role ||
+                  "Portfolio"}
               </p>
             </div>
             <a
               href={resumeUrl || "#"}
               target={resumeUrl ? "_blank" : undefined}
               rel={resumeUrl ? "noopener noreferrer" : undefined}
-              className="text-[13px] font-medium flex items-center gap-1.5 border-b border-[#1A1A1A] dark:border-[#F0EDE7] pb-0.5 hover:opacity-70 transition-opacity w-fit shrink-0 group/download text-[#1A1A1A] dark:text-[#F0EDE7]"
+              className="text-[13px] font-medium flex items-center gap-1.5 border-b border-[#1A1A1A] dark:border-[#F0EDE7] pb-0.5 hover:opacity-70 transition-opacity w-fit group/download text-[#1A1A1A] dark:text-[#F0EDE7]"
               onMouseEnter={() => downloadRef.current?.startAnimation()}
               onMouseLeave={() => downloadRef.current?.stopAnimation()}
               onClick={(e) => {

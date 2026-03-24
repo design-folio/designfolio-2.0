@@ -39,6 +39,7 @@ import { getSidebarShiftWidth } from "@/lib/constant";
 import Canvas from "@/components/templates/Canvas";
 import Mono from "@/components/templates/Mono";
 import Chat from "@/components/templates/Chat";
+import Spotlight from "@/components/templates/Spotlight";
 
 export default function Index() {
   const {
@@ -210,7 +211,8 @@ export default function Index() {
         return <Chat isEditing={true} />;
         return <Builder2 edit />;
       case 2:
-        return <Minimal userDetails={userDetails} edit />;
+        return <Spotlight isEditing={true} />;
+      // return <Minimal userDetails={userDetails} edit />;
       case 3:
         // return <Portfolio userDetails={userDetails} edit />;
         return <Mono isEditing={true} />;
@@ -226,7 +228,9 @@ export default function Index() {
     open: !!activeSidebar,
     onOpenChange: (open) => !open && closeSidebar(true),
     style: {
-      "--sidebar-width": getSidebarShiftWidth(lastSidebarRef.current || activeSidebar) || "400px",
+      "--sidebar-width":
+        getSidebarShiftWidth(lastSidebarRef.current || activeSidebar) ||
+        "400px",
     },
     defaultOpen: false,
   };
@@ -283,6 +287,8 @@ export default function Index() {
     );
   }
 
+  const t = userDetails?.template;
+
   return (
     <SidebarProvider {...sidebarProviderProps}>
       <div className="flex-1 min-w-0">
@@ -298,19 +304,22 @@ export default function Index() {
           className={cn(
             "min-h-screen",
             hasNoWallpaper(wallpaper) &&
-            "bg-background flex justify-center font-inter text-foreground selection:bg-foreground selection:text-background transition-colors duration-700",
-        )}
-      >
-        <div
-          className={cn(
-            "mx-auto w-full",
-            userDetails?.template !== 4 && "px-2 md:px-4 lg:px-0",
-            userDetails?.template === 3 || userDetails?.template === 0
-              ? "pt-24 pb-0"
-              : userDetails?.template !== 4 && "py-[94px] md:py-[124px]",
-            userDetails?.template !== 3 &&
-              userDetails?.template !== 4 &&
-              "max-w-[848px]",
+              "bg-background flex justify-center font-inter text-foreground selection:bg-foreground selection:text-background transition-colors duration-700",
+          )}
+        >
+          <div
+            className={cn(
+              "mx-auto w-full",
+
+              t === 2
+                ? "pt-24"
+                : [
+                    t !== 4 && "px-2 md:px-4 lg:px-0",
+                    t === 3 || t === 0
+                      ? "pt-24 pb-0"
+                      : t !== 4 && "py-[94px] md:py-[124px]",
+                    t !== 3 && t !== 4 && "max-w-[848px]",
+                  ],
             )}
           >
             {/* //HACK: Allow all templates to be free */}

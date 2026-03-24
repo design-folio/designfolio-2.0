@@ -1,37 +1,40 @@
-import '@/styles/globals.scss';
-import '@/styles/tiptap.css';
-import '@/styles/templates/canvas.css';
-import '@/styles/templates/mono.css';
-import '@/styles/templates/retroos.css';
-import localFont from 'next/font/local';
-import { Inter, Kalam, Cedarville_Cursive } from 'next/font/google';
-import Header from '@/components/header';
-import { useEffect } from 'react';
-import Cookies from 'js-cookie';
-import App from 'next/app';
-import { ThemeProvider, useTheme } from 'next-themes';
-import { GlobalProvider } from '@/context/globalContext';
-// import queryClient from "@/network/queryClient";
-import { GoogleOAuthProvider } from '@react-oauth/google';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { HydrationBoundary, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import queryClient from '@/network/queryClient';
-import Head from 'next/head';
-import UpgradeModal from '@/components/upgradeModal';
-import { CursorTooltipProvider } from '@/context/cursorTooltipContext';
-import { CursorPill } from '@/components/CursorPill';
-import posthog from '@/lib/postHog';
-import { PostHogProvider } from '@posthog/react';
-import { usePostHogEvent } from '@/hooks/usePostHogEvent';
-import { POSTHOG_EVENT_NAMES } from '@/lib/posthogEventNames';
+import "@/styles/globals.scss";
+import "@/styles/tiptap.css";
+import "@/styles/templates/canvas.css";
+import "@/styles/templates/mono.css";
+import "@/styles/templates/retroos.css";
+import "@/styles/templates/spotlight.css";
+import localFont from "next/font/local";
 import {
-
-  DM_Mono,
+  Inter,
+  Kalam,
+  Cedarville_Cursive,
+  Pixelify_Sans,
+  JetBrains_Mono,
 } from "next/font/google";
+import Header from "@/components/header";
+import { useEffect } from "react";
+import Cookies from "js-cookie";
+import App from "next/app";
+import { ThemeProvider, useTheme } from "next-themes";
+import { GlobalProvider } from "@/context/globalContext";
+// import queryClient from "@/network/queryClient";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { HydrationBoundary, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import queryClient from "@/network/queryClient";
+import Head from "next/head";
+import UpgradeModal from "@/components/upgradeModal";
+import { CursorTooltipProvider } from "@/context/cursorTooltipContext";
+import { CursorPill } from "@/components/CursorPill";
+import posthog from "@/lib/postHog";
+import { PostHogProvider } from "@posthog/react";
+import { usePostHogEvent } from "@/hooks/usePostHogEvent";
+import { POSTHOG_EVENT_NAMES } from "@/lib/posthogEventNames";
+import { DM_Mono } from "next/font/google";
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
-
 
 const dmMono = DM_Mono({
   subsets: ["latin"],
@@ -41,126 +44,137 @@ const dmMono = DM_Mono({
 });
 
 const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
-  weight: ['400', '500', '600', '700'],
+  subsets: ["latin"],
+  variable: "--font-inter",
+  weight: ["400", "500", "600", "700"],
 });
 
 const kalam = Kalam({
-  subsets: ['latin'],
-  variable: '--font-kalam',
-  weight: ['400', '700'],
+  subsets: ["latin"],
+  variable: "--font-kalam",
+  weight: ["400", "700"],
 });
 
 const cedarvilleCursive = Cedarville_Cursive({
-  subsets: ['latin'],
-  variable: '--font-cedarville',
-  weight: ['400'],
+  subsets: ["latin"],
+  variable: "--font-cedarville",
+  weight: ["400"],
+});
+
+const pixelifySans = Pixelify_Sans({
+  subsets: ["latin"],
+  variable: "--font-pixelify-sans",
+  weight: ["400", "500", "600", "700"],
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-jetbrains-mono",
+  weight: ["400", "500", "600", "700"],
 });
 
 const satoshi = localFont({
   src: [
     {
-      path: './fonts/satoshi/Satoshi-Regular.ttf',
-      weight: '400',
-      style: 'normal',
+      path: "./fonts/satoshi/Satoshi-Regular.ttf",
+      weight: "400",
+      style: "normal",
     },
     {
-      path: './fonts/satoshi/Satoshi-Medium.ttf',
-      weight: '500',
-      style: 'normal',
+      path: "./fonts/satoshi/Satoshi-Medium.ttf",
+      weight: "500",
+      style: "normal",
     },
     {
-      path: './fonts/satoshi/Satoshi-Bold.ttf',
-      weight: '700',
-      style: 'normal',
+      path: "./fonts/satoshi/Satoshi-Bold.ttf",
+      weight: "700",
+      style: "normal",
     },
     {
-      path: './fonts/sf-pro/SF-Pro-Text-BoldItalic.otf',
-      weight: '700',
-      style: 'italic',
+      path: "./fonts/sf-pro/SF-Pro-Text-BoldItalic.otf",
+      weight: "700",
+      style: "italic",
     },
     {
-      path: './fonts/satoshi/Satoshi-Black.ttf',
-      weight: '800',
-      style: 'normal',
+      path: "./fonts/satoshi/Satoshi-Black.ttf",
+      weight: "800",
+      style: "normal",
     },
   ],
-  variable: '--font-satoshi',
+  variable: "--font-satoshi",
 });
 
 const sfpro = localFont({
   src: [
     {
-      path: './fonts/sf-pro/SF-Pro-Text-Regular.otf',
-      weight: '400',
-      style: 'normal',
+      path: "./fonts/sf-pro/SF-Pro-Text-Regular.otf",
+      weight: "400",
+      style: "normal",
     },
     {
-      path: './fonts/sf-pro/SF-Pro-Text-Medium.otf',
-      weight: '500',
-      style: 'normal',
+      path: "./fonts/sf-pro/SF-Pro-Text-Medium.otf",
+      weight: "500",
+      style: "normal",
     },
     {
-      path: './fonts/sf-pro/SF-Pro-Text-Semibold.otf',
-      weight: '600',
-      style: 'normal',
+      path: "./fonts/sf-pro/SF-Pro-Text-Semibold.otf",
+      weight: "600",
+      style: "normal",
     },
     {
-      path: './fonts/sf-pro/SF-Pro-Text-Bold.otf',
-      weight: '700',
-      style: 'normal',
+      path: "./fonts/sf-pro/SF-Pro-Text-Bold.otf",
+      weight: "700",
+      style: "normal",
     },
   ],
-  variable: '--font-sfpro',
+  variable: "--font-sfpro",
 });
 const gsans = localFont({
   src: [
     {
-      path: './fonts/general-sans/GeneralSans-Light.otf',
-      weight: '300',
-      style: 'normal',
+      path: "./fonts/general-sans/GeneralSans-Light.otf",
+      weight: "300",
+      style: "normal",
     },
     {
-      path: './fonts/general-sans/GeneralSans-Regular.otf',
-      weight: '400',
-      style: 'normal',
+      path: "./fonts/general-sans/GeneralSans-Regular.otf",
+      weight: "400",
+      style: "normal",
     },
     {
-      path: './fonts/general-sans/GeneralSans-Medium.otf',
-      weight: '500',
-      style: 'normal',
+      path: "./fonts/general-sans/GeneralSans-Medium.otf",
+      weight: "500",
+      style: "normal",
     },
     {
-      path: './fonts/general-sans/GeneralSans-Semibold.otf',
-      weight: '600',
-      style: 'normal',
+      path: "./fonts/general-sans/GeneralSans-Semibold.otf",
+      weight: "600",
+      style: "normal",
     },
     {
-      path: './fonts/general-sans/GeneralSans-Bold.otf',
-      weight: '700',
-      style: 'normal',
+      path: "./fonts/general-sans/GeneralSans-Bold.otf",
+      weight: "700",
+      style: "normal",
     },
   ],
-  variable: '--font-gsans',
+  variable: "--font-gsans",
 });
 
 const eudoxus = localFont({
   src: [
-
     {
-      path: './fonts/exodus/EudoxusSans-Bold.ttf',
-      weight: '400',
-      style: 'normal',
+      path: "./fonts/exodus/EudoxusSans-Bold.ttf",
+      weight: "400",
+      style: "normal",
     },
 
     {
-      path: './fonts/exodus/EudoxusSans-Bold.ttf',
-      weight: '700',
-      style: 'normal',
+      path: "./fonts/exodus/EudoxusSans-Bold.ttf",
+      weight: "700",
+      style: "normal",
     },
   ],
-  variable: '--font-eudoxus',
+  variable: "--font-eudoxus",
 });
 
 function MyApp({ Component, pageProps, dfToken, hideHeader }) {
@@ -168,7 +182,7 @@ function MyApp({ Component, pageProps, dfToken, hideHeader }) {
   const phEvent = usePostHogEvent();
 
   useEffect(() => {
-    const sessionCount = Number(localStorage.getItem('session_count') || '0');
+    const sessionCount = Number(localStorage.getItem("session_count") || "0");
     const newSessionCount = sessionCount + 1;
     phEvent(POSTHOG_EVENT_NAMES.SESSION_STARTED, {
       session_number: newSessionCount,
@@ -183,7 +197,7 @@ function MyApp({ Component, pageProps, dfToken, hideHeader }) {
     //     referrer: document.referrer,
     //   });
     // }
-    localStorage.setItem('session_count', newSessionCount);
+    localStorage.setItem("session_count", newSessionCount);
   }, []);
 
   return (
@@ -223,7 +237,7 @@ function MyApp({ Component, pageProps, dfToken, hideHeader }) {
                   <CursorTooltipProvider>
                     <CursorPill />
                     <main
-                      className={`${satoshi.variable} ${sfpro.variable} ${inter.variable} ${kalam.variable} ${gsans.variable} ${eudoxus.variable} ${dmMono.variable} ${cedarvilleCursive.variable}`}
+                      className={`${satoshi.variable} ${sfpro.variable} ${inter.variable} ${kalam.variable} ${gsans.variable} ${eudoxus.variable} ${dmMono.variable} ${cedarvilleCursive.variable} ${pixelifySans.variable} ${jetbrainsMono.variable}`}
                     >
                       {
                         <Header
@@ -247,11 +261,11 @@ function MyApp({ Component, pageProps, dfToken, hideHeader }) {
   );
 }
 
-MyApp.getInitialProps = async appContext => {
+MyApp.getInitialProps = async (appContext) => {
   const appProps = await App.getInitialProps(appContext);
   const dfToken = appContext.ctx.req
-    ? appContext.ctx.req.cookies['df-token']
-    : Cookies.get('df-token');
+    ? appContext.ctx.req.cookies["df-token"]
+    : Cookies.get("df-token");
   return { ...appProps, dfToken: !!dfToken };
 };
 

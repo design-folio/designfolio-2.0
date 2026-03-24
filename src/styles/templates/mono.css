@@ -2,7 +2,7 @@
 
 /* Mono light: pure neutral grays */
 [data-template="mono"] {
-  --background: #F0EDE7;
+  --background: #f0ede7;
   --card: #ffffff;
   --secondary: #ffffff;
   --secondary-hover: #f5f5f5;

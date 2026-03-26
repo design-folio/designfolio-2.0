@@ -75,7 +75,7 @@ export default function ChatProjectsSection({
                   show={chatRevealStep < s(8)}
                 />
               </div>
-              <div className="bg-white dark:bg-[#2A2520] px-4 py-3 rounded-2xl rounded-tl-sm rounded-bl-sm text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed transition-colors duration-700 border border-black/5 dark:border-white/5 min-h-[46px] flex items-center">
+              <div className="bg-white dark:bg-[#2A2520] px-4 py-3 rounded-2xl rounded-tl-sm rounded-bl-sm text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed transition-colors duration-400 border border-black/5 dark:border-white/5 min-h-[46px] flex items-center">
                 {chatRevealStep === s(7) ? (
                   <TypingIndicator />
                 ) : (
@@ -144,7 +144,7 @@ export default function ChatProjectsSection({
                 </svg>
                 <div
                   onClick={() => router.push(getProjectHref(project._id))}
-                  className="bg-white dark:bg-[#2A2520] p-3 rounded-2xl rounded-tl-none rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5 border-t-0 w-full cursor-pointer  group/proj"
+                  className="bg-white dark:bg-[#2A2520] p-3 rounded-2xl rounded-tl-none rounded-bl-sm transition-colors duration-400 border border-black/5 dark:border-white/5 border-t-0 w-full cursor-pointer  group/proj"
                 >
                   <div className="w-full aspect-[2/1] rounded-xl overflow-hidden mb-3 relative bg-[#D5D0C6] dark:bg-[#1A1A1A]">
                     <img

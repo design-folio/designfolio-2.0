@@ -82,7 +82,7 @@ export default function ChatTestimonialsSection({
                       show={chatRevealStep < s(15)}
                     />
                   </div>
-                  <div className="bg-white dark:bg-[#2A2520] px-4 py-3 rounded-2xl rounded-tl-sm rounded-bl-sm text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed transition-colors duration-700 border border-black/5 dark:border-white/5 min-h-[46px] flex items-center">
+                  <div className="bg-white dark:bg-[#2A2520] px-4 py-3 rounded-2xl rounded-tl-sm rounded-bl-sm text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed transition-colors duration-400 border border-black/5 dark:border-white/5 min-h-[46px] flex items-center">
                     {chatRevealStep === s(14) ? (
                       <TypingIndicator />
                     ) : (
@@ -132,7 +132,7 @@ export default function ChatTestimonialsSection({
                         show={chatRevealStep < getNextLeftStep("reviews")}
                       />
                     </div>
-                    <div className="bg-white dark:bg-[#2A2520] p-4 rounded-2xl rounded-tl-sm rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5 w-full">
+                    <div className="bg-white dark:bg-[#2A2520] p-4 rounded-2xl rounded-tl-sm rounded-bl-sm transition-colors duration-400 border border-black/5 dark:border-white/5 w-full">
                       <div className="flex items-center gap-3 mb-3">
                         <div className="w-10 h-10 rounded-full overflow-hidden shrink-0">
                           <img

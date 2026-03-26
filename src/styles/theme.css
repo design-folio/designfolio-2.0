@@ -14,46 +14,5 @@
 @import "./templates/mono.css";
 @import "./templates/retroos.css";
 @import "./templates/professional.css";
-/* ─── Chatfolio / Spotlight ────────────────────────────────────────────────── */
-/* Light: same warm beige — shared tokens */
-[data-template="chatfolio"],
-[data-template="spotlight"] {
-  --card: #ffffff;
-  --secondary: #ffffff;
-  --secondary-hover: #faf8f5;
-  --secondary-border: #e0d8ce;
-  --secondary-border-hover: #c8bdb0;
-  --accent: 38 16% 88%;
-  --muted: 38 14% 90%;
-  --border: 38 15% 88%;
-  --sidebar: 0 0% 100%;
-  --sidebar-accent: 38 18% 88%;
-  --primary: #202937;
-  --primary-foreground: #ffffff;
-  --primary-hover: #35435a;
-  --ring: 217 26% 17%;
-  --sidebar-primary: 217 26% 17%;
-  --sidebar-ring: 217 26% 17%;
-}
-
-/* ─── Dark mode ───────────────────────────────────────────────────────────── */
-
-/* Chatfolio / Spotlight dark: cool dark — globals dark defaults are fine for secondary */
-[data-theme="dark"][data-template="chatfolio"],
-[data-theme="dark"][data-template="spotlight"] {
-  --card: #1d1f27;
-  --secondary: #17181d;
-  --secondary-hover: #22242b;
-  --secondary-border: #262832;
-  --secondary-border-hover: #565b6c;
-  --accent: 0 0% 16%;
-  --muted: 0 0% 16%;
-  --border: 0 0% 18%;
-  --sidebar: 223 16% 9%;
-  --sidebar-accent: 0 0% 16%;
-  --primary: #f9f9fb;
-  --primary-foreground: #202937;
-  --primary-hover: #ffffff;
-  --sidebar-primary: 210 10% 95%;
-  --sidebar-ring: 210 10% 91%;
-}
+@import "./templates/chatfolio.css";
+@import "./templates/spotlight.css";

@@ -305,7 +305,7 @@ export default function Index() {
         <main
           className={cn(
             "min-h-screen",
-            hasNoWallpaper(wallpaper) &&
+            hasNoWallpaper(wallpaper, template) &&
               "bg-background flex justify-center font-inter text-foreground selection:bg-foreground selection:text-background transition-colors duration-700",
           )}
         >

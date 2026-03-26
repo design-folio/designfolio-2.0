@@ -109,7 +109,7 @@ export default function ChatAboutSection({
               <span className="text-[11px] text-[#7A736C] dark:text-[#B5AFA5] ml-1 font-medium">
                 {userDetails?.firstName || "Me"}
               </span>
-              <div className="bg-white dark:bg-[#2A2520] p-3 sm:p-4 rounded-2xl rounded-tl-sm rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5 w-fit">
+              <div className="bg-white dark:bg-[#2A2520] p-3 sm:p-4 rounded-2xl rounded-tl-sm rounded-bl-sm transition-colors duration-400 border border-black/5 dark:border-white/5 w-fit">
                 {chatRevealStep === s(17) ? (
                   <div className="flex space-x-1.5 items-center px-1 min-h-[46px]">
                     <TypingIndicator />
@@ -180,7 +180,7 @@ export default function ChatAboutSection({
               />
             </div>
             {hasAboutDescription ? (
-              <div className="bg-white dark:bg-[#2A2520] px-4 py-3 rounded-2xl rounded-tl-sm rounded-bl-sm text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed transition-colors duration-700 border border-black/5 dark:border-white/5">
+              <div className="bg-white dark:bg-[#2A2520] px-4 py-3 rounded-2xl rounded-tl-sm rounded-bl-sm text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed transition-colors duration-400 border border-black/5 dark:border-white/5">
                 <p>
                   {aboutDescription.split("\n").map((line, i) => (
                     <span key={i}>
@@ -191,7 +191,7 @@ export default function ChatAboutSection({
                 </p>
               </div>
             ) : canEdit ? (
-              <div className="bg-white dark:bg-[#2A2520] px-4 py-3 rounded-2xl rounded-tl-sm rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5">
+              <div className="bg-white dark:bg-[#2A2520] px-4 py-3 rounded-2xl rounded-tl-sm rounded-bl-sm transition-colors duration-400 border border-black/5 dark:border-white/5">
                 <button
                   onClick={() => openSidebar?.(sidebars.about)}
                   className="flex items-center gap-2 text-[13px] text-[#7A736C] dark:text-[#B5AFA5] hover:text-[#1A1A1A] dark:hover:text-white transition-colors"
@@ -201,7 +201,7 @@ export default function ChatAboutSection({
                 </button>
               </div>
             ) : (
-              <div className="bg-white dark:bg-[#2A2520] px-4 py-3 rounded-2xl rounded-tl-sm rounded-bl-sm text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed transition-colors duration-700 border border-black/5 dark:border-white/5">
+              <div className="bg-white dark:bg-[#2A2520] px-4 py-3 rounded-2xl rounded-tl-sm rounded-bl-sm text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed transition-colors duration-400 border border-black/5 dark:border-white/5">
                 That's my story so far!
               </div>
             )}

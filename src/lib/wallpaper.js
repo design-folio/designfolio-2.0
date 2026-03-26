@@ -47,6 +47,9 @@ export const extractWallpaperValue = (wallpaper) => {
         : wallpaper;
 };
 
-export const hasNoWallpaper = (value) => {
+export const hasNoWallpaper = (value, templateId) => {
+    const isRetroOS = templateId === TEMPLATE_IDS.RETRO_OS;
+    // MacOS default (0) resolves to wall8 — not "no wallpaper"
+    if (isRetroOS && (!value || value === 0)) return false;
     return !value || value === 0 || value === null || value === undefined || value === "";
 };

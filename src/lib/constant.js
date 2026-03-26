@@ -63,7 +63,7 @@ export const SIDEBAR_SHIFT_WIDTHS = {
 };
 
 export const getSidebarShiftWidth = (activeSidebar) =>
-  SIDEBAR_SHIFT_WIDTHS[activeSidebar] ?? "0";
+  SIDEBAR_SHIFT_WIDTHS[activeSidebar] ?? "400px";
 
 // Ensure sectionOrder always contains all available sections (e.g. after adding new blocks)
 export const normalizeSectionOrder = (rawOrder, availableSections = DEFAULT_SECTION_ORDER) => {

@@ -12,15 +12,15 @@ import { useGlobalContext } from "@/context/globalContext";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { useRouter } from "next/router";
 import { modals, sidebars } from "@/lib/constant";
-import SpotlightProfileHeader from "./SpotlightProfileHeader";
-import SpotlightNavTabs from "./SpotlightNavTabs";
-import SpotlightProjectsTab from "./SpotlightProjectsTab";
-import SpotlightExperienceTab from "./SpotlightExperienceTab";
-import SpotlightAboutTab from "./SpotlightAboutTab";
-import SpotlightContactTab from "./SpotlightContactTab";
-import SpotlightTestimonialsTab from "./SpotlightTestimonialsTab";
+import ProfessionalProfileHeader from "./ProfessionalProfileHeader";
+import ProfessionalNavTabs from "./ProfessionalNavTabs";
+import ProfessionalProjectsTab from "./ProfessionalProjectsTab";
+import ProfessionalExperienceTab from "./ProfessionalExperienceTab";
+import ProfessionalAboutTab from "./ProfessionalAboutTab";
+import ProfessionalContactTab from "./ProfessionalContactTab";
+import ProfessionalTestimonialsTab from "./ProfessionalTestimonialsTab";
 
-export default function Spotlight({
+export default function Professional({
   isEditing,
   preview = false,
   publicView = false,
@@ -167,7 +167,7 @@ export default function Spotlight({
     switch (activeTab) {
       case "Projects":
         return (
-          <SpotlightProjectsTab
+          <ProfessionalProjectsTab
             isEditing={isEditing}
             visibleProjects={visibleProjects}
             onAddProject={handleAddProject}
@@ -178,7 +178,7 @@ export default function Spotlight({
         );
       case "Experience":
         return (
-          <SpotlightExperienceTab
+          <ProfessionalExperienceTab
             isEditing={isEditing}
             experiences={experiences}
             onEditExperience={handleEditExperience}
@@ -187,7 +187,7 @@ export default function Spotlight({
         );
       case "About":
         return (
-          <SpotlightAboutTab
+          <ProfessionalAboutTab
             isEditing={isEditing}
             about={about}
             skills={skills}
@@ -198,7 +198,7 @@ export default function Spotlight({
         );
       case "Contact":
         return (
-          <SpotlightContactTab
+          <ProfessionalContactTab
             isEditing={isEditing}
             socialLinks={socialLinks}
             onEditContact={handleEditContact}
@@ -206,7 +206,7 @@ export default function Spotlight({
         );
       case "Testimonials":
         return (
-          <SpotlightTestimonialsTab
+          <ProfessionalTestimonialsTab
             isEditing={isEditing}
             reviews={reviews}
             onAddReview={handleAddReview}
@@ -221,7 +221,7 @@ export default function Spotlight({
   return (
     <div className="w-full flex-1 flex flex-col gap-3 max-w-[640px] mx-auto relative min-h-screen font-['Inter'] transition-colors duration-700 bg-[#EFECE6] dark:bg-[#1A1A1A] custom-solid-x">
       <div className="w-full flex-1 flex flex-col pt-12 overflow-hidden">
-        <SpotlightProfileHeader
+        <ProfessionalProfileHeader
           isEditing={isEditing}
           avatarSrc={avatarSrc}
           displayName={displayName}
@@ -230,7 +230,10 @@ export default function Spotlight({
           currentTime={currentTime}
           onEditProfile={handleEditProfile}
         />
-        <SpotlightNavTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+        <ProfessionalNavTabs
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+        />
         <div className="flex-1">{renderActiveTab()}</div>
       </div>
     </div>

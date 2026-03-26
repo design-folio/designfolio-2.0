@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 import { format } from "date-fns";
 import CinematicThemeSwitcher from "./cinematic-theme-switcher";
-import { itemVariants } from "./spotlight-utils";
+import { itemVariants } from "./professional-utils";
 
-function SpotlightProfileHeader({
+function ProfessionalProfileHeader({
   isEditing,
   avatarSrc,
   displayName,
@@ -81,4 +81,4 @@ function SpotlightProfileHeader({
   );
 }
 
-export default memo(SpotlightProfileHeader);
+export default memo(ProfessionalProfileHeader);

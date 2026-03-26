@@ -2,7 +2,7 @@ import React, { memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 
-function SpotlightContactTab({ isEditing, socialLinks, onEditContact }) {
+function ProfessionalContactTab({ isEditing, socialLinks, onEditContact }) {
   return (
     <div className="p-4 md:p-6 pb-12 relative group/section">
       {isEditing && (
@@ -53,4 +53,4 @@ function SpotlightContactTab({ isEditing, socialLinks, onEditContact }) {
   );
 }
 
-export default memo(SpotlightContactTab);
+export default memo(ProfessionalContactTab);

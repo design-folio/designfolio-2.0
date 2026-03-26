@@ -123,7 +123,7 @@ export default function ChatHeader({ chatRevealStep, s, canEdit }) {
         <div className="absolute inset-0 flex items-center">
           <div className="w-full border-t border-dashed border-black/10 dark:border-white/10"></div>
         </div>
-        <span className="relative bg-[#EFECE6] dark:bg-[#1A1A1A] px-4 text-xs font-medium text-[#7A736C] dark:text-[#B5AFA5] transition-colors duration-700">
+        <span className="relative bg-[#EFECE6] dark:bg-[#1A1A1A] px-4 text-xs font-medium text-[#7A736C] dark:text-[#B5AFA5] transition-colors duration-400">
           {format(currentTime, "d EEE, h:mm:ss a")}
         </span>
       </motion.div>
@@ -164,7 +164,7 @@ export default function ChatHeader({ chatRevealStep, s, canEdit }) {
                 <span className="text-[11px] text-[#7A736C] dark:text-[#B5AFA5] ml-1 font-medium">
                   {userDetails?.firstName || "Me"}
                 </span>
-                <div className="bg-white dark:bg-[#2A2520] px-4 py-3 rounded-2xl rounded-bl-sm text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed transition-colors duration-700 border border-black/5 dark:border-white/5 min-h-[46px] flex items-center">
+                <div className="bg-white dark:bg-[#2A2520] px-4 py-3 rounded-2xl rounded-bl-sm text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed transition-colors duration-400 border border-black/5 dark:border-white/5 min-h-[46px] flex items-center">
                   {chatRevealStep === s(2) ? (
                     <TypingIndicator />
                   ) : (

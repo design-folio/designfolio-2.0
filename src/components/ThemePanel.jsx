@@ -430,13 +430,15 @@ const ThemePanel = ({
             >
               Background
             </TabsTrigger>
-            <TabsTrigger
-              value="blocks"
-              className="bg-transparent border-b-2 border-transparent rounded-none px-0 pb-2 data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none text-foreground/60 data-[state=active]:text-foreground font-medium transition-all"
-              data-testid={isMobile ? "tab-blocks-mobile" : "tab-blocks"}
-            >
-              Blocks
-            </TabsTrigger>
+            {!isMacOSTemplate && (
+              <TabsTrigger
+                value="blocks"
+                className="bg-transparent border-b-2 border-transparent rounded-none px-0 pb-2 data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none text-foreground/60 data-[state=active]:text-foreground font-medium transition-all"
+                data-testid={isMobile ? "tab-blocks-mobile" : "tab-blocks"}
+              >
+                Blocks
+              </TabsTrigger>
+            )}
             <TabsTrigger
               value="cursors"
               className="bg-transparent border-b-2 border-transparent rounded-none px-0 pb-2 data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none text-foreground/60 data-[state=active]:text-foreground font-medium transition-all"
@@ -661,9 +663,17 @@ const ThemePanel = ({
               )}
               data-testid={isMobile ? "button-wallpaper-none-mobile" : "button-wallpaper-none"}
             >
-              <div className="aspect-video bg-gradient-to-br from-background to-muted flex items-center justify-center pointer-events-none">
-                <span className="text-sm font-medium text-foreground/60">Default</span>
-              </div>
+              {isMacOSTemplate ? (
+                <img
+                  src={isDarkWallpapers ? '/wallpaper/darkui/wall8.png' : '/wallpaper/wall8.png'}
+                  alt="Default"
+                  className="aspect-video object-cover w-full pointer-events-none"
+                />
+              ) : (
+                <div className="aspect-video bg-gradient-to-br from-background to-muted flex items-center justify-center pointer-events-none">
+                  <span className="text-sm font-medium text-foreground/60">Default</span>
+                </div>
+              )}
               {wallpaper === 0 && (
                 <div className="absolute top-2 right-2 bg-primary-landing  text-primary-landing -foreground rounded-full p-1 pointer-events-none">
                   <svg className="w-4 h-4" fill="background" viewBox="0 0 20 20">
@@ -702,6 +712,7 @@ const ThemePanel = ({
 
             {wallpapers.map((wp, index) => {
               if (wp.value === 0) return null;
+              if (isMacOSTemplate && wp.value === 8) return null;
               return (
                 <button
                   key={index}
@@ -729,36 +740,38 @@ const ThemePanel = ({
         </div>
       </TabsContent>
 
-      <TabsContent value="blocks" className="flex-1 overflow-y-auto p-6 m-0" data-testid={isMobile ? "content-blocks-mobile" : "content-blocks"}>
-        <div className="space-y-4">
-          <div className="flex items-center justify-between mb-4">
-            <p className="text-sm font-medium text-foreground/60">Re-arrange your portfolio sections</p>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={resetSectionOrder}
-              className="h-8 px-2 text-xs gap-1.5 text-foreground/40 hover:text-foreground"
-              data-testid={isMobile ? "button-reset-blocks-mobile" : "button-reset-blocks"}
+      {!isMacOSTemplate && (
+        <TabsContent value="blocks" className="flex-1 overflow-y-auto p-6 m-0" data-testid={isMobile ? "content-blocks-mobile" : "content-blocks"}>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-sm font-medium text-foreground/60">Re-arrange your portfolio sections</p>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={resetSectionOrder}
+                className="h-8 px-2 text-xs gap-1.5 text-foreground/40 hover:text-foreground"
+                data-testid={isMobile ? "button-reset-blocks-mobile" : "button-reset-blocks"}
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                Reset
+              </Button>
+            </div>
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
             >
-              <RotateCcw className="w-3.5 h-3.5" />
-              Reset
-            </Button>
+              <SortableContext items={sectionOrder} strategy={rectSortingStrategy}>
+                <div className="space-y-4">
+                  {sectionOrder.map((id) => (
+                    <SortableSectionItem key={id} id={id} isMobile={isMobile} />
+                  ))}
+                </div>
+              </SortableContext>
+            </DndContext>
           </div>
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-          >
-            <SortableContext items={sectionOrder} strategy={rectSortingStrategy}>
-              <div className="space-y-4">
-                {sectionOrder.map((id) => (
-                  <SortableSectionItem key={id} id={id} isMobile={isMobile} />
-                ))}
-              </div>
-            </SortableContext>
-          </DndContext>
-        </div>
-      </TabsContent>
+        </TabsContent>
+      )}
 
       <TabsContent value="cursors" className="flex-1 overflow-y-auto p-6 m-0" data-testid={isMobile ? "content-cursors-mobile" : "content-cursors"}>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">

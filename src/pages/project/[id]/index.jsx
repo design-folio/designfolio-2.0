@@ -157,8 +157,7 @@ export default function Index({
   // Compute wallpaper URL for this project
   const currentTheme =
     resolvedTheme || theme || (project?.theme == 1 ? "dark" : "light");
-  const wallpaperUrl =
-    wpValue && wpValue !== 0 ? getWallpaperUrl(wpValue, currentTheme) : null;
+  const wallpaperUrl = getWallpaperUrl(wpValue ?? 0, currentTheme, effectiveTemplate);
 
   // Get wallpaper effects from project → owner → userDetails
   const effects =

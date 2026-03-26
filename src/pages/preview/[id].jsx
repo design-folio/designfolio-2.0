@@ -34,7 +34,7 @@ export default function Index({ initialUserDetails }) {
     initialData: initialUserDetails,
     enabled: !!router.query.id,
     cacheTime: 300000,
-    staleTime: 300000,
+    staleTime: 0, //NOTE: we don't want to cache the user details for the preview page else the visitor count will not be counted.
   });
 
   // Use fetched data or initialUserDetails (from SSR)

@@ -2,7 +2,7 @@ import React, { memo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Pencil, Plus } from "lucide-react";
-import { extractText } from "./spotlight-utils";
+import { extractText } from "./professional-utils";
 
 function AnimatedWord({ word, wordIndex, isLast }) {
   return (
@@ -113,7 +113,7 @@ function ExperienceItem({
   );
 }
 
-function SpotlightExperienceTab({
+function ProfessionalExperienceTab({
   isEditing,
   experiences,
   onEditExperience,
@@ -156,4 +156,4 @@ function SpotlightExperienceTab({
   );
 }
 
-export default memo(SpotlightExperienceTab);
+export default memo(ProfessionalExperienceTab);

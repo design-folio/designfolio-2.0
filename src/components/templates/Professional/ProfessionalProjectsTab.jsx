@@ -1,7 +1,7 @@
 import React, { memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Pencil, Plus, Trash2 } from "lucide-react";
-import { screwClass, frameBorderClass } from "./spotlight-utils";
+import { screwClass, frameBorderClass } from "./professional-utils";
 
 const ScrewDot = ({ className }) => (
   <div className={`absolute ${className} ${screwClass}`} />
@@ -23,7 +23,7 @@ const FrameBorders = () => (
   </>
 );
 
-function SpotlightProjectsTab({
+function ProfessionalProjectsTab({
   isEditing,
   visibleProjects,
   onAddProject,
@@ -109,4 +109,4 @@ function SpotlightProjectsTab({
   );
 }
 
-export default memo(SpotlightProjectsTab);
+export default memo(ProfessionalProjectsTab);

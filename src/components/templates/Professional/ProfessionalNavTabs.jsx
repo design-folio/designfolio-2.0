@@ -1,8 +1,8 @@
 import React, { memo } from "react";
 import { cn } from "@/lib/utils";
-import { SPOTLIGHT_TABS } from "./spotlight-utils";
+import { SPOTLIGHT_TABS } from "./professional-utils";
 
-function SpotlightNavTabs({ activeTab, setActiveTab }) {
+function ProfessionalNavTabs({ activeTab, setActiveTab }) {
   return (
     <div className="bg-[#DED9CE] dark:bg-[#2A2520] px-3 py-2 flex justify-between items-center overflow-x-auto hide-scrollbar">
       {SPOTLIGHT_TABS.map((tab) => (
@@ -28,4 +28,4 @@ function SpotlightNavTabs({ activeTab, setActiveTab }) {
   );
 }
 
-export default memo(SpotlightNavTabs);
+export default memo(ProfessionalNavTabs);

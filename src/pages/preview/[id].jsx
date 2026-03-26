@@ -15,6 +15,7 @@ import MadeWithDesignfolio from "../../../public/assets/svgs/madewithdesignfolio
 import WallpaperBackground from "@/components/WallpaperBackground";
 import Canvas from "@/components/templates/Canvas";
 import Mono from "@/components/templates/Mono";
+import Professional from "@/components/templates/Professional";
 
 export default function Index({ initialUserDetails }) {
   const { setTheme, theme, resolvedTheme } = useTheme();
@@ -93,6 +94,8 @@ export default function Index({ initialUserDetails }) {
         return <><Minimal userDetails={finalUserDetails} />{ProBadge}</>;
       case TEMPLATE_IDS.MONO:
         return <><Mono preview publicView />{ProBadge}</>;
+        case TEMPLATE_IDS.PROFESSIONAL:
+        return <><Professional isEditing={false} />{ProBadge}</>;
       case TEMPLATE_IDS.RETRO_OS:
         return <><MacOSTemplate userDetails={finalUserDetails} />{ProBadge}</>;
       default:

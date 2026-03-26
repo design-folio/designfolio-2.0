@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 import { TextGradientScroll } from "./text-gradient-scroll";
 
-function SpotlightAboutTab({
+function ProfessionalAboutTab({
   isEditing,
   about,
   skills,
@@ -88,4 +88,4 @@ function SpotlightAboutTab({
   );
 }
 
-export default memo(SpotlightAboutTab);
+export default memo(ProfessionalAboutTab);

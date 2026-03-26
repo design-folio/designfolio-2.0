@@ -12,6 +12,7 @@ import Canvas from "@/components/templates/Canvas";
 import Mono from "@/components/templates/Mono";
 import { TEMPLATE_IDS } from "@/lib/templates";
 import Chat from "@/components/templates/Chat";
+import Professional from "@/components/templates/Professional";
 
 export default function Index() {
   const {
@@ -52,11 +53,15 @@ export default function Index() {
   const renderTemplate = () => {
     switch (template) {
       case TEMPLATE_IDS.CANVAS:
-
         return (
           <>
             <div className="max-w-[640px] mx-auto w-full px-4 md:px-0 pt-6 pb-2">
-              <Button variant="outline" className="bg-white/80 dark:bg-[#2A2520]/80 backdrop-blur-md rounded-full hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors border border-[#E5D7C4] dark:border-white/10" size="sm" onClick={() => router.back()}>
+              <Button
+                variant="outline"
+                className="bg-white/80 dark:bg-[#2A2520]/80 backdrop-blur-md rounded-full hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors border border-[#E5D7C4] dark:border-white/10"
+                size="sm"
+                onClick={() => router.back()}
+              >
                 <ArrowLeft className="w-4 h-4" />
                 Exit Preview
               </Button>
@@ -70,7 +75,12 @@ export default function Index() {
       case TEMPLATE_IDS.SPOTLIGHT:
         return (
           <>
-            <Button variant="outline" size="sm" onClick={() => router.back()} className="mt-8">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => router.back()}
+              className="mt-8"
+            >
               <ArrowLeft className="w-4 h-4" />
               Go Back
             </Button>
@@ -85,6 +95,13 @@ export default function Index() {
             {ProBadge}
           </>
         );
+      case TEMPLATE_IDS.PROFESSIONAL:
+        return (
+          <>
+            <Professional isEditing={false} />
+            {ProBadge}
+          </>
+        );
       case TEMPLATE_IDS.RETRO_OS:
         return (
           <>
@@ -94,7 +111,12 @@ export default function Index() {
               preview={false}
             />
             {ProBadge}
-            <Button variant="outline" size="sm" onClick={() => router.back()} className="absolute top-4 left-8">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => router.back()}
+              className="absolute top-4 left-8"
+            >
               <ArrowLeft className="w-4 h-4" />
               Go Back
             </Button>

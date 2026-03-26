@@ -39,7 +39,7 @@ import { getSidebarShiftWidth } from "@/lib/constant";
 import Canvas from "@/components/templates/Canvas";
 import Mono from "@/components/templates/Mono";
 import Chat from "@/components/templates/Chat";
-import Spotlight from "@/components/templates/Spotlight";
+import Professional from "@/components/templates/Professional";
 
 export default function Index() {
   const {
@@ -211,13 +211,15 @@ export default function Index() {
         return <Chat isEditing={true} />;
         return <Builder2 edit />;
       case 2:
-        return <Spotlight isEditing={true} />;
-      // return <Minimal userDetails={userDetails} edit />;
+        // return <Spotlight isEditing={true} />;
+        return <Minimal userDetails={userDetails} edit />;
       case 3:
         // return <Portfolio userDetails={userDetails} edit />;
         return <Mono isEditing={true} />;
       case 4:
         return <MacOSTemplate userDetails={userDetails} edit />;
+      case 5:
+        return <Professional isEditing={true} />;
 
       default:
         return <Builder1 />;
@@ -311,7 +313,7 @@ export default function Index() {
             className={cn(
               "mx-auto w-full",
 
-              t === 2
+              t === 2 || t === 5
                 ? "pt-24"
                 : [
                     t !== 4 && "px-2 md:px-4 lg:px-0",

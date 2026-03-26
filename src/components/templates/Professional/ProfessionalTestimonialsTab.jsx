@@ -2,7 +2,7 @@ import React, { memo, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Pencil, Play, Plus, Square } from "lucide-react";
-import { extractText } from "./spotlight-utils";
+import { extractText } from "./professional-utils";
 
 function TestimonialCard({ review, isEditing, isPlaying, onPlay, onEdit }) {
   const reviewText = extractText(review?.description);
@@ -93,7 +93,7 @@ function TestimonialCard({ review, isEditing, isPlaying, onPlay, onEdit }) {
   );
 }
 
-function SpotlightTestimonialsTab({
+function ProfessionalTestimonialsTab({
   isEditing,
   reviews,
   onAddReview,
@@ -150,4 +150,4 @@ function SpotlightTestimonialsTab({
   );
 }
 
-export default memo(SpotlightTestimonialsTab);
+export default memo(ProfessionalTestimonialsTab);

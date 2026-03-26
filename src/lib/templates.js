@@ -1,12 +1,11 @@
-
 export const TEMPLATE_IDS = {
   CANVAS: 0,
   CHATFOLIO: 1,
   SPOTLIGHT: 2,
   MONO: 3,
   RETRO_OS: 4,
+  PROFESSIONAL: 5,
 };
-
 
 export const TEMPLATES_BY_ID = {
   [TEMPLATE_IDS.CANVAS]: {
@@ -39,19 +38,27 @@ export const TEMPLATES_BY_ID = {
     item: "Retro OS",
     isNew: true,
   },
+  [TEMPLATE_IDS.PROFESSIONAL]: {
+    id: TEMPLATE_IDS.PROFESSIONAL,
+    value: "professional",
+    item: "Professional",
+    isNew: true,
+  },
 };
 
-
 export const TEMPLATE_DISPLAY_ORDER = [
-  TEMPLATE_IDS.CANVAS,  // 0 – 1st
-  TEMPLATE_IDS.RETRO_OS,    // 4 – 2nd
-  TEMPLATE_IDS.CHATFOLIO,     // 1
-  TEMPLATE_IDS.SPOTLIGHT,    // 2
+  TEMPLATE_IDS.CANVAS, // 0 – 1st
+  TEMPLATE_IDS.RETRO_OS, // 4 – 2nd
+  TEMPLATE_IDS.CHATFOLIO, // 1
+  TEMPLATE_IDS.SPOTLIGHT, // 2
   TEMPLATE_IDS.MONO, // 3
+  TEMPLATE_IDS.PROFESSIONAL, // 5 – last
 ];
 
 /** Templates array in display order, for use in ThemePanel / dropdowns */
-export const TEMPLATES_LIST = TEMPLATE_DISPLAY_ORDER.map((id) => TEMPLATES_BY_ID[id]);
+export const TEMPLATES_LIST = TEMPLATE_DISPLAY_ORDER.map(
+  (id) => TEMPLATES_BY_ID[id],
+);
 
 export const TEMPLATE_PREVIEW_IMAGES = {
   [TEMPLATE_IDS.CANVAS]: {
@@ -73,8 +80,13 @@ export const TEMPLATE_PREVIEW_IMAGES = {
   [TEMPLATE_IDS.RETRO_OS]: "/assets/png/template-thumbnails/retro-os.png",
 };
 
-export function getTemplatePreviewImage(templateId = TEMPLATE_IDS.CANVAS, theme = "light") {
-  const entry = TEMPLATE_PREVIEW_IMAGES[templateId] ?? TEMPLATE_PREVIEW_IMAGES[TEMPLATE_IDS.CANVAS];
+export function getTemplatePreviewImage(
+  templateId = TEMPLATE_IDS.CANVAS,
+  theme = "light",
+) {
+  const entry =
+    TEMPLATE_PREVIEW_IMAGES[templateId] ??
+    TEMPLATE_PREVIEW_IMAGES[TEMPLATE_IDS.CANVAS];
   if (typeof entry === "string") return entry;
   return entry[theme] ?? entry.light;
 }

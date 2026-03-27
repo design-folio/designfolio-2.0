@@ -24,7 +24,7 @@ function TestimonialCard({ review, isEditing, isPlaying, onPlay, onEdit }) {
           </Button>
         </div>
       )}
-      <p className="font-['Inter'] text-[#1A1A1A] dark:text-[#F0EDE7] text-[16px] leading-relaxed mb-6 italic relative z-10">
+      <p className="font-inter text-[#1A1A1A] dark:text-[#F0EDE7] text-[16px] leading-relaxed mb-6 italic relative z-10">
         &ldquo;{reviewText}&rdquo;
       </p>
       <div className="flex items-center justify-between">
@@ -124,7 +124,7 @@ function ProfessionalTestimonialsTab({
           <Button
             variant="outline"
             size="sm"
-            className="h-8 flex items-center gap-1.5 px-3 rounded-full bg-white dark:bg-[#2A2520] border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
+            className="font-inter h-8 flex items-center gap-1.5 px-3 rounded-full bg-white dark:bg-[#2A2520] border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
             onClick={onAddReview}
           >
             <Plus className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />

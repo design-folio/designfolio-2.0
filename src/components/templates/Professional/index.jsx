@@ -54,7 +54,12 @@ export default function Professional({
   );
   const email = userDetails?.contact_email || userDetails?.email;
   const phone = userDetails?.phone;
-  const displayName = (introduction || "Your Name").toUpperCase();
+  const fullName = (
+    [userDetails?.firstName, userDetails?.lastName].filter(Boolean).join(" ") ||
+    introduction ||
+    "Your Name"
+  ).toUpperCase();
+  const displayName = `HEY I'M ${fullName}`;
   const userRole = userDetails?.persona?.label || "";
 
   const visibleProjects = useMemo(() => {

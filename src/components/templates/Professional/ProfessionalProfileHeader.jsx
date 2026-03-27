@@ -41,7 +41,7 @@ function ProfessionalProfileHeader({
           <img
             src={avatarSrc}
             alt="Profile"
-            className="w-full h-full object-cover mix-blend-multiply opacity-90 grayscale-[0.2]"
+            className="w-full h-full object-cover"
             style={{ filter: "contrast(1.2)" }}
           />
         </div>

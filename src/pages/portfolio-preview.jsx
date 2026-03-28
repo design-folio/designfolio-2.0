@@ -58,7 +58,7 @@ export default function Index() {
             <div className="max-w-[640px] mx-auto w-full px-4 md:px-0 pt-6 pb-2">
               <Button
                 variant="outline"
-                className="bg-white/80 dark:bg-[#2A2520]/80 backdrop-blur-md rounded-full hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors border border-[#E5D7C4] dark:border-white/10"
+                className="bg-white dark:bg-[#2A2520] rounded-full hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors border border-[#E5D7C4] dark:border-white/10"
                 size="sm"
                 onClick={() => router.back()}
               >

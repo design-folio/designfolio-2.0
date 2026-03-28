@@ -70,7 +70,7 @@ export default function Settings() {
   const cardClass = (() => {
     switch (template) {
       case TEMPLATE_IDS.CANVAS:
-        return "bg-white/80 dark:bg-[#2A2520]/80 backdrop-blur-md rounded-[32px] border border-[#E5D7C4] dark:border-white/10 p-8";
+        return "bg-white dark:bg-[#2A2520] rounded-[32px] border border-[#E5D7C4] dark:border-white/10 p-8";
       case TEMPLATE_IDS.MONO:
         return "px-5 md:px-8 py-8";
       default:

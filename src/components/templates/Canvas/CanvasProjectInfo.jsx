@@ -259,7 +259,7 @@ export default function CanvasProjectInfo({
       {/* Toolbar: Back + breadcrumb + lock + analyze */}
       <motion.div
         variants={itemVariants}
-        className="bg-white/80 dark:bg-[#2A2520]/80 backdrop-blur-md rounded-[24px] border border-[#E5D7C4] dark:border-white/10 py-2 px-4 flex justify-between items-center w-full"
+        className="bg-white dark:bg-[#2A2520] rounded-[24px] border border-[#E5D7C4] dark:border-white/10 py-2 px-4 flex justify-between items-center w-full"
       >
         {!isMacOS ? (
           <button
@@ -377,7 +377,7 @@ export default function CanvasProjectInfo({
       {/* Title + Description + Featured Image — combined */}
       <motion.div
         variants={itemVariants}
-        className="bg-white/80 dark:bg-[#2A2520]/80 backdrop-blur-md rounded-[32px] border border-[#E5D7C4] dark:border-white/10 p-2 md:p-3 w-full"
+        className="bg-white dark:bg-[#2A2520] rounded-[32px] border border-[#E5D7C4] dark:border-white/10 p-2 md:p-3 w-full"
       >
         <div className="p-4 md:p-5 pb-6 md:pb-8">
           <h1
@@ -439,7 +439,7 @@ export default function CanvasProjectInfo({
       {(edit || !!client || !!role || !!industry || !!platform) && (
         <motion.div
           variants={itemVariants}
-          className="bg-white/80 dark:bg-[#2A2520]/80 backdrop-blur-md rounded-[32px] border border-[#E5D7C4] dark:border-white/10 p-6 md:p-8 w-full"
+          className="bg-white dark:bg-[#2A2520] rounded-[32px] border border-[#E5D7C4] dark:border-white/10 p-6 md:p-8 w-full"
         >
           <h2 className="text-[#7A736C] dark:text-[#B5AFA5] font-dm-mono font-medium text-[14px] mb-6">
             PROJECT DETAILS

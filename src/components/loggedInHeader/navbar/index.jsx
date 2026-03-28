@@ -42,6 +42,8 @@ import queryClient from "@/network/queryClient";
 import { removeCursor } from "@/lib/cursor";
 import MemoDFLogoV2 from "@/components/icons/DFLogoV2";
 import Link from "next/link";
+import { TEMPLATE_IDS } from "@/lib/templates";
+import { cn } from "@/lib/utils";
 
 const MACOS_ROUTES = ["/builder", "/project/[id]/editor", "/project/[id]/preview"];
 
@@ -331,7 +333,7 @@ export default function Navbar() {
           transition: "transform 0.3s ease-out, right 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       >
-        <nav className="bg-card border border-border rounded-full shadow-sm pointer-events-auto max-w-[640px] w-full">
+        <nav className={cn("bg-card border border-border rounded-full shadow-sm pointer-events-auto w-full", template === TEMPLATE_IDS.CANVAS ? "max-w-[720px]" : "max-w-[640px]")}>
           {navContent}
         </nav>
       </div>

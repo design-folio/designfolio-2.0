@@ -97,7 +97,7 @@ function CanvasTestimonialsSection({ isEditing }) {
         damping: 12,
         delay: 0.95,
       }}
-      className="bg-white/80 dark:bg-[#2A2520]/80 backdrop-blur-md rounded-[24px] border border-[#E5D7C4] dark:border-white/10 p-6 w-full relative group/section"
+      className="bg-white dark:bg-[#2A2520] rounded-[24px] border border-[#E5D7C4] dark:border-white/10 p-6 w-full relative group/section"
     >
       {isEditing && (
         <CanvasSectionControls>

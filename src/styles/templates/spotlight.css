@@ -18,15 +18,16 @@
 }
 
 [data-theme="dark"][data-template="spotlight"] {
+  --background: #13151a;
   --card: #1d1f27;
   --secondary: #17181d;
   --secondary-hover: #22242b;
   --secondary-border: #262832;
   --secondary-border-hover: #565b6c;
+  --muted: 227 13% 21%; /* 0 0% 16 */
   --accent: 0 0% 16%;
-  --muted: 0 0% 16%;
   --border: 0 0% 18%;
-  --sidebar: 223 16% 9%;
+  --sidebar: 223 16% 11%;
   --sidebar-accent: 0 0% 16%;
   --primary: #f9f9fb;
   --primary-foreground: #202937;

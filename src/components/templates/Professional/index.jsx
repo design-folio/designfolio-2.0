@@ -8,6 +8,7 @@ import {
   FileText,
   Phone,
 } from "lucide-react";
+import { _updateProject } from "@/network/post-request";
 import { useGlobalContext } from "@/context/globalContext";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { useRouter } from "next/router";
@@ -27,10 +28,15 @@ export default function Professional({
 }) {
   const {
     userDetails,
+    setUserDetails,
     openModal,
     openSidebar,
     setSelectedProject,
     setSelectedReview,
+    setSelectedWork,
+    updateCache,
+    setShowUpgradeModal,
+    setUpgradeModalUnhideProject,
   } = useGlobalContext();
   const router = useRouter();
 
@@ -63,11 +69,11 @@ export default function Professional({
   const userRole = userDetails?.persona?.label || "";
 
   const visibleProjects = useMemo(() => {
-    if (preview && projects) {
+    if (!isEditing && projects) {
       return projects.filter((project) => !project.hidden);
     }
     return projects || [];
-  }, [projects, preview]);
+  }, [projects, isEditing]);
 
   const handleProjectClick = useCallback(
     (project) => {
@@ -96,6 +102,28 @@ export default function Professional({
       router.push(`/project/${project._id}/editor`);
     },
     [router],
+  );
+
+  const handleToggleProjectVisibility = useCallback(
+    (projectId) => {
+      const project = (projects || []).find((p) => p._id === projectId);
+      const visibleCount = (projects || []).filter((p) => !p.hidden).length;
+      const isUnhiding = project?.hidden === true;
+
+      if (!userDetails?.pro && isUnhiding && visibleCount >= 2) {
+        setUpgradeModalUnhideProject({ projectId, title: project?.title || "Project" });
+        setShowUpgradeModal(true);
+        return;
+      }
+
+      const updatedProjects = (projects || []).map((p) =>
+        p._id === projectId ? { ...p, hidden: !p.hidden } : p
+      );
+      _updateProject(projectId, { hidden: !project.hidden });
+      setUserDetails((prev) => ({ ...prev, projects: updatedProjects }));
+      updateCache("userDetails", (prev) => ({ ...prev, projects: updatedProjects }));
+    },
+    [projects, userDetails, setUserDetails, updateCache, setShowUpgradeModal, setUpgradeModalUnhideProject],
   );
 
   const socialLinks = useMemo(() => {
@@ -141,8 +169,19 @@ export default function Professional({
     [openSidebar],
   );
   const handleEditExperience = useCallback(
-    () => openSidebar(sidebars.work),
-    [openSidebar],
+    (exp) => {
+      setSelectedWork(exp);
+      openSidebar(sidebars.work);
+    },
+    [setSelectedWork, openSidebar],
+  );
+
+  const handleAddExperience = useCallback(
+    () => {
+      setSelectedWork(null);
+      openSidebar(sidebars.work);
+    },
+    [setSelectedWork, openSidebar],
   );
   const handleEditAbout = useCallback(
     () => openSidebar(sidebars.about),
@@ -179,6 +218,7 @@ export default function Professional({
             onProjectClick={handleProjectClick}
             onEditProject={handleEditProject}
             onDeleteProject={onDeleteProject}
+            onToggleVisibility={handleToggleProjectVisibility}
           />
         );
       case "Experience":
@@ -187,7 +227,7 @@ export default function Professional({
             isEditing={isEditing}
             experiences={experiences}
             onEditExperience={handleEditExperience}
-            onAddExperience={handleEditExperience}
+            onAddExperience={handleAddExperience}
           />
         );
       case "About":
@@ -229,7 +269,7 @@ export default function Professional({
         <ProfessionalProfileHeader
           isEditing={isEditing}
           avatarSrc={avatarSrc}
-          displayName={displayName}
+          displayName={fullName}
           bio={bio}
           userRole={userRole}
           currentTime={currentTime}

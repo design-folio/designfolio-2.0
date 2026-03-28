@@ -1,6 +1,6 @@
 import React, { memo } from "react";
 import { Button } from "@/components/ui/button";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { Eye, EyeOff, Pencil, Plus, Trash2 } from "lucide-react";
 import { screwClass, frameBorderClass } from "./professional-utils";
 
 const ScrewDot = ({ className }) => (
@@ -30,6 +30,7 @@ function ProfessionalProjectsTab({
   onProjectClick,
   onEditProject,
   onDeleteProject,
+  onToggleVisibility,
 }) {
   return (
     <div className="grid grid-cols-1 gap-0">
@@ -71,6 +72,20 @@ function ProfessionalProjectsTab({
                 }}
               >
                 <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-black/10 dark:border-white/10 shadow-sm hover:bg-white dark:hover:bg-[#35302A]"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onToggleVisibility(project._id);
+                }}
+              >
+                {project.hidden
+                  ? <EyeOff className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                  : <Eye className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                }
               </Button>
               <Button
                 variant="outline"

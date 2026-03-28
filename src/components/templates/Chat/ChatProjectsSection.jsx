@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { Eye, EyeOff, Pencil, Plus, Trash2 } from "lucide-react";
+import { _updateProject } from "@/network/post-request";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGlobalContext } from "@/context/globalContext";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
@@ -17,8 +18,16 @@ export default function ChatProjectsSection({
   preview,
   isEditing,
 }) {
-  const { userDetails, openModal, openSidebar, setSelectedProject } =
-    useGlobalContext();
+  const {
+    userDetails,
+    setUserDetails,
+    openModal,
+    openSidebar,
+    setSelectedProject,
+    updateCache,
+    setShowUpgradeModal,
+    setUpgradeModalUnhideProject,
+  } = useGlobalContext();
   const router = useRouter();
   const { projects = [] } = userDetails || {};
   const avatarSrc = useMemo(
@@ -26,8 +35,30 @@ export default function ChatProjectsSection({
     [userDetails],
   );
   const visibleProjects = useMemo(
-    () => (projects || []).filter((p) => !p.hidden),
-    [projects],
+    () => isEditing ? (projects || []) : (projects || []).filter((p) => !p.hidden),
+    [projects, isEditing],
+  );
+
+  const handleToggleProjectVisibility = useCallback(
+    (projectId) => {
+      const project = (projects || []).find((p) => p._id === projectId);
+      const visibleCount = (projects || []).filter((p) => !p.hidden).length;
+      const isUnhiding = project?.hidden === true;
+
+      if (!userDetails?.pro && isUnhiding && visibleCount >= 2) {
+        setUpgradeModalUnhideProject({ projectId, title: project?.title || "Project" });
+        setShowUpgradeModal(true);
+        return;
+      }
+
+      const updatedProjects = (projects || []).map((p) =>
+        p._id === projectId ? { ...p, hidden: !p.hidden } : p
+      );
+      _updateProject(projectId, { hidden: !project.hidden });
+      setUserDetails((prev) => ({ ...prev, projects: updatedProjects }));
+      updateCache("userDetails", (prev) => ({ ...prev, projects: updatedProjects }));
+    },
+    [projects, userDetails, setUserDetails, updateCache, setShowUpgradeModal, setUpgradeModalUnhideProject],
   );
   const getProjectHref = useCallback(
     (id) => (isEditing ? `/project/${id}/editor` : `/project/${id}`),
@@ -108,6 +139,20 @@ export default function ChatProjectsSection({
                     }}
                   >
                     <Pencil className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleToggleProjectVisibility(project._id);
+                    }}
+                  >
+                    {project.hidden
+                      ? <EyeOff className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                      : <Eye className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                    }
                   </Button>
                   <Button
                     variant="outline"

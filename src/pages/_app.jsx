@@ -1,9 +1,6 @@
 import "@/styles/globals.scss";
 import "@/styles/tiptap.css";
-import "@/styles/templates/canvas.css";
-import "@/styles/templates/mono.css";
-import "@/styles/templates/retroos.css";
-import "@/styles/templates/professional.css";
+import "@/styles/theme.css";
 import localFont from "next/font/local";
 import {
   Inter,

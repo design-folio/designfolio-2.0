@@ -9,7 +9,7 @@ export default function CanvasProjectCta({ ownerUser }) {
   return (
     <motion.div
       variants={itemVariants}
-      className="bg-white/80 dark:bg-[#2A2520]/80 backdrop-blur-md rounded-[32px] border border-[#E5D7C4] dark:border-white/10 p-6 md:p-8 w-full text-center flex flex-col items-center"
+      className="bg-white dark:bg-[#2A2520] rounded-[32px] border border-[#E5D7C4] dark:border-white/10 p-6 md:p-8 w-full text-center flex flex-col items-center"
     >
       <h2 className="text-[24px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7] mb-6">
         {`Let's build something great.`}

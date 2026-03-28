@@ -19,7 +19,7 @@ function TemplateCard({ tmpl, isSelected, onChange }) {
         <button
           onClick={() => onChange(tmpl.id)}
           className={twMerge(
-            "w-full aspect-square rounded-[24px] transition-all focus:outline-none cursor-pointer group",
+            "w-full aspect-square rounded-[24px] transition-all focus:outline-none cursor-pointer group/card",
             isSelected
               ? "border-[2.5px] border-df-orange-color p-1.5"
               : "border-[2.5px] border-transparent p-1.5 hover:bg-black/5 dark:hover:bg-white/5"
@@ -28,7 +28,7 @@ function TemplateCard({ tmpl, isSelected, onChange }) {
           <div
             className={twMerge(
               "w-full h-full rounded-[14px] overflow-hidden transition-all shadow-sm border border-black/5 dark:border-white/5 relative pointer-events-none",
-              isSelected ? "bg-accent" : "bg-card group-hover:shadow-md"
+              isSelected ? "bg-accent" : "bg-card group-hover/card:shadow-md"
             )}
           >
             <div className="absolute inset-0 p-3 flex flex-col gap-2 opacity-40">

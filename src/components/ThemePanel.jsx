@@ -64,6 +64,9 @@ function TemplateCard({ tmpl, isSelected, onChange }) {
         {tmpl.isNew && (
           <Badge className="bg-[#EE7F70] text-white text-[10px] font-medium px-1.5 py-0">New</Badge>
         )}
+        {tmpl.isPro && (
+          <Badge className="bg-[#EE7F70] text-white text-[10px] font-medium px-1.5 py-0">Pro</Badge>
+        )}
       </div>
     </div>
   );

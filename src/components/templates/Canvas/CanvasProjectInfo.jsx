@@ -430,21 +430,27 @@ export default function CanvasProjectInfo({
             </p>
           )}
         </div>
-        <div className="w-full rounded-[24px] overflow-hidden bg-[#F5F5F5] dark:bg-[#1A1A1A]">
+        <div className="w-full aspect-[16/9] rounded-[24px] overflow-hidden bg-[#F5F5F5] dark:bg-[#1A1A1A]">
           {edit ? (
-            <ImageWithOverlayAndPicker src={thumbnail?.url} project={projectDetails} />
+            <ImageWithOverlayAndPicker
+              src={thumbnail?.url}
+              project={projectDetails}
+              aspectRatio="16/9"
+              recommendedSize="1600 × 900px"
+              className="rounded-none"
+            />
           ) : (
             <>
               <img
                 src={thumbnail?.url}
                 alt={title || "project image"}
-                className={`w-full h-auto object-cover transition-opacity duration-100 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
+                className={`w-full h-full object-cover transition-opacity duration-100 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
                 loading="lazy"
                 fetchPriority="high"
                 decoding="async"
                 onLoad={() => setImageLoaded(true)}
               />
-              {!imageLoaded && <div className="w-full aspect-[4/3] bg-[#F0EDE7] dark:bg-[#2A2520]" />}
+              {!imageLoaded && <div className="absolute inset-0 bg-[#F0EDE7] dark:bg-[#2A2520]" />}
             </>
           )}
         </div>

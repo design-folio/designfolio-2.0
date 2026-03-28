@@ -8,6 +8,7 @@ import { containerVariants, itemVariants } from "@/lib/animationVariants";
 import { TEMPLATE_IDS } from "@/lib/templates";
 import CanvasProjectCta from "./templates/Canvas/CanvasProjectCta";
 import MonoProjectFooter from "./templates/Mono/MonoProjectFooter";
+import ProfessionalProjectInfo from "./templates/Professional/ProfessionalProjectInfo";
 
 export default function ProjectPreview({ projectDetails }) {
   const { userDetails, showModal } = useGlobalContext();
@@ -18,7 +19,18 @@ export default function ProjectPreview({ projectDetails }) {
   const template = userDetails?.template;
   const isMono = template === TEMPLATE_IDS.MONO;
   const isCanvas = template === TEMPLATE_IDS.CANVAS;
+  const isProfessional = template === TEMPLATE_IDS.PROFESSIONAL;
   const isProtected = projectDetails?.isProtected;
+
+  // Professional has its own full-page project view
+  if (isProfessional && projectDetails) {
+    return (
+      <ProfessionalProjectInfo
+        projectDetails={projectDetails?.project}
+        userDetails={userDetails}
+      />
+    );
+  }
 
   return (
     <motion.div

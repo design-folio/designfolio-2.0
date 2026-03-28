@@ -269,16 +269,19 @@ export default function AddProject() {
                         )}
                       </div>
                     </label>
-                    <label htmlFor="picture">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        type="button"
-                        className="rounded-full"
-                      >
-                        {imagePreview ? 'Change image' : 'Upload image'}
-                      </Button>
-                    </label>
+                    <div className="flex flex-col gap-1.5">
+                      <label htmlFor="picture">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          type="button"
+                          className="rounded-full"
+                        >
+                          {imagePreview ? 'Change image' : 'Upload image'}
+                        </Button>
+                      </label>
+                      <span className="text-[11px] text-muted-foreground ml-1">Recommended: 1600 × 900px (16:9)</span>
+                    </div>
                   </div>
                   <input
                     id="picture"

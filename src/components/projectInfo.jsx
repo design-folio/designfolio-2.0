@@ -29,6 +29,7 @@ import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { TEMPLATE_IDS } from "@/lib/templates";
 import CanvasProjectInfo from "@/components/templates/Canvas/CanvasProjectInfo";
+import ProfessionalProjectInfo from "@/components/templates/Professional/ProfessionalProjectInfo";
 export default function ProjectInfo({
   projectDetails,
   userDetails,
@@ -65,6 +66,7 @@ export default function ProjectInfo({
   const isMacOS = activeTemplate === TEMPLATE_IDS.RETRO_OS;
   const isCanvas = activeTemplate === TEMPLATE_IDS.CANVAS;
   const isMono = activeTemplate === TEMPLATE_IDS.MONO;
+  const isProfessional = activeTemplate === TEMPLATE_IDS.PROFESSIONAL;
   // Use the project's own _id when available (e.g. when rendered inside a
   // floating ProjectWindow where router.query.id is not set).
   const projectId = _id || router.query.id;
@@ -198,6 +200,18 @@ export default function ProjectInfo({
   useEffect(() => {
     fetchAnalyzeStatus();
   }, []);
+
+  // ─── Professional (template 5) layout ────────────────────────────────────
+  if (isProfessional) {
+    return (
+      <ProfessionalProjectInfo
+        projectDetails={projectDetails}
+        userDetails={userDetails}
+        edit={edit}
+        ownerTemplate={ownerTemplate}
+      />
+    );
+  }
 
   // ─── Canvas (template 0) layout ─────────────────────────────────────────
   if (isCanvas) {
@@ -342,19 +356,24 @@ export default function ProjectInfo({
         {/* Featured Image */}
         <div className="px-5 md:px-8 pb-4">
           {edit ? (
-            <ImageWithOverlayAndPicker src={thumbnail?.url} project={projectDetails} />
+            <ImageWithOverlayAndPicker
+              src={thumbnail?.url}
+              project={projectDetails}
+              aspectRatio="16/9"
+              recommendedSize="1600 × 900px"
+            />
           ) : (
-            <figure className="relative">
+            <figure className="relative w-full aspect-[16/9] rounded-xl overflow-hidden drop-shadow-sm border border-black/5 dark:border-white/10">
               <img
                 src={thumbnail?.url}
                 alt="project image"
-                className={`w-full rounded-xl drop-shadow-sm border border-black/5 dark:border-white/10 transition-opacity duration-100 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
+                className={`w-full h-full object-cover transition-opacity duration-100 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
                 loading="lazy"
                 fetchPriority="high"
                 decoding="async"
                 onLoad={() => setImageLoaded(true)}
               />
-              {!imageLoaded && <div className="w-full aspect-[4/3] rounded-xl bg-[#E5D7C4] dark:bg-[#2A2520] absolute top-0 right-0" />}
+              {!imageLoaded && <div className="absolute inset-0 bg-[#E5D7C4] dark:bg-[#2A2520]" />}
             </figure>
           )}
         </div>
@@ -734,23 +753,23 @@ export default function ProjectInfo({
           <ImageWithOverlayAndPicker
             src={thumbnail?.url}
             project={projectDetails}
+            aspectRatio="16/9"
+            recommendedSize="1600 × 900px"
+            className="mt-6 md:mt-8"
           />
         ) : (
-          <figure className="relative">
+          <figure className="relative w-full aspect-[16/9] rounded-[20px] overflow-hidden mt-6 md:mt-8">
             <img
               src={thumbnail?.url}
               alt="project image"
-              className={`w-full h-full rounded-[20px] object-cover transition-opacity duration-100 mt-6 md:mt-8 ${imageLoaded ? "opacity-100" : "opacity-0"
-                }`}
+              className={`w-full h-full object-cover transition-opacity duration-100 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
               loading="lazy"
               fetchPriority="high"
               decoding="async"
-              onLoad={() => {
-                setImageLoaded(true);
-              }}
+              onLoad={() => setImageLoaded(true)}
             />
             {!imageLoaded && (
-              <div className="w-full h-full rounded-[20px] bg-df-placeholder-color absolute top-0 right-0" />
+              <div className="absolute inset-0 bg-df-placeholder-color" />
             )}
           </figure>
         )

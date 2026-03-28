@@ -1,18 +1,24 @@
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
+import { ImageUp } from "lucide-react";
 import { _updateProject } from "@/network/post-request";
 import { toast } from "react-toastify";
 import queryClient from "@/network/queryClient";
 import { useGlobalContext } from "@/context/globalContext";
+import { cn } from "@/lib/utils";
 
-export const ImageWithOverlayAndPicker = ({ src, project }) => {
-  // Reference to the hidden file input element
+export const ImageWithOverlayAndPicker = ({
+  src,
+  project,
+  aspectRatio = "16/9",
+  recommendedSize = "1600 × 900px",
+  className,
+}) => {
   const fileInputRef = useRef(null);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [source, setSource] = useState(src);
   const { userDetailsRefecth } = useGlobalContext();
 
-  // Function to simulate click on file input
   const handleClick = () => {
     fileInputRef.current.click();
   };
@@ -22,44 +28,31 @@ export const ImageWithOverlayAndPicker = ({ src, project }) => {
       setSource(res?.data?.project?.thumbnail?.key);
       queryClient.setQueriesData(
         { queryKey: [`project-editor-${projectId}`] },
-        (oldData) => {
-          return {
-            ...oldData,
-            project: {
-              ...oldData.project,
-              thumbnail: {
-                ...oldData.project.thumbnail,
-                key: res?.data?.project?.thumbnail?.key,
-              },
+        (oldData) => ({
+          ...oldData,
+          project: {
+            ...oldData.project,
+            thumbnail: {
+              ...oldData.project.thumbnail,
+              key: res?.data?.project?.thumbnail?.key,
             },
-          };
-        }
+          },
+        })
       );
       userDetailsRefecth();
-
-      return res; // Ensure the promise resolves with the response for further chaining if necessary
+      return res;
     });
   }
 
-  // Function to handle file selection
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    const FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
-    const SUPPORTED_FORMATS = [
-      "image/jpg",
-      "image/jpeg",
-      "image/png",
-      "image/gif",
-    ];
+    const FILE_SIZE = 5 * 1024 * 1024;
+    const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png", "image/gif"];
 
-    if (!file) {
-      return;
-    }
+    if (!file) return;
 
     if (!SUPPORTED_FORMATS.includes(file.type)) {
-      toast.error(
-        "Unsupported file format. Only jpg, jpeg, png, and gif files are allowed."
-      );
+      toast.error("Unsupported file format. Only jpg, jpeg, png, and gif files are allowed.");
       return;
     }
 
@@ -68,67 +61,44 @@ export const ImageWithOverlayAndPicker = ({ src, project }) => {
       return;
     }
 
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64Image = reader.result;
-        const payload = {
-          thumbnail: {
-            key: base64Image,
-            originalName: file.name,
-            extension: file.type,
-          },
-        };
-
-        toast.promise(updateProjectImage(project._id, payload), {
-          pending: {
-            render() {
-              return "Updating project image...";
-            },
-            // Optional: Customize the pending state further (e.g., with an icon)
-            icon: true,
-          },
-          success: {
-            render({ data }) {
-              // Assuming `data` contains the response from your update API
-              // You can customize the message based on the response
-              return `Project image was successfully updated.`;
-            },
-            // Optional: Additional customization for the success toast
-            icon: "🟢",
-          },
-          error: {
-            render({ data }) {
-              // `data` contains the error thrown by the promise
-              // You can render a custom error component or message based on the error
-              return `Failed to update project image.`;
-            },
-            // Optional: Additional customization for the error toast
-            icon: "🔴",
-          },
-        });
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const payload = {
+        thumbnail: {
+          key: reader.result,
+          originalName: file.name,
+          extension: file.type,
+        },
       };
-      reader.readAsDataURL(file);
-    }
+      toast.promise(updateProjectImage(project._id, payload), {
+        pending: { render() { return "Updating project image..."; }, icon: true },
+        success: { render() { return "Project image was successfully updated."; }, icon: "🟢" },
+        error: { render() { return "Failed to update project image."; }, icon: "🔴" },
+      });
+    };
+    reader.readAsDataURL(file);
   };
 
+  const aspectClass = {
+    "16/9": "aspect-[16/9]",
+    "4/3": "aspect-[4/3]",
+    "1/1": "aspect-square",
+    "3/2": "aspect-[3/2]",
+  }[aspectRatio] ?? "aspect-[16/9]";
+
   return (
-    <div className="relative w-full h-full mt-6 md:mt-8">
+    <div className={cn("relative w-full overflow-hidden rounded-[20px]", aspectClass, className)}>
       <img
         src={source}
         alt="project image"
-        className={`w-full h-full rounded-[20px] object-cover transition-opacity duration-100 mt-6 md:mt-8 ${
-          imageLoaded ? "opacity-100" : "opacity-0"
-        }`}
+        className={`w-full h-full object-cover transition-opacity duration-100 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
         loading="lazy"
         fetchPriority="high"
         decoding="async"
-        onLoad={() => {
-          setImageLoaded(true);
-        }}
+        onLoad={() => setImageLoaded(true)}
       />
       {!imageLoaded && (
-        <div className="w-full h-full rounded-[20px] bg-df-placeholder-color absolute top-0 right-0" />
+        <div className="absolute inset-0 bg-df-placeholder-color" />
       )}
 
       <input
@@ -136,16 +106,19 @@ export const ImageWithOverlayAndPicker = ({ src, project }) => {
         type="file"
         onChange={handleFileChange}
         className="hidden"
-        accept="image/png, image/jpeg,image/jpg,image/gif"
+        accept="image/png, image/jpeg, image/jpg, image/gif"
       />
+
       <motion.div
         onClick={handleClick}
-        className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 rounded-[20px] hover:opacity-100 cursor-pointer"
+        className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/50 opacity-0 hover:opacity-100 cursor-pointer rounded-[20px]"
         initial={{ opacity: 0 }}
         whileHover={{ opacity: 1 }}
         transition={{ duration: 0.3 }}
       >
-        <p className="text-df-base-text-color text-lg">Change Image</p>
+        <ImageUp className="w-6 h-6 text-white" />
+        <p className="text-white text-sm font-medium">Change Image</p>
+        <p className="text-white/60 text-xs">Recommended: {recommendedSize}</p>
       </motion.div>
     </div>
   );

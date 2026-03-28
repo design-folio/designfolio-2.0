@@ -22,6 +22,7 @@ import { ChevronLeft } from "lucide-react";
 import { TEMPLATE_IDS, TEMPLATES_BY_ID } from "@/lib/templates";
 import CanvasProjectCta from "@/components/templates/Canvas/CanvasProjectCta";
 import MonoProjectFooter from "@/components/templates/Mono/MonoProjectFooter";
+import ProfessionalProjectInfo from "@/components/templates/Professional/ProfessionalProjectInfo";
 
 export default function Index({
   data,
@@ -129,6 +130,7 @@ export default function Index({
   const isMacOS = effectiveTemplate === TEMPLATE_IDS.RETRO_OS;
   const isCanvas = effectiveTemplate === TEMPLATE_IDS.CANVAS;
   const isMono = effectiveTemplate === TEMPLATE_IDS.MONO;
+  const isProfessional = effectiveTemplate === TEMPLATE_IDS.PROFESSIONAL;
 
   // Set data-template on <html> so template-scoped CSS (canvas.css, mono.css etc.) works on the public page
   useEffect(() => {
@@ -253,7 +255,9 @@ export default function Index({
       />
       <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={effects} />
 
-      {isMacOS ? (
+      {isProfessional && !isProtected && project ? (
+        <ProfessionalProjectInfo projectDetails={project} userDetails={ownerUser} />
+      ) : isMacOS ? (
         <>
           {/* Full macOS desktop: use owner's profile when visitor has no userDetails */}
           {effectiveUserDetails && (

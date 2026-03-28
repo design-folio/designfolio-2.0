@@ -20,11 +20,9 @@ import { ImageWithOverlayAndPicker } from "@/components/ImageWithOverlayAndPicke
 import queryClient from "@/network/queryClient";
 import { toast } from "react-toastify";
 import { useTheme } from "next-themes";
-import AnalyzeIcon from "../../../../public/assets/svgs/analyze.svg";
 import Modal from "@/components/modal";
 import AnalyzeCaseStudy from "@/components/analyzeCaseStudy";
 import { useGlobalContext } from "@/context/globalContext";
-import AnimatedLoading from "@/components/AnimatedLoading";
 import { TEMPLATE_IDS } from "@/lib/templates";
 import { cn } from "@/lib/utils";
 
@@ -33,6 +31,25 @@ const ph = (val) =>
   val
     ? "text-[#1A1A1A] dark:text-[#F0EDE7]"
     : "text-[#C5BFB8] dark:text-[#4A4238] italic";
+
+function AnalyzeIcon({ className = "w-4 h-4" }) {
+  return (
+    <svg className={className} viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10.5 7L9.98415 8.39405C9.30774 10.222 8.96953 11.136 8.30278 11.8028C7.63603 12.4695 6.72204 12.8077 4.89405 13.4842L3.5 14L4.89405 14.5158C6.72204 15.1923 7.63603 15.5305 8.30278 16.1972C8.96953 16.864 9.30774 17.778 9.98415 19.6059L10.5 21L11.0158 19.6059C11.6923 17.778 12.0305 16.864 12.6972 16.1972C13.364 15.5305 14.278 15.1923 16.1059 14.5158L17.5 14L16.1059 13.4842C14.278 12.8077 13.364 12.4695 12.6972 11.8028C12.0305 11.136 11.6923 10.222 11.0158 8.39405L10.5 7Z" fill="#FF553E" />
+      <path d="M18.5 3L18.2789 3.59745C17.989 4.38087 17.8441 4.77259 17.5583 5.05833C17.2726 5.34408 16.8809 5.48903 16.0975 5.77892L15.5 6L16.0975 6.22108C16.8809 6.51097 17.2726 6.65592 17.5583 6.94167C17.8441 7.22741 17.989 7.61913 18.2789 8.40255L18.5 9L18.7211 8.40255C19.011 7.61913 19.1559 7.22741 19.4417 6.94166C19.7274 6.65592 20.1191 6.51097 20.9025 6.22108L21.5 6L20.9025 5.77892C20.1191 5.48903 19.7274 5.34408 19.4417 5.05833C19.1559 4.77259 19.011 4.38087 18.7211 3.59745L18.5 3Z" fill="#FF553E" />
+    </svg>
+  );
+}
+
+function AnimatedLoadingDots({ className = "w-[22px] h-[6px]" }) {
+  return (
+    <svg className={className} viewBox="0 0 22 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle className="bounce" cx="3.03448" cy="3.0003" r="2.53448" fill="#FF553E" />
+      <circle className="bounce" cx="11.0001" cy="3.0003" r="2.53448" fill="#FF553E" />
+      <circle className="bounce" cx="18.9655" cy="3.0003" r="2.53448" fill="#FF553E" />
+    </svg>
+  );
+}
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -360,9 +377,7 @@ export default function CanvasProjectInfo({
                   )}
                 >
                   {isAnalyzing ? (
-                    <span className="pointer-events-none scale-75">
-                      <AnimatedLoading />
-                    </span>
+                    <AnimatedLoadingDots className="w-[18px] h-[5px] shrink-0" />
                   ) : (
                     <AnalyzeIcon className="w-4 h-4 shrink-0" />
                   )}

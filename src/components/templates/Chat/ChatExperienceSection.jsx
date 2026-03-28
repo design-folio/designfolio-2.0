@@ -11,153 +11,47 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useGlobalContext } from "@/context/globalContext";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { sidebars } from "@/lib/constant";
-import { tiptapToDisplayString } from "@/lib/tiptapUtils";
+import { parseTiptapToWords } from "@/lib/tiptapUtils";
 import { TypingIndicator, ChatAvatar, YouPrompt } from "./chatUtils";
 
 function ExperienceDescription({ desc }) {
-  const segments = [];
-  const walkContent = (node, inheritedMarks = []) => {
-    if (!node) return;
-    if (node.type === "text" && node.text) {
-      segments.push({
-        text: node.text,
-        marks: [...inheritedMarks, ...(node.marks || [])],
-      });
-      return;
-    }
-    if (node.type === "bulletList" && node.content) {
-      node.content.forEach((li) => {
-        segments.push({ text: "• ", marks: [], blockType: "bullet" });
-        (li.content || []).forEach((child) =>
-          walkContent(child, inheritedMarks),
-        );
-        segments.push({ text: "\n", marks: [], blockType: "break" });
-      });
-      return;
-    }
-    if (node.type === "orderedList" && node.content) {
-      node.content.forEach((li, i) => {
-        segments.push({
-          text: `${i + 1}. `,
-          marks: [],
-          blockType: "bullet",
-        });
-        (li.content || []).forEach((child) =>
-          walkContent(child, inheritedMarks),
-        );
-        segments.push({ text: "\n", marks: [], blockType: "break" });
-      });
-      return;
-    }
-    if (node.content && Array.isArray(node.content)) {
-      node.content.forEach((child) => walkContent(child, inheritedMarks));
-      const blockTypes = ["paragraph", "heading", "blockquote"];
-      if (blockTypes.includes(node.type)) {
-        segments.push({ text: "\n", marks: [], blockType: "break" });
-      }
-    }
-  };
-
-  if (!desc) return null;
-  if (typeof desc === "string") {
-    const plain = tiptapToDisplayString(desc);
-    if (!plain) return null;
-    segments.push({ text: plain, marks: [] });
-  } else if (typeof desc === "object") {
-    const root = desc.type === "doc" ? desc : desc;
-    (root.content || []).forEach((n) => walkContent(n));
-    while (
-      segments.length &&
-      segments[segments.length - 1].blockType === "break"
-    ) {
-      segments.pop();
-    }
-  }
-
-  if (!segments.length) return null;
-
-  const chars = [];
-  segments.forEach((seg) => {
-    const hasBold = (seg.marks || []).some((m) => m.type === "bold");
-    const hasItalic = (seg.marks || []).some((m) => m.type === "italic");
-    const hasUnderline = (seg.marks || []).some((m) => m.type === "underline");
-    const hasStrike = (seg.marks || []).some((m) => m.type === "strike");
-    for (const ch of seg.text) {
-      chars.push({
-        ch,
-        bold: hasBold,
-        italic: hasItalic,
-        underline: hasUnderline,
-        strike: hasStrike,
-        blockType: seg.blockType,
-      });
-    }
-  });
-
-  if (!chars.length) return null;
-
-  const words = [];
-  let currentWord = [];
-  chars.forEach((c) => {
-    if (c.ch === "\n") {
-      if (currentWord.length) {
-        words.push(currentWord);
-        currentWord = [];
-      }
-      words.push([{ ...c, isBreak: true }]);
-    } else if (c.ch === " ") {
-      if (currentWord.length) {
-        words.push(currentWord);
-        currentWord = [];
-      }
-    } else {
-      currentWord.push(c);
-    }
-  });
-  if (currentWord.length) words.push(currentWord);
+  const words = parseTiptapToWords(desc);
+  if (!words.length) return null;
 
   return (
     <div className="flex flex-col overflow-hidden">
       <motion.div
-        variants={{
-          hidden: { opacity: 0 },
-          show: { opacity: 1, transition: { staggerChildren: 0.015 } },
-        }}
+        variants={{ hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.015 } } }}
         initial="hidden"
         animate="show"
-        className="text-[#7A736C] dark:text-[#B5AFA5] text-[14px] leading-relaxed mt-1 break-words whitespace-normal"
+        className="text-[14px] leading-relaxed mt-1 break-words whitespace-normal"
+        style={{ color: "var(--tiptap-work-paragraph, #7a736c)" }}
       >
         {words.map((word, wordIndex) => {
-          if (word.length === 1 && word[0].isBreak) {
-            return <br key={`br-${wordIndex}`} />;
-          }
+          if (word.length === 1 && word[0].isBreak) return <br key={`br-${wordIndex}`} />;
           return (
             <span key={wordIndex} className="inline-block whitespace-nowrap">
               {word.map((c, charIndex) => {
-                let className = "inline-block";
-                if (c.bold) className += " font-bold";
-                if (c.italic) className += " italic";
-                if (c.underline) className += " underline";
-                if (c.strike) className += " line-through";
+                let cls = "inline-block";
+                if (c.bold) cls += " font-bold";
+                if (c.italic) cls += " italic";
+                if (c.underline) cls += " underline";
+                if (c.strike) cls += " line-through";
                 return (
                   <motion.span
                     key={charIndex}
-                    variants={{
-                      hidden: { opacity: 0, filter: "blur(10px)" },
-                      show: { opacity: 1, filter: "blur(0px)" },
-                    }}
+                    variants={{ hidden: { opacity: 0, filter: "blur(10px)" }, show: { opacity: 1, filter: "blur(0px)" } }}
                     transition={{ duration: 0.3 }}
-                    className={className}
+                    className={cls}
+                    style={c.highlight ? { backgroundColor: "#f9daa3", borderRadius: "0.125rem", padding: "0.125rem 0", color: "black" } : undefined}
                   >
                     {c.ch}
                   </motion.span>
                 );
               })}
-              {wordIndex < words.length - 1 &&
-                !(
-                  words[wordIndex + 1]?.length === 1 &&
-                  words[wordIndex + 1]?.[0]?.isBreak
-                ) && <span className="inline-block">&nbsp;</span>}
+              {wordIndex < words.length - 1 && !(words[wordIndex + 1]?.[0]?.isBreak) && (
+                <span className="inline-block">&nbsp;</span>
+              )}
             </span>
           );
         })}

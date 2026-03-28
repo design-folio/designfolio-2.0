@@ -2,39 +2,59 @@ import React, { memo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Pencil, Plus } from "lucide-react";
-import { extractText } from "./professional-utils";
+import { parseTiptapToWords } from "@/lib/tiptapUtils";
 
-function AnimatedWord({ word, wordIndex, isLast }) {
+function ExperienceDescription({ desc }) {
+  const words = parseTiptapToWords(desc);
+  if (!words.length) return null;
+
   return (
-    <span className="inline-block whitespace-nowrap">
-      {word.split("").map((char, charIndex) => (
-        <motion.span
-          key={charIndex}
-          variants={{
-            hidden: { opacity: 0, filter: "blur(4px)", y: 4 },
-            show: { opacity: 1, filter: "blur(0px)", y: 0 },
-          }}
-          transition={{ duration: 0.2 }}
-          className="inline-block"
-        >
-          {char}
-        </motion.span>
-      ))}
-      {!isLast && <span className="inline-block">&nbsp;</span>}
-    </span>
+    <motion.p
+      variants={{ hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.015 } } }}
+      initial="hidden"
+      animate="show"
+      className="font-jetbrains text-[15px] leading-relaxed max-w-xl break-words whitespace-normal"
+      style={{ color: "var(--tiptap-work-paragraph, #7a736c)" }}
+    >
+      {words.map((word, wordIndex) => {
+        if (word.length === 1 && word[0].isBreak) return <br key={`br-${wordIndex}`} />;
+        return (
+          <span key={wordIndex} className="inline-block whitespace-nowrap">
+            {word.map((c, charIndex) => {
+              let cls = "inline-block";
+              if (c.bold) cls += " font-bold";
+              if (c.italic) cls += " italic";
+              if (c.underline) cls += " underline";
+              if (c.strike) cls += " line-through";
+              return (
+                <motion.span
+                  key={charIndex}
+                  variants={{ hidden: { opacity: 0, filter: "blur(4px)", y: 4 }, show: { opacity: 1, filter: "blur(0px)", y: 0 } }}
+                  transition={{ duration: 0.2 }}
+                  className={cls}
+                  style={c.highlight ? { backgroundColor: "#f9daa3", borderRadius: "0.125rem", padding: "0.125rem 0", color: "black" } : undefined}
+                >
+                  {c.ch}
+                </motion.span>
+              );
+            })}
+            {wordIndex < words.length - 1 && !(words[wordIndex + 1]?.[0]?.isBreak) && (
+              <span className="inline-block">&nbsp;</span>
+            )}
+          </span>
+        );
+      })}
+    </motion.p>
   );
 }
 
 function ExperienceItem({
   exp,
-  index,
   isExpanded,
   onToggle,
   isEditing,
   onEdit,
 }) {
-  const descriptionText = extractText(exp.description);
-
   return (
     <div className="group border-b border-[#D5D0C6] dark:border-[#3A352E] last:border-0 hover:bg-[#DED9CE]/30 dark:hover:bg-white/[0.02] transition-colors -mx-4 px-4 md:-mx-6 md:px-6 relative">
       {isEditing && (
@@ -45,7 +65,7 @@ function ExperienceItem({
             className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
             onClick={(e) => {
               e.stopPropagation();
-              onEdit();
+              onEdit(exp);
             }}
           >
             <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
@@ -84,27 +104,7 @@ function ExperienceItem({
             className="overflow-hidden"
           >
             <div className="pb-6 pl-12 pr-4 sm:pr-0">
-              <motion.p
-                variants={{
-                  hidden: { opacity: 0 },
-                  show: {
-                    opacity: 1,
-                    transition: { staggerChildren: 0.015 },
-                  },
-                }}
-                initial="hidden"
-                animate="show"
-                className="font-jetbrains text-[#7A736C] dark:text-[#B5AFA5] text-[15px] leading-relaxed max-w-xl"
-              >
-                {descriptionText.split(" ").map((word, wordIndex, arr) => (
-                  <AnimatedWord
-                    key={wordIndex}
-                    word={word}
-                    wordIndex={wordIndex}
-                    isLast={wordIndex === arr.length - 1}
-                  />
-                ))}
-              </motion.p>
+              <ExperienceDescription desc={exp.description} />
             </div>
           </motion.div>
         )}

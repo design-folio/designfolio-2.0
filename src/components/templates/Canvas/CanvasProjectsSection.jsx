@@ -11,7 +11,7 @@ import {
 import { useGlobalContext } from "@/context/globalContext";
 import { modals, sidebars } from "@/lib/constant";
 import { CanvasSectionControls, CanvasSectionButton } from "./CanvasSectionControls";
-import { _updateUser } from "@/network/post-request";
+import { _updateProject, _updateUser } from "@/network/post-request";
 import ProjectLock from "@/components/projectLock";
 import { useRouter } from "next/router";
 
@@ -21,7 +21,7 @@ const getHref = (id, isEditing, isPreview) => {
   return `/project/${id}`;
 };
 
-function ProjectCard({ project, isEditing, isPreview, onNavigate, onDelete }) {
+function ProjectCard({ project, isEditing, isPreview, onNavigate, onDelete, onToggleVisibility }) {
   return (
     <div
       className="flex flex-col gap-4 group/card cursor-pointer relative"
@@ -43,6 +43,20 @@ function ProjectCard({ project, isEditing, isPreview, onNavigate, onDelete }) {
           <Button
             variant="outline"
             size="sm"
+            className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] cursor-pointer"
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleVisibility(project._id);
+            }}
+          >
+            {project.hidden
+              ? <EyeOff className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7] pointer-events-none" />
+              : <Eye className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7] pointer-events-none" />
+            }
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
             className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-red-50 dark:hover:bg-red-950/30 hover:border-red-200 dark:hover:border-red-900/50 hover:text-red-600 dark:hover:text-red-400 cursor-pointer"
             onClick={(e) => {
               e.stopPropagation();
@@ -53,12 +67,18 @@ function ProjectCard({ project, isEditing, isPreview, onNavigate, onDelete }) {
           </Button>
         </div>
       )}
-      <div className="rounded-2xl overflow-hidden aspect-[4/3] border border-black/5 dark:border-white/10 bg-[#F5F5F5] dark:bg-[#1A1A1A] pointer-events-none">
+      <div className="rounded-2xl overflow-hidden aspect-[4/3] border border-black/5 dark:border-white/10 bg-[#F5F5F5] dark:bg-[#1A1A1A] pointer-events-none relative">
         <img
           src={project?.thumbnail?.url}
           alt={project?.title || "project image"}
           className="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-105"
         />
+        {project?.hidden && (
+          <div className="absolute top-3 left-3 bg-amber-100 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1.5">
+            <EyeOff className="w-3 h-3" />
+            Hidden from live site
+          </div>
+        )}
       </div>
       <div className="pointer-events-none">
         <h3 className="text-base font-medium text-[#1A1A1A] dark:text-[#F0EDE7] mb-2 leading-snug line-clamp-2">
@@ -142,6 +162,8 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
     openModal,
     openSidebar,
     updateCache,
+    setShowUpgradeModal,
+    setUpgradeModalUnhideProject,
   } = useGlobalContext();
   const router = useRouter();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -151,11 +173,11 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
   const isSectionHidden = hiddenSections?.includes(sectionId);
 
   const visibleProjects = useMemo(() => {
-    if (preview && projects) {
+    if (!isEditing && projects) {
       return projects.filter((project) => !project.hidden);
     }
     return projects || [];
-  }, [projects, preview]);
+  }, [projects, isEditing]);
 
   const handleNavigation = useCallback((route) => router.push(route), [router]);
 
@@ -165,6 +187,28 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
       setSelectedProject(project);
     },
     [openModal, setSelectedProject],
+  );
+
+  const handleToggleProjectVisibility = useCallback(
+    (projectId) => {
+      const project = (projects || []).find((p) => p._id === projectId);
+      const visibleCount = (projects || []).filter((p) => !p.hidden).length;
+      const isUnhiding = project?.hidden === true;
+
+      if (!userDetails?.pro && isUnhiding && visibleCount >= 2) {
+        setUpgradeModalUnhideProject({ projectId, title: project?.title || "Project" });
+        setShowUpgradeModal(true);
+        return;
+      }
+
+      const updatedProjects = (projects || []).map((p) =>
+        p._id === projectId ? { ...p, hidden: !p.hidden } : p
+      );
+      _updateProject(projectId, { hidden: !project.hidden });
+      setUserDetails((prev) => ({ ...prev, projects: updatedProjects }));
+      updateCache("userDetails", (prev) => ({ ...prev, projects: updatedProjects }));
+    },
+    [projects, userDetails, setUserDetails, updateCache, setShowUpgradeModal, setUpgradeModalUnhideProject],
   );
 
   const handleToggleVisibility = useCallback(
@@ -275,6 +319,7 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
                 isPreview={preview && !publicView}
                 onNavigate={handleNavigation}
                 onDelete={onDeleteProject}
+                onToggleVisibility={handleToggleProjectVisibility}
               />
             ))}
             {isEditing && !(userDetails?.pro || visibleProjects.length < 2) && (

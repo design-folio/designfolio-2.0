@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
 import {
   Mail,
   Twitter,
@@ -12,7 +12,8 @@ import { _updateProject } from "@/network/post-request";
 import { useGlobalContext } from "@/context/globalContext";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { useRouter } from "next/router";
-import { modals, sidebars } from "@/lib/constant";
+import { modals, sidebars, normalizeSectionOrder } from "@/lib/constant";
+import { PROFESSIONAL_DEFAULT_ORDER, PROFESSIONAL_TAB_MAP } from "./professional-utils";
 import ProfessionalProfileHeader from "./ProfessionalProfileHeader";
 import ProfessionalNavTabs from "./ProfessionalNavTabs";
 import ProfessionalProjectsTab from "./ProfessionalProjectsTab";
@@ -66,7 +67,7 @@ export default function Professional({
     "Your Name"
   ).toUpperCase();
   const displayName = `HEY I'M ${fullName}`;
-  const userRole = userDetails?.persona?.label || "";
+  const userRole = userDetails?.persona?.label !== "Others" ? userDetails?.persona?.label : userDetails?.persona?.custom;
 
   const visibleProjects = useMemo(() => {
     if (!isEditing && projects) {
@@ -157,8 +158,32 @@ export default function Professional({
     return links;
   }, [email, socials, portfolios, phone, resume]);
 
+  const { hiddenSections = [], sectionOrder } = userDetails || {};
+
+  const orderedSectionIds = useMemo(() => {
+    const normalized = normalizeSectionOrder(sectionOrder, PROFESSIONAL_DEFAULT_ORDER);
+    return normalized.filter(id => PROFESSIONAL_DEFAULT_ORDER.includes(id));
+  }, [sectionOrder]);
+
+  const visibleTabs = useMemo(() => {
+    const sorted = orderedSectionIds
+      .filter(id => isEditing || !hiddenSections.includes(id))
+      .map(id => PROFESSIONAL_TAB_MAP[id]);
+    // Contact is not in sectionOrder (backend restriction) — always appended last
+    if (isEditing || !hiddenSections.includes('contact')) {
+      sorted.push(PROFESSIONAL_TAB_MAP['contact']);
+    }
+    return sorted;
+  }, [orderedSectionIds, hiddenSections, isEditing]);
+
   const [currentTime] = useState(new Date());
-  const [activeTab, setActiveTab] = useState("Projects");
+  const [activeTab, setActiveTab] = useState(() => visibleTabs[0]?.key || "Projects");
+
+  useEffect(() => {
+    if (visibleTabs.length && !visibleTabs.find(t => t.key === activeTab)) {
+      setActiveTab(visibleTabs[0].key);
+    }
+  }, [visibleTabs]);
 
   const handleEditProfile = useCallback(
     () => openModal("onboarding"),
@@ -279,6 +304,7 @@ export default function Professional({
         <ProfessionalNavTabs
           activeTab={activeTab}
           setActiveTab={setActiveTab}
+          tabs={visibleTabs}
         />
         <div className="flex-1">{renderActiveTab()}</div>
       </div>

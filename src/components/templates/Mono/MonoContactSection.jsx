@@ -19,9 +19,9 @@ const itemVariants = {
 const btnClass =
   "w-full flex items-center justify-between px-4 py-4 bg-white dark:bg-[#2A2520] rounded-xl border border-black/5 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors group h-auto";
 
-function LinkButton({ label, icon: Icon, iconRotate = 0, onClick }) {
+function LinkButton({ label, icon: Icon, iconRotate = 0, onClick, flex1 = false }) {
   return (
-    <motion.div whileHover="hover" initial="rest" className="w-full">
+    <motion.div whileHover="hover" initial="rest" className={flex1 ? "flex-1" : "w-full"}>
       <Button variant="outline" size="sm" onClick={onClick} className={btnClass}>
         <span className="text-[#1A1A1A] dark:text-[#F0EDE7] font-medium text-sm">
           {label}
@@ -107,12 +107,13 @@ export default function MonoContactSection({ isEditing }) {
       )}
 
       {(socials.linkedin || portfolios.dribbble || socials.twitter || portfolios.medium) && (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
+        <div className="flex gap-3 mb-3">
           {socials.linkedin && (
             <LinkButton
               label="Linkedin"
               icon={Linkedin}
               iconRotate={-10}
+              flex1
               onClick={() => openExternalLink(socials.linkedin)}
             />
           )}
@@ -121,6 +122,7 @@ export default function MonoContactSection({ isEditing }) {
               label="Dribbble"
               icon={DribbbleIcon}
               iconRotate={20}
+              flex1
               onClick={() => openExternalLink(portfolios.dribbble)}
             />
           )}
@@ -129,6 +131,7 @@ export default function MonoContactSection({ isEditing }) {
               label="X"
               icon={TwitterIcon}
               iconRotate={-20}
+              flex1
               onClick={() => openExternalLink(socials.twitter)}
             />
           )}
@@ -137,6 +140,7 @@ export default function MonoContactSection({ isEditing }) {
               label="Medium"
               icon={Globe}
               iconRotate={15}
+              flex1
               onClick={() => openExternalLink(portfolios.medium)}
             />
           )}

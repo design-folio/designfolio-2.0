@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { Eye, EyeOff, Pencil, Plus, Trash2 } from "lucide-react";
+import { EyeOff, Pencil, Plus, Trash2 } from "lucide-react";
+import { ProjectVisibilityButton } from "@/components/section";
 import { _updateProject } from "@/network/post-request";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGlobalContext } from "@/context/globalContext";
@@ -80,26 +81,6 @@ export default function ChatProjectsSection({
               transition={{ duration: 0.3 }}
               className="flex gap-3 max-w-[85%] relative group/msg"
             >
-              {canEdit && chatRevealStep >= s(8) && (
-                <div className="absolute -left-12 top-1/2 -translate-y-1/2 z-40 transition-opacity flex gap-1.5 opacity-0 group-hover/msg:opacity-100">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <Pencil className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-red-50 dark:hover:bg-red-950/30 hover:border-red-200 dark:hover:border-red-900/50 hover:text-red-600 dark:hover:text-red-400"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <Trash2 className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                  </Button>
-                </div>
-              )}
               <div className="w-8 h-8 shrink-0 mt-auto flex items-end">
                 <ChatAvatar
                   avatarSrc={avatarSrc}
@@ -127,47 +108,6 @@ export default function ChatProjectsSection({
               transition={{ duration: 0.3, delay: index * 0.2 }}
               className="flex gap-3 max-w-[72%] relative group/msg"
             >
-              {canEdit && (
-                <div className="absolute -left-12 top-1/2 -translate-y-1/2 z-40 transition-opacity flex gap-1.5 opacity-0 group-hover/msg:opacity-100">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      router.push(getProjectHref(project._id));
-                    }}
-                  >
-                    <Pencil className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleToggleProjectVisibility(project._id);
-                    }}
-                  >
-                    {project.hidden
-                      ? <EyeOff className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                      : <Eye className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                    }
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-red-50 dark:hover:bg-red-950/30 hover:border-red-200 dark:hover:border-red-900/50 hover:text-red-600 dark:hover:text-red-400"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSelectedProject(project);
-                      openModal(modals.deleteProject);
-                    }}
-                  >
-                    <Trash2 className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                  </Button>
-                </div>
-              )}
               <div className="w-8 h-8 shrink-0 mt-auto flex items-end">
                 {index === visibleProjects.length - 1 &&
                   chatRevealStep < getNextLeftStep("projects") && (
@@ -189,14 +129,57 @@ export default function ChatProjectsSection({
                 </svg>
                 <div
                   onClick={() => router.push(getProjectHref(project._id))}
-                  className="bg-white dark:bg-[#2A2520] p-3 rounded-2xl rounded-tl-none rounded-bl-sm transition-colors duration-400 border border-black/5 dark:border-white/5 border-t-0 w-full cursor-pointer  group/proj"
+                  className="bg-white dark:bg-[#2A2520] p-3 rounded-2xl rounded-tl-none rounded-bl-sm transition-colors duration-400 border border-black/5 dark:border-white/5 border-t-0 w-full cursor-pointer group/proj relative"
                 >
+                  {/* Actions — inside card, top-right */}
+                  {canEdit && (
+                    <div
+                      className={`absolute top-3 right-3 z-40 flex gap-1.5 transition-opacity ${project.hidden ? "opacity-100" : "opacity-100 md:opacity-0 md:group-hover/proj:opacity-100"}`}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          router.push(getProjectHref(project._id));
+                        }}
+                      >
+                        <Pencil className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                      </Button>
+                      <ProjectVisibilityButton
+                        isHidden={!!project.hidden}
+                        iconSize="w-3 h-3"
+                        className="h-7 w-7"
+                        onClick={(e) => { e.stopPropagation(); handleToggleProjectVisibility(project._id); }}
+                      />
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-red-50 dark:hover:bg-red-950/30 hover:border-red-200 dark:hover:border-red-900/50 hover:text-red-600 dark:hover:text-red-400"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedProject(project);
+                          openModal(modals.deleteProject);
+                        }}
+                      >
+                        <Trash2 className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                      </Button>
+                    </div>
+                  )}
+
                   <div className="w-full aspect-[2/1] rounded-xl overflow-hidden mb-3 relative bg-[#D5D0C6] dark:bg-[#1A1A1A]">
                     <img
                       src={project?.thumbnail?.url}
                       alt={project?.title || "project"}
                       className="w-full h-full object-cover transition-transform duration-300 group-hover/proj:scale-110"
                     />
+                    {project.hidden && (
+                      <div className="absolute top-2 left-2 bg-amber-100 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 px-2 py-0.5 rounded-full text-xs font-medium flex items-center gap-1">
+                        <EyeOff className="w-3 h-3" /> Hidden from live site
+                      </div>
+                    )}
                   </div>
                   <h3 className="text-[#1A1A1A] dark:text-[#F0EDE7] font-medium text-[15px] mb-1 px-1 line-clamp-2">
                     {project?.title}

@@ -1,7 +1,9 @@
 import React, { memo } from "react";
 import { Button } from "@/components/ui/button";
-import { Eye, EyeOff, Pencil, Plus, Trash2 } from "lucide-react";
+import { ChevronsUpDown, EyeOff, Pencil, Plus, Trash2 } from "lucide-react";
 import { screwClass, frameBorderClass } from "./professional-utils";
+import { SectionVisibilityButton, ProjectVisibilityButton } from "@/components/section";
+import { sidebars } from "@/lib/constant";
 
 const ScrewDot = ({ className }) => (
   <div className={`absolute ${className} ${screwClass}`} />
@@ -31,9 +33,31 @@ function ProfessionalProjectsTab({
   onEditProject,
   onDeleteProject,
   onToggleVisibility,
+  openSidebar,
 }) {
   return (
     <div className="grid grid-cols-1 gap-0">
+      {/* Sort + Section visibility controls */}
+      {isEditing && (
+        <div className="flex items-center justify-end gap-2 px-1 py-2 border-b border-[#D5D0C6] dark:border-[#3A352E]">
+          {visibleProjects.length >= 2 && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 w-8 p-0 rounded-none border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520] text-[#1A1A1A] dark:text-[#F0EDE7]"
+              onClick={() => openSidebar?.(sidebars.sortProjects)}
+              title="Rearrange projects"
+            >
+              <ChevronsUpDown className="w-3.5 h-3.5" />
+            </Button>
+          )}
+          <SectionVisibilityButton
+            sectionId="projects"
+            className="h-8 w-8 rounded-none border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520]"
+          />
+        </div>
+      )}
+
       {isEditing && (
         <div
           className={`group cursor-pointer relative flex flex-col ${frameBorderClass}`}
@@ -61,7 +85,7 @@ function ProfessionalProjectsTab({
           className={`group cursor-pointer relative flex flex-col ${frameBorderClass}`}
         >
           {isEditing && (
-            <div className="absolute top-4 right-4 z-40 transition-opacity flex gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100">
+            <div className={`absolute top-4 right-4 z-40 flex gap-2 transition-opacity ${project.hidden ? "opacity-100" : "opacity-100 md:opacity-0 md:group-hover:opacity-100"}`}>
               <Button
                 variant="outline"
                 size="sm"
@@ -73,20 +97,10 @@ function ProfessionalProjectsTab({
               >
                 <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
               </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-black/10 dark:border-white/10 shadow-sm hover:bg-white dark:hover:bg-[#35302A]"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onToggleVisibility(project._id);
-                }}
-              >
-                {project.hidden
-                  ? <EyeOff className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                  : <Eye className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                }
-              </Button>
+              <ProjectVisibilityButton
+                isHidden={!!project.hidden}
+                onClick={(e) => { e.stopPropagation(); onToggleVisibility(project._id); }}
+              />
               <Button
                 variant="outline"
                 size="sm"
@@ -107,6 +121,11 @@ function ProfessionalProjectsTab({
                 alt={project.title || "Project"}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
+              {project.hidden && (
+                <div className="absolute top-2 left-2 z-40 bg-amber-100 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 px-2 py-0.5 rounded-full text-xs font-medium flex items-center gap-1">
+                  <EyeOff className="w-3 h-3" /> Hidden from live site
+                </div>
+              )}
             </div>
           </div>
 

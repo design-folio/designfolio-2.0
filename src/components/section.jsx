@@ -1,12 +1,41 @@
 import React from "react";
 import Text from "./text";
 import { PencilIcon, Eye, EyeOff } from "lucide-react";
-import { Button } from "./ui/buttonNew";
+import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { useGlobalContext } from "@/context/globalContext";
 import { _updateUser } from "@/network/post-request";
+
+/** Reusable hide/show button for individual project cards — same visual style as SectionVisibilityButton */
+export function ProjectVisibilityButton({ isHidden, onClick, className = "", iconSize = "w-3.5 h-3.5" }) {
+  return (
+    <TooltipProvider delayDuration={300}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="outline"
+            size="icon"
+            className={cn(
+              "h-8 w-8 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]",
+              className,
+              isHidden && "text-amber-500 dark:text-amber-400",
+            )}
+            onClick={onClick}
+            type="button"
+            aria-label={isHidden ? "Hidden" : "Hide"}
+          >
+            {isHidden ? <EyeOff className={iconSize} /> : <Eye className={iconSize} />}
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent side="top" sideOffset={8} className="bg-tooltip-bg-color text-tooltip-text-color border-0 px-4 py-2 rounded-xl shadow-xl">
+          <span className="text-sm font-medium">{isHidden ? "Hidden" : "Hide"}</span>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+}
 
 /** Reusable hide/show section button for templates that don't use Section wrapper (Builder2 (Chat),Minimal,Portfolio) */
 export function SectionVisibilityButton({ sectionId, className = "" }) {
@@ -45,7 +74,7 @@ export function SectionVisibilityButton({ sectionId, className = "" }) {
           <Button
             variant="secondary"
             size="icon"
-            className={cn("h-11 w-11", isSectionHidden && "text-[#F59E0b]", className)}
+            className={cn("h-11 w-11", className, isSectionHidden && "text-amber-500 dark:text-amber-400")}
             onClick={handleToggleVisibility}
             type="button"
             aria-label={isSectionHidden ? "Hidden" : "Hide"}

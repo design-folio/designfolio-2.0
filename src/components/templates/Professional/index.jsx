@@ -219,6 +219,7 @@ export default function Professional({
             onEditProject={handleEditProject}
             onDeleteProject={onDeleteProject}
             onToggleVisibility={handleToggleProjectVisibility}
+            openSidebar={openSidebar}
           />
         );
       case "Experience":

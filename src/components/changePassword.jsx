@@ -3,9 +3,8 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 import { _changePassword } from "@/network/post-request";
-import Text from "./text";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 const resetPasswordValidationSchema = Yup.object().shape({
   password: Yup.string()
@@ -25,99 +24,97 @@ const resetPasswordValidationSchema = Yup.object().shape({
 
 export default function ChangePassword() {
   const [loading, setLoading] = useState(false);
+
   return (
     <div>
-      <Text size="p-small" className="text-df-section-card-heading-color">
+      <p className="text-[18px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
         Change password
-      </Text>
+      </p>
+
       <Formik
-        initialValues={{
-          password: "",
-          confirmPassword: "",
-          oldPassword: "",
-        }}
+        initialValues={{ password: "", confirmPassword: "", oldPassword: "" }}
         validationSchema={resetPasswordValidationSchema}
         onSubmit={(values, actions) => {
           setLoading(true);
           actions.setSubmitting(false);
-
-          const data = {
+          _changePassword({
             currentPassword: values.oldPassword,
             newPassword: values.password,
-          };
-          _changePassword(data)
+          })
             .then(() => {
               toast.success("Password changed successfully");
               setLoading(false);
             })
-            .catch((err) => setLoading(false));
+            .catch(() => setLoading(false));
         }}
       >
-        {({ isSubmitting, isValid, errors, touched }) => (
+        {({ isValid, errors, touched }) => (
           <Form id="resetPasswordForm">
-            <Text size={"p-xxsmall"} className="mt-6 font-medium" required>
-              Old password
-            </Text>
+            <div className="mt-5">
+              <label className="text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+                Old password <span className="text-destructive">*</span>
+              </label>
+              <Field name="oldPassword">
+                {({ field }) => (
+                  <Input
+                    {...field}
+                    id="oldPassword"
+                    type="password"
+                    autoComplete="off"
+                    className={`mt-2 ${errors.oldPassword && touched.oldPassword ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                  />
+                )}
+              </Field>
+              <ErrorMessage name="oldPassword" component="p" className="text-destructive text-[13px] mt-1" />
+            </div>
 
-            <Field name="oldPassword">
-              {({ field }) => (
-                <Input {...field} id="oldPassword" type="password" autoComplete="off"
-                  className={`mt-2 ${errors.oldPassword && touched.oldPassword ? "border-destructive focus-visible:ring-destructive" : ""}`}
-                />
-              )}
-            </Field>
-            <ErrorMessage
-              name="oldPassword"
-              component="div"
-              className="error-message text-[14px]"
-            />
-            <div className="md:flex gap-10">
-              <div className="flex-1 ">
-                <Text size={"p-xxsmall"} className="mt-6 font-medium" required>
-                  New password
-                </Text>
-
+            <div className="md:flex gap-8 mt-5">
+              <div className="flex-1">
+                <label className="text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+                  New password <span className="text-destructive">*</span>
+                </label>
                 <Field name="password">
                   {({ field }) => (
-                    <Input {...field} id="password" type="password" autoComplete="off"
+                    <Input
+                      {...field}
+                      id="password"
+                      type="password"
+                      autoComplete="off"
                       className={`mt-2 ${errors.password && touched.password ? "border-destructive focus-visible:ring-destructive" : ""}`}
                     />
                   )}
                 </Field>
-                <ErrorMessage
-                  name="password"
-                  component="div"
-                  className="error-message text-[14px]"
-                />
+                <ErrorMessage name="password" component="p" className="text-destructive text-[13px] mt-1" />
               </div>
 
-              <div className="flex-1">
-                <Text size={"p-xxsmall"} className="mt-6 font-medium" required>
-                  Confirm password
-                </Text>
-
+              <div className="flex-1 mt-5 md:mt-0">
+                <label className="text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+                  Confirm password <span className="text-destructive">*</span>
+                </label>
                 <Field name="confirmPassword">
                   {({ field }) => (
-                    <Input {...field} id="confirmPassword" type="password" autoComplete="off"
+                    <Input
+                      {...field}
+                      id="confirmPassword"
+                      type="password"
+                      autoComplete="off"
                       className={`mt-2 ${errors.confirmPassword && touched.confirmPassword ? "border-destructive focus-visible:ring-destructive" : ""}`}
                     />
                   )}
                 </Field>
-                <ErrorMessage
-                  name="confirmPassword"
-                  component="div"
-                  className="error-message text-[14px]"
-                />
+                <ErrorMessage name="confirmPassword" component="p" className="text-destructive text-[13px] mt-1" />
               </div>
             </div>
 
-            <div className="lg:flex justify-end">
+            <div className="flex justify-end mt-6">
               <Button
                 type="submit"
                 form="resetPasswordForm"
                 disabled={loading || !isValid}
-                className="mt-6 w-full lg:w-fit"
-              >{loading ? "Saving…" : "Change password"}</Button>
+                className="w-full lg:w-fit rounded-full"
+              >
+                {loading ? "Saving…" : "Change password"}
+              </Button>
             </div>
           </Form>
         )}

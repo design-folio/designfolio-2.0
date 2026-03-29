@@ -37,26 +37,6 @@ export default function ChatTestimonialsSection({
             transition={{ duration: 0.3 }}
             className="flex justify-end relative group/msg"
           >
-            {canEdit && (
-              <div className="absolute -left-12 top-1/2 -translate-y-1/2 z-40 transition-opacity flex gap-1.5 opacity-0 group-hover/msg:opacity-100">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <Pencil className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-red-50 dark:hover:bg-red-950/30 hover:border-red-200 dark:hover:border-red-900/50 hover:text-red-600 dark:hover:text-red-400"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <Trash2 className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                </Button>
-              </div>
-            )}
             <YouPrompt>What do clients say about your work?</YouPrompt>
           </motion.div>
         )}

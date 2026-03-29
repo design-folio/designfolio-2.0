@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { Button } from "@/components/ui/buttonNew";
+import { Button } from "@/components/ui/button";
 import { useGlobalContext } from "@/context/globalContext";
 import ChangePassword from "@/components/changePassword";
 import DeleteAccount from "@/components/deleteAccount";
@@ -59,7 +59,7 @@ export default function Settings() {
   const containerClass = (() => {
     switch (template) {
       case TEMPLATE_IDS.CANVAS:
-        return "max-w-[640px] mx-auto flex flex-col gap-3 py-[94px] md:py-[124px] px-4 md:px-0";
+        return "max-w-[720px] mx-auto flex flex-col gap-3 py-[94px] md:py-[124px] px-4 md:px-0";
       case TEMPLATE_IDS.MONO:
         return "max-w-[640px] mx-auto py-[94px] md:py-[124px] custom-dashed-x bg-[#F0EDE7] dark:bg-[#1A1A1A] min-h-screen";
       default:
@@ -73,6 +73,10 @@ export default function Settings() {
         return "bg-white dark:bg-[#2A2520] rounded-[32px] border border-[#E5D7C4] dark:border-white/10 p-8";
       case TEMPLATE_IDS.MONO:
         return "px-5 md:px-8 py-8";
+      case TEMPLATE_IDS.CHATFOLIO:
+        return "bg-white dark:bg-[#2A2520] rounded-2xl  p-8";
+      case TEMPLATE_IDS.PROFESSIONAL:
+        return "bg-white dark:bg-[#2A2520] rounded-2xl  p-8";
       default:
         return "bg-df-section-card-bg-color p-8 rounded-2xl";
     }

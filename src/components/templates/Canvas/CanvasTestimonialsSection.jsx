@@ -6,9 +6,46 @@ import { useGlobalContext } from "@/context/globalContext";
 import { sidebars } from "@/lib/constant";
 import { CanvasSectionControls, CanvasSectionButton } from "./CanvasSectionControls";
 import { SectionVisibilityButton } from "@/components/section";
-import { getPlainTextLength } from "@/lib/tiptapUtils";
+import { getPlainTextLength, parseTiptapToWords } from "@/lib/tiptapUtils";
 import SimpleTiptapRenderer from "@/components/SimpleTiptapRenderer";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
+const THRESHOLD = 200;
+
+function renderTiptapWords(content, charLimit = null) {
+  const words = parseTiptapToWords(content);
+  let charCount = 0;
+  const elements = [];
+
+  for (let wi = 0; wi < words.length; wi++) {
+    const word = words[wi];
+    if (word[0]?.isBreak) {
+      elements.push(<br key={`br-${wi}`} />);
+      continue;
+    }
+    const text = word.map(c => c.ch).join('');
+    if (charLimit !== null && charCount + text.length > charLimit) {
+      const remaining = charLimit - charCount;
+      if (remaining > 0) elements.push(<React.Fragment key={wi}>{text.slice(0, remaining)}</React.Fragment>);
+      break;
+    }
+    charCount += text.length;
+    const { bold, italic, underline, strike, highlight } = word[0] || {};
+    const cn = [
+      bold && 'font-bold',
+      italic && 'italic',
+      underline && 'underline',
+      strike && 'line-through',
+      highlight && 'bg-[#f9daa3] rounded-sm px-0.5',
+    ].filter(Boolean).join(' ') || undefined;
+    elements.push(
+      <React.Fragment key={wi}>
+        {cn ? <span className={cn}>{text}</span> : text}{' '}
+      </React.Fragment>
+    );
+  }
+  return elements;
+}
 
 function getTextFromTiptap(node) {
   if (!node) return "";
@@ -70,7 +107,7 @@ function CanvasTestimonialsSection({ isEditing }) {
 
   const review = reviews[currentIndex];
   const reviewTextLength = getPlainTextLength(review?.description || "");
-  const needsExpand = reviewTextLength > 150;
+  const needsExpand = reviewTextLength > THRESHOLD;
   const reviewId = review?._id ?? `review-${currentIndex}`;
   const isExpanded = expandedReviewIds.includes(reviewId);
 
@@ -101,11 +138,34 @@ function CanvasTestimonialsSection({ isEditing }) {
           />
         </CanvasSectionControls>
       )}
-      <h2
-        className="text-[#7A736C] dark:text-[#B5AFA5] font-dm-mono font-medium text-[14px] mb-6"
-      >
-        TESTIMONIALS
-      </h2>
+
+      {/* Header row: title left, indicators right */}
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-[#7A736C] dark:text-[#B5AFA5] font-dm-mono font-medium text-[14px]">
+          TESTIMONIALS
+        </h2>
+        {reviews.length > 1 && (
+          <div className="flex items-center gap-1.5">
+            {reviews.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCurrentIndex(idx);
+                  setIsHovering(true);
+                  setTimeout(() => setIsHovering(false), 5000);
+                }}
+                className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                  idx === currentIndex
+                    ? "w-6 bg-[#1A1A1A] dark:bg-[#F0EDE7]"
+                    : "w-1.5 bg-[#E5D7C4] dark:bg-white/20 hover:bg-[#D5D0C6] dark:hover:bg-white/40"
+                }`}
+                aria-label={`Go to testimonial ${idx + 1}`}
+              />
+            ))}
+          </div>
+        )}
+      </div>
 
       <div className="space-y-4">
         {reviews.length === 0 ? (
@@ -151,10 +211,10 @@ function CanvasTestimonialsSection({ isEditing }) {
                 transition={{ duration: 0.3, ease: "easeInOut" }}
                 onMouseEnter={() => setIsHovering(true)}
                 onMouseLeave={() => setIsHovering(false)}
-                className="group border border-[#E5D7C4] dark:border-white/10 p-6 rounded-2xl bg-white/50 dark:bg-[#2A2520]/50 hover:bg-white dark:hover:bg-[#35302A] transition-colors relative"
+                className="group relative"
               >
                 {isEditing && (
-                  <div className="absolute top-4 right-4 z-20 transition-opacity flex gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100">
+                  <div className="absolute top-0 right-0 z-20 transition-opacity flex gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100">
                     <Button
                       variant="outline"
                       size="sm"
@@ -183,25 +243,18 @@ function CanvasTestimonialsSection({ isEditing }) {
                 )}
 
                 <div className="mb-6 relative z-10">
-                  <span className="text-[#7A736C] dark:text-[#B5AFA5] text-[18px] leading-none align-top">
-                    "
-                  </span>
                   {needsExpand ? (
                     <>
-                      <motion.div
-                        initial={false}
-                        animate={{ height: isExpanded ? "auto" : "4.875em" }}
-                        transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
-                        className="block overflow-hidden"
-                      >
-                        <SimpleTiptapRenderer
-                          content={review?.description || ""}
-                          mode="review"
-                          enableBulletList={false}
-                          className="text-[#7A736C] dark:text-[#B5AFA5] text-[15px] leading-relaxed"
-                          noCardStyle
-                        />
-                      </motion.div>
+                      <div className={`relative overflow-hidden ${!isExpanded ? "h-[5em]" : ""}`}>
+                        <p className="text-[#7A736C] dark:text-[#B5AFA5] text-[15px] leading-relaxed">
+                          {isExpanded
+                            ? renderTiptapWords(review?.description)
+                            : renderTiptapWords(review?.description, THRESHOLD)}
+                        </p>
+                        {!isExpanded && (
+                          <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white dark:from-[#2A2520] to-transparent pointer-events-none" />
+                        )}
+                      </div>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -231,13 +284,10 @@ function CanvasTestimonialsSection({ isEditing }) {
                       content={review?.description || ""}
                       mode="review"
                       enableBulletList={false}
-                      className="inline text-[#7A736C] dark:text-[#B5AFA5] text-[15px] leading-relaxed"
+                      className="text-[#7A736C] dark:text-[#B5AFA5] text-[15px] leading-relaxed"
                       noCardStyle
                     />
                   )}
-                  <span className="text-[#7A736C] dark:text-[#B5AFA5] text-[18px] leading-none align-top">
-                    "
-                  </span>
                 </div>
 
                 <div className="flex items-center justify-between">
@@ -321,28 +371,6 @@ function CanvasTestimonialsSection({ isEditing }) {
                 </div>
               </motion.div>
             </AnimatePresence>
-          </div>
-        )}
-
-        {/* Progress Indicators */}
-        {reviews.length > 1 && (
-          <div className="flex justify-center gap-2 mt-4 pt-2">
-            {reviews.map((_, idx) => (
-              <button
-                key={idx}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setCurrentIndex(idx);
-                  setIsHovering(true);
-                  setTimeout(() => setIsHovering(false), 5000);
-                }}
-                className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${idx === currentIndex
-                    ? "w-6 bg-[#1A1A1A] dark:bg-[#F0EDE7]"
-                    : "w-1.5 bg-[#E5D7C4] dark:bg-white/20 hover:bg-[#D5D0C6] dark:hover:bg-white/40"
-                  }`}
-                aria-label={`Go to testimonial ${idx + 1}`}
-              />
-            ))}
           </div>
         )}
       </div>

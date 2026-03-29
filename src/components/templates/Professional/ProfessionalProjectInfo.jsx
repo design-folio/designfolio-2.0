@@ -273,10 +273,10 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
               <DropdownMenu modal={false} open={isLockOpen} onOpenChange={setIsLockOpen}>
                 <DropdownMenuTrigger asChild>
                   <button
-                    className="text-[#7A736C] dark:text-[#9E9893] hover:text-[#E37941] transition-colors"
-                    title="Lock Case Study"
+                    className="flex items-center gap-1.5 hover:text-[#E37941] transition-colors"
+                  // title="Lock Case Study"
                   >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                       <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
                       <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                     </svg>
@@ -340,20 +340,20 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
                 <button
                   onClick={handleAnalyzeClick}
                   disabled={isAnalyzeDisabled}
-                  className="flex items-center gap-1.5 text-[#7A736C] dark:text-[#9E9893] hover:text-[#E37941] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  title={analyzeButtonLabel}
+                  className="flex items-center gap-1.5 hover:text-[#E37941] cursor-pointer transition-colors disabled:opacity-40 disabled:cursor-not-allowed text-[11px] uppercase tracking-wider"
+                // title={analyzeButtonLabel}
                 >
                   {isAnalyzing ? (
                     <AnimatedLoadingDots className="w-[18px] h-[5px] shrink-0" />
                   ) : (
-                    <AnalyzeIcon className="w-[14px] h-[14px] shrink-0" />
+                    <AnalyzeIcon className="w-[13px] h-[13px] shrink-0" />
                   )}
-                  <span className="text-[11px] uppercase tracking-wider">{analyzeButtonLabel}</span>
+                  {analyzeButtonLabel}
                 </button>
               )}
             </>
           )}
-          <div className="tracking-wider">PROJECT</div>
+          {!edit && <div className="tracking-wider">PROJECT</div>}
         </div>
       </motion.div>
 
@@ -428,24 +428,24 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
           >
             {edit
               ? detailFields.map(({ label, value, field }) => (
-                  <EditableDetailField
-                    key={field}
-                    label={label}
-                    field={field}
-                    value={value}
-                    onBlur={handleOnBlur}
-                  />
-                ))
+                <EditableDetailField
+                  key={field}
+                  label={label}
+                  field={field}
+                  value={value}
+                  onBlur={handleOnBlur}
+                />
+              ))
               : viewDetailFields.map(({ label, value }) => (
-                  <div key={label}>
-                    <h4 className="font-jetbrains text-[11px] text-[#7A736C] dark:text-[#9E9893] uppercase tracking-wider mb-2">
-                      {label}
-                    </h4>
-                    <p className="font-jetbrains text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] uppercase">
-                      {value}
-                    </p>
-                  </div>
-                ))}
+                <div key={label}>
+                  <h4 className="font-jetbrains text-[11px] text-[#7A736C] dark:text-[#9E9893] uppercase tracking-wider mb-2">
+                    {label}
+                  </h4>
+                  <p className="font-jetbrains text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] uppercase">
+                    {value}
+                  </p>
+                </div>
+              ))}
           </motion.div>
         )}
 

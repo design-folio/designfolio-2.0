@@ -42,7 +42,7 @@ export function EditButtons({ canEdit, onEdit, onDelete, className = "" }) {
   if (!canEdit) return null;
   return (
     <div
-      className={`absolute -left-12 top-1/2 -translate-y-1/2 z-40 transition-opacity flex gap-1.5 opacity-0 group-hover/msg:opacity-100 ${className}`}
+      className={`absolute -left-0 top-1/2 -translate-y-1/2 z-40 transition-opacity flex gap-1.5 opacity-0 group-hover/msg:opacity-100 ${className}`}
     >
       {onEdit && (
         <button

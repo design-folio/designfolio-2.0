@@ -221,42 +221,44 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
               onClick={() => openSidebar(sidebars.sortProjects)}
             />
           )}
-          <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
-            <DropdownMenuTrigger asChild>
-              <CanvasSectionButton icon={<Plus className="w-3.5 h-3.5" />} ariaLabel="Add project" alwaysVisible={isDropdownOpen} />
-            </DropdownMenuTrigger>
+          {(userDetails?.pro || (projects?.length ?? 0) < 2) && (
+            <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
+              <DropdownMenuTrigger asChild>
+                <CanvasSectionButton icon={<Plus className="w-3.5 h-3.5" />} ariaLabel="Add project" alwaysVisible={isDropdownOpen} />
+              </DropdownMenuTrigger>
 
-            <DropdownMenuContent
-              align="end"
-              className="w-48 bg-white dark:bg-[#2A2520] border border-black/10 dark:border-white/10 shadow-lg rounded-xl overflow-hidden p-1"
-            >
-              <DropdownMenuItem
-                onClick={() => openSidebar(sidebars.project)}
-                className="flex items-center gap-2 px-3 py-2 text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer rounded-lg focus:bg-black/5 dark:focus:bg-white/5"
+              <DropdownMenuContent
+                align="end"
+                className="w-48 bg-white dark:bg-[#2A2520] border border-black/10 dark:border-white/10 shadow-lg rounded-xl overflow-hidden p-1"
               >
-                <Pencil className="w-3.5 h-3.5" />
-                <span>Write from Scratch</span>
-              </DropdownMenuItem>
-
-              <DropdownMenuItem
-                onClick={() => openModal(modals.aiProject)}
-                className="flex items-center gap-2 px-3 py-2 text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer rounded-lg focus:bg-black/5 dark:focus:bg-white/5"
-              >
-                <svg
-                  className="w-3.5 h-3.5"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+                <DropdownMenuItem
+                  onClick={() => openSidebar(sidebars.project)}
+                  className="flex items-center gap-2 px-3 py-2 text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer rounded-lg focus:bg-black/5 dark:focus:bg-white/5"
                 >
-                  <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                </svg>
-                <span>Write using AI</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                  <Pencil className="w-3.5 h-3.5" />
+                  <span>Write from Scratch</span>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem
+                  onClick={() => openModal(modals.aiProject)}
+                  className="flex items-center gap-2 px-3 py-2 text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer rounded-lg focus:bg-black/5 dark:focus:bg-white/5"
+                >
+                  <svg
+                    className="w-3.5 h-3.5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                  </svg>
+                  <span>Write using AI</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
 
           <SectionVisibilityButton
             sectionId="projects"

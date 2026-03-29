@@ -6,7 +6,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { sidebars, DEFAULT_SECTION_ORDER, normalizeSectionOrder } from "@/lib/constant";
 import styles from "@/styles/domain.module.css";
 import imageCompression from "browser-image-compression";
-import { Upload, RotateCcw, Check, Sun, Moon } from "lucide-react";
+import { Upload, RotateCcw, Check, Sun, Moon, Eye, EyeOff } from "lucide-react";
 import DragHandle from "./DragHandle";
 import React, { useEffect, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
@@ -94,6 +94,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { _updateUser } from "@/network/post-request";
 import { runThemeTransition, hasThemeSwitchEffect } from "@/hooks/use-theme-switch-audio";
 import { TEMPLATE_IDS, TEMPLATES_BY_ID, TEMPLATES_LIST } from "@/lib/templates";
+import { PROFESSIONAL_DEFAULT_ORDER } from "@/components/templates/Professional/professional-utils";
 
 
 // Section display names mapping
@@ -102,17 +103,18 @@ const SECTION_NAMES = {
   projects: 'Projects',
   reviews: 'Testimonials',
   tools: 'Toolbox',
-  works: 'Works/Experience'
+  works: 'Works/Experience',
+  contact: 'Contact',
 };
 
 // Get available sections for a template
-// All templates use the same default order
 const getAvailableSections = (template) => {
+  if (template === TEMPLATE_IDS.PROFESSIONAL) return PROFESSIONAL_DEFAULT_ORDER;
   return DEFAULT_SECTION_ORDER;
 };
 
 // SortableSectionItem Component
-const SortableSectionItem = ({ id, isMobile }) => {
+const SortableSectionItem = ({ id, isMobile, isHidden, onToggleHide }) => {
   const {
     attributes,
     listeners,
@@ -149,6 +151,14 @@ const SortableSectionItem = ({ id, isMobile }) => {
       <span className="flex-1 text-sm font-medium">
         {SECTION_NAMES[id] || id}
       </span>
+      <button
+        onClick={(e) => { e.stopPropagation(); onToggleHide(); }}
+        className="p-1 rounded-md text-foreground/40 hover:text-foreground transition-colors"
+        aria-label={isHidden ? "Show section" : "Hide section"}
+        type="button"
+      >
+        {isHidden ? <EyeOff className="w-4 h-4 text-amber-500" /> : <Eye className="w-4 h-4" />}
+      </button>
     </div>
   );
 };
@@ -217,6 +227,17 @@ const ThemePanel = ({
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
+
+  const hiddenSections = userDetails?.hiddenSections || [];
+
+  const toggleSectionHide = (sectionId) => {
+    const newHidden = hiddenSections.includes(sectionId)
+      ? hiddenSections.filter(id => id !== sectionId)
+      : [...hiddenSections, sectionId];
+    setUserDetails(prev => ({ ...prev, hiddenSections: newHidden }));
+    updateCache("userDetails", prev => ({ ...prev, hiddenSections: newHidden }));
+    _updateUser({ hiddenSections: newHidden });
+  };
 
   // Change section order function
   const changeSectionOrder = (newOrder) => {
@@ -767,7 +788,13 @@ const ThemePanel = ({
               <SortableContext items={sectionOrder} strategy={rectSortingStrategy}>
                 <div className="space-y-4">
                   {sectionOrder.map((id) => (
-                    <SortableSectionItem key={id} id={id} isMobile={isMobile} />
+                    <SortableSectionItem
+                      key={id}
+                      id={id}
+                      isMobile={isMobile}
+                      isHidden={hiddenSections.includes(id)}
+                      onToggleHide={() => toggleSectionHide(id)}
+                    />
                   ))}
                 </div>
               </SortableContext>

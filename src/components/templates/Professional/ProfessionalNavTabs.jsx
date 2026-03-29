@@ -1,11 +1,10 @@
 import React, { memo } from "react";
 import { cn } from "@/lib/utils";
-import { SPOTLIGHT_TABS } from "./professional-utils";
 
-function ProfessionalNavTabs({ activeTab, setActiveTab }) {
+function ProfessionalNavTabs({ activeTab, setActiveTab, tabs }) {
   return (
     <div className="bg-[#DED9CE] dark:bg-[#2A2520] px-3 py-2 flex justify-between items-center overflow-x-auto hide-scrollbar">
-      {SPOTLIGHT_TABS.map((tab) => (
+      {tabs.map((tab) => (
         <button
           key={tab.key}
           onClick={() => setActiveTab(tab.key)}

@@ -2,10 +2,53 @@ import React, { memo, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Pencil, Play, Plus, Square } from "lucide-react";
-import { extractText } from "./professional-utils";
+import { parseTiptapToWords, getPlainTextLength } from "@/lib/tiptapUtils";
+
+const VIEW_MORE_THRESHOLD = 300;
+
+function renderTiptapWords(content, charLimit = null) {
+  const words = parseTiptapToWords(content);
+  let charCount = 0;
+  const elements = [];
+  let truncated = false;
+
+  for (let wi = 0; wi < words.length; wi++) {
+    const word = words[wi];
+    if (word[0]?.isBreak) {
+      elements.push(<br key={`br-${wi}`} />);
+      continue;
+    }
+    const text = word.map(c => c.ch).join('');
+    if (charLimit !== null && charCount + text.length > charLimit) {
+      const remaining = charLimit - charCount;
+      if (remaining > 0) elements.push(<React.Fragment key={wi}>{text.slice(0, remaining)}</React.Fragment>);
+      truncated = true;
+      break;
+    }
+    charCount += text.length;
+    const { bold, italic, underline, strike, highlight } = word[0] || {};
+    const cn = [
+      bold && 'font-bold',
+      italic && 'italic',
+      underline && 'underline',
+      strike && 'line-through',
+      highlight && 'bg-[#f9daa3] rounded-sm px-0.5 text-black',
+    ].filter(Boolean).join(' ') || undefined;
+    elements.push(
+      <React.Fragment key={wi}>
+        {cn ? <span className={cn}>{text}</span> : text}{' '}
+      </React.Fragment>
+    );
+  }
+  if (truncated) elements.push('…');
+  return elements;
+}
 
 function TestimonialCard({ review, isEditing, isPlaying, onPlay, onEdit }) {
-  const reviewText = extractText(review?.description);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const shouldTruncate = getPlainTextLength(review?.description) > VIEW_MORE_THRESHOLD;
+  // Full plain text used only for speech synthesis
+  const plainText = parseTiptapToWords(review?.description).map(w => w.map(c => c.ch).join('')).join(' ');
 
   return (
     <div className="group border border-[#D5D0C6] dark:border-[#3A352E] p-6 rounded-sm hover:bg-[#DED9CE]/30 dark:hover:bg-white/[0.02] transition-colors relative">
@@ -24,9 +67,19 @@ function TestimonialCard({ review, isEditing, isPlaying, onPlay, onEdit }) {
           </Button>
         </div>
       )}
-      <p className="font-inter text-[#1A1A1A] dark:text-[#F0EDE7] text-[16px] leading-relaxed mb-6 italic relative z-10">
-        &ldquo;{reviewText}&rdquo;
-      </p>
+      <div className="mb-6">
+        <p className="font-jetbrains text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed relative z-10">
+          {renderTiptapWords(review?.description, !isExpanded && shouldTruncate ? VIEW_MORE_THRESHOLD : null)}
+        </p>
+        {shouldTruncate && (
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="mt-2 font-jetbrains text-[13px] text-[#7A736C] dark:text-[#9E9893] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7] transition-colors"
+          >
+            {isExpanded ? "View less" : "View more"}
+          </button>
+        )}
+      </div>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="w-10 h-10 rounded-full bg-[#D5D0C6] dark:bg-[#3A352E] overflow-hidden">
@@ -54,9 +107,9 @@ function TestimonialCard({ review, isEditing, isPlaying, onPlay, onEdit }) {
             </p>
           </div>
         </div>
-        {reviewText && (
+        {plainText && (
           <button
-            onClick={() => onPlay(reviewText, review._id)}
+            onClick={() => onPlay(plainText, review._id)}
             className="flex items-center gap-2 px-3 py-1.5 border border-[#D5D0C6] dark:border-[#3A352E] rounded-full text-[#1A1A1A] dark:text-[#F0EDE7] hover:bg-[#DED9CE] dark:hover:bg-[#2A2520] transition-colors"
           >
             {isPlaying ? (

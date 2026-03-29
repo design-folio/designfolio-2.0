@@ -383,7 +383,7 @@ export default function Index() {
               data-feedefy-userid={userDetails?.email}
             />
           )}
-          {!isMobile && <CourseCard />}
+          {/* {!isMobile && <CourseCard />} */}
         </main>
       </div>
       <AppSidebar />

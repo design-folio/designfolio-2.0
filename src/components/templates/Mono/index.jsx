@@ -1,5 +1,5 @@
 "use client";
-import { SectionVisibilityButton } from "@/components/section";
+import { SectionVisibilityButton, ProjectVisibilityButton } from "@/components/section";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,10 +16,10 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
 import { useGlobalContext } from "@/context/globalContext";
+import { _updateProject } from "@/network/post-request";
 import { DEFAULT_PEGBOARD_IMAGES } from "@/lib/aboutConstants";
 import {
   DEFAULT_SECTION_ORDER,
@@ -37,9 +37,9 @@ import {
 } from "lucide-animated";
 import {
   ChevronsUpDown,
+  EyeOff,
   Pencil,
   Plus,
-  Search,
   Trash2,
   X
 } from "lucide-react";
@@ -85,9 +85,13 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
   const router = useRouter();
   const {
     userDetails,
+    setUserDetails,
     openModal,
     openSidebar,
     setSelectedProject,
+    updateCache,
+    setShowUpgradeModal,
+    setUpgradeModalUnhideProject,
   } = useGlobalContext();
   const avatarSrc = useMemo(
     () => getUserAvatarImage(userDetails),
@@ -98,7 +102,6 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
   const dribbbleRef = useRef(null);
   const twitterRef = useRef(null);
 
-  const [isStackPanelOpen, setIsStackPanelOpen] = useState(false);
   const [isRecommendationsPanelOpen, setIsRecommendationsPanelOpen] =
     useState(false);
   const [isProjectsPanelOpen, setIsProjectsPanelOpen] = useState(false);
@@ -129,7 +132,6 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
   }, [userDetails?.about?.pegboardImages]);
   const [storyImages, setStoryImages] = useState(mappedStoryImages);
   const [selectedStoryImage, setSelectedStoryImage] = useState(null);
-  const [toolSearchQuery, setToolSearchQuery] = useState("");
 
   const mappedTools = useMemo(
     () =>
@@ -164,65 +166,6 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
     [displayName],
   );
 
-  const allTools = [
-    { name: "Figma", icon: "/tools/image 4.png" },
-    { name: "Notion", icon: "/tools/image 5.png" },
-    { name: "Raycast", icon: "/tools/image 6.png" },
-    { name: "Framer", icon: "/tools/image 7.png" },
-    { name: "Linear", icon: "/tools/image 8.png" },
-    { name: "Slack", icon: "/tools/image 9.png" },
-    { name: "Arc", icon: "/tools/image 10.png" },
-    {
-      name: "GitHub",
-      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg",
-    },
-    {
-      name: "VS Code",
-      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg",
-    },
-    {
-      name: "React",
-      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
-    },
-    {
-      name: "TypeScript",
-      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg",
-    },
-    {
-      name: "Tailwind",
-      icon: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg",
-    },
-    {
-      name: "Python",
-      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg",
-    },
-    {
-      name: "Node.js",
-      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",
-    },
-    {
-      name: "Vercel",
-      icon: "https://assets.vercel.com/image/upload/front/favicon/vercel/180x180.png",
-    },
-    {
-      name: "GitLab",
-      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/gitlab/gitlab-original.svg",
-    },
-    {
-      name: "Firebase",
-      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg",
-    },
-  ];
-
-  const handleAddTool = (tool) => {
-    if (!activeTools.find((t) => t.name === tool.name)) {
-      setActiveTools([...activeTools, tool]);
-    }
-  };
-
-  const handleRemoveTool = (toolToRemove) => {
-    setActiveTools(activeTools.filter((t) => t.name !== toolToRemove.name));
-  };
 
   useEffect(() => {
     setProjects(mappedProjects);
@@ -255,16 +198,34 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
     [openModal, setSelectedProject],
   );
 
+  const handleToggleProjectVisibility = useCallback(
+    (projectId) => {
+      const allProjects = userDetails?.projects || [];
+      const project = allProjects.find((p) => p._id === projectId);
+      if (!project) return;
+      const visibleCount = allProjects.filter((p) => !p.hidden).length;
+      const isUnhiding = project.hidden === true;
 
+      if (!userDetails?.pro && isUnhiding && visibleCount >= 2) {
+        setUpgradeModalUnhideProject({ projectId, title: project.title || "Project" });
+        setShowUpgradeModal(true);
+        return;
+      }
+
+      const updatedProjects = allProjects.map((p) =>
+        p._id === projectId ? { ...p, hidden: !p.hidden } : p
+      );
+      _updateProject(projectId, { hidden: !project.hidden });
+      setUserDetails((prev) => ({ ...prev, projects: updatedProjects }));
+      updateCache("userDetails", (prev) => ({ ...prev, projects: updatedProjects }));
+    },
+    [userDetails, setUserDetails, updateCache, setShowUpgradeModal, setUpgradeModalUnhideProject],
+  );
 
   useEffect(() => {
     const root = document.getElementById("root");
     if (root) {
-      if (
-        isStackPanelOpen ||
-        isRecommendationsPanelOpen ||
-        isProjectsPanelOpen
-      ) {
+      if (isRecommendationsPanelOpen || isProjectsPanelOpen) {
         root.classList.add("theme-panel-open");
       } else {
         root.classList.remove("theme-panel-open");
@@ -273,13 +234,10 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
     return () => {
       if (root) root.classList.remove("theme-panel-open");
     };
-  }, [isStackPanelOpen, isRecommendationsPanelOpen, isProjectsPanelOpen]);
+  }, [isRecommendationsPanelOpen, isProjectsPanelOpen]);
 
 
   useEffect(() => {
-    if (isStackPanelOpen) {
-      window.dispatchEvent(new CustomEvent("panelOpened", { detail: "stack" }));
-    }
     if (isRecommendationsPanelOpen) {
       window.dispatchEvent(
         new CustomEvent("panelOpened", { detail: "recommendations" }),
@@ -290,14 +248,11 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
         new CustomEvent("panelOpened", { detail: "projects" }),
       );
     }
-  }, [isStackPanelOpen, isRecommendationsPanelOpen, isProjectsPanelOpen]);
+  }, [isRecommendationsPanelOpen, isProjectsPanelOpen]);
 
   useEffect(() => {
     const handlePanelOpened = (e) => {
       const customEvent = e;
-      if (customEvent.detail !== "stack") {
-        setIsStackPanelOpen(false);
-      }
       if (customEvent.detail !== "recommendations") {
         setIsRecommendationsPanelOpen(false);
       }
@@ -681,9 +636,20 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                   </div>
                 </SheetContent>
               </Sheet>
+              {visibleProjects.length >= 2 && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-8 w-8 p-0 rounded-full border-black/10 dark:border-white/10 shadow-sm bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A]"
+                  onClick={() => openSidebar(sidebars.sortProjects)}
+                  title="Rearrange projects"
+                >
+                  <ChevronsUpDown className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                </Button>
+              )}
               <SectionVisibilityButton
                 sectionId="projects"
-                className="h-8 w-8 rounded-full border-black/10 dark:border-white/10 shadow-sm bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A]"
+                className="h-8 w-8 rounded-full border border-black/10 dark:border-white/10 shadow-sm bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A]"
               />
             </div>
           )}
@@ -755,7 +721,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                   >
                     {isEditing && (
                       <div
-                        className="absolute top-8 right-8 z-10 transition-opacity flex gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100"
+                        className={`absolute top-8 right-8 z-10 flex gap-2 transition-opacity ${project.hidden ? "opacity-100" : "opacity-100 md:opacity-0 md:group-hover:opacity-100"}`}
                         onClick={(e) => e.stopPropagation()}
                       >
                         <Button
@@ -769,6 +735,10 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                         >
                           <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
                         </Button>
+                        <ProjectVisibilityButton
+                          isHidden={!!project.hidden}
+                          onClick={(e) => { e.stopPropagation(); handleToggleProjectVisibility(project.raw?._id || project.id); }}
+                        />
                         <Button
                           variant="outline"
                           size="sm"
@@ -778,16 +748,21 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                             handleDeleteProject(project);
                           }}
                         >
-                          <Trash2 className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7] group-hover/btn:text-red-600" />
+                          <Trash2 className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
                         </Button>
                       </div>
                     )}
-                    <div className="rounded-xl overflow-hidden mb-4 aspect-[4/3] bg-white dark:bg-[#2A2520] drop-shadow-sm border border-black/5 dark:border-white/10 group-hover:border-black/10 dark:group-hover:border-white/20 transition-colors">
+                    <div className="rounded-xl overflow-hidden mb-4 aspect-[4/3] bg-white dark:bg-[#2A2520] drop-shadow-sm border border-black/5 dark:border-white/10 group-hover:border-black/10 dark:group-hover:border-white/20 transition-colors relative">
                       <img
                         src={project.image}
                         alt={project.title}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                       />
+                      {project.hidden && (
+                        <div className="absolute top-2 left-2 bg-amber-100 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 px-2 py-0.5 rounded-full text-xs font-medium flex items-center gap-1 z-10">
+                          <EyeOff className="w-3 h-3" /> Hidden from live site
+                        </div>
+                      )}
                     </div>
                     <h3 className="font-medium text-base mb-1.5 text-[#1A1A1A] dark:text-[#F0EDE7]">
                       {project.title}
@@ -845,7 +820,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               </Button>
               <SectionVisibilityButton
                 sectionId="about"
-                className="h-8 w-8 rounded-full border-black/10 dark:border-white/10 shadow-sm bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A]"
+                className="h-8 w-8 rounded-full border border-black/10 dark:border-white/10 shadow-sm bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A]"
               />
             </div>
           )}
@@ -937,134 +912,21 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
         >
           {isEditing && (
             <div className="absolute top-4 right-4 transition-opacity z-10 opacity-100 md:opacity-0 md:group-hover/section:opacity-100 flex gap-2">
-              <Sheet
-                modal={false}
-                open={isStackPanelOpen}
-                onOpenChange={setIsStackPanelOpen}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  openSidebar?.(sidebars.tools);
+                }}
+                className="h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors"
               >
-                <SheetTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      openSidebar?.(sidebars.tools);
-                    }}
-                    className="h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors"
-                  >
-                    <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                  </Button>
-                </SheetTrigger>
-                <SheetContent
-                  className="border-l border-black/10 dark:border-white/10 bg-white dark:bg-[#2A2520] p-0 flex flex-col"
-                  hasOverlay={false}
-                  onInteractOutside={(e) => {
-                    e.preventDefault();
-                  }}
-                >
-                  <SheetHeader className="px-5 py-4 border-b border-black/10 dark:border-white/10 flex-shrink-0 flex flex-row items-center m-0 space-y-0 h-[65px]">
-                    <SheetTitle className="text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] font-medium m-0">
-                      Edit Stack
-                    </SheetTitle>
-                  </SheetHeader>
-
-                  <div className="flex-1 overflow-y-auto p-6 space-y-6">
-                    <div className="space-y-3">
-                      <Label className="text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] ml-1">
-                        Search Tools
-                      </Label>
-                      <div className="relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7A736C] dark:text-[#9E9893]" />
-                        <Input
-                          placeholder="Search for a tool..."
-                          value={toolSearchQuery}
-                          onChange={(e) => setToolSearchQuery(e.target.value)}
-                          className="h-10 pl-9 bg-black/[0.03] dark:bg-white/[0.03] border-transparent rounded-xl text-[14px] text-[#1A1A1A] dark:text-[#F0EDE7] focus-visible:bg-transparent focus-visible:ring-2 focus-visible:ring-black/10 dark:focus-visible:ring-white/10 focus-visible:border-black/20 dark:focus-visible:border-white/20 transition-all shadow-none placeholder:text-black/30 dark:placeholder:text-white/30"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-4">
-                      <div className="flex flex-wrap gap-2">
-                        {allTools
-                          .filter((t) =>
-                            t.name
-                              .toLowerCase()
-                              .includes(toolSearchQuery.toLowerCase()),
-                          )
-                          .sort((a, b) => {
-                            const isASelected = activeTools.some(
-                              (t) => t.name === a.name,
-                            );
-                            const isBSelected = activeTools.some(
-                              (t) => t.name === b.name,
-                            );
-                            if (isASelected === isBSelected)
-                              return a.name.localeCompare(b.name);
-                            return isASelected ? -1 : 1;
-                          })
-                          .map((tool) => {
-                            const isSelected = activeTools.some(
-                              (t) => t.name === tool.name,
-                            );
-                            return (
-                              <motion.button
-                                layout
-                                transition={{
-                                  type: "spring",
-                                  stiffness: 400,
-                                  damping: 25,
-                                }}
-                                key={`tool-${tool.name}`}
-                                onClick={() =>
-                                  isSelected
-                                    ? handleRemoveTool(tool)
-                                    : handleAddTool(tool)
-                                }
-                                className={`group h-[34px] px-3.5 rounded-xl flex items-center gap-2.5 text-[13px] font-medium transition-colors border ${
-                                  isSelected
-                                    ? "bg-[#EFECE6] dark:bg-[#1A1A1A] border-black/5 dark:border-white/5 text-[#1A1A1A] dark:text-[#F0EDE7] shadow-sm"
-                                    : "bg-transparent border-transparent text-[#7A736C] dark:text-[#9E9893] hover:bg-black/5 dark:hover:bg-white/5 hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7]"
-                                }`}
-                              >
-                                <div className="relative w-4 h-4 flex items-center justify-center shrink-0">
-                                  <img
-                                    src={tool.icon}
-                                    alt={tool.name}
-                                    className={`absolute inset-0 w-4 h-4 object-contain transition-all duration-200 ${
-                                      isSelected
-                                        ? "grayscale-0 opacity-100"
-                                        : "grayscale opacity-50 group-hover:opacity-0 group-hover:scale-50 group-hover:-rotate-45"
-                                    }`}
-                                  />
-                                  {!isSelected && (
-                                    <Plus className="absolute inset-0 w-4 h-4 opacity-0 group-hover:opacity-100 transition-all duration-200 scale-50 group-hover:scale-100 rotate-45 group-hover:rotate-0" />
-                                  )}
-                                </div>
-                                {tool.name}
-                              </motion.button>
-                            );
-                          })}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="p-5 border-t border-black/10 dark:border-white/10 flex justify-end gap-3 flex-shrink-0 bg-white dark:bg-[#2A2520]">
-                    <SheetClose asChild>
-                      <Button
-                        variant="outline"
-                        className="h-9 px-4 rounded-full text-[13px] font-medium border-black/10 dark:border-white/10 text-[#1A1A1A] dark:text-[#F0EDE7] hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
-                      >
-                        Close
-                      </Button>
-                    </SheetClose>
-                  </div>
-                </SheetContent>
-              </Sheet>
+                <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+              </Button>
               <SectionVisibilityButton
                 sectionId="tools"
-                className="h-8 w-8 rounded-full border-black/10 dark:border-white/10 shadow-sm bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A]"
+                className="h-8 w-8 rounded-full border border-black/10 dark:border-white/10 shadow-sm bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A]"
               />
             </div>
           )}
@@ -1117,18 +979,6 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                   whileHover={{ y: -4 }}
                   className="w-8 h-8 flex items-center justify-center cursor-pointer relative group/tool"
                 >
-                  {isEditing && (
-                    <div className="absolute -top-3 -right-3 z-20 transition-opacity flex gap-1 opacity-100 md:opacity-0 md:group-hover/tool:opacity-100">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="h-6 w-6 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-black/10 dark:border-white/10 shadow-sm hover:bg-red-50 dark:hover:bg-red-950/30 hover:border-red-200 dark:hover:border-red-900/50 hover:text-red-600 dark:hover:text-red-400"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <Trash2 className="w-2.5 h-2.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                      </Button>
-                    </div>
-                  )}
                   <img
                     src={tool.icon}
                     alt={tool.name}

@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Eye, EyeOff, Pencil, Plus, Trash2 } from "lucide-react";
+import { Pencil, Plus, Trash2 } from "lucide-react";
 import { Button } from "../../ui/button";
 import { useGlobalContext } from "@/context/globalContext";
 import { sidebars } from "@/lib/constant";
-import { _updateUser } from "@/network/post-request";
 import { CanvasSectionControls, CanvasSectionButton } from "./CanvasSectionControls";
+import { SectionVisibilityButton } from "@/components/section";
 import { getPlainTextLength } from "@/lib/tiptapUtils";
 import SimpleTiptapRenderer from "@/components/SimpleTiptapRenderer";
 import { cn } from "@/lib/utils";
@@ -136,21 +136,8 @@ function ExperienceCard({
 const MemoizedExperienceCard = React.memo(ExperienceCard);
 
 function CanvasCareerLadder({ isEditing }) {
-  const { userDetails, openSidebar, setUserDetails, updateCache } = useGlobalContext();
-  const { experiences = [], hiddenSections = [] } = userDetails || {};
-
-  const sectionId = "works";
-  const isSectionHidden = hiddenSections.includes(sectionId);
-  const handleToggleVisibility = useCallback((e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const updated = isSectionHidden
-      ? hiddenSections.filter((id) => id !== sectionId)
-      : [...hiddenSections, sectionId];
-    setUserDetails((prev) => ({ ...prev, hiddenSections: updated }));
-    updateCache("userDetails", (prev) => ({ ...prev, hiddenSections: updated }));
-    _updateUser({ hiddenSections: updated });
-  }, [isSectionHidden, hiddenSections, setUserDetails, updateCache]);
+  const { userDetails, openSidebar } = useGlobalContext();
+  const { experiences = [] } = userDetails || {};
 
   const careerLadderRef = useRef(null);
   const ladderContainerRef = useRef(null);
@@ -228,11 +215,9 @@ function CanvasCareerLadder({ isEditing }) {
               onClick={() => openSidebar(sidebars.work)}
             />
           )}
-          <CanvasSectionButton
-            icon={isSectionHidden ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-            ariaLabel={isSectionHidden ? "Show section" : "Hide section"}
-            onClick={handleToggleVisibility}
-            alwaysVisible={isSectionHidden}
+          <SectionVisibilityButton
+            sectionId="works"
+            className="w-8 h-8 rounded-full bg-white dark:bg-[#2A2520] shadow-md border border-[#E5D7C4] dark:border-white/10 hover:bg-gray-50 dark:hover:bg-[#35302A]"
           />
         </CanvasSectionControls>
       )}

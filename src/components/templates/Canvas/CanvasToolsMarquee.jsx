@@ -1,27 +1,14 @@
 import React, { useMemo } from "react";
 import { motion } from "framer-motion";
-import { Eye, EyeOff, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useGlobalContext } from "@/context/globalContext";
 import { sidebars } from "@/lib/constant";
-import { _updateUser } from "@/network/post-request";
 import { CanvasSectionControls, CanvasSectionButton } from "./CanvasSectionControls";
+import { SectionVisibilityButton } from "@/components/section";
 
 function CanvasToolsMarquee({ isEditing }) {
-  const { userDetails, openSidebar, setUserDetails, updateCache } = useGlobalContext();
-  const { tools = [], hiddenSections = [] } = userDetails || {};
-
-  const sectionId = "tools";
-  const isSectionHidden = hiddenSections.includes(sectionId);
-  const handleToggleVisibility = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const updated = isSectionHidden
-      ? hiddenSections.filter((id) => id !== sectionId)
-      : [...hiddenSections, sectionId];
-    setUserDetails((prev) => ({ ...prev, hiddenSections: updated }));
-    updateCache("userDetails", (prev) => ({ ...prev, hiddenSections: updated }));
-    _updateUser({ hiddenSections: updated });
-  };
+  const { userDetails, openSidebar } = useGlobalContext();
+  const { tools = [] } = userDetails || {};
 
   const repeatedTools = useMemo(() => Array(12).fill(tools).flat(), [tools]);
 
@@ -46,11 +33,9 @@ function CanvasToolsMarquee({ isEditing }) {
             label="Add Tool"
             onClick={() => openSidebar(sidebars.tools)}
           />
-          <CanvasSectionButton
-            icon={isSectionHidden ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-            ariaLabel={isSectionHidden ? "Show section" : "Hide section"}
-            onClick={handleToggleVisibility}
-            alwaysVisible={isSectionHidden}
+          <SectionVisibilityButton
+            sectionId="tools"
+            className="w-8 h-8 rounded-full bg-white dark:bg-[#2A2520] shadow-md border border-[#E5D7C4] dark:border-white/10 hover:bg-gray-50 dark:hover:bg-[#35302A]"
           />
         </CanvasSectionControls>
       )}

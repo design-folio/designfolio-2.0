@@ -11,7 +11,8 @@ import {
 import { useGlobalContext } from "@/context/globalContext";
 import { modals, sidebars } from "@/lib/constant";
 import { CanvasSectionControls, CanvasSectionButton } from "./CanvasSectionControls";
-import { _updateProject, _updateUser } from "@/network/post-request";
+import { SectionVisibilityButton, ProjectVisibilityButton } from "@/components/section";
+import { _updateProject } from "@/network/post-request";
 import ProjectLock from "@/components/projectLock";
 import { useRouter } from "next/router";
 
@@ -28,7 +29,7 @@ function ProjectCard({ project, isEditing, isPreview, onNavigate, onDelete, onTo
       onClick={() => onNavigate(getHref(project._id, isEditing, isPreview))}
     >
       {isEditing && (
-        <div className="absolute top-4 right-4 z-20 transition-opacity flex gap-2 opacity-100 md:opacity-0 md:group-hover/card:opacity-100">
+        <div className={`absolute top-4 right-4 z-20 flex gap-2 transition-opacity ${project.hidden ? "opacity-100" : "opacity-100 md:opacity-0 md:group-hover/card:opacity-100"}`}>
           <Button
             variant="outline"
             size="sm"
@@ -40,20 +41,10 @@ function ProjectCard({ project, isEditing, isPreview, onNavigate, onDelete, onTo
           >
             <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7] pointer-events-none" />
           </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] cursor-pointer"
-            onClick={(e) => {
-              e.stopPropagation();
-              onToggleVisibility(project._id);
-            }}
-          >
-            {project.hidden
-              ? <EyeOff className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7] pointer-events-none" />
-              : <Eye className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7] pointer-events-none" />
-            }
-          </Button>
+          <ProjectVisibilityButton
+            isHidden={!!project.hidden}
+            onClick={(e) => { e.stopPropagation(); onToggleVisibility(project._id); }}
+          />
           <Button
             variant="outline"
             size="sm"
@@ -168,9 +159,7 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
   const router = useRouter();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const { hiddenSections, projects } = userDetails || {};
-  const sectionId = "projects";
-  const isSectionHidden = hiddenSections?.includes(sectionId);
+  const { projects } = userDetails || {};
 
   const visibleProjects = useMemo(() => {
     if (!isEditing && projects) {
@@ -209,28 +198,6 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
       updateCache("userDetails", (prev) => ({ ...prev, projects: updatedProjects }));
     },
     [projects, userDetails, setUserDetails, updateCache, setShowUpgradeModal, setUpgradeModalUnhideProject],
-  );
-
-  const handleToggleVisibility = useCallback(
-    (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-
-      const updatedHiddenSections = isSectionHidden
-        ? hiddenSections.filter((id) => id !== sectionId)
-        : [...hiddenSections, sectionId];
-
-      setUserDetails((prev) => ({
-        ...prev,
-        hiddenSections: updatedHiddenSections,
-      }));
-      updateCache("userDetails", (prev) => ({
-        ...prev,
-        hiddenSections: updatedHiddenSections,
-      }));
-      _updateUser({ hiddenSections: updatedHiddenSections });
-    },
-    [isSectionHidden, hiddenSections, setUserDetails, updateCache],
   );
 
   return (
@@ -291,11 +258,9 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <CanvasSectionButton
-            icon={isSectionHidden ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-            ariaLabel={isSectionHidden ? "Show section" : "Hide section"}
-            onClick={handleToggleVisibility}
-            alwaysVisible={isSectionHidden}
+          <SectionVisibilityButton
+            sectionId="projects"
+            className="w-8 h-8 rounded-full bg-white dark:bg-[#2A2520] shadow-md border border-[#E5D7C4] dark:border-white/10 hover:bg-gray-50 dark:hover:bg-[#35302A]"
           />
         </CanvasSectionControls>
       )}

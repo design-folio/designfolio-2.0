@@ -96,7 +96,7 @@ export default function BuilderShell({ hideCourseCard = false }) {
         />
       )}
 
-      {!isMobile && !hideCourseCard && <CourseCard />}
+      {/* {!isMobile && !hideCourseCard && <CourseCard />} */}
     </>
   );
 }

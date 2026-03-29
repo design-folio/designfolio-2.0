@@ -4,6 +4,7 @@ import { ChevronsUpDown, EyeOff, Pencil, Plus, Trash2 } from "lucide-react";
 import { screwClass, frameBorderClass } from "./professional-utils";
 import { SectionVisibilityButton, ProjectVisibilityButton } from "@/components/section";
 import { sidebars } from "@/lib/constant";
+import ProjectLock from "@/components/projectLock";
 
 const ScrewDot = ({ className }) => (
   <div className={`absolute ${className} ${screwClass}`} />
@@ -34,6 +35,7 @@ function ProfessionalProjectsTab({
   onDeleteProject,
   onToggleVisibility,
   openSidebar,
+  isPro,
 }) {
   return (
     <div className="grid grid-cols-1 gap-0">
@@ -58,7 +60,13 @@ function ProfessionalProjectsTab({
         </div>
       )}
 
-      {isEditing && (
+      {isEditing && !(isPro || visibleProjects.length < 2) && (
+        <div className="p-4">
+          <ProjectLock />
+        </div>
+      )}
+
+      {isEditing && (isPro || visibleProjects.length < 2) && (
         <div
           className={`group cursor-pointer relative flex flex-col ${frameBorderClass}`}
           onClick={onAddProject}

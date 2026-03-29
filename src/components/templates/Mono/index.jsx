@@ -1,4 +1,5 @@
 "use client";
+import ProjectLock from "@/components/projectLock";
 import { SectionVisibilityButton, ProjectVisibilityButton } from "@/components/section";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -462,7 +463,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                 <ChevronsUpDown className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
               </Button>
 
-              <DropdownMenu
+              {(userDetails?.pro || visibleProjects.length < 2) && <DropdownMenu
                 open={isProjectsAddDropdownOpen}
                 onOpenChange={setIsProjectsAddDropdownOpen}
               >
@@ -504,7 +505,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                     <span>Write using AI</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
-              </DropdownMenu>
+              </DropdownMenu>}
 
               <Sheet
                 modal={false}
@@ -713,6 +714,11 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
           ) : (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-8">
+                {isEditing && !(userDetails?.pro || visibleProjects.length < 2) && (
+                  <div className="sm:col-span-2">
+                    <ProjectLock />
+                  </div>
+                )}
                 {visibleProjects.map((project) => (
                   <div
                     key={project.id}

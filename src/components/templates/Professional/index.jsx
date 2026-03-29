@@ -245,6 +245,7 @@ export default function Professional({
             onDeleteProject={onDeleteProject}
             onToggleVisibility={handleToggleProjectVisibility}
             openSidebar={openSidebar}
+            isPro={!!userDetails?.pro}
           />
         );
       case "Experience":

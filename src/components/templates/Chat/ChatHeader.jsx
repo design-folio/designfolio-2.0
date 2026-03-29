@@ -139,7 +139,7 @@ export default function ChatHeader({ chatRevealStep, s, canEdit }) {
               className="flex gap-3 max-w-[85%] relative group/msg"
             >
               {canEdit && chatRevealStep >= s(3) && (
-                <div className="absolute -left-12 top-1/2 -translate-y-1/2 z-40 transition-opacity flex gap-1.5 opacity-0 group-hover/msg:opacity-100">
+                <div className="absolute left-0 top-1/2 -translate-y-[calc(50%+20px)] z-40 transition-opacity flex gap-1.5 opacity-0 group-hover/msg:opacity-100">
                   <Button
                     variant="outline"
                     size="sm"

@@ -45,35 +45,7 @@ function playPegboardClick(type) {
   }
 }
 
-function EditDeleteButtons({ isEditing, onEdit, onDelete }) {
-  if (!isEditing) return null;
-  return (
-    <div className="absolute -top-2 -right-2 z-40 transition-opacity flex gap-1.5 opacity-100 md:opacity-0 md:group-hover:opacity-100">
-      <Button
-        variant="outline"
-        size="sm"
-        className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
-        onClick={(e) => {
-          e.stopPropagation();
-          onEdit?.();
-        }}
-      >
-        <Pencil className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-      </Button>
-      <Button
-        variant="outline"
-        size="sm"
-        className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-red-50 dark:hover:bg-red-950/30 hover:border-red-200 dark:hover:border-red-900/50 hover:text-red-600 dark:hover:text-red-400"
-        onClick={(e) => {
-          e.stopPropagation();
-          onDelete?.();
-        }}
-      >
-        <Trash2 className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-      </Button>
-    </div>
-  );
-}
+
 
 function MoveOverlay({ rounded = "rounded-[6px] md:rounded-[8px]", size = "w-4 h-4 md:w-5 md:h-5" }) {
   return (
@@ -182,7 +154,7 @@ function CanvasAboutSection({ isEditing }) {
               style={{ zIndex: zIndexes[0] }}
               className="relative w-28 md:w-36 aspect-[3/4] group cursor-grab"
             >
-              <EditDeleteButtons isEditing={isEditing} />
+
               <div
                 className="w-full h-full pointer-events-none relative"
                 style={{ transform: "rotate(-4deg)" }}
@@ -230,7 +202,7 @@ function CanvasAboutSection({ isEditing }) {
               style={{ zIndex: zIndexes[1] }}
               className="relative w-32 md:w-44 aspect-square group cursor-grab"
             >
-              <EditDeleteButtons isEditing={isEditing} />
+
               <div
                 className="w-full h-full pointer-events-none relative"
                 style={{ transform: "rotate(6deg)" }}
@@ -278,7 +250,7 @@ function CanvasAboutSection({ isEditing }) {
               style={{ zIndex: zIndexes[2] }}
               className="relative w-28 md:w-36 aspect-[3/4] group cursor-grab"
             >
-              <EditDeleteButtons isEditing={isEditing} />
+
               <div
                 className="w-full h-full pointer-events-none relative"
                 style={{ transform: "rotate(-2deg)" }}

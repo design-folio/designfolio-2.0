@@ -48,6 +48,9 @@ export default function Index({ initialUserDetails }) {
   // setTemplateContext updates globalContext's `template` state, which in turn
   // sets data-template on <html> via globalContext's own effect — ensuring a single
   // source of truth and no race between the page effect and the parent context effect.
+  const userDetailsId = finalUserDetails?._id;
+  const userDetailsUpdatedAt = finalUserDetails?.updatedAt;
+
   useEffect(() => {
     if (!finalUserDetails) return;
     setCtxUserDetails(finalUserDetails);
@@ -67,7 +70,8 @@ export default function Index({ initialUserDetails }) {
         setWallpaperEffects(wp.effects);
       }
     }
-  }, [finalUserDetails, setTheme, setWallpaper, setWallpaperEffects, setCtxUserDetails, setTemplateContext]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userDetailsId, userDetailsUpdatedAt]);
 
   const wp = finalUserDetails?.wallpaper;
   const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;

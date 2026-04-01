@@ -1,12 +1,13 @@
 import React, { useMemo } from "react";
 import { motion } from "framer-motion";
-import { Pencil } from "lucide-react";
+import { Pencil, UserCircle } from "lucide-react";
 import { useGlobalContext } from "@/context/globalContext";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
+import { sidebars } from "@/lib/constant";
 import { CanvasSectionControls, CanvasSectionButton } from "./CanvasSectionControls";
 
 function CanvasProfileCard({ isEditing }) {
-  const { userDetails, openModal } = useGlobalContext();
+  const { userDetails, openSidebar } = useGlobalContext();
   const { introduction, bio } = userDetails || {};
 
   const avatarSrc = useMemo(
@@ -30,8 +31,8 @@ function CanvasProfileCard({ isEditing }) {
         <CanvasSectionControls>
           <CanvasSectionButton
             icon={<Pencil className="w-3.5 h-3.5" />}
-            ariaLabel="Edit profile"
-            onClick={() => openModal("onboarding")}
+            label="Edit Profile"
+            onClick={() => openSidebar(sidebars.profile)}
           />
         </CanvasSectionControls>
       )}

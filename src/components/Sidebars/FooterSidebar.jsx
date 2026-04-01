@@ -6,7 +6,7 @@ import { useGlobalContext } from "@/context/globalContext";
 import { Upload, X, FileText } from "lucide-react";
 import { _updateUser } from "@/network/post-request";
 import { FooterValidationSchema } from "@/lib/validationSchemas";
-import Text from "./text";
+import Text from "../text";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { toast } from "react-toastify";
 

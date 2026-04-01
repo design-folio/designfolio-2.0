@@ -128,7 +128,6 @@ function CanvasTestimonialsSection({ isEditing }) {
           {reviews.length >= 2 && (
             <CanvasSectionButton
               icon={<ChevronsUpDown className="w-3.5 h-3.5" />}
-              label="Reorder Testimonials"
               onClick={() => openSidebar?.(sidebars.sortReviews)}
             />
           )}
@@ -163,11 +162,10 @@ function CanvasTestimonialsSection({ isEditing }) {
                   setIsHovering(true);
                   setTimeout(() => setIsHovering(false), 5000);
                 }}
-                className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
-                  idx === currentIndex
+                className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${idx === currentIndex
                     ? "w-6 bg-[#1A1A1A] dark:bg-[#F0EDE7]"
                     : "w-1.5 bg-[#E5D7C4] dark:bg-white/20 hover:bg-[#D5D0C6] dark:hover:bg-white/40"
-                }`}
+                  }`}
                 aria-label={`Go to testimonial ${idx + 1}`}
               />
             ))}

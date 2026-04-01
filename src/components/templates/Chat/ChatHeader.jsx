@@ -5,12 +5,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
 import { useGlobalContext } from "@/context/globalContext";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
+import { sidebars } from "@/lib/constant";
 import { Switch } from "../Canvas/switch-button";
 import { useTheme } from "next-themes";
 import { TypingIndicator } from "./chatUtils";
 
 export default function ChatHeader({ chatRevealStep, s, canEdit }) {
-  const { userDetails, openModal } = useGlobalContext();
+  const { userDetails, openSidebar } = useGlobalContext();
   const { introduction, bio } = userDetails || {};
 
   const avatarSrc = useMemo(
@@ -54,7 +55,7 @@ export default function ChatHeader({ chatRevealStep, s, canEdit }) {
                 className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
                 onClick={(e) => {
                   e.stopPropagation();
-                  openModal("onboarding");
+                  openSidebar(sidebars.profile);
                 }}
               >
                 <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
@@ -78,7 +79,7 @@ export default function ChatHeader({ chatRevealStep, s, canEdit }) {
                 className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
                 onClick={(e) => {
                   e.stopPropagation();
-                  openModal("onboarding");
+                  openSidebar(sidebars.profile);
                 }}
               >
                 <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
@@ -146,7 +147,7 @@ export default function ChatHeader({ chatRevealStep, s, canEdit }) {
                     className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
                     onClick={(e) => {
                       e.stopPropagation();
-                      openModal("onboarding");
+                      openSidebar(sidebars.profile);
                     }}
                   >
                     <Pencil className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />

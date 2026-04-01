@@ -123,8 +123,11 @@ const AboutWindow = ({ userDetails, fullName, edit = false, onEdit }) => {
             </div>
 
             {/* Right — pegboard image stack */}
-            <div className="flex items-center justify-center pt-4">
+            <div className="flex flex-col items-center justify-center pt-4">
               <ImgStack images={stackImages} />
+              <p className="mt-3 text-center text-[10px] font-medium tracking-widest uppercase text-white/35 pointer-events-none">
+                Try moving things around :)
+              </p>
             </div>
           </div>
         </div>

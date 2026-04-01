@@ -41,7 +41,9 @@ import {
   EyeOff,
   Pencil,
   Plus,
+  Sparkles,
   Trash2,
+  UserCircle,
   X
 } from "lucide-react";
 import { useRouter } from "next/router";
@@ -459,11 +461,10 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                   <Button
                     variant="outline"
                     size="sm"
-                    className={`h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors ${
-                      isProjectsAddDropdownOpen
-                        ? "opacity-100"
-                        : "opacity-100 md:opacity-0 md:group-hover/section:opacity-100"
-                    }`}
+                    className={`h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors ${isProjectsAddDropdownOpen
+                      ? "opacity-100"
+                      : "opacity-100 md:opacity-0 md:group-hover/section:opacity-100"
+                      }`}
                   >
                     <Plus className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
                   </Button>
@@ -483,17 +484,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                     onClick={() => openModal?.(modals.aiProject)}
                     className="flex items-center gap-2 px-3 py-2 text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer rounded-lg focus:bg-black/5 dark:focus:bg-white/5"
                   >
-                    <svg
-                      className="w-3.5 h-3.5"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                    </svg>
+                    <Sparkles className="w-3.5 h-3.5" />
                     <span>Write using AI</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -684,21 +675,11 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                     Write from Scratch
                   </Button>
                   <Button
-                    variant="outline"
+                    variant="secondary"
                     onClick={() => openModal?.(modals.aiProject)}
-                    className="h-9 px-5 rounded-full text-[13px] font-medium bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors flex items-center gap-2 text-[#1A1A1A] dark:text-[#F0EDE7]"
+                    className="h-9 px-5 rounded-full text-[13px] font-medium border-button-outline hover:border-button-outline-hover"
                   >
-                    <svg
-                      className="w-3.5 h-3.5"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                    </svg>
+                    <Sparkles className="w-3.5 h-3.5" />
                     Write using AI
                   </Button>
                 </div>
@@ -886,14 +867,28 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               />
             </motion.div>
           </div>
+          <p className="mb-8 -mt-2 text-center text-[10px] font-medium tracking-widest uppercase text-[#7A736C]/70 dark:text-[#B5AFA5]/60 pointer-events-none">
+            Try moving things around :)
+          </p>
 
           <div className="space-y-6 text-[#7A736C] dark:text-[#B5AFA5] text-base leading-[1.7]">
-            {(storyText || "")
-              .split("\n")
-              .filter(Boolean)
-              .map((paragraph, idx) => (
-                <p key={idx}>{paragraph}</p>
-              ))}
+            {storyText ? (
+              storyText
+                .split("\n")
+                .filter(Boolean)
+                .map((paragraph, idx) => <p key={idx}>{paragraph}</p>)
+            ) : isEditing ? (
+              <button
+                onClick={() => openSidebar?.(sidebars.about)}
+                className="text-left text-[13px] text-[#7A736C] dark:text-[#B5AFA5] hover:text-[#1A1A1A] dark:hover:text-white transition-colors"
+              >
+                Click here to add your story...
+              </button>
+            ) : (
+              <p className="text-[13px] text-[#7A736C] dark:text-[#B5AFA5]">
+                Click here to add your story...
+              </p>
+            )}
           </div>
         </motion.div>
       </React.Fragment>
@@ -1008,14 +1003,24 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
           className="px-5 md:px-8 pt-12 md:pt-16 pb-6 relative group/section"
         >
           {isEditing && (
-            <div className="absolute top-4 right-4 transition-opacity z-10 opacity-100 md:opacity-0 md:group-hover/section:opacity-100">
+            <div className="absolute top-4 right-4 transition-opacity z-10 opacity-100 md:opacity-0 md:group-hover/section:opacity-100 flex gap-1.5">
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => openModal?.("onboarding")}
+                onClick={() => openSidebar?.(sidebars.profile)}
                 className="h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors"
+                title="Edit Profile"
               >
                 <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => openSidebar?.(sidebars.persona)}
+                className="h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors"
+                title="Edit Persona"
+              >
+                <UserCircle className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
               </Button>
             </div>
           )}
@@ -1170,7 +1175,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => openModal?.("onboarding")}
+                onClick={() => openSidebar?.(sidebars.profile)}
                 className="h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors"
               >
                 <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />

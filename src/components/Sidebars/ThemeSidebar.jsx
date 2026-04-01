@@ -7,10 +7,10 @@ import { sidebars, DEFAULT_SECTION_ORDER, normalizeSectionOrder } from "@/lib/co
 import styles from "@/styles/domain.module.css";
 import imageCompression from "browser-image-compression";
 import { Upload, RotateCcw, Check, Sun, Moon, Eye, EyeOff } from "lucide-react";
-import DragHandle from "./DragHandle";
+import DragHandle from "../DragHandle";
 import React, { useEffect, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
-import { Badge } from "./ui/badge";
+import { Badge } from "../ui/badge";
 
 function TemplateCard({ tmpl, isSelected, onChange }) {
   return (
@@ -71,10 +71,10 @@ function TemplateCard({ tmpl, isSelected, onChange }) {
     </div>
   );
 }
-import { Slider } from "./ui/slider";
-import { Switch as SwitchCanvas } from "./templates/Canvas/switch-button";
+import { Slider } from "../ui/slider";
+import { Switch as SwitchCanvas } from "../templates/Canvas/switch-button";
 import { AnimatePresence, motion } from "framer-motion";
-import Text from "./text";
+import Text from "../text";
 import {
   DndContext,
   closestCenter,

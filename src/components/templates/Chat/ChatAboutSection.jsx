@@ -95,24 +95,29 @@ export default function ChatAboutSection({
                     <TypingIndicator />
                   </div>
                 ) : aboutImages.length > 0 ? (
-                  <div className="flex gap-2 my-1 mx-1">
-                    {aboutImages.slice(0, 2).map((img, idx) => {
-                      const imgSrc = img?.src || img?.key || img;
-                      return (
-                        <motion.div
-                          key={idx}
-                          whileHover={{ scale: 1.05, zIndex: 10 }}
-                          onClick={() => setSelectedStoryImage(imgSrc)}
-                          className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden shadow-sm border border-black/5 dark:border-white/5 cursor-pointer"
-                        >
-                          <img
-                            src={imgSrc}
-                            alt={`Story ${idx + 1}`}
-                            className="w-full h-full object-cover"
-                          />
-                        </motion.div>
-                      );
-                    })}
+                  <div className="my-1 mx-1">
+                    <div className="flex gap-2">
+                      {aboutImages.slice(0, 2).map((img, idx) => {
+                        const imgSrc = img?.src || img?.key || img;
+                        return (
+                          <motion.div
+                            key={idx}
+                            whileHover={{ scale: 1.05, zIndex: 10 }}
+                            onClick={() => setSelectedStoryImage(imgSrc)}
+                            className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden shadow-sm border border-black/5 dark:border-white/5 cursor-pointer"
+                          >
+                            <img
+                              src={imgSrc}
+                              alt={`Story ${idx + 1}`}
+                              className="w-full h-full object-cover"
+                            />
+                          </motion.div>
+                        );
+                      })}
+                    </div>
+                    <p className="mt-2 text-center text-[10px] font-medium tracking-widest uppercase text-[#7A736C]/70 dark:text-[#B5AFA5]/60 pointer-events-none">
+                      Try moving things around :)
+                    </p>
                   </div>
                 ) : canEdit ? (
                   <button
@@ -174,15 +179,16 @@ export default function ChatAboutSection({
               <div className="bg-white dark:bg-[#2A2520] px-4 py-3 rounded-2xl rounded-tl-sm rounded-bl-sm transition-colors duration-400 border border-black/5 dark:border-white/5">
                 <button
                   onClick={() => openSidebar?.(sidebars.about)}
-                  className="flex items-center gap-2 text-[13px] text-[#7A736C] dark:text-[#B5AFA5] hover:text-[#1A1A1A] dark:hover:text-white transition-colors"
+                  className="text-[13px] text-[#7A736C] dark:text-[#B5AFA5] hover:text-[#1A1A1A] dark:hover:text-white transition-colors"
                 >
-                  <Plus className="w-3.5 h-3.5" />
-                  Add your story
+                  Click here to add your story...
                 </button>
               </div>
             ) : (
               <div className="bg-white dark:bg-[#2A2520] px-4 py-3 rounded-2xl rounded-tl-sm rounded-bl-sm text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed transition-colors duration-400 border border-black/5 dark:border-white/5">
-                That's my story so far!
+                <span className="text-[#7A736C] dark:text-[#B5AFA5] text-[13px]">
+                  Click here to add your story...
+                </span>
               </div>
             )}
           </motion.div>

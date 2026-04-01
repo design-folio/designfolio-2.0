@@ -38,7 +38,7 @@ function ProfessionalProjectsTab({
   isPro,
 }) {
   return (
-    <div className="grid grid-cols-1 gap-0">
+    <div className="grid grid-cols-1 gap-0 group/section">
       {/* Sort + Section visibility controls */}
       {isEditing && (
         <div className="flex items-center justify-end gap-2 px-1 py-2 border-b border-[#D5D0C6] dark:border-[#3A352E]">
@@ -46,7 +46,7 @@ function ProfessionalProjectsTab({
             <Button
               variant="outline"
               size="sm"
-              className="h-8 w-8 p-0 rounded-none border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520] text-[#1A1A1A] dark:text-[#F0EDE7]"
+              className="h-8 w-8 p-0 rounded-none border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520] text-[#1A1A1A] dark:text-[#F0EDE7] opacity-100 md:opacity-0 md:group-hover/section:opacity-100 transition-opacity"
               onClick={() => openSidebar?.(sidebars.sortProjects)}
               title="Rearrange projects"
             >
@@ -55,6 +55,7 @@ function ProfessionalProjectsTab({
           )}
           <SectionVisibilityButton
             sectionId="projects"
+            showOnHoverWhenVisible
             className="h-8 w-8 rounded-none border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520]"
           />
         </div>

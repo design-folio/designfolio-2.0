@@ -38,10 +38,13 @@ export function ProjectVisibilityButton({ isHidden, onClick, className = "", ico
 }
 
 /** Reusable hide/show section button for templates that don't use Section wrapper (Builder2 (Chat),Minimal,Portfolio) */
-export function SectionVisibilityButton({ sectionId, className = "" }) {
+export function SectionVisibilityButton({ sectionId, className = "", showOnHoverWhenVisible = false }) {
   const { userDetails, setUserDetails, updateCache } = useGlobalContext();
   const hiddenSections = userDetails?.hiddenSections || [];
   const isSectionHidden = hiddenSections.includes(sectionId);
+  const visibilityClass = showOnHoverWhenVisible && !isSectionHidden
+    ? "opacity-100 md:opacity-0 md:pointer-events-none md:group-hover/section:opacity-100 md:group-hover/section:pointer-events-auto transition-opacity"
+    : "";
 
   const handleToggleVisibility = (e) => {
     e.preventDefault();
@@ -74,7 +77,12 @@ export function SectionVisibilityButton({ sectionId, className = "" }) {
           <Button
             variant="secondary"
             size="icon"
-            className={cn("h-11 w-11", className, isSectionHidden && "text-amber-500 dark:text-amber-400")}
+            className={cn(
+              "h-11 w-11",
+              visibilityClass,
+              className,
+              isSectionHidden && "text-amber-500 dark:text-amber-400",
+            )}
             onClick={handleToggleVisibility}
             type="button"
             aria-label={isSectionHidden ? "Hidden" : "Hide"}

@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash2 } from "lucide-react";
+import { ChevronsUpDown, Pencil, Trash2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGlobalContext } from "@/context/globalContext";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
@@ -82,6 +82,19 @@ export default function ChatTestimonialsSection({
                   >
                     {canEdit && (
                       <div className="absolute -left-0 top-1/2 -translate-y-1/2 z-40 transition-opacity flex gap-1.5 opacity-0 group-hover/msg:opacity-100">
+                        {reviews.length >= 2 && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              openSidebar(sidebars.sortReviews);
+                            }}
+                          >
+                            <ChevronsUpDown className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                          </Button>
+                        )}
                         <Button
                           variant="outline"
                           size="sm"

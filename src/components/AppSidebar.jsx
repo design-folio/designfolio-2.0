@@ -19,6 +19,8 @@ import AddAbout from "./addAbout";
 import AddTools from "./addTools";
 import AddProject from "./addProject";
 import RearrangeProjectsSidebar from "./RearrangeProjectsSidebar";
+import RearrangeReviewsSidebar from "./RearrangeReviewsSidebar";
+import RearrangeWorksSidebar from "./RearrangeWorksSidebar";
 
 const SIDEBAR_TITLES = {
   [sidebars.theme]: "Theme Settings",
@@ -26,6 +28,8 @@ const SIDEBAR_TITLES = {
   [sidebars.about]: "About",
   [sidebars.tools]: "Toolbox",
   [sidebars.sortProjects]: "Rearrange Projects",
+  [sidebars.sortReviews]: "Rearrange Testimonials",
+  [sidebars.sortWorks]: "Rearrange Experience",
 };
 
 export default function AppSidebar() {
@@ -98,6 +102,10 @@ export default function AppSidebar() {
         return <AddProject />;
       case sidebars.sortProjects:
         return <RearrangeProjectsSidebar />;
+      case sidebars.sortReviews:
+        return <RearrangeReviewsSidebar />;
+      case sidebars.sortWorks:
+        return <RearrangeWorksSidebar />;
       default:
         return null;
     }

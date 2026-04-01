@@ -2,32 +2,15 @@ import { Button } from "@/components/ui/buttonNew";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useGlobalContext } from "@/context/globalContext";
 import { sidebars } from "@/lib/constant";
-import { _updateUser } from "@/network/post-request";
-import {
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors
-} from '@dnd-kit/core';
-import {
-  arrayMove,
-  sortableKeyboardCoordinates,
-  useSortable
-} from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
 import { motion } from "framer-motion";
-import { Plus, PlusIcon, Pencil, Linkedin, QuoteIcon } from "lucide-react";
+import { Plus, PlusIcon, Pencil, Linkedin } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useState } from "react";
-import { twMerge } from "tailwind-merge";
 import SortIcon from "../../public/assets/svgs/sort.svg";
 import AddItem from "./addItem";
 import Button2 from "./button";
-import DragHandle from "./DragHandle";
 import MemoTestimonial from "./icons/Testimonial";
-import ReviewCard from "./reviewCard";
 import Section from "./section";
-import SortableModal from "./SortableModal";
 import {
   Carousel,
   CarouselContent,
@@ -41,11 +24,10 @@ import MemoQuoteIcon from "./icons/QuoteIcon";
 
 export default function Reviews({ edit = false, openModal, userDetails }) {
 
-  const { setUserDetails, updateCache, setSelectedReview } = useGlobalContext();
+  const { setSelectedReview } = useGlobalContext();
   const reviews = userDetails?.reviews || [];
   const hasMultipleReviews = reviews.length >= 2;
   const theme = useTheme();
-  const [showModal, setShowModal] = useState(false);
   const [expandedReviewIds, setExpandedReviewIds] = useState([]);
 
   const buttonStyles =
@@ -54,36 +36,6 @@ export default function Reviews({ edit = false, openModal, userDetails }) {
   const toggleExpandReview = (id) => {
     setExpandedReviewIds((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-    );
-  };
-
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
-
-  const handleDragEnd = (event) => {
-    const { active, over } = event;
-    if (!over || active.id === over.id) return;
-
-    const oldIndex = userDetails.reviews.findIndex(
-      (review) => review._id === active.id
-    );
-    const newIndex = userDetails.reviews.findIndex(
-      (review) => review._id === over.id
-    );
-
-    const sortedReviews = arrayMove(
-      userDetails.reviews,
-      oldIndex,
-      newIndex
-    );
-
-    setUserDetails((prev) => ({ ...prev, reviews: sortedReviews }));
-    _updateUser({ reviews: sortedReviews }).then((res) =>
-      updateCache("userDetails", res?.data?.user)
     );
   };
 
@@ -107,9 +59,7 @@ export default function Reviews({ edit = false, openModal, userDetails }) {
                       <Button
                         variant="secondary"
                         size="icon"
-                        onClick={() => {
-                          setShowModal(true);
-                        }}
+                        onClick={() => openModal(sidebars.sortReviews)}
                         className="rounded-full h-11 w-11"
                         aria-label="Reorder Testimonials"
                       >
@@ -279,55 +229,6 @@ export default function Reviews({ edit = false, openModal, userDetails }) {
         )
         }
       </Section >
-      <SortableModal
-        show={showModal}
-        onClose={() => setShowModal(false)}
-        items={userDetails?.reviews?.map((review) => review._id) || []}
-        onSortEnd={handleDragEnd}
-        sensors={sensors}
-        useButton2={true}
-      >
-        {userDetails?.reviews?.map((review) => (
-          <SortableReviewItem
-            key={review._id}
-            review={review}
-            edit={edit}
-          />
-        ))}
-      </SortableModal>
     </motion.div >
   );
 }
-
-const SortableReviewItem = ({ review, edit }) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: review._id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-    zIndex: isDragging ? 9999 : 1,
-  };
-
-  return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className={`flex justify-between gap-4 items-center ${isDragging ? 'relative' : ''}`}
-    >
-      <div className="flex-1 min-w-0">
-        <ReviewCard review={review} sorting={true} edit={edit} />
-      </div>
-      <div className="flex-shrink-0">
-        <DragHandle listeners={listeners} attributes={attributes} />
-      </div>
-    </div>
-  );
-};

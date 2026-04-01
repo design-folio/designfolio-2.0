@@ -6,7 +6,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Pencil, Plus } from "lucide-react";
+import { ChevronsUpDown, Pencil, Plus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGlobalContext } from "@/context/globalContext";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
@@ -119,9 +119,24 @@ export default function ChatExperienceSection({
                       <TypingIndicator />
                     ) : (
                       <div className="space-y-4">
-                        <p className="text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] mb-3">
-                          Here's a quick overview of my experience:
-                        </p>
+                        <div className="flex items-center justify-between mb-3">
+                          <p className="text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px]">
+                            Here's a quick overview of my experience:
+                          </p>
+                          {canEdit && experiences.length >= 2 && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] shrink-0"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                openSidebar(sidebars.sortWorks);
+                              }}
+                            >
+                              <ChevronsUpDown className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                            </Button>
+                          )}
+                        </div>
                         <Accordion
                           type="single"
                           collapsible

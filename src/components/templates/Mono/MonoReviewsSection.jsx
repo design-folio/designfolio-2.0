@@ -193,24 +193,28 @@ export default function MonoReviewsSection({ isEditing }) {
   return (
     <div className="px-5 md:px-8 py-8 relative group/section">
       {isEditing && (
-        <div className="absolute top-4 right-4 transition-opacity z-10 opacity-100 md:opacity-0 md:group-hover/section:opacity-100 flex gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors"
-          >
-            <ChevronsUpDown className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-          </Button>
+        <div className="absolute top-4 right-4 transition-opacity z-10 flex gap-2">
+          {recommendations.length >= 2 && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => openSidebar?.(sidebars.sortReviews)}
+              className="h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors opacity-100 md:opacity-0 md:group-hover/section:opacity-100"
+            >
+              <ChevronsUpDown className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+            </Button>
+          )}
           <Button
             variant="outline"
             size="sm"
             onClick={() => handleOpenReviewSidebar(null)}
-            className="h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors"
+            className="h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors opacity-100 md:opacity-0 md:group-hover/section:opacity-100"
           >
             <Plus className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
           </Button>
           <SectionVisibilityButton
             sectionId="reviews"
+            showOnHoverWhenVisible
             className="h-8 w-8 rounded-full border-black/10 dark:border-white/10 shadow-sm bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A]"
           />
         </div>

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { ChevronsUpDown, Pencil, Plus, Trash2 } from "lucide-react";
 import { Button } from "../../ui/button";
 import { useGlobalContext } from "@/context/globalContext";
 import { sidebars } from "@/lib/constant";
@@ -208,6 +208,13 @@ function CanvasCareerLadder({ isEditing }) {
     >
       {isEditing && (
         <CanvasSectionControls>
+          {experiences.length >= 2 && (
+            <CanvasSectionButton
+              icon={<ChevronsUpDown className="w-3.5 h-3.5" />}
+              label="Reorder Experience"
+              onClick={() => openSidebar(sidebars.sortWorks)}
+            />
+          )}
           {experiences.length > 0 && (
             <CanvasSectionButton
               icon={<Plus className="w-3.5 h-3.5" />}
@@ -217,6 +224,7 @@ function CanvasCareerLadder({ isEditing }) {
           )}
           <SectionVisibilityButton
             sectionId="works"
+            showOnHoverWhenVisible
             className="w-8 h-8 rounded-full bg-white dark:bg-[#2A2520] shadow-md border border-[#E5D7C4] dark:border-white/10 hover:bg-gray-50 dark:hover:bg-[#35302A]"
           />
         </CanvasSectionControls>

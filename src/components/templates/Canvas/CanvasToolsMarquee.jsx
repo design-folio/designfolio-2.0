@@ -35,6 +35,7 @@ function CanvasToolsMarquee({ isEditing }) {
           />
           <SectionVisibilityButton
             sectionId="tools"
+            showOnHoverWhenVisible
             className="w-8 h-8 rounded-full bg-white dark:bg-[#2A2520] shadow-md border border-[#E5D7C4] dark:border-white/10 hover:bg-gray-50 dark:hover:bg-[#35302A]"
           />
         </CanvasSectionControls>

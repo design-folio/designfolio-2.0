@@ -1,8 +1,10 @@
 import React, { memo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Pencil, Plus } from "lucide-react";
+import { ChevronsUpDown, Pencil, Plus } from "lucide-react";
 import { parseTiptapToWords } from "@/lib/tiptapUtils";
+import { useGlobalContext } from "@/context/globalContext";
+import { sidebars } from "@/lib/constant";
 
 function ExperienceDescription({ desc }) {
   const words = parseTiptapToWords(desc);
@@ -119,10 +121,23 @@ function ProfessionalExperienceTab({
   onEditExperience,
   onAddExperience,
 }) {
+  const { openSidebar } = useGlobalContext();
   const [expandedIndex, setExpandedIndex] = useState(null);
 
   return (
     <div className="px-4 md:px-6 pb-12 relative group/section">
+      {isEditing && experiences.length >= 2 && (
+        <div className="absolute -top-3 right-4 md:right-6 transition-opacity z-10 opacity-100 md:opacity-0 md:group-hover/section:opacity-100">
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
+            onClick={() => openSidebar(sidebars.sortWorks)}
+          >
+            <ChevronsUpDown className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+          </Button>
+        </div>
+      )}
       <div className="space-y-0">
         {experiences.map((exp, index) => (
           <ExperienceItem

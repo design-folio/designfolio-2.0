@@ -33,6 +33,8 @@ export const sidebars = {
   tools: "tools",
   project: "project",
   sortProjects: "sortProjects",
+  sortReviews: "sortReviews",
+  sortWorks: "sortWorks",
 };
 
 /** Sidebars that cause header/card layout to shift on desktop (used by loggedInHeader and CourseCard) */
@@ -45,6 +47,8 @@ export const SIDEBARS_THAT_SHIFT = [
   sidebars.tools,
   sidebars.project,
   sidebars.sortProjects,
+  sidebars.sortReviews,
+  sidebars.sortWorks,
 ];
 
 export const isSidebarThatShifts = (activeSidebar) =>
@@ -60,6 +64,8 @@ export const SIDEBAR_SHIFT_WIDTHS = {
   [sidebars.about]: "320px",
   [sidebars.tools]: "400px",
   [sidebars.sortProjects]: "400px",
+  [sidebars.sortReviews]: "400px",
+  [sidebars.sortWorks]: "400px",
 };
 
 export const getSidebarShiftWidth = (activeSidebar) =>

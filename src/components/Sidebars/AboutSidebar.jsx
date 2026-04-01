@@ -2,14 +2,14 @@ import { useGlobalContext } from "@/context/globalContext";
 import { _updateUser } from "@/network/post-request";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useState, useRef, useEffect } from "react";
-import Text from "./text";
-import { Button } from "./ui/button";
-import { Textarea } from "./ui/textarea";
-import { UnsavedChangesDialog } from "./ui/UnsavedChangesDialog";
+import Text from "../text";
+import { Button } from "../ui/button";
+import { Textarea } from "../ui/textarea";
+import { UnsavedChangesDialog } from "../ui/UnsavedChangesDialog";
 import { sidebars } from "@/lib/constant";
 import { AboutSchema } from "@/lib/validationSchemas";
 import { DEFAULT_PEGBOARD_IMAGES, DEFAULT_PEGBOARD_STICKERS } from "@/lib/aboutConstants";
-import ImageGrid from "./about/ImageGrid";
+import ImageGrid from "../about/ImageGrid";
 import useImageCompression from "@/hooks/useImageCompression";
 
 export default function AddAbout() {

@@ -5,6 +5,7 @@ import { ChevronsUpDown, Pencil, Play, Plus, Square } from "lucide-react";
 import { parseTiptapToWords, getPlainTextLength } from "@/lib/tiptapUtils";
 import { useGlobalContext } from "@/context/globalContext";
 import { sidebars } from "@/lib/constant";
+import { SectionVisibilityButton } from "@/components/section";
 
 const VIEW_MORE_THRESHOLD = 300;
 
@@ -174,30 +175,34 @@ function ProfessionalTestimonialsTab({
   );
 
   return (
-    <div className="p-4 md:p-6 pb-12 relative group/section">
+    <div className="px-4 md:px-6 pb-12 group/section">
       {isEditing && (
-        <div className="absolute -top-3 right-4 md:right-6 transition-opacity z-10 opacity-100 md:opacity-0 md:group-hover/section:opacity-100 flex gap-2">
+        <div className="-mx-4 md:-mx-6 px-1 py-2 flex items-center justify-end gap-2 border-b border-[#D5D0C6] dark:border-[#3A352E] mb-4">
           {reviews.length >= 2 && (
             <Button
               variant="outline"
               size="sm"
-              className="h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
+              className="h-8 w-8 p-0 rounded-none border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520] text-[#1A1A1A] dark:text-[#F0EDE7] opacity-100 md:opacity-0 md:group-hover/section:opacity-100 transition-opacity"
               onClick={() => openSidebar(sidebars.sortReviews)}
+              title="Rearrange testimonials"
             >
-              <ChevronsUpDown className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+              <ChevronsUpDown className="w-3.5 h-3.5" />
             </Button>
           )}
           <Button
             variant="outline"
             size="sm"
-            className="font-inter h-8 flex items-center gap-1.5 px-3 rounded-full bg-white dark:bg-[#2A2520] border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
+            className="font-inter h-8 flex items-center gap-1.5 px-3 rounded-none border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520] text-[#1A1A1A] dark:text-[#F0EDE7] opacity-100 md:opacity-0 md:group-hover/section:opacity-100 transition-opacity"
             onClick={onAddReview}
           >
-            <Plus className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-            <span className="text-xs font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
-              Add Testimonial
-            </span>
+            <Plus className="w-3.5 h-3.5" />
+            <span className="text-xs font-medium">Add Testimonial</span>
           </Button>
+          <SectionVisibilityButton
+            sectionId="reviews"
+            showOnHoverWhenVisible
+            className="h-8 w-8 rounded-none border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520]"
+          />
         </div>
       )}
       <div className="max-w-2xl space-y-6">

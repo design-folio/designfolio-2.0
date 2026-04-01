@@ -12,7 +12,7 @@ import { useTheme } from "next-themes";
 import React, { useEffect, useRef, useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { modals } from "@/lib/constant";
-import AppSidebar from "@/components/AppSidebar";
+import AppSidebar from "@/components/Sidebars";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { getSidebarShiftWidth } from "@/lib/constant";
 import MacOSWindowShell from "@/components/templates/MacOSDock/MacOSWindowShell";

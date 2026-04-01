@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Phone, Linkedin, Globe, FileText, Pencil } from "lucide-react";
+import { Phone, Globe, FileText, Pencil, Plus } from "lucide-react";
 import { AtSignIcon, DribbbleIcon, TwitterIcon } from "lucide-animated";
 import { Button } from "../../ui/button";
 import { useGlobalContext } from "@/context/globalContext";
@@ -8,7 +8,8 @@ import { sidebars } from "@/lib/constant";
 import { CanvasSectionControls, CanvasSectionButton } from "./CanvasSectionControls";
 
 const btnClass =
-  "w-full flex items-center justify-between px-4 py-4 bg-white dark:bg-[#2A2520] rounded-xl border border-black/5 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors group h-auto";
+  "w-full flex items-center justify-between px-4 py-4 bg-white dark:bg-[#2A2520] rounded-xl border border-black/5 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors group h-auto !shadow-none";
+
 
 function LinkButton({ label, icon: Icon, iconRotate = 0, onClick, flex1 = false }) {
   return (
@@ -30,6 +31,7 @@ function LinkButton({ label, icon: Icon, iconRotate = 0, onClick, flex1 = false 
     </motion.div>
   );
 }
+
 
 function CanvasContactSection({ isEditing }) {
   const { userDetails, openSidebar } = useGlobalContext();
@@ -54,9 +56,17 @@ function CanvasContactSection({ isEditing }) {
     window.open(url, "_blank", "noopener,noreferrer");
   }, []);
 
+  const openFooter = useCallback(() => openSidebar?.(sidebars.footer), [openSidebar]);
+
   const hasAnyLink =
     !!email || !!phone || !!socials.linkedin || !!socials.twitter ||
     !!portfolios.dribbble || !!portfolios.medium || !!resumeUrl;
+
+  const allFieldsFilled =
+    !!phone && !!socials.linkedin && !!socials.twitter &&
+    !!portfolios.dribbble && !!portfolios.medium && !!resumeUrl;
+
+  const showAddButton = isEditing && !allFieldsFilled;
 
   if (!hasAnyLink && !isEditing) return null;
 
@@ -72,7 +82,7 @@ function CanvasContactSection({ isEditing }) {
           <CanvasSectionButton
             icon={<Pencil className="w-3.5 h-3.5" />}
             label="Edit Contact"
-            onClick={() => openSidebar?.(sidebars.footer)}
+            onClick={openFooter}
           />
         </CanvasSectionControls>
       )}
@@ -82,14 +92,16 @@ function CanvasContactSection({ isEditing }) {
           Contact
         </h2>
 
+        {/* Email / Phone row */}
         {(email || phone) && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+          <div className="flex gap-3 mb-3">
             {email && (
               <LinkButton
                 label={copiedField === "email" ? "Copied!" : "Copy mail"}
                 icon={AtSignIcon}
                 iconRotate={15}
                 onClick={() => handleCopy(email, "email")}
+                flex1
               />
             )}
             {phone && (
@@ -98,17 +110,19 @@ function CanvasContactSection({ isEditing }) {
                 icon={Phone}
                 iconRotate={-15}
                 onClick={() => handleCopy(phone, "phone")}
+                flex1
               />
             )}
           </div>
         )}
 
-        {(socials.linkedin || portfolios.dribbble || socials.twitter || portfolios.medium) && (
+        {/* Socials + Resume row */}
+        {(socials.linkedin || portfolios.dribbble || socials.twitter || portfolios.medium || resumeUrl) && (
           <div className="flex gap-3 mb-3">
             {socials.linkedin && (
               <LinkButton
                 label="Linkedin"
-                icon={Linkedin}
+                icon={Globe}
                 iconRotate={-10}
                 flex1
                 onClick={() => openExternalLink(socials.linkedin)}
@@ -141,16 +155,27 @@ function CanvasContactSection({ isEditing }) {
                 onClick={() => openExternalLink(portfolios.medium)}
               />
             )}
+            {resumeUrl && (
+              <LinkButton
+                label="Resume"
+                icon={FileText}
+                iconRotate={-15}
+                flex1
+                onClick={() => openExternalLink(resumeUrl)}
+              />
+            )}
           </div>
         )}
 
-        {resumeUrl && (
-          <LinkButton
-            label="View resume"
-            icon={FileText}
-            iconRotate={-15}
-            onClick={() => openExternalLink(resumeUrl)}
-          />
+        {/* Single add button for any remaining fields */}
+        {showAddButton && (
+          <button
+            onClick={openFooter}
+            className="mt-3 w-full flex items-center justify-center gap-2 py-3.5 rounded-xl border-2 border-dashed border-[#E5D7C4] dark:border-white/10 text-sm text-[#B5AFA5] dark:text-[#7A736C] hover:border-[#1A1A1A]/20 dark:hover:border-white/20 hover:text-[#7A736C] dark:hover:text-[#B5AFA5] transition-colors"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            Add
+          </button>
         )}
       </div>
     </motion.div>

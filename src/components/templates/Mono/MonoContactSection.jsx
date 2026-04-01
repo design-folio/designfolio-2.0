@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Phone, Linkedin, Globe, FileText, Pencil } from "lucide-react";
+import { Phone, Globe, FileText, Pencil, Plus } from "lucide-react";
 import { AtSignIcon, DribbbleIcon, TwitterIcon } from "lucide-animated";
 import { Button } from "@/components/ui/button";
 import { useGlobalContext } from "@/context/globalContext";
@@ -17,11 +17,11 @@ const itemVariants = {
 };
 
 const btnClass =
-  "w-full flex items-center justify-between px-4 py-4 bg-white dark:bg-[#2A2520] rounded-xl border border-black/5 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors group h-auto";
+  "flex-1 flex items-center justify-between px-4 py-4 bg-white dark:bg-[#2A2520] rounded-xl border border-black/5 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors group h-auto !shadow-none";
 
-function LinkButton({ label, icon: Icon, iconRotate = 0, onClick, flex1 = false }) {
+function LinkButton({ label, icon: Icon, iconRotate = 0, onClick }) {
   return (
-    <motion.div whileHover="hover" initial="rest" className={flex1 ? "flex-1" : "w-full"}>
+    <motion.div whileHover="hover" initial="rest" className="flex-1">
       <Button variant="outline" size="sm" onClick={onClick} className={btnClass}>
         <span className="text-[#1A1A1A] dark:text-[#F0EDE7] font-medium text-sm">
           {label}
@@ -63,6 +63,18 @@ export default function MonoContactSection({ isEditing }) {
     window.open(url, "_blank", "noopener,noreferrer");
   }, []);
 
+  const openFooter = useCallback(() => openSidebar?.(sidebars.footer), [openSidebar]);
+
+  const allFieldsFilled =
+    !!phone && !!socials.linkedin && !!socials.twitter &&
+    !!portfolios.dribbble && !!portfolios.medium && !!resumeUrl;
+
+  const showAddButton = isEditing && !allFieldsFilled;
+
+  const hasSocialsOrResume =
+    !!socials.linkedin || !!portfolios.dribbble || !!socials.twitter ||
+    !!portfolios.medium || !!resumeUrl;
+
   return (
     <motion.div
       variants={itemVariants}
@@ -73,7 +85,7 @@ export default function MonoContactSection({ isEditing }) {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => openSidebar?.(sidebars.footer)}
+            onClick={openFooter}
             className="h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors"
           >
             <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
@@ -85,8 +97,9 @@ export default function MonoContactSection({ isEditing }) {
         Contact
       </h2>
 
+      {/* Email / Phone row */}
       {(email || phone) && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+        <div className="flex gap-3 mb-3">
           {email && (
             <LinkButton
               label={copiedField === "email" ? "Copied!" : "Copy mail"}
@@ -106,14 +119,14 @@ export default function MonoContactSection({ isEditing }) {
         </div>
       )}
 
-      {(socials.linkedin || portfolios.dribbble || socials.twitter || portfolios.medium) && (
+      {/* Socials + Resume row */}
+      {hasSocialsOrResume && (
         <div className="flex gap-3 mb-3">
           {socials.linkedin && (
             <LinkButton
               label="Linkedin"
-              icon={Linkedin}
+              icon={Globe}
               iconRotate={-10}
-              flex1
               onClick={() => openExternalLink(socials.linkedin)}
             />
           )}
@@ -122,7 +135,6 @@ export default function MonoContactSection({ isEditing }) {
               label="Dribbble"
               icon={DribbbleIcon}
               iconRotate={20}
-              flex1
               onClick={() => openExternalLink(portfolios.dribbble)}
             />
           )}
@@ -131,7 +143,6 @@ export default function MonoContactSection({ isEditing }) {
               label="X"
               icon={TwitterIcon}
               iconRotate={-20}
-              flex1
               onClick={() => openExternalLink(socials.twitter)}
             />
           )}
@@ -140,20 +151,29 @@ export default function MonoContactSection({ isEditing }) {
               label="Medium"
               icon={Globe}
               iconRotate={15}
-              flex1
               onClick={() => openExternalLink(portfolios.medium)}
+            />
+          )}
+          {resumeUrl && (
+            <LinkButton
+              label="Resume"
+              icon={FileText}
+              iconRotate={-15}
+              onClick={() => openExternalLink(resumeUrl)}
             />
           )}
         </div>
       )}
 
-      {resumeUrl && (
-        <LinkButton
-          label="View resume"
-          icon={FileText}
-          iconRotate={-15}
-          onClick={() => openExternalLink(resumeUrl)}
-        />
+      {/* Single add button */}
+      {showAddButton && (
+        <button
+          onClick={openFooter}
+          className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl border-2 border-dashed border-black/10 dark:border-white/10 text-sm text-[#B5AFA5] dark:text-[#7A736C] hover:border-black/20 dark:hover:border-white/20 hover:text-[#7A736C] dark:hover:text-[#B5AFA5] transition-colors"
+        >
+          <Plus className="w-3.5 h-3.5" />
+          Add
+        </button>
       )}
     </motion.div>
   );

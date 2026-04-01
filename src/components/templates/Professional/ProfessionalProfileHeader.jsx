@@ -1,7 +1,7 @@
 import React, { memo } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Pencil } from "lucide-react";
+import { Pencil, UserCircle } from "lucide-react";
 import { format } from "date-fns";
 import CinematicThemeSwitcher from "./cinematic-theme-switcher";
 import { itemVariants } from "./professional-utils";
@@ -14,6 +14,7 @@ function ProfessionalProfileHeader({
   userRole,
   currentTime,
   onEditProfile,
+  onEditPersona,
 }) {
   return (
     <>
@@ -69,13 +70,26 @@ function ProfessionalProfileHeader({
       </motion.div>
 
       {/* Time / Role row */}
-      <div className="border-t border-[#D5D0C6] dark:border-[#3A352E] flex justify-between items-center px-4 py-2.5 font-jetbrains text-[13px] uppercase tracking-wide text-[#1A1A1A] dark:text-[#B5AFA5]">
+      <div className="border-t border-[#D5D0C6] dark:border-[#3A352E] flex justify-between items-center px-4 py-2.5 font-jetbrains text-[13px] uppercase tracking-wide text-[#1A1A1A] dark:text-[#B5AFA5] relative group/role">
         <div className="flex items-center gap-2">
           <span>{format(currentTime, "E, MMM d")}</span>
           <span className="text-[#E37941] text-[8px] mt-[1px]">◆</span>
           <span>{format(currentTime, "h:mm:ss a")}</span>
         </div>
-        <div className="tracking-wider">{(userRole || "").toUpperCase()}</div>
+        <div className="flex items-center gap-2">
+          {isEditing && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-6 w-6 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] opacity-0 group-hover/role:opacity-100 transition-opacity"
+              onClick={onEditPersona}
+            >
+              <Pencil className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+            </Button>
+          )}
+          <span className="tracking-wider">{(userRole || "").toUpperCase()}</span>
+
+        </div>
       </div>
     </>
   );

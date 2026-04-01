@@ -35,21 +35,16 @@ export const sidebars = {
   sortProjects: "sortProjects",
   sortReviews: "sortReviews",
   sortWorks: "sortWorks",
+  profile: "profile",
+  skills: "skills",
+  persona: "persona",
 };
 
+/** Canonical list of sidebar ids used across the app */
+export const ALL_SIDEBARS = Object.values(sidebars);
+
 /** Sidebars that cause header/card layout to shift on desktop (used by loggedInHeader and CourseCard) */
-export const SIDEBARS_THAT_SHIFT = [
-  sidebars.theme,
-  sidebars.review,
-  sidebars.work,
-  sidebars.footer,
-  sidebars.about,
-  sidebars.tools,
-  sidebars.project,
-  sidebars.sortProjects,
-  sidebars.sortReviews,
-  sidebars.sortWorks,
-];
+export const SIDEBARS_THAT_SHIFT = [...ALL_SIDEBARS];
 
 export const isSidebarThatShifts = (activeSidebar) =>
   SIDEBARS_THAT_SHIFT.includes(activeSidebar);
@@ -66,6 +61,9 @@ export const SIDEBAR_SHIFT_WIDTHS = {
   [sidebars.sortProjects]: "400px",
   [sidebars.sortReviews]: "400px",
   [sidebars.sortWorks]: "400px",
+  [sidebars.profile]: "400px",
+  [sidebars.skills]: "400px",
+  [sidebars.persona]: "400px",
 };
 
 export const getSidebarShiftWidth = (activeSidebar) =>

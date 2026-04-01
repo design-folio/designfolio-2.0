@@ -4,7 +4,7 @@ import { useGlobalContext } from "@/context/globalContext";
 import { getServerSideProps } from "@/lib/loggedInServerSideProps";
 import { TEMPLATE_IDS } from "@/lib/templates";
 import WallpaperBackground from "@/components/WallpaperBackground";
-import AppSidebar from "@/components/AppSidebar";
+import AppSidebar from "@/components/Sidebars";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { getSidebarShiftWidth } from "@/lib/constant";
 import { useIsMobile } from "@/hooks/use-mobile";

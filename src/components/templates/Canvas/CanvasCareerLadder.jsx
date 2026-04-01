@@ -211,7 +211,6 @@ function CanvasCareerLadder({ isEditing }) {
           {experiences.length >= 2 && (
             <CanvasSectionButton
               icon={<ChevronsUpDown className="w-3.5 h-3.5" />}
-              label="Reorder Experience"
               onClick={() => openSidebar(sidebars.sortWorks)}
             />
           )}

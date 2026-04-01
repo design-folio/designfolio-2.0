@@ -10,17 +10,20 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar";
 import { getTemplatePreviewImage, TEMPLATES_LIST } from "@/lib/templates";
-import { cursors, getWallpapers } from "./loggedInHeader/constants";
-import ThemePanel from "./ThemePanel";
-import AddWork from "./addWork";
-import AddReview from "./addReview";
-import FooterSettingsPanel from "./FooterSettingsPanel";
-import AddAbout from "./addAbout";
-import AddTools from "./addTools";
-import AddProject from "./addProject";
+import { cursors, getWallpapers } from "../loggedInHeader/constants";
+import ThemeSidebar from "./ThemeSidebar";
+import WorkSidebar from "./WorkSidebar";
+import ReviewSidebar from "./ReviewSidebar";
+import FooterSidebar from "./FooterSidebar";
+import AboutSidebar from "./AboutSidebar";
+import ToolsSidebar from "./ToolsSidebar";
+import ProjectSidebar from "./ProjectSidebar";
 import RearrangeProjectsSidebar from "./RearrangeProjectsSidebar";
 import RearrangeReviewsSidebar from "./RearrangeReviewsSidebar";
 import RearrangeWorksSidebar from "./RearrangeWorksSidebar";
+import UpdateProfileSidebar from "./UpdateProfileSidebar";
+import UpdateSkillsSidebar from "./UpdateSkillsSidebar";
+import UpdatePersonaSidebar from "./UpdatePersonaSidebar";
 
 const SIDEBAR_TITLES = {
   [sidebars.theme]: "Theme Settings",
@@ -30,6 +33,9 @@ const SIDEBAR_TITLES = {
   [sidebars.sortProjects]: "Rearrange Projects",
   [sidebars.sortReviews]: "Rearrange Testimonials",
   [sidebars.sortWorks]: "Rearrange Experience",
+  [sidebars.profile]: "Update Profile",
+  [sidebars.skills]: "Update Skills",
+  [sidebars.persona]: "Update Persona",
 };
 
 export default function AppSidebar() {
@@ -69,7 +75,7 @@ export default function AppSidebar() {
     switch (activeSidebar) {
       case sidebars.theme:
         return (
-          <ThemePanel
+          <ThemeSidebar
             theme={theme}
             changeTheme={changeTheme}
             template={template}
@@ -89,23 +95,29 @@ export default function AppSidebar() {
           />
         );
       case sidebars.work:
-        return <AddWork />;
+        return <WorkSidebar />;
       case sidebars.review:
-        return <AddReview />;
+        return <ReviewSidebar />;
       case sidebars.footer:
-        return <FooterSettingsPanel />;
+        return <FooterSidebar />;
       case sidebars.about:
-        return <AddAbout />;
+        return <AboutSidebar />;
       case sidebars.tools:
-        return <AddTools />;
+        return <ToolsSidebar />;
       case sidebars.project:
-        return <AddProject />;
+        return <ProjectSidebar />;
       case sidebars.sortProjects:
         return <RearrangeProjectsSidebar />;
       case sidebars.sortReviews:
         return <RearrangeReviewsSidebar />;
       case sidebars.sortWorks:
         return <RearrangeWorksSidebar />;
+      case sidebars.profile:
+        return <UpdateProfileSidebar />;
+      case sidebars.skills:
+        return <UpdateSkillsSidebar />;
+      case sidebars.persona:
+        return <UpdatePersonaSidebar />;
       default:
         return null;
     }

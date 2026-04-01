@@ -5,6 +5,7 @@ import { ChevronsUpDown, Pencil, Plus } from "lucide-react";
 import { parseTiptapToWords } from "@/lib/tiptapUtils";
 import { useGlobalContext } from "@/context/globalContext";
 import { sidebars } from "@/lib/constant";
+import { SectionVisibilityButton } from "@/components/section";
 
 function ExperienceDescription({ desc }) {
   const words = parseTiptapToWords(desc);
@@ -125,17 +126,25 @@ function ProfessionalExperienceTab({
   const [expandedIndex, setExpandedIndex] = useState(null);
 
   return (
-    <div className="px-4 md:px-6 pb-12 relative group/section">
-      {isEditing && experiences.length >= 2 && (
-        <div className="absolute -top-3 right-4 md:right-6 transition-opacity z-10 opacity-100 md:opacity-0 md:group-hover/section:opacity-100">
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
-            onClick={() => openSidebar(sidebars.sortWorks)}
-          >
-            <ChevronsUpDown className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-          </Button>
+    <div className="px-4 md:px-6 pb-12 group/section">
+      {isEditing && (
+        <div className="-mx-4 md:-mx-6 px-1 py-2 flex items-center justify-end gap-2 border-b border-[#D5D0C6] dark:border-[#3A352E] mb-2">
+          {experiences.length >= 2 && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 w-8 p-0 rounded-none border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520] text-[#1A1A1A] dark:text-[#F0EDE7] opacity-100 md:opacity-0 md:group-hover/section:opacity-100 transition-opacity"
+              onClick={() => openSidebar(sidebars.sortWorks)}
+              title="Rearrange experience"
+            >
+              <ChevronsUpDown className="w-3.5 h-3.5" />
+            </Button>
+          )}
+          <SectionVisibilityButton
+            sectionId="works"
+            showOnHoverWhenVisible
+            className="h-8 w-8 rounded-none border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520]"
+          />
         </div>
       )}
       <div className="space-y-0">

@@ -186,8 +186,16 @@ export default function Professional({
   }, [visibleTabs]);
 
   const handleEditProfile = useCallback(
-    () => openModal("onboarding"),
-    [openModal],
+    () => openSidebar(sidebars.profile),
+    [openSidebar],
+  );
+  const handleEditSkills = useCallback(
+    () => openSidebar(sidebars.skills),
+    [openSidebar],
+  );
+  const handleEditPersona = useCallback(
+    () => openSidebar(sidebars.persona),
+    [openSidebar],
   );
   const handleAddProject = useCallback(
     () => openSidebar(sidebars.project),
@@ -265,6 +273,7 @@ export default function Professional({
             skills={skills}
             tools={tools}
             onEditAbout={handleEditAbout}
+            onEditSkills={handleEditSkills}
             onEditTools={handleEditTools}
           />
         );
@@ -301,6 +310,7 @@ export default function Professional({
           userRole={userRole}
           currentTime={currentTime}
           onEditProfile={handleEditProfile}
+          onEditPersona={handleEditPersona}
         />
         <ProfessionalNavTabs
           activeTab={activeTab}

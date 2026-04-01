@@ -1,7 +1,13 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { Pencil } from "lucide-react";
+import { useGlobalContext } from "@/context/globalContext";
+import { sidebars } from "@/lib/constant";
+import { CanvasSectionControls, CanvasSectionButton } from "./CanvasSectionControls";
 
-function CanvasSkillsMarquee({ skills = [] }) {
+function CanvasSkillsMarquee({ skills = [], isEditing }) {
+  const { openSidebar } = useGlobalContext();
+
   if (skills.length === 0) return null;
 
   const repeatedSkills = [
@@ -17,8 +23,17 @@ function CanvasSkillsMarquee({ skills = [] }) {
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 100, damping: 12, delay: 0.3 }}
-      className="bg-white dark:bg-[#2A2520] rounded-[24px] border border-[#E5D7C4] dark:border-white/10 py-2 overflow-hidden relative w-full"
+      className="bg-white dark:bg-[#2A2520] rounded-[24px] border border-[#E5D7C4] dark:border-white/10 py-2 overflow-hidden relative w-full group/section"
     >
+      {isEditing && (
+        <CanvasSectionControls>
+          <CanvasSectionButton
+            icon={<Pencil className="w-3.5 h-3.5" />}
+            label="Edit Skills"
+            onClick={() => openSidebar(sidebars.skills)}
+          />
+        </CanvasSectionControls>
+      )}
       <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-white/80 dark:from-[#2A2520]/80 to-transparent z-10"></div>
       <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-white/80 dark:from-[#2A2520]/80 to-transparent z-10"></div>
       <motion.div

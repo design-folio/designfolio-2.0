@@ -277,17 +277,33 @@ function CanvasAboutSection({ isEditing }) {
           )}
         </div>
       </div>
+      <p className="mb-8 -mt-2 text-center text-[10px] font-medium tracking-widest uppercase text-[#7A736C]/70 dark:text-[#B5AFA5]/60 pointer-events-none">
+        Try moving things around :)
+      </p>
 
       {/* Story Text */}
       <div className="space-y-4">
-        <p className="text-[#7A736C] dark:text-[#B5AFA5] text-[16px] leading-relaxed">
-          {about?.description?.split("\n").map((line, i) => (
-            <span key={i}>
-              {line}
-              <br />
-            </span>
-          ))}
-        </p>
+        {about?.description ? (
+          <p className="text-[#7A736C] dark:text-[#B5AFA5] text-[16px] leading-relaxed">
+            {about.description.split("\n").map((line, i) => (
+              <span key={i}>
+                {line}
+                <br />
+              </span>
+            ))}
+          </p>
+        ) : isEditing ? (
+          <button
+            onClick={() => openSidebar?.(sidebars.about)}
+            className="text-left text-[13px] text-[#7A736C] dark:text-[#B5AFA5] hover:text-[#1A1A1A] dark:hover:text-white transition-colors"
+          >
+            Click here to add your story...
+          </button>
+        ) : (
+          <p className="text-[13px] text-[#7A736C] dark:text-[#B5AFA5]">
+            Click here to add your story...
+          </p>
+        )}
       </div>
     </motion.div>
   );

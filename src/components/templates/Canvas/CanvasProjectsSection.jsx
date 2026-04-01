@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { Pencil, Plus, Trash2, Eye, EyeOff, ChevronsUpDown } from "lucide-react";
+import { Pencil, Plus, Trash2, Eye, EyeOff, ChevronsUpDown, WandSparklesIcon, Sparkles } from "lucide-react";
 import { Button } from "../../ui/button";
 import {
   DropdownMenu,
@@ -120,21 +120,12 @@ function ProjectsEmptyState({ isEditing, openModal, openSidebar }) {
             Write from Scratch
           </Button>
           <Button
-            variant="outline"
+            variant="secondary"
             onClick={() => openModal(modals.aiProject)}
-            className="h-9 px-5 rounded-full text-[13px] font-medium bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors flex items-center gap-2 text-[#1A1A1A] dark:text-[#F0EDE7]"
+            className="h-9 px-5 rounded-full text-[13px] font-medium"
           >
-            <svg
-              className="w-3.5 h-3.5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-            </svg>
+
+            <Sparkles className="w-3.5 h-3.5" />
             Write using AI
           </Button>
         </div>
@@ -233,7 +224,7 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
               >
                 <DropdownMenuItem
                   onClick={() => openSidebar(sidebars.project)}
-                  className="flex items-center gap-2 px-3 py-2 text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer rounded-lg focus:bg-black/5 dark:focus:bg-white/5"
+                  className="flex items-center gap-2 px-3 py-2 text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer rounded-lg focus:bg-black/5 dark:focus:bg-white/5"
                 >
                   <Pencil className="w-3.5 h-3.5" />
                   <span>Write from Scratch</span>
@@ -241,19 +232,9 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
 
                 <DropdownMenuItem
                   onClick={() => openModal(modals.aiProject)}
-                  className="flex items-center gap-2 px-3 py-2 text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer rounded-lg focus:bg-black/5 dark:focus:bg-white/5"
+                  className="flex items-center gap-2 px-3 py-2 text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer rounded-lg focus:bg-black/5 dark:focus:bg-white/5"
                 >
-                  <svg
-                    className="w-3.5 h-3.5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                  </svg>
+                  <Sparkles className="w-3.5 h-3.5" />
                   <span>Write using AI</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>

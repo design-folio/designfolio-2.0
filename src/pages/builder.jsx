@@ -33,7 +33,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { CourseCard } from "@/components/CourceCard";
 import WallpaperBackground from "@/components/WallpaperBackground";
 import AiToolsWorkspace from "@/components/AiToolsWorkspace";
-import AppSidebar from "@/components/AppSidebar";
+import AppSidebar from "@/components/Sidebars";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { getSidebarShiftWidth } from "@/lib/constant";
 import Canvas from "@/components/templates/Canvas";

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Pencil, Plus, Trash2, Play, Square } from "lucide-react";
+import { ChevronsUpDown, Pencil, Plus, Trash2, Play, Square } from "lucide-react";
 import { Button } from "../../ui/button";
 import { useGlobalContext } from "@/context/globalContext";
 import { sidebars } from "@/lib/constant";
@@ -125,6 +125,13 @@ function CanvasTestimonialsSection({ isEditing }) {
     >
       {isEditing && (
         <CanvasSectionControls>
+          {reviews.length >= 2 && (
+            <CanvasSectionButton
+              icon={<ChevronsUpDown className="w-3.5 h-3.5" />}
+              label="Reorder Testimonials"
+              onClick={() => openSidebar?.(sidebars.sortReviews)}
+            />
+          )}
           {reviews.length > 0 && (
             <CanvasSectionButton
               icon={<Plus className="w-3.5 h-3.5" />}
@@ -134,6 +141,7 @@ function CanvasTestimonialsSection({ isEditing }) {
           )}
           <SectionVisibilityButton
             sectionId="reviews"
+            showOnHoverWhenVisible
             className="w-8 h-8 rounded-full bg-white dark:bg-[#2A2520] shadow-md border border-[#E5D7C4] dark:border-white/10 hover:bg-gray-50 dark:hover:bg-[#35302A]"
           />
         </CanvasSectionControls>

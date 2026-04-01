@@ -449,20 +449,8 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
         >
           {isEditing && (
             <div
-              className={`absolute top-4 right-4 z-10 transition-opacity flex gap-2 ${
-                isProjectsAddDropdownOpen
-                  ? "opacity-100"
-                  : "opacity-100 md:opacity-0 md:group-hover/section:opacity-100"
-              }`}
+              className="absolute top-4 right-4 z-10 transition-opacity flex gap-2"
             >
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors"
-              >
-                <ChevronsUpDown className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-              </Button>
-
               {(userDetails?.pro || visibleProjects.length < 2) && <DropdownMenu
                 open={isProjectsAddDropdownOpen}
                 onOpenChange={setIsProjectsAddDropdownOpen}
@@ -471,7 +459,11 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors"
+                    className={`h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors ${
+                      isProjectsAddDropdownOpen
+                        ? "opacity-100"
+                        : "opacity-100 md:opacity-0 md:group-hover/section:opacity-100"
+                    }`}
                   >
                     <Plus className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
                   </Button>
@@ -641,7 +633,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="h-8 w-8 p-0 rounded-full border-black/10 dark:border-white/10 shadow-sm bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A]"
+                  className="h-8 w-8 p-0 rounded-full border-black/10 dark:border-white/10 shadow-sm bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A] opacity-100 md:opacity-0 md:group-hover/section:opacity-100 transition-opacity"
                   onClick={() => openSidebar(sidebars.sortProjects)}
                   title="Rearrange projects"
                 >
@@ -650,6 +642,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               )}
               <SectionVisibilityButton
                 sectionId="projects"
+                showOnHoverWhenVisible
                 className="h-8 w-8 rounded-full border border-black/10 dark:border-white/10 shadow-sm bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A]"
               />
             </div>
@@ -815,17 +808,18 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
           className="px-5 md:px-8 py-8 pb-16 relative group/section"
         >
           {isEditing && (
-            <div className="absolute top-4 right-4 transition-opacity z-10 opacity-100 md:opacity-0 md:group-hover/section:opacity-100 flex gap-2">
+            <div className="absolute top-4 right-4 transition-opacity z-10 flex gap-2">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => openSidebar?.(sidebars.about)}
-                className="h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors"
+                className="h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors opacity-100 md:opacity-0 md:group-hover/section:opacity-100"
               >
                 <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
               </Button>
               <SectionVisibilityButton
                 sectionId="about"
+                showOnHoverWhenVisible
                 className="h-8 w-8 rounded-full border border-black/10 dark:border-white/10 shadow-sm bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A]"
               />
             </div>
@@ -917,7 +911,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
           className="px-5 md:px-8 py-8 relative group/section"
         >
           {isEditing && (
-            <div className="absolute top-4 right-4 transition-opacity z-10 opacity-100 md:opacity-0 md:group-hover/section:opacity-100 flex gap-2">
+            <div className="absolute top-4 right-4 transition-opacity z-10 flex gap-2">
               <Button
                 variant="outline"
                 size="sm"
@@ -926,12 +920,13 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                   e.stopPropagation();
                   openSidebar?.(sidebars.tools);
                 }}
-                className="h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors"
+                className="h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors opacity-100 md:opacity-0 md:group-hover/section:opacity-100"
               >
                 <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
               </Button>
               <SectionVisibilityButton
                 sectionId="tools"
+                showOnHoverWhenVisible
                 className="h-8 w-8 rounded-full border border-black/10 dark:border-white/10 shadow-sm bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A]"
               />
             </div>

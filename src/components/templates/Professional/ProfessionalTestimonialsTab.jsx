@@ -1,8 +1,10 @@
 import React, { memo, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Pencil, Play, Plus, Square } from "lucide-react";
+import { ChevronsUpDown, Pencil, Play, Plus, Square } from "lucide-react";
 import { parseTiptapToWords, getPlainTextLength } from "@/lib/tiptapUtils";
+import { useGlobalContext } from "@/context/globalContext";
+import { sidebars } from "@/lib/constant";
 
 const VIEW_MORE_THRESHOLD = 300;
 
@@ -152,6 +154,7 @@ function ProfessionalTestimonialsTab({
   onAddReview,
   onEditReview,
 }) {
+  const { openSidebar } = useGlobalContext();
   const [playingTestimonial, setPlayingTestimonial] = useState(null);
 
   const handlePlayTestimonial = useCallback(
@@ -174,6 +177,16 @@ function ProfessionalTestimonialsTab({
     <div className="p-4 md:p-6 pb-12 relative group/section">
       {isEditing && (
         <div className="absolute -top-3 right-4 md:right-6 transition-opacity z-10 opacity-100 md:opacity-0 md:group-hover/section:opacity-100 flex gap-2">
+          {reviews.length >= 2 && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
+              onClick={() => openSidebar(sidebars.sortReviews)}
+            >
+              <ChevronsUpDown className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+            </Button>
+          )}
           <Button
             variant="outline"
             size="sm"

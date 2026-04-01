@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Pencil, Plus } from "lucide-react";
+import { ChevronsUpDown, Pencil, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useGlobalContext } from "@/context/globalContext";
 import { sidebars } from "@/lib/constant";
@@ -59,7 +59,7 @@ export default function MonoExperienceSection({ isEditing }) {
 
   const handleOpenWorkSidebar = useCallback(
     (exp) => {
-      if (exp) setSelectedWork?.(exp);
+      setSelectedWork?.(exp || null);
       openSidebar?.(sidebars.work);
     },
     [setSelectedWork, openSidebar],
@@ -68,17 +68,28 @@ export default function MonoExperienceSection({ isEditing }) {
   return (
     <div className="px-5 md:px-8 py-8 relative group/section">
       {isEditing && (
-        <div className="absolute top-4 right-4 transition-opacity z-10 opacity-100 md:opacity-0 md:group-hover/section:opacity-100 flex gap-2">
+        <div className="absolute top-4 right-4 transition-opacity z-10 flex gap-2">
+          {experiences.length >= 2 && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => openSidebar?.(sidebars.sortWorks)}
+              className="h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors opacity-100 md:opacity-0 md:group-hover/section:opacity-100"
+            >
+              <ChevronsUpDown className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+            </Button>
+          )}
           <Button
             variant="outline"
             size="sm"
             onClick={() => handleOpenWorkSidebar(null)}
-            className="h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors"
+            className="h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors opacity-100 md:opacity-0 md:group-hover/section:opacity-100"
           >
             <Plus className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
           </Button>
           <SectionVisibilityButton
             sectionId="works"
+            showOnHoverWhenVisible
             className="h-8 w-8 rounded-full border-black/10 dark:border-white/10 shadow-sm bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A]"
           />
         </div>

@@ -58,8 +58,8 @@ import ProjectLock from "./projectLock";
 import ClampableTiptapContent from "./ClampableTiptapContent";
 import Text from "./text";
 import { Button as ButtonNew } from "./ui/buttonNew";
-import DragHandle from "./DragHandle";
 import SortIcon from "../../public/assets/svgs/sort.svg";
+import DragHandle from "./DragHandle";
 import ReviewCard from "./reviewCard";
 import SortableModal from "./SortableModal";
 import { AboutMeContent } from "./aboutMe";
@@ -216,21 +216,6 @@ export default function Builder2({ edit = false }) {
   const [expandedReviewCards, setExpandedReviewCards] = useState([]);
   const [showAllReviews, setShowAllReviews] = useState(false);
 
-  const toggleExpandReview = (id) => {
-    setExpandedReviewCards((prev) =>
-      prev.includes(id) ? prev.filter((cardId) => cardId !== id) : [...prev, id]
-    );
-  };
-
-  const [expandedExperienceCards, setExpandedExperienceCards] = useState([]);
-  const [showAllExperiences, setShowAllExperiences] = useState(false);
-
-  const toggleExpandExperience = (id) => {
-    setExpandedExperienceCards((prev) =>
-      prev.includes(id) ? prev.filter((cardId) => cardId !== id) : [...prev, id]
-    );
-  };
-
   // Reviews sorting state and handlers
   const [showReviewSortModal, setShowReviewSortModal] = useState(false);
 
@@ -261,6 +246,21 @@ export default function Builder2({ edit = false }) {
     setUserDetails((prev) => ({ ...prev, reviews: sortedReviews }));
     _updateUser({ reviews: sortedReviews }).then((res) =>
       updateCache("userDetails", res?.data?.user)
+    );
+  };
+
+  const toggleExpandReview = (id) => {
+    setExpandedReviewCards((prev) =>
+      prev.includes(id) ? prev.filter((cardId) => cardId !== id) : [...prev, id]
+    );
+  };
+
+  const [expandedExperienceCards, setExpandedExperienceCards] = useState([]);
+  const [showAllExperiences, setShowAllExperiences] = useState(false);
+
+  const toggleExpandExperience = (id) => {
+    setExpandedExperienceCards((prev) =>
+      prev.includes(id) ? prev.filter((cardId) => cardId !== id) : [...prev, id]
     );
   };
 
@@ -1126,3 +1126,4 @@ const SortableReviewItemBuilder2 = ({ review, edit }) => {
     </div>
   );
 };
+

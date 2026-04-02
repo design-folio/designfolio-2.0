@@ -76,6 +76,18 @@ const itemVariants = {
   },
 };
 
+// Matches the "Minimal" template reveal: parent staggers children.
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.1,
+    },
+  },
+};
+
 function getInitials(name, fallback = "U") {
   if (!name || typeof name !== "string") return fallback;
   const parts = name.trim().split(/\s+/).filter(Boolean);
@@ -991,10 +1003,13 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
 
   return (
     <div className="w-full flex-1 flex flex-col gap-3 pb-0 pt-0 px-4 md:px-0 max-w-[640px] mx-auto">
-      <div
+      <motion.div
         className={
           "w-full max-w-[640px] relative min-h-screen flex flex-col font-inter transition-colors duration-700 bg-[#F0EDE7] dark:bg-[#1A1A1A] custom-dashed-x"
         }
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
       >
         {/* <SmoothCursor type="minimal" /> */}
         {/* Header Section */}
@@ -1160,10 +1175,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
           </div>
         </motion.div>
 
-        <motion.div
-          variants={itemVariants}
-          className="custom-dashed-t"
-        ></motion.div>
+        <motion.div variants={itemVariants} className="custom-dashed-t"></motion.div>
 
         {/* Intro Section */}
         <motion.div
@@ -1205,10 +1217,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
         {/* Contact Section — using MonoContactSection */}
         <MonoContactSection isEditing={isEditing} />
 
-        <motion.div
-          variants={itemVariants}
-          className="custom-dashed-t"
-        ></motion.div>
+        <motion.div variants={itemVariants} className="custom-dashed-t"></motion.div>
 
         {/* Dino Game Section */}
         <motion.div
@@ -1320,7 +1329,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
             )}
           </div>
         </motion.div>
-      </div>
+      </motion.div>
 
       {/* Image Lightbox */}
       <AnimatePresence>

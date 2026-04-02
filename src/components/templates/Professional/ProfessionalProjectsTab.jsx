@@ -1,10 +1,11 @@
 import React, { memo } from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronsUpDown, EyeOff, Pencil, Plus, Trash2 } from "lucide-react";
+import { ChevronsUpDown, EyeOff, Pencil, Plus, Sparkles, Trash2 } from "lucide-react";
 import { screwClass, frameBorderClass } from "./professional-utils";
 import { SectionVisibilityButton, ProjectVisibilityButton } from "@/components/section";
-import { sidebars } from "@/lib/constant";
+import { modals, sidebars } from "@/lib/constant";
 import ProjectLock from "@/components/projectLock";
+import { useGlobalContext } from "@/context/globalContext";
 
 const ScrewDot = ({ className }) => (
   <div className={`absolute ${className} ${screwClass}`} />
@@ -37,6 +38,8 @@ function ProfessionalProjectsTab({
   openSidebar,
   isPro,
 }) {
+  const { openModal } = useGlobalContext();
+
   return (
     <div className="grid grid-cols-1 gap-0 group/section">
       {/* Sort + Section visibility controls */}
@@ -68,20 +71,37 @@ function ProfessionalProjectsTab({
       )}
 
       {isEditing && (isPro || visibleProjects.length < 2) && (
-        <div
-          className={`group cursor-pointer relative flex flex-col ${frameBorderClass}`}
-          onClick={onAddProject}
-        >
-          <FrameBorders />
-          <div className="bg-white/50 dark:bg-[#1A1A1A]/50 p-6 md:p-7 relative overflow-hidden flex-1 flex flex-col items-center justify-center min-h-[120px] md:min-h-[160px]">
-            <FrameScrews />
-            <div className="flex flex-col items-center justify-center gap-3 mt-4 mb-4">
-              <div className="w-12 h-12 rounded-full border border-dashed border-[#D5D0C6] dark:border-[#3A352E] flex items-center justify-center text-[#7A736C] dark:text-[#9E9893] group-hover:border-[#1A1A1A] dark:group-hover:border-[#F0EDE7] group-hover:text-[#1A1A1A] dark:group-hover:text-[#F0EDE7] transition-colors bg-white dark:bg-[#2A2520] shadow-sm">
-                <Plus className="w-5 h-5" />
+        <div className="flex flex-col gap-3">
+          <div
+            className={`group cursor-pointer relative flex flex-col ${frameBorderClass}`}
+            onClick={onAddProject}
+          >
+            <FrameBorders />
+            <div className="bg-white/50 dark:bg-[#1A1A1A]/50 p-6 md:p-7 relative overflow-hidden flex-1 flex flex-col items-center justify-center min-h-[120px] md:min-h-[160px]">
+              <FrameScrews />
+              <div className="flex flex-col items-center justify-center gap-3 mt-4 mb-4">
+                <div className="w-12 h-12 rounded-full border border-dashed border-[#D5D0C6] dark:border-[#3A352E] flex items-center justify-center text-[#7A736C] dark:text-[#9E9893] group-hover:border-[#1A1A1A] dark:group-hover:border-[#F0EDE7] group-hover:text-[#1A1A1A] dark:group-hover:text-[#F0EDE7] transition-colors bg-white dark:bg-[#2A2520] shadow-sm">
+                  <Plus className="w-5 h-5" />
+                </div>
+                <span className="font-jetbrains text-[13px] font-medium text-[#7A736C] dark:text-[#9E9893] group-hover:text-[#1A1A1A] dark:group-hover:text-[#F0EDE7] transition-colors uppercase tracking-wider">
+                  Add New Project
+                </span>
               </div>
-              <span className="font-jetbrains text-[13px] font-medium text-[#7A736C] dark:text-[#9E9893] group-hover:text-[#1A1A1A] dark:group-hover:text-[#F0EDE7] transition-colors uppercase tracking-wider">
-                Add New Project
-              </span>
+
+              {visibleProjects.length === 0 && (
+                <Button
+                  variant="outline"
+                  className="h-9 px-5 rounded-none border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] text-[#1A1A1A] dark:text-[#F0EDE7] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520] transition-colors flex items-center justify-center gap-2 font-jetbrains"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openModal(modals.aiProject);
+                  }}
+                  title="Write using AI"
+                >
+                  <Sparkles className="w-4 h-4" />
+                  Write with AI
+                </Button>
+              )}
             </div>
           </div>
         </div>

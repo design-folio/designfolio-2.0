@@ -21,8 +21,8 @@ export default function ChatHeader({ chatRevealStep, s, canEdit }) {
 
   const [currentTime, setCurrentTime] = useState(new Date());
   const [mounted, setMounted] = useState(false);
-  const { theme, setTheme } = useTheme();
-  const isDark = mounted && theme === "dark";
+  const { resolvedTheme, setTheme } = useTheme();
+  const isDark = mounted && resolvedTheme === "dark";
 
   useEffect(() => {
     setMounted(true);

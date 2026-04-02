@@ -82,8 +82,7 @@ export default function AddProject() {
 
   const validationSchema = Yup.object().shape({
     description: Yup.string()
-      .max(160, 'App name must be 160 characters or less')
-      .required('Description is required'),
+      .max(160, 'Description must be 160 characters or less'),
     title: Yup.string()
       .max(80, 'Project title must be 80 characters or less')
       .required('Project title is required'),
@@ -139,229 +138,237 @@ export default function AddProject() {
   return (
     <>
       <Formik
-          innerRef={formikRef}
-          initialValues={{
-            description: '',
-            title: '',
-            picture: null,
-            password: '',
-          }}
-          validateOnChange
-          validateOnBlur
-          validationSchema={validationSchema}
-          onSubmit={(values, actions) => {
-            setLoading(true);
-            const reader = new FileReader();
-            reader.onloadend = () => {
-              const base64Image = reader.result;
-              const payload = {
-                projects: [
-                  ...userDetails?.projects,
-                  {
-                    thumbnail: {
-                      key: base64Image,
-                      originalName: values.picture.name,
-                      extension: values.picture.type,
-                    },
-                    description: values.description,
-                    title: values.title,
-                    client: values.client,
-                    industry: values.industry,
-                    role: values.role,
-                    platform: values.platform,
-                    password: values.password,
-                    protected: isPassword,
-                    contentVersion: 2,
-                    tiptapContent: {
-                      type: 'doc',
-                      content: [],
-                    },
+        innerRef={formikRef}
+        initialValues={{
+          description: '',
+          title: '',
+          picture: null,
+          password: '',
+        }}
+        validateOnChange
+        validateOnBlur
+        validationSchema={validationSchema}
+        onSubmit={(values, actions) => {
+          setLoading(true);
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            const base64Image = reader.result;
+            const payload = {
+              projects: [
+                ...userDetails?.projects,
+                {
+                  thumbnail: {
+                    key: base64Image,
+                    originalName: values.picture.name,
+                    extension: values.picture.type,
                   },
-                ],
-              };
-              _updateUser(payload)
-                .then(res => {
-                  setUserDetails(res?.data?.user);
-                  updateCache('userDetails', res?.data?.user);
-                  phEvent(POSTHOG_EVENT_NAMES.PROJECT_ADDED, {
-                    project_title: values.title,
-                    industry: values.industry || null,
-                    client: values.client || null,
-                    role: values.role || null,
-                    has_password: isPassword,
-                  });
-                  posthog.people.set({
-                    project_count: res.data.user.projects.length,
-                  });
-                  resetStateAndClose();
-                })
-                .finally(() => setLoading(false));
+                  description: values.description,
+                  title: values.title,
+                  client: values.client,
+                  industry: values.industry,
+                  role: values.role,
+                  platform: values.platform,
+                  password: values.password,
+                  protected: isPassword,
+                  contentVersion: 2,
+                  tiptapContent: {
+                    type: 'doc',
+                    content: [],
+                  },
+                },
+              ],
             };
-            reader.readAsDataURL(values.picture);
-            actions.setSubmitting(false);
-          }}
-        >
-          {({ setFieldValue, values, validateField, errors, touched }) => (
-            <Form id="projectForm" autoComplete="off" className="flex flex-col h-full">
-              <div className="flex-1 overflow-auto px-6 py-5 space-y-5">
-                {/* Project title */}
-                <div className="space-y-1.5">
-                  <div className="flex justify-between items-center">
-                    <Label className="text-[13px] font-medium text-foreground ml-1">
-                      Project title <span className="text-destructive">*</span>
-                    </Label>
-                    <span className="text-xs text-foreground/40">{values.title.length}/80</span>
-                  </div>
-                  <Field name="title">
-                    {({ field }) => (
-                      <Input
-                        {...field}
-                        id="title"
-                        type="text"
-                        autoComplete="off"
-                        placeholder="Eg: Designing an onboarding for 1M users"
-                        className={errors.title && touched.title ? 'border-destructive focus-visible:ring-destructive' : ''}
-                      />
-                    )}
-                  </Field>
-                  <ErrorMessage name="title" component="div" className="error-message" />
-                </div>
-
-                {/* Description */}
-                <div className="space-y-1.5">
-                  <div className="flex justify-between items-center">
-                    <Label className="text-[13px] font-medium text-foreground ml-1">
-                      Description <span className="text-destructive">*</span>
-                    </Label>
-                    <span className="text-xs text-foreground/40">{values.description.length}/160</span>
-                  </div>
-                  <Field name="description">
-                    {({ field }) => (
-                      <Textarea
-                        {...field}
-                        id="description"
-                        rows={3}
-                        autoComplete="off"
-                        placeholder="Short description of the project"
-                        className={`resize-none ${errors.description && touched.description ? 'border-destructive focus-visible:ring-destructive' : ''}`}
-                      />
-                    )}
-                  </Field>
-                  <ErrorMessage name="description" component="div" className="error-message" />
-                </div>
-
-                {/* Cover image */}
-                <div className="space-y-1.5">
+            _updateUser(payload)
+              .then(res => {
+                setUserDetails(res?.data?.user);
+                updateCache('userDetails', res?.data?.user);
+                phEvent(POSTHOG_EVENT_NAMES.PROJECT_ADDED, {
+                  project_title: values.title,
+                  industry: values.industry || null,
+                  client: values.client || null,
+                  role: values.role || null,
+                  has_password: isPassword,
+                });
+                posthog.people.set({
+                  project_count: res.data.user.projects.length,
+                });
+                resetStateAndClose();
+              })
+              .finally(() => setLoading(false));
+          };
+          reader.readAsDataURL(values.picture);
+          actions.setSubmitting(false);
+        }}
+      >
+        {({ setFieldValue, values, validateField, errors, touched }) => (
+          <Form id="projectForm" autoComplete="off" className="flex flex-col h-full">
+            <div className="flex-1 overflow-auto px-6 py-5 space-y-5">
+              {/* Project title */}
+              <div className="space-y-1.5">
+                <div className="flex justify-between items-center">
                   <Label className="text-[13px] font-medium text-foreground ml-1">
-                    Cover image <span className="text-destructive">*</span>
+                    Project title <span className="text-destructive">*</span>
                   </Label>
-                  <div className="flex items-center gap-4">
-                    <label htmlFor="picture" className="cursor-pointer shrink-0">
-                      <div className="w-24 h-16 rounded-xl bg-black/[0.03] dark:bg-white/[0.03] border border-border flex items-center justify-center overflow-hidden">
-                        {imagePreview ? (
-                          <img
-                            src={imagePreview}
-                            className="w-full h-full object-cover"
-                            alt="project cover"
-                          />
-                        ) : (
-                          <ImageIcon className="w-5 h-5 text-foreground/30" />
-                        )}
-                      </div>
-                    </label>
-                    <div className="flex flex-col gap-1.5">
-                      <label htmlFor="picture">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          type="button"
-                          className="rounded-full"
-                        >
-                          {imagePreview ? 'Change image' : 'Upload image'}
-                        </Button>
-                      </label>
-                      <span className="text-[11px] text-muted-foreground ml-1">Recommended: 1600 × 900px (16:9)</span>
-                    </div>
-                  </div>
-                  <input
-                    id="picture"
-                    name="picture"
-                    type="file"
-                    hidden
-                    onChange={event => handleImageChange(event, setFieldValue)}
-                    accept="image/png, image/jpeg, image/jpg, image/gif"
-                  />
-                  <ErrorMessage name="picture" component="div" className="error-message" />
+                  <span className="text-xs text-foreground/40">{values.title.length}/80</span>
                 </div>
-
-                {/* Password protection */}
-                <div className="pt-2">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <p className="text-[13px] font-medium text-foreground ml-1">Protect Project</p>
-                      <p className="text-[12px] text-muted-foreground ml-1">
-                        Require a password to view this project (e.g., for NDAs).
-                      </p>
-                    </div>
-                    <Switch
-                      checked={isPassword}
-                      onCheckedChange={checked => setPassword(checked)}
-                      className="data-[state=unchecked]:bg-input"
+                <Field name="title">
+                  {({ field }) => (
+                    <Input
+                      {...field}
+                      id="title"
+                      type="text"
+                      autoComplete="off"
+                      placeholder="Eg: Designing an onboarding for 1M users"
+                      className={errors.title && touched.title ? 'border-destructive focus-visible:ring-destructive' : ''}
                     />
-                  </div>
-                  <AnimatePresence>
-                    {isPassword && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0, marginTop: 0 }}
-                        animate={{ opacity: 1, height: 'auto', marginTop: 8 }}
-                        exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="overflow-hidden"
-                      >
-                        <div className="relative p-0.5">
-                          <Field name="password">
-                            {({ field }) => (
-                              <Input
-                                {...field}
-                                id="password"
-                                type={showEye ? 'text' : 'password'}
-                                placeholder="Password"
-                                autoComplete="new-password"
-                                className={`pr-10 ${errors.password && touched.password ? 'border-destructive focus-visible:ring-destructive' : ''}`}
-                              />
-                            )}
-                          </Field>
-                          <div
-                            className="absolute top-[10px] right-3 cursor-pointer"
-                            onClick={() => {
-                              setShowEye(prev => !prev);
-                              validateField('password');
-                            }}
-                          >
-                            {showEye ? (
-                              <EyeIcon className="text-df-icon-color" />
-                            ) : (
-                              <EyeCloseIcon className="text-df-icon-color" />
-                            )}
-                          </div>
-                        </div>
-                        <ErrorMessage name="password" component="div" className="error-message" />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
+                  )}
+                </Field>
+                <ErrorMessage name="title" component="div" className="error-message" />
               </div>
 
-              <div className="flex gap-2 py-3 px-6 border-t border-border justify-end flex-shrink-0 bg-sidebar">
-                <Button variant="outline" type="button" onClick={() => closeSidebar()}>
-                  Cancel
-                </Button>
-                <Button type="submit" form="projectForm" disabled={loading}>
-                  {loading ? 'Saving…' : 'Save case study'}
-                </Button>
+              {/* Description */}
+              <div className="space-y-1.5">
+                <div className="flex justify-between items-center">
+                  <Label className="text-[13px] font-medium text-foreground ml-1">
+                    Description <span className="text-destructive">*</span>
+                  </Label>
+                  <span className="text-xs text-foreground/40">{values.description.length}/160</span>
+                </div>
+                <Field name="description">
+                  {({ field }) => (
+                    <Textarea
+                      {...field}
+                      id="description"
+                      rows={3}
+                      autoComplete="off"
+                      placeholder="Short description of the project"
+                      className={`resize-none ${errors.description && touched.description ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                    />
+                  )}
+                </Field>
+                <ErrorMessage name="description" component="div" className="error-message" />
               </div>
-            </Form>
-          )}
+
+              {/* Cover image */}
+              <div className="space-y-1.5">
+                <Label className="text-[13px] font-medium text-foreground ml-1">
+                  Cover image <span className="text-destructive">*</span>
+                </Label>
+                <div className="flex items-center gap-4">
+                  <label htmlFor="picture" className="cursor-pointer shrink-0">
+                    <div className="w-24 h-16 rounded-xl bg-black/[0.03] dark:bg-white/[0.03] border border-border flex items-center justify-center overflow-hidden">
+                      {imagePreview ? (
+                        <img
+                          src={imagePreview}
+                          className="w-full h-full object-cover"
+                          alt="project cover"
+                        />
+                      ) : (
+                        <ImageIcon className="w-5 h-5 text-foreground/30" />
+                      )}
+                    </div>
+                  </label>
+                  <div className="flex flex-col gap-1.5">
+                    <label
+                      htmlFor="picture"
+                      onClick={event => {
+                        // Ensure the file picker always opens when clicking this button.
+                        // Some nested Button implementations can interfere with native label behavior.
+                        event.preventDefault();
+                        document.getElementById('picture')?.click();
+                      }}
+                    >
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        type="button"
+                        className="rounded-full"
+                      >
+                        {imagePreview ? 'Change image' : 'Upload image'}
+                      </Button>
+                    </label>
+                    <span className="text-[11px] text-muted-foreground ml-1">Recommended: 1600 × 900px (16:9)</span>
+                  </div>
+                </div>
+                <input
+                  id="picture"
+                  name="picture"
+                  type="file"
+                  hidden
+                  onChange={event => handleImageChange(event, setFieldValue)}
+                  accept="image/png, image/jpeg, image/jpg, image/gif"
+                />
+                <ErrorMessage name="picture" component="div" className="error-message" />
+              </div>
+
+              {/* Password protection */}
+              <div className="pt-2">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <p className="text-[13px] font-medium text-foreground ml-1">Protect Project</p>
+                    <p className="text-[12px] text-muted-foreground ml-1">
+                      Require a password to view this project (e.g., for NDAs).
+                    </p>
+                  </div>
+                  <Switch
+                    checked={isPassword}
+                    onCheckedChange={checked => setPassword(checked)}
+                    className="data-[state=unchecked]:bg-input"
+                  />
+                </div>
+                <AnimatePresence>
+                  {isPassword && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                      animate={{ opacity: 1, height: 'auto', marginTop: 8 }}
+                      exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="relative p-0.5">
+                        <Field name="password">
+                          {({ field }) => (
+                            <Input
+                              {...field}
+                              id="password"
+                              type={showEye ? 'text' : 'password'}
+                              placeholder="Password"
+                              autoComplete="new-password"
+                              className={`pr-10 ${errors.password && touched.password ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                            />
+                          )}
+                        </Field>
+                        <div
+                          className="absolute top-[10px] right-3 cursor-pointer"
+                          onClick={() => {
+                            setShowEye(prev => !prev);
+                            validateField('password');
+                          }}
+                        >
+                          {showEye ? (
+                            <EyeIcon className="text-df-icon-color" />
+                          ) : (
+                            <EyeCloseIcon className="text-df-icon-color" />
+                          )}
+                        </div>
+                      </div>
+                      <ErrorMessage name="password" component="div" className="error-message" />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </div>
+
+            <div className="flex gap-2 py-3 px-6 border-t border-border justify-end flex-shrink-0 bg-sidebar">
+              <Button variant="outline" type="button" onClick={() => closeSidebar()}>
+                Cancel
+              </Button>
+              <Button type="submit" form="projectForm" disabled={loading}>
+                {loading ? 'Saving…' : 'Save case study'}
+              </Button>
+            </div>
+          </Form>
+        )}
       </Formik>
 
       <UnsavedChangesDialog

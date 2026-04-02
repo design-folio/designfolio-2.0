@@ -115,9 +115,6 @@ export default function ChatAboutSection({
                         );
                       })}
                     </div>
-                    <p className="mt-2 text-center text-[10px] font-medium tracking-widest uppercase text-[#7A736C]/70 dark:text-[#B5AFA5]/60 pointer-events-none">
-                      Try moving things around :)
-                    </p>
                   </div>
                 ) : canEdit ? (
                   <button

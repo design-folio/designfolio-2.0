@@ -64,12 +64,6 @@ function ProfessionalProjectsTab({
         </div>
       )}
 
-      {isEditing && !(isPro || visibleProjects.length < 2) && (
-        <div className="p-4">
-          <ProjectLock />
-        </div>
-      )}
-
       {isEditing && (isPro || visibleProjects.length < 2) && (
         <div className="flex flex-col gap-3">
           <div
@@ -168,6 +162,11 @@ function ProfessionalProjectsTab({
           </div>
         </div>
       ))}
+      {isEditing && !(isPro || visibleProjects.length < 2) && (
+        <div className="p-4">
+          <ProjectLock className="bg-[#DED9CE] dark:bg-[#2A2520] font-jetbrains" />
+        </div>
+      )}
     </div>
   );
 }

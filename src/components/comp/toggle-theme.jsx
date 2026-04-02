@@ -51,7 +51,7 @@ const SwitchToggleThemeDemo = ({ changeTheme }) => {
       gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
       osc2.start(now + 0.12);
       osc2.stop(now + 0.22);
-    } catch (e) {}
+    } catch (e) { }
   }, []);
 
   const handleCheckedChange = async (checked) => {

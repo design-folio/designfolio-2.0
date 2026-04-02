@@ -97,7 +97,7 @@ const Minimal = ({ userDetails, edit }) => {
 
   return (
     <>
-      <div className={cn("min-h-screen bg-background text-foreground rounded-2xl", userDetails?.wallpaper && userDetails?.wallpaper?.value != 0 && "")}>
+      <div className={cn("min-h-screen max-w-[848px] bg-background mx-auto text-foreground rounded-2xl", userDetails?.wallpaper && userDetails?.wallpaper?.value != 0 && "")}>
         <div className="fixed top-8 left-8 z-50">{/* <ThemeToggle /> */}</div>
         <div className={cn("container max-w-3xl mx-auto px-4", userDetails?.wallpaper && userDetails?.wallpaper?.value != 0 && "my-8")}>
           <section id="hero">

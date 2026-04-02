@@ -6,6 +6,7 @@ import Logo from "../../../public/assets/svgs/logo.svg";
 import Link from "next/link";
 import TrustedBySection from "@/components/trustedBySection";
 import { useMeasuredHeight } from "@/hooks/useMeasuredHeight";
+import MemoDesignfolioLogoV2 from "../icons/DesignfolioLogoV2";
 
 export function AuthLayout({
     children,
@@ -41,7 +42,7 @@ export function AuthLayout({
             <div className="flex-1 flex flex-col relative z-10">
                 <div className="pt-8 pb-4 flex justify-center">
                     <Link href="/" className="cursor-pointer" data-testid="link-home">
-                        <Logo className="text-df-icon-color" />
+                        <MemoDesignfolioLogoV2 className="text-df-icon-color" />
                     </Link>
                 </div>
 

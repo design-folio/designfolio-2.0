@@ -508,7 +508,7 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
 
   // In view mode: full-page centered wrapper with background
   return (
-    <div className="min-h-screen bg-[#F0EDE7] dark:bg-[#1A1A1A] flex justify-center font-['Inter'] text-[#1A1A1A] dark:text-[#F0EDE7] selection:bg-[#E37941] selection:text-white transition-colors duration-700">
+    <div className="min-h-screen bg-[#F0EDE7] dark:bg-[#1A1A1A] flex justify-center font-inter text-[#1A1A1A] dark:text-[#F0EDE7] selection:bg-[#E37941] selection:text-white transition-colors duration-700">
       {innerContent}
     </div>
   );

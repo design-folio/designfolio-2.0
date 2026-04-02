@@ -116,8 +116,8 @@ function ReviewCard({ rec, isEditing, onEdit, onDelete }) {
         </Avatar>
       </div>
 
-      <div className="p-4 pt-0">
-        <div className="border border-dashed border-[#E5D7C4] dark:border-[#3A352E] rounded-[12px] p-4">
+      <div className="p-0">
+        <div className="border border-dashed border-[#E5D7C4] dark:border-[#3A352E] rounded-[16px] p-4">
           <div
             ref={contentRef}
             className={cn(

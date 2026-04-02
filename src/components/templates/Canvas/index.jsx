@@ -39,7 +39,7 @@ export default function Canvas({ isEditing, preview = false, publicView = false 
 
   return (
     <div className="w-full flex-1 flex flex-col gap-3 pb-20 pt-0 px-4 md:px-0 max-w-[720px] mx-auto">
-      <CanvasHeader />
+      <CanvasHeader persistTheme={isEditing && !preview} />
       <CanvasProfileCard isEditing={isEditing} />
       <CanvasSkillsMarquee skills={skills} isEditing={isEditing} />
       {sectionOrder.map((id) => sectionComponents[id] || null)}

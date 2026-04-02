@@ -328,12 +328,12 @@ export default function Navbar() {
       <div
         className="fixed top-0 left-0 z-50 flex justify-center pointer-events-none pt-4 px-4"
         style={{
-          right: shiftWidth,
+          right: shouldShift ? `calc(${shiftWidth} + 16px)` : shiftWidth,
           transform: isVisible ? "translateY(0)" : "translateY(-120%)",
           transition: "transform 0.3s ease-out, right 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       >
-        <nav className={cn("bg-card border border-border rounded-full shadow-sm pointer-events-auto w-full", template === TEMPLATE_IDS.CANVAS ? "max-w-[720px]" : "max-w-[640px]")}>
+        <nav className={cn("bg-card border border-border rounded-full shadow-sm pointer-events-auto w-full", template === TEMPLATE_IDS.CANVAS ? "max-w-[720px]" : TEMPLATE_IDS.SPOTLIGHT ? "max-w-[848px]" : "max-w-[640px]")}>
           {navContent}
         </nav>
       </div>

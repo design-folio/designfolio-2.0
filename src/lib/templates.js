@@ -83,9 +83,20 @@ export const TEMPLATE_PREVIEW_IMAGES = {
     light: "/assets/png/template-thumbnails/mono.png",
     dark: "/assets/png/template-thumbnails/mono-dark.png",
   },
+  [TEMPLATE_IDS.PROFESSIONAL]: {
+    light: "/assets/png/template-thumbnails/professional.png",
+    dark: "/assets/png/template-thumbnails/professional-dark.png",
+  },
   [TEMPLATE_IDS.RETRO_OS]: "/assets/png/template-thumbnails/retro-os.png",
 };
 
+function urlFromPreviewEntry(entry, theme = "light") {
+  if (entry == null) return null;
+  if (typeof entry === "string") return entry;
+  return entry[theme] ?? entry.light;
+}
+
+/** Always returns a URL; falls back to Canvas when the template has no preview asset. */
 export function getTemplatePreviewImage(
   templateId = TEMPLATE_IDS.CANVAS,
   theme = "light",
@@ -93,6 +104,10 @@ export function getTemplatePreviewImage(
   const entry =
     TEMPLATE_PREVIEW_IMAGES[templateId] ??
     TEMPLATE_PREVIEW_IMAGES[TEMPLATE_IDS.CANVAS];
-  if (typeof entry === "string") return entry;
-  return entry[theme] ?? entry.light;
+  return urlFromPreviewEntry(entry, theme);
+}
+
+/** Preview URL for the theme sidebar, or `null` if there is no asset (placeholder UI). */
+export function getTemplateThumbnailSrc(templateId, theme = "light") {
+  return urlFromPreviewEntry(TEMPLATE_PREVIEW_IMAGES[templateId], theme);
 }

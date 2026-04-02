@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useCallback, useEffect } from "react";
+import { SmoothCursor } from "@/components/ui/smooth-cursor";
 import {
   Mail,
   Twitter,
@@ -158,6 +159,19 @@ export default function Professional({
     return links;
   }, [email, socials, portfolios, phone, resume]);
 
+  const allFieldsFilled = useMemo(
+    () =>
+      Boolean(email) &&
+      Boolean(socials?.twitter) &&
+      Boolean(socials?.linkedin) &&
+      Boolean(socials?.instagram) &&
+      Boolean(portfolios?.dribbble) &&
+      Boolean(portfolios?.medium) &&
+      Boolean(phone) &&
+      Boolean(resume?.url),
+    [email, socials, portfolios, phone, resume],
+  );
+
   const { hiddenSections = [], sectionOrder } = userDetails || {};
 
   const orderedSectionIds = useMemo(() => {
@@ -167,14 +181,19 @@ export default function Professional({
 
   const visibleTabs = useMemo(() => {
     const sorted = orderedSectionIds
-      .filter(id => isEditing || !hiddenSections.includes(id))
+      .filter(id => {
+        if (hiddenSections.includes(id) && !isEditing) return false;
+        // Hide Projects tab in preview/public when there are no visible projects
+        if (id === 'projects' && !isEditing && visibleProjects.length === 0) return false;
+        return true;
+      })
       .map(id => PROFESSIONAL_TAB_MAP[id]);
-    // Contact is not in sectionOrder (backend restriction) — always appended last
+    // Contact is not in sectionOrder (backend restriction) — always appended last, non-sortable
     if (isEditing || !hiddenSections.includes('contact')) {
       sorted.push(PROFESSIONAL_TAB_MAP['contact']);
     }
     return sorted;
-  }, [orderedSectionIds, hiddenSections, isEditing]);
+  }, [orderedSectionIds, hiddenSections, isEditing, visibleProjects]);
 
   const [currentTime] = useState(new Date());
   const [activeTab, setActiveTab] = useState(() => visibleTabs[0]?.key || "Projects");
@@ -283,6 +302,7 @@ export default function Professional({
             isEditing={isEditing}
             socialLinks={socialLinks}
             onEditContact={handleEditContact}
+            allFieldsFilled={allFieldsFilled}
           />
         );
       case "Testimonials":
@@ -301,6 +321,7 @@ export default function Professional({
 
   return (
     <div className="w-full flex-1 flex flex-col gap-3 max-w-[640px] mx-auto relative min-h-screen font-['Inter'] transition-colors duration-700 bg-[#EFECE6] dark:bg-[#1A1A1A] custom-solid-x">
+      {!isEditing && <SmoothCursor type="professional" />}
       <div className="w-full flex-1 flex flex-col pt-12 overflow-hidden">
         <ProfessionalProfileHeader
           isEditing={isEditing}

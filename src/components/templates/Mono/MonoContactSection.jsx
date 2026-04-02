@@ -17,11 +17,11 @@ const itemVariants = {
 };
 
 const btnClass =
-  "flex-1 flex items-center justify-between px-4 py-4 bg-white dark:bg-[#2A2520] rounded-xl border border-black/5 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors group h-auto !shadow-none";
+  "w-full flex items-center justify-between px-4 py-4 bg-white dark:bg-[#2A2520] rounded-xl border border-black/5 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors group h-auto !shadow-none";
 
-function LinkButton({ label, icon: Icon, iconRotate = 0, onClick }) {
+function LinkButton({ label, icon: Icon, iconRotate = 0, onClick, flex1 = false }) {
   return (
-    <motion.div whileHover="hover" initial="rest" className="flex-1">
+    <motion.div whileHover="hover" initial="rest" className={flex1 ? "flex-1" : "w-full"}>
       <Button variant="outline" size="sm" onClick={onClick} className={btnClass}>
         <span className="text-[#1A1A1A] dark:text-[#F0EDE7] font-medium text-sm">
           {label}
@@ -65,15 +65,17 @@ export default function MonoContactSection({ isEditing }) {
 
   const openFooter = useCallback(() => openSidebar?.(sidebars.footer), [openSidebar]);
 
+  const hasAnyLink =
+    !!email || !!phone || !!socials.linkedin || !!socials.twitter ||
+    !!portfolios.dribbble || !!portfolios.medium || !!resumeUrl;
+
   const allFieldsFilled =
     !!phone && !!socials.linkedin && !!socials.twitter &&
     !!portfolios.dribbble && !!portfolios.medium && !!resumeUrl;
 
   const showAddButton = isEditing && !allFieldsFilled;
 
-  const hasSocialsOrResume =
-    !!socials.linkedin || !!portfolios.dribbble || !!socials.twitter ||
-    !!portfolios.medium || !!resumeUrl;
+  if (!hasAnyLink && !isEditing) return null;
 
   return (
     <motion.div
@@ -106,6 +108,7 @@ export default function MonoContactSection({ isEditing }) {
               icon={AtSignIcon}
               iconRotate={15}
               onClick={() => handleCopy(email, "email")}
+              flex1
             />
           )}
           {phone && (
@@ -114,19 +117,21 @@ export default function MonoContactSection({ isEditing }) {
               icon={Phone}
               iconRotate={-15}
               onClick={() => handleCopy(phone, "phone")}
+              flex1
             />
           )}
         </div>
       )}
 
       {/* Socials + Resume row */}
-      {hasSocialsOrResume && (
+      {(socials.linkedin || portfolios.dribbble || socials.twitter || portfolios.medium || resumeUrl) && (
         <div className="flex gap-3 mb-3">
           {socials.linkedin && (
             <LinkButton
               label="Linkedin"
               icon={Globe}
               iconRotate={-10}
+              flex1
               onClick={() => openExternalLink(socials.linkedin)}
             />
           )}
@@ -135,6 +140,7 @@ export default function MonoContactSection({ isEditing }) {
               label="Dribbble"
               icon={DribbbleIcon}
               iconRotate={20}
+              flex1
               onClick={() => openExternalLink(portfolios.dribbble)}
             />
           )}
@@ -143,6 +149,7 @@ export default function MonoContactSection({ isEditing }) {
               label="X"
               icon={TwitterIcon}
               iconRotate={-20}
+              flex1
               onClick={() => openExternalLink(socials.twitter)}
             />
           )}
@@ -151,6 +158,7 @@ export default function MonoContactSection({ isEditing }) {
               label="Medium"
               icon={Globe}
               iconRotate={15}
+              flex1
               onClick={() => openExternalLink(portfolios.medium)}
             />
           )}
@@ -159,17 +167,18 @@ export default function MonoContactSection({ isEditing }) {
               label="Resume"
               icon={FileText}
               iconRotate={-15}
+              flex1
               onClick={() => openExternalLink(resumeUrl)}
             />
           )}
         </div>
       )}
 
-      {/* Single add button */}
+      {/* Single add button for any remaining fields */}
       {showAddButton && (
         <button
           onClick={openFooter}
-          className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl border-2 border-dashed border-black/10 dark:border-white/10 text-sm text-[#B5AFA5] dark:text-[#7A736C] hover:border-black/20 dark:hover:border-white/20 hover:text-[#7A736C] dark:hover:text-[#B5AFA5] transition-colors"
+          className="mt-3 w-full flex items-center justify-center gap-2 py-3.5 rounded-xl border-2 border-dashed border-[#E5D7C4] dark:border-white/10 text-sm text-[#B5AFA5] dark:text-[#7A736C] hover:border-[#1A1A1A]/20 dark:hover:border-white/20 hover:text-[#7A736C] dark:hover:text-[#B5AFA5] transition-colors"
         >
           <Plus className="w-3.5 h-3.5" />
           Add

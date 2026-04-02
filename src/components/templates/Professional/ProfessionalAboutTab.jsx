@@ -20,13 +20,13 @@ function ProfessionalAboutTab({
       : DEFAULT_PEGBOARD_IMAGES;
 
   return (
-    <div className="px-4 md:px-6 pb-12 group/section">
+    <div className="px-4 md:px-6 pb-20 group/section">
       {isEditing && (
         <div className="-mx-4 md:-mx-6 px-1 py-2 flex items-center justify-end gap-2 border-b border-[#D5D0C6] dark:border-[#3A352E] mb-6">
           <Button
             variant="outline"
             size="sm"
-            className="h-8 w-8 p-0 rounded-none border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520] text-[#1A1A1A] dark:text-[#F0EDE7] opacity-100 md:opacity-0 md:group-hover/section:opacity-100 transition-opacity"
+            className="h-8 w-8 p-0 rounded-full border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520] text-[#1A1A1A] dark:text-[#F0EDE7] opacity-100 md:opacity-0 md:group-hover/section:opacity-100 transition-opacity"
             onClick={onEditAbout}
             title="Edit story"
           >
@@ -35,7 +35,7 @@ function ProfessionalAboutTab({
           <SectionVisibilityButton
             sectionId="about"
             showOnHoverWhenVisible
-            className="h-8 w-8 rounded-none border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520]"
+            className="h-8 w-8 rounded-full border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520]"
           />
         </div>
       )}
@@ -106,7 +106,7 @@ function ProfessionalAboutTab({
                   <Button
                     variant="outline"
                     size="sm"
-                    className="h-7 w-7 p-0 rounded-none border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520] text-[#1A1A1A] dark:text-[#F0EDE7]"
+                    className="h-7 w-7 p-0 rounded-full border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520] text-[#1A1A1A] dark:text-[#F0EDE7]"
                     onClick={onEditSkills}
                   >
                     <Pencil className="w-3 h-3" />
@@ -138,7 +138,7 @@ function ProfessionalAboutTab({
                   <Button
                     variant="outline"
                     size="sm"
-                    className="h-7 w-7 p-0 rounded-none border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520] text-[#1A1A1A] dark:text-[#F0EDE7]"
+                    className="h-7 w-7 p-0 rounded-full border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520] text-[#1A1A1A] dark:text-[#F0EDE7]"
                     onClick={onEditTools}
                   >
                     <Pencil className="w-3 h-3" />

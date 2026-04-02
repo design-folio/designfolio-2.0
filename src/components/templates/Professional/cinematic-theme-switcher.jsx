@@ -5,7 +5,7 @@ import { useTheme } from "next-themes";
 import { runThemeTransition } from "@/hooks/use-theme-switch-audio";
 
 export default function CinematicThemeSwitcher() {
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
 
   // State Management
   const [mounted, setMounted] = useState(false);
@@ -16,7 +16,7 @@ export default function CinematicThemeSwitcher() {
   const toggleRef = useRef(null);
 
   // Track whether toggle is in checked (dark) or unchecked (light) position
-  const isDark = mounted && theme === "dark";
+  const isDark = mounted && resolvedTheme === "dark";
 
   // Handle hydration - prevent mismatch
   useEffect(() => {

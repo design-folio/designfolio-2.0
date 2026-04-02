@@ -190,6 +190,8 @@ export default function MonoReviewsSection({ isEditing }) {
     setRecommendations((prev) => prev.filter((r) => r.id !== id));
   }, []);
 
+  if (!isEditing && recommendations.length === 0) return null;
+
   return (
     <div className="px-5 md:px-8 py-8 relative group/section">
       {isEditing && (
@@ -225,7 +227,7 @@ export default function MonoReviewsSection({ isEditing }) {
       </h2>
 
       {recommendations.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 px-4 text-center rounded-2xl border border-dashed border-black/10 dark:border-white/10 bg-white/50 dark:bg-[#2A2520]/50 backdrop-blur-sm">
+        <div className="flex flex-col items-center justify-center py-16 px-4 text-center rounded-2xl border border-dashed border-black/10 dark:border-white/10 bg-background backdrop-blur-sm">
           <div className="w-12 h-12 rounded-full bg-black/[0.03] dark:bg-white/[0.03] flex items-center justify-center mb-4">
             <svg className="w-6 h-6 text-[#7A736C] dark:text-[#9E9893]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />

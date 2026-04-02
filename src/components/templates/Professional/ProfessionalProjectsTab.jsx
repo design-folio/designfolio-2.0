@@ -49,7 +49,7 @@ function ProfessionalProjectsTab({
             <Button
               variant="outline"
               size="sm"
-              className="h-8 w-8 p-0 rounded-none border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520] text-[#1A1A1A] dark:text-[#F0EDE7] opacity-100 md:opacity-0 md:group-hover/section:opacity-100 transition-opacity"
+              className="h-8 w-8 p-0 rounded-full border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520] text-[#1A1A1A] dark:text-[#F0EDE7] opacity-100 md:opacity-0 md:group-hover/section:opacity-100 transition-opacity"
               onClick={() => openSidebar?.(sidebars.sortProjects)}
               title="Rearrange projects"
             >
@@ -59,7 +59,7 @@ function ProfessionalProjectsTab({
           <SectionVisibilityButton
             sectionId="projects"
             showOnHoverWhenVisible
-            className="h-8 w-8 rounded-none border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520]"
+            className="h-8 w-8 rounded-full border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520]"
           />
         </div>
       )}
@@ -79,11 +79,11 @@ function ProfessionalProjectsTab({
             <FrameBorders />
             <div className="bg-white/50 dark:bg-[#1A1A1A]/50 p-6 md:p-7 relative overflow-hidden flex-1 flex flex-col items-center justify-center min-h-[120px] md:min-h-[160px]">
               <FrameScrews />
-              <div className="flex flex-col items-center justify-center gap-3 mt-4 mb-4">
-                <div className="w-12 h-12 rounded-full border border-dashed border-[#D5D0C6] dark:border-[#3A352E] flex items-center justify-center text-[#7A736C] dark:text-[#9E9893] group-hover:border-[#1A1A1A] dark:group-hover:border-[#F0EDE7] group-hover:text-[#1A1A1A] dark:group-hover:text-[#F0EDE7] transition-colors bg-white dark:bg-[#2A2520] shadow-sm">
+              <div className="group/add-project flex flex-col items-center justify-center gap-3 mt-4 mb-4">
+                <div className="w-12 h-12 rounded-full border border-dashed border-[#D5D0C6] dark:border-[#3A352E] flex items-center justify-center text-[#7A736C] dark:text-[#9E9893] group-hover/add-project:border-[#1A1A1A] dark:group-hover/add-project:border-[#F0EDE7] group-hover/add-project:text-[#1A1A1A] dark:group-hover/add-project:text-[#F0EDE7] transition-colors bg-white dark:bg-[#2A2520] shadow-sm">
                   <Plus className="w-5 h-5" />
                 </div>
-                <span className="font-jetbrains text-[13px] font-medium text-[#7A736C] dark:text-[#9E9893] group-hover:text-[#1A1A1A] dark:group-hover:text-[#F0EDE7] transition-colors uppercase tracking-wider">
+                <span className="font-jetbrains text-[13px] font-medium text-[#7A736C] dark:text-[#9E9893] group-hover/add-project:text-[#1A1A1A] dark:group-hover/add-project:text-[#F0EDE7] transition-colors uppercase tracking-wider">
                   Add New Project
                 </span>
               </div>
@@ -91,7 +91,7 @@ function ProfessionalProjectsTab({
               {visibleProjects.length === 0 && (
                 <Button
                   variant="outline"
-                  className="h-9 px-5 rounded-none border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] text-[#1A1A1A] dark:text-[#F0EDE7] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520] transition-colors flex items-center justify-center gap-2 font-jetbrains"
+                  className="h-9 px-5 rounded-full border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520] transition-colors flex items-center justify-center gap-2 font-jetbrains text-[#7A736C] dark:text-[#9E9893] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7]"
                   onClick={(e) => {
                     e.stopPropagation();
                     openModal(modals.aiProject);

@@ -1,4 +1,5 @@
 "use client";
+import { SmoothCursor } from "@/components/ui/smooth-cursor";
 import ProjectLock from "@/components/projectLock";
 import { SectionVisibilityButton, ProjectVisibilityButton } from "@/components/section";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -449,7 +450,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
         <MonoExperienceSection isEditing={isEditing} />
       </React.Fragment>
     ),
-    projects: (
+    projects: !isEditing && visibleProjects.length === 0 ? null : (
       <React.Fragment key="projects">
         <motion.div
           variants={itemVariants}
@@ -655,7 +656,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
           </h2>
 
           {visibleProjects.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 px-4 text-center rounded-2xl border border-dashed border-black/10 dark:border-white/10 bg-white/50 dark:bg-[#2A2520]/50 backdrop-blur-sm">
+            <div className="flex flex-col items-center justify-center py-16 px-4 text-center rounded-2xl border border-dashed border-black/10 dark:border-white/10 bg-background backdrop-blur-sm">
               <div className="w-12 h-12 rounded-full bg-black/[0.03] dark:bg-white/[0.03] flex items-center justify-center mb-4">
                 <svg
                   className="w-6 h-6 text-[#7A736C] dark:text-[#9E9893]"
@@ -896,16 +897,12 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               >
                 Click here to add your story...
               </button>
-            ) : (
-              <p className="text-[13px] text-[#7A736C] dark:text-[#B5AFA5]">
-                Click here to add your story...
-              </p>
-            )}
+            ) : null}
           </div>
         </motion.div>
       </React.Fragment>
     ),
-    tools: (
+    tools: !isEditing && activeTools.length === 0 ? null : (
       <React.Fragment key="tools">
         <motion.div
           variants={itemVariants}
@@ -1011,7 +1008,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
         initial="hidden"
         animate="visible"
       >
-        {/* <SmoothCursor type="minimal" /> */}
+        {!isEditing && <SmoothCursor type="minimal" />}
         {/* Header Section */}
         <motion.div
           variants={itemVariants}

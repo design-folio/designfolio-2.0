@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 
 function ProfessionalNavTabs({ activeTab, setActiveTab, tabs }) {
   return (
-    <div className="bg-[#DED9CE] dark:bg-[#2A2520] px-3 py-2 flex justify-between items-center overflow-x-auto hide-scrollbar">
+    <div className="bg-[#DED9CE] dark:bg-[#2A2520] px-3 py-2 flex items-center gap-1 overflow-x-auto hide-scrollbar">
       {tabs.map((tab) => (
         <button
           key={tab.key}

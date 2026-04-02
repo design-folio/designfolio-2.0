@@ -24,12 +24,14 @@ export const CanvasSectionButton = forwardRef(function CanvasSectionButton({ onC
         size="sm"
         onClick={onClick}
         aria-label={ariaLabel}
-        className={`h-8 flex items-center gap-1.5 px-3 ${baseClass} ${visibilityClass}`}
+        className={`h-8 flex items-center px-2 md:px-3 ${baseClass} ${visibilityClass}`}
         {...props}
       >
-        <span className="pointer-events-none flex items-center gap-1.5">
+        <span className="pointer-events-none flex items-center gap-0 md:gap-1.5">
           <span className="text-[#1A1A1A] dark:text-[#F0EDE7] flex items-center">{icon}</span>
-          <span className="text-xs font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">{label}</span>
+          <span className="hidden md:inline text-xs font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+            {label}
+          </span>
         </span>
       </Button>
     );

@@ -1,27 +1,16 @@
 import { Sun, Moon } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { useTheme } from "next-themes";
 import { runThemeTransition } from "@/hooks/use-theme-switch-audio";
+import { usePersistableThemeToggle } from "@/hooks/usePersistableThemeToggle";
 
-export default function CinematicThemeSwitcher() {
-  const { resolvedTheme, setTheme } = useTheme();
+export default function CinematicThemeSwitcher({ persist = false }) {
+  const { mounted, isDark, toggleTheme } = usePersistableThemeToggle(persist);
 
-  // State Management
-  const [mounted, setMounted] = useState(false);
   const [particles, setParticles] = useState([]);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  // Ref to track toggle button DOM element
   const toggleRef = useRef(null);
-
-  // Track whether toggle is in checked (dark) or unchecked (light) position
-  const isDark = mounted && resolvedTheme === "dark";
-
-  // Handle hydration - prevent mismatch
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   // Generate particles with different timing
   const generateParticles = () => {
@@ -49,14 +38,10 @@ export default function CinematicThemeSwitcher() {
   // Toggle handler - switches theme and triggers particles
   const handleToggle = () => {
     generateParticles();
-    runThemeTransition(
-      toggleRef.current,
-      () => setTheme(isDark ? "light" : "dark"),
-      {
-        playSound: true,
-        ripple: true,
-      },
-    );
+    runThemeTransition(toggleRef.current, toggleTheme, {
+      playSound: true,
+      ripple: true,
+    });
   };
 
   // Prevent hydration mismatch - show placeholder during SSR

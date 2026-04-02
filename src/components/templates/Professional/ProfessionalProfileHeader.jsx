@@ -8,6 +8,7 @@ import { itemVariants } from "./professional-utils";
 
 function ProfessionalProfileHeader({
   isEditing,
+  persistTheme = false,
   avatarSrc,
   displayName,
   bio,
@@ -35,7 +36,7 @@ function ProfessionalProfileHeader({
           </div>
         )}
         <div className="absolute top-0 right-4 z-10">
-          <CinematicThemeSwitcher />
+          <CinematicThemeSwitcher persist={persistTheme} />
         </div>
 
         <div className="w-[68px] h-[68px] bg-[#E37941] mb-6 flex items-center justify-center overflow-hidden shrink-0 mt-2">

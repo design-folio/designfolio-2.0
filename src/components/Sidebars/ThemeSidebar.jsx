@@ -11,12 +11,62 @@ import DragHandle from "../DragHandle";
 import React, { useEffect, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { Badge } from "../ui/badge";
+import { Slider } from "../ui/slider";
+import { Switch as SwitchCanvas } from "../templates/Canvas/switch-button";
+import { AnimatePresence, motion } from "framer-motion";
+import Text from "../text";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  rectSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { _updateUser } from "@/network/post-request";
+import { runThemeTransition, hasThemeSwitchEffect } from "@/hooks/use-theme-switch-audio";
+import { useTheme } from "next-themes";
+import { TEMPLATE_IDS, TEMPLATES_BY_ID, getTemplateThumbnailSrc } from "@/lib/templates";
+import { PROFESSIONAL_DEFAULT_ORDER } from "@/components/templates/Professional/professional-utils";
 
-function TemplateCard({ tmpl, isSelected, onChange }) {
+function TemplateCardPlaceholder() {
+  return (
+    <div className="absolute inset-0 p-3 flex flex-col gap-2 opacity-40">
+      <div className="flex items-center gap-2">
+        <div className="w-5 h-5 rounded-full bg-black/20 dark:bg-white/20" />
+        <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
+      </div>
+      <div className="w-full h-12 mt-1 rounded-md bg-black/10 dark:bg-white/10" />
+      <div className="flex gap-2 mt-auto">
+        <div className="w-full h-8 rounded-md bg-black/10 dark:bg-white/10" />
+        <div className="w-full h-8 rounded-md bg-black/10 dark:bg-white/10" />
+      </div>
+    </div>
+  );
+}
+
+function TemplateCard({ tmpl, isSelected, onChange, previewSrc }) {
+  const [imageFailed, setImageFailed] = useState(false);
+
+  useEffect(() => {
+    setImageFailed(false);
+  }, [previewSrc]);
+
+  const showThumbnail = Boolean(previewSrc) && !imageFailed;
+
   return (
     <div className="flex flex-col gap-3 items-center">
       <div className="relative w-full">
         <button
+          type="button"
           onClick={() => onChange(tmpl.id)}
           className={twMerge(
             "w-full aspect-square rounded-[24px] transition-all focus:outline-none cursor-pointer group/card",
@@ -27,21 +77,22 @@ function TemplateCard({ tmpl, isSelected, onChange }) {
         >
           <div
             className={twMerge(
-              "w-full h-full rounded-[14px] overflow-hidden transition-all shadow-sm border border-black/5 dark:border-white/5 relative pointer-events-none",
+              "pointer-events-none w-full h-full rounded-[14px] overflow-hidden transition-all shadow-sm border border-black/5 dark:border-white/5 relative",
               isSelected ? "bg-accent" : "bg-card group-hover/card:shadow-md"
             )}
           >
-            <div className="absolute inset-0 p-3 flex flex-col gap-2 opacity-40">
-              <div className="flex items-center gap-2">
-                <div className="w-5 h-5 rounded-full bg-black/20 dark:bg-white/20" />
-                <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
+            {showThumbnail ? (
+              <img
+                src={previewSrc}
+                alt=""
+                className="absolute inset-0 w-full h-full object-cover object-top pointer-events-none"
+                onError={() => setImageFailed(true)}
+              />
+            ) : (
+              <div className="pointer-events-none absolute inset-0">
+                <TemplateCardPlaceholder />
               </div>
-              <div className="w-full h-12 mt-1 rounded-md bg-black/10 dark:bg-white/10" />
-              <div className="flex gap-2 mt-auto">
-                <div className="w-full h-8 rounded-md bg-black/10 dark:bg-white/10" />
-                <div className="w-full h-8 rounded-md bg-black/10 dark:bg-white/10" />
-              </div>
-            </div>
+            )}
           </div>
         </button>
 
@@ -71,31 +122,6 @@ function TemplateCard({ tmpl, isSelected, onChange }) {
     </div>
   );
 }
-import { Slider } from "../ui/slider";
-import { Switch as SwitchCanvas } from "../templates/Canvas/switch-button";
-import { AnimatePresence, motion } from "framer-motion";
-import Text from "../text";
-import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core';
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  useSortable,
-  rectSortingStrategy,
-} from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import { _updateUser } from "@/network/post-request";
-import { runThemeTransition, hasThemeSwitchEffect } from "@/hooks/use-theme-switch-audio";
-import { TEMPLATE_IDS, TEMPLATES_BY_ID, TEMPLATES_LIST } from "@/lib/templates";
-import { PROFESSIONAL_DEFAULT_ORDER } from "@/components/templates/Professional/professional-utils";
-
 
 // Section display names mapping
 const SECTION_NAMES = {
@@ -169,7 +195,6 @@ const ThemePanel = ({
   template,
   changeTemplate,
   templates,
-  renderTemplate,
   getTemplateStyles,
   cursor,
   handleChangeCursor,
@@ -181,6 +206,8 @@ const ThemePanel = ({
   effects,
   updateWallpaperEffect,
 }) => {
+
+
   const {
     registerUnsavedChangesChecker,
     unregisterUnsavedChangesChecker,
@@ -476,40 +503,41 @@ const ThemePanel = ({
 
       <TabsContent value="layouts" className="flex-1 overflow-y-auto p-6 m-0 thin-scrollbar" data-testid={isMobile ? "content-layouts-mobile" : "content-layouts"}>
         <div className="space-y-4">
-          <div className="flex items-center justify-between p-4 border border-border rounded-[16px] bg-black/[0.02] dark:bg-white/[0.02] mb-4">
-            <span className="text-[13px] font-medium text-foreground">Appearance</span>
-            {
-              template === TEMPLATE_IDS.CANVAS ? (<div className="flex items-center gap-3">
-                <SwitchCanvas
-                  value={isMacOSTemplate ? false : (theme === 'dark' || theme === 1)}
-                  onToggle={() => !isMacOSTemplate && changeTheme((theme === 'dark' || theme === 1) ? 0 : 1)}
-                  iconOn={<Moon className="size-4" />}
-                  iconOff={<Sun className="size-4" />}
-                />
-              </div>) : (<div className="inline-flex items-center gap-2">
-                <span
-                  className={twMerge("cursor-pointer transition-colors", (theme === 'dark' || theme === 1) ? "text-muted-foreground" : "text-foreground")}
-                  onClick={() => !isMacOSTemplate && changeTheme(0)}
-                >
-                  <Sun className="size-4" />
-                </span>
-                <div ref={appearanceSwitchRefLayouts} className="inline-flex">
-                  <Switch
-                    checked={isMacOSTemplate ? false : (theme === 'dark' || theme === 1)}
-                    onCheckedChange={(checked) => applyThemeChange(checked, appearanceSwitchRefLayouts.current)}
-                    disabled={isMacOSTemplate}
-                    data-testid={isMobile ? "switch-theme-mode-layouts-mobile" : "switch-theme-mode-layouts"}
+          {!isMacOSTemplate && (
+            <div className="flex items-center justify-between p-4 border border-border rounded-[16px] bg-black/[0.02] dark:bg-white/[0.02] mb-4">
+              <span className="text-[13px] font-medium text-foreground">Appearance</span>
+              {
+                template === TEMPLATE_IDS.CANVAS ? (<div className="flex items-center gap-3">
+                  <SwitchCanvas
+                    value={theme === 'dark' || theme === 1}
+                    onToggle={() => changeTheme((theme === 'dark' || theme === 1) ? 0 : 1)}
+                    iconOn={<Moon className="size-4" />}
+                    iconOff={<Sun className="size-4" />}
                   />
-                </div>
-                <span
-                  className={twMerge("cursor-pointer transition-colors", !(theme === 'dark' || theme === 1) ? "text-muted-foreground" : "text-foreground")}
-                  onClick={() => !isMacOSTemplate && changeTheme(1)}
-                >
-                  <Moon className="size-4" />
-                </span>
-              </div>)
-            }
-          </div>
+                </div>) : (<div className="inline-flex items-center gap-2">
+                  <span
+                    className={twMerge("cursor-pointer transition-colors", (theme === 'dark' || theme === 1) ? "text-muted-foreground" : "text-foreground")}
+                    onClick={() => changeTheme(0)}
+                  >
+                    <Sun className="size-4" />
+                  </span>
+                  <div ref={appearanceSwitchRefLayouts} className="inline-flex">
+                    <Switch
+                      checked={theme === 'dark' || theme === 1}
+                      onCheckedChange={(checked) => applyThemeChange(checked, appearanceSwitchRefLayouts.current)}
+                      data-testid={isMobile ? "switch-theme-mode-layouts-mobile" : "switch-theme-mode-layouts"}
+                    />
+                  </div>
+                  <span
+                    className={twMerge("cursor-pointer transition-colors", !(theme === 'dark' || theme === 1) ? "text-muted-foreground" : "text-foreground")}
+                    onClick={() => changeTheme(1)}
+                  >
+                    <Moon className="size-4" />
+                  </span>
+                </div>)
+              }
+            </div>
+          )}
 
           <div className="text-[13px] font-medium text-muted-foreground px-1">Templates</div>
           <div className="grid grid-cols-2 gap-x-4 gap-y-6 pb-4">
@@ -519,6 +547,7 @@ const ThemePanel = ({
                 tmpl={tmpl}
                 isSelected={template === tmpl.id}
                 onChange={changeTemplate}
+                previewSrc={getTemplateThumbnailSrc(tmpl.id, theme === 'dark' || theme === 1 ? 'dark' : 'light')}
               />
             ))}
           </div>
@@ -527,31 +556,32 @@ const ThemePanel = ({
 
       <TabsContent value="background" className="flex-1 overflow-y-auto p-6 m-0" data-testid={isMobile ? "content-background-mobile" : "content-background"}>
         <div className="space-y-4">
-          <div className="flex items-center justify-between p-4 border border-border rounded-[16px] bg-black/[0.02] dark:bg-white/[0.02] mb-4">
-            <span className="text-[13px] font-medium text-foreground">Appearance</span>
-            <div className="inline-flex items-center gap-2">
-              <span
-                className={twMerge("cursor-pointer transition-colors", (theme === 'dark' || theme === 1) ? "text-muted-foreground" : "text-foreground")}
-                onClick={() => !isMacOSTemplate && changeTheme(0)}
-              >
-                <Sun className="size-4" />
-              </span>
-              <div ref={appearanceSwitchRefBackground} className="inline-flex">
-                <Switch
-                  checked={isMacOSTemplate ? false : (theme === 'dark' || theme === 1)}
-                  onCheckedChange={(checked) => applyThemeChange(checked, appearanceSwitchRefBackground.current)}
-                  disabled={isMacOSTemplate}
-                  data-testid={isMobile ? "switch-wallpaper-mode-mobile" : "switch-wallpaper-mode"}
-                />
+          {!isMacOSTemplate && (
+            <div className="flex items-center justify-between p-4 border border-border rounded-[16px] bg-black/[0.02] dark:bg-white/[0.02] mb-4">
+              <span className="text-[13px] font-medium text-foreground">Appearance</span>
+              <div className="inline-flex items-center gap-2">
+                <span
+                  className={twMerge("cursor-pointer transition-colors", (theme === 'dark' || theme === 1) ? "text-muted-foreground" : "text-foreground")}
+                  onClick={() => changeTheme(0)}
+                >
+                  <Sun className="size-4" />
+                </span>
+                <div ref={appearanceSwitchRefBackground} className="inline-flex">
+                  <Switch
+                    checked={theme === 'dark' || theme === 1}
+                    onCheckedChange={(checked) => applyThemeChange(checked, appearanceSwitchRefBackground.current)}
+                    data-testid={isMobile ? "switch-wallpaper-mode-mobile" : "switch-wallpaper-mode"}
+                  />
+                </div>
+                <span
+                  className={twMerge("cursor-pointer transition-colors", !(theme === 'dark' || theme === 1) ? "text-muted-foreground" : "text-foreground")}
+                  onClick={() => changeTheme(1)}
+                >
+                  <Moon className="size-4" />
+                </span>
               </div>
-              <span
-                className={twMerge("cursor-pointer transition-colors", !(theme === 'dark' || theme === 1) ? "text-muted-foreground" : "text-foreground")}
-                onClick={() => !isMacOSTemplate && changeTheme(1)}
-              >
-                <Moon className="size-4" />
-              </span>
             </div>
-          </div>
+          )}
 
           <AnimatePresence mode="wait">
             {wallpaper && wallpaper !== 0 && (

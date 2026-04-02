@@ -173,6 +173,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
   const portfolios = userDetails?.portfolios || {};
   const resumeUrl = userDetails?.resume?.url || "";
   const storyText = userDetails?.about?.description || "";
+  const userRole = userDetails?.persona?.label !== "Others" ? userDetails?.persona?.label : userDetails?.persona?.custom;
   const visibleProjects = useMemo(
     () => (preview ? projects.filter((project) => !project.hidden) : projects),
     [preview, projects],
@@ -212,6 +213,11 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
       openModal?.(modals.deleteProject);
     },
     [openModal, setSelectedProject],
+  );
+
+  const handleEditPersona = useCallback(
+    () => openSidebar?.(sidebars.persona),
+    [openSidebar],
   );
 
   const handleToggleProjectVisibility = useCallback(
@@ -701,11 +707,6 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
           ) : (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-8">
-                {isEditing && !(userDetails?.pro || visibleProjects.length < 2) && (
-                  <div className="sm:col-span-2">
-                    <ProjectLock />
-                  </div>
-                )}
                 {visibleProjects.map((project) => (
                   <div
                     key={project.id}
@@ -768,6 +769,11 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                     </p>
                   </div>
                 ))}
+                {isEditing && !(userDetails?.pro || visibleProjects.length < 2) && (
+                  <div className="sm:col-span-2">
+                    <ProjectLock />
+                  </div>
+                )}
               </div>
 
               {/* <div className="bg-[#1A1A1A] dark:bg-[#F0EDE7] text-[#F0EDE7] dark:text-[#1A1A1A] px-3 py-1.5 rounded-full text-[13px] font-medium shadow-2xl flex items-center gap-1.5">
@@ -1025,15 +1031,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               >
                 <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
               </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => openSidebar?.(sidebars.persona)}
-                className="h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors"
-                title="Edit Persona"
-              >
-                <UserCircle className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-              </Button>
+
             </div>
           )}
           <div className="flex items-start justify-between gap-4 mb-6">
@@ -1048,7 +1046,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               </AvatarFallback>
             </Avatar>
             <div className="flex items-center gap-2 mt-1">
-              <AnimatedThemeToggler />
+              <AnimatedThemeToggler persist={isEditing && !preview} />
             </div>
           </div>
 
@@ -1057,15 +1055,33 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               <h1 className="text-[24px] font-semibold mb-0.5 tracking-tight text-[#1A1A1A] dark:text-[#F0EDE7]">
                 {introduction}
               </h1>
-              <p
-                className="text-[#7A736C] dark:text-[#B5AFA5] text-base"
-                style={{ fontWeight: 450 }}
-              >
-                {userDetails?.designation ||
-                  userDetails?.profession ||
-                  userDetails?.experiences?.[0]?.role ||
-                  "Portfolio"}
-              </p>
+              {isEditing ? (
+                <div className="flex items-center gap-2 group/role">
+
+                  <p
+                    className="text-[#7A736C] dark:text-[#B5AFA5] text-base"
+                    style={{ fontWeight: 450 }}
+                  >
+                    {userRole}
+                  </p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-6 w-6 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] opacity-0 group-hover/role:opacity-100 transition-opacity shrink-0"
+                    onClick={handleEditPersona}
+                    title="Edit persona"
+                  >
+                    <Pencil className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                  </Button>
+                </div>
+              ) : (
+                <p
+                  className="text-[#7A736C] dark:text-[#B5AFA5] text-base"
+                  style={{ fontWeight: 450 }}
+                >
+                  {userRole}
+                </p>
+              )}
             </div>
             <a
               href={resumeUrl || "#"}

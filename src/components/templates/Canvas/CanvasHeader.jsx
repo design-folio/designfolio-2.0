@@ -1,17 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Moon, Sun } from "lucide-react";
-import { useTheme } from "next-themes";
 import { Switch } from "./switch-button";
+import { usePersistableThemeToggle } from "@/hooks/usePersistableThemeToggle";
 
-function CanvasHeader() {
+function CanvasHeader({ persistTheme = false }) {
   const [currentTime, setCurrentTime] = useState(null);
-  const [mounted, setMounted] = useState(false);
-  const { theme, setTheme } = useTheme();
-  const isDark = mounted && theme === "dark";
+  const { isDark, toggleTheme } = usePersistableThemeToggle(persistTheme);
 
   useEffect(() => {
-    setMounted(true);
     setCurrentTime(new Date());
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
@@ -46,7 +43,7 @@ function CanvasHeader() {
       <div className="flex items-center gap-3">
         <Switch
           value={isDark}
-          onToggle={() => setTheme(isDark ? "light" : "dark")}
+          onToggle={toggleTheme}
           iconOn={<Moon className="size-4" />}
           iconOff={<Sun className="size-4" />}
         />

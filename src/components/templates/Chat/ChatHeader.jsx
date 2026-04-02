@@ -7,7 +7,7 @@ import { useGlobalContext } from "@/context/globalContext";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { sidebars } from "@/lib/constant";
 import { Switch } from "../Canvas/switch-button";
-import { useTheme } from "next-themes";
+import { usePersistableThemeToggle } from "@/hooks/usePersistableThemeToggle";
 import { TypingIndicator } from "./chatUtils";
 
 export default function ChatHeader({ chatRevealStep, s, canEdit }) {
@@ -20,13 +20,7 @@ export default function ChatHeader({ chatRevealStep, s, canEdit }) {
   );
 
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [mounted, setMounted] = useState(false);
-  const { resolvedTheme, setTheme } = useTheme();
-  const isDark = mounted && resolvedTheme === "dark";
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const { isDark, toggleTheme } = usePersistableThemeToggle(canEdit);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -108,7 +102,7 @@ export default function ChatHeader({ chatRevealStep, s, canEdit }) {
       >
         <Switch
           value={isDark}
-          onToggle={() => setTheme(isDark ? "light" : "dark")}
+          onToggle={toggleTheme}
           iconOn={<Moon className="size-4" />}
           iconOff={<Sun className="size-4" />}
         />
@@ -130,7 +124,7 @@ export default function ChatHeader({ chatRevealStep, s, canEdit }) {
       </motion.div>
 
       {/* Intro Message */}
-      <div className="space-y-6 pb-6">
+      <div className="space-y-6">
         <AnimatePresence mode="popLayout">
           {chatRevealStep >= s(2) && (
             <motion.div

@@ -1,21 +1,17 @@
-import { useRef, useCallback, useState, useEffect } from "react";
+import { useRef, useCallback } from "react";
 import { flushSync } from "react-dom";
-import { useTheme } from "next-themes";
 
 import { Moon, Sun } from "lucide-react";
 
 import { motion, AnimatePresence } from "framer-motion";
 
 import { cn } from "@/lib/utils";
+import { usePersistableThemeToggle } from "@/hooks/usePersistableThemeToggle";
 
-export const AnimatedThemeToggler = ({ className }) => {
+export const AnimatedThemeToggler = ({ className, persist = false }) => {
   const buttonRef = useRef(null);
-  const { resolvedTheme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => setMounted(true), []);
-
-  const darkMode = mounted && resolvedTheme === "dark";
+  const { mounted, isDark: darkMode, toggleTheme } =
+    usePersistableThemeToggle(persist);
 
   const playHeartbeat = useCallback(() => {
     try {
@@ -58,19 +54,14 @@ export const AnimatedThemeToggler = ({ className }) => {
 
     playHeartbeat();
 
-    const applyTheme = () => {
-      const toggled = !darkMode;
-      setTheme(toggled ? "dark" : "light");
-    };
-
     if (document.startViewTransition) {
       await document.startViewTransition(() => {
         flushSync(() => {
-          applyTheme();
+          toggleTheme();
         });
       }).ready;
     } else {
-      applyTheme();
+      toggleTheme();
       return;
     }
 
@@ -96,7 +87,7 @@ export const AnimatedThemeToggler = ({ className }) => {
         pseudoElement: "::view-transition-new(root)",
       },
     );
-  }, [darkMode, playHeartbeat, setTheme]);
+  }, [toggleTheme, playHeartbeat]);
 
   // Avoid hydration mismatch: server and first client render don't know theme (no localStorage)
   if (!mounted) {

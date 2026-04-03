@@ -68,11 +68,11 @@ export const TEMPLATES_LIST = TEMPLATE_DISPLAY_ORDER.map(
 
 export const TEMPLATE_PREVIEW_IMAGES = {
   [TEMPLATE_IDS.CANVAS]: {
-    light: "/assets/png/template-thumbnails/canvas.png",
+    light: "/assets/png/template-thumbnails/canvas-light.png",
     dark: "/assets/png/template-thumbnails/canvas-dark.png",
   },
   [TEMPLATE_IDS.CHATFOLIO]: {
-    light: "/assets/png/template-thumbnails/chatfolio.png",
+    light: "/assets/png/template-thumbnails/chatfolio-light.png",
     dark: "/assets/png/template-thumbnails/chatfolio-dark.png",
   },
   [TEMPLATE_IDS.SPOTLIGHT]: {
@@ -80,11 +80,11 @@ export const TEMPLATE_PREVIEW_IMAGES = {
     dark: "/assets/png/template-thumbnails/spotlight-dark.png",
   },
   [TEMPLATE_IDS.MONO]: {
-    light: "/assets/png/template-thumbnails/mono.png",
+    light: "/assets/png/template-thumbnails/mono-light.png",
     dark: "/assets/png/template-thumbnails/mono-dark.png",
   },
   [TEMPLATE_IDS.PROFESSIONAL]: {
-    light: "/assets/png/template-thumbnails/professional.png",
+    light: "/assets/png/template-thumbnails/professional-light.png",
     dark: "/assets/png/template-thumbnails/professional-dark.png",
   },
   [TEMPLATE_IDS.RETRO_OS]: "/assets/png/template-thumbnails/retro-os.png",

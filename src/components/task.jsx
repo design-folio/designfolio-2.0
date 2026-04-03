@@ -17,9 +17,9 @@ export default function Task({ setOpen }) {
       openModal(modals.onboarding);
       setStep(2);
     } else if (i == 2 && !checkList[2].checked) {
-      openSidebar(sidebars.work);
+      openSidebar(sidebars.work, "add");
     } else if (i == 3 && !checkList[3].checked) {
-      openSidebar(sidebars.review);
+      openSidebar(sidebars.review, "add");
     }
   };
 

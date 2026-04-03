@@ -229,11 +229,8 @@ export default function Professional({
   );
 
   const handleAddExperience = useCallback(
-    () => {
-      setSelectedWork(null);
-      openSidebar(sidebars.work);
-    },
-    [setSelectedWork, openSidebar],
+    () => openSidebar(sidebars.work, "add"),
+    [openSidebar],
   );
   const handleEditAbout = useCallback(
     () => openSidebar(sidebars.about),
@@ -248,7 +245,7 @@ export default function Professional({
     [openSidebar],
   );
   const handleAddReview = useCallback(
-    () => openSidebar(sidebars.review),
+    () => openSidebar(sidebars.review, "add"),
     [openSidebar],
   );
   const handleEditReview = useCallback(

@@ -6,6 +6,7 @@ import { useGlobalContext } from "@/context/globalContext";
 import useClient from "@/hooks/useClient";
 import { getWallpaperUrl } from "@/lib/wallpaper";
 import { TEMPLATE_IDS } from "@/lib/templates";
+import Chat from "@/components/templates/Chat";
 import { _getUser } from "@/network/get-request";
 import { useQuery } from "@tanstack/react-query";
 import { useTheme } from "next-themes";
@@ -76,7 +77,8 @@ export default function Index({ initialUserDetails }) {
   const wp = finalUserDetails?.wallpaper;
   const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
   const currentTheme = resolvedTheme || theme || (finalUserDetails?.theme == 1 ? "dark" : "light");
-  const wallpaperUrl = getWallpaperUrl(wpValue ?? 0, currentTheme, finalUserDetails?.template);
+  const isChatfolioTemplate = finalUserDetails?.template === TEMPLATE_IDS.CHATFOLIO;
+  const wallpaperUrl = isChatfolioTemplate ? null : getWallpaperUrl(wpValue ?? 0, currentTheme, finalUserDetails?.template);
   const ProBadge = !finalUserDetails?.pro && (
     <div
       className="text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] xl:block cursor-pointer mb-[120px] lg:m-0"
@@ -93,7 +95,7 @@ export default function Index({ initialUserDetails }) {
       case TEMPLATE_IDS.CANVAS:
         return <><Canvas preview publicView />{ProBadge}</>;
       case TEMPLATE_IDS.CHATFOLIO:
-        return <><Template2 userDetails={finalUserDetails} />{ProBadge}</>;
+        return <><Chat publicView />{ProBadge}</>;
       case TEMPLATE_IDS.SPOTLIGHT:
         return <><Minimal userDetails={finalUserDetails} />{ProBadge}</>;
       case TEMPLATE_IDS.MONO:
@@ -121,7 +123,7 @@ export default function Index({ initialUserDetails }) {
         url={`https://${finalUserDetails?.username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`}
       />
       <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
-      <main className="min-h-screen">
+      <main className={isChatfolioTemplate ? "min-h-screen bg-[#F0EDE7] dark:bg-[#1A1A1A] transition-colors duration-700 flex justify-center" : "min-h-screen"}>
         <div
           className={(() => {
             switch (finalUserDetails?.template) {
@@ -129,6 +131,8 @@ export default function Index({ initialUserDetails }) {
                 return "py-10";
               case TEMPLATE_IDS.MONO:
                 return "py-10";
+              case TEMPLATE_IDS.CHATFOLIO:
+                return "w-full py-[94px]";
               case TEMPLATE_IDS.RETRO_OS:
                 return "mx-auto px-2 md:px-4 lg:px-0";
               default:

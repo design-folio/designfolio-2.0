@@ -127,8 +127,7 @@ const MacOSTemplate = ({
   };
 
   const handleAddReview = () => {
-    setSelectedReview(null);
-    openSidebar(sidebars.review);
+    openSidebar(sidebars.review, "add");
   };
 
   const handleWidgetEditClick = () => {
@@ -156,8 +155,7 @@ const MacOSTemplate = ({
   };
 
   const handleAddWork = () => {
-    setSelectedWork(null);
-    openSidebar(sidebars.work);
+    openSidebar(sidebars.work, "add");
     setShowWorkSortModal(false);
   };
 

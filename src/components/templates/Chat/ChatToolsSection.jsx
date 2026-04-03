@@ -72,7 +72,7 @@ export default function ChatToolsSection({
                 show={chatRevealStep < s(6)}
               />
             </div>
-            <div className="bg-white dark:bg-[#2A2520] px-4 py-3 rounded-2xl rounded-tl-sm rounded-bl-sm text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed transition-colors duration-400 border border-black/5 dark:border-white/5 min-h-[46px] flex items-center">
+            <div className="bg-[#E5E2DB] dark:bg-[#2A2520] px-4 py-3 rounded-2xl rounded-tl-sm rounded-bl-sm text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed transition-colors duration-300 border border-black/5 dark:border-white/5 min-h-[46px] flex items-center">
               {chatRevealStep === s(5) ? (
                 <TypingIndicator />
               ) : skills.length > 0 ? (
@@ -115,7 +115,7 @@ export default function ChatToolsSection({
                 show={chatRevealStep < getNextLeftStep("tools")}
               />
             </div>
-            <div className="bg-white dark:bg-[#2A2520] px-4 py-4 rounded-2xl rounded-tl-sm rounded-bl-sm transition-colors duration-400 border border-black/5 dark:border-white/5 overflow-hidden min-w-0">
+            <div className="bg-[#E5E2DB] dark:bg-[#2A2520] px-4 py-4 rounded-2xl rounded-tl-sm rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5 overflow-hidden min-w-0">
               {tools.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-8 px-4 text-center">
                   <p className="text-[13px] text-[#7A736C] dark:text-[#9E9893] mb-3">
@@ -138,8 +138,8 @@ export default function ChatToolsSection({
                   </p>
                   {tools.length > 6 ? (
                     <div className="relative overflow-hidden rounded-xl">
-                      <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white dark:from-[#2A2520] to-transparent z-10 pointer-events-none"></div>
-                      <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white dark:from-[#2A2520] to-transparent z-10 pointer-events-none"></div>
+                      <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-[#E5E2DB] dark:from-[#2A2520] to-transparent z-10 pointer-events-none"></div>
+                      <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[#E5E2DB] dark:from-[#2A2520] to-transparent z-10 pointer-events-none"></div>
                       <motion.div
                         className="flex gap-2 w-max py-1"
                         animate={{ x: ["0%", "-50%"] }}
@@ -152,7 +152,7 @@ export default function ChatToolsSection({
                         {[...tools, ...tools].map((tool, i) => (
                           <div
                             key={i}
-                            className="w-10 h-10 rounded-2xl bg-white dark:bg-[#35302A] shadow-sm flex items-center justify-center border border-black/5 dark:border-white/5 flex-shrink-0"
+                            className="w-10 h-10 rounded-2xl bg-[#E5E2DB] dark:bg-[#35302A] shadow-sm flex items-center justify-center border border-black/5 dark:border-white/5 flex-shrink-0"
                           >
                             <img
                               src={tool.image}
@@ -168,7 +168,7 @@ export default function ChatToolsSection({
                       {tools.map((tool, i) => (
                         <div
                           key={tool._id || i}
-                          className="w-10 h-10 rounded-2xl bg-white dark:bg-[#35302A] shadow-sm flex items-center justify-center border border-black/5 dark:border-white/5 relative group/tool"
+                          className="w-10 h-10 rounded-2xl bg-[#E5E2DB] dark:bg-[#35302A] shadow-sm flex items-center justify-center border border-black/5 dark:border-white/5 relative group/tool"
                         >
                           <img
                             src={tool.image}

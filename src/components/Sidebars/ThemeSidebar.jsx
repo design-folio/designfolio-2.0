@@ -221,6 +221,7 @@ const ThemePanel = ({
   const [isDarkWallpapers, setIsDarkWallpapers] = useState(theme === 'dark' || theme === 1);
 
   const isMacOSTemplate = template === 4;
+  const isChatfolioTemplate = template === 1;
   const useThemeSwitchEffect = hasThemeSwitchEffect(template);
   const appearanceSwitchRefLayouts = useRef(null);
   const appearanceSwitchRefBackground = useRef(null);
@@ -583,6 +584,13 @@ const ThemePanel = ({
             </div>
           )}
 
+          {isChatfolioTemplate ? (
+            <div className="flex flex-col items-center justify-center py-10 px-4 text-center rounded-xl border border-dashed border-border bg-muted/20">
+              <p className="text-sm font-medium text-foreground/70 mb-1">No wallpaper for Chat theme</p>
+              <p className="text-xs text-muted-foreground">Chat theme uses a solid background colour. Switch templates to use wallpapers.</p>
+            </div>
+          ) : (
+          <>
           <AnimatePresence mode="wait">
             {wallpaper && wallpaper !== 0 && (
               <motion.div
@@ -791,6 +799,8 @@ const ThemePanel = ({
               );
             })}
           </div>
+          </>
+          )}
         </div>
       </TabsContent>
 

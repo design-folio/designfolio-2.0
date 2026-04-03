@@ -71,7 +71,7 @@ function ExperienceCard({
         </div>
       )}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 gap-2 sm:gap-0">
-        <h3 className="text-[18px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
+        <h3 className="text-base font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
           {role} @ {company}
         </h3>
         <div className="bg-[#F0EDE7] dark:bg-[#3A352E] px-3 py-1 rounded-full text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] w-fit whitespace-nowrap">
@@ -204,7 +204,7 @@ function CanvasCareerLadder({ isEditing }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 100, damping: 12, delay: 0.6 }}
       ref={careerLadderRef}
-      className="bg-white dark:bg-[#2A2520] rounded-[24px] border border-[#E5D7C4] dark:border-white/10 p-4 md:p-6 w-full mt-2 relative group/section"
+      className="bg-white dark:bg-[#2A2520] rounded-[24px] border border-[#E5D7C4] dark:border-white/10 p-4 md:p-6 w-full  relative group/section"
     >
       {isEditing && (
         <CanvasSectionControls>
@@ -218,7 +218,7 @@ function CanvasCareerLadder({ isEditing }) {
             <CanvasSectionButton
               icon={<Plus className="w-3.5 h-3.5" />}
               label="Add Experience"
-              onClick={() => openSidebar(sidebars.work)}
+              onClick={() => openSidebar(sidebars.work, "add")}
             />
           )}
           <SectionVisibilityButton
@@ -259,7 +259,7 @@ function CanvasCareerLadder({ isEditing }) {
           </p>
           {isEditing && (
             <Button
-              onClick={() => openSidebar(sidebars.work)}
+              onClick={() => openSidebar(sidebars.work, "add")}
               className="h-9 px-5 rounded-full text-[13px] font-medium bg-[#1A1A1A] dark:bg-white text-white dark:text-black hover:bg-black/80 dark:hover:bg-white/90 transition-colors shadow-sm flex items-center gap-2"
             >
               <Plus className="w-3.5 h-3.5" />
@@ -296,7 +296,7 @@ function CanvasCareerLadder({ isEditing }) {
           )}
 
           <div
-            className={`space-y-12 ${experiences.length !== 1 ? "pl-16" : ""} relative z-10 w-full pt-1 pb-2`}
+            className={`space-y-6 ${experiences.length !== 1 ? "pl-16" : ""} relative z-10 w-full pt-1 pb-2`}
           >
             {experiences.map((experience) => (
               <MemoizedExperienceCard

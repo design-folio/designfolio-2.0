@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronsUpDown, Pencil, Trash2 } from "lucide-react";
+import { ChevronsUpDown, Pencil, Plus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGlobalContext } from "@/context/globalContext";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
@@ -16,7 +16,11 @@ export default function ChatTestimonialsSection({
   canEdit,
   preview,
 }) {
-  const { userDetails, openSidebar, setSelectedReview } = useGlobalContext();
+  const {
+    userDetails,
+    openSidebar,
+    setSelectedReview,
+  } = useGlobalContext();
   const { reviews = [] } = userDetails || {};
   const avatarSrc = useMemo(
     () => getUserAvatarImage(userDetails),
@@ -62,7 +66,7 @@ export default function ChatTestimonialsSection({
                       show={chatRevealStep < s(15)}
                     />
                   </div>
-                  <div className="bg-white dark:bg-[#2A2520] px-4 py-3 rounded-2xl rounded-tl-sm rounded-bl-sm text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed transition-colors duration-400 border border-black/5 dark:border-white/5 min-h-[46px] flex items-center">
+                  <div className="bg-[#E5E2DB] dark:bg-[#2A2520] px-4 py-3 rounded-2xl rounded-tl-sm rounded-bl-sm text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed transition-colors duration-300 border border-black/5 dark:border-white/5 min-h-[46px] flex items-center">
                     {chatRevealStep === s(14) ? (
                       <TypingIndicator />
                     ) : (
@@ -71,107 +75,100 @@ export default function ChatTestimonialsSection({
                   </div>
                 </motion.div>
 
-                {/* Testimonial Card */}
-                {chatRevealStep >= s(15) && (
-                  <motion.div
-                    key="testimonial-card"
-                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    transition={{ duration: 0.3 }}
-                    className="flex gap-3 max-w-[85%] relative group/msg"
-                  >
-                    {canEdit && (
-                      <div className="absolute -left-0 top-1/2 -translate-y-1/2 z-40 transition-opacity flex gap-1.5 opacity-0 group-hover/msg:opacity-100">
-                        {reviews.length >= 2 && (
+                {/* All Review Cards */}
+                {chatRevealStep >= s(15) &&
+                  reviews.map((review, index) => (
+                    <motion.div
+                      key={review._id || index}
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      transition={{ duration: 0.3, delay: index * 0.15 }}
+                      className="flex gap-3 max-w-[85%] relative group/msg"
+                    >
+                      {canEdit && (
+                        <div className="absolute -left-0 top-1/2 -translate-y-1/2 z-40 transition-opacity flex gap-1.5 opacity-0 group-hover/msg:opacity-100">
+                          {reviews.length >= 2 && index === 0 && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                openSidebar(sidebars.sortReviews);
+                              }}
+                            >
+                              <ChevronsUpDown className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                            </Button>
+                          )}
                           <Button
                             variant="outline"
                             size="sm"
                             className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
                             onClick={(e) => {
                               e.stopPropagation();
-                              openSidebar(sidebars.sortReviews);
+                              setSelectedReview(review);
+                              openSidebar(sidebars.review);
                             }}
                           >
-                            <ChevronsUpDown className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                            <Pencil className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
                           </Button>
-                        )}
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (reviews[0]) {
-                              setSelectedReview(reviews[0]);
-                            }
-                            openSidebar(sidebars.review);
-                          }}
-                        >
-                          <Pencil className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-red-50 dark:hover:bg-red-950/30 hover:border-red-200 dark:hover:border-red-900/50 hover:text-red-600 dark:hover:text-red-400"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <Trash2 className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                        </Button>
-                      </div>
-                    )}
-                    <div className="w-8 h-8 shrink-0 mt-auto flex items-end">
-                      <ChatAvatar
-                        avatarSrc={avatarSrc}
-                        show={chatRevealStep < getNextLeftStep("reviews")}
-                      />
-                    </div>
-                    <div className="bg-white dark:bg-[#2A2520] p-4 rounded-2xl rounded-tl-sm rounded-bl-sm transition-colors duration-400 border border-black/5 dark:border-white/5 w-full">
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className="w-10 h-10 rounded-full overflow-hidden shrink-0">
-                          <img
-                            src={
-                              reviews[0]?.avatar?.url ||
-                              reviews[0]?.avatar ||
-                              ""
-                            }
-                            alt={reviews[0]?.name || "Reviewer"}
-                            className="w-full h-full object-cover bg-gray-200 dark:bg-gray-800"
-                            onError={(e) => {
-                              e.currentTarget.src =
-                                "https://i.pravatar.cc/150?u=a042581f4e29026704d";
-                            }}
-                          />
                         </div>
-                        <div className="flex flex-col">
-                          <span className="text-[#1A1A1A] dark:text-[#F0EDE7] font-medium text-[15px]">
-                            {reviews[0]?.name || "Anonymous"}
-                          </span>
-                          {reviews[0]?.designation && (
-                            <div className="flex items-center gap-1.5">
-                              <svg
-                                className="w-3.5 h-3.5 text-[#0077b5]"
-                                viewBox="0 0 24 24"
-                                fill="currentColor"
-                              >
-                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                              </svg>
-                              <span className="text-[#7A736C] dark:text-[#B5AFA5] text-[13px]">
-                                {reviews[0].designation}
-                              </span>
-                            </div>
-                          )}
-                        </div>
+                      )}
+                      <div className="w-8 h-8 shrink-0 mt-auto flex items-end">
+                        <ChatAvatar
+                          avatarSrc={avatarSrc}
+                          show={
+                            index === reviews.length - 1 &&
+                            chatRevealStep < getNextLeftStep("reviews")
+                          }
+                        />
                       </div>
-                      <p className="text-[#1A1A1A] dark:text-[#F0EDE7] text-[14px] leading-relaxed italic">
-                        {reviews[0]?.description
-                          ? `"${tiptapToDisplayString(reviews[0].description)}"`
-                          : ""}
-                      </p>
-                    </div>
-                  </motion.div>
-                )}
+                      <div className="bg-[#E5E2DB] dark:bg-[#2A2520] p-4 rounded-2xl rounded-tl-sm rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5 w-full">
+                        <div className="flex items-center gap-3 mb-3">
+                          <div className="w-10 h-10 rounded-full overflow-hidden shrink-0">
+                            <img
+                              src={
+                                review?.avatar?.url || review?.avatar || ""
+                              }
+                              alt={review?.name || "Reviewer"}
+                              className="w-full h-full object-cover bg-gray-200 dark:bg-gray-800"
+                              onError={(e) => {
+                                e.currentTarget.src =
+                                  "https://i.pravatar.cc/150?u=a042581f4e29026704d";
+                              }}
+                            />
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-[#1A1A1A] dark:text-[#F0EDE7] font-medium text-[15px]">
+                              {review?.name || "Anonymous"}
+                            </span>
+                            {review?.designation && (
+                              <div className="flex items-center gap-1.5">
+                                <svg
+                                  className="w-3.5 h-3.5 text-[#0077b5]"
+                                  viewBox="0 0 24 24"
+                                  fill="currentColor"
+                                >
+                                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                                </svg>
+                                <span className="text-[#7A736C] dark:text-[#B5AFA5] text-[13px]">
+                                  {review.designation}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <p className="text-[#1A1A1A] dark:text-[#F0EDE7] text-[14px] leading-relaxed italic">
+                          {review?.description
+                            ? `"${tiptapToDisplayString(review.description)}"`
+                            : ""}
+                        </p>
+                      </div>
+                    </motion.div>
+                  ))}
               </>
             ) : (
+              /* Empty state */
               <motion.div
                 key="testimonials-empty"
                 initial={{ opacity: 0, y: 10 }}
@@ -179,7 +176,7 @@ export default function ChatTestimonialsSection({
                 className="flex gap-3 max-w-[85%]"
               >
                 <div className="w-8 h-8 shrink-0" />
-                <div className="flex flex-col items-center justify-center w-full py-16 px-4 text-center rounded-2xl border border-dashed border-black/10 dark:border-white/10 bg-white dark:bg-[#2A2520]/50 backdrop-blur-sm">
+                <div className="flex flex-col items-center justify-center w-full py-16 px-4 text-center rounded-2xl border border-dashed border-black/10 dark:border-white/10 bg-[#E5E2DB] dark:bg-[#2A2520]/50 backdrop-blur-sm">
                   <div className="w-12 h-12 rounded-full bg-black/[0.03] dark:bg-white/[0.03] flex items-center justify-center mb-4">
                     <svg
                       className="w-6 h-6 text-[#7A736C] dark:text-[#9E9893]"
@@ -203,9 +200,10 @@ export default function ChatTestimonialsSection({
                   </p>
                   {canEdit && (
                     <Button
-                      onClick={() => openSidebar(sidebars.review)}
-                      className="h-9 px-4 rounded-full text-[13px] font-medium bg-[#1A1A1A] dark:bg-white text-white dark:text-black hover:bg-black/80 dark:hover:bg-white/90 transition-colors shadow-sm"
+                      onClick={() => openSidebar(sidebars.review, "add")}
+                      className="h-9 px-4 rounded-full text-[13px] font-medium bg-[#1A1A1A] dark:bg-white text-white dark:text-black hover:bg-black/80 dark:hover:bg-white/90 transition-colors shadow-sm flex items-center gap-2"
                     >
+                      <Plus className="w-3.5 h-3.5" />
                       Add Testimonial
                     </Button>
                   )}

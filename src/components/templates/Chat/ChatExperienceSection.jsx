@@ -114,7 +114,7 @@ export default function ChatExperienceSection({
                       show={chatRevealStep < getNextLeftStep("works")}
                     />
                   </div>
-                  <div className="bg-white dark:bg-[#2A2520] px-4 py-4 rounded-2xl rounded-tl-sm rounded-bl-sm transition-colors duration-400 border border-black/5 dark:border-white/5 w-full">
+                  <div className="bg-[#E5E2DB] dark:bg-[#2A2520] px-4 py-4 rounded-2xl rounded-tl-sm rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5 w-full">
                     {chatRevealStep === s(11) ? (
                       <TypingIndicator />
                     ) : (
@@ -221,7 +221,7 @@ export default function ChatExperienceSection({
                     </p>
                     {canEdit && (
                       <Button
-                        onClick={() => openSidebar(sidebars.work)}
+                        onClick={() => openSidebar(sidebars.work, "add")}
                         className="h-9 px-5 rounded-full text-[13px] font-medium bg-[#1A1A1A] dark:bg-white text-white dark:text-black hover:bg-black/80 dark:hover:bg-white/90 transition-colors shadow-sm flex items-center gap-2"
                       >
                         <Plus className="w-3.5 h-3.5" />

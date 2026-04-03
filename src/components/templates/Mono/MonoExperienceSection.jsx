@@ -59,8 +59,8 @@ export default function MonoExperienceSection({ isEditing }) {
 
   const handleOpenWorkSidebar = useCallback(
     (exp) => {
-      setSelectedWork?.(exp || null);
-      openSidebar?.(sidebars.work);
+      setSelectedWork(exp || null);
+      openSidebar(sidebars.work, exp ? undefined : "add");
     },
     [setSelectedWork, openSidebar],
   );

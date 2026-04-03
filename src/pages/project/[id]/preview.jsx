@@ -15,6 +15,7 @@ import MacOSWindowShell from "@/components/templates/MacOSDock/MacOSWindowShell"
 import MacOSTemplate from "@/components/comp/MacOSTemplate";
 import BuilderShell from "@/components/BuilderShell";
 import ProfessionalProjectInfo from "@/components/templates/Professional/ProfessionalProjectInfo";
+import ChatProjectView from "@/components/templates/Chat/ChatProjectView";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { modals } from "@/lib/constant";
@@ -145,6 +146,7 @@ export default function Index() {
   const template = userDetails.template;
   const isMacOS = template === TEMPLATE_IDS.RETRO_OS;
   const isProfessional = template === TEMPLATE_IDS.PROFESSIONAL;
+  const isChatfolio = template === TEMPLATE_IDS.CHATFOLIO;
   const projectTitle = projectDetails?.project?.title || "Project";
   const currentProject = projectDetails?.project;
 
@@ -221,7 +223,16 @@ export default function Index() {
         effects={wallpaperEffects}
       />
 
-      {isProfessional && currentProject ? (
+      {isChatfolio && currentProject ? (
+        <>
+          <ChatProjectView
+            project={currentProject}
+            ownerUser={userDetails}
+            onBack={() => router.push("/portfolio-preview")}
+          />
+          <BuilderShell hideCourseCard />
+        </>
+      ) : isProfessional && currentProject ? (
         <>
           <ProfessionalProjectInfo projectDetails={currentProject} userDetails={userDetails} />
           <BuilderShell hideCourseCard />

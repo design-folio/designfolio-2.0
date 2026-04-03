@@ -6,7 +6,7 @@ import Text from "../text";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import DeleteIcon from "../../../public/assets/svgs/deleteIcon.svg";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback, useLayoutEffect } from "react";
 import SimpleTiptapEditor from "../SimpleTiptapEditor";
 import { UnsavedChangesDialog } from "../ui/UnsavedChangesDialog";
 import { sidebars } from "@/lib/constant";
@@ -61,7 +61,8 @@ export default function AddWork() {
     pendingSidebarAction,
   } = useGlobalContext();
   const [loading, setLoading] = useState(false);
-  const [editingValues, setEditingValues] = useState(null);
+  /** Synced every Formik render (not in useEffect) so unsaved detection cannot lag behind typing */
+  const formValuesRef = useRef(null);
   const [showDeleteWarning, setShowDeleteWarning] = useState(false);
 
   const formikRef = useRef(null);
@@ -75,42 +76,42 @@ export default function AddWork() {
     return JSON.stringify(desc1) === JSON.stringify(desc2);
   };
 
-  const hasUnsavedChanges = () => {
-    if (!editingValues) return false;
+  const hasUnsavedChanges = useCallback(() => {
+    const v = formValuesRef.current;
+    if (!v) return false;
 
     // If creating a new work (selectedWork is null), check if any fields have values
     if (!selectedWork) {
       return !!(
-        editingValues.role ||
-        editingValues.company ||
-        editingValues.description ||
-        editingValues.startMonth ||
-        editingValues.startYear ||
-        editingValues.endMonth ||
-        editingValues.endYear ||
-        editingValues.currentlyWorking
+        v.role ||
+        v.company ||
+        v.description ||
+        v.startMonth ||
+        v.startYear ||
+        v.endMonth ||
+        v.endYear ||
+        v.currentlyWorking
       );
     }
 
-    // If editing existing work, compare with original values
     const originalEndMonth = selectedWork.currentlyWorking ? "" : (selectedWork.endMonth || "");
     const originalEndYear = selectedWork.currentlyWorking ? "" : (selectedWork.endYear || "");
 
     return (
-      editingValues.role !== (selectedWork.role || "") ||
-      editingValues.company !== (selectedWork.company || "") ||
-      !compareDescription(editingValues.description, selectedWork.description) ||
-      editingValues.startMonth !== (selectedWork.startMonth || "") ||
-      editingValues.startYear !== (selectedWork.startYear || "") ||
-      editingValues.endMonth !== originalEndMonth ||
-      editingValues.endYear !== originalEndYear ||
-      editingValues.currentlyWorking !== (selectedWork.currentlyWorking || false)
+      v.role !== (selectedWork.role || "") ||
+      v.company !== (selectedWork.company || "") ||
+      !compareDescription(v.description, selectedWork.description) ||
+      v.startMonth !== (selectedWork.startMonth || "") ||
+      v.startYear !== (selectedWork.startYear || "") ||
+      v.endMonth !== originalEndMonth ||
+      v.endYear !== originalEndYear ||
+      v.currentlyWorking !== (selectedWork.currentlyWorking || false)
     );
-  };
+  }, [selectedWork]);
 
   const resetState = () => {
     setSelectedWork(null);
-    setEditingValues(null);
+    formValuesRef.current = null;
     setShowDeleteWarning(false);
   };
 
@@ -139,15 +140,15 @@ export default function AddWork() {
     }
   }, [isOpen]);
 
-  // Register unsaved changes checker
-  useEffect(() => {
+  // Register before paint so a fast click to another sidebar still sees unsaved edits
+  useLayoutEffect(() => {
     if (isOpen) {
       registerUnsavedChangesChecker(sidebars.work, hasUnsavedChanges);
     }
     return () => {
       unregisterUnsavedChangesChecker(sidebars.work);
     };
-  }, [isOpen, editingValues, selectedWork, registerUnsavedChangesChecker, unregisterUnsavedChangesChecker]);
+  }, [isOpen, hasUnsavedChanges, registerUnsavedChangesChecker, unregisterUnsavedChangesChecker]);
 
   // Handle confirm discard from global context
   useEffect(() => {
@@ -248,50 +249,48 @@ export default function AddWork() {
       }}
     >
       {({ isSubmitting, errors, touched, values, setFieldValue }) => {
-        useEffect(() => {
-          setEditingValues(values);
-        }, [values]);
+        formValuesRef.current = values;
 
         return (
           <Form id="workForm" className="flex flex-col h-full">
             <div className="flex-1 overflow-auto px-6 py-4">
               <div>
                 <Text size={"p-xxsmall"} className="font-medium" required>
-                  Name of the Company
+                  Your Role
                 </Text>
-                <Field name="company">
+                <Field name="role">
                   {({ field }) => (
                     <Input
                       {...field}
-                      id="company"
+                      id="role"
                       type="text"
                       autoComplete="off"
-                      className={`mt-2 ${errors.company && touched.company ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                      className={`mt-2 ${errors.role && touched.role ? "border-destructive focus-visible:ring-destructive" : ""}`}
                     />
                   )}
                 </Field>
                 <ErrorMessage
-                  name="company"
+                  name="role"
                   component="div"
                   className="error-message"
                 />
               </div>
               <Text size={"p-xxsmall"} className="font-medium mt-4" required>
-                Your Role
+                Name of the Company
               </Text>
-              <Field name="role">
+              <Field name="company">
                 {({ field }) => (
                   <Input
                     {...field}
-                    id="role"
+                    id="company"
                     type="text"
                     autoComplete="off"
-                    className={`mt-2 ${errors.role && touched.role ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                    className={`mt-2 ${errors.company && touched.company ? "border-destructive focus-visible:ring-destructive" : ""}`}
                   />
                 )}
               </Field>
               <ErrorMessage
-                name="role"
+                name="company"
                 component="div"
                 className="error-message"
               />

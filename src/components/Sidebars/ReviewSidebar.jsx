@@ -7,7 +7,7 @@ import { Input } from "../ui/input";
 import CloseIcon from "../../../public/assets/svgs/close.svg";
 import Text from "../text";
 import DeleteIcon from "../../../public/assets/svgs/deleteIcon.svg";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback, useLayoutEffect } from "react";
 import SimpleTiptapEditor from "../SimpleTiptapEditor";
 import { UnsavedChangesDialog } from "../ui/UnsavedChangesDialog";
 import { sidebars } from "@/lib/constant";
@@ -35,7 +35,7 @@ export default function AddReview() {
   } = useGlobalContext();
 
   const [loading, setLoading] = useState(false);
-  const [editingValues, setEditingValues] = useState(null);
+  const formValuesRef = useRef(null);
   const [showDeleteWarning, setShowDeleteWarning] = useState(false);
 
   const formikRef = useRef(null);
@@ -78,33 +78,32 @@ export default function AddReview() {
     return JSON.stringify(desc1) === JSON.stringify(desc2);
   };
 
-  const hasUnsavedChanges = () => {
-    if (!editingValues) return false;
+  const hasUnsavedChanges = useCallback(() => {
+    const v = formValuesRef.current;
+    if (!v) return false;
 
-    // If creating a new review (selectedReview is null), check if any fields have values
     if (!selectedReview) {
       return !!(
-        editingValues.name ||
-        editingValues.company ||
-        editingValues.linkedinLink ||
-        editingValues.description ||
+        v.name ||
+        v.company ||
+        v.linkedinLink ||
+        v.description ||
         avatarFile !== null
       );
     }
 
-    // If editing existing review, compare with original values
     return (
-      editingValues.name !== selectedReview.name ||
-      editingValues.company !== selectedReview.company ||
-      editingValues.linkedinLink !== (selectedReview.linkedinLink || "") ||
-      !compareDescription(editingValues.description, selectedReview.description) ||
+      v.name !== selectedReview.name ||
+      v.company !== selectedReview.company ||
+      v.linkedinLink !== (selectedReview.linkedinLink || "") ||
+      !compareDescription(v.description, selectedReview.description) ||
       avatarFile !== null
     );
-  };
+  }, [selectedReview, avatarFile]);
 
   const resetState = () => {
     setSelectedReview(null);
-    setEditingValues(null);
+    formValuesRef.current = null;
     setAvatarPreview(null);
     setAvatarFile(null);
     setShowDeleteWarning(false);
@@ -135,15 +134,14 @@ export default function AddReview() {
     }
   }, [isOpen]);
 
-  // Register unsaved changes checker
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (isOpen) {
       registerUnsavedChangesChecker(sidebars.review, hasUnsavedChanges);
     }
     return () => {
       unregisterUnsavedChangesChecker(sidebars.review);
     };
-  }, [isOpen, editingValues, selectedReview, avatarFile, registerUnsavedChangesChecker, unregisterUnsavedChangesChecker]);
+  }, [isOpen, hasUnsavedChanges, registerUnsavedChangesChecker, unregisterUnsavedChangesChecker]);
 
   const handleDelete = () => {
     setShowDeleteWarning(true);
@@ -230,9 +228,7 @@ export default function AddReview() {
       }}
     >
       {({ isSubmitting, errors, touched, values, setFieldValue }) => {
-        useEffect(() => {
-          setEditingValues(values);
-        }, [values]);
+        formValuesRef.current = values;
 
         return (
           <Form id="reviewForm" className="flex flex-col h-full">

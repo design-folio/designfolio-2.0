@@ -277,6 +277,7 @@ export const GlobalProvider = ({ children }) => {
 
   // Compute wallpaper URL centrally - handles object and primitive values
   const wallpaperUrl = useMemo(() => {
+    if (template === 1) return null; // Chat theme uses solid bg — no wallpaper. Remove this line to re-enable.
     const wp = wallpaper;
     const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
     const currentTheme = resolvedTheme || theme;
@@ -638,24 +639,34 @@ export const GlobalProvider = ({ children }) => {
     return checker ? checker() : false;
   };
 
-  // Open sidebar with unsaved changes check
-  const openSidebar = (sidebarType) => {
-    // If trying to open the same sidebar, do nothing
-    if (activeSidebar === sidebarType) return;
+   // Open sidebar with unsaved changes check.
+  // Pass intent "add" when opening work/review/project for a new item so entity selection
+  // is cleared (needed when the sidebar is already open, or when only openSidebar() is used).
+  const openSidebar = (sidebarType, intent) => {
+    const clearEntityForAdd = () => {
+      if (intent !== "add") return;
+      if (sidebarType === sidebars.work) setSelectedWork(null);
+      else if (sidebarType === sidebars.review) setSelectedReview(null);
+      else if (sidebarType === sidebars.project) setSelectedProject(null);
+    };
 
-    // If another sidebar is open, check for unsaved changes
+    if (activeSidebar === sidebarType) {
+      setPopoverMenu(null);
+      clearEntityForAdd();
+      return;
+    }
+
     if (activeSidebar) {
       const hasChanges = hasUnsavedChanges();
       if (hasChanges) {
-        // Show warning and store the pending action
         setIsSwitchingSidebar(true);
         setShowUnsavedWarning(true);
-        setPendingSidebarAction({ type: "open", sidebarType });
+        setPendingSidebarAction({ type: "open", sidebarType, intent });
         return;
       }
     }
 
-    // No unsaved changes or no active sidebar, proceed to open
+    clearEntityForAdd();
     setActiveSidebar(sidebarType);
     setPopoverMenu(null);
   };
@@ -676,6 +687,11 @@ export const GlobalProvider = ({ children }) => {
 
     // No unsaved changes or forced, proceed to close
     setActiveSidebar(null);
+    // Entity selection must reset whenever the panel closes. Work/Review sidebars unmount
+    // immediately when activeSidebar becomes null, so their local reset effects may not run.
+    setSelectedWork(null);
+    setSelectedReview(null);
+    setSelectedProject(null);
   };
 
   // Handle unsaved changes dialog confirmation
@@ -685,12 +701,20 @@ export const GlobalProvider = ({ children }) => {
 
     if (pendingSidebarAction) {
       if (pendingSidebarAction.type === "open") {
-        // Close current sidebar and open new one
-        setActiveSidebar(pendingSidebarAction.sidebarType);
+        const { sidebarType, intent } = pendingSidebarAction;
+        if (intent === "add") {
+          if (sidebarType === sidebars.work) setSelectedWork(null);
+          else if (sidebarType === sidebars.review) setSelectedReview(null);
+          else if (sidebarType === sidebars.project) setSelectedProject(null);
+        }
+        setActiveSidebar(sidebarType);
         setPopoverMenu(null);
       } else if (pendingSidebarAction.type === "close") {
         // Close current sidebar
         setActiveSidebar(null);
+        setSelectedWork(null);
+        setSelectedReview(null);
+        setSelectedProject(null);
       }
       setPendingSidebarAction(null);
     }

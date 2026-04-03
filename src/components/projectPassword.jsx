@@ -22,7 +22,7 @@ export default function ProjectPassword({
 }) {
   const [showEye, setShowEye] = useState(false);
   const router = useRouter();
-
+  const displayName = projectDetails?.firstName && projectDetails?.lastName ? `${projectDetails?.firstName} ${projectDetails?.lastName}` : projectDetails?.name;
   return (
     <div className="px-4 max-w-[500px] m-auto">
       <div className="flex justify-center">
@@ -37,22 +37,30 @@ export default function ProjectPassword({
       </h1>
 
       <p className="text-[16px] text-center mt-1 lg:w-[480px] m-auto md:text-[16px] mb-4 text-[#B4B8C6] font-[400] leading-[24px] dark:text-[#B4B8C6]">
-        By {`${projectDetails?.firstName} ${projectDetails?.lastName}`}
+        By {displayName}
       </p>
       <div>
         <Formik
           initialValues={{ password: "" }}
           validationSchema={validationSchema}
-          onSubmit={(values, actions) => {
+          onSubmit={async (values, actions) => {
+            actions.setStatus(null);
             _getProjectDetails(id, status, { password: values.password })
               .then((res) => {
                 setProjectDetails(res?.data);
                 setIsProtected(res?.data?.isProtected);
               })
+              .catch((error) => {
+                const message =
+                  error?.response?.data?.error ||
+                  "Incorrect password. Please try again.";
+                actions.setFieldError("password", message);
+                actions.setStatus(message);
+              })
               .finally(() => actions.setSubmitting(false));
           }}
         >
-          {({ errors, touched, isSubmitting }) => (
+          {({ errors, touched, isSubmitting, status }) => (
             <Form id="projectForm" autoComplete="off">
               <div className="relative">
                 <div className="absolute top-[24px] left-4 rounded-[8px] border-[#E9EAEB] dark:border-[#2C2F39] cursor-pointer">
@@ -62,11 +70,10 @@ export default function ProjectPassword({
                   name="password"
                   type={showEye ? "text" : "password"}
                   // className="text-input mt-2 dark:bg-[#1D1F27] dark:border-[#363A48] !pl-[50px]"
-                  className={`text-input mt-2 !pl-[46px] ${
-                    errors.password &&
+                  className={`text-input mt-2 !pl-[46px] ${errors.password &&
                     touched.password &&
                     "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                  }`}
+                    }`}
                   placeholder="Enter password"
                   autocomplete="new-password"
                 />
@@ -86,6 +93,9 @@ export default function ProjectPassword({
                 component="div"
                 className="error-message"
               />
+              {status && (
+                <div className="error-message text-center mt-1">{status}</div>
+              )}
 
               <div className="flex gap-2 justify-center mt-6">
                 <Button

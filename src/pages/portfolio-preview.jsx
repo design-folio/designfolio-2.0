@@ -60,7 +60,7 @@ export default function Index() {
                 variant="outline"
                 className="bg-white dark:bg-[#2A2520] rounded-full hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors border border-[#E5D7C4] dark:border-white/10"
                 size="sm"
-                onClick={() => router.back()}
+                onClick={() => router.push("/builder")}
               >
                 <ArrowLeft className="w-4 h-4" />
                 Exit Preview
@@ -71,20 +71,20 @@ export default function Index() {
         );
       case TEMPLATE_IDS.CHATFOLIO:
         return (
-          <>
-            <div className="max-w-[848px] mx-auto w-full pt-6 pb-2 px-4 md:px-0">
+          <div className="min-h-screen bg-[#F0EDE7] dark:bg-[#1A1A1A] transition-colors duration-700 flex flex-col items-center">
+            <div className="w-full max-w-[640px] pt-6 pb-2 px-4">
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => router.back()}
-                className="rounded-full bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A] border border-border"
+                onClick={() => router.push("/builder")}
+                className="rounded-full bg-[#E5E2DB] dark:bg-[#2A2520] hover:bg-[#DEDAD3] dark:hover:bg-[#35302A] border border-black/10 dark:border-white/10 text-[#1A1A1A] dark:text-[#F0EDE7]"
               >
                 <ArrowLeft className="w-4 h-4" />
                 Exit Preview
               </Button>
             </div>
             <Chat preview />
-          </>
+          </div>
         );
       case TEMPLATE_IDS.SPOTLIGHT:
         return (
@@ -92,7 +92,7 @@ export default function Index() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => router.back()}
+                onClick={() => router.push("/builder")}
               className="mt-8"
             >
               <ArrowLeft className="w-4 h-4" />
@@ -109,7 +109,7 @@ export default function Index() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => router.back()}
+                onClick={() => router.push("/builder")}
                 className="rounded-full bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A] border border-[#D5D0C6] dark:border-white/10"
               >
                 <ArrowLeft className="w-4 h-4" />
@@ -126,7 +126,7 @@ export default function Index() {
             <div className="w-full sticky top-0 z-[100] border-b border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] flex justify-center">
               <div className="w-full max-w-[640px] px-4 py-2 flex items-center">
                 <button
-                  onClick={() => router.back()}
+                  onClick={() => router.push("/builder")}
                   className="flex items-center gap-2 font-jetbrains text-[13px] uppercase tracking-wide text-[#1A1A1A] dark:text-[#B5AFA5] hover:text-[#E37941] transition-colors"
                 >
                   <ArrowLeft className="w-4 h-4" />
@@ -150,7 +150,7 @@ export default function Index() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => router.back()}
+              onClick={() => router.push("/builder")}
               className="absolute top-4 left-8"
             >
               <ArrowLeft className="w-4 h-4" />
@@ -182,7 +182,8 @@ export default function Index() {
     template === TEMPLATE_IDS.MONO ||
     template === TEMPLATE_IDS.RETRO_OS ||
     template === TEMPLATE_IDS.CANVAS ||
-    template === TEMPLATE_IDS.PROFESSIONAL;
+    template === TEMPLATE_IDS.PROFESSIONAL ||
+    template === TEMPLATE_IDS.CHATFOLIO;
 
   return (
     <>

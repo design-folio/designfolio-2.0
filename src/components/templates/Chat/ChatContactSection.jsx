@@ -91,7 +91,7 @@ export default function ChatContactSection({
                 show={chatRevealStep < s(21)}
               />
             </div>
-            <div className="bg-white dark:bg-[#2A2520] p-4 rounded-2xl rounded-tl-sm rounded-bl-sm transition-colors duration-400 border border-black/5 dark:border-white/5 w-full">
+            <div className="bg-[#E5E2DB] dark:bg-[#2A2520] p-4 rounded-2xl rounded-tl-sm rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5 w-full">
               {chatRevealStep === s(20) ? (
                 <TypingIndicator />
               ) : email || phone ? (
@@ -219,7 +219,7 @@ export default function ChatContactSection({
                 <div className="w-8 h-8 shrink-0 mt-auto flex items-end">
                   <ChatAvatar avatarSrc={avatarSrc} />
                 </div>
-                <div className="bg-white dark:bg-[#2A2520] p-4 rounded-2xl rounded-tl-sm rounded-bl-sm transition-colors duration-400 border border-black/5 dark:border-white/5 w-full">
+                <div className="bg-[#E5E2DB] dark:bg-[#2A2520] p-4 rounded-2xl rounded-tl-sm rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5 w-full">
                   {hasLinks ? (
                     <div className="space-y-3">
                       <p className="text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px]">

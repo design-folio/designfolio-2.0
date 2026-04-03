@@ -333,7 +333,16 @@ export default function Navbar() {
           transition: "transform 0.3s ease-out, right 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       >
-        <nav className={cn("bg-card border border-border rounded-full shadow-sm pointer-events-auto w-full", template === TEMPLATE_IDS.CANVAS ? "max-w-[720px]" : TEMPLATE_IDS.SPOTLIGHT ? "max-w-[848px]" : "max-w-[640px]")}>
+        <nav
+          className={cn(
+            "bg-card border border-border rounded-full shadow-sm pointer-events-auto w-full",
+            template === TEMPLATE_IDS.SPOTLIGHT
+              ? "max-w-[848px]"
+              : template === TEMPLATE_IDS.CANVAS
+                ? "max-w-[720px]"
+                : "max-w-[640px]"
+          )}
+        >
           {navContent}
         </nav>
       </div>

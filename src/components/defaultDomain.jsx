@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import * as Yup from "yup";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { _checkUsername, _updateUsername } from "@/network/post-request";
@@ -20,9 +20,10 @@ const DomainValidationSchema = Yup.object().shape({
 });
 
 export default function DefaultDomain() {
-  const [isAvailable, setIsAvailable] = useState(false);
+  const [isAvailable, setIsAvailable] = useState(true);
   const [domainValue, setDomainValue] = useState("");
   const { userDetails, setUserDetails } = useGlobalContext();
+  const debounceRef = useRef(null);
 
   const handleClaim = () => {
     _updateUsername({ username: domainValue }).then(() => {
@@ -31,33 +32,35 @@ export default function DefaultDomain() {
     });
   };
 
-  const debounce = (func, delay) => {
-    let inDebounce;
-    return function () {
-      const context = this;
-      const args = arguments;
-      clearTimeout(inDebounce);
-      inDebounce = setTimeout(() => func.apply(context, args), delay);
-    };
-  };
+  const checkUsername = useCallback((value) => {
+    if (value === userDetails?.username) {
+      setIsAvailable(true);
+      return;
+    }
 
-  const checkUsername = (value) => {
     if (value.length !== 0) {
       _checkUsername({ username: value })
         .then((response) => {
           setIsAvailable(response?.data?.available ?? false);
         })
         .catch((error) => console.error(error));
+    } else {
+      setIsAvailable(true);
     }
-  };
+  }, [userDetails?.username]);
 
-  const debouncedCheckUsername = useCallback(debounce(checkUsername, 200), []);
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, []);
 
   const handleChange = (e, setFieldValue) => {
     const { value, name } = e.target;
     setFieldValue(name, value);
     setDomainValue(value);
-    debouncedCheckUsername(value);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => checkUsername(value), 200);
   };
 
   const formatedValue = formatTimestamp(userDetails?.latestPublishDate);
@@ -101,7 +104,12 @@ export default function DefaultDomain() {
                       placeholder="your-name"
                       autoComplete="off"
                       className={`pr-44 ${
-                        (errors.domain && values.domain) || (!isAvailable && values.domain)
+                        (touched.domain && !!errors.domain) ||
+                        (touched.domain &&
+                          values.domain &&
+                          values.domain !== userDetails?.username &&
+                          !errors.domain &&
+                          !isAvailable)
                           ? "border-destructive focus-visible:ring-destructive"
                           : ""
                       }`}

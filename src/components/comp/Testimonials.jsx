@@ -333,7 +333,7 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
           <AddItem
             className="bg-card shadow-df-section-card-shadow flex-1"
             title="Add your testimonial"
-            onClick={() => openSidebar(sidebars.review)}
+            onClick={() => openSidebar(sidebars.review, "add")}
             iconLeft={
               reviews?.length > 0 ? (
                 <Button2
@@ -341,7 +341,7 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
                   icon={
                     <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
                   }
-                  onClick={() => openSidebar(sidebars.review)}
+                  onClick={() => openSidebar(sidebars.review, "add")}
                   size="small"
                   text
                 />
@@ -356,7 +356,7 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
                   icon={
                     <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
                   }
-                  onClick={() => openSidebar(sidebars.review)}
+                  onClick={() => openSidebar(sidebars.review, "add")}
                   size="small"
                 />
               ) : (

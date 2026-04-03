@@ -2,9 +2,10 @@ import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 import { useGlobalContext } from "@/context/globalContext";
-import { Upload, X, FileText } from "lucide-react";
-import { _updateUser } from "@/network/post-request";
+import { Upload, FileText, Trash2 } from "lucide-react";
+import { _updateUser, _deleteResume } from "@/network/post-request";
 import { FooterValidationSchema } from "@/lib/validationSchemas";
 import Text from "../text";
 import { Formik, Form, Field, ErrorMessage } from "formik";
@@ -16,10 +17,12 @@ const FooterSettingsPanel = () => {
     userDetails,
     updateCache,
     setUserDetails,
+    userDetailsRefecth,
   } = useGlobalContext();
 
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingResume, setIsUploadingResume] = useState(false);
+  const [isRemovingResume, setIsRemovingResume] = useState(false);
   const [uploadedResume, setUploadedResume] = useState(null); // { name: string, size: string } | null
   const resumeInputRef = useRef(null);
 
@@ -39,6 +42,22 @@ const FooterSettingsPanel = () => {
 
   const handleResumeUpload = () => {
     resumeInputRef.current?.click?.();
+  };
+
+  const handleRemoveResume = async (e) => {
+    e?.preventDefault?.();
+    e?.stopPropagation?.();
+    setIsRemovingResume(true);
+    try {
+      await _deleteResume();
+      await userDetailsRefecth();
+      toast.success("Resume removed");
+    } catch (error) {
+      console.error("Error removing resume:", error);
+      toast.error("Failed to remove resume");
+    } finally {
+      setIsRemovingResume(false);
+    }
   };
 
   const handleResumeFileChange = async (event) => {
@@ -154,10 +173,10 @@ const FooterSettingsPanel = () => {
       >
         {({ isSubmitting, errors, touched, values }) => (
           <Form id="footerForm" className="flex flex-col h-full">
-            <div className="flex-1 overflow-auto p-6 space-y-8">
+            <div className="flex-1 overflow-auto p-6 flex flex-col gap-8">
               {/* Resume Section */}
-              <div className="space-y-4">
-                <Label className="text-xs font-semibold uppercase tracking-wider text-foreground-landing/40 px-1">
+              <div className="flex flex-col gap-3">
+                <Label className="px-1 text-xs font-semibold uppercase tracking-wider text-foreground-landing/40">
                   Resume
                 </Label>
                 <input
@@ -168,58 +187,106 @@ const FooterSettingsPanel = () => {
                   onChange={handleResumeFileChange}
                 />
                 <div
-                  className={`p-8 rounded-[2rem] border-2 transition-all duration-300 group cursor-pointer ${
+                  role="button"
+                  tabIndex={0}
+                  aria-label={
                     uploadedResume
-                      ? "border-df-orange-color/20 bg-df-orange-color/[0.02]"
-                      : "border-border/40 bg-card hover-elevate"
-                  }`}
+                      ? `Resume: ${uploadedResume.name}`
+                      : "Upload resume PDF"
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      handleResumeUpload();
+                    }
+                  }}
+                  className={cn(
+                    "group/resume relative rounded-2xl border p-8 pt-10 outline-none transition-[border-color,box-shadow,background-color] duration-200",
+                    "cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                    uploadedResume
+                      ? [
+                          "border-border bg-card shadow-sm",
+                          "ring-1 ring-border/80",
+                          "hover:border-primary/35 hover:bg-accent/25 hover:shadow-md hover:ring-primary/20",
+                        ]
+                      : [
+                          "border-dashed border-border/90 bg-card/60",
+                          "hover:border-muted-foreground/35 hover:bg-accent/20 hover:shadow-sm",
+                        ],
+                  )}
                   onClick={handleResumeUpload}
                 >
-                  <div className="flex flex-col items-center gap-4 text-center">
-                    <div
-                      className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-colors ${
-                        uploadedResume ? "bg-df-orange-color/10" : "bg-muted/30"
-                      }`}
-                    >
-                      {uploadedResume ? (
-                        <FileText className="w-7 h-7 text-df-orange-color" />
-                      ) : (
-                        <Upload className="w-7 h-7 text-foreground-landing/30 group-hover:text-df-orange-color transition-colors" />
-                      )}
-                    </div>
-                    <div>
-                      <h4 className="text-base font-semibold text-foreground-landing">
-                        {uploadedResume ? uploadedResume.name : "Update Resume"}
-                      </h4>
-                      {uploadedResume?.size ? (
-                        <p className="text-sm text-foreground-landing/40 mt-1 font-medium">
-                          Size: {uploadedResume.size}
-                        </p>
-                      ) : !uploadedResume ? (
-                        <p className="text-sm text-foreground-landing/40 mt-1 font-medium">
-                          PDF format only • Max 5MB
-                        </p>
-                      ) : null}
-                    </div>
+                  {uploadedResume ? (
                     <Button
-                      variant="outline"
-                      size="lg"
-                      className="w-full rounded-full h-12 border-2 border-border/50 bg-card hover:bg-accent font-semibold"
+                      variant="ghost"
+                      size="icon"
                       type="button"
-                      disabled={isUploadingResume}
+                      className="absolute right-2 top-2 z-10 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                      disabled={isUploadingResume || isRemovingResume}
+                      aria-label={
+                        isRemovingResume ? "Removing resume" : "Delete resume"
+                      }
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        handleResumeUpload();
+                        handleRemoveResume(e);
                       }}
                     >
-                      <Upload className="w-4 h-4" />
-                      {isUploadingResume
-                        ? "Uploading..."
-                        : uploadedResume
-                          ? "Change File"
-                          : "Choose File"}
+                      <Trash2 />
                     </Button>
+                  ) : null}
+                  <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/[0.04] via-transparent to-transparent opacity-0 transition-opacity duration-200 group-hover/resume:opacity-100" />
+                  <div className="relative flex flex-col items-center gap-4 text-center">
+                    <div
+                      className={cn(
+                        "flex size-14 shrink-0 items-center justify-center rounded-2xl transition-colors duration-200",
+                        uploadedResume
+                          ? "bg-primary/10 text-primary"
+                          : "bg-muted text-muted-foreground group-hover/resume:bg-accent group-hover/resume:text-foreground",
+                      )}
+                    >
+                      {uploadedResume ? (
+                        <FileText className="size-7" aria-hidden />
+                      ) : (
+                        <Upload className="size-7 transition-colors" aria-hidden />
+                      )}
+                    </div>
+                    <div className="min-w-0 w-full">
+                      <h4 className="truncate px-1 text-base font-semibold text-foreground">
+                        {uploadedResume
+                          ? uploadedResume.name
+                          : "Resume (optional)"}
+                      </h4>
+                      {uploadedResume?.size ? (
+                        <p className="mt-1 text-sm text-muted-foreground">
+                          {uploadedResume.size}
+                        </p>
+                      ) : null}
+                    </div>
+                    <div
+                      className="w-full"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Button
+                        variant="outline"
+                        size="lg"
+                        className="h-12 w-full rounded-full border-border bg-background font-semibold shadow-xs hover:bg-accent"
+                        type="button"
+                        disabled={isUploadingResume || isRemovingResume}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleResumeUpload();
+                        }}
+                      >
+                        <Upload data-icon="inline-start" />
+                        {isUploadingResume
+                          ? "Uploading..."
+                          : uploadedResume
+                            ? "Replace"
+                            : "Choose file"}
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>

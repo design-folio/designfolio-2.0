@@ -180,8 +180,8 @@ export default function MonoReviewsSection({ isEditing }) {
 
   const handleOpenReviewSidebar = useCallback(
     (review) => {
-      if (review) setSelectedReview?.(review.raw || review);
-      openSidebar?.(sidebars.review);
+      setSelectedReview(review ? review.raw || review : null);
+      openSidebar(sidebars.review, review ? undefined : "add");
     },
     [openSidebar, setSelectedReview],
   );

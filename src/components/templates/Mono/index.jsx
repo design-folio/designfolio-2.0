@@ -1014,7 +1014,9 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
         initial="hidden"
         animate="visible"
       >
-        {!isEditing && <SmoothCursor type="minimal" />}
+        {/* {!isEditing && <SmoothCursor type="minimal" />}
+         */}
+         <SmoothCursor type="minimal" />
         {/* Header Section */}
         <motion.div
           variants={itemVariants}

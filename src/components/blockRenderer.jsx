@@ -163,7 +163,7 @@ const BreakLineBlock = ({ data }) => {
   return <br />;
 };
 
-const BlockRenderer = ({ editorJsData }) => {
+const BlockRenderer = ({ editorJsData, className }) => {
   const renderers = useMemo(
     () => ({
       list: (data) => (
@@ -218,7 +218,7 @@ const BlockRenderer = ({ editorJsData }) => {
   );
 
   return (
-    <div className="bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words project-editor">
+    <div className={cn("bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words project-editor", className)}>
       <Blocks
         data={editorJsData}
         config={{

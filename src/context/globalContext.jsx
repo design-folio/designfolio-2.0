@@ -277,6 +277,7 @@ export const GlobalProvider = ({ children }) => {
 
   // Compute wallpaper URL centrally - handles object and primitive values
   const wallpaperUrl = useMemo(() => {
+    if (template === 1) return null; // Chat theme uses solid bg — no wallpaper. Remove this line to re-enable.
     const wp = wallpaper;
     const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
     const currentTheme = resolvedTheme || theme;

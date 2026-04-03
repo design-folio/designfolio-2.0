@@ -305,7 +305,9 @@ export default function Index() {
         <main
           className={cn(
             "min-h-screen",
-            hasNoWallpaper(wallpaper, template) &&
+            t === 1
+              ? "bg-[#F0EDE7] dark:bg-[#1A1A1A] flex justify-center transition-colors duration-700"
+              : hasNoWallpaper(wallpaper, template) &&
               "bg-background flex justify-center font-inter text-foreground selection:bg-foreground selection:text-background transition-colors duration-700",
           )}
         >
@@ -313,7 +315,9 @@ export default function Index() {
             className={cn(
               "mx-auto w-full",
 
-              t === 2 || t === 5
+              t === 1
+                ? "py-[94px]"
+                : t === 2 || t === 5
                 ? "pt-24"
                 : [
                     t !== 4 && "px-2 md:px-4 lg:px-0",

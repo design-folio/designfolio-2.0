@@ -23,6 +23,7 @@ import { TEMPLATE_IDS, TEMPLATES_BY_ID } from "@/lib/templates";
 import CanvasProjectCta from "@/components/templates/Canvas/CanvasProjectCta";
 import MonoProjectFooter from "@/components/templates/Mono/MonoProjectFooter";
 import ProfessionalProjectInfo from "@/components/templates/Professional/ProfessionalProjectInfo";
+import ChatProjectView from "@/components/templates/Chat/ChatProjectView";
 
 export default function Index({
   data,
@@ -131,6 +132,7 @@ export default function Index({
   const isCanvas = effectiveTemplate === TEMPLATE_IDS.CANVAS;
   const isMono = effectiveTemplate === TEMPLATE_IDS.MONO;
   const isProfessional = effectiveTemplate === TEMPLATE_IDS.PROFESSIONAL;
+  const isChatfolio = effectiveTemplate === TEMPLATE_IDS.CHATFOLIO;
 
   // Set data-template on <html> so template-scoped CSS (canvas.css, mono.css etc.) works on the public page
   useEffect(() => {
@@ -159,7 +161,8 @@ export default function Index({
   // Compute wallpaper URL for this project
   const currentTheme =
     resolvedTheme || theme || (project?.theme == 1 ? "dark" : "light");
-  const wallpaperUrl = getWallpaperUrl(wpValue ?? 0, currentTheme, effectiveTemplate);
+  // Chat template uses solid bg — no wallpaper. Remove the isChatfolio check to re-enable.
+  const wallpaperUrl = isChatfolio ? null : getWallpaperUrl(wpValue ?? 0, currentTheme, effectiveTemplate);
 
   // Get wallpaper effects from project → owner → userDetails
   const effects =
@@ -212,7 +215,7 @@ export default function Index({
                     }
                   }}
                   setProjectDetails={(newData) => {
-                    setUnlockedProjectData(newData);
+                    if (newData?.project) setUnlockedProjectData(newData);
                   }}
                 />
               </motion.div>
@@ -255,7 +258,13 @@ export default function Index({
       />
       <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={effects} />
 
-      {isProfessional && !isProtected && project ? (
+      {isChatfolio && !isProtected && project ? (
+        <ChatProjectView
+          project={project}
+          ownerUser={ownerUser}
+          onBack={() => router.back()}
+        />
+      ) : isProfessional && !isProtected && project ? (
         <ProfessionalProjectInfo projectDetails={project} userDetails={ownerUser} />
       ) : isMacOS ? (
         <>

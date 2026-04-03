@@ -30,6 +30,7 @@ import { ChevronLeft } from "lucide-react";
 import { TEMPLATE_IDS } from "@/lib/templates";
 import CanvasProjectInfo from "@/components/templates/Canvas/CanvasProjectInfo";
 import ProfessionalProjectInfo from "@/components/templates/Professional/ProfessionalProjectInfo";
+import ChatProjectView from "@/components/templates/Chat/ChatProjectView";
 export default function ProjectInfo({
   projectDetails,
   userDetails,
@@ -65,6 +66,7 @@ export default function ProjectInfo({
   const activeTemplate = ownerTemplate ?? userDetails?.template;
   const isMacOS = activeTemplate === TEMPLATE_IDS.RETRO_OS;
   const isCanvas = activeTemplate === TEMPLATE_IDS.CANVAS;
+  const isChatfolio = activeTemplate === TEMPLATE_IDS.CHATFOLIO;
   const isMono = activeTemplate === TEMPLATE_IDS.MONO;
   const isProfessional = activeTemplate === TEMPLATE_IDS.PROFESSIONAL;
   // Use the project's own _id when available (e.g. when rendered inside a
@@ -221,6 +223,18 @@ export default function ProjectInfo({
         userDetails={userDetails}
         edit={edit}
         ownerTemplate={ownerTemplate}
+      />
+    );
+  }
+
+  // ─── Chatfolio (template 1) layout ────────────────────────────────────────
+  if (isChatfolio) {
+    return (
+      <ChatProjectView
+        project={projectDetails}
+        ownerUser={userDetails}
+        onBack={handleBack}
+        edit={edit}
       />
     );
   }

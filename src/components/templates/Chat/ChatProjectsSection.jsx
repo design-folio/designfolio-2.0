@@ -87,7 +87,7 @@ export default function ChatProjectsSection({
                   show={chatRevealStep < s(8)}
                 />
               </div>
-              <div className="bg-white dark:bg-[#2A2520] px-4 py-3 rounded-2xl rounded-tl-sm rounded-bl-sm text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed transition-colors duration-400 border border-black/5 dark:border-white/5 min-h-[46px] flex items-center">
+              <div className="bg-[#E5E2DB] dark:bg-[#2A2520] px-4 py-3 rounded-2xl rounded-tl-sm rounded-bl-sm text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed transition-colors duration-300 border border-black/5 dark:border-white/5 min-h-[46px] flex items-center">
                 {chatRevealStep === s(7) ? (
                   <TypingIndicator />
                 ) : (
@@ -106,7 +106,7 @@ export default function ChatProjectsSection({
               initial={{ opacity: 0, y: 10, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.3, delay: index * 0.2 }}
-              className="flex gap-3 max-w-[72%] relative group/msg"
+              className="flex gap-3 max-w-[85%] relative group/msg"
             >
               <div className="w-8 h-8 shrink-0 mt-auto flex items-end">
                 {index === visibleProjects.length - 1 &&
@@ -114,22 +114,10 @@ export default function ChatProjectsSection({
                     <ChatAvatar avatarSrc={avatarSrc} />
                   )}
               </div>
-              <div className="flex flex-col w-full min-w-0">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="144"
-                  height="19"
-                  fill="none"
-                  className="text-white dark:text-[#2A2520] relative z-10 -mb-[1px] "
-                >
-                  <path
-                    fill="currentColor"
-                    d="M0 18.868c0-9.941 8.059-18 18-18h75.054a51 51 0 0 1 20.928 4.492L144 18.868z"
-                  ></path>
-                </svg>
+              <div className="w-full min-w-0">
                 <div
                   onClick={() => router.push(getProjectHref(project._id))}
-                  className="bg-white dark:bg-[#2A2520] p-3 rounded-2xl rounded-tl-none rounded-bl-sm transition-colors duration-400 border border-black/5 dark:border-white/5 border-t-0 w-full cursor-pointer group/proj relative"
+                  className="bg-[#E5E2DB] dark:bg-[#2A2520] p-3 rounded-2xl rounded-tl-sm rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5 w-full cursor-pointer hover:shadow-md hover:scale-[1.01] transform group/proj relative"
                 >
                   {/* Actions — inside card, top-right */}
                   {canEdit && (
@@ -169,7 +157,7 @@ export default function ChatProjectsSection({
                     </div>
                   )}
 
-                  <div className="w-full aspect-[2/1] rounded-xl overflow-hidden mb-3 relative bg-[#D5D0C6] dark:bg-[#1A1A1A]">
+                  <div className="w-full aspect-[4/3] rounded-xl overflow-hidden mb-3 relative bg-[#D5D0C6] dark:bg-[#1A1A1A]">
                     <img
                       src={project?.thumbnail?.url}
                       alt={project?.title || "project"}

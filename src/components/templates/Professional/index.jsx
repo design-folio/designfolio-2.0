@@ -321,7 +321,9 @@ export default function Professional({
 
   return (
     <div className="w-full flex-1 flex flex-col gap-3 max-w-[640px] mx-auto relative min-h-screen font-inter transition-colors duration-700 bg-[#EFECE6] dark:bg-[#1A1A1A] custom-solid-x">
-      {!isEditing && <SmoothCursor type="professional" />}
+      {/* {!isEditing && <SmoothCursor type="professional" />}
+       */}
+      <SmoothCursor type="professional" />
       <div className="w-full flex-1 flex flex-col pt-12 overflow-hidden">
         <ProfessionalProfileHeader
           isEditing={isEditing}

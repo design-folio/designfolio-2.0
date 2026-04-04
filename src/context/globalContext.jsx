@@ -163,7 +163,14 @@ export const GlobalProvider = ({ children }) => {
 
       // Template 4 (macOS) is always light mode
       const isTemplate4 = userData?.template === 4;
-      setTheme(isTemplate4 ? "light" : (userData?.theme == 1 ? "dark" : "light"));
+      if (isTemplate4) {
+        setTheme("light");
+      } else if (userData?.theme != null) {
+        // Only override theme if user has an explicit preference saved on their account.
+        // For new users (theme === null), preserve whatever was in localStorage
+        // (e.g. the theme they chose on the landing page before signing up).
+        setTheme(userData.theme == 1 ? "dark" : "light");
+      }
       setCursor(userData?.cursor ? userData?.cursor : 0);
       setTemplate(userData?.template ? userData?.template : 0);
 

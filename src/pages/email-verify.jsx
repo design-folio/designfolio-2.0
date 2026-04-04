@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 export default function Index() {
   const router = useRouter();
   return (
-    <div className="bg-background-landing min-h-screen overflow-hidden">
+    <div className="min-h-screen overflow-hidden" style={{ background: "var(--lp-bg)" }}>
       <Seo
         title={"Designfolio - Build your Design Portfolio Website super Fast"}
         description={
@@ -24,8 +24,6 @@ export default function Index() {
     </div>
   );
 }
-
-Index.theme = "light";
 
 export const getServerSideProps = async (context) => {
   const dfToken = context.req.cookies["df-token"] || null;

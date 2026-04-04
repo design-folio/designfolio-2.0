@@ -16,3 +16,6 @@
 @import "./templates/professional.css";
 @import "./templates/chatfolio.css";
 @import "./templates/spotlight.css";
+
+/* Landing + auth + legal pages */
+@import "./templates/landing.css";

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/router";
-import { Button } from "./ui/buttonNew";
+import { Button } from "@/components/ui/button";
 import Stepper from "./Stepper";
 import ErrorBanner from "./ErrorBanner";
 import SectionTitle from "./SectionTitle";

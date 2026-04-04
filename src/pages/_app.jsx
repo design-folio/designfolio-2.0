@@ -8,12 +8,15 @@ import {
   Cedarville_Cursive,
   Pixelify_Sans,
   JetBrains_Mono,
+  Manrope,
+  Caveat,
 } from "next/font/google";
 import Header from "@/components/header";
 import { useEffect } from "react";
+import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import App from "next/app";
-import { ThemeProvider, useTheme } from "next-themes";
+import { ThemeProvider } from "next-themes";
 import { GlobalProvider } from "@/context/globalContext";
 // import queryClient from "@/network/queryClient";
 import { GoogleOAuthProvider } from "@react-oauth/google";
@@ -32,6 +35,18 @@ import { usePostHogEvent } from "@/hooks/usePostHogEvent";
 import { POSTHOG_EVENT_NAMES } from "@/lib/posthogEventNames";
 import { DM_Mono } from "next/font/google";
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+
+const manrope = Manrope({
+  subsets: ["latin"],
+  variable: "--font-manrope",
+  weight: ["400", "500", "600", "700"],
+});
+
+const caveat = Caveat({
+  subsets: ["latin"],
+  variable: "--font-caveat",
+  weight: ["400", "500", "600", "700"],
+});
 
 const dmMono = DM_Mono({
   subsets: ["latin"],
@@ -174,9 +189,34 @@ const eudoxus = localFont({
   variable: "--font-eudoxus",
 });
 
+const LANDING_PAGES = new Set([
+  "/",
+  "/login",
+  "/signup",
+  "/claim-link",
+  "/email-verify",
+  "/privacy-policy",
+  "/terms-and-conditions",
+  "/refund-policy",
+  "/forgot-password",
+  "/reset-password",
+  "/oldlanding2",
+]);
+
 function MyApp({ Component, pageProps, dfToken, hideHeader }) {
-  const { theme } = useTheme();
   const phEvent = usePostHogEvent();
+  const router = useRouter();
+
+  // Stamp data-page="landing" on <html> for landing/auth/legal pages
+  // so landing.css token overrides take effect.
+  useEffect(() => {
+    const isLanding = LANDING_PAGES.has(router.pathname);
+    if (isLanding) {
+      document.documentElement.dataset.page = "landing";
+    } else {
+      delete document.documentElement.dataset.page;
+    }
+  }, [router.pathname]);
 
   useEffect(() => {
     const sessionCount = Number(localStorage.getItem("session_count") || "0");
@@ -221,8 +261,9 @@ function MyApp({ Component, pageProps, dfToken, hideHeader }) {
             <ThemeProvider
               enableSystem={false}
               attribute="data-theme"
+              defaultTheme="light"
+              themes={["light", "dark"]}
               forcedTheme={Component.theme || null}
-              themes={theme}
             >
               <style jsx global>{`
                 :root {
@@ -234,7 +275,7 @@ function MyApp({ Component, pageProps, dfToken, hideHeader }) {
                   <CursorTooltipProvider>
                     <CursorPill />
                     <main
-                      className={`${satoshi.variable} ${sfpro.variable} ${inter.variable} ${kalam.variable} ${gsans.variable} ${eudoxus.variable} ${dmMono.variable} ${cedarvilleCursive.variable} ${pixelifySans.variable} ${jetbrainsMono.variable}`}
+                      className={`${satoshi.variable} ${sfpro.variable} ${inter.variable} ${kalam.variable} ${gsans.variable} ${eudoxus.variable} ${dmMono.variable} ${cedarvilleCursive.variable} ${pixelifySans.variable} ${jetbrainsMono.variable} ${manrope.variable} ${caveat.variable}`}
                     >
                       {
                         <Header

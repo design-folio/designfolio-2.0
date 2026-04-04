@@ -1,0 +1,64 @@
+/* ─── Landing Page Specific Styles ─── */
+
+/* Shimmer animation for hero "Fastest" word */
+@keyframes shimmer-text {
+  0% {
+    background-position: 100% center;
+  }
+  100% {
+    background-position: 0% center;
+  }
+}
+
+/* Speed slider – custom range input thumb */
+.speed-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: currentColor;
+  border: 2px solid currentColor;
+  box-shadow: 0 0 0 1px rgba(29, 27, 26, 0.2);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+.speed-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: currentColor;
+  border: 2px solid currentColor;
+  box-shadow: 0 0 0 1px rgba(29, 27, 26, 0.2);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+.speed-slider:hover::-webkit-slider-thumb,
+.speed-slider:focus::-webkit-slider-thumb {
+  transform: scale(1.2);
+}
+.speed-slider:hover::-moz-range-thumb,
+.speed-slider:focus::-moz-range-thumb {
+  transform: scale(1.2);
+}
+.speed-slider::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 9999px;
+}
+.speed-slider::-moz-range-track {
+  height: 4px;
+  border-radius: 9999px;
+}
+
+/* View transition clip-path for theme ripple */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+  z-index: 1;
+}
+::view-transition-new(root) {
+  z-index: 9999;
+}

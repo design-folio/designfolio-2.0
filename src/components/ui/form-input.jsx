@@ -26,9 +26,9 @@ export function FormInput({
                 {required && <span className="text-red-500">*</span>}
             </Label>
             <div
-                className={`bg-white dark:bg-white border-2 rounded-full transition-all duration-300 ease-out ${hasError
+                className={`bg-[--input-bg-color] border-2 rounded-full transition-all duration-300 ease-out ${hasError
                         ? "border-red-500 shadow-[0_0_0_4px_rgba(239,68,68,0.12)]"
-                        : "border-border hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)]"
+                        : "border-border hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--ring)/0.15)]"
                     } ${className}`}
             >
                 <Field
@@ -37,7 +37,7 @@ export function FormInput({
                     name={name}
                     type={type}
                     placeholder={placeholder}
-                    className="border-0 bg-transparent h-11 px-4 focus-visible:ring-0 focus-visible:ring-offset-0 text-base text-foreground placeholder:text-base placeholder:text-muted-foreground/60"
+                    className="border-0 bg-transparent dark:bg-transparent h-11 px-4 focus-visible:ring-0 focus-visible:ring-offset-0 text-base text-foreground placeholder:text-base placeholder:text-muted-foreground/60"
                     {...props}
                 />
             </div>

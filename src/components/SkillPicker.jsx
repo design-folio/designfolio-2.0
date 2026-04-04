@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Input } from "@/components/ui/input-new";
+import { Input } from "@/components/ui/input";
 import { Check, Search, Loader2 } from "lucide-react";
 import ErrorBanner from "./ErrorBanner";
 
@@ -13,7 +13,7 @@ export default function SkillsPicker({ skills, selected, onToggle, onAdd, search
         <>
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }} className="mb-4 md:mb-6">
 
-                <div className="relative bg-input-bg-color border-2 border-border rounded-full hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] transition-all duration-300 ease-out">
+                <div className="relative bg-input border-2 border-input rounded-full hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--ring)/0.15)] transition-all duration-300 ease-out">
                     <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
                         <Search className="w-4 h-4 text-muted-foreground/60" />
                     </div>
@@ -22,7 +22,7 @@ export default function SkillsPicker({ skills, selected, onToggle, onAdd, search
                         placeholder="Search skills..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className="border-0 bg-transparent h-11 pl-11 pr-12 focus-visible:ring-0 focus-visible:ring-offset-0 text-base text-foreground placeholder:text-base placeholder:text-muted-foreground/60"
+                        className="border-0 bg-transparent dark:bg-transparent h-11 pl-11 pr-12 focus-visible:ring-0 focus-visible:ring-offset-0 text-base text-foreground placeholder:text-base placeholder:text-muted-foreground/60"
                         data-testid="input-skills-search"
                     />
                     {loading && (
@@ -54,7 +54,7 @@ export default function SkillsPicker({ skills, selected, onToggle, onAdd, search
                                         className="px-5 py-2.5 rounded-full border-2 text-sm font-medium transition-all hover-elevate relative cursor-pointer flex items-center gap-2"
                                         style={
                                             isSelected
-                                                ? { backgroundColor: "#FFF5F0", borderColor: "#FF553E", color: "#FF553E" }
+                                                ? { backgroundColor: "var(--onboarding-selected-bg)", borderColor: "#FF553E", color: "#FF553E" }
                                                 : { backgroundColor: "transparent", borderColor: "hsl(var(--border))", color: "hsl(var(--foreground))" }
                                         }
                                         data-testid={`button-interest-${interest.toLowerCase().replace(/\s+/g, "-")}`}

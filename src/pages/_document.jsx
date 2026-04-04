@@ -4,7 +4,7 @@ export default function Document() {
   const isProduction = process.env.NODE_ENV === "production";
 
   return (
-    <Html lang="en">
+    <Html lang="en" suppressHydrationWarning>
       <Head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

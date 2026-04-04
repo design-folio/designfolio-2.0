@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Input } from "@/components/ui/input-new";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Check, } from "lucide-react";
 import ErrorBanner from "./ErrorBanner";
@@ -31,7 +31,7 @@ export default function RoleGrid({ roles, selectedRole, onSelect, customRole, se
                                 className="px-4 py-3 rounded-2xl border-2 text-sm font-medium transition-all hover-elevate text-left flex items-center md:gap-3 gap-2 relative overflow-hidden"
                                 style={
                                     isSelected
-                                        ? { backgroundColor: "#FFF5F0", borderColor: "#FF553E", color: "#FF553E" }
+                                        ? { backgroundColor: "var(--onboarding-selected-bg)", borderColor: "#FF553E", color: "#FF553E" }
                                         : { backgroundColor: "transparent", borderColor: "hsl(var(--border))", color: "hsl(var(--foreground))" }
                                 }
                                 data-testid={`button-role-${role.label.toLowerCase().replace(/[\s\/]/g, "-")}`}
@@ -63,14 +63,14 @@ export default function RoleGrid({ roles, selectedRole, onSelect, customRole, se
                         <Label htmlFor="custom-role" className="text-sm font-medium text-foreground">
                             Your Role
                         </Label>
-                        <div className="bg-input-bg-color border-2 border-border rounded-full hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] transition-all duration-300 ease-out">
+                        <div className="bg-[--input-bg-color] border-2 border-border rounded-full hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--ring)/0.15)] transition-all duration-300 ease-out">
                             <Input
                                 id="custom-role"
                                 type="text"
                                 placeholder="Tell us your role..."
                                 value={customRole}
                                 onChange={(e) => setCustomRole(e.target.value)}
-                                className="border-0 bg-transparent h-11 px-4 focus-visible:ring-0 focus-visible:ring-offset-0 text-base text-foreground placeholder:text-base placeholder:text-muted-foreground/60"
+                                className="border-0 bg-transparent dark:bg-transparent h-11 px-4 focus-visible:ring-0 focus-visible:ring-offset-0 text-base text-foreground placeholder:text-base placeholder:text-muted-foreground/60"
                                 data-testid="input-custom-role"
                             />
                         </div>

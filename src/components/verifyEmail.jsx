@@ -8,6 +8,7 @@ import { AuthLayout } from "@/components/ui/auth-layout";
 import { FormInput } from "@/components/ui/form-input";
 import { FormButton } from "@/components/ui/form-button";
 import Cookies from "js-cookie";
+import { setToken } from "@/lib/cooikeManager";
 import { useGlobalContext } from "@/context/globalContext";
 import * as Yup from "yup";
 
@@ -74,7 +75,9 @@ export default function VerifyEmail() {
     function handleVerifyEmail(data) {
         setLoading(true);
         _verifyEmail(data)
-            .then(() => {
+            .then((res) => {
+                const token = res?.data?.token;
+                if (token) setToken(token);
                 userDetailsRefecth();
                 router.replace("/builder");
                 setLoading(false);

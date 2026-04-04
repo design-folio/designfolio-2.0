@@ -1,5 +1,18 @@
 :root {
-  /* landing page */
+  /* new landing page (--lp-*) */
+  --lp-bg: #fffef2;
+  --lp-card: #f4f3e5;
+  --lp-border: #eae9e4;
+  --lp-text: #1d1b1a;
+  --lp-text-muted: rgba(29, 27, 26, 0.5);
+  --lp-text-faint: rgba(29, 27, 26, 0.4);
+  --lp-accent: #e54d2e;
+  --lp-accent-hover: #ff553e;
+  --lp-fg-white: #fdfcf8;
+  --lp-video-border: #e2e1da;
+  --onboarding-selected-bg: #fff5f0;
+
+  /* landing page (legacy) */
   --landing-bg-color: #fafaf7;
   --landing-header-bg-color: "transparent";
   --landng-header-border-color: #e8ecf2;
@@ -235,6 +248,17 @@
 
 /* dark mode start*/
 [data-theme="dark"] {
+  /* new landing page dark overrides */
+  --lp-bg: #1a1a18;
+  --lp-card: #1e1e1b;
+  --lp-border: rgba(255, 255, 255, 0.1);
+  --lp-text: #f0ede7;
+  --lp-text-muted: rgba(240, 237, 231, 0.5);
+  --lp-text-faint: rgba(240, 237, 231, 0.4);
+  --lp-fg-white: #1d1b1a;
+  --lp-video-border: rgba(255, 255, 255, 0.1);
+  --onboarding-selected-bg: rgba(255, 85, 62, 0.12);
+
   /* Buttons */
   --primary-btn-bg-color: #262832;
   --primary-btn-text-color: #f9f9fb;

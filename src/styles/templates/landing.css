@@ -1,0 +1,95 @@
+/* Landing + auth + legal pages — shadcn token overrides */
+/* Applied when <html data-page="landing"> via _app.jsx    */
+/* Mirrors the --lp-* brand tokens set in colors.css       */
+
+[data-page="landing"] {
+  /* Page surface */
+  --background: var(--lp-bg);
+  --foreground: var(--lp-text);
+
+  /* Card (auth-layout Card, modal surfaces) */
+  --card: #ffffff;
+  --card-foreground: var(--lp-text);
+
+  /* Popover */
+  --popover: #ffffff;
+  --popover-foreground: var(--lp-text);
+
+  /* Input surface — pill wrapper bg */
+  --input-bg-color: #ffffff;
+
+  /* Borders — must be HSL triplets so Tailwind's hsl(var(--border)) works */
+  --border: 48 12% 91%;       /* ≈ #eae9e4, matches --lp-border in light */
+  --input-border-color: var(--lp-border);
+  --button-outline: var(--lp-border);
+
+  /* Muted surface (onboarding bg, hover states) */
+  /* HSL triplets required — Tailwind uses hsl(var(--muted)) */
+  --muted: 56 41% 93%;            /* ≈ #f4f3e5 (--lp-card light) */
+  /* HSL triplets required — Tailwind uses hsl(var(--muted-foreground) / <alpha>) */
+  --muted-foreground: 20 5% 11%;
+
+  /* Accent (hover bg on buttons, selected chips bg) */
+  --accent: var(--lp-card);
+  --accent-foreground: var(--lp-text);
+
+  /* Primary button → lp-text / lp-fg-white */
+  --primary: var(--lp-text);
+  --primary-foreground: var(--lp-fg-white);
+  --primary-hover: var(--lp-accent-hover);
+
+  /* Secondary button */
+  --secondary: transparent;
+  --secondary-foreground: var(--lp-text);
+  --secondary-border: var(--lp-border);
+  --secondary-border-hover: var(--lp-text);
+
+  /* Focus ring */
+  --ring: var(--lp-accent);
+}
+
+[data-theme="dark"][data-page="landing"] {
+  /* Page surface */
+  --background: var(--lp-bg);      /* #1a1a18 */
+  --foreground: var(--lp-text);    /* #f0ede7 */
+
+  /* Card */
+  --card: #1e1e1b;
+  --card-foreground: var(--lp-text);
+
+  /* Popover */
+  --popover: #1e1e1b;
+  --popover-foreground: var(--lp-text);
+
+  /* Input surface — slightly lighter than card to show depth */
+  --input-bg-color: #252520;
+
+  /* Borders — must be HSL triplets so Tailwind's hsl(var(--border)) works */
+  --border: 0 0% 22%;         /* ≈ solid equivalent of rgba(255,255,255,0.1) on dark bg */
+  --input-border-color: var(--lp-border);
+  --button-outline: var(--lp-border);
+
+  /* Muted */
+  /* HSL triplets required — Tailwind uses hsl(var(--muted)) */
+  --muted: 60 5% 11%;             /* ≈ #1e1e1b (--lp-card dark) */
+  /* HSL triplets required — Tailwind uses hsl(var(--muted-foreground) / <alpha>) */
+  --muted-foreground: 40 24% 92%;
+
+  /* Accent */
+  --accent: #252520;
+  --accent-foreground: var(--lp-text);
+
+  /* Primary button */
+  --primary: var(--lp-text);
+  --primary-foreground: var(--lp-fg-white);
+  --primary-hover: var(--lp-accent-hover);
+
+  /* Secondary button */
+  --secondary: transparent;
+  --secondary-foreground: var(--lp-text);
+  --secondary-border: var(--lp-border);
+  --secondary-border-hover: rgba(255, 255, 255, 0.25);
+
+  /* Focus ring */
+  --ring: var(--lp-accent);
+}

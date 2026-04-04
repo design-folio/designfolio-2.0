@@ -7,7 +7,7 @@ export function Divider({ text = "OR" }) {
                 <span className="w-full border-t border-border" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white px-3 text-muted-foreground font-medium">
+                <span className="bg-card px-3 text-muted-foreground font-medium">
                     {text}
                 </span>
             </div>

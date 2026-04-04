@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { Check } from "lucide-react";
-import { FormButton } from "./ui/form-button";
+import { Button } from "@/components/ui/button";
 import { DomainValidationSchema } from "@/lib/validationSchemas";
 
 
@@ -106,7 +106,7 @@ export default function ClaimLink() {
             <Label htmlFor="domain" className="text-sm font-medium text-foreground">
               Your Domain
             </Label>
-            <div className="flex items-center bg-white dark:bg-white border-2 border-border rounded-full hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] transition-all duration-300 ease-out overflow-hidden">
+            <div className="flex items-center bg-[--input-bg-color] border-2 border-border rounded-full hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--ring)/0.15)] transition-colors duration-300 ease-out overflow-hidden">
               <Input
                 id="domain"
                 type="text"
@@ -114,7 +114,7 @@ export default function ClaimLink() {
                 value={domain}
                 onChange={handleDomainChange}
                 required
-                className="border-0 bg-transparent h-11 px-4 focus-visible:ring-0 focus-visible:ring-offset-0 text-base text-foreground placeholder:text-base placeholder:text-muted-foreground/60 flex-1"
+                className="border-0 bg-transparent dark:bg-transparent h-11 px-4 focus-visible:ring-0 focus-visible:ring-offset-0 text-base text-foreground placeholder:text-base placeholder:text-muted-foreground/60 flex-1"
                 data-testid="input-domain"
               />
               <div className="flex items-center gap-2 pr-4">
@@ -202,13 +202,15 @@ export default function ClaimLink() {
 
 
 
-          <FormButton
+          <Button
+            variant="darker"
             type="submit"
-            disabled={!domain.trim() || !isAvailable || loading || validationError}
+            className="w-full rounded-full h-11 px-6 text-base font-semibold no-default-hover-elevate no-default-active-elevate transition-colors"
+            disabled={!domain.trim() || !isAvailable || loading || !!validationError}
             data-testid="button-claim-domain"
           >
             Continue
-          </FormButton>
+          </Button>
 
           <p className="text-center text-sm text-foreground/70 mt-6">
             Already have an account?{" "}

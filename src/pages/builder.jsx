@@ -36,6 +36,7 @@ import AiToolsWorkspace from "@/components/AiToolsWorkspace";
 import AppSidebar from "@/components/Sidebars";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { getSidebarShiftWidth } from "@/lib/constant";
+import { TEMPLATE_IDS } from "@/lib/templates";
 import Canvas from "@/components/templates/Canvas";
 import Mono from "@/components/templates/Mono";
 import Chat from "@/components/templates/Chat";
@@ -289,7 +290,7 @@ export default function Index() {
     );
   }
 
-  const t = userDetails?.template;
+  const t = userDetails?.template ?? TEMPLATE_IDS.CANVAS;
 
   return (
     <SidebarProvider {...sidebarProviderProps}>
@@ -297,7 +298,7 @@ export default function Index() {
         <WallpaperBackground
           wallpaperUrl={wallpaperUrl}
           effects={
-            userDetails?.template === 4
+            t === TEMPLATE_IDS.RETRO_OS
               ? { ...(wallpaperEffects || {}), motion: false }
               : wallpaperEffects
           }
@@ -305,7 +306,7 @@ export default function Index() {
         <main
           className={cn(
             "min-h-screen",
-            t === 1
+            t === TEMPLATE_IDS.CHATFOLIO
               ? "bg-[#F0EDE7] dark:bg-[#1A1A1A] flex justify-center transition-colors duration-700"
               : hasNoWallpaper(wallpaper, template) &&
               "bg-background flex justify-center font-inter text-foreground selection:bg-foreground selection:text-background transition-colors duration-700",
@@ -314,22 +315,19 @@ export default function Index() {
           <div
             className={cn(
               "mx-auto w-full",
-
-              t === 1
+              t === TEMPLATE_IDS.CHATFOLIO
                 ? "py-[94px]"
-                : t === 2 || t === 5
+                : t === TEMPLATE_IDS.SPOTLIGHT || t === TEMPLATE_IDS.PROFESSIONAL
                   ? "pt-24"
-                  : [
-                    t !== 4 && "px-2 md:px-4 lg:px-0",
-                    t === 3 || t === 0
-                      ? "pt-24 pb-0"
-                      : t !== 4 && "py-[94px] md:py-[124px]",
-                    t !== 3 && t !== 4 && "max-w-[848px]",
-                  ],
+                  : t === TEMPLATE_IDS.RETRO_OS
+                    ? ""
+                    : "px-2 md:px-4 lg:px-0 pt-24 pb-0 max-w-[848px]",
             )}
           >
             {/* //HACK: Allow all templates to be free except professional*/}
-            {userDetails && !userDetails?.pro && t === 4 && <ProWarning />}
+            {userDetails && !userDetails?.pro && t === TEMPLATE_IDS.RETRO_OS && (
+              <ProWarning />
+            )}
             {userDetails && (
               <>
                 {isLoadingTemplate ? (
@@ -341,7 +339,7 @@ export default function Index() {
                 )}
               </>
             )}
-            {userDetails && taskPercentage !== 100 && !template === 4 && (
+            {userDetails && taskPercentage !== 100 && template !== 4 && (
               <BottomTask />
             )}
           </div>

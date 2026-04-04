@@ -19,7 +19,7 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         tertiary:
           "bg-tertiary text-tertiary-foreground hover:bg-tertiary-hover border-tertiary hover:border-tertiary-border-hover",
-        darker: "bg-foreground-landing text-background-landing hover:bg-foreground-landing/90"
+        darker: "bg-[--lp-text] text-[--lp-fg-white] hover:bg-[--lp-accent-hover] transition-colors duration-300"
       },
       size: {
         default: "h-9 px-4 py-2",

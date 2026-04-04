@@ -19,6 +19,7 @@ import { useGlobalContext } from "@/context/globalContext";
 import { sidebars } from "@/lib/constant";
 import { SectionVisibilityButton } from "@/components/section";
 import SimpleTiptapRenderer from "@/components/SimpleTiptapRenderer";
+import { MonoRearrangeButton } from "./MonoRearrangeButton";
 
 function getInitials(name, fallback = "U") {
   if (!name || typeof name !== "string") return fallback;
@@ -157,7 +158,7 @@ function ReviewCard({ rec, isEditing, onEdit, onDelete }) {
 }
 
 export default function MonoReviewsSection({ isEditing }) {
-  const { userDetails, openSidebar, setSelectedReview } = useGlobalContext();
+  const { userDetails, openSidebar, openNewReview, setSelectedReview } = useGlobalContext();
 
   const mappedRecommendations = useMemo(
     () =>
@@ -180,10 +181,14 @@ export default function MonoReviewsSection({ isEditing }) {
 
   const handleOpenReviewSidebar = useCallback(
     (review) => {
-      setSelectedReview(review ? review.raw || review : null);
-      openSidebar(sidebars.review, review ? undefined : "add");
+      if (review) {
+        setSelectedReview(review.raw || review);
+        openSidebar(sidebars.review);
+      } else {
+        openNewReview();
+      }
     },
-    [openSidebar, setSelectedReview],
+    [openSidebar, openNewReview, setSelectedReview],
   );
 
   const handleDelete = useCallback((id) => {
@@ -197,14 +202,11 @@ export default function MonoReviewsSection({ isEditing }) {
       {isEditing && (
         <div className="absolute top-4 right-4 transition-opacity z-10 flex gap-2">
           {recommendations.length >= 2 && (
-            <Button
-              variant="outline"
-              size="sm"
+            <MonoRearrangeButton
               onClick={() => openSidebar?.(sidebars.sortReviews)}
-              className="h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors opacity-100 md:opacity-0 md:group-hover/section:opacity-100"
-            >
-              <ChevronsUpDown className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-            </Button>
+              title="Rearrange recommendations"
+              tooltipText="Rearrange"
+            />
           )}
           <Button
             variant="outline"

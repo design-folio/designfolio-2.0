@@ -51,12 +51,16 @@ export function FluidDropdown() {
   const dropdownRef = React.useRef(null);
   const router = useRouter();
 
-  const selectedCategory = React.useMemo(
-    () =>
-      categories.find((c) => router.asPath.startsWith(c.navigation)) ??
-      categories[0],
-    [router.asPath],
-  );
+  const selectedCategory = React.useMemo(() => {
+    const asPath = router.asPath;
+    // Longer paths first so `/builder?view=ai-tools&...` matches AI tools, not bare `/builder`.
+    const bySpecificity = [...categories].sort(
+      (a, b) => b.navigation.length - a.navigation.length,
+    );
+    return (
+      bySpecificity.find((c) => asPath.startsWith(c.navigation)) ?? categories[0]
+    );
+  }, [router.asPath]);
 
   useClickAway(dropdownRef, () => setIsOpen(false));
 

@@ -37,6 +37,8 @@ const MacOSTemplate = ({
   const {
     setCursor,
     openSidebar,
+    openNewWork,
+    openNewReview,
     openModal,
     setSelectedReview,
     setSelectedWork,
@@ -127,7 +129,7 @@ const MacOSTemplate = ({
   };
 
   const handleAddReview = () => {
-    openSidebar(sidebars.review, "add");
+    openNewReview();
   };
 
   const handleWidgetEditClick = () => {
@@ -155,7 +157,7 @@ const MacOSTemplate = ({
   };
 
   const handleAddWork = () => {
-    openSidebar(sidebars.work, "add");
+    openNewWork();
     setShowWorkSortModal(false);
   };
 

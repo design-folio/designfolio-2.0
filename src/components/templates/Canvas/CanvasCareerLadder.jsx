@@ -136,7 +136,7 @@ function ExperienceCard({
 const MemoizedExperienceCard = React.memo(ExperienceCard);
 
 function CanvasCareerLadder({ isEditing }) {
-  const { userDetails, openSidebar } = useGlobalContext();
+  const { userDetails, openSidebar, openNewWork } = useGlobalContext();
   const { experiences = [] } = userDetails || {};
 
   const careerLadderRef = useRef(null);
@@ -211,6 +211,7 @@ function CanvasCareerLadder({ isEditing }) {
           {experiences.length >= 2 && (
             <CanvasSectionButton
               icon={<ChevronsUpDown className="w-3.5 h-3.5" />}
+              tooltipText="Rearrange"
               onClick={() => openSidebar(sidebars.sortWorks)}
             />
           )}
@@ -218,7 +219,7 @@ function CanvasCareerLadder({ isEditing }) {
             <CanvasSectionButton
               icon={<Plus className="w-3.5 h-3.5" />}
               label="Add Experience"
-              onClick={() => openSidebar(sidebars.work, "add")}
+              onClick={() => openNewWork()}
             />
           )}
           <SectionVisibilityButton
@@ -259,7 +260,7 @@ function CanvasCareerLadder({ isEditing }) {
           </p>
           {isEditing && (
             <Button
-              onClick={() => openSidebar(sidebars.work, "add")}
+              onClick={() => openNewWork()}
               className="h-9 px-5 rounded-full text-[13px] font-medium bg-[#1A1A1A] dark:bg-white text-white dark:text-black hover:bg-black/80 dark:hover:bg-white/90 transition-colors shadow-sm flex items-center gap-2"
             >
               <Plus className="w-3.5 h-3.5" />

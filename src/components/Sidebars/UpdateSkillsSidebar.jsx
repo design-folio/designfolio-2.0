@@ -8,6 +8,8 @@ import { _updateUser } from "@/network/post-request";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { cn } from "@/lib/utils";
+import { UnsavedChangesDialog } from "../ui/UnsavedChangesDialog";
+import { sidebars } from "@/lib/constant";
 
 function toOptionString(x) {
   if (!x) return "";
@@ -18,7 +20,22 @@ function toOptionString(x) {
 }
 
 export default function UpdateSkillsSidebar() {
-  const { userDetails, setUserDetails, updateCache, closeSidebar } = useGlobalContext();
+  const {
+    userDetails,
+    setUserDetails,
+    updateCache,
+    closeSidebar,
+    activeSidebar,
+    registerUnsavedChangesChecker,
+    unregisterUnsavedChangesChecker,
+    showUnsavedWarning,
+    handleConfirmDiscardSidebar,
+    handleCancelDiscardSidebar,
+    isSwitchingSidebar,
+    pendingSidebarAction,
+  } = useGlobalContext();
+
+  const isOpen = activeSidebar === sidebars.skills;
 
   const personaId = userDetails?.persona?.value || "";
 
@@ -34,6 +51,24 @@ export default function UpdateSkillsSidebar() {
   const [search, setSearch] = useState("");
   const [saving, setSaving] = useState(false);
 
+  const initialLabels = (userDetails?.skills || []).map((s) => s.label);
+
+  const hasUnsavedChanges = () => {
+    const initial = JSON.stringify(initialLabels.slice().sort());
+    const current = JSON.stringify(selectedLabels.slice().sort());
+    return initial !== current;
+  };
+
+  useEffect(() => {
+    if (isOpen) registerUnsavedChangesChecker(sidebars.skills, hasUnsavedChanges);
+    return () => unregisterUnsavedChangesChecker(sidebars.skills);
+  }, [isOpen, selectedLabels]);
+
+  // Reset search when sidebar closes
+  useEffect(() => {
+    if (!isOpen) setSearch("");
+  }, [isOpen]);
+
   // Debounced search term for the query key
   const [debouncedSearch, setDebouncedSearch] = useState("");
   useEffect(() => {
@@ -46,20 +81,18 @@ export default function UpdateSkillsSidebar() {
 
   const { data: fetchedSkills = [], isFetching: skillsLoading } = useQuery({
     queryKey,
-    queryFn: () =>
-      _getSkills(debouncedSearch, hasSearch ? "" : personaId).then((res) => {
-        const apiSkills = res?.data?.skills || [];
-        return Array.isArray(apiSkills)
-          ? apiSkills.map((s) => ({
-              label: toOptionString(s),
-              value: s._id || s.id || s.value,
-              __isNew__: false,
-            }))
-          : [];
-      }),
+    queryFn: async () => {
+      const res = await _getSkills(debouncedSearch, hasSearch ? "" : personaId);
+      const apiSkills = res?.data?.skills || [];
+      return apiSkills.map((s) => ({
+        label: toOptionString(s),
+        value: s._id || s.id || s.value,
+        __isNew__: false,
+      }));
+    },
     enabled: !!(personaId || hasSearch),
-    staleTime: 5 * 60 * 1000, // 5 minutes - skills lists are stable
-    placeholderData: (prev) => prev, // keep showing previous results while loading
+    staleTime: 5 * 60 * 1000,
+    placeholderData: (prev) => prev,
   });
 
   // Merge fetched skills into the map and visible list
@@ -126,6 +159,11 @@ export default function UpdateSkillsSidebar() {
     }
   };
 
+  const resetStateAndClose = () => {
+    setSearch("");
+    closeSidebar(true);
+  };
+
   return (
     <div className="flex flex-col h-full">
       <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
@@ -160,31 +198,33 @@ export default function UpdateSkillsSidebar() {
           {filtered.map((skill) => {
             const isSelected = selectedLabels.includes(skill);
             return (
-              <button
+              <motion.button
                 key={skill}
+                whileTap={{ scale: 0.92 }}
+                transition={{ type: "spring", stiffness: 500, damping: 30 }}
                 onClick={() => toggle(skill)}
                 className={cn(
-                  "px-3.5 py-1.5 rounded-full border text-sm font-medium transition-all flex items-center gap-1.5",
+                  "px-3.5 py-1.5 rounded-full border text-sm font-medium transition-all duration-200 flex items-center gap-1.5",
                   isSelected
                     ? "bg-foreground border-foreground text-background"
                     : "bg-transparent border-border text-foreground hover:bg-muted"
                 )}
               >
-                <AnimatePresence>
+                <AnimatePresence mode="popLayout">
                   {isSelected && (
                     <motion.span
-                      initial={{ scale: 0, opacity: 0, width: 0 }}
-                      animate={{ scale: 1, opacity: 1, width: "auto" }}
-                      exit={{ scale: 0, opacity: 0, width: 0 }}
-                      transition={{ duration: 0.15 }}
-                      className="overflow-hidden"
+                      initial={{ scale: 0, opacity: 0, width: 0, marginRight: 0 }}
+                      animate={{ scale: 1, opacity: 1, width: "auto", marginRight: 2 }}
+                      exit={{ scale: 0, opacity: 0, width: 0, marginRight: 0 }}
+                      transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                      className="overflow-hidden flex items-center"
                     >
                       <Check className="w-3.5 h-3.5" />
                     </motion.span>
                   )}
                 </AnimatePresence>
                 {skill}
-              </button>
+              </motion.button>
             );
           })}
 
@@ -209,13 +249,24 @@ export default function UpdateSkillsSidebar() {
       </div>
 
       <div className="flex gap-2 py-3 px-6 border-t border-border justify-end">
-        <Button variant="outline" type="button" onClick={() => closeSidebar(true)}>
+        <Button variant="outline" type="button" onClick={() => closeSidebar()}>
           Cancel
         </Button>
         <Button onClick={handleSave} disabled={saving}>
           {saving ? "Saving..." : "Save"}
         </Button>
       </div>
+
+      <UnsavedChangesDialog
+        open={showUnsavedWarning && isOpen && !isSwitchingSidebar && pendingSidebarAction?.type === "close"}
+        onOpenChange={(open) => { if (!open) handleCancelDiscardSidebar(); }}
+        onConfirmDiscard={() => {
+          handleConfirmDiscardSidebar();
+          resetStateAndClose();
+        }}
+        title="Unsaved Changes"
+        description="You have made changes to your skills. Are you sure you want to discard them?"
+      />
     </div>
   );
 }

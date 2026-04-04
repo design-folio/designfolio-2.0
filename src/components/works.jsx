@@ -27,7 +27,7 @@ export default function Works({
   const displayedExperiences = showAllExperience || workExperiences.length <= 3
     ? workExperiences
     : workExperiences.slice(0, 3);
-  const { setSelectedWork } = useGlobalContext();
+  const { setSelectedWork, openNewWork } = useGlobalContext();
 
   return (
     <Section
@@ -78,7 +78,7 @@ export default function Works({
         {edit && (
           <AddItem
             title="Add your work experience"
-            onClick={() => openSidebar(sidebars.work, "add")}
+            onClick={() => openNewWork()}
             iconLeft={
               userDetails?.experiences?.length > 0 ? (
                 <Button
@@ -86,7 +86,7 @@ export default function Works({
                   icon={
                     <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
                   }
-                  onClick={() => openSidebar(sidebars.work, "add")}
+                  onClick={() => openNewWork()}
                   size="small"
                 />
               ) : (
@@ -100,7 +100,7 @@ export default function Works({
                   icon={
                     <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
                   }
-                  onClick={() => openSidebar(sidebars.work, "add")}
+                  onClick={() => openNewWork()}
                   size="small"
                 />
               ) : (

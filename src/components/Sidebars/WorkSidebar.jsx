@@ -6,7 +6,7 @@ import Text from "../text";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import DeleteIcon from "../../../public/assets/svgs/deleteIcon.svg";
-import { useState, useRef, useEffect, useCallback, useLayoutEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import SimpleTiptapEditor from "../SimpleTiptapEditor";
 import { UnsavedChangesDialog } from "../ui/UnsavedChangesDialog";
 import { sidebars } from "@/lib/constant";
@@ -61,8 +61,7 @@ export default function AddWork() {
     pendingSidebarAction,
   } = useGlobalContext();
   const [loading, setLoading] = useState(false);
-  /** Synced every Formik render (not in useEffect) so unsaved detection cannot lag behind typing */
-  const formValuesRef = useRef(null);
+  const [editingValues, setEditingValues] = useState(null);
   const [showDeleteWarning, setShowDeleteWarning] = useState(false);
 
   const formikRef = useRef(null);
@@ -76,11 +75,10 @@ export default function AddWork() {
     return JSON.stringify(desc1) === JSON.stringify(desc2);
   };
 
-  const hasUnsavedChanges = useCallback(() => {
-    const v = formValuesRef.current;
+  const hasUnsavedChanges = () => {
+    const v = editingValues;
     if (!v) return false;
 
-    // If creating a new work (selectedWork is null), check if any fields have values
     if (!selectedWork) {
       return !!(
         v.role ||
@@ -107,28 +105,20 @@ export default function AddWork() {
       v.endYear !== originalEndYear ||
       v.currentlyWorking !== (selectedWork.currentlyWorking || false)
     );
-  }, [selectedWork]);
+  };
 
   const resetState = () => {
     setSelectedWork(null);
-    formValuesRef.current = null;
+    setEditingValues(null);
     setShowDeleteWarning(false);
   };
 
   const resetStateAndClose = () => {
     resetState();
-    closeSidebar(true); // Force close since we're handling unsaved changes separately
-  };
-
-  const handleCloseModal = () => {
-    // closeSidebar will check for unsaved changes and show dialog if needed
-    // If no unsaved changes, it will close immediately and useEffect will call resetStateAndClose
-    closeSidebar();
+    closeSidebar(true);
   };
 
   const handleCancel = () => {
-    // closeSidebar will check for unsaved changes and show dialog if needed
-    // If no unsaved changes, it will close immediately and useEffect will call resetStateAndClose
     closeSidebar();
   };
 
@@ -140,23 +130,12 @@ export default function AddWork() {
     }
   }, [isOpen]);
 
-  // Register before paint so a fast click to another sidebar still sees unsaved edits
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (isOpen) {
       registerUnsavedChangesChecker(sidebars.work, hasUnsavedChanges);
     }
-    return () => {
-      unregisterUnsavedChangesChecker(sidebars.work);
-    };
-  }, [isOpen, hasUnsavedChanges, registerUnsavedChangesChecker, unregisterUnsavedChangesChecker]);
-
-  // Handle confirm discard from global context
-  useEffect(() => {
-    if (showUnsavedWarning && isOpen) {
-      // The global context will handle the dialog, but we need to reset our state when confirmed
-      // This is handled by the global context's handleConfirmDiscardSidebar
-    }
-  }, [showUnsavedWarning, isOpen]);
+    return () => unregisterUnsavedChangesChecker(sidebars.work);
+  }, [isOpen, editingValues, selectedWork]);
 
   const handleDeleteWork = () => {
     setShowDeleteWarning(true);
@@ -249,7 +228,7 @@ export default function AddWork() {
       }}
     >
       {({ isSubmitting, errors, touched, values, setFieldValue }) => {
-        formValuesRef.current = values;
+        useEffect(() => { setEditingValues(values); }, [values]);
 
         return (
           <Form id="workForm" className="flex flex-col h-full">

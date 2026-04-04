@@ -2,6 +2,7 @@ import { useGlobalContext } from "@/context/globalContext";
 import { _getTools } from "@/network/get-request";
 import { _updateUser } from "@/network/post-request";
 import { Form, Formik } from "formik";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import * as Yup from "yup";
 import { Button } from "../ui/button";
@@ -33,19 +34,20 @@ export default function AddTools() {
     pendingSidebarAction,
   } = useGlobalContext();
 
-  const [toolsOptions, setToolsOptions] = useState([]);
+  const { data: toolsOptions = [] } = useQuery({
+    queryKey: ["tools"],
+    queryFn: () =>
+      _getTools()
+        .then((res) => res?.data?.tools ?? [])
+        .catch(() => []),
+    staleTime: 5 * 60 * 1000,
+  });
   const [loading, setLoading] = useState(false);
   const [editingValues, setEditingValues] = useState(null);
   const [toolSearchQuery, setToolSearchQuery] = useState("");
   const formikRef = useRef(null);
 
   const isOpen = activeSidebar === sidebars.tools;
-
-  useEffect(() => {
-    _getTools()
-      .then((res) => setToolsOptions(res.data.tools))
-      .catch(() => {});
-  }, []);
 
   // Reset search when panel closes
   useEffect(() => {

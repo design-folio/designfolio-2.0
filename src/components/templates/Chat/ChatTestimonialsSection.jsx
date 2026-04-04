@@ -19,6 +19,7 @@ export default function ChatTestimonialsSection({
   const {
     userDetails,
     openSidebar,
+    openNewReview,
     setSelectedReview,
   } = useGlobalContext();
   const { reviews = [] } = userDetails || {};
@@ -200,7 +201,7 @@ export default function ChatTestimonialsSection({
                   </p>
                   {canEdit && (
                     <Button
-                      onClick={() => openSidebar(sidebars.review, "add")}
+                      onClick={() => openNewReview()}
                       className="h-9 px-4 rounded-full text-[13px] font-medium bg-[#1A1A1A] dark:bg-white text-white dark:text-black hover:bg-black/80 dark:hover:bg-white/90 transition-colors shadow-sm flex items-center gap-2"
                     >
                       <Plus className="w-3.5 h-3.5" />

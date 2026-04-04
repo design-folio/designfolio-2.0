@@ -39,7 +39,7 @@ function ProfessionalProfileHeader({
           <CinematicThemeSwitcher persist={persistTheme} />
         </div>
 
-        <div className="w-[68px] h-[68px] bg-[#E37941] mb-6 flex items-center justify-center overflow-hidden shrink-0 mt-2">
+        <div className="w-[80px] h-[80px] bg-[#E37941] mb-6 flex items-center justify-center overflow-hidden shrink-0 mt-2">
           <img
             src={avatarSrc}
             alt="Profile"

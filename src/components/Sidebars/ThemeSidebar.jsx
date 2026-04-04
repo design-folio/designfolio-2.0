@@ -69,7 +69,7 @@ function TemplateCard({ tmpl, isSelected, onChange, previewSrc }) {
           type="button"
           onClick={() => onChange(tmpl.id)}
           className={twMerge(
-            "w-full aspect-square rounded-[24px] transition-all focus:outline-none cursor-pointer group/card",
+            "w-full aspect-square rounded-[24px] transition-colors focus:outline-none cursor-pointer group/card",
             isSelected
               ? "border-[2.5px] border-df-orange-color p-1.5"
               : "border-[2.5px] border-transparent p-1.5 hover:bg-black/5 dark:hover:bg-white/5"
@@ -77,7 +77,8 @@ function TemplateCard({ tmpl, isSelected, onChange, previewSrc }) {
         >
           <div
             className={twMerge(
-              "pointer-events-none w-full h-full rounded-[14px] overflow-hidden transition-all shadow-sm border border-black/5 dark:border-white/5 relative",
+              "pointer-events-none w-full h-full rounded-[14px] overflow-hidden shadow-sm border border-black/5 dark:border-white/5 relative",
+              "transition-[box-shadow,background-color] duration-200 ease-out",
               isSelected ? "bg-accent" : "bg-card group-hover/card:shadow-md"
             )}
           >
@@ -590,216 +591,216 @@ const ThemePanel = ({
               <p className="text-xs text-muted-foreground">Chat theme uses a solid background colour. Switch templates to use wallpapers.</p>
             </div>
           ) : (
-          <>
-          <AnimatePresence mode="wait">
-            {wallpaper && wallpaper !== 0 && (
-              <motion.div
-                key="bg-effects"
-                initial={{ height: 0, opacity: 0, marginTop: 0 }}
-                animate={{ height: "auto", opacity: 1, marginTop: 16 }}
-                exit={{ height: 0, opacity: 0, marginTop: 0 }}
-                transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
-                className="overflow-hidden"
-              >
-                <div className="p-4 rounded-xl bg-muted/50 mb-4">
-                  <div className="flex items-center justify-between mb-4">
-                    <Text size="p-xs-uppercase">Background Texture</Text>
-                  </div>
-                  <div className="flex p-1 bg-muted/50 rounded-lg gap-1 mb-4">
-                    <Button
-                      variant={currentEffects.effectType === 'blur' ? 'secondary' : 'ghost'}
-                      size="sm"
-                      onClick={() => currentUpdateWallpaperEffect('effectType', 'blur')}
-                      className="flex-1 text-xs rounded-md"
-                      data-testid={isMobileOrTablet ? "button-effect-blur-mobile" : "button-effect-blur"}
-                    >
-                      Soft Blur
-                    </Button>
-                    <Button
-                      variant={currentEffects.effectType === 'grain' ? 'secondary' : 'ghost'}
-                      size="sm"
-                      onClick={() => {
-                        if (currentEffects.grainIntensity === 0 || currentEffects.grainIntensity === undefined || currentEffects.grainIntensity === null) {
-                          currentUpdateWallpaperEffect('grainIntensity', 25);
-                        }
-                        currentUpdateWallpaperEffect('effectType', 'grain');
-                      }}
-                      className="flex-1 text-xs rounded-md"
-                      data-testid={isMobileOrTablet ? "button-effect-grain-mobile" : "button-effect-grain"}
-                    >
-                      Fine Grain
-                    </Button>
-                  </div>
-
-                  <div className="space-y-4">
-                    {currentEffects.effectType === 'blur' ? (
-                      <div className="animate-in fade-in slide-in-from-top-1 duration-300">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-[11px] font-medium text-foreground/60">Depth</span>
-                          <span className="text-[11px] tabular-nums text-foreground/40">{currentEffects.blur}px</span>
-                        </div>
-                        <Slider
-
-                          value={[currentEffects.blur]}
-                          onValueChange={(value) => currentUpdateWallpaperEffect('blur', value[0])}
-                          max={20}
-                          step={1}
-                          className="w-full"
-                          data-testid={isMobileOrTablet ? "slider-background-blur-mobile" : "slider-background-blur"}
-                        />
-                      </div>
-                    ) : (
-                      <div className="animate-in fade-in slide-in-from-top-1 duration-300">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-[11px] font-medium text-foreground/60">Opacity</span>
-                          <span className="text-[11px] tabular-nums text-foreground/40">{currentEffects.grainIntensity}%</span>
-                        </div>
-                        <Slider
-                          value={[currentEffects.grainIntensity]}
-                          onValueChange={(value) => currentUpdateWallpaperEffect('grainIntensity', value[0])}
-                          max={100}
-                          step={5}
-                          className="w-full"
-                          data-testid={isMobileOrTablet ? "slider-grain-intensity-mobile" : "slider-grain-intensity"}
-                        />
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between p-4 rounded-xl  bg-muted/50 mb-4">
-                  <div>
-                    <Text size="p-xs-uppercase" className="text-df-heading-color">Dynamic Motion</Text>
-                    <p className="text-[11px] text-df-description-color mt-0.5 font-medium">Parallax zoom interaction</p>
-                  </div>
-                  <Switch
-                    checked={currentEffects.motion}
-                    onCheckedChange={(checked) => currentUpdateWallpaperEffect('motion', checked)}
-                    data-testid={isMobileOrTablet ? "switch-background-motion-mobile" : "switch-background-motion"}
-                    className="scale-90"
-                  />
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-          <div className="p-4 rounded-md border border-border bg-card/50 mb-4">
-            <div className="flex items-start gap-3 mb-3">
-              <Upload className="w-5 h-5 text-df-heading-color  mt-0.5" />
-              <div className="flex-1">
-                <h4 className="text-sm font-semibold mb-1">Upload Custom Background</h4>
-                <p className="text-xs text-df-description-color mb-2">
-                  Upload your own image. Minimum: 500x300. Maximum file size: 5MB. Image will be resized to 1920x1080.
-                </p>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileUpload}
-                  className="hidden"
-                  id={isMobile ? "custom-wallpaper-upload-mobile" : "custom-wallpaper-upload"}
-                  data-testid={isMobile ? "input-custom-wallpaper-mobile" : "input-custom-wallpaper"}
-                />
-                <label htmlFor={isMobile ? "custom-wallpaper-upload-mobile" : "custom-wallpaper-upload"}>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="cursor-pointer"
-                    disabled={isCompressing}
-                    onClick={() => document.getElementById(isMobile ? 'custom-wallpaper-upload-mobile' : 'custom-wallpaper-upload')?.click()}
-                    data-testid={isMobile ? "button-upload-wallpaper-mobile" : "button-upload-wallpaper"}
+            <>
+              <AnimatePresence mode="wait">
+                {wallpaper && wallpaper !== 0 && (
+                  <motion.div
+                    key="bg-effects"
+                    initial={{ height: 0, opacity: 0, marginTop: 0 }}
+                    animate={{ height: "auto", opacity: 1, marginTop: 16 }}
+                    exit={{ height: 0, opacity: 0, marginTop: 0 }}
+                    transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+                    className="overflow-hidden"
                   >
-                    <Upload className="w-4 h-4" />
-                    {"Choose File"}
-                  </Button>
-                </label>
-              </div>
-            </div>
-          </div>
+                    <div className="p-4 rounded-xl bg-muted/50 mb-4">
+                      <div className="flex items-center justify-between mb-4">
+                        <Text size="p-xs-uppercase">Background Texture</Text>
+                      </div>
+                      <div className="flex p-1 bg-muted/50 rounded-lg gap-1 mb-4">
+                        <Button
+                          variant={currentEffects.effectType === 'blur' ? 'secondary' : 'ghost'}
+                          size="sm"
+                          onClick={() => currentUpdateWallpaperEffect('effectType', 'blur')}
+                          className="flex-1 text-xs rounded-md"
+                          data-testid={isMobileOrTablet ? "button-effect-blur-mobile" : "button-effect-blur"}
+                        >
+                          Soft Blur
+                        </Button>
+                        <Button
+                          variant={currentEffects.effectType === 'grain' ? 'secondary' : 'ghost'}
+                          size="sm"
+                          onClick={() => {
+                            if (currentEffects.grainIntensity === 0 || currentEffects.grainIntensity === undefined || currentEffects.grainIntensity === null) {
+                              currentUpdateWallpaperEffect('grainIntensity', 25);
+                            }
+                            currentUpdateWallpaperEffect('effectType', 'grain');
+                          }}
+                          className="flex-1 text-xs rounded-md"
+                          data-testid={isMobileOrTablet ? "button-effect-grain-mobile" : "button-effect-grain"}
+                        >
+                          Fine Grain
+                        </Button>
+                      </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <button
-              onClick={() => changeWallpaper(0)}
-              className={twMerge(
-                "relative rounded-md overflow-hidden border-2 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer",
-                wallpaper === 0 ? 'border-primary-landing ' : 'border-border'
-              )}
-              data-testid={isMobile ? "button-wallpaper-none-mobile" : "button-wallpaper-none"}
-            >
-              {isMacOSTemplate ? (
-                <img
-                  src={isDarkWallpapers ? '/wallpaper/darkui/wall8.png' : '/wallpaper/wall8.png'}
-                  alt="Default"
-                  className="aspect-video object-cover w-full pointer-events-none"
-                />
-              ) : (
-                <div className="aspect-video bg-gradient-to-br from-background to-muted flex items-center justify-center pointer-events-none">
-                  <span className="text-sm font-medium text-foreground/60">Default</span>
-                </div>
-              )}
-              {wallpaper === 0 && (
-                <div className="absolute top-2 right-2 bg-primary-landing  text-primary-landing -foreground rounded-full p-1 pointer-events-none">
-                  <svg className="w-4 h-4" fill="background" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                </div>
-              )}
-            </button>
+                      <div className="space-y-4">
+                        {currentEffects.effectType === 'blur' ? (
+                          <div className="animate-in fade-in slide-in-from-top-1 duration-300">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-[11px] font-medium text-foreground/60">Depth</span>
+                              <span className="text-[11px] tabular-nums text-foreground/40">{currentEffects.blur}px</span>
+                            </div>
+                            <Slider
 
-            {customWallpaper && (
-              <button
-                onClick={() => changeWallpaper(customWallpaper)}
-                className={twMerge(
-                  "relative rounded-md overflow-hidden border-2 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer",
-                  wallpaper === customWallpaper ? 'border-primary-landing' : 'border-border'
+                              value={[currentEffects.blur]}
+                              onValueChange={(value) => currentUpdateWallpaperEffect('blur', value[0])}
+                              max={20}
+                              step={1}
+                              className="w-full"
+                              data-testid={isMobileOrTablet ? "slider-background-blur-mobile" : "slider-background-blur"}
+                            />
+                          </div>
+                        ) : (
+                          <div className="animate-in fade-in slide-in-from-top-1 duration-300">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-[11px] font-medium text-foreground/60">Opacity</span>
+                              <span className="text-[11px] tabular-nums text-foreground/40">{currentEffects.grainIntensity}%</span>
+                            </div>
+                            <Slider
+                              value={[currentEffects.grainIntensity]}
+                              onValueChange={(value) => currentUpdateWallpaperEffect('grainIntensity', value[0])}
+                              max={100}
+                              step={5}
+                              className="w-full"
+                              data-testid={isMobileOrTablet ? "slider-grain-intensity-mobile" : "slider-grain-intensity"}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between p-4 rounded-xl  bg-muted/50 mb-4">
+                      <div>
+                        <Text size="p-xs-uppercase" className="text-df-heading-color">Dynamic Motion</Text>
+                        <p className="text-[11px] text-df-description-color mt-0.5 font-medium">Parallax zoom interaction</p>
+                      </div>
+                      <Switch
+                        checked={currentEffects.motion}
+                        onCheckedChange={(checked) => currentUpdateWallpaperEffect('motion', checked)}
+                        data-testid={isMobileOrTablet ? "switch-background-motion-mobile" : "switch-background-motion"}
+                        className="scale-90"
+                      />
+                    </div>
+                  </motion.div>
                 )}
-                data-testid={isMobile ? "button-wallpaper-custom-mobile" : "button-wallpaper-custom"}
-              >
-                <img
-                  src={customWallpaper}
-                  alt="Custom wallpaper"
-                  className="aspect-video object-cover w-full pointer-events-none"
-                />
-                <div className="absolute bottom-2 left-2 pointer-events-none">
-                  <Badge variant="secondary" className="text-xs">Custom</Badge>
-                </div>
-                {wallpaper === customWallpaper && (
-                  <div className="absolute top-2 right-2 bg-primary-landing  text-primary-landing -foreground rounded-full p-1 z-10 pointer-events-none">
-                    <svg className="w-4 h-4" fill="background" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
+              </AnimatePresence>
+              <div className="p-4 rounded-md border border-border bg-card/50 mb-4">
+                <div className="flex items-start gap-3 mb-3">
+                  <Upload className="w-5 h-5 text-df-heading-color  mt-0.5" />
+                  <div className="flex-1">
+                    <h4 className="text-sm font-semibold mb-1">Upload Custom Background</h4>
+                    <p className="text-xs text-df-description-color mb-2">
+                      Upload your own image. Minimum: 500x300. Maximum file size: 5MB. Image will be resized to 1920x1080.
+                    </p>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileUpload}
+                      className="hidden"
+                      id={isMobile ? "custom-wallpaper-upload-mobile" : "custom-wallpaper-upload"}
+                      data-testid={isMobile ? "input-custom-wallpaper-mobile" : "input-custom-wallpaper"}
+                    />
+                    <label htmlFor={isMobile ? "custom-wallpaper-upload-mobile" : "custom-wallpaper-upload"}>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="cursor-pointer"
+                        disabled={isCompressing}
+                        onClick={() => document.getElementById(isMobile ? 'custom-wallpaper-upload-mobile' : 'custom-wallpaper-upload')?.click()}
+                        data-testid={isMobile ? "button-upload-wallpaper-mobile" : "button-upload-wallpaper"}
+                      >
+                        <Upload className="w-4 h-4" />
+                        {"Choose File"}
+                      </Button>
+                    </label>
                   </div>
-                )}
-              </button>
-            )}
+                </div>
+              </div>
 
-            {wallpapers.map((wp, index) => {
-              if (wp.value === 0) return null;
-              if (isMacOSTemplate && wp.value === 8) return null;
-              return (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <button
-                  key={index}
-                  onClick={() => changeWallpaper(wp.value)}
+                  onClick={() => changeWallpaper(0)}
                   className={twMerge(
                     "relative rounded-md overflow-hidden border-2 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer",
-                    wallpaper === wp.value ? 'border-primary-landing ' : 'border-border'
+                    wallpaper === 0 ? 'border-primary-landing ' : 'border-border'
                   )}
-                  data-testid={isMobile ? `button-wallpaper-${wp.id}-mobile` : `button-wallpaper-${wp.id}`}
+                  data-testid={isMobile ? "button-wallpaper-none-mobile" : "button-wallpaper-none"}
                 >
-                  <div className="w-full aspect-video [&>div]:!h-full [&>div]:!rounded-none pointer-events-none">
-                    {wp.item}
-                  </div>
-                  {wallpaper === wp.value && (
-                    <div className="absolute top-2 right-2 bg-primary-landing  text-primary-landing -foreground rounded-full p-1 z-10 pointer-events-none">
+                  {isMacOSTemplate ? (
+                    <img
+                      src={isDarkWallpapers ? '/wallpaper/darkui/wall8.png' : '/wallpaper/wall8.png'}
+                      alt="Default"
+                      className="aspect-video object-cover w-full pointer-events-none"
+                    />
+                  ) : (
+                    <div className="aspect-video bg-gradient-to-br from-background to-muted flex items-center justify-center pointer-events-none">
+                      <span className="text-sm font-medium text-foreground/60">Default</span>
+                    </div>
+                  )}
+                  {wallpaper === 0 && (
+                    <div className="absolute top-2 right-2 bg-primary-landing  text-primary-landing -foreground rounded-full p-1 pointer-events-none">
                       <svg className="w-4 h-4" fill="background" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
                     </div>
                   )}
                 </button>
-              );
-            })}
-          </div>
-          </>
+
+                {customWallpaper && (
+                  <button
+                    onClick={() => changeWallpaper(customWallpaper)}
+                    className={twMerge(
+                      "relative rounded-md overflow-hidden border-2 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer",
+                      wallpaper === customWallpaper ? 'border-primary-landing' : 'border-border'
+                    )}
+                    data-testid={isMobile ? "button-wallpaper-custom-mobile" : "button-wallpaper-custom"}
+                  >
+                    <img
+                      src={customWallpaper}
+                      alt="Custom wallpaper"
+                      className="aspect-video object-cover w-full pointer-events-none"
+                    />
+                    <div className="absolute bottom-2 left-2 pointer-events-none">
+                      <Badge variant="secondary" className="text-xs">Custom</Badge>
+                    </div>
+                    {wallpaper === customWallpaper && (
+                      <div className="absolute top-2 right-2 bg-primary-landing  text-primary-landing -foreground rounded-full p-1 z-10 pointer-events-none">
+                        <svg className="w-4 h-4" fill="background" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    )}
+                  </button>
+                )}
+
+                {wallpapers.map((wp, index) => {
+                  if (wp.value === 0) return null;
+                  if (isMacOSTemplate && wp.value === 8) return null;
+                  return (
+                    <button
+                      key={index}
+                      onClick={() => changeWallpaper(wp.value)}
+                      className={twMerge(
+                        "relative rounded-md overflow-hidden border-2 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer",
+                        wallpaper === wp.value ? 'border-primary-landing ' : 'border-border'
+                      )}
+                      data-testid={isMobile ? `button-wallpaper-${wp.id}-mobile` : `button-wallpaper-${wp.id}`}
+                    >
+                      <div className="w-full aspect-video [&>div]:!h-full [&>div]:!rounded-none pointer-events-none">
+                        {wp.item}
+                      </div>
+                      {wallpaper === wp.value && (
+                        <div className="absolute top-2 right-2 bg-primary-landing  text-primary-landing -foreground rounded-full p-1 z-10 pointer-events-none">
+                          <svg className="w-4 h-4" fill="background" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </>
           )}
         </div>
       </TabsContent>

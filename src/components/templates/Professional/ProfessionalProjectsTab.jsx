@@ -6,6 +6,7 @@ import { SectionVisibilityButton, ProjectVisibilityButton } from "@/components/s
 import { modals, sidebars } from "@/lib/constant";
 import ProjectLock from "@/components/projectLock";
 import { useGlobalContext } from "@/context/globalContext";
+import { ProfessionalRearrangeButton } from "./ProfessionalRearrangeButton";
 
 const ScrewDot = ({ className }) => (
   <div className={`absolute ${className} ${screwClass}`} />
@@ -46,15 +47,11 @@ function ProfessionalProjectsTab({
       {isEditing && (
         <div className="flex items-center justify-end gap-2 px-1 py-2 border-b border-[#D5D0C6] dark:border-[#3A352E]">
           {visibleProjects.length >= 2 && (
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-8 w-8 p-0 rounded-full border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520] text-[#1A1A1A] dark:text-[#F0EDE7] opacity-100 md:opacity-0 md:group-hover/section:opacity-100 transition-opacity"
+            <ProfessionalRearrangeButton
               onClick={() => openSidebar?.(sidebars.sortProjects)}
               title="Rearrange projects"
-            >
-              <ChevronsUpDown className="w-3.5 h-3.5" />
-            </Button>
+              tooltipText="Rearrange"
+            />
           )}
           <SectionVisibilityButton
             sectionId="projects"

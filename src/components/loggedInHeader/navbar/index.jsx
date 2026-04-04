@@ -67,6 +67,9 @@ export default function Navbar() {
 
   const router = useRouter();
 
+  const isAiToolsWorkspace =
+    router.pathname === "/builder" && router.query?.view === "ai-tools";
+
   const isMacOS = template === 4 && MACOS_ROUTES.includes(router.pathname);
 
   const shouldShift = !isMobile && isSidebarThatShifts(activeSidebar);
@@ -136,7 +139,11 @@ export default function Navbar() {
         <Link href="/builder">
           <MemoDFLogoV2 className="flex-shrink-0" />
         </Link>
-        <div className="hidden md:block">
+        <div
+          className={cn(
+            isAiToolsWorkspace ? "block" : "hidden md:block",
+          )}
+        >
           <FluidDropdown />
         </div>
       </div>
@@ -144,6 +151,7 @@ export default function Navbar() {
       {/* Mobile right */}
       <div className="flex md:hidden items-center gap-2">
         <AvatarDropdown variant="new" onClose={() => setIsMobileMenuOpen(false)} />
+        {!isAiToolsWorkspace && (
         <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
           <SheetTrigger asChild>
             <Button
@@ -243,62 +251,67 @@ export default function Navbar() {
             </div>
           </SheetContent>
         </Sheet>
+        )}
       </div>
 
       {/* Desktop right */}
       <div className="hidden md:flex items-center gap-2">
-        <Tooltip delayDuration={100}>
-          <TooltipTrigger asChild>
-            <Button
-              variant="secondary"
-              size="icon"
-              className="group bg-secondary hover:bg-secondary-hover border border-border text-muted-foreground hover:text-foreground h-9 w-9 rounded-full cursor-pointer"
-              onClick={() => router.push("/analytics")}
-              data-testid="button-insights"
-            >
-              <ChartSpline size={18} className="transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent side="bottom" className="bg-foreground text-background text-xs px-2 py-1 rounded">
-            Insights
-          </TooltipContent>
-        </Tooltip>
+        {!isAiToolsWorkspace && (
+          <>
+            <Tooltip delayDuration={100}>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="group bg-secondary hover:bg-secondary-hover border border-border text-muted-foreground hover:text-foreground h-9 w-9 rounded-full cursor-pointer"
+                  onClick={() => router.push("/analytics")}
+                  data-testid="button-insights"
+                >
+                  <ChartSpline size={18} className="transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="bg-foreground text-background text-xs px-2 py-1 rounded">
+                Insights
+              </TooltipContent>
+            </Tooltip>
 
-        <Tooltip delayDuration={100}>
-          <TooltipTrigger asChild>
-            <Button
-              variant="secondary"
-              size="icon"
-              className="group bg-secondary hover:bg-secondary-hover border border-border text-muted-foreground hover:text-foreground h-9 w-9 rounded-full cursor-pointer"
-              onClick={handleTheme}
-              data-testid="button-themes"
-            >
-              <PaintRoller size={18} className="transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent side="bottom" className="bg-foreground text-background text-xs px-2 py-1 rounded">
-            Themes
-          </TooltipContent>
-        </Tooltip>
+            <Tooltip delayDuration={100}>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="group bg-secondary hover:bg-secondary-hover border border-border text-muted-foreground hover:text-foreground h-9 w-9 rounded-full cursor-pointer"
+                  onClick={handleTheme}
+                  data-testid="button-themes"
+                >
+                  <PaintRoller size={18} className="transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="bg-foreground text-background text-xs px-2 py-1 rounded">
+                Themes
+              </TooltipContent>
+            </Tooltip>
 
-        <Tooltip delayDuration={100}>
-          <TooltipTrigger asChild>
-            <Button
-              variant="secondary"
-              size="icon"
-              className="group bg-secondary hover:bg-secondary-hover border border-border text-muted-foreground hover:text-foreground h-9 w-9 rounded-full cursor-pointer"
-              onClick={() => router.push("/portfolio-preview")}
-              data-testid="button-preview"
-            >
-              <Eye size={18} className="transition-transform duration-300 group-hover:scale-125" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent side="bottom" className="bg-foreground text-background text-xs px-2 py-1 rounded">
-            Preview
-          </TooltipContent>
-        </Tooltip>
+            <Tooltip delayDuration={100}>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="group bg-secondary hover:bg-secondary-hover border border-border text-muted-foreground hover:text-foreground h-9 w-9 rounded-full cursor-pointer"
+                  onClick={() => router.push("/portfolio-preview")}
+                  data-testid="button-preview"
+                >
+                  <Eye size={18} className="transition-transform duration-300 group-hover:scale-125" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="bg-foreground text-background text-xs px-2 py-1 rounded">
+                Preview
+              </TooltipContent>
+            </Tooltip>
 
-        <PublishDropdown variant="new" />
+            <PublishDropdown variant="new" />
+          </>
+        )}
         <AvatarDropdown variant="new" />
       </div>
     </div>

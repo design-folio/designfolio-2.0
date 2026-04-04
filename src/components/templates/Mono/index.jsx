@@ -59,6 +59,7 @@ import { AnimatedThemeToggler } from "./animated-theme-toggler";
 import MonoContactSection from "./MonoContactSection";
 import MonoExperienceSection from "./MonoExperienceSection";
 import MonoReviewsSection from "./MonoReviewsSection";
+import { MonoRearrangeButton } from "./MonoRearrangeButton";
 
 const itemVariants = {
   hidden: {
@@ -640,15 +641,12 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                 </SheetContent>
               </Sheet>
               {visibleProjects.length >= 2 && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-8 w-8 p-0 rounded-full border-black/10 dark:border-white/10 shadow-sm bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A] opacity-100 md:opacity-0 md:group-hover/section:opacity-100 transition-opacity"
+                <MonoRearrangeButton
                   onClick={() => openSidebar(sidebars.sortProjects)}
                   title="Rearrange projects"
-                >
-                  <ChevronsUpDown className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                </Button>
+                  tooltipText="Rearrange"
+                />
+
               )}
               <SectionVisibilityButton
                 sectionId="projects"

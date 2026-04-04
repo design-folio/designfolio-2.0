@@ -8,7 +8,7 @@ import Text from "./text";
 import { modals, sidebars } from "@/lib/constant";
 
 export default function Task({ setOpen }) {
-  const { checkList, openModal, openSidebar, setStep } = useGlobalContext();
+  const { checkList, openModal, openSidebar, openNewWork, openNewReview, setStep } = useGlobalContext();
 
   const handleClick = (i) => {
     if (i == 0 && !checkList[0].checked) {
@@ -17,9 +17,9 @@ export default function Task({ setOpen }) {
       openModal(modals.onboarding);
       setStep(2);
     } else if (i == 2 && !checkList[2].checked) {
-      openSidebar(sidebars.work, "add");
+      openNewWork();
     } else if (i == 3 && !checkList[3].checked) {
-      openSidebar(sidebars.review, "add");
+      openNewReview();
     }
   };
 

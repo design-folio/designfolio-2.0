@@ -134,6 +134,8 @@ export default function Builder2({ edit = false }) {
     userDetails,
     openModal,
     openSidebar,
+    openNewWork,
+    openNewReview,
     setSelectedProject,
     setSelectedWork,
     setSelectedReview,
@@ -554,7 +556,7 @@ export default function Builder2({ edit = false }) {
                           : "Add more reviews"
                           } `}
                         subTitle="Share colleague's feedback."
-                        onClick={() => openSidebar(sidebars.review, "add")}
+                        onClick={() => openNewReview()}
                         className={
                           "flex justify-center items-center flex-col p-4 w-[340px] flex-1 min-w-0"
                         }
@@ -651,7 +653,7 @@ export default function Builder2({ edit = false }) {
                       <AddItem
                         className="flex-1"
                         title="Add testimonial"
-                        onClick={() => openSidebar(sidebars.review, "add")}
+                        onClick={() => openNewReview()}
                         iconLeft={
                           userDetails?.reviews?.length > 0 ? (
                             <Button
@@ -659,7 +661,7 @@ export default function Builder2({ edit = false }) {
                               icon={
                                 <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
                               }
-                              onClick={() => openSidebar(sidebars.review, "add")}
+                              onClick={() => openNewReview()}
                               size="small"
                             />
                           ) : (
@@ -807,7 +809,7 @@ export default function Builder2({ edit = false }) {
                         <AddItem
                           className="flex-1 min-w-0"
                           title="Add your work experience"
-                          onClick={() => openSidebar(sidebars.work, "add")}
+                          onClick={() => openNewWork()}
                           iconLeft={
                             userDetails?.experiences?.length > 0 ? (
                               <Button
@@ -815,7 +817,7 @@ export default function Builder2({ edit = false }) {
                                 icon={
                                   <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
                                 }
-                                onClick={() => openSidebar(sidebars.work, "add")}
+                                onClick={() => openNewWork()}
                                 size="small"
                               />
                             ) : (
@@ -831,7 +833,7 @@ export default function Builder2({ edit = false }) {
                                 icon={
                                   <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
                                 }
-                                onClick={() => openSidebar(sidebars.work, "add")}
+                                onClick={() => openNewWork()}
                                 size="small"
                               />
                             ) : (

@@ -68,7 +68,7 @@ export default function ChatExperienceSection({
   canEdit,
   preview,
 }) {
-  const { userDetails, openSidebar, setSelectedWork } = useGlobalContext();
+  const { userDetails, openSidebar, openNewWork, setSelectedWork } = useGlobalContext();
   const { experiences = [] } = userDetails || {};
   const avatarSrc = useMemo(
     () => getUserAvatarImage(userDetails),
@@ -221,7 +221,7 @@ export default function ChatExperienceSection({
                     </p>
                     {canEdit && (
                       <Button
-                        onClick={() => openSidebar(sidebars.work, "add")}
+                        onClick={() => openNewWork()}
                         className="h-9 px-5 rounded-full text-[13px] font-medium bg-[#1A1A1A] dark:bg-white text-white dark:text-black hover:bg-black/80 dark:hover:bg-white/90 transition-colors shadow-sm flex items-center gap-2"
                       >
                         <Plus className="w-3.5 h-3.5" />

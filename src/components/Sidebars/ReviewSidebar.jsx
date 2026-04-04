@@ -7,7 +7,7 @@ import { Input } from "../ui/input";
 import CloseIcon from "../../../public/assets/svgs/close.svg";
 import Text from "../text";
 import DeleteIcon from "../../../public/assets/svgs/deleteIcon.svg";
-import { useState, useRef, useEffect, useCallback, useLayoutEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import SimpleTiptapEditor from "../SimpleTiptapEditor";
 import { UnsavedChangesDialog } from "../ui/UnsavedChangesDialog";
 import { sidebars } from "@/lib/constant";
@@ -35,7 +35,7 @@ export default function AddReview() {
   } = useGlobalContext();
 
   const [loading, setLoading] = useState(false);
-  const formValuesRef = useRef(null);
+  const [editingValues, setEditingValues] = useState(null);
   const [showDeleteWarning, setShowDeleteWarning] = useState(false);
 
   const formikRef = useRef(null);
@@ -78,8 +78,8 @@ export default function AddReview() {
     return JSON.stringify(desc1) === JSON.stringify(desc2);
   };
 
-  const hasUnsavedChanges = useCallback(() => {
-    const v = formValuesRef.current;
+  const hasUnsavedChanges = () => {
+    const v = editingValues;
     if (!v) return false;
 
     if (!selectedReview) {
@@ -99,11 +99,11 @@ export default function AddReview() {
       !compareDescription(v.description, selectedReview.description) ||
       avatarFile !== null
     );
-  }, [selectedReview, avatarFile]);
+  };
 
   const resetState = () => {
     setSelectedReview(null);
-    formValuesRef.current = null;
+    setEditingValues(null);
     setAvatarPreview(null);
     setAvatarFile(null);
     setShowDeleteWarning(false);
@@ -111,18 +111,10 @@ export default function AddReview() {
 
   const resetStateAndClose = () => {
     resetState();
-    closeSidebar(true); // Force close since we're handling unsaved changes separately
-  };
-
-  const handleCloseModal = () => {
-    // closeSidebar will check for unsaved changes and show dialog if needed
-    // If no unsaved changes, it will close immediately and useEffect will call resetStateAndClose
-    closeSidebar();
+    closeSidebar(true);
   };
 
   const handleCancel = () => {
-    // closeSidebar will check for unsaved changes and show dialog if needed
-    // If no unsaved changes, it will close immediately and useEffect will call resetStateAndClose
     closeSidebar();
   };
 
@@ -134,14 +126,12 @@ export default function AddReview() {
     }
   }, [isOpen]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (isOpen) {
       registerUnsavedChangesChecker(sidebars.review, hasUnsavedChanges);
     }
-    return () => {
-      unregisterUnsavedChangesChecker(sidebars.review);
-    };
-  }, [isOpen, hasUnsavedChanges, registerUnsavedChangesChecker, unregisterUnsavedChangesChecker]);
+    return () => unregisterUnsavedChangesChecker(sidebars.review);
+  }, [isOpen, editingValues, selectedReview, avatarFile]);
 
   const handleDelete = () => {
     setShowDeleteWarning(true);
@@ -228,7 +218,7 @@ export default function AddReview() {
       }}
     >
       {({ isSubmitting, errors, touched, values, setFieldValue }) => {
-        formValuesRef.current = values;
+        useEffect(() => { setEditingValues(values); }, [values]);
 
         return (
           <Form id="reviewForm" className="flex flex-col h-full">

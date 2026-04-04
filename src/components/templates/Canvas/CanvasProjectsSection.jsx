@@ -209,6 +209,7 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
             <CanvasSectionButton
               icon={<ChevronsUpDown className="w-3.5 h-3.5" />}
               ariaLabel="Rearrange projects"
+              tooltipText="Rearrange"
               onClick={() => openSidebar(sidebars.sortProjects)}
             />
           )}

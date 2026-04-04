@@ -318,8 +318,8 @@ export default function Index() {
               t === 1
                 ? "py-[94px]"
                 : t === 2 || t === 5
-                ? "pt-24"
-                : [
+                  ? "pt-24"
+                  : [
                     t !== 4 && "px-2 md:px-4 lg:px-0",
                     t === 3 || t === 0
                       ? "pt-24 pb-0"
@@ -328,8 +328,8 @@ export default function Index() {
                   ],
             )}
           >
-            {/* //HACK: Allow all templates to be free */}
-            {/* {userDetails && !userDetails?.pro && <ProWarning />} */}
+            {/* //HACK: Allow all templates to be free except professional*/}
+            {userDetails && !userDetails?.pro && t === 4 && <ProWarning />}
             {userDetails && (
               <>
                 {isLoadingTemplate ? (

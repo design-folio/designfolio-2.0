@@ -3,6 +3,7 @@ import { TEMPLATE_IDS } from "@/lib/templates";
 
 export function playThemeSwitchSound() {
   if (typeof window === "undefined") return;
+  if (window.matchMedia("(pointer: coarse)").matches) return;
   try {
     const Ctx = window.AudioContext || window.webkitAudioContext;
     if (!Ctx) return;

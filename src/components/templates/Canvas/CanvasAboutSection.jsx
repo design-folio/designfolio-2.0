@@ -1,5 +1,5 @@
-import React, { useCallback, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { Move, Pencil, Trash2 } from "lucide-react";
 import { Button } from "../../ui/button";
 import { useGlobalContext } from "@/context/globalContext";
@@ -10,6 +10,11 @@ import {
   DEFAULT_PEGBOARD_IMAGES,
   DEFAULT_PEGBOARD_STICKERS,
 } from "@/lib/aboutConstants";
+import {
+  ABOUT_STORY_CHAR_THRESHOLD,
+  renderDescriptionLines,
+  truncatePlainText,
+} from "@/lib/aboutStoryPreview";
 
 function playPegboardClick(type) {
   try {
@@ -62,6 +67,18 @@ function CanvasAboutSection({ isEditing }) {
   const { about } = userDetails || {};
   const pegboardRef = useRef(null);
   const [zIndexes, setZIndexes] = useState({ 0: 10, 1: 20, 2: 10 });
+  const [aboutExpanded, setAboutExpanded] = useState(false);
+  const reduceMotion = useReducedMotion();
+
+  const storyText = about?.description?.trim() ?? "";
+  const storyNeedsExpand = storyText.length > ABOUT_STORY_CHAR_THRESHOLD;
+  const storyDisplayText = storyNeedsExpand && !aboutExpanded
+    ? truncatePlainText(storyText, ABOUT_STORY_CHAR_THRESHOLD)
+    : storyText;
+
+  useEffect(() => {
+    setAboutExpanded(false);
+  }, [storyText]);
 
   const images =
     about?.pegboardImages?.length > 0
@@ -282,16 +299,56 @@ function CanvasAboutSection({ isEditing }) {
       </p>
 
       {/* Story Text */}
-      <div className="space-y-4">
-        {about?.description ? (
-          <p className="text-[#7A736C] dark:text-[#B5AFA5] text-[16px] leading-relaxed">
-            {about.description.split("\n").map((line, i) => (
-              <span key={i}>
-                {line}
-                <br />
-              </span>
-            ))}
-          </p>
+      <div className="flex flex-col gap-4">
+        {storyText ? (
+          storyNeedsExpand ? (
+            <div className="flex flex-col gap-0">
+              <div
+                className={`relative min-w-0 overflow-hidden ${!aboutExpanded ? "max-h-[5em]" : ""}`}
+              >
+                <p className="break-words text-[16px] leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]">
+                  {renderDescriptionLines(storyDisplayText)}
+                </p>
+                {!aboutExpanded && (
+                  <div
+                    className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white to-transparent dark:from-[#2A2520]"
+                    aria-hidden
+                  />
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={() => setAboutExpanded((v) => !v)}
+                aria-expanded={aboutExpanded}
+                className="mt-3 flex items-center gap-1.5 self-start rounded-md text-[13px] font-medium text-[#1A1A1A] opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1A1A1A]/25 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:text-[#F0EDE7] dark:focus-visible:ring-white/35 dark:focus-visible:ring-offset-[#2A2520]"
+              >
+                {aboutExpanded ? "View less" : "View more"}
+                <motion.svg
+                  animate={{ rotate: aboutExpanded ? 180 : 0 }}
+                  transition={
+                    reduceMotion
+                      ? { duration: 0 }
+                      : { duration: 0.3, ease: [0.23, 1, 0.32, 1] }
+                  }
+                  width="10"
+                  height="10"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </motion.svg>
+              </button>
+            </div>
+          ) : (
+            <p className="text-[16px] leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]">
+              {renderDescriptionLines(storyText)}
+            </p>
+          )
         ) : isEditing ? (
           <button
             onClick={() => openSidebar?.(sidebars.about)}

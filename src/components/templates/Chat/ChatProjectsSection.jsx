@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { EyeOff, Pencil, Plus, Trash2 } from "lucide-react";
+import { EyeOff, Pencil, Plus, Sparkles, Trash2 } from "lucide-react";
 import { ProjectVisibilityButton } from "@/components/section";
 import { _updateProject } from "@/network/post-request";
 import { motion, AnimatePresence } from "framer-motion";
@@ -9,6 +9,7 @@ import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { modals, sidebars } from "@/lib/constant";
 import { useRouter } from "next/router";
 import { TypingIndicator, ChatAvatar } from "./chatUtils";
+import ProjectLock from "@/components/projectLock";
 
 export default function ChatProjectsSection({
   chatRevealStep,
@@ -157,7 +158,7 @@ export default function ChatProjectsSection({
                     </div>
                   )}
 
-                  <div className="w-full aspect-[4/3] rounded-xl overflow-hidden mb-3 relative bg-[#D5D0C6] dark:bg-[#1A1A1A]">
+                  <div className="w-full aspect-[16/9] rounded-xl overflow-hidden mb-3 relative bg-[#D5D0C6] dark:bg-[#1A1A1A]">
                     <img
                       src={project?.thumbnail?.url}
                       alt={project?.title || "project"}
@@ -181,6 +182,51 @@ export default function ChatProjectsSection({
           )}
         </AnimatePresence>
       ))}
+
+      {/* Add project card / Project lock — after all project cards */}
+      {canEdit && chatRevealStep >= s(8) && visibleProjects.length > 0 && (
+        <AnimatePresence mode="popLayout">
+          <motion.div
+            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.3, delay: visibleProjects.length * 0.2 }}
+            className="flex gap-3 max-w-[85%]"
+          >
+            <div className="w-8 h-8 shrink-0" />
+            {userDetails?.pro || visibleProjects.length < 2 ? (
+              <div className="w-full bg-[#E5E2DB] dark:bg-[#2A2520] p-3 rounded-2xl rounded-tl-sm rounded-bl-sm border border-dashed border-black/15 dark:border-white/10">
+                <div className="w-full aspect-[16/9] rounded-xl flex flex-col items-center justify-center gap-3 bg-black/[0.02] dark:bg-white/[0.02]">
+                  <div className="w-9 h-9 rounded-full bg-black/[0.05] dark:bg-white/[0.05] flex items-center justify-center">
+                    <Plus className="w-4 h-4 text-[#7A736C] dark:text-[#9E9893]" />
+                  </div>
+                  <p className="text-[11px] font-medium text-[#A09890] dark:text-[#7A736C] tracking-widest uppercase">New project</p>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      onClick={() => openSidebar(sidebars.project)}
+                      className="h-8 px-3.5 rounded-full text-[12px] font-medium bg-[#1A1A1A] dark:bg-white text-white dark:text-black hover:bg-black/80 dark:hover:bg-white/90 transition-colors shadow-sm flex items-center gap-1.5"
+                    >
+                      <Pencil className="w-3 h-3" />
+                      Add Project
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => openModal(modals.aiProject)}
+                      className="h-8 px-3.5 rounded-full text-[12px] font-medium bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors flex items-center gap-1.5 text-[#1A1A1A] dark:text-[#F0EDE7]"
+                    >
+                      <Sparkles className="w-3 h-3" />
+                      Write with AI
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="w-full">
+                <ProjectLock className="min-h-[200px]" />
+              </div>
+            )}
+          </motion.div>
+        </AnimatePresence>
+      )}
 
       {/* Projects empty state */}
       {visibleProjects.length === 0 && chatRevealStep >= s(8) && !preview && (

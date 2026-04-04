@@ -1,6 +1,7 @@
-import React, { memo } from "react";
+import React, { memo, useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Pencil } from "lucide-react";
+import { Pencil, X } from "lucide-react";
 import { TextGradientScroll } from "./text-gradient-scroll";
 import { SectionVisibilityButton } from "@/components/section";
 import { DEFAULT_PEGBOARD_IMAGES } from "@/lib/aboutConstants";
@@ -14,10 +15,22 @@ function ProfessionalAboutTab({
   onEditSkills,
   onEditTools,
 }) {
+
   const aboutImages =
     about?.pegboardImages?.length > 0
       ? about.pegboardImages
       : DEFAULT_PEGBOARD_IMAGES;
+
+  const storyImageUrls = useMemo(
+    () =>
+      aboutImages
+        .map((img) => img?.src || img?.key || "")
+        .filter(Boolean)
+        .slice(0, 4),
+    [aboutImages],
+  );
+
+  const [selectedStoryImage, setSelectedStoryImage] = useState(null);
 
   return (
     <div className="px-4 md:px-6 pb-20 group/section">
@@ -40,44 +53,67 @@ function ProfessionalAboutTab({
         </div>
       )}
       <div className="max-w-2xl">
-        <div className="mb-8">
-          <div
-            className="relative h-[220px] md:h-[260px] border border-[#D5D0C6] dark:border-[#3A352E] bg-[#F5F1EA] dark:bg-[#201B16] overflow-hidden"
-            style={{
-              backgroundImage:
-                "radial-gradient(circle at 1px 1px, rgba(122,115,108,0.2) 1px, transparent 0)",
-              backgroundSize: "24px 24px",
-            }}
-          >
-            {[0, 1, 2].map((idx) => {
-              const img = aboutImages[idx];
-              const src = img?.src || img?.key || img;
-              if (!src) return null;
-
-              const positionClasses = [
-                "left-[8%] top-[16%] rotate-[-5deg] w-28 h-36 md:w-32 md:h-40",
-                "left-[36%] top-[10%] rotate-[4deg] w-32 h-32 md:w-40 md:h-40",
-                "right-[8%] top-[18%] rotate-[-2deg] w-28 h-36 md:w-32 md:h-40",
-              ];
-
-              return (
-                <div
-                  key={`about-image-${idx}`}
-                  className={`absolute ${positionClasses[idx]} border border-[#D5D0C6] dark:border-[#3A352E] bg-white dark:bg-[#2A2520] p-1.5 shadow-sm`}
-                >
-                  <img
-                    src={src}
-                    alt={`About ${idx + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              );
-            })}
-          </div>
-          <p className="mt-3 text-center text-[10px] font-medium tracking-widest uppercase text-[#7A736C]/70 dark:text-[#B5AFA5]/60 pointer-events-none">
-            Try moving things around :)
-          </p>
+        <div className="relative mb-8 flex h-56 items-center justify-center">
+          {storyImageUrls[0] ? (
+            <motion.div
+              initial={{ rotate: -8, x: -120, y: 0 }}
+              whileHover={{ rotate: -2, scale: 1.1, zIndex: 50 }}
+              onClick={() => setSelectedStoryImage(storyImageUrls[0])}
+              className="absolute z-0 h-40 w-32 cursor-pointer overflow-hidden rounded-xl border-4 border-white shadow-lg dark:border-[#2A2520]"
+            >
+              <img
+                src={storyImageUrls[0]}
+                alt="My workspace"
+                className="h-full w-full object-cover"
+              />
+            </motion.div>
+          ) : null}
+          {storyImageUrls[1] ? (
+            <motion.div
+              initial={{ rotate: 12, x: -40, y: 15 }}
+              whileHover={{ rotate: 5, scale: 1.1, zIndex: 50 }}
+              onClick={() => setSelectedStoryImage(storyImageUrls[1])}
+              className="absolute z-10 h-36 w-36 cursor-pointer overflow-hidden rounded-xl border-4 border-white shadow-lg dark:border-[#2A2520]"
+            >
+              <img
+                src={storyImageUrls[1]}
+                alt="Designing"
+                className="h-full w-full object-cover"
+              />
+            </motion.div>
+          ) : null}
+          {storyImageUrls[2] ? (
+            <motion.div
+              initial={{ rotate: -5, x: 40, y: -10 }}
+              whileHover={{ rotate: 0, scale: 1.1, zIndex: 50 }}
+              onClick={() => setSelectedStoryImage(storyImageUrls[2])}
+              className="absolute z-20 h-40 w-32 cursor-pointer overflow-hidden rounded-xl border-4 border-white shadow-lg dark:border-[#2A2520]"
+            >
+              <img
+                src={storyImageUrls[2]}
+                alt="Coffee and notes"
+                className="h-full w-full object-cover"
+              />
+            </motion.div>
+          ) : null}
+          {storyImageUrls[3] ? (
+            <motion.div
+              initial={{ rotate: 8, x: 120, y: 20 }}
+              whileHover={{ rotate: 3, scale: 1.1, zIndex: 50 }}
+              onClick={() => setSelectedStoryImage(storyImageUrls[3])}
+              className="absolute z-30 h-36 w-36 cursor-pointer overflow-hidden rounded-xl border-4 border-white shadow-lg dark:border-[#2A2520]"
+            >
+              <img
+                src={storyImageUrls[3]}
+                alt="Creative studio"
+                className="h-full w-full object-cover"
+              />
+            </motion.div>
+          ) : null}
         </div>
+        <p className="mb-8 -mt-2 text-center text-[10px] font-medium uppercase tracking-widest text-[#7A736C]/70 dark:text-[#B5AFA5]/60 pointer-events-none">
+          Try moving things around :)
+        </p>
 
         {about?.description ? (
           <TextGradientScroll
@@ -98,7 +134,7 @@ function ProfessionalAboutTab({
           </p>
         )}
 
-        <div className="space-y-6">
+        <div className="flex flex-col gap-6">
           {skills.length > 0 && (
             <div className="relative group/skill">
               {isEditing && (
@@ -162,6 +198,41 @@ function ProfessionalAboutTab({
           )}
         </div>
       </div>
+
+      <AnimatePresence>
+        {selectedStoryImage ? (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedStoryImage(null)}
+            className="fixed inset-0 z-[100] flex cursor-zoom-out items-center justify-center bg-black/60 p-4 backdrop-blur-sm sm:p-8"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.9, y: 20, opacity: 0 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="relative max-h-[90vh] max-w-4xl overflow-hidden rounded-2xl border border-white/10 shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                type="button"
+                aria-label="Close full image"
+                onClick={() => setSelectedStoryImage(null)}
+                className="absolute right-4 top-4 z-10 flex size-10 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-md transition-colors hover:bg-black/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+              >
+                <X className="size-5" />
+              </button>
+              <img
+                src={selectedStoryImage}
+                alt="Story full view"
+                className="h-auto max-h-[90vh] w-auto max-w-full object-contain"
+              />
+            </motion.div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </div>
   );
 }

@@ -3,6 +3,26 @@ import ProjectInfo from "./projectInfo";
 import { useGlobalContext } from "@/context/globalContext";
 import dynamic from "next/dynamic";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
+import { TEMPLATE_IDS } from "@/lib/templates";
+
+const tiptapClassNamesByTemplate = {
+  [TEMPLATE_IDS.MONO]: {
+    editor: "bg-background",
+    wrapper: "p-0 md:p-0",
+  },
+  [TEMPLATE_IDS.CHATFOLIO]: {
+    editor:
+      "bg-[#E5E2DB] dark:bg-[#2A2520] border border-black/5 dark:border-white/5 rounded-2xl rounded-bl-sm shadow-none",
+    container: "!pb-0",
+    wrapper: "p-4 md:p-4",
+  },
+  [TEMPLATE_IDS.PROFESSIONAL]: {
+    editor: "",
+    container: "",
+    wrapper: "bg-background",
+  }
+};
+
 const ProjectEditor = dynamic(() => import("./projectEditor"), {
   ssr: false,
 });
@@ -19,29 +39,22 @@ export default function Editor({ edit, projectDetails, refetchProjectDetail }) {
     popoverMenu,
   } = useGlobalContext();
 
-  const isMono = userDetails?.template === 3;
-  const isChatfolio = userDetails?.template === 1;
+  const isMono = userDetails?.template === TEMPLATE_IDS.MONO;
+  const isChatfolio = userDetails?.template === TEMPLATE_IDS.CHATFOLIO;
   const avatarSrc = useMemo(() => getUserAvatarImage(userDetails), [userDetails]);
   const firstName = userDetails?.firstName || userDetails?.name || "Me";
+
+  const tiptapClassNames = {
+    editor: "",
+    container: "",
+    wrapper: "",
+    ...tiptapClassNamesByTemplate[userDetails?.template],
+  };
 
   const editorBody =
     projectDetails?.project?.contentVersion === 2 ? (
       <TiptapEditor
-        classNames={{
-          editor: isMono
-            ? "bg-background"
-            : isChatfolio
-              ? "bg-[#E5E2DB] dark:bg-[#2A2520] border border-black/5 dark:border-white/5 rounded-2xl rounded-bl-sm shadow-none"
-              : "",
-          container: isChatfolio
-            ? "!pb-0"
-            : "",
-          wrapper: isMono
-            ? "p-0 md:p-0"
-            : isChatfolio
-              ? "p-4 md:p-4"
-              : "",
-        }}
+        classNames={tiptapClassNames}
         projectDetails={projectDetails?.project}
         userDetails={userDetails}
         setUserDetails={setUserDetails}

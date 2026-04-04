@@ -24,13 +24,18 @@ import { useGlobalContext } from "@/context/globalContext";
 import { _updateProject } from "@/network/post-request";
 import { DEFAULT_PEGBOARD_IMAGES } from "@/lib/aboutConstants";
 import {
+  ABOUT_STORY_CHAR_THRESHOLD,
+  renderDescriptionLines,
+  truncatePlainText,
+} from "@/lib/aboutStoryPreview";
+import {
   DEFAULT_SECTION_ORDER,
   modals,
   normalizeSectionOrder,
   sidebars,
 } from "@/lib/constant";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
   AtSignIcon,
   DownloadIcon,
@@ -38,6 +43,7 @@ import {
   TwitterIcon,
 } from "lucide-animated";
 import {
+  ChevronDown,
   ChevronsUpDown,
   EyeOff,
   Pencil,
@@ -174,6 +180,11 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
   const portfolios = userDetails?.portfolios || {};
   const resumeUrl = userDetails?.resume?.url || "";
   const storyText = userDetails?.about?.description || "";
+  const aboutStoryPlain = storyText.trim();
+  const aboutStoryNeedsExpand =
+    aboutStoryPlain.length > ABOUT_STORY_CHAR_THRESHOLD;
+  const [aboutStoryExpanded, setAboutStoryExpanded] = useState(false);
+  const aboutStoryReduceMotion = useReducedMotion();
   const userRole = userDetails?.persona?.label !== "Others" ? userDetails?.persona?.label : userDetails?.persona?.custom;
   const visibleProjects = useMemo(
     () => (preview ? projects.filter((project) => !project.hidden) : projects),
@@ -198,6 +209,9 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
     setStoryImages(mappedStoryImages);
   }, [mappedStoryImages]);
 
+  useEffect(() => {
+    setAboutStoryExpanded(false);
+  }, [aboutStoryPlain]);
 
   const handleOpenProjectEditor = useCallback(
     (project) => {
@@ -744,7 +758,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                         </Button>
                       </div>
                     )}
-                    <div className="rounded-xl overflow-hidden mb-4 aspect-[4/3] bg-white dark:bg-[#2A2520] drop-shadow-sm border border-black/5 dark:border-white/10 group-hover:border-black/10 dark:group-hover:border-white/20 transition-colors relative">
+                    <div className="rounded-xl overflow-hidden mb-4 aspect-[16/9] bg-white dark:bg-[#2A2520] drop-shadow-sm border border-black/5 dark:border-white/10 group-hover:border-black/10 dark:group-hover:border-white/20 transition-colors relative">
                       <img
                         src={project.image}
                         alt={project.title}
@@ -767,6 +781,33 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                     </p>
                   </div>
                 ))}
+                {isEditing && (userDetails?.pro || visibleProjects.length < 2) && (
+                  <div className="flex flex-col gap-4">
+                    <div className="rounded-xl aspect-[16/9] border border-dashed border-black/15 dark:border-white/10 bg-black/[0.015] dark:bg-white/[0.015] flex flex-col items-center justify-center gap-3 transition-colors hover:bg-black/[0.03] dark:hover:bg-white/[0.03]">
+                      <div className="w-10 h-10 rounded-full bg-black/[0.05] dark:bg-white/[0.05] flex items-center justify-center">
+                        <Plus className="w-4 h-4 text-[#7A736C] dark:text-[#9E9893]" />
+                      </div>
+                      <p className="text-[11px] font-medium text-[#A09890] dark:text-[#7A736C] tracking-widest uppercase">New project</p>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          onClick={() => openSidebar?.(sidebars.project)}
+                          className="h-8 px-3.5 rounded-full text-[12px] font-medium bg-[#1A1A1A] dark:bg-white text-white dark:text-black hover:bg-black/80 dark:hover:bg-white/90 transition-colors shadow-sm flex items-center gap-1.5"
+                        >
+                          <Pencil className="w-3 h-3" />
+                          Add Project
+                        </Button>
+                        <Button
+                          variant="secondary"
+                          onClick={() => openModal(modals.aiProject)}
+                          className="h-8 px-3.5 rounded-full text-[12px] font-medium flex items-center gap-1.5"
+                        >
+                          <Sparkles className="w-3 h-3" />
+                          Write with AI
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 {isEditing && !(userDetails?.pro || visibleProjects.length < 2) && (
                   <div className="sm:col-span-2">
                     <ProjectLock />
@@ -888,16 +929,74 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
             Try moving things around :)
           </p>
 
-          <div className="space-y-6 text-[#7A736C] dark:text-[#B5AFA5] text-base leading-[1.7]">
-            {storyText ? (
-              storyText
-                .split("\n")
-                .filter(Boolean)
-                .map((paragraph, idx) => <p key={idx}>{paragraph}</p>)
+          <div className="flex flex-col gap-6 text-base leading-[1.7] text-[#7A736C] dark:text-[#B5AFA5]">
+            {aboutStoryPlain ? (
+              aboutStoryNeedsExpand ? (
+                <div className="flex flex-col gap-0">
+                  <div
+                    className={`relative min-w-0 overflow-hidden ${!aboutStoryExpanded ? "max-h-[5em]" : ""}`}
+                  >
+                    {aboutStoryExpanded ? (
+                      aboutStoryPlain
+                        .split("\n")
+                        .filter(Boolean)
+                        .map((paragraph, idx) => (
+                          <p key={idx} className={idx > 0 ? "mt-4" : ""}>
+                            {paragraph}
+                          </p>
+                        ))
+                    ) : (
+                      <p className="break-words">
+                        {renderDescriptionLines(
+                          truncatePlainText(
+                            aboutStoryPlain,
+                            ABOUT_STORY_CHAR_THRESHOLD,
+                          ),
+                        )}
+                      </p>
+                    )}
+                    {!aboutStoryExpanded && (
+                      <div
+                        className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-[#F0EDE7] to-transparent dark:from-[#1A1A1A]"
+                        aria-hidden
+                      />
+                    )}
+                  </div>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    aria-expanded={aboutStoryExpanded}
+                    onClick={() => setAboutStoryExpanded((v) => !v)}
+                    className="mt-3 h-auto justify-start gap-1.5 self-start px-2 py-1.5 text-[13px] font-medium text-[#1A1A1A] hover:bg-black/[0.04] dark:text-[#F0EDE7] dark:hover:bg-white/[0.06] focus-visible:ring-2 focus-visible:ring-[#1A1A1A]/20 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F0EDE7] dark:focus-visible:ring-white/25 dark:focus-visible:ring-offset-[#1A1A1A]"
+                  >
+                    {aboutStoryExpanded ? "View less" : "View more"}
+                    <motion.span
+                      aria-hidden
+                      className="inline-flex [&_svg]:pointer-events-none"
+                      animate={{ rotate: aboutStoryExpanded ? 180 : 0 }}
+                      transition={
+                        aboutStoryReduceMotion
+                          ? { duration: 0 }
+                          : { duration: 0.3, ease: [0.23, 1, 0.32, 1] }
+                      }
+                    >
+                      <ChevronDown data-icon="inline-end" />
+                    </motion.span>
+                  </Button>
+                </div>
+              ) : (
+                aboutStoryPlain
+                  .split("\n")
+                  .filter(Boolean)
+                  .map((paragraph, idx) => (
+                    <p key={idx}>{paragraph}</p>
+                  ))
+              )
             ) : isEditing ? (
               <button
+                type="button"
                 onClick={() => openSidebar?.(sidebars.about)}
-                className="text-left text-[13px] text-[#7A736C] dark:text-[#B5AFA5] hover:text-[#1A1A1A] dark:hover:text-white transition-colors"
+                className="text-left text-[13px] text-[#7A736C] dark:text-[#B5AFA5] transition-colors hover:text-[#1A1A1A] dark:hover:text-white"
               >
                 Click here to add your story...
               </button>

@@ -455,18 +455,18 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
             <h3 className="font-jetbrains text-[14px] text-[#1A1A1A] dark:text-[#F0EDE7] font-semibold mb-6 uppercase tracking-wider flex items-center gap-3">
               <span className="w-2 h-2 bg-[#E37941] shrink-0" /> Overview
             </h3>
-            <TiptapRenderer content={tiptapContent} />
+            <TiptapRenderer content={tiptapContent} className={"bg-background !p-0 shadow-none "} />
           </motion.div>
         )}
 
-        {!edit && hasEditorJSContent && (
+        {/* {!edit && hasEditorJSContent && (
           <motion.div variants={itemVariants}>
             <h3 className="font-jetbrains text-[14px] text-[#1A1A1A] dark:text-[#F0EDE7] font-semibold mb-6 uppercase tracking-wider flex items-center gap-3">
               <span className="w-2 h-2 bg-[#E37941] shrink-0" /> Overview
             </h3>
-            <BlockRenderer editorJsData={content} />
+            <BlockRenderer editorJsData={content}  />
           </motion.div>
-        )}
+        )} */}
 
         {/* Footer nav — view mode only */}
         {!edit && (

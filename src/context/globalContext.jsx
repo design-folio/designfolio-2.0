@@ -639,20 +639,10 @@ export const GlobalProvider = ({ children }) => {
     return checker ? checker() : false;
   };
 
-   // Open sidebar with unsaved changes check.
-  // Pass intent "add" when opening work/review/project for a new item so entity selection
-  // is cleared (needed when the sidebar is already open, or when only openSidebar() is used).
-  const openSidebar = (sidebarType, intent) => {
-    const clearEntityForAdd = () => {
-      if (intent !== "add") return;
-      if (sidebarType === sidebars.work) setSelectedWork(null);
-      else if (sidebarType === sidebars.review) setSelectedReview(null);
-      else if (sidebarType === sidebars.project) setSelectedProject(null);
-    };
-
+  // Open sidebar with unsaved changes check.
+  const openSidebar = (sidebarType) => {
     if (activeSidebar === sidebarType) {
       setPopoverMenu(null);
-      clearEntityForAdd();
       return;
     }
 
@@ -661,14 +651,24 @@ export const GlobalProvider = ({ children }) => {
       if (hasChanges) {
         setIsSwitchingSidebar(true);
         setShowUnsavedWarning(true);
-        setPendingSidebarAction({ type: "open", sidebarType, intent });
+        setPendingSidebarAction({ type: "open", sidebarType });
         return;
       }
     }
 
-    clearEntityForAdd();
     setActiveSidebar(sidebarType);
     setPopoverMenu(null);
+  };
+
+  // Helpers to open work/review sidebars for adding a new item (clears any selected entity first).
+  const openNewWork = () => {
+    setSelectedWork(null);
+    openSidebar(sidebars.work);
+  };
+
+  const openNewReview = () => {
+    setSelectedReview(null);
+    openSidebar(sidebars.review);
   };
 
   // Close sidebar with unsaved changes check
@@ -701,12 +701,7 @@ export const GlobalProvider = ({ children }) => {
 
     if (pendingSidebarAction) {
       if (pendingSidebarAction.type === "open") {
-        const { sidebarType, intent } = pendingSidebarAction;
-        if (intent === "add") {
-          if (sidebarType === sidebars.work) setSelectedWork(null);
-          else if (sidebarType === sidebars.review) setSelectedReview(null);
-          else if (sidebarType === sidebars.project) setSelectedProject(null);
-        }
+        const { sidebarType } = pendingSidebarAction;
         setActiveSidebar(sidebarType);
         setPopoverMenu(null);
       } else if (pendingSidebarAction.type === "close") {
@@ -786,6 +781,8 @@ export const GlobalProvider = ({ children }) => {
         isLoadingTemplate,
         activeSidebar,
         openSidebar,
+        openNewWork,
+        openNewReview,
         closeSidebar,
         registerUnsavedChangesChecker,
         unregisterUnsavedChangesChecker,

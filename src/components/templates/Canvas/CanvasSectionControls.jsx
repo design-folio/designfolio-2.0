@@ -1,5 +1,6 @@
 import React, { forwardRef } from "react";
 import { Button } from "../../ui/button";
+import { TooltipProvider, TooltipTrigger, TooltipContent, Tooltip } from "@/components/ui/tooltip";
 
 export function CanvasSectionControls({ children }) {
   return (
@@ -9,7 +10,7 @@ export function CanvasSectionControls({ children }) {
   );
 }
 
-export const CanvasSectionButton = forwardRef(function CanvasSectionButton({ onClick, icon, label, ariaLabel, alwaysVisible = false, asChild, children, ...props }, ref) {
+export const CanvasSectionButton = forwardRef(function CanvasSectionButton({ tooltipText, onClick, icon, label, ariaLabel, alwaysVisible = false, asChild, children, ...props }, ref) {
   const baseClass =
     "rounded-full bg-white dark:bg-[#2A2520] shadow-md border border-[#E5D7C4] dark:border-white/10 hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors cursor-pointer";
   const visibilityClass = alwaysVisible
@@ -37,7 +38,7 @@ export const CanvasSectionButton = forwardRef(function CanvasSectionButton({ onC
     );
   }
 
-  return (
+  const iconButton = (
     <Button
       ref={ref}
       variant="outline"
@@ -51,5 +52,20 @@ export const CanvasSectionButton = forwardRef(function CanvasSectionButton({ onC
         {icon}
       </span>
     </Button>
+  );
+
+  if (!tooltipText) {
+    return iconButton;
+  }
+
+  return (
+    <TooltipProvider delayDuration={300}>
+      <Tooltip>
+        <TooltipTrigger asChild>{iconButton}</TooltipTrigger>
+        <TooltipContent side="top" sideOffset={8} className="bg-tooltip-bg-color text-tooltip-text-color border-0 px-4 py-2 rounded-xl shadow-xl">
+          <span className="text-sm font-medium">{tooltipText}</span>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 });

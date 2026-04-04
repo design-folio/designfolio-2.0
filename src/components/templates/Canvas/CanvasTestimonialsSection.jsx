@@ -58,7 +58,7 @@ function getTextFromTiptap(node) {
 }
 
 function CanvasTestimonialsSection({ isEditing }) {
-  const { userDetails, setSelectedReview, openSidebar } = useGlobalContext();
+  const { userDetails, setSelectedReview, openSidebar, openNewReview } = useGlobalContext();
   const { reviews = [] } = userDetails || {};
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -128,6 +128,7 @@ function CanvasTestimonialsSection({ isEditing }) {
           {reviews.length >= 2 && (
             <CanvasSectionButton
               icon={<ChevronsUpDown className="w-3.5 h-3.5" />}
+              tooltipText="Rearrange"
               onClick={() => openSidebar?.(sidebars.sortReviews)}
             />
           )}
@@ -135,7 +136,7 @@ function CanvasTestimonialsSection({ isEditing }) {
             <CanvasSectionButton
               icon={<Plus className="w-3.5 h-3.5" />}
               label="Add Testimonial"
-              onClick={() => openSidebar?.(sidebars.review, "add")}
+              onClick={() => openNewReview()}
             />
           )}
           <SectionVisibilityButton
@@ -199,7 +200,7 @@ function CanvasTestimonialsSection({ isEditing }) {
             </p>
             {isEditing && (
               <Button
-                onClick={() => openSidebar?.(sidebars.review, "add")}
+                onClick={() => openNewReview()}
                 className="h-9 px-4 rounded-full text-[13px] font-medium bg-[#1A1A1A] dark:bg-white text-white dark:text-black hover:bg-black/80 dark:hover:bg-white/90 transition-colors shadow-sm"
               >
                 Add Testimonial

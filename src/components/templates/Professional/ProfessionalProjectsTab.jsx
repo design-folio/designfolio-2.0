@@ -6,6 +6,7 @@ import { SectionVisibilityButton, ProjectVisibilityButton } from "@/components/s
 import { modals, sidebars } from "@/lib/constant";
 import ProjectLock from "@/components/projectLock";
 import { useGlobalContext } from "@/context/globalContext";
+import { ProfessionalRearrangeButton } from "./ProfessionalRearrangeButton";
 
 const ScrewDot = ({ className }) => (
   <div className={`absolute ${className} ${screwClass}`} />
@@ -46,58 +47,17 @@ function ProfessionalProjectsTab({
       {isEditing && (
         <div className="flex items-center justify-end gap-2 px-1 py-2 border-b border-[#D5D0C6] dark:border-[#3A352E]">
           {visibleProjects.length >= 2 && (
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-8 w-8 p-0 rounded-full border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520] text-[#1A1A1A] dark:text-[#F0EDE7] opacity-100 md:opacity-0 md:group-hover/section:opacity-100 transition-opacity"
+            <ProfessionalRearrangeButton
               onClick={() => openSidebar?.(sidebars.sortProjects)}
               title="Rearrange projects"
-            >
-              <ChevronsUpDown className="w-3.5 h-3.5" />
-            </Button>
+              tooltipText="Rearrange"
+            />
           )}
           <SectionVisibilityButton
             sectionId="projects"
             showOnHoverWhenVisible
             className="h-8 w-8 rounded-full border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520]"
           />
-        </div>
-      )}
-
-      {isEditing && (isPro || visibleProjects.length < 2) && (
-        <div className="flex flex-col gap-3">
-          <div
-            className={`group cursor-pointer relative flex flex-col ${frameBorderClass}`}
-            onClick={onAddProject}
-          >
-            <FrameBorders />
-            <div className="bg-white/50 dark:bg-[#1A1A1A]/50 p-6 md:p-7 relative overflow-hidden flex-1 flex flex-col items-center justify-center min-h-[120px] md:min-h-[160px]">
-              <FrameScrews />
-              <div className="group/add-project flex flex-col items-center justify-center gap-3 mt-4 mb-4">
-                <div className="w-12 h-12 rounded-full border border-dashed border-[#D5D0C6] dark:border-[#3A352E] flex items-center justify-center text-[#7A736C] dark:text-[#9E9893] group-hover/add-project:border-[#1A1A1A] dark:group-hover/add-project:border-[#F0EDE7] group-hover/add-project:text-[#1A1A1A] dark:group-hover/add-project:text-[#F0EDE7] transition-colors bg-white dark:bg-[#2A2520] shadow-sm">
-                  <Plus className="w-5 h-5" />
-                </div>
-                <span className="font-jetbrains text-[13px] font-medium text-[#7A736C] dark:text-[#9E9893] group-hover/add-project:text-[#1A1A1A] dark:group-hover/add-project:text-[#F0EDE7] transition-colors uppercase tracking-wider">
-                  Add New Project
-                </span>
-              </div>
-
-              {visibleProjects.length === 0 && (
-                <Button
-                  variant="outline"
-                  className="h-9 px-5 rounded-full border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520] transition-colors flex items-center justify-center gap-2 font-jetbrains text-[#7A736C] dark:text-[#9E9893] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7]"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    openModal(modals.aiProject);
-                  }}
-                  title="Write using AI"
-                >
-                  <Sparkles className="w-4 h-4" />
-                  Write with AI
-                </Button>
-              )}
-            </div>
-          </div>
         </div>
       )}
 
@@ -162,6 +122,37 @@ function ProfessionalProjectsTab({
           </div>
         </div>
       ))}
+      {isEditing && (isPro || visibleProjects.length < 2) && (
+        <div
+          className={`relative flex flex-col ${frameBorderClass}`}
+        >
+          <FrameBorders />
+          <div className="bg-white/50 dark:bg-[#1A1A1A]/50 p-6 md:p-8 relative overflow-hidden flex-1 flex flex-col items-center justify-center gap-3 min-h-[140px] md:min-h-[180px]">
+            <FrameScrews />
+            <div className="w-10 h-10 rounded-full border border-dashed border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#2A2520] flex items-center justify-center">
+              <Plus className="w-4 h-4 text-[#7A736C] dark:text-[#9E9893]" />
+            </div>
+            <p className="font-jetbrains text-[10px] font-medium text-[#A09890] dark:text-[#5A5550] tracking-widest uppercase">New project slot</p>
+            <div className="flex items-center gap-2">
+              <Button
+                className="h-8 px-3.5 rounded-full font-jetbrains text-[12px] font-medium bg-[#1A1A1A] dark:bg-white text-white dark:text-black hover:bg-black/80 dark:hover:bg-white/90 transition-colors shadow-sm flex items-center gap-1.5"
+                onClick={(e) => { e.stopPropagation(); onAddProject(); }}
+              >
+                <Pencil className="w-3 h-3" />
+                Add Project
+              </Button>
+              <Button
+                variant="outline"
+                className="h-8 px-3.5 rounded-full font-jetbrains text-[12px] font-medium border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520] transition-colors flex items-center gap-1.5 text-[#7A736C] dark:text-[#9E9893] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7]"
+                onClick={(e) => { e.stopPropagation(); openModal(modals.aiProject); }}
+              >
+                <Sparkles className="w-3 h-3" />
+                Write with AI
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
       {isEditing && !(isPro || visibleProjects.length < 2) && (
         <div className="p-4">
           <ProjectLock className="bg-[#DED9CE] dark:bg-[#2A2520] font-jetbrains" />

@@ -33,6 +33,8 @@ export default function Professional({
     setUserDetails,
     openModal,
     openSidebar,
+    openNewWork,
+    openNewReview,
     setSelectedProject,
     setSelectedReview,
     setSelectedWork,
@@ -229,8 +231,8 @@ export default function Professional({
   );
 
   const handleAddExperience = useCallback(
-    () => openSidebar(sidebars.work, "add"),
-    [openSidebar],
+    () => openNewWork(),
+    [openNewWork],
   );
   const handleEditAbout = useCallback(
     () => openSidebar(sidebars.about),
@@ -245,8 +247,8 @@ export default function Professional({
     [openSidebar],
   );
   const handleAddReview = useCallback(
-    () => openSidebar(sidebars.review, "add"),
-    [openSidebar],
+    () => openNewReview(),
+    [openNewReview],
   );
   const handleEditReview = useCallback(
     (review) => {

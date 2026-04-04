@@ -18,12 +18,16 @@ export default function UpdateProfileSidebar() {
   const { compress, compressedImage, compressionProgress } = useImageCompression();
 
   const [values, setValues] = useState({
+    firstName: userDetails?.firstName || "",
+    lastName: userDetails?.lastName || "",
     introduction: userDetails?.introduction || "",
     bio: userDetails?.bio || "",
   });
 
   useEffect(() => {
     setValues({
+      firstName: userDetails?.firstName || "",
+      lastName: userDetails?.lastName || "",
       introduction: userDetails?.introduction || "",
       bio: userDetails?.bio || "",
     });
@@ -83,31 +87,35 @@ export default function UpdateProfileSidebar() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex-1 overflow-y-auto px-6 py-4 space-y-5">
+      <div className="flex flex-1 flex-col gap-5 overflow-y-auto px-6 py-4">
 
         {/* Avatar */}
         <div className="flex flex-col items-center gap-3">
-          <div
-            className="relative w-24 h-24 rounded-2xl overflow-hidden cursor-pointer group border border-border"
+          <button
+            type="button"
+            aria-label="Change profile photo"
+            className="relative size-24 overflow-hidden rounded-2xl border border-border group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/10 dark:focus-visible:ring-white/10"
             onClick={() => fileInputRef.current?.click()}
           >
             <img
               src={currentAvatar}
-              alt="Profile"
-              className="w-full h-full object-cover"
+              alt=""
+              width={96}
+              height={96}
+              className="size-full object-cover"
             />
-            <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
               {compressionProgress > 0 && compressionProgress < 100 ? (
-                <Loader2 className="w-5 h-5 text-white animate-spin" />
+                <Loader2 className="size-5 text-white animate-spin" aria-hidden />
               ) : (
-                <Camera className="w-5 h-5 text-white" />
+                <Camera className="size-5 text-white" aria-hidden />
               )}
             </div>
-          </div>
+          </button>
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+            className="text-xs text-muted-foreground transition-colors hover:text-foreground"
           >
             Change photo
           </button>
@@ -120,35 +128,93 @@ export default function UpdateProfileSidebar() {
           />
         </div>
 
+
+        {/* Name */}
+        <div className="flex flex-col gap-2">
+
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div className="flex min-w-0 flex-col gap-1.5">
+              <Label
+                htmlFor="update-profile-first-name"
+                className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
+              >
+                First name
+              </Label>
+              <Input
+                id="update-profile-first-name"
+                name="given-name"
+                autoComplete="given-name"
+                spellCheck={false}
+                value={values.firstName}
+                onChange={set("firstName")}
+                placeholder="e.g. Alex…"
+                maxLength={50}
+                className="min-w-0"
+              />
+            </div>
+            <div className="flex min-w-0 flex-col gap-1.5">
+              <Label
+                htmlFor="update-profile-last-name"
+                className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
+              >
+                Last name
+              </Label>
+              <Input
+                id="update-profile-last-name"
+                name="family-name"
+                autoComplete="family-name"
+                spellCheck={false}
+                value={values.lastName}
+                onChange={set("lastName")}
+                placeholder="e.g. Rivera…"
+                maxLength={50}
+                className="min-w-0"
+              />
+            </div>
+          </div>
+        </div>
+
         {/* Introduction */}
-        <div className="space-y-1.5">
-          <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+        <div className="flex flex-col gap-1.5">
+          <Label
+            htmlFor="update-profile-introduction"
+            className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
+          >
             Introduction / Tagline
           </Label>
           <Input
+            id="update-profile-introduction"
+            name="introduction"
+            autoComplete="off"
             value={values.introduction}
             onChange={set("introduction")}
-            placeholder="e.g. Hey, I'm a Product Designer"
+            placeholder="e.g. Product designer in Berlin…"
             maxLength={50}
           />
-          <p className="text-[11px] text-muted-foreground text-right">
+          <p className="text-right text-[11px] text-muted-foreground tabular-nums">
             {values.introduction.length}/50
           </p>
         </div>
 
         {/* Bio */}
-        <div className="space-y-1.5">
-          <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+        <div className="flex flex-col gap-1.5">
+          <Label
+            htmlFor="update-profile-bio"
+            className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
+          >
             Bio
           </Label>
           <Textarea
+            id="update-profile-bio"
+            name="bio"
+            autoComplete="off"
             value={values.bio}
             onChange={set("bio")}
-            placeholder="Short bio about yourself..."
+            placeholder="Short bio about yourself…"
             className="min-h-[100px] resize-none"
             maxLength={250}
           />
-          <p className="text-[11px] text-muted-foreground text-right">
+          <p className="text-right text-[11px] text-muted-foreground tabular-nums">
             {values.bio.length}/250
           </p>
         </div>
@@ -159,7 +225,7 @@ export default function UpdateProfileSidebar() {
           Cancel
         </Button>
         <Button onClick={handleSave} disabled={loading}>
-          {loading ? "Saving..." : "Save"}
+          {loading ? "Saving…" : "Save"}
         </Button>
       </div>
     </div>

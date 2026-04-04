@@ -1,11 +1,16 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Pencil, Plus, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { ChevronDown, Pencil, Plus, X } from "lucide-react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useGlobalContext } from "@/context/globalContext";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { sidebars } from "@/lib/constant";
 import { DEFAULT_PEGBOARD_IMAGES } from "@/lib/aboutConstants";
+import {
+  ABOUT_STORY_CHAR_THRESHOLD,
+  renderDescriptionLines,
+  truncatePlainText,
+} from "@/lib/aboutStoryPreview";
 import { getPlainTextLength } from "@/lib/tiptapUtils";
 import { TypingIndicator, ChatAvatar, YouPrompt } from "./chatUtils";
 
@@ -35,6 +40,15 @@ export default function ChatAboutSection({
   const hasAboutContent = hasAboutDescription || hasCustomAboutImages;
 
   const [selectedStoryImage, setSelectedStoryImage] = useState(null);
+  const storyPlain =
+    typeof aboutDescription === "string" ? aboutDescription.trim() : "";
+  const storyNeedsExpand = storyPlain.length > ABOUT_STORY_CHAR_THRESHOLD;
+  const [aboutStoryExpanded, setAboutStoryExpanded] = useState(false);
+  const reduceMotion = useReducedMotion();
+
+  useEffect(() => {
+    setAboutStoryExpanded(false);
+  }, [storyPlain]);
 
   return (
     <div
@@ -162,16 +176,59 @@ export default function ChatAboutSection({
               />
             </div>
             {hasAboutDescription ? (
-              <div className="bg-[#E5E2DB] dark:bg-[#2A2520] px-4 py-3 rounded-2xl rounded-tl-sm rounded-bl-sm text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed transition-colors duration-300 border border-black/5 dark:border-white/5">
-                <p>
-                  {aboutDescription.split("\n").map((line, i) => (
-                    <span key={i}>
-                      {line}
-                      <br />
-                    </span>
-                  ))}
-                </p>
-              </div>
+              storyNeedsExpand ? (
+                <div className="flex flex-col gap-0 rounded-2xl rounded-tl-sm rounded-bl-sm border border-black/5 bg-[#E5E2DB] px-4 py-3 text-[15px] leading-relaxed text-[#1A1A1A] transition-colors duration-300 dark:border-white/5 dark:bg-[#2A2520] dark:text-[#F0EDE7]">
+                  <div
+                    className={`relative min-w-0 overflow-hidden ${!aboutStoryExpanded ? "max-h-[5em]" : ""}`}
+                  >
+                    <p className="break-words">
+                      {renderDescriptionLines(
+                        aboutStoryExpanded
+                          ? storyPlain
+                          : truncatePlainText(
+                              storyPlain,
+                              ABOUT_STORY_CHAR_THRESHOLD,
+                            ),
+                      )}
+                    </p>
+                    {!aboutStoryExpanded && (
+                      <div
+                        className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-[#E5E2DB] to-transparent dark:from-[#2A2520]"
+                        aria-hidden
+                      />
+                    )}
+                  </div>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    aria-expanded={aboutStoryExpanded}
+                    onClick={() => setAboutStoryExpanded((v) => !v)}
+                    className="mt-2 h-auto justify-start gap-1.5 self-start px-2 py-1 text-[13px] font-medium text-[#1A1A1A] hover:bg-black/[0.06] dark:text-[#F0EDE7] dark:hover:bg-white/[0.08] focus-visible:ring-2 focus-visible:ring-[#1A1A1A]/20 focus-visible:ring-offset-2 focus-visible:ring-offset-[#E5E2DB] dark:focus-visible:ring-white/30 dark:focus-visible:ring-offset-[#2A2520]"
+                  >
+                    {aboutStoryExpanded ? "View less" : "View more"}
+                    <motion.span
+                      aria-hidden
+                      className="inline-flex [&_svg]:pointer-events-none"
+                      animate={{ rotate: aboutStoryExpanded ? 180 : 0 }}
+                      transition={
+                        reduceMotion
+                          ? { duration: 0 }
+                          : { duration: 0.3, ease: [0.23, 1, 0.32, 1] }
+                      }
+                    >
+                      <ChevronDown data-icon="inline-end" />
+                    </motion.span>
+                  </Button>
+                </div>
+              ) : (
+                <div className="rounded-2xl rounded-tl-sm rounded-bl-sm border border-black/5 bg-[#E5E2DB] px-4 py-3 text-[15px] leading-relaxed text-[#1A1A1A] transition-colors duration-300 dark:border-white/5 dark:bg-[#2A2520] dark:text-[#F0EDE7]">
+                  <p className="break-words">
+                    {typeof aboutDescription === "string"
+                      ? renderDescriptionLines(storyPlain)
+                      : null}
+                  </p>
+                </div>
+              )
             ) : canEdit ? (
               <div className="bg-[#E5E2DB] dark:bg-[#2A2520] px-4 py-3 rounded-2xl rounded-tl-sm rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5">
                 <button

@@ -58,7 +58,7 @@ function ProjectCard({ project, isEditing, isPreview, onNavigate, onDelete, onTo
           </Button>
         </div>
       )}
-      <div className="rounded-2xl overflow-hidden aspect-[4/3] border border-black/5 dark:border-white/10 bg-[#F5F5F5] dark:bg-[#1A1A1A] pointer-events-none relative">
+      <div className="rounded-2xl overflow-hidden aspect-[16/9] border border-black/5 dark:border-white/10 bg-[#F5F5F5] dark:bg-[#1A1A1A] pointer-events-none relative">
         <img
           src={project?.thumbnail?.url}
           alt={project?.title || "project image"}
@@ -209,6 +209,7 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
             <CanvasSectionButton
               icon={<ChevronsUpDown className="w-3.5 h-3.5" />}
               ariaLabel="Rearrange projects"
+              tooltipText="Rearrange"
               onClick={() => openSidebar(sidebars.sortProjects)}
             />
           )}
@@ -271,6 +272,33 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
                 onToggleVisibility={handleToggleProjectVisibility}
               />
             ))}
+            {isEditing && (userDetails?.pro || visibleProjects.length < 2) && (
+              <div className="flex flex-col gap-4">
+                <div className="rounded-2xl aspect-[16/9] border border-dashed border-black/15 dark:border-white/10 bg-black/[0.015] dark:bg-white/[0.015] flex flex-col items-center justify-center gap-3 transition-colors hover:bg-black/[0.03] dark:hover:bg-white/[0.03]">
+                  <div className="w-10 h-10 rounded-full bg-black/[0.05] dark:bg-white/[0.05] flex items-center justify-center">
+                    <Plus className="w-4 h-4 text-[#7A736C] dark:text-[#9E9893]" />
+                  </div>
+                  <p className="text-[11px] font-medium text-[#A09890] dark:text-[#7A736C] tracking-widest uppercase">New project</p>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      onClick={() => openSidebar(sidebars.project)}
+                      className="h-8 px-3.5 rounded-full text-[12px] font-medium bg-[#1A1A1A] dark:bg-white text-white dark:text-black hover:bg-black/80 dark:hover:bg-white/90 transition-colors shadow-sm flex items-center gap-1.5"
+                    >
+                      <Plus className="w-3 h-3" />
+                      Add Project
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      onClick={() => openModal(modals.aiProject)}
+                      className="h-8 px-3.5 rounded-full text-[12px] font-medium flex items-center gap-1.5"
+                    >
+                      <Sparkles className="w-3 h-3" />
+                      Write with AI
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
             {isEditing && !(userDetails?.pro || visibleProjects.length < 2) && (
               <div className="md:col-span-2">
                 <ProjectLock />

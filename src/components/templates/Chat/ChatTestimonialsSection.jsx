@@ -14,7 +14,6 @@ export default function ChatTestimonialsSection({
   sectionSteps,
   getNextLeftStep,
   canEdit,
-  preview,
 }) {
   const {
     userDetails,
@@ -35,7 +34,7 @@ export default function ChatTestimonialsSection({
     >
       {/* You: Testimonials prompt */}
       <AnimatePresence mode="popLayout">
-        {chatRevealStep >= s(13) && !(preview && reviews.length === 0) && (
+        {chatRevealStep >= s(13) && (reviews.length > 0 || canEdit) && (
           <motion.div
             initial={{ opacity: 0, y: 10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -49,7 +48,7 @@ export default function ChatTestimonialsSection({
 
       {/* Testimonials content */}
       <AnimatePresence mode="popLayout">
-        {chatRevealStep >= s(14) && !(preview && reviews.length === 0) && (
+        {chatRevealStep >= s(14) && (reviews.length > 0 || canEdit) && (
           <>
             {reviews.length > 0 ? (
               <>

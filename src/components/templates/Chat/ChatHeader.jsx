@@ -10,7 +10,7 @@ import { Switch } from "../Canvas/switch-button";
 import { usePersistableThemeToggle } from "@/hooks/usePersistableThemeToggle";
 import { TypingIndicator, ChatAvatar } from "./chatUtils";
 
-export default function ChatHeader({ chatRevealStep, s, canEdit, preview }) {
+export default function ChatHeader({ chatRevealStep, s, canEdit }) {
   const { userDetails, openSidebar } = useGlobalContext();
   const { introduction, bio, skills = [] } = userDetails || {};
 
@@ -176,7 +176,7 @@ export default function ChatHeader({ chatRevealStep, s, canEdit, preview }) {
 
       {/* Skills message */}
       <AnimatePresence mode="popLayout">
-        {chatRevealStep >= s(3) && !(preview && skills.length === 0) && (
+        {chatRevealStep >= s(3) && (skills.length > 0 || canEdit) && (
           <motion.div
             initial={{ opacity: 0, y: 10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}

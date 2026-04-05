@@ -23,7 +23,7 @@ export default function ShimmerInView({ text }) {
         className="text-transparent bg-clip-text inline-block"
         style={{
           backgroundImage:
-            "linear-gradient(to right, hsl(var(--foreground)) 0%, hsl(var(--foreground)) 30%, #5D3560 40%, #E54D2E 50%, #F5A623 60%, hsl(var(--foreground)) 70%, hsl(var(--foreground)) 100%)",
+            "linear-gradient(to right, var(--lp-text) 0%, var(--lp-text) 30%, #5D3560 40%, #E54D2E 50%, #F5A623 60%, var(--lp-text) 70%, var(--lp-text) 100%)",
           backgroundSize: "300% auto",
         }}
       >

@@ -114,7 +114,7 @@ export default function ChatExperienceSection({
                       show={chatRevealStep < getNextLeftStep("works")}
                     />
                   </div>
-                  <div className="bg-[#E5E2DB] dark:bg-[#2A2520] px-4 py-4 rounded-2xl rounded-tl-sm rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5 w-full">
+                  <div className="bg-[#E5E2DB] dark:bg-[#2A2520] px-4 py-4 rounded-2xl rounded-tl-sm rounded-bl-sm transition-colors duration-100 border border-black/5 dark:border-white/5 w-full">
                     {chatRevealStep === s(11) ? (
                       <TypingIndicator />
                     ) : (

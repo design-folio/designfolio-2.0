@@ -72,7 +72,7 @@ export default function ChatToolsSection({
                 show={chatRevealStep < getNextLeftStep("tools")}
               />
             </div>
-            <div className="bg-[#E5E2DB] dark:bg-[#2A2520] px-4 py-4 rounded-2xl rounded-tl-sm rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5 overflow-hidden min-w-0">
+            <div className="bg-[#E5E2DB] dark:bg-[#2A2520] px-4 py-4 rounded-2xl rounded-tl-sm rounded-bl-sm transition-colors duration-100 border border-black/5 dark:border-white/5 overflow-hidden min-w-0">
               {tools.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-8 px-4 text-center">
                   <p className="text-[13px] text-[#7A736C] dark:text-[#9E9893] mb-3">

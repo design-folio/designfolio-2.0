@@ -114,7 +114,7 @@ export default function LandingLeftNav({
                   onSectionClick(id, id === "stories" ? "center" : "start");
                 }}
                 className={cn(
-                  "transition-colors",
+                  "transition-colors cursor-pointer",
                   activeSection === id
                     ? "text-[--lp-accent] font-semibold"
                     : "hover:text-[--lp-text]",

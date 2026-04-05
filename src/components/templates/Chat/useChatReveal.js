@@ -33,13 +33,11 @@ export default function useChatReveal({ preview = false }) {
   const hasCustomAboutImages = about?.pegboardImages?.length > 0;
   const hasAboutContent = hasAboutDescription || hasCustomAboutImages;
 
-  const sectionOrder = userDetails?.sectionOrder || [
-    "tools",
-    "projects",
-    "works",
-    "reviews",
-    "about",
-  ];
+  const DEFAULT_SECTION_ORDER = ["tools", "projects", "works", "reviews", "about"];
+  const sectionOrder =
+    userDetails?.sectionOrder?.length > 0
+      ? userDetails.sectionOrder
+      : DEFAULT_SECTION_ORDER;
 
   const sectionSteps = useMemo(() => {
     const steps = {};

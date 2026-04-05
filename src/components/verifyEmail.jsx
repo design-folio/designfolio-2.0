@@ -74,16 +74,16 @@ export default function VerifyEmail() {
 
     function handleVerifyEmail(data) {
         setLoading(true);
-        _verifyEmail(data)
+        // Must return the promise so Formik resets isSubmitting (see Formik submitForm: if onSubmit returns undefined, consumer must call setSubmitting(false)).
+        return _verifyEmail(data)
             .then((res) => {
                 const token = res?.data?.token;
                 if (token) setToken(token);
                 userDetailsRefecth();
                 router.replace("/builder");
-                setLoading(false);
                 toast.success("Email verified successfully");
             })
-            .catch(() => {
+            .finally(() => {
                 setLoading(false);
             });
     }

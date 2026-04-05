@@ -23,7 +23,6 @@ export default function Index() {
   );
 }
 
-Index.theme = "light";
 
 export async function getServerSideProps(context) {
   const baseProps = await getAuthServerSideProps(context);

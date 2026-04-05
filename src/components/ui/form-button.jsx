@@ -14,7 +14,7 @@ export function FormButton({
         <Button
             variant={variant}
             type={type}
-            className={`w-full rounded-full h-11 px-6 text-base font-semibold no-default-hover-elevate no-default-active-elevate transition-colors ${className}`}
+            className={`w-full rounded-full px-6 text-base font-semibold no-default-hover-elevate no-default-active-elevate transition-colors ${className}`}
             disabled={disabled || isLoading}
             {...props}
         >

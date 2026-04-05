@@ -24,7 +24,7 @@ export default function Canvas({ isEditing, preview = false, publicView = false 
       <CanvasProjectsSection key="projects" isEditing={isEditing} preview={preview} publicView={publicView} />
     ),
     works: isSectionVisible('works') && (
-      <CanvasCareerLadder key="works" isEditing={isEditing} />
+      <CanvasCareerLadder key="works" isEditing={isEditing} preview={preview} />
     ),
     tools: isSectionVisible('tools') && (
       <CanvasToolsMarquee key="tools" isEditing={isEditing} />
@@ -33,7 +33,7 @@ export default function Canvas({ isEditing, preview = false, publicView = false 
       <CanvasAboutSection key="about" isEditing={isEditing} />
     ),
     reviews: isSectionVisible('reviews') && (
-      <CanvasTestimonialsSection key="reviews" isEditing={isEditing} />
+      <CanvasTestimonialsSection key="reviews" isEditing={isEditing} preview={preview} />
     ),
   };
 

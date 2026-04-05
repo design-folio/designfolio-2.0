@@ -75,9 +75,7 @@ export default function LandingLeftNav({
             <span
               className={cn(
                 "cursor-pointer text-sm transition-colors",
-                isDark
-                  ? "text-[--lp-text]/30"
-                  : "text-[--lp-text]",
+                isDark ? "text-[--lp-text]/30" : "text-[--lp-text]",
               )}
               onClick={() => onThemeChange(false)}
             >
@@ -94,9 +92,7 @@ export default function LandingLeftNav({
             <span
               className={cn(
                 "cursor-pointer text-sm transition-colors",
-                !isDark
-                  ? "text-[--lp-text]/30"
-                  : "text-[--lp-text]",
+                !isDark ? "text-[--lp-text]/30" : "text-[--lp-text]",
               )}
               onClick={() => onThemeChange(true)}
             >

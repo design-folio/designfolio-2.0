@@ -135,7 +135,7 @@ function ExperienceCard({
 
 const MemoizedExperienceCard = React.memo(ExperienceCard);
 
-function CanvasCareerLadder({ isEditing }) {
+function CanvasCareerLadder({ isEditing, preview = false }) {
   const { userDetails, openSidebar, openNewWork } = useGlobalContext();
   const { experiences = [] } = userDetails || {};
 
@@ -197,6 +197,10 @@ function CanvasCareerLadder({ isEditing }) {
       clearTimeout(timeoutId);
     };
   }, []);
+
+  if (preview && !isEditing && (experiences?.length ?? 0) === 0) {
+    return null;
+  }
 
   return (
     <motion.div

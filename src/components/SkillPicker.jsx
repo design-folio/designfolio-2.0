@@ -13,7 +13,7 @@ export default function SkillsPicker({ skills, selected, onToggle, onAdd, search
         <>
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }} className="mb-4 md:mb-6">
 
-                <div className="relative bg-input border-2 border-input rounded-full hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--ring)/0.15)] transition-all duration-300 ease-out">
+                <div className="relative">
                     <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
                         <Search className="w-4 h-4 text-muted-foreground/60" />
                     </div>
@@ -22,7 +22,7 @@ export default function SkillsPicker({ skills, selected, onToggle, onAdd, search
                         placeholder="Search skills..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className="border-0 bg-transparent dark:bg-transparent h-11 pl-11 pr-12 focus-visible:ring-0 focus-visible:ring-offset-0 text-base text-foreground placeholder:text-base placeholder:text-muted-foreground/60"
+                        className="pl-10"
                         data-testid="input-skills-search"
                     />
                     {loading && (
@@ -81,7 +81,7 @@ export default function SkillsPicker({ skills, selected, onToggle, onAdd, search
                                     style={{ backgroundColor: "transparent", borderColor: "#FF553E", color: "#FF553E" }}
                                     data-testid="button-add-custom-skill"
                                 >
-                                    <span>Add "{search}" as new skill</span>
+                                    Add "{search}" as new skill
                                 </motion.button>
                             )}
                         </>

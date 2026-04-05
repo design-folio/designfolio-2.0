@@ -28,7 +28,7 @@ export default function DeleteAccount() {
     setText("");
     _deleteUser().then(() => {
       toast.success("Account deleted successfully");
-      Cookies.remove("df-token", {
+      Cookies.remove("", {
         domain: process.env.NEXT_PUBLIC_BASE_DOMAIN,
       });
       setUserDetails(null);

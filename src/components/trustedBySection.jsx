@@ -47,7 +47,7 @@ export default function TrustedBySection({ classNames }) {
                   <img
                     src={logo}
                     alt={`Company logo ${index + 1}`}
-                    className="h-5 sm:h-6 md:h-8 w-auto opacity-50 grayscale hover:opacity-70 hover:grayscale-0 transition-all duration-300"
+                    className="h-5 sm:h-6 md:h-8 w-auto opacity-50 grayscale dark:invert hover:opacity-70 hover:grayscale-0 transition-all duration-300"
                   />
                 </div>
               ))}
@@ -65,7 +65,7 @@ export default function TrustedBySection({ classNames }) {
                   <img
                     src={logo}
                     alt=""
-                    className="h-5 sm:h-6 md:h-8 w-auto opacity-50 grayscale hover:opacity-70 hover:grayscale-0 transition-all duration-300"
+                    className="h-5 sm:h-6 md:h-8 w-auto opacity-50 grayscale dark:invert hover:opacity-70 hover:grayscale-0 transition-all duration-300"
                   />
                 </div>
               ))}

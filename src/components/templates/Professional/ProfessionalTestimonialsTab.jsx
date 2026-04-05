@@ -1,7 +1,7 @@
 import React, { memo, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ChevronsUpDown, Pencil, Play, Plus, Square } from "lucide-react";
+import { Pencil, Play, Plus, Square } from "lucide-react";
 import { parseTiptapToWords, getPlainTextLength } from "@/lib/tiptapUtils";
 import { useGlobalContext } from "@/context/globalContext";
 import { sidebars } from "@/lib/constant";
@@ -178,24 +178,14 @@ function ProfessionalTestimonialsTab({
   return (
     <div className="px-4 md:px-6 pb-20 group/section">
       {isEditing && (
-        <div className="-mx-4 md:-mx-6 px-1 py-2 flex items-center justify-end gap-2 border-b border-[#D5D0C6] dark:border-[#3A352E]">
-          {reviews.length >= 2 && (
-
+        <div className="-mx-4 md:-mx-6 px-1 py-2 flex items-center justify-end gap-2 border-b border-[#D5D0C6] dark:border-[#3A352E] mb-2">
+          {(reviews || []).length >= 2 && (
             <ProfessionalRearrangeButton
               onClick={() => openSidebar(sidebars.sortReviews)}
               title="Rearrange testimonials"
               tooltipText="Rearrange"
             />
           )}
-          <Button
-            variant="outline"
-            size="sm"
-            className="font-inter h-8 flex items-center gap-1.5 px-3 rounded-full border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520] text-[#1A1A1A] dark:text-[#F0EDE7] opacity-100 md:opacity-0 md:group-hover/section:opacity-100 transition-opacity"
-            onClick={onAddReview}
-          >
-            <Plus className="w-3.5 h-3.5" />
-            <span className="text-xs font-medium">Add Testimonial</span>
-          </Button>
           <SectionVisibilityButton
             sectionId="reviews"
             showOnHoverWhenVisible
@@ -203,17 +193,34 @@ function ProfessionalTestimonialsTab({
           />
         </div>
       )}
-      <div className="max-w-2xl space-y-6 mt-4">
-        {reviews.map((review) => (
-          <TestimonialCard
-            key={review._id}
-            review={review}
-            isEditing={isEditing}
-            isPlaying={playingTestimonial === review._id}
-            onPlay={handlePlayTestimonial}
-            onEdit={onEditReview}
-          />
-        ))}
+      <div className="max-w-2xl mt-4">
+        <div className="space-y-6">
+          {(reviews || []).map((review) => (
+            <TestimonialCard
+              key={review._id}
+              review={review}
+              isEditing={isEditing}
+              isPlaying={playingTestimonial === review._id}
+              onPlay={handlePlayTestimonial}
+              onEdit={onEditReview}
+            />
+          ))}
+        </div>
+
+        {isEditing && (
+          <div className="pt-6 mt-4 border-t border-[#D5D0C6]/50 dark:border-[#3A352E]/50 border-dashed">
+            <button
+              type="button"
+              onClick={onAddReview}
+              className="w-full flex items-center justify-center gap-2 py-4 border border-dashed border-[#D5D0C6] dark:border-[#3A352E] rounded-lg text-[#7A736C] dark:text-[#9E9893] hover:border-[#1A1A1A] dark:hover:border-[#F0EDE7] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7] transition-all bg-black/[0.02] dark:bg-white/[0.02] hover:bg-black/[0.04] dark:hover:bg-white/[0.04]"
+            >
+              <Plus className="w-4 h-4" />
+              <span className="font-jetbrains text-[13px] uppercase tracking-wider font-medium">
+                Add New Testimonial
+              </span>
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

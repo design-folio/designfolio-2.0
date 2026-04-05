@@ -8,17 +8,23 @@ import { sidebars } from "@/lib/constant";
 import { CanvasSectionControls, CanvasSectionButton } from "./CanvasSectionControls";
 
 const btnClass =
-  "w-full flex items-center justify-between px-4 py-4 bg-white dark:bg-[#2A2520] rounded-xl border border-black/5 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors group h-auto !shadow-none";
+  "w-full min-w-0 flex items-center justify-between gap-2 px-3 py-3.5 sm:px-4 sm:py-4 bg-white dark:bg-[#2A2520] rounded-xl border border-black/5 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors group h-auto !shadow-none";
 
 
-function LinkButton({ label, icon: Icon, iconRotate = 0, onClick, flex1 = false }) {
+/** flex-[1_1_10rem]: grow/shrink with ~10rem basis so flex-wrap moves items to the next row instead of crushing them. */
+function LinkButton({ label, icon: Icon, iconRotate = 0, onClick }) {
   return (
-    <motion.div whileHover="hover" initial="rest" className={flex1 ? "flex-1" : "w-full"}>
+    <motion.div
+      whileHover="hover"
+      initial="rest"
+      className="min-w-0 flex-[1_1_10rem] max-w-full"
+    >
       <Button variant="outline" size="sm" onClick={onClick} className={btnClass}>
-        <span className="text-[#1A1A1A] dark:text-[#F0EDE7] font-medium text-sm">
+        <span className="text-[#1A1A1A] dark:text-[#F0EDE7] font-medium text-sm truncate min-w-0 text-left">
           {label}
         </span>
         <motion.div
+          className="shrink-0"
           variants={{ rest: { scale: 1, rotate: 0 }, hover: { scale: 1.3, rotate: iconRotate } }}
           transition={{ type: "spring", stiffness: 400, damping: 10 }}
         >
@@ -92,16 +98,15 @@ function CanvasContactSection({ isEditing }) {
           Contact
         </h2>
 
-        {/* Email / Phone row */}
+        {/* Email / Phone */}
         {(email || phone) && (
-          <div className="flex gap-3 mb-3">
+          <div className="flex flex-wrap gap-3 mb-3">
             {email && (
               <LinkButton
                 label={copiedField === "email" ? "Copied!" : "Copy mail"}
                 icon={AtSignIcon}
                 iconRotate={15}
                 onClick={() => handleCopy(email, "email")}
-                flex1
               />
             )}
             {phone && (
@@ -110,21 +115,19 @@ function CanvasContactSection({ isEditing }) {
                 icon={Phone}
                 iconRotate={-15}
                 onClick={() => handleCopy(phone, "phone")}
-                flex1
               />
             )}
           </div>
         )}
 
-        {/* Socials + Resume row */}
+        {/* Socials + Resume */}
         {(socials.linkedin || portfolios.dribbble || socials.twitter || portfolios.medium || resumeUrl) && (
-          <div className="flex gap-3 mb-3">
+          <div className="flex flex-wrap gap-3 mb-3">
             {socials.linkedin && (
               <LinkButton
                 label="Linkedin"
                 icon={Globe}
                 iconRotate={-10}
-                flex1
                 onClick={() => openExternalLink(socials.linkedin)}
               />
             )}
@@ -133,7 +136,6 @@ function CanvasContactSection({ isEditing }) {
                 label="Dribbble"
                 icon={DribbbleIcon}
                 iconRotate={20}
-                flex1
                 onClick={() => openExternalLink(portfolios.dribbble)}
               />
             )}
@@ -142,7 +144,6 @@ function CanvasContactSection({ isEditing }) {
                 label="X"
                 icon={TwitterIcon}
                 iconRotate={-20}
-                flex1
                 onClick={() => openExternalLink(socials.twitter)}
               />
             )}
@@ -151,7 +152,6 @@ function CanvasContactSection({ isEditing }) {
                 label="Medium"
                 icon={Globe}
                 iconRotate={15}
-                flex1
                 onClick={() => openExternalLink(portfolios.medium)}
               />
             )}
@@ -160,7 +160,6 @@ function CanvasContactSection({ isEditing }) {
                 label="Resume"
                 icon={FileText}
                 iconRotate={-15}
-                flex1
                 onClick={() => openExternalLink(resumeUrl)}
               />
             )}

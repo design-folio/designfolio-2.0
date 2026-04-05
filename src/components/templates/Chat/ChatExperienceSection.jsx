@@ -83,7 +83,7 @@ export default function ChatExperienceSection({
       {/* You: Experience Prompt */}
       <AnimatePresence mode="popLayout">
         {chatRevealStep >= s(10) &&
-          !(preview && experiences.length === 0) && (
+          (experiences.length > 0 || canEdit) && (
             <motion.div
               initial={{ opacity: 0, y: 10, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -98,7 +98,7 @@ export default function ChatExperienceSection({
       {/* Experience Details */}
       <AnimatePresence mode="popLayout">
         {chatRevealStep >= s(11) &&
-          !(preview && experiences.length === 0) && (
+          (experiences.length > 0 || canEdit) && (
             <>
               {experiences.length > 0 ? (
                 <motion.div

@@ -75,7 +75,7 @@ export default function ChatProjectsSection({
       {/* You: "Can I see your work?" */}
       <AnimatePresence mode="popLayout">
         {chatRevealStep >= s(7) &&
-          !(preview && visibleProjects.length === 0) && (
+          (visibleProjects.length > 0 || canEdit) && (
             <motion.div
               initial={{ opacity: 0, y: 10, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -90,7 +90,7 @@ export default function ChatProjectsSection({
       {/* "And here's some recent work" */}
       <AnimatePresence mode="popLayout">
         {chatRevealStep >= s(8) &&
-          !(preview && visibleProjects.length === 0) && (
+          (visibleProjects.length > 0 || canEdit) && (
             <motion.div
               initial={{ opacity: 0, y: 10, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -244,7 +244,7 @@ export default function ChatProjectsSection({
       )}
 
       {/* Projects empty state */}
-      {visibleProjects.length === 0 && chatRevealStep >= s(8) && !preview && (
+      {visibleProjects.length === 0 && chatRevealStep >= s(8) && canEdit && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}

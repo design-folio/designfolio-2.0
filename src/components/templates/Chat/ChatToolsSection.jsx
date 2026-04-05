@@ -13,7 +13,6 @@ export default function ChatToolsSection({
   sectionSteps,
   getNextLeftStep,
   canEdit,
-  preview,
 }) {
   const { userDetails, openSidebar } = useGlobalContext();
   const { skills = [], tools = [] } = userDetails || {};
@@ -31,7 +30,7 @@ export default function ChatToolsSection({
       {/* You: "What are the tools you work with?" */}
       <AnimatePresence mode="popLayout">
         {chatRevealStep >= s(4) &&
-          !(preview && skills.length === 0 && tools.length === 0) && (
+          (skills.length > 0 || tools.length > 0 || canEdit) && (
             <motion.div
               initial={{ opacity: 0, y: 10, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -45,7 +44,7 @@ export default function ChatToolsSection({
 
       {/* Tools bubble */}
       <AnimatePresence mode="popLayout">
-        {chatRevealStep >= s(6) && !(preview && tools.length === 0) && (
+        {chatRevealStep >= s(6) && (tools.length > 0 || canEdit) && (
           <motion.div
             initial={{ opacity: 0, y: 10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}

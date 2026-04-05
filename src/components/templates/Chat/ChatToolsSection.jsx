@@ -1,11 +1,11 @@
 import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { Pencil, Plus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGlobalContext } from "@/context/globalContext";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { sidebars } from "@/lib/constant";
-import { TypingIndicator, ChatAvatar, YouPrompt } from "./chatUtils";
+import { ChatAvatar, YouPrompt } from "./chatUtils";
 
 export default function ChatToolsSection({
   chatRevealStep,
@@ -27,7 +27,8 @@ export default function ChatToolsSection({
       className="flex flex-col gap-3"
       style={{ order: sectionSteps.tools - 3 }}
     >
-      {/* You: "Can I see your work?" */}
+
+      {/* You: "What are the tools you work with?" */}
       <AnimatePresence mode="popLayout">
         {chatRevealStep >= s(4) &&
           !(preview && skills.length === 0 && tools.length === 0) && (
@@ -37,52 +38,9 @@ export default function ChatToolsSection({
               transition={{ duration: 0.3 }}
               className="flex justify-end relative group/msg"
             >
-              <YouPrompt>Can I see your work?</YouPrompt>
+              <YouPrompt>What are the tools you work with?</YouPrompt>
             </motion.div>
           )}
-      </AnimatePresence>
-
-      {/* Skills message */}
-      <AnimatePresence mode="popLayout">
-        {chatRevealStep >= s(5) && !(preview && skills.length === 0) && (
-          <motion.div
-            initial={{ opacity: 0, y: 10, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.3 }}
-            className="flex gap-3 max-w-[85%] relative group/msg"
-          >
-            {canEdit && chatRevealStep >= s(6) && (
-              <div className="absolute -left-2 top-1/2 -translate-y-1/2 z-40 transition-opacity flex gap-1.5 opacity-0 group-hover/msg:opacity-100">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    openSidebar?.(sidebars.skills);
-                  }}
-                >
-                  <Pencil className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                </Button>
-              </div>
-            )}
-            <div className="w-8 h-8 shrink-0 mt-auto flex items-end">
-              <ChatAvatar
-                avatarSrc={avatarSrc}
-                show={chatRevealStep < s(6)}
-              />
-            </div>
-            <div className="bg-[#E5E2DB] dark:bg-[#2A2520] px-4 py-3 rounded-2xl rounded-tl-sm rounded-bl-sm text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed transition-colors duration-300 border border-black/5 dark:border-white/5 min-h-[46px] flex items-center">
-              {chatRevealStep === s(5) ? (
-                <TypingIndicator />
-              ) : skills.length > 0 ? (
-                `My skills are ${skills.map((sk) => sk.label).join(", ")}`
-              ) : (
-                "I have a range of skills to offer"
-              )}
-            </div>
-          </motion.div>
-        )}
       </AnimatePresence>
 
       {/* Tools bubble */}

@@ -12,7 +12,6 @@ import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
-import MadeWithDesignfolio from "../../../../public/assets/svgs/madewithdesignfolio.svg";
 import WallpaperBackground from "@/components/WallpaperBackground";
 import { getWallpaperUrl } from "@/lib/wallpaper";
 import MacOSWindowShell from "@/components/templates/MacOSDock/MacOSWindowShell";
@@ -24,6 +23,7 @@ import CanvasProjectCta from "@/components/templates/Canvas/CanvasProjectCta";
 import MonoProjectFooter from "@/components/templates/Mono/MonoProjectFooter";
 import ProfessionalProjectInfo from "@/components/templates/Professional/ProfessionalProjectInfo";
 import ChatProjectView from "@/components/templates/Chat/ChatProjectView";
+import MemoMadewithdesignfolio from "@/components/icons/Madewithdesignfolio";
 
 export default function Index({
   data,
@@ -186,7 +186,7 @@ export default function Index({
           case TEMPLATE_IDS.CANVAS:
             return "max-w-[640px] mx-auto flex flex-col gap-3 pb-20 pt-[40px] px-4 md:px-0";
           case TEMPLATE_IDS.MONO:
-            return "max-w-[640px] mx-auto pb-20 pt-[80px] custom-dashed-x bg-[#F0EDE7] dark:bg-[#1A1A1A] min-h-screen";
+            return "max-w-[640px] mx-auto pb-20  custom-dashed-x bg-[#F0EDE7] dark:bg-[#1A1A1A] min-h-screen";
           default:
             return "max-w-[848px] mx-auto pt-[16px] pb-[80px] lg:py-[40px] px-2 md:px-4 lg:px-0";
         }
@@ -226,7 +226,7 @@ export default function Index({
                 </motion.div>
                 {project?.contentVersion === 2 && project?.tiptapContent ? (
                   <motion.div variants={itemVariants} className={isMono ? "px-5 md:px-8 py-6" : ""}>
-                    <TiptapRenderer key={project._id} content={project.tiptapContent} />
+                    <TiptapRenderer key={project._id} content={project.tiptapContent} className="!p-0 shadow-none bg-transparent" />
                   </motion.div>
                 ) : project?.content ? (
                   <motion.div variants={itemVariants} className={isMono ? "px-5 md:px-8 py-6" : ""}>
@@ -298,9 +298,7 @@ export default function Index({
                 window.open("https://www.designfolio.me", "_blank")
               }
             >
-              <div className="bg-df-section-card-bg-color shadow-lg p-2 rounded-2xl">
-                <MadeWithDesignfolio className="text-df-icon-color" />
-              </div>
+              <MemoMadewithdesignfolio />
             </div>
           )}
         </main>

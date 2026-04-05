@@ -105,7 +105,7 @@ const ProjectContentView = ({ projectId, userDetails }) => {
             </motion.div>
             {project?.contentVersion === 2 && project?.tiptapContent ? (
               <motion.div variants={itemVariants}>
-                <TiptapRenderer content={project.tiptapContent} />
+                <TiptapRenderer content={project.tiptapContent} cla/>
               </motion.div>
             ) : project?.content ? (
               <motion.div variants={itemVariants}>

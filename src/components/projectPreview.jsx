@@ -51,6 +51,7 @@ export default function ProjectPreview({ projectDetails }) {
           {hasTiptapContent && (
             <motion.div variants={itemVariants} className={isMono ? "px-5 md:px-8 py-6" : ""}>
               <TiptapRenderer
+                className="!p-0 shadow-none bg-transparent"
                 key={projectDetails?.project?._id}
                 content={projectDetails?.project?.tiptapContent}
               />

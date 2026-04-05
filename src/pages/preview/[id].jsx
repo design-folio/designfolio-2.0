@@ -12,11 +12,11 @@ import { useQuery } from "@tanstack/react-query";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import MadeWithDesignfolio from "../../../public/assets/svgs/madewithdesignfolio.svg";
 import WallpaperBackground from "@/components/WallpaperBackground";
 import Canvas from "@/components/templates/Canvas";
 import Mono from "@/components/templates/Mono";
 import Professional from "@/components/templates/Professional";
+import MemoMadewithdesignfolio from "@/components/icons/Madewithdesignfolio";
 
 export default function Index({ initialUserDetails }) {
   const { setTheme, theme, resolvedTheme } = useTheme();
@@ -71,7 +71,7 @@ export default function Index({ initialUserDetails }) {
         setWallpaperEffects(wp.effects);
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userDetailsId, userDetailsUpdatedAt]);
 
   const wp = finalUserDetails?.wallpaper;
@@ -84,9 +84,9 @@ export default function Index({ initialUserDetails }) {
       className="text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] xl:block cursor-pointer mb-[120px] lg:m-0"
       onClick={() => window.open("https://www.designfolio.me", "_blank")}
     >
-      <div className="bg-df-section-card-bg-color shadow-df-section-card-shadow p-2 rounded-2xl">
-        <MadeWithDesignfolio className="text-df-icon-color" />
-      </div>
+
+      <MemoMadewithdesignfolio />
+
     </div>
   );
 
@@ -100,7 +100,7 @@ export default function Index({ initialUserDetails }) {
         return <><Minimal userDetails={finalUserDetails} />{ProBadge}</>;
       case TEMPLATE_IDS.MONO:
         return <><Mono preview publicView />{ProBadge}</>;
-        case TEMPLATE_IDS.PROFESSIONAL:
+      case TEMPLATE_IDS.PROFESSIONAL:
         return <><Professional isEditing={false} />{ProBadge}</>;
       case TEMPLATE_IDS.RETRO_OS:
         return <><MacOSTemplate userDetails={finalUserDetails} />{ProBadge}</>;

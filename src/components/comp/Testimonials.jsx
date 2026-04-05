@@ -44,7 +44,7 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
   const isMobile = useIsMobile();
   const visibleTestimonials = showMore ? reviews : reviews?.slice(0, 4);
   const theme = useTheme();
-  const { openSidebar, setSelectedReview, setUserDetails, updateCache } = useGlobalContext();
+  const { openSidebar, openNewReview, setSelectedReview, setUserDetails, updateCache } = useGlobalContext();
 
   const sortSensors = useSensors(
     useSensor(PointerSensor),
@@ -331,9 +331,9 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
       {edit && (
         <div className="flex items-center gap-2 mt-6">
           <AddItem
-            className="bg-df-section-card-bg-color shadow-df-section-card-shadow flex-1"
+            className="bg-card shadow-df-section-card-shadow flex-1"
             title="Add your testimonial"
-            onClick={() => openSidebar(sidebars.review)}
+            onClick={() => openNewReview()}
             iconLeft={
               reviews?.length > 0 ? (
                 <Button2
@@ -341,7 +341,7 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
                   icon={
                     <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
                   }
-                  onClick={() => openSidebar(sidebars.review)}
+                  onClick={() => openNewReview()}
                   size="small"
                   text
                 />
@@ -356,7 +356,7 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
                   icon={
                     <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
                   }
-                  onClick={() => openSidebar(sidebars.review)}
+                  onClick={() => openNewReview()}
                   size="small"
                 />
               ) : (

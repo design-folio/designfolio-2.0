@@ -5,7 +5,7 @@ import Signup from "@/components/signup";
 
 export default function Index() {
   return (
-    <div className="bg-background-landing min-h-screen overflow-hidden">
+    <div className="min-h-screen overflow-hidden" style={{ background: "var(--lp-bg)" }}>
       <Seo
         title={"Designfolio - Build your Design Portfolio Website super Fast"}
         description={
@@ -23,7 +23,6 @@ export default function Index() {
   );
 }
 
-Index.theme = "light";
 
 export async function getServerSideProps(context) {
   const baseProps = await getAuthServerSideProps(context);

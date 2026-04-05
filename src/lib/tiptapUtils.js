@@ -119,3 +119,81 @@ export function tiptapToDisplayString(content) {
     return out.replace(/\n{3,}/g, '\n\n');
 }
 
+export function parseTiptapToWords(desc) {
+    const segments = [];
+
+    const walkContent = (node, inheritedMarks = []) => {
+        if (!node) return;
+        if (node.type === 'text' && node.text) {
+            segments.push({ text: node.text, marks: [...inheritedMarks, ...(node.marks || [])] });
+            return;
+        }
+        if (node.type === 'bulletList' && node.content) {
+            node.content.forEach((li) => {
+                segments.push({ text: '• ', marks: [], blockType: 'bullet' });
+                (li.content || []).forEach((child) => walkContent(child, inheritedMarks));
+                segments.push({ text: '\n', marks: [], blockType: 'break' });
+            });
+            return;
+        }
+        if (node.type === 'orderedList' && node.content) {
+            node.content.forEach((li, i) => {
+                segments.push({ text: `${i + 1}. `, marks: [], blockType: 'bullet' });
+                (li.content || []).forEach((child) => walkContent(child, inheritedMarks));
+                segments.push({ text: '\n', marks: [], blockType: 'break' });
+            });
+            return;
+        }
+        if (node.content && Array.isArray(node.content)) {
+            node.content.forEach((child) => walkContent(child, inheritedMarks));
+            if (['paragraph', 'heading', 'blockquote'].includes(node.type)) {
+                segments.push({ text: '\n', marks: [], blockType: 'break' });
+            }
+        }
+    };
+
+    if (!desc) return [];
+    if (typeof desc === 'string') {
+        const plain = tiptapToDisplayString(desc);
+        if (!plain) return [];
+        segments.push({ text: plain, marks: [] });
+    } else if (typeof desc === 'object') {
+        const root = desc.type === 'doc' ? desc : desc;
+        (root.content || []).forEach((n) => walkContent(n));
+        while (segments.length && segments[segments.length - 1].blockType === 'break') {
+            segments.pop();
+        }
+    }
+
+    if (!segments.length) return [];
+
+    const chars = [];
+    segments.forEach((seg) => {
+        const hasBold      = (seg.marks || []).some((m) => m.type === 'bold');
+        const hasItalic    = (seg.marks || []).some((m) => m.type === 'italic');
+        const hasUnderline = (seg.marks || []).some((m) => m.type === 'underline');
+        const hasStrike    = (seg.marks || []).some((m) => m.type === 'strike');
+        const hasHighlight = (seg.marks || []).some((m) => m.type === 'highlight');
+        for (const ch of seg.text) {
+            chars.push({ ch, bold: hasBold, italic: hasItalic, underline: hasUnderline, strike: hasStrike, highlight: hasHighlight, blockType: seg.blockType });
+        }
+    });
+
+    if (!chars.length) return [];
+
+    const words = [];
+    let currentWord = [];
+    chars.forEach((c) => {
+        if (c.ch === '\n') {
+            if (currentWord.length) { words.push(currentWord); currentWord = []; }
+            words.push([{ ...c, isBreak: true }]);
+        } else if (c.ch === ' ') {
+            if (currentWord.length) { words.push(currentWord); currentWord = []; }
+        } else {
+            currentWord.push(c);
+        }
+    });
+    if (currentWord.length) words.push(currentWord);
+
+    return words;
+}

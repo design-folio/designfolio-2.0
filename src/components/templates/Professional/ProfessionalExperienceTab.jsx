@@ -1,0 +1,180 @@
+import React, { memo, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { ChevronsUpDown, Pencil, Plus } from "lucide-react";
+import { parseTiptapToWords } from "@/lib/tiptapUtils";
+import { useGlobalContext } from "@/context/globalContext";
+import { sidebars } from "@/lib/constant";
+import { SectionVisibilityButton } from "@/components/section";
+import { ProfessionalRearrangeButton } from "./ProfessionalRearrangeButton";
+
+function ExperienceDescription({ desc }) {
+  const words = parseTiptapToWords(desc);
+  if (!words.length) return null;
+
+  return (
+    <motion.p
+      variants={{ hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.015 } } }}
+      initial="hidden"
+      animate="show"
+      className="font-jetbrains text-[15px] leading-relaxed max-w-xl break-words whitespace-normal"
+      style={{ color: "var(--tiptap-work-paragraph, #7a736c)" }}
+    >
+      {words.map((word, wordIndex) => {
+        if (word.length === 1 && word[0].isBreak) return <br key={`br-${wordIndex}`} />;
+        return (
+          <span key={wordIndex} className="inline-block whitespace-nowrap">
+            {word.map((c, charIndex) => {
+              let cls = "inline-block";
+              if (c.bold) cls += " font-bold";
+              if (c.italic) cls += " italic";
+              if (c.underline) cls += " underline";
+              if (c.strike) cls += " line-through";
+              return (
+                <motion.span
+                  key={charIndex}
+                  variants={{ hidden: { opacity: 0, filter: "blur(4px)", y: 4 }, show: { opacity: 1, filter: "blur(0px)", y: 0 } }}
+                  transition={{ duration: 0.2 }}
+                  className={cls}
+                  style={c.highlight ? { backgroundColor: "#f9daa3", borderRadius: "0.125rem", padding: "0.125rem 0", color: "black" } : undefined}
+                >
+                  {c.ch}
+                </motion.span>
+              );
+            })}
+            {wordIndex < words.length - 1 && !(words[wordIndex + 1]?.[0]?.isBreak) && (
+              <span className="inline-block">&nbsp;</span>
+            )}
+          </span>
+        );
+      })}
+    </motion.p>
+  );
+}
+
+function ExperienceItem({
+  exp,
+  isExpanded,
+  onToggle,
+  isEditing,
+  onEdit,
+}) {
+  return (
+    <div className="group border-b border-[#D5D0C6] dark:border-[#3A352E] last:border-0 hover:bg-[#DED9CE]/30 dark:hover:bg-white/[0.02] transition-colors -mx-4 px-4 md:-mx-6 md:px-6 relative">
+      {isEditing && (
+        <div className="absolute top-4 right-4 md:right-6 z-20 transition-opacity flex gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100">
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit(exp);
+            }}
+          >
+            <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+          </Button>
+        </div>
+      )}
+      <button
+        onClick={onToggle}
+        className="w-full flex flex-col sm:flex-row sm:items-center sm:justify-between py-5 gap-2 sm:gap-4 text-left cursor-pointer"
+      >
+        <div className="flex items-center gap-4">
+          <motion.span
+            animate={{ rotate: isExpanded ? 45 : 0 }}
+            className="text-[#1A1A1A] dark:text-[#F0EDE7] font-light text-lg leading-none transition-colors w-4 h-4 flex items-center justify-center shrink-0"
+          >
+            +
+          </motion.span>
+          <span className="font-jetbrains text-[#1A1A1A] dark:text-[#F0EDE7] text-[14px] font-medium tracking-wide uppercase">
+            <span className="text-[#7A736C] dark:text-[#9E9893] mr-2">
+              {exp.startYear} /
+            </span>
+            {exp.company}
+          </span>
+        </div>
+        <span className="font-jetbrains text-[#7A736C] dark:text-[#9E9893] text-[14px] uppercase tracking-wider group-hover:text-[#1A1A1A] dark:group-hover:text-[#F0EDE7] transition-colors ml-8 sm:ml-0">
+          {exp.role}
+        </span>
+      </button>
+      <AnimatePresence>
+        {isExpanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+            className="overflow-hidden"
+          >
+            <div className="pb-6 pl-12 pr-4 sm:pr-0">
+              <ExperienceDescription desc={exp.description} />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function ProfessionalExperienceTab({
+  isEditing,
+  experiences,
+  onEditExperience,
+  onAddExperience,
+}) {
+  const { openSidebar } = useGlobalContext();
+  const [expandedIndex, setExpandedIndex] = useState(null);
+
+  return (
+    <div className="px-4 md:px-6 pb-20 group/section">
+      {isEditing && (
+        <div className="-mx-4 md:-mx-6 px-1 py-2 flex items-center justify-end gap-2 border-b border-[#D5D0C6] dark:border-[#3A352E] mb-2">
+          {experiences.length >= 2 && (
+            <ProfessionalRearrangeButton
+              onClick={() => openSidebar(sidebars.sortWorks)}
+              title="Rearrange experience"
+              tooltipText="Rearrange"
+            />
+          )}
+          <SectionVisibilityButton
+            sectionId="works"
+            showOnHoverWhenVisible
+            className="h-8 w-8 rounded-full border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520]"
+          />
+        </div>
+      )}
+      <div className="space-y-0">
+        {experiences.map((exp, index) => (
+          <ExperienceItem
+            key={exp._id || index}
+            exp={exp}
+            index={index}
+            isExpanded={expandedIndex === index}
+            onToggle={() =>
+              setExpandedIndex(expandedIndex === index ? null : index)
+            }
+            isEditing={isEditing}
+            onEdit={onEditExperience}
+          />
+        ))}
+
+        {isEditing && (
+          <div className="pt-6 mt-4 border-t border-[#D5D0C6]/50 dark:border-[#3A352E]/50 border-dashed">
+            <button
+              onClick={onAddExperience}
+              className="w-full flex items-center justify-center gap-2 py-4 border border-dashed border-[#D5D0C6] dark:border-[#3A352E] rounded-lg text-[#7A736C] dark:text-[#9E9893] hover:border-[#1A1A1A] dark:hover:border-[#F0EDE7] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7] transition-all bg-black/[0.02] dark:bg-white/[0.02] hover:bg-black/[0.04] dark:hover:bg-white/[0.04]"
+            >
+              <Plus className="w-4 h-4" />
+              <span className="font-jetbrains text-[13px] uppercase tracking-wider font-medium">
+                Add New Experience
+              </span>
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default memo(ProfessionalExperienceTab);

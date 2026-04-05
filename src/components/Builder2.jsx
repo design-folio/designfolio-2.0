@@ -58,8 +58,8 @@ import ProjectLock from "./projectLock";
 import ClampableTiptapContent from "./ClampableTiptapContent";
 import Text from "./text";
 import { Button as ButtonNew } from "./ui/buttonNew";
-import DragHandle from "./DragHandle";
 import SortIcon from "../../public/assets/svgs/sort.svg";
+import DragHandle from "./DragHandle";
 import ReviewCard from "./reviewCard";
 import SortableModal from "./SortableModal";
 import { AboutMeContent } from "./aboutMe";
@@ -134,6 +134,8 @@ export default function Builder2({ edit = false }) {
     userDetails,
     openModal,
     openSidebar,
+    openNewWork,
+    openNewReview,
     setSelectedProject,
     setSelectedWork,
     setSelectedReview,
@@ -216,21 +218,6 @@ export default function Builder2({ edit = false }) {
   const [expandedReviewCards, setExpandedReviewCards] = useState([]);
   const [showAllReviews, setShowAllReviews] = useState(false);
 
-  const toggleExpandReview = (id) => {
-    setExpandedReviewCards((prev) =>
-      prev.includes(id) ? prev.filter((cardId) => cardId !== id) : [...prev, id]
-    );
-  };
-
-  const [expandedExperienceCards, setExpandedExperienceCards] = useState([]);
-  const [showAllExperiences, setShowAllExperiences] = useState(false);
-
-  const toggleExpandExperience = (id) => {
-    setExpandedExperienceCards((prev) =>
-      prev.includes(id) ? prev.filter((cardId) => cardId !== id) : [...prev, id]
-    );
-  };
-
   // Reviews sorting state and handlers
   const [showReviewSortModal, setShowReviewSortModal] = useState(false);
 
@@ -261,6 +248,21 @@ export default function Builder2({ edit = false }) {
     setUserDetails((prev) => ({ ...prev, reviews: sortedReviews }));
     _updateUser({ reviews: sortedReviews }).then((res) =>
       updateCache("userDetails", res?.data?.user)
+    );
+  };
+
+  const toggleExpandReview = (id) => {
+    setExpandedReviewCards((prev) =>
+      prev.includes(id) ? prev.filter((cardId) => cardId !== id) : [...prev, id]
+    );
+  };
+
+  const [expandedExperienceCards, setExpandedExperienceCards] = useState([]);
+  const [showAllExperiences, setShowAllExperiences] = useState(false);
+
+  const toggleExpandExperience = (id) => {
+    setExpandedExperienceCards((prev) =>
+      prev.includes(id) ? prev.filter((cardId) => cardId !== id) : [...prev, id]
     );
   };
 
@@ -488,7 +490,7 @@ export default function Builder2({ edit = false }) {
                             <Button
                               text={"Add case study"}
                               customClass="w-fit gap-1 items-center h-11"
-                              onClick={() => openModal(modals.project)}
+                              onClick={() => openSidebar(sidebars.project)}
                               icon={
                                 <PlusIcon className="text-primary-btn-text-color w-[20px] h-[20px] mb-[2px] cursor-pointer" />
                               }
@@ -521,7 +523,7 @@ export default function Builder2({ edit = false }) {
                             first={projects?.length !== 0}
                             buttonTitle="Add case study"
                             secondaryButtonTitle="Write using AI"
-                            onClick={() => openModal(modals.project)}
+                            onClick={() => openSidebar(sidebars.project)}
                             icon={<MemoCasestudy className="cursor-pointer size-[72px]" />}
                             openModal={openModal}
                             className="flex justify-center items-center flex-col p-4 flex-1 min-w-0"
@@ -554,7 +556,7 @@ export default function Builder2({ edit = false }) {
                           : "Add more reviews"
                           } `}
                         subTitle="Share colleague's feedback."
-                        onClick={() => openSidebar(sidebars.review)}
+                        onClick={() => openNewReview()}
                         className={
                           "flex justify-center items-center flex-col p-4 w-[340px] flex-1 min-w-0"
                         }
@@ -651,7 +653,7 @@ export default function Builder2({ edit = false }) {
                       <AddItem
                         className="flex-1"
                         title="Add testimonial"
-                        onClick={() => openSidebar(sidebars.review)}
+                        onClick={() => openNewReview()}
                         iconLeft={
                           userDetails?.reviews?.length > 0 ? (
                             <Button
@@ -659,7 +661,7 @@ export default function Builder2({ edit = false }) {
                               icon={
                                 <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
                               }
-                              onClick={() => openSidebar(sidebars.review)}
+                              onClick={() => openNewReview()}
                               size="small"
                             />
                           ) : (
@@ -722,7 +724,7 @@ export default function Builder2({ edit = false }) {
                             <PlusIcon className="text-secondary-btn-text-color w-[18px] h-[18px] cursor-pointer" />
                           }
                           size="icon"
-                          onClick={() => openModal(modals.tools)}
+                          onClick={() => openSidebar(sidebars.tools)}
                         />
                         <SectionVisibilityButton sectionId="tools" className="h-[52px]" />
                       </>
@@ -807,7 +809,7 @@ export default function Builder2({ edit = false }) {
                         <AddItem
                           className="flex-1 min-w-0"
                           title="Add your work experience"
-                          onClick={() => openSidebar(sidebars.work)}
+                          onClick={() => openNewWork()}
                           iconLeft={
                             userDetails?.experiences?.length > 0 ? (
                               <Button
@@ -815,7 +817,7 @@ export default function Builder2({ edit = false }) {
                                 icon={
                                   <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
                                 }
-                                onClick={() => openSidebar(sidebars.work)}
+                                onClick={() => openNewWork()}
                                 size="small"
                               />
                             ) : (
@@ -831,7 +833,7 @@ export default function Builder2({ edit = false }) {
                                 icon={
                                   <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
                                 }
-                                onClick={() => openSidebar(sidebars.work)}
+                                onClick={() => openNewWork()}
                                 size="small"
                               />
                             ) : (
@@ -1126,3 +1128,4 @@ const SortableReviewItemBuilder2 = ({ review, edit }) => {
     </div>
   );
 };
+

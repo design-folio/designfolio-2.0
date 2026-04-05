@@ -1,0 +1,129 @@
+/* Canvas template theme tokens (light + dark) */
+[data-template="professional"] {
+  --background: #f0ede7;
+  --card: #ffffff;
+  --secondary: #ffffff;
+  --secondary-hover: #faf8f5;
+  --secondary-border: #e0d8ce;
+  --secondary-border-hover: #c8bdb0;
+  --accent: 38 16% 88%;
+  --muted: 38 14% 90%;
+  --border: 38 15% 88%;
+  --sidebar: 0 0% 100%;
+  --sidebar-accent: 38 18% 88%;
+  --primary: #202937;
+  --primary-foreground: #ffffff;
+  --primary-hover: #35435a;
+  --ring: 217 26% 17%;
+  --sidebar-primary: 217 26% 17%;
+  --sidebar-ring: 217 26% 17%;
+  /* Tiptap text tokens — all modes share one colour in Canvas */
+  --tiptap-text: #7a736c;
+  --tiptap-work-paragraph: var(--tiptap-text);
+  --tiptap-review-paragraph: var(--tiptap-text);
+  --tiptap-work-list: var(--tiptap-text);
+  --tiptap-review-list: var(--tiptap-text);
+}
+
+[data-theme="dark"][data-template="professional"] {
+  --background: #1a1a1a;
+  --card: #2a2520;
+  --secondary: #302b25;
+  --secondary-hover: #3a342d;
+  --secondary-border: #4a4238;
+  --secondary-border-hover: #5e5449;
+  --accent: 25 15% 22%;
+  --muted: 25 12% 20%;
+  --border: 25 12% 24%;
+  --sidebar: 30 14% 15%;
+  --sidebar-accent: 25 15% 22%;
+  --primary: #f0f0f0;
+  --primary-foreground: #1a1a1a;
+  --primary-hover: #ffffff;
+  --sidebar-primary: 0 0% 90%;
+  --sidebar-ring: 0 0% 90%;
+  /* Tiptap dark tokens — all modes share one colour in Canvas */
+  --tiptap-text: #b5afa5;
+  --tiptap-work-paragraph: var(--tiptap-text);
+  --tiptap-review-paragraph: var(--tiptap-text);
+  --tiptap-work-list: var(--tiptap-text);
+  --tiptap-review-list: var(--tiptap-text);
+}
+
+[data-template="professional"] .custom-dashed-x {
+  position: relative;
+}
+
+[data-template="professional"] .custom-dashed-x::before,
+[data-template="professional"] .custom-dashed-x::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-image: linear-gradient(to bottom, #e5d7c4 50%, transparent 50%);
+  background-size: 1px 10px;
+  z-index: 0;
+  pointer-events: none;
+}
+
+[data-template="professional"] .custom-dashed-x::before {
+  left: 0;
+}
+
+[data-template="professional"] .custom-dashed-x::after {
+  right: 0;
+}
+
+[data-template="professional"] .custom-dashed-t {
+  height: 1px;
+  width: 100%;
+  background-image: linear-gradient(to right, #e5d7c4 50%, transparent 50%);
+  background-size: 10px 1px;
+}
+
+[data-template="professional"] .dino-color {
+  fill: #535353;
+}
+
+[data-template="professional"] .custom-solid-x {
+  position: relative;
+}
+
+[data-template="professional"] .custom-solid-x::before,
+[data-template="professional"] .custom-solid-x::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-color: #d5d0c6;
+  pointer-events: none;
+  z-index: 50;
+}
+
+[data-template="professional"] .custom-solid-x::before {
+  left: 0;
+}
+
+[data-template="professional"] .custom-solid-x::after {
+  right: 0;
+}
+
+[data-theme="dark"][data-template="professional"] .custom-dashed-x::before,
+[data-theme="dark"][data-template="professional"] .custom-dashed-x::after {
+  background-image: linear-gradient(to bottom, #3a352e 50%, transparent 50%);
+}
+
+[data-theme="dark"][data-template="professional"] .custom-dashed-t {
+  background-image: linear-gradient(to right, #3a352e 50%, transparent 50%);
+}
+
+[data-theme="dark"][data-template="professional"] .dino-color {
+  fill: #b5afa5;
+}
+
+[data-theme="dark"][data-template="professional"] .custom-solid-x::before,
+[data-theme="dark"][data-template="professional"] .custom-solid-x::after {
+  background-color: #3a352e;
+}

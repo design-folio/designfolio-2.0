@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
-import { Button } from "./ui/buttonNew";
+import { Button } from "./ui/button";
 import Dropdown from "./dropdown";
 import Text from "./text";
 import AnalyticsChart from "./analyticsChart";
@@ -54,7 +54,7 @@ function Analytics({ }) {
       animate="visible"
     >
       <motion.div variants={itemVariants}>
-        <section className={cn("bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words")}>
+        <section className={cn("bg-card shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words")}>
           <div className="flex flex-col gap-4">
             <div className="flex items-center">
               <Button
@@ -69,7 +69,7 @@ function Analytics({ }) {
 
             <div className="flex items-center justify-between mt-1">
               <div className="flex flex-col">
-                <h1 className="text-[28px] md:text-[39px] font-inter font-[500] leading-[130%] text-df-heading-color">
+                <h1 className="text-[24px] font-semibold text-primary tracking-tight leading-tight">
                   Insights
                 </h1>
 
@@ -103,7 +103,7 @@ function Analytics({ }) {
             </div>
 
             <div
-              className={`bg-review-card-bg-color p-[16px] border flex flex-col justify-between border-review-card-border-color rounded-[16px]`}
+              className={`bg-muted p-[16px] border flex flex-col justify-between border-border rounded-[16px]`}
             >
               <h1 className="text-[20px] md:text-[39px] font-inter font-[500] leading-[130%] text-df-heading-color">
                 {uniqueVisits}

@@ -1,0 +1,21 @@
+/* Template-aware token overrides — applied via data-template on <html> */
+/*
+  Custom DF tokens NOT in standard shadcn (defined in globals.scss, must be overridden per template):
+    --secondary-hover        : button/surface hover background
+    --secondary-border       : default border on secondary buttons
+    --secondary-border-hover : border on secondary button hover
+  Standard shadcn tokens also overridden here:
+    --background, --card, --accent, --muted, --border, --secondary,
+    --primary, --primary-foreground, --ring, --sidebar-*
+*/
+
+/* Template-specific theme files */
+@import "./templates/canvas.css";
+@import "./templates/mono.css";
+@import "./templates/retroos.css";
+@import "./templates/professional.css";
+@import "./templates/chatfolio.css";
+@import "./templates/spotlight.css";
+
+/* Landing + auth + legal pages */
+@import "./templates/landing.css";

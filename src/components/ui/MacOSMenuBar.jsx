@@ -219,7 +219,7 @@ export default function MacOSMenuBar({
 
   return (
     <div
-      className={`fixed left-0 h-7 backdrop-blur-md z-[9999] flex justify-between items-center px-4 select-none ${className}`}
+      className={`fixed left-0 h-7 backdrop-blur-md z-[99] flex justify-between items-center px-4 select-none ${className}`}
       style={{
         top: 0,
         right: 0,

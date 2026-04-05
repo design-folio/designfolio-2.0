@@ -1,15 +1,15 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import * as Yup from "yup";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { _checkUsername, _updateUsername } from "@/network/post-request";
 import { toast } from "react-toastify";
 import { useGlobalContext } from "@/context/globalContext";
-import Button from "./button";
-import { Badge } from "./ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { formatTimestamp } from "@/lib/times";
-import { Clock } from "lucide-react";
+import { Clock, CheckCircle2, XCircle } from "lucide-react";
 
-// Yup validation schema
 const DomainValidationSchema = Yup.object().shape({
   domain: Yup.string()
     .matches(
@@ -20,9 +20,10 @@ const DomainValidationSchema = Yup.object().shape({
 });
 
 export default function DefaultDomain() {
-  const [isAvailable, setIsAvailable] = useState(false);
+  const [isAvailable, setIsAvailable] = useState(true);
   const [domainValue, setDomainValue] = useState("");
   const { userDetails, setUserDetails } = useGlobalContext();
+  const debounceRef = useRef(null);
 
   const handleClaim = () => {
     _updateUsername({ username: domainValue }).then(() => {
@@ -31,173 +32,131 @@ export default function DefaultDomain() {
     });
   };
 
-  const debounce = (func, delay) => {
-    let inDebounce;
-    return function () {
-      const context = this;
-      const args = arguments;
-      clearTimeout(inDebounce);
-      inDebounce = setTimeout(() => func.apply(context, args), delay);
-    };
-  };
+  const checkUsername = useCallback((value) => {
+    if (value === userDetails?.username) {
+      setIsAvailable(true);
+      return;
+    }
 
-  // API call function
-  const checkUsername = (value) => {
-    if (value.length != 0) {
+    if (value.length !== 0) {
       _checkUsername({ username: value })
         .then((response) => {
           setIsAvailable(response?.data?.available ?? false);
         })
-        .catch((error) => {
-          // Handle error
-          console.error(error);
-        });
+        .catch((error) => console.error(error));
+    } else {
+      setIsAvailable(true);
     }
-  };
+  }, [userDetails?.username]);
 
-  // Debounced API call
-  const debouncedCheckUsername = useCallback(debounce(checkUsername, 200), []);
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, []);
 
-  // Formik handleChange function with API call
   const handleChange = (e, setFieldValue) => {
     const { value, name } = e.target;
     setFieldValue(name, value);
     setDomainValue(value);
-    debouncedCheckUsername(value);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => checkUsername(value), 200);
   };
 
   const formatedValue = formatTimestamp(userDetails?.latestPublishDate);
 
-  if (!userDetails?.username) {
-    return <></>;
-  }
+  if (!userDetails?.username) return null;
 
   return (
     <div>
-      <div className="flex items-center gap-2">
-        <p className="text-[20px] text-df-section-card-heading-color font-[500] font-inter ">
+      <div className="flex items-center gap-2 flex-wrap">
+        <p className="text-[18px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
           Base domain
         </p>
-        <Badge
-          variant=""
-          className={"text-[#15803D] bg-[#DCFCE7] gap-1 items-center"}
-        >
-          <svg
-            width="9"
-            height="8"
-            viewBox="0 0 9 8"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle cx="4.5" cy="4" r="4" fill="#22C55E" />
-          </svg>
+        <Badge className="text-[#15803D] bg-[#DCFCE7] dark:bg-[#14532D]/30 dark:text-[#4ADE80] border-0 gap-1 items-center">
+          <span className="w-2 h-2 rounded-full bg-[#22C55E] inline-block" />
           Connected
         </Badge>
       </div>
-      <p className="text-[#4d545f] dark:text-[#B4B8C6] text-[12.8px] font-[400] leading-[22.4px] font-inter mt-2">
-        This is your current Designfolio link. You can change your username
-        anytime (if it's available).
+      <p className="text-[13px] text-[#7A736C] dark:text-[#B5AFA5] mt-1 leading-relaxed">
+        This is your current Designfolio link. You can change your username anytime (if it&apos;s available).
       </p>
+
       <Formik
         initialValues={{ domain: userDetails?.username ?? "" }}
         validationSchema={DomainValidationSchema}
         onSubmit={(values, actions) => {
-          // Handle form submission
-
-          if (values.domain != 0) {
+          if (values.domain) {
             handleClaim();
             actions.setSubmitting(false);
           }
         }}
       >
-        {({
-          isSubmitting,
-          isValid,
-          setFieldValue,
-          values,
-          errors,
-          touched,
-        }) => (
-          <Form
-            id={"usernameForm"}
-            className="w-full mt-[24px] flex flex-col lg:flex-row items-center gap-6"
-          >
-            <div className="flex-1 flex flex-col xl:flex-row items-end  gap-4  w-full">
-              <div className="w-full">
-                <div className="relative">
-                  <Field
-                    type="text"
-                    name="domain"
-                    placeholder="Your-name"
-                    autoComplete="off"
-                    className={`text-input ${((!!errors.domain && values.domain) ||
-                        (!isAvailable && values.domain)) &&
-                      "!text-df-error"
+        {({ isSubmitting, isValid, setFieldValue, values, errors, touched }) => (
+          <Form id="usernameForm" className="w-full mt-6 flex flex-col lg:flex-row items-start lg:items-center gap-4">
+            <div className="flex-1 w-full">
+              <div className="relative">
+                <Field name="domain">
+                  {({ field }) => (
+                    <Input
+                      {...field}
+                      type="text"
+                      placeholder="your-name"
+                      autoComplete="off"
+                      className={`pr-44 ${
+                        (touched.domain && !!errors.domain) ||
+                        (touched.domain &&
+                          values.domain &&
+                          values.domain !== userDetails?.username &&
+                          !errors.domain &&
+                          !isAvailable)
+                          ? "border-destructive focus-visible:ring-destructive"
+                          : ""
                       }`}
-                    onChange={(e) => handleChange(e, setFieldValue)}
-                  />
-                  <div className="bg-[#F4F6FA] dark:bg-[#4d545f] p-3 rounded-full absolute top-[3.5px] right-[3.5px] flex items-center gap-2">
-                    <div className="font-inter font-semibold text-base leading-normal text-[#202937] dark:text-[#E9EAEB]">
-                      designfolio.me
-                    </div>
-                    <div className="flex justify-center items-center gap-[10px]">
-                      {domainValue &&
-                        values?.domain !== userDetails?.username && (
-                          <>
-                            {isAvailable ? (
-                              <img
-                                src="/assets/svgs/checkbox.svg"
-                                className="w-[18px] h-[18px]"
-                                alt="designfolio logo"
-                              />
-                            ) : (
-                              <img
-                                src="/assets/svgs/no.svg"
-                                className="w-[18px] h-[18px]"
-                                alt="designfolio logo"
-                              />
-                            )}
-                          </>
-                        )}
-                    </div>
-                  </div>
+                      onChange={(e) => handleChange(e, setFieldValue)}
+                    />
+                  )}
+                </Field>
+                <div className="absolute top-1/2 -translate-y-1/2 right-1.5 bg-[#F4F6FA] dark:bg-[#35302A] px-3 py-1.5 rounded-lg flex items-center gap-2">
+                  <span className="text-[13px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
+                    designfolio.me
+                  </span>
+                  {domainValue && values.domain !== userDetails?.username && (
+                    isAvailable
+                      ? <CheckCircle2 className="w-4 h-4 text-green-500" />
+                      : <XCircle className="w-4 h-4 text-red-500" />
+                  )}
                 </div>
-                <ErrorMessage
-                  name="domain"
-                  component="div"
-                  className="error-message text-[14px] absolute"
-                />
               </div>
-            </div>
-            <div className="flex justify-end w-full lg:w-fit">
-              <Button
-                text={"Change username"}
-                form={"usernameForm"}
-                isLoading={isSubmitting}
-                isDisabled={
-                  isSubmitting ||
-                  !isValid ||
-                  values?.domain == userDetails?.username
-                }
-                btnType="submit"
-                customClass="w-full lg:w-fit"
+              <ErrorMessage
+                name="domain"
+                component="p"
+                className="text-destructive text-[13px] mt-1"
               />
             </div>
+
+            <Button
+              type="submit"
+              form="usernameForm"
+              disabled={isSubmitting || !isValid || values.domain === userDetails?.username}
+              className="w-full lg:w-fit rounded-full"
+            >
+              Change username
+            </Button>
           </Form>
         )}
       </Formik>
 
-      <div className="lg:flex items-center gap-6 mt-6">
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-[#22C55E]"></div>
-          <p className=" font-inter font-medium text-sm text-[#4d545f] dark:text-[#B4B8C6]">
-            Published & optimized
+      <div className="flex flex-wrap items-center gap-4 mt-5">
+        <div className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-[#22C55E]" />
+          <p className="text-[13px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">
+            Published &amp; optimized
           </p>
         </div>
-
-        <div className="flex items-center gap-2 mt-2 lg:mt-0">
-          <Clock className="w-4 h-4 text-[#4d545f] dark:text-[#B4B8C6]" />
-          <p className="font-inter font-medium text-sm text-[#4d545f] dark:text-[#B4B8C6]">
+        <div className="flex items-center gap-1.5">
+          <Clock className="w-3.5 h-3.5 text-[#7A736C] dark:text-[#B5AFA5]" />
+          <p className="text-[13px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">
             Updated {formatedValue}
           </p>
         </div>

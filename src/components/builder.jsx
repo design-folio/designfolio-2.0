@@ -80,7 +80,7 @@ export default function Builder() {
       />
     ),
     tools: (
-      <Tools userDetails={userDetails} openModal={openModal} edit />
+      <Tools userDetails={userDetails} edit />
     ),
     works: (
       <Works

@@ -402,7 +402,7 @@ const ProjectEditor = ({ projectDetails, userDetails }) => {
 
   return (
     <>
-      <div className="project-editor bg-df-section-card-bg-color rounded-[24px] p-[16px] md:p-[32px]">
+      <div className="project-editor bg-card rounded-[24px] p-[16px] md:p-[32px]">
         <div
           ref={editorContainer}
           className={'block w-[100%] mx-0 my-auto'}

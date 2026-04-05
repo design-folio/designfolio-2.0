@@ -1,11 +1,11 @@
 import { useGlobalContext } from "@/context/globalContext";
 import { useRouter } from "next/router";
-import MadeWithDesignfolio from "../../public/assets/svgs/madewithdesignfolio.svg";
 import { useState } from "react";
 import Dock from "@/components/ui/dock";
 import { Home, Layers, MessageSquare, FileText, Mail } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import MemoMadewithdesignfolio from "./icons/Madewithdesignfolio";
 
 export default function BottomNavigation({
   userDetails,
@@ -129,9 +129,9 @@ export default function BottomNavigation({
           className={`hidden text-center lg:flex justify-center lg:fixed lg:right-[36px] lg:bottom-[24px] xl:block cursor-pointer ${watermarkClassName}`}
           onClick={() => window.open("https://www.designfolio.me", "_blank")}
         >
-          <div className="bg-df-section-card-bg-color shadow-df-section-card-shadow p-2 rounded-2xl">
-            <MadeWithDesignfolio className="text-df-icon-color" />
-          </div>
+
+          <MemoMadewithdesignfolio />
+
         </div>
       )}
       {/* Resume Dialog */}

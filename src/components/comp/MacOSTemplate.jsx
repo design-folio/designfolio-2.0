@@ -1,28 +1,56 @@
 import { useEffect, useRef, useCallback, useState } from "react";
 import { motion } from "framer-motion";
 import MacOSMenuBar from "@/components/ui/MacOSMenuBar";
-import MacOSDock from "@/components/MacOSDock";
+import MacOSDock from "@/components/templates/MacOSDock";
 import { DivOrigami } from "@/components/ui/animated-logo-rolodex";
 import { useGlobalContext } from "@/context/globalContext";
 import { cn } from "@/lib/utils";
-import { getSidebarShiftWidth, isSidebarThatShifts, modals, sidebars } from "@/lib/constant";
+import {
+  getSidebarShiftWidth,
+  isSidebarThatShifts,
+  modals,
+  sidebars,
+} from "@/lib/constant";
 import SortableModal from "@/components/SortableModal";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import {
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { _updateUser } from "@/network/post-request";
 import {
   TestimonialWidget,
   SortableTestimonialItem,
-} from "@/components/MacOSDock/TestimonialWidget";
-import { SortableWorkExperienceItem } from "@/components/MacOSDock/WorkExperienceWindow";
+} from "@/components/templates/MacOSDock/TestimonialWidget";
+import { SortableWorkExperienceItem } from "@/components/templates/MacOSDock/WorkExperienceWindow";
 
-
-
-const MacOSTemplate = ({ userDetails, edit = false, preview = false, showHeaderInside = false, noTopNavbar = false }) => {
-  const { setCursor, openSidebar, openModal, setSelectedReview, setSelectedWork, setUserDetails, updateCache, activeSidebar, showModal, template } = useGlobalContext();
+const MacOSTemplate = ({
+  userDetails,
+  edit = false,
+  preview = false,
+  showHeaderInside = false,
+  noTopNavbar = false,
+}) => {
+  const {
+    setCursor,
+    openSidebar,
+    openNewWork,
+    openNewReview,
+    openModal,
+    setSelectedReview,
+    setSelectedWork,
+    setUserDetails,
+    updateCache,
+    activeSidebar,
+    showModal,
+    template,
+  } = useGlobalContext();
   const isProWarningVisible = template !== 0;
-  const isOnboardingOpen = showModal === modals.onboarding || showModal === modals.onBoardingNewUser;
+  const isOnboardingOpen =
+    showModal === modals.onboarding || showModal === modals.onBoardingNewUser;
   const isMobile = useIsMobile();
 
   useEffect(() => {
@@ -36,17 +64,23 @@ const MacOSTemplate = ({ userDetails, edit = false, preview = false, showHeaderI
   }, []);
 
   const appName =
-    [userDetails?.firstName, userDetails?.lastName].filter(Boolean).join(" ") + "'s Portfolio" ||
-    "Portfolio";
+    [userDetails?.firstName, userDetails?.lastName].filter(Boolean).join(" ") +
+      "'s Portfolio" || "Portfolio";
 
-  const loggedInHeaderOffset = (edit && !noTopNavbar) ? 62 : 0;
+  const loggedInHeaderOffset = edit && !noTopNavbar ? 62 : 0;
   const macOSMenuBarTop = loggedInHeaderOffset;
-  const desktopTopMargin = (edit && !noTopNavbar) ? loggedInHeaderOffset + 28 : (showHeaderInside ? 152 : 28);
+  const desktopTopMargin =
+    edit && !noTopNavbar
+      ? loggedInHeaderOffset + 28
+      : showHeaderInside
+        ? 152
+        : 28;
 
   // Sidebar shift: when a sidebar opens, shift the fixed-position elements to the left
-  const sidebarShiftWidth = edit && !isMobile && isSidebarThatShifts(activeSidebar)
-    ? getSidebarShiftWidth(activeSidebar)
-    : "0px";
+  const sidebarShiftWidth =
+    edit && !isMobile && isSidebarThatShifts(activeSidebar)
+      ? getSidebarShiftWidth(activeSidebar)
+      : "0px";
   const sidebarTransition = "right 0.3s cubic-bezier(0.4, 0, 0.2, 1)";
 
   const [activeTab, setActiveTab] = useState("home");
@@ -56,10 +90,10 @@ const MacOSTemplate = ({ userDetails, edit = false, preview = false, showHeaderI
   // and drops to 200 when a project window is active (project portal at 250 wins).
   const dockWrapperRef = useRef(null);
   const bringDockToFront = useCallback(() => {
-    if (dockWrapperRef.current) dockWrapperRef.current.style.zIndex = '400';
+    if (dockWrapperRef.current) dockWrapperRef.current.style.zIndex = "400";
   }, []);
   const bringProjectToFront = useCallback(() => {
-    if (dockWrapperRef.current) dockWrapperRef.current.style.zIndex = '200';
+    if (dockWrapperRef.current) dockWrapperRef.current.style.zIndex = "200";
   }, []);
   const [showSortModal, setShowSortModal] = useState(false);
   const [showWorkSortModal, setShowWorkSortModal] = useState(false);
@@ -71,7 +105,7 @@ const MacOSTemplate = ({ userDetails, edit = false, preview = false, showHeaderI
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 
   const handleSortEnd = (event) => {
@@ -84,7 +118,7 @@ const MacOSTemplate = ({ userDetails, edit = false, preview = false, showHeaderI
 
     setUserDetails((prev) => ({ ...prev, reviews: sortedReviews }));
     _updateUser({ reviews: sortedReviews }).then((res) =>
-      updateCache("userDetails", res?.data?.user)
+      updateCache("userDetails", res?.data?.user),
     );
   };
 
@@ -95,8 +129,7 @@ const MacOSTemplate = ({ userDetails, edit = false, preview = false, showHeaderI
   };
 
   const handleAddReview = () => {
-    setSelectedReview(null);
-    openSidebar(sidebars.review);
+    openNewReview();
   };
 
   const handleWidgetEditClick = () => {
@@ -113,7 +146,7 @@ const MacOSTemplate = ({ userDetails, edit = false, preview = false, showHeaderI
 
     setUserDetails((prev) => ({ ...prev, experiences: sorted }));
     _updateUser({ experiences: sorted }).then((res) =>
-      updateCache("userDetails", res?.data?.user)
+      updateCache("userDetails", res?.data?.user),
     );
   };
 
@@ -124,22 +157,28 @@ const MacOSTemplate = ({ userDetails, edit = false, preview = false, showHeaderI
   };
 
   const handleAddWork = () => {
-    setSelectedWork(null);
-    openSidebar(sidebars.work);
+    openNewWork();
     setShowWorkSortModal(false);
   };
 
   const dockApps = [
     { id: "home", name: "Home", icon: "/macosicons/header.svg" },
     { id: "works", name: "Works", icon: "/macosicons/projects.svg" },
-    { id: "work_experience", name: "Work Experience", icon: "/macosicons/work-experience.svg" },
+    {
+      id: "work_experience",
+      name: "Work Experience",
+      icon: "/macosicons/work-experience.svg",
+    },
     { id: "about", name: "About Me", icon: "/macosicons/aboutme.svg" },
     { id: "resume", name: "Resume", icon: "/macosicons/resume.svg" },
     { id: "contact", name: "Contact", icon: "/macosicons/contact.svg" },
   ];
 
   // In non-edit mode, hide Resume from dock if user has no resume
-  const visibleDockApps = (edit || userDetails?.resume?.url) ? dockApps : dockApps.filter((a) => a.id !== "resume");
+  const visibleDockApps =
+    edit || userDetails?.resume?.url
+      ? dockApps
+      : dockApps.filter((a) => a.id !== "resume");
 
   const handleAppClick = (appId) => {
     if (appId === "resume") {
@@ -160,14 +199,14 @@ const MacOSTemplate = ({ userDetails, edit = false, preview = false, showHeaderI
         window.scrollTo({ top: 0, behavior: "smooth" });
       } else {
         const element = document.getElementById(targetId);
-        if (element) element.scrollIntoView({ behavior: "smooth", block: "center" });
+        if (element)
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
       }
     }
   };
 
   return (
     <div className="relative min-h-screen">
-
       {!isOnboardingOpen && (
         <MacOSMenuBar
           appName={appName}
@@ -180,7 +219,10 @@ const MacOSTemplate = ({ userDetails, edit = false, preview = false, showHeaderI
       )}
 
       {/* Desktop area — starts below the menu bar (and LoggedInHeader in edit mode) */}
-      <div className="min-h-screen relative overflow-hidden" style={{ marginTop: `${desktopTopMargin}px` }}>
+      <div
+        className="min-h-screen relative overflow-hidden"
+        style={{ marginTop: `${desktopTopMargin}px` }}
+      >
         {/* Desktop Widgets Layer — fixed, pointer-events only on widgets, shifts with sidebar */}
         <div
           className="fixed left-0 bottom-0 pointer-events-none z-10 overflow-hidden"
@@ -197,7 +239,7 @@ const MacOSTemplate = ({ userDetails, edit = false, preview = false, showHeaderI
             transition={{ delay: 0.3 }}
             className={cn(
               "absolute left-0 right-0 top-0 bottom-0 md:right-auto md:left-8 md:bottom-auto flex flex-col gap-6 pointer-events-auto items-center justify-center md:items-stretch md:justify-start min-w-0 max-w-full md:max-w-none px-4 md:px-0",
-              isProWarningVisible ? "md:top-24" : "md:top-16"
+              isProWarningVisible ? "md:top-24" : "md:top-16",
             )}
           >
             <TestimonialWidget
@@ -210,7 +252,6 @@ const MacOSTemplate = ({ userDetails, edit = false, preview = false, showHeaderI
               <DivOrigami userDetails={userDetails} />
             </div>
           </motion.div>
-
         </div>
 
         {/* Empty desktop surface — the windows float above via MacOSDock's fixed positioning */}
@@ -226,10 +267,15 @@ const MacOSTemplate = ({ userDetails, edit = false, preview = false, showHeaderI
             transition: sidebarTransition,
           }}
         >
-          <div className="pointer-events-auto w-full h-full" style={{ position: "relative" }}>
+          <div
+            className="pointer-events-auto w-full h-full"
+            style={{ position: "relative" }}
+          >
             <MacOSDock
               apps={visibleDockApps}
-              openApps={[activeTab, isResumeDialogOpen ? "resume" : ""].filter(Boolean)}
+              openApps={[activeTab, isResumeDialogOpen ? "resume" : ""].filter(
+                Boolean,
+              )}
               onAppClick={handleAppClick}
               userDetails={userDetails}
               edit={edit}
@@ -243,8 +289,8 @@ const MacOSTemplate = ({ userDetails, edit = false, preview = false, showHeaderI
               onEditContact={() => openSidebar(sidebars.footer)}
               onEditWorkExperience={() => setShowWorkSortModal(true)}
               onAddWorkExperience={handleAddWork}
-              onAddProject={() => openModal(modals.project)}
-              onEditTools={() => openModal(modals.tools)}
+              onAddProject={() => openSidebar(sidebars.project)}
+              onEditTools={() => openSidebar(sidebars.tools)}
               onEditSkills={() => openModal(modals.onboarding)}
               onEditResume={() => openModal(modals.resume)}
             />

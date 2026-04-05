@@ -5,11 +5,10 @@ import { AnimatePresence, motion } from "framer-motion";
 import * as Yup from "yup";
 import { _checkUsername } from "@/network/post-request";
 import { AuthLayout } from "@/components/ui/auth-layout";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { Check } from "lucide-react";
-import { FormButton } from "./ui/form-button";
+import { Button } from "@/components/ui/button";
 import { DomainValidationSchema } from "@/lib/validationSchemas";
 
 
@@ -106,19 +105,19 @@ export default function ClaimLink() {
             <Label htmlFor="domain" className="text-sm font-medium text-foreground">
               Your Domain
             </Label>
-            <div className="flex items-center bg-white dark:bg-white border-2 border-border rounded-full hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] transition-all duration-300 ease-out overflow-hidden">
-              <Input
+            <div className="flex h-10 w-full items-center rounded-xl border border-transparent bg-black/[0.03] dark:bg-white/[0.03] px-3.5 transition-colors focus-within:bg-transparent focus-within:ring-2 focus-within:ring-black/10 dark:focus-within:ring-white/10 focus-within:border-black/20 dark:focus-within:border-white/20">
+              <input
                 id="domain"
                 type="text"
                 placeholder="yourname"
                 value={domain}
                 onChange={handleDomainChange}
                 required
-                className="border-0 bg-transparent h-11 px-4 focus-visible:ring-0 focus-visible:ring-offset-0 text-base text-foreground placeholder:text-base placeholder:text-muted-foreground/60 flex-1"
                 data-testid="input-domain"
+                className="min-w-0 flex-1 bg-transparent py-1 text-sm text-foreground outline-none placeholder:text-black/30 dark:placeholder:text-white/30 disabled:cursor-not-allowed disabled:opacity-50"
               />
-              <div className="flex items-center gap-2 pr-4">
-                <span className="text-sm text-muted-foreground/60 whitespace-nowrap">
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <span className="text-sm text-foreground/40 whitespace-nowrap select-none">
                   .designfolio.me
                 </span>
                 {loading && domain && (
@@ -128,19 +127,8 @@ export default function ClaimLink() {
                     fill="none"
                     viewBox="0 0 24 24"
                   >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V2.5A9.5 9.5 0 002.5 12H4z"
-                    ></path>
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V2.5A9.5 9.5 0 002.5 12H4z" />
                   </svg>
                 )}
               </div>
@@ -202,13 +190,15 @@ export default function ClaimLink() {
 
 
 
-          <FormButton
+          <Button
+            variant="darker"
             type="submit"
-            disabled={!domain.trim() || !isAvailable || loading || validationError}
+            className="w-full rounded-full h-11 px-6 text-base font-semibold no-default-hover-elevate no-default-active-elevate transition-colors"
+            disabled={!domain.trim() || !isAvailable || loading || !!validationError}
             data-testid="button-claim-domain"
           >
             Continue
-          </FormButton>
+          </Button>
 
           <p className="text-center text-sm text-foreground/70 mt-6">
             Already have an account?{" "}

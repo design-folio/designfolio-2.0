@@ -1,10 +1,22 @@
 // Utility functions for wallpaper - DOM manipulation moved to WallpaperBackground component
 
-export const getWallpaperUrl = (value, theme = "light") => {
+import { TEMPLATE_IDS } from "./templates";
+
+export const getWallpaperUrl = (value, theme = "light", templateId) => {
     if (typeof value === "string") {
         return value;
     }
     const basePath = theme === "dark" ? "/wallpaper/darkui" : "/wallpaper";
+    const isRetroOS = templateId === TEMPLATE_IDS.RETRO_OS;
+
+    // Retro OS default is wall8 — resolve 0/null/undefined to wall8
+    if (isRetroOS && (!value || value === 0)) {
+        return `${basePath}/wall8.png`;
+    }
+    // Legacy: value 8 stored in DB for non-Retro OS — treat as no wallpaper
+    if (value === 8 && !isRetroOS) {
+        return null;
+    }
 
     switch (value) {
         case 1:
@@ -35,6 +47,9 @@ export const extractWallpaperValue = (wallpaper) => {
         : wallpaper;
 };
 
-export const hasNoWallpaper = (value) => {
+export const hasNoWallpaper = (value, templateId) => {
+    const isRetroOS = templateId === TEMPLATE_IDS.RETRO_OS;
+    // MacOS default (0) resolves to wall8 — not "no wallpaper"
+    if (isRetroOS && (!value || value === 0)) return false;
     return !value || value === 0 || value === null || value === undefined || value === "";
 };

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/router";
-import { Button } from "./ui/buttonNew";
+import { Button } from "@/components/ui/button";
 import Stepper from "./Stepper";
 import ErrorBanner from "./ErrorBanner";
 import SectionTitle from "./SectionTitle";
@@ -280,6 +280,7 @@ export default function Onboarding() {
   return (
     <div
       className="fixed inset-0 z-[1000] overflow-hidden bg-background"
+      style={{ paddingBottom: "env(safe-area-inset-bottom)" }} // Add this to handle safe area on iOS
       onClick={(e) => e.stopPropagation()}
       role="dialog"
       aria-modal="true"
@@ -383,7 +384,7 @@ export default function Onboarding() {
                   <Button onClick={() => setCurrentStep(3)} variant="outline" className="h-11 rounded-full px-6">
                     Back
                   </Button>
-                  <Button onClick={handleNext} disabled={loading} className="flex-1 h-11 rounded-full bg-foreground text-background font-semibold">
+                  <Button onClick={handleNext} disabled={loading} className="flex-1 h-11 rounded-full">
                     {loading ? "Saving..." : "Get Started"}
                     <ArrowRight className="ml-2 w-4 h-4" />
                   </Button>

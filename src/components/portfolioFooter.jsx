@@ -81,7 +81,7 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
   const wp = userDetails?.wallpaper;
   const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
   const currentTheme = resolvedTheme || 'light';
-  const wallpaperUrl = wpValue && wpValue !== 0 ? getWallpaperUrl(wpValue, currentTheme) : null;
+  const wallpaperUrl = getWallpaperUrl(wpValue ?? 0, currentTheme, userDetails?.template);
   const selectedWallpaper = wallpaperUrl;
 
   // Generate wallpaper mask pattern (pegboard effect)

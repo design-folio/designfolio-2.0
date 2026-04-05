@@ -30,16 +30,21 @@ export const sidebars = {
   review: "review",
   footer: "footer",
   about: "about",
+  tools: "tools",
+  project: "project",
+  sortProjects: "sortProjects",
+  sortReviews: "sortReviews",
+  sortWorks: "sortWorks",
+  profile: "profile",
+  skills: "skills",
+  persona: "persona",
 };
 
+/** Canonical list of sidebar ids used across the app */
+export const ALL_SIDEBARS = Object.values(sidebars);
+
 /** Sidebars that cause header/card layout to shift on desktop (used by loggedInHeader and CourseCard) */
-export const SIDEBARS_THAT_SHIFT = [
-  sidebars.theme,
-  sidebars.review,
-  sidebars.work,
-  sidebars.footer,
-  sidebars.about,
-];
+export const SIDEBARS_THAT_SHIFT = [...ALL_SIDEBARS];
 
 export const isSidebarThatShifts = (activeSidebar) =>
   SIDEBARS_THAT_SHIFT.includes(activeSidebar);
@@ -48,13 +53,21 @@ export const isSidebarThatShifts = (activeSidebar) =>
 export const SIDEBAR_SHIFT_WIDTHS = {
   [sidebars.work]: "500px",
   [sidebars.review]: "500px",
-  [sidebars.theme]: "320px",
+  [sidebars.project]: "500px",
+  [sidebars.theme]: "400px",
   [sidebars.footer]: "320px",
   [sidebars.about]: "320px",
+  [sidebars.tools]: "400px",
+  [sidebars.sortProjects]: "400px",
+  [sidebars.sortReviews]: "400px",
+  [sidebars.sortWorks]: "400px",
+  [sidebars.profile]: "400px",
+  [sidebars.skills]: "400px",
+  [sidebars.persona]: "400px",
 };
 
 export const getSidebarShiftWidth = (activeSidebar) =>
-  SIDEBAR_SHIFT_WIDTHS[activeSidebar] ?? "0";
+  SIDEBAR_SHIFT_WIDTHS[activeSidebar] ?? "400px";
 
 // Ensure sectionOrder always contains all available sections (e.g. after adding new blocks)
 export const normalizeSectionOrder = (rawOrder, availableSections = DEFAULT_SECTION_ORDER) => {

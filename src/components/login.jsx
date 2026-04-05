@@ -12,6 +12,7 @@ import { FormInput } from '@/components/ui/form-input';
 import { FormButton } from '@/components/ui/form-button';
 import { GoogleButton } from '@/components/ui/google-button';
 import { Divider } from '@/components/ui/divider';
+import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { usePostHogEvent } from '@/hooks/usePostHogEvent';
 import { usePostHogIdentify } from '@/hooks/usePostHogIdentify';
@@ -248,8 +249,9 @@ export default function Login() {
 
           <Divider />
 
-          <div
-            className="bg-white border border-border rounded-full px-5 py-3 flex items-center justify-center gap-3 hover-elevate cursor-pointer"
+          <Button
+            variant="outline"
+            className="w-full rounded-full h-[50px] px-5 text-base font-medium border-border bg-[--input-bg-color] hover:bg-muted gap-3"
             onClick={() => {
               event(POSTHOG_EVENT_NAMES.LOGIN_STARTED);
               event(POSTHOG_EVENT_NAMES.LOGIN_METHOD_SELECTED, {
@@ -258,11 +260,9 @@ export default function Login() {
               setLoginStep('email');
             }}
           >
-            <Mail className="w-5 h-5 text-foreground" />
-            <span className="text-base font-medium text-foreground">
-              Log in with Email
-            </span>
-          </div>
+            <Mail className="w-5 h-5" />
+            Log in with Email
+          </Button>
         </div>
 
         <p className="text-center text-sm text-foreground/70 mt-8">

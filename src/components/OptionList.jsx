@@ -22,7 +22,7 @@ export default function OptionList({ items, selected, onSelect, testPrefix, mess
                             className="px-6 py-4 rounded-2xl border-2 text-base font-medium transition-all hover-elevate text-left flex items-center gap-4 relative overflow-hidden"
                             style={
                                 isSelected
-                                    ? { backgroundColor: "#FFF5F0", borderColor: "#FF553E", color: "#FF553E" }
+                                    ? { backgroundColor: "var(--onboarding-selected-bg)", borderColor: "#FF553E", color: "#FF553E" }
                                     : { backgroundColor: "transparent", borderColor: "hsl(var(--border))", color: "hsl(var(--foreground))" }
                             }
                             data-testid={`${testPrefix}-${item.label.toLowerCase().replace(/\s+/g, "-")}`}

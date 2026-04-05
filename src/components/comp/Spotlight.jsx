@@ -31,7 +31,7 @@ import MemoWorkExperience from "../icons/WorkExperience";
 
 export const Spotlight = ({ userDetails, edit, headerActions }) => {
   const { experiences } = userDetails || {};
-  const { openSidebar, setSelectedWork, updateCache, setUserDetails } =
+  const { openSidebar, openNewWork, setSelectedWork, updateCache, setUserDetails } =
     useGlobalContext();
   const { theme } = useTheme();
 
@@ -236,9 +236,9 @@ export const Spotlight = ({ userDetails, edit, headerActions }) => {
       </DndContext>
       {edit && (
         <AddItem
-          className="bg-df-section-card-bg-color shadow-df-section-card-shadow mt-4"
+          className="bg-card shadow-df-section-card-shadow mt-4"
           title="Add your work experience"
-          onClick={() => openSidebar(sidebars.work)}
+          onClick={() => openNewWork()}
           iconLeft={
             sortedExperiences?.length > 0 ? (
               <Button
@@ -246,7 +246,7 @@ export const Spotlight = ({ userDetails, edit, headerActions }) => {
                 icon={
                   <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
                 }
-                onClick={() => openSidebar(sidebars.work)}
+                onClick={() => openNewWork()}
                 size="small"
               />
             ) : (
@@ -260,7 +260,7 @@ export const Spotlight = ({ userDetails, edit, headerActions }) => {
                 icon={
                   <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
                 }
-                onClick={() => openSidebar(sidebars.work)}
+                onClick={() => openNewWork()}
                 size="small"
               />
             ) : (

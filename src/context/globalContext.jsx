@@ -1,5 +1,6 @@
 import { setCursorvalue } from "@/lib/cursor";
-import { getWallpaperUrl, hasNoWallpaper } from "@/lib/wallpaper";
+import { getWallpaperUrl, hasNoWallpaper, extractWallpaperValue } from "@/lib/wallpaper";
+import { useRouter } from "next/router";
 import { mapPendingPortfolioToUpdatePayload } from "@/lib/mapPendingPortfolioToUpdatePayload";
 import { _getDomainDetails, _getUserDetails, _getPersonas, _getTools } from "@/network/get-request";
 import { _updateUser } from "@/network/post-request";
@@ -8,6 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import Cookies from "js-cookie";
 import { useTheme } from "next-themes";
 import { popovers, sidebars, DEFAULT_SECTION_ORDER } from "@/lib/constant";
+import { TEMPLATES_BY_ID } from "@/lib/templates";
 import { useDebouncedCallback } from "use-debounce";
 import React, {
   createContext,
@@ -29,6 +31,7 @@ export const useGlobalContext = () => {
 
 // Provider component to wrap your app and provide the context
 export const GlobalProvider = ({ children }) => {
+  const router = useRouter();
   const [popoverMenu, setPopoverMenu] = useState(null);
   const [userDetails, setUserDetails] = useState(null);
   const [isUserDetailsFromCache, setIsUserDetailsFromCache] = useState(false);
@@ -50,6 +53,24 @@ export const GlobalProvider = ({ children }) => {
   const [projectValue, setProjectValue] = useState(null);
   const [cursor, setCursor] = useState(0);
   const [template, setTemplate] = useState(0);
+
+  // Sync data-template attribute on <html> for theme.css accent overrides
+  useEffect(() => {
+    const templateValue = TEMPLATES_BY_ID[template]?.value ?? 'canvas';
+    document.documentElement.dataset.template = templateValue;
+  }, [template]);
+
+  // Re-set data-template after every client-side navigation. Public pages (project/[id]/index)
+  // clean up the attribute on unmount; this ensures globalContext restores it for the next page.
+  useEffect(() => {
+    const handleRouteChangeComplete = () => {
+      const templateValue = TEMPLATES_BY_ID[template]?.value ?? 'canvas';
+      document.documentElement.dataset.template = templateValue;
+    };
+    router.events.on('routeChangeComplete', handleRouteChangeComplete);
+    return () => router.events.off('routeChangeComplete', handleRouteChangeComplete);
+  }, [router.events, template]);
+
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   /** When set, upgrade modal shows "Unhide [title]?" and message about 2 visible projects limit */
   const [upgradeModalUnhideProject, setUpgradeModalUnhideProject] = useState(null);
@@ -142,7 +163,14 @@ export const GlobalProvider = ({ children }) => {
 
       // Template 4 (macOS) is always light mode
       const isTemplate4 = userData?.template === 4;
-      setTheme(isTemplate4 ? "light" : (userData?.theme == 1 ? "dark" : "light"));
+      if (isTemplate4) {
+        setTheme("light");
+      } else if (userData?.theme != null) {
+        // Only override theme if user has an explicit preference saved on their account.
+        // For new users (theme === null), preserve whatever was in localStorage
+        // (e.g. the theme they chose on the landing page before signing up).
+        setTheme(userData.theme == 1 ? "dark" : "light");
+      }
       setCursor(userData?.cursor ? userData?.cursor : 0);
       setTemplate(userData?.template ? userData?.template : 0);
 
@@ -256,14 +284,12 @@ export const GlobalProvider = ({ children }) => {
 
   // Compute wallpaper URL centrally - handles object and primitive values
   const wallpaperUrl = useMemo(() => {
+    if (template === 1) return null; // Chat theme uses solid bg — no wallpaper. Remove this line to re-enable.
     const wp = wallpaper;
     const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
     const currentTheme = resolvedTheme || theme;
-
-    return wpValue && wpValue !== 0
-      ? getWallpaperUrl(wpValue, currentTheme)
-      : null;
-  }, [wallpaper, resolvedTheme, theme]);
+    return getWallpaperUrl(wpValue ?? 0, currentTheme, template);
+  }, [wallpaper, resolvedTheme, theme, template]);
 
   const fetchDomainDetails = () => {
     _getDomainDetails().then((res) => {
@@ -429,48 +455,44 @@ export const GlobalProvider = ({ children }) => {
     });
   };
 
-  const changeTemplate = (template) => {
-    if (template === 4) {
+  const changeTemplate = (newTemplate) => {
+    if (newTemplate === 4) {
       setTheme("light");
     }
     setIsLoadingTemplate(true);
 
-    const isSwitchingToMacOS = template === 4 && userDetails?.template !== 4;
-    const payload = { template };
-    if (template === 4) {
+    const isSwitchingFromMacOS = userDetails?.template === 4 && newTemplate !== 4;
+    const previousTemplate = template;
+
+    // Optimistic update — template state drives wallpaperUrl immediately
+    setTemplate(newTemplate);
+
+    const payload = { template: newTemplate };
+    if (newTemplate === 4) {
       payload.theme = 0;
     }
-    if (isSwitchingToMacOS) {
-      const existingEffects = userDetails?.wallpaper?.effects;
-      const defaultEffects = {
-        blur: 0,
-        effectType: 'blur',
-        grainIntensity: 25,
-        motion: true
-      };
-      payload.wallpaper = {
-        value: 8,
-        effects: existingEffects || defaultEffects
-      };
+    // Legacy cleanup: if user has 8 stored and is leaving Retro OS, reset to 0 in DB
+    if (isSwitchingFromMacOS) {
+      const currentWpValue = extractWallpaperValue(userDetails?.wallpaper);
+      if (currentWpValue === 8) {
+        payload.wallpaper = { value: 0 };
+        setWallpaper(0); // optimistic local reset
+      }
     }
 
     _updateUser(payload)
       .then((res) => {
         const updatedUser = res?.data?.user;
-        setTemplate(template);
         updateCache("userDetails", updatedUser);
-        const merge = { template };
-        if (template === 4) merge.theme = 0;
+        const merge = { template: newTemplate };
+        if (newTemplate === 4) merge.theme = 0;
         if (updatedUser?.wallpaper) merge.wallpaper = updatedUser.wallpaper;
         setUserDetails((prev) => ({ ...prev, ...merge }));
-        if (isSwitchingToMacOS && updatedUser?.wallpaper) {
-          const wp = updatedUser.wallpaper;
-          const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
-          setWallpaper(wpValue !== undefined ? wpValue : 8);
-        }
       })
       .catch((error) => {
         console.error("Error changing template:", error);
+        // Roll back optimistic update on failure
+        setTemplate(previousTemplate);
       })
       .finally(() => {
         setIsLoadingTemplate(false);
@@ -624,16 +646,16 @@ export const GlobalProvider = ({ children }) => {
     return checker ? checker() : false;
   };
 
-  // Open sidebar with unsaved changes check
+  // Open sidebar with unsaved changes check.
   const openSidebar = (sidebarType) => {
-    // If trying to open the same sidebar, do nothing
-    if (activeSidebar === sidebarType) return;
+    if (activeSidebar === sidebarType) {
+      setPopoverMenu(null);
+      return;
+    }
 
-    // If another sidebar is open, check for unsaved changes
     if (activeSidebar) {
       const hasChanges = hasUnsavedChanges();
       if (hasChanges) {
-        // Show warning and store the pending action
         setIsSwitchingSidebar(true);
         setShowUnsavedWarning(true);
         setPendingSidebarAction({ type: "open", sidebarType });
@@ -641,9 +663,19 @@ export const GlobalProvider = ({ children }) => {
       }
     }
 
-    // No unsaved changes or no active sidebar, proceed to open
     setActiveSidebar(sidebarType);
     setPopoverMenu(null);
+  };
+
+  // Helpers to open work/review sidebars for adding a new item (clears any selected entity first).
+  const openNewWork = () => {
+    setSelectedWork(null);
+    openSidebar(sidebars.work);
+  };
+
+  const openNewReview = () => {
+    setSelectedReview(null);
+    openSidebar(sidebars.review);
   };
 
   // Close sidebar with unsaved changes check
@@ -662,6 +694,11 @@ export const GlobalProvider = ({ children }) => {
 
     // No unsaved changes or forced, proceed to close
     setActiveSidebar(null);
+    // Entity selection must reset whenever the panel closes. Work/Review sidebars unmount
+    // immediately when activeSidebar becomes null, so their local reset effects may not run.
+    setSelectedWork(null);
+    setSelectedReview(null);
+    setSelectedProject(null);
   };
 
   // Handle unsaved changes dialog confirmation
@@ -671,12 +708,15 @@ export const GlobalProvider = ({ children }) => {
 
     if (pendingSidebarAction) {
       if (pendingSidebarAction.type === "open") {
-        // Close current sidebar and open new one
-        setActiveSidebar(pendingSidebarAction.sidebarType);
+        const { sidebarType } = pendingSidebarAction;
+        setActiveSidebar(sidebarType);
         setPopoverMenu(null);
       } else if (pendingSidebarAction.type === "close") {
         // Close current sidebar
         setActiveSidebar(null);
+        setSelectedWork(null);
+        setSelectedReview(null);
+        setSelectedProject(null);
       }
       setPendingSidebarAction(null);
     }
@@ -748,6 +788,8 @@ export const GlobalProvider = ({ children }) => {
         isLoadingTemplate,
         activeSidebar,
         openSidebar,
+        openNewWork,
+        openNewReview,
         closeSidebar,
         registerUnsavedChangesChecker,
         unregisterUnsavedChangesChecker,

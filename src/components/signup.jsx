@@ -12,6 +12,7 @@ import { FormInput } from '@/components/ui/form-input';
 import { FormButton } from '@/components/ui/form-button';
 import { GoogleButton } from '@/components/ui/google-button';
 import { Divider } from '@/components/ui/divider';
+import { Button } from '@/components/ui/button';
 import * as Yup from 'yup';
 
 import { usePostHogEvent } from '@/hooks/usePostHogEvent';
@@ -180,8 +181,9 @@ export default function Signup() {
 
           <Divider />
 
-          <div
-            className="bg-white border border-border rounded-full px-5 py-3 flex items-center justify-center gap-3 hover-elevate cursor-pointer"
+          <Button
+            variant="outline"
+            className="w-full rounded-full h-[50px] px-5 text-base font-medium border-border bg-[--input-bg-color] hover:bg-muted gap-3"
             onClick={() => {
               event(POSTHOG_EVENT_NAMES.SIGNUP_METHOD_SELECTED, {
                 method: 'email',
@@ -190,11 +192,9 @@ export default function Signup() {
             }}
             data-testid="button-signup-email"
           >
-            <Mail className="w-5 h-5 text-foreground" />
-            <span className="text-base font-medium text-foreground">
-              Sign up with Email
-            </span>
-          </div>
+            <Mail className="w-5 h-5" />
+            Sign up with Email
+          </Button>
         </motion.div>
       </AuthLayout>
     );

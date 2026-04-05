@@ -4,22 +4,31 @@ import { _deleteUser } from "@/network/post-request";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 import { useGlobalContext } from "@/context/globalContext";
-import Button from "./button";
-import Modal from "./modal";
-import CloseIcon from "../../public/assets/svgs/close.svg";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+} from "@/components/ui/alert-dialog";
 
 export default function DeleteAccount() {
   const router = useRouter();
   const { setUserDetails } = useGlobalContext();
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const [open, setOpen] = useState(false);
+
   const handleDeleteAccount = () => {
     setLoading(true);
     setText("");
     _deleteUser().then(() => {
       toast.success("Account deleted successfully");
-      Cookies.remove("df-token", {
+      Cookies.remove("", {
         domain: process.env.NEXT_PUBLIC_BASE_DOMAIN,
       });
       setUserDetails(null);
@@ -27,74 +36,64 @@ export default function DeleteAccount() {
       router.push("/");
     });
   };
+
   return (
-    <div className="flex flex-col lg:flex-row justify-between items-center">
+    <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
       <div>
-        <p className="text-[20px] text-df-section-card-heading-color font-[500] font-inter ">
+        <p className="text-[18px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
           Danger zone
         </p>
-        <p className="text-[#4d545f] dark:text-[#B4B8C6] text-[12.8px] font-[400] leading-[22.4px] font-inter mt-2">
+        <p className="text-[13px] text-[#7A736C] dark:text-[#B5AFA5] mt-1 leading-relaxed">
           Delete your account and account data. This can&apos;t be undone.
         </p>
       </div>
 
       <Button
-        type="tertiary"
-        text="Delete account"
-        onClick={() => setShowModal(true)}
-        customClass="mt-2 w-full lg:w-fit"
-      />
-      <Modal show={showModal}>
-        <div className="rounded-2xl bg-modal-bg-color m-auto max-w-[375px] md:max-w-[500px]">
-          <div className="flex justify-between items-center p-5">
-            <p className="text-[18px] md:text-[25px] text-df-section-card-heading-color font-[500]">
+        variant="destructive"
+        className="w-full lg:w-fit rounded-full"
+        onClick={() => setOpen(true)}
+      >
+        Delete account
+      </Button>
+
+      <AlertDialog open={open} onOpenChange={setOpen}>
+        <AlertDialogContent className="max-w-[420px] rounded-2xl bg-white dark:bg-[#2A2520] border border-[#E5D7C4] dark:border-white/10">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-[#1A1A1A] dark:text-[#F0EDE7]">
               Delete Account
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-[#7A736C] dark:text-[#B5AFA5] leading-relaxed">
+              This action <strong className="text-[#1A1A1A] dark:text-[#F0EDE7]">CANNOT</strong> be undone. This will permanently delete
+              everything associated with this account, from your published website to
+              the content in draft—<strong className="text-[#1A1A1A] dark:text-[#F0EDE7]">EVERYTHING</strong>.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <div className="px-0">
+            <p className="text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] mb-2">
+              Please type <span className="font-bold">DELETE</span> to confirm
             </p>
-            <Button
-              // customClass="lg:hidden"
-              type="secondary"
-              customClass="!p-2"
-              icon={<CloseIcon className="text-icon-color cursor-pointer" />}
-              onClick={() => setShowModal(false)}
+            <Input
+              autoComplete="off"
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              placeholder="DELETE"
             />
           </div>
-          <div>
-            <div className="px-5">
-              <p className="text-df-secondary-text-color !font-inter">
-                This action <b>CANNOT</b> be undone. This will permanently
-                delete everything associated with this account, from your
-                published website to the content in draft<b>—EVERYTHING</b>.
-              </p>
-              <p className="mt-3 text-df-secondary-text-color !font-inter font-[500]">
-                Please type DELETE to confirm
-              </p>
-              <input
-                name="name"
-                type="text"
-                className="text-input mt-2"
-                autoComplete="off"
-                onChange={(e) => setText(e?.target?.value)}
-              />
-            </div>
-            <div className="flex gap-2 py-3 bg-modal-footer-bg-color justify-end px-3 rounded-bl-2xl rounded-br-2xl mt-5">
-              <Button
-                text="Cancel"
-                type="secondary"
-                onClick={() => setShowModal(false)}
-              />
-              <Button
-                btnType="submit"
-                text={"Delete account"}
-                form="tools"
-                isLoading={loading}
-                isDisabled={text != "DELETE"}
-                type="tertiary"
-                onClick={handleDeleteAccount}
-              />
-            </div>
-          </div>
-        </div>
-      </Modal>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel className="rounded-full">Cancel</AlertDialogCancel>
+            <Button
+              variant="destructive"
+              className="rounded-full"
+              disabled={text !== "DELETE" || loading}
+              onClick={handleDeleteAccount}
+            >
+              {loading ? "Deleting…" : "Delete account"}
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

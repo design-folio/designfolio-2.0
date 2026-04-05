@@ -1,19 +1,22 @@
 import Minimal from "@/components/comp/Minimal";
-import Portfolio from "@/components/comp/Portfolio";
 import MacOSTemplate from "@/components/comp/MacOSTemplate";
 import Seo from "@/components/seo";
-import Template1 from "@/components/template";
 import Template2 from "@/components/template2";
 import { useGlobalContext } from "@/context/globalContext";
 import useClient from "@/hooks/useClient";
 import { getWallpaperUrl } from "@/lib/wallpaper";
+import { TEMPLATE_IDS } from "@/lib/templates";
+import Chat from "@/components/templates/Chat";
 import { _getUser } from "@/network/get-request";
 import { useQuery } from "@tanstack/react-query";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import MadeWithDesignfolio from "../../../public/assets/svgs/madewithdesignfolio.svg";
 import WallpaperBackground from "@/components/WallpaperBackground";
+import Canvas from "@/components/templates/Canvas";
+import Mono from "@/components/templates/Mono";
+import Professional from "@/components/templates/Professional";
+import MemoMadewithdesignfolio from "@/components/icons/Madewithdesignfolio";
 
 export default function Index({ initialUserDetails }) {
   const { setTheme, theme, resolvedTheme } = useTheme();
@@ -23,6 +26,8 @@ export default function Index({ initialUserDetails }) {
     setWallpaper,
     setWallpaperEffects,
     wallpaperEffects,
+    setUserDetails: setCtxUserDetails,
+    setTemplateContext,
   } = useGlobalContext();
 
   const { data: userDetails } = useQuery({
@@ -40,114 +45,67 @@ export default function Index({ initialUserDetails }) {
   // Use fetched data or initialUserDetails (from SSR)
   const finalUserDetails = userDetails || initialUserDetails;
 
-  // Apply theme and wallpaper from finalUserDetails
+  // Inject the portfolio owner's data into globalContext.
+  // setTemplateContext updates globalContext's `template` state, which in turn
+  // sets data-template on <html> via globalContext's own effect — ensuring a single
+  // source of truth and no race between the page effect and the parent context effect.
+  const userDetailsId = finalUserDetails?._id;
+  const userDetailsUpdatedAt = finalUserDetails?.updatedAt;
+
   useEffect(() => {
     if (!finalUserDetails) return;
+    setCtxUserDetails(finalUserDetails);
+    if (finalUserDetails.template !== undefined) {
+      setTemplateContext(finalUserDetails.template);
+    }
 
-    // Set theme
     if (finalUserDetails?.theme !== undefined) {
       setTheme(finalUserDetails.theme == 1 ? "dark" : "light");
     }
 
-    // Set wallpaper
     if (finalUserDetails?.wallpaper !== undefined) {
       const wp = finalUserDetails.wallpaper;
       const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
       setWallpaper(wpValue !== undefined ? wpValue : 0);
-
-      // Set wallpaper effects if available
       if (wp && typeof wp === 'object' && wp.effects) {
         setWallpaperEffects(wp.effects);
       }
     }
-  }, [finalUserDetails, setTheme, setWallpaper, setWallpaperEffects]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userDetailsId, userDetailsUpdatedAt]);
 
   const wp = finalUserDetails?.wallpaper;
   const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
   const currentTheme = resolvedTheme || theme || (finalUserDetails?.theme == 1 ? "dark" : "light");
-  const wallpaperUrl = wpValue && wpValue !== 0
-    ? getWallpaperUrl(wpValue, currentTheme)
-    : null;
+  const isChatfolioTemplate = finalUserDetails?.template === TEMPLATE_IDS.CHATFOLIO;
+  const wallpaperUrl = isChatfolioTemplate ? null : getWallpaperUrl(wpValue ?? 0, currentTheme, finalUserDetails?.template);
+  const ProBadge = !finalUserDetails?.pro && (
+    <div
+      className="text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] xl:block cursor-pointer mb-[120px] lg:m-0"
+      onClick={() => window.open("https://www.designfolio.me", "_blank")}
+    >
+
+      <MemoMadewithdesignfolio />
+
+    </div>
+  );
+
   const renderTemplate = () => {
     switch (finalUserDetails?.template) {
-      case 0:
-        return <Template1 userDetails={finalUserDetails} />;
-      case 1:
-        return (
-          <>
-            <Template2 userDetails={finalUserDetails} />
-            {!finalUserDetails?.pro && (
-              <div
-                className={`text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] xl:block cursor-pointer mb-[120px] lg:m-0`}
-                onClick={() =>
-                  window.open("https://www.designfolio.me", "_blank")
-                }
-              >
-                <div className="bg-df-section-card-bg-color shadow-df-section-card-shadow p-2 rounded-2xl">
-                  <MadeWithDesignfolio className="text-df-icon-color" />
-                </div>
-              </div>
-            )}
-          </>
-        );
-
-      case 2:
-        return (
-          <>
-            <Minimal userDetails={finalUserDetails} />
-            {!finalUserDetails?.pro && (
-              <div
-                className={`text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] xl:block cursor-pointer mb-[120px] lg:m-0`}
-                onClick={() =>
-                  window.open("https://www.designfolio.me", "_blank")
-                }
-              >
-                <div className="bg-df-section-card-bg-color shadow-df-section-card-shadow p-2 rounded-2xl">
-                  <MadeWithDesignfolio className="text-df-icon-color" />
-                </div>
-              </div>
-            )}
-          </>
-        );
-      case 3:
-        return (
-          <>
-            <Portfolio userDetails={finalUserDetails} />
-            {!finalUserDetails?.pro && (
-              <div
-                className={`text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] xl:block cursor-pointer mb-[120px] lg:m-0`}
-                onClick={() =>
-                  window.open("https://www.designfolio.me", "_blank")
-                }
-              >
-                <div className="bg-df-section-card-bg-color shadow-df-section-card-shadow p-2 rounded-2xl">
-                  <MadeWithDesignfolio className="text-df-icon-color" />
-                </div>
-              </div>
-            )}
-          </>
-        );
-      case 4:
-        return (
-          <>
-            <MacOSTemplate userDetails={finalUserDetails} />
-            {!finalUserDetails?.pro && (
-              <div
-                className={`text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] xl:block cursor-pointer mb-[120px] lg:m-0`}
-                onClick={() =>
-                  window.open("https://www.designfolio.me", "_blank")
-                }
-              >
-                <div className="bg-df-section-card-bg-color shadow-df-section-card-shadow p-2 rounded-2xl">
-                  <MadeWithDesignfolio className="text-df-icon-color" />
-                </div>
-              </div>
-            )}
-          </>
-        );
-
+      case TEMPLATE_IDS.CANVAS:
+        return <><Canvas preview publicView />{ProBadge}</>;
+      case TEMPLATE_IDS.CHATFOLIO:
+        return <><Chat publicView />{ProBadge}</>;
+      case TEMPLATE_IDS.SPOTLIGHT:
+        return <><Minimal userDetails={finalUserDetails} />{ProBadge}</>;
+      case TEMPLATE_IDS.MONO:
+        return <><Mono preview publicView />{ProBadge}</>;
+      case TEMPLATE_IDS.PROFESSIONAL:
+        return <><Professional isEditing={false} />{ProBadge}</>;
+      case TEMPLATE_IDS.RETRO_OS:
+        return <><MacOSTemplate userDetails={finalUserDetails} />{ProBadge}</>;
       default:
-        return <Template1 userDetails={finalUserDetails} />;
+        return <><Canvas preview publicView />{ProBadge}</>;
     }
   };
 
@@ -165,10 +123,22 @@ export default function Index({ initialUserDetails }) {
         url={`https://${finalUserDetails?.username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`}
       />
       <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
-      <main className="min-h-screen">
+      <main className={isChatfolioTemplate ? "min-h-screen bg-[#F0EDE7] dark:bg-[#1A1A1A] transition-colors duration-700 flex justify-center" : "min-h-screen"}>
         <div
-          className={` mx-auto px-2 md:px-4 lg:px-0 ${finalUserDetails?.template != 3 && finalUserDetails?.template != 4 && "max-w-[848px]"
-            }`}
+          className={(() => {
+            switch (finalUserDetails?.template) {
+              case TEMPLATE_IDS.CANVAS:
+                return "py-10";
+              case TEMPLATE_IDS.MONO:
+                return "";
+              case TEMPLATE_IDS.CHATFOLIO:
+                return "w-full py-[94px]";
+              case TEMPLATE_IDS.RETRO_OS:
+                return "mx-auto px-2 md:px-4 lg:px-0";
+              default:
+                return "max-w-[848px] mx-auto px-2 md:px-4 lg:px-0";
+            }
+          })()}
         >
           {finalUserDetails && renderTemplate()}
         </div>

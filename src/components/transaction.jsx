@@ -1,113 +1,74 @@
 import { _getPaymentDetails } from "@/network/get-request";
 import React, { useEffect, useState } from "react";
-import styles from "@/styles/domain.module.css";
+
 export default function Transaction() {
   const [transaction, setTransaction] = useState(null);
+
   useEffect(() => {
     _getPaymentDetails().then((res) => {
       setTransaction(res?.data?.order);
     });
   }, []);
-  function formatAmount(amount, currencyCode, locale = undefined) {
-    return new Intl.NumberFormat(locale, {
+
+  function formatAmount(amount, currencyCode) {
+    return new Intl.NumberFormat(undefined, {
       style: "currency",
       currency: currencyCode,
-      minimumFractionDigits: 0, // no decimals
+      minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount);
   }
 
-  function formatDateToDDMMYYYY(isoDate, useUTC = true) {
-    const dateObj = new Date(isoDate);
-
-    const options = {
-      month: "short", // "Jan"
-      day: "2-digit", // "29"
-      year: "numeric", // "2025"
-    };
-
-    return dateObj.toLocaleDateString("en-US", options, {
-      timeZone: useUTC ? "UTC" : undefined,
+  function formatDate(isoDate) {
+    return new Date(isoDate).toLocaleDateString("en-US", {
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
     });
   }
-  if (!transaction) {
-    return null;
-  }
+
+  if (!transaction) return null;
+
   return (
     <div>
-      <p className="text-[20px] text-df-section-card-heading-color font-[500] font-inter ">
+      <p className="text-[18px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7] mb-4">
         Payment Details
       </p>
-      <div
-        className={`${styles.accordionContent} ${styles.accordionContentOpen}`}
-      >
-        <div className="flex flex-col lg:flex-row justify-between">
-          <p className={styles.paymentDescription}>
-            Designfolio Pro • Lifetime Access
-          </p>
-          <div className={`  ${styles.accordionRight} justify-end`}>
-            <div className={styles.paymentAmountSection}>
-              <>
-                <span className={styles.paymentAmount}>
-                  {formatAmount(transaction?.amount, transaction?.currency)}
-                </span>
-                <span className={styles.paymentDate}>
-                  {formatDateToDDMMYYYY(transaction?.updatedAt, false)}
-                </span>
-              </>
-            </div>
+
+      <div className="flex flex-col lg:flex-row justify-between gap-2 mb-4">
+        <p className="text-[14px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">
+          Designfolio Pro • Lifetime Access
+        </p>
+        <div className="text-right">
+          <span className="block text-[22px] font-bold text-[#1A1A1A] dark:text-[#F0EDE7] leading-none">
+            {formatAmount(transaction?.amount, transaction?.currency)}
+          </span>
+          <span className="text-[13px] text-[#7A736C] dark:text-[#B5AFA5] mt-0.5 block">
+            {formatDate(transaction?.updatedAt)}
+          </span>
+        </div>
+      </div>
+
+      <div className="space-y-2 mb-4">
+        <div className="flex items-center justify-between">
+          <span className="text-[13px] text-[#7A736C] dark:text-[#B5AFA5]">Order ID</span>
+          <span className="text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] break-all text-right max-w-[60%]">
+            {transaction?.razorpayOrderID}
+          </span>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="text-[13px] text-[#7A736C] dark:text-[#B5AFA5]">Status</span>
+          <div className="flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-[#22C55E]" />
+            <span className="text-[13px] font-medium text-[#065F46] dark:text-[#4ADE80]">Completed</span>
           </div>
         </div>
-        {/* Tab Content */}
-        <div className={styles.paymentDetailsGrid}>
-          <div className={styles.paymentDetail}>
-            <span className={styles.paymentDetailLabel}>Order ID</span>
-            <span className={styles.paymentDetailValue}>
-              {transaction?.razorpayOrderID}
-            </span>
-          </div>
-          <div className={styles.paymentDetail}>
-            <span className={styles.paymentDetailLabel}>Status</span>
-            <div className={styles.statusBadge}>
-              <div className={styles.statusDot}></div>
-              <span>Completed</span>
-            </div>
-          </div>
-        </div>
-        <div className={styles.paymentActions}>
-          {/* <button className={styles.downloadInvoiceButton}>
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="7,10 12,15 17,10" />
-              <line x1="12" y1="15" x2="12" y2="3" />
-            </svg>
-            Download Invoice
-          </button> */}
-          {/* <button className={styles.contactSupportButton}>
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-              <polyline points="22,6 12,13 2,6" />
-            </svg>
-            Contact Support
-          </button> */}
-          <p className={styles.paymentDescription}>
-            Support: shai@designfolio.me
-          </p>
-        </div>
+      </div>
+
+      <div className="pt-4 border-t border-[#E5D7C4] dark:border-white/10">
+        <p className="text-[13px] text-[#7A736C] dark:text-[#B5AFA5]">
+          Support: shai@designfolio.me
+        </p>
       </div>
     </div>
   );

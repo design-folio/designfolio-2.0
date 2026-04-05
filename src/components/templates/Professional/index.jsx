@@ -187,6 +187,9 @@ export default function Professional({
         if (hiddenSections.includes(id) && !isEditing) return false;
         // Hide Projects tab in preview/public when there are no visible projects
         if (id === 'projects' && !isEditing && visibleProjects.length === 0) return false;
+        // Hide Experience / Testimonials when empty for any read-only view (portfolio preview & public site); builder still shows tabs
+        if (!isEditing && id === 'works' && (experiences || []).length === 0) return false;
+        if (!isEditing && id === 'reviews' && (reviews || []).length === 0) return false;
         return true;
       })
       .map(id => PROFESSIONAL_TAB_MAP[id]);
@@ -195,9 +198,8 @@ export default function Professional({
       sorted.push(PROFESSIONAL_TAB_MAP['contact']);
     }
     return sorted;
-  }, [orderedSectionIds, hiddenSections, isEditing, visibleProjects]);
+  }, [orderedSectionIds, hiddenSections, isEditing, visibleProjects, experiences, reviews]);
 
-  const [currentTime] = useState(new Date());
   const [activeTab, setActiveTab] = useState(() => visibleTabs[0]?.key || "Projects");
 
   useEffect(() => {
@@ -329,7 +331,6 @@ export default function Professional({
           displayName={fullName}
           bio={bio}
           userRole={userRole}
-          currentTime={currentTime}
           onEditProfile={handleEditProfile}
           onEditPersona={handleEditPersona}
         />

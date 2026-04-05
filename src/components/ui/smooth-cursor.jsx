@@ -1,3 +1,4 @@
+import { useIsMobile } from "@/hooks/use-mobile";
 import { motion, useSpring } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
@@ -101,6 +102,10 @@ const ProfessionalCursor = ({ isHovering }) => {
 };
 
 export function SmoothCursor({ springConfig = defaultSpringConfig, type = "professional" }) {
+
+
+  const { isMobile } = useIsMobile();
+  if (isMobile) return null;
   const [isHovering, setIsHovering] = useState(false);
   const lastMousePos = useRef({ x: 0, y: 0 });
   const velocity = useRef({ x: 0, y: 0 });

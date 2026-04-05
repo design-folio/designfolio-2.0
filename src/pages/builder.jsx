@@ -339,9 +339,10 @@ export default function Index() {
                 )}
               </>
             )}
-            {userDetails && taskPercentage !== 100 && template !== 4 && (
+            {/* //NOTE: Remove bottom progress bar temporarily */}
+            {/* {userDetails && taskPercentage !== 100 && template !== 4 && (
               <BottomTask />
-            )}
+            )} */}
           </div>
           <Modal
             show={

@@ -57,7 +57,7 @@ function getTextFromTiptap(node) {
   return "";
 }
 
-function CanvasTestimonialsSection({ isEditing }) {
+function CanvasTestimonialsSection({ isEditing, preview = false }) {
   const { userDetails, setSelectedReview, openSidebar, openNewReview } = useGlobalContext();
   const { reviews = [] } = userDetails || {};
 
@@ -104,6 +104,10 @@ function CanvasTestimonialsSection({ isEditing }) {
     },
     [playingId],
   );
+
+  if (preview && !isEditing && (reviews?.length ?? 0) === 0) {
+    return null;
+  }
 
   const review = reviews[currentIndex];
   const reviewTextLength = getPlainTextLength(review?.description || "");

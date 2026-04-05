@@ -383,7 +383,7 @@ export default function Onboarding() {
                   <Button onClick={() => setCurrentStep(3)} variant="outline" className="h-11 rounded-full px-6">
                     Back
                   </Button>
-                  <Button onClick={handleNext} disabled={loading} className="flex-1 h-11 rounded-full bg-foreground text-background font-semibold">
+                  <Button onClick={handleNext} disabled={loading} className="flex-1 h-11 rounded-full">
                     {loading ? "Saving..." : "Get Started"}
                     <ArrowRight className="ml-2 w-4 h-4" />
                   </Button>

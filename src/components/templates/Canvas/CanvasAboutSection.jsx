@@ -356,11 +356,7 @@ function CanvasAboutSection({ isEditing }) {
           >
             Click here to add your story...
           </button>
-        ) : (
-          <p className="text-[13px] text-[#7A736C] dark:text-[#B5AFA5]">
-            Click here to add your story...
-          </p>
-        )}
+        ) : null}
       </div>
     </motion.div>
   );

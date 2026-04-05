@@ -128,11 +128,7 @@ function ProfessionalAboutTab({
           >
             Click here to add your story...
           </button>
-        ) : (
-          <p className="mb-8 font-jetbrains text-[13px] text-[#7A736C] dark:text-[#B5AFA5]">
-            Click here to add your story...
-          </p>
-        )}
+        ) : null}
 
         <div className="flex flex-col gap-6">
           {skills.length > 0 && (

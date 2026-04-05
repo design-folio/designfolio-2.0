@@ -95,9 +95,9 @@ export default function LandingTestimonialCarousel() {
             <ChevronLeft className="size-3.5" />
           </button>
 
-          <div className="flex-1 h-[3px] bg-black/5 dark:bg-white/10 rounded-full overflow-hidden">
+          <div className="flex-1 h-[3px] bg-black/5 dark:bg-white/5 rounded-full overflow-hidden">
             <motion.div
-              className="h-full bg-black/20 dark:bg-white/30 rounded-full"
+              className="h-full bg-black/20 dark:bg-white/20 rounded-full"
               style={{ width: `${progress}%` }}
               transition={{ ease: "linear", duration: 0.05 }}
             />

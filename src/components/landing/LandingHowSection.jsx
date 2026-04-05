@@ -1,7 +1,8 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { FileText, TrendingUp, BookOpen, Mic, Mail, BarChart2, ChevronRight } from "lucide-react";
+import { FileText, TrendingUp, BookOpen, Mic, Mail, BarChart2, ChevronRight, ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ShimmerInView from "./shared/ShimmerInView";
+import Link from "next/link";
 
 const STEPS = [
   {
@@ -19,12 +20,12 @@ const STEPS = [
     title: 'And other "AI tools".',
     video: "/landing-video/other-ai-tools.mp4",
     features: [
-      { label: "Fix your resume", icon: FileText, color: "#2563EB", lightBg: "#DBEAFE", midBg: "#BFDBFE" },
-      { label: "Salary Negotiation", icon: TrendingUp, color: "#16A34A", lightBg: "#DCFCE7", midBg: "#BBF7D0" },
-      { label: "Case study generator", icon: BookOpen, color: "#7C3AED", lightBg: "#EDE9FE", midBg: "#DDD6FE" },
-      { label: "AI mock interview", icon: Mic, color: "#C2410C", lightBg: "#FFEDD5", midBg: "#FED7AA" },
-      { label: "AI email generator", icon: Mail, color: "#0D9488", lightBg: "#CCFBF1", midBg: "#99F6E4" },
-      { label: "Analyze Case study", icon: BarChart2, color: "#DC2626", lightBg: "#FFE4E1", midBg: "#FECACA" },
+      { label: "Fix your resume", icon: FileText, color: "#2563EB", lightBg: "#DBEAFE", midBg: "#BFDBFE", href: "/ai-tools?type=optimize-resume" },
+      { label: "Salary Negotiation", icon: TrendingUp, color: "#16A34A", lightBg: "#DCFCE7", midBg: "#BBF7D0", href: "/ai-tools?type=salary-negotiator" },
+      { label: "Case study generator", icon: BookOpen, color: "#7C3AED", lightBg: "#EDE9FE", midBg: "#DDD6FE", href: "/login" },
+      { label: "AI mock interview", icon: Mic, color: "#C2410C", lightBg: "#FFEDD5", midBg: "#FED7AA", href: "/ai-tools?type=mock-interview" },
+      { label: "AI email generator", icon: Mail, color: "#0D9488", lightBg: "#CCFBF1", midBg: "#99F6E4", href: "/ai-tools?type=email-generator" },
+      { label: "Analyze Case study", icon: BarChart2, color: "#DC2626", lightBg: "#FFE4E1", midBg: "#FECACA", href: "/login" },
     ],
   },
 ];
@@ -33,20 +34,21 @@ function FeatureRow({ f, isLast }) {
   const Icon = f.icon;
   const pillStyle = f.lightBg && f.midBg
     ? {
-        background: `radial-gradient(circle at 38% 32%, ${f.lightBg}, ${f.midBg})`,
-        boxShadow: `inset 0 1.5px 2px rgba(255,255,255,0.75), inset 0 -1px 2px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.08)`,
-      }
+      background: `radial-gradient(circle at 38% 32%, ${f.lightBg}, ${f.midBg})`,
+      boxShadow: `inset 0 1.5px 2px rgba(255,255,255,0.75), inset 0 -1px 2px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.08)`,
+    }
     : undefined;
 
   return (
-    <div
+    <Link
+      href={f.href || "/ai-tools"}
       className={cn(
-        "group flex items-center justify-between px-4 py-3.5 cursor-pointer bg-[--lp-bg] hover:bg-[#F8F7EE] dark:hover:bg-white/[0.03] transition-colors duration-150",
+        "group flex items-center justify-between px-4 py-3.5 bg-[--lp-bg] hover:bg-[#F8F7EE] dark:hover:bg-white/[0.03] transition-colors duration-150 no-underline [&_*]:cursor-pointer cursor-pointer",
         !isLast && "border-b border-[--lp-video-border]",
       )}
     >
       <div className="flex items-center gap-3">
-        <div className="relative h-7 w-7 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden bg-[--lp-text]/[0.08]">
+        <div className="relative h-7 w-7 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden bg-black/[0.08] dark:bg-white/[0.10]">
           <span
             className="absolute inset-0 rounded-full scale-100 sm:scale-0 sm:group-hover:scale-100 transition-transform duration-300 ease-out origin-center"
             style={pillStyle}
@@ -63,11 +65,11 @@ function FeatureRow({ f, isLast }) {
         </div>
         <span className="text-[14px] font-medium text-[--lp-text]">{f.label}</span>
       </div>
-      <ChevronRight
+      <ArrowUpRight
         className="h-[15px] w-[15px] text-[--lp-text]/40 opacity-0 -translate-x-1 transition-all duration-200 ease-out group-hover:opacity-100 group-hover:translate-x-0 flex-shrink-0"
         strokeWidth={2}
       />
-    </div>
+    </Link>
   );
 }
 
@@ -145,7 +147,7 @@ export default function LandingHowSection({ showAllFeatures, onToggleFeatures })
                   onClick={onToggleFeatures}
                   className="self-start flex items-center gap-1.5 px-1 py-1 text-[13px] font-medium text-[--lp-text]/50 hover:text-[--lp-text] transition-colors duration-150"
                 >
-                  <span>
+                  <span className="cursor-pointer">
                     {showAllFeatures
                       ? "Show less"
                       : `+${item.features.length - 3} more tools`}

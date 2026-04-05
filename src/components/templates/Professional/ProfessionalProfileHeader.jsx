@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Pencil, UserCircle } from "lucide-react";
@@ -13,10 +13,18 @@ function ProfessionalProfileHeader({
   displayName,
   bio,
   userRole,
-  currentTime,
   onEditProfile,
   onEditPersona,
 }) {
+  /** Clock only after mount — avoids hydration mismatch (server vs client `new Date()`). */
+  const [currentTime, setCurrentTime] = useState(null);
+  useEffect(() => {
+    const tick = () => setCurrentTime(new Date());
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+
   return (
     <>
       <motion.div
@@ -72,10 +80,14 @@ function ProfessionalProfileHeader({
 
       {/* Time / Role row */}
       <div className="border-t border-[#D5D0C6] dark:border-[#3A352E] flex justify-between items-center px-4 py-2.5 font-jetbrains text-[13px] uppercase tracking-wide text-[#1A1A1A] dark:text-[#B5AFA5] relative group/role">
-        <div className="flex items-center gap-2">
-          <span>{format(currentTime, "E, MMM d")}</span>
-          <span className="text-[#E37941] text-[8px] mt-[1px]">◆</span>
-          <span>{format(currentTime, "h:mm:ss a")}</span>
+        <div className="flex items-center gap-2 min-h-[1.25em]">
+          {currentTime ? (
+            <>
+              <span>{format(currentTime, "E, MMM d")}</span>
+              <span className="text-[#E37941] text-[8px] mt-[1px]">◆</span>
+              <span className="tabular-nums">{format(currentTime, "h:mm:ss a")}</span>
+            </>
+          ) : null}
         </div>
         <div className="flex items-center gap-2">
           {isEditing && (

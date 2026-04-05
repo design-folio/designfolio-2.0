@@ -9,6 +9,7 @@ import { formatTimestamp } from "@/lib/times";
 import { toast } from "react-toastify";
 import { usePostHogEvent } from "@/hooks/usePostHogEvent";
 import { POSTHOG_EVENT_NAMES } from "@/lib/posthogEventNames";
+import { TEMPLATE_IDS } from "@/lib/templates";
 
 function useClickAway(ref, handler) {
   React.useEffect(() => {
@@ -31,10 +32,11 @@ export function PublishDropdown({ onClose }) {
   const [isPublishing, setIsPublishing] = useState(false);
   const dropdownRef = useRef(null);
 
-  const { userDetails, setUserDetails, updateCache } = useGlobalContext();
+  const { userDetails, setUserDetails, updateCache, template } = useGlobalContext();
   const phEvent = usePostHogEvent();
 
   const { username, latestPublishDate, email } = userDetails || {};
+
   const formattedDate = formatTimestamp(latestPublishDate);
   const domain = `${username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`;
 
@@ -83,7 +85,7 @@ export function PublishDropdown({ onClose }) {
       <div className="relative" ref={dropdownRef}>
         <Button
           onClick={handleFirstPublish}
-          disabled={isPublishing}
+          disabled={isPublishing || (!userDetails?.pro && template === TEMPLATE_IDS.RETRO_OS)}
           className="bg-black hover:bg-[#2A2A2A] dark:bg-white dark:hover:bg-[#E8E8E8] text-white dark:text-black font-medium px-6 h-9 text-[13px] rounded-full hover:cursor-pointer transition-colors"
           data-testid="button-publish"
           aria-expanded={isOpen}
@@ -139,12 +141,12 @@ export function PublishDropdown({ onClose }) {
 
                   <button
                     onClick={handlePublish}
-                    disabled={isPublishing}
+                    disabled={isPublishing || (!userDetails?.pro && template === TEMPLATE_IDS.RETRO_OS)}
                     className={cn(
-                      "relative z-10 flex w-full items-center justify-center px-3 h-[44px] text-[13px] font-medium rounded-xl transition-colors duration-150 focus:outline-none mt-1 cursor-pointer",
-                      isPublishing
-                        ? "bg-black/5 dark:bg-white/5 text-[#7A736C] dark:text-[#9E9893]"
-                        : "bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-[#1A1A1A] dark:text-[#F0EDE7]"
+                      "relative z-10 flex w-full items-center justify-center px-3 h-[44px] text-[13px] font-medium rounded-xl transition-colors duration-150 focus:outline-none mt-1",
+                      isPublishing || (!userDetails?.pro && template === TEMPLATE_IDS.RETRO_OS)
+                        ? "cursor-not-allowed bg-black/5 dark:bg-white/5 text-[#7A736C] dark:text-[#9E9893]"
+                        : "cursor-pointer bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-[#1A1A1A] dark:text-[#F0EDE7]"
                     )}
                   >
                     {isPublishing ? "Updating…" : "Update changes"}

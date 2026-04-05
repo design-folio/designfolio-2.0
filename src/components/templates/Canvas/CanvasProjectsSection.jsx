@@ -191,6 +191,10 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
     [projects, userDetails, setUserDetails, updateCache, setShowUpgradeModal, setUpgradeModalUnhideProject],
   );
 
+  if (preview && !isEditing && visibleProjects.length === 0) {
+    return null;
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 40 }}

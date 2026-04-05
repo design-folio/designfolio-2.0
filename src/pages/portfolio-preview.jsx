@@ -6,13 +6,13 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/router";
 import { ArrowLeft } from "lucide-react";
 import MacOSTemplate from "@/components/comp/MacOSTemplate";
-import MadeWithDesignfolio from "../../public/assets/svgs/madewithdesignfolio.svg";
 import WallpaperBackground from "@/components/WallpaperBackground";
 import Canvas from "@/components/templates/Canvas";
 import Mono from "@/components/templates/Mono";
 import { TEMPLATE_IDS } from "@/lib/templates";
 import Chat from "@/components/templates/Chat";
 import Professional from "@/components/templates/Professional";
+import MemoMadewithdesignfolio from "@/components/icons/Madewithdesignfolio";
 
 export default function Index() {
   const {
@@ -44,9 +44,9 @@ export default function Index() {
       className="text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] xl:block cursor-pointer mb-[120px] lg:m-0"
       onClick={() => window.open("https://www.designfolio.me", "_blank")}
     >
-      <div className="bg-df-section-card-bg-color shadow-df-section-card-shadow p-2 rounded-2xl">
-        <MadeWithDesignfolio className="text-df-icon-color" />
-      </div>
+
+      <MemoMadewithdesignfolio />
+
     </div>
   );
 
@@ -92,7 +92,7 @@ export default function Index() {
             <Button
               variant="outline"
               size="sm"
-                onClick={() => router.push("/builder")}
+              onClick={() => router.push("/builder")}
               className="mt-8"
             >
               <ArrowLeft className="w-4 h-4" />

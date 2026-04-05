@@ -155,7 +155,7 @@ export default function Index() {
       case TEMPLATE_IDS.CANVAS:
         return "max-w-[640px] mx-auto flex flex-col gap-3 pb-20 pt-[40px] px-4 md:px-0";
       case TEMPLATE_IDS.MONO:
-        return "max-w-[640px] mx-auto pb-20 pt-[80px] custom-dashed-x bg-[#F0EDE7] dark:bg-[#1A1A1A] min-h-screen";
+        return "max-w-[640px] mx-auto pb-20 custom-dashed-x bg-[#F0EDE7] dark:bg-[#1A1A1A] min-h-screen";
       case TEMPLATE_IDS.RETRO_OS:
         return "max-w-[848px] mx-auto py-6 px-2 md:px-4 lg:px-0";
       case TEMPLATE_IDS.PROFESSIONAL:
@@ -271,15 +271,17 @@ export default function Index() {
       ) : (
         <main className={cn("min-h-screen")}>
           <div className="fixed top-4 left-4 z-50">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => router.back()}
-              className="rounded-full shadow-md bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm hover:bg-white dark:hover:bg-[#2A2520]"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to Preview
-            </Button>
+            {
+              !template === TEMPLATE_IDS.MONO && (<Button
+                variant="outline"
+                size="sm"
+                onClick={() => router.back()}
+                className="rounded-full shadow-md bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm hover:bg-white dark:hover:bg-[#2A2520]"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back to Preview
+              </Button>)
+            }
           </div>
           {previewContent}
         </main>

@@ -200,13 +200,12 @@ export default function Professional({
     return sorted;
   }, [orderedSectionIds, hiddenSections, isEditing, visibleProjects, experiences, reviews]);
 
-  const [activeTab, setActiveTab] = useState(() => visibleTabs[0]?.key || "Projects");
-
-  useEffect(() => {
-    if (visibleTabs.length && !visibleTabs.find(t => t.key === activeTab)) {
-      setActiveTab(visibleTabs[0].key);
-    }
-  }, [visibleTabs]);
+  // null = user hasn't explicitly picked a tab yet → always follow visibleTabs[0]
+  const [userSelectedTab, setUserSelectedTab] = useState(null);
+  const activeTab =
+    userSelectedTab && visibleTabs.find((t) => t.key === userSelectedTab)
+      ? userSelectedTab
+      : visibleTabs[0]?.key || "Projects";
 
   const handleEditProfile = useCallback(
     () => openSidebar(sidebars.profile),
@@ -336,7 +335,7 @@ export default function Professional({
         />
         <ProfessionalNavTabs
           activeTab={activeTab}
-          setActiveTab={setActiveTab}
+          setActiveTab={setUserSelectedTab}
           tabs={visibleTabs}
         />
         <div className="flex-1">{renderActiveTab()}</div>

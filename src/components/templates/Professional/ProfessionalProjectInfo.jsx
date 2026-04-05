@@ -452,9 +452,6 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
         {/* Case Study Content — view mode only; edit mode shows TiptapEditor below */}
         {!edit && hasTiptapContent && (
           <motion.div variants={itemVariants}>
-            <h3 className="font-jetbrains text-[14px] text-[#1A1A1A] dark:text-[#F0EDE7] font-semibold mb-6 uppercase tracking-wider flex items-center gap-3">
-              <span className="w-2 h-2 bg-[#E37941] shrink-0" /> Overview
-            </h3>
             <TiptapRenderer content={tiptapContent} className={"bg-background !p-0 shadow-none "} />
           </motion.div>
         )}

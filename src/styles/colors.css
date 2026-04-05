@@ -92,6 +92,9 @@
   --df-logo-text-color: #334155;
   --df-header-bg-color: #ffffff;
   --df-icon-color: #000000;
+  /* "Made with Designfolio" badge (public preview, etc.) */
+  --df-made-with-badge-bg: #ffffff;
+  --df-made-with-badge-border: #e5d7c4;
   --df-section-card-bg-color: #ffffff;
   --df-section-card-heading-color: #202937;
   --df-section-card-shadow:
@@ -310,6 +313,8 @@
   --df-logo-text-color: #f9f9fb;
   --df-header-bg-color: #1d1f27;
   --df-icon-color: #f9f9fb;
+  --df-made-with-badge-bg: #252424;
+  --df-made-with-badge-border: #3a352e;
   --df-section-card-bg-color: #1d1f27;
   --df-section-card-heading-color: #e9eaeb;
   --df-section-card-shadow:

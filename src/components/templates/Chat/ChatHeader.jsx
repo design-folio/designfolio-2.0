@@ -159,7 +159,7 @@ export default function ChatHeader({ chatRevealStep, s, canEdit }) {
                 <span className="text-[11px] text-[#7A736C] dark:text-[#B5AFA5] ml-1 font-medium">
                   {userDetails?.firstName || "Me"}
                 </span>
-                <div className="bg-[#E5E2DB] dark:bg-[#2A2520] px-4 py-3 rounded-2xl rounded-bl-sm text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed transition-colors duration-300 border border-black/5 dark:border-white/5 min-h-[46px] flex items-center">
+                <div className="bg-[#E5E2DB] dark:bg-[#2A2520] px-4 py-3 rounded-2xl rounded-bl-sm text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed transition-colors duration-100 border border-black/5 dark:border-white/5 min-h-[46px] flex items-center">
                   {chatRevealStep === s(2) ? (
                     <TypingIndicator />
                   ) : (
@@ -204,7 +204,7 @@ export default function ChatHeader({ chatRevealStep, s, canEdit }) {
                 show={chatRevealStep <= s(3)}
               />
             </div>
-            <div className="bg-[#E5E2DB] dark:bg-[#2A2520] px-4 py-3 rounded-2xl rounded-tl-sm rounded-bl-sm text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed transition-colors duration-300 border border-black/5 dark:border-white/5 min-h-[46px] flex items-center">
+            <div className="bg-[#E5E2DB] dark:bg-[#2A2520] px-4 py-3 rounded-2xl rounded-tl-sm rounded-bl-sm text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed transition-colors duration-100 border border-black/5 dark:border-white/5 min-h-[46px] flex items-center">
               {chatRevealStep === s(3) ? (
                 <TypingIndicator />
               ) : skills.length > 0 ? (

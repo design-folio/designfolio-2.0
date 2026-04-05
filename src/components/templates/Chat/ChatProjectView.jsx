@@ -222,7 +222,7 @@ export default function ChatProjectView({
       animate="visible"
       variants={containerVariants}
       className={cn(
-        "bg-[#F0EDE7] dark:bg-[#1A1A1A] flex justify-center font-inter text-[#1A1A1A] dark:text-[#F0EDE7] selection:bg-[#1A8CFF] selection:text-white transition-colors duration-700",
+        "bg-[#F0EDE7] dark:bg-[#1A1A1A] flex justify-center font-inter text-[#1A1A1A] dark:text-[#F0EDE7] selection:bg-[#1A8CFF] selection:text-white transition-colors duration-100",
         edit ? "min-h-0" : "min-h-screen",
       )}
     >

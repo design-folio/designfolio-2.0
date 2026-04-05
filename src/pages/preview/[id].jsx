@@ -105,7 +105,7 @@ export default function Index({ initialUserDetails }) {
       case TEMPLATE_IDS.RETRO_OS:
         return <><MacOSTemplate userDetails={finalUserDetails} />{ProBadge}</>;
       default:
-        return <><Template2 userDetails={finalUserDetails} />{ProBadge}</>;
+        return <><Canvas preview publicView />{ProBadge}</>;
     }
   };
 
@@ -130,7 +130,7 @@ export default function Index({ initialUserDetails }) {
               case TEMPLATE_IDS.CANVAS:
                 return "py-10";
               case TEMPLATE_IDS.MONO:
-                return "py-10";
+                return "";
               case TEMPLATE_IDS.CHATFOLIO:
                 return "w-full py-[94px]";
               case TEMPLATE_IDS.RETRO_OS:

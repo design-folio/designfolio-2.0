@@ -8,7 +8,7 @@ import { useGlobalContext } from "@/context/globalContext";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { modals, sidebars } from "@/lib/constant";
 import { useRouter } from "next/router";
-import { TypingIndicator, ChatAvatar } from "./chatUtils";
+import { TypingIndicator, ChatAvatar, YouPrompt } from "./chatUtils";
 import ProjectLock from "@/components/projectLock";
 
 export default function ChatProjectsSection({
@@ -72,9 +72,24 @@ export default function ChatProjectsSection({
       className="flex flex-col gap-3"
       style={{ order: sectionSteps.projects - 3 }}
     >
-      {/* Recent work prompt */}
+      {/* You: "Can I see your work?" */}
       <AnimatePresence mode="popLayout">
         {chatRevealStep >= s(7) &&
+          !(preview && visibleProjects.length === 0) && (
+            <motion.div
+              initial={{ opacity: 0, y: 10, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.3 }}
+              className="flex justify-end relative group/msg"
+            >
+              <YouPrompt>Can I see your work?</YouPrompt>
+            </motion.div>
+          )}
+      </AnimatePresence>
+
+      {/* "And here's some recent work" */}
+      <AnimatePresence mode="popLayout">
+        {chatRevealStep >= s(8) &&
           !(preview && visibleProjects.length === 0) && (
             <motion.div
               initial={{ opacity: 0, y: 10, scale: 0.95 }}
@@ -85,11 +100,11 @@ export default function ChatProjectsSection({
               <div className="w-8 h-8 shrink-0 mt-auto flex items-end">
                 <ChatAvatar
                   avatarSrc={avatarSrc}
-                  show={chatRevealStep < s(8)}
+                  show={chatRevealStep < s(9)}
                 />
               </div>
               <div className="bg-[#E5E2DB] dark:bg-[#2A2520] px-4 py-3 rounded-2xl rounded-tl-sm rounded-bl-sm text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed transition-colors duration-300 border border-black/5 dark:border-white/5 min-h-[46px] flex items-center">
-                {chatRevealStep === s(7) ? (
+                {chatRevealStep === s(8) ? (
                   <TypingIndicator />
                 ) : (
                   "And here's some recent work"
@@ -102,7 +117,7 @@ export default function ChatProjectsSection({
       {/* Project cards */}
       {visibleProjects.map((project, index) => (
         <AnimatePresence mode="popLayout" key={project._id}>
-          {chatRevealStep >= s(8) && (
+          {chatRevealStep >= s(9) && (
             <motion.div
               initial={{ opacity: 0, y: 10, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}

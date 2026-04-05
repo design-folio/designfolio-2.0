@@ -340,6 +340,7 @@ svg * {
 html {
   scroll-behavior: smooth;
   min-height: 100vh;
+  min-height: -webkit-fill-available;
 
   &.landing-page {
     background-color: hsl(var(--background-landing));
@@ -354,6 +355,7 @@ html {
 body {
   overflow-y: auto;
   min-height: 100vh;
+  min-height: -webkit-fill-available;
 }
 
 /* Same as html/#__next when not landing so scroll/overscroll never shows a different band */

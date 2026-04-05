@@ -10,6 +10,8 @@ const defaultSpringConfig = {
 };
 
 const MinimalCursor = ({ isHovering }) => {
+  const { isMobile } = useIsMobile();
+  if (isMobile) return null;
   return (
     <motion.div
       className="relative flex items-center justify-center rounded-full pointer-events-none z-[9999]"

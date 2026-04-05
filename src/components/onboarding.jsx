@@ -280,6 +280,7 @@ export default function Onboarding() {
   return (
     <div
       className="fixed inset-0 z-[1000] overflow-hidden bg-background"
+      style={{ paddingBottom: "env(safe-area-inset-bottom)" }} // Add this to handle safe area on iOS
       onClick={(e) => e.stopPropagation()}
       role="dialog"
       aria-modal="true"

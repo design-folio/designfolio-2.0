@@ -19,7 +19,7 @@ export default function LandingFooter() {
           <Link
             key={href}
             href={href}
-            className="hover:text-[--lp-text] transition-colors"
+            className="hover:text-[--lp-text] transition-colors cursor-pointer"
           >
             {label}
           </Link>

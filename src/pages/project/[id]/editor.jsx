@@ -152,7 +152,7 @@ export default function Index() {
 
   if (!userDetails) return null;
 
-  const template = userDetails.template;
+  const template = userDetails.template ?? TEMPLATE_IDS.CANVAS;
   const isMacOS = template === TEMPLATE_IDS.RETRO_OS;
   const isChatfolio = template === TEMPLATE_IDS.CHATFOLIO;
   const isEmbed = router.query.embed === "1";
@@ -181,7 +181,7 @@ export default function Index() {
       case TEMPLATE_IDS.RETRO_OS:
         return "max-w-[848px] mx-auto py-6 px-2 md:px-4 lg:px-0";
       default:
-        return "max-w-[848px] mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0";
+        return "max-w-[720px] mx-auto flex flex-col gap-3 pb-20 pt-24 px-4 md:px-0";
     }
   })();
 

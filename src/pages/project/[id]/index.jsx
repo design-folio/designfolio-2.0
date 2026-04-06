@@ -127,7 +127,7 @@ export default function Index({
   const project = projectData?.project;
   const isProtected = projectData?.isProtected || false;
   // Always use the owner's portfolio template for layout — never the viewer's own template
-  const effectiveTemplate = ownerTemplate ?? TEMPLATE_IDS.CHATFOLIO;
+  const effectiveTemplate = ownerTemplate ?? TEMPLATE_IDS.CANVAS;
   const isMacOS = effectiveTemplate === TEMPLATE_IDS.RETRO_OS;
   const isCanvas = effectiveTemplate === TEMPLATE_IDS.CANVAS;
   const isMono = effectiveTemplate === TEMPLATE_IDS.MONO;

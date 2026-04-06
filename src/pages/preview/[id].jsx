@@ -136,7 +136,7 @@ export default function Index({ initialUserDetails }) {
               case TEMPLATE_IDS.RETRO_OS:
                 return "mx-auto px-2 md:px-4 lg:px-0";
               default:
-                return "max-w-[848px] mx-auto px-2 md:px-4 lg:px-0";
+                return "py-10";
             }
           })()}
         >

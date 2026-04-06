@@ -15,7 +15,7 @@ import { useEffect, useMemo, useState } from "react";
 import WallpaperBackground from "@/components/WallpaperBackground";
 import { getWallpaperUrl } from "@/lib/wallpaper";
 import MacOSWindowShell from "@/components/templates/MacOSDock/MacOSWindowShell";
-import { getProjectUrl } from "@/lib/utils";
+import { cn, getProjectUrl } from "@/lib/utils";
 import MacOSTemplate from "@/components/comp/MacOSTemplate";
 import { ChevronLeft } from "lucide-react";
 import { TEMPLATE_IDS, TEMPLATES_BY_ID } from "@/lib/templates";
@@ -226,7 +226,7 @@ export default function Index({
                 </motion.div>
                 {project?.contentVersion === 2 && project?.tiptapContent ? (
                   <motion.div variants={itemVariants} className={isMono ? "px-5 md:px-8 py-6" : ""}>
-                    <TiptapRenderer key={project._id} content={project.tiptapContent} className="!p-0 shadow-none bg-transparent" />
+                    <TiptapRenderer key={project._id} content={project.tiptapContent} className={cn(isCanvas ? "" : "!p-0 shadow-none bg-transparent")} />
                   </motion.div>
                 ) : project?.content ? (
                   <motion.div variants={itemVariants} className={isMono ? "px-5 md:px-8 py-6" : ""}>

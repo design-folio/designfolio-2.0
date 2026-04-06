@@ -143,7 +143,7 @@ export default function Index() {
 
   if (!userDetails) return null;
 
-  const template = userDetails.template;
+  const template = userDetails.template ?? TEMPLATE_IDS.CANVAS;
   const isMacOS = template === TEMPLATE_IDS.RETRO_OS;
   const isProfessional = template === TEMPLATE_IDS.PROFESSIONAL;
   const isChatfolio = template === TEMPLATE_IDS.CHATFOLIO;

@@ -161,7 +161,7 @@ export default function Index() {
       case TEMPLATE_IDS.PROFESSIONAL:
         return "max-w-[848px] mx-auto px-2 md:px-4 lg:px-0";
       default:
-        return "max-w-[848px] mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0";
+        return "max-w-[640px] mx-auto flex flex-col gap-3 pb-20 pt-[40px] px-4 md:px-0";
     }
   })();
 

@@ -63,7 +63,7 @@ export default function ProjectInfo({
   const [AnalyzeStatus, setAnalyzeStatus] = useState(false);
   // ownerTemplate (from SSR prop) takes priority; fall back to the logged-in user's template
   // only in builder/preview contexts where ownerTemplate is not passed.
-  const activeTemplate = ownerTemplate ?? userDetails?.template;
+  const activeTemplate = ownerTemplate ?? userDetails?.template ?? TEMPLATE_IDS.CANVAS;
   const isMacOS = activeTemplate === TEMPLATE_IDS.RETRO_OS;
   const isCanvas = activeTemplate === TEMPLATE_IDS.CANVAS;
   const isChatfolio = activeTemplate === TEMPLATE_IDS.CHATFOLIO;

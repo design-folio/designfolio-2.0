@@ -443,6 +443,9 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.code === "Space" || e.code === "ArrowUp") {
+        const tag = document.activeElement?.tagName;
+        const isEditable = tag === "INPUT" || tag === "TEXTAREA" || document.activeElement?.isContentEditable;
+        if (isEditable) return;
         e.preventDefault();
         jump();
       }

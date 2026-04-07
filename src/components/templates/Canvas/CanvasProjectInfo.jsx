@@ -4,7 +4,7 @@ import {
   _updateProject,
 } from "@/network/post-request";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -141,6 +141,7 @@ export default function CanvasProjectInfo({
   const [isPassword, setIsPassword] = useState(projectDetails?.protected);
   const [passwordInput, setPasswordInput] = useState(password || "");
   const [imageLoaded, setImageLoaded] = useState(false);
+  const projectImageRef = useRef(null);
   const { setTheme } = useTheme();
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
@@ -162,6 +163,14 @@ export default function CanvasProjectInfo({
       : needsMoreWords
         ? `${400 - wordCount} more words`
         : "Analyze with AI";
+
+  useEffect(() => {
+    // Reset for URL changes and support cached images after hydration.
+    setImageLoaded(false);
+    if (projectImageRef.current?.complete) {
+      setImageLoaded(true);
+    }
+  }, [thumbnail?.url]);
 
   const saveProject = (key, value) => {
     _updateProject(projectId, { [key]: value }).then((res) => {
@@ -442,6 +451,7 @@ export default function CanvasProjectInfo({
           ) : (
             <>
               <img
+                ref={projectImageRef}
                 src={thumbnail?.url}
                 alt={title || "project image"}
                 className={`w-full h-full object-cover transition-opacity duration-100 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
@@ -449,6 +459,7 @@ export default function CanvasProjectInfo({
                 fetchPriority="high"
                 decoding="async"
                 onLoad={() => setImageLoaded(true)}
+                onError={() => setImageLoaded(true)}
               />
               {!imageLoaded && <div className="absolute inset-0 bg-[#F0EDE7] dark:bg-[#2A2520]" />}
             </>

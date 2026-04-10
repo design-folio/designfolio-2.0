@@ -18,3 +18,19 @@ export const _postJobsInteract = (recommendationId, jobId, action) => {
 
 // GET /jobs/history — restore last recommendation session on page mount
 export const _getJobsHistory = () => axiosInstance.get("/jobs/history");
+
+// POST /jobs/scout — Scout AI chat; returns { reply: string }
+export const _postJobsScout = (recommendationId, jobId, message) =>
+  axiosInstance.post("/jobs/scout", { recommendationId, jobId, message });
+
+// POST /jobs/customize-resume — returns { customizedResume, changes[] }
+export const _postJobsCustomizeResume = (jobId, recommendationId) =>
+  axiosInstance.post("/jobs/customize-resume", { jobId, recommendationId });
+
+// POST /jobs/cover-letter — returns { coverLetter: string }
+export const _postJobsCoverLetter = (jobId, recommendationId) =>
+  axiosInstance.post("/jobs/cover-letter", { jobId, recommendationId });
+
+// POST /jobs/fit-analysis — returns { strengths[], gaps[], overallVerdict }
+export const _postJobsFitAnalysis = (jobId, recommendationId) =>
+  axiosInstance.post("/jobs/fit-analysis", { jobId, recommendationId });

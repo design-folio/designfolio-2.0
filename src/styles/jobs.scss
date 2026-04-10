@@ -1,3 +1,8 @@
+/* ── Jobs: Kanban column — hide scrollbar cross-browser ───────────────────── */
+[data-slot="kanban-column-content"]::-webkit-scrollbar {
+  display: none;
+}
+
 /* ── Jobs: Match Glow Card ─────────────────────────────────────────────────── */
 @keyframes scanLine {
   0%, 100% { opacity: 0.15; }

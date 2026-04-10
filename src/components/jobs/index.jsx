@@ -28,6 +28,10 @@ export function Jobs() {
   const [answers, setAnswers] = useState([]);
   const [jobs, setJobs] = useState([]);
   const [recommendationId, setRecommendationId] = useState(null);
+  // null = no history yet (build fresh from jobs); object = restored column state
+  const [initialColumns, setInitialColumns] = useState(null);
+  // Quiz answers for Criteria panel — populated from history or new search
+  const [quizAnswers, setQuizAnswers] = useState([]);
 
   // On mount: parallel fetch questions + history
   useEffect(() => {
@@ -39,14 +43,49 @@ export function Jobs() {
         ]);
 
         const fetchedQuestions = questionsRes.data.questions ?? [];
-        const { jobs: historyJobs = [], recommendationId: historyRecId } =
-          historyRes.data;
+        const {
+          jobs: historyJobs = [],
+          recommendationId: historyRecId,
+          columns: historyColumns,
+          quizAnswers: historyQuizAnswers,
+        } = historyRes.data;
 
         setQuestions(fetchedQuestions);
 
         if (historyJobs.length > 0) {
           setJobs(historyJobs);
           setRecommendationId(historyRecId ?? null);
+
+          // Restore board column state from persisted pipeline
+          if (historyColumns) {
+            // Map string IDs → full job objects for each column
+            const jobMap = Object.fromEntries(historyJobs.map((j) => [j.id, j]));
+            const restored = {
+              picks:       (historyColumns.picks       || []).map((id) => jobMap[id]).filter(Boolean),
+              not_applied: (historyColumns.not_applied || []).map((id) => jobMap[id]).filter(Boolean),
+              applied:     (historyColumns.applied     || []).map((id) => jobMap[id]).filter(Boolean),
+              interview:   (historyColumns.interview   || []).map((id) => jobMap[id]).filter(Boolean),
+              offer:       (historyColumns.offer       || []).map((id) => jobMap[id]).filter(Boolean),
+            };
+
+            // Any job that isn't placed in any column defaults to picks.
+            // This handles pipeline gaps (e.g. jobs added after column state was saved,
+            // or ID mismatches between pipeline and jobs array).
+            const placedIds = new Set(
+              Object.values(restored).flat().map((j) => j.id),
+            );
+            const unplaced = historyJobs.filter((j) => !placedIds.has(j.id));
+            if (unplaced.length) restored.picks = [...restored.picks, ...unplaced];
+
+            // Only use restored columns if the pipeline was actually persisted.
+            // For old recommendations without a pipeline field the backend returns
+            // all-empty column arrays — in that case fall back to putting all
+            // jobs in picks so the board isn't blank.
+            const hasPipelineData = Object.values(restored).some((col) => col.length > 0);
+            setInitialColumns(hasPipelineData ? restored : null);
+          }
+
+          if (historyQuizAnswers?.length) setQuizAnswers(historyQuizAnswers);
           setPhase("dashboard");
         } else {
           setPhase("transition");
@@ -67,6 +106,7 @@ export function Jobs() {
   const handleRecommendComplete = (fetchedJobs, recId) => {
     setJobs(fetchedJobs);
     setRecommendationId(recId);
+    setQuizAnswers(answers); // answers already collected from TypeRoom/VoiceRoom
     setPhase("aha");
   };
 
@@ -166,7 +206,12 @@ export function Jobs() {
 
       {/* Dashboard lives behind the aha modal */}
       {(phase === "aha" || phase === "dashboard") && (
-        <Dashboard initialJobs={jobs} recommendationId={recommendationId} />
+        <Dashboard
+          initialJobs={jobs}
+          initialColumns={initialColumns}
+          recommendationId={recommendationId}
+          quizAnswers={quizAnswers}
+        />
       )}
 
       <AnimatePresence>

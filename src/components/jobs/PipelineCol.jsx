@@ -78,7 +78,8 @@ export function PipelineCol({
       </div>
       <KanbanColumnContent
         value={colId}
-        className="flex-1 overflow-y-auto scrollbar-hide px-2 pt-2 pb-3 min-h-[60px]"
+        className="flex-1 overflow-y-auto px-2 pt-2 pb-3 min-h-[60px]"
+        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         {cardList}
       </KanbanColumnContent>

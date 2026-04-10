@@ -1,40 +1,49 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion } from "framer-motion";
-import { Sparkles, X, ArrowUpCircle } from "lucide-react";
-import { SCOUT_SUGGESTIONS, SCOUT_RESPONSES } from "@/data/jobs";
+import { Sparkles, X, ArrowUpCircle, Loader2 } from "lucide-react";
+import { SCOUT_SUGGESTIONS } from "@/data/jobs";
+import { _postJobsScout } from "@/network/jobs";
 
-// NOTE: APIS TO BE INTEGRATED HERE — POST /api/jobs/scout with { jobId, message }
-// Replace the local SCOUT_RESPONSES lookup with an API call that returns the AI response.
-
-export function ScoutChat({ job, onClose }) {
+export function ScoutChat({ job, onClose, recommendationId }) {
   const [messages, setMessages] = useState([
     {
       role: "ai",
-      text: `I see you're asking about the ${job.role} role at ${job.company}. What would you like to know?`,
+      text: `I see you're looking at the ${job.role} role at ${job.company}. What would you like to know?`,
     },
   ]);
   const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
   const [suggestionsGone, setSuggestionsGone] = useState(false);
   const bottomRef = useRef(null);
+  const inputRef  = useRef(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const send = (text) => {
-    if (!text.trim()) return;
-    // NOTE: APIS TO BE INTEGRATED HERE — POST /api/jobs/scout { jobId: job.id, message: text }
-    const response =
-      SCOUT_RESPONSES[text] ??
-      "Great question. Based on this role and your profile, I'd look at how your past work maps to their requirements — especially any areas where you've driven end-to-end design decisions.";
-    setMessages((prev) => [
-      ...prev,
-      { role: "user", text },
-      { role: "ai", text: response },
-    ]);
+  const send = async (text) => {
+    const trimmed = text.trim();
+    if (!trimmed || loading) return;
+
+    setMessages((prev) => [...prev, { role: "user", text: trimmed }]);
     setSuggestionsGone(true);
     setInput("");
+    setLoading(true);
+
+    try {
+      const res = await _postJobsScout(recommendationId, job.id, trimmed);
+      const reply = res.data?.reply ?? "I couldn't get a response right now. Please try again.";
+      setMessages((prev) => [...prev, { role: "ai", text: reply }]);
+    } catch {
+      setMessages((prev) => [
+        ...prev,
+        { role: "ai", text: "Something went wrong. Please try again." },
+      ]);
+    } finally {
+      setLoading(false);
+      setTimeout(() => inputRef.current?.focus(), 50);
+    }
   };
 
   return createPortal(
@@ -51,6 +60,7 @@ export function ScoutChat({ job, onClose }) {
         <div className="flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-foreground" />
           <span className="text-[14px] font-semibold text-foreground">Scout</span>
+          <span className="text-[11px] text-foreground/30 truncate max-w-[140px]">{job.role}</span>
         </div>
         <button
           onClick={onClose}
@@ -76,6 +86,14 @@ export function ScoutChat({ job, onClose }) {
           </div>
         ))}
 
+        {loading && (
+          <div className="flex justify-start">
+            <div className="bg-black/[0.04] dark:bg-white/[0.06] rounded-xl px-3 py-2.5">
+              <Loader2 className="w-3.5 h-3.5 text-foreground/40 animate-spin" />
+            </div>
+          </div>
+        )}
+
         {!suggestionsGone && (
           <div className="space-y-1.5 pt-0.5">
             {SCOUT_SUGGESTIONS.map((s) => (
@@ -96,18 +114,25 @@ export function ScoutChat({ job, onClose }) {
       {/* Input */}
       <div className="px-3 py-2.5 border-t border-black/[0.06] dark:border-border flex-shrink-0 flex items-center gap-2">
         <input
+          ref={inputRef}
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => { if (e.key === "Enter") send(input); }}
+          onKeyDown={(e) => { if (e.key === "Enter" && !loading) send(input); }}
           placeholder="Ask me anything..."
-          className="flex-1 text-[13px] text-foreground placeholder:text-foreground/30 bg-transparent outline-none py-1"
+          disabled={loading}
+          className="flex-1 text-[13px] text-foreground placeholder:text-foreground/30 bg-transparent outline-none py-1 disabled:opacity-50"
         />
         <button
           onClick={() => send(input)}
-          className="flex items-center justify-center w-7 h-7 rounded-full border border-black/[0.12] dark:border-border text-foreground/50 hover:text-foreground hover:border-foreground/30 transition-colors flex-shrink-0"
+          disabled={loading || !input.trim()}
+          className="flex items-center justify-center w-7 h-7 rounded-full border border-black/[0.12] dark:border-border text-foreground/50 hover:text-foreground hover:border-foreground/30 transition-colors flex-shrink-0 disabled:opacity-30 disabled:cursor-not-allowed"
         >
-          <ArrowUpCircle className="w-3.5 h-3.5" />
+          {loading ? (
+            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+          ) : (
+            <ArrowUpCircle className="w-3.5 h-3.5" />
+          )}
         </button>
       </div>
     </motion.div>,

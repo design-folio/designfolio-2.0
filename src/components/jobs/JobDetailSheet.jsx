@@ -1,31 +1,113 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import {
   MapPin, Briefcase, Monitor, Clock, Calendar, Sparkles,
   ChevronRight, FileText, PenLine, ThumbsUp, Mail, ExternalLink,
+  X, Loader2, Copy, Check,
 } from "lucide-react";
 import { FaLinkedin } from "react-icons/fa";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Gauge } from "@/components/ui/gauge-1";
 import { MatchGlowCard } from "@/components/ui/glowing-card";
-import { _postJobsInteract } from "@/network/jobs";
+import { _postJobsInteract, _postJobsCustomizeResume, _postJobsCoverLetter, _postJobsFitAnalysis } from "@/network/jobs";
 import { toRelativeTime, getSourceLabel, formatSalary } from "@/lib/jobsUtils";
 
 // NOTE: APIS TO BE INTEGRATED HERE — contacts section is always empty from JSearch.
 // GET /jobs/:id/contacts would need a separate data source (LinkedIn scraping, etc.)
 
-// NOTE: APIS TO BE INTEGRATED HERE — AI agent actions (Customize Resume, Cover Letter,
-// Fit Analysis) require backend endpoints:
-//   POST /jobs/customize-resume { jobId, recommendationId }
-//   POST /jobs/cover-letter { jobId, recommendationId }
-//   POST /jobs/fit-analysis { jobId, recommendationId }
+// ── Small result panel shown below AI buttons ──────────────────────────────
+function AiResultPanel({ title, onClose, children }) {
+  return (
+    <div className="mt-3 rounded-2xl border border-black/[0.08] dark:border-white/[0.07] bg-black/[0.02] dark:bg-white/[0.02] overflow-hidden">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-black/[0.06] dark:border-white/[0.05]">
+        <span className="text-[12px] font-semibold text-foreground/60">{title}</span>
+        <button onClick={onClose} className="text-foreground/30 hover:text-foreground transition-colors">
+          <X className="w-3.5 h-3.5" />
+        </button>
+      </div>
+      <div className="px-4 py-3">{children}</div>
+    </div>
+  );
+}
+
+function CopyButton({ text }) {
+  const [copied, setCopied] = useState(false);
+  const handleCopy = () => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    });
+  };
+  return (
+    <button
+      onClick={handleCopy}
+      className="flex items-center gap-1 text-[11px] text-foreground/40 hover:text-foreground transition-colors"
+    >
+      {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+      {copied ? "Copied" : "Copy"}
+    </button>
+  );
+}
 
 export function JobDetailSheet({ job, open, onClose, recommendationId }) {
   const lastJobRef = useRef(null);
   if (job) lastJobRef.current = job;
   const displayJob = job ?? lastJobRef.current;
+
+  // ── AI Agent state — all hooks must be declared before any early return ──
+  const [resumeLoading, setResumeLoading] = useState(false);
+  const [resumeResult,  setResumeResult]  = useState(null); // { customizedResume, changes }
+
+  const [letterLoading, setLetterLoading] = useState(false);
+  const [letterResult,  setLetterResult]  = useState(null); // { coverLetter }
+
+  const [fitLoading, setFitLoading] = useState(false);
+  const [fitResult,  setFitResult]  = useState(null); // { strengths, gaps, overallVerdict }
+
   if (!displayJob) return null;
 
   const salaryText = formatSalary(displayJob.salary);
+
+  const handleCustomizeResume = async () => {
+    if (resumeLoading) return;
+    setResumeResult(null);
+    setResumeLoading(true);
+    try {
+      const res = await _postJobsCustomizeResume(displayJob.id, recommendationId);
+      setResumeResult(res.data);
+    } catch {
+      setResumeResult({ error: "Could not generate resume. Please try again." });
+    } finally {
+      setResumeLoading(false);
+    }
+  };
+
+  const handleCoverLetter = async () => {
+    if (letterLoading) return;
+    setLetterResult(null);
+    setLetterLoading(true);
+    try {
+      const res = await _postJobsCoverLetter(displayJob.id, recommendationId);
+      setLetterResult(res.data);
+    } catch {
+      setLetterResult({ error: "Could not generate cover letter. Please try again." });
+    } finally {
+      setLetterLoading(false);
+    }
+  };
+
+  const handleFitAnalysis = async () => {
+    if (fitLoading) return;
+    setFitResult(null);
+    setFitLoading(true);
+    try {
+      const res = await _postJobsFitAnalysis(displayJob.id, recommendationId);
+      setFitResult(res.data);
+    } catch {
+      setFitResult({ error: "Could not generate fit analysis. Please try again." });
+    } finally {
+      setFitLoading(false);
+    }
+  };
 
   const handleApply = () => {
     if (displayJob.applyUrl) {
@@ -154,49 +236,166 @@ export function JobDetailSheet({ job, open, onClose, recommendationId }) {
                   </div>
 
                   <div className="h-px bg-black/[0.05] dark:bg-white/[0.05]" />
-                  {/* NOTE: APIS TO BE INTEGRATED HERE — POST /jobs/customize-resume { jobId, recommendationId } */}
-                  <button className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-black/[0.03] dark:hover:bg-white/[0.03] transition-colors group text-left">
+
+                  {/* Customize Resume */}
+                  <button
+                    onClick={handleCustomizeResume}
+                    disabled={resumeLoading}
+                    className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-black/[0.03] dark:hover:bg-white/[0.03] transition-colors group text-left disabled:opacity-60"
+                  >
                     <div className="w-9 h-9 rounded-xl bg-foreground/[0.08] group-hover:bg-foreground/[0.11] transition-colors flex items-center justify-center flex-shrink-0">
-                      <FileText className="w-4 h-4 text-foreground/55" />
+                      {resumeLoading ? (
+                        <Loader2 className="w-4 h-4 text-foreground/55 animate-spin" />
+                      ) : (
+                        <FileText className="w-4 h-4 text-foreground/55" />
+                      )}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="text-[13px] font-semibold text-foreground/80 leading-none">
                         Customize Your Resume
                       </div>
                       <div className="text-[11px] text-foreground/40 mt-1 leading-snug">
-                        AI rewrites your CV to match this role&apos;s exact requirements
+                        {resumeLoading ? "Generating tailored resume…" : "AI rewrites your CV to match this role's exact requirements"}
                       </div>
                     </div>
-                    <ChevronRight className="w-4 h-4 text-foreground/20 group-hover:text-foreground/45 transition-colors flex-shrink-0" />
+                    {!resumeLoading && (
+                      <ChevronRight className="w-4 h-4 text-foreground/20 group-hover:text-foreground/45 transition-colors flex-shrink-0" />
+                    )}
                   </button>
+
+                  {/* Resume Result */}
+                  {resumeResult && (
+                    <div className="px-4 pb-3">
+                      {resumeResult.error ? (
+                        <p className="text-[12px] text-red-500/80">{resumeResult.error}</p>
+                      ) : (
+                        <AiResultPanel title="Tailored Resume" onClose={() => setResumeResult(null)}>
+                          {resumeResult.changes?.length > 0 && (
+                            <ul className="space-y-1.5 mb-3">
+                              {resumeResult.changes.map((c, i) => (
+                                <li key={i} className="flex items-start gap-2 text-[12px] text-foreground/70">
+                                  <span className="mt-1 w-1 h-1 rounded-full bg-emerald-500 flex-shrink-0" />
+                                  {c}
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                          <div className="rounded-lg bg-black/[0.04] dark:bg-white/[0.04] p-3 text-[12px] text-foreground/75 leading-relaxed whitespace-pre-wrap max-h-48 overflow-y-auto">
+                            {resumeResult.customizedResume}
+                          </div>
+                          <div className="flex justify-end mt-2">
+                            <CopyButton text={resumeResult.customizedResume} />
+                          </div>
+                        </AiResultPanel>
+                      )}
+                    </div>
+                  )}
 
                   <div className="h-px bg-black/[0.05] dark:bg-white/[0.05]" />
                   <div className="grid grid-cols-2 divide-x divide-black/[0.05] dark:divide-white/[0.05]">
-                    {/* NOTE: APIS TO BE INTEGRATED HERE — POST /jobs/cover-letter { jobId, recommendationId } */}
-                    <button className="flex items-start gap-2.5 px-4 py-3.5 hover:bg-black/[0.03] dark:hover:bg-white/[0.03] transition-colors group text-left">
-                      <PenLine className="w-3.5 h-3.5 text-foreground/35 flex-shrink-0 mt-0.5 group-hover:text-foreground/55 transition-colors" />
+                    {/* Cover Letter */}
+                    <button
+                      onClick={handleCoverLetter}
+                      disabled={letterLoading}
+                      className="flex items-start gap-2.5 px-4 py-3.5 hover:bg-black/[0.03] dark:hover:bg-white/[0.03] transition-colors group text-left disabled:opacity-60"
+                    >
+                      {letterLoading ? (
+                        <Loader2 className="w-3.5 h-3.5 text-foreground/35 flex-shrink-0 mt-0.5 animate-spin" />
+                      ) : (
+                        <PenLine className="w-3.5 h-3.5 text-foreground/35 flex-shrink-0 mt-0.5 group-hover:text-foreground/55 transition-colors" />
+                      )}
                       <div>
                         <div className="text-[12px] font-semibold text-foreground/70 leading-none">
                           Cover Letter
                         </div>
                         <div className="text-[10px] text-foreground/35 mt-1 leading-snug">
-                          Drafted in seconds
+                          {letterLoading ? "Drafting…" : "Drafted in seconds"}
                         </div>
                       </div>
                     </button>
-                    {/* NOTE: APIS TO BE INTEGRATED HERE — POST /jobs/fit-analysis { jobId, recommendationId } */}
-                    <button className="flex items-start gap-2.5 px-4 py-3.5 hover:bg-black/[0.03] dark:hover:bg-white/[0.03] transition-colors group text-left">
-                      <ThumbsUp className="w-3.5 h-3.5 text-foreground/35 flex-shrink-0 mt-0.5 group-hover:text-foreground/55 transition-colors" />
+
+                    {/* Fit Analysis */}
+                    <button
+                      onClick={handleFitAnalysis}
+                      disabled={fitLoading}
+                      className="flex items-start gap-2.5 px-4 py-3.5 hover:bg-black/[0.03] dark:hover:bg-white/[0.03] transition-colors group text-left disabled:opacity-60"
+                    >
+                      {fitLoading ? (
+                        <Loader2 className="w-3.5 h-3.5 text-foreground/35 flex-shrink-0 mt-0.5 animate-spin" />
+                      ) : (
+                        <ThumbsUp className="w-3.5 h-3.5 text-foreground/35 flex-shrink-0 mt-0.5 group-hover:text-foreground/55 transition-colors" />
+                      )}
                       <div>
                         <div className="text-[12px] font-semibold text-foreground/70 leading-none">
                           Fit Analysis
                         </div>
                         <div className="text-[10px] text-foreground/35 mt-1 leading-snug">
-                          Strengths &amp; gaps
+                          {fitLoading ? "Analysing…" : "Strengths & gaps"}
                         </div>
                       </div>
                     </button>
                   </div>
+
+                  {/* Cover Letter Result */}
+                  {letterResult && (
+                    <div className="px-4 pb-3">
+                      {letterResult.error ? (
+                        <p className="text-[12px] text-red-500/80">{letterResult.error}</p>
+                      ) : (
+                        <AiResultPanel title="Cover Letter" onClose={() => setLetterResult(null)}>
+                          <div className="text-[12px] text-foreground/75 leading-relaxed whitespace-pre-wrap max-h-56 overflow-y-auto">
+                            {letterResult.coverLetter}
+                          </div>
+                          <div className="flex justify-end mt-2">
+                            <CopyButton text={letterResult.coverLetter} />
+                          </div>
+                        </AiResultPanel>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Fit Analysis Result */}
+                  {fitResult && (
+                    <div className="px-4 pb-3">
+                      {fitResult.error ? (
+                        <p className="text-[12px] text-red-500/80">{fitResult.error}</p>
+                      ) : (
+                        <AiResultPanel title="Fit Analysis" onClose={() => setFitResult(null)}>
+                          {fitResult.overallVerdict && (
+                            <div className="text-[12px] font-semibold text-foreground/80 mb-3 px-3 py-2 rounded-lg bg-black/[0.04] dark:bg-white/[0.04]">
+                              {fitResult.overallVerdict}
+                            </div>
+                          )}
+                          {fitResult.strengths?.length > 0 && (
+                            <div className="mb-3">
+                              <p className="text-[10px] font-semibold uppercase tracking-widest text-emerald-600 dark:text-emerald-400 mb-1.5">Strengths</p>
+                              <ul className="space-y-1.5">
+                                {fitResult.strengths.map((s, i) => (
+                                  <li key={i} className="flex items-start gap-2 text-[12px] text-foreground/70">
+                                    <span className="mt-1 w-1 h-1 rounded-full bg-emerald-500 flex-shrink-0" />
+                                    {s}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                          {fitResult.gaps?.length > 0 && (
+                            <div>
+                              <p className="text-[10px] font-semibold uppercase tracking-widest text-amber-600 dark:text-amber-400 mb-1.5">Gaps</p>
+                              <ul className="space-y-1.5">
+                                {fitResult.gaps.map((g, i) => (
+                                  <li key={i} className="flex items-start gap-2 text-[12px] text-foreground/70">
+                                    <span className="mt-1 w-1 h-1 rounded-full bg-amber-500 flex-shrink-0" />
+                                    {g}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </AiResultPanel>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
 

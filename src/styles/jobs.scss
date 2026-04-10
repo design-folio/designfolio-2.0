@@ -1,0 +1,150 @@
+/* ── Jobs: Match Glow Card ─────────────────────────────────────────────────── */
+@keyframes scanLine {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 0.7; }
+}
+
+.match-glow-outer {
+  position: relative;
+  width: 100%;
+}
+
+.match-glow-card {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  background: linear-gradient(140deg, rgba(0, 0, 0, 0.03) 0%, rgba(0, 0, 0, 0.05) 100%);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.dark .match-glow-card {
+  background: linear-gradient(140deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.match-glow-ray {
+  position: absolute;
+  top: -30%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 180px;
+  height: 120px;
+  background: radial-gradient(ellipse, rgba(160, 160, 170, 0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.match-glow-line {
+  position: absolute;
+  animation: scanLine 4s ease-in-out infinite;
+}
+
+.match-glow-line.topl {
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(150, 150, 160, 0.5) 50%, transparent 100%);
+  animation-delay: 0s;
+}
+
+.match-glow-line.bottoml {
+  bottom: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(150, 150, 160, 0.5) 50%, transparent 100%);
+  animation-delay: 2s;
+}
+
+.match-glow-line.leftl {
+  top: 0; bottom: 0; left: 0; width: 1px;
+  background: linear-gradient(180deg, transparent 0%, rgba(150, 150, 160, 0.5) 50%, transparent 100%);
+  animation-delay: 1s;
+}
+
+.match-glow-line.rightl {
+  top: 0; bottom: 0; right: 0; width: 1px;
+  background: linear-gradient(180deg, transparent 0%, rgba(150, 150, 160, 0.5) 50%, transparent 100%);
+  animation-delay: 3s;
+}
+
+/* ── Jobs: Color Orb ───────────────────────────────────────────────────────── */
+@property --orb-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.color-orb {
+  display: grid;
+  grid-template-areas: "stack";
+  overflow: hidden;
+  border-radius: 50%;
+  position: relative;
+  transform: scale(1.1);
+  flex-shrink: 0;
+  background: oklch(78% 0.01 80 / 0.55);
+}
+
+.color-orb::before,
+.color-orb::after {
+  content: "";
+  display: block;
+  grid-area: stack;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  transform: translateZ(0);
+}
+
+.color-orb::before {
+  background:
+    conic-gradient(from calc(var(--orb-angle) * 2) at 25% 70%, var(--orb-accent3), transparent 20% 80%, var(--orb-accent3)),
+    conic-gradient(from calc(var(--orb-angle) * 2) at 45% 75%, var(--orb-accent2), transparent 30% 60%, var(--orb-accent2)),
+    conic-gradient(from calc(var(--orb-angle) * -3) at 80% 20%, var(--orb-accent1), transparent 40% 60%, var(--orb-accent1)),
+    conic-gradient(from calc(var(--orb-angle) * 2) at 15% 5%, var(--orb-accent2), transparent 10% 90%, var(--orb-accent2)),
+    conic-gradient(from calc(var(--orb-angle) * 1) at 20% 80%, var(--orb-accent1), transparent 10% 90%, var(--orb-accent1)),
+    conic-gradient(from calc(var(--orb-angle) * -2) at 85% 10%, var(--orb-accent3), transparent 20% 80%, var(--orb-accent3));
+  box-shadow: inset var(--orb-base) 0 0 var(--orb-shadow) calc(var(--orb-shadow) * 0.2);
+  filter: blur(var(--orb-blur)) contrast(var(--orb-contrast));
+  animation: orb-spin var(--orb-spin-duration) linear infinite;
+  animation-play-state: paused;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.color-orb::after {
+  background-image: radial-gradient(circle at center, oklch(48% 0.01 80 / 0.45) 1px, transparent 1px);
+  background-size: 3px 3px;
+  mix-blend-mode: normal;
+  opacity: 1;
+  transition: opacity 0.5s ease;
+}
+
+.orb-activates-on-hover {
+  overflow: visible;
+  gap: 6px;
+  padding-left: 12px;
+  padding-right: 12px;
+  transition: color 0.4s ease, background-color 0.4s ease;
+}
+
+.orb-activates-on-hover .color-orb {
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.orb-activates-on-hover:hover .color-orb {
+  transform: scale(1.6);
+}
+
+.orb-activates-on-hover:hover .color-orb::before {
+  animation-play-state: running;
+  opacity: 1;
+}
+
+.orb-activates-on-hover:hover .color-orb::after {
+  opacity: 0;
+}
+
+@keyframes orb-spin {
+  to { --orb-angle: 360deg; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .color-orb::before { animation: none !important; opacity: 0 !important; }
+}

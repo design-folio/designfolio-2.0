@@ -58,13 +58,13 @@ export function AhaMomentModal({ jobCount = 0, answers = [], onConfirm }) {
 
       {/* Card */}
       <motion.div
-        className="relative z-10 w-full max-w-[420px] bg-[#F5F2ED] rounded-[28px] shadow-[0_32px_80px_rgba(0,0,0,0.28)] overflow-hidden"
+        className="relative z-10 w-full max-w-[420px] bg-[#F5F2ED] dark:bg-[#1E1B18] rounded-[28px] shadow-[0_32px_80px_rgba(0,0,0,0.28)] dark:shadow-[0_32px_80px_rgba(0,0,0,0.6)] overflow-hidden"
         initial={{ scale: 0.88, y: 24, opacity: 0 }}
         animate={{ scale: 1, y: 0, opacity: 1 }}
         exit={{ scale: 0.94, y: 12, opacity: 0 }}
         transition={{ delay: 0.08, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
       >
-        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-[#D4C5A9]/30 to-transparent pointer-events-none" />
+        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-[#D4C5A9]/30 dark:from-white/[0.04] to-transparent pointer-events-none" />
 
         {/* Lottie animation */}
         <div className="flex justify-center pt-8 pb-3">
@@ -112,12 +112,12 @@ export function AhaMomentModal({ jobCount = 0, answers = [], onConfirm }) {
 
         {/* Preferences summary */}
         <motion.div
-          className="mx-5 mb-5 rounded-2xl border border-black/[0.07] bg-white/70 overflow-hidden"
+          className="mx-5 mb-5 rounded-2xl border border-black/[0.07] dark:border-white/[0.07] bg-white/70 dark:bg-white/[0.04] overflow-hidden"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.42, duration: 0.4 }}
         >
-          <div className="px-4 py-2.5 border-b border-black/[0.05]">
+          <div className="px-4 py-2.5 border-b border-black/[0.05] dark:border-white/[0.05]">
             <span className="text-[10px] font-semibold uppercase tracking-[0.1em] text-foreground/30">
               Filtered for you
             </span>
@@ -126,7 +126,7 @@ export function AhaMomentModal({ jobCount = 0, answers = [], onConfirm }) {
             <div
               key={p.label}
               className={`flex items-center justify-between px-4 py-2.5 ${
-                i < arr.length - 1 ? "border-b border-black/[0.04]" : ""
+                i < arr.length - 1 ? "border-b border-black/[0.04] dark:border-white/[0.04]" : ""
               }`}
             >
               <span className="text-[13px] text-foreground/45">{p.label}</span>
@@ -146,7 +146,7 @@ export function AhaMomentModal({ jobCount = 0, answers = [], onConfirm }) {
         >
           <motion.button
             onClick={onConfirm}
-            className="w-full h-[50px] rounded-full bg-[#1A1A1A] text-white text-[15px] font-semibold hover:bg-black transition-colors flex items-center justify-center gap-2 shadow-lg shadow-black/20"
+            className="w-full h-[50px] rounded-full bg-[#1A1A1A] dark:bg-white text-white dark:text-black text-[15px] font-semibold hover:opacity-85 transition-opacity flex items-center justify-center gap-2 shadow-lg shadow-black/20"
             whileTap={{ scale: 0.97 }}
           >
             Let&apos;s go

@@ -1,7 +1,149 @@
-import { motion } from "framer-motion";
-import { Mic, ChevronRight } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 
-export function TransitionScreen({ onVoice, onType }) {
+// Orbiting company logos
+const ORBIT_LOGOS = [
+  "/companylogo/companyradial01.svg",
+  "/companylogo/companyradial02.svg",
+  "/companylogo/companyradial03.svg",
+  "/companylogo/companyradial04.svg",
+  "/companylogo/companyradial05.svg",
+  "/companylogo/companyradial06.svg",
+  "/companylogo/companyradial07.svg",
+  "/companylogo/companyradial08.svg",
+];
+
+function OrbitRing({ visible }) {
+  return (
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          className="absolute top-1/2 left-1/2 pointer-events-none"
+          style={{ transform: "translate(-50%, -50%)", width: 560, height: 560 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.9 }}
+        >
+          {/* Outer orbit ring */}
+          <div
+            className="absolute inset-0 rounded-full border border-border/30"
+            style={{ animation: "spin 32s linear infinite" }}
+          >
+            {ORBIT_LOGOS.map((src, i) => {
+              const angle = (i / ORBIT_LOGOS.length) * 360;
+              const rad = (angle * Math.PI) / 180;
+              const r = 280;
+              const x = r * Math.cos(rad);
+              const y = r * Math.sin(rad);
+              return (
+                <div
+                  key={i}
+                  className="absolute flex items-center justify-center"
+                  style={{
+                    width: 48,
+                    height: 48,
+                    left: "50%",
+                    top: "50%",
+                    transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) rotate(${-angle}deg)`,
+                  }}
+                >
+                  <div
+                    className="w-10 h-10 rounded-xl bg-white dark:bg-card border border-border/50 flex items-center justify-center p-1.5 shadow-sm"
+                    style={{ animation: `spin-reverse 32s linear infinite` }}
+                  >
+                    <img src={src} alt="" className="w-full h-full object-contain opacity-70 dark:opacity-50" />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Inner subtle ring */}
+          <div
+            className="absolute rounded-full border border-border/15"
+            style={{ inset: 80 }}
+          />
+
+          <style>{`
+            @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+            @keyframes spin-reverse { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
+          `}</style>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+function AnimatedJobCount({ onDone }) {
+  const [count, setCount] = useState(0);
+  const [showGradient, setShowGradient] = useState(false);
+  const rafRef = useRef(null);
+  const startRef = useRef(null);
+  const doneFiredRef = useRef(false);
+
+  useEffect(() => {
+    const duration = 1800;
+    const target = 1200;
+
+    const tick = (now) => {
+      if (!startRef.current) startRef.current = now;
+      const elapsed = now - startRef.current;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = Math.floor(eased * target);
+      setCount(current);
+
+      if (!doneFiredRef.current && current >= target / 2) {
+        doneFiredRef.current = true;
+        onDone?.();
+      }
+
+      if (progress < 1) {
+        rafRef.current = requestAnimationFrame(tick);
+      } else {
+        setCount(target);
+        setTimeout(() => setShowGradient(true), 80);
+      }
+    };
+
+    rafRef.current = requestAnimationFrame(tick);
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+  }, []);
+
+  const display = count >= 1200 ? "1,200+" : count.toLocaleString();
+
+  return (
+    <>
+      <span
+        style={showGradient ? {
+          display: "inline-block",
+          whiteSpace: "nowrap",
+          paddingRight: "0.08em",
+          color: "transparent",
+          WebkitBackgroundClip: "text",
+          backgroundClip: "text",
+          backgroundImage: "linear-gradient(to right, hsl(var(--foreground)) 0%, hsl(var(--foreground)) 38%, #5D3560 52%, #E54D2E 62%, #F5A623 72%, hsl(var(--foreground)) 86%, hsl(var(--foreground)) 100%)",
+          backgroundSize: "300% 100%",
+          animation: "shimmer-text 3s ease-in-out forwards",
+        } : { display: "inline-block", whiteSpace: "nowrap" }}
+      >
+        {display}
+      </span>
+      <style>{`
+        @keyframes shimmer-text {
+          0% { background-position: 100% 0; }
+          100% { background-position: -100% 0; }
+        }
+      `}</style>
+    </>
+  );
+}
+
+export function TransitionScreen({ onType }) {
+  const [orbitVisible, setOrbitVisible] = useState(false);
+
   return (
     <motion.div
       className="fixed inset-0 flex flex-col items-center justify-center bg-[#F0EDE7] dark:bg-background px-6"
@@ -10,9 +152,12 @@ export function TransitionScreen({ onVoice, onType }) {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.6 }}
     >
+      {/* Background glow */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full dark:bg-[#FF553E]/8 blur-[120px]" />
       </div>
+
+      <OrbitRing visible={orbitVisible} />
 
       <motion.div
         className="relative z-10 max-w-md text-center space-y-6"
@@ -20,52 +165,30 @@ export function TransitionScreen({ onVoice, onType }) {
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.2, duration: 0.7, ease: "easeOut" }}
       >
-        <motion.div
-          className="flex justify-center mb-8"
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.1, duration: 0.5 }}
-        >
-          <svg width="44" height="44" viewBox="0 0 37 37" fill="none">
-            <rect width="37" height="37" rx="18.5" fill="#FF553E" />
-            <path
-              d="M20.0417 4.625H16.9583V14.7781L9.77902 7.59877L7.59877 9.77902L14.7781 16.9583H4.625V20.0417H14.7781L7.59877 27.221L9.77902 29.4012L16.9583 22.2219V32.375H20.0417V22.2219L27.221 29.4012L29.4012 27.221L22.2219 20.0417H32.375V16.9583H22.2219L29.4012 9.77902L27.221 7.59877L20.0417 14.7781V4.625Z"
-              fill="white"
-            />
-          </svg>
-        </motion.div>
-
         <div className="space-y-3">
           <h1 className="text-[28px] font-semibold leading-tight tracking-tight text-foreground">
-            Let&apos;s find a job that actually fits you.
+            We found <AnimatedJobCount onDone={() => setOrbitVisible(true)} />
+            <br />
+            jobs that match your profile.
           </h1>
           <p className="text-[16px] text-muted-foreground leading-relaxed font-light">
-            Your portfolio and resume are already here.
-            <br />I just need 5 minutes with you.
+            Now let&apos;s find the ones worth your time. Answer 3 quick questions and we&apos;ll narrow it down to your best matches.
           </p>
         </div>
 
         <motion.div
-          className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4"
+          className="flex items-center justify-center pt-4"
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.5 }}
         >
           <button
-            data-testid="button-lets-talk"
-            onClick={onVoice}
-            className="flex items-center gap-2 bg-foreground text-background font-medium text-[14px] px-6 py-3 rounded-full hover:bg-foreground/90 transition-all active:scale-[0.97]"
-          >
-            <Mic className="w-4 h-4" />
-            Let&apos;s talk
-          </button>
-          <button
-            data-testid="button-type-instead"
+            data-testid="button-lets-do-it"
             onClick={onType}
-            className="flex items-center gap-2 text-muted-foreground font-medium text-[14px] px-6 py-3 rounded-full border border-border hover:border-foreground/30 hover:text-foreground/80 transition-all active:scale-[0.97]"
+            className="cursor-pointer flex items-center gap-2 bg-foreground text-background font-medium text-[14px] px-7 py-3 rounded-full hover:bg-foreground/90 transition-all active:scale-[0.97]"
           >
-            I&apos;ll type instead
-            <ChevronRight className="w-4 h-4" />
+            Let&apos;s do it
+            <ArrowRight className="w-4 h-4" />
           </button>
         </motion.div>
       </motion.div>

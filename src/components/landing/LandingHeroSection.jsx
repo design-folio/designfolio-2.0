@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
-import ArrowCTA from "./shared/ArrowCTA";
+import ResumeUploadZone from "./ResumeUploadZone";
 
-export default function LandingHeroSection({ dfToken }) {
+export default function LandingHeroSection() {
   return (
     <section
       className="w-full px-6 pt-12 pb-12 flex flex-col items-center text-center"
@@ -14,45 +14,25 @@ export default function LandingHeroSection({ dfToken }) {
         className="text-[32px] sm:text-[40px] leading-[1.1] tracking-[-0.02em] max-w-[480px] mb-5 text-[--lp-text]"
         style={{ fontWeight: 650 }}
       >
-        <div className="relative inline-block">
-          <span
-            className="relative z-10 text-transparent bg-clip-text animate-[shimmer-text_2.5s_ease-in-out_forwards_0.3s]"
-            style={{
-              backgroundImage:
-                "linear-gradient(to right, var(--lp-text) 0%, var(--lp-text) 30%, #5D3560 40%, #E54D2E 50%, #F5A623 60%, var(--lp-text) 70%, var(--lp-text) 100%)",
-              backgroundSize: "300% auto",
-              backgroundPosition: "100% center",
-            }}
-          >
-            Fastest
-          </span>
-        </div>{" "}
-        way to build
-        <br />
-        your portfolio site
+        The career tool that works while you sleep.
       </motion.h1>
 
       <motion.p
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
-        className="text-[16px] mb-8 max-w-[400px] leading-relaxed font-semibold text-[--lp-text]/70"
+        className="text-[16px] mb-8 max-w-[400px] leading-relaxed font-semibold text-[--lp-text-muted]"
       >
-        Skip the busywork with Designfolio —
-        <br />
-        publish in hours, not weeks.
+        Upload your resume. AI builds your portfolio, scans, scores, and shortlists matched jobs.
       </motion.p>
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
+        className="w-full max-w-[400px] flex justify-center"
       >
-        <ArrowCTA
-          label={dfToken ? "Launch Builder" : "Get started for Free"}
-          size="lg"
-          href={dfToken ? "/builder" : "/claim-link"}
-        />
+        <ResumeUploadZone />
       </motion.div>
     </section>
   );

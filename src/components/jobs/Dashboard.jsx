@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { SlidersHorizontal, Sparkles, RotateCcw } from "lucide-react";
+import { SlidersHorizontal, Sparkles, RotateCcw, Search } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Kanban, KanbanBoard, KanbanOverlay } from "@/components/ui/kanban";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
@@ -12,7 +12,7 @@ import { MockInterviewDialog } from "./MockInterviewDialog";
 import { MockInterviewRoom } from "./MockInterviewRoom";
 import { ScoutChat } from "./ScoutChat";
 import { JobCard } from "./JobCard";
-import { _postJobsInteract } from "@/network/jobs";
+import { _postJobsInteract, _postJobsRecommend, _postJobsMore } from "@/network/jobs";
 
 const buildColumns = (jobs) => ({
   picks:       jobs ?? [],
@@ -31,7 +31,18 @@ const COL_DRAG_ACTION = {
 
 const DEFAULT_FILTERS = { workMode: "all", type: "all", minMatch: 0 };
 
-// ── Small toggle pill used inside the filter panel ────────────────────────
+const ROLE_SUGGESTIONS = [
+  "Product Designer", "UX Designer", "UI Designer",
+  "UX Researcher", "Design Lead", "Interaction Designer",
+];
+const LOCATION_OPTIONS = ["My city only", "Open to relocating", "Remote only"];
+const LEVEL_OPTIONS = [
+  { title: "Mid-level",          sub: "2–4 yrs" },
+  { title: "Senior",             sub: "5–8 yrs" },
+  { title: "Lead / Staff",       sub: "8+ yrs"  },
+  { title: "Manager / Director", sub: ""        },
+];
+
 function FilterPill({ active, onClick, children }) {
   return (
     <button
@@ -47,29 +58,195 @@ function FilterPill({ active, onClick, children }) {
   );
 }
 
-export function Dashboard({
-  initialJobs     = [],
-  initialColumns  = null,
-  recommendationId = null,
-  quizAnswers     = [],
-}) {
-  const [columns, setColumns] = useState(() =>
-    initialColumns ?? buildColumns(initialJobs),
+function CriteriaEditor({ answers, onRescan, isRescanning }) {
+  const [role,           setRole]           = useState(answers[0]?.answer || "");
+  const [locationChoice, setLocationChoice] = useState(() => {
+    const raw = answers[1]?.answer || "";
+    if (raw === "Remote only") return "Remote only";
+    if (raw.startsWith("My city only:")) return "My city only";
+    if (raw.startsWith("Open to relocating:")) return "Open to relocating";
+    return null;
+  });
+  const [city, setCity] = useState(() => {
+    const raw = answers[1]?.answer || "";
+    if (raw.includes(": ")) return raw.split(": ").slice(1).join(": ");
+    return "";
+  });
+  const [level, setLevel] = useState(answers[2]?.answer || null);
+
+  const isDirty = useMemo(() => {
+    const locAnswer = locationChoice === "Remote only"
+      ? "Remote only"
+      : locationChoice ? `${locationChoice}: ${city}` : "";
+    return (
+      role !== (answers[0]?.answer || "") ||
+      locAnswer !== (answers[1]?.answer || "") ||
+      level !== (answers[2]?.answer || null)
+    );
+  }, [role, locationChoice, city, level, answers]);
+
+  const canRescan = role.trim().length > 0 &&
+    locationChoice !== null &&
+    (locationChoice === "Remote only" || city.trim().length > 0) &&
+    level !== null;
+
+  const handleRescan = () => {
+    if (!canRescan || isRescanning) return;
+    const newAnswers = [
+      { question: answers[0]?.question || "What role are you looking for next?", answer: role.trim() },
+      { question: answers[1]?.question || "Where are you open to working?",
+        answer: locationChoice === "Remote only" ? "Remote only" : `${locationChoice}: ${city.trim()}` },
+      { question: answers[2]?.question || "What level are you targeting?", answer: level },
+    ];
+    onRescan(newAnswers);
+  };
+
+  return (
+    <div className="flex flex-col">
+      <div className="px-4 py-3 border-b border-black/[0.06] dark:border-border">
+        <p className="text-[13px] font-semibold text-foreground">Your search criteria</p>
+        <p className="text-[11px] text-muted-foreground/60 mt-0.5">Edit any field to rescan with new criteria</p>
+      </div>
+
+      <div className="divide-y divide-black/[0.04] dark:divide-border">
+        {/* Role */}
+        <div className="px-4 py-3">
+          <p className="text-[11px] text-foreground/40 mb-2">{answers[0]?.question || "Role"}</p>
+          <input
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            className="w-full bg-black/[0.03] dark:bg-white/[0.04] border border-black/[0.08] dark:border-border rounded-xl px-3 py-2 text-[13px] text-foreground outline-none focus:border-foreground/25 transition-colors"
+          />
+          <div className="flex flex-wrap gap-1.5 mt-2">
+            {ROLE_SUGGESTIONS.map((s) => (
+              <button
+                key={s}
+                onClick={() => setRole(s)}
+                className={`text-[11px] px-2.5 py-1 rounded-full border transition-colors ${
+                  role === s
+                    ? "bg-foreground text-background border-foreground"
+                    : "border-black/10 dark:border-border text-foreground/50 hover:border-foreground/30"
+                }`}
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Location */}
+        <div className="px-4 py-3">
+          <p className="text-[11px] text-foreground/40 mb-2">{answers[1]?.question || "Location"}</p>
+          <div className="flex flex-wrap gap-1.5">
+            {LOCATION_OPTIONS.map((opt) => (
+              <button
+                key={opt}
+                onClick={() => { setLocationChoice(opt); if (opt === "Remote only") setCity(""); }}
+                className={`text-[12px] font-medium px-3 py-1.5 rounded-full border transition-colors ${
+                  locationChoice === opt
+                    ? "bg-foreground text-background border-foreground"
+                    : "border-black/10 dark:border-border text-foreground/60 hover:border-foreground/30"
+                }`}
+              >
+                {opt}
+              </button>
+            ))}
+          </div>
+          <AnimatePresence>
+            {locationChoice && locationChoice !== "Remote only" && (
+              <motion.input
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                placeholder="City name"
+                className="mt-2 w-full bg-black/[0.03] dark:bg-white/[0.04] border border-black/[0.08] dark:border-border rounded-xl px-3 py-2 text-[13px] text-foreground outline-none focus:border-foreground/25 transition-colors"
+              />
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Level */}
+        <div className="px-4 py-3">
+          <p className="text-[11px] text-foreground/40 mb-2">{answers[2]?.question || "Level"}</p>
+          <div className="flex flex-wrap gap-1.5">
+            {LEVEL_OPTIONS.map((opt) => (
+              <button
+                key={opt.title}
+                onClick={() => setLevel(opt.title)}
+                className={`text-[12px] font-medium px-3 py-1.5 rounded-full border transition-colors ${
+                  level === opt.title
+                    ? "bg-foreground text-background border-foreground"
+                    : "border-black/10 dark:border-border text-foreground/60 hover:border-foreground/30"
+                }`}
+              >
+                {opt.title}{opt.sub ? ` · ${opt.sub}` : ""}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Rescan button */}
+      <div className="px-4 pb-4 pt-2">
+        <button
+          onClick={handleRescan}
+          disabled={!canRescan || !isDirty || isRescanning}
+          className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-[13px] font-semibold transition-all ${
+            isDirty && canRescan && !isRescanning
+              ? "bg-foreground text-background hover:bg-foreground/90"
+              : "bg-black/[0.05] dark:bg-white/[0.06] text-foreground/40 cursor-not-allowed"
+          }`}
+        >
+          {isRescanning ? (
+            <>
+              <div className="flex gap-[3px]">
+                {[0,1,2].map(i => (
+                  <motion.div key={i} className="w-1 h-1 rounded-full bg-current"
+                    animate={{ opacity: [0.3,1,0.3] }} transition={{ duration: 0.9, repeat: Infinity, delay: i * 0.2 }} />
+                ))}
+              </div>
+              Scanning…
+            </>
+          ) : (
+            <>
+              <Search className="w-3.5 h-3.5" />
+              {isDirty ? "Rescan with new criteria" : "Change criteria to rescan"}
+            </>
+          )}
+        </button>
+      </div>
+    </div>
   );
-  const [filters, setFilters] = useState(DEFAULT_FILTERS);
+}
+
+export function Dashboard({
+  initialJobs      = [],
+  initialColumns   = null,
+  recommendationId: initialRecId = null,
+  quizAnswers      = [],
+}) {
+  const [columns,          setColumns]          = useState(() => initialColumns ?? buildColumns(initialJobs));
+  const [recommendationId, setRecommendationId] = useState(initialRecId);
+  const [currentAnswers,   setCurrentAnswers]   = useState(quizAnswers);
+  const [filters,          setFilters]          = useState(DEFAULT_FILTERS);
+  const [isRescanning,     setIsRescanning]     = useState(false);
+  const [rescanExhausted,  setRescanExhausted]  = useState(false); // true when DB has no more unique jobs
+
+  // Track all job IDs ever shown — passed as excludeIds on rescan
+  const seenJobIds = useRef(new Set(initialJobs.map((j) => j.id)));
 
   const [selectedJobId,  setSelectedJobId]  = useState(null);
   const [interviewJobId, setInterviewJobId] = useState(null);
   const [roomJobId,      setRoomJobId]      = useState(null);
   const [scoutJobId,     setScoutJobId]     = useState(null);
 
-  // If history restored jobs in pipeline columns (not_applied/applied/interview),
-  // start directly in "split" so all columns are visible immediately.
   const hasRestoredPipeline = initialColumns
     ? ["not_applied", "applied", "interview"].some((c) => (initialColumns[c] || []).length > 0)
     : false;
 
-  // 4-phase: list → shrinking → settled → split
   const [phase, setPhase] = useState(hasRestoredPipeline ? "split" : "list");
   const picksRef     = useRef(null);
   const filterBarRef = useRef(null);
@@ -92,7 +269,6 @@ export function Dashboard({
   const roomJob      = roomJobId      ? allJobs.find((j) => j.id === roomJobId)      ?? null : null;
   const scoutJob     = scoutJobId     ? allJobs.find((j) => j.id === scoutJobId)     ?? null : null;
 
-  // ── Client-side filtering for the AI Picks column ─────────────────────
   const filteredPicks = useMemo(() => {
     return (columns.picks || []).filter((job) => {
       if (filters.workMode !== "all" && job.workMode !== filters.workMode) return false;
@@ -107,7 +283,59 @@ export function Dashboard({
     filters.minMatch > 0,
   ].filter(Boolean).length;
 
-  // ── Interaction handlers ───────────────────────────────────────────────
+  const handleFetchMore = useCallback(async () => {
+    if (isRescanning || rescanExhausted || !recommendationId) return;
+    setIsRescanning(true);
+    try {
+      const { data } = await _postJobsMore(
+        recommendationId,
+        currentAnswers,
+        [...seenJobIds.current],
+      );
+      const newJobs = data.jobs || [];
+      if (!newJobs.length) {
+        setRescanExhausted(true);
+        return;
+      }
+      newJobs.forEach((j) => seenJobIds.current.add(j.id));
+      setColumns((prev) => ({ ...prev, picks: [...(prev.picks || []), ...newJobs] }));
+    } catch (err) {
+      console.error("[Jobs] fetchMore failed:", err);
+    } finally {
+      setIsRescanning(false);
+    }
+  }, [isRescanning, rescanExhausted, recommendationId, currentAnswers]);
+
+  const handleRescan = useCallback(async (answers = currentAnswers) => {
+    if (isRescanning) return;
+    setIsRescanning(true);
+    setRescanExhausted(false);
+    seenJobIds.current.clear();
+    try {
+      const { data } = await _postJobsRecommend(answers, []);
+      const newPicks  = data.jobs || [];
+      const inherited = data.inheritedColumns || {};
+
+      newPicks.forEach((j) => seenJobIds.current.add(j.id));
+      Object.values(inherited).flat().forEach((j) => seenJobIds.current.add(j.id));
+
+      setColumns({
+        picks:       newPicks,
+        not_applied: inherited.not_applied || [],
+        applied:     inherited.applied     || [],
+        interview:   inherited.interview   || [],
+        offer:       inherited.offer       || [],
+        dismissed:   [],
+      });
+      setCurrentAnswers(answers);
+      setRecommendationId(data.recommendationId);
+    } catch (err) {
+      console.error("[Jobs] Rescan failed:", err);
+    } finally {
+      setIsRescanning(false);
+    }
+  }, [isRescanning, currentAnswers]);
+
   const handleOpenJob = useCallback(
     (id) => {
       setSelectedJobId(id);
@@ -184,12 +412,15 @@ export function Dashboard({
     [recommendationId],
   );
 
-  // ── Prompt pill summary from quiz answers ──────────────────────────────
   const promptSummary = useMemo(() => {
-    if (!quizAnswers.length) return "AI-matched roles for your profile";
-    const parts = [quizAnswers[0]?.answer, quizAnswers[1]?.answer].filter(Boolean);
+    if (!currentAnswers.length) return "AI-matched roles for your profile";
+    const parts = [
+      currentAnswers[0]?.answer,
+      currentAnswers[1]?.answer,
+      currentAnswers[2]?.answer,
+    ].filter(Boolean);
     return parts.join(" · ") || "AI-matched roles for your profile";
-  }, [quizAnswers]);
+  }, [currentAnswers]);
 
   return (
     <motion.div
@@ -249,50 +480,35 @@ export function Dashboard({
                 )}
               </div>
 
-              {/* Work mode */}
               <div className="mb-4">
-                <p className="text-[11px] font-semibold uppercase tracking-widest text-foreground/35 mb-2">
-                  Work mode
-                </p>
+                <p className="text-[11px] font-semibold uppercase tracking-widest text-foreground/35 mb-2">Work mode</p>
                 <div className="flex flex-wrap gap-1.5">
                   {["all", "Remote", "On-site"].map((v) => (
-                    <FilterPill
-                      key={v}
-                      active={filters.workMode === v}
-                      onClick={() => setFilters((f) => ({ ...f, workMode: v }))}
-                    >
+                    <FilterPill key={v} active={filters.workMode === v} onClick={() => setFilters((f) => ({ ...f, workMode: v }))}>
                       {v === "all" ? "Any" : v}
                     </FilterPill>
                   ))}
                 </div>
               </div>
 
-              {/* Min match score */}
               <div>
-                <p className="text-[11px] font-semibold uppercase tracking-widest text-foreground/35 mb-2">
-                  Min match score
-                </p>
+                <p className="text-[11px] font-semibold uppercase tracking-widest text-foreground/35 mb-2">Min match score</p>
                 <div className="flex flex-wrap gap-1.5">
                   {[0, 50, 60, 70, 80, 90].map((v) => (
-                    <FilterPill
-                      key={v}
-                      active={filters.minMatch === v}
-                      onClick={() => setFilters((f) => ({ ...f, minMatch: v }))}
-                    >
+                    <FilterPill key={v} active={filters.minMatch === v} onClick={() => setFilters((f) => ({ ...f, minMatch: v }))}>
                       {v === 0 ? "Any" : `${v}+`}
                     </FilterPill>
                   ))}
                 </div>
               </div>
 
-              {/* Live count */}
               <p className="mt-4 text-[11px] text-muted-foreground/50 text-center">
                 {filteredPicks.length} of {(columns.picks || []).length} roles shown
               </p>
             </PopoverContent>
           </Popover>
 
-          {/* ── Criteria popover ─────────────────────────────────────────── */}
+          {/* ── Criteria popover — now editable ─────────────────────────── */}
           <Popover>
             <PopoverTrigger asChild>
               <button
@@ -301,43 +517,42 @@ export function Dashboard({
               >
                 <Sparkles className="w-3.5 h-3.5" />
                 Criteria
+                {currentAnswers.length > 0 && !isRescanning && (
+                  <span className="flex items-center justify-center w-4 h-4 rounded-full bg-foreground text-background text-[10px] font-semibold">
+                    {currentAnswers.filter(a => a.answer).length}
+                  </span>
+                )}
+                {isRescanning && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#FF553E] animate-pulse" />
+                )}
               </button>
             </PopoverTrigger>
             <PopoverContent
               side="bottom"
               align="start"
               sideOffset={8}
-              className="w-[320px] p-0 rounded-2xl border border-black/[0.08] dark:border-border shadow-xl bg-white dark:bg-card overflow-hidden"
+              className="w-[340px] p-0 rounded-2xl border border-black/[0.08] dark:border-border shadow-xl bg-white dark:bg-card overflow-hidden"
             >
-              <div className="px-4 py-3 border-b border-black/[0.06] dark:border-border">
-                <p className="text-[13px] font-semibold text-foreground">Your search criteria</p>
-                <p className="text-[11px] text-muted-foreground/60 mt-0.5">
-                  Used to find and rank your matched roles
-                </p>
-              </div>
-
-              {quizAnswers.length > 0 ? (
-                <div className="divide-y divide-black/[0.04] dark:divide-border">
-                  {quizAnswers.map((qa, i) => (
-                    <div key={i} className="px-4 py-3">
-                      <p className="text-[11px] text-foreground/40 leading-snug mb-1">
-                        {qa.question}
-                      </p>
-                      <p className="text-[13px] font-medium text-foreground/80 leading-snug">
-                        {qa.answer || <span className="text-foreground/30 italic">Skipped</span>}
-                      </p>
-                    </div>
-                  ))}
-                </div>
+              {currentAnswers.length > 0 ? (
+                <CriteriaEditor
+                  answers={currentAnswers}
+                  onRescan={handleRescan}
+                  isRescanning={isRescanning}
+                />
               ) : (
                 <div className="px-4 py-6 text-center">
-                  <p className="text-[12px] text-muted-foreground/50">
-                    No criteria recorded for this session.
-                  </p>
+                  <p className="text-[12px] text-muted-foreground/50">No criteria recorded for this session.</p>
                 </div>
               )}
             </PopoverContent>
           </Popover>
+
+          {/* Exhausted notice */}
+          {rescanExhausted && (
+            <span className="text-[11px] text-muted-foreground/50 px-2">
+              No more new roles found
+            </span>
+          )}
         </div>
       </div>
 
@@ -346,7 +561,6 @@ export function Dashboard({
         <Kanban
           value={columns}
           onValueChange={(newCols) => {
-            // Detect column moves for drag-and-drop interaction tracking
             Object.keys(newCols).forEach((colId) => {
               const action = COL_DRAG_ACTION[colId];
               if (!action) return;
@@ -363,15 +577,14 @@ export function Dashboard({
           className="h-full"
         >
           <KanbanBoard className="flex h-full pt-4 pr-4 pb-4 pl-[108px]">
-            {/* AI Picks — centered in list mode, shrinks on shortlist */}
             <div
               ref={picksRef}
               style={{
-                flex:        phase === "split" || phase === "settled" ? "0 0 350px" : "none",
-                width:       phase === "split" || phase === "settled" ? undefined : "520px",
-                marginLeft:  phase === "split" || phase === "settled" ? 0 : centerMargin,
-                height:      "100%",
-                display:     "flex",
+                flex:          phase === "split" || phase === "settled" ? "0 0 350px" : "none",
+                width:         phase === "split" || phase === "settled" ? undefined : "520px",
+                marginLeft:    phase === "split" || phase === "settled" ? 0 : centerMargin,
+                height:        "100%",
+                display:       "flex",
                 flexDirection: "column",
               }}
             >
@@ -384,12 +597,11 @@ export function Dashboard({
                 onDismiss={handleDismiss}
                 onMockInterview={setInterviewJobId}
                 onAskScout={setScoutJobId}
-                filterActive={activeFilterCount > 0}
-                totalCount={(columns.picks || []).length}
+                onExhausted={rescanExhausted ? undefined : handleFetchMore}
+                isRescanning={isRescanning}
               />
             </div>
 
-            {/* Pipeline columns — stagger-reveal after AI Picks shrinks */}
             {COL_ORDER.filter((c) => c !== "picks").map((colId, i) => (
               <motion.div
                 key={colId}
@@ -397,7 +609,7 @@ export function Dashboard({
                 initial={{ maxWidth: 0, opacity: 0 }}
                 animate={{
                   maxWidth: phase === "split" ? 362 : 0,
-                  opacity:  phase === "split" ? 1 : 0,
+                  opacity:  phase === "split" ? 1   : 0,
                 }}
                 transition={{
                   maxWidth: { duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: phase === "split" ? i * 0.12 : 0 },

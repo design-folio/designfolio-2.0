@@ -195,15 +195,6 @@ export const INITIAL_COLUMNS = {
   offer: [],
 };
 
-// NOTE: APIS TO BE INTEGRATED HERE — questions should come from GET /api/jobs/onboarding-questions
-export const questions = [
-  "What kind of work are you looking for — full-time, freelance, or something in between?",
-  "Where would you want to be based? Remote, hybrid, or a specific city?",
-  "Which industry excites you most right now?",
-  "What's the one thing a role must have for you to say yes?",
-  "Anything you'd want to avoid in your next job?",
-];
-
 // NOTE: APIS TO BE INTEGRATED HERE — replace SCOUT_RESPONSES with POST /api/jobs/scout { jobId, message }
 export const SCOUT_SUGGESTIONS = [
   "Tell me why this job is a good fit for me.",

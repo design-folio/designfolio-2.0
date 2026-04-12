@@ -146,6 +146,16 @@
   opacity: 0;
 }
 
+// Always-active orb (no hover needed — used while AI is processing)
+.orb-always-active .color-orb::before {
+  animation-play-state: running;
+  opacity: 1;
+}
+
+.orb-always-active .color-orb::after {
+  opacity: 0;
+}
+
 @keyframes orb-spin {
   to { --orb-angle: 360deg; }
 }

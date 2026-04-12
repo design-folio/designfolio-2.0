@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Video, Mic, CheckCircle2, XCircle, Clapperboard } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { CompanyLogo } from "./CompanyLogo";
 
 function PermissionCard({ icon: Icon, label, description, state, onRequest }) {
   return (
@@ -68,12 +69,7 @@ export function MockInterviewDialog({ job, open, onClose, onStart }) {
       >
         <DialogHeader className="px-6 pt-6 pb-5 border-b border-black/[0.06] dark:border-white/[0.06]">
           <div className="flex items-center gap-3">
-            <div
-              className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-white text-[13px] font-bold"
-              style={{ backgroundColor: job.logoColor }}
-            >
-              {job.logoLetter}
-            </div>
+            <CompanyLogo logoUrl={job.logoUrl} company={job.company} size={40} />
             <div className="min-w-0">
               <DialogTitle className="text-[#1A1A1A] dark:text-[#F0EDE7] text-[17px] font-semibold leading-tight m-0 truncate">
                 Ready to practise?

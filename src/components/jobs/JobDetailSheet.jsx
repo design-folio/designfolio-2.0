@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { FaLinkedin } from "react-icons/fa";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { CompanyLogo } from "./CompanyLogo";
 import { Gauge } from "@/components/ui/gauge-1";
 import { MatchGlowCard } from "@/components/ui/glowing-card";
 import { _postJobsInteract, _postJobsCustomizeResume, _postJobsCoverLetter, _postJobsFitAnalysis } from "@/network/jobs";
@@ -136,12 +137,7 @@ export function JobDetailSheet({ job, open, onClose, recommendationId }) {
           <div className="px-5 py-5 border-b border-black/[0.06] dark:border-white/[0.06]">
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div
-                  className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 text-white text-sm font-bold"
-                  style={{ backgroundColor: displayJob.logoColor }}
-                >
-                  {displayJob.logoLetter}
-                </div>
+                <CompanyLogo logoUrl={displayJob.logoUrl} company={displayJob.company} size={40} />
                 <div>
                   <div className="text-base font-semibold text-foreground">{displayJob.company}</div>
                   <div className="flex items-center gap-1 mt-0.5 text-sm text-foreground/50">

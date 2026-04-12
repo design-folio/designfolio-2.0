@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Briefcase, Monitor, Clock, Bookmark, XCircle, Clapperboard } from "lucide-react";
 import { Gauge } from "@/components/ui/gauge-1";
 import { ColorOrb } from "@/components/ui/color-orb";
+import { CompanyLogo } from "./CompanyLogo";
 
 export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, onAskScout }) {
   const [dismissOpen, setDismissOpen] = useState(false);
@@ -26,12 +27,7 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
       {/* Row 1: Company logo + name/location + gauge */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2.5 min-w-0">
-          <div
-            className="w-[42px] h-[42px] rounded-lg flex items-center justify-center flex-shrink-0 text-white text-[15px] font-bold"
-            style={{ backgroundColor: job.logoColor }}
-          >
-            {job.logoLetter}
-          </div>
+          <CompanyLogo logoUrl={job.logoUrl} company={job.company} size={42} />
           <div className="min-w-0">
             <div className="text-[13px] font-medium text-foreground/70 truncate">{job.company}</div>
             <div className="text-[12px] text-foreground/40 truncate">{job.location}</div>

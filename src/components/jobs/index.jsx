@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
 import { TransitionScreen } from "./TransitionScreen";
-import { VoiceRoom } from "./VoiceRoom";
 import { TypeRoom } from "./TypeRoom";
 import { ThinkingScreen } from "./ThinkingScreen";
 import { AhaMomentModal } from "./AhaMomentModal";
@@ -15,7 +14,7 @@ import { _getJobsQuestions, _getJobsHistory } from "@/network/jobs";
  *   loading → (history check)
  *     → dashboard           if history has jobs
  *     → transition          if no history
- *       → voice | type
+ *       → type
  *         → thinking        (POST /jobs/recommend in-flight)
  *           → aha           (celebration modal)
  *             → dashboard   (kanban board)
@@ -106,7 +105,7 @@ export function Jobs() {
   const handleRecommendComplete = (fetchedJobs, recId) => {
     setJobs(fetchedJobs);
     setRecommendationId(recId);
-    setQuizAnswers(answers); // answers already collected from TypeRoom/VoiceRoom
+    setQuizAnswers(answers);
     setPhase("aha");
   };
 
@@ -174,16 +173,7 @@ export function Jobs() {
         {phase === "transition" && (
           <TransitionScreen
             key="transition"
-            onVoice={() => setPhase("voice")}
             onType={() => setPhase("type")}
-          />
-        )}
-        {phase === "voice" && (
-          <VoiceRoom
-            key="voice"
-            questions={questions}
-            onDone={handleDone}
-            onReset={() => setPhase("type")}
           />
         )}
         {phase === "type" && (

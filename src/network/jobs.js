@@ -5,8 +5,9 @@ export const _getJobsQuestions = () => axiosInstance.get("/jobs/questions");
 
 // POST /jobs/recommend — submit quiz answers; returns { recommendationId, jobs[] }
 // NOTE: This call is slow (5–15 seconds) — keep ThinkingScreen visible until resolved
-export const _postJobsRecommend = (answers) =>
-  axiosInstance.post("/jobs/recommend", { answers });
+// Pass excludeIds to skip already-seen jobs on auto-rescan (no quiz re-run needed).
+export const _postJobsRecommend = (answers, excludeIds = []) =>
+  axiosInstance.post("/jobs/recommend", { answers, excludeIds });
 
 // POST /jobs/interact — fire-and-forget tracking; action: 'viewed'|'applied'|'saved'|'dismissed'
 export const _postJobsInteract = (recommendationId, jobId, action) => {
@@ -18,6 +19,11 @@ export const _postJobsInteract = (recommendationId, jobId, action) => {
 
 // GET /jobs/history — restore last recommendation session on page mount
 export const _getJobsHistory = () => axiosInstance.get("/jobs/history");
+
+// POST /jobs/more — append more jobs to existing recommendation (infinite scroll)
+// Does NOT create a new recommendation document — same recommendationId throughout.
+export const _postJobsMore = (recommendationId, answers, excludeIds = []) =>
+  axiosInstance.post("/jobs/more", { recommendationId, answers, excludeIds });
 
 // POST /jobs/scout — Scout AI chat; returns { reply: string }
 export const _postJobsScout = (recommendationId, jobId, message) =>

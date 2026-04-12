@@ -1,3 +1,4 @@
+import { useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { KanbanColumn, KanbanColumnContent, KanbanItem, KanbanItemHandle } from "@/components/ui/kanban";
 import { JobCard } from "./JobCard";
@@ -12,9 +13,30 @@ export function PipelineCol({
   onMockInterview,
   onAskScout,
   colIndex = 0,
+  onExhausted,
+  isRescanning = false,
 }) {
-  const isPicks = colId === "picks";
+  const isPicks    = colId === "picks";
   const isInterview = colId === "interview";
+
+  const sentinelRef = useRef(null);
+
+  // Root must be the column's scroll container — not viewport — otherwise the sentinel
+  // stays clipped inside the column and the observer never fires.
+  useEffect(() => {
+    if (!isPicks || !sentinelRef.current || !onExhausted) return;
+    const scrollContainer = sentinelRef.current.parentElement;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && jobs.length > 0 && !isRescanning) {
+          onExhausted();
+        }
+      },
+      { root: scrollContainer, threshold: 0.1 },
+    );
+    obs.observe(sentinelRef.current);
+    return () => obs.disconnect();
+  }, [isPicks, jobs.length, isRescanning, onExhausted]);
 
   const cardList = (
     <AnimatePresence mode="popLayout" initial={false}>
@@ -50,13 +72,55 @@ export function PipelineCol({
           </KanbanItem>
         </motion.div>
       ))}
-      {jobs.length === 0 && (
+
+      {isPicks && <div key="sentinel" ref={sentinelRef} className="h-1" />}
+
+      {/* Rescanning / fetching-more indicator */}
+      {isPicks && isRescanning && (
+        <motion.div
+          key="rescanning"
+          layout
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0 }}
+          className="flex items-center justify-center gap-2 py-3"
+        >
+          <div className="flex gap-[4px]">
+            {[0, 1, 2].map((i) => (
+              <motion.div
+                key={i}
+                className="w-1.5 h-1.5 rounded-full bg-[#FF553E]"
+                animate={{ opacity: [0.3, 1, 0.3], scale: [0.8, 1.2, 0.8] }}
+                transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }}
+              />
+            ))}
+          </div>
+          <span className="text-[11px] text-muted-foreground/50">Finding more roles…</span>
+        </motion.div>
+      )}
+
+      {jobs.length === 0 && !isRescanning && (
         <div className="flex items-center justify-center py-10 rounded-lg border border-dashed border-black/10 dark:border-border/50 mx-0.5">
           <p className="text-[11px] text-muted-foreground/40 text-center leading-relaxed">
             Drag a role here
             <br />
             to track it
           </p>
+        </div>
+      )}
+
+      {jobs.length === 0 && isRescanning && (
+        <div className="flex items-center justify-center py-10">
+          <div className="flex gap-[4px]">
+            {[0, 1, 2].map((i) => (
+              <motion.div
+                key={i}
+                className="w-1.5 h-1.5 rounded-full bg-[#FF553E]"
+                animate={{ opacity: [0.3, 1, 0.3], scale: [0.8, 1.2, 0.8] }}
+                transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }}
+              />
+            ))}
+          </div>
         </div>
       )}
     </AnimatePresence>
@@ -74,6 +138,9 @@ export function PipelineCol({
           <span className="text-[11px] text-foreground/40 bg-black/8 rounded-full px-1.5 py-0.5 leading-none">
             {jobs.length}
           </span>
+        )}
+        {isPicks && isRescanning && (
+          <span className="text-[10px] text-[#FF553E]/70 ml-auto">scanning…</span>
         )}
       </div>
       <KanbanColumnContent

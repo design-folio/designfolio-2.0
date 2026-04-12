@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useGoogleLogin } from '@react-oauth/google';
 import { _signupEmail, _signupGmail } from '@/network/post-request';
+import { _postResumeApply } from '@/network/resume';
 import { setToken } from '@/lib/cooikeManager';
 import { AuthLayout } from '@/components/ui/auth-layout';
 import { FormInput } from '@/components/ui/form-input';
@@ -50,6 +51,19 @@ export default function Signup() {
     });
   }, [router.query.username]);
 
+  // Apply parsed resume to user profile silently (fire-and-forget)
+  const applyParsedResume = async () => {
+    try {
+      const raw = sessionStorage.getItem('df_parsed_resume');
+      if (!raw) return;
+      const parsed = JSON.parse(raw);
+      sessionStorage.removeItem('df_parsed_resume');
+      await _postResumeApply(parsed);
+    } catch {
+      // Silent — resume apply is best-effort; don't block signup flow
+    }
+  };
+
   const handleEmailSignup = async (values, { setFieldError }) => {
     setEmailLoading(true);
 
@@ -67,6 +81,8 @@ export default function Signup() {
       const { token } = data;
       setToken(token);
       console.log('Signup successful:', data);
+
+      await applyParsedResume();
 
       identify(signupData.email, {
         email: signupData.email,
@@ -119,6 +135,7 @@ export default function Signup() {
         const { data: signupData } = await _signupGmail(data);
         const { token } = signupData;
         setToken(token);
+        await applyParsedResume();
         identify(data.email, {
           email: data.email,
           username: data.username,

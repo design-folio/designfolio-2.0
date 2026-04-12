@@ -236,7 +236,7 @@ export default function LandingPage({ dfToken }) {
           <LandingHeader showNavCTA={showNavCTA} dfToken={dfToken} />
 
           <main className="flex flex-col items-center">
-            <LandingHeroSection dfToken={dfToken} />
+            <LandingHeroSection />
             <LandingVideoSection ref={videoSectionRef} isDark={isDark} />
             <LandingTrustedBySection />
             <LandingTestimonialCarousel />

@@ -1,7 +1,12 @@
 import ArrowCTA from "./shared/ArrowCTA";
 
 export default function LandingFounderSection({ dfToken, hasParsedResume, onPrimaryCta }) {
-  const showPrimaryCta = Boolean(dfToken || hasParsedResume);
+  const ctaLabel = dfToken
+    ? "Launch Builder"
+    : hasParsedResume
+      ? "Continue Signup"
+      : "Get started for Free";
+  const ctaHref = dfToken ? "/builder" : hasParsedResume ? "/resume-signup" : undefined;
 
   return (
     <section
@@ -57,16 +62,14 @@ export default function LandingFounderSection({ dfToken, hasParsedResume, onPrim
           </div>
         </div>
 
-        {showPrimaryCta && (
-          <div className="mt-4 mb-6">
-            <ArrowCTA
-              label={dfToken ? "Launch Builder" : "Continue Signup"}
-              size="lg"
-              href={dfToken ? "/builder" : "/resume-signup"}
-              onClick={!dfToken ? onPrimaryCta : undefined}
-            />
-          </div>
-        )}
+        <div className="mt-4 mb-6">
+          <ArrowCTA
+            label={ctaLabel}
+            size="lg"
+            href={ctaHref}
+            onClick={!ctaHref ? onPrimaryCta : undefined}
+          />
+        </div>
       </div>
     </section>
   );

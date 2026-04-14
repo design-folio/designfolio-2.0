@@ -627,7 +627,7 @@ export default function ResumeSignup() {
             <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.17 }} className="md:hidden">
               <button
                 onClick={() => setShowMobileSheet(true)}
-                className="inline-flex items-center gap-2 rounded-xl border border-[--lp-border] bg-[--lp-text]/[0.03] px-4 py-2.5 text-[13px] font-medium text-[--lp-text-muted] hover:border-[--lp-text]/25 transition-colors"
+                className="inline-flex items-center gap-2 rounded-xl border border-[--lp-border] bg-[--lp-text]/[0.03] px-4 py-2.5 text-[13px] font-medium text-[--lp-text-muted] hover:border-[--lp-border] transition-colors"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 opacity-70">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" />

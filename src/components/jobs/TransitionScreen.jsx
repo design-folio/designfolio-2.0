@@ -15,12 +15,27 @@ const ORBIT_LOGOS = [
 ];
 
 function OrbitRing({ visible }) {
+  const [r, setR] = useState(280);
+
+  useEffect(() => {
+    const update = () => {
+      if (window.innerWidth <= 640) setR(190);
+      else if (window.innerWidth <= 900) setR(240);
+      else setR(280);
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  const size = 2 * r + 100;
+
   return (
     <AnimatePresence>
       {visible && (
         <motion.div
           className="absolute top-1/2 left-1/2 pointer-events-none"
-          style={{ transform: "translate(-50%, -50%)", width: 560, height: 560 }}
+          style={{ transform: "translate(-50%, -50%)", width: size, height: size }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -34,7 +49,6 @@ function OrbitRing({ visible }) {
             {ORBIT_LOGOS.map((src, i) => {
               const angle = (i / ORBIT_LOGOS.length) * 360;
               const rad = (angle * Math.PI) / 180;
-              const r = 280;
               const x = r * Math.cos(rad);
               const y = r * Math.sin(rad);
               return (
@@ -50,7 +64,7 @@ function OrbitRing({ visible }) {
                   }}
                 >
                   <div
-                    className="w-10 h-10 rounded-xl bg-white dark:bg-card border border-border/50 flex items-center justify-center p-1.5 shadow-sm"
+                    className="w-10 h-10 rounded-xl bg-white dark:bg-[#2A2520] border border-border/50 flex items-center justify-center p-1.5 shadow-sm"
                     style={{ animation: `spin-reverse 32s linear infinite` }}
                   >
                     <img src={src} alt="" className="w-full h-full object-contain opacity-70 dark:opacity-50" />
@@ -69,6 +83,10 @@ function OrbitRing({ visible }) {
           <style>{`
             @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
             @keyframes spin-reverse { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
+            @keyframes shimmer-text {
+              0% { background-position: 100% 0; }
+              100% { background-position: -100% 0; }
+            }
           `}</style>
         </motion.div>
       )}
@@ -115,29 +133,22 @@ function AnimatedJobCount({ onDone }) {
   const display = count >= 1200 ? "1,200+" : count.toLocaleString();
 
   return (
-    <>
-      <span
-        style={showGradient ? {
-          display: "inline-block",
-          whiteSpace: "nowrap",
-          paddingRight: "0.08em",
-          color: "transparent",
-          WebkitBackgroundClip: "text",
-          backgroundClip: "text",
-          backgroundImage: "linear-gradient(to right, hsl(var(--foreground)) 0%, hsl(var(--foreground)) 38%, #5D3560 52%, #E54D2E 62%, #F5A623 72%, hsl(var(--foreground)) 86%, hsl(var(--foreground)) 100%)",
-          backgroundSize: "300% 100%",
-          animation: "shimmer-text 3s ease-in-out forwards",
-        } : { display: "inline-block", whiteSpace: "nowrap" }}
-      >
-        {display}
-      </span>
-      <style>{`
-        @keyframes shimmer-text {
-          0% { background-position: 100% 0; }
-          100% { background-position: -100% 0; }
-        }
-      `}</style>
-    </>
+    <span
+      key={showGradient ? "g" : "n"}
+      style={showGradient ? {
+        display: "inline-block",
+        whiteSpace: "nowrap",
+        paddingRight: "0.08em",
+        color: "transparent",
+        WebkitBackgroundClip: "text",
+        backgroundClip: "text",
+        backgroundImage: "linear-gradient(to right, hsl(var(--foreground)) 0%, hsl(var(--foreground)) 38%, #5D3560 52%, #E54D2E 62%, #F5A623 72%, hsl(var(--foreground)) 86%, hsl(var(--foreground)) 100%)",
+        backgroundSize: "300% 100%",
+        animation: "shimmer-text 3s ease-in-out forwards",
+      } : { display: "inline-block", whiteSpace: "nowrap" }}
+    >
+      {display}
+    </span>
   );
 }
 

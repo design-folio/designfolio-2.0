@@ -4,6 +4,7 @@ import { ArrowRight, ArrowLeft, Search } from "lucide-react";
 import Lottie from "lottie-react";
 import aiAssistantAnimation from "@/assets/AI-Assistant.json";
 import { DotTrail } from "./DotTrail";
+import { LocationAutocomplete } from "./LocationAutocomplete";
 
 // Inline BlurredStagger — animates each word with blur fade-in stagger
 function BlurredStagger({ text, className }) {
@@ -86,8 +87,6 @@ export function TypeRoom({ questions, onDone, onReset }) {
     setLocationChoice(option);
     if (option === "Remote only") {
       setCity("");
-    } else if (option === "My city only" && !city) {
-      setCity("Bengaluru");
     }
   };
 
@@ -205,13 +204,12 @@ export function TypeRoom({ questions, onDone, onReset }) {
                     <p className="text-muted-foreground text-[13px] text-left">
                       {locationChoice === "My city only" ? "Which city?" : "Which cities are you open to?"}
                     </p>
-                    <input
-                      ref={cityRef}
-                      data-testid="input-city"
+                    <LocationAutocomplete
+                      inputRef={cityRef}
                       value={city}
-                      onChange={(e) => setCity(e.target.value)}
+                      onChange={setCity}
+                      onSelect={setCity}
                       onKeyDown={(e) => e.key === "Enter" && advance()}
-                      className="w-full bg-background/70 dark:bg-foreground/5 border border-border rounded-2xl px-5 py-4 text-foreground text-[15px] outline-none focus:border-foreground/30 transition-colors"
                     />
                   </motion.div>
                 )}

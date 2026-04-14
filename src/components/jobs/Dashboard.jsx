@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { SlidersHorizontal, Sparkles, RotateCcw, Search } from "lucide-react";
+import { LocationAutocomplete } from "./LocationAutocomplete";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Kanban, KanbanBoard, KanbanOverlay } from "@/components/ui/kanban";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
@@ -154,16 +155,21 @@ function CriteriaEditor({ answers, onRescan, isRescanning }) {
           </div>
           <AnimatePresence>
             {locationChoice && locationChoice !== "Remote only" && (
-              <motion.input
+              <motion.div
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: "auto", opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ duration: 0.2 }}
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-                placeholder="City name"
-                className="mt-2 w-full bg-black/[0.03] dark:bg-white/[0.04] border border-black/[0.08] dark:border-border rounded-xl px-3 py-2 text-[13px] text-foreground outline-none focus:border-foreground/25 transition-colors"
-              />
+                className="mt-2 overflow-visible"
+              >
+                <LocationAutocomplete
+                  value={city}
+                  onChange={setCity}
+                  onSelect={setCity}
+                  placeholder="City name"
+                  size="sm"
+                />
+              </motion.div>
             )}
           </AnimatePresence>
         </div>
@@ -284,21 +290,28 @@ export function Dashboard({
   ].filter(Boolean).length;
 
   const handleFetchMore = useCallback(async () => {
+    console.log("[Jobs] handleFetchMore called", { isRescanning, rescanExhausted, recommendationId });
     if (isRescanning || rescanExhausted || !recommendationId) return;
     setIsRescanning(true);
     try {
+      console.log("[Jobs] Calling /jobs/more", { recommendationId, answers: currentAnswers });
       const { data } = await _postJobsMore(
         recommendationId,
         currentAnswers,
         [...seenJobIds.current],
       );
+      console.log("[Jobs] /jobs/more response", { jobs: data.jobs?.length, hasMore: data.hasMore });
       const newJobs = data.jobs || [];
-      if (!newJobs.length) {
-        setRescanExhausted(true);
-        return;
+      if (newJobs.length) {
+        newJobs.forEach((j) => seenJobIds.current.add(j.id));
+        setColumns((prev) => ({ ...prev, picks: [...(prev.picks || []), ...newJobs] }));
       }
-      newJobs.forEach((j) => seenJobIds.current.add(j.id));
-      setColumns((prev) => ({ ...prev, picks: [...(prev.picks || []), ...newJobs] }));
+      // Use the backend's authoritative signal — hasMore: false means JSearch
+      // is exhausted for this query, even if some jobs were returned this call.
+      if (data.hasMore === false) {
+        console.log("[Jobs] JSearch exhausted — hiding Get More button");
+        setRescanExhausted(true);
+      }
     } catch (err) {
       console.error("[Jobs] fetchMore failed:", err);
     } finally {

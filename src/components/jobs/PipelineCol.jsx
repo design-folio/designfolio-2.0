@@ -1,5 +1,5 @@
-import { useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { ChevronDown } from "lucide-react";
 import { KanbanColumn, KanbanColumnContent, KanbanItem, KanbanItemHandle } from "@/components/ui/kanban";
 import { JobCard } from "./JobCard";
 import { COL_LABELS } from "@/data/jobs";
@@ -13,30 +13,11 @@ export function PipelineCol({
   onMockInterview,
   onAskScout,
   colIndex = 0,
-  onExhausted,
+  onExhausted,   // undefined = JSearch exhausted (hide button); function = show "Get More" button
   isRescanning = false,
 }) {
-  const isPicks    = colId === "picks";
+  const isPicks     = colId === "picks";
   const isInterview = colId === "interview";
-
-  const sentinelRef = useRef(null);
-
-  // Root must be the column's scroll container — not viewport — otherwise the sentinel
-  // stays clipped inside the column and the observer never fires.
-  useEffect(() => {
-    if (!isPicks || !sentinelRef.current || !onExhausted) return;
-    const scrollContainer = sentinelRef.current.parentElement;
-    const obs = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && jobs.length > 0 && !isRescanning) {
-          onExhausted();
-        }
-      },
-      { root: scrollContainer, threshold: 0.1 },
-    );
-    obs.observe(sentinelRef.current);
-    return () => obs.disconnect();
-  }, [isPicks, jobs.length, isRescanning, onExhausted]);
 
   const cardList = (
     <AnimatePresence mode="popLayout" initial={false}>
@@ -73,7 +54,31 @@ export function PipelineCol({
         </motion.div>
       ))}
 
-      {isPicks && <div key="sentinel" ref={sentinelRef} className="h-1" />}
+      {/* Get More / Exhausted footer — picks column only */}
+      {isPicks && jobs.length > 0 && (
+        <motion.div
+          key="fetch-more-footer"
+          layout
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="pt-1 pb-2"
+        >
+          {!isRescanning && onExhausted && (
+            <button
+              onClick={onExhausted}
+              className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-black/[0.08] dark:border-border text-[12px] font-medium text-foreground/50 hover:text-foreground hover:border-foreground/20 transition-colors bg-transparent"
+            >
+              <ChevronDown className="w-3.5 h-3.5" />
+              Get more matches
+            </button>
+          )}
+          {!isRescanning && !onExhausted && (
+            <p className="text-center text-[11px] text-muted-foreground/40 py-2">
+              No more new roles found
+            </p>
+          )}
+        </motion.div>
+      )}
 
       {/* Rescanning / fetching-more indicator */}
       {isPicks && isRescanning && (

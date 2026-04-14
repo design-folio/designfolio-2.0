@@ -1,32 +1,21 @@
-// NOTE: APIS TO BE INTEGRATED HERE — anam-ai SDK integration
-// Install: npm install @anam-ai/js-sdk
-// The ANAM_API_KEY below should be fetched from /api/jobs/interview-token (server-side)
-// rather than hardcoded here.
-//
-// NOTE: APIS TO BE INTEGRATED HERE — replace hardcoded personaId, avatarId, voiceId
-// with values from /api/jobs/interview-config?jobId=...
-
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Mic, MicOff, Phone, ChevronLeft } from "lucide-react";
+import { _postJobsInterviewSession } from "@/network/jobs";
 
 // Guard against missing package: import lazily
-let unsafe_createClientWithApiKey = null;
+let createClient = null;
 let AnamEvent = null;
 try {
   // eslint-disable-next-line
   const anamSdk = require("@anam-ai/js-sdk");
-  unsafe_createClientWithApiKey = anamSdk.unsafe_createClientWithApiKey;
+  createClient = anamSdk.createClient;
   AnamEvent = anamSdk.AnamEvent;
 } catch {
-  // NOTE: APIS TO BE INTEGRATED HERE — install @anam-ai/js-sdk to enable live interviews
+  // package not installed
 }
 
-// NOTE: APIS TO BE INTEGRATED HERE — fetch this token from /api/jobs/interview-token
-const ANAM_API_KEY =
-  "MTI0ZDNkNjctYjQ0ZS00ZjMzLWJmOTAtYjViZWJjYzdmNWM5OllrU0hvQXVNRkI0TFZQMVMrdXdXbWZoMUY5UGxUQzAzNkExWHlTd213V0E9";
-
-export function MockInterviewRoom({ job, onEnd }) {
+export function MockInterviewRoom({ job, recommendationId, onEnd }) {
   const userVideoRef = useRef(null);
   const transcriptRef = useRef(null);
   const anamClientRef = useRef(null);
@@ -37,36 +26,26 @@ export function MockInterviewRoom({ job, onEnd }) {
   const [transcript, setTranscript] = useState([]);
 
   useEffect(() => {
-    if (!unsafe_createClientWithApiKey || !AnamEvent) {
-      setStatus("error");
-      return;
-    }
-
     let mounted = true;
 
     const start = async () => {
       try {
+        if (!createClient || !AnamEvent) {
+          console.error("[MockInterview] @anam-ai/js-sdk is not installed");
+          if (mounted) setStatus("error");
+          return;
+        }
+
         const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
         userStreamRef.current = stream;
         if (userVideoRef.current) userVideoRef.current.srcObject = stream;
         if (!mounted) return;
 
-        // NOTE: APIS TO BE INTEGRATED HERE — personaId, avatarId, voiceId from /api/jobs/interview-config
-        const client = unsafe_createClientWithApiKey(ANAM_API_KEY, {
-          personaId: "cedce154-128d-4814-ba32-3d79c6a8fedd",
-          name: "Kevin",
-          avatarId: "ccf00c0e-7302-455b-ace2-057e0cf58127",
-          voiceId: "13ba97ac-88e3-454f-8a49-6f9479dd4586",
-          systemPrompt: `You are Kevin, a warm and professional UX interviewer at ${job.company} interviewing a candidate for the role of ${job.role}. Run the session in three phases, moving naturally from one to the next:
+        const tokenRes = await _postJobsInterviewSession(job.id, recommendationId);
+        const { sessionToken } = tokenRes.data;
+        if (!mounted) return;
 
-Phase 1 — Introductions: Introduce yourself briefly, then invite the candidate to introduce themselves. Ask a follow-up question about their background or what drew them to UX design. Keep it conversational, not interrogative.
-
-Phase 2 — Experience deep-dive: Ask one focused question about a past project — something that reveals how they think about users, constraints, and decisions. Listen and respond naturally to what they share.
-
-Phase 3 — UX whiteboarding challenge: Present a realistic design challenge relevant to ${job.role} work (e.g. "Redesign the airport security experience for first-time travellers" or "Design a feature that helps remote teams build trust"). Walk them through it like a real whiteboard session — ask about their approach, how they'd define the problem, who the users are, what constraints matter, and what the key design decisions would be. Prompt them to think out loud. Give light, encouraging reactions to keep the energy up.
-
-Keep all responses concise and spoken-word natural. One question or prompt at a time. Never list multiple questions at once.`,
-        });
+        const client = createClient(sessionToken);
         anamClientRef.current = client;
 
         client.addListener(AnamEvent.MESSAGE_HISTORY_UPDATED, (messages) => {
@@ -82,7 +61,8 @@ Keep all responses concise and spoken-word natural. One question or prompt at a 
         });
 
         await client.streamToVideoElement("anam-avatar-video", stream);
-      } catch {
+      } catch (err) {
+        console.error("[MockInterview] start error:", err);
         if (mounted) setStatus("error");
       }
     };
@@ -93,7 +73,7 @@ Keep all responses concise and spoken-word natural. One question or prompt at a 
       anamClientRef.current?.stopStreaming();
       userStreamRef.current?.getTracks().forEach((t) => t.stop());
     };
-  }, [job.company, job.role]);
+  }, [job.id, recommendationId]);
 
   const toggleMute = () => {
     if (muted) {
@@ -130,11 +110,7 @@ Keep all responses concise and spoken-word natural. One question or prompt at a 
           )}
           {status === "error" && (
             <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
-              <p className="text-red-400/80 text-[13px]">
-                {!unsafe_createClientWithApiKey
-                  ? "Install @anam-ai/js-sdk to enable live interviews."
-                  : "Connection failed. Please try again."}
-              </p>
+              <p className="text-red-400/80 text-[13px]">Connection failed. Please try again.</p>
             </div>
           )}
           <video
@@ -207,7 +183,7 @@ Keep all responses concise and spoken-word natural. One question or prompt at a 
       {/* Bottom navbar */}
       <div className="h-[56px] bg-[#1C1C1E] border-t border-white/[0.08] flex items-center justify-between px-4 flex-shrink-0">
         <button
-          onClick={onEnd}
+          onClick={() => onEnd(transcript)}
           className="flex items-center gap-1.5 text-white/50 hover:text-white/80 transition-colors"
         >
           <ChevronLeft className="w-4 h-4" />
@@ -227,7 +203,7 @@ Keep all responses concise and spoken-word natural. One question or prompt at a 
             {muted ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
           </button>
           <button
-            onClick={onEnd}
+            onClick={() => onEnd(transcript)}
             className="flex items-center gap-1.5 h-8 px-3.5 rounded-full bg-red-500 hover:bg-red-600 text-white text-[13px] font-medium transition-colors"
           >
             <Phone className="w-3.5 h-3.5" />

@@ -4,9 +4,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
 import { useTheme } from "next-themes";
 import toast from "react-hot-toast";
-import { Upload } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import { ColorOrb } from "@/components/ui/color-orb";
+import { Folder } from "@/components/ui/folder";
 import { _postResumeParse } from "@/network/resume";
+import ArrowCTA from "./shared/ArrowCTA";
+import { Button } from "../ui/button";
 
 const AI_STATUSES = [
   "Reading your resume...",
@@ -15,7 +18,13 @@ const AI_STATUSES = [
   "Scanning matched jobs...",
 ];
 
-export default function ResumeUploadZone() {
+export default function ResumeUploadZone({
+  hasDfToken = false,
+  hasParsedResume = false,
+  onPrimaryCta,
+  primaryCtaLabel = "Upload Resume",
+  variant = "hero",
+}) {
   const router = useRouter();
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
@@ -108,10 +117,25 @@ export default function ResumeUploadZone() {
   };
 
   const { x, y } = cutoutPos;
+  const showPrimaryCta = !isProcessing && (hasDfToken || hasParsedResume);
+  const canUpload = !hasDfToken && !hasParsedResume;
+  const handlePrimaryClick = () => {
+    if (onPrimaryCta) {
+      onPrimaryCta();
+      return;
+    }
+    if (hasDfToken) {
+      router.push("/builder");
+      return;
+    }
+    if (hasParsedResume) {
+      router.push("/resume-signup");
+    }
+  };
 
   return (
     <>
-      <div ref={uploadZoneRef} className="inline-flex">
+      <div ref={uploadZoneRef} className="inline-flex w-full justify-center">
         <input
           ref={fileInputRef}
           type="file"
@@ -126,29 +150,53 @@ export default function ResumeUploadZone() {
             <motion.div
               key="processing"
               initial={{ opacity: 0, scale: 0.97 }}
-              animate={{ opacity: 1, scale: 1.06 }}
+              animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.97 }}
-              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-              className="orb-always-active inline-flex items-center gap-3 rounded-full border border-[--lp-border] bg-[--lp-text]/[0.03] px-5 py-[10px]"
+              transition={{ duration: 0.25 }}
+              className={
+                variant === "modal"
+                  ? "orb-always-active w-full flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-[--lp-border] bg-[--lp-text]/[0.03] px-6 py-10"
+                  : "orb-always-active inline-flex items-center gap-3.5 rounded-xl border border-dashed border-[--lp-border] bg-[--lp-text]/[0.03] px-5 py-3"
+              }
               style={{
                 boxShadow: isDark
                   ? "0 8px 32px rgba(0,0,0,0.45), 0 2px 8px rgba(0,0,0,0.3)"
                   : "0 8px 32px rgba(29,27,26,0.14), 0 2px 8px rgba(29,27,26,0.08)",
               }}
             >
-              <ColorOrb dimension="14px" spinDuration={5} />
-              <AnimatePresence mode="wait">
-                <motion.span
-                  key={aiStatusIndex}
-                  initial={{ opacity: 0, y: 5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -5 }}
-                  transition={{ duration: 0.35, ease: "easeOut" }}
-                  className="text-[14px] font-medium text-[--lp-text-muted] whitespace-nowrap"
-                >
-                  {AI_STATUSES[aiStatusIndex]}
-                </motion.span>
-              </AnimatePresence>
+              <ColorOrb dimension={variant === "modal" ? "32px" : "14px"} spinDuration={5} />
+              <div className={variant === "modal" ? "flex flex-col items-center gap-1" : ""}>
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={aiStatusIndex}
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ duration: 0.3, ease: "easeOut" }}
+                    className={`text-[14px] font-semibold leading-none text-[--lp-text] ${variant === "modal" ? "text-center" : "whitespace-nowrap"}`}
+                  >
+                    {AI_STATUSES[aiStatusIndex]}
+                  </motion.span>
+                </AnimatePresence>
+                <span className="text-[12px] text-[--lp-text-faint] leading-none">
+                  This takes a few seconds...
+                </span>
+              </div>
+            </motion.div>
+          ) : showPrimaryCta ? (
+            <motion.div
+              key="ready-state"
+              initial={{ opacity: 0, scale: 0.97 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.97 }}
+              transition={{ duration: 0.25 }}
+              className="flex flex-col items-center gap-2.5"
+            >
+              <ArrowCTA
+                label={primaryCtaLabel}
+                size="lg"
+                onClick={handlePrimaryClick}
+              />
             </motion.div>
           ) : (
             <motion.div
@@ -157,29 +205,53 @@ export default function ResumeUploadZone() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.97 }}
               transition={{ duration: 0.25 }}
-              data-testid="dropzone-resume"
-              onClick={() => fileInputRef.current?.click()}
-              onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
-              onDragLeave={() => setIsDragging(false)}
-              onDrop={handleDrop}
-              className={`cursor-pointer inline-flex items-center gap-3 rounded-full border border-dashed px-5 py-3 transition-all duration-200 ${
-                isDragging
-                  ? "border-[--lp-accent] bg-[--lp-accent]/5"
-                  : "border-[--lp-text]/25 bg-[--lp-text]/[0.03] hover:border-[--lp-text]/45"
-              }`}
+              className={variant === "modal" ? "w-full flex flex-col items-center gap-4" : undefined}
             >
-              <Upload
-                className={`h-[18px] w-[18px] shrink-0 transition-colors duration-200 ${
-                  isDragging ? "text-[--lp-accent]" : "text-[--lp-text]/60"
-                }`}
-                strokeWidth={2}
-              />
-              <span className="text-[14px] font-semibold text-[--lp-text]">
-                {isDragging ? "Drop it here" : "Upload your resume"}
-              </span>
-              <span className="text-[13px] text-[--lp-text-faint]">
-                PDF · max 5MB
-              </span>
+              <div
+                data-testid="dropzone-resume"
+                onClick={() => canUpload && fileInputRef.current?.click()}
+                onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+                onDragLeave={() => setIsDragging(false)}
+                onDrop={handleDrop}
+                className={`group/dropzone cursor-pointer ${variant === "modal"
+                  ? "w-full flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed px-6 py-10 [&_*]:cursor-pointer"
+                  : "inline-flex items-center gap-3.5 rounded-xl border border-dashed px-5 py-3 [&_*]:cursor-pointer"
+                  } transition-all duration-200 ${isDragging
+                    ? "border-[--lp-accent] bg-[--lp-accent]/5"
+                    : "border-[--lp-border] bg-[--lp-text]/[0.03] hover:border-[--lp-text]/45 hover:bg-[--lp-text]/[0.05]"
+                  }`}
+              >
+                <Folder isDragging={isDragging} />
+                <div className={`flex flex-col ${variant === "modal" ? "items-center text-center" : "items-start"} gap-0.5`}>
+                  <span className={`text-[14px] mb-1 font-semibold leading-none transition-colors duration-200 ${isDragging ? "text-[--lp-accent]" : "text-[--lp-text]"}`}>
+                    {isDragging ? "Drop it here" : variant === "modal" ? "Click to upload Resume" : "Upload your resume"}
+                  </span>
+                  <span className="text-[12px] text-[--lp-text-faint] leading-none">
+                    {variant === "modal" ? "PDF format only · Max 5MB" : "PDF · max 5MB"}
+                  </span>
+                </div>
+              </div>
+
+              {variant === "modal" && (
+                <>
+                  <Button
+                    variant="darker"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="w-full rounded-xl py-3.5 text-[15px] h-[50px]"
+                  >
+                    Upload Resume
+                  </Button>
+
+                  <div className="flex items-center justify-center gap-3 flex-wrap">
+                    {["Data never sold", "Delete anytime"].map((label) => (
+                      <span key={label} className="flex items-center gap-1 text-[11px] text-[--lp-text-faint] font-medium">
+                        <CheckCircle2 className="w-3 h-3 shrink-0" strokeWidth={2} />
+                        {label}
+                      </span>
+                    ))}
+                  </div>
+                </>
+              )}
             </motion.div>
           )}
         </AnimatePresence>

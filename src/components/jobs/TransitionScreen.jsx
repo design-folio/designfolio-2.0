@@ -1,75 +1,99 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 
 // Orbiting company logos
-const ORBIT_LOGOS = [
-  "/companylogo/companyradial01.svg",
-  "/companylogo/companyradial02.svg",
-  "/companylogo/companyradial03.svg",
-  "/companylogo/companyradial04.svg",
-  "/companylogo/companyradial05.svg",
-  "/companylogo/companyradial06.svg",
-  "/companylogo/companyradial07.svg",
-  "/companylogo/companyradial08.svg",
+const ORBIT_COMPANIES = [
+  { id: 1, name: "Company 1", src: "/companylogo/companyradial01.svg" },
+  { id: 2, name: "Company 2", src: "/companylogo/companyradial02.svg" },
+  { id: 3, name: "Company 3", src: "/companylogo/companyradial03.svg" },
+  { id: 4, name: "Company 4", src: "/companylogo/companyradial04.svg" },
+  { id: 5, name: "Company 5", src: "/companylogo/companyradial05.svg" },
+  { id: 6, name: "Company 6", src: "/companylogo/companyradial06.svg" },
+  { id: 7, name: "Company 7", src: "/companylogo/companyradial07.svg" },
+  { id: 8, name: "Company 8", src: "/companylogo/companyradial08.svg" },
 ];
 
 function OrbitRing({ visible }) {
+  const [stageSize, setStageSize] = useState(640);
+  const [imageSize, setImageSize] = useState(52);
+
+  useEffect(() => {
+    const update = () => {
+      if (window.innerWidth <= 640) {
+        setStageSize(380);
+        setImageSize(42);
+      } else if (window.innerWidth <= 900) {
+        setStageSize(520);
+        setImageSize(46);
+      } else {
+        setStageSize(640);
+        setImageSize(52);
+      }
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  const step = useMemo(() => 360 / ORBIT_COMPANIES.length, []);
+
   return (
     <AnimatePresence>
       {visible && (
         <motion.div
           className="absolute top-1/2 left-1/2 pointer-events-none"
-          style={{ transform: "translate(-50%, -50%)", width: 560, height: 560 }}
+          style={{ transform: "translate(-50%, -50%)", width: stageSize, height: stageSize }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.9 }}
         >
-          {/* Outer orbit ring */}
-          <div
-            className="absolute inset-0 rounded-full border border-border/30"
-            style={{ animation: "spin 32s linear infinite" }}
-          >
-            {ORBIT_LOGOS.map((src, i) => {
-              const angle = (i / ORBIT_LOGOS.length) * 360;
-              const rad = (angle * Math.PI) / 180;
-              const r = 280;
-              const x = r * Math.cos(rad);
-              const y = r * Math.sin(rad);
-              return (
-                <div
-                  key={i}
-                  className="absolute flex items-center justify-center"
+          {ORBIT_COMPANIES.map((item, i) => {
+            const angle = i * step;
+            return (
+              <motion.div
+                key={item.id}
+                className="absolute inset-0"
+                initial={{ rotate: 0 }}
+                animate={{ rotate: [angle, angle + 360] }}
+                transition={{
+                  rotate: {
+                    delay: 1.1,
+                    duration: 28,
+                    ease: "linear",
+                    repeat: Infinity,
+                  },
+                }}
+              >
+                <motion.img
+                  src={item.src}
+                  alt={item.name}
+                  draggable={false}
+                  className="absolute left-1/2 -translate-x-1/2 rounded-full select-none"
                   style={{
-                    width: 48,
-                    height: 48,
-                    left: "50%",
-                    top: "50%",
-                    transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) rotate(${-angle}deg)`,
+                    top: 0,
+                    width: imageSize,
+                    height: imageSize,
                   }}
-                >
-                  <div
-                    className="w-10 h-10 rounded-xl bg-white dark:bg-card border border-border/50 flex items-center justify-center p-1.5 shadow-sm"
-                    style={{ animation: `spin-reverse 32s linear infinite` }}
-                  >
-                    <img src={src} alt="" className="w-full h-full object-contain opacity-70 dark:opacity-50" />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                  initial={{ opacity: 0, y: 8, filter: "blur(8px)", rotate: -angle }}
+                  animate={{ opacity: 1, y: 0, filter: "blur(0px)", rotate: [-angle, -angle - 360] }}
+                  transition={{
+                    opacity: { delay: 0.7 + i * 0.07, duration: 0.55, ease: [0.22, 1, 0.36, 1] },
+                    y: { delay: 0.7 + i * 0.07, duration: 0.55, ease: [0.22, 1, 0.36, 1] },
+                    filter: { delay: 0.7 + i * 0.07, duration: 0.55, ease: [0.22, 1, 0.36, 1] },
+                    rotate: {
+                      delay: 1.1,
+                      duration: 28,
+                      ease: "linear",
+                      repeat: Infinity,
+                    },
+                  }}
+                />
+              </motion.div>
+            );
+          })}
 
-          {/* Inner subtle ring */}
-          <div
-            className="absolute rounded-full border border-border/15"
-            style={{ inset: 80 }}
-          />
-
-          <style>{`
-            @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-            @keyframes spin-reverse { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
-          `}</style>
         </motion.div>
       )}
     </AnimatePresence>
@@ -80,11 +104,13 @@ function AnimatedJobCount({ onDone }) {
   const [count, setCount] = useState(0);
   const [showGradient, setShowGradient] = useState(false);
   const rafRef = useRef(null);
+  const shimmerTimeoutRef = useRef(null);
+  const shimmerResetRef = useRef(null);
   const startRef = useRef(null);
   const doneFiredRef = useRef(false);
 
   useEffect(() => {
-    const duration = 1800;
+    const duration = 1800; // natural pacing
     const target = 1200;
 
     const tick = (now) => {
@@ -93,8 +119,9 @@ function AnimatedJobCount({ onDone }) {
       const progress = Math.min(elapsed / duration, 1);
       const eased = 1 - Math.pow(1 - progress, 3);
       const current = Math.floor(eased * target);
-      setCount(current);
+      setCount((prev) => (prev === current ? prev : current));
 
+      // fire at halfway
       if (!doneFiredRef.current && current >= target / 2) {
         doneFiredRef.current = true;
         onDone?.();
@@ -104,40 +131,45 @@ function AnimatedJobCount({ onDone }) {
         rafRef.current = requestAnimationFrame(tick);
       } else {
         setCount(target);
-        setTimeout(() => setShowGradient(true), 80);
+        shimmerTimeoutRef.current = setTimeout(() => {
+          setShowGradient(true);
+          shimmerResetRef.current = setTimeout(() => setShowGradient(false), 3000);
+        }, 80);
       }
     };
 
     rafRef.current = requestAnimationFrame(tick);
-    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      if (shimmerTimeoutRef.current) clearTimeout(shimmerTimeoutRef.current);
+      if (shimmerResetRef.current) clearTimeout(shimmerResetRef.current);
+    };
   }, []);
 
   const display = count >= 1200 ? "1,200+" : count.toLocaleString();
 
   return (
-    <>
-      <span
-        style={showGradient ? {
-          display: "inline-block",
-          whiteSpace: "nowrap",
-          paddingRight: "0.08em",
-          color: "transparent",
-          WebkitBackgroundClip: "text",
-          backgroundClip: "text",
-          backgroundImage: "linear-gradient(to right, hsl(var(--foreground)) 0%, hsl(var(--foreground)) 38%, #5D3560 52%, #E54D2E 62%, #F5A623 72%, hsl(var(--foreground)) 86%, hsl(var(--foreground)) 100%)",
-          backgroundSize: "300% 100%",
-          animation: "shimmer-text 3s ease-in-out forwards",
-        } : { display: "inline-block", whiteSpace: "nowrap" }}
-      >
-        {display}
-      </span>
-      <style>{`
-        @keyframes shimmer-text {
-          0% { background-position: 100% 0; }
-          100% { background-position: -100% 0; }
-        }
-      `}</style>
-    </>
+    <span
+      style={
+        showGradient
+          ? {
+              display: "inline-block",
+              whiteSpace: "nowrap",
+              fontVariantNumeric: "tabular-nums",
+              paddingRight: "0.08em",
+              color: "transparent",
+              WebkitBackgroundClip: "text",
+              backgroundClip: "text",
+              backgroundImage:
+                "linear-gradient(to right, var(--foreground) 0%, var(--foreground) 38%, #5D3560 52%, #E54D2E 62%, #F5A623 72%, var(--foreground) 86%, var(--foreground) 100%)",
+              backgroundSize: "300% 100%",
+              animation: "shimmer-text 3s ease-in-out forwards",
+            }
+          : { display: "inline-block", whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums" }
+      }
+    >
+      {display}
+    </span>
   );
 }
 
@@ -154,7 +186,7 @@ export function TransitionScreen({ onType }) {
     >
       {/* Background glow */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full dark:bg-[#FF553E]/8 blur-[120px]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full bg-[#FF553E]/5 dark:bg-[#FF553E]/15 blur-[120px]" />
       </div>
 
       <OrbitRing visible={orbitVisible} />
@@ -192,6 +224,13 @@ export function TransitionScreen({ onType }) {
           </button>
         </motion.div>
       </motion.div>
+
+      <style>{`
+        @keyframes shimmer-text {
+          0% { background-position: 100% 0; }
+          100% { background-position: -100% 0; }
+        }
+      `}</style>
     </motion.div>
   );
 }

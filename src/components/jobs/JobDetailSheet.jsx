@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import {
   MapPin, Briefcase, Monitor, Clock, Calendar, Sparkles,
   ChevronRight, FileText, PenLine, ThumbsUp, Mail, ExternalLink,
-  X, Loader2, Copy, Check,
+  X, Loader2, Copy, Check, Clapperboard,
 } from "lucide-react";
 import { FaLinkedin } from "react-icons/fa";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
@@ -49,10 +49,15 @@ function CopyButton({ text }) {
   );
 }
 
-export function JobDetailSheet({ job, open, onClose, recommendationId }) {
+export function JobDetailSheet({ job, open, onClose, recommendationId, pastReports = [], onViewReport }) {
   const lastJobRef = useRef(null);
   if (job) lastJobRef.current = job;
   const displayJob = job ?? lastJobRef.current;
+
+  const mockInterviewsRef = useRef(null);
+  const scrollToMockInterviews = () => {
+    mockInterviewsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   // ── AI Agent state — all hooks must be declared before any early return ──
   const [resumeLoading, setResumeLoading] = useState(false);
@@ -392,6 +397,28 @@ export function JobDetailSheet({ job, open, onClose, recommendationId }) {
                       )}
                     </div>
                   )}
+
+                  {/* Jump to mock interviews */}
+                  <div className="h-px bg-black/[0.05] dark:bg-white/[0.05]" />
+                  <button
+                    onClick={scrollToMockInterviews}
+                    className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-black/[0.03] dark:hover:bg-white/[0.03] transition-colors group text-left"
+                  >
+                    <div className="w-9 h-9 rounded-xl bg-foreground/[0.08] group-hover:bg-foreground/[0.11] transition-colors flex items-center justify-center flex-shrink-0">
+                      <Clapperboard className="w-4 h-4 text-foreground/55" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[13px] font-semibold text-foreground/80 leading-none">
+                        Mock Interviews
+                      </div>
+                      <div className="text-[11px] text-foreground/40 mt-1 leading-snug">
+                        {pastReports.length > 0
+                          ? `${pastReports.length} session${pastReports.length > 1 ? "s" : ""} completed`
+                          : "Practice before the real thing"}
+                      </div>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-foreground/20 group-hover:text-foreground/45 transition-colors flex-shrink-0" />
+                  </button>
                 </div>
               </div>
 
@@ -473,7 +500,7 @@ export function JobDetailSheet({ job, open, onClose, recommendationId }) {
 
           {/* Requirements — only shown if non-empty */}
           {(displayJob.requirements ?? []).length > 0 && (
-            <div className="px-5 py-5 pb-8">
+            <div className="px-5 py-5 border-b border-black/[0.06] dark:border-white/[0.06]">
               <h3 className="text-sm font-semibold text-foreground/40 uppercase tracking-widest mb-3">
                 Requirements
               </h3>
@@ -487,6 +514,50 @@ export function JobDetailSheet({ job, open, onClose, recommendationId }) {
               </ul>
             </div>
           )}
+
+          {/* Mock interviews section */}
+          <div ref={mockInterviewsRef} className="px-5 py-5 pb-8">
+            <div className="flex items-baseline gap-2 mb-2">
+              <span className="text-[11px] font-semibold uppercase tracking-widest text-foreground/35">
+                Mock interviews
+              </span>
+            </div>
+            <div className="h-px bg-black/[0.06] dark:bg-white/[0.06] mb-3" />
+            {pastReports.length === 0 ? (
+              <div className="flex flex-col items-center justify-center gap-2 py-6 text-center">
+                <Clapperboard className="w-7 h-7 text-foreground/15" />
+                <p className="text-[13px] text-foreground/35 leading-snug">
+                  No sessions yet. Drag this job to<br />
+                  <span className="font-medium text-foreground/50">Interview</span> to take a mock interview.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {pastReports.map((entry, i) => (
+                  <button
+                    key={entry.date}
+                    onClick={() => onViewReport?.(entry)}
+                    className="w-full flex items-center gap-3 py-3 px-3 rounded-xl hover:bg-black/[0.03] dark:hover:bg-white/[0.03] transition-colors group text-left"
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-foreground/[0.06] flex items-center justify-center flex-shrink-0">
+                      <span className="text-[13px] font-bold text-foreground/50">
+                        {entry.report.communicationScore}
+                      </span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[13px] font-medium text-foreground/75">
+                        Session {pastReports.length - i}
+                      </div>
+                      <div className="text-[11px] text-foreground/35 mt-0.5">
+                        {new Date(entry.date).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
+                      </div>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-foreground/20 group-hover:text-foreground/45 transition-colors flex-shrink-0" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Footer CTA */}

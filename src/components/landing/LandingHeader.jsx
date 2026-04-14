@@ -1,11 +1,17 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import BlurHoverText from "./shared/BlurHoverText";
 import LandingLogoSVG from "./shared/LandingLogoSVG";
+import ArrowCTA from "./shared/ArrowCTA";
 
-export default function LandingHeader({ showNavCTA, dfToken }) {
+export default function LandingHeader({
+  showNavCTA,
+  dfToken,
+  hasParsedResume,
+  ctaLabel,
+  onPrimaryCta,
+}) {
   return (
     <header className="sticky top-0 z-50 w-full bg-[--lp-bg] md:bg-[color-mix(in_srgb,var(--lp-bg)_95%,transparent)] md:backdrop-blur before:absolute before:content-[''] before:inset-x-[-100vw] before:bottom-0 before:h-px before:bg-[--lp-border]">
       <div className="px-6 h-16 flex items-center justify-between">
@@ -55,18 +61,12 @@ export default function LandingHeader({ showNavCTA, dfToken }) {
                 transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
                 className="overflow-hidden flex-shrink-0 flex"
               >
-                <Link
-                  href={dfToken ? "/builder" : "/claim-link"}
-                  className="group inline-flex cursor-pointer items-center gap-0 rounded-full no-underline"
-                >
-                  <span className="rounded-full bg-[--lp-text] px-4 py-[6px] text-[13px] font-medium text-[--lp-fg-white] transition-colors duration-500 ease-in-out group-hover:bg-[--lp-accent-hover] group-hover:text-white whitespace-nowrap">
-                    {dfToken ? "Launch Builder" : "Get Started"}
-                  </span>
-                  <div className="relative h-[32px] w-[32px] flex-shrink-0 overflow-hidden rounded-full bg-[--lp-text] text-[--lp-fg-white] transition-colors duration-500 ease-in-out group-hover:bg-[--lp-accent-hover] group-hover:text-white">
-                    <ArrowUpRight className="absolute top-1/2 left-1/2 h-[14px] w-[14px] -translate-x-1/2 -translate-y-1/2 transition-all duration-500 ease-in-out group-hover:translate-x-6 group-hover:-translate-y-6" strokeWidth={2.5} />
-                    <ArrowUpRight className="absolute top-1/2 left-1/2 h-[14px] w-[14px] -translate-x-7 translate-y-7 transition-all duration-500 ease-in-out group-hover:-translate-x-1/2 group-hover:-translate-y-1/2" strokeWidth={2.5} />
-                  </div>
-                </Link>
+                <ArrowCTA
+                  label={ctaLabel || "Get Started"}
+                  size="sm"
+                  href={dfToken ? "/builder" : hasParsedResume ? "/resume-signup" : undefined}
+                  onClick={!dfToken && !hasParsedResume ? onPrimaryCta : undefined}
+                />
               </motion.div>
             )}
           </AnimatePresence>

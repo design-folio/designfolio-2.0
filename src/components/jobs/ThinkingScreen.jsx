@@ -119,7 +119,7 @@ export function ThinkingScreen({ answers, onComplete, onError }) {
         setIndeedCount(0); // JSearch is the real source; visual parity only
 
         // Short pause to let the user see the "done" state before advancing
-        addTimer(setTimeout(() => onComplete(data.jobs, data.recommendationId), 1200));
+        addTimer(setTimeout(() => onComplete(data.jobs, data.pipelineId), 1200));
       } catch (err) {
         if (done) return;
         done = true;

@@ -49,7 +49,7 @@ function CopyButton({ text }) {
   );
 }
 
-export function JobDetailSheet({ job, open, onClose, recommendationId }) {
+export function JobDetailSheet({ job, open, onClose, pipelineId, onInteract }) {
   const lastJobRef = useRef(null);
   if (job) lastJobRef.current = job;
   const displayJob = job ?? lastJobRef.current;
@@ -73,7 +73,7 @@ export function JobDetailSheet({ job, open, onClose, recommendationId }) {
     setResumeResult(null);
     setResumeLoading(true);
     try {
-      const res = await _postJobsCustomizeResume(displayJob.id, recommendationId);
+      const res = await _postJobsCustomizeResume(displayJob.id, pipelineId);
       setResumeResult(res.data);
     } catch {
       setResumeResult({ error: "Could not generate resume. Please try again." });
@@ -87,7 +87,7 @@ export function JobDetailSheet({ job, open, onClose, recommendationId }) {
     setLetterResult(null);
     setLetterLoading(true);
     try {
-      const res = await _postJobsCoverLetter(displayJob.id, recommendationId);
+      const res = await _postJobsCoverLetter(displayJob.id, pipelineId);
       setLetterResult(res.data);
     } catch {
       setLetterResult({ error: "Could not generate cover letter. Please try again." });
@@ -101,7 +101,7 @@ export function JobDetailSheet({ job, open, onClose, recommendationId }) {
     setFitResult(null);
     setFitLoading(true);
     try {
-      const res = await _postJobsFitAnalysis(displayJob.id, recommendationId);
+      const res = await _postJobsFitAnalysis(displayJob.id, pipelineId);
       setFitResult(res.data);
     } catch {
       setFitResult({ error: "Could not generate fit analysis. Please try again." });
@@ -114,7 +114,11 @@ export function JobDetailSheet({ job, open, onClose, recommendationId }) {
     if (displayJob.applyUrl) {
       window.open(displayJob.applyUrl, "_blank", "noopener,noreferrer");
     }
-    _postJobsInteract(recommendationId, displayJob.id, "applied");
+    if (onInteract) {
+      onInteract(displayJob.id, "applied", displayJob);
+    } else {
+      _postJobsInteract(pipelineId, displayJob.id, "applied", displayJob);
+    }
   };
 
   return (

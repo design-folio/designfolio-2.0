@@ -1,42 +1,56 @@
 import axiosInstance from "./axiosInstance";
 
-// GET /jobs/questions — fetch quiz questions; call once on mount and cache
+// GET /jobs/questions — fetch quiz questions once on mount
 export const _getJobsQuestions = () => axiosInstance.get("/jobs/questions");
 
-// POST /jobs/recommend — submit quiz answers; returns { recommendationId, jobs[] }
-// NOTE: This call is slow (5–15 seconds) — keep ThinkingScreen visible until resolved
-// Pass excludeIds to skip already-seen jobs on auto-rescan (no quiz re-run needed).
-export const _postJobsRecommend = (answers, excludeIds = []) =>
-  axiosInstance.post("/jobs/recommend", { answers, excludeIds });
+// POST /jobs/recommend — submit quiz answers; returns { pipelineId, jobs[] }
+// Server handles seen-job deduplication automatically — no excludeIds needed.
+export const _postJobsRecommend = (answers) =>
+  axiosInstance.post("/jobs/recommend", { answers });
 
-// POST /jobs/interact — fire-and-forget tracking; action: 'viewed'|'applied'|'saved'|'dismissed'
-export const _postJobsInteract = (recommendationId, jobId, action) => {
-  if (!recommendationId || !jobId) return;
+// POST /jobs/interact — fire-and-forget pipeline tracking
+// action: 'viewed' | 'applied' | 'saved' | 'dismissed' | 'interview' | 'offer'
+// jobData: optional { match, reason, matchReasons, emotionalLabel } — included on first pipeline move
+// onNotFound: called when the pipeline no longer exists (404) — caller should re-run /recommend
+export const _postJobsInteract = (pipelineId, jobId, action, jobData = null, onNotFound = null) => {
+  if (!pipelineId || !jobId) return;
   axiosInstance
-    .post("/jobs/interact", { recommendationId, jobId, action })
-    .catch(() => {}); // intentional fire-and-forget — swallow silently
+    .post("/jobs/interact", {
+      pipelineId,
+      jobId,
+      action,
+      ...(jobData && {
+        score:          jobData.match,
+        reason:         jobData.reason,
+        matchReasons:   jobData.matchReasons,
+        emotionalLabel: jobData.emotionalLabel,
+      }),
+    })
+    .catch((err) => {
+      if (err?.response?.status === 404 && onNotFound) onNotFound();
+    });
 };
 
-// GET /jobs/history — restore last recommendation session on page mount
+// GET /jobs/history — restore pipeline state on page mount
 export const _getJobsHistory = () => axiosInstance.get("/jobs/history");
 
-// POST /jobs/more — append more jobs to existing recommendation (infinite scroll)
-// Does NOT create a new recommendation document — same recommendationId throughout.
-export const _postJobsMore = (recommendationId, answers, excludeIds = []) =>
-  axiosInstance.post("/jobs/more", { recommendationId, answers, excludeIds });
+// POST /jobs/more — append more picks via infinite scroll (same pipelineId throughout)
+// Server manages cursor and deduplication — no excludeIds or page offset needed.
+export const _postJobsMore = (pipelineId, answers) =>
+  axiosInstance.post("/jobs/more", { pipelineId, answers });
 
 // POST /jobs/scout — Scout AI chat; returns { reply: string }
-export const _postJobsScout = (recommendationId, jobId, message) =>
-  axiosInstance.post("/jobs/scout", { recommendationId, jobId, message });
+export const _postJobsScout = (pipelineId, jobId, message) =>
+  axiosInstance.post("/jobs/scout", { pipelineId, jobId, message });
 
 // POST /jobs/customize-resume — returns { customizedResume, changes[] }
-export const _postJobsCustomizeResume = (jobId, recommendationId) =>
-  axiosInstance.post("/jobs/customize-resume", { jobId, recommendationId });
+export const _postJobsCustomizeResume = (jobId, pipelineId) =>
+  axiosInstance.post("/jobs/customize-resume", { jobId, pipelineId });
 
 // POST /jobs/cover-letter — returns { coverLetter: string }
-export const _postJobsCoverLetter = (jobId, recommendationId) =>
-  axiosInstance.post("/jobs/cover-letter", { jobId, recommendationId });
+export const _postJobsCoverLetter = (jobId, pipelineId) =>
+  axiosInstance.post("/jobs/cover-letter", { jobId, pipelineId });
 
 // POST /jobs/fit-analysis — returns { strengths[], gaps[], overallVerdict }
-export const _postJobsFitAnalysis = (jobId, recommendationId) =>
-  axiosInstance.post("/jobs/fit-analysis", { jobId, recommendationId });
+export const _postJobsFitAnalysis = (jobId, pipelineId) =>
+  axiosInstance.post("/jobs/fit-analysis", { jobId, pipelineId });

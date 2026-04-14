@@ -30,6 +30,7 @@ const COL_DRAG_ACTION = {
 };
 
 const DEFAULT_FILTERS = { workMode: "all", type: "all", minMatch: 0 };
+const MIN_PICKS = 12; // auto-fetch more when initial batch is smaller than this
 
 const ROLE_SUGGESTIONS = [
   "Product Designer", "UX Designer", "UI Designer",
@@ -223,20 +224,19 @@ function CriteriaEditor({ answers, onRescan, isRescanning }) {
 }
 
 export function Dashboard({
-  initialJobs      = [],
-  initialColumns   = null,
-  recommendationId: initialRecId = null,
-  quizAnswers      = [],
+  initialJobs    = [],
+  initialColumns = null,
+  pipelineId:    initialPipelineId = null,
+  quizAnswers    = [],
 }) {
-  const [columns,          setColumns]          = useState(() => initialColumns ?? buildColumns(initialJobs));
-  const [recommendationId, setRecommendationId] = useState(initialRecId);
-  const [currentAnswers,   setCurrentAnswers]   = useState(quizAnswers);
+  const [columns,      setColumns]      = useState(() => initialColumns ?? buildColumns(initialJobs));
+  const [pipelineId,   setPipelineId]   = useState(initialPipelineId);
+  const [currentAnswers, setCurrentAnswers] = useState(quizAnswers);
   const [filters,          setFilters]          = useState(DEFAULT_FILTERS);
   const [isRescanning,     setIsRescanning]     = useState(false);
-  const [rescanExhausted,  setRescanExhausted]  = useState(false); // true when DB has no more unique jobs
+  const [rescanExhausted,  setRescanExhausted]  = useState(false); // true when server has no more jobs
 
-  // Track all job IDs ever shown — passed as excludeIds on rescan
-  const seenJobIds = useRef(new Set(initialJobs.map((j) => j.id)));
+  const didAutoScan = useRef(false);
 
   const [selectedJobId,  setSelectedJobId]  = useState(null);
   const [interviewJobId, setInterviewJobId] = useState(null);
@@ -284,51 +284,32 @@ export function Dashboard({
   ].filter(Boolean).length;
 
   const handleFetchMore = useCallback(async () => {
-    if (isRescanning || rescanExhausted || !recommendationId) return;
+    if (isRescanning || rescanExhausted || !pipelineId) return;
     setIsRescanning(true);
     try {
-      const { data } = await _postJobsMore(
-        recommendationId,
-        currentAnswers,
-        [...seenJobIds.current],
-      );
+      const { data } = await _postJobsMore(pipelineId, currentAnswers);
       const newJobs = data.jobs || [];
       if (!newJobs.length) {
         setRescanExhausted(true);
         return;
       }
-      newJobs.forEach((j) => seenJobIds.current.add(j.id));
       setColumns((prev) => ({ ...prev, picks: [...(prev.picks || []), ...newJobs] }));
     } catch (err) {
       console.error("[Jobs] fetchMore failed:", err);
     } finally {
       setIsRescanning(false);
     }
-  }, [isRescanning, rescanExhausted, recommendationId, currentAnswers]);
+  }, [isRescanning, rescanExhausted, pipelineId, currentAnswers]);
 
   const handleRescan = useCallback(async (answers = currentAnswers) => {
     if (isRescanning) return;
     setIsRescanning(true);
     setRescanExhausted(false);
-    seenJobIds.current.clear();
     try {
-      const { data } = await _postJobsRecommend(answers, []);
-      const newPicks  = data.jobs || [];
-      const inherited = data.inheritedColumns || {};
-
-      newPicks.forEach((j) => seenJobIds.current.add(j.id));
-      Object.values(inherited).flat().forEach((j) => seenJobIds.current.add(j.id));
-
-      setColumns({
-        picks:       newPicks,
-        not_applied: inherited.not_applied || [],
-        applied:     inherited.applied     || [],
-        interview:   inherited.interview   || [],
-        offer:       inherited.offer       || [],
-        dismissed:   [],
-      });
+      const { data } = await _postJobsRecommend(answers);
+      setColumns((prev) => ({ ...prev, picks: data.jobs || [] }));
       setCurrentAnswers(answers);
-      setRecommendationId(data.recommendationId);
+      setPipelineId(data.pipelineId);
     } catch (err) {
       console.error("[Jobs] Rescan failed:", err);
     } finally {
@@ -336,27 +317,57 @@ export function Dashboard({
     }
   }, [isRescanning, currentAnswers]);
 
+  // Auto-fetch fresh picks for returning users: they have saved criteria but empty picks
+  // (history only restores pipeline columns, not the picks feed).
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (didAutoScan.current) return;
+    if (quizAnswers.length > 0 && (columns.picks || []).length === 0 && !isRescanning) {
+      didAutoScan.current = true;
+      handleRescan(quizAnswers);
+    }
+  }, []); // intentionally empty — fire once on mount only
+
+  // Proactive fetch: if the picks batch is small (backend scored few qualifying jobs),
+  // load more immediately rather than waiting for the user to scroll to the sentinel.
+  useEffect(() => {
+    if (!isRescanning && !rescanExhausted && pipelineId &&
+        (columns.picks || []).length > 0 && (columns.picks || []).length < MIN_PICKS) {
+      handleFetchMore();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [(columns.picks || []).length, isRescanning, rescanExhausted, pipelineId]);
+
+  // Wraps _postJobsInteract: recovers from 404 by re-fetching /recommend.
+  const handleInteract = useCallback(
+    (jobId, action, jobData = null) => {
+      _postJobsInteract(pipelineId, jobId, action, jobData, () => handleRescan(currentAnswers));
+    },
+    [pipelineId, currentAnswers, handleRescan],
+  );
+
   const handleOpenJob = useCallback(
     (id) => {
       setSelectedJobId(id);
-      _postJobsInteract(recommendationId, id, "viewed");
+      handleInteract(id, "viewed");
     },
-    [recommendationId],
+    [handleInteract],
   );
 
   const handleShortlist = useCallback(
     (id) => {
+      const job = allJobs.find((j) => j.id === id);
       setColumns((prev) => {
         const fromCol = Object.keys(prev).find((col) => prev[col].some((j) => j.id === id));
         if (!fromCol) return prev;
-        const job = prev[fromCol].find((j) => j.id === id);
+        const j = prev[fromCol].find((j2) => j2.id === id);
         return {
           ...prev,
-          [fromCol]:   prev[fromCol].filter((j) => j.id !== id),
-          not_applied: [{ ...job }, ...prev.not_applied],
+          [fromCol]:   prev[fromCol].filter((j2) => j2.id !== id),
+          not_applied: [{ ...j }, ...prev.not_applied],
         };
       });
-      _postJobsInteract(recommendationId, id, "saved");
+      handleInteract(id, "saved", job);
 
       if (phase !== "list") return;
 
@@ -397,19 +408,20 @@ export function Dashboard({
         setTimeout(() => setPhase("split"), 960);
       }, CARD_EXIT_MS);
     },
-    [phase, centerMargin, recommendationId],
+    [phase, centerMargin, handleInteract, allJobs],
   );
 
   const handleDismiss = useCallback(
     (id) => {
+      const job = allJobs.find((j) => j.id === id);
       setColumns((prev) => {
         const fromCol = Object.keys(prev).find((col) => prev[col].some((j) => j.id === id));
         if (!fromCol) return prev;
         return { ...prev, [fromCol]: prev[fromCol].filter((j) => j.id !== id) };
       });
-      _postJobsInteract(recommendationId, id, "dismissed");
+      handleInteract(id, "dismissed", job);
     },
-    [recommendationId],
+    [handleInteract, allJobs],
   );
 
   const promptSummary = useMemo(() => {
@@ -567,7 +579,7 @@ export function Dashboard({
               const prevIds = new Set((columns[colId] || []).map((j) => j.id));
               (newCols[colId] || []).forEach((job) => {
                 if (!prevIds.has(job.id)) {
-                  _postJobsInteract(recommendationId, job.id, action);
+                  handleInteract(job.id, action, job);
                 }
               });
             });
@@ -655,7 +667,8 @@ export function Dashboard({
       <JobDetailSheet
         job={selectedJob}
         open={!!selectedJobId}
-        recommendationId={recommendationId}
+        pipelineId={pipelineId}
+        onInteract={handleInteract}
         onClose={() => setSelectedJobId(null)}
       />
       <MockInterviewDialog
@@ -668,7 +681,7 @@ export function Dashboard({
       {createPortal(
         <AnimatePresence>
           {roomJob  && <MockInterviewRoom key={roomJob.id}  job={roomJob}  onEnd={() => setRoomJobId(null)} />}
-          {scoutJob && <ScoutChat         key={scoutJob.id} job={scoutJob} recommendationId={recommendationId} onClose={() => setScoutJobId(null)} />}
+          {scoutJob && <ScoutChat         key={scoutJob.id} job={scoutJob} pipelineId={pipelineId} onClose={() => setScoutJobId(null)} />}
         </AnimatePresence>,
         document.body,
       )}

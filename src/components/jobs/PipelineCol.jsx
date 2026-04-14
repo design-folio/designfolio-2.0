@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { KanbanColumn, KanbanColumnContent, KanbanItem, KanbanItemHandle } from "@/components/ui/kanban";
 import { JobCard } from "./JobCard";
@@ -19,24 +19,37 @@ export function PipelineCol({
   const isPicks    = colId === "picks";
   const isInterview = colId === "interview";
 
-  const sentinelRef = useRef(null);
+  const sentinelRef     = useRef(null);
+  const onExhaustedRef  = useRef(onExhausted);
+  const isRescanningRef = useRef(isRescanning);
+  const jobsLengthRef   = useRef(jobs.length);
+  const [sentinelVisible, setSentinelVisible] = useState(false);
+
+  // Keep refs in sync each render — no observer rebuild needed for these changes.
+  useEffect(() => { onExhaustedRef.current  = onExhausted;  });
+  useEffect(() => { isRescanningRef.current = isRescanning; });
+  useEffect(() => { jobsLengthRef.current   = jobs.length;  });
 
   // Root must be the column's scroll container — not viewport — otherwise the sentinel
   // stays clipped inside the column and the observer never fires.
+  // Observer is set up once on mount so it isn't torn down on every isRescanning flip.
   useEffect(() => {
-    if (!isPicks || !sentinelRef.current || !onExhausted) return;
-    const scrollContainer = sentinelRef.current.parentElement;
+    if (!isPicks || !sentinelRef.current) return;
+    const scrollContainer = sentinelRef.current.closest('[data-slot="kanban-column-content"]');
+    console.log("[sentinel] root element:", scrollContainer, "parentElement was:", sentinelRef.current.parentElement);
     const obs = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && jobs.length > 0 && !isRescanning) {
-          onExhausted();
+        setSentinelVisible(entry.isIntersecting);
+        if (entry.isIntersecting && jobsLengthRef.current > 0 && !isRescanningRef.current) {
+          onExhaustedRef.current?.();
         }
       },
       { root: scrollContainer, threshold: 0.1 },
     );
     obs.observe(sentinelRef.current);
     return () => obs.disconnect();
-  }, [isPicks, jobs.length, isRescanning, onExhausted]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPicks]); // intentionally stable — dynamic values read via refs
 
   const cardList = (
     <AnimatePresence mode="popLayout" initial={false}>
@@ -73,7 +86,19 @@ export function PipelineCol({
         </motion.div>
       ))}
 
-      {isPicks && <div key="sentinel" ref={sentinelRef} className="h-1" />}
+      {isPicks && (
+        <div
+          key="sentinel"
+          ref={sentinelRef}
+          className={`h-6 mx-1 rounded flex items-center justify-center text-[10px] font-mono transition-colors ${
+            sentinelVisible
+              ? "bg-emerald-400/30 text-emerald-700 dark:text-emerald-300"
+              : "bg-orange-300/30 text-orange-600 dark:text-orange-400"
+          }`}
+        >
+          sentinel · {sentinelVisible ? "IN VIEW → fetch triggered" : "out of view"}
+        </div>
+      )}
 
       {/* Rescanning / fetching-more indicator */}
       {isPicks && isRescanning && (

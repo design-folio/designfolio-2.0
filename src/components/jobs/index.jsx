@@ -12,27 +12,24 @@ import { _getJobsQuestions, _getJobsHistory } from "@/network/jobs";
  *
  * Flow:
  *   loading → (history check)
- *     → dashboard           if history has jobs
- *     → transition          if no history
+ *     → dashboard           if user has a pipeline (restored columns + auto-fetches fresh picks)
+ *     → transition          if no pipeline
  *       → type
  *         → thinking        (POST /jobs/recommend in-flight)
  *           → aha           (celebration modal)
- *             → dashboard   (kanban board)
+ *             → dashboard
  *
  * Error states: 'empty' (404 from recommend), 'error' (unexpected)
  */
 export function Jobs() {
-  const [phase, setPhase] = useState("loading");
-  const [questions, setQuestions] = useState([]);
-  const [answers, setAnswers] = useState([]);
-  const [jobs, setJobs] = useState([]);
-  const [recommendationId, setRecommendationId] = useState(null);
-  // null = no history yet (build fresh from jobs); object = restored column state
+  const [phase,        setPhase]        = useState("loading");
+  const [questions,    setQuestions]    = useState([]);
+  const [answers,      setAnswers]      = useState([]);
+  const [jobs,         setJobs]         = useState([]);
+  const [pipelineId,   setPipelineId]   = useState(null);
   const [initialColumns, setInitialColumns] = useState(null);
-  // Quiz answers for Criteria panel — populated from history or new search
-  const [quizAnswers, setQuizAnswers] = useState([]);
+  const [quizAnswers,  setQuizAnswers]  = useState([]);
 
-  // On mount: parallel fetch questions + history
   useEffect(() => {
     const init = async () => {
       try {
@@ -41,50 +38,33 @@ export function Jobs() {
           _getJobsHistory(),
         ]);
 
-        const fetchedQuestions = questionsRes.data.questions ?? [];
+        setQuestions(questionsRes.data.questions ?? []);
+
         const {
-          jobs: historyJobs = [],
-          recommendationId: historyRecId,
-          columns: historyColumns,
+          pipelineId:  historyPipelineId,
+          jobs:        historyJobs      = [],
+          columns:     historyColumns,
           quizAnswers: historyQuizAnswers,
         } = historyRes.data;
 
-        setQuestions(fetchedQuestions);
-
-        if (historyJobs.length > 0) {
-          setJobs(historyJobs);
-          setRecommendationId(historyRecId ?? null);
-
-          // Restore board column state from persisted pipeline
-          if (historyColumns) {
-            // Map string IDs → full job objects for each column
-            const jobMap = Object.fromEntries(historyJobs.map((j) => [j.id, j]));
-            const restored = {
-              picks:       (historyColumns.picks       || []).map((id) => jobMap[id]).filter(Boolean),
-              not_applied: (historyColumns.not_applied || []).map((id) => jobMap[id]).filter(Boolean),
-              applied:     (historyColumns.applied     || []).map((id) => jobMap[id]).filter(Boolean),
-              interview:   (historyColumns.interview   || []).map((id) => jobMap[id]).filter(Boolean),
-              offer:       (historyColumns.offer       || []).map((id) => jobMap[id]).filter(Boolean),
-            };
-
-            // Any job that isn't placed in any column defaults to picks.
-            // This handles pipeline gaps (e.g. jobs added after column state was saved,
-            // or ID mismatches between pipeline and jobs array).
-            const placedIds = new Set(
-              Object.values(restored).flat().map((j) => j.id),
-            );
-            const unplaced = historyJobs.filter((j) => !placedIds.has(j.id));
-            if (unplaced.length) restored.picks = [...restored.picks, ...unplaced];
-
-            // Only use restored columns if the pipeline was actually persisted.
-            // For old recommendations without a pipeline field the backend returns
-            // all-empty column arrays — in that case fall back to putting all
-            // jobs in picks so the board isn't blank.
-            const hasPipelineData = Object.values(restored).some((col) => col.length > 0);
-            setInitialColumns(hasPipelineData ? restored : null);
+        if (historyPipelineId) {
+          // User has a pipeline — restore tracked columns immediately, then Dashboard
+          // will auto-fetch fresh picks using lastCriteria.
+          setPipelineId(historyPipelineId);
+          if (historyQuizAnswers?.length) {
+            // Strip MongoDB metadata (_id, etc.) — only { question, answer } is valid
+            setQuizAnswers(historyQuizAnswers.map(({ question, answer }) => ({ question, answer })));
           }
 
-          if (historyQuizAnswers?.length) setQuizAnswers(historyQuizAnswers);
+          const jobMap = Object.fromEntries((historyJobs || []).map(j => [j.id, j]));
+          setInitialColumns({
+            picks:       [],   // empty — Dashboard auto-fetches via handleRescan on mount
+            not_applied: (historyColumns?.not_applied || []).map(id => jobMap[id]).filter(Boolean),
+            applied:     (historyColumns?.applied     || []).map(id => jobMap[id]).filter(Boolean),
+            interview:   (historyColumns?.interview   || []).map(id => jobMap[id]).filter(Boolean),
+            offer:       (historyColumns?.offer       || []).map(id => jobMap[id]).filter(Boolean),
+          });
+
           setPhase("dashboard");
         } else {
           setPhase("transition");
@@ -102,14 +82,13 @@ export function Jobs() {
     setPhase("thinking");
   };
 
-  const handleRecommendComplete = (fetchedJobs, recId) => {
+  const handleRecommendComplete = (fetchedJobs, fetchedPipelineId) => {
     setJobs(fetchedJobs);
-    setRecommendationId(recId);
+    setPipelineId(fetchedPipelineId ?? null);
     setQuizAnswers(answers);
     setPhase("aha");
   };
 
-  // ── Loading ──────────────────────────────────────────────────────────────
   if (phase === "loading") {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-[#F0EDE7] dark:bg-background">
@@ -126,13 +105,10 @@ export function Jobs() {
     );
   }
 
-  // ── Error ────────────────────────────────────────────────────────────────
   if (phase === "error") {
     return (
       <div className="fixed inset-0 flex flex-col items-center justify-center gap-4 bg-[#F0EDE7] dark:bg-background">
-        <p className="text-foreground/60 text-sm">
-          Something went wrong. Please try again.
-        </p>
+        <p className="text-foreground/60 text-sm">Something went wrong. Please try again.</p>
         <button
           onClick={() => window.location.reload()}
           className="text-sm text-foreground underline"
@@ -143,7 +119,6 @@ export function Jobs() {
     );
   }
 
-  // ── Empty (404 from recommend) ──────────────────────────────────────────
   if (phase === "empty") {
     return (
       <div className="fixed inset-0 flex flex-col items-center justify-center gap-4 bg-[#F0EDE7] dark:bg-background px-6">
@@ -155,10 +130,7 @@ export function Jobs() {
           Try different answers.
         </p>
         <button
-          onClick={() => {
-            setAnswers([]);
-            setPhase("transition");
-          }}
+          onClick={() => { setAnswers([]); setPhase("transition"); }}
           className="mt-2 h-10 px-6 rounded-full bg-foreground text-background text-sm font-medium"
         >
           Try again
@@ -171,10 +143,7 @@ export function Jobs() {
     <>
       <AnimatePresence mode="wait">
         {phase === "transition" && (
-          <TransitionScreen
-            key="transition"
-            onType={() => setPhase("type")}
-          />
+          <TransitionScreen key="transition" onType={() => setPhase("type")} />
         )}
         {phase === "type" && (
           <TypeRoom
@@ -194,12 +163,11 @@ export function Jobs() {
         )}
       </AnimatePresence>
 
-      {/* Dashboard lives behind the aha modal */}
       {(phase === "aha" || phase === "dashboard") && (
         <Dashboard
           initialJobs={jobs}
           initialColumns={initialColumns}
-          recommendationId={recommendationId}
+          pipelineId={pipelineId}
           quizAnswers={quizAnswers}
         />
       )}

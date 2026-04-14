@@ -1,7 +1,12 @@
 import { motion } from "framer-motion";
 import ResumeUploadZone from "./ResumeUploadZone";
 
-export default function LandingHeroSection() {
+export default function LandingHeroSection({
+  hasDfToken,
+  hasParsedResume,
+  onPrimaryCta,
+  primaryCtaLabel,
+}) {
   return (
     <section
       className="w-full px-6 pt-12 pb-12 flex flex-col items-center text-center"
@@ -32,7 +37,12 @@ export default function LandingHeroSection() {
         transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
         className="w-full max-w-[400px] flex justify-center"
       >
-        <ResumeUploadZone />
+        <ResumeUploadZone
+          hasDfToken={hasDfToken}
+          hasParsedResume={hasParsedResume}
+          onPrimaryCta={onPrimaryCta}
+          primaryCtaLabel={primaryCtaLabel}
+        />
       </motion.div>
     </section>
   );

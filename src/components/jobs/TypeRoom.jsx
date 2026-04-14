@@ -103,7 +103,7 @@ export function TypeRoom({ questions, onDone, onReset }) {
       transition={{ duration: 0.5 }}
     >
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full dark:bg-[#FF553E]/6 blur-[120px]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full bg-[#FF553E]/5 dark:bg-[#FF553E]/15 blur-[120px]" />
       </div>
 
       <div />

@@ -43,24 +43,20 @@ function Tabs({ tabs, active, onChange }) {
   );
 }
 
-// Placeholder thumbnail gradients for projects without images
-const PROJECT_GRADIENTS = [
-  "linear-gradient(135deg, #E8E4DD 0%, #C8C0B4 100%)",
-  "linear-gradient(135deg, #D4D0C8 0%, #B8B0A4 100%)",
-  "linear-gradient(135deg, #DDD8D0 0%, #C0B8AC 100%)",
-  "linear-gradient(135deg, #E0DCD4 0%, #C4BCB0 100%)",
-  "linear-gradient(135deg, #D8D4CC 0%, #BCB4A8 100%)",
-  "linear-gradient(135deg, #E4E0D8 0%, #C8C0B4 100%)",
+// Placeholder thumbnail images for projects without images
+const PLACEHOLDER_THUMBNAILS = [
+  "/previewproject/Thumbnail1.png",
+  "/previewproject/Thumbnail2.png",
 ];
 
 // ── Canvas template preview (self-contained, no globalContext needed) ─────────
 function CanvasPreview({ parsed }) {
-  const name     = parsed?.name         || "Your Name";
-  const bio      = parsed?.bio          || "Product designer crafting purposeful digital experiences.";
-  const intro    = parsed?.introduction || "";
-  const rawSkills = parsed?.skills      || [];
-  const exp      = parsed?.experience   || [];
-  const projs    = parsed?.projects     || [];
+  const name = parsed?.name || "Your Name";
+  const bio = parsed?.bio || "Product designer crafting purposeful digital experiences.";
+  const intro = parsed?.introduction || "";
+  const rawSkills = parsed?.skills || [];
+  const exp = parsed?.experience || [];
+  const projs = parsed?.projects || [];
 
   const skills = rawSkills.map((s) => ({
     label: typeof s === "string" ? s : (s?.label || s?.name || ""),
@@ -70,8 +66,13 @@ function CanvasPreview({ parsed }) {
     ? [...skills, ...skills, ...skills, ...skills, ...skills]
     : [];
 
-  const visibleExp   = exp.slice(0, 4);
+  const visibleExp = exp.slice(0, 4);
+  const MOCK_PROJECTS = [
+    { title: "Case Study", description: "End-to-end redesign with user research and prototyping." },
+    { title: "Design System", description: "Component library built for scale and consistency." },
+  ];
   const visibleProjs = projs.slice(0, 6);
+  const displayProjs = visibleProjs.length > 0 ? visibleProjs : MOCK_PROJECTS;
 
   return (
     <div className="w-full flex flex-col gap-3 pb-24 max-w-[720px] mx-auto">
@@ -83,14 +84,12 @@ function CanvasPreview({ parsed }) {
         transition={{ type: "spring", stiffness: 100, damping: 12, delay: 0.15 }}
         className="bg-white dark:bg-[#2A2520] rounded-[24px] border border-[#E5D7C4] dark:border-white/10 p-4 flex flex-col md:flex-row gap-6 items-start md:items-center w-full"
       >
-        <div className="w-28 h-28 rounded-2xl shrink-0 border border-black/5 dark:border-white/10 shadow-sm flex items-center justify-center bg-[#F0EDE7] dark:bg-[#3A352E]">
-          <span className="text-[36px] font-bold text-[#7A736C] dark:text-[#B5AFA5]">
-            {name.charAt(0).toUpperCase()}
-          </span>
+        <div className="w-28 h-28 rounded-2xl shrink-0 border border-black/5 dark:border-white/10 shadow-sm flex items-center justify-center bg-[#F0EDE7] dark:bg-[#3A352E] overflow-hidden">
+          <img src="/previewproject/avatar.png" alt="avatar" />
         </div>
         <div className="flex flex-col gap-2">
           <h1 className="text-[24px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7] tracking-tight leading-tight">
-            {intro || `Hey, I'm ${name}`}
+            {`Hey, I'm ${name}`}
           </h1>
           <p className="text-[#7A736C] dark:text-[#B5AFA5] text-[16px] leading-relaxed max-w-[480px]">
             {bio}
@@ -132,46 +131,41 @@ function CanvasPreview({ parsed }) {
       )}
 
       {/* ── Projects section — mirrors CanvasProjectsSection ── */}
-      {visibleProjs.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ type: "spring", stiffness: 100, damping: 12, delay: 0.45 }}
-          className="bg-white dark:bg-[#2A2520] rounded-[24px] border border-[#E5D7C4] dark:border-white/10 p-4 md:p-6 w-full"
-        >
-          <h2 className="text-[#7A736C] dark:text-[#B5AFA5] font-medium text-[14px] mb-4 uppercase tracking-wider">
-            Projects
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {visibleProjs.map((p, i) => (
-              <div key={i} className="flex flex-col gap-3 group/card">
-                {/* 16:9 placeholder thumbnail — same structure as real project card */}
-                <div
-                  className="rounded-2xl overflow-hidden aspect-[16/9] border border-black/5 dark:border-white/10 bg-[#F5F5F5] dark:bg-[#1A1A1A] relative"
-                  style={{ background: PROJECT_GRADIENTS[i % PROJECT_GRADIENTS.length] }}
-                >
-                  <div className="absolute inset-0 flex items-end p-3">
-                    <span className="text-[11px] font-semibold text-[#7A736C] uppercase tracking-wider opacity-60">
-                      {p.title?.slice(0, 2).toUpperCase() || "PR"}
-                    </span>
-                  </div>
-                </div>
-                {/* Title + description */}
-                <div>
-                  <h3 className="text-base font-medium text-[#1A1A1A] dark:text-[#F0EDE7] mb-1 leading-snug line-clamp-2">
-                    {p.title}
-                  </h3>
-                  {p.description && (
-                    <p className="text-[#7A736C] dark:text-[#B5AFA5] text-sm leading-relaxed line-clamp-2">
-                      {p.description}
-                    </p>
-                  )}
-                </div>
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: "spring", stiffness: 100, damping: 12, delay: 0.45 }}
+        className="bg-white dark:bg-[#2A2520] rounded-[24px] border border-[#E5D7C4] dark:border-white/10 p-4 md:p-6 w-full"
+      >
+        <h2 className="text-[#7A736C] dark:text-[#B5AFA5] font-medium text-[14px] mb-4 uppercase tracking-wider">
+          Projects
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {displayProjs.map((p, i) => (
+            <div key={i} className="flex flex-col gap-3 group/card">
+              {/* 4:3 placeholder thumbnail */}
+              <div className="rounded-2xl overflow-hidden aspect-[4/3] border border-black/5 dark:border-white/10 bg-[#F5F5F5] dark:bg-[#1A1A1A]">
+                <img
+                  src={PLACEHOLDER_THUMBNAILS[i % PLACEHOLDER_THUMBNAILS.length]}
+                  alt={p.title || "Project"}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-105"
+                />
               </div>
-            ))}
-          </div>
-        </motion.div>
-      )}
+              {/* Title + description */}
+              <div>
+                <h3 className="text-base font-medium text-[#1A1A1A] dark:text-[#F0EDE7] mb-1 leading-snug line-clamp-2">
+                  {p.title}
+                </h3>
+                {p.description && (
+                  <p className="text-[#7A736C] dark:text-[#B5AFA5] text-sm leading-relaxed line-clamp-2">
+                    {p.description}
+                  </p>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </motion.div>
 
       {/* ── Career ladder — mirrors CanvasCareerLadder with actual ladder visual ── */}
       {visibleExp.length > 0 && (

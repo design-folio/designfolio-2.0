@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Mic, MicOff, Phone, ChevronLeft } from "lucide-react";
+import { _postJobsInterviewSession } from "@/network/jobs";
 
 // Guard against missing package: import lazily
 let createClient = null;
@@ -14,7 +15,7 @@ try {
   // package not installed
 }
 
-export function MockInterviewRoom({ job, onEnd }) {
+export function MockInterviewRoom({ job, recommendationId, onEnd }) {
   const userVideoRef = useRef(null);
   const transcriptRef = useRef(null);
   const anamClientRef = useRef(null);
@@ -29,22 +30,20 @@ export function MockInterviewRoom({ job, onEnd }) {
 
     const start = async () => {
       try {
+        if (!createClient || !AnamEvent) {
+          console.error("[MockInterview] @anam-ai/js-sdk is not installed");
+          if (mounted) setStatus("error");
+          return;
+        }
+
         const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
         userStreamRef.current = stream;
         if (userVideoRef.current) userVideoRef.current.srcObject = stream;
         if (!mounted) return;
 
-        const tokenRes = await fetch("/api/anam/session", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            company: job.company,
-            role: job.role,
-            description: job.description ?? "",
-          }),
-        });
-        if (!tokenRes.ok) throw new Error("Failed to get interview session token");
-        const { sessionToken } = await tokenRes.json();
+        const tokenRes = await _postJobsInterviewSession(job.id, recommendationId);
+        const { sessionToken } = tokenRes.data;
+        if (!mounted) return;
 
         const client = createClient(sessionToken);
         anamClientRef.current = client;
@@ -62,7 +61,8 @@ export function MockInterviewRoom({ job, onEnd }) {
         });
 
         await client.streamToVideoElement("anam-avatar-video", stream);
-      } catch {
+      } catch (err) {
+        console.error("[MockInterview] start error:", err);
         if (mounted) setStatus("error");
       }
     };
@@ -73,7 +73,7 @@ export function MockInterviewRoom({ job, onEnd }) {
       anamClientRef.current?.stopStreaming();
       userStreamRef.current?.getTracks().forEach((t) => t.stop());
     };
-  }, [job.company, job.role]);
+  }, [job.id, recommendationId]);
 
   const toggleMute = () => {
     if (muted) {
@@ -183,7 +183,7 @@ export function MockInterviewRoom({ job, onEnd }) {
       {/* Bottom navbar */}
       <div className="h-[56px] bg-[#1C1C1E] border-t border-white/[0.08] flex items-center justify-between px-4 flex-shrink-0">
         <button
-          onClick={onEnd}
+          onClick={() => onEnd(transcript)}
           className="flex items-center gap-1.5 text-white/50 hover:text-white/80 transition-colors"
         >
           <ChevronLeft className="w-4 h-4" />
@@ -203,7 +203,7 @@ export function MockInterviewRoom({ job, onEnd }) {
             {muted ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
           </button>
           <button
-            onClick={onEnd}
+            onClick={() => onEnd(transcript)}
             className="flex items-center gap-1.5 h-8 px-3.5 rounded-full bg-red-500 hover:bg-red-600 text-white text-[13px] font-medium transition-colors"
           >
             <Phone className="w-3.5 h-3.5" />

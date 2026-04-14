@@ -11,9 +11,10 @@ import { PipelineCol } from "./PipelineCol";
 import { JobDetailSheet } from "./JobDetailSheet";
 import { MockInterviewDialog } from "./MockInterviewDialog";
 import { MockInterviewRoom } from "./MockInterviewRoom";
+import { InterviewReport } from "./InterviewReport";
 import { ScoutChat } from "./ScoutChat";
 import { JobCard } from "./JobCard";
-import { _postJobsInteract, _postJobsRecommend, _postJobsMore } from "@/network/jobs";
+import { _postJobsInteract, _postJobsRecommend, _postJobsMore, _postJobsInterviewReport } from "@/network/jobs";
 
 const buildColumns = (jobs) => ({
   picks:       jobs ?? [],
@@ -244,10 +245,14 @@ export function Dashboard({
   // Track all job IDs ever shown — passed as excludeIds on rescan
   const seenJobIds = useRef(new Set(initialJobs.map((j) => j.id)));
 
-  const [selectedJobId,  setSelectedJobId]  = useState(null);
-  const [interviewJobId, setInterviewJobId] = useState(null);
-  const [roomJobId,      setRoomJobId]      = useState(null);
-  const [scoutJobId,     setScoutJobId]     = useState(null);
+  const [selectedJobId,    setSelectedJobId]    = useState(null);
+  const [interviewJobId,   setInterviewJobId]   = useState(null);
+  const [roomJobId,        setRoomJobId]        = useState(null);
+  const [scoutJobId,       setScoutJobId]       = useState(null);
+  const [reportJobId,      setReportJobId]      = useState(null);
+  const [reportLoading,    setReportLoading]    = useState(false);
+  const [completedReports, setCompletedReports] = useState({});
+  const [viewingReport,    setViewingReport]    = useState(null);
 
   const hasRestoredPipeline = initialColumns
     ? ["not_applied", "applied", "interview"].some((c) => (initialColumns[c] || []).length > 0)
@@ -274,6 +279,7 @@ export function Dashboard({
   const interviewJob = interviewJobId ? allJobs.find((j) => j.id === interviewJobId) ?? null : null;
   const roomJob      = roomJobId      ? allJobs.find((j) => j.id === roomJobId)      ?? null : null;
   const scoutJob     = scoutJobId     ? allJobs.find((j) => j.id === scoutJobId)     ?? null : null;
+  const reportJob    = reportJobId    ? allJobs.find((j) => j.id === reportJobId)    ?? null : null;
 
   const filteredPicks = useMemo(() => {
     return (columns.picks || []).filter((job) => {
@@ -670,6 +676,10 @@ export function Dashboard({
         open={!!selectedJobId}
         recommendationId={recommendationId}
         onClose={() => setSelectedJobId(null)}
+        pastReports={selectedJob ? (completedReports[selectedJob.id] ?? []).slice().reverse() : []}
+        onViewReport={(entry) => {
+          if (selectedJob) setViewingReport({ job: selectedJob, entry });
+        }}
       />
       <MockInterviewDialog
         job={interviewJob}
@@ -680,7 +690,49 @@ export function Dashboard({
 
       {createPortal(
         <AnimatePresence>
-          {roomJob  && <MockInterviewRoom key={roomJob.id}  job={roomJob}  onEnd={() => setRoomJobId(null)} />}
+          {roomJob  && (
+            <MockInterviewRoom
+              key={roomJob.id}
+              job={roomJob}
+              recommendationId={recommendationId}
+              onEnd={(transcript) => {
+                const finishedId = roomJobId;
+                setRoomJobId(null);
+                if (!finishedId) return;
+                setReportJobId(finishedId);
+                setReportLoading(true);
+                _postJobsInterviewReport(finishedId, recommendationId, transcript)
+                  .then(({ data }) => {
+                    setCompletedReports((prev) => ({
+                      ...prev,
+                      [finishedId]: [
+                        ...(prev[finishedId] ?? []),
+                        { date: new Date().toISOString(), report: data.report },
+                      ],
+                    }));
+                    setReportLoading(false);
+                  })
+                  .catch(() => setReportLoading(false));
+              }}
+            />
+          )}
+          {reportJob && (
+            <InterviewReport
+              key={`report-${reportJob.id}`}
+              job={reportJob}
+              report={completedReports[reportJob.id]?.at(-1)?.report ?? null}
+              loading={reportLoading}
+              onClose={() => setReportJobId(null)}
+            />
+          )}
+          {viewingReport && (
+            <InterviewReport
+              key={`viewing-${viewingReport.job.id}-${viewingReport.entry.date}`}
+              job={viewingReport.job}
+              report={viewingReport.entry.report}
+              onClose={() => setViewingReport(null)}
+            />
+          )}
           {scoutJob && <ScoutChat         key={scoutJob.id} job={scoutJob} recommendationId={recommendationId} onClose={() => setScoutJobId(null)} />}
         </AnimatePresence>,
         document.body,

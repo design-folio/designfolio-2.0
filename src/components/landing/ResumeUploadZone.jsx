@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
 import { useTheme } from "next-themes";
 import toast from "react-hot-toast";
-import { Upload } from "lucide-react";
+import { ArrowUpRight, FileUp } from "lucide-react";
 import { ColorOrb } from "@/components/ui/color-orb";
 import { _postResumeParse } from "@/network/resume";
 
@@ -15,7 +15,12 @@ const AI_STATUSES = [
   "Scanning matched jobs...",
 ];
 
-export default function ResumeUploadZone() {
+export default function ResumeUploadZone({
+  hasDfToken = false,
+  hasParsedResume = false,
+  onPrimaryCta,
+  primaryCtaLabel = "Upload Resume",
+}) {
   const router = useRouter();
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
@@ -108,10 +113,25 @@ export default function ResumeUploadZone() {
   };
 
   const { x, y } = cutoutPos;
+  const showPrimaryCta = !isProcessing && (hasDfToken || hasParsedResume);
+  const canUpload = !hasDfToken && !hasParsedResume;
+  const handlePrimaryClick = () => {
+    if (onPrimaryCta) {
+      onPrimaryCta();
+      return;
+    }
+    if (hasDfToken) {
+      router.push("/builder");
+      return;
+    }
+    if (hasParsedResume) {
+      router.push("/resume-signup");
+    }
+  };
 
   return (
     <>
-      <div ref={uploadZoneRef} className="inline-flex">
+      <div ref={uploadZoneRef} className="inline-flex w-full justify-center">
         <input
           ref={fileInputRef}
           type="file"
@@ -150,6 +170,30 @@ export default function ResumeUploadZone() {
                 </motion.span>
               </AnimatePresence>
             </motion.div>
+          ) : showPrimaryCta ? (
+            <motion.button
+              key="ready-state"
+              type="button"
+              initial={{ opacity: 0, scale: 0.97 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.97 }}
+              transition={{ duration: 0.25 }}
+              onClick={handlePrimaryClick}
+              className="group cursor-pointer flex w-full items-center justify-center gap-3.5 rounded-2xl border border-dashed border-[--lp-text]/22 bg-[--lp-text]/[0.035] px-6 py-4 shadow-[0_1px_0_rgba(0,0,0,0.02)] transition-all duration-200 hover:-translate-y-[1px] hover:border-[--lp-text]/50 hover:bg-[--lp-text]/[0.06]"
+            >
+              <div className="relative h-8 w-8 overflow-hidden rounded-full bg-[--lp-text] text-[--lp-fg-white] transition-colors duration-500 ease-in-out group-hover:bg-[--lp-accent-hover] group-hover:text-white">
+                <ArrowUpRight className="absolute top-1/2 left-1/2 h-[14px] w-[14px] -translate-x-1/2 -translate-y-1/2 transition-all duration-500 ease-in-out group-hover:translate-x-6 group-hover:-translate-y-6" strokeWidth={2.5} />
+                <ArrowUpRight className="absolute top-1/2 left-1/2 h-[14px] w-[14px] -translate-x-7 translate-y-7 transition-all duration-500 ease-in-out group-hover:-translate-x-1/2 group-hover:-translate-y-1/2" strokeWidth={2.5} />
+              </div>
+              <div className="flex flex-col items-start gap-0.5 text-left">
+                <span className="text-[14px] font-semibold leading-none text-[--lp-text]">
+                  {primaryCtaLabel}
+                </span>
+                <span className="text-[12px] text-[--lp-text-faint] leading-none">
+                  {hasDfToken ? "Open your existing workspace" : "Resume already parsed"}
+                </span>
+              </div>
+            </motion.button>
           ) : (
             <motion.div
               key="idle"
@@ -158,28 +202,30 @@ export default function ResumeUploadZone() {
               exit={{ opacity: 0, scale: 0.97 }}
               transition={{ duration: 0.25 }}
               data-testid="dropzone-resume"
-              onClick={() => fileInputRef.current?.click()}
+              onClick={() => canUpload && fileInputRef.current?.click()}
               onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
               onDragLeave={() => setIsDragging(false)}
               onDrop={handleDrop}
-              className={`cursor-pointer inline-flex items-center gap-3 rounded-full border border-dashed px-5 py-3 transition-all duration-200 ${
+              className={`group/dropzone cursor-pointer flex w-full items-center justify-center gap-3.5 rounded-2xl border border-dashed px-6 py-4 shadow-[0_1px_0_rgba(0,0,0,0.02)] transition-all duration-200 ${
                 isDragging
                   ? "border-[--lp-accent] bg-[--lp-accent]/5"
-                  : "border-[--lp-text]/25 bg-[--lp-text]/[0.03] hover:border-[--lp-text]/45"
+                  : "border-[--lp-text]/22 bg-[--lp-text]/[0.035] hover:-translate-y-[1px] hover:border-[--lp-text]/50 hover:bg-[--lp-text]/[0.06]"
               }`}
             >
-              <Upload
+              <FileUp
                 className={`h-[18px] w-[18px] shrink-0 transition-colors duration-200 ${
                   isDragging ? "text-[--lp-accent]" : "text-[--lp-text]/60"
                 }`}
                 strokeWidth={2}
               />
-              <span className="text-[14px] font-semibold text-[--lp-text]">
-                {isDragging ? "Drop it here" : "Upload your resume"}
-              </span>
-              <span className="text-[13px] text-[--lp-text-faint]">
-                PDF · max 5MB
-              </span>
+              <div className="flex flex-col items-start gap-0.5">
+                <span className="text-[14px] font-semibold leading-none text-[--lp-text]">
+                  {isDragging ? "Drop it here" : "Upload your resume"}
+                </span>
+                <span className="text-[12px] text-[--lp-text-faint] leading-none">
+                  PDF · max 5MB
+                </span>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

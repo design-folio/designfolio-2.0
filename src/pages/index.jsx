@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { useTheme } from "next-themes";
 import { flushSync } from "react-dom";
+import { useRouter } from "next/router";
 import Seo from "@/components/seo";
 import LandingHeader from "@/components/landing/LandingHeader";
 import LandingLeftNav from "@/components/landing/LandingLeftNav";
@@ -13,8 +14,17 @@ import LandingVerticalScroller from "@/components/landing/LandingVerticalScrolle
 import LandingHowSection from "@/components/landing/LandingHowSection";
 import LandingFounderSection from "@/components/landing/LandingFounderSection";
 import LandingFooter from "@/components/landing/LandingFooter";
+import ResumeUploadModal from "@/components/landing/ResumeUploadModal";
 
-export default function LandingPage({ dfToken }) {
+function getCookieValue(cookieName) {
+  if (typeof document === "undefined") return "";
+  const escapedName = cookieName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const match = document.cookie.match(new RegExp(`(?:^|; )${escapedName}=([^;]*)`));
+  return match ? decodeURIComponent(match[1]) : "";
+}
+
+export default function LandingPage({ dfToken, dfParsedResume }) {
+  const router = useRouter();
   const { theme, setTheme } = useTheme();
   // Defer theme resolution to client — avoids server/client hydration mismatch
   const [mounted, setMounted] = useState(false);
@@ -30,6 +40,8 @@ export default function LandingPage({ dfToken }) {
   const [fabVisible, setFabVisible] = useState(true);
   const [speedLevel, setSpeedLevel] = useState(4);
   const [showAllFeatures, setShowAllFeatures] = useState(false);
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [hasParsedResume, setHasParsedResume] = useState(!!dfParsedResume);
 
   // ── Theme sound (desktop only – mobile guard is inside the hook) ──
   const playHeartbeat = useCallback(() => {
@@ -115,6 +127,36 @@ export default function LandingPage({ dfToken }) {
       osc.onended = () => ctx.close();
     } catch { }
   }, []);
+
+  useEffect(() => {
+    let parsedResumePresent = !!dfParsedResume;
+    try {
+      parsedResumePresent =
+        parsedResumePresent ||
+        Boolean(sessionStorage.getItem("df_parsed_resume")) ||
+        Boolean(localStorage.getItem("df_parsed_resume"));
+    } catch { }
+    parsedResumePresent = parsedResumePresent || Boolean(getCookieValue("df_parsed_resume"));
+    if (parsedResumePresent) setHasParsedResume(true);
+  }, [dfParsedResume]);
+
+  const primaryCtaLabel = dfToken
+    ? "Launch Builder"
+    : hasParsedResume
+      ? "Continue Signup"
+      : "Get Started";
+
+  const handlePrimaryCta = useCallback(() => {
+    if (dfToken) {
+      router.push("/builder");
+      return;
+    }
+    if (hasParsedResume) {
+      router.push("/resume-signup");
+      return;
+    }
+    setShowUploadModal(true);
+  }, [dfToken, hasParsedResume, router]);
 
   // Section tracking
   useEffect(() => {
@@ -233,10 +275,21 @@ export default function LandingPage({ dfToken }) {
             containerRef={containerRef}
           />
 
-          <LandingHeader showNavCTA={showNavCTA} dfToken={dfToken} />
+          <LandingHeader
+            showNavCTA={showNavCTA}
+            dfToken={dfToken}
+            hasParsedResume={hasParsedResume}
+            ctaLabel={primaryCtaLabel}
+            onPrimaryCta={handlePrimaryCta}
+          />
 
           <main className="flex flex-col items-center">
-            <LandingHeroSection />
+            <LandingHeroSection
+              hasDfToken={dfToken}
+              hasParsedResume={hasParsedResume}
+              onPrimaryCta={handlePrimaryCta}
+              primaryCtaLabel={dfToken ? "Launch Builder" : hasParsedResume ? "Continue Signup" : "Upload Resume"}
+            />
             <LandingVideoSection ref={videoSectionRef} isDark={isDark} />
             <LandingTrustedBySection />
             <LandingTestimonialCarousel />
@@ -250,7 +303,11 @@ export default function LandingPage({ dfToken }) {
               isDark={isDark}
               playSliderTick={playSliderTick}
             />
-            <LandingFounderSection dfToken={dfToken} />
+            <LandingFounderSection
+              dfToken={dfToken}
+              hasParsedResume={hasParsedResume}
+              onPrimaryCta={handlePrimaryCta}
+            />
             <LandingFooter />
           </main>
         </div>
@@ -261,6 +318,14 @@ export default function LandingPage({ dfToken }) {
           isDark={isDark}
           onThemeChange={handleThemeChange}
         />
+
+        <ResumeUploadModal
+          open={showUploadModal}
+          onClose={() => setShowUploadModal(false)}
+          hasDfToken={dfToken}
+          hasParsedResume={hasParsedResume}
+          onPrimaryCta={handlePrimaryCta}
+        />
       </div>
     </>
   );
@@ -269,9 +334,11 @@ export default function LandingPage({ dfToken }) {
 // No forced theme — users can toggle dark/light
 export const getServerSideProps = async (context) => {
   const dfToken = context.req.cookies["df-token"] || null;
+  const dfParsedResume = context.req.cookies["df_parsed_resume"] || null;
   return {
     props: {
       dfToken: !!dfToken,
+      dfParsedResume: !!dfParsedResume,
       hideHeader: true,
     },
   };

@@ -40,3 +40,6 @@ next-env.d.ts
 .cursor
 .history
 CLAUDE.md
+.claude
+.agents/*
+.kiro

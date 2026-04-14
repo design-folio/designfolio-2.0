@@ -1,74 +1,5 @@
 import { motion } from "framer-motion";
-import { MessageSquare, Star, AlertTriangle, Crosshair, X } from "lucide-react";
-
-// ---------------------------------------------------------------------------
-// Mock data
-// ---------------------------------------------------------------------------
-
-const MOCK_REPORTS = {
-  "1": {
-    communicationScore: 78,
-    clarity: 82,
-    confidence: 71,
-    pacing: 80,
-    strongestAnswer: {
-      question: "Walk me through a design system you've owned end-to-end.",
-      highlight:
-        "Your answer showed clear ownership, measurable impact (30% faster prototyping), and a strong rationale for the decisions you made. Lead with this in the real interview.",
-    },
-    watchOutFor: [
-      'You hedged twice with "I think maybe…" when describing your process. Own your decisions — Linear values directness.',
-      "Your answer on cross-functional collaboration ran long. Tighten it to two concrete examples and stop.",
-    ],
-    roleSpecificGaps: [
-      "You didn't connect your work to developer experience — a core value at Linear. Prepare a story that bridges design decisions to engineering velocity.",
-      "When asked about metrics, you stayed qualitative. Bring at least one data point on adoption or error reduction from your design system work.",
-    ],
-  },
-  "2": {
-    communicationScore: 83,
-    clarity: 88,
-    confidence: 79,
-    pacing: 82,
-    strongestAnswer: {
-      question: "How do you make complex technical concepts feel simple in UI?",
-      highlight:
-        "Concrete examples from real projects, clear before/after framing, and you named the mental model you used. This is a strong answer for a Vercel role — use it early.",
-    },
-    watchOutFor: [
-      "You rushed through the onboarding flow example. Slow down — that story has more signal in it than you gave it time for.",
-      'Avoid saying "it depends" without immediately following it with a framework. It reads as evasive without structure.',
-    ],
-    roleSpecificGaps: [
-      "Vercel cares about async-first communication. Your answers were strong verbally but you didn't demonstrate how you document or write for async teams. Prepare a brief example.",
-      "You didn't mention any frontend fundamentals. Even a brief reference to CSS, component thinking, or dev handoff would close this gap.",
-    ],
-  },
-};
-
-const FALLBACK_REPORT = {
-  communicationScore: 75,
-  clarity: 78,
-  confidence: 70,
-  pacing: 77,
-  strongestAnswer: {
-    question: "Tell me about a project you're most proud of.",
-    highlight:
-      "You structured the answer well and showed clear ownership of outcomes. This is your strongest signal — make sure it opens your real interview.",
-  },
-  watchOutFor: [
-    'You used filler phrases ("like", "you know") more frequently under pressure. Record yourself and listen back — it\'s an easy fix with practice.',
-    "One answer went over three minutes. The real interview will move faster; aim for 90 seconds per response.",
-  ],
-  roleSpecificGaps: [
-    "Your answers didn't reference this company's specific product or customer. Research their recent launches and weave in one specific reference.",
-    "You didn't mention your approach to feedback or iteration cycles — both came up implicitly in questions. Prepare a short answer for each.",
-  ],
-};
-
-export function getMockReport(jobId) {
-  return MOCK_REPORTS[jobId] ?? FALLBACK_REPORT;
-}
+import { MessageSquare, Star, AlertTriangle, Crosshair, X, Loader2 } from "lucide-react";
 
 // ---------------------------------------------------------------------------
 // ScoreBar sub-component
@@ -98,9 +29,7 @@ function ScoreBar({ value, label }) {
 const CARD_CLASS =
   "bg-white dark:bg-card rounded-xl border border-black/[0.06] dark:border-border p-5";
 
-export function InterviewReport({ job, report: reportProp, onClose }) {
-  const report = reportProp ?? getMockReport(job.id);
-
+export function InterviewReport({ job, report, loading = false, onClose }) {
   return (
     <motion.div
       className="fixed inset-0 z-[400] bg-[#F0EDE7] dark:bg-background flex flex-col overflow-hidden"
@@ -112,7 +41,7 @@ export function InterviewReport({ job, report: reportProp, onClose }) {
       {/* ------------------------------------------------------------------ */}
       {/* Header                                                              */}
       {/* ------------------------------------------------------------------ */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-black/[0.06] dark:border-border bg-white/60 dark:bg-card/60 backdrop-blur-sm flex-shrink-0">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-black/[0.06] dark:border-border bg-white dark:bg-[#1A1713] flex-shrink-0">
         {/* Left: logo + role/company */}
         <div className="flex items-center gap-3 min-w-0">
           <div
@@ -148,6 +77,15 @@ export function InterviewReport({ job, report: reportProp, onClose }) {
       {/* Scrollable body                                                     */}
       {/* ------------------------------------------------------------------ */}
       <div className="flex-1 overflow-y-auto">
+        {(loading || !report) ? (
+          <div className="flex flex-col items-center justify-center h-full gap-4 px-6 text-center">
+            <Loader2 className="w-8 h-8 text-foreground/25 animate-spin" />
+            <p className="text-[15px] font-medium text-foreground/60">Analysing your interview…</p>
+            <p className="text-[13px] text-foreground/35 max-w-xs">
+              Gemini is reviewing your responses. This takes about 10–15 seconds.
+            </p>
+          </div>
+        ) : (
         <div className="max-w-[680px] mx-auto px-6 py-8 space-y-5">
           {/* Card 1: Communication score */}
           <motion.div
@@ -242,12 +180,13 @@ export function InterviewReport({ job, report: reportProp, onClose }) {
             </div>
           </motion.div>
         </div>
+        )}
       </div>
 
       {/* ------------------------------------------------------------------ */}
       {/* Footer                                                              */}
       {/* ------------------------------------------------------------------ */}
-      <div className="flex items-center justify-between px-6 py-4 border-t border-black/[0.06] dark:border-border bg-white/60 dark:bg-card/60 backdrop-blur-sm flex-shrink-0">
+      <div className="flex items-center justify-between px-6 py-4 border-t border-black/[0.06] dark:border-border bg-white dark:bg-[#1A1713] flex-shrink-0">
         <p className="text-[11px] text-foreground/35">
           Generated after your mock session · {job.company}
         </p>

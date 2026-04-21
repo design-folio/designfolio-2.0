@@ -66,8 +66,9 @@ import MonoContactSection from "./MonoContactSection";
 import MonoExperienceSection from "./MonoExperienceSection";
 import MonoReviewsSection from "./MonoReviewsSection";
 import { MonoRearrangeButton } from "./MonoRearrangeButton";
+import { MonoEmailSocialLinksSection } from "./MonoEmailSocialLinksSection";
 
-const itemVariants = {
+export const itemVariants = {
   hidden: {
     opacity: 0,
     filter: "blur(10px)",
@@ -1199,97 +1200,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
           </div>
         </motion.div>
 
-        <motion.div
-          variants={itemVariants}
-          className="custom-dashed-t"
-        ></motion.div>
-
-        {/* Contact Section */}
-        <motion.div
-          variants={itemVariants}
-          className="px-5 md:px-8 py-4 flex justify-between items-center relative group/section"
-        >
-          {isEditing && (
-            <div className="absolute top-1/2 -translate-y-1/2 right-4 transition-opacity z-10 opacity-100 md:opacity-0 md:group-hover/section:opacity-100">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => openSidebar?.(sidebars.footer)}
-                className="h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors"
-              >
-                <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-              </Button>
-            </div>
-          )}
-          <a
-            href={email ? `mailto:${email}` : "#"}
-            className="flex items-center gap-2 text-base text-[#666666] dark:text-[#9E9893] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7] transition-colors group"
-            onMouseEnter={() => atSignRef.current?.startAnimation()}
-            onMouseLeave={() => atSignRef.current?.stopAnimation()}
-            onClick={(e) => {
-              if (!email) e.preventDefault();
-            }}
-          >
-            <AtSignIcon
-              ref={atSignRef}
-              size={18}
-              className="transition-colors"
-            />
-            {email || "No email set"}
-          </a>
-          <div className="flex items-center gap-5 text-[#1A1A1A] dark:text-[#F0EDE7]">
-            <a
-              href={portfolios.dribbble || "#"}
-              target={portfolios.dribbble ? "_blank" : undefined}
-              rel={portfolios.dribbble ? "noopener noreferrer" : undefined}
-              className="hover:opacity-70 transition-opacity"
-              onMouseEnter={() => dribbbleRef.current?.startAnimation()}
-              onMouseLeave={() => dribbbleRef.current?.stopAnimation()}
-              onClick={(e) => {
-                if (!portfolios.dribbble) e.preventDefault();
-              }}
-            >
-              <DribbbleIcon
-                ref={dribbbleRef}
-                size={16}
-                className="transition-colors"
-              />
-            </a>
-            <a
-              href={socials.twitter || "#"}
-              target={socials.twitter ? "_blank" : undefined}
-              rel={socials.twitter ? "noopener noreferrer" : undefined}
-              className="hover:opacity-70 transition-opacity"
-              onMouseEnter={() => twitterRef.current?.startAnimation()}
-              onMouseLeave={() => twitterRef.current?.stopAnimation()}
-              onClick={(e) => {
-                if (!socials.twitter) e.preventDefault();
-              }}
-            >
-              <TwitterIcon
-                ref={twitterRef}
-                size={16}
-                className="transition-colors"
-              />
-            </a>
-            <a
-              href={socials.linkedin || "#"}
-              target={socials.linkedin ? "_blank" : undefined}
-              rel={socials.linkedin ? "noopener noreferrer" : undefined}
-              className="hover:opacity-70 transition-opacity"
-              onClick={(e) => {
-                if (!socials.linkedin) e.preventDefault();
-              }}
-            >
-              <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor">
-                <path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42c1.87 0 3.38 2.88 3.38 6.42zM24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z" />
-              </svg>
-            </a>
-          </div>
-        </motion.div>
-
-        <motion.div variants={itemVariants} className="custom-dashed-t"></motion.div>
-
+        <MonoEmailSocialLinksSection email={email} socials={socials} portfolios={portfolios} isEditing={isEditing} />
         {/* Intro Section */}
         <motion.div
           variants={itemVariants}

@@ -14,20 +14,22 @@ import { MockInterviewRoom } from "./MockInterviewRoom";
 import { InterviewReport } from "./InterviewReport";
 import { ScoutChat } from "./ScoutChat";
 import { JobCard } from "./JobCard";
-import { _postJobsInteract, _postJobsRecommend, _postJobsMore, _postJobsInterviewReport } from "@/network/jobs";
+import { _postJobsInteract, _postJobsRecommend, _postJobsMore, _postJobsInterviewReport, _getJobsRecommendations } from "@/network/jobs";
+import { CreditsWidget } from "./CreditsWidget";
+import { creditBadge } from "@/data/jobCredits";
 
 const buildColumns = (jobs) => ({
-  picks:       jobs ?? [],
-  not_applied: [],
-  applied:     [],
-  interview:   [],
-  offer:       [],
+  picks:     jobs ?? [],
+  saved:     [],
+  applied:   [],
+  interview: [],
+  offer:     [],
 });
 
 const COL_DRAG_ACTION = {
-  not_applied: "saved",
-  applied:     "applied",
-  interview:   "interview",
+  saved:     "saved",
+  applied:   "applied",
+  interview: "interview",
   offer:       "offer",
 };
 
@@ -232,17 +234,17 @@ function CriteriaEditor({ answers, onRescan, isRescanning }) {
 export function Dashboard({
   initialJobs      = [],
   initialColumns   = null,
-  recommendationId: initialRecId = null,
+  profileId:       initialProfileId = null,
   quizAnswers      = [],
 }) {
-  const [columns,          setColumns]          = useState(() => initialColumns ?? buildColumns(initialJobs));
-  const [recommendationId, setRecommendationId] = useState(initialRecId);
-  const [currentAnswers,   setCurrentAnswers]   = useState(quizAnswers);
-  const [filters,          setFilters]          = useState(DEFAULT_FILTERS);
-  const [isRescanning,     setIsRescanning]     = useState(false);
-  const [rescanExhausted,  setRescanExhausted]  = useState(false); // true when DB has no more unique jobs
+  const [columns,        setColumns]        = useState(() => initialColumns ?? buildColumns(initialJobs));
+  const [profileId,      setProfileId]      = useState(initialProfileId);
+  const [currentAnswers, setCurrentAnswers] = useState(quizAnswers);
+  const [filters,        setFilters]        = useState(DEFAULT_FILTERS);
+  const [isRescanning,   setIsRescanning]   = useState(false);
+  const [rescanExhausted, setRescanExhausted] = useState(false);
 
-  // Track all job IDs ever shown — passed as excludeIds on rescan
+  // Track all job IDs ever shown to avoid duplicates when paginating
   const seenJobIds = useRef(new Set(initialJobs.map((j) => j.id)));
 
   const [selectedJobId,    setSelectedJobId]    = useState(null);
@@ -253,9 +255,11 @@ export function Dashboard({
   const [reportLoading,    setReportLoading]    = useState(false);
   const [completedReports, setCompletedReports] = useState({});
   const [viewingReport,    setViewingReport]    = useState(null);
+  const [creditsRefreshKey, setCreditsRefreshKey] = useState(0);
+  const bumpCredits = useCallback(() => setCreditsRefreshKey(k => k + 1), []);
 
   const hasRestoredPipeline = initialColumns
-    ? ["not_applied", "applied", "interview"].some((c) => (initialColumns[c] || []).length > 0)
+    ? ["saved", "applied", "interview"].some((c) => (initialColumns[c] || []).length > 0)
     : false;
 
   const [phase, setPhase] = useState(hasRestoredPipeline ? "split" : "list");
@@ -296,34 +300,34 @@ export function Dashboard({
   ].filter(Boolean).length;
 
   const handleFetchMore = useCallback(async () => {
-    console.log("[Jobs] handleFetchMore called", { isRescanning, rescanExhausted, recommendationId });
-    if (isRescanning || rescanExhausted || !recommendationId) return;
+    console.log("[Jobs] handleFetchMore called", { isRescanning, rescanExhausted, profileId });
+    if (isRescanning || rescanExhausted || !profileId) return;
     setIsRescanning(true);
     try {
-      console.log("[Jobs] Calling /jobs/more", { recommendationId, answers: currentAnswers });
-      const { data } = await _postJobsMore(
-        recommendationId,
-        currentAnswers,
-        [...seenJobIds.current],
-      );
-      console.log("[Jobs] /jobs/more response", { jobs: data.jobs?.length, hasMore: data.hasMore });
-      const newJobs = data.jobs || [];
-      if (newJobs.length) {
-        newJobs.forEach((j) => seenJobIds.current.add(j.id));
-        setColumns((prev) => ({ ...prev, picks: [...(prev.picks || []), ...newJobs] }));
-      }
-      // Use the backend's authoritative signal — hasMore: false means JSearch
-      // is exhausted for this query, even if some jobs were returned this call.
-      if (data.hasMore === false) {
-        console.log("[Jobs] JSearch exhausted — hiding Get More button");
-        setRescanExhausted(true);
+      // Fire-and-forget Lambda; poll until new page of jobs is ready
+      await _postJobsMore(profileId);
+      bumpCredits();
+      const page = Math.ceil((columns.picks || []).length / 10);
+      for (let i = 0; i < 20; i++) {
+        await new Promise((r) => setTimeout(r, 3000));
+        const { data } = await _getJobsRecommendations(profileId, page);
+        if (data.status === "ready") {
+          const newJobs = (data.jobs || []).filter((j) => !seenJobIds.current.has(j.id));
+          if (newJobs.length) {
+            newJobs.forEach((j) => seenJobIds.current.add(j.id));
+            setColumns((prev) => ({ ...prev, picks: [...(prev.picks || []), ...newJobs] }));
+          }
+          if (!data.hasMore) setRescanExhausted(true);
+          break;
+        }
+        if (data.status === "exhausted") { setRescanExhausted(true); break; }
       }
     } catch (err) {
       console.error("[Jobs] fetchMore failed:", err);
     } finally {
       setIsRescanning(false);
     }
-  }, [isRescanning, rescanExhausted, recommendationId, currentAnswers]);
+  }, [isRescanning, rescanExhausted, profileId, columns.picks, bumpCredits]);
 
   const handleRescan = useCallback(async (answers = currentAnswers) => {
     if (isRescanning) return;
@@ -331,36 +335,36 @@ export function Dashboard({
     setRescanExhausted(false);
     seenJobIds.current.clear();
     try {
-      const { data } = await _postJobsRecommend(answers, []);
-      const newPicks  = data.jobs || [];
-      const inherited = data.inheritedColumns || {};
-
-      newPicks.forEach((j) => seenJobIds.current.add(j.id));
-      Object.values(inherited).flat().forEach((j) => seenJobIds.current.add(j.id));
-
-      setColumns({
-        picks:       newPicks,
-        not_applied: inherited.not_applied || [],
-        applied:     inherited.applied     || [],
-        interview:   inherited.interview   || [],
-        offer:       inherited.offer       || [],
-        dismissed:   [],
-      });
+      const { data } = await _postJobsRecommend(answers);
+      bumpCredits();
+      const newProfileId = data.profileId;
+      setProfileId(newProfileId);
       setCurrentAnswers(answers);
-      setRecommendationId(data.recommendationId);
+
+      // Poll until ready — rescan starts a fresh pipeline
+      for (let i = 0; i < 30; i++) {
+        await new Promise((r) => setTimeout(r, 3000));
+        const { data: pollData } = await _getJobsRecommendations(newProfileId);
+        if (pollData.status === "ready") {
+          const newPicks = pollData.jobs || [];
+          newPicks.forEach((j) => seenJobIds.current.add(j.id));
+          setColumns({ picks: newPicks, saved: [], applied: [], interview: [], offer: [] });
+          break;
+        }
+        if (pollData.status === "exhausted") break;
+      }
     } catch (err) {
       console.error("[Jobs] Rescan failed:", err);
     } finally {
       setIsRescanning(false);
     }
-  }, [isRescanning, currentAnswers]);
+  }, [isRescanning, currentAnswers, bumpCredits]);
 
   const handleOpenJob = useCallback(
     (id) => {
       setSelectedJobId(id);
-      _postJobsInteract(recommendationId, id, "viewed");
     },
-    [recommendationId],
+    [],
   );
 
   const handleShortlist = useCallback(
@@ -371,11 +375,11 @@ export function Dashboard({
         const job = prev[fromCol].find((j) => j.id === id);
         return {
           ...prev,
-          [fromCol]:   prev[fromCol].filter((j) => j.id !== id),
-          not_applied: [{ ...job }, ...prev.not_applied],
+          [fromCol]: prev[fromCol].filter((j) => j.id !== id),
+          saved:     [{ ...job }, ...(prev.saved || [])],
         };
       });
-      _postJobsInteract(recommendationId, id, "saved");
+      _postJobsInteract(profileId, id, "saved");
 
       if (phase !== "list") return;
 
@@ -416,7 +420,7 @@ export function Dashboard({
         setTimeout(() => setPhase("split"), 960);
       }, CARD_EXIT_MS);
     },
-    [phase, centerMargin, recommendationId],
+    [phase, centerMargin, profileId],
   );
 
   const handleDismiss = useCallback(
@@ -426,9 +430,9 @@ export function Dashboard({
         if (!fromCol) return prev;
         return { ...prev, [fromCol]: prev[fromCol].filter((j) => j.id !== id) };
       });
-      _postJobsInteract(recommendationId, id, "dismissed");
+      _postJobsInteract(profileId, id, "dismissed");
     },
-    [recommendationId],
+    [profileId],
   );
 
   const promptSummary = useMemo(() => {
@@ -450,7 +454,7 @@ export function Dashboard({
       transition={{ duration: 0.5 }}
     >
       {/* ── Top filter bar ──────────────────────────────────────────────── */}
-      <div className="flex flex-shrink-0 pl-[108px] pr-4 mt-6 mb-2">
+      <div className="flex flex-shrink-0 pl-[108px] pr-4 mt-6 mb-2 items-center">
         <div
           ref={filterBarRef}
           className="flex items-center gap-2"
@@ -573,6 +577,10 @@ export function Dashboard({
             </span>
           )}
         </div>
+        {/* Credits widget — right extreme */}
+        <div className="ml-auto">
+          <CreditsWidget refreshKey={creditsRefreshKey} />
+        </div>
       </div>
 
       {/* ── Kanban board ────────────────────────────────────────────────── */}
@@ -586,7 +594,7 @@ export function Dashboard({
               const prevIds = new Set((columns[colId] || []).map((j) => j.id));
               (newCols[colId] || []).forEach((job) => {
                 if (!prevIds.has(job.id)) {
-                  _postJobsInteract(recommendationId, job.id, action);
+                  _postJobsInteract(profileId, job.id, action);
                 }
               });
             });
@@ -674,7 +682,7 @@ export function Dashboard({
       <JobDetailSheet
         job={selectedJob}
         open={!!selectedJobId}
-        recommendationId={recommendationId}
+        profileId={profileId}
         onClose={() => setSelectedJobId(null)}
         pastReports={selectedJob ? (completedReports[selectedJob.id] ?? []).slice().reverse() : []}
         onViewReport={(entry) => {
@@ -694,14 +702,14 @@ export function Dashboard({
             <MockInterviewRoom
               key={roomJob.id}
               job={roomJob}
-              recommendationId={recommendationId}
+              profileId={profileId}
               onEnd={(transcript) => {
                 const finishedId = roomJobId;
                 setRoomJobId(null);
                 if (!finishedId) return;
                 setReportJobId(finishedId);
                 setReportLoading(true);
-                _postJobsInterviewReport(finishedId, recommendationId, transcript)
+                _postJobsInterviewReport(finishedId, profileId, transcript)
                   .then(({ data }) => {
                     setCompletedReports((prev) => ({
                       ...prev,
@@ -733,7 +741,7 @@ export function Dashboard({
               onClose={() => setViewingReport(null)}
             />
           )}
-          {scoutJob && <ScoutChat         key={scoutJob.id} job={scoutJob} recommendationId={recommendationId} onClose={() => setScoutJobId(null)} />}
+          {scoutJob && <ScoutChat key={scoutJob.id} job={scoutJob} profileId={profileId} onClose={() => setScoutJobId(null)} />}
         </AnimatePresence>,
         document.body,
       )}

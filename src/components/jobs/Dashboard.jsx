@@ -223,6 +223,7 @@ function CriteriaEditor({ answers, onRescan, isRescanning }) {
             <>
               <Search className="w-3.5 h-3.5" />
               {isDirty ? "Rescan with new criteria" : "Change criteria to rescan"}
+              <span className="text-[10px] font-normal opacity-50 ml-1">· {creditBadge('jobRecommendation')}</span>
             </>
           )}
         </button>

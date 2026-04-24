@@ -3,6 +3,7 @@ import { Briefcase, Monitor, Clock, Bookmark, XCircle, Clapperboard } from "luci
 import { Gauge } from "@/components/ui/gauge-1";
 import { ColorOrb } from "@/components/ui/color-orb";
 import { CompanyLogo } from "./CompanyLogo";
+import { creditBadge } from "@/data/jobCredits";
 
 export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, onAskScout }) {
   const [dismissOpen, setDismissOpen] = useState(false);
@@ -124,6 +125,7 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
             >
               <ColorOrb dimension="14px" spinDuration={8} />
               Ask Scout
+              <span className="text-[10px] font-normal text-foreground/30 ml-auto">{creditBadge('jobScout')}</span>
             </button>
           )}
         </div>
@@ -137,6 +139,7 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
             >
               <Clapperboard className="w-3.5 h-3.5" />
               Take mock interview
+              <span className="text-[10px] font-normal text-foreground/30 ml-auto">{creditBadge('jobInterview')}</span>
             </button>
           )}
           {onAskScout && (
@@ -147,6 +150,7 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
             >
               <ColorOrb dimension="14px" spinDuration={8} />
               Ask Scout
+              <span className="text-[10px] font-normal text-foreground/30 ml-auto">{creditBadge('jobScout')}</span>
             </button>
           )}
         </>

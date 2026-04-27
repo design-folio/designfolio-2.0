@@ -84,9 +84,10 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
             <button
               data-testid={`button-dismiss-${job.id}`}
               onClick={(e) => { e.stopPropagation(); setDismissOpen((v) => !v); }}
-              className="flex items-center justify-center w-8 h-8 text-foreground/40 bg-black/[0.04] hover:bg-red-50 hover:text-red-400 dark:hover:bg-red-950/30 dark:hover:text-red-400 rounded-md transition-colors"
+              aria-label="Dismiss job"
+              className="flex items-center justify-center w-8 h-8 text-foreground/40 bg-black/[0.04] hover:bg-red-50 hover:text-red-400 dark:hover:bg-red-950/30 dark:hover:text-red-400 rounded-md transition-colors cursor-pointer"
             >
-              <XCircle className="w-3.5 h-3.5" />
+              <XCircle className="w-3.5 h-3.5" aria-hidden="true" />
             </button>
             {dismissOpen && (
               <div className="absolute bottom-full left-0 mb-1.5 bg-white dark:bg-card rounded-lg shadow-lg border border-black/[0.08] dark:border-border py-1 min-w-[148px] z-50">
@@ -110,9 +111,9 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
           <button
             data-testid={`button-shortlist-${job.id}`}
             onClick={(e) => { e.stopPropagation(); onShortlist(); }}
-            className="flex items-center justify-center gap-1.5 flex-1 text-[12px] font-semibold text-foreground/50 bg-black/[0.04] hover:bg-black/[0.08] dark:hover:bg-white/[0.08] rounded-md px-2 py-2 transition-colors"
+            className="flex items-center justify-center gap-1.5 flex-1 text-[12px] font-semibold text-foreground/50 bg-black/[0.04] hover:bg-black/[0.08] dark:hover:bg-white/[0.08] rounded-md px-2 py-2 transition-colors cursor-pointer"
           >
-            <Bookmark className="w-3.5 h-3.5" />
+            <Bookmark className="w-3.5 h-3.5" aria-hidden="true" />
             Shortlist
           </button>
 
@@ -121,7 +122,7 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
             <button
               data-testid={`button-ask-scout-${job.id}`}
               onClick={(e) => { e.stopPropagation(); onAskScout(); }}
-              className="orb-activates-on-hover flex items-center justify-center gap-1.5 flex-1 text-[12px] font-semibold text-foreground/65 hover:text-foreground/90 bg-black/[0.04] hover:bg-black/[0.08] rounded-md px-2 py-2 transition-colors"
+              className="orb-activates-on-hover flex items-center justify-center gap-1.5 flex-1 text-[12px] font-semibold text-foreground/65 hover:text-foreground/90 bg-black/[0.04] hover:bg-black/[0.08] rounded-md px-2 py-2 transition-colors cursor-pointer"
             >
               <ColorOrb dimension="14px" spinDuration={8} />
               Ask Scout
@@ -135,9 +136,9 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
             <button
               data-testid={`button-mock-interview-${job.id}`}
               onClick={(e) => { e.stopPropagation(); onMockInterview(); }}
-              className="flex items-center justify-center gap-1.5 w-full text-[12px] font-semibold text-foreground/60 bg-black/[0.04] hover:bg-black/[0.08] rounded-md px-2 py-2 transition-colors"
+              className="flex items-center justify-center gap-1.5 w-full text-[12px] font-semibold text-foreground/60 bg-black/[0.04] hover:bg-black/[0.08] rounded-md px-2 py-2 transition-colors cursor-pointer"
             >
-              <Clapperboard className="w-3.5 h-3.5" />
+              <Clapperboard className="w-3.5 h-3.5" aria-hidden="true" />
               Take mock interview
               <span className="text-[10px] font-normal text-foreground/30 ml-auto">{creditBadge('jobInterview')}</span>
             </button>
@@ -146,7 +147,7 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
             <button
               data-testid={`button-ask-scout-${job.id}`}
               onClick={(e) => { e.stopPropagation(); onAskScout(); }}
-              className="orb-activates-on-hover flex items-center justify-center gap-1.5 w-full text-[12px] font-semibold text-foreground/65 hover:text-foreground/90 bg-black/[0.04] hover:bg-black/[0.08] rounded-full py-1.5 transition-colors"
+              className="orb-activates-on-hover flex items-center justify-center gap-1.5 w-full text-[12px] font-semibold text-foreground/65 hover:text-foreground/90 bg-black/[0.04] hover:bg-black/[0.08] rounded-full py-1.5 transition-colors cursor-pointer"
             >
               <ColorOrb dimension="14px" spinDuration={8} />
               Ask Scout

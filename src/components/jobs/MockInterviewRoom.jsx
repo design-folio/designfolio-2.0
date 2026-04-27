@@ -15,7 +15,7 @@ try {
   // package not installed
 }
 
-export function MockInterviewRoom({ job, recommendationId, onEnd }) {
+export function MockInterviewRoom({ job, profileId, onEnd }) {
   const userVideoRef = useRef(null);
   const transcriptRef = useRef(null);
   const anamClientRef = useRef(null);
@@ -41,7 +41,7 @@ export function MockInterviewRoom({ job, recommendationId, onEnd }) {
         if (userVideoRef.current) userVideoRef.current.srcObject = stream;
         if (!mounted) return;
 
-        const tokenRes = await _postJobsInterviewSession(job.id, recommendationId);
+        const tokenRes = await _postJobsInterviewSession(job.id, profileId);
         const { sessionToken } = tokenRes.data;
         if (!mounted) return;
 
@@ -73,7 +73,7 @@ export function MockInterviewRoom({ job, recommendationId, onEnd }) {
       anamClientRef.current?.stopStreaming();
       userStreamRef.current?.getTracks().forEach((t) => t.stop());
     };
-  }, [job.id, recommendationId]);
+  }, [job.id, profileId]);
 
   const toggleMute = () => {
     if (muted) {

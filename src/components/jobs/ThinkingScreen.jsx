@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LinkedInLogo, IndeedLogo } from "./PlatformLogos";
-import { _postJobsRecommend } from "@/network/jobs";
+import { _postJobsRecommend, _getJobsRecommendations } from "@/network/jobs";
 
-// Calls POST /jobs/recommend with the user's answers.
-// The API takes 5–15 seconds (live job fetching + AI scoring).
+// Calls POST /jobs/recommend — returns immediately with { profileId, status: "processing" }.
+// Then polls GET /jobs/recommendations every 3s until status === "ready".
 // Visual animation runs in parallel — platforms animate independently.
-// When the API resolves, both show "done" then onComplete is called.
+// When polling resolves, both show "done" then onComplete is called.
 
 function ThoughtLine({ text, delay, dim }) {
   return (
@@ -87,44 +87,80 @@ export function ThinkingScreen({ answers, onComplete, onError }) {
     { text: "Scoring each role with Gemini…", delay: 3.7 },
   ];
 
-  const [liStatus, setLiStatus] = useState("waiting");
-  const [liCount, setLiCount] = useState(undefined);
+  const [liStatus,     setLiStatus]     = useState("waiting");
+  const [liCount,      setLiCount]      = useState(undefined);
   const [indeedStatus, setIndeedStatus] = useState("waiting");
-  const [indeedCount, setIndeedCount] = useState(undefined);
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [indeedCount,  setIndeedCount]  = useState(undefined);
+  const [isExpanded,   setIsExpanded]   = useState(true);
 
-  // Track timers for cleanup
   const timersRef = useRef([]);
+  const pollRef   = useRef(null);
+
   const addTimer = (id) => timersRef.current.push(id);
-  const clearAll = () => timersRef.current.forEach(clearTimeout);
+  const clearAll = () => {
+    timersRef.current.forEach(clearTimeout);
+    if (pollRef.current) clearInterval(pollRef.current);
+  };
 
   useEffect(() => {
     let done = false;
 
-    // Visual animation — independent of API timing
+    // Visual animation — independent of polling timing
     addTimer(setTimeout(() => setLiStatus("scraping"), 1800));
     addTimer(setTimeout(() => setIndeedStatus("scraping"), 3000));
 
-    // Real API call
     const run = async () => {
       try {
         const { data } = await _postJobsRecommend(answers);
         if (done) return;
-        done = true;
 
-        const total = data.jobs?.length ?? 0;
-        setLiStatus("done");
-        setLiCount(total);
-        setIndeedStatus("done");
-        setIndeedCount(0); // JSearch is the real source; visual parity only
+        const profileId = data.profileId;
+        let attempts = 0;
 
-        // Short pause to let the user see the "done" state before advancing
-        addTimer(setTimeout(() => onComplete(data.jobs, data.recommendationId), 1200));
+        pollRef.current = setInterval(async () => {
+          if (done) { clearInterval(pollRef.current); return; }
+
+          attempts++;
+          if (attempts > 30) {
+            // 90s timeout
+            clearInterval(pollRef.current);
+            done = true;
+            clearAll();
+            onError(false);
+            return;
+          }
+
+          try {
+            const { data: pollData } = await _getJobsRecommendations(profileId);
+            if (pollData.status === "ready") {
+              clearInterval(pollRef.current);
+              done = true;
+              if ((pollData.jobs?.length ?? 0) > 0) {
+                const total = pollData.jobs.length;
+                setLiStatus("done");    setLiCount(total);
+                setIndeedStatus("done"); setIndeedCount(0);
+                addTimer(setTimeout(() => onComplete(pollData.jobs, profileId), 1200));
+              } else {
+                // ready but no matching jobs in the pool
+                clearAll();
+                onError(true);
+              }
+            } else if (pollData.status === "exhausted") {
+              clearInterval(pollRef.current);
+              done = true;
+              clearAll();
+              onError(true); // no jobs found
+            }
+          } catch {
+            // ignore transient poll errors — retry next tick
+          }
+        }, 3000);
       } catch (err) {
         if (done) return;
         done = true;
         clearAll();
-        onError(err?.response?.status === 404);
+        const status = err?.response?.status;
+        onError(status === 404);
       }
     };
 

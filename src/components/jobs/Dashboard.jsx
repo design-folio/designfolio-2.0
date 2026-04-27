@@ -474,9 +474,9 @@ export function Dashboard({
             <PopoverTrigger asChild>
               <button
                 data-testid="button-filters"
-                className="flex-shrink-0 flex items-center gap-1.5 h-9 px-4 rounded-full border border-black/8 dark:border-border bg-white dark:bg-card text-sm font-medium text-foreground/70 hover:text-foreground transition-colors"
+                className="flex-shrink-0 flex items-center gap-1.5 h-9 px-4 rounded-full border border-black/[0.08] dark:border-border bg-white dark:bg-card text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer"
               >
-                <SlidersHorizontal className="w-3.5 h-3.5" />
+                <SlidersHorizontal className="w-3.5 h-3.5" aria-hidden="true" />
                 Filters
                 {activeFilterCount > 0 && (
                   <span className="flex items-center justify-center w-4 h-4 rounded-full bg-foreground text-background text-[10px] font-semibold">
@@ -496,9 +496,9 @@ export function Dashboard({
                 {activeFilterCount > 0 && (
                   <button
                     onClick={() => setFilters(DEFAULT_FILTERS)}
-                    className="flex items-center gap-1 text-[11px] text-muted-foreground/60 hover:text-foreground transition-colors"
+                    className="flex items-center gap-1 text-[11px] text-muted-foreground/60 hover:text-foreground transition-colors cursor-pointer"
                   >
-                    <RotateCcw className="w-3 h-3" />
+                    <RotateCcw className="w-3 h-3" aria-hidden="true" />
                     Reset
                   </button>
                 )}
@@ -537,9 +537,9 @@ export function Dashboard({
             <PopoverTrigger asChild>
               <button
                 data-testid="button-criteria"
-                className="flex-shrink-0 flex items-center gap-1.5 h-9 px-4 rounded-full border border-black/8 dark:border-border bg-white dark:bg-card text-sm font-medium text-foreground/70 hover:text-foreground transition-colors"
+                className="flex-shrink-0 flex items-center gap-1.5 h-9 px-4 rounded-full border border-black/[0.08] dark:border-border bg-white dark:bg-card text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer"
               >
-                <Sparkles className="w-3.5 h-3.5" />
+                <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
                 Criteria
                 {currentAnswers.length > 0 && !isRescanning && (
                   <span className="flex items-center justify-center w-4 h-4 rounded-full bg-foreground text-background text-[10px] font-semibold">

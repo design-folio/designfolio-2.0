@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
 import {
   MapPin, Briefcase, Monitor, Clock, Calendar, Sparkles,
   ChevronRight, FileText, PenLine, ThumbsUp, Mail, ExternalLink,
@@ -49,7 +50,7 @@ function CopyButton({ text }) {
   );
 }
 
-export function JobDetailSheet({ job, open, onClose, recommendationId, pastReports = [], onViewReport }) {
+export function JobDetailSheet({ job, open, onClose, profileId, pastReports = [], onViewReport }) {
   const lastJobRef = useRef(null);
   if (job) lastJobRef.current = job;
   const displayJob = job ?? lastJobRef.current;
@@ -78,7 +79,7 @@ export function JobDetailSheet({ job, open, onClose, recommendationId, pastRepor
     setResumeResult(null);
     setResumeLoading(true);
     try {
-      const res = await _postJobsCustomizeResume(displayJob.id, recommendationId);
+      const res = await _postJobsCustomizeResume(displayJob.id, profileId);
       setResumeResult(res.data);
     } catch {
       setResumeResult({ error: "Could not generate resume. Please try again." });
@@ -92,7 +93,7 @@ export function JobDetailSheet({ job, open, onClose, recommendationId, pastRepor
     setLetterResult(null);
     setLetterLoading(true);
     try {
-      const res = await _postJobsCoverLetter(displayJob.id, recommendationId);
+      const res = await _postJobsCoverLetter(displayJob.id, profileId);
       setLetterResult(res.data);
     } catch {
       setLetterResult({ error: "Could not generate cover letter. Please try again." });
@@ -106,7 +107,7 @@ export function JobDetailSheet({ job, open, onClose, recommendationId, pastRepor
     setFitResult(null);
     setFitLoading(true);
     try {
-      const res = await _postJobsFitAnalysis(displayJob.id, recommendationId);
+      const res = await _postJobsFitAnalysis(displayJob.id, profileId);
       setFitResult(res.data);
     } catch {
       setFitResult({ error: "Could not generate fit analysis. Please try again." });
@@ -119,7 +120,7 @@ export function JobDetailSheet({ job, open, onClose, recommendationId, pastRepor
     if (displayJob.applyUrl) {
       window.open(displayJob.applyUrl, "_blank", "noopener,noreferrer");
     }
-    _postJobsInteract(recommendationId, displayJob.id, "applied");
+    _postJobsInteract(profileId, displayJob.id, "applied");
   };
 
   return (
@@ -490,11 +491,24 @@ export function JobDetailSheet({ job, open, onClose, recommendationId, pastRepor
               <h3 className="text-sm font-semibold text-foreground/40 uppercase tracking-widest mb-3">
                 About the role
               </h3>
-              {displayJob.description.split("\n\n").map((para, i) => (
-                <p key={i} className="text-sm text-foreground/75 leading-[1.7] mb-3 last:mb-0">
-                  {para}
-                </p>
-              ))}
+              <ReactMarkdown
+                components={{
+                  p:      ({ children }) => <p className="text-sm text-foreground/75 leading-[1.7] mb-3 last:mb-0">{children}</p>,
+                  h1:     ({ children }) => <h1 className="text-base font-semibold text-foreground mt-4 mb-2">{children}</h1>,
+                  h2:     ({ children }) => <h2 className="text-sm font-semibold text-foreground mt-4 mb-2">{children}</h2>,
+                  h3:     ({ children }) => <h3 className="text-sm font-medium text-foreground mt-3 mb-1">{children}</h3>,
+                  ul:     ({ children }) => <ul className="list-disc pl-5 mb-3 space-y-1">{children}</ul>,
+                  ol:     ({ children }) => <ol className="list-decimal pl-5 mb-3 space-y-1">{children}</ol>,
+                  li:     ({ children }) => <li className="text-sm text-foreground/75 leading-[1.6]">{children}</li>,
+                  strong: ({ children }) => <strong className="font-semibold text-foreground/90">{children}</strong>,
+                  em:     ({ children }) => <em className="italic">{children}</em>,
+                  a:      ({ href, children }) => <a href={href} target="_blank" rel="noopener noreferrer" className="text-foreground underline underline-offset-2 hover:text-foreground/70 transition-colors">{children}</a>,
+                  hr:     () => <hr className="border-black/[0.06] dark:border-white/[0.06] my-3" />,
+                  blockquote: ({ children }) => <blockquote className="border-l-2 border-foreground/20 pl-3 text-sm text-foreground/60 italic my-2">{children}</blockquote>,
+                }}
+              >
+                {displayJob.description}
+              </ReactMarkdown>
             </div>
           )}
 

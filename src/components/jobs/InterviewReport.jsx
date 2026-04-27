@@ -77,12 +77,20 @@ export function InterviewReport({ job, report, loading = false, onClose }) {
       {/* Scrollable body                                                     */}
       {/* ------------------------------------------------------------------ */}
       <div className="flex-1 overflow-y-auto">
-        {(loading || !report) ? (
+        {loading ? (
           <div className="flex flex-col items-center justify-center h-full gap-4 px-6 text-center">
             <Loader2 className="w-8 h-8 text-foreground/25 animate-spin" />
             <p className="text-[15px] font-medium text-foreground/60">Analysing your interview…</p>
             <p className="text-[13px] text-foreground/35 max-w-xs">
               Gemini is reviewing your responses. This takes about 10–15 seconds.
+            </p>
+          </div>
+        ) : !report ? (
+          <div className="flex flex-col items-center justify-center h-full gap-4 px-6 text-center">
+            <MessageSquare className="w-8 h-8 text-foreground/20" />
+            <p className="text-[15px] font-medium text-foreground/60">No transcript recorded</p>
+            <p className="text-[13px] text-foreground/35 max-w-xs">
+              The interview ended before any conversation was captured. Try again and speak with the interviewer to get a report.
             </p>
           </div>
         ) : (

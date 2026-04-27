@@ -5,7 +5,7 @@ import { Sparkles, X, ArrowUpCircle, Loader2 } from "lucide-react";
 import { SCOUT_SUGGESTIONS } from "@/data/jobs";
 import { _postJobsScout } from "@/network/jobs";
 
-export function ScoutChat({ job, onClose, recommendationId }) {
+export function ScoutChat({ job, onClose, profileId }) {
   const [messages, setMessages] = useState([
     {
       role: "ai",
@@ -32,7 +32,7 @@ export function ScoutChat({ job, onClose, recommendationId }) {
     setLoading(true);
 
     try {
-      const res = await _postJobsScout(recommendationId, job.id, trimmed);
+      const res = await _postJobsScout(profileId, job.id, trimmed);
       const reply = res.data?.reply ?? "I couldn't get a response right now. Please try again.";
       setMessages((prev) => [...prev, { role: "ai", text: reply }]);
     } catch {
@@ -64,9 +64,10 @@ export function ScoutChat({ job, onClose, recommendationId }) {
         </div>
         <button
           onClick={onClose}
-          className="flex items-center justify-center w-7 h-7 rounded-md text-foreground/40 hover:text-foreground hover:bg-black/[0.05] dark:hover:bg-white/[0.05] transition-colors"
+          aria-label="Close Scout chat"
+          className="flex items-center justify-center w-7 h-7 rounded-md text-foreground/40 hover:text-foreground hover:bg-black/[0.05] dark:hover:bg-white/[0.05] transition-colors cursor-pointer"
         >
-          <X className="w-3.5 h-3.5" />
+          <X className="w-3.5 h-3.5" aria-hidden="true" />
         </button>
       </div>
 
@@ -100,10 +101,10 @@ export function ScoutChat({ job, onClose, recommendationId }) {
               <button
                 key={s}
                 onClick={() => send(s)}
-                className="w-full text-left text-[12px] text-foreground/70 border border-black/[0.10] dark:border-border rounded-lg px-3 py-2 hover:bg-black/[0.04] dark:hover:bg-white/[0.04] transition-colors flex items-center justify-between gap-2"
+                className="w-full text-left text-[12px] text-foreground/70 border border-black/[0.10] dark:border-border rounded-lg px-3 py-2 hover:bg-black/[0.04] dark:hover:bg-white/[0.04] transition-colors flex items-center justify-between gap-2 cursor-pointer"
               >
                 <span>{s}</span>
-                <ArrowUpCircle className="w-3.5 h-3.5 flex-shrink-0 text-foreground/30" />
+                <ArrowUpCircle className="w-3.5 h-3.5 flex-shrink-0 text-foreground/30" aria-hidden="true" />
               </button>
             ))}
           </div>
@@ -119,14 +120,16 @@ export function ScoutChat({ job, onClose, recommendationId }) {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => { if (e.key === "Enter" && !loading) send(input); }}
-          placeholder="Ask me anything..."
+          placeholder="Ask me anything…"
+          aria-label="Message Scout"
           disabled={loading}
           className="flex-1 text-[13px] text-foreground placeholder:text-foreground/30 bg-transparent outline-none py-1 disabled:opacity-50"
         />
         <button
           onClick={() => send(input)}
           disabled={loading || !input.trim()}
-          className="flex items-center justify-center w-7 h-7 rounded-full border border-black/[0.12] dark:border-border text-foreground/50 hover:text-foreground hover:border-foreground/30 transition-colors flex-shrink-0 disabled:opacity-30 disabled:cursor-not-allowed"
+          aria-label="Send message"
+          className="flex items-center justify-center w-7 h-7 rounded-full border border-black/[0.12] dark:border-border text-foreground/50 hover:text-foreground hover:border-foreground/30 transition-colors flex-shrink-0 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
         >
           {loading ? (
             <Loader2 className="w-3.5 h-3.5 animate-spin" />

@@ -181,7 +181,7 @@ export function LocationAutocomplete({
       <AnimatePresence>
         {isOpen && suggestions.length > 0 && (
           <motion.ul
-            className="absolute z-50 mt-1.5 w-full bg-background dark:bg-muted/90 border border-border rounded-xl shadow-lg overflow-hidden"
+            className="absolute z-50 mt-1.5 w-full bg-background dark:bg-muted border border-border rounded-xl shadow-lg overflow-hidden"
             initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}

@@ -54,3 +54,7 @@ export const _postJobsInterviewReport = (jobId, profileId, transcript) =>
 
 // GET /jobs/credits — today's used/limit per action
 export const _getJobCredits = () => axiosInstance.get('/jobs/credits');
+
+// GET /jobs/role-suggestions?q=... — fuzzy search over curated job titles (no auth required)
+export const _getJobRoleSuggestions = (q) =>
+  axiosInstance.get('/jobs/role-suggestions', { params: { q } });

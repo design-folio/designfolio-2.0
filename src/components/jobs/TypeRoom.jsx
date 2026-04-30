@@ -1,10 +1,11 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, ArrowLeft, Search } from "lucide-react";
 import Lottie from "lottie-react";
 import aiAssistantAnimation from "@/assets/AI-Assistant.json";
 import { DotTrail } from "./DotTrail";
 import { LocationAutocomplete } from "./LocationAutocomplete";
+import { _getJobRoleSuggestions } from "@/network/jobs";
 
 // Inline BlurredStagger — animates each word with blur fade-in stagger
 function BlurredStagger({ text, className }) {
@@ -31,7 +32,9 @@ export function TypeRoom({ questions, onDone, onReset }) {
 
   // Q0
   const [role, setRole] = useState("Senior Product Designer");
+  const [roleSuggestions, setRoleSuggestions] = useState([]);
   const inputRef = useRef(null);
+  const suggestTimerRef = useRef(null);
 
   // Q1
   const [locationChoice, setLocationChoice] = useState(null);
@@ -54,6 +57,19 @@ export function TypeRoom({ questions, onDone, onReset }) {
       setTimeout(() => cityRef.current?.focus(), 50);
     }
   }, [locationChoice]);
+
+  useEffect(() => {
+    clearTimeout(suggestTimerRef.current);
+    suggestTimerRef.current = setTimeout(async () => {
+      try {
+        const { data } = await _getJobRoleSuggestions(role);
+        setRoleSuggestions(data.suggestions || []);
+      } catch {
+        setRoleSuggestions([]);
+      }
+    }, 250);
+    return () => clearTimeout(suggestTimerRef.current);
+  }, [role]);
 
   const canNext = () => {
     if (current === 0) return role.trim().length > 0;
@@ -144,21 +160,21 @@ export function TypeRoom({ questions, onDone, onReset }) {
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && advance()}
-                className="w-full bg-background/70 dark:bg-foreground/5 border border-border rounded-2xl px-5 py-4 text-foreground text-[15px] outline-none focus:border-foreground/30 transition-colors text-left"
+                className="w-full bg-background dark:bg-foreground/8 border border-border rounded-2xl px-5 py-4 text-foreground text-[15px] outline-none focus:border-foreground/30 transition-colors text-left"
               />
               <div className="flex flex-wrap justify-center gap-2">
-                {(q0?.suggestions || []).map((s) => (
+                {roleSuggestions.map((s) => (
                   <button
-                    key={s}
-                    data-testid={`suggestion-${s.toLowerCase().replace(/\s+/g, "-")}`}
-                    onClick={() => setRole(s)}
+                    key={s.label}
+                    data-testid={`suggestion-${s.label.toLowerCase().replace(/\s+/g, "-")}`}
+                    onClick={() => setRole(s.label)}
                     className={`cursor-pointer px-4 py-2 rounded-full border text-[13px] transition-all duration-200 ${
-                      role === s
+                      role === s.label
                         ? "bg-foreground text-background border-foreground"
-                        : "border-border text-muted-foreground bg-background/50 dark:bg-foreground/5 hover:border-foreground/30 hover:text-foreground"
+                        : "border-border text-muted-foreground bg-background dark:bg-foreground/8 hover:border-foreground/30 hover:text-foreground"
                     }`}
                   >
-                    {s}
+                    {s.label}
                   </button>
                 ))}
               </div>
@@ -185,7 +201,7 @@ export function TypeRoom({ questions, onDone, onReset }) {
                     className={`cursor-pointer px-5 py-3 rounded-full border text-[14px] font-medium transition-all duration-200 ${
                       locationChoice === option
                         ? "bg-foreground text-background border-foreground"
-                        : "bg-background/60 dark:bg-foreground/5 border-border text-foreground hover:border-foreground/40"
+                        : "bg-background dark:bg-foreground/8 border-border text-foreground hover:border-foreground/40"
                     }`}
                   >
                     {option}
@@ -238,7 +254,7 @@ export function TypeRoom({ questions, onDone, onReset }) {
                     className={`cursor-pointer w-full flex items-center justify-between px-5 py-4 rounded-2xl border text-left transition-all duration-200 ${
                       isChosen
                         ? "bg-foreground text-background border-foreground"
-                        : "bg-background/60 dark:bg-foreground/5 border-border text-foreground hover:border-foreground/30"
+                        : "bg-background dark:bg-foreground/8 border-border text-foreground hover:border-foreground/30"
                     }`}
                   >
                     <div className="flex flex-col gap-0.5">

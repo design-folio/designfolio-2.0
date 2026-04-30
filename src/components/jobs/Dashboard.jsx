@@ -14,7 +14,7 @@ import { MockInterviewRoom } from "./MockInterviewRoom";
 import { InterviewReport } from "./InterviewReport";
 import { ScoutChat } from "./ScoutChat";
 import { JobCard } from "./JobCard";
-import { _postJobsInteract, _postJobsRecommend, _postJobsMore, _postJobsInterviewReport, _getJobsRecommendations } from "@/network/jobs";
+import { _postJobsInteract, _postJobsRecommend, _postJobsMore, _postJobsInterviewReport, _getJobsRecommendations, _getJobRoleSuggestions } from "@/network/jobs";
 import { CreditsWidget } from "./CreditsWidget";
 import { creditBadge } from "@/data/jobCredits";
 
@@ -35,10 +35,6 @@ const COL_DRAG_ACTION = {
 
 const DEFAULT_FILTERS = { workMode: "all", type: "all", minMatch: 0 };
 
-const ROLE_SUGGESTIONS = [
-  "Product Designer", "UX Designer", "UI Designer",
-  "UX Researcher", "Design Lead", "Interaction Designer",
-];
 const LOCATION_OPTIONS = ["My city only", "Open to relocating", "Remote only"];
 const LEVEL_OPTIONS = [
   { title: "Mid-level",          sub: "2–4 yrs" },
@@ -64,6 +60,22 @@ function FilterPill({ active, onClick, children }) {
 
 function CriteriaEditor({ answers, onRescan, isRescanning }) {
   const [role,           setRole]           = useState(answers[0]?.answer || "");
+  const [roleSuggestions, setRoleSuggestions] = useState([]);
+  const suggestTimerRef = useRef(null);
+
+  useEffect(() => {
+    clearTimeout(suggestTimerRef.current);
+    suggestTimerRef.current = setTimeout(async () => {
+      try {
+        const { data } = await _getJobRoleSuggestions(role);
+        setRoleSuggestions(data.suggestions || []);
+      } catch {
+        setRoleSuggestions([]);
+      }
+    }, 250);
+    return () => clearTimeout(suggestTimerRef.current);
+  }, [role]);
+
   const [locationChoice, setLocationChoice] = useState(() => {
     const raw = answers[1]?.answer || "";
     if (raw === "Remote only") return "Remote only";
@@ -122,17 +134,17 @@ function CriteriaEditor({ answers, onRescan, isRescanning }) {
             className="w-full bg-black/[0.03] dark:bg-white/[0.04] border border-black/[0.08] dark:border-border rounded-xl px-3 py-2 text-[13px] text-foreground outline-none focus:border-foreground/25 transition-colors"
           />
           <div className="flex flex-wrap gap-1.5 mt-2">
-            {ROLE_SUGGESTIONS.map((s) => (
+            {roleSuggestions.map((s) => (
               <button
-                key={s}
-                onClick={() => setRole(s)}
+                key={s.label}
+                onClick={() => setRole(s.label)}
                 className={`text-[11px] px-2.5 py-1 rounded-full border transition-colors ${
-                  role === s
+                  role === s.label
                     ? "bg-foreground text-background border-foreground"
                     : "border-black/10 dark:border-border text-foreground/50 hover:border-foreground/30"
                 }`}
               >
-                {s}
+                {s.label}
               </button>
             ))}
           </div>

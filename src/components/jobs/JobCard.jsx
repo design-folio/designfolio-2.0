@@ -23,7 +23,7 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
   return (
     <div
       data-testid={`card-job-${job.id}`}
-      className="flex flex-col gap-3 p-3 rounded-lg border border-black/[0.06] bg-white dark:bg-background dark:border-border select-none"
+      className="job-card flex flex-col gap-3 p-3 rounded-lg border border-black/[0.06] dark:border-border bg-white dark:bg-background select-none transition-all duration-200 hover:border-black/[0.12] dark:hover:border-white/[0.12] hover:shadow-sm"
     >
       {/* Row 1: Company logo + name/location + gauge */}
       <div className="flex items-center justify-between gap-2">
@@ -85,7 +85,7 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
               data-testid={`button-dismiss-${job.id}`}
               onClick={(e) => { e.stopPropagation(); setDismissOpen((v) => !v); }}
               aria-label="Dismiss job"
-              className="flex items-center justify-center w-8 h-8 text-foreground/40 bg-black/[0.04] hover:bg-red-50 hover:text-red-400 dark:hover:bg-red-950/30 dark:hover:text-red-400 rounded-md transition-colors cursor-pointer"
+              className="flex items-center justify-center w-8 h-8 text-foreground/40 bg-black/[0.04] dark:bg-white/[0.04] hover:bg-red-50 hover:text-red-400 dark:hover:bg-red-950/30 dark:hover:text-red-400 rounded-md transition-colors cursor-pointer"
             >
               <XCircle className="w-3.5 h-3.5" aria-hidden="true" />
             </button>
@@ -111,7 +111,7 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
           <button
             data-testid={`button-shortlist-${job.id}`}
             onClick={(e) => { e.stopPropagation(); onShortlist(); }}
-            className="flex items-center justify-center gap-1.5 flex-1 text-[12px] font-semibold text-foreground/50 bg-black/[0.04] hover:bg-black/[0.08] dark:hover:bg-white/[0.08] rounded-md px-2 py-2 transition-colors cursor-pointer"
+            className="flex items-center justify-center gap-1.5 flex-1 text-[12px] font-semibold text-foreground/50 bg-black/[0.04] dark:bg-white/[0.04] hover:bg-black/[0.08] dark:hover:bg-white/[0.08] rounded-md px-2 py-2 transition-colors cursor-pointer"
           >
             <Bookmark className="w-3.5 h-3.5" aria-hidden="true" />
             Shortlist
@@ -122,11 +122,10 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
             <button
               data-testid={`button-ask-scout-${job.id}`}
               onClick={(e) => { e.stopPropagation(); onAskScout(); }}
-              className="orb-activates-on-hover flex items-center justify-center gap-1.5 flex-1 text-[12px] font-semibold text-foreground/65 hover:text-foreground/90 bg-black/[0.04] hover:bg-black/[0.08] rounded-md px-2 py-2 transition-colors cursor-pointer"
+              className="orb-activates-on-hover flex items-center justify-center gap-1.5 flex-1 text-[12px] font-semibold text-foreground/65 hover:text-foreground/90 bg-black/[0.04] dark:bg-white/[0.04] hover:bg-black/[0.08] dark:hover:bg-white/[0.08] rounded-md px-2 py-2 transition-colors cursor-pointer"
             >
               <ColorOrb dimension="14px" spinDuration={8} />
               Ask Scout
-              <span className="text-[10px] font-normal text-foreground/30 ml-auto">{creditBadge('jobScout')}</span>
             </button>
           )}
         </div>
@@ -136,7 +135,7 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
             <button
               data-testid={`button-mock-interview-${job.id}`}
               onClick={(e) => { e.stopPropagation(); onMockInterview(); }}
-              className="flex items-center justify-center gap-1.5 w-full text-[12px] font-semibold text-foreground/60 bg-black/[0.04] hover:bg-black/[0.08] rounded-md px-2 py-2 transition-colors cursor-pointer"
+              className="flex items-center justify-center gap-1.5 w-full text-[12px] font-semibold text-foreground/60 bg-black/[0.04] dark:bg-white/[0.04] hover:bg-black/[0.08] dark:hover:bg-white/[0.08] rounded-md px-2 py-2 transition-colors cursor-pointer"
             >
               <Clapperboard className="w-3.5 h-3.5" aria-hidden="true" />
               Take mock interview
@@ -147,7 +146,7 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
             <button
               data-testid={`button-ask-scout-${job.id}`}
               onClick={(e) => { e.stopPropagation(); onAskScout(); }}
-              className="orb-activates-on-hover flex items-center justify-center gap-1.5 w-full text-[12px] font-semibold text-foreground/65 hover:text-foreground/90 bg-black/[0.04] hover:bg-black/[0.08] rounded-full py-1.5 transition-colors cursor-pointer"
+              className="orb-activates-on-hover flex items-center justify-center gap-1.5 w-full text-[12px] font-semibold text-foreground/65 hover:text-foreground/90 bg-black/[0.04] dark:bg-white/[0.04] hover:bg-black/[0.08] dark:hover:bg-white/[0.08] rounded-full py-1.5 transition-colors cursor-pointer"
             >
               <ColorOrb dimension="14px" spinDuration={8} />
               Ask Scout

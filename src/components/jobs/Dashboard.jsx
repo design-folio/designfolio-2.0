@@ -321,8 +321,8 @@ export function Dashboard({
       await _postJobsMore(profileId);
       bumpCredits();
       const page = Math.ceil((columns.picks || []).length / 10);
-      for (let i = 0; i < 20; i++) {
-        await new Promise((r) => setTimeout(r, 3000));
+      for (let i = 0; i < 60; i++) {
+        await new Promise((r) => setTimeout(r, 5000));
         const { data } = await _getJobsRecommendations(profileId, page);
         if (data.status === "ready") {
           const newJobs = (data.jobs || []).filter((j) => !seenJobIds.current.has(j.id));
@@ -701,6 +701,7 @@ export function Dashboard({
         onViewReport={(entry) => {
           if (selectedJob) setViewingReport({ job: selectedJob, entry });
         }}
+        onCreditUsed={bumpCredits}
       />
       <MockInterviewDialog
         job={interviewJob}
@@ -754,7 +755,7 @@ export function Dashboard({
               onClose={() => setViewingReport(null)}
             />
           )}
-          {scoutJob && <ScoutChat key={scoutJob.id} job={scoutJob} profileId={profileId} onClose={() => setScoutJobId(null)} />}
+          {scoutJob && <ScoutChat key={scoutJob.id} job={scoutJob} profileId={profileId} onClose={() => setScoutJobId(null)} onCreditUsed={bumpCredits} />}
         </AnimatePresence>,
         document.body,
       )}

@@ -146,6 +146,20 @@
   opacity: 0;
 }
 
+// Card-level hover triggers the orb on the Scout button inside it
+.job-card:hover .orb-activates-on-hover .color-orb {
+  transform: scale(1.6);
+}
+
+.job-card:hover .orb-activates-on-hover .color-orb::before {
+  animation-play-state: running;
+  opacity: 1;
+}
+
+.job-card:hover .orb-activates-on-hover .color-orb::after {
+  opacity: 0;
+}
+
 // Always-active orb (no hover needed — used while AI is processing)
 .orb-always-active .color-orb::before {
   animation-play-state: running;

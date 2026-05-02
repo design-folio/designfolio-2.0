@@ -1,24 +1,43 @@
-// Central registry for job-hunter credit limits.
-// When backend aiLimits.js changes, update the `limit` here to match.
-// Every UI badge and widget derives from this object — nothing is hardcoded elsewhere.
+// Central registry for job-hunter credit costs.
+// 'cost' matches backend aiLimits.costs — update both together.
+// CreditsWidget and feature buttons derive from this — nothing hardcoded elsewhere.
 
 export const JOB_CREDITS = {
   jobRecommendation: {
-    limit:       5,
-    label:       "Rescan",
-    description: "AI job rescans per day",
+    cost:        15,
+    label:       'Rescan',
+    description: 'AI job rescan with fresh matches',
   },
   jobScout: {
-    limit:       30,
-    label:       "Scout",
-    description: "Scout AI messages per day",
+    cost:        1,
+    label:       'Scout',
+    description: 'Ask Scout about a job',
   },
   jobInterview: {
-    limit:       3,
-    label:       "Interview",
-    description: "Mock interview sessions per day",
+    cost:        30,
+    label:       'Interview',
+    description: 'Mock video interview session',
+  },
+  jobCoverLetter: {
+    cost:        8,
+    label:       'Cover Letter',
+    description: 'AI-tailored cover letter',
+  },
+  jobResumeCustomize: {
+    cost:        8,
+    label:       'Resume',
+    description: 'Portfolio summary tailored to job',
+  },
+  jobFitAnalysis: {
+    cost:        5,
+    label:       'Fit Analysis',
+    description: 'Strengths, gaps, and verdict',
   },
 };
 
-// Helper: return the badge string shown on buttons, e.g. "30/day"
-export const creditBadge = (type) => `${JOB_CREDITS[type]?.limit ?? '?'}/day`;
+// Returns badge string shown on buttons, e.g. "1 credit" or "15 cr"
+export const creditBadge = (type) => {
+  const cost = JOB_CREDITS[type]?.cost;
+  if (cost == null) return '';
+  return cost === 1 ? '1 credit' : `${cost} cr`;
+};

@@ -52,9 +52,10 @@ export const _postJobsInterviewSession = (jobId, profileId) =>
 export const _postJobsInterviewReport = (jobId, profileId, transcript) =>
   axiosInstance.post("/jobs/interview-report", { jobId, profileId, transcript });
 
-// GET /jobs/credits — today's used/limit per action
+// GET /jobs/credits — returns { balance: number, costs: { [feature]: number } }
 export const _getJobCredits = () => axiosInstance.get('/jobs/credits');
 
 // GET /jobs/role-suggestions?q=... — fuzzy search over curated job titles (no auth required)
 export const _getJobRoleSuggestions = (q) =>
   axiosInstance.get('/jobs/role-suggestions', { params: { q } });
+

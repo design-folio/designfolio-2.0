@@ -11,6 +11,7 @@ import { CompanyLogo } from "./CompanyLogo";
 import { Gauge } from "@/components/ui/gauge-1";
 import { MatchGlowCard } from "@/components/ui/glowing-card";
 import { _postJobsInteract, _postJobsCustomizeResume, _postJobsCoverLetter, _postJobsFitAnalysis } from "@/network/jobs";
+import { creditBadge } from "@/data/jobCredits";
 import { toRelativeTime, getSourceLabel, formatSalary } from "@/lib/jobsUtils";
 
 // NOTE: APIS TO BE INTEGRATED HERE — contacts section is always empty from JSearch.
@@ -261,7 +262,12 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
                       </div>
                     </div>
                     {!resumeLoading && (
-                      <ChevronRight className="w-4 h-4 text-foreground/20 group-hover:text-foreground/45 transition-colors flex-shrink-0" />
+                      <>
+                        <span className="text-[10px] font-medium text-foreground/30 bg-foreground/[0.05] rounded-full px-2 py-0.5 flex-shrink-0">
+                          {creditBadge('jobResumeCustomize')}
+                        </span>
+                        <ChevronRight className="w-4 h-4 text-foreground/20 group-hover:text-foreground/45 transition-colors flex-shrink-0" />
+                      </>
                     )}
                   </button>
 
@@ -306,7 +312,7 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
                       ) : (
                         <PenLine className="w-3.5 h-3.5 text-foreground/35 flex-shrink-0 mt-0.5 group-hover:text-foreground/55 transition-colors" />
                       )}
-                      <div>
+                      <div className="flex-1 min-w-0">
                         <div className="text-[12px] font-semibold text-foreground/70 leading-none">
                           Cover Letter
                         </div>
@@ -314,6 +320,11 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
                           {letterLoading ? "Drafting…" : "Drafted in seconds"}
                         </div>
                       </div>
+                      {!letterLoading && (
+                        <span className="text-[10px] font-medium text-foreground/25 ml-auto flex-shrink-0">
+                          {creditBadge('jobCoverLetter')}
+                        </span>
+                      )}
                     </button>
 
                     {/* Fit Analysis */}
@@ -327,7 +338,7 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
                       ) : (
                         <ThumbsUp className="w-3.5 h-3.5 text-foreground/35 flex-shrink-0 mt-0.5 group-hover:text-foreground/55 transition-colors" />
                       )}
-                      <div>
+                      <div className="flex-1 min-w-0">
                         <div className="text-[12px] font-semibold text-foreground/70 leading-none">
                           Fit Analysis
                         </div>
@@ -335,6 +346,11 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
                           {fitLoading ? "Analysing…" : "Strengths & gaps"}
                         </div>
                       </div>
+                      {!fitLoading && (
+                        <span className="text-[10px] font-medium text-foreground/25 ml-auto flex-shrink-0">
+                          {creditBadge('jobFitAnalysis')}
+                        </span>
+                      )}
                     </button>
                   </div>
 

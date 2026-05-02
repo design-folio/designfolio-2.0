@@ -5,7 +5,7 @@ import { Sparkles, X, ArrowUpCircle, Loader2 } from "lucide-react";
 import { SCOUT_SUGGESTIONS } from "@/data/jobs";
 import { _postJobsScout } from "@/network/jobs";
 
-export function ScoutChat({ job, onClose, profileId }) {
+export function ScoutChat({ job, onClose, profileId, onCreditUsed }) {
   const [messages, setMessages] = useState([
     {
       role: "ai",
@@ -35,6 +35,7 @@ export function ScoutChat({ job, onClose, profileId }) {
       const res = await _postJobsScout(profileId, job.id, trimmed);
       const reply = res.data?.reply ?? "I couldn't get a response right now. Please try again.";
       setMessages((prev) => [...prev, { role: "ai", text: reply }]);
+      onCreditUsed?.();
     } catch {
       setMessages((prev) => [
         ...prev,

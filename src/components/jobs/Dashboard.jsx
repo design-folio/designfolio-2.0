@@ -701,6 +701,7 @@ export function Dashboard({
         onViewReport={(entry) => {
           if (selectedJob) setViewingReport({ job: selectedJob, entry });
         }}
+        onCreditUsed={bumpCredits}
       />
       <MockInterviewDialog
         job={interviewJob}
@@ -754,7 +755,7 @@ export function Dashboard({
               onClose={() => setViewingReport(null)}
             />
           )}
-          {scoutJob && <ScoutChat key={scoutJob.id} job={scoutJob} profileId={profileId} onClose={() => setScoutJobId(null)} />}
+          {scoutJob && <ScoutChat key={scoutJob.id} job={scoutJob} profileId={profileId} onClose={() => setScoutJobId(null)} onCreditUsed={bumpCredits} />}
         </AnimatePresence>,
         document.body,
       )}

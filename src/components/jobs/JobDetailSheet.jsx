@@ -51,7 +51,7 @@ function CopyButton({ text }) {
   );
 }
 
-export function JobDetailSheet({ job, open, onClose, profileId, pastReports = [], onViewReport }) {
+export function JobDetailSheet({ job, open, onClose, profileId, pastReports = [], onViewReport, onCreditUsed }) {
   const lastJobRef = useRef(null);
   if (job) lastJobRef.current = job;
   const displayJob = job ?? lastJobRef.current;
@@ -82,6 +82,7 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
     try {
       const res = await _postJobsCustomizeResume(displayJob.id, profileId);
       setResumeResult(res.data);
+      onCreditUsed?.();
     } catch {
       setResumeResult({ error: "Could not generate resume. Please try again." });
     } finally {
@@ -96,6 +97,7 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
     try {
       const res = await _postJobsCoverLetter(displayJob.id, profileId);
       setLetterResult(res.data);
+      onCreditUsed?.();
     } catch {
       setLetterResult({ error: "Could not generate cover letter. Please try again." });
     } finally {
@@ -110,6 +112,7 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
     try {
       const res = await _postJobsFitAnalysis(displayJob.id, profileId);
       setFitResult(res.data);
+      onCreditUsed?.();
     } catch {
       setFitResult({ error: "Could not generate fit analysis. Please try again." });
     } finally {
@@ -240,64 +243,23 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
 
                   <div className="h-px bg-black/[0.05] dark:bg-white/[0.05]" />
 
-                  {/* Customize Resume */}
-                  <button
-                    onClick={handleCustomizeResume}
-                    disabled={resumeLoading}
-                    className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-black/[0.03] dark:hover:bg-white/[0.03] transition-colors group text-left disabled:opacity-60"
-                  >
-                    <div className="w-9 h-9 rounded-xl bg-foreground/[0.08] group-hover:bg-foreground/[0.11] transition-colors flex items-center justify-center flex-shrink-0">
-                      {resumeLoading ? (
-                        <Loader2 className="w-4 h-4 text-foreground/55 animate-spin" />
-                      ) : (
-                        <FileText className="w-4 h-4 text-foreground/55" />
-                      )}
+                  {/* Customize Resume — Coming Soon */}
+                  <div className="w-full flex items-center gap-3 px-4 py-3.5 opacity-50 cursor-not-allowed text-left">
+                    <div className="w-9 h-9 rounded-xl bg-foreground/[0.06] flex items-center justify-center flex-shrink-0">
+                      <FileText className="w-4 h-4 text-foreground/40" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="text-[13px] font-semibold text-foreground/80 leading-none">
-                        Customize Your Resume
+                      <div className="text-[13px] font-semibold text-foreground/60 leading-none">
+                        Generate Resume
                       </div>
-                      <div className="text-[11px] text-foreground/40 mt-1 leading-snug">
-                        {resumeLoading ? "Generating tailored resume…" : "AI rewrites your CV to match this role's exact requirements"}
+                      <div className="text-[11px] text-foreground/35 mt-1 leading-snug">
+                        AI builds a full resume from your portfolio
                       </div>
                     </div>
-                    {!resumeLoading && (
-                      <>
-                        <span className="text-[10px] font-medium text-foreground/30 bg-foreground/[0.05] rounded-full px-2 py-0.5 flex-shrink-0">
-                          {creditBadge('jobResumeCustomize')}
-                        </span>
-                        <ChevronRight className="w-4 h-4 text-foreground/20 group-hover:text-foreground/45 transition-colors flex-shrink-0" />
-                      </>
-                    )}
-                  </button>
-
-                  {/* Resume Result */}
-                  {resumeResult && (
-                    <div className="px-4 pb-3">
-                      {resumeResult.error ? (
-                        <p className="text-[12px] text-red-500/80">{resumeResult.error}</p>
-                      ) : (
-                        <AiResultPanel title="Tailored Resume" onClose={() => setResumeResult(null)}>
-                          {resumeResult.changes?.length > 0 && (
-                            <ul className="space-y-1.5 mb-3">
-                              {resumeResult.changes.map((c, i) => (
-                                <li key={i} className="flex items-start gap-2 text-[12px] text-foreground/70">
-                                  <span className="mt-1 w-1 h-1 rounded-full bg-emerald-500 flex-shrink-0" />
-                                  {c}
-                                </li>
-                              ))}
-                            </ul>
-                          )}
-                          <div className="rounded-lg bg-black/[0.04] dark:bg-white/[0.04] p-3 text-[12px] text-foreground/75 leading-relaxed whitespace-pre-wrap max-h-48 overflow-y-auto">
-                            {resumeResult.customizedResume}
-                          </div>
-                          <div className="flex justify-end mt-2">
-                            <CopyButton text={resumeResult.customizedResume} />
-                          </div>
-                        </AiResultPanel>
-                      )}
-                    </div>
-                  )}
+                    <span className="text-[10px] font-medium text-foreground/30 bg-foreground/[0.05] rounded-full px-2 py-0.5 flex-shrink-0 whitespace-nowrap">
+                      Coming soon
+                    </span>
+                  </div>
 
                   <div className="h-px bg-black/[0.05] dark:bg-white/[0.05]" />
                   <div className="grid grid-cols-2 divide-x divide-black/[0.05] dark:divide-white/[0.05]">

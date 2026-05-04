@@ -2,7 +2,8 @@
 
 /* Light: warm beige */
 [data-template="canvas"] {
-  --background: #F0EDE7;
+  --background: #f0ede7;
+  --foreground: #2a2522;
   --card: #ffffff;
   --secondary: #ffffff;
   --secondary-hover: #faf8f5;
@@ -30,6 +31,7 @@
 /* Canvas dark: warm dark — sepia-tinted secondary buttons */
 [data-theme="dark"][data-template="canvas"] {
   --background: #1a1a1a;
+  --foreground: #f4f2eb;
   --card: #2a2520;
   --secondary: #302b25;
   --secondary-hover: #3a342d;

@@ -55,17 +55,23 @@ export function Jobs() {
           setJobs(historyJobs);
           setProfileId(historyProfileId ?? null);
 
-          // Restore board column state from persisted pipeline.
-          // Backend returns { saved, applied, interview, offer } — no picks list.
-          // Jobs not placed in any column fall into picks.
-          if (historyColumns) {
+          // Restore board column state: prefer backend response, fall back to
+          // sessionStorage (written by Dashboard on every column change).
+          const columnsSource = historyColumns || (() => {
+            try {
+              const stored = sessionStorage.getItem(`df_pipeline_${historyProfileId}`);
+              return stored ? JSON.parse(stored) : null;
+            } catch { return null; }
+          })();
+
+          if (columnsSource) {
             const jobMap = Object.fromEntries(historyJobs.map((j) => [j.id, j]));
             const restored = {
               picks:     [],
-              saved:     (historyColumns.saved     || []).map((id) => jobMap[id]).filter(Boolean),
-              applied:   (historyColumns.applied   || []).map((id) => jobMap[id]).filter(Boolean),
-              interview: (historyColumns.interview || []).map((id) => jobMap[id]).filter(Boolean),
-              offer:     (historyColumns.offer     || []).map((id) => jobMap[id]).filter(Boolean),
+              saved:     (columnsSource.saved     || []).map((id) => jobMap[id]).filter(Boolean),
+              applied:   (columnsSource.applied   || []).map((id) => jobMap[id]).filter(Boolean),
+              interview: (columnsSource.interview || []).map((id) => jobMap[id]).filter(Boolean),
+              offer:     (columnsSource.offer     || []).map((id) => jobMap[id]).filter(Boolean),
             };
 
             // Unplaced jobs (not in any pipeline column) go to picks
@@ -74,7 +80,8 @@ export function Jobs() {
             );
             restored.picks = historyJobs.filter((j) => !placedIds.has(j.id));
 
-            const hasPipelineData = Object.values(restored).some((col) => col.length > 0);
+            const hasPipelineData = ['saved','applied','interview','offer']
+              .some((c) => restored[c].length > 0);
             setInitialColumns(hasPipelineData ? restored : null);
           }
 

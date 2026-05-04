@@ -146,11 +146,10 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
             <button
               data-testid={`button-ask-scout-${job.id}`}
               onClick={(e) => { e.stopPropagation(); onAskScout(); }}
-              className="orb-activates-on-hover flex items-center justify-center gap-1.5 w-full text-[12px] font-semibold text-foreground/65 hover:text-foreground/90 bg-black/[0.04] dark:bg-white/[0.04] hover:bg-black/[0.08] dark:hover:bg-white/[0.08] rounded-full py-1.5 transition-colors cursor-pointer"
+              className="orb-activates-on-hover flex items-center justify-center gap-1.5 w-full text-[12px] font-semibold text-foreground/65 hover:text-foreground/90 bg-black/[0.04] dark:bg-white/[0.04] hover:bg-black/[0.08] dark:hover:bg-white/[0.08] rounded-md py-1.5 transition-colors cursor-pointer"
             >
               <ColorOrb dimension="14px" spinDuration={8} />
               Ask Scout
-              <span className="text-[10px] font-normal text-foreground/30 ml-auto">{creditBadge('jobScout')}</span>
             </button>
           )}
         </>

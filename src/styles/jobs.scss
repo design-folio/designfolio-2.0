@@ -160,13 +160,27 @@
   opacity: 0;
 }
 
-// Always-active orb (no hover needed — used while AI is processing)
+// Always-active orb (scaled + spinning — used for large central orb)
+.orb-always-active .color-orb {
+  transform: scale(1.6);
+}
+
 .orb-always-active .color-orb::before {
   animation-play-state: running;
   opacity: 1;
 }
 
 .orb-always-active .color-orb::after {
+  opacity: 0;
+}
+
+// Spinning orb without forced scale — for inline/avatar use
+.orb-spinning .color-orb::before {
+  animation-play-state: running;
+  opacity: 1;
+}
+
+.orb-spinning .color-orb::after {
   opacity: 0;
 }
 

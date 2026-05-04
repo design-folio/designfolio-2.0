@@ -196,9 +196,9 @@ export const INITIAL_COLUMNS = {
 
 // NOTE: APIS TO BE INTEGRATED HERE — replace SCOUT_RESPONSES with POST /api/jobs/scout { jobId, message }
 export const SCOUT_SUGGESTIONS = [
-  "Tell me why this job is a good fit for me.",
-  "Give me resume tips to apply here.",
-  "What's the culture like at this company?",
+  "Why is this a good fit for me?",
+  "Give me resume tips for this role.",
+  "What's the culture like here?",
   "Show me similar roles I might like.",
 ];
 

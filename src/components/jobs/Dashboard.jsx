@@ -14,9 +14,9 @@ import { MockInterviewRoom } from "./MockInterviewRoom";
 import { InterviewReport } from "./InterviewReport";
 import { ScoutChat } from "./ScoutChat";
 import { JobCard } from "./JobCard";
-import { _postJobsInteract, _postJobsRecommend, _postJobsMore, _postJobsInterviewReport, _getJobsRecommendations, _getJobRoleSuggestions } from "@/network/jobs";
+import { _postJobsInteract, _postJobsRecommend, _postJobsMore, _postJobsInterviewReport, _getJobsRecommendations, _getJobRoleSuggestions, _getJobCredits } from "@/network/jobs";
 import { CreditsWidget } from "./CreditsWidget";
-import { creditBadge } from "@/data/jobCredits";
+import { creditBadge, JOB_CREDITS } from "@/data/jobCredits";
 
 const buildColumns = (jobs) => ({
   picks:     jobs ?? [],
@@ -270,12 +270,27 @@ export function Dashboard({
   const [viewingReport,    setViewingReport]    = useState(null);
   const [creditsRefreshKey, setCreditsRefreshKey] = useState(0);
   const bumpCredits = useCallback(() => setCreditsRefreshKey(k => k + 1), []);
+  const [creditBalance, setCreditBalance] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    _getJobCredits()
+      .then((res) => { if (!cancelled) setCreditBalance(res.data?.balance ?? 0); })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [creditsRefreshKey]);
 
   const hasRestoredPipeline = initialColumns
-    ? ["saved", "applied", "interview"].some((c) => (initialColumns[c] || []).length > 0)
+    ? ["saved", "applied", "interview", "offer"].some((c) => (initialColumns[c] || []).length > 0)
     : false;
 
-  const [phase, setPhase] = useState(hasRestoredPipeline ? "split" : "list");
+  const [phase, setPhase] = useState(() => {
+    if (hasRestoredPipeline) return "split";
+    try {
+      if (sessionStorage.getItem("df_jobs_phase") === "split") return "split";
+    } catch {}
+    return "list";
+  });
   const picksRef     = useRef(null);
   const filterBarRef = useRef(null);
 
@@ -289,6 +304,33 @@ export function Dashboard({
     window.addEventListener("resize", compute);
     return () => window.removeEventListener("resize", compute);
   }, []);
+
+  // Persist phase so kanban view survives navigation
+  useEffect(() => {
+    try {
+      if (phase === "split") sessionStorage.setItem("df_jobs_phase", "split");
+      else if (phase === "list") sessionStorage.removeItem("df_jobs_phase");
+    } catch {}
+  }, [phase]);
+
+  // Persist pipeline column assignments (job IDs) for cross-navigation restore
+  useEffect(() => {
+    if (!profileId) return;
+    try {
+      const ids = {
+        saved:     (columns.saved     || []).map((j) => j.id),
+        applied:   (columns.applied   || []).map((j) => j.id),
+        interview: (columns.interview || []).map((j) => j.id),
+        offer:     (columns.offer     || []).map((j) => j.id),
+      };
+      const hasAny = Object.values(ids).some((a) => a.length > 0);
+      if (hasAny) {
+        sessionStorage.setItem(`df_pipeline_${profileId}`, JSON.stringify(ids));
+      } else {
+        sessionStorage.removeItem(`df_pipeline_${profileId}`);
+      }
+    } catch {}
+  }, [columns.saved, columns.applied, columns.interview, columns.offer, profileId]);
 
   const allJobs    = Object.values(columns).flat();
   const findJob    = (id) => allJobs.find((j) => j.id === id);
@@ -638,6 +680,7 @@ export function Dashboard({
                 onMockInterview={setInterviewJobId}
                 onAskScout={setScoutJobId}
                 onExhausted={rescanExhausted ? undefined : handleFetchMore}
+                canFetchMore={creditBalance === null || creditBalance >= (JOB_CREDITS.jobRecommendation?.cost ?? 15)}
                 isRescanning={isRescanning}
               />
             </div>
@@ -755,7 +798,7 @@ export function Dashboard({
               onClose={() => setViewingReport(null)}
             />
           )}
-          {scoutJob && <ScoutChat key={scoutJob.id} job={scoutJob} profileId={profileId} onClose={() => setScoutJobId(null)} onCreditUsed={bumpCredits} />}
+          {scoutJob && <ScoutChat key={scoutJob.id} job={scoutJob} profileId={profileId} onClose={() => setScoutJobId(null)} />}
         </AnimatePresence>,
         document.body,
       )}

@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
@@ -130,7 +131,7 @@ const TiptapRenderer = ({ content, className }) => {
         <EditorContent editor={editor} />
       </div>
 
-      {fullscreenImageSrc && (
+      {fullscreenImageSrc && typeof document !== 'undefined' && createPortal(
         <button
           type="button"
           className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 p-4 outline-none"
@@ -147,7 +148,8 @@ const TiptapRenderer = ({ content, className }) => {
           <span className="absolute top-4 right-4 rounded-full bg-white/10 p-2 text-white hover:bg-white/20 transition-colors">
             <X className="w-6 h-6" />
           </span>
-        </button>
+        </button>,
+        document.body,
       )}
     </>
   );

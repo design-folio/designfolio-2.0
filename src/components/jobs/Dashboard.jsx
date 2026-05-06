@@ -523,8 +523,8 @@ export function Dashboard({
             <span className="truncate text-[13px]">{promptSummary}</span>
           </div>
 
-          {/* ── Filters popover ─────────────────────────────────────────── */}
-          <Popover>
+          {/* ── Filters + Criteria — hidden in list-only (AI picks) view ── */}
+          {phase === "split" && <><Popover>
             <PopoverTrigger asChild>
               <button
                 data-testid="button-filters"
@@ -623,7 +623,7 @@ export function Dashboard({
                 </div>
               )}
             </PopoverContent>
-          </Popover>
+          </Popover></>}
 
           {/* Exhausted notice */}
           {rescanExhausted && (

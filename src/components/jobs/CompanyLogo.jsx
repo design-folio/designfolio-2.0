@@ -28,7 +28,7 @@ export function CompanyLogo({ logoUrl, company = '', size = 42, className = '' }
   const letter = (company || '?').charAt(0).toUpperCase();
   const color  = fallbackColor(company);
 
-  const base = `rounded-lg flex-shrink-0 overflow-hidden ${className}`;
+  const base = `rounded-xl flex-shrink-0 overflow-hidden shadow-sm ${className}`;
   const style = { width: size, height: size, minWidth: size };
 
   if (logoUrl && !imgFailed) {

@@ -1,33 +1,40 @@
-import { useEffect, useState } from 'react';
-import { ColorOrb } from '@/components/ui/color-orb';
+import { useEffect, useState, useRef } from 'react';
+import { FlaskConical } from 'lucide-react';
+import { UsageBadge } from '@/components/ui/bubble-button';
 import { _getJobCredits } from '@/network/jobs';
 
 export function CreditsWidget({ refreshKey = 0 }) {
   const [data, setData] = useState(null);
+  const totalRef = useRef(null);
 
   useEffect(() => {
     let cancelled = false;
     _getJobCredits()
-      .then((res) => { if (!cancelled) setData(res.data); })
+      .then((res) => {
+        if (!cancelled) {
+          const d = res.data;
+          setData(d);
+          if (totalRef.current === null) {
+            totalRef.current = d?.total ?? d?.limit ?? d?.pool ?? d?.balance ?? null;
+          }
+        }
+      })
       .catch(() => {});
     return () => { cancelled = true; };
   }, [refreshKey]);
 
   const balance = data?.balance ?? null;
-  const isLow   = balance !== null && balance <= 20;
+  const total   = data?.total ?? data?.limit ?? data?.pool ?? totalRef.current;
 
   return (
-    <div className="orb-always-active flex-shrink-0 flex items-center gap-2 h-9 px-3 rounded-full border border-black/[0.08] dark:border-border bg-white dark:bg-card select-none cursor-default">
-      <ColorOrb dimension="12px" spinDuration={8} />
-      <div className="flex flex-col leading-none">
-        <span className="text-[9px] font-medium text-foreground/35 uppercase tracking-wide">AI Credits</span>
-        <span className={`text-[12px] font-semibold ${isLow ? 'text-amber-500 dark:text-amber-400' : 'text-foreground/70'}`}>
-          {balance !== null ? balance : '—'}
-          {isLow && balance !== null && (
-            <span className="text-[9px] font-normal text-amber-400/80 ml-1">low</span>
-          )}
-        </span>
-      </div>
-    </div>
+    <UsageBadge
+      icon={<FlaskConical className="w-3.5 h-3.5 opacity-70" />}
+      planName="AI Balance"
+      usage={balance ?? '—'}
+      limit={total}
+      tooltipContent={
+        <p>{balance !== null ? `${balance} AI credits remaining.` : 'Loading…'}<br />Used for mock interviews &amp; scout chats.</p>
+      }
+    />
   );
 }

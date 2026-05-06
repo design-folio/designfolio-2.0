@@ -60,9 +60,9 @@ export function JobsFloatingNav() {
                 <Link href={href}>
                   <button
                     data-testid={`nav-${label.toLowerCase().replace(/\s+/g, "-")}`}
-                    className={`flex items-center justify-center w-9 h-9 rounded-full transition-colors ${isActive
-                      ? "bg-foreground text-background"
-                      : "text-muted-foreground hover:bg-black/[0.07] dark:hover:bg-white/10"
+                    className={`flex items-center justify-center w-9 h-9 rounded-full transition-all duration-200 ease-out ${isActive
+                      ? "bg-[hsl(46,15%,91%)] text-foreground shadow-[inset_0_1px_3px_rgba(0,0,0,0.07)] scale-[1.08] dark:bg-white/[0.13] dark:text-foreground dark:shadow-[inset_0_1px_3px_rgba(0,0,0,0.2)]"
+                      : "text-muted-foreground hover:bg-black/[0.07] hover:scale-[1.05] dark:hover:bg-white/10"
                       }`}
                   >
                     <Icon className="w-4 h-4" />

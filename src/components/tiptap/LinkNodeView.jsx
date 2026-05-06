@@ -2,15 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { NodeViewWrapper } from '@tiptap/react';
 
 const LinkNodeView = ({ node, updateAttributes, deleteNode, editor }) => {
-  const [isEditing, setIsEditing] = useState(!node.attrs.href);
+  const isEditable = editor?.isEditable ?? false;
+  const [isEditing, setIsEditing] = useState(isEditable && !node.attrs.href);
   const [href, setHref] = useState(node.attrs.href || '');
   const [text, setText] = useState(node.attrs.text || '');
 
   useEffect(() => {
-    if (!node.attrs.href) {
+    if (isEditable && !node.attrs.href) {
       setIsEditing(true);
     }
-  }, [node.attrs.href]);
+  }, [isEditable, node.attrs.href]);
 
   const handleSave = () => {
     if (href.trim()) {
@@ -52,21 +53,38 @@ const LinkNodeView = ({ node, updateAttributes, deleteNode, editor }) => {
     return (
       <NodeViewWrapper>
         <div className="relative inline-block my-3">
-          <a 
-            href={node.attrs.href} 
-            target="_blank" 
+          <a
+            href={node.attrs.href}
+            target="_blank"
             rel="noopener noreferrer"
             className="text-blue-500 dark:text-blue-400 underline cursor-pointer hover:text-blue-600 dark:hover:text-blue-300"
           >
             {node.attrs.text || node.attrs.href}
           </a>
-          <button
-            onClick={() => setIsEditing(true)}
-            className="absolute -top-1 -right-6 bg-blue-500 dark:bg-blue-600 hover:bg-blue-600 dark:hover:bg-blue-700 text-white rounded px-2 py-0.5 text-xs cursor-pointer transition-colors"
-          >
-            Edit
-          </button>
+          {isEditable && (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="absolute -top-1 -right-6 bg-blue-500 dark:bg-blue-600 hover:bg-blue-600 dark:hover:bg-blue-700 text-white rounded px-2 py-0.5 text-xs cursor-pointer transition-colors"
+            >
+              Edit
+            </button>
+          )}
         </div>
+      </NodeViewWrapper>
+    );
+  }
+
+  if (!isEditable) {
+    return (
+      <NodeViewWrapper>
+        <a
+          href={node.attrs.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-500 dark:text-blue-400 underline cursor-pointer hover:text-blue-600 dark:hover:text-blue-300 my-3 inline-block"
+        >
+          {node.attrs.text || node.attrs.href}
+        </a>
       </NodeViewWrapper>
     );
   }

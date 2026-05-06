@@ -1,5 +1,8 @@
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, Lock } from "lucide-react";
+import Lottie from "lottie-react";
+import aiAssistantAnimation from "@/assets/AI-Assistant.json";
 import { KanbanColumn, KanbanColumnContent, KanbanItem, KanbanItemHandle } from "@/components/ui/kanban";
 import { JobCard } from "./JobCard";
 import { COL_LABELS } from "@/data/jobs";
@@ -18,8 +21,17 @@ export function PipelineCol({
   canFetchMore = true, // false = insufficient credits — show locked state
   isRescanning = false,
 }) {
-  const isPicks     = colId === "picks";
+  const isPicks = colId === "picks";
   const isInterview = colId === "interview";
+  const isOffer = colId === "offer";
+  const offerThreshold = isOffer && jobs.length >= 2;
+  const [bannerReady, setBannerReady] = useState(false);
+
+  useEffect(() => {
+    if (!offerThreshold) { setBannerReady(false); return; }
+    const t = setTimeout(() => setBannerReady(true), 1200);
+    return () => clearTimeout(t);
+  }, [offerThreshold]);
 
   const cardList = (
     <AnimatePresence mode="popLayout" initial={false}>
@@ -41,8 +53,8 @@ export function PipelineCol({
             ease: "easeOut",
           }}
         >
-          <KanbanItem value={job.id} className="rounded-lg">
-            <KanbanItemHandle className="w-full rounded-lg">
+          <KanbanItem value={job.id} className="rounded-lg group/item">
+            <KanbanItemHandle className="w-full cursor-grab active:cursor-grabbing">
               <JobCard
                 job={job}
                 onShortlist={isPicks ? () => onShortlist(job.id) : undefined}
@@ -145,15 +157,15 @@ export function PipelineCol({
   );
 
   const colBg = isPicks
-    ? "flex flex-col min-w-[350px] flex-1 rounded-xl bg-[#EAE6DF] dark:bg-card border border-[#DDD8D0] dark:border-border overflow-hidden"
-    : "flex flex-col min-w-[350px] flex-1 rounded-xl bg-[#E8E4DD] dark:bg-card border border-[#DDD8D0] dark:border-border overflow-hidden";
+    ? "flex flex-col min-w-[350px] flex-1 rounded-xl bg-[#E8E3DC] dark:bg-[#141414] overflow-hidden"
+    : "flex flex-col min-w-[350px] flex-1 rounded-xl bg-[#E2DDD6] dark:bg-[#141414] overflow-hidden";
 
   return (
     <KanbanColumn value={colId} className={colBg}>
-      <div className="flex items-center gap-2 px-3 pt-3 pb-1 flex-shrink-0 select-none">
-        <span className="text-[13px] font-semibold text-foreground/80">{COL_LABELS[colId]}</span>
+      <div className="flex items-center gap-2 px-4 pt-4 pb-2 flex-shrink-0 select-none">
+        <span className="font-jetbrains-mono text-[11px] font-semibold uppercase tracking-wider text-foreground/55 dark:text-foreground/45">{COL_LABELS[colId]}</span>
         {jobs.length > 0 && (
-          <span className="text-[11px] text-foreground/40 bg-black/8 rounded-full px-1.5 py-0.5 leading-none">
+          <span className="text-[10px] font-semibold text-foreground/40 bg-black/[0.08] dark:bg-white/[0.08] rounded-full px-1.5 py-0.5 leading-none">
             {jobs.length}
           </span>
         )}
@@ -161,9 +173,42 @@ export function PipelineCol({
           <span className="text-[10px] text-[#FF553E]/70 ml-auto">scanning…</span>
         )}
       </div>
+      {bannerReady && !isPicks && (
+        <AnimatePresence>
+          <motion.div
+            key="offer-banner"
+            initial={{ opacity: 0, y: -8, scale: 0.97, filter: "blur(6px)" }}
+            animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+            exit={{ opacity: 0, y: -6, scale: 0.97, filter: "blur(4px)" }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            className="mx-2 mb-1.5 flex-shrink-0"
+          >
+            <div className="relative overflow-hidden rounded-xl bg-white dark:bg-card border border-black/[0.06] dark:border-border shadow-sm">
+              <div
+                className="absolute inset-x-0 top-0 h-10 pointer-events-none"
+                style={{ background: "radial-gradient(ellipse 70% 100% at 50% 0%, rgba(192,74,56,0.18) 0%, rgba(245,166,35,0.10) 40%, transparent 100%)" }}
+              />
+              <div className="px-3.5 pt-4 pb-3.5">
+                <div className="flex items-center gap-2.5 mb-3">
+                  <div className="w-[44px] h-[44px] flex-shrink-0">
+                    <Lottie animationData={aiAssistantAnimation} loop={true} />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-[14px] font-semibold text-foreground/85 leading-tight">Two offers. Big decision.</p>
+                    <p className="text-[12px] font-normal text-foreground/45 mt-0.5 leading-snug">Let Scout help you think it through.</p>
+                  </div>
+                </div>
+                <button className="w-full flex items-center justify-center gap-1.5 bg-foreground text-background text-[12px] font-medium h-8 rounded-lg hover:opacity-85 transition-opacity">
+                  Help me decide
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      )}
       <KanbanColumnContent
         value={colId}
-        className="flex-1 overflow-y-auto px-2 pt-2 pb-3 min-h-[60px]"
+        className="flex-1 overflow-y-auto px-3 pt-1 pb-4 min-h-[60px]"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         {cardList}

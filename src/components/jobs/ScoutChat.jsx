@@ -6,6 +6,35 @@ import { SCOUT_SUGGESTIONS } from "@/data/jobs";
 import { _postJobsScout } from "@/network/jobs";
 import { ColorOrb } from "@/components/ui/color-orb";
 
+const typingKeyframes = `
+  @keyframes typing-wave {
+    0%, 60%, 100% { transform: translateY(0px); opacity: 0.3; }
+    30%            { transform: translateY(-5px); opacity: 1; }
+  }
+`;
+
+function TypingDots() {
+  return (
+    <span className="flex gap-[5px] items-center py-1">
+      <style>{typingKeyframes}</style>
+      {[0, 1, 2].map((i) => (
+        <span
+          key={i}
+          style={{
+            width: 5, height: 5,
+            borderRadius: "50%",
+            display: "inline-block",
+            backgroundColor: "currentColor",
+            opacity: 0.3,
+            animation: `typing-wave 1.2s ease-in-out infinite`,
+            animationDelay: `${i * 0.15}s`,
+          }}
+        />
+      ))}
+    </span>
+  );
+}
+
 export function ScoutChat({ job, onClose, profileId }) {
   const [messages, setMessages]     = useState([]);
   const [input, setInput]           = useState("");
@@ -201,13 +230,7 @@ export function ScoutChat({ job, onClose, profileId }) {
                             ? "bg-foreground text-background rounded-br-sm"
                             : "bg-black/[0.04] dark:bg-white/[0.06] text-foreground/85 border border-black/[0.06] dark:border-border rounded-bl-sm"
                         }`}>
-                          {msg.text ?? (
-                            <span className="flex gap-1 items-center py-0.5">
-                              <span className="w-1.5 h-1.5 rounded-full bg-foreground/30 animate-bounce [animation-delay:0ms]" />
-                              <span className="w-1.5 h-1.5 rounded-full bg-foreground/30 animate-bounce [animation-delay:150ms]" />
-                              <span className="w-1.5 h-1.5 rounded-full bg-foreground/30 animate-bounce [animation-delay:300ms]" />
-                            </span>
-                          )}
+                          {msg.text ?? <TypingDots />}
                         </div>
                       </div>
                     );

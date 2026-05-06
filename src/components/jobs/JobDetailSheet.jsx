@@ -243,23 +243,31 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
 
                   <div className="h-px bg-black/[0.05] dark:bg-white/[0.05]" />
 
-                  {/* Customize Resume — Coming Soon */}
-                  <div className="w-full flex items-center gap-3 px-4 py-3.5 opacity-50 cursor-not-allowed text-left">
-                    <div className="w-9 h-9 rounded-xl bg-foreground/[0.06] flex items-center justify-center flex-shrink-0">
-                      <FileText className="w-4 h-4 text-foreground/40" />
+                  {/* Customize Your Resume — enabled featured action */}
+                  <button
+                    onClick={handleCustomizeResume}
+                    disabled={resumeLoading}
+                    className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-black/[0.03] dark:hover:bg-white/[0.03] transition-colors group text-left disabled:opacity-60"
+                  >
+                    <div className="w-9 h-9 rounded-xl bg-foreground/[0.08] group-hover:bg-foreground/[0.11] transition-colors flex items-center justify-center flex-shrink-0">
+                      {resumeLoading ? (
+                        <Loader2 className="w-4 h-4 text-foreground/55 animate-spin" />
+                      ) : (
+                        <FileText className="w-4 h-4 text-foreground/55" />
+                      )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="text-[13px] font-semibold text-foreground/60 leading-none">
-                        Generate Resume
+                      <div className="text-[13px] font-semibold text-foreground/80 leading-none">
+                        Customize Your Resume
                       </div>
-                      <div className="text-[11px] text-foreground/35 mt-1 leading-snug">
-                        AI builds a full resume from your portfolio
+                      <div className="text-[11px] text-foreground/40 mt-1 leading-snug">
+                        {resumeLoading ? "Tailoring…" : "AI rewrites your CV to match this role's exact requirements"}
                       </div>
                     </div>
-                    <span className="text-[10px] font-medium text-foreground/30 bg-foreground/[0.05] rounded-full px-2 py-0.5 flex-shrink-0 whitespace-nowrap">
-                      Coming soon
-                    </span>
-                  </div>
+                    {!resumeLoading && (
+                      <ChevronRight className="w-4 h-4 text-foreground/20 group-hover:text-foreground/45 transition-colors flex-shrink-0" />
+                    )}
+                  </button>
 
                   <div className="h-px bg-black/[0.05] dark:bg-white/[0.05]" />
                   <div className="grid grid-cols-2 divide-x divide-black/[0.05] dark:divide-white/[0.05]">
@@ -377,29 +385,47 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
                     </div>
                   )}
 
-                  {/* Jump to mock interviews */}
-                  <div className="h-px bg-black/[0.05] dark:bg-white/[0.05]" />
-                  <button
-                    onClick={scrollToMockInterviews}
-                    className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-black/[0.03] dark:hover:bg-white/[0.03] transition-colors group text-left"
-                  >
-                    <div className="w-9 h-9 rounded-xl bg-foreground/[0.08] group-hover:bg-foreground/[0.11] transition-colors flex items-center justify-center flex-shrink-0">
-                      <Clapperboard className="w-4 h-4 text-foreground/55" />
+                  {/* Resume Result */}
+                  {resumeResult && (
+                    <div className="px-4 pb-3">
+                      {resumeResult.error ? (
+                        <p className="text-[12px] text-red-500/80">{resumeResult.error}</p>
+                      ) : (
+                        <AiResultPanel title="Customized Resume" onClose={() => setResumeResult(null)}>
+                          <div className="text-[12px] text-foreground/75 leading-relaxed whitespace-pre-wrap max-h-56 overflow-y-auto">
+                            {resumeResult.customizedResume}
+                          </div>
+                          <div className="flex justify-end mt-2">
+                            <CopyButton text={resumeResult.customizedResume ?? ""} />
+                          </div>
+                        </AiResultPanel>
+                      )}
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-[13px] font-semibold text-foreground/80 leading-none">
-                        Mock Interviews
-                      </div>
-                      <div className="text-[11px] text-foreground/40 mt-1 leading-snug">
-                        {pastReports.length > 0
-                          ? `${pastReports.length} session${pastReports.length > 1 ? "s" : ""} completed`
-                          : "Practice before the real thing"}
-                      </div>
-                    </div>
-                    <ChevronRight className="w-4 h-4 text-foreground/20 group-hover:text-foreground/45 transition-colors flex-shrink-0" />
-                  </button>
+                  )}
                 </div>
               </div>
+
+              {/* Mock interviews — compact link, outside AI card */}
+              <button
+                data-testid="button-jump-mock-interviews"
+                onClick={scrollToMockInterviews}
+                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg bg-foreground/[0.03] hover:bg-foreground/[0.06] border border-black/[0.05] dark:border-white/[0.05] transition-colors group text-left"
+              >
+                <div className="w-5 h-5 rounded-md bg-foreground/[0.07] flex items-center justify-center flex-shrink-0">
+                  <Clapperboard className="w-3 h-3 text-foreground/40" />
+                </div>
+                <span className="flex-1 text-[12px] font-medium text-foreground/50 group-hover:text-foreground/70 transition-colors">
+                  Mock interviews
+                </span>
+                {pastReports.length > 0 ? (
+                  <span className="text-[10px] font-semibold text-foreground/40 bg-foreground/[0.07] rounded-full px-1.5 py-0.5 leading-none">
+                    {pastReports.length}
+                  </span>
+                ) : (
+                  <span className="text-[10px] text-foreground/30">No sessions yet</span>
+                )}
+                <ChevronRight className="w-3.5 h-3.5 text-foreground/20 group-hover:text-foreground/45 transition-colors flex-shrink-0" />
+              </button>
 
               {/* Insider connections — only shown if contacts exist */}
               {(displayJob.contacts ?? []).length > 0 && (

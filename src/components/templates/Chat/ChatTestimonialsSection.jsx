@@ -1,12 +1,15 @@
-import { useMemo } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronsUpDown, Pencil, Plus } from "lucide-react";
+import { ChevronsUpDown, ChevronDown, Pencil, Plus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGlobalContext } from "@/context/globalContext";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { sidebars } from "@/lib/constant";
-import { tiptapToDisplayString } from "@/lib/tiptapUtils";
+import { tiptapToDisplayString, getPlainTextLength } from "@/lib/tiptapUtils";
 import { TypingIndicator, ChatAvatar, YouPrompt } from "./chatUtils";
+
+const INITIAL_VISIBLE = 3;
+const REVIEW_CHAR_THRESHOLD = 200;
 
 export default function ChatTestimonialsSection({
   chatRevealStep,
@@ -26,6 +29,20 @@ export default function ChatTestimonialsSection({
     () => getUserAvatarImage(userDetails),
     [userDetails],
   );
+
+  const [expandedIds, setExpandedIds] = useState(new Set());
+  const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
+
+  const toggleExpand = (id) => {
+    setExpandedIds((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
+
+  const visibleReviews = reviews.slice(0, visibleCount);
+  const hasMore = reviews.length > visibleCount;
 
   return (
     <div
@@ -52,7 +69,7 @@ export default function ChatTestimonialsSection({
           <>
             {reviews.length > 0 ? (
               <>
-                {/* Testimonials Intro */}
+                {/* Intro bubble */}
                 <motion.div
                   key="testimonials-intro"
                   initial={{ opacity: 0, y: 10, scale: 0.95 }}
@@ -75,97 +92,169 @@ export default function ChatTestimonialsSection({
                   </div>
                 </motion.div>
 
-                {/* All Review Cards */}
+                {/* Review cards */}
                 {chatRevealStep >= s(15) &&
-                  reviews.map((review, index) => (
-                    <motion.div
-                      key={review._id || index}
-                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      transition={{ duration: 0.3, delay: index * 0.15 }}
-                      className="flex gap-3 max-w-[85%] relative group/msg"
-                    >
-                      {canEdit && (
-                        <div className="absolute -left-0 top-1/2 -translate-y-1/2 z-40 transition-opacity flex gap-1.5 opacity-0 group-hover/msg:opacity-100">
-                          {reviews.length >= 2 && index === 0 && (
+                  visibleReviews.map((review, index) => {
+                    const reviewId = review._id || `review-${index}`;
+                    const plainText = tiptapToDisplayString(review.description);
+                    const needsExpand =
+                      getPlainTextLength(review.description) >
+                      REVIEW_CHAR_THRESHOLD;
+                    const isExpanded = expandedIds.has(reviewId);
+
+                    return (
+                      <motion.div
+                        key={reviewId}
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        transition={{ duration: 0.25, delay: index * 0.06 }}
+                        className="flex gap-3 max-w-[85%] relative group/msg"
+                      >
+                        {canEdit && (
+                          <div className="absolute -left-0 top-1/2 -translate-y-1/2 z-40 flex gap-1.5 opacity-0 group-hover/msg:opacity-100 transition-opacity duration-150">
+                            {reviews.length >= 2 && index === 0 && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] active:scale-[0.97] transition-transform duration-100"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  openSidebar(sidebars.sortReviews);
+                                }}
+                              >
+                                <ChevronsUpDown className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                              </Button>
+                            )}
                             <Button
                               variant="outline"
                               size="sm"
-                              className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
+                              className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] active:scale-[0.97] transition-transform duration-100"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                openSidebar(sidebars.sortReviews);
+                                setSelectedReview(review);
+                                openSidebar(sidebars.review);
                               }}
                             >
-                              <ChevronsUpDown className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                              <Pencil className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
                             </Button>
-                          )}
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setSelectedReview(review);
-                              openSidebar(sidebars.review);
-                            }}
-                          >
-                            <Pencil className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                          </Button>
-                        </div>
-                      )}
-                      <div className="w-8 h-8 shrink-0 mt-auto flex items-end">
-                        <ChatAvatar
-                          avatarSrc={avatarSrc}
-                          show={
-                            index === reviews.length - 1 &&
-                            chatRevealStep < getNextLeftStep("reviews")
-                          }
-                        />
-                      </div>
-                      <div className="bg-[#E5E2DB] dark:bg-[#2A2520] p-4 rounded-2xl rounded-tl-sm rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5 w-full">
-                        <div className="flex items-center gap-3 mb-3">
-                          <div className="w-10 h-10 rounded-full overflow-hidden shrink-0">
-                            <img
-                              src={
-                                review?.avatar?.url || review?.avatar || ""
-                              }
-                              alt={review?.name || "Reviewer"}
-                              className="w-full h-full object-cover bg-gray-200 dark:bg-gray-800"
-                              onError={(e) => {
-                                e.currentTarget.src =
-                                  "https://i.pravatar.cc/150?u=a042581f4e29026704d";
-                              }}
-                            />
                           </div>
-                          <div className="flex flex-col">
-                            <span className="text-[#1A1A1A] dark:text-[#F0EDE7] font-medium text-[15px]">
-                              {review?.name || "Anonymous"}
-                            </span>
-                            {review?.designation && (
-                              <div className="flex items-center gap-1.5">
-                                <svg
-                                  className="w-3.5 h-3.5 text-[#0077b5]"
-                                  viewBox="0 0 24 24"
-                                  fill="currentColor"
+                        )}
+
+                        <div className="w-8 h-8 shrink-0 mt-auto flex items-end">
+                          <ChatAvatar
+                            avatarSrc={avatarSrc}
+                            show={
+                              index === visibleReviews.length - 1 &&
+                              !hasMore &&
+                              chatRevealStep < getNextLeftStep("reviews")
+                            }
+                          />
+                        </div>
+
+                        <div className="bg-[#E5E2DB] dark:bg-[#2A2520] p-4 rounded-2xl rounded-tl-sm rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5 w-full">
+                          {/* Reviewer header */}
+                          <div className="flex items-center gap-3 mb-3">
+                            <div className="w-9 h-9 rounded-full overflow-hidden shrink-0 ring-1 ring-black/5 dark:ring-white/5">
+                              <img
+                                src={review?.avatar?.url || review?.avatar || ""}
+                                alt={review?.name || "Reviewer"}
+                                className="w-full h-full object-cover bg-[#D5CFC7] dark:bg-[#3A352E]"
+                                onError={(e) => {
+                                  e.currentTarget.src =
+                                    "https://i.pravatar.cc/150?u=a042581f4e29026704d";
+                                }}
+                              />
+                            </div>
+                            <div className="flex flex-col min-w-0">
+                              <span className="text-[#1A1A1A] dark:text-[#F0EDE7] font-medium text-[14px] truncate">
+                                {review?.name || "Anonymous"}
+                              </span>
+                              {review?.designation && (
+                                <div className="flex items-center gap-1">
+                                  <svg
+                                    className="w-3 h-3 text-[#0077b5] shrink-0"
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                  >
+                                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                                  </svg>
+                                  <span className="text-[#7A736C] dark:text-[#B5AFA5] text-[12px] truncate">
+                                    {review.designation}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Quote text */}
+                          {needsExpand ? (
+                            <div>
+                              {/* Clipped region + gradient as a single positioned unit */}
+                              <div className="relative">
+                                <p
+                                  className={`text-[#1A1A1A] dark:text-[#F0EDE7] text-[13px] leading-relaxed italic break-words overflow-hidden${isExpanded ? "" : " line-clamp-4"}`}
                                 >
-                                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                                </svg>
-                                <span className="text-[#7A736C] dark:text-[#B5AFA5] text-[13px]">
-                                  {review.designation}
-                                </span>
+                                  {plainText ? `"${plainText}"` : ""}
+                                </p>
+                                {!isExpanded && (
+                                  <div
+                                    className="pointer-events-none absolute inset-x-0 bottom-0 h-7 bg-gradient-to-t from-[#E5E2DB] dark:from-[#2A2520] to-transparent"
+                                    aria-hidden
+                                  />
+                                )}
                               </div>
-                            )}
-                          </div>
+
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  toggleExpand(reviewId);
+                                }}
+                                className="mt-2 flex items-center gap-0.5 text-[12px] font-medium text-[#7A736C] dark:text-[#B5AFA5] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7] active:scale-[0.97] transition-[color,transform] duration-150"
+                              >
+                                {isExpanded ? "View less" : "View more"}
+                                <motion.span
+                                  animate={{ rotate: isExpanded ? 180 : 0 }}
+                                  transition={{
+                                    duration: 0.25,
+                                    ease: [0.23, 1, 0.32, 1],
+                                  }}
+                                  className="inline-flex"
+                                >
+                                  <ChevronDown className="w-3.5 h-3.5" />
+                                </motion.span>
+                              </button>
+                            </div>
+                          ) : (
+                            <p className="text-[#1A1A1A] dark:text-[#F0EDE7] text-[13px] leading-relaxed italic">
+                              {plainText ? `"${plainText}"` : ""}
+                            </p>
+                          )}
                         </div>
-                        <p className="text-[#1A1A1A] dark:text-[#F0EDE7] text-[14px] leading-relaxed italic">
-                          {review?.description
-                            ? `"${tiptapToDisplayString(review.description)}"`
-                            : ""}
-                        </p>
-                      </div>
-                    </motion.div>
-                  ))}
+                      </motion.div>
+                    );
+                  })}
+
+                {/* Load more — centered divider, aligned to card left edge */}
+                {chatRevealStep >= s(15) && hasMore && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.2 }}
+                    className="flex items-center gap-3 pl-11"
+                  >
+                    <div className="h-px flex-1 bg-black/[0.07] dark:bg-white/[0.07]" />
+                    <button
+                      onClick={() =>
+                        setVisibleCount((v) => v + INITIAL_VISIBLE)
+                      }
+                      className="flex items-center gap-1 text-[11px] font-medium text-[#7A736C] dark:text-[#B5AFA5] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7] active:scale-[0.97] transition-[color,transform] duration-150 whitespace-nowrap"
+                    >
+                      {reviews.length - visibleCount} more
+                      <ChevronDown className="w-3 h-3" />
+                    </button>
+                    <div className="h-px flex-1 bg-black/[0.07] dark:bg-white/[0.07]" />
+                  </motion.div>
+                )}
               </>
             ) : (
               /* Empty state */
@@ -176,7 +265,7 @@ export default function ChatTestimonialsSection({
                 className="flex gap-3 max-w-[85%]"
               >
                 <div className="w-8 h-8 shrink-0" />
-                <div className="flex flex-col items-center justify-center w-full py-16 px-4 text-center rounded-2xl border border-dashed border-black/10 dark:border-white/10 bg-[#E5E2DB] dark:bg-[#2A2520]/50 backdrop-blur-sm">
+                <div className="flex flex-col items-center justify-center w-full py-16 px-4 text-center rounded-2xl border border-dashed border-black/10 dark:border-white/10 bg-[#E5E2DB] dark:bg-[#2A2520]/50">
                   <div className="w-12 h-12 rounded-full bg-black/[0.03] dark:bg-white/[0.03] flex items-center justify-center mb-4">
                     <svg
                       className="w-6 h-6 text-[#7A736C] dark:text-[#9E9893]"

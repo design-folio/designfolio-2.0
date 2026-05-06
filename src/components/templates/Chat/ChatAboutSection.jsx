@@ -147,7 +147,7 @@ export default function ChatAboutSection({
 
       {/* Story Text */}
       <AnimatePresence mode="popLayout">
-        {chatRevealStep >= s(18) && !(preview && !hasAboutContent) && (
+        {chatRevealStep >= s(18) && !(preview && !hasAboutDescription) && (
           <motion.div
             initial={{ opacity: 0, y: 10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -238,13 +238,7 @@ export default function ChatAboutSection({
                   Click here to add your story...
                 </button>
               </div>
-            ) : (
-              <div className="bg-[#E5E2DB] dark:bg-[#2A2520] px-4 py-3 rounded-2xl rounded-tl-sm rounded-bl-sm text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed transition-colors duration-100 border border-black/5 dark:border-white/5">
-                <span className="text-[#7A736C] dark:text-[#B5AFA5] text-[13px]">
-                  Click here to add your story...
-                </span>
-              </div>
-            )}
+            ) : null}
           </motion.div>
         )}
       </AnimatePresence>

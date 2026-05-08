@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, Lock } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, Lock } from "lucide-react";
 import Lottie from "lottie-react";
 import aiAssistantAnimation from "@/assets/AI-Assistant.json";
 import { KanbanColumn, KanbanColumnContent, KanbanItem, KanbanItemHandle } from "@/components/ui/kanban";
@@ -21,6 +21,8 @@ export function PipelineCol({
   onExhausted,      // undefined = exhausted (hide button); function = show "Get More" button
   canFetchMore = true, // false = insufficient credits — show locked state
   isRescanning = false,
+  collapsed,
+  onToggleCollapse,
 }) {
   const isPicks = colId === "picks";
   const isInterview = colId === "interview";
@@ -61,7 +63,7 @@ export function PipelineCol({
                 onShortlist={isPicks ? () => onShortlist(job.id) : undefined}
                 onOpen={() => onOpenJob(job.id)}
                 onDismiss={onDismiss ? () => onDismiss(job.id) : undefined}
-                onMockInterview={isInterview ? () => onMockInterview(job.id) : undefined}
+                onMockInterview={!isPicks ? () => onMockInterview(job.id) : undefined}
                 onAskScout={() => onAskScout(job.id)}
               />
             </KanbanItemHandle>
@@ -157,6 +159,83 @@ export function PipelineCol({
     </AnimatePresence>
   );
 
+  // ── Archived column: morph layout (expanded ↔ collapsed) ─────────────────
+  if (onToggleCollapse) {
+    const morphEase = [0.22, 1, 0.36, 1];
+    const morphDur = 0.42;
+    return (
+      <KanbanColumn
+        value={colId}
+        className="relative flex-1 rounded-xl bg-[#E2DDD6] dark:bg-[#141414] overflow-hidden h-full"
+      >
+        {/* Expanded state */}
+        <motion.div
+          className="absolute inset-0 flex flex-col"
+          animate={{ opacity: collapsed ? 0 : 1 }}
+          transition={{ duration: morphDur, ease: morphEase }}
+          style={{ pointerEvents: collapsed ? "none" : "auto" }}
+        >
+          <div className="flex items-center gap-2 px-4 pt-4 pb-2 flex-shrink-0 select-none">
+            <span
+              className="font-jetbrains-mono text-[11px] font-semibold uppercase tracking-wider text-foreground"
+              style={{ opacity: 0.5 }}
+            >
+              {COL_LABELS[colId]}
+            </span>
+            {jobs.length > 0 && (
+              <span className="text-[10px] font-semibold text-foreground/40 bg-black/[0.08] dark:bg-white/[0.08] rounded-full px-1.5 py-0.5 leading-none">
+                {jobs.length}
+              </span>
+            )}
+            <button
+              onClick={onToggleCollapse}
+              className="cursor-pointer ml-auto w-6 h-6 flex items-center justify-center rounded-md hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
+              title="Collapse"
+            >
+              <ChevronLeft className="w-3.5 h-3.5 text-foreground/40" />
+            </button>
+          </div>
+          <KanbanColumnContent
+            value={colId}
+            className="flex-1 overflow-y-auto px-3 pt-1 pb-4 min-h-[60px]"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          >
+            {cardList}
+          </KanbanColumnContent>
+        </motion.div>
+
+        {/* Collapsed state (thin strip) */}
+        <motion.div
+          className="absolute inset-0 flex flex-col items-center py-3 gap-2"
+          animate={{ opacity: collapsed ? 1 : 0 }}
+          transition={{ duration: morphDur, ease: morphEase }}
+          style={{ pointerEvents: collapsed ? "auto" : "none" }}
+        >
+          <button
+            onClick={onToggleCollapse}
+            className="cursor-pointer w-6 h-6 flex items-center justify-center rounded-md hover:bg-black/10 dark:hover:bg-white/10 transition-colors flex-shrink-0"
+            title="Expand"
+          >
+            <ChevronRight className="w-3.5 h-3.5 text-foreground/50" />
+          </button>
+          <div className="flex-1 flex flex-col items-center justify-center gap-2 min-h-0">
+            <span
+              className="font-jetbrains-mono text-[11px] font-semibold uppercase tracking-wider text-foreground select-none"
+              style={{ writingMode: "vertical-rl", transform: "rotate(180deg)", opacity: 0.45 }}
+            >
+              {COL_LABELS[colId]}
+            </span>
+            {jobs.length > 0 && (
+              <span className="text-[10px] font-semibold text-foreground/40 bg-black/[0.08] dark:bg-white/[0.08] rounded-full px-1.5 py-0.5 leading-none">
+                {jobs.length}
+              </span>
+            )}
+          </div>
+        </motion.div>
+      </KanbanColumn>
+    );
+  }
+
   const colBg = isPicks
     ? "flex flex-col min-w-[350px] flex-1 rounded-xl bg-[#E8E3DC] dark:bg-[#141414] overflow-hidden"
     : "flex flex-col min-w-[350px] flex-1 rounded-xl bg-[#E2DDD6] dark:bg-[#141414] overflow-hidden";
@@ -164,7 +243,8 @@ export function PipelineCol({
   return (
     <KanbanColumn value={colId} className={colBg}>
       <div className="flex items-center gap-2 px-4 pt-4 pb-2 flex-shrink-0 select-none">
-        <span className="font-jetbrains-mono text-[11px] font-semibold uppercase tracking-wider text-foreground/55 dark:text-foreground/45">{COL_LABELS[colId]}</span>
+        <span className="font-jetbrains-mono text-[11px] font-semibold uppercase tracking-wider text-foreground"
+          style={{ opacity: 0.5 }}>{COL_LABELS[colId]}</span>
         {jobs.length > 0 && (
           <span className="text-[10px] font-semibold text-foreground/40 bg-black/[0.08] dark:bg-white/[0.08] rounded-full px-1.5 py-0.5 leading-none">
             {jobs.length}

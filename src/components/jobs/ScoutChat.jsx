@@ -57,13 +57,14 @@ export function ScoutChat({ job, onClose, profileId }) {
     const trimmed = text.trim();
     if (!trimmed || loading) return;
 
+    const history = [...messages];
     setMessages(prev => [...prev, { role: "user", text: trimmed }]);
     setHasStarted(true);
     setInput("");
     setLoading(true);
 
     try {
-      const res = await _postJobsScout(profileId, job.id, trimmed);
+      const res = await _postJobsScout(profileId, job.id, trimmed, history);
       const reply = res.data?.reply ?? "I couldn't get a response right now. Please try again.";
       setMessages(prev => [...prev, { role: "ai", text: reply }]);
     } catch {

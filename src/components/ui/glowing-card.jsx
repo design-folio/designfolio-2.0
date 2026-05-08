@@ -1,7 +1,8 @@
 import { cn } from "@/lib/utils";
 import { Sparkles } from "lucide-react";
 
-export function MatchGlowCard({ reason, className }) {
+export function MatchGlowCard({ reason, match, className }) {
+  const isMatch = match == null || match >= 30;
   return (
     <div className={cn("match-glow-outer", className)}>
       <div className="match-glow-card px-4 py-3.5">
@@ -10,7 +11,7 @@ export function MatchGlowCard({ reason, className }) {
           <div className="flex items-center gap-1.5 mb-1.5">
             <Sparkles className="w-3.5 h-3.5 text-foreground/50 fill-foreground/50" />
             <span className="text-[11px] font-semibold text-foreground/50 uppercase tracking-widest">
-              Why it&apos;s a match
+              {isMatch ? "Why it’s a match" : "Why it’s not a match"}
             </span>
           </div>
           <p className="text-sm text-foreground/70 leading-relaxed">{reason}</p>

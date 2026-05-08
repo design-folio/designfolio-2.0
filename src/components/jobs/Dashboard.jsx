@@ -25,24 +25,20 @@ const buildColumns = (jobs) => ({
   applied:   [],
   interview: [],
   offer:     [],
+  archived:  [],
 });
 
 const COL_DRAG_ACTION = {
   saved:     "saved",
   applied:   "applied",
   interview: "interview",
-  offer:       "offer",
+  offer:     "offer",
+  archived:  "archived",
 };
 
 const DEFAULT_FILTERS = { workMode: "all", type: "all", minMatch: 0 };
 
-const LOCATION_OPTIONS = ["My city only", "Open to relocating", "Remote only"];
-const LEVEL_OPTIONS = [
-  { title: "Mid-level",          sub: "2–4 yrs" },
-  { title: "Senior",             sub: "5–8 yrs" },
-  { title: "Lead / Staff",       sub: "8+ yrs"  },
-  { title: "Manager / Director", sub: ""        },
-];
+const LOCATION_OPTIONS = ["Location", "Remote only"];
 
 function FilterPill({ active, onClick, children }) {
   return (
@@ -80,8 +76,7 @@ function CriteriaEditor({ answers, onRescan, isRescanning }) {
   const [locationChoice, setLocationChoice] = useState(() => {
     const raw = answers[1]?.answer || "";
     if (raw === "Remote only") return "Remote only";
-    if (raw.startsWith("My city only:")) return "My city only";
-    if (raw.startsWith("Open to relocating:")) return "Open to relocating";
+    if (raw.includes(": ")) return "Location";
     return null;
   });
   const [city, setCity] = useState(() => {
@@ -89,7 +84,6 @@ function CriteriaEditor({ answers, onRescan, isRescanning }) {
     if (raw.includes(": ")) return raw.split(": ").slice(1).join(": ");
     return "";
   });
-  const [level, setLevel] = useState(answers[2]?.answer || null);
 
   const isDirty = useMemo(() => {
     const locAnswer = locationChoice === "Remote only"
@@ -97,15 +91,13 @@ function CriteriaEditor({ answers, onRescan, isRescanning }) {
       : locationChoice ? `${locationChoice}: ${city}` : "";
     return (
       role !== (answers[0]?.answer || "") ||
-      locAnswer !== (answers[1]?.answer || "") ||
-      level !== (answers[2]?.answer || null)
+      locAnswer !== (answers[1]?.answer || "")
     );
-  }, [role, locationChoice, city, level, answers]);
+  }, [role, locationChoice, city, answers]);
 
   const canRescan = role.trim().length > 0 &&
     locationChoice !== null &&
-    (locationChoice === "Remote only" || city.trim().length > 0) &&
-    level !== null;
+    (locationChoice === "Remote only" || city.trim().length > 0);
 
   const handleRescan = () => {
     if (!canRescan || isRescanning) return;
@@ -113,7 +105,6 @@ function CriteriaEditor({ answers, onRescan, isRescanning }) {
       { question: answers[0]?.question || "What role are you looking for next?", answer: role.trim() },
       { question: answers[1]?.question || "Where are you open to working?",
         answer: locationChoice === "Remote only" ? "Remote only" : `${locationChoice}: ${city.trim()}` },
-      { question: answers[2]?.question || "What level are you targeting?", answer: level },
     ];
     onRescan(newAnswers);
   };
@@ -190,25 +181,6 @@ function CriteriaEditor({ answers, onRescan, isRescanning }) {
           </AnimatePresence>
         </div>
 
-        {/* Level */}
-        <div className="px-4 py-3">
-          <p className="text-[11px] text-foreground/40 mb-2">{answers[2]?.question || "Level"}</p>
-          <div className="flex flex-wrap gap-1.5">
-            {LEVEL_OPTIONS.map((opt) => (
-              <button
-                key={opt.title}
-                onClick={() => setLevel(opt.title)}
-                className={`text-[12px] font-medium px-3 py-1.5 rounded-full border transition-colors ${
-                  level === opt.title
-                    ? "bg-foreground text-background border-foreground"
-                    : "border-black/10 dark:border-border text-foreground/60 hover:border-foreground/30"
-                }`}
-              >
-                {opt.title}{opt.sub ? ` · ${opt.sub}` : ""}
-              </button>
-            ))}
-          </div>
-        </div>
       </div>
 
       {/* Rescan button */}
@@ -218,7 +190,7 @@ function CriteriaEditor({ answers, onRescan, isRescanning }) {
           disabled={!canRescan || !isDirty || isRescanning}
           className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-[13px] font-semibold transition-all ${
             isDirty && canRescan && !isRescanning
-              ? "bg-foreground text-background hover:bg-foreground/90"
+              ? "bg-foreground text-background hover:bg-foreground/90 cursor-pointer"
               : "bg-black/[0.05] dark:bg-white/[0.06] text-foreground/40 cursor-not-allowed"
           }`}
         >
@@ -269,7 +241,8 @@ export function Dashboard({
   const [reportLoading,    setReportLoading]    = useState(false);
   const [completedReports, setCompletedReports] = useState({});
   const [viewingReport,    setViewingReport]    = useState(null);
-  const [offerDecisionOpen, setOfferDecisionOpen] = useState(false);
+  const [offerDecisionOpen,  setOfferDecisionOpen]  = useState(false);
+  const [archivedCollapsed,  setArchivedCollapsed]  = useState(false);
   const [creditsRefreshKey, setCreditsRefreshKey] = useState(0);
   const bumpCredits = useCallback(() => setCreditsRefreshKey(k => k + 1), []);
   const [creditBalance, setCreditBalance] = useState(null);
@@ -283,16 +256,10 @@ export function Dashboard({
   }, [creditsRefreshKey]);
 
   const hasRestoredPipeline = initialColumns
-    ? ["saved", "applied", "interview", "offer"].some((c) => (initialColumns[c] || []).length > 0)
+    ? ["saved", "applied", "interview", "offer", "archived"].some((c) => (initialColumns[c] || []).length > 0)
     : false;
 
-  const [phase, setPhase] = useState(() => {
-    if (hasRestoredPipeline) return "split";
-    try {
-      if (sessionStorage.getItem("df_jobs_phase") === "split") return "split";
-    } catch {}
-    return "list";
-  });
+  const [phase, setPhase] = useState(() => hasRestoredPipeline ? "split" : "list");
   const picksRef     = useRef(null);
   const filterBarRef = useRef(null);
 
@@ -307,13 +274,6 @@ export function Dashboard({
     return () => window.removeEventListener("resize", compute);
   }, []);
 
-  // Persist phase so kanban view survives navigation
-  useEffect(() => {
-    try {
-      if (phase === "split") sessionStorage.setItem("df_jobs_phase", "split");
-      else if (phase === "list") sessionStorage.removeItem("df_jobs_phase");
-    } catch {}
-  }, [phase]);
 
   // Persist pipeline column assignments (job IDs) for cross-navigation restore
   useEffect(() => {
@@ -324,6 +284,7 @@ export function Dashboard({
         applied:   (columns.applied   || []).map((j) => j.id),
         interview: (columns.interview || []).map((j) => j.id),
         offer:     (columns.offer     || []).map((j) => j.id),
+        archived:  (columns.archived  || []).map((j) => j.id),
       };
       const hasAny = Object.values(ids).some((a) => a.length > 0);
       if (hasAny) {
@@ -332,7 +293,7 @@ export function Dashboard({
         sessionStorage.removeItem(`df_pipeline_${profileId}`);
       }
     } catch {}
-  }, [columns.saved, columns.applied, columns.interview, columns.offer, profileId]);
+  }, [columns.saved, columns.applied, columns.interview, columns.offer, columns.archived, profileId]);
 
   const allJobs    = Object.values(columns).flat();
   const findJob    = (id) => allJobs.find((j) => j.id === id);
@@ -729,6 +690,39 @@ export function Dashboard({
                 </div>
               </motion.div>
             ))}
+
+            {/* Archived column — always last, collapsible */}
+            <motion.div
+              className="overflow-hidden flex-shrink-0 h-full"
+              initial={{ maxWidth: 0, opacity: 0 }}
+              animate={{
+                maxWidth: phase === "split" ? 362 : 0,
+                opacity:  phase === "split" ? 1   : 0,
+              }}
+              transition={{
+                maxWidth: { duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: phase === "split" ? COL_ORDER.filter((c) => c !== "picks").length * 0.12 : 0 },
+                opacity:  { duration: 0.4,  ease: "easeOut",           delay: phase === "split" ? COL_ORDER.filter((c) => c !== "picks").length * 0.12 + 0.1 : 0 },
+              }}
+            >
+              <motion.div
+                className="flex flex-col h-full ml-3 overflow-hidden"
+                animate={{ width: archivedCollapsed ? 43 : 350 }}
+                transition={{ duration: 0.48, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <PipelineCol
+                  colId="archived"
+                  colIndex={COL_ORDER.length}
+                  jobs={columns.archived ?? []}
+                  onShortlist={handleShortlist}
+                  onOpenJob={handleOpenJob}
+                  onDismiss={handleDismiss}
+                  onMockInterview={setInterviewJobId}
+                  onAskScout={setScoutJobId}
+                  collapsed={archivedCollapsed}
+                  onToggleCollapse={() => setArchivedCollapsed((v) => !v)}
+                />
+              </motion.div>
+            </motion.div>
 
             <div className="flex-shrink-0 w-10 h-full" />
           </KanbanBoard>

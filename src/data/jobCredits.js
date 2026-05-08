@@ -33,6 +33,11 @@ export const JOB_CREDITS = {
     label:       'Fit Analysis',
     description: 'Strengths, gaps, and verdict',
   },
+  offerDecision: {
+    cost:        5,
+    label:       'Offer Decision',
+    description: 'AI compares two offers based on your profile',
+  },
 };
 
 // Returns badge string shown on buttons, e.g. "1 credit" or "15 cr"

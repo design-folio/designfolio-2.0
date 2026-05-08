@@ -14,7 +14,8 @@ import { MockInterviewRoom } from "./MockInterviewRoom";
 import { InterviewReport } from "./InterviewReport";
 import { ScoutChat } from "./ScoutChat";
 import { JobCard } from "./JobCard";
-import { _postJobsInteract, _postJobsRecommend, _postJobsMore, _postJobsInterviewReport, _getJobsRecommendations, _getJobRoleSuggestions, _getJobCredits } from "@/network/jobs";
+import { _postJobsInteract, _postJobsRecommend, _postJobsMore, _postJobsInterviewReport, _getJobsRecommendations, _getJobRoleSuggestions, _getJobCredits, _postJobsPipelineReorder } from "@/network/jobs";
+import { OfferDecisionScout } from "./OfferDecisionScout";
 import { CreditsWidget } from "./CreditsWidget";
 import { creditBadge, JOB_CREDITS } from "@/data/jobCredits";
 
@@ -268,6 +269,7 @@ export function Dashboard({
   const [reportLoading,    setReportLoading]    = useState(false);
   const [completedReports, setCompletedReports] = useState({});
   const [viewingReport,    setViewingReport]    = useState(null);
+  const [offerDecisionOpen, setOfferDecisionOpen] = useState(false);
   const [creditsRefreshKey, setCreditsRefreshKey] = useState(0);
   const bumpCredits = useCallback(() => setCreditsRefreshKey(k => k + 1), []);
   const [creditBalance, setCreditBalance] = useState(null);
@@ -298,7 +300,7 @@ export function Dashboard({
   useEffect(() => {
     const compute = () => {
       const available = window.innerWidth - 108 - 16;
-      setCenterMargin(Math.max(0, Math.floor((available - 520) / 2)));
+      setCenterMargin(Math.max(0, Math.floor((available - 350) / 2)));
     };
     compute();
     window.addEventListener("resize", compute);
@@ -396,14 +398,14 @@ export function Dashboard({
       setProfileId(newProfileId);
       setCurrentAnswers(answers);
 
-      // Poll until ready — rescan starts a fresh pipeline
+      // Poll until ready — keep pipeline columns; only replace picks
       for (let i = 0; i < 30; i++) {
         await new Promise((r) => setTimeout(r, 3000));
         const { data: pollData } = await _getJobsRecommendations(newProfileId);
         if (pollData.status === "ready") {
           const newPicks = pollData.jobs || [];
           newPicks.forEach((j) => seenJobIds.current.add(j.id));
-          setColumns({ picks: newPicks, saved: [], applied: [], interview: [], offer: [] });
+          setColumns((prev) => ({ ...prev, picks: newPicks }));
           break;
         }
         if (pollData.status === "exhausted") break;
@@ -646,12 +648,23 @@ export function Dashboard({
             Object.keys(newCols).forEach((colId) => {
               const action = COL_DRAG_ACTION[colId];
               if (!action) return;
-              const prevIds = new Set((columns[colId] || []).map((j) => j.id));
-              (newCols[colId] || []).forEach((job) => {
-                if (!prevIds.has(job.id)) {
-                  _postJobsInteract(profileId, job.id, action);
-                }
-              });
+
+              const prevIds = (columns[colId] || []).map((j) => j.id);
+              const newIds  = (newCols[colId]  || []).map((j) => j.id);
+              const prevSet = new Set(prevIds);
+
+              // Cross-column move: a new job entered this column
+              const entered = newIds.filter((id) => !prevSet.has(id));
+              entered.forEach((id) => _postJobsInteract(profileId, id, action));
+
+              // Within-column reorder: same set of IDs but different order
+              if (
+                entered.length === 0 &&
+                newIds.length === prevIds.length &&
+                prevIds.some((id, i) => id !== newIds[i])
+              ) {
+                _postJobsPipelineReorder(profileId, colId, newIds);
+              }
             });
             setColumns(newCols);
           }}
@@ -663,11 +676,13 @@ export function Dashboard({
               ref={picksRef}
               style={{
                 flex:          phase === "split" || phase === "settled" ? "0 0 350px" : "none",
-                width:         phase === "split" || phase === "settled" ? undefined : "520px",
+                width:         "350px",
+                maxWidth:      "350px",
                 marginLeft:    phase === "split" || phase === "settled" ? 0 : centerMargin,
                 height:        "100%",
                 display:       "flex",
                 flexDirection: "column",
+                overflow:      "hidden",
               }}
             >
               <PipelineCol
@@ -709,6 +724,7 @@ export function Dashboard({
                     onDismiss={handleDismiss}
                     onMockInterview={setInterviewJobId}
                     onAskScout={setScoutJobId}
+                    onDecide={colId === "offer" ? () => setOfferDecisionOpen(true) : undefined}
                   />
                 </div>
               </motion.div>
@@ -799,6 +815,15 @@ export function Dashboard({
             />
           )}
           {scoutJob && <ScoutChat key={scoutJob.id} job={scoutJob} profileId={profileId} onClose={() => setScoutJobId(null)} />}
+          {offerDecisionOpen && (columns.offer || []).length >= 2 && (
+            <OfferDecisionScout
+              key="offer-decision"
+              jobs={(columns.offer || []).slice(0, 2)}
+              profileId={profileId}
+              onClose={() => setOfferDecisionOpen(false)}
+              onCreditUsed={bumpCredits}
+            />
+          )}
         </AnimatePresence>,
         document.body,
       )}

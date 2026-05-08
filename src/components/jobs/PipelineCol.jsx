@@ -16,6 +16,7 @@ export function PipelineCol({
   onDismiss,
   onMockInterview,
   onAskScout,
+  onDecide,
   colIndex = 0,
   onExhausted,      // undefined = exhausted (hide button); function = show "Get More" button
   canFetchMore = true, // false = insufficient credits — show locked state
@@ -198,7 +199,7 @@ export function PipelineCol({
                     <p className="text-[12px] font-normal text-foreground/45 mt-0.5 leading-snug">Let Scout help you think it through.</p>
                   </div>
                 </div>
-                <button className="w-full flex items-center justify-center gap-1.5 bg-foreground text-background text-[12px] font-medium h-8 rounded-lg hover:opacity-85 transition-opacity">
+                <button onClick={onDecide} className="w-full flex items-center justify-center gap-1.5 bg-foreground text-background text-[12px] font-medium h-8 rounded-lg hover:opacity-85 transition-opacity cursor-pointer">
                   Help me decide
                 </button>
               </div>

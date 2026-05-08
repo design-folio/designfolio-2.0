@@ -52,6 +52,19 @@ export const _postJobsInterviewSession = (jobId, profileId) =>
 export const _postJobsInterviewReport = (jobId, profileId, transcript) =>
   axiosInstance.post("/jobs/interview-report", { jobId, profileId, transcript });
 
+// POST /jobs/offer-decision — compare two offers with AI; returns { winner, analysis, regretNote, take }
+export const _postJobsOfferDecision = (profileId, jobAId, jobBId, answers) =>
+  axiosInstance.post('/jobs/offer-decision', { profileId, jobAId, jobBId, answers });
+
+// POST /jobs/pipeline/reorder — persist custom card order within a stage
+// column: 'saved'|'applied'|'interview'|'offer', jobIds: string[] (full ordered array)
+export const _postJobsPipelineReorder = (profileId, column, jobIds) => {
+  if (!profileId) return;
+  axiosInstance
+    .post('/jobs/pipeline/reorder', { profileId, column, jobIds })
+    .catch(() => {}); // fire-and-forget
+};
+
 // GET /jobs/credits — returns { balance: number, costs: { [feature]: number } }
 export const _getJobCredits = () => axiosInstance.get('/jobs/credits');
 

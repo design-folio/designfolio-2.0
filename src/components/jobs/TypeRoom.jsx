@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, ArrowLeft, Search } from "lucide-react";
 import Lottie from "lottie-react";
@@ -41,12 +41,8 @@ export function TypeRoom({ questions, onDone, onReset }) {
   const [city, setCity] = useState("");
   const cityRef = useRef(null);
 
-  // Q2
-  const [levelChoice, setLevelChoice] = useState(null);
-
   const q0 = questions[0];
   const q1 = questions[1];
-  const q2 = questions[2];
 
   useEffect(() => {
     if (current === 0) setTimeout(() => inputRef.current?.focus(), 50);
@@ -76,13 +72,12 @@ export function TypeRoom({ questions, onDone, onReset }) {
     if (current === 1)
       return locationChoice !== null &&
         (locationChoice === "Remote only" || city.trim().length > 0);
-    if (current === 2) return levelChoice !== null;
     return false;
   };
 
   const advance = () => {
     if (!canNext()) return;
-    if (current < 2) {
+    if (current < 1) {
       setCurrent((c) => c + 1);
       return;
     }
@@ -93,7 +88,6 @@ export function TypeRoom({ questions, onDone, onReset }) {
     onDone([
       { question: q0.text, answer: role.trim() },
       { question: q1.text, answer: locationAnswer },
-      { question: q2.text, answer: levelChoice },
     ]);
   };
 
@@ -106,7 +100,7 @@ export function TypeRoom({ questions, onDone, onReset }) {
     }
   };
 
-  const isLastStep = current === 2;
+  const isLastStep = current === 1;
 
   if (!questions.length) return null;
 
@@ -139,7 +133,7 @@ export function TypeRoom({ questions, onDone, onReset }) {
         {/* Question text — re-mounts on question change for stagger reset */}
         <BlurredStagger
           key={current}
-          text={current === 0 ? (q0?.text || "") : current === 1 ? (q1?.text || "") : (q2?.text || "")}
+          text={current === 0 ? (q0?.text || "") : (q1?.text || "")}
           className="text-foreground text-[22px] font-medium leading-snug tracking-tight"
         />
 
@@ -218,7 +212,7 @@ export function TypeRoom({ questions, onDone, onReset }) {
                     transition={{ duration: 0.25 }}
                   >
                     <p className="text-muted-foreground text-[13px] text-left">
-                      {locationChoice === "My city only" ? "Which city?" : "Which cities are you open to?"}
+                      Which city or region?
                     </p>
                     <LocationAutocomplete
                       inputRef={cityRef}
@@ -233,46 +227,6 @@ export function TypeRoom({ questions, onDone, onReset }) {
             </motion.div>
           )}
 
-          {/* Q2 — Level */}
-          {current === 2 && (
-            <motion.div
-              key="level"
-              className="flex flex-col gap-3 w-full"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.32 }}
-            >
-              {(q2?.options || []).map((opt) => {
-                const isChosen = levelChoice === opt.title;
-                return (
-                  <motion.button
-                    key={opt.title}
-                    data-testid={`option-${opt.title.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")}`}
-                    onClick={() => setLevelChoice(opt.title)}
-                    whileTap={{ scale: 0.985 }}
-                    className={`cursor-pointer w-full flex items-center justify-between px-5 py-4 rounded-2xl border text-left transition-all duration-200 ${
-                      isChosen
-                        ? "bg-foreground text-background border-foreground"
-                        : "bg-background dark:bg-foreground/8 border-border text-foreground hover:border-foreground/30"
-                    }`}
-                  >
-                    <div className="flex flex-col gap-0.5">
-                      <span className="text-[15px] font-semibold">{opt.title}</span>
-                      <span className={`text-[13px] ${isChosen ? "text-background/70" : "text-muted-foreground"}`}>
-                        {opt.desc}
-                      </span>
-                    </div>
-                    {opt.sub && (
-                      <span className={`text-[12px] font-medium flex-shrink-0 ml-4 ${isChosen ? "text-background/60" : "text-muted-foreground/60"}`}>
-                        {opt.sub}
-                      </span>
-                    )}
-                  </motion.button>
-                );
-              })}
-            </motion.div>
-          )}
         </AnimatePresence>
       </div>
 
@@ -290,7 +244,7 @@ export function TypeRoom({ questions, onDone, onReset }) {
             Back
           </motion.button>
 
-          <DotTrail current={current} total={3} />
+          <DotTrail current={current} total={2} />
 
           {/* Next / Scan Jobs */}
           <motion.button

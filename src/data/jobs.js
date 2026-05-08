@@ -171,11 +171,12 @@ export const BASE_JOBS = [
 export const COL_ORDER = ["picks", "saved", "applied", "interview", "offer"];
 
 export const COL_LABELS = {
-  picks: "AI Picks",
-  saved: "Shortlisted",
-  applied: "Applied",
-  interview: "Interview",
-  offer: "Offer",
+  picks:    "AI Picks",
+  saved:    "Shortlisted",
+  applied:  "Applied",
+  interview:"Interview",
+  offer:    "Offer",
+  archived: "Archived",
 };
 
 export const COL_BG = {

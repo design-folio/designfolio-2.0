@@ -1,97 +1,29 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { LinkedInLogo, IndeedLogo } from "./PlatformLogos";
 import { _postJobsRecommend, _getJobsRecommendations } from "@/network/jobs";
 
 // Calls POST /jobs/recommend — returns immediately with { profileId, status: "processing" }.
 // Then polls GET /jobs/recommendations every 3s until status === "ready".
-// Visual animation runs in parallel — platforms animate independently.
-// When polling resolves, both show "done" then onComplete is called.
+// Visual animation (timeline) runs in parallel — steps reveal via timers,
+// portfolio/rank steps gate on real data resolving.
 
-function ThoughtLine({ text, delay, dim }) {
-  return (
-    <motion.div
-      className={`flex items-start gap-2 text-[13px] leading-relaxed font-mono ${
-        dim ? "text-muted-foreground/40" : "text-muted-foreground"
-      }`}
-      initial={{ opacity: 0, x: -6 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ delay, duration: 0.35, ease: "easeOut" }}
-    >
-      <span className="text-foreground/20 mt-0.5 flex-shrink-0">›</span>
-      <span>{text}</span>
-    </motion.div>
-  );
-}
-
-function PlatformCard({ logo, name, status, count, delay }) {
-  return (
-    <motion.div
-      className="flex-1 min-w-0 border border-black/8 dark:border-border rounded-2xl p-4 flex flex-col gap-3 bg-white dark:bg-muted/30"
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay, duration: 0.4 }}
-    >
-      <div className="flex items-center gap-2">
-        {logo}
-        <span className="text-foreground/70 text-[13px] font-medium">{name}</span>
-      </div>
-      <div className="flex items-center gap-2">
-        {status === "waiting" && (
-          <span className="text-muted-foreground/50 text-[12px]">Queued</span>
-        )}
-        {status === "scraping" && (
-          <div className="flex items-center gap-1.5">
-            <div className="flex gap-[3px]">
-              {[0, 1, 2].map((i) => (
-                <motion.div
-                  key={i}
-                  className="w-1 h-1 rounded-full bg-[#FF553E]"
-                  animate={{ opacity: [0.3, 1, 0.3] }}
-                  transition={{ duration: 0.9, repeat: Infinity, delay: i * 0.2 }}
-                />
-              ))}
-            </div>
-            <span className="text-[#FF553E] text-[12px]">Scanning…</span>
-          </div>
-        )}
-        {status === "done" && (
-          <motion.div
-            className="flex items-center gap-1.5"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            <motion.div
-              className="w-1.5 h-1.5 rounded-full bg-emerald-500"
-              animate={{ scale: [1, 1.4, 1] }}
-              transition={{ duration: 0.4 }}
-            />
-            <span className="text-emerald-500 text-[12px]">
-              {count != null ? `${count} roles found` : "Done"}
-            </span>
-          </motion.div>
-        )}
-      </div>
-    </motion.div>
-  );
-}
+const keyframes = `
+  @keyframes thinking-pulse {
+    0%, 100% { opacity: 0.5; transform: scale(0.85); }
+    50%       { opacity: 1;   transform: scale(1.15); }
+  }
+  @keyframes heading-fade {
+    0%, 100% { opacity: 0.6; }
+    50%       { opacity: 1; }
+  }
+`;
 
 export function ThinkingScreen({ answers, onComplete, onError }) {
-  const thoughts = [
-    { text: "Reading your answers…", delay: 0.3 },
-    { text: "Extracting role and location signals.", delay: 0.85 },
-    { text: "Filtering for employment type match.", delay: 1.4 },
-    { text: "Excluding mismatched listings.", delay: 1.95 },
-    { text: "Weighting for portfolio alignment.", delay: 2.5 },
-    { text: "Running vector search on job embeddings…", delay: 3.1 },
-    { text: "Scoring each role with Gemini…", delay: 3.7 },
-  ];
-
+  const [visibleCount, setVisibleCount] = useState(0);
+  const [timer,        setTimer]        = useState(0);
   const [liStatus,     setLiStatus]     = useState("waiting");
   const [liCount,      setLiCount]      = useState(undefined);
   const [indeedStatus, setIndeedStatus] = useState("waiting");
-  const [indeedCount,  setIndeedCount]  = useState(undefined);
-  const [isExpanded,   setIsExpanded]   = useState(true);
 
   const timersRef = useRef([]);
   const pollRef   = useRef(null);
@@ -102,12 +34,28 @@ export function ThinkingScreen({ answers, onComplete, onError }) {
     if (pollRef.current) clearInterval(pollRef.current);
   };
 
+  // Tick the elapsed timer
+  useEffect(() => {
+    const id = setInterval(() => setTimer((t) => t + 1), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  // Advance timeline steps 4+5 when real data resolves
+  useEffect(() => {
+    if (liStatus !== "done") return;
+    setVisibleCount((v) => Math.max(v, 5));
+    const t = setTimeout(() => setVisibleCount((v) => Math.max(v, 6)), 600);
+    return () => clearTimeout(t);
+  }, [liStatus]);
+
   useEffect(() => {
     let done = false;
 
-    // Visual animation — independent of polling timing
-    addTimer(setTimeout(() => setLiStatus("scraping"), 1800));
-    addTimer(setTimeout(() => setIndeedStatus("scraping"), 3000));
+    // Visual step reveals — independent of polling timing
+    addTimer(setTimeout(() => setVisibleCount(1), 350));
+    addTimer(setTimeout(() => setVisibleCount(2), 1000));
+    addTimer(setTimeout(() => { setLiStatus("scraping"); setVisibleCount(3); }, 1800));
+    addTimer(setTimeout(() => { setIndeedStatus("scraping"); setVisibleCount(4); }, 3000));
 
     const run = async () => {
       try {
@@ -122,7 +70,6 @@ export function ThinkingScreen({ answers, onComplete, onError }) {
 
           attempts++;
           if (attempts > 30) {
-            // 90s timeout
             clearInterval(pollRef.current);
             done = true;
             clearAll();
@@ -137,11 +84,11 @@ export function ThinkingScreen({ answers, onComplete, onError }) {
               done = true;
               if ((pollData.jobs?.length ?? 0) > 0) {
                 const total = pollData.jobs.length;
-                setLiStatus("done");    setLiCount(total);
-                setIndeedStatus("done"); setIndeedCount(0);
-                addTimer(setTimeout(() => onComplete(pollData.jobs, profileId), 1200));
+                setLiStatus("done");
+                setLiCount(total);
+                setIndeedStatus("done");
+                addTimer(setTimeout(() => onComplete(pollData.jobs, profileId), 1600));
               } else {
-                // ready but no matching jobs in the pool
                 clearAll();
                 onError(true);
               }
@@ -149,10 +96,10 @@ export function ThinkingScreen({ answers, onComplete, onError }) {
               clearInterval(pollRef.current);
               done = true;
               clearAll();
-              onError(true); // no jobs found
+              onError(true);
             }
           } catch {
-            // ignore transient poll errors — retry next tick
+            // ignore transient poll errors
           }
         }, 3000);
       } catch (err) {
@@ -173,6 +120,27 @@ export function ThinkingScreen({ answers, onComplete, onError }) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const steps = [
+    { label: "Reading your answers" },
+    { label: "Filtering for matching roles" },
+    {
+      label: "Scanning LinkedIn",
+      getDetail: () =>
+        liStatus === "done"     ? `${liCount} roles found` :
+        liStatus === "scraping" ? "scanning…" : null,
+      isScanning: liStatus === "scraping",
+    },
+    {
+      label: "Scanning Indeed",
+      getDetail: () =>
+        indeedStatus === "done"     ? "indexed" :
+        indeedStatus === "scraping" ? "scanning…" : null,
+      isScanning: indeedStatus === "scraping",
+    },
+    { label: "Cross-referencing your portfolio" },
+    { label: "Ranking by alignment score" },
+  ];
+
   return (
     <motion.div
       className="fixed inset-0 flex flex-col items-center justify-center bg-[#F0EDE7] dark:bg-background px-6"
@@ -181,122 +149,159 @@ export function ThinkingScreen({ answers, onComplete, onError }) {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
+      <style>{keyframes}</style>
+
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full dark:bg-[#FF553E]/7 blur-[130px]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[560px] h-[380px] rounded-full dark:bg-[#FF553E]/6 blur-[130px]" />
       </div>
 
-      <div className="relative z-10 w-full max-w-md flex flex-col gap-5">
-        <motion.div
-          className="flex items-center gap-3"
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-        >
-          <div className="flex gap-[5px] items-center">
-            {[0, 1, 2].map((i) => (
-              <motion.div
-                key={i}
-                className="w-1.5 h-1.5 rounded-full bg-[#FF553E]"
-                animate={{ opacity: [0.4, 1, 0.4], scale: [0.9, 1.2, 0.9] }}
-                transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.25 }}
-              />
-            ))}
-          </div>
-          <h2 className="text-foreground text-[17px] font-semibold tracking-tight">
-            Got it. We&apos;re on it.
-          </h2>
-        </motion.div>
+      <div className="relative z-10 w-full max-w-xs flex flex-col gap-8">
 
+        {/* Header */}
         <motion.div
-          className="border border-black/8 dark:border-border rounded-2xl overflow-hidden bg-white dark:bg-muted/20"
-          initial={{ opacity: 0, y: 8 }}
+          className="flex items-start justify-between"
+          initial={{ opacity: 0, y: -6 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15, duration: 0.4 }}
+          transition={{ duration: 0.45 }}
         >
-          <button
-            onClick={() => setIsExpanded((v) => !v)}
-            className="w-full flex items-center justify-between px-4 py-3 border-b border-black/8 dark:border-border hover:bg-black/[0.03] dark:hover:bg-muted/30 transition-colors"
-            data-testid="button-thinking-toggle"
-          >
+          <div className="flex flex-col gap-1">
             <div className="flex items-center gap-2">
-              <motion.div
-                className="w-1.5 h-1.5 rounded-full bg-amber-400"
-                animate={{ opacity: [0.5, 1, 0.5] }}
-                transition={{ duration: 1.4, repeat: Infinity }}
-              />
-              <span className="text-muted-foreground text-[12px] font-medium tracking-wide uppercase">
-                Thinking
-              </span>
-            </div>
-            <motion.div
-              animate={{ rotate: isExpanded ? 0 : -90 }}
-              transition={{ duration: 0.25 }}
-              className="text-foreground/20"
-            >
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                <path
-                  d="M2 4L6 8L10 4"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </motion.div>
-          </button>
-
-          <AnimatePresence>
-            {isExpanded && (
-              <motion.div
-                className="px-4 py-3 flex flex-col gap-2"
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                {thoughts.map((t, i) => (
-                  <ThoughtLine
+              <div className="flex gap-[4px]">
+                {[0, 1, 2].map((i) => (
+                  <motion.div
                     key={i}
-                    text={t.text}
-                    delay={t.delay}
-                    dim={i < thoughts.length - 2}
+                    className="w-1.5 h-1.5 rounded-full bg-[#FF553E]"
+                    animate={{ opacity: [0.4, 1, 0.4], scale: [0.85, 1.15, 0.85] }}
+                    transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.25 }}
                   />
                 ))}
+              </div>
+              <p
+                className="text-[18px] font-semibold tracking-tight text-foreground"
+                style={{ animation: "heading-fade 2.8s ease-in-out infinite" }}
+              >
+                Finding your matches
+              </p>
+            </div>
+            <p className="text-[12px] text-muted-foreground/50 leading-snug">
+              Matching roles to your portfolio and preferences
+            </p>
+          </div>
+          <span className="text-[12px] text-muted-foreground/35 font-mono tabular-nums mt-0.5 flex-shrink-0">
+            {timer}s
+          </span>
+        </motion.div>
+
+        {/* Timeline */}
+        <div className="flex flex-col">
+          {steps.map((step, i) => {
+            if (i >= visibleCount) return null;
+            const isActive = i === visibleCount - 1;
+            const isDone   = i < visibleCount - 1;
+            const isLast   = i === steps.length - 1;
+            const detail   = step.getDetail?.() ?? null;
+            const isScanning = step.isScanning;
+
+            return (
+              <motion.div
+                key={i}
+                className="flex gap-3.5"
+                initial={{ opacity: 0, y: 6, filter: "blur(6px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+              >
+                {/* Dot + vertical connector */}
+                <div className="flex flex-col items-center flex-shrink-0" style={{ width: 16 }}>
+                  <div className="relative flex items-center justify-center" style={{ width: 16, height: 16 }}>
+                    {isActive ? (
+                      <>
+                        <motion.div
+                          className="absolute rounded-full border border-[#FF553E]/40"
+                          style={{ width: 14, height: 14 }}
+                          animate={{ scale: [1, 1.6, 1], opacity: [0.6, 0, 0.6] }}
+                          transition={{ duration: 1.6, repeat: Infinity, ease: "easeOut" }}
+                        />
+                        <div
+                          className="w-2 h-2 rounded-full bg-[#FF553E]"
+                          style={{ animation: "thinking-pulse 1.4s ease-in-out infinite" }}
+                        />
+                      </>
+                    ) : (
+                      <div
+                        className="w-1.5 h-1.5 rounded-full transition-all duration-500"
+                        style={{ background: isDone ? "hsl(var(--muted-foreground) / 0.35)" : "hsl(var(--border))" }}
+                      />
+                    )}
+                  </div>
+                  {!isLast && (
+                    <motion.div
+                      className="w-px"
+                      style={{
+                        height: 28,
+                        background: isDone
+                          ? "linear-gradient(to bottom, hsl(var(--muted-foreground) / 0.2), hsl(var(--muted-foreground) / 0.1))"
+                          : "linear-gradient(to bottom, hsl(var(--border) / 0.5), transparent)",
+                      }}
+                      initial={{ scaleY: 0, originY: 0 }}
+                      animate={{ scaleY: 1 }}
+                      transition={{ duration: 0.3, delay: 0.1 }}
+                    />
+                  )}
+                </div>
+
+                {/* Step text */}
+                <div className={`${isLast ? "pb-0" : "pb-1"} flex flex-col gap-0.5`} style={{ paddingTop: 1 }}>
+                  <p
+                    className="text-[13.5px] leading-snug transition-colors duration-500"
+                    style={{
+                      color: isActive
+                        ? "hsl(var(--foreground))"
+                        : isDone
+                        ? "hsl(var(--muted-foreground) / 0.55)"
+                        : "hsl(var(--foreground))",
+                      fontWeight: isActive ? 500 : 400,
+                    }}
+                  >
+                    {step.label}
+                  </p>
+
+                  <AnimatePresence mode="wait">
+                    {detail && (
+                      <motion.p
+                        key={detail}
+                        className="text-[11.5px]"
+                        style={{
+                          color: detail.includes("found") || detail === "indexed"
+                            ? "hsl(142 60% 42%)"
+                            : "hsl(var(--muted-foreground) / 0.5)",
+                        }}
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.25 }}
+                      >
+                        {isScanning && !detail.includes("found") && (
+                          <span className="inline-flex gap-[3px] items-center mr-1">
+                            {[0, 1, 2].map((j) => (
+                              <motion.span
+                                key={j}
+                                className="inline-block w-[3px] h-[3px] rounded-full bg-current"
+                                animate={{ opacity: [0.3, 1, 0.3] }}
+                                transition={{ duration: 0.9, repeat: Infinity, delay: j * 0.2 }}
+                              />
+                            ))}
+                          </span>
+                        )}
+                        {detail}
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
+                </div>
               </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
+            );
+          })}
+        </div>
 
-        <motion.div
-          className="flex gap-3"
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.4 }}
-        >
-          <PlatformCard
-            logo={<LinkedInLogo size={22} />}
-            name="LinkedIn"
-            status={liStatus}
-            count={liCount}
-            delay={0.4}
-          />
-          <PlatformCard
-            logo={<IndeedLogo size={22} />}
-            name="Indeed"
-            status={indeedStatus}
-            count={indeedCount}
-            delay={0.55}
-          />
-        </motion.div>
-
-        <motion.p
-          className="text-muted-foreground/50 text-[12px] text-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2, duration: 0.6 }}
-        >
-          Matching roles to your portfolio and preferences
-        </motion.p>
       </div>
     </motion.div>
   );

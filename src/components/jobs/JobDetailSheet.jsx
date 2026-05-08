@@ -1,5 +1,6 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
+import { useTheme } from "next-themes";
 import {
   MapPin, Briefcase, Monitor, Clock, Calendar, Sparkles,
   ChevronRight, FileText, PenLine, ThumbsUp, Mail, ExternalLink,
@@ -7,6 +8,7 @@ import {
 } from "lucide-react";
 import { FaLinkedin } from "react-icons/fa";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { CompanyLogo } from "./CompanyLogo";
 import { Gauge } from "@/components/ui/gauge-1";
 import { MatchGlowCard } from "@/components/ui/glowing-card";
@@ -51,6 +53,12 @@ function CopyButton({ text }) {
   );
 }
 
+function getScoreColor(score) {
+  if (score >= 85) return "#18A360";
+  if (score >= 70) return "#F5A623";
+  return "#E5534B";
+}
+
 export function JobDetailSheet({ job, open, onClose, profileId, pastReports = [], onViewReport, onCreditUsed }) {
   const lastJobRef = useRef(null);
   if (job) lastJobRef.current = job;
@@ -63,13 +71,21 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
 
   // ── AI Agent state — all hooks must be declared before any early return ──
   const [resumeLoading, setResumeLoading] = useState(false);
-  const [resumeResult,  setResumeResult]  = useState(null); // { customizedResume, changes }
+  const [resumeResult, setResumeResult] = useState(null); // { customizedResume, changes }
 
   const [letterLoading, setLetterLoading] = useState(false);
-  const [letterResult,  setLetterResult]  = useState(null); // { coverLetter }
+  const [letterResult, setLetterResult] = useState(null); // { coverLetter }
 
   const [fitLoading, setFitLoading] = useState(false);
-  const [fitResult,  setFitResult]  = useState(null); // { strengths, gaps, overallVerdict }
+  const [fitResult, setFitResult] = useState(null); // { strengths, gaps, overallVerdict }
+
+  // Clear AI results whenever a new job is opened
+  useEffect(() => {
+    if (!job) return;
+    setResumeResult(null);
+    setLetterResult(null);
+    setFitResult(null);
+  }, [job?.id]);
 
   if (!displayJob) return null;
 
@@ -126,7 +142,8 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
     }
     _postJobsInteract(profileId, displayJob.id, "applied");
   };
-
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
   return (
     <Sheet open={open} onOpenChange={(v) => !v && onClose()} modal={false}>
       <SheetContent
@@ -156,20 +173,29 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col items-center flex-shrink-0">
-                <Gauge
-                  value={displayJob.match}
-                  size={48}
-                  strokeWidth={8}
-                  gapPercent={3}
-                  primary="success"
-                  secondary="rgba(0,0,0,0.06)"
-                  showValue={true}
-                  showPercentage={false}
-                  className={{ textClassName: "fill-emerald-600 dark:fill-emerald-400" }}
-                />
-                <span className="text-sm text-foreground/40 mt-0.5">match</span>
-              </div>
+              <TooltipProvider delayDuration={300}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="flex-shrink-0 cursor-default">
+                      <Gauge
+                        value={displayJob.match}
+                        size={48}
+                        strokeWidth={8}
+                        gapPercent={3}
+                        primary={getScoreColor(displayJob.match)}
+                        secondary={isDark ? "rgba(255,255,255,0.14)" : "rgba(0,0,0,0.13)"}
+                        showValue={true}
+                        showPercentage={false}
+                        transition={{ delay: 200 }}
+                        className={{ textClassName: isDark ? "fill-white" : "fill-[#1A1A1A]" }}
+                      />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent side="top" className="text-[12px] bg-foreground text-background  ">
+                    Scored against your portfolio
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
 
             {/* Property rows */}
@@ -486,7 +512,7 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
               )}
             </div>
 
-            <MatchGlowCard reason={displayJob.reason} className="mt-4" />
+            <MatchGlowCard reason={displayJob.reason} match={displayJob.match} className="mt-4" />
           </div>
 
           {/* Description */}
@@ -497,17 +523,17 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
               </h3>
               <ReactMarkdown
                 components={{
-                  p:      ({ children }) => <p className="text-sm text-foreground/75 leading-[1.7] mb-3 last:mb-0">{children}</p>,
-                  h1:     ({ children }) => <h1 className="text-base font-semibold text-foreground mt-4 mb-2">{children}</h1>,
-                  h2:     ({ children }) => <h2 className="text-sm font-semibold text-foreground mt-4 mb-2">{children}</h2>,
-                  h3:     ({ children }) => <h3 className="text-sm font-medium text-foreground mt-3 mb-1">{children}</h3>,
-                  ul:     ({ children }) => <ul className="list-disc pl-5 mb-3 space-y-1">{children}</ul>,
-                  ol:     ({ children }) => <ol className="list-decimal pl-5 mb-3 space-y-1">{children}</ol>,
-                  li:     ({ children }) => <li className="text-sm text-foreground/75 leading-[1.6]">{children}</li>,
+                  p: ({ children }) => <p className="text-sm text-foreground/75 leading-[1.7] mb-3 last:mb-0">{children}</p>,
+                  h1: ({ children }) => <h1 className="text-base font-semibold text-foreground mt-4 mb-2">{children}</h1>,
+                  h2: ({ children }) => <h2 className="text-sm font-semibold text-foreground mt-4 mb-2">{children}</h2>,
+                  h3: ({ children }) => <h3 className="text-sm font-medium text-foreground mt-3 mb-1">{children}</h3>,
+                  ul: ({ children }) => <ul className="list-disc pl-5 mb-3 space-y-1">{children}</ul>,
+                  ol: ({ children }) => <ol className="list-decimal pl-5 mb-3 space-y-1">{children}</ol>,
+                  li: ({ children }) => <li className="text-sm text-foreground/75 leading-[1.6]">{children}</li>,
                   strong: ({ children }) => <strong className="font-semibold text-foreground/90">{children}</strong>,
-                  em:     ({ children }) => <em className="italic">{children}</em>,
-                  a:      ({ href, children }) => <a href={href} target="_blank" rel="noopener noreferrer" className="text-foreground underline underline-offset-2 hover:text-foreground/70 transition-colors">{children}</a>,
-                  hr:     () => <hr className="border-black/[0.06] dark:border-white/[0.06] my-3" />,
+                  em: ({ children }) => <em className="italic">{children}</em>,
+                  a: ({ href, children }) => <a href={href} target="_blank" rel="noopener noreferrer" className="text-foreground underline underline-offset-2 hover:text-foreground/70 transition-colors">{children}</a>,
+                  hr: () => <hr className="border-black/[0.06] dark:border-white/[0.06] my-3" />,
                   blockquote: ({ children }) => <blockquote className="border-l-2 border-foreground/20 pl-3 text-sm text-foreground/60 italic my-2">{children}</blockquote>,
                 }}
               >

@@ -3,7 +3,6 @@ import { AnimatePresence } from "framer-motion";
 import { TransitionScreen } from "./TransitionScreen";
 import { TypeRoom } from "./TypeRoom";
 import { ThinkingScreen } from "./ThinkingScreen";
-import { AhaMomentModal } from "./AhaMomentModal";
 import { Dashboard } from "./Dashboard";
 import { _getJobsQuestions, _getJobsHistory } from "@/network/jobs";
 
@@ -72,6 +71,7 @@ export function Jobs() {
               applied:   (columnsSource.applied   || []).map((id) => jobMap[id]).filter(Boolean),
               interview: (columnsSource.interview || []).map((id) => jobMap[id]).filter(Boolean),
               offer:     (columnsSource.offer     || []).map((id) => jobMap[id]).filter(Boolean),
+              archived:  (columnsSource.archived  || []).map((id) => jobMap[id]).filter(Boolean),
             };
 
             // Unplaced jobs (not in any pipeline column) go to picks
@@ -80,7 +80,7 @@ export function Jobs() {
             );
             restored.picks = historyJobs.filter((j) => !placedIds.has(j.id));
 
-            const hasPipelineData = ['saved','applied','interview','offer']
+            const hasPipelineData = ['saved','applied','interview','offer','archived']
               .some((c) => restored[c].length > 0);
             setInitialColumns(hasPipelineData ? restored : null);
           }
@@ -107,7 +107,7 @@ export function Jobs() {
     setJobs(fetchedJobs);
     setProfileId(pid);
     setQuizAnswers(answers);
-    setPhase("aha");
+    setPhase("dashboard");
   };
 
   // ── Loading ──────────────────────────────────────────────────────────────
@@ -195,8 +195,7 @@ export function Jobs() {
         )}
       </AnimatePresence>
 
-      {/* Dashboard lives behind the aha modal */}
-      {(phase === "aha" || phase === "dashboard") && (
+      {phase === "dashboard" && (
         <Dashboard
           initialJobs={jobs}
           initialColumns={initialColumns}
@@ -204,16 +203,6 @@ export function Jobs() {
           quizAnswers={quizAnswers}
         />
       )}
-
-      <AnimatePresence>
-        {phase === "aha" && (
-          <AhaMomentModal
-            jobCount={jobs.length}
-            answers={answers}
-            onConfirm={() => setPhase("dashboard")}
-          />
-        )}
-      </AnimatePresence>
     </>
   );
 }

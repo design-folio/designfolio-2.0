@@ -28,7 +28,7 @@ export function CreditsWidget({ refreshKey = 0 }) {
   return (
     <UsageBadge
       icon={<FlaskConical className="w-3.5 h-3.5 opacity-70" />}
-      planName="AI Balance"
+      planName="AI Credits"
       usage={balance ?? ''}
       tooltipContent={
         <p>{balance !== null ? `${balance} AI credits remaining.` : 'Loading…'}<br />Used for mock interviews &amp; scout chats.</p>

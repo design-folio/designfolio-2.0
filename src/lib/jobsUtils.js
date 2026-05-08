@@ -37,7 +37,8 @@ export const getSourceLabel = (source = "") =>
 // ── Salary display ──────────────────────────────────────────────────────────
 
 export const formatSalary = (salary) => {
-  if (!salary || (!salary.min && !salary.max)) return null;
+  if (!salary) return null;
+  if (!salary.min && !salary.max) return salary.raw ?? null;
   const currency = salary.currency ?? "";
   const period = salary.period ? `/ ${salary.period}` : "";
   if (salary.min && salary.max)

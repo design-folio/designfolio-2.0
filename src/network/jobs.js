@@ -29,8 +29,8 @@ export const _postJobsMore = (profileId) =>
   axiosInstance.post("/jobs/more", { profileId });
 
 // POST /jobs/scout — Scout AI chat; returns { reply: string }
-export const _postJobsScout = (profileId, jobId, message) =>
-  axiosInstance.post("/jobs/scout", { profileId, jobId, message });
+export const _postJobsScout = (profileId, jobId, message, history = []) =>
+  axiosInstance.post("/jobs/scout", { profileId, jobId, message, history });
 
 // POST /jobs/customize-resume — returns { customizedResume, changes[] }
 export const _postJobsCustomizeResume = (jobId, profileId) =>

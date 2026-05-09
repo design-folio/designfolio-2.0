@@ -9,7 +9,7 @@ export const JOB_CREDITS = {
     description: 'AI job rescan with fresh matches',
   },
   jobScout: {
-    cost: 0,
+    cost: 1,
     label: 'Scout',
     description: 'Ask Scout about a job',
   },

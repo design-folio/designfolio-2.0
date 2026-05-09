@@ -8,18 +8,12 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import MemoDFLogoV2 from "../icons/DFLogoV2";
+import { useGlobalContext } from "@/context/globalContext";
+import { isJobsBetaUser } from "@/lib/jobsBeta";
 
-const navItems = [
-  {
-    icon: LayoutTemplate,
-    label: "Portfolio Builder",
-    href: "/builder",
-  },
-  {
-    icon: Briefcase,
-    label: "Jobs",
-    href: "/jobs",
-  },
+const ALL_NAV_ITEMS = [
+  { icon: LayoutTemplate, label: "Portfolio Builder", href: "/builder" },
+  { icon: Briefcase,      label: "Jobs",              href: "/jobs"    },
 ];
 
 
@@ -29,6 +23,9 @@ const navItems = [
  */
 export function JobsFloatingNav() {
   const router = useRouter();
+  const { userDetails } = useGlobalContext();
+
+  if (!isJobsBetaUser(userDetails?.email)) return null;
 
   return (
     <TooltipProvider delayDuration={200}>
@@ -49,7 +46,7 @@ export function JobsFloatingNav() {
         <div className="w-5 h-px bg-border" />
 
         {/* Nav items */}
-        {navItems.map(({ icon: Icon, label, href }) => {
+        {ALL_NAV_ITEMS.map(({ icon: Icon, label, href }) => {
           const isActive =
             href === "/builder"
               ? router.pathname === "/builder"

@@ -1,7 +1,7 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Mic, MicOff, Phone, ChevronLeft } from "lucide-react";
-import { _postJobsInterviewSession } from "@/network/jobs";
+import { _postJobsInterviewSession, _deleteJobsInterviewSession } from "@/network/jobs";
 
 // Guard against missing package: import lazily
 let createClient = null;
@@ -15,18 +15,37 @@ try {
   // package not installed
 }
 
+function formatTime(ms) {
+  const totalSecs = Math.max(0, Math.floor(ms / 1000));
+  const m = Math.floor(totalSecs / 60).toString().padStart(2, "0");
+  const s = (totalSecs % 60).toString().padStart(2, "0");
+  return `${m}:${s}`;
+}
+
 export function MockInterviewRoom({ job, profileId, onEnd }) {
   const userVideoRef = useRef(null);
   const transcriptRef = useRef(null);
   const anamClientRef = useRef(null);
   const userStreamRef = useRef(null);
+  const timerRef = useRef(null);
+  const maxDurationMsRef = useRef(3 * 60 * 1000); // fallback 3 min (Anam plan limit)
 
   const [muted, setMuted] = useState(false);
-  const [status, setStatus] = useState("connecting");
+  const [status, setStatus] = useState("connecting"); // connecting | ready | error | busy
   const [transcript, setTranscript] = useState([]);
+  const [timeLeftMs, setTimeLeftMs] = useState(null);
+
+  const cleanup = useCallback(async (currentTranscript) => {
+    clearInterval(timerRef.current);
+    anamClientRef.current?.stopStreaming();
+    userStreamRef.current?.getTracks().forEach((t) => t.stop());
+    await _deleteJobsInterviewSession();
+    onEnd(currentTranscript);
+  }, [onEnd]);
 
   useEffect(() => {
     let mounted = true;
+    let localTranscript = [];
 
     const start = async () => {
       try {
@@ -42,14 +61,31 @@ export function MockInterviewRoom({ job, profileId, onEnd }) {
         if (!mounted) return;
 
         const tokenRes = await _postJobsInterviewSession(job.id, profileId);
-        const { sessionToken } = tokenRes.data;
+        const { sessionToken, maxDurationMs } = tokenRes.data;
         if (!mounted) return;
+
+        const duration = maxDurationMs ?? maxDurationMsRef.current;
+        maxDurationMsRef.current = duration;
+
+        // Start countdown
+        const deadline = Date.now() + duration;
+        setTimeLeftMs(duration);
+        timerRef.current = setInterval(() => {
+          const left = deadline - Date.now();
+          setTimeLeftMs(left);
+          if (left <= 0) {
+            clearInterval(timerRef.current);
+            // Auto-end: pass accumulated transcript
+            cleanup(localTranscript);
+          }
+        }, 1000);
 
         const client = createClient(sessionToken);
         anamClientRef.current = client;
 
         client.addListener(AnamEvent.MESSAGE_HISTORY_UPDATED, (messages) => {
-          if (mounted) setTranscript([...messages]);
+          localTranscript = [...messages];
+          if (mounted) setTranscript(localTranscript);
         });
 
         client.addListener(AnamEvent.VIDEO_PLAY_STARTED, () => {
@@ -63,17 +99,27 @@ export function MockInterviewRoom({ job, profileId, onEnd }) {
         await client.streamToVideoElement("anam-avatar-video", stream);
       } catch (err) {
         console.error("[MockInterview] start error:", err);
-        if (mounted) setStatus("error");
+        if (!mounted) return;
+        const code = err?.response?.status;
+        setStatus(code === 503 ? "busy" : "error");
+        // Release camera if we never got a session
+        userStreamRef.current?.getTracks().forEach((t) => t.stop());
       }
     };
 
     start();
     return () => {
       mounted = false;
+      clearInterval(timerRef.current);
       anamClientRef.current?.stopStreaming();
       userStreamRef.current?.getTracks().forEach((t) => t.stop());
+      _deleteJobsInterviewSession();
     };
-  }, [job.id, profileId]);
+  }, [job.id, profileId]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleEnd = useCallback(() => {
+    cleanup(transcript);
+  }, [cleanup, transcript]);
 
   const toggleMute = () => {
     if (muted) {
@@ -89,6 +135,8 @@ export function MockInterviewRoom({ job, profileId, onEnd }) {
       transcriptRef.current.scrollTop = transcriptRef.current.scrollHeight;
     }
   }, [transcript]);
+
+  const isWarning = timeLeftMs !== null && timeLeftMs <= 30 * 1000;
 
   return (
     <motion.div
@@ -109,8 +157,15 @@ export function MockInterviewRoom({ job, profileId, onEnd }) {
             </div>
           )}
           {status === "error" && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
+            <div className="absolute inset-0 flex flex-col items-center justify-center z-10 gap-3 px-6 text-center">
               <p className="text-red-400/80 text-[13px]">Connection failed. Please try again.</p>
+              <button onClick={() => onEnd([])} className="text-white/40 text-[12px] underline">Go back</button>
+            </div>
+          )}
+          {status === "busy" && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center z-10 gap-3 px-6 text-center">
+              <p className="text-amber-400/80 text-[13px]">Another interview is in progress. Please try again in a few minutes.</p>
+              <button onClick={() => onEnd([])} className="text-white/40 text-[12px] underline">Go back</button>
             </div>
           )}
           <video
@@ -123,6 +178,15 @@ export function MockInterviewRoom({ job, profileId, onEnd }) {
           <div className="absolute bottom-3 left-4 text-white/70 text-[13px] font-medium">
             Kevin · AI Interviewer
           </div>
+
+          {/* Timer */}
+          {timeLeftMs !== null && status === "ready" && (
+            <div className={`absolute top-3 right-3 text-[12px] font-mono font-medium px-2 py-1 rounded-md ${
+              isWarning ? "bg-red-500/20 text-red-400" : "bg-black/30 text-white/50"
+            }`}>
+              {formatTime(timeLeftMs)}
+            </div>
+          )}
         </div>
 
         {/* User camera */}
@@ -183,7 +247,7 @@ export function MockInterviewRoom({ job, profileId, onEnd }) {
       {/* Bottom navbar */}
       <div className="h-[56px] bg-[#1C1C1E] border-t border-white/[0.08] flex items-center justify-between px-4 flex-shrink-0">
         <button
-          onClick={() => onEnd(transcript)}
+          onClick={handleEnd}
           className="flex items-center gap-1.5 text-white/50 hover:text-white/80 transition-colors"
         >
           <ChevronLeft className="w-4 h-4" />
@@ -203,7 +267,7 @@ export function MockInterviewRoom({ job, profileId, onEnd }) {
             {muted ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
           </button>
           <button
-            onClick={() => onEnd(transcript)}
+            onClick={handleEnd}
             className="flex items-center gap-1.5 h-8 px-3.5 rounded-full bg-red-500 hover:bg-red-600 text-white text-[13px] font-medium transition-colors"
           >
             <Phone className="w-3.5 h-3.5" />

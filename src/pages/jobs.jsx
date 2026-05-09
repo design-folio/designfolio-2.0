@@ -13,10 +13,10 @@ function decodeJwtEmail(token) {
   }
 }
 
-export default function JobsPage() {
+export default function JobsPage({ isBetaUser }) {
   return (
     <>
-      <JobsFloatingNav />
+      <JobsFloatingNav isBetaUser={isBetaUser} />
       <Jobs />
     </>
   );
@@ -35,6 +35,7 @@ export async function getServerSideProps(context) {
     props: {
       ...(base.props ?? {}),
       hideHeader: true,
+      isBetaUser: true,
     },
   };
 }

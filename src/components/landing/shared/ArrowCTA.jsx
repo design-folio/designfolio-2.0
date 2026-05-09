@@ -8,9 +8,16 @@ import Link from "next/link";
  * Props:
  *  label   – button text
  *  size    – "lg" (default) | "sm"
- *  href    – link destination (default: /signup)
+ *  href    – link destination (optional)
+ *  onClick – click handler for action-only CTAs
  */
-export default function ArrowCTA({ label = "Get started for Free", size = "lg", href = "/signup" }) {
+export default function ArrowCTA({
+  label = "Get started for Free",
+  size = "lg",
+  href,
+  onClick,
+  className = "",
+}) {
   const isLg = size === "lg";
 
   const textCls = isLg
@@ -22,8 +29,8 @@ export default function ArrowCTA({ label = "Get started for Free", size = "lg", 
   const translateOut = isLg ? "group-hover:translate-x-8 group-hover:-translate-y-8" : "group-hover:translate-x-6 group-hover:-translate-y-6";
   const translateIn = isLg ? "-translate-x-10 translate-y-10" : "-translate-x-7 translate-y-7";
 
-  return (
-    <Link href={href} className="group inline-flex cursor-pointer items-center gap-0 rounded-full no-underline">
+  const content = (
+    <>
       <span
         className={`cursor-pointer rounded-full bg-[--lp-text] px-6 font-medium text-[--lp-fg-white] transition-colors duration-500 ease-in-out group-hover:bg-[--lp-accent-hover] group-hover:text-white whitespace-nowrap ${textCls}`}
         style={{ paddingLeft: isLg ? "24px" : "16px", paddingRight: isLg ? "24px" : "16px" }}
@@ -42,6 +49,22 @@ export default function ArrowCTA({ label = "Get started for Free", size = "lg", 
           strokeWidth={2.5}
         />
       </div>
-    </Link>
+    </>
+  );
+
+  const wrapperClass = `group inline-flex cursor-pointer items-center gap-0 rounded-full no-underline ${className}`.trim();
+
+  if (href) {
+    return (
+      <Link href={href} onClick={onClick} className={wrapperClass}>
+        {content}
+      </Link>
+    );
+  }
+
+  return (
+    <button type="button" onClick={onClick} className={wrapperClass}>
+      {content}
+    </button>
   );
 }

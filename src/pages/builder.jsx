@@ -41,6 +41,7 @@ import Canvas from "@/components/templates/Canvas";
 import Mono from "@/components/templates/Mono";
 import Chat from "@/components/templates/Chat";
 import Professional from "@/components/templates/Professional";
+import { JobsFloatingNav } from "@/components/jobs/JobsFloatingNav";
 
 export default function Index() {
   const {
@@ -284,6 +285,7 @@ export default function Index() {
               data-feedefy-userid={userDetails?.email}
             />
           )}
+          {userDetails && <JobsFloatingNav />}
         </div>
         <AppSidebar />
       </SidebarProvider>
@@ -387,6 +389,7 @@ export default function Index() {
             />
           )}
           {/* {!isMobile && <CourseCard />} */}
+          {userDetails && <JobsFloatingNav />}
         </main>
       </div>
       <AppSidebar />

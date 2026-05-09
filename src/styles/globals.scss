@@ -322,14 +322,29 @@
   --cursor-default: default;
   --cursor-pointer: pointer;
   --cursor-not-allowed: not-allowed;
-  --cursor-grab: "grab";
-  --cursor-grabbing: "grabbing";
+  --cursor-grab: grab;
+  --cursor-grabbing: grabbing;
 }
 
 *,
 *:before,
 *:after {
   @apply cursor-default;
+}
+
+[data-slot="kanban-item-handle"],
+[data-slot="kanban-item-handle"] *:not(button):not(a):not(input):not(select):not(textarea) {
+  cursor: grab !important;
+}
+
+[data-slot="kanban-item-handle"]:active,
+[data-slot="kanban-item-handle"]:active *:not(button):not(a):not(input):not(select):not(textarea) {
+  cursor: grabbing !important;
+}
+
+[data-slot="kanban-item-handle"] button,
+[data-slot="kanban-item-handle"] a {
+  cursor: pointer !important;
 }
 
 svg,
@@ -1207,3 +1222,5 @@ body.has-wallpaper,
 body.has-wallpaper #__next {
   background-color: transparent !important;
 }
+
+@import "./jobs.scss";

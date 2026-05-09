@@ -21,11 +21,12 @@ const ALL_NAV_ITEMS = [
  * Floating vertical navigation pill shown on /builder and /jobs pages.
  * Lets the user switch between Portfolio Builder and Jobs.
  */
-export function JobsFloatingNav() {
+export function JobsFloatingNav({ isBetaUser }) {
   const router = useRouter();
   const { userDetails } = useGlobalContext();
 
-  if (!isJobsBetaUser(userDetails?.email)) return null;
+  const visible = isBetaUser ?? isJobsBetaUser(userDetails?.email);
+  if (!visible) return null;
 
   return (
     <TooltipProvider delayDuration={200}>

@@ -242,7 +242,15 @@ export function Dashboard({
   const [completedReports, setCompletedReports] = useState({});
   const [viewingReport,    setViewingReport]    = useState(null);
   const [offerDecisionOpen,  setOfferDecisionOpen]  = useState(false);
-  const [archivedCollapsed,  setArchivedCollapsed]  = useState(false);
+  const [archivedCollapsed, setArchivedCollapsed] = useState(() => {
+    try { return localStorage.getItem('df_archived_collapsed') !== 'false'; } catch { return true; }
+  });
+  const handleToggleArchive = () => setArchivedCollapsed((v) => {
+    const next = !v;
+    try { localStorage.setItem('df_archived_collapsed', String(next)); } catch {}
+    return next;
+  });
+  const [picksCollapsed, setPicksCollapsed] = useState(false);
   const [creditsRefreshKey, setCreditsRefreshKey] = useState(0);
   const bumpCredits = useCallback(() => setCreditsRefreshKey(k => k + 1), []);
   const [creditBalance, setCreditBalance] = useState(null);
@@ -322,20 +330,22 @@ export function Dashboard({
     if (isRescanning || rescanExhausted || !profileId) return;
     setIsRescanning(true);
     try {
-      // Fire-and-forget Lambda; poll until new page of jobs is ready
+      // Fire-and-forget Lambda; poll page 0 — newly fetched high-scoring jobs
+      // bubble to the top due to score sorting, not to the "next" page
       await _postJobsMore(profileId);
       bumpCredits();
-      const page = Math.ceil((columns.picks || []).length / 10);
+      let foundNew = false;
       for (let i = 0; i < 60; i++) {
         await new Promise((r) => setTimeout(r, 5000));
-        const { data } = await _getJobsRecommendations(profileId, page);
+        const { data } = await _getJobsRecommendations(profileId, 0);
         if (data.status === "ready") {
           const newJobs = (data.jobs || []).filter((j) => !seenJobIds.current.has(j.id));
           if (newJobs.length) {
+            foundNew = true;
             newJobs.forEach((j) => seenJobIds.current.add(j.id));
             setColumns((prev) => ({ ...prev, picks: [...(prev.picks || []), ...newJobs] }));
           }
-          if (!data.hasMore) setRescanExhausted(true);
+          if (!foundNew) setRescanExhausted(true);
           break;
         }
         if (data.status === "exhausted") { setRescanExhausted(true); break; }
@@ -633,17 +643,18 @@ export function Dashboard({
           className="h-full"
         >
           <KanbanBoard className="flex h-full pt-4 pr-4 pb-4 pl-[108px]">
-            <div
+            <motion.div
               ref={picksRef}
+              animate={{ width: picksCollapsed ? 43 : (phase === "list" ? 420 : 350) }}
+              transition={{ duration: 0.48, ease: [0.22, 1, 0.36, 1] }}
               style={{
-                flex:          phase === "split" || phase === "settled" ? "0 0 350px" : "none",
-                width:         "350px",
-                maxWidth:      "350px",
+                flex:          phase === "split" || phase === "settled" ? "0 0 auto" : "none",
                 marginLeft:    phase === "split" || phase === "settled" ? 0 : centerMargin,
                 height:        "100%",
                 display:       "flex",
                 flexDirection: "column",
                 overflow:      "hidden",
+                flexShrink:    0,
               }}
             >
               <PipelineCol
@@ -658,8 +669,11 @@ export function Dashboard({
                 onExhausted={rescanExhausted ? undefined : handleFetchMore}
                 canFetchMore={creditBalance === null || creditBalance >= (JOB_CREDITS.jobRecommendation?.cost ?? 15)}
                 isRescanning={isRescanning}
+                isListPhase={phase === "list"}
+                isCollapsed={picksCollapsed}
+                onToggleCollapse={() => setPicksCollapsed((v) => !v)}
               />
-            </div>
+            </motion.div>
 
             {COL_ORDER.filter((c) => c !== "picks").map((colId, i) => (
               <motion.div
@@ -719,7 +733,7 @@ export function Dashboard({
                   onMockInterview={setInterviewJobId}
                   onAskScout={setScoutJobId}
                   collapsed={archivedCollapsed}
-                  onToggleCollapse={() => setArchivedCollapsed((v) => !v)}
+                  onToggleCollapse={handleToggleArchive}
                 />
               </motion.div>
             </motion.div>
@@ -732,9 +746,16 @@ export function Dashboard({
               if (variant === "item") {
                 const job = findJob(value);
                 if (job) {
+                  const inPicks = (columns.picks || []).some((j) => j.id === value);
                   return (
                     <div className="rounded-lg shadow-xl ring-1 ring-foreground/10 opacity-95 rotate-1 scale-[1.02]">
-                      <JobCard job={job} />
+                      <JobCard
+                        job={job}
+                        onShortlist={inPicks ? () => {} : undefined}
+                        onMockInterview={!inPicks ? () => {} : undefined}
+                        onAskScout={() => {}}
+                        onOpen={() => {}}
+                      />
                     </div>
                   );
                 }
@@ -755,6 +776,7 @@ export function Dashboard({
           if (selectedJob) setViewingReport({ job: selectedJob, entry });
         }}
         onCreditUsed={bumpCredits}
+        onStartMockInterview={selectedJobId ? () => { setInterviewJobId(selectedJobId); setSelectedJobId(null); } : undefined}
       />
       <MockInterviewDialog
         job={interviewJob}

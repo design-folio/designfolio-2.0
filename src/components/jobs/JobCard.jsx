@@ -7,7 +7,7 @@ import { CompanyLogo } from "./CompanyLogo";
 
 function getScoreColor(score) {
   if (score >= 85) return "#18A360";
-  if (score >= 70) return "#F5A623";
+  if (score >= 65) return "#F5A623";
   return "#E5534B";
 }
 
@@ -33,7 +33,7 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
               {job.role}
             </button>
             <div className="text-[12px] text-foreground/45 mt-0.5 truncate">
-              {job.company} · {job.location}
+              {job.company}
             </div>
           </div>
         </div>

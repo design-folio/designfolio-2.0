@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ChevronLeft, ChevronRight, Lock } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, Clapperboard, Lock } from "lucide-react";
 import Lottie from "lottie-react";
 import aiAssistantAnimation from "@/assets/AI-Assistant.json";
 import { KanbanColumn, KanbanColumnContent, KanbanItem, KanbanItemHandle } from "@/components/ui/kanban";
@@ -21,6 +21,8 @@ export function PipelineCol({
   onExhausted,      // undefined = exhausted (hide button); function = show "Get More" button
   canFetchMore = true, // false = insufficient credits — show locked state
   isRescanning = false,
+  isListPhase = false,
+  isCollapsed,
   collapsed,
   onToggleCollapse,
 }) {
@@ -71,8 +73,8 @@ export function PipelineCol({
         </motion.div>
       ))}
 
-      {/* Get More / Exhausted footer — picks column only */}
-      {isPicks && jobs.length > 0 && (
+      {/* Get More / Exhausted footer — picks column only, hidden in initial list view */}
+      {isPicks && !isListPhase && jobs.length > 0 && (
         <motion.div
           key="fetch-more-footer"
           layout
@@ -132,13 +134,19 @@ export function PipelineCol({
         </motion.div>
       )}
 
-      {jobs.length === 0 && !isRescanning && (
+      {jobs.length === 0 && !isRescanning && !isPicks && (
         <div className="flex items-center justify-center py-10 rounded-lg border border-dashed border-black/10 dark:border-border/50 mx-0.5">
           <p className="text-[11px] text-muted-foreground/40 text-center leading-relaxed">
             Drag a role here
             <br />
             to track it
           </p>
+        </div>
+      )}
+
+      {isPicks && jobs.length === 0 && !isRescanning && (
+        <div className="flex flex-col items-center gap-3 px-4 py-10 text-center">
+          <p className="text-[11px] text-muted-foreground/40">No roles found yet</p>
         </div>
       )}
 
@@ -159,21 +167,22 @@ export function PipelineCol({
     </AnimatePresence>
   );
 
-  // ── Archived column: morph layout (expanded ↔ collapsed) ─────────────────
+  // ── Collapsible columns: picks (isCollapsed) and archived (collapsed) ──────
+  const collapseActive = isPicks ? isCollapsed : collapsed;
   if (onToggleCollapse) {
     const morphEase = [0.22, 1, 0.36, 1];
     const morphDur = 0.42;
+    const colBgCollapsible = isPicks
+      ? "relative flex-1 rounded-xl bg-[#E8E3DC] dark:bg-[#141414] overflow-hidden h-full"
+      : "relative flex-1 rounded-xl bg-[#E2DDD6] dark:bg-[#141414] overflow-hidden h-full";
     return (
-      <KanbanColumn
-        value={colId}
-        className="relative flex-1 rounded-xl bg-[#E2DDD6] dark:bg-[#141414] overflow-hidden h-full"
-      >
+      <KanbanColumn value={colId} className={colBgCollapsible}>
         {/* Expanded state */}
         <motion.div
           className="absolute inset-0 flex flex-col"
-          animate={{ opacity: collapsed ? 0 : 1 }}
+          animate={{ opacity: collapseActive ? 0 : 1 }}
           transition={{ duration: morphDur, ease: morphEase }}
-          style={{ pointerEvents: collapsed ? "none" : "auto" }}
+          style={{ pointerEvents: collapseActive ? "none" : "auto" }}
         >
           <div className="flex items-center gap-2 px-4 pt-4 pb-2 flex-shrink-0 select-none">
             <span
@@ -187,13 +196,18 @@ export function PipelineCol({
                 {jobs.length}
               </span>
             )}
-            <button
-              onClick={onToggleCollapse}
-              className="cursor-pointer ml-auto w-6 h-6 flex items-center justify-center rounded-md hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
-              title="Collapse"
-            >
-              <ChevronLeft className="w-3.5 h-3.5 text-foreground/40" />
-            </button>
+            {isPicks && isRescanning && (
+              <span className="text-[10px] text-[#FF553E]/70">scanning…</span>
+            )}
+            {(!isPicks || !isListPhase) && (
+              <button
+                onClick={onToggleCollapse}
+                className="cursor-pointer ml-auto w-6 h-6 flex items-center justify-center rounded-md hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
+                title="Collapse"
+              >
+                <ChevronLeft className="w-3.5 h-3.5 text-foreground/40" />
+              </button>
+            )}
           </div>
           <KanbanColumnContent
             value={colId}
@@ -207,9 +221,9 @@ export function PipelineCol({
         {/* Collapsed state (thin strip) */}
         <motion.div
           className="absolute inset-0 flex flex-col items-center py-3 gap-2"
-          animate={{ opacity: collapsed ? 1 : 0 }}
+          animate={{ opacity: collapseActive ? 1 : 0 }}
           transition={{ duration: morphDur, ease: morphEase }}
-          style={{ pointerEvents: collapsed ? "auto" : "none" }}
+          style={{ pointerEvents: collapseActive ? "auto" : "none" }}
         >
           <button
             onClick={onToggleCollapse}
@@ -218,7 +232,7 @@ export function PipelineCol({
           >
             <ChevronRight className="w-3.5 h-3.5 text-foreground/50" />
           </button>
-          <div className="flex-1 flex flex-col items-center justify-center gap-2 min-h-0">
+          <div className="flex-1 flex flex-col items-center justify-center gap-3 min-h-0">
             <span
               className="font-jetbrains-mono text-[11px] font-semibold uppercase tracking-wider text-foreground select-none"
               style={{ writingMode: "vertical-rl", transform: "rotate(180deg)", opacity: 0.45 }}
@@ -226,7 +240,10 @@ export function PipelineCol({
               {COL_LABELS[colId]}
             </span>
             {jobs.length > 0 && (
-              <span className="text-[10px] font-semibold text-foreground/40 bg-black/[0.08] dark:bg-white/[0.08] rounded-full px-1.5 py-0.5 leading-none">
+              <span
+                className="font-jetbrains-mono text-[10px] font-semibold text-foreground/40 bg-black/[0.08] dark:bg-white/[0.08] rounded-full px-0.5 py-1.5 leading-none select-none"
+                style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
+              >
                 {jobs.length}
               </span>
             )}

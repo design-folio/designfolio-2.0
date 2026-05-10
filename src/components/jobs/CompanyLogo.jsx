@@ -33,11 +33,11 @@ export function CompanyLogo({ logoUrl, company = '', size = 42, className = '' }
 
   if (logoUrl && !imgFailed) {
     return (
-      <div className={`${base} bg-white border border-black/[0.06] dark:border-white/[0.08] flex items-center justify-center p-1`} style={style}>
+      <div className={`${base} border border-black/[0.06] dark:border-white/[0.08]`} style={style}>
         <img
           src={logoUrl}
           alt={company}
-          className="w-full h-full object-contain"
+          className="w-full h-full object-cover"
           onError={() => setImgFailed(true)}
         />
       </div>

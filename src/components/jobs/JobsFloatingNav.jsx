@@ -8,8 +8,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import MemoDFLogoV2 from "../icons/DFLogoV2";
+
+//TODO: TO LAUNCH JOBS FOR ALL USERS — remove this import and the isBetaUser guard below
+import { isBetaUser } from "@/lib/betaEnv";
 import { useGlobalContext } from "@/context/globalContext";
-import { isJobsBetaUser } from "@/lib/jobsBeta";
 
 const ALL_NAV_ITEMS = [
   { icon: LayoutTemplate, label: "Portfolio Builder", href: "/builder" },
@@ -17,15 +19,13 @@ const ALL_NAV_ITEMS = [
 ];
 
 
-/**
- * Floating vertical navigation pill shown on /builder and /jobs pages.
- * Lets the user switch between Portfolio Builder and Jobs.
- */
-export function JobsFloatingNav() {
+export function JobsFloatingNav({ betaUser }) {
   const router = useRouter();
   const { userDetails } = useGlobalContext();
 
-  if (!isJobsBetaUser(userDetails?.email)) return null;
+  //TODO: BETA GATE — remove this block when launching Jobs for all users
+  const canAccess = betaUser ?? isBetaUser(userDetails?.email);
+  if (!canAccess) return null;
 
   return (
     <TooltipProvider delayDuration={200}>

@@ -1,22 +1,28 @@
 import { getServerSideProps as loggedInServerSideProps } from "@/lib/loggedInServerSideProps";
 import { Jobs } from "@/components/jobs/index";
 import { JobsFloatingNav } from "@/components/jobs/JobsFloatingNav";
-import { isJobsBetaUser } from "@/lib/jobsBeta";
+// ─── BETA GATE ──────────────────────────────────────────────────────────────
+// TO LAUNCH JOBS FOR ALL USERS — remove in this order:
+//   1. Delete src/lib/betaEnv.js
+//   2. Remove this import + the betaUser prop below
+//   3. Remove the `if (!betaUser)` 404 guard below
+//   4. In JobsFloatingNav.jsx — remove the isBetaUser guard
+// ─────────────────────────────────────────────────────────────────────────────
+import { isBetaUser } from "@/lib/betaEnv";
 
-function decodeJwtEmail(token) {
+// Decodes email from a JWT without verifying the signature (safe for UI gating).
+function getEmailFromJwt(token) {
   try {
-    const raw = token.replace(/^Bearer\s+/i, '');
-    const payload = JSON.parse(Buffer.from(raw.split('.')[1], 'base64').toString('utf8'));
-    return payload.email ?? null;
+    return JSON.parse(Buffer.from(token.split(".")[1], "base64url").toString()).email ?? null;
   } catch {
     return null;
   }
 }
 
-export default function JobsPage() {
+export default function JobsPage({ betaUser }) {
   return (
     <>
-      <JobsFloatingNav />
+      <JobsFloatingNav betaUser={betaUser} />
       <Jobs />
     </>
   );
@@ -26,14 +32,14 @@ export async function getServerSideProps(context) {
   const base = await loggedInServerSideProps(context);
   if (base.redirect || base.notFound) return base;
 
-  const token = context.req.cookies['df-token'] ?? '';
-  const email = decodeJwtEmail(token);
-
-  if (!isJobsBetaUser(email)) return { notFound: true };
+  // BETA GATE — remove this block when launching Jobs for all users
+  const email = getEmailFromJwt(context.req.cookies["df-token"] || "");
+  if (!isBetaUser(email)) return { notFound: true };
 
   return {
     props: {
       ...(base.props ?? {}),
+      betaUser: true,
       hideHeader: true,
     },
   };

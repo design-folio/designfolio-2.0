@@ -162,11 +162,10 @@ export function TypeRoom({ questions, onDone, onReset }) {
                     key={s.label}
                     data-testid={`suggestion-${s.label.toLowerCase().replace(/\s+/g, "-")}`}
                     onClick={() => setRole(s.label)}
-                    className={`cursor-pointer px-4 py-2 rounded-full border text-[13px] transition-all duration-200 ${
-                      role === s.label
-                        ? "bg-foreground text-background border-foreground"
-                        : "border-border text-muted-foreground bg-background dark:bg-foreground/8 hover:border-foreground/30 hover:text-foreground"
-                    }`}
+                    className={`cursor-pointer px-4 py-2 rounded-full border text-[13px] transition-all duration-200 ${role === s.label
+                      ? "bg-foreground text-background border-foreground"
+                      : "border-border text-muted-foreground bg-background dark:bg-foreground/8 hover:border-foreground/30 hover:text-foreground"
+                      }`}
                   >
                     {s.label}
                   </button>
@@ -192,11 +191,10 @@ export function TypeRoom({ questions, onDone, onReset }) {
                     data-testid={`option-${option.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")}`}
                     onClick={() => handleLocationOption(option)}
                     whileTap={{ scale: 0.96 }}
-                    className={`cursor-pointer px-5 py-3 rounded-full border text-[14px] font-medium transition-all duration-200 ${
-                      locationChoice === option
-                        ? "bg-foreground text-background border-foreground"
-                        : "bg-background dark:bg-foreground/8 border-border text-foreground hover:border-foreground/40"
-                    }`}
+                    className={`cursor-pointer px-5 py-3 rounded-full border text-[14px] font-medium transition-all duration-200 ${locationChoice === option
+                      ? "bg-foreground text-background border-foreground"
+                      : "bg-background dark:bg-foreground/8 border-border text-foreground hover:border-foreground/40"
+                      }`}
                   >
                     {option}
                   </motion.button>
@@ -255,9 +253,9 @@ export function TypeRoom({ questions, onDone, onReset }) {
             className="cursor-pointer flex items-center gap-2 px-5 py-3 rounded-full text-[14px] font-medium transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed bg-foreground text-background"
           >
             {isLastStep ? (
-              <>Scan Jobs <Search className="w-4 h-4" /></>
+              <>Find matching Jobs <Search className="w-4 h-4" /></>
             ) : (
-              <>Next <ArrowRight className="w-4 h-4" /></>
+              <>Continue <ArrowRight className="w-4 h-4" /></>
             )}
           </motion.button>
         </div>

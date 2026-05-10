@@ -78,7 +78,7 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
           </div>
         </div>
 
-        {/* Score gauge — animated transition between analyzing and scored */}
+        {/* Score gauge — null=pending ring, number=gauge, undefined=no score (pipeline) */}
         <AnimatePresence mode="wait" initial={false}>
           {isAnalyzing ? (
             <motion.div
@@ -90,7 +90,7 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
             >
               <AnalyzingRing isDark={isDark} />
             </motion.div>
-          ) : (
+          ) : job.match !== undefined ? (
             <motion.div
               key="scored"
               initial={{ opacity: 0, scale: 0.7 }}
@@ -112,7 +112,7 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
                 className={{ textClassName: isDark ? "fill-white" : "fill-[#1A1A1A]" }}
               />
             </motion.div>
-          )}
+          ) : null}
         </AnimatePresence>
       </div>
 

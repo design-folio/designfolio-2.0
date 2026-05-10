@@ -38,7 +38,20 @@ const COL_DRAG_ACTION = {
 
 const DEFAULT_FILTERS = { workMode: "all", type: "all", minMatch: 0 };
 
-const LOCATION_OPTIONS = ["Location", "Remote only"];
+
+// Scan pages 0, 1, 2... collecting picks not in seenIds until maxCount found.
+// Needed because score-sort reshuffles page boundaries when new picks arrive —
+// a fixed page number would miss picks that crossed a page boundary.
+const findUnseenPicks = async (profileId, seenIds, maxCount = 10) => {
+  const found = [];
+  for (let page = 0; found.length < maxCount && page < 10; page++) {
+    const { data } = await _getJobsRecommendations(profileId, page, 10);
+    const unseen = (data.jobs || []).filter((j) => !seenIds.has(j.id));
+    found.push(...unseen);
+    if (!data.hasMore) break;
+  }
+  return found.slice(0, maxCount);
+};
 
 function FilterPill({ active, onClick, children }) {
   return (
@@ -73,38 +86,30 @@ function CriteriaEditor({ answers, onRescan, isRescanning }) {
     return () => clearTimeout(suggestTimerRef.current);
   }, [role]);
 
-  const [locationChoice, setLocationChoice] = useState(() => {
-    const raw = answers[1]?.answer || "";
-    if (raw === "Remote only") return "Remote only";
-    if (raw.includes(": ")) return "Location";
-    return null;
-  });
   const [city, setCity] = useState(() => {
     const raw = answers[1]?.answer || "";
+    if (raw === "Remote only") return "";
     if (raw.includes(": ")) return raw.split(": ").slice(1).join(": ");
-    return "";
+    return raw;
   });
 
   const isDirty = useMemo(() => {
-    const locAnswer = locationChoice === "Remote only"
-      ? "Remote only"
-      : locationChoice ? `${locationChoice}: ${city}` : "";
-    return (
-      role !== (answers[0]?.answer || "") ||
-      locAnswer !== (answers[1]?.answer || "")
-    );
-  }, [role, locationChoice, city, answers]);
+    const storedCity = (() => {
+      const raw = answers[1]?.answer || "";
+      if (raw === "Remote only") return "";
+      if (raw.includes(": ")) return raw.split(": ").slice(1).join(": ");
+      return raw;
+    })();
+    return role !== (answers[0]?.answer || "") || city !== storedCity;
+  }, [role, city, answers]);
 
-  const canRescan = role.trim().length > 0 &&
-    locationChoice !== null &&
-    (locationChoice === "Remote only" || city.trim().length > 0);
+  const canRescan = role.trim().length > 0;
 
   const handleRescan = () => {
     if (!canRescan || isRescanning) return;
     const newAnswers = [
-      { question: answers[0]?.question || "What role are you looking for next?", answer: role.trim() },
-      { question: answers[1]?.question || "Where are you open to working?",
-        answer: locationChoice === "Remote only" ? "Remote only" : `${locationChoice}: ${city.trim()}` },
+      { question: "What role are you looking for?", answer: role.trim() },
+      { question: answers[1]?.question || "Where are you open to working?", answer: city.trim() },
     ];
     onRescan(newAnswers);
   };
@@ -119,10 +124,11 @@ function CriteriaEditor({ answers, onRescan, isRescanning }) {
       <div className="divide-y divide-black/[0.04] dark:divide-border">
         {/* Role */}
         <div className="px-4 py-3">
-          <p className="text-[11px] text-foreground/40 mb-2">{answers[0]?.question || "Role"}</p>
+          <p className="text-[11px] text-foreground/40 mb-2">What role are you looking for?</p>
           <input
             value={role}
             onChange={(e) => setRole(e.target.value)}
+            onClick={(e) => e.target.select()}
             className="w-full bg-black/[0.03] dark:bg-white/[0.04] border border-black/[0.08] dark:border-border rounded-xl px-3 py-2 text-[13px] text-foreground outline-none focus:border-foreground/25 transition-colors"
           />
           <div className="flex flex-wrap gap-1.5 mt-2">
@@ -144,41 +150,14 @@ function CriteriaEditor({ answers, onRescan, isRescanning }) {
 
         {/* Location */}
         <div className="px-4 py-3">
-          <p className="text-[11px] text-foreground/40 mb-2">{answers[1]?.question || "Location"}</p>
-          <div className="flex flex-wrap gap-1.5">
-            {LOCATION_OPTIONS.map((opt) => (
-              <button
-                key={opt}
-                onClick={() => { setLocationChoice(opt); if (opt === "Remote only") setCity(""); }}
-                className={`text-[12px] font-medium px-3 py-1.5 rounded-full border transition-colors ${
-                  locationChoice === opt
-                    ? "bg-foreground text-background border-foreground"
-                    : "border-black/10 dark:border-border text-foreground/60 hover:border-foreground/30"
-                }`}
-              >
-                {opt}
-              </button>
-            ))}
-          </div>
-          <AnimatePresence>
-            {locationChoice && locationChoice !== "Remote only" && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className="mt-2 overflow-visible"
-              >
-                <LocationAutocomplete
-                  value={city}
-                  onChange={setCity}
-                  onSelect={setCity}
-                  placeholder="City name"
-                  size="sm"
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <p className="text-[11px] text-foreground/40 mb-2">Location</p>
+          <LocationAutocomplete
+            value={city}
+            onChange={setCity}
+            onSelect={setCity}
+            placeholder="City name"
+            size="sm"
+          />
         </div>
 
       </div>
@@ -232,6 +211,8 @@ export function Dashboard({
 
   // Track all job IDs ever shown to avoid duplicates when paginating
   const seenJobIds = useRef(new Set(initialJobs.map((j) => j.id)));
+  // Live picks count for the score-poll interval (avoids stale closure)
+  const picksLengthRef = useRef((initialJobs || []).length);
 
   const [selectedJobId,    setSelectedJobId]    = useState(null);
   const [interviewJobId,   setInterviewJobId]   = useState(null);
@@ -263,11 +244,20 @@ export function Dashboard({
     return () => { cancelled = true; };
   }, [creditsRefreshKey]);
 
-  // Poll for scores when any pick is unscored — stops when all scored or after 5 min
+  // Keep picksLengthRef current so the score-poll interval always fetches enough
+  useEffect(() => {
+    picksLengthRef.current = (columns.picks || []).length;
+  }, [columns.picks]);
+
+  // Poll for scores when any pick is unscored — stops when all scored or after 2 min
   useEffect(() => {
     if (!profileId) return;
-    const hasUnscored = () => (columns.picks || []).some((j) => j.match === null);
-    if (!hasUnscored()) return;
+    const picks = columns.picks || [];
+    if (!picks.some((j) => j.match === null)) return;
+    // fetchLimit is read from the ref inside the interval so it grows dynamically as
+    // the user clicks "Get More". Unscored picks always sort last (score=-1) in
+    // getRecommendations; a stale limit of 20 would miss them if >20 picks exist.
+    const fetchLimit = () => Math.max(20, picksLengthRef.current);
 
     let attempts = 0;
     const MAX = 24; // 24 × 5s = 2 min
@@ -275,7 +265,7 @@ export function Dashboard({
       attempts++;
       if (attempts > MAX) { clearInterval(interval); return; }
       try {
-        const { data } = await _getJobsRecommendations(profileId, 0);
+        const { data } = await _getJobsRecommendations(profileId, 0, fetchLimit());
         if (!data?.jobs?.length) return;
         setColumns((prev) => {
           const updatedPicks = (prev.picks || []).map((existing) => {
@@ -363,10 +353,8 @@ export function Dashboard({
     if (isRescanning || rescanExhausted || !profileId) return;
     setIsRescanning(true);
     try {
-      // Check if there are already more picks in DB before invoking Lambda
-      const nextPage = Math.floor((columns.picks || []).length / 10);
-      const { data: existing } = await _getJobsRecommendations(profileId, nextPage, 10);
-      const existingNew = (existing.jobs || []).filter((j) => !seenJobIds.current.has(j.id));
+      // Check if there are already unseen picks in DB — no Lambda needed
+      const existingNew = await findUnseenPicks(profileId, seenJobIds.current, 10);
 
       if (existingNew.length > 0) {
         existingNew.forEach((j) => seenJobIds.current.add(j.id));
@@ -379,23 +367,24 @@ export function Dashboard({
       bumpCredits();
 
       // Poll until Lambda appends new picks and sets status="ready"
+      let resolved = false;
       for (let i = 0; i < 60; i++) {
         await new Promise((r) => setTimeout(r, 5000));
         const { data } = await _getJobsRecommendations(profileId, 0);
         if (data.status === "ready") {
-          const lambdaPage = Math.floor((columns.picks || []).length / 10);
-          const { data: pageData } = await _getJobsRecommendations(profileId, lambdaPage, 10);
-          const newJobs = (pageData.jobs || []).filter((j) => !seenJobIds.current.has(j.id));
+          const newJobs = await findUnseenPicks(profileId, seenJobIds.current, 10);
           if (newJobs.length > 0) {
             newJobs.forEach((j) => seenJobIds.current.add(j.id));
             setColumns((prev) => ({ ...prev, picks: [...(prev.picks || []), ...newJobs] }));
           } else {
             setRescanExhausted(true);
           }
+          resolved = true;
           break;
         }
-        if (data.status === "exhausted") { setRescanExhausted(true); break; }
+        if (data.status === "exhausted") { setRescanExhausted(true); resolved = true; break; }
       }
+      if (!resolved) setRescanExhausted(true); // Lambda timed out — surface the message
     } catch (err) {
       console.error("[Jobs] fetchMore failed:", err);
     } finally {
@@ -630,7 +619,8 @@ export function Dashboard({
               side="bottom"
               align="start"
               sideOffset={8}
-              className="w-[340px] p-0 rounded-2xl border border-black/[0.08] dark:border-border shadow-xl bg-white dark:bg-card overflow-hidden"
+              onOpenAutoFocus={(e) => e.preventDefault()}
+              className="w-[340px] p-0 rounded-2xl border border-black/[0.08] dark:border-border shadow-xl bg-white dark:bg-card overflow-visible"
             >
               {currentAnswers.length > 0 ? (
                 <CriteriaEditor

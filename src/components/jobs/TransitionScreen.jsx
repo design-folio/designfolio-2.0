@@ -153,18 +153,18 @@ function AnimatedJobCount({ onDone }) {
       style={
         showGradient
           ? {
-              display: "inline-block",
-              whiteSpace: "nowrap",
-              fontVariantNumeric: "tabular-nums",
-              paddingRight: "0.08em",
-              color: "transparent",
-              WebkitBackgroundClip: "text",
-              backgroundClip: "text",
-              backgroundImage:
-                "linear-gradient(to right, var(--foreground) 0%, var(--foreground) 38%, #5D3560 52%, #E54D2E 62%, #F5A623 72%, var(--foreground) 86%, var(--foreground) 100%)",
-              backgroundSize: "300% 100%",
-              animation: "shimmer-text 3s ease-in-out forwards",
-            }
+            display: "inline-block",
+            whiteSpace: "nowrap",
+            fontVariantNumeric: "tabular-nums",
+            paddingRight: "0.08em",
+            color: "transparent",
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+            backgroundImage:
+              "linear-gradient(to right, var(--foreground) 0%, var(--foreground) 38%, #5D3560 52%, #E54D2E 62%, #F5A623 72%, var(--foreground) 86%, var(--foreground) 100%)",
+            backgroundSize: "300% 100%",
+            animation: "shimmer-text 3s ease-in-out forwards",
+          }
           : { display: "inline-block", whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums" }
       }
     >
@@ -204,7 +204,7 @@ export function TransitionScreen({ onType }) {
             jobs that match your profile.
           </h1>
           <p className="text-[16px] text-muted-foreground leading-relaxed font-light">
-            Now let&apos;s find the ones worth your time. Answer 3 quick questions and we&apos;ll narrow it down to your best matches.
+            Answer 2 quick questions and let AI rank the best matches based on your portfolio.
           </p>
         </div>
 
@@ -219,7 +219,7 @@ export function TransitionScreen({ onType }) {
             onClick={onType}
             className="cursor-pointer flex items-center gap-2 bg-foreground text-background font-medium text-[14px] px-7 py-3 rounded-full hover:bg-foreground/90 transition-all active:scale-[0.97]"
           >
-            Let&apos;s do it
+            Find my matches
             <ArrowRight className="w-4 h-4" />
           </button>
         </motion.div>

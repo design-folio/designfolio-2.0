@@ -147,15 +147,6 @@ export function PipelineCol({
       {isPicks && jobs.length === 0 && !isRescanning && (
         <div className="flex flex-col items-center gap-3 px-4 py-10 text-center">
           <p className="text-[11px] text-muted-foreground/40">No roles found yet</p>
-          {onMockInterview && (
-            <button
-              onClick={() => onMockInterview(null)}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-black/[0.08] dark:border-white/[0.08] bg-foreground/[0.03] hover:bg-foreground/[0.06] text-[12px] font-medium text-foreground/55 hover:text-foreground/80 transition-colors"
-            >
-              <Clapperboard className="w-3.5 h-3.5" />
-              Start mock interview
-            </button>
-          )}
         </div>
       )}
 
@@ -241,7 +232,7 @@ export function PipelineCol({
           >
             <ChevronRight className="w-3.5 h-3.5 text-foreground/50" />
           </button>
-          <div className="flex-1 flex flex-col items-center justify-center gap-2 min-h-0">
+          <div className="flex-1 flex flex-col items-center justify-center gap-3 min-h-0">
             <span
               className="font-jetbrains-mono text-[11px] font-semibold uppercase tracking-wider text-foreground select-none"
               style={{ writingMode: "vertical-rl", transform: "rotate(180deg)", opacity: 0.45 }}
@@ -249,7 +240,10 @@ export function PipelineCol({
               {COL_LABELS[colId]}
             </span>
             {jobs.length > 0 && (
-              <span className="text-[10px] font-semibold text-foreground/40 bg-black/[0.08] dark:bg-white/[0.08] rounded-full px-1.5 py-0.5 leading-none">
+              <span
+                className="font-jetbrains-mono text-[10px] font-semibold text-foreground/40 bg-black/[0.08] dark:bg-white/[0.08] rounded-full px-0.5 py-1.5 leading-none select-none"
+                style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
+              >
                 {jobs.length}
               </span>
             )}

@@ -233,7 +233,7 @@ function KanbanItem({ value, asChild = false, className, children, disabled }) {
         ref={setNodeRef}
         style={style}
         {...attributes}
-        className={cn(isSortableDragging && "opacity-40", disabled && "opacity-50", className)}
+        className={cn(disabled && "opacity-50", className)}
       >
         {children}
       </Comp>

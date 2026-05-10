@@ -55,11 +55,11 @@ function CopyButton({ text }) {
 
 function getScoreColor(score) {
   if (score >= 85) return "#18A360";
-  if (score >= 70) return "#F5A623";
+  if (score >= 65) return "#F5A623";
   return "#E5534B";
 }
 
-export function JobDetailSheet({ job, open, onClose, profileId, pastReports = [], onViewReport, onCreditUsed }) {
+export function JobDetailSheet({ job, open, onClose, profileId, pastReports = [], onViewReport, onCreditUsed, onStartMockInterview }) {
   const lastJobRef = useRef(null);
   if (job) lastJobRef.current = job;
   const displayJob = job ?? lastJobRef.current;
@@ -205,7 +205,7 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
                   <Calendar className="w-4 h-4 text-foreground/30" />
                   <span className="text-sm text-foreground/40">Posted</span>
                 </div>
-                <span className="text-sm text-foreground/70">
+                <span className="inline-flex items-center text-sm text-foreground/65 border border-black/[0.09] dark:border-white/[0.09] rounded-md px-2.5 py-0.5">
                   {toRelativeTime(displayJob.postedAt)}
                 </span>
               </div>
@@ -568,12 +568,21 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
             </div>
             <div className="h-px bg-black/[0.06] dark:bg-white/[0.06] mb-3" />
             {pastReports.length === 0 ? (
-              <div className="flex flex-col items-center justify-center gap-2 py-6 text-center">
+              <div className="flex flex-col items-center justify-center gap-3 py-6 text-center">
                 <Clapperboard className="w-7 h-7 text-foreground/15" />
                 <p className="text-[13px] text-foreground/35 leading-snug">
                   No sessions yet. Drag this job to<br />
                   <span className="font-medium text-foreground/50">Interview</span> to take a mock interview.
                 </p>
+                {onStartMockInterview && (
+                  <button
+                    onClick={onStartMockInterview}
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-black/[0.08] dark:border-white/[0.08] bg-foreground/[0.03] hover:bg-foreground/[0.06] text-[12px] font-medium text-foreground/55 hover:text-foreground/80 transition-colors"
+                  >
+                    <Clapperboard className="w-3.5 h-3.5" />
+                    Start mock interview
+                  </button>
+                )}
               </div>
             ) : (
               <div className="space-y-2">

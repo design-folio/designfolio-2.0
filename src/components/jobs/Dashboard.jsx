@@ -263,6 +263,36 @@ export function Dashboard({
     return () => { cancelled = true; };
   }, [creditsRefreshKey]);
 
+  // Poll for scores when any pick is unscored — stops when all scored or after 5 min
+  useEffect(() => {
+    if (!profileId) return;
+    const hasUnscored = () => (columns.picks || []).some((j) => j.match === null);
+    if (!hasUnscored()) return;
+
+    let attempts = 0;
+    const MAX = 60; // 60 × 5s = 5 min
+    const interval = setInterval(async () => {
+      attempts++;
+      if (attempts > MAX) { clearInterval(interval); return; }
+      try {
+        const { data } = await _getJobsRecommendations(profileId, 0);
+        if (!data?.jobs?.length) return;
+        setColumns((prev) => {
+          const updatedPicks = (prev.picks || []).map((existing) => {
+            const fresh = data.jobs.find((j) => j.id === existing.id);
+            if (!fresh || fresh.match === null) return existing;
+            return { ...existing, match: fresh.match, reason: fresh.reason, matchReasons: fresh.matchReasons, emotionalLabel: fresh.emotionalLabel };
+          });
+          return { ...prev, picks: updatedPicks };
+        });
+      } catch {}
+      if (!hasUnscored()) clearInterval(interval);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profileId, (columns.picks || []).some((j) => j.match === null)]);
+
   const hasRestoredPipeline = initialColumns
     ? ["saved", "applied", "interview", "offer", "archived"].some((c) => (initialColumns[c] || []).length > 0)
     : false;
@@ -304,6 +334,8 @@ export function Dashboard({
   }, [columns.saved, columns.applied, columns.interview, columns.offer, columns.archived, profileId]);
 
   const allJobs    = Object.values(columns).flat();
+  const allJobsRef = useRef(allJobs);
+  allJobsRef.current = allJobs;
   const findJob    = (id) => allJobs.find((j) => j.id === id);
   const selectedJob  = selectedJobId  ? allJobs.find((j) => j.id === selectedJobId)  ?? null : null;
   const interviewJob = interviewJobId ? allJobs.find((j) => j.id === interviewJobId) ?? null : null;
@@ -315,7 +347,7 @@ export function Dashboard({
     return (columns.picks || []).filter((job) => {
       if (filters.workMode !== "all" && job.workMode !== filters.workMode) return false;
       if (filters.type     !== "all" && job.type     !== filters.type)     return false;
-      if (job.match < filters.minMatch) return false;
+      if (job.match !== null && job.match < filters.minMatch) return false;
       return true;
     });
   }, [columns.picks, filters]);
@@ -390,6 +422,8 @@ export function Dashboard({
 
   const handleOpenJob = useCallback(
     (id) => {
+      const job = allJobsRef.current.find((j) => j.id === id);
+      if (!job || job.match === null) return;
       setSelectedJobId(id);
     },
     [],

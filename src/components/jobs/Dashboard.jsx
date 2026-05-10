@@ -280,8 +280,10 @@ export function Dashboard({
         setColumns((prev) => {
           const updatedPicks = (prev.picks || []).map((existing) => {
             const fresh = data.jobs.find((j) => j.id === existing.id);
-            if (!fresh || fresh.match === null) return existing;
-            return { ...existing, match: fresh.match, reason: fresh.reason, matchReasons: fresh.matchReasons, emotionalLabel: fresh.emotionalLabel };
+            if (!fresh) return existing;
+            const updates = { logoUrl: fresh.logoUrl || existing.logoUrl };
+            if (fresh.match !== null) Object.assign(updates, { match: fresh.match, reason: fresh.reason, matchReasons: fresh.matchReasons, emotionalLabel: fresh.emotionalLabel });
+            return { ...existing, ...updates };
           });
           return { ...prev, picks: updatedPicks };
         });
@@ -362,20 +364,24 @@ export function Dashboard({
     if (isRescanning || rescanExhausted || !profileId) return;
     setIsRescanning(true);
     try {
-      // Fire-and-forget Lambda; poll page 0 — newly fetched high-scoring jobs
-      // bubble to the top due to score sorting, not to the "next" page
       await _postJobsMore(profileId);
       bumpCredits();
       let foundNew = false;
+      // Poll until Lambda marks status="ready"
       for (let i = 0; i < 60; i++) {
         await new Promise((r) => setTimeout(r, 5000));
         const { data } = await _getJobsRecommendations(profileId, 0);
         if (data.status === "ready") {
-          const newJobs = (data.jobs || []).filter((j) => !seenJobIds.current.has(j.id));
-          if (newJobs.length) {
-            foundNew = true;
-            newJobs.forEach((j) => seenJobIds.current.add(j.id));
-            setColumns((prev) => ({ ...prev, picks: [...(prev.picks || []), ...newJobs] }));
+          // New unscored jobs (score=-1) sort to bottom — paginate pages 0-2 with
+          // limit=20 so we don't miss jobs that fall off the default page 0 top-10
+          for (let page = 0; page <= 2; page++) {
+            const { data: pageData } = await _getJobsRecommendations(profileId, page, 20);
+            const newJobs = (pageData.jobs || []).filter((j) => !seenJobIds.current.has(j.id));
+            if (newJobs.length) {
+              foundNew = true;
+              newJobs.forEach((j) => seenJobIds.current.add(j.id));
+              setColumns((prev) => ({ ...prev, picks: [...(prev.picks || []), ...newJobs] }));
+            }
           }
           if (!foundNew) setRescanExhausted(true);
           break;
@@ -387,7 +393,7 @@ export function Dashboard({
     } finally {
       setIsRescanning(false);
     }
-  }, [isRescanning, rescanExhausted, profileId, columns.picks, bumpCredits]);
+  }, [isRescanning, rescanExhausted, profileId, bumpCredits]);
 
   const handleRescan = useCallback(async (answers = currentAnswers) => {
     if (isRescanning) return;

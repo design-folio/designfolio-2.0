@@ -366,24 +366,22 @@ export function Dashboard({
     try {
       await _postJobsMore(profileId);
       bumpCredits();
-      let foundNew = false;
-      // Poll until Lambda marks status="ready"
+
+      // Poll until Lambda appends new picks and sets status="ready"
       for (let i = 0; i < 60; i++) {
         await new Promise((r) => setTimeout(r, 5000));
         const { data } = await _getJobsRecommendations(profileId, 0);
         if (data.status === "ready") {
-          // New unscored jobs (score=-1) sort to bottom — paginate pages 0-2 with
-          // limit=20 so we don't miss jobs that fall off the default page 0 top-10
-          for (let page = 0; page <= 2; page++) {
-            const { data: pageData } = await _getJobsRecommendations(profileId, page, 20);
-            const newJobs = (pageData.jobs || []).filter((j) => !seenJobIds.current.has(j.id));
-            if (newJobs.length) {
-              foundNew = true;
-              newJobs.forEach((j) => seenJobIds.current.add(j.id));
-              setColumns((prev) => ({ ...prev, picks: [...(prev.picks || []), ...newJobs] }));
-            }
+          // Fetch the next page based on how many picks are already displayed
+          const nextPage = Math.floor((columns.picks || []).length / 10);
+          const { data: pageData } = await _getJobsRecommendations(profileId, nextPage, 10);
+          const newJobs = (pageData.jobs || []).filter((j) => !seenJobIds.current.has(j.id));
+          if (newJobs.length > 0) {
+            newJobs.forEach((j) => seenJobIds.current.add(j.id));
+            setColumns((prev) => ({ ...prev, picks: [...(prev.picks || []), ...newJobs] }));
+          } else {
+            setRescanExhausted(true);
           }
-          if (!foundNew) setRescanExhausted(true);
           break;
         }
         if (data.status === "exhausted") { setRescanExhausted(true); break; }
@@ -393,7 +391,7 @@ export function Dashboard({
     } finally {
       setIsRescanning(false);
     }
-  }, [isRescanning, rescanExhausted, profileId, bumpCredits]);
+  }, [isRescanning, rescanExhausted, profileId, columns.picks, bumpCredits]);
 
   const handleRescan = useCallback(async (answers = currentAnswers) => {
     if (isRescanning) return;

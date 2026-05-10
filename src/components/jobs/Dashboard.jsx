@@ -270,7 +270,7 @@ export function Dashboard({
     if (!hasUnscored()) return;
 
     let attempts = 0;
-    const MAX = 60; // 60 × 5s = 5 min
+    const MAX = 24; // 24 × 5s = 2 min
     const interval = setInterval(async () => {
       attempts++;
       if (attempts > MAX) { clearInterval(interval); return; }
@@ -288,7 +288,6 @@ export function Dashboard({
           return { ...prev, picks: updatedPicks };
         });
       } catch {}
-      if (!hasUnscored()) clearInterval(interval);
     }, 5000);
 
     return () => clearInterval(interval);
@@ -364,6 +363,18 @@ export function Dashboard({
     if (isRescanning || rescanExhausted || !profileId) return;
     setIsRescanning(true);
     try {
+      // Check if there are already more picks in DB before invoking Lambda
+      const nextPage = Math.floor((columns.picks || []).length / 10);
+      const { data: existing } = await _getJobsRecommendations(profileId, nextPage, 10);
+      const existingNew = (existing.jobs || []).filter((j) => !seenJobIds.current.has(j.id));
+
+      if (existingNew.length > 0) {
+        existingNew.forEach((j) => seenJobIds.current.add(j.id));
+        setColumns((prev) => ({ ...prev, picks: [...(prev.picks || []), ...existingNew] }));
+        return;
+      }
+
+      // No more existing picks — trigger Lambda to fetch fresh jobs
       await _postJobsMore(profileId);
       bumpCredits();
 
@@ -372,9 +383,8 @@ export function Dashboard({
         await new Promise((r) => setTimeout(r, 5000));
         const { data } = await _getJobsRecommendations(profileId, 0);
         if (data.status === "ready") {
-          // Fetch the next page based on how many picks are already displayed
-          const nextPage = Math.floor((columns.picks || []).length / 10);
-          const { data: pageData } = await _getJobsRecommendations(profileId, nextPage, 10);
+          const lambdaPage = Math.floor((columns.picks || []).length / 10);
+          const { data: pageData } = await _getJobsRecommendations(profileId, lambdaPage, 10);
           const newJobs = (pageData.jobs || []).filter((j) => !seenJobIds.current.has(j.id));
           if (newJobs.length > 0) {
             newJobs.forEach((j) => seenJobIds.current.add(j.id));

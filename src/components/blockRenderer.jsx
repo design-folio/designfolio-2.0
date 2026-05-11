@@ -8,6 +8,7 @@ import DOMPurifyLib from "dompurify";
 // DOMPurify requires window, so we need to handle SSR
 const DOMPurify = typeof window !== "undefined" ? DOMPurifyLib : { sanitize: (html) => html };
 import he from "he";
+import { cn } from "@/lib/utils";
 // Custom list renderer component
 const CustomListRenderer = React.memo(({ items, listType = "unordered" }) => {
   const ListTag = listType === "unordered" ? "ul" : "ol";
@@ -130,9 +131,8 @@ const RenderImageBlock = React.memo(({ block }) => {
           <img
             src={block?.data?.file?.url}
             alt="project image"
-            className={`w-full h-full ${getClassNames} rounded-[20px] object-cover transition-opacity duration-100 mt-6 md:mt-8 ${
-              isImageLoaded ? "opacity-100" : "opacity-0"
-            }`}
+            className={`w-full h-full ${getClassNames} rounded-[20px] object-cover transition-opacity duration-100 mt-6 md:mt-8 ${isImageLoaded ? "opacity-100" : "opacity-0"
+              }`}
             loading="lazy"
             fetchPriority="high"
             decoding="async"
@@ -218,7 +218,7 @@ const BlockRenderer = ({ editorJsData, className }) => {
   );
 
   return (
-    <div className={cn("bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words project-editor", className)}>
+    <div className={cn("bg-card shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words project-editor", className)}>
       <Blocks
         data={editorJsData}
         config={{

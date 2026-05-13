@@ -291,7 +291,7 @@ export default function Index({
       ) : (
         <main className="min-h-screen">
           {projectContent}
-          {!project?.pro && (
+          {!ownerUser?.pro && (
             <div
               className={`text-center flex justify-center fixed bottom-0 left-0 right-0 lg:left-1/2 lg:-translate-x-1/2 lg:bottom-[24px] lg:right-[unset] mb-2 xl:block cursor-pointer`}
               onClick={() =>

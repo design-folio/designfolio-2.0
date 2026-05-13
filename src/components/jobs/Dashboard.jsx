@@ -146,7 +146,6 @@ function CriteriaEditor({ answers, onRescan, isRescanning }) {
           </div>
         </div>
 
-        {/* Location */}
         <div className="px-4 py-3">
           <p className="text-[11px] text-foreground/40 mb-2">Location</p>
           <LocationAutocomplete
@@ -206,9 +205,7 @@ export function Dashboard({
   const [isRescanning, setIsRescanning] = useState(false);
   const [rescanExhausted, setRescanExhausted] = useState(false);
 
-  // Track all job IDs ever shown to avoid duplicates when paginating
   const seenJobIds = useRef(new Set(initialJobs.map((j) => j.id)));
-  // Live picks count for the score-poll interval (avoids stale closure)
   const picksLengthRef = useRef((initialJobs || []).length);
 
   const [selectedJobId, setSelectedJobId] = useState(null);
@@ -229,6 +226,9 @@ export function Dashboard({
     return next;
   });
   const [picksCollapsed, setPicksCollapsed] = useState(false);
+  const [showJoyride, setShowJoyride] = useState(() => {
+    try { return !localStorage.getItem('df_jobs_joyride_seen'); } catch { return false; }
+  });
   const [creditsRefreshKey, setCreditsRefreshKey] = useState(0);
   const bumpCredits = useCallback(() => setCreditsRefreshKey(k => k + 1), []);
   const [creditBalance, setCreditBalance] = useState(null);
@@ -241,26 +241,22 @@ export function Dashboard({
     return () => { cancelled = true; };
   }, [creditsRefreshKey]);
 
-  // Keep picksLengthRef current so the score-poll interval always fetches enough
   useEffect(() => {
     picksLengthRef.current = (columns.picks || []).length;
   }, [columns.picks]);
 
-  // Poll for scores when any pick is unscored — stops when all scored or after 2 min
+  // Polls every 5s while any pick has match===null.
+  // Auto-stops when the dependency flips to false (all scored).
+  // 10-min safety cap covers scores that genuinely never arrive.
   useEffect(() => {
     if (!profileId) return;
-    const picks = columns.picks || [];
-    if (!picks.some((j) => j.match === null)) return;
-    // fetchLimit is read from the ref inside the interval so it grows dynamically as
-    // the user clicks "Get More". Unscored picks always sort last (score=-1) in
-    // getRecommendations; a stale limit of 20 would miss them if >20 picks exist.
-    const fetchLimit = () => Math.max(20, picksLengthRef.current);
+    if (!(columns.picks || []).some((j) => j.match === null)) return;
 
-    let attempts = 0;
-    const MAX = 24; // 24 × 5s = 2 min
+    const fetchLimit = () => Math.max(20, picksLengthRef.current);
+    let safetyCount = 0;
+
     const interval = setInterval(async () => {
-      attempts++;
-      if (attempts > MAX) { clearInterval(interval); return; }
+      if (++safetyCount > 120) { clearInterval(interval); return; }
       try {
         const { data } = await _getJobsRecommendations(profileId, 0, fetchLimit());
         if (!data?.jobs?.length) return;
@@ -269,7 +265,8 @@ export function Dashboard({
             const fresh = data.jobs.find((j) => j.id === existing.id);
             if (!fresh) return existing;
             const updates = { logoUrl: fresh.logoUrl || existing.logoUrl };
-            if (fresh.match !== null) Object.assign(updates, { match: fresh.match, reason: fresh.reason, matchReasons: fresh.matchReasons, emotionalLabel: fresh.emotionalLabel });
+            if (fresh.match !== null && existing.match === null)
+              Object.assign(updates, { match: fresh.match, reason: fresh.reason, matchReasons: fresh.matchReasons, emotionalLabel: fresh.emotionalLabel });
             return { ...existing, ...updates };
           });
           return { ...prev, picks: updatedPicks };
@@ -301,7 +298,6 @@ export function Dashboard({
   }, []);
 
 
-  // Persist pipeline column assignments (job IDs) for cross-navigation restore
   useEffect(() => {
     if (!profileId) return;
     try {
@@ -346,11 +342,9 @@ export function Dashboard({
   ].filter(Boolean).length;
 
   const handleFetchMore = useCallback(async () => {
-    console.log("[Jobs] handleFetchMore called", { isRescanning, rescanExhausted, profileId });
     if (isRescanning || rescanExhausted || !profileId) return;
     setIsRescanning(true);
     try {
-      // Check if there are already unseen picks in DB — no Lambda needed
       const existingNew = await findUnseenPicks(profileId, seenJobIds.current, 10);
 
       if (existingNew.length > 0) {
@@ -359,7 +353,6 @@ export function Dashboard({
         return;
       }
 
-      // No more existing picks — check credits before triggering Lambda
       const creditCost = JOB_CREDITS.jobRecommendation?.cost ?? 15;
       if (creditBalance !== null && creditBalance < creditCost) {
         toast.error(`Not enough credits. You need ${creditCost} credits to fetch more matches.`, { autoClose: 5000 });
@@ -369,7 +362,6 @@ export function Dashboard({
       await _postJobsMore(profileId);
       bumpCredits();
 
-      // Poll until Lambda appends new picks and sets status="ready"
       let resolved = false;
       for (let i = 0; i < 60; i++) {
         await new Promise((r) => setTimeout(r, 5000));
@@ -387,9 +379,8 @@ export function Dashboard({
         }
         if (data.status === "exhausted") { setRescanExhausted(true); resolved = true; break; }
       }
-      if (!resolved) setRescanExhausted(true); // Lambda timed out — surface the message
-    } catch (err) {
-      console.error("[Jobs] fetchMore failed:", err);
+      if (!resolved) setRescanExhausted(true);
+    } catch {
     } finally {
       setIsRescanning(false);
     }
@@ -407,7 +398,6 @@ export function Dashboard({
       setProfileId(newProfileId);
       setCurrentAnswers(answers);
 
-      // Poll until ready — up to 5 min (60 × 5s), matching handleFetchMore
       let resolved = false;
       for (let i = 0; i < 60; i++) {
         await new Promise((r) => setTimeout(r, 5000));
@@ -424,8 +414,7 @@ export function Dashboard({
       if (!resolved) {
         toast.info("Still scanning in the background — check back in a minute.", { autoClose: 6000 });
       }
-    } catch (err) {
-      console.error("[Jobs] Rescan failed:", err);
+    } catch {
     } finally {
       setIsRescanning(false);
     }
@@ -440,8 +429,14 @@ export function Dashboard({
     [],
   );
 
+  const dismissJoyride = useCallback(() => {
+    try { localStorage.setItem('df_jobs_joyride_seen', '1'); } catch { }
+    setShowJoyride(false);
+  }, []);
+
   const handleShortlist = useCallback(
     (id) => {
+      dismissJoyride();
       setColumns((prev) => {
         const fromCol = Object.keys(prev).find((col) => prev[col].some((j) => j.id === id));
         if (!fromCol) return prev;
@@ -526,14 +521,12 @@ export function Dashboard({
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
-      {/* ── Top filter bar ──────────────────────────────────────────────── */}
       <div className="flex flex-shrink-0 pl-[108px] pr-4 mt-6 mb-2 items-center">
         <div
           ref={filterBarRef}
           className="flex items-center gap-2"
           style={{ marginLeft: phase === "list" || phase === "shrinking" ? centerMargin : 0 }}
         >
-          {/* Prompt pill */}
           <div className="flex items-center gap-2.5 bg-white dark:bg-card border border-black/8 dark:border-border rounded-full pl-1.5 pr-4 h-9 text-sm text-foreground min-w-0 max-w-[360px] select-none">
             <Avatar className="w-6 h-6 flex-shrink-0 border border-black/10 dark:border-white/10">
               <AvatarFallback className="text-[10px]">AI</AvatarFallback>
@@ -541,7 +534,6 @@ export function Dashboard({
             <span className="truncate text-[13px]">{promptSummary}</span>
           </div>
 
-          {/* Score methodology info */}
           <TooltipProvider delayDuration={200}>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -562,7 +554,6 @@ export function Dashboard({
             </Tooltip>
           </TooltipProvider>
 
-          {/* ── Filters + Criteria — hidden in list-only (AI picks) view ── */}
           {phase === "split" && <><Popover>
             <PopoverTrigger asChild>
               <button
@@ -625,7 +616,6 @@ export function Dashboard({
             </PopoverContent>
           </Popover>
 
-            {/* ── Criteria popover — now editable ─────────────────────────── */}
             <Popover>
               <PopoverTrigger asChild>
                 <button
@@ -665,20 +655,17 @@ export function Dashboard({
               </PopoverContent>
             </Popover></>}
 
-          {/* Exhausted notice */}
           {rescanExhausted && (
             <span className="text-[11px] text-muted-foreground/50 px-2">
               No more new roles found
             </span>
           )}
         </div>
-        {/* Credits widget — right extreme */}
         <div className="ml-auto">
           <CreditsWidget refreshKey={creditsRefreshKey} />
         </div>
       </div>
 
-      {/* ── Kanban board ────────────────────────────────────────────────── */}
       <div className="flex-1 min-h-0 overflow-x-auto overflow-y-hidden">
         <Kanban
           value={columns}
@@ -691,11 +678,9 @@ export function Dashboard({
               const newIds = (newCols[colId] || []).map((j) => j.id);
               const prevSet = new Set(prevIds);
 
-              // Cross-column move: a new job entered this column
               const entered = newIds.filter((id) => !prevSet.has(id));
               entered.forEach((id) => _postJobsInteract(profileId, id, action));
 
-              // Within-column reorder: same set of IDs but different order
               if (
                 entered.length === 0 &&
                 newIds.length === prevIds.length &&
@@ -738,6 +723,7 @@ export function Dashboard({
                 isListPhase={phase === "list"}
                 isCollapsed={picksCollapsed}
                 onToggleCollapse={() => setPicksCollapsed((v) => !v)}
+                joyrideActive={showJoyride}
               />
             </motion.div>
 
@@ -771,7 +757,6 @@ export function Dashboard({
               </motion.div>
             ))}
 
-            {/* Archived column — always last, collapsible */}
             <motion.div
               className="overflow-hidden flex-shrink-0 h-full"
               initial={{ maxWidth: 0, opacity: 0 }}

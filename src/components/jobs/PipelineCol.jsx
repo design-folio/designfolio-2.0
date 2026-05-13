@@ -23,6 +23,7 @@ export function PipelineCol({
   isCollapsed,
   collapsed,
   onToggleCollapse,
+  joyrideActive = false,
 }) {
   const isPicks = colId === "picks";
   const isInterview = colId === "interview";
@@ -38,7 +39,7 @@ export function PipelineCol({
 
   const cardList = (
     <AnimatePresence mode="popLayout" initial={false}>
-      {jobs.map((job) => (
+      {jobs.map((job, idx) => (
         <motion.div
           key={job.id}
           layout
@@ -65,6 +66,8 @@ export function PipelineCol({
                 onDismiss={onDismiss ? () => onDismiss(job.id) : undefined}
                 onMockInterview={!isPicks ? () => onMockInterview(job.id) : undefined}
                 onAskScout={() => onAskScout(job.id)}
+                joyrideActive={isPicks && joyrideActive}
+                joyrideFirst={isPicks && joyrideActive && idx === 0}
               />
             </KanbanItemHandle>
           </KanbanItem>

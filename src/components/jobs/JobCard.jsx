@@ -42,7 +42,7 @@ function AnalyzingRing({ isDark }) {
   );
 }
 
-export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, onAskScout }) {
+export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, onAskScout, joyrideActive = false, joyrideFirst = false }) {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
   const isAnalyzing = job.match === null;
@@ -129,13 +129,25 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
         </span>
       </div>
 
+      {/* Joyride tooltip — dark pill with downward caret pointing at Shortlist button */}
+      {joyrideFirst && (
+        <div className="flex items-start">
+          <div className="relative">
+            <div className="bg-[#1a1a1a] dark:bg-white text-white dark:text-[#1a1a1a] text-[11px] font-medium px-3 py-1.5 rounded-lg leading-none whitespace-nowrap">
+              Shortlist jobs you want to track →
+            </div>
+            <div className="absolute left-4 top-full w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[5px] border-t-[#1a1a1a] dark:border-t-white" />
+          </div>
+        </div>
+      )}
+
       {/* Action row */}
       {onShortlist ? (
         <div className="flex items-center gap-1.5">
           <button
             data-testid={`button-shortlist-${job.id}`}
             onClick={(e) => { e.stopPropagation(); onShortlist(); }}
-            className="flex items-center gap-1.5 h-8 px-3 rounded-full border border-black/[0.08] dark:border-white/[0.1] bg-black/[0.04] dark:bg-white/[0.06] text-[12px] font-medium text-foreground/65 hover:text-foreground hover:border-black/[0.15] dark:hover:border-white/[0.18] transition-colors"
+            className={`flex items-center gap-1.5 h-8 px-3 rounded-full border border-black/[0.08] dark:border-white/[0.1] bg-black/[0.04] dark:bg-white/[0.06] text-[12px] font-medium text-foreground/65 hover:text-foreground hover:border-black/[0.15] dark:hover:border-white/[0.18] transition-colors${joyrideActive ? " joyride-btn-glow" : ""}`}
           >
             <Bookmark className="w-3 h-3" />
             Shortlist

@@ -226,6 +226,9 @@ export function Dashboard({
     return next;
   });
   const [picksCollapsed, setPicksCollapsed] = useState(false);
+  const [showJoyride, setShowJoyride] = useState(() => {
+    try { return !localStorage.getItem('df_jobs_joyride_seen'); } catch { return false; }
+  });
   const [creditsRefreshKey, setCreditsRefreshKey] = useState(0);
   const bumpCredits = useCallback(() => setCreditsRefreshKey(k => k + 1), []);
   const [creditBalance, setCreditBalance] = useState(null);
@@ -426,8 +429,14 @@ export function Dashboard({
     [],
   );
 
+  const dismissJoyride = useCallback(() => {
+    try { localStorage.setItem('df_jobs_joyride_seen', '1'); } catch { }
+    setShowJoyride(false);
+  }, []);
+
   const handleShortlist = useCallback(
     (id) => {
+      dismissJoyride();
       setColumns((prev) => {
         const fromCol = Object.keys(prev).find((col) => prev[col].some((j) => j.id === id));
         if (!fromCol) return prev;
@@ -714,6 +723,7 @@ export function Dashboard({
                 isListPhase={phase === "list"}
                 isCollapsed={picksCollapsed}
                 onToggleCollapse={() => setPicksCollapsed((v) => !v)}
+                joyrideActive={showJoyride}
               />
             </motion.div>
 

@@ -1,11 +1,13 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from "react";
+import { toast } from "react-toastify";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { SlidersHorizontal, Sparkles, RotateCcw, Search } from "lucide-react";
+import { SlidersHorizontal, Sparkles, RotateCcw, Search, Info } from "lucide-react";
 import { LocationAutocomplete } from "./LocationAutocomplete";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Kanban, KanbanBoard, KanbanOverlay } from "@/components/ui/kanban";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { COL_ORDER } from "@/data/jobs";
 import { PipelineCol } from "./PipelineCol";
 import { JobDetailSheet } from "./JobDetailSheet";
@@ -20,20 +22,20 @@ import { CreditsWidget } from "./CreditsWidget";
 import { creditBadge, JOB_CREDITS } from "@/data/jobCredits";
 
 const buildColumns = (jobs) => ({
-  picks:     jobs ?? [],
-  saved:     [],
-  applied:   [],
+  picks: jobs ?? [],
+  saved: [],
+  applied: [],
   interview: [],
-  offer:     [],
-  archived:  [],
+  offer: [],
+  archived: [],
 });
 
 const COL_DRAG_ACTION = {
-  saved:     "saved",
-  applied:   "applied",
+  saved: "saved",
+  applied: "applied",
   interview: "interview",
-  offer:     "offer",
-  archived:  "archived",
+  offer: "offer",
+  archived: "archived",
 };
 
 const DEFAULT_FILTERS = { workMode: "all", type: "all", minMatch: 0 };
@@ -57,11 +59,10 @@ function FilterPill({ active, onClick, children }) {
   return (
     <button
       onClick={onClick}
-      className={`text-[12px] font-medium px-3 py-1.5 rounded-full border transition-colors ${
-        active
-          ? "bg-foreground text-background border-foreground"
-          : "border-black/10 dark:border-border text-foreground/60 hover:border-foreground/30 hover:text-foreground"
-      }`}
+      className={`text-[12px] font-medium px-3 py-1.5 rounded-full border transition-colors ${active
+        ? "bg-foreground text-background border-foreground"
+        : "border-black/10 dark:border-border text-foreground/60 hover:border-foreground/30 hover:text-foreground"
+        }`}
     >
       {children}
     </button>
@@ -69,7 +70,7 @@ function FilterPill({ active, onClick, children }) {
 }
 
 function CriteriaEditor({ answers, onRescan, isRescanning }) {
-  const [role,           setRole]           = useState(answers[0]?.answer || "");
+  const [role, setRole] = useState(answers[0]?.answer || "");
   const [roleSuggestions, setRoleSuggestions] = useState([]);
   const suggestTimerRef = useRef(null);
 
@@ -88,7 +89,6 @@ function CriteriaEditor({ answers, onRescan, isRescanning }) {
 
   const [city, setCity] = useState(() => {
     const raw = answers[1]?.answer || "";
-    if (raw === "Remote only") return "";
     if (raw.includes(": ")) return raw.split(": ").slice(1).join(": ");
     return raw;
   });
@@ -96,7 +96,6 @@ function CriteriaEditor({ answers, onRescan, isRescanning }) {
   const isDirty = useMemo(() => {
     const storedCity = (() => {
       const raw = answers[1]?.answer || "";
-      if (raw === "Remote only") return "";
       if (raw.includes(": ")) return raw.split(": ").slice(1).join(": ");
       return raw;
     })();
@@ -136,11 +135,10 @@ function CriteriaEditor({ answers, onRescan, isRescanning }) {
               <button
                 key={s.label}
                 onClick={() => setRole(s.label)}
-                className={`text-[11px] px-2.5 py-1 rounded-full border transition-colors ${
-                  role === s.label
-                    ? "bg-foreground text-background border-foreground"
-                    : "border-black/10 dark:border-border text-foreground/50 hover:border-foreground/30"
-                }`}
+                className={`text-[11px] px-2.5 py-1 rounded-full border transition-colors ${role === s.label
+                  ? "bg-foreground text-background border-foreground"
+                  : "border-black/10 dark:border-border text-foreground/50 hover:border-foreground/30"
+                  }`}
               >
                 {s.label}
               </button>
@@ -167,18 +165,17 @@ function CriteriaEditor({ answers, onRescan, isRescanning }) {
         <button
           onClick={handleRescan}
           disabled={!canRescan || !isDirty || isRescanning}
-          className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-[13px] font-semibold transition-all ${
-            isDirty && canRescan && !isRescanning
-              ? "bg-foreground text-background hover:bg-foreground/90 cursor-pointer"
-              : "bg-black/[0.05] dark:bg-white/[0.06] text-foreground/40 cursor-not-allowed"
-          }`}
+          className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-[13px] font-semibold transition-all ${isDirty && canRescan && !isRescanning
+            ? "bg-foreground text-background hover:bg-foreground/90 cursor-pointer"
+            : "bg-black/[0.05] dark:bg-white/[0.06] text-foreground/40 cursor-not-allowed"
+            }`}
         >
           {isRescanning ? (
             <>
               <div className="flex gap-[3px]">
-                {[0,1,2].map(i => (
+                {[0, 1, 2].map(i => (
                   <motion.div key={i} className="w-1 h-1 rounded-full bg-current"
-                    animate={{ opacity: [0.3,1,0.3] }} transition={{ duration: 0.9, repeat: Infinity, delay: i * 0.2 }} />
+                    animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 0.9, repeat: Infinity, delay: i * 0.2 }} />
                 ))}
               </div>
               Scanning…
@@ -197,16 +194,16 @@ function CriteriaEditor({ answers, onRescan, isRescanning }) {
 }
 
 export function Dashboard({
-  initialJobs      = [],
-  initialColumns   = null,
-  profileId:       initialProfileId = null,
-  quizAnswers      = [],
+  initialJobs = [],
+  initialColumns = null,
+  profileId: initialProfileId = null,
+  quizAnswers = [],
 }) {
-  const [columns,        setColumns]        = useState(() => initialColumns ?? buildColumns(initialJobs));
-  const [profileId,      setProfileId]      = useState(initialProfileId);
+  const [columns, setColumns] = useState(() => initialColumns ?? buildColumns(initialJobs));
+  const [profileId, setProfileId] = useState(initialProfileId);
   const [currentAnswers, setCurrentAnswers] = useState(quizAnswers);
-  const [filters,        setFilters]        = useState(DEFAULT_FILTERS);
-  const [isRescanning,   setIsRescanning]   = useState(false);
+  const [filters, setFilters] = useState(DEFAULT_FILTERS);
+  const [isRescanning, setIsRescanning] = useState(false);
   const [rescanExhausted, setRescanExhausted] = useState(false);
 
   // Track all job IDs ever shown to avoid duplicates when paginating
@@ -214,21 +211,21 @@ export function Dashboard({
   // Live picks count for the score-poll interval (avoids stale closure)
   const picksLengthRef = useRef((initialJobs || []).length);
 
-  const [selectedJobId,    setSelectedJobId]    = useState(null);
-  const [interviewJobId,   setInterviewJobId]   = useState(null);
-  const [roomJobId,        setRoomJobId]        = useState(null);
-  const [scoutJobId,       setScoutJobId]       = useState(null);
-  const [reportJobId,      setReportJobId]      = useState(null);
-  const [reportLoading,    setReportLoading]    = useState(false);
+  const [selectedJobId, setSelectedJobId] = useState(null);
+  const [interviewJobId, setInterviewJobId] = useState(null);
+  const [roomJobId, setRoomJobId] = useState(null);
+  const [scoutJobId, setScoutJobId] = useState(null);
+  const [reportJobId, setReportJobId] = useState(null);
+  const [reportLoading, setReportLoading] = useState(false);
   const [completedReports, setCompletedReports] = useState({});
-  const [viewingReport,    setViewingReport]    = useState(null);
-  const [offerDecisionOpen,  setOfferDecisionOpen]  = useState(false);
+  const [viewingReport, setViewingReport] = useState(null);
+  const [offerDecisionOpen, setOfferDecisionOpen] = useState(false);
   const [archivedCollapsed, setArchivedCollapsed] = useState(() => {
     try { return localStorage.getItem('df_archived_collapsed') !== 'false'; } catch { return true; }
   });
   const handleToggleArchive = () => setArchivedCollapsed((v) => {
     const next = !v;
-    try { localStorage.setItem('df_archived_collapsed', String(next)); } catch {}
+    try { localStorage.setItem('df_archived_collapsed', String(next)); } catch { }
     return next;
   });
   const [picksCollapsed, setPicksCollapsed] = useState(false);
@@ -240,7 +237,7 @@ export function Dashboard({
     let cancelled = false;
     _getJobCredits()
       .then((res) => { if (!cancelled) setCreditBalance(res.data?.balance ?? 0); })
-      .catch(() => {});
+      .catch(() => { });
     return () => { cancelled = true; };
   }, [creditsRefreshKey]);
 
@@ -277,11 +274,11 @@ export function Dashboard({
           });
           return { ...prev, picks: updatedPicks };
         });
-      } catch {}
+      } catch { }
     }, 5000);
 
     return () => clearInterval(interval);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profileId, (columns.picks || []).some((j) => j.match === null)]);
 
   const hasRestoredPipeline = initialColumns
@@ -289,14 +286,14 @@ export function Dashboard({
     : false;
 
   const [phase, setPhase] = useState(() => hasRestoredPipeline ? "split" : "list");
-  const picksRef     = useRef(null);
+  const picksRef = useRef(null);
   const filterBarRef = useRef(null);
 
   const [centerMargin, setCenterMargin] = useState(0);
   useEffect(() => {
     const compute = () => {
       const available = window.innerWidth - 108 - 16;
-      setCenterMargin(Math.max(0, Math.floor((available - 350) / 2)));
+      setCenterMargin(Math.max(0, Math.floor((available - 500) / 2)));
     };
     compute();
     window.addEventListener("resize", compute);
@@ -309,11 +306,11 @@ export function Dashboard({
     if (!profileId) return;
     try {
       const ids = {
-        saved:     (columns.saved     || []).map((j) => j.id),
-        applied:   (columns.applied   || []).map((j) => j.id),
+        saved: (columns.saved || []).map((j) => j.id),
+        applied: (columns.applied || []).map((j) => j.id),
         interview: (columns.interview || []).map((j) => j.id),
-        offer:     (columns.offer     || []).map((j) => j.id),
-        archived:  (columns.archived  || []).map((j) => j.id),
+        offer: (columns.offer || []).map((j) => j.id),
+        archived: (columns.archived || []).map((j) => j.id),
       };
       const hasAny = Object.values(ids).some((a) => a.length > 0);
       if (hasAny) {
@@ -321,23 +318,23 @@ export function Dashboard({
       } else {
         sessionStorage.removeItem(`df_pipeline_${profileId}`);
       }
-    } catch {}
+    } catch { }
   }, [columns.saved, columns.applied, columns.interview, columns.offer, columns.archived, profileId]);
 
-  const allJobs    = Object.values(columns).flat();
+  const allJobs = Object.values(columns).flat();
   const allJobsRef = useRef(allJobs);
   allJobsRef.current = allJobs;
-  const findJob    = (id) => allJobs.find((j) => j.id === id);
-  const selectedJob  = selectedJobId  ? allJobs.find((j) => j.id === selectedJobId)  ?? null : null;
+  const findJob = (id) => allJobs.find((j) => j.id === id);
+  const selectedJob = selectedJobId ? allJobs.find((j) => j.id === selectedJobId) ?? null : null;
   const interviewJob = interviewJobId ? allJobs.find((j) => j.id === interviewJobId) ?? null : null;
-  const roomJob      = roomJobId      ? allJobs.find((j) => j.id === roomJobId)      ?? null : null;
-  const scoutJob     = scoutJobId     ? allJobs.find((j) => j.id === scoutJobId)     ?? null : null;
-  const reportJob    = reportJobId    ? allJobs.find((j) => j.id === reportJobId)    ?? null : null;
+  const roomJob = roomJobId ? allJobs.find((j) => j.id === roomJobId) ?? null : null;
+  const scoutJob = scoutJobId ? allJobs.find((j) => j.id === scoutJobId) ?? null : null;
+  const reportJob = reportJobId ? allJobs.find((j) => j.id === reportJobId) ?? null : null;
 
   const filteredPicks = useMemo(() => {
     return (columns.picks || []).filter((job) => {
       if (filters.workMode !== "all" && job.workMode !== filters.workMode) return false;
-      if (filters.type     !== "all" && job.type     !== filters.type)     return false;
+      if (filters.type !== "all" && job.type !== filters.type) return false;
       if (job.match !== null && job.match < filters.minMatch) return false;
       return true;
     });
@@ -362,7 +359,13 @@ export function Dashboard({
         return;
       }
 
-      // No more existing picks — trigger Lambda to fetch fresh jobs
+      // No more existing picks — check credits before triggering Lambda
+      const creditCost = JOB_CREDITS.jobRecommendation?.cost ?? 15;
+      if (creditBalance !== null && creditBalance < creditCost) {
+        toast.error(`Not enough credits. You need ${creditCost} credits to fetch more matches.`, { autoClose: 5000 });
+        return;
+      }
+
       await _postJobsMore(profileId);
       bumpCredits();
 
@@ -390,7 +393,7 @@ export function Dashboard({
     } finally {
       setIsRescanning(false);
     }
-  }, [isRescanning, rescanExhausted, profileId, columns.picks, bumpCredits]);
+  }, [isRescanning, rescanExhausted, profileId, columns.picks, bumpCredits, creditBalance]);
 
   const handleRescan = useCallback(async (answers = currentAnswers) => {
     if (isRescanning) return;
@@ -404,17 +407,22 @@ export function Dashboard({
       setProfileId(newProfileId);
       setCurrentAnswers(answers);
 
-      // Poll until ready — keep pipeline columns; only replace picks
-      for (let i = 0; i < 30; i++) {
-        await new Promise((r) => setTimeout(r, 3000));
+      // Poll until ready — up to 5 min (60 × 5s), matching handleFetchMore
+      let resolved = false;
+      for (let i = 0; i < 60; i++) {
+        await new Promise((r) => setTimeout(r, 5000));
         const { data: pollData } = await _getJobsRecommendations(newProfileId);
         if (pollData.status === "ready") {
           const newPicks = pollData.jobs || [];
           newPicks.forEach((j) => seenJobIds.current.add(j.id));
           setColumns((prev) => ({ ...prev, picks: newPicks }));
+          resolved = true;
           break;
         }
-        if (pollData.status === "exhausted") break;
+        if (pollData.status === "exhausted") { resolved = true; break; }
+      }
+      if (!resolved) {
+        toast.info("Still scanning in the background — check back in a minute.", { autoClose: 6000 });
       }
     } catch (err) {
       console.error("[Jobs] Rescan failed:", err);
@@ -441,7 +449,7 @@ export function Dashboard({
         return {
           ...prev,
           [fromCol]: prev[fromCol].filter((j) => j.id !== id),
-          saved:     [{ ...job }, ...(prev.saved || [])],
+          saved: [{ ...job }, ...(prev.saved || [])],
         };
       });
       _postJobsInteract(profileId, id, "saved");
@@ -450,34 +458,34 @@ export function Dashboard({
 
       const CARD_EXIT_MS = 480;
       const ease = "cubic-bezier(0.22, 1, 0.36, 1)";
-      const dur  = "0.65s";
+      const dur = "0.65s";
 
       setTimeout(() => {
-        const el       = picksRef.current;
+        const el = picksRef.current;
         const filterEl = filterBarRef.current;
 
         if (el) {
           const currentWidth = el.getBoundingClientRect().width;
           el.style.transition = "none";
-          el.style.flex       = "none";
-          el.style.width      = `${currentWidth}px`;
+          el.style.flex = "none";
+          el.style.width = `${currentWidth}px`;
           el.style.marginLeft = `${centerMargin}px`;
           void el.offsetWidth;
           el.style.transition = `width ${dur} ${ease}, margin-left ${dur} ${ease}`;
-          el.style.width      = "350px";
+          el.style.width = "350px";
           el.style.marginLeft = "0px";
         }
         if (filterEl) {
-          filterEl.style.transition  = "none";
-          filterEl.style.marginLeft  = `${centerMargin}px`;
+          filterEl.style.transition = "none";
+          filterEl.style.marginLeft = `${centerMargin}px`;
           void filterEl.offsetWidth;
-          filterEl.style.transition  = `margin-left ${dur} ${ease}`;
-          filterEl.style.marginLeft  = "0px";
+          filterEl.style.transition = `margin-left ${dur} ${ease}`;
+          filterEl.style.marginLeft = "0px";
         }
         setPhase("shrinking");
 
         setTimeout(() => {
-          if (el)       { el.style.transition = ""; el.style.width = ""; el.style.flex = ""; el.style.marginLeft = ""; }
+          if (el) { el.style.transition = ""; el.style.width = ""; el.style.flex = ""; el.style.marginLeft = ""; }
           if (filterEl) { filterEl.style.transition = ""; filterEl.style.marginLeft = ""; }
           setPhase("settled");
         }, 700);
@@ -532,6 +540,27 @@ export function Dashboard({
             </Avatar>
             <span className="truncate text-[13px]">{promptSummary}</span>
           </div>
+
+          {/* Score methodology info */}
+          <TooltipProvider delayDuration={200}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button className="flex-shrink-0 flex items-center justify-center w-9 h-9 rounded-full border border-black/[0.08] dark:border-border bg-white dark:bg-card text-foreground/40 hover:text-foreground/70 transition-colors cursor-pointer">
+                  <Info className="w-3.5 h-3.5" aria-hidden="true" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" align="start" className="max-w-[240px] text-[12px] leading-relaxed p-3 bg-foreground text-background">
+                <p className="font-semibold mb-2">How match scores work</p>
+                <p className="text-background/60 mb-2">Each role is scored against your portfolio based on:</p>
+                <ul className="space-y-1 text-background/60 list-disc pl-3.5">
+                  <li>Role title alignment</li>
+                  <li>Skill &amp; tool overlap</li>
+                  <li>Seniority &amp; experience fit</li>
+                  <li>Industry relevance</li>
+                </ul>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
 
           {/* ── Filters + Criteria — hidden in list-only (AI picks) view ── */}
           {phase === "split" && <><Popover>
@@ -596,45 +625,45 @@ export function Dashboard({
             </PopoverContent>
           </Popover>
 
-          {/* ── Criteria popover — now editable ─────────────────────────── */}
-          <Popover>
-            <PopoverTrigger asChild>
-              <button
-                data-testid="button-criteria"
-                className="flex-shrink-0 flex items-center gap-1.5 h-9 px-4 rounded-full border border-black/[0.08] dark:border-border bg-white dark:bg-card text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer"
+            {/* ── Criteria popover — now editable ─────────────────────────── */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <button
+                  data-testid="button-criteria"
+                  className="flex-shrink-0 flex items-center gap-1.5 h-9 px-4 rounded-full border border-black/[0.08] dark:border-border bg-white dark:bg-card text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer"
+                >
+                  <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
+                  Criteria
+                  {currentAnswers.length > 0 && !isRescanning && (
+                    <span className="flex items-center justify-center w-4 h-4 rounded-full bg-foreground text-background text-[10px] font-semibold">
+                      {currentAnswers.filter(a => a.answer).length}
+                    </span>
+                  )}
+                  {isRescanning && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#FF553E] animate-pulse" />
+                  )}
+                </button>
+              </PopoverTrigger>
+              <PopoverContent
+                side="bottom"
+                align="start"
+                sideOffset={8}
+                onOpenAutoFocus={(e) => e.preventDefault()}
+                className="w-[340px] p-0 rounded-2xl border border-black/[0.08] dark:border-border shadow-xl bg-white dark:bg-card overflow-visible"
               >
-                <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
-                Criteria
-                {currentAnswers.length > 0 && !isRescanning && (
-                  <span className="flex items-center justify-center w-4 h-4 rounded-full bg-foreground text-background text-[10px] font-semibold">
-                    {currentAnswers.filter(a => a.answer).length}
-                  </span>
+                {currentAnswers.length > 0 ? (
+                  <CriteriaEditor
+                    answers={currentAnswers}
+                    onRescan={handleRescan}
+                    isRescanning={isRescanning}
+                  />
+                ) : (
+                  <div className="px-4 py-6 text-center">
+                    <p className="text-[12px] text-muted-foreground/50">No criteria recorded for this session.</p>
+                  </div>
                 )}
-                {isRescanning && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#FF553E] animate-pulse" />
-                )}
-              </button>
-            </PopoverTrigger>
-            <PopoverContent
-              side="bottom"
-              align="start"
-              sideOffset={8}
-              onOpenAutoFocus={(e) => e.preventDefault()}
-              className="w-[340px] p-0 rounded-2xl border border-black/[0.08] dark:border-border shadow-xl bg-white dark:bg-card overflow-visible"
-            >
-              {currentAnswers.length > 0 ? (
-                <CriteriaEditor
-                  answers={currentAnswers}
-                  onRescan={handleRescan}
-                  isRescanning={isRescanning}
-                />
-              ) : (
-                <div className="px-4 py-6 text-center">
-                  <p className="text-[12px] text-muted-foreground/50">No criteria recorded for this session.</p>
-                </div>
-              )}
-            </PopoverContent>
-          </Popover></>}
+              </PopoverContent>
+            </Popover></>}
 
           {/* Exhausted notice */}
           {rescanExhausted && (
@@ -659,7 +688,7 @@ export function Dashboard({
               if (!action) return;
 
               const prevIds = (columns[colId] || []).map((j) => j.id);
-              const newIds  = (newCols[colId]  || []).map((j) => j.id);
+              const newIds = (newCols[colId] || []).map((j) => j.id);
               const prevSet = new Set(prevIds);
 
               // Cross-column move: a new job entered this column
@@ -683,16 +712,16 @@ export function Dashboard({
           <KanbanBoard className="flex h-full pt-4 pr-4 pb-4 pl-[108px]">
             <motion.div
               ref={picksRef}
-              animate={{ width: picksCollapsed ? 43 : (phase === "list" ? 420 : 350) }}
+              animate={{ width: picksCollapsed ? 43 : (phase === "list" ? 500 : 350) }}
               transition={{ duration: 0.48, ease: [0.22, 1, 0.36, 1] }}
               style={{
-                flex:          phase === "split" || phase === "settled" ? "0 0 auto" : "none",
-                marginLeft:    phase === "split" || phase === "settled" ? 0 : centerMargin,
-                height:        "100%",
-                display:       "flex",
+                flex: phase === "split" || phase === "settled" ? "0 0 auto" : "none",
+                marginLeft: phase === "split" || phase === "settled" ? 0 : centerMargin,
+                height: "100%",
+                display: "flex",
                 flexDirection: "column",
-                overflow:      "hidden",
-                flexShrink:    0,
+                overflow: "hidden",
+                flexShrink: 0,
               }}
             >
               <PipelineCol
@@ -705,7 +734,6 @@ export function Dashboard({
                 onMockInterview={setInterviewJobId}
                 onAskScout={setScoutJobId}
                 onExhausted={rescanExhausted ? undefined : handleFetchMore}
-                canFetchMore={creditBalance === null || creditBalance >= (JOB_CREDITS.jobRecommendation?.cost ?? 15)}
                 isRescanning={isRescanning}
                 isListPhase={phase === "list"}
                 isCollapsed={picksCollapsed}
@@ -720,11 +748,11 @@ export function Dashboard({
                 initial={{ maxWidth: 0, opacity: 0 }}
                 animate={{
                   maxWidth: phase === "split" ? 362 : 0,
-                  opacity:  phase === "split" ? 1   : 0,
+                  opacity: phase === "split" ? 1 : 0,
                 }}
                 transition={{
                   maxWidth: { duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: phase === "split" ? i * 0.12 : 0 },
-                  opacity:  { duration: 0.4,  ease: "easeOut",           delay: phase === "split" ? i * 0.12 + 0.1 : 0 },
+                  opacity: { duration: 0.4, ease: "easeOut", delay: phase === "split" ? i * 0.12 + 0.1 : 0 },
                 }}
               >
                 <div className="flex flex-col w-[350px] ml-3 h-full">
@@ -749,11 +777,11 @@ export function Dashboard({
               initial={{ maxWidth: 0, opacity: 0 }}
               animate={{
                 maxWidth: phase === "split" ? 362 : 0,
-                opacity:  phase === "split" ? 1   : 0,
+                opacity: phase === "split" ? 1 : 0,
               }}
               transition={{
                 maxWidth: { duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: phase === "split" ? COL_ORDER.filter((c) => c !== "picks").length * 0.12 : 0 },
-                opacity:  { duration: 0.4,  ease: "easeOut",           delay: phase === "split" ? COL_ORDER.filter((c) => c !== "picks").length * 0.12 + 0.1 : 0 },
+                opacity: { duration: 0.4, ease: "easeOut", delay: phase === "split" ? COL_ORDER.filter((c) => c !== "picks").length * 0.12 + 0.1 : 0 },
               }}
             >
               <motion.div
@@ -789,10 +817,10 @@ export function Dashboard({
                     <div className="rounded-lg shadow-xl ring-1 ring-foreground/10 opacity-95 rotate-1 scale-[1.02]">
                       <JobCard
                         job={job}
-                        onShortlist={inPicks ? () => {} : undefined}
-                        onMockInterview={!inPicks ? () => {} : undefined}
-                        onAskScout={() => {}}
-                        onOpen={() => {}}
+                        onShortlist={inPicks ? () => { } : undefined}
+                        onMockInterview={!inPicks ? () => { } : undefined}
+                        onAskScout={() => { }}
+                        onOpen={() => { }}
                       />
                     </div>
                   );
@@ -825,7 +853,7 @@ export function Dashboard({
 
       {createPortal(
         <AnimatePresence>
-          {roomJob  && (
+          {roomJob && (
             <MockInterviewRoom
               key={roomJob.id}
               job={roomJob}

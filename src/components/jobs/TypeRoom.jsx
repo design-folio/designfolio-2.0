@@ -49,7 +49,7 @@ export function TypeRoom({ questions, onDone, onReset }) {
   }, [current]);
 
   useEffect(() => {
-    if (locationChoice && locationChoice !== "Remote only") {
+    if (locationChoice) {
       setTimeout(() => cityRef.current?.focus(), 50);
     }
   }, [locationChoice]);
@@ -67,11 +67,16 @@ export function TypeRoom({ questions, onDone, onReset }) {
     return () => clearTimeout(suggestTimerRef.current);
   }, [role]);
 
+  // Auto-select the only option when Q1 appears so city input shows immediately
+  useEffect(() => {
+    if (current === 1 && q1?.options?.length > 0 && locationChoice === null) {
+      setLocationChoice(q1.options[0]);
+    }
+  }, [current, q1, locationChoice]);
+
   const canNext = () => {
     if (current === 0) return role.trim().length > 0;
-    if (current === 1)
-      return locationChoice !== null &&
-        (locationChoice === "Remote only" || city.trim().length > 0);
+    if (current === 1) return city.trim().length > 0;
     return false;
   };
 
@@ -81,13 +86,9 @@ export function TypeRoom({ questions, onDone, onReset }) {
       setCurrent((c) => c + 1);
       return;
     }
-    const locationAnswer =
-      locationChoice === "Remote only"
-        ? "Remote only"
-        : `${locationChoice}: ${city.trim()}`;
     onDone([
       { question: q0.text, answer: role.trim() },
-      { question: q1.text, answer: locationAnswer },
+      { question: q1.text, answer: city.trim() },
     ]);
   };
 
@@ -95,9 +96,6 @@ export function TypeRoom({ questions, onDone, onReset }) {
 
   const handleLocationOption = (option) => {
     setLocationChoice(option);
-    if (option === "Remote only") {
-      setCity("");
-    }
   };
 
   const isLastStep = current === 1;
@@ -184,34 +182,15 @@ export function TypeRoom({ questions, onDone, onReset }) {
               exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.32 }}
             >
-              <div className="flex flex-wrap justify-center gap-3 w-full">
-                {(q1?.options || []).map((option) => (
-                  <motion.button
-                    key={option}
-                    data-testid={`option-${option.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")}`}
-                    onClick={() => handleLocationOption(option)}
-                    whileTap={{ scale: 0.96 }}
-                    className={`cursor-pointer px-5 py-3 rounded-full border text-[14px] font-medium transition-all duration-200 ${locationChoice === option
-                      ? "bg-foreground text-background border-foreground"
-                      : "bg-background dark:bg-foreground/8 border-border text-foreground hover:border-foreground/40"
-                      }`}
-                  >
-                    {option}
-                  </motion.button>
-                ))}
-              </div>
               <AnimatePresence>
-                {locationChoice && locationChoice !== "Remote only" && (
+                {locationChoice && (
                   <motion.div
-                    className="w-full flex flex-col gap-2"
+                    className="w-full"
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 8 }}
                     transition={{ duration: 0.25 }}
                   >
-                    <p className="text-muted-foreground text-[13px] text-left">
-                      Which city or region?
-                    </p>
                     <LocationAutocomplete
                       inputRef={cityRef}
                       value={city}

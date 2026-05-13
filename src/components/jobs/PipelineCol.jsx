@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ChevronLeft, ChevronRight, Clapperboard, Lock } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, Clapperboard } from "lucide-react";
 import Lottie from "lottie-react";
 import aiAssistantAnimation from "@/assets/AI-Assistant.json";
 import { KanbanColumn, KanbanColumnContent, KanbanItem, KanbanItemHandle } from "@/components/ui/kanban";
 import { JobCard } from "./JobCard";
 import { COL_LABELS } from "@/data/jobs";
-import { creditBadge } from "@/data/jobCredits";
 
 export function PipelineCol({
   colId,
@@ -19,7 +18,6 @@ export function PipelineCol({
   onDecide,
   colIndex = 0,
   onExhausted,      // undefined = exhausted (hide button); function = show "Get More" button
-  canFetchMore = true, // false = insufficient credits — show locked state
   isRescanning = false,
   isListPhase = false,
   isCollapsed,
@@ -83,24 +81,13 @@ export function PipelineCol({
           className="pt-1 pb-2"
         >
           {!isRescanning && onExhausted && (
-            canFetchMore ? (
-              <button
-                onClick={onExhausted}
-                className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-black/[0.08] dark:border-border text-[12px] font-medium text-foreground/50 hover:text-foreground hover:border-foreground/20 transition-colors bg-transparent"
-              >
-                <ChevronDown className="w-3.5 h-3.5" />
-                Get more matches
-              </button>
-            ) : (
-              <button
-                disabled
-                className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-black/[0.08] dark:border-border text-[12px] font-medium text-foreground/30 bg-transparent cursor-not-allowed"
-              >
-                <Lock className="w-3.5 h-3.5" />
-                Get more matches
-                <span className="text-[10px] font-normal text-foreground/25 ml-auto">{creditBadge('jobRecommendation')}</span>
-              </button>
-            )
+            <button
+              onClick={onExhausted}
+              className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-black/[0.08] dark:border-border text-[12px] font-medium text-foreground/50 hover:text-foreground hover:border-foreground/20 transition-colors bg-transparent"
+            >
+              <ChevronDown className="w-3.5 h-3.5" />
+              Get more matches
+            </button>
           )}
           {!isRescanning && !onExhausted && (
             <p className="text-center text-[11px] text-muted-foreground/40 py-2">

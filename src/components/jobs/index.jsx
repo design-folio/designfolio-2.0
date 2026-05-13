@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
+import Cookies from "js-cookie";
 import { TransitionScreen } from "./TransitionScreen";
 import { TypeRoom } from "./TypeRoom";
 import { ThinkingScreen } from "./ThinkingScreen";
@@ -22,6 +23,7 @@ import { _getJobsQuestions, _getJobsHistory } from "@/network/jobs";
  */
 export function Jobs() {
   const [phase,          setPhase]          = useState("loading");
+  const [errorType,      setErrorType]      = useState(null); // "auth" | "generic"
   const [questions,      setQuestions]      = useState([]);
   const [answers,        setAnswers]        = useState([]);
   const [jobs,           setJobs]           = useState([]);
@@ -90,7 +92,9 @@ export function Jobs() {
         } else {
           setPhase("transition");
         }
-      } catch {
+      } catch (err) {
+        const is401 = err?.response?.status === 401 || err?.status === 401;
+        setErrorType(is401 ? "auth" : "generic");
         setPhase("error");
       }
     };
@@ -129,16 +133,30 @@ export function Jobs() {
 
   // ── Error ────────────────────────────────────────────────────────────────
   if (phase === "error") {
+    const isAuth = errorType === "auth";
     return (
-      <div className="fixed inset-0 flex flex-col items-center justify-center gap-4 bg-[#F0EDE7] dark:bg-background">
-        <p className="text-foreground/60 text-sm">
-          Something went wrong. Please try again.
+      <div className="fixed inset-0 flex flex-col items-center justify-center gap-3 bg-[#F0EDE7] dark:bg-background px-6">
+        <p className="text-foreground text-[18px] font-medium tracking-tight text-center">
+          {isAuth ? "Session expired" : "Something went wrong"}
+        </p>
+        <p className="text-foreground/50 text-sm max-w-xs text-center leading-relaxed">
+          {isAuth
+            ? "Your session has expired or you're not signed in. Please log in to continue."
+            : "We couldn't load your jobs. Please try again."}
         </p>
         <button
-          onClick={() => window.location.reload()}
-          className="text-sm text-foreground underline"
+          onClick={() => {
+            if (isAuth) {
+              Cookies.remove("df-token", { domain: process.env.NEXT_PUBLIC_BASE_DOMAIN });
+              localStorage.removeItem("bottom_notification_seen");
+              window.location.href = "/login";
+            } else {
+              window.location.reload();
+            }
+          }}
+          className="mt-2 h-10 px-6 rounded-full bg-foreground text-background text-sm font-medium"
         >
-          Retry
+          {isAuth ? "Sign in" : "Retry"}
         </button>
       </div>
     );

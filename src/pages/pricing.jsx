@@ -217,7 +217,7 @@ export default function Pricing() {
             Will pricing change in the future?
           </AccordionTrigger>
           <AccordionContent className="text-[--lp-text-muted]" data-testid="text-faq-pricing-change-answer">
-            Yes. Lifetime access is currently priced at ₹4,500 (India) and $99
+            Yes. Lifetime access is currently priced at ₹8,799 (India) and $119
             (Global) and may increase later. Early buyers keep their lifetime
             access permanently.
           </AccordionContent>

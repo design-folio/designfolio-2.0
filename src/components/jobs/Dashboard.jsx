@@ -206,7 +206,6 @@ export function Dashboard({
   const [rescanExhausted, setRescanExhausted] = useState(false);
 
   const seenJobIds = useRef(new Set(initialJobs.map((j) => j.id)));
-  const picksLengthRef = useRef((initialJobs || []).length);
 
   const [selectedJobId, setSelectedJobId] = useState(null);
   const [interviewJobId, setInterviewJobId] = useState(null);
@@ -241,33 +240,46 @@ export function Dashboard({
     return () => { cancelled = true; };
   }, [creditsRefreshKey]);
 
-  useEffect(() => {
-    picksLengthRef.current = (columns.picks || []).length;
-  }, [columns.picks]);
-
   // Polls every 5s while any pick has match===null.
-  // Auto-stops when the dependency flips to false (all scored).
-  // 10-min safety cap covers scores that genuinely never arrive.
+  // Paginates through all recommendation pages until every unscored pick
+  // is found — prevents picks that sort below page-0 from staying null forever.
+  // Auto-stops when all picks are scored. 10-min safety cap as fallback.
   useEffect(() => {
     if (!profileId) return;
-    if (!(columns.picks || []).some((j) => j.match === null)) return;
+    const unscoredIds = new Set(
+      (columns.picks || []).filter((j) => j.match === null).map((j) => j.id),
+    );
+    if (!unscoredIds.size) return;
 
-    const fetchLimit = () => Math.max(20, picksLengthRef.current);
     let safetyCount = 0;
 
     const interval = setInterval(async () => {
       if (++safetyCount > 120) { clearInterval(interval); return; }
       try {
-        const { data } = await _getJobsRecommendations(profileId, 0, fetchLimit());
-        if (!data?.jobs?.length) return;
+        const scored = new Map();
+        for (let page = 0; scored.size < unscoredIds.size && page < 20; page++) {
+          const { data } = await _getJobsRecommendations(profileId, page, 20);
+          if (!data?.jobs?.length) break;
+          for (const fresh of data.jobs) {
+            if (unscoredIds.has(fresh.id) && fresh.match !== null) {
+              scored.set(fresh.id, fresh);
+            }
+          }
+          if (!data.hasMore) break;
+        }
+        if (!scored.size) return;
         setColumns((prev) => {
           const updatedPicks = (prev.picks || []).map((existing) => {
-            const fresh = data.jobs.find((j) => j.id === existing.id);
-            if (!fresh) return existing;
-            const updates = { logoUrl: fresh.logoUrl || existing.logoUrl };
-            if (fresh.match !== null && existing.match === null)
-              Object.assign(updates, { match: fresh.match, reason: fresh.reason, matchReasons: fresh.matchReasons, emotionalLabel: fresh.emotionalLabel });
-            return { ...existing, ...updates };
+            const fresh = scored.get(existing.id);
+            if (!fresh || existing.match !== null) return existing;
+            return {
+              ...existing,
+              logoUrl:        fresh.logoUrl        || existing.logoUrl,
+              match:          fresh.match,
+              reason:         fresh.reason,
+              matchReasons:   fresh.matchReasons,
+              emotionalLabel: fresh.emotionalLabel,
+            };
           });
           return { ...prev, picks: updatedPicks };
         });

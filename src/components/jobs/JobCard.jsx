@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { useTheme } from "next-themes";
-import { Bookmark, Clapperboard, Maximize2, Loader2 } from "lucide-react";
+import { Bookmark, Clapperboard, Maximize2, Loader2, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Gauge } from "@/components/ui/gauge-1";
 import { ColorOrb } from "@/components/ui/color-orb";
@@ -43,6 +44,7 @@ function AnalyzingRing({ isDark }) {
 }
 
 export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, onAskScout, joyrideActive = false, joyrideFirst = false }) {
+  const [tooltipVisible, setTooltipVisible] = useState(joyrideFirst);
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
   const isAnalyzing = job.match === null;
@@ -130,11 +132,21 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
       </div>
 
       {/* Joyride tooltip — dark pill with downward caret pointing at Shortlist button */}
-      {joyrideFirst && (
-        <div className="flex items-start">
+      {tooltipVisible && (
+        <div
+          className="flex items-start !cursor-default"
+          onPointerDown={(e) => e.stopPropagation()}
+        >
           <div className="relative">
-            <div className="bg-[#1a1a1a] dark:bg-white text-white dark:text-[#1a1a1a] text-[11px] font-medium px-3 py-1.5 rounded-lg leading-none whitespace-nowrap">
+            <div className="flex items-center gap-1.5 bg-[#1a1a1a] dark:bg-white text-white dark:text-[#1a1a1a] text-[11px] font-medium pl-3 pr-1.5 py-1.5 rounded-lg leading-none whitespace-nowrap">
               Shortlist jobs you want to track →
+              <button
+                onClick={(e) => { e.stopPropagation(); setTooltipVisible(false); }}
+                onPointerDown={(e) => e.stopPropagation()}
+                className="flex items-center justify-center w-5 h-5 rounded-full hover:bg-white/20 dark:hover:bg-black/10 transition-colors flex-shrink-0 !cursor-pointer"
+              >
+                <X className="w-3 h-3" />
+              </button>
             </div>
             <div className="absolute left-4 top-full w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[5px] border-t-[#1a1a1a] dark:border-t-white" />
           </div>

@@ -226,7 +226,7 @@ export default function Index({
                 </motion.div>
                 {project?.contentVersion === 2 && project?.tiptapContent ? (
                   <motion.div variants={itemVariants} className={isMono ? "px-5 md:px-8 py-6" : ""}>
-                    <TiptapRenderer key={project._id} content={project.tiptapContent} className={cn(isCanvas ? "" : "!p-0 shadow-none bg-transparent")} />
+                    <TiptapRenderer key={project._id} content={project.tiptapContent} className={cn(isCanvas ? "" : "")} />
                   </motion.div>
                 ) : project?.content ? (
                   <motion.div variants={itemVariants} className={isMono ? "px-5 md:px-8 py-6" : ""}>

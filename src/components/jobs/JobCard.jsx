@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Gauge } from "@/components/ui/gauge-1";
 import { ColorOrb } from "@/components/ui/color-orb";
 import { CompanyLogo } from "./CompanyLogo";
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 
 const EASING = [0.23, 1, 0.32, 1];
 
@@ -15,16 +16,14 @@ function getScoreColor(score) {
 }
 
 function AnalyzingRing({ isDark }) {
-  const track  = isDark ? "rgba(255,255,255,0.08)"  : "rgba(0,0,0,0.07)";
-  const arc    = isDark ? "rgba(255,255,255,0.22)"  : "rgba(0,0,0,0.18)";
+  const track = isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.07)";
+  const arc = isDark ? "rgba(255,255,255,0.22)" : "rgba(0,0,0,0.18)";
 
   return (
     <div className="relative w-[40px] h-[40px] flex-shrink-0 mt-0.5">
-      {/* Static track ring */}
       <svg width="40" height="40" viewBox="0 0 100 100" className="absolute inset-0" fill="none">
         <circle cx="50" cy="50" r="46.5" strokeWidth="7" stroke={track} strokeLinecap="round" />
       </svg>
-      {/* Spinning arc — whole SVG rotates so transform-origin:center is guaranteed */}
       <svg
         width="40" height="40" viewBox="0 0 100 100"
         className="absolute inset-0"
@@ -43,6 +42,9 @@ function AnalyzingRing({ isDark }) {
   );
 }
 
+// Shared pill button classes — press feedback + specific transition properties
+const PILL_BTN = "flex items-center gap-1.5 h-8 px-3 rounded-full border border-black/[0.08] dark:border-white/[0.1] bg-black/[0.04] dark:bg-white/[0.06] text-[12px] font-medium text-foreground/65 hover:text-foreground hover:border-black/[0.15] dark:hover:border-white/[0.18] transition-[transform,color,border-color,background-color] duration-150 active:scale-[0.97]";
+
 export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, onAskScout, joyrideActive = false, joyrideFirst = false }) {
   const [tooltipVisible, setTooltipVisible] = useState(joyrideFirst);
   const { resolvedTheme } = useTheme();
@@ -52,24 +54,27 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
   return (
     <div
       data-testid={`card-job-${job.id}`}
-      className="job-card relative flex flex-col gap-3 p-3 rounded-xl border border-black/[0.04] dark:border-[#302B28] bg-white dark:bg-[#28231E] select-none shadow-[0_1px_3px_rgba(0,0,0,0.06)] dark:shadow-[0_1px_4px_rgba(0,0,0,0.4)] transition-all duration-150 hover:-translate-y-0.5 hover:border-black/[0.1] dark:hover:border-[#4A4440] hover:shadow-[0_4px_14px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_4px_14px_rgba(0,0,0,0.55)]"
+      className="job-card relative flex flex-col gap-3 p-3 rounded-xl border border-black/[0.04] dark:border-[#302B28] bg-white dark:bg-[#28231E] select-none
+        shadow-[0_1px_3px_rgba(0,0,0,0.06)] dark:shadow-[0_1px_4px_rgba(0,0,0,0.4)]
+        transition-[transform,box-shadow,border-color] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]
+        hover:-translate-y-1 hover:border-black/[0.1] dark:hover:border-[#4A4440] hover:shadow-[0_4px_14px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_4px_14px_rgba(0,0,0,0.55)]
+        active:translate-y-0 active:shadow-[0_1px_3px_rgba(0,0,0,0.06)] dark:active:shadow-[0_1px_4px_rgba(0,0,0,0.4)]"
     >
       <div className="absolute top-2 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full bg-foreground/20 opacity-0 group-hover/item:opacity-100 transition-opacity duration-150 pointer-events-none" />
 
-      {/* Row 1: Logo + Role/Company·Location + Gauge */}
+      {/* Row 1: Logo + Role/Company + Gauge */}
       <div className="flex items-start justify-between gap-2.5">
         <div className="flex items-start gap-3 min-w-0 flex-1">
           <CompanyLogo logoUrl={job.logoUrl} company={job.company} size={40} />
           <div className="min-w-0 flex-1">
             {isAnalyzing ? (
-              /* Non-interactive title when unscored */
               <div className="text-[15px] font-semibold text-foreground/50 leading-snug w-full">
                 {job.role}
               </div>
             ) : (
               <button
                 onClick={(e) => { e.stopPropagation(); onOpen?.(); }}
-                className="text-[15px] font-semibold text-foreground leading-snug text-left hover:text-foreground/60 transition-colors cursor-pointer w-full"
+                className="text-[15px] font-semibold text-foreground leading-snug text-left hover:text-foreground/60 active:text-foreground/40 transition-colors duration-100 cursor-pointer w-full"
               >
                 {job.role}
               </button>
@@ -101,18 +106,56 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
               transition={{ duration: 0.26, ease: EASING }}
               className="flex-shrink-0 mt-0.5"
             >
-              <Gauge
-                value={job.match}
-                size={40}
-                strokeWidth={7}
-                gapPercent={3}
-                primary={getScoreColor(job.match)}
-                secondary={isDark ? "rgba(255,255,255,0.14)" : "rgba(0,0,0,0.13)"}
-                showValue={true}
-                showPercentage={false}
-                transition={{ delay: 200 }}
-                className={{ textClassName: isDark ? "fill-white" : "fill-[#1A1A1A]" }}
-              />
+              {job.matchReasons?.length > 0 ? (
+                <TooltipProvider delayDuration={100}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="cursor-default select-none" style={{ cursor: "default" }}>
+                        <Gauge
+                          value={job.match}
+                          size={40}
+                          strokeWidth={7}
+                          gapPercent={3}
+                          primary={getScoreColor(job.match)}
+                          secondary={isDark ? "rgba(255,255,255,0.14)" : "rgba(0,0,0,0.13)"}
+                          showValue={true}
+                          showPercentage={false}
+                          transition={{ delay: 200 }}
+                          className={{ textClassName: isDark ? "fill-white" : "fill-[#1A1A1A]" }}
+                        />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="left" sideOffset={8} className="max-w-[200px] space-y-1.5 py-2.5 px-3 bg-primary text-primary-foreground text-xs rounded-md">
+                      {job.emotionalLabel && (
+                        <p className="text-[11px] font-semibold" style={{ color: getScoreColor(job.match) }}>
+                          {job.emotionalLabel}
+                        </p>
+                      )}
+                      <ul className="space-y-1">
+                        {job.matchReasons.map((r, i) => (
+                          <li key={i} className="flex items-start gap-1.5 text-[11px] leading-snug text-primary-foreground/80">
+                            <span className="mt-[3px] w-1 h-1 rounded-full flex-shrink-0" style={{ backgroundColor: getScoreColor(job.match) }} />
+                            {r}
+                          </li>
+                        ))}
+                      </ul>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              ) : (
+                <Gauge
+                  value={job.match}
+                  size={40}
+                  strokeWidth={7}
+                  gapPercent={3}
+                  primary={getScoreColor(job.match)}
+                  secondary={isDark ? "rgba(255,255,255,0.14)" : "rgba(0,0,0,0.13)"}
+                  showValue={true}
+                  showPercentage={false}
+                  transition={{ delay: 200 }}
+                  className={{ textClassName: isDark ? "fill-white" : "fill-[#1A1A1A]" }}
+                />
+              )}
             </motion.div>
           ) : null}
         </AnimatePresence>
@@ -131,7 +174,7 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
         </span>
       </div>
 
-      {/* Joyride tooltip — dark pill with downward caret pointing at Shortlist button */}
+      {/* Joyride tooltip */}
       {tooltipVisible && (
         <div
           className="flex items-start !cursor-default"
@@ -159,7 +202,7 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
           <button
             data-testid={`button-shortlist-${job.id}`}
             onClick={(e) => { e.stopPropagation(); onShortlist(); }}
-            className={`flex items-center gap-1.5 h-8 px-3 rounded-full border border-black/[0.08] dark:border-white/[0.1] bg-black/[0.04] dark:bg-white/[0.06] text-[12px] font-medium text-foreground/65 hover:text-foreground hover:border-black/[0.15] dark:hover:border-white/[0.18] transition-colors${joyrideActive ? " joyride-btn-glow" : ""}`}
+            className={`${PILL_BTN}${joyrideActive ? " joyride-btn-glow" : ""}`}
           >
             <Bookmark className="w-3 h-3" />
             Shortlist
@@ -169,7 +212,7 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
             <button
               data-testid={`button-ask-scout-${job.id}`}
               onClick={(e) => { e.stopPropagation(); onAskScout(); }}
-              className="orb-activates-on-hover flex items-center gap-1.5 h-8 px-3 rounded-full border border-black/[0.08] dark:border-white/[0.1] bg-black/[0.04] dark:bg-white/[0.06] text-[12px] font-medium text-foreground/65 hover:text-foreground hover:border-black/[0.15] dark:hover:border-white/[0.18] transition-colors"
+              className={`orb-activates-on-hover ${PILL_BTN}`}
             >
               <ColorOrb dimension="12px" spinDuration={8} />
               Ask Scout
@@ -178,7 +221,6 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
 
           <div className="ml-auto">
             {isAnalyzing ? (
-              /* Analyzing state — non-interactive spinner in place of expand */
               <div className="flex items-center justify-center w-7 h-7 text-foreground/20 rounded-full">
                 <Loader2 className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: "1.8s" }} />
               </div>
@@ -186,7 +228,7 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
               <button
                 data-testid={`button-expand-${job.id}`}
                 onClick={(e) => { e.stopPropagation(); onOpen?.(); }}
-                className="flex items-center justify-center w-7 h-7 text-foreground/30 hover:text-foreground/60 transition-colors rounded-full"
+                className="flex items-center justify-center w-7 h-7 text-foreground/30 hover:text-foreground/60 transition-[transform,color] duration-100 active:scale-[0.88] rounded-full"
               >
                 <Maximize2 className="w-3.5 h-3.5" />
               </button>
@@ -199,7 +241,7 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
             <button
               data-testid={`button-mock-interview-${job.id}`}
               onClick={(e) => { e.stopPropagation(); onMockInterview(); }}
-              className="flex items-center gap-1.5 h-8 px-3 rounded-full border border-black/[0.08] dark:border-white/[0.1] bg-black/[0.04] dark:bg-white/[0.06] text-[12px] font-medium text-foreground/65 hover:text-foreground hover:border-black/[0.15] dark:hover:border-white/[0.18] transition-colors"
+              className={PILL_BTN}
             >
               <Clapperboard className="w-3 h-3" />
               Mock interview
@@ -210,7 +252,7 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
             <button
               data-testid={`button-ask-scout-${job.id}`}
               onClick={(e) => { e.stopPropagation(); onAskScout(); }}
-              className="orb-activates-on-hover flex items-center gap-1.5 h-8 px-3 rounded-full border border-black/[0.08] dark:border-white/[0.1] bg-black/[0.04] dark:bg-white/[0.06] text-[12px] font-medium text-foreground/65 hover:text-foreground hover:border-black/[0.15] dark:hover:border-white/[0.18] transition-colors"
+              className={`orb-activates-on-hover ${PILL_BTN}`}
             >
               <ColorOrb dimension="12px" spinDuration={8} />
               Ask Scout
@@ -226,7 +268,7 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
               <button
                 data-testid={`button-expand-other-${job.id}`}
                 onClick={(e) => { e.stopPropagation(); onOpen?.(); }}
-                className="flex items-center justify-center w-7 h-7 text-foreground/30 hover:text-foreground/60 transition-colors rounded-full"
+                className="flex items-center justify-center w-7 h-7 text-foreground/30 hover:text-foreground/60 transition-[transform,color] duration-100 active:scale-[0.88] rounded-full"
               >
                 <Maximize2 className="w-3.5 h-3.5" />
               </button>

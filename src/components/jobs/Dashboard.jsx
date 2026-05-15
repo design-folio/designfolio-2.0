@@ -250,11 +250,11 @@ export function Dashboard({
     if (!profileId) return;
     const unscoredIds = new Set(
       [
-        ...(columns.picks     || []),
-        ...(columns.saved     || []),
-        ...(columns.applied   || []),
+        ...(columns.picks || []),
+        ...(columns.saved || []),
+        ...(columns.applied || []),
         ...(columns.interview || []),
-        ...(columns.offer     || []),
+        ...(columns.offer || []),
       ]
         .filter((j) => j.match === null)
         .map((j) => j.id),
@@ -285,20 +285,20 @@ export function Dashboard({
               if (!fresh || existing.match !== null) return existing;
               return {
                 ...existing,
-                logoUrl:        fresh.logoUrl        || existing.logoUrl,
-                match:          fresh.match,
-                reason:         fresh.reason,
-                matchReasons:   fresh.matchReasons,
+                logoUrl: fresh.logoUrl || existing.logoUrl,
+                match: fresh.match,
+                reason: fresh.reason,
+                matchReasons: fresh.matchReasons,
                 emotionalLabel: fresh.emotionalLabel,
               };
             });
           return {
             ...prev,
-            picks:     applyScores(prev.picks),
-            saved:     applyScores(prev.saved),
-            applied:   applyScores(prev.applied),
+            picks: applyScores(prev.picks),
+            saved: applyScores(prev.saved),
+            applied: applyScores(prev.applied),
             interview: applyScores(prev.interview),
-            offer:     applyScores(prev.offer),
+            offer: applyScores(prev.offer),
           };
         });
       } catch { }
@@ -537,7 +537,7 @@ export function Dashboard({
     seenJobIds.current.add(job.id);
     setColumns((prev) => ({
       ...prev,
-      saved: [{ ...job }, ...(prev.saved || [])],
+      saved: [{ ...job, match: job.match === undefined ? null : job.match }, ...(prev.saved || [])],
     }));
     setPhase("split");
   }, []);
@@ -572,26 +572,6 @@ export function Dashboard({
             </Avatar>
             <span className="truncate text-[13px]">{promptSummary}</span>
           </div>
-
-          <TooltipProvider delayDuration={200}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button className="flex-shrink-0 flex items-center justify-center w-9 h-9 rounded-full border border-black/[0.08] dark:border-border bg-white dark:bg-card text-foreground/40 hover:text-foreground/70 transition-colors cursor-pointer">
-                  <Info className="w-3.5 h-3.5" aria-hidden="true" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="bottom" align="start" className="max-w-[240px] text-[12px] leading-relaxed p-3 bg-foreground text-background">
-                <p className="font-semibold mb-2">How match scores work</p>
-                <p className="text-background/60 mb-2">Each role is scored against your portfolio based on:</p>
-                <ul className="space-y-1 text-background/60 list-disc pl-3.5">
-                  <li>Role title alignment</li>
-                  <li>Skill &amp; tool overlap</li>
-                  <li>Seniority &amp; experience fit</li>
-                  <li>Industry relevance</li>
-                </ul>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
 
           {phase === "split" && <><Popover>
             <PopoverTrigger asChild>
@@ -693,13 +673,13 @@ export function Dashboard({
                 )}
               </PopoverContent>
             </Popover>
-          <button
-            onClick={() => setAddJobOpen(true)}
-            className="flex-shrink-0 flex items-center gap-1.5 h-9 px-4 rounded-full border border-black/[0.08] dark:border-border bg-white dark:bg-card text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer"
-          >
-            <Plus className="w-3.5 h-3.5" aria-hidden="true" />
-            Add job
-          </button></>}
+            <button
+              onClick={() => setAddJobOpen(true)}
+              className="flex-shrink-0 flex items-center gap-1.5 h-9 px-4 rounded-full border border-black/[0.08] dark:border-border bg-white dark:bg-card text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer"
+            >
+              <Plus className="w-3.5 h-3.5" aria-hidden="true" />
+              Add job
+            </button></>}
 
           {rescanExhausted && (
             <span className="text-[11px] text-muted-foreground/50 px-2">

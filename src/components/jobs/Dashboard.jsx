@@ -2,7 +2,8 @@ import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import { toast } from "react-toastify";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { SlidersHorizontal, Sparkles, RotateCcw, Search, Info, Plus } from "lucide-react";
+import { SlidersHorizontal, Sparkles, RotateCcw, Search,  Plus } from "lucide-react";
+import { Kbd } from "@/components/ui/kbd";
 import { LocationAutocomplete } from "./LocationAutocomplete";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Kanban, KanbanBoard, KanbanOverlay } from "@/components/ui/kanban";
@@ -232,6 +233,18 @@ export function Dashboard({
   const [creditsRefreshKey, setCreditsRefreshKey] = useState(0);
   const bumpCredits = useCallback(() => setCreditsRefreshKey(k => k + 1), []);
   const [addJobOpen, setAddJobOpen] = useState(false);
+
+  useEffect(() => {
+    const handler = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setAddJobOpen(true);
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
+
   const [creditBalance, setCreditBalance] = useState(null);
 
   useEffect(() => {
@@ -285,6 +298,10 @@ export function Dashboard({
               if (!fresh || existing.match !== null) return existing;
               return {
                 ...existing,
+                role: fresh.role || existing.role,
+                company: fresh.company || existing.company,
+                location: fresh.location || existing.location,
+                description: fresh.description || existing.description,
                 logoUrl: fresh.logoUrl || existing.logoUrl,
                 match: fresh.match,
                 reason: fresh.reason,
@@ -678,7 +695,8 @@ export function Dashboard({
               className="flex-shrink-0 flex items-center gap-1.5 h-9 px-4 rounded-full border border-black/[0.08] dark:border-border bg-white dark:bg-card text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" aria-hidden="true" />
-              Add job
+              Add job manually
+              <Kbd>⌘K</Kbd>
             </button></>}
 
           {rescanExhausted && (

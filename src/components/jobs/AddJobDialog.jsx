@@ -1,20 +1,31 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Plus, AlertCircle } from "lucide-react";
-import { _postJobsAddManual, _getJobsHistory } from "@/network/jobs";
+import { Link2, AlertCircle, Check } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { _postJobsAddManual } from "@/network/jobs";
+
+const STEPS = [
+  "Fetching job from LinkedIn",
+  "Scoring against your profile",
+];
 
 export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
+  const [step, setStep] = useState(0);
   const [error, setError] = useState(null);
   const inputRef = useRef(null);
+  const stepTimerRef = useRef(null);
 
   useEffect(() => {
     if (open) {
       setUrl("");
       setError(null);
+      setLoading(false);
+      setStep(0);
       setTimeout(() => inputRef.current?.focus(), 80);
     }
+    return () => clearTimeout(stepTimerRef.current);
   }, [open]);
 
   const handleSubmit = async (e) => {
@@ -23,115 +34,131 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
     if (!trimmed || loading) return;
     setError(null);
     setLoading(true);
+    setStep(0);
+
+    stepTimerRef.current = setTimeout(() => setStep(1), 9000);
 
     try {
-      // Snapshot saved job IDs before adding
-      const before = await _getJobsHistory();
-      const savedIdsBefore = new Set(
-        (before.data?.columns?.saved || []).map(String)
-      );
-
-      // If this LinkedIn job is already in Shortlisted, surface it immediately
-      const linkedinJobId = trimmed.match(/\/jobs\/view\/(\d+)/)?.[1];
-      if (linkedinJobId) {
-        const alreadySaved = (before.data?.jobs || []).find(
-          (j) => savedIdsBefore.has(j.id) && j.applyUrl?.includes(linkedinJobId)
-        );
-        if (alreadySaved) {
-          onJobAdded(alreadySaved);
-          onClose();
-          return;
-        }
-      }
-
-      await _postJobsAddManual(trimmed, profileId);
-
-      // Poll getHistory until a new job appears in pipeline.saved (up to 30s)
-      let newJob = null;
-      for (let attempt = 0; attempt < 15; attempt++) {
-        await new Promise((r) => setTimeout(r, 3000));
-        const after = await _getJobsHistory();
-        const afterJobs = after.data?.jobs || [];
-        const afterSaved = (after.data?.columns?.saved || []).map(String);
-        const newId = afterSaved.find((id) => !savedIdsBefore.has(id));
-        if (newId) {
-          newJob = afterJobs.find((j) => j.id === newId) ?? null;
-          break;
-        }
-      }
-
-      if (!newJob) {
-        setError("Job added but took too long to appear. Refresh the page to see it in Shortlisted.");
-        return;
-      }
-
-      onJobAdded(newJob);
+      const { data } = await _postJobsAddManual(trimmed, profileId);
+      clearTimeout(stepTimerRef.current);
+      onJobAdded(data.job);
       onClose();
     } catch (err) {
+      clearTimeout(stepTimerRef.current);
       const msg =
         err?.response?.data?.message ||
         err?.response?.data?.error ||
         "Failed to add job. Please check the URL and try again.";
       setError(msg);
-    } finally {
       setLoading(false);
+      setStep(0);
     }
   };
 
-  const isValidUrl = /linkedin\.com\/jobs\/view\/\d+/.test(url.trim());
+  const isValidUrl = (() => {
+    const u = url.trim();
+    if (!/linkedin\.com\/jobs\//.test(u)) return false;
+    if (/\/jobs\/view\/\d+/.test(u)) return true;
+    try {
+      const id = new URL(u).searchParams.get("currentJobId");
+      return Boolean(id && /^\d+$/.test(id));
+    } catch {
+      return false;
+    }
+  })();
 
   return (
-    <AnimatePresence>
-      {open && (
-        <>
-          <motion.div
-            className="fixed inset-0 z-50 bg-black/30 backdrop-blur-[2px]"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-          />
-
-          <motion.div
-            className="fixed z-50 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] max-w-[calc(100vw-2rem)]"
-            initial={{ opacity: 0, scale: 0.95, y: 8 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 8 }}
-            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <div className="bg-white dark:bg-card border border-black/[0.08] dark:border-border rounded-2xl shadow-2xl overflow-hidden">
-              <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-black/[0.06] dark:border-border">
-                <div>
-                  <p className="text-[15px] font-semibold text-foreground">Add a job</p>
-                  <p className="text-[12px] text-muted-foreground/60 mt-0.5">
-                    Paste a LinkedIn job URL — we'll score it against your profile
-                  </p>
-                </div>
-                <button
-                  onClick={onClose}
-                  className="flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-lg text-foreground/40 hover:text-foreground hover:bg-black/[0.05] dark:hover:bg-white/[0.05] transition-colors cursor-pointer"
-                >
-                  <X className="w-4 h-4" />
-                </button>
+    <Dialog open={open} onOpenChange={(v) => !loading && !v && onClose()}>
+      <DialogContent
+        aria-describedby={undefined}
+        className="bg-white dark:bg-[#2A2520] border border-black/[0.08] dark:border-white/[0.08] p-0 gap-0 max-w-[420px] rounded-2xl overflow-hidden [&>button]:hidden"
+        onInteractOutside={(e) => loading && e.preventDefault()}
+        onEscapeKeyDown={(e) => loading && e.preventDefault()}
+      >
+        <AnimatePresence mode="wait" initial={false}>
+          {loading ? (
+            <motion.div
+              key="loading"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              className="px-6 py-8 flex flex-col gap-6"
+            >
+              <div className="flex flex-col gap-4">
+                {STEPS.map((label, i) => {
+                  const isDone = i < step;
+                  const isActive = i === step;
+                  return (
+                    <motion.div
+                      key={i}
+                      className="flex items-center gap-3"
+                      animate={{ opacity: i > step ? 0.3 : 1 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <div className="w-5 h-5 flex-shrink-0 flex items-center justify-center">
+                        {isDone ? (
+                          <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                            className="w-5 h-5 rounded-full bg-[#1A1A1A] dark:bg-white flex items-center justify-center"
+                          >
+                            <Check className="w-3 h-3 text-white dark:text-black" strokeWidth={2.5} />
+                          </motion.div>
+                        ) : isActive ? (
+                          <div className="w-5 h-5 rounded-full border-2 border-black/15 dark:border-white/15 border-t-[#1A1A1A] dark:border-t-white animate-spin" />
+                        ) : (
+                          <div className="w-5 h-5 rounded-full border-2 border-black/10 dark:border-white/10" />
+                        )}
+                      </div>
+                      <span
+                        className={`text-[13px] font-medium transition-colors duration-300 ${
+                          isActive
+                            ? "text-[#1A1A1A] dark:text-[#F0EDE7]"
+                            : isDone
+                            ? "text-foreground/45"
+                            : "text-foreground/25"
+                        }`}
+                      >
+                        {label}
+                      </span>
+                    </motion.div>
+                  );
+                })}
               </div>
+              <p className="text-[12px] text-foreground/35 leading-relaxed">
+                This usually takes 15–20 seconds
+              </p>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="form"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <DialogHeader className="px-6 pt-6 pb-5 border-b border-black/[0.06] dark:border-white/[0.06]">
+                <DialogTitle className="text-[#1A1A1A] dark:text-[#F0EDE7] text-[17px] font-semibold leading-tight m-0">
+                  Add a job
+                </DialogTitle>
+                <p className="text-[13px] text-foreground/50 mt-1 leading-[1.5]">
+                  Paste a LinkedIn URL — we'll fetch and score it for you
+                </p>
+              </DialogHeader>
 
-              <form onSubmit={handleSubmit} className="px-5 py-4 flex flex-col gap-3">
-                <div>
-                  <label className="text-[11px] font-medium text-foreground/50 mb-1.5 block">
-                    LinkedIn job URL
-                  </label>
+              <form onSubmit={handleSubmit} className="px-6 py-5 flex flex-col gap-3">
+                <div className="relative">
+                  <Link2 className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-foreground/30 pointer-events-none" />
                   <input
                     ref={inputRef}
                     type="url"
                     value={url}
                     onChange={(e) => { setUrl(e.target.value); setError(null); }}
-                    placeholder="https://www.linkedin.com/jobs/view/1234567890"
-                    disabled={loading}
-                    className="w-full bg-black/[0.03] dark:bg-white/[0.04] border border-black/[0.08] dark:border-border rounded-xl px-3.5 py-2.5 text-[13px] text-foreground placeholder:text-foreground/30 outline-none focus:border-foreground/25 transition-colors disabled:opacity-50"
+                    placeholder="https://www.linkedin.com/jobs/view/…"
+                    className="w-full h-10 pl-9 pr-3.5 rounded-xl border border-black/[0.08] dark:border-white/[0.08] bg-black/[0.02] dark:bg-white/[0.02] text-[13px] text-foreground placeholder:text-black/30 dark:placeholder:text-white/30 outline-none focus:border-black/20 dark:focus:border-white/20 focus:bg-transparent transition-colors"
                   />
-                  <p className="text-[11px] text-foreground/35 mt-1.5 leading-relaxed">
-                    Open any LinkedIn job listing and copy the URL from your browser.
-                  </p>
                 </div>
 
                 <AnimatePresence>
@@ -140,45 +167,28 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: "auto" }}
                       exit={{ opacity: 0, height: 0 }}
-                      className="flex items-start gap-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/40 rounded-xl px-3.5 py-3"
+                      className="overflow-hidden"
                     >
-                      <AlertCircle className="w-3.5 h-3.5 text-red-500 flex-shrink-0 mt-px" />
-                      <p className="text-[12px] text-red-600 dark:text-red-400 leading-relaxed">{error}</p>
+                      <div className="flex items-start gap-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/30 rounded-xl px-3.5 py-3">
+                        <AlertCircle className="w-3.5 h-3.5 text-red-500 flex-shrink-0 mt-0.5" />
+                        <p className="text-[12px] text-red-600 dark:text-red-400 leading-relaxed">{error}</p>
+                      </div>
                     </motion.div>
                   )}
                 </AnimatePresence>
 
                 <button
                   type="submit"
-                  disabled={!isValidUrl || loading}
-                  className="w-full flex items-center justify-center gap-2 h-10 rounded-xl bg-foreground text-background text-[13px] font-semibold transition-opacity disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed"
+                  disabled={!isValidUrl}
+                  className="w-full flex items-center justify-center h-10 rounded-full bg-[#1A1A1A] dark:bg-white text-white dark:text-black text-[14px] font-medium transition-opacity disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed"
                 >
-                  {loading ? (
-                    <>
-                      <div className="flex gap-[3px]">
-                        {[0, 1, 2].map((i) => (
-                          <motion.div
-                            key={i}
-                            className="w-1 h-1 rounded-full bg-current"
-                            animate={{ opacity: [0.3, 1, 0.3] }}
-                            transition={{ duration: 0.9, repeat: Infinity, delay: i * 0.2 }}
-                          />
-                        ))}
-                      </div>
-                      Adding to Shortlisted…
-                    </>
-                  ) : (
-                    <>
-                      <Plus className="w-3.5 h-3.5" />
-                      Add to Shortlisted
-                    </>
-                  )}
+                  Add to Shortlisted
                 </button>
               </form>
-            </div>
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </DialogContent>
+    </Dialog>
   );
 }

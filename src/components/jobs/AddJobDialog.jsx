@@ -31,11 +31,24 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
         (before.data?.columns?.saved || []).map(String)
       );
 
+      // If this LinkedIn job is already in Shortlisted, surface it immediately
+      const linkedinJobId = trimmed.match(/\/jobs\/view\/(\d+)/)?.[1];
+      if (linkedinJobId) {
+        const alreadySaved = (before.data?.jobs || []).find(
+          (j) => savedIdsBefore.has(j.id) && j.applyUrl?.includes(linkedinJobId)
+        );
+        if (alreadySaved) {
+          onJobAdded(alreadySaved);
+          onClose();
+          return;
+        }
+      }
+
       await _postJobsAddManual(trimmed, profileId);
 
       // Poll getHistory until a new job appears in pipeline.saved (up to 30s)
       let newJob = null;
-      for (let attempt = 0; attempt < 10; attempt++) {
+      for (let attempt = 0; attempt < 15; attempt++) {
         await new Promise((r) => setTimeout(r, 3000));
         const after = await _getJobsHistory();
         const afterJobs = after.data?.jobs || [];

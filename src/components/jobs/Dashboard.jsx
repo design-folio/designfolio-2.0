@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import { toast } from "react-toastify";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { SlidersHorizontal, Sparkles, RotateCcw, Search, Info } from "lucide-react";
+import { SlidersHorizontal, Sparkles, RotateCcw, Search, Info, Plus } from "lucide-react";
 import { LocationAutocomplete } from "./LocationAutocomplete";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Kanban, KanbanBoard, KanbanOverlay } from "@/components/ui/kanban";
@@ -19,6 +19,7 @@ import { JobCard } from "./JobCard";
 import { _postJobsInteract, _postJobsRecommend, _postJobsMore, _postJobsInterviewReport, _getJobsRecommendations, _getJobRoleSuggestions, _getJobCredits, _postJobsPipelineReorder } from "@/network/jobs";
 import { OfferDecisionScout } from "./OfferDecisionScout";
 import { CreditsWidget } from "./CreditsWidget";
+import { AddJobDialog } from "./AddJobDialog";
 import { creditBadge, JOB_CREDITS } from "@/data/jobCredits";
 
 const buildColumns = (jobs) => ({
@@ -230,6 +231,7 @@ export function Dashboard({
   });
   const [creditsRefreshKey, setCreditsRefreshKey] = useState(0);
   const bumpCredits = useCallback(() => setCreditsRefreshKey(k => k + 1), []);
+  const [addJobOpen, setAddJobOpen] = useState(false);
   const [creditBalance, setCreditBalance] = useState(null);
 
   useEffect(() => {
@@ -531,6 +533,15 @@ export function Dashboard({
     [profileId],
   );
 
+  const handleJobAdded = useCallback((job) => {
+    seenJobIds.current.add(job.id);
+    setColumns((prev) => ({
+      ...prev,
+      saved: [{ ...job }, ...(prev.saved || [])],
+    }));
+    setPhase("split");
+  }, []);
+
   const promptSummary = useMemo(() => {
     if (!currentAnswers.length) return "AI-matched roles for your profile";
     const parts = [
@@ -681,7 +692,14 @@ export function Dashboard({
                   </div>
                 )}
               </PopoverContent>
-            </Popover></>}
+            </Popover>
+          <button
+            onClick={() => setAddJobOpen(true)}
+            className="flex-shrink-0 flex items-center gap-1.5 h-9 px-4 rounded-full border border-black/[0.08] dark:border-border bg-white dark:bg-card text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer"
+          >
+            <Plus className="w-3.5 h-3.5" aria-hidden="true" />
+            Add job
+          </button></>}
 
           {rescanExhausted && (
             <span className="text-[11px] text-muted-foreground/50 px-2">
@@ -845,6 +863,12 @@ export function Dashboard({
         </Kanban>
       </div>
 
+      <AddJobDialog
+        open={addJobOpen}
+        profileId={profileId}
+        onClose={() => setAddJobOpen(false)}
+        onJobAdded={handleJobAdded}
+      />
       <JobDetailSheet
         job={selectedJob}
         open={!!selectedJobId}

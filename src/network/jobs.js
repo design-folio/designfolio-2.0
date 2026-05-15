@@ -76,3 +76,8 @@ export const _getJobCredits = () => axiosInstance.get('/jobs/credits');
 export const _getJobRoleSuggestions = (q) =>
   axiosInstance.get('/jobs/role-suggestions', { params: { q } });
 
+// POST /jobs/add-manual — invoke Lambda to scrape LinkedIn URL and add job to Shortlisted
+// Returns { status: 'processing', profileId }
+export const _postJobsAddManual = (linkedinUrl, profileId) =>
+  axiosInstance.post('/jobs/add-manual', { linkedinUrl, profileId });
+

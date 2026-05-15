@@ -247,7 +247,15 @@ export function Dashboard({
   useEffect(() => {
     if (!profileId) return;
     const unscoredIds = new Set(
-      (columns.picks || []).filter((j) => j.match === null).map((j) => j.id),
+      [
+        ...(columns.picks     || []),
+        ...(columns.saved     || []),
+        ...(columns.applied   || []),
+        ...(columns.interview || []),
+        ...(columns.offer     || []),
+      ]
+        .filter((j) => j.match === null)
+        .map((j) => j.id),
     );
     if (!unscoredIds.size) return;
 
@@ -269,26 +277,34 @@ export function Dashboard({
         }
         if (!scored.size) return;
         setColumns((prev) => {
-          const updatedPicks = (prev.picks || []).map((existing) => {
-            const fresh = scored.get(existing.id);
-            if (!fresh || existing.match !== null) return existing;
-            return {
-              ...existing,
-              logoUrl:        fresh.logoUrl        || existing.logoUrl,
-              match:          fresh.match,
-              reason:         fresh.reason,
-              matchReasons:   fresh.matchReasons,
-              emotionalLabel: fresh.emotionalLabel,
-            };
-          });
-          return { ...prev, picks: updatedPicks };
+          const applyScores = (jobs) =>
+            (jobs || []).map((existing) => {
+              const fresh = scored.get(existing.id);
+              if (!fresh || existing.match !== null) return existing;
+              return {
+                ...existing,
+                logoUrl:        fresh.logoUrl        || existing.logoUrl,
+                match:          fresh.match,
+                reason:         fresh.reason,
+                matchReasons:   fresh.matchReasons,
+                emotionalLabel: fresh.emotionalLabel,
+              };
+            });
+          return {
+            ...prev,
+            picks:     applyScores(prev.picks),
+            saved:     applyScores(prev.saved),
+            applied:   applyScores(prev.applied),
+            interview: applyScores(prev.interview),
+            offer:     applyScores(prev.offer),
+          };
         });
       } catch { }
     }, 5000);
 
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profileId, (columns.picks || []).some((j) => j.match === null)]);
+  }, [profileId, [columns.picks, columns.saved, columns.applied, columns.interview, columns.offer].flat().some((j) => j?.match === null)]);
 
   const hasRestoredPipeline = initialColumns
     ? ["saved", "applied", "interview", "offer", "archived"].some((c) => (initialColumns[c] || []).length > 0)

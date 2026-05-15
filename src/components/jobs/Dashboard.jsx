@@ -2,7 +2,8 @@ import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import { toast } from "react-toastify";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { SlidersHorizontal, Sparkles, RotateCcw, Search, Info } from "lucide-react";
+import { SlidersHorizontal, Sparkles, RotateCcw, Search,  Plus } from "lucide-react";
+import { Kbd } from "@/components/ui/kbd";
 import { LocationAutocomplete } from "./LocationAutocomplete";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Kanban, KanbanBoard, KanbanOverlay } from "@/components/ui/kanban";
@@ -19,6 +20,7 @@ import { JobCard } from "./JobCard";
 import { _postJobsInteract, _postJobsRecommend, _postJobsMore, _postJobsInterviewReport, _getJobsRecommendations, _getJobRoleSuggestions, _getJobCredits, _postJobsPipelineReorder } from "@/network/jobs";
 import { OfferDecisionScout } from "./OfferDecisionScout";
 import { CreditsWidget } from "./CreditsWidget";
+import { AddJobDialog } from "./AddJobDialog";
 import { creditBadge, JOB_CREDITS } from "@/data/jobCredits";
 
 const buildColumns = (jobs) => ({
@@ -230,6 +232,19 @@ export function Dashboard({
   });
   const [creditsRefreshKey, setCreditsRefreshKey] = useState(0);
   const bumpCredits = useCallback(() => setCreditsRefreshKey(k => k + 1), []);
+  const [addJobOpen, setAddJobOpen] = useState(false);
+
+  useEffect(() => {
+    const handler = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setAddJobOpen(true);
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
+
   const [creditBalance, setCreditBalance] = useState(null);
 
   useEffect(() => {
@@ -247,7 +262,15 @@ export function Dashboard({
   useEffect(() => {
     if (!profileId) return;
     const unscoredIds = new Set(
-      (columns.picks || []).filter((j) => j.match === null).map((j) => j.id),
+      [
+        ...(columns.picks || []),
+        ...(columns.saved || []),
+        ...(columns.applied || []),
+        ...(columns.interview || []),
+        ...(columns.offer || []),
+      ]
+        .filter((j) => j.match === null)
+        .map((j) => j.id),
     );
     if (!unscoredIds.size) return;
 
@@ -269,26 +292,38 @@ export function Dashboard({
         }
         if (!scored.size) return;
         setColumns((prev) => {
-          const updatedPicks = (prev.picks || []).map((existing) => {
-            const fresh = scored.get(existing.id);
-            if (!fresh || existing.match !== null) return existing;
-            return {
-              ...existing,
-              logoUrl:        fresh.logoUrl        || existing.logoUrl,
-              match:          fresh.match,
-              reason:         fresh.reason,
-              matchReasons:   fresh.matchReasons,
-              emotionalLabel: fresh.emotionalLabel,
-            };
-          });
-          return { ...prev, picks: updatedPicks };
+          const applyScores = (jobs) =>
+            (jobs || []).map((existing) => {
+              const fresh = scored.get(existing.id);
+              if (!fresh || existing.match !== null) return existing;
+              return {
+                ...existing,
+                role: fresh.role || existing.role,
+                company: fresh.company || existing.company,
+                location: fresh.location || existing.location,
+                description: fresh.description || existing.description,
+                logoUrl: fresh.logoUrl || existing.logoUrl,
+                match: fresh.match,
+                reason: fresh.reason,
+                matchReasons: fresh.matchReasons,
+                emotionalLabel: fresh.emotionalLabel,
+              };
+            });
+          return {
+            ...prev,
+            picks: applyScores(prev.picks),
+            saved: applyScores(prev.saved),
+            applied: applyScores(prev.applied),
+            interview: applyScores(prev.interview),
+            offer: applyScores(prev.offer),
+          };
         });
       } catch { }
     }, 5000);
 
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profileId, (columns.picks || []).some((j) => j.match === null)]);
+  }, [profileId, [columns.picks, columns.saved, columns.applied, columns.interview, columns.offer].flat().some((j) => j?.match === null)]);
 
   const hasRestoredPipeline = initialColumns
     ? ["saved", "applied", "interview", "offer", "archived"].some((c) => (initialColumns[c] || []).length > 0)
@@ -515,6 +550,15 @@ export function Dashboard({
     [profileId],
   );
 
+  const handleJobAdded = useCallback((job) => {
+    seenJobIds.current.add(job.id);
+    setColumns((prev) => ({
+      ...prev,
+      saved: [{ ...job, match: job.match === undefined ? null : job.match }, ...(prev.saved || [])],
+    }));
+    setPhase("split");
+  }, []);
+
   const promptSummary = useMemo(() => {
     if (!currentAnswers.length) return "AI-matched roles for your profile";
     const parts = [
@@ -545,26 +589,6 @@ export function Dashboard({
             </Avatar>
             <span className="truncate text-[13px]">{promptSummary}</span>
           </div>
-
-          <TooltipProvider delayDuration={200}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button className="flex-shrink-0 flex items-center justify-center w-9 h-9 rounded-full border border-black/[0.08] dark:border-border bg-white dark:bg-card text-foreground/40 hover:text-foreground/70 transition-colors cursor-pointer">
-                  <Info className="w-3.5 h-3.5" aria-hidden="true" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="bottom" align="start" className="max-w-[240px] text-[12px] leading-relaxed p-3 bg-foreground text-background">
-                <p className="font-semibold mb-2">How match scores work</p>
-                <p className="text-background/60 mb-2">Each role is scored against your portfolio based on:</p>
-                <ul className="space-y-1 text-background/60 list-disc pl-3.5">
-                  <li>Role title alignment</li>
-                  <li>Skill &amp; tool overlap</li>
-                  <li>Seniority &amp; experience fit</li>
-                  <li>Industry relevance</li>
-                </ul>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
 
           {phase === "split" && <><Popover>
             <PopoverTrigger asChild>
@@ -665,7 +689,15 @@ export function Dashboard({
                   </div>
                 )}
               </PopoverContent>
-            </Popover></>}
+            </Popover>
+            <button
+              onClick={() => setAddJobOpen(true)}
+              className="flex-shrink-0 flex items-center gap-1.5 h-9 px-4 rounded-full border border-black/[0.08] dark:border-border bg-white dark:bg-card text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer"
+            >
+              <Plus className="w-3.5 h-3.5" aria-hidden="true" />
+              Add job manually
+              <Kbd>⌘K</Kbd>
+            </button></>}
 
           {rescanExhausted && (
             <span className="text-[11px] text-muted-foreground/50 px-2">
@@ -829,6 +861,12 @@ export function Dashboard({
         </Kanban>
       </div>
 
+      <AddJobDialog
+        open={addJobOpen}
+        profileId={profileId}
+        onClose={() => setAddJobOpen(false)}
+        onJobAdded={handleJobAdded}
+      />
       <JobDetailSheet
         job={selectedJob}
         open={!!selectedJobId}

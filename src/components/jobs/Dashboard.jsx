@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import { toast } from "react-toastify";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { SlidersHorizontal, Sparkles, RotateCcw, Search,  Plus } from "lucide-react";
+import { SlidersHorizontal, Sparkles, RotateCcw, Search, Plus } from "lucide-react";
 import { Kbd } from "@/components/ui/kbd";
 import { LocationAutocomplete } from "./LocationAutocomplete";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -228,7 +228,16 @@ export function Dashboard({
   });
   const [picksCollapsed, setPicksCollapsed] = useState(false);
   const [showJoyride, setShowJoyride] = useState(() => {
-    try { return !localStorage.getItem('df_jobs_joyride_seen'); } catch { return false; }
+    try {
+      if (localStorage.getItem('df_jobs_joyride_seen')) return false;
+      if (initialColumns) {
+        const hasPipeline = ['saved', 'applied', 'interview', 'offer', 'archived'].some(
+          (c) => (initialColumns[c] || []).length > 0,
+        );
+        if (hasPipeline) return false;
+      }
+      return true;
+    } catch { return false; }
   });
   const [creditsRefreshKey, setCreditsRefreshKey] = useState(0);
   const bumpCredits = useCallback(() => setCreditsRefreshKey(k => k + 1), []);
@@ -481,6 +490,10 @@ export function Dashboard({
     setShowJoyride(false);
   }, []);
 
+  useEffect(() => {
+    if (isRescanning && showJoyride) dismissJoyride();
+  }, [isRescanning]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const handleShortlist = useCallback(
     (id) => {
       dismissJoyride();
@@ -690,14 +703,7 @@ export function Dashboard({
                 )}
               </PopoverContent>
             </Popover>
-            <button
-              onClick={() => setAddJobOpen(true)}
-              className="flex-shrink-0 flex items-center gap-1.5 h-9 px-4 rounded-full border border-black/[0.08] dark:border-border bg-white dark:bg-card text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer"
-            >
-              <Plus className="w-3.5 h-3.5" aria-hidden="true" />
-              Add job manually
-              <Kbd>⌘K</Kbd>
-            </button></>}
+          </>}
 
           {rescanExhausted && (
             <span className="text-[11px] text-muted-foreground/50 px-2">
@@ -705,8 +711,16 @@ export function Dashboard({
             </span>
           )}
         </div>
-        <div className="ml-auto">
-          <CreditsWidget refreshKey={creditsRefreshKey} />
+        <div className="ml-auto flex items-center gap-2">
+          <button
+            onClick={() => setAddJobOpen(true)}
+            className="flex-shrink-0 flex items-center gap-1.5 h-9 px-4 rounded-full border border-black/[0.08] dark:border-border bg-white dark:bg-card text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer"
+          >
+            <Plus className="w-3.5 h-3.5" aria-hidden="true" />
+            Add job manually
+            <Kbd>⌘K</Kbd>
+          </button>
+          <CreditsWidget refreshKey={creditsRefreshKey} onBuyClick={bumpCredits} />
         </div>
       </div>
 

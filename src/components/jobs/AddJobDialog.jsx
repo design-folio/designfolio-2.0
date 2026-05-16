@@ -1,77 +1,164 @@
 import { useState, useRef, useEffect } from "react";
+import * as Yup from "yup";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link2, AlertCircle, Check } from "lucide-react";
+import { Link2, PenLine, AlertCircle, Check, Plus, Sparkles, ChevronDown } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { _postJobsAddManual } from "@/network/jobs";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+import { _postJobsAddManual, _postJobsAddManualEntry } from "@/network/jobs";
+import { LocationAutocomplete } from "./LocationAutocomplete";
 
-const STEPS = [
+const STEPS_LINKEDIN = [
   "Fetching job from LinkedIn",
   "Scoring against your profile",
 ];
 
+const STEPS_MANUAL = [
+  "Saving your job",
+  "Scoring against your profile",
+];
+
+const labelCls = "block text-[12px] font-semibold text-foreground/40 uppercase tracking-widest mb-1.5";
+
+function TabToggle({ mode, onChange }) {
+  return (
+    <div className="flex items-center gap-1 p-1 rounded-xl bg-black/[0.04] dark:bg-white/[0.04]">
+      {[
+        { id: "linkedin", icon: Link2, label: "LinkedIn URL" },
+        { id: "manual", icon: PenLine, label: "Enter manually" },
+      ].map(({ id, icon: Icon, label }) => (
+        <button
+          key={id}
+          type="button"
+          onClick={() => onChange(id)}
+          className={`flex items-center gap-1.5 flex-1 justify-center h-8 rounded-lg text-[12px] font-medium transition-all ${mode === id
+            ? "bg-white dark:bg-white/10 text-foreground shadow-sm"
+            : "text-foreground/40 hover:text-foreground/60"
+            }`}
+        >
+          <Icon className="w-3 h-3" />
+          {label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+const linkedinValidation = Yup.object({
+  url: Yup.string()
+    .required("LinkedIn URL is required")
+    .test("is-linkedin-job", "Enter a valid LinkedIn job URL", (val = "") => {
+      if (!/linkedin\.com\/jobs\//.test(val)) return false;
+      if (/\/jobs\/view\/\d+/.test(val)) return true;
+      try {
+        const id = new URL(val).searchParams.get("currentJobId");
+        return Boolean(id && /^\d+$/.test(id));
+      } catch { return false; }
+    }),
+});
+
+const manualValidation = Yup.object({
+  title: Yup.string().trim().min(2, "Job title is required").required("Job title is required"),
+  company: Yup.string().trim().min(2, "Company name is required").required("Company name is required"),
+  applyUrl: Yup.string().url("Enter a valid URL (e.g. https://…)").required("Apply URL is required"),
+  location: Yup.string().trim(),
+  workMode: Yup.string().oneOf(["", "remote", "hybrid", "onsite"]),
+  description: Yup.string().trim(),
+});
+
 export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
-  const [url, setUrl] = useState("");
+  const [mode, setMode] = useState("linkedin");
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(0);
   const [error, setError] = useState(null);
-  const inputRef = useRef(null);
+  const urlInputRef = useRef(null);
+  const titleInputRef = useRef(null);
   const stepTimerRef = useRef(null);
 
   useEffect(() => {
     if (open) {
-      setUrl("");
       setError(null);
       setLoading(false);
       setStep(0);
-      setTimeout(() => inputRef.current?.focus(), 80);
+      setTimeout(() => {
+        if (mode === "linkedin") urlInputRef.current?.focus();
+        else titleInputRef.current?.focus();
+      }, 80);
     }
     return () => clearTimeout(stepTimerRef.current);
   }, [open]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const trimmed = url.trim();
-    if (!trimmed || loading) return;
+  useEffect(() => {
+    setError(null);
+  }, [mode]);
+
+  const STEPS = mode === "linkedin" ? STEPS_LINKEDIN : STEPS_MANUAL;
+
+  const handleLinkedinSubmit = async ({ url }, { resetForm }) => {
     setError(null);
     setLoading(true);
     setStep(0);
-
     stepTimerRef.current = setTimeout(() => setStep(1), 9000);
-
     try {
-      const { data } = await _postJobsAddManual(trimmed, profileId);
+      const { data } = await _postJobsAddManual(url.trim(), profileId);
       clearTimeout(stepTimerRef.current);
       onJobAdded(data.job);
       onClose();
+      resetForm();
     } catch (err) {
       clearTimeout(stepTimerRef.current);
-      const msg =
+      setError(
         err?.response?.data?.message ||
         err?.response?.data?.error ||
-        "Failed to add job. Please check the URL and try again.";
-      setError(msg);
+        "Failed to add job. Please check the URL and try again."
+      );
       setLoading(false);
       setStep(0);
     }
   };
 
-  const isValidUrl = (() => {
-    const u = url.trim();
-    if (!/linkedin\.com\/jobs\//.test(u)) return false;
-    if (/\/jobs\/view\/\d+/.test(u)) return true;
+  const handleManualSubmit = async (values, { resetForm }) => {
+    setError(null);
+    setLoading(true);
+    setStep(0);
+    stepTimerRef.current = setTimeout(() => setStep(1), 3000);
     try {
-      const id = new URL(u).searchParams.get("currentJobId");
-      return Boolean(id && /^\d+$/.test(id));
-    } catch {
-      return false;
+      const { data } = await _postJobsAddManualEntry(
+        {
+          title: values.title.trim(),
+          company: values.company.trim(),
+          applyUrl: values.applyUrl.trim(),
+          description: values.description.trim(),
+          location: values.location.trim(),
+          ...(values.workMode ? { workMode: values.workMode } : {}),
+        },
+        profileId
+      );
+      clearTimeout(stepTimerRef.current);
+      onJobAdded(data.job);
+      onClose();
+      resetForm();
+    } catch (err) {
+      clearTimeout(stepTimerRef.current);
+      setError(
+        err?.response?.data?.message ||
+        err?.response?.data?.error ||
+        "Failed to add job. Please try again."
+      );
+      setLoading(false);
+      setStep(0);
     }
-  })();
+  };
 
   return (
     <Dialog open={open} onOpenChange={(v) => !loading && !v && onClose()}>
       <DialogContent
         aria-describedby={undefined}
-        className="bg-white dark:bg-[#2A2520] border border-black/[0.08] dark:border-white/[0.08] p-0 gap-0 max-w-[420px] rounded-2xl overflow-hidden [&>button]:hidden"
+        className="bg-white dark:bg-[#2A2520] border border-black/[0.08] dark:border-white/[0.08] p-0 gap-0 max-w-[440px] rounded-2xl overflow-hidden [&>button]:hidden"
         onInteractOutside={(e) => loading && e.preventDefault()}
         onEscapeKeyDown={(e) => loading && e.preventDefault()}
       >
@@ -113,13 +200,10 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                         )}
                       </div>
                       <span
-                        className={`text-[13px] font-medium transition-colors duration-300 ${
-                          isActive
-                            ? "text-[#1A1A1A] dark:text-[#F0EDE7]"
-                            : isDone
-                            ? "text-foreground/45"
+                        className={`text-[13px] font-medium transition-colors duration-300 ${isActive ? "text-[#1A1A1A] dark:text-[#F0EDE7]"
+                          : isDone ? "text-foreground/45"
                             : "text-foreground/25"
-                        }`}
+                          }`}
                       >
                         {label}
                       </span>
@@ -128,7 +212,7 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                 })}
               </div>
               <p className="text-[12px] text-foreground/35 leading-relaxed">
-                This usually takes 15–20 seconds
+                {mode === "linkedin" ? "This usually takes 15–20 seconds" : "This usually takes 10–15 seconds"}
               </p>
             </motion.div>
           ) : (
@@ -139,52 +223,243 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
             >
-              <DialogHeader className="px-6 pt-6 pb-5 border-b border-black/[0.06] dark:border-white/[0.06]">
-                <DialogTitle className="text-[#1A1A1A] dark:text-[#F0EDE7] text-[17px] font-semibold leading-tight m-0">
+              <DialogHeader className="px-6 pt-6 pb-4 border-b border-black/[0.06] dark:border-white/[0.06]">
+                <DialogTitle className="text-[#1A1A1A] dark:text-[#F0EDE7] text-[17px] font-semibold leading-tight m-0 mb-4">
                   Add a job
                 </DialogTitle>
-                <p className="text-[13px] text-foreground/50 mt-1 leading-[1.5]">
-                  Paste a LinkedIn URL — we'll fetch and score it for you
-                </p>
+                <TabToggle mode={mode} onChange={setMode} />
               </DialogHeader>
 
-              <form onSubmit={handleSubmit} className="px-6 py-5 flex flex-col gap-3">
-                <div className="relative">
-                  <Link2 className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-foreground/30 pointer-events-none" />
-                  <input
-                    ref={inputRef}
-                    type="url"
-                    value={url}
-                    onChange={(e) => { setUrl(e.target.value); setError(null); }}
-                    placeholder="https://www.linkedin.com/jobs/view/…"
-                    className="w-full h-10 pl-9 pr-3.5 rounded-xl border border-black/[0.08] dark:border-white/[0.08] bg-black/[0.02] dark:bg-white/[0.02] text-[13px] text-foreground placeholder:text-black/30 dark:placeholder:text-white/30 outline-none focus:border-black/20 dark:focus:border-white/20 focus:bg-transparent transition-colors"
-                  />
-                </div>
-
-                <AnimatePresence>
-                  {error && (
+              <div className="px-6 py-5 flex flex-col gap-3">
+                <AnimatePresence mode="wait" initial={false}>
+                  {mode === "linkedin" ? (
                     <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className="overflow-hidden"
+                      key="linkedin-form"
+                      initial={{ opacity: 0, x: -8 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: 8 }}
+                      transition={{ duration: 0.18 }}
                     >
-                      <div className="flex items-start gap-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/30 rounded-xl px-3.5 py-3">
-                        <AlertCircle className="w-3.5 h-3.5 text-red-500 flex-shrink-0 mt-0.5" />
-                        <p className="text-[12px] text-red-600 dark:text-red-400 leading-relaxed">{error}</p>
-                      </div>
+                      <Formik
+                        initialValues={{ url: "" }}
+                        validationSchema={linkedinValidation}
+                        validateOnBlur
+                        validateOnChange={false}
+                        onSubmit={handleLinkedinSubmit}
+                      >
+                        {({ errors, touched }) => (
+                          <Form className="flex flex-col gap-3">
+                            <p className="text-[12px] text-foreground/45 leading-[1.5]">
+                              Paste a LinkedIn job URL — we'll fetch and score it against your profile.
+                            </p>
+                            <div className="flex flex-col gap-1">
+                              <div className="relative">
+                                <Link2 className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/30 pointer-events-none" />
+                                <Field name="url">
+                                  {({ field }) => (
+                                    <Input
+                                      {...field}
+                                      ref={urlInputRef}
+                                      type="url"
+                                      placeholder="https://linkedin.com/jobs/view/…"
+                                      className={cn(
+                                        "pl-10",
+                                        errors.url && touched.url && "border-destructive focus-visible:ring-destructive"
+                                      )}
+                                      onChange={(e) => { field.onChange(e); setError(null); }}
+                                    />
+                                  )}
+                                </Field>
+                              </div>
+                              <ErrorMessage name="url" component="p" className="text-[11px] text-red-500 dark:text-red-400" />
+                            </div>
+
+                            <AnimatePresence>
+                              {error && (
+                                <motion.div
+                                  initial={{ opacity: 0, height: 0 }}
+                                  animate={{ opacity: 1, height: "auto" }}
+                                  exit={{ opacity: 0, height: 0 }}
+                                  className="overflow-hidden"
+                                >
+                                  <div className="flex items-start gap-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/30 rounded-xl px-3.5 py-3">
+                                    <AlertCircle className="w-3.5 h-3.5 text-red-500 flex-shrink-0 mt-0.5" />
+                                    <p className="text-[12px] text-red-600 dark:text-red-400 leading-relaxed">{error}</p>
+                                  </div>
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+
+                            <Button type="submit" size="lg" className="w-full mt-1 rounded-full">
+                              <Sparkles className="w-4 h-4" />
+                              Fetch & score job
+                            </Button>
+                          </Form>
+                        )}
+                      </Formik>
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="manual-form"
+                      initial={{ opacity: 0, x: 8 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -8 }}
+                      transition={{ duration: 0.18 }}
+                    >
+                      <Formik
+                        initialValues={{ title: "", company: "", applyUrl: "", description: "", location: "", workMode: "" }}
+                        validationSchema={manualValidation}
+                        validateOnBlur
+                        validateOnChange={false}
+                        onSubmit={handleManualSubmit}
+                      >
+                        {({ errors, touched }) => (
+                          <Form className="flex flex-col gap-3">
+                            <p className="text-[12px] text-foreground/45 leading-[1.5]">
+                              Add any job manually — we'll still score it against your profile.
+                            </p>
+
+                            <div>
+                              <Label className={labelCls} htmlFor="title">
+                                Role title <span className="text-foreground/30 normal-case tracking-normal font-normal">*</span>
+                              </Label>
+                              <Field name="title">
+                                {({ field }) => (
+                                  <Input
+                                    {...field}
+                                    id="title"
+                                    ref={titleInputRef}
+                                    placeholder="e.g. Senior Product Designer"
+                                    className={cn(errors.title && touched.title && "border-destructive focus-visible:ring-destructive")}
+                                  />
+                                )}
+                              </Field>
+                              <ErrorMessage name="title" component="p" className="text-[11px] text-red-500 dark:text-red-400 mt-1" />
+                            </div>
+
+                            <div>
+                              <Label className={labelCls} htmlFor="company">
+                                Company <span className="text-foreground/30 normal-case tracking-normal font-normal">*</span>
+                              </Label>
+                              <Field name="company">
+                                {({ field }) => (
+                                  <Input
+                                    {...field}
+                                    id="company"
+                                    placeholder="e.g. Figma"
+                                    className={cn(errors.company && touched.company && "border-destructive focus-visible:ring-destructive")}
+                                  />
+                                )}
+                              </Field>
+                              <ErrorMessage name="company" component="p" className="text-[11px] text-red-500 dark:text-red-400 mt-1" />
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-3">
+                              <div>
+                                <Label className={labelCls} htmlFor="location">Location</Label>
+                                <Field name="location">
+                                  {({ field, form }) => (
+                                    <LocationAutocomplete
+                                      value={field.value}
+                                      onChange={(val) => form.setFieldValue("location", val)}
+                                      onSelect={(label) => form.setFieldValue("location", label)}
+                                      placeholder="e.g. London, UK"
+                                      size="sm"
+                                    />
+                                  )}
+                                </Field>
+                                <ErrorMessage name="location" component="p" className="text-[11px] text-red-500 dark:text-red-400 mt-1" />
+                              </div>
+                              <div>
+                                <Label className={labelCls} htmlFor="workMode">Work mode</Label>
+                                <div className="relative">
+                                  <Field name="workMode">
+                                    {({ field }) => (
+                                      <select
+                                        {...field}
+                                        id="workMode"
+                                        className={cn(
+                                          "flex h-10 w-full items-center rounded-xl border border-transparent bg-black/[0.03] dark:bg-white/[0.03] px-3.5 text-sm text-foreground",
+                                          "appearance-none pr-8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/10 dark:focus-visible:ring-white/10 transition-colors"
+                                        )}
+                                      >
+                                        <option value="">Select…</option>
+                                        <option value="remote">Remote</option>
+                                        <option value="hybrid">Hybrid</option>
+                                        <option value="onsite">On-site</option>
+                                      </select>
+                                    )}
+                                  </Field>
+                                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-foreground/30 pointer-events-none" />
+                                </div>
+                              </div>
+                            </div>
+
+                            <div>
+                              <Label className={labelCls} htmlFor="applyUrl">
+                                Apply URL <span className="text-foreground/30 normal-case tracking-normal font-normal">*</span>
+                              </Label>
+                              <div className="relative">
+                                <Link2 className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/30 pointer-events-none" />
+                                <Field name="applyUrl">
+                                  {({ field }) => (
+                                    <Input
+                                      {...field}
+                                      id="applyUrl"
+                                      placeholder="https://…"
+                                      className={cn(
+                                        "pl-10",
+                                        errors.applyUrl && touched.applyUrl && "border-destructive focus-visible:ring-destructive"
+                                      )}
+                                    />
+                                  )}
+                                </Field>
+                              </div>
+                              <ErrorMessage name="applyUrl" component="p" className="text-[11px] text-red-500 dark:text-red-400 mt-1" />
+                            </div>
+
+                            <div>
+                              <Label className={labelCls} htmlFor="description">Job description</Label>
+                              <Field name="description">
+                                {({ field }) => (
+                                  <Textarea
+                                    {...field}
+                                    id="description"
+                                    rows={4}
+                                    placeholder="Paste the job description here for AI scoring and interview prep…"
+                                    className="resize-none"
+                                  />
+                                )}
+                              </Field>
+                            </div>
+
+                            <AnimatePresence>
+                              {error && (
+                                <motion.div
+                                  initial={{ opacity: 0, height: 0 }}
+                                  animate={{ opacity: 1, height: "auto" }}
+                                  exit={{ opacity: 0, height: 0 }}
+                                  className="overflow-hidden"
+                                >
+                                  <div className="flex items-start gap-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/30 rounded-xl px-3.5 py-3">
+                                    <AlertCircle className="w-3.5 h-3.5 text-red-500 flex-shrink-0 mt-0.5" />
+                                    <p className="text-[12px] text-red-600 dark:text-red-400 leading-relaxed">{error}</p>
+                                  </div>
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+
+                            <Button type="submit" size="lg" className="w-full mt-1 rounded-full">
+                              <Plus className="w-4 h-4" />
+                              Add to board
+                            </Button>
+                          </Form>
+                        )}
+                      </Formik>
                     </motion.div>
                   )}
                 </AnimatePresence>
-
-                <button
-                  type="submit"
-                  disabled={!isValidUrl}
-                  className="w-full flex items-center justify-center h-10 rounded-full bg-[#1A1A1A] dark:bg-white text-white dark:text-black text-[14px] font-medium transition-opacity disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed"
-                >
-                  Add to Shortlisted
-                </button>
-              </form>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

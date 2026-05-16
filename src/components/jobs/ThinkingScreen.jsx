@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { _postJobsRecommend, _getJobsRecommendations } from "@/network/jobs";
+import { ColorOrb } from "@/components/ui/color-orb";
 
 // Calls POST /jobs/recommend — returns immediately with { profileId, status: "processing" }.
 // Then polls GET /jobs/recommendations every 3s until status === "ready".
@@ -20,13 +21,13 @@ const keyframes = `
 
 export function ThinkingScreen({ answers, onComplete, onError }) {
   const [visibleCount, setVisibleCount] = useState(0);
-  const [timer,        setTimer]        = useState(0);
-  const [liStatus,     setLiStatus]     = useState("waiting");
-  const [liCount,      setLiCount]      = useState(undefined);
+  const [timer, setTimer] = useState(0);
+  const [liStatus, setLiStatus] = useState("waiting");
+  const [liCount, setLiCount] = useState(undefined);
   const [indeedStatus, setIndeedStatus] = useState("waiting");
 
   const timersRef = useRef([]);
-  const pollRef   = useRef(null);
+  const pollRef = useRef(null);
 
   const addTimer = (id) => timersRef.current.push(id);
   const clearAll = () => {
@@ -117,7 +118,7 @@ export function ThinkingScreen({ answers, onComplete, onError }) {
       done = true;
       clearAll();
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const steps = [
@@ -126,15 +127,15 @@ export function ThinkingScreen({ answers, onComplete, onError }) {
     {
       label: "Scanning LinkedIn",
       getDetail: () =>
-        liStatus === "done"     ? `${liCount} roles found` :
-        liStatus === "scraping" ? "scanning…" : null,
+        liStatus === "done" ? `${liCount} roles found` :
+          liStatus === "scraping" ? "scanning…" : null,
       isScanning: liStatus === "scraping",
     },
     {
       label: "Scanning Indeed",
       getDetail: () =>
-        indeedStatus === "done"     ? "indexed" :
-        indeedStatus === "scraping" ? "scanning…" : null,
+        indeedStatus === "done" ? "indexed" :
+          indeedStatus === "scraping" ? "scanning…" : null,
       isScanning: indeedStatus === "scraping",
     },
     { label: "Cross-referencing your portfolio" },
@@ -167,14 +168,8 @@ export function ThinkingScreen({ answers, onComplete, onError }) {
           <div className="flex flex-col gap-1">
             <div className="flex items-center gap-2">
               <div className="flex gap-[4px]">
-                {[0, 1, 2].map((i) => (
-                  <motion.div
-                    key={i}
-                    className="w-1.5 h-1.5 rounded-full bg-[#FF553E]"
-                    animate={{ opacity: [0.4, 1, 0.4], scale: [0.85, 1.15, 0.85] }}
-                    transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.25 }}
-                  />
-                ))}
+                <span className="orb-spinning"><ColorOrb dimension="18px" spinDuration={4} /></span>
+
               </div>
               <p
                 className="text-[18px] font-semibold tracking-tight text-foreground"
@@ -197,9 +192,9 @@ export function ThinkingScreen({ answers, onComplete, onError }) {
           {steps.map((step, i) => {
             if (i >= visibleCount) return null;
             const isActive = i === visibleCount - 1;
-            const isDone   = i < visibleCount - 1;
-            const isLast   = i === steps.length - 1;
-            const detail   = step.getDetail?.() ?? null;
+            const isDone = i < visibleCount - 1;
+            const isLast = i === steps.length - 1;
+            const detail = step.getDetail?.() ?? null;
             const isScanning = step.isScanning;
 
             return (
@@ -257,8 +252,8 @@ export function ThinkingScreen({ answers, onComplete, onError }) {
                       color: isActive
                         ? "hsl(var(--foreground))"
                         : isDone
-                        ? "hsl(var(--muted-foreground) / 0.55)"
-                        : "hsl(var(--foreground))",
+                          ? "hsl(var(--muted-foreground) / 0.55)"
+                          : "hsl(var(--foreground))",
                       fontWeight: isActive ? 500 : 400,
                     }}
                   >

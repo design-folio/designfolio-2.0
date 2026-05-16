@@ -81,3 +81,9 @@ export const _getJobRoleSuggestions = (q) =>
 export const _postJobsAddManual = (linkedinUrl, profileId) =>
   axiosInstance.post('/jobs/add-manual', { linkedinUrl, profileId });
 
+export const _postJobsAddManualEntry = (fields, profileId) =>
+  axiosInstance.post('/jobs/add-manual-entry', { ...fields, profileId });
+
+export const _createJobCreditOrder = () =>
+  axiosInstance.post('/jobs/credits/create-order');
+

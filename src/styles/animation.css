@@ -76,15 +76,21 @@
 
 /* ── Joyride: first-time onboarding glow ───────────────────── */
 @keyframes joyride-btn-glow {
-  0%, 100% {
-    box-shadow: 0 0 0 0 rgba(255, 85, 62, 0);
-  }
-  50% {
-    box-shadow: 0 0 10px 3px rgba(255, 85, 62, 0.22), 0 0 0 3px rgba(255, 85, 62, 0.07);
-  }
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
 }
 
 .joyride-btn-glow {
-  animation: joyride-btn-glow 2s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  position: relative;
+}
+
+.joyride-btn-glow::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 9999px;
+  box-shadow: 0 0 10px 3px rgba(255, 85, 62, 0.22), 0 0 0 3px rgba(255, 85, 62, 0.07);
+  animation: joyride-btn-glow 4s ease-in-out infinite;
+  pointer-events: none;
 }
 

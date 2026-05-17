@@ -522,7 +522,7 @@ export function Dashboard({
         pastReports={selectedJob ? (completedReports[selectedJob.id] ?? []).slice().reverse() : []}
         onViewReport={(entry) => { if (selectedJob) setViewingReport({ job: selectedJob, entry }); }}
         onCreditUsed={bumpCredits}
-        onStartMockInterview={selectedJobId ? () => { setInterviewJobId(selectedJobId); setSelectedJobId(null); } : undefined}
+        onStartMockInterview={selectedJobId ? () => { setInterviewJobId(selectedJobId); } : undefined}
       />
       <MockInterviewDialog
         job={interviewJob}

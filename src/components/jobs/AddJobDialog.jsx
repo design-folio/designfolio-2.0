@@ -22,7 +22,7 @@ const STEPS_MANUAL = [
   "Scoring against your profile",
 ];
 
-const labelCls = "block text-[12px] font-semibold text-foreground/40 uppercase tracking-widest mb-1.5";
+const labelCls = "text-[13px] font-medium text-foreground ml-1";
 
 function TabToggle({ mode, onChange }) {
   return (
@@ -158,7 +158,8 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
     <Dialog open={open} onOpenChange={(v) => !loading && !v && onClose()}>
       <DialogContent
         aria-describedby={undefined}
-        className="bg-white dark:bg-[#2A2520] border border-black/[0.08] dark:border-white/[0.08] p-0 gap-0 max-w-[440px] rounded-2xl overflow-hidden [&>button]:hidden"
+        overlayClassName="fixed inset-0 z-[300] bg-black/40 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
+        className="bg-white dark:bg-[#2A2520] border border-black/[0.08] dark:border-white/[0.08] p-0 gap-0 max-w-[440px] rounded-2xl overflow-hidden [&>button]:hidden z-[301]"
         onInteractOutside={(e) => loading && e.preventDefault()}
         onEscapeKeyDown={(e) => loading && e.preventDefault()}
       >
@@ -315,13 +316,9 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                       >
                         {({ errors, touched }) => (
                           <Form className="flex flex-col gap-3">
-                            <p className="text-[12px] text-foreground/45 leading-[1.5]">
-                              Add any job manually — we'll still score it against your profile.
-                            </p>
-
                             <div>
                               <Label className={labelCls} htmlFor="title">
-                                Role title <span className="text-foreground/30 normal-case tracking-normal font-normal">*</span>
+                                Role title <span className="text-destructive">*</span>
                               </Label>
                               <Field name="title">
                                 {({ field }) => (
@@ -339,7 +336,7 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
 
                             <div>
                               <Label className={labelCls} htmlFor="company">
-                                Company <span className="text-foreground/30 normal-case tracking-normal font-normal">*</span>
+                                Company <span className="text-destructive">*</span>
                               </Label>
                               <Field name="company">
                                 {({ field }) => (
@@ -397,7 +394,7 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
 
                             <div>
                               <Label className={labelCls} htmlFor="applyUrl">
-                                Apply URL <span className="text-foreground/30 normal-case tracking-normal font-normal">*</span>
+                                Apply URL <span className="text-destructive">*</span>
                               </Label>
                               <div className="relative">
                                 <Link2 className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/30 pointer-events-none" />

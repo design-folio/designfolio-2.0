@@ -150,8 +150,8 @@ export function LocationAutocomplete({
           autoComplete="off"
           className={`w-full outline-none transition-colors ${
             isSm
-              ? "pl-7 pr-7 py-2 text-[13px] bg-black/[0.03] dark:bg-white/[0.04] border border-black/[0.08] dark:border-border rounded-xl focus:border-foreground/25"
-              : "pl-10 pr-10 py-4 text-[15px] bg-background/70 dark:bg-foreground/5 border border-border rounded-2xl focus:border-foreground/30"
+              ? "pl-7 pr-7 py-2 text-[13px] bg-black/[0.03] dark:bg-white/[0.04] border border-black/[0.08] dark:border-border rounded-xl focus:border-foreground/25 placeholder:text-black/30 dark:placeholder:text-white/30"
+              : "pl-10 pr-10 py-4 text-[15px] bg-background/70 dark:bg-foreground/5 border border-border rounded-2xl focus:border-foreground/30 placeholder:text-black/30 dark:placeholder:text-white/30"
           } text-foreground ${inputClassName}`}
         />
         {isLoading && (

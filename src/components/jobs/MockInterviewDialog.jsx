@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { Video, Mic, CheckCircle2, XCircle, Clapperboard } from "lucide-react";
+import { Video, Mic, CheckCircle2, XCircle, Clapperboard, Zap } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { CompanyLogo } from "./CompanyLogo";
+import { JOB_CREDITS } from "@/data/jobCredits";
 
 function PermissionCard({ icon: Icon, label, description, state, onRequest }) {
   return (
@@ -11,7 +12,7 @@ function PermissionCard({ icon: Icon, label, description, state, onRequest }) {
       </div>
       <div className="flex-1 min-w-0">
         <div className="text-[14px] font-semibold text-foreground mb-0.5">{label}</div>
-        <div className="text-[13px] text-foreground/50 leading-[1.5]">{description}</div>
+        <div className="text-[13px] text-foreground/50 leading-[1.5] break-words">{description}</div>
       </div>
       <div className="flex-shrink-0 mt-0.5">
         {state === "granted" ? (
@@ -68,9 +69,9 @@ export function MockInterviewDialog({ job, open, onClose, onStart }) {
         className="bg-white dark:bg-[#2A2520] border border-black/[0.08] dark:border-white/[0.08] p-0 gap-0 max-w-[440px] rounded-2xl overflow-hidden"
       >
         <DialogHeader className="px-6 pt-6 pb-5 border-b border-black/[0.06] dark:border-white/[0.06]">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 overflow-hidden">
             <CompanyLogo logoUrl={job.logoUrl} company={job.company} size={40} />
-            <div className="min-w-0">
+            <div className="min-w-0 overflow-hidden">
               <DialogTitle className="text-[#1A1A1A] dark:text-[#F0EDE7] text-[17px] font-semibold leading-tight m-0 truncate">
                 Ready to practise?
               </DialogTitle>
@@ -115,6 +116,10 @@ export function MockInterviewDialog({ job, open, onClose, onStart }) {
           >
             <Clapperboard className="w-4 h-4" />
             Start mock interview
+            <span className="flex items-center gap-0.5 bg-amber-400/20 dark:bg-amber-500/15 border border-amber-400/35 dark:border-amber-500/30 rounded-full px-1.5 py-0.5">
+              <Zap className="w-2.5 h-2.5 text-amber-400 fill-amber-400 dark:text-amber-500 dark:fill-amber-500" />
+              <span className="text-[10px] font-semibold text-amber-300 dark:text-amber-600">{JOB_CREDITS.jobInterview.cost}</span>
+            </span>
           </button>
           {!bothGranted && (
             <p className="text-center text-[12px] text-foreground/35 mt-2.5">

@@ -1,7 +1,6 @@
 import "@/styles/globals.scss";
 import "@/styles/tiptap.css";
 import "@/styles/theme.css";
-import "@/styles/credits-widget.css";
 import localFont from "next/font/local";
 import {
   Inter,

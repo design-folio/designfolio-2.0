@@ -1,19 +1,12 @@
 import { useState } from "react";
 import { useTheme } from "next-themes";
-import { Bookmark, Clapperboard, Maximize2, Loader2, X } from "lucide-react";
+import { Bookmark, Clapperboard, Maximize2, Loader2, X, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Gauge } from "@/components/ui/gauge-1";
 import { ColorOrb } from "@/components/ui/color-orb";
 import { CompanyLogo } from "./CompanyLogo";
-import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
+import { ScoreGauge } from "./ScoreGauge";
 
 const EASING = [0.23, 1, 0.32, 1];
-
-function getScoreColor(score) {
-  if (score >= 85) return "#18A360";
-  if (score >= 65) return "#F5A623";
-  return "#E5534B";
-}
 
 function AnalyzingRing({ isDark }) {
   const track = isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.07)";
@@ -42,14 +35,18 @@ function AnalyzingRing({ isDark }) {
   );
 }
 
-// Shared pill button classes — press feedback + specific transition properties
 const PILL_BTN = "flex items-center gap-1.5 h-8 px-3 rounded-full border border-black/[0.08] dark:border-white/[0.1] bg-black/[0.04] dark:bg-white/[0.06] text-[12px] font-medium text-foreground/65 hover:text-foreground hover:border-black/[0.15] dark:hover:border-white/[0.18] transition-[transform,color,border-color,background-color] duration-150 active:scale-[0.97]";
 
 export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, onAskScout, joyrideActive = false, joyrideFirst = false }) {
   const [tooltipVisible, setTooltipVisible] = useState(joyrideFirst);
+  const [gaugeHovered, setGaugeHovered] = useState(false);
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
   const isAnalyzing = job.match === null;
+
+  const gaugeAligns = (job.aligns ?? []).slice(0, 3);
+  const gaugeGaps   = (job.gaps   ?? []).slice(0, 2);
+  const hasPopover  = gaugeAligns.length > 0 || gaugeGaps.length > 0;
 
   return (
     <div
@@ -60,8 +57,6 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
         hover:-translate-y-1 hover:border-black/[0.1] dark:hover:border-[#4A4440] hover:shadow-[0_4px_14px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_4px_14px_rgba(0,0,0,0.55)]
         active:translate-y-0 active:shadow-[0_1px_3px_rgba(0,0,0,0.06)] dark:active:shadow-[0_1px_4px_rgba(0,0,0,0.4)]"
     >
-      <div className="absolute top-2 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full bg-foreground/20 opacity-0 group-hover/item:opacity-100 transition-opacity duration-150 pointer-events-none" />
-
       {/* Row 1: Logo + Role/Company + Gauge */}
       <div className="flex items-start justify-between gap-2.5">
         <div className="flex items-start gap-3 min-w-0 flex-1">
@@ -85,7 +80,7 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
           </div>
         </div>
 
-        {/* Score gauge — null=pending ring, number=gauge, undefined=no score (pipeline) */}
+        {/* Score gauge — null=pending ring, number=gauge, undefined=no score */}
         <AnimatePresence mode="wait" initial={false}>
           {isAnalyzing ? (
             <motion.div
@@ -104,57 +99,57 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.85 }}
               transition={{ duration: 0.26, ease: EASING }}
-              className="flex-shrink-0 mt-0.5"
+              className="relative flex-shrink-0 mt-0.5"
+              onMouseEnter={() => setGaugeHovered(true)}
+              onMouseLeave={() => setGaugeHovered(false)}
             >
-              {job.matchReasons?.length > 0 ? (
-                <TooltipProvider delayDuration={100}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="cursor-default select-none" style={{ cursor: "default" }}>
-                        <Gauge
-                          value={job.match}
-                          size={40}
-                          strokeWidth={7}
-                          gapPercent={3}
-                          primary={getScoreColor(job.match)}
-                          secondary={isDark ? "rgba(255,255,255,0.14)" : "rgba(0,0,0,0.13)"}
-                          showValue={true}
-                          showPercentage={false}
-                          transition={{ delay: 200 }}
-                          className={{ textClassName: isDark ? "fill-white" : "fill-[#1A1A1A]" }}
-                        />
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent side="left" sideOffset={8} className="max-w-[200px] space-y-1.5 py-2.5 px-3 bg-primary text-primary-foreground text-xs rounded-md">
-                      {job.emotionalLabel && (
-                        <p className="text-[11px] font-semibold" style={{ color: getScoreColor(job.match) }}>
-                          {job.emotionalLabel}
-                        </p>
-                      )}
-                      <ul className="space-y-1">
-                        {job.matchReasons.map((r, i) => (
-                          <li key={i} className="flex items-start gap-1.5 text-[11px] leading-snug text-primary-foreground/80">
-                            <span className="mt-[3px] w-1 h-1 rounded-full flex-shrink-0" style={{ backgroundColor: getScoreColor(job.match) }} />
-                            {r}
-                          </li>
+              <ScoreGauge value={job.match} isDark={isDark} />
+
+              {/* Hover popover with aligns/gaps */}
+              {hasPopover && (
+                <div
+                  className="absolute right-full top-0 mr-2 z-50 pointer-events-none"
+                  style={{
+                    opacity: gaugeHovered ? 1 : 0,
+                    transform: gaugeHovered ? "translateY(0)" : "translateY(4px)",
+                    transition: "opacity 0.18s ease, transform 0.18s ease",
+                  }}
+                >
+                  <div
+                    className="w-[172px] rounded-xl border border-black/[0.07] dark:border-white/[0.09] px-3 py-2.5 flex flex-col gap-2"
+                    style={{
+                      background: isDark ? "rgba(30,26,22,0.97)" : "rgba(255,255,255,0.97)",
+                      boxShadow: isDark
+                        ? "0 4px 20px rgba(0,0,0,0.45)"
+                        : "0 4px 20px rgba(0,0,0,0.10)",
+                      backdropFilter: "blur(8px)",
+                    }}
+                  >
+                    {gaugeAligns.length > 0 && (
+                      <div className="flex flex-col gap-1">
+                        {gaugeAligns.map((a) => (
+                          <div key={a} className="flex items-start gap-1.5">
+                            <Check className="w-2.5 h-2.5 mt-[2px] flex-shrink-0 text-emerald-500 dark:text-emerald-400" />
+                            <span className="text-[11px] text-foreground/65 leading-snug">{a}</span>
+                          </div>
                         ))}
-                      </ul>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              ) : (
-                <Gauge
-                  value={job.match}
-                  size={40}
-                  strokeWidth={7}
-                  gapPercent={3}
-                  primary={getScoreColor(job.match)}
-                  secondary={isDark ? "rgba(255,255,255,0.14)" : "rgba(0,0,0,0.13)"}
-                  showValue={true}
-                  showPercentage={false}
-                  transition={{ delay: 200 }}
-                  className={{ textClassName: isDark ? "fill-white" : "fill-[#1A1A1A]" }}
-                />
+                      </div>
+                    )}
+                    {gaugeAligns.length > 0 && gaugeGaps.length > 0 && (
+                      <div className="h-px bg-black/[0.06] dark:bg-white/[0.07]" />
+                    )}
+                    {gaugeGaps.length > 0 && (
+                      <div className="flex flex-col gap-1">
+                        {gaugeGaps.map((g) => (
+                          <div key={g} className="flex items-start gap-1.5">
+                            <X className="w-2.5 h-2.5 mt-[2px] flex-shrink-0 text-foreground/30" />
+                            <span className="text-[11px] text-foreground/40 leading-snug">{g}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
               )}
             </motion.div>
           ) : null}
@@ -277,7 +272,7 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
         </div>
       )}
 
-      {/* Analyzing label — fades in below action row */}
+      {/* Analyzing label */}
       <AnimatePresence>
         {isAnalyzing && (
           <motion.div

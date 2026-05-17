@@ -75,11 +75,10 @@ export function CriteriaEditor({ answers, onRescan, isRescanning }) {
                   key={s.label}
                   type="button"
                   onClick={() => setRole(s.label)}
-                  className={`h-6 px-2.5 rounded-full border text-[11px] transition-colors ${
-                    role === s.label
+                  className={`h-6 px-2.5 rounded-full border text-[11px] transition-colors ${role === s.label
                       ? "bg-foreground text-background border-foreground"
                       : "border-black/[0.08] dark:border-white/[0.1] bg-black/[0.03] dark:bg-white/[0.04] text-foreground/55 hover:text-foreground hover:border-black/[0.16] dark:hover:border-white/[0.2] hover:bg-black/[0.06] dark:hover:bg-white/[0.08]"
-                  }`}
+                    }`}
                 >
                   {s.label}
                 </button>
@@ -106,11 +105,7 @@ export function CriteriaEditor({ answers, onRescan, isRescanning }) {
         <button
           onClick={handleRescan}
           disabled={!canRescan || !isDirty || isRescanning}
-          className={`w-full h-10 flex items-center justify-center gap-2.5 rounded-xl text-[13px] font-semibold transition-opacity select-none ${
-            isDirty && canRescan && !isRescanning
-              ? "bg-foreground dark:bg-[#2E2B27] text-background dark:text-white hover:opacity-90 active:opacity-80 cursor-pointer"
-              : "bg-black/[0.05] dark:bg-white/[0.06] text-foreground/40 cursor-not-allowed"
-          }`}
+          className="w-full h-10 flex items-center justify-center gap-2.5 rounded-xl text-[13px] font-semibold transition-opacity select-none bg-foreground dark:bg-[#2E2B27] text-background dark:text-white hover:opacity-90 active:opacity-80 disabled:opacity-80 disabled:cursor-not-allowed cursor-pointer"
         >
           {isRescanning ? (
             <>

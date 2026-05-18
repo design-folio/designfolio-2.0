@@ -260,7 +260,7 @@ export default function UpgradeModal() {
               <div className={styles.lifetimeDealBanner}>
                 <div className={styles.dealBannerIcon}>⏰</div>
                 <span className={styles.dealBannerText}>
-                  Lifetime price increasing next month
+                  Lifetime is going away. One week left to grab it.
                 </span>
                 <div className={styles.dealBannerPulse}></div>
               </div>

@@ -4,7 +4,8 @@ import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motio
 import { Zap, FlaskConical } from "lucide-react";
 import { _getJobCredits, _createJobCreditOrder } from "@/network/jobs";
 import { RotatingGradientButton } from "@/components/ui/rotating-gradient-button";
-import { JOB_CREDITS } from "@/data/jobCredits";
+import { JOB_CREDITS, JOB_MATCH_BATCH_SIZE } from "@/data/jobCredits";
+import { CreditsShopModal } from "./CreditsShopModal";
 
 /* ── Keyframes injected once (pulse-dot) ──────────────────────────────── */
 const KEYFRAMES = `
@@ -210,6 +211,7 @@ function LiquidGauge({ pct, remaining, limit, uid, isDark }) {
 export function CreditsBalance({ refreshKey = 0, onBuyClick }) {
   const [data, setData] = useState(null);
   const [open, setOpen] = useState(false);
+  const [shopOpen, setShopOpen] = useState(false);
   const [buying, setBuying] = useState(false);
   const containerRef = useRef(null);
   const uid = useId().replace(/:/g, "");
@@ -240,8 +242,6 @@ export function CreditsBalance({ refreshKey = 0, onBuyClick }) {
   const totalAllocated = data?.totalAllocated ?? 0;
   const displayTotal = totalAllocated > 0 ? totalAllocated : (balance ?? 30);
   const pct = displayTotal > 0 && balance !== null ? Math.min(1, balance / displayTotal) : 0;
-  const matchCost = JOB_CREDITS.jobRecommendation?.cost ?? 15;
-  const canFetchMore = balance === null || balance >= matchCost;
 
   const loadRazorpayScript = useCallback(() => {
     if (window.Razorpay) return Promise.resolve();
@@ -366,19 +366,28 @@ export function CreditsBalance({ refreshKey = 0, onBuyClick }) {
                 Credits power mock interviews and scout chats.
               </p>
 
+           
+
               {/* CTA — rotating gradient border button */}
               <RotatingGradientButton
-                onClick={handleBuy}
+                onClick={() => { setOpen(false); setShopOpen(true); }}
                 disabled={buying}
                 isDark={isDark}
               >
                 <Zap size={12} />
-                {buying ? "Opening checkout…" : "Get more credits"}
+                Get more credits
               </RotatingGradientButton>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
+
+      <CreditsShopModal
+        open={shopOpen}
+        onClose={() => setShopOpen(false)}
+        onBuy={handleBuy}
+        buying={buying}
+      />
     </div>
   );
 }

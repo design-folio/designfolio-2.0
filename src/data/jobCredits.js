@@ -1,6 +1,7 @@
 // Central registry for job-hunter credit costs.
 // 'cost' matches backend aiLimits.costs — update both together.
-// CreditsBalance and feature buttons derive from this — nothing hardcoded elsewhere.
+
+export const JOB_MATCH_BATCH_SIZE = 10; // jobs returned per "fetch more" call
 
 export const JOB_CREDITS = {
   jobRecommendation: {

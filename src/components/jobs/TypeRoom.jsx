@@ -5,7 +5,9 @@ import Lottie from "lottie-react";
 import aiAssistantAnimation from "@/assets/AI-Assistant.json";
 import { DotTrail } from "./DotTrail";
 import { LocationAutocomplete } from "./LocationAutocomplete";
+import { Input } from "@/components/ui/input";
 import { _getJobRoleSuggestions } from "@/network/jobs";
+import { Button } from "../ui/button";
 
 // Inline BlurredStagger — animates each word with blur fade-in stagger
 function BlurredStagger({ text, className }) {
@@ -117,7 +119,7 @@ export function TypeRoom({ questions, onDone, onReset }) {
       <div />
 
       {/* Question + answer area */}
-      <div className="relative z-10 flex flex-col items-center text-center max-w-lg gap-6 w-full">
+      <div className="relative z-20 flex flex-col items-center text-center max-w-lg gap-6 w-full">
         {/* Lottie AI animation */}
         <motion.div
           initial={{ scale: 0.75, opacity: 0 }}
@@ -146,13 +148,13 @@ export function TypeRoom({ questions, onDone, onReset }) {
               exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.32 }}
             >
-              <input
+              <Input
                 ref={inputRef}
                 data-testid="input-role"
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && advance()}
-                className="w-full bg-background dark:bg-foreground/8 border border-border rounded-2xl px-5 py-4 text-foreground text-[15px] outline-none focus:border-foreground/30 transition-colors text-left"
+                className="rounded-2xl px-5 py-4 text-[15px] h-auto"
               />
               <div className="flex flex-wrap justify-center gap-2">
                 {roleSuggestions.map((s) => (
@@ -211,41 +213,41 @@ export function TypeRoom({ questions, onDone, onReset }) {
       <div className="relative z-10 flex flex-col items-center gap-5 w-full max-w-lg mt-8">
         <div className="flex items-center justify-between w-full gap-3">
           {/* Back */}
-          <motion.button
+          <Button
             data-testid="button-back"
+            variant="outline"
             onClick={goBack}
-            whileTap={{ scale: 0.94 }}
-            className={`cursor-pointer flex items-center gap-1.5 px-5 py-3 rounded-full border border-border text-[14px] font-medium text-muted-foreground transition-all duration-200 hover:text-foreground hover:border-foreground/30 ${current === 0 ? "invisible" : ""}`}
+            className={`px-5 py-3 h-auto text-[14px] ${current === 0 ? "invisible" : ""}`}
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft />
             Back
-          </motion.button>
+          </Button>
 
           <DotTrail current={current} total={2} />
 
           {/* Next / Scan Jobs */}
-          <motion.button
+          <Button
             data-testid={isLastStep ? "button-scan-jobs" : "button-next"}
             onClick={advance}
             disabled={!canNext()}
-            whileTap={{ scale: 0.94 }}
-            className="cursor-pointer flex items-center gap-2 px-5 py-3 rounded-full text-[14px] font-medium transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed bg-foreground text-background"
+            className="px-5 py-3 h-auto text-[14px]"
           >
             {isLastStep ? (
-              <>Find matching Jobs <Search className="w-4 h-4" /></>
+              <>Find matching Jobs <Search /></>
             ) : (
-              <>Continue <ArrowRight className="w-4 h-4" /></>
+              <>Continue <ArrowRight /></>
             )}
-          </motion.button>
+          </Button>
         </div>
 
-        <button
+        <Button
+          variant="ghost"
           data-testid="button-do-later-type"
           onClick={onReset}
           className="cursor-pointer text-muted-foreground/50 text-[12px] hover:text-muted-foreground transition-colors"
         >
           I&apos;ll do it later
-        </button>
+        </Button>
       </div>
     </motion.div>
   );

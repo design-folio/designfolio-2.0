@@ -15,7 +15,7 @@ const comparisonRows = [
   {
     feature: 'Pricing',
     free: '₹0',
-    lifetime: '₹4,500 (India) / $99 (Global)',
+    lifetime: '₹8,799 (India) / $119 (Global)',
     testId: 'pricing',
   },
   {

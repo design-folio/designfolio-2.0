@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Maximize2, Minimize2, SendHorizontal, ArrowRight } from "lucide-react";
 import { ColorOrb } from "@/components/ui/color-orb";
 import { _postJobsOfferDecision } from "@/network/jobs";
-import { creditBadge } from "@/data/jobCredits";
 
 const REGRET_SUGGESTIONS = [
   "Money short-term",
@@ -348,7 +347,7 @@ export function OfferDecisionScout({ jobs, profileId, onClose, onCreditUsed }) {
           {done ? (
             <div className="px-4 py-3 flex items-center justify-between gap-3">
               <p className="text-[11px] text-foreground/35">
-                {creditBadge("offerDecision")} used · AI-powered
+                AI-powered
               </p>
               <button
                 onClick={onClose}
@@ -395,7 +394,7 @@ export function OfferDecisionScout({ jobs, profileId, onClose, onCreditUsed }) {
               </div>
               {step === steps.length - 1 && (
                 <p className="text-[11px] text-center text-foreground/30 mt-2">
-                  Uses {creditBadge("offerDecision")} · Scout will analyse both offers
+                  Scout will analyse both offers
                 </p>
               )}
             </div>

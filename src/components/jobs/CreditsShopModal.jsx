@@ -2,18 +2,22 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "next-themes";
-import { X, Zap, Clapperboard, FileText, PenLine, Crosshair, BookOpen } from "lucide-react";
+import { X, Zap, Clapperboard, FileText, PenLine, Crosshair, ScanSearch, MessageCircle } from "lucide-react";
 import { ColorOrb } from "@/components/ui/color-orb";
 import { ConicButton } from "@/components/ui/ConicButton";
 import { _getProPlanDetails } from "@/network/get-request";
 
-const CREDIT_ACTIONS = [
-  { icon: Clapperboard, label: "Mock interview",              sub: "Practice with a real AI interviewer" },
-  { icon: FileText,     label: "Tailor resume",               sub: "Rewrite your resume for this specific role" },
-  { icon: PenLine,      label: "Cover letter",                sub: "Generate a job-specific cover letter" },
-  { icon: Crosshair,    label: "Scout AI chat",               sub: "Get deep insights on any job or company" },
-  { icon: BookOpen,     label: "Write / Analyze Case studies", sub: "Draft or critique design case studies" },
-];
+/* ── Feature metadata map ─────────────────────────────────────────────── */
+const FEATURE_META = {
+  mockInterview:   { icon: Clapperboard,  label: "Mock Interview",  sub: "Full AI-powered interview session"      },
+  jobScan:         { icon: ScanSearch,    label: "Job Scan",        sub: "Score & analyse a job listing"          },
+  resumeCustomize: { icon: FileText,      label: "Resume Tailor",   sub: "Rewrite your resume for a specific role" },
+  coverLetter:     { icon: PenLine,       label: "Cover Letter",    sub: "Generate a job-specific cover letter"   },
+  fitAnalysis:     { icon: Crosshair,     label: "Fit Analysis",    sub: "Analyse your fit for a role"            },
+  scoutChat:       { icon: MessageCircle, label: "Scout Chat",      sub: "Deep insights on any job or company"    },
+};
+
+const FEATURE_ORDER = ["mockInterview", "jobScan", "resumeCustomize", "coverLetter", "fitAnalysis", "scoutChat"];
 
 export function CreditsShopModal({ open, onClose, onBuy, buying = false }) {
   const { resolvedTheme } = useTheme();
@@ -24,15 +28,21 @@ export function CreditsShopModal({ open, onClose, onBuy, buying = false }) {
     if (!open || pack) return;
     _getProPlanDetails()
       .then((res) => {
-        const topup = res.data?.creditTopups?.[0];
+        const topup = res.data?.jobTopup;
         if (topup) setPack(topup);
       })
       .catch(() => {});
   }, [open]);
 
-  const credits = pack?.credits ?? 50;
-  const amount  = pack?.amount  ?? 299;
-  const symbol  = pack?.currency === "USD" ? "$" : "₹";
+  const quantities   = pack?.quantities ?? {};
+  const amount       = pack?.amount     ?? 1999;
+  const symbol       = pack?.currency === "USD" ? "$" : "₹";
+  const totalUses    = Object.values(quantities).reduce((s, v) => s + v, 0) || 0;
+
+  // Build rows in a fixed order, skip any key not in FEATURE_META
+  const rows = FEATURE_ORDER
+    .filter((key) => FEATURE_META[key] && (quantities[key] ?? 0) > 0)
+    .map((key) => ({ key, ...FEATURE_META[key], count: quantities[key] }));
 
   if (!open || typeof document === "undefined") return null;
 
@@ -80,51 +90,86 @@ export function CreditsShopModal({ open, onClose, onBuy, buying = false }) {
               <X className="w-3.5 h-3.5" />
             </button>
 
-            {/* Header band */}
+            {/* Header */}
             <div className="px-6 pt-7 pb-5 border-b border-black/[0.06] dark:border-white/[0.06]">
-              {/* Animated color orb */}
               <div className="mb-4 orb-always-active flex items-center">
                 <ColorOrb dimension="28px" spinDuration={5} />
               </div>
 
-              <h2 className="text-[20px] font-bold text-foreground leading-tight tracking-tight">Top up AI Credits</h2>
+              <h2 className="text-[20px] font-bold text-foreground leading-tight tracking-tight">Top up Job AI</h2>
               <p className="text-[13px] text-foreground/45 mt-1 leading-relaxed">
-                Credits power every AI action in Designfolio — no subscription, pay only when you need more.
+                Extra uses for every Job AI feature — no subscription, pay only when you need more.
               </p>
 
               {/* Price row */}
               <div className="mt-4 flex items-center gap-3">
-                <span className="text-[34px] font-extrabold text-foreground tracking-tight leading-none">{symbol}{amount}</span>
-                <div className="h-7 w-px bg-foreground/10 rounded-full" />
-                <span className="text-[14px] font-medium text-foreground/50 leading-tight">{credits} credits</span>
+                <span className="text-[34px] font-extrabold text-foreground tracking-tight leading-none">
+                  {symbol}{amount}
+                </span>
+                {totalUses > 0 && (
+                  <>
+                    <div className="h-7 w-px bg-foreground/10 rounded-full" />
+                    <span className="text-[14px] font-medium text-foreground/50 leading-tight">
+                      {totalUses} extra uses total
+                    </span>
+                  </>
+                )}
               </div>
             </div>
 
-            {/* What credits do */}
+            {/* Per-feature breakdown */}
             <div className="px-6 py-4">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-foreground/30 mb-3">What you can do</p>
-              <div className="space-y-2.5">
-                {CREDIT_ACTIONS.map(({ icon: Icon, label, sub }) => (
-                  <div key={label} className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-xl bg-foreground/[0.05] flex items-center justify-center flex-shrink-0">
-                      <Icon className="w-3.5 h-3.5 text-foreground/40" />
+              <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-foreground/30 mb-3">
+                What's included
+              </p>
+
+              {rows.length > 0 ? (
+                <div className="space-y-1">
+                  {rows.map(({ key, icon: Icon, label, sub, count }) => (
+                    <div key={key} className="flex items-center gap-3 py-1.5">
+                      <div className="w-8 h-8 rounded-xl bg-foreground/[0.05] flex items-center justify-center flex-shrink-0">
+                        <Icon className="w-3.5 h-3.5 text-foreground/40" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-[13px] font-medium text-foreground/80 leading-none">{label}</div>
+                        <div className="text-[11px] text-foreground/40 mt-0.5 leading-tight">{sub}</div>
+                      </div>
+                      <span className="flex-shrink-0 text-[12px] font-semibold tabular-nums px-2 py-0.5 rounded-full bg-foreground/[0.06] text-foreground/60">
+                        +{count}
+                      </span>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-[13px] font-medium text-foreground/80 leading-none">{label}</div>
-                      <div className="text-[11px] text-foreground/40 mt-0.5 leading-tight">{sub}</div>
+                  ))}
+                </div>
+              ) : (
+                /* Loading skeleton */
+                <div className="space-y-2">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="flex items-center gap-3 animate-pulse">
+                      <div className="w-8 h-8 rounded-xl bg-foreground/[0.05]" />
+                      <div className="flex-1 space-y-1.5">
+                        <div className="h-3 w-24 rounded bg-foreground/[0.07]" />
+                        <div className="h-2.5 w-36 rounded bg-foreground/[0.05]" />
+                      </div>
+                      <div className="h-5 w-8 rounded-full bg-foreground/[0.06]" />
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* CTA */}
-            <div className="px-5 pb-6 pt-2">
-              <ConicButton onClick={onBuy} disabled={buying}>
+            <div className="px-5 pb-6 pt-1">
+              <ConicButton onClick={onBuy} disabled={buying || !pack}>
                 <Zap className="w-4 h-4 fill-white" />
-                {buying ? "Opening checkout…" : `Buy ${credits} Credits — ${symbol}${amount}`}
+                {buying
+                  ? "Opening checkout…"
+                  : pack
+                  ? `Buy pack — ${symbol}${amount}`
+                  : "Loading…"}
               </ConicButton>
-              <p className="text-center text-[11px] text-foreground/30 mt-2.5">No subscription · Credits never expire</p>
+              <p className="text-center text-[11px] text-foreground/30 mt-2.5">
+                No subscription · Uses never expire
+              </p>
             </div>
           </motion.div>
         </motion.div>

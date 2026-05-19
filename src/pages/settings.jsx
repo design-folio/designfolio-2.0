@@ -5,7 +5,7 @@ import ChangePassword from "@/components/changePassword";
 import DeleteAccount from "@/components/deleteAccount";
 import CustomDomain from "@/components/customDomain";
 import DefaultDomain from "@/components/defaultDomain";
-import Transaction from "@/components/transaction";
+import ProSection from "@/components/ProSection";
 import MemoLeftArrow from "@/components/icons/LeftArrow";
 import Link from "next/link";
 import { TEMPLATE_IDS } from "@/lib/templates";
@@ -123,14 +123,10 @@ export default function Settings() {
               />
             </div>
 
-            {userDetails?.pro && (
-              <>
-                {isMono && <div className="custom-dashed-t" />}
-                <div className={`${cardClass} ${!isMono ? "mt-6" : ""}`}>
-                  <Transaction />
-                </div>
-              </>
-            )}
+            {isMono && <div className="custom-dashed-t" />}
+            <div className={`${cardClass} ${!isMono ? "mt-6" : ""}`}>
+              <ProSection />
+            </div>
 
             {isMono && <div className="custom-dashed-t" />}
             <div className={`${cardClass} ${!isMono ? "mt-6" : ""}`}>

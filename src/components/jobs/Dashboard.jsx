@@ -2,8 +2,7 @@ import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 import { COL_ORDER } from "@/data/jobs";
-import { _postJobsInteract, _postJobsRecommend, _postJobsMore, _postJobsInterviewReport, _getJobsRecommendations, _getJobCredits, _postJobsPipelineReorder } from "@/network/jobs";
-import { JOB_CREDITS, JOB_MATCH_BATCH_SIZE } from "@/data/jobCredits";
+import { _postJobsInteract, _postJobsRecommend, _postJobsMore, _postJobsInterviewReport, _getJobsRecommendations, _postJobsPipelineReorder } from "@/network/jobs";
 import { JobDetailSheet } from "./JobDetailSheet";
 import { MockInterviewDialog } from "./MockInterviewDialog";
 import { AddJobDialog } from "./AddJobDialog";
@@ -33,10 +32,12 @@ const COL_DRAG_ACTION = {
 // Scan pages 0, 1, 2... collecting picks not in seenIds until maxCount found.
 // Needed because score-sort reshuffles page boundaries when new picks arrive —
 // a fixed page number would miss picks that crossed a page boundary.
-const findUnseenPicks = async (profileId, seenIds, maxCount = JOB_MATCH_BATCH_SIZE) => {
+const JOB_BATCH_SIZE = 10;
+
+const findUnseenPicks = async (profileId, seenIds, maxCount = JOB_BATCH_SIZE) => {
   const found = [];
   for (let page = 0; found.length < maxCount && page < 10; page++) {
-    const { data } = await _getJobsRecommendations(profileId, page, JOB_MATCH_BATCH_SIZE);
+    const { data } = await _getJobsRecommendations(profileId, page, JOB_BATCH_SIZE);
     const unseen = (data.jobs || []).filter((j) => !seenIds.has(j.id));
     found.push(...unseen);
     if (!data.hasMore) break;
@@ -87,7 +88,6 @@ export function Dashboard({
   const [creditsRefreshKey, setCreditsRefreshKey] = useState(0);
   const bumpCredits = useCallback(() => setCreditsRefreshKey((k) => k + 1), []);
   const [addJobOpen, setAddJobOpen] = useState(false);
-  const [creditBalance, setCreditBalance] = useState(null);
 
   const picksRef = useRef(null);
   const filterBarRef = useRef(null);
@@ -102,14 +102,6 @@ export function Dashboard({
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, []);
-
-  useEffect(() => {
-    let cancelled = false;
-    _getJobCredits()
-      .then((res) => { if (!cancelled) setCreditBalance(res.data?.balance ?? 0); })
-      .catch(() => {});
-    return () => { cancelled = true; };
-  }, [creditsRefreshKey]);
 
   // Polls every 5s while any pick has match===null.
   // Paginates through all recommendation pages until every unscored pick
@@ -273,15 +265,10 @@ export function Dashboard({
     if (isRescanning || rescanExhausted || !profileId) return;
     setIsRescanning(true);
     try {
-      const existingNew = await findUnseenPicks(profileId, seenJobIds.current, JOB_MATCH_BATCH_SIZE);
+      const existingNew = await findUnseenPicks(profileId, seenJobIds.current, JOB_BATCH_SIZE);
       if (existingNew.length > 0) {
         existingNew.forEach((j) => seenJobIds.current.add(j.id));
         setColumns((prev) => ({ ...prev, picks: [...(prev.picks || []), ...existingNew] }));
-        return;
-      }
-      const creditCost = JOB_CREDITS.jobRecommendation?.cost ?? 15;
-      if (creditBalance !== null && creditBalance < creditCost) {
-        toast.error(`Not enough credits. You need ${creditCost} credits to fetch more matches.`, { autoClose: 5000 });
         return;
       }
       await _postJobsMore(profileId);
@@ -291,7 +278,7 @@ export function Dashboard({
         await new Promise((r) => setTimeout(r, 5000));
         const { data } = await _getJobsRecommendations(profileId, 0);
         if (data.status === "ready") {
-          const newJobs = await findUnseenPicks(profileId, seenJobIds.current, JOB_MATCH_BATCH_SIZE);
+          const newJobs = await findUnseenPicks(profileId, seenJobIds.current, JOB_BATCH_SIZE);
           if (newJobs.length > 0) {
             newJobs.forEach((j) => seenJobIds.current.add(j.id));
             setColumns((prev) => ({ ...prev, picks: [...(prev.picks || []), ...newJobs] }));
@@ -308,7 +295,7 @@ export function Dashboard({
     } finally {
       setIsRescanning(false);
     }
-  }, [isRescanning, rescanExhausted, profileId, columns.picks, bumpCredits, creditBalance]);
+  }, [isRescanning, rescanExhausted, profileId, columns.picks, bumpCredits]);
 
   const handleRescan = useCallback(async (answers = currentAnswers) => {
     if (isRescanning) return;

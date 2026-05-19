@@ -3,7 +3,6 @@ import { Zap } from "lucide-react";
 import { motion } from "framer-motion";
 import { LocationAutocomplete } from "./LocationAutocomplete";
 import { _getJobRoleSuggestions } from "@/network/jobs";
-import { JOB_CREDITS } from "@/data/jobCredits";
 
 export function CriteriaEditor({ answers, onRescan, isRescanning }) {
   const [role, setRole] = useState(answers[0]?.answer || "");
@@ -122,15 +121,7 @@ export function CriteriaEditor({ answers, onRescan, isRescanning }) {
               Scanning…
             </>
           ) : (
-            <>
-              <span className="pointer-events-none">Rescan jobs</span>
-              <span className="flex items-center gap-1 bg-amber-300/20 rounded-full px-2 py-0.5 pointer-events-none">
-                <Zap className="w-3 h-3 text-amber-300 fill-amber-300" />
-                <span className="text-[12px] font-semibold text-amber-300">
-                  {JOB_CREDITS.jobRecommendation.cost}
-                </span>
-              </span>
-            </>
+            <span className="pointer-events-none">Rescan jobs</span>
           )}
         </button>
       </div>

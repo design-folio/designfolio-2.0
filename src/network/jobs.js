@@ -69,9 +69,6 @@ export const _postJobsPipelineReorder = (profileId, column, jobIds) => {
     .catch(() => {}); // fire-and-forget
 };
 
-// GET /jobs/credits — returns { balance: number, costs: { [feature]: number } }
-export const _getJobCredits = () => axiosInstance.get('/jobs/credits');
-
 // GET /jobs/role-suggestions?q=... — fuzzy search over curated job titles (no auth required)
 export const _getJobRoleSuggestions = (q) =>
   axiosInstance.get('/jobs/role-suggestions', { params: { q } });
@@ -84,6 +81,4 @@ export const _postJobsAddManual = (linkedinUrl, profileId) =>
 export const _postJobsAddManualEntry = (fields, profileId) =>
   axiosInstance.post('/jobs/add-manual-entry', { ...fields, profileId });
 
-export const _createJobCreditOrder = () =>
-  axiosInstance.post('/jobs/credits/create-order');
 

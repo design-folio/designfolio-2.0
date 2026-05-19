@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Video, Mic, CheckCircle2, XCircle, Clapperboard, Zap } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { CompanyLogo } from "./CompanyLogo";
-import { JOB_CREDITS } from "@/data/jobCredits";
 
 function PermissionCard({ icon: Icon, label, description, state, onRequest }) {
   return (
@@ -116,10 +115,6 @@ export function MockInterviewDialog({ job, open, onClose, onStart }) {
           >
             <Clapperboard className="w-4 h-4" />
             Start mock interview
-            <span className="flex items-center gap-0.5 bg-amber-400/20 dark:bg-amber-500/15 border border-amber-400/35 dark:border-amber-500/30 rounded-full px-1.5 py-0.5">
-              <Zap className="w-2.5 h-2.5 text-amber-400 fill-amber-400 dark:text-amber-500 dark:fill-amber-500" />
-              <span className="text-[10px] font-semibold text-amber-300 dark:text-amber-600">{JOB_CREDITS.jobInterview.cost}</span>
-            </span>
           </button>
           {!bothGranted && (
             <p className="text-center text-[12px] text-foreground/35 mt-2.5">

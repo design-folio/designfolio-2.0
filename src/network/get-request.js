@@ -32,10 +32,15 @@ export const _getDomainDetails = () =>
 export const _removeDomain = () =>
   axiosInstance.delete("/user/removeCustomDomain");
 
-export const createOrder = (plan) =>
-  axiosInstance.get(`/user/createRazorpayOrder${plan ? `?plan=${encodeURIComponent(plan)}` : ""}`);
+export const createDodoCheckout = (plan) =>
+  axiosInstance.get(`/user/createDodoCheckout?plan=${encodeURIComponent(plan)}`);
+
+export const _getDodoPortalUrl = () =>
+  axiosInstance.get("/user/getDodoPortalUrl");
 
 export const _getProPlanDetails = () =>
   axiosInstance.get("/user/getProPlanDetails");
 
 export const _getPaymentDetails = () => axiosInstance.get("/user/getUserOrder");
+
+export const _getUserQuota = () => axiosInstance.get("/user/getUserQuota");

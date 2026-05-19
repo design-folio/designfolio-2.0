@@ -1,10 +1,9 @@
 import { useState, useEffect, useRef, useCallback, useId } from "react";
 import { useTheme } from "next-themes";
 import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
-import { Zap, FlaskConical } from "lucide-react";
-import { _getJobCredits, _createJobCreditOrder } from "@/network/jobs";
+import { FlaskConical } from "lucide-react";
+import { _getUserQuota, createDodoCheckout } from "@/network/get-request";
 import { RotatingGradientButton } from "@/components/ui/rotating-gradient-button";
-import { JOB_CREDITS, JOB_MATCH_BATCH_SIZE } from "@/data/jobCredits";
 import { CreditsShopModal } from "./CreditsShopModal";
 
 /* ── Keyframes injected once (pulse-dot) ──────────────────────────────── */
@@ -15,7 +14,7 @@ const KEYFRAMES = `
   }
 `;
 
-/* ── Bubble animation (bubble-rise keyframe lives in jobs.scss) ──────── */
+/* ── Bubble animation ─────────────────────────────────────────────────── */
 const BUBBLES = Array.from({ length: 15 }, (_, i) => ({
   id: i,
   width: Math.random() * 12 + 4,
@@ -98,10 +97,10 @@ function LiquidGauge({ pct, remaining, limit, uid, isDark }) {
   const filled_sw = SWEEP * Math.min(Math.max(pct, 0), 1);
   const filledEnd = (A0 + filled_sw) % 360;
 
-  const track = arcPath(CX, CY, R, A0, A1);
+  const track  = arcPath(CX, CY, R, A0, A1);
   const filled = filled_sw > 0.5 ? arcPath(CX, CY, R, A0, filledEnd) : "";
-  const empty = filled_sw < SWEEP - 0.5 ? arcPath(CX, CY, R, filledEnd, A1) : "";
-  const capPt = filled && pct > 0.02 && pct < 0.99 ? pt(CX, CY, R, filledEnd) : null;
+  const empty  = filled_sw < SWEEP - 0.5 ? arcPath(CX, CY, R, filledEnd, A1) : "";
+  const capPt  = filled && pct > 0.02 && pct < 0.99 ? pt(CX, CY, R, filledEnd) : null;
 
   const mv = useMotionValue(0);
   const sp = useSpring(mv, { stiffness: 50, damping: 18 });
@@ -113,8 +112,8 @@ function LiquidGauge({ pct, remaining, limit, uid, isDark }) {
   const labelY = CY + 16;
 
   const trackSurface = isDark ? "hsl(20,10%,14%)" : "rgba(215,210,203,0.90)";
-  const scoreColor = isDark ? "hsl(46,29%,94%)" : "#1A1A1A";
-  const labelColor = isDark ? "rgba(240,237,232,0.68)" : "rgba(26,26,26,0.62)";
+  const scoreColor   = isDark ? "hsl(46,29%,94%)" : "#1A1A1A";
+  const labelColor   = isDark ? "rgba(240,237,232,0.68)" : "rgba(26,26,26,0.62)";
 
   return (
     <svg viewBox={`0 0 ${VB_W} ${VB_H}`} width={VB_W} height={VB_H}
@@ -122,14 +121,14 @@ function LiquidGauge({ pct, remaining, limit, uid, isDark }) {
       <defs>
         <linearGradient id={`fg-${uid}`} gradientUnits="userSpaceOnUse"
           x1={CX} y1={CY - R} x2={CX} y2={CY + R * 0.55}>
-          <stop offset="0%" stopColor={c.bright} />
-          <stop offset="40%" stopColor={c.mid} />
-          <stop offset="100%" stopColor={c.deep} />
+          <stop offset="0%"   stopColor={c.bright} />
+          <stop offset="40%"  stopColor={c.mid}    />
+          <stop offset="100%" stopColor={c.deep}   />
         </linearGradient>
         <linearGradient id={`gg-${uid}`} gradientUnits="userSpaceOnUse"
           x1={CX} y1={CY - R} x2={CX} y2={CY}>
-          <stop offset="0%" stopColor="white" stopOpacity="0.35" />
-          <stop offset="100%" stopColor="white" stopOpacity="0" />
+          <stop offset="0%"   stopColor="white" stopOpacity="0.35" />
+          <stop offset="100%" stopColor="white" stopOpacity="0"   />
         </linearGradient>
         <filter id={`af-${uid}`} x="-35%" y="-35%" width="170%" height="170%" colorInterpolationFilters="sRGB">
           <feDropShadow dx="0" dy="0" stdDeviation="3" floodColor={c.glow} floodOpacity="0.55" />
@@ -200,21 +199,67 @@ function LiquidGauge({ pct, remaining, limit, uid, isDark }) {
           textAnchor="middle" dominantBaseline="central"
           fill={labelColor} fontSize="11" fontWeight="500"
           style={{ userSelect: "none", letterSpacing: "1px", fontFamily: "'JetBrains Mono', monospace", textTransform: "uppercase" }}>
-          / {limit} CREDITS
+          / {limit} USES
         </text>
       </motion.g>
     </svg>
   );
 }
 
+/* ── Feature breakdown rows ───────────────────────────────────────────── */
+const JOB_FEATURES = [
+  { key: "mockInterview",   label: "Mock Interview" },
+  { key: "jobScan",         label: "Job Scan"        },
+  { key: "resumeCustomize", label: "Resume Tailor"   },
+  { key: "coverLetter",     label: "Cover Letter"    },
+  { key: "fitAnalysis",     label: "Fit Analysis"    },
+  { key: "scoutChat",       label: "Scout Chat"      },
+];
+
+function FeatureRow({ label, used, limit, topupLimit = 0, topupUsed = 0, isDark }) {
+  const totalLimit = limit + topupLimit;
+  const totalUsed  = used  + topupUsed;
+  const locked     = totalLimit === 0;
+  const p          = locked ? 0 : Math.min(1, totalUsed / totalLimit);
+  const remaining  = locked ? 0 : Math.max(0, totalLimit - totalUsed);
+
+  const fillColor  = p >= 0.9 ? "#ef4444" : p >= 0.7 ? "#f59e0b"
+    : isDark ? "rgba(240,237,232,0.55)" : "rgba(26,26,26,0.45)";
+  const trackColor = isDark ? "rgba(255,255,255,0.07)" : "rgba(26,26,26,0.07)";
+  const textColor  = locked
+    ? (isDark ? "rgba(181,175,165,0.3)" : "rgba(122,115,108,0.35)")
+    : (isDark ? "rgba(181,175,165,0.75)" : "rgba(122,115,108,0.9)");
+
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "3.5px 0" }}>
+      <span style={{ fontSize: 11, color: textColor, width: 90, flexShrink: 0, lineHeight: 1 }}>{label}</span>
+      <div style={{ flex: 1, height: 3, borderRadius: 999, background: trackColor, overflow: "hidden" }}>
+        {!locked && (
+          <div style={{
+            width: `${Math.max(2, p * 100)}%`, height: "100%",
+            background: fillColor, borderRadius: 999,
+            transition: "width 0.5s cubic-bezier(0.16,1,0.3,1)",
+          }} />
+        )}
+      </div>
+      <span style={{
+        fontSize: 10, width: 30, textAlign: "right", flexShrink: 0,
+        color: textColor, fontVariantNumeric: "tabular-nums", lineHeight: 1,
+      }}>
+        {locked ? "—" : <>{remaining}<span style={{ opacity: 0.4 }}>/{totalLimit}</span></>}
+      </span>
+    </div>
+  );
+}
+
 /* ── Main component ──────────────────────────────────────────────────── */
-export function CreditsBalance({ refreshKey = 0, onBuyClick }) {
-  const [data, setData] = useState(null);
-  const [open, setOpen] = useState(false);
+export function CreditsBalance({ refreshKey = 0 }) {
+  const [quota, setQuota]       = useState(null);
+  const [open, setOpen]         = useState(false);
   const [shopOpen, setShopOpen] = useState(false);
-  const [buying, setBuying] = useState(false);
-  const containerRef = useRef(null);
-  const uid = useId().replace(/:/g, "");
+  const [buying, setBuying]     = useState(false);
+  const containerRef            = useRef(null);
+  const uid                     = useId().replace(/:/g, "");
 
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -223,9 +268,9 @@ export function CreditsBalance({ refreshKey = 0, onBuyClick }) {
 
   useEffect(() => {
     let cancelled = false;
-    _getJobCredits()
-      .then((res) => { if (!cancelled) setData(res.data); })
-      .catch(() => { });
+    _getUserQuota()
+      .then((res) => { if (!cancelled) setQuota(res.data?.quota ?? null); })
+      .catch(() => {});
     return () => { cancelled = true; };
   }, [refreshKey]);
 
@@ -238,49 +283,34 @@ export function CreditsBalance({ refreshKey = 0, onBuyClick }) {
     return () => document.removeEventListener("mousedown", handler);
   }, [open]);
 
-  const balance = data?.balance ?? null;
-  const totalAllocated = data?.totalAllocated ?? 0;
-  const displayTotal = totalAllocated > 0 ? totalAllocated : (balance ?? 30);
-  const pct = displayTotal > 0 && balance !== null ? Math.min(1, balance / displayTotal) : 0;
+  // Aggregate totals across job features only
+  const { totalRemaining, totalLimit } = JOB_FEATURES.reduce(
+    (acc, { key }) => {
+      const base  = quota?.[key]        ?? { limit: 0, used: 0 };
+      const topup = quota?.topup?.[key] ?? { limit: 0, used: 0 };
+      acc.totalLimit     += base.limit  + topup.limit;
+      acc.totalRemaining += Math.max(0, (base.limit - base.used) + (topup.limit - topup.used));
+      return acc;
+    },
+    { totalRemaining: 0, totalLimit: 0 }
+  );
 
-  const loadRazorpayScript = useCallback(() => {
-    if (window.Razorpay) return Promise.resolve();
-    return new Promise((resolve, reject) => {
-      const existing = document.getElementById("razorpay-checkout-js");
-      if (existing) { existing.addEventListener("load", resolve); return; }
-      const script = document.createElement("script");
-      script.id = "razorpay-checkout-js";
-      script.src = "https://checkout.razorpay.com/v1/checkout.js";
-      script.onload = resolve;
-      script.onerror = reject;
-      document.body.appendChild(script);
-    });
-  }, []);
+  const displayTotal = totalLimit > 0 ? totalLimit : 0;
+  const balance      = quota !== null ? totalRemaining : null;
+  const pct          = displayTotal > 0 && balance !== null
+    ? Math.min(1, balance / displayTotal)
+    : 0;
 
   const handleBuy = useCallback(async () => {
     if (buying) return;
     setBuying(true);
     try {
-      await loadRazorpayScript();
-      const { data: orderData } = await _createJobCreditOrder();
-      const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-        order_id: orderData.order.id,
-        name: "Designfolio AI Credits",
-        description: "50 AI Credits",
-        handler: () => {
-          setOpen(false);
-          onBuyClick?.();
-        },
-        theme: { color: "#ea580c" },
-      };
-      new window.Razorpay(options).open();
-    } catch (err) {
-      console.error("[CreditsBalance] Failed to create credit order:", err.message);
-    } finally {
+      const res = await createDodoCheckout("topup");
+      window.location.href = res.data.checkoutUrl;
+    } catch {
       setBuying(false);
     }
-  }, [buying, onBuyClick, loadRazorpayScript]);
+  }, [buying]);
 
   const card = isDark ? {
     background: "linear-gradient(160deg, hsl(20,10%,13%) 0%, hsl(20,10%,10%) 100%)",
@@ -294,8 +324,13 @@ export function CreditsBalance({ refreshKey = 0, onBuyClick }) {
     gloss: "linear-gradient(90deg, transparent, rgba(255,255,255,0.70), transparent)",
   };
 
+  const divColor   = isDark ? "rgba(255,255,255,0.06)" : "rgba(26,26,26,0.07)";
+  const descColor  = isDark ? "hsl(46,10%,60%)"        : "rgba(26,26,26,0.45)";
+
   return (
     <div ref={containerRef} className="relative">
+      <style>{KEYFRAMES}</style>
+
       {/* Badge trigger */}
       <div
         role="button"
@@ -303,9 +338,9 @@ export function CreditsBalance({ refreshKey = 0, onBuyClick }) {
         onClick={() => setOpen((o) => !o)}
         onKeyDown={(e) => e.key === "Enter" && setOpen((o) => !o)}
         className={`group relative inline-flex cursor-pointer select-none items-center gap-2 overflow-hidden rounded-full h-9 px-4 text-sm font-medium text-foreground transition-all hover:bg-card hover:text-accent-foreground ${open
-            ? "border-2 border-border bg-card text-accent-foreground"
-            : "border border-border bg-[#EEECE7] dark:bg-[#1C1917]"
-          }`}
+          ? "border-2 border-border bg-card text-accent-foreground"
+          : "border border-border bg-[#EEECE7] dark:bg-[#1C1917]"
+        }`}
       >
         <BadgeBubbles />
         <div className="relative z-10 flex-shrink-0 pointer-events-none">
@@ -314,8 +349,8 @@ export function CreditsBalance({ refreshKey = 0, onBuyClick }) {
         <div className="relative z-10 whitespace-nowrap pointer-events-none">
           <span>AI Balance:</span>
           <span className="ml-1.5 font-semibold">{balance ?? "…"}</span>
-          {totalAllocated > 0 && (
-            <span className="ml-0.5 opacity-50 text-xs">/ {totalAllocated}</span>
+          {displayTotal > 0 && (
+            <span className="ml-0.5 opacity-50 text-xs">/ {displayTotal}</span>
           )}
         </div>
       </div>
@@ -360,21 +395,38 @@ export function CreditsBalance({ refreshKey = 0, onBuyClick }) {
               {/* Description */}
               <p style={{
                 fontSize: 12,
-                color: isDark ? "hsl(46,10%,60%)" : "rgba(26,26,26,0.45)",
-                lineHeight: 1.6, margin: "0 0 14px", textAlign: "center",
+                color: descColor,
+                lineHeight: 1.6, margin: "0 0 12px", textAlign: "center",
               }}>
-                Credits power mock interviews and scout chats.
+                Job AI uses across all features.
               </p>
 
-           
+              {/* Per-feature breakdown — always show all 6 job features */}
+              {quota && (
+                <>
+                  <div style={{ height: 1, background: divColor, marginBottom: 10 }} />
+                  <div>
+                    {JOB_FEATURES.map(({ key, label }) => {
+                      const base  = quota?.[key]        ?? { limit: 0, used: 0 };
+                      const topup = quota?.topup?.[key] ?? { limit: 0, used: 0 };
+                      return (
+                        <FeatureRow key={key} label={label}
+                          used={base.used} limit={base.limit}
+                          topupUsed={topup.used} topupLimit={topup.limit}
+                          isDark={isDark} />
+                      );
+                    })}
+                  </div>
+                  <div style={{ height: 1, background: divColor, margin: "10px 0 14px" }} />
+                </>
+              )}
 
-              {/* CTA — rotating gradient border button */}
+              {/* CTA */}
               <RotatingGradientButton
                 onClick={() => { setOpen(false); setShopOpen(true); }}
                 disabled={buying}
                 isDark={isDark}
               >
-                <Zap size={12} />
                 Get more credits
               </RotatingGradientButton>
             </div>

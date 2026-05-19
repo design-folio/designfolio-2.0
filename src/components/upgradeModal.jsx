@@ -1,29 +1,25 @@
 import React, { useEffect, useState, useRef } from 'react';
 import styles from '@/styles/domain.module.css';
 import { useGlobalContext } from '@/context/globalContext';
-import Script from 'next/script';
-import { _getProPlanDetails, createOrder } from '@/network/get-request';
+import { _getProPlanDetails, createDodoCheckout } from '@/network/get-request';
 import { usePostHogEvent } from '@/hooks/usePostHogEvent';
 import { POSTHOG_EVENT_NAMES } from '@/lib/posthogEventNames';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-const PLAN_LABELS = { '1m': '1 Month', '3m': '3 Months', lifetime: 'Lifetime' };
+const PLAN_LABELS = { qtrly: 'Quarterly', yrly: 'Yearly' };
+
+const PLAN_PERIOD = { qtrly: '/ 3 months', yrly: '/ year' };
 
 const PLAN_HEADINGS = {
-  '1m': {
-    title: 'For Students',
-    subtitle: "Build your first serious portfolio. Explore what's possible.",
-    buttonText: 'Get PRO for 1 Month',
-  },
-  '3m': {
+  qtrly: {
     title: 'For Job Seekers',
     subtitle: 'Build a complete portfolio and start landing interviews fast.',
-    buttonText: 'Get PRO for 3 Months',
+    buttonText: 'Get PRO — Quarterly',
   },
-  lifetime: {
-    title: 'Lifetime Access',
-    subtitle: 'Own your portfolio forever. No expiry. No resets.',
-    buttonText: 'Get PRO for Lifetime',
+  yrly: {
+    title: 'Best Value',
+    subtitle: 'Own your portfolio all year. No resets, full AI access.',
+    buttonText: 'Get PRO — Yearly',
   },
 };
 
@@ -59,7 +55,7 @@ export default function UpgradeModal() {
         const plans = response?.data?.proPlans;
         if (Array.isArray(plans) && plans.length > 0) {
           setProPlans(plans);
-          setSelectedPlan(plans.find(p => p.plan === '3m') || plans[0]);
+          setSelectedPlan(plans.find(p => p.plan === 'yrly') || plans[0]);
         }
       });
     }
@@ -104,55 +100,25 @@ export default function UpgradeModal() {
     }).format(amount);
   }
 
-  const openCheckout = () => {
-    if (!selectedPlan?.plan) return;
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+
+  const openCheckout = async () => {
+    if (!selectedPlan?.plan || checkoutLoading) return;
     phEvent(POSTHOG_EVENT_NAMES.UPGRADE_MODAL_CLICKED, {
       source: 'dropdown',
       selected_plan: selectedPlan?.plan,
       selected_amount: Number(selectedPlan?.amount),
       selected_currency: selectedPlan?.currency,
     });
-    createOrder(selectedPlan.plan).then(response => {
-      const { id } = response?.data?.order; // Assuming the response contains necessary data for Razorpay
-      const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, // Your public Key ID
-        // amount: { amount }, // Amount in paise (e.g., ₹500.00)
-        // currency: "INR",
-        order_id: id,
-        name: 'Designfolio by DOT Workspaces',
-        description: 'Insecure Test Transaction',
-        image: '../../public/assets/svgs/logo.svg',
-        handler: function (response) {
-          // console.log(response);
-          userDetailsRefecth();
-          phEvent(POSTHOG_EVENT_NAMES.PAYMENT_COMPLETED, {
-            order_id: id,
-            plan_amount: Number(selectedPlan?.amount),
-            plan_currency: selectedPlan?.currency,
-            plan_month: selectedPlan?.plan,
-          });
-          handleCloseModal();
-          // This handler is called on successful payment.
-          // 🚨 WITHOUT SERVER-SIDE VERIFICATION, THIS CAN BE FAKED.
-          // A user can manually trigger this function without actually paying.
-          // alert(
-          //   `Payment supposedly successful! Payment ID: ${response.razorpay_payment_id}`
-          // );
-          // alert("Warning: This payment has NOT been securely verified.");
-        },
-        prefill: {
-          name: userDetails?.username,
-          email: userDetails?.email,
-          // contact: "",
-        },
-        theme: {
-          color: '#3399cc',
-        },
-      };
-      const rzp = new window.Razorpay(options);
-      rzp.open();
-      handleCloseModal();
-    });
+    setCheckoutLoading(true);
+    try {
+      const res = await createDodoCheckout(selectedPlan.plan);
+      window.location.href = res.data.checkoutUrl;
+    } catch (err) {
+      console.error('[UpgradeModal] Checkout failed:', err.message);
+    } finally {
+      setCheckoutLoading(false);
+    }
   };
   if (!showUpgradeModal || proPlans.length === 0 || !selectedPlan) return null;
   return (
@@ -195,16 +161,24 @@ export default function UpgradeModal() {
 
         <div className={styles.modalContent}>
           <div className="mb-6">
-            {proPlans.some(p => p.plan === '3m') && (
-              <div className="relative z-10 text-center -mb-2.5">
-                <span
-                  className="inline-block px-2 py-1 text-[10px] font-semibold rounded-full whitespace-nowrap"
-                  style={{ backgroundColor: '#22c55e', color: '#ffffff' }}
-                >
-                  Save 25%
-                </span>
-              </div>
-            )}
+            {/* {(() => {
+              const qtrly = proPlans.find(p => p.plan === 'qtrly');
+              const yrly  = proPlans.find(p => p.plan === 'yrly');
+              if (!qtrly || !yrly || selectedPlan?.plan !== 'yrly') return null;
+              const annualQtrly = Number(qtrly.amount) * 4;
+              const savePct = Math.round((1 - Number(yrly.amount) / annualQtrly) * 100);
+              if (savePct <= 0) return null;
+              return (
+                <div className="relative z-10 text-center -mb-2.5">
+                  <span
+                    className="inline-block px-2 py-1 text-[10px] font-semibold rounded-full whitespace-nowrap"
+                    style={{ backgroundColor: '#22c55e', color: '#ffffff' }}
+                  >
+                    Save {savePct}%
+                  </span>
+                </div>
+              );
+            })()} */}
             <div className="relative z-0">
               <Tabs
                 value={selectedPlan?.plan ?? ''}
@@ -241,31 +215,13 @@ export default function UpgradeModal() {
                 {formatAmount(selectedPlan?.amount, selectedPlan?.currency)}
               </div>
               {/* <div className={styles.slashPrice}>₹8,300</div> */}
+              <div className={styles.priceSubtext}>{PLAN_PERIOD[selectedPlan?.plan] ?? ''}</div>
             </div>
-            <div className={styles.priceSubtext}>one-time payment</div>
           </div>
 
-          <Script
-            id="razorpay-checkout-js"
-            src="https://checkout.razorpay.com/v1/checkout.js"
-          />
-
-          <button className={styles.upgradeNowButton} onClick={openCheckout}>
-            {PLAN_HEADINGS[selectedPlan?.plan]?.buttonText ?? 'Upgrade Now'}
+          <button className={styles.upgradeNowButton} onClick={openCheckout} disabled={checkoutLoading}>
+            {checkoutLoading ? 'Opening checkout…' : (PLAN_HEADINGS[selectedPlan?.plan]?.buttonText ?? 'Upgrade Now')}
           </button>
-          {(() => {
-            const lifetimePlan = proPlans.find(p => p.plan === 'lifetime');
-            if (!lifetimePlan || selectedPlan?.plan !== 'lifetime') return null;
-            return (
-              <div className={styles.lifetimeDealBanner}>
-                <div className={styles.dealBannerIcon}>⏰</div>
-                <span className={styles.dealBannerText}>
-                  Lifetime is going away. One week left to grab it.
-                </span>
-                <div className={styles.dealBannerPulse}></div>
-              </div>
-            );
-          })()}
 
           {/* <div className={styles.lifetimeDealBanner}>
             <div className={styles.dealBannerIcon}>⏰</div>

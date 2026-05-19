@@ -3,6 +3,7 @@ import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover
 import { Kbd } from "@/components/ui/kbd";
 import { CriteriaEditor } from "./CriteriaEditor";
 import { CreditsBalance } from "./CreditsBalance";
+import { AvatarDropdown } from "@/components/loggedInHeader/avatar-dropdown";
 
 function FilterPill({ active, onClick, children }) {
   return (
@@ -177,6 +178,7 @@ export function FilterBar({
           <Kbd>⌘K</Kbd>
         </button>
         <CreditsBalance refreshKey={creditsRefreshKey} onBuyClick={onBuyCredits} />
+        <AvatarDropdown />
       </div>
     </div>
   );

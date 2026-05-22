@@ -3,7 +3,7 @@ import { useTheme } from "next-themes";
 import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
 import { FlaskConical } from "lucide-react";
 import { _getUserQuota, createDodoCheckout } from "@/network/get-request";
-import { RotatingGradientButton } from "@/components/ui/rotating-gradient-button";
+import { ConicButton } from "@/components/ui/ConicButton";
 import { CreditsShopModal } from "./CreditsShopModal";
 
 /* ── Keyframes injected once (pulse-dot) ──────────────────────────────── */
@@ -97,10 +97,10 @@ function LiquidGauge({ pct, remaining, limit, uid, isDark }) {
   const filled_sw = SWEEP * Math.min(Math.max(pct, 0), 1);
   const filledEnd = (A0 + filled_sw) % 360;
 
-  const track  = arcPath(CX, CY, R, A0, A1);
+  const track = arcPath(CX, CY, R, A0, A1);
   const filled = filled_sw > 0.5 ? arcPath(CX, CY, R, A0, filledEnd) : "";
-  const empty  = filled_sw < SWEEP - 0.5 ? arcPath(CX, CY, R, filledEnd, A1) : "";
-  const capPt  = filled && pct > 0.02 && pct < 0.99 ? pt(CX, CY, R, filledEnd) : null;
+  const empty = filled_sw < SWEEP - 0.5 ? arcPath(CX, CY, R, filledEnd, A1) : "";
+  const capPt = filled && pct > 0.02 && pct < 0.99 ? pt(CX, CY, R, filledEnd) : null;
 
   const mv = useMotionValue(0);
   const sp = useSpring(mv, { stiffness: 50, damping: 18 });
@@ -112,8 +112,8 @@ function LiquidGauge({ pct, remaining, limit, uid, isDark }) {
   const labelY = CY + 16;
 
   const trackSurface = isDark ? "hsl(20,10%,14%)" : "rgba(215,210,203,0.90)";
-  const scoreColor   = isDark ? "hsl(46,29%,94%)" : "#1A1A1A";
-  const labelColor   = isDark ? "rgba(240,237,232,0.68)" : "rgba(26,26,26,0.62)";
+  const scoreColor = isDark ? "hsl(46,29%,94%)" : "#1A1A1A";
+  const labelColor = isDark ? "rgba(240,237,232,0.68)" : "rgba(26,26,26,0.62)";
 
   return (
     <svg viewBox={`0 0 ${VB_W} ${VB_H}`} width={VB_W} height={VB_H}
@@ -121,14 +121,14 @@ function LiquidGauge({ pct, remaining, limit, uid, isDark }) {
       <defs>
         <linearGradient id={`fg-${uid}`} gradientUnits="userSpaceOnUse"
           x1={CX} y1={CY - R} x2={CX} y2={CY + R * 0.55}>
-          <stop offset="0%"   stopColor={c.bright} />
-          <stop offset="40%"  stopColor={c.mid}    />
-          <stop offset="100%" stopColor={c.deep}   />
+          <stop offset="0%" stopColor={c.bright} />
+          <stop offset="40%" stopColor={c.mid} />
+          <stop offset="100%" stopColor={c.deep} />
         </linearGradient>
         <linearGradient id={`gg-${uid}`} gradientUnits="userSpaceOnUse"
           x1={CX} y1={CY - R} x2={CX} y2={CY}>
-          <stop offset="0%"   stopColor="white" stopOpacity="0.35" />
-          <stop offset="100%" stopColor="white" stopOpacity="0"   />
+          <stop offset="0%" stopColor="white" stopOpacity="0.35" />
+          <stop offset="100%" stopColor="white" stopOpacity="0" />
         </linearGradient>
         <filter id={`af-${uid}`} x="-35%" y="-35%" width="170%" height="170%" colorInterpolationFilters="sRGB">
           <feDropShadow dx="0" dy="0" stdDeviation="3" floodColor={c.glow} floodOpacity="0.55" />
@@ -208,25 +208,26 @@ function LiquidGauge({ pct, remaining, limit, uid, isDark }) {
 
 /* ── Feature breakdown rows ───────────────────────────────────────────── */
 const JOB_FEATURES = [
-  { key: "mockInterview",   label: "Mock Interview" },
-  { key: "jobScan",         label: "Job Scan"        },
-  { key: "resumeCustomize", label: "Resume Tailor"   },
-  { key: "coverLetter",     label: "Cover Letter"    },
-  { key: "fitAnalysis",     label: "Fit Analysis"    },
-  { key: "scoutChat",       label: "Scout Chat"      },
+  { key: "mockInterview", label: "Mock Interview" },
+  { key: "jobScan", label: "Job Scan" },
+  { key: "resumeCustomize", label: "Resume Tailor" },
+  { key: "coverLetter", label: "Cover Letter" },
+  { key: "fitAnalysis", label: "Fit Analysis" },
+  { key: "scoutChat", label: "Scout Chat" },
 ];
 
 function FeatureRow({ label, used, limit, topupLimit = 0, topupUsed = 0, isDark, idx }) {
   const totalLimit = (limit ?? 0) + (topupLimit ?? 0);
-  const totalUsed  = used + topupUsed;
-  const locked     = totalLimit === 0;
-  const barPct     = locked ? 0 : Math.max(0, 1 - totalUsed / totalLimit);
+  const totalUsed = used + topupUsed;
+  const totalLeft = totalLimit - totalUsed;
+  const locked = totalLimit === 0;
+  const barPct = locked ? 0 : Math.max(0, 1 - totalUsed / totalLimit);
 
   const labelColor = isDark ? "rgba(240,237,232,0.82)" : "rgba(26,26,26,0.80)";
   const countColor = isDark ? "rgba(240,237,232,0.60)" : "rgba(26,26,26,0.55)";
   const trackColor = isDark ? "rgba(255,255,255,0.14)" : "rgba(0,0,0,0.13)";
-  const fillColor  = isDark ? "rgba(255,255,255,0.72)" : "rgba(26,26,26,0.62)";
-  const dimColor   = isDark ? "rgba(181,175,165,0.3)"  : "rgba(122,115,108,0.35)";
+  const fillColor = isDark ? "rgba(255,255,255,0.72)" : "rgba(26,26,26,0.62)";
+  const dimColor = isDark ? "rgba(181,175,165,0.3)" : "rgba(122,115,108,0.35)";
 
   return (
     <motion.div
@@ -248,7 +249,7 @@ function FeatureRow({ label, used, limit, topupLimit = 0, topupUsed = 0, isDark,
         )}
       </div>
       <span style={{ fontSize: 10.5, fontWeight: 600, color: locked ? dimColor : countColor, whiteSpace: "nowrap", minWidth: 28, textAlign: "right", letterSpacing: "-0.2px" }}>
-        {locked ? "—" : <>{totalUsed}<span style={{ fontWeight: 400, opacity: 0.55 }}>/{totalLimit}</span></>}
+        {locked ? "—" : <>{totalLeft}<span style={{ fontWeight: 400, opacity: 0.55 }}>/{totalLimit}</span></>}
       </span>
     </motion.div>
   );
@@ -256,12 +257,12 @@ function FeatureRow({ label, used, limit, topupLimit = 0, topupUsed = 0, isDark,
 
 /* ── Main component ──────────────────────────────────────────────────── */
 export function CreditsBalance({ refreshKey = 0 }) {
-  const [quota, setQuota]       = useState(null);
-  const [open, setOpen]         = useState(false);
+  const [quota, setQuota] = useState(null);
+  const [open, setOpen] = useState(false);
   const [shopOpen, setShopOpen] = useState(false);
-  const [buying, setBuying]     = useState(false);
-  const containerRef            = useRef(null);
-  const uid                     = useId().replace(/:/g, "");
+  const [buying, setBuying] = useState(false);
+  const containerRef = useRef(null);
+  const uid = useId().replace(/:/g, "");
 
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -272,7 +273,7 @@ export function CreditsBalance({ refreshKey = 0 }) {
     let cancelled = false;
     _getUserQuota()
       .then((res) => { if (!cancelled) setQuota(res.data?.quota ?? null); })
-      .catch(() => {});
+      .catch(() => { });
     return () => { cancelled = true; };
   }, [refreshKey]);
 
@@ -288,10 +289,10 @@ export function CreditsBalance({ refreshKey = 0 }) {
   // Aggregate finite-limit job features only — unlimited (null limit) are excluded from the gauge total
   const { totalRemaining, totalLimit } = JOB_FEATURES.reduce(
     (acc, { key }) => {
-      const base  = quota?.[key]        ?? { limit: 0, used: 0 };
+      const base = quota?.[key] ?? { limit: 0, used: 0 };
       const topup = quota?.topup?.[key] ?? { limit: 0, used: 0 };
       if (base.limit === null) return acc; // unlimited — skip from finite aggregate
-      acc.totalLimit     += (base.limit ?? 0) + (topup.limit ?? 0);
+      acc.totalLimit += (base.limit ?? 0) + (topup.limit ?? 0);
       acc.totalRemaining += Math.max(0, ((base.limit ?? 0) - base.used) + ((topup.limit ?? 0) - topup.used));
       return acc;
     },
@@ -299,8 +300,8 @@ export function CreditsBalance({ refreshKey = 0 }) {
   );
 
   const displayTotal = totalLimit > 0 ? totalLimit : 0;
-  const balance      = quota !== null ? totalRemaining : null;
-  const pct          = displayTotal > 0 && balance !== null
+  const balance = quota !== null ? totalRemaining : null;
+  const pct = displayTotal > 0 && balance !== null
     ? Math.min(1, balance / displayTotal)
     : 0;
 
@@ -327,8 +328,8 @@ export function CreditsBalance({ refreshKey = 0 }) {
     gloss: "linear-gradient(90deg, transparent, rgba(255,255,255,0.70), transparent)",
   };
 
-  const divColor   = isDark ? "rgba(255,255,255,0.06)" : "rgba(26,26,26,0.07)";
-  const descColor  = isDark ? "hsl(46,10%,60%)"        : "rgba(26,26,26,0.45)";
+  const divColor = isDark ? "rgba(255,255,255,0.06)" : "rgba(26,26,26,0.07)";
+  const descColor = isDark ? "hsl(46,10%,60%)" : "rgba(26,26,26,0.45)";
 
   return (
     <div ref={containerRef} className="relative">
@@ -340,10 +341,10 @@ export function CreditsBalance({ refreshKey = 0 }) {
         tabIndex={0}
         onClick={() => setOpen((o) => !o)}
         onKeyDown={(e) => e.key === "Enter" && setOpen((o) => !o)}
-        className={`group relative inline-flex cursor-pointer select-none items-center gap-2 overflow-hidden rounded-full h-9 px-4 text-sm font-medium text-foreground transition-all hover:bg-card hover:text-accent-foreground ${open
-          ? "border-2 border-border bg-card text-accent-foreground"
-          : "border border-border bg-[#EEECE7] dark:bg-[#1C1917]"
-        }`}
+        className={`group relative inline-flex cursor-pointer select-none items-center gap-2 overflow-hidden rounded-full h-9 px-4 text-sm font-medium text-foreground transition-all hover:bg-card hover:text-accent-foreground border-[#d4d0c4] dark:border-[#38312e] ${open
+          ? "border-2  bg-card text-accent-foreground"
+          : "border  bg-[#EEECE7] dark:bg-[#1C1917]"
+          }`}
       >
         <BadgeBubbles />
         <div className="relative z-10 flex-shrink-0 pointer-events-none">
@@ -403,7 +404,7 @@ export function CreditsBalance({ refreshKey = 0 }) {
                     {JOB_FEATURES
                       .filter(({ key }) => quota?.[key]?.limit !== null && (quota?.[key]?.limit ?? 0) > 0)
                       .map(({ key, label }, idx) => {
-                        const base  = quota?.[key]        ?? { limit: 0, used: 0 };
+                        const base = quota?.[key] ?? { limit: 0, used: 0 };
                         const topup = quota?.topup?.[key] ?? { limit: 0, used: 0 };
                         return (
                           <FeatureRow key={key} label={label} idx={idx}
@@ -418,13 +419,14 @@ export function CreditsBalance({ refreshKey = 0 }) {
               )}
 
               {/* CTA */}
-              <RotatingGradientButton
+              <ConicButton
+                variant="mono"
                 onClick={() => { setOpen(false); setShopOpen(true); }}
                 disabled={buying}
                 isDark={isDark}
               >
                 Get more credits
-              </RotatingGradientButton>
+              </ConicButton>
             </div>
           </motion.div>
         )}

@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useTheme } from "next-themes";
 
 const STYLE_ID = "conic-button-kf";
 function injectKeyframes() {
@@ -21,8 +20,6 @@ function injectKeyframes() {
  *   className — extra classes on the outer wrapper
  */
 export function ConicButton({ onClick, disabled = false, children, className = "" }) {
-  const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === "dark";
   const [hovered, setHovered] = useState(false);
 
   useEffect(() => { injectKeyframes(); }, []);
@@ -35,15 +32,13 @@ export function ConicButton({ onClick, disabled = false, children, className = "
       style={{
         borderRadius: 50,
         padding: "2px",
-        background: isDark
-          ? "conic-gradient(from var(--rgb-angle, 0deg), #ffffff 0deg, #d0ccc6 6deg, #706c68 18deg, #302e2b 32deg, #1c1916 60deg, #1c1916 300deg, #302e2b 328deg, #706c68 342deg, #d0ccc6 354deg, #ffffff 360deg)"
-          : "conic-gradient(from var(--rgb-angle, 0deg), #ffffff 0deg, #c8c4be 6deg, #686460 18deg, #282522 32deg, #1c1916 60deg, #1c1916 300deg, #282522 328deg, #686460 342deg, #c8c4be 354deg, #ffffff 360deg)",
+        background: "conic-gradient(from var(--rgb-angle, 0deg), #FFD580 0deg, #FF9A3C 40deg, #E8593A 90deg, #C0392B 150deg, #7A1A0A 180deg, #7A1A0A 200deg, #C0392B 240deg, #E8593A 290deg, #FF9A3C 330deg, #FFD580 360deg)",
         animation: "rotate-rgb-gradient 3s linear infinite",
         cursor: disabled ? "default" : "pointer",
         transform: hovered && !disabled ? "scale(1.025)" : "scale(1)",
         boxShadow: hovered && !disabled
-          ? "0 0 0 1px rgba(250,95,75,0.3), 0 4px 20px rgba(250,95,75,0.35)"
-          : "0 0 0 1px rgba(250,95,75,0.15), 0 4px 14px rgba(250,95,75,0.18)",
+          ? "0 0 0 1px rgba(232,89,58,0.3), 0 4px 20px rgba(232,89,58,0.35)"
+          : "0 0 0 1px rgba(232,89,58,0.15), 0 4px 14px rgba(232,89,58,0.18)",
         transition: "transform 220ms cubic-bezier(0.34,1.56,0.64,1), box-shadow 200ms ease",
         opacity: disabled ? 0.6 : 1,
       }}
@@ -53,7 +48,7 @@ export function ConicButton({ onClick, disabled = false, children, className = "
         disabled={disabled}
         style={{
           width: "100%",
-          background: hovered && !disabled ? "#f8614e" : "#FA5F4B",
+          background: hovered && !disabled ? "#d44e30" : "#E8593A",
           borderRadius: 48,
           display: "flex",
           alignItems: "center",

@@ -401,7 +401,7 @@ export function CreditsBalance({ refreshKey = 0 }) {
                   <div style={{ height: 1, background: divColor, marginBottom: 10 }} />
                   <div>
                     {JOB_FEATURES
-                      .filter(({ key }) => quota?.[key]?.limit !== null)
+                      .filter(({ key }) => quota?.[key]?.limit !== null && (quota?.[key]?.limit ?? 0) > 0)
                       .map(({ key, label }, idx) => {
                         const base  = quota?.[key]        ?? { limit: 0, used: 0 };
                         const topup = quota?.topup?.[key] ?? { limit: 0, used: 0 };

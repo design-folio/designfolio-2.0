@@ -3,12 +3,13 @@ import { useTheme } from "next-themes";
 import {
   MapPin, Briefcase, Monitor, Clock, Calendar, DollarSign,
   ChevronRight, FileText, PenLine, ExternalLink,
-  X, Loader2, Copy, Check, Clapperboard, Crosshair, Zap,
+  X, Loader2, Copy, Check, Clapperboard, Crosshair, Zap, Sparkles,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { CompanyLogo } from "./CompanyLogo";
 import { MatchBreakdown } from "./MatchBreakdown";
 import { _postJobsInteract, _postJobsCustomizeResume, _postJobsCoverLetter, _postJobsFitAnalysis } from "@/network/jobs";
+import { _getUserQuota } from "@/network/get-request";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import DOMPurify from "dompurify";
@@ -96,10 +97,25 @@ function CopyButton({ text }) {
 }
 
 function CreditBadge({ count }) {
+  if (count === null) return null;
   return (
     <span className="flex items-center gap-0.5 bg-amber-100 dark:bg-amber-400/20 border border-amber-300/60 dark:border-amber-400/30 rounded-full px-1.5 py-0.5 flex-shrink-0">
       <Zap className="w-2.5 h-2.5 text-amber-500 fill-amber-500" />
       <span className="text-[10px] font-semibold text-amber-600 dark:text-amber-400">{count}</span>
+    </span>
+  );
+}
+
+function ComingSoonBadge() {
+  return (
+    <span className="relative flex items-center gap-0.5 bg-violet-50 dark:bg-violet-500/10 border border-violet-200/60 dark:border-violet-400/20 rounded-full px-1.5 py-0.5 flex-shrink-0 overflow-hidden cursor-not-allowed">
+      {/* sweep shimmer */}
+      <span
+        className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-violet-300/25 dark:via-violet-400/15 to-transparent"
+        style={{ animation: "comingSoonShimmer 2.4s ease-in-out infinite" }}
+      />
+      <Sparkles className="w-2 h-2 text-violet-400 dark:text-violet-400 relative z-10 cursor-not-allowed" />
+      <span className="text-[9.5px] font-semibold text-violet-500 dark:text-violet-400 tracking-tight relative z-10 cursor-not-allowed">Soon</span>
     </span>
   );
 }
@@ -130,6 +146,28 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
   const [fitLoading, setFitLoading] = useState(false);
   const [fitResult, setFitResult] = useState(null);
 
+  const [quota, setQuota] = useState(null);
+  const [quotaKey, setQuotaKey] = useState(0);
+
+  useEffect(() => {
+    if (!open) return;
+    let cancelled = false;
+    _getUserQuota()
+      .then((res) => { if (!cancelled) setQuota(res.data?.quota ?? null); })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [open, quotaKey]);
+
+  const bumpQuota = () => { setQuotaKey((k) => k + 1); onCreditUsed?.(); };
+
+  const featureRemaining = (key) => {
+    if (!quota) return undefined;
+    const base  = quota[key]        ?? { limit: 0, used: 0 };
+    const topup = quota.topup?.[key] ?? { limit: 0, used: 0 };
+    if (base.limit === null) return null; // unlimited — hide badge
+    return Math.max(0, (base.limit - base.used) + ((topup.limit ?? 0) - (topup.used ?? 0)));
+  };
+
   useEffect(() => {
     if (!job) return;
     setResumeResult(null);
@@ -146,7 +184,7 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
     try {
       const res = await _postJobsCustomizeResume(displayJob.id, profileId);
       setResumeResult(res.data);
-      onCreditUsed?.();
+      bumpQuota();
     } catch {
       setResumeResult({ error: "Could not generate resume. Please try again." });
     } finally {
@@ -161,7 +199,7 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
     try {
       const res = await _postJobsCoverLetter(displayJob.id, profileId);
       setLetterResult(res.data);
-      onCreditUsed?.();
+      bumpQuota();
     } catch {
       setLetterResult({ error: "Could not generate cover letter. Please try again." });
     } finally {
@@ -176,7 +214,7 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
     try {
       const res = await _postJobsFitAnalysis(displayJob.id, profileId);
       setFitResult(res.data);
-      onCreditUsed?.();
+      bumpQuota();
     } catch {
       setFitResult({ error: "Could not generate fit analysis. Please try again." });
     } finally {
@@ -287,62 +325,48 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
                 <button
                   data-testid="button-jump-mock-interviews"
                   onClick={() => { scrollToMockInterviews(); onStartMockInterview?.(); }}
-                  className="w-full flex items-center gap-2.5 px-4 py-3 hover:bg-black/[0.03] dark:hover:bg-white/[0.03] transition-colors group text-left border-b border-black/[0.05] dark:border-white/[0.05]"
+                  className="w-full flex items-center gap-2.5 px-4 py-3 hover:bg-black/[0.03] dark:hover:bg-white/[0.03] transition-colors group text-left border-b border-black/[0.05] dark:border-white/[0.05] cursor-pointer"
                 >
                   <div className="w-8 h-8 rounded-xl bg-black/[0.05] dark:bg-white/[0.06] group-hover:bg-black/[0.07] dark:group-hover:bg-white/[0.09] transition-colors flex items-center justify-center flex-shrink-0">
                     <Clapperboard className="w-3.5 h-3.5 text-foreground/55" />
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[13px] font-semibold text-foreground/80 group-hover:text-foreground transition-colors leading-none">Practice with a mock interview</span>
-                      <span className="text-[9.5px] font-medium text-foreground/35 leading-none whitespace-nowrap">✦ Recommended</span>
+                  <div className="flex-1 min-w-0 cursor-pointer">
+                    <div className="flex items-center gap-2 cursor-pointer">
+                      <span className="text-[13px] font-semibold text-foreground/80 group-hover:text-foreground transition-colors leading-none cursor-pointer">Practice with a mock interview</span>
+                      <span className="text-[9.5px] font-medium text-foreground/35 leading-none whitespace-nowrap cursor-pointer">✦ Recommended</span>
                     </div>
-                    <div className="text-[11px] text-foreground/40 mt-1 leading-snug">AI-guided session + actionable debrief</div>
+                    <div className="text-[11px] text-foreground/40 mt-1 leading-snug cursor-pointer">AI-guided session + actionable debrief</div>
                   </div>
-                  <CreditBadge count={10} />
+                  <CreditBadge count={featureRemaining("mockInterview")} />
                 </button>
 
                 {/* 3-column split: resume | cover letter | fit analysis */}
                 <div className="grid grid-cols-3 divide-x divide-black/[0.05] dark:divide-white/[0.05]">
-                  {/* Tailor resume */}
-                  <button
-                    onClick={handleCustomizeResume}
-                    disabled={resumeLoading}
-                    className="flex flex-col items-start gap-2 px-3.5 py-3 hover:bg-black/[0.03] dark:hover:bg-white/[0.03] transition-colors group text-left disabled:opacity-60"
-                  >
-                    <div className="flex items-center justify-between w-full">
-                      <div className="w-6 h-6 rounded-lg bg-black/[0.05] dark:bg-white/[0.06] group-hover:bg-black/[0.07] dark:group-hover:bg-white/[0.09] transition-colors flex items-center justify-center flex-shrink-0">
-                        {resumeLoading
-                          ? <Loader2 className="w-3 h-3 text-foreground/40 animate-spin" />
-                          : <FileText className="w-3 h-3 text-foreground/45" />
-                        }
+                  {/* Tailor resume — coming soon */}
+                  <div className="flex flex-col items-start gap-2 px-3.5 py-3 cursor-not-allowed select-none">
+                    <div className="flex items-center justify-between w-full cursor-not-allowed">
+                      <div className="w-6 h-6 rounded-lg bg-black/[0.04] dark:bg-white/[0.04] flex items-center justify-center flex-shrink-0 cursor-not-allowed">
+                        <FileText className="w-3 h-3 text-foreground/30 cursor-not-allowed" />
                       </div>
-                      {!resumeLoading && <CreditBadge count={4} />}
+                      <ComingSoonBadge />
                     </div>
-                    <div className="text-[11.5px] font-semibold text-foreground/70 group-hover:text-foreground/90 transition-colors leading-snug">
-                      {resumeLoading ? "Tailoring…" : "Tailor resume"}
+                    <div className="text-[11.5px] font-semibold text-foreground/35 leading-snug cursor-not-allowed">
+                      Tailor resume
                     </div>
-                  </button>
+                  </div>
 
-                  {/* Cover letter */}
-                  <button
-                    onClick={handleCoverLetter}
-                    disabled={letterLoading}
-                    className="flex flex-col items-start gap-2 px-3.5 py-3 hover:bg-black/[0.03] dark:hover:bg-white/[0.03] transition-colors group text-left disabled:opacity-60"
-                  >
-                    <div className="flex items-center justify-between w-full">
-                      <div className="w-6 h-6 rounded-lg bg-black/[0.05] dark:bg-white/[0.06] group-hover:bg-black/[0.07] dark:group-hover:bg-white/[0.09] transition-colors flex items-center justify-center flex-shrink-0">
-                        {letterLoading
-                          ? <Loader2 className="w-3 h-3 text-foreground/40 animate-spin" />
-                          : <PenLine className="w-3 h-3 text-foreground/45" />
-                        }
+                  {/* Cover letter — coming soon */}
+                  <div className="flex flex-col items-start gap-2 px-3.5 py-3 cursor-not-allowed select-none">
+                    <div className="flex items-center justify-between w-full cursor-not-allowed">
+                      <div className="w-6 h-6 rounded-lg bg-black/[0.04] dark:bg-white/[0.04] flex items-center justify-center flex-shrink-0 cursor-not-allowed">
+                        <PenLine className="w-3 h-3 text-foreground/30 cursor-not-allowed" />
                       </div>
-                      {!letterLoading && <CreditBadge count={3} />}
+                      <ComingSoonBadge />
                     </div>
-                    <div className="text-[11.5px] font-semibold text-foreground/70 group-hover:text-foreground/90 transition-colors leading-snug">
-                      {letterLoading ? "Drafting…" : "Cover letter"}
+                    <div className="text-[11.5px] font-semibold text-foreground/35 leading-snug cursor-not-allowed">
+                      Cover letter
                     </div>
-                  </button>
+                  </div>
 
                   {/* Fit analysis */}
                   <button
@@ -357,7 +381,7 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
                           : <Crosshair className="w-3 h-3 text-foreground/45" />
                         }
                       </div>
-                      {!fitLoading && <CreditBadge count={6} />}
+                      {!fitLoading && <CreditBadge count={featureRemaining("fitAnalysis")} />}
                     </div>
                     <div className="text-[11.5px] font-semibold text-foreground/70 group-hover:text-foreground/90 transition-colors leading-snug">
                       {fitLoading ? "Analysing…" : "Fit analysis"}

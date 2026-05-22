@@ -216,39 +216,41 @@ const JOB_FEATURES = [
   { key: "scoutChat",       label: "Scout Chat"      },
 ];
 
-function FeatureRow({ label, used, limit, topupLimit = 0, topupUsed = 0, isDark }) {
-  const totalLimit = limit + topupLimit;
-  const totalUsed  = used  + topupUsed;
+function FeatureRow({ label, used, limit, topupLimit = 0, topupUsed = 0, isDark, idx }) {
+  const totalLimit = (limit ?? 0) + (topupLimit ?? 0);
+  const totalUsed  = used + topupUsed;
   const locked     = totalLimit === 0;
-  const p          = locked ? 0 : Math.min(1, totalUsed / totalLimit);
-  const remaining  = locked ? 0 : Math.max(0, totalLimit - totalUsed);
+  const barPct     = locked ? 0 : Math.max(0, 1 - totalUsed / totalLimit);
 
-  const fillColor  = p >= 0.9 ? "#ef4444" : p >= 0.7 ? "#f59e0b"
-    : isDark ? "rgba(240,237,232,0.55)" : "rgba(26,26,26,0.45)";
-  const trackColor = isDark ? "rgba(255,255,255,0.07)" : "rgba(26,26,26,0.07)";
-  const textColor  = locked
-    ? (isDark ? "rgba(181,175,165,0.3)" : "rgba(122,115,108,0.35)")
-    : (isDark ? "rgba(181,175,165,0.75)" : "rgba(122,115,108,0.9)");
+  const labelColor = isDark ? "rgba(240,237,232,0.82)" : "rgba(26,26,26,0.80)";
+  const countColor = isDark ? "rgba(240,237,232,0.60)" : "rgba(26,26,26,0.55)";
+  const trackColor = isDark ? "rgba(255,255,255,0.14)" : "rgba(0,0,0,0.13)";
+  const fillColor  = isDark ? "rgba(255,255,255,0.72)" : "rgba(26,26,26,0.62)";
+  const dimColor   = isDark ? "rgba(181,175,165,0.3)"  : "rgba(122,115,108,0.35)";
 
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "3.5px 0" }}>
-      <span style={{ fontSize: 11, color: textColor, width: 90, flexShrink: 0, lineHeight: 1 }}>{label}</span>
-      <div style={{ flex: 1, height: 3, borderRadius: 999, background: trackColor, overflow: "hidden" }}>
+    <motion.div
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+      transition={{ delay: 0.05 + idx * 0.04, duration: 0.22 }}
+      style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}
+    >
+      <span style={{ fontSize: 11, fontWeight: 500, color: locked ? dimColor : labelColor, whiteSpace: "nowrap", minWidth: 84 }}>
+        {label}
+      </span>
+      <div style={{ flex: 1, height: 3, borderRadius: 99, overflow: "hidden", background: trackColor }}>
         {!locked && (
-          <div style={{
-            width: `${Math.max(2, p * 100)}%`, height: "100%",
-            background: fillColor, borderRadius: 999,
-            transition: "width 0.5s cubic-bezier(0.16,1,0.3,1)",
-          }} />
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: `${barPct * 100}%` }}
+            transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1], delay: 0.12 + idx * 0.06 }}
+            style={{ height: "100%", borderRadius: 99, background: fillColor }}
+          />
         )}
       </div>
-      <span style={{
-        fontSize: 10, width: 30, textAlign: "right", flexShrink: 0,
-        color: textColor, fontVariantNumeric: "tabular-nums", lineHeight: 1,
-      }}>
-        {locked ? "—" : <>{remaining}<span style={{ opacity: 0.4 }}>/{totalLimit}</span></>}
+      <span style={{ fontSize: 10.5, fontWeight: 600, color: locked ? dimColor : countColor, whiteSpace: "nowrap", minWidth: 28, textAlign: "right", letterSpacing: "-0.2px" }}>
+        {locked ? "—" : <>{totalUsed}<span style={{ fontWeight: 400, opacity: 0.55 }}>/{totalLimit}</span></>}
       </span>
-    </div>
+    </motion.div>
   );
 }
 
@@ -283,13 +285,14 @@ export function CreditsBalance({ refreshKey = 0 }) {
     return () => document.removeEventListener("mousedown", handler);
   }, [open]);
 
-  // Aggregate totals across job features only
+  // Aggregate finite-limit job features only — unlimited (null limit) are excluded from the gauge total
   const { totalRemaining, totalLimit } = JOB_FEATURES.reduce(
     (acc, { key }) => {
       const base  = quota?.[key]        ?? { limit: 0, used: 0 };
       const topup = quota?.topup?.[key] ?? { limit: 0, used: 0 };
-      acc.totalLimit     += base.limit  + topup.limit;
-      acc.totalRemaining += Math.max(0, (base.limit - base.used) + (topup.limit - topup.used));
+      if (base.limit === null) return acc; // unlimited — skip from finite aggregate
+      acc.totalLimit     += (base.limit ?? 0) + (topup.limit ?? 0);
+      acc.totalRemaining += Math.max(0, ((base.limit ?? 0) - base.used) + ((topup.limit ?? 0) - topup.used));
       return acc;
     },
     { totalRemaining: 0, totalLimit: 0 }
@@ -392,32 +395,25 @@ export function CreditsBalance({ refreshKey = 0 }) {
                 />
               </div>
 
-              {/* Description */}
-              <p style={{
-                fontSize: 12,
-                color: descColor,
-                lineHeight: 1.6, margin: "0 0 12px", textAlign: "center",
-              }}>
-                Job AI uses across all features.
-              </p>
-
-              {/* Per-feature breakdown — always show all 6 job features */}
+              {/* Per-feature breakdown — hide unlimited (null limit) features */}
               {quota && (
                 <>
                   <div style={{ height: 1, background: divColor, marginBottom: 10 }} />
                   <div>
-                    {JOB_FEATURES.map(({ key, label }) => {
-                      const base  = quota?.[key]        ?? { limit: 0, used: 0 };
-                      const topup = quota?.topup?.[key] ?? { limit: 0, used: 0 };
-                      return (
-                        <FeatureRow key={key} label={label}
-                          used={base.used} limit={base.limit}
-                          topupUsed={topup.used} topupLimit={topup.limit}
-                          isDark={isDark} />
-                      );
-                    })}
+                    {JOB_FEATURES
+                      .filter(({ key }) => quota?.[key]?.limit !== null)
+                      .map(({ key, label }, idx) => {
+                        const base  = quota?.[key]        ?? { limit: 0, used: 0 };
+                        const topup = quota?.topup?.[key] ?? { limit: 0, used: 0 };
+                        return (
+                          <FeatureRow key={key} label={label} idx={idx}
+                            used={base.used} limit={base.limit}
+                            topupUsed={topup.used} topupLimit={topup.limit}
+                            isDark={isDark} />
+                        );
+                      })}
                   </div>
-                  <div style={{ height: 1, background: divColor, margin: "10px 0 14px" }} />
+                  <div style={{ height: 1, background: divColor, margin: "2px 0 14px" }} />
                 </>
               )}
 

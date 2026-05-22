@@ -74,6 +74,19 @@
   }
 }
 
+/* ── Coming Soon badge shimmer sweep ───────────────────────── */
+@keyframes comingSoonShimmer {
+  0%   { transform: translateX(-100%); }
+  60%  { transform: translateX(200%); }
+  100% { transform: translateX(200%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @keyframes comingSoonShimmer {
+    0%, 100% { transform: translateX(-100%); }
+  }
+}
+
 /* ── Joyride: first-time onboarding glow ───────────────────── */
 @keyframes joyride-btn-glow {
   0%, 100% { opacity: 0; }

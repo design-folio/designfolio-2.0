@@ -9,12 +9,12 @@ import { _getProPlanDetails } from "@/network/get-request";
 
 /* ── Feature metadata map ─────────────────────────────────────────────── */
 const FEATURE_META = {
-  mockInterview:   { icon: Clapperboard,  label: "Mock Interview",  sub: "Full AI-powered interview session"      },
-  jobScan:         { icon: ScanSearch,    label: "Job Scan",        sub: "Score & analyse a job listing"          },
-  resumeCustomize: { icon: FileText,      label: "Resume Tailor",   sub: "Rewrite your resume for a specific role" },
-  coverLetter:     { icon: PenLine,       label: "Cover Letter",    sub: "Generate a job-specific cover letter"   },
-  fitAnalysis:     { icon: Crosshair,     label: "Fit Analysis",    sub: "Analyse your fit for a role"            },
-  scoutChat:       { icon: MessageCircle, label: "Scout Chat",      sub: "Deep insights on any job or company"    },
+  mockInterview: { icon: Clapperboard, label: "Mock Interview", sub: "Full AI-powered interview session" },
+  jobScan: { icon: ScanSearch, label: "Job Scan", sub: "Score & analyse a job listing" },
+  resumeCustomize: { icon: FileText, label: "Resume Tailor", sub: "Rewrite your resume for a specific role" },
+  coverLetter: { icon: PenLine, label: "Cover Letter", sub: "Generate a job-specific cover letter" },
+  fitAnalysis: { icon: Crosshair, label: "Fit Analysis", sub: "Analyse your fit for a role" },
+  scoutChat: { icon: MessageCircle, label: "Scout Chat", sub: "Deep insights on any job or company" },
 };
 
 const FEATURE_ORDER = ["mockInterview", "jobScan", "resumeCustomize", "coverLetter", "fitAnalysis", "scoutChat"];
@@ -31,13 +31,13 @@ export function CreditsShopModal({ open, onClose, onBuy, buying = false }) {
         const topup = res.data?.jobTopup;
         if (topup) setPack(topup);
       })
-      .catch(() => {});
+      .catch(() => { });
   }, [open]);
 
-  const quantities   = pack?.quantities ?? {};
-  const amount       = pack?.amount     ?? 1999;
-  const symbol       = pack?.currency === "USD" ? "$" : "₹";
-  const totalUses    = Object.values(quantities).reduce((s, v) => s + v, 0) || 0;
+  const quantities = pack?.quantities ?? {};
+  const amount = pack?.amount ?? 1999;
+  const symbol = pack?.currency === "USD" ? "$" : "₹";
+  const totalUses = Object.values(quantities).reduce((s, v) => s + v, 0) || 0;
 
   // Build rows in a fixed order, skip any key not in FEATURE_META
   const rows = FEATURE_ORDER
@@ -92,11 +92,10 @@ export function CreditsShopModal({ open, onClose, onBuy, buying = false }) {
 
             {/* Header */}
             <div className="px-6 pt-7 pb-5 border-b border-black/[0.06] dark:border-white/[0.06]">
-              <div className="mb-4 orb-always-active flex items-center">
+              <div className="flex flex-col items-start gap-2 mb-1 orb-always-active">
                 <ColorOrb dimension="28px" spinDuration={5} />
+                <h2 className="text-[20px] font-bold text-foreground leading-tight tracking-tight">Top up Job AI</h2>
               </div>
-
-              <h2 className="text-[20px] font-bold text-foreground leading-tight tracking-tight">Top up Job AI</h2>
               <p className="text-[13px] text-foreground/45 mt-1 leading-relaxed">
                 Extra uses for every Job AI feature — no subscription, pay only when you need more.
               </p>
@@ -108,8 +107,8 @@ export function CreditsShopModal({ open, onClose, onBuy, buying = false }) {
                 </span>
                 {totalUses > 0 && (
                   <>
-                    <div className="h-7 w-px bg-foreground/10 rounded-full" />
-                    <span className="text-[14px] font-medium text-foreground/50 leading-tight">
+                    <div className="h-7 w-px bg-foreground opacity-10 rounded-full" />
+                    <span className="text-[14px] font-medium text-foreground opacity-50 leading-tight">
                       {totalUses} extra uses total
                     </span>
                   </>
@@ -134,8 +133,9 @@ export function CreditsShopModal({ open, onClose, onBuy, buying = false }) {
                         <div className="text-[13px] font-medium text-foreground/80 leading-none">{label}</div>
                         <div className="text-[11px] text-foreground/40 mt-0.5 leading-tight">{sub}</div>
                       </div>
-                      <span className="flex-shrink-0 text-[12px] font-semibold tabular-nums px-2 py-0.5 rounded-full bg-foreground/[0.06] text-foreground/60">
-                        +{count}
+                      <span className="flex items-center gap-0.5 bg-amber-100 dark:bg-amber-400/20 border border-amber-300/60 dark:border-amber-400/30 rounded-full px-1.5 py-0.5 flex-shrink-0">
+                        <Zap className="w-2.5 h-2.5 text-amber-500 fill-amber-500" />
+                        <span className="text-[10px] font-semibold tabular-nums text-amber-600 dark:text-amber-400">+{count}</span>
                       </span>
                     </div>
                   ))}
@@ -164,10 +164,10 @@ export function CreditsShopModal({ open, onClose, onBuy, buying = false }) {
                 {buying
                   ? "Opening checkout…"
                   : pack
-                  ? `Buy pack — ${symbol}${amount}`
-                  : "Loading…"}
+                    ? `Buy pack ${symbol}${amount}`
+                    : "Loading…"}
               </ConicButton>
-              <p className="text-center text-[11px] text-foreground/30 mt-2.5">
+              <p className="text-center text-[11px] text-foreground opacity-30 mt-2.5">
                 No subscription · Uses never expire
               </p>
             </div>

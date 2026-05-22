@@ -92,12 +92,12 @@ export function CreditsShopModal({ open, onClose, onBuy, buying = false }) {
 
             {/* Header */}
             <div className="px-6 pt-7 pb-5 border-b border-black/[0.06] dark:border-white/[0.06]">
-              <div className="flex flex-col items-start gap-2 mb-1 orb-always-active">
+              <div className="flex flex-col items-start gap-2 mb-2 orb-always-active p-2 ">
                 <ColorOrb dimension="28px" spinDuration={5} />
-                <h2 className="text-[20px] font-bold text-foreground leading-tight tracking-tight">Top up Job AI</h2>
               </div>
+              <h2 className="text-[20px] font-bold text-foreground leading-tight tracking-tight">Top up Job AI</h2>
               <p className="text-[13px] text-foreground/45 mt-1 leading-relaxed">
-                Extra uses for every Job AI feature — no subscription, pay only when you need more.
+                Extra credits for every Job AI feature — no subscription, pay only when you need more.
               </p>
 
               {/* Price row */}
@@ -109,7 +109,7 @@ export function CreditsShopModal({ open, onClose, onBuy, buying = false }) {
                   <>
                     <div className="h-7 w-px bg-foreground opacity-10 rounded-full" />
                     <span className="text-[14px] font-medium text-foreground opacity-50 leading-tight">
-                      {totalUses} extra uses total
+                      {totalUses} credits (no expiry)
                     </span>
                   </>
                 )}
@@ -168,7 +168,7 @@ export function CreditsShopModal({ open, onClose, onBuy, buying = false }) {
                     : "Loading…"}
               </ConicButton>
               <p className="text-center text-[11px] text-foreground opacity-30 mt-2.5">
-                No subscription · Uses never expire
+                No subscription · Credits never expire
               </p>
             </div>
           </motion.div>

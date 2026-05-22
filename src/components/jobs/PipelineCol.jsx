@@ -74,8 +74,8 @@ export function PipelineCol({
         </motion.div>
       ))}
 
-      {/* Get More / Exhausted footer — picks column only, hidden in initial list view */}
-      {isPicks && !isListPhase && jobs.length > 0 && (
+      {/* Get More / Exhausted footer — picks column only */}
+      {isPicks && jobs.length > 0 && (
         <motion.div
           key="fetch-more-footer"
           layout

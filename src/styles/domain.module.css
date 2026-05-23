@@ -2965,6 +2965,12 @@
   overflow: hidden !important;
 }
 
+/* Constrain the orange gradient + sparkles to the left 440px panel only when FAQ is open */
+.modal.modalFaqOpen::before,
+.modal.modalFaqOpen::after {
+  right: 50%;
+}
+
 /* Left pricing panel — scrollable, fixed width on desktop */
 .modalLeftPanel {
   width: 440px;

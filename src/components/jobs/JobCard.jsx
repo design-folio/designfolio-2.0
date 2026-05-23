@@ -54,7 +54,7 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
       className="job-card relative flex flex-col gap-3 p-3 rounded-xl border border-black/[0.04] dark:border-[#302B28] bg-white dark:bg-[#28231E] select-none
         shadow-[0_1px_3px_rgba(0,0,0,0.06)] dark:shadow-[0_1px_4px_rgba(0,0,0,0.4)]
         transition-[transform,box-shadow,border-color] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]
-        hover:-translate-y-1 hover:border-black/[0.1] dark:hover:border-[#4A4440] hover:shadow-[0_4px_14px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_4px_14px_rgba(0,0,0,0.55)]
+        hover:-translate-y-1 hover:z-10 hover:border-black/[0.1] dark:hover:border-[#4A4440] hover:shadow-[0_4px_14px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_4px_14px_rgba(0,0,0,0.55)]
         active:translate-y-0 active:shadow-[0_1px_3px_rgba(0,0,0,0.06)] dark:active:shadow-[0_1px_4px_rgba(0,0,0,0.4)]"
     >
       {/* Row 1: Logo + Role/Company + Gauge */}
@@ -223,9 +223,9 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
               <button
                 data-testid={`button-expand-${job.id}`}
                 onClick={(e) => { e.stopPropagation(); onOpen?.(); }}
-                className="flex items-center justify-center w-7 h-7 text-foreground/30 hover:text-foreground/60 transition-[transform,color] duration-100 active:scale-[0.88] rounded-full"
+                className="flex items-center justify-center w-7 h-7 text-foreground/30 hover:text-foreground/60 hover:bg-black/[0.05] dark:hover:bg-white/[0.07] transition-[transform,color,background-color] duration-100 active:scale-[0.88] rounded-full"
               >
-                <Maximize2 className="w-3.5 h-3.5" />
+                <Maximize2 className="w-3.5 h-3.5 pointer-events-none" />
               </button>
             )}
           </div>
@@ -263,9 +263,9 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
               <button
                 data-testid={`button-expand-other-${job.id}`}
                 onClick={(e) => { e.stopPropagation(); onOpen?.(); }}
-                className="flex items-center justify-center w-7 h-7 text-foreground/30 hover:text-foreground/60 transition-[transform,color] duration-100 active:scale-[0.88] rounded-full"
+                className="flex items-center justify-center w-7 h-7 text-foreground/30 hover:text-foreground/60 hover:bg-black/[0.05] dark:hover:bg-white/[0.07] transition-[transform,color,background-color] duration-100 active:scale-[0.88] rounded-full"
               >
-                <Maximize2 className="w-3.5 h-3.5" />
+                <Maximize2 className="w-3.5 h-3.5 pointer-events-none" />
               </button>
             )}
           </div>

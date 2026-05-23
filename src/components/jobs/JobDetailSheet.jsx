@@ -232,15 +232,22 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
   return (
     <Sheet open={open} onOpenChange={(v) => !v && onClose()} modal={false}>
       <SheetContent
-        className="inset-y-3 right-3 h-[calc(100vh-24px)] rounded-2xl shadow-2xl !border border-black/[0.09] dark:border-white/[0.09] bg-white dark:bg-[#2A2520] p-0 flex flex-col w-[560px] sm:max-w-[560px] overflow-hidden"
+        className="inset-y-3 right-3 h-[calc(100vh-24px)] rounded-2xl shadow-2xl !border border-black/[0.09] dark:border-white/[0.09] bg-white dark:bg-[#2A2520] p-0 flex flex-col w-[560px] sm:max-w-[560px] overflow-hidden [&>button:last-child]:hidden"
         hasOverlay={false}
         onInteractOutside={(e) => e.preventDefault()}
       >
         {/* Header */}
-        <SheetHeader className="px-5 py-4 border-b border-black/10 dark:border-white/10 flex-shrink-0 flex flex-row items-center m-0 space-y-0 h-[65px]">
-          <SheetTitle className="text-[#1A1A1A] dark:text-[#F0EDE7] text-base font-semibold m-0 truncate pr-10">
+        <SheetHeader className="px-5 py-4 border-b border-black/10 dark:border-white/10 flex-shrink-0 flex flex-row items-center justify-between m-0 space-y-0 h-[65px]">
+          <SheetTitle className="text-[#1A1A1A] dark:text-[#F0EDE7] text-base font-semibold m-0 truncate">
             {displayJob.role}
           </SheetTitle>
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            className="flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-full bg-black/[0.06] dark:bg-white/[0.08] text-black/40 dark:text-white/40 hover:bg-black/[0.10] dark:hover:bg-white/[0.14] hover:text-black dark:hover:text-white transition-colors"
+          >
+            <X className="w-3.5 h-3.5" strokeWidth={2.5} />
+          </button>
         </SheetHeader>
 
         {/* Scrollable body */}

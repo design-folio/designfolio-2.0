@@ -5,16 +5,16 @@ import { checkRateLimit } from "@/lib/api-rate-limit";
 export const config = { maxDuration: 90 };
 
 const PERSONA_LABELS = [
-  "Product Designers",
+  "Product Designer",
   "Developer / Engineer",
-  "Product Managers",
-  "Vibe / No-Code Builders",
-  "UX Researchers",
-  "Writers",
-  "Graphic Designers",
+  "Product Manager",
+  "Vibe / No-Code Builder",
+  "UX Researcher",
+  "Writer",
+  "Graphic Designer",
   "Founder",
   "Educator",
-  "Others",
+  "Other",
 ];
 
 async function fetchToolsList() {

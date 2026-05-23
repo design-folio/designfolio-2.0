@@ -1,6 +1,6 @@
 const PERSONAS = [
     {
-        "label": "Product Designers",
+        "label": "Product Designer",
         "image": "/onboarding-animated-icons/productdesigner.png"
     },
     {
@@ -8,23 +8,23 @@ const PERSONAS = [
         "image": "/onboarding-animated-icons/developer.png"
     },
     {
-        "label": "Product Managers",
+        "label": "Product Manager",
         "image": "/onboarding-animated-icons/productmanager.png"
     },
     {
-        "label": "Vibe / No-Code Builders",
+        "label": "Vibe / No-Code Builder",
         "image": "/onboarding-animated-icons/nocodemakers.png"
     },
     {
-        "label": "UX Researchers",
+        "label": "UX Researcher",
         "image": "/onboarding-animated-icons/datascientist.png"
     },
     {
-        "label": "Writers",
+        "label": "Writer",
         "image": "/onboarding-animated-icons/contentwriting.png"
     },
     {
-        "label": "Graphic Designers",
+        "label": "Graphic Designer",
         "image": "/onboarding-animated-icons/graphicdesigner.png"
     },
     {
@@ -36,7 +36,7 @@ const PERSONAS = [
         "image": "/onboarding-animated-icons/teacher.png"
     },
     {
-        "label": "Others",
+        "label": "Other",
         "image": "/onboarding-animated-icons/others.png"
     }
 ];

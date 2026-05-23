@@ -1310,26 +1310,22 @@
   font-size: 14px;
   color: #4b5563;
   opacity: 0;
-  animation: subtleFadeInUp 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation: subtleFadeInUp 0.3s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
-.featureItem:nth-child(1) {
-  animation-delay: 0.7s;
-}
-.featureItem:nth-child(2) {
-  animation-delay: 0.85s;
-}
-.featureItem:nth-child(3) {
-  animation-delay: 1s;
-}
-.featureItem:nth-child(4) {
-  animation-delay: 1.15s;
-}
+.featureItem:nth-child(1) { animation-delay: 0.2s; }
+.featureItem:nth-child(2) { animation-delay: 0.27s; }
+.featureItem:nth-child(3) { animation-delay: 0.34s; }
+.featureItem:nth-child(4) { animation-delay: 0.41s; }
+.featureItem:nth-child(5) { animation-delay: 0.48s; }
+.featureItem:nth-child(6) { animation-delay: 0.55s; }
+.featureItem:nth-child(7) { animation-delay: 0.62s; }
+.featureItem:nth-child(8) { animation-delay: 0.69s; }
 
 @keyframes subtleFadeInUp {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(6px);
   }
   to {
     opacity: 1;

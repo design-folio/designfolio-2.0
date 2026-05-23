@@ -55,7 +55,7 @@ export function ConicButton({
         : "0 0 0 1px hsl(20,10%,72%), inset 0 1px 0 rgba(255,255,255,0.5)";
 
   const innerBg = isOrange
-    ? hovered && !disabled ? "#d44e30" : "#E8593A"
+    ? hovered && !disabled ? "hsl(7, 100%, 55%)" : "hsl(7, 100%, 62%)"
     : isDark
       ? hovered ? "hsl(46,35%,97%)" : "hsl(46,29%,94%)"
       : hovered ? "hsl(20,12%,18%)" : "hsl(20,10%,15%)";

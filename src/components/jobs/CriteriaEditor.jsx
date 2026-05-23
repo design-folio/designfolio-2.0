@@ -63,7 +63,6 @@ export function CriteriaEditor({ answers, onRescan, isRescanning }) {
             type="text"
             value={role}
             onChange={(e) => setRole(e.target.value)}
-            onClick={(e) => e.target.select()}
             placeholder="e.g. Product Designer"
             className="w-full h-9 px-3 rounded-xl border border-black/[0.08] dark:border-white/[0.1] bg-black/[0.03] dark:bg-white/[0.05] text-[13px] text-foreground placeholder:text-foreground/30 outline-none focus:border-black/[0.18] dark:focus:border-white/[0.22] transition-colors"
           />

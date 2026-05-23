@@ -199,7 +199,7 @@ function LiquidGauge({ pct, remaining, limit, uid, isDark }) {
           textAnchor="middle" dominantBaseline="central"
           fill={labelColor} fontSize="11" fontWeight="500"
           style={{ userSelect: "none", letterSpacing: "1px", fontFamily: "'JetBrains Mono', monospace", textTransform: "uppercase" }}>
-          / {limit} USES
+          AI CREDITS LEFT
         </text>
       </motion.g>
     </svg>
@@ -249,7 +249,7 @@ function FeatureRow({ label, used, limit, topupLimit = 0, topupUsed = 0, isDark,
         )}
       </div>
       <span style={{ fontSize: 10.5, fontWeight: 600, color: locked ? dimColor : countColor, whiteSpace: "nowrap", minWidth: 28, textAlign: "right", letterSpacing: "-0.2px" }}>
-        {locked ? "—" : <>{totalLeft}<span style={{ fontWeight: 400, opacity: 0.55 }}>/{totalLimit}</span></>}
+        {locked ? "—" : `${totalLeft} Left`}
       </span>
     </motion.div>
   );
@@ -351,11 +351,9 @@ export function CreditsBalance({ refreshKey = 0 }) {
           <FlaskConical className="w-3.5 h-3.5 opacity-70" />
         </div>
         <div className="relative z-10 whitespace-nowrap pointer-events-none">
-          <span>AI Balance:</span>
-          <span className="ml-1.5 font-semibold">{balance ?? "…"}</span>
-          {displayTotal > 0 && (
-            <span className="ml-0.5 opacity-50 text-xs">/ {displayTotal}</span>
-          )}
+          <span className="font-semibold">{balance ?? "…"}</span>
+          <span className="ml-1 opacity-50 text-xs">Credits</span>
+
         </div>
       </div>
 

@@ -14,6 +14,7 @@ import {
   AccordionContent,
 } from '@/components/ui/accordion';
 import { ConicButton } from '@/components/ui/ConicButton';
+import { Button } from '@/components/ui/button';
 
 const PLAN_LABELS = { qtrly: 'Quarterly', yrly: 'Yearly' };
 
@@ -209,7 +210,7 @@ export default function UpgradeModal() {
           <motion.div
             key="upgrade-card"
             transformTemplate={centeredTransform}
-            className={`${styles.modal} ${sideBySide ? styles.modalFMRow : ''}`}
+            className={`${styles.modal} ${sideBySide ? styles.modalFMRow : ''} ${sideBySide && showFaq ? styles.modalFaqOpen : ''}`}
             initial={{ opacity: 0, y: 12, scale: 0.97, ...(sideBySide ? { width: 440 } : {}) }}
             animate={{ opacity: 1, y: 0, scale: 1, ...(cardWidth !== undefined ? { width: cardWidth } : {}) }}
             exit={{ opacity: 0, y: 6, scale: 0.97 }}
@@ -238,7 +239,7 @@ export default function UpgradeModal() {
             <div className={sideBySide ? styles.modalLeftPanel : styles.modalSinglePanel}>
               <div className={styles.modalHeader}>
                 <div>
-                  <div className={styles.modalIcon} />
+                  {!showFaq && <div className={styles.modalIcon} />}
                   <h2 className={styles.modalTitle}>
                     {upgradeModalUnhideProject
                       ? `Unhide ${upgradeModalUnhideProject.title || 'Project'}?`
@@ -299,28 +300,56 @@ export default function UpgradeModal() {
                 </div>
 
                 {/* CTA */}
-                <ConicButton
-                  onClick={openCheckout}
-                  disabled={checkoutLoading}
-                  className="w-full mb-4"
-                >
-                  <Zap size={13} />
-                  {getButtonText()}
-                </ConicButton>
+                {selectedPlan?.plan === 'yrly' ? (
+                  <ConicButton
+                    onClick={openCheckout}
+                    disabled={checkoutLoading}
+                    className="w-full mb-4"
+                  >
+                    <Zap size={13} />
+                    {getButtonText()}
+                  </ConicButton>
+                ) : (
+                  <Button
+                    onClick={openCheckout}
+                    disabled={checkoutLoading}
+                    className="w-full mb-4 h-12 text-sm font-bold bg-[hsl(7,100%,62%)] hover:bg-[hsl(7,100%,55%)] text-white border-none"
+                  >
+                    {getButtonText()}
+                  </Button>
+                )}
 
                 {/* Features */}
                 <div className={styles.featuresList}>
                   {[
-                    'Use your own custom domain',
-                    'Access all templates — now & forever',
-                    'Create unlimited projects (not just 2)',
-                    'Track views with built-in analytics',
+                    "Write unlimited case studies",
+                    "Custom domain",
+                    "All premium templates",
+                    "Use AI to find jobs",
+                    "Tailored resumes & cover letters",
+                    "AI-powered job insights",
+                    "Mock interviews",
+                    "AI case study analysis",
                   ].map(f => (
                     <div key={f} className={styles.featureItem}>
                       <div className={styles.featureIcon}>✓</div>
                       <span>{f}</span>
                     </div>
                   ))}
+                </div>
+
+                {/* FAQ toggle chip */}
+                <div className="flex mt-3">
+                  <button
+                    onClick={() => setShowFaq(s => !s)}
+                    className={`flex items-center gap-1.5 text-[11px] font-medium rounded-full px-2.5 py-[5px] border transition-all duration-200 ${showFaq
+                      ? 'border-[#9ca3af] bg-[#f3f4f6] text-[#374151]'
+                      : 'border-[#c4c9d4] bg-transparent text-[#6b7280] hover:text-[#374151] hover:border-[#9ca3af]'
+                      }`}
+                  >
+                    <HelpCircle className="w-3 h-3 flex-shrink-0" />
+                    Have more doubts? FAQ
+                  </button>
                 </div>
 
                 {/* Logo marquee */}
@@ -347,21 +376,6 @@ export default function UpgradeModal() {
                       ))}
                     </div>
                   </div>
-                </div>
-
-                {/* FAQ toggle chip */}
-                <div className="flex mt-3.5">
-                  <button
-                    onClick={() => setShowFaq(s => !s)}
-                    className={`flex items-center gap-1.5 text-[11px] font-medium rounded-full px-2.5 py-[5px] border transition-all duration-200 ${
-                      showFaq
-                        ? 'border-[#d1d5db] bg-[#f3f4f6] text-[#4b5563]'
-                        : 'border-[#e5e7eb] bg-transparent text-[#9ca3af] hover:text-[#6b7280] hover:border-[#d1d5db]'
-                    }`}
-                  >
-                    <HelpCircle className="w-3 h-3 flex-shrink-0" />
-                    Have more doubts? FAQ
-                  </button>
                 </div>
 
                 {/* Mobile: FAQ stacks inline below */}
@@ -419,11 +433,11 @@ export default function UpgradeModal() {
                     className={styles.modalRightPanel}
                   >
                     {/* Header pushed below the 80px ::before orange gradient */}
-                    <div className="px-5 pt-[88px] pb-4 border-b border-[#f3f4f6]">
+                    <div className="px-5 py-4 border-b border-[#f3f4f6]">
                       <h3 className="text-[16px] font-bold text-[#111827] tracking-tight">
                         FAQs
                       </h3>
-              
+
                     </div>
                     <div className="overflow-y-auto flex-1 px-5 py-2">
                       <Accordion type="single" collapsible className="w-full">

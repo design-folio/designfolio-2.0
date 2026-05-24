@@ -45,11 +45,15 @@ export default function Signup() {
     if (router.query.username) {
       setDomain(router.query.username);
     }
+    // Persist shared job context so it survives email-verify + quiz flow
+    if (router.query.job) {
+      sessionStorage.setItem('df_pending_shared_job', router.query.job);
+    }
     event(POSTHOG_EVENT_NAMES.SIGNUP_STARTED, {
       username: router.query.username,
-      source: 'claim-link',
+      source: router.query.job ? 'shared-job' : 'claim-link',
     });
-  }, [router.query.username]);
+  }, [router.query.username, router.query.job]);
 
   // Apply parsed resume to user profile silently (fire-and-forget)
   const applyParsedResume = async () => {

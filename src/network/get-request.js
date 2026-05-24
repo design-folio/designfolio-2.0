@@ -44,3 +44,7 @@ export const _getProPlanDetails = () =>
 export const _getPaymentDetails = () => axiosInstance.get("/user/getUserOrder");
 
 export const _getUserQuota = () => axiosInstance.get("/user/getUserQuota");
+
+// GET /user/public/:username — no auth, minimal public info for "shared by" badge
+export const _getPublicUserInfo = (username) =>
+  axiosInstance.get(`/user/public/${username}`);

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import Logo from "../../public/assets/svgs/logo.svg";
+
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
+import MemoDesignfolioLogoV2 from "./icons/DesignfolioLogoV2";
 
 export default function AuthHeader() {
   const [isVisible, setIsVisible] = useState(true);
@@ -41,7 +42,7 @@ export default function AuthHeader() {
       className={`flex bg-landing-bg-color justify-center fixed right-0 left-0 p-3 md:px-0 md:py-3 ${headerStyle}`}
     >
       <div onClick={handleNavigation} className="cursor-pointer">
-        <Logo className="text-logo-text-color cursor-pointer" />
+        <MemoDesignfolioLogoV2 className="text-logo-text-color cursor-pointer" />
       </div>
     </div>
   );

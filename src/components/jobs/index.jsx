@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
 import Cookies from "js-cookie";
+import { toast } from "react-toastify";
 import { TransitionScreen } from "./TransitionScreen";
 import { TypeRoom } from "./TypeRoom";
 import { ThinkingScreen } from "./ThinkingScreen";
 import { Dashboard } from "./Dashboard";
-import { _getJobsQuestions, _getJobsHistory } from "@/network/jobs";
+import { _getJobsQuestions, _getJobsHistory, _postJobsAddFromShare } from "@/network/jobs";
 
 /**
  * Jobs — root phase state machine
@@ -101,6 +102,32 @@ export function Jobs() {
 
     init();
   }, []);
+
+  // Claim a shared job that was stored in sessionStorage during signup
+  useEffect(() => {
+    if (phase !== "dashboard" || !profileId) return;
+    const pendingJobId = sessionStorage.getItem("df_pending_shared_job");
+    if (!pendingJobId) return;
+
+    _postJobsAddFromShare(pendingJobId)
+      .then(({ data }) => {
+        if (data?.job && !data?.alreadySaved) {
+          setJobs((prev) => {
+            if (prev.some((j) => j.id === data.job.id)) return prev;
+            return [...prev, data.job];
+          });
+          setInitialColumns((prev) => {
+            if (!prev) return prev;
+            const alreadyInSaved = prev.saved?.some((j) => j.id === data.job.id);
+            if (alreadyInSaved) return prev;
+            return { ...prev, saved: [data.job, ...(prev.saved || [])] };
+          });
+          toast.success("🎉 Your shared job was added to Saved!", { autoClose: 4000 });
+        }
+      })
+      .catch(() => {})
+      .finally(() => sessionStorage.removeItem("df_pending_shared_job"));
+  }, [phase, profileId]);
 
   const handleDone = (collectedAnswers) => {
     setAnswers(collectedAnswers);

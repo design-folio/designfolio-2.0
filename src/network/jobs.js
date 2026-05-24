@@ -81,4 +81,11 @@ export const _postJobsAddManual = (linkedinUrl, profileId) =>
 export const _postJobsAddManualEntry = (fields, profileId) =>
   axiosInstance.post('/jobs/add-manual-entry', { ...fields, profileId });
 
+// GET /jobs/public/:jobId — no auth, returns job data for shared page SSR
+export const _getPublicJob = (jobId) =>
+  axiosInstance.get(`/jobs/public/${jobId}`);
+
+// POST /jobs/add-from-share — add a shared job to the user's Saved column (idempotent)
+export const _postJobsAddFromShare = (jobId) =>
+  axiosInstance.post('/jobs/add-from-share', { jobId });
 

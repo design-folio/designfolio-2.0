@@ -3,8 +3,9 @@ import { useTheme } from "next-themes";
 import {
   MapPin, Briefcase, Monitor, Clock, Calendar, DollarSign,
   ChevronRight, FileText, PenLine, ExternalLink,
-  X, Loader2, Copy, Check, Clapperboard, Crosshair, Zap, Sparkles,
+  X, Loader2, Copy, Check, Clapperboard, Crosshair, Zap, Sparkles, Link2,
 } from "lucide-react";
+import { useGlobalContext } from "@/context/globalContext";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { CompanyLogo } from "./CompanyLogo";
 import { MatchBreakdown } from "./MatchBreakdown";
@@ -121,6 +122,7 @@ function ComingSoonBadge() {
 }
 
 export function JobDetailSheet({ job, open, onClose, profileId, pastReports = [], onViewReport, onCreditUsed, onStartMockInterview }) {
+  const { userDetails } = useGlobalContext();
   const lastJobRef = useRef(null);
   if (job) lastJobRef.current = job;
   const displayJob = job ?? lastJobRef.current;
@@ -135,6 +137,27 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
       const targetTop = target.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop - 12;
       container.scrollTo({ top: targetTop, behavior: "smooth" });
     }
+  };
+
+  const [copiedShare, setCopiedShare] = useState(false);
+
+  const handleShare = () => {
+    if (!displayJob) return;
+    const ref = userDetails?.username ? `?ref=${userDetails.username}` : "";
+    const url = `${window.location.origin}/jobs/share/${displayJob.id}${ref}`;
+    try {
+      navigator.clipboard.writeText(url);
+    } catch {
+      // fallback for older browsers
+      const el = document.createElement("textarea");
+      el.value = url;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand("copy");
+      document.body.removeChild(el);
+    }
+    setCopiedShare(true);
+    setTimeout(() => setCopiedShare(false), 2000);
   };
 
   const [resumeLoading, setResumeLoading] = useState(false);
@@ -242,13 +265,29 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
           <SheetTitle className="text-[#1A1A1A] dark:text-[#F0EDE7] text-base font-semibold m-0 truncate">
             {displayJob.role}
           </SheetTitle>
-          <button
-            onClick={onClose}
-            aria-label="Close"
-            className="flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-full bg-black/[0.06] dark:bg-white/[0.08] text-black/40 dark:text-white/40 hover:bg-black/[0.10] dark:hover:bg-white/[0.14] hover:text-black dark:hover:text-white transition-colors"
-          >
-            <X className="w-3.5 h-3.5" strokeWidth={2.5} />
-          </button>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <button
+              onClick={handleShare}
+              aria-label="Copy share link"
+              className={`flex items-center gap-1.5 px-3 h-7 rounded-full border text-xs font-medium transition-all duration-150 ${
+                copiedShare
+                  ? "bg-green-50 dark:bg-green-500/10 border-green-200 dark:border-green-500/30 text-green-600 dark:text-green-400"
+                  : "bg-black/[0.04] dark:bg-white/[0.06] border-black/[0.08] dark:border-white/[0.10] text-black/50 dark:text-white/50 hover:text-black dark:hover:text-white hover:bg-black/[0.08] dark:hover:bg-white/[0.10]"
+              }`}
+            >
+              {copiedShare
+                ? <><Check className="w-3 h-3" strokeWidth={2.5} />Copied!</>
+                : <><Link2 className="w-3 h-3" strokeWidth={2} />Share</>
+              }
+            </button>
+            <button
+              onClick={onClose}
+              aria-label="Close"
+              className="w-7 h-7 flex items-center justify-center rounded-full bg-black/[0.06] dark:bg-white/[0.08] text-black/40 dark:text-white/40 hover:bg-black/[0.10] dark:hover:bg-white/[0.14] hover:text-black dark:hover:text-white transition-colors"
+            >
+              <X className="w-3.5 h-3.5" strokeWidth={2.5} />
+            </button>
+          </div>
         </SheetHeader>
 
         {/* Scrollable body */}
@@ -468,7 +507,7 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
           {/* Description — old DB records are raw HTML; newer LinkedIn scrapes are markdown */}
           {displayJob.description && (
             <div className="px-5 py-5 border-b border-black/[0.06] dark:border-white/[0.06]">
-              <h3 className="text-sm font-semibold text-foreground/40 uppercase tracking-widest mb-3">About the role</h3>
+              <h3 className="text-sm font-semibold text-foreground opacity-70 uppercase tracking-widest mb-3">About the role</h3>
               {isHtmlDescription(displayJob.description) ? (
                 <div
                   className="job-description text-sm text-foreground/75"

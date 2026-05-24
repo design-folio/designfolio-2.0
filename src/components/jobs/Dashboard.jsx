@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 import { COL_ORDER } from "@/data/jobs";
+import { extractLinkedInJobId } from "@/lib/jobsUtils";
 import { _postJobsInteract, _postJobsRecommend, _postJobsMore, _postJobsInterviewReport, _getJobsRecommendations, _postJobsPipelineReorder } from "@/network/jobs";
 import { JobDetailSheet } from "./JobDetailSheet";
 import { MockInterviewDialog } from "./MockInterviewDialog";
@@ -418,10 +419,23 @@ export function Dashboard({
 
   const handleJobAdded = useCallback((job) => {
     seenJobIds.current.add(job.id);
-    setColumns((prev) => ({
-      ...prev,
-      saved: [{ ...job, match: job.match === undefined ? null : job.match }, ...(prev.saved || [])],
-    }));
+    const addedLinkedinId = extractLinkedInJobId(job.applyUrl);
+    setColumns((prev) => {
+      const filteredPicks = (prev.picks || []).filter((p) => {
+        if (p.id === job.id) return false;
+        if (job.applyUrl && p.applyUrl === job.applyUrl) return false;
+        if (addedLinkedinId) {
+          const pickLinkedinId = extractLinkedInJobId(p.applyUrl);
+          if (pickLinkedinId && pickLinkedinId === addedLinkedinId) return false;
+        }
+        return true;
+      });
+      return {
+        ...prev,
+        picks: filteredPicks,
+        saved: [{ ...job, match: job.match === undefined ? null : job.match }, ...(prev.saved || [])],
+      };
+    });
     setPhase("split");
   }, []);
 

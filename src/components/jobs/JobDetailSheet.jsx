@@ -173,6 +173,7 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
     setResumeResult(null);
     setLetterResult(null);
     setFitResult(null);
+    scrollRef.current?.scrollTo({ top: 0 });
   }, [job?.id]);
 
   if (!displayJob) return null;

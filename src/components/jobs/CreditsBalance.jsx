@@ -5,6 +5,7 @@ import { FlaskConical } from "lucide-react";
 import { _getUserQuota, createDodoCheckout } from "@/network/get-request";
 import { ConicButton } from "@/components/ui/ConicButton";
 import { CreditsShopModal } from "./CreditsShopModal";
+import { useGlobalContext } from "@/context/globalContext";
 
 /* ── Keyframes injected once (pulse-dot) ──────────────────────────────── */
 const KEYFRAMES = `
@@ -264,6 +265,9 @@ export function CreditsBalance({ refreshKey = 0 }) {
   const containerRef = useRef(null);
   const uid = useId().replace(/:/g, "");
 
+  const { userDetails, setShowUpgradeModal } = useGlobalContext();
+  const isPro = !!userDetails?.pro;
+
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
@@ -419,7 +423,14 @@ export function CreditsBalance({ refreshKey = 0 }) {
               {/* CTA */}
               <ConicButton
                 variant="mono"
-                onClick={() => { setOpen(false); setShopOpen(true); }}
+                onClick={() => {
+                  setOpen(false);
+                  if (isPro) {
+                    setShopOpen(true);
+                  } else {
+                    setShowUpgradeModal(true);
+                  }
+                }}
                 disabled={buying}
                 isDark={isDark}
               >

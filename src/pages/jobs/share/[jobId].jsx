@@ -101,7 +101,7 @@ export default function SharedJobPage({ job, sharer, sharerUsername }) {
       </Head>
 
       <div className="min-h-screen bg-background flex flex-col">
-        <ShareNav authState={authState} />
+        <ShareNav authState={authState} jobId={job.id} />
 
         {/* pt-[70px] clears the fixed nav */}
         <main className="flex-1 max-w-5xl mx-auto w-full px-5 pt-[70px] pb-16">

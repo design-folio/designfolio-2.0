@@ -61,11 +61,14 @@ export default function Login() {
         const { token, emailVerification } = res.data;
 
         setToken(token);
-        const redirect =
-          router.query.redirect && typeof router.query.redirect === 'string'
+        const jobId = router.query.job;
+        const redirect = jobId
+          ? `/jobs/share/${jobId}`
+          : router.query.redirect && typeof router.query.redirect === 'string'
             ? router.query.redirect
             : '/builder';
-        router.push(emailVerification ? redirect : '/email-verify');
+        const emailVerifyUrl = `/email-verify${jobId ? `?job=${jobId}` : ''}`;
+        router.push(emailVerification ? redirect : emailVerifyUrl);
 
         identify(userData.email, {
           email: userData.email,
@@ -98,13 +101,14 @@ export default function Login() {
       const res = await _loginWithEmail(data);
       const { token, emailVerification } = res.data;
       setToken(token);
-      const redirect =
-        router.query.redirect && typeof router.query.redirect === 'string'
+      const jobId = router.query.job;
+      const redirect = jobId
+        ? `/jobs/share/${jobId}`
+        : router.query.redirect && typeof router.query.redirect === 'string'
           ? router.query.redirect
           : '/builder';
-      router.push(
-        emailVerification ? redirect : `/email-verify?email=${values.email}`
-      );
+      const emailVerifyUrl = `/email-verify?email=${values.email}${jobId ? `&job=${jobId}` : ''}`;
+      router.push(emailVerification ? redirect : emailVerifyUrl);
 
       identify(data.email, {
         email: data.email,

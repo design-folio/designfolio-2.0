@@ -99,7 +99,9 @@ export default function Signup() {
         email: signupData.email,
         username: signupData.username,
       });
-      router.push(`/email-verify?email=${values.email}`);
+      const pendingJobId = router.query.job || sessionStorage.getItem('df_pending_shared_job');
+      const jobSuffix = pendingJobId ? `&job=${pendingJobId}` : '';
+      router.push(`/email-verify?email=${values.email}${jobSuffix}`);
     } catch (error) {
       event(POSTHOG_EVENT_NAMES.SIGNUP_FAILED, {
         method: 'email',
@@ -151,7 +153,13 @@ export default function Signup() {
           email: data.email,
           username: data.username,
         });
-        router.push('/builder');
+        const pendingJobId = router.query.job || sessionStorage.getItem('df_pending_shared_job');
+        if (pendingJobId) {
+          sessionStorage.removeItem('df_pending_shared_job');
+          router.push(`/jobs/share/${pendingJobId}`);
+        } else {
+          router.push('/builder');
+        }
       } catch (error) {
         event(POSTHOG_EVENT_NAMES.SIGNUP_FAILED, {
           method: 'google',

@@ -5,6 +5,7 @@ import MemoDFLogoV2 from "@/components/icons/DFLogoV2";
 import { AvatarDropdown } from "@/components/loggedInHeader/avatar-dropdown";
 import { EASE_OUT } from "./motion-constants";
 import { Button } from "@/components/ui/button";
+import MemoDesignfolioLogoV2 from "@/components/icons/DesignfolioLogoV2";
 
 export function ShareNav({ authState, jobId }) {
   const jobParam = jobId ? `?job=${jobId}` : "";
@@ -17,7 +18,7 @@ export function ShareNav({ authState, jobId }) {
     >
       <div className="max-w-5xl mx-auto px-5 h-full flex items-center justify-between">
         <Link href="/" className="flex-shrink-0 flex items-center">
-          <MemoDFLogoV2 />
+          <MemoDesignfolioLogoV2 />
         </Link>
 
         <AnimatePresence mode="wait">
@@ -69,7 +70,7 @@ export function ShareNav({ authState, jobId }) {
               <Button asChild size="sm" className="hidden sm:flex items-center rounded-full">
                 <Link href="/jobs">
                   <Briefcase className="w-4 h-4" />
-                  My Board
+                  My Jobs
                 </Link>
               </Button>
               <AvatarDropdown />

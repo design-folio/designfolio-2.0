@@ -64,10 +64,18 @@ const linkedinValidation = Yup.object({
 const manualValidation = Yup.object({
   title: Yup.string().trim().min(2, "Job title is required").required("Job title is required"),
   company: Yup.string().trim().min(2, "Company name is required").required("Company name is required"),
-  applyUrl: Yup.string().url("Enter a valid URL (e.g. https://…)").required("Apply URL is required"),
+  applyUrl: Yup.string().trim().required("Apply URL is required").test(
+    "is-url",
+    "Enter a valid URL (e.g. company.com/jobs/…)",
+    (val = "") => {
+      if (!val) return false;
+      const full = /^https?:\/\//i.test(val) ? val : `https://${val}`;
+      try { new URL(full); return true; } catch { return false; }
+    }
+  ),
   location: Yup.string().trim(),
   workMode: Yup.string().oneOf(["", "remote", "hybrid", "onsite"]),
-  description: Yup.string().trim(),
+  description: Yup.string().trim().min(10, "Job description is required").required("Job description is required"),
 });
 
 export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
@@ -131,7 +139,7 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
         {
           title: values.title.trim(),
           company: values.company.trim(),
-          applyUrl: values.applyUrl.trim(),
+          applyUrl: /^https?:\/\//i.test(values.applyUrl.trim()) ? values.applyUrl.trim() : `https://${values.applyUrl.trim()}`,
           description: values.description.trim(),
           location: values.location.trim(),
           ...(values.workMode ? { workMode: values.workMode } : {}),
@@ -255,22 +263,28 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                             </p>
                             <div className="flex flex-col gap-1">
                               <div className="relative">
-                                <Link2 className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/30 pointer-events-none" />
                                 <Field name="url">
-                                  {({ field }) => (
+                                  {({ field, form }) => (
                                     <Input
                                       {...field}
                                       ref={urlInputRef}
                                       type="url"
-                                      placeholder="https://linkedin.com/jobs/view/…"
+                                      placeholder="linkedin.com/jobs/view/…"
                                       className={cn(
-                                        "pl-10",
+                                        "peer ps-[4.25rem]",
                                         errors.url && touched.url && "border-destructive focus-visible:ring-destructive"
                                       )}
-                                      onChange={(e) => { field.onChange(e); setError(null); }}
+                                      onChange={(e) => {
+                                        const stripped = e.target.value.replace(/^https?:\/\//i, "");
+                                        form.setFieldValue("url", stripped);
+                                        setError(null);
+                                      }}
                                     />
                                   )}
                                 </Field>
+                                <span className="pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 text-sm text-muted-foreground peer-disabled:opacity-50 select-none">
+                                  https://
+                                </span>
                               </div>
                               <ErrorMessage name="url" component="p" className="text-[11px] text-red-500 dark:text-red-400" />
                             </div>
@@ -397,37 +411,49 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                                 Apply URL <span className="text-destructive">*</span>
                               </Label>
                               <div className="relative">
-                                <Link2 className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/30 pointer-events-none" />
                                 <Field name="applyUrl">
-                                  {({ field }) => (
+                                  {({ field, form }) => (
                                     <Input
                                       {...field}
                                       id="applyUrl"
-                                      placeholder="https://…"
+                                      placeholder="company.com/jobs/…"
                                       className={cn(
-                                        "pl-10",
+                                        "peer ps-[4.25rem]",
                                         errors.applyUrl && touched.applyUrl && "border-destructive focus-visible:ring-destructive"
                                       )}
+                                      onChange={(e) => {
+                                        const stripped = e.target.value.replace(/^https?:\/\//i, "");
+                                        form.setFieldValue("applyUrl", stripped);
+                                      }}
                                     />
                                   )}
                                 </Field>
+                                <span className="pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 text-sm text-muted-foreground peer-disabled:opacity-50 select-none">
+                                  https://
+                                </span>
                               </div>
                               <ErrorMessage name="applyUrl" component="p" className="text-[11px] text-red-500 dark:text-red-400 mt-1" />
                             </div>
 
                             <div>
-                              <Label className={labelCls} htmlFor="description">Job description</Label>
+                              <Label className={labelCls} htmlFor="description">
+                                Job description <span className="text-destructive">*</span>
+                              </Label>
                               <Field name="description">
-                                {({ field }) => (
+                                {({ field, form }) => (
                                   <Textarea
                                     {...field}
                                     id="description"
                                     rows={4}
                                     placeholder="Paste the job description here for AI scoring and interview prep…"
-                                    className="resize-none"
+                                    className={cn(
+                                      "resize-none",
+                                      form.errors.description && form.touched.description && "border-destructive focus-visible:ring-destructive"
+                                    )}
                                   />
                                 )}
                               </Field>
+                              <ErrorMessage name="description" component="p" className="text-[11px] text-red-500 dark:text-red-400 mt-1" />
                             </div>
 
                             <AnimatePresence>

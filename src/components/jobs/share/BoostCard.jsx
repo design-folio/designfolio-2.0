@@ -28,7 +28,7 @@ function YourScoreGauge({ isDark, score = null }) {
 
   // When score is known: fill arc to score%, dot moves to that position
   const fillRatio = score !== null ? score / 100 : 1;
-  const dotAngle  = score !== null ? GA0 + fillRatio * 240 : 0; // 0° = midpoint teaser for "?"
+  const dotAngle = score !== null ? GA0 + fillRatio * 240 : 0; // 0° = midpoint teaser for "?"
   const dot = gpt(dotAngle);
 
   return (
@@ -203,9 +203,67 @@ export function BoostCard({ authState, isDark, isSaving, matchScore, onSave, onF
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 8 }}
-          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          className={`${CARD} p-5 space-y-3`}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+          className={`${CARD} p-5`}
         >
+          {/* Header */}
+          <div className="flex items-start justify-between gap-2 mb-5">
+            <h3 className="text-[14px] font-semibold text-foreground leading-snug">
+              Save this job to reveal your match score.
+            </h3>
+          </div>
+
+          {/* Gauges */}
+          <div className="flex items-center justify-between gap-1 mb-4 px-0.5">
+            <div className="flex flex-col items-center gap-1.5 flex-1">
+              <YourScoreGauge isDark={isDark} />
+              <span className="text-[11px] text-foreground/50 font-medium tracking-tight">Your Score</span>
+            </div>
+            <div className="flex items-center gap-[2px] opacity-20 mb-6 flex-shrink-0">
+              {[0, 1, 2].map((i) => (
+                <svg key={i} width="8" height="12" viewBox="0 0 8 12" fill="none">
+                  <path d="M1 1l5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+                    className="text-foreground" />
+                </svg>
+              ))}
+            </div>
+            <div className="flex flex-col items-center gap-1.5 flex-1">
+              <TopApplicantsGauge isDark={isDark} />
+              <span className="text-[11px] text-foreground/50 font-medium tracking-tight">Top Applicants</span>
+            </div>
+          </div>
+
+          <div className="h-px bg-black/[0.06] dark:bg-white/[0.06] mb-4" />
+
+          {/* Blurred skills */}
+          <div className="mb-4">
+            <div className="flex items-center gap-1.5 mb-2.5">
+              <Lock className="w-3 h-3 text-foreground/35" />
+              <span className="text-[11px] font-semibold text-foreground/50 uppercase tracking-widest">
+                Must-Have Skills
+              </span>
+            </div>
+            <div className="relative">
+              <div
+                className="flex flex-wrap gap-1.5 select-none pointer-events-none"
+                style={{ filter: "blur(4px)" }}
+              >
+                {BLURRED_SKILLS.map((s) => (
+                  <span key={s} className="inline-flex items-center font-jetbrains text-[10px] font-semibold uppercase tracking-wide text-[#3D3630] dark:text-white/55 bg-[#EAE5DF] dark:bg-[#1F1C1C] rounded-md px-2 py-1 whitespace-nowrap">
+                    {s}
+                  </span>
+                ))}
+              </div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="flex items-center gap-1.5 bg-white/70 dark:bg-[#28231E]/80 backdrop-blur-[2px] rounded-lg px-3 py-1.5 border border-black/[0.06] dark:border-white/[0.07] text-[11px] font-semibold text-foreground/55">
+                  <Lock className="w-3 h-3 text-foreground/50" />
+                  Save to unlock
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* CTA */}
           <Button
             variant="default"
             className="w-full transition-all duration-[160ms] active:scale-[0.97]"
@@ -213,10 +271,10 @@ export function BoostCard({ authState, isDark, isSaving, matchScore, onSave, onF
             disabled={isSaving}
           >
             <BookmarkPlus className="w-4 h-4" />
-            {isSaving ? "Saving…" : "Save to my board"}
+            {isSaving ? "Saving…" : "Save Job to Board"}
           </Button>
-          <p className="text-center text-[11px] text-foreground/50">
-            Adds to your <span className="font-medium text-foreground">Saved</span> column · Run AI analysis from your board
+          <p className="text-center text-[11px] text-foreground/45 mt-3 leading-relaxed">
+            Adds to <span className="font-medium text-foreground/60">My Jobs</span> · Reveals your match score
           </p>
         </motion.div>
       )}
@@ -255,7 +313,7 @@ export function BoostCard({ authState, isDark, isSaving, matchScore, onSave, onF
             className="w-full transition-all duration-[160ms] active:scale-[0.97]"
           >
             <Link href="/jobs">
-              Go to my board
+              Go to My Jobs
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </Button>

@@ -110,7 +110,12 @@ export default function SharedJobPage({ job, sharer, sharerUsername }) {
 
               {/* ── Left: job content ── */}
               <div className="min-w-0 space-y-4">
-                <JobHeroCard job={job} badge={badge} />
+                <JobHeroCard
+                  job={job}
+                  badge={badge}
+                  authState={authState}
+                  onApplyClick={() => setShowScoreModal(true)}
+                />
 
                 {/* Mobile BoostCard — shows between hero and description */}
                 <div className="lg:hidden">

@@ -20,7 +20,7 @@ function Pill({ icon: Icon, children }) {
   );
 }
 
-export function JobHeroCard({ job, badge }) {
+export function JobHeroCard({ job, badge, authState, onApplyClick }) {
   const salaryLabel = formatSalary(job.salary);
   const postedLabel = job.postedAt ? toRelativeTime(job.postedAt) : null;
 
@@ -67,7 +67,16 @@ export function JobHeroCard({ job, badge }) {
       </div>
 
       {/* Apply button */}
-      <button className="flex items-center gap-2 h-10 px-5 rounded-full bg-[#1A1A1A] dark:bg-white text-white dark:text-black text-sm font-medium hover:opacity-80 transition-opacity active:scale-[0.97]" onClick={() => window.open(job.applyUrl, "_blank")}>
+      <button
+        className="flex items-center gap-2 h-10 px-5 rounded-full bg-[#1A1A1A] dark:bg-white text-white dark:text-black text-sm font-medium hover:opacity-80 transition-opacity active:scale-[0.97]"
+        onClick={() => {
+          if (authState === "new") {
+            onApplyClick?.();
+          } else {
+            window.open(job.applyUrl, "_blank");
+          }
+        }}
+      >
         Apply Now
         <ExternalLink className="w-3.5 h-3.5" />
       </button>

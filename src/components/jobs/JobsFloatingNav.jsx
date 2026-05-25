@@ -9,9 +9,6 @@ import {
 } from "@/components/ui/tooltip";
 import MemoDFLogoV2 from "../icons/DFLogoV2";
 
-//TODO: TO LAUNCH JOBS FOR ALL USERS — remove this import and the isBetaUser guard below
-import { isBetaUser } from "@/lib/betaEnv";
-import { useGlobalContext } from "@/context/globalContext";
 
 const ALL_NAV_ITEMS = [
   { icon: LayoutTemplate, label: "Portfolio Builder", href: "/builder" },
@@ -19,13 +16,8 @@ const ALL_NAV_ITEMS = [
 ];
 
 
-export function JobsFloatingNav({ betaUser }) {
+export function JobsFloatingNav() {
   const router = useRouter();
-  const { userDetails } = useGlobalContext();
-
-  //TODO: BETA GATE — remove this block when launching Jobs for all users
-  const canAccess = betaUser ?? isBetaUser(userDetails?.email);
-  if (!canAccess) return null;
 
   return (
     <TooltipProvider delayDuration={200}>

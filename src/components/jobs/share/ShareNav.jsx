@@ -6,7 +6,8 @@ import { AvatarDropdown } from "@/components/loggedInHeader/avatar-dropdown";
 import { EASE_OUT } from "./motion-constants";
 import { Button } from "@/components/ui/button";
 
-export function ShareNav({ authState }) {
+export function ShareNav({ authState, jobId }) {
+  const jobParam = jobId ? `?job=${jobId}` : "";
   return (
     <motion.header
       initial={{ y: -10, opacity: 0 }}
@@ -41,13 +42,13 @@ export function ShareNav({ authState }) {
               className="flex items-center gap-2"
             >
               <Link
-                href="/login"
+                href={`/login${jobParam}`}
                 className="hidden sm:flex items-center h-8 px-4 rounded-full border border-black/[0.10] dark:border-white/[0.12] text-[13px] font-medium text-foreground/65 hover:text-foreground hover:border-black/[0.20] dark:hover:border-white/[0.25] transition-colors"
               >
                 Sign in
               </Link>
               <Link
-                href="/claim-link"
+                href={`/claim-link${jobParam}`}
                 className="flex items-center gap-1.5 h-8 px-4 rounded-full bg-[#1A1A1A] dark:bg-white text-white dark:text-black text-[13px] font-medium hover:opacity-80 transition-opacity"
               >
                 <Sparkles className="w-3.5 h-3.5" />

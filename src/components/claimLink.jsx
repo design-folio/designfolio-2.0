@@ -20,10 +20,9 @@ export default function ClaimLink() {
   const [validationError, setValidationError] = useState("");
 
   const handleClaim = () => {
-    router.push({
-      pathname: "/signup",
-      query: { username: domain.toLowerCase() },
-    });
+    const query = { username: domain.toLowerCase() };
+    if (router.query.job) query.job = router.query.job;
+    router.push({ pathname: "/signup", query });
   };
 
   const handleDomainSubmit = (e) => {
@@ -203,7 +202,7 @@ export default function ClaimLink() {
           <p className="text-center text-sm text-foreground/70 mt-6">
             Already have an account?{" "}
             <Link
-              href="/login"
+              href={router.query.job ? `/login?job=${router.query.job}` : "/login"}
               className="hover:underline font-medium cursor-pointer"
               style={{ color: '#FF553E' }}
               data-testid="link-login"

@@ -9,6 +9,8 @@ import { JobsFloatingNav } from "@/components/jobs/JobsFloatingNav";
 //   4. In JobsFloatingNav.jsx — remove the isBetaUser guard
 // ─────────────────────────────────────────────────────────────────────────────
 import { isBetaUser } from "@/lib/betaEnv";
+import { useGlobalContext } from "@/context/globalContext";
+import { useEffect } from "react";
 
 // Decodes email from a JWT without verifying the signature (safe for UI gating).
 function getEmailFromJwt(token) {
@@ -20,6 +22,16 @@ function getEmailFromJwt(token) {
 }
 
 export default function JobsPage({ betaUser }) {
+  const { setIsUserDetailsFromCache, userDetailsIsState } = useGlobalContext();
+
+  useEffect(() => {
+    if (userDetailsIsState) {
+      setIsUserDetailsFromCache(false);
+    } else {
+      setIsUserDetailsFromCache(true);
+    }
+  }, []);
+
   return (
     <>
       <JobsFloatingNav betaUser={betaUser} />

@@ -354,6 +354,53 @@ function JobsPreview({ parsed }) {
   );
 }
 
+// ── Right preview panel — defined outside component to avoid remount on every keystroke ──
+function PreviewContent({ tab, onTabChange, parsed }) {
+  return (
+    <div className="flex flex-col flex-1 h-full overflow-hidden relative bg-background">
+      {/* Top fade */}
+      <div className="absolute top-0 left-0 right-0 z-20 pointer-events-none h-20 bg-gradient-to-b from-background to-transparent" />
+
+      {/* Floating tabs */}
+      <div className="absolute top-4 left-0 right-0 z-30 flex justify-center pointer-events-auto">
+        <Tabs tabs={["My Portfolio", "My Jobs"]} active={tab} onChange={onTabChange} />
+      </div>
+
+      {/* Content */}
+      <AnimatePresence mode="wait">
+        {tab === "My Portfolio" ? (
+          <motion.div
+            key="portfolio"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            className="flex-1 overflow-y-auto pt-20 pb-8 px-6"
+            style={{ scrollbarWidth: "none" }}
+          >
+            <CanvasPreview parsed={parsed} />
+          </motion.div>
+        ) : (
+          <motion.div
+            key="jobs"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            className="flex-1 overflow-y-auto pt-20 pb-8 px-6"
+            style={{ scrollbarWidth: "none" }}
+          >
+            <JobsPreview parsed={parsed} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Bottom fade */}
+      <div className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none bg-gradient-to-t from-background to-transparent" />
+    </div>
+  );
+}
+
 // ── Field wrapper ─────────────────────────────────────────────────────────────
 function Field({ label, children }) {
   return (
@@ -414,6 +461,15 @@ export default function ResumeSignup() {
         .replace(/\s+/g, "-")
         .replace(/[^a-z0-9-]/g, "");
       if (slug) { setDomain(slug); debouncedCheck(slug); }
+      const jobId = router.query.job || sessionStorage.getItem("df_pending_job_id") || "";
+      event(POSTHOG_EVENT_NAMES.RESUME_SIGNUP_VIEWED, {
+        signup_flow: "job_share_resume",
+        job_id: jobId || null,
+        resume_has_name: !!data.name,
+        resume_has_email: !!data.email,
+        resume_has_skills: Array.isArray(data.skills) && data.skills.length > 0,
+        resume_has_experience: Array.isArray(data.experience) && data.experience.length > 0,
+      });
     } catch {
       router.replace("/claim-link");
     }
@@ -464,6 +520,8 @@ export default function ResumeSignup() {
 
   const canSubmit = name.trim() && domain.length >= 3 && domainAvail && email.trim() && password.length >= 8;
 
+  const pendingJobId = router.query.job || sessionStorage.getItem("df_pending_job_id") || "";
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!canSubmit) return;
@@ -480,8 +538,18 @@ export default function ResumeSignup() {
       setToken(data.token);
       await applyResume();
       identify(email, { email, username: domain, firstName: name.split(" ")[0] });
-      event(POSTHOG_EVENT_NAMES.SIGNUP_SUCCESS, { method: "email", email, username: domain });
-      router.push(`/email-verify?email=${encodeURIComponent(email)}`);
+      event(POSTHOG_EVENT_NAMES.SIGNUP_SUCCESS, {
+        method: "email",
+        email,
+        username: domain,
+        signup_flow: "job_share_resume",
+        job_id: pendingJobId || null,
+        has_resume: true,
+      });
+      const verifyUrl = pendingJobId
+        ? `/email-verify?email=${encodeURIComponent(email)}&job=${pendingJobId}`
+        : `/email-verify?email=${encodeURIComponent(email)}`;
+      router.push(verifyUrl);
     } catch {
       setSubmitting(false);
     }
@@ -505,9 +573,16 @@ export default function ResumeSignup() {
         });
         setToken(data.token);
         await applyResume();
-        identify(user.email, { email: user.email });
-        event(POSTHOG_EVENT_NAMES.SIGNUP_SUCCESS, { method: "google" });
-        router.push("/builder");
+        identify(user.email, { email: user.email, username: domain || user.given_name?.toLowerCase().replace(/\s+/g, "-") || "user" });
+        event(POSTHOG_EVENT_NAMES.SIGNUP_SUCCESS, {
+          method: "google",
+          email: user.email,
+          username: domain || user.given_name?.toLowerCase().replace(/\s+/g, "-") || "user",
+          signup_flow: "job_share_resume",
+          job_id: pendingJobId || null,
+          has_resume: true,
+        });
+        router.push(pendingJobId ? `/jobs/share/${pendingJobId}` : "/builder");
       } catch {
         setGoogleLoading(false);
       }
@@ -516,51 +591,6 @@ export default function ResumeSignup() {
   });
 
   if (!mounted || !parsed) return null;
-
-  // Right panel — shared between desktop and mobile sheet
-  const PreviewContent = ({ tab, onTabChange }) => (
-    <div className="flex flex-col flex-1 h-full overflow-hidden relative bg-background">
-      {/* Top fade */}
-      <div className="absolute top-0 left-0 right-0 z-20 pointer-events-none h-20 bg-gradient-to-b from-background to-transparent" />
-
-      {/* Floating tabs */}
-      <div className="absolute top-4 left-0 right-0 z-30 flex justify-center pointer-events-auto">
-        <Tabs tabs={["My Portfolio", "My Jobs"]} active={tab} onChange={onTabChange} />
-      </div>
-
-      {/* Content */}
-      <AnimatePresence mode="wait">
-        {tab === "My Portfolio" ? (
-          <motion.div
-            key="portfolio"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.18 }}
-            className="flex-1 overflow-y-auto pt-20 pb-8 px-6"
-            style={{ scrollbarWidth: "none" }}
-          >
-            <CanvasPreview parsed={parsed} />
-          </motion.div>
-        ) : (
-          <motion.div
-            key="jobs"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.18 }}
-            className="flex-1 overflow-y-auto pt-20 pb-8 px-6"
-            style={{ scrollbarWidth: "none" }}
-          >
-            <JobsPreview parsed={parsed} />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Bottom fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none bg-gradient-to-t from-background to-transparent" />
-    </div>
-  );
 
   return (
     <>
@@ -787,7 +817,7 @@ export default function ResumeSignup() {
           transition={{ duration: 0.6, delay: 0.15 }}
           className="hidden md:flex flex-col flex-1 h-full overflow-hidden"
         >
-          <PreviewContent tab={activeTab} onTabChange={setActiveTab} />
+          <PreviewContent tab={activeTab} onTabChange={setActiveTab} parsed={parsed} />
         </motion.div>
 
         {/* ── Mobile preview bottom sheet ─────────────── */}

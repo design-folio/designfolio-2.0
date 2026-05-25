@@ -89,3 +89,11 @@ export const _getPublicJob = (jobId) =>
 export const _postJobsAddFromShare = (jobId) =>
   axiosInstance.post('/jobs/add-from-share', { jobId });
 
+// GET /jobs/check-saved — fast pipeline membership check (single query, no job docs)
+export const _getJobsCheckSaved = (jobId) =>
+  axiosInstance.get('/jobs/check-saved', { params: { jobId } });
+
+// GET /jobs/job-score — poll for a job's match score after async Lambda scoring
+export const _getJobsJobScore = (jobId) =>
+  axiosInstance.get('/jobs/job-score', { params: { jobId } });
+

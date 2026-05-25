@@ -34,7 +34,7 @@ export default function JobsPage({ betaUser }) {
 
   return (
     <>
-      <JobsFloatingNav betaUser={betaUser} />
+      <JobsFloatingNav />
       <Jobs />
     </>
   );

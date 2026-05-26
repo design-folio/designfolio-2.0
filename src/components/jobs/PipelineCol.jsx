@@ -15,6 +15,7 @@ export function PipelineCol({
   onDismiss,
   onMockInterview,
   onAskScout,
+  onMoveTo,
   onDecide,
   colIndex = 0,
   onExhausted,      // undefined = exhausted (hide button); function = show "Get More" button
@@ -66,6 +67,8 @@ export function PipelineCol({
                 onDismiss={onDismiss ? () => onDismiss(job.id) : undefined}
                 onMockInterview={!isPicks ? () => onMockInterview(job.id) : undefined}
                 onAskScout={() => onAskScout(job.id)}
+                onMoveTo={!isPicks && onMoveTo ? (targetColId) => onMoveTo(job.id, targetColId) : undefined}
+                currentColId={colId}
                 joyrideActive={isPicks && joyrideActive}
                 joyrideFirst={isPicks && joyrideActive && idx === 0}
               />

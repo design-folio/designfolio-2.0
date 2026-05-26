@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Kanban, KanbanBoard, KanbanOverlay } from "@/components/ui/kanban";
 import { PipelineCol } from "./PipelineCol";
@@ -40,6 +40,20 @@ export function DashboardColumns({
   }, [phase, isMobile]);
 
   const findJob = (id) => Object.values(columns).flat().find((j) => j.id === id);
+
+  const handleMoveJob = useCallback((jobId, targetColId) => {
+    const sourceColId = Object.keys(columns).find((col) =>
+      (columns[col] ?? []).some((j) => j.id === jobId)
+    );
+    if (!sourceColId || sourceColId === targetColId) return;
+    const job = columns[sourceColId].find((j) => j.id === jobId);
+    onColumnsChange({
+      ...columns,
+      [sourceColId]: columns[sourceColId].filter((j) => j.id !== jobId),
+      [targetColId]: [job, ...(columns[targetColId] ?? [])],
+    });
+    setActiveTab(targetColId);
+  }, [columns, onColumnsChange]);
 
   // ── Mobile tab-based kanban ───────────────────────────────────────────────
   const mobileTabs = [
@@ -111,6 +125,7 @@ export function DashboardColumns({
               onDismiss={onDismiss}
               onMockInterview={onMockInterview}
               onAskScout={onAskScout}
+              onMoveTo={handleMoveJob}
               onExhausted={activeTabData.id === "picks" && !rescanExhausted ? onFetchMore : undefined}
               isRescanning={isRescanning && activeTabData.id === "picks"}
               isListPhase={phase === "list"}

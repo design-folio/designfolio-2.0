@@ -81,7 +81,7 @@ export default function VerifyEmail() {
                 if (token) setToken(token);
                 userDetailsRefecth();
                 const jobId = router.query.job;
-                router.replace(jobId ? `/jobs/share/${jobId}` : "/builder");
+                router.replace(jobId ? "/jobs" : "/builder");
                 toast.success("Email verified successfully");
             })
             .finally(() => {

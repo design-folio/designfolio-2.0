@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   MapPin, Briefcase, Monitor, Clock, DollarSign, Calendar, Check, BookmarkPlus,
@@ -54,6 +54,19 @@ export function SharedJobPromptDialog({ jobId, onClose, onSaved }) {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [alreadySaved, setAlreadySaved] = useState(false);
+  // Local close flag — lets the dialog dismiss itself without relying on router.replace
+  const [forceClosed, setForceClosed] = useState(false);
+  const savedJobRef = useRef(null);
+  const resolvedRef = useRef(false);
+
+  // Reset local state whenever a new jobId opens the dialog
+  useEffect(() => {
+    if (jobId) {
+      setForceClosed(false);
+      resolvedRef.current = false;
+      savedJobRef.current = null;
+    }
+  }, [jobId]);
 
   useEffect(() => {
     if (!jobId) return;
@@ -72,15 +85,22 @@ export function SharedJobPromptDialog({ jobId, onClose, onSaved }) {
       .catch(() => setFetchError(true));
   }, [jobId]);
 
+  const resolve = (jobData) => {
+    if (resolvedRef.current) return;
+    resolvedRef.current = true;
+    onSaved?.(jobData);
+    setForceClosed(true);
+    onClose();
+  };
+
   const handleSave = async () => {
     setSaving(true);
     try {
       const { data } = await _postJobsAddFromShare(jobId);
+      const jobData = data?.job ?? null;
+      savedJobRef.current = jobData;
       setSaved(true);
-      setTimeout(() => {
-        onSaved?.(data?.job ?? null);
-        onClose();
-      }, 700);
+      setTimeout(() => resolve(jobData), 700);
     } catch {
       setSaving(false);
     }
@@ -90,7 +110,7 @@ export function SharedJobPromptDialog({ jobId, onClose, onSaved }) {
   const postedLabel = job?.postedAt ? toRelativeTime(job.postedAt) : null;
 
   return (
-    <Dialog open={!!jobId} onOpenChange={(open) => !open && !saving && onClose()}>
+    <Dialog open={!!jobId && !forceClosed} onOpenChange={(open) => !open && !saving && onClose()}>
       <DialogContent
         aria-describedby={undefined}
         overlayClassName="fixed inset-0 z-[300] bg-black/40 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
@@ -106,7 +126,8 @@ export function SharedJobPromptDialog({ jobId, onClose, onSaved }) {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.22, ease: EASE }}
-              className="flex flex-col items-center gap-3 px-6 py-10"
+              className="flex flex-col items-center gap-3 px-6 py-10 cursor-pointer"
+              onClick={() => resolve(savedJobRef.current)}
             >
               <motion.div
                 initial={{ scale: 0 }}
@@ -218,7 +239,7 @@ export function SharedJobPromptDialog({ jobId, onClose, onSaved }) {
                   <Button
                     variant="default"
                     className="w-full transition-all duration-[160ms] active:scale-[0.97]"
-                    onClick={onClose}
+                    onClick={() => { onSaved?.(null); setForceClosed(true); onClose(); }}
                   >
                     <Check className="w-4 h-4" />
                     View on Board

@@ -126,11 +126,10 @@ export function ScoreModal({ job, isDark, onClose }) {
                 <div className="flex flex-col gap-4">
                   {/* Dropzone */}
                   <div
-                    className={`group/dropzone w-full cursor-pointer flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed px-6 py-10 transition-all duration-200 ${
-                      isDragging
+                    className={`group/dropzone w-full cursor-pointer flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed px-6 py-10 transition-all duration-200 ${isDragging
                         ? "border-[#FF553E] bg-[#FF553E]/5"
                         : "border-[#1D1B1A]/20 dark:border-white/20 bg-[#1D1B1A]/[0.025] dark:bg-white/[0.04] hover:border-[#1D1B1A]/40 dark:hover:border-white/35 hover:bg-[#1D1B1A]/[0.04] dark:hover:bg-white/[0.06]"
-                    }`}
+                      }`}
                     onClick={() => fileInputRef.current?.click()}
                     onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
                     onDragLeave={() => setIsDragging(false)}
@@ -174,6 +173,15 @@ export function ScoreModal({ job, isDark, onClose }) {
                       </span>
                     ))}
                   </div>
+                  <p className="text-center text-[13px] text-[#1D1B1A]/45 dark:text-foreground dark:[opacity:0.45]">
+                    Already have an account?{" "}
+                    <button
+                      onClick={() => router.push("/login")}
+                      className="font-semibold text-[#1D1B1A] dark:text-foreground underline underline-offset-2 hover:text-[#FF553E] dark:hover:text-[#FF553E] transition-colors duration-150"
+                    >
+                      Login
+                    </button>
+                  </p>
                 </div>
               </motion.div>
             )}

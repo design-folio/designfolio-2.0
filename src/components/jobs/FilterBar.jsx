@@ -4,6 +4,7 @@ import { Kbd } from "@/components/ui/kbd";
 import { CriteriaEditor } from "./CriteriaEditor";
 import { CreditsBalance } from "./CreditsBalance";
 import { AvatarDropdown } from "@/components/loggedInHeader/avatar-dropdown";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 function FilterPill({ active, onClick, children }) {
   return (
@@ -39,19 +40,23 @@ export function FilterBar({
   creditsRefreshKey,
   onBuyCredits,
 }) {
+  const isMobile = useIsMobile();
+
   return (
-    <div className="flex flex-shrink-0 pl-[108px] pr-4 mt-6 mb-2 items-center">
+    <div className="flex flex-row flex-shrink-0 items-center pl-4 md:pl-[108px] pr-4 mt-2.5 md:mt-6 mb-1.5 md:mb-2 gap-2">
+
+      {/* Left group: criteria + filters */}
       <div
         ref={filterBarRef}
-        className="flex items-center gap-2"
-        style={{ marginLeft: phase === "list" || phase === "shrinking" ? centerMargin : 0 }}
+        className="flex items-center gap-1.5 flex-1 md:flex-none min-w-0"
+        style={{ marginLeft: !isMobile && (phase === "list" || phase === "shrinking") ? centerMargin : 0 }}
       >
         {/* Criteria / search pill */}
         <Popover>
           <PopoverTrigger asChild>
             <button
               data-testid="button-criteria"
-              className="flex items-center gap-2.5 bg-white dark:bg-card border border-black/[0.08] dark:border-border h-9 text-sm text-foreground min-w-0 max-w-[360px] select-none rounded-full pl-1.5 pr-4 hover:border-black/[0.15] dark:hover:border-white/[0.15] transition-colors cursor-pointer"
+              className="flex items-center gap-2.5 bg-white dark:bg-card border border-black/[0.08] dark:border-border h-9 text-sm text-foreground min-w-0 flex-1 md:max-w-[360px] select-none rounded-full pl-1.5 pr-4 hover:border-black/[0.15] dark:hover:border-white/[0.15] transition-colors cursor-pointer"
             >
               <div className="w-6 h-6 flex-shrink-0 rounded-full bg-foreground/[0.07] dark:bg-white/[0.08] flex items-center justify-center pointer-events-none">
                 <Search className="w-3 h-3 text-foreground/55" aria-hidden="true" />
@@ -71,6 +76,7 @@ export function FilterBar({
             side="bottom"
             align="start"
             sideOffset={8}
+            collisionPadding={12}
             onOpenAutoFocus={(e) => e.preventDefault()}
             className="w-[340px] p-0 rounded-2xl border border-black/[0.08] dark:border-border shadow-xl bg-white dark:bg-card overflow-visible"
           >
@@ -94,10 +100,10 @@ export function FilterBar({
             <PopoverTrigger asChild>
               <button
                 data-testid="button-filters"
-                className="flex-shrink-0 flex items-center gap-1.5 h-9 px-4 rounded-full border border-black/[0.08] dark:border-border bg-white dark:bg-card text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer"
+                className="flex-shrink-0 flex items-center justify-center gap-1.5 h-9 w-9 md:w-auto md:px-4 rounded-full border border-black/[0.08] dark:border-border bg-white dark:bg-card text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer"
               >
                 <SlidersHorizontal className="w-3.5 h-3.5" aria-hidden="true" />
-                Filters
+                <span className="hidden md:inline">Filters</span>
                 {activeFilterCount > 0 && (
                   <span className="flex items-center justify-center w-4 h-4 rounded-full bg-foreground text-background text-[10px] font-semibold">
                     {activeFilterCount}
@@ -109,6 +115,7 @@ export function FilterBar({
               side="bottom"
               align="start"
               sideOffset={8}
+              collisionPadding={12}
               className="w-[272px] p-4 rounded-2xl border border-black/[0.08] dark:border-border shadow-xl bg-white dark:bg-card"
             >
               <div className="flex items-center justify-between mb-4">
@@ -162,13 +169,14 @@ export function FilterBar({
         )}
 
         {rescanExhausted && (
-          <span className="text-[11px] text-muted-foreground/50 px-2">
+          <span className="hidden md:inline text-[11px] text-muted-foreground/50 px-2">
             No more new roles found
           </span>
         )}
       </div>
 
-      <div className="ml-auto flex items-center gap-2">
+      {/* Right group: desktop only */}
+      <div className="hidden md:flex items-center gap-1.5 ml-auto">
         <button
           onClick={onAddJob}
           className="flex-shrink-0 flex items-center gap-1.5 h-9 px-4 rounded-full border border-black/[0.08] dark:border-border bg-white dark:bg-card text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer"

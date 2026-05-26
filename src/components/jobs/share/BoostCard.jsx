@@ -269,7 +269,7 @@ export function BoostCard({ authState, isDark, isSaving, matchScore, onSave, onF
             onClick={onSave}
             isLoading={isSaving}
             disabled={isSaving}
-          >npx shadcn@latest add spinner
+          >
             {isSaving ? <Spinner data-icon="inline-start w-4 h-4 " /> : <BookmarkPlus className="w-4 h-4 inline-start" />}
 
 

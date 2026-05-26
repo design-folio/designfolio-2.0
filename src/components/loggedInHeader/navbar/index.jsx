@@ -139,11 +139,7 @@ export default function Navbar() {
         <Link href="/builder">
           <MemoDFLogoV2 className="flex-shrink-0" />
         </Link>
-        <div
-          className={cn(
-            isAiToolsWorkspace ? "block" : "hidden md:block",
-          )}
-        >
+        <div>
           <FluidDropdown />
         </div>
       </div>
@@ -152,105 +148,105 @@ export default function Navbar() {
       <div className="flex md:hidden items-center gap-2">
         <AvatarDropdown variant="new" onClose={() => setIsMobileMenuOpen(false)} />
         {!isAiToolsWorkspace && (
-        <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-          <SheetTrigger asChild>
-            <Button
-              variant="secondary"
-              size="icon"
-              className="bg-secondary hover:bg-secondary-hover border border-border text-foreground h-10 w-10 rounded-full"
+          <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+            <SheetTrigger asChild>
+              <Button
+                variant="secondary"
+                size="icon"
+                className="bg-secondary hover:bg-secondary-hover border border-border text-foreground h-10 w-10 rounded-full"
+              >
+                <Menu size={18} />
+              </Button>
+            </SheetTrigger>
+            <SheetContent
+              side="bottom"
+              className="rounded-t-3xl bg-card border-t border-border p-6 flex flex-col gap-4"
             >
-              <Menu size={18} />
-            </Button>
-          </SheetTrigger>
-          <SheetContent
-            side="bottom"
-            className="rounded-t-3xl bg-card border-t border-border p-6 flex flex-col gap-4"
-          >
-            <VisuallyHidden>
+
               <SheetTitle>Menu</SheetTitle>
-            </VisuallyHidden>
 
-            <FluidDropdown />
-            <div className="h-px w-full bg-border" />
 
-            <div className="flex flex-col gap-1">
-              <Button
-                variant="ghost"
-                className="w-full justify-start h-11 px-4 text-[14px] text-muted-foreground hover:text-foreground hover:bg-secondary"
-                onClick={() => { setIsMobileMenuOpen(false); handleTheme(); }}
-              >
-                <PaintRoller className="mr-2 h-4 w-4" /> Theme settings
-              </Button>
-              <Button
-                variant="ghost"
-                className="w-full justify-start h-11 px-4 text-[14px] text-muted-foreground hover:text-foreground hover:bg-secondary"
-                onClick={() => { setIsMobileMenuOpen(false); router.push("/portfolio-preview"); }}
-              >
-                <Eye className="mr-2 h-4 w-4" /> Preview
-              </Button>
-              <Button
-                variant="ghost"
-                className="w-full justify-start h-11 px-4 text-[14px] text-muted-foreground hover:text-foreground hover:bg-secondary"
-                onClick={() => { setIsMobileMenuOpen(false); router.push("/analytics"); }}
-              >
-                <ChartSpline className="mr-2 h-4 w-4" /> Insights
-              </Button>
-              <Button
-                variant="ghost"
-                className="w-full justify-start h-11 px-4 text-[14px] text-muted-foreground hover:text-foreground hover:bg-secondary"
-                onClick={() => { setIsMobileMenuOpen(false); router.push("/settings"); }}
-              >
-                <Settings className="mr-2 h-4 w-4" /> Settings
-              </Button>
-              <Button
-                variant="ghost"
-                className="w-full justify-start h-11 px-4 text-[14px] text-destructive hover:text-destructive hover:bg-destructive/5"
-                onClick={handleLogout}
-              >
-                <LogOut className="mr-2 h-4 w-4" /> Logout
-              </Button>
-            </div>
+           
 
-            <div className="h-px w-full bg-border" />
 
-            <div className="flex w-full items-center justify-between gap-3 p-3 bg-muted rounded-xl border border-border">
-              <div
-                className="flex flex-col gap-0.5 overflow-hidden flex-1 min-w-0 cursor-pointer"
-                onClick={() => window.open(`https://${domain}`, "_blank")}
-              >
-                <span className="text-[13px] font-medium text-foreground truncate">
-                  {domain}
-                </span>
-                <span className="text-[11px] text-muted-foreground">
-                  {latestPublishDate
-                    ? `Updated ${formatTimestamp(latestPublishDate)}`
-                    : "Not published yet"}
-                </span>
-              </div>
-              <div className="flex items-center gap-2 flex-shrink-0">
+              <div className="flex flex-col gap-1">
                 <Button
                   variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground"
-                  onClick={handleCopy}
+                  className="w-full justify-start h-11 px-4 text-[14px] text-muted-foreground hover:text-foreground hover:bg-secondary"
+                  onClick={() => { setIsMobileMenuOpen(false); handleTheme(); }}
                 >
-                  {isCopied ? (
-                    <Check className="h-4 w-4 text-foreground" />
-                  ) : (
-                    <Copy className="h-4 w-4" />
-                  )}
+                  <PaintRoller className="mr-2 h-4 w-4" /> Theme settings
                 </Button>
                 <Button
-                  disabled={isPublishing}
-                  onClick={handlePublish}
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium px-4 h-8 text-xs rounded-lg"
+                  variant="ghost"
+                  className="w-full justify-start h-11 px-4 text-[14px] text-muted-foreground hover:text-foreground hover:bg-secondary"
+                  onClick={() => { setIsMobileMenuOpen(false); router.push("/portfolio-preview"); }}
                 >
-                  {isPublishing ? "Updating…" : "Publish"}
+                  <Eye className="mr-2 h-4 w-4" /> Preview
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start h-11 px-4 text-[14px] text-muted-foreground hover:text-foreground hover:bg-secondary"
+                  onClick={() => { setIsMobileMenuOpen(false); router.push("/analytics"); }}
+                >
+                  <ChartSpline className="mr-2 h-4 w-4" /> Insights
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start h-11 px-4 text-[14px] text-muted-foreground hover:text-foreground hover:bg-secondary"
+                  onClick={() => { setIsMobileMenuOpen(false); router.push("/settings"); }}
+                >
+                  <Settings className="mr-2 h-4 w-4" /> Settings
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start h-11 px-4 text-[14px] text-destructive hover:text-destructive hover:bg-destructive/5"
+                  onClick={handleLogout}
+                >
+                  <LogOut className="mr-2 h-4 w-4" /> Logout
                 </Button>
               </div>
-            </div>
-          </SheetContent>
-        </Sheet>
+
+              <div className="h-px w-full bg-border" />
+
+              <div className="flex w-full items-center justify-between gap-3 p-3 bg-muted rounded-xl border border-border">
+                <div
+                  className="flex flex-col gap-0.5 overflow-hidden flex-1 min-w-0 cursor-pointer"
+                  onClick={() => window.open(`https://${domain}`, "_blank")}
+                >
+                  <span className="text-[13px] font-medium text-foreground truncate">
+                    {domain}
+                  </span>
+                  <span className="text-[11px] text-muted-foreground">
+                    {latestPublishDate
+                      ? `Updated ${formatTimestamp(latestPublishDate)}`
+                      : "Not published yet"}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground"
+                    onClick={handleCopy}
+                  >
+                    {isCopied ? (
+                      <Check className="h-4 w-4 text-foreground" />
+                    ) : (
+                      <Copy className="h-4 w-4" />
+                    )}
+                  </Button>
+                  <Button
+                    disabled={isPublishing}
+                    onClick={handlePublish}
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium px-4 h-8 text-xs rounded-lg"
+                  >
+                    {isPublishing ? "Updating…" : "Publish"}
+                  </Button>
+                </div>
+              </div>
+            </SheetContent>
+          </Sheet>
         )}
       </div>
 

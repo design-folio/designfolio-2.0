@@ -1,10 +1,19 @@
 import { useState } from "react";
 import { useTheme } from "next-themes";
-import { Bookmark, Clapperboard, Maximize2, Loader2, X, Check } from "lucide-react";
+import { Bookmark, Clapperboard, Maximize2, Loader2, X, Check, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { ColorOrb } from "@/components/ui/color-orb";
 import { CompanyLogo } from "./CompanyLogo";
 import { ScoreGauge } from "./ScoreGauge";
+
+const MOVE_COLS = [
+  { id: "saved", label: "Shortlisted" },
+  { id: "applied", label: "Applied" },
+  { id: "interview", label: "Interview" },
+  { id: "offer", label: "Offer" },
+  { id: "archived", label: "Archived" },
+];
 
 const EASING = [0.23, 1, 0.32, 1];
 
@@ -35,18 +44,19 @@ function AnalyzingRing({ isDark }) {
   );
 }
 
-const PILL_BTN = "flex items-center gap-1.5 h-8 px-3 rounded-full border border-black/[0.08] dark:border-white/[0.1] bg-black/[0.04] dark:bg-white/[0.06] text-[12px] font-medium text-foreground/65 hover:text-foreground hover:border-black/[0.15] dark:hover:border-white/[0.18] transition-[transform,color,border-color,background-color] duration-150 active:scale-[0.97]";
+const PILL_BTN = "flex items-center gap-1.5 h-8 px-2 md:px-3 rounded-full border border-black/[0.08] dark:border-white/[0.1] bg-black/[0.04] dark:bg-white/[0.06] text-[12px] font-medium text-foreground/65 hover:text-foreground hover:border-black/[0.15] dark:hover:border-white/[0.18] transition-[transform,color,border-color,background-color] duration-150 active:scale-[0.97]";
 
-export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, onAskScout, joyrideActive = false, joyrideFirst = false }) {
+export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, onAskScout, onMoveTo, currentColId, joyrideActive = false, joyrideFirst = false }) {
   const [tooltipVisible, setTooltipVisible] = useState(joyrideFirst);
   const [gaugeHovered, setGaugeHovered] = useState(false);
+  const [moveOpen, setMoveOpen] = useState(false);
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
   const isAnalyzing = job.match === null;
 
   const gaugeAligns = (job.aligns ?? []).slice(0, 3);
-  const gaugeGaps   = (job.gaps   ?? []).slice(0, 2);
-  const hasPopover  = gaugeAligns.length > 0 || gaugeGaps.length > 0;
+  const gaugeGaps = (job.gaps ?? []).slice(0, 2);
+  const hasPopover = gaugeAligns.length > 0 || gaugeGaps.length > 0;
 
   return (
     <div
@@ -239,7 +249,7 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
               className={PILL_BTN}
             >
               <Clapperboard className="w-3 h-3" />
-              Mock interview
+              <span className="hidden md:inline">Mock interview</span>
             </button>
           )}
 
@@ -252,6 +262,38 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
               <ColorOrb dimension="12px" spinDuration={8} />
               Ask Scout
             </button>
+          )}
+
+          {onMoveTo && !isAnalyzing && (
+            <Popover open={moveOpen} onOpenChange={setMoveOpen}>
+              <PopoverTrigger asChild>
+                <button
+                  className={`md:hidden ${PILL_BTN}`}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <ArrowRight className="w-3 h-3" />
+                  Move to
+                </button>
+              </PopoverTrigger>
+              <PopoverContent
+                side="top"
+                align="start"
+                sideOffset={6}
+                collisionPadding={12}
+                onOpenAutoFocus={(e) => e.preventDefault()}
+                className="w-[176px] p-1.5 rounded-2xl border border-black/[0.08] dark:border-border shadow-xl bg-white dark:bg-card"
+              >
+                {MOVE_COLS.filter((c) => c.id !== currentColId).map(({ id, label }) => (
+                  <button
+                    key={id}
+                    onClick={(e) => { e.stopPropagation(); onMoveTo(id); setMoveOpen(false); }}
+                    className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-[13px] font-medium text-foreground/70 hover:text-foreground hover:bg-foreground/[0.05] active:bg-foreground/[0.08] transition-colors text-left"
+                  >
+                    {label}
+                  </button>
+                ))}
+              </PopoverContent>
+            </Popover>
           )}
 
           <div className="ml-auto">

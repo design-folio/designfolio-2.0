@@ -227,3 +227,35 @@ export const AboutSchema = Yup.object().shape({
     .max(2, "Maximum 2 stickers allowed")
     .nullable(),
 });
+
+
+export const linkedinValidation = Yup.object({
+  url: Yup.string()
+    .required("LinkedIn URL is required")
+    .test("is-linkedin-job", "Enter a valid LinkedIn job URL", (val = "") => {
+      if (!/linkedin\.com\/jobs\//.test(val)) return false;
+      if (/\/jobs\/view\/\d+/.test(val)) return true;
+      try {
+        const full = /^https?:\/\//i.test(val) ? val : `https://${val}`;
+        const id = new URL(full).searchParams.get("currentJobId");
+        return Boolean(id && /^\d+$/.test(id));
+      } catch { return false; }
+    }),
+});
+
+export const manualValidation = Yup.object({
+  title: Yup.string().trim().min(2, "Job title is required").required("Job title is required"),
+  company: Yup.string().trim().min(2, "Company name is required").required("Company name is required"),
+  applyUrl: Yup.string().trim().required("Apply URL is required").test(
+    "is-url",
+    "Enter a valid URL (e.g. company.com/jobs/…)",
+    (val = "") => {
+      if (!val) return false;
+      const full = /^https?:\/\//i.test(val) ? val : `https://${val}`;
+      try { new URL(full); return true; } catch { return false; }
+    }
+  ),
+  location: Yup.string().trim(),
+  workMode: Yup.string().oneOf(["", "remote", "hybrid", "onsite"]),
+  description: Yup.string().trim().min(10, "Job description is required").required("Job description is required"),
+});

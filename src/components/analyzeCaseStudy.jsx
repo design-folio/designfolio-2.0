@@ -7,6 +7,7 @@ import Good from "../../public/assets/svgs/good.svg";
 import NotBad from "../../public/assets/svgs/not-bad.svg";
 import Bad from "../../public/assets/svgs/not-bad.svg";
 import { _analyzeCaseStudyCredits } from "@/network/post-request";
+import { useGlobalContext } from "@/context/globalContext";
 
 const variants = {
   hidden: { x: "100%" },
@@ -53,6 +54,8 @@ export default function AnalyzeCaseStudy({
   wordCount,
   isAnalyzing,
 }) {
+  const { setShowUpgradeModal } = useGlobalContext();
+
   const category = {
     good: "good",
     notBad: "notBad",
@@ -64,23 +67,13 @@ export default function AnalyzeCaseStudy({
     await fetchCredits();
   };
 
-  const [credits, setCredits] = useState(0);
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-  const [minutesLeft, setMinutesLeft] = useState(0);
+  const [analysisCredits, setAnalysisCredits] = useState({ limit: 2, used: 0, remaining: 2 });
 
   const fetchCredits = async () => {
     try {
       const response = await _analyzeCaseStudyCredits(projectId);
-      setCredits(response.data.usedToday);
-      if (response.data.usedToday <= 2) {
-        const usageDateTime = new Date(response.data.usageDate);
-        const currentTime = new Date();
-        const timeDifference = currentTime - usageDateTime;
-        const minutesPassed = Math.round(timeDifference / (1000 * 60));
-        const remainingMinutes = 20 - minutesPassed;
-        setIsButtonDisabled(minutesPassed < 20);
-        setMinutesLeft(remainingMinutes);
-      }
+      const analysis = response.data?.credits?.caseStudyAnalysis;
+      if (analysis) setAnalysisCredits(analysis);
     } catch (e) {
       console.log(e);
     }
@@ -164,27 +157,28 @@ export default function AnalyzeCaseStudy({
       </main>
       <footer className="bg-modal-footer-bg-color py-4 px-8 rounded-b-2xl">
         <div className="flex justify-between items-center gap-2">
-          <Text
-            size="p-xxsmall"
-            className="font-medium font-inter text-used-credit-text-color"
-          >
-            {credits === 2
-              ? "All credits used, Try again tomorrow"
-              : 2 - credits + "/2 Credits left"}
-          </Text>
+          {analysisCredits.remaining <= 0 ? (
+            <Button
+              text="Upgrade to Pro"
+              type="modal"
+              onClick={() => setShowUpgradeModal(true)}
+            />
+          ) : (
+            <Text
+              size="p-xxsmall"
+              className="font-medium font-inter text-used-credit-text-color"
+            >
+              {`${analysisCredits.remaining}/${analysisCredits.limit} Credits left`}
+            </Text>
+          )}
           <Button
             text={
-              credits === 2
-                ? "Re-analyze Case Study"
-                : isButtonDisabled
-                  ? `Re-analyze Case Study in ${minutesLeft}  ${minutesLeft == 1 ? "minute" : "minutes"
-                  }`
-                  : wordCount < 400
-                    ? `Re-analyze requires ${400 - wordCount} more words`
-                    : "Re-analyze Case Study"
+              wordCount < 400
+                ? `Re-analyze requires ${400 - wordCount} more words`
+                : "Re-analyze Case Study"
             }
             type="modal"
-            isDisabled={(credits >= 2) | isButtonDisabled | (wordCount < 400)}
+            isDisabled={analysisCredits.remaining <= 0 || wordCount < 400}
             isLoading={isAnalyzing}
             onClick={reAnalyze}
           />

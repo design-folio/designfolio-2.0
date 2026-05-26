@@ -6,7 +6,7 @@ import { usePostHogEvent } from '@/hooks/usePostHogEvent';
 import { POSTHOG_EVENT_NAMES } from '@/lib/posthogEventNames';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { motion, AnimatePresence } from 'framer-motion';
-import { HelpCircle, X, Zap } from 'lucide-react';
+import { ChevronDown, HelpCircle, X, Zap } from 'lucide-react';
 import {
   Accordion,
   AccordionItem,
@@ -72,6 +72,7 @@ export default function UpgradeModal() {
   const [proPlans, setProPlans] = useState([]);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [showFaq, setShowFaq] = useState(false);
+  const [showAllFeatures, setShowAllFeatures] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [sideBySide, setSideBySide] = useState(false);
   const {
@@ -119,6 +120,7 @@ export default function UpgradeModal() {
     if (!showUpgradeModal) {
       hasTrackedView.current = false;
       setShowFaq(false);
+      setShowAllFeatures(false);
     }
   }, [showUpgradeModal]);
 
@@ -239,7 +241,7 @@ export default function UpgradeModal() {
             <div className={sideBySide ? styles.modalLeftPanel : styles.modalSinglePanel}>
               <div className={styles.modalHeader}>
                 <div>
-                  {!showFaq && <div className={styles.modalIcon} />}
+                  <div className={styles.modalIcon} />
                   <h2 className={styles.modalTitle}>
                     {upgradeModalUnhideProject
                       ? `Unhide ${upgradeModalUnhideProject.title || 'Project'}?`
@@ -320,23 +322,59 @@ export default function UpgradeModal() {
                 )}
 
                 {/* Features */}
-                <div className={styles.featuresList}>
-                  {[
-                    "Write unlimited case studies",
+                {(() => {
+                  const allFeatures = [
+                    "Unlimited case studies",
                     "Custom domain",
                     "All premium templates",
-                    "Use AI to find jobs",
+                    "AI job search & matching",
                     "Tailored resumes & cover letters",
-                    "AI-powered job insights",
                     "Mock interviews",
                     "AI case study analysis",
-                  ].map(f => (
-                    <div key={f} className={styles.featureItem}>
-                      <div className={styles.featureIcon}>✓</div>
-                      <span>{f}</span>
+                  ];
+                  const visible = allFeatures.slice(0, 4);
+                  const hidden = allFeatures.slice(4);
+                  return (
+                    <div className={styles.featuresList}>
+                      {visible.map(f => (
+                        <div key={f} className={styles.featureItem}>
+                          <div className={styles.featureIcon}>✓</div>
+                          <span>{f}</span>
+                        </div>
+                      ))}
+                      <AnimatePresence>
+                        {showAllFeatures && (
+                          <motion.div
+                            key="extra-features"
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                            className="overflow-hidden flex flex-col gap-3"
+                          >
+                            {hidden.map(f => (
+                              <div key={f} className={styles.featureItem}>
+                                <div className={styles.featureIcon}>✓</div>
+                                <span>{f}</span>
+                              </div>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                      <button
+                        onClick={() => setShowAllFeatures(s => !s)}
+                        className="flex items-center gap-1 text-[11px] font-medium text-[#9ca3af] hover:text-[#6b7280] transition-colors duration-150"
+                      >
+                        <ChevronDown
+                          size={12}
+                          strokeWidth={2.5}
+                          className={`transition-transform duration-200 ${showAllFeatures ? 'rotate-180' : ''}`}
+                        />
+                        {showAllFeatures ? 'Show less' : `+${hidden.length} more features`}
+                      </button>
                     </div>
-                  ))}
-                </div>
+                  );
+                })()}
 
                 {/* FAQ toggle chip */}
                 <div className="flex mt-3">

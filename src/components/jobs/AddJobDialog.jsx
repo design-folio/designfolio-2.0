@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import * as Yup from "yup";
+import { linkedinValidation, manualValidation } from "@/lib/validationSchemas";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link2, PenLine, AlertCircle, Check, Plus, Sparkles, ChevronDown } from "lucide-react";
@@ -48,35 +48,7 @@ function TabToggle({ mode, onChange }) {
   );
 }
 
-const linkedinValidation = Yup.object({
-  url: Yup.string()
-    .required("LinkedIn URL is required")
-    .test("is-linkedin-job", "Enter a valid LinkedIn job URL", (val = "") => {
-      if (!/linkedin\.com\/jobs\//.test(val)) return false;
-      if (/\/jobs\/view\/\d+/.test(val)) return true;
-      try {
-        const id = new URL(val).searchParams.get("currentJobId");
-        return Boolean(id && /^\d+$/.test(id));
-      } catch { return false; }
-    }),
-});
 
-const manualValidation = Yup.object({
-  title: Yup.string().trim().min(2, "Job title is required").required("Job title is required"),
-  company: Yup.string().trim().min(2, "Company name is required").required("Company name is required"),
-  applyUrl: Yup.string().trim().required("Apply URL is required").test(
-    "is-url",
-    "Enter a valid URL (e.g. company.com/jobs/…)",
-    (val = "") => {
-      if (!val) return false;
-      const full = /^https?:\/\//i.test(val) ? val : `https://${val}`;
-      try { new URL(full); return true; } catch { return false; }
-    }
-  ),
-  location: Yup.string().trim(),
-  workMode: Yup.string().oneOf(["", "remote", "hybrid", "onsite"]),
-  description: Yup.string().trim().min(10, "Job description is required").required("Job description is required"),
-});
 
 export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
   const [mode, setMode] = useState("linkedin");
@@ -262,30 +234,18 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                               Paste a LinkedIn job URL — we'll fetch and score it against your profile.
                             </p>
                             <div className="flex flex-col gap-1">
-                              <div className="relative">
-                                <Field name="url">
-                                  {({ field, form }) => (
-                                    <Input
-                                      {...field}
-                                      ref={urlInputRef}
-                                      type="url"
-                                      placeholder="linkedin.com/jobs/view/…"
-                                      className={cn(
-                                        "peer ps-[4.25rem]",
-                                        errors.url && touched.url && "border-destructive focus-visible:ring-destructive"
-                                      )}
-                                      onChange={(e) => {
-                                        const stripped = e.target.value.replace(/^https?:\/\//i, "");
-                                        form.setFieldValue("url", stripped);
-                                        setError(null);
-                                      }}
-                                    />
-                                  )}
-                                </Field>
-                                <span className="pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 text-sm text-muted-foreground peer-disabled:opacity-50 select-none">
-                                  https://
-                                </span>
-                              </div>
+                              <Field name="url">
+                                {({ field, form }) => (
+                                  <Input
+                                    {...field}
+                                    ref={urlInputRef}
+                                    type="url"
+                                    placeholder="https://linkedin.com/jobs/view/…"
+                                    className={cn(errors.url && touched.url && "border-destructive focus-visible:ring-destructive")}
+                                    onChange={(e) => { form.setFieldValue("url", e.target.value); setError(null); }}
+                                  />
+                                )}
+                              </Field>
                               <ErrorMessage name="url" component="p" className="text-[11px] text-red-500 dark:text-red-400" />
                             </div>
 
@@ -410,28 +370,18 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                               <Label className={labelCls} htmlFor="applyUrl">
                                 Apply URL <span className="text-destructive">*</span>
                               </Label>
-                              <div className="relative">
-                                <Field name="applyUrl">
-                                  {({ field, form }) => (
-                                    <Input
-                                      {...field}
-                                      id="applyUrl"
-                                      placeholder="company.com/jobs/…"
-                                      className={cn(
-                                        "peer ps-[4.25rem]",
-                                        errors.applyUrl && touched.applyUrl && "border-destructive focus-visible:ring-destructive"
-                                      )}
-                                      onChange={(e) => {
-                                        const stripped = e.target.value.replace(/^https?:\/\//i, "");
-                                        form.setFieldValue("applyUrl", stripped);
-                                      }}
-                                    />
-                                  )}
-                                </Field>
-                                <span className="pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 text-sm text-muted-foreground peer-disabled:opacity-50 select-none">
-                                  https://
-                                </span>
-                              </div>
+                              <Field name="applyUrl">
+                                {({ field, form }) => (
+                                  <Input
+                                    {...field}
+                                    id="applyUrl"
+                                    type="url"
+                                    placeholder="https://company.com/jobs/…"
+                                    className={cn(errors.applyUrl && touched.applyUrl && "border-destructive focus-visible:ring-destructive")}
+                                    onChange={(e) => form.setFieldValue("applyUrl", e.target.value)}
+                                  />
+                                )}
+                              </Field>
                               <ErrorMessage name="applyUrl" component="p" className="text-[11px] text-red-500 dark:text-red-400 mt-1" />
                             </div>
 

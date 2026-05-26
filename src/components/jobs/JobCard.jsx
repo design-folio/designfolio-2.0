@@ -55,8 +55,8 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
   const isAnalyzing = job.match === null;
 
   const gaugeAligns = (job.aligns ?? []).slice(0, 3);
-  const gaugeGaps   = (job.gaps   ?? []).slice(0, 2);
-  const hasPopover  = gaugeAligns.length > 0 || gaugeGaps.length > 0;
+  const gaugeGaps = (job.gaps ?? []).slice(0, 2);
+  const hasPopover = gaugeAligns.length > 0 || gaugeGaps.length > 0;
 
   return (
     <div

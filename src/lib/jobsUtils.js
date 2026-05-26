@@ -1,3 +1,18 @@
+// ── Extract LinkedIn job ID from a URL ─────────────────────────────────────
+
+export const extractLinkedInJobId = (url) => {
+  if (!url) return null;
+  const viewMatch = url.match(/\/jobs\/view\/(\d+)/);
+  if (viewMatch) return viewMatch[1];
+  try {
+    const full = /^https?:\/\//i.test(url) ? url : `https://${url}`;
+    const id = new URL(full).searchParams.get("currentJobId");
+    return id && /^\d+$/.test(id) ? id : null;
+  } catch {
+    return null;
+  }
+};
+
 // ── Relative time from postedAt ISO string ─────────────────────────────────
 
 export const toRelativeTime = (iso) => {

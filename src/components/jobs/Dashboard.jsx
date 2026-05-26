@@ -1,11 +1,13 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
+import { useRouter } from "next/router";
 import { COL_ORDER } from "@/data/jobs";
-import { _postJobsInteract, _postJobsRecommend, _postJobsMore, _postJobsInterviewReport, _getJobsRecommendations, _postJobsPipelineReorder } from "@/network/jobs";
+import { _postJobsInteract, _postJobsRecommend, _postJobsMore, _postJobsInterviewReport, _getJobsRecommendations, _postJobsPipelineReorder, _getJobsJobScore } from "@/network/jobs";
 import { JobDetailSheet } from "./JobDetailSheet";
 import { MockInterviewDialog } from "./MockInterviewDialog";
 import { AddJobDialog } from "./AddJobDialog";
+import { SharedJobPromptDialog } from "./SharedJobPromptDialog";
 import { FilterBar } from "./FilterBar";
 import { DashboardColumns } from "./DashboardColumns";
 import { PortalOverlays } from "./PortalOverlays";
@@ -51,6 +53,7 @@ export function Dashboard({
   profileId: initialProfileId = null,
   quizAnswers = [],
 }) {
+  const router = useRouter();
   const [columns, setColumns] = useState(() => initialColumns ?? buildColumns(initialJobs));
   const [profileId, setProfileId] = useState(initialProfileId);
   const [currentAnswers, setCurrentAnswers] = useState(quizAnswers);
@@ -88,6 +91,7 @@ export function Dashboard({
   const [creditsRefreshKey, setCreditsRefreshKey] = useState(0);
   const bumpCredits = useCallback(() => setCreditsRefreshKey((k) => k + 1), []);
   const [addJobOpen, setAddJobOpen] = useState(false);
+  const [shareScoringJobId, setShareScoringJobId] = useState(null);
 
   const picksRef = useRef(null);
   const filterBarRef = useRef(null);
@@ -172,6 +176,30 @@ export function Dashboard({
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profileId, [columns.picks, columns.saved, columns.applied, columns.interview, columns.offer].flat().some((j) => j?.match === null)]);
+
+  // Targeted score poll for a job added via the share flow.
+  // getRecommendations excludes pipeline jobs, so we hit getJobScore directly.
+  useEffect(() => {
+    if (!shareScoringJobId) return;
+    let attempts = 0;
+    const interval = setInterval(async () => {
+      if (++attempts > 8) { clearInterval(interval); setShareScoringJobId(null); return; }
+      try {
+        const { data } = await _getJobsJobScore(shareScoringJobId);
+        if (data?.match !== null && data?.match !== undefined) {
+          setColumns((prev) => {
+            const patch = (jobs) => (jobs || []).map((j) =>
+              j.id === shareScoringJobId ? { ...j, match: data.match } : j
+            );
+            return { ...prev, saved: patch(prev.saved), applied: patch(prev.applied) };
+          });
+          setShareScoringJobId(null);
+          clearInterval(interval);
+        }
+      } catch {}
+    }, 2500);
+    return () => clearInterval(interval);
+  }, [shareScoringJobId]);
 
   const hasRestoredPipeline = initialColumns
     ? ["saved", "applied", "interview", "offer", "archived"].some((c) => (initialColumns[c] || []).length > 0)
@@ -500,6 +528,17 @@ export function Dashboard({
         profileId={profileId}
         onClose={() => setAddJobOpen(false)}
         onJobAdded={handleJobAdded}
+      />
+      <SharedJobPromptDialog
+        jobId={router.query.job ?? null}
+        onClose={() => router.replace("/jobs", undefined, { shallow: true })}
+        onSaved={(job) => {
+          if (job) {
+            handleJobAdded(job);
+            if (job.match === null) setShareScoringJobId(job.id);
+          }
+          router.replace("/jobs", undefined, { shallow: true });
+        }}
       />
       <JobDetailSheet
         job={selectedJob}

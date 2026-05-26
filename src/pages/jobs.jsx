@@ -12,16 +12,7 @@ import { isBetaUser } from "@/lib/betaEnv";
 import { useGlobalContext } from "@/context/globalContext";
 import { useEffect } from "react";
 
-// Decodes email from a JWT without verifying the signature (safe for UI gating).
-function getEmailFromJwt(token) {
-  try {
-    return JSON.parse(Buffer.from(token.split(".")[1], "base64url").toString()).email ?? null;
-  } catch {
-    return null;
-  }
-}
-
-export default function JobsPage({ betaUser }) {
+export default function JobsPage() {
   const { setIsUserDetailsFromCache, userDetailsIsState } = useGlobalContext();
 
   useEffect(() => {
@@ -43,7 +34,6 @@ export default function JobsPage({ betaUser }) {
 export async function getServerSideProps(context) {
   const base = await loggedInServerSideProps(context);
   if (base.redirect || base.notFound) return base;
-
 
   return {
     props: {

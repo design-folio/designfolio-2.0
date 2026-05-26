@@ -156,7 +156,7 @@ export default function Signup() {
         const pendingJobId = router.query.job || sessionStorage.getItem('df_pending_shared_job');
         if (pendingJobId) {
           sessionStorage.removeItem('df_pending_shared_job');
-          router.push('/jobs');
+          router.push(`/jobs?job=${pendingJobId}`);
         } else {
           router.push('/builder');
         }

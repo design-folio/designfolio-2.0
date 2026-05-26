@@ -241,7 +241,7 @@ export default function UpgradeModal() {
             <div className={sideBySide ? styles.modalLeftPanel : styles.modalSinglePanel}>
               <div className={styles.modalHeader}>
                 <div>
-                  {!showFaq && <div className={styles.modalIcon} />}
+                  <div className={styles.modalIcon} />
                   <h2 className={styles.modalTitle}>
                     {upgradeModalUnhideProject
                       ? `Unhide ${upgradeModalUnhideProject.title || 'Project'}?`

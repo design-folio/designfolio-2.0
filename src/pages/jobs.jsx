@@ -44,9 +44,6 @@ export async function getServerSideProps(context) {
   const base = await loggedInServerSideProps(context);
   if (base.redirect || base.notFound) return base;
 
-  // BETA GATE — remove this block when launching Jobs for all users
-  const email = getEmailFromJwt(context.req.cookies["df-token"] || "");
-  if (!isBetaUser(email)) return { notFound: true };
 
   return {
     props: {

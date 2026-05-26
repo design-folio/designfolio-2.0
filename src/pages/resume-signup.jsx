@@ -582,7 +582,7 @@ export default function ResumeSignup() {
           job_id: pendingJobId || null,
           has_resume: true,
         });
-        router.push(pendingJobId ? `/jobs/share/${pendingJobId}` : "/builder");
+        router.push(pendingJobId ? "/jobs" : "/builder");
       } catch {
         setGoogleLoading(false);
       }

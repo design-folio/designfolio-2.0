@@ -488,7 +488,7 @@ export function Dashboard({
 
   return (
     <motion.div
-      className="fixed inset-0 flex flex-col bg-[#F0EDE7] dark:bg-background"
+      className="fixed inset-0 flex flex-col bg-[#F0EDE7] dark:bg-background pt-[72px] md:pt-0"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}

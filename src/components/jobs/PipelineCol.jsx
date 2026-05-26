@@ -192,7 +192,7 @@ export function PipelineCol({
             {(!isPicks || !isListPhase) && (
               <button
                 onClick={onToggleCollapse}
-                className="cursor-pointer ml-auto w-6 h-6 flex items-center justify-center rounded-md hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
+                className="hidden md:flex cursor-pointer ml-auto w-6 h-6 items-center justify-center rounded-md hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
                 title="Collapse"
               >
                 <ChevronLeft className="w-3.5 h-3.5 text-foreground/40" />

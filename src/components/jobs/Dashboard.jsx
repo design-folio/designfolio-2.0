@@ -551,6 +551,7 @@ export function Dashboard({
             handleJobAdded(job);
             if (job.match === null) setShareScoringJobId(job.id);
           }
+          setPhase("split");
           router.replace("/jobs", undefined, { shallow: true });
         }}
       />

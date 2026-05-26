@@ -265,12 +265,15 @@ export function BoostCard({ authState, isDark, isSaving, matchScore, onSave, onF
 
           {/* CTA */}
           <Button
-            variant="default"
-            className="w-full transition-all duration-[160ms] active:scale-[0.97]"
+            className="w-full"
             onClick={onSave}
+            isLoading={isSaving}
             disabled={isSaving}
-          >
-            <BookmarkPlus className="w-4 h-4" />
+          >npx shadcn@latest add spinner
+            {isSaving ? <Spinner data-icon="inline-start w-4 h-4 " /> : <BookmarkPlus className="w-4 h-4 inline-start" />}
+
+
+
             {isSaving ? "Saving…" : "Save Job to Board"}
           </Button>
           <p className="text-center text-[11px] text-foreground/45 mt-3 leading-relaxed">

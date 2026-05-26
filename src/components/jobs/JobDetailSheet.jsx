@@ -256,7 +256,7 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
   return (
     <Sheet open={open} onOpenChange={(v) => !v && onClose()} modal={false}>
       <SheetContent
-        className="inset-y-3 right-3 h-[calc(100vh-24px)] rounded-2xl shadow-2xl !border border-black/[0.09] dark:border-white/[0.09] bg-white dark:bg-[#2A2520] p-0 flex flex-col w-[560px] sm:max-w-[560px] overflow-hidden [&>button:last-child]:hidden"
+        className="inset-y-0 right-0 h-full w-full rounded-none sm:inset-y-3 sm:right-3 sm:h-[calc(100vh-24px)] sm:rounded-2xl sm:w-[560px] sm:max-w-[560px] shadow-2xl !border border-black/[0.09] dark:border-white/[0.09] bg-white dark:bg-[#2A2520] p-0 flex flex-col overflow-hidden [&>button:last-child]:hidden"
         hasOverlay={false}
         onInteractOutside={(e) => e.preventDefault()}
       >

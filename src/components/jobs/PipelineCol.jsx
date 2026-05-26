@@ -15,6 +15,7 @@ export function PipelineCol({
   onDismiss,
   onMockInterview,
   onAskScout,
+  onMoveTo,
   onDecide,
   colIndex = 0,
   onExhausted,      // undefined = exhausted (hide button); function = show "Get More" button
@@ -66,6 +67,8 @@ export function PipelineCol({
                 onDismiss={onDismiss ? () => onDismiss(job.id) : undefined}
                 onMockInterview={!isPicks ? () => onMockInterview(job.id) : undefined}
                 onAskScout={() => onAskScout(job.id)}
+                onMoveTo={!isPicks && onMoveTo ? (targetColId) => onMoveTo(job.id, targetColId) : undefined}
+                currentColId={colId}
                 joyrideActive={isPicks && joyrideActive}
                 joyrideFirst={isPicks && joyrideActive && idx === 0}
               />
@@ -192,7 +195,7 @@ export function PipelineCol({
             {(!isPicks || !isListPhase) && (
               <button
                 onClick={onToggleCollapse}
-                className="cursor-pointer ml-auto w-6 h-6 flex items-center justify-center rounded-md hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
+                className="hidden md:flex cursor-pointer ml-auto w-6 h-6 items-center justify-center rounded-md hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
                 title="Collapse"
               >
                 <ChevronLeft className="w-3.5 h-3.5 text-foreground/40" />

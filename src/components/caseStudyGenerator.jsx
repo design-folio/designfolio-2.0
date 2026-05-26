@@ -3,7 +3,7 @@ import AiIcon from "../../public/assets/svgs/ai.svg";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import ProgressBar from "./ProgressBar";
-import { _getCredits, _getProjectTypes } from "@/network/get-request";
+import { _getUserQuota, _getProjectTypes } from "@/network/get-request";
 import { _generateCaseStudy } from "@/network/post-request";
 import { aiQuestions } from "@/lib/caseStudyQuestions";
 import CustomRadioButton from "./customRadioButton";
@@ -45,7 +45,7 @@ export default function CaseStudyGenerator() {
   const { userDetails } = useGlobalContext();
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const [cred, setCredits] = useState(0);
+  const [cred, setCredits] = useState(2);
   const [questions, setQuestions] = useState([]);
   const formikRef = useRef(null);
   const [typeProjects, setTypeprojects] = useState([]);
@@ -72,13 +72,17 @@ export default function CaseStudyGenerator() {
         const projectTypes = response.data;
         setTypeprojects(projectTypes);
         if (userDetails?._id) {
-          await _getCredits(userDetails._id)
+          await _getUserQuota()
             .then((res) => {
-              setCredits(res.data.usedToday);
+              const gen = res.data?.quota?.caseStudyGeneration;
+              if (gen) {
+                const remaining = gen.limit === null ? Infinity : Math.max(0, gen.limit - gen.used);
+                setCredits(remaining);
+              }
             })
             .catch((err) => {
               console.log(err);
-              setCredits(2);
+              setCredits(0);
             });
         }
       }
@@ -142,7 +146,7 @@ export default function CaseStudyGenerator() {
               <button
                 type="button"
                 onClick={() => setStep((prev) => prev - 1)}
-                disabled={isLoading || cred == 2}
+                disabled={isLoading || cred <= 0}
                 className="rounded-full border-2 border-foreground/20 bg-white/50 px-4 py-2 text-sm font-medium text-foreground hover:bg-foreground/10 disabled:opacity-50 transition-colors"
               >
                 Back
@@ -151,7 +155,7 @@ export default function CaseStudyGenerator() {
             <button
               type="submit"
               form="aiProjectForm"
-              disabled={isLoading || cred == 2}
+              disabled={isLoading || cred <= 0}
               className="rounded-full h-11 px-6 text-base font-semibold bg-foreground text-background hover:bg-foreground/90 disabled:opacity-50 transition-colors flex items-center gap-2"
             >
               {step == 4 && isLoading ? "Generating..." : step == 4 ? "Generate Now" : "Next"}
@@ -167,9 +171,9 @@ export default function CaseStudyGenerator() {
             <ProgressBar progress={step == 4 && 100} />
           </div>
           <div className="flex-1 overflow-y-auto py-6 relative">
-            {cred == "2" && <Info className={"mb-4"} />}
+            {/* {cred <= 0 && <Info className={"mb-4"} />} */}
             {/* This is the scrollable body */}
-            <div className={`${(cred == "2" || isLoading) && "opacity-25"}`}>
+            <div className={`${(cred <= 0 || isLoading) && "opacity-25"}`}>
               <Formik
                 innerRef={formikRef}
                 validationSchema={getSchemaValidation()}
@@ -223,7 +227,7 @@ export default function CaseStudyGenerator() {
                               component={CustomRadioButton}
                               label={res?.name}
                               selected={values.projectType === res?.name}
-                              disabled={cred == 2}
+                              disabled={cred <= 0}
                             />
                           ))}
                         </div>

@@ -4,7 +4,7 @@ import AiIcon from "../../public/assets/svgs/ai.svg";
 import { Formik, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useGlobalContext } from "@/context/globalContext";
-import { _getCredits, _getProjectTypes } from "@/network/get-request";
+import { _getUserQuota, _getProjectTypes } from "@/network/get-request";
 import { aiQuestions } from "@/lib/caseStudyQuestions";
 import { _generateCaseStudy, _updateUser } from "@/network/post-request";
 import { convertEditorJSToTiptap } from "@/lib/editorjsToTiptap";
@@ -39,16 +39,16 @@ const stepFourValidationSchema = Yup.object().shape({
 
 export default function CreateAiProject({ openModal }) {
   const [typeProjects, setTypeprojects] = useState([]);
-  const [cred, setCredits] = useState(0);
-  const { userDetails, updateCache } = useGlobalContext();
+  const [generationCredits, setGenerationCredits] = useState({ limit: 2, used: 0, remaining: 2 });
+  const { userDetails, updateCache, setShowUpgradeModal } = useGlobalContext();
   const [step, setStep] = useState(1);
   const [questions, setQuestions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const formikRef = useRef(null);
   const router = useRouter();
 
-  const creditsLeft = 2 - cred;
-  const outOfCredits = cred >= 2;
+  const creditsLeft = generationCredits.remaining;
+  const outOfCredits = generationCredits.remaining <= 0;
 
   useEffect(() => {
     _getProjectTypes()
@@ -56,9 +56,15 @@ export default function CreateAiProject({ openModal }) {
         if (res) setTypeprojects(res.data);
       })
       .catch(() => {});
-    _getCredits(userDetails._id)
-      .then((res) => setCredits(res.data.usedToday))
-      .catch(() => setCredits(2));
+    _getUserQuota()
+      .then((res) => {
+        const gen = res.data?.quota?.caseStudyGeneration;
+        if (gen) {
+          const remaining = gen.limit === null ? Infinity : Math.max(0, gen.limit - gen.used);
+          setGenerationCredits({ ...gen, remaining });
+        }
+      })
+      .catch(() => setGenerationCredits({ limit: 2, used: 2, remaining: 0 }));
   }, []);
 
   const getSchemaValidation = () => {
@@ -83,7 +89,7 @@ export default function CreateAiProject({ openModal }) {
     setStep(2);
   };
 
-  const handleSubmit = async (values, actions) => {
+  const handleSubmit = async (values) => {
     setIsLoading(true);
     const selected = typeProjects.find((item) => item.name === values.projectType);
     const data = {
@@ -144,7 +150,7 @@ export default function CreateAiProject({ openModal }) {
         <div className="flex items-center gap-1.5 h-8 px-3 rounded-full bg-black/[0.04] dark:bg-white/[0.04] border border-border">
           <Coins className="w-3.5 h-3.5 text-foreground/50" />
           <span className="text-[13px] font-medium text-foreground/70">
-            {creditsLeft} credit{creditsLeft !== 1 ? "s" : ""} left
+            {creditsLeft === Infinity ? "∞" : creditsLeft} credit{creditsLeft !== 1 ? "s" : ""} left
           </span>
         </div>
       </div>
@@ -164,7 +170,7 @@ export default function CreateAiProject({ openModal }) {
 
       {/* Body */}
       <div className="flex-1 overflow-y-auto px-6 py-5">
-        {outOfCredits && <Info className="mb-5" />}
+        {outOfCredits && <Info className="mb-5" onUpgrade={() => { openModal(null); setShowUpgradeModal(true); }} />}
 
         <Formik
           innerRef={formikRef}

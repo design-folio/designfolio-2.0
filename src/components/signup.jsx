@@ -45,11 +45,15 @@ export default function Signup() {
     if (router.query.username) {
       setDomain(router.query.username);
     }
+    // Persist shared job context so it survives email-verify + quiz flow
+    if (router.query.job) {
+      sessionStorage.setItem('df_pending_shared_job', router.query.job);
+    }
     event(POSTHOG_EVENT_NAMES.SIGNUP_STARTED, {
       username: router.query.username,
-      source: 'claim-link',
+      source: router.query.job ? 'shared-job' : 'claim-link',
     });
-  }, [router.query.username]);
+  }, [router.query.username, router.query.job]);
 
   // Apply parsed resume to user profile silently (fire-and-forget)
   const applyParsedResume = async () => {
@@ -95,7 +99,9 @@ export default function Signup() {
         email: signupData.email,
         username: signupData.username,
       });
-      router.push(`/email-verify?email=${values.email}`);
+      const pendingJobId = router.query.job || sessionStorage.getItem('df_pending_shared_job');
+      const jobSuffix = pendingJobId ? `&job=${pendingJobId}` : '';
+      router.push(`/email-verify?email=${values.email}${jobSuffix}`);
     } catch (error) {
       event(POSTHOG_EVENT_NAMES.SIGNUP_FAILED, {
         method: 'email',
@@ -147,7 +153,13 @@ export default function Signup() {
           email: data.email,
           username: data.username,
         });
-        router.push('/builder');
+        const pendingJobId = router.query.job || sessionStorage.getItem('df_pending_shared_job');
+        if (pendingJobId) {
+          sessionStorage.removeItem('df_pending_shared_job');
+          router.push(`/jobs/share/${pendingJobId}`);
+        } else {
+          router.push('/builder');
+        }
       } catch (error) {
         event(POSTHOG_EVENT_NAMES.SIGNUP_FAILED, {
           method: 'google',

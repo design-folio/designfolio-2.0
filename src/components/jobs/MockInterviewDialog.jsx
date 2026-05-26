@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Video, Mic, CheckCircle2, XCircle, Clapperboard } from "lucide-react";
+import { Video, Mic, CheckCircle2, XCircle, Clapperboard, Zap } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { CompanyLogo } from "./CompanyLogo";
 
@@ -11,7 +11,7 @@ function PermissionCard({ icon: Icon, label, description, state, onRequest }) {
       </div>
       <div className="flex-1 min-w-0">
         <div className="text-[14px] font-semibold text-foreground mb-0.5">{label}</div>
-        <div className="text-[13px] text-foreground/50 leading-[1.5]">{description}</div>
+        <div className="text-[13px] text-foreground/50 leading-[1.5] break-words">{description}</div>
       </div>
       <div className="flex-shrink-0 mt-0.5">
         {state === "granted" ? (
@@ -65,12 +65,13 @@ export function MockInterviewDialog({ job, open, onClose, onStart }) {
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent
         aria-describedby={undefined}
-        className="bg-white dark:bg-[#2A2520] border border-black/[0.08] dark:border-white/[0.08] p-0 gap-0 max-w-[440px] rounded-2xl overflow-hidden"
+        overlayClassName="fixed inset-0 z-[300] bg-black/40 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
+        className="bg-white dark:bg-[#2A2520] border border-black/[0.08] dark:border-white/[0.08] p-0 gap-0 max-w-[440px] rounded-2xl overflow-hidden z-[301]"
       >
-        <DialogHeader className="px-6 pt-6 pb-5 border-b border-black/[0.06] dark:border-white/[0.06]">
-          <div className="flex items-center gap-3">
+        <DialogHeader className="px-6 pt-6 pb-5 border-b border-black/[0.06] dark:border-white/[0.06] min-w-0 overflow-hidden">
+          <div className="w-full flex items-center gap-3 overflow-hidden">
             <CompanyLogo logoUrl={job.logoUrl} company={job.company} size={40} />
-            <div className="min-w-0">
+            <div className="flex-1 min-w-0 overflow-hidden">
               <DialogTitle className="text-[#1A1A1A] dark:text-[#F0EDE7] text-[17px] font-semibold leading-tight m-0 truncate">
                 Ready to practise?
               </DialogTitle>
@@ -79,7 +80,7 @@ export function MockInterviewDialog({ job, open, onClose, onStart }) {
               </p>
             </div>
           </div>
-          <p className="text-[14px] text-foreground/50 leading-[1.6] mt-4">
+          <p className="text-[14px] text-foreground/50 leading-[1.6] mt-4 break-words">
             Grant camera and microphone access below so your mock interview session can run smoothly.
           </p>
         </DialogHeader>

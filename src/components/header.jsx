@@ -28,7 +28,9 @@ const Header = ({ dfToken, hideHeader }) => {
   // Determine header component based on dfToken and router pathname
   let headerComponent = null;
   const path = router.pathname;
-  if (hideHeader) {
+  // hideHeader prop OR share-page path — both suppress the global header.
+  // Share pages have their own ShareNav; we never want the app nav here.
+  if (hideHeader || path.startsWith("/jobs/share/")) {
     return null;
   } else if (footerPaths.includes(path)) {
     headerComponent = <LandingHeader dfToken={dfToken} />;

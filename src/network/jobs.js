@@ -69,10 +69,31 @@ export const _postJobsPipelineReorder = (profileId, column, jobIds) => {
     .catch(() => {}); // fire-and-forget
 };
 
-// GET /jobs/credits — returns { balance: number, costs: { [feature]: number } }
-export const _getJobCredits = () => axiosInstance.get('/jobs/credits');
-
 // GET /jobs/role-suggestions?q=... — fuzzy search over curated job titles (no auth required)
 export const _getJobRoleSuggestions = (q) =>
   axiosInstance.get('/jobs/role-suggestions', { params: { q } });
+
+// POST /jobs/add-manual — invoke Lambda to scrape LinkedIn URL and add job to Shortlisted
+// Returns { status: 'processing', profileId }
+export const _postJobsAddManual = (linkedinUrl, profileId) =>
+  axiosInstance.post('/jobs/add-manual', { linkedinUrl, profileId });
+
+export const _postJobsAddManualEntry = (fields, profileId) =>
+  axiosInstance.post('/jobs/add-manual-entry', { ...fields, profileId });
+
+// GET /jobs/public/:jobId — no auth, returns job data for shared page SSR
+export const _getPublicJob = (jobId) =>
+  axiosInstance.get(`/jobs/public/${jobId}`);
+
+// POST /jobs/add-from-share — add a shared job to the user's Saved column (idempotent)
+export const _postJobsAddFromShare = (jobId) =>
+  axiosInstance.post('/jobs/add-from-share', { jobId });
+
+// GET /jobs/check-saved — fast pipeline membership check (single query, no job docs)
+export const _getJobsCheckSaved = (jobId) =>
+  axiosInstance.get('/jobs/check-saved', { params: { jobId } });
+
+// GET /jobs/job-score — poll for a job's match score after async Lambda scoring
+export const _getJobsJobScore = (jobId) =>
+  axiosInstance.get('/jobs/job-score', { params: { jobId } });
 

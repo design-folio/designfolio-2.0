@@ -1,29 +1,31 @@
 import React, { useEffect, useState, useRef } from 'react';
 import styles from '@/styles/domain.module.css';
 import { useGlobalContext } from '@/context/globalContext';
-import Script from 'next/script';
-import { _getProPlanDetails, createOrder } from '@/network/get-request';
+import { _getProPlanDetails, createDodoCheckout } from '@/network/get-request';
 import { usePostHogEvent } from '@/hooks/usePostHogEvent';
 import { POSTHOG_EVENT_NAMES } from '@/lib/posthogEventNames';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronDown, HelpCircle, X, Zap } from 'lucide-react';
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from '@/components/ui/accordion';
+import { ConicButton } from '@/components/ui/ConicButton';
+import { Button } from '@/components/ui/button';
 
-const PLAN_LABELS = { '1m': '1 Month', '3m': '3 Months', lifetime: 'Lifetime' };
+const PLAN_LABELS = { qtrly: 'Quarterly', yrly: 'Yearly' };
 
 const PLAN_HEADINGS = {
-  '1m': {
-    title: 'For Students',
-    subtitle: "Build your first serious portfolio. Explore what's possible.",
-    buttonText: 'Get PRO for 1 Month',
+  qtrly: {
+    title: 'Get Hired Faster',
+    subtitle: 'Your portfolio, resumes, AI job tools & interview prep — all in one place.',
   },
-  '3m': {
-    title: 'For Job Seekers',
-    subtitle: 'Build a complete portfolio and start landing interviews fast.',
-    buttonText: 'Get PRO for 3 Months',
-  },
-  lifetime: {
-    title: 'Lifetime Access',
-    subtitle: 'Own your portfolio forever. No expiry. No resets.',
-    buttonText: 'Get PRO for Lifetime',
+  yrly: {
+    title: 'Get Hired Faster',
+    subtitle: 'Your portfolio, resumes, AI job tools & interview prep — all in one place.',
   },
 };
 
@@ -37,21 +39,58 @@ const TRUSTED_BY_LOGOS = [
   '/assets/svgs/company logos/companylogos07.svg',
 ];
 
+const FAQS = [
+  {
+    q: 'Can I cancel anytime?',
+    a: 'Yes. You keep access to Pro until the end of your current billing cycle. No questions asked.',
+  },
+  {
+    q: 'What happens to my portfolio if I downgrade to Free?',
+    a: "Your portfolio stays live. You'll be limited to 2 case studies; extras stay hidden until you upgrade again. Custom domain support will also be removed.",
+  },
+  {
+    q: 'What does AI case study analysis mean?',
+    a: 'Our AI reviews your case studies and gives you targeted feedback on structure, storytelling, depth of process, and how recruiters are likely to perceive them.',
+  },
+  {
+    q: 'Which plans include AI job matching?',
+    a: 'AI job matching, tailored resumes, cover letters, mock interviews, and job insights are all exclusive to Pro — available on both Quarterly and Yearly billing.',
+  },
+  {
+    q: 'Is there a free trial?',
+    a: 'No free trial right now, but the Free plan lets you explore the portfolio builder with up to 2 case studies before you decide to upgrade.',
+  },
+];
+
+// Prepends centering translate so framer-motion's y/scale animations don't conflict with
+// the element's own position: fixed + top:50% + left:50% centering.
+function centeredTransform(_, generated) {
+  return `translate(-50%, -50%) ${generated}`;
+}
+
 export default function UpgradeModal() {
-  const [isModalExiting, setIsModalExiting] = useState(false);
   const [proPlans, setProPlans] = useState([]);
   const [selectedPlan, setSelectedPlan] = useState(null);
+  const [showFaq, setShowFaq] = useState(false);
+  const [showAllFeatures, setShowAllFeatures] = useState(false);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [sideBySide, setSideBySide] = useState(false);
   const {
     showUpgradeModal,
     setShowUpgradeModal,
     upgradeModalUnhideProject,
     setUpgradeModalUnhideProject,
-    userDetails,
-    userDetailsRefecth,
   } = useGlobalContext();
 
   const phEvent = usePostHogEvent();
   const hasTrackedView = useRef(false);
+
+  useEffect(() => {
+    const check = () => setSideBySide(window.innerWidth >= 700);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
   useEffect(() => {
     if (showUpgradeModal) {
@@ -59,7 +98,7 @@ export default function UpgradeModal() {
         const plans = response?.data?.proPlans;
         if (Array.isArray(plans) && plans.length > 0) {
           setProPlans(plans);
-          setSelectedPlan(plans.find(p => p.plan === '3m') || plans[0]);
+          setSelectedPlan(plans.find(p => p.plan === 'yrly') || plans[0]);
         }
       });
     }
@@ -80,22 +119,18 @@ export default function UpgradeModal() {
   useEffect(() => {
     if (!showUpgradeModal) {
       hasTrackedView.current = false;
+      setShowFaq(false);
+      setShowAllFeatures(false);
     }
   }, [showUpgradeModal]);
 
   const handleCloseModal = () => {
-    setIsModalExiting(true);
-    setTimeout(() => {
-      setShowUpgradeModal(false);
-      setUpgradeModalUnhideProject(null);
-      setIsModalExiting(false);
-    }, 300);
+    setShowUpgradeModal(false);
+    setUpgradeModalUnhideProject(null);
   };
 
   function formatAmount(amount, currencyCode) {
-    if (currencyCode === 'USD') {
-      return `$${Number(amount).toFixed(0)}`;
-    }
+    if (currencyCode === 'USD') return `$${Number(amount).toFixed(0)}`;
     return new Intl.NumberFormat(undefined, {
       style: 'currency',
       currency: currencyCode,
@@ -104,246 +139,371 @@ export default function UpgradeModal() {
     }).format(amount);
   }
 
-  const openCheckout = () => {
-    if (!selectedPlan?.plan) return;
+  function getMonthlyAmount(plan) {
+    if (!plan) return 0;
+    if (plan.plan === 'yrly') return Math.round(Number(plan.amount) / 12);
+    if (plan.plan === 'qtrly') return Math.round(Number(plan.amount) / 3);
+    return Number(plan.amount);
+  }
+
+  function getYearlySavingsPct() {
+    const qtrly = proPlans.find(p => p.plan === 'qtrly');
+    const yrly = proPlans.find(p => p.plan === 'yrly');
+    if (!qtrly || !yrly) return 0;
+    const annualQtrly = Number(qtrly.amount) * 4;
+    return Math.round((1 - Number(yrly.amount) / annualQtrly) * 100);
+  }
+
+  function getButtonText() {
+    if (checkoutLoading) return 'Opening checkout…';
+    if (selectedPlan?.plan === 'yrly') {
+      const savePct = getYearlySavingsPct();
+      return savePct > 0 ? `Get PRO — Save ${savePct}% yearly` : 'Get PRO — Yearly';
+    }
+    return 'Get PRO — Quarterly';
+  }
+
+  const openCheckout = async () => {
+    if (!selectedPlan?.plan || checkoutLoading) return;
     phEvent(POSTHOG_EVENT_NAMES.UPGRADE_MODAL_CLICKED, {
       source: 'dropdown',
       selected_plan: selectedPlan?.plan,
       selected_amount: Number(selectedPlan?.amount),
       selected_currency: selectedPlan?.currency,
     });
-    createOrder(selectedPlan.plan).then(response => {
-      const { id } = response?.data?.order; // Assuming the response contains necessary data for Razorpay
-      const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, // Your public Key ID
-        // amount: { amount }, // Amount in paise (e.g., ₹500.00)
-        // currency: "INR",
-        order_id: id,
-        name: 'Designfolio by DOT Workspaces',
-        description: 'Insecure Test Transaction',
-        image: '../../public/assets/svgs/logo.svg',
-        handler: function (response) {
-          // console.log(response);
-          userDetailsRefecth();
-          phEvent(POSTHOG_EVENT_NAMES.PAYMENT_COMPLETED, {
-            order_id: id,
-            plan_amount: Number(selectedPlan?.amount),
-            plan_currency: selectedPlan?.currency,
-            plan_month: selectedPlan?.plan,
-          });
-          handleCloseModal();
-          // This handler is called on successful payment.
-          // 🚨 WITHOUT SERVER-SIDE VERIFICATION, THIS CAN BE FAKED.
-          // A user can manually trigger this function without actually paying.
-          // alert(
-          //   `Payment supposedly successful! Payment ID: ${response.razorpay_payment_id}`
-          // );
-          // alert("Warning: This payment has NOT been securely verified.");
-        },
-        prefill: {
-          name: userDetails?.username,
-          email: userDetails?.email,
-          // contact: "",
-        },
-        theme: {
-          color: '#3399cc',
-        },
-      };
-      const rzp = new window.Razorpay(options);
-      rzp.open();
-      handleCloseModal();
-    });
+    setCheckoutLoading(true);
+    try {
+      const res = await createDodoCheckout(selectedPlan.plan);
+      window.location.href = res.data.checkoutUrl;
+    } catch (err) {
+      console.error('[UpgradeModal] Checkout failed:', err.message);
+    } finally {
+      setCheckoutLoading(false);
+    }
   };
-  if (!showUpgradeModal || proPlans.length === 0 || !selectedPlan) return null;
+
+  if (proPlans.length === 0 || !selectedPlan) return null;
+
+  // Expanded width: 880px (2 × 440). Collapsed: 440px. Mobile: no framer width control.
+  const cardWidth = sideBySide ? (showFaq ? 880 : 440) : undefined;
+
   return (
-    <div
-      className={`${styles.modalOverlay} ${
-        isModalExiting ? styles.modalOverlayExiting : ''
-      }`}
-      onClick={() => handleCloseModal()}
-    >
-      <div
-        className={`${styles.modal} ${
-          isModalExiting ? styles.modalExiting : ''
-        }`}
-        onClick={e => e.stopPropagation()}
-      >
-        <button
-          className={styles.modalClose}
-          onClick={() => handleCloseModal()}
-        >
-          ✕
-        </button>
-
-        <div className={styles.modalHeader}>
-          <div>
-            <div className={styles.modalIcon}></div>
-            <h2 className={styles.modalTitle}>
-              {upgradeModalUnhideProject
-                ? `Unhide ${upgradeModalUnhideProject.title || 'Project'}?`
-                : (PLAN_HEADINGS[selectedPlan?.plan] ?? PLAN_HEADINGS.lifetime)
-                    .title}
-            </h2>
-            <p className={styles.modalSubtitle}>
-              {upgradeModalUnhideProject
-                ? 'Free users can only have 2 visible projects. Go Pro to add unlimited and unhide this project.'
-                : (PLAN_HEADINGS[selectedPlan?.plan] ?? PLAN_HEADINGS.lifetime)
-                    .subtitle}
-            </p>
-          </div>
-        </div>
-
-        <div className={styles.modalContent}>
-          <div className="mb-6">
-            {proPlans.some(p => p.plan === '3m') && (
-              <div className="relative z-10 text-center -mb-2.5">
-                <span
-                  className="inline-block px-2 py-1 text-[10px] font-semibold rounded-full whitespace-nowrap"
-                  style={{ backgroundColor: '#22c55e', color: '#ffffff' }}
-                >
-                  Save 25%
-                </span>
-              </div>
-            )}
-            <div className="relative z-0">
-              <Tabs
-                value={selectedPlan?.plan ?? ''}
-                onValueChange={value => {
-                  const newPlan = proPlans.find(p => p.plan === value);
-                  setSelectedPlan(proPlans.find(p => p.plan === value));
-                  phEvent(POSTHOG_EVENT_NAMES.UPGRADE_PLAN_SELECTED, {
-                    source: 'dropdown',
-                    selected_plan: newPlan?.plan,
-                    selected_amount: Number(newPlan?.amount),
-                    selected_currency: newPlan?.currency,
-                  });
-                }}
-                className="mb-0"
-              >
-                <TabsList className="flex p-1 rounded-lg gap-1 w-full h-auto bg-[#f0f0f0]">
-                  {proPlans.map(p => (
-                    <TabsTrigger
-                      key={p.plan}
-                      value={p.plan}
-                      className="flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 text-[#525252] hover:text-[#0a0a0a] data-[state=active]:bg-[#ffffff] data-[state=active]:text-[#0a0a0a] data-[state=active]:shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] dark:text-[#525252] dark:hover:text-[#0a0a0a] dark:data-[state=active]:bg-[#ffffff] dark:data-[state=active]:text-[#0a0a0a] dark:data-[state=active]:shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]"
-                    >
-                      {PLAN_LABELS[p.plan] ?? p.plan}
-                    </TabsTrigger>
-                  ))}
-                </TabsList>
-              </Tabs>
-            </div>
-          </div>
-
-          <div className={styles.priceSection}>
-            <div className={styles.priceContainer}>
-              <div className={styles.price}>
-                {formatAmount(selectedPlan?.amount, selectedPlan?.currency)}
-              </div>
-              {/* <div className={styles.slashPrice}>₹8,300</div> */}
-            </div>
-            <div className={styles.priceSubtext}>one-time payment</div>
-          </div>
-
-          <Script
-            id="razorpay-checkout-js"
-            src="https://checkout.razorpay.com/v1/checkout.js"
+    <AnimatePresence>
+      {showUpgradeModal && (
+        <>
+          {/* Backdrop — sibling to the card so its opacity doesn't clip the card's exit */}
+          <motion.div
+            key="upgrade-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              zIndex: 1000,
+              background: 'rgba(0,0,0,0.6)',
+              backdropFilter: 'blur(4px)',
+            }}
+            onClick={handleCloseModal}
           />
 
-          <button className={styles.upgradeNowButton} onClick={openCheckout}>
-            {PLAN_HEADINGS[selectedPlan?.plan]?.buttonText ?? 'Upgrade Now'}
-          </button>
-          {(() => {
-            const lifetimePlan = proPlans.find(p => p.plan === 'lifetime');
-            if (!lifetimePlan || selectedPlan?.plan !== 'lifetime') return null;
-            return (
-              <div className={styles.lifetimeDealBanner}>
-                <div className={styles.dealBannerIcon}>⏰</div>
-                <span className={styles.dealBannerText}>
-                  Lifetime is going away. One week left to grab it.
-                </span>
-                <div className={styles.dealBannerPulse}></div>
-              </div>
-            );
-          })()}
+          {/* Modal card — centered via transformTemplate, expands symmetrically */}
+          <motion.div
+            key="upgrade-card"
+            transformTemplate={centeredTransform}
+            className={`${styles.modal} ${sideBySide ? styles.modalFMRow : ''} ${sideBySide && showFaq ? styles.modalFaqOpen : ''}`}
+            initial={{ opacity: 0, y: 12, scale: 0.97, ...(sideBySide ? { width: 440 } : {}) }}
+            animate={{ opacity: 1, y: 0, scale: 1, ...(cardWidth !== undefined ? { width: cardWidth } : {}) }}
+            exit={{ opacity: 0, y: 6, scale: 0.97 }}
+            transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+            style={{
+              position: 'fixed',
+              top: '50%',
+              left: '50%',
+              zIndex: 1001,
+              animation: 'none',
+              ...(sideBySide ? { maxWidth: 'none', overflow: 'hidden' } : {}),
+            }}
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Close button — anchored to the card, not inside the scrolling panel,
+                top: 88px clears the 80px ::before orange gradient */}
+            <button
+              className={styles.modalClose}
+              onClick={handleCloseModal}
+              aria-label="Close"
+            >
+              <X size={14} strokeWidth={2.5} />
+            </button>
 
-          {/* <div className={styles.lifetimeDealBanner}>
-            <div className={styles.dealBannerIcon}>⏰</div>
-            <span className={styles.dealBannerText}>
-              Lifetime deal ending soon
-            </span>
-            <div className={styles.dealBannerPulse}></div>
-          </div> */}
-          <div className={styles.featuresList}>
-            <div className={styles.featureItem}>
-              <div className={styles.featureIcon}>✓</div>
-              <span>Use your own custom domain</span>
-            </div>
-
-            <div className={styles.featureItem}>
-              <div className={styles.featureIcon}>✓</div>
-              <span>Access all templates — now & forever</span>
-            </div>
-
-            <div className={styles.featureItem}>
-              <div className={styles.featureIcon}>✓</div>
-              <span>Create unlimited projects (not just 2)</span>
-            </div>
-
-            <div className={styles.featureItem}>
-              <div className={styles.featureIcon}>✓</div>
-              <span>Track views with built-in analytics</span>
-            </div>
-          </div>
-
-          <div className="mt-6 pt-4 border-t border-[#e5e7eb] min-h-[64px]">
-            <p className="text-center text-[10px] font-medium text-[#9ca3af] mb-2">
-              Trusted by 20000+ designers
-            </p>
-            <div className="relative min-h-8 py-1">
-              <div className="absolute left-0 top-0 bottom-0 w-6 sm:w-8 z-10 pointer-events-none bg-gradient-to-r from-white to-transparent" />
-              <div className="absolute right-0 top-0 bottom-0 w-6 sm:w-8 z-10 pointer-events-none bg-gradient-to-l from-white to-transparent" />
-              <div className="flex gap-0 overflow-x-hidden min-h-8 px-1">
-                <div className="flex animate-scroll items-center gap-0 shrink-0 min-h-8 py-0.5">
-                  {TRUSTED_BY_LOGOS.map((logo, index) => (
-                    <div
-                      key={`first-${index}`}
-                      className="flex items-center justify-center px-2 sm:px-3 flex-shrink-0 min-h-8 min-w-[48px]"
-                    >
-                      <img
-                        src={logo}
-                        alt=""
-                        width={32}
-                        height={16}
-                        className="h-4 w-auto max-h-6 opacity-50 grayscale object-contain"
-                      />
-                    </div>
-                  ))}
-                </div>
-                <div
-                  className="flex animate-scroll items-center gap-0 shrink-0 min-h-8 py-0.5"
-                  aria-hidden="true"
-                >
-                  {TRUSTED_BY_LOGOS.map((logo, index) => (
-                    <div
-                      key={`second-${index}`}
-                      className="flex items-center justify-center px-2 sm:px-3 flex-shrink-0 min-h-8 min-w-[48px]"
-                    >
-                      <img
-                        src={logo}
-                        alt=""
-                        width={32}
-                        height={16}
-                        className="h-4 w-auto max-h-6 opacity-50 grayscale object-contain"
-                      />
-                    </div>
-                  ))}
+            {/* ── Left panel: pricing (always visible) ── */}
+            <div className={sideBySide ? styles.modalLeftPanel : styles.modalSinglePanel}>
+              <div className={styles.modalHeader}>
+                <div>
+                  <div className={styles.modalIcon} />
+                  <h2 className={styles.modalTitle}>
+                    {upgradeModalUnhideProject
+                      ? `Unhide ${upgradeModalUnhideProject.title || 'Project'}?`
+                      : (PLAN_HEADINGS[selectedPlan?.plan] ?? PLAN_HEADINGS.yrly).title}
+                  </h2>
+                  <p className={styles.modalSubtitle}>
+                    {upgradeModalUnhideProject
+                      ? 'Free users can only have 2 visible projects. Go Pro to add unlimited and unhide this project.'
+                      : (PLAN_HEADINGS[selectedPlan?.plan] ?? PLAN_HEADINGS.yrly).subtitle}
+                  </p>
                 </div>
               </div>
+
+              <div className={styles.modalContent}>
+                {/* Billing toggle */}
+                <div className="mb-6">
+                  <Tabs
+                    value={selectedPlan?.plan ?? ''}
+                    onValueChange={value => {
+                      const newPlan = proPlans.find(p => p.plan === value);
+                      setSelectedPlan(newPlan);
+                      phEvent(POSTHOG_EVENT_NAMES.UPGRADE_PLAN_SELECTED, {
+                        source: 'dropdown',
+                        selected_plan: newPlan?.plan,
+                        selected_amount: Number(newPlan?.amount),
+                        selected_currency: newPlan?.currency,
+                      });
+                    }}
+                  >
+                    <TabsList className="flex p-1 rounded-lg gap-1 w-full h-auto bg-[#f0f0f0]">
+                      {proPlans.map(p => (
+                        <TabsTrigger
+                          key={p.plan}
+                          value={p.plan}
+                          className="flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 text-[#525252] hover:text-[#0a0a0a] data-[state=active]:bg-[#ffffff] data-[state=active]:text-[#0a0a0a] data-[state=active]:shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]"
+                        >
+                          {PLAN_LABELS[p.plan] ?? p.plan}
+                        </TabsTrigger>
+                      ))}
+                    </TabsList>
+                  </Tabs>
+                </div>
+
+                {/* Price */}
+                <div className={styles.priceSection}>
+                  <div className={styles.priceContainer}>
+                    <div className="flex items-baseline gap-2">
+                      <div className={styles.price}>
+                        {formatAmount(getMonthlyAmount(selectedPlan), selectedPlan?.currency)}
+                      </div>
+                      <div className={styles.priceSubtext}>/ per month</div>
+                    </div>
+                    <div className="text-sm text-[#6b7280] font-medium mt-0.5">
+                      billed {formatAmount(selectedPlan?.amount, selectedPlan?.currency)}{' '}
+                      {selectedPlan?.plan === 'yrly' ? 'yearly' : 'quarterly'}
+                    </div>
+                  </div>
+                </div>
+
+                {/* CTA */}
+                {selectedPlan?.plan === 'yrly' ? (
+                  <ConicButton
+                    onClick={openCheckout}
+                    disabled={checkoutLoading}
+                    className="w-full mb-4"
+                  >
+                    <Zap size={13} />
+                    {getButtonText()}
+                  </ConicButton>
+                ) : (
+                  <Button
+                    onClick={openCheckout}
+                    disabled={checkoutLoading}
+                    className="w-full mb-4 h-12 text-sm font-bold bg-[hsl(7,100%,62%)] hover:bg-[hsl(7,100%,55%)] text-white border-none"
+                  >
+                    {getButtonText()}
+                  </Button>
+                )}
+
+                {/* Features */}
+                {(() => {
+                  const allFeatures = [
+                    "Unlimited case studies",
+                    "Custom domain",
+                    "All premium templates",
+                    "AI job search & matching",
+                    "Tailored resumes & cover letters",
+                    "Mock interviews",
+                    "AI case study analysis",
+                  ];
+                  const visible = allFeatures.slice(0, 4);
+                  const hidden = allFeatures.slice(4);
+                  return (
+                    <div className={styles.featuresList}>
+                      {visible.map(f => (
+                        <div key={f} className={styles.featureItem}>
+                          <div className={styles.featureIcon}>✓</div>
+                          <span>{f}</span>
+                        </div>
+                      ))}
+                      <AnimatePresence>
+                        {showAllFeatures && (
+                          <motion.div
+                            key="extra-features"
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                            className="overflow-hidden flex flex-col gap-3"
+                          >
+                            {hidden.map(f => (
+                              <div key={f} className={styles.featureItem}>
+                                <div className={styles.featureIcon}>✓</div>
+                                <span>{f}</span>
+                              </div>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                      <button
+                        onClick={() => setShowAllFeatures(s => !s)}
+                        className="flex items-center gap-1 text-[11px] font-medium text-[#9ca3af] hover:text-[#6b7280] transition-colors duration-150"
+                      >
+                        <ChevronDown
+                          size={12}
+                          strokeWidth={2.5}
+                          className={`transition-transform duration-200 ${showAllFeatures ? 'rotate-180' : ''}`}
+                        />
+                        {showAllFeatures ? 'Show less' : `+${hidden.length} more features`}
+                      </button>
+                    </div>
+                  );
+                })()}
+
+                {/* FAQ toggle chip */}
+                <div className="flex mt-3">
+                  <button
+                    onClick={() => setShowFaq(s => !s)}
+                    className={`flex items-center gap-1.5 text-[11px] font-medium rounded-full px-2.5 py-[5px] border transition-all duration-200 ${showFaq
+                      ? 'border-[#9ca3af] bg-[#f3f4f6] text-[#374151]'
+                      : 'border-[#c4c9d4] bg-transparent text-[#6b7280] hover:text-[#374151] hover:border-[#9ca3af]'
+                      }`}
+                  >
+                    <HelpCircle className="w-3 h-3 flex-shrink-0" />
+                    Have more doubts? FAQ
+                  </button>
+                </div>
+
+                {/* Logo marquee */}
+                <div className="mt-6 pt-4 border-t border-[#e5e7eb] min-h-[64px]">
+                  <p className="text-center text-[10px] font-medium text-[#9ca3af] mb-2">
+                    Trusted by 20000+ designers
+                  </p>
+                  <div className="relative min-h-8 py-1">
+                    <div className="absolute left-0 top-0 bottom-0 w-6 z-10 pointer-events-none bg-gradient-to-r from-white to-transparent" />
+                    <div className="absolute right-0 top-0 bottom-0 w-6 z-10 pointer-events-none bg-gradient-to-l from-white to-transparent" />
+                    <div className="flex gap-0 overflow-x-hidden min-h-8 px-1">
+                      {[TRUSTED_BY_LOGOS, TRUSTED_BY_LOGOS].map((logos, pass) => (
+                        <div
+                          key={pass}
+                          className="flex animate-scroll items-center gap-0 shrink-0 min-h-8 py-0.5"
+                          aria-hidden={pass === 1 ? 'true' : undefined}
+                        >
+                          {logos.map((logo, i) => (
+                            <div key={i} className="flex items-center justify-center px-2 flex-shrink-0 min-h-8 min-w-[48px]">
+                              <img src={logo} alt="" width={32} height={16} className="h-4 w-auto max-h-6 opacity-50 grayscale object-contain" />
+                            </div>
+                          ))}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Mobile: FAQ stacks inline below */}
+                {!sideBySide && (
+                  <AnimatePresence>
+                    {showFaq && (
+                      <motion.div
+                        key="faq-inline"
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                        className="overflow-hidden"
+                      >
+                        <div className="pt-4 mt-3 border-t border-[#e5e7eb]">
+                          <h3 className="text-[14px] font-bold text-[#111827] tracking-tight mb-0.5">
+                            FAQs
+                          </h3>
+                          <Accordion type="single" collapsible className="w-full">
+                            {FAQS.map((item, i) => (
+                              <AccordionItem
+                                key={i}
+                                value={`faq-mob-${i}`}
+                                className="border-b border-[#f3f4f6] last:border-0"
+                              >
+                                <AccordionTrigger className="text-[12px] font-medium text-left text-[#374151] hover:no-underline py-3 leading-snug">
+                                  {item.q}
+                                </AccordionTrigger>
+                                <AccordionContent>
+                                  <p className="text-[11.5px] text-[#6b7280] leading-relaxed pb-1">
+                                    {item.a}
+                                  </p>
+                                </AccordionContent>
+                              </AccordionItem>
+                            ))}
+                          </Accordion>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                )}
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
+
+            {/* ── Right panel: FAQ (desktop side-by-side, fades in after card expands) ── */}
+            {sideBySide && (
+              <AnimatePresence>
+                {showFaq && (
+                  <motion.div
+                    key="faq-panel"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.18, delay: 0.14 }}
+                    className={styles.modalRightPanel}
+                  >
+                    {/* Header pushed below the 80px ::before orange gradient */}
+                    <div className="px-5 py-4 border-b border-[#f3f4f6]">
+                      <h3 className="text-[16px] font-bold text-[#111827] tracking-tight">
+                        FAQs
+                      </h3>
+
+                    </div>
+                    <div className="overflow-y-auto flex-1 px-5 py-2">
+                      <Accordion type="single" collapsible className="w-full">
+                        {FAQS.map((item, i) => (
+                          <AccordionItem
+                            key={i}
+                            value={`faq-desk-${i}`}
+                            className="border-b border-[#f3f4f6] last:border-0"
+                          >
+                            <AccordionTrigger className="text-[13.5px] font-medium text-left text-[#1f2937] hover:no-underline py-4 leading-snug">
+                              {item.q}
+                            </AccordionTrigger>
+                            <AccordionContent>
+                              <p className="text-[13px] text-[#6b7280] leading-relaxed pb-2">
+                                {item.a}
+                              </p>
+                            </AccordionContent>
+                          </AccordionItem>
+                        ))}
+                      </Accordion>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            )}
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
   );
 }

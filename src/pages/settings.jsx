@@ -5,7 +5,7 @@ import ChangePassword from "@/components/changePassword";
 import DeleteAccount from "@/components/deleteAccount";
 import CustomDomain from "@/components/customDomain";
 import DefaultDomain from "@/components/defaultDomain";
-import Transaction from "@/components/transaction";
+import ProSection from "@/components/ProSection";
 import MemoLeftArrow from "@/components/icons/LeftArrow";
 import Link from "next/link";
 import { TEMPLATE_IDS } from "@/lib/templates";
@@ -62,8 +62,11 @@ export default function Settings() {
         return "max-w-[720px] mx-auto flex flex-col gap-3 py-[94px] md:py-[124px] px-4 md:px-0";
       case TEMPLATE_IDS.MONO:
         return "max-w-[640px] mx-auto py-[94px] md:py-[124px] custom-dashed-x bg-[#F0EDE7] dark:bg-[#1A1A1A] min-h-screen";
+      case TEMPLATE_IDS.SPOTLIGHT:
+        return "max-w-[840px] mx-auto py-[94px] md:py-[124px] min-h-screen";
       default:
         return "max-w-[640px] mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0";
+
     }
   })();
 
@@ -77,6 +80,8 @@ export default function Settings() {
         return "bg-white dark:bg-[#2A2520] rounded-2xl  p-8";
       case TEMPLATE_IDS.PROFESSIONAL:
         return "bg-white dark:bg-[#2A2520] rounded-2xl  p-8";
+      case TEMPLATE_IDS.SPOTLIGHT:
+        return "bg-df-section-card-bg-color rounded-2xl  p-8";
       default:
         return "bg-df-section-card-bg-color p-8 rounded-2xl";
     }
@@ -123,14 +128,10 @@ export default function Settings() {
               />
             </div>
 
-            {userDetails?.pro && (
-              <>
-                {isMono && <div className="custom-dashed-t" />}
-                <div className={`${cardClass} ${!isMono ? "mt-6" : ""}`}>
-                  <Transaction />
-                </div>
-              </>
-            )}
+            {isMono && <div className="custom-dashed-t" />}
+            <div className={`${cardClass} ${!isMono ? "mt-6" : ""}`}>
+              <ProSection />
+            </div>
 
             {isMono && <div className="custom-dashed-t" />}
             <div className={`${cardClass} ${!isMono ? "mt-6" : ""}`}>

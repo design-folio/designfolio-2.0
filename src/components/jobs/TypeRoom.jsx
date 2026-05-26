@@ -5,7 +5,9 @@ import Lottie from "lottie-react";
 import aiAssistantAnimation from "@/assets/AI-Assistant.json";
 import { DotTrail } from "./DotTrail";
 import { LocationAutocomplete } from "./LocationAutocomplete";
+import { Input } from "@/components/ui/input";
 import { _getJobRoleSuggestions } from "@/network/jobs";
+import { Button } from "../ui/button";
 
 // Inline BlurredStagger — animates each word with blur fade-in stagger
 function BlurredStagger({ text, className }) {
@@ -49,7 +51,7 @@ export function TypeRoom({ questions, onDone, onReset }) {
   }, [current]);
 
   useEffect(() => {
-    if (locationChoice && locationChoice !== "Remote only") {
+    if (locationChoice) {
       setTimeout(() => cityRef.current?.focus(), 50);
     }
   }, [locationChoice]);
@@ -67,11 +69,16 @@ export function TypeRoom({ questions, onDone, onReset }) {
     return () => clearTimeout(suggestTimerRef.current);
   }, [role]);
 
+  // Auto-select the only option when Q1 appears so city input shows immediately
+  useEffect(() => {
+    if (current === 1 && q1?.options?.length > 0 && locationChoice === null) {
+      setLocationChoice(q1.options[0]);
+    }
+  }, [current, q1, locationChoice]);
+
   const canNext = () => {
     if (current === 0) return role.trim().length > 0;
-    if (current === 1)
-      return locationChoice !== null &&
-        (locationChoice === "Remote only" || city.trim().length > 0);
+    if (current === 1) return city.trim().length > 0;
     return false;
   };
 
@@ -81,13 +88,9 @@ export function TypeRoom({ questions, onDone, onReset }) {
       setCurrent((c) => c + 1);
       return;
     }
-    const locationAnswer =
-      locationChoice === "Remote only"
-        ? "Remote only"
-        : `${locationChoice}: ${city.trim()}`;
     onDone([
       { question: q0.text, answer: role.trim() },
-      { question: q1.text, answer: locationAnswer },
+      { question: q1.text, answer: city.trim() },
     ]);
   };
 
@@ -95,9 +98,6 @@ export function TypeRoom({ questions, onDone, onReset }) {
 
   const handleLocationOption = (option) => {
     setLocationChoice(option);
-    if (option === "Remote only") {
-      setCity("");
-    }
   };
 
   const isLastStep = current === 1;
@@ -119,7 +119,7 @@ export function TypeRoom({ questions, onDone, onReset }) {
       <div />
 
       {/* Question + answer area */}
-      <div className="relative z-10 flex flex-col items-center text-center max-w-lg gap-6 w-full">
+      <div className="relative z-20 flex flex-col items-center text-center max-w-lg gap-6 w-full">
         {/* Lottie AI animation */}
         <motion.div
           initial={{ scale: 0.75, opacity: 0 }}
@@ -148,13 +148,13 @@ export function TypeRoom({ questions, onDone, onReset }) {
               exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.32 }}
             >
-              <input
+              <Input
                 ref={inputRef}
                 data-testid="input-role"
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && advance()}
-                className="w-full bg-background dark:bg-foreground/8 border border-border rounded-2xl px-5 py-4 text-foreground text-[15px] outline-none focus:border-foreground/30 transition-colors text-left"
+                className="rounded-2xl px-5 py-4 text-[15px] h-auto"
               />
               <div className="flex flex-wrap justify-center gap-2">
                 {roleSuggestions.map((s) => (
@@ -184,34 +184,15 @@ export function TypeRoom({ questions, onDone, onReset }) {
               exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.32 }}
             >
-              <div className="flex flex-wrap justify-center gap-3 w-full">
-                {(q1?.options || []).map((option) => (
-                  <motion.button
-                    key={option}
-                    data-testid={`option-${option.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")}`}
-                    onClick={() => handleLocationOption(option)}
-                    whileTap={{ scale: 0.96 }}
-                    className={`cursor-pointer px-5 py-3 rounded-full border text-[14px] font-medium transition-all duration-200 ${locationChoice === option
-                      ? "bg-foreground text-background border-foreground"
-                      : "bg-background dark:bg-foreground/8 border-border text-foreground hover:border-foreground/40"
-                      }`}
-                  >
-                    {option}
-                  </motion.button>
-                ))}
-              </div>
               <AnimatePresence>
-                {locationChoice && locationChoice !== "Remote only" && (
+                {locationChoice && (
                   <motion.div
-                    className="w-full flex flex-col gap-2"
+                    className="w-full"
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 8 }}
                     transition={{ duration: 0.25 }}
                   >
-                    <p className="text-muted-foreground text-[13px] text-left">
-                      Which city or region?
-                    </p>
                     <LocationAutocomplete
                       inputRef={cityRef}
                       value={city}
@@ -232,41 +213,41 @@ export function TypeRoom({ questions, onDone, onReset }) {
       <div className="relative z-10 flex flex-col items-center gap-5 w-full max-w-lg mt-8">
         <div className="flex items-center justify-between w-full gap-3">
           {/* Back */}
-          <motion.button
+          <Button
             data-testid="button-back"
+            variant="outline"
             onClick={goBack}
-            whileTap={{ scale: 0.94 }}
-            className={`cursor-pointer flex items-center gap-1.5 px-5 py-3 rounded-full border border-border text-[14px] font-medium text-muted-foreground transition-all duration-200 hover:text-foreground hover:border-foreground/30 ${current === 0 ? "invisible" : ""}`}
+            className={`px-5 py-3 h-auto text-[14px] ${current === 0 ? "invisible" : ""}`}
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft />
             Back
-          </motion.button>
+          </Button>
 
           <DotTrail current={current} total={2} />
 
           {/* Next / Scan Jobs */}
-          <motion.button
+          <Button
             data-testid={isLastStep ? "button-scan-jobs" : "button-next"}
             onClick={advance}
             disabled={!canNext()}
-            whileTap={{ scale: 0.94 }}
-            className="cursor-pointer flex items-center gap-2 px-5 py-3 rounded-full text-[14px] font-medium transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed bg-foreground text-background"
+            className="px-5 py-3 h-auto text-[14px]"
           >
             {isLastStep ? (
-              <>Find matching Jobs <Search className="w-4 h-4" /></>
+              <>Find matching Jobs <Search /></>
             ) : (
-              <>Continue <ArrowRight className="w-4 h-4" /></>
+              <>Continue <ArrowRight /></>
             )}
-          </motion.button>
+          </Button>
         </div>
 
-        <button
+        <Button
+          variant="ghost"
           data-testid="button-do-later-type"
           onClick={onReset}
           className="cursor-pointer text-muted-foreground/50 text-[12px] hover:text-muted-foreground transition-colors"
         >
           I&apos;ll do it later
-        </button>
+        </Button>
       </div>
     </motion.div>
   );

@@ -1,6 +1,6 @@
 import React from "react";
 import { motion, AnimatePresence, MotionConfig } from "framer-motion";
-import { ChevronDown, Briefcase, Sparkles } from "lucide-react";
+import { ChevronDown, Briefcase, Sparkles, LayoutTemplate } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/router";
@@ -26,7 +26,7 @@ const categories = [
   {
     id: "portfolio",
     label: "Portfolio builder",
-    icon: Briefcase,
+    icon: LayoutTemplate,
     color: "#1A1A1A",
     navigation: "/builder",
   },
@@ -36,6 +36,13 @@ const categories = [
     icon: Sparkles,
     color: "#A06CD5",
     navigation: "/builder?view=ai-tools&type=optimize-resume",
+  },
+  {
+    id: "jobs",
+    label: "Jobs",
+    icon: Briefcase,
+    color: "#1A1A1A",
+    navigation: "/jobs",
   },
 ];
 

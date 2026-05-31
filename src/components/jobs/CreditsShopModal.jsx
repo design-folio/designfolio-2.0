@@ -35,7 +35,7 @@ export function CreditsShopModal({ open, onClose, onBuy, buying = false }) {
   }, [open]);
 
   const quantities = pack?.quantities ?? {};
-  const amount = pack?.amount ?? 1999;
+  const amount = pack?.amount ?? 999;
   const symbol = pack?.currency === "USD" ? "$" : "₹";
   const totalUses = Object.values(quantities).reduce((s, v) => s + v, 0) || 0;
 

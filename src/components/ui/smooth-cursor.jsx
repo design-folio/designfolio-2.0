@@ -10,7 +10,7 @@ const defaultSpringConfig = {
 };
 
 const MinimalCursor = ({ isHovering }) => {
-  const { isMobile } = useIsMobile();
+  const isMobile = useIsMobile();
   if (isMobile) return null;
   return (
     <motion.div
@@ -106,8 +106,7 @@ const ProfessionalCursor = ({ isHovering }) => {
 export function SmoothCursor({ springConfig = defaultSpringConfig, type = "professional" }) {
 
 
-  const { isMobile } = useIsMobile();
-  if (isMobile) return null;
+  const isMobile = useIsMobile();
   const [isHovering, setIsHovering] = useState(false);
   const lastMousePos = useRef({ x: 0, y: 0 });
   const velocity = useRef({ x: 0, y: 0 });
@@ -130,6 +129,7 @@ export function SmoothCursor({ springConfig = defaultSpringConfig, type = "profe
   });
 
   useEffect(() => {
+    if (isMobile) return;
     const style = document.createElement("style");
     style.innerHTML = `* { cursor: none !important; }`;
     document.head.appendChild(style);
@@ -203,7 +203,9 @@ export function SmoothCursor({ springConfig = defaultSpringConfig, type = "profe
       }
       if (rafId) cancelAnimationFrame(rafId);
     };
-  }, [cursorX, cursorY, rotation, scale, type]);
+  }, [cursorX, cursorY, rotation, scale, type, isMobile]);
+
+  if (isMobile) return null;
 
   return (
     <motion.div

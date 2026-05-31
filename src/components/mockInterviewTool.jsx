@@ -7,6 +7,7 @@ import QuestionDisplay from "./QuestionDisplay";
 import DetailedFeedback from "./DetailedFeedback";
 import { Button } from "@/components/ui/button";
 import { getAiToolResult, setAiToolResult } from "@/lib/ai-tools-usage";
+import axiosInstance from "@/network/axiosInstance";
 
 const MOCK_INTERVIEW_STORAGE_KEY = "mock-interview";
 
@@ -85,19 +86,17 @@ export default function MockInterviewTool({ onToolUsed, onViewChange, onReportVi
     }
     try {
       setIsLoading(true);
-      const res = await fetch("/api/interview-questions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ jobDescription: jd.trim(), role: r.trim(), difficulty: diff || "mid" }),
+      const { data } = await axiosInstance.post("/ai/tools/interview/questions", {
+        jobDescription: jd.trim(), role: r.trim(), difficulty: diff || "mid",
       });
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.message || "Failed to generate questions");
-      }
       setQuestions(data.questions);
       setIsInterviewStarted(true);
     } catch (error) {
       console.error("Error generating questions:", error);
+      if (error.response?.data?.limitReached) {
+        onToolUsed?.();
+        return;
+      }
       toast.error("Failed to generate questions. Please try again.");
     } finally {
       setIsLoading(false);
@@ -116,25 +115,21 @@ export default function MockInterviewTool({ onToolUsed, onViewChange, onReportVi
     if (currentQuestionIndex === questions.length - 1) {
       try {
         setIsGeneratingFeedback(true);
-        const res = await fetch("/api/interview-feedback", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            role,
-            questions,
-            userAnswers: newUserAnswers,
-          }),
+        const { data } = await axiosInstance.post("/ai/tools/interview/feedback", {
+          role,
+          questions,
+          userAnswers: newUserAnswers,
         });
-        const data = await res.json();
-        if (!res.ok) {
-          throw new Error(data.message || "Failed to generate feedback");
-        }
         setFeedback(data.feedback);
         setIsFinished(true);
         setAiToolResult(MOCK_INTERVIEW_STORAGE_KEY, { feedback: data.feedback });
         onToolUsed?.();
       } catch (error) {
         console.error("Error generating feedback:", error);
+        if (error.response?.data?.limitReached) {
+          onToolUsed?.();
+          return;
+        }
         toast.error("Failed to generate feedback. Please try again.");
       } finally {
         setIsGeneratingFeedback(false);

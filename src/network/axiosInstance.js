@@ -38,6 +38,10 @@ axiosInstance.interceptors.response.use(
       return Promise.reject(error);
     }
     if (error.response) {
+      // Guest rate-limit: let the calling component handle the UI (banner, etc.). No toast.
+      if (error.response.data?.limitReached) {
+        return Promise.reject(error);
+      }
       let errorMessage = "Error: ";
       switch (error.response.status) {
         case 400:

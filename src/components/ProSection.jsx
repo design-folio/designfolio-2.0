@@ -3,20 +3,21 @@ import { _getPaymentDetails, _getDodoPortalUrl } from "@/network/get-request";
 import { useGlobalContext } from "@/context/globalContext";
 
 const PLAN_LABEL = {
-  qtrly:    "Quarterly",
-  yrly:     "Yearly",
-  "1m":     "1 Month",
-  "3m":     "3 Months",
+  mthly: "Monthly",
+  qtrly: "Quarterly",
+  yrly: "Yearly",
+  "1m": "1 Month",
+  "3m": "3 Months",
   lifetime: "Lifetime",
-  free:     "Free",
+  free: "Free",
 };
 
 const STATUS_CONFIG = {
-  active:    { dot: "#22C55E", label: "Active",        textClass: "text-[#15803d] dark:text-[#4ade80]" },
-  paid:      { dot: "#22C55E", label: "Active",        textClass: "text-[#15803d] dark:text-[#4ade80]" },
-  on_hold:   { dot: "#F59E0B", label: "Payment issue", textClass: "text-[#b45309] dark:text-[#fcd34d]" },
-  cancelled: { dot: "#EF4444", label: "Cancelled",     textClass: "text-[#b91c1c] dark:text-[#fca5a5]" },
-  expired:   { dot: "#9CA3AF", label: "Expired",       textClass: "text-[#6b7280] dark:text-[#9ca3af]" },
+  active: { dot: "#22C55E", label: "Active", textClass: "text-[#15803d] dark:text-[#4ade80]" },
+  paid: { dot: "#22C55E", label: "Active", textClass: "text-[#15803d] dark:text-[#4ade80]" },
+  on_hold: { dot: "#F59E0B", label: "Payment issue", textClass: "text-[#b45309] dark:text-[#fcd34d]" },
+  cancelled: { dot: "#EF4444", label: "Cancelled", textClass: "text-[#b91c1c] dark:text-[#fca5a5]" },
+  expired: { dot: "#9CA3AF", label: "Expired", textClass: "text-[#6b7280] dark:text-[#9ca3af]" },
 };
 
 function formatDate(iso) {
@@ -38,7 +39,7 @@ function Skeleton() {
 
 export default function ProSection() {
   const { setShowUpgradeModal } = useGlobalContext();
-  const [order, setOrder]             = useState(undefined);
+  const [order, setOrder] = useState(undefined);
   const [portalLoading, setPortalLoading] = useState(false);
 
   useEffect(() => {
@@ -58,13 +59,15 @@ export default function ProSection() {
     }
   };
 
-  const loading    = order === undefined;
-  const isPro      = order && ["active", "on_hold", "paid"].includes(order.status)
-                     || (order?.status === "cancelled" && order?.cancellationScheduled);
-  const isDodo     = order?.aggregator === 2;
-  const status     = order?.status ?? "free";
-  const statusCfg  = STATUS_CONFIG[status] ?? STATUS_CONFIG.active;
-  const planType   = (isPro && order?.planType) ? order.planType : "free";
+  const loading = order === undefined;
+  const isPro = order && ["active", "on_hold", "paid"].includes(order.status)
+    || (order?.status === "cancelled" && order?.cancellationScheduled);
+  const isDodo = order?.aggregator === 2;
+  const status = order?.status ?? "free";
+  const statusCfg = STATUS_CONFIG[status] ?? STATUS_CONFIG.active;
+  const planType = (isPro && order?.planType) ? order.planType : "free";
+
+  const cancelScheduled = isPro && !!order?.cancellationScheduled;
 
   return (
     <div>
@@ -85,23 +88,25 @@ export default function ProSection() {
                 </span>
 
                 {isPro && (
-                  <span className={`flex items-center gap-1.5 text-[12px] font-medium ${statusCfg.textClass}`}>
+                  <span
+                    className={`flex items-center gap-1.5 text-[12px] font-medium ${cancelScheduled ? "text-[#b45309] dark:text-[#fcd34d]" : statusCfg.textClass}`}
+                  >
                     <span
                       className="inline-block w-1.5 h-1.5 rounded-full"
-                      style={{ background: statusCfg.dot }}
+                      style={{ background: cancelScheduled ? "#F59E0B" : statusCfg.dot }}
                     />
-                    {statusCfg.label}
+                    {cancelScheduled ? "Cancels soon" : statusCfg.label}
                   </span>
                 )}
               </div>
 
               {order?.proExpiresAt && (
                 <p className="text-[12px] text-[#7A736C] dark:text-[#B5AFA5]">
-                  {order.cancellationScheduled
+                  {cancelScheduled
                     ? `Ends ${formatDate(order.proExpiresAt)}`
                     : status === "active"
-                    ? `Renews ${formatDate(order.proExpiresAt)}`
-                    : `Expired ${formatDate(order.proExpiresAt)}`}
+                      ? `Renews ${formatDate(order.proExpiresAt)}`
+                      : `Expired ${formatDate(order.proExpiresAt)}`}
                 </p>
               )}
             </div>
@@ -136,10 +141,12 @@ export default function ProSection() {
               </p>
             </div>
           )}
-          {order?.cancellationScheduled && (
+          {cancelScheduled && (
             <div className="mt-4 px-3 py-2.5 rounded-xl bg-[#fff7ed] dark:bg-[#f59e0b]/10 border border-[#fed7aa] dark:border-[#f59e0b]/20">
               <p className="text-[12px] text-[#9a3412] dark:text-[#fed7aa] leading-relaxed">
-                Plan cancelled. You have access until {formatDate(order.proExpiresAt)}.
+                Your Pro plan is set to cancel. You'll keep full access until{" "}
+                <span className="font-semibold">{formatDate(order.proExpiresAt)}</span>, then move to Free.
+                {isDodo && " Changed your mind? Resume anytime from Manage subscription."}
               </p>
             </div>
           )}

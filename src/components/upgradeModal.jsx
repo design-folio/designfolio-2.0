@@ -306,16 +306,26 @@ export default function UpgradeModal() {
                 {/* Price */}
                 <div className={styles.priceSection}>
                   <div className={styles.priceContainer}>
-                    <div className="flex items-baseline gap-2">
-                      <div className={styles.price}>
-                        {formatAmount(getMonthlyAmount(selectedPlan), selectedPlan?.currency)}
-                      </div>
-                      <div className={styles.priceSubtext}>/ per month</div>
-                    </div>
-                    <div className="text-sm text-[#6b7280] font-medium mt-0.5">
-                      billed {formatAmount(selectedPlan?.amount, selectedPlan?.currency)}{' '}
-                      {{ mthly: 'monthly', qtrly: 'quarterly', yrly: 'yearly' }[selectedPlan?.plan] ?? 'per period'}
-                    </div>
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={selectedPlan?.plan}
+                        initial={{ opacity: 0, y: 4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -4 }}
+                        transition={{ duration: 0.14 }}
+                      >
+                        <div className="flex items-baseline gap-2">
+                          <div className={styles.price}>
+                            {formatAmount(getMonthlyAmount(selectedPlan), selectedPlan?.currency)}
+                          </div>
+                          <div className={styles.priceSubtext}>/ per month</div>
+                        </div>
+                        <div className="text-sm text-[#6b7280] font-medium mt-0.5">
+                          billed {formatAmount(selectedPlan?.amount, selectedPlan?.currency)}{' '}
+                          {{ mthly: 'monthly', qtrly: 'quarterly', yrly: 'yearly' }[selectedPlan?.plan] ?? 'per period'}
+                        </div>
+                      </motion.div>
+                    </AnimatePresence>
                   </div>
                 </div>
 

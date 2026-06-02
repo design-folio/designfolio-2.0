@@ -16,9 +16,13 @@ import {
 import { ConicButton } from '@/components/ui/ConicButton';
 import { Button } from '@/components/ui/button';
 
-const PLAN_LABELS = { qtrly: 'Quarterly', yrly: 'Yearly' };
+const PLAN_LABELS = { mthly: 'Monthly', qtrly: 'Quarterly', yrly: 'Yearly' };
 
 const PLAN_HEADINGS = {
+  mthly: {
+    title: 'Get Hired Faster',
+    subtitle: 'Your portfolio, resumes, AI job tools & interview prep — all in one place.',
+  },
   qtrly: {
     title: 'Get Hired Faster',
     subtitle: 'Your portfolio, resumes, AI job tools & interview prep — all in one place.',
@@ -54,7 +58,7 @@ const FAQS = [
   },
   {
     q: 'Which plans include AI job matching?',
-    a: 'AI job matching, tailored resumes, cover letters, mock interviews, and job insights are all exclusive to Pro — available on both Quarterly and Yearly billing.',
+    a: 'AI job matching, tailored resumes, cover letters, mock interviews, and job insights are all exclusive to Pro — available on Monthly, Quarterly, and Yearly billing.',
   },
   {
     q: 'Is there a free trial?',
@@ -98,7 +102,7 @@ export default function UpgradeModal() {
         const plans = response?.data?.proPlans;
         if (Array.isArray(plans) && plans.length > 0) {
           setProPlans(plans);
-          setSelectedPlan(plans.find(p => p.plan === 'yrly') || plans[0]);
+          setSelectedPlan(plans.find(p => p.plan === 'qtrly') || plans[0]);
         }
       });
     }
@@ -141,26 +145,40 @@ export default function UpgradeModal() {
 
   function getMonthlyAmount(plan) {
     if (!plan) return 0;
-    if (plan.plan === 'yrly') return Math.round(Number(plan.amount) / 12);
+    if (plan.plan === 'yrly')  return Math.round(Number(plan.amount) / 12);
     if (plan.plan === 'qtrly') return Math.round(Number(plan.amount) / 3);
-    return Number(plan.amount);
+    return Number(plan.amount); // mthly: amount is already monthly
   }
 
-  function getYearlySavingsPct() {
-    const qtrly = proPlans.find(p => p.plan === 'qtrly');
-    const yrly = proPlans.find(p => p.plan === 'yrly');
-    if (!qtrly || !yrly) return 0;
-    const annualQtrly = Number(qtrly.amount) * 4;
-    return Math.round((1 - Number(yrly.amount) / annualQtrly) * 100);
+  function getSavingsPct(planKey) {
+    const mthly = proPlans.find(p => p.plan === 'mthly');
+    if (!mthly) return 0;
+    const monthlyPrice = Number(mthly.amount);
+    if (planKey === 'qtrly') {
+      const q = proPlans.find(p => p.plan === 'qtrly');
+      if (!q) return 0;
+      return Math.round((1 - Number(q.amount) / 3 / monthlyPrice) * 100);
+    }
+    if (planKey === 'yrly') {
+      const y = proPlans.find(p => p.plan === 'yrly');
+      if (!y) return 0;
+      return Math.round((1 - Number(y.amount) / 12 / monthlyPrice) * 100);
+    }
+    return 0;
   }
 
   function getButtonText() {
     if (checkoutLoading) return 'Opening checkout…';
-    if (selectedPlan?.plan === 'yrly') {
-      const savePct = getYearlySavingsPct();
-      return savePct > 0 ? `Get PRO — Save ${savePct}% yearly` : 'Get PRO — Yearly';
+    if (selectedPlan?.plan === 'mthly') return 'Get PRO Monthly';
+    if (selectedPlan?.plan === 'qtrly') {
+      const savePct = getSavingsPct('qtrly');
+      return savePct > 0 ? `Get PRO Quarterly • Save ${savePct}%` : 'Get PRO Quarterly';
     }
-    return 'Get PRO — Quarterly';
+    if (selectedPlan?.plan === 'yrly') {
+      const savePct = getSavingsPct('yrly');
+      return savePct > 0 ? `Get PRO Yearly • Save ${savePct}%` : 'Get PRO Yearly';
+    }
+    return 'Get PRO';
   }
 
   const openCheckout = async () => {
@@ -288,16 +306,26 @@ export default function UpgradeModal() {
                 {/* Price */}
                 <div className={styles.priceSection}>
                   <div className={styles.priceContainer}>
-                    <div className="flex items-baseline gap-2">
-                      <div className={styles.price}>
-                        {formatAmount(getMonthlyAmount(selectedPlan), selectedPlan?.currency)}
-                      </div>
-                      <div className={styles.priceSubtext}>/ per month</div>
-                    </div>
-                    <div className="text-sm text-[#6b7280] font-medium mt-0.5">
-                      billed {formatAmount(selectedPlan?.amount, selectedPlan?.currency)}{' '}
-                      {selectedPlan?.plan === 'yrly' ? 'yearly' : 'quarterly'}
-                    </div>
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={selectedPlan?.plan}
+                        initial={{ opacity: 0, y: 4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -4 }}
+                        transition={{ duration: 0.14 }}
+                      >
+                        <div className="flex items-baseline gap-2">
+                          <div className={styles.price}>
+                            {formatAmount(getMonthlyAmount(selectedPlan), selectedPlan?.currency)}
+                          </div>
+                          <div className={styles.priceSubtext}>/ per month</div>
+                        </div>
+                        <div className="text-sm text-[#6b7280] font-medium mt-0.5">
+                          billed {formatAmount(selectedPlan?.amount, selectedPlan?.currency)}{' '}
+                          {{ mthly: 'monthly', qtrly: 'quarterly', yrly: 'yearly' }[selectedPlan?.plan] ?? 'per period'}
+                        </div>
+                      </motion.div>
+                    </AnimatePresence>
                   </div>
                 </div>
 

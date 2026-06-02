@@ -11,6 +11,7 @@ export default function LandingHeader({
   hasParsedResume,
   ctaLabel,
   onPrimaryCta,
+  primaryCtaLoading,
 }) {
   return (
     <header className="sticky top-0 z-50 w-full bg-[--lp-bg] md:bg-[color-mix(in_srgb,var(--lp-bg)_95%,transparent)] md:backdrop-blur before:absolute before:content-[''] before:inset-x-[-100vw] before:bottom-0 before:h-px before:bg-[--lp-border]">
@@ -32,7 +33,7 @@ export default function LandingHeader({
           style={{ fontFamily: '"DM Mono", monospace' }}
         >
           <BlurHoverText
-            defaultText="25000+ USERS"
+            defaultText="TRUSTED BY 25000+ JOB SEEKERS"
             hoverText="5000+ PORTFOLIOS LAUNCHED"
             scrollActive={showNavCTA}
           />
@@ -66,6 +67,7 @@ export default function LandingHeader({
                   size="sm"
                   href={dfToken ? "/builder" : hasParsedResume ? "/resume-signup" : undefined}
                   onClick={!dfToken && !hasParsedResume ? onPrimaryCta : undefined}
+                  loading={primaryCtaLoading}
                 />
               </motion.div>
             )}

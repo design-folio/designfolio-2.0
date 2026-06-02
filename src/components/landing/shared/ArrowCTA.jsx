@@ -1,5 +1,6 @@
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
+import { Spinner } from "@/components/ui/spinner";
 
 /**
  * Split pill CTA button: [label text][arrow circle]
@@ -10,12 +11,15 @@ import Link from "next/link";
  *  size    – "lg" (default) | "sm"
  *  href    – link destination (optional)
  *  onClick – click handler for action-only CTAs
+ *  loading – when true, the arrow circle shows a spinner and the CTA is
+ *            non-interactive (used while a navigation is in flight)
  */
 export default function ArrowCTA({
   label = "Get started for Free",
   size = "lg",
   href,
   onClick,
+  loading = false,
   className = "",
 }) {
   const isLg = size === "lg";
@@ -26,6 +30,7 @@ export default function ArrowCTA({
 
   const circleSz = isLg ? "h-[46px] w-[46px]" : "h-[32px] w-[32px]";
   const arrowSz = isLg ? "h-[18px] w-[18px]" : "h-[14px] w-[14px]";
+  const spinnerSz = isLg ? "size-[18px]" : "size-[14px]";
   const translateOut = isLg ? "group-hover:translate-x-8 group-hover:-translate-y-8" : "group-hover:translate-x-6 group-hover:-translate-y-6";
   const translateIn = isLg ? "-translate-x-10 translate-y-10" : "-translate-x-7 translate-y-7";
 
@@ -40,30 +45,50 @@ export default function ArrowCTA({
       <div
         className={`cursor-pointer relative flex-shrink-0 overflow-hidden rounded-full bg-[--lp-text] text-[--lp-fg-white] transition-colors duration-500 ease-in-out group-hover:bg-[--lp-accent-hover] group-hover:text-white ${circleSz}`}
       >
-        <ArrowUpRight
-          className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-500 ease-in-out ${translateOut} ${arrowSz}`}
-          strokeWidth={2.5}
-        />
-        <ArrowUpRight
-          className={`absolute top-1/2 left-1/2 transition-all duration-500 ease-in-out group-hover:-translate-x-1/2 group-hover:-translate-y-1/2 ${translateIn} ${arrowSz}`}
-          strokeWidth={2.5}
-        />
+        {loading ? (
+          <span className="absolute inset-0 flex items-center justify-center">
+            <Spinner className={spinnerSz} />
+          </span>
+        ) : (
+          <>
+            <ArrowUpRight
+              className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-500 ease-in-out ${translateOut} ${arrowSz}`}
+              strokeWidth={2.5}
+            />
+            <ArrowUpRight
+              className={`absolute top-1/2 left-1/2 transition-all duration-500 ease-in-out group-hover:-translate-x-1/2 group-hover:-translate-y-1/2 ${translateIn} ${arrowSz}`}
+              strokeWidth={2.5}
+            />
+          </>
+        )}
       </div>
     </>
   );
 
-  const wrapperClass = `group inline-flex cursor-pointer items-center gap-0 rounded-full no-underline ${className}`.trim();
+  const wrapperClass = `group inline-flex cursor-pointer items-center gap-0 rounded-full no-underline ${loading ? "pointer-events-none" : ""} ${className}`.trim();
 
   if (href) {
     return (
-      <Link href={href} onClick={onClick} className={wrapperClass}>
+      <Link
+        href={href}
+        onClick={onClick}
+        className={wrapperClass}
+        aria-busy={loading}
+        aria-disabled={loading || undefined}
+      >
         {content}
       </Link>
     );
   }
 
   return (
-    <button type="button" onClick={onClick} className={wrapperClass}>
+    <button
+      type="button"
+      onClick={onClick}
+      className={wrapperClass}
+      disabled={loading}
+      aria-busy={loading}
+    >
       {content}
     </button>
   );

@@ -23,6 +23,7 @@ export default function ResumeUploadZone({
   hasParsedResume = false,
   onPrimaryCta,
   primaryCtaLabel = "Upload Resume",
+  primaryCtaLoading = false,
   variant = "hero",
 }) {
   const router = useRouter();
@@ -196,6 +197,7 @@ export default function ResumeUploadZone({
                 label={primaryCtaLabel}
                 size="lg"
                 onClick={handlePrimaryClick}
+                loading={primaryCtaLoading}
               />
             </motion.div>
           ) : (

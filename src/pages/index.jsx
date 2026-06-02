@@ -146,6 +146,39 @@ export default function LandingPage({ dfToken, dfParsedResume }) {
       ? "Continue Signup"
       : "Get Started";
 
+  // The page the primary CTA navigates to (null when it only opens the modal).
+  const primaryCtaDest = dfToken
+    ? "/builder"
+    : hasParsedResume
+      ? "/resume-signup"
+      : null;
+
+  const [isNavigatingPrimary, setIsNavigatingPrimary] = useState(false);
+
+  useEffect(() => {
+    if (primaryCtaDest) router.prefetch(primaryCtaDest);
+  }, [primaryCtaDest, router]);
+
+  useEffect(() => {
+    if (!primaryCtaDest) return;
+    const matchesDest = (url) =>
+      url === primaryCtaDest ||
+      url.startsWith(`${primaryCtaDest}?`) ||
+      url.startsWith(`${primaryCtaDest}/`);
+    const onStart = (url) => {
+      if (matchesDest(url)) setIsNavigatingPrimary(true);
+    };
+    const onDone = () => setIsNavigatingPrimary(false);
+    router.events.on("routeChangeStart", onStart);
+    router.events.on("routeChangeComplete", onDone);
+    router.events.on("routeChangeError", onDone);
+    return () => {
+      router.events.off("routeChangeStart", onStart);
+      router.events.off("routeChangeComplete", onDone);
+      router.events.off("routeChangeError", onDone);
+    };
+  }, [primaryCtaDest, router.events]);
+
   const handlePrimaryCta = useCallback(() => {
     if (dfToken) {
       router.push("/builder");
@@ -281,6 +314,7 @@ export default function LandingPage({ dfToken, dfParsedResume }) {
             hasParsedResume={hasParsedResume}
             ctaLabel={primaryCtaLabel}
             onPrimaryCta={handlePrimaryCta}
+            primaryCtaLoading={isNavigatingPrimary}
           />
 
           <main className="flex flex-col items-center">
@@ -289,6 +323,7 @@ export default function LandingPage({ dfToken, dfParsedResume }) {
               hasParsedResume={hasParsedResume}
               onPrimaryCta={handlePrimaryCta}
               primaryCtaLabel={dfToken ? "Launch Builder" : hasParsedResume ? "Continue Signup" : "Upload Resume"}
+              primaryCtaLoading={isNavigatingPrimary}
             />
             <LandingVideoSection ref={videoSectionRef} isDark={isDark} />
             <LandingTrustedBySection />
@@ -307,6 +342,7 @@ export default function LandingPage({ dfToken, dfParsedResume }) {
               dfToken={dfToken}
               hasParsedResume={hasParsedResume}
               onPrimaryCta={handlePrimaryCta}
+              primaryCtaLoading={isNavigatingPrimary}
             />
             <LandingFooter />
           </main>
@@ -325,6 +361,7 @@ export default function LandingPage({ dfToken, dfParsedResume }) {
           hasDfToken={dfToken}
           hasParsedResume={hasParsedResume}
           onPrimaryCta={handlePrimaryCta}
+          primaryCtaLoading={isNavigatingPrimary}
         />
       </div>
     </>

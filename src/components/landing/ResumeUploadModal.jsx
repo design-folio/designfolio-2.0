@@ -9,6 +9,7 @@ export default function ResumeUploadModal({
   hasDfToken,
   hasParsedResume,
   onPrimaryCta,
+  primaryCtaLoading,
 }) {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
@@ -69,6 +70,7 @@ export default function ResumeUploadModal({
                   hasParsedResume={hasParsedResume}
                   onPrimaryCta={onPrimaryCta}
                   variant="modal"
+                  primaryCtaLoading={primaryCtaLoading}
                   primaryCtaLabel={
                     hasDfToken
                       ? "Launch Builder"

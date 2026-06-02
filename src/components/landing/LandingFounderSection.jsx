@@ -1,6 +1,6 @@
 import ArrowCTA from "./shared/ArrowCTA";
 
-export default function LandingFounderSection({ dfToken, hasParsedResume, onPrimaryCta }) {
+export default function LandingFounderSection({ dfToken, hasParsedResume, onPrimaryCta, primaryCtaLoading }) {
   const ctaLabel = dfToken
     ? "Launch Builder"
     : hasParsedResume
@@ -68,6 +68,7 @@ export default function LandingFounderSection({ dfToken, hasParsedResume, onPrim
             size="lg"
             href={ctaHref}
             onClick={!ctaHref ? onPrimaryCta : undefined}
+            loading={primaryCtaLoading}
           />
         </div>
       </div>

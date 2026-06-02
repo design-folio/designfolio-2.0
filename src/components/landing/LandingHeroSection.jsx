@@ -6,6 +6,7 @@ export default function LandingHeroSection({
   hasParsedResume,
   onPrimaryCta,
   primaryCtaLabel,
+  primaryCtaLoading,
 }) {
   return (
     <section
@@ -42,6 +43,7 @@ export default function LandingHeroSection({
           hasParsedResume={hasParsedResume}
           onPrimaryCta={onPrimaryCta}
           primaryCtaLabel={primaryCtaLabel}
+          primaryCtaLoading={primaryCtaLoading}
         />
       </motion.div>
     </section>

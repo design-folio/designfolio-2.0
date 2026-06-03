@@ -156,8 +156,8 @@ export default function ResumeUploadZone({
               transition={{ duration: 0.25 }}
               className={
                 variant === "modal"
-                  ? "orb-always-active w-full flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-[--lp-border] bg-[--lp-text]/[0.03] px-6 py-10"
-                  : "orb-always-active inline-flex items-center gap-3.5 rounded-xl border border-dashed border-[--lp-border] bg-[--lp-text]/[0.03] px-5 py-3"
+                  ? "orb-always-active w-full flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-[#1D1B1A]/25 dark:border-white/25 bg-[#1D1B1A]/[0.03] dark:bg-white/[0.05] px-6 py-10"
+                  : "orb-always-active inline-flex items-center gap-3.5 rounded-xl border border-dashed border-[#1D1B1A]/25 dark:border-white/25 bg-[#1D1B1A]/[0.03] dark:bg-white/[0.05] px-5 py-3"
               }
               style={{
                 boxShadow: isDark
@@ -219,8 +219,8 @@ export default function ResumeUploadZone({
                   ? "w-full flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed px-6 py-10 [&_*]:cursor-pointer"
                   : "inline-flex items-center gap-3.5 rounded-xl border border-dashed px-5 py-3 [&_*]:cursor-pointer"
                   } transition-all duration-200 ${isDragging
-                    ? "border-[--lp-accent] bg-[--lp-accent]/5"
-                    : "border-[--lp-border] bg-[--lp-text]/[0.03] hover:border-[--lp-text]/45 hover:bg-[--lp-text]/[0.05]"
+                    ? "border-[--lp-accent] bg-[#e54d2e]/[0.08]"
+                    : "border-[#1D1B1A]/25 dark:border-white/25 bg-[#1D1B1A]/[0.03] dark:bg-white/[0.05] hover:border-[#1D1B1A]/45 dark:hover:border-white/40 hover:bg-[#1D1B1A]/[0.05] dark:hover:bg-white/[0.07]"
                   }`}
               >
                 <Folder isDragging={isDragging} />

@@ -3,9 +3,10 @@
   --lp-bg: #fffef2;
   --lp-card: #f4f3e5;
   --lp-border: #eae9e4;
+  --lp-heading: #463b34;
   --lp-text: #1d1b1a;
-  --lp-text-muted: rgba(29, 27, 26, 0.5);
-  --lp-text-faint: rgba(29, 27, 26, 0.4);
+  --lp-text-muted: #1c1b1ab3;
+  --lp-text-faint: #a09890;
   --lp-accent: #e54d2e;
   --lp-accent-hover: #ff553e;
   --lp-fg-white: #fdfcf8;
@@ -255,9 +256,10 @@
   --lp-bg: #1a1a18;
   --lp-card: #1e1e1b;
   --lp-border: rgba(255, 255, 255, 0.1);
+  --lp-heading: #f4f2eb;
   --lp-text: #f0ede7;
-  --lp-text-muted: rgba(240, 237, 231, 0.5);
-  --lp-text-faint: rgba(240, 237, 231, 0.4);
+  --lp-text-muted: #f4f2ebb3;
+  --lp-text-faint: #7a736c;
   --lp-fg-white: #1d1b1a;
   --lp-video-border: rgba(255, 255, 255, 0.1);
   --onboarding-selected-bg: rgba(255, 85, 62, 0.12);

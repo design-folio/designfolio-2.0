@@ -8,7 +8,7 @@ const LandingVideoSection = forwardRef(function LandingVideoSection({ isDark }, 
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
-        className="relative rounded-[20px] overflow-hidden shadow-xl border border-[--lp-video-border] bg-[#141414]"
+        className="relative rounded-[20px] overflow-hidden border border-[--lp-video-border] bg-[#141414]"
       >
         <div className="relative w-full overflow-hidden" style={{ paddingTop: "65%" }}>
           <video

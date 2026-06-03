@@ -208,11 +208,16 @@ function CanvasPreview({ parsed }) {
                     <h3 className="text-base font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
                       {e.role}{e.company ? ` @ ${e.company}` : ""}
                     </h3>
-                    {(e.startDate || e.endDate) && (
-                      <div className="bg-[#F0EDE7] dark:bg-[#3A352E] px-3 py-1 rounded-full text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] w-fit whitespace-nowrap">
-                        {e.startDate}{e.endDate ? ` — ${e.endDate}` : " — Present"}
-                      </div>
-                    )}
+                    {(() => {
+                      const start = [e.startMonth, e.startYear].filter(Boolean).join(' ');
+                      const end = e.currentlyWorking ? 'Present' : [e.endMonth, e.endYear].filter(Boolean).join(' ');
+                      const label = start && end ? `${start} — ${end}` : start || end || '';
+                      return label ? (
+                        <div className="bg-[#F0EDE7] dark:bg-[#3A352E] px-3 py-1 rounded-full text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] w-fit whitespace-nowrap">
+                          {label}
+                        </div>
+                      ) : null;
+                    })()}
                   </div>
                   {e.description && (
                     <p className="text-[#7A736C] dark:text-[#B5AFA5] text-[15px] leading-relaxed line-clamp-3">
@@ -520,7 +525,10 @@ export default function ResumeSignup() {
 
   const canSubmit = name.trim() && domain.length >= 3 && domainAvail && email.trim() && password.length >= 8;
 
-  const pendingJobId = router.query.job || sessionStorage.getItem("df_pending_job_id") || "";
+  const pendingJobId =
+    router.query.job ||
+    (typeof window !== "undefined" ? sessionStorage.getItem("df_pending_job_id") : "") ||
+    "";
 
   const handleSubmit = async (e) => {
     e.preventDefault();

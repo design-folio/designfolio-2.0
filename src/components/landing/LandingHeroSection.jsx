@@ -17,7 +17,10 @@ export default function LandingHeroSection({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="text-[32px] sm:text-[40px] leading-[1.1] tracking-[-0.02em] max-w-[480px] mb-5 text-[--lp-text] text-balance"
+        className="text-[32px] sm:text-[40px] leading-[1.1] tracking-[-0.02em] max-w-[480px] mb-5 text-[--lp-heading] text-balance"
+
+
+        
         style={{ fontWeight: 650 }}
       >
         Turn your Resume into Interviews.

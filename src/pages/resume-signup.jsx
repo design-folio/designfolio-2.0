@@ -1,20 +1,24 @@
-import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
-import { motion, AnimatePresence } from "framer-motion";
-import { Eye, EyeOff, ArrowRight, Sun, Moon, Lock, Sparkles, Briefcase, Monitor, Clock } from "lucide-react";
-import { useTheme } from "next-themes";
 import { useGoogleLogin } from "@react-oauth/google";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowRight, Briefcase, Clock, Eye, EyeOff, Lock, Monitor, Moon, Sparkles, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 
-import { _signupEmail, _signupGmail, _checkUsername } from "@/network/post-request";
-import { _postResumeApply } from "@/network/resume";
-import { setToken } from "@/lib/cooikeManager";
+import Seo from "@/components/seo";
+import { Button } from "@/components/ui/button";
 import { Gauge } from "@/components/ui/gauge-1";
 import { GoogleButton } from "@/components/ui/google-button";
+import { Input } from "@/components/ui/input";
+import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from "@/components/ui/input-group";
+import { Label } from "@/components/ui/label";
 import { usePostHogEvent } from "@/hooks/usePostHogEvent";
 import { usePostHogIdentify } from "@/hooks/usePostHogIdentify";
+import { setToken } from "@/lib/cooikeManager";
 import { POSTHOG_EVENT_NAMES } from "@/lib/posthogEventNames";
-import Seo from "@/components/seo";
+import { _checkUsername, _signupEmail, _signupGmail } from "@/network/post-request";
+import { _postResumeApply } from "@/network/resume";
 
 // ── Animated tabs (app design system) ────────────────────────────────────────
 function Tabs({ tabs, active, onChange }) {
@@ -105,13 +109,13 @@ function CanvasPreview({ parsed }) {
           transition={{ type: "spring", stiffness: 100, damping: 12, delay: 0.3 }}
           className="bg-white dark:bg-[#2A2520] rounded-[24px] border border-[#E5D7C4] dark:border-white/10 py-2 relative w-full overflow-hidden"
         >
-          <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-white dark:from-[#2A2520] to-transparent z-10 rounded-l-[24px]" />
-          <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-white dark:from-[#2A2520] to-transparent z-10 rounded-r-[24px]" />
+          <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-white/80 dark:from-[#2A2520]/80 to-transparent z-10 rounded-l-[24px]" />
+          <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-white/80 dark:from-[#2A2520]/80 to-transparent z-10 rounded-r-[24px]" />
           <div className="overflow-hidden">
             <motion.div
               className="flex gap-4 whitespace-nowrap"
               animate={{ x: [0, "-50%"] }}
-              transition={{ ease: "linear", duration: 22, repeat: Infinity }}
+              transition={{ ease: "linear", duration: 20, repeat: Infinity }}
             >
               {repeatedSkills.map((skill, idx) => (
                 <div key={idx} className="flex gap-4 items-center shrink-0">
@@ -137,14 +141,14 @@ function CanvasPreview({ parsed }) {
         transition={{ type: "spring", stiffness: 100, damping: 12, delay: 0.45 }}
         className="bg-white dark:bg-[#2A2520] rounded-[24px] border border-[#E5D7C4] dark:border-white/10 p-4 md:p-6 w-full"
       >
-        <h2 className="text-[#7A736C] dark:text-[#B5AFA5] font-medium text-[14px] mb-4 uppercase tracking-wider">
-          Projects
+        <h2 className="text-[#7A736C] dark:text-[#B5AFA5] font-dm-mono font-medium text-[14px] mb-3">
+          PROJECTS
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {displayProjs.map((p, i) => (
-            <div key={i} className="flex flex-col gap-3 group/card">
-              {/* 4:3 placeholder thumbnail */}
-              <div className="rounded-2xl overflow-hidden aspect-[4/3] border border-black/5 dark:border-white/10 bg-[#F5F5F5] dark:bg-[#1A1A1A]">
+            <div key={i} className="flex flex-col gap-4 group/card">
+              {/* 16:9 placeholder thumbnail */}
+              <div className="rounded-2xl overflow-hidden aspect-[16/9] border border-black/5 dark:border-white/10 bg-[#F5F5F5] dark:bg-[#1A1A1A]">
                 <img
                   src={PLACEHOLDER_THUMBNAILS[i % PLACEHOLDER_THUMBNAILS.length]}
                   alt={p.title || "Project"}
@@ -175,8 +179,8 @@ function CanvasPreview({ parsed }) {
           transition={{ type: "spring", stiffness: 100, damping: 12, delay: 0.6 }}
           className="bg-white dark:bg-[#2A2520] rounded-[24px] border border-[#E5D7C4] dark:border-white/10 p-4 md:p-6 w-full"
         >
-          <h2 className="text-[#7A736C] dark:text-[#B5AFA5] font-medium text-[14px] mb-6 uppercase tracking-wider">
-            Career Ladder
+          <h2 className="text-[#7A736C] dark:text-[#B5AFA5] font-dm-mono font-medium text-[14px] mb-6">
+            CAREER LADDER
           </h2>
 
           <div className="relative flex">
@@ -203,7 +207,7 @@ function CanvasPreview({ parsed }) {
             {/* Experience entries */}
             <div className={`space-y-6 ${visibleExp.length > 1 ? "pl-16" : ""} relative z-10 w-full pt-1 pb-2`}>
               {visibleExp.map((e, i) => (
-                <div key={i} className="p-4 -mx-4 rounded-2xl">
+                <div key={i} className="p-4 -mx-4 rounded-2xl transition-colors hover:bg-black/5 dark:hover:bg-white/5">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2 gap-2 sm:gap-0">
                     <h3 className="text-base font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
                       {e.role}{e.company ? ` @ ${e.company}` : ""}
@@ -410,16 +414,13 @@ function PreviewContent({ tab, onTabChange, parsed }) {
 function Field({ label, children }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="text-[11px] font-bold text-[--lp-text-faint] uppercase tracking-[0.1em]">
+      <Label className="text-[11px] font-bold text-[--lp-text-faint] uppercase tracking-[0.1em]">
         {label}
-      </label>
+      </Label>
       {children}
     </div>
   );
 }
-
-const inputCls =
-  "w-full rounded-xl border border-[--lp-border] bg-[--lp-text]/[0.03] px-4 py-3 text-[14px] text-[--lp-text] placeholder:text-[--lp-text]/30 outline-none focus:border-[--lp-text]/30 transition-colors";
 
 // ── Main page ─────────────────────────────────────────────────────────────────
 export default function ResumeSignup() {
@@ -654,7 +655,7 @@ export default function ResumeSignup() {
             {/* Heading */}
             <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.14 }} className="flex flex-col gap-1.5">
               <h1 className="text-[26px] font-bold text-[--lp-text] tracking-tight leading-[1.15]">
-                Sign up. Let&apos;s get you hired.
+                Sign up. Let{"'"}s get you hired.
               </h1>
               <p className="text-[14px] text-[--lp-text-muted] leading-relaxed">
                 Your portfolio and matched jobs are one click away.
@@ -663,15 +664,16 @@ export default function ResumeSignup() {
 
             {/* Mobile: view preview */}
             <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.17 }} className="md:hidden">
-              <button
+              <Button
+                variant="outline"
                 onClick={() => setShowMobileSheet(true)}
-                className="inline-flex items-center gap-2 rounded-xl border border-[--lp-border] bg-[--lp-text]/[0.03] px-4 py-2.5 text-[13px] font-medium text-[--lp-text-muted] hover:border-[--lp-border] transition-colors"
+                className="rounded-xl h-auto py-2.5 text-[13px] font-medium justify-start"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 opacity-70">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" />
                 </svg>
-                View your portfolio &amp; job matches
-              </button>
+                View your portfolio {"&"} job matches
+              </Button>
             </motion.div>
 
             {/* Form */}
@@ -683,12 +685,11 @@ export default function ResumeSignup() {
               className="flex flex-col gap-3"
             >
               <Field label="Full name">
-                <input
+                <Input
                   type="text"
                   placeholder="Your full name"
                   value={name}
                   onChange={(e) => handleNameChange(e.target.value)}
-                  className={inputCls}
                   data-testid="input-name"
                 />
               </Field>
@@ -700,28 +701,27 @@ export default function ResumeSignup() {
                     animate={{ opacity: 1, height: "auto" }}
                     exit={{ opacity: 0, height: 0 }}
                     transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
-                    className="overflow-hidden"
+                    className="overflow-hidden px-0.5 -mx-0.5"
                   >
                     <Field label="Your portfolio URL">
-                      <div className="flex items-center rounded-xl border border-[--lp-border] bg-[--lp-text]/[0.03] overflow-hidden focus-within:border-[--lp-text]/30 transition-colors">
-                        <input
+                      <InputGroup>
+                        <InputGroupInput
                           type="text"
                           placeholder="yourname"
                           value={domain}
                           onChange={handleDomainChange}
-                          className="flex-1 min-w-0 bg-transparent px-4 py-3 text-[14px] text-[--lp-text] placeholder:text-[--lp-text]/30 outline-none"
                           data-testid="input-domain"
                         />
-                        <div className="flex items-center gap-2 pr-4 shrink-0">
-                          <span className="text-[13px] text-[--lp-text-faint] font-medium select-none">.designfolio.me</span>
+                        <InputGroupAddon className="gap-2 pr-4">
+                          <InputGroupText className="px-0">.designfolio.me</InputGroupText>
                           {domainLoading && (
                             <svg className="animate-spin h-3.5 w-3.5 text-[--lp-text]/30" viewBox="0 0 24 24" fill="none">
                               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V2.5A9.5 9.5 0 002.5 12H4z" />
                             </svg>
                           )}
-                        </div>
-                      </div>
+                        </InputGroupAddon>
+                      </InputGroup>
                       <AnimatePresence>
                         {!domainLoading && domain.length >= 3 && (
                           <motion.p
@@ -741,41 +741,42 @@ export default function ResumeSignup() {
               </AnimatePresence>
 
               <Field label="Email">
-                <input
+                <Input
                   type="email"
                   placeholder="you@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className={inputCls}
                   data-testid="input-email"
                 />
               </Field>
 
               <Field label="Password">
                 <div className="relative">
-                  <input
+                  <Input
                     type={showPass ? "text" : "password"}
                     placeholder="Min. 8 characters"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className={`${inputCls} pr-11`}
+                    className="pr-10"
                     data-testid="input-password"
                   />
-                  <button
+                  <Button
                     type="button"
+                    variant="ghost"
+                    size="icon"
                     onClick={() => setShowPass((v) => !v)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[--lp-text-faint] hover:text-[--lp-text-muted] transition-colors"
+                    className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-foreground"
                   >
                     {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
+                  </Button>
                 </div>
               </Field>
 
-              <button
+              <Button
                 type="submit"
+                variant="default"
                 disabled={!canSubmit || submitting}
-                className="group mt-1 w-full flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-[15px] font-semibold transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
-                style={{ background: "var(--lp-text)", color: "var(--lp-bg)" }}
+                className="group mt-1 w-full h-auto py-3.5 text-[15px] font-semibold rounded-xl"
                 data-testid="button-claim"
               >
                 {submitting ? (
@@ -785,11 +786,11 @@ export default function ResumeSignup() {
                   </svg>
                 ) : (
                   <>
-                    Claim my portfolio &amp; jobs
+                    Claim my portfolio {"&"} jobs
                     <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" strokeWidth={2.5} />
                   </>
                 )}
-              </button>
+              </Button>
             </motion.form>
 
             {/* Divider */}

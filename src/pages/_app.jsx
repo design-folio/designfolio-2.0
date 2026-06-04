@@ -194,6 +194,7 @@ const LANDING_PAGES = new Set([
   "/login",
   "/signup",
   "/claim-link",
+  "/resume-signup",
   "/email-verify",
   "/privacy-policy",
   "/terms-and-conditions",

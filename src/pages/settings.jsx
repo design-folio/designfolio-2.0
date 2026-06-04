@@ -83,7 +83,7 @@ export default function Settings() {
       case TEMPLATE_IDS.SPOTLIGHT:
         return "bg-df-section-card-bg-color rounded-2xl  p-8";
       default:
-        return "bg-df-section-card-bg-color p-8 rounded-2xl";
+        return "bg-white dark:bg-[#2A2520] p-8 rounded-2xl";
     }
   })();
 

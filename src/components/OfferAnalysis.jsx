@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import AnalysisReport from "./AnalysisReport";
 import TetrisLoading from "./ui/tetris-loader";
 import { getAiToolResult, setAiToolResult } from "@/lib/ai-tools-usage";
+import axiosInstance from "@/network/axiosInstance";
 
 const RESULT_STORAGE_KEY = "salary-negotiator";
 
@@ -47,15 +48,7 @@ export default function OfferAnalysis({ onToolUsed, onViewChange, onStartNewAnal
     setIsAnalyzing(true);
 
     try {
-      const res = await fetch("/api/analyze-offer", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      const result = await res.json();
-      if (!res.ok) {
-        throw new Error(result.message || "Failed to analyze offer");
-      }
+      const { data: result } = await axiosInstance.post("/ai/tools/offer/analyze", data);
       setAnalysis(result.analysis);
       setAiToolResult(RESULT_STORAGE_KEY, result.analysis);
       onViewChange?.(true);
@@ -63,20 +56,15 @@ export default function OfferAnalysis({ onToolUsed, onViewChange, onStartNewAnal
     } catch (error) {
       console.error("Analysis error:", error);
 
-      if (error?.message?.includes("Rate limit")) {
-        handleRateLimitError();
-      } else if (error?.message?.includes("network")) {
+      if (error.response?.data?.limitReached) {
+        onToolUsed?.();
+        return;
+      } else if (!error.response) {
         toast.error("Please check your internet connection and try again.");
-        setAnalysis(
-          "🌐 Network Error: Unable to reach our AI service. Please check your internet connection and try again."
-        );
+        setAnalysis("🌐 Network Error: Unable to reach our AI service. Please check your internet connection and try again.");
       } else {
-        toast.error(
-          "An unexpected error occurred. Please try again in a few moments."
-        );
-        setAnalysis(
-          "❌ Unexpected error occurred. If this persists:\n\n1. Try refreshing the page\n2. Check if you're using a valid API key\n3. Contact support if the issue continues"
-        );
+        toast.error("An unexpected error occurred. Please try again in a few moments.");
+        setAnalysis("❌ Unexpected error occurred. If this persists:\n\n1. Try refreshing the page\n2. Contact support if the issue continues");
       }
     } finally {
       setIsAnalyzing(false);

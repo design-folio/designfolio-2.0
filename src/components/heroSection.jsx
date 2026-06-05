@@ -20,6 +20,7 @@ import { SegmentedControl } from "./ui/segmented-control"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 import { extractResumeText } from "@/lib/extractResumeText"
+import axiosInstance from "@/network/axiosInstance"
 
 const LANDING_ANALYZE_USED_KEY = "DESIGNFOLIO_LANDING_ANALYZE_USED"
 const LAST_ANALYZE_RESULT_KEY = "DESIGNFOLIO_LAST_ANALYZE_RESULT"
@@ -70,20 +71,7 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab, onResume
             if (!text || text.trim().length < 50) {
                 throw new Error("The file appears to be empty or too short. Please use a PDF or TXT file with at least 50 characters.")
             }
-            const response = await fetch("/api/convert-resume", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ text: text.trim() })
-            })
-            if (!response.ok) {
-                const errData = await response.json().catch(() => ({}))
-                const message =
-                    response.status === 504
-                        ? "Conversion took too long. Please try again or use a shorter resume."
-                        : (errData.message || "Conversion failed")
-                throw new Error(message)
-            }
-            const data = await response.json()
+            const { data } = await axiosInstance.post("/ai/tools/resume/convert", { text: text.trim() })
             let content = data.content
             // Attach resume PDF for prefill (FooterSettingsPanel format)
             if (file?.type === "application/pdf" && file?.size <= 5 * 1024 * 1024) {

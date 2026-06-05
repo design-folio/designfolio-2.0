@@ -20,7 +20,7 @@ import { Button } from "@/components/ui/button";
 import Cookies from "js-cookie";
 import { Home, Lock, ArrowRight } from "lucide-react";
 import { getAiWorkspaceToolIcon } from "@/components/ui/ai-workspace-icons";
-import { getAiToolUsage, getAiToolResult, incrementAiToolUsage, USES_PER_DAY_PER_TOOL } from "@/lib/ai-tools-usage";
+import { getAiToolResult } from "@/lib/ai-tools-usage";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useState } from "react";
@@ -132,20 +132,9 @@ export default function AiToolsWorkspace({ embedInBuilder = false }) {
   const [emailHasResult, setEmailHasResult] = useState(false);
   const [mockInterviewHasResult, setMockInterviewHasResult] = useState(false);
   const [hasClickedStartNewAnalysis, setHasClickedStartNewAnalysis] = useState(false);
-  const [usageKey, setUsageKey] = useState(0);
-
-  const defaultUsage = { allowed: true, usedToday: 0, limit: USES_PER_DAY_PER_TOOL };
-  const [usageForCurrent, setUsageForCurrent] = useState(defaultUsage);
-  useEffect(() => {
-    if (!router.isReady) return;
-    if (typeof currentTypeForLock === "string" && GUEST_USAGE_TOOL_TYPES.includes(currentTypeForLock)) {
-      setUsageForCurrent(getAiToolUsage(currentTypeForLock));
-    } else {
-      setUsageForCurrent(defaultUsage);
-    }
-  }, [currentTypeForLock, usageKey, router.isReady]);
+  const [toolLimitReached, setToolLimitReached] = useState({});
   const isUsageLimitReached =
-    !isLoggedIn && GUEST_USAGE_TOOL_TYPES.includes(currentTypeForLock) && !usageForCurrent.allowed;
+    !isLoggedIn && GUEST_USAGE_TOOL_TYPES.includes(currentTypeForLock) && !!toolLimitReached[currentTypeForLock];
 
   const currentToolStorageKey =
     router.query?.type === navigation.optimizeResume
@@ -160,7 +149,7 @@ export default function AiToolsWorkspace({ embedInBuilder = false }) {
   const [hasStoredResult, setHasStoredResult] = useState(false);
   useEffect(() => {
     setHasStoredResult(!!(currentToolStorageKey && getAiToolResult(currentToolStorageKey)));
-  }, [currentToolStorageKey, usageKey]);
+  }, [currentToolStorageKey]);
 
   const currentToolHasResult =
     (router.query?.type === navigation.optimizeResume && optimizeResumeHasResult) ||
@@ -169,9 +158,8 @@ export default function AiToolsWorkspace({ embedInBuilder = false }) {
     (router.query?.type === navigation.MockInterview && mockInterviewHasResult);
 
   const recordToolUsed = () => {
-    if (currentTypeForLock && GUEST_USAGE_TOOL_TYPES.includes(currentTypeForLock)) {
-      incrementAiToolUsage(currentTypeForLock);
-      setUsageKey((k) => k + 1);
+    if (!isLoggedIn && currentTypeForLock && GUEST_USAGE_TOOL_TYPES.includes(currentTypeForLock)) {
+      setToolLimitReached((prev) => ({ ...prev, [currentTypeForLock]: true }));
     }
   };
 

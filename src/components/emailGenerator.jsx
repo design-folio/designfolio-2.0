@@ -5,6 +5,7 @@ import EmailPreview from "./emailPreview";
 import TetrisLoading from "./ui/tetris-loader";
 import { toast } from "react-toastify";
 import { getAiToolResult, setAiToolResult } from "@/lib/ai-tools-usage";
+import axiosInstance from "@/network/axiosInstance";
 
 const RESULT_STORAGE_KEY = "email-generator";
 
@@ -37,22 +38,18 @@ export default function EmailGenerator({ onToolUsed, onViewChange, guestUsageLim
     }
     setIsGenerating(true);
     try {
-      const res = await fetch("/api/generate-email", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.message || "Failed to generate email");
-      }
+      const { data } = await axiosInstance.post("/ai/tools/email", formData);
       const result = { subject: data.subject, body: data.body };
       setGeneratedEmail(result);
       setAiToolResult(RESULT_STORAGE_KEY, result);
       setShowPreview(true);
       onToolUsed?.();
     } catch (error) {
-      toast.error(error?.message || "Failed to generate email");
+      if (error.response?.data?.limitReached) {
+        onToolUsed?.();
+        return;
+      }
+      toast.error(error?.response?.data?.error || error?.message || "Failed to generate email");
     } finally {
       setIsGenerating(false);
     }

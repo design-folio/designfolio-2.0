@@ -11,6 +11,8 @@ import { CompanyLogo } from "./CompanyLogo";
 import { MatchBreakdown } from "./MatchBreakdown";
 import { _postJobsInteract, _postJobsCustomizeResume, _postJobsCoverLetter, _postJobsFitAnalysis } from "@/network/jobs";
 import { _getUserQuota } from "@/network/get-request";
+import { _getDocuments } from "@/network/documents";
+import DocumentStudio from "./documents/DocumentStudio";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import DOMPurify from "dompurify";
@@ -169,6 +171,10 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
   const [fitLoading, setFitLoading] = useState(false);
   const [fitResult, setFitResult] = useState(null);
 
+  // Tailored documents (resume / cover letter) — full-screen studio + per-job versions.
+  const [studio, setStudio] = useState({ open: false, type: "resume", docId: null });
+  const [jobDocs, setJobDocs] = useState([]);
+
   const [quota, setQuota] = useState(null);
   const [quotaKey, setQuotaKey] = useState(0);
 
@@ -198,6 +204,16 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
     setFitResult(null);
     scrollRef.current?.scrollTo({ top: 0 });
   }, [job?.id]);
+
+  // Load this job's saved documents (refreshes when the studio closes / after mutations).
+  useEffect(() => {
+    if (!open || !job?.id || studio.open) return;
+    let cancelled = false;
+    _getDocuments({ jobId: job.id })
+      .then((res) => { if (!cancelled) setJobDocs(res.data || []); })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [open, job?.id, studio.open]);
 
   if (!displayJob) return null;
 
@@ -256,10 +272,26 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
   return (
     <Sheet open={open} onOpenChange={(v) => !v && onClose()} modal={false}>
       <SheetContent
-        className="inset-y-0 right-0 h-full w-full rounded-none sm:inset-y-3 sm:right-3 sm:h-[calc(100vh-24px)] sm:rounded-2xl sm:w-[560px] sm:max-w-[560px] shadow-2xl !border border-black/[0.09] dark:border-white/[0.09] bg-white dark:bg-[#2A2520] p-0 flex flex-col overflow-hidden [&>button:last-child]:hidden"
+        className={`inset-y-0 right-0 h-full w-full rounded-none sm:inset-y-3 sm:right-3 sm:h-[calc(100vh-24px)] sm:rounded-2xl ${studio.open ? "sm:w-[920px] sm:max-w-[calc(100vw-24px)]" : "sm:w-[560px] sm:max-w-[560px]"} shadow-2xl !border border-black/[0.09] dark:border-white/[0.09] bg-white dark:bg-[#2A2520] p-0 flex flex-col overflow-hidden [&>button:last-child]:hidden`}
         hasOverlay={false}
         onInteractOutside={(e) => e.preventDefault()}
       >
+        {studio.open ? (
+          /* Document editor takes over the sheet panel (back button returns to the job) */
+          <DocumentStudio
+            open
+            onClose={() => setStudio((s) => ({ ...s, open: false }))}
+            type={studio.type}
+            job={displayJob}
+            profileId={profileId}
+            docId={studio.docId}
+            onChange={() => {
+              bumpQuota();
+              if (job?.id) _getDocuments({ jobId: job.id }).then((res) => setJobDocs(res.data || [])).catch(() => {});
+            }}
+          />
+        ) : (
+        <>
         {/* Header */}
         <SheetHeader className="px-5 py-4 border-b border-black/10 dark:border-white/10 flex-shrink-0 flex flex-row items-center justify-between m-0 space-y-0 h-[65px]">
           <SheetTitle className="text-[#1A1A1A] dark:text-[#F0EDE7] text-base font-semibold m-0 truncate">
@@ -389,31 +421,37 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
 
                 {/* 3-column split: resume | cover letter | fit analysis */}
                 <div className="grid grid-cols-3 divide-x divide-black/[0.05] dark:divide-white/[0.05]">
-                  {/* Tailor resume — coming soon */}
-                  <div className="flex flex-col items-start gap-2 px-3.5 py-3 cursor-not-allowed select-none">
-                    <div className="flex items-center justify-between w-full cursor-not-allowed">
-                      <div className="w-6 h-6 rounded-lg bg-black/[0.04] dark:bg-white/[0.04] flex items-center justify-center flex-shrink-0 cursor-not-allowed">
-                        <FileText className="w-3 h-3 text-foreground/30 cursor-not-allowed" />
+                  {/* Tailor resume */}
+                  <button
+                    onClick={() => setStudio({ open: true, type: "resume", docId: null })}
+                    className="flex flex-col items-start gap-2 px-3.5 py-3 hover:bg-black/[0.03] dark:hover:bg-white/[0.03] transition-colors group text-left"
+                  >
+                    <div className="flex items-center justify-between w-full">
+                      <div className="w-6 h-6 rounded-lg bg-black/[0.05] dark:bg-white/[0.06] group-hover:bg-black/[0.07] dark:group-hover:bg-white/[0.09] transition-colors flex items-center justify-center flex-shrink-0">
+                        <FileText className="w-3 h-3 text-foreground/45" />
                       </div>
-                      <ComingSoonBadge />
+                      <CreditBadge count={featureRemaining("resumeCustomize")} />
                     </div>
-                    <div className="text-[11.5px] font-semibold text-foreground/35 leading-snug cursor-not-allowed">
+                    <div className="text-[11.5px] font-semibold text-foreground/70 group-hover:text-foreground/90 transition-colors leading-snug">
                       Tailor resume
                     </div>
-                  </div>
+                  </button>
 
-                  {/* Cover letter — coming soon */}
-                  <div className="flex flex-col items-start gap-2 px-3.5 py-3 cursor-not-allowed select-none">
-                    <div className="flex items-center justify-between w-full cursor-not-allowed">
-                      <div className="w-6 h-6 rounded-lg bg-black/[0.04] dark:bg-white/[0.04] flex items-center justify-center flex-shrink-0 cursor-not-allowed">
-                        <PenLine className="w-3 h-3 text-foreground/30 cursor-not-allowed" />
+                  {/* Cover letter */}
+                  <button
+                    onClick={() => setStudio({ open: true, type: "coverLetter", docId: null })}
+                    className="flex flex-col items-start gap-2 px-3.5 py-3 hover:bg-black/[0.03] dark:hover:bg-white/[0.03] transition-colors group text-left"
+                  >
+                    <div className="flex items-center justify-between w-full">
+                      <div className="w-6 h-6 rounded-lg bg-black/[0.05] dark:bg-white/[0.06] group-hover:bg-black/[0.07] dark:group-hover:bg-white/[0.09] transition-colors flex items-center justify-center flex-shrink-0">
+                        <PenLine className="w-3 h-3 text-foreground/45" />
                       </div>
-                      <ComingSoonBadge />
+                      <CreditBadge count={featureRemaining("coverLetter")} />
                     </div>
-                    <div className="text-[11.5px] font-semibold text-foreground/35 leading-snug cursor-not-allowed">
+                    <div className="text-[11.5px] font-semibold text-foreground/70 group-hover:text-foreground/90 transition-colors leading-snug">
                       Cover letter
                     </div>
-                  </div>
+                  </button>
 
                   {/* Fit analysis */}
                   <button
@@ -435,6 +473,30 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
                     </div>
                   </button>
                 </div>
+
+                {/* Saved documents for this job (versions) */}
+                {jobDocs.length > 0 && (
+                  <div className="px-3.5 py-3 border-t border-black/[0.05] dark:border-white/[0.05] space-y-1">
+                    <p className="text-[10px] font-semibold uppercase tracking-widest text-foreground/35 mb-1">Saved documents</p>
+                    {jobDocs.map((d) => (
+                      <button
+                        key={d._id}
+                        onClick={() => setStudio({ open: true, type: d.type, docId: d._id })}
+                        className="w-full flex items-center gap-2 py-1.5 text-left group"
+                      >
+                        {d.type === "resume"
+                          ? <FileText className="w-3 h-3 text-foreground/40 flex-shrink-0" />
+                          : <PenLine className="w-3 h-3 text-foreground/40 flex-shrink-0" />}
+                        <span className="text-[12px] text-foreground/65 group-hover:text-foreground/90 transition-colors">
+                          {d.type === "resume" ? "Tailored resume" : "Cover letter"} · v{d.version}
+                        </span>
+                        <span className="ml-auto text-[10.5px] text-foreground/30">
+                          {new Date(d.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                )}
 
                 {/* AI result panels */}
                 {resumeResult && (
@@ -611,6 +673,8 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
             <ExternalLink className="w-3.5 h-3.5" />
           </button>
         </div>
+        </>
+        )}
       </SheetContent>
     </Sheet>
   );

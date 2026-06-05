@@ -9,6 +9,7 @@ import { Download, RefreshCcw, Loader2 } from "lucide-react";
 import ScannerCardStream from "./ui/scanner-card-stream";
 import { exportToPdf } from "./PdfExporter";
 import { setAiToolResult, getAiToolResult } from "@/lib/ai-tools-usage";
+import axiosInstance from "@/network/axiosInstance";
 
 const validationSchema = Yup.object().shape({
   resumeText: Yup.string()
@@ -72,20 +73,10 @@ export default function CoverLetterGenerator({ onViewChange, onToolUsed, onStart
     }
     setIsAnalyzing(true);
     try {
-      const res = await fetch("/api/analyze-resume", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          resumeText: values.resumeText,
-          jobDescription: values.jobDescription,
-        }),
+      const { data } = await axiosInstance.post("/ai/tools/resume/analyze", {
+        resumeText: values.resumeText,
+        jobDescription: values.jobDescription,
       });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || "Failed to analyze resume");
-      }
 
       setAnalysisProgress(100);
       setAnalysis(data.analysis);
@@ -95,8 +86,11 @@ export default function CoverLetterGenerator({ onViewChange, onToolUsed, onStart
       toast.success("Analysis complete");
     } catch (error) {
       console.error("Analysis error:", error);
-      const errorMessage =
-        error?.message || "There was an error analyzing your resume.";
+      if (error.response?.data?.limitReached) {
+        onToolUsed?.();
+        return;
+      }
+      const errorMessage = error?.response?.data?.error || error?.message || "There was an error analyzing your resume.";
       toast.error(errorMessage);
     } finally {
       setIsAnalyzing(false);

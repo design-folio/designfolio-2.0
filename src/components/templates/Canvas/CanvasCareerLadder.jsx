@@ -8,6 +8,8 @@ import { CanvasSectionControls, CanvasSectionButton } from "./CanvasSectionContr
 import { SectionVisibilityButton } from "@/components/section";
 import { getPlainTextLength } from "@/lib/tiptapUtils";
 import SimpleTiptapRenderer from "@/components/SimpleTiptapRenderer";
+import { UnsavedChangesDialog } from "@/components/ui/UnsavedChangesDialog";
+import { _deleteExperience } from "@/network/post-request";
 import { cn } from "@/lib/utils";
 
 function ExperienceCard({
@@ -15,6 +17,7 @@ function ExperienceCard({
   isEditing,
   expandedCards,
   onToggleExpand,
+  onDelete,
 }) {
   const { setSelectedWork, openSidebar, activeSidebar, selectedWork } = useGlobalContext();
 
@@ -64,7 +67,10 @@ function ExperienceCard({
             variant="outline"
             size="sm"
             className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-red-50 dark:hover:bg-red-950/30 hover:border-red-200 dark:hover:border-red-900/50 hover:text-red-600 dark:hover:text-red-400"
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete(experience);
+            }}
           >
             <Trash2 className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
           </Button>
@@ -136,13 +142,15 @@ function ExperienceCard({
 const MemoizedExperienceCard = React.memo(ExperienceCard);
 
 function CanvasCareerLadder({ isEditing, preview = false }) {
-  const { userDetails, openSidebar, openNewWork } = useGlobalContext();
+  const { userDetails, setUserDetails, updateCache, openSidebar, openNewWork } =
+    useGlobalContext();
   const { experiences = [] } = userDetails || {};
 
   const careerLadderRef = useRef(null);
   const ladderContainerRef = useRef(null);
   const [characterPosition, setCharacterPosition] = useState(0);
   const [expandedCards, setExpandedCards] = useState([]);
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   const toggleExpand = useCallback((id) => {
     setExpandedCards((prev) =>
@@ -151,6 +159,28 @@ function CanvasCareerLadder({ isEditing, preview = false }) {
         : [...prev, id],
     );
   }, []);
+
+  const handleDeleteExperience = useCallback((experience) => {
+    setDeleteTarget(experience);
+  }, []);
+
+  const confirmDelete = useCallback(() => {
+    const target = deleteTarget;
+    if (!target?._id) return;
+
+    _deleteExperience(target._id).then(() => {
+      const removeById = (list) =>
+        (list || []).filter((item) => item._id !== target._id);
+      setUserDetails((prev) => ({
+        ...prev,
+        experiences: removeById(prev?.experiences),
+      }));
+      updateCache("userDetails", (prev) => ({
+        ...prev,
+        experiences: removeById(prev?.experiences),
+      }));
+    });
+  }, [deleteTarget, setUserDetails, updateCache]);
 
   useEffect(() => {
     let rafId;
@@ -310,11 +340,24 @@ function CanvasCareerLadder({ isEditing, preview = false }) {
                 isEditing={isEditing}
                 expandedCards={expandedCards}
                 onToggleExpand={toggleExpand}
+                onDelete={handleDeleteExperience}
               />
             ))}
           </div>
         </div>
       )}
+
+      <UnsavedChangesDialog
+        open={!!deleteTarget}
+        onOpenChange={(open) => {
+          if (!open) setDeleteTarget(null);
+        }}
+        onConfirmDiscard={confirmDelete}
+        title="Delete Work Experience"
+        description="Are you sure you want to delete this work experience? This action cannot be undone."
+        confirmText="Delete"
+        cancelText="Cancel"
+      />
     </motion.div>
   );
 }

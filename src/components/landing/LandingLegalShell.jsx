@@ -48,7 +48,7 @@ export default function LandingLegalShell({ title, seoTitle, seoDescription, chi
               {title}
             </h1>
             <div
-              className="space-y-6 text-[15px] leading-relaxed text-[--lp-text]/80 [&_h2]:text-[18px] [&_h2]:font-semibold [&_h2]:text-[--lp-text] [&_h2]:mt-2 [&_h2]:mb-2 [&_a]:text-[--lp-accent] [&_a:hover]:underline [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1"
+              className="space-y-6 text-[15px] leading-relaxed text-lp-text/80 [&_h2]:text-[18px] [&_h2]:font-semibold [&_h2]:text-[--lp-text] [&_h2]:mt-2 [&_h2]:mb-2 [&_a]:text-[--lp-accent] [&_a:hover]:underline [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1"
             >
               {children}
             </div>

@@ -37,12 +37,12 @@ export default function ResumeUploadModal({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 8 }}
             transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-            className="relative w-full max-w-[640px] rounded-3xl border border-[#E2E1DA] dark:border-white/10 bg-[#FDFCF8] dark:bg-[#1C1A19] shadow-2xl overflow-hidden"
+            className="relative w-full max-w-[640px] rounded-3xl border border-[#E2E1DA] bg-[#FDFCF8] dark:bg-[#1C1A19] shadow-2xl overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-[#1D1B1A]/[0.06] dark:bg-white/[0.08] text-[#1D1B1A]/50 dark:text-foreground/50 hover:bg-[#1D1B1A]/[0.12] dark:hover:bg-white/[0.14] hover:text-[#1D1B1A] dark:hover:text-foreground transition-all duration-150"
+              className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-lp-text/[0.06] text-lp-text/50 hover:bg-lp-text/[0.12] hover:text-[--lp-text] transition-all duration-150"
               aria-label="Close"
             >
               <X className="w-3.5 h-3.5" strokeWidth={2.5} />

@@ -8,8 +8,8 @@ import ArrowCTA from "./shared/ArrowCTA";
 export default function LandingHeader({
   showNavCTA,
   dfToken,
-  hasParsedResume,
   ctaLabel,
+  ctaDest,
   onPrimaryCta,
   primaryCtaLoading,
 }) {
@@ -29,7 +29,7 @@ export default function LandingHeader({
 
         {/* Desktop: user stats */}
         <div
-          className="hidden md:flex text-[13px] font-semibold tracking-wide text-[--lp-text]/70 uppercase h-[20px] items-center min-w-[200px]"
+          className="hidden md:flex text-[13px] font-semibold tracking-wide text-lp-text/70 uppercase h-[20px] items-center min-w-[200px]"
           style={{ fontFamily: '"DM Mono", monospace' }}
         >
           <BlurHoverText
@@ -44,7 +44,7 @@ export default function LandingHeader({
             <Link href="/login">
               <Button
                 variant="outline"
-                className="rounded-full px-5 h-8 text-[13px] font-medium border-[--lp-border] hover:bg-black/5 dark:hover:bg-white/5 bg-transparent text-[--lp-text]"
+                className="rounded-full px-5 h-8 text-[13px] font-medium border-[--lp-border] hover:bg-black/5 bg-transparent text-[--lp-text]"
                 style={{ fontFamily: "var(--font-manrope), sans-serif" }}
               >
                 Login
@@ -65,8 +65,8 @@ export default function LandingHeader({
                 <ArrowCTA
                   label={ctaLabel || "Get Started"}
                   size="sm"
-                  href={dfToken ? "/builder" : hasParsedResume ? "/resume-signup" : undefined}
-                  onClick={!dfToken && !hasParsedResume ? onPrimaryCta : undefined}
+                  href={ctaDest || undefined}
+                  onClick={!ctaDest ? onPrimaryCta : undefined}
                   loading={primaryCtaLoading}
                 />
               </motion.div>

@@ -37,7 +37,7 @@ export default function ResumeUploadModal({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 8 }}
             transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-            className="relative w-full max-w-[640px] rounded-3xl border border-[#E2E1DA] bg-[#FDFCF8] dark:bg-[#1C1A19] shadow-2xl overflow-hidden"
+            className="relative w-full max-w-[640px] rounded-3xl border border-[--lp-video-border] bg-[--lp-fg-white] dark:bg-[--lp-card] shadow-2xl overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             <button

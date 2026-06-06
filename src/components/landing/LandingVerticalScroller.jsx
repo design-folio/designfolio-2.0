@@ -1,120 +1,147 @@
-import { motion } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { testimonials, scrollerExtraTestimonials } from "./shared/testimonialData";
 
-function VerticalTestimonialsScroller({ duration }) {
-  const all = [...testimonials, ...scrollerExtraTestimonials];
-  const doubled = [...all, ...all];
-
+function MasonryScrollCard({ t }) {
   return (
-    <div
-      className="relative overflow-hidden"
-      style={{
-        height: 420,
-        maskImage:
-          "linear-gradient(to bottom, transparent, black 14%, black 86%, transparent)",
-        WebkitMaskImage:
-          "linear-gradient(to bottom, transparent, black 14%, black 86%, transparent)",
-      }}
-    >
-      <motion.ul
-        key={duration}
-        animate={{ translateY: "-50%" }}
-        transition={{
-          duration,
-          repeat: Infinity,
-          ease: "linear",
-          repeatType: "loop",
-        }}
-        className="flex flex-col gap-3 list-none m-0 p-0"
-      >
-        {doubled.map((t, i) => (
-          <li
-            key={i}
-            className="px-5 py-5 rounded-xl border border-[--lp-video-border] bg-[--lp-bg]"
+    <div className="px-4 py-4 rounded-xl border border-[--lp-video-border] bg-[--lp-bg]">
+      <p className="text-[13px] leading-[1.6] text-lp-text/75 font-medium mb-3.5">
+        "{t.content}"
+      </p>
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <img
+            src={t.image}
+            alt={t.name}
+            className="h-7 w-7 rounded-full object-cover flex-shrink-0"
+          />
+          <div className="flex flex-col min-w-0">
+            <span className="text-[12px] font-semibold text-lp-text leading-none truncate">
+              {t.name}
+            </span>
+            <span className="text-[11px] text-lp-text/45 leading-tight truncate">
+              {t.role}
+            </span>
+          </div>
+        </div>
+        {t.logoSrc && (
+          <div
+            className={cn(
+              "shrink-0 w-6 h-6 rounded-full overflow-hidden",
+              !t.logoRaw && "bg-white dark:bg-white/5"
+            )}
           >
-            <p className="text-[14px] leading-[1.6] text-lp-text/80 font-medium mb-4">
-              "{t.content}"
-            </p>
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3 min-w-0">
-                <img
-                  src={t.image}
-                  alt={t.name}
-                  className="h-8 w-8 rounded-[28%] object-cover flex-shrink-0"
-                />
-                <div className="flex flex-col gap-0.5 min-w-0">
-                  <span className="text-[13px] font-semibold text-[--lp-text] leading-none">
-                    {t.name}
-                  </span>
-                  <span className="text-[12px] text-[--lp-text-muted]">{t.role}</span>
-                </div>
-              </div>
-              {t.logoSrc && (
-                <img
-                  src={t.logoSrc}
-                  alt=""
-                  aria-hidden="true"
-                  className={cn(
-                    "shrink-0",
-                    !t.logoRaw && "opacity-20 dark:invert",
-                  )}
-                  style={{ width: 32, height: 32, objectFit: "contain" }}
-                />
+            <img
+              src={t.logoSrc}
+              alt=""
+              aria-hidden="true"
+              className={cn(
+                "w-full h-full object-cover",
+                !t.logoRaw && "opacity-40 dark:invert"
               )}
-            </div>
-          </li>
-        ))}
-      </motion.ul>
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
 
-const SPEED_LABELS = ["Taking it easy", "Comfortable", "Normal", "Skimming", "Quick scan"];
-const SPEED_DURATIONS = [52, 38, 28, 18, 11];
+// Purely presentational — all animation is driven by the parent's single RAF loop
+function MasonryScrollColumn({ items, innerRef, className }) {
+  const doubled = [...items, ...items];
+  return (
+    <div className={cn("flex-1 min-w-0 overflow-hidden", className)}>
+      <div ref={innerRef} className="flex flex-col gap-3">
+        {doubled.map((t, i) => (
+          <MasonryScrollCard key={i} t={t} />
+        ))}
+      </div>
+    </div>
+  );
+}
 
-export default function LandingVerticalScroller({ speedLevel, onSpeedChange, isDark, playSliderTick }) {
-  // Speed control commented out — keeping a constant slow scroll
-  // const scrollDuration = SPEED_DURATIONS[speedLevel - 1];
-  const scrollDuration = SPEED_DURATIONS[0]; // always "Taking it easy"
+export default function LandingVerticalScroller() {
+  const all = [...scrollerExtraTestimonials, ...testimonials];
+  const col1Items = all.filter((_, i) => i % 2 === 0);
+  const col2Base = all.filter((_, i) => i % 2 === 1);
+  const col2Items = col2Base.length < col1Items.length ? [...col2Base, all[0]] : col2Base;
+
+  const col1Ref = useRef(null);
+  const col2Ref = useRef(null);
+  const hoveredRef = useRef(false);
+
+  // Single shared accumulator — both columns advance from the same number.
+  // This makes equal speed a mathematical certainty, not an approximation.
+  const pixelsRef = useRef(0);
+  const rafRef = useRef(null);
+  const lastTimeRef = useRef(null);
+
+  const [pps, setPps] = useState(55);
+
+  useEffect(() => {
+    const update = () => setPps(window.innerWidth < 640 ? 35 : 55);
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  useEffect(() => {
+    const run = (timestamp) => {
+      if (lastTimeRef.current === null) lastTimeRef.current = timestamp;
+      // Cap delta so a backgrounded tab doesn't cause a position jump on return
+      const delta = Math.min(timestamp - lastTimeRef.current, 50);
+      lastTimeRef.current = timestamp;
+
+      const effectivePps = hoveredRef.current ? pps * 0.35 : pps;
+      pixelsRef.current += effectivePps * delta / 1000;
+
+      // col1 scrolls up: translateY goes from 0 toward -h1, then wraps
+      const col1 = col1Ref.current;
+      if (col1) {
+        const h1 = col1.scrollHeight / 2;
+        if (h1 > 0) {
+          col1.style.transform = `translateY(${-(pixelsRef.current % h1)}px)`;
+        }
+      }
+
+      // col2 scrolls down: translateY goes from -h2 toward 0, then wraps
+      const col2 = col2Ref.current;
+      if (col2) {
+        const h2 = col2.scrollHeight / 2;
+        if (h2 > 0) {
+          col2.style.transform = `translateY(${(pixelsRef.current % h2) - h2}px)`;
+        }
+      }
+
+      rafRef.current = requestAnimationFrame(run);
+    };
+
+    rafRef.current = requestAnimationFrame(run);
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+      lastTimeRef.current = null;
+    };
+  }, [pps]);
 
   return (
     <section
-      className="w-full border-y border-[--lp-border] px-6 pt-10 pb-4 bg-[--lp-card]"
+      className="w-full border-y border-[--lp-border] bg-[--lp-card]"
       style={{ fontFamily: "var(--font-manrope), sans-serif" }}
     >
-      {/* Speed control UI — commented out
-      <div className="flex items-center justify-between mb-6">
-        <span className="text-[12px] font-semibold tracking-widest uppercase text-lp-text/40 tabular-nums w-[130px]">
-          {SPEED_LABELS[speedLevel - 1]}
-        </span>
-        <div className="flex items-center gap-2.5">
-          <span className="text-[11px] text-lp-text/30 font-medium">Slow</span>
-          <input
-            type="range"
-            min={1}
-            max={5}
-            step={1}
-            value={speedLevel}
-            onChange={(e) => {
-              const v = Number(e.target.value);
-              onSpeedChange(v);
-              playSliderTick(v);
-            }}
-            className="speed-slider w-24 h-1 appearance-none cursor-pointer rounded-full outline-none"
-            style={{
-              color: isDark ? "#F0EDE7" : "#1D1B1A",
-              background: isDark
-                ? `linear-gradient(to right, #F0EDE7 ${(speedLevel - 1) * 25}%, #F0EDE740 ${(speedLevel - 1) * 25}%)`
-                : `linear-gradient(to right, #1D1B1A ${(speedLevel - 1) * 25}%, #1D1B1A30 ${(speedLevel - 1) * 25}%)`,
-            }}
-          />
-          <span className="text-[11px] text-lp-text/30 font-medium">Fast</span>
-        </div>
+      <div
+        className="flex gap-3 px-6"
+        style={{ height: 440 }}
+        onMouseEnter={() => { hoveredRef.current = true; }}
+        onMouseLeave={() => { hoveredRef.current = false; }}
+      >
+        <MasonryScrollColumn items={col1Items} innerRef={col1Ref} />
+        <MasonryScrollColumn
+          items={col2Items}
+          innerRef={col2Ref}
+          className="hidden sm:flex"
+        />
       </div>
-      */}
-
-      <VerticalTestimonialsScroller duration={scrollDuration} />
     </section>
   );
 }

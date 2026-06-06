@@ -42,9 +42,16 @@ export default function Signup() {
   const [googleLoading, setGoogleLoading] = useState(false);
 
   useEffect(() => {
-    if (router.query.username) {
-      setDomain(router.query.username);
+    if (!router.isReady) return;
+
+    if (!router.query.username) {
+      const query = router.query.job ? { job: router.query.job } : {};
+      router.replace({ pathname: '/claim-link', query });
+      return;
     }
+
+    setDomain(router.query.username);
+
     // Persist shared job context so it survives email-verify + quiz flow
     if (router.query.job) {
       sessionStorage.setItem('df_pending_shared_job', router.query.job);
@@ -53,7 +60,7 @@ export default function Signup() {
       username: router.query.username,
       source: router.query.job ? 'shared-job' : 'claim-link',
     });
-  }, [router.query.username, router.query.job]);
+  }, [router.isReady, router.query.username, router.query.job]);
 
   // Apply parsed resume to user profile silently (fire-and-forget)
   const applyParsedResume = async () => {

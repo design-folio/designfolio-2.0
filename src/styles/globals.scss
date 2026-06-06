@@ -1188,6 +1188,16 @@ body.cursor-pill-active * {
   animation: subtleDrift 15s ease-in-out infinite;
 }
 
+@keyframes masonryScrollUp {
+  from { transform: translateY(0); }
+  to { transform: translateY(-50%); }
+}
+
+@keyframes masonryScrollDown {
+  from { transform: translateY(-50%); }
+  to { transform: translateY(0); }
+}
+
 /* Bottom navigation gradient */
 .bottom-nav-gradient {
   background: linear-gradient(

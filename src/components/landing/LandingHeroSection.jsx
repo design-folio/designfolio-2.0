@@ -25,7 +25,7 @@ export default function LandingHeroSection({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className="mb-6 inline-flex items-center rounded-full border border-lp-text/10 bg-lp-text/[0.04] p-0.5"
+          className="mb-6 inline-flex items-center rounded-full border border-lp-text/10 bg-lp-text/[0.04] dark:bg-[--lp-card] dark:border-[--lp-border] p-0.5"
         >
           {["resume", "scratch"].map((tab) => (
             <button
@@ -41,7 +41,7 @@ export default function LandingHeroSection({
               {heroTab === tab && (
                 <motion.span
                   layoutId="tab-pill"
-                  className="absolute inset-0 rounded-full bg-lp-bg border border-lp-text/10 shadow-sm"
+                  className="absolute inset-0 rounded-full bg-[--lp-surface] border border-lp-text/10 shadow-sm"
                   transition={{ type: "spring", stiffness: 500, damping: 38 }}
                 />
               )}

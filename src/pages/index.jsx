@@ -203,7 +203,7 @@ export default function LandingPage({ dfToken, dfParsedResume }) {
 
   // Force background colour for iOS/Mac overscroll
   useEffect(() => {
-    const bg = isDark ? "#1a1a18" : "#fffef2";
+    const bg = isDark ? "#1c1917" : "#fffef2";
     document.documentElement.style.setProperty("background-color", bg, "important");
     document.body.style.setProperty("background-color", bg, "important");
     return () => {

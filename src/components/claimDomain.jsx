@@ -2,10 +2,9 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { _checkUsername } from "@/network/post-request";
 import { useRouter } from "next/router";
-import { useDebouncedCallback } from "use-debounce";
 import * as Yup from "yup";
+import { useUsernameAvailability } from "@/hooks/useUsernameAvailability";
 
 const DomainValidationSchema = Yup.object().shape({
     domain: Yup.string()
@@ -22,11 +21,12 @@ export default function ClaimDomain({
     onClaimWebsite,
 }) {
     const [inputValue, setInputValue] = useState("");
-    const [error, setError] = useState("");
+    const [formatError, setFormatError] = useState("");
     const [isFocused, setIsFocused] = useState(false);
     const [currentNameIndex, setCurrentNameIndex] = useState(0);
-    const [isAvailable, setIsAvailable] = useState(false);
-    const [loading, setLoading] = useState(false);
+    // Only check availability when format is valid
+    const { isChecking: loading, isAvailable, error: apiError } = useUsernameAvailability(formatError ? "" : inputValue);
+    const error = formatError || apiError;
     const router = useRouter();
 
     const names = ["john", "sarah", "alex", "emma", "david"];
@@ -49,63 +49,25 @@ export default function ClaimDomain({
         });
     };
 
-    // Debounced API call
-    const debouncedCheckUsername = useDebouncedCallback(
-        async (value) => {
-            setLoading(true);
-            if (value.length !== 0) {
-                try {
-                    const response = await _checkUsername({ username: value });
-                    const isDomainAvailable = response?.data?.available ?? false;
-                    setIsAvailable(isDomainAvailable);
-                    if (!isDomainAvailable) {
-                        setError("This domain seems to be taken already. Try something similar.");
-                    } else {
-                        setError("");
-                    }
-                } catch (error) {
-                    console.error(error);
-                    setError("Error checking domain availability");
-                } finally {
-                    setLoading(false);
-                }
-            }
-        },
-        1000 // Delay in milliseconds
-    );
-
-    // Handle input change with validation
     const handleInputChange = (e) => {
-        const { value } = e.target;
-        setLoading(true);
-
-        // Filter allowed characters and format
         const pattern = /^[a-z0-9-\s]+$/;
-        const newValue = value
+        const newValue = e.target.value
             .toLowerCase()
             .split("")
             .filter((char) => pattern.test(char))
             .join("");
         const formattedValue = newValue.replace(/\s+/g, "-");
-
         setInputValue(formattedValue);
 
-        // Validate with Yup schema
+        if (!formattedValue) {
+            setFormatError("");
+            return;
+        }
         try {
             DomainValidationSchema.validateSync({ domain: formattedValue });
-            setError("");
-            if (formattedValue) {
-                debouncedCheckUsername(formattedValue);
-            }
+            setFormatError("");
         } catch (validationError) {
-            setError(validationError.message);
-            setLoading(false);
-        }
-
-        if (!formattedValue) {
-            setError("");
-            setLoading(false);
-            setIsAvailable(false);
+            setFormatError(validationError.message);
         }
     };
 
@@ -122,14 +84,7 @@ export default function ClaimDomain({
     };
 
     const handleSubmit = () => {
-        if (!inputValue.trim()) {
-            setError("Username is required");
-            return;
-        }
-
-        if (error || !isAvailable) {
-            return;
-        }
+        if (!inputValue.trim() || error || !isAvailable || loading) return;
 
         if (onClaimWebsite) {
             onClaimWebsite({ domain: inputValue });
@@ -137,6 +92,102 @@ export default function ClaimDomain({
             handleClaim();
         }
     };
+
+    const canSubmit = !error && inputValue && isAvailable && !loading;
+
+    if (form === "landing") {
+        return (
+            <div className={`w-full flex flex-col items-center gap-2.5 ${className}`}>
+                <div className="w-full flex items-stretch gap-2">
+                    {/* Domain input pill */}
+                    <div className="flex-1 flex items-center rounded-full border border-lp-text/[0.12] bg-white dark:bg-card overflow-hidden transition-all duration-200 focus-within:border-lp-text/30 focus-within:shadow-[0_0_0_3px_rgba(29,27,26,0.07)] dark:focus-within:shadow-[0_0_0_3px_rgba(255,255,255,0.05)]">
+                        <div className="relative flex-1 min-w-0">
+                            <input
+                                type="text"
+                                value={inputValue}
+                                onChange={handleInputChange}
+                                onFocus={() => setIsFocused(true)}
+                                onBlur={() => setIsFocused(false)}
+                                placeholder={isFocused ? "yourname" : ""}
+                                autoComplete="off"
+                                className="w-full bg-transparent pl-5 pr-1 py-3.5 text-[15px] font-semibold text-[--lp-text] placeholder:text-lp-text/45 outline-none appearance-none border-0 ring-0 focus:ring-0 focus:outline-none [box-shadow:none]"
+                            />
+                            {!inputValue && !isFocused && (
+                                <motion.span
+                                    key={currentNameIndex}
+                                    initial={{ opacity: 0, y: 8 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -8 }}
+                                    transition={{ duration: 0.3, ease: "easeOut" }}
+                                    className="absolute left-5 top-0 h-full flex items-center pointer-events-none text-[15px] font-semibold text-lp-text/45"
+                                >
+                                    {names[currentNameIndex]}
+                                </motion.span>
+                            )}
+                        </div>
+                        <span
+                            className="flex items-center pl-3 pr-5 text-[14px] font-medium text-lp-text/35 whitespace-nowrap select-none border-l border-lp-text/10"
+                        >
+                            .designfolio.me
+                        </span>
+                    </div>
+
+                    {/* Get started button */}
+                    <motion.button
+                        onClick={handleSubmit}
+                        disabled={!canSubmit}
+                        whileTap={canSubmit ? { y: 2 } : {}}
+                        transition={{ type: "spring", stiffness: 600, damping: 30 }}
+                        className="flex-shrink-0 rounded-full text-white px-6 py-3.5 text-[14px] font-semibold whitespace-nowrap select-none transition-opacity duration-200"
+                        style={{
+                            background: "linear-gradient(to bottom, #FF6E52 0%, #E8391E 100%)",
+                            boxShadow: canSubmit
+                                ? "0 3px 0 #b82e16, 0 6px 18px rgba(232,57,30,0.32), inset 0 1px 0 rgba(255,255,255,0.22)"
+                                : "none",
+                            opacity: canSubmit ? 1 : 0.5,
+                            cursor: canSubmit ? "pointer" : "not-allowed",
+                        }}
+                        onMouseEnter={(e) => {
+                            if (!canSubmit) return;
+                            e.currentTarget.style.boxShadow = "0 3px 0 #b82e16, 0 8px 22px rgba(232,57,30,0.42), inset 0 1px 0 rgba(255,255,255,0.22)";
+                        }}
+                        onMouseLeave={(e) => {
+                            if (!canSubmit) return;
+                            e.currentTarget.style.boxShadow = "0 3px 0 #b82e16, 0 6px 18px rgba(232,57,30,0.32), inset 0 1px 0 rgba(255,255,255,0.22)";
+                        }}
+                        onMouseDown={(e) => {
+                            if (!canSubmit) return;
+                            e.currentTarget.style.boxShadow = "0 1px 0 #b82e16, 0 3px 10px rgba(232,57,30,0.25), inset 0 1px 0 rgba(255,255,255,0.22)";
+                        }}
+                        onMouseUp={(e) => {
+                            if (!canSubmit) return;
+                            e.currentTarget.style.boxShadow = "0 3px 0 #b82e16, 0 6px 18px rgba(232,57,30,0.32), inset 0 1px 0 rgba(255,255,255,0.22)";
+                        }}
+                    >
+                        Get started
+                    </motion.button>
+                </div>
+
+                {/* Status line */}
+                <div className="h-5 flex items-center justify-center">
+                    {loading && inputValue && (
+                        <span className="text-[12px] text-lp-text/55 font-medium">Checking availability…</span>
+                    )}
+                    {!loading && error && inputValue && (
+                        <span className="text-[12px] text-red-500 font-medium">{error}</span>
+                    )}
+                    {!loading && !error && isAvailable && inputValue && (
+                        <span className="text-[12px] text-green-600 font-medium">It&apos;s available — claim it now.</span>
+                    )}
+                    {!inputValue && (
+                        <span className="text-[12px] text-lp-text/55 font-medium">
+                            Claim your domain before it&apos;s taken
+                        </span>
+                    )}
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className={`flex flex-col sm:flex-row items-stretch justify-center gap-3 max-w-2xl mx-auto pt-4 ${className}`}>

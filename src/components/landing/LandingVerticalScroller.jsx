@@ -33,7 +33,7 @@ function VerticalTestimonialsScroller({ duration }) {
             key={i}
             className="px-5 py-5 rounded-xl border border-[--lp-video-border] bg-[--lp-bg]"
           >
-            <p className="text-[14px] leading-[1.6] text-[--lp-text]/80 font-medium mb-4">
+            <p className="text-[14px] leading-[1.6] text-lp-text/80 font-medium mb-4">
               "{t.content}"
             </p>
             <div className="flex items-center justify-between gap-3">
@@ -74,19 +74,22 @@ const SPEED_LABELS = ["Taking it easy", "Comfortable", "Normal", "Skimming", "Qu
 const SPEED_DURATIONS = [52, 38, 28, 18, 11];
 
 export default function LandingVerticalScroller({ speedLevel, onSpeedChange, isDark, playSliderTick }) {
-  const scrollDuration = SPEED_DURATIONS[speedLevel - 1];
+  // Speed control commented out — keeping a constant slow scroll
+  // const scrollDuration = SPEED_DURATIONS[speedLevel - 1];
+  const scrollDuration = SPEED_DURATIONS[0]; // always "Taking it easy"
 
   return (
     <section
       className="w-full border-y border-[--lp-border] px-6 pt-10 pb-4 bg-[--lp-card]"
       style={{ fontFamily: "var(--font-manrope), sans-serif" }}
     >
+      {/* Speed control UI — commented out
       <div className="flex items-center justify-between mb-6">
-        <span className="text-[12px] font-semibold tracking-widest uppercase text-[--lp-text]/40 tabular-nums w-[130px]">
+        <span className="text-[12px] font-semibold tracking-widest uppercase text-lp-text/40 tabular-nums w-[130px]">
           {SPEED_LABELS[speedLevel - 1]}
         </span>
         <div className="flex items-center gap-2.5">
-          <span className="text-[11px] text-[--lp-text]/30 font-medium">Slow</span>
+          <span className="text-[11px] text-lp-text/30 font-medium">Slow</span>
           <input
             type="range"
             min={1}
@@ -106,9 +109,10 @@ export default function LandingVerticalScroller({ speedLevel, onSpeedChange, isD
                 : `linear-gradient(to right, #1D1B1A ${(speedLevel - 1) * 25}%, #1D1B1A30 ${(speedLevel - 1) * 25}%)`,
             }}
           />
-          <span className="text-[11px] text-[--lp-text]/30 font-medium">Fast</span>
+          <span className="text-[11px] text-lp-text/30 font-medium">Fast</span>
         </div>
       </div>
+      */}
 
       <VerticalTestimonialsScroller duration={scrollDuration} />
     </section>

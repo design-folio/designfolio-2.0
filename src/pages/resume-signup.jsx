@@ -704,8 +704,9 @@ export default function ResumeSignup() {
                     className="overflow-hidden px-0.5 -mx-0.5"
                   >
                     <Field label="Your portfolio URL">
-                      <InputGroup>
+                      <InputGroup className="">
                         <InputGroupInput
+                          className="border-none"
                           type="text"
                           placeholder="yourname"
                           value={domain}

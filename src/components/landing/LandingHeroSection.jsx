@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { motion, LayoutGroup } from "framer-motion";
+import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import { cn } from "@/lib/utils";
 import ResumeUploadZone from "./ResumeUploadZone";
 import ClaimDomain from "../claimDomain";
+import ArrowCTA from "./shared/ArrowCTA";
 
 export default function LandingHeroSection({
   hasDfToken,
@@ -95,7 +96,35 @@ export default function LandingHeroSection({
         </div>
 
         {heroTab === "scratch" && (
-          <ClaimDomain form="landing" />
+          <AnimatePresence mode="wait">
+            {hasDfToken || hasParsedResume ? (
+              <motion.div
+                key="scratch-cta"
+                initial={{ opacity: 0, scale: 0.97 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.97 }}
+                transition={{ duration: 0.25 }}
+                className="flex flex-col items-center gap-2.5"
+              >
+                <ArrowCTA
+                  label={primaryCtaLabel}
+                  size="lg"
+                  onClick={onPrimaryCta}
+                  loading={primaryCtaLoading}
+                />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="scratch-domain"
+                initial={{ opacity: 0, scale: 0.97 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.97 }}
+                transition={{ duration: 0.25 }}
+              >
+                <ClaimDomain form="landing" />
+              </motion.div>
+            )}
+          </AnimatePresence>
         )}
       </motion.div>
     </section>

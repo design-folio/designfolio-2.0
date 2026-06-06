@@ -24,7 +24,7 @@ const InputGroupInput = React.forwardRef(function InputGroupInput({ className, .
     <Input
       ref={ref}
       className={cn(
-        "h-full flex-1 min-w-0 w-auto border-transparent bg-transparent rounded-none shadow-none",
+        "h-full flex-1 min-w-0 w-auto border-transparent bg-transparent dark:bg-bg-transparent rounded-none shadow-none",
         "focus-visible:ring-0 focus-visible:border-transparent",
         className
       )}

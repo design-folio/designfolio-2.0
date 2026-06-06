@@ -323,13 +323,13 @@ module.exports = {
         ring: "hsl(var(--ring))",
         background: {
           DEFAULT: "var(--background)",
-          landing: "hsl(var(--background-landing))",
+          landing: "hsl(var(--background-landing) / <alpha-value>)",
           dark: "#13151a",
           light: "#fafaf7",
         },
         foreground: {
           DEFAULT: "var(--foreground)",
-          landing: "hsl(var(--foreground-landing))",
+          landing: "hsl(var(--foreground-landing) / <alpha-value>)",
           dark: "#e9eaeb !important",
           light: "#202937",
         },

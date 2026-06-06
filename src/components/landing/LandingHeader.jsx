@@ -44,7 +44,7 @@ export default function LandingHeader({
             <Link href="/login">
               <Button
                 variant="outline"
-                className="rounded-full px-5 h-8 text-[13px] font-medium border-[--lp-border] hover:bg-black/5 bg-transparent text-[--lp-text]"
+                className="rounded-full px-5 h-8 text-[13px] font-medium border-[--lp-border] hover:bg-black/5 bg-transparent text-[--lp-text] shadow-none"
                 style={{ fontFamily: "var(--font-manrope), sans-serif" }}
               >
                 Login

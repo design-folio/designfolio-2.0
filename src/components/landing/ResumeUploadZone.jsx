@@ -156,8 +156,8 @@ export default function ResumeUploadZone({
               transition={{ duration: 0.25 }}
               className={
                 variant === "modal"
-                  ? "orb-always-active w-full flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-[#1D1B1A]/25 dark:border-white/25 bg-[#1D1B1A]/[0.03] dark:bg-white/[0.05] px-6 py-10"
-                  : "orb-always-active inline-flex items-center gap-3.5 rounded-xl border border-dashed border-[#1D1B1A]/25 dark:border-white/25 bg-[#1D1B1A]/[0.03] dark:bg-white/[0.05] px-5 py-3"
+                  ? "orb-always-active w-full flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-lp-text/25 bg-lp-text/[0.03] px-6 py-10"
+                  : "orb-always-active inline-flex items-center gap-3.5 rounded-xl border border-dashed border-lp-text/25 bg-lp-text/[0.03] px-5 py-3"
               }
               style={{
                 boxShadow: isDark
@@ -219,8 +219,8 @@ export default function ResumeUploadZone({
                   ? "w-full flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed px-6 py-10 [&_*]:cursor-pointer"
                   : "inline-flex items-center gap-3.5 rounded-xl border border-dashed px-5 py-3 [&_*]:cursor-pointer"
                   } transition-all duration-200 ${isDragging
-                    ? "border-[--lp-accent] bg-[#e54d2e]/[0.08]"
-                    : "border-[#1D1B1A]/25 dark:border-white/25 bg-[#1D1B1A]/[0.03] dark:bg-white/[0.05] hover:border-[#1D1B1A]/45 dark:hover:border-white/40 hover:bg-[#1D1B1A]/[0.05] dark:hover:bg-white/[0.07]"
+                    ? "border-[--lp-accent] bg-lp-accent/[0.08]"
+                    : "border-lp-text/25 bg-lp-text/[0.03] hover:border-lp-text/45 hover:bg-lp-text/[0.05]"
                   }`}
               >
                 <Folder isDragging={isDragging} />
@@ -264,12 +264,13 @@ export default function ResumeUploadZone({
         <>
           {/* Backdrop spotlight */}
           <motion.div
+            initial={{ opacity: 0 }}
             animate={{ opacity: isProcessing ? 1 : 0 }}
             transition={{ duration: 0.55, ease: "easeOut" }}
             className="fixed inset-0 z-[80] pointer-events-none"
             style={{
-              backdropFilter: "blur(4px)",
-              WebkitBackdropFilter: "blur(4px)",
+              backdropFilter: isProcessing ? "blur(4px)" : "none",
+              WebkitBackdropFilter: isProcessing ? "blur(4px)" : "none",
               background: isDark
                 ? `radial-gradient(ellipse 400px 120px at ${x}px ${y}px, transparent 0%, rgba(8,7,6,0.65) 62%)`
                 : `radial-gradient(ellipse 400px 120px at ${x}px ${y}px, transparent 0%, rgba(250,248,238,0.72) 62%)`,
@@ -280,6 +281,7 @@ export default function ResumeUploadZone({
 
           {/* Corner bracket — top-left */}
           <motion.div
+            initial={{ opacity: 0 }}
             animate={{ opacity: isProcessing ? 0.8 : 0, x: isProcessing ? 0 : 5, y: isProcessing ? 0 : 5 }}
             transition={{ duration: 0.35, delay: isProcessing ? 0.15 : 0 }}
             className="fixed z-[82] pointer-events-none"
@@ -292,6 +294,7 @@ export default function ResumeUploadZone({
           />
           {/* Corner bracket — top-right */}
           <motion.div
+            initial={{ opacity: 0 }}
             animate={{ opacity: isProcessing ? 0.8 : 0, x: isProcessing ? 0 : -5, y: isProcessing ? 0 : 5 }}
             transition={{ duration: 0.35, delay: isProcessing ? 0.15 : 0 }}
             className="fixed z-[82] pointer-events-none"
@@ -304,6 +307,7 @@ export default function ResumeUploadZone({
           />
           {/* Corner bracket — bottom-left */}
           <motion.div
+            initial={{ opacity: 0 }}
             animate={{ opacity: isProcessing ? 0.8 : 0, x: isProcessing ? 0 : 5, y: isProcessing ? 0 : -5 }}
             transition={{ duration: 0.35, delay: isProcessing ? 0.15 : 0 }}
             className="fixed z-[82] pointer-events-none"
@@ -316,6 +320,7 @@ export default function ResumeUploadZone({
           />
           {/* Corner bracket — bottom-right */}
           <motion.div
+            initial={{ opacity: 0 }}
             animate={{ opacity: isProcessing ? 0.8 : 0, x: isProcessing ? 0 : -5, y: isProcessing ? 0 : -5 }}
             transition={{ duration: 0.35, delay: isProcessing ? 0.15 : 0 }}
             className="fixed z-[82] pointer-events-none"
@@ -328,6 +333,7 @@ export default function ResumeUploadZone({
           />
           {/* Scanning line */}
           <motion.div
+            initial={{ opacity: 0 }}
             animate={
               isProcessing
                 ? { top: [`${y - 35}px`, `${y + 35}px`, `${y - 35}px`], opacity: [0, 0.5, 0.5, 0] }

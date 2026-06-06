@@ -8,7 +8,7 @@ export default function LandingTrustedBySection() {
       className="w-full px-6 mb-20 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8"
       style={{ fontFamily: "var(--font-manrope), sans-serif" }}
     >
-      <div className="text-[14px] text-[--lp-text]/60 leading-tight whitespace-nowrap text-center md:text-left shrink-0 font-semibold">
+      <div className="text-[14px] text-lp-text/60 leading-tight whitespace-nowrap text-center md:text-left shrink-0 font-semibold">
         Trusted by folks
         <br className="hidden md:block" /> working at
       </div>
@@ -23,7 +23,7 @@ export default function LandingTrustedBySection() {
         }}
       >
         <motion.div
-          className="flex items-center text-[--lp-text]/40 w-max"
+          className="flex items-center text-lp-text/40 w-max"
           animate={{ x: ["0%", "-50%"] }}
           transition={{ ease: "linear", duration: 50, repeat: Infinity }}
         >

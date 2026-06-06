@@ -79,7 +79,7 @@ export default function LandingTestimonialCarousel() {
                 )}
               </div>
 
-              <p className="text-[--lp-text]/80 font-medium text-[15px] leading-[1.5]">
+              <p className="text-lp-text/80 font-medium text-[15px] leading-[1.5]">
                 {t.content}
               </p>
             </motion.div>
@@ -90,14 +90,14 @@ export default function LandingTestimonialCarousel() {
           <button
             onClick={() => navigate(-1)}
             aria-label="Previous testimonial"
-            className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-[--lp-text]/30 border border-[--lp-text]/10 transition-colors hover:text-[--lp-text]/60 hover:border-[--lp-text]/20"
+            className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-lp-text/30 border border-lp-text/10 transition-colors hover:text-lp-text/60 hover:border-lp-text/20"
           >
             <ChevronLeft className="size-3.5" />
           </button>
 
-          <div className="flex-1 h-[3px] bg-black/5 dark:bg-white/5 rounded-full overflow-hidden">
+          <div className="flex-1 h-[3px] bg-black/5 rounded-full overflow-hidden">
             <motion.div
-              className="h-full bg-black/20 dark:bg-white/20 rounded-full"
+              className="h-full bg-black/20 rounded-full"
               style={{ width: `${progress}%` }}
               transition={{ ease: "linear", duration: 0.05 }}
             />
@@ -106,7 +106,7 @@ export default function LandingTestimonialCarousel() {
           <button
             onClick={() => navigate(1)}
             aria-label="Next testimonial"
-            className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-[--lp-text]/30 border border-[--lp-text]/10 transition-colors hover:text-[--lp-text]/60 hover:border-[--lp-text]/20"
+            className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-lp-text/30 border border-lp-text/10 transition-colors hover:text-lp-text/60 hover:border-lp-text/20"
           >
             <ChevronRight className="size-3.5" />
           </button>

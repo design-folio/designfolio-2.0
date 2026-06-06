@@ -35,6 +35,13 @@ module.exports = {
         grab: "var(--cursor-grab)", // Custom cursor
       },
       colors: {
+        /* lp-* tokens with <alpha-value> — enables text-lp-text/35, bg-lp-accent/10, etc. */
+        "lp-text": "rgb(var(--lp-text-rgb) / <alpha-value>)",
+        "lp-heading": "rgb(var(--lp-heading-rgb) / <alpha-value>)",
+        "lp-accent": "rgb(var(--lp-accent-rgb) / <alpha-value>)",
+        "lp-text-faint": "rgb(var(--lp-text-faint-rgb) / <alpha-value>)",
+        "lp-bg": "rgb(var(--lp-bg-rgb) / <alpha-value>)",
+
         "landing-bg-color": "var(--landing-bg-color)",
         "landing-header-bg-color": "var(--landing-header-bg-color)",
         "landng-header-border-color": "var(--landng-header-border-color)",
@@ -316,13 +323,13 @@ module.exports = {
         ring: "hsl(var(--ring))",
         background: {
           DEFAULT: "var(--background)",
-          landing: "hsl(var(--background-landing))",
+          landing: "hsl(var(--background-landing) / <alpha-value>)",
           dark: "#13151a",
           light: "#fafaf7",
         },
         foreground: {
           DEFAULT: "var(--foreground)",
-          landing: "hsl(var(--foreground-landing))",
+          landing: "hsl(var(--foreground-landing) / <alpha-value>)",
           dark: "#e9eaeb !important",
           light: "#202937",
         },

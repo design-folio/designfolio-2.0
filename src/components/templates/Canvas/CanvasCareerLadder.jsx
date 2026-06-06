@@ -77,7 +77,7 @@ function ExperienceCard({
         </div>
       )}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 gap-2 sm:gap-0">
-        <h3 className="text-base font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
+        <h3 className="text-base font-semibold text-[#1A1A1A] dark:text-[#F0EDE7] md:max-w-sm">
           {role} @ {company}
         </h3>
         <div className="bg-[#F0EDE7] dark:bg-[#3A352E] px-3 py-1 rounded-full text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] w-fit whitespace-nowrap">

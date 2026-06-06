@@ -1,12 +1,7 @@
 import ArrowCTA from "./shared/ArrowCTA";
 
-export default function LandingFounderSection({ dfToken, hasParsedResume, onPrimaryCta, primaryCtaLoading }) {
-  const ctaLabel = dfToken
-    ? "Launch Builder"
-    : hasParsedResume
-      ? "Continue Signup"
-      : "Get started for Free";
-  const ctaHref = dfToken ? "/builder" : hasParsedResume ? "/resume-signup" : undefined;
+export default function LandingFounderSection({ ctaLabel, ctaDest, onPrimaryCta, primaryCtaLoading }) {
+  const ctaHref = ctaDest || undefined;
 
   return (
     <section
@@ -15,11 +10,11 @@ export default function LandingFounderSection({ dfToken, hasParsedResume, onPrim
       style={{ fontFamily: "var(--font-manrope), sans-serif" }}
     >
       <div className="max-w-[500px] mx-auto">
-        <h2 className="text-[24px] font-bold text-[--lp-text] mb-6 tracking-tight">
+        <h2 className="text-[26px] font-bold text-[--lp-text] mb-6 tracking-tight">
           I'm Shai. Maker of Designfolio.
         </h2>
 
-        <div className="flex flex-col gap-6 text-[15px] leading-[1.6] text-[--lp-text]/80 font-medium">
+        <div className="flex flex-col gap-6 text-[15px] leading-[1.6] text-lp-text/80 font-medium">
           <p>
             For the last decade, I've been designing products.
             <br />
@@ -51,7 +46,7 @@ export default function LandingFounderSection({ dfToken, hasParsedResume, onPrim
           >
             Shai
           </div>
-          <div className="text-[14px] font-medium text-[--lp-text]/70">
+          <div className="text-[14px] font-medium text-lp-text/70">
             Say hi -{" "}
             <a
               href="mailto:shai@designfolio.me"

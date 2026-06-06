@@ -43,18 +43,18 @@ function FeatureRow({ f, isLast }) {
     <Link
       href={f.href || "/ai-tools"}
       className={cn(
-        "group flex items-center justify-between px-4 py-3.5 bg-[--lp-bg] hover:bg-[#F8F7EE] dark:hover:bg-white/[0.03] transition-colors duration-150 no-underline [&_*]:cursor-pointer cursor-pointer",
+        "group flex items-center justify-between px-4 py-3.5 bg-[--lp-bg] hover:bg-[#F8F7EE] transition-colors duration-150 no-underline [&_*]:cursor-pointer cursor-pointer",
         !isLast && "border-b border-[--lp-video-border]",
       )}
     >
       <div className="flex items-center gap-3">
-        <div className="relative h-7 w-7 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden bg-black/[0.08] dark:bg-white/[0.10]">
+        <div className="relative h-7 w-7 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden bg-black/[0.08]">
           <span
             className="absolute inset-0 rounded-full scale-100 sm:scale-0 sm:group-hover:scale-100 transition-transform duration-300 ease-out origin-center"
             style={pillStyle}
           />
           <Icon
-            className="absolute h-3.5 w-3.5 text-[--lp-text]/30 opacity-0 sm:opacity-100 transition-opacity duration-200 sm:group-hover:opacity-0"
+            className="absolute h-3.5 w-3.5 text-lp-text/30 opacity-0 sm:opacity-100 transition-opacity duration-200 sm:group-hover:opacity-0"
             strokeWidth={1.75}
           />
           <Icon
@@ -66,7 +66,7 @@ function FeatureRow({ f, isLast }) {
         <span className="text-[14px] font-medium text-[--lp-text]">{f.label}</span>
       </div>
       <ArrowUpRight
-        className="h-[15px] w-[15px] text-[--lp-text]/40 opacity-0 -translate-x-1 transition-all duration-200 ease-out group-hover:opacity-100 group-hover:translate-x-0 flex-shrink-0"
+        className="h-[15px] w-[15px] text-lp-text/40 opacity-0 -translate-x-1 transition-all duration-200 ease-out group-hover:opacity-100 group-hover:translate-x-0 flex-shrink-0"
         strokeWidth={2}
       />
     </Link>
@@ -83,7 +83,7 @@ export default function LandingHowSection({ showAllFeatures, onToggleFeatures })
       <div className="w-full flex flex-col gap-12">
         {STEPS.map((item, i) => (
           <div key={i} className="flex flex-col gap-5">
-            <h3 className="text-[18px] font-bold text-[--lp-text]">
+            <h3 className="text-[20px] font-bold text-[--lp-text]">
               {item.step} <ShimmerInView text={item.title} />
             </h3>
 
@@ -145,7 +145,7 @@ export default function LandingHowSection({ showAllFeatures, onToggleFeatures })
 
                 <button
                   onClick={onToggleFeatures}
-                  className="self-start flex items-center gap-1.5 px-1 py-1 text-[13px] font-medium text-[--lp-text]/50 hover:text-[--lp-text] transition-colors duration-150"
+                  className="self-start flex items-center gap-1.5 px-1 py-1 text-[13px] font-medium text-lp-text/50 hover:text-[--lp-text] transition-colors duration-150 cursor-pointer"
                 >
                   <span className="cursor-pointer">
                     {showAllFeatures

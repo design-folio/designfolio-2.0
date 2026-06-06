@@ -136,9 +136,9 @@ export default function Navbar() {
     <div className="px-2 md:px-2 py-2 flex items-center justify-between gap-4 md:gap-8">
       {/* Logo + mode switcher */}
       <div className="flex items-center gap-3">
-        <Link href="/builder">
+        {/* <Link href="/builder">
           <MemoDFLogoV2 className="flex-shrink-0" />
-        </Link>
+        </Link> */}
         <div>
           <FluidDropdown />
         </div>

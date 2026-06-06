@@ -75,7 +75,7 @@ export default function LandingLeftNav({
             <span
               className={cn(
                 "cursor-pointer text-sm transition-colors",
-                isDark ? "text-[--lp-text]/30" : "text-[--lp-text]",
+                isDark ? "text-lp-text/30" : "text-[--lp-text]",
               )}
               onClick={() => onThemeChange(false)}
             >
@@ -92,7 +92,7 @@ export default function LandingLeftNav({
             <span
               className={cn(
                 "cursor-pointer text-sm transition-colors",
-                !isDark ? "text-[--lp-text]/30" : "text-[--lp-text]",
+                !isDark ? "text-lp-text/30" : "text-[--lp-text]",
               )}
               onClick={() => onThemeChange(true)}
             >
@@ -102,7 +102,7 @@ export default function LandingLeftNav({
 
           {/* Section nav */}
           <nav
-            className="flex flex-col gap-2.5 text-[15px] font-medium text-[--lp-text]/50 pb-4 bg-[--lp-bg]"
+            className="flex flex-col gap-2.5 text-[15px] font-medium text-lp-text/50 pb-4 bg-[--lp-bg]"
             style={{ fontFamily: "var(--font-manrope), sans-serif" }}
           >
             {NAV_LINKS.map(({ id, label }) => (

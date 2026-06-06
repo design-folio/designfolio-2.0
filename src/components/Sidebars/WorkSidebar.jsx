@@ -208,14 +208,18 @@ export default function AddWork() {
             experiences: works,
           };
         } else {
-          payload = {
-            experiences: [
-              ...userDetails?.experiences,
-              {
-                ...values,
-              },
-            ],
-          };
+          const list = [...(userDetails?.experiences || [])];
+          const newExp = { ...values };
+          // Find the first item where the new entry should come before it (by startYear desc, currentlyWorking first)
+          let insertIdx = list.length;
+          for (let i = 0; i < list.length; i++) {
+            const cur = list[i];
+            if (newExp.currentlyWorking && !cur.currentlyWorking) { insertIdx = i; break; }
+            if (!newExp.currentlyWorking && cur.currentlyWorking) continue;
+            if ((newExp.startYear || 0) > (cur.startYear || 0)) { insertIdx = i; break; }
+          }
+          list.splice(insertIdx, 0, newExp);
+          payload = { experiences: list };
         }
 
         _updateUser(payload)

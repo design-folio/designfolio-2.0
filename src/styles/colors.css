@@ -1,6 +1,7 @@
 :root {
   /* new landing page (--lp-*) */
   --lp-bg: #fffef2;
+  --lp-surface: #fffef2;
   --lp-card: #f4f3e5;
   --lp-border: #eae9e4;
   --lp-heading: #463b34;
@@ -259,8 +260,9 @@
 /* dark mode start*/
 [data-theme="dark"] {
   /* new landing page dark overrides */
-  --lp-bg: #1a1a18;
-  --lp-card: #1e1e1b;
+  --lp-bg: #1c1917;
+  --lp-surface: #2a2522;
+  --lp-card: #221e1c;
   --lp-border: rgba(255, 255, 255, 0.1);
   --lp-heading: #f4f2eb;
   --lp-text: #f0ede7;
@@ -274,7 +276,7 @@
   --lp-heading-rgb: 244 242 235;
   --lp-accent-rgb: 229 77 46;
   --lp-text-faint-rgb: 122 115 108;
-  --lp-bg-rgb: 26 26 24;
+  --lp-bg-rgb: 28 25 23;
 
   /* Buttons */
   --primary-btn-bg-color: #262832;

@@ -33,7 +33,7 @@ export default function LandingHeader({
           style={{ fontFamily: '"DM Mono", monospace' }}
         >
           <BlurHoverText
-            defaultText="TRUSTED BY 25000+ JOB SEEKERS"
+            defaultText="TRUSTED BY 31000+ JOB SEEKERS"
             hoverText="5000+ PORTFOLIOS LAUNCHED"
             scrollActive={showNavCTA}
           />

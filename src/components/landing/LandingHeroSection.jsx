@@ -121,7 +121,7 @@ export default function LandingHeroSection({
                 exit={{ opacity: 0, scale: 0.97 }}
                 transition={{ duration: 0.25 }}
               >
-                <ClaimDomain form="landing" />
+                <ClaimDomain  />
               </motion.div>
             )}
           </AnimatePresence>

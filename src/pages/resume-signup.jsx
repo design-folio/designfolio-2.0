@@ -13,6 +13,7 @@ import { GoogleButton } from "@/components/ui/google-button";
 import { Input } from "@/components/ui/input";
 import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from "@/components/ui/input-group";
 import { Label } from "@/components/ui/label";
+import { Spinner } from "@/components/ui/spinner";
 import { usePostHogEvent } from "@/hooks/usePostHogEvent";
 import { usePostHogIdentify } from "@/hooks/usePostHogIdentify";
 import { setToken } from "@/lib/cooikeManager";
@@ -716,10 +717,7 @@ export default function ResumeSignup() {
                         <InputGroupAddon className="gap-2 pr-4">
                           <InputGroupText className="px-0">.designfolio.me</InputGroupText>
                           {domainLoading && (
-                            <svg className="animate-spin h-3.5 w-3.5 text-[--lp-text]/30" viewBox="0 0 24 24" fill="none">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V2.5A9.5 9.5 0 002.5 12H4z" />
-                            </svg>
+                            <Spinner variant="circle" className="h-3.5 w-3.5 text-[--lp-text]/30" />
                           )}
                         </InputGroupAddon>
                       </InputGroup>
@@ -781,10 +779,7 @@ export default function ResumeSignup() {
                 data-testid="button-claim"
               >
                 {submitting ? (
-                  <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.37 0 0 5.37 0 12h4z" />
-                  </svg>
+                  <Spinner variant="circle" className="w-4 h-4" />
                 ) : (
                   <>
                     Claim my portfolio {"&"} jobs

@@ -219,7 +219,7 @@ export function TransitionScreen({ onType }) {
             onClick={onType}
             className="cursor-pointer flex items-center gap-2 bg-foreground text-background font-medium text-[14px] px-7 py-3 rounded-full hover:bg-foreground/90 transition-all active:scale-[0.97]"
           >
-            Find my matches
+            Narrow It Down
             <ArrowRight className="w-4 h-4" />
           </button>
         </motion.div>

@@ -219,12 +219,16 @@ export default function Login() {
 
                 <p className="text-center text-sm text-foreground/70 mt-6">
                   Don't have an account?{' '}
-                  <Link
-                    href="/claim-link"
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const hasResume = typeof window !== "undefined" && !!sessionStorage.getItem("df_parsed_resume");
+                      router.push(hasResume ? "/resume-signup" : "/claim-link");
+                    }}
                     className="hover:underline font-medium text-[#FF553E] cursor-pointer"
                   >
                     Sign up
-                  </Link>
+                  </button>
                 </p>
               </Form>
             )}
@@ -271,12 +275,16 @@ export default function Login() {
 
         <p className="text-center text-sm text-foreground/70 mt-8">
           Don't have an account?{' '}
-          <Link
-            href="/claim-link"
+          <button
+            type="button"
+            onClick={() => {
+              const hasResume = typeof window !== "undefined" && !!sessionStorage.getItem("df_parsed_resume");
+              router.push(hasResume ? "/resume-signup" : "/claim-link");
+            }}
             className="hover:underline font-medium text-[#FF553E] cursor-pointer"
           >
             Sign up
-          </Link>
+          </button>
         </p>
       </motion.div>
     </AuthLayout>

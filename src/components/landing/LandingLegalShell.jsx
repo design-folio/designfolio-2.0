@@ -1,13 +1,29 @@
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import LandingFooter from "./LandingFooter";
 import Seo from "@/components/seo";
 import MemoDesignfolioLogoV2 from "@/components/icons/DesignfolioLogoV2";
+import { Button } from "@/components/ui/button";
+
+function getCookieValue(name) {
+  if (typeof document === "undefined") return "";
+  const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const match = document.cookie.match(new RegExp(`(?:^|; )${escaped}=([^;]*)`));
+  return match ? decodeURIComponent(match[1]) : "";
+}
 
 /**
  * Shared wrapper for legal pages (privacy, terms, refund).
  * Applies the warm landing-page design shell.
  */
 export default function LandingLegalShell({ title, seoTitle, seoDescription, children }) {
+  const [hasDfToken, setHasDfToken] = useState(false);
+  const [hasParsedResume, setHasParsedResume] = useState(false);
+
+  useEffect(() => {
+    setHasDfToken(!!getCookieValue("df-token"));
+    setHasParsedResume(!!getCookieValue("df_parsed_resume"));
+  }, []);
   return (
     <>
       <Seo
@@ -27,18 +43,20 @@ export default function LandingLegalShell({ title, seoTitle, seoDescription, chi
               <MemoDesignfolioLogoV2 className="text-df-icon-color" />
             </Link>
             <div className="flex items-center gap-3">
-              <Link
-                href="/login"
-                className="text-[13px] font-medium text-[--lp-text-muted] hover:text-[--lp-text] transition-colors"
-              >
-                Login
-              </Link>
-              <Link
-                href="/claim-link"
-                className="inline-flex items-center gap-1.5 h-8 px-4 rounded-full text-[13px] font-semibold bg-[--lp-text] text-[--lp-fg-white] hover:bg-[--lp-accent] transition-colors duration-300"
-              >
-                Get Started
-              </Link>
+              {hasDfToken ? (
+                <Button asChild variant="darker" size="sm" className="rounded-full px-4 text-[13px] font-semibold">
+                  <Link href="/builder">Launch Builder</Link>
+                </Button>
+              ) : (
+                <>
+                  <Button asChild variant="ghost" size="sm" className="text-[13px] font-medium text-[--lp-text-muted] hover:text-[--lp-text] hover:bg-transparent px-0">
+                    <Link href="/login">Login</Link>
+                  </Button>
+                  <Button asChild variant="darker" size="sm" className="rounded-full px-4 text-[13px] font-semibold">
+                    <Link href="/claim-link">{hasParsedResume ? "Continue Signup" : "Get Started"}</Link>
+                  </Button>
+                </>
+              )}
             </div>
           </header>
 

@@ -5,7 +5,7 @@ import { testimonials, scrollerExtraTestimonials } from "./shared/testimonialDat
 function MasonryScrollCard({ t }) {
   return (
     <div className="px-4 py-4 rounded-xl border border-[--lp-video-border] bg-[--lp-bg]">
-      <p className="text-[13px] leading-[1.6] text-lp-text/75 font-medium mb-3.5">
+      <p className="text-[14px] leading-[1.65] text-lp-text/75 font-medium mb-4">
         "{t.content}"
       </p>
       <div className="flex items-center justify-between gap-2">
@@ -13,13 +13,13 @@ function MasonryScrollCard({ t }) {
           <img
             src={t.image}
             alt={t.name}
-            className="h-7 w-7 rounded-full object-cover flex-shrink-0"
+            className="h-8 w-8 rounded-full object-cover flex-shrink-0"
           />
-          <div className="flex flex-col min-w-0">
-            <span className="text-[12px] font-semibold text-lp-text leading-none truncate">
+          <div className="flex flex-col gap-0.5 min-w-0">
+            <span className="text-[13px] font-semibold text-lp-text leading-none truncate">
               {t.name}
             </span>
-            <span className="text-[11px] text-lp-text/45 leading-tight truncate">
+            <span className="text-[11.5px] text-lp-text/45 leading-tight truncate">
               {t.role}
             </span>
           </div>
@@ -27,7 +27,7 @@ function MasonryScrollCard({ t }) {
         {t.logoSrc && (
           <div
             className={cn(
-              "shrink-0 w-6 h-6 rounded-full overflow-hidden",
+              "shrink-0 w-7 h-7 rounded-full overflow-hidden",
               !t.logoRaw && "bg-white dark:bg-white/5"
             )}
           >
@@ -52,7 +52,7 @@ function MasonryScrollColumn({ items, innerRef, className }) {
   const doubled = [...items, ...items];
   return (
     <div className={cn("flex-1 min-w-0 overflow-hidden", className)}>
-      <div ref={innerRef} className="flex flex-col gap-3">
+      <div ref={innerRef} className="flex flex-col gap-3 w-full">
         {doubled.map((t, i) => (
           <MasonryScrollCard key={i} t={t} />
         ))}
@@ -126,11 +126,11 @@ export default function LandingVerticalScroller() {
 
   return (
     <section
-      className="w-full border-y border-[--lp-border] bg-[--lp-card]"
+      className="w-full overflow-hidden border-y border-[--lp-border] bg-[--lp-card]"
       style={{ fontFamily: "var(--font-manrope), sans-serif" }}
     >
       <div
-        className="flex gap-3 px-6"
+        className="flex gap-3 px-6 overflow-hidden"
         style={{ height: 440 }}
         onMouseEnter={() => { hoveredRef.current = true; }}
         onMouseLeave={() => { hoveredRef.current = false; }}
@@ -139,7 +139,7 @@ export default function LandingVerticalScroller() {
         <MasonryScrollColumn
           items={col2Items}
           innerRef={col2Ref}
-          className="hidden sm:flex"
+          className="hidden min-[720px]:flex"
         />
       </div>
     </section>

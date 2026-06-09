@@ -10,6 +10,8 @@ import { Folder } from "@/components/ui/folder";
 import { _postResumeParse } from "@/network/resume";
 import ArrowCTA from "./shared/ArrowCTA";
 import { Button } from "../ui/button";
+import { usePostHogEvent } from "@/hooks/usePostHogEvent";
+import { POSTHOG_EVENT_NAMES } from "@/lib/posthogEventNames";
 
 const AI_STATUSES = [
   "Reading your resume...",
@@ -29,6 +31,7 @@ export default function ResumeUploadZone({
   const router = useRouter();
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
+  const phEvent = usePostHogEvent();
 
   const fileInputRef = useRef(null);
   const uploadZoneRef = useRef(null);
@@ -88,21 +91,37 @@ export default function ResumeUploadZone({
         return;
       }
 
+      phEvent(POSTHOG_EVENT_NAMES.RESUME_UPLOAD_STARTED, {
+        source: "landing_hero",
+        file_size_kb: Math.round(file.size / 1024),
+      });
+
       setIsProcessing(true);
 
       try {
         const { data } = await _postResumeParse(file);
         sessionStorage.setItem("df_parsed_resume", JSON.stringify(data));
+        phEvent(POSTHOG_EVENT_NAMES.RESUME_UPLOAD_SUCCESS, {
+          source: "landing_hero",
+          resume_has_name: !!data?.name,
+          resume_has_email: !!data?.email,
+          resume_has_skills: Array.isArray(data?.skills) && data.skills.length > 0,
+          resume_has_experience: Array.isArray(data?.experience) && data.experience.length > 0,
+        });
         setTimeout(() => router.push("/resume-signup"), 400);
       } catch (err) {
         setIsProcessing(false);
         const msg =
           err?.response?.data?.message ||
           "Couldn't read your resume. Try a text-based PDF.";
+        phEvent(POSTHOG_EVENT_NAMES.RESUME_UPLOAD_FAILED, {
+          source: "landing_hero",
+          error: msg,
+        });
         toast.error(msg);
       }
     },
-    [router],
+    [router, phEvent],
   );
 
   const handleFileInput = (e) => {

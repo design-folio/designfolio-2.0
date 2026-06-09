@@ -19,6 +19,10 @@ export const POSTHOG_EVENT_NAMES = {
   UPGRADE_PLAN_SELECTED: 'upgrade_plan_selected',
   UPGRADE_MODAL_CLICKED: 'upgrade_modal_clicked',
   PAYMENT_COMPLETED: 'payment_completed',
+  // Landing page resume upload funnel
+  RESUME_UPLOAD_STARTED: 'resume_upload_started',
+  RESUME_UPLOAD_SUCCESS: 'resume_upload_success',
+  RESUME_UPLOAD_FAILED: 'resume_upload_failed',
   // Job share → resume signup funnel
   RESUME_SIGNUP_VIEWED: 'resume_signup_viewed',
   JOB_SHARE_RESUME_UPLOADED: 'job_share_resume_uploaded',

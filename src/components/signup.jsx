@@ -58,7 +58,7 @@ export default function Signup() {
     }
     event(POSTHOG_EVENT_NAMES.SIGNUP_STARTED, {
       username: router.query.username,
-      source: router.query.job ? 'shared-job' : 'claim-link',
+      source: router.query.job ? 'shared-job' : sessionStorage.getItem('df_parsed_resume') ? 'resume-upload' : 'claim-link',
     });
   }, [router.isReady, router.query.username, router.query.job]);
 

@@ -2,7 +2,10 @@ import * as React from "react";
 import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
 import { cn } from "@/lib/utils";
 
-const ScrollArea = function ScrollArea({ className, children, ...props }) {
+const ScrollArea = React.forwardRef(function ScrollArea(
+  { className, children, ...props },
+  ref
+) {
   return /*#__PURE__*/ React.createElement(
     ScrollAreaPrimitive.Root,
     {
@@ -20,15 +23,14 @@ const ScrollArea = function ScrollArea({ className, children, ...props }) {
     /*#__PURE__*/ React.createElement(ScrollBar, null),
     /*#__PURE__*/ React.createElement(ScrollAreaPrimitive.Corner, null)
   );
-};
+});
 
 ScrollArea.displayName = ScrollAreaPrimitive.Root.displayName;
 
-const ScrollBar = function ScrollBar({
-  className,
-  orientation = "vertical",
-  ...props
-}) {
+const ScrollBar = React.forwardRef(function ScrollBar(
+  { className, orientation = "vertical", ...props },
+  ref
+) {
   return /*#__PURE__*/ React.createElement(
     ScrollAreaPrimitive.ScrollAreaScrollbar,
     {
@@ -48,7 +50,7 @@ const ScrollBar = function ScrollBar({
       className: "relative flex-1 rounded-full bg-border",
     })
   );
-};
+});
 
 ScrollBar.displayName = ScrollAreaPrimitive.ScrollAreaScrollbar.displayName;
 

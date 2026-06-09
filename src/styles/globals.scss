@@ -271,6 +271,7 @@
   }
 
   * {
+    @apply border-border;
     scroll-behavior: smooth;
   }
 
@@ -308,6 +309,17 @@
 @import url("./animation.css");
 @import url("./theme.css");
 
+/* Admin section: all interactive elements use pointer cursor */
+body[data-admin="true"] button:not([disabled]),
+body[data-admin="true"] [role="button"]:not([aria-disabled="true"]),
+body[data-admin="true"] a[href],
+body[data-admin="true"] [role="tab"],
+body[data-admin="true"] [role="menuitem"],
+body[data-admin="true"] [role="option"],
+body[data-admin="true"] [cmdk-item] {
+  cursor: pointer;
+}
+
 /* Chalkboard font — used in MacOS AboutWindow chalkboard theme */
 @font-face {
   font-family: "Chalkboard";
@@ -333,12 +345,14 @@
 }
 
 [data-slot="kanban-item-handle"],
-[data-slot="kanban-item-handle"] *:not(button):not(a):not(input):not(select):not(textarea) {
+[data-slot="kanban-item-handle"]
+  *:not(button):not(a):not(input):not(select):not(textarea) {
   cursor: grab !important;
 }
 
 [data-slot="kanban-item-handle"]:active,
-[data-slot="kanban-item-handle"]:active *:not(button):not(a):not(input):not(select):not(textarea) {
+[data-slot="kanban-item-handle"]:active
+  *:not(button):not(a):not(input):not(select):not(textarea) {
   cursor: grabbing !important;
 }
 
@@ -1189,13 +1203,21 @@ body.cursor-pill-active * {
 }
 
 @keyframes masonryScrollUp {
-  from { transform: translateY(0); }
-  to { transform: translateY(-50%); }
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  }
 }
 
 @keyframes masonryScrollDown {
-  from { transform: translateY(-50%); }
-  to { transform: translateY(0); }
+  from {
+    transform: translateY(-50%);
+  }
+  to {
+    transform: translateY(0);
+  }
 }
 
 /* Bottom navigation gradient */

@@ -2,12 +2,15 @@ import * as React from "react";
 import * as SeparatorPrimitive from "@radix-ui/react-separator";
 import { cn } from "@/lib/utils";
 
-const Separator = function Separator({
-  className,
-  orientation = "horizontal",
-  decorative = true,
-  ...props
-}) {
+const Separator = React.forwardRef(function Separator(
+  {
+    className,
+    orientation = "horizontal",
+    decorative = true,
+    ...props
+  },
+  ref
+) {
   return /*#__PURE__*/ React.createElement(SeparatorPrimitive.Root, {
     ref: ref,
     decorative: decorative,
@@ -19,7 +22,7 @@ const Separator = function Separator({
     ),
     ...props,
   });
-};
+});
 
 Separator.displayName = SeparatorPrimitive.Root.displayName;
 

@@ -9,11 +9,10 @@ const SelectGroup = SelectPrimitive.Group;
 
 const SelectValue = SelectPrimitive.Value;
 
-const SelectTrigger = function SelectTrigger({
-  className,
-  children,
-  ...props
-}) {
+const SelectTrigger = React.forwardRef(function SelectTrigger(
+  { className, children, ...props },
+  ref
+) {
   return /*#__PURE__*/ React.createElement(
     SelectPrimitive.Trigger,
     {
@@ -35,14 +34,14 @@ const SelectTrigger = function SelectTrigger({
       })
     )
   );
-};
+});
 
 SelectTrigger.displayName = SelectPrimitive.Trigger.displayName;
 
-const SelectScrollUpButton = function SelectScrollUpButton({
-  className,
-  ...props
-}) {
+const SelectScrollUpButton = React.forwardRef(function SelectScrollUpButton(
+  { className, ...props },
+  ref
+) {
   return /*#__PURE__*/ React.createElement(
     SelectPrimitive.ScrollUpButton,
     {
@@ -57,14 +56,14 @@ const SelectScrollUpButton = function SelectScrollUpButton({
       className: "h-4 w-4",
     })
   );
-};
+});
 
 SelectScrollUpButton.displayName = SelectPrimitive.ScrollUpButton.displayName;
 
-const SelectScrollDownButton = function SelectScrollDownButton({
-  className,
-  ...props
-}) {
+const SelectScrollDownButton = React.forwardRef(function SelectScrollDownButton(
+  { className, ...props },
+  ref
+) {
   return /*#__PURE__*/ React.createElement(
     SelectPrimitive.ScrollDownButton,
     {
@@ -79,17 +78,15 @@ const SelectScrollDownButton = function SelectScrollDownButton({
       className: "h-4 w-4",
     })
   );
-};
+});
 
 SelectScrollDownButton.displayName =
   SelectPrimitive.ScrollDownButton.displayName;
 
-const SelectContent = function SelectContent({
-  className,
-  children,
-  position = "popper",
-  ...props
-}) {
+const SelectContent = React.forwardRef(function SelectContent(
+  { className, children, position = "popper", ...props },
+  ref
+) {
   return /*#__PURE__*/ React.createElement(
     SelectPrimitive.Portal,
     null,
@@ -121,21 +118,27 @@ const SelectContent = function SelectContent({
       /*#__PURE__*/ React.createElement(SelectScrollDownButton, null)
     )
   );
-};
+});
 
 SelectContent.displayName = SelectPrimitive.Content.displayName;
 
-const SelectLabel = function SelectLabel({ className, ...props }) {
+const SelectLabel = React.forwardRef(function SelectLabel(
+  { className, ...props },
+  ref
+) {
   return /*#__PURE__*/ React.createElement(SelectPrimitive.Label, {
     ref: ref,
     className: cn("py-1.5 pl-8 pr-2 text-sm font-semibold", className),
     ...props,
   });
-};
+});
 
 SelectLabel.displayName = SelectPrimitive.Label.displayName;
 
-const SelectItem = function SelectItem({ className, children, ...props }) {
+const SelectItem = React.forwardRef(function SelectItem(
+  { className, children, ...props },
+  ref
+) {
   return /*#__PURE__*/ React.createElement(
     SelectPrimitive.Item,
     {
@@ -162,17 +165,20 @@ const SelectItem = function SelectItem({ className, children, ...props }) {
     ),
     /*#__PURE__*/ React.createElement(SelectPrimitive.ItemText, null, children)
   );
-};
+});
 
 SelectItem.displayName = SelectPrimitive.Item.displayName;
 
-const SelectSeparator = function SelectSeparator({ className, ...props }) {
+const SelectSeparator = React.forwardRef(function SelectSeparator(
+  { className, ...props },
+  ref
+) {
   return /*#__PURE__*/ React.createElement(SelectPrimitive.Separator, {
     ref: ref,
     className: cn("-mx-1 my-1 h-px bg-muted", className),
     ...props,
   });
-};
+});
 
 SelectSeparator.displayName = SelectPrimitive.Separator.displayName;
 

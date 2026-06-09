@@ -72,6 +72,7 @@ export default function Navbar() {
 
   const isMacOS = template === 4 && MACOS_ROUTES.includes(router.pathname);
 
+  const isAdminROute = router.pathname.startsWith("/admin");
   const shouldShift = !isMobile && isSidebarThatShifts(activeSidebar);
   const shiftWidth = shouldShift ? getSidebarShiftWidth(activeSidebar) : "0px";
 

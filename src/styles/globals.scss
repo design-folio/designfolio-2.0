@@ -271,6 +271,7 @@
   }
 
   * {
+    @apply border-border;
     scroll-behavior: smooth;
   }
 
@@ -308,6 +309,17 @@
 @import url("./animation.css");
 @import url("./theme.css");
 
+/* Admin section: all interactive elements use pointer cursor */
+body[data-admin="true"] button:not([disabled]),
+body[data-admin="true"] [role="button"]:not([aria-disabled="true"]),
+body[data-admin="true"] a[href],
+body[data-admin="true"] [role="tab"],
+body[data-admin="true"] [role="menuitem"],
+body[data-admin="true"] [role="option"],
+body[data-admin="true"] [cmdk-item] {
+  cursor: pointer;
+}
+
 /* Chalkboard font — used in MacOS AboutWindow chalkboard theme */
 @font-face {
   font-family: "Chalkboard";
@@ -333,12 +345,14 @@
 }
 
 [data-slot="kanban-item-handle"],
-[data-slot="kanban-item-handle"] *:not(button):not(a):not(input):not(select):not(textarea) {
+[data-slot="kanban-item-handle"]
+  *:not(button):not(a):not(input):not(select):not(textarea) {
   cursor: grab !important;
 }
 
 [data-slot="kanban-item-handle"]:active,
-[data-slot="kanban-item-handle"]:active *:not(button):not(a):not(input):not(select):not(textarea) {
+[data-slot="kanban-item-handle"]:active
+  *:not(button):not(a):not(input):not(select):not(textarea) {
   cursor: grabbing !important;
 }
 
@@ -977,6 +991,20 @@ body.cursor-pill-active * {
     scrollbar-width: thin;
     scrollbar-color: hsl(var(--border)) transparent;
   }
+  .custom-thin-scrollbar::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  .custom-thin-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-thin-scrollbar::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 999px;
+  }
+  .custom-thin-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.4);
+  }
   /* Hide ugly search cancel button in Chrome until we can style it properly */
   input[type="search"]::-webkit-search-cancel-button {
     @apply hidden;
@@ -1189,13 +1217,21 @@ body.cursor-pill-active * {
 }
 
 @keyframes masonryScrollUp {
-  from { transform: translateY(0); }
-  to { transform: translateY(-50%); }
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  }
 }
 
 @keyframes masonryScrollDown {
-  from { transform: translateY(-50%); }
-  to { transform: translateY(0); }
+  from {
+    transform: translateY(-50%);
+  }
+  to {
+    transform: translateY(0);
+  }
 }
 
 /* Bottom navigation gradient */

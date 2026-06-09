@@ -12,6 +12,8 @@
   --accent: 38 16% 88%;
   --muted: 38 14% 90%;
   --border: 38 15% 88%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 23 11% 15%;
   --sidebar: 0 0% 100%;
   --sidebar-accent: 38 18% 88%;
   --primary: #202937;
@@ -40,6 +42,8 @@
   --accent: 25 15% 22%;
   --muted: 25 12% 20%;
   --border: 25 12% 24%;
+  --popover: 30 14% 15%;
+  --popover-foreground: 47 29% 94%;
   --sidebar: 30 14% 15%;
   --sidebar-accent: 25 15% 22%;
   --primary: #f0f0f0;

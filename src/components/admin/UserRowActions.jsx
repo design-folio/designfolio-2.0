@@ -66,10 +66,11 @@ export default function UserRowActions({ user }) {
   };
 
   const isFree = !user.activePlan || user.activePlan === "free";
+  const isDeleted = user.status === 1;
 
   return (
     <>
-      {isFree ? (
+      {!isDeleted && isFree ? (
         <Button
           variant="ghost"
           size="icon"
@@ -96,20 +97,24 @@ export default function UserRowActions({ user }) {
               <Copy size={14} className="mr-2" aria-hidden="true" />
               Copy email
             </DropdownMenuItem>
-            {user.username && (
+            {!isDeleted && user.username && (
               <DropdownMenuItem onClick={viewProfile} className="cursor-pointer">
                 <ExternalLink size={14} className="mr-2" aria-hidden="true" />
                 View profile
               </DropdownMenuItem>
             )}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => setGrantOpen(true)}
-              className="cursor-pointer"
-            >
-              <Gift size={14} className="mr-2" aria-hidden="true" />
-              Grant plan
-            </DropdownMenuItem>
+            {!isDeleted && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={() => setGrantOpen(true)}
+                  className="cursor-pointer"
+                >
+                  <Gift size={14} className="mr-2" aria-hidden="true" />
+                  Grant plan
+                </DropdownMenuItem>
+              </>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       )}

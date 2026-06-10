@@ -138,16 +138,11 @@ export function AdminSearchDialog({ open, onOpenChange }) {
             {showUsers && users.length > 0 && (
               <>
                 {filteredNav.length > 0 && <CommandSeparator />}
-                <CommandGroup
-                  heading={
-                    isFetching ? "Users — searching…" : `Users`
-                  }
-                >
+                <CommandGroup heading={isFetching ? "Users — searching…" : "Users"}>
                   {users.map((user) => {
+                    const isDeleted = user.status === 1;
                     const name =
-                      [user.firstName, user.lastName]
-                        .filter(Boolean)
-                        .join(" ") ||
+                      [user.firstName, user.lastName].filter(Boolean).join(" ") ||
                       user.username ||
                       user.email;
                     const initials = (name || "?")
@@ -162,7 +157,7 @@ export function AdminSearchDialog({ open, onOpenChange }) {
                         key={user.email}
                         value={`user-${user.email}`}
                         onSelect={() =>
-                          user.username
+                          !isDeleted && user.username
                             ? handleOpenPortfolio(user.username)
                             : handleCopyEmail(user.email)
                         }
@@ -173,7 +168,7 @@ export function AdminSearchDialog({ open, onOpenChange }) {
                             {initials}
                           </div>
                           <div className="flex flex-col min-w-0 flex-1 gap-0.5">
-                            <span className="text-sm font-medium text-[#1A1A1A] dark:text-[#F0EDE7] truncate leading-tight">
+                            <span className={`text-sm font-medium text-[#1A1A1A] dark:text-[#F0EDE7] truncate leading-tight ${isDeleted ? "line-through opacity-60" : ""}`}>
                               {name}
                             </span>
                             <span className="text-xs text-[#7A736C] dark:text-[#B5AFA5] truncate leading-tight">
@@ -181,18 +176,22 @@ export function AdminSearchDialog({ open, onOpenChange }) {
                             </span>
                           </div>
                           <div className="flex items-center gap-2 shrink-0">
-                            {user.hasLive && (
-                              <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-[#F0EDE7] dark:bg-[#231F1A] text-[#7A736C] dark:text-[#B5AFA5] leading-none border border-[#E5D7C4] dark:border-white/10">
-                                Live
+                            {isDeleted ? (
+                              <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 leading-none border border-red-200 dark:border-red-800">
+                                Deleted
                               </span>
+                            ) : (
+                              <>
+                                {user.hasLive && (
+                                  <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-[#F0EDE7] dark:bg-[#231F1A] text-[#7A736C] dark:text-[#B5AFA5] leading-none border border-[#E5D7C4] dark:border-white/10">
+                                    Live
+                                  </span>
+                                )}
+                                {user.username && (
+                                  <ExternalLink size={11} className="text-[#7A736C] dark:text-[#B5AFA5]" aria-hidden="true" />
+                                )}
+                              </>
                             )}
-                            {user.username ? (
-                              <ExternalLink
-                                size={11}
-                                className="text-[#7A736C] dark:text-[#B5AFA5]"
-                                aria-hidden="true"
-                              />
-                            ) : null}
                           </div>
                         </div>
                       </CommandItem>

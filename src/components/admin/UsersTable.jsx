@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef } from "react";
+import { cn } from "@/lib/utils";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import {
   useReactTable,
@@ -9,8 +10,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Separator } from "@/components/ui/separator";
 import {
   Table,
   TableBody,
@@ -27,6 +30,7 @@ import {
   ShieldCheck,
   AlertCircle,
   ExternalLink,
+  SlidersHorizontal,
 } from "lucide-react";
 import {
   Tooltip,
@@ -58,6 +62,30 @@ function AvatarInitials({ name, email }) {
 
 function getPortfolioUrl(username) {
   return `https://${username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`;
+}
+
+const AGGREGATOR_LABEL = { 0: "Admin Grant", 1: "Razorpay", 2: "Dodo" };
+
+function getOrderId(order) {
+  if (order.aggregator === 1) return order.razorpayOrderID || order.receipt || null;
+  if (order.aggregator === 2) return order.dodoSubscriptionId || order.dodoPaymentId || null;
+  return null;
+}
+
+function PlanBadge({ plan }) {
+  if (!plan || plan === "free") {
+    return (
+      <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-[#F0EDE7] dark:bg-[#2A2520] text-[#7A736C] dark:text-[#B5AFA5] border border-[#E5D7C4] dark:border-white/10">
+        Free
+      </span>
+    );
+  }
+  const label = { lifetime: "Lifetime", mthly: "Monthly", qtrly: "Quarterly", yrly: "Yearly" }[plan] ?? plan;
+  return (
+    <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-[#F0EDE7] dark:bg-[#2A2520] text-[#1A1A1A] dark:text-[#F0EDE7] border border-[#E5D7C4] dark:border-white/10">
+      {label}
+    </span>
+  );
 }
 
 function UserCell({ user }) {
@@ -109,8 +137,18 @@ const COLUMNS = [
   {
     accessorKey: "emailVerification",
     header: "Verified",
-    cell: ({ getValue }) =>
-      getValue() ? (
+    cell: ({ getValue, row }) => {
+      if (row.original.status === 1) {
+        return (
+          <Badge
+            variant="outline"
+            className="text-xs border-red-200 text-red-700 bg-red-50 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800"
+          >
+            Deleted
+          </Badge>
+        );
+      }
+      return getValue() ? (
         <Badge
           variant="outline"
           className="text-xs border-green-200 text-green-700 bg-green-50 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800"
@@ -119,26 +157,53 @@ const COLUMNS = [
         </Badge>
       ) : (
         <span className="text-[#7A736C] dark:text-[#B5AFA5] text-sm" aria-label="Not verified">—</span>
-      ),
+      );
+    },
   },
   {
     accessorKey: "activePlan",
     header: "Plan",
     enableSorting: false,
-    cell: ({ getValue }) => {
-      const plan = getValue();
-      if (!plan || plan === "free") {
-        return (
-          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-[#F0EDE7] dark:bg-[#2A2520] text-[#7A736C] dark:text-[#B5AFA5] border border-[#E5D7C4] dark:border-white/10">
-            Free
-          </span>
-        );
-      }
-      const label = { lifetime: "Lifetime", mthly: "Monthly", qtrly: "Quarterly", yrly: "Yearly" }[plan] ?? plan;
+    cell: ({ row }) => {
+      const { activePlan: plan, activeOrder } = row.original;
+      const badge = <PlanBadge plan={plan} />;
+
+      if (!activeOrder) return badge;
+
+      const orderId = getOrderId(activeOrder);
+      const aggregatorLabel = AGGREGATOR_LABEL[activeOrder.aggregator] ?? "Unknown";
+      const rows = [
+        { label: "Via", value: aggregatorLabel },
+        orderId ? { label: "Order ID", value: orderId } : null,
+        activeOrder.amountMajor != null
+          ? { label: "Amount", value: `${activeOrder.currency} ${activeOrder.amountMajor.toLocaleString()}` }
+          : null,
+        activeOrder.createdAt
+          ? { label: "Date", value: new Date(activeOrder.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) }
+          : null,
+        activeOrder.proExpiresAt
+          ? { label: "Expires", value: new Date(activeOrder.proExpiresAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) }
+          : null,
+      ].filter(Boolean);
+
       return (
-        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-[#F0EDE7] dark:bg-[#2A2520] text-[#1A1A1A] dark:text-[#F0EDE7] border border-[#E5D7C4] dark:border-white/10">
-          {label}
-        </span>
+        <TooltipProvider delayDuration={200}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="cursor-default">{badge}</span>
+            </TooltipTrigger>
+            <TooltipContent side="top" className="p-0 bg-transparent border-0 shadow-none">
+              <div className="bg-[#231F1A] text-[#F0EDE7] rounded-md p-3 min-w-[220px] space-y-1.5 border border-white/10 shadow-lg">
+                {rows.map(({ label, value }) => (
+                  <div key={label} className="flex items-baseline justify-between gap-4">
+                    <span className="text-[10px] font-mono text-[#B5AFA5] shrink-0">{label}:</span>
+                    <span className="text-[11px] font-mono text-right break-all">{value}</span>
+                  </div>
+                ))}
+              </div>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       );
     },
   },
@@ -146,8 +211,8 @@ const COLUMNS = [
     accessorKey: "hasLive",
     header: "Portfolio",
     cell: ({ row }) => {
-      const { hasLive, username } = row.original;
-      if (!hasLive) {
+      const { hasLive, username, status } = row.original;
+      if (status === 1 || !hasLive) {
         return <span className="text-[#7A736C] dark:text-[#B5AFA5] text-sm" aria-label="Not live">—</span>;
       }
       if (username) {
@@ -252,9 +317,20 @@ const COLUMNS = [
   },
 ];
 
+const FILTER_OPTIONS = [
+  { value: "all", label: "All" },
+  { value: "live", label: "Live" },
+  { value: "verified", label: "Verified" },
+  { value: "paid", label: "Paid" },
+  { value: "no-portfolio", label: "No Portfolio" },
+  { value: "deleted", label: "Deleted" },
+];
+
 export default function UsersTable() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
+  const [pendingFilter, setPendingFilter] = useState("all");
+  const [filterOpen, setFilterOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [sorting, setSorting] = useState([]);
   const LIMIT = 20;
@@ -317,17 +393,105 @@ export default function UsersTable() {
             type="search"
           />
         </div>
-        <Tabs
-          value={filter}
-          onValueChange={(v) => { setFilter(v); setPage(1); }}
-          className="shrink-0"
+        <Popover
+          open={filterOpen}
+          onOpenChange={(open) => {
+            if (open) setPendingFilter(filter);
+            setFilterOpen(open);
+          }}
         >
-          <TabsList className="h-9" aria-label="Filter users">
-            <TabsTrigger value="all" className="text-xs px-3">All</TabsTrigger>
-            <TabsTrigger value="live" className="text-xs px-3">Live</TabsTrigger>
-            <TabsTrigger value="verified" className="text-xs px-3">Verified</TabsTrigger>
-          </TabsList>
-        </Tabs>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              className={cn(
+                "h-9 gap-2 text-xs shrink-0 transition-colors duration-150",
+                filter !== "all" && "border-foreground/40 bg-muted"
+              )}
+              aria-label="Filter users"
+            >
+              <SlidersHorizontal data-icon="inline-start" />
+              Filters
+              {filter !== "all" && (
+                <Badge variant="secondary" className="px-1.5 py-0 h-4 text-[10px] font-semibold leading-none">
+                  {FILTER_OPTIONS.find((o) => o.value === filter)?.label}
+                </Badge>
+              )}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent
+            align="start"
+            sideOffset={6}
+            className="w-44 p-0 overflow-hidden rounded-xl shadow-lg"
+          >
+            {/* Header */}
+            <div className="px-3 pt-3 pb-2">
+              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">
+                Filter by
+              </p>
+            </div>
+            <Separator />
+            {/* Options */}
+            <div className="p-1.5">
+              <p className="text-[10px] font-medium text-muted-foreground px-2 py-1 mb-0.5">
+                Status
+              </p>
+              <RadioGroup
+                value={pendingFilter}
+                onValueChange={setPendingFilter}
+                className="flex flex-col gap-0"
+              >
+                {FILTER_OPTIONS.map((opt) => (
+                  <label
+                    key={opt.value}
+                    htmlFor={`filter-${opt.value}`}
+                    className={cn(
+                      "flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer text-[13px] select-none transition-colors duration-150",
+                      pendingFilter === opt.value
+                        ? "bg-accent text-accent-foreground font-medium"
+                        : "text-foreground hover:bg-muted"
+                    )}
+                  >
+                    <RadioGroupItem
+                      value={opt.value}
+                      id={`filter-${opt.value}`}
+                      className="size-3.5 shrink-0"
+                    />
+                    {opt.label}
+                  </label>
+                ))}
+              </RadioGroup>
+            </div>
+            <Separator />
+            {/* Footer */}
+            <div className="p-1.5 flex gap-1.5">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="flex-1 h-7 text-xs"
+                onClick={() => {
+                  setPendingFilter("all");
+                  setFilter("all");
+                  setPage(1);
+                  setFilterOpen(false);
+                }}
+              >
+                Clear
+              </Button>
+              <Button
+                size="sm"
+                className="flex-1 h-7 text-xs"
+                onClick={() => {
+                  setFilter(pendingFilter);
+                  setPage(1);
+                  setFilterOpen(false);
+                }}
+              >
+                Apply
+              </Button>
+            </div>
+          </PopoverContent>
+        </Popover>
         {!isLoading && (
           <p className="text-xs text-[#7A736C] dark:text-[#B5AFA5] ml-auto" aria-live="polite" aria-atomic="true">
             {total.toLocaleString()} user{total !== 1 ? "s" : ""}

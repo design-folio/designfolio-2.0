@@ -74,14 +74,14 @@ export default function AdminLayout({ children, title }) {
           {/* Global search trigger */}
           <button
             onClick={() => setSearchOpen(true)}
-            className="ml-auto flex items-center gap-2 h-8 px-2.5 rounded-lg text-sm text-[#7A736C] dark:text-[#B5AFA5] bg-white dark:bg-[#2A2520] border border-[#E5D7C4] dark:border-white/10 hover:bg-[#F5F2EE] dark:hover:bg-[#302B25] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5D7C4] dark:focus-visible:ring-white/20"
+            className="ml-auto flex items-center gap-2 h-8 px-3 w-56 rounded-lg text-sm text-[#7A736C] dark:text-[#B5AFA5] bg-white dark:bg-[#2A2520] border border-[#E5D7C4] dark:border-white/10 hover:bg-[#F5F2EE] dark:hover:bg-[#302B25] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5D7C4] dark:focus-visible:ring-white/20"
             aria-label="Open search"
             aria-keyshortcuts="Meta+k Control+k"
           >
             <Search size={13} aria-hidden="true" />
-            <span className="hidden sm:inline text-xs">Search…</span>
+            <span className="text-xs flex-1 text-left">Search…</span>
             <kbd
-              className="hidden sm:inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium bg-[#F5F2EE] dark:bg-[#231F1A] border border-[#E5D7C4] dark:border-white/10 text-[#7A736C] dark:text-[#B5AFA5] leading-none pointer-events-none"
+              className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium bg-[#F5F2EE] dark:bg-[#231F1A] border border-[#E5D7C4] dark:border-white/10 text-[#7A736C] dark:text-[#B5AFA5] leading-none pointer-events-none"
               aria-hidden="true"
             >
               ⌘K

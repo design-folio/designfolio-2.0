@@ -1,5 +1,5 @@
 import StatsCard from "./StatsCard";
-import { Users, Globe, TrendingUp } from "lucide-react";
+import { Users, Globe, TrendingUp, UserX } from "lucide-react";
 
 export default function StatsWindow({ title, description, data, isOverall = false }) {
   const cards = isOverall
@@ -12,6 +12,7 @@ export default function StatsWindow({ title, description, data, isOverall = fals
           icon: TrendingUp,
           suffix: "%",
         },
+        { label: "Deleted Users", value: data?.deletedUsers ?? 0, icon: UserX },
       ]
     : [
         { label: "New Users", value: data?.newUsers ?? 0, icon: Users },
@@ -32,7 +33,7 @@ export default function StatsWindow({ title, description, data, isOverall = fals
           <p className="text-xs text-[#7A736C] dark:text-[#B5AFA5] mt-0.5">{description}</p>
         )}
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <div className={`grid grid-cols-1 gap-3 ${isOverall ? "sm:grid-cols-4" : "sm:grid-cols-3"}`}>
         {cards.map((card, i) => (
           <StatsCard
             key={card.label}

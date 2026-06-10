@@ -1,10 +1,8 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-// Define a default fallback config that can be used when Supabase is unavailable
-const FALLBACK_CONTENTFUL_CONFIG = {
+const CONTENTFUL_CONFIG = {
   space_id: "qu73jsama0eo",
   access_token: "FcBkwpxFmkI-X_bdtCy_O1gKVsgbYTEqtwg0dYH_goQ",
   environment: "master",
@@ -16,41 +14,8 @@ const staticAuthor = {
   image: "/lovable-uploads/cf09cbb1-eeda-42a6-b714-976c2dc6a445.png",
 };
 
-export async function getContentfulConfig() {
-  console.log("Fetching Contentful config...");
-
-  try {
-    const { data, error } = await supabase.from("contentful_config").select();
-
-    if (error) {
-      console.error("Supabase error:", error);
-      console.log("Using fallback Contentful config due to Supabase error");
-      return FALLBACK_CONTENTFUL_CONFIG;
-    }
-
-    if (
-      Array.isArray(data) &&
-      data.length > 0 &&
-      data[0].space_id &&
-      data[0].access_token
-    ) {
-      const config = data[0];
-      return {
-        space_id: config.space_id,
-        access_token: config.access_token,
-        environment: config.environment || "master",
-      };
-    }
-
-    console.log(
-      "No valid Contentful config found in Supabase, using fallback config"
-    );
-    return FALLBACK_CONTENTFUL_CONFIG;
-  } catch (err) {
-    console.error("Error fetching Contentful config:", err);
-    console.log("Using fallback Contentful config due to exception");
-    return FALLBACK_CONTENTFUL_CONFIG;
-  }
+export function getContentfulConfig() {
+  return CONTENTFUL_CONFIG;
 }
 
 function formatImageUrl(url) {
@@ -77,7 +42,7 @@ function findAsset(assetId, assets) {
 
 export async function fetchPosts() {
   try {
-    const config = await getContentfulConfig();
+    const config = getContentfulConfig();
 
     const response = await fetch(
       `https://cdn.contentful.com/spaces/${config.space_id}/environments/${config.environment}/entries?content_type=blogPage`,
@@ -243,7 +208,7 @@ export async function fetchRecommendedPosts(postId) {
 
 export async function fetchPost(identifier) {
   try {
-    const config = await getContentfulConfig();
+    const config = getContentfulConfig();
     console.log("Fetching post with identifier:", identifier);
 
     // First try to fetch by slug

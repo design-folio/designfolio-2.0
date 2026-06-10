@@ -14,7 +14,7 @@ export default function LandingHeader({
   primaryCtaLoading,
 }) {
   return (
-    <header className="sticky top-0 z-50 w-full bg-[--lp-bg] md:bg-[color-mix(in_srgb,var(--lp-bg)_95%,transparent)] md:backdrop-blur before:absolute before:content-[''] before:inset-x-[-100vw] before:bottom-0 before:h-px before:bg-[--lp-border]">
+    <header className="sticky top-0 z-[200] w-full bg-[--lp-bg] md:bg-[color-mix(in_srgb,var(--lp-bg)_95%,transparent)] md:backdrop-blur before:absolute before:content-[''] before:inset-x-[-100vw] before:bottom-0 before:h-px before:bg-[--lp-border]">
       <div className="px-6 h-16 flex items-center justify-between">
         {/* Mobile: logo + /designfolio */}
         <div className="flex md:hidden items-center gap-2">

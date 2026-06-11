@@ -83,6 +83,7 @@ export const GlobalProvider = ({ children }) => {
     motion: true
   });
   const [isLoadingTemplate, setIsLoadingTemplate] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [activeSidebar, setActiveSidebar] = useState(null);
   const [showUnsavedWarning, setShowUnsavedWarning] = useState(false);
   const [pendingSidebarAction, setPendingSidebarAction] = useState(null);
@@ -803,6 +804,8 @@ export const GlobalProvider = ({ children }) => {
         setPendingReplaceAwaitingConfirmation,
         applyPendingPortfolio,
         discardPendingPortfolio,
+        showSettingsModal,
+        setShowSettingsModal,
       }}
     >
       {children}

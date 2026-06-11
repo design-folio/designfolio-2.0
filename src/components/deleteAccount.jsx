@@ -50,7 +50,7 @@ export default function DeleteAccount() {
 
       <Button
         variant="destructive"
-        className="w-full lg:w-fit rounded-full"
+        className="w-full lg:w-fit "
         onClick={() => setOpen(true)}
       >
         Delete account
@@ -82,10 +82,10 @@ export default function DeleteAccount() {
           </div>
 
           <AlertDialogFooter>
-            <AlertDialogCancel className="rounded-full">Cancel</AlertDialogCancel>
+            <AlertDialogCancel className="">Cancel</AlertDialogCancel>
             <Button
               variant="destructive"
-              className="rounded-full"
+              className=""
               disabled={text !== "DELETE" || loading}
               onClick={handleDeleteAccount}
             >

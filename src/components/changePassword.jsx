@@ -111,7 +111,7 @@ export default function ChangePassword() {
                 type="submit"
                 form="resetPasswordForm"
                 disabled={loading || !isValid}
-                className="w-full lg:w-fit rounded-full"
+                className="w-full lg:w-fit"
               >
                 {loading ? "Saving…" : "Change password"}
               </Button>

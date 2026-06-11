@@ -54,18 +54,18 @@ export default function CustomDomain({ domainDetails, fetchDomainDetails }) {
         <p className="text-[18px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
           Custom domain
         </p>
-        <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-gradient-to-r from-[#FF8C00] to-[#FFB347] text-white uppercase tracking-wide">
+        <span className="text-[11px] font-semibold px-2 py-0.5  bg-gradient-to-r from-[#FF8C00] to-[#FFB347] text-white uppercase tracking-wide rounded-full">
           PRO
         </span>
         {domainDetails?.customDomain?.domain && (
           isVerified ? (
             <Badge className="text-[#15803D] bg-[#DCFCE7] dark:bg-[#14532D]/30 dark:text-[#4ADE80] border-0 gap-1 items-center">
-              <span className="w-2 h-2 rounded-full bg-[#22C55E] inline-block" />
+              <span className="w-2 h-2  bg-[#22C55E] inline-block" />
               Connected
             </Badge>
           ) : (
             <Badge className="text-[#CA8A04] bg-[#FEFCE8] dark:bg-[#713F12]/30 dark:text-[#FDE047] border-0 gap-1 items-center">
-              <span className="w-2 h-2 rounded-full bg-[#FACC15] inline-block" />
+              <span className="w-2 h-2  bg-[#FACC15] inline-block" />
               Verification pending
             </Badge>
           )
@@ -87,7 +87,7 @@ export default function CustomDomain({ domainDetails, fetchDomainDetails }) {
                 <Button
                   variant="outline"
                   size="icon"
-                  className="h-8 w-8 rounded-full border-red-200 dark:border-red-900/50 hover:bg-red-50 dark:hover:bg-red-950/30 hover:text-red-600 dark:hover:text-red-400"
+                  className="size-8 text-destructive hover:text-destructive hover:bg-destructive/10"
                   onClick={() => setIsDeleteOpen(true)}
                 >
                   <Trash2 className="w-3.5 h-3.5" />
@@ -133,7 +133,7 @@ export default function CustomDomain({ domainDetails, fetchDomainDetails }) {
                   </div>
 
                   <Button
-                    className="w-full rounded-full"
+                    className="w-full "
                     disabled={isDomainLoading}
                     onClick={() => {
                       setIsDomainLoading(true);
@@ -183,7 +183,7 @@ export default function CustomDomain({ domainDetails, fetchDomainDetails }) {
                     type="submit"
                     form="domainForm"
                     disabled={isSubmitting || !isValid}
-                    className="rounded-full"
+                    className=""
                   >
                     Add domain
                   </Button>
@@ -201,7 +201,7 @@ export default function CustomDomain({ domainDetails, fetchDomainDetails }) {
             Want to connect your own domain? Upgrade to Designfolio Pro and make your portfolio look like a real website.
           </p>
           <Button
-            className="rounded-full"
+            className=""
             onClick={() => { setUpgradeModalUnhideProject(null); setShowUpgradeModal(true); }}
           >
             Upgrade to Pro
@@ -218,10 +218,10 @@ export default function CustomDomain({ domainDetails, fetchDomainDetails }) {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" className="rounded-full" onClick={() => setIsDeleteOpen(false)}>
+            <Button variant="outline" className="" onClick={() => setIsDeleteOpen(false)}>
               Cancel
             </Button>
-            <Button variant="destructive" className="rounded-full" onClick={handleRemoveDomain}>
+            <Button variant="destructive" className="" onClick={handleRemoveDomain}>
               Delete
             </Button>
           </DialogFooter>

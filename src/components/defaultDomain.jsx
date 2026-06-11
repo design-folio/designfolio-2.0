@@ -139,7 +139,7 @@ export default function DefaultDomain() {
               type="submit"
               form="usernameForm"
               disabled={isSubmitting || !isValid || values.domain === userDetails?.username}
-              className="w-full lg:w-fit rounded-full"
+              className="w-full lg:w-fit"
             >
               Change username
             </Button>

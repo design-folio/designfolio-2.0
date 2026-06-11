@@ -27,6 +27,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import queryClient from "@/network/queryClient";
 import Head from "next/head";
 import UpgradeModal from "@/components/upgradeModal";
+import SettingsModal from "@/components/SettingsModal";
 import { CursorTooltipProvider } from "@/context/cursorTooltipContext";
 import { CursorPill } from "@/components/CursorPill";
 import posthog from "@/lib/postHog";
@@ -287,6 +288,7 @@ function MyApp({ Component, pageProps, dfToken, hideHeader }) {
                       <Component {...pageProps} />
                       <ToastContainer position="bottom-right" />
                       <UpgradeModal />
+                      <SettingsModal />
                     </main>
                   </CursorTooltipProvider>
                 </GlobalProvider>

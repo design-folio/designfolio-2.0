@@ -74,11 +74,11 @@ export default function UserRowActions({ user }) {
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8"
+          className="size-8"
           onClick={() => setGrantOpen(true)}
           aria-label={`Grant plan to ${user.email}`}
         >
-          <Gift size={15} aria-hidden="true" />
+          <Gift aria-hidden="true" />
         </Button>
       ) : (
         <DropdownMenu>
@@ -86,20 +86,20 @@ export default function UserRowActions({ user }) {
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8"
+              className="size-8"
               aria-label={`Actions for ${user.email}`}
             >
-              <MoreHorizontal size={16} aria-hidden="true" />
+              <MoreHorizontal aria-hidden="true" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-44">
             <DropdownMenuItem onClick={copyEmail} className="cursor-pointer">
-              <Copy size={14} className="mr-2" aria-hidden="true" />
+              <Copy aria-hidden="true" />
               Copy email
             </DropdownMenuItem>
             {!isDeleted && user.username && (
               <DropdownMenuItem onClick={viewProfile} className="cursor-pointer">
-                <ExternalLink size={14} className="mr-2" aria-hidden="true" />
+                <ExternalLink aria-hidden="true" />
                 View profile
               </DropdownMenuItem>
             )}
@@ -110,7 +110,7 @@ export default function UserRowActions({ user }) {
                   onClick={() => setGrantOpen(true)}
                   className="cursor-pointer"
                 >
-                  <Gift size={14} className="mr-2" aria-hidden="true" />
+                  <Gift aria-hidden="true" />
                   Grant plan
                 </DropdownMenuItem>
               </>
@@ -124,8 +124,8 @@ export default function UserRowActions({ user }) {
           <DialogHeader>
             <DialogTitle>Grant Plan</DialogTitle>
           </DialogHeader>
-          <div className="space-y-3 py-1">
-            <p className="text-sm text-[#7A736C] dark:text-[#B5AFA5] break-all">{user.email}</p>
+          <div className="flex flex-col gap-3 py-1">
+            <p className="text-sm text-muted-foreground break-all">{user.email}</p>
             <Select value={planType} onValueChange={setPlanType}>
               <SelectTrigger>
                 <SelectValue />

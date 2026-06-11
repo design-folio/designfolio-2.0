@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import {
@@ -31,7 +31,9 @@ import {
   AlertCircle,
   ExternalLink,
   SlidersHorizontal,
+  Columns3,
 } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Tooltip,
   TooltipContent,
@@ -52,7 +54,7 @@ function AvatarInitials({ name, email }) {
     .toUpperCase();
   return (
     <div
-      className="w-8 h-8 rounded-full bg-[#F0EDE7] dark:bg-[#231F1A] flex items-center justify-center shrink-0"
+      className="size-8 rounded-full bg-[#F0EDE7] dark:bg-[#231F1A] flex items-center justify-center shrink-0"
       aria-hidden="true"
     >
       <span className="text-xs font-medium text-[#7A736C] dark:text-[#B5AFA5]">{initials}</span>
@@ -102,7 +104,7 @@ function UserCell({ user }) {
             content={user.email}
             delay={1500}
             iconSize={11}
-            className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity text-[#7A736C] dark:text-[#B5AFA5] w-4 h-4"
+            className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity text-[#7A736C] dark:text-[#B5AFA5] size-4"
             aria-label={`Copy ${user.email}`}
           />
         </div>
@@ -111,11 +113,24 @@ function UserCell({ user }) {
   );
 }
 
+const COLUMN_LABELS = {
+  createdAt: "Joined",
+  emailVerification: "Verified",
+  activePlan: "Plan",
+  hasLive: "Portfolio",
+  lastPublishedAt: "Published",
+  projectCount: "Projects",
+  customDomain: "Domain",
+  lastPlanType: "Was On",
+  lastExpiredAt: "Expired On",
+};
+
 const COLUMNS = [
   {
     id: "user",
     header: "User",
     enableSorting: false,
+    enableHiding: false,
     cell: ({ row }) => <UserCell user={row.original} />,
   },
   {
@@ -313,24 +328,63 @@ const COLUMNS = [
     id: "actions",
     header: "",
     enableSorting: false,
+    enableHiding: false,
     cell: ({ row }) => <UserRowActions user={row.original} />,
   },
 ];
 
-const FILTER_OPTIONS = [
-  { value: "all", label: "All" },
-  { value: "live", label: "Live" },
-  { value: "verified", label: "Verified" },
-  { value: "paid", label: "Paid" },
-  { value: "no-portfolio", label: "No Portfolio" },
-  { value: "deleted", label: "Deleted" },
+function normalisePlan(raw) {
+  if (raw === "1m") return "mthly";
+  if (raw === "3m") return "qtrly";
+  return raw;
+}
+
+const CHURNED_EXTRA_COLUMNS = [
+  {
+    accessorKey: "lastPlanType",
+    header: "Was On",
+    enableSorting: false,
+    cell: ({ getValue }) => {
+      const val = getValue();
+      if (!val) return <span className="text-[#7A736C] dark:text-[#B5AFA5] text-sm">—</span>;
+      return <PlanBadge plan={normalisePlan(val)} />;
+    },
+  },
+  {
+    accessorKey: "lastExpiredAt",
+    header: "Expired On",
+    enableSorting: false,
+    cell: ({ getValue }) => {
+      const val = getValue();
+      if (!val) return <span className="text-[#7A736C] dark:text-[#B5AFA5] text-sm">—</span>;
+      return <TimestampCell date={val} />;
+    },
+  },
 ];
+
+const GENERIC_FILTERS = [
+  { value: "all",          label: "All" },
+  { value: "live",         label: "Live" },
+  { value: "verified",     label: "Verified" },
+  { value: "no-portfolio", label: "No Portfolio" },
+  { value: "deleted",      label: "Deleted" },
+];
+
+const REVENUE_FILTERS = [
+  { value: "paid",                 label: "Paid" },
+  { value: "churned",              label: "Churned" },
+  { value: "pending-cancellation", label: "Pending Cancel" },
+];
+
+const ALL_FILTERS = [...GENERIC_FILTERS, ...REVENUE_FILTERS];
 
 export default function UsersTable() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
   const [pendingFilter, setPendingFilter] = useState("all");
   const [filterOpen, setFilterOpen] = useState(false);
+  const [colMenuOpen, setColMenuOpen] = useState(false);
+  const [columnVisibility, setColumnVisibility] = useState({});
   const [page, setPage] = useState(1);
   const [sorting, setSorting] = useState([]);
   const LIMIT = 20;
@@ -359,11 +413,22 @@ export default function UsersTable() {
     placeholderData: keepPreviousData,
   });
 
+  const activeColumns = useMemo(() => {
+    if (filter === "churned") {
+      const cols = [...COLUMNS];
+      // Insert after Plan column (index 3)
+      cols.splice(4, 0, ...CHURNED_EXTRA_COLUMNS);
+      return cols;
+    }
+    return COLUMNS;
+  }, [filter]);
+
   const table = useReactTable({
     data: data?.users ?? [],
-    columns: COLUMNS,
-    state: { sorting },
+    columns: activeColumns,
+    state: { sorting, columnVisibility },
     onSortingChange: setSorting,
+    onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     manualPagination: true,
@@ -374,7 +439,7 @@ export default function UsersTable() {
   const total = data?.total ?? 0;
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col gap-4">
       {/* Controls */}
       <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
         <div className="relative w-full sm:w-72">
@@ -393,6 +458,8 @@ export default function UsersTable() {
             type="search"
           />
         </div>
+
+        {/* Filters popover */}
         <Popover
           open={filterOpen}
           onOpenChange={(open) => {
@@ -414,7 +481,7 @@ export default function UsersTable() {
               Filters
               {filter !== "all" && (
                 <Badge variant="secondary" className="px-1.5 py-0 h-4 text-[10px] font-semibold leading-none">
-                  {FILTER_OPTIONS.find((o) => o.value === filter)?.label}
+                  {ALL_FILTERS.find((o) => o.value === filter)?.label}
                 </Badge>
               )}
             </Button>
@@ -422,26 +489,20 @@ export default function UsersTable() {
           <PopoverContent
             align="start"
             sideOffset={6}
-            className="w-44 p-0 overflow-hidden rounded-xl shadow-lg"
+            className="w-48 p-0 overflow-hidden rounded-xl shadow-lg"
           >
-            {/* Header */}
             <div className="px-3 pt-3 pb-2">
               <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">
                 Filter by
               </p>
             </div>
             <Separator />
-            {/* Options */}
             <div className="p-1.5">
-              <p className="text-[10px] font-medium text-muted-foreground px-2 py-1 mb-0.5">
-                Status
+              <p className="text-[10px] font-medium text-muted-foreground px-2 py-1 mb-0.5 uppercase tracking-wider">
+                General
               </p>
-              <RadioGroup
-                value={pendingFilter}
-                onValueChange={setPendingFilter}
-                className="flex flex-col gap-0"
-              >
-                {FILTER_OPTIONS.map((opt) => (
+              <RadioGroup value={pendingFilter} onValueChange={setPendingFilter} className="flex flex-col gap-0">
+                {GENERIC_FILTERS.map((opt) => (
                   <label
                     key={opt.value}
                     htmlFor={`filter-${opt.value}`}
@@ -452,18 +513,36 @@ export default function UsersTable() {
                         : "text-foreground hover:bg-muted"
                     )}
                   >
-                    <RadioGroupItem
-                      value={opt.value}
-                      id={`filter-${opt.value}`}
-                      className="size-3.5 shrink-0"
-                    />
+                    <RadioGroupItem value={opt.value} id={`filter-${opt.value}`} className="size-3.5 shrink-0" />
                     {opt.label}
                   </label>
                 ))}
               </RadioGroup>
             </div>
             <Separator />
-            {/* Footer */}
+            <div className="p-1.5">
+              <p className="text-[10px] font-medium text-muted-foreground px-2 py-1 mb-0.5 uppercase tracking-wider">
+                Revenue
+              </p>
+              <RadioGroup value={pendingFilter} onValueChange={setPendingFilter} className="flex flex-col gap-0">
+                {REVENUE_FILTERS.map((opt) => (
+                  <label
+                    key={opt.value}
+                    htmlFor={`filter-${opt.value}`}
+                    className={cn(
+                      "flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer text-[13px] select-none transition-colors duration-150",
+                      pendingFilter === opt.value
+                        ? "bg-accent text-accent-foreground font-medium"
+                        : "text-foreground hover:bg-muted"
+                    )}
+                  >
+                    <RadioGroupItem value={opt.value} id={`filter-${opt.value}`} className="size-3.5 shrink-0" />
+                    {opt.label}
+                  </label>
+                ))}
+              </RadioGroup>
+            </div>
+            <Separator />
             <div className="p-1.5 flex gap-1.5">
               <Button
                 variant="ghost"
@@ -492,6 +571,56 @@ export default function UsersTable() {
             </div>
           </PopoverContent>
         </Popover>
+
+        {/* Columns popover */}
+        <Popover open={colMenuOpen} onOpenChange={setColMenuOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-9 gap-2 text-xs shrink-0 transition-colors duration-150"
+              aria-label="Toggle columns"
+            >
+              <Columns3 data-icon="inline-start" />
+              Columns
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent
+            align="start"
+            sideOffset={6}
+            className="w-44 p-0 overflow-hidden rounded-xl shadow-lg"
+          >
+            <div className="px-3 pt-3 pb-2">
+              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">
+                Show / Hide
+              </p>
+            </div>
+            <Separator />
+            <div className="p-1.5 flex flex-col gap-0.5">
+              {table
+                .getAllColumns()
+                .filter((col) => col.getCanHide())
+                .map((col) => (
+                  <label
+                    key={col.id}
+                    className={cn(
+                      "flex items-center gap-2.5 px-2 py-1.5 rounded-md cursor-pointer text-[13px] select-none transition-colors duration-150 hover:bg-muted",
+                      col.getIsVisible() ? "text-foreground" : "text-muted-foreground"
+                    )}
+                  >
+                    <Checkbox
+                      checked={col.getIsVisible()}
+                      onCheckedChange={(val) => col.toggleVisibility(!!val)}
+                      className="size-3.5 shrink-0"
+                      aria-label={`Toggle ${COLUMN_LABELS[col.id] ?? col.id} column`}
+                    />
+                    {COLUMN_LABELS[col.id] ?? col.id}
+                  </label>
+                ))}
+            </div>
+          </PopoverContent>
+        </Popover>
+
         {!isLoading && (
           <p className="text-xs text-[#7A736C] dark:text-[#B5AFA5] ml-auto" aria-live="polite" aria-atomic="true">
             {total.toLocaleString()} user{total !== 1 ? "s" : ""}
@@ -533,7 +662,7 @@ export default function UsersTable() {
               {isLoading ? (
                 Array.from({ length: 8 }).map((_, i) => (
                   <TableRow key={i}>
-                    {COLUMNS.map((col) => (
+                    {activeColumns.map((col) => (
                       <TableCell key={col.id || col.accessorKey} className="px-4 py-3">
                         <Skeleton className="h-4 w-full" />
                       </TableCell>
@@ -543,7 +672,7 @@ export default function UsersTable() {
               ) : isError ? (
                 <TableRow>
                   <TableCell
-                    colSpan={COLUMNS.length}
+                    colSpan={activeColumns.length}
                     className="h-32 text-center text-sm text-[#7A736C] dark:text-[#B5AFA5]"
                   >
                     Failed to load users.
@@ -552,7 +681,7 @@ export default function UsersTable() {
               ) : table.getRowModel().rows.length === 0 ? (
                 <TableRow>
                   <TableCell
-                    colSpan={COLUMNS.length}
+                    colSpan={activeColumns.length}
                     className="h-32 text-center text-sm text-[#7A736C] dark:text-[#B5AFA5]"
                   >
                     No users found.
@@ -588,7 +717,7 @@ export default function UsersTable() {
             className="h-8 text-xs bg-white dark:bg-[#2A2520] border-[#E5D7C4] dark:border-white/10 text-[#7A736C] dark:text-[#B5AFA5] hover:bg-[#F5F2EE] dark:hover:bg-[#302B25] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7]"
             aria-label="Previous page"
           >
-            <ChevronLeft size={14} className="mr-1" aria-hidden="true" /> Previous
+            <ChevronLeft data-icon="inline-start" aria-hidden="true" /> Previous
           </Button>
           <span className="text-xs text-[#7A736C] dark:text-[#B5AFA5] tabular-nums" aria-live="polite">
             Page {page} of {totalPages}
@@ -601,7 +730,7 @@ export default function UsersTable() {
             className="h-8 text-xs bg-white dark:bg-[#2A2520] border-[#E5D7C4] dark:border-white/10 text-[#7A736C] dark:text-[#B5AFA5] hover:bg-[#F5F2EE] dark:hover:bg-[#302B25] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7]"
             aria-label="Next page"
           >
-            Next <ChevronRight size={14} className="ml-1" aria-hidden="true" />
+            Next <ChevronRight data-icon="inline-end" aria-hidden="true" />
           </Button>
         </div>
       )}

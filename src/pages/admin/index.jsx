@@ -2,21 +2,34 @@ import { useQuery } from "@tanstack/react-query";
 import Head from "next/head";
 import AdminLayout from "@/components/admin/AdminLayout";
 import StatsWindow from "@/components/admin/StatsWindow";
+import RevenuePanel from "@/components/admin/RevenuePanel";
+import SubscriptionBreakdown from "@/components/admin/SubscriptionBreakdown";
+import StatsCard from "@/components/admin/StatsCard";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import GrowthChart from "@/components/admin/GrowthChart";
 import { Skeleton } from "@/components/ui/skeleton";
 import { _getAdminStats } from "@/network/admin";
 import { withAdminAuth } from "@/lib/adminServerSideProps";
+import { UserPlus, TrendingDown, ArrowRightCircle } from "lucide-react";
 
-function StatsSkeleton({ count = 2 }) {
+function SectionHeader({ children }) {
   return (
-    <div className={`grid gap-3 ${count === 5 ? "grid-cols-2 lg:grid-cols-5" : "grid-cols-2"}`}>
-      {Array.from({ length: count }).map((_, i) => (
-        <div key={i} className="bg-white dark:bg-[#2A2520] rounded-2xl border border-[#E5D7C4] dark:border-white/10 p-5">
-          <Skeleton className="h-3 w-24 mb-3" />
-          <Skeleton className="h-8 w-20" />
-        </div>
-      ))}
+    <div className="mb-4">
+      <h2 className="text-xs font-manrope font-semibold uppercase tracking-widest text-[#7A736C] dark:text-[#B5AFA5]">
+        {children}
+      </h2>
+      <div className="h-px bg-[#E5D7C4] dark:bg-white/[0.07] mt-2" />
+    </div>
+  );
+}
+
+function CardSkeleton({ className = "" }) {
+  return (
+    <div
+      className={`bg-white dark:bg-[#2A2520] rounded-2xl border border-[#E5D7C4] dark:border-white/10 p-5 ${className}`}
+    >
+      <Skeleton className="h-3 w-20 mb-3" />
+      <Skeleton className="h-8 w-24" />
     </div>
   );
 }
@@ -34,51 +47,134 @@ export default function AdminStats() {
         <title>Stats — Designfolio Admin</title>
       </Head>
       <AdminLayout title="Stats">
-        <div className="max-w-5xl space-y-8">
+        <div className="max-w-5xl space-y-10">
           {isError ? (
             <p className="text-sm text-red-500">Failed to load stats.</p>
           ) : (
             <>
-              {/* Overview */}
+              {/* ── Overview ───────────────────────────────────────────── */}
               <section>
-                <h2 className="text-sm font-semibold text-[#1A1A1A] dark:text-[#F0EDE7] mb-4">Overview</h2>
-                <div className="h-px bg-[#E5D7C4] dark:bg-white/10 mb-4" />
-                <div className="bg-white dark:bg-[#2A2520] rounded-2xl border border-[#E5D7C4] dark:border-white/10 p-5">
-                  {isLoading ? <StatsSkeleton count={5} /> : <StatsWindow data={data?.overall} isOverall compact />}
-                </div>
+                <SectionHeader>Overview</SectionHeader>
+                {isLoading ? (
+                  <div className="flex flex-col gap-3">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <CardSkeleton key={i} />
+                      ))}
+                    </div>
+                    <CardSkeleton className="py-5" />
+                  </div>
+                ) : (
+                  <StatsWindow data={data?.overall} isOverall />
+                )}
               </section>
 
-              {/* Recent ranges (compact tabs) */}
+              {/* ── Revenue & Growth ────────────────────────────────────── */}
               <section>
-                <h2 className="text-sm font-semibold text-[#1A1A1A] dark:text-[#F0EDE7] mb-4">Recent</h2>
-                <div className="h-px bg-[#E5D7C4] dark:bg-white/10 mb-4" />
-                <div className="bg-white dark:bg-[#2A2520] rounded-2xl border border-[#E5D7C4] dark:border-white/10 p-5">
+                <SectionHeader>Revenue &amp; Growth</SectionHeader>
+                {isLoading ? (
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div className="bg-white dark:bg-[#2A2520] rounded-2xl border border-[#E5D7C4] dark:border-white/10 p-5 space-y-3">
+                      <Skeleton className="h-3 w-20" />
+                      <Skeleton className="h-3 w-full" />
+                      <Skeleton className="h-3 w-full" />
+                      <Skeleton className="h-3 w-3/4" />
+                    </div>
+                    <div className="grid grid-cols-1 gap-3">
+                      <CardSkeleton />
+                      <div className="grid grid-cols-2 gap-3">
+                        <CardSkeleton />
+                        <CardSkeleton />
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <RevenuePanel overall={data?.overall} />
+
+                    <div className="flex flex-col gap-3">
+                      <StatsCard
+                        label="New Pro Users"
+                        value={data?.growth?.newProUsers30d ?? 0}
+                        icon={UserPlus}
+                        index={0}
+                        subText="converted in last 30 days"
+                      />
+                      <div className="grid grid-cols-2 gap-3 flex-1">
+                        <StatsCard
+                          label="Churn Rate"
+                          value={data?.growth?.churnRate ?? 0}
+                          suffix="%"
+                          icon={TrendingDown}
+                          index={1}
+                          info="Subscriptions that expired in the last 30 days ÷ (active + expired in 30d)"
+                        />
+                        <StatsCard
+                          label="Trial → Paid"
+                          value={data?.growth?.trialToPaidConversion ?? 0}
+                          suffix="%"
+                          icon={ArrowRightCircle}
+                          index={2}
+                          info="New pro users (30d) ÷ New signups (30d) — how many new users converted to paid"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </section>
+
+              {/* ── Subscriptions + Recent ──────────────────────────────── */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:items-stretch">
+                <section className="flex flex-col">
+                  <SectionHeader>Subscriptions</SectionHeader>
                   {isLoading ? (
-                    <StatsSkeleton />
+                    <div className="flex-1 bg-white dark:bg-[#2A2520] rounded-2xl border border-[#E5D7C4] dark:border-white/10 p-5 space-y-4">
+                      <Skeleton className="h-3 w-24" />
+                      <Skeleton className="h-1.5 w-full rounded-full" />
+                      <div className="flex gap-2 flex-wrap">
+                        {Array.from({ length: 4 }).map((_, i) => (
+                          <Skeleton key={i} className="h-7 w-24 rounded-full" />
+                        ))}
+                      </div>
+                    </div>
                   ) : (
-                    <Tabs defaultValue="today">
-                      <TabsList>
-                        <TabsTrigger value="today">Today</TabsTrigger>
-                        <TabsTrigger value="7days">7 Days</TabsTrigger>
-                        <TabsTrigger value="30days">30 Days</TabsTrigger>
-                      </TabsList>
-                      <TabsContent value="today">
-                        <StatsWindow data={data?.today} compact />
-                      </TabsContent>
-                      <TabsContent value="7days">
-                        <StatsWindow data={data?.last7Days} compact />
-                      </TabsContent>
-                      <TabsContent value="30days">
-                        <StatsWindow data={data?.last30Days} compact />
-                      </TabsContent>
-                    </Tabs>
+                    <SubscriptionBreakdown subscriptions={data?.subscriptions} className="flex-1" />
                   )}
-                </div>
-              </section>
+                </section>
 
-              {/* Growth chart */}
+                <section className="flex flex-col">
+                  <SectionHeader>Recent</SectionHeader>
+                  <div className="flex-1 bg-white dark:bg-[#2A2520] rounded-2xl border border-[#E5D7C4] dark:border-white/10 p-5 flex flex-col">
+                    {isLoading ? (
+                      <div className="grid grid-cols-2 gap-3">
+                        <CardSkeleton />
+                        <CardSkeleton />
+                      </div>
+                    ) : (
+                      <Tabs defaultValue="today" className="flex flex-col flex-1">
+                        <TabsList className="w-fit">
+                          <TabsTrigger value="today">Today</TabsTrigger>
+                          <TabsTrigger value="7days">7 Days</TabsTrigger>
+                          <TabsTrigger value="30days">30 Days</TabsTrigger>
+                        </TabsList>
+                        <TabsContent value="today" className="mt-4 flex-1">
+                          <StatsWindow data={data?.today} prevData={data?.yesterday} deltaLabel="vs yesterday" />
+                        </TabsContent>
+                        <TabsContent value="7days" className="mt-4 flex-1">
+                          <StatsWindow data={data?.last7Days} prevData={data?.prev7Days} deltaLabel="vs prev 7d" />
+                        </TabsContent>
+                        <TabsContent value="30days" className="mt-4 flex-1">
+                          <StatsWindow data={data?.last30Days} prevData={data?.prev30Days} deltaLabel="vs prev 30d" />
+                        </TabsContent>
+                      </Tabs>
+                    )}
+                  </div>
+                </section>
+              </div>
+
+              {/* ── Growth Chart ────────────────────────────────────────── */}
               <section>
-                <div className="h-px bg-[#E5D7C4] dark:bg-white/10 mb-6" />
+                <SectionHeader>Trends</SectionHeader>
                 <div className="bg-white dark:bg-[#2A2520] rounded-2xl border border-[#E5D7C4] dark:border-white/10 p-5">
                   {isLoading ? (
                     <Skeleton className="h-64 w-full" />

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { BarChart2, Users, Gift, LogOut } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import {
   Sidebar,
   SidebarContent,
@@ -38,9 +39,9 @@ export default function AdminNav() {
             className="h-7 w-auto shrink-0 text-[#1A1A1A] dark:text-[#F0EDE7]"
             aria-label="Designfolio"
           />
-          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold tracking-wide uppercase bg-[#E37941]/12 text-[#E37941] leading-none shrink-0 mb-4">
+          <Badge className="bg-[#E37941]/12 text-[#E37941] border-0 text-[10px] font-semibold tracking-wide uppercase leading-none shrink-0 mb-4">
             Admin
-          </span>
+          </Badge>
         </div>
       </SidebarHeader>
 

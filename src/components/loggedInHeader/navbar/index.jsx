@@ -204,7 +204,7 @@ export default function Navbar() {
                 <Button
                   variant="ghost"
                   className="w-full justify-start h-11 px-4 text-[14px] text-muted-foreground hover:text-foreground hover:bg-secondary"
-                  onClick={() => { setIsMobileMenuOpen(false); router.push("/settings"); }}
+                  onClick={() => { setIsMobileMenuOpen(false); setShowSettingsModal(true); }}
                 >
                   <Settings className="mr-2 h-4 w-4" /> Settings
                 </Button>

@@ -37,7 +37,7 @@ export function AvatarDropdown({ onClose }) {
   const router = useRouter();
   const phEvent = usePostHogEvent();
 
-  const { userDetails, setUserDetails, setShowUpgradeModal, setUpgradeModalUnhideProject } = useGlobalContext();
+  const { userDetails, setUserDetails, setShowUpgradeModal, setUpgradeModalUnhideProject, setShowSettingsModal } = useGlobalContext();
 
   useEffect(() => {
     fetch("/lottie/diamond-lottie.json")
@@ -64,7 +64,7 @@ export function AvatarDropdown({ onClose }) {
   };
 
   const handleSettings = () => {
-    router.push("/settings");
+    setShowSettingsModal(true);
     close();
   };
 

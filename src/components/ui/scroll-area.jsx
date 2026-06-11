@@ -43,12 +43,11 @@ const ScrollBar = React.forwardRef(function ScrollBar(
         orientation === "horizontal" &&
           "h-2.5 flex-col border-t border-t-transparent p-[1px]",
         className
-      ),
-      ...props,
-    },
-    /*#__PURE__*/ React.createElement(ScrollAreaPrimitive.ScrollAreaThumb, {
-      className: "relative flex-1 rounded-full bg-border",
-    })
+      )}
+      {...props}
+    >
+      <ScrollAreaPrimitive.ScrollAreaThumb className="relative flex-1 rounded-full bg-border" />
+    </ScrollAreaPrimitive.ScrollAreaScrollbar>
   );
 });
 

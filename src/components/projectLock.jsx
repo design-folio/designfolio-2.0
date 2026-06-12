@@ -1,17 +1,11 @@
 import React from "react";
 import { useGlobalContext } from "@/context/globalContext";
 import { Crown, Lock } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { StardustButton } from "./StardustButton";
 import { cn } from "@/lib/utils";
 
 export default function ProjectLock({ className }) {
   const { setShowUpgradeModal, setUpgradeModalUnhideProject } = useGlobalContext();
-
-  const handleUpgrade = () => {
-    setUpgradeModalUnhideProject(null);
-    setShowUpgradeModal(true);
-  };
 
   return (
     <div className={cn("w-full h-full rounded-2xl flex flex-col items-center justify-center p-10 min-h-[400px] gap-4 relative bg-background border border-border shadow-sm", className)}>
@@ -33,7 +27,7 @@ export default function ProjectLock({ className }) {
 
         <div className="mt-6 flex items-center gap-2 text-xs text-muted-foreground/80">
           <Lock className="w-3 h-3 shrink-0" />
-          <span>Free plan: 2 projects only</span>
+          <span>Free plan: 2 visible projects</span>
         </div>
       </div>
     </div>

@@ -273,6 +273,7 @@ export default function Professional({
             onToggleVisibility={handleToggleProjectVisibility}
             openSidebar={openSidebar}
             isPro={!!userDetails?.pro}
+            hasHiddenProjects={(userDetails?.projects || []).filter(p => !p.hidden).length >= 2}
           />
         );
       case "Experience":

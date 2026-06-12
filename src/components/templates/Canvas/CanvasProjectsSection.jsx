@@ -217,8 +217,7 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
               onClick={() => openSidebar(sidebars.sortProjects)}
             />
           )}
-          {(userDetails?.pro || (projects?.length ?? 0) < 2) && (
-            <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
+          <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
               <DropdownMenuTrigger asChild>
                 <CanvasSectionButton icon={<Plus className="w-3.5 h-3.5" />} ariaLabel="Add project" alwaysVisible={isDropdownOpen} />
               </DropdownMenuTrigger>
@@ -244,7 +243,6 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-          )}
 
           <SectionVisibilityButton
             sectionId="projects"
@@ -276,7 +274,7 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
                 onToggleVisibility={handleToggleProjectVisibility}
               />
             ))}
-            {isEditing && (userDetails?.pro || visibleProjects.length < 2) && (
+            {isEditing && (userDetails?.pro || (projects || []).filter(p => !p.hidden).length < 2) && (
               <div className="flex flex-col gap-4">
                 <div className="rounded-2xl aspect-[16/9] border border-dashed border-black/15 dark:border-white/10 bg-black/[0.015] dark:bg-white/[0.015] flex flex-col items-center justify-center gap-3 transition-colors hover:bg-black/[0.03] dark:hover:bg-white/[0.03]">
                   <div className="w-10 h-10 rounded-full bg-black/[0.05] dark:bg-white/[0.05] flex items-center justify-center">
@@ -303,7 +301,7 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
                 </div>
               </div>
             )}
-            {isEditing && !(userDetails?.pro || visibleProjects.length < 2) && (
+            {isEditing && !userDetails?.pro && (projects || []).filter(p => !p.hidden).length >= 2 && (
               <div className="md:col-span-2">
                 <ProjectLock />
               </div>

@@ -285,7 +285,7 @@ export default function Projects({
               ))}
 
               {edit &&
-                (userDetails?.pro || visibleProjects.length < 2 ? (
+                (userDetails?.pro || (userDetails?.projects || []).filter(p => !p.hidden).length < 2 ? (
                   <AddCard
                     title={`${
                       visibleProjects?.length === 0

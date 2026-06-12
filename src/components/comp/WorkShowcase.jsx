@@ -391,7 +391,7 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
         </DndContext>
       )}
       {edit &&
-        (userDetails?.pro || userDetails?.projects.length < 2 ? (
+        (userDetails?.pro || (userDetails?.projects || []).filter(p => !p.hidden).length < 2 ? (
           <AddCard
             title={`${visibleProjects.length === 0
               ? "Upload your first case study"

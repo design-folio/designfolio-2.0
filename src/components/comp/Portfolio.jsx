@@ -591,7 +591,7 @@ const Portfolio = ({ userDetails, edit }) => {
                               />
                             ))}
                             {edit &&
-                              (userDetails?.pro || userDetails?.projects.length < 2 ? (
+                              (userDetails?.pro || (userDetails?.projects || []).filter(p => !p.hidden).length < 2 ? (
                                 <AddCard
                                   title={`${userDetails?.projects?.length === 0
                                     ? "Upload your first case study"

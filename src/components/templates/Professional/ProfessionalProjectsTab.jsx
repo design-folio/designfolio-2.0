@@ -38,6 +38,7 @@ function ProfessionalProjectsTab({
   onToggleVisibility,
   openSidebar,
   isPro,
+  hasHiddenProjects,
 }) {
   const { openModal } = useGlobalContext();
 
@@ -122,7 +123,7 @@ function ProfessionalProjectsTab({
           </div>
         </div>
       ))}
-      {isEditing && (isPro || visibleProjects.length < 2) && (
+      {isEditing && (isPro || !hasHiddenProjects) && (
         <div
           className={`relative flex flex-col ${frameBorderClass}`}
         >
@@ -153,7 +154,7 @@ function ProfessionalProjectsTab({
           </div>
         </div>
       )}
-      {isEditing && !(isPro || visibleProjects.length < 2) && (
+      {isEditing && !isPro && hasHiddenProjects && (
         <div className="p-4">
           <ProjectLock className="bg-[#DED9CE] dark:bg-[#2A2520] font-jetbrains" />
         </div>

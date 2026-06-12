@@ -485,7 +485,7 @@ export default function Builder2({ edit = false }) {
                     <ProjectShape className="text-template-text-left-bg-color" />
                     <Chat direction="left" className={cn("rounded-tl-none", "w-full")}>
                       {projects.length > 1 ? (
-                        userDetails?.pro || userDetails?.projects.length < 1 ? (
+                        <>
                           <div className="flex items-center justify-center gap-2 flex-wrap">
                             <Button
                               text={"Add case study"}
@@ -509,9 +509,10 @@ export default function Builder2({ edit = false }) {
                             />
                             <SectionVisibilityButton sectionId="projects" className="h-11" />
                           </div>
-                        ) : (
-                          <ProjectLock />
-                        )
+                          {!userDetails?.pro && (userDetails?.projects || []).filter(p => !p.hidden).length >= 2 && (
+                            <ProjectLock />
+                          )}
+                        </>
                       ) : (
                         <div className="flex items-start gap-2 w-full">
                           <AddCard

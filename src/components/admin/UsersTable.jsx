@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useMemo } from "react";
+import { useState, useCallback, useRef, useMemo, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import {
@@ -123,6 +123,16 @@ const COLUMN_LABELS = {
   customDomain: "Domain",
   lastPlanType: "Was On",
   lastExpiredAt: "Expired On",
+  deletionReason: "Reason",
+  deletionAt: "Deleted On",
+};
+
+const DELETION_REASON_LABELS = {
+  "not-useful":       "Didn't find it useful",
+  "missing-features": "Missing features I need",
+  "switching":        "Switching to another tool",
+  "expensive":        "Too expensive",
+  "exploring":        "Just exploring",
 };
 
 const COLUMNS = [
@@ -376,6 +386,65 @@ const CHURNED_EXTRA_COLUMNS = [
   },
 ];
 
+const DELETED_EXTRA_COLUMNS = [
+  {
+    id: "deletionReason",
+    accessorFn: (row) => row.deletion?.reason,
+    header: "Reason",
+    enableSorting: false,
+    cell: ({ getValue }) => {
+      const val = getValue();
+      if (!val) return <span className="text-[#7A736C] dark:text-[#B5AFA5] text-sm">—</span>;
+      const label = DELETION_REASON_LABELS[val];
+      if (label) {
+        return (
+          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50 whitespace-nowrap">
+            {label}
+          </span>
+        );
+      }
+      return (
+        <TooltipProvider delayDuration={200}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="text-xs text-[#7A736C] dark:text-[#B5AFA5] italic truncate max-w-[160px] block cursor-default">
+                {val}
+              </span>
+            </TooltipTrigger>
+            <TooltipContent side="top" className="p-0 bg-transparent border-0 shadow-none">
+              <div className="bg-[#231F1A] text-[#F0EDE7] rounded-md px-2.5 py-1.5 text-[11px] border border-white/10 shadow-lg max-w-[280px] break-words">
+                {val}
+              </div>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      );
+    },
+  },
+  {
+    id: "deletionAt",
+    accessorFn: (row) => row.deletion?.at,
+    header: ({ column }) => {
+      const sorted = column.getIsSorted();
+      return (
+        <button
+          type="button"
+          className="flex items-center gap-1 text-xs font-medium text-[#7A736C] dark:text-[#B5AFA5] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7] transition-colors duration-120"
+          onClick={() => column.toggleSorting(sorted === "asc")}
+          aria-label={`Sort by deletion date${sorted === "asc" ? ", ascending" : sorted === "desc" ? ", descending" : ""}`}
+        >
+          Deleted On <ArrowUpDown size={12} aria-hidden="true" />
+        </button>
+      );
+    },
+    cell: ({ getValue }) => {
+      const val = getValue();
+      if (!val) return <span className="text-[#7A736C] dark:text-[#B5AFA5] text-sm">—</span>;
+      return <TimestampCell date={val} />;
+    },
+  },
+];
+
 const GENERIC_FILTERS = [
   { value: "all",          label: "All" },
   { value: "live",         label: "Live" },
@@ -591,8 +660,12 @@ export default function UsersTable() {
   const activeColumns = useMemo(() => {
     if (filter === "churned") {
       const cols = [...COLUMNS];
-      // Insert after Plan column (index 3)
       cols.splice(4, 0, ...CHURNED_EXTRA_COLUMNS);
+      return cols;
+    }
+    if (filter === "deleted") {
+      const cols = [...COLUMNS];
+      cols.splice(4, 0, ...DELETED_EXTRA_COLUMNS);
       return cols;
     }
     return COLUMNS;

@@ -81,12 +81,10 @@ export default function Index({ initialUserDetails }) {
   const wallpaperUrl = isChatfolioTemplate ? null : getWallpaperUrl(wpValue ?? 0, currentTheme, finalUserDetails?.template);
   const ProBadge = !finalUserDetails?.pro && (
     <div
-      className="text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] xl:block cursor-pointer mb-[120px] lg:m-0"
+      className="text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[20px] xl:block cursor-pointer mb-[120px] lg:m-1"
       onClick={() => window.open("https://www.designfolio.me", "_blank")}
     >
-
       <MemoMadewithdesignfolio />
-
     </div>
   );
 
@@ -135,6 +133,8 @@ export default function Index({ initialUserDetails }) {
                 return "w-full py-[94px]";
               case TEMPLATE_IDS.RETRO_OS:
                 return "mx-auto px-2 md:px-4 lg:px-0";
+              case TEMPLATE_IDS.PROFESSIONAL:
+                return "";
               default:
                 return "py-10";
             }

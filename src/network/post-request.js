@@ -39,7 +39,8 @@ export const _verifyEmail = (data) =>
 export const _updateUsername = (data) =>
   axiosInstance.patch("/user/changeUsername", data);
 
-export const _deleteUser = () => axiosInstance.delete("/user/delete");
+export const _deleteUser = (data) =>
+  axiosInstance.delete("/user/delete", { data });
 
 export const _changePassword = (data) =>
   axiosInstance.patch("/user/changePassword", data);

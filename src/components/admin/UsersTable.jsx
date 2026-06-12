@@ -139,6 +139,7 @@ const COLUMNS = [
       const sorted = column.getIsSorted();
       return (
         <button
+          type="button"
           className="flex items-center gap-1 text-xs font-medium text-[#7A736C] dark:text-[#B5AFA5] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7] transition-colors duration-120"
           onClick={() => column.toggleSorting(sorted === "asc")}
           aria-label={`Sort by joined date${sorted === "asc" ? ", ascending" : sorted === "desc" ? ", descending" : ""}`}
@@ -252,6 +253,7 @@ const COLUMNS = [
       const sorted = column.getIsSorted();
       return (
         <button
+          type="button"
           className="flex items-center gap-1 text-xs font-medium text-[#7A736C] dark:text-[#B5AFA5] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7] transition-colors duration-120"
           onClick={() => column.toggleSorting(sorted === "asc")}
           aria-label={`Sort by published date${sorted === "asc" ? ", ascending" : sorted === "desc" ? ", descending" : ""}`}
@@ -272,6 +274,7 @@ const COLUMNS = [
       const sorted = column.getIsSorted();
       return (
         <button
+          type="button"
           className="flex items-center gap-1 text-xs font-medium text-[#7A736C] dark:text-[#B5AFA5] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7] transition-colors duration-120"
           onClick={() => column.toggleSorting(sorted === "asc")}
           aria-label={`Sort by project count${sorted === "asc" ? ", ascending" : sorted === "desc" ? ", descending" : ""}`}
@@ -356,6 +359,7 @@ const CHURNED_EXTRA_COLUMNS = [
       const sorted = column.getIsSorted();
       return (
         <button
+          type="button"
           className="flex items-center gap-1 text-xs font-medium text-[#7A736C] dark:text-[#B5AFA5] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7] transition-colors duration-120"
           onClick={() => column.toggleSorting(sorted === "asc")}
           aria-label={`Sort by expired date${sorted === "asc" ? ", ascending" : sorted === "desc" ? ", descending" : ""}`}
@@ -387,6 +391,167 @@ const REVENUE_FILTERS = [
 ];
 
 const ALL_FILTERS = [...GENERIC_FILTERS, ...REVENUE_FILTERS];
+
+function FilterPopover({ open, onOpenChange, filter, pendingFilter, setPendingFilter, setFilter, setPage }) {
+  return (
+    <Popover open={open} onOpenChange={onOpenChange}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          size="sm"
+          className={cn(
+            "h-9 gap-2 text-xs shrink-0 transition-colors duration-150",
+            filter !== "all" && "border-foreground/40 bg-muted"
+          )}
+          aria-label="Filter users"
+        >
+          <SlidersHorizontal data-icon="inline-start" />
+          Filters
+          {filter !== "all" && (
+            <Badge variant="secondary" className="px-1.5 py-0 h-4 text-[10px] font-semibold leading-none">
+              {ALL_FILTERS.find((o) => o.value === filter)?.label}
+            </Badge>
+          )}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent
+        align="start"
+        sideOffset={6}
+        className="w-48 p-0 overflow-hidden rounded-xl shadow-lg"
+      >
+        <div className="px-3 pt-3 pb-2">
+          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">
+            Filter by
+          </p>
+        </div>
+        <Separator />
+        <div className="p-1.5">
+          <p className="text-[10px] font-medium text-muted-foreground px-2 py-1 mb-0.5 uppercase tracking-wider">
+            General
+          </p>
+          <RadioGroup value={pendingFilter} onValueChange={setPendingFilter} className="flex flex-col gap-0">
+            {GENERIC_FILTERS.map((opt) => (
+              <label
+                key={opt.value}
+                htmlFor={`filter-${opt.value}`}
+                className={cn(
+                  "flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer text-[13px] select-none transition-colors duration-150",
+                  pendingFilter === opt.value
+                    ? "bg-accent text-accent-foreground font-medium"
+                    : "text-foreground hover:bg-muted"
+                )}
+              >
+                <RadioGroupItem value={opt.value} id={`filter-${opt.value}`} className="size-3.5 shrink-0" />
+                {opt.label}
+              </label>
+            ))}
+          </RadioGroup>
+        </div>
+        <Separator />
+        <div className="p-1.5">
+          <p className="text-[10px] font-medium text-muted-foreground px-2 py-1 mb-0.5 uppercase tracking-wider">
+            Revenue
+          </p>
+          <RadioGroup value={pendingFilter} onValueChange={setPendingFilter} className="flex flex-col gap-0">
+            {REVENUE_FILTERS.map((opt) => (
+              <label
+                key={opt.value}
+                htmlFor={`filter-${opt.value}`}
+                className={cn(
+                  "flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer text-[13px] select-none transition-colors duration-150",
+                  pendingFilter === opt.value
+                    ? "bg-accent text-accent-foreground font-medium"
+                    : "text-foreground hover:bg-muted"
+                )}
+              >
+                <RadioGroupItem value={opt.value} id={`filter-${opt.value}`} className="size-3.5 shrink-0" />
+                {opt.label}
+              </label>
+            ))}
+          </RadioGroup>
+        </div>
+        <Separator />
+        <div className="p-1.5 flex gap-1.5">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="flex-1 h-7 text-xs"
+            onClick={() => {
+              setPendingFilter("all");
+              setFilter("all");
+              setPage(1);
+              onOpenChange(false);
+            }}
+          >
+            Clear
+          </Button>
+          <Button
+            size="sm"
+            className="flex-1 h-7 text-xs"
+            onClick={() => {
+              setFilter(pendingFilter);
+              setPage(1);
+              onOpenChange(false);
+            }}
+          >
+            Apply
+          </Button>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
+function ColumnPopover({ open, onOpenChange, table }) {
+  return (
+    <Popover open={open} onOpenChange={onOpenChange}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          size="sm"
+          className="h-9 gap-2 text-xs shrink-0 transition-colors duration-150"
+          aria-label="Toggle columns"
+        >
+          <Columns3 data-icon="inline-start" />
+          Columns
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent
+        align="start"
+        sideOffset={6}
+        className="w-44 p-0 overflow-hidden rounded-xl shadow-lg"
+      >
+        <div className="px-3 pt-3 pb-2">
+          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">
+            Show / Hide
+          </p>
+        </div>
+        <Separator />
+        <div className="p-1.5 flex flex-col gap-0.5">
+          {table.getAllColumns().flatMap((col) =>
+            col.getCanHide() ? [
+              <label
+                key={col.id}
+                className={cn(
+                  "flex items-center gap-2.5 px-2 py-1.5 rounded-md cursor-pointer text-[13px] select-none transition-colors duration-150 hover:bg-muted",
+                  col.getIsVisible() ? "text-foreground" : "text-muted-foreground"
+                )}
+              >
+                <Checkbox
+                  checked={col.getIsVisible()}
+                  onCheckedChange={(val) => col.toggleVisibility(!!val)}
+                  className="size-3.5 shrink-0"
+                  aria-label={`Toggle ${COLUMN_LABELS[col.id] ?? col.id} column`}
+                />
+                {COLUMN_LABELS[col.id] ?? col.id}
+              </label>
+            ] : []
+          )}
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+}
 
 export default function UsersTable() {
   const [search, setSearch] = useState("");
@@ -469,167 +634,24 @@ export default function UsersTable() {
           />
         </div>
 
-        {/* Filters popover */}
-        <Popover
+        <FilterPopover
           open={filterOpen}
           onOpenChange={(open) => {
             if (open) setPendingFilter(filter);
             setFilterOpen(open);
           }}
-        >
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              size="sm"
-              className={cn(
-                "h-9 gap-2 text-xs shrink-0 transition-colors duration-150",
-                filter !== "all" && "border-foreground/40 bg-muted"
-              )}
-              aria-label="Filter users"
-            >
-              <SlidersHorizontal data-icon="inline-start" />
-              Filters
-              {filter !== "all" && (
-                <Badge variant="secondary" className="px-1.5 py-0 h-4 text-[10px] font-semibold leading-none">
-                  {ALL_FILTERS.find((o) => o.value === filter)?.label}
-                </Badge>
-              )}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent
-            align="start"
-            sideOffset={6}
-            className="w-48 p-0 overflow-hidden rounded-xl shadow-lg"
-          >
-            <div className="px-3 pt-3 pb-2">
-              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">
-                Filter by
-              </p>
-            </div>
-            <Separator />
-            <div className="p-1.5">
-              <p className="text-[10px] font-medium text-muted-foreground px-2 py-1 mb-0.5 uppercase tracking-wider">
-                General
-              </p>
-              <RadioGroup value={pendingFilter} onValueChange={setPendingFilter} className="flex flex-col gap-0">
-                {GENERIC_FILTERS.map((opt) => (
-                  <label
-                    key={opt.value}
-                    htmlFor={`filter-${opt.value}`}
-                    className={cn(
-                      "flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer text-[13px] select-none transition-colors duration-150",
-                      pendingFilter === opt.value
-                        ? "bg-accent text-accent-foreground font-medium"
-                        : "text-foreground hover:bg-muted"
-                    )}
-                  >
-                    <RadioGroupItem value={opt.value} id={`filter-${opt.value}`} className="size-3.5 shrink-0" />
-                    {opt.label}
-                  </label>
-                ))}
-              </RadioGroup>
-            </div>
-            <Separator />
-            <div className="p-1.5">
-              <p className="text-[10px] font-medium text-muted-foreground px-2 py-1 mb-0.5 uppercase tracking-wider">
-                Revenue
-              </p>
-              <RadioGroup value={pendingFilter} onValueChange={setPendingFilter} className="flex flex-col gap-0">
-                {REVENUE_FILTERS.map((opt) => (
-                  <label
-                    key={opt.value}
-                    htmlFor={`filter-${opt.value}`}
-                    className={cn(
-                      "flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer text-[13px] select-none transition-colors duration-150",
-                      pendingFilter === opt.value
-                        ? "bg-accent text-accent-foreground font-medium"
-                        : "text-foreground hover:bg-muted"
-                    )}
-                  >
-                    <RadioGroupItem value={opt.value} id={`filter-${opt.value}`} className="size-3.5 shrink-0" />
-                    {opt.label}
-                  </label>
-                ))}
-              </RadioGroup>
-            </div>
-            <Separator />
-            <div className="p-1.5 flex gap-1.5">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="flex-1 h-7 text-xs"
-                onClick={() => {
-                  setPendingFilter("all");
-                  setFilter("all");
-                  setPage(1);
-                  setFilterOpen(false);
-                }}
-              >
-                Clear
-              </Button>
-              <Button
-                size="sm"
-                className="flex-1 h-7 text-xs"
-                onClick={() => {
-                  setFilter(pendingFilter);
-                  setPage(1);
-                  setFilterOpen(false);
-                }}
-              >
-                Apply
-              </Button>
-            </div>
-          </PopoverContent>
-        </Popover>
+          filter={filter}
+          pendingFilter={pendingFilter}
+          setPendingFilter={setPendingFilter}
+          setFilter={setFilter}
+          setPage={setPage}
+        />
 
-        {/* Columns popover */}
-        <Popover open={colMenuOpen} onOpenChange={setColMenuOpen}>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-9 gap-2 text-xs shrink-0 transition-colors duration-150"
-              aria-label="Toggle columns"
-            >
-              <Columns3 data-icon="inline-start" />
-              Columns
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent
-            align="start"
-            sideOffset={6}
-            className="w-44 p-0 overflow-hidden rounded-xl shadow-lg"
-          >
-            <div className="px-3 pt-3 pb-2">
-              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">
-                Show / Hide
-              </p>
-            </div>
-            <Separator />
-            <div className="p-1.5 flex flex-col gap-0.5">
-              {table
-                .getAllColumns()
-                .filter((col) => col.getCanHide())
-                .map((col) => (
-                  <label
-                    key={col.id}
-                    className={cn(
-                      "flex items-center gap-2.5 px-2 py-1.5 rounded-md cursor-pointer text-[13px] select-none transition-colors duration-150 hover:bg-muted",
-                      col.getIsVisible() ? "text-foreground" : "text-muted-foreground"
-                    )}
-                  >
-                    <Checkbox
-                      checked={col.getIsVisible()}
-                      onCheckedChange={(val) => col.toggleVisibility(!!val)}
-                      className="size-3.5 shrink-0"
-                      aria-label={`Toggle ${COLUMN_LABELS[col.id] ?? col.id} column`}
-                    />
-                    {COLUMN_LABELS[col.id] ?? col.id}
-                  </label>
-                ))}
-            </div>
-          </PopoverContent>
-        </Popover>
+        <ColumnPopover
+          open={colMenuOpen}
+          onOpenChange={setColMenuOpen}
+          table={table}
+        />
 
         {!isLoading && (
           <p className="text-xs text-[#7A736C] dark:text-[#B5AFA5] ml-auto" aria-live="polite" aria-atomic="true">

@@ -352,8 +352,18 @@ const CHURNED_EXTRA_COLUMNS = [
   },
   {
     accessorKey: "lastExpiredAt",
-    header: "Expired On",
-    enableSorting: false,
+    header: ({ column }) => {
+      const sorted = column.getIsSorted();
+      return (
+        <button
+          className="flex items-center gap-1 text-xs font-medium text-[#7A736C] dark:text-[#B5AFA5] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7] transition-colors duration-120"
+          onClick={() => column.toggleSorting(sorted === "asc")}
+          aria-label={`Sort by expired date${sorted === "asc" ? ", ascending" : sorted === "desc" ? ", descending" : ""}`}
+        >
+          Expired On <ArrowUpDown size={12} aria-hidden="true" />
+        </button>
+      );
+    },
     cell: ({ getValue }) => {
       const val = getValue();
       if (!val) return <span className="text-[#7A736C] dark:text-[#B5AFA5] text-sm">—</span>;

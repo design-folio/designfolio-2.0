@@ -114,7 +114,7 @@
     "pdf-parse": "^2.4.5",
     "pdfjs-dist": "^4.10.38",
     "poly-decomp": "^0.3.0",
-    "posthog-js": "^1.347.2",
+    "posthog-js": "^1.386.6",
     "radix-ui": "^1.4.3",
     "razorpay": "^2.9.6",
     "react": "^18",

@@ -11,7 +11,7 @@ export default function LandingTrustedBySection() {
       <div className="flex items-center gap-3">
         <div className="flex-1 h-px bg-lp-text/[0.07]" />
         <span className="text-[12px] font-semibold tracking-[0.08em] uppercase text-lp-text/55 whitespace-nowrap">
-          Helping 28,000+ job seekers
+          31,000+ Designfolio users work at
         </span>
         <div className="flex-1 h-px bg-lp-text/[0.07]" />
       </div>

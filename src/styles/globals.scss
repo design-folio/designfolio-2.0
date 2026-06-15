@@ -1220,6 +1220,24 @@ body.cursor-pill-active * {
   }
 }
 
+@keyframes portfolioScroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes quoteScroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-33.333%);
+  }
+}
+
 /* Bottom navigation gradient */
 .bottom-nav-gradient {
   background: linear-gradient(

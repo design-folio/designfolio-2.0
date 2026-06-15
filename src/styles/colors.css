@@ -12,6 +12,8 @@
   --lp-accent-hover: #ff553e;
   --lp-fg-white: #fdfcf8;
   --lp-video-border: #e2e1da;
+  --lp-chat-viewer-bg: #e8e7e2;
+  --lp-chat-avatar-bg: #c8c6c2;
   /* bare RGB channels — enables text-lp-text/50, bg-lp-accent/10, etc. in Tailwind */
   --lp-text-rgb: 29 27 26;
   --lp-heading-rgb: 70 59 52;
@@ -270,6 +272,8 @@
   --lp-text-faint: #7a736c;
   --lp-fg-white: #1d1b1a;
   --lp-video-border: rgba(255, 255, 255, 0.1);
+  --lp-chat-viewer-bg: #2e2c2a;
+  --lp-chat-avatar-bg: #48464a;
   --onboarding-selected-bg: rgba(255, 85, 62, 0.12);
   /* bare RGB channels — dark mode overrides */
   --lp-text-rgb: 240 237 231;

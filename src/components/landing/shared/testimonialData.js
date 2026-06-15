@@ -7,6 +7,9 @@ export const testimonials = [
     image: "/testimonial/ishita.png",
     logoSrc: "/testimonial/company/cisco.png",
     logoRaw: true,
+    highlights: ["completely changed that", "20 minutes"],
+    highlightBg: "#FFF5B1",
+    highlightDarkBg: "rgba(255,245,177,0.22)",
   },
   {
     name: "Ashutosh Vashishtha",
@@ -16,6 +19,9 @@ export const testimonials = [
     image: "/testimonial/ashuthosh.png",
     logoSrc: "/testimonial/company/apple.png",
     logoRaw: true,
+    highlights: ["customisations are awesome", "GOATed portfolio builder"],
+    highlightBg: "#C8F7DC",
+    highlightDarkBg: "rgba(200,247,220,0.18)",
   },
   {
     name: "Suvigya Nijhawan",
@@ -25,6 +31,9 @@ export const testimonials = [
     image: "/testimonial/suvigya.png",
     logoSrc: "/testimonial/company/google.png",
     logoRaw: true,
+    highlights: ["ideal launchpad", "every section recruiters care about"],
+    highlightBg: "#C8E4FF",
+    highlightDarkBg: "rgba(200,228,255,0.18)",
   },
   {
     name: "Aditya Krishna",
@@ -34,6 +43,9 @@ export const testimonials = [
     image: "/testimonial/aditya.png",
     logoSrc: "/testimonial/company/jpmorgan.png",
     logoRaw: true,
+    highlights: ["clean, customizable format", "polished and professional"],
+    highlightBg: "#EAD4FF",
+    highlightDarkBg: "rgba(234,212,255,0.18)",
   },
 ];
 

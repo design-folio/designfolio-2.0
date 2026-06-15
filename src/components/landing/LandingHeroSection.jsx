@@ -62,7 +62,7 @@ export default function LandingHeroSection({
         className="text-[35px] sm:text-[45px] leading-[1.1] tracking-[-0.02em] max-w-[520px] mb-5 text-[--lp-heading]"
         style={{ fontWeight: 650 }}
       >
-        Building a portfolio was never meant to be hard.
+        Wait... another recruiter asked for your portfolio?
       </motion.h1>
 
       <motion.p
@@ -72,8 +72,8 @@ export default function LandingHeroSection({
         className="text-[17px] mb-8 max-w-[450px] leading-relaxed font-semibold text-[--lp-text-muted]"
       >
         {heroTab === "resume" || hasDfToken
-          ? "Upload your resume. AI builds your portfolio and matches you with jobs."
-          : "Pick your domain and start building your portfolio from scratch — no resume needed."}
+          ? "Upload your resume. We'll turn it into a portfolio and find jobs that match your experience."
+          : "Pick your domain. AI helps you build a portfolio and powers your job search."}
       </motion.p>
 
       <motion.div
@@ -123,7 +123,7 @@ export default function LandingHeroSection({
                 exit={{ opacity: 0, scale: 0.97 }}
                 transition={{ duration: 0.25 }}
               >
-                <ClaimDomain  />
+                <ClaimDomain />
               </motion.div>
             )}
           </AnimatePresence>

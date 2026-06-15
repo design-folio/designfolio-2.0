@@ -5,10 +5,10 @@ import { cn } from "@/lib/utils";
 import LandingLogoSVG from "./shared/LandingLogoSVG";
 
 const NAV_LINKS = [
-  { id: "overview", label: "Overview" },
-  { id: "stories", label: "Stories" },
-  { id: "how", label: "How?" },
-  { id: "why", label: "Why?" },
+  { id: "overview", label: "Start here" },
+  { id: "stories", label: "Success stories" },
+  { id: "how", label: "How it works" },
+  { id: "why", label: "Meet Shai" },
 ];
 
 export default function LandingLeftNav({

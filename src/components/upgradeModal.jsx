@@ -6,7 +6,7 @@ import { usePostHogEvent } from '@/hooks/usePostHogEvent';
 import { POSTHOG_EVENT_NAMES } from '@/lib/posthogEventNames';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, HelpCircle, X, Zap } from 'lucide-react';
+import { ChevronDown, Gem, HelpCircle, Rocket, Sprout, Star, X, Zap } from 'lucide-react';
 import {
   Accordion,
   AccordionItem,
@@ -16,7 +16,7 @@ import {
 import { ConicButton } from '@/components/ui/ConicButton';
 import { Button } from '@/components/ui/button';
 
-const PLAN_LABELS = { mthly: 'Monthly', qtrly: 'Quarterly', yrly: 'Yearly' };
+const PLAN_LABELS = { mthly: 'Monthly', qtrly: 'Quarterly', yrly: 'Yearly', lifetime: "Lifetime" };
 
 const PLAN_HEADINGS = {
   mthly: {
@@ -28,6 +28,10 @@ const PLAN_HEADINGS = {
     subtitle: 'Your portfolio, resumes, AI job tools & interview prep — all in one place.',
   },
   yrly: {
+    title: 'Get Hired Faster',
+    subtitle: 'Your portfolio, resumes, AI job tools & interview prep — all in one place.',
+  },
+  lifetime: {
     title: 'Get Hired Faster',
     subtitle: 'Your portfolio, resumes, AI job tools & interview prep — all in one place.',
   },
@@ -63,6 +67,10 @@ const FAQS = [
   {
     q: 'Is there a free trial?',
     a: 'No free trial right now, but the Free plan lets you explore the portfolio builder with up to 2 case studies before you decide to upgrade.',
+  },
+  {
+    q: 'When do AI credits expire for Lifetime members?',
+    a: 'AI credits on the Lifetime plan expire 18 months after your purchase date. After that, you can top up credits as needed — your portfolio and all other Pro features remain active forever.',
   },
 ];
 
@@ -102,7 +110,7 @@ export default function UpgradeModal() {
         const plans = response?.data?.proPlans;
         if (Array.isArray(plans) && plans.length > 0) {
           setProPlans(plans);
-          setSelectedPlan(plans.find(p => p.plan === 'qtrly') || plans[0]);
+          setSelectedPlan(plans.find(p => p.plan === 'lifetime') || plans[0]);
         }
       });
     }
@@ -145,7 +153,7 @@ export default function UpgradeModal() {
 
   function getMonthlyAmount(plan) {
     if (!plan) return 0;
-    if (plan.plan === 'yrly')  return Math.round(Number(plan.amount) / 12);
+    if (plan.plan === 'yrly') return Math.round(Number(plan.amount) / 12);
     if (plan.plan === 'qtrly') return Math.round(Number(plan.amount) / 3);
     return Number(plan.amount); // mthly: amount is already monthly
   }
@@ -169,16 +177,8 @@ export default function UpgradeModal() {
 
   function getButtonText() {
     if (checkoutLoading) return 'Opening checkout…';
-    if (selectedPlan?.plan === 'mthly') return 'Get PRO Monthly';
-    if (selectedPlan?.plan === 'qtrly') {
-      const savePct = getSavingsPct('qtrly');
-      return savePct > 0 ? `Get PRO Quarterly • Save ${savePct}%` : 'Get PRO Quarterly';
-    }
-    if (selectedPlan?.plan === 'yrly') {
-      const savePct = getSavingsPct('yrly');
-      return savePct > 0 ? `Get PRO Yearly • Save ${savePct}%` : 'Get PRO Yearly';
-    }
-    return 'Get PRO';
+    const label = PLAN_LABELS[selectedPlan?.plan];
+    return label ? `Get ${label} Access` : 'Get PRO';
   }
 
   const openCheckout = async () => {
@@ -201,6 +201,8 @@ export default function UpgradeModal() {
   };
 
   if (proPlans.length === 0 || !selectedPlan) return null;
+
+  const stashedPrice = selectedPlan?.currency === 'USD' ? '$149' : '₹11,999';
 
   // Expanded width: 880px (2 × 440). Collapsed: 440px. Mobile: no framer width control.
   const cardWidth = sideBySide ? (showFaq ? 880 : 440) : undefined;
@@ -225,7 +227,6 @@ export default function UpgradeModal() {
             }}
             onClick={handleCloseModal}
           />
-
           {/* Modal card — centered via transformTemplate, expands symmetrically */}
           <motion.div
             key="upgrade-card"
@@ -256,10 +257,15 @@ export default function UpgradeModal() {
             </button>
 
             {/* ── Left panel: pricing (always visible) ── */}
+
             <div className={sideBySide ? styles.modalLeftPanel : styles.modalSinglePanel}>
+
               <div className={styles.modalHeader}>
+
                 <div>
+
                   <div className={styles.modalIcon} />
+                  <UrgencyBanner />
                   <h2 className={styles.modalTitle}>
                     {upgradeModalUnhideProject
                       ? `Unhide ${upgradeModalUnhideProject.title || 'Project'}?`
@@ -275,7 +281,7 @@ export default function UpgradeModal() {
 
               <div className={styles.modalContent}>
                 {/* Billing toggle */}
-                <div className="mb-6">
+                <div className="mb-6 pt-5">
                   <Tabs
                     value={selectedPlan?.plan ?? ''}
                     onValueChange={value => {
@@ -289,13 +295,24 @@ export default function UpgradeModal() {
                       });
                     }}
                   >
-                    <TabsList className="flex p-1 rounded-lg gap-1 w-full h-auto bg-[#f0f0f0]">
+                    <TabsList className="flex p-1 rounded-lg gap-1 w-full h-auto bg-[#f0f0f0] overflow-visible">
                       {proPlans.map(p => (
                         <TabsTrigger
                           key={p.plan}
                           value={p.plan}
-                          className="flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 text-[#525252] hover:text-[#0a0a0a] data-[state=active]:bg-[#ffffff] data-[state=active]:text-[#0a0a0a] data-[state=active]:shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]"
+                          className="relative flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 text-[#525252] hover:text-[#0a0a0a] data-[state=active]:bg-[#ffffff] data-[state=active]:text-[#0a0a0a] data-[state=active]:shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]"
                         >
+                          {p.plan === 'lifetime' && (
+                            <span
+                              className="absolute -top-[18px] left-1/2 -translate-x-1/2 whitespace-nowrap px-2 py-[3.5px] rounded-full text-[8.5px] font-semibold uppercase select-none"
+                              style={{
+                                background: "linear-gradient(180deg, #383838 0%, #1c1c1c 100%)",
+                                color: "rgba(255,255,255,0.82)",
+                                letterSpacing: "0.09em",
+                                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.13), 0 2px 5px rgba(0,0,0,0.28), 0 0 0 0.5px rgba(0,0,0,0.35)",
+                              }}
+                            >Best Value</span>
+                          )}
                           {PLAN_LABELS[p.plan] ?? p.plan}
                         </TabsTrigger>
                       ))}
@@ -314,23 +331,74 @@ export default function UpgradeModal() {
                         exit={{ opacity: 0, y: -4 }}
                         transition={{ duration: 0.14 }}
                       >
-                        <div className="flex items-baseline gap-2">
-                          <div className={styles.price}>
-                            {formatAmount(getMonthlyAmount(selectedPlan), selectedPlan?.currency)}
-                          </div>
-                          <div className={styles.priceSubtext}>/ per month</div>
-                        </div>
-                        <div className="text-sm text-[#6b7280] font-medium mt-0.5">
-                          billed {formatAmount(selectedPlan?.amount, selectedPlan?.currency)}{' '}
-                          {{ mthly: 'monthly', qtrly: 'quarterly', yrly: 'yearly' }[selectedPlan?.plan] ?? 'per period'}
-                        </div>
+                        {selectedPlan?.plan === 'lifetime' ? (
+                          <>
+                            <div className="flex items-baseline gap-2">
+                              <div className={styles.price}>
+                                {formatAmount(selectedPlan?.amount, selectedPlan?.currency)}
+                              </div>
+                              <div className={styles.priceSubtext}><span className=' line-through'> {stashedPrice} </span> /one-time</div>
+                            </div>
+                            <div className="text-sm text-[#6b7280] font-medium mt-0.5">
+                              Pay once. Use it throughout your career.
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <div className="flex items-baseline gap-2">
+                              <div className={styles.price}>
+                                {formatAmount(getMonthlyAmount(selectedPlan), selectedPlan?.currency)}
+                              </div>
+                              <div className={styles.priceSubtext}>/ per month</div>
+                            </div>
+                            <div className="text-sm text-[#6b7280] font-medium mt-0.5">
+                              billed {formatAmount(selectedPlan?.amount, selectedPlan?.currency)}{' '}
+                              {{ mthly: 'monthly', qtrly: 'quarterly', yrly: 'yearly' }[selectedPlan?.plan] ?? 'per period'}
+                            </div>
+                          </>
+                        )}
                       </motion.div>
                     </AnimatePresence>
                   </div>
                 </div>
 
                 {/* CTA */}
-                {selectedPlan?.plan === 'yrly' ? (
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={selectedPlan?.plan + "-quote"}
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ duration: 0.14 }}
+                  >
+                    <div
+                      className="flex items-center gap-2.5 mb-3 px-3 py-2.5 rounded-xl"
+                      style={{
+                        border: "1px solid #e5e7eb",
+                        background: "#f9fafb",
+                        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.8), 0 1px 3px rgba(0,0,0,0.06)",
+                      }}
+                    >
+                      <span
+                        className="flex-shrink-0 w-[22px] h-[22px] rounded-md flex items-center justify-center"
+                        style={{ background: "rgba(232,89,58,0.12)" }}
+                      >
+                        {selectedPlan?.plan === 'lifetime' && <Gem className="w-3 h-3" style={{ color: "#E8593A" }} />}
+                        {selectedPlan?.plan === 'mthly' && <Sprout className="w-3 h-3" style={{ color: "#E8593A" }} />}
+                        {selectedPlan?.plan === 'qtrly' && <Rocket className="w-3 h-3" style={{ color: "#E8593A" }} />}
+                        {selectedPlan?.plan === 'yrly' && <Star className="w-3 h-3" style={{ color: "#E8593A" }} />}
+                      </span>
+                      <p className="text-[11.5px] leading-snug" style={{ color: "#4b5563" }}>
+                        {selectedPlan?.plan === 'lifetime' && "78% of paying members choose Lifetime."}
+                        {selectedPlan?.plan === 'mthly' && "Start building today. Upgrade anytime."}
+                        {selectedPlan?.plan === 'qtrly' && "Enough time to build, apply, interview, and get hired."}
+                        {selectedPlan?.plan === 'yrly' && "The best value for a serious job search."}
+                      </p>
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+
+                {(selectedPlan?.plan === 'yrly' || selectedPlan?.plan === 'lifetime') ? (
                   <ConicButton
                     onClick={openCheckout}
                     disabled={checkoutLoading}
@@ -419,28 +487,39 @@ export default function UpgradeModal() {
                 </div>
 
                 {/* Logo marquee */}
-                <div className="mt-6 pt-4 border-t border-[#e5e7eb] min-h-[64px]">
-                  <p className="text-center text-[10px] font-medium text-[#9ca3af] mb-2">
-                    Trusted by 20000+ designers
-                  </p>
-                  <div className="relative min-h-8 py-1">
-                    <div className="absolute left-0 top-0 bottom-0 w-6 z-10 pointer-events-none bg-gradient-to-r from-white to-transparent" />
-                    <div className="absolute right-0 top-0 bottom-0 w-6 z-10 pointer-events-none bg-gradient-to-l from-white to-transparent" />
-                    <div className="flex gap-0 overflow-x-hidden min-h-8 px-1">
-                      {[TRUSTED_BY_LOGOS, TRUSTED_BY_LOGOS].map((logos, pass) => (
-                        <div
-                          key={pass}
-                          className="flex animate-scroll items-center gap-0 shrink-0 min-h-8 py-0.5"
-                          aria-hidden={pass === 1 ? 'true' : undefined}
-                        >
-                          {logos.map((logo, i) => (
-                            <div key={i} className="flex items-center justify-center px-2 flex-shrink-0 min-h-8 min-w-[48px]">
-                              <img src={logo} alt="" width={32} height={16} className="h-4 w-auto max-h-6 opacity-50 grayscale object-contain" />
-                            </div>
+                <div className="pt-4  flex flex-col gap-3">
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 h-px bg-[#e5e7eb]" />
+                    <span className="text-[10px] font-semibold tracking-[0.08em] uppercase text-[#9ca3af] whitespace-nowrap">
+                      31,000+ Designfolio users work at
+                    </span>
+                    <div className="flex-1 h-px bg-[#e5e7eb]" />
+                  </div>
+                  <div
+                    className="w-full overflow-hidden relative"
+                    style={{
+                      maskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)",
+                      WebkitMaskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)",
+                    }}
+                  >
+                    <motion.div
+                      className="flex items-center w-max"
+                      animate={{ x: ["0%", "-50%"] }}
+                      transition={{ ease: "linear", duration: 30, repeat: Infinity }}
+                    >
+                      {[...Array(2)].map((_, pass) => (
+                        <div key={pass} className="flex items-center gap-x-6 pr-6" aria-hidden={pass === 1 ? 'true' : undefined}>
+                          {[...Array(7)].map((_, num) => (
+                            <img
+                              key={num}
+                              src={`/companylogo/companienames0${num + 1}.svg`}
+                              alt=""
+                              className="h-4 w-auto opacity-50 grayscale object-contain"
+                            />
                           ))}
                         </div>
                       ))}
-                    </div>
+                    </motion.div>
                   </div>
                 </div>
 
@@ -534,4 +613,31 @@ export default function UpgradeModal() {
       )}
     </AnimatePresence>
   );
+}
+
+function UrgencyBanner() {
+  return (
+    <div
+      className="flex items-center gap-2 mb-1 px-3 py-2 rounded-lg"
+      style={{
+        background: "rgba(232,89,58,0.07)",
+        border: "1px solid rgba(232,89,58,0.14)",
+      }}
+    >
+      <span className="relative flex-shrink-0 flex h-[7px] w-[7px]">
+        <span
+          className="animate-ping absolute inline-flex h-full w-full rounded-full"
+          style={{ backgroundColor: "#E8593A", opacity: 0.5 }}
+        />
+        <span
+          className="relative inline-flex rounded-full h-[7px] w-[7px]"
+          style={{ backgroundColor: "#E8593A" }}
+        />
+      </span>
+      <p className="text-[11px] leading-none">
+        <span style={{ color: "#9a3412" }}>Current pricing ends next month.</span>{" "}
+        <span className="font-semibold" style={{ color: "#7c2d12" }}>Lock in today's price.</span>
+      </p>
+    </div>
+  )
 }

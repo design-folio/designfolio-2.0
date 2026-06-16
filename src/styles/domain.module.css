@@ -1191,7 +1191,7 @@
 .modalSubtitle {
   font-size: 16px;
   color: #6b7280;
-  margin: 0 0 1.5rem 0;
+  margin: 0 0 0.5rem 0;
   line-height: 1.4;
 }
 
@@ -1226,6 +1226,8 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #c4c9d4 transparent;
 }
 
 .priceSection {

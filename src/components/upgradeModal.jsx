@@ -16,7 +16,7 @@ import {
 import { ConicButton } from '@/components/ui/ConicButton';
 import { Button } from '@/components/ui/button';
 
-const PLAN_LABELS = { mthly: 'Monthly', qtrly: 'Quarterly', yrly: 'Yearly' };
+const PLAN_LABELS = { mthly: 'Monthly', qtrly: 'Quarterly', yrly: 'Yearly', lifetime: "Lifetime" };
 
 const PLAN_HEADING = {
   title: 'Career OS for Job Seekers',
@@ -73,6 +73,10 @@ const FAQS = [
     q: 'Is there a free trial?',
     a: 'No free trial right now, but the Free plan lets you explore the portfolio builder with up to 2 case studies before you decide to upgrade.',
   },
+  {
+    q: 'When do AI credits expire for Lifetime members?',
+    a: 'AI credits on the Lifetime plan expire 18 months after your purchase date. After that, you can top up credits as needed — your portfolio and all other Pro features remain active forever.',
+  },
 ];
 
 // Prepends centering translate so framer-motion's y/scale animations don't conflict with
@@ -111,7 +115,7 @@ export default function UpgradeModal() {
         const plans = response?.data?.proPlans;
         if (Array.isArray(plans) && plans.length > 0) {
           setProPlans(plans);
-          setSelectedPlan(plans.find(p => p.plan === 'qtrly') || plans[0]);
+          setSelectedPlan(plans.find(p => p.plan === 'lifetime') || plans[0]);
         }
       });
     }
@@ -154,7 +158,7 @@ export default function UpgradeModal() {
 
   function getMonthlyAmount(plan) {
     if (!plan) return 0;
-    if (plan.plan === 'yrly')  return Math.round(Number(plan.amount) / 12);
+    if (plan.plan === 'yrly') return Math.round(Number(plan.amount) / 12);
     if (plan.plan === 'qtrly') return Math.round(Number(plan.amount) / 3);
     return Number(plan.amount);
   }
@@ -263,10 +267,15 @@ export default function UpgradeModal() {
               <X size={14} strokeWidth={2.5} />
             </button>
 
+            {/* ── Left panel: pricing (always visible) ── */}
+
             {/* Left panel: pricing */}
             <div className={sideBySide ? styles.modalLeftPanel : styles.modalSinglePanel}>
+
               <div className={styles.modalHeader}>
+
                 <div>
+
                   <div className={styles.modalIcon} />
                   <h2 className={styles.modalTitle}>{heading.title}</h2>
                   <p className={styles.modalSubtitle}>{heading.subtitle}</p>
@@ -289,13 +298,24 @@ export default function UpgradeModal() {
                       });
                     }}
                   >
-                    <TabsList className="flex p-1 rounded-lg gap-1 w-full h-auto bg-[#f0f0f0]">
+                    <TabsList className="flex p-1 rounded-lg gap-1 w-full h-auto bg-[#f0f0f0] overflow-visible">
                       {proPlans.map(p => (
                         <TabsTrigger
                           key={p.plan}
                           value={p.plan}
-                          className="flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 text-[#525252] hover:text-[#0a0a0a] data-[state=active]:bg-[#ffffff] data-[state=active]:text-[#0a0a0a] data-[state=active]:shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]"
+                          className="relative flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 text-[#525252] hover:text-[#0a0a0a] data-[state=active]:bg-[#ffffff] data-[state=active]:text-[#0a0a0a] data-[state=active]:shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]"
                         >
+                          {p.plan === 'lifetime' && (
+                            <span
+                              className="absolute -top-[18px] left-1/2 -translate-x-1/2 whitespace-nowrap px-2 py-[3.5px] rounded-full text-[8.5px] font-semibold uppercase select-none"
+                              style={{
+                                background: "linear-gradient(180deg, #383838 0%, #1c1c1c 100%)",
+                                color: "rgba(255,255,255,0.82)",
+                                letterSpacing: "0.09em",
+                                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.13), 0 2px 5px rgba(0,0,0,0.28), 0 0 0 0.5px rgba(0,0,0,0.35)",
+                              }}
+                            >Best Value</span>
+                          )}
                           {PLAN_LABELS[p.plan] ?? p.plan}
                         </TabsTrigger>
                       ))}

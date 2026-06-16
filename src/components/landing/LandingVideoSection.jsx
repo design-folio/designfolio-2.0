@@ -63,8 +63,8 @@ const LandingVideoSection = forwardRef(function LandingVideoSection({ isDark }, 
         </div>
 
         {/* Video */}
-        <div className="rounded-[20px] overflow-hidden border border-[--lp-video-border] bg-[#141414]">
-          <div className="relative w-full" style={{ paddingTop: "65%" }}>
+        <div className="rounded-[16px] overflow-hidden border border-[--lp-video-border] bg-[#141414]">
+          <div className="relative w-full" style={{ paddingTop: "78.75%" }}>
             <video
               key={heroStep}
               src={isDark ? STEPS[heroStep].darkSrc : STEPS[heroStep].lightSrc}

@@ -6,32 +6,32 @@ import { useState, useEffect } from "react";
 const STEPS = [
   {
     messages: [
-      { from: "viewer", text: "I don't have a portfolio. Just a bunch of work." },
-      { from: "shai",   text: "That's where most people start." },
+      { from: "viewer", text: "I don't have a portfolio. Just a bunch of random work." },
+      { from: "shai",   text: "You've already done the hard part. Pick a template and turn it into a portfolio in minutes." },
     ],
     darkVideo: "/landing-video/video1dark.mp4",
     lightVideo: "/landing-video/video1light.mp4",
   },
   {
     messages: [
-      { from: "viewer", text: "I've applied to too many jobs to hear nothing back." },
-      { from: "shai",   text: "Let's start with your resume." },
-    ],
-    darkVideo: "/landing-video/video2dark.mp4",
-    lightVideo: "/landing-video/video2light.mp4",
-  },
-  {
-    messages: [
-      { from: "viewer", text: "Finding jobs feels like a full-time job." },
-      { from: "shai",   text: "It doesn't have to be." },
+      { from: "viewer", text: "Okay, my portfolio looks great now. But getting a job is still going to be hard." },
+      { from: "shai",   text: "That's covered too. Build your portfolio, choose your target role and location, and AI will find and rank jobs based on your experience." },
     ],
     darkVideo: "/landing-video/video3dark.mp4",
     lightVideo: "/landing-video/video3light.mp4",
   },
   {
     messages: [
-      { from: "viewer", text: "I wish someone would just tell me what to do next." },
-      { from: "shai",   text: "Start with these free tools." },
+      { from: "viewer", text: "That sounds great. Let me go fix my resume first." },
+      { from: "shai",   text: "Good news. Click Tailor Resume on any job, and AI will customize it for you." },
+    ],
+    darkVideo: "/landing-video/video2dark.mp4",
+    lightVideo: "/landing-video/video2light.mp4",
+  },
+  {
+    messages: [
+      { from: "viewer", text: "Damn. That's crazy." },
+      { from: "shai",   text: "We're not done yet. Keep scrolling. 👇" },
     ],
     cards: [
       { label: "Fix your resume",      icon: "/assets/svgs/fixResume.svg",           href: "/ai-tools?type=optimize-resume" },
@@ -83,7 +83,7 @@ export default function LandingHowSection() {
                       className="shrink-0 w-[30px] h-[30px] rounded-full flex items-center justify-center text-white text-[12px] font-bold"
                       style={{ background: "linear-gradient(135deg, #FF553E 0%, #FF8C42 100%)" }}
                     >
-                      S
+                      D
                     </div>
                   )}
                   <div
@@ -123,7 +123,7 @@ export default function LandingHowSection() {
               </div>
             ) : (
               <div className="w-full rounded-[12px] overflow-hidden border border-[--lp-video-border] shadow-sm bg-[#141414]">
-                <div className="relative w-full overflow-hidden" style={{ paddingTop: "65%" }}>
+                <div className="relative w-full overflow-hidden" style={{ paddingTop: "78.75%" }}>
                   <video
                     key={isDark ? "dark" : "light"}
                     src={isDark ? item.darkVideo : item.lightVideo}

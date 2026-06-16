@@ -9,10 +9,21 @@ export default function LandingFounderSection({ ctaLabel, ctaDest, onPrimaryCta,
       className="w-full border-t border-[--lp-border] pt-16 pb-12 px-6 scroll-mt-24"
       style={{ fontFamily: "var(--font-manrope), sans-serif" }}
     >
-      <div className="max-w-[500px] mx-auto">
+      <div className="max-w-[560px] mx-auto">
         <h2 className="text-[26px] font-bold text-[--lp-text] mb-6 tracking-tight">
-          I'm Shai. Maker of Designfolio.
+          Yo. I'm Shai (I built Designfolio)
         </h2>
+
+        <img
+          src="/assets/svgs/footerimageformob.svg"
+          alt="Shai"
+          className="w-full rounded-2xl mb-8 sm:hidden"
+        />
+        <img
+          src="/assets/svgs/footerimage.svg"
+          alt="Shai"
+          className="w-full rounded-2xl mb-8 hidden sm:block"
+        />
 
         <div className="flex flex-col gap-6 text-[15px] leading-[1.6] text-lp-text/80 font-medium">
           <p>

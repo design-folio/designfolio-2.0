@@ -1,164 +1,139 @@
-import { motion, AnimatePresence } from "framer-motion";
-import { FileText, TrendingUp, BookOpen, Mic, Mail, BarChart2, ChevronRight, ArrowUpRight } from "lucide-react";
-import { cn } from "@/lib/utils";
-import ShimmerInView from "./shared/ShimmerInView";
 import Link from "next/link";
+import { User } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useState, useEffect } from "react";
 
 const STEPS = [
   {
-    step: "1/",
-    title: 'Choose a "template".',
-    video: "/landing-video/template-section.mp4",
+    messages: [
+      { from: "viewer", text: "I don't have a portfolio. Just a bunch of random work." },
+      { from: "shai",   text: "You've already done the hard part. Pick a template and turn it into a portfolio in minutes." },
+    ],
+    darkVideo: "/landing-video/video1dark.mp4",
+    lightVideo: "/landing-video/video1light.mp4",
   },
   {
-    step: "2/",
-    title: 'Use AI as a "co-pilot".',
-    video: "/landing-video/analyzeai.mp4",
+    messages: [
+      { from: "viewer", text: "Okay, my portfolio looks great now. But getting a job is still going to be hard." },
+      { from: "shai",   text: "That's covered too. Build your portfolio, choose your target role and location, and AI will find and rank jobs based on your experience." },
+    ],
+    darkVideo: "/landing-video/video3dark.mp4",
+    lightVideo: "/landing-video/video3light.mp4",
   },
   {
-    step: "3/",
-    title: 'And other "AI tools".',
-    video: "/landing-video/other-ai-tools.mp4",
-    features: [
-      { label: "Fix your resume", icon: FileText, color: "#2563EB", lightBg: "#DBEAFE", midBg: "#BFDBFE", href: "/ai-tools?type=optimize-resume" },
-      { label: "Salary Negotiation", icon: TrendingUp, color: "#16A34A", lightBg: "#DCFCE7", midBg: "#BBF7D0", href: "/ai-tools?type=salary-negotiator" },
-      { label: "Case study generator", icon: BookOpen, color: "#7C3AED", lightBg: "#EDE9FE", midBg: "#DDD6FE", href: "/login" },
-      { label: "AI mock interview", icon: Mic, color: "#C2410C", lightBg: "#FFEDD5", midBg: "#FED7AA", href: "/ai-tools?type=mock-interview" },
-      { label: "AI email generator", icon: Mail, color: "#0D9488", lightBg: "#CCFBF1", midBg: "#99F6E4", href: "/ai-tools?type=email-generator" },
-      { label: "Analyze Case study", icon: BarChart2, color: "#DC2626", lightBg: "#FFE4E1", midBg: "#FECACA", href: "/login" },
+    messages: [
+      { from: "viewer", text: "That sounds great. Let me go fix my resume first." },
+      { from: "shai",   text: "Good news. Click Tailor Resume on any job, and AI will customize it for you." },
+    ],
+    darkVideo: "/landing-video/video2dark.mp4",
+    lightVideo: "/landing-video/video2light.mp4",
+  },
+  {
+    messages: [
+      { from: "viewer", text: "Damn. That's crazy." },
+      { from: "shai",   text: "We're not done yet. Keep scrolling. 👇" },
+    ],
+    cards: [
+      { label: "Fix your resume",      icon: "/assets/svgs/fixResume.svg",           href: "/ai-tools?type=optimize-resume" },
+      { label: "Salary Negotiation",   icon: "/assets/svgs/salary-negotiate.svg",    href: "/ai-tools?type=salary-negotiator" },
+      { label: "Case study generator", icon: "/assets/svgs/caseStudyGen.svg",         href: "/login" },
+      { label: "AI mock interview",    icon: "/assets/svgs/aiMock.svg",              href: "/ai-tools?type=mock-interview" },
+      { label: "AI email generator",   icon: "/assets/svgs/emailGen.svg",            href: "/ai-tools?type=email-generator" },
+      { label: "Analyze Case study",   icon: "/assets/svgs/analyzeCaseStudyGen.svg", href: "/login" },
     ],
   },
 ];
 
-function FeatureRow({ f, isLast }) {
-  const Icon = f.icon;
-  const pillStyle = f.lightBg && f.midBg
-    ? {
-      background: `radial-gradient(circle at 38% 32%, ${f.lightBg}, ${f.midBg})`,
-      boxShadow: `inset 0 1.5px 2px rgba(255,255,255,0.75), inset 0 -1px 2px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.08)`,
-    }
-    : undefined;
+export default function LandingHowSection() {
+  const { theme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+  const isDark = mounted && theme === "dark";
 
-  return (
-    <Link
-      href={f.href || "/ai-tools"}
-      className={cn(
-        "group flex items-center justify-between px-4 py-3.5 bg-[--lp-bg] hover:bg-[#F8F7EE] transition-colors duration-150 no-underline [&_*]:cursor-pointer cursor-pointer",
-        !isLast && "border-b border-[--lp-video-border]",
-      )}
-    >
-      <div className="flex items-center gap-3">
-        <div className="relative h-7 w-7 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden bg-black/[0.08]">
-          <span
-            className="absolute inset-0 rounded-full scale-100 sm:scale-0 sm:group-hover:scale-100 transition-transform duration-300 ease-out origin-center"
-            style={pillStyle}
-          />
-          <Icon
-            className="absolute h-3.5 w-3.5 text-lp-text/30 opacity-0 sm:opacity-100 transition-opacity duration-200 sm:group-hover:opacity-0"
-            strokeWidth={1.75}
-          />
-          <Icon
-            className="absolute h-3.5 w-3.5 opacity-100 sm:opacity-0 transition-opacity duration-200 sm:group-hover:opacity-100"
-            style={f.color ? { color: f.color } : undefined}
-            strokeWidth={1.75}
-          />
-        </div>
-        <span className="text-[14px] font-medium text-[--lp-text]">{f.label}</span>
-      </div>
-      <ArrowUpRight
-        className="h-[15px] w-[15px] text-lp-text/40 opacity-0 -translate-x-1 transition-all duration-200 ease-out group-hover:opacity-100 group-hover:translate-x-0 flex-shrink-0"
-        strokeWidth={2}
-      />
-    </Link>
-  );
-}
-
-export default function LandingHowSection({ showAllFeatures, onToggleFeatures }) {
   return (
     <section
       id="how"
-      className="w-full px-6 mb-16 mt-[48px] scroll-mt-24"
+      className="w-full px-6 mb-16 mt-6 scroll-mt-24"
       style={{ fontFamily: "var(--font-manrope), sans-serif" }}
     >
       <div className="w-full flex flex-col gap-12">
         {STEPS.map((item, i) => (
-          <div key={i} className="flex flex-col gap-5">
-            <h3 className="text-[20px] font-bold text-[--lp-text]">
-              {item.step} <ShimmerInView text={item.title} />
-            </h3>
+          <div key={i} className="flex flex-col gap-4">
+            {/* Chat header */}
+            <div className="flex flex-col gap-2.5">
+              {i === 0 && (
+                <div className="text-center">
+                  <span className="text-[11px] font-semibold tracking-widest uppercase text-lp-text/25">
+                    Today
+                  </span>
+                </div>
+              )}
 
-            <div className="w-full rounded-[12px] overflow-hidden border border-[--lp-video-border] shadow-sm bg-[#141414]">
-              <div className="relative w-full overflow-hidden" style={{ paddingTop: "65%" }}>
-                <video
-                  src={item.video}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="absolute inset-0 w-full h-full object-cover origin-center"
-                />
+              {item.messages.map((msg, mi) => (
+                <div
+                  key={mi}
+                  className={`flex items-end gap-2 ${msg.from === "shai" ? "flex-row-reverse" : "flex-row"}`}
+                >
+                  {msg.from === "viewer" ? (
+                    <div className="shrink-0 w-[30px] h-[30px] rounded-full bg-[--lp-chat-avatar-bg] flex items-center justify-center">
+                      <User className="w-[14px] h-[14px] text-white" strokeWidth={2.5} />
+                    </div>
+                  ) : (
+                    <div
+                      className="shrink-0 w-[30px] h-[30px] rounded-full flex items-center justify-center text-white text-[12px] font-bold"
+                      style={{ background: "linear-gradient(135deg, #FF553E 0%, #FF8C42 100%)" }}
+                    >
+                      D
+                    </div>
+                  )}
+                  <div
+                    className={`max-w-[72%] px-[14px] py-[10px] text-[17px] font-medium leading-snug ${
+                      msg.from === "shai"
+                        ? "bg-[#007AFF] text-white rounded-[20px] rounded-br-[5px]"
+                        : "bg-[--lp-chat-viewer-bg] text-[--lp-text] rounded-[20px] rounded-bl-[5px]"
+                    }`}
+                  >
+                    {msg.text}
+                  </div>
+                </div>
+              ))}
+
+              <div className="flex justify-end pr-[42px]">
+                <span className="text-[11px] font-medium text-lp-text/25">Delivered</span>
               </div>
             </div>
 
-            {item.features && (
-              <div className="flex flex-col gap-2">
-                <div className="flex flex-col rounded-xl border border-[--lp-video-border] overflow-hidden">
-                  {item.features.slice(0, 3).map((f, fi) => (
-                    <FeatureRow
-                      key={fi}
-                      f={f}
-                      isLast={!showAllFeatures && fi === 2}
-                    />
-                  ))}
-                  <motion.div
-                    initial={false}
-                    animate={{ height: showAllFeatures ? "auto" : 0 }}
-                    transition={{
-                      type: "spring",
-                      stiffness: 380,
-                      damping: 38,
-                      restDelta: 0.5,
-                    }}
-                    style={{ overflow: "hidden" }}
+            {/* Content: video or AI tool card grid */}
+            {item.cards ? (
+              <div className="grid grid-cols-2 gap-3">
+                {item.cards.map((card) => (
+                  <Link
+                    key={card.label}
+                    href={card.href}
+                    className="group flex flex-col items-center gap-3 rounded-2xl border border-[--lp-video-border] bg-[--lp-bg] p-5 hover:bg-[--lp-card] transition-colors duration-150 no-underline"
                   >
-                    {item.features.slice(3).map((f, fi) => (
-                      <motion.div
-                        key={`hidden-${fi}`}
-                        initial={{ opacity: 0, y: -6 }}
-                        animate={
-                          showAllFeatures
-                            ? { opacity: 1, y: 0 }
-                            : { opacity: 0, y: -6 }
-                        }
-                        transition={{
-                          type: "spring",
-                          stiffness: 420,
-                          damping: 28,
-                          delay: showAllFeatures ? fi * 0.06 : 0,
-                        }}
-                      >
-                        <FeatureRow f={f} isLast={fi === item.features.slice(3).length - 1} />
-                      </motion.div>
-                    ))}
-                  </motion.div>
-                </div>
-
-                <button
-                  onClick={onToggleFeatures}
-                  className="self-start flex items-center gap-1.5 px-1 py-1 text-[13px] font-medium text-lp-text/50 hover:text-[--lp-text] transition-colors duration-150 cursor-pointer"
-                >
-                  <span className="cursor-pointer">
-                    {showAllFeatures
-                      ? "Show less"
-                      : `+${item.features.length - 3} more tools`}
-                  </span>
-                  <ChevronRight
-                    className={cn(
-                      "h-3.5 w-3.5 transition-transform duration-300",
-                      showAllFeatures && "rotate-90",
-                    )}
+                    <div className="w-14 h-14 rounded-2xl overflow-hidden flex items-center justify-center bg-[--lp-card]">
+                      <img src={card.icon} alt={card.label} className="w-full h-full object-cover" />
+                    </div>
+                    <span className="text-[13px] font-semibold text-[--lp-text] text-center leading-snug">
+                      {card.label}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <div className="w-full rounded-[12px] overflow-hidden border border-[--lp-video-border] shadow-sm bg-[#141414]">
+                <div className="relative w-full overflow-hidden" style={{ paddingTop: "78.75%" }}>
+                  <video
+                    key={isDark ? "dark" : "light"}
+                    src={isDark ? item.darkVideo : item.lightVideo}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="absolute inset-0 w-full h-full object-cover"
                   />
-                </button>
+                </div>
               </div>
             )}
           </div>

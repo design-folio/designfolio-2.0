@@ -1,7 +1,6 @@
-import { useEffect, useState, useRef, useCallback, useMemo } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useTheme } from "next-themes";
 import { flushSync } from "react-dom";
-import { useRouter } from "next/router";
 import Seo from "@/components/seo";
 import LandingHeader from "@/components/landing/LandingHeader";
 import LandingLeftNav from "@/components/landing/LandingLeftNav";
@@ -12,6 +11,9 @@ import LandingTrustedBySection from "@/components/landing/LandingTrustedBySectio
 import LandingTestimonialCarousel from "@/components/landing/LandingTestimonialCarousel";
 import LandingVerticalScroller from "@/components/landing/LandingVerticalScroller";
 import LandingHowSection from "@/components/landing/LandingHowSection";
+import LandingPainPoints from "@/components/landing/LandingPainPoints";
+import LandingPortfolioGallery from "@/components/landing/LandingPortfolioGallery";
+import LandingQuoteBanner from "@/components/landing/LandingQuoteBanner";
 import LandingFounderSection from "@/components/landing/LandingFounderSection";
 import LandingFooter from "@/components/landing/LandingFooter";
 import ResumeUploadModal from "@/components/landing/ResumeUploadModal";
@@ -25,7 +27,6 @@ function getCookieValue(cookieName) {
 }
 
 export default function LandingPage({ dfToken, dfParsedResume }) {
-  const router = useRouter();
   const { theme, setTheme } = useTheme();
   // Defer theme resolution to client — avoids server/client hydration mismatch
   const [mounted, setMounted] = useState(false);
@@ -39,8 +40,6 @@ export default function LandingPage({ dfToken, dfParsedResume }) {
   const [activeSection, setActiveSection] = useState("overview");
   const [showNavCTA, setShowNavCTA] = useState(false);
   const [fabVisible, setFabVisible] = useState(true);
-  const [speedLevel, setSpeedLevel] = useState(4);
-  const [showAllFeatures, setShowAllFeatures] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [hasParsedResume, setHasParsedResume] = useState(!!dfParsedResume);
 
@@ -111,23 +110,6 @@ export default function LandingPage({ dfToken, dfParsedResume }) {
     [playHeartbeat, setTheme],
   );
 
-  // Slider tick sound
-  const playSliderTick = useCallback((level) => {
-    try {
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(300 + level * 60, ctx.currentTime);
-      gain.gain.setValueAtTime(0.08, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.08);
-      osc.start(ctx.currentTime);
-      osc.stop(ctx.currentTime + 0.08);
-      osc.onended = () => ctx.close();
-    } catch { }
-  }, []);
 
   useEffect(() => {
     let parsedResumePresent = !!dfParsedResume;
@@ -284,22 +266,17 @@ export default function LandingPage({ dfToken, dfParsedResume }) {
             <LandingVideoSection ref={videoSectionRef} isDark={isDark} />
             <LandingTrustedBySection />
             <LandingTestimonialCarousel />
-            <LandingHowSection
-              showAllFeatures={showAllFeatures}
-              onToggleFeatures={() => setShowAllFeatures((v) => !v)}
-            />
-            <LandingVerticalScroller
-              speedLevel={speedLevel}
-              onSpeedChange={setSpeedLevel}
-              isDark={isDark}
-              playSliderTick={playSliderTick}
-            />
+            <LandingPainPoints />
+            <LandingHowSection />
+            <LandingPortfolioGallery />
             <LandingFounderSection
               ctaLabel={ctaLabel}
               ctaDest={ctaDest}
               onPrimaryCta={handleCta}
               primaryCtaLoading={isNavigating}
             />
+            <LandingVerticalScroller />
+            <LandingQuoteBanner />
             <LandingFooter />
           </main>
         </div>

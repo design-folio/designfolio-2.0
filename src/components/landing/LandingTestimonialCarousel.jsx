@@ -3,20 +3,41 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { testimonials } from "./shared/testimonialData";
+import { useTheme } from "next-themes";
+
+function renderHighlights(t, isDark) {
+  const phrases = t.highlights ?? [];
+  const bg = isDark ? t.highlightDarkBg : t.highlightBg;
+  if (!phrases.length || !bg) return t.content;
+
+  const parts = [t.content];
+  for (const phrase of phrases) {
+    const next = [];
+    for (const part of parts) {
+      if (typeof part !== "string") { next.push(part); continue; }
+      const idx = part.indexOf(phrase);
+      if (idx === -1) { next.push(part); continue; }
+      if (idx > 0) next.push(part.slice(0, idx));
+      next.push(
+        <mark
+          key={phrase}
+          style={{ background: bg, borderRadius: "3px", padding: "1px 3px", color: "inherit" }}
+        >
+          {phrase}
+        </mark>
+      );
+      if (idx + phrase.length < part.length) next.push(part.slice(idx + phrase.length));
+    }
+    parts.splice(0, parts.length, ...next);
+  }
+  return parts;
+}
 
 export default function LandingTestimonialCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [progress, setProgress] = useState(0);
-  const [isDark, setIsDark] = useState(false);
-
-  useEffect(() => {
-    const check = () =>
-      setIsDark(document.documentElement.getAttribute("data-theme") === "dark");
-    check();
-    const obs = new MutationObserver(check);
-    obs.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
-    return () => obs.disconnect();
-  }, []);
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
 
   const navigate = (dir) => {
     setCurrentIndex((prev) => (prev + dir + testimonials.length) % testimonials.length);
@@ -24,7 +45,7 @@ export default function LandingTestimonialCarousel() {
   };
 
   useEffect(() => {
-    const duration = 5000;
+    const duration = 10000;
     const interval = 50;
     const step = (interval / duration) * 100;
 
@@ -111,7 +132,7 @@ export default function LandingTestimonialCarousel() {
               </div>
 
               <p className="text-lp-text/75 font-medium text-[15px] leading-[1.55]">
-                {t.content}
+                {renderHighlights(t, isDark)}
               </p>
             </motion.div>
           </AnimatePresence>

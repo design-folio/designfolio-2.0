@@ -13,9 +13,10 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
 const PRO_PLANS = [
-  { label: 'Monthly', inr: '₹1,899', usd: '$29', save: null, testId: 'monthly' },
-  { label: 'Quarterly', inr: '₹3,999', usd: '$59', save: '30%', testId: 'quarterly' },
-  { label: 'Yearly', inr: '₹10,999', usd: '$149', save: '50%', testId: 'yearly' },
+  { label: 'Monthly', inr: '₹999', usd: '$19', save: null, testId: 'monthly' },
+  { label: 'Quarterly', inr: '₹2,499', usd: '$39', save: '17%', testId: 'quarterly' },
+  // { label: 'Yearly', inr: '₹10,999', usd: '$149', save: '50%', testId: 'yearly' },
+  { label: 'Lifetime', inr: '₹8,999', usd: '$99', save: null, testId: 'yearly' },
 ];
 
 const comparisonRows = [

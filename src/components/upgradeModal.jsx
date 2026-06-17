@@ -30,7 +30,7 @@ const PLAN_QUOTES = {
   yrly:     { Icon: Star,   text: 'The best value for a serious job search.' },
 };
 
-const LIFETIME_STASHED_PRICE = 11999;
+const LIFETIME_STASHED_PRICES = { INR: 11999, USD: 129 };
 
 const ALL_FEATURES = [
   'Unlimited case studies',
@@ -346,7 +346,7 @@ export default function UpgradeModal() {
                               <div className={styles.price}>
                                 {formatAmount(selectedPlan?.amount, selectedPlan?.currency)}
                               </div>
-                              <div className={styles.priceSubtext}><span className="line-through">{formatAmount(LIFETIME_STASHED_PRICE, selectedPlan?.currency)}</span> /one-time</div>
+                              <div className={styles.priceSubtext}><span className="line-through">{formatAmount(LIFETIME_STASHED_PRICES[selectedPlan?.currency] ?? LIFETIME_STASHED_PRICES.INR, selectedPlan?.currency)}</span> /one-time</div>
                             </div>
                             <div className="text-sm text-[#6b7280] font-medium mt-0.5">
                               Pay once. Use it throughout your career.

@@ -33,13 +33,13 @@ const PLAN_QUOTES = {
 const LIFETIME_STASHED_PRICES = { INR: 11999, USD: 129 };
 
 const ALL_FEATURES = [
-  'Unlimited case studies',
-  'Custom domain',
-  'All premium templates',
   'AI job search & matching',
+  'Unlimited case studies',
   'Tailored resumes & cover letters',
-  'Mock interviews',
+  'AI Mock interviews',
   'AI case study analysis',
+  'All premium templates',
+  'Custom domain',
 ];
 
 const TRUSTED_BY_LOGOS = [
@@ -360,9 +360,10 @@ export default function UpgradeModal() {
                               </div>
                               <div className={styles.priceSubtext}>/ per month</div>
                             </div>
-                            <div className="text-sm text-[#6b7280] font-medium mt-0.5">
-                              billed {formatAmount(selectedPlan?.amount, selectedPlan?.currency)}{' '}
-                              {{ mthly: 'monthly', qtrly: 'quarterly', yrly: 'yearly' }[selectedPlan?.plan] ?? 'per period'}
+                            <div className="text-sm text-[#6b7280] font-medium mt-1">
+                              {selectedPlan?.plan === 'mthly'
+                                ? 'billed monthly'
+                                : `billed ${formatAmount(selectedPlan?.amount, selectedPlan?.currency)} ${{ qtrly: 'quarterly', yrly: 'yearly' }[selectedPlan?.plan] ?? 'per period'}`}
                             </div>
                           </>
                         )}

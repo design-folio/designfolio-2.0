@@ -1152,14 +1152,14 @@
 }
 
 .modalIcon {
-  width: 80px;
-  height: 80px;
+  width: 68px;
+  height: 68px;
   background: transparent;
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 1rem;
+  margin-bottom: 0.25rem;
   background-image: url("../../public/assets/png/crown.png");
   background-size: contain;
   background-repeat: no-repeat;
@@ -1222,7 +1222,7 @@
 }
 
 .modalContent {
-  padding: 0 2rem 2rem 2rem;
+  padding: 0 2rem 1.5rem 2rem;
   flex: 1;
   min-height: 0;
   overflow-y: auto;
@@ -1230,7 +1230,7 @@
 
 .priceSection {
   text-align: left;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   opacity: 0;
   animation: fadeInUp 0.5s ease-out 0.3s forwards;
 }
@@ -1240,7 +1240,6 @@
   font-weight: 800;
   color: #1f2937;
   line-height: 1;
-  margin-bottom: 0.25rem;
 }
 
 @keyframes fadeInUp {
@@ -1313,14 +1312,30 @@
   animation: subtleFadeInUp 0.3s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
-.featureItem:nth-child(1) { animation-delay: 0.2s; }
-.featureItem:nth-child(2) { animation-delay: 0.27s; }
-.featureItem:nth-child(3) { animation-delay: 0.34s; }
-.featureItem:nth-child(4) { animation-delay: 0.41s; }
-.featureItem:nth-child(5) { animation-delay: 0.48s; }
-.featureItem:nth-child(6) { animation-delay: 0.55s; }
-.featureItem:nth-child(7) { animation-delay: 0.62s; }
-.featureItem:nth-child(8) { animation-delay: 0.69s; }
+.featureItem:nth-child(1) {
+  animation-delay: 0.2s;
+}
+.featureItem:nth-child(2) {
+  animation-delay: 0.27s;
+}
+.featureItem:nth-child(3) {
+  animation-delay: 0.34s;
+}
+.featureItem:nth-child(4) {
+  animation-delay: 0.41s;
+}
+.featureItem:nth-child(5) {
+  animation-delay: 0.48s;
+}
+.featureItem:nth-child(6) {
+  animation-delay: 0.55s;
+}
+.featureItem:nth-child(7) {
+  animation-delay: 0.62s;
+}
+.featureItem:nth-child(8) {
+  animation-delay: 0.69s;
+}
 
 @keyframes subtleFadeInUp {
   from {
@@ -2944,7 +2959,6 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 4px;
-  margin-bottom: 0.25rem;
 }
 .slashPrice {
   font-size: 24px;

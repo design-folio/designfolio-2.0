@@ -110,7 +110,7 @@ export default function LandingHowSection() {
                   <Link
                     key={card.label}
                     href={card.href}
-                    className="group flex flex-col items-center gap-3 rounded-2xl border border-[--lp-video-border] bg-[--lp-bg] p-5 hover:bg-[--lp-card] transition-colors duration-150 no-underline"
+                    className="group flex flex-col items-center gap-3 rounded-2xl border border-[--lp-video-border] bg-[--lp-bg] p-5 hover:bg-[--lp-card] transition-colors duration-150 no-underline cursor-pointer"
                   >
                     <div className="w-14 h-14 rounded-2xl overflow-hidden flex items-center justify-center bg-[--lp-card]">
                       <img src={card.icon} alt={card.label} className="w-full h-full object-cover" />

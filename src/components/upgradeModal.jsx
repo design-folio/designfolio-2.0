@@ -30,7 +30,7 @@ const PLAN_QUOTES = {
   yrly: { Icon: Star, text: 'The best value for a serious job search.' },
 };
 
-const LIFETIME_STASHED_PRICES = { INR: 11999, USD: 129 };
+const LIFETIME_STASHED_PRICES = { INR: 12999, USD: 149 };
 
 const ALL_FEATURES = [
   'AI job search & matching',
@@ -586,7 +586,7 @@ function LogoMarquee() {
 
 function UrgencyBanner() {
   return (
-    <div className="flex items-center justify-center gap-2 my-2.5">
+    <div className="flex items-center justify-center gap-2 mt-2.5 mb-4">
       <span className="relative flex-shrink-0 flex h-[7px] w-[7px]">
         <span
           className="animate-ping absolute inline-flex h-full w-full rounded-full"

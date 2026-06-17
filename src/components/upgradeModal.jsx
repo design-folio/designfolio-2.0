@@ -24,10 +24,10 @@ const PLAN_HEADING = {
 };
 
 const PLAN_QUOTES = {
-  lifetime: { Icon: Gem,    text: '78% of paying members choose Lifetime.' },
-  mthly:    { Icon: Sprout, text: 'Start building today. Upgrade anytime.' },
-  qtrly:    { Icon: Rocket, text: 'Enough time to build, apply, interview, and get hired.' },
-  yrly:     { Icon: Star,   text: 'The best value for a serious job search.' },
+  lifetime: { Icon: Gem, text: '78% of paying members choose Lifetime.' },
+  mthly: { Icon: Sprout, text: 'Start building today. Upgrade anytime.' },
+  qtrly: { Icon: Rocket, text: 'Enough time to build, apply, interview, and get hired.' },
+  yrly: { Icon: Star, text: 'The best value for a serious job search.' },
 };
 
 const LIFETIME_STASHED_PRICES = { INR: 11999, USD: 129 };
@@ -176,15 +176,10 @@ export default function UpgradeModal() {
 
   function getButtonText() {
     if (checkoutLoading) return 'Opening checkout…';
-    if (selectedPlan?.plan === 'mthly') return 'Get PRO Monthly';
-    if (selectedPlan?.plan === 'qtrly') {
-      const pct = getSavingsPct('qtrly');
-      return pct > 0 ? `Get PRO Quarterly • Save ${pct}%` : 'Get PRO Quarterly';
-    }
-    if (selectedPlan?.plan === 'yrly') {
-      const pct = getSavingsPct('yrly');
-      return pct > 0 ? `Get PRO Yearly • Save ${pct}%` : 'Get PRO Yearly';
-    }
+    if (selectedPlan?.plan === 'lifetime') return 'Get Lifetime Access';
+    if (selectedPlan?.plan === 'mthly') return 'Get Monthly Access';
+    if (selectedPlan?.plan === 'qtrly') return 'Get Quarterly Access';
+    if (selectedPlan?.plan === 'yrly') return 'Get Yearly Access';
     return 'Get PRO';
   }
 
@@ -213,9 +208,9 @@ export default function UpgradeModal() {
 
   const heading = upgradeModalUnhideProject
     ? {
-        title: `Unhide ${upgradeModalUnhideProject.title || 'Project'}?`,
-        subtitle: 'Free users can only have 2 visible projects. Go Pro to add unlimited and unhide this project.',
-      }
+      title: `Unhide ${upgradeModalUnhideProject.title || 'Project'}?`,
+      subtitle: 'Free users can only have 2 visible projects. Go Pro to add unlimited and unhide this project.',
+    }
     : PLAN_HEADING;
 
   const isPremiumPlan = selectedPlan?.plan === 'yrly' || selectedPlan?.plan === 'lifetime';
@@ -394,7 +389,7 @@ export default function UpgradeModal() {
                     className={`flex items-center gap-1.5 text-[11px] font-medium rounded-full px-2.5 py-[5px] border transition-all duration-200 ${showFaq
                       ? 'border-[#9ca3af] bg-[#f3f4f6] text-[#374151]'
                       : 'border-[#c4c9d4] bg-transparent text-[#6b7280] hover:text-[#374151] hover:border-[#9ca3af]'
-                    }`}
+                      }`}
                   >
                     <HelpCircle className="w-3 h-3 flex-shrink-0" />
                     Have more doubts? FAQ
@@ -538,11 +533,10 @@ function FaqAccordion({ compact = false }) {
           className="border-b border-[#f3f4f6] last:border-0"
         >
           <AccordionTrigger
-            className={`font-medium text-left hover:no-underline leading-snug ${
-              compact
-                ? 'text-[12px] py-3 text-[#374151]'
-                : 'text-[13.5px] py-4 text-[#1f2937]'
-            }`}
+            className={`font-medium text-left hover:no-underline leading-snug ${compact
+              ? 'text-[12px] py-3 text-[#374151]'
+              : 'text-[13.5px] py-4 text-[#1f2937]'
+              }`}
           >
             {item.q}
           </AccordionTrigger>

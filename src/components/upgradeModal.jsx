@@ -30,6 +30,8 @@ const PLAN_QUOTES = {
   yrly:     { Icon: Star,   text: 'The best value for a serious job search.' },
 };
 
+const LIFETIME_STASHED_PRICES = { INR: 11999, USD: 129 };
+
 const ALL_FEATURES = [
   'Unlimited case studies',
   'Custom domain',
@@ -317,16 +319,32 @@ export default function UpgradeModal() {
                         exit={{ opacity: 0, y: -4 }}
                         transition={{ duration: 0.14 }}
                       >
-                        <div className="flex items-baseline gap-2">
-                          <div className={styles.price}>
-                            {formatAmount(getMonthlyAmount(selectedPlan), selectedPlan?.currency)}
-                          </div>
-                          <div className={styles.priceSubtext}>/ per month</div>
-                        </div>
-                        <div className="text-sm text-[#6b7280] font-medium mt-0.5">
-                          billed {formatAmount(selectedPlan?.amount, selectedPlan?.currency)}{' '}
-                          {{ mthly: 'monthly', qtrly: 'quarterly', yrly: 'yearly' }[selectedPlan?.plan] ?? 'per period'}
-                        </div>
+                        {selectedPlan?.plan === 'lifetime' ? (
+                          <>
+                            <div className="flex items-baseline gap-2">
+                              <div className={styles.price}>
+                                {formatAmount(selectedPlan?.amount, selectedPlan?.currency)}
+                              </div>
+                              <div className={styles.priceSubtext}><span className="line-through">{formatAmount(LIFETIME_STASHED_PRICES[selectedPlan?.currency] ?? LIFETIME_STASHED_PRICES.INR, selectedPlan?.currency)}</span> /one-time</div>
+                            </div>
+                            <div className="text-sm text-[#6b7280] font-medium mt-0.5">
+                              Pay once. Use it throughout your career.
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <div className="flex items-baseline gap-2">
+                              <div className={styles.price}>
+                                {formatAmount(getMonthlyAmount(selectedPlan), selectedPlan?.currency)}
+                              </div>
+                              <div className={styles.priceSubtext}>/ per month</div>
+                            </div>
+                            <div className="text-sm text-[#6b7280] font-medium mt-0.5">
+                              billed {formatAmount(selectedPlan?.amount, selectedPlan?.currency)}{' '}
+                              {{ mthly: 'monthly', qtrly: 'quarterly', yrly: 'yearly' }[selectedPlan?.plan] ?? 'per period'}
+                            </div>
+                          </>
+                        )}
                       </motion.div>
                     </AnimatePresence>
                   </div>

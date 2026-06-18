@@ -6,7 +6,7 @@ import { usePostHogEvent } from '@/hooks/usePostHogEvent';
 import { POSTHOG_EVENT_NAMES } from '@/lib/posthogEventNames';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, HelpCircle, X, Zap } from 'lucide-react';
+import { ChevronDown, Gem, HelpCircle, Rocket, Sprout, Star, X, Zap } from 'lucide-react';
 import {
   Accordion,
   AccordionItem,
@@ -18,20 +18,29 @@ import { Button } from '@/components/ui/button';
 
 const PLAN_LABELS = { mthly: 'Monthly', qtrly: 'Quarterly', yrly: 'Yearly' };
 
-const PLAN_HEADINGS = {
-  mthly: {
-    title: 'Get Hired Faster',
-    subtitle: 'Your portfolio, resumes, AI job tools & interview prep — all in one place.',
-  },
-  qtrly: {
-    title: 'Get Hired Faster',
-    subtitle: 'Your portfolio, resumes, AI job tools & interview prep — all in one place.',
-  },
-  yrly: {
-    title: 'Get Hired Faster',
-    subtitle: 'Your portfolio, resumes, AI job tools & interview prep — all in one place.',
-  },
+const PLAN_HEADING = {
+  title: 'Career OS for Job Seekers',
+  subtitle: 'Build your portfolio, tailor every application, find jobs, and prepare for interviews—all in one place.',
 };
+
+const PLAN_QUOTES = {
+  lifetime: { Icon: Gem, text: '78% of paying members choose Lifetime.' },
+  mthly: { Icon: Sprout, text: 'Start building today. Upgrade anytime.' },
+  qtrly: { Icon: Rocket, text: 'Enough time to build, apply, interview, and get hired.' },
+  yrly: { Icon: Star, text: 'The best value for a serious job search.' },
+};
+
+const LIFETIME_STASHED_PRICES = { INR: 12999, USD: 149 };
+
+const ALL_FEATURES = [
+  'AI job search & matching',
+  'Unlimited case studies',
+  'Tailored resumes & cover letters',
+  'AI Mock interviews',
+  'AI case study analysis',
+  'All premium templates',
+  'Custom domain',
+];
 
 const TRUSTED_BY_LOGOS = [
   '/assets/svgs/company logos/companylogos02.svg',
@@ -147,7 +156,7 @@ export default function UpgradeModal() {
     if (!plan) return 0;
     if (plan.plan === 'yrly')  return Math.round(Number(plan.amount) / 12);
     if (plan.plan === 'qtrly') return Math.round(Number(plan.amount) / 3);
-    return Number(plan.amount); // mthly: amount is already monthly
+    return Number(plan.amount);
   }
 
   function getSavingsPct(planKey) {
@@ -156,28 +165,21 @@ export default function UpgradeModal() {
     const monthlyPrice = Number(mthly.amount);
     if (planKey === 'qtrly') {
       const q = proPlans.find(p => p.plan === 'qtrly');
-      if (!q) return 0;
-      return Math.round((1 - Number(q.amount) / 3 / monthlyPrice) * 100);
+      return q ? Math.round((1 - Number(q.amount) / 3 / monthlyPrice) * 100) : 0;
     }
     if (planKey === 'yrly') {
       const y = proPlans.find(p => p.plan === 'yrly');
-      if (!y) return 0;
-      return Math.round((1 - Number(y.amount) / 12 / monthlyPrice) * 100);
+      return y ? Math.round((1 - Number(y.amount) / 12 / monthlyPrice) * 100) : 0;
     }
     return 0;
   }
 
   function getButtonText() {
     if (checkoutLoading) return 'Opening checkout…';
-    if (selectedPlan?.plan === 'mthly') return 'Get PRO Monthly';
-    if (selectedPlan?.plan === 'qtrly') {
-      const savePct = getSavingsPct('qtrly');
-      return savePct > 0 ? `Get PRO Quarterly • Save ${savePct}%` : 'Get PRO Quarterly';
-    }
-    if (selectedPlan?.plan === 'yrly') {
-      const savePct = getSavingsPct('yrly');
-      return savePct > 0 ? `Get PRO Yearly • Save ${savePct}%` : 'Get PRO Yearly';
-    }
+    if (selectedPlan?.plan === 'lifetime') return 'Get Lifetime Access';
+    if (selectedPlan?.plan === 'mthly') return 'Get Monthly Access';
+    if (selectedPlan?.plan === 'qtrly') return 'Get Quarterly Access';
+    if (selectedPlan?.plan === 'yrly') return 'Get Yearly Access';
     return 'Get PRO';
   }
 
@@ -202,14 +204,22 @@ export default function UpgradeModal() {
 
   if (proPlans.length === 0 || !selectedPlan) return null;
 
-  // Expanded width: 880px (2 × 440). Collapsed: 440px. Mobile: no framer width control.
   const cardWidth = sideBySide ? (showFaq ? 880 : 440) : undefined;
+
+  const heading = upgradeModalUnhideProject
+    ? {
+      title: `Unhide ${upgradeModalUnhideProject.title || 'Project'}?`,
+      subtitle: 'Free users can only have 2 visible projects. Go Pro to add unlimited and unhide this project.',
+    }
+    : PLAN_HEADING;
+
+  const isPremiumPlan = selectedPlan?.plan === 'yrly' || selectedPlan?.plan === 'lifetime';
 
   return (
     <AnimatePresence>
       {showUpgradeModal && (
         <>
-          {/* Backdrop — sibling to the card so its opacity doesn't clip the card's exit */}
+          {/* Backdrop */}
           <motion.div
             key="upgrade-backdrop"
             initial={{ opacity: 0 }}
@@ -226,7 +236,7 @@ export default function UpgradeModal() {
             onClick={handleCloseModal}
           />
 
-          {/* Modal card — centered via transformTemplate, expands symmetrically */}
+          {/* Modal card */}
           <motion.div
             key="upgrade-card"
             transformTemplate={centeredTransform}
@@ -245,8 +255,6 @@ export default function UpgradeModal() {
             }}
             onClick={e => e.stopPropagation()}
           >
-            {/* Close button — anchored to the card, not inside the scrolling panel,
-                top: 88px clears the 80px ::before orange gradient */}
             <button
               className={styles.modalClose}
               onClick={handleCloseModal}
@@ -255,27 +263,19 @@ export default function UpgradeModal() {
               <X size={14} strokeWidth={2.5} />
             </button>
 
-            {/* ── Left panel: pricing (always visible) ── */}
+            {/* Left panel: pricing */}
             <div className={sideBySide ? styles.modalLeftPanel : styles.modalSinglePanel}>
               <div className={styles.modalHeader}>
                 <div>
                   <div className={styles.modalIcon} />
-                  <h2 className={styles.modalTitle}>
-                    {upgradeModalUnhideProject
-                      ? `Unhide ${upgradeModalUnhideProject.title || 'Project'}?`
-                      : (PLAN_HEADINGS[selectedPlan?.plan] ?? PLAN_HEADINGS.yrly).title}
-                  </h2>
-                  <p className={styles.modalSubtitle}>
-                    {upgradeModalUnhideProject
-                      ? 'Free users can only have 2 visible projects. Go Pro to add unlimited and unhide this project.'
-                      : (PLAN_HEADINGS[selectedPlan?.plan] ?? PLAN_HEADINGS.yrly).subtitle}
-                  </p>
+                  <h2 className={styles.modalTitle}>{heading.title}</h2>
+                  <p className={styles.modalSubtitle}>{heading.subtitle}</p>
                 </div>
               </div>
 
               <div className={styles.modalContent}>
                 {/* Billing toggle */}
-                <div className="mb-6">
+                <div className="mb-5 pt-5">
                   <Tabs
                     value={selectedPlan?.plan ?? ''}
                     onValueChange={value => {
@@ -314,28 +314,54 @@ export default function UpgradeModal() {
                         exit={{ opacity: 0, y: -4 }}
                         transition={{ duration: 0.14 }}
                       >
-                        <div className="flex items-baseline gap-2">
-                          <div className={styles.price}>
-                            {formatAmount(getMonthlyAmount(selectedPlan), selectedPlan?.currency)}
-                          </div>
-                          <div className={styles.priceSubtext}>/ per month</div>
-                        </div>
-                        <div className="text-sm text-[#6b7280] font-medium mt-0.5">
-                          billed {formatAmount(selectedPlan?.amount, selectedPlan?.currency)}{' '}
-                          {{ mthly: 'monthly', qtrly: 'quarterly', yrly: 'yearly' }[selectedPlan?.plan] ?? 'per period'}
-                        </div>
+                        {selectedPlan?.plan === 'lifetime' ? (
+                          <>
+                            <div className="flex items-baseline gap-2">
+                              <div className={styles.price}>
+                                {formatAmount(selectedPlan?.amount, selectedPlan?.currency)}
+                              </div>
+                              <div className={styles.priceSubtext}><span className="line-through">{formatAmount(LIFETIME_STASHED_PRICES[selectedPlan?.currency] ?? LIFETIME_STASHED_PRICES.INR, selectedPlan?.currency)}</span> /one-time</div>
+                            </div>
+                            <div className="text-sm text-[#6b7280] font-medium mt-0.5">
+                              Pay once. Use it throughout your career.
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <div className="flex items-baseline gap-2">
+                              <div className={styles.price}>
+                                {formatAmount(getMonthlyAmount(selectedPlan), selectedPlan?.currency)}
+                              </div>
+                              <div className={styles.priceSubtext}>/ per month</div>
+                            </div>
+                            <div className="text-sm text-[#6b7280] font-medium mt-1">
+                              {selectedPlan?.plan === 'mthly'
+                                ? 'billed monthly'
+                                : `billed ${formatAmount(selectedPlan?.amount, selectedPlan?.currency)} ${{ qtrly: 'quarterly', yrly: 'yearly' }[selectedPlan?.plan] ?? 'per period'}`}
+                            </div>
+                          </>
+                        )}
                       </motion.div>
                     </AnimatePresence>
                   </div>
                 </div>
 
-                {/* CTA */}
-                {selectedPlan?.plan === 'yrly' ? (
-                  <ConicButton
-                    onClick={openCheckout}
-                    disabled={checkoutLoading}
-                    className="w-full mb-4"
+                {/* Plan tagline */}
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={selectedPlan?.plan + '-quote'}
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ duration: 0.14 }}
                   >
+                    <PlanQuote plan={selectedPlan?.plan} />
+                  </motion.div>
+                </AnimatePresence>
+
+                {/* CTA */}
+                {isPremiumPlan ? (
+                  <ConicButton onClick={openCheckout} disabled={checkoutLoading} className="w-full">
                     <Zap size={13} />
                     {getButtonText()}
                   </ConicButton>
@@ -343,66 +369,18 @@ export default function UpgradeModal() {
                   <Button
                     onClick={openCheckout}
                     disabled={checkoutLoading}
-                    className="w-full mb-4 h-12 text-sm font-bold bg-[hsl(7,100%,62%)] hover:bg-[hsl(7,100%,55%)] text-white border-none"
+                    className="w-full h-12 text-sm font-bold bg-[hsl(7,100%,62%)] hover:bg-[hsl(7,100%,55%)] text-white border-none"
                   >
                     {getButtonText()}
                   </Button>
                 )}
 
-                {/* Features */}
-                {(() => {
-                  const allFeatures = [
-                    "Unlimited case studies",
-                    "Custom domain",
-                    "All premium templates",
-                    "AI job search & matching",
-                    "Tailored resumes & cover letters",
-                    "Mock interviews",
-                    "AI case study analysis",
-                  ];
-                  const visible = allFeatures.slice(0, 4);
-                  const hidden = allFeatures.slice(4);
-                  return (
-                    <div className={styles.featuresList}>
-                      {visible.map(f => (
-                        <div key={f} className={styles.featureItem}>
-                          <div className={styles.featureIcon}>✓</div>
-                          <span>{f}</span>
-                        </div>
-                      ))}
-                      <AnimatePresence>
-                        {showAllFeatures && (
-                          <motion.div
-                            key="extra-features"
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            exit={{ opacity: 0, height: 0 }}
-                            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-                            className="overflow-hidden flex flex-col gap-3"
-                          >
-                            {hidden.map(f => (
-                              <div key={f} className={styles.featureItem}>
-                                <div className={styles.featureIcon}>✓</div>
-                                <span>{f}</span>
-                              </div>
-                            ))}
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                      <button
-                        onClick={() => setShowAllFeatures(s => !s)}
-                        className="flex items-center gap-1 text-[11px] font-medium text-[#9ca3af] hover:text-[#6b7280] transition-colors duration-150"
-                      >
-                        <ChevronDown
-                          size={12}
-                          strokeWidth={2.5}
-                          className={`transition-transform duration-200 ${showAllFeatures ? 'rotate-180' : ''}`}
-                        />
-                        {showAllFeatures ? 'Show less' : `+${hidden.length} more features`}
-                      </button>
-                    </div>
-                  );
-                })()}
+                <UrgencyBanner />
+
+                <FeaturesList
+                  showAll={showAllFeatures}
+                  onToggle={() => setShowAllFeatures(s => !s)}
+                />
 
                 {/* FAQ toggle chip */}
                 <div className="flex mt-3">
@@ -418,31 +396,7 @@ export default function UpgradeModal() {
                   </button>
                 </div>
 
-                {/* Logo marquee */}
-                <div className="mt-6 pt-4 border-t border-[#e5e7eb] min-h-[64px]">
-                  <p className="text-center text-[10px] font-medium text-[#9ca3af] mb-2">
-                    Trusted by 20000+ designers
-                  </p>
-                  <div className="relative min-h-8 py-1">
-                    <div className="absolute left-0 top-0 bottom-0 w-6 z-10 pointer-events-none bg-gradient-to-r from-white to-transparent" />
-                    <div className="absolute right-0 top-0 bottom-0 w-6 z-10 pointer-events-none bg-gradient-to-l from-white to-transparent" />
-                    <div className="flex gap-0 overflow-x-hidden min-h-8 px-1">
-                      {[TRUSTED_BY_LOGOS, TRUSTED_BY_LOGOS].map((logos, pass) => (
-                        <div
-                          key={pass}
-                          className="flex animate-scroll items-center gap-0 shrink-0 min-h-8 py-0.5"
-                          aria-hidden={pass === 1 ? 'true' : undefined}
-                        >
-                          {logos.map((logo, i) => (
-                            <div key={i} className="flex items-center justify-center px-2 flex-shrink-0 min-h-8 min-w-[48px]">
-                              <img src={logo} alt="" width={32} height={16} className="h-4 w-auto max-h-6 opacity-50 grayscale object-contain" />
-                            </div>
-                          ))}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+                <LogoMarquee />
 
                 {/* Mobile: FAQ stacks inline below */}
                 {!sideBySide && (
@@ -460,24 +414,7 @@ export default function UpgradeModal() {
                           <h3 className="text-[14px] font-bold text-[#111827] tracking-tight mb-0.5">
                             FAQs
                           </h3>
-                          <Accordion type="single" collapsible className="w-full">
-                            {FAQS.map((item, i) => (
-                              <AccordionItem
-                                key={i}
-                                value={`faq-mob-${i}`}
-                                className="border-b border-[#f3f4f6] last:border-0"
-                              >
-                                <AccordionTrigger className="text-[12px] font-medium text-left text-[#374151] hover:no-underline py-3 leading-snug">
-                                  {item.q}
-                                </AccordionTrigger>
-                                <AccordionContent>
-                                  <p className="text-[11.5px] text-[#6b7280] leading-relaxed pb-1">
-                                    {item.a}
-                                  </p>
-                                </AccordionContent>
-                              </AccordionItem>
-                            ))}
-                          </Accordion>
+                          <FaqAccordion compact />
                         </div>
                       </motion.div>
                     )}
@@ -486,7 +423,7 @@ export default function UpgradeModal() {
               </div>
             </div>
 
-            {/* ── Right panel: FAQ (desktop side-by-side, fades in after card expands) ── */}
+            {/* Right panel: FAQ (desktop side-by-side) */}
             {sideBySide && (
               <AnimatePresence>
                 {showFaq && (
@@ -498,32 +435,13 @@ export default function UpgradeModal() {
                     transition={{ duration: 0.18, delay: 0.14 }}
                     className={styles.modalRightPanel}
                   >
-                    {/* Header pushed below the 80px ::before orange gradient */}
                     <div className="px-5 py-4 border-b border-[#f3f4f6]">
                       <h3 className="text-[16px] font-bold text-[#111827] tracking-tight">
                         FAQs
                       </h3>
-
                     </div>
                     <div className="overflow-y-auto flex-1 px-5 py-2">
-                      <Accordion type="single" collapsible className="w-full">
-                        {FAQS.map((item, i) => (
-                          <AccordionItem
-                            key={i}
-                            value={`faq-desk-${i}`}
-                            className="border-b border-[#f3f4f6] last:border-0"
-                          >
-                            <AccordionTrigger className="text-[13.5px] font-medium text-left text-[#1f2937] hover:no-underline py-4 leading-snug">
-                              {item.q}
-                            </AccordionTrigger>
-                            <AccordionContent>
-                              <p className="text-[13px] text-[#6b7280] leading-relaxed pb-2">
-                                {item.a}
-                              </p>
-                            </AccordionContent>
-                          </AccordionItem>
-                        ))}
-                      </Accordion>
+                      <FaqAccordion />
                     </div>
                   </motion.div>
                 )}
@@ -533,5 +451,156 @@ export default function UpgradeModal() {
         </>
       )}
     </AnimatePresence>
+  );
+}
+
+function PlanQuote({ plan }) {
+  const { Icon, text } = PLAN_QUOTES[plan] ?? PLAN_QUOTES.yrly;
+  return (
+    <div
+      className="flex items-center gap-2.5 mb-4 px-3 py-2.5 rounded-xl"
+      style={{
+        border: '1px solid #e5e7eb',
+        background: '#f9fafb',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.8), 0 1px 3px rgba(0,0,0,0.06)',
+      }}
+    >
+      <span
+        className="flex-shrink-0 w-[22px] h-[22px] rounded-md flex items-center justify-center"
+        style={{ background: 'rgba(232,89,58,0.12)' }}
+      >
+        <Icon className="w-3 h-3" style={{ color: '#E8593A' }} />
+      </span>
+      <p className="text-[11.5px] leading-snug" style={{ color: '#4b5563' }}>
+        {text}
+      </p>
+    </div>
+  );
+}
+
+function FeaturesList({ showAll, onToggle }) {
+  const visible = ALL_FEATURES.slice(0, 2);
+  const hidden = ALL_FEATURES.slice(2);
+  return (
+    <div className={styles.featuresList}>
+      {visible.map(f => (
+        <div key={f} className={styles.featureItem}>
+          <div className={styles.featureIcon}>✓</div>
+          <span>{f}</span>
+        </div>
+      ))}
+      <AnimatePresence>
+        {showAll && (
+          <motion.div
+            key="extra-features"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+            className="overflow-hidden flex flex-col gap-3"
+          >
+            {hidden.map(f => (
+              <div key={f} className={styles.featureItem}>
+                <div className={styles.featureIcon}>✓</div>
+                <span>{f}</span>
+              </div>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <button
+        onClick={onToggle}
+        className="flex items-center gap-1 text-[11px] font-medium text-[#9ca3af] hover:text-[#6b7280] transition-colors duration-150"
+      >
+        <ChevronDown
+          size={12}
+          strokeWidth={2.5}
+          className={`transition-transform duration-200 ${showAll ? 'rotate-180' : ''}`}
+        />
+        {showAll ? 'Show less' : `+${hidden.length} more features`}
+      </button>
+    </div>
+  );
+}
+
+function FaqAccordion({ compact = false }) {
+  return (
+    <Accordion type="single" collapsible className="w-full">
+      {FAQS.map((item, i) => (
+        <AccordionItem
+          key={i}
+          value={`faq-${compact ? 'mob' : 'desk'}-${i}`}
+          className="border-b border-[#f3f4f6] last:border-0"
+        >
+          <AccordionTrigger
+            className={`font-medium text-left hover:no-underline leading-snug ${compact
+              ? 'text-[12px] py-3 text-[#374151]'
+              : 'text-[13.5px] py-4 text-[#1f2937]'
+              }`}
+          >
+            {item.q}
+          </AccordionTrigger>
+          <AccordionContent>
+            <p className={`text-[#6b7280] leading-relaxed ${compact ? 'text-[11.5px] pb-1' : 'text-[13px] pb-2'}`}>
+              {item.a}
+            </p>
+          </AccordionContent>
+        </AccordionItem>
+      ))}
+    </Accordion>
+  );
+}
+
+function LogoMarquee() {
+  return (
+    <div className="pt-4 flex flex-col gap-2">
+      <div className="flex items-center gap-2">
+        <div className="flex-1 h-px bg-[#e5e7eb]" />
+        <span className="text-[10px] font-semibold tracking-[0.08em] uppercase text-[#9ca3af] whitespace-nowrap">
+          31,000+ Designfolio users work at
+        </span>
+        <div className="flex-1 h-px bg-[#e5e7eb]" />
+      </div>
+      <div className="relative min-h-8 py-1">
+        <div className="absolute left-0 top-0 bottom-0 w-6 z-10 pointer-events-none bg-gradient-to-r from-white to-transparent" />
+        <div className="absolute right-0 top-0 bottom-0 w-6 z-10 pointer-events-none bg-gradient-to-l from-white to-transparent" />
+        <div className="flex gap-0 overflow-x-hidden min-h-8 px-1">
+          {[TRUSTED_BY_LOGOS, TRUSTED_BY_LOGOS].map((logos, pass) => (
+            <div
+              key={pass}
+              className="flex animate-scroll items-center gap-0 shrink-0 min-h-8 py-0.5"
+              aria-hidden={pass === 1 ? 'true' : undefined}
+            >
+              {logos.map((logo, i) => (
+                <div key={i} className="flex items-center justify-center px-2 flex-shrink-0 min-h-8 min-w-[48px]">
+                  <img src={logo} alt="" width={32} height={16} className="h-4 w-auto max-h-6 opacity-50 grayscale object-contain" />
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function UrgencyBanner() {
+  return (
+    <div className="flex items-center justify-center gap-2 mt-2.5 mb-4">
+      <span className="relative flex-shrink-0 flex h-[7px] w-[7px]">
+        <span
+          className="animate-ping absolute inline-flex h-full w-full rounded-full"
+          style={{ backgroundColor: '#E8593A', opacity: 0.5 }}
+        />
+        <span
+          className="relative inline-flex rounded-full h-[7px] w-[7px]"
+          style={{ backgroundColor: '#E8593A' }}
+        />
+      </span>
+      <p className="text-[11px] leading-none text-[#6b7280]">
+        Current pricing ends next month.{' '}
+        <span className="font-medium text-[#374151]">Lock in today's price.</span>
+      </p>
+    </div>
   );
 }

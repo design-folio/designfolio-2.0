@@ -9,7 +9,6 @@ import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { modals, sidebars } from "@/lib/constant";
 import { useRouter } from "next/router";
 import { TypingIndicator, ChatAvatar, YouPrompt } from "./chatUtils";
-import ProjectLock from "@/components/projectLock";
 
 export default function ChatProjectsSection({
   chatRevealStep,
@@ -208,8 +207,7 @@ export default function ChatProjectsSection({
             className="flex gap-3 max-w-[85%]"
           >
             <div className="w-8 h-8 shrink-0" />
-            {userDetails?.pro || (projects || []).filter(p => !p.hidden).length < 2 ? (
-              <div className="w-full bg-[#E5E2DB] dark:bg-[#2A2520] p-3 rounded-2xl rounded-tl-sm rounded-bl-sm border border-dashed border-black/15 dark:border-white/10">
+            <div className="w-full bg-[#E5E2DB] dark:bg-[#2A2520] p-3 rounded-2xl rounded-tl-sm rounded-bl-sm border border-dashed border-black/15 dark:border-white/10">
                 <div className="w-full aspect-[16/9] rounded-xl flex flex-col items-center justify-center gap-3 bg-black/[0.02] dark:bg-white/[0.02]">
                   <div className="w-9 h-9 rounded-full bg-black/[0.05] dark:bg-white/[0.05] flex items-center justify-center">
                     <Plus className="w-4 h-4 text-[#7A736C] dark:text-[#9E9893]" />
@@ -234,12 +232,8 @@ export default function ChatProjectsSection({
                   </div>
                 </div>
               </div>
-            ) : (
-              <div className="w-full">
-                <ProjectLock className="min-h-[200px]" />
-              </div>
-            )}
           </motion.div>
+
         </AnimatePresence>
       )}
 

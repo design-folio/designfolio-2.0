@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import AiIcon from "../../public/assets/svgs/ai.svg";
 import { Formik, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useGlobalContext } from "@/context/globalContext";
@@ -16,7 +15,6 @@ import { Label } from "./ui/label";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { cn } from "@/lib/utils";
 import { Sparkles, Coins } from "lucide-react";
-import Info from "./info";
 
 const stepOneValidationSchema = Yup.object().shape({
   projectType: Yup.string().required("Please select a project type."),
@@ -40,7 +38,7 @@ const stepFourValidationSchema = Yup.object().shape({
 export default function CreateAiProject({ openModal }) {
   const [typeProjects, setTypeprojects] = useState([]);
   const [generationCredits, setGenerationCredits] = useState({ limit: 2, used: 0, remaining: 2 });
-  const { userDetails, updateCache, setShowUpgradeModal } = useGlobalContext();
+  const { userDetails, updateCache, setShowUpgradeModal, setUpgradeModalSource, invalidateAiWritingCredits } = useGlobalContext();
   const [step, setStep] = useState(1);
   const [questions, setQuestions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -48,7 +46,6 @@ export default function CreateAiProject({ openModal }) {
   const router = useRouter();
 
   const creditsLeft = generationCredits.remaining;
-  const outOfCredits = generationCredits.remaining <= 0;
 
   useEffect(() => {
     _getProjectTypes()
@@ -61,6 +58,12 @@ export default function CreateAiProject({ openModal }) {
         const gen = res.data?.quota?.caseStudyGeneration;
         if (gen) {
           const remaining = gen.limit === null ? Infinity : Math.max(0, gen.limit - gen.used);
+          if (remaining <= 0) {
+            openModal(null);
+            setUpgradeModalSource("write-ai");
+            setShowUpgradeModal(true);
+            return;
+          }
           setGenerationCredits({ ...gen, remaining });
         }
       })
@@ -122,6 +125,7 @@ export default function CreateAiProject({ openModal }) {
         const project = res?.data?.user?.projects?.find((p) => p.title === response.data.title);
         updateCache("userDetails", res?.data?.user);
         toast.success("Project created successfully");
+        invalidateAiWritingCredits();
         router.push(`/project/${project._id}/editor`);
         openModal(null);
       }
@@ -170,97 +174,95 @@ export default function CreateAiProject({ openModal }) {
 
       {/* Body */}
       <div className="flex-1 overflow-y-auto px-6 py-5">
-        {outOfCredits && <Info className="mb-5" onUpgrade={() => { openModal(null); setShowUpgradeModal(true); }} />}
-
         <Formik
-          innerRef={formikRef}
-          validationSchema={getSchemaValidation()}
-          initialValues={{ projectType: "", answer1: "", answer2: "", answer3: "", answer4: "", answer5: "", answer6: "" }}
-          onSubmit={(values, actions) => {
-            switch (step) {
-              case 1: handleStepOne(values, actions); break;
-              case 2: setStep(3); break;
-              case 3: setStep(4); break;
-              case 4: handleSubmit(values, actions); break;
-            }
-            formikRef.current?.validateForm();
-            formikRef.current?.setTouched({});
-          }}
-        >
-          {({ setFieldValue, values, errors, touched }) => (
-            <Form id="aiProjectForm" className={cn("space-y-5", outOfCredits && "opacity-30 pointer-events-none")}>
-              {/* Step 1 — Project type */}
-              {step === 1 && (
-                <div className="space-y-4">
-                  <p className="text-[14px] font-medium text-foreground">
-                    I want to create a project or write a case study on:
-                  </p>
-                  <RadioGroup
-                    value={values.projectType}
-                    onValueChange={(val) => setFieldValue("projectType", val)}
-                    className="gap-3"
-                  >
-                    {typeProjects.map((res) => (
-                      <label
-                        key={res.name}
-                        htmlFor={`type-${res.name}`}
-                        className={cn(
-                          "flex items-center gap-3 px-4 py-3.5 rounded-xl border cursor-pointer transition-all",
-                          values.projectType === res.name
-                            ? "border-foreground/30 bg-black/[0.04] dark:bg-white/[0.04]"
-                            : "border-border bg-black/[0.02] dark:bg-white/[0.02] hover:bg-black/[0.04] dark:hover:bg-white/[0.04]"
-                        )}
-                      >
-                        <RadioGroupItem
-                          id={`type-${res.name}`}
-                          value={res.name}
-                          className="shrink-0"
-                        />
-                        <span className="text-[14px] font-medium text-foreground">{res.name}</span>
-                      </label>
-                    ))}
-                  </RadioGroup>
-                  <ErrorMessage name="projectType" component="p" className="error-message" />
-                </div>
-              )}
-
-              {/* Steps 2–4 — Questions */}
-              {step >= 2 && questions.length > 0 && (
-                <div className="space-y-6">
-                  {[[0, 1], [2, 3], [4, 5]][step - 2].map((qIndex) => {
-                    const answerKey = `answer${qIndex + 1}`;
-                    const q = questions[qIndex];
-                    return (
-                      <div key={qIndex} className="space-y-1.5">
-                        <Label className="text-[13px] font-medium text-foreground ml-1">
-                          {q.question}
-                        </Label>
-                        <Textarea
-                          name={answerKey}
-                          rows={4}
-                          autoComplete="off"
-                          placeholder="Write your answer here…"
-                          value={values[answerKey]}
-                          onChange={(e) => setFieldValue(answerKey, e.target.value)}
+            innerRef={formikRef}
+            validationSchema={getSchemaValidation()}
+            initialValues={{ projectType: "", answer1: "", answer2: "", answer3: "", answer4: "", answer5: "", answer6: "" }}
+            onSubmit={(values, actions) => {
+              switch (step) {
+                case 1: handleStepOne(values, actions); break;
+                case 2: setStep(3); break;
+                case 3: setStep(4); break;
+                case 4: handleSubmit(values, actions); break;
+              }
+              formikRef.current?.validateForm();
+              formikRef.current?.setTouched({});
+            }}
+          >
+            {({ setFieldValue, values, errors, touched }) => (
+              <Form id="aiProjectForm" className="space-y-5">
+                {/* Step 1 — Project type */}
+                {step === 1 && (
+                  <div className="space-y-4">
+                    <p className="text-[14px] font-medium text-foreground">
+                      I want to create a project or write a case study on:
+                    </p>
+                    <RadioGroup
+                      value={values.projectType}
+                      onValueChange={(val) => setFieldValue("projectType", val)}
+                      className="gap-3"
+                    >
+                      {typeProjects.map((res) => (
+                        <label
+                          key={res.name}
+                          htmlFor={`type-${res.name}`}
                           className={cn(
-                            "resize-none",
-                            errors[answerKey] && touched[answerKey] && "border-destructive focus-visible:ring-destructive"
+                            "flex items-center gap-3 px-4 py-3.5 rounded-xl border cursor-pointer transition-all",
+                            values.projectType === res.name
+                              ? "border-foreground/30 bg-black/[0.04] dark:bg-white/[0.04]"
+                              : "border-border bg-black/[0.02] dark:bg-white/[0.02] hover:bg-black/[0.04] dark:hover:bg-white/[0.04]"
                           )}
-                        />
-                        <ErrorMessage name={answerKey} component="p" className="error-message" />
-                        {q.template && (
-                          <p className="text-[12px] text-muted-foreground ml-1 mt-1">
-                            ✏️ <span className="font-medium">Template:</span> {q.template}
-                          </p>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </Form>
-          )}
-        </Formik>
+                        >
+                          <RadioGroupItem
+                            id={`type-${res.name}`}
+                            value={res.name}
+                            className="shrink-0"
+                          />
+                          <span className="text-[14px] font-medium text-foreground">{res.name}</span>
+                        </label>
+                      ))}
+                    </RadioGroup>
+                    <ErrorMessage name="projectType" component="p" className="error-message" />
+                  </div>
+                )}
+
+                {/* Steps 2–4 — Questions */}
+                {step >= 2 && questions.length > 0 && (
+                  <div className="space-y-6">
+                    {[[0, 1], [2, 3], [4, 5]][step - 2].map((qIndex) => {
+                      const answerKey = `answer${qIndex + 1}`;
+                      const q = questions[qIndex];
+                      return (
+                        <div key={qIndex} className="space-y-1.5">
+                          <Label className="text-[13px] font-medium text-foreground ml-1">
+                            {q.question}
+                          </Label>
+                          <Textarea
+                            name={answerKey}
+                            rows={4}
+                            autoComplete="off"
+                            placeholder="Write your answer here…"
+                            value={values[answerKey]}
+                            onChange={(e) => setFieldValue(answerKey, e.target.value)}
+                            className={cn(
+                              "resize-none",
+                              errors[answerKey] && touched[answerKey] && "border-destructive focus-visible:ring-destructive"
+                            )}
+                          />
+                          <ErrorMessage name={answerKey} component="p" className="error-message" />
+                          {q.template && (
+                            <p className="text-[12px] text-muted-foreground ml-1 mt-1">
+                              ✏️ <span className="font-medium">Template:</span> {q.template}
+                            </p>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </Form>
+            )}
+          </Formik>
       </div>
 
       {/* Footer */}
@@ -287,18 +289,18 @@ export default function CreateAiProject({ openModal }) {
           <Button
             type="submit"
             form="aiProjectForm"
-            disabled={isLoading || outOfCredits}
+            disabled={isLoading}
           >
-            {step === 4 ? (
-              <>
-                {isLoading ? "Generating…" : (
-                  <>
-                    <Sparkles className="w-4 h-4 mr-1.5" />
-                    Generate Now
-                  </>
-                )}
-              </>
-            ) : "Next"}
+              {step === 4 ? (
+                <>
+                  {isLoading ? "Generating…" : (
+                    <>
+                      <Sparkles className="w-4 h-4 mr-1.5" />
+                      Generate Now
+                    </>
+                  )}
+                </>
+              ) : "Next"}
           </Button>
         </div>
       </div>

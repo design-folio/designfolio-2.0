@@ -25,6 +25,7 @@ import AnalyzeCaseStudy from "@/components/analyzeCaseStudy";
 import { useGlobalContext } from "@/context/globalContext";
 import { TEMPLATE_IDS } from "@/lib/templates";
 import { cn } from "@/lib/utils";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 // Returns muted italic style for empty contentEditable placeholders
 const ph = (val) =>
@@ -145,24 +146,31 @@ export default function CanvasProjectInfo({
   const { setTheme } = useTheme();
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
-  const { wordCount } = useGlobalContext();
+  const { wordCount, setWordCount, setShowUpgradeModal, setUpgradeModalSource, analysisCreditsRemaining, setAnalysisCreditsRemaining } = useGlobalContext();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analyzeStatus, setAnalyzeStatus] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const [rating, setRating] = useState("");
 
+
   const activeTemplate = ownerTemplate ?? userDetails?.template;
   const isMacOS = activeTemplate === TEMPLATE_IDS.RETRO_OS;
   const projectId = _id || router.query.id;
-  const needsMoreWords = suggestions?.length === 0 && wordCount < 400;
+  const needsMoreWords = suggestions?.length === 0 && wordCount !== null && wordCount < 400;
+  const outOfCredits = analysisCreditsRemaining !== null && analysisCreditsRemaining <= 0;
   const isAnalyzeDisabled = isAnalyzing || needsMoreWords;
   const analyzeButtonLabel = isAnalyzing
     ? "Analyzing..."
     : suggestions?.length > 0
       ? "Show Score Card"
-      : needsMoreWords
-        ? `${400 - wordCount} more words`
-        : "Analyze with AI";
+      : "Analyze with AI";
+  const tooltipMessage = outOfCredits
+    ? "Upgrade to Pro to analyze Case Study"
+    : needsMoreWords
+      ? `${wordCount} / 400 words — add ${400 - wordCount} more`
+      : wordCount != null
+        ? `${wordCount} words`
+        : null;
 
   useEffect(() => {
     // Reset for URL changes and support cached images after hydration.
@@ -225,19 +233,27 @@ export default function CanvasProjectInfo({
   const handleAnalyzeClick = async () => {
     if (suggestions.length > 0) {
       setShowModal(true);
-    } else {
-      setIsAnalyzing(true);
-      const data = { userId: _id, caseStudy: projectDetails, projectId: projectDetails._id };
-      try {
-        const response = await _analyzeCaseStudy(data);
-        setShowModal(true);
-        setSuggestions(response.data.response);
-        setRating(response.data.rating);
-      } catch (e) {
-        console.log(e);
-      } finally {
-        setIsAnalyzing(false);
-      }
+      return;
+    }
+    if (outOfCredits) {
+      setUpgradeModalSource("analyze");
+      setShowUpgradeModal(true);
+      return;
+    }
+    setIsAnalyzing(true);
+    const data = { userId: _id, caseStudy: projectDetails, projectId: projectDetails._id };
+    try {
+      const response = await _analyzeCaseStudy(data);
+      setShowModal(true);
+      setSuggestions(response.data.response);
+      setRating(response.data.rating);
+      setAnalysisCreditsRemaining((prev) => (prev !== null && prev !== Infinity ? Math.max(0, prev - 1) : prev));
+    } catch (e) {
+      setAnalysisCreditsRemaining(0);
+      setUpgradeModalSource("analyze");
+      setShowUpgradeModal(true);
+    } finally {
+      setIsAnalyzing(false);
     }
   };
 
@@ -249,8 +265,11 @@ export default function CanvasProjectInfo({
       setShowModal(true);
       setSuggestions(response.data.response);
       setRating(response.data.rating);
+      setAnalysisCreditsRemaining((prev) => (prev !== null && prev !== Infinity ? Math.max(0, prev - 1) : prev));
     } catch (e) {
-      console.log(e);
+      setAnalysisCreditsRemaining(0);
+      setUpgradeModalSource("analyze");
+      setShowUpgradeModal(true);
     } finally {
       setIsAnalyzing(false);
     }
@@ -272,6 +291,7 @@ export default function CanvasProjectInfo({
   };
 
   useEffect(() => {
+    setWordCount(null);
     fetchAnalyzeStatus();
   }, []);
 
@@ -372,26 +392,39 @@ export default function CanvasProjectInfo({
 
               {/* Analyze with AI */}
               {analyzeStatus && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleAnalyzeClick}
-                  disabled={isAnalyzeDisabled}
-                  className={cn(
-                    "h-7 text-[12px] rounded-full border border-black/10 dark:border-white/10",
-                    "bg-white/50 dark:bg-[#2A2520]/50 text-[#1A1A1A] dark:text-[#F0EDE7]",
-                    "flex items-center gap-1.5 px-3 transition-all focus-visible:ring-0 focus-visible:ring-offset-0",
-                    "disabled:opacity-60 disabled:cursor-not-allowed",
-                    !isAnalyzeDisabled && "hover:bg-black/5 dark:hover:bg-white/5",
-                  )}
-                >
-                  {isAnalyzing ? (
-                    <AnimatedLoadingDots className="w-[18px] h-[5px] shrink-0" />
-                  ) : (
-                    <AnalyzeIcon className="w-4 h-4 shrink-0" />
-                  )}
-                  <span>{analyzeButtonLabel}</span>
-                </Button>
+                <TooltipProvider delayDuration={200}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className={cn("inline-flex", isAnalyzeDisabled ? "cursor-not-allowed" : "cursor-pointer")}>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={handleAnalyzeClick}
+                          disabled={isAnalyzeDisabled}
+                          className={cn(
+                            "h-7 text-[12px] rounded-full border border-black/10 dark:border-white/10",
+                            "bg-white/50 dark:bg-[#2A2520]/50 text-[#1A1A1A] dark:text-[#F0EDE7]",
+                            "flex items-center gap-1.5 px-3 transition-all focus-visible:ring-0 focus-visible:ring-offset-0",
+                            "cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed",
+                            !isAnalyzeDisabled && "hover:bg-black/5 dark:hover:bg-white/5",
+                          )}
+                        >
+                          {isAnalyzing ? (
+                            <AnimatedLoadingDots className="w-[18px] h-[5px] shrink-0" />
+                          ) : (
+                            <AnalyzeIcon className="w-4 h-4 shrink-0" />
+                          )}
+                          {analyzeButtonLabel}
+                        </Button>
+                      </span>
+                    </TooltipTrigger>
+                    {tooltipMessage && (
+                      <TooltipContent side="bottom" className="bg-foreground text-background text-xs px-2 py-1 rounded">
+                        {tooltipMessage}
+                      </TooltipContent>
+                    )}
+                  </Tooltip>
+                </TooltipProvider>
               )}
             </div>
           )}

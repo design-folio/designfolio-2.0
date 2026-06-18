@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 import Text from "./text";
 import CloseIcon from "../../public/assets/svgs/close.svg";
@@ -6,8 +6,8 @@ import Button from "./button";
 import Good from "../../public/assets/svgs/good.svg";
 import NotBad from "../../public/assets/svgs/not-bad.svg";
 import Bad from "../../public/assets/svgs/not-bad.svg";
-import { _analyzeCaseStudyCredits } from "@/network/post-request";
 import { useGlobalContext } from "@/context/globalContext";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const variants = {
   hidden: { x: "100%" },
@@ -45,43 +45,31 @@ const status = {
     </div>
   ),
 };
+
 export default function AnalyzeCaseStudy({
   setShowModal,
   suggestions,
   rating,
-  projectId,
   analyzeCallback,
   wordCount,
   isAnalyzing,
 }) {
-  const { setShowUpgradeModal } = useGlobalContext();
+  const {
+    setShowUpgradeModal,
+    setUpgradeModalSource,
+    analysisCreditsRemaining,
+    analysisCreditsLimit,
+  } = useGlobalContext();
+
+  const outOfCredits = analysisCreditsRemaining !== null && analysisCreditsRemaining <= 0;
+  const tooShort = wordCount !== null && wordCount < 400;
+  const isDisabled = outOfCredits || tooShort;
 
   const category = {
     good: "good",
     notBad: "notBad",
     bad: "bad",
   };
-
-  const reAnalyze = async () => {
-    await analyzeCallback();
-    await fetchCredits();
-  };
-
-  const [analysisCredits, setAnalysisCredits] = useState({ limit: 2, used: 0, remaining: 2 });
-
-  const fetchCredits = async () => {
-    try {
-      const response = await _analyzeCaseStudyCredits(projectId);
-      const analysis = response.data?.credits?.caseStudyAnalysis;
-      if (analysis) setAnalysisCredits(analysis);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  useEffect(() => {
-    fetchCredits();
-  }, []);
 
   const renderItems = suggestions.map((item) => {
     return (
@@ -135,8 +123,7 @@ export default function AnalyzeCaseStudy({
         </div>
       </header>
       <main
-        className={`flex-1 overflow-y-auto p-8 relative ${isAnalyzing && "opacity-20"
-          }`}
+        className={`flex-1 overflow-y-auto p-8 relative ${isAnalyzing && "opacity-20"}`}
       >
         <div className="flex flex-col justify-center items-center mb-8">
           {rating === 1
@@ -157,31 +144,42 @@ export default function AnalyzeCaseStudy({
       </main>
       <footer className="bg-modal-footer-bg-color py-4 px-8 rounded-b-2xl">
         <div className="flex justify-between items-center gap-2">
-          {analysisCredits.remaining <= 0 ? (
+          {outOfCredits ? (
             <Button
               text="Upgrade to Pro"
               type="modal"
-              onClick={() => setShowUpgradeModal(true)}
+              onClick={() => { setUpgradeModalSource("analyze"); setShowUpgradeModal(true); }}
             />
           ) : (
             <Text
               size="p-xxsmall"
               className="font-medium font-inter text-used-credit-text-color"
             >
-              {`${analysisCredits.remaining}/${analysisCredits.limit} Credits left`}
+              {analysisCreditsRemaining !== null
+                ? `${analysisCreditsRemaining}/${analysisCreditsLimit} Credits left`
+                : "Loading credits…"}
             </Text>
           )}
-          <Button
-            text={
-              wordCount < 400
-                ? `Re-analyze requires ${400 - wordCount} more words`
-                : "Re-analyze Case Study"
-            }
-            type="modal"
-            isDisabled={analysisCredits.remaining <= 0 || wordCount < 400}
-            isLoading={isAnalyzing}
-            onClick={reAnalyze}
-          />
+          <TooltipProvider delayDuration={200}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className={isDisabled ? "cursor-not-allowed inline-flex" : "inline-flex"}>
+                  <Button
+                    text="Analyze with AI"
+                    type="modal"
+                    isDisabled={isDisabled}
+                    isLoading={isAnalyzing}
+                    onClick={analyzeCallback}
+                  />
+                </span>
+              </TooltipTrigger>
+              {tooShort && (
+                <TooltipContent side="top" className="text-xs">
+                  {wordCount} / 400 words — add {400 - wordCount} more to analyze
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
         </div>
       </footer>
     </motion.div>

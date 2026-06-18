@@ -42,7 +42,7 @@ import queryClient from "@/network/queryClient";
 import { removeCursor } from "@/lib/cursor";
 import MemoDFLogoV2 from "@/components/icons/DFLogoV2";
 import Link from "next/link";
-import { TEMPLATE_IDS } from "@/lib/templates";
+import { TEMPLATE_IDS, TEMPLATES_BY_ID } from "@/lib/templates";
 import { cn } from "@/lib/utils";
 import { StardustButton } from "@/components/StardustButton";
 
@@ -64,7 +64,8 @@ export default function Navbar() {
     setUserDetails,
     updateCache,
     template,
-    setShowUpgradeModal,
+    setShowSettingsModal,
+    setShowUpgradeModal
   } = useGlobalContext();
 
   const router = useRouter();
@@ -240,7 +241,7 @@ export default function Navbar() {
                     )}
                   </Button>
                   <Button
-                    disabled={isPublishing}
+                    disabled={isPublishing || (!userDetails?.pro && TEMPLATES_BY_ID[template]?.isPro)}
                     onClick={handlePublish}
                     className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium px-4 h-8 text-xs rounded-lg"
                   >

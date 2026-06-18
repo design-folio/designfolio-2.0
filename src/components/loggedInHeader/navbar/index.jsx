@@ -44,6 +44,7 @@ import MemoDFLogoV2 from "@/components/icons/DFLogoV2";
 import Link from "next/link";
 import { TEMPLATE_IDS } from "@/lib/templates";
 import { cn } from "@/lib/utils";
+import { StardustButton } from "@/components/StardustButton";
 
 const MACOS_ROUTES = ["/builder", "/project/[id]/editor", "/project/[id]/preview"];
 
@@ -63,6 +64,7 @@ export default function Navbar() {
     setUserDetails,
     updateCache,
     template,
+    setShowUpgradeModal,
   } = useGlobalContext();
 
   const router = useRouter();
@@ -167,7 +169,7 @@ export default function Navbar() {
               <SheetTitle>Menu</SheetTitle>
 
 
-           
+
 
 
               <div className="flex flex-col gap-1">
@@ -355,6 +357,18 @@ export default function Navbar() {
         >
           {navContent}
         </nav>
+
+        {/* Upgrade pill — free users only, builder page only, desktop non-MacOS */}
+        {!userDetails?.pro && router.pathname === "/builder" && !isMobile && !isMacOS && !activeSidebar && (
+          <div className="pointer-events-auto absolute right-5 top-7">
+            <StardustButton
+              size="sm"
+              onClick={() => setShowUpgradeModal(true)}
+            >
+              Upgrade PRO
+            </StardustButton>
+          </div>
+        )}
       </div>
     </TooltipProvider>
   );

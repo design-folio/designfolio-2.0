@@ -4,7 +4,6 @@ import { ChevronsUpDown, EyeOff, Pencil, Plus, Sparkles, Trash2 } from "lucide-r
 import { screwClass, frameBorderClass } from "./professional-utils";
 import { SectionVisibilityButton, ProjectVisibilityButton } from "@/components/section";
 import { modals, sidebars } from "@/lib/constant";
-import ProjectLock from "@/components/projectLock";
 import { useGlobalContext } from "@/context/globalContext";
 import { ProfessionalRearrangeButton } from "./ProfessionalRearrangeButton";
 
@@ -37,8 +36,6 @@ function ProfessionalProjectsTab({
   onDeleteProject,
   onToggleVisibility,
   openSidebar,
-  isPro,
-  hasHiddenProjects,
 }) {
   const { openModal } = useGlobalContext();
 
@@ -123,7 +120,7 @@ function ProfessionalProjectsTab({
           </div>
         </div>
       ))}
-      {isEditing && (isPro || !hasHiddenProjects) && (
+      {isEditing && (
         <div
           className={`relative flex flex-col ${frameBorderClass}`}
         >
@@ -152,11 +149,6 @@ function ProfessionalProjectsTab({
               </Button>
             </div>
           </div>
-        </div>
-      )}
-      {isEditing && !isPro && hasHiddenProjects && (
-        <div className="p-4">
-          <ProjectLock className="bg-[#DED9CE] dark:bg-[#2A2520] font-jetbrains" />
         </div>
       )}
     </div>

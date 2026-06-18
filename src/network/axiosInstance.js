@@ -42,6 +42,10 @@ axiosInstance.interceptors.response.use(
       if (error.response.data?.limitReached) {
         return Promise.reject(error);
       }
+      // Analysis credit errors — component opens upgrade modal; suppress interceptor toast.
+      if (error.response.config.url === "/ai/analyze/caseStudy") {
+        return Promise.reject(error);
+      }
       let errorMessage = "Error: ";
       switch (error.response.status) {
         case 400:

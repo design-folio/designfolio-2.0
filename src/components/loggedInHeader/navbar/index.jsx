@@ -359,7 +359,7 @@ export default function Navbar() {
         </nav>
 
         {/* Upgrade pill — free users only, builder page only, desktop non-MacOS */}
-        {!userDetails?.pro && router.pathname === "/builder" && !isMobile && !isMacOS && (
+        {!userDetails?.pro && router.pathname === "/builder" && !isMobile && !isMacOS && !activeSidebar && (
           <div className="pointer-events-auto absolute right-5 top-7">
             <StardustButton
               size="sm"

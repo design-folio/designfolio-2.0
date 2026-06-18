@@ -97,6 +97,8 @@ export default function UpgradeModal() {
     setShowUpgradeModal,
     upgradeModalUnhideProject,
     setUpgradeModalUnhideProject,
+    upgradeModalSource,
+    setUpgradeModalSource,
   } = useGlobalContext();
 
   const phEvent = usePostHogEvent();
@@ -144,6 +146,7 @@ export default function UpgradeModal() {
   const handleCloseModal = () => {
     setShowUpgradeModal(false);
     setUpgradeModalUnhideProject(null);
+    setUpgradeModalSource(null);
   };
 
   function formatAmount(amount, currencyCode) {
@@ -206,7 +209,7 @@ export default function UpgradeModal() {
     }
   };
 
-  if (proPlans.length === 0 || !selectedPlan) return null;
+  const plansReady = proPlans.length > 0 && !!selectedPlan;
 
   const cardWidth = sideBySide ? (showFaq ? 880 : 440) : undefined;
 
@@ -214,6 +217,16 @@ export default function UpgradeModal() {
     ? {
       title: `Unhide ${upgradeModalUnhideProject.title || 'Project'}?`,
       subtitle: 'Free users can only have 2 visible projects. Go Pro to add unlimited and unhide this project.',
+    }
+    : upgradeModalSource === 'write-ai'
+    ? {
+      title: 'Unlock AI Case Study Writing',
+      subtitle: 'You\'ve used all your free credits. Upgrade to Pro for unlimited AI-written case studies.',
+    }
+    : upgradeModalSource === 'analyze'
+    ? {
+      title: 'Unlock AI Case Study Analysis',
+      subtitle: 'You\'ve used all your free analysis credits. Upgrade to Pro for unlimited AI feedback on your work.',
     }
     : PLAN_HEADING;
 
@@ -244,9 +257,9 @@ export default function UpgradeModal() {
           <motion.div
             key="upgrade-card"
             transformTemplate={centeredTransform}
-            className={`${styles.modal} ${sideBySide ? styles.modalFMRow : ''} ${sideBySide && showFaq ? styles.modalFaqOpen : ''}`}
+            className={`${styles.modal} ${plansReady && sideBySide ? styles.modalFMRow : ''} ${plansReady && sideBySide && showFaq ? styles.modalFaqOpen : ''}`}
             initial={{ opacity: 0, y: 12, scale: 0.97, ...(sideBySide ? { width: 440 } : {}) }}
-            animate={{ opacity: 1, y: 0, scale: 1, ...(cardWidth !== undefined ? { width: cardWidth } : {}) }}
+            animate={{ opacity: 1, y: 0, scale: 1, ...(plansReady && cardWidth !== undefined ? { width: cardWidth } : {}) }}
             exit={{ opacity: 0, y: 6, scale: 0.97 }}
             transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
             style={{
@@ -255,10 +268,16 @@ export default function UpgradeModal() {
               left: '50%',
               zIndex: 1001,
               animation: 'none',
-              ...(sideBySide ? { maxWidth: 'none', overflow: 'hidden' } : {}),
+              ...(plansReady && sideBySide ? { maxWidth: 'none', overflow: 'hidden' } : {}),
             }}
             onClick={e => e.stopPropagation()}
           >
+            {!plansReady ? (
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 200, minWidth: 320 }}>
+                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-foreground/30" />
+              </div>
+            ) : (
+            <>
             <button
               className={styles.modalClose}
               onClick={handleCloseModal}
@@ -466,6 +485,8 @@ export default function UpgradeModal() {
                   </motion.div>
                 )}
               </AnimatePresence>
+            )}
+            </>
             )}
           </motion.div>
         </>

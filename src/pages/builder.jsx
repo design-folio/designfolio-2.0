@@ -36,7 +36,7 @@ import AiToolsWorkspace from "@/components/AiToolsWorkspace";
 import AppSidebar from "@/components/Sidebars";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { getSidebarShiftWidth } from "@/lib/constant";
-import { TEMPLATE_IDS } from "@/lib/templates";
+import { TEMPLATE_IDS, TEMPLATES_BY_ID } from "@/lib/templates";
 import Canvas from "@/components/templates/Canvas";
 import Mono from "@/components/templates/Mono";
 import Chat from "@/components/templates/Chat";
@@ -326,8 +326,7 @@ export default function Index() {
                     : "px-2 md:px-4 lg:px-0 pt-24 pb-0 max-w-[848px]",
             )}
           >
-            {/* //HACK: Allow all templates to be free except professional*/}
-            {userDetails && !userDetails?.pro && t === TEMPLATE_IDS.RETRO_OS && (
+            {userDetails && !userDetails?.pro && TEMPLATES_BY_ID[t]?.isPro && (
               <ProWarning />
             )}
             {userDetails && (

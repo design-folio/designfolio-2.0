@@ -10,7 +10,7 @@
 }
 
 .proTemplateBannerContent {
-  max-width: 890px;
+  max-width: 640px;
   margin: 0 auto 1.5rem auto;
   display: flex;
   justify-content: space-between;
@@ -24,11 +24,12 @@
 
 .proTemplateBannerText {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 6px;
   color: #92400e;
   font-size: 13px;
   font-weight: 500;
+  line-height: 1.5;
 }
 
 .proTemplateBannerText svg {
@@ -1827,6 +1828,7 @@
   }
 
   .proTemplateBannerText {
+    align-items: flex-start;
     justify-content: center;
     text-align: center;
   }

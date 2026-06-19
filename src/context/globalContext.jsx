@@ -74,8 +74,10 @@ export const GlobalProvider = ({ children }) => {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   /** When set, upgrade modal shows "Unhide [title]?" and message about 2 visible projects limit */
   const [upgradeModalUnhideProject, setUpgradeModalUnhideProject] = useState(null);
-  /** When set, upgrade modal shows a feature-specific title. Values: 'write-ai' | 'analyze' | null */
+  /** When set, upgrade modal shows a feature-specific title. Values: 'write-ai' | 'analyze' | 'fit-analysis' | 'resume' | 'cover-letter' | 'mock-interview' | null */
   const [upgradeModalSource, setUpgradeModalSource] = useState(null);
+  /** When source is a job tool, carries { role, company, logoUrl } for the job context row */
+  const [upgradeModalJob, setUpgradeModalJob] = useState(null);
   /** Cached AI writing credits remaining. null = not yet fetched. */
   const [_aiWritingCredits, _setAiWritingCredits] = useState(null);
   /** Case study analysis credits. null = not yet fetched. */
@@ -801,6 +803,8 @@ export const GlobalProvider = ({ children }) => {
         setUpgradeModalUnhideProject,
         upgradeModalSource,
         setUpgradeModalSource,
+        upgradeModalJob,
+        setUpgradeModalJob,
         invalidateAiWritingCredits: () => _setAiWritingCredits(null),
         analysisCreditsRemaining,
         setAnalysisCreditsRemaining,

@@ -7,6 +7,7 @@ import { POSTHOG_EVENT_NAMES } from '@/lib/posthogEventNames';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Gem, HelpCircle, Rocket, Sprout, Star, X, Zap } from 'lucide-react';
+import { CompanyLogo } from '@/components/jobs/CompanyLogo';
 import {
   Accordion,
   AccordionItem,
@@ -21,6 +22,33 @@ const PLAN_LABELS = { mthly: 'Monthly', qtrly: 'Quarterly', yrly: 'Yearly', life
 const PLAN_HEADING = {
   title: 'Career OS for Job Seekers',
   subtitle: 'Build your portfolio, tailor every application, find jobs, and prepare for interviews—all in one place.',
+};
+
+const JOB_TOOL_CONFIG = {
+  'fit-analysis': {
+    icon: '/assets/png/icons/fitanalysis.png',
+    title: 'Unlock Fit Analysis',
+    subtitle: 'See exactly how well you match this role, discover missing skills, and get personalized insights to improve your chances before applying.',
+    buttonText: 'Unlock Fit Analysis',
+  },
+  'resume': {
+    icon: '/assets/png/icons/resume.png',
+    title: 'Tailor Your Resume',
+    subtitle: 'Get an ATS-friendly, role-specific resume that highlights the right skills and experience to increase your chances of getting shortlisted.',
+    buttonText: 'Unlock Resume Tailoring',
+  },
+  'cover-letter': {
+    icon: '/assets/png/icons/coverletter.png',
+    title: 'Generate a Personalized Cover Letter',
+    subtitle: 'Create a compelling, role-specific cover letter that highlights your strengths and makes you stand out to hiring managers.',
+    buttonText: 'Unlock Cover Letter',
+  },
+  'mock-interview': {
+    icon: '/assets/png/icons/mockinterview.png',
+    title: 'Prepare for Your Mock Interview',
+    subtitle: 'Practice role-specific interview questions with AI-guided feedback to confidently walk into your next interview.',
+    buttonText: 'Unlock Mock Interview',
+  },
 };
 
 const PLAN_QUOTES = {
@@ -99,7 +127,12 @@ export default function UpgradeModal() {
     setUpgradeModalUnhideProject,
     upgradeModalSource,
     setUpgradeModalSource,
+    upgradeModalJob,
+    setUpgradeModalJob,
   } = useGlobalContext();
+
+  const isJobTool = upgradeModalSource != null && upgradeModalSource in JOB_TOOL_CONFIG;
+  const jobToolConfig = isJobTool ? JOB_TOOL_CONFIG[upgradeModalSource] : null;
 
   const phEvent = usePostHogEvent();
   const hasTrackedView = useRef(false);
@@ -147,6 +180,7 @@ export default function UpgradeModal() {
     setShowUpgradeModal(false);
     setUpgradeModalUnhideProject(null);
     setUpgradeModalSource(null);
+    setUpgradeModalJob(null);
   };
 
   function formatAmount(amount, currencyCode) {
@@ -183,6 +217,7 @@ export default function UpgradeModal() {
 
   function getButtonText() {
     if (checkoutLoading) return 'Opening checkout…';
+    if (isJobTool && jobToolConfig) return jobToolConfig.buttonText;
     if (selectedPlan?.plan === 'lifetime') return 'Get Lifetime Access';
     if (selectedPlan?.plan === 'mthly') return 'Get Monthly Access';
     if (selectedPlan?.plan === 'qtrly') return 'Get Quarterly Access';
@@ -218,6 +253,8 @@ export default function UpgradeModal() {
       title: 'Project is hidden',
       subtitle: "You've reached the Free plan limit of 2 visible projects. Upgrade to Pro to unhide it and get unlimited projects.",
     }
+    : isJobTool
+    ? { title: jobToolConfig.title, subtitle: jobToolConfig.subtitle }
     : upgradeModalSource === 'pro-template'
     ? {
       title: 'Upgrade to publish',
@@ -300,8 +337,26 @@ export default function UpgradeModal() {
 
                 <div>
 
-                  <div className={styles.modalIcon} />
+                  <div
+                    className={styles.modalIcon}
+                    style={isJobTool && jobToolConfig ? { backgroundImage: `url(${jobToolConfig.icon})` } : undefined}
+                  />
                   <h2 className={styles.modalTitle}>{heading.title}</h2>
+                  {isJobTool && upgradeModalJob && (
+                    <div className="flex items-center gap-2 mb-2">
+                      <CompanyLogo
+                        logoUrl={upgradeModalJob.logoUrl}
+                        company={upgradeModalJob.company}
+                        size={24}
+                        className="rounded-md"
+                      />
+                      <span className="text-[14px] font-medium text-[#1f2937]">
+                        {upgradeModalJob.role}
+                        <span className="text-[#9ca3af] mx-1">•</span>
+                        {upgradeModalJob.company}
+                      </span>
+                    </div>
+                  )}
                   <p className={styles.modalSubtitle}>{heading.subtitle}</p>
                 </div>
               </div>

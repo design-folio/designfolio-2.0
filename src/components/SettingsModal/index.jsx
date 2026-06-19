@@ -4,6 +4,11 @@ import {
   DialogContent,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Sheet,
+  SheetContent,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
@@ -21,6 +26,7 @@ import Cookies from "js-cookie";
 import queryClient from "@/network/queryClient";
 import { removeCursor } from "@/lib/cursor";
 import { useRouter } from "next/router";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 /* ─────────────────────────── constants ─────────────────────────── */
 
@@ -156,6 +162,49 @@ function SecurityTab({ userDetails }) {
   );
 }
 
+/* ─────────────────────────── mobile tab bar ────────────────────── */
+
+function MobileTabBar({ activeTab, setActiveTab }) {
+  return (
+    <div className="shrink-0 border-b border-black/[0.06] dark:border-white/[0.06]">
+      <div className="px-5 pt-5 pb-2">
+        <span className="text-[13px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7] tracking-[0.01em]">
+          Settings
+        </span>
+      </div>
+      <div className="flex overflow-x-auto hide-scrollbar relative">
+        {TABS.map((tab) => {
+          const Icon = tab.icon;
+          const isActive = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={cn(
+                "relative flex items-center gap-1.5 px-4 pb-3 text-[13px] whitespace-nowrap transition-colors shrink-0 focus:outline-none",
+                isActive
+                  ? "text-[#1A1A1A] dark:text-[#F0EDE7] font-medium"
+                  : "text-[#7A736C] dark:text-[#9E9893]"
+              )}
+            >
+              <Icon className="size-[14px] shrink-0" />
+              {tab.label}
+              {isActive && (
+                <motion.div
+                  layoutId="settings-mobile-indicator"
+                  className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#1A1A1A] dark:bg-[#F0EDE7] rounded-full"
+                  initial={false}
+                  transition={{ type: "spring", bounce: 0.15, duration: 0.3 }}
+                />
+              )}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 /* ─────────────────────────── sidebar nav ───────────────────────── */
 
 function SidebarNav({ activeTab, setActiveTab }) {
@@ -211,6 +260,32 @@ function SidebarNav({ activeTab, setActiveTab }) {
   );
 }
 
+/* ─────────────────────────── shared tab content ────────────────── */
+
+function TabContent({ activeTab, userDetails, domainDetails, fetchDomainDetails, onSignOut, padding }) {
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={activeTab}
+        initial={{ opacity: 0, y: 4 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -4 }}
+        transition={{ duration: 0.18, ease: [0.23, 1, 0.32, 1] }}
+        className={padding}
+      >
+        {activeTab === "account" && (
+          <AccountTab userDetails={userDetails} onSignOut={onSignOut} />
+        )}
+        {activeTab === "domains" && (
+          <DomainsTab domainDetails={domainDetails} fetchDomainDetails={fetchDomainDetails} />
+        )}
+        {activeTab === "subscription" && <SubscriptionTab />}
+        {activeTab === "security" && <SecurityTab userDetails={userDetails} />}
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
 /* ─────────────────────────── modal root ────────────────────────── */
 
 export default function SettingsModal() {
@@ -224,6 +299,7 @@ export default function SettingsModal() {
   } = useGlobalContext();
 
   const [activeTab, setActiveTab] = useState("account");
+  const isMobile = useIsMobile();
   const router = useRouter();
 
   const handleSignOut = () => {
@@ -236,6 +312,33 @@ export default function SettingsModal() {
     router.replace("/");
   };
 
+  const sharedProps = {
+    activeTab,
+    userDetails,
+    domainDetails,
+    fetchDomainDetails,
+    onSignOut: handleSignOut,
+  };
+
+  /* ── Mobile: bottom sheet ── */
+  if (isMobile) {
+    return (
+      <Sheet open={showSettingsModal} onOpenChange={setShowSettingsModal}>
+        <SheetContent
+          side="bottom"
+          className="rounded-t-3xl bg-white dark:bg-[#1C1C1C] border-t border-black/10 dark:border-white/10 p-0 flex flex-col h-[90dvh]"
+        >
+          <SheetTitle className="sr-only">Settings</SheetTitle>
+          <MobileTabBar activeTab={activeTab} setActiveTab={setActiveTab} />
+          <div className="flex-1 min-h-0 overflow-y-auto custom-thin-scrollbar">
+            <TabContent {...sharedProps} padding="p-5 pb-10" />
+          </div>
+        </SheetContent>
+      </Sheet>
+    );
+  }
+
+  /* ── Desktop: centered dialog ── */
   return (
     <Dialog open={showSettingsModal} onOpenChange={setShowSettingsModal}>
       <DialogContent className="max-w-[860px] p-0 overflow-hidden gap-0 rounded-2xl border border-black/10 dark:border-white/10 bg-white dark:bg-[#1C1C1C] h-[580px] shadow-2xl flex flex-col">
@@ -255,31 +358,7 @@ export default function SettingsModal() {
 
           {/* ── Right content ── */}
           <div className="flex-1 min-w-0 overflow-y-auto rounded-r-2xl custom-thin-scrollbar">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeTab}
-                initial={{ opacity: 0, y: 4 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -4 }}
-                transition={{ duration: 0.18, ease: [0.23, 1, 0.32, 1] }}
-                className="p-8 pr-10"
-              >
-                {activeTab === "account" && (
-                  <AccountTab
-                    userDetails={userDetails}
-                    onSignOut={handleSignOut}
-                  />
-                )}
-                {activeTab === "domains" && (
-                  <DomainsTab
-                    domainDetails={domainDetails}
-                    fetchDomainDetails={fetchDomainDetails}
-                  />
-                )}
-                {activeTab === "subscription" && <SubscriptionTab />}
-                {activeTab === "security" && <SecurityTab userDetails={userDetails} />}
-              </motion.div>
-            </AnimatePresence>
+            <TabContent {...sharedProps} padding="p-8 pr-10" />
           </div>
 
         </div>

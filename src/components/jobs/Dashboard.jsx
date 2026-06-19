@@ -5,6 +5,8 @@ import { useRouter } from "next/router";
 import { COL_ORDER } from "@/data/jobs";
 import { extractLinkedInJobId } from "@/lib/jobsUtils";
 import { _postJobsInteract, _postJobsRecommend, _postJobsMore, _postJobsInterviewReport, _getJobsRecommendations, _postJobsPipelineReorder, _getJobsJobScore } from "@/network/jobs";
+import { _getUserQuota } from "@/network/get-request";
+import { useGlobalContext } from "@/context/globalContext";
 import { JobDetailSheet } from "./JobDetailSheet";
 import { MockInterviewDialog } from "./MockInterviewDialog";
 import { AddJobDialog } from "./AddJobDialog";
@@ -91,6 +93,32 @@ export function Dashboard({
   });
   const [creditsRefreshKey, setCreditsRefreshKey] = useState(0);
   const bumpCredits = useCallback(() => setCreditsRefreshKey((k) => k + 1), []);
+
+  const { setShowUpgradeModal, setUpgradeModalSource, setUpgradeModalJob } = useGlobalContext();
+  const [mockInterviewCreditsRemaining, setMockInterviewCreditsRemaining] = useState(undefined);
+
+  useEffect(() => {
+    _getUserQuota().then((res) => {
+      const q = res.data?.quota;
+      const base = q?.mockInterview ?? { limit: 0, used: 0 };
+      const topup = q?.topup?.mockInterview ?? { limit: 0, used: 0 };
+      const remaining = base.limit === null
+        ? null
+        : Math.max(0, (base.limit - base.used) + ((topup.limit ?? 0) - (topup.used ?? 0)));
+      setMockInterviewCreditsRemaining(remaining);
+    }).catch(() => {});
+  }, [creditsRefreshKey]);
+
+  const handleMockInterview = useCallback((jobId) => {
+    if (mockInterviewCreditsRemaining === 0) {
+      const job = Object.values(columns).flat().find((j) => j.id === jobId);
+      setUpgradeModalSource("mock-interview");
+      setUpgradeModalJob({ role: job?.role ?? "", company: job?.company ?? "", logoUrl: job?.logoUrl ?? null });
+      setShowUpgradeModal(true);
+      return;
+    }
+    setInterviewJobId(jobId);
+  }, [mockInterviewCreditsRemaining, columns, setShowUpgradeModal, setUpgradeModalSource, setUpgradeModalJob]);
   const [addJobOpen, setAddJobOpen] = useState(false);
   const [shareScoringJobId, setShareScoringJobId] = useState(null);
 
@@ -529,7 +557,7 @@ export function Dashboard({
         onShortlist={handleShortlist}
         onOpenJob={handleOpenJob}
         onDismiss={handleDismiss}
-        onMockInterview={setInterviewJobId}
+        onMockInterview={handleMockInterview}
         onAskScout={setScoutJobId}
         onFetchMore={handleFetchMore}
         onTogglePicksCollapse={() => setPicksCollapsed((v) => !v)}

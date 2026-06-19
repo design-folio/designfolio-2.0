@@ -175,7 +175,7 @@ export default function AnalyzeCaseStudy({
               </TooltipTrigger>
               {tooShort && (
                 <TooltipContent side="top" className="text-xs">
-                  {wordCount} / 400 words — add {400 - wordCount} more to analyze
+                  400 words required to analyze
                 </TooltipContent>
               )}
             </Tooltip>

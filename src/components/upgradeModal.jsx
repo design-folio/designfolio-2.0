@@ -215,8 +215,13 @@ export default function UpgradeModal() {
 
   const heading = upgradeModalUnhideProject
     ? {
-      title: `Unhide ${upgradeModalUnhideProject.title || 'Project'}?`,
-      subtitle: 'Free users can only have 2 visible projects. Go Pro to add unlimited and unhide this project.',
+      title: 'Project is hidden',
+      subtitle: "You've reached the Free plan limit of 2 visible projects. Upgrade to Pro to unhide it and get unlimited projects.",
+    }
+    : upgradeModalSource === 'pro-template'
+    ? {
+      title: 'Upgrade to publish',
+      subtitle: "You're using a Pro template. Upgrade to publish your portfolio and unlock all Pro features.",
     }
     : upgradeModalSource === 'write-ai'
     ? {
@@ -246,7 +251,7 @@ export default function UpgradeModal() {
             style={{
               position: 'fixed',
               inset: 0,
-              zIndex: 1000,
+              zIndex: 10001,
               background: 'rgba(0,0,0,0.6)',
               backdropFilter: 'blur(4px)',
             }}
@@ -266,7 +271,7 @@ export default function UpgradeModal() {
               position: 'fixed',
               top: '50%',
               left: '50%',
-              zIndex: 1001,
+              zIndex: 10002,
               animation: 'none',
               ...(plansReady && sideBySide ? { maxWidth: 'none', overflow: 'hidden' } : {}),
             }}

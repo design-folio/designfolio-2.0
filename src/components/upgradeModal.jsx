@@ -28,7 +28,7 @@ const JOB_TOOL_CONFIG = {
   'fit-analysis': {
     icon: '/assets/png/icons/fitanalysis.png',
     title: 'Unlock Fit Analysis',
-    subtitle: 'See exactly how well you match this role, discover missing skills, and get personalized insights to improve your chances before applying.',
+    subtitle: 'See how well you match this role, identify skill gaps, and get personalized insights before you apply.',
     buttonText: 'Unlock Fit Analysis',
   },
   'resume': {
@@ -254,23 +254,23 @@ export default function UpgradeModal() {
       subtitle: "You've reached the Free plan limit of 2 visible projects. Upgrade to Pro to unhide it and get unlimited projects.",
     }
     : isJobTool
-    ? { title: jobToolConfig.title, subtitle: jobToolConfig.subtitle }
-    : upgradeModalSource === 'pro-template'
-    ? {
-      title: 'Upgrade to publish',
-      subtitle: "You're using a Pro template. Upgrade to publish your portfolio and unlock all Pro features.",
-    }
-    : upgradeModalSource === 'write-ai'
-    ? {
-      title: 'Unlock AI Case Study Writing',
-      subtitle: 'You\'ve used all your free credits. Upgrade to Pro for unlimited AI-written case studies.',
-    }
-    : upgradeModalSource === 'analyze'
-    ? {
-      title: 'Unlock AI Case Study Analysis',
-      subtitle: 'You\'ve used all your free analysis credits. Upgrade to Pro for unlimited AI feedback on your work.',
-    }
-    : PLAN_HEADING;
+      ? { title: jobToolConfig.title, subtitle: jobToolConfig.subtitle }
+      : upgradeModalSource === 'pro-template'
+        ? {
+          title: 'Upgrade to publish',
+          subtitle: "You're using a Pro template. Upgrade to publish your portfolio and unlock all Pro features.",
+        }
+        : upgradeModalSource === 'write-ai'
+          ? {
+            title: 'Unlock AI Case Study Writing',
+            subtitle: 'You\'ve used all your free credits. Upgrade to Pro for unlimited AI-written case studies.',
+          }
+          : upgradeModalSource === 'analyze'
+            ? {
+              title: 'Unlock AI Case Study Analysis',
+              subtitle: 'You\'ve used all your free analysis credits. Upgrade to Pro for unlimited AI feedback on your work.',
+            }
+            : PLAN_HEADING;
 
   const isPremiumPlan = selectedPlan?.plan === 'yrly' || selectedPlan?.plan === 'lifetime';
 
@@ -319,234 +319,234 @@ export default function UpgradeModal() {
                 <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-foreground/30" />
               </div>
             ) : (
-            <>
-            <button
-              className={styles.modalClose}
-              onClick={handleCloseModal}
-              aria-label="Close"
-            >
-              <X size={14} strokeWidth={2.5} />
-            </button>
+              <>
+                <button
+                  className={styles.modalClose}
+                  onClick={handleCloseModal}
+                  aria-label="Close"
+                >
+                  <X size={14} strokeWidth={2.5} />
+                </button>
 
-            {/* ── Left panel: pricing (always visible) ── */}
+                {/* ── Left panel: pricing (always visible) ── */}
 
-            {/* Left panel: pricing */}
-            <div className={sideBySide ? styles.modalLeftPanel : styles.modalSinglePanel}>
+                {/* Left panel: pricing */}
+                <div className={sideBySide ? styles.modalLeftPanel : styles.modalSinglePanel}>
 
-              <div className={styles.modalHeader}>
+                  <div className={styles.modalHeader}>
 
-                <div>
+                    <div>
 
-                  <div
-                    className={styles.modalIcon}
-                    style={isJobTool && jobToolConfig ? { backgroundImage: `url(${jobToolConfig.icon})` } : undefined}
-                  />
-                  <h2 className={styles.modalTitle}>{heading.title}</h2>
-                  {isJobTool && upgradeModalJob && (
-                    <div className="flex items-center gap-2 mb-2">
-                      <CompanyLogo
-                        logoUrl={upgradeModalJob.logoUrl}
-                        company={upgradeModalJob.company}
-                        size={24}
-                        className="rounded-md"
+                      <div
+                        className={styles.modalIcon}
+                        style={isJobTool && jobToolConfig ? { backgroundImage: `url(${jobToolConfig.icon})` } : undefined}
                       />
-                      <span className="text-[14px] font-medium text-[#1f2937]">
-                        {upgradeModalJob.role}
-                        <span className="text-[#9ca3af] mx-1">•</span>
-                        {upgradeModalJob.company}
-                      </span>
+                      <h2 className={styles.modalTitle}>{heading.title}</h2>
+                      {isJobTool && upgradeModalJob && (
+                        <div className="flex items-center gap-2 mb-2 min-w-0">
+                          <CompanyLogo
+                            logoUrl={upgradeModalJob.logoUrl}
+                            company={upgradeModalJob.company}
+                            size={24}
+                            className="rounded-md flex-shrink-0"
+                          />
+                          <span className="text-[14px] font-medium text-[#1f2937] line-clamp-1">
+                            {upgradeModalJob.role}
+                            <span className="text-[#9ca3af] mx-1">•</span>
+                            {upgradeModalJob.company}
+                          </span>
+                        </div>
+                      )}
+                      <p className={styles.modalSubtitle}>{heading.subtitle}</p>
                     </div>
-                  )}
-                  <p className={styles.modalSubtitle}>{heading.subtitle}</p>
-                </div>
-              </div>
+                  </div>
 
-              <div className={styles.modalContent}>
-                {/* Billing toggle */}
-                <div className="mb-5 pt-5">
-                  <Tabs
-                    value={selectedPlan?.plan ?? ''}
-                    onValueChange={value => {
-                      const newPlan = proPlans.find(p => p.plan === value);
-                      setSelectedPlan(newPlan);
-                      phEvent(POSTHOG_EVENT_NAMES.UPGRADE_PLAN_SELECTED, {
-                        source: 'dropdown',
-                        selected_plan: newPlan?.plan,
-                        selected_amount: Number(newPlan?.amount),
-                        selected_currency: newPlan?.currency,
-                      });
-                    }}
-                  >
-                    <TabsList className="flex p-1 rounded-lg gap-1 w-full h-auto bg-[#f0f0f0] overflow-visible">
-                      {proPlans.map(p => (
-                        <TabsTrigger
-                          key={p.plan}
-                          value={p.plan}
-                          className="relative flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 text-[#525252] hover:text-[#0a0a0a] data-[state=active]:bg-[#ffffff] data-[state=active]:text-[#0a0a0a] data-[state=active]:shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]"
-                        >
-                          {p.plan === 'lifetime' && (
-                            <span
-                              className="absolute -top-[18px] left-1/2 -translate-x-1/2 whitespace-nowrap px-2 py-[3.5px] rounded-full text-[8.5px] font-semibold uppercase select-none"
-                              style={{
-                                background: "linear-gradient(180deg, #383838 0%, #1c1c1c 100%)",
-                                color: "rgba(255,255,255,0.82)",
-                                letterSpacing: "0.09em",
-                                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.13), 0 2px 5px rgba(0,0,0,0.28), 0 0 0 0.5px rgba(0,0,0,0.35)",
-                              }}
-                            >Best Value</span>
-                          )}
-                          {PLAN_LABELS[p.plan] ?? p.plan}
-                        </TabsTrigger>
-                      ))}
-                    </TabsList>
-                  </Tabs>
-                </div>
+                  <div className={styles.modalContent}>
+                    {/* Billing toggle */}
+                    <div className="mb-5 pt-5">
+                      <Tabs
+                        value={selectedPlan?.plan ?? ''}
+                        onValueChange={value => {
+                          const newPlan = proPlans.find(p => p.plan === value);
+                          setSelectedPlan(newPlan);
+                          phEvent(POSTHOG_EVENT_NAMES.UPGRADE_PLAN_SELECTED, {
+                            source: 'dropdown',
+                            selected_plan: newPlan?.plan,
+                            selected_amount: Number(newPlan?.amount),
+                            selected_currency: newPlan?.currency,
+                          });
+                        }}
+                      >
+                        <TabsList className="flex p-1 rounded-lg gap-1 w-full h-auto bg-[#f0f0f0] overflow-visible">
+                          {proPlans.map(p => (
+                            <TabsTrigger
+                              key={p.plan}
+                              value={p.plan}
+                              className="relative flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 text-[#525252] hover:text-[#0a0a0a] data-[state=active]:bg-[#ffffff] data-[state=active]:text-[#0a0a0a] data-[state=active]:shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]"
+                            >
+                              {p.plan === 'lifetime' && (
+                                <span
+                                  className="absolute -top-[18px] left-1/2 -translate-x-1/2 whitespace-nowrap px-2 py-[3.5px] rounded-full text-[8.5px] font-semibold uppercase select-none"
+                                  style={{
+                                    background: "linear-gradient(180deg, #383838 0%, #1c1c1c 100%)",
+                                    color: "rgba(255,255,255,0.82)",
+                                    letterSpacing: "0.09em",
+                                    boxShadow: "inset 0 1px 0 rgba(255,255,255,0.13), 0 2px 5px rgba(0,0,0,0.28), 0 0 0 0.5px rgba(0,0,0,0.35)",
+                                  }}
+                                >Best Value</span>
+                              )}
+                              {PLAN_LABELS[p.plan] ?? p.plan}
+                            </TabsTrigger>
+                          ))}
+                        </TabsList>
+                      </Tabs>
+                    </div>
 
-                {/* Price */}
-                <div className={styles.priceSection}>
-                  <div className={styles.priceContainer}>
+                    {/* Price */}
+                    <div className={styles.priceSection}>
+                      <div className={styles.priceContainer}>
+                        <AnimatePresence mode="wait">
+                          <motion.div
+                            key={selectedPlan?.plan}
+                            initial={{ opacity: 0, y: 4 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -4 }}
+                            transition={{ duration: 0.14 }}
+                          >
+                            {selectedPlan?.plan === 'lifetime' ? (
+                              <>
+                                <div className="flex items-baseline gap-2">
+                                  <div className={styles.price}>
+                                    {formatAmount(selectedPlan?.amount, selectedPlan?.currency)}
+                                  </div>
+                                  <div className={styles.priceSubtext}><span className="line-through">{formatAmount(LIFETIME_STASHED_PRICES[selectedPlan?.currency] ?? LIFETIME_STASHED_PRICES.INR, selectedPlan?.currency)}</span> /one-time</div>
+                                </div>
+                                <div className="text-sm text-[#6b7280] font-medium mt-0.5">
+                                  Pay once. Use it throughout your career.
+                                </div>
+                              </>
+                            ) : (
+                              <>
+                                <div className="flex items-baseline gap-2">
+                                  <div className={styles.price}>
+                                    {formatAmount(getMonthlyAmount(selectedPlan), selectedPlan?.currency)}
+                                  </div>
+                                  <div className={styles.priceSubtext}>/ per month</div>
+                                </div>
+                                <div className="text-sm text-[#6b7280] font-medium mt-1">
+                                  {selectedPlan?.plan === 'mthly'
+                                    ? 'billed monthly'
+                                    : `billed ${formatAmount(selectedPlan?.amount, selectedPlan?.currency)} ${{ qtrly: 'quarterly', yrly: 'yearly' }[selectedPlan?.plan] ?? 'per period'}`}
+                                </div>
+                              </>
+                            )}
+                          </motion.div>
+                        </AnimatePresence>
+                      </div>
+                    </div>
+
+                    {/* Plan tagline */}
                     <AnimatePresence mode="wait">
                       <motion.div
-                        key={selectedPlan?.plan}
+                        key={selectedPlan?.plan + '-quote'}
                         initial={{ opacity: 0, y: 4 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -4 }}
                         transition={{ duration: 0.14 }}
                       >
-                        {selectedPlan?.plan === 'lifetime' ? (
-                          <>
-                            <div className="flex items-baseline gap-2">
-                              <div className={styles.price}>
-                                {formatAmount(selectedPlan?.amount, selectedPlan?.currency)}
-                              </div>
-                              <div className={styles.priceSubtext}><span className="line-through">{formatAmount(LIFETIME_STASHED_PRICES[selectedPlan?.currency] ?? LIFETIME_STASHED_PRICES.INR, selectedPlan?.currency)}</span> /one-time</div>
-                            </div>
-                            <div className="text-sm text-[#6b7280] font-medium mt-0.5">
-                              Pay once. Use it throughout your career.
-                            </div>
-                          </>
-                        ) : (
-                          <>
-                            <div className="flex items-baseline gap-2">
-                              <div className={styles.price}>
-                                {formatAmount(getMonthlyAmount(selectedPlan), selectedPlan?.currency)}
-                              </div>
-                              <div className={styles.priceSubtext}>/ per month</div>
-                            </div>
-                            <div className="text-sm text-[#6b7280] font-medium mt-1">
-                              {selectedPlan?.plan === 'mthly'
-                                ? 'billed monthly'
-                                : `billed ${formatAmount(selectedPlan?.amount, selectedPlan?.currency)} ${{ qtrly: 'quarterly', yrly: 'yearly' }[selectedPlan?.plan] ?? 'per period'}`}
-                            </div>
-                          </>
-                        )}
+                        <PlanQuote plan={selectedPlan?.plan} />
                       </motion.div>
                     </AnimatePresence>
+
+                    {/* CTA */}
+                    {isPremiumPlan ? (
+                      <ConicButton onClick={openCheckout} disabled={checkoutLoading} className="w-full">
+                        <Zap size={13} />
+                        {getButtonText()}
+                      </ConicButton>
+                    ) : (
+                      <Button
+                        onClick={openCheckout}
+                        disabled={checkoutLoading}
+                        className="w-full h-12 text-sm font-bold bg-[hsl(7,100%,62%)] hover:bg-[hsl(7,100%,55%)] text-white border-none"
+                      >
+                        {getButtonText()}
+                      </Button>
+                    )}
+
+                    <UrgencyBanner />
+
+                    <FeaturesList
+                      showAll={showAllFeatures}
+                      onToggle={() => setShowAllFeatures(s => !s)}
+                    />
+
+                    {/* FAQ toggle chip */}
+                    <div className="flex mt-3">
+                      <button
+                        onClick={() => setShowFaq(s => !s)}
+                        className={`flex items-center gap-1.5 text-[11px] font-medium rounded-full px-2.5 py-[5px] border transition-all duration-200 ${showFaq
+                          ? 'border-[#9ca3af] bg-[#f3f4f6] text-[#374151]'
+                          : 'border-[#c4c9d4] bg-transparent text-[#6b7280] hover:text-[#374151] hover:border-[#9ca3af]'
+                          }`}
+                      >
+                        <HelpCircle className="w-3 h-3 flex-shrink-0" />
+                        Have more doubts? FAQ
+                      </button>
+                    </div>
+
+                    <LogoMarquee />
+
+                    {/* Mobile: FAQ stacks inline below */}
+                    {!sideBySide && (
+                      <AnimatePresence>
+                        {showFaq && (
+                          <motion.div
+                            key="faq-inline"
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                            className="overflow-hidden"
+                          >
+                            <div className="pt-4 mt-3 border-t border-[#e5e7eb]">
+                              <h3 className="text-[14px] font-bold text-[#111827] tracking-tight mb-0.5">
+                                FAQs
+                              </h3>
+                              <FaqAccordion compact />
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    )}
                   </div>
                 </div>
 
-                {/* Plan tagline */}
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={selectedPlan?.plan + '-quote'}
-                    initial={{ opacity: 0, y: 4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -4 }}
-                    transition={{ duration: 0.14 }}
-                  >
-                    <PlanQuote plan={selectedPlan?.plan} />
-                  </motion.div>
-                </AnimatePresence>
-
-                {/* CTA */}
-                {isPremiumPlan ? (
-                  <ConicButton onClick={openCheckout} disabled={checkoutLoading} className="w-full">
-                    <Zap size={13} />
-                    {getButtonText()}
-                  </ConicButton>
-                ) : (
-                  <Button
-                    onClick={openCheckout}
-                    disabled={checkoutLoading}
-                    className="w-full h-12 text-sm font-bold bg-[hsl(7,100%,62%)] hover:bg-[hsl(7,100%,55%)] text-white border-none"
-                  >
-                    {getButtonText()}
-                  </Button>
-                )}
-
-                <UrgencyBanner />
-
-                <FeaturesList
-                  showAll={showAllFeatures}
-                  onToggle={() => setShowAllFeatures(s => !s)}
-                />
-
-                {/* FAQ toggle chip */}
-                <div className="flex mt-3">
-                  <button
-                    onClick={() => setShowFaq(s => !s)}
-                    className={`flex items-center gap-1.5 text-[11px] font-medium rounded-full px-2.5 py-[5px] border transition-all duration-200 ${showFaq
-                      ? 'border-[#9ca3af] bg-[#f3f4f6] text-[#374151]'
-                      : 'border-[#c4c9d4] bg-transparent text-[#6b7280] hover:text-[#374151] hover:border-[#9ca3af]'
-                      }`}
-                  >
-                    <HelpCircle className="w-3 h-3 flex-shrink-0" />
-                    Have more doubts? FAQ
-                  </button>
-                </div>
-
-                <LogoMarquee />
-
-                {/* Mobile: FAQ stacks inline below */}
-                {!sideBySide && (
+                {/* Right panel: FAQ (desktop side-by-side) */}
+                {sideBySide && (
                   <AnimatePresence>
                     {showFaq && (
                       <motion.div
-                        key="faq-inline"
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-                        className="overflow-hidden"
+                        key="faq-panel"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.18, delay: 0.14 }}
+                        className={styles.modalRightPanel}
                       >
-                        <div className="pt-4 mt-3 border-t border-[#e5e7eb]">
-                          <h3 className="text-[14px] font-bold text-[#111827] tracking-tight mb-0.5">
+                        <div className="px-5 py-4 border-b border-[#f3f4f6]">
+                          <h3 className="text-[16px] font-bold text-[#111827] tracking-tight">
                             FAQs
                           </h3>
-                          <FaqAccordion compact />
+                        </div>
+                        <div className="overflow-y-auto flex-1 px-5 py-2">
+                          <FaqAccordion />
                         </div>
                       </motion.div>
                     )}
                   </AnimatePresence>
                 )}
-              </div>
-            </div>
-
-            {/* Right panel: FAQ (desktop side-by-side) */}
-            {sideBySide && (
-              <AnimatePresence>
-                {showFaq && (
-                  <motion.div
-                    key="faq-panel"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.18, delay: 0.14 }}
-                    className={styles.modalRightPanel}
-                  >
-                    <div className="px-5 py-4 border-b border-[#f3f4f6]">
-                      <h3 className="text-[16px] font-bold text-[#111827] tracking-tight">
-                        FAQs
-                      </h3>
-                    </div>
-                    <div className="overflow-y-auto flex-1 px-5 py-2">
-                      <FaqAccordion />
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            )}
-            </>
+              </>
             )}
           </motion.div>
         </>

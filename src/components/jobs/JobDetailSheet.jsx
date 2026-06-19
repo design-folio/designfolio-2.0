@@ -124,10 +124,16 @@ function ComingSoonBadge() {
 }
 
 export function JobDetailSheet({ job, open, onClose, profileId, pastReports = [], onViewReport, onCreditUsed, onStartMockInterview }) {
-  const { userDetails } = useGlobalContext();
+  const { userDetails, setShowUpgradeModal, setUpgradeModalSource, setUpgradeModalJob } = useGlobalContext();
   const lastJobRef = useRef(null);
   if (job) lastJobRef.current = job;
   const displayJob = job ?? lastJobRef.current;
+
+  const openJobUpgradeModal = (source) => {
+    setUpgradeModalSource(source);
+    setUpgradeModalJob({ role: displayJob.role, company: displayJob.company, logoUrl: displayJob.logoUrl ?? null });
+    setShowUpgradeModal(true);
+  };
 
   const scrollRef = useRef(null);
   const mockInterviewsRef = useRef(null);
@@ -403,7 +409,10 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
                 {/* Mock interview — primary recommended action */}
                 <button
                   data-testid="button-jump-mock-interviews"
-                  onClick={() => { scrollToMockInterviews(); onStartMockInterview?.(); }}
+                  onClick={() => {
+                    if (featureRemaining("mockInterview") === 0) { openJobUpgradeModal("mock-interview"); return; }
+                    scrollToMockInterviews(); onStartMockInterview?.();
+                  }}
                   className="w-full flex items-center gap-2.5 px-4 py-3 hover:bg-black/[0.03] dark:hover:bg-white/[0.03] transition-colors group text-left border-b border-black/[0.05] dark:border-white/[0.05] cursor-pointer"
                 >
                   <div className="w-8 h-8 rounded-xl bg-black/[0.05] dark:bg-white/[0.06] group-hover:bg-black/[0.07] dark:group-hover:bg-white/[0.09] transition-colors flex items-center justify-center flex-shrink-0">
@@ -423,7 +432,10 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
                 <div className="grid grid-cols-3 divide-x divide-black/[0.05] dark:divide-white/[0.05]">
                   {/* Tailor resume */}
                   <button
-                    onClick={() => setStudio({ open: true, type: "resume", docId: null })}
+                    onClick={() => {
+                      if (featureRemaining("resumeCustomize") === 0) { openJobUpgradeModal("resume"); return; }
+                      setStudio({ open: true, type: "resume", docId: null });
+                    }}
                     className="flex flex-col items-start gap-2 px-3.5 py-3 hover:bg-black/[0.03] dark:hover:bg-white/[0.03] transition-colors group text-left"
                   >
                     <div className="flex items-center justify-between w-full">
@@ -439,7 +451,10 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
 
                   {/* Cover letter */}
                   <button
-                    onClick={() => setStudio({ open: true, type: "coverLetter", docId: null })}
+                    onClick={() => {
+                      if (featureRemaining("coverLetter") === 0) { openJobUpgradeModal("cover-letter"); return; }
+                      setStudio({ open: true, type: "coverLetter", docId: null });
+                    }}
                     className="flex flex-col items-start gap-2 px-3.5 py-3 hover:bg-black/[0.03] dark:hover:bg-white/[0.03] transition-colors group text-left"
                   >
                     <div className="flex items-center justify-between w-full">
@@ -455,7 +470,10 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
 
                   {/* Fit analysis */}
                   <button
-                    onClick={handleFitAnalysis}
+                    onClick={() => {
+                      if (featureRemaining("fitAnalysis") === 0) { openJobUpgradeModal("fit-analysis"); return; }
+                      handleFitAnalysis();
+                    }}
                     disabled={fitLoading}
                     className="flex flex-col items-start gap-2 px-3.5 py-3 hover:bg-black/[0.03] dark:hover:bg-white/[0.03] transition-colors group text-left disabled:opacity-60"
                   >

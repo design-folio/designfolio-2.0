@@ -1,38 +1,34 @@
 import { useGlobalContext } from "@/context/globalContext";
 import React from "react";
 import styles from "@/styles/domain.module.css";
+import { Zap } from "lucide-react";
+
 export default function ProWarning() {
-  const { template, setTemplate, setShowUpgradeModal, setUpgradeModalUnhideProject, setTemplateContext } = useGlobalContext();
+  const { template, setShowUpgradeModal, setUpgradeModalUnhideProject, setUpgradeModalSource, changeTemplate } = useGlobalContext();
 
   if (template === 0) return null;
   const isMacOS = template === 4;
   return (
-    <div className={`${styles.proTemplateBanner} ${isMacOS ? "mt-[100px] relative z-[20]" : ""}`}>
+    <div className={`${styles.proTemplateBanner} ${isMacOS ? styles.proTemplateBannerMacOS : ""}`}>
       <div className={styles.proTemplateBannerContent}>
-        <div className={styles.proTemplateBannerText}>
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-          </svg>
-          You're using a Pro template. Some features might be limited.{" "}
-          <span
-            className="underline underline-offset-1 cursor-pointer"
-            onClick={() => { setUpgradeModalUnhideProject(null); setShowUpgradeModal(true); }}
-          >
-            Upgrade now
-          </span>
+        <div className={styles.proTemplateBannerLeft}>
+          <div className={styles.proTemplateBannerIcon} />
+          <div className={styles.proTemplateBannerTextBlock}>
+            <div className={styles.proTemplateBannerTitle}>You're using a Pro template</div>
+            <div className={styles.proTemplateBannerSubtext}>
+              Customize it freely. Upgrade to publish this portfolio.{" "}
+              <span className={styles.proTemplateBannerLink} onClick={() => changeTemplate(0)}>
+                Switch to a free template
+              </span>
+            </div>
+          </div>
         </div>
         <button
-          className={styles.revertTemplateButton}
-          onClick={() => setTemplateContext(0)}
+          className={styles.proTemplateBannerButton}
+          onClick={() => { setUpgradeModalUnhideProject(null); setUpgradeModalSource('pro-template'); setShowUpgradeModal(true); }}
         >
-          Revert to Default
+          <Zap size={13} fill="white" />
+          Upgrade to Publish
         </button>
       </div>
     </div>

@@ -4,7 +4,7 @@ import { useGlobalContext } from "@/context/globalContext";
 import { TEMPLATE_IDS } from "@/lib/templates";
 import { getProjectUrl } from "@/lib/utils";
 import { cn } from "@/lib/utils";
-import { _getProjectDetails } from "@/network/get-request";
+import { _getProjectDetails, _getUserQuota } from "@/network/get-request";
 import { _updateProject, _updateUser } from "@/network/post-request";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/router";
@@ -39,6 +39,8 @@ export default function Index() {
     setUpgradeModalUnhideProject,
     domainDetails,
     closeSidebar,
+    setAnalysisCreditsRemaining,
+    setAnalysisCreditsLimit,
   } = useGlobalContext();
   const [projectDetails, setProjectDetails] = useState(null);
   const initializedRef = useRef(false);
@@ -119,6 +121,25 @@ export default function Index() {
       initializedRef.current = projectId;
     }
   }, [router.query.id, userDetails, refetchProjectDetail]);
+
+  // Fetch analysis credits on page load. Kept separate from the project-init
+  // guard so it always runs when the project changes.
+  useEffect(() => {
+    if (!router.query.id) return;
+
+    setAnalysisCreditsRemaining(null);
+    _getUserQuota()
+      .then((res) => {
+        const analysis = res.data?.quota?.caseStudyAnalysis;
+        if (analysis) {
+          const limit = analysis.limit ?? 2;
+          const remaining = analysis.limit === null ? Infinity : Math.max(0, limit - (analysis.used ?? 0));
+          setAnalysisCreditsRemaining(remaining);
+          setAnalysisCreditsLimit(limit);
+        }
+      })
+      .catch(() => {});
+  }, [router.query.id]);
 
   // Compensate for scrollbar gutter when sidebar opens so content doesn't shift.
   useEffect(() => {

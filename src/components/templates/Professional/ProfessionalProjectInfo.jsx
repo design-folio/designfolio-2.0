@@ -25,6 +25,8 @@ import Modal from "@/components/modal";
 import AnalyzeCaseStudy from "@/components/analyzeCaseStudy";
 import { useGlobalContext } from "@/context/globalContext";
 import { toast } from "react-toastify";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 
 const ScrewDot = ({ className }) => (
   <div className={`absolute ${className} ${screwClass}`} />
@@ -99,7 +101,7 @@ function EditableDetailField({ label, field, value, onBlur }) {
 
 export default function ProfessionalProjectInfo({ projectDetails, userDetails, edit = false }) {
   const router = useRouter();
-  const { wordCount } = useGlobalContext();
+  const { wordCount, setWordCount, setShowUpgradeModal, setUpgradeModalSource, analysisCreditsRemaining, setAnalysisCreditsRemaining } = useGlobalContext();
   const [imageLoaded, setImageLoaded] = useState(false);
   const [titleIsPlaceholder, setTitleIsPlaceholder] = useState(false);
   const [descIsPlaceholder, setDescIsPlaceholder] = useState(false);
@@ -111,6 +113,7 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
   const [analyzeStatus, setAnalyzeStatus] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const [rating, setRating] = useState("");
+
 
   const {
     title,
@@ -136,20 +139,27 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
   }, [isProtected, password, title, description]);
 
   useEffect(() => {
+    setWordCount(null);
     if (edit) fetchAnalyzeStatus();
   }, [edit]);
 
   const projectId = _id || router.query.id;
 
-  const needsMoreWords = suggestions?.length === 0 && wordCount < 400;
+  const needsMoreWords = suggestions?.length === 0 && wordCount !== null && wordCount < 400;
+  const outOfCredits = analysisCreditsRemaining !== null && analysisCreditsRemaining <= 0;
   const isAnalyzeDisabled = isAnalyzing || needsMoreWords;
   const analyzeButtonLabel = isAnalyzing
     ? "Analyzing..."
     : suggestions?.length > 0
       ? "Show Score Card"
-      : needsMoreWords
-        ? `${400 - wordCount} more words`
-        : "Analyze with AI";
+      : "Analyze with AI";
+  const tooltipMessage = outOfCredits
+    ? "Upgrade to Pro to analyze Case Study"
+    : needsMoreWords
+      ? "400 words required to analyze"
+      : wordCount != null
+        ? `${wordCount} words`
+        : null;
 
   const updateProjectCache = (key, value) => {
     if (userDetails) {
@@ -189,19 +199,27 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
   const handleAnalyzeClick = async () => {
     if (suggestions.length > 0) {
       setShowModal(true);
-    } else {
-      setIsAnalyzing(true);
-      const data = { userId: _id, caseStudy: projectDetails, projectId: projectDetails._id };
-      try {
-        const response = await _analyzeCaseStudy(data);
-        setShowModal(true);
-        setSuggestions(response.data.response);
-        setRating(response.data.rating);
-      } catch (e) {
-        console.log(e);
-      } finally {
-        setIsAnalyzing(false);
-      }
+      return;
+    }
+    if (outOfCredits) {
+      setUpgradeModalSource("analyze");
+      setShowUpgradeModal(true);
+      return;
+    }
+    setIsAnalyzing(true);
+    const data = { userId: _id, caseStudy: projectDetails, projectId: projectDetails._id };
+    try {
+      const response = await _analyzeCaseStudy(data);
+      setShowModal(true);
+      setSuggestions(response.data.response);
+      setRating(response.data.rating);
+      setAnalysisCreditsRemaining((prev) => (prev !== null && prev !== Infinity ? Math.max(0, prev - 1) : prev));
+    } catch (e) {
+      setAnalysisCreditsRemaining(0);
+      setUpgradeModalSource("analyze");
+      setShowUpgradeModal(true);
+    } finally {
+      setIsAnalyzing(false);
     }
   };
 
@@ -213,8 +231,11 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
       setShowModal(true);
       setSuggestions(response.data.response);
       setRating(response.data.rating);
+      setAnalysisCreditsRemaining((prev) => (prev !== null && prev !== Infinity ? Math.max(0, prev - 1) : prev));
     } catch (e) {
-      console.log(e);
+      setAnalysisCreditsRemaining(0);
+      setUpgradeModalSource("analyze");
+      setShowUpgradeModal(true);
     } finally {
       setIsAnalyzing(false);
     }
@@ -337,19 +358,31 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
 
               {/* Analyze with AI */}
               {analyzeStatus && (
-                <button
-                  onClick={handleAnalyzeClick}
-                  disabled={isAnalyzeDisabled}
-                  className="flex items-center gap-1.5 hover:text-[#E37941] cursor-pointer transition-colors disabled:opacity-40 disabled:cursor-not-allowed text-[11px] uppercase tracking-wider"
-                // title={analyzeButtonLabel}
-                >
-                  {isAnalyzing ? (
-                    <AnimatedLoadingDots className="w-[18px] h-[5px] shrink-0" />
-                  ) : (
-                    <AnalyzeIcon className="w-[13px] h-[13px] shrink-0" />
-                  )}
-                  {analyzeButtonLabel}
-                </button>
+                <TooltipProvider delayDuration={200}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className={cn("inline-flex", isAnalyzeDisabled ? "cursor-not-allowed" : "cursor-pointer")}>
+                        <button
+                          onClick={handleAnalyzeClick}
+                          disabled={isAnalyzeDisabled}
+                          className="flex items-center gap-1.5 hover:text-[#E37941] cursor-pointer transition-colors disabled:opacity-40 disabled:cursor-not-allowed text-[11px] uppercase tracking-wider"
+                        >
+                          {isAnalyzing ? (
+                            <AnimatedLoadingDots className="w-[18px] h-[5px] shrink-0" />
+                          ) : (
+                            <AnalyzeIcon className="w-[13px] h-[13px] shrink-0" />
+                          )}
+                          {analyzeButtonLabel}
+                        </button>
+                      </span>
+                    </TooltipTrigger>
+                    {tooltipMessage && (
+                      <TooltipContent side="bottom" className="bg-foreground text-background text-xs px-2 py-1 rounded">
+                        {tooltipMessage}
+                      </TooltipContent>
+                    )}
+                  </Tooltip>
+                </TooltipProvider>
               )}
             </>
           )}

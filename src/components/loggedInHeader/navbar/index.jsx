@@ -42,9 +42,9 @@ import queryClient from "@/network/queryClient";
 import { removeCursor } from "@/lib/cursor";
 import MemoDFLogoV2 from "@/components/icons/DFLogoV2";
 import Link from "next/link";
-import { TEMPLATE_IDS } from "@/lib/templates";
+import { TEMPLATE_IDS, TEMPLATES_BY_ID } from "@/lib/templates";
 import { cn } from "@/lib/utils";
-import { StardustButton } from "@/components/StardustButton";
+import { UpgradePill } from "./UpgradePill";
 
 const MACOS_ROUTES = ["/builder", "/project/[id]/editor", "/project/[id]/preview"];
 
@@ -64,7 +64,9 @@ export default function Navbar() {
     setUserDetails,
     updateCache,
     template,
+    setShowSettingsModal,
     setShowUpgradeModal,
+    setUpgradeModalSource,
   } = useGlobalContext();
 
   const router = useRouter();
@@ -102,6 +104,11 @@ export default function Navbar() {
   };
 
   const handlePublish = () => {
+    if (!userDetails?.pro && TEMPLATES_BY_ID[template]?.isPro) {
+      setUpgradeModalSource('pro-template');
+      setShowUpgradeModal(true);
+      return;
+    }
     setIsPublishing(true);
     _publish({ status: 1 })
       .then((res) => {
@@ -197,7 +204,7 @@ export default function Navbar() {
                 <Button
                   variant="ghost"
                   className="w-full justify-start h-11 px-4 text-[14px] text-muted-foreground hover:text-foreground hover:bg-secondary"
-                  onClick={() => { setIsMobileMenuOpen(false); router.push("/settings"); }}
+                  onClick={() => { setIsMobileMenuOpen(false); setShowSettingsModal(true); }}
                 >
                   <Settings className="mr-2 h-4 w-4" /> Settings
                 </Button>
@@ -358,16 +365,9 @@ export default function Navbar() {
           {navContent}
         </nav>
 
-        {/* Upgrade pill — free users only, builder page only, desktop non-MacOS */}
-        {!userDetails?.pro && router.pathname === "/builder" && !isMobile && !isMacOS && !activeSidebar && (
-          <div className="pointer-events-auto absolute right-5 top-7">
-            <StardustButton
-              size="sm"
-              onClick={() => setShowUpgradeModal(true)}
-            >
-              Upgrade PRO
-            </StardustButton>
-          </div>
+        {/* Upgrade pill — free users only, desktop non-MacOS */}
+        {userDetails && !userDetails.pro && !isMobile && !isMacOS && !activeSidebar && (
+          <UpgradePill />
         )}
       </div>
     </TooltipProvider>

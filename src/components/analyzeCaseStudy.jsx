@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 import Text from "./text";
 import CloseIcon from "../../public/assets/svgs/close.svg";
-import Button from "./button";
 import Good from "../../public/assets/svgs/good.svg";
 import NotBad from "../../public/assets/svgs/not-bad.svg";
 import Bad from "../../public/assets/svgs/not-bad.svg";
-import { _analyzeCaseStudyCredits } from "@/network/post-request";
 import { useGlobalContext } from "@/context/globalContext";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
+import { Zap } from "lucide-react";
 
 const variants = {
   hidden: { x: "100%" },
@@ -45,16 +46,24 @@ const status = {
     </div>
   ),
 };
+
 export default function AnalyzeCaseStudy({
   setShowModal,
   suggestions,
   rating,
-  projectId,
   analyzeCallback,
   wordCount,
   isAnalyzing,
 }) {
-  const { setShowUpgradeModal } = useGlobalContext();
+  const {
+    setShowUpgradeModal,
+    setUpgradeModalSource,
+    analysisCreditsRemaining,
+  } = useGlobalContext();
+
+  const outOfCredits = analysisCreditsRemaining !== null && analysisCreditsRemaining <= 0;
+  const tooShort = wordCount !== null && wordCount < 400;
+  const isDisabled = outOfCredits || tooShort;
 
   const category = {
     good: "good",
@@ -62,31 +71,10 @@ export default function AnalyzeCaseStudy({
     bad: "bad",
   };
 
-  const reAnalyze = async () => {
-    await analyzeCallback();
-    await fetchCredits();
-  };
-
-  const [analysisCredits, setAnalysisCredits] = useState({ limit: 2, used: 0, remaining: 2 });
-
-  const fetchCredits = async () => {
-    try {
-      const response = await _analyzeCaseStudyCredits(projectId);
-      const analysis = response.data?.credits?.caseStudyAnalysis;
-      if (analysis) setAnalysisCredits(analysis);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  useEffect(() => {
-    fetchCredits();
-  }, []);
-
   const renderItems = suggestions.map((item) => {
     return (
       <div
-        className="mt-4 bg-df-section-card-bg-color rounded-2xl p-3 shadow-df-section-card-shadow"
+        className="mt-4 bg-muted rounded-2xl p-3 border border-border"
         key={item.metric}
       >
         <div className="flex gap-2 items-center">
@@ -115,7 +103,7 @@ export default function AnalyzeCaseStudy({
 
   return (
     <motion.div
-      className="bg-modal-analyze-bg-color h-[95%] w-[95%] m-auto md:w-[602px] md:fixed md:top-[2.25%] md:right-4 flex flex-col rounded-2xl"
+      className="bg-card h-[95%] w-[95%] m-auto md:w-[602px] md:fixed md:top-[2.25%] md:right-4 flex flex-col rounded-2xl border border-border"
       initial="hidden"
       animate="visible"
       variants={variants}
@@ -127,16 +115,17 @@ export default function AnalyzeCaseStudy({
             Scorecard
           </Text>
           <Button
-            type="secondary"
-            customClass="!p-2"
-            icon={<CloseIcon className="text-icon-color cursor-pointer" />}
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
             onClick={setShowModal}
-          />
+          >
+            <CloseIcon className="text-icon-color" />
+          </Button>
         </div>
       </header>
       <main
-        className={`flex-1 overflow-y-auto p-8 relative ${isAnalyzing && "opacity-20"
-          }`}
+        className={`flex-1 overflow-y-auto p-8 relative ${isAnalyzing && "opacity-20"}`}
       >
         <div className="flex flex-col justify-center items-center mb-8">
           {rating === 1
@@ -155,33 +144,36 @@ export default function AnalyzeCaseStudy({
 
         {renderItems}
       </main>
-      <footer className="bg-modal-footer-bg-color py-4 px-8 rounded-b-2xl">
-        <div className="flex justify-between items-center gap-2">
-          {analysisCredits.remaining <= 0 ? (
+      <footer className="bg-card py-4 px-8 rounded-b-2xl border-t border-border">
+        <div className="flex justify-end items-center gap-2">
+          {outOfCredits ? (
             <Button
-              text="Upgrade to Pro"
-              type="modal"
-              onClick={() => setShowUpgradeModal(true)}
-            />
-          ) : (
-            <Text
-              size="p-xxsmall"
-              className="font-medium font-inter text-used-credit-text-color"
+              onClick={() => { setUpgradeModalSource("analyze"); setShowUpgradeModal(true); }}
             >
-              {`${analysisCredits.remaining}/${analysisCredits.limit} Credits left`}
-            </Text>
+              <Zap size={13} fill="currentColor" strokeWidth={0} />
+              Upgrade to Re-analyze
+            </Button>
+          ) : (
+            <TooltipProvider delayDuration={200}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className={isDisabled ? "cursor-not-allowed inline-flex" : "inline-flex"}>
+                    <Button
+                      disabled={isDisabled || isAnalyzing}
+                      onClick={analyzeCallback}
+                    >
+                      {isAnalyzing ? "Analyzing…" : "Analyze with AI"}
+                    </Button>
+                  </span>
+                </TooltipTrigger>
+                {tooShort && (
+                  <TooltipContent side="top" className="text-xs">
+                    400 words required to analyze
+                  </TooltipContent>
+                )}
+              </Tooltip>
+            </TooltipProvider>
           )}
-          <Button
-            text={
-              wordCount < 400
-                ? `Re-analyze requires ${400 - wordCount} more words`
-                : "Re-analyze Case Study"
-            }
-            type="modal"
-            isDisabled={analysisCredits.remaining <= 0 || wordCount < 400}
-            isLoading={isAnalyzing}
-            onClick={reAnalyze}
-          />
         </div>
       </footer>
     </motion.div>

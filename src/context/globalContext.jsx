@@ -2,13 +2,13 @@ import { setCursorvalue } from "@/lib/cursor";
 import { getWallpaperUrl, hasNoWallpaper, extractWallpaperValue } from "@/lib/wallpaper";
 import { useRouter } from "next/router";
 import { mapPendingPortfolioToUpdatePayload } from "@/lib/mapPendingPortfolioToUpdatePayload";
-import { _getDomainDetails, _getUserDetails, _getPersonas, _getTools } from "@/network/get-request";
+import { _getDomainDetails, _getUserDetails, _getPersonas, _getTools, _getUserQuota } from "@/network/get-request";
 import { _updateUser } from "@/network/post-request";
 import queryClient from "@/network/queryClient";
 import { useQuery } from "@tanstack/react-query";
 import Cookies from "js-cookie";
 import { useTheme } from "next-themes";
-import { popovers, sidebars, DEFAULT_SECTION_ORDER } from "@/lib/constant";
+import { popovers, sidebars, DEFAULT_SECTION_ORDER, modals } from "@/lib/constant";
 import { TEMPLATES_BY_ID } from "@/lib/templates";
 import { useDebouncedCallback } from "use-debounce";
 import React, {
@@ -74,6 +74,15 @@ export const GlobalProvider = ({ children }) => {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   /** When set, upgrade modal shows "Unhide [title]?" and message about 2 visible projects limit */
   const [upgradeModalUnhideProject, setUpgradeModalUnhideProject] = useState(null);
+  /** When set, upgrade modal shows a feature-specific title. Values: 'write-ai' | 'analyze' | 'fit-analysis' | 'resume' | 'cover-letter' | 'mock-interview' | null */
+  const [upgradeModalSource, setUpgradeModalSource] = useState(null);
+  /** When source is a job tool, carries { role, company, logoUrl } for the job context row */
+  const [upgradeModalJob, setUpgradeModalJob] = useState(null);
+  /** Cached AI writing credits remaining. null = not yet fetched. */
+  const [_aiWritingCredits, _setAiWritingCredits] = useState(null);
+  /** Case study analysis credits. null = not yet fetched. */
+  const [analysisCreditsRemaining, setAnalysisCreditsRemaining] = useState(null);
+  const [analysisCreditsLimit, setAnalysisCreditsLimit] = useState(2);
   const [domainDetails, setDomainDetails] = useState(null);
   const [wallpaper, setWallpaper] = useState(0);
   const [wallpaperEffects, setWallpaperEffects] = useState({
@@ -83,6 +92,7 @@ export const GlobalProvider = ({ children }) => {
     motion: true
   });
   const [isLoadingTemplate, setIsLoadingTemplate] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [activeSidebar, setActiveSidebar] = useState(null);
   const [showUnsavedWarning, setShowUnsavedWarning] = useState(false);
   const [pendingSidebarAction, setPendingSidebarAction] = useState(null);
@@ -608,6 +618,23 @@ export const GlobalProvider = ({ children }) => {
   };
 
   const openModal = (type = null) => {
+    if (type === modals.aiProject) {
+      const open = () => { setShowModal(type); setPopoverMenu(null); };
+      const openUpgrade = () => { setUpgradeModalSource("write-ai"); setShowUpgradeModal(true); };
+      if (_aiWritingCredits !== null) {
+        _aiWritingCredits <= 0 ? openUpgrade() : open();
+        return;
+      }
+      _getUserQuota()
+        .then((res) => {
+          const gen = res.data?.quota?.caseStudyGeneration;
+          const remaining = gen?.limit === null ? Infinity : Math.max(0, (gen?.limit ?? 2) - (gen?.used ?? 0));
+          _setAiWritingCredits(remaining);
+          remaining <= 0 ? openUpgrade() : open();
+        })
+        .catch(open);
+      return;
+    }
     setShowModal(type);
     setPopoverMenu(null);
   };
@@ -774,6 +801,15 @@ export const GlobalProvider = ({ children }) => {
         setShowUpgradeModal,
         upgradeModalUnhideProject,
         setUpgradeModalUnhideProject,
+        upgradeModalSource,
+        setUpgradeModalSource,
+        upgradeModalJob,
+        setUpgradeModalJob,
+        invalidateAiWritingCredits: () => _setAiWritingCredits(null),
+        analysisCreditsRemaining,
+        setAnalysisCreditsRemaining,
+        analysisCreditsLimit,
+        setAnalysisCreditsLimit,
         domainDetails,
         setDomainDetails,
         fetchDomainDetails,
@@ -803,6 +839,8 @@ export const GlobalProvider = ({ children }) => {
         setPendingReplaceAwaitingConfirmation,
         applyPendingPortfolio,
         discardPendingPortfolio,
+        showSettingsModal,
+        setShowSettingsModal,
       }}
     >
       {children}

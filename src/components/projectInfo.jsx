@@ -145,7 +145,7 @@ export default function ProjectInfo({
   const tooltipMessage = outOfCredits
     ? "Upgrade to Pro to analyze Case Study"
     : needsMoreWords
-      ? `${wordCount} / 400 words — add ${400 - wordCount} more`
+      ? "400 words required to analyze"
       : wordCount != null ? `${wordCount} words` : null;
 
 

@@ -1,32 +1,34 @@
 import { useGlobalContext } from "@/context/globalContext";
 import React from "react";
 import styles from "@/styles/domain.module.css";
-import { TriangleAlert, ArrowUpRight } from "lucide-react";
+import { Zap } from "lucide-react";
+
 export default function ProWarning() {
-  const { template, setTemplate, setShowUpgradeModal, setUpgradeModalUnhideProject, setTemplateContext } = useGlobalContext();
+  const { template, setShowUpgradeModal, setUpgradeModalUnhideProject, changeTemplate } = useGlobalContext();
 
   if (template === 0) return null;
   const isMacOS = template === 4;
   return (
-    <div className={`${styles.proTemplateBanner} ${isMacOS ? "mt-[100px] relative z-[20]" : ""}`}>
+    <div className={`${styles.proTemplateBanner} ${isMacOS ? styles.proTemplateBannerMacOS : ""}`}>
       <div className={styles.proTemplateBannerContent}>
-        <div className={styles.proTemplateBannerText}>
-          <TriangleAlert size={16} className="shrink-0 mt-[1px]" />
-          <span>
-            You're using a Pro template. Some features might be limited.{" "}
-            <span
-              className="underline underline-offset-1 cursor-pointer"
-              onClick={() => { setUpgradeModalUnhideProject(null); setShowUpgradeModal(true); }}
-            >
-              Upgrade now
-            </span>
-          </span>
+        <div className={styles.proTemplateBannerLeft}>
+          <div className={styles.proTemplateBannerIcon} />
+          <div className={styles.proTemplateBannerTextBlock}>
+            <div className={styles.proTemplateBannerTitle}>You're using a Pro template</div>
+            <div className={styles.proTemplateBannerSubtext}>
+              Customize it freely. Upgrade to publish this portfolio.{" "}
+              <span className={styles.proTemplateBannerLink} onClick={() => changeTemplate(0)}>
+                Switch to a free template
+              </span>
+            </div>
+          </div>
         </div>
         <button
-          className={styles.revertTemplateButton}
-          onClick={() => setTemplateContext(0)}
+          className={styles.proTemplateBannerButton}
+          onClick={() => { setUpgradeModalUnhideProject(null); setShowUpgradeModal(true); }}
         >
-          Revert to Default
+          <Zap size={13} fill="white" />
+          Upgrade to Publish
         </button>
       </div>
     </div>

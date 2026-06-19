@@ -32,7 +32,7 @@ export function PublishDropdown({ onClose }) {
   const [isPublishing, setIsPublishing] = useState(false);
   const dropdownRef = useRef(null);
 
-  const { userDetails, setUserDetails, updateCache, template } = useGlobalContext();
+  const { userDetails, setUserDetails, updateCache, template, setShowUpgradeModal, setUpgradeModalSource } = useGlobalContext();
   const phEvent = usePostHogEvent();
 
   const { username, latestPublishDate, email } = userDetails || {};
@@ -54,6 +54,11 @@ export function PublishDropdown({ onClose }) {
   };
 
   const handlePublish = () => {
+    if (!userDetails?.pro && TEMPLATES_BY_ID[template]?.isPro) {
+      setUpgradeModalSource('pro-template');
+      setShowUpgradeModal(true);
+      return;
+    }
     setIsPublishing(true);
     const isFirstPublished = !latestPublishDate;
     _publish({ status: 1 })
@@ -85,7 +90,7 @@ export function PublishDropdown({ onClose }) {
       <div className="relative" ref={dropdownRef}>
         <Button
           onClick={handleFirstPublish}
-          disabled={isPublishing || (!userDetails?.pro && TEMPLATES_BY_ID[template]?.isPro)}
+          disabled={isPublishing}
           className="bg-black hover:bg-[#2A2A2A] dark:bg-white dark:hover:bg-[#E8E8E8] text-white dark:text-black font-medium px-6 h-9 text-[13px] rounded-full hover:cursor-pointer transition-colors"
           data-testid="button-publish"
           aria-expanded={isOpen}
@@ -141,10 +146,10 @@ export function PublishDropdown({ onClose }) {
 
                   <button
                     onClick={handlePublish}
-                    disabled={isPublishing || (!userDetails?.pro && TEMPLATES_BY_ID[template]?.isPro)}
+                    disabled={isPublishing}
                     className={cn(
                       "relative z-10 flex w-full items-center justify-center px-3 h-[44px] text-[13px] font-medium rounded-xl transition-colors duration-150 focus:outline-none mt-1",
-                      isPublishing || (!userDetails?.pro && TEMPLATES_BY_ID[template]?.isPro)
+                      isPublishing
                         ? "cursor-not-allowed bg-black/5 dark:bg-white/5 text-[#7A736C] dark:text-[#9E9893]"
                         : "cursor-pointer bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-[#1A1A1A] dark:text-[#F0EDE7]"
                     )}

@@ -4,7 +4,7 @@ import styles from "@/styles/domain.module.css";
 import { Zap } from "lucide-react";
 
 export default function ProWarning() {
-  const { template, setShowUpgradeModal, setUpgradeModalUnhideProject, changeTemplate } = useGlobalContext();
+  const { template, setShowUpgradeModal, setUpgradeModalUnhideProject, setUpgradeModalSource, changeTemplate } = useGlobalContext();
 
   if (template === 0) return null;
   const isMacOS = template === 4;
@@ -25,7 +25,7 @@ export default function ProWarning() {
         </div>
         <button
           className={styles.proTemplateBannerButton}
-          onClick={() => { setUpgradeModalUnhideProject(null); setShowUpgradeModal(true); }}
+          onClick={() => { setUpgradeModalUnhideProject(null); setUpgradeModalSource('pro-template'); setShowUpgradeModal(true); }}
         >
           <Zap size={13} fill="white" />
           Upgrade to Publish

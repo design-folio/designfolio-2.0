@@ -44,7 +44,7 @@ import MemoDFLogoV2 from "@/components/icons/DFLogoV2";
 import Link from "next/link";
 import { TEMPLATE_IDS, TEMPLATES_BY_ID } from "@/lib/templates";
 import { cn } from "@/lib/utils";
-import { StardustButton } from "@/components/StardustButton";
+import { UpgradePill } from "./UpgradePill";
 
 const MACOS_ROUTES = ["/builder", "/project/[id]/editor", "/project/[id]/preview"];
 
@@ -65,7 +65,8 @@ export default function Navbar() {
     updateCache,
     template,
     setShowSettingsModal,
-    setShowUpgradeModal
+    setShowUpgradeModal,
+    setUpgradeModalSource,
   } = useGlobalContext();
 
   const router = useRouter();
@@ -103,6 +104,11 @@ export default function Navbar() {
   };
 
   const handlePublish = () => {
+    if (!userDetails?.pro && TEMPLATES_BY_ID[template]?.isPro) {
+      setUpgradeModalSource('pro-template');
+      setShowUpgradeModal(true);
+      return;
+    }
     setIsPublishing(true);
     _publish({ status: 1 })
       .then((res) => {
@@ -241,7 +247,7 @@ export default function Navbar() {
                     )}
                   </Button>
                   <Button
-                    disabled={isPublishing || (!userDetails?.pro && TEMPLATES_BY_ID[template]?.isPro)}
+                    disabled={isPublishing}
                     onClick={handlePublish}
                     className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium px-4 h-8 text-xs rounded-lg"
                   >
@@ -359,16 +365,9 @@ export default function Navbar() {
           {navContent}
         </nav>
 
-        {/* Upgrade pill — free users only, builder page only, desktop non-MacOS */}
-        {!userDetails?.pro && router.pathname === "/builder" && !isMobile && !isMacOS && !activeSidebar && (
-          <div className="pointer-events-auto absolute right-5 top-7">
-            <StardustButton
-              size="sm"
-              onClick={() => setShowUpgradeModal(true)}
-            >
-              Upgrade PRO
-            </StardustButton>
-          </div>
+        {/* Upgrade pill — free users only, desktop non-MacOS */}
+        {userDetails && !userDetails.pro && !isMobile && !isMacOS && !activeSidebar && (
+          <UpgradePill />
         )}
       </div>
     </TooltipProvider>

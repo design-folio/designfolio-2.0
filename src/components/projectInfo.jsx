@@ -449,7 +449,7 @@ export default function ProjectInfo({
             <ImageWithOverlayAndPicker
               src={thumbnail?.url}
               project={projectDetails}
-              aspectRatio="16/9"
+              aspectRatio="3/2"
               recommendedSize="1600 × 900px"
             />
           ) : (
@@ -841,7 +841,7 @@ export default function ProjectInfo({
           <ImageWithOverlayAndPicker
             src={thumbnail?.url}
             project={projectDetails}
-            aspectRatio="16/9"
+            aspectRatio="3/2"
             recommendedSize="1600 × 900px"
             className="mt-6 md:mt-8"
           />

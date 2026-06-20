@@ -472,12 +472,12 @@ export default function CanvasProjectInfo({
             </p>
           )}
         </div>
-        <div className="w-full aspect-[16/9] rounded-[24px] overflow-hidden bg-[#F5F5F5] dark:bg-[#1A1A1A]">
+        <div className="w-full aspect-[3/2] rounded-[24px] overflow-hidden bg-[#F5F5F5] dark:bg-[#1A1A1A]">
           {edit ? (
             <ImageWithOverlayAndPicker
               src={thumbnail?.url}
               project={projectDetails}
-              aspectRatio="16/9"
+              aspectRatio="3/2"
               recommendedSize="1600 × 900px"
               className="rounded-none"
             />

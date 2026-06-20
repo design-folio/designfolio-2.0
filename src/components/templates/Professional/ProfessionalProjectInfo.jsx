@@ -425,12 +425,12 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
             <div className="absolute inset-0 border border-[#D5D0C6] dark:border-[#3A352E] pointer-events-none z-30" />
             <div className="bg-gradient-to-br from-[#D2CEC8] to-[#A8A49D] dark:from-[#3A352E] dark:to-[#1A1A1A] p-4 md:p-5 relative overflow-hidden">
               <FrameScrews />
-              <div className="w-full aspect-[16/10] relative overflow-hidden bg-white dark:bg-[#1A1A1A] shadow-[0_0_10px_rgba(0,0,0,0.2)]">
+              <div className="w-full aspect-[3/2] relative overflow-hidden bg-white dark:bg-[#1A1A1A] shadow-[0_0_10px_rgba(0,0,0,0.2)]">
                 {edit ? (
                   <ImageWithOverlayAndPicker
                     src={thumbnail?.url}
                     project={projectDetails}
-                    aspectRatio="16/10"
+                    aspectRatio="3/2"
                     recommendedSize="1600 × 900px"
                     className="rounded-none"
                   />

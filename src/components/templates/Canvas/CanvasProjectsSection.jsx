@@ -57,7 +57,7 @@ function ProjectCard({ project, isEditing, isPreview, onNavigate, onDelete, onTo
           </Button>
         </div>
       )}
-      <div className="rounded-2xl overflow-hidden aspect-[16/9] border border-black/5 dark:border-white/10 bg-[#F5F5F5] dark:bg-[#1A1A1A] pointer-events-none relative">
+      <div className="rounded-2xl overflow-hidden aspect-[3/2] border border-black/5 dark:border-white/10 bg-[#F5F5F5] dark:bg-[#1A1A1A] pointer-events-none relative">
         <img
           src={project?.thumbnail?.url}
           alt={project?.title || "project image"}

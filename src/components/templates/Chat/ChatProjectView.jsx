@@ -248,7 +248,7 @@ export default function ChatProjectView({
     >
       <div
         className={cn(
-          "w-full max-w-[640px] flex flex-col relative px-4 sm:px-6",
+          "w-full max-w-[640px] flex flex-col relative",
           edit ? "pt-2 pb-6" : "min-h-screen pt-8 pb-24",
         )}
       >
@@ -419,13 +419,13 @@ export default function ChatProjectView({
                   )}
                 </div>
                 {(edit || project?.thumbnail?.url) && (
-                  <div className="rounded-2xl overflow-hidden aspect-[4/3] bg-[#F5F5F5] dark:bg-[#1A1A1A] relative border border-black/5 dark:border-white/5">
+                  <div className="rounded-2xl overflow-hidden aspect-[3/2] bg-[#F5F5F5] dark:bg-[#1A1A1A] relative border border-black/5 dark:border-white/5">
                     {edit ? (
                       <ImageWithOverlayAndPicker
                         src={project?.thumbnail?.url}
                         project={project}
-                        aspectRatio="4/3"
-                        recommendedSize="1200 × 900px"
+                        aspectRatio="3/2"
+                        recommendedSize="1600 × 900px"
                         className="rounded-none"
                       />
                     ) : (

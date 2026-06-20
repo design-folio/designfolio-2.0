@@ -44,10 +44,10 @@ function CanvasProfileCard({ isEditing }) {
         />
       </div>
       <div className="flex flex-col gap-2">
-        <h1 className="text-[24px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7] tracking-tight leading-tight">
+        <h1 className="text-[24px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7] tracking-tight leading-tight text-pretty">
           {introduction}
         </h1>
-        <p className="text-[#7A736C] dark:text-[#B5AFA5] text-[16px] leading-relaxed max-w-[480px]">
+        <p className="text-[#7A736C] dark:text-[#B5AFA5] text-[16px] leading-relaxed text-pretty ">
           {bio}
         </p>
       </div>

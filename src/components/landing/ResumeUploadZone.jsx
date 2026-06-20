@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
 import { useTheme } from "next-themes";
 import toast from "react-hot-toast";
-import { CheckCircle2 } from "lucide-react";
 import { ColorOrb } from "@/components/ui/color-orb";
 import { Folder } from "@/components/ui/folder";
 import { _postResumeParse } from "@/network/resume";
@@ -14,10 +13,11 @@ import { usePostHogEvent } from "@/hooks/usePostHogEvent";
 import { POSTHOG_EVENT_NAMES } from "@/lib/posthogEventNames";
 
 const AI_STATUSES = [
-  "Reading your resume...",
-  "Extracting skills & experience...",
-  "Building your portfolio...",
-  "Scanning matched jobs...",
+  "Reading your resume",
+  "Identifying your experience",
+  "Extracting your skills",
+  "Finding matching jobs",
+  "Building your portfolio",
 ];
 
 export default function ResumeUploadZone({
@@ -49,8 +49,8 @@ export default function ResumeUploadZone({
     if (!isProcessing) return;
     setAiStatusIndex(0);
     const interval = setInterval(() => {
-      setAiStatusIndex((i) => (i + 1) % AI_STATUSES.length);
-    }, 2200);
+      setAiStatusIndex((i) => Math.min(i + 1, AI_STATUSES.length - 1));
+    }, 1600);
     return () => clearInterval(interval);
   }, [isProcessing]);
 
@@ -175,8 +175,8 @@ export default function ResumeUploadZone({
               transition={{ duration: 0.25 }}
               className={
                 variant === "modal"
-                  ? "orb-always-active w-full flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-lp-text/25 bg-lp-text/[0.03] px-6 py-10"
-                  : "orb-always-active inline-flex items-center gap-3.5 rounded-xl border border-dashed border-lp-text/25 bg-lp-text/[0.03] px-5 py-3"
+                  ? "orb-always-active w-full flex items-start gap-4 rounded-2xl border border-dashed border-lp-text/25 bg-lp-text/[0.03] px-6 py-10"
+                  : "orb-always-active inline-flex items-start gap-3.5 rounded-xl border border-dashed border-lp-text/25 bg-lp-text/[0.03] px-5 py-3.5"
               }
               style={{
                 boxShadow: isDark
@@ -184,24 +184,19 @@ export default function ResumeUploadZone({
                   : "0 8px 32px rgba(29,27,26,0.14), 0 2px 8px rgba(29,27,26,0.08)",
               }}
             >
-              <ColorOrb dimension={variant === "modal" ? "32px" : "14px"} spinDuration={5} />
-              <div className={variant === "modal" ? "flex flex-col items-center gap-1" : ""}>
-                <AnimatePresence mode="wait">
-                  <motion.span
-                    key={aiStatusIndex}
-                    initial={{ opacity: 0, y: 4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -4 }}
-                    transition={{ duration: 0.3, ease: "easeOut" }}
-                    className={`text-[14px] font-semibold leading-none text-[--lp-text] ${variant === "modal" ? "text-center" : "whitespace-nowrap"}`}
-                  >
-                    {AI_STATUSES[aiStatusIndex]}
-                  </motion.span>
-                </AnimatePresence>
-                <span className="text-[12px] text-[--lp-text-faint] leading-none">
-                  This takes a few seconds...
-                </span>
-              </div>
+              <ColorOrb dimension="14px" spinDuration={5} className="shrink-0" />
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={aiStatusIndex}
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  className="text-[14px] font-semibold leading-none text-[--lp-text] whitespace-nowrap"
+                >
+                  {AI_STATUSES[aiStatusIndex]}
+                </motion.span>
+              </AnimatePresence>
             </motion.div>
           ) : showPrimaryCta ? (
             <motion.div

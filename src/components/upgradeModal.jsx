@@ -159,7 +159,7 @@ export default function UpgradeModal() {
   useEffect(() => {
     if (showUpgradeModal && selectedPlan && !hasTrackedView.current) {
       phEvent(POSTHOG_EVENT_NAMES.UPGRADE_MODAL_VIEWED, {
-        source: 'dropdown',
+        source: upgradeModalUnhideProject ? 'portfolio_case_study_limit' : (upgradeModalSource || 'dropdown'),
         default_plan: selectedPlan?.plan,
         default_plan_amount: Number(selectedPlan?.amount),
         default_plan_currency: selectedPlan?.currency,
@@ -228,7 +228,7 @@ export default function UpgradeModal() {
   const openCheckout = async () => {
     if (!selectedPlan?.plan || checkoutLoading) return;
     phEvent(POSTHOG_EVENT_NAMES.UPGRADE_MODAL_CLICKED, {
-      source: 'dropdown',
+      source: upgradeModalUnhideProject ? 'portfolio_case_study_limit' : (upgradeModalSource || 'dropdown'),
       selected_plan: selectedPlan?.plan,
       selected_amount: Number(selectedPlan?.amount),
       selected_currency: selectedPlan?.currency,
@@ -370,7 +370,7 @@ export default function UpgradeModal() {
                           const newPlan = proPlans.find(p => p.plan === value);
                           setSelectedPlan(newPlan);
                           phEvent(POSTHOG_EVENT_NAMES.UPGRADE_PLAN_SELECTED, {
-                            source: 'dropdown',
+                            source: upgradeModalUnhideProject ? 'portfolio_case_study_limit' : (upgradeModalSource || 'dropdown'),
                             selected_plan: newPlan?.plan,
                             selected_amount: Number(newPlan?.amount),
                             selected_currency: newPlan?.currency,

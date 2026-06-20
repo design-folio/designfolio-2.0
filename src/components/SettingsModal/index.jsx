@@ -31,10 +31,10 @@ import { useIsMobile } from "@/hooks/use-mobile";
 /* ─────────────────────────── constants ─────────────────────────── */
 
 const TABS = [
-  { id: "account",      label: "Account",      icon: User       },
-  { id: "domains",      label: "Domains",      icon: Globe      },
+  { id: "account", label: "Account", icon: User },
+  { id: "domains", label: "Domains", icon: Globe },
   { id: "subscription", label: "Subscription", icon: CreditCard },
-  { id: "security",     label: "Security",     icon: Shield     },
+  { id: "security", label: "Security", icon: Shield },
 ];
 
 /* ─────────────────────────── shared primitives ─────────────────── */
@@ -341,7 +341,7 @@ export default function SettingsModal() {
   /* ── Desktop: centered dialog ── */
   return (
     <Dialog open={showSettingsModal} onOpenChange={setShowSettingsModal}>
-      <DialogContent className="max-w-[860px] p-0 overflow-hidden gap-0 rounded-2xl border border-black/10 dark:border-white/10 bg-white dark:bg-[#1C1C1C] h-[580px] shadow-2xl flex flex-col">
+      <DialogContent overlayClassName="z-[201]" className="z-[202] max-w-[860px] p-0 overflow-hidden gap-0 rounded-2xl border border-black/10 dark:border-white/10 bg-white dark:bg-[#1C1C1C] h-[580px] shadow-2xl flex flex-col">
         <DialogTitle className="sr-only">Settings</DialogTitle>
 
         <div className="flex flex-1 min-h-0">

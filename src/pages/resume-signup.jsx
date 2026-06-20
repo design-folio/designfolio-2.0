@@ -1,6 +1,6 @@
 import { useGoogleLogin } from "@react-oauth/google";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowRight, Briefcase, Clock, Eye, EyeOff, Lock, Monitor, Moon, Sparkles, Sun } from "lucide-react";
+import { ArrowLeft, ArrowRight, Briefcase, Clock, Eye, EyeOff, Lock, Monitor, Moon, Sparkles, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -367,7 +367,7 @@ function JobsPreview({ parsed }) {
 // ── Right preview panel — defined outside component to avoid remount on every keystroke ──
 function PreviewContent({ tab, onTabChange, parsed }) {
   return (
-    <div className="flex flex-col flex-1 h-full overflow-hidden relative bg-background">
+    <div className="flex flex-col flex-1 h-full overflow-hidden relative bg-[#f0ede7] dark:bg-[#1a1a1a]">
       {/* Top fade */}
       <div className="absolute top-0 left-0 right-0 z-20 pointer-events-none h-20 bg-gradient-to-b from-background to-transparent" />
 
@@ -625,12 +625,18 @@ export default function ResumeSignup() {
         >
           {/* Top bar */}
           <div className="absolute top-0 left-0 right-0 flex items-center justify-between px-8 py-5 z-10">
-            <button
-              onClick={() => router.push("/")}
-              className="text-[13px] font-semibold text-[--lp-text-faint] hover:text-[--lp-text] transition-colors"
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                sessionStorage.removeItem("df_parsed_resume");
+                router.push("/");
+              }}
+              className="gap-1.5 px-2 text-[13px] font-semibold text-[--lp-text-faint] hover:text-[--lp-text] hover:bg-transparent"
             >
-              ← Back
-            </button>
+              <ArrowLeft className="w-3.5 h-3.5" />
+              Restart with different resume
+            </Button>
             <button
               onClick={() => setTheme(isDark ? "light" : "dark")}
               className="flex items-center justify-center w-8 h-8 rounded-full border border-[--lp-border] text-[--lp-text-faint] hover:text-[--lp-text] hover:border-[--lp-text]/30 transition-all"

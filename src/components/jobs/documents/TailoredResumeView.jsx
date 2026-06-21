@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ChevronLeft, ChevronDown, Copy, Check, Download, RotateCcw,
-  Loader2, Save, ExternalLink, Plus, Trash2, Info,
+  Loader2, Save, ExternalLink, Plus, Trash2, Info, AlertTriangle,
 } from "lucide-react";
 
 const FONTS = ["Inter", "Manrope", "Geist Mono", "DM Mono"];
@@ -16,7 +16,8 @@ const fontFamilyOf = (f) =>
     : "'Inter', sans-serif";
 const lineHeightOf = (s) => (s === "Compact" ? "1.5" : s === "Relaxed" ? "2" : "1.75");
 
-const F = "w-full text-[11.5px] text-foreground/75 bg-foreground/[0.03] dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06] rounded-lg px-2.5 py-1.5 outline-none focus:ring-1 focus:ring-foreground/[0.18] transition-all";
+// Input / textarea base class for the editor panel
+const F = "w-full text-[11.5px] text-foreground/75 bg-foreground/[0.03] dark:bg-white/[0.03] border border-black/[0.07] dark:border-white/[0.07] rounded-lg px-2.5 py-1.5 outline-none focus:ring-1 focus:ring-foreground/[0.18] transition-all";
 
 const SECTIONS = [
   { id: "personal", label: "Personal Info" },
@@ -26,8 +27,6 @@ const SECTIONS = [
   { id: "skills", label: "Skills" },
 ];
 
-// Resume editor wired to a persisted document. Facts come pre-filled from the
-// portfolio; the user can edit everything. AI-Rewrite tab is hidden in v1.
 export default function TailoredResumeView({ doc, job, onBack, onSave, onExport, onRegenerate, saving, exporting, regenerating }) {
   const c = doc?.content || {};
   const [personalInfo, setPersonalInfo] = useState(c.personalInfo || { name: "", email: "", linkedin: "", portfolio: "" });
@@ -75,7 +74,11 @@ export default function TailoredResumeView({ doc, job, onBack, onSave, onExport,
       personalInfo.name,
       [personalInfo.email, personalInfo.linkedin, personalInfo.portfolio].filter(Boolean).join("  ·  "),
       "", summary, "",
-      ...experiences.flatMap((e) => [`${e.title} · ${e.company} (${e.dates})`, ...(e.bullets || []).map((b) => `• ${b}`), ""]),
+      ...experiences.flatMap((e) => [
+        `${e.company} — ${e.title} (${e.dates})`,
+        ...(e.bullets || []).map((b) => `• ${b}`),
+        "",
+      ]),
       ...(skills.length ? ["Skills", ...skills] : []),
     ];
     navigator.clipboard.writeText(lines.join("\n"));
@@ -88,7 +91,7 @@ export default function TailoredResumeView({ doc, job, onBack, onSave, onExport,
 
   return (
     <div className="flex flex-col h-full">
-      {/* Header */}
+      {/* ── Header ── */}
       <div className="px-4 flex-shrink-0 flex items-center gap-3 h-[64px] border-b border-black/[0.08] dark:border-white/[0.08]">
         <button onClick={onBack} className="flex items-center gap-1.5 text-foreground/45 hover:text-foreground/75 transition-colors group -ml-1">
           <ChevronLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
@@ -100,10 +103,12 @@ export default function TailoredResumeView({ doc, job, onBack, onSave, onExport,
         <span className="ml-auto text-[12px] text-foreground/40">{job?.company}</span>
       </div>
 
-      {/* Body */}
+      {/* ── Body ── */}
       <div className="flex flex-1 min-h-0">
-        {/* Left: preview */}
+
+        {/* ── Left: preview ── */}
         <div className="flex flex-col flex-1 min-w-0">
+          {/* Toolbar */}
           <div className="flex items-center gap-1 px-4 py-2 border-b border-black/[0.05] dark:border-white/[0.05] flex-shrink-0">
             <div className="flex items-center gap-1.5 text-foreground/35 select-none">
               <Info className="w-3 h-3 flex-shrink-0" />
@@ -116,81 +121,113 @@ export default function TailoredResumeView({ doc, job, onBack, onSave, onExport,
             </button>
             <div className="w-px h-3.5 bg-black/[0.07] dark:bg-white/[0.07]" />
             <button onClick={handleCopy} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-foreground/45 hover:text-foreground/70 hover:bg-foreground/[0.05] transition-all text-[11px] font-medium">
-              {copied ? <span className="flex items-center gap-1.5 text-emerald-500"><Check className="w-3 h-3" />Copied</span> : <span className="flex items-center gap-1.5"><Copy className="w-3 h-3" />Copy</span>}
+              <AnimatePresence mode="wait" initial={false}>
+                {copied
+                  ? <motion.span key="c" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} transition={{ duration: 0.14 }} className="flex items-center gap-1.5 text-emerald-500"><Check className="w-3 h-3" />Copied</motion.span>
+                  : <motion.span key="o" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} transition={{ duration: 0.14 }} className="flex items-center gap-1.5"><Copy className="w-3 h-3" />Copy</motion.span>
+                }
+              </AnimatePresence>
             </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto bg-[#F7F5F2] dark:bg-[#161210] px-5 py-5">
-            <div className="bg-white dark:bg-[#1C1814] border border-black/[0.07] dark:border-white/[0.05] rounded-xl shadow-[0_2px_16px_rgba(0,0,0,0.07)] dark:shadow-[0_2px_16px_rgba(0,0,0,0.35)] px-8 py-7 min-h-[520px]" style={{ fontFamily, lineHeight }}>
-              <p className="text-[20px] font-bold tracking-tight text-center text-foreground leading-tight">{personalInfo.name || "Your Name"}</p>
-              <p className="text-[10.5px] text-foreground/55 text-center mt-1 mb-5">
+          {/* Resume paper — always white regardless of app theme */}
+          <div className="flex-1 overflow-y-auto custom-thin-scrollbar bg-[#F7F5F2] dark:bg-[#161210] px-5 py-5">
+            <div
+              className="bg-white border border-black/[0.07] rounded-xl shadow-[0_2px_16px_rgba(0,0,0,0.07)] px-8 py-7 min-h-[520px]"
+              style={{ fontFamily, lineHeight }}
+            >
+              {/* Name */}
+              <p style={{ fontSize: "22px", fontWeight: 700, color: "#111", margin: "0 0 4px", textAlign: "center", lineHeight: 1.2 }}>
+                {personalInfo.name || "Your Name"}
+              </p>
+              {/* Contact */}
+              <p style={{ fontSize: "10.5px", color: "#555", margin: "0 0 18px", textAlign: "center" }}>
                 {[personalInfo.email, personalInfo.linkedin, personalInfo.portfolio].filter(Boolean).join("  ·  ")}
               </p>
 
+              {/* Summary */}
               {summary ? (
                 <div className="mb-4">
                   <p className="text-[10px] font-bold uppercase tracking-[0.09em] mb-1" style={{ color: accent }}>Summary</p>
-                  <hr className="border-foreground/15 mb-2" />
-                  <p className="text-[11.5px] text-foreground/80">{summary}</p>
+                  <hr className="mb-2" style={{ borderColor: "#e5e5e5" }} />
+                  <p className="text-[11.5px] leading-relaxed" style={{ color: "#333" }}>{summary}</p>
                 </div>
               ) : null}
 
+              {/* Experience */}
               {experiences.length ? (
                 <div className="mb-4">
                   <p className="text-[10px] font-bold uppercase tracking-[0.09em] mb-1" style={{ color: accent }}>Experience</p>
-                  <hr className="border-foreground/15 mb-3" />
+                  <hr className="mb-3" style={{ borderColor: "#e5e5e5" }} />
                   {experiences.map((exp, i) => (
-                    <div key={i} className={i < experiences.length - 1 ? "mb-3.5" : ""}>
+                    <div key={i} style={{ marginBottom: i < experiences.length - 1 ? "12px" : 0 }}>
+                      {/* Title · Company — matches PDF layout */}
                       <div className="flex items-baseline justify-between gap-2">
-                        <p className="text-[12px] font-semibold text-foreground leading-snug">{exp.company}</p>
-                        <p className="text-[10.5px] text-foreground/45 whitespace-nowrap flex-shrink-0">{exp.dates}</p>
+                        <p className="text-[11.5px] font-semibold" style={{ color: "#111" }}>
+                          {exp.title || ""}{exp.company ? ` · ${exp.company}` : ""}
+                        </p>
+                        <p className="text-[10px] whitespace-nowrap flex-shrink-0" style={{ color: "#777" }}>{exp.dates}</p>
                       </div>
-                      <p className="text-[11px] text-foreground/55 italic mb-1.5">{exp.title}</p>
-                      <ul className="space-y-0.5 pl-3.5">
-                        {(exp.bullets || []).filter(Boolean).map((b, bi) => (
-                          <li key={bi} className="text-[11.5px] text-foreground/72 leading-[1.7] list-disc list-outside ml-1">{b}</li>
-                        ))}
-                      </ul>
+                      {(exp.bullets || []).filter(Boolean).length ? (
+                        <ul style={{ margin: "6px 0 0", paddingLeft: "16px", listStyleType: "disc" }}>
+                          {(exp.bullets || []).filter(Boolean).map((b, bi) => (
+                            <li key={bi} className="text-[11.5px] leading-[1.7]" style={{ color: "#333", marginBottom: "3px", display: "list-item" }}>{b}</li>
+                          ))}
+                        </ul>
+                      ) : null}
                     </div>
                   ))}
                 </div>
               ) : null}
 
+              {/* Education */}
               {education.length ? (
                 <div className="mb-4">
                   <p className="text-[10px] font-bold uppercase tracking-[0.09em] mb-1" style={{ color: accent }}>Education</p>
-                  <hr className="border-foreground/15 mb-2" />
+                  <hr className="mb-2" style={{ borderColor: "#e5e5e5" }} />
                   {education.map((edu, i) => (
-                    <div key={i} className="flex items-baseline justify-between gap-2">
-                      <div>
-                        <p className="text-[11.5px] font-semibold text-foreground">{edu.school}</p>
-                        <p className="text-[11px] text-foreground/55 italic">{edu.degree}</p>
+                    <div key={i} style={{ marginBottom: i < education.length - 1 ? "10px" : 0 }}>
+                      {/* Degree · School — matches PDF layout */}
+                      <div className="flex items-baseline justify-between gap-2">
+                        <p className="text-[11.5px] font-semibold" style={{ color: "#111" }}>
+                          {edu.degree || ""}{edu.school ? ` · ${edu.school}` : ""}
+                        </p>
+                        <p className="text-[10px] whitespace-nowrap flex-shrink-0" style={{ color: "#777" }}>{edu.dates}</p>
                       </div>
-                      <p className="text-[10.5px] text-foreground/45 whitespace-nowrap flex-shrink-0">{edu.dates}</p>
                     </div>
                   ))}
                 </div>
               ) : null}
 
+              {/* Skills — chips to match PDF output */}
               {skills.length ? (
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-[0.09em] mb-1" style={{ color: accent }}>Skills</p>
-                  <hr className="border-foreground/15 mb-2" />
-                  {skills.map((line, i) => (
-                    <p key={i} className="text-[11.5px] text-foreground/72">{line}</p>
-                  ))}
+                  <hr className="mb-2" style={{ borderColor: "#e5e5e5" }} />
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                    {skills.map((s, i) => (
+                      <span key={i} style={{ border: "1px solid #e0e0e0", borderRadius: "4px", padding: "2px 8px", fontSize: "10px", color: "#333" }}>
+                        {s}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               ) : null}
+            </div>
+
+            {/* Page indicator */}
+            <div className="flex items-center justify-center mt-3">
+              <span className="text-[11px] text-foreground/25 font-medium tracking-wide">1 / 1</span>
             </div>
           </div>
 
           {/* Footer */}
           <div className="px-5 py-3.5 border-t border-black/[0.06] dark:border-white/[0.06] flex gap-2.5 flex-shrink-0">
-            <button onClick={() => onSave(buildContent(), buildStyling())} disabled={saving || !dirty} className="flex items-center justify-center gap-2 h-9 px-4 rounded-full border border-black/[0.12] dark:border-white/[0.12] text-foreground/65 hover:text-foreground hover:border-black/[0.20] text-[12.5px] font-medium transition-colors disabled:opacity-40">
+            <button onClick={() => onSave(buildContent(), buildStyling())} disabled={saving || !dirty} className="flex items-center justify-center gap-2 h-9 px-4 rounded-full border border-black/[0.12] dark:border-white/[0.12] text-foreground/65 hover:text-foreground hover:border-black/[0.20] dark:hover:border-white/[0.20] text-[12.5px] font-medium transition-colors disabled:opacity-40">
               {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
               {dirty ? "Save changes" : "Saved"}
             </button>
-            <button onClick={() => onExport(buildContent(), buildStyling())} disabled={exporting} className="flex items-center justify-center gap-2 h-9 px-4 rounded-full border border-black/[0.12] dark:border-white/[0.12] text-foreground/65 hover:text-foreground hover:border-black/[0.20] text-[12.5px] font-medium transition-colors disabled:opacity-40">
+            <button onClick={() => onExport(buildContent(), buildStyling())} disabled={exporting} className="flex items-center justify-center gap-2 h-9 px-4 rounded-full border border-black/[0.12] dark:border-white/[0.12] text-foreground/65 hover:text-foreground hover:border-black/[0.20] dark:hover:border-white/[0.20] text-[12.5px] font-medium transition-colors disabled:opacity-40">
               {exporting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
               Download PDF
             </button>
@@ -205,20 +242,40 @@ export default function TailoredResumeView({ doc, job, onBack, onSave, onExport,
 
         <div className="w-px bg-black/[0.06] dark:bg-white/[0.06] flex-shrink-0" />
 
-        {/* Right: Editor / Style */}
+        {/* ── Right: Editor / Style panel ── */}
         <div className="w-[300px] flex-shrink-0 flex flex-col bg-[#F4F1EC] dark:bg-[#131008]">
+          {/* Tab bar */}
           <div className="flex items-center px-3 pt-3 pb-0 gap-0.5 flex-shrink-0">
             {[{ key: "editor", label: "Editor" }, { key: "style", label: "Style" }].map((tab) => (
-              <button key={tab.key} onClick={() => setRightTab(tab.key)} className={`flex-1 py-2 text-[11.5px] font-semibold rounded-t-lg transition-all ${rightTab === tab.key ? "bg-white dark:bg-[#1E1A16] text-foreground/85 border border-black/[0.07] dark:border-white/[0.07] border-b-0" : "text-foreground/40 hover:text-foreground/65"}`}>{tab.label}</button>
+              <button
+                key={tab.key}
+                onClick={() => setRightTab(tab.key)}
+                className={`flex-1 py-2 text-[11.5px] font-semibold rounded-t-lg transition-all ${
+                  rightTab === tab.key
+                    ? "bg-white dark:bg-[#1E1A16] text-foreground/85 border border-black/[0.07] dark:border-white/[0.07] border-b-0"
+                    : "text-foreground/40 hover:text-foreground/65"
+                }`}
+              >
+                {tab.label}
+              </button>
             ))}
           </div>
           <div className="h-px bg-black/[0.07] dark:bg-white/[0.07] flex-shrink-0" />
 
+          {/* ── Editor tab ── */}
           {rightTab === "editor" && (
-            <div className="flex flex-col flex-1 min-h-0 overflow-y-auto">
+            <div className="flex flex-col flex-1 min-h-0 overflow-y-auto custom-thin-scrollbar">
               <div className="px-3 py-3 space-y-2.5">
+                {/* Change notice */}
+                <div className="flex items-start gap-2.5 bg-amber-50 dark:bg-amber-400/10 border border-amber-200/70 dark:border-amber-400/20 rounded-xl px-3 py-2.5">
+                  <AlertTriangle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0 mt-0.5" />
+                  <p className="text-[11px] leading-[1.6] text-amber-800 dark:text-amber-300">
+                    Changes apply only to this tailored resume and update the preview instantly.
+                  </p>
+                </div>
+
                 {SECTIONS.map((section) => (
-                  <div key={section.id} className="bg-white dark:bg-[#1E1A16] border border-black/[0.06] dark:border-white/[0.05] rounded-xl overflow-hidden">
+                  <div key={section.id} className="bg-white dark:bg-[#1E1A16] border border-black/[0.06] dark:border-white/[0.06] rounded-xl overflow-hidden">
                     <button onClick={() => toggle(section.id)} className="w-full flex items-center gap-2 px-3 py-2.5 text-left">
                       <span className="flex-1 text-[12px] font-semibold text-foreground/75">{section.label}</span>
                       <motion.div animate={{ rotate: expanded[section.id] ? 180 : 0 }} transition={{ duration: 0.2 }}>
@@ -228,7 +285,11 @@ export default function TailoredResumeView({ doc, job, onBack, onSave, onExport,
 
                     <AnimatePresence initial={false}>
                       {expanded[section.id] && (
-                        <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }} className="overflow-hidden">
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
+                          className="overflow-hidden"
+                        >
                           <div className="border-t border-black/[0.05] dark:border-white/[0.05] px-3 py-3 space-y-2">
 
                             {section.id === "personal" && ["name", "email", "linkedin", "portfolio"].map((field) => (
@@ -251,13 +312,27 @@ export default function TailoredResumeView({ doc, job, onBack, onSave, onExport,
                                       <p className="text-[10px] font-semibold text-foreground/40 uppercase tracking-wide">Role {idx + 1}</p>
                                       <button onClick={() => removeExp(idx)} className="text-foreground/25 hover:text-red-400 transition-colors"><Trash2 className="w-3 h-3" /></button>
                                     </div>
-                                    <input placeholder="Company" value={exp.company || ""} onChange={(e) => updateExp(idx, "company", e.target.value)} className={F} />
-                                    <input placeholder="Title" value={exp.title || ""} onChange={(e) => updateExp(idx, "title", e.target.value)} className={F} />
-                                    <input placeholder="Dates" value={exp.dates || ""} onChange={(e) => updateExp(idx, "dates", e.target.value)} className={F} />
-                                    <textarea placeholder="Bullet points (one per line)" value={(exp.bullets || []).join("\n")} onChange={(e) => updateExpBullets(idx, e.target.value)} rows={4} className={`${F} resize-none`} />
+                                    <div>
+                                      <p className="text-[10px] text-foreground/40 font-medium mb-0.5">Company</p>
+                                      <input placeholder="Company" value={exp.company || ""} onChange={(e) => updateExp(idx, "company", e.target.value)} className={F} />
+                                    </div>
+                                    <div>
+                                      <p className="text-[10px] text-foreground/40 font-medium mb-0.5">Title</p>
+                                      <input placeholder="Title" value={exp.title || ""} onChange={(e) => updateExp(idx, "title", e.target.value)} className={F} />
+                                    </div>
+                                    <div>
+                                      <p className="text-[10px] text-foreground/40 font-medium mb-0.5">Dates</p>
+                                      <input placeholder="Dates" value={exp.dates || ""} onChange={(e) => updateExp(idx, "dates", e.target.value)} className={F} />
+                                    </div>
+                                    <div>
+                                      <p className="text-[10px] text-foreground/40 font-medium mb-0.5">Bullet points (one per line)</p>
+                                      <textarea placeholder="Bullet points (one per line)" value={(exp.bullets || []).join("\n")} onChange={(e) => updateExpBullets(idx, e.target.value)} rows={4} className={`${F} resize-none`} />
+                                    </div>
                                   </div>
                                 ))}
-                                <button onClick={addExp} className="w-full flex items-center justify-center gap-1.5 h-8 rounded-lg border border-dashed border-black/[0.12] dark:border-white/[0.12] text-foreground/40 hover:text-foreground/65 text-[11.5px] font-medium transition-colors"><Plus className="w-3 h-3" />Add role</button>
+                                <button onClick={addExp} className="w-full flex items-center justify-center gap-1.5 h-8 rounded-lg border border-dashed border-black/[0.12] dark:border-white/[0.12] text-foreground/40 hover:text-foreground/65 hover:border-black/[0.22] dark:hover:border-white/[0.22] text-[11.5px] font-medium transition-colors">
+                                  <Plus className="w-3 h-3" />Add role
+                                </button>
                               </div>
                             )}
 
@@ -270,12 +345,23 @@ export default function TailoredResumeView({ doc, job, onBack, onSave, onExport,
                                       <p className="text-[10px] font-semibold text-foreground/40 uppercase tracking-wide">Entry {idx + 1}</p>
                                       <button onClick={() => removeEdu(idx)} className="text-foreground/25 hover:text-red-400 transition-colors"><Trash2 className="w-3 h-3" /></button>
                                     </div>
-                                    <input placeholder="School" value={edu.school || ""} onChange={(e) => updateEdu(idx, "school", e.target.value)} className={F} />
-                                    <input placeholder="Degree" value={edu.degree || ""} onChange={(e) => updateEdu(idx, "degree", e.target.value)} className={F} />
-                                    <input placeholder="Dates" value={edu.dates || ""} onChange={(e) => updateEdu(idx, "dates", e.target.value)} className={F} />
+                                    <div>
+                                      <p className="text-[10px] text-foreground/40 font-medium mb-0.5">School</p>
+                                      <input placeholder="School" value={edu.school || ""} onChange={(e) => updateEdu(idx, "school", e.target.value)} className={F} />
+                                    </div>
+                                    <div>
+                                      <p className="text-[10px] text-foreground/40 font-medium mb-0.5">Degree</p>
+                                      <input placeholder="Degree" value={edu.degree || ""} onChange={(e) => updateEdu(idx, "degree", e.target.value)} className={F} />
+                                    </div>
+                                    <div>
+                                      <p className="text-[10px] text-foreground/40 font-medium mb-0.5">Dates</p>
+                                      <input placeholder="Dates" value={edu.dates || ""} onChange={(e) => updateEdu(idx, "dates", e.target.value)} className={F} />
+                                    </div>
                                   </div>
                                 ))}
-                                <button onClick={addEdu} className="w-full flex items-center justify-center gap-1.5 h-8 rounded-lg border border-dashed border-black/[0.12] dark:border-white/[0.12] text-foreground/40 hover:text-foreground/65 text-[11.5px] font-medium transition-colors"><Plus className="w-3 h-3" />Add education</button>
+                                <button onClick={addEdu} className="w-full flex items-center justify-center gap-1.5 h-8 rounded-lg border border-dashed border-black/[0.12] dark:border-white/[0.12] text-foreground/40 hover:text-foreground/65 hover:border-black/[0.22] dark:hover:border-white/[0.22] text-[11.5px] font-medium transition-colors">
+                                  <Plus className="w-3 h-3" />Add education
+                                </button>
                               </div>
                             )}
 
@@ -295,30 +381,62 @@ export default function TailoredResumeView({ doc, job, onBack, onSave, onExport,
             </div>
           )}
 
+          {/* ── Style tab ── */}
           {rightTab === "style" && (
-            <div className="flex flex-col flex-1 min-h-0 overflow-y-auto">
+            <div className="flex flex-col flex-1 min-h-0 overflow-y-auto custom-thin-scrollbar">
               <div className="px-3 py-4 space-y-5">
                 <div>
                   <p className="text-[10.5px] font-semibold text-foreground/45 uppercase tracking-[0.07em] mb-2">Font</p>
                   <div className="grid grid-cols-2 gap-1.5">
                     {FONTS.map((f) => (
-                      <button key={f} onClick={() => setFont(f)} className={`h-9 rounded-xl border text-[11.5px] font-medium transition-colors bg-white dark:bg-[#1E1A16] ${font === f ? "border-foreground/35 text-foreground/85" : "border-black/[0.07] dark:border-white/[0.07] text-foreground/45 hover:text-foreground/70"}`}>{f}</button>
+                      <button
+                        key={f}
+                        onClick={() => setFont(f)}
+                        className={`h-9 rounded-xl border text-[11.5px] font-medium transition-colors ${
+                          font === f
+                            ? "border-foreground/35 bg-white dark:bg-[#1E1A16] text-foreground/85"
+                            : "border-black/[0.07] dark:border-white/[0.07] bg-white dark:bg-[#1E1A16] text-foreground/45 hover:text-foreground/70 hover:border-black/[0.15] dark:hover:border-white/[0.15]"
+                        }`}
+                      >
+                        {f}
+                      </button>
                     ))}
                   </div>
                 </div>
+
                 <div>
                   <p className="text-[10.5px] font-semibold text-foreground/45 uppercase tracking-[0.07em] mb-2">Line Spacing</p>
                   <div className="flex gap-1.5">
                     {SPACINGS.map((s) => (
-                      <button key={s} onClick={() => setSpacing(s)} className={`flex-1 h-8 rounded-xl border text-[11px] font-medium transition-colors bg-white dark:bg-[#1E1A16] ${spacing === s ? "border-foreground/35 text-foreground/85" : "border-black/[0.07] dark:border-white/[0.07] text-foreground/45 hover:text-foreground/70"}`}>{s}</button>
+                      <button
+                        key={s}
+                        onClick={() => setSpacing(s)}
+                        className={`flex-1 h-8 rounded-xl border text-[11px] font-medium transition-colors ${
+                          spacing === s
+                            ? "border-foreground/35 bg-white dark:bg-[#1E1A16] text-foreground/85"
+                            : "border-black/[0.07] dark:border-white/[0.07] bg-white dark:bg-[#1E1A16] text-foreground/45 hover:text-foreground/70 hover:border-black/[0.15] dark:hover:border-white/[0.15]"
+                        }`}
+                      >
+                        {s}
+                      </button>
                     ))}
                   </div>
                 </div>
+
                 <div>
                   <p className="text-[10.5px] font-semibold text-foreground/45 uppercase tracking-[0.07em] mb-2">Section Header Colour</p>
                   <div className="flex gap-2 flex-wrap">
                     {ACCENTS.map((color) => (
-                      <button key={color} onClick={() => setAccent(color)} style={{ backgroundColor: color }} className={`w-7 h-7 rounded-full transition-all ${accent === color ? "ring-2 ring-offset-2 ring-foreground/50 dark:ring-offset-[#131008] scale-110" : "hover:scale-110"}`} />
+                      <button
+                        key={color}
+                        onClick={() => setAccent(color)}
+                        style={{ backgroundColor: color }}
+                        className={`w-7 h-7 rounded-full transition-all ${
+                          accent === color
+                            ? "ring-2 ring-offset-2 ring-foreground/50 dark:ring-offset-[#131008] scale-110"
+                            : "hover:scale-110"
+                        }`}
+                      />
                     ))}
                   </div>
                 </div>

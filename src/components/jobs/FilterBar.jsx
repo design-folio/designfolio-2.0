@@ -1,4 +1,7 @@
 import { Search, SlidersHorizontal, RotateCcw, Plus } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { motion, LayoutGroup } from "framer-motion";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Kbd } from "@/components/ui/kbd";
 import { CriteriaEditor } from "./CriteriaEditor";
@@ -6,15 +9,49 @@ import { CreditsBalance } from "./CreditsBalance";
 import { AvatarDropdown } from "@/components/loggedInHeader/avatar-dropdown";
 import { useIsMobile } from "@/hooks/use-mobile";
 
+const TABS = [
+  { href: "/jobs", label: "Jobs", key: "jobs" },
+  { href: "/jobs/documents", label: "Documents", key: "documents" },
+];
+
+export function TabSwitcher() {
+  const router = useRouter();
+  const activeKey = router.pathname === "/jobs/documents" ? "documents" : "jobs";
+
+  return (
+    <LayoutGroup id="filterbar-tabs">
+      <div className="flex items-center rounded-full bg-[#EEECE7] dark:bg-[#1C1917] border border-[#d4d0c4] dark:border-[#38312e] p-0.5 flex-shrink-0">
+        {TABS.map(({ href, label, key }) => (
+          <Link key={key} href={href}>
+            <span
+              className={`relative block text-[12px] font-semibold px-3 py-1.5 rounded-full transition-colors duration-200 cursor-pointer select-none ${
+                activeKey === key ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {activeKey === key && (
+                <motion.span
+                  layoutId="tab-pill"
+                  className="absolute inset-0 rounded-full bg-white dark:bg-[#2C2620] border border-[#d4d0c4] dark:border-[#38312e] shadow-sm pointer-events-none"
+                  transition={{ type: "spring", stiffness: 500, damping: 38 }}
+                />
+              )}
+              <span className="relative z-10">{label}</span>
+            </span>
+          </Link>
+        ))}
+      </div>
+    </LayoutGroup>
+  );
+}
+
 function FilterPill({ active, onClick, children }) {
   return (
     <button
       onClick={onClick}
-      className={`text-[12px] font-medium px-3 py-1.5 rounded-full border transition-colors ${
-        active
-          ? "bg-foreground text-background border-foreground"
-          : "border-black/10 dark:border-border text-foreground/60 hover:border-foreground/30 hover:text-foreground"
-      }`}
+      className={`text-[12px] font-medium px-3 py-1.5 rounded-full border transition-colors ${active
+        ? "bg-foreground text-background border-foreground"
+        : "border-border text-foreground/60 hover:border-foreground/30 hover:text-foreground"
+        }`}
     >
       {children}
     </button>
@@ -56,7 +93,7 @@ export function FilterBar({
           <PopoverTrigger asChild>
             <button
               data-testid="button-criteria"
-              className="flex items-center gap-2.5 bg-white dark:bg-card border border-black/[0.08] dark:border-border h-9 text-sm text-foreground min-w-0 flex-1 md:max-w-[360px] select-none rounded-full pl-1.5 pr-4 hover:border-black/[0.15] dark:hover:border-white/[0.15] transition-colors cursor-pointer"
+              className="flex items-center gap-2.5 bg-card border border-border h-9 text-sm text-foreground min-w-0 flex-1 md:max-w-[360px] select-none rounded-full pl-1.5 pr-4 hover:border-foreground/20 transition-colors cursor-pointer"
             >
               <div className="w-6 h-6 flex-shrink-0 rounded-full bg-foreground/[0.07] dark:bg-white/[0.08] flex items-center justify-center pointer-events-none">
                 <Search className="w-3 h-3 text-foreground/55" aria-hidden="true" />
@@ -78,7 +115,7 @@ export function FilterBar({
             sideOffset={8}
             collisionPadding={12}
             onOpenAutoFocus={(e) => e.preventDefault()}
-            className="w-[340px] p-0 rounded-2xl border border-black/[0.08] dark:border-border shadow-xl bg-white dark:bg-card overflow-visible"
+            className="w-[340px] p-0 rounded-2xl border border-border shadow-xl bg-card overflow-visible"
           >
             {currentAnswers.length > 0 ? (
               <CriteriaEditor
@@ -100,7 +137,7 @@ export function FilterBar({
             <PopoverTrigger asChild>
               <button
                 data-testid="button-filters"
-                className="flex-shrink-0 flex items-center justify-center gap-1.5 h-9 w-9 md:w-auto md:px-4 rounded-full border border-black/[0.08] dark:border-border bg-white dark:bg-card text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer"
+                className="flex-shrink-0 flex items-center justify-center gap-1.5 h-9 w-9 md:w-auto md:px-4 rounded-full border border-border bg-card text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer"
               >
                 <SlidersHorizontal className="w-3.5 h-3.5" aria-hidden="true" />
                 <span className="hidden md:inline">Filters</span>
@@ -116,7 +153,7 @@ export function FilterBar({
               align="start"
               sideOffset={8}
               collisionPadding={12}
-              className="w-[272px] p-4 rounded-2xl border border-black/[0.08] dark:border-border shadow-xl bg-white dark:bg-card"
+              className="w-[272px] p-4 rounded-2xl border border-border shadow-xl bg-card"
             >
               <div className="flex items-center justify-between mb-4">
                 <p className="text-[13px] font-semibold text-foreground">Filter roles</p>
@@ -179,12 +216,13 @@ export function FilterBar({
       <div className="hidden md:flex items-center gap-1.5 ml-auto">
         <button
           onClick={onAddJob}
-          className="flex-shrink-0 flex items-center gap-1.5 h-9 px-4 rounded-full border border-black/[0.08] dark:border-border bg-white dark:bg-card text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer"
+          className="flex-shrink-0 flex items-center gap-1.5 h-9 px-4 rounded-full border border-border bg-card text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer"
         >
           <Plus className="w-3.5 h-3.5" aria-hidden="true" />
           Add job manually
           <Kbd>⌘K</Kbd>
         </button>
+        <TabSwitcher />
         <CreditsBalance refreshKey={creditsRefreshKey} onBuyClick={onBuyCredits} />
         <AvatarDropdown />
       </div>

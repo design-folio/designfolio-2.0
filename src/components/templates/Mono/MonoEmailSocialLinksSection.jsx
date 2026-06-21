@@ -4,7 +4,6 @@ import { itemVariants } from '@/lib/animationVariants'
 import { sidebars } from '@/lib/constant'
 import { motion } from 'framer-motion'
 import { AtSignIcon, DribbbleIcon, InstagramIcon, LinkedinIcon, TwitterIcon } from 'lucide-animated'
-import BehanceIcon from '../../../../public/assets/svgs/behance.svg'
 import MediumIcon from '../../../../public/assets/svgs/medium.svg'
 
 import { Pencil } from 'lucide-react'
@@ -14,7 +13,6 @@ const localSocialLinks = [
     { key: 'instagram', Icon: InstagramIcon, label: 'Instagram', from: 'socials', size: 18 },
     { key: 'linkedin', Icon: LinkedinIcon, label: 'LinkedIn', from: 'socials', size: 18 },
     { key: 'twitter', Icon: TwitterIcon, label: 'X / Twitter', from: 'socials', size: 18 },
-    { key: 'behance', Icon: BehanceIcon, label: 'Behance', from: 'portfolios', size: 18 },
     { key: 'dribbble', Icon: DribbbleIcon, label: 'Dribbble', from: 'portfolios', size: 18 },
     { key: 'medium', Icon: MediumIcon, label: 'Medium', from: 'portfolios', size: 18 },
 ]

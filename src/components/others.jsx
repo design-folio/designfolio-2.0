@@ -10,7 +10,6 @@ import TwitterIcon from "../../public/assets/svgs/twitter.svg";
 import LinkedInIcon from "../../public/assets/svgs/linkedin.svg";
 import PuzzleIcon from "../../public/assets/svgs/puzzle.svg";
 import DribbbleIcon from "../../public/assets/svgs/dribbble.svg";
-import BehanceIcon from "../../public/assets/svgs/behance.svg";
 import NotionIcon from "../../public/assets/svgs/noteIcon.svg";
 import MediumIcon from "../../public/assets/svgs/medium.svg";
 import OthersIcon from "../../public/assets/svgs/others.svg";
@@ -184,7 +183,6 @@ export default function Others({ openModal, userDetails, edit }) {
         <div className="flex items-center justify-between mb-4">
           {(!!userDetails?.portfolios?.dribbble ||
             !!userDetails?.portfolios?.notion ||
-            !!userDetails?.portfolios?.behance ||
             !!userDetails?.portfolios?.medium ||
             edit) && (
               <Text
@@ -197,7 +195,6 @@ export default function Others({ openModal, userDetails, edit }) {
           {edit &&
             (userDetails?.portfolios?.dribbble ||
               userDetails?.portfolios?.notion ||
-              userDetails?.portfolios?.behance ||
               userDetails?.portfolios?.medium) && (
               <ButtonNew
                 className="h-11 w-11"
@@ -209,7 +206,6 @@ export default function Others({ openModal, userDetails, edit }) {
         <div>
           {!!userDetails?.portfolios?.dribbble ||
             !!userDetails?.portfolios?.notion ||
-            !!userDetails?.portfolios?.behance ||
             !!userDetails?.portfolios?.medium ? (
             <div className="flex flex-col lg:flex-row gap-[24px]">
               {userDetails?.portfolios?.dribbble && (
@@ -223,21 +219,6 @@ export default function Others({ openModal, userDetails, edit }) {
                     type="secondary"
                     icon={
                       <DribbbleIcon className="text-df-icon-color cursor-pointer" />
-                    }
-                  />
-                </Link>
-              )}
-              {userDetails?.portfolios?.behance && (
-                <Link
-                  href={userDetails?.portfolios?.behance}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Button
-                    text={"Behance"}
-                    type="secondary"
-                    icon={
-                      <BehanceIcon className="text-df-icon-color cursor-pointer" />
                     }
                   />
                 </Link>

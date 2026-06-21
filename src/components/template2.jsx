@@ -7,7 +7,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import BehanceIcon from "../../public/assets/svgs/behance.svg";
 import DribbbleIcon from "../../public/assets/svgs/dribbble.svg";
 import ExperienceShape from "../../public/assets/svgs/experience-shape.svg";
 import GoUp from "../../public/assets/svgs/go-up.svg";
@@ -506,21 +505,6 @@ export default function Template2({ userDetails, preview = false, edit = false, 
                         type="secondary"
                         icon={
                           <DribbbleIcon className="text-df-icon-color cursor-pointer" />
-                        }
-                      />
-                    </Link>
-                  )}
-                  {portfolios?.behance && (
-                    <Link
-                      href={portfolios?.behance}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Button
-                        text={"Behance"}
-                        type="secondary"
-                        icon={
-                          <BehanceIcon className="text-df-icon-color cursor-pointer" />
                         }
                       />
                     </Link>

@@ -6,7 +6,6 @@ import InstagramIcon from "../../../../public/assets/svgs/instagram.svg";
 import TwitterIcon from "../../../../public/assets/svgs/twitter.svg";
 import LinkedInIcon from "../../../../public/assets/svgs/linkedin.svg";
 import DribbbleIcon from "../../../../public/assets/svgs/dribbble.svg";
-import BehanceIcon from "../../../../public/assets/svgs/behance.svg";
 import NotionIcon from "../../../../public/assets/svgs/noteIcon.svg";
 import MediumIcon from "../../../../public/assets/svgs/medium.svg";
 
@@ -14,7 +13,6 @@ const SOCIALS = [
   { key: "instagram", Icon: InstagramIcon, label: "Instagram", from: "socials" },
   { key: "linkedin", Icon: LinkedInIcon, label: "LinkedIn", from: "socials" },
   { key: "twitter", Icon: TwitterIcon, label: "X / Twitter", from: "socials" },
-  { key: "behance", Icon: BehanceIcon, label: "Behance", from: "portfolios" },
   { key: "dribbble", Icon: DribbbleIcon, label: "Dribbble", from: "portfolios" },
   { key: "medium", Icon: MediumIcon, label: "Medium", from: "portfolios" },
   { key: "notion", Icon: NotionIcon, label: "Notion", from: "portfolios" },

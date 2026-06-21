@@ -506,7 +506,7 @@ export function JobDetailSheet({ job, open, onClose, profileId, pastReports = []
                           ? <FileText className="w-3 h-3 text-foreground/40 flex-shrink-0" />
                           : <PenLine className="w-3 h-3 text-foreground/40 flex-shrink-0" />}
                         <span className="text-[12px] text-foreground/65 group-hover:text-foreground/90 transition-colors">
-                          {d.type === "resume" ? "Tailored resume" : "Cover letter"} · v{d.version}
+                          {d.type === "resume" ? "Tailored resume" : "Cover letter"}
                         </span>
                         <span className="ml-auto text-[10.5px] text-foreground/30">
                           {new Date(d.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}

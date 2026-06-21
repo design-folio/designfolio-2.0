@@ -97,19 +97,6 @@ export default function Template1({ userDetails, edit = false }) {
 
           {sectionOrder.map((sectionId) => sectionComponents[sectionId])}
 
-          {/* Old Footer - Commented out */}
-          {/* {(!!userDetails?.socials?.instagram ||
-            !!userDetails?.socials?.twitter ||
-            !!userDetails?.socials?.linkedin ||
-            !!userDetails?.portfolios?.dribbble ||
-            !!userDetails?.portfolios?.notion ||
-            !!userDetails?.portfolios?.behance ||
-            !!userDetails?.portfolios?.medium) && (
-              <motion.div variants={itemVariants}>
-                <OthersPreview userDetails={userDetails} />
-              </motion.div>
-            )} */}
-
           {/* New Footer */}
           <motion.div variants={itemVariants}>
             <PortfolioFooter edit={false} userDetails={userDetails} />

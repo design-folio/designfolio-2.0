@@ -5,7 +5,6 @@ import InstagramIcon from "../../public/assets/svgs/instagram.svg";
 import TwitterIcon from "../../public/assets/svgs/twitter.svg";
 import LinkedInIcon from "../../public/assets/svgs/linkedin.svg";
 import DribbbleIcon from "../../public/assets/svgs/dribbble.svg";
-import BehanceIcon from "../../public/assets/svgs/behance.svg";
 import NotionIcon from "../../public/assets/svgs/noteIcon.svg";
 import MediumIcon from "../../public/assets/svgs/medium.svg";
 import Text from "./text";
@@ -83,7 +82,6 @@ export default function OthersPreview({ userDetails }) {
 
         {(!!userDetails?.portfolios?.dribbble ||
           !!userDetails?.portfolios?.notion ||
-          !!userDetails?.portfolios?.behance ||
           !!userDetails?.portfolios?.medium) && (
             <div>
               <div className="flex items-center justify-between mb-4">
@@ -107,21 +105,6 @@ export default function OthersPreview({ userDetails }) {
                         type="secondary"
                         icon={
                           <DribbbleIcon className="text-df-icon-color cursor-pointer" />
-                        }
-                      />
-                    </Link>
-                  )}
-                  {userDetails?.portfolios?.behance && (
-                    <Link
-                      href={userDetails?.portfolios?.behance}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Button
-                        text={"Behance"}
-                        type="secondary"
-                        icon={
-                          <BehanceIcon className="text-df-icon-color cursor-pointer" />
                         }
                       />
                     </Link>

@@ -13,11 +13,6 @@ const validationSchema = Yup.object().shape({
     .notRequired()
     .url("Invalid URL")
     .matches(/(dribbble.com)/, "Invalid Dribbble link"),
-  behance: Yup.string()
-    .nullable()
-    .notRequired()
-    .url("Invalid URL")
-    .matches(/(behance.net)/, "Invalid Behance link"),
   notion: Yup.string()
     .nullable()
     .notRequired()
@@ -47,7 +42,6 @@ export default function AddPortfolioLinks() {
         <Formik
           initialValues={{
             dribbble: userDetails?.portfolios?.dribbble ?? "",
-            behance: userDetails?.portfolios?.behance ?? "",
             notion: userDetails?.portfolios?.notion ?? "",
             medium: userDetails?.portfolios?.medium ?? "",
           }}
@@ -81,24 +75,6 @@ export default function AddPortfolioLinks() {
                   </Field>
                   <ErrorMessage
                     name="dribbble"
-                    component="div"
-                    className="error-message"
-                  />
-                </div>
-
-                <div className="mt-[24px]">
-                  <Text size={"p-xxsmall"} className="font-medium">
-                    Behance
-                  </Text>
-                  <Field name="behance">
-                    {({ field }) => (
-                      <Input {...field} id="behance" type="text" autoComplete="off"
-                        className={`mt-2 ${errors.behance && touched.behance ? "border-destructive focus-visible:ring-destructive" : ""}`}
-                      />
-                    )}
-                  </Field>
-                  <ErrorMessage
-                    name="behance"
                     component="div"
                     className="error-message"
                   />

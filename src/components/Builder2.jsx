@@ -28,7 +28,6 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import AiIcon from "../../public/assets/svgs/ai.svg";
-import BehanceIcon from "../../public/assets/svgs/behance.svg";
 import DribbbleIcon from "../../public/assets/svgs/dribbble.svg";
 import EditIcon from "../../public/assets/svgs/edit.svg";
 import ExperienceShape from "../../public/assets/svgs/experience-shape.svg";
@@ -866,21 +865,6 @@ export default function Builder2({ edit = false }) {
                   type="secondary"
                   icon={
                     <DribbbleIcon className="text-df-icon-color cursor-pointer" />
-                  }
-                />
-              </Link>
-            )}
-            {portfolios?.behance && (
-              <Link
-                href={portfolios?.behance}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Button
-                  text={"Behance"}
-                  type="secondary"
-                  icon={
-                    <BehanceIcon className="text-df-icon-color cursor-pointer" />
                   }
                 />
               </Link>

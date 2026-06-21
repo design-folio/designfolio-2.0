@@ -438,11 +438,9 @@ const MacOSDock = ({ apps, onAppClick, openApps = [], className = '', userDetail
     linkedin: userDetails?.linkedin || '',
     twitter: userDetails?.twitter || '',
     dribbble: userDetails?.dribbble || '',
-    behance: userDetails?.behance || '',
     instagram: userDetails?.instagram || '',
     medium: userDetails?.medium || '',
     notion: userDetails?.notion || '',
-    behance: userDetails?.behance || '',
   };
   const fullName = [userDetails?.firstName, userDetails?.lastName].filter(Boolean).join(' ') || 'Portfolio';
 

@@ -110,7 +110,6 @@ const Minimal = ({ userDetails, edit }) => {
             userDetails?.socials?.linkedin ||
             userDetails?.portfolios?.dribbble ||
             userDetails?.portfolios?.notion ||
-            userDetails?.portfolios?.behance ||
             userDetails?.portfolios?.medium) && (
               <section id="footer">
                 <Footer userDetails={userDetails} edit={edit} />

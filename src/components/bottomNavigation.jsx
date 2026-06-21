@@ -48,7 +48,6 @@ export default function BottomNavigation({
     !!userDetails?.socials?.linkedin ||
     !!userDetails?.portfolios?.dribbble ||
     !!userDetails?.portfolios?.notion ||
-    !!userDetails?.portfolios?.behance ||
     !!userDetails?.portfolios?.medium;
 
   return (

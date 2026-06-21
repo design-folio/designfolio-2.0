@@ -149,7 +149,7 @@ function CanvasPreview({ parsed }) {
           {displayProjs.map((p, i) => (
             <div key={i} className="flex flex-col gap-4 group/card">
               {/* 16:9 placeholder thumbnail */}
-              <div className="rounded-2xl overflow-hidden aspect-[16/9] border border-black/5 dark:border-white/10 bg-[#F5F5F5] dark:bg-[#1A1A1A]">
+              <div className="rounded-2xl overflow-hidden aspect-[3/2] border border-black/5 dark:border-white/10 bg-[#F5F5F5] dark:bg-[#1A1A1A]">
                 <img
                   src={PLACEHOLDER_THUMBNAILS[i % PLACEHOLDER_THUMBNAILS.length]}
                   alt={p.title || "Project"}

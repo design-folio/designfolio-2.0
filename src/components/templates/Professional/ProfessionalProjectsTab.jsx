@@ -96,7 +96,7 @@ function ProfessionalProjectsTab({
 
           <div className="bg-gradient-to-br from-[#D2CEC8] to-[#A8A49D] dark:from-[#3A352E] dark:to-[#1A1A1A] p-6 md:p-7 relative overflow-hidden">
             <FrameScrews />
-            <div className="w-full aspect-[16/9] md:aspect-[16/10] relative overflow-hidden bg-white dark:bg-[#1A1A1A] shadow-[0_0_10px_rgba(0,0,0,0.2)]">
+            <div className="w-full aspect-[3/2] md:aspect-[16/10] relative overflow-hidden bg-white dark:bg-[#1A1A1A] shadow-[0_0_10px_rgba(0,0,0,0.2)]">
               <img
                 src={project.thumbnail?.url || ""}
                 alt={project.title || "Project"}

@@ -172,7 +172,7 @@ export default function ChatProjectsSection({
                     </div>
                   )}
 
-                  <div className="w-full aspect-[16/9] rounded-xl overflow-hidden mb-3 relative bg-[#D5D0C6] dark:bg-[#1A1A1A]">
+                  <div className="w-full aspect-[3/2] rounded-xl overflow-hidden mb-3 relative bg-[#D5D0C6] dark:bg-[#1A1A1A]">
                     <img
                       src={project?.thumbnail?.url}
                       alt={project?.title || "project"}
@@ -208,7 +208,7 @@ export default function ChatProjectsSection({
           >
             <div className="w-8 h-8 shrink-0" />
             <div className="w-full bg-[#E5E2DB] dark:bg-[#2A2520] p-3 rounded-2xl rounded-tl-sm rounded-bl-sm border border-dashed border-black/15 dark:border-white/10">
-                <div className="w-full aspect-[16/9] rounded-xl flex flex-col items-center justify-center gap-3 bg-black/[0.02] dark:bg-white/[0.02]">
+                <div className="w-full aspect-[3/2] rounded-xl flex flex-col items-center justify-center gap-3 bg-black/[0.02] dark:bg-white/[0.02]">
                   <div className="w-9 h-9 rounded-full bg-black/[0.05] dark:bg-white/[0.05] flex items-center justify-center">
                     <Plus className="w-4 h-4 text-[#7A736C] dark:text-[#9E9893]" />
                   </div>

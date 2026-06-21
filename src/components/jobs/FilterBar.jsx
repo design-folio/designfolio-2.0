@@ -1,6 +1,7 @@
 import { Search, SlidersHorizontal, RotateCcw, Plus } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { motion, LayoutGroup } from "framer-motion";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Kbd } from "@/components/ui/kbd";
 import { CriteriaEditor } from "./CriteriaEditor";
@@ -8,29 +9,38 @@ import { CreditsBalance } from "./CreditsBalance";
 import { AvatarDropdown } from "@/components/loggedInHeader/avatar-dropdown";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-function TabSwitcher() {
+const TABS = [
+  { href: "/jobs", label: "Jobs", key: "jobs" },
+  { href: "/jobs/documents", label: "Documents", key: "documents" },
+];
+
+export function TabSwitcher() {
   const router = useRouter();
-  const isDocuments = router.pathname === "/jobs/documents";
+  const activeKey = router.pathname === "/jobs/documents" ? "documents" : "jobs";
 
   return (
-    <div className="flex items-center gap-0.5 bg-card rounded-full p-0.5 flex-shrink-0">
-      <Link href="/jobs">
-        <span className={`block text-[12px] font-medium px-3 py-1.5 rounded-full transition-colors cursor-pointer select-none ${!isDocuments
-          ? "bg-foreground text-background"
-          : "text-foreground/45 hover:text-foreground/70"
-          }`}>
-          Jobs
-        </span>
-      </Link>
-      <Link href="/jobs/documents">
-        <span className={`block text-[12px] font-medium px-3 py-1.5 rounded-full transition-colors cursor-pointer select-none ${isDocuments
-          ? "bg-foreground text-background"
-          : "text-foreground/45 hover:text-foreground/70"
-          }`}>
-          Documents
-        </span>
-      </Link>
-    </div>
+    <LayoutGroup id="filterbar-tabs">
+      <div className="flex items-center rounded-full bg-[#EEECE7] dark:bg-[#1C1917] border border-[#d4d0c4] dark:border-[#38312e] p-0.5 flex-shrink-0">
+        {TABS.map(({ href, label, key }) => (
+          <Link key={key} href={href}>
+            <span
+              className={`relative block text-[12px] font-semibold px-3 py-1.5 rounded-full transition-colors duration-200 cursor-pointer select-none ${
+                activeKey === key ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {activeKey === key && (
+                <motion.span
+                  layoutId="tab-pill"
+                  className="absolute inset-0 rounded-full bg-white dark:bg-[#2C2620] border border-[#d4d0c4] dark:border-[#38312e] shadow-sm pointer-events-none"
+                  transition={{ type: "spring", stiffness: 500, damping: 38 }}
+                />
+              )}
+              <span className="relative z-10">{label}</span>
+            </span>
+          </Link>
+        ))}
+      </div>
+    </LayoutGroup>
   );
 }
 

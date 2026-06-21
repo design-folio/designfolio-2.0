@@ -150,8 +150,6 @@ export default function Professional({
       });
     if (portfolios.dribbble)
       links.push({ label: "Dribbble", icon: Globe, href: portfolios.dribbble });
-    if (portfolios.behance)
-      links.push({ label: "Behance", icon: Globe, href: portfolios.behance });
     if (portfolios.medium)
       links.push({ label: "Medium", icon: Globe, href: portfolios.medium });
     if (phone)

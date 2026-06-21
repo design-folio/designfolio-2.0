@@ -453,7 +453,7 @@ export default function ProjectInfo({
               recommendedSize="1600 × 900px"
             />
           ) : (
-            <figure className="relative w-full aspect-[16/9] rounded-xl overflow-hidden drop-shadow-sm border border-black/5 dark:border-white/10">
+            <figure className="relative w-full aspect-[3/2] rounded-xl overflow-hidden drop-shadow-sm border border-black/5 dark:border-white/10">
               <img
                 src={thumbnail?.url}
                 alt="project image"
@@ -846,7 +846,7 @@ export default function ProjectInfo({
             className="mt-6 md:mt-8"
           />
         ) : (
-          <figure className="relative w-full aspect-[16/9] rounded-[20px] overflow-hidden mt-6 md:mt-8">
+          <figure className="relative w-full aspect-[3/2] rounded-[20px] overflow-hidden mt-6 md:mt-8">
             <img
               src={thumbnail?.url}
               alt="project image"

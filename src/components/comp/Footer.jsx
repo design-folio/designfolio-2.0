@@ -6,7 +6,6 @@ import InstagramIcon from "../../../public/assets/svgs/instagram.svg";
 import TwitterIcon from "../../../public/assets/svgs/twitter.svg";
 import LinkedInIcon from "../../../public/assets/svgs/linkedin.svg";
 import DribbbleIcon from "../../../public/assets/svgs/dribbble.svg";
-import BehanceIcon from "../../../public/assets/svgs/behance.svg";
 import NotionIcon from "../../../public/assets/svgs/noteIcon.svg";
 import MediumIcon from "../../../public/assets/svgs/medium.svg";
 import ResumeIcon from "../../../public/assets/svgs/resume.svg";
@@ -139,17 +138,6 @@ export const Footer = ({ userDetails, edit }) => {
               >
                 <TwitterIcon />
                 <span className="sr-only">X</span>
-              </a>
-            )}
-            {portfolios?.behance && (
-              <a
-                href={portfolios?.behance}
-                className="hover:text-foreground dark:hover:text-white transition-colors"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <BehanceIcon />
-                <span className="sr-only">Behance</span>
               </a>
             )}
             {portfolios?.dribbble && (

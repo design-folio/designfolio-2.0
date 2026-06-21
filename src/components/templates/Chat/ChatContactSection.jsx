@@ -173,11 +173,6 @@ export default function ChatContactSection({
                 icon: Dribbble,
                 href: portfolios.dribbble,
               },
-              portfolios?.behance && {
-                label: "View my Behance",
-                icon: Globe,
-                href: portfolios.behance,
-              },
               portfolios?.notion && {
                 label: "View my Notion",
                 icon: Globe,

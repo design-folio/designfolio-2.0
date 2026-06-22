@@ -43,7 +43,7 @@ function CanvasProfileCard({ isEditing, skills = [], persistTheme = false }) {
         <div className="w-28 h-28 rounded-2xl overflow-hidden shrink-0 border border-black/5 dark:border-white/10 shadow-sm">
           <img src={avatarSrc} alt="Profile" className="w-full h-full object-cover" />
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 w-full">
           <div className="flex justify-between">
             <h1 className="text-[24px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7] tracking-tight leading-tight text-pretty">
               {introduction}

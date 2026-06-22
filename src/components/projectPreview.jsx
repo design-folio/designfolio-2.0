@@ -33,7 +33,7 @@ export default function ProjectPreview({ projectDetails }) {
           </motion.div>
           {hasTiptapContent && (
             <motion.div variants={itemVariants}>
-              <TiptapRenderer content={projectDetails?.project?.tiptapContent} className={cn(userDetails?.template === TEMPLATE_IDS.CANVAS ? "" : "shadow-none bg-transparent")} />
+              <TiptapRenderer content={projectDetails?.project?.tiptapContent} className={cn(userDetails?.template === TEMPLATE_IDS.CANVAS ? "" : userDetails?.template === TEMPLATE_IDS.SPOTLIGHT ? "shadow-none bg-card" : "shadow-none bg-transparent")} />
             </motion.div>
           )}
           {hasEditorJSContent && (

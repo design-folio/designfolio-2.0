@@ -79,10 +79,21 @@ export const FloatingNav = () => {
     }
   };
 
+  const hasSideNav =
+    router.pathname === "/builder" ||
+    router.pathname === "/jobs" ||
+    router.pathname.startsWith("/jobs/") ||
+    router.pathname === "/project/[id]/editor" ||
+    router.pathname === "/analytics" ||
+    router.pathname === "/settings";
+
   return (
     <>
       {/* Desktop Navigation */}
-      <nav className="fixed left-8 top-1/2 -translate-y-1/2 z-50 hidden lg:block">
+      <nav
+        className="fixed top-1/2 -translate-y-1/2 z-50 hidden lg:block transition-[left] duration-300"
+        style={{ left: hasSideNav ? "88px" : "32px" }}
+      >
         <div className="bg-card dark:bg-secondary border border-card-border dark:border-secondary-border rounded-xl p-3 shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]">
           <div className="flex flex-col gap-4">
             {sections.map(({ id, label, icon: Icon }) => (

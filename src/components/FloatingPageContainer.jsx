@@ -32,7 +32,7 @@ export function FloatingPageContainer({ isSidebarRoute, children }) {
   // viewport-relative and escape the clip naturally.
   // On mobile the md: classes don't apply — children render in normal flow.
   return (
-    <div className="md:fixed md:top-2 md:bottom-2 md:left-[72px] md:right-2 md:bg-background md:overflow-y-auto md:rounded-[32px] md:border md:border-black/[0.07] md:dark:border-white/[0.07]">
+    <div className="md:fixed md:top-2 md:bottom-2 md:left-[72px] md:right-2 md:bg-background md:overflow-y-auto md:rounded-[32px] md:border md:border-black/[0.07] md:dark:border-white/[0.07] custom-thin-scrollbar">
       {children}
     </div>
   );

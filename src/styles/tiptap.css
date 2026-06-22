@@ -9,7 +9,6 @@
 .project-editor {
   display: flex;
   flex-direction: column;
-  border-radius: 16px;
   cursor: text;
 }
 
@@ -135,8 +134,11 @@
   z-index: 1000;
   flex-shrink: 0;
   max-width: calc(100% - 40px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
-  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.08),
+    0 2px 8px rgba(0, 0, 0, 0.04);
+  transition:
+    opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
     transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   opacity: 1;
   visibility: visible;
@@ -207,7 +209,9 @@
   font-size: 0.875rem;
   font-weight: 400;
   color: hsl(var(--muted-foreground));
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
   min-width: 36px;
   height: 36px;
   display: flex;
@@ -260,8 +264,10 @@
   background-color: var(--card);
   border: 1px solid var(--secondary-border);
   border-radius: 14px;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-    0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
   padding: 0.5rem;
   min-width: 160px;
   z-index: 1001;
@@ -293,7 +299,9 @@
   min-width: auto;
   height: 40px;
   color: hsl(var(--muted-foreground));
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 }
 
 /* Override for color buttons - they should not inherit dropdown button styles */
@@ -328,7 +336,9 @@
 
 /* Dark mode menu — background/border handled by CSS vars (--card, --secondary-border) */
 [data-theme="dark"] .tiptap-menu-bar {
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.5),
+    0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 [data-theme="dark"] .tiptap-menu-bar button:active:not(:disabled) {
@@ -343,7 +353,8 @@
 
 /* Dark mode dropdown — background/border handled by CSS vars */
 [data-theme="dark"] .dropdown-menu {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5),
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.5),
     0 4px 6px -2px rgba(0, 0, 0, 0.3);
 }
 
@@ -575,7 +586,9 @@
 }
 
 /* Editor-specific dark mode paragraph colors (non-canvas/mono keep defaults) */
-[data-theme="dark"]:not([data-template="canvas"]):not([data-template="mono"]) .ProseMirror.tiptap-work-mode p {
+[data-theme="dark"]:not([data-template="canvas"]):not([data-template="mono"])
+  .ProseMirror.tiptap-work-mode
+  p {
   color: #f2f2f280 !important;
 }
 
@@ -638,8 +651,12 @@
 }
 
 /* Editor-specific dark mode list colors (non-canvas/mono keep defaults) */
-[data-theme="dark"]:not([data-template="canvas"]):not([data-template="mono"]) .ProseMirror.tiptap-work-mode ul,
-[data-theme="dark"]:not([data-template="canvas"]):not([data-template="mono"]) .ProseMirror.tiptap-work-mode ol {
+[data-theme="dark"]:not([data-template="canvas"]):not([data-template="mono"])
+  .ProseMirror.tiptap-work-mode
+  ul,
+[data-theme="dark"]:not([data-template="canvas"]):not([data-template="mono"])
+  .ProseMirror.tiptap-work-mode
+  ol {
   color: #f2f2f280 !important;
 }
 
@@ -1112,7 +1129,8 @@
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    transition: bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    transition:
+      bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1),
       opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
@@ -1280,7 +1298,9 @@
     min-width: 32px;
     max-width: 32px;
     border-radius: 8px;
-    transition: background-color 0.15s ease, border-color 0.15s ease;
+    transition:
+      background-color 0.15s ease,
+      border-color 0.15s ease;
     flex-shrink: 0;
   }
 

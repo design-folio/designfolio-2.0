@@ -128,7 +128,7 @@ export function BuilderSideNav() {
           ))}
         </nav>
 
-        <div className="mt-auto pb-4 flex items-center justify-center">
+        <div className="mt-auto pb-5 flex items-center justify-center">
           <AvatarDropdown variant="sidebar" />
         </div>
       </aside>

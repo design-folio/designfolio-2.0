@@ -20,6 +20,9 @@ const tiptapClassNamesByTemplate = {
     editor: "",
     container: "",
     wrapper: "bg-background",
+  },
+  [TEMPLATE_IDS.CANVAS]: {
+    editor: "rounded-[26px]",
   }
 };
 

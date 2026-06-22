@@ -86,7 +86,7 @@ export default function MonoContactSection({ isEditing }) {
   return (
     <motion.div
       variants={itemVariants}
-      className="px-5 md:px-8 py-8 relative group/section"
+      className="px-6 md:px-10 py-10 relative group/section"
     >
       {isEditing && (
         <div className="absolute top-4 right-4 transition-opacity z-10 opacity-100 md:opacity-0 md:group-hover/section:opacity-100">
@@ -101,7 +101,7 @@ export default function MonoContactSection({ isEditing }) {
         </div>
       )}
 
-      <h2 className="text-[14px] font-bold text-[#463B34] dark:text-[#D4C9BC] font-dm-mono uppercase tracking-widest mb-6">
+      <h2 className="text-[14px] font-bold text-[#463B34] dark:text-[#D4C9BC] font-dm-mono uppercase tracking-wider mb-5">
         Contact
       </h2>
 

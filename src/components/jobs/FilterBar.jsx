@@ -80,7 +80,7 @@ export function FilterBar({
   const isMobile = useIsMobile();
 
   return (
-    <div className="flex flex-row flex-shrink-0 items-center pl-4 md:pl-[108px] pr-4 mt-2.5 md:mt-6 mb-1.5 md:mb-2 gap-2">
+    <div className="flex flex-row flex-shrink-0 items-center pl-4 pr-4 mt-2.5 md:mt-6 mb-1.5 md:mb-2 gap-2">
 
       {/* Left group: criteria + filters */}
       <div

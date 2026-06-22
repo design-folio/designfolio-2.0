@@ -198,7 +198,7 @@ export default function MonoReviewsSection({ isEditing }) {
   if (!isEditing && recommendations.length === 0) return null;
 
   return (
-    <div className="px-5 md:px-8 py-8 relative group/section">
+    <div className="px-6 md:px-10 py-10 relative group/section">
       {isEditing && (
         <div className="absolute top-4 right-4 transition-opacity z-10 flex gap-2">
           {recommendations.length >= 2 && (
@@ -224,7 +224,7 @@ export default function MonoReviewsSection({ isEditing }) {
         </div>
       )}
 
-      <h2 className="text-[14px] font-bold text-[#463B34] dark:text-[#D4C9BC] font-dm-mono uppercase tracking-widest mb-6">
+      <h2 className="text-[14px] font-bold text-[#463B34] dark:text-[#D4C9BC] font-dm-mono uppercase tracking-wider mb-5">
         Recommendations
       </h2>
 

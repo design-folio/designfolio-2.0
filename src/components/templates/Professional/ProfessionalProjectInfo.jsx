@@ -273,7 +273,7 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
       initial="hidden"
       animate="visible"
       variants={containerVariants}
-      className={`w-full max-w-[640px] relative bg-[#EFECE6] dark:bg-[#1A1A1A] flex flex-col transition-colors duration-700 border-x border-[#D5D0C6] dark:border-[#3A352E] ${edit ? "" : "min-h-screen"}`}
+      className={`w-full max-w-[700px] relative bg-[#EFECE6] dark:bg-[#1A1A1A] flex flex-col transition-colors duration-700 border-x border-[#D5D0C6] dark:border-[#3A352E] ${edit ? "" : "min-h-screen"}`}
     >
       {/* Header */}
       <motion.div

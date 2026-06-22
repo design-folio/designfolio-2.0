@@ -97,7 +97,7 @@ export function AvatarDropdown({ onClose, variant = "navbar" }) {
           aria-haspopup="true"
         >
           <div className="relative">
-            <Avatar className={`border border-black/10 dark:border-white/10 flex-shrink-0 transition-transform hover:scale-105 ${isSidebar ? "h-9 w-9 rounded-xl" : "h-10 w-10"}`}>
+            <Avatar className={`border border-black/10 dark:border-white/10 flex-shrink-0 transition-transform hover:scale-105 ${isSidebar ? "h-10 w-10 rounded-xl" : "h-10 w-10"}`}>
               <AvatarImage src={getUserAvatarImage(userDetails)} alt="Profile" className="object-cover cursor-pointer" />
               <AvatarFallback>{userDetails?.username?.[0]?.toUpperCase() ?? "U"}</AvatarFallback>
             </Avatar>

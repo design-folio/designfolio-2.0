@@ -1104,10 +1104,10 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
   };
 
   return (
-    <div className="w-full flex-1 flex flex-col gap-3 pb-0 pt-0 px-4 md:px-0 max-w-[880px] mx-auto">
+    <div className="w-full flex-1 flex flex-col gap-3 pb-0 pt-0 px-4 md:px-0 max-w-[848px] mx-auto">
       <motion.div
         className={
-          "w-full max-w-[880px] relative min-h-screen flex flex-col font-inter transition-colors duration-700 bg-[#F0EDE7] dark:bg-[#1A1A1A] custom-dashed-x"
+          "w-full max-w-[848px] relative min-h-screen flex flex-col font-inter transition-colors duration-700 bg-[#F0EDE7] dark:bg-[#1A1A1A] custom-dashed-x"
         }
         variants={containerVariants}
         initial="hidden"

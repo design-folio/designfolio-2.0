@@ -80,7 +80,7 @@ function CanvasPreview({ parsed }) {
   const displayProjs = visibleProjs.length > 0 ? visibleProjs : MOCK_PROJECTS;
 
   return (
-    <div className="w-full flex flex-col gap-3 pb-24 max-w-[800px] mx-auto">
+    <div className="w-full flex flex-col gap-3 pb-24 max-w-[848px] mx-auto">
 
       {/* ── Profile card with skills strip ── */}
       <motion.div

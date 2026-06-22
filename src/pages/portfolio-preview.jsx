@@ -55,7 +55,7 @@ export default function Index() {
       case TEMPLATE_IDS.CANVAS:
         return (
           <>
-            <div className="max-w-[800px] mx-auto w-full px-4 md:px-0 pt-6 pb-2">
+            <div className="max-w-[848px] mx-auto w-full px-4 md:px-0 pt-6 pb-2">
               <Button
                 variant="outline"
                 className="bg-white dark:bg-[#2A2520] rounded-full hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors border border-[#E5D7C4] dark:border-white/10"
@@ -72,7 +72,7 @@ export default function Index() {
       case TEMPLATE_IDS.CHATFOLIO:
         return (
           <div className="min-h-screen bg-[#F0EDE7] dark:bg-[#1A1A1A] transition-colors duration-700 flex flex-col items-center">
-            <div className="w-full max-w-[640px] pt-6 pb-2 px-4">
+            <div className="w-full max-w-[700px] pt-6 pb-2 px-4">
               <Button
                 variant="outline"
                 size="sm"
@@ -105,7 +105,7 @@ export default function Index() {
       case TEMPLATE_IDS.MONO:
         return (
           <>
-            <div className="max-w-[640px] mx-auto w-full px-4 md:px-0 pt-6 pb-2">
+            <div className="max-w-[848px] mx-auto w-full px-4 md:px-0 pt-6 pb-2">
               <Button
                 variant="outline"
                 size="sm"
@@ -124,7 +124,7 @@ export default function Index() {
         return (
           <>
             <div className="w-full sticky top-0 z-[100] border-b border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] flex justify-center">
-              <div className="w-full max-w-[640px] px-4 py-2 flex items-center">
+              <div className="w-full max-w-[700px] px-4 py-2 flex items-center">
                 <button
                   onClick={() => router.push("/builder")}
                   className="flex items-center gap-2 font-jetbrains text-[13px] uppercase tracking-wide text-[#1A1A1A] dark:text-[#B5AFA5] hover:text-[#E37941] transition-colors"
@@ -161,7 +161,7 @@ export default function Index() {
       default:
         return (
           <>
-            <div className="max-w-[800px] mx-auto w-full px-4 md:px-0 pt-6 pb-2">
+            <div className="max-w-[848px] mx-auto w-full px-4 md:px-0 pt-6 pb-2">
               <Button
                 variant="outline"
                 className="bg-white dark:bg-[#2A2520] rounded-full hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors border border-[#E5D7C4] dark:border-white/10"

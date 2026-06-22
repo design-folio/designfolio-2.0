@@ -520,7 +520,7 @@ export default function ProjectInfo({
 
   // ─── Default layout (all other templates) ────────────────────────────────
   return (
-    <div className="bg-df-section-card-bg-color rounded-[24px] p-[16px] md:p-[32px]">
+    <div className="bg-df-section-card-bg-color rounded-[26px] p-[16px] md:p-[32px]">
       <div className="flex justify-between items-center mb-2">
 
         {!isMacOS && (

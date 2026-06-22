@@ -44,7 +44,7 @@ function NavItem({ icon: Icon, label, href, isActive, pendingHref, onNavigate })
   return (
     <Link
       href={href}
-      className="w-full"
+      className="w-full cursor-pointer"
       onClick={(e) => {
         if (isActive || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0)
           return;
@@ -53,10 +53,10 @@ function NavItem({ icon: Icon, label, href, isActive, pendingHref, onNavigate })
     >
       <button
         aria-busy={isLoading}
-        className="w-full flex flex-col items-center gap-1.5 px-1 py-2.5 rounded-xl transition-all duration-200 group"
+        className="w-full flex flex-col items-center gap-1.5 px-1 py-2.5 rounded-xl transition-all duration-200 group cursor-pointer"
       >
         <span
-          className={`flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-200 ${
+          className={`flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-200 cursor-pointer ${
             isActive
               ? "bg-[#E2DBD1] dark:bg-[#2E2E2E] shadow-[inset_0_1px_5px_rgba(0,0,0,0.10),inset_0_2px_10px_rgba(0,0,0,0.06)] dark:shadow-[inset_0_2px_6px_rgba(0,0,0,0.55),inset_0_1px_3px_rgba(0,0,0,0.40)]"
               : "group-hover:bg-black/[0.05] dark:group-hover:bg-white/[0.08]"
@@ -69,7 +69,7 @@ function NavItem({ icon: Icon, label, href, isActive, pendingHref, onNavigate })
           )}
         </span>
         <span
-          className={`text-[11px] font-medium leading-none transition-colors duration-200 ${
+          className={`text-[11px] font-medium leading-none transition-colors duration-200 cursor-pointer ${
             isActive
               ? "text-[#1A1A1A] dark:text-[#F0F0F0]"
               : "text-[#777777] dark:text-[#666666] group-hover:text-[#1A1A1A] dark:group-hover:text-[#F0F0F0]"

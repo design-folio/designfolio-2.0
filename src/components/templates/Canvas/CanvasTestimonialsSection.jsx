@@ -125,7 +125,7 @@ function CanvasTestimonialsSection({ isEditing, preview = false }) {
         damping: 12,
         delay: 0.95,
       }}
-      className="bg-white dark:bg-[#2A2520] rounded-[24px] border border-[#E5D7C4] dark:border-white/10 p-6 w-full relative group/section"
+      className="bg-white dark:bg-[#2A2520] rounded-[26px] border border-[#E5D7C4] dark:border-white/10 p-6 w-full relative group/section"
     >
       {isEditing && (
         <CanvasSectionControls>
@@ -168,8 +168,8 @@ function CanvasTestimonialsSection({ isEditing, preview = false }) {
                   setTimeout(() => setIsHovering(false), 5000);
                 }}
                 className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${idx === currentIndex
-                    ? "w-6 bg-[#1A1A1A] dark:bg-[#F0EDE7]"
-                    : "w-1.5 bg-[#E5D7C4] dark:bg-white/20 hover:bg-[#D5D0C6] dark:hover:bg-white/40"
+                  ? "w-6 bg-[#1A1A1A] dark:bg-[#F0EDE7]"
+                  : "w-1.5 bg-[#E5D7C4] dark:bg-white/20 hover:bg-[#D5D0C6] dark:hover:bg-white/40"
                   }`}
                 aria-label={`Go to testimonial ${idx + 1}`}
               />

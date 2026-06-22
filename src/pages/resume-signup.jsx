@@ -80,39 +80,32 @@ function CanvasPreview({ parsed }) {
   const displayProjs = visibleProjs.length > 0 ? visibleProjs : MOCK_PROJECTS;
 
   return (
-    <div className="w-full flex flex-col gap-3 pb-24 max-w-[720px] mx-auto">
+    <div className="w-full flex flex-col gap-3 pb-24 max-w-[800px] mx-auto">
 
-      {/* ── Profile card — mirrors CanvasProfileCard ── */}
+      {/* ── Profile card with skills strip ── */}
       <motion.div
         initial={{ opacity: 0, y: -40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: "spring", stiffness: 100, damping: 12, delay: 0.15 }}
-        className="bg-white dark:bg-[#2A2520] rounded-[24px] border border-[#E5D7C4] dark:border-white/10 p-4 flex flex-col md:flex-row gap-6 items-start md:items-center w-full"
+        className="bg-white dark:bg-[#2A2520] rounded-[26px] border border-[#E5D7C4] dark:border-white/10 w-full flex flex-col overflow-hidden"
       >
-        <div className="w-28 h-28 rounded-2xl shrink-0 border border-black/5 dark:border-white/10 shadow-sm flex items-center justify-center bg-[#F0EDE7] dark:bg-[#3A352E] overflow-hidden">
-          <img src="/previewproject/avatar.png" alt="avatar" />
+        <div className="p-5 md:p-6 flex flex-col md:flex-row gap-8 items-start md:items-center">
+          <div className="w-28 h-28 rounded-2xl shrink-0 border border-black/5 dark:border-white/10 shadow-sm flex items-center justify-center bg-[#F0EDE7] dark:bg-[#3A352E] overflow-hidden">
+            <img src="/previewproject/avatar.png" alt="avatar" />
+          </div>
+          <div className="flex flex-col gap-2">
+            <h1 className="text-[24px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7] tracking-tight leading-tight text-pretty">
+              {`Hey, I'm ${name}`}
+            </h1>
+            <p className="text-[#7A736C] dark:text-[#B5AFA5] text-[16px] leading-relaxed text-pretty">
+              {bio}
+            </p>
+          </div>
         </div>
-        <div className="flex flex-col gap-2">
-          <h1 className="text-[24px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7] tracking-tight leading-tight text-pretty">
-            {`Hey, I'm ${name}`}
-          </h1>
-          <p className="text-[#7A736C] dark:text-[#B5AFA5] text-[16px] leading-relaxed text-pretty">
-            {bio}
-          </p>
-        </div>
-      </motion.div>
-
-      {/* ── Skills marquee — mirrors CanvasSkillsMarquee ── */}
-      {skills.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ type: "spring", stiffness: 100, damping: 12, delay: 0.3 }}
-          className="bg-white dark:bg-[#2A2520] rounded-[24px] border border-[#E5D7C4] dark:border-white/10 py-2 relative w-full overflow-hidden"
-        >
-          <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-white/80 dark:from-[#2A2520]/80 to-transparent z-10 rounded-l-[24px]" />
-          <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-white/80 dark:from-[#2A2520]/80 to-transparent z-10 rounded-r-[24px]" />
-          <div className="overflow-hidden">
+        {skills.length > 0 && (
+          <div className="border-t border-[#E5D7C4] dark:border-white/10 py-2 overflow-hidden relative w-full bg-gradient-to-b from-[#EEE9E3] to-[#F4F1EC] dark:from-[#252119] dark:to-[#2B2620] rounded-b-[26px] shadow-[inset_0_1px_3px_rgba(0,0,0,0.04),inset_0_-1px_1px_rgba(255,255,255,0.45)] dark:shadow-[inset_0_1px_3px_rgba(0,0,0,0.15)]">
+            <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-[#F0EBE5] dark:from-[#272219] to-transparent z-10" />
+            <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-[#F0EBE5] dark:from-[#272219] to-transparent z-10" />
             <motion.div
               className="flex gap-4 whitespace-nowrap"
               animate={{ x: [0, "-50%"] }}
@@ -132,15 +125,15 @@ function CanvasPreview({ parsed }) {
               ))}
             </motion.div>
           </div>
-        </motion.div>
-      )}
+        )}
+      </motion.div>
 
       {/* ── Projects section — mirrors CanvasProjectsSection ── */}
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ type: "spring", stiffness: 100, damping: 12, delay: 0.45 }}
-        className="bg-white dark:bg-[#2A2520] rounded-[24px] border border-[#E5D7C4] dark:border-white/10 p-4 md:p-6 w-full"
+        transition={{ type: "spring", stiffness: 100, damping: 12, delay: 0.3 }}
+        className="bg-white dark:bg-[#2A2520] rounded-[26px] border border-[#E5D7C4] dark:border-white/10 p-4 md:p-6 w-full"
       >
         <h2 className="text-[#7A736C] dark:text-[#B5AFA5] font-dm-mono font-medium text-[14px] mb-3">
           PROJECTS
@@ -177,8 +170,8 @@ function CanvasPreview({ parsed }) {
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ type: "spring", stiffness: 100, damping: 12, delay: 0.6 }}
-          className="bg-white dark:bg-[#2A2520] rounded-[24px] border border-[#E5D7C4] dark:border-white/10 p-4 md:p-6 w-full"
+          transition={{ type: "spring", stiffness: 100, damping: 12, delay: 0.45 }}
+          className="bg-white dark:bg-[#2A2520] rounded-[26px] border border-[#E5D7C4] dark:border-white/10 p-4 md:p-6 w-full"
         >
           <h2 className="text-[#7A736C] dark:text-[#B5AFA5] font-dm-mono font-medium text-[14px] mb-6">
             CAREER LADDER

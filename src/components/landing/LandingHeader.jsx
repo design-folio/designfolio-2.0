@@ -1,9 +1,9 @@
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import BlurHoverText from "./shared/BlurHoverText";
 import LandingLogoSVG from "./shared/LandingLogoSVG";
 import ArrowCTA from "./shared/ArrowCTA";
+import BuiltForTypewriter from "./shared/BuiltForTypewriter";
 
 export default function LandingHeader({
   showNavCTA,
@@ -32,11 +32,7 @@ export default function LandingHeader({
           className="hidden md:flex text-[13px] font-semibold tracking-wide text-lp-text/70 uppercase h-[20px] items-center min-w-[200px]"
           style={{ fontFamily: '"DM Mono", monospace' }}
         >
-          <BlurHoverText
-            defaultText="TRUSTED BY 31000+ JOB SEEKERS"
-            hoverText="5000+ PORTFOLIOS LAUNCHED"
-            scrollActive={showNavCTA}
-          />
+          <BuiltForTypewriter />
         </div>
 
         <div className="flex items-center">

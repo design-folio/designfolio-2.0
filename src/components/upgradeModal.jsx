@@ -150,7 +150,7 @@ export default function UpgradeModal() {
         const plans = response?.data?.proPlans;
         if (Array.isArray(plans) && plans.length > 0) {
           setProPlans(plans);
-          setSelectedPlan(plans.find(p => p.plan === 'lifetime') || plans[0]);
+          setSelectedPlan(plans.find(p => p.plan === 'qtrly') || plans[0]);
         }
       });
     }

@@ -237,7 +237,7 @@ export default function LandingPage({ dfToken, dfParsedResume }) {
         className="min-h-screen bg-[--lp-bg] text-[--lp-text] antialiased overflow-x-clip flex justify-center"
         style={{ fontFamily: "var(--font-manrope), sans-serif" }}
       >
-        <div className="w-full max-w-[720px] bg-[--lp-bg] min-h-screen border-x border-[--lp-border] relative z-10 shadow-[0_0_40px_rgba(0,0,0,0.02)]">
+        <div className="w-full max-w-[792px] bg-[--lp-bg] min-h-screen border-x border-[--lp-border] relative z-10 shadow-[0_0_40px_rgba(0,0,0,0.02)]">
           <LandingLeftNav
             activeSection={activeSection}
             onSectionClick={scrollToSection}

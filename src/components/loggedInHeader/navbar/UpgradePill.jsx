@@ -4,14 +4,18 @@ import { useGlobalContext } from "@/context/globalContext";
 
 export function UpgradePill() {
   const router = useRouter();
-  const { setShowUpgradeModal } = useGlobalContext();
+  const { setShowUpgradeModal, userDetails } = useGlobalContext();
 
-  if (router.pathname !== "/builder") return null;
+  const isValidRoute =
+    router.pathname === "/builder" ||
+    router.pathname === "/project/[id]/editor";
+
+  if (!isValidRoute || userDetails?.pro) return null;
 
   return (
     <button
       onClick={() => setShowUpgradeModal(true)}
-      className="pointer-events-auto fixed top-[18px] right-5 z-40 flex items-center gap-1.5 px-3.5 py-[7px] rounded-full text-[12px] font-semibold tracking-wide cursor-pointer select-none
+      className="pointer-events-auto fixed top-[18px] right-5 z-10 flex items-center gap-1.5 px-3.5 py-[7px] rounded-full text-[12px] font-semibold tracking-wide cursor-pointer select-none
         bg-gradient-to-b from-white to-[#EAE5DE] dark:from-[#2A2A2A] dark:to-[#202020]
         border border-black/[0.09] dark:border-white/[0.08]
         shadow-[inset_0_1px_0_rgba(255,255,255,1),inset_0_-1px_0_rgba(0,0,0,0.06)]

@@ -5,13 +5,13 @@ import { forwardRef, useState } from "react";
 
 const STEPS = [
   {
-    label: "Build your portfolio",
+    label: "Portfolio Builder",
     icon: LayoutTemplate,
     darkSrc: "/landing-video/hero-dark.mp4",
     lightSrc: "/landing-video/hero-light.mp4",
   },
   {
-    label: "Find your next role",
+    label: "AI Job Matching",
     icon: Sparkles,
     darkSrc: "/landing-video/hero-jobs-dark.mp4",
     lightSrc: "/landing-video/hero-jobs-light.mp4",

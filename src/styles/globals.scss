@@ -54,6 +54,7 @@
     --slider-thumb-border: #cfc4af;
     --slider-thumb-bg: #fafafa;
     --switch-unchecked-bg: #cfc4af;
+    --shell-bg: #e9e3db;
 
     /* Sidebar variables */
     --sidebar: 0 0% 100%;
@@ -204,6 +205,7 @@
     --slider-thumb-border: #f6f2ef;
     --slider-thumb-bg: #f6f2ef;
     --switch-unchecked-bg: #3f4358;
+    --shell-bg: #1c1c1c;
 
     /* Sidebar variables */
     --sidebar: 223 16% 9%;
@@ -376,9 +378,14 @@ html {
     background-color: hsl(var(--background-landing));
   }
 
-  /* Match #__next so builder/app pages don't show a different color (no html/body banding) */
   &:not(.landing-page) {
     background-color: var(--background);
+  }
+
+  /* On sidebar-layout routes the 8px gap areas outside the floating card must match
+     the sidebar chrome — override the --background set above. */
+  &.sidebar-layout {
+    background-color: var(--shell-bg);
   }
 }
 
@@ -388,9 +395,18 @@ body {
   min-height: -webkit-fill-available;
 }
 
-/* Same as html/#__next when not landing so scroll/overscroll never shows a different band */
 html:not(.landing-page) body {
   background-color: var(--background);
+}
+
+html.sidebar-layout body {
+  background-color: var(--shell-bg);
+}
+/* Lock window scroll on desktop — the card container scrolls instead */
+@media (min-width: 768px) {
+  html.sidebar-layout {
+    overflow: hidden;
+  }
 }
 
 /* MacOS desktop view: no body scrollbar; content is fixed within viewport */
@@ -1271,7 +1287,7 @@ body.cursor-pill-active * {
   );
 }
 
-/* Next.js root container — use same token as html/body to avoid background banding on builder */
+/* Next.js root container */
 #__next {
   transition: padding-right 500ms cubic-bezier(0.32, 0.72, 0, 1);
   will-change: padding-right;
@@ -1280,6 +1296,12 @@ body.cursor-pill-active * {
   min-height: 100vh;
   position: relative;
   background-color: var(--background);
+}
+
+/* On sidebar-layout routes, match html/body so the gap areas outside the floating card
+   never show a different background band. */
+html.sidebar-layout #__next {
+  background-color: var(--shell-bg);
 }
 
 /* When a wallpaper is active, make the opaque backgrounds transparent so z-index: -1 wallpaper shows through */

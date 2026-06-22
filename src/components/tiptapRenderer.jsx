@@ -124,7 +124,7 @@ const TiptapRenderer = ({ content, className }) => {
   return (
     <>
       <div
-        className={cn("bg-card shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words project-editor", className)}
+        className={cn("bg-card shadow-df-section-card-shadow rounded-[26px] p-4 lg:p-[32px] break-words project-editor", className)}
         onClick={handleContentClick}
         role="presentation"
       >

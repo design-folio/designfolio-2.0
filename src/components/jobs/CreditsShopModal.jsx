@@ -95,7 +95,7 @@ export function CreditsShopModal({ open, onClose, onBuy, buying = false }) {
               <div className="flex flex-col items-start gap-2 mb-2 orb-always-active p-2 ">
                 <ColorOrb dimension="28px" spinDuration={5} />
               </div>
-              <h2 className="text-[20px] font-bold text-foreground leading-tight tracking-tight">Top AI Credits</h2>
+              <h2 className="text-[20px] font-bold text-foreground leading-tight tracking-tight">Topup AI Credits</h2>
               <p className="text-[13px] text-foreground/45 mt-1 leading-relaxed">
                 Extra credits for every Job AI feature — no subscription, pay only when you need more.
               </p>

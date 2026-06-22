@@ -24,7 +24,7 @@ function CanvasToolsMarquee({ isEditing }) {
         damping: 12,
         delay: 0.75,
       }}
-      className="bg-white dark:bg-[#2A2520] rounded-[24px] border border-[#E5D7C4] dark:border-white/10 py-2 w-full relative group/section"
+      className="bg-white dark:bg-[#2A2520] rounded-[26px] border border-[#E5D7C4] dark:border-white/10 py-2 w-full relative group/section"
     >
       {isEditing && (
         <CanvasSectionControls>

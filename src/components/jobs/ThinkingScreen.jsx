@@ -144,7 +144,7 @@ export function ThinkingScreen({ answers, onComplete, onError }) {
 
   return (
     <motion.div
-      className="fixed inset-0 flex flex-col items-center justify-center bg-[#F0EDE7] dark:bg-background px-6"
+      className="flex-1 flex flex-col items-center justify-center px-6"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}

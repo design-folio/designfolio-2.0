@@ -36,7 +36,7 @@ export const MonoEmailSocialLinksSection = ({ email, socials, portfolios, isEdit
 
             <motion.div
                 variants={itemVariants}
-                className="px-5 md:px-8 py-4 flex justify-between items-center relative group/section gap-4"
+                className="px-6 md:px-10 py-5 flex justify-between items-center relative group/section gap-4"
             >
                 {isEditing && (
                     <div className="absolute top-1/2 -translate-y-1/2 right-4 transition-opacity z-10 opacity-100 md:opacity-0 md:group-hover/section:opacity-100">

@@ -29,7 +29,8 @@ function useClickAway(ref, handler) {
   }, [ref, handler]);
 }
 
-export function AvatarDropdown({ onClose }) {
+export function AvatarDropdown({ onClose, variant = "navbar" }) {
+  const isSidebar = variant === "sidebar";
   const [isOpen, setIsOpen] = useState(false);
   const [hoveredId, setHoveredId] = useState(null);
   const [diamondLottie, setDiamondLottie] = useState(null);
@@ -91,12 +92,12 @@ export function AvatarDropdown({ onClose }) {
       <div className="relative" ref={dropdownRef}>
         <button
           onClick={() => setIsOpen((v) => !v)}
-          className="rounded-full focus:outline-none focus:ring-2 focus:ring-black/20 dark:focus:ring-white/20 transition-all cursor-pointer block"
+          className={`focus:outline-none focus:ring-2 focus:ring-black/20 dark:focus:ring-white/20 transition-all cursor-pointer block ${isSidebar ? "rounded-xl" : "rounded-full"}`}
           aria-expanded={isOpen}
           aria-haspopup="true"
         >
           <div className="relative">
-            <Avatar className="h-10 w-10 border border-black/10 dark:border-white/10 flex-shrink-0 transition-transform hover:scale-105">
+            <Avatar className={`border border-black/10 dark:border-white/10 flex-shrink-0 transition-transform hover:scale-105 ${isSidebar ? "h-10 w-10 rounded-xl" : "h-10 w-10"}`}>
               <AvatarImage src={getUserAvatarImage(userDetails)} alt="Profile" className="object-cover cursor-pointer" />
               <AvatarFallback>{userDetails?.username?.[0]?.toUpperCase() ?? "U"}</AvatarFallback>
             </Avatar>
@@ -112,12 +113,12 @@ export function AvatarDropdown({ onClose }) {
           {isOpen && (
             <motion.div
               key="avatar-dropdown"
-              initial={{ opacity: 0, y: -4 }}
-              animate={{ opacity: 1, y: 0, transition: { duration: 0.15, ease: "easeOut" } }}
-              exit={{ opacity: 0, y: -4, pointerEvents: "none", transition: { duration: 0.15, ease: "easeIn" } }}
-              className="absolute right-0 top-full mt-2 z-50 min-w-[280px]"
+              initial={isSidebar ? { opacity: 0, x: -4 } : { opacity: 0, y: -4 }}
+              animate={{ opacity: 1, x: 0, y: 0, transition: { duration: 0.15, ease: "easeOut" } }}
+              exit={{ opacity: 0, ...(isSidebar ? { x: -4 } : { y: -4 }), pointerEvents: "none", transition: { duration: 0.15, ease: "easeIn" } }}
+              className={`absolute z-50 min-w-[280px] ${isSidebar ? "left-full bottom-0 ml-3" : "right-0 top-full mt-2"}`}
               onKeyDown={(e) => e.key === "Escape" && setIsOpen(false)}
-              style={{ transformOrigin: "top right" }}
+              style={{ transformOrigin: isSidebar ? "bottom left" : "top right" }}
             >
               <div className="w-full rounded-2xl border border-black/10 dark:border-white/10 bg-card p-1.5 shadow-lg overflow-hidden">
                 <div className="relative flex flex-col" onMouseLeave={() => setHoveredId(null)}>

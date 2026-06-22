@@ -225,16 +225,16 @@ function CanvasAboutSection({ isEditing }) {
                 className="w-full h-full pointer-events-none relative"
                 style={{ transform: "rotate(6deg)" }}
               >
-                <div className="w-full h-full bg-white dark:bg-[#2A2520] p-1.5 md:p-2 rounded-[24px] md:rounded-[32px] shadow-md border border-black/5 dark:border-white/10 flex flex-col relative group-hover:shadow-lg transition-shadow">
+                <div className="w-full h-full bg-white dark:bg-[#2A2520] p-1.5 md:p-2 rounded-[26px] md:rounded-[32px] shadow-md border border-black/5 dark:border-white/10 flex flex-col relative group-hover:shadow-lg transition-shadow">
                   <div className="relative w-full h-full">
                     <img
                       src={images[1].src || images[1].key}
                       alt="pegboard-2"
-                      className="w-full h-full object-cover rounded-[16px] md:rounded-[24px]"
+                      className="w-full h-full object-cover rounded-[16px] md:rounded-[26px]"
                       draggable="false"
                     />
                     <MoveOverlay
-                      rounded="rounded-[16px] md:rounded-[24px]"
+                      rounded="rounded-[16px] md:rounded-[26px]"
                       size="w-5 h-5 md:w-6 md:h-6"
                     />
                   </div>

@@ -248,7 +248,7 @@ export default function ChatProjectView({
     >
       <div
         className={cn(
-          "w-full max-w-[640px] flex flex-col relative",
+          "w-full max-w-[700px] flex flex-col relative",
           edit ? "pt-2 pb-6" : "min-h-screen pt-8 pb-24",
         )}
       >

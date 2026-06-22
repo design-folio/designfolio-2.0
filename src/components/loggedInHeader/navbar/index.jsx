@@ -358,8 +358,8 @@ export default function Navbar() {
             template === TEMPLATE_IDS.SPOTLIGHT
               ? "max-w-[848px]"
               : template === TEMPLATE_IDS.CANVAS
-                ? "max-w-[720px]"
-                : "max-w-[640px]"
+                ? "max-w-[848px]"
+                : "max-w-[700px]"
           )}
         >
           {navContent}

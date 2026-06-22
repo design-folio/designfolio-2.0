@@ -305,7 +305,7 @@ export default function CanvasProjectInfo({
       {/* Toolbar: Back + breadcrumb + lock + analyze */}
       <motion.div
         variants={itemVariants}
-        className="bg-white dark:bg-[#2A2520] rounded-[24px] border border-[#E5D7C4] dark:border-white/10 py-2 px-4 flex justify-between items-center w-full"
+        className="bg-white dark:bg-[#2A2520] rounded-[26px] border border-[#E5D7C4] dark:border-white/10 py-2 px-4 flex justify-between items-center w-full"
       >
         {!isMacOS ? (
           <button
@@ -434,7 +434,7 @@ export default function CanvasProjectInfo({
       {/* Title + Description + Featured Image — combined */}
       <motion.div
         variants={itemVariants}
-        className="bg-white dark:bg-[#2A2520] rounded-[32px] border border-[#E5D7C4] dark:border-white/10 p-2 md:p-3 w-full"
+        className="bg-white dark:bg-[#2A2520] rounded-[26px] border border-[#E5D7C4] dark:border-white/10 p-2 md:p-3 w-full"
       >
         <div className="p-4 md:p-5 pb-6 md:pb-8">
           <h1
@@ -472,7 +472,7 @@ export default function CanvasProjectInfo({
             </p>
           )}
         </div>
-        <div className="w-full aspect-[3/2] rounded-[24px] overflow-hidden bg-[#F5F5F5] dark:bg-[#1A1A1A]">
+        <div className="w-full aspect-[3/2] rounded-[26px] overflow-hidden bg-[#F5F5F5] dark:bg-[#1A1A1A]">
           {edit ? (
             <ImageWithOverlayAndPicker
               src={thumbnail?.url}

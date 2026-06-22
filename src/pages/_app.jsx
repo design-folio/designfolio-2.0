@@ -17,7 +17,7 @@ import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import App from "next/app";
 import { ThemeProvider } from "next-themes";
-import { GlobalProvider } from "@/context/globalContext";
+import { GlobalProvider, useGlobalContext } from "@/context/globalContext";
 // import queryClient from "@/network/queryClient";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ToastContainer } from "react-toastify";
@@ -28,8 +28,13 @@ import queryClient from "@/network/queryClient";
 import Head from "next/head";
 import UpgradeModal from "@/components/upgradeModal";
 import SettingsModal from "@/components/SettingsModal";
+import { BuilderSideNav } from "@/components/BuilderSideNav";
+import { BuilderTopNav } from "@/components/BuilderTopNav";
+import { FloatingPageContainer } from "@/components/FloatingPageContainer";
+import { UpgradePill } from "@/components/loggedInHeader/navbar/UpgradePill";
 import { CursorTooltipProvider } from "@/context/cursorTooltipContext";
 import { CursorPill } from "@/components/CursorPill";
+import { TEMPLATE_IDS } from "@/lib/templates";
 import posthog from "@/lib/postHog";
 import { PostHogProvider } from "@posthog/react";
 import { usePostHogEvent } from "@/hooks/usePostHogEvent";
@@ -190,6 +195,38 @@ const eudoxus = localFont({
   variable: "--font-eudoxus",
 });
 
+// Manages html.sidebar-layout class so the 8px gap areas match the sidebar chrome color.
+// Must live inside GlobalProvider to read template via useGlobalContext.
+function ShellClassManager({ isSidebarRoute }) {
+  const { template } = useGlobalContext();
+  const router = useRouter();
+
+  useEffect(() => {
+    const isRetroOsBuilder =
+      router.pathname === "/builder" && template === TEMPLATE_IDS.RETRO_OS;
+    document.documentElement.classList.toggle(
+      "sidebar-layout",
+      isSidebarRoute && !isRetroOsBuilder
+    );
+  }, [isSidebarRoute, template, router.pathname]);
+
+  return null;
+}
+
+// Renders the top Header, hiding it on desktop for sidebar routes (except RETRO_OS on /builder).
+function ConditionalHeader({ dfToken, hideHeader, isSidebarRoute }) {
+  const { template } = useGlobalContext();
+  const router = useRouter();
+  const isRetroOsBuilder =
+    router.pathname === "/builder" && template === TEMPLATE_IDS.RETRO_OS;
+  const hideOnDesktop = isSidebarRoute && !isRetroOsBuilder;
+  return (
+    <div className={hideOnDesktop ? "md:hidden" : ""}>
+      <Header dfToken={dfToken} hideHeader={hideHeader} />
+    </div>
+  );
+}
+
 const LANDING_PAGES = new Set([
   "/",
   "/login",
@@ -209,6 +246,23 @@ function MyApp({ Component, pageProps, dfToken, hideHeader }) {
   const phEvent = usePostHogEvent();
   const router = useRouter();
 
+  const isSidebarRoute =
+    !!dfToken &&
+    (router.pathname === "/builder" ||
+      router.pathname === "/jobs" ||
+      router.pathname.startsWith("/jobs/") ||
+      router.pathname === "/project/[id]/editor" ||
+      router.pathname === "/analytics" ||
+      router.pathname === "/settings");
+
+  const showBuilderTopNav =
+    !!dfToken &&
+    (router.pathname === "/builder" ||
+      router.pathname === "/project/[id]/editor" ||
+      router.pathname === "/settings" ||
+      router.pathname === "/analytics") &&
+    router.query?.view !== "ai-tools";
+
   // Stamp data-page="landing" on <html> for landing/auth/legal pages
   // so landing.css token overrides take effect.
   useEffect(() => {
@@ -219,6 +273,7 @@ function MyApp({ Component, pageProps, dfToken, hideHeader }) {
       delete document.documentElement.dataset.page;
     }
   }, [router.pathname]);
+
 
   useEffect(() => {
     const sessionCount = Number(localStorage.getItem("session_count") || "0");
@@ -276,16 +331,21 @@ function MyApp({ Component, pageProps, dfToken, hideHeader }) {
                 <GlobalProvider>
                   <CursorTooltipProvider>
                     <CursorPill />
+                    <ShellClassManager isSidebarRoute={isSidebarRoute} />
                     <main
                       className={`${satoshi.variable} ${sfpro.variable} ${inter.variable} ${kalam.variable} ${gsans.variable} ${eudoxus.variable} ${dmMono.variable} ${cedarvilleCursive.variable} ${pixelifySans.variable} ${jetbrainsMono.variable} ${manrope.variable} ${caveat.variable}`}
                     >
-                      {
-                        <Header
-                          dfToken={dfToken}
-                          hideHeader={pageProps?.hideHeader}
-                        />
-                      }
-                      <Component {...pageProps} />
+                      <ConditionalHeader
+                        dfToken={dfToken}
+                        hideHeader={pageProps?.hideHeader}
+                        isSidebarRoute={isSidebarRoute}
+                      />
+                      {isSidebarRoute && <BuilderSideNav />}
+                      {showBuilderTopNav && <BuilderTopNav />}
+                      {isSidebarRoute && <UpgradePill />}
+                      <FloatingPageContainer isSidebarRoute={isSidebarRoute}>
+                        <Component {...pageProps} />
+                      </FloatingPageContainer>
                       <ToastContainer position="bottom-right" />
                       <UpgradeModal />
                       <SettingsModal />

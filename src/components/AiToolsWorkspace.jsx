@@ -326,7 +326,7 @@ export default function AiToolsWorkspace({ embedInBuilder = false }) {
       <main
         className={cn(
           "flex-1 p-6 overflow-y-auto pb-32 flex justify-center",
-          (embedInBuilder || isLoggedIn) && "pt-[94px] md:pt-[124px]"
+          (embedInBuilder || isLoggedIn) && "pt-[94px]"
         )}
       >
         <div

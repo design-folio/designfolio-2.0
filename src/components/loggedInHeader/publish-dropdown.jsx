@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Copy, Check } from "lucide-react";
+import { ZapIcon } from "lucide-animated";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence, MotionConfig } from "framer-motion";
 import { useGlobalContext } from "@/context/globalContext";
@@ -8,6 +9,7 @@ import { _publish } from "@/network/post-request";
 import { formatTimestamp } from "@/lib/times";
 import { toast } from "react-toastify";
 import { usePostHogEvent } from "@/hooks/usePostHogEvent";
+import { Spinner } from "@/components/ui/spinner";
 import { POSTHOG_EVENT_NAMES } from "@/lib/posthogEventNames";
 import { TEMPLATES_BY_ID } from "@/lib/templates";
 
@@ -31,6 +33,7 @@ export function PublishDropdown({ onClose }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
   const dropdownRef = useRef(null);
+  const zapRef = useRef(null);
 
   const { userDetails, setUserDetails, updateCache, template, setShowUpgradeModal, setUpgradeModalSource } = useGlobalContext();
   const phEvent = usePostHogEvent();
@@ -91,12 +94,19 @@ export function PublishDropdown({ onClose }) {
         <Button
           onClick={handleFirstPublish}
           disabled={isPublishing}
-          className="bg-black hover:bg-[#2A2A2A] dark:bg-white dark:hover:bg-[#E8E8E8] text-white dark:text-black font-medium px-6 h-9 text-[13px] rounded-full hover:cursor-pointer transition-colors"
+          onMouseEnter={() => !isPublishing && zapRef.current?.startAnimation()}
+          onMouseLeave={() => zapRef.current?.stopAnimation()}
+          className="bg-black hover:bg-[#2A2A2A] dark:bg-white dark:hover:bg-[#E8E8E8] text-white dark:text-black font-medium pl-4 pr-5 h-9 text-[13px] rounded-full hover:cursor-pointer transition-colors gap-1.5 inline-flex items-center"
           data-testid="button-publish"
           aria-expanded={isOpen}
           aria-haspopup="true"
         >
-          {isPublishing ? "Publishing…" : "Publish"}
+          {isPublishing ? (
+            <Spinner className="size-3.5" />
+          ) : (
+            <ZapIcon ref={zapRef} size={14} />
+          )}
+          Publish
         </Button>
 
         <AnimatePresence>
@@ -148,12 +158,13 @@ export function PublishDropdown({ onClose }) {
                     onClick={handlePublish}
                     disabled={isPublishing}
                     className={cn(
-                      "relative z-10 flex w-full items-center justify-center px-3 h-[44px] text-[13px] font-medium rounded-xl transition-colors duration-150 focus:outline-none mt-1",
+                      "relative z-10 flex w-full items-center justify-center gap-2 px-3 h-[44px] text-[13px] font-medium rounded-xl transition-colors duration-150 focus:outline-none mt-1",
                       isPublishing
                         ? "cursor-not-allowed bg-black/5 dark:bg-white/5 text-[#7A736C] dark:text-[#9E9893]"
                         : "cursor-pointer bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-[#1A1A1A] dark:text-[#F0EDE7]"
                     )}
                   >
+                    {isPublishing && <Spinner className="size-3.5" />}
                     {isPublishing ? "Updating…" : "Update changes"}
                   </button>
                 </div>

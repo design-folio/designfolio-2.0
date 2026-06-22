@@ -16,19 +16,11 @@ export function FloatingPageContainer({ isSidebarRoute, children }) {
     return <>{children}</>;
   }
 
-  // Jobs uses a fixed inset-0 Kanban layout whose height chain depends on being
-  // viewport-anchored. Wrapping it in a container breaks flex-1/min-h-0 chains.
-  // Use a visual border overlay (z-150, above page content, below sidebar z-200)
-  // and render children normally.
   if (isJobsRoute) {
     return (
-      <>
-        <div
-          aria-hidden="true"
-          className="hidden md:block pointer-events-none fixed top-2 bottom-2 left-[72px] right-2 rounded-[32px] border border-black/[0.07] dark:border-white/[0.07] z-[150]"
-        />
+      <div className="fixed inset-0 md:top-2 md:bottom-2 md:left-[72px] md:right-2 flex flex-col bg-[#F0EDE7] dark:bg-background pt-[72px] md:pt-0 md:rounded-[32px] md:border md:border-black/[0.07] md:dark:border-white/[0.07] md:overflow-hidden">
         {children}
-      </>
+      </div>
     );
   }
 

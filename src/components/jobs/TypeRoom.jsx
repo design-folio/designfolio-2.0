@@ -106,7 +106,7 @@ export function TypeRoom({ questions, onDone, onReset }) {
 
   return (
     <motion.div
-      className="fixed inset-0 flex flex-col items-center justify-between bg-[#F0EDE7] dark:bg-background px-6 py-12 overflow-y-auto"
+      className="flex-1 flex flex-col items-center justify-between px-6 py-12 overflow-y-auto"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}

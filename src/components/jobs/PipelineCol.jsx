@@ -165,9 +165,7 @@ export function PipelineCol({
   if (onToggleCollapse) {
     const morphEase = [0.22, 1, 0.36, 1];
     const morphDur = 0.42;
-    const colBgCollapsible = isPicks
-      ? "relative flex-1 rounded-xl bg-[#E8E3DC] dark:bg-[#141414] overflow-hidden h-full"
-      : "relative flex-1 rounded-xl bg-[#E2DDD6] dark:bg-[#141414] overflow-hidden h-full";
+    const colBgCollapsible = "relative flex-1 rounded-xl bg-[var(--shell-bg)] overflow-hidden h-full";
     return (
       <KanbanColumn value={colId} className={colBgCollapsible}>
         {/* Expanded state */}

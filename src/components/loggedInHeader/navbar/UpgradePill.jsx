@@ -4,13 +4,13 @@ import { useGlobalContext } from "@/context/globalContext";
 
 export function UpgradePill() {
   const router = useRouter();
-  const { setShowUpgradeModal, userDetails } = useGlobalContext();
+  const { setShowUpgradeModal, userDetails, activeSidebar } = useGlobalContext();
 
   const isValidRoute =
     router.pathname === "/builder" ||
     router.pathname === "/project/[id]/editor";
 
-  if (!isValidRoute || userDetails?.pro) return null;
+  if (!isValidRoute || userDetails?.pro || activeSidebar) return null;
 
   return (
     <button

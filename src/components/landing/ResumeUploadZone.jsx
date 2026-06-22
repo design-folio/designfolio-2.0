@@ -11,6 +11,7 @@ import ArrowCTA from "./shared/ArrowCTA";
 import { Button } from "../ui/button";
 import { usePostHogEvent } from "@/hooks/usePostHogEvent";
 import { POSTHOG_EVENT_NAMES } from "@/lib/posthogEventNames";
+import { CheckCircle2 } from "lucide-react";
 
 const AI_STATUSES = [
   "Reading your resume",

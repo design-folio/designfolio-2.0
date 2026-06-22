@@ -1,6 +1,5 @@
 import { getServerSideProps as loggedInServerSideProps } from "@/lib/loggedInServerSideProps";
 import { Jobs } from "@/components/jobs/index";
-import { JobsFloatingNav } from "@/components/jobs/JobsFloatingNav";
 import Navbar from "@/components/loggedInHeader/navbar";
 // ─── BETA GATE ──────────────────────────────────────────────────────────────
 // TO LAUNCH JOBS FOR ALL USERS — remove in this order:
@@ -29,7 +28,6 @@ export default function JobsPage() {
       <div className="md:hidden">
         <Navbar />
       </div>
-      <JobsFloatingNav />
       <Jobs />
     </>
   );

@@ -1,5 +1,4 @@
 import { getServerSideProps as loggedInServerSideProps } from "@/lib/loggedInServerSideProps";
-import { JobsFloatingNav } from "@/components/jobs/JobsFloatingNav";
 import { CreditsBalance } from "@/components/jobs/CreditsBalance";
 import { AvatarDropdown } from "@/components/loggedInHeader/avatar-dropdown";
 import { TabSwitcher } from "@/components/jobs/FilterBar";
@@ -21,7 +20,6 @@ function DocumentsTopBar() {
 export default function JobsDocumentsPage() {
   return (
     <>
-      <JobsFloatingNav />
       <div className="flex flex-col h-screen overflow-hidden">
         <DocumentsTopBar />
         <DocumentsLibrary />

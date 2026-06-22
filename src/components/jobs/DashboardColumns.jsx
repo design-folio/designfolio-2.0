@@ -175,14 +175,14 @@ export function DashboardColumns({
   }
 
   return (
-    <div className="flex-1 min-h-0 overflow-x-auto overflow-y-hidden">
+    <div className="flex-1 min-h-0 overflow-x-auto overflow-y-hidden custom-thin-scrollbar">
       <Kanban
         value={columns}
         onValueChange={onColumnsChange}
         getItemValue={(job) => job.id}
         className="h-full"
       >
-        <KanbanBoard className="flex h-full pt-4 pr-4 pb-4 pl-[108px]">
+        <KanbanBoard className="flex h-full pt-4 pr-4 pb-4 pl-4">
           {/* Picks column */}
           <motion.div
             ref={picksRef}

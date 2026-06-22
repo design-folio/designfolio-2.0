@@ -204,7 +204,7 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
         damping: 12,
         delay: 0.45,
       }}
-      className="bg-white dark:bg-[#2A2520] rounded-[24px] border border-[#E5D7C4] dark:border-white/10 p-4 md:p-6 w-full relative group/section"
+      className="bg-white dark:bg-[#2A2520] rounded-[26px] border border-[#E5D7C4] dark:border-white/10 p-4 md:p-6 w-full relative group/section"
     >
       {isEditing && (
         <CanvasSectionControls>
@@ -217,31 +217,31 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
             />
           )}
           <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
-              <DropdownMenuTrigger asChild>
-                <CanvasSectionButton icon={<Plus className="w-3.5 h-3.5" />} ariaLabel="Add project" alwaysVisible={isDropdownOpen} />
-              </DropdownMenuTrigger>
+            <DropdownMenuTrigger asChild>
+              <CanvasSectionButton icon={<Plus className="w-3.5 h-3.5" />} ariaLabel="Add project" alwaysVisible={isDropdownOpen} />
+            </DropdownMenuTrigger>
 
-              <DropdownMenuContent
-                align="end"
-                className="w-48 bg-white dark:bg-[#2A2520] border border-black/10 dark:border-white/10 shadow-lg rounded-xl overflow-hidden p-1"
+            <DropdownMenuContent
+              align="end"
+              className="w-48 bg-white dark:bg-[#2A2520] border border-black/10 dark:border-white/10 shadow-lg rounded-xl overflow-hidden p-1"
+            >
+              <DropdownMenuItem
+                onClick={() => openSidebar(sidebars.project)}
+                className="flex items-center gap-2 px-3 py-2 text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer rounded-lg focus:bg-black/5 dark:focus:bg-white/5"
               >
-                <DropdownMenuItem
-                  onClick={() => openSidebar(sidebars.project)}
-                  className="flex items-center gap-2 px-3 py-2 text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer rounded-lg focus:bg-black/5 dark:focus:bg-white/5"
-                >
-                  <Pencil className="w-3.5 h-3.5" />
-                  <span>Write from Scratch</span>
-                </DropdownMenuItem>
+                <Pencil className="w-3.5 h-3.5" />
+                <span>Write from Scratch</span>
+              </DropdownMenuItem>
 
-                <DropdownMenuItem
-                  onClick={() => openModal(modals.aiProject)}
-                  className="flex items-center gap-2 px-3 py-2 text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer rounded-lg focus:bg-black/5 dark:focus:bg-white/5"
-                >
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>Write using AI</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+              <DropdownMenuItem
+                onClick={() => openModal(modals.aiProject)}
+                className="flex items-center gap-2 px-3 py-2 text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer rounded-lg focus:bg-black/5 dark:focus:bg-white/5"
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Write using AI</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
           <SectionVisibilityButton
             sectionId="projects"

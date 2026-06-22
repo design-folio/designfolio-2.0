@@ -184,9 +184,9 @@ export default function Index({
       className={(() => {
         switch (effectiveTemplate) {
           case TEMPLATE_IDS.CANVAS:
-            return "max-w-[720px] mx-auto flex flex-col gap-3 pb-20 pt-[40px] px-4 md:px-0";
+            return "max-w-[800px] mx-auto flex flex-col gap-3 pb-20 pt-[40px] px-4 md:px-0";
           case TEMPLATE_IDS.MONO:
-            return "max-w-[640px] mx-auto pb-20 custom-dashed-x bg-[#F0EDE7] dark:bg-[#1A1A1A] min-h-screen";
+            return "max-w-[880px] mx-auto pb-20 custom-dashed-x bg-[#F0EDE7] dark:bg-[#1A1A1A] min-h-screen";
           default:
             return "max-w-[848px] mx-auto pt-[16px] pb-[80px] lg:py-[40px] px-2 md:px-4 lg:px-0";
         }
@@ -229,7 +229,7 @@ export default function Index({
                     <TiptapRenderer key={project._id} content={project.tiptapContent} className={cn(isCanvas ? "" : "shadow-none bg-transparent")} />
                   </motion.div>
                 ) : project?.content ? (
-                  <motion.div variants={itemVariants} className={isMono ? "px-5 md:px-8 py-6" : ""}>
+                  <motion.div variants={itemVariants} className={isMono ? "px-6 md:px-10 py-8" : ""}>
                     <BlockRenderer editorJsData={project.content} />
                   </motion.div>
                 ) : null}

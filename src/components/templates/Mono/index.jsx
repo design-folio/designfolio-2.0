@@ -484,7 +484,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
         {/* Projects Section */}
         <motion.div
           variants={itemVariants}
-          className="px-5 md:px-8 py-8 pb-16 relative group/section"
+          className="px-6 md:px-10 py-10 pb-16 relative group/section"
         >
           {isEditing && (
             <div
@@ -672,7 +672,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               />
             </div>
           )}
-          <h2 className="text-[14px] font-bold text-[#463B34] dark:text-[#D4C9BC] font-dm-mono uppercase tracking-widest mb-4">
+          <h2 className="text-[14px] font-bold text-[#463B34] dark:text-[#D4C9BC] font-dm-mono uppercase tracking-wider mb-5">
             Projects
           </h2>
 
@@ -842,7 +842,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
         {/* My Story Section */}
         <motion.div
           variants={itemVariants}
-          className="px-5 md:px-8 py-8 pb-16 relative group/section"
+          className="px-6 md:px-10 py-10 pb-16 relative group/section"
         >
           {isEditing && (
             <div className="absolute top-4 right-4 transition-opacity z-10 flex gap-2">
@@ -861,7 +861,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               />
             </div>
           )}
-          <h2 className="text-[14px] font-bold text-[#463B34] dark:text-[#D4C9BC] font-dm-mono uppercase tracking-widest mb-6">
+          <h2 className="text-[14px] font-bold text-[#463B34] dark:text-[#D4C9BC] font-dm-mono uppercase tracking-wider mb-5">
             My Story
           </h2>
 
@@ -1013,7 +1013,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
         {/* Stack Section */}
         <motion.div
           variants={itemVariants}
-          className="px-5 md:px-8 py-8 relative group/section"
+          className="px-6 md:px-10 py-10 relative group/section"
         >
           {isEditing && (
             <div className="absolute top-4 right-4 transition-opacity z-10 flex gap-2">
@@ -1036,7 +1036,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               />
             </div>
           )}
-          <h2 className="text-[14px] font-bold text-[#463B34] dark:text-[#D4C9BC] font-dm-mono uppercase tracking-widest mb-6">
+          <h2 className="text-[14px] font-bold text-[#463B34] dark:text-[#D4C9BC] font-dm-mono uppercase tracking-wider mb-5">
             Stack
           </h2>
           {activeTools.length === 0 ? (
@@ -1078,18 +1078,22 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               )}
             </div>
           ) : (
-            <div className="flex flex-wrap gap-6 items-center">
+            <div className="flex flex-wrap gap-8 items-end">
               {activeTools.map((tool, i) => (
                 <motion.div
                   key={i}
-                  whileHover={{ y: -4 }}
-                  className="w-8 h-8 flex items-center justify-center cursor-pointer relative group/tool"
+                  whileHover={{ y: -5, scale: 1.05, rotate: i % 2 === 0 ? 2 : -2 }}
+                  transition={{ type: "spring", stiffness: 350, damping: 18 }}
+                  className="flex flex-col items-center gap-1.5 cursor-pointer relative group/tool"
                 >
                   <img
                     src={tool.icon}
                     alt={tool.name}
-                    className="w-full h-full object-contain grayscale hover:grayscale-0 transition-all duration-300"
+                    className="w-10 h-10 object-contain cursor-pointer transition-[filter] duration-300 group-hover/tool:[filter:drop-shadow(0_4px_8px_rgba(0,0,0,0.18))]"
                   />
+                  <span className="text-[10px] font-medium text-[#7A736C] dark:text-[#9E9893] opacity-0 group-hover/tool:opacity-100 transition-opacity duration-200 whitespace-nowrap leading-none">
+                    {tool.name}
+                  </span>
                 </motion.div>
               ))}
             </div>
@@ -1100,10 +1104,10 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
   };
 
   return (
-    <div className="w-full flex-1 flex flex-col gap-3 pb-0 pt-0 px-4 md:px-0 max-w-[640px] mx-auto">
+    <div className="w-full flex-1 flex flex-col gap-3 pb-0 pt-0 px-4 md:px-0 max-w-[880px] mx-auto">
       <motion.div
         className={
-          "w-full max-w-[640px] relative min-h-screen flex flex-col font-inter transition-colors duration-700 bg-[#F0EDE7] dark:bg-[#1A1A1A] custom-dashed-x"
+          "w-full max-w-[880px] relative min-h-screen flex flex-col font-inter transition-colors duration-700 bg-[#F0EDE7] dark:bg-[#1A1A1A] custom-dashed-x"
         }
         variants={containerVariants}
         initial="hidden"
@@ -1113,7 +1117,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
         {/* Header Section */}
         <motion.div
           variants={itemVariants}
-          className="px-5 md:px-8 pt-12 md:pt-16 pb-6 relative group/section"
+          className="px-6 md:px-10 pt-12 md:pt-16 pb-8 relative group/section"
         >
           {isEditing && (
             <div className="absolute top-4 right-4 transition-opacity z-10 opacity-100 md:opacity-0 md:group-hover/section:opacity-100 flex gap-1.5">
@@ -1130,7 +1134,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
             </div>
           )}
           <div className="flex items-start justify-between gap-4 mb-6">
-            <Avatar className="w-[80px] h-[80px] rounded-2xl">
+            <Avatar className="w-[96px] h-[96px] rounded-2xl">
               <AvatarImage
                 src={avatarSrc}
                 alt={displayName || "Profile image"}
@@ -1147,14 +1151,14 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
 
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4 sm:gap-0">
             <div>
-              <h1 className="text-[24px] font-semibold mb-0.5 tracking-tight text-[#1A1A1A] dark:text-[#F0EDE7]">
+              <h1 className="text-[30px] font-semibold mb-0.5 tracking-[-0.01em] text-[#1A1A1A] dark:text-[#F0EDE7]">
                 {introduction}
               </h1>
               {isEditing ? (
                 <div className="flex items-center gap-2 group/role">
 
                   <p
-                    className="text-[#7A736C] dark:text-[#B5AFA5] text-base"
+                    className="text-[#4A4440] dark:text-[#C8C0B5] text-[17px]"
                     style={{ fontWeight: 450 }}
                   >
                     {userRole}
@@ -1171,7 +1175,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                 </div>
               ) : (
                 <p
-                  className="text-[#7A736C] dark:text-[#B5AFA5] text-base"
+                  className="text-[#4A4440] dark:text-[#C8C0B5] text-[17px]"
                   style={{ fontWeight: 450 }}
                 >
                   {userRole}
@@ -1198,7 +1202,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
         {/* Intro Section */}
         <motion.div
           variants={itemVariants}
-          className="px-5 md:px-8 py-8 relative group/section"
+          className="px-6 md:px-10 py-10 relative group/section"
         >
           {isEditing && (
             <div className="absolute top-4 right-4 transition-opacity z-10 opacity-100 md:opacity-0 md:group-hover/section:opacity-100">
@@ -1212,11 +1216,11 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               </Button>
             </div>
           )}
-          <h2 className="text-[14px] font-bold text-[#463B34] dark:text-[#D4C9BC] font-dm-mono uppercase tracking-widest mb-4">
+          <h2 className="text-[14px] font-bold text-[#463B34] dark:text-[#D4C9BC] font-dm-mono uppercase tracking-wider mb-5">
             Intro
           </h2>
           <p
-            className="text-[#7A736C] dark:text-[#B5AFA5] leading-[1.7] text-base"
+            className="text-[#7A736C] dark:text-[#B5AFA5] leading-[1.7] text-[17px]"
             style={{ fontWeight: 450 }}
           >
             {bio}

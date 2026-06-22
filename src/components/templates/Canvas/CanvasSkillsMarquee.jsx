@@ -23,7 +23,7 @@ function CanvasSkillsMarquee({ skills = [], isEditing }) {
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 100, damping: 12, delay: 0.3 }}
-      className="bg-white dark:bg-[#2A2520] rounded-[24px] border border-[#E5D7C4] dark:border-white/10 py-2 relative w-full group/section"
+      className="bg-white dark:bg-[#2A2520] rounded-[26px] border border-[#E5D7C4] dark:border-white/10 py-2 relative w-full group/section"
     >
       {isEditing && (
         <CanvasSectionControls>

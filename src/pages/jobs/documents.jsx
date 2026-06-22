@@ -6,7 +6,7 @@ import DocumentsLibrary from "@/components/jobs/documents/DocumentsLibrary";
 
 function DocumentsTopBar() {
   return (
-    <div className="flex flex-row flex-shrink-0 items-center pl-4 md:pl-[108px] pr-4 mt-2.5 md:mt-6 mb-1.5 md:mb-2 gap-2">
+    <div className="flex flex-row flex-shrink-0 items-center pl-4 pr-4 mt-2.5 md:mt-6 mb-1.5 md:mb-2 gap-2">
       <div className="flex-1 md:flex-none" />
       <div className="hidden md:flex items-center gap-1.5 ml-auto">
         <TabSwitcher />

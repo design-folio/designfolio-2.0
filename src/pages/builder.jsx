@@ -313,16 +313,12 @@ export default function Index() {
           )}
         >
           <div
-            className={cn(
-              "mx-auto w-full",
-              t === TEMPLATE_IDS.CHATFOLIO
-                ? "py-[94px]"
-                : t === TEMPLATE_IDS.SPOTLIGHT || t === TEMPLATE_IDS.PROFESSIONAL
-                  ? "pt-24"
-                  : t === TEMPLATE_IDS.RETRO_OS
-                    ? ""
-                    : "px-2 md:px-4 lg:px-0 pt-24 pb-0 max-w-[848px]",
-            )}
+            className={cn("mx-auto w-full", {
+              [TEMPLATE_IDS.CHATFOLIO]: "py-[94px]",
+              [TEMPLATE_IDS.SPOTLIGHT]: "pt-24",
+              [TEMPLATE_IDS.PROFESSIONAL]: "pt-24",
+              [TEMPLATE_IDS.RETRO_OS]: "",
+            }[t] ?? "px-2 md:px-4 lg:px-0 pt-24 pb-0 max-w-[880px]")}
           >
             {userDetails && !userDetails?.pro && TEMPLATES_BY_ID[t]?.isPro && (
               <ProWarning />

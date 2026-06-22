@@ -1,15 +1,18 @@
-import { forwardRef, useState } from "react";
-import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
+import { LayoutTemplate, Sparkles } from "lucide-react";
+import { forwardRef, useState } from "react";
 
 const STEPS = [
   {
     label: "Build your portfolio",
+    icon: LayoutTemplate,
     darkSrc: "/landing-video/hero-dark.mp4",
     lightSrc: "/landing-video/hero-light.mp4",
   },
   {
     label: "Find your next role",
+    icon: Sparkles,
     darkSrc: "/landing-video/hero-jobs-dark.mp4",
     lightSrc: "/landing-video/hero-jobs-light.mp4",
   },
@@ -32,7 +35,7 @@ const LandingVideoSection = forwardRef(function LandingVideoSection({ isDark }, 
         className="flex flex-col gap-5"
       >
         {/* Tab header */}
-        <div className="flex items-end gap-8 px-1">
+        <div className="flex items-end justify-center gap-8 px-1">
           {STEPS.map((step, i) => {
             const isActive = heroStep === i;
             return (
@@ -43,12 +46,13 @@ const LandingVideoSection = forwardRef(function LandingVideoSection({ isDark }, 
               >
                 <span
                   className={cn(
-                    "text-[13px] font-semibold leading-none transition-colors duration-200 whitespace-nowrap cursor-pointer",
+                    "inline-flex items-center gap-1.5 text-[13px] font-semibold leading-none transition-colors duration-200 whitespace-nowrap cursor-pointer",
                     isActive
                       ? "text-[--lp-text]"
                       : "text-lp-text/35 group-hover:text-lp-text/55",
                   )}
                 >
+                  <step.icon className="w-3.5 h-3.5 flex-shrink-0" strokeWidth={2} />
                   {step.label}
                 </span>
                 <div className="w-full h-[2px] rounded-full bg-lp-text/10 overflow-hidden">

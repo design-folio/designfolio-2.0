@@ -144,7 +144,7 @@ export function Jobs() {
   // ── Loading ──────────────────────────────────────────────────────────────
   if (phase === "loading") {
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-[#F0EDE7] dark:bg-background">
+      <div className="flex-1 flex items-center justify-center">
         <div className="flex gap-[5px]">
           {[0, 1, 2].map((i) => (
             <div
@@ -162,7 +162,7 @@ export function Jobs() {
   if (phase === "error") {
     const isAuth = errorType === "auth";
     return (
-      <div className="fixed inset-0 flex flex-col items-center justify-center gap-3 bg-[#F0EDE7] dark:bg-background px-6">
+      <div className="flex-1 flex flex-col items-center justify-center gap-3 px-6">
         <p className="text-foreground text-[18px] font-medium tracking-tight text-center">
           {isAuth ? "Session expired" : "Something went wrong"}
         </p>
@@ -192,7 +192,7 @@ export function Jobs() {
   // ── Empty (no jobs found) ─────────────────────────────────────────────────
   if (phase === "empty") {
     return (
-      <div className="fixed inset-0 flex flex-col items-center justify-center gap-4 bg-[#F0EDE7] dark:bg-background px-6">
+      <div className="flex-1 flex flex-col items-center justify-center gap-4 px-6">
         <p className="text-foreground text-[22px] font-medium tracking-tight text-center">
           No matching roles found.
         </p>

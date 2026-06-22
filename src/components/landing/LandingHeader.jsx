@@ -30,7 +30,6 @@ export default function LandingHeader({
         {/* Desktop: user stats */}
         <div
           className="hidden md:flex text-[13px] font-semibold tracking-wide text-lp-text/70 uppercase h-[20px] items-center min-w-[200px]"
-          style={{ fontFamily: '"DM Mono", monospace' }}
         >
           <BuiltForTypewriter />
         </div>

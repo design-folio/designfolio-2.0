@@ -171,6 +171,14 @@ export default function Index({
     userDetails?.wallpaper?.effects ||
     null;
 
+  const tiptapClassName = (() => {
+    switch (effectiveTemplate) {
+      case TEMPLATE_IDS.CANVAS: return "";
+      case TEMPLATE_IDS.SPOTLIGHT: return "shadow-none bg-card";
+      default: return "shadow-none bg-transparent";
+    }
+  })();
+
   const canvasCta = isCanvas && !isProtected && project && (
     <CanvasProjectCta ownerUser={ownerUser} />
   );
@@ -225,8 +233,8 @@ export default function Index({
                   <ProjectInfo projectDetails={project} ownerTemplate={ownerTemplate} />
                 </motion.div>
                 {project?.contentVersion === 2 && project?.tiptapContent ? (
-                  <motion.div variants={itemVariants} className={isMono ? "" : ""}>
-                    <TiptapRenderer key={project._id} content={project.tiptapContent} className={cn(isCanvas ? "" : "shadow-none bg-transparent")} />
+                  <motion.div variants={itemVariants} className={cn(isMono ? "px-6 md:px-10 py-8" : "")}>
+                    <TiptapRenderer key={project._id} content={project.tiptapContent} className={tiptapClassName} />
                   </motion.div>
                 ) : project?.content ? (
                   <motion.div variants={itemVariants} className={isMono ? "px-6 md:px-10 py-8" : ""}>

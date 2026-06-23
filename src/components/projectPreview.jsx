@@ -5,7 +5,6 @@ import { useGlobalContext } from "@/context/globalContext";
 import BlockRenderer from "./blockRenderer";
 import TiptapRenderer from "./tiptapRenderer";
 import { containerVariants, itemVariants } from "@/lib/animationVariants";
-import { cn } from "@/lib/utils";
 import { TEMPLATE_IDS } from "@/lib/templates";
 
 export default function ProjectPreview({ projectDetails }) {
@@ -14,6 +13,14 @@ export default function ProjectPreview({ projectDetails }) {
   const contentVersion = projectDetails?.project?.contentVersion || 1;
   const hasTiptapContent = contentVersion === 2 && projectDetails?.project?.tiptapContent;
   const hasEditorJSContent = contentVersion === 1 && projectDetails?.project?.content;
+
+  const tiptapClassName = (() => {
+    switch (userDetails?.template) {
+      case TEMPLATE_IDS.CANVAS: return "";
+      case TEMPLATE_IDS.SPOTLIGHT: return "shadow-none bg-card";
+      default: return "shadow-none bg-transparent";
+    }
+  })();
 
   return (
     <motion.div
@@ -33,7 +40,7 @@ export default function ProjectPreview({ projectDetails }) {
           </motion.div>
           {hasTiptapContent && (
             <motion.div variants={itemVariants}>
-              <TiptapRenderer content={projectDetails?.project?.tiptapContent} className={cn(userDetails?.template === TEMPLATE_IDS.CANVAS ? "" : userDetails?.template === TEMPLATE_IDS.SPOTLIGHT ? "shadow-none bg-card" : "shadow-none bg-transparent")} />
+              <TiptapRenderer content={projectDetails?.project?.tiptapContent} className={tiptapClassName} />
             </motion.div>
           )}
           {hasEditorJSContent && (

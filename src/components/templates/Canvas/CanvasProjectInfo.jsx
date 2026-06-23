@@ -455,7 +455,7 @@ export default function CanvasProjectInfo({
           </h1>
           {(edit || !!description) && (
             <p
-              className={`text-[16px] leading-relaxed max-w-[600px] min-w-0 webkit-fill ${descIsPlaceholder ? "text-[#C5BFB8] dark:text-[#4A4238] italic" : "text-[#7A736C] dark:text-[#B5AFA5]"}`}
+              className={`text-[16px] leading-relaxed min-w-0 webkit-fill ${descIsPlaceholder ? "text-[#C5BFB8] dark:text-[#4A4238] italic" : "text-[#7A736C] dark:text-[#B5AFA5]"}`}
               contentEditable={edit}
               suppressContentEditableWarning
               onFocus={(e) => {

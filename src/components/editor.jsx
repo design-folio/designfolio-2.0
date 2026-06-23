@@ -23,7 +23,10 @@ const tiptapClassNamesByTemplate = {
   },
   [TEMPLATE_IDS.CANVAS]: {
     editor: "rounded-[26px]",
-  }
+  },
+  [TEMPLATE_IDS.SPOTLIGHT]: {
+    editor: "rounded-[26px]",
+  },
 };
 
 const ProjectEditor = dynamic(() => import("./projectEditor"), {

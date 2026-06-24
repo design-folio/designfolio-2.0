@@ -56,14 +56,16 @@ export const GlobalProvider = ({ children }) => {
 
   // Sync data-template attribute on <html> for theme.css accent overrides
   useEffect(() => {
+    if (router.pathname === '/project/[id]') return;
     const templateValue = TEMPLATES_BY_ID[template]?.value ?? 'canvas';
     document.documentElement.dataset.template = templateValue;
-  }, [template]);
+  }, [template, router.pathname]);
 
   // Re-set data-template after every client-side navigation. Public pages (project/[id]/index)
   // clean up the attribute on unmount; this ensures globalContext restores it for the next page.
   useEffect(() => {
-    const handleRouteChangeComplete = () => {
+    const handleRouteChangeComplete = (url) => {
+      if (url.startsWith('/project/')) return;
       const templateValue = TEMPLATES_BY_ID[template]?.value ?? 'canvas';
       document.documentElement.dataset.template = templateValue;
     };

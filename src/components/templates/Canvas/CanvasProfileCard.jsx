@@ -42,8 +42,8 @@ function CanvasProfileCard({ isEditing, skills = [], persistTheme = false }) {
         <Switch
           value={isDark}
           onToggle={toggleTheme}
-          iconOn={<Moon className="size-4" />}
-          iconOff={<Sun className="size-4" />}
+          iconOn={<Moon className="size-3" />}
+          iconOff={<Sun className="size-3" />}
         />
       </div>
 

@@ -185,19 +185,37 @@ function CanvasCareerLadder({ isEditing, preview = false }) {
   useEffect(() => {
     let rafId;
 
+    // In the builder, html.sidebar-layout locks window scroll and the
+    // FloatingPageContainer (a fixed, overflow-y-auto div) is the real scroll
+    // container. Walk up the DOM to find it so scroll events are captured
+    // correctly in both the builder and the public/preview views.
+    const getScrollContainer = (el) => {
+      let node = el?.parentElement;
+      while (node && node !== document.documentElement) {
+        const { overflow, overflowY } = window.getComputedStyle(node);
+        if (/(auto|scroll)/.test(overflow + overflowY)) return node;
+        node = node.parentElement;
+      }
+      return window;
+    };
+
+    const scrollEl = getScrollContainer(careerLadderRef.current);
+    const isWindow = scrollEl === window;
+
     const updatePosition = () => {
       if (!careerLadderRef.current || !ladderContainerRef.current) return;
 
       const sectionRect = careerLadderRef.current.getBoundingClientRect();
       const containerHeight = ladderContainerRef.current.offsetHeight;
-      const viewportHeight = window.innerHeight;
-
-      const sectionTop = sectionRect.top;
+      const viewportHeight = isWindow ? window.innerHeight : scrollEl.clientHeight;
+      // sectionRect.top is viewport-relative; make it relative to scroll container
+      const containerTop = isWindow ? 0 : scrollEl.getBoundingClientRect().top;
+      const relativeSectionTop = sectionRect.top - containerTop;
       const sectionHeight = sectionRect.height;
 
       let progress = 0;
       const middleOfScreen = viewportHeight / 2;
-      const distanceFromMiddle = sectionTop - middleOfScreen;
+      const distanceFromMiddle = relativeSectionTop - middleOfScreen;
 
       if (distanceFromMiddle > 0) {
         progress = 0;
@@ -220,9 +238,9 @@ function CanvasCareerLadder({ isEditing, preview = false }) {
     updatePosition();
     const timeoutId = setTimeout(updatePosition, 50);
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    scrollEl.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      scrollEl.removeEventListener("scroll", handleScroll);
       if (rafId) cancelAnimationFrame(rafId);
       clearTimeout(timeoutId);
     };

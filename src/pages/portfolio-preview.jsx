@@ -44,9 +44,7 @@ export default function Index() {
       className="text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] xl:block cursor-pointer mb-[120px] lg:m-0"
       onClick={() => window.open("https://www.designfolio.me", "_blank")}
     >
-
       <MemoMadewithdesignfolio />
-
     </div>
   );
 
@@ -141,11 +139,7 @@ export default function Index() {
       case TEMPLATE_IDS.RETRO_OS:
         return (
           <>
-            <MacOSTemplate
-              userDetails={userDetails}
-              edit={false}
-              preview={false}
-            />
+            <MacOSTemplate userDetails={userDetails} edit={false} preview={false} />
             {ProBadge}
             <Button
               variant="outline"
@@ -197,14 +191,9 @@ export default function Index() {
 
   return (
     <>
-      <WallpaperBackground
-        wallpaperUrl={wallpaperUrl}
-        effects={wallpaperEffects}
-      />
+      <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
       <main className="min-h-screen">
-        <div
-          className={`mx-auto px-2 md:px-4 lg:px-0 ${fullWidth ? "" : "max-w-[848px]"}`}
-        >
+        <div className={`mx-auto px-2 md:px-4 lg:px-0 ${fullWidth ? "" : "max-w-[848px]"}`}>
           {userDetails && renderTemplate()}
         </div>
       </main>

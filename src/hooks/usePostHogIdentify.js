@@ -1,5 +1,5 @@
-import { useCallback } from 'react';
-import { usePostHog } from 'posthog-js/react';
+import { useCallback } from "react";
+import { usePostHog } from "posthog-js/react";
 
 export function usePostHogIdentify() {
   const posthog = usePostHog();

@@ -37,18 +37,17 @@ function AnalyticsChart({ duration, setUniqueVisits }) {
       plugins: {
         colors: {
           forceOverride: true,
-          enabled: false
+          enabled: false,
         },
         legend: {
           position: "bottom",
           labels: {
             usePointStyle: true,
             font: {
-              size: 14
+              size: 14,
             },
             generateLabels: (chart) => {
-              const original =
-                ChartJS.defaults.plugins.legend.labels.generateLabels(chart);
+              const original = ChartJS.defaults.plugins.legend.labels.generateLabels(chart);
               return original.map((label) => ({
                 ...label,
                 pointStyle: svgIcon, // Use the loaded SVG image as a point style
@@ -75,12 +74,12 @@ function AnalyticsChart({ duration, setUniqueVisits }) {
               size: 12,
             },
             callback: function (value) {
-              return Number.isInteger(value) ? value : ''; // Removes decimals and shows only whole numbers
+              return Number.isInteger(value) ? value : ""; // Removes decimals and shows only whole numbers
             },
           },
         },
         x: {
-          borderColor: isDarkMode ? '#1D1F27' : '#565656', // Dark color for dark mode, lighter color for light mode
+          borderColor: isDarkMode ? "#1D1F27" : "#565656", // Dark color for dark mode, lighter color for light mode
           grid: {
             display: false, // Remove vertical grid lines
           },
@@ -95,12 +94,11 @@ function AnalyticsChart({ duration, setUniqueVisits }) {
       },
       elements: {
         line: {
-          color: isDarkMode ? '#606273' : 'rgba(141, 186, 248, 0.7)', // Line color for dark mode and light mode
+          color: isDarkMode ? "#606273" : "rgba(141, 186, 248, 0.7)", // Line color for dark mode and light mode
         },
       },
     };
   }, [svgIcon, theme]); // Only recompute when svgIcon or theme changes
-  
 
   const fetchAnalytics = async (durationQuery) => {
     const response = await _analytics(durationQuery);
@@ -194,10 +192,10 @@ function AnalyticsChart({ duration, setUniqueVisits }) {
       duration === "Week"
         ? "week"
         : duration === "Today"
-        ? "day"
-        : duration === "This Month"
-        ? "month"
-        : null;
+          ? "day"
+          : duration === "This Month"
+            ? "month"
+            : null;
 
     if (durationQuery) {
       fetchAnalytics(durationQuery);

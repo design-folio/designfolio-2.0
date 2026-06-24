@@ -10,10 +10,7 @@ import { Input } from "./ui/input";
 // Yup validation schema
 const DomainValidationSchema = Yup.object().shape({
   domain: Yup.string()
-    .matches(
-      /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})?$/,
-      "Invalid subdomain"
-    )
+    .matches(/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})?$/, "Invalid subdomain")
     .required("Username is required"),
 });
 
@@ -73,10 +70,9 @@ export default function ChangeUsername() {
       </p>
 
       <p className="text-[#4d545f] dark:text-[#B4B8C6] text-[12.8px] font-[400] leading-[22.4px] font-inter mt-2">
-        You can change your username to another username that is not currently
-        in use. Designfolio cannot set up redirects for links to your {""}
-        <span className="text-[#FF553E]">DesignFolio profile</span> that
-        includes your old username.
+        You can change your username to another username that is not currently in use. Designfolio
+        cannot set up redirects for links to your {""}
+        <span className="text-[#FF553E]">DesignFolio profile</span> that includes your old username.
       </p>
       <Formik
         initialValues={{ domain: userDetails?.username ?? "" }}
@@ -90,14 +86,7 @@ export default function ChangeUsername() {
           }
         }}
       >
-        {({
-          isSubmitting,
-          isValid,
-          setFieldValue,
-          values,
-          errors,
-          touched,
-        }) => (
+        {({ isSubmitting, isValid, setFieldValue, values, errors, touched }) => (
           <Form id={"usernameForm"} className=" w-full mt-[24px]">
             <div className="flex flex-col xl:flex-row items-end  gap-4  m-auto">
               <div className="w-full">
@@ -110,30 +99,33 @@ export default function ChangeUsername() {
                         type="text"
                         placeholder="Your-name"
                         autoComplete="off"
-                        className={((!!errors.domain && values.domain) || (!isAvailable && values.domain)) ? "border-destructive focus-visible:ring-destructive" : ""}
+                        className={
+                          (!!errors.domain && values.domain) || (!isAvailable && values.domain)
+                            ? "border-destructive focus-visible:ring-destructive"
+                            : ""
+                        }
                         onChange={(e) => handleChange(e, setFieldValue)}
                       />
                     )}
                   </Field>
                   <div className="flex justify-center items-center gap-[10px] absolute top-[18px] right-[20px]">
-                    {domainValue &&
-                      values?.domain !== userDetails?.username && (
-                        <>
-                          {isAvailable ? (
-                            <img
-                              src="/assets/svgs/checkbox.svg"
-                              className="w-[18px] h-[18px]"
-                              alt="designfolio logo"
-                            />
-                          ) : (
-                            <img
-                              src="/assets/svgs/no.svg"
-                              className="w-[18px] h-[18px]"
-                              alt="designfolio logo"
-                            />
-                          )}
-                        </>
-                      )}
+                    {domainValue && values?.domain !== userDetails?.username && (
+                      <>
+                        {isAvailable ? (
+                          <img
+                            src="/assets/svgs/checkbox.svg"
+                            className="w-[18px] h-[18px]"
+                            alt="designfolio logo"
+                          />
+                        ) : (
+                          <img
+                            src="/assets/svgs/no.svg"
+                            className="w-[18px] h-[18px]"
+                            alt="designfolio logo"
+                          />
+                        )}
+                      </>
+                    )}
                   </div>
                 </div>
                 <ErrorMessage
@@ -149,7 +141,9 @@ export default function ChangeUsername() {
                 form="usernameForm"
                 className="mt-6"
                 disabled={isSubmitting || !isValid || values?.domain == userDetails?.username}
-              >{isSubmitting ? "Saving…" : "Change username"}</Button>
+              >
+                {isSubmitting ? "Saving…" : "Change username"}
+              </Button>
             </div>
           </Form>
         )}

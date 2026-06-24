@@ -1,38 +1,15 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import {
-  Sheet,
-  SheetContent,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import {
-  ChartSpline,
-  Eye,
-  PaintRoller,
-  Menu,
-  LogOut,
-  Settings,
-  Check,
-  Copy,
-} from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { ChartSpline, Eye, PaintRoller, Menu, LogOut, Settings, Check, Copy } from "lucide-react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { FluidDropdown } from "./fluid-dropdown";
 import { PublishDropdown } from "../publish-dropdown";
 import { AvatarDropdown } from "../avatar-dropdown";
 import { useGlobalContext } from "@/context/globalContext";
 import { useIsMobile } from "@/hooks/use-mobile";
-import {
-  getSidebarShiftWidth,
-  isSidebarThatShifts,
-  sidebars,
-} from "@/lib/constant";
+import { getSidebarShiftWidth, isSidebarThatShifts, sidebars } from "@/lib/constant";
 import { formatTimestamp } from "@/lib/times";
 import { _publish } from "@/network/post-request";
 import { toast } from "react-toastify";
@@ -71,8 +48,7 @@ export default function Navbar() {
 
   const router = useRouter();
 
-  const isAiToolsWorkspace =
-    router.pathname === "/builder" && router.query?.view === "ai-tools";
+  const isAiToolsWorkspace = router.pathname === "/builder" && router.query?.view === "ai-tools";
 
   const isMacOS = template === 4 && MACOS_ROUTES.includes(router.pathname);
 
@@ -105,7 +81,7 @@ export default function Navbar() {
 
   const handlePublish = () => {
     if (!userDetails?.pro && TEMPLATES_BY_ID[template]?.isPro) {
-      setUpgradeModalSource('pro-template');
+      setUpgradeModalSource("pro-template");
       setShowUpgradeModal(true);
       return;
     }
@@ -172,39 +148,46 @@ export default function Navbar() {
               side="bottom"
               className="rounded-t-3xl bg-card border-t border-border p-6 flex flex-col gap-4"
             >
-
               <SheetTitle>Menu</SheetTitle>
-
-
-
-
 
               <div className="flex flex-col gap-1">
                 <Button
                   variant="ghost"
                   className="w-full justify-start h-11 px-4 text-[14px] text-muted-foreground hover:text-foreground hover:bg-secondary"
-                  onClick={() => { setIsMobileMenuOpen(false); handleTheme(); }}
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    handleTheme();
+                  }}
                 >
                   <PaintRoller className="mr-2 h-4 w-4" /> Theme settings
                 </Button>
                 <Button
                   variant="ghost"
                   className="w-full justify-start h-11 px-4 text-[14px] text-muted-foreground hover:text-foreground hover:bg-secondary"
-                  onClick={() => { setIsMobileMenuOpen(false); router.push("/portfolio-preview"); }}
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    router.push("/portfolio-preview");
+                  }}
                 >
                   <Eye className="mr-2 h-4 w-4" /> Preview
                 </Button>
                 <Button
                   variant="ghost"
                   className="w-full justify-start h-11 px-4 text-[14px] text-muted-foreground hover:text-foreground hover:bg-secondary"
-                  onClick={() => { setIsMobileMenuOpen(false); router.push("/analytics"); }}
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    router.push("/analytics");
+                  }}
                 >
                   <ChartSpline className="mr-2 h-4 w-4" /> Insights
                 </Button>
                 <Button
                   variant="ghost"
                   className="w-full justify-start h-11 px-4 text-[14px] text-muted-foreground hover:text-foreground hover:bg-secondary"
-                  onClick={() => { setIsMobileMenuOpen(false); setShowSettingsModal(true); }}
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    setShowSettingsModal(true);
+                  }}
                 >
                   <Settings className="mr-2 h-4 w-4" /> Settings
                 </Button>
@@ -224,9 +207,7 @@ export default function Navbar() {
                   className="flex flex-col gap-0.5 overflow-hidden flex-1 min-w-0 cursor-pointer"
                   onClick={() => window.open(`https://${domain}`, "_blank")}
                 >
-                  <span className="text-[13px] font-medium text-foreground truncate">
-                    {domain}
-                  </span>
+                  <span className="text-[13px] font-medium text-foreground truncate">{domain}</span>
                   <span className="text-[11px] text-muted-foreground">
                     {latestPublishDate
                       ? `Updated ${formatTimestamp(latestPublishDate)}`
@@ -273,10 +254,16 @@ export default function Navbar() {
                   onClick={() => router.push("/analytics")}
                   data-testid="button-insights"
                 >
-                  <ChartSpline size={18} className="transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110" />
+                  <ChartSpline
+                    size={18}
+                    className="transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110"
+                  />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent side="bottom" className="bg-foreground text-background text-xs px-2 py-1 rounded">
+              <TooltipContent
+                side="bottom"
+                className="bg-foreground text-background text-xs px-2 py-1 rounded"
+              >
                 Insights
               </TooltipContent>
             </Tooltip>
@@ -290,10 +277,16 @@ export default function Navbar() {
                   onClick={handleTheme}
                   data-testid="button-themes"
                 >
-                  <PaintRoller size={18} className="transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110" />
+                  <PaintRoller
+                    size={18}
+                    className="transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110"
+                  />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent side="bottom" className="bg-foreground text-background text-xs px-2 py-1 rounded">
+              <TooltipContent
+                side="bottom"
+                className="bg-foreground text-background text-xs px-2 py-1 rounded"
+              >
                 Themes
               </TooltipContent>
             </Tooltip>
@@ -307,10 +300,16 @@ export default function Navbar() {
                   onClick={() => router.push("/portfolio-preview")}
                   data-testid="button-preview"
                 >
-                  <Eye size={18} className="transition-transform duration-300 group-hover:scale-125" />
+                  <Eye
+                    size={18}
+                    className="transition-transform duration-300 group-hover:scale-125"
+                  />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent side="bottom" className="bg-foreground text-background text-xs px-2 py-1 rounded">
+              <TooltipContent
+                side="bottom"
+                className="bg-foreground text-background text-xs px-2 py-1 rounded"
+              >
                 Preview
               </TooltipContent>
             </Tooltip>

@@ -32,7 +32,7 @@ const itemVariants = {
   },
 };
 
-function Analytics({ }) {
+function Analytics({}) {
   const router = useRouter();
   const [duration, setDuration] = useState("Week");
   const [uniqueVisits, setUniqueVisits] = useState(0);
@@ -54,7 +54,11 @@ function Analytics({ }) {
       animate="visible"
     >
       <motion.div variants={itemVariants}>
-        <section className={cn("bg-card shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words")}>
+        <section
+          className={cn(
+            "bg-card shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words"
+          )}
+        >
           <div className="flex flex-col gap-4">
             <div className="flex items-center">
               <Button
@@ -83,10 +87,8 @@ function Analytics({ }) {
                       )
                     }
                   >
-                    {userDetails?.username
-                      ? userDetails?.username
-                      : "hastobefixed"}
-                    .{process.env.NEXT_PUBLIC_BASE_DOMAIN}
+                    {userDetails?.username ? userDetails?.username : "hastobefixed"}.
+                    {process.env.NEXT_PUBLIC_BASE_DOMAIN}
                   </p>
                 </div>
               </div>
@@ -109,18 +111,12 @@ function Analytics({ }) {
                 {uniqueVisits}
               </h1>
 
-              <Text
-                size="p-xsmall"
-                className="text-analytics-last-updated-color mt-2"
-              >
+              <Text size="p-xsmall" className="text-analytics-last-updated-color mt-2">
                 Unique Visitors
               </Text>
             </div>
 
-            <AnalyticsChart
-              duration={duration}
-              setUniqueVisits={setUniqueVisits}
-            ></AnalyticsChart>
+            <AnalyticsChart duration={duration} setUniqueVisits={setUniqueVisits}></AnalyticsChart>
           </div>
         </section>
       </motion.div>

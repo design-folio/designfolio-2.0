@@ -12,15 +12,9 @@ import { cn } from "@/lib/utils";
 import { _postJobsAddManual, _postJobsAddManualEntry } from "@/network/jobs";
 import { LocationAutocomplete } from "./LocationAutocomplete";
 
-const STEPS_LINKEDIN = [
-  "Fetching job from LinkedIn",
-  "Scoring against your profile",
-];
+const STEPS_LINKEDIN = ["Fetching job from LinkedIn", "Scoring against your profile"];
 
-const STEPS_MANUAL = [
-  "Saving your job",
-  "Scoring against your profile",
-];
+const STEPS_MANUAL = ["Saving your job", "Scoring against your profile"];
 
 const labelCls = "text-[13px] font-medium text-foreground ml-1";
 
@@ -35,10 +29,11 @@ function TabToggle({ mode, onChange }) {
           key={id}
           type="button"
           onClick={() => onChange(id)}
-          className={`flex items-center gap-1.5 flex-1 justify-center h-8 rounded-lg text-[12px] font-medium transition-all ${mode === id
-            ? "bg-white dark:bg-white/10 text-foreground shadow-sm"
-            : "text-foreground/40 hover:text-foreground/60"
-            }`}
+          className={`flex items-center gap-1.5 flex-1 justify-center h-8 rounded-lg text-[12px] font-medium transition-all ${
+            mode === id
+              ? "bg-white dark:bg-white/10 text-foreground shadow-sm"
+              : "text-foreground/40 hover:text-foreground/60"
+          }`}
         >
           <Icon className="w-3 h-3" />
           {label}
@@ -47,8 +42,6 @@ function TabToggle({ mode, onChange }) {
     </div>
   );
 }
-
-
 
 export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
   const [mode, setMode] = useState("linkedin");
@@ -93,8 +86,8 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
       clearTimeout(stepTimerRef.current);
       setError(
         err?.response?.data?.message ||
-        err?.response?.data?.error ||
-        "Failed to add job. Please check the URL and try again."
+          err?.response?.data?.error ||
+          "Failed to add job. Please check the URL and try again."
       );
       setLoading(false);
       setStep(0);
@@ -111,7 +104,9 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
         {
           title: values.title.trim(),
           company: values.company.trim(),
-          applyUrl: /^https?:\/\//i.test(values.applyUrl.trim()) ? values.applyUrl.trim() : `https://${values.applyUrl.trim()}`,
+          applyUrl: /^https?:\/\//i.test(values.applyUrl.trim())
+            ? values.applyUrl.trim()
+            : `https://${values.applyUrl.trim()}`,
           description: values.description.trim(),
           location: values.location.trim(),
           ...(values.workMode ? { workMode: values.workMode } : {}),
@@ -126,8 +121,8 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
       clearTimeout(stepTimerRef.current);
       setError(
         err?.response?.data?.message ||
-        err?.response?.data?.error ||
-        "Failed to add job. Please try again."
+          err?.response?.data?.error ||
+          "Failed to add job. Please try again."
       );
       setLoading(false);
       setStep(0);
@@ -172,7 +167,10 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                             transition={{ type: "spring", stiffness: 400, damping: 20 }}
                             className="w-5 h-5 rounded-full bg-[#1A1A1A] dark:bg-white flex items-center justify-center"
                           >
-                            <Check className="w-3 h-3 text-white dark:text-black" strokeWidth={2.5} />
+                            <Check
+                              className="w-3 h-3 text-white dark:text-black"
+                              strokeWidth={2.5}
+                            />
                           </motion.div>
                         ) : isActive ? (
                           <div className="w-5 h-5 rounded-full border-2 border-black/15 dark:border-white/15 border-t-[#1A1A1A] dark:border-t-white animate-spin" />
@@ -181,10 +179,13 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                         )}
                       </div>
                       <span
-                        className={`text-[13px] font-medium transition-colors duration-300 ${isActive ? "text-[#1A1A1A] dark:text-[#F0EDE7]"
-                          : isDone ? "text-foreground/45"
-                            : "text-foreground/25"
-                          }`}
+                        className={`text-[13px] font-medium transition-colors duration-300 ${
+                          isActive
+                            ? "text-[#1A1A1A] dark:text-[#F0EDE7]"
+                            : isDone
+                              ? "text-foreground/45"
+                              : "text-foreground/25"
+                        }`}
                       >
                         {label}
                       </span>
@@ -193,7 +194,9 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                 })}
               </div>
               <p className="text-[12px] text-foreground/35 leading-relaxed">
-                {mode === "linkedin" ? "This usually takes 15–20 seconds" : "This usually takes 10–15 seconds"}
+                {mode === "linkedin"
+                  ? "This usually takes 15–20 seconds"
+                  : "This usually takes 10–15 seconds"}
               </p>
             </motion.div>
           ) : (
@@ -231,7 +234,8 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                         {({ errors, touched }) => (
                           <Form className="flex flex-col gap-3">
                             <p className="text-[12px] text-foreground/45 leading-[1.5]">
-                              Paste a LinkedIn job URL — we'll fetch and score it against your profile.
+                              Paste a LinkedIn job URL — we&apos;ll fetch and score it against your
+                              profile.
                             </p>
                             <div className="flex flex-col gap-1">
                               <Field name="url">
@@ -241,12 +245,23 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                                     ref={urlInputRef}
                                     type="url"
                                     placeholder="https://linkedin.com/jobs/view/…"
-                                    className={cn(errors.url && touched.url && "border-destructive focus-visible:ring-destructive")}
-                                    onChange={(e) => { form.setFieldValue("url", e.target.value); setError(null); }}
+                                    className={cn(
+                                      errors.url &&
+                                        touched.url &&
+                                        "border-destructive focus-visible:ring-destructive"
+                                    )}
+                                    onChange={(e) => {
+                                      form.setFieldValue("url", e.target.value);
+                                      setError(null);
+                                    }}
                                   />
                                 )}
                               </Field>
-                              <ErrorMessage name="url" component="p" className="text-[11px] text-red-500 dark:text-red-400" />
+                              <ErrorMessage
+                                name="url"
+                                component="p"
+                                className="text-[11px] text-red-500 dark:text-red-400"
+                              />
                             </div>
 
                             <AnimatePresence>
@@ -259,7 +274,9 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                                 >
                                   <div className="flex items-start gap-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/30 rounded-xl px-3.5 py-3">
                                     <AlertCircle className="w-3.5 h-3.5 text-red-500 flex-shrink-0 mt-0.5" />
-                                    <p className="text-[12px] text-red-600 dark:text-red-400 leading-relaxed">{error}</p>
+                                    <p className="text-[12px] text-red-600 dark:text-red-400 leading-relaxed">
+                                      {error}
+                                    </p>
                                   </div>
                                 </motion.div>
                               )}
@@ -282,7 +299,14 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                       transition={{ duration: 0.18 }}
                     >
                       <Formik
-                        initialValues={{ title: "", company: "", applyUrl: "", description: "", location: "", workMode: "" }}
+                        initialValues={{
+                          title: "",
+                          company: "",
+                          applyUrl: "",
+                          description: "",
+                          location: "",
+                          workMode: "",
+                        }}
                         validationSchema={manualValidation}
                         validateOnBlur
                         validateOnChange={false}
@@ -301,11 +325,19 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                                     id="title"
                                     ref={titleInputRef}
                                     placeholder="e.g. Senior Product Designer"
-                                    className={cn(errors.title && touched.title && "border-destructive focus-visible:ring-destructive")}
+                                    className={cn(
+                                      errors.title &&
+                                        touched.title &&
+                                        "border-destructive focus-visible:ring-destructive"
+                                    )}
                                   />
                                 )}
                               </Field>
-                              <ErrorMessage name="title" component="p" className="text-[11px] text-red-500 dark:text-red-400 mt-1" />
+                              <ErrorMessage
+                                name="title"
+                                component="p"
+                                className="text-[11px] text-red-500 dark:text-red-400 mt-1"
+                              />
                             </div>
 
                             <div>
@@ -318,16 +350,26 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                                     {...field}
                                     id="company"
                                     placeholder="e.g. Figma"
-                                    className={cn(errors.company && touched.company && "border-destructive focus-visible:ring-destructive")}
+                                    className={cn(
+                                      errors.company &&
+                                        touched.company &&
+                                        "border-destructive focus-visible:ring-destructive"
+                                    )}
                                   />
                                 )}
                               </Field>
-                              <ErrorMessage name="company" component="p" className="text-[11px] text-red-500 dark:text-red-400 mt-1" />
+                              <ErrorMessage
+                                name="company"
+                                component="p"
+                                className="text-[11px] text-red-500 dark:text-red-400 mt-1"
+                              />
                             </div>
 
                             <div className="grid grid-cols-2 gap-3">
                               <div>
-                                <Label className={labelCls} htmlFor="location">Location</Label>
+                                <Label className={labelCls} htmlFor="location">
+                                  Location
+                                </Label>
                                 <Field name="location">
                                   {({ field, form }) => (
                                     <LocationAutocomplete
@@ -339,10 +381,16 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                                     />
                                   )}
                                 </Field>
-                                <ErrorMessage name="location" component="p" className="text-[11px] text-red-500 dark:text-red-400 mt-1" />
+                                <ErrorMessage
+                                  name="location"
+                                  component="p"
+                                  className="text-[11px] text-red-500 dark:text-red-400 mt-1"
+                                />
                               </div>
                               <div>
-                                <Label className={labelCls} htmlFor="workMode">Work mode</Label>
+                                <Label className={labelCls} htmlFor="workMode">
+                                  Work mode
+                                </Label>
                                 <div className="relative">
                                   <Field name="workMode">
                                     {({ field }) => (
@@ -377,12 +425,20 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                                     id="applyUrl"
                                     type="url"
                                     placeholder="https://company.com/jobs/…"
-                                    className={cn(errors.applyUrl && touched.applyUrl && "border-destructive focus-visible:ring-destructive")}
+                                    className={cn(
+                                      errors.applyUrl &&
+                                        touched.applyUrl &&
+                                        "border-destructive focus-visible:ring-destructive"
+                                    )}
                                     onChange={(e) => form.setFieldValue("applyUrl", e.target.value)}
                                   />
                                 )}
                               </Field>
-                              <ErrorMessage name="applyUrl" component="p" className="text-[11px] text-red-500 dark:text-red-400 mt-1" />
+                              <ErrorMessage
+                                name="applyUrl"
+                                component="p"
+                                className="text-[11px] text-red-500 dark:text-red-400 mt-1"
+                              />
                             </div>
 
                             <div>
@@ -398,12 +454,18 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                                     placeholder="Paste the job description here for AI scoring and interview prep…"
                                     className={cn(
                                       "resize-none",
-                                      form.errors.description && form.touched.description && "border-destructive focus-visible:ring-destructive"
+                                      form.errors.description &&
+                                        form.touched.description &&
+                                        "border-destructive focus-visible:ring-destructive"
                                     )}
                                   />
                                 )}
                               </Field>
-                              <ErrorMessage name="description" component="p" className="text-[11px] text-red-500 dark:text-red-400 mt-1" />
+                              <ErrorMessage
+                                name="description"
+                                component="p"
+                                className="text-[11px] text-red-500 dark:text-red-400 mt-1"
+                              />
                             </div>
 
                             <AnimatePresence>
@@ -416,7 +478,9 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                                 >
                                   <div className="flex items-start gap-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/30 rounded-xl px-3.5 py-3">
                                     <AlertCircle className="w-3.5 h-3.5 text-red-500 flex-shrink-0 mt-0.5" />
-                                    <p className="text-[12px] text-red-600 dark:text-red-400 leading-relaxed">{error}</p>
+                                    <p className="text-[12px] text-red-600 dark:text-red-400 leading-relaxed">
+                                      {error}
+                                    </p>
                                   </div>
                                 </motion.div>
                               )}

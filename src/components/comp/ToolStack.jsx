@@ -93,10 +93,7 @@ export const ToolStack = ({ userDetails, edit, titleClasses, headerActions }) =>
         >
           <motion.div className="flex gap-4 px-4" animate={scrollAnimation}>
             {scrollTools.map((tool, index) => (
-              <div
-                key={index}
-                className="flex flex-col items-center gap-2 min-w-[100px]"
-              >
+              <div key={index} className="flex flex-col items-center gap-2 min-w-[100px]">
                 <div className="bg-card p-4 rounded-2xl flex items-center justify-center transition-colors hover:bg-card/80">
                   <img src={tool.image} className="w-8" />
                 </div>
@@ -117,15 +114,13 @@ export const ToolStack = ({ userDetails, edit, titleClasses, headerActions }) =>
             <motion.div
               key={index}
               variants={itemVariants}
-              whileHover={{ scale: 1.2, y: -8, }}
+              whileHover={{ scale: 1.2, y: -8 }}
               className="relative group hover:z-50"
             >
               <div className="bg-card p-4 rounded-2xl flex items-center justify-center transition-colors hover:bg-card/80">
                 {/* <Tool.icon className="size-8" /> */}
                 <img
-                  src={
-                    tool.image ? tool.image : "/assets/svgs/default-tools.svg"
-                  }
+                  src={tool.image ? tool.image : "/assets/svgs/default-tools.svg"}
                   className="w-8"
                 />
               </div>
@@ -147,7 +142,7 @@ export const ToolStack = ({ userDetails, edit, titleClasses, headerActions }) =>
                   <PlusIcon className="text-secondary-btn-text-color w-[32px] h-[32px] cursor-pointer" />
                 }
                 onClick={() => openSidebar(sidebars.tools)}
-              // customClass="px-[22px]"
+                // customClass="px-[22px]"
               />{" "}
               <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-sm whitespace-nowrap">
                 Edit

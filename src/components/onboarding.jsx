@@ -84,7 +84,6 @@ export default function Onboarding() {
       .finally(() => setLoading(false));
   }, []);
 
-
   // Prefill from Context
   useEffect(() => {
     if (!userDetails || isPreFilled || roles.length === 0) return;
@@ -96,7 +95,8 @@ export default function Onboarding() {
         const personaId = persona.value;
         const personaLabel = persona.label;
         // Check if it's a custom persona: has __isNew__, label is "Others", or has custom field
-        const isCustom = persona.__isNew__ === true || personaLabel === "Others" || !!persona.custom;
+        const isCustom =
+          persona.__isNew__ === true || personaLabel === "Others" || !!persona.custom;
         const customValue = persona.custom || (personaLabel === "Others" ? "" : personaLabel);
 
         if (isCustom) {
@@ -136,7 +136,6 @@ export default function Onboarding() {
     setIsPreFilled(true);
   }, [roles, userDetails, isPreFilled]);
 
-
   // Fetch Skills (Persona + Search)
   useEffect(() => {
     if (!selectedPersonaId && !skillsSearch.trim()) return;
@@ -144,38 +143,40 @@ export default function Onboarding() {
     const hasSearch = skillsSearch.trim().length > 0;
     setSkillsLoading(true);
 
-    const timer = setTimeout(() => {
-      _getSkills(skillsSearch, hasSearch ? "" : selectedPersonaId)
-        .then((res) => {
-          const apiSkills = res?.data?.skills || [];
-          if (!Array.isArray(apiSkills)) return;
+    const timer = setTimeout(
+      () => {
+        _getSkills(skillsSearch, hasSearch ? "" : selectedPersonaId)
+          .then((res) => {
+            const apiSkills = res?.data?.skills || [];
+            if (!Array.isArray(apiSkills)) return;
 
-          const newMap = new Map(skillsMap);
-          const normalized = apiSkills.map((s) => ({
-            label: toOptionString(s),
-            value: s._id || s.id || s.value,
-            __isNew__: false,
-          }));
+            const newMap = new Map(skillsMap);
+            const normalized = apiSkills.map((s) => ({
+              label: toOptionString(s),
+              value: s._id || s.id || s.value,
+              __isNew__: false,
+            }));
 
-          normalized.forEach((s) => newMap.set(s.label, s));
-          setSkillsMap(newMap);
+            normalized.forEach((s) => newMap.set(s.label, s));
+            setSkillsMap(newMap);
 
-          const preSelected = normalized.filter((s) => s.selected).map(toOptionString);
-          const selected = selectedInterests.length ? selectedInterests : preSelected;
-          const allSkills = [...new Set([...selected, ...normalized.map((s) => s.label)])];
-          setSkills(allSkills.slice(0, 30));
+            const preSelected = normalized.filter((s) => s.selected).map(toOptionString);
+            const selected = selectedInterests.length ? selectedInterests : preSelected;
+            const allSkills = [...new Set([...selected, ...normalized.map((s) => s.label)])];
+            setSkills(allSkills.slice(0, 30));
 
-          if (selectedInterests.length === 0 && preSelected.length > 0) {
-            setSelectedInterests(preSelected);
-          }
-        })
-        .catch((err) => console.error("Error loading skills:", err))
-        .finally(() => setSkillsLoading(false));
-    }, hasSearch ? 300 : 0);
+            if (selectedInterests.length === 0 && preSelected.length > 0) {
+              setSelectedInterests(preSelected);
+            }
+          })
+          .catch((err) => console.error("Error loading skills:", err))
+          .finally(() => setSkillsLoading(false));
+      },
+      hasSearch ? 300 : 0
+    );
 
     return () => clearTimeout(timer);
   }, [selectedPersonaId, skillsSearch]);
-
 
   // Handlers
   const handleInterestToggle = (interest) => {
@@ -184,9 +185,7 @@ export default function Onboarding() {
       if (isAdding) {
         setSkillsSearch(""); // Clear search when adding a skill
       }
-      return prev.includes(interest)
-        ? prev.filter((i) => i !== interest)
-        : [...prev, interest];
+      return prev.includes(interest) ? prev.filter((i) => i !== interest) : [...prev, interest];
     });
   };
 
@@ -201,24 +200,17 @@ export default function Onboarding() {
     };
     setSkillsMap((prev) => new Map(prev).set(trimmed, newSkill));
     setSkills((prev) => [...new Set([...prev, trimmed])]);
-    setSelectedInterests((prev) =>
-      prev.includes(trimmed) ? prev : [...prev, trimmed]
-    );
+    setSelectedInterests((prev) => (prev.includes(trimmed) ? prev : [...prev, trimmed]));
     setSkillsSearch("");
   };
-
 
   // Validation + Step Control
   const validateStep = async () => {
     try {
-      if (currentStep === 1)
-        await RoleValidationSchema.validate({ selectedRole, customRole });
-      if (currentStep === 2)
-        await GoalValidationSchema.validate({ selectedGoalId });
-      if (currentStep === 3)
-        await ExperienceValidationSchema.validate({ selectedExperienceId });
-      if (currentStep === 4)
-        await SkillsValidationSchema.validate({ selectedInterests });
+      if (currentStep === 1) await RoleValidationSchema.validate({ selectedRole, customRole });
+      if (currentStep === 2) await GoalValidationSchema.validate({ selectedGoalId });
+      if (currentStep === 3) await ExperienceValidationSchema.validate({ selectedExperienceId });
+      if (currentStep === 4) await SkillsValidationSchema.validate({ selectedInterests });
       setError("");
       return true;
     } catch (err) {
@@ -234,7 +226,6 @@ export default function Onboarding() {
     if (currentStep < 4) setCurrentStep((s) => s + 1);
     else submitAll();
   };
-
 
   // Submit Final Data
   const submitAll = async () => {
@@ -294,7 +285,12 @@ export default function Onboarding() {
           <AnimatePresence mode="wait">
             {/* Step 1: Role */}
             {currentStep === 1 && (
-              <motion.div key="step1" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
+              <motion.div
+                key="step1"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+              >
                 <SectionTitle
                   title="What describes you the best?"
                   subtitle="Help us tailor your experience to match your professional journey"
@@ -324,8 +320,16 @@ export default function Onboarding() {
 
             {/* Step 2: Goal */}
             {currentStep === 2 && (
-              <motion.div key="step2" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
-                <SectionTitle title="What is your main goal?" subtitle="Choose the one that matters most to you" />
+              <motion.div
+                key="step2"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+              >
+                <SectionTitle
+                  title="What is your main goal?"
+                  subtitle="Choose the one that matters most to you"
+                />
                 <OptionList
                   message={error}
                   items={GOALS}
@@ -333,10 +337,18 @@ export default function Onboarding() {
                   onSelect={(label) => setSelectedGoalId(GOALS.find((g) => g.label === label)?.id)}
                 />
                 <div className="flex gap-3 md:mt-6 mt-4">
-                  <Button onClick={() => setCurrentStep(1)} variant="outline" className="h-11 rounded-full px-6">
+                  <Button
+                    onClick={() => setCurrentStep(1)}
+                    variant="outline"
+                    className="h-11 rounded-full px-6"
+                  >
                     Back
                   </Button>
-                  <Button onClick={handleNext} disabled={loading} className="flex-1 h-11 rounded-full bg-foreground text-background font-semibold">
+                  <Button
+                    onClick={handleNext}
+                    disabled={loading}
+                    className="flex-1 h-11 rounded-full bg-foreground text-background font-semibold"
+                  >
                     Continue
                     <ArrowRight className="ml-2 w-4 h-4" />
                   </Button>
@@ -346,19 +358,39 @@ export default function Onboarding() {
 
             {/* Step 3: Experience */}
             {currentStep === 3 && (
-              <motion.div key="step3" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
-                <SectionTitle title="What's your experience level?" subtitle="This helps us recommend the right features for you" />
+              <motion.div
+                key="step3"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+              >
+                <SectionTitle
+                  title="What's your experience level?"
+                  subtitle="This helps us recommend the right features for you"
+                />
                 <OptionList
                   message={error}
                   items={EXPERIENCE_LEVELS}
-                  selected={EXPERIENCE_LEVELS.find((e) => e.id === selectedExperienceId)?.label || ""}
-                  onSelect={(label) => setSelectedExperienceId(EXPERIENCE_LEVELS.find((e) => e.label === label)?.id)}
+                  selected={
+                    EXPERIENCE_LEVELS.find((e) => e.id === selectedExperienceId)?.label || ""
+                  }
+                  onSelect={(label) =>
+                    setSelectedExperienceId(EXPERIENCE_LEVELS.find((e) => e.label === label)?.id)
+                  }
                 />
                 <div className="flex gap-3 md:mt-6 mt-4">
-                  <Button onClick={() => setCurrentStep(2)} variant="outline" className="h-11 rounded-full px-6">
+                  <Button
+                    onClick={() => setCurrentStep(2)}
+                    variant="outline"
+                    className="h-11 rounded-full px-6"
+                  >
                     Back
                   </Button>
-                  <Button onClick={handleNext} disabled={loading} className="flex-1 h-11 rounded-full bg-foreground text-background font-semibold">
+                  <Button
+                    onClick={handleNext}
+                    disabled={loading}
+                    className="flex-1 h-11 rounded-full bg-foreground text-background font-semibold"
+                  >
                     Continue
                     <ArrowRight className="ml-2 w-4 h-4" />
                   </Button>
@@ -368,8 +400,16 @@ export default function Onboarding() {
 
             {/* Step 4: Skills */}
             {currentStep === 4 && (
-              <motion.div key="step4" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
-                <SectionTitle title="Choose at least 3 strengths" subtitle="Pick three that feel most true right now—add more if you like." />
+              <motion.div
+                key="step4"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+              >
+                <SectionTitle
+                  title="Choose at least 3 strengths"
+                  subtitle="Pick three that feel most true right now—add more if you like."
+                />
                 <SkillsPicker
                   skills={skills}
                   selected={selectedInterests}
@@ -381,10 +421,18 @@ export default function Onboarding() {
                   message={error}
                 />
                 <div className="flex gap-3 md:mt-6 mt-4">
-                  <Button onClick={() => setCurrentStep(3)} variant="outline" className="h-11 rounded-full px-6">
+                  <Button
+                    onClick={() => setCurrentStep(3)}
+                    variant="outline"
+                    className="h-11 rounded-full px-6"
+                  >
                     Back
                   </Button>
-                  <Button onClick={handleNext} disabled={loading} className="flex-1 h-11 rounded-full">
+                  <Button
+                    onClick={handleNext}
+                    disabled={loading}
+                    className="flex-1 h-11 rounded-full"
+                  >
                     {loading ? "Saving..." : "Get Started"}
                     <ArrowRight className="ml-2 w-4 h-4" />
                   </Button>

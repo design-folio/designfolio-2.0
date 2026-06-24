@@ -39,7 +39,12 @@ export default function SubscriptionBreakdown({ subscriptions, className }) {
   const churnedTotal = subscriptions?.churnedTotal ?? 0;
 
   return (
-    <div className={cn("bg-white dark:bg-[#2A2520] rounded-2xl border border-[#E5D7C4] dark:border-white/10 p-5", className)}>
+    <div
+      className={cn(
+        "bg-white dark:bg-[#2A2520] rounded-2xl border border-[#E5D7C4] dark:border-white/10 p-5",
+        className
+      )}
+    >
       {/* Header */}
       <div className="flex items-center gap-2 mb-5">
         <div
@@ -79,12 +84,20 @@ export default function SubscriptionBreakdown({ subscriptions, className }) {
                   <span className="text-[10px] font-mono tabular-nums text-[#B5AFA5] dark:text-[#5A544E] w-7 text-right">
                     {pct}%
                   </span>
-                  <span className={cn("text-sm font-dm-mono font-semibold tabular-nums w-5 text-right", p.text)}>
+                  <span
+                    className={cn(
+                      "text-sm font-dm-mono font-semibold tabular-nums w-5 text-right",
+                      p.text
+                    )}
+                  >
                     {count}
                   </span>
                 </div>
               </div>
-              <div className="h-1 rounded-full bg-[#F0EDE7] dark:bg-[#231F1A] overflow-hidden" aria-hidden="true">
+              <div
+                className="h-1 rounded-full bg-[#F0EDE7] dark:bg-[#231F1A] overflow-hidden"
+                aria-hidden="true"
+              >
                 <div
                   className={cn("h-full rounded-full transition-all duration-700", p.bar)}
                   style={{ width: `${pct}%` }}

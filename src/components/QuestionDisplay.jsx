@@ -11,26 +11,17 @@ const generateTip = (question) => {
   const questionLower = question.toLowerCase();
 
   // Design Process Questions
-  if (
-    questionLower.includes("design process") ||
-    questionLower.includes("methodology")
-  ) {
+  if (questionLower.includes("design process") || questionLower.includes("methodology")) {
     return "Framework: Define → Research → Ideate → Prototype → Test → Iterate";
   }
 
   // User Research Questions
-  if (
-    questionLower.includes("user research") ||
-    questionLower.includes("usability")
-  ) {
+  if (questionLower.includes("user research") || questionLower.includes("usability")) {
     return "Methods → Participants → Key Findings → Insights → Impact";
   }
 
   // Design System Questions
-  if (
-    questionLower.includes("design system") ||
-    questionLower.includes("component")
-  ) {
+  if (questionLower.includes("design system") || questionLower.includes("component")) {
     return "Problem → Principles → Structure → Implementation → Documentation";
   }
 
@@ -53,10 +44,7 @@ const generateTip = (question) => {
   }
 
   // Project Questions
-  if (
-    questionLower.includes("project") ||
-    questionLower.includes("case study")
-  ) {
+  if (questionLower.includes("project") || questionLower.includes("case study")) {
     return "Overview → Goals → Process → Outcome → Impact";
   }
 
@@ -177,7 +165,10 @@ export default function QuestionDisplay({
         <p className="text-base font-medium text-foreground leading-relaxed">
           {streamedText || (currentQuestion ? "" : "Loading question...")}
           {currentQuestion && streamedText.length < (currentQuestion?.length || 0) ? (
-            <span className="inline-block w-0.5 h-4 bg-foreground/70 align-middle animate-pulse ml-0.5" aria-hidden />
+            <span
+              className="inline-block w-0.5 h-4 bg-foreground/70 align-middle animate-pulse ml-0.5"
+              aria-hidden
+            />
           ) : null}
         </p>
 

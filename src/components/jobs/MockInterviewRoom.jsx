@@ -17,7 +17,9 @@ try {
 
 function formatTime(ms) {
   const totalSecs = Math.max(0, Math.floor(ms / 1000));
-  const m = Math.floor(totalSecs / 60).toString().padStart(2, "0");
+  const m = Math.floor(totalSecs / 60)
+    .toString()
+    .padStart(2, "0");
   const s = (totalSecs % 60).toString().padStart(2, "0");
   return `${m}:${s}`;
 }
@@ -35,13 +37,16 @@ export function MockInterviewRoom({ job, profileId, onEnd }) {
   const [transcript, setTranscript] = useState([]);
   const [timeLeftMs, setTimeLeftMs] = useState(null);
 
-  const cleanup = useCallback(async (currentTranscript) => {
-    clearInterval(timerRef.current);
-    anamClientRef.current?.stopStreaming();
-    userStreamRef.current?.getTracks().forEach((t) => t.stop());
-    await _deleteJobsInterviewSession();
-    onEnd(currentTranscript);
-  }, [onEnd]);
+  const cleanup = useCallback(
+    async (currentTranscript) => {
+      clearInterval(timerRef.current);
+      anamClientRef.current?.stopStreaming();
+      userStreamRef.current?.getTracks().forEach((t) => t.stop());
+      await _deleteJobsInterviewSession();
+      onEnd(currentTranscript);
+    },
+    [onEnd]
+  );
 
   useEffect(() => {
     let mounted = true;
@@ -159,13 +164,19 @@ export function MockInterviewRoom({ job, profileId, onEnd }) {
           {status === "error" && (
             <div className="absolute inset-0 flex flex-col items-center justify-center z-10 gap-3 px-6 text-center">
               <p className="text-red-400/80 text-[13px]">Connection failed. Please try again.</p>
-              <button onClick={() => onEnd([])} className="text-white/40 text-[12px] underline">Go back</button>
+              <button onClick={() => onEnd([])} className="text-white/40 text-[12px] underline">
+                Go back
+              </button>
             </div>
           )}
           {status === "busy" && (
             <div className="absolute inset-0 flex flex-col items-center justify-center z-10 gap-3 px-6 text-center">
-              <p className="text-amber-400/80 text-[13px]">Another interview is in progress. Please try again in a few minutes.</p>
-              <button onClick={() => onEnd([])} className="text-white/40 text-[12px] underline">Go back</button>
+              <p className="text-amber-400/80 text-[13px]">
+                Another interview is in progress. Please try again in a few minutes.
+              </p>
+              <button onClick={() => onEnd([])} className="text-white/40 text-[12px] underline">
+                Go back
+              </button>
             </div>
           )}
           <video
@@ -181,9 +192,11 @@ export function MockInterviewRoom({ job, profileId, onEnd }) {
 
           {/* Timer */}
           {timeLeftMs !== null && status === "ready" && (
-            <div className={`absolute top-3 right-3 text-[12px] font-mono font-medium px-2 py-1 rounded-md ${
-              isWarning ? "bg-red-500/20 text-red-400" : "bg-black/30 text-white/50"
-            }`}>
+            <div
+              className={`absolute top-3 right-3 text-[12px] font-mono font-medium px-2 py-1 rounded-md ${
+                isWarning ? "bg-red-500/20 text-red-400" : "bg-black/30 text-white/50"
+              }`}
+            >
               {formatTime(timeLeftMs)}
             </div>
           )}
@@ -214,9 +227,7 @@ export function MockInterviewRoom({ job, profileId, onEnd }) {
         className="h-[160px] overflow-y-auto scrollbar-hide px-4 py-3 space-y-2.5 border-t border-white/[0.06]"
       >
         {transcript.length === 0 && (
-          <p className="text-white/25 text-[13px] text-center pt-6">
-            Transcript will appear here…
-          </p>
+          <p className="text-white/25 text-[13px] text-center pt-6">Transcript will appear here…</p>
         )}
         {transcript.map((msg) => {
           const isPersona = msg.role === "persona";

@@ -25,12 +25,7 @@ export function PortalOverlays({
   return createPortal(
     <AnimatePresence>
       {roomJob && (
-        <MockInterviewRoom
-          key={roomJob.id}
-          job={roomJob}
-          profileId={profileId}
-          onEnd={onRoomEnd}
-        />
+        <MockInterviewRoom key={roomJob.id} job={roomJob} profileId={profileId} onEnd={onRoomEnd} />
       )}
       {reportJob && (
         <InterviewReport
@@ -50,12 +45,7 @@ export function PortalOverlays({
         />
       )}
       {scoutJob && (
-        <ScoutChat
-          key={scoutJob.id}
-          job={scoutJob}
-          profileId={profileId}
-          onClose={onScoutClose}
-        />
+        <ScoutChat key={scoutJob.id} job={scoutJob} profileId={profileId} onClose={onScoutClose} />
       )}
       {offerDecisionOpen && offerJobs.length >= 2 && (
         <OfferDecisionScout
@@ -67,6 +57,6 @@ export function PortalOverlays({
         />
       )}
     </AnimatePresence>,
-    document.body,
+    document.body
   );
 }

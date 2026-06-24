@@ -22,15 +22,15 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-} from '@dnd-kit/core';
+} from "@dnd-kit/core";
 import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   useSortable,
   rectSortingStrategy,
-} from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { _updateUser } from "@/network/post-request";
 import { runThemeTransition, hasThemeSwitchEffect } from "@/hooks/use-theme-switch-audio";
 import { useTheme } from "next-themes";
@@ -126,12 +126,12 @@ function TemplateCard({ tmpl, isSelected, onChange, previewSrc }) {
 
 // Section display names mapping
 const SECTION_NAMES = {
-  about: 'About me',
-  projects: 'Projects',
-  reviews: 'Testimonials',
-  tools: 'Toolbox',
-  works: 'Works/Experience',
-  contact: 'Contact',
+  about: "About me",
+  projects: "Projects",
+  reviews: "Testimonials",
+  tools: "Toolbox",
+  works: "Works/Experience",
+  contact: "Contact",
 };
 
 // Get available sections for a template
@@ -142,14 +142,9 @@ const getAvailableSections = (template) => {
 
 // SortableSectionItem Component
 const SortableSectionItem = ({ id, isMobile, isHidden, onToggleHide }) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id,
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -175,11 +170,12 @@ const SortableSectionItem = ({ id, isMobile, isHidden, onToggleHide }) => {
         isButton={true}
         className="cursor-grab active:cursor-grabbing text-foreground/40 hover:text-foreground/60 transition-colors"
       />
-      <span className="flex-1 text-sm font-medium">
-        {SECTION_NAMES[id] || id}
-      </span>
+      <span className="flex-1 text-sm font-medium">{SECTION_NAMES[id] || id}</span>
       <button
-        onClick={(e) => { e.stopPropagation(); onToggleHide(); }}
+        onClick={(e) => {
+          e.stopPropagation();
+          onToggleHide();
+        }}
         className="p-1 rounded-md text-foreground/40 hover:text-foreground transition-colors"
         aria-label={isHidden ? "Show section" : "Hide section"}
         type="button"
@@ -207,8 +203,6 @@ const ThemePanel = ({
   effects,
   updateWallpaperEffect,
 }) => {
-
-
   const {
     registerUnsavedChangesChecker,
     unregisterUnsavedChangesChecker,
@@ -219,7 +213,7 @@ const ThemePanel = ({
   const [customWallpaper, setCustomWallpaper] = useState(null);
   const [isCompressing, setIsCompressing] = useState(false);
   const isMobileOrTablet = useIsMobile();
-  const [isDarkWallpapers, setIsDarkWallpapers] = useState(theme === 'dark' || theme === 1);
+  const [isDarkWallpapers, setIsDarkWallpapers] = useState(theme === "dark" || theme === 1);
 
   const isMacOSTemplate = template === 4;
   const isChatfolioTemplate = template === 1;
@@ -261,10 +255,10 @@ const ThemePanel = ({
 
   const toggleSectionHide = (sectionId) => {
     const newHidden = hiddenSections.includes(sectionId)
-      ? hiddenSections.filter(id => id !== sectionId)
+      ? hiddenSections.filter((id) => id !== sectionId)
       : [...hiddenSections, sectionId];
-    setUserDetails(prev => ({ ...prev, hiddenSections: newHidden }));
-    updateCache("userDetails", prev => ({ ...prev, hiddenSections: newHidden }));
+    setUserDetails((prev) => ({ ...prev, hiddenSections: newHidden }));
+    updateCache("userDetails", (prev) => ({ ...prev, hiddenSections: newHidden }));
     _updateUser({ hiddenSections: newHidden });
   };
 
@@ -291,7 +285,9 @@ const ThemePanel = ({
   // Reset to template default
   const resetSectionOrder = () => {
     // Filter default order to only include available sections for current template
-    const defaultOrder = DEFAULT_SECTION_ORDER.filter(section => availableSections.includes(section));
+    const defaultOrder = DEFAULT_SECTION_ORDER.filter((section) =>
+      availableSections.includes(section)
+    );
     setSectionOrder(defaultOrder);
     changeSectionOrder(defaultOrder);
   };
@@ -334,7 +330,7 @@ const ThemePanel = ({
     setTimeout(() => {
       const sectionElement = document.getElementById(`section-${active.id}`);
       if (sectionElement) {
-        sectionElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        sectionElement.scrollIntoView({ behavior: "smooth", block: "center" });
       }
     }, 100);
   };
@@ -342,17 +338,18 @@ const ThemePanel = ({
   // Fallback to local state if effects is not provided (backward compatibility)
   const [localEffects, setLocalEffects] = useState({
     blur: 0,
-    effectType: 'blur',
+    effectType: "blur",
     grainIntensity: 25,
-    motion: true
+    motion: true,
   });
 
   // Use provided effects or fall back to local state
   const currentEffects = effects || localEffects;
-  const currentUpdateWallpaperEffect = updateWallpaperEffect || ((key, value) => {
-    setLocalEffects(prev => ({ ...prev, [key]: value }));
-  });
-
+  const currentUpdateWallpaperEffect =
+    updateWallpaperEffect ||
+    ((key, value) => {
+      setLocalEffects((prev) => ({ ...prev, [key]: value }));
+    });
 
   useEffect(() => {
     registerUnsavedChangesChecker(sidebars.theme, () => false);
@@ -363,9 +360,8 @@ const ThemePanel = ({
 
   // Sync isDarkWallpapers with theme prop changes
   useEffect(() => {
-    setIsDarkWallpapers(theme === 'dark' || theme === 1);
+    setIsDarkWallpapers(theme === "dark" || theme === 1);
   }, [theme]);
-
 
   useEffect(() => {
     if (typeof wallpaper === "string") {
@@ -404,20 +400,20 @@ const ThemePanel = ({
       }
 
       // Always resize to 1920x1080
-      const canvas = document.createElement('canvas');
+      const canvas = document.createElement("canvas");
       canvas.width = 1920;
       canvas.height = 1080;
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext("2d");
       ctx.drawImage(img, 0, 0, 1920, 1080);
 
       const resizedBlob = await new Promise((resolve) => {
-        let mimeType = 'image/jpeg'; // default
-        if (file.type.includes('png')) {
-          mimeType = 'image/png';
-        } else if (file.type.includes('gif')) {
-          mimeType = 'image/gif';
-        } else if (file.type.includes('jpeg') || file.type.includes('jpg')) {
-          mimeType = 'image/jpeg';
+        let mimeType = "image/jpeg"; // default
+        if (file.type.includes("png")) {
+          mimeType = "image/png";
+        } else if (file.type.includes("gif")) {
+          mimeType = "image/gif";
+        } else if (file.type.includes("jpeg") || file.type.includes("jpg")) {
+          mimeType = "image/jpeg";
         }
         canvas.toBlob(resolve, mimeType, 0.9);
       });
@@ -438,11 +434,14 @@ const ThemePanel = ({
       // Convert compressed file to Base64 for API payload
       const reader = new FileReader();
       reader.onloadend = () => {
-        changeWallpaper({
-          base64: reader.result,
-          type: compressedFile.type,
-          name: compressedFile.name
-        }, compressedFile.name);
+        changeWallpaper(
+          {
+            base64: reader.result,
+            type: compressedFile.type,
+            name: compressedFile.name,
+          },
+          compressedFile.name
+        );
         setIsCompressing(false);
       };
       reader.readAsDataURL(compressedFile);
@@ -453,11 +452,14 @@ const ThemePanel = ({
       setCustomWallpaper(url);
       const reader = new FileReader();
       reader.onloadend = () => {
-        changeWallpaper({
-          base64: reader.result,
-          type: file.type,
-          name: file.name
-        }, file.name);
+        changeWallpaper(
+          {
+            base64: reader.result,
+            type: file.type,
+            name: file.name,
+          },
+          file.name
+        );
         setIsCompressing(false);
       };
       reader.readAsDataURL(file);
@@ -466,7 +468,9 @@ const ThemePanel = ({
 
   const renderContent = (isMobile) => (
     <Tabs defaultValue="layouts" className="w-full h-full flex flex-col">
-      <div className={`sticky top-0 z-50 px-6 ${isMobile ? 'pb-2' : 'pt-4 pb-2'} border-b border-border/30 bg-background/95 backdrop-blur-sm`}>
+      <div
+        className={`sticky top-0 z-50 px-6 ${isMobile ? "pb-2" : "pt-4 pb-2"} border-b border-border/30 bg-background/95 backdrop-blur-sm`}
+      >
         <div className="overflow-x-auto hide-scrollbar -mx-6 px-6">
           <TabsList className="w-full bg-transparent p-0 h-auto gap-6 justify-start min-w-fit">
             <TabsTrigger
@@ -503,41 +507,59 @@ const ThemePanel = ({
         </div>
       </div>
 
-      <TabsContent value="layouts" className="flex-1 overflow-y-auto p-6 m-0 thin-scrollbar" data-testid={isMobile ? "content-layouts-mobile" : "content-layouts"}>
+      <TabsContent
+        value="layouts"
+        className="flex-1 overflow-y-auto p-6 m-0 thin-scrollbar"
+        data-testid={isMobile ? "content-layouts-mobile" : "content-layouts"}
+      >
         <div className="space-y-4">
           {!isMacOSTemplate && (
             <div className="flex items-center justify-between p-4 border border-border rounded-[16px] bg-black/[0.02] dark:bg-white/[0.02] mb-4">
               <span className="text-[13px] font-medium text-foreground">Appearance</span>
-              {
-                template === TEMPLATE_IDS.CANVAS ? (<div className="flex items-center gap-3">
+              {template === TEMPLATE_IDS.CANVAS ? (
+                <div className="flex items-center gap-3">
                   <SwitchCanvas
-                    value={theme === 'dark' || theme === 1}
-                    onToggle={() => changeTheme((theme === 'dark' || theme === 1) ? 0 : 1)}
+                    value={theme === "dark" || theme === 1}
+                    onToggle={() => changeTheme(theme === "dark" || theme === 1 ? 0 : 1)}
                     iconOn={<Moon className="size-4" />}
                     iconOff={<Sun className="size-4" />}
                   />
-                </div>) : (<div className="inline-flex items-center gap-2">
+                </div>
+              ) : (
+                <div className="inline-flex items-center gap-2">
                   <span
-                    className={twMerge("cursor-pointer transition-colors", (theme === 'dark' || theme === 1) ? "text-muted-foreground" : "text-foreground")}
+                    className={twMerge(
+                      "cursor-pointer transition-colors",
+                      theme === "dark" || theme === 1 ? "text-muted-foreground" : "text-foreground"
+                    )}
                     onClick={() => changeTheme(0)}
                   >
                     <Sun className="size-4" />
                   </span>
                   <div ref={appearanceSwitchRefLayouts} className="inline-flex">
                     <Switch
-                      checked={theme === 'dark' || theme === 1}
-                      onCheckedChange={(checked) => applyThemeChange(checked, appearanceSwitchRefLayouts.current)}
-                      data-testid={isMobile ? "switch-theme-mode-layouts-mobile" : "switch-theme-mode-layouts"}
+                      checked={theme === "dark" || theme === 1}
+                      onCheckedChange={(checked) =>
+                        applyThemeChange(checked, appearanceSwitchRefLayouts.current)
+                      }
+                      data-testid={
+                        isMobile ? "switch-theme-mode-layouts-mobile" : "switch-theme-mode-layouts"
+                      }
                     />
                   </div>
                   <span
-                    className={twMerge("cursor-pointer transition-colors", !(theme === 'dark' || theme === 1) ? "text-muted-foreground" : "text-foreground")}
+                    className={twMerge(
+                      "cursor-pointer transition-colors",
+                      !(theme === "dark" || theme === 1)
+                        ? "text-muted-foreground"
+                        : "text-foreground"
+                    )}
                     onClick={() => changeTheme(1)}
                   >
                     <Moon className="size-4" />
                   </span>
-                </div>)
-              }
+                </div>
+              )}
             </div>
           )}
 
@@ -549,34 +571,51 @@ const ThemePanel = ({
                 tmpl={tmpl}
                 isSelected={template === tmpl.id}
                 onChange={changeTemplate}
-                previewSrc={getTemplateThumbnailSrc(tmpl.id, theme === 'dark' || theme === 1 ? 'dark' : 'light')}
+                previewSrc={getTemplateThumbnailSrc(
+                  tmpl.id,
+                  theme === "dark" || theme === 1 ? "dark" : "light"
+                )}
               />
             ))}
           </div>
         </div>
       </TabsContent>
 
-      <TabsContent value="background" className="flex-1 overflow-y-auto p-6 m-0" data-testid={isMobile ? "content-background-mobile" : "content-background"}>
+      <TabsContent
+        value="background"
+        className="flex-1 overflow-y-auto p-6 m-0"
+        data-testid={isMobile ? "content-background-mobile" : "content-background"}
+      >
         <div className="space-y-4">
           {!isMacOSTemplate && (
             <div className="flex items-center justify-between p-4 border border-border rounded-[16px] bg-black/[0.02] dark:bg-white/[0.02] mb-4">
               <span className="text-[13px] font-medium text-foreground">Appearance</span>
               <div className="inline-flex items-center gap-2">
                 <span
-                  className={twMerge("cursor-pointer transition-colors", (theme === 'dark' || theme === 1) ? "text-muted-foreground" : "text-foreground")}
+                  className={twMerge(
+                    "cursor-pointer transition-colors",
+                    theme === "dark" || theme === 1 ? "text-muted-foreground" : "text-foreground"
+                  )}
                   onClick={() => changeTheme(0)}
                 >
                   <Sun className="size-4" />
                 </span>
                 <div ref={appearanceSwitchRefBackground} className="inline-flex">
                   <Switch
-                    checked={theme === 'dark' || theme === 1}
-                    onCheckedChange={(checked) => applyThemeChange(checked, appearanceSwitchRefBackground.current)}
-                    data-testid={isMobile ? "switch-wallpaper-mode-mobile" : "switch-wallpaper-mode"}
+                    checked={theme === "dark" || theme === 1}
+                    onCheckedChange={(checked) =>
+                      applyThemeChange(checked, appearanceSwitchRefBackground.current)
+                    }
+                    data-testid={
+                      isMobile ? "switch-wallpaper-mode-mobile" : "switch-wallpaper-mode"
+                    }
                   />
                 </div>
                 <span
-                  className={twMerge("cursor-pointer transition-colors", !(theme === 'dark' || theme === 1) ? "text-muted-foreground" : "text-foreground")}
+                  className={twMerge(
+                    "cursor-pointer transition-colors",
+                    !(theme === "dark" || theme === 1) ? "text-muted-foreground" : "text-foreground"
+                  )}
                   onClick={() => changeTheme(1)}
                 >
                   <Moon className="size-4" />
@@ -587,8 +626,12 @@ const ThemePanel = ({
 
           {isChatfolioTemplate ? (
             <div className="flex flex-col items-center justify-center py-10 px-4 text-center rounded-xl border border-dashed border-border bg-muted/20">
-              <p className="text-sm font-medium text-foreground/70 mb-1">No wallpaper for Chat theme</p>
-              <p className="text-xs text-muted-foreground">Chat theme uses a solid background colour. Switch templates to use wallpapers.</p>
+              <p className="text-sm font-medium text-foreground/70 mb-1">
+                No wallpaper for Chat theme
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Chat theme uses a solid background colour. Switch templates to use wallpapers.
+              </p>
             </div>
           ) : (
             <>
@@ -608,60 +651,87 @@ const ThemePanel = ({
                       </div>
                       <div className="flex p-1 bg-muted/50 rounded-lg gap-1 mb-4">
                         <Button
-                          variant={currentEffects.effectType === 'blur' ? 'secondary' : 'ghost'}
+                          variant={currentEffects.effectType === "blur" ? "secondary" : "ghost"}
                           size="sm"
-                          onClick={() => currentUpdateWallpaperEffect('effectType', 'blur')}
+                          onClick={() => currentUpdateWallpaperEffect("effectType", "blur")}
                           className="flex-1 text-xs rounded-md"
-                          data-testid={isMobileOrTablet ? "button-effect-blur-mobile" : "button-effect-blur"}
+                          data-testid={
+                            isMobileOrTablet ? "button-effect-blur-mobile" : "button-effect-blur"
+                          }
                         >
                           Soft Blur
                         </Button>
                         <Button
-                          variant={currentEffects.effectType === 'grain' ? 'secondary' : 'ghost'}
+                          variant={currentEffects.effectType === "grain" ? "secondary" : "ghost"}
                           size="sm"
                           onClick={() => {
-                            if (currentEffects.grainIntensity === 0 || currentEffects.grainIntensity === undefined || currentEffects.grainIntensity === null) {
-                              currentUpdateWallpaperEffect('grainIntensity', 25);
+                            if (
+                              currentEffects.grainIntensity === 0 ||
+                              currentEffects.grainIntensity === undefined ||
+                              currentEffects.grainIntensity === null
+                            ) {
+                              currentUpdateWallpaperEffect("grainIntensity", 25);
                             }
-                            currentUpdateWallpaperEffect('effectType', 'grain');
+                            currentUpdateWallpaperEffect("effectType", "grain");
                           }}
                           className="flex-1 text-xs rounded-md"
-                          data-testid={isMobileOrTablet ? "button-effect-grain-mobile" : "button-effect-grain"}
+                          data-testid={
+                            isMobileOrTablet ? "button-effect-grain-mobile" : "button-effect-grain"
+                          }
                         >
                           Fine Grain
                         </Button>
                       </div>
 
                       <div className="space-y-4">
-                        {currentEffects.effectType === 'blur' ? (
+                        {currentEffects.effectType === "blur" ? (
                           <div className="animate-in fade-in slide-in-from-top-1 duration-300">
                             <div className="flex items-center justify-between mb-2">
-                              <span className="text-[11px] font-medium text-foreground/60">Depth</span>
-                              <span className="text-[11px] tabular-nums text-foreground/40">{currentEffects.blur}px</span>
+                              <span className="text-[11px] font-medium text-foreground/60">
+                                Depth
+                              </span>
+                              <span className="text-[11px] tabular-nums text-foreground/40">
+                                {currentEffects.blur}px
+                              </span>
                             </div>
                             <Slider
-
                               value={[currentEffects.blur]}
-                              onValueChange={(value) => currentUpdateWallpaperEffect('blur', value[0])}
+                              onValueChange={(value) =>
+                                currentUpdateWallpaperEffect("blur", value[0])
+                              }
                               max={20}
                               step={1}
                               className="w-full"
-                              data-testid={isMobileOrTablet ? "slider-background-blur-mobile" : "slider-background-blur"}
+                              data-testid={
+                                isMobileOrTablet
+                                  ? "slider-background-blur-mobile"
+                                  : "slider-background-blur"
+                              }
                             />
                           </div>
                         ) : (
                           <div className="animate-in fade-in slide-in-from-top-1 duration-300">
                             <div className="flex items-center justify-between mb-2">
-                              <span className="text-[11px] font-medium text-foreground/60">Opacity</span>
-                              <span className="text-[11px] tabular-nums text-foreground/40">{currentEffects.grainIntensity}%</span>
+                              <span className="text-[11px] font-medium text-foreground/60">
+                                Opacity
+                              </span>
+                              <span className="text-[11px] tabular-nums text-foreground/40">
+                                {currentEffects.grainIntensity}%
+                              </span>
                             </div>
                             <Slider
                               value={[currentEffects.grainIntensity]}
-                              onValueChange={(value) => currentUpdateWallpaperEffect('grainIntensity', value[0])}
+                              onValueChange={(value) =>
+                                currentUpdateWallpaperEffect("grainIntensity", value[0])
+                              }
                               max={100}
                               step={5}
                               className="w-full"
-                              data-testid={isMobileOrTablet ? "slider-grain-intensity-mobile" : "slider-grain-intensity"}
+                              data-testid={
+                                isMobileOrTablet
+                                  ? "slider-grain-intensity-mobile"
+                                  : "slider-grain-intensity"
+                              }
                             />
                           </div>
                         )}
@@ -670,13 +740,23 @@ const ThemePanel = ({
 
                     <div className="flex items-center justify-between p-4 rounded-xl  bg-muted/50 mb-4">
                       <div>
-                        <Text size="p-xs-uppercase" className="text-df-heading-color">Dynamic Motion</Text>
-                        <p className="text-[11px] text-df-description-color mt-0.5 font-medium">Parallax zoom interaction</p>
+                        <Text size="p-xs-uppercase" className="text-df-heading-color">
+                          Dynamic Motion
+                        </Text>
+                        <p className="text-[11px] text-df-description-color mt-0.5 font-medium">
+                          Parallax zoom interaction
+                        </p>
                       </div>
                       <Switch
                         checked={currentEffects.motion}
-                        onCheckedChange={(checked) => currentUpdateWallpaperEffect('motion', checked)}
-                        data-testid={isMobileOrTablet ? "switch-background-motion-mobile" : "switch-background-motion"}
+                        onCheckedChange={(checked) =>
+                          currentUpdateWallpaperEffect("motion", checked)
+                        }
+                        data-testid={
+                          isMobileOrTablet
+                            ? "switch-background-motion-mobile"
+                            : "switch-background-motion"
+                        }
                         className="scale-90"
                       />
                     </div>
@@ -689,7 +769,8 @@ const ThemePanel = ({
                   <div className="flex-1">
                     <h4 className="text-sm font-semibold mb-1">Upload Custom Background</h4>
                     <p className="text-xs text-df-description-color mb-2">
-                      Upload your own image. Minimum: 500x300. Maximum file size: 5MB. Image will be resized to 1920x1080.
+                      Upload your own image. Minimum: 500x300. Maximum file size: 5MB. Image will be
+                      resized to 1920x1080.
                     </p>
                     <input
                       type="file"
@@ -697,17 +778,33 @@ const ThemePanel = ({
                       onChange={handleFileUpload}
                       className="hidden"
                       id={isMobile ? "custom-wallpaper-upload-mobile" : "custom-wallpaper-upload"}
-                      data-testid={isMobile ? "input-custom-wallpaper-mobile" : "input-custom-wallpaper"}
+                      data-testid={
+                        isMobile ? "input-custom-wallpaper-mobile" : "input-custom-wallpaper"
+                      }
                     />
-                    <label htmlFor={isMobile ? "custom-wallpaper-upload-mobile" : "custom-wallpaper-upload"}>
+                    <label
+                      htmlFor={
+                        isMobile ? "custom-wallpaper-upload-mobile" : "custom-wallpaper-upload"
+                      }
+                    >
                       <Button
                         type="button"
                         variant="outline"
                         size="sm"
                         className="cursor-pointer"
                         disabled={isCompressing}
-                        onClick={() => document.getElementById(isMobile ? 'custom-wallpaper-upload-mobile' : 'custom-wallpaper-upload')?.click()}
-                        data-testid={isMobile ? "button-upload-wallpaper-mobile" : "button-upload-wallpaper"}
+                        onClick={() =>
+                          document
+                            .getElementById(
+                              isMobile
+                                ? "custom-wallpaper-upload-mobile"
+                                : "custom-wallpaper-upload"
+                            )
+                            ?.click()
+                        }
+                        data-testid={
+                          isMobile ? "button-upload-wallpaper-mobile" : "button-upload-wallpaper"
+                        }
                       >
                         <Upload className="w-4 h-4" />
                         {"Choose File"}
@@ -722,13 +819,15 @@ const ThemePanel = ({
                   onClick={() => changeWallpaper(0)}
                   className={twMerge(
                     "relative rounded-md overflow-hidden border-2 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer",
-                    wallpaper === 0 ? 'border-primary-landing ' : 'border-border'
+                    wallpaper === 0 ? "border-primary-landing " : "border-border"
                   )}
                   data-testid={isMobile ? "button-wallpaper-none-mobile" : "button-wallpaper-none"}
                 >
                   {isMacOSTemplate ? (
                     <img
-                      src={isDarkWallpapers ? '/wallpaper/darkui/wall8.png' : '/wallpaper/wall8.png'}
+                      src={
+                        isDarkWallpapers ? "/wallpaper/darkui/wall8.png" : "/wallpaper/wall8.png"
+                      }
                       alt="Default"
                       className="aspect-video object-cover w-full pointer-events-none"
                     />
@@ -740,7 +839,11 @@ const ThemePanel = ({
                   {wallpaper === 0 && (
                     <div className="absolute top-2 right-2 bg-primary-landing  text-primary-landing -foreground rounded-full p-1 pointer-events-none">
                       <svg className="w-4 h-4" fill="background" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        <path
+                          fillRule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                        />
                       </svg>
                     </div>
                   )}
@@ -751,9 +854,11 @@ const ThemePanel = ({
                     onClick={() => changeWallpaper(customWallpaper)}
                     className={twMerge(
                       "relative rounded-md overflow-hidden border-2 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer",
-                      wallpaper === customWallpaper ? 'border-primary-landing' : 'border-border'
+                      wallpaper === customWallpaper ? "border-primary-landing" : "border-border"
                     )}
-                    data-testid={isMobile ? "button-wallpaper-custom-mobile" : "button-wallpaper-custom"}
+                    data-testid={
+                      isMobile ? "button-wallpaper-custom-mobile" : "button-wallpaper-custom"
+                    }
                   >
                     <img
                       src={customWallpaper}
@@ -761,12 +866,18 @@ const ThemePanel = ({
                       className="aspect-video object-cover w-full pointer-events-none"
                     />
                     <div className="absolute bottom-2 left-2 pointer-events-none">
-                      <Badge variant="secondary" className="text-xs">Custom</Badge>
+                      <Badge variant="secondary" className="text-xs">
+                        Custom
+                      </Badge>
                     </div>
                     {wallpaper === customWallpaper && (
                       <div className="absolute top-2 right-2 bg-primary-landing  text-primary-landing -foreground rounded-full p-1 z-10 pointer-events-none">
                         <svg className="w-4 h-4" fill="background" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          <path
+                            fillRule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clipRule="evenodd"
+                          />
                         </svg>
                       </div>
                     )}
@@ -782,9 +893,11 @@ const ThemePanel = ({
                       onClick={() => changeWallpaper(wp.value)}
                       className={twMerge(
                         "relative rounded-md overflow-hidden border-2 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer",
-                        wallpaper === wp.value ? 'border-primary-landing ' : 'border-border'
+                        wallpaper === wp.value ? "border-primary-landing " : "border-border"
                       )}
-                      data-testid={isMobile ? `button-wallpaper-${wp.id}-mobile` : `button-wallpaper-${wp.id}`}
+                      data-testid={
+                        isMobile ? `button-wallpaper-${wp.id}-mobile` : `button-wallpaper-${wp.id}`
+                      }
                     >
                       <div className="w-full aspect-video [&>div]:!h-full [&>div]:!rounded-none pointer-events-none">
                         {wp.item}
@@ -792,7 +905,11 @@ const ThemePanel = ({
                       {wallpaper === wp.value && (
                         <div className="absolute top-2 right-2 bg-primary-landing  text-primary-landing -foreground rounded-full p-1 z-10 pointer-events-none">
                           <svg className="w-4 h-4" fill="background" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            <path
+                              fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"
+                            />
                           </svg>
                         </div>
                       )}
@@ -806,10 +923,16 @@ const ThemePanel = ({
       </TabsContent>
 
       {!isMacOSTemplate && (
-        <TabsContent value="blocks" className="flex-1 overflow-y-auto p-6 m-0" data-testid={isMobile ? "content-blocks-mobile" : "content-blocks"}>
+        <TabsContent
+          value="blocks"
+          className="flex-1 overflow-y-auto p-6 m-0"
+          data-testid={isMobile ? "content-blocks-mobile" : "content-blocks"}
+        >
           <div className="space-y-4">
             <div className="flex items-center justify-between mb-4">
-              <p className="text-sm font-medium text-foreground/60">Re-arrange your portfolio sections</p>
+              <p className="text-sm font-medium text-foreground/60">
+                Re-arrange your portfolio sections
+              </p>
               <Button
                 variant="ghost"
                 size="sm"
@@ -844,7 +967,11 @@ const ThemePanel = ({
         </TabsContent>
       )}
 
-      <TabsContent value="cursors" className="flex-1 overflow-y-auto p-6 m-0" data-testid={isMobile ? "content-cursors-mobile" : "content-cursors"}>
+      <TabsContent
+        value="cursors"
+        className="flex-1 overflow-y-auto p-6 m-0"
+        data-testid={isMobile ? "content-cursors-mobile" : "content-cursors"}
+      >
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {cursors.map((c, index) => (
             <div
@@ -864,8 +991,6 @@ const ThemePanel = ({
       </TabsContent>
     </Tabs>
   );
-
-
 
   return renderContent(isMobileOrTablet);
 };

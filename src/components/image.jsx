@@ -39,11 +39,17 @@ const DfImage = ({ src, style, className, alt, onClick }) => {
             onClick={onClick}
           />
           {!imageLoaded && (
-            <div className="absolute inset-0 bg-placeholder-color rounded-full animate-pulse" aria-hidden />
+            <div
+              className="absolute inset-0 bg-placeholder-color rounded-full animate-pulse"
+              aria-hidden
+            />
           )}
         </>
       ) : (
-        <div className="absolute inset-0 bg-placeholder-color rounded-full animate-pulse" aria-hidden />
+        <div
+          className="absolute inset-0 bg-placeholder-color rounded-full animate-pulse"
+          aria-hidden
+        />
       )}
     </div>
   );

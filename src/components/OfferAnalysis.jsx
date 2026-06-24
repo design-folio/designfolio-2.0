@@ -8,7 +8,13 @@ import axiosInstance from "@/network/axiosInstance";
 
 const RESULT_STORAGE_KEY = "salary-negotiator";
 
-export default function OfferAnalysis({ onToolUsed, onViewChange, onStartNewAnalysis, skipRestore = false, guestUsageLimitReached = false }) {
+export default function OfferAnalysis({
+  onToolUsed,
+  onViewChange,
+  onStartNewAnalysis,
+  skipRestore = false,
+  guestUsageLimitReached = false,
+}) {
   const [analysis, setAnalysis] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isRestarting, setIsRestarting] = useState(false);
@@ -25,10 +31,7 @@ export default function OfferAnalysis({ onToolUsed, onViewChange, onStartNewAnal
 
   const handleRateLimitError = () => {
     toast.error("Rate limit reached.");
-    setAnalysis(
-      "⚠️ Rate Limit Reached\n\n" +
-      "Please try again in a few moments."
-    );
+    setAnalysis("⚠️ Rate Limit Reached\n\n" + "Please try again in a few moments.");
   };
 
   const handleRestart = () => {
@@ -61,10 +64,14 @@ export default function OfferAnalysis({ onToolUsed, onViewChange, onStartNewAnal
         return;
       } else if (!error.response) {
         toast.error("Please check your internet connection and try again.");
-        setAnalysis("🌐 Network Error: Unable to reach our AI service. Please check your internet connection and try again.");
+        setAnalysis(
+          "🌐 Network Error: Unable to reach our AI service. Please check your internet connection and try again."
+        );
       } else {
         toast.error("An unexpected error occurred. Please try again in a few moments.");
-        setAnalysis("❌ Unexpected error occurred. If this persists:\n\n1. Try refreshing the page\n2. Contact support if the issue continues");
+        setAnalysis(
+          "❌ Unexpected error occurred. If this persists:\n\n1. Try refreshing the page\n2. Contact support if the issue continues"
+        );
       }
     } finally {
       setIsAnalyzing(false);
@@ -74,7 +81,11 @@ export default function OfferAnalysis({ onToolUsed, onViewChange, onStartNewAnal
   return (
     <div className="w-full relative">
       {!analysis ? (
-        <OfferForm onSubmit={handleSubmit} isAnalyzing={isAnalyzing} guestUsageLimitReached={guestUsageLimitReached} />
+        <OfferForm
+          onSubmit={handleSubmit}
+          isAnalyzing={isAnalyzing}
+          guestUsageLimitReached={guestUsageLimitReached}
+        />
       ) : (
         <AnalysisReport analysis={analysis} onRestart={handleRestart} isRestarting={isRestarting} />
       )}

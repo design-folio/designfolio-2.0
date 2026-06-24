@@ -1,10 +1,5 @@
 import { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import PreviewIcon from "../../public/assets/svgs/previewIcon.svg";
 import Button from "./button";
 
@@ -76,11 +71,7 @@ const SpotlightUsersDesktop = ({ title, projectUrl, imageSrc, onHover }) => {
           <DialogTitle className="sr-only">{title}</DialogTitle>
           <DialogDescription className="sr-only">{title}</DialogDescription>
           <div className="relative w-full h-full rounded-[20px] overflow-hidden">
-            <iframe
-              src={projectUrl}
-              className="w-full h-full"
-              title="Project Preview"
-            />
+            <iframe src={projectUrl} className="w-full h-full" title="Project Preview" />
           </div>
         </DialogContent>
       </Dialog>

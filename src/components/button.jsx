@@ -63,17 +63,18 @@ const Button = ({
     },
     ai: {
       base: "text-ai-btn-text-color border border-ai-btn-border-color cursor-pointer",
-      disabled: "text-ai-btn-text-color border border-ai-btn-border-color opacity-70 cursor-not-allowed",
+      disabled:
+        "text-ai-btn-text-color border border-ai-btn-border-color opacity-70 cursor-not-allowed",
     },
     tools: {
       base: "bg-transparent text-[#404040] hover:bg-[#FFF] rounded-full",
       selected: "bg-white border border-[#CDCDC6] rounded-full",
-      disabled:
-        "bg-transparent text-[#404040] hover:bg-[#FFF] rounded-full opacity-40",
+      disabled: "bg-transparent text-[#404040] hover:bg-[#FFF] rounded-full opacity-40",
     },
     toggleVisibility: {
       base: "bg-secondary hover:bg-secondary-hover text-foreground border border-secondary-border hover:border-secondary-border-hover hover:shadow-secondary-btn cursor-pointer",
-      selected: "bg-amber-50 border-amber-200 text-amber-700 dark:bg-amber-950/20 dark:border-amber-800 dark:text-amber-400 hover:bg-amber-100 hover:dark:bg-amber-950/30 hover:text-amber-700 hover:dark:text-amber-400 border rounded-full",
+      selected:
+        "bg-amber-50 border-amber-200 text-amber-700 dark:bg-amber-950/20 dark:border-amber-800 dark:text-amber-400 hover:bg-amber-100 hover:dark:bg-amber-950/30 hover:text-amber-700 hover:dark:text-amber-400 border rounded-full",
       disabled:
         "bg-secondary border-secondary-border text-foreground border rounded-full opacity-40",
     },

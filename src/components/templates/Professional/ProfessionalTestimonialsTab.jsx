@@ -22,29 +22,31 @@ function renderTiptapWords(content, charLimit = null) {
       elements.push(<br key={`br-${wi}`} />);
       continue;
     }
-    const text = word.map(c => c.ch).join('');
+    const text = word.map((c) => c.ch).join("");
     if (charLimit !== null && charCount + text.length > charLimit) {
       const remaining = charLimit - charCount;
-      if (remaining > 0) elements.push(<React.Fragment key={wi}>{text.slice(0, remaining)}</React.Fragment>);
+      if (remaining > 0)
+        elements.push(<React.Fragment key={wi}>{text.slice(0, remaining)}</React.Fragment>);
       truncated = true;
       break;
     }
     charCount += text.length;
     const { bold, italic, underline, strike, highlight } = word[0] || {};
-    const cn = [
-      bold && 'font-bold',
-      italic && 'italic',
-      underline && 'underline',
-      strike && 'line-through',
-      highlight && 'bg-[#f9daa3] rounded-sm px-0.5 text-black',
-    ].filter(Boolean).join(' ') || undefined;
+    const cn =
+      [
+        bold && "font-bold",
+        italic && "italic",
+        underline && "underline",
+        strike && "line-through",
+        highlight && "bg-[#f9daa3] rounded-sm px-0.5 text-black",
+      ]
+        .filter(Boolean)
+        .join(" ") || undefined;
     elements.push(
-      <React.Fragment key={wi}>
-        {cn ? <span className={cn}>{text}</span> : text}{' '}
-      </React.Fragment>
+      <React.Fragment key={wi}>{cn ? <span className={cn}>{text}</span> : text} </React.Fragment>
     );
   }
-  if (truncated) elements.push('…');
+  if (truncated) elements.push("…");
   return elements;
 }
 
@@ -52,7 +54,9 @@ function TestimonialCard({ review, isEditing, isPlaying, onPlay, onEdit }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const shouldTruncate = getPlainTextLength(review?.description) > VIEW_MORE_THRESHOLD;
   // Full plain text used only for speech synthesis
-  const plainText = parseTiptapToWords(review?.description).map(w => w.map(c => c.ch).join('')).join(' ');
+  const plainText = parseTiptapToWords(review?.description)
+    .map((w) => w.map((c) => c.ch).join(""))
+    .join(" ");
 
   return (
     <div className="group border border-[#D5D0C6] dark:border-[#3A352E] p-6 rounded-xl hover:bg-[#DED9CE]/30 dark:hover:bg-white/[0.02] transition-colors relative">
@@ -73,7 +77,10 @@ function TestimonialCard({ review, isEditing, isPlaying, onPlay, onEdit }) {
       )}
       <div className="mb-6">
         <p className="font-jetbrains text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed relative z-10">
-          {renderTiptapWords(review?.description, !isExpanded && shouldTruncate ? VIEW_MORE_THRESHOLD : null)}
+          {renderTiptapWords(
+            review?.description,
+            !isExpanded && shouldTruncate ? VIEW_MORE_THRESHOLD : null
+          )}
         </p>
         {shouldTruncate && (
           <button
@@ -138,9 +145,7 @@ function TestimonialCard({ review, isEditing, isPlaying, onPlay, onEdit }) {
             ) : (
               <>
                 <Play size={14} className="fill-current" />
-                <span className="font-jetbrains text-[12px] w-[30px] text-center">
-                  Play
-                </span>
+                <span className="font-jetbrains text-[12px] w-[30px] text-center">Play</span>
               </>
             )}
           </button>
@@ -150,12 +155,7 @@ function TestimonialCard({ review, isEditing, isPlaying, onPlay, onEdit }) {
   );
 }
 
-function ProfessionalTestimonialsTab({
-  isEditing,
-  reviews,
-  onAddReview,
-  onEditReview,
-}) {
+function ProfessionalTestimonialsTab({ isEditing, reviews, onAddReview, onEditReview }) {
   const { openSidebar } = useGlobalContext();
   const [playingTestimonial, setPlayingTestimonial] = useState(null);
 
@@ -172,7 +172,7 @@ function ProfessionalTestimonialsTab({
         setPlayingTestimonial(id);
       }
     },
-    [playingTestimonial],
+    [playingTestimonial]
   );
 
   return (

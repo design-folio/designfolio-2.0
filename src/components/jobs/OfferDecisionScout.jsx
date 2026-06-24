@@ -13,11 +13,21 @@ const REGRET_SUGGESTIONS = [
 ];
 
 const buildSteps = (compA, compB) => [
-  { key: "ctc",    q: "What's your current CTC?" },
-  { key: "offerA", q: `Let's figure this out. What's ${compA} actually offering — base salary and anything else on top?` },
+  { key: "ctc", q: "What's your current CTC?" },
+  {
+    key: "offerA",
+    q: `Let's figure this out. What's ${compA} actually offering — base salary and anything else on top?`,
+  },
   { key: "offerB", q: `Got it. And ${compB}?` },
-  { key: "feel",   q: "Now the part the numbers can't tell me — how did each interview actually feel?" },
-  { key: "regret", q: "Last one. What's the thing you'd most regret optimising for the wrong way?", suggestions: REGRET_SUGGESTIONS },
+  {
+    key: "feel",
+    q: "Now the part the numbers can't tell me — how did each interview actually feel?",
+  },
+  {
+    key: "regret",
+    q: "Last one. What's the thing you'd most regret optimising for the wrong way?",
+    suggestions: REGRET_SUGGESTIONS,
+  },
 ];
 
 // ── Typing indicator ──────────────────────────────────────────────────────────
@@ -84,9 +94,11 @@ function ResultCard({ winner, analysis, regretNote, take }) {
     >
       {/* Scout's Take label */}
       <div className="flex items-center gap-2 mb-3 px-0.5">
-        <span className="orb-spinning"><ColorOrb dimension="14px" spinDuration={5} /></span>
+        <span className="orb-spinning">
+          <ColorOrb dimension="14px" spinDuration={5} />
+        </span>
         <span className="text-[11px] font-semibold tracking-widest text-foreground/45 uppercase">
-          Scout's Take
+          Scout&apos;s Take
         </span>
       </div>
 
@@ -137,14 +149,14 @@ export function OfferDecisionScout({ jobs, profileId, onClose, onCreditUsed }) {
   const steps = buildSteps(compA, compB);
 
   const [messages, setMessages] = useState([{ role: "ai", text: steps[0].q }]);
-  const [step,     setStep]     = useState(0);
-  const [answers,  setAnswers]  = useState({});
-  const [input,    setInput]    = useState("");
-  const [loading,  setLoading]  = useState(false);
-  const [result,   setResult]   = useState(null);
+  const [step, setStep] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null);
   const [expanded, setExpanded] = useState(false);
   const bottomRef = useRef(null);
-  const inputRef  = useRef(null);
+  const inputRef = useRef(null);
 
   const done = result !== null;
 
@@ -212,10 +224,10 @@ export function OfferDecisionScout({ jobs, profileId, onClose, onCreditUsed }) {
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 16, scale: 0.97 }}
         transition={{
-          layout:  { type: "spring", bounce: 0.15, duration: 0.5 },
+          layout: { type: "spring", bounce: 0.15, duration: 0.5 },
           opacity: { duration: 0.22 },
-          y:       { duration: 0.25, ease: [0.22, 1, 0.36, 1] },
-          scale:   { duration: 0.22 },
+          y: { duration: 0.25, ease: [0.22, 1, 0.36, 1] },
+          scale: { duration: 0.22 },
         }}
         className={`absolute pointer-events-auto flex flex-col bg-[#F5F2EE] dark:bg-[#161412] border border-black/[0.1] dark:border-white/[0.1] shadow-2xl rounded-2xl overflow-hidden ${
           expanded
@@ -226,7 +238,9 @@ export function OfferDecisionScout({ jobs, profileId, onClose, onCreditUsed }) {
         {/* ── Header ────────────────────────────────────────────────────────── */}
         <div className="flex-shrink-0 flex items-center justify-between px-4 py-3 bg-white/60 dark:bg-white/[0.04] border-b border-black/[0.07] dark:border-white/[0.08] backdrop-blur-sm">
           <div className="flex items-center gap-2 min-w-0">
-            <span className="orb-spinning"><ColorOrb dimension="14px" spinDuration={6} /></span>
+            <span className="orb-spinning">
+              <ColorOrb dimension="14px" spinDuration={6} />
+            </span>
             <span className="text-[13.5px] font-semibold text-foreground">Scout</span>
             <span className="text-[12px] text-foreground/40 truncate">
               · {compA} vs {compB}
@@ -238,7 +252,11 @@ export function OfferDecisionScout({ jobs, profileId, onClose, onCreditUsed }) {
               aria-label={expanded ? "Collapse" : "Expand"}
               className="w-7 h-7 flex items-center justify-center rounded-md text-foreground/35 hover:text-foreground/70 hover:bg-black/[0.05] dark:hover:bg-white/[0.07] transition-colors cursor-pointer"
             >
-              {expanded ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
+              {expanded ? (
+                <Minimize2 className="w-3.5 h-3.5" />
+              ) : (
+                <Maximize2 className="w-3.5 h-3.5" />
+              )}
             </button>
             <button
               onClick={onClose}
@@ -304,7 +322,8 @@ export function OfferDecisionScout({ jobs, profileId, onClose, onCreditUsed }) {
               transition={{ duration: 0.2 }}
             >
               {messages.map((msg, i) => {
-                const isLastAi = msg.role === "ai" && messages.slice(i + 1).every((m) => m.role !== "ai");
+                const isLastAi =
+                  msg.role === "ai" && messages.slice(i + 1).every((m) => m.role !== "ai");
                 return (
                   <motion.div
                     key={i}
@@ -346,9 +365,7 @@ export function OfferDecisionScout({ jobs, profileId, onClose, onCreditUsed }) {
         <div className="flex-shrink-0 border-t border-black/[0.07] dark:border-white/[0.08] bg-white/40 dark:bg-white/[0.02]">
           {done ? (
             <div className="px-4 py-3 flex items-center justify-between gap-3">
-              <p className="text-[11px] text-foreground/35">
-                AI-powered
-              </p>
+              <p className="text-[11px] text-foreground/35">AI-powered</p>
               <button
                 onClick={onClose}
                 className="h-8 px-5 rounded-full bg-foreground text-background text-[12.5px] font-medium hover:opacity-80 transition-opacity cursor-pointer"
@@ -380,7 +397,9 @@ export function OfferDecisionScout({ jobs, profileId, onClose, onCreditUsed }) {
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={(e) => { if (e.key === "Enter") submit(input); }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") submit(input);
+                  }}
                   placeholder="Type your answer…"
                   className="flex-1 text-[13.5px] text-foreground placeholder:text-foreground/30 bg-transparent outline-none"
                 />

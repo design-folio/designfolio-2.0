@@ -10,13 +10,7 @@ function CanvasSkillsMarquee({ skills = [], isEditing }) {
 
   if (skills.length === 0) return null;
 
-  const repeatedSkills = [
-    ...skills,
-    ...skills,
-    ...skills,
-    ...skills,
-    ...skills,
-  ];
+  const repeatedSkills = [...skills, ...skills, ...skills, ...skills, ...skills];
 
   return (
     <motion.div

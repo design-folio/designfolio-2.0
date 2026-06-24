@@ -25,7 +25,7 @@ export function usePersistableThemeToggle(persist) {
         setTheme(nextDark ? "dark" : "light");
       }
     },
-    [persist, changeTheme, setTheme],
+    [persist, changeTheme, setTheme]
   );
 
   const toggleTheme = useCallback(() => {

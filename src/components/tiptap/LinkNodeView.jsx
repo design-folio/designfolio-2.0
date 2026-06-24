@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { NodeViewWrapper } from '@tiptap/react';
+import React, { useState, useEffect } from "react";
+import { NodeViewWrapper } from "@tiptap/react";
 
 const LinkNodeView = ({ node, updateAttributes, deleteNode, editor }) => {
   const isEditable = editor?.isEditable ?? false;
   const [isEditing, setIsEditing] = useState(isEditable && !node.attrs.href);
-  const [href, setHref] = useState(node.attrs.href || '');
-  const [text, setText] = useState(node.attrs.text || '');
+  const [href, setHref] = useState(node.attrs.href || "");
+  const [text, setText] = useState(node.attrs.text || "");
 
   useEffect(() => {
     if (isEditable && !node.attrs.href) {
@@ -19,17 +19,17 @@ const LinkNodeView = ({ node, updateAttributes, deleteNode, editor }) => {
         href: href.trim(),
         text: text.trim() || href.trim(),
       });
-      
+
       // Replace this node with actual link
       const linkText = text.trim() || href.trim();
       editor
         .chain()
         .focus()
-        .deleteNode('linkNode')
+        .deleteNode("linkNode")
         .insertContent({
-          type: 'text',
+          type: "text",
           text: linkText,
-          marks: [{ type: 'link', attrs: { href: href.trim() } }],
+          marks: [{ type: "link", attrs: { href: href.trim() } }],
         })
         .run();
     }
@@ -40,10 +40,10 @@ const LinkNodeView = ({ node, updateAttributes, deleteNode, editor }) => {
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
       e.preventDefault();
       handleSave();
-    } else if (e.key === 'Escape') {
+    } else if (e.key === "Escape") {
       e.preventDefault();
       handleCancel();
     }
@@ -91,7 +91,10 @@ const LinkNodeView = ({ node, updateAttributes, deleteNode, editor }) => {
 
   return (
     <NodeViewWrapper>
-      <div className="rounded-lg p-4 my-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 select-none" onMouseDown={(e) => e.stopPropagation()}>
+      <div
+        className="rounded-lg p-4 my-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 select-none"
+        onMouseDown={(e) => e.stopPropagation()}
+      >
         <div className="mb-3">
           <input
             type="url"
@@ -112,7 +115,10 @@ const LinkNodeView = ({ node, updateAttributes, deleteNode, editor }) => {
             className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-md text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 select-text"
             onMouseDown={(e) => e.stopPropagation()}
           />
-          <div className="text-xs text-slate-600 dark:text-slate-400 mt-1" onMouseDown={(e) => e.stopPropagation()}>
+          <div
+            className="text-xs text-slate-600 dark:text-slate-400 mt-1"
+            onMouseDown={(e) => e.stopPropagation()}
+          >
             Press Ctrl+Enter to save, Esc to cancel
           </div>
         </div>
@@ -122,8 +128,8 @@ const LinkNodeView = ({ node, updateAttributes, deleteNode, editor }) => {
             disabled={!href.trim()}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
               href.trim()
-                ? 'bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white cursor-pointer'
-                : 'bg-slate-400 dark:bg-slate-700 text-white cursor-not-allowed'
+                ? "bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white cursor-pointer"
+                : "bg-slate-400 dark:bg-slate-700 text-white cursor-not-allowed"
             }`}
           >
             Save

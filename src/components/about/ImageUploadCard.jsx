@@ -6,13 +6,13 @@ import Button from "../button";
  * Reusable component for individual image upload cards
  * Handles display, upload, edit, and delete actions for pegboard images/stickers
  */
-const ImageUploadCard = ({ 
-  image, 
-  onUpload, 
-  onDelete, 
-  index, 
+const ImageUploadCard = ({
+  image,
+  onUpload,
+  onDelete,
+  index,
   type = "image",
-  isUploading = false 
+  isUploading = false,
 }) => {
   const fileInputRef = useRef(null);
   const [isHovering, setIsHovering] = useState(false);
@@ -118,9 +118,7 @@ const ImageUploadCard = ({
             {isUploading ? (
               <>
                 <Upload className="w-6 h-6 text-foreground/40 animate-pulse" />
-                <span className="text-xs text-foreground/40 font-medium">
-                  Uploading...
-                </span>
+                <span className="text-xs text-foreground/40 font-medium">Uploading...</span>
               </>
             ) : (
               <>

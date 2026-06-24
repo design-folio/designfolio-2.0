@@ -3,21 +3,37 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 const MD_COMPONENTS = {
-  p:      ({ children }) => <p className="text-sm text-foreground/75 leading-[1.75] mb-3 last:mb-0">{children}</p>,
-  ul:     ({ children }) => <ul className="list-disc pl-5 mb-3 space-y-1 text-sm text-foreground/75">{children}</ul>,
-  ol:     ({ children }) => <ol className="list-decimal pl-5 mb-3 space-y-1 text-sm text-foreground/75">{children}</ol>,
-  li:     ({ children }) => <li className="leading-[1.65]">{children}</li>,
-  a:      ({ href, children }) => (
-    <a href={href} target="_blank" rel="noopener noreferrer"
-      className="underline underline-offset-2 text-foreground/55 hover:text-foreground transition-colors">
+  p: ({ children }) => (
+    <p className="text-sm text-foreground/75 leading-[1.75] mb-3 last:mb-0">{children}</p>
+  ),
+  ul: ({ children }) => (
+    <ul className="list-disc pl-5 mb-3 space-y-1 text-sm text-foreground/75">{children}</ul>
+  ),
+  ol: ({ children }) => (
+    <ol className="list-decimal pl-5 mb-3 space-y-1 text-sm text-foreground/75">{children}</ol>
+  ),
+  li: ({ children }) => <li className="leading-[1.65]">{children}</li>,
+  a: ({ href, children }) => (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="underline underline-offset-2 text-foreground/55 hover:text-foreground transition-colors"
+    >
       {children}
     </a>
   ),
   strong: ({ children }) => <strong className="font-semibold text-foreground">{children}</strong>,
-  em:     ({ children }) => <em className="italic">{children}</em>,
-  h3:     ({ children }) => <h3 className="text-sm font-semibold text-foreground mt-4 mb-1.5">{children}</h3>,
-  h2:     ({ children }) => <h2 className="text-sm font-semibold text-foreground mt-4 mb-2">{children}</h2>,
-  h1:     ({ children }) => <h1 className="text-base font-semibold text-foreground mt-4 mb-2">{children}</h1>,
+  em: ({ children }) => <em className="italic">{children}</em>,
+  h3: ({ children }) => (
+    <h3 className="text-sm font-semibold text-foreground mt-4 mb-1.5">{children}</h3>
+  ),
+  h2: ({ children }) => (
+    <h2 className="text-sm font-semibold text-foreground mt-4 mb-2">{children}</h2>
+  ),
+  h1: ({ children }) => (
+    <h1 className="text-base font-semibold text-foreground mt-4 mb-2">{children}</h1>
+  ),
 };
 
 export function JobDescriptionCard({ description, delay = 0.06 }) {

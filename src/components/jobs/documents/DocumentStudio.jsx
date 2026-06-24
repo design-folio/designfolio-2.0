@@ -1,8 +1,11 @@
 import { useEffect, useState, useCallback } from "react";
 import { toast } from "react-toastify";
 import {
-  _getDocument, _patchDocument, _postExportDocument,
-  _postGenerateResume, _postGenerateCoverLetter,
+  _getDocument,
+  _patchDocument,
+  _postExportDocument,
+  _postGenerateResume,
+  _postGenerateCoverLetter,
 } from "@/network/documents";
 import DocumentGeneratingView from "./DocumentGeneratingView";
 import TailoredResumeView from "./TailoredResumeView";
@@ -117,21 +120,32 @@ export default function DocumentStudio({ open, onClose, type, job, profileId, do
       {phase === "generating" && <DocumentGeneratingView type={type} job={job} onBack={onClose} />}
 
       {phase === "loading" && (
-        <div className="flex-1 flex items-center justify-center text-foreground/40 text-[13px]">Loading…</div>
+        <div className="flex-1 flex items-center justify-center text-foreground/40 text-[13px]">
+          Loading…
+        </div>
       )}
 
       {phase === "error" && (
         <div className="flex-1 flex flex-col items-center justify-center gap-3">
-          <p className="text-[13px] text-foreground/60">Something went wrong generating this document.</p>
-          <button onClick={onClose} className="text-[12px] px-4 py-2 rounded-full border border-black/[0.12] dark:border-white/[0.12] text-foreground/70">Close</button>
+          <p className="text-[13px] text-foreground/60">
+            Something went wrong generating this document.
+          </p>
+          <button
+            onClick={onClose}
+            className="text-[12px] px-4 py-2 rounded-full border border-black/[0.12] dark:border-white/[0.12] text-foreground/70"
+          >
+            Close
+          </button>
         </div>
       )}
 
-      {phase === "ready" && doc && (
-        type === "coverLetter"
-          ? <CoverLetterView key={doc._id} doc={doc} {...editorProps} />
-          : <TailoredResumeView key={doc._id} doc={doc} {...editorProps} />
-      )}
+      {phase === "ready" &&
+        doc &&
+        (type === "coverLetter" ? (
+          <CoverLetterView key={doc._id} doc={doc} {...editorProps} />
+        ) : (
+          <TailoredResumeView key={doc._id} doc={doc} {...editorProps} />
+        ))}
     </div>
   );
 }

@@ -42,23 +42,31 @@ export default function AddAbout() {
   const getInitialImages = () => {
     const userImages = userDetails?.about?.pegboardImages;
     if (userImages && userImages.length > 0) {
-      return userImages.map(img => img ? {
-        src: img.src,
-        isDefault: !!img.isDefault
-      } : null);
+      return userImages.map((img) =>
+        img
+          ? {
+              src: img.src,
+              isDefault: !!img.isDefault,
+            }
+          : null
+      );
     }
-    return DEFAULT_PEGBOARD_IMAGES.map(img => ({ ...img, isDefault: true }));
+    return DEFAULT_PEGBOARD_IMAGES.map((img) => ({ ...img, isDefault: true }));
   };
 
   const getInitialStickers = () => {
     const userStickers = userDetails?.about?.pegboardStickers;
     if (userStickers && userStickers.length > 0) {
-      return userStickers.map(s => s ? {
-        src: s.src,
-        isDefault: !!s.isDefault
-      } : null);
+      return userStickers.map((s) =>
+        s
+          ? {
+              src: s.src,
+              isDefault: !!s.isDefault,
+            }
+          : null
+      );
     }
-    return DEFAULT_PEGBOARD_STICKERS.map(s => ({ ...s, isDefault: true }));
+    return DEFAULT_PEGBOARD_STICKERS.map((s) => ({ ...s, isDefault: true }));
   };
 
   // Helper to convert file to base64
@@ -73,21 +81,26 @@ export default function AddAbout() {
 
   // Handle compression result
   useEffect(() => {
-    if (compressionProgress === 100 && compressedImage && formikRef.current && lastCompressedTarget) {
+    if (
+      compressionProgress === 100 &&
+      compressedImage &&
+      formikRef.current &&
+      lastCompressedTarget
+    ) {
       const { type, index } = lastCompressedTarget;
-      const fieldName = type === 'image' ? 'pegboardImages' : 'pegboardStickers';
+      const fieldName = type === "image" ? "pegboardImages" : "pegboardStickers";
       const currentItems = formikRef.current.values[fieldName];
       const updatedItems = [...currentItems];
 
       updatedItems[index] = {
         src: URL.createObjectURL(compressedImage),
         isDefault: false,
-        file: compressedImage // Store File object for submission
+        file: compressedImage, // Store File object for submission
       };
 
       formikRef.current.setFieldValue(fieldName, updatedItems);
       setLastCompressedTarget(null);
-      if (type === 'image') setUploadingImageIndex(null);
+      if (type === "image") setUploadingImageIndex(null);
     }
   }, [compressionProgress, compressedImage]);
 
@@ -102,7 +115,7 @@ export default function AddAbout() {
       if (!item && !item2) return true;
       if (!item || !item2) return false;
       // If it's a new upload (has file or blob src), it's different from initial
-      if (item.file || (item.src && item.src.startsWith('blob:'))) return false;
+      if (item.file || (item.src && item.src.startsWith("blob:"))) return false;
       return item.src === item2.src;
     });
   };
@@ -156,7 +169,7 @@ export default function AddAbout() {
   // Handle image upload
   const handleImageUpload = async (file, index, setFieldValue, currentImages) => {
     setUploadingImageIndex(index);
-    setLastCompressedTarget({ type: 'image', index });
+    setLastCompressedTarget({ type: "image", index });
 
     const maxSizeInBytes = 2 * 1024 * 1024;
     if (file.size > maxSizeInBytes) {
@@ -167,7 +180,7 @@ export default function AddAbout() {
       updatedImages[index] = {
         src: URL.createObjectURL(file),
         isDefault: false,
-        file: file
+        file: file,
       };
       setFieldValue("pegboardImages", updatedImages);
       setUploadingImageIndex(null);
@@ -206,14 +219,16 @@ export default function AddAbout() {
                   src: base64,
                   isDefault: false,
                   originalName: img.file.name,
-                  extension: img.file.type.split("/")[1]
+                  extension: img.file.type.split("/")[1],
                 };
               }
               // For existing images, strip unnecessary properties
-              return img ? {
-                src: img.src,
-                isDefault: !!img.isDefault
-              } : null;
+              return img
+                ? {
+                    src: img.src,
+                    isDefault: !!img.isDefault,
+                  }
+                : null;
             })
           );
 
@@ -226,13 +241,15 @@ export default function AddAbout() {
                   src: base64,
                   isDefault: false,
                   originalName: s.file.name,
-                  extension: s.file.type.split("/")[1]
+                  extension: s.file.type.split("/")[1],
                 };
               }
-              return s ? {
-                src: s.src,
-                isDefault: !!s.isDefault
-              } : null;
+              return s
+                ? {
+                    src: s.src,
+                    isDefault: !!s.isDefault,
+                  }
+                : null;
             })
           );
 
@@ -260,6 +277,7 @@ export default function AddAbout() {
       }}
     >
       {({ errors, touched, values, setFieldValue }) => {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
         useEffect(() => {
           setEditingValues(values);
         }, [values]);
@@ -274,7 +292,7 @@ export default function AddAbout() {
                     Description
                   </Text>
                   <Text size="p-xxsmall" className="font-medium text-muted-foreground">
-                    {(values?.description?.length || 0)}/1200
+                    {values?.description?.length || 0}/1200
                   </Text>
                 </div>
                 <Field name="description">
@@ -317,8 +335,12 @@ export default function AddAbout() {
 
             {/* Footer */}
             <div className="flex gap-2 py-3 px-6 border-t border-border justify-end">
-              <Button variant="outline" type="button" onClick={handleCancel}>Cancel</Button>
-              <Button type="submit" form="aboutForm" disabled={loading}>{loading ? "Saving…" : "Save"}</Button>
+              <Button variant="outline" type="button" onClick={handleCancel}>
+                Cancel
+              </Button>
+              <Button type="submit" form="aboutForm" disabled={loading}>
+                {loading ? "Saving…" : "Save"}
+              </Button>
             </div>
           </Form>
         );

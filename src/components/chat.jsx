@@ -9,7 +9,7 @@ export default function Chat({
   children,
   delay = 0,
   className = "",
-  onComplete = () => { },
+  onComplete = () => {},
 }) {
   const [show, setShow] = useState(delay === 0);
   const onCompleteRef = useRef(onComplete);
@@ -31,8 +31,9 @@ export default function Chat({
 
   return (
     <div
-      className={`flex flex-1 flex-col min-w-min relative  w-full max-w-[680px]  ${direction == "left" ? " mr-auto" : " ml-auto"
-        }`}
+      className={`flex flex-1 flex-col min-w-min relative  w-full max-w-[680px]  ${
+        direction == "left" ? " mr-auto" : " ml-auto"
+      }`}
     >
       <motion.div
         initial={{ x: direction == "left" ? -5 : 5, scale: 0.99, opacity: 0 }}
@@ -42,16 +43,13 @@ export default function Chat({
           zIndex: 1,
           wordBreak: "break-word",
         }}
-        className={`${direction == "left"
-          ? "bg-template-text-left-bg-color text-template-text-left-text-color mr-auto"
-          : "bg-template-text-right-bg-color text-template-text-right-text-color ml-auto"
-          } p-4 rounded-[24px] break-words ${className}`}
+        className={`${
+          direction == "left"
+            ? "bg-template-text-left-bg-color text-template-text-left-text-color mr-auto"
+            : "bg-template-text-right-bg-color text-template-text-right-text-color ml-auto"
+        } p-4 rounded-[24px] break-words ${className}`}
       >
-        {show ? (
-          children
-        ) : (
-          <ChatBubble className="cursor-pointer" color={"#000"} />
-        )}
+        {show ? children : <ChatBubble className="cursor-pointer" color={"#000"} />}
 
         {direction == "left" ? (
           <LeftBubble

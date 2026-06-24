@@ -18,9 +18,9 @@ export function ShareFooter() {
         </div>
         <nav className="flex items-center gap-5">
           {[
-            { label: "Privacy",     href: "/privacy-policy"       },
-            { label: "Terms",       href: "/terms-and-conditions" },
-            { label: "Designfolio", href: "/"                     },
+            { label: "Privacy", href: "/privacy-policy" },
+            { label: "Terms", href: "/terms-and-conditions" },
+            { label: "Designfolio", href: "/" },
           ].map(({ label, href }) => (
             <Link
               key={label}

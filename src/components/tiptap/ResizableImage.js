@@ -1,10 +1,10 @@
-import { Node, mergeAttributes } from '@tiptap/core';
-import { ReactNodeViewRenderer } from '@tiptap/react';
-import ResizableImageView from './ResizableImageView';
+import { Node, mergeAttributes } from "@tiptap/core";
+import { ReactNodeViewRenderer } from "@tiptap/react";
+import ResizableImageView from "./ResizableImageView";
 
 export const ResizableImage = Node.create({
-  name: 'resizableImage',
-  group: 'block',
+  name: "resizableImage",
+  group: "block",
   atom: true,
   draggable: true,
 
@@ -32,7 +32,7 @@ export const ResizableImage = Node.create({
         default: null,
       },
       alignment: {
-        default: 'left',
+        default: "left",
       },
     };
   },
@@ -40,20 +40,20 @@ export const ResizableImage = Node.create({
   parseHTML() {
     return [
       {
-        tag: 'img[src]',
+        tag: "img[src]",
         getAttrs: (dom) => ({
-          src: dom.getAttribute('src'),
-          alt: dom.getAttribute('alt'),
-          title: dom.getAttribute('title'),
-          width: dom.getAttribute('width'),
-          height: dom.getAttribute('height'),
+          src: dom.getAttribute("src"),
+          alt: dom.getAttribute("alt"),
+          title: dom.getAttribute("title"),
+          width: dom.getAttribute("width"),
+          height: dom.getAttribute("height"),
         }),
       },
     ];
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ['img', mergeAttributes(HTMLAttributes)];
+    return ["img", mergeAttributes(HTMLAttributes)];
   },
 
   addNodeView() {

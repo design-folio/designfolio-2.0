@@ -1,14 +1,10 @@
-import { motion, useScroll, useTransform } from "framer-motion"
+import { motion, useScroll, useTransform } from "framer-motion";
 
 export default function PortfolioSection() {
-  const { scrollY } = useScroll()
+  const { scrollY } = useScroll();
 
-  const scrollRange = 400
-  const cardScale = useTransform(
-    scrollY,
-    [scrollRange * 0.4, scrollRange * 0.8],
-    [0.95, 1]
-  )
+  const scrollRange = 400;
+  const cardScale = useTransform(scrollY, [scrollRange * 0.4, scrollRange * 0.8], [0.95, 1]);
 
   return (
     <section className="py-12 sm:py-16 md:py-20 px-6 bg-background-landing">
@@ -31,7 +27,7 @@ export default function PortfolioSection() {
             id="portfolio-card-1"
             className="bg-white dark:bg-card rounded-xl lg:rounded-2xl border border-border overflow-hidden shadow-lg flex flex-col relative z-20"
             style={{
-              scale: cardScale
+              scale: cardScale,
             }}
             data-testid="card-portfolio-placeholder-1"
           >
@@ -62,7 +58,7 @@ export default function PortfolioSection() {
             id="portfolio-card-2"
             className="bg-white dark:bg-card rounded-xl lg:rounded-2xl border border-border overflow-hidden shadow-lg flex flex-col relative z-20"
             style={{
-              scale: cardScale
+              scale: cardScale,
             }}
             data-testid="card-portfolio-placeholder-2"
           >
@@ -89,5 +85,5 @@ export default function PortfolioSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }

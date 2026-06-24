@@ -90,104 +90,105 @@ export function InterviewReport({ job, report, loading = false, onClose }) {
             <MessageSquare className="w-8 h-8 text-foreground/20" />
             <p className="text-[15px] font-medium text-foreground/60">No transcript recorded</p>
             <p className="text-[13px] text-foreground/35 max-w-xs">
-              The interview ended before any conversation was captured. Try again and speak with the interviewer to get a report.
+              The interview ended before any conversation was captured. Try again and speak with the
+              interviewer to get a report.
             </p>
           </div>
         ) : (
-        <div className="max-w-[680px] mx-auto px-6 py-8 space-y-5">
-          {/* Card 1: Communication score */}
-          <motion.div
-            className={CARD_CLASS}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1], delay: 0.05 }}
-          >
-            <div className="flex items-center gap-2 mb-4">
-              <MessageSquare className="w-4 h-4 text-foreground/40 flex-shrink-0" />
-              <span className="text-[13px] font-semibold text-foreground/60">
-                Communication score
-              </span>
-            </div>
-            <div className="flex items-end gap-3 mb-5">
-              <span className="text-[48px] font-bold leading-none text-foreground">
-                {report.communicationScore}
-              </span>
-              <span className="text-[16px] text-foreground/30 pb-1.5">/100</span>
-            </div>
-            <div className="space-y-3">
-              <ScoreBar value={report.clarity} label="Clarity" />
-              <ScoreBar value={report.confidence} label="Confidence" />
-              <ScoreBar value={report.pacing} label="Pacing" />
-            </div>
-          </motion.div>
+          <div className="max-w-[680px] mx-auto px-6 py-8 space-y-5">
+            {/* Card 1: Communication score */}
+            <motion.div
+              className={CARD_CLASS}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1], delay: 0.05 }}
+            >
+              <div className="flex items-center gap-2 mb-4">
+                <MessageSquare className="w-4 h-4 text-foreground/40 flex-shrink-0" />
+                <span className="text-[13px] font-semibold text-foreground/60">
+                  Communication score
+                </span>
+              </div>
+              <div className="flex items-end gap-3 mb-5">
+                <span className="text-[48px] font-bold leading-none text-foreground">
+                  {report.communicationScore}
+                </span>
+                <span className="text-[16px] text-foreground/30 pb-1.5">/100</span>
+              </div>
+              <div className="space-y-3">
+                <ScoreBar value={report.clarity} label="Clarity" />
+                <ScoreBar value={report.confidence} label="Confidence" />
+                <ScoreBar value={report.pacing} label="Pacing" />
+              </div>
+            </motion.div>
 
-          {/* Card 2: Strongest answer */}
-          <motion.div
-            className={CARD_CLASS}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1], delay: 0.12 }}
-          >
-            <div className="flex items-center gap-2 mb-4">
-              <Star className="w-4 h-4 text-foreground/40 flex-shrink-0" />
-              <span className="text-[13px] font-semibold text-foreground/60">
-                Strongest answer
-              </span>
-            </div>
-            <p className="text-[13px] italic text-foreground/50 leading-[1.6] mb-3">
-              &ldquo;{report.strongestAnswer.question}&rdquo;
-            </p>
-            <p className="text-[14px] text-foreground/75 leading-[1.65]">
-              {report.strongestAnswer.highlight}
-            </p>
-          </motion.div>
+            {/* Card 2: Strongest answer */}
+            <motion.div
+              className={CARD_CLASS}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1], delay: 0.12 }}
+            >
+              <div className="flex items-center gap-2 mb-4">
+                <Star className="w-4 h-4 text-foreground/40 flex-shrink-0" />
+                <span className="text-[13px] font-semibold text-foreground/60">
+                  Strongest answer
+                </span>
+              </div>
+              <p className="text-[13px] italic text-foreground/50 leading-[1.6] mb-3">
+                &ldquo;{report.strongestAnswer.question}&rdquo;
+              </p>
+              <p className="text-[14px] text-foreground/75 leading-[1.65]">
+                {report.strongestAnswer.highlight}
+              </p>
+            </motion.div>
 
-          {/* Card 3: Watch out for */}
-          <motion.div
-            className={CARD_CLASS}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1], delay: 0.19 }}
-          >
-            <div className="flex items-center gap-2 mb-4">
-              <AlertTriangle className="w-4 h-4 text-foreground/40 flex-shrink-0" />
-              <span className="text-[13px] font-semibold text-foreground/60">Watch out for</span>
-            </div>
-            <div className="space-y-3.5">
-              {report.watchOutFor.map((item, i) => (
-                <div key={i} className="flex gap-3">
-                  <div className="flex-shrink-0 mt-[3px] w-5 h-5 rounded-full bg-orange-50 dark:bg-orange-950/30 flex items-center justify-center">
-                    <span className="text-[10px] font-bold text-orange-400">{i + 1}</span>
+            {/* Card 3: Watch out for */}
+            <motion.div
+              className={CARD_CLASS}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1], delay: 0.19 }}
+            >
+              <div className="flex items-center gap-2 mb-4">
+                <AlertTriangle className="w-4 h-4 text-foreground/40 flex-shrink-0" />
+                <span className="text-[13px] font-semibold text-foreground/60">Watch out for</span>
+              </div>
+              <div className="space-y-3.5">
+                {report.watchOutFor.map((item, i) => (
+                  <div key={i} className="flex gap-3">
+                    <div className="flex-shrink-0 mt-[3px] w-5 h-5 rounded-full bg-orange-50 dark:bg-orange-950/30 flex items-center justify-center">
+                      <span className="text-[10px] font-bold text-orange-400">{i + 1}</span>
+                    </div>
+                    <p className="text-[14px] text-foreground/75 leading-[1.65]">{item}</p>
                   </div>
-                  <p className="text-[14px] text-foreground/75 leading-[1.65]">{item}</p>
-                </div>
-              ))}
-            </div>
-          </motion.div>
+                ))}
+              </div>
+            </motion.div>
 
-          {/* Card 4: Role-specific gaps */}
-          <motion.div
-            className={CARD_CLASS}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1], delay: 0.26 }}
-          >
-            <div className="flex items-center gap-2 mb-4">
-              <Crosshair className="w-4 h-4 text-foreground/40 flex-shrink-0" />
-              <span className="text-[13px] font-semibold text-foreground/60">
-                Role-specific gaps · {job.company}
-              </span>
-            </div>
-            <div className="space-y-3.5">
-              {report.roleSpecificGaps.map((item, i) => (
-                <div key={i} className="flex gap-3">
-                  <div className="flex-shrink-0 mt-[3px] w-1 rounded-full bg-foreground/15 self-stretch min-h-[20px]" />
-                  <p className="text-[14px] text-foreground/75 leading-[1.65]">{item}</p>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
+            {/* Card 4: Role-specific gaps */}
+            <motion.div
+              className={CARD_CLASS}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1], delay: 0.26 }}
+            >
+              <div className="flex items-center gap-2 mb-4">
+                <Crosshair className="w-4 h-4 text-foreground/40 flex-shrink-0" />
+                <span className="text-[13px] font-semibold text-foreground/60">
+                  Role-specific gaps · {job.company}
+                </span>
+              </div>
+              <div className="space-y-3.5">
+                {report.roleSpecificGaps.map((item, i) => (
+                  <div key={i} className="flex gap-3">
+                    <div className="flex-shrink-0 mt-[3px] w-1 rounded-full bg-foreground/15 self-stretch min-h-[20px]" />
+                    <p className="text-[14px] text-foreground/75 leading-[1.65]">{item}</p>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
         )}
       </div>
 

@@ -2,15 +2,13 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { RefreshCcw, PenTool } from "lucide-react";
 
-export default function EmailPreview({
-  generatedEmail,
-  handleCopy,
-  onEditDetails,
-}) {
+export default function EmailPreview({ generatedEmail, handleCopy, onEditDetails }) {
   return (
     <>
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-medium text-foreground/60 uppercase tracking-wider">Email Preview</h3>
+        <h3 className="text-sm font-medium text-foreground/60 uppercase tracking-wider">
+          Email Preview
+        </h3>
         <div className="flex gap-2">
           <Button
             variant="outline"

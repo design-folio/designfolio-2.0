@@ -29,11 +29,7 @@ export function ChatAvatar({ avatarSrc, show = true }) {
       layoutId="matt-avatar-sequence"
       className="w-8 h-8 rounded-full overflow-hidden border border-black/5 dark:border-white/5"
     >
-      <img
-        src={avatarSrc}
-        alt="Profile"
-        className="w-full h-full object-cover"
-      />
+      <img src={avatarSrc} alt="Profile" className="w-full h-full object-cover" />
     </motion.div>
   );
 }
@@ -97,9 +93,7 @@ export function EditButtons({ canEdit, onEdit, onDelete, className = "" }) {
 export function YouPrompt({ children }) {
   return (
     <div className="flex flex-col gap-1 max-w-[85%] items-end">
-      <span className="text-[11px] text-[#7A736C] dark:text-[#B5AFA5] mr-1 font-medium">
-        You
-      </span>
+      <span className="text-[11px] text-[#7A736C] dark:text-[#B5AFA5] mr-1 font-medium">You</span>
       <div className="bg-[#1A8CFF] dark:bg-[#0073E6] text-white px-4 py-3 rounded-2xl rounded-br-sm text-[15px] leading-relaxed shadow-sm">
         {children}
       </div>

@@ -1,8 +1,9 @@
-'use client';
+"use client";
 
-import React, { useRef, useEffect, useMemo, useState } from 'react';
+import React, { useRef, useEffect, useMemo, useState } from "react";
 
-const ASCII_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789(){}[]<>;:,._-+=!@#$%^&*|\\/\"'`~?";
+const ASCII_CHARS =
+  "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789(){}[]<>;:,._-+=!@#$%^&*|\\/\"'`~?";
 const generateCode = (width, height) => {
   let text = "";
   for (let i = 0; i < width * height; i++) {
@@ -34,7 +35,7 @@ export default function ScannerCardStream({ file = null, isScanning = true }) {
     const scannerCanvas = scannerCanvasRef.current;
     if (!scannerCanvas) return;
 
-    const ctx = scannerCanvas.getContext('2d');
+    const ctx = scannerCanvas.getContext("2d");
     scannerCanvas.width = 400;
     scannerCanvas.height = 300;
 
@@ -94,9 +95,7 @@ export default function ScannerCardStream({ file = null, isScanning = true }) {
     <div className="relative w-full h-[300px] flex items-center justify-center overflow-hidden bg-black rounded-3xl border border-white/5 shadow-2xl">
       <div className="relative w-full h-full bg-zinc-950 overflow-hidden flex items-center justify-center">
         {/* Digital code layer */}
-        <div
-          className="absolute inset-0 p-4 font-mono text-[9px] leading-[1.2] text-white/30 overflow-hidden whitespace-pre pointer-events-none flex items-center justify-center text-center break-all"
-        >
+        <div className="absolute inset-0 p-4 font-mono text-[9px] leading-[1.2] text-white/30 overflow-hidden whitespace-pre pointer-events-none flex items-center justify-center text-center break-all">
           <div className="max-w-full">{asciiCode}</div>
         </div>
 
@@ -104,7 +103,7 @@ export default function ScannerCardStream({ file = null, isScanning = true }) {
         <div
           className="absolute inset-0 bg-white"
           style={{
-            clipPath: isScanning ? `inset(${scanProgress * 100}% 0 0 0)` : 'none',
+            clipPath: isScanning ? `inset(${scanProgress * 100}% 0 0 0)` : "none",
           }}
         >
           {previewUrl ? (
@@ -133,7 +132,7 @@ export default function ScannerCardStream({ file = null, isScanning = true }) {
         <canvas
           ref={scannerCanvasRef}
           className="absolute inset-0 pointer-events-none z-30 w-full h-full"
-          style={{ width: '100%', height: '100%' }}
+          style={{ width: "100%", height: "100%" }}
         />
       </div>
     </div>

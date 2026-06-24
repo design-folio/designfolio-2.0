@@ -1,16 +1,18 @@
-import React, { useRef, useEffect } from 'react';
-import { motion, useAnimation } from 'framer-motion';
-import * as THREE from 'three';
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
-import PixelVoyagerCanvas from './PixelVoyagerCanvas';
+import React, { useRef, useEffect } from "react";
+import { motion, useAnimation } from "framer-motion";
+import * as THREE from "three";
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
+import PixelVoyagerCanvas from "./PixelVoyagerCanvas";
 
 const HomeWindow = ({ userDetails, fullName, onViewProjects }) => {
   const textControls = useAnimation();
   const buttonControls = useAnimation();
 
-  const headline = userDetails?.introduction ? userDetails?.introduction : `${"Hey, I'm"} ${fullName}`;
+  const headline = userDetails?.introduction
+    ? userDetails?.introduction
+    : `${"Hey, I'm"} ${fullName}`;
 
   useEffect(() => {
     textControls.start({
@@ -46,7 +48,7 @@ const HomeWindow = ({ userDetails, fullName, onViewProjects }) => {
         )}
         <motion.h1
           className="text-2xl font-bold tracking-tighter text-white md:text-4xl max-w-3xl mx-auto"
-          style={{ textShadow: '2px 2px 0px #ff00ff', lineHeight: '3rem' }}
+          style={{ textShadow: "2px 2px 0px #ff00ff", lineHeight: "3rem" }}
           initial={{ opacity: 0, y: 50 }}
           animate={textControls}
         >

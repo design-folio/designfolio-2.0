@@ -1,6 +1,18 @@
 import { useGoogleLogin } from "@react-oauth/google";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeft, ArrowRight, Briefcase, Clock, Eye, EyeOff, Lock, Monitor, Moon, Sparkles, Sun } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Briefcase,
+  Clock,
+  Eye,
+  EyeOff,
+  Lock,
+  Monitor,
+  Moon,
+  Sparkles,
+  Sun,
+} from "lucide-react";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -11,7 +23,12 @@ import { Button } from "@/components/ui/button";
 import { Gauge } from "@/components/ui/gauge-1";
 import { GoogleButton } from "@/components/ui/google-button";
 import { Input } from "@/components/ui/input";
-import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from "@/components/ui/input-group";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+  InputGroupText,
+} from "@/components/ui/input-group";
 import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
 import { usePostHogEvent } from "@/hooks/usePostHogEvent";
@@ -29,10 +46,9 @@ function Tabs({ tabs, active, onChange }) {
         <button
           key={t}
           onClick={() => onChange(t)}
-          className={`relative px-4 py-1.5 rounded-full text-[13px] font-semibold transition-colors duration-200 ${active === t
-            ? "text-foreground"
-            : "text-foreground/40 hover:text-foreground/65"
-            }`}
+          className={`relative px-4 py-1.5 rounded-full text-[13px] font-semibold transition-colors duration-200 ${
+            active === t ? "text-foreground" : "text-foreground/40 hover:text-foreground/65"
+          }`}
         >
           {active === t && (
             <motion.span
@@ -49,10 +65,7 @@ function Tabs({ tabs, active, onChange }) {
 }
 
 // Placeholder thumbnail images for projects without images
-const PLACEHOLDER_THUMBNAILS = [
-  "/previewproject/Thumbnail1.png",
-  "/previewproject/Thumbnail2.png",
-];
+const PLACEHOLDER_THUMBNAILS = ["/previewproject/Thumbnail1.png", "/previewproject/Thumbnail2.png"];
 
 // ── Canvas template preview (self-contained, no globalContext needed) ─────────
 function CanvasPreview({ parsed }) {
@@ -63,13 +76,14 @@ function CanvasPreview({ parsed }) {
   const exp = parsed?.experience || [];
   const projs = parsed?.projects || [];
 
-  const skills = rawSkills.map((s) => ({
-    label: typeof s === "string" ? s : (s?.label || s?.name || ""),
-  })).filter((s) => s.label);
+  const skills = rawSkills
+    .map((s) => ({
+      label: typeof s === "string" ? s : s?.label || s?.name || "",
+    }))
+    .filter((s) => s.label);
 
-  const repeatedSkills = skills.length > 0
-    ? [...skills, ...skills, ...skills, ...skills, ...skills]
-    : [];
+  const repeatedSkills =
+    skills.length > 0 ? [...skills, ...skills, ...skills, ...skills, ...skills] : [];
 
   const visibleExp = exp.slice(0, 4);
   const MOCK_PROJECTS = [
@@ -81,7 +95,6 @@ function CanvasPreview({ parsed }) {
 
   return (
     <div className="w-full flex flex-col gap-3 pb-24 max-w-[848px] mx-auto">
-
       {/* ── Profile card with skills strip ── */}
       <motion.div
         initial={{ opacity: 0, y: -40 }}
@@ -199,17 +212,25 @@ function CanvasPreview({ parsed }) {
             )}
 
             {/* Experience entries */}
-            <div className={`space-y-6 ${visibleExp.length > 1 ? "pl-16" : ""} relative z-10 w-full pt-1 pb-2`}>
+            <div
+              className={`space-y-6 ${visibleExp.length > 1 ? "pl-16" : ""} relative z-10 w-full pt-1 pb-2`}
+            >
               {visibleExp.map((e, i) => (
-                <div key={i} className="p-4 -mx-4 rounded-2xl transition-colors hover:bg-black/5 dark:hover:bg-white/5">
+                <div
+                  key={i}
+                  className="p-4 -mx-4 rounded-2xl transition-colors hover:bg-black/5 dark:hover:bg-white/5"
+                >
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2 gap-2 sm:gap-0">
                     <h3 className="text-base font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
-                      {e.role}{e.company ? ` @ ${e.company}` : ""}
+                      {e.role}
+                      {e.company ? ` @ ${e.company}` : ""}
                     </h3>
                     {(() => {
-                      const start = [e.startMonth, e.startYear].filter(Boolean).join(' ');
-                      const end = e.currentlyWorking ? 'Present' : [e.endMonth, e.endYear].filter(Boolean).join(' ');
-                      const label = start && end ? `${start} — ${end}` : start || end || '';
+                      const start = [e.startMonth, e.startYear].filter(Boolean).join(" ");
+                      const end = e.currentlyWorking
+                        ? "Present"
+                        : [e.endMonth, e.endYear].filter(Boolean).join(" ");
+                      const label = start && end ? `${start} — ${end}` : start || end || "";
                       return label ? (
                         <div className="bg-[#F0EDE7] dark:bg-[#3A352E] px-3 py-1 rounded-full text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] w-fit whitespace-nowrap">
                           {label}
@@ -238,14 +259,40 @@ function JobsPreview({ parsed }) {
 
   // Personalized teasers using parsed role — clearly preview state
   const teasers = [
-    { company: "Series B SaaS", role: baseRole, workMode: "Remote", type: "Full-Time", yearsExp: "4+ yrs", location: "Remote", logoColor: "#5E6AD2", logoLetter: "S" },
-    { company: "Growth-stage tech", role: `Senior ${baseRole}`, workMode: "Hybrid", type: "Full-Time", yearsExp: "5+ yrs", location: "Hybrid", logoColor: "#171717", logoLetter: "G" },
-    { company: "Established product", role: baseRole, workMode: "On-site", type: "Full-Time", yearsExp: "3+ yrs", location: "San Francisco", logoColor: "#0F9D58", logoLetter: "E" },
+    {
+      company: "Series B SaaS",
+      role: baseRole,
+      workMode: "Remote",
+      type: "Full-Time",
+      yearsExp: "4+ yrs",
+      location: "Remote",
+      logoColor: "#5E6AD2",
+      logoLetter: "S",
+    },
+    {
+      company: "Growth-stage tech",
+      role: `Senior ${baseRole}`,
+      workMode: "Hybrid",
+      type: "Full-Time",
+      yearsExp: "5+ yrs",
+      location: "Hybrid",
+      logoColor: "#171717",
+      logoLetter: "G",
+    },
+    {
+      company: "Established product",
+      role: baseRole,
+      workMode: "On-site",
+      type: "Full-Time",
+      yearsExp: "3+ yrs",
+      location: "San Francisco",
+      logoColor: "#0F9D58",
+      logoLetter: "E",
+    },
   ];
 
   return (
     <div className="w-full max-w-[580px] mx-auto flex flex-col gap-3 pb-24">
-
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -8 }}
@@ -270,11 +317,11 @@ function JobsPreview({ parsed }) {
           style={
             i >= 1
               ? {
-                filter: `blur(${1.5 + (i - 1) * 2}px)`,
-                opacity: Math.max(0.65 - (i - 1) * 0.2, 0.3),
-                pointerEvents: "none",
-                userSelect: "none",
-              }
+                  filter: `blur(${1.5 + (i - 1) * 2}px)`,
+                  opacity: Math.max(0.65 - (i - 1) * 0.2, 0.3),
+                  pointerEvents: "none",
+                  userSelect: "none",
+                }
               : undefined
           }
         >
@@ -288,7 +335,9 @@ function JobsPreview({ parsed }) {
                 {job.logoLetter}
               </div>
               <div className="min-w-0">
-                <div className="text-[13px] font-medium text-foreground/70 truncate">{job.company}</div>
+                <div className="text-[13px] font-medium text-foreground/70 truncate">
+                  {job.company}
+                </div>
                 <div className="text-[12px] text-foreground/40 truncate">{job.location}</div>
               </div>
             </div>
@@ -349,7 +398,8 @@ function JobsPreview({ parsed }) {
             Real matches unlock after signup
           </p>
           <p className="text-[12px] text-foreground/50 leading-relaxed max-w-[260px]">
-            AI scans thousands of live jobs, scores each against your resume, and surfaces the best fits — in seconds.
+            AI scans thousands of live jobs, scores each against your resume, and surfaces the best
+            fits — in seconds.
           </p>
         </div>
       </motion.div>
@@ -451,16 +501,23 @@ export default function ResumeSignup() {
     setMounted(true);
     try {
       const raw = sessionStorage.getItem("df_parsed_resume");
-      if (!raw) { router.replace("/claim-link"); return; }
+      if (!raw) {
+        router.replace("/claim-link");
+        return;
+      }
       const data = JSON.parse(raw);
       setParsed(data);
       if (data.name) setName(data.name);
       if (data.email) setEmail(data.email);
       const slug = (data.name || "")
-        .trim().toLowerCase()
+        .trim()
+        .toLowerCase()
         .replace(/\s+/g, "-")
         .replace(/[^a-z0-9-]/g, "");
-      if (slug) { setDomain(slug); debouncedCheck(slug); }
+      if (slug) {
+        setDomain(slug);
+        debouncedCheck(slug);
+      }
       const jobId = router.query.job || sessionStorage.getItem("df_pending_job_id") || "";
       event(POSTHOG_EVENT_NAMES.RESUME_SIGNUP_VIEWED, {
         signup_flow: "job_share_resume",
@@ -495,7 +552,10 @@ export default function ResumeSignup() {
     setDomainTouched(true);
     setDomainAvail(false);
     setDomainError("");
-    if (raw.length < 3) { setDomainError(raw ? "Minimum 3 characters" : ""); return; }
+    if (raw.length < 3) {
+      setDomainError(raw ? "Minimum 3 characters" : "");
+      return;
+    }
     setDomainLoading(true);
     debouncedCheck(raw);
   };
@@ -503,9 +563,16 @@ export default function ResumeSignup() {
   const handleNameChange = (val) => {
     setName(val);
     if (!domainTouched) {
-      const slug = val.trim().toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+      const slug = val
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^a-z0-9-]/g, "");
       setDomain(slug);
-      if (slug.length >= 3) { setDomainLoading(true); debouncedCheck(slug); }
+      if (slug.length >= 3) {
+        setDomainLoading(true);
+        debouncedCheck(slug);
+      }
     }
   };
 
@@ -515,10 +582,13 @@ export default function ResumeSignup() {
       if (!raw) return;
       await _postResumeApply(JSON.parse(raw));
       sessionStorage.removeItem("df_parsed_resume");
-    } catch { /* silent */ }
+    } catch {
+      /* silent */
+    }
   };
 
-  const canSubmit = name.trim() && domain.length >= 3 && domainAvail && email.trim() && password.length >= 8;
+  const canSubmit =
+    name.trim() && domain.length >= 3 && domainAvail && email.trim() && password.length >= 8;
 
   const pendingJobId =
     router.query.job ||
@@ -576,7 +646,10 @@ export default function ResumeSignup() {
         });
         setToken(data.token);
         await applyResume();
-        identify(user.email, { email: user.email, username: domain || user.given_name?.toLowerCase().replace(/\s+/g, "-") || "user" });
+        identify(user.email, {
+          email: user.email,
+          username: domain || user.given_name?.toLowerCase().replace(/\s+/g, "-") || "user",
+        });
         event(POSTHOG_EVENT_NAMES.SIGNUP_SUCCESS, {
           method: "google",
           email: user.email,
@@ -640,20 +713,31 @@ export default function ResumeSignup() {
 
           {/* Form content */}
           <div className="flex flex-col gap-5 w-full max-w-[400px] mx-auto px-6 pt-24 pb-20 md:pb-0 md:my-auto">
-
             {/* Badge */}
-            <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+            >
               <span
                 className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[12px] font-semibold"
                 style={{ background: "rgba(229,77,46,0.10)", color: "#e54d2e" }}
               >
-                <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#e54d2e" }} />
+                <span
+                  className="w-1.5 h-1.5 rounded-full animate-pulse"
+                  style={{ background: "#e54d2e" }}
+                />
                 Your portfolio is ready
               </span>
             </motion.div>
 
             {/* Heading */}
-            <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.14 }} className="flex flex-col gap-1.5">
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.14 }}
+              className="flex flex-col gap-1.5"
+            >
               <h1 className="text-[26px] font-bold text-[--lp-text] tracking-tight leading-[1.15]">
                 Sign up. Let{"'"}s get you hired.
               </h1>
@@ -663,14 +747,30 @@ export default function ResumeSignup() {
             </motion.div>
 
             {/* Mobile: view preview */}
-            <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.17 }} className="md:hidden">
+            <motion.div
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.17 }}
+              className="md:hidden"
+            >
               <Button
                 variant="outline"
                 onClick={() => setShowMobileSheet(true)}
                 className="rounded-xl h-auto py-2.5 text-[13px] font-medium justify-start"
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 opacity-70">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" />
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="shrink-0 opacity-70"
+                >
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
                 </svg>
                 View your portfolio {"&"} job matches
               </Button>
@@ -729,7 +829,9 @@ export default function ResumeSignup() {
                             transition={{ duration: 0.2 }}
                             className={`text-[12px] mt-1 font-medium ${domainAvail ? "text-emerald-600" : "text-red-500"}`}
                           >
-                            {domainAvail ? `✓ ${domain}.designfolio.me is available` : domainError || `${domain}.designfolio.me is taken`}
+                            {domainAvail
+                              ? `✓ ${domain}.designfolio.me is available`
+                              : domainError || `${domain}.designfolio.me is taken`}
                           </motion.p>
                         )}
                       </AnimatePresence>
@@ -782,7 +884,10 @@ export default function ResumeSignup() {
                 ) : (
                   <>
                     Claim my portfolio {"&"} jobs
-                    <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" strokeWidth={2.5} />
+                    <ArrowRight
+                      className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5"
+                      strokeWidth={2.5}
+                    />
                   </>
                 )}
               </Button>
@@ -854,7 +959,11 @@ export default function ResumeSignup() {
 
                 {/* Mobile tabs */}
                 <div className="absolute top-7 left-0 right-0 z-30 flex justify-center pointer-events-auto">
-                  <Tabs tabs={["My Portfolio", "My Jobs"]} active={mobileTab} onChange={setMobileTab} />
+                  <Tabs
+                    tabs={["My Portfolio", "My Jobs"]}
+                    active={mobileTab}
+                    onChange={setMobileTab}
+                  />
                 </div>
 
                 <AnimatePresence mode="wait">

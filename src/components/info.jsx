@@ -11,7 +11,7 @@ export default function Info({ className = "", onUpgrade }) {
         <DangerIcon className="text-delete-btn-icon-color" />
       </div>
       <Text size="p-xsmall" className="font-medium">
-        You've used all your free credits.{" "}
+        You&apos;ve used all your free credits.{" "}
         {onUpgrade ? (
           <button
             onClick={onUpgrade}

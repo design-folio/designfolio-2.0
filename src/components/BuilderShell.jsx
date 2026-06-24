@@ -1,20 +1,20 @@
-import Modal from '@/components/modal';
-import { modals } from '@/lib/constant';
-import DeleteProject from '@/components/deleteProject';
-import AddResume from '@/components/addResume';
-import AddSocial from '@/components/addSocial';
-import AddPortfolioLinks from '@/components/addPortfolioLinks';
-import AddUsername from '@/components/addUsername';
-import CreateAiProject from '@/components/createAiProject';
-import Onboarding from '@/components/onboarding-old';
-import OnboardingNewUser from '@/components/onboarding';
-import { UnsavedChangesDialog } from '@/components/ui/UnsavedChangesDialog';
-import { ReplacePortfolioDialog } from '@/components/ui/ReplacePortfolioDialog';
-import { CourseCard } from '@/components/CourceCard';
-import { Feedefy } from '@feedefy/react';
-import { useGlobalContext } from '@/context/globalContext';
-import useClient from '@/hooks/useClient';
-import { useIsMobile } from '@/hooks/use-mobile';
+import Modal from "@/components/modal";
+import { modals } from "@/lib/constant";
+import DeleteProject from "@/components/deleteProject";
+import AddResume from "@/components/addResume";
+import AddSocial from "@/components/addSocial";
+import AddPortfolioLinks from "@/components/addPortfolioLinks";
+import AddUsername from "@/components/addUsername";
+import CreateAiProject from "@/components/createAiProject";
+import Onboarding from "@/components/onboarding-old";
+import OnboardingNewUser from "@/components/onboarding";
+import { UnsavedChangesDialog } from "@/components/ui/UnsavedChangesDialog";
+import { ReplacePortfolioDialog } from "@/components/ui/ReplacePortfolioDialog";
+import { CourseCard } from "@/components/CourceCard";
+import { Feedefy } from "@feedefy/react";
+import { useGlobalContext } from "@/context/globalContext";
+import useClient from "@/hooks/useClient";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function BuilderShell({ hideCourseCard = false }) {
   const {
@@ -67,7 +67,15 @@ export default function BuilderShell({ hideCourseCard = false }) {
 
   return (
     <>
-      <Modal show={showModal && showModal !== modals.aiProject && showModal !== modals.review && showModal !== modals.work && showModal !== modals.project}>
+      <Modal
+        show={
+          showModal &&
+          showModal !== modals.aiProject &&
+          showModal !== modals.review &&
+          showModal !== modals.work &&
+          showModal !== modals.project
+        }
+      >
         {modalContent()}
       </Modal>
       <Modal show={modals.aiProject === showModal} className="md:block">
@@ -75,8 +83,10 @@ export default function BuilderShell({ hideCourseCard = false }) {
       </Modal>
 
       <UnsavedChangesDialog
-        open={showUnsavedWarning && isSwitchingSidebar && pendingSidebarAction?.type === 'open'}
-        onOpenChange={(open) => { if (!open) handleCancelDiscardSidebar(); }}
+        open={showUnsavedWarning && isSwitchingSidebar && pendingSidebarAction?.type === "open"}
+        onOpenChange={(open) => {
+          if (!open) handleCancelDiscardSidebar();
+        }}
         onConfirmDiscard={handleConfirmDiscardSidebar}
         title="Unsaved Changes"
         description="You have unsaved changes. Are you sure you want to switch sidebars and discard them?"

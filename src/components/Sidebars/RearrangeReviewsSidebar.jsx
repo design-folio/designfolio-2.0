@@ -21,14 +21,9 @@ import { _updateUser } from "@/network/post-request";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 function SortableReviewCard({ review }) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: review._id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: review._id,
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -56,10 +51,7 @@ function SortableReviewCard({ review }) {
     >
       <GripVertical className="w-4 h-4 text-[#7A736C] dark:text-[#9E9893] shrink-0" />
       <Avatar className="w-9 h-9 rounded-lg shrink-0">
-        <AvatarImage
-          src={review?.avatar?.url || review?.avatar}
-          alt={review?.name}
-        />
+        <AvatarImage src={review?.avatar?.url || review?.avatar} alt={review?.name} />
         <AvatarFallback
           className="rounded-lg text-xs font-medium"
           style={{ backgroundColor: "#FF9966", color: "#FFFFFF" }}
@@ -88,7 +80,7 @@ export default function RearrangeReviewsSidebar() {
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    }),
+    })
   );
 
   const handleSortEnd = useCallback(
@@ -106,21 +98,14 @@ export default function RearrangeReviewsSidebar() {
       updateCache("userDetails", { reviews: sorted });
       _updateUser({ reviews: sorted });
     },
-    [userDetails?.reviews, setUserDetails, updateCache],
+    [userDetails?.reviews, setUserDetails, updateCache]
   );
 
   return (
     <div className="flex flex-col h-full">
       <div className="flex-1 overflow-y-auto p-4 space-y-2">
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleSortEnd}
-        >
-          <SortableContext
-            items={reviews.map((r) => r._id)}
-            strategy={verticalListSortingStrategy}
-          >
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleSortEnd}>
+          <SortableContext items={reviews.map((r) => r._id)} strategy={verticalListSortingStrategy}>
             {reviews.map((review) => (
               <SortableReviewCard key={review._id} review={review} />
             ))}

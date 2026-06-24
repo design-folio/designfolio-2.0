@@ -28,16 +28,13 @@ export default function useChatReveal({ preview = false }) {
   const email = userDetails?.contact_email || userDetails?.email;
   const visibleProjects = (projects || []).filter((p) => !p.hidden);
   const aboutDescription = about?.description;
-  const hasAboutDescription =
-    aboutDescription && getPlainTextLength(aboutDescription || "") > 0;
+  const hasAboutDescription = aboutDescription && getPlainTextLength(aboutDescription || "") > 0;
   const hasCustomAboutImages = about?.pegboardImages?.length > 0;
   const hasAboutContent = hasAboutDescription || hasCustomAboutImages;
 
   const DEFAULT_SECTION_ORDER = ["tools", "projects", "works", "reviews", "about"];
   const sectionOrder =
-    userDetails?.sectionOrder?.length > 0
-      ? userDetails.sectionOrder
-      : DEFAULT_SECTION_ORDER;
+    userDetails?.sectionOrder?.length > 0 ? userDetails.sectionOrder : DEFAULT_SECTION_ORDER;
 
   const sectionSteps = useMemo(() => {
     const steps = {};
@@ -56,7 +53,7 @@ export default function useChatReveal({ preview = false }) {
       const offset = (staticStep - 4) % 3;
       return sectionSteps[STATIC_SECTIONS[sectionIdx]] + offset;
     },
-    [sectionSteps],
+    [sectionSteps]
   );
 
   const getNextLeftStep = useCallback(
@@ -68,33 +65,21 @@ export default function useChatReveal({ preview = false }) {
       }
       return sectionSteps._contact + 1;
     },
-    [sectionOrder, sectionSteps],
+    [sectionOrder, sectionSteps]
   );
 
   const stepsToReveal = useMemo(() => {
     const steps = [1, 2, 3];
     const totalSteps = 3 + sectionOrder.length * 3 + 3;
     const sectionEmpty = {
-      tools: [
-        skills.length === 0 && tools.length === 0,
-        skills.length === 0,
-        tools.length === 0,
-      ],
+      tools: [skills.length === 0 && tools.length === 0, skills.length === 0, tools.length === 0],
       projects: [
         visibleProjects.length === 0,
         visibleProjects.length === 0,
         visibleProjects.length === 0,
       ],
-      works: [
-        experiences.length === 0,
-        experiences.length === 0,
-        experiences.length === 0,
-      ],
-      reviews: [
-        reviews.length === 0,
-        reviews.length === 0,
-        reviews.length === 0,
-      ],
+      works: [experiences.length === 0, experiences.length === 0, experiences.length === 0],
+      reviews: [reviews.length === 0, reviews.length === 0, reviews.length === 0],
       about: [!hasAboutContent, !hasAboutContent, !hasAboutContent],
     };
     for (let step = 4; step <= totalSteps; step++) {
@@ -108,13 +93,7 @@ export default function useChatReveal({ preview = false }) {
           const sName = sectionOrder[sIdx];
           if (sectionEmpty[sName]?.[offset]) continue;
         }
-        if (
-          step >= contactStart &&
-          step <= contactStart + 1 &&
-          !email &&
-          !phone
-        )
-          continue;
+        if (step >= contactStart && step <= contactStart + 1 && !email && !phone) continue;
       }
       steps.push(step);
     }
@@ -148,16 +127,11 @@ export default function useChatReveal({ preview = false }) {
       ([entry]) => {
         const wasInView = isInViewRef.current;
         isInViewRef.current = entry.isIntersecting;
-        if (
-          entry.isIntersecting &&
-          !wasInView &&
-          !timerId &&
-          queueIndex < stepsToReveal.length
-        ) {
+        if (entry.isIntersecting && !wasInView && !timerId && queueIndex < stepsToReveal.length) {
           scheduleNext();
         }
       },
-      { threshold: 0 },
+      { threshold: 0 }
     );
 
     if (containerRef.current) observer.observe(containerRef.current);

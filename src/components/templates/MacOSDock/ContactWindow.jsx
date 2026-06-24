@@ -1,26 +1,27 @@
-import React from 'react';
+import React from "react";
 
 const ensureUrl = (value) => {
-  if (!value || typeof value !== 'string') return '';
+  if (!value || typeof value !== "string") return "";
   const trimmed = value.trim();
   return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
 };
 
 // Shared UI tokens for Contact window (match existing styles)
 const styles = {
-  card: 'p-4 rounded-lg bg-[#f7f6f3] border border-[#e9e9e7] hover:bg-[#efeee9] transition-colors',
-  cardInteractive: 'cursor-pointer group block no-underline text-inherit',
-  sectionHeader: 'flex items-center gap-2 pb-2 border-b border-[#e9e9e7] mb-4',
-  sectionTitle: 'text-lg font-semibold',
-  label: 'text-[10px] uppercase tracking-wider opacity-50 mb-1',
-  row: 'flex items-center gap-3 p-2 hover:bg-[#f7f6f3] rounded-md cursor-pointer transition-colors no-underline text-inherit',
+  card: "p-4 rounded-lg bg-[#f7f6f3] border border-[#e9e9e7] hover:bg-[#efeee9] transition-colors",
+  cardInteractive: "cursor-pointer group block no-underline text-inherit",
+  sectionHeader: "flex items-center gap-2 pb-2 border-b border-[#e9e9e7] mb-4",
+  sectionTitle: "text-lg font-semibold",
+  label: "text-[10px] uppercase tracking-wider opacity-50 mb-1",
+  row: "flex items-center gap-3 p-2 hover:bg-[#f7f6f3] rounded-md cursor-pointer transition-colors no-underline text-inherit",
 };
 
 function ContactEmptyState({ label, message, onClick }) {
-  const baseClass = 'rounded-lg border-2 border-dashed border-[#e9e9e7] bg-[#f7f6f3]/60 text-left transition-colors';
+  const baseClass =
+    "rounded-lg border-2 border-dashed border-[#e9e9e7] bg-[#f7f6f3]/60 text-left transition-colors";
   const interactiveClass = onClick
-    ? 'cursor-pointer hover:bg-[#f7f6f3] hover:border-[#d1d0cc] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#37352f]/20'
-    : 'cursor-default';
+    ? "cursor-pointer hover:bg-[#f7f6f3] hover:border-[#d1d0cc] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#37352f]/20"
+    : "cursor-default";
 
   const content = (
     <>
@@ -42,7 +43,9 @@ function ContactEmptyState({ label, message, onClick }) {
   }
 
   return (
-    <div className={`min-h-[4rem] w-full ${baseClass} ${interactiveClass} p-4 flex flex-col justify-center`}>
+    <div
+      className={`min-h-[4rem] w-full ${baseClass} ${interactiveClass} p-4 flex flex-col justify-center`}
+    >
       {content}
     </div>
   );
@@ -52,16 +55,12 @@ function ContactEmptyState({ label, message, onClick }) {
  * Section-level empty state (e.g. Social Connect, Blogs when no items).
  */
 function SectionEmptyState({ message, onClick }) {
-  return (
-    <ContactEmptyState
-      message={message}
-      onClick={onClick}
-    />
-  );
+  return <ContactEmptyState message={message} onClick={onClick} />;
 }
 
 const ContactWindow = ({ contactInfo, fullName, onOpenPdf, edit, onEdit, hasResume = false }) => {
-  const hasSocials = contactInfo.linkedin || contactInfo.twitter || contactInfo.instagram || contactInfo.dribbble;
+  const hasSocials =
+    contactInfo.linkedin || contactInfo.twitter || contactInfo.instagram || contactInfo.dribbble;
   const hasBlogs = contactInfo.blogs;
   const hasContactDetails = contactInfo.contact_email || contactInfo.phone || hasResume;
   const showContactDetails = edit || hasContactDetails;
@@ -122,11 +121,7 @@ const ContactWindow = ({ contactInfo, fullName, onOpenPdf, edit, onEdit, hasResu
                   <div className="font-medium">{contactInfo.phone}</div>
                 </a>
               ) : edit ? (
-                <ContactEmptyState
-                  label="Phone"
-                  message="Add Phone"
-                  onClick={onEdit}
-                />
+                <ContactEmptyState label="Phone" message="Add Phone" onClick={onEdit} />
               ) : null}
 
               {hasResume ? (
@@ -135,18 +130,14 @@ const ContactWindow = ({ contactInfo, fullName, onOpenPdf, edit, onEdit, hasResu
                   role="button"
                   tabIndex={0}
                   onClick={() => onOpenPdf(`${fullName}_Resume.pdf`)}
-                  onKeyDown={(e) => e.key === 'Enter' && onOpenPdf(`${fullName}_Resume.pdf`)}
-                  style={{ cursor: 'pointer' }}
+                  onKeyDown={(e) => e.key === "Enter" && onOpenPdf(`${fullName}_Resume.pdf`)}
+                  style={{ cursor: "pointer" }}
                 >
                   <div className={styles.label}>Resume</div>
                   <div className="font-medium text-[#007aff] hover:underline">View Resume</div>
                 </div>
               ) : edit ? (
-                <ContactEmptyState
-                  label="Resume"
-                  message="Add Resume"
-                  onClick={onEdit}
-                />
+                <ContactEmptyState label="Resume" message="Add Resume" onClick={onEdit} />
               ) : null}
             </div>
           </section>
@@ -169,8 +160,12 @@ const ContactWindow = ({ contactInfo, fullName, onOpenPdf, edit, onEdit, hasResu
                       rel="noopener noreferrer"
                       className={styles.row}
                     >
-                      <span className="w-6 h-6 flex items-center justify-center bg-[#0077b5] text-white rounded text-[10px] font-bold shrink-0">in</span>
-                      <span className="flex-1 border-b border-[#e9e9e7] pb-1">{contactInfo.linkedin}</span>
+                      <span className="w-6 h-6 flex items-center justify-center bg-[#0077b5] text-white rounded text-[10px] font-bold shrink-0">
+                        in
+                      </span>
+                      <span className="flex-1 border-b border-[#e9e9e7] pb-1">
+                        {contactInfo.linkedin}
+                      </span>
                     </a>
                   )}
                   {contactInfo.twitter && (
@@ -180,8 +175,12 @@ const ContactWindow = ({ contactInfo, fullName, onOpenPdf, edit, onEdit, hasResu
                       rel="noopener noreferrer"
                       className={styles.row}
                     >
-                      <span className="w-6 h-6 flex items-center justify-center bg-black text-white rounded text-[10px] font-bold shrink-0">X</span>
-                      <span className="flex-1 border-b border-[#e9e9e7] pb-1">{contactInfo.twitter}</span>
+                      <span className="w-6 h-6 flex items-center justify-center bg-black text-white rounded text-[10px] font-bold shrink-0">
+                        X
+                      </span>
+                      <span className="flex-1 border-b border-[#e9e9e7] pb-1">
+                        {contactInfo.twitter}
+                      </span>
                     </a>
                   )}
                   {contactInfo.instagram && (
@@ -191,8 +190,12 @@ const ContactWindow = ({ contactInfo, fullName, onOpenPdf, edit, onEdit, hasResu
                       rel="noopener noreferrer"
                       className={styles.row}
                     >
-                      <span className="w-6 h-6 flex items-center justify-center bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] text-white rounded text-[10px] font-bold shrink-0">IG</span>
-                      <span className="flex-1 border-b border-[#e9e9e7] pb-1">{contactInfo.instagram}</span>
+                      <span className="w-6 h-6 flex items-center justify-center bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] text-white rounded text-[10px] font-bold shrink-0">
+                        IG
+                      </span>
+                      <span className="flex-1 border-b border-[#e9e9e7] pb-1">
+                        {contactInfo.instagram}
+                      </span>
                     </a>
                   )}
                   {contactInfo.dribbble && (
@@ -202,16 +205,17 @@ const ContactWindow = ({ contactInfo, fullName, onOpenPdf, edit, onEdit, hasResu
                       rel="noopener noreferrer"
                       className={styles.row}
                     >
-                      <span className="w-6 h-6 flex items-center justify-center bg-[#ea4c89] text-white rounded text-[10px] font-bold shrink-0">Dr</span>
-                      <span className="flex-1 border-b border-[#e9e9e7] pb-1">{contactInfo.dribbble}</span>
+                      <span className="w-6 h-6 flex items-center justify-center bg-[#ea4c89] text-white rounded text-[10px] font-bold shrink-0">
+                        Dr
+                      </span>
+                      <span className="flex-1 border-b border-[#e9e9e7] pb-1">
+                        {contactInfo.dribbble}
+                      </span>
                     </a>
                   )}
                 </>
               ) : (
-                <SectionEmptyState
-                  message="Add Social Links"
-                  onClick={onEdit}
-                />
+                <SectionEmptyState message="Add Social Links" onClick={onEdit} />
               )}
             </div>
           </section>
@@ -231,14 +235,15 @@ const ContactWindow = ({ contactInfo, fullName, onOpenPdf, edit, onEdit, hasResu
                 rel="noopener noreferrer"
                 className={styles.row}
               >
-                <span className="w-6 h-6 flex items-center justify-center bg-black text-white rounded text-[10px] font-bold shrink-0">M</span>
-                <span className="flex-1 border-b border-[#e9e9e7] pb-1 text-[#37352f]">{contactInfo.blogs}</span>
+                <span className="w-6 h-6 flex items-center justify-center bg-black text-white rounded text-[10px] font-bold shrink-0">
+                  M
+                </span>
+                <span className="flex-1 border-b border-[#e9e9e7] pb-1 text-[#37352f]">
+                  {contactInfo.blogs}
+                </span>
               </a>
             ) : (
-              <SectionEmptyState
-                message="Add Blog Link"
-                onClick={onEdit}
-              />
+              <SectionEmptyState message="Add Blog Link" onClick={onEdit} />
             )}
           </section>
         )}

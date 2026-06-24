@@ -34,15 +34,15 @@ import {
   useSensor,
   useSensors,
   DragEndEvent,
-} from '@dnd-kit/core';
+} from "@dnd-kit/core";
 import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   useSortable,
   verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { Testimonials } from "./Testimonials";
 import { _updateUser, _updateProject } from "@/network/post-request";
 import ProjectLock from "../projectLock";
@@ -72,8 +72,15 @@ const Portfolio = ({ userDetails, edit }) => {
   } = userDetails || {};
 
   const hasAbout = userDetails?.about !== null && userDetails?.about !== undefined;
-  const { openModal, openSidebar, setSelectedWork, setSelectedProject, setUserDetails, setShowUpgradeModal, setUpgradeModalUnhideProject } =
-    useGlobalContext();
+  const {
+    openModal,
+    openSidebar,
+    setSelectedWork,
+    setSelectedProject,
+    setUserDetails,
+    setShowUpgradeModal,
+    setUpgradeModalUnhideProject,
+  } = useGlobalContext();
 
   // Get section order from userDetails or use template default
   const sectionOrder = normalizeSectionOrder(userDetails?.sectionOrder, DEFAULT_SECTION_ORDER);
@@ -108,14 +115,7 @@ const Portfolio = ({ userDetails, edit }) => {
   };
 
   // Duplicate skills for smooth infinite scroll
-  const scrollSkills = [
-    ...skills,
-    ...skills,
-    ...skills,
-    ...skills,
-    ...skills,
-    ...skills,
-  ];
+  const scrollSkills = [...skills, ...skills, ...skills, ...skills, ...skills, ...skills];
 
   const handleNavigation = (id) => {
     router.push(
@@ -192,12 +192,8 @@ const Portfolio = ({ userDetails, edit }) => {
   const handleDragEnd = (event) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
-    const oldIndex = sortedProjects.findIndex(
-      (project) => project._id === active.id
-    );
-    const newIndex = sortedProjects.findIndex(
-      (project) => project._id === over.id
-    );
+    const oldIndex = sortedProjects.findIndex((project) => project._id === active.id);
+    const newIndex = sortedProjects.findIndex((project) => project._id === over.id);
     const newSortedProjects = arrayMove(sortedProjects, oldIndex, newIndex);
     setSortedProjects(newSortedProjects);
     setUserDetails((prev) => ({ ...prev, projects: newSortedProjects }));
@@ -217,8 +213,9 @@ const Portfolio = ({ userDetails, edit }) => {
       setMousePosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
     };
 
-    const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-      useSortable({ id: project._id });
+    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+      id: project._id,
+    });
     const style = {
       transform: CSS.Transform.toString(transform),
       transition,
@@ -231,23 +228,23 @@ const Portfolio = ({ userDetails, edit }) => {
     }, [shouldShowTooltip, setCursorPill]);
 
     return (
-      <div ref={setNodeRef} style={style} className={isDragging ? 'relative' : ''}>
+      <div ref={setNodeRef} style={style} className={isDragging ? "relative" : ""}>
         <motion.div
-            ref={cardRef}
-            variants={item}
-            onClick={() => {
-              setCursorPill(false);
-              handleNavigation(project?._id);
-            }}
-            onMouseDown={() => setCursorPill(false)}
-            onMouseMove={handleMouseMove}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => {
-              setIsHovered(false);
-              setIsHoveringInteractive(false);
-            }}
-            className="group bg-card border border-card-border rounded-lg overflow-hidden hover:bg-card/80 transition-colors relative !cursor-pointer"
-          >
+          ref={cardRef}
+          variants={item}
+          onClick={() => {
+            setCursorPill(false);
+            handleNavigation(project?._id);
+          }}
+          onMouseDown={() => setCursorPill(false)}
+          onMouseMove={handleMouseMove}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => {
+            setIsHovered(false);
+            setIsHoveringInteractive(false);
+          }}
+          className="group bg-card border border-card-border rounded-lg overflow-hidden hover:bg-card/80 transition-colors relative !cursor-pointer"
+        >
           <div className="flex flex-col md:flex-row !cursor-pointer">
             <div className="relative w-full lg:w-[320px] h-[261px] shrink-0 overflow-hidden">
               <img
@@ -277,11 +274,7 @@ const Portfolio = ({ userDetails, edit }) => {
                   onMouseEnter={() => setIsHoveringInteractive(true)}
                   onMouseLeave={() => setIsHoveringInteractive(false)}
                 >
-                  <DragHandle
-                    isButton
-                    listeners={listeners}
-                    attributes={attributes}
-                  />
+                  <DragHandle isButton listeners={listeners} attributes={attributes} />
                   <div className="flex gap-2 ml-auto">
                     <Button2
                       size="medium"
@@ -303,7 +296,13 @@ const Portfolio = ({ userDetails, edit }) => {
                         e.stopPropagation();
                         handleToggleVisibility(project?._id);
                       }}
-                      icon={project?.hidden ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      icon={
+                        project?.hidden ? (
+                          <EyeOff className="w-4 h-4" />
+                        ) : (
+                          <Eye className="w-4 h-4" />
+                        )
+                      }
                       text={project?.hidden ? "Hidden" : "Visible"}
                     />
                     <Button2
@@ -351,10 +350,20 @@ const Portfolio = ({ userDetails, edit }) => {
   const wallpaperExists = userDetails?.wallpaper && userDetails?.wallpaper?.value != 0;
   return (
     <TooltipProvider>
-      <div className={cn("min-h-screen bg-background text-foreground transition-colors duration-300", wallpaperExists && "max-w-[848px] mx-auto rounded-2xl mb-8", !edit && wallpaperExists && "mt-8")}>
+      <div
+        className={cn(
+          "min-h-screen bg-background text-foreground transition-colors duration-300",
+          wallpaperExists && "max-w-[848px] mx-auto rounded-2xl mb-8",
+          !edit && wallpaperExists && "mt-8"
+        )}
+      >
         {/* Header */}
 
-        <header className={cn("border-b border-secondary-border py-6 bg-background transition-colors duration-300 rounded-t-2xl",)}>
+        <header
+          className={cn(
+            "border-b border-secondary-border py-6 bg-background transition-colors duration-300 rounded-t-2xl"
+          )}
+        >
           <div className="container max-w-3xl mx-auto px-4">
             <motion.div
               className="flex items-center justify-between"
@@ -398,7 +407,11 @@ const Portfolio = ({ userDetails, edit }) => {
                     className="bg-tooltip-bg-color text-tooltip-text-color border-0 px-4 py-2 rounded-xl flex items-center gap-2 shadow-xl"
                   >
                     <span className="text-sm font-medium">Happy to have you here</span>
-                    <img src="/assets/png/handshake.png" alt="Handshake" className="w-5 h-5 object-contain" />
+                    <img
+                      src="/assets/png/handshake.png"
+                      alt="Handshake"
+                      className="w-5 h-5 object-contain"
+                    />
                   </TooltipContent>
                 </Tooltip>
                 <div>
@@ -427,12 +440,7 @@ const Portfolio = ({ userDetails, edit }) => {
                     onClick={() => openModal("onboarding")}
                     customClass="!p-[8px] rounded-[8px] !flex-shrink-0"
                     type={"secondary"}
-                    icon={
-                      <EditIcon
-                        className="text-df-icon-color cursor-pointer"
-                        size={20}
-                      />
-                    }
+                    icon={<EditIcon className="text-df-icon-color cursor-pointer" size={20} />}
                   />
                 )}
               </motion.div>
@@ -451,16 +459,10 @@ const Portfolio = ({ userDetails, edit }) => {
               animate="animate"
               variants={{ animate: { transition: { staggerChildren: 0.2 } } }}
             >
-              <motion.h1
-                className="text-4xl font-bold mb-4"
-                variants={textReveal}
-              >
+              <motion.h1 className="text-4xl font-bold mb-4" variants={textReveal}>
                 {introduction}
               </motion.h1>
-              <motion.p
-                className="dark:text-gray-400 text-gray-600 mb-6"
-                variants={textReveal}
-              >
+              <motion.p className="dark:text-gray-400 text-gray-600 mb-6" variants={textReveal}>
                 {bio}
               </motion.p>
               {/* Skills Infinite Scroll */}
@@ -504,7 +506,7 @@ const Portfolio = ({ userDetails, edit }) => {
           {/* Sections rendered in order based on sectionOrder */}
           {sectionOrder.map((sectionId) => {
             if (!isSectionVisible(sectionId)) return null;
-            if (sectionId === 'about') {
+            if (sectionId === "about") {
               if (!edit && !hasAbout) return null;
               return (
                 <motion.section
@@ -524,7 +526,9 @@ const Portfolio = ({ userDetails, edit }) => {
                           onClick={() => openModal(modals.about)}
                           customClass="!p-[8px] rounded-[10px] !flex-shrink-0"
                           type={"secondary"}
-                          icon={<EditIcon className="text-df-icon-color cursor-pointer" size={20} />}
+                          icon={
+                            <EditIcon className="text-df-icon-color cursor-pointer" size={20} />
+                          }
                         />
                       </div>
                     )}
@@ -538,7 +542,7 @@ const Portfolio = ({ userDetails, edit }) => {
                 </motion.section>
               );
             }
-            if (sectionId === 'works') {
+            if (sectionId === "works") {
               return (
                 <div key="works" id="section-works">
                   {(experiences.length > 0 || edit) && (
@@ -552,7 +556,7 @@ const Portfolio = ({ userDetails, edit }) => {
               );
             }
 
-            if (sectionId === 'projects') {
+            if (sectionId === "projects") {
               return (
                 <div key="projects" id="section-projects">
                   {(projects.length > 0 || edit) && (
@@ -591,24 +595,25 @@ const Portfolio = ({ userDetails, edit }) => {
                               />
                             ))}
                             {edit &&
-                              (userDetails?.pro || (userDetails?.projects || []).filter(p => !p.hidden).length < 2 ? (
+                              (userDetails?.pro ||
+                              (userDetails?.projects || []).filter((p) => !p.hidden).length < 2 ? (
                                 <AddCard
-                                  title={`${userDetails?.projects?.length === 0
-                                    ? "Upload your first case study"
-                                    : "Add case study"
-                                    }`}
+                                  title={`${
+                                    userDetails?.projects?.length === 0
+                                      ? "Upload your first case study"
+                                      : "Add case study"
+                                  }`}
                                   subTitle="Show off your best work."
                                   first
                                   buttonTitle="Add case study"
                                   secondaryButtonTitle="Write using AI"
                                   onClick={() => openSidebar(sidebars.project)}
-                                  icon={
-                                    <MemoCasestudy className="cursor-pointer size-[72px]" />
-                                  }
+                                  icon={<MemoCasestudy className="cursor-pointer size-[72px]" />}
                                   openModal={openModal}
-                                  className={`bg-card flex items-center justify-center min-h-[269px] rounded-lg ${userDetails?.projects?.length !== 0 &&
+                                  className={`bg-card flex items-center justify-center min-h-[269px] rounded-lg ${
+                                    userDetails?.projects?.length !== 0 &&
                                     " shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] hover:shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
-                                    }`}
+                                  }`}
                                 />
                               ) : (
                                 <ProjectLock />
@@ -622,7 +627,7 @@ const Portfolio = ({ userDetails, edit }) => {
               );
             }
 
-            if (sectionId === 'tools') {
+            if (sectionId === "tools") {
               return (
                 <div key="tools" id="section-tools">
                   <ToolStack
@@ -635,7 +640,7 @@ const Portfolio = ({ userDetails, edit }) => {
               );
             }
 
-            if (sectionId === 'reviews') {
+            if (sectionId === "reviews") {
               return (
                 <div key="reviews" id="section-reviews">
                   {(reviews?.length > 0 || edit) && (

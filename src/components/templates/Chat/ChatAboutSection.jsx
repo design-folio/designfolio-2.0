@@ -24,24 +24,17 @@ export default function ChatAboutSection({
 }) {
   const { userDetails, openSidebar } = useGlobalContext();
   const { about } = userDetails || {};
-  const avatarSrc = useMemo(
-    () => getUserAvatarImage(userDetails),
-    [userDetails],
-  );
+  const avatarSrc = useMemo(() => getUserAvatarImage(userDetails), [userDetails]);
 
   const aboutImages =
-    about?.pegboardImages?.length > 0
-      ? about.pegboardImages
-      : DEFAULT_PEGBOARD_IMAGES;
+    about?.pegboardImages?.length > 0 ? about.pegboardImages : DEFAULT_PEGBOARD_IMAGES;
   const aboutDescription = about?.description;
-  const hasAboutDescription =
-    aboutDescription && getPlainTextLength(aboutDescription || "") > 0;
+  const hasAboutDescription = aboutDescription && getPlainTextLength(aboutDescription || "") > 0;
   const hasCustomAboutImages = about?.pegboardImages?.length > 0;
   const hasAboutContent = hasAboutDescription || hasCustomAboutImages;
 
   const [selectedStoryImage, setSelectedStoryImage] = useState(null);
-  const storyPlain =
-    typeof aboutDescription === "string" ? aboutDescription.trim() : "";
+  const storyPlain = typeof aboutDescription === "string" ? aboutDescription.trim() : "";
   const storyNeedsExpand = storyPlain.length > ABOUT_STORY_CHAR_THRESHOLD;
   const [aboutStoryExpanded, setAboutStoryExpanded] = useState(false);
   const reduceMotion = useReducedMotion();
@@ -51,10 +44,7 @@ export default function ChatAboutSection({
   }, [storyPlain]);
 
   return (
-    <div
-      className="flex flex-col gap-3"
-      style={{ order: sectionSteps.about - 3 }}
-    >
+    <div className="flex flex-col gap-3" style={{ order: sectionSteps.about - 3 }}>
       {/* You: Story prompt */}
       <AnimatePresence mode="popLayout">
         {chatRevealStep >= s(16) && !(preview && !hasAboutContent) && (
@@ -94,10 +84,7 @@ export default function ChatAboutSection({
               </div>
             )}
             <div className="w-8 h-8 shrink-0 mt-auto flex items-end">
-              <ChatAvatar
-                avatarSrc={avatarSrc}
-                show={chatRevealStep < s(18)}
-              />
+              <ChatAvatar avatarSrc={avatarSrc} show={chatRevealStep < s(18)} />
             </div>
             <div className="flex flex-col gap-1">
               <span className="text-[11px] text-[#7A736C] dark:text-[#B5AFA5] ml-1 font-medium">
@@ -170,10 +157,7 @@ export default function ChatAboutSection({
               </div>
             )}
             <div className="w-8 h-8 shrink-0 mt-auto flex items-end">
-              <ChatAvatar
-                avatarSrc={avatarSrc}
-                show={chatRevealStep < getNextLeftStep("about")}
-              />
+              <ChatAvatar avatarSrc={avatarSrc} show={chatRevealStep < getNextLeftStep("about")} />
             </div>
             {hasAboutDescription ? (
               storyNeedsExpand ? (
@@ -185,10 +169,7 @@ export default function ChatAboutSection({
                       {renderDescriptionLines(
                         aboutStoryExpanded
                           ? storyPlain
-                          : truncatePlainText(
-                            storyPlain,
-                            ABOUT_STORY_CHAR_THRESHOLD,
-                          ),
+                          : truncatePlainText(storyPlain, ABOUT_STORY_CHAR_THRESHOLD)
                       )}
                     </p>
                     {!aboutStoryExpanded && (
@@ -211,9 +192,7 @@ export default function ChatAboutSection({
                       className="inline-flex [&_svg]:pointer-events-none"
                       animate={{ rotate: aboutStoryExpanded ? 180 : 0 }}
                       transition={
-                        reduceMotion
-                          ? { duration: 0 }
-                          : { duration: 0.3, ease: [0.23, 1, 0.32, 1] }
+                        reduceMotion ? { duration: 0 } : { duration: 0.3, ease: [0.23, 1, 0.32, 1] }
                       }
                     >
                       <ChevronDown data-icon="inline-end" />

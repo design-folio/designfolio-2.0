@@ -14,7 +14,10 @@ function ExperienceDescription({ desc }) {
 
   return (
     <motion.p
-      variants={{ hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.015 } } }}
+      variants={{
+        hidden: { opacity: 0 },
+        show: { opacity: 1, transition: { staggerChildren: 0.015 } },
+      }}
       initial="hidden"
       animate="show"
       className="font-jetbrains text-[15px] leading-relaxed max-w-xl break-words whitespace-normal"
@@ -33,16 +36,28 @@ function ExperienceDescription({ desc }) {
               return (
                 <motion.span
                   key={charIndex}
-                  variants={{ hidden: { opacity: 0, filter: "blur(4px)", y: 4 }, show: { opacity: 1, filter: "blur(0px)", y: 0 } }}
+                  variants={{
+                    hidden: { opacity: 0, filter: "blur(4px)", y: 4 },
+                    show: { opacity: 1, filter: "blur(0px)", y: 0 },
+                  }}
                   transition={{ duration: 0.2 }}
                   className={cls}
-                  style={c.highlight ? { backgroundColor: "#f9daa3", borderRadius: "0.125rem", padding: "0.125rem 0", color: "black" } : undefined}
+                  style={
+                    c.highlight
+                      ? {
+                          backgroundColor: "#f9daa3",
+                          borderRadius: "0.125rem",
+                          padding: "0.125rem 0",
+                          color: "black",
+                        }
+                      : undefined
+                  }
                 >
                   {c.ch}
                 </motion.span>
               );
             })}
-            {wordIndex < words.length - 1 && !(words[wordIndex + 1]?.[0]?.isBreak) && (
+            {wordIndex < words.length - 1 && !words[wordIndex + 1]?.[0]?.isBreak && (
               <span className="inline-block">&nbsp;</span>
             )}
           </span>
@@ -52,13 +67,7 @@ function ExperienceDescription({ desc }) {
   );
 }
 
-function ExperienceItem({
-  exp,
-  isExpanded,
-  onToggle,
-  isEditing,
-  onEdit,
-}) {
+function ExperienceItem({ exp, isExpanded, onToggle, isEditing, onEdit }) {
   return (
     <div className="group border-b border-[#D5D0C6] dark:border-[#3A352E] last:border-0 hover:bg-[#DED9CE]/30 dark:hover:bg-white/[0.02] transition-colors -mx-4 px-4 md:-mx-6 md:px-6 relative">
       {isEditing && (
@@ -88,9 +97,7 @@ function ExperienceItem({
             +
           </motion.span>
           <span className="font-jetbrains text-[#1A1A1A] dark:text-[#F0EDE7] text-[14px] font-medium tracking-wide uppercase">
-            <span className="text-[#7A736C] dark:text-[#9E9893] mr-2">
-              {exp.startYear} /
-            </span>
+            <span className="text-[#7A736C] dark:text-[#9E9893] mr-2">{exp.startYear} /</span>
             {exp.company}
           </span>
         </div>
@@ -117,12 +124,7 @@ function ExperienceItem({
   );
 }
 
-function ProfessionalExperienceTab({
-  isEditing,
-  experiences,
-  onEditExperience,
-  onAddExperience,
-}) {
+function ProfessionalExperienceTab({ isEditing, experiences, onEditExperience, onAddExperience }) {
   const { openSidebar } = useGlobalContext();
   const [expandedIndex, setExpandedIndex] = useState(null);
 
@@ -151,9 +153,7 @@ function ProfessionalExperienceTab({
             exp={exp}
             index={index}
             isExpanded={expandedIndex === index}
-            onToggle={() =>
-              setExpandedIndex(expandedIndex === index ? null : index)
-            }
+            onToggle={() => setExpandedIndex(expandedIndex === index ? null : index)}
             isEditing={isEditing}
             onEdit={onEditExperience}
           />

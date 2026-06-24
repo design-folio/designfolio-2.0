@@ -54,9 +54,7 @@ function calculatePosition(value, containerSize, elementSize) {
     const percentage = parseFloat(value) / 100;
     return containerSize * percentage;
   }
-  return typeof value === "number"
-    ? value
-    : elementSize - containerSize + elementSize / 2;
+  return typeof value === "number" ? value : elementSize - containerSize + elementSize / 2;
 }
 
 const GravityContext = createContext(null);
@@ -150,7 +148,11 @@ export const Gravity = forwardRef(
           body = Bodies.circle(x, y, radius, {
             ...props.matterBodyOptions,
             angle,
-            render: { fillStyle: debug ? "#888888" : "#00000000", strokeStyle: debug ? "#333333" : "#00000000", lineWidth: debug ? 3 : 0 },
+            render: {
+              fillStyle: debug ? "#888888" : "#00000000",
+              strokeStyle: debug ? "#333333" : "#00000000",
+              lineWidth: debug ? 3 : 0,
+            },
           });
         } else if (props.bodyType === "svg") {
           const paths = element.querySelectorAll("path");
@@ -163,13 +165,21 @@ export const Gravity = forwardRef(
           body = Bodies.fromVertices(x, y, vertexSets, {
             ...props.matterBodyOptions,
             angle,
-            render: { fillStyle: debug ? "#888888" : "#00000000", strokeStyle: debug ? "#333333" : "#00000000", lineWidth: debug ? 3 : 0 },
+            render: {
+              fillStyle: debug ? "#888888" : "#00000000",
+              strokeStyle: debug ? "#333333" : "#00000000",
+              lineWidth: debug ? 3 : 0,
+            },
           });
         } else {
           body = Bodies.rectangle(x, y, width, height, {
             ...props.matterBodyOptions,
             angle,
-            render: { fillStyle: debug ? "#888888" : "#00000000", strokeStyle: debug ? "#333333" : "#00000000", lineWidth: debug ? 3 : 0 },
+            render: {
+              fillStyle: debug ? "#888888" : "#00000000",
+              strokeStyle: debug ? "#333333" : "#00000000",
+              lineWidth: debug ? 3 : 0,
+            },
           });
         }
 
@@ -238,18 +248,37 @@ export const Gravity = forwardRef(
       });
 
       const walls = [
-        Bodies.rectangle(width / 2, height + 10, width, 20, { isStatic: true, friction: 1, render: { visible: debug } }),
-        Bodies.rectangle(width + 10, height / 2, 20, height, { isStatic: true, friction: 1, render: { visible: debug } }),
-        Bodies.rectangle(-10, height / 2, 20, height, { isStatic: true, friction: 1, render: { visible: debug } }),
+        Bodies.rectangle(width / 2, height + 10, width, 20, {
+          isStatic: true,
+          friction: 1,
+          render: { visible: debug },
+        }),
+        Bodies.rectangle(width + 10, height / 2, 20, height, {
+          isStatic: true,
+          friction: 1,
+          render: { visible: debug },
+        }),
+        Bodies.rectangle(-10, height / 2, 20, height, {
+          isStatic: true,
+          friction: 1,
+          render: { visible: debug },
+        }),
       ];
 
       const topWall = addTopWall
-        ? Bodies.rectangle(width / 2, -10, width, 20, { isStatic: true, friction: 1, render: { visible: debug } })
+        ? Bodies.rectangle(width / 2, -10, width, 20, {
+            isStatic: true,
+            friction: 1,
+            render: { visible: debug },
+          })
         : null;
       if (topWall) walls.push(topWall);
 
       const touchingMouse = () =>
-        Query.point(engine.current.world.bodies, mouseConstraint.current?.mouse.position || { x: 0, y: 0 }).length > 0;
+        Query.point(
+          engine.current.world.bodies,
+          mouseConstraint.current?.mouse.position || { x: 0, y: 0 }
+        ).length > 0;
 
       if (grabCursor) {
         Events.on(engine.current, "beforeUpdate", () => {
@@ -261,8 +290,12 @@ export const Gravity = forwardRef(
             }
           }
         });
-        canvas.current.addEventListener("mousedown", () => { mouseDown.current = true; });
-        canvas.current.addEventListener("mouseup", () => { mouseDown.current = false; });
+        canvas.current.addEventListener("mousedown", () => {
+          mouseDown.current = true;
+        });
+        canvas.current.addEventListener("mouseup", () => {
+          mouseDown.current = false;
+        });
       }
 
       World.add(engine.current.world, [mouseConstraint.current, ...walls]);
@@ -270,7 +303,16 @@ export const Gravity = forwardRef(
       runner.current = Runner.create();
 
       if (autoStart) startEngine();
-    }, [updateElements, debug, autoStart, gravity.x, gravity.y, addTopWall, grabCursor, startEngine]);
+    }, [
+      updateElements,
+      debug,
+      autoStart,
+      gravity.x,
+      gravity.y,
+      addTopWall,
+      grabCursor,
+      startEngine,
+    ]);
 
     const clearRenderer = useCallback(() => {
       if (frameId.current) cancelAnimationFrame(frameId.current);
@@ -288,11 +330,18 @@ export const Gravity = forwardRef(
       bodiesMap.current.clear();
     }, []);
 
-    useImperativeHandle(ref, () => ({
-      start: startEngine,
-      stop: stopEngine,
-      reset: () => { clearRenderer(); initializeRenderer(); },
-    }), [startEngine, stopEngine, clearRenderer, initializeRenderer]);
+    useImperativeHandle(
+      ref,
+      () => ({
+        start: startEngine,
+        stop: stopEngine,
+        reset: () => {
+          clearRenderer();
+          initializeRenderer();
+        },
+      }),
+      [startEngine, stopEngine, clearRenderer, initializeRenderer]
+    );
 
     useEffect(() => {
       initializeRenderer();

@@ -13,7 +13,12 @@ import { containerVariants, itemVariants } from "@/lib/animationVariants";
 import { DEFAULT_SECTION_ORDER, normalizeSectionOrder } from "@/lib/constant";
 import AboutMe from "@/components/aboutMe";
 
-export default function Preview1({ userDetails, projectRef, embeddedPreview = false, edit = false }) {
+export default function Preview1({
+  userDetails,
+  projectRef,
+  embeddedPreview = false,
+  edit = false,
+}) {
   // Get section order from userDetails or use template default
   const sectionOrder = normalizeSectionOrder(userDetails?.sectionOrder, DEFAULT_SECTION_ORDER);
 
@@ -21,7 +26,7 @@ export default function Preview1({ userDetails, projectRef, embeddedPreview = fa
   const hiddenSections = userDetails?.hiddenSections || [];
 
   const hasAbout = userDetails?.about !== null && userDetails?.about !== undefined;
-  const showAbout = !hiddenSections.includes('about') && (edit || hasAbout);
+  const showAbout = !hiddenSections.includes("about") && (edit || hasAbout);
 
   // Section component mapping
   const sectionComponents = {
@@ -30,7 +35,7 @@ export default function Preview1({ userDetails, projectRef, embeddedPreview = fa
         <AboutMe userDetails={userDetails} />
       </motion.div>
     ),
-    projects: userDetails?.projects?.length > 0 && !hiddenSections.includes('projects') && (
+    projects: userDetails?.projects?.length > 0 && !hiddenSections.includes("projects") && (
       <motion.div variants={itemVariants} id="section-projects">
         <Projects
           userDetails={userDetails}
@@ -40,17 +45,17 @@ export default function Preview1({ userDetails, projectRef, embeddedPreview = fa
         />
       </motion.div>
     ),
-    reviews: userDetails?.reviews?.length > 0 && !hiddenSections.includes('reviews') && (
+    reviews: userDetails?.reviews?.length > 0 && !hiddenSections.includes("reviews") && (
       <motion.div variants={itemVariants} id="section-reviews">
         <Reviews userDetails={userDetails} />
       </motion.div>
     ),
-    tools: !embeddedPreview && !hiddenSections.includes('tools') && (
+    tools: !embeddedPreview && !hiddenSections.includes("tools") && (
       <motion.div variants={itemVariants} id="section-tools">
         <Tools userDetails={userDetails} />
       </motion.div>
     ),
-    works: userDetails?.experiences?.length > 0 && !hiddenSections.includes('works') && (
+    works: userDetails?.experiences?.length > 0 && !hiddenSections.includes("works") && (
       <motion.div variants={itemVariants} id="section-works">
         <Works userDetails={userDetails} />
       </motion.div>
@@ -59,9 +64,7 @@ export default function Preview1({ userDetails, projectRef, embeddedPreview = fa
 
   const mainContent = (
     <main className="min-h-screen">
-      <div
-        className={`max-w-[848px] mx-auto py-[40px] px-2 md:px-4 lg:px-0 pb-[140px]`}
-      >
+      <div className={`max-w-[848px] mx-auto py-[40px] px-2 md:px-4 lg:px-0 pb-[140px]`}>
         {userDetails && (
           <motion.div
             className="flex-1 flex flex-col gap-3"
@@ -86,9 +89,5 @@ export default function Preview1({ userDetails, projectRef, embeddedPreview = fa
     return mainContent;
   }
 
-  return (
-    <BottomLayout userDetails={userDetails}>
-      {mainContent}
-    </BottomLayout>
-  );
+  return <BottomLayout userDetails={userDetails}>{mainContent}</BottomLayout>;
 }

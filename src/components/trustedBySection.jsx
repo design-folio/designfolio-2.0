@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 export default function TrustedBySection({ classNames }) {
   const companyLogos = [
@@ -8,9 +8,8 @@ export default function TrustedBySection({ classNames }) {
     "/assets/svgs/company logos/companylogos04.svg",
     "/assets/svgs/company logos/companylogos05.svg",
     "/assets/svgs/company logos/companylogos06.svg",
-    "/assets/svgs/company logos/companylogos07.svg"
-  ]
-
+    "/assets/svgs/company logos/companylogos07.svg",
+  ];
 
   return (
     <section className="py-8 sm:py-12 md:py-16 px-4 sm:px-6 overflow-hidden w-full">
@@ -25,14 +24,15 @@ export default function TrustedBySection({ classNames }) {
         <div className="relative overflow-hidden">
           <div
             className={cn(
-              "absolute left-0 top-0 bottom-0 w-16 sm:w-24 md:w-40 z-10 pointer-events-none bg-gradient-to-r to-transparent from-background-landing", classNames
+              "absolute left-0 top-0 bottom-0 w-16 sm:w-24 md:w-40 z-10 pointer-events-none bg-gradient-to-r to-transparent from-background-landing",
+              classNames
             )}
           />
 
-
           <div
             className={cn(
-              "absolute right-0 top-0 bottom-0 w-16 sm:w-24 md:w-40 z-10 pointer-events-none bg-gradient-to-l to-transparent from-background-landing", classNames
+              "absolute right-0 top-0 bottom-0 w-16 sm:w-24 md:w-40 z-10 pointer-events-none bg-gradient-to-l to-transparent from-background-landing",
+              classNames
             )}
           />
 
@@ -53,10 +53,7 @@ export default function TrustedBySection({ classNames }) {
               ))}
             </div>
 
-            <div
-              className="flex animate-scroll items-center gap-0 shrink-0"
-              aria-hidden="true"
-            >
+            <div className="flex animate-scroll items-center gap-0 shrink-0" aria-hidden="true">
               {companyLogos.map((logo, index) => (
                 <div
                   key={`second-${index}`}
@@ -74,5 +71,5 @@ export default function TrustedBySection({ classNames }) {
         </div>
       </div>
     </section>
-  )
+  );
 }

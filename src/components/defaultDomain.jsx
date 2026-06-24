@@ -12,10 +12,7 @@ import { Clock, CheckCircle2, XCircle } from "lucide-react";
 
 const DomainValidationSchema = Yup.object().shape({
   domain: Yup.string()
-    .matches(
-      /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})?$/,
-      "Invalid subdomain"
-    )
+    .matches(/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})?$/, "Invalid subdomain")
     .required("Username is required"),
 });
 
@@ -32,22 +29,25 @@ export default function DefaultDomain() {
     });
   };
 
-  const checkUsername = useCallback((value) => {
-    if (value === userDetails?.username) {
-      setIsAvailable(true);
-      return;
-    }
+  const checkUsername = useCallback(
+    (value) => {
+      if (value === userDetails?.username) {
+        setIsAvailable(true);
+        return;
+      }
 
-    if (value.length !== 0) {
-      _checkUsername({ username: value })
-        .then((response) => {
-          setIsAvailable(response?.data?.available ?? false);
-        })
-        .catch((error) => console.error(error));
-    } else {
-      setIsAvailable(true);
-    }
-  }, [userDetails?.username]);
+      if (value.length !== 0) {
+        _checkUsername({ username: value })
+          .then((response) => {
+            setIsAvailable(response?.data?.available ?? false);
+          })
+          .catch((error) => console.error(error));
+      } else {
+        setIsAvailable(true);
+      }
+    },
+    [userDetails?.username]
+  );
 
   useEffect(() => {
     return () => {
@@ -70,16 +70,15 @@ export default function DefaultDomain() {
   return (
     <div>
       <div className="flex items-center gap-2 flex-wrap">
-        <p className="text-[18px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
-          Base domain
-        </p>
+        <p className="text-[18px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">Base domain</p>
         <Badge className="text-[#15803D] bg-[#DCFCE7] dark:bg-[#14532D]/30 dark:text-[#4ADE80] border-0 gap-1 items-center">
           <span className="w-2 h-2 rounded-full bg-[#22C55E] inline-block" />
           Connected
         </Badge>
       </div>
       <p className="text-[13px] text-[#7A736C] dark:text-[#B5AFA5] mt-1 leading-relaxed">
-        This is your current Designfolio link. You can change your username anytime (if it&apos;s available).
+        This is your current Designfolio link. You can change your username anytime (if it&apos;s
+        available).
       </p>
 
       <Formik
@@ -93,7 +92,10 @@ export default function DefaultDomain() {
         }}
       >
         {({ isSubmitting, isValid, setFieldValue, values, errors, touched }) => (
-          <Form id="usernameForm" className="w-full mt-6 flex flex-col lg:flex-row items-start lg:items-center gap-4">
+          <Form
+            id="usernameForm"
+            className="w-full mt-6 flex flex-col lg:flex-row items-start lg:items-center gap-4"
+          >
             <div className="flex-1 w-full">
               <div className="relative">
                 <Field name="domain">
@@ -121,11 +123,13 @@ export default function DefaultDomain() {
                   <span className="text-[13px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
                     designfolio.me
                   </span>
-                  {domainValue && values.domain !== userDetails?.username && (
-                    isAvailable
-                      ? <CheckCircle2 className="w-4 h-4 text-green-500" />
-                      : <XCircle className="w-4 h-4 text-red-500" />
-                  )}
+                  {domainValue &&
+                    values.domain !== userDetails?.username &&
+                    (isAvailable ? (
+                      <CheckCircle2 className="w-4 h-4 text-green-500" />
+                    ) : (
+                      <XCircle className="w-4 h-4 text-red-500" />
+                    ))}
                 </div>
               </div>
               <ErrorMessage

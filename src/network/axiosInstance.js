@@ -29,10 +29,8 @@ axiosInstance.interceptors.response.use(
     console.log(error);
     if (
       error.response &&
-      ((error.response.config.url === "/user/check" &&
-        error.response.config.method === "post") ||
-        (error.response.config.url === "/ai/get/credits",
-        error.response.config.method === "get"))
+      ((error.response.config.url === "/user/check" && error.response.config.method === "post") ||
+        (error.response.config.url === "/ai/get/credits", error.response.config.method === "get"))
     ) {
       // Simply return the Promise rejection without showing a toast
       return Promise.reject(error);

@@ -28,7 +28,13 @@ import { Button as ButtonNew } from "./ui/buttonNew";
 import { ChevronDown } from "lucide-react";
 import MemoLinkedin from "./icons/Linkedin";
 import { AboutMeContent } from "./aboutMe";
-export default function Template2({ userDetails, preview = false, edit = false, activeStep: activeStepProp, onStepComplete }) {
+export default function Template2({
+  userDetails,
+  preview = false,
+  edit = false,
+  activeStep: activeStepProp,
+  onStepComplete,
+}) {
   const {
     bio,
     skills,
@@ -73,14 +79,13 @@ export default function Template2({ userDetails, preview = false, edit = false, 
   const activeStep = isControlled ? activeStepProp : internalStep;
   const setActiveStep = isControlled
     ? (fn) => {
-      const next = typeof fn === "function" ? fn(activeStepProp) : fn;
-      onStepComplete(next);
-    }
+        const next = typeof fn === "function" ? fn(activeStepProp) : fn;
+        onStepComplete(next);
+      }
     : setInternalStep;
 
   const portfolioCheck =
-    portfolios &&
-    !Object.values(portfolios).every((portfolio) => portfolio == "");
+    portfolios && !Object.values(portfolios).every((portfolio) => portfolio == "");
 
   useEffect(() => {
     setCursor(userDetails?.cursor ? userDetails?.cursor : 0);
@@ -97,11 +102,15 @@ export default function Template2({ userDetails, preview = false, edit = false, 
       if (!item) return true;
       if (item === "projects_chat" || item === "projects_content")
         return !isSectionVisible("projects") || !projects || projects.length === 0;
-      if (item === "reviews") return !isSectionVisible("reviews") || !reviews || reviews.length === 0;
+      if (item === "reviews")
+        return !isSectionVisible("reviews") || !reviews || reviews.length === 0;
       if (item === "tools") return !isSectionVisible("tools");
       if (item === "about")
-        return !isSectionVisible("about") || !userDetails?.about || userDetails?.about?.trim?.() === "";
-      if (item === "works") return !isSectionVisible("works") || !experiences || experiences.length === 0;
+        return (
+          !isSectionVisible("about") || !userDetails?.about || userDetails?.about?.trim?.() === ""
+        );
+      if (item === "works")
+        return !isSectionVisible("works") || !experiences || experiences.length === 0;
       return false;
     };
     let step = activeStep;
@@ -116,7 +125,19 @@ export default function Template2({ userDetails, preview = false, edit = false, 
     if (skippedSteps.length > 0) {
       setActiveStep(step);
     }
-  }, [activeStep, projects, reviews, experiences, portfolios, userDetails?.about, portfolioCheck, socials, hiddenSections, sectionOrder, contentSteps]);
+  }, [
+    activeStep,
+    projects,
+    reviews,
+    experiences,
+    portfolios,
+    userDetails?.about,
+    portfolioCheck,
+    socials,
+    hiddenSections,
+    sectionOrder,
+    contentSteps,
+  ]);
 
   // Trigger effect when activeStep or projects change
   const getSkills = () => {
@@ -130,7 +151,7 @@ export default function Template2({ userDetails, preview = false, edit = false, 
       return `${skills[0]}`;
     }
   };
-  const onDeleteProject = () => { };
+  const onDeleteProject = () => {};
 
   const handleRouter = (id) => {
     if (preview) {
@@ -170,9 +191,7 @@ export default function Template2({ userDetails, preview = false, edit = false, 
 
   return (
     <TooltipProvider>
-      <div
-        className={`max-w-[848px] mx-auto py-[32px] lg:py-[100px] px-2 md:px-4 lg:px-0`}
-      >
+      <div className={`max-w-[848px] mx-auto py-[32px] lg:py-[100px] px-2 md:px-4 lg:px-0`}>
         {preview && (
           <Link href={"/builder"}>
             <ButtonNew
@@ -195,10 +214,7 @@ export default function Template2({ userDetails, preview = false, edit = false, 
                       !userDetails?.avatar ? "bg-[#FFB088]" : ""
                     )}
                   >
-                    <DfImage
-                      src={getUserAvatarImage(userDetails)}
-                      className="w-full h-full"
-                    />
+                    <DfImage src={getUserAvatarImage(userDetails)} className="w-full h-full" />
                   </div>
                 </TooltipTrigger>
                 <TooltipContent
@@ -208,15 +224,15 @@ export default function Template2({ userDetails, preview = false, edit = false, 
                   className="bg-tooltip-bg-color text-tooltip-text-color border-0 px-4 py-2 rounded-xl flex items-center gap-2 shadow-xl"
                 >
                   <span className="text-sm font-medium">Happy to have you here</span>
-                  <img src="/assets/png/handshake.png" alt="Handshake" className="w-5 h-5 object-contain" />
+                  <img
+                    src="/assets/png/handshake.png"
+                    alt="Handshake"
+                    className="w-5 h-5 object-contain"
+                  />
                 </TooltipContent>
               </Tooltip>
-              <Chat
-                direction="left"
-                delay={1000}
-                onComplete={handleStepCompletion}
-              >
-                Hey there! I'm {firstName} {lastName}
+              <Chat direction="left" delay={1000} onComplete={handleStepCompletion}>
+                Hey there! I&apos;m {firstName} {lastName}
               </Chat>
             </div>
           )}
@@ -228,14 +244,20 @@ export default function Template2({ userDetails, preview = false, edit = false, 
           {contentSteps.map((item) => {
             const step = getStepForContentItem(item);
             if (item === "projects_chat") {
-              return activeStep >= step && projects && projects?.length > 0 && isSectionVisible("projects") ? (
+              return activeStep >= step &&
+                projects &&
+                projects?.length > 0 &&
+                isSectionVisible("projects") ? (
                 <Chat key={item} direction="right" delay={400} onComplete={handleStepCompletion}>
                   So… what have you been working on lately?
                 </Chat>
               ) : null;
             }
             if (item === "projects_content") {
-              return activeStep >= step && projects && projects?.length > 0 && isSectionVisible("projects") ? (
+              return activeStep >= step &&
+                projects &&
+                projects?.length > 0 &&
+                isSectionVisible("projects") ? (
                 <div key={item} id="section-projects" className="flex flex-col gap-6">
                   <Chat
                     direction="left"
@@ -247,30 +269,35 @@ export default function Template2({ userDetails, preview = false, edit = false, 
                     Here are a few things I&apos;ve built.
                   </Chat>
                   <div className="flex flex-row flex-wrap gap-6">
-                    {projects?.filter((project) => !project.hidden || !preview).map((project) => (
-                      <div
-                        className="w-full md:w-[calc(50%-12px)] max-w-[444px] relative"
-                        key={project._id}
-                        ref={projectRef}
-                      >
-                        <ProjectShape className="text-template-text-left-bg-color" />
-                        <Chat direction="left" className="rounded-tl-none w-full">
-                          <ProjectCard
-                            project={project}
-                            onDeleteProject={onDeleteProject}
-                            edit={false}
-                            handleRouter={handleRouter}
-                            href={getHref(project._id)}
-                          />
-                        </Chat>
-                      </div>
-                    ))}
+                    {projects
+                      ?.filter((project) => !project.hidden || !preview)
+                      .map((project) => (
+                        <div
+                          className="w-full md:w-[calc(50%-12px)] max-w-[444px] relative"
+                          key={project._id}
+                          ref={projectRef}
+                        >
+                          <ProjectShape className="text-template-text-left-bg-color" />
+                          <Chat direction="left" className="rounded-tl-none w-full">
+                            <ProjectCard
+                              project={project}
+                              onDeleteProject={onDeleteProject}
+                              edit={false}
+                              handleRouter={handleRouter}
+                              href={getHref(project._id)}
+                            />
+                          </Chat>
+                        </div>
+                      ))}
                   </div>
                 </div>
               ) : null;
             }
             if (item === "reviews") {
-              return activeStep >= step && reviews && reviews.length > 0 && isSectionVisible("reviews") ? (
+              return activeStep >= step &&
+                reviews &&
+                reviews.length > 0 &&
+                isSectionVisible("reviews") ? (
                 <div key={item} id="section-reviews" className="flex flex-col gap-6">
                   <Chat direction="right" delay={400} onComplete={handleStepCompletion}>
                     What do people usually say about working with you?
@@ -278,10 +305,18 @@ export default function Template2({ userDetails, preview = false, edit = false, 
                   <Chat direction="left" delay={300}>
                     Here&apos;s what some very kind humans had to say 🫶
                   </Chat>
-                  <Chat direction="left" delay={200} onComplete={handleStepCompletion} className="w-full">
+                  <Chat
+                    direction="left"
+                    delay={200}
+                    onComplete={handleStepCompletion}
+                    className="w-full"
+                  >
                     <div className="space-y-4">
                       {(showAllReviews ? reviews : reviews?.slice(0, 3))?.map((review) => (
-                        <div key={review?._id} className="border border-tools-card-item-border-color p-5 rounded-2xl">
+                        <div
+                          key={review?._id}
+                          className="border border-tools-card-item-border-color p-5 rounded-2xl"
+                        >
                           <Quote />
                           <div className="mt-4 text-df-base-text-color">
                             <ClampableTiptapContent
@@ -297,7 +332,10 @@ export default function Template2({ userDetails, preview = false, edit = false, 
                           </div>
                           <div className="flex items-center gap-3 mt-4">
                             <Avatar className="w-12 h-12 shrink-0">
-                              <AvatarImage src={review?.avatar?.url || review?.avatar} alt={review?.name} />
+                              <AvatarImage
+                                src={review?.avatar?.url || review?.avatar}
+                                alt={review?.name}
+                              />
                               <AvatarFallback
                                 style={{
                                   backgroundColor: "#FF9966",
@@ -322,7 +360,9 @@ export default function Template2({ userDetails, preview = false, edit = false, 
                                   className="flex items-center gap-1 text-blue-500"
                                 >
                                   <MemoLinkedin className="text-df-icon-color w-4 h-4" />
-                                  <span className="font-semibold cursor-pointer text-base">{review?.name}</span>
+                                  <span className="font-semibold cursor-pointer text-base">
+                                    {review?.name}
+                                  </span>
                                 </a>
                               ) : (
                                 <h3 className="font-semibold text-base mb-0">{review?.name}</h3>
@@ -360,7 +400,8 @@ export default function Template2({ userDetails, preview = false, edit = false, 
                     What do you actually use to build all this?
                   </Chat>
                   <Chat delay={300} onComplete={handleStepCompletion}>
-                    A mix of design, code, and a bit of chaos 😄<br />
+                    A mix of design, code, and a bit of chaos 😄
+                    <br />
                     But mostly:
                   </Chat>
                   <Chat delay={300} onComplete={handleStepCompletion} className="w-full">
@@ -378,10 +419,7 @@ export default function Template2({ userDetails, preview = false, edit = false, 
                               className="w-[34px] h-[34px] "
                             />
                           )}
-                          <Text
-                            size="p-xsmall"
-                            className="text-tools-card-item-text-color"
-                          >
+                          <Text size="p-xsmall" className="text-tools-card-item-text-color">
                             {tool?.label}
                           </Text>
                         </div>
@@ -396,12 +434,19 @@ export default function Template2({ userDetails, preview = false, edit = false, 
               ) : null;
             }
             if (item === "about") {
-              return activeStep >= step && isSectionVisible("about") && (edit || (userDetails?.about !== null && userDetails?.about !== undefined)) ? (
+              return activeStep >= step &&
+                isSectionVisible("about") &&
+                (edit || (userDetails?.about !== null && userDetails?.about !== undefined)) ? (
                 <div key={item} id="section-about" className="flex flex-col gap-6">
                   <Chat direction="right" delay={400} onComplete={handleStepCompletion}>
                     Tell me a little about yourself?
                   </Chat>
-                  <Chat direction="left" delay={200} onComplete={handleStepCompletion} className="w-full">
+                  <Chat
+                    direction="left"
+                    delay={200}
+                    onComplete={handleStepCompletion}
+                    className="w-full"
+                  >
                     <AboutMeContent
                       userDetails={userDetails}
                       edit={false}
@@ -413,7 +458,10 @@ export default function Template2({ userDetails, preview = false, edit = false, 
               ) : null;
             }
             if (item === "works") {
-              return activeStep >= step && experiences && experiences?.length > 0 && isSectionVisible("works") ? (
+              return activeStep >= step &&
+                experiences &&
+                experiences?.length > 0 &&
+                isSectionVisible("works") ? (
                 <div key={item} id="section-works" className="flex flex-col gap-6">
                   <Chat direction="right" delay={400} onComplete={handleStepCompletion}>
                     Where have you worked so far?
@@ -428,39 +476,41 @@ export default function Template2({ userDetails, preview = false, edit = false, 
                     onComplete={handleStepCompletion}
                   >
                     <div className="flex flex-col gap-6">
-                      {(showAllExperiences ? experiences : experiences?.slice(0, 3))?.map((experience) => (
-                        <div key={experience?._id}>
-                          <div className="flex">
-                            <ExperienceShape className="w-[54px]" />
-                            <div className="mt-[14px] flex-1">
-                              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-2">
-                                <span className="font-semibold text-base text-foreground">
-                                  {experience?.role}
+                      {(showAllExperiences ? experiences : experiences?.slice(0, 3))?.map(
+                        (experience) => (
+                          <div key={experience?._id}>
+                            <div className="flex">
+                              <ExperienceShape className="w-[54px]" />
+                              <div className="mt-[14px] flex-1">
+                                <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-2">
+                                  <span className="font-semibold text-base text-foreground">
+                                    {experience?.role}
+                                  </span>
+                                  <span className="text-foreground/30">at</span>
+                                  <span className="font-semibold text-base text-foreground">
+                                    {experience?.company}
+                                  </span>
+                                </div>
+                                <span className="text-xs font-medium text-foreground/40 uppercase tracking-wider">
+                                  {`${experience?.startMonth} ${experience?.startYear} - ${experience?.currentlyWorking ? "Present" : `${experience?.endMonth} ${experience?.endYear}`}`}
                                 </span>
-                                <span className="text-foreground/30">at</span>
-                                <span className="font-semibold text-base text-foreground">
-                                  {experience?.company}
-                                </span>
-                              </div>
-                              <span className="text-xs font-medium text-foreground/40 uppercase tracking-wider">
-                                {`${experience?.startMonth} ${experience?.startYear} - ${experience?.currentlyWorking ? "Present" : `${experience?.endMonth} ${experience?.endYear}`}`}
-                              </span>
-                              <div className="text-sm text-foreground/60 leading-relaxed mt-2">
-                                <ClampableTiptapContent
-                                  content={experience?.description || ""}
-                                  mode="work"
-                                  enableBulletList={true}
-                                  maxLines={3}
-                                  itemId={experience?._id}
-                                  expandedIds={expandedExperienceCards}
-                                  onToggleExpand={toggleExpandExperience}
-                                  buttonClassName="mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
-                                />
+                                <div className="text-sm text-foreground/60 leading-relaxed mt-2">
+                                  <ClampableTiptapContent
+                                    content={experience?.description || ""}
+                                    mode="work"
+                                    enableBulletList={true}
+                                    maxLines={3}
+                                    itemId={experience?._id}
+                                    expandedIds={expandedExperienceCards}
+                                    onToggleExpand={toggleExpandExperience}
+                                    buttonClassName="mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
+                                  />
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      ))}
+                        )
+                      )}
                       {!showAllExperiences && experiences?.length > 3 && (
                         <div className="flex justify-center">
                           <ButtonNew
@@ -495,47 +545,29 @@ export default function Template2({ userDetails, preview = false, edit = false, 
               >
                 <div className="flex flex-col lg:flex-row gap-[24px]">
                   {portfolios?.dribbble && (
-                    <Link
-                      href={portfolios?.dribbble}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
+                    <Link href={portfolios?.dribbble} target="_blank" rel="noopener noreferrer">
                       <Button
                         text={"Dribbble"}
                         type="secondary"
-                        icon={
-                          <DribbbleIcon className="text-df-icon-color cursor-pointer" />
-                        }
+                        icon={<DribbbleIcon className="text-df-icon-color cursor-pointer" />}
                       />
                     </Link>
                   )}
                   {portfolios?.notion && (
-                    <Link
-                      href={portfolios?.notion}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
+                    <Link href={portfolios?.notion} target="_blank" rel="noopener noreferrer">
                       <Button
                         text={"Notion"}
                         type="secondary"
-                        icon={
-                          <NotionIcon className="text-df-icon-color cursor-pointer" />
-                        }
+                        icon={<NotionIcon className="text-df-icon-color cursor-pointer" />}
                       />
                     </Link>
                   )}
                   {portfolios?.medium && (
-                    <Link
-                      href={portfolios?.medium}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
+                    <Link href={portfolios?.medium} target="_blank" rel="noopener noreferrer">
                       <Button
                         text={"Medium"}
                         type="secondary"
-                        icon={
-                          <MediumIcon className="text-df-icon-color cursor-pointer" />
-                        }
+                        icon={<MediumIcon className="text-df-icon-color cursor-pointer" />}
                       />
                     </Link>
                   )}
@@ -546,106 +578,68 @@ export default function Template2({ userDetails, preview = false, edit = false, 
 
           {activeStep >= 10 &&
             (resume ||
-              (socials &&
-                Object.values(socials).some(
-                  (social) => social && social != ""
-                ))) && (
+              (socials && Object.values(socials).some((social) => social && social != ""))) && (
               <>
-                <Chat
-                  direction="right"
-                  delay={400}
-                  onComplete={handleStepCompletion}
-                >
+                <Chat direction="right" delay={400} onComplete={handleStepCompletion}>
                   Where can I reach you?
                 </Chat>
-                <Chat direction="left" className="w-full">You can reach me here 👇🏻</Chat>
+                <Chat direction="left" className="w-full">
+                  You can reach me here 👇🏻
+                </Chat>
                 {resume && (
                   <Chat direction="left" className="w-full pb-5">
-                    <a
-                      href={userDetails?.resume?.url}
-                      download={true}
-                      target="_blank"
-                    >
+                    <a href={userDetails?.resume?.url} download={true} target="_blank">
                       <Button
                         text={"Download Resume"}
                         customClass="w-full justify-start"
                         type="secondary"
-                        icon={
-                          <NoteIcon className="text-df-icon-color cursor-pointer" />
-                        }
+                        icon={<NoteIcon className="text-df-icon-color cursor-pointer" />}
                       />
                     </a>
                   </Chat>
                 )}
 
-                {socials &&
-                  Object.values(socials).some(
-                    (social) => social && social != ""
-                  ) && (
-                    <Chat direction="left" className="w-full pb-5" delay={200}>
-                      <div className="flex flex-col lg:flex-row gap-[24px]">
-                        {socials?.instagram && (
-                          <Link
-                            href={socials?.instagram}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <Button
-                              text={"Instagram"}
-                              type="secondary"
-                              icon={
-                                <InstagramIcon className="text-df-icon-color cursor-pointer" />
-                              }
-                            />
-                          </Link>
-                        )}
+                {socials && Object.values(socials).some((social) => social && social != "") && (
+                  <Chat direction="left" className="w-full pb-5" delay={200}>
+                    <div className="flex flex-col lg:flex-row gap-[24px]">
+                      {socials?.instagram && (
+                        <Link href={socials?.instagram} target="_blank" rel="noopener noreferrer">
+                          <Button
+                            text={"Instagram"}
+                            type="secondary"
+                            icon={<InstagramIcon className="text-df-icon-color cursor-pointer" />}
+                          />
+                        </Link>
+                      )}
 
-                        {socials?.twitter && (
-                          <Link
-                            href={socials?.twitter}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <Button
-                              text={"Twitter"}
-                              type="secondary"
-                              icon={
-                                <TwitterIcon className="text-df-icon-color cursor-pointer" />
-                              }
-                            />
-                          </Link>
-                        )}
-                        {socials?.linkedin && (
-                          <Link
-                            href={socials?.linkedin}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <Button
-                              text={"LinkedIn"}
-                              type="secondary"
-                              icon={
-                                <LinkedInIcon className="text-df-icon-color cursor-pointer" />
-                              }
-                            />
-                          </Link>
-                        )}
-                      </div>
-                    </Chat>
-                  )}
+                      {socials?.twitter && (
+                        <Link href={socials?.twitter} target="_blank" rel="noopener noreferrer">
+                          <Button
+                            text={"Twitter"}
+                            type="secondary"
+                            icon={<TwitterIcon className="text-df-icon-color cursor-pointer" />}
+                          />
+                        </Link>
+                      )}
+                      {socials?.linkedin && (
+                        <Link href={socials?.linkedin} target="_blank" rel="noopener noreferrer">
+                          <Button
+                            text={"LinkedIn"}
+                            type="secondary"
+                            icon={<LinkedInIcon className="text-df-icon-color cursor-pointer" />}
+                          />
+                        </Link>
+                      )}
+                    </div>
+                  </Chat>
+                )}
               </>
             )}
 
           {activeStep >= 3 && (
-            <div
-              className="flex justify-center mt-10"
-              style={{ pointerEvent: "all" }}
-            >
+            <div className="flex justify-center mt-10" style={{ pointerEvent: "all" }}>
               <a href="#">
-                <GoUp
-                  className="animate-bounce cursor-pointer"
-                  style={{ cursor: "pointer" }}
-                />
+                <GoUp className="animate-bounce cursor-pointer" style={{ cursor: "pointer" }} />
               </a>
             </div>
           )}

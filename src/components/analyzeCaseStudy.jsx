@@ -55,11 +55,8 @@ export default function AnalyzeCaseStudy({
   wordCount,
   isAnalyzing,
 }) {
-  const {
-    setShowUpgradeModal,
-    setUpgradeModalSource,
-    analysisCreditsRemaining,
-  } = useGlobalContext();
+  const { setShowUpgradeModal, setUpgradeModalSource, analysisCreditsRemaining } =
+    useGlobalContext();
 
   const outOfCredits = analysisCreditsRemaining !== null && analysisCreditsRemaining <= 0;
   const tooShort = wordCount !== null && wordCount < 400;
@@ -73,20 +70,9 @@ export default function AnalyzeCaseStudy({
 
   const renderItems = suggestions.map((item) => {
     return (
-      <div
-        className="mt-4 bg-muted rounded-2xl p-3 border border-border"
-        key={item.metric}
-      >
+      <div className="mt-4 bg-muted rounded-2xl p-3 border border-border" key={item.metric}>
         <div className="flex gap-2 items-center">
-          {
-            status[
-            item.score > 8
-              ? category.good
-              : item.score > 6
-                ? category.notBad
-                : category.bad
-            ]
-          }
+          {status[item.score > 8 ? category.good : item.score > 6 ? category.notBad : category.bad]}
           <Text as="h3" size="p-xsmall" className="font-semibold">
             {item.metric}
           </Text>
@@ -114,19 +100,12 @@ export default function AnalyzeCaseStudy({
           <Text size="p-small" className="font-semibold font-inter">
             Scorecard
           </Text>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8"
-            onClick={setShowModal}
-          >
+          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={setShowModal}>
             <CloseIcon className="text-icon-color" />
           </Button>
         </div>
       </header>
-      <main
-        className={`flex-1 overflow-y-auto p-8 relative ${isAnalyzing && "opacity-20"}`}
-      >
+      <main className={`flex-1 overflow-y-auto p-8 relative ${isAnalyzing && "opacity-20"}`}>
         <div className="flex flex-col justify-center items-center mb-8">
           {rating === 1
             ? states["good"].image
@@ -148,7 +127,10 @@ export default function AnalyzeCaseStudy({
         <div className="flex justify-end items-center gap-2">
           {outOfCredits ? (
             <Button
-              onClick={() => { setUpgradeModalSource("analyze"); setShowUpgradeModal(true); }}
+              onClick={() => {
+                setUpgradeModalSource("analyze");
+                setShowUpgradeModal(true);
+              }}
             >
               <Zap size={13} fill="currentColor" strokeWidth={0} />
               Upgrade to Re-analyze
@@ -158,10 +140,7 @@ export default function AnalyzeCaseStudy({
               <Tooltip>
                 <TooltipTrigger asChild>
                   <span className={isDisabled ? "cursor-not-allowed inline-flex" : "inline-flex"}>
-                    <Button
-                      disabled={isDisabled || isAnalyzing}
-                      onClick={analyzeCallback}
-                    >
+                    <Button disabled={isDisabled || isAnalyzing} onClick={analyzeCallback}>
                       {isAnalyzing ? "Analyzing…" : "Analyze with AI"}
                     </Button>
                   </span>

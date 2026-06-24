@@ -3,7 +3,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronLeft, ChevronRight, Clapperboard } from "lucide-react";
 import Lottie from "lottie-react";
 import aiAssistantAnimation from "@/assets/AI-Assistant.json";
-import { KanbanColumn, KanbanColumnContent, KanbanItem, KanbanItemHandle } from "@/components/ui/kanban";
+import {
+  KanbanColumn,
+  KanbanColumnContent,
+  KanbanItem,
+  KanbanItemHandle,
+} from "@/components/ui/kanban";
 import { JobCard } from "./JobCard";
 import { COL_LABELS } from "@/data/jobs";
 
@@ -18,7 +23,7 @@ export function PipelineCol({
   onMoveTo,
   onDecide,
   colIndex = 0,
-  onExhausted,      // undefined = exhausted (hide button); function = show "Get More" button
+  onExhausted, // undefined = exhausted (hide button); function = show "Get More" button
   isRescanning = false,
   isListPhase = false,
   isCollapsed,
@@ -33,7 +38,10 @@ export function PipelineCol({
   const [bannerReady, setBannerReady] = useState(false);
 
   useEffect(() => {
-    if (!offerThreshold) { setBannerReady(false); return; }
+    if (!offerThreshold) {
+      setBannerReady(false);
+      return;
+    }
     const t = setTimeout(() => setBannerReady(true), 1200);
     return () => clearTimeout(t);
   }, [offerThreshold]);
@@ -67,7 +75,9 @@ export function PipelineCol({
                 onDismiss={onDismiss ? () => onDismiss(job.id) : undefined}
                 onMockInterview={!isPicks ? () => onMockInterview(job.id) : undefined}
                 onAskScout={() => onAskScout(job.id)}
-                onMoveTo={!isPicks && onMoveTo ? (targetColId) => onMoveTo(job.id, targetColId) : undefined}
+                onMoveTo={
+                  !isPicks && onMoveTo ? (targetColId) => onMoveTo(job.id, targetColId) : undefined
+                }
                 currentColId={colId}
                 joyrideActive={isPicks && joyrideActive}
                 joyrideFirst={isPicks && joyrideActive && idx === 0}
@@ -165,7 +175,8 @@ export function PipelineCol({
   if (onToggleCollapse) {
     const morphEase = [0.22, 1, 0.36, 1];
     const morphDur = 0.42;
-    const colBgCollapsible = "relative flex-1 rounded-xl bg-[var(--shell-bg)] overflow-hidden h-full";
+    const colBgCollapsible =
+      "relative flex-1 rounded-xl bg-[var(--shell-bg)] overflow-hidden h-full";
     return (
       <KanbanColumn value={colId} className={colBgCollapsible}>
         {/* Expanded state */}
@@ -251,8 +262,12 @@ export function PipelineCol({
   return (
     <KanbanColumn value={colId} className={colBg}>
       <div className="flex items-center gap-2 px-4 pt-4 pb-2 flex-shrink-0 select-none">
-        <span className="font-jetbrains-mono text-[11px] font-semibold uppercase tracking-wider text-foreground"
-          style={{ opacity: 0.5 }}>{COL_LABELS[colId]}</span>
+        <span
+          className="font-jetbrains-mono text-[11px] font-semibold uppercase tracking-wider text-foreground"
+          style={{ opacity: 0.5 }}
+        >
+          {COL_LABELS[colId]}
+        </span>
         {jobs.length > 0 && (
           <span className="text-[10px] font-semibold text-foreground/40 bg-black/[0.08] dark:bg-white/[0.08] rounded-full px-1.5 py-0.5 leading-none">
             {jobs.length}
@@ -275,7 +290,10 @@ export function PipelineCol({
             <div className="relative overflow-hidden rounded-xl bg-white dark:bg-card border border-black/[0.06] dark:border-border shadow-sm">
               <div
                 className="absolute inset-x-0 top-0 h-10 pointer-events-none"
-                style={{ background: "radial-gradient(ellipse 70% 100% at 50% 0%, rgba(192,74,56,0.18) 0%, rgba(245,166,35,0.10) 40%, transparent 100%)" }}
+                style={{
+                  background:
+                    "radial-gradient(ellipse 70% 100% at 50% 0%, rgba(192,74,56,0.18) 0%, rgba(245,166,35,0.10) 40%, transparent 100%)",
+                }}
               />
               <div className="px-3.5 pt-4 pb-3.5">
                 <div className="flex items-center gap-2.5 mb-3">
@@ -283,11 +301,18 @@ export function PipelineCol({
                     <Lottie animationData={aiAssistantAnimation} loop={true} />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-[14px] font-semibold text-foreground/85 leading-tight">Two offers. Big decision.</p>
-                    <p className="text-[12px] font-normal text-foreground/45 mt-0.5 leading-snug">Let Scout help you think it through.</p>
+                    <p className="text-[14px] font-semibold text-foreground/85 leading-tight">
+                      Two offers. Big decision.
+                    </p>
+                    <p className="text-[12px] font-normal text-foreground/45 mt-0.5 leading-snug">
+                      Let Scout help you think it through.
+                    </p>
                   </div>
                 </div>
-                <button onClick={onDecide} className="w-full flex items-center justify-center gap-1.5 bg-foreground text-background text-[12px] font-medium h-8 rounded-lg hover:opacity-85 transition-opacity cursor-pointer">
+                <button
+                  onClick={onDecide}
+                  className="w-full flex items-center justify-center gap-1.5 bg-foreground text-background text-[12px] font-medium h-8 rounded-lg hover:opacity-85 transition-opacity cursor-pointer"
+                >
                   Help me decide
                 </button>
               </div>

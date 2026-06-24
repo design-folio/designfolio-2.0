@@ -17,8 +17,7 @@ export const StardustButton = ({
     border: 0,
     position: "relative",
     borderRadius: "var(--radius)",
-    background:
-      "linear-gradient(135deg, #f9d423 0%, #e8b923 50%, #d4a017 100%)",
+    background: "linear-gradient(135deg, #f9d423 0%, #e8b923 50%, #d4a017 100%)",
     transition: "all 0.2s ease",
     // boxShadow: `
     //   inset 0 0.4rem 1rem rgba(255, 255, 255, 0.6),

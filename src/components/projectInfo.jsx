@@ -1,8 +1,4 @@
-import {
-  _analyzeCaseStudy,
-  _analyzeCaseStudyStatus,
-  _updateProject,
-} from "@/network/post-request";
+import { _analyzeCaseStudy, _analyzeCaseStudyStatus, _updateProject } from "@/network/post-request";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import * as Yup from "yup";
@@ -11,7 +7,11 @@ import LockIcon from "../../public/assets/svgs/lock.svg";
 import LockOpenIcon from "../../public/assets/svgs/lock-open.svg";
 import Button from "./button";
 import { Button as UIButton } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -66,7 +66,13 @@ export default function ProjectInfo({
   const { setTheme } = useTheme();
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
-  const { wordCount, setShowUpgradeModal, setUpgradeModalSource, analysisCreditsRemaining, setAnalysisCreditsRemaining } = useGlobalContext();
+  const {
+    wordCount,
+    setShowUpgradeModal,
+    setUpgradeModalSource,
+    analysisCreditsRemaining,
+    setAnalysisCreditsRemaining,
+  } = useGlobalContext();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [AnalyzeStatus, setAnalyzeStatus] = useState(false);
   // ownerTemplate (from SSR prop) takes priority; fall back to the logged-in user's template
@@ -130,8 +136,7 @@ export default function ProjectInfo({
 
   const handleOnBlur = (field, e) => {
     saveProject(field, e.target.textContent);
-    e.target.textContent =
-      e.target.textContent.length > 0 ? e.target.textContent : "Type here...";
+    e.target.textContent = e.target.textContent.length > 0 ? e.target.textContent : "Type here...";
   };
 
   const [suggestions, setSuggestions] = useState([]);
@@ -141,13 +146,18 @@ export default function ProjectInfo({
   const needsMoreWords = suggestions?.length === 0 && wordCount !== null && wordCount < 400;
   const outOfCredits = analysisCreditsRemaining !== null && analysisCreditsRemaining <= 0;
   const isAnalyzeDisabled = isAnalyzing || needsMoreWords;
-  const analyzeButtonLabel = isAnalyzing ? "Analyzing..." : suggestions?.length > 0 ? "Show Score Card" : "Analyze with AI";
+  const analyzeButtonLabel = isAnalyzing
+    ? "Analyzing..."
+    : suggestions?.length > 0
+      ? "Show Score Card"
+      : "Analyze with AI";
   const tooltipMessage = outOfCredits
     ? "Upgrade to Pro to analyze Case Study"
     : needsMoreWords
       ? "400 words required to analyze"
-      : wordCount != null ? `${wordCount} words` : null;
-
+      : wordCount != null
+        ? `${wordCount} words`
+        : null;
 
   const handleAnalyzeClick = async () => {
     if (suggestions.length > 0) {
@@ -171,7 +181,9 @@ export default function ProjectInfo({
       setSuggestions(response.data.response);
       setScore(response.data.weightedAverageRounded);
       setRating(response.data.rating);
-      setAnalysisCreditsRemaining((prev) => (prev !== null && prev !== Infinity ? Math.max(0, prev - 1) : prev));
+      setAnalysisCreditsRemaining((prev) =>
+        prev !== null && prev !== Infinity ? Math.max(0, prev - 1) : prev
+      );
     } catch (e) {
       setUpgradeModalSource("analyze");
       setShowUpgradeModal(true);
@@ -193,7 +205,9 @@ export default function ProjectInfo({
       setSuggestions(response.data.response);
       setScore(response.data.weightedAverageRounded);
       setRating(response.data.rating);
-      setAnalysisCreditsRemaining((prev) => (prev !== null && prev !== Infinity ? Math.max(0, prev - 1) : prev));
+      setAnalysisCreditsRemaining((prev) =>
+        prev !== null && prev !== Infinity ? Math.max(0, prev - 1) : prev
+      );
     } catch (e) {
       setUpgradeModalSource("analyze");
       setShowUpgradeModal(true);
@@ -205,12 +219,9 @@ export default function ProjectInfo({
   const validationSchema = Yup.object().shape({
     password: isPassword
       ? Yup.string()
-        .required("Password is required.")
-        .min(6, "Password is too short - should be 6 chars minimum.")
-      : Yup.string().min(
-        6,
-        "Password is too short - should be 6 chars minimum."
-      ),
+          .required("Password is required.")
+          .min(6, "Password is too short - should be 6 chars minimum.")
+      : Yup.string().min(6, "Password is too short - should be 6 chars minimum."),
   });
 
   const handleBack = () => {
@@ -218,12 +229,10 @@ export default function ProjectInfo({
   };
 
   const handlePasswordRadio = async () => {
-    await _updateProject(projectId, { protected: !isPassword }).then(
-      (res) => {
-        updateProjectCache("protected", res?.data?.project?.protected);
-        setPassword((prev) => !prev);
-      }
-    );
+    await _updateProject(projectId, { protected: !isPassword }).then((res) => {
+      updateProjectCache("protected", res?.data?.project?.protected);
+      setPassword((prev) => !prev);
+    });
   };
 
   const handlePasswordSave = () => {
@@ -293,7 +302,10 @@ export default function ProjectInfo({
                 onClick={handleBack}
                 className="flex items-center gap-1.5 text-[13px] font-medium text-[#7A736C] dark:text-[#9E9893] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7] transition-colors group"
               >
-                <ChevronLeft size={18} className="transition-transform group-hover:-translate-x-1" />
+                <ChevronLeft
+                  size={18}
+                  className="transition-transform group-hover:-translate-x-1"
+                />
                 Go back
               </button>
             )}
@@ -308,7 +320,16 @@ export default function ProjectInfo({
                         size="icon"
                         className="h-7 w-7 rounded-full border border-black/10 dark:border-white/10 bg-white/50 dark:bg-[#2A2520]/50 hover:bg-black/5 dark:hover:bg-white/5 text-[#1A1A1A] dark:text-[#F0EDE7] transition-all focus-visible:ring-0 focus-visible:ring-offset-0"
                       >
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <svg
+                          width="13"
+                          height="13"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
                           <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
                           <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                         </svg>
@@ -373,7 +394,12 @@ export default function ProjectInfo({
                   <TooltipProvider delayDuration={200}>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <span className={cn("inline-flex", isAnalyzeDisabled ? "cursor-not-allowed" : "cursor-pointer")}>
+                        <span
+                          className={cn(
+                            "inline-flex",
+                            isAnalyzeDisabled ? "cursor-not-allowed" : "cursor-pointer"
+                          )}
+                        >
                           <UIButton
                             variant="outline"
                             size="sm"
@@ -384,19 +410,53 @@ export default function ProjectInfo({
                               "bg-white/50 dark:bg-[#2A2520]/50 text-[#1A1A1A] dark:text-[#F0EDE7]",
                               "flex items-center gap-1.5 px-3 transition-all focus-visible:ring-0 focus-visible:ring-offset-0",
                               "cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed",
-                              !isAnalyzeDisabled && "hover:bg-black/5 dark:hover:bg-white/5",
+                              !isAnalyzeDisabled && "hover:bg-black/5 dark:hover:bg-white/5"
                             )}
                           >
                             {isAnalyzing ? (
-                              <svg className="w-[18px] h-[5px] shrink-0" viewBox="0 0 22 6" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <circle className="bounce" cx="3.03448" cy="3.0003" r="2.53448" fill="#FF553E" />
-                                <circle className="bounce" cx="11.0001" cy="3.0003" r="2.53448" fill="#FF553E" />
-                                <circle className="bounce" cx="18.9655" cy="3.0003" r="2.53448" fill="#FF553E" />
+                              <svg
+                                className="w-[18px] h-[5px] shrink-0"
+                                viewBox="0 0 22 6"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <circle
+                                  className="bounce"
+                                  cx="3.03448"
+                                  cy="3.0003"
+                                  r="2.53448"
+                                  fill="#FF553E"
+                                />
+                                <circle
+                                  className="bounce"
+                                  cx="11.0001"
+                                  cy="3.0003"
+                                  r="2.53448"
+                                  fill="#FF553E"
+                                />
+                                <circle
+                                  className="bounce"
+                                  cx="18.9655"
+                                  cy="3.0003"
+                                  r="2.53448"
+                                  fill="#FF553E"
+                                />
                               </svg>
                             ) : (
-                              <svg className="w-4 h-4 shrink-0" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M10.5 7L9.98415 8.39405C9.30774 10.222 8.96953 11.136 8.30278 11.8028C7.63603 12.4695 6.72204 12.8077 4.89405 13.4842L3.5 14L4.89405 14.5158C6.72204 15.1923 7.63603 15.5305 8.30278 16.1972C8.96953 16.864 9.30774 17.778 9.98415 19.6059L10.5 21L11.0158 19.6059C11.6923 17.778 12.0305 16.864 12.6972 16.1972C13.364 15.5305 14.278 15.1923 16.1059 14.5158L17.5 14L16.1059 13.4842C14.278 12.8077 13.364 12.4695 12.6972 11.8028C12.0305 11.136 11.6923 10.222 11.0158 8.39405L10.5 7Z" fill="#FF553E" />
-                                <path d="M18.5 3L18.2789 3.59745C17.989 4.38087 17.8441 4.77259 17.5583 5.05833C17.2726 5.34408 16.8809 5.48903 16.0975 5.77892L15.5 6L16.0975 6.22108C16.8809 6.51097 17.2726 6.65592 17.5583 6.94167C17.8441 7.22741 17.989 7.61913 18.2789 8.40255L18.5 9L18.7211 8.40255C19.011 7.61913 19.1559 7.22741 19.4417 6.94166C19.7274 6.65592 20.1191 6.51097 20.9025 6.22108L21.5 6L20.9025 5.77892C20.1191 5.48903 19.7274 5.34408 19.4417 5.05833C19.1559 4.77259 19.011 4.38087 18.7211 3.59745L18.5 3Z" fill="#FF553E" />
+                              <svg
+                                className="w-4 h-4 shrink-0"
+                                viewBox="0 0 25 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M10.5 7L9.98415 8.39405C9.30774 10.222 8.96953 11.136 8.30278 11.8028C7.63603 12.4695 6.72204 12.8077 4.89405 13.4842L3.5 14L4.89405 14.5158C6.72204 15.1923 7.63603 15.5305 8.30278 16.1972C8.96953 16.864 9.30774 17.778 9.98415 19.6059L10.5 21L11.0158 19.6059C11.6923 17.778 12.0305 16.864 12.6972 16.1972C13.364 15.5305 14.278 15.1923 16.1059 14.5158L17.5 14L16.1059 13.4842C14.278 12.8077 13.364 12.4695 12.6972 11.8028C12.0305 11.136 11.6923 10.222 11.0158 8.39405L10.5 7Z"
+                                  fill="#FF553E"
+                                />
+                                <path
+                                  d="M18.5 3L18.2789 3.59745C17.989 4.38087 17.8441 4.77259 17.5583 5.05833C17.2726 5.34408 16.8809 5.48903 16.0975 5.77892L15.5 6L16.0975 6.22108C16.8809 6.51097 17.2726 6.65592 17.5583 6.94167C17.8441 7.22741 17.989 7.61913 18.2789 8.40255L18.5 9L18.7211 8.40255C19.011 7.61913 19.1559 7.22741 19.4417 6.94166C19.7274 6.65592 20.1191 6.51097 20.9025 6.22108L21.5 6L20.9025 5.77892C20.1191 5.48903 19.7274 5.34408 19.4417 5.05833C19.1559 4.77259 19.011 4.38087 18.7211 3.59745L18.5 3Z"
+                                  fill="#FF553E"
+                                />
                               </svg>
                             )}
                             {analyzeButtonLabel}
@@ -404,7 +464,10 @@ export default function ProjectInfo({
                         </span>
                       </TooltipTrigger>
                       {tooltipMessage && (
-                        <TooltipContent side="bottom" className="bg-foreground text-background text-xs px-2 py-1 rounded">
+                        <TooltipContent
+                          side="bottom"
+                          className="bg-foreground text-background text-xs px-2 py-1 rounded"
+                        >
                           {tooltipMessage}
                         </TooltipContent>
                       )}
@@ -425,7 +488,9 @@ export default function ProjectInfo({
             contentEditable={edit}
             suppressContentEditableWarning
             onBlur={(e) => handleOnBlur("title", e)}
-            onFocus={(e) => { if (e.target.textContent === "Type here...") e.target.textContent = ""; }}
+            onFocus={(e) => {
+              if (e.target.textContent === "Type here...") e.target.textContent = "";
+            }}
           >
             {title ? title : "Type here..."}
           </h1>
@@ -436,7 +501,9 @@ export default function ProjectInfo({
               contentEditable={edit}
               suppressContentEditableWarning
               onBlur={(e) => handleOnBlur("description", e)}
-              onFocus={(e) => { if (e.target.textContent === "Type here...") e.target.textContent = ""; }}
+              onFocus={(e) => {
+                if (e.target.textContent === "Type here...") e.target.textContent = "";
+              }}
             >
               {description ? description : "Type here..."}
             </p>
@@ -472,10 +539,20 @@ export default function ProjectInfo({
         {monoDetailFields.length > 0 && (
           <div className="px-5 md:px-8 py-5">
             <div className="flex items-center gap-2 mb-4">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-[#463B34] dark:text-[#D4C9BC]">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                className="text-[#463B34] dark:text-[#D4C9BC]"
+              >
                 <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
               </svg>
-              <h2 className="text-[11px] font-bold text-[#463B34] dark:text-[#D4C9BC] font-mono uppercase tracking-widest">Project Details</h2>
+              <h2 className="text-[11px] font-bold text-[#463B34] dark:text-[#D4C9BC] font-mono uppercase tracking-widest">
+                Project Details
+              </h2>
             </div>
             <div className="border border-[#C8C4BD] dark:border-[#3A352E] rounded-lg overflow-hidden bg-[#E7E3D9] dark:bg-[#2A2520]">
               {monoDetailFields.map(({ key, label, value }, index) => (
@@ -483,14 +560,18 @@ export default function ProjectInfo({
                   key={key}
                   className={`flex justify-between items-center px-4 py-3 ${index !== monoDetailFields.length - 1 ? "border-b border-[#C8C4BD] dark:border-[#3A352E]" : ""}`}
                 >
-                  <span className="text-[12px] font-medium text-[#463B34] dark:text-[#D4C9BC] uppercase tracking-wide">{label}</span>
+                  <span className="text-[12px] font-medium text-[#463B34] dark:text-[#D4C9BC] uppercase tracking-wide">
+                    {label}
+                  </span>
                   <p
                     className="text-base text-[#7A736C] dark:text-[#B5AFA5]"
                     style={{ fontWeight: 450 }}
                     contentEditable={edit}
                     suppressContentEditableWarning
                     onBlur={(e) => handleOnBlur(key, e)}
-                    onFocus={(e) => { if (e.target.textContent === "Type here...") e.target.textContent = ""; }}
+                    onFocus={(e) => {
+                      if (e.target.textContent === "Type here...") e.target.textContent = "";
+                    }}
                     onInput={handleInput}
                   >
                     {value ? value : "Type here..."}
@@ -522,7 +603,6 @@ export default function ProjectInfo({
   return (
     <div className="bg-df-section-card-bg-color rounded-[26px] p-[16px] md:p-[32px]">
       <div className="flex justify-between items-center mb-2">
-
         {!isMacOS && (
           <Button
             text="Go Back"
@@ -541,11 +621,7 @@ export default function ProjectInfo({
                   type="secondary"
                   size="small"
                   customClass="hidden md:flex"
-                  text={
-                    suggestions?.length > 0
-                      ? "Show Score Card"
-                      : "Analyze with AI"
-                  }
+                  text={suggestions?.length > 0 ? "Show Score Card" : "Analyze with AI"}
                   onClick={() => handleAnalyzeClick()}
                   iconPosition={isAnalyzing ? "right" : "left"}
                   icon={
@@ -586,9 +662,7 @@ export default function ProjectInfo({
                   type="secondary"
                   size="small"
                   onClick={() =>
-                    setPopoverMenu((prev) =>
-                      prev == popovers.password ? null : popovers.password
-                    )
+                    setPopoverMenu((prev) => (prev == popovers.password ? null : popovers.password))
                   }
                   icon={
                     isPassword ? (
@@ -601,10 +675,11 @@ export default function ProjectInfo({
                 />
 
                 <div
-                  className={`pt-2 origin-top-right absolute z-50 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${popoverMenu === popovers.password
-                    ? "opacity-100 scale-100"
-                    : "opacity-0 scale-90 pointer-events-none"
-                    }`}
+                  className={`pt-2 origin-top-right absolute z-50 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${
+                    popoverMenu === popovers.password
+                      ? "opacity-100 scale-100"
+                      : "opacity-0 scale-90 pointer-events-none"
+                  }`}
                 >
                   <div className=" w-[350px] md:w-[386px]  bg-popover-bg-color rounded-2xl shadow-lg border-[5px] border-popover-border-color p-2">
                     <Formik
@@ -618,14 +693,8 @@ export default function ProjectInfo({
                         _updateProject(projectId, {
                           password: values.password,
                         }).then((res) => {
-                          updateProjectCache(
-                            "password",
-                            res?.data?.project?.password
-                          );
-                          updateProjectCache(
-                            "protected",
-                            res?.data?.project?.protected
-                          );
+                          updateProjectCache("password", res?.data?.project?.password);
+                          updateProjectCache("protected", res?.data?.project?.protected);
                           actions.setSubmitting(false);
                           toast.success("Password has been updated.");
                         });
@@ -649,10 +718,7 @@ export default function ProjectInfo({
                                   Protect your project if you&apos;ve an NDA.
                                 </Text>
                               </div>
-                              <Toggle
-                                onClick={handlePasswordRadio}
-                                value={isPassword}
-                              />
+                              <Toggle onClick={handlePasswordRadio} value={isPassword} />
                             </div>
                             {isPassword && (
                               <>
@@ -660,10 +726,11 @@ export default function ProjectInfo({
                                   <Field
                                     name="password"
                                     type={showEye ? "text" : "password"}
-                                    className={`text-input mt-2 ${errors.password &&
+                                    className={`text-input mt-2 ${
+                                      errors.password &&
                                       touched.password &&
                                       "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                                      }`}
+                                    }`}
                                     placeholder="Password"
                                     autocomplete="new-password"
                                   />
@@ -731,23 +798,21 @@ export default function ProjectInfo({
         {title ? title : "Type here..."}
       </h1>
 
-      {
-        (edit || !!description) && (
-          <p
-            className="text-[16px] text-df-description-color font-inter font-[500] mt-2 min-w-0 webkit-fill"
-            contentEditable={edit}
-            suppressContentEditableWarning
-            onBlur={(e) => handleOnBlur("description", e)}
-            onFocus={(e) => {
-              if (e.target.textContent === "Type here...") {
-                e.target.textContent = "";
-              }
-            }}
-          >
-            {description ? description : "Type here..."}
-          </p>
-        )
-      }
+      {(edit || !!description) && (
+        <p
+          className="text-[16px] text-df-description-color font-inter font-[500] mt-2 min-w-0 webkit-fill"
+          contentEditable={edit}
+          suppressContentEditableWarning
+          onBlur={(e) => handleOnBlur("description", e)}
+          onFocus={(e) => {
+            if (e.target.textContent === "Type here...") {
+              e.target.textContent = "";
+            }
+          }}
+        >
+          {description ? description : "Type here..."}
+        </p>
+      )}
 
       <div className="flex flex-col gap-4 md:grid md:grid-cols-4 md:gap-6 mt-4">
         {(edit || !!client) && (
@@ -774,9 +839,7 @@ export default function ProjectInfo({
 
         {(edit || !!role) && (
           <div>
-            <p className="text-[14px] text-df-heading-color font-inter font-[500]">
-              My Role
-            </p>
+            <p className="text-[14px] text-df-heading-color font-inter font-[500]">My Role</p>
             <p
               className="text-[14px] text-df-description-color font-inter font-[500]"
               contentEditable={edit}
@@ -795,9 +858,7 @@ export default function ProjectInfo({
         )}
         {(edit || !!industry) && (
           <div>
-            <p className="text-[14px] text-df-heading-color font-inter font-[500]">
-              Industry
-            </p>
+            <p className="text-[14px] text-df-heading-color font-inter font-[500]">Industry</p>
             <p
               className="text-[14px] text-df-description-color font-inter font-[500]"
               contentEditable={edit}
@@ -816,9 +877,7 @@ export default function ProjectInfo({
         )}
         {(edit || !!platform) && (
           <div>
-            <p className="text-[14px] text-df-heading-color font-inter font-[500]">
-              Platform
-            </p>
+            <p className="text-[14px] text-df-heading-color font-inter font-[500]">Platform</p>
             <p
               className="text-[14px] text-df-description-color font-inter font-[500]"
               contentEditable={edit}
@@ -836,32 +895,28 @@ export default function ProjectInfo({
           </div>
         )}
       </div>
-      {
-        edit ? (
-          <ImageWithOverlayAndPicker
+      {edit ? (
+        <ImageWithOverlayAndPicker
+          src={thumbnail?.url}
+          project={projectDetails}
+          aspectRatio="3/2"
+          recommendedSize="1600 × 900px"
+          className="mt-6 md:mt-8"
+        />
+      ) : (
+        <figure className="relative w-full aspect-[3/2] rounded-[20px] overflow-hidden mt-6 md:mt-8">
+          <img
             src={thumbnail?.url}
-            project={projectDetails}
-            aspectRatio="3/2"
-            recommendedSize="1600 × 900px"
-            className="mt-6 md:mt-8"
+            alt="project image"
+            className={`w-full h-full object-cover transition-opacity duration-100 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
+            loading="lazy"
+            fetchPriority="high"
+            decoding="async"
+            onLoad={() => setImageLoaded(true)}
           />
-        ) : (
-          <figure className="relative w-full aspect-[3/2] rounded-[20px] overflow-hidden mt-6 md:mt-8">
-            <img
-              src={thumbnail?.url}
-              alt="project image"
-              className={`w-full h-full object-cover transition-opacity duration-100 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
-              loading="lazy"
-              fetchPriority="high"
-              decoding="async"
-              onLoad={() => setImageLoaded(true)}
-            />
-            {!imageLoaded && (
-              <div className="absolute inset-0 bg-df-placeholder-color" />
-            )}
-          </figure>
-        )
-      }
+          {!imageLoaded && <div className="absolute inset-0 bg-df-placeholder-color" />}
+        </figure>
+      )}
       <Modal show={showModal} className={"md:block"}>
         <AnalyzeCaseStudy
           wordCount={wordCount}
@@ -873,16 +928,21 @@ export default function ProjectInfo({
           isAnalyzing={isAnalyzing}
         />
       </Modal>
-    </div >
+    </div>
   );
 }
-
 
 function AnalyzeIcon({ className = "w-4 h-4" }) {
   return (
     <svg className={className} viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M10.5 7L9.98415 8.39405C9.30774 10.222 8.96953 11.136 8.30278 11.8028C7.63603 12.4695 6.72204 12.8077 4.89405 13.4842L3.5 14L4.89405 14.5158C6.72204 15.1923 7.63603 15.5305 8.30278 16.1972C8.96953 16.864 9.30774 17.778 9.98415 19.6059L10.5 21L11.0158 19.6059C11.6923 17.778 12.0305 16.864 12.6972 16.1972C13.364 15.5305 14.278 15.1923 16.1059 14.5158L17.5 14L16.1059 13.4842C14.278 12.8077 13.364 12.4695 12.6972 11.8028C12.0305 11.136 11.6923 10.222 11.0158 8.39405L10.5 7Z" fill="#FF553E" />
-      <path d="M18.5 3L18.2789 3.59745C17.989 4.38087 17.8441 4.77259 17.5583 5.05833C17.2726 5.34408 16.8809 5.48903 16.0975 5.77892L15.5 6L16.0975 6.22108C16.8809 6.51097 17.2726 6.65592 17.5583 6.94167C17.8441 7.22741 17.989 7.61913 18.2789 8.40255L18.5 9L18.7211 8.40255C19.011 7.61913 19.1559 7.22741 19.4417 6.94166C19.7274 6.65592 20.1191 6.51097 20.9025 6.22108L21.5 6L20.9025 5.77892C20.1191 5.48903 19.7274 5.34408 19.4417 5.05833C19.1559 4.77259 19.011 4.38087 18.7211 3.59745L18.5 3Z" fill="#FF553E" />
+      <path
+        d="M10.5 7L9.98415 8.39405C9.30774 10.222 8.96953 11.136 8.30278 11.8028C7.63603 12.4695 6.72204 12.8077 4.89405 13.4842L3.5 14L4.89405 14.5158C6.72204 15.1923 7.63603 15.5305 8.30278 16.1972C8.96953 16.864 9.30774 17.778 9.98415 19.6059L10.5 21L11.0158 19.6059C11.6923 17.778 12.0305 16.864 12.6972 16.1972C13.364 15.5305 14.278 15.1923 16.1059 14.5158L17.5 14L16.1059 13.4842C14.278 12.8077 13.364 12.4695 12.6972 11.8028C12.0305 11.136 11.6923 10.222 11.0158 8.39405L10.5 7Z"
+        fill="#FF553E"
+      />
+      <path
+        d="M18.5 3L18.2789 3.59745C17.989 4.38087 17.8441 4.77259 17.5583 5.05833C17.2726 5.34408 16.8809 5.48903 16.0975 5.77892L15.5 6L16.0975 6.22108C16.8809 6.51097 17.2726 6.65592 17.5583 6.94167C17.8441 7.22741 17.989 7.61913 18.2789 8.40255L18.5 9L18.7211 8.40255C19.011 7.61913 19.1559 7.22741 19.4417 6.94166C19.7274 6.65592 20.1191 6.51097 20.9025 6.22108L21.5 6L20.9025 5.77892C20.1191 5.48903 19.7274 5.34408 19.4417 5.05833C19.1559 4.77259 19.011 4.38087 18.7211 3.59745L18.5 3Z"
+        fill="#FF553E"
+      />
     </svg>
   );
 }

@@ -46,8 +46,7 @@ const SOURCE_LABELS = {
   "unstop.com": "Unstop",
 };
 
-export const getSourceLabel = (source = "") =>
-  SOURCE_LABELS[source] ?? (source || "Job Board");
+export const getSourceLabel = (source = "") => SOURCE_LABELS[source] ?? (source || "Job Board");
 
 // ── Salary display ──────────────────────────────────────────────────────────
 
@@ -58,9 +57,7 @@ export const formatSalary = (salary) => {
   const period = salary.period ? `/ ${salary.period}` : "";
   if (salary.min && salary.max)
     return `${currency}${salary.min.toLocaleString()} – ${currency}${salary.max.toLocaleString()} ${period}`.trim();
-  if (salary.min)
-    return `From ${currency}${salary.min.toLocaleString()} ${period}`.trim();
-  if (salary.max)
-    return `Up to ${currency}${salary.max.toLocaleString()} ${period}`.trim();
+  if (salary.min) return `From ${currency}${salary.min.toLocaleString()} ${period}`.trim();
+  if (salary.max) return `Up to ${currency}${salary.max.toLocaleString()} ${period}`.trim();
   return salary.raw ?? null;
 };

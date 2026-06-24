@@ -41,15 +41,16 @@ const LandingVideoSection = forwardRef(function LandingVideoSection({ isDark }, 
             return (
               <button
                 key={i}
-                onClick={() => { setHeroStep(i); setHeroProgress(0); }}
+                onClick={() => {
+                  setHeroStep(i);
+                  setHeroProgress(0);
+                }}
                 className="relative flex flex-col items-start gap-2 cursor-pointer group "
               >
                 <span
                   className={cn(
                     "inline-flex items-center gap-1.5 text-[13px] font-semibold leading-none transition-colors duration-200 whitespace-nowrap cursor-pointer",
-                    isActive
-                      ? "text-[--lp-text]"
-                      : "text-lp-text/35 group-hover:text-lp-text/55",
+                    isActive ? "text-[--lp-text]" : "text-lp-text/35 group-hover:text-lp-text/55"
                   )}
                 >
                   <step.icon className="w-3.5 h-3.5 flex-shrink-0" strokeWidth={2} />

@@ -60,7 +60,8 @@ export default function ResumeUploadModal({
                   className="text-[14px] text-[--lp-text-muted] leading-relaxed"
                   style={{ fontFamily: "var(--font-manrope), sans-serif" }}
                 >
-                  Upload once. AI builds your portfolio, matches jobs, and sets you up for your next role.
+                  Upload once. AI builds your portfolio, matches jobs, and sets you up for your next
+                  role.
                 </p>
               </div>
 
@@ -103,9 +104,7 @@ export default function ResumeUploadModal({
                         <p className="text-[15px] font-semibold text-[--lp-text] leading-snug mb-1">
                           {title}
                         </p>
-                        <p className="text-[13px] text-[--lp-text-muted] leading-relaxed">
-                          {desc}
-                        </p>
+                        <p className="text-[13px] text-[--lp-text-muted] leading-relaxed">{desc}</p>
                       </div>
                     </div>
                   ))}

@@ -1,6 +1,11 @@
 import ArrowCTA from "./shared/ArrowCTA";
 
-export default function LandingFounderSection({ ctaLabel, ctaDest, onPrimaryCta, primaryCtaLoading }) {
+export default function LandingFounderSection({
+  ctaLabel,
+  ctaDest,
+  onPrimaryCta,
+  primaryCtaLoading,
+}) {
   const ctaHref = ctaDest || undefined;
 
   return (
@@ -11,7 +16,7 @@ export default function LandingFounderSection({ ctaLabel, ctaDest, onPrimaryCta,
     >
       <div className="max-w-[560px] mx-auto">
         <h2 className="text-[26px] font-bold text-[--lp-text] mb-6 tracking-tight">
-          Yo. I'm Shai (I built Designfolio)
+          Yo. I&apos;m Shai (I built Designfolio)
         </h2>
 
         <img
@@ -27,14 +32,13 @@ export default function LandingFounderSection({ ctaLabel, ctaDest, onPrimaryCta,
 
         <div className="flex flex-col gap-6 text-[15px] leading-[1.6] text-lp-text/80 font-medium">
           <p>
-            For the last decade, I've been designing products.
+            For the last decade, I&apos;ve been designing products.
             <br />
-            And honestly, the hardest problem was never design itself — it was
-            the portfolio.
+            And honestly, the hardest problem was never design itself — it was the portfolio.
           </p>
           <p>
-            Keeping it updated, packaging your work right, being ready when the
-            right opportunity shows up — it's a lot.
+            Keeping it updated, packaging your work right, being ready when the right opportunity
+            shows up — it&apos;s a lot.
           </p>
           <p>
             And somewhere in that process, one thought kept coming back:
@@ -43,9 +47,8 @@ export default function LandingFounderSection({ ctaLabel, ctaDest, onPrimaryCta,
           </p>
           <p>That question turned into Designfolio.</p>
           <p>
-            Hey, I'm Shai — a Staff Product Designer at ServiceNow.
-            <br />
-            I built Designfolio to make this whole thing easier.
+            Hey, I&apos;m Shai — a Staff Product Designer at ServiceNow.
+            <br />I built Designfolio to make this whole thing easier.
           </p>
           <p>Give it a shot.</p>
         </div>

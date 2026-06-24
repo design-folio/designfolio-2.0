@@ -50,7 +50,7 @@ function AnalyticsPage() {
   useEffect(() => {
     if (userDetails?.wallpaper !== undefined) {
       const wp = userDetails.wallpaper;
-      const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
+      const wpValue = wp && typeof wp === "object" ? wp.url || wp.value : wp;
       setWallpaper(wpValue !== undefined ? wpValue : 0);
     }
   }, [userDetails?.wallpaper, setWallpaper]);

@@ -14,10 +14,7 @@ export default function ChatHeader({ chatRevealStep, s, canEdit }) {
   const { userDetails, openSidebar } = useGlobalContext();
   const { introduction, bio, skills = [] } = userDetails || {};
 
-  const avatarSrc = useMemo(
-    () => getUserAvatarImage(userDetails),
-    [userDetails],
-  );
+  const avatarSrc = useMemo(() => getUserAvatarImage(userDetails), [userDetails]);
 
   const [currentTime, setCurrentTime] = useState(new Date());
   const { isDark, toggleTheme } = usePersistableThemeToggle(canEdit);
@@ -57,11 +54,7 @@ export default function ChatHeader({ chatRevealStep, s, canEdit }) {
             </div>
           )}
           <div className="w-16 h-16 rounded-2xl overflow-hidden border border-black/10 dark:border-white/10 relative transition-transform duration-300 group-hover/avatar:scale-105">
-            <img
-              src={avatarSrc}
-              alt="Profile"
-              className="w-full h-full object-cover"
-            />
+            <img src={avatarSrc} alt="Profile" className="w-full h-full object-cover" />
           </div>
         </div>
         <div className="space-y-2 relative group/text">
@@ -149,11 +142,7 @@ export default function ChatHeader({ chatRevealStep, s, canEdit }) {
                 </div>
               )}
               <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 mt-auto border border-black/5 dark:border-white/5">
-                <img
-                  src={avatarSrc}
-                  alt="Profile"
-                  className="w-full h-full object-cover"
-                />
+                <img src={avatarSrc} alt="Profile" className="w-full h-full object-cover" />
               </div>
               <div className="flex flex-col gap-1">
                 <span className="text-[11px] text-[#7A736C] dark:text-[#B5AFA5] ml-1 font-medium">
@@ -171,8 +160,6 @@ export default function ChatHeader({ chatRevealStep, s, canEdit }) {
           )}
         </AnimatePresence>
       </div>
-
-
 
       {/* Skills message */}
       <AnimatePresence mode="popLayout">
@@ -199,10 +186,7 @@ export default function ChatHeader({ chatRevealStep, s, canEdit }) {
               </div>
             )}
             <div className="w-8 h-8 shrink-0 mt-auto flex items-end">
-              <ChatAvatar
-                avatarSrc={avatarSrc}
-                show={chatRevealStep <= s(3)}
-              />
+              <ChatAvatar avatarSrc={avatarSrc} show={chatRevealStep <= s(3)} />
             </div>
             <div className="bg-[#E5E2DB] dark:bg-[#2A2520] px-4 py-3 rounded-2xl rounded-tl-sm rounded-bl-sm text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed transition-colors duration-100 border border-black/5 dark:border-white/5 min-h-[46px] flex items-center">
               {chatRevealStep === s(3) ? (

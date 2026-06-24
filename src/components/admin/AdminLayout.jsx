@@ -1,11 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { Search } from "lucide-react";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import AdminNav from "./AdminNav";
 import { AdminSearchDialog } from "./AdminSearchDialog";
 
@@ -34,21 +30,31 @@ export default function AdminLayout({ children, title }) {
       // g-prefix nav shortcuts — only when dialog is closed and no text input is focused
       if (searchOpenRef.current) return;
       const tag = document.activeElement?.tagName;
-      if (tag === "INPUT" || tag === "TEXTAREA" || document.activeElement?.isContentEditable) return;
+      if (tag === "INPUT" || tag === "TEXTAREA" || document.activeElement?.isContentEditable)
+        return;
       if (e.metaKey || e.ctrlKey || e.altKey) return;
 
       if (gMode) {
         clearTimeout(gTimer);
         gMode = false;
-        if (e.key === "s") { e.preventDefault(); router.push("/admin"); }
-        else if (e.key === "u") { e.preventDefault(); router.push("/admin/users"); }
-        else if (e.key === "p") { e.preventDefault(); router.push("/admin/grant-plan"); }
+        if (e.key === "s") {
+          e.preventDefault();
+          router.push("/admin");
+        } else if (e.key === "u") {
+          e.preventDefault();
+          router.push("/admin/users");
+        } else if (e.key === "p") {
+          e.preventDefault();
+          router.push("/admin/grant-plan");
+        }
         return;
       }
 
       if (e.key === "g") {
         gMode = true;
-        gTimer = setTimeout(() => { gMode = false; }, 1000);
+        gTimer = setTimeout(() => {
+          gMode = false;
+        }, 1000);
       }
     };
 
@@ -91,9 +97,7 @@ export default function AdminLayout({ children, title }) {
 
         {/* Page content */}
         <main className="flex-1 p-4 md:p-6 overflow-auto">
-          <div className="max-w-6xl mx-auto w-full">
-            {children}
-          </div>
+          <div className="max-w-6xl mx-auto w-full">{children}</div>
         </main>
       </SidebarInset>
 

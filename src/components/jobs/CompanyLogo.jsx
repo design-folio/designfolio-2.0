@@ -2,11 +2,23 @@ import { useState } from "react";
 
 // Deterministic fallback colour from company name (client-side only)
 const LOGO_COLORS = [
-  '#5E6AD2', '#171717', '#F24E1E', '#625DF5', '#6772E5',
-  '#0A66C2', '#FF553E', '#1DB954', '#FF9500', '#007AFF',
-  '#34C759', '#FF2D55', '#5856D6', '#FF6B35', '#8B5CF6',
+  "#5E6AD2",
+  "#171717",
+  "#F24E1E",
+  "#625DF5",
+  "#6772E5",
+  "#0A66C2",
+  "#FF553E",
+  "#1DB954",
+  "#FF9500",
+  "#007AFF",
+  "#34C759",
+  "#FF2D55",
+  "#5856D6",
+  "#FF6B35",
+  "#8B5CF6",
 ];
-function fallbackColor(name = '') {
+function fallbackColor(name = "") {
   let hash = 0;
   for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
   return LOGO_COLORS[Math.abs(hash) % LOGO_COLORS.length];
@@ -22,11 +34,11 @@ function fallbackColor(name = '') {
  *   size      {number}       — px size of the square (default 42)
  *   className {string}       — extra classes on the wrapper
  */
-export function CompanyLogo({ logoUrl, company = '', size = 42, className = '' }) {
+export function CompanyLogo({ logoUrl, company = "", size = 42, className = "" }) {
   const [imgFailed, setImgFailed] = useState(false);
 
-  const letter = (company || '?').charAt(0).toUpperCase();
-  const color  = fallbackColor(company);
+  const letter = (company || "?").charAt(0).toUpperCase();
+  const color = fallbackColor(company);
 
   const base = `rounded-xl flex-shrink-0 overflow-hidden shadow-sm ${className}`;
   const style = { width: size, height: size, minWidth: size };

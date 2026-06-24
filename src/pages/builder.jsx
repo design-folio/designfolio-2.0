@@ -140,22 +140,16 @@ export default function Index() {
       openModal(modals.username);
     } else if (userDetails) {
       // Note: goal and experienceLevel can be 0, so we check for null/undefined specifically
-      const hasGoal =
-        userDetails.goal !== undefined && userDetails.goal !== null;
+      const hasGoal = userDetails.goal !== undefined && userDetails.goal !== null;
       const hasExperienceLevel =
-        userDetails.experienceLevel !== undefined &&
-        userDetails.experienceLevel !== null;
+        userDetails.experienceLevel !== undefined && userDetails.experienceLevel !== null;
       const hasSkills = userDetails.skills && userDetails.skills.length > 0;
       const hasPersona =
-        userDetails.persona &&
-        userDetails.persona.value &&
-        userDetails.persona.label;
-      const needsOnboarding =
-        !hasGoal || !hasExperienceLevel || !hasSkills || !hasPersona;
+        userDetails.persona && userDetails.persona.value && userDetails.persona.label;
+      const needsOnboarding = !hasGoal || !hasExperienceLevel || !hasSkills || !hasPersona;
 
       const hasPendingResumePrefill =
-        typeof window !== "undefined" &&
-        !!localStorage.getItem("pending-portfolio-data");
+        typeof window !== "undefined" && !!localStorage.getItem("pending-portfolio-data");
 
       if (needsOnboarding && !hasPendingResumePrefill) {
         openModal(modals.onBoardingNewUser);
@@ -231,9 +225,7 @@ export default function Index() {
     open: !!activeSidebar,
     onOpenChange: (open) => !open && closeSidebar(true),
     style: {
-      "--sidebar-width":
-        getSidebarShiftWidth(lastSidebarRef.current || activeSidebar) ||
-        "400px",
+      "--sidebar-width": getSidebarShiftWidth(lastSidebarRef.current || activeSidebar) || "400px",
     },
     defaultOpen: false,
   };
@@ -259,11 +251,7 @@ export default function Index() {
             <CreateAiProject openModal={openModal} />
           </Modal>
           <UnsavedChangesDialog
-            open={
-              showUnsavedWarning &&
-              isSwitchingSidebar &&
-              pendingSidebarAction?.type === "open"
-            }
+            open={showUnsavedWarning && isSwitchingSidebar && pendingSidebarAction?.type === "open"}
             onOpenChange={(open) => {
               if (!open) handleCancelDiscardSidebar();
             }}
@@ -309,20 +297,21 @@ export default function Index() {
             t === TEMPLATE_IDS.CHATFOLIO
               ? "bg-[#F0EDE7] dark:bg-[#1A1A1A] flex justify-center transition-colors duration-700"
               : hasNoWallpaper(wallpaper, template) &&
-              "bg-background flex justify-center font-inter text-foreground selection:bg-foreground selection:text-background transition-colors duration-700",
+                  "bg-background flex justify-center font-inter text-foreground selection:bg-foreground selection:text-background transition-colors duration-700"
           )}
         >
           <div
-            className={cn("mx-auto w-full", {
-              [TEMPLATE_IDS.CHATFOLIO]: "py-[94px]",
-              [TEMPLATE_IDS.SPOTLIGHT]: "pt-24",
-              [TEMPLATE_IDS.PROFESSIONAL]: "pt-24",
-              [TEMPLATE_IDS.RETRO_OS]: "",
-            }[t] ?? "px-2 md:px-4 lg:px-0 pt-24 pb-0 max-w-[880px]")}
-          >
-            {userDetails && !userDetails?.pro && TEMPLATES_BY_ID[t]?.isPro && (
-              <ProWarning />
+            className={cn(
+              "mx-auto w-full",
+              {
+                [TEMPLATE_IDS.CHATFOLIO]: "py-[94px]",
+                [TEMPLATE_IDS.SPOTLIGHT]: "pt-24",
+                [TEMPLATE_IDS.PROFESSIONAL]: "pt-24",
+                [TEMPLATE_IDS.RETRO_OS]: "",
+              }[t] ?? "px-2 md:px-4 lg:px-0 pt-24 pb-0 max-w-[880px]"
             )}
+          >
+            {userDetails && !userDetails?.pro && TEMPLATES_BY_ID[t]?.isPro && <ProWarning />}
             {userDetails && (
               <>
                 {isLoadingTemplate ? (
@@ -354,11 +343,7 @@ export default function Index() {
             <CreateAiProject openModal={openModal} />
           </Modal>
           <UnsavedChangesDialog
-            open={
-              showUnsavedWarning &&
-              isSwitchingSidebar &&
-              pendingSidebarAction?.type === "open"
-            }
+            open={showUnsavedWarning && isSwitchingSidebar && pendingSidebarAction?.type === "open"}
             onOpenChange={(open) => {
               if (!open) {
                 handleCancelDiscardSidebar();

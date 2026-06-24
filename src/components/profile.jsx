@@ -42,17 +42,13 @@ export default function Profile({
   }, [avatarSrc]);
 
   const skills = useMemo(
-    () =>
-      userDetails?.skills?.length
-        ? userDetails.skills.map((skill) => skill.label)
-        : [],
+    () => (userDetails?.skills?.length ? userDetails.skills.map((skill) => skill.label) : []),
     [userDetails?.skills]
   );
 
   useEffect(() => {
     const skillElementWidthIncludingMargin = 100;
-    const totalWidth =
-      (userDetails?.skills?.length || 0) * skillElementWidthIncludingMargin * 3;
+    const totalWidth = (userDetails?.skills?.length || 0) * skillElementWidthIncludingMargin * 3;
     controls.start({
       x: [0, -totalWidth],
       transition: {
@@ -82,10 +78,7 @@ export default function Profile({
           {preview && !embeddedPreview && (
             <div className="p-4">
               <Link href={"/builder"}>
-                <Button
-                  variant="secondary"
-                  className="rounded-full px-4 h-9 text-sm font-medium"
-                >
+                <Button variant="secondary" className="rounded-full px-4 h-9 text-sm font-medium">
                   <MemoLeftArrow className="!size-2.5" />
                   Exit preview
                 </Button>
@@ -125,7 +118,8 @@ export default function Profile({
                       }}
                       whileHover={{
                         scale: 1.05,
-                        boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03)"
+                        boxShadow:
+                          "0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03)",
                       }}
                       onMouseMove={(e) => {
                         const rect = e.currentTarget.getBoundingClientRect();
@@ -142,13 +136,15 @@ export default function Profile({
                         type: "spring",
                         stiffness: 150,
                         damping: 20,
-                        mass: 0.5
+                        mass: 0.5,
                       }}
-
-                      className={cn("w-24 h-24 sm:w-32 sm:h-32 rounded-2xl flex items-center justify-center relative overflow-hidden shrink-0", !userDetails?.avatar ? "bf-[#F5F3F1] dark:bg-df-bg-color" : "")}
+                      className={cn(
+                        "w-24 h-24 sm:w-32 sm:h-32 rounded-2xl flex items-center justify-center relative overflow-hidden shrink-0",
+                        !userDetails?.avatar ? "bf-[#F5F3F1] dark:bg-df-bg-color" : ""
+                      )}
                       style={{
                         perspective: "1000px",
-                        transformStyle: "preserve-3d"
+                        transformStyle: "preserve-3d",
                       }}
                       data-testid="avatar-profile"
                     >
@@ -156,8 +152,9 @@ export default function Profile({
                         <div
                           className="absolute inset-0 rounded-2xl"
                           style={{
-                            background: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%)',
-                            animation: 'shimmer 1.5s infinite'
+                            background:
+                              "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%)",
+                            animation: "shimmer 1.5s infinite",
                           }}
                         />
                       )}
@@ -168,7 +165,7 @@ export default function Profile({
                         className="w-full h-full object-cover"
                         onLoad={() => setImageLoaded(true)}
                         onError={() => setImageLoaded(true)}
-                        style={{ opacity: imageLoaded ? 1 : 0, transition: 'opacity 0.3s' }}
+                        style={{ opacity: imageLoaded ? 1 : 0, transition: "opacity 0.3s" }}
                       />
                     </motion.div>
                   </TooltipTrigger>
@@ -180,7 +177,11 @@ export default function Profile({
                   className="bg-tooltip-bg-color text-tooltip-text-color border-0 px-4 py-2 rounded-xl flex items-center gap-2 shadow-xl"
                 >
                   <span className="text-sm font-medium">Happy to have you here</span>
-                  <img src="/assets/png/handshake.png" alt="Handshake" className="w-5 h-5 object-contain" />
+                  <img
+                    src="/assets/png/handshake.png"
+                    alt="Handshake"
+                    className="w-5 h-5 object-contain"
+                  />
                 </TooltipContent>
               </Tooltip>
 
@@ -193,7 +194,8 @@ export default function Profile({
                   className="text-2xl sm:text-3xl font-semibold mb-2 font-gsans text-df-heading-color break-words"
                   data-testid="text-user-name"
                 >
-                  {userDetails?.introduction || `Hey, I'm ${capitalizeWords(userDetails?.firstName) || ""}`}
+                  {userDetails?.introduction ||
+                    `Hey, I'm ${capitalizeWords(userDetails?.firstName) || ""}`}
                 </motion.h1>
                 <motion.p
                   initial={{ opacity: 0, filter: "blur(10px)", y: 10 }}
@@ -208,13 +210,9 @@ export default function Profile({
             </div>
           </div>
 
-
-
           {/* Skills banner strip */}
           {skills?.length > 0 && (
-            <div
-              className="relative overflow-hidden border-t border-border/10 py-3 bg-df-profile-strip-bg-color rounded-b-2xl"
-            >
+            <div className="relative overflow-hidden border-t border-border/10 py-3 bg-df-profile-strip-bg-color rounded-b-2xl">
               <motion.div
                 ref={skillsRef}
                 animate={controls}
@@ -235,10 +233,7 @@ export default function Profile({
                   ...skills,
                   ...skills,
                 ].map((skill, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center gap-3 shrink-0 mr-3"
-                  >
+                  <div key={index} className="flex items-center gap-3 shrink-0 mr-3">
                     <span className="text-xs font-medium tracking-normal text-df-ink-color whitespace-nowrap uppercase">
                       {skill}
                     </span>

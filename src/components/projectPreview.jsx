@@ -16,9 +16,12 @@ export default function ProjectPreview({ projectDetails }) {
 
   const tiptapClassName = (() => {
     switch (userDetails?.template) {
-      case TEMPLATE_IDS.CANVAS: return "";
-      case TEMPLATE_IDS.SPOTLIGHT: return "shadow-none bg-card";
-      default: return "shadow-none bg-transparent";
+      case TEMPLATE_IDS.CANVAS:
+        return "";
+      case TEMPLATE_IDS.SPOTLIGHT:
+        return "shadow-none bg-card";
+      default:
+        return "shadow-none bg-transparent";
     }
   })();
 
@@ -40,7 +43,10 @@ export default function ProjectPreview({ projectDetails }) {
           </motion.div>
           {hasTiptapContent && (
             <motion.div variants={itemVariants}>
-              <TiptapRenderer content={projectDetails?.project?.tiptapContent} className={tiptapClassName} />
+              <TiptapRenderer
+                content={projectDetails?.project?.tiptapContent}
+                className={tiptapClassName}
+              />
             </motion.div>
           )}
           {hasEditorJSContent && (

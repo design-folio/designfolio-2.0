@@ -11,5 +11,4 @@ export const _postResumeParse = (file) => {
 };
 
 // POST /resume/apply — authenticated; saves parsed resume data into user's profile
-export const _postResumeApply = (data) =>
-  axiosInstance.post("/resume/apply", data);
+export const _postResumeApply = (data) => axiosInstance.post("/resume/apply", data);

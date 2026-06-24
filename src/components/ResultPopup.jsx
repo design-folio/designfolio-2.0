@@ -14,9 +14,7 @@ const PENDING_PORTFOLIO_KEY = "pending-portfolio-data";
 export function ResultPopup({ content, onClose }) {
   const router = useRouter();
   const isStructured = content && typeof content === "object" && !content.raw;
-  const userDetailsFromContent = isStructured
-    ? mapContentToUserDetails(content)
-    : null;
+  const userDetailsFromContent = isStructured ? mapContentToUserDetails(content) : null;
 
   if (typeof document === "undefined" || !content) return null;
 
@@ -94,11 +92,7 @@ export function ResultPopup({ content, onClose }) {
 
           <div className="flex-1 overflow-y-auto min-h-0 bg-df-bg-color">
             {isStructured && userDetailsFromContent ? (
-              <Preview1
-                userDetails={userDetailsFromContent}
-                projectRef={null}
-                embeddedPreview
-              />
+              <Preview1 userDetails={userDetailsFromContent} projectRef={null} embeddedPreview />
             ) : (
               <div className="p-4 lg:p-6">
                 <pre className="p-4 lg:p-6 bg-df-section-card-bg-color border border-project-card-border-color rounded-2xl overflow-x-auto whitespace-pre-wrap font-mono text-sm">

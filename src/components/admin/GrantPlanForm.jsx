@@ -23,9 +23,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { _grantPlan } from "@/network/admin";
 
-const PLAN_OPTIONS = [
-  { value: "lifetime", label: "Lifetime" },
-];
+const PLAN_OPTIONS = [{ value: "lifetime", label: "Lifetime" }];
 
 function parseEmails(raw) {
   return raw
@@ -72,7 +70,10 @@ export default function GrantPlanForm() {
               id="emails"
               placeholder={"user@example.com\nanother@example.com"}
               value={raw}
-              onChange={(e) => { setRaw(e.target.value); setResults(null); }}
+              onChange={(e) => {
+                setRaw(e.target.value);
+                setResults(null);
+              }}
               rows={6}
               className="text-sm font-mono resize-none bg-[#F5F2EE] dark:bg-[#231F1A] border-[#E5D7C4] dark:border-white/10 text-[#1A1A1A] dark:text-[#F0EDE7] placeholder:text-[#7A736C] dark:placeholder:text-[#B5AFA5]"
             />
@@ -84,7 +85,9 @@ export default function GrantPlanForm() {
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="plan-type" className="text-sm text-[#1A1A1A] dark:text-[#F0EDE7]">Plan type</Label>
+            <Label htmlFor="plan-type" className="text-sm text-[#1A1A1A] dark:text-[#F0EDE7]">
+              Plan type
+            </Label>
             <Select value={planType} onValueChange={setPlanType}>
               <SelectTrigger id="plan-type" className="h-9" aria-label="Select plan type">
                 <SelectValue />
@@ -101,10 +104,7 @@ export default function GrantPlanForm() {
 
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button
-                className="w-full"
-                disabled={emails.length === 0 || loading}
-              >
+              <Button className="w-full" disabled={emails.length === 0 || loading}>
                 {loading ? "Granting..." : "Grant access"}
               </Button>
             </AlertDialogTrigger>
@@ -114,8 +114,7 @@ export default function GrantPlanForm() {
                 <AlertDialogDescription>
                   This will grant <strong>{planType}</strong> access to{" "}
                   <strong>{emails.length}</strong> user
-                  {emails.length !== 1 ? "s" : ""}. This action cannot be undone
-                  automatically.
+                  {emails.length !== 1 ? "s" : ""}. This action cannot be undone automatically.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
@@ -134,10 +133,7 @@ export default function GrantPlanForm() {
                 <p className="text-xs font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">Results</p>
                 <div className="space-y-1.5 max-h-48 overflow-y-auto">
                   {results.map((r, i) => (
-                    <div
-                      key={i}
-                      className="flex items-center justify-between gap-2 text-sm"
-                    >
+                    <div key={i} className="flex items-center justify-between gap-2 text-sm">
                       <span className="text-[#7A736C] dark:text-[#B5AFA5] truncate font-mono text-xs">
                         {r.email}
                       </span>

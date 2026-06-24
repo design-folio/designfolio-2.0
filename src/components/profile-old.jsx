@@ -9,19 +9,12 @@ import Text from "./text";
 import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
 import { cn } from "@/lib/utils";
 
-export default function Profile({
-  preview = false,
-  edit = false,
-  userDetails = null,
-  openModal,
-}) {
+export default function Profile({ preview = false, edit = false, userDetails = null, openModal }) {
   const controls = useAnimation();
   const skillsRef = useRef(null);
   const skills = useMemo(
     () =>
-      userDetails?.skills?.length != 0
-        ? userDetails?.skills?.map((skill) => skill.label)
-        : [],
+      userDetails?.skills?.length != 0 ? userDetails?.skills?.map((skill) => skill.label) : [],
     [userDetails?.skills]
   );
 
@@ -29,8 +22,7 @@ export default function Profile({
     // Assuming each skill element and its margin take up 100px for simplicity
     const skillElementWidthIncludingMargin = 100;
     // Adjust the totalWidth calculation based on the actual elements
-    const totalWidth =
-      userDetails?.skills?.length * skillElementWidthIncludingMargin * 3; // *3 for the duplicated list
+    const totalWidth = userDetails?.skills?.length * skillElementWidthIncludingMargin * 3; // *3 for the duplicated list
 
     controls.start({
       x: [0, -totalWidth],
@@ -47,7 +39,9 @@ export default function Profile({
 
   return (
     <section
-      className={cn("bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words")}
+      className={cn(
+        "bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words"
+      )}
     >
       {preview && (
         <Link href={"/builder"}>
@@ -58,19 +52,12 @@ export default function Profile({
             size="small"
             icon={<LeftArrow className="text-df-icon-color cursor-pointer" />}
           />
-
         </Link>
       )}
       <div className="flex flex-col lg:flex-row gap-[16px] lg:gap-[32px] items-start ">
         <DfImage
-          src={
-            userDetails?.avatar?.url
-              ? userDetails?.avatar?.url
-              : "/assets/svgs/avatar.svg"
-          }
-          className={
-            "w-[136px] h-[136px] lg:w-[142px] lg:h-[142px] rounded-[24px]"
-          }
+          src={userDetails?.avatar?.url ? userDetails?.avatar?.url : "/assets/svgs/avatar.svg"}
+          className={"w-[136px] h-[136px] lg:w-[142px] lg:h-[142px] rounded-[24px]"}
         />
 
         <div className="flex-1 relative min-w-0 webkit-fill">
@@ -88,17 +75,12 @@ export default function Profile({
                   onClick={() => openModal("onboarding")}
                   customClass="!p-[13.38px] !flex-shrink-0"
                   type={"secondary"}
-                  icon={
-                    <EditIcon className="text-df-icon-color cursor-pointer" />
-                  }
+                  icon={<EditIcon className="text-df-icon-color cursor-pointer" />}
                 />
               </div>
             )}
           </div>
-          <Text
-            size="p-xsmall"
-            className="min-w-0 webkit-fill mt-[12px] text-df-description-color"
-          >
+          <Text size="p-xsmall" className="min-w-0 webkit-fill mt-[12px] text-df-description-color">
             {userDetails?.bio ? userDetails?.bio : "Write your Intro here.."}
           </Text>
         </div>
@@ -134,11 +116,7 @@ export default function Profile({
               ...skills,
             ].map((skill, index) => (
               <React.Fragment key={index}>
-                <img
-                  src="/assets/svgs/scroll-star.svg"
-                  className="mr-2"
-                  alt=""
-                />
+                <img src="/assets/svgs/scroll-star.svg" className="mr-2" alt="" />
                 <Text
                   size="p-xxsmall"
                   className=" text-profile-card-skill-color px-[10px] cursor-default mr-2"

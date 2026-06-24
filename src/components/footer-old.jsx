@@ -23,8 +23,7 @@ export default function Footer({ dfToken, innerClass = "", className = "" }) {
           className={`bg-landing-card-bg-color border-[6px] border-solid border-landing-card-border-color py-10 xl:p-0 xl:h-[500px] rounded-[24px] flex flex-col justify-center items-center px-4 md:px-0 ${innerClass}`}
         >
           <p className="text-center text-landing-footer-heading-color md:hidden px-[40px] text-[22px] xl:text-[39.5px] font-satoshi font-[500] xl:leading-[46.87px]">
-            Build your portfolio website now – it&lsquo;s simpler than you
-            think!
+            Build your portfolio website now – it&lsquo;s simpler than you think!
           </p>
           <p className="text-center hidden text-landing-footer-heading-color md:block px-[40px] text-[22px] xl:text-[39.5px] font-satoshi font-[500] xl:leading-[46.87px]">
             <b>

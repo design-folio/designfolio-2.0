@@ -9,7 +9,11 @@ import axiosInstance from "@/network/axiosInstance";
 
 const RESULT_STORAGE_KEY = "email-generator";
 
-export default function EmailGenerator({ onToolUsed, onViewChange, guestUsageLimitReached = false }) {
+export default function EmailGenerator({
+  onToolUsed,
+  onViewChange,
+  guestUsageLimitReached = false,
+}) {
   const [generatedEmail, setGeneratedEmail] = useState({
     subject: "",
     body: "",

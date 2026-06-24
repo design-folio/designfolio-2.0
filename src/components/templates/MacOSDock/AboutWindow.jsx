@@ -1,20 +1,13 @@
 import React from "react";
 import ImgStack from "../../ui/image-stack";
-import {
-  DEFAULT_PEGBOARD_IMAGES,
-  DEFAULT_PEGBOARD_STICKERS,
-} from "@/lib/aboutConstants";
+import { DEFAULT_PEGBOARD_IMAGES, DEFAULT_PEGBOARD_STICKERS } from "@/lib/aboutConstants";
 
 const AboutWindow = ({ userDetails, fullName, edit = false, onEdit }) => {
   const aboutObj = userDetails?.about;
   const pegboardImages =
-    aboutObj?.pegboardImages?.length > 0
-      ? aboutObj.pegboardImages
-      : DEFAULT_PEGBOARD_IMAGES;
+    aboutObj?.pegboardImages?.length > 0 ? aboutObj.pegboardImages : DEFAULT_PEGBOARD_IMAGES;
   const pegboardStickers =
-    aboutObj?.pegboardStickers?.length > 0
-      ? aboutObj.pegboardStickers
-      : DEFAULT_PEGBOARD_STICKERS;
+    aboutObj?.pegboardStickers?.length > 0 ? aboutObj.pegboardStickers : DEFAULT_PEGBOARD_STICKERS;
 
   const stackImages = [
     ...pegboardImages.map((img) => img?.src).filter(Boolean),
@@ -43,7 +36,7 @@ const AboutWindow = ({ userDetails, fullName, edit = false, onEdit }) => {
           {/* Header */}
           <div className="border-b-2 border-white/20 pb-4">
             <h1 className="text-5xl font-bold tracking-tight mb-2 text-white italic drop-shadow-[2px_2px_0px_rgba(255,255,255,0.2)]">
-              Yo! I'm {fullName}
+              Yo! I&apos;m {fullName}
             </h1>
           </div>
 
@@ -56,9 +49,7 @@ const AboutWindow = ({ userDetails, fullName, edit = false, onEdit }) => {
                   Background
                 </h2>
                 {userDetails?.about?.description ? (
-                  <p className="text-lg leading-relaxed italic">
-                    {userDetails.about.description}
-                  </p>
+                  <p className="text-lg leading-relaxed italic">{userDetails.about.description}</p>
                 ) : (
                   <button
                     type="button"
@@ -104,19 +95,16 @@ const AboutWindow = ({ userDetails, fullName, edit = false, onEdit }) => {
                     Tools
                   </h2>
                   <ul className="list-disc list-inside space-y-1 text-lg italic">
-                    {Array.from(
-                      { length: Math.ceil(userDetails.tools.length / 2) },
-                      (_, i) => {
-                        const a = userDetails.tools[i * 2];
-                        const b = userDetails.tools[i * 2 + 1];
-                        return (
-                          <li key={i}>
-                            {a?.label}
-                            {b ? ` / ${b.label}` : ""}
-                          </li>
-                        );
-                      },
-                    )}
+                    {Array.from({ length: Math.ceil(userDetails.tools.length / 2) }, (_, i) => {
+                      const a = userDetails.tools[i * 2];
+                      const b = userDetails.tools[i * 2 + 1];
+                      return (
+                        <li key={i}>
+                          {a?.label}
+                          {b ? ` / ${b.label}` : ""}
+                        </li>
+                      );
+                    })}
                   </ul>
                 </section>
               )}

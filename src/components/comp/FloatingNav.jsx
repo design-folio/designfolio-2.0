@@ -100,22 +100,23 @@ export const FloatingNav = () => {
               <button
                 key={id}
                 onClick={() => scrollToSection(id)}
-                className={`group flex items-center gap-4 transition-all ${activeSection === id
-                    ? "opacity-100"
-                    : "opacity-50 hover:opacity-100"
-                  }`}
+                className={`group flex items-center gap-4 transition-all ${
+                  activeSection === id ? "opacity-100" : "opacity-50 hover:opacity-100"
+                }`}
               >
                 <div
-                  className={`flex items-center justify-center w-10 h-10 rounded-full transition-colors ${activeSection === id
+                  className={`flex items-center justify-center w-10 h-10 rounded-full transition-colors ${
+                    activeSection === id
                       ? "bg-foreground dark:bg-[#2A2D37]"
                       : "bg-[#e5e5e7] dark:bg-secondary-hover hover:bg-primary-hover dark:hover:bg-primary-hover"
-                    }`}
+                  }`}
                 >
                   <Icon
-                    className={`w-5 h-5 ${activeSection === id
+                    className={`w-5 h-5 ${
+                      activeSection === id
                         ? "text-background dark:text-white"
                         : "text-foreground dark:text-foreground-dark"
-                      }`}
+                    }`}
                   />
                 </div>
                 <span className="text-sm opacity-0 group-hover:opacity-100 transition-opacity absolute left-full pl-4 whitespace-nowrap">
@@ -136,22 +137,23 @@ export const FloatingNav = () => {
                 <button
                   key={id}
                   onClick={() => scrollToSection(id)}
-                  className={`group flex flex-col items-center transition-all ${activeSection === id
-                      ? "opacity-100"
-                      : "opacity-50 hover:opacity-100"
-                    }`}
+                  className={`group flex flex-col items-center transition-all ${
+                    activeSection === id ? "opacity-100" : "opacity-50 hover:opacity-100"
+                  }`}
                 >
                   <div
-                    className={`flex items-center justify-center w-10 h-10 rounded-full transition-colors ${activeSection === id
+                    className={`flex items-center justify-center w-10 h-10 rounded-full transition-colors ${
+                      activeSection === id
                         ? "bg-foreground dark:bg-[#2A2D37]"
                         : "bg-[#e5e5e7] dark:bg-secondary-hover hover:bg-primary-hover dark:hover:bg-primary-hover"
-                      }`}
+                    }`}
                   >
                     <Icon
-                      className={`w-5 h-5 ${activeSection === id
+                      className={`w-5 h-5 ${
+                        activeSection === id
                           ? "text-background dark:text-white"
                           : "text-foreground dark:text-foreground-dark"
-                        }`}
+                      }`}
                     />
                   </div>
                 </button>

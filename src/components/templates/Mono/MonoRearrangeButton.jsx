@@ -1,20 +1,9 @@
 import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ChevronsUpDown } from "lucide-react";
 import React from "react";
 
-export const MonoRearrangeButton = ({
-  onClick,
-  title,
-  tooltipText,
-  ariaLabel,
-  ...props
-}) => {
+export const MonoRearrangeButton = ({ onClick, title, tooltipText, ariaLabel, ...props }) => {
   const iconButton = (
     <Button
       variant="outline"

@@ -11,7 +11,9 @@ function PermissionCard({ icon: Icon, label, description, state, onRequest }) {
       </div>
       <div className="flex-1 min-w-0">
         <div className="text-[14px] font-semibold text-foreground mb-0.5">{label}</div>
-        <div className="text-[13px] text-foreground/50 leading-[1.5] break-words">{description}</div>
+        <div className="text-[13px] text-foreground/50 leading-[1.5] break-words">
+          {description}
+        </div>
       </div>
       <div className="flex-shrink-0 mt-0.5">
         {state === "granted" ? (
@@ -81,7 +83,8 @@ export function MockInterviewDialog({ job, open, onClose, onStart }) {
             </div>
           </div>
           <p className="text-[14px] text-foreground/50 leading-[1.6] mt-4 break-words">
-            Grant camera and microphone access below so your mock interview session can run smoothly.
+            Grant camera and microphone access below so your mock interview session can run
+            smoothly.
           </p>
         </DialogHeader>
 

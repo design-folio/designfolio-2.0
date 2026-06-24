@@ -106,23 +106,15 @@
   }
 
   /* Adjust inset for border-2 elements to cover the 2px border and match border-radius */
-  [class*="border-2"].rounded-2xl.hover-elevate:not(
-      .no-default-hover-elevate
-    )::after,
-  [class*="border-2"].rounded-2xl.hover-elevate-2:not(
-      .no-default-hover-elevate
-    )::after {
+  [class*="border-2"].rounded-2xl.hover-elevate:not(.no-default-hover-elevate)::after,
+  [class*="border-2"].rounded-2xl.hover-elevate-2:not(.no-default-hover-elevate)::after {
     inset: -2px;
     border-radius: 1rem; /* Matches Tailwind's rounded-2xl value (16px) */
   }
 
   /* Adjust inset for border-2 elements with rounded-3xl to cover the 2px border and match border-radius */
-  [class*="border-2"].rounded-3xl.hover-elevate:not(
-      .no-default-hover-elevate
-    )::after,
-  [class*="border-2"].rounded-3xl.hover-elevate-2:not(
-      .no-default-hover-elevate
-    )::after {
+  [class*="border-2"].rounded-3xl.hover-elevate:not(.no-default-hover-elevate)::after,
+  [class*="border-2"].rounded-3xl.hover-elevate-2:not(.no-default-hover-elevate)::after {
     inset: -2px;
     border-radius: 1.5rem; /* Matches Tailwind's rounded-3xl value (24px) */
   }

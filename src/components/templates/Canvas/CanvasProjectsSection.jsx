@@ -1,6 +1,15 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { Pencil, Plus, Trash2, Eye, EyeOff, ChevronsUpDown, WandSparklesIcon, Sparkles } from "lucide-react";
+import {
+  Pencil,
+  Plus,
+  Trash2,
+  Eye,
+  EyeOff,
+  ChevronsUpDown,
+  WandSparklesIcon,
+  Sparkles,
+} from "lucide-react";
 import { Button } from "../../ui/button";
 import {
   DropdownMenu,
@@ -28,7 +37,9 @@ function ProjectCard({ project, isEditing, isPreview, onNavigate, onDelete, onTo
       onClick={() => onNavigate(getHref(project._id, isEditing, isPreview))}
     >
       {isEditing && (
-        <div className={`absolute top-4 right-4 z-20 flex gap-2 transition-opacity ${project.hidden ? "opacity-100" : "opacity-100 md:opacity-0 md:group-hover/card:opacity-100"}`}>
+        <div
+          className={`absolute top-4 right-4 z-20 flex gap-2 transition-opacity ${project.hidden ? "opacity-100" : "opacity-100 md:opacity-0 md:group-hover/card:opacity-100"}`}
+        >
           <Button
             variant="outline"
             size="sm"
@@ -42,7 +53,10 @@ function ProjectCard({ project, isEditing, isPreview, onNavigate, onDelete, onTo
           </Button>
           <ProjectVisibilityButton
             isHidden={!!project.hidden}
-            onClick={(e) => { e.stopPropagation(); onToggleVisibility(project._id); }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleVisibility(project._id);
+            }}
           />
           <Button
             variant="outline"
@@ -84,7 +98,6 @@ function ProjectCard({ project, isEditing, isPreview, onNavigate, onDelete, onTo
 
 const MemoizedProjectCard = React.memo(ProjectCard);
 
-
 function ProjectsEmptyState({ isEditing, openModal, openSidebar }) {
   return (
     <div className="flex flex-col items-center justify-center md:col-span-2 py-16 px-4 text-center rounded-2xl border border-dashed border-black/10 dark:border-white/10 bg-background">
@@ -123,7 +136,6 @@ function ProjectsEmptyState({ isEditing, openModal, openSidebar }) {
             onClick={() => openModal(modals.aiProject)}
             className="h-9 px-5 rounded-full text-[13px] font-medium"
           >
-
             <Sparkles className="w-3.5 h-3.5" />
             Write using AI
           </Button>
@@ -165,7 +177,7 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
       openModal(modals.deleteProject);
       setSelectedProject(project);
     },
-    [openModal, setSelectedProject],
+    [openModal, setSelectedProject]
   );
 
   const handleToggleProjectVisibility = useCallback(
@@ -187,7 +199,14 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
       setUserDetails((prev) => ({ ...prev, projects: updatedProjects }));
       updateCache("userDetails", (prev) => ({ ...prev, projects: updatedProjects }));
     },
-    [projects, userDetails, setUserDetails, updateCache, setShowUpgradeModal, setUpgradeModalUnhideProject],
+    [
+      projects,
+      userDetails,
+      setUserDetails,
+      updateCache,
+      setShowUpgradeModal,
+      setUpgradeModalUnhideProject,
+    ]
   );
 
   if (preview && !isEditing && visibleProjects.length === 0) {
@@ -218,7 +237,11 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
           )}
           <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
             <DropdownMenuTrigger asChild>
-              <CanvasSectionButton icon={<Plus className="w-3.5 h-3.5" />} ariaLabel="Add project" alwaysVisible={isDropdownOpen} />
+              <CanvasSectionButton
+                icon={<Plus className="w-3.5 h-3.5" />}
+                ariaLabel="Add project"
+                alwaysVisible={isDropdownOpen}
+              />
             </DropdownMenuTrigger>
 
             <DropdownMenuContent
@@ -251,15 +274,17 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
         </CanvasSectionControls>
       )}
 
-      <h2
-        className="text-[#7A736C] dark:text-[#B5AFA5] font-dm-mono font-medium text-[14px] mb-3"
-      >
+      <h2 className="text-[#7A736C] dark:text-[#B5AFA5] font-dm-mono font-medium text-[14px] mb-3">
         PROJECTS
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {visibleProjects?.length === 0 ? (
-          <ProjectsEmptyState isEditing={isEditing} openModal={openModal} openSidebar={openSidebar} />
+          <ProjectsEmptyState
+            isEditing={isEditing}
+            openModal={openModal}
+            openSidebar={openSidebar}
+          />
         ) : (
           <>
             {visibleProjects?.map((project) => (
@@ -279,7 +304,9 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
                   <div className="w-10 h-10 rounded-full bg-black/[0.05] dark:bg-white/[0.05] flex items-center justify-center">
                     <Plus className="w-4 h-4 text-[#7A736C] dark:text-[#9E9893]" />
                   </div>
-                  <p className="text-[11px] font-medium text-[#A09890] dark:text-[#7A736C] tracking-widest uppercase">New project</p>
+                  <p className="text-[11px] font-medium text-[#A09890] dark:text-[#7A736C] tracking-widest uppercase">
+                    New project
+                  </p>
                   <div className="flex items-center gap-2">
                     <Button
                       onClick={() => openSidebar(sidebars.project)}

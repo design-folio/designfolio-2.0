@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 function Kbd({ className, ...props }) {
   return (
@@ -10,7 +10,7 @@ function Kbd({ className, ...props }) {
       )}
       {...props}
     />
-  )
+  );
 }
 
 function KbdGroup({ className, ...props }) {
@@ -20,7 +20,7 @@ function KbdGroup({ className, ...props }) {
       className={cn("inline-flex items-center gap-1", className)}
       {...props}
     />
-  )
+  );
 }
 
-export { Kbd, KbdGroup }
+export { Kbd, KbdGroup };

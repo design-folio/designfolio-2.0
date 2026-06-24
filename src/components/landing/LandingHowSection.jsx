@@ -7,15 +7,24 @@ const STEPS = [
   {
     messages: [
       { from: "viewer", text: "I don't have a portfolio. Just a bunch of random work." },
-      { from: "shai",   text: "You've already done the hard part. Pick a template and turn it into a portfolio in minutes." },
+      {
+        from: "shai",
+        text: "You've already done the hard part. Pick a template and turn it into a portfolio in minutes.",
+      },
     ],
     darkVideo: "/landing-video/video1dark.mp4",
     lightVideo: "/landing-video/video1light.mp4",
   },
   {
     messages: [
-      { from: "viewer", text: "Okay, my portfolio looks great now. But getting a job is still going to be hard." },
-      { from: "shai",   text: "That's covered too. Build your portfolio, choose your target role and location, and AI will find and rank jobs based on your experience." },
+      {
+        from: "viewer",
+        text: "Okay, my portfolio looks great now. But getting a job is still going to be hard.",
+      },
+      {
+        from: "shai",
+        text: "That's covered too. Build your portfolio, choose your target role and location, and AI will find and rank jobs based on your experience.",
+      },
     ],
     darkVideo: "/landing-video/video3dark.mp4",
     lightVideo: "/landing-video/video3light.mp4",
@@ -23,7 +32,10 @@ const STEPS = [
   {
     messages: [
       { from: "viewer", text: "That sounds great. Let me go fix my resume first." },
-      { from: "shai",   text: "Good news. Click Tailor Resume on any job, and AI will customize it for you." },
+      {
+        from: "shai",
+        text: "Good news. Click Tailor Resume on any job, and AI will customize it for you.",
+      },
     ],
     darkVideo: "/landing-video/video2dark.mp4",
     lightVideo: "/landing-video/video2light.mp4",
@@ -31,15 +43,31 @@ const STEPS = [
   {
     messages: [
       { from: "viewer", text: "Damn. That's crazy." },
-      { from: "shai",   text: "We're not done yet. Keep scrolling. 👇" },
+      { from: "shai", text: "We're not done yet. Keep scrolling. 👇" },
     ],
     cards: [
-      { label: "Fix your resume",      icon: "/assets/svgs/fixResume.svg",           href: "/ai-tools?type=optimize-resume" },
-      { label: "Salary Negotiation",   icon: "/assets/svgs/salary-negotiate.svg",    href: "/ai-tools?type=salary-negotiator" },
-      { label: "Case study generator", icon: "/assets/svgs/caseStudyGen.svg",         href: "/login" },
-      { label: "AI mock interview",    icon: "/assets/svgs/aiMock.svg",              href: "/ai-tools?type=mock-interview" },
-      { label: "AI email generator",   icon: "/assets/svgs/emailGen.svg",            href: "/ai-tools?type=email-generator" },
-      { label: "Analyze Case study",   icon: "/assets/svgs/analyzeCaseStudyGen.svg", href: "/login" },
+      {
+        label: "Fix your resume",
+        icon: "/assets/svgs/fixResume.svg",
+        href: "/ai-tools?type=optimize-resume",
+      },
+      {
+        label: "Salary Negotiation",
+        icon: "/assets/svgs/salary-negotiate.svg",
+        href: "/ai-tools?type=salary-negotiator",
+      },
+      { label: "Case study generator", icon: "/assets/svgs/caseStudyGen.svg", href: "/login" },
+      {
+        label: "AI mock interview",
+        icon: "/assets/svgs/aiMock.svg",
+        href: "/ai-tools?type=mock-interview",
+      },
+      {
+        label: "AI email generator",
+        icon: "/assets/svgs/emailGen.svg",
+        href: "/ai-tools?type=email-generator",
+      },
+      { label: "Analyze Case study", icon: "/assets/svgs/analyzeCaseStudyGen.svg", href: "/login" },
     ],
   },
 ];
@@ -47,7 +75,9 @@ const STEPS = [
 export default function LandingHowSection() {
   const { theme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   const isDark = mounted && theme === "dark";
 
   return (
@@ -113,7 +143,11 @@ export default function LandingHowSection() {
                     className="group flex flex-col items-center gap-3 rounded-2xl border border-[--lp-video-border] bg-[--lp-bg] p-5 hover:bg-[--lp-card] transition-colors duration-150 no-underline cursor-pointer"
                   >
                     <div className="w-14 h-14 rounded-2xl overflow-hidden flex items-center justify-center bg-[--lp-card]">
-                      <img src={card.icon} alt={card.label} className="w-full h-full object-cover" />
+                      <img
+                        src={card.icon}
+                        alt={card.label}
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                     <span className="text-[13px] font-semibold text-[--lp-text] text-center leading-snug">
                       {card.label}

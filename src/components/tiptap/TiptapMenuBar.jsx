@@ -36,12 +36,7 @@ import {
   Columns,
   Rows,
 } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const MenuButton = ({
   onClick,
@@ -373,11 +368,7 @@ const TiptapMenuBar = ({ editor, showToolbar, onImageUpload }) => {
   };
 
   const addTable = () => {
-    editor
-      .chain()
-      .focus()
-      .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
-      .run();
+    editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run();
     closeAllDropdowns();
   };
 
@@ -385,8 +376,7 @@ const TiptapMenuBar = ({ editor, showToolbar, onImageUpload }) => {
     <TooltipProvider delayDuration={0}>
       <div
         ref={toolbarRef}
-        className={`tiptap-menu-bar ${showToolbar ? "toolbar-visible" : "toolbar-hidden"
-          }`}
+        className={`tiptap-menu-bar ${showToolbar ? "toolbar-visible" : "toolbar-hidden"}`}
       >
         {/* Primary Text Formatting */}
         <div className="menu-group">
@@ -466,10 +456,9 @@ const TiptapMenuBar = ({ editor, showToolbar, onImageUpload }) => {
                           }
                           closeAllDropdowns();
                         }}
-                        className={`color-button ${color.isDefault
-                          ? "color-default text-color-default"
-                          : ""
-                          } ${isActive ? "is-active" : ""}`}
+                        className={`color-button ${
+                          color.isDefault ? "color-default text-color-default" : ""
+                        } ${isActive ? "is-active" : ""}`}
                         style={{ border: "none" }}
                         title={color.name}
                       >
@@ -478,14 +467,9 @@ const TiptapMenuBar = ({ editor, showToolbar, onImageUpload }) => {
                           style={{
                             color: color.display,
                             WebkitTextStroke:
-                              (resolvedTheme === "dark" &&
-                                color.display === "#000000") ||
-                                (resolvedTheme !== "dark" &&
-                                  color.display === "#ffffff")
-                                ? `0.5px ${resolvedTheme === "dark"
-                                  ? "#ffffff"
-                                  : "#000000"
-                                }`
+                              (resolvedTheme === "dark" && color.display === "#000000") ||
+                              (resolvedTheme !== "dark" && color.display === "#ffffff")
+                                ? `0.5px ${resolvedTheme === "dark" ? "#ffffff" : "#000000"}`
                                 : "unset",
                           }}
                         >
@@ -510,33 +494,24 @@ const TiptapMenuBar = ({ editor, showToolbar, onImageUpload }) => {
                         key={index}
                         onClick={() => {
                           if (color.value) {
-                            editor
-                              .chain()
-                              .focus()
-                              .setHighlight({ color: color.value })
-                              .run();
+                            editor.chain().focus().setHighlight({ color: color.value }).run();
                           } else {
                             editor.chain().focus().unsetHighlight().run();
                           }
                           closeAllDropdowns();
                         }}
-                        className={`color-button ${color.isDefault ? "color-default" : ""
-                          } ${isActive ? "is-active" : ""}`}
+                        className={`color-button ${
+                          color.isDefault ? "color-default" : ""
+                        } ${isActive ? "is-active" : ""}`}
                         style={{
                           backgroundColor: color.bgColor,
-                          borderColor: color.isDefault
-                            ? undefined
-                            : color.bgColor,
+                          borderColor: color.isDefault ? undefined : color.bgColor,
                         }}
                         title={color.name}
                       >
                         <span
                           className="color-letter"
-                          style={
-                            color.textColor
-                              ? { color: color.textColor }
-                              : undefined
-                          }
+                          style={color.textColor ? { color: color.textColor } : undefined}
                         >
                           A
                         </span>

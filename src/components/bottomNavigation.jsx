@@ -7,17 +7,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import MemoMadewithdesignfolio from "./icons/Madewithdesignfolio";
 
-export default function BottomNavigation({
-  userDetails,
-  className = "",
-  watermarkClassName = "",
-}) {
+export default function BottomNavigation({ userDetails, className = "", watermarkClassName = "" }) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("home");
   const [isResumeDialogOpen, setIsResumeDialogOpen] = useState(false);
 
   const { projectRef } = useGlobalContext();
-
 
   const handleHomeNavigation = () => {
     setActiveTab("home");
@@ -68,54 +63,54 @@ export default function BottomNavigation({
                 },
                 ...(userDetails?.projects?.length
                   ? [
-                    {
-                      icon: Layers,
-                      label: "Works",
-                      active: activeTab === "projects" && !isResumeDialogOpen,
-                      onClick: () => {
-                        handleProjectNavigation();
+                      {
+                        icon: Layers,
+                        label: "Works",
+                        active: activeTab === "projects" && !isResumeDialogOpen,
+                        onClick: () => {
+                          handleProjectNavigation();
+                        },
                       },
-                    },
-                  ]
+                    ]
                   : []),
                 ...(hasReviews
                   ? [
-                    {
-                      icon: MessageSquare,
-                      label: "Testimonials",
-                      active: activeTab === "reviews" && !isResumeDialogOpen,
-                      onClick: () => {
-                        setActiveTab("reviews");
-                        scrollToId("section-reviews", "center");
+                      {
+                        icon: MessageSquare,
+                        label: "Testimonials",
+                        active: activeTab === "reviews" && !isResumeDialogOpen,
+                        onClick: () => {
+                          setActiveTab("reviews");
+                          scrollToId("section-reviews", "center");
+                        },
                       },
-                    },
-                  ]
+                    ]
                   : []),
                 ...(hasResume
                   ? [
-                    {
-                      icon: FileText,
-                      label: "Resume",
-                      active: isResumeDialogOpen,
-                      onClick: () => setIsResumeDialogOpen(true),
-                    },
-                  ]
+                      {
+                        icon: FileText,
+                        label: "Resume",
+                        active: isResumeDialogOpen,
+                        onClick: () => setIsResumeDialogOpen(true),
+                      },
+                    ]
                   : []),
                 ...(hasContact
                   ? [
-                    {
-                      icon: Mail,
-                      label: "Contact",
-                      active: activeTab === "contact" && !isResumeDialogOpen,
-                      onClick: () => {
-                        setActiveTab("contact");
-                        window.scrollTo({
-                          top: document.documentElement.scrollHeight,
-                          behavior: "smooth",
-                        });
+                      {
+                        icon: Mail,
+                        label: "Contact",
+                        active: activeTab === "contact" && !isResumeDialogOpen,
+                        onClick: () => {
+                          setActiveTab("contact");
+                          window.scrollTo({
+                            top: document.documentElement.scrollHeight,
+                            behavior: "smooth",
+                          });
+                        },
                       },
-                    },
-                  ]
+                    ]
                   : []),
               ]}
             />
@@ -128,9 +123,7 @@ export default function BottomNavigation({
           className={`hidden text-center lg:flex justify-center lg:fixed lg:right-[36px] lg:bottom-[24px] xl:block cursor-pointer ${watermarkClassName}`}
           onClick={() => window.open("https://www.designfolio.me", "_blank")}
         >
-
           <MemoMadewithdesignfolio />
-
         </div>
       )}
       {/* Resume Dialog */}
@@ -149,9 +142,7 @@ export default function BottomNavigation({
                 className="w-full h-[70vh] rounded-xl border border-border"
               />
             ) : (
-              <div className="p-6 text-sm text-muted-foreground">
-                No resume uploaded.
-              </div>
+              <div className="p-6 text-sm text-muted-foreground">No resume uploaded.</div>
             )}
           </div>
           {userDetails?.resume?.url && (

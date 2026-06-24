@@ -47,8 +47,8 @@ export default function ProjectCard({
   const handleLinkClick = (e) => {
     setCursorPill(false);
     // Always prevent Link navigation when dragging, recently moved, or clicking drag handle
-    const isDragHandle = !!e.target.closest('[data-drag-handle]');
-    const isButton = e.target.closest('button');
+    const isDragHandle = !!e.target.closest("[data-drag-handle]");
+    const isButton = e.target.closest("button");
 
     if (isDragging || wasRecentlyMoved || isDragHandle) {
       e.preventDefault();
@@ -77,27 +77,31 @@ export default function ProjectCard({
 
   const cardContent = (
     <div
-        className="group relative w-full h-full"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => {
-          setIsHovered(false);
-          setIsHoveringInteractive(false);
-        }}
-        onMouseDown={handleCardMouseDown}
-      >
+      className="group relative w-full h-full"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => {
+        setIsHovered(false);
+        setIsHoveringInteractive(false);
+      }}
+      onMouseDown={handleCardMouseDown}
+    >
       <motion.div
         className={customTwMerge(
           `bg-project-card-bg-color border border-project-card-border-color rounded-2xl min-h-[360px] h-full w-full flex flex-col overflow-hidden relative`,
-          !edit && !embeddedPreview && (shouldShowTooltip ? '' : 'cursor-pointer'),
-          embeddedPreview && 'cursor-default',
+          !edit && !embeddedPreview && (shouldShowTooltip ? "" : "cursor-pointer"),
+          embeddedPreview && "cursor-default",
           className
         )}
-        whileHover={!edit && !embeddedPreview && !isDragging && !isHoveringInteractive ? {
-          scale: 1.02,
-          rotateX: 2,
-          rotateY: -2,
-          transition: { duration: 0.3, ease: [0.4, 0, 0.2, 1] }
-        } : {}}
+        whileHover={
+          !edit && !embeddedPreview && !isDragging && !isHoveringInteractive
+            ? {
+                scale: 1.02,
+                rotateX: 2,
+                rotateY: -2,
+                transition: { duration: 0.3, ease: [0.4, 0, 0.2, 1] },
+              }
+            : {}
+        }
         initial={{ scale: 1, rotateX: 0, rotateY: 0 }}
         animate={isDragging ? { scale: 1.02 } : { scale: 1 }}
         style={{
@@ -109,13 +113,14 @@ export default function ProjectCard({
             <div
               className="w-full h-48 flex items-center justify-center relative overflow-hidden rounded-t-[15px]"
               style={{
-                background: 'linear-gradient(135deg, rgb(252, 249, 246) 0%, rgb(249, 245, 241) 50%, rgb(245, 241, 237) 100%)',
+                background:
+                  "linear-gradient(135deg, rgb(252, 249, 246) 0%, rgb(249, 245, 241) 50%, rgb(245, 241, 237) 100%)",
               }}
             >
               <div className="absolute inset-0 bg-gradient-to-t from-black/[0.02] to-transparent pointer-events-none" />
               <img
                 src={project?.thumbnail?.url}
-                alt={project?.title || 'Project'}
+                alt={project?.title || "Project"}
                 className="w-24 h-24 object-contain opacity-20 transition-transform duration-500 group-hover:scale-110"
               />
             </div>
@@ -124,8 +129,9 @@ export default function ProjectCard({
               <motion.img
                 src={project?.thumbnail?.url}
                 alt="project image"
-                className={`w-full h-full object-cover transition-opacity duration-100 ${shouldShowTooltip ? '' : 'cursor-pointer'} ${imageLoaded ? "opacity-100" : "opacity-100"
-                  }`}
+                className={`w-full h-full object-cover transition-opacity duration-100 ${shouldShowTooltip ? "" : "cursor-pointer"} ${
+                  imageLoaded ? "opacity-100" : "opacity-100"
+                }`}
                 initial="initial"
                 whileHover="hover"
                 variants={imageVariants}
@@ -142,8 +148,9 @@ export default function ProjectCard({
               <motion.img
                 src={project?.thumbnail?.url}
                 alt="project image"
-                className={`w-full h-full object-cover transition-opacity duration-100 ${shouldShowTooltip ? '' : 'cursor-pointer'} ${imageLoaded ? "opacity-100" : "opacity-100"
-                  }`}
+                className={`w-full h-full object-cover transition-opacity duration-100 ${shouldShowTooltip ? "" : "cursor-pointer"} ${
+                  imageLoaded ? "opacity-100" : "opacity-100"
+                }`}
                 initial="initial"
                 whileHover="hover"
                 variants={imageVariants}
@@ -163,16 +170,18 @@ export default function ProjectCard({
             </div>
           )}
 
-          <div className={`flex-1 flex flex-col justify-between ${!edit && !embeddedPreview && (shouldShowTooltip ? '' : 'cursor-pointer')}`}>
+          <div
+            className={`flex-1 flex flex-col justify-between ${!edit && !embeddedPreview && (shouldShowTooltip ? "" : "cursor-pointer")}`}
+          >
             <div className="p-6 pb-0">
               <p
-                className={`project-info-card-heading-color font-semibold line-clamp-2 ${!edit && !embeddedPreview && !shouldShowTooltip ? 'cursor-pointer' : ''} text-lg mb-2`}
+                className={`project-info-card-heading-color font-semibold line-clamp-2 ${!edit && !embeddedPreview && !shouldShowTooltip ? "cursor-pointer" : ""} text-lg mb-2`}
               >
                 {project?.title}
               </p>
               <Text
                 size="p-xxsmall"
-                className={`text-df-description-color font-normal line-clamp-3 leading-relaxed ${!edit && !embeddedPreview && !shouldShowTooltip ? 'cursor-pointer' : ''}`}
+                className={`text-df-description-color font-normal line-clamp-3 leading-relaxed ${!edit && !embeddedPreview && !shouldShowTooltip ? "cursor-pointer" : ""}`}
               >
                 {project?.description}
               </Text>
@@ -190,7 +199,6 @@ export default function ProjectCard({
                   className={"max-h-[34px]"}
                 />
               ) : (
-
                 <>
                   {/* <motion.div
                   className="flex gap-1 flex-1 w-fit"
@@ -234,7 +242,9 @@ export default function ProjectCard({
                       e.stopPropagation();
                       onToggleVisibility?.(project?._id);
                     }}
-                    icon={project?.hidden ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    icon={
+                      project?.hidden ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />
+                    }
                     text={project?.hidden ? "Hidden" : "Visible"}
                   />
                   <Button
@@ -266,8 +276,8 @@ export default function ProjectCard({
         onClick={(e) => {
           setCursorPill(false);
           // Allow buttons and drag handle to work
-          const isButton = e.target.closest('button');
-          const isDragHandle = !!e.target.closest('[data-drag-handle]');
+          const isButton = e.target.closest("button");
+          const isDragHandle = !!e.target.closest("[data-drag-handle]");
           if (!isButton && !isDragHandle) {
             e.preventDefault();
             e.stopPropagation();
@@ -275,7 +285,7 @@ export default function ProjectCard({
         }}
         onMouseDown={(e) => {
           setCursorPill(false);
-          const isButton = e.target.closest('button');
+          const isButton = e.target.closest("button");
           if (!isButton) {
             e.preventDefault();
             e.stopPropagation();

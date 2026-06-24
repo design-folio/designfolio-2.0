@@ -11,7 +11,6 @@ import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DomainValidationSchema } from "@/lib/validationSchemas";
 
-
 export default function ClaimLink() {
   const [isAvailable, setIsAvailable] = useState(false);
   const router = useRouter();
@@ -126,8 +125,19 @@ export default function ClaimLink() {
                     fill="none"
                     viewBox="0 0 24 24"
                   >
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V2.5A9.5 9.5 0 002.5 12H4z" />
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V2.5A9.5 9.5 0 002.5 12H4z"
+                    />
                   </svg>
                 )}
               </div>
@@ -143,7 +153,11 @@ export default function ClaimLink() {
                 >
                   <div className="flex items-center gap-2 text-sm text-red-600">
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      <path
+                        fillRule="evenodd"
+                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                        clipRule="evenodd"
+                      />
                     </svg>
                     <span>{validationError}</span>
                   </div>
@@ -175,19 +189,18 @@ export default function ClaimLink() {
                 >
                   <div className="flex items-center gap-2 text-sm text-red-600">
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      <path
+                        fillRule="evenodd"
+                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                        clipRule="evenodd"
+                      />
                     </svg>
                     <span>{domain}.designfolio.me is not available!</span>
                   </div>
                 </motion.div>
               )}
             </AnimatePresence>
-
-
-
           </div>
-
-
 
           <Button
             variant="darker"
@@ -204,7 +217,7 @@ export default function ClaimLink() {
             <Link
               href={router.query.job ? `/login?job=${router.query.job}` : "/login"}
               className="hover:underline font-medium cursor-pointer"
-              style={{ color: '#FF553E' }}
+              style={{ color: "#FF553E" }}
               data-testid="link-login"
             >
               Log in

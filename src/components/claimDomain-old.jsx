@@ -8,17 +8,10 @@ import { useDebouncedCallback } from "use-debounce";
 
 const DomainValidationSchema = Yup.object().shape({
   domain: Yup.string()
-    .matches(
-      /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})?$/,
-      "Invalid subdomain"
-    )
+    .matches(/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})?$/, "Invalid subdomain")
     .required("Domain is required"),
 });
-export default function ClaimDomain({
-  form = "default",
-  className = "",
-  onClaimWebsite,
-}) {
+export default function ClaimDomain({ form = "default", className = "", onClaimWebsite }) {
   const [isAvailable, setIsAvailable] = useState(false);
   const router = useRouter();
   const [domainValue, setDomainValue] = useState("");
@@ -91,17 +84,8 @@ export default function ClaimDomain({
           }
         }}
       >
-        {({
-          setFieldValue,
-          setFieldError,
-          setFieldTouched,
-          errors,
-          values,
-        }) => (
-          <Form
-            id={form}
-            className={`w-full xl:w-[836px] md:pr-5 m-auto ${className}`}
-          >
+        {({ setFieldValue, setFieldError, setFieldTouched, errors, values }) => (
+          <Form id={form} className={`w-full xl:w-[836px] md:pr-5 m-auto ${className}`}>
             <div className="flex flex-col md:flex-row items-end justify-center gap-4 md:max-w-[848px] m-auto">
               <div className="w-full md:w-[432px]">
                 <div className="relative">
@@ -110,31 +94,26 @@ export default function ClaimDomain({
                     name="domain"
                     placeholder="Enter your name"
                     autoComplete="off"
-                    className={`text-input !rounded-[16px] ${loading ? "!pr-[182px]" : "!pr-[158px]"
-                      } !py-[19.2px] xl:!py-[18.8px] placeholder-[#9CA3AF] ${((!!errors.domain && values.domain && !loading) ||
+                    className={`text-input !rounded-[16px] ${
+                      loading ? "!pr-[182px]" : "!pr-[158px]"
+                    } !py-[19.2px] xl:!py-[18.8px] placeholder-[#9CA3AF] ${
+                      ((!!errors.domain && values.domain && !loading) ||
                         (!isAvailable && !loading && values.domain)) &&
                       "!text-input-error-color"
-                      } ${!errors.domain &&
+                    } ${
+                      !errors.domain &&
                       domainValue &&
                       isAvailable &&
                       !loading &&
                       "!text-input-success-color"
-                      }`}
-                    onChange={(e) =>
-                      handleChange(
-                        e,
-                        setFieldValue,
-                        setFieldError,
-                        setFieldTouched
-                      )
-                    }
+                    }`}
+                    onChange={(e) => handleChange(e, setFieldValue, setFieldError, setFieldTouched)}
                   />
                   <div className="flex justify-center items-center gap-[10px] absolute top-[4px] lg:top-[3px] right-[4px]">
                     <span
                       className="text-input-button-color flex  gap-2 items-center text-[17px] font-inter font-[500] p-[14px] rounded-xl transition-all"
                       style={{
-                        background:
-                          "linear-gradient(to right, #F1F2F8, #F7F3EB)",
+                        background: "linear-gradient(to right, #F1F2F8, #F7F3EB)",
                       }}
                     >
                       .designfolio.me
@@ -170,18 +149,17 @@ export default function ClaimDomain({
                 form={form}
                 btnType="submit"
                 customClass="w-full md:w-fit md:py-[18px]"
-                isDisabled={
-                  !(!errors.domain && domainValue && isAvailable && !loading)
-                }
+                isDisabled={!(!errors.domain && domainValue && isAvailable && !loading)}
               />
             </div>
             <div className="h-6 text-center mt-6">
               <div className="flex flex-col justify-center overflow-hidden">
                 <div
-                  className={`transition flex gap-x-1 justify-center items-center duration-300 ${!domainValue || loading
-                    ? "h-max animate-slide-up max-h-10 opacity-100"
-                    : "h-max max-h-0 opacity-0"
-                    }`}
+                  className={`transition flex gap-x-1 justify-center items-center duration-300 ${
+                    !domainValue || loading
+                      ? "h-max animate-slide-up max-h-10 opacity-100"
+                      : "h-max max-h-0 opacity-0"
+                  }`}
                 >
                   <img src="/assets/svgs/normal-emoji.svg" alt="" />
                   <p className="text-input-button-color font-[500] font-inter">
@@ -190,10 +168,11 @@ export default function ClaimDomain({
                 </div>
 
                 <div
-                  className={`transition-transform flex gap-x-1 justify-center items-center duration-300 ${!errors.domain && domainValue && isAvailable && !loading
-                    ? "-translate-y-full h-max animate-slide-down max-h-10 opacity-100"
-                    : "-translate-y-full h-max max-h-0 opacity-0"
-                    }`}
+                  className={`transition-transform flex gap-x-1 justify-center items-center duration-300 ${
+                    !errors.domain && domainValue && isAvailable && !loading
+                      ? "-translate-y-full h-max animate-slide-down max-h-10 opacity-100"
+                      : "-translate-y-full h-max max-h-0 opacity-0"
+                  }`}
                 >
                   <img src="/assets/svgs/success-emoji.svg" alt="" />
                   <p className="text-center text-input-success-color font-[500] font-inter">
@@ -202,18 +181,17 @@ export default function ClaimDomain({
                 </div>
 
                 <div
-                  className={`transition-transform flex gap-x-1 justify-center items-center duration-300 ${(!!errors.domain && values.domain && !loading) ||
+                  className={`transition-transform flex gap-x-1 justify-center items-center duration-300 ${
+                    (!!errors.domain && values.domain && !loading) ||
                     (!isAvailable && !loading && values.domain)
-                    ? "translate-y-full h-max  animate-slide-up max-h-10 opacity-100"
-                    : "translate-y-full h-max max-h-0 opacity-0"
-                    }`}
+                      ? "translate-y-full h-max  animate-slide-up max-h-10 opacity-100"
+                      : "translate-y-full h-max max-h-0 opacity-0"
+                  }`}
                 >
                   <img src="/assets/svgs/error-emoji.svg" alt="" />
                   <p className="text-center flex text-input-error-color font-[500] font-inter">
                     Username is already taken.{" "}
-                    <span className="hidden md:block">
-                      Your clone got here first!
-                    </span>
+                    <span className="hidden md:block">Your clone got here first!</span>
                   </p>
                 </div>
               </div>

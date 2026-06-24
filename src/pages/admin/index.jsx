@@ -158,13 +158,25 @@ export default function AdminStats() {
                           <TabsTrigger value="30days">30 Days</TabsTrigger>
                         </TabsList>
                         <TabsContent value="today" className="mt-4 flex-1">
-                          <StatsWindow data={data?.today} prevData={data?.yesterday} deltaLabel="vs yesterday" />
+                          <StatsWindow
+                            data={data?.today}
+                            prevData={data?.yesterday}
+                            deltaLabel="vs yesterday"
+                          />
                         </TabsContent>
                         <TabsContent value="7days" className="mt-4 flex-1">
-                          <StatsWindow data={data?.last7Days} prevData={data?.prev7Days} deltaLabel="vs prev 7d" />
+                          <StatsWindow
+                            data={data?.last7Days}
+                            prevData={data?.prev7Days}
+                            deltaLabel="vs prev 7d"
+                          />
                         </TabsContent>
                         <TabsContent value="30days" className="mt-4 flex-1">
-                          <StatsWindow data={data?.last30Days} prevData={data?.prev30Days} deltaLabel="vs prev 30d" />
+                          <StatsWindow
+                            data={data?.last30Days}
+                            prevData={data?.prev30Days}
+                            deltaLabel="vs prev 30d"
+                          />
                         </TabsContent>
                       </Tabs>
                     )}

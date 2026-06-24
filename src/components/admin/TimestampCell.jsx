@@ -1,9 +1,4 @@
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 function relativeTime(date) {
   const now = Date.now();
@@ -24,7 +19,8 @@ function relativeTime(date) {
 
 export default function TimestampCell({ date: dateStr }) {
   const date = new Date(dateStr);
-  if (isNaN(date.getTime())) return <span className="text-[#7A736C] dark:text-[#B5AFA5] text-sm">—</span>;
+  if (isNaN(date.getTime()))
+    return <span className="text-[#7A736C] dark:text-[#B5AFA5] text-sm">—</span>;
 
   const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const fmt = (timeZone) =>
@@ -53,16 +49,11 @@ export default function TimestampCell({ date: dateStr }) {
             {relativeTime(date)}
           </span>
         </TooltipTrigger>
-        <TooltipContent
-          side="top"
-          className="p-0 bg-foreground border-0 shadow-none"
-        >
+        <TooltipContent side="top" className="p-0 bg-foreground border-0 shadow-none">
           <div className="bg-[#231F1A] text-[#F0EDE7] rounded-md p-3 min-w-[280px] space-y-1.5 border border-white/10 shadow-lg">
             {rows.map(({ label, value }) => (
               <div key={label} className="flex items-baseline justify-between gap-4">
-                <span className="text-[10px] font-mono text-[#B5AFA5] shrink-0">
-                  {label}:
-                </span>
+                <span className="text-[10px] font-mono text-[#B5AFA5] shrink-0">{label}:</span>
                 <span className="text-[11px] font-mono text-right">{value}</span>
               </div>
             ))}

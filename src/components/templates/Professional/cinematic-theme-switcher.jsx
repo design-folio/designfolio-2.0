@@ -60,18 +60,8 @@ export default function CinematicThemeSwitcher({ persist = false }) {
         <defs>
           {/* Light mode grain - subtle */}
           <filter id="grain-light">
-            <feTurbulence
-              type="fractalNoise"
-              baseFrequency="0.9"
-              numOctaves="4"
-              result="noise"
-            />
-            <feColorMatrix
-              in="noise"
-              type="saturate"
-              values="0"
-              result="desaturatedNoise"
-            />
+            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" result="noise" />
+            <feColorMatrix in="noise" type="saturate" values="0" result="desaturatedNoise" />
             <feComponentTransfer in="desaturatedNoise" result="lightGrain">
               <feFuncA type="linear" slope="0.3" />
             </feComponentTransfer>
@@ -80,18 +70,8 @@ export default function CinematicThemeSwitcher({ persist = false }) {
 
           {/* Dark mode grain - more visible */}
           <filter id="grain-dark">
-            <feTurbulence
-              type="fractalNoise"
-              baseFrequency="0.9"
-              numOctaves="4"
-              result="noise"
-            />
-            <feColorMatrix
-              in="noise"
-              type="saturate"
-              values="0"
-              result="desaturatedNoise"
-            />
+            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" result="noise" />
+            <feColorMatrix in="noise" type="saturate" values="0" result="desaturatedNoise" />
             <feComponentTransfer in="desaturatedNoise" result="darkGrain">
               <feFuncA type="linear" slope="0.5" />
             </feComponentTransfer>
@@ -138,14 +118,8 @@ export default function CinematicThemeSwitcher({ persist = false }) {
 
         {/* Background Icons */}
         <div className="absolute inset-0 flex items-center justify-between px-4">
-          <Sun
-            size={20}
-            className={isDark ? "text-[#3A352E]" : "text-[#7A736C]"}
-          />
-          <Moon
-            size={20}
-            className={isDark ? "text-[#7A736C]" : "text-[#D5D0C6]"}
-          />
+          <Sun size={20} className={isDark ? "text-[#3A352E]" : "text-[#7A736C]"} />
+          <Moon size={20} className={isDark ? "text-[#7A736C]" : "text-[#D5D0C6]"} />
         </div>
 
         {/* Circular Thumb with Bouncy Spring Physics */}

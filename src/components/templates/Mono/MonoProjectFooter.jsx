@@ -19,9 +19,7 @@ const SOCIALS = [
 ];
 
 export default function MonoProjectFooter({ ownerUser }) {
-  const fullName = [ownerUser?.firstName, ownerUser?.lastName]
-    .filter(Boolean)
-    .join(" ");
+  const fullName = [ownerUser?.firstName, ownerUser?.lastName].filter(Boolean).join(" ");
 
   const activeSocials = SOCIALS.filter(({ key, from }) =>
     from === "socials" ? ownerUser?.socials?.[key] : ownerUser?.portfolios?.[key]
@@ -41,7 +39,9 @@ export default function MonoProjectFooter({ ownerUser }) {
           </span>
         )}
         <p className="text-[#1A1A1A] dark:text-[#F0EDE7] text-[22px] font-semibold max-w-sm leading-tight">
-          Got a project in mind?<br />Let&apos;s talk.
+          Got a project in mind?
+          <br />
+          Let&apos;s talk.
         </p>
 
         {/* Contact actions */}
@@ -71,9 +71,7 @@ export default function MonoProjectFooter({ ownerUser }) {
           <div className="flex items-center gap-5 text-[#7A736C] dark:text-[#9E9893]">
             {activeSocials.map(({ key, from, Icon, label }) => {
               const href =
-                from === "socials"
-                  ? ownerUser?.socials?.[key]
-                  : ownerUser?.portfolios?.[key];
+                from === "socials" ? ownerUser?.socials?.[key] : ownerUser?.portfolios?.[key];
               return (
                 <a
                   key={key}

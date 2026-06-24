@@ -52,11 +52,7 @@ export default function Index() {
     }
   }, []);
 
-  const setProjectData = (
-    project,
-    isProtectedValue = false,
-    isFromRefetch = false,
-  ) => {
+  const setProjectData = (project, isProtectedValue = false, isFromRefetch = false) => {
     setProjectDetails({
       project: project,
       isProtected: isProtectedValue,
@@ -112,9 +108,7 @@ export default function Index() {
 
     if (initializedRef.current) return;
 
-    const cachedProject = userDetails.projects?.find(
-      (project) => project._id === projectId,
-    );
+    const cachedProject = userDetails.projects?.find((project) => project._id === projectId);
 
     if (cachedProject) {
       setProjectData(cachedProject, cachedProject.protected || false);
@@ -130,10 +124,7 @@ export default function Index() {
   if (!userDetails && userDetailLoading) {
     return (
       <>
-        <WallpaperBackground
-          wallpaperUrl={wallpaperUrl}
-          effects={wallpaperEffects}
-        />
+        <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div className="w-8 h-8 border-2 border-[#888] border-t-transparent rounded-full animate-spin" />
         </div>
@@ -161,7 +152,7 @@ export default function Index() {
       case TEMPLATE_IDS.PROFESSIONAL:
         return "max-w-[848px] mx-auto px-2 md:px-4 lg:px-0";
       case TEMPLATE_IDS.SPOTLIGHT:
-        return "max-w-[848px] mx-auto flex flex-col gap-3 pb-20 pt-[40px] px-4 md:px-0"
+        return "max-w-[848px] mx-auto flex flex-col gap-3 pb-20 pt-[40px] px-4 md:px-0";
       default:
         return "max-w-[700px] mx-auto flex flex-col gap-3 pb-20 pt-[40px] px-4 md:px-0";
     }
@@ -199,31 +190,26 @@ export default function Index() {
     }
 
     const updatedProjects = projects.map((p) =>
-      p._id === projectId ? { ...p, hidden: !p.hidden } : p,
+      p._id === projectId ? { ...p, hidden: !p.hidden } : p
     );
 
-    setUserDetails((prev) =>
-      prev ? { ...prev, projects: updatedProjects } : prev,
-    );
+    setUserDetails((prev) => (prev ? { ...prev, projects: updatedProjects } : prev));
     _updateProject(projectId, { hidden: !existing.hidden });
     _updateUser({ projects: updatedProjects });
 
     setProjectDetails((prev) =>
       prev
         ? {
-          ...prev,
-          project: { ...prev.project, hidden: !prev.project.hidden },
-        }
-        : prev,
+            ...prev,
+            project: { ...prev.project, hidden: !prev.project.hidden },
+          }
+        : prev
     );
   };
 
   return (
     <>
-      <WallpaperBackground
-        wallpaperUrl={wallpaperUrl}
-        effects={wallpaperEffects}
-      />
+      <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
 
       {isChatfolio && currentProject ? (
         <>
@@ -273,8 +259,8 @@ export default function Index() {
       ) : (
         <main className={cn("min-h-screen")}>
           <div className="fixed top-4 left-4 z-50">
-            {
-              !template === TEMPLATE_IDS.MONO && (<Button
+            {!template === TEMPLATE_IDS.MONO && (
+              <Button
                 variant="outline"
                 size="sm"
                 onClick={() => router.back()}
@@ -282,8 +268,8 @@ export default function Index() {
               >
                 <ArrowLeft className="w-4 h-4" />
                 Back to Preview
-              </Button>)
-            }
+              </Button>
+            )}
           </div>
           {previewContent}
         </main>

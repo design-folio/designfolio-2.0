@@ -1,6 +1,16 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { cn } from "@/lib/utils";
-import { X, ChevronLeft, ChevronRight, Minus, Square, RefreshCw, Lock, Star, User } from "lucide-react";
+import {
+  X,
+  ChevronLeft,
+  ChevronRight,
+  Minus,
+  Square,
+  RefreshCw,
+  Lock,
+  Star,
+  User,
+} from "lucide-react";
 
 export function AnimatedFolder({ title, projects, className, onProjectClick }) {
   const [isHovered, setIsHovered] = useState(false);
@@ -43,7 +53,10 @@ export function AnimatedFolder({ title, projects, className, onProjectClick }) {
         onMouseLeave={() => setIsHovered(false)}
         onClick={handleFolderClick}
       >
-        <div className="relative flex items-center justify-center mb-2" style={{ height: "80px", width: "100px" }}>
+        <div
+          className="relative flex items-center justify-center mb-2"
+          style={{ height: "80px", width: "100px" }}
+        >
           {/* Folder back layer */}
           <div
             className="absolute w-16 h-12 bg-[#007aff] rounded-md shadow-sm"
@@ -74,8 +87,13 @@ export function AnimatedFolder({ title, projects, className, onProjectClick }) {
             {projects.slice(0, 1).map((project, index) => (
               <div
                 key={project.id}
-                ref={(el) => { cardRefs.current[index] = el; }}
-                onClick={(e) => { e.stopPropagation(); handleFolderClick(); }}
+                ref={(el) => {
+                  cardRefs.current[index] = el;
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleFolderClick();
+                }}
                 className={cn(
                   "absolute w-12 h-12 bg-white rounded-sm shadow-sm border border-black/5 overflow-hidden transition-all duration-500",
                   hiddenCardId === project.id ? "opacity-0 scale-90" : "opacity-100 scale-100"
@@ -83,13 +101,19 @@ export function AnimatedFolder({ title, projects, className, onProjectClick }) {
                 style={{
                   left: "-24px",
                   top: "-24px",
-                  transform: isHovered ? "translateY(-30px) rotate(0deg)" : "translateY(0) rotate(0deg)",
+                  transform: isHovered
+                    ? "translateY(-30px) rotate(0deg)"
+                    : "translateY(0) rotate(0deg)",
                   transitionDelay: `${index * 80}ms`,
                   zIndex: 20 - index,
                 }}
               >
-                {project.image?.startsWith?.('http') ? (
-                  <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
+                {project.image?.startsWith?.("http") ? (
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    className="w-full h-full object-cover"
+                  />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-xs bg-gray-100">
                     {project.image}
@@ -171,7 +195,8 @@ function BrowserWindow({ projects, currentIndex, isOpen, onClose, onCloseComplet
         className="relative bg-[#f3f3f3] rounded-lg shadow-2xl overflow-hidden w-full max-w-5xl h-[80vh] flex flex-col border border-gray-400"
         onClick={(e) => e.stopPropagation()}
         style={{
-          transform: animationPhase === "initial" ? "scale(0.9) translateY(20px)" : "scale(1) translateY(0)",
+          transform:
+            animationPhase === "initial" ? "scale(0.9) translateY(20px)" : "scale(1) translateY(0)",
           opacity: animationPhase === "initial" ? 0 : 1,
           transition: "transform 500ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 400ms",
         }}
@@ -180,9 +205,15 @@ function BrowserWindow({ projects, currentIndex, isOpen, onClose, onCloseComplet
         <div className="h-10 bg-[#e7e7e7] flex items-center justify-between px-3 border-b border-gray-300 shrink-0 select-none">
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 rounded-sm overflow-hidden bg-gray-200 flex items-center justify-center text-[10px] text-gray-500">
-              {currentProject?.image?.startsWith?.('http') ? (
-                <img src={currentProject.image} alt={currentProject.title} className="w-full h-full object-cover" />
-              ) : currentProject?.image}
+              {currentProject?.image?.startsWith?.("http") ? (
+                <img
+                  src={currentProject.image}
+                  alt={currentProject.title}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                currentProject?.image
+              )}
             </div>
             <span className="text-[11px] text-gray-600 truncate max-w-[200px]">
               {currentProject?.title || "New Tab"}
@@ -195,7 +226,10 @@ function BrowserWindow({ projects, currentIndex, isOpen, onClose, onCloseComplet
             <button className="h-10 w-11 flex items-center justify-center hover:bg-gray-300 transition-colors">
               <Square size={10} className="text-gray-600" />
             </button>
-            <button onClick={handleClose} className="h-10 w-11 flex items-center justify-center hover:bg-[#e81123] hover:text-white transition-colors">
+            <button
+              onClick={handleClose}
+              className="h-10 w-11 flex items-center justify-center hover:bg-[#e81123] hover:text-white transition-colors"
+            >
               <X size={16} className="text-gray-600" />
             </button>
           </div>
@@ -204,27 +238,35 @@ function BrowserWindow({ projects, currentIndex, isOpen, onClose, onCloseComplet
         <div className="bg-white border-b border-gray-200 p-2 flex flex-col gap-2 shrink-0">
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1">
-              <button className="p-1.5 rounded-full hover:bg-gray-100"><ChevronLeft size={18} className="text-gray-600" /></button>
-              <button className="p-1.5 rounded-full hover:bg-gray-100"><ChevronRight size={18} className="text-gray-600" /></button>
-              <button className="p-1.5 rounded-full hover:bg-gray-100"><RefreshCw size={16} className="text-gray-600" /></button>
+              <button className="p-1.5 rounded-full hover:bg-gray-100">
+                <ChevronLeft size={18} className="text-gray-600" />
+              </button>
+              <button className="p-1.5 rounded-full hover:bg-gray-100">
+                <ChevronRight size={18} className="text-gray-600" />
+              </button>
+              <button className="p-1.5 rounded-full hover:bg-gray-100">
+                <RefreshCw size={16} className="text-gray-600" />
+              </button>
             </div>
             <div className="flex-1 flex items-center bg-[#f0f2f5] rounded-full px-3 py-1.5 border border-transparent hover:border-gray-300 transition-all">
               <Lock size={12} className="text-gray-500 mr-2" />
               <input
                 type="text"
                 readOnly
-                value={`https://${currentProject?.title?.toLowerCase()?.replace(/\s+/g, '-') || 'project'}.com`}
+                value={`https://${currentProject?.title?.toLowerCase()?.replace(/\s+/g, "-") || "project"}.com`}
                 className="bg-transparent border-none outline-none text-xs text-gray-700 w-full"
               />
               <Star size={14} className="text-gray-500 cursor-pointer hover:text-yellow-500 ml-2" />
             </div>
-            <button className="p-1.5 rounded hover:bg-gray-100"><User size={18} className="text-gray-600" /></button>
+            <button className="p-1.5 rounded hover:bg-gray-100">
+              <User size={18} className="text-gray-600" />
+            </button>
           </div>
         </div>
         {/* Content */}
         <div className="flex-1 bg-white overflow-auto flex flex-col items-center justify-center text-center p-8">
           <div className="max-w-md space-y-6 w-full">
-            {currentProject?.image?.startsWith?.('http') ? (
+            {currentProject?.image?.startsWith?.("http") ? (
               <img
                 src={currentProject.image}
                 alt={currentProject.title}
@@ -241,7 +283,9 @@ function BrowserWindow({ projects, currentIndex, isOpen, onClose, onCloseComplet
               <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
                 <div className="w-1/3 h-full bg-[#007aff] animate-pulse" />
               </div>
-              <span className="text-[11px] text-gray-400 uppercase tracking-widest font-bold">Connection Secure</span>
+              <span className="text-[11px] text-gray-400 uppercase tracking-widest font-bold">
+                Connection Secure
+              </span>
             </div>
           </div>
         </div>

@@ -24,7 +24,15 @@ const Header = ({ dfToken, hideHeader }) => {
     setWallpaper,
     changeWallpaper,
   } = useGlobalContext();
-  const footerPaths = ["/", "/old-landing", "/contact", "/refund-policy", "/privacy-policy", "/terms-and-conditions", "/pricing"];
+  const footerPaths = [
+    "/",
+    "/old-landing",
+    "/contact",
+    "/refund-policy",
+    "/privacy-policy",
+    "/terms-and-conditions",
+    "/pricing",
+  ];
   // Determine header component based on dfToken and router pathname
   let headerComponent = null;
   const path = router.pathname;

@@ -23,7 +23,9 @@ export function useNumberCounter({ value, direction = "up", delay = 0, decimalPl
 
   useEffect(() => {
     if (isInView) {
-      const timeout = setTimeout(() => { motionValue.set(direction === "down" ? 0 : value); }, delay * 1000);
+      const timeout = setTimeout(() => {
+        motionValue.set(direction === "down" ? 0 : value);
+      }, delay * 1000);
       return () => clearTimeout(timeout);
     }
   }, [motionValue, isInView, delay, value, direction]);
@@ -83,9 +85,12 @@ export function Gauge({
 
   const gaugeConfig = (() => {
     switch (gaugeType) {
-      case "half": return { startAngle: -90, endAngle: 90, circumferenceFactor: 0.5 };
-      case "quarter": return { startAngle: 0, endAngle: 90, circumferenceFactor: 0.25 };
-      default: return { startAngle: -90, endAngle: 270, circumferenceFactor: 1 };
+      case "half":
+        return { startAngle: -90, endAngle: 90, circumferenceFactor: 0.5 };
+      case "quarter":
+        return { startAngle: 0, endAngle: 90, circumferenceFactor: 0.25 };
+      default:
+        return { startAngle: -90, endAngle: 270, circumferenceFactor: 1 };
     }
   })();
 
@@ -134,7 +139,13 @@ export function Gauge({
       : { danger: "#dc2626", warning: "#f59e0b", info: "#3b82f6", success: "#22c55e" };
     if (!colorProp) {
       if (isSecondary) return "rgba(85,85,85,0.15)";
-      return strokePercent <= 25 ? defaultColors.danger : strokePercent <= 50 ? defaultColors.warning : strokePercent <= 75 ? defaultColors.info : defaultColors.success;
+      return strokePercent <= 25
+        ? defaultColors.danger
+        : strokePercent <= 50
+          ? defaultColors.warning
+          : strokePercent <= 75
+            ? defaultColors.info
+            : defaultColors.success;
     }
     if (typeof colorProp === "string") return defaultColors[colorProp] || colorProp;
     if (typeof colorProp === "object") {
@@ -156,10 +167,18 @@ export function Gauge({
   const secondaryStroke = getColor(secondary, true);
 
   const primaryOpacity = () =>
-    offsetFactor > 0 && strokePercent < gapPercent * 2 * offsetFactor && strokePercent < gapPercent * 2 * offsetFactorSecondary ? 0 : 1;
+    offsetFactor > 0 &&
+    strokePercent < gapPercent * 2 * offsetFactor &&
+    strokePercent < gapPercent * 2 * offsetFactorSecondary
+      ? 0
+      : 1;
   const secondaryOpacity = () =>
     (offsetFactor === 0 && strokePercent > 100 - gapPercent * 2) ||
-    (offsetFactor > 0 && strokePercent > 100 - gapPercent * 2 * offsetFactor && strokePercent > 100 - gapPercent * 2 * offsetFactorSecondary) ? 0 : 1;
+    (offsetFactor > 0 &&
+      strokePercent > 100 - gapPercent * 2 * offsetFactor &&
+      strokePercent > 100 - gapPercent * 2 * offsetFactorSecondary)
+      ? 0
+      : 1;
 
   const circleStyles = {
     strokeLinecap: "round",
@@ -170,7 +189,9 @@ export function Gauge({
     shapeRendering: "geometricPrecision",
   };
 
-  const glowStyles = glowEffect ? { filter: `drop-shadow(0 0 4px ${primaryStroke}80) drop-shadow(0 0 10px ${primaryStroke}40)` } : {};
+  const glowStyles = glowEffect
+    ? { filter: `drop-shadow(0 0 4px ${primaryStroke}80) drop-shadow(0 0 10px ${primaryStroke}40)` }
+    : {};
 
   return (
     <div className="relative inline-block">
@@ -194,29 +215,58 @@ export function Gauge({
           </defs>
         )}
         <circle
-          cx={circleSize / 2} cy={circleSize / 2} r={radius}
-          style={{ ...circleStyles, strokeDasharray: secondaryStrokeDasharray(), transform: secondaryTransform(), stroke: secondaryStroke, opacity: secondaryOpacity() }}
+          cx={circleSize / 2}
+          cy={circleSize / 2}
+          r={radius}
+          style={{
+            ...circleStyles,
+            strokeDasharray: secondaryStrokeDasharray(),
+            transform: secondaryTransform(),
+            stroke: secondaryStroke,
+            opacity: secondaryOpacity(),
+          }}
           className={cn("", typeof className === "object" && className?.secondaryClassName)}
         />
         <circle
-          cx={circleSize / 2} cy={circleSize / 2} r={radius}
-          style={{ ...circleStyles, strokeDasharray: primaryStrokeDasharray(), transform: primaryTransform(), stroke: gradient ? "url(#primaryGradient)" : primaryStroke, opacity: primaryOpacity() }}
+          cx={circleSize / 2}
+          cy={circleSize / 2}
+          r={radius}
+          style={{
+            ...circleStyles,
+            strokeDasharray: primaryStrokeDasharray(),
+            transform: primaryTransform(),
+            stroke: gradient ? "url(#primaryGradient)" : primaryStroke,
+            opacity: primaryOpacity(),
+          }}
           className={cn("", typeof className === "object" && className?.primaryClassName)}
         />
         {showValue && (
           <text
-            x={circleSize / 2} y={circleSize / 2} textAnchor="middle" dominantBaseline="middle" alignmentBaseline="central"
-            fill="currentColor" fontSize={30} fontWeight="700"
+            x={circleSize / 2}
+            y={circleSize / 2}
+            textAnchor="middle"
+            dominantBaseline="middle"
+            alignmentBaseline="central"
+            fill="currentColor"
+            fontSize={30}
+            fontWeight="700"
             className={cn("font-bold", typeof className === "object" && className?.textClassName)}
             style={{ userSelect: "none" }}
           >
-            {animatedValue}{showPercentage && unit}
+            {animatedValue}
+            {showPercentage && unit}
           </text>
         )}
         {label && (
           <text
-            x={circleSize / 2} y={circleSize / 2 + 20} textAnchor="middle" dominantBaseline="middle"
-            fontSize={8} fontWeight="400" className="fill-muted-foreground" style={{ userSelect: "none" }}
+            x={circleSize / 2}
+            y={circleSize / 2 + 20}
+            textAnchor="middle"
+            dominantBaseline="middle"
+            fontSize={8}
+            fontWeight="400"
+            className="fill-muted-foreground"
+            style={{ userSelect: "none" }}
           >
             {label}
           </text>

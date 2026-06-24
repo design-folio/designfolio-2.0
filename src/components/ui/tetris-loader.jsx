@@ -4,12 +4,50 @@ import { useState, useEffect, useCallback, useRef } from "react";
 
 const TETRIS_PIECES = [
   { shape: [[1, 1, 1, 1]], color: "bg-[#0A0A0A]" },
-  { shape: [[1, 1], [1, 1]], color: "bg-[#0A0A0A]" },
-  { shape: [[0, 1, 0], [1, 1, 1]], color: "bg-[#0A0A0A]" },
-  { shape: [[1, 0], [1, 0], [1, 1]], color: "bg-[#0A0A0A]" },
-  { shape: [[0, 1, 1], [1, 1, 0]], color: "bg-[#0A0A0A]" },
-  { shape: [[1, 1, 0], [0, 1, 1]], color: "bg-[#0A0A0A]" },
-  { shape: [[0, 1], [0, 1], [1, 1]], color: "bg-[#0A0A0A]" },
+  {
+    shape: [
+      [1, 1],
+      [1, 1],
+    ],
+    color: "bg-[#0A0A0A]",
+  },
+  {
+    shape: [
+      [0, 1, 0],
+      [1, 1, 1],
+    ],
+    color: "bg-[#0A0A0A]",
+  },
+  {
+    shape: [
+      [1, 0],
+      [1, 0],
+      [1, 1],
+    ],
+    color: "bg-[#0A0A0A]",
+  },
+  {
+    shape: [
+      [0, 1, 1],
+      [1, 1, 0],
+    ],
+    color: "bg-[#0A0A0A]",
+  },
+  {
+    shape: [
+      [1, 1, 0],
+      [0, 1, 1],
+    ],
+    color: "bg-[#0A0A0A]",
+  },
+  {
+    shape: [
+      [0, 1],
+      [0, 1],
+      [1, 1],
+    ],
+    color: "bg-[#0A0A0A]",
+  },
 ];
 
 const SIZE_CONFIG = {
@@ -105,7 +143,12 @@ export default function TetrisLoading({
             if (piece.shape[row][col]) {
               const gridX = piece.x + col;
               const gridY = piece.y + row;
-              if (gridY >= 0 && gridY < config.gridHeight && gridX >= 0 && gridX < config.gridWidth) {
+              if (
+                gridY >= 0 &&
+                gridY < config.gridHeight &&
+                gridX >= 0 &&
+                gridX < config.gridWidth
+              ) {
                 newGrid[gridY][gridX] = { filled: true, color: piece.color };
               }
             }
@@ -209,12 +252,7 @@ export default function TetrisLoading({
         if (fallingPiece.shape[row][col]) {
           const gridX = fallingPiece.x + col;
           const gridY = fallingPiece.y + row;
-          if (
-            gridY >= 0 &&
-            gridY < config.gridHeight &&
-            gridX >= 0 &&
-            gridX < config.gridWidth
-          ) {
+          if (gridY >= 0 && gridY < config.gridHeight && gridX >= 0 && gridX < config.gridWidth) {
             displayGrid[gridY][gridX] = { filled: true, color: fallingPiece.color };
           }
         }

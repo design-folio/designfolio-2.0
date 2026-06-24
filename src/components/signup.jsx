@@ -1,43 +1,39 @@
-import { useState, useEffect } from 'react';
-import { Formik, Form } from 'formik';
-import { Mail } from 'lucide-react';
-import { motion } from 'framer-motion';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { useGoogleLogin } from '@react-oauth/google';
-import { _signupEmail, _signupGmail } from '@/network/post-request';
-import { _postResumeApply } from '@/network/resume';
-import { setToken } from '@/lib/cooikeManager';
-import { AuthLayout } from '@/components/ui/auth-layout';
-import { FormInput } from '@/components/ui/form-input';
-import { FormButton } from '@/components/ui/form-button';
-import { GoogleButton } from '@/components/ui/google-button';
-import { Divider } from '@/components/ui/divider';
-import { Button } from '@/components/ui/button';
-import * as Yup from 'yup';
+import { useState, useEffect } from "react";
+import { Formik, Form } from "formik";
+import { Mail } from "lucide-react";
+import { motion } from "framer-motion";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useGoogleLogin } from "@react-oauth/google";
+import { _signupEmail, _signupGmail } from "@/network/post-request";
+import { _postResumeApply } from "@/network/resume";
+import { setToken } from "@/lib/cooikeManager";
+import { AuthLayout } from "@/components/ui/auth-layout";
+import { FormInput } from "@/components/ui/form-input";
+import { FormButton } from "@/components/ui/form-button";
+import { GoogleButton } from "@/components/ui/google-button";
+import { Divider } from "@/components/ui/divider";
+import { Button } from "@/components/ui/button";
+import * as Yup from "yup";
 
-import { usePostHogEvent } from '@/hooks/usePostHogEvent';
-import { POSTHOG_EVENT_NAMES } from '@/lib/posthogEventNames';
-import { usePostHogIdentify } from '@/hooks/usePostHogIdentify';
+import { usePostHogEvent } from "@/hooks/usePostHogEvent";
+import { POSTHOG_EVENT_NAMES } from "@/lib/posthogEventNames";
+import { usePostHogIdentify } from "@/hooks/usePostHogIdentify";
 
 const SignupValidationSchema = Yup.object().shape({
-  name: Yup.string()
-    .max(100, 'Name is too long')
-    .required('Full name is required'),
-  email: Yup.string()
-    .email('Invalid email address')
-    .required('Email is required'),
+  name: Yup.string().max(100, "Name is too long").required("Full name is required"),
+  email: Yup.string().email("Invalid email address").required("Email is required"),
   password: Yup.string()
-    .min(8, 'Password must be at least 8 characters')
-    .required('Password is required'),
+    .min(8, "Password must be at least 8 characters")
+    .required("Password is required"),
 });
 
 export default function Signup() {
   const router = useRouter();
   const event = usePostHogEvent();
   const identify = usePostHogIdentify();
-  const [signupStep, setSignupStep] = useState('method');
-  const [domain, setDomain] = useState(router.query.username || '');
+  const [signupStep, setSignupStep] = useState("method");
+  const [domain, setDomain] = useState(router.query.username || "");
   const [emailLoading, setEmailLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
 
@@ -46,7 +42,7 @@ export default function Signup() {
 
     if (!router.query.username) {
       const query = router.query.job ? { job: router.query.job } : {};
-      router.replace({ pathname: '/claim-link', query });
+      router.replace({ pathname: "/claim-link", query });
       return;
     }
 
@@ -54,21 +50,25 @@ export default function Signup() {
 
     // Persist shared job context so it survives email-verify + quiz flow
     if (router.query.job) {
-      sessionStorage.setItem('df_pending_shared_job', router.query.job);
+      sessionStorage.setItem("df_pending_shared_job", router.query.job);
     }
     event(POSTHOG_EVENT_NAMES.SIGNUP_STARTED, {
       username: router.query.username,
-      source: router.query.job ? 'shared-job' : sessionStorage.getItem('df_parsed_resume') ? 'resume-upload' : 'claim-link',
+      source: router.query.job
+        ? "shared-job"
+        : sessionStorage.getItem("df_parsed_resume")
+          ? "resume-upload"
+          : "claim-link",
     });
   }, [router.isReady, router.query.username, router.query.job]);
 
   // Apply parsed resume to user profile silently (fire-and-forget)
   const applyParsedResume = async () => {
     try {
-      const raw = sessionStorage.getItem('df_parsed_resume');
+      const raw = sessionStorage.getItem("df_parsed_resume");
       if (!raw) return;
       const parsed = JSON.parse(raw);
-      sessionStorage.removeItem('df_parsed_resume');
+      sessionStorage.removeItem("df_parsed_resume");
       await _postResumeApply(parsed);
     } catch {
       // Silent — resume apply is best-effort; don't block signup flow
@@ -82,8 +82,8 @@ export default function Signup() {
       const signupData = {
         username: domain,
         loginMethod: 0,
-        firstName: values.name.split(' ')[0] || values.name,
-        lastName: values.name.split(' ').slice(1).join(' ') || '',
+        firstName: values.name.split(" ")[0] || values.name,
+        lastName: values.name.split(" ").slice(1).join(" ") || "",
         email: values.email,
         password: values.password,
       };
@@ -91,7 +91,7 @@ export default function Signup() {
       const { data } = await _signupEmail(signupData);
       const { token } = data;
       setToken(token);
-      console.log('Signup successful:', data);
+      console.log("Signup successful:", data);
 
       await applyParsedResume();
 
@@ -102,38 +102,35 @@ export default function Signup() {
         lastName: signupData.lastName,
       });
       event(POSTHOG_EVENT_NAMES.SIGNUP_SUCCESS, {
-        method: 'email',
+        method: "email",
         email: signupData.email,
         username: signupData.username,
       });
-      const pendingJobId = router.query.job || sessionStorage.getItem('df_pending_shared_job');
-      const jobSuffix = pendingJobId ? `&job=${pendingJobId}` : '';
+      const pendingJobId = router.query.job || sessionStorage.getItem("df_pending_shared_job");
+      const jobSuffix = pendingJobId ? `&job=${pendingJobId}` : "";
       router.push(`/email-verify?email=${values.email}${jobSuffix}`);
     } catch (error) {
       event(POSTHOG_EVENT_NAMES.SIGNUP_FAILED, {
-        method: 'email',
+        method: "email",
         error: error?.response?.data?.message || error.message,
       });
 
-      console.error('Signup error:', error);
+      console.error("Signup error:", error);
     } finally {
       setEmailLoading(false);
     }
   };
 
   const googleLogin = useGoogleLogin({
-    onSuccess: async tokenResponse => {
+    onSuccess: async (tokenResponse) => {
       setGoogleLoading(true);
 
       try {
-        const response = await fetch(
-          'https://www.googleapis.com/oauth2/v2/userinfo',
-          {
-            headers: {
-              Authorization: `Bearer ${tokenResponse.access_token}`,
-            },
-          }
-        );
+        const response = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
+          headers: {
+            Authorization: `Bearer ${tokenResponse.access_token}`,
+          },
+        });
         const userData = await response.json();
 
         const data = {
@@ -156,23 +153,23 @@ export default function Signup() {
           lastName: data.lastName,
         });
         event(POSTHOG_EVENT_NAMES.SIGNUP_SUCCESS, {
-          method: 'google',
+          method: "google",
           email: data.email,
           username: data.username,
         });
-        const pendingJobId = router.query.job || sessionStorage.getItem('df_pending_shared_job');
+        const pendingJobId = router.query.job || sessionStorage.getItem("df_pending_shared_job");
         if (pendingJobId) {
-          sessionStorage.removeItem('df_pending_shared_job');
+          sessionStorage.removeItem("df_pending_shared_job");
           router.push(`/jobs?job=${pendingJobId}`);
         } else {
-          router.push('/builder');
+          router.push("/builder");
         }
       } catch (error) {
         event(POSTHOG_EVENT_NAMES.SIGNUP_FAILED, {
-          method: 'google',
+          method: "google",
           error: error?.response?.data?.message || error.message,
         });
-        console.error('Error with Google signup:', error);
+        console.error("Error with Google signup:", error);
       } finally {
         setGoogleLoading(false);
       }
@@ -182,26 +179,26 @@ export default function Signup() {
 
   const handleGoogleSignup = () => {
     event(POSTHOG_EVENT_NAMES.SIGNUP_METHOD_SELECTED, {
-      method: 'google',
+      method: "google",
     });
     googleLogin();
   };
 
   // Method selection step
-  if (signupStep === 'method') {
+  if (signupStep === "method") {
     return (
       <AuthLayout
         title="Now, create your account."
         description={
           <>
-            Just a step away from claiming{' '}
-            <span className="font-medium" style={{ color: '#FF553E' }}>
+            Just a step away from claiming{" "}
+            <span className="font-medium" style={{ color: "#FF553E" }}>
               {domain}.designfolio.me
             </span>
           </>
         }
         showBackButton={true}
-        onBack={() => router.push('/claim-link')}
+        onBack={() => router.push("/claim-link")}
       >
         <motion.div
           key="method-content"
@@ -222,9 +219,9 @@ export default function Signup() {
             className="w-full rounded-full h-[50px] px-5 text-base font-medium border-border bg-[--input-bg-color] hover:bg-muted gap-3"
             onClick={() => {
               event(POSTHOG_EVENT_NAMES.SIGNUP_METHOD_SELECTED, {
-                method: 'email',
+                method: "email",
               });
-              setSignupStep('email');
+              setSignupStep("email");
             }}
             data-testid="button-signup-email"
           >
@@ -242,14 +239,14 @@ export default function Signup() {
       title="Now, create your account."
       description={
         <>
-          Just a step away from claiming{' '}
-          <span className="font-medium" style={{ color: '#FF553E' }}>
+          Just a step away from claiming{" "}
+          <span className="font-medium" style={{ color: "#FF553E" }}>
             {domain}.designfolio.me
           </span>
         </>
       }
       showBackButton={true}
-      onBack={() => setSignupStep('method')}
+      onBack={() => setSignupStep("method")}
     >
       <motion.div
         key="email-content"
@@ -260,9 +257,9 @@ export default function Signup() {
       >
         <Formik
           initialValues={{
-            name: '',
-            email: '',
-            password: '',
+            name: "",
+            email: "",
+            password: "",
           }}
           validationSchema={SignupValidationSchema}
           onSubmit={handleEmailSignup}
@@ -330,20 +327,20 @@ export default function Signup() {
               </FormButton>
 
               <p className="text-center text-xs text-muted-foreground">
-                By continuing, you agree to Designfolio's{' '}
+                By continuing, you agree to Designfolio&apos;s{" "}
                 <Link
                   href="/terms-and-conditions"
                   className="hover:underline"
-                  style={{ color: '#FF553E' }}
+                  style={{ color: "#FF553E" }}
                   data-testid="link-terms"
                 >
                   Terms and Conditions
-                </Link>{' '}
-                and{' '}
+                </Link>{" "}
+                and{" "}
                 <Link
                   href="/privacy-policy"
                   className="hover:underline"
-                  style={{ color: '#FF553E' }}
+                  style={{ color: "#FF553E" }}
                   data-testid="link-privacy"
                 >
                   Privacy Policy
@@ -352,10 +349,7 @@ export default function Signup() {
 
               <Divider />
 
-              <GoogleButton
-                onClick={handleGoogleSignup}
-                isLoading={googleLoading}
-              >
+              <GoogleButton onClick={handleGoogleSignup} isLoading={googleLoading}>
                 Sign up with Google
               </GoogleButton>
             </Form>

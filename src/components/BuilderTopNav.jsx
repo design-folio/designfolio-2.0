@@ -1,19 +1,10 @@
 import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ChartSpline, Eye, PaintRoller } from "lucide-react";
 import { useGlobalContext } from "@/context/globalContext";
 import { useIsMobile } from "@/hooks/use-mobile";
-import {
-  sidebars,
-  getSidebarShiftWidth,
-  isSidebarThatShifts,
-} from "@/lib/constant";
+import { sidebars, getSidebarShiftWidth, isSidebarThatShifts } from "@/lib/constant";
 import { PublishDropdown } from "@/components/loggedInHeader/publish-dropdown";
 import { TEMPLATE_IDS } from "@/lib/templates";
 
@@ -48,7 +39,6 @@ export function BuilderTopNav() {
       >
         <nav className="bg-white dark:bg-[#2A2520] border border-black/[0.08] dark:border-white/10 rounded-full shadow-sm pointer-events-auto w-fit">
           <div className="px-2 py-2 flex items-center gap-1.5">
-
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button

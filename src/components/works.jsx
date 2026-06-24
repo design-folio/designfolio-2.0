@@ -14,19 +14,14 @@ import { getPlainTextLength } from "@/lib/tiptapUtils";
 import { useGlobalContext } from "@/context/globalContext";
 import { Button as ButtonNew } from "./ui/buttonNew";
 
-export default function Works({
-  edit,
-  openSidebar,
-  userDetails,
-  setUserDetails,
-  updateCache,
-}) {
+export default function Works({ edit, openSidebar, userDetails, setUserDetails, updateCache }) {
   const [showAllExperience, setShowAllExperience] = useState(false);
   const { theme } = useTheme();
   const workExperiences = userDetails?.experiences || [];
-  const displayedExperiences = showAllExperience || workExperiences.length <= 3
-    ? workExperiences
-    : workExperiences.slice(0, 3);
+  const displayedExperiences =
+    showAllExperience || workExperiences.length <= 3
+      ? workExperiences
+      : workExperiences.slice(0, 3);
   const { setSelectedWork, openNewWork } = useGlobalContext();
 
   return (
@@ -115,7 +110,14 @@ export default function Works({
   );
 }
 
-const WorkExperienceCard = ({ experience, index, edit, setSelectedWork, openSidebar, showDivider }) => {
+const WorkExperienceCard = ({
+  experience,
+  index,
+  edit,
+  setSelectedWork,
+  openSidebar,
+  showDivider,
+}) => {
   const [expandedCards, setExpandedCards] = useState([]);
 
   const toggleExpand = (id) => {
@@ -124,7 +126,8 @@ const WorkExperienceCard = ({ experience, index, edit, setSelectedWork, openSide
     );
   };
 
-  const hasDescription = experience?.description && getPlainTextLength(experience?.description || "") > 0;
+  const hasDescription =
+    experience?.description && getPlainTextLength(experience?.description || "") > 0;
 
   return (
     <motion.div
@@ -137,10 +140,11 @@ const WorkExperienceCard = ({ experience, index, edit, setSelectedWork, openSide
       <div className="grid grid-cols-1 md:grid-cols-[150px_1fr] gap-1 md:gap-6">
         <div className="shrink-0">
           <span className="text-xs font-medium text-foreground-landing/40 uppercase tracking-wider">
-            {`${experience?.startMonth} ${experience?.startYear} - ${experience?.currentlyWorking
-              ? "Present"
-              : `${experience?.endMonth} ${experience?.endYear}`
-              }`}
+            {`${experience?.startMonth} ${experience?.startYear} - ${
+              experience?.currentlyWorking
+                ? "Present"
+                : `${experience?.endMonth} ${experience?.endYear}`
+            }`}
           </span>
         </div>
 
@@ -197,4 +201,3 @@ const WorkExperienceCard = ({ experience, index, edit, setSelectedWork, openSide
     </motion.div>
   );
 };
-

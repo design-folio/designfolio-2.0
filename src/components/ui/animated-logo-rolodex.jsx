@@ -47,7 +47,9 @@ const LogoRolodex = ({ items }) => {
     intervalRef.current = setInterval(() => {
       setIndex((pv) => pv + 1);
     }, DELAY_IN_MS);
-    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
   }, []);
 
   return (
@@ -57,7 +59,13 @@ const LogoRolodex = ({ items }) => {
     >
       <AnimatePresence mode="sync">
         <motion.div
-          style={{ y: "-50%", x: "-50%", clipPath: "polygon(0 0, 100% 0, 100% 50%, 0 50%)", zIndex: -index, backfaceVisibility: "hidden" }}
+          style={{
+            y: "-50%",
+            x: "-50%",
+            clipPath: "polygon(0 0, 100% 0, 100% 50%, 0 50%)",
+            zIndex: -index,
+            backfaceVisibility: "hidden",
+          }}
           key={index}
           transition={{ duration: TRANSITION_DURATION_IN_SECS, ease: "easeInOut" }}
           initial={{ rotateX: "0deg" }}
@@ -68,7 +76,13 @@ const LogoRolodex = ({ items }) => {
           {items[index % items.length]}
         </motion.div>
         <motion.div
-          style={{ y: "-50%", x: "-50%", clipPath: "polygon(0 50%, 100% 50%, 100% 100%, 0 100%)", zIndex: index, backfaceVisibility: "hidden" }}
+          style={{
+            y: "-50%",
+            x: "-50%",
+            clipPath: "polygon(0 50%, 100% 50%, 100% 100%, 0 100%)",
+            zIndex: index,
+            backfaceVisibility: "hidden",
+          }}
           key={(index + 1) * 2}
           initial={{ rotateX: "180deg" }}
           animate={{ rotateX: "0deg" }}
@@ -88,7 +102,12 @@ const LogoRolodex = ({ items }) => {
 };
 
 const LogoItem = ({ children, className }) => (
-  <div className={twMerge("grid h-44 w-80 place-content-center text-6xl shadow-sm border-r border-black/5", className)}>
+  <div
+    className={twMerge(
+      "grid h-44 w-80 place-content-center text-6xl shadow-sm border-r border-black/5",
+      className
+    )}
+  >
     {children}
   </div>
 );

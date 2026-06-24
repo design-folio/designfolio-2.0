@@ -1,11 +1,19 @@
 import { motion } from "framer-motion";
-import { MapPin, Briefcase, Monitor, Clock, DollarSign, Calendar, ExternalLink } from "lucide-react";
+import {
+  MapPin,
+  Briefcase,
+  Monitor,
+  Clock,
+  DollarSign,
+  Calendar,
+  ExternalLink,
+} from "lucide-react";
 import { toRelativeTime } from "@/lib/jobsUtils";
 
 function formatSalary(salary) {
   if (!salary) return null;
   if (salary.raw) return salary.raw;
-  const sym = salary.currency === "USD" ? "$" : (salary.currency ? `${salary.currency} ` : "");
+  const sym = salary.currency === "USD" ? "$" : salary.currency ? `${salary.currency} ` : "";
   const fmt = (n) => (n >= 1000 ? `${sym}${Math.round(n / 1000)}k` : `${sym}${n}`);
   if (salary.min && salary.max) return `${fmt(salary.min)} – ${fmt(salary.max)}`;
   return salary.min ? fmt(salary.min) : salary.max ? fmt(salary.max) : null;

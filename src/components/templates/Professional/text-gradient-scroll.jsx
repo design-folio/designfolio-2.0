@@ -10,12 +10,7 @@ function useGradientScroll() {
   return context;
 }
 
-function TextGradientScroll({
-  text,
-  className,
-  type = "letter",
-  textOpacity = "soft",
-}) {
+function TextGradientScroll({ text, className, type = "letter", textOpacity = "soft" }) {
   const progress = useMotionValue(0);
 
   useEffect(() => {
@@ -44,10 +39,7 @@ function TextGradientScroll({
     <TextGradientScrollContext.Provider value={{ textOpacity, type }}>
       <div className={cn("", className)}>
         {paragraphWords.map((words, pIndex) => (
-          <p
-            key={pIndex}
-            className={pIndex < paragraphWords.length - 1 ? "mb-8" : "m-0"}
-          >
+          <p key={pIndex} className={pIndex < paragraphWords.length - 1 ? "mb-8" : "m-0"}>
             {words.map((word, i) => {
               const start = currentWordIndex / totalWords;
               const end = (currentWordIndex + 1) / totalWords;

@@ -37,13 +37,8 @@ const TiptapEditor = dynamic(() => import("./tiptapEditor"), {
 });
 
 export default function Editor({ edit, projectDetails, refetchProjectDetail }) {
-  const {
-    userDetails,
-    setUserDetails,
-    setPopoverMenu,
-    showModal,
-    popoverMenu,
-  } = useGlobalContext();
+  const { userDetails, setUserDetails, setPopoverMenu, showModal, popoverMenu } =
+    useGlobalContext();
 
   const isMono = userDetails?.template === TEMPLATE_IDS.MONO;
   const isChatfolio = userDetails?.template === TEMPLATE_IDS.CHATFOLIO;
@@ -93,11 +88,7 @@ export default function Editor({ edit, projectDetails, refetchProjectDetail }) {
             {isChatfolio ? (
               <div className="flex items-end gap-3 max-w-[95%] mb-20">
                 <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 mb-0.5 border border-black/5 dark:border-white/5">
-                  <img
-                    src={avatarSrc}
-                    alt={firstName}
-                    className="w-full h-full object-cover"
-                  />
+                  <img src={avatarSrc} alt={firstName} className="w-full h-full object-cover" />
                 </div>
                 <div className="flex flex-col gap-1 w-full">
                   <span className="text-[11px] text-[#7A736C] dark:text-[#B5AFA5] ml-1 font-medium">

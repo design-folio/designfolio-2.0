@@ -18,22 +18,14 @@ export default function BottomTask() {
         }`}
       >
         <Task
-          setOpen={() =>
-            setPopoverMenu((prev) =>
-              prev == popovers.task ? null : popovers.task
-            )
-          }
+          setOpen={() => setPopoverMenu((prev) => (prev == popovers.task ? null : popovers.task))}
         />
       </div>
       <div
         className={`px-2 pointer-events-none fixed bottom-0 py-4 cursor-pointer left-0 right-0 flex flex-col justify-center items-center overflow-hidden z-10 `}
       >
         <div
-          onClick={() =>
-            setPopoverMenu((prev) =>
-              prev == popovers.task ? null : popovers.task
-            )
-          }
+          onClick={() => setPopoverMenu((prev) => (prev == popovers.task ? null : popovers.task))}
           style={{ boxShadow: "0px 8.3px 33.2px 0px rgba(32, 41, 55, 0.14)" }}
           className="bg-popover-bg-color pointer-events-auto shadow-lg border-[5px] border-popover-border-color rounded-[24px] px-[14px] py-[10.42px] flex gap-[8.5px] items-center justify-center cursor-pointer"
         >
@@ -49,10 +41,7 @@ export default function BottomTask() {
               })}
             />
           </div>
-          <Text
-            size="p-xxsmall"
-            className="text-checked-list-item-text-color cursor-pointer"
-          >
+          <Text size="p-xxsmall" className="text-checked-list-item-text-color cursor-pointer">
             Complete portfolio
           </Text>
           {/* <p className="text-checked-list-item-text-color font-inter text-[13.28px] font-[600]">

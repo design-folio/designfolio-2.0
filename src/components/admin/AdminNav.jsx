@@ -53,16 +53,10 @@ export default function AdminNav() {
           <SidebarMenu>
             {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
               const isActive =
-                href === "/admin"
-                  ? router.pathname === "/admin"
-                  : router.pathname.startsWith(href);
+                href === "/admin" ? router.pathname === "/admin" : router.pathname.startsWith(href);
               return (
                 <SidebarMenuItem key={href}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={isActive}
-                    tooltip={label}
-                  >
+                  <SidebarMenuButton asChild isActive={isActive} tooltip={label}>
                     <Link href={href}>
                       <Icon aria-hidden="true" />
                       <span>{label}</span>

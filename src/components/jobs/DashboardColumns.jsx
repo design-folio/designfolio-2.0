@@ -39,21 +39,27 @@ export function DashboardColumns({
     if (phase === "split" && isMobile) setActiveTab("saved");
   }, [phase, isMobile]);
 
-  const findJob = (id) => Object.values(columns).flat().find((j) => j.id === id);
+  const findJob = (id) =>
+    Object.values(columns)
+      .flat()
+      .find((j) => j.id === id);
 
-  const handleMoveJob = useCallback((jobId, targetColId) => {
-    const sourceColId = Object.keys(columns).find((col) =>
-      (columns[col] ?? []).some((j) => j.id === jobId)
-    );
-    if (!sourceColId || sourceColId === targetColId) return;
-    const job = columns[sourceColId].find((j) => j.id === jobId);
-    onColumnsChange({
-      ...columns,
-      [sourceColId]: columns[sourceColId].filter((j) => j.id !== jobId),
-      [targetColId]: [job, ...(columns[targetColId] ?? [])],
-    });
-    setActiveTab(targetColId);
-  }, [columns, onColumnsChange]);
+  const handleMoveJob = useCallback(
+    (jobId, targetColId) => {
+      const sourceColId = Object.keys(columns).find((col) =>
+        (columns[col] ?? []).some((j) => j.id === jobId)
+      );
+      if (!sourceColId || sourceColId === targetColId) return;
+      const job = columns[sourceColId].find((j) => j.id === jobId);
+      onColumnsChange({
+        ...columns,
+        [sourceColId]: columns[sourceColId].filter((j) => j.id !== jobId),
+        [targetColId]: [job, ...(columns[targetColId] ?? [])],
+      });
+      setActiveTab(targetColId);
+    },
+    [columns, onColumnsChange]
+  );
 
   // ── Mobile tab-based kanban ───────────────────────────────────────────────
   const mobileTabs = [
@@ -64,7 +70,12 @@ export function DashboardColumns({
       jobs: columns[colId] ?? [],
       colIndex: i + 1,
     })),
-    { id: "archived", label: COL_LABELS.archived, jobs: columns.archived ?? [], colIndex: COL_ORDER.length },
+    {
+      id: "archived",
+      label: COL_LABELS.archived,
+      jobs: columns.archived ?? [],
+      colIndex: COL_ORDER.length,
+    },
   ];
 
   if (isMobile) {
@@ -86,7 +97,7 @@ export function DashboardColumns({
                     "flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[13px] font-medium whitespace-nowrap transition-all duration-200",
                     activeTab === tab.id
                       ? "bg-foreground text-background"
-                      : "bg-white dark:bg-card border border-black/[0.06] dark:border-border text-foreground/60",
+                      : "bg-white dark:bg-card border border-black/[0.06] dark:border-border text-foreground/60"
                   )}
                 >
                   {tab.label}
@@ -96,7 +107,7 @@ export function DashboardColumns({
                         "flex items-center justify-center w-4 h-4 rounded-full text-[10px] font-semibold",
                         activeTab === tab.id
                           ? "bg-background/20 text-background"
-                          : "bg-foreground/10 text-foreground/70",
+                          : "bg-foreground/10 text-foreground/70"
                       )}
                     >
                       {tab.jobs.length}
@@ -126,7 +137,9 @@ export function DashboardColumns({
               onMockInterview={onMockInterview}
               onAskScout={onAskScout}
               onMoveTo={handleMoveJob}
-              onExhausted={activeTabData.id === "picks" && !rescanExhausted ? onFetchMore : undefined}
+              onExhausted={
+                activeTabData.id === "picks" && !rescanExhausted ? onFetchMore : undefined
+              }
               isRescanning={isRescanning && activeTabData.id === "picks"}
               isListPhase={phase === "list"}
               isCollapsed={
@@ -227,8 +240,16 @@ export function DashboardColumns({
                 opacity: phase === "split" ? 1 : 0,
               }}
               transition={{
-                maxWidth: { duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: phase === "split" ? i * 0.12 : 0 },
-                opacity: { duration: 0.4, ease: "easeOut", delay: phase === "split" ? i * 0.12 + 0.1 : 0 },
+                maxWidth: {
+                  duration: 0.65,
+                  ease: [0.22, 1, 0.36, 1],
+                  delay: phase === "split" ? i * 0.12 : 0,
+                },
+                opacity: {
+                  duration: 0.4,
+                  ease: "easeOut",
+                  delay: phase === "split" ? i * 0.12 + 0.1 : 0,
+                },
               }}
             >
               <div className="flex flex-col w-[350px] ml-3 h-full">
@@ -256,8 +277,16 @@ export function DashboardColumns({
               opacity: phase === "split" ? 1 : 0,
             }}
             transition={{
-              maxWidth: { duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: phase === "split" ? PIPELINE_COL_COUNT * 0.12 : 0 },
-              opacity: { duration: 0.4, ease: "easeOut", delay: phase === "split" ? PIPELINE_COL_COUNT * 0.12 + 0.1 : 0 },
+              maxWidth: {
+                duration: 0.65,
+                ease: [0.22, 1, 0.36, 1],
+                delay: phase === "split" ? PIPELINE_COL_COUNT * 0.12 : 0,
+              },
+              opacity: {
+                duration: 0.4,
+                ease: "easeOut",
+                delay: phase === "split" ? PIPELINE_COL_COUNT * 0.12 + 0.1 : 0,
+              },
             }}
           >
             <motion.div

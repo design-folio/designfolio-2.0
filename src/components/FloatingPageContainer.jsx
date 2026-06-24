@@ -6,10 +6,8 @@ export function FloatingPageContainer({ isSidebarRoute, children }) {
   const router = useRouter();
   const { template } = useGlobalContext();
 
-  const isRetroOsBuilder =
-    router.pathname === "/builder" && template === TEMPLATE_IDS.RETRO_OS;
-  const isJobsRoute =
-    router.pathname === "/jobs" || router.pathname.startsWith("/jobs/");
+  const isRetroOsBuilder = router.pathname === "/builder" && template === TEMPLATE_IDS.RETRO_OS;
+  const isJobsRoute = router.pathname === "/jobs" || router.pathname.startsWith("/jobs/");
   const shouldFloat = isSidebarRoute && !isRetroOsBuilder;
 
   if (!shouldFloat) {

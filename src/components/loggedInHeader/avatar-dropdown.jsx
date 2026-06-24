@@ -38,13 +38,19 @@ export function AvatarDropdown({ onClose, variant = "navbar" }) {
   const router = useRouter();
   const phEvent = usePostHogEvent();
 
-  const { userDetails, setUserDetails, setShowUpgradeModal, setUpgradeModalUnhideProject, setShowSettingsModal } = useGlobalContext();
+  const {
+    userDetails,
+    setUserDetails,
+    setShowUpgradeModal,
+    setUpgradeModalUnhideProject,
+    setShowSettingsModal,
+  } = useGlobalContext();
 
   useEffect(() => {
     fetch("/lottie/diamond-lottie.json")
       .then((res) => res.json())
       .then(setDiamondLottie)
-      .catch(() => { });
+      .catch(() => {});
   }, []);
 
   useClickAway(dropdownRef, () => setIsOpen(false));
@@ -82,8 +88,24 @@ export function AvatarDropdown({ onClose, variant = "navbar" }) {
   };
 
   const menuItems = [
-    ...(!userDetails?.pro ? [{ id: "upgrade", label: "Upgrade PRO", icon: null, action: handleUpgrade, isUpgrade: true }] : []),
-    { id: "settings", label: "Settings", subLabel: "Custom Domains, Username and more", icon: Settings, action: handleSettings },
+    ...(!userDetails?.pro
+      ? [
+          {
+            id: "upgrade",
+            label: "Upgrade PRO",
+            icon: null,
+            action: handleUpgrade,
+            isUpgrade: true,
+          },
+        ]
+      : []),
+    {
+      id: "settings",
+      label: "Settings",
+      subLabel: "Custom Domains, Username and more",
+      icon: Settings,
+      action: handleSettings,
+    },
     { id: "logout", label: "Logout", icon: LogOut, action: handleLogout },
   ];
 
@@ -97,8 +119,14 @@ export function AvatarDropdown({ onClose, variant = "navbar" }) {
           aria-haspopup="true"
         >
           <div className="relative">
-            <Avatar className={`border border-black/10 dark:border-white/10 flex-shrink-0 transition-transform hover:scale-105 ${isSidebar ? "h-10 w-10 rounded-xl" : "h-10 w-10"}`}>
-              <AvatarImage src={getUserAvatarImage(userDetails)} alt="Profile" className="object-cover cursor-pointer" />
+            <Avatar
+              className={`border border-black/10 dark:border-white/10 flex-shrink-0 transition-transform hover:scale-105 ${isSidebar ? "h-10 w-10 rounded-xl" : "h-10 w-10"}`}
+            >
+              <AvatarImage
+                src={getUserAvatarImage(userDetails)}
+                alt="Profile"
+                className="object-cover cursor-pointer"
+              />
               <AvatarFallback>{userDetails?.username?.[0]?.toUpperCase() ?? "U"}</AvatarFallback>
             </Avatar>
             <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-white dark:bg-zinc-800 border border-black/10 dark:border-white/10 px-1.5 py-0.5 rounded-full shadow-sm whitespace-nowrap cursor-pointer">
@@ -115,7 +143,12 @@ export function AvatarDropdown({ onClose, variant = "navbar" }) {
               key="avatar-dropdown"
               initial={isSidebar ? { opacity: 0, x: -4 } : { opacity: 0, y: -4 }}
               animate={{ opacity: 1, x: 0, y: 0, transition: { duration: 0.15, ease: "easeOut" } }}
-              exit={{ opacity: 0, ...(isSidebar ? { x: -4 } : { y: -4 }), pointerEvents: "none", transition: { duration: 0.15, ease: "easeIn" } }}
+              exit={{
+                opacity: 0,
+                ...(isSidebar ? { x: -4 } : { y: -4 }),
+                pointerEvents: "none",
+                transition: { duration: 0.15, ease: "easeIn" },
+              }}
               className={`absolute z-50 min-w-[280px] ${isSidebar ? "left-full bottom-0 ml-3" : "right-0 top-full mt-2"}`}
               onKeyDown={(e) => e.key === "Escape" && setIsOpen(false)}
               style={{ transformOrigin: isSidebar ? "bottom left" : "top right" }}
@@ -145,7 +178,11 @@ export function AvatarDropdown({ onClose, variant = "navbar" }) {
                             {item.isUpgrade ? (
                               <Suspense fallback={<Crown className="w-4 h-4 text-[#FF553E]" />}>
                                 {diamondLottie ? (
-                                  <Lottie animationData={diamondLottie} style={{ width: 32, height: 32 }} loop />
+                                  <Lottie
+                                    animationData={diamondLottie}
+                                    style={{ width: 32, height: 32 }}
+                                    loop
+                                  />
                                 ) : (
                                   <Crown className="w-4 h-4 text-[#FF553E]" />
                                 )}
@@ -155,9 +192,13 @@ export function AvatarDropdown({ onClose, variant = "navbar" }) {
                             ) : null}
                           </div>
                           <div className="flex flex-col gap-0.5">
-                            <span className="text-[13px] font-medium leading-none">{item.label}</span>
+                            <span className="text-[13px] font-medium leading-none">
+                              {item.label}
+                            </span>
                             {item.subLabel && (
-                              <span className="text-[12px] text-[#7A736C] dark:text-[#9E9893]">{item.subLabel}</span>
+                              <span className="text-[12px] text-[#7A736C] dark:text-[#9E9893]">
+                                {item.subLabel}
+                              </span>
                             )}
                           </div>
                         </div>

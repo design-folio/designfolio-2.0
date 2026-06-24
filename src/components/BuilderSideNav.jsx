@@ -20,15 +20,13 @@ const NAV_ITEMS = [
     icon: BriefcaseBusiness,
     label: "Jobs",
     href: "/jobs",
-    isActive: (pathname) =>
-      pathname === "/jobs" || pathname.startsWith("/jobs/"),
+    isActive: (pathname) => pathname === "/jobs" || pathname.startsWith("/jobs/"),
   },
   {
     icon: Sparkles,
     label: "AI Tools",
     href: "/builder?view=ai-tools",
-    isActive: (pathname, query) =>
-      pathname === "/builder" && query?.view === "ai-tools",
+    isActive: (pathname, query) => pathname === "/builder" && query?.view === "ai-tools",
   },
 ];
 
@@ -46,8 +44,7 @@ function NavItem({ icon: Icon, label, href, isActive, pendingHref, onNavigate })
       href={href}
       className="w-full cursor-pointer"
       onClick={(e) => {
-        if (isActive || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0)
-          return;
+        if (isActive || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
         onNavigate(href);
       }}
     >
@@ -97,8 +94,7 @@ export function BuilderSideNav() {
     };
   }, [router.events]);
 
-  const isRetroOsBuilder =
-    router.pathname === "/builder" && template === TEMPLATE_IDS.RETRO_OS;
+  const isRetroOsBuilder = router.pathname === "/builder" && template === TEMPLATE_IDS.RETRO_OS;
 
   if (!userDetails || isRetroOsBuilder) return null;
 

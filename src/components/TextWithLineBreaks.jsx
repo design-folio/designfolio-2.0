@@ -13,8 +13,7 @@ export default function TextWithLineBreaks({ text, color }) {
 
   // Join lines into a single text block for truncation
   const fullText = text;
-  const truncatedText =
-    text.length > splitCount ? `${text.substring(0, splitCount)}...` : text;
+  const truncatedText = text.length > splitCount ? `${text.substring(0, splitCount)}...` : text;
 
   return (
     <div>

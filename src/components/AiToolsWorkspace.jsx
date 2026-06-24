@@ -38,8 +38,16 @@ const navigation = {
 
 const navItems = [
   { id: 1, title: "Resume Fixer", description: "Optimize your resume for ATS and impact." },
-  { id: 2, title: "Write Case Study using AI", description: "Write compelling case studies with AI assistance." },
-  { id: 3, title: "Case Study Audit", description: "Get critical feedback on your design case studies." },
+  {
+    id: 2,
+    title: "Write Case Study using AI",
+    description: "Write compelling case studies with AI assistance.",
+  },
+  {
+    id: 3,
+    title: "Case Study Audit",
+    description: "Get critical feedback on your design case studies.",
+  },
   { id: 4, title: "Mock Interview", description: "Practice with AI-driven interview questions." },
   { id: 5, title: "Salary Negotiation", description: "Get data-backed negotiation strategies." },
   { id: 6, title: "Email Generator", description: "Draft professional outreach and follow-ups." },
@@ -64,7 +72,12 @@ const indexToType = [
 ];
 
 const LOCKED_TOOL_TYPES = [navigation.caseStudy, navigation.analyze];
-const GUEST_USAGE_TOOL_TYPES = [navigation.optimizeResume, navigation.MockInterview, navigation.email, navigation.salary];
+const GUEST_USAGE_TOOL_TYPES = [
+  navigation.optimizeResume,
+  navigation.MockInterview,
+  navigation.email,
+  navigation.salary,
+];
 
 /**
  * Shared AI tools workspace. Renders the tool card + ruler carousel.
@@ -95,7 +108,9 @@ export default function AiToolsWorkspace({ embedInBuilder = false }) {
       ? router.query?.view === "ai-tools" && router.query?.type === undefined
       : router.query?.type === undefined;
     if (needsDefault) {
-      const url = embedInBuilder ? "/builder?view=ai-tools&type=optimize-resume" : "/ai-tools?type=optimize-resume";
+      const url = embedInBuilder
+        ? "/builder?view=ai-tools&type=optimize-resume"
+        : "/ai-tools?type=optimize-resume";
       router.replace(url, undefined, { shallow: true });
     }
   }, [router.isReady, router.query?.view, router.query?.type, embedInBuilder]);
@@ -134,7 +149,9 @@ export default function AiToolsWorkspace({ embedInBuilder = false }) {
   const [hasClickedStartNewAnalysis, setHasClickedStartNewAnalysis] = useState(false);
   const [toolLimitReached, setToolLimitReached] = useState({});
   const isUsageLimitReached =
-    !isLoggedIn && GUEST_USAGE_TOOL_TYPES.includes(currentTypeForLock) && !!toolLimitReached[currentTypeForLock];
+    !isLoggedIn &&
+    GUEST_USAGE_TOOL_TYPES.includes(currentTypeForLock) &&
+    !!toolLimitReached[currentTypeForLock];
 
   const currentToolStorageKey =
     router.query?.type === navigation.optimizeResume
@@ -163,7 +180,9 @@ export default function AiToolsWorkspace({ embedInBuilder = false }) {
     }
   };
 
-  const loginRedirectPath = embedInBuilder ? "/builder?view=ai-tools" : router.asPath || "/ai-tools";
+  const loginRedirectPath = embedInBuilder
+    ? "/builder?view=ai-tools"
+    : router.asPath || "/ai-tools";
   const loginUrl = `/login?redirect=${encodeURIComponent(loginRedirectPath)}`;
 
   const content = () => {
@@ -231,7 +250,9 @@ export default function AiToolsWorkspace({ embedInBuilder = false }) {
                   <EmailGenerator
                     onToolUsed={!isLoggedIn ? recordToolUsed : undefined}
                     onViewChange={setEmailHasResult}
-                    guestUsageLimitReached={router.query?.type === navigation.email && isUsageLimitReached}
+                    guestUsageLimitReached={
+                      router.query?.type === navigation.email && isUsageLimitReached
+                    }
                   />
                 );
               case navigation.salary:
@@ -239,9 +260,13 @@ export default function AiToolsWorkspace({ embedInBuilder = false }) {
                   <OfferTool
                     onToolUsed={!isLoggedIn ? recordToolUsed : undefined}
                     onViewChange={setSalaryHasResult}
-                    onStartNewAnalysis={!isLoggedIn ? () => setHasClickedStartNewAnalysis(true) : undefined}
+                    onStartNewAnalysis={
+                      !isLoggedIn ? () => setHasClickedStartNewAnalysis(true) : undefined
+                    }
                     skipRestore={hasClickedStartNewAnalysis}
-                    guestUsageLimitReached={router.query?.type === navigation.salary && isUsageLimitReached}
+                    guestUsageLimitReached={
+                      router.query?.type === navigation.salary && isUsageLimitReached
+                    }
                   />
                 );
               case navigation.MockInterview:
@@ -249,8 +274,12 @@ export default function AiToolsWorkspace({ embedInBuilder = false }) {
                   <MockInterviewTool
                     onToolUsed={!isLoggedIn ? recordToolUsed : undefined}
                     onViewChange={setMockInterviewHasResult}
-                    onStartNewAnalysis={!isLoggedIn ? () => setHasClickedStartNewAnalysis(true) : undefined}
-                    guestUsageLimitReached={router.query?.type === navigation.MockInterview && isUsageLimitReached}
+                    onStartNewAnalysis={
+                      !isLoggedIn ? () => setHasClickedStartNewAnalysis(true) : undefined
+                    }
+                    guestUsageLimitReached={
+                      router.query?.type === navigation.MockInterview && isUsageLimitReached
+                    }
                     skipRestore={hasClickedStartNewAnalysis}
                   />
                 );
@@ -259,8 +288,12 @@ export default function AiToolsWorkspace({ embedInBuilder = false }) {
                   <CoverLetterGenerator
                     onViewChange={setOptimizeResumeHasResult}
                     onToolUsed={!isLoggedIn ? recordToolUsed : undefined}
-                    onStartNewAnalysis={!isLoggedIn ? () => setHasClickedStartNewAnalysis(true) : undefined}
-                    guestUsageLimitReached={router.query?.type === navigation.optimizeResume && isUsageLimitReached}
+                    onStartNewAnalysis={
+                      !isLoggedIn ? () => setHasClickedStartNewAnalysis(true) : undefined
+                    }
+                    guestUsageLimitReached={
+                      router.query?.type === navigation.optimizeResume && isUsageLimitReached
+                    }
                     skipRestore={hasClickedStartNewAnalysis}
                   />
                 );
@@ -269,8 +302,12 @@ export default function AiToolsWorkspace({ embedInBuilder = false }) {
                   <CoverLetterGenerator
                     onViewChange={setOptimizeResumeHasResult}
                     onToolUsed={!isLoggedIn ? recordToolUsed : undefined}
-                    onStartNewAnalysis={!isLoggedIn ? () => setHasClickedStartNewAnalysis(true) : undefined}
-                    guestUsageLimitReached={currentTypeForLock === navigation.optimizeResume && isUsageLimitReached}
+                    onStartNewAnalysis={
+                      !isLoggedIn ? () => setHasClickedStartNewAnalysis(true) : undefined
+                    }
+                    guestUsageLimitReached={
+                      currentTypeForLock === navigation.optimizeResume && isUsageLimitReached
+                    }
                     skipRestore={hasClickedStartNewAnalysis}
                   />
                 );
@@ -330,7 +367,7 @@ export default function AiToolsWorkspace({ embedInBuilder = false }) {
         )}
       >
         <div
-          className={`w-full transition-all duration-500 ease-[0.23,1,0.32,1] ${isWideLayout ? "max-w-6xl" : "max-w-lg"}`}
+          className={`w-full transition-all duration-500 [transition-timing-function:cubic-bezier(0.23,1,0.32,1)] ${isWideLayout ? "max-w-6xl" : "max-w-lg"}`}
         >
           <Card className="border border-border/40 rounded-[2rem] bg-[#E5E1D5] shadow-none overflow-hidden p-2">
             <AnimatePresence mode="wait" initial={false}>
@@ -363,7 +400,8 @@ export default function AiToolsWorkspace({ embedInBuilder = false }) {
                       {currentTool?.title || "Write Case Study using AI"}
                     </h1>
                     <p className="text-muted-foreground text-xs whitespace-nowrap">
-                      {currentTool?.description || "Write compelling case studies with AI assistance."}
+                      {currentTool?.description ||
+                        "Write compelling case studies with AI assistance."}
                     </p>
                   </div>
                 </div>

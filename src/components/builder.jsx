@@ -59,9 +59,7 @@ export default function Builder() {
 
   // Section component mapping
   const sectionComponents = {
-    about: (
-      <AboutMe edit userDetails={userDetails} openModal={handleOpen} />
-    ),
+    about: <AboutMe edit userDetails={userDetails} openModal={handleOpen} />,
     projects: (
       <Projects
         edit
@@ -72,16 +70,8 @@ export default function Builder() {
         openModal={openModal}
       />
     ),
-    reviews: (
-      <Reviews
-        edit
-        openModal={handleOpen}
-        userDetails={userDetails}
-      />
-    ),
-    tools: (
-      <Tools userDetails={userDetails} edit />
-    ),
+    reviews: <Reviews edit openModal={handleOpen} userDetails={userDetails} />,
+    tools: <Tools userDetails={userDetails} edit />,
     works: (
       <Works
         edit
@@ -104,11 +94,7 @@ export default function Builder() {
         <Profile edit userDetails={userDetails} openModal={openModal} />
       </motion.div>
       {sectionOrder.map((sectionId) => (
-        <motion.div
-          key={sectionId}
-          id={`section-${sectionId}`}
-          variants={itemVariants}
-        >
+        <motion.div key={sectionId} id={`section-${sectionId}`} variants={itemVariants}>
           {sectionComponents[sectionId]}
         </motion.div>
       ))}
@@ -116,10 +102,15 @@ export default function Builder() {
       {/* <motion.div variants={itemVariants}>
         <Others edit openModal={openModal} userDetails={userDetails} />
       </motion.div> */}
-      
+
       {/* New Footer */}
       <motion.div variants={itemVariants}>
-        <PortfolioFooter edit openModal={openModal} openSidebar={openSidebar} userDetails={userDetails} />
+        <PortfolioFooter
+          edit
+          openModal={openModal}
+          openSidebar={openSidebar}
+          userDetails={userDetails}
+        />
       </motion.div>
     </motion.div>
   );

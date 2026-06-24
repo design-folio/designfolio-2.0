@@ -34,26 +34,10 @@ const AnimatedSection = ({ children, animationData, className, delay }) => {
 
         {/* SVGs */}
         <div className="grid grid-cols-2 justify-items-center md:flex md:flex-row items-center pt-[5px] md:pt-[20px] gap-[10px] md:space-y-0 md:space-x-[80px]">
-          <img
-            src="/assets/svgs/google-trust.svg"
-            alt="Google"
-            className="w-24 h-24"
-          />
-          <img
-            src="/assets/svgs/amazon-trust.svg"
-            alt="Amazon"
-            className="w-24 h-24"
-          />
-          <img
-            src="/assets/svgs/swiggy-trust.svg"
-            alt="Swiggy"
-            className="w-36 h-24"
-          />
-          <img
-            src="/assets/svgs/ola-trust.svg"
-            alt="Ola"
-            className="w-24 h-24"
-          />
+          <img src="/assets/svgs/google-trust.svg" alt="Google" className="w-24 h-24" />
+          <img src="/assets/svgs/amazon-trust.svg" alt="Amazon" className="w-24 h-24" />
+          <img src="/assets/svgs/swiggy-trust.svg" alt="Swiggy" className="w-36 h-24" />
+          <img src="/assets/svgs/ola-trust.svg" alt="Ola" className="w-24 h-24" />
         </div>
       </div>
     </section>

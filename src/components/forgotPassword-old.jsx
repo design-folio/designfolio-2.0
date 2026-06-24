@@ -10,9 +10,7 @@ import ForgotPasswordPlaceHolder from "./forgotPasswordPlaceHolder-old";
 
 // Yup validation schema
 const forgotPasswordValidationSchema = Yup.object().shape({
-  email: Yup.string()
-    .email("Invalid email address")
-    .required("Email is required"),
+  email: Yup.string().email("Invalid email address").required("Email is required"),
 });
 
 export default function ForgotPassword() {
@@ -87,12 +85,7 @@ export default function ForgotPassword() {
                 >
                   {({ isSubmitting, isValid, errors, touched }) => (
                     <Form id="forgotPasswordForm">
-                      <Text
-                        as="p"
-                        size={"p-xxsmall"}
-                        className="mt-6 font-medium"
-                        required
-                      >
+                      <Text as="p" size={"p-xxsmall"} className="mt-6 font-medium" required>
                         Email
                       </Text>
 
@@ -100,10 +93,11 @@ export default function ForgotPassword() {
                         type="email"
                         name="email"
                         placeholder="you@email.com"
-                        className={`text-input mt-2 ${errors.email &&
+                        className={`text-input mt-2 ${
+                          errors.email &&
                           touched.email &&
                           "!text-input-error-color !border-input-error-color !shadow-input-error-shadow"
-                          }`}
+                        }`}
                         autoComplete="off"
                       />
                       <ErrorMessage

@@ -5,20 +5,10 @@ import MacOSDock from "@/components/templates/MacOSDock";
 import { DivOrigami } from "@/components/ui/animated-logo-rolodex";
 import { useGlobalContext } from "@/context/globalContext";
 import { cn } from "@/lib/utils";
-import {
-  getSidebarShiftWidth,
-  isSidebarThatShifts,
-  modals,
-  sidebars,
-} from "@/lib/constant";
+import { getSidebarShiftWidth, isSidebarThatShifts, modals, sidebars } from "@/lib/constant";
 import SortableModal from "@/components/SortableModal";
 import { useIsMobile } from "@/hooks/use-mobile";
-import {
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
+import { KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { _updateUser } from "@/network/post-request";
 import {
@@ -64,17 +54,13 @@ const MacOSTemplate = ({
   }, []);
 
   const appName =
-    [userDetails?.firstName, userDetails?.lastName].filter(Boolean).join(" ") +
-      "'s Portfolio" || "Portfolio";
+    [userDetails?.firstName, userDetails?.lastName].filter(Boolean).join(" ") + "'s Portfolio" ||
+    "Portfolio";
 
   const loggedInHeaderOffset = edit && !noTopNavbar ? 62 : 0;
   const macOSMenuBarTop = loggedInHeaderOffset;
   const desktopTopMargin =
-    edit && !noTopNavbar
-      ? loggedInHeaderOffset + 28
-      : showHeaderInside
-        ? 152
-        : 28;
+    edit && !noTopNavbar ? loggedInHeaderOffset + 28 : showHeaderInside ? 152 : 28;
 
   // Sidebar shift: when a sidebar opens, shift the fixed-position elements to the left
   const sidebarShiftWidth =
@@ -105,7 +91,7 @@ const MacOSTemplate = ({
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    }),
+    })
   );
 
   const handleSortEnd = (event) => {
@@ -118,7 +104,7 @@ const MacOSTemplate = ({
 
     setUserDetails((prev) => ({ ...prev, reviews: sortedReviews }));
     _updateUser({ reviews: sortedReviews }).then((res) =>
-      updateCache("userDetails", res?.data?.user),
+      updateCache("userDetails", res?.data?.user)
     );
   };
 
@@ -145,9 +131,7 @@ const MacOSTemplate = ({
     const sorted = arrayMove(experiences, oldIndex, newIndex);
 
     setUserDetails((prev) => ({ ...prev, experiences: sorted }));
-    _updateUser({ experiences: sorted }).then((res) =>
-      updateCache("userDetails", res?.data?.user),
-    );
+    _updateUser({ experiences: sorted }).then((res) => updateCache("userDetails", res?.data?.user));
   };
 
   const handleEditWork = (exp) => {
@@ -176,9 +160,7 @@ const MacOSTemplate = ({
 
   // In non-edit mode, hide Resume from dock if user has no resume
   const visibleDockApps =
-    edit || userDetails?.resume?.url
-      ? dockApps
-      : dockApps.filter((a) => a.id !== "resume");
+    edit || userDetails?.resume?.url ? dockApps : dockApps.filter((a) => a.id !== "resume");
 
   const handleAppClick = (appId) => {
     if (appId === "resume") {
@@ -199,8 +181,7 @@ const MacOSTemplate = ({
         window.scrollTo({ top: 0, behavior: "smooth" });
       } else {
         const element = document.getElementById(targetId);
-        if (element)
-          element.scrollIntoView({ behavior: "smooth", block: "center" });
+        if (element) element.scrollIntoView({ behavior: "smooth", block: "center" });
       }
     }
   };
@@ -239,7 +220,7 @@ const MacOSTemplate = ({
             transition={{ delay: 0.3 }}
             className={cn(
               "absolute left-0 right-0 top-0 bottom-0 md:right-auto md:left-8 md:bottom-auto flex flex-col gap-6 pointer-events-auto items-center justify-center md:items-stretch md:justify-start min-w-0 max-w-full md:max-w-none px-4 md:px-0",
-              isProWarningVisible ? "md:top-24" : "md:top-16",
+              isProWarningVisible ? "md:top-24" : "md:top-16"
             )}
           >
             <TestimonialWidget
@@ -267,15 +248,10 @@ const MacOSTemplate = ({
             transition: sidebarTransition,
           }}
         >
-          <div
-            className="pointer-events-auto w-full h-full"
-            style={{ position: "relative" }}
-          >
+          <div className="pointer-events-auto w-full h-full" style={{ position: "relative" }}>
             <MacOSDock
               apps={visibleDockApps}
-              openApps={[activeTab, isResumeDialogOpen ? "resume" : ""].filter(
-                Boolean,
-              )}
+              openApps={[activeTab, isResumeDialogOpen ? "resume" : ""].filter(Boolean)}
               onAppClick={handleAppClick}
               userDetails={userDetails}
               edit={edit}

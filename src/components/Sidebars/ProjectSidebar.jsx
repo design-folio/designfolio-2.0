@@ -1,32 +1,26 @@
-import useImageCompression from '@/hooks/useImageCompression';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { useEffect, useRef, useState } from 'react';
-import * as Yup from 'yup';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Textarea } from '../ui/textarea';
-import { Label } from '../ui/label';
+import useImageCompression from "@/hooks/useImageCompression";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import { useEffect, useRef, useState } from "react";
+import * as Yup from "yup";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
+import { Label } from "../ui/label";
 import EyeIcon from "../../../public/assets/svgs/eye.svg";
 import EyeCloseIcon from "../../../public/assets/svgs/eye-close.svg";
-import { Switch } from '../ui/switch';
-import { useGlobalContext } from '@/context/globalContext';
-import { _updateUser } from '@/network/post-request';
-import { usePostHogEvent } from '@/hooks/usePostHogEvent';
-import { POSTHOG_EVENT_NAMES } from '@/lib/posthogEventNames';
-import posthog from 'posthog-js';
-import { UnsavedChangesDialog } from '../ui/UnsavedChangesDialog';
-import { sidebars } from '@/lib/constant';
-import { AnimatePresence, motion } from 'framer-motion';
-import { ImageIcon } from 'lucide-react';
+import { Switch } from "../ui/switch";
+import { useGlobalContext } from "@/context/globalContext";
+import { _updateUser } from "@/network/post-request";
+import { usePostHogEvent } from "@/hooks/usePostHogEvent";
+import { POSTHOG_EVENT_NAMES } from "@/lib/posthogEventNames";
+import posthog from "posthog-js";
+import { UnsavedChangesDialog } from "../ui/UnsavedChangesDialog";
+import { sidebars } from "@/lib/constant";
+import { AnimatePresence, motion } from "framer-motion";
+import { ImageIcon } from "lucide-react";
 
 const FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const SUPPORTED_FORMATS = [
-  'image/jpg',
-  'image/jpeg',
-  'image/png',
-  'image/gif',
-  'image/webp',
-];
+const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png", "image/gif", "image/webp"];
 
 export default function AddProject() {
   const [imagePreview, setImagePreview] = useState(null);
@@ -81,28 +75,27 @@ export default function AddProject() {
   }, [isOpen, registerUnsavedChangesChecker, unregisterUnsavedChangesChecker]);
 
   const validationSchema = Yup.object().shape({
-    description: Yup.string()
-      .max(160, 'Description must be 160 characters or less'),
+    description: Yup.string().max(160, "Description must be 160 characters or less"),
     title: Yup.string()
-      .max(80, 'Project title must be 80 characters or less')
-      .required('Project title is required'),
+      .max(80, "Project title must be 80 characters or less")
+      .required("Project title is required"),
     picture: Yup.mixed()
-      .required('A file is required')
+      .required("A file is required")
       .test(
-        'fileSize',
-        'File size is too large. Maximum size is 5MB.',
-        value => value && value.size <= FILE_SIZE
+        "fileSize",
+        "File size is too large. Maximum size is 5MB.",
+        (value) => value && value.size <= FILE_SIZE
       )
       .test(
-        'fileType',
-        'Unsupported file format. Only jpg, jpeg, png and gif files are allowed.',
-        value => value && SUPPORTED_FORMATS.includes(value.type)
+        "fileType",
+        "Unsupported file format. Only jpg, jpeg, png and gif files are allowed.",
+        (value) => value && SUPPORTED_FORMATS.includes(value.type)
       ),
     password: isPassword
       ? Yup.string()
-        .required('Password is required.')
-        .min(6, 'Password is too short - should be 6 chars minimum.')
-      : Yup.string().min(6, 'Password is too short - should be 6 chars minimum.'),
+          .required("Password is required.")
+          .min(6, "Password is too short - should be 6 chars minimum.")
+      : Yup.string().min(6, "Password is too short - should be 6 chars minimum."),
   });
 
   const { compress, compressedImage, compressionProgress } = useImageCompression();
@@ -110,20 +103,20 @@ export default function AddProject() {
   const handleImageChange = (event, setFieldValue) => {
     const file = event.currentTarget.files[0];
     if (!file) return;
-    const isGif = file.type === 'image/gif';
+    const isGif = file.type === "image/gif";
     if (isGif) {
-      setFieldValue('picture', file);
+      setFieldValue("picture", file);
       setImagePreview(URL.createObjectURL(file));
     } else {
       compress(file);
-      setFieldValue('picture', file);
+      setFieldValue("picture", file);
       setImagePreview(URL.createObjectURL(file));
     }
   };
 
   useEffect(() => {
     if (compressionProgress === 100 && compressedImage && formikRef.current) {
-      formikRef.current.setFieldValue('picture', compressedImage);
+      formikRef.current.setFieldValue("picture", compressedImage);
       setImagePreview(URL.createObjectURL(compressedImage));
     }
   }, [compressionProgress, compressedImage]);
@@ -140,10 +133,10 @@ export default function AddProject() {
       <Formik
         innerRef={formikRef}
         initialValues={{
-          description: '',
-          title: '',
+          description: "",
+          title: "",
           picture: null,
-          password: '',
+          password: "",
         }}
         validateOnChange
         validateOnBlur
@@ -172,16 +165,16 @@ export default function AddProject() {
                   protected: isPassword,
                   contentVersion: 2,
                   tiptapContent: {
-                    type: 'doc',
+                    type: "doc",
                     content: [],
                   },
                 },
               ],
             };
             _updateUser(payload)
-              .then(res => {
+              .then((res) => {
                 setUserDetails(res?.data?.user);
-                updateCache('userDetails', res?.data?.user);
+                updateCache("userDetails", res?.data?.user);
                 phEvent(POSTHOG_EVENT_NAMES.PROJECT_ADDED, {
                   project_title: values.title,
                   industry: values.industry || null,
@@ -219,7 +212,11 @@ export default function AddProject() {
                       type="text"
                       autoComplete="off"
                       placeholder="Eg: Designing an onboarding for 1M users"
-                      className={errors.title && touched.title ? 'border-destructive focus-visible:ring-destructive' : ''}
+                      className={
+                        errors.title && touched.title
+                          ? "border-destructive focus-visible:ring-destructive"
+                          : ""
+                      }
                     />
                   )}
                 </Field>
@@ -232,7 +229,9 @@ export default function AddProject() {
                   <Label className="text-[13px] font-medium text-foreground ml-1">
                     Description <span className="text-destructive">*</span>
                   </Label>
-                  <span className="text-xs text-foreground/40">{values.description.length}/160</span>
+                  <span className="text-xs text-foreground/40">
+                    {values.description.length}/160
+                  </span>
                 </div>
                 <Field name="description">
                   {({ field }) => (
@@ -242,7 +241,7 @@ export default function AddProject() {
                       rows={3}
                       autoComplete="off"
                       placeholder="Short description of the project"
-                      className={`resize-none ${errors.description && touched.description ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                      className={`resize-none ${errors.description && touched.description ? "border-destructive focus-visible:ring-destructive" : ""}`}
                     />
                   )}
                 </Field>
@@ -271,23 +270,20 @@ export default function AddProject() {
                   <div className="flex flex-col gap-1.5">
                     <label
                       htmlFor="picture"
-                      onClick={event => {
+                      onClick={(event) => {
                         // Ensure the file picker always opens when clicking this button.
                         // Some nested Button implementations can interfere with native label behavior.
                         event.preventDefault();
-                        document.getElementById('picture')?.click();
+                        document.getElementById("picture")?.click();
                       }}
                     >
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        type="button"
-                        className="rounded-full"
-                      >
-                        {imagePreview ? 'Change image' : 'Upload image'}
+                      <Button variant="outline" size="sm" type="button" className="rounded-full">
+                        {imagePreview ? "Change image" : "Upload image"}
                       </Button>
                     </label>
-                    <span className="text-[11px] text-muted-foreground ml-1">Recommended: 1600 × 900px (16:9)</span>
+                    <span className="text-[11px] text-muted-foreground ml-1">
+                      Recommended: 1600 × 900px (16:9)
+                    </span>
                   </div>
                 </div>
                 <input
@@ -295,7 +291,7 @@ export default function AddProject() {
                   name="picture"
                   type="file"
                   hidden
-                  onChange={event => handleImageChange(event, setFieldValue)}
+                  onChange={(event) => handleImageChange(event, setFieldValue)}
                   accept="image/png, image/jpeg, image/jpg, image/gif"
                 />
                 <ErrorMessage name="picture" component="div" className="error-message" />
@@ -312,7 +308,7 @@ export default function AddProject() {
                   </div>
                   <Switch
                     checked={isPassword}
-                    onCheckedChange={checked => setPassword(checked)}
+                    onCheckedChange={(checked) => setPassword(checked)}
                     className="data-[state=unchecked]:bg-input"
                   />
                 </div>
@@ -320,7 +316,7 @@ export default function AddProject() {
                   {isPassword && (
                     <motion.div
                       initial={{ opacity: 0, height: 0, marginTop: 0 }}
-                      animate={{ opacity: 1, height: 'auto', marginTop: 8 }}
+                      animate={{ opacity: 1, height: "auto", marginTop: 8 }}
                       exit={{ opacity: 0, height: 0, marginTop: 0 }}
                       transition={{ duration: 0.2 }}
                       className="overflow-hidden"
@@ -331,18 +327,18 @@ export default function AddProject() {
                             <Input
                               {...field}
                               id="password"
-                              type={showEye ? 'text' : 'password'}
+                              type={showEye ? "text" : "password"}
                               placeholder="Password"
                               autoComplete="new-password"
-                              className={`pr-10 ${errors.password && touched.password ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                              className={`pr-10 ${errors.password && touched.password ? "border-destructive focus-visible:ring-destructive" : ""}`}
                             />
                           )}
                         </Field>
                         <div
                           className="absolute top-[10px] right-3 cursor-pointer"
                           onClick={() => {
-                            setShowEye(prev => !prev);
-                            validateField('password');
+                            setShowEye((prev) => !prev);
+                            validateField("password");
                           }}
                         >
                           {showEye ? (
@@ -364,7 +360,7 @@ export default function AddProject() {
                 Cancel
               </Button>
               <Button type="submit" form="projectForm" disabled={loading}>
-                {loading ? 'Saving…' : 'Save case study'}
+                {loading ? "Saving…" : "Save case study"}
               </Button>
             </div>
           </Form>
@@ -376,9 +372,9 @@ export default function AddProject() {
           showUnsavedWarning &&
           isOpen &&
           !isSwitchingSidebar &&
-          pendingSidebarAction?.type === 'close'
+          pendingSidebarAction?.type === "close"
         }
-        onOpenChange={open => {
+        onOpenChange={(open) => {
           if (!open) handleCancelDiscardSidebar();
         }}
         onConfirmDiscard={() => {

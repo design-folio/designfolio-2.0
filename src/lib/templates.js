@@ -62,9 +62,7 @@ export const TEMPLATE_DISPLAY_ORDER = [
 ];
 
 /** Templates array in display order, for use in ThemePanel / dropdowns */
-export const TEMPLATES_LIST = TEMPLATE_DISPLAY_ORDER.map(
-  (id) => TEMPLATES_BY_ID[id],
-);
+export const TEMPLATES_LIST = TEMPLATE_DISPLAY_ORDER.map((id) => TEMPLATES_BY_ID[id]);
 
 export const TEMPLATE_PREVIEW_IMAGES = {
   [TEMPLATE_IDS.CANVAS]: {
@@ -97,13 +95,8 @@ function urlFromPreviewEntry(entry, theme = "light") {
 }
 
 /** Always returns a URL; falls back to Canvas when the template has no preview asset. */
-export function getTemplatePreviewImage(
-  templateId = TEMPLATE_IDS.CANVAS,
-  theme = "light",
-) {
-  const entry =
-    TEMPLATE_PREVIEW_IMAGES[templateId] ??
-    TEMPLATE_PREVIEW_IMAGES[TEMPLATE_IDS.CANVAS];
+export function getTemplatePreviewImage(templateId = TEMPLATE_IDS.CANVAS, theme = "light") {
+  const entry = TEMPLATE_PREVIEW_IMAGES[templateId] ?? TEMPLATE_PREVIEW_IMAGES[TEMPLATE_IDS.CANVAS];
   return urlFromPreviewEntry(entry, theme);
 }
 

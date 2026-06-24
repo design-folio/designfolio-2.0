@@ -77,11 +77,7 @@ export default function AddSocial() {
                       />
                     )}
                   </Field>
-                  <ErrorMessage
-                    name="instagram"
-                    component="div"
-                    className="error-message"
-                  />
+                  <ErrorMessage name="instagram" component="div" className="error-message" />
                 </div>
 
                 <div className="mt-[24px]">
@@ -99,11 +95,7 @@ export default function AddSocial() {
                       />
                     )}
                   </Field>
-                  <ErrorMessage
-                    name="linkedin"
-                    component="div"
-                    className="error-message"
-                  />
+                  <ErrorMessage name="linkedin" component="div" className="error-message" />
                 </div>
 
                 <div className="mt-[24px]">
@@ -121,17 +113,17 @@ export default function AddSocial() {
                       />
                     )}
                   </Field>
-                  <ErrorMessage
-                    name="twitter"
-                    component="div"
-                    className="error-message"
-                  />
+                  <ErrorMessage name="twitter" component="div" className="error-message" />
                 </div>
               </div>
 
               <div className="flex gap-2 mt-[26px] justify-end p-3 bg-modal-footer-bg-color rounded-br-[24px] rounded-bl-[24px]">
-                <Button variant="outline" type="button" onClick={closeModal}>Cancel</Button>
-                <Button type="submit" form="socialForm" disabled={isSubmitting}>{isSubmitting ? "Saving…" : "Save"}</Button>
+                <Button variant="outline" type="button" onClick={closeModal}>
+                  Cancel
+                </Button>
+                <Button type="submit" form="socialForm" disabled={isSubmitting}>
+                  {isSubmitting ? "Saving…" : "Save"}
+                </Button>
               </div>
             </Form>
           )}

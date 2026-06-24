@@ -10,13 +10,11 @@ import { usePersistableThemeToggle } from "@/hooks/usePersistableThemeToggle";
 
 export const AnimatedThemeToggler = ({ className, persist = false }) => {
   const buttonRef = useRef(null);
-  const { mounted, isDark: darkMode, toggleTheme } =
-    usePersistableThemeToggle(persist);
+  const { mounted, isDark: darkMode, toggleTheme } = usePersistableThemeToggle(persist);
 
   const playHeartbeat = useCallback(() => {
     try {
-      const audioContext =
-        new window.AudioContext() || window.webkitAudioContext();
+      const audioContext = new window.AudioContext() || window.webkitAudioContext();
       const now = audioContext.currentTime;
 
       // First beat
@@ -65,13 +63,12 @@ export const AnimatedThemeToggler = ({ className, persist = false }) => {
       return;
     }
 
-    const { left, top, width, height } =
-      buttonRef.current.getBoundingClientRect();
+    const { left, top, width, height } = buttonRef.current.getBoundingClientRect();
     const centerX = left + width / 2;
     const centerY = top + height / 2;
     const maxDistance = Math.hypot(
       Math.max(centerX, window.innerWidth - centerX),
-      Math.max(centerY, window.innerHeight - centerY),
+      Math.max(centerY, window.innerHeight - centerY)
     );
 
     document.documentElement.animate(
@@ -85,7 +82,7 @@ export const AnimatedThemeToggler = ({ className, persist = false }) => {
         duration: 700,
         easing: "ease-in-out",
         pseudoElement: "::view-transition-new(root)",
-      },
+      }
     );
   }, [toggleTheme, playHeartbeat]);
 
@@ -97,7 +94,7 @@ export const AnimatedThemeToggler = ({ className, persist = false }) => {
         aria-label="Switch theme"
         className={cn(
           "flex items-center justify-center p-2 rounded-full outline-none focus:outline-none active:outline-none focus:ring-0 cursor-pointer hover:bg-black/10 dark:hover:bg-white/10 transition-all",
-          className,
+          className
         )}
         type="button"
         data-testid="button-toggle-theme"
@@ -116,7 +113,7 @@ export const AnimatedThemeToggler = ({ className, persist = false }) => {
       aria-label="Switch theme"
       className={cn(
         "flex items-center justify-center p-2 rounded-full outline-none focus:outline-none active:outline-none focus:ring-0 cursor-pointer hover:bg-black/10 dark:hover:bg-white/10 transition-all",
-        className,
+        className
       )}
       type="button"
       data-testid="button-toggle-theme"

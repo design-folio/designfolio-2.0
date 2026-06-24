@@ -1,8 +1,4 @@
-import {
-  _analyzeCaseStudy,
-  _analyzeCaseStudyStatus,
-  _updateProject,
-} from "@/network/post-request";
+import { _analyzeCaseStudy, _analyzeCaseStudyStatus, _updateProject } from "@/network/post-request";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -29,15 +25,19 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 
 // Returns muted italic style for empty contentEditable placeholders
 const ph = (val) =>
-  val
-    ? "text-[#1A1A1A] dark:text-[#F0EDE7]"
-    : "text-[#C5BFB8] dark:text-[#4A4238] italic";
+  val ? "text-[#1A1A1A] dark:text-[#F0EDE7]" : "text-[#C5BFB8] dark:text-[#4A4238] italic";
 
 function AnalyzeIcon({ className = "w-4 h-4" }) {
   return (
     <svg className={className} viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M10.5 7L9.98415 8.39405C9.30774 10.222 8.96953 11.136 8.30278 11.8028C7.63603 12.4695 6.72204 12.8077 4.89405 13.4842L3.5 14L4.89405 14.5158C6.72204 15.1923 7.63603 15.5305 8.30278 16.1972C8.96953 16.864 9.30774 17.778 9.98415 19.6059L10.5 21L11.0158 19.6059C11.6923 17.778 12.0305 16.864 12.6972 16.1972C13.364 15.5305 14.278 15.1923 16.1059 14.5158L17.5 14L16.1059 13.4842C14.278 12.8077 13.364 12.4695 12.6972 11.8028C12.0305 11.136 11.6923 10.222 11.0158 8.39405L10.5 7Z" fill="#FF553E" />
-      <path d="M18.5 3L18.2789 3.59745C17.989 4.38087 17.8441 4.77259 17.5583 5.05833C17.2726 5.34408 16.8809 5.48903 16.0975 5.77892L15.5 6L16.0975 6.22108C16.8809 6.51097 17.2726 6.65592 17.5583 6.94167C17.8441 7.22741 17.989 7.61913 18.2789 8.40255L18.5 9L18.7211 8.40255C19.011 7.61913 19.1559 7.22741 19.4417 6.94166C19.7274 6.65592 20.1191 6.51097 20.9025 6.22108L21.5 6L20.9025 5.77892C20.1191 5.48903 19.7274 5.34408 19.4417 5.05833C19.1559 4.77259 19.011 4.38087 18.7211 3.59745L18.5 3Z" fill="#FF553E" />
+      <path
+        d="M10.5 7L9.98415 8.39405C9.30774 10.222 8.96953 11.136 8.30278 11.8028C7.63603 12.4695 6.72204 12.8077 4.89405 13.4842L3.5 14L4.89405 14.5158C6.72204 15.1923 7.63603 15.5305 8.30278 16.1972C8.96953 16.864 9.30774 17.778 9.98415 19.6059L10.5 21L11.0158 19.6059C11.6923 17.778 12.0305 16.864 12.6972 16.1972C13.364 15.5305 14.278 15.1923 16.1059 14.5158L17.5 14L16.1059 13.4842C14.278 12.8077 13.364 12.4695 12.6972 11.8028C12.0305 11.136 11.6923 10.222 11.0158 8.39405L10.5 7Z"
+        fill="#FF553E"
+      />
+      <path
+        d="M18.5 3L18.2789 3.59745C17.989 4.38087 17.8441 4.77259 17.5583 5.05833C17.2726 5.34408 16.8809 5.48903 16.0975 5.77892L15.5 6L16.0975 6.22108C16.8809 6.51097 17.2726 6.65592 17.5583 6.94167C17.8441 7.22741 17.989 7.61913 18.2789 8.40255L18.5 9L18.7211 8.40255C19.011 7.61913 19.1559 7.22741 19.4417 6.94166C19.7274 6.65592 20.1191 6.51097 20.9025 6.22108L21.5 6L20.9025 5.77892C20.1191 5.48903 19.7274 5.34408 19.4417 5.05833C19.1559 4.77259 19.011 4.38087 18.7211 3.59745L18.5 3Z"
+        fill="#FF553E"
+      />
     </svg>
   );
 }
@@ -89,7 +89,7 @@ function ProjectDetailField({ label, value, field, edit, handleOnBlur, handleInp
           "text-[15px] font-medium",
           isPlaceholder
             ? "text-[#C5BFB8] dark:text-[#4A4238] italic"
-            : "text-[#1A1A1A] dark:text-[#F0EDE7]",
+            : "text-[#1A1A1A] dark:text-[#F0EDE7]"
         )}
         contentEditable={edit}
         suppressContentEditableWarning
@@ -117,23 +117,9 @@ function ProjectDetailField({ label, value, field, edit, handleOnBlur, handleInp
   );
 }
 
-export default function CanvasProjectInfo({
-  projectDetails,
-  userDetails,
-  edit,
-  ownerTemplate,
-}) {
-  const {
-    client,
-    industry,
-    platform,
-    role,
-    title,
-    thumbnail,
-    description,
-    password,
-    _id,
-  } = projectDetails;
+export default function CanvasProjectInfo({ projectDetails, userDetails, edit, ownerTemplate }) {
+  const { client, industry, platform, role, title, thumbnail, description, password, _id } =
+    projectDetails;
 
   // Track which fields are showing the placeholder so color updates live while typing
   const [titleIsPlaceholder, setTitleIsPlaceholder] = useState(!title);
@@ -146,12 +132,18 @@ export default function CanvasProjectInfo({
   const { setTheme } = useTheme();
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
-  const { wordCount, setWordCount, setShowUpgradeModal, setUpgradeModalSource, analysisCreditsRemaining, setAnalysisCreditsRemaining } = useGlobalContext();
+  const {
+    wordCount,
+    setWordCount,
+    setShowUpgradeModal,
+    setUpgradeModalSource,
+    analysisCreditsRemaining,
+    setAnalysisCreditsRemaining,
+  } = useGlobalContext();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analyzeStatus, setAnalyzeStatus] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const [rating, setRating] = useState("");
-
 
   const activeTemplate = ownerTemplate ?? userDetails?.template;
   const isMacOS = activeTemplate === TEMPLATE_IDS.RETRO_OS;
@@ -226,8 +218,7 @@ export default function CanvasProjectInfo({
 
   const handleOnBlur = (field, e) => {
     saveProject(field, e.target.textContent);
-    e.target.textContent =
-      e.target.textContent.length > 0 ? e.target.textContent : "Type here...";
+    e.target.textContent = e.target.textContent.length > 0 ? e.target.textContent : "Type here...";
   };
 
   const handleAnalyzeClick = async () => {
@@ -247,7 +238,9 @@ export default function CanvasProjectInfo({
       setShowModal(true);
       setSuggestions(response.data.response);
       setRating(response.data.rating);
-      setAnalysisCreditsRemaining((prev) => (prev !== null && prev !== Infinity ? Math.max(0, prev - 1) : prev));
+      setAnalysisCreditsRemaining((prev) =>
+        prev !== null && prev !== Infinity ? Math.max(0, prev - 1) : prev
+      );
     } catch (e) {
       setAnalysisCreditsRemaining(0);
       setUpgradeModalSource("analyze");
@@ -265,7 +258,9 @@ export default function CanvasProjectInfo({
       setShowModal(true);
       setSuggestions(response.data.response);
       setRating(response.data.rating);
-      setAnalysisCreditsRemaining((prev) => (prev !== null && prev !== Infinity ? Math.max(0, prev - 1) : prev));
+      setAnalysisCreditsRemaining((prev) =>
+        prev !== null && prev !== Infinity ? Math.max(0, prev - 1) : prev
+      );
     } catch (e) {
       setAnalysisCreditsRemaining(0);
       setUpgradeModalSource("analyze");
@@ -315,7 +310,9 @@ export default function CanvasProjectInfo({
             <ChevronLeft size={18} className="transition-transform group-hover:-translate-x-1" />
             Back to Projects
           </button>
-        ) : <div />}
+        ) : (
+          <div />
+        )}
 
         <div className="flex items-center gap-4">
           {edit && (
@@ -330,7 +327,16 @@ export default function CanvasProjectInfo({
                       className="h-7 w-7 rounded-full border border-black/10 dark:border-white/10 bg-white/50 dark:bg-[#2A2520]/50 hover:bg-black/5 dark:hover:bg-white/5 text-[#1A1A1A] dark:text-[#F0EDE7] transition-all focus-visible:ring-0 focus-visible:ring-offset-0"
                       title="Lock Case Study"
                     >
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <svg
+                        width="13"
+                        height="13"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
                         <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
                         <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                       </svg>
@@ -395,7 +401,12 @@ export default function CanvasProjectInfo({
                 <TooltipProvider delayDuration={200}>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <span className={cn("inline-flex", isAnalyzeDisabled ? "cursor-not-allowed" : "cursor-pointer")}>
+                      <span
+                        className={cn(
+                          "inline-flex",
+                          isAnalyzeDisabled ? "cursor-not-allowed" : "cursor-pointer"
+                        )}
+                      >
                         <Button
                           variant="outline"
                           size="sm"
@@ -406,7 +417,7 @@ export default function CanvasProjectInfo({
                             "bg-white/50 dark:bg-[#2A2520]/50 text-[#1A1A1A] dark:text-[#F0EDE7]",
                             "flex items-center gap-1.5 px-3 transition-all focus-visible:ring-0 focus-visible:ring-offset-0",
                             "cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed",
-                            !isAnalyzeDisabled && "hover:bg-black/5 dark:hover:bg-white/5",
+                            !isAnalyzeDisabled && "hover:bg-black/5 dark:hover:bg-white/5"
                           )}
                         >
                           {isAnalyzing ? (
@@ -419,7 +430,10 @@ export default function CanvasProjectInfo({
                       </span>
                     </TooltipTrigger>
                     {tooltipMessage && (
-                      <TooltipContent side="bottom" className="bg-foreground text-background text-xs px-2 py-1 rounded">
+                      <TooltipContent
+                        side="bottom"
+                        className="bg-foreground text-background text-xs px-2 py-1 rounded"
+                      >
                         {tooltipMessage}
                       </TooltipContent>
                     )}

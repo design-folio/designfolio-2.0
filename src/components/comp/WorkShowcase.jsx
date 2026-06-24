@@ -20,15 +20,15 @@ import {
   useSensor,
   useSensors,
   DragEndEvent,
-} from '@dnd-kit/core';
+} from "@dnd-kit/core";
 import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   useSortable,
   rectSortingStrategy,
-} from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import ProjectLock from "../projectLock";
 import MemoCasestudy from "../icons/Casestudy";
 import Text from "../text";
@@ -132,9 +132,7 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
   };
 
   // Maintain local state for sorted projects
-  const [sortedProjects, setSortedProjects] = useState(
-    () => userDetails?.projects || []
-  );
+  const [sortedProjects, setSortedProjects] = useState(() => userDetails?.projects || []);
 
   // Update state when userDetails changes
   useEffect(() => {
@@ -162,12 +160,8 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
-    const oldIndex = sortedProjects.findIndex(
-      (project) => project._id === active.id
-    );
-    const newIndex = sortedProjects.findIndex(
-      (project) => project._id === over.id
-    );
+    const oldIndex = sortedProjects.findIndex((project) => project._id === active.id);
+    const newIndex = sortedProjects.findIndex((project) => project._id === over.id);
 
     // Update the sorted order
     const newSortedProjects = arrayMove(sortedProjects, oldIndex, newIndex);
@@ -186,8 +180,9 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
     const containerRef = useRef(null);
     const { setCursorPill } = useCursorTooltip();
     // Setup DND Kit sortable functionality.
-    const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-      useSortable({ id: project._id });
+    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+      id: project._id,
+    });
     const style = {
       transform: CSS.Transform.toString(transform),
       transition,
@@ -248,7 +243,7 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
           containerRef.current = node;
         }}
         style={style}
-        className={`${isDragging ? 'relative' : ''} h-full`}
+        className={`${isDragging ? "relative" : ""} h-full`}
       >
         <motion.div
           onMouseMove={handleMouseMove}
@@ -272,10 +267,7 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
             }}
           />
           <div className="aspect-[4/3] cursor-pointer overflow-hidden bg-secondary/50 relative">
-            <ImageWithPreload
-              src={project?.thumbnail?.url}
-              alt={project.title}
-            />
+            <ImageWithPreload src={project?.thumbnail?.url} alt={project.title} />
             {project?.hidden && (
               <div className="absolute top-3 right-3 bg-amber-100 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1.5 z-10">
                 <EyeOff className="w-3 h-3" />
@@ -290,7 +282,7 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
             </a> */}
           </div>
           <div className="flex-1 flex flex-col justify-between cursor-pointer">
-            <div className={cn('p-6', edit && 'pb-0')}>
+            <div className={cn("p-6", edit && "pb-0")}>
               <h3 className="text-lg font-semibold line-clamp-2 project-info-card-heading-color">
                 {project.title}
               </h3>
@@ -336,7 +328,9 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
                       e.stopPropagation();
                       handleToggleVisibility(project?._id);
                     }}
-                    icon={project?.hidden ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    icon={
+                      project?.hidden ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />
+                    }
                     text={project?.hidden ? "Hidden" : "Visible"}
                   />
                   <Button
@@ -367,11 +361,7 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
         {headerActions && <div className="flex-shrink-0">{headerActions}</div>}
       </div>
       {sortedProjects.length > 0 && (
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-        >
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext
             items={visibleProjects.map((project) => project._id)}
             strategy={rectSortingStrategy}
@@ -391,12 +381,11 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
         </DndContext>
       )}
       {edit &&
-        (userDetails?.pro || (userDetails?.projects || []).filter(p => !p.hidden).length < 2 ? (
+        (userDetails?.pro || (userDetails?.projects || []).filter((p) => !p.hidden).length < 2 ? (
           <AddCard
-            title={`${visibleProjects.length === 0
-              ? "Upload your first case study"
-              : "Add case study"
-              }`}
+            title={`${
+              visibleProjects.length === 0 ? "Upload your first case study" : "Add case study"
+            }`}
             subTitle="Show off your best work."
             first={sortedProjects.length !== 0}
             buttonTitle="Add case study"
@@ -404,9 +393,10 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
             onClick={() => openSidebar(sidebars.project)}
             icon={<MemoCasestudy className="cursor-pointer size-[72px]" />}
             openModal={openModal}
-            className={`bg-secondary flex items-center justify-center mt-6 ${visibleProjects.length !== 0 &&
+            className={`bg-secondary flex items-center justify-center mt-6 ${
+              visibleProjects.length !== 0 &&
               "shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] hover:shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
-              }`}
+            }`}
           />
         ) : (
           <div className="mt-6">

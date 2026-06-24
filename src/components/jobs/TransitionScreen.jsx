@@ -77,7 +77,12 @@ function OrbitRing({ visible }) {
                     height: imageSize,
                   }}
                   initial={{ opacity: 0, y: 8, filter: "blur(8px)", rotate: -angle }}
-                  animate={{ opacity: 1, y: 0, filter: "blur(0px)", rotate: [-angle, -angle - 360] }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                    filter: "blur(0px)",
+                    rotate: [-angle, -angle - 360],
+                  }}
                   transition={{
                     opacity: { delay: 0.7 + i * 0.07, duration: 0.55, ease: [0.22, 1, 0.36, 1] },
                     y: { delay: 0.7 + i * 0.07, duration: 0.55, ease: [0.22, 1, 0.36, 1] },
@@ -93,7 +98,6 @@ function OrbitRing({ visible }) {
               </motion.div>
             );
           })}
-
         </motion.div>
       )}
     </AnimatePresence>
@@ -153,18 +157,18 @@ function AnimatedJobCount({ onDone }) {
       style={
         showGradient
           ? {
-            display: "inline-block",
-            whiteSpace: "nowrap",
-            fontVariantNumeric: "tabular-nums",
-            paddingRight: "0.08em",
-            color: "transparent",
-            WebkitBackgroundClip: "text",
-            backgroundClip: "text",
-            backgroundImage:
-              "linear-gradient(to right, var(--foreground) 0%, var(--foreground) 38%, #5D3560 52%, #E54D2E 62%, #F5A623 72%, var(--foreground) 86%, var(--foreground) 100%)",
-            backgroundSize: "300% 100%",
-            animation: "shimmer-text 3s ease-in-out forwards",
-          }
+              display: "inline-block",
+              whiteSpace: "nowrap",
+              fontVariantNumeric: "tabular-nums",
+              paddingRight: "0.08em",
+              color: "transparent",
+              WebkitBackgroundClip: "text",
+              backgroundClip: "text",
+              backgroundImage:
+                "linear-gradient(to right, var(--foreground) 0%, var(--foreground) 38%, #5D3560 52%, #E54D2E 62%, #F5A623 72%, var(--foreground) 86%, var(--foreground) 100%)",
+              backgroundSize: "300% 100%",
+              animation: "shimmer-text 3s ease-in-out forwards",
+            }
           : { display: "inline-block", whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums" }
       }
     >

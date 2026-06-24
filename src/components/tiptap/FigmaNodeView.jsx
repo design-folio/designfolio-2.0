@@ -1,12 +1,7 @@
 import { NodeViewWrapper } from "@tiptap/react";
 import { useState, useEffect, useRef } from "react";
 
-export default function FigmaNodeView({
-  node,
-  updateAttributes,
-  editor,
-  getPos,
-}) {
+export default function FigmaNodeView({ node, updateAttributes, editor, getPos }) {
   const [isEditing, setIsEditing] = useState(!node.attrs.embedCode);
   const [embedCode, setEmbedCode] = useState(node.attrs.embedCode || "");
   const textareaRef = useRef(null);

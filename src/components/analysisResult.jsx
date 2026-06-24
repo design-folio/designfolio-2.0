@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "./ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
 import {
   CheckCircle2,
@@ -57,7 +52,8 @@ function Gauge({ value, size = 120, strokeWidth = 12 }) {
 function getSectionIcon(name) {
   const n = (name || "").toLowerCase();
   if (n.includes("experience")) return <TrendingUp className="w-5 h-5 text-orange-600" />;
-  if (n.includes("education") || n.includes("certification")) return <BookOpen className="w-5 h-5 text-blue-600" />;
+  if (n.includes("education") || n.includes("certification"))
+    return <BookOpen className="w-5 h-5 text-blue-600" />;
   if (n.includes("technical")) return <Cpu className="w-5 h-5 text-purple-600" />;
   return <UserCircle2 className="w-5 h-5 text-slate-600" />;
 }
@@ -81,7 +77,7 @@ export default function AnalysisResult({ analysis }) {
   const recText = (rec) => [rec.action, rec.impact].filter(Boolean).join(" ");
 
   return (
-    <div className="w-full max-w-5xl mx-auto space-y-6 pb-12 animate-in fade-in slide-in-from-bottom-4 duration-700 items-center" >
+    <div className="w-full max-w-5xl mx-auto space-y-6 pb-12 animate-in fade-in slide-in-from-bottom-4 duration-700 items-center">
       {/* Header Score section */}
       <Card className="border-border/40 bg-white shadow-sm overflow-hidden rounded-[2rem]">
         <CardContent className="p-8">
@@ -107,7 +103,10 @@ export default function AnalysisResult({ analysis }) {
           </CardHeader>
           <CardContent className="space-y-3">
             {(analysis.strengths || []).map((s, i) => (
-              <div key={i} className="p-4 rounded-2xl bg-white/80 border border-emerald-100 shadow-sm">
+              <div
+                key={i}
+                className="p-4 rounded-2xl bg-white/80 border border-emerald-100 shadow-sm"
+              >
                 <h4 className="font-semibold text-emerald-800 mb-1 text-sm">{s.category}</h4>
                 <p className="text-muted-foreground text-xs leading-relaxed">{s.details}</p>
               </div>
@@ -132,7 +131,7 @@ export default function AnalysisResult({ analysis }) {
       </div>
 
       {/* Skills Analysis */}
-      {(analysis.metrics?.length > 0) && (
+      {analysis.metrics?.length > 0 && (
         <Card className="border-border/40 bg-white shadow-sm rounded-[2rem]">
           <CardHeader>
             <CardTitle className="text-xl text-foreground ">Skills Analysis</CardTitle>
@@ -179,10 +178,7 @@ export default function AnalysisResult({ analysis }) {
                         </div>
                       </td>
                       <td className="py-5 pr-2">
-                        <Badge
-                          variant="outline"
-                          className={statusBadgeClass(skill.status)}
-                        >
+                        <Badge variant="outline" className={statusBadgeClass(skill.status)}>
                           {statusLabel(skill.status)}
                         </Badge>
                       </td>
@@ -224,7 +220,9 @@ export default function AnalysisResult({ analysis }) {
                   </div>
                 )}
               </div>
-              <p className="text-muted-foreground text-sm mb-5 leading-relaxed">{section.analysis}</p>
+              <p className="text-muted-foreground text-sm mb-5 leading-relaxed">
+                {section.analysis}
+              </p>
               {section.suggestions?.length > 0 && (
                 <div className="pt-5 border-t border-slate-100">
                   <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mb-3">
@@ -253,9 +251,7 @@ export default function AnalysisResult({ analysis }) {
         <Card className="border-orange-100 bg-[#FFFAF5] shadow-sm rounded-[2rem]">
           <CardHeader className="flex flex-row items-center space-x-2 pb-2">
             <UserCircle2 className="w-5 h-5 text-[#FF553E]" />
-            <CardTitle className="text-foreground text-xl ">
-              Priority Recommendations
-            </CardTitle>
+            <CardTitle className="text-foreground text-xl ">Priority Recommendations</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {recommendations.map((rec, i) => (
@@ -273,7 +269,8 @@ export default function AnalysisResult({ analysis }) {
                         : "bg-blue-50 text-blue-700 border-blue-100"
                   }
                 >
-                  {(rec.priority || "Medium").charAt(0).toUpperCase() + (rec.priority || "medium").slice(1)}
+                  {(rec.priority || "Medium").charAt(0).toUpperCase() +
+                    (rec.priority || "medium").slice(1)}
                 </Badge>
                 <p className="text-sm text-foreground font-medium">{recText(rec)}</p>
               </div>

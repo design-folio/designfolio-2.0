@@ -2,12 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { ChevronLeft, ChevronRight, ArrowUpRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { portfolioProjects } from "./shared/portfolioData";
 
 const doubled = [...portfolioProjects, ...portfolioProjects];
@@ -20,8 +15,7 @@ export default function LandingPortfolioGallery() {
   const mobileTrackRef = useRef(null);
 
   useEffect(() => {
-    const check = () =>
-      setIsDark(document.documentElement.getAttribute("data-theme") === "dark");
+    const check = () => setIsDark(document.documentElement.getAttribute("data-theme") === "dark");
     check();
     const obs = new MutationObserver(check);
     obs.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
@@ -78,14 +72,21 @@ export default function LandingPortfolioGallery() {
                 className="group snap-center flex-shrink-0 w-[80%] rounded-2xl overflow-hidden bg-[--lp-bg] border border-[--lp-border] cursor-pointer"
               >
                 <div className="w-full h-[200px] overflow-hidden bg-[--lp-surface] relative">
-                  <img src={card.imageSrc} alt={card.title} className="w-full h-full object-cover" />
+                  <img
+                    src={card.imageSrc}
+                    alt={card.title}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div className="p-4 flex flex-col gap-3">
                   <p className="text-[15px] font-semibold text-[--lp-text] leading-snug line-clamp-2">
                     {card.title}
                   </p>
                   <button
-                    onClick={(e) => { e.stopPropagation(); setSelectedProject(card); }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedProject(card);
+                    }}
                     className="self-start flex items-center gap-1.5 text-[12px] font-semibold text-[--lp-text] border border-[--lp-border] rounded-full px-3 py-1.5 hover:bg-[--lp-text] hover:text-[--lp-fg-white] transition-colors duration-200"
                   >
                     View Project <ArrowUpRight className="w-3 h-3" />
@@ -114,7 +115,7 @@ export default function LandingPortfolioGallery() {
                   key={i}
                   className={cn(
                     "w-1.5 h-1.5 rounded-full transition-colors duration-200",
-                    i === mobileIndex ? "bg-[--lp-text]" : "bg-lp-text/20",
+                    i === mobileIndex ? "bg-[--lp-text]" : "bg-lp-text/20"
                   )}
                 />
               ))}
@@ -167,7 +168,10 @@ export default function LandingPortfolioGallery() {
                     {card.title}
                   </p>
                   <button
-                    onClick={(e) => { e.stopPropagation(); setSelectedProject(card); }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedProject(card);
+                    }}
                     className="self-start flex items-center gap-1.5 text-[13px] font-semibold text-[--lp-text] border border-[--lp-border] rounded-full px-3.5 py-1.5 hover:bg-[--lp-text] hover:text-[--lp-fg-white] transition-colors duration-200"
                   >
                     View Project <ArrowUpRight className="w-3.5 h-3.5" />
@@ -180,8 +184,16 @@ export default function LandingPortfolioGallery() {
       </section>
 
       {/* Project preview dialog */}
-      <Dialog open={!!selectedProject} onOpenChange={(open) => { if (!open) setSelectedProject(null); }}>
-        <DialogContent className="max-w-[85vw] w-[85vw] h-[85vh] p-0 overflow-hidden rounded-[20px]" style={{ background: "var(--lp-bg)" }}>
+      <Dialog
+        open={!!selectedProject}
+        onOpenChange={(open) => {
+          if (!open) setSelectedProject(null);
+        }}
+      >
+        <DialogContent
+          className="max-w-[85vw] w-[85vw] h-[85vh] p-0 overflow-hidden rounded-[20px]"
+          style={{ background: "var(--lp-bg)" }}
+        >
           <DialogTitle className="sr-only">{selectedProject?.title}</DialogTitle>
           <DialogDescription className="sr-only">{selectedProject?.title}</DialogDescription>
           <div className="relative w-full h-full rounded-[20px] overflow-hidden">

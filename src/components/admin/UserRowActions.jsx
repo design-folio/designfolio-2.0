@@ -26,9 +26,7 @@ import {
 import { toast } from "sonner";
 import { _grantPlan } from "@/network/admin";
 
-const PLAN_OPTIONS = [
-  { value: "lifetime", label: "Lifetime" },
-];
+const PLAN_OPTIONS = [{ value: "lifetime", label: "Lifetime" }];
 
 export default function UserRowActions({ user }) {
   const [grantOpen, setGrantOpen] = useState(false);
@@ -106,10 +104,7 @@ export default function UserRowActions({ user }) {
             {!isDeleted && (
               <>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={() => setGrantOpen(true)}
-                  className="cursor-pointer"
-                >
+                <DropdownMenuItem onClick={() => setGrantOpen(true)} className="cursor-pointer">
                   <Gift aria-hidden="true" />
                   Grant plan
                 </DropdownMenuItem>
@@ -141,7 +136,9 @@ export default function UserRowActions({ user }) {
           </div>
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline" size="sm">Cancel</Button>
+              <Button variant="outline" size="sm">
+                Cancel
+              </Button>
             </DialogClose>
             <Button size="sm" onClick={handleGrant} disabled={granting}>
               {granting ? "Granting..." : "Grant access"}

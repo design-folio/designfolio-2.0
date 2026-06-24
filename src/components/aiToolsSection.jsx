@@ -16,9 +16,7 @@ export default function AiToolsSection() {
         <GeneratorCard
           title="Fix your Resume"
           src={"/assets/svgs/fixResume.svg"}
-          description={
-            "See how your resume stacks up against the \n Job Description."
-          }
+          description={"See how your resume stacks up against the \n Job Description."}
           buttonText="Analyze my Resume"
           route="/ai-tools?type=optimize-resume"
         />
@@ -39,9 +37,7 @@ export default function AiToolsSection() {
         <GeneratorCard
           title="AI Email Generator for Job Seekers"
           src={"/assets/svgs/emailGen.svg"}
-          description={
-            "Get personalized emails for any situation—ready to send or tweak."
-          }
+          description={"Get personalized emails for any situation—ready to send or tweak."}
           route="/ai-tools?type=email-generator"
         />
 

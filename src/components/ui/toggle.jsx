@@ -10,8 +10,7 @@ const toggleVariants = cva(
     variants: {
       variant: {
         default: "bg-transparent",
-        outline:
-          "border border-input bg-transparent hover:bg-accent hover:text-accent-foreground",
+        outline: "border border-input bg-transparent hover:bg-accent hover:text-accent-foreground",
       },
       size: {
         default: "h-10 px-3",
@@ -26,10 +25,7 @@ const toggleVariants = cva(
   }
 );
 
-const Toggle = React.forwardRef(function Toggle(
-  { className, variant, size, ...props },
-  ref
-) {
+const Toggle = React.forwardRef(function Toggle({ className, variant, size, ...props }, ref) {
   return (
     <TogglePrimitive.Root
       ref={ref}

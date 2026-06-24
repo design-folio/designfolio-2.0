@@ -20,8 +20,7 @@ function resolvePersona(personaLabel, personas) {
   if (!personaLabel || !Array.isArray(personas) || personas.length === 0) return null;
   const label = personaLabel.trim();
   const matched = personas.find(
-    (p) =>
-      (p.label || p.name || p.title || "").trim().toLowerCase() === label.toLowerCase()
+    (p) => (p.label || p.name || p.title || "").trim().toLowerCase() === label.toLowerCase()
   );
   if (matched && matched._id) {
     return { value: matched._id, label: matched.label || matched.name || matched.title || label };
@@ -33,8 +32,7 @@ function resolveTool(toolName, tools) {
   if (!toolName || !Array.isArray(tools) || tools.length === 0) return null;
   const name = String(toolName).trim();
   const matched = tools.find(
-    (t) =>
-      (t.label || t.name || "").trim().toLowerCase() === name.toLowerCase()
+    (t) => (t.label || t.name || "").trim().toLowerCase() === name.toLowerCase()
   );
   if (matched && (matched.value || matched._id)) {
     const id = matched.value || matched._id;
@@ -97,7 +95,8 @@ export function mapPendingPortfolioToUpdatePayload(content, personas, tools) {
   const portfolios = {};
   const link = (v) => (v && String(v).trim()) || "";
   if (link(contact.linkedin)) socials.linkedin = link(contact.linkedin);
-  if (link(contact.twitter) || link(contact.x)) socials.twitter = link(contact.twitter) || link(contact.x);
+  if (link(contact.twitter) || link(contact.x))
+    socials.twitter = link(contact.twitter) || link(contact.x);
   if (link(contact.instagram)) socials.instagram = link(contact.instagram);
   if (link(contact.medium)) portfolios.medium = link(contact.medium);
   if (link(contact.dribbble)) portfolios.dribbble = link(contact.dribbble);
@@ -167,21 +166,21 @@ export function mapPendingPortfolioToUpdatePayload(content, personas, tools) {
   const projectSources =
     caseStudies.length > 0
       ? caseStudies.slice(0, MAX_PROJECTS).map((proj) => ({
-        title: proj.title ?? "",
-        description: proj.description || "",
-        category: proj.category ?? "",
-        client: proj.client ?? "",
-        role: proj.role ?? "",
-        platform: proj.platform ?? "",
-      }))
+          title: proj.title ?? "",
+          description: proj.description || "",
+          category: proj.category ?? "",
+          client: proj.client ?? "",
+          role: proj.role ?? "",
+          platform: proj.platform ?? "",
+        }))
       : workExperiences.slice(0, MAX_PROJECTS).map((exp) => ({
-        title: `${exp.role ?? ""} at ${exp.company ?? ""}`.trim() || "Project",
-        description: exp.description || "",
-        category: "",
-        client: exp.company ?? "",
-        role: exp.role ?? "",
-        platform: "",
-      }));
+          title: `${exp.role ?? ""} at ${exp.company ?? ""}`.trim() || "Project",
+          description: exp.description || "",
+          category: "",
+          client: exp.company ?? "",
+          role: exp.role ?? "",
+          platform: "",
+        }));
 
   if (projectSources.length) {
     payload.projects = projectSources.map((proj) => {

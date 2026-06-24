@@ -2,13 +2,7 @@
 import React from "react";
 import Text from "./text";
 
-export default function AddItem({
-  title = "title",
-  className = "",
-  onClick,
-  iconLeft,
-  iconRight,
-}) {
+export default function AddItem({ title = "title", className = "", onClick, iconLeft, iconRight }) {
   return (
     <div
       onClick={onClick}

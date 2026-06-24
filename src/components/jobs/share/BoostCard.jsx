@@ -1,21 +1,28 @@
 import { useId } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Lock, Sparkles, BookmarkPlus, Check, ArrowRight } from "lucide-react";
+import { Lock, Sparkles, BookmarkPlus, Check, ArrowRight, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { EASE_OUT } from "./motion-constants";
 
 // ── Gauge geometry (GA0=240° start, GA1=120° end → 240° sweep) ───────────────
-const GA0 = 240, GA1 = 120, GCX = 50, GCY = 52, GR = 34, GSW = 7;
-const GVW = 100, GVH = 72;
+const GA0 = 240,
+  GA1 = 120,
+  GCX = 50,
+  GCY = 52,
+  GR = 34,
+  GSW = 7;
+const GVW = 100,
+  GVH = 72;
 
 function gpt(deg) {
   const r = (deg * Math.PI) / 180;
   return { x: GCX + GR * Math.sin(r), y: GCY - GR * Math.cos(r) };
 }
 function garc(a1, a2) {
-  const s = gpt(a1), e = gpt(a2);
-  const sw = ((a2 - a1) + 360) % 360;
+  const s = gpt(a1),
+    e = gpt(a2);
+  const sw = (a2 - a1 + 360) % 360;
   if (sw < 0.1) return "";
   return `M ${s.x.toFixed(2)} ${s.y.toFixed(2)} A ${GR} ${GR} 0 ${sw > 180 ? 1 : 0} 1 ${e.x.toFixed(2)} ${e.y.toFixed(2)}`;
 }
@@ -24,7 +31,8 @@ function YourScoreGauge({ isDark, score = null }) {
   const uid = useId().replace(/:/g, "");
   const trackPath = garc(GA0, GA1);
   const trackColor = isDark ? "hsl(20,8%,18%)" : "rgba(215,210,203,0.85)";
-  const xL = gpt(GA0).x, xR = gpt(GA1).x;
+  const xL = gpt(GA0).x,
+    xR = gpt(GA1).x;
 
   // When score is known: fill arc to score%, dot moves to that position
   const fillRatio = score !== null ? score / 100 : 1;
@@ -32,9 +40,21 @@ function YourScoreGauge({ isDark, score = null }) {
   const dot = gpt(dotAngle);
 
   return (
-    <svg viewBox={`0 0 ${GVW} ${GVH}`} width={GVW} height={GVH} style={{ overflow: "visible", display: "block" }}>
+    <svg
+      viewBox={`0 0 ${GVW} ${GVH}`}
+      width={GVW}
+      height={GVH}
+      style={{ overflow: "visible", display: "block" }}
+    >
       <defs>
-        <linearGradient id={`rb-ys-${uid}`} gradientUnits="userSpaceOnUse" x1={xL} y1="0" x2={xR} y2="0">
+        <linearGradient
+          id={`rb-ys-${uid}`}
+          gradientUnits="userSpaceOnUse"
+          x1={xL}
+          y1="0"
+          x2={xR}
+          y2="0"
+        >
           <stop offset="0%" stopColor="#ef4444" />
           <stop offset="28%" stopColor="#f97316" />
           <stop offset="52%" stopColor="#eab308" />
@@ -44,26 +64,47 @@ function YourScoreGauge({ isDark, score = null }) {
       </defs>
       <path d={trackPath} fill="none" stroke={trackColor} strokeWidth={GSW} strokeLinecap="round" />
       <motion.path
-        d={trackPath} fill="none" stroke={`url(#rb-ys-${uid})`} strokeWidth={GSW - 1} strokeLinecap="round"
-        initial={{ pathLength: 0 }} animate={{ pathLength: fillRatio }}
+        d={trackPath}
+        fill="none"
+        stroke={`url(#rb-ys-${uid})`}
+        strokeWidth={GSW - 1}
+        strokeLinecap="round"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: fillRatio }}
         transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
       />
       <motion.path
-        d={trackPath} fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth={(GSW - 1) * 0.5} strokeLinecap="round"
-        initial={{ pathLength: 0 }} animate={{ pathLength: fillRatio }}
+        d={trackPath}
+        fill="none"
+        stroke="rgba(255,255,255,0.25)"
+        strokeWidth={(GSW - 1) * 0.5}
+        strokeLinecap="round"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: fillRatio }}
         transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
       />
       <motion.circle
-        cx={dot.x} cy={dot.y} r={GSW * 0.48} fill="white" stroke="rgba(0,0,0,0.12)" strokeWidth={0.8}
-        initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }}
+        cx={dot.x}
+        cy={dot.y}
+        r={GSW * 0.48}
+        fill="white"
+        stroke="rgba(0,0,0,0.12)"
+        strokeWidth={0.8}
+        initial={{ opacity: 0, scale: 0 }}
+        animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.9, duration: 0.3, ease: "backOut" }}
       />
       <motion.text
-        x={GCX} y={GCY - 2} textAnchor="middle" dominantBaseline="middle"
+        x={GCX}
+        y={GCY - 2}
+        textAnchor="middle"
+        dominantBaseline="middle"
         fill={isDark ? "rgba(240,237,232,0.85)" : "#1A1A1A"}
-        fontSize={score !== null ? "20" : "22"} fontWeight="800"
+        fontSize={score !== null ? "20" : "22"}
+        fontWeight="800"
         style={{ userSelect: "none", fontFamily: "inherit", letterSpacing: "-0.5px" }}
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
         transition={{ delay: 0.3, duration: 0.4 }}
       >
         {score !== null ? `${score}` : "?"}
@@ -78,13 +119,28 @@ function TopApplicantsGauge({ isDark }) {
   const dashColor = isDark ? "hsl(20,8%,30%)" : "rgba(190,185,178,0.95)";
 
   return (
-    <svg viewBox={`0 0 ${GVW} ${GVH}`} width={GVW} height={GVH} style={{ overflow: "visible", display: "block" }}>
+    <svg
+      viewBox={`0 0 ${GVW} ${GVH}`}
+      width={GVW}
+      height={GVH}
+      style={{ overflow: "visible", display: "block" }}
+    >
       <path d={trackPath} fill="none" stroke={trackColor} strokeWidth={GSW} strokeLinecap="round" />
-      <path d={trackPath} fill="none" stroke={dashColor} strokeWidth={GSW - 2} strokeLinecap="round" />
+      <path
+        d={trackPath}
+        fill="none"
+        stroke={dashColor}
+        strokeWidth={GSW - 2}
+        strokeLinecap="round"
+      />
       <text
-        x={GCX} y={GCY - 2} textAnchor="middle" dominantBaseline="middle"
+        x={GCX}
+        y={GCY - 2}
+        textAnchor="middle"
+        dominantBaseline="middle"
         fill={isDark ? "rgba(240,237,232,0.25)" : "rgba(26,26,26,0.22)"}
-        fontSize="22" fontWeight="700"
+        fontSize="22"
+        fontWeight="700"
         style={{ userSelect: "none", fontFamily: "inherit" }}
       >
         —
@@ -93,9 +149,16 @@ function TopApplicantsGauge({ isDark }) {
   );
 }
 
-const BLURRED_SKILLS = ["Figma", "Design Systems", "Interaction Design", "Visual Design", "Prototyping"];
+const BLURRED_SKILLS = [
+  "Figma",
+  "Design Systems",
+  "Interaction Design",
+  "Visual Design",
+  "Prototyping",
+];
 
-const CARD = "bg-white dark:bg-[#28231E] rounded-2xl border border-black/[0.05] dark:border-[#302B28] shadow-[0_2px_8px_rgba(0,0,0,0.06)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.3)]";
+const CARD =
+  "bg-white dark:bg-[#28231E] rounded-2xl border border-black/[0.05] dark:border-[#302B28] shadow-[0_2px_8px_rgba(0,0,0,0.06)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.3)]";
 
 export function CTASkeleton() {
   return (
@@ -134,19 +197,29 @@ export function BoostCard({ authState, isDark, isSaving, matchScore, onSave, onF
           <div className="flex items-center justify-between gap-1 mb-4 px-0.5">
             <div className="flex flex-col items-center gap-1.5 flex-1">
               <YourScoreGauge isDark={isDark} />
-              <span className="text-[11px] text-foreground/50 font-medium tracking-tight">Your Score</span>
+              <span className="text-[11px] text-foreground/50 font-medium tracking-tight">
+                Your Score
+              </span>
             </div>
             <div className="flex items-center gap-[2px] opacity-20 mb-6 flex-shrink-0">
               {[0, 1, 2].map((i) => (
                 <svg key={i} width="8" height="12" viewBox="0 0 8 12" fill="none">
-                  <path d="M1 1l5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
-                    className="text-foreground" />
+                  <path
+                    d="M1 1l5 5-5 5"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-foreground"
+                  />
                 </svg>
               ))}
             </div>
             <div className="flex flex-col items-center gap-1.5 flex-1">
               <TopApplicantsGauge isDark={isDark} />
-              <span className="text-[11px] text-foreground/50 font-medium tracking-tight">Top Applicants</span>
+              <span className="text-[11px] text-foreground/50 font-medium tracking-tight">
+                Top Applicants
+              </span>
             </div>
           </div>
 
@@ -166,7 +239,10 @@ export function BoostCard({ authState, isDark, isSaving, matchScore, onSave, onF
                 style={{ filter: "blur(4px)" }}
               >
                 {BLURRED_SKILLS.map((s) => (
-                  <span key={s} className="inline-flex items-center font-jetbrains text-[10px] font-semibold uppercase tracking-wide text-[#3D3630] dark:text-white/55 bg-[#EAE5DF] dark:bg-[#1F1C1C] rounded-md px-2 py-1 whitespace-nowrap">
+                  <span
+                    key={s}
+                    className="inline-flex items-center font-jetbrains text-[10px] font-semibold uppercase tracking-wide text-[#3D3630] dark:text-white/55 bg-[#EAE5DF] dark:bg-[#1F1C1C] rounded-md px-2 py-1 whitespace-nowrap"
+                  >
                     {s}
                   </span>
                 ))}
@@ -177,7 +253,9 @@ export function BoostCard({ authState, isDark, isSaving, matchScore, onSave, onF
                   className="flex items-center gap-1.5 bg-white/70 dark:bg-[#28231E]/80 backdrop-blur-[2px] rounded-lg px-3 py-1.5 border border-black/[0.06] dark:border-white/[0.07] hover:bg-white/90 dark:hover:bg-[#28231E]/95 transition-colors"
                 >
                   <Lock className="w-3 h-3 text-foreground/50" />
-                  <span className="text-[11px] font-semibold text-foreground/55">Sign up to unlock</span>
+                  <span className="text-[11px] font-semibold text-foreground/55">
+                    Sign up to unlock
+                  </span>
                 </button>
               </div>
             </div>
@@ -217,19 +295,29 @@ export function BoostCard({ authState, isDark, isSaving, matchScore, onSave, onF
           <div className="flex items-center justify-between gap-1 mb-4 px-0.5">
             <div className="flex flex-col items-center gap-1.5 flex-1">
               <YourScoreGauge isDark={isDark} />
-              <span className="text-[11px] text-foreground/50 font-medium tracking-tight">Your Score</span>
+              <span className="text-[11px] text-foreground/50 font-medium tracking-tight">
+                Your Score
+              </span>
             </div>
             <div className="flex items-center gap-[2px] opacity-20 mb-6 flex-shrink-0">
               {[0, 1, 2].map((i) => (
                 <svg key={i} width="8" height="12" viewBox="0 0 8 12" fill="none">
-                  <path d="M1 1l5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
-                    className="text-foreground" />
+                  <path
+                    d="M1 1l5 5-5 5"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-foreground"
+                  />
                 </svg>
               ))}
             </div>
             <div className="flex flex-col items-center gap-1.5 flex-1">
               <TopApplicantsGauge isDark={isDark} />
-              <span className="text-[11px] text-foreground/50 font-medium tracking-tight">Top Applicants</span>
+              <span className="text-[11px] text-foreground/50 font-medium tracking-tight">
+                Top Applicants
+              </span>
             </div>
           </div>
 
@@ -249,7 +337,10 @@ export function BoostCard({ authState, isDark, isSaving, matchScore, onSave, onF
                 style={{ filter: "blur(4px)" }}
               >
                 {BLURRED_SKILLS.map((s) => (
-                  <span key={s} className="inline-flex items-center font-jetbrains text-[10px] font-semibold uppercase tracking-wide text-[#3D3630] dark:text-white/55 bg-[#EAE5DF] dark:bg-[#1F1C1C] rounded-md px-2 py-1 whitespace-nowrap">
+                  <span
+                    key={s}
+                    className="inline-flex items-center font-jetbrains text-[10px] font-semibold uppercase tracking-wide text-[#3D3630] dark:text-white/55 bg-[#EAE5DF] dark:bg-[#1F1C1C] rounded-md px-2 py-1 whitespace-nowrap"
+                  >
                     {s}
                   </span>
                 ))}
@@ -264,20 +355,18 @@ export function BoostCard({ authState, isDark, isSaving, matchScore, onSave, onF
           </div>
 
           {/* CTA */}
-          <Button
-            className="w-full"
-            onClick={onSave}
-            isLoading={isSaving}
-            disabled={isSaving}
-          >
-            {isSaving ? <Spinner data-icon="inline-start w-4 h-4 " /> : <BookmarkPlus className="w-4 h-4 inline-start" />}
-
-
+          <Button className="w-full" onClick={onSave} isLoading={isSaving} disabled={isSaving}>
+            {isSaving ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <BookmarkPlus className="w-4 h-4 inline-start" />
+            )}
 
             {isSaving ? "Saving…" : "Save Job to Board"}
           </Button>
           <p className="text-center text-[11px] text-foreground/45 mt-3 leading-relaxed">
-            Adds to <span className="font-medium text-foreground/60">My Jobs</span> · Reveals your match score
+            Adds to <span className="font-medium text-foreground/60">My Jobs</span> · Reveals your
+            match score
           </p>
         </motion.div>
       )}
@@ -305,7 +394,9 @@ export function BoostCard({ authState, isDark, isSaving, matchScore, onSave, onF
           {/* Gauge */}
           <div className="flex flex-col items-center gap-1.5 mb-4">
             <YourScoreGauge isDark={isDark} score={matchScore} />
-            <span className="text-[11px] text-foreground/50 font-medium tracking-tight">Your Score</span>
+            <span className="text-[11px] text-foreground/50 font-medium tracking-tight">
+              Your Score
+            </span>
           </div>
 
           <div className="h-px bg-black/[0.06] dark:bg-white/[0.06] mb-3" />
@@ -313,7 +404,7 @@ export function BoostCard({ authState, isDark, isSaving, matchScore, onSave, onF
           <Button
             asChild
             variant="outline"
-            className="w-full transition-all duration-[160ms] active:scale-[0.97]"
+            className="w-full transition-all [transition-duration:160ms] active:scale-[0.97]"
           >
             <Link href="/jobs">
               Go to My Jobs

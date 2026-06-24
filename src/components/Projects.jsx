@@ -67,14 +67,9 @@ const SortableItem = ({
   onToggleVisibility,
 }) => {
   const router = useRouter();
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: project._id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: project._id,
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -137,7 +132,7 @@ export default function Projects({
     }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    }),
+    })
   );
 
   // Track recently moved items to prevent navigation after drag (use state to trigger re-renders)
@@ -151,8 +146,7 @@ export default function Projects({
     return userDetails?.projects || [];
   }, [userDetails?.projects, preview]);
 
-  const { setShowUpgradeModal, setUpgradeModalUnhideProject, openSidebar } =
-    useGlobalContext();
+  const { setShowUpgradeModal, setUpgradeModalUnhideProject, openSidebar } = useGlobalContext();
 
   const onDeleteProject = (project) => {
     openModal(modals.deleteProject);
@@ -161,9 +155,7 @@ export default function Projects({
 
   const handleToggleVisibility = (projectId) => {
     const project = userDetails.projects.find((p) => p._id === projectId);
-    const visibleCount = (userDetails.projects || []).filter(
-      (p) => !p.hidden,
-    ).length;
+    const visibleCount = (userDetails.projects || []).filter((p) => !p.hidden).length;
     const isUnhiding = project?.hidden === true;
 
     if (!userDetails?.pro && isUnhiding && visibleCount >= 2) {
@@ -195,12 +187,8 @@ export default function Projects({
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
-    const oldIndex = userDetails.projects.findIndex(
-      (project) => project._id === active.id,
-    );
-    const newIndex = userDetails.projects.findIndex(
-      (project) => project._id === over.id,
-    );
+    const oldIndex = userDetails.projects.findIndex((project) => project._id === active.id);
+    const newIndex = userDetails.projects.findIndex((project) => project._id === over.id);
 
     const sortedProject = arrayMove(userDetails.projects, oldIndex, newIndex);
 
@@ -224,7 +212,7 @@ export default function Projects({
   };
   const gridClassName = twMerge(
     "grid grid-cols-1 gap-4 md:grid-cols-2 items-stretch",
-    visibleProjects?.length === 0 && "md:grid-cols-1",
+    visibleProjects?.length === 0 && "md:grid-cols-1"
   );
 
   if (preview && !edit) {
@@ -261,11 +249,7 @@ export default function Projects({
         sectionId="projects"
         edit={edit}
       >
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-        >
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext
             items={visibleProjects?.map((p) => p._id) || []}
             strategy={rectSortingStrategy}
@@ -285,7 +269,8 @@ export default function Projects({
               ))}
 
               {edit &&
-                (userDetails?.pro || (userDetails?.projects || []).filter(p => !p.hidden).length < 2 ? (
+                (userDetails?.pro ||
+                (userDetails?.projects || []).filter((p) => !p.hidden).length < 2 ? (
                   <AddCard
                     title={`${
                       visibleProjects?.length === 0

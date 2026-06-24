@@ -65,9 +65,9 @@ export default function Index({ initialUserDetails }) {
 
     if (finalUserDetails?.wallpaper !== undefined) {
       const wp = finalUserDetails.wallpaper;
-      const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
+      const wpValue = wp && typeof wp === "object" ? wp.url || wp.value : wp;
       setWallpaper(wpValue !== undefined ? wpValue : 0);
-      if (wp && typeof wp === 'object' && wp.effects) {
+      if (wp && typeof wp === "object" && wp.effects) {
         setWallpaperEffects(wp.effects);
       }
     }
@@ -75,10 +75,12 @@ export default function Index({ initialUserDetails }) {
   }, [userDetailsId, userDetailsUpdatedAt]);
 
   const wp = finalUserDetails?.wallpaper;
-  const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
+  const wpValue = wp && typeof wp === "object" ? wp.url || wp.value : wp;
   const currentTheme = resolvedTheme || theme || (finalUserDetails?.theme == 1 ? "dark" : "light");
   const isChatfolioTemplate = finalUserDetails?.template === TEMPLATE_IDS.CHATFOLIO;
-  const wallpaperUrl = isChatfolioTemplate ? null : getWallpaperUrl(wpValue ?? 0, currentTheme, finalUserDetails?.template);
+  const wallpaperUrl = isChatfolioTemplate
+    ? null
+    : getWallpaperUrl(wpValue ?? 0, currentTheme, finalUserDetails?.template);
   const ProBadge = !finalUserDetails?.pro && (
     <div
       className="text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[20px] xl:block cursor-pointer mb-[120px] lg:m-1"
@@ -91,24 +93,60 @@ export default function Index({ initialUserDetails }) {
   const renderTemplate = () => {
     switch (finalUserDetails?.template) {
       case TEMPLATE_IDS.CANVAS:
-        return <><Canvas preview publicView />{ProBadge}</>;
+        return (
+          <>
+            <Canvas preview publicView />
+            {ProBadge}
+          </>
+        );
       case TEMPLATE_IDS.CHATFOLIO:
-        return <><Chat publicView />{ProBadge}</>;
+        return (
+          <>
+            <Chat publicView />
+            {ProBadge}
+          </>
+        );
       case TEMPLATE_IDS.SPOTLIGHT:
-        return <><Minimal userDetails={finalUserDetails} />{ProBadge}</>;
+        return (
+          <>
+            <Minimal userDetails={finalUserDetails} />
+            {ProBadge}
+          </>
+        );
       case TEMPLATE_IDS.MONO:
-        return <><Mono preview publicView />{ProBadge}</>;
+        return (
+          <>
+            <Mono preview publicView />
+            {ProBadge}
+          </>
+        );
       case TEMPLATE_IDS.PROFESSIONAL:
-        return <><Professional isEditing={false} />{ProBadge}</>;
+        return (
+          <>
+            <Professional isEditing={false} />
+            {ProBadge}
+          </>
+        );
       case TEMPLATE_IDS.RETRO_OS:
-        return <><MacOSTemplate userDetails={finalUserDetails} />{ProBadge}</>;
+        return (
+          <>
+            <MacOSTemplate userDetails={finalUserDetails} />
+            {ProBadge}
+          </>
+        );
       default:
-        return <><Canvas preview publicView />{ProBadge}</>;
+        return (
+          <>
+            <Canvas preview publicView />
+            {ProBadge}
+          </>
+        );
     }
   };
 
-
-  const fullName = [finalUserDetails?.firstName, finalUserDetails?.lastName].filter(Boolean).join(' ');
+  const fullName = [finalUserDetails?.firstName, finalUserDetails?.lastName]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <>
@@ -121,7 +159,13 @@ export default function Index({ initialUserDetails }) {
         url={`https://${finalUserDetails?.username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`}
       />
       <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
-      <main className={isChatfolioTemplate ? "min-h-screen bg-[#F0EDE7] dark:bg-[#1A1A1A] transition-colors duration-700 flex justify-center" : "min-h-screen"}>
+      <main
+        className={
+          isChatfolioTemplate
+            ? "min-h-screen bg-[#F0EDE7] dark:bg-[#1A1A1A] transition-colors duration-700 flex justify-center"
+            : "min-h-screen"
+        }
+      >
         <div
           className={(() => {
             switch (finalUserDetails?.template) {

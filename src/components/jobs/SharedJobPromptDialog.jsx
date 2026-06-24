@@ -1,7 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  MapPin, Briefcase, Monitor, Clock, DollarSign, Calendar, Check, BookmarkPlus,
+  MapPin,
+  Briefcase,
+  Monitor,
+  Clock,
+  DollarSign,
+  Calendar,
+  Check,
+  BookmarkPlus,
 } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -23,9 +30,7 @@ function Pill({ icon: Icon, children }) {
 
 function Shimmer({ className }) {
   return (
-    <div
-      className={`rounded-md bg-black/[0.06] dark:bg-white/[0.06] animate-pulse ${className}`}
-    />
+    <div className={`rounded-md bg-black/[0.06] dark:bg-white/[0.06] animate-pulse ${className}`} />
   );
 }
 
@@ -137,9 +142,7 @@ export function SharedJobPromptDialog({ jobId, onClose, onSaved }) {
               >
                 <Check className="w-5 h-5 text-white dark:text-black" strokeWidth={2.5} />
               </motion.div>
-              <p className="text-[14px] font-medium text-foreground/70">
-                Added to your board
-              </p>
+              <p className="text-[14px] font-medium text-foreground/70">Added to your board</p>
             </motion.div>
           ) : (
             <motion.div
@@ -160,7 +163,12 @@ export function SharedJobPromptDialog({ jobId, onClose, onSaved }) {
                   aria-label="Dismiss"
                 >
                   <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
-                    <path d="M1 1l9 9M10 1L1 10" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                    <path
+                      d="M1 1l9 9M10 1L1 10"
+                      stroke="currentColor"
+                      strokeWidth="1.6"
+                      strokeLinecap="round"
+                    />
                   </svg>
                 </button>
               </div>
@@ -199,11 +207,7 @@ export function SharedJobPromptDialog({ jobId, onClose, onSaved }) {
                   >
                     {/* Logo + title */}
                     <div className="flex items-center gap-3.5 mb-4">
-                      <CompanyLogo
-                        logoUrl={job.logoUrl}
-                        company={job.company}
-                        size={44}
-                      />
+                      <CompanyLogo logoUrl={job.logoUrl} company={job.company} size={44} />
                       <div className="min-w-0">
                         <div className="text-[10px] font-semibold uppercase tracking-widest text-foreground/35 mb-0.5 truncate">
                           {job.company}
@@ -238,8 +242,12 @@ export function SharedJobPromptDialog({ jobId, onClose, onSaved }) {
                 {alreadySaved ? (
                   <Button
                     variant="default"
-                    className="w-full transition-all duration-[160ms] active:scale-[0.97]"
-                    onClick={() => { onSaved?.(null); setForceClosed(true); onClose(); }}
+                    className="w-full transition-all [transition-duration:160ms] active:scale-[0.97]"
+                    onClick={() => {
+                      onSaved?.(null);
+                      setForceClosed(true);
+                      onClose();
+                    }}
                   >
                     <Check className="w-4 h-4" />
                     View on Board
@@ -247,7 +255,7 @@ export function SharedJobPromptDialog({ jobId, onClose, onSaved }) {
                 ) : (
                   <Button
                     variant="default"
-                    className="w-full transition-all duration-[160ms] active:scale-[0.97]"
+                    className="w-full transition-all [transition-duration:160ms] active:scale-[0.97]"
                     onClick={handleSave}
                     disabled={saving || !job}
                   >

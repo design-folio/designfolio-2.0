@@ -93,11 +93,12 @@ const OfferLetterUploader = ({ onUpload, disabled = false }) => {
   const disabledClass = disabled
     ? "cursor-not-allowed opacity-60 border-border/40 bg-muted/30"
     : "cursor-pointer";
-  const stateClass = !disabled && fileName
-    ? "border-[#FF553E]/20 bg-[#FF553E]/[0.02]"
-    : !disabled
-      ? "border-border/40 bg-white/50 hover:border-[#FF553E]/20 hover:bg-[#FF553E]/[0.01]"
-      : "";
+  const stateClass =
+    !disabled && fileName
+      ? "border-[#FF553E]/20 bg-[#FF553E]/[0.02]"
+      : !disabled
+        ? "border-border/40 bg-white/50 hover:border-[#FF553E]/20 hover:bg-[#FF553E]/[0.01]"
+        : "";
   const dragClass = !disabled && isDragging ? "border-[#FF553E] bg-[#FF553E]/[0.02]" : "";
 
   return (
@@ -115,11 +116,15 @@ const OfferLetterUploader = ({ onUpload, disabled = false }) => {
         onDrop={handleDrop}
         onDragOver={disabled ? (e) => e.preventDefault() : handleDragOver}
         onDragLeave={handleDragLeave}
-        onClick={disabled ? undefined : () => document.getElementById("offer-letter-upload")?.click()}
+        onClick={
+          disabled ? undefined : () => document.getElementById("offer-letter-upload")?.click()
+        }
       >
         <div
           className={`flex items-center justify-center rounded-xl transition-colors ${
-            fileName ? "w-12 h-12 bg-[#FF553E]/10" : "w-12 h-12 bg-muted/30 group-hover:bg-[#FF553E]/10"
+            fileName
+              ? "w-12 h-12 bg-[#FF553E]/10"
+              : "w-12 h-12 bg-muted/30 group-hover:bg-[#FF553E]/10"
           }`}
         >
           {fileName ? (
@@ -133,9 +138,7 @@ const OfferLetterUploader = ({ onUpload, disabled = false }) => {
             {fileName ? fileName : "Upload Offer Letter"}
           </h4>
           <p className="text-[11px] text-foreground/40 font-medium">
-            {fileName
-              ? "PDF uploaded • Click to replace"
-              : "PDF or DOCX • Max 5MB"}
+            {fileName ? "PDF uploaded • Click to replace" : "PDF or DOCX • Max 5MB"}
           </p>
         </div>
       </div>

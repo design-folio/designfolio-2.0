@@ -10,15 +10,10 @@ import { CanvasSectionControls, CanvasSectionButton } from "./CanvasSectionContr
 const btnClass =
   "w-full min-w-0 flex items-center justify-between gap-2 px-3 py-3.5 sm:px-4 sm:py-4 bg-white dark:bg-[#2A2520] rounded-xl border border-black/5 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors group h-auto !shadow-none";
 
-
 /** flex-[1_1_10rem]: grow/shrink with ~10rem basis so flex-wrap moves items to the next row instead of crushing them. */
 function LinkButton({ label, icon: Icon, iconRotate = 0, onClick }) {
   return (
-    <motion.div
-      whileHover="hover"
-      initial="rest"
-      className="min-w-0 flex-[1_1_10rem] max-w-full"
-    >
+    <motion.div whileHover="hover" initial="rest" className="min-w-0 flex-[1_1_10rem] max-w-full">
       <Button variant="outline" size="sm" onClick={onClick} className={btnClass}>
         <span className="text-[#1A1A1A] dark:text-[#F0EDE7] font-medium text-sm truncate min-w-0 text-left">
           {label}
@@ -37,7 +32,6 @@ function LinkButton({ label, icon: Icon, iconRotate = 0, onClick }) {
     </motion.div>
   );
 }
-
 
 function CanvasContactSection({ isEditing }) {
   const { userDetails, openSidebar } = useGlobalContext();
@@ -65,12 +59,21 @@ function CanvasContactSection({ isEditing }) {
   const openFooter = useCallback(() => openSidebar?.(sidebars.footer), [openSidebar]);
 
   const hasAnyLink =
-    !!email || !!phone || !!socials.linkedin || !!socials.twitter ||
-    !!portfolios.dribbble || !!portfolios.medium || !!resumeUrl;
+    !!email ||
+    !!phone ||
+    !!socials.linkedin ||
+    !!socials.twitter ||
+    !!portfolios.dribbble ||
+    !!portfolios.medium ||
+    !!resumeUrl;
 
   const allFieldsFilled =
-    !!phone && !!socials.linkedin && !!socials.twitter &&
-    !!portfolios.dribbble && !!portfolios.medium && !!resumeUrl;
+    !!phone &&
+    !!socials.linkedin &&
+    !!socials.twitter &&
+    !!portfolios.dribbble &&
+    !!portfolios.medium &&
+    !!resumeUrl;
 
   const showAddButton = isEditing && !allFieldsFilled;
 
@@ -121,7 +124,11 @@ function CanvasContactSection({ isEditing }) {
         )}
 
         {/* Socials + Resume */}
-        {(socials.linkedin || portfolios.dribbble || socials.twitter || portfolios.medium || resumeUrl) && (
+        {(socials.linkedin ||
+          portfolios.dribbble ||
+          socials.twitter ||
+          portfolios.medium ||
+          resumeUrl) && (
           <div className="flex flex-wrap gap-3 mb-3">
             {socials.linkedin && (
               <LinkButton

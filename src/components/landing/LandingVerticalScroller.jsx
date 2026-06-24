@@ -6,7 +6,7 @@ function MasonryScrollCard({ t }) {
   return (
     <div className="px-4 py-4 rounded-xl border border-[--lp-video-border] bg-[--lp-bg]">
       <p className="text-[14px] leading-[1.65] text-lp-text/75 font-medium mb-4">
-        "{t.content}"
+        &quot;{t.content}&quot;
       </p>
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2.5 min-w-0">
@@ -19,9 +19,7 @@ function MasonryScrollCard({ t }) {
             <span className="text-[13px] font-semibold text-lp-text leading-none truncate">
               {t.name}
             </span>
-            <span className="text-[11.5px] text-lp-text/45 leading-tight truncate">
-              {t.role}
-            </span>
+            <span className="text-[11.5px] text-lp-text/45 leading-tight truncate">{t.role}</span>
           </div>
         </div>
         {t.logoSrc && (
@@ -35,10 +33,7 @@ function MasonryScrollCard({ t }) {
               src={t.logoSrc}
               alt=""
               aria-hidden="true"
-              className={cn(
-                "w-full h-full object-cover",
-                !t.logoRaw && "opacity-40 dark:invert"
-              )}
+              className={cn("w-full h-full object-cover", !t.logoRaw && "opacity-40 dark:invert")}
             />
           </div>
         )}
@@ -94,7 +89,7 @@ export default function LandingVerticalScroller() {
       lastTimeRef.current = timestamp;
 
       const effectivePps = hoveredRef.current ? pps * 0.35 : pps;
-      pixelsRef.current += effectivePps * delta / 1000;
+      pixelsRef.current += (effectivePps * delta) / 1000;
 
       // col1 scrolls up: translateY goes from 0 toward -h1, then wraps
       const col1 = col1Ref.current;
@@ -132,8 +127,12 @@ export default function LandingVerticalScroller() {
       <div
         className="flex gap-3 px-6 overflow-hidden"
         style={{ height: 440 }}
-        onMouseEnter={() => { hoveredRef.current = true; }}
-        onMouseLeave={() => { hoveredRef.current = false; }}
+        onMouseEnter={() => {
+          hoveredRef.current = true;
+        }}
+        onMouseLeave={() => {
+          hoveredRef.current = false;
+        }}
       >
         <MasonryScrollColumn items={col1Items} innerRef={col1Ref} />
         <MasonryScrollColumn

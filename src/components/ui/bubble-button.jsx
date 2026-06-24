@@ -1,11 +1,6 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const keyframes = `
   @keyframes bubble-rise {
@@ -61,13 +56,15 @@ const UsageBadge = React.forwardRef(
               <div className="relative z-10 whitespace-nowrap">
                 <span>{planName}:</span>
                 <span className="ml-1.5 font-semibold">{usage}</span>
-                {limit != null && (
-                  <span className="ml-0.5 opacity-50 text-xs">/ {limit}</span>
-                )}
+                {limit != null && <span className="ml-0.5 opacity-50 text-xs">/ {limit}</span>}
               </div>
             </div>
           </TooltipTrigger>
-          <TooltipContent side="bottom" sideOffset={8} className="max-w-xs text-center text-primary-foreground bg-primary text-xs rounded-md">
+          <TooltipContent
+            side="bottom"
+            sideOffset={8}
+            className="max-w-xs text-center text-primary-foreground bg-primary text-xs rounded-md"
+          >
             {tooltipContent}
           </TooltipContent>
         </Tooltip>

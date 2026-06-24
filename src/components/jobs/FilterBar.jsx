@@ -24,7 +24,9 @@ export function TabSwitcher() {
           <Link key={key} href={href}>
             <span
               className={`relative block text-[12px] font-semibold px-3 py-1.5 rounded-full transition-colors duration-200 cursor-pointer select-none ${
-                activeKey === key ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+                activeKey === key
+                  ? "text-foreground"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               {activeKey === key && (
@@ -47,10 +49,11 @@ function FilterPill({ active, onClick, children }) {
   return (
     <button
       onClick={onClick}
-      className={`text-[12px] font-medium px-3 py-1.5 rounded-full border transition-colors ${active
-        ? "bg-foreground text-background border-foreground"
-        : "border-border text-foreground/60 hover:border-foreground/30 hover:text-foreground"
-        }`}
+      className={`text-[12px] font-medium px-3 py-1.5 rounded-full border transition-colors ${
+        active
+          ? "bg-foreground text-background border-foreground"
+          : "border-border text-foreground/60 hover:border-foreground/30 hover:text-foreground"
+      }`}
     >
       {children}
     </button>
@@ -80,12 +83,13 @@ export function FilterBar({
 
   return (
     <div className="flex flex-row flex-shrink-0 items-center pl-4 pr-4 mt-2.5 md:mt-6 mb-1.5 md:mb-2 gap-2">
-
       {/* Left group: criteria + filters */}
       <div
         ref={filterBarRef}
         className="flex items-center gap-1.5 flex-1 md:flex-none min-w-0"
-        style={{ marginLeft: !isMobile && (phase === "list" || phase === "shrinking") ? centerMargin : 0 }}
+        style={{
+          marginLeft: !isMobile && (phase === "list" || phase === "shrinking") ? centerMargin : 0,
+        }}
       >
         {/* Criteria / search pill */}
         <Popover>
@@ -97,7 +101,9 @@ export function FilterBar({
               <div className="w-6 h-6 flex-shrink-0 rounded-full bg-foreground/[0.07] dark:bg-white/[0.08] flex items-center justify-center pointer-events-none">
                 <Search className="w-3 h-3 text-foreground/55" aria-hidden="true" />
               </div>
-              <span className="truncate text-[13px] text-foreground/70 pointer-events-none">{promptSummary}</span>
+              <span className="truncate text-[13px] text-foreground/70 pointer-events-none">
+                {promptSummary}
+              </span>
               {currentAnswers.length > 0 && !isRescanning && (
                 <span className="flex items-center justify-center w-4 h-4 rounded-full bg-foreground text-background text-[10px] font-semibold pointer-events-none">
                   {currentAnswers.filter((a) => a.answer).length}
@@ -124,7 +130,9 @@ export function FilterBar({
               />
             ) : (
               <div className="px-4 py-6 text-center">
-                <p className="text-[12px] text-muted-foreground/50">No criteria recorded for this session.</p>
+                <p className="text-[12px] text-muted-foreground/50">
+                  No criteria recorded for this session.
+                </p>
               </div>
             )}
           </PopoverContent>
@@ -168,7 +176,9 @@ export function FilterBar({
               </div>
 
               <div className="mb-4">
-                <p className="text-[11px] font-semibold uppercase tracking-widest text-foreground/35 mb-2">Work mode</p>
+                <p className="text-[11px] font-semibold uppercase tracking-widest text-foreground/35 mb-2">
+                  Work mode
+                </p>
                 <div className="flex flex-wrap gap-1.5">
                   {["all", "Remote", "On-site"].map((v) => (
                     <FilterPill
@@ -183,7 +193,9 @@ export function FilterBar({
               </div>
 
               <div>
-                <p className="text-[11px] font-semibold uppercase tracking-widest text-foreground/35 mb-2">Min match score</p>
+                <p className="text-[11px] font-semibold uppercase tracking-widest text-foreground/35 mb-2">
+                  Min match score
+                </p>
                 <div className="flex flex-wrap gap-1.5">
                   {[0, 50, 60, 70, 80, 90].map((v) => (
                     <FilterPill

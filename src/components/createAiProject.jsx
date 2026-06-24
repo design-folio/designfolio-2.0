@@ -21,24 +21,42 @@ const stepOneValidationSchema = Yup.object().shape({
 });
 
 const stepTwoValidationSchema = Yup.object().shape({
-  answer1: Yup.string().min(25, "Answer is shorter than 25 characters.").required("Answer is required."),
-  answer2: Yup.string().min(25, "Answer is shorter than 25 characters.").required("Answer is required."),
+  answer1: Yup.string()
+    .min(25, "Answer is shorter than 25 characters.")
+    .required("Answer is required."),
+  answer2: Yup.string()
+    .min(25, "Answer is shorter than 25 characters.")
+    .required("Answer is required."),
 });
 
 const stepThreeValidationSchema = Yup.object().shape({
-  answer3: Yup.string().min(25, "Answer is shorter than 25 characters.").required("Answer is required."),
-  answer4: Yup.string().min(25, "Answer is shorter than 25 characters.").required("Answer is required."),
+  answer3: Yup.string()
+    .min(25, "Answer is shorter than 25 characters.")
+    .required("Answer is required."),
+  answer4: Yup.string()
+    .min(25, "Answer is shorter than 25 characters.")
+    .required("Answer is required."),
 });
 
 const stepFourValidationSchema = Yup.object().shape({
-  answer5: Yup.string().min(25, "Answer is shorter than 25 characters.").required("Answer is required."),
-  answer6: Yup.string().min(25, "Answer is shorter than 25 characters.").required("Answer is required."),
+  answer5: Yup.string()
+    .min(25, "Answer is shorter than 25 characters.")
+    .required("Answer is required."),
+  answer6: Yup.string()
+    .min(25, "Answer is shorter than 25 characters.")
+    .required("Answer is required."),
 });
 
 export default function CreateAiProject({ openModal }) {
   const [typeProjects, setTypeprojects] = useState([]);
   const [generationCredits, setGenerationCredits] = useState({ limit: 2, used: 0, remaining: 2 });
-  const { userDetails, updateCache, setShowUpgradeModal, setUpgradeModalSource, invalidateAiWritingCredits } = useGlobalContext();
+  const {
+    userDetails,
+    updateCache,
+    setShowUpgradeModal,
+    setUpgradeModalSource,
+    invalidateAiWritingCredits,
+  } = useGlobalContext();
   const [step, setStep] = useState(1);
   const [questions, setQuestions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -72,11 +90,16 @@ export default function CreateAiProject({ openModal }) {
 
   const getSchemaValidation = () => {
     switch (step) {
-      case 1: return stepOneValidationSchema;
-      case 2: return stepTwoValidationSchema;
-      case 3: return stepThreeValidationSchema;
-      case 4: return stepFourValidationSchema;
-      default: return Yup.object();
+      case 1:
+        return stepOneValidationSchema;
+      case 2:
+        return stepTwoValidationSchema;
+      case 3:
+        return stepThreeValidationSchema;
+      case 4:
+        return stepFourValidationSchema;
+      default:
+        return Yup.object();
     }
   };
 
@@ -84,10 +107,13 @@ export default function CreateAiProject({ openModal }) {
     const selected = typeProjects.find((item) => item.name === values.projectType);
     const csType = selected.type;
     const quest =
-      csType === "dev" ? aiQuestions.dev :
-      csType === "design" ? aiQuestions.design :
-      csType === "product" ? aiQuestions.product :
-      aiQuestions.others;
+      csType === "dev"
+        ? aiQuestions.dev
+        : csType === "design"
+          ? aiQuestions.design
+          : csType === "product"
+            ? aiQuestions.product
+            : aiQuestions.others;
     setQuestions(quest.data);
     setStep(2);
   };
@@ -96,7 +122,9 @@ export default function CreateAiProject({ openModal }) {
     setIsLoading(true);
     const selected = typeProjects.find((item) => item.name === values.projectType);
     const data = {
-      questionnare: questions.map((q, i) => q.question + "\n" + values[`answer${i + 1}`]).join("\n"),
+      questionnare: questions
+        .map((q, i) => q.question + "\n" + values[`answer${i + 1}`])
+        .join("\n"),
       type: selected.type,
       userId: userDetails._id,
     };
@@ -175,94 +203,116 @@ export default function CreateAiProject({ openModal }) {
       {/* Body */}
       <div className="flex-1 overflow-y-auto px-6 py-5">
         <Formik
-            innerRef={formikRef}
-            validationSchema={getSchemaValidation()}
-            initialValues={{ projectType: "", answer1: "", answer2: "", answer3: "", answer4: "", answer5: "", answer6: "" }}
-            onSubmit={(values, actions) => {
-              switch (step) {
-                case 1: handleStepOne(values, actions); break;
-                case 2: setStep(3); break;
-                case 3: setStep(4); break;
-                case 4: handleSubmit(values, actions); break;
-              }
-              formikRef.current?.validateForm();
-              formikRef.current?.setTouched({});
-            }}
-          >
-            {({ setFieldValue, values, errors, touched }) => (
-              <Form id="aiProjectForm" className="space-y-5">
-                {/* Step 1 — Project type */}
-                {step === 1 && (
-                  <div className="space-y-4">
-                    <p className="text-[14px] font-medium text-foreground">
-                      I want to create a project or write a case study on:
-                    </p>
-                    <RadioGroup
-                      value={values.projectType}
-                      onValueChange={(val) => setFieldValue("projectType", val)}
-                      className="gap-3"
-                    >
-                      {typeProjects.map((res) => (
-                        <label
-                          key={res.name}
-                          htmlFor={`type-${res.name}`}
-                          className={cn(
-                            "flex items-center gap-3 px-4 py-3.5 rounded-xl border cursor-pointer transition-all",
-                            values.projectType === res.name
-                              ? "border-foreground/30 bg-black/[0.04] dark:bg-white/[0.04]"
-                              : "border-border bg-black/[0.02] dark:bg-white/[0.02] hover:bg-black/[0.04] dark:hover:bg-white/[0.04]"
-                          )}
-                        >
-                          <RadioGroupItem
-                            id={`type-${res.name}`}
-                            value={res.name}
-                            className="shrink-0"
-                          />
-                          <span className="text-[14px] font-medium text-foreground">{res.name}</span>
-                        </label>
-                      ))}
-                    </RadioGroup>
-                    <ErrorMessage name="projectType" component="p" className="error-message" />
-                  </div>
-                )}
+          innerRef={formikRef}
+          validationSchema={getSchemaValidation()}
+          initialValues={{
+            projectType: "",
+            answer1: "",
+            answer2: "",
+            answer3: "",
+            answer4: "",
+            answer5: "",
+            answer6: "",
+          }}
+          onSubmit={(values, actions) => {
+            switch (step) {
+              case 1:
+                handleStepOne(values, actions);
+                break;
+              case 2:
+                setStep(3);
+                break;
+              case 3:
+                setStep(4);
+                break;
+              case 4:
+                handleSubmit(values, actions);
+                break;
+            }
+            formikRef.current?.validateForm();
+            formikRef.current?.setTouched({});
+          }}
+        >
+          {({ setFieldValue, values, errors, touched }) => (
+            <Form id="aiProjectForm" className="space-y-5">
+              {/* Step 1 — Project type */}
+              {step === 1 && (
+                <div className="space-y-4">
+                  <p className="text-[14px] font-medium text-foreground">
+                    I want to create a project or write a case study on:
+                  </p>
+                  <RadioGroup
+                    value={values.projectType}
+                    onValueChange={(val) => setFieldValue("projectType", val)}
+                    className="gap-3"
+                  >
+                    {typeProjects.map((res) => (
+                      <label
+                        key={res.name}
+                        htmlFor={`type-${res.name}`}
+                        className={cn(
+                          "flex items-center gap-3 px-4 py-3.5 rounded-xl border cursor-pointer transition-all",
+                          values.projectType === res.name
+                            ? "border-foreground/30 bg-black/[0.04] dark:bg-white/[0.04]"
+                            : "border-border bg-black/[0.02] dark:bg-white/[0.02] hover:bg-black/[0.04] dark:hover:bg-white/[0.04]"
+                        )}
+                      >
+                        <RadioGroupItem
+                          id={`type-${res.name}`}
+                          value={res.name}
+                          className="shrink-0"
+                        />
+                        <span className="text-[14px] font-medium text-foreground">{res.name}</span>
+                      </label>
+                    ))}
+                  </RadioGroup>
+                  <ErrorMessage name="projectType" component="p" className="error-message" />
+                </div>
+              )}
 
-                {/* Steps 2–4 — Questions */}
-                {step >= 2 && questions.length > 0 && (
-                  <div className="space-y-6">
-                    {[[0, 1], [2, 3], [4, 5]][step - 2].map((qIndex) => {
-                      const answerKey = `answer${qIndex + 1}`;
-                      const q = questions[qIndex];
-                      return (
-                        <div key={qIndex} className="space-y-1.5">
-                          <Label className="text-[13px] font-medium text-foreground ml-1">
-                            {q.question}
-                          </Label>
-                          <Textarea
-                            name={answerKey}
-                            rows={4}
-                            autoComplete="off"
-                            placeholder="Write your answer here…"
-                            value={values[answerKey]}
-                            onChange={(e) => setFieldValue(answerKey, e.target.value)}
-                            className={cn(
-                              "resize-none",
-                              errors[answerKey] && touched[answerKey] && "border-destructive focus-visible:ring-destructive"
-                            )}
-                          />
-                          <ErrorMessage name={answerKey} component="p" className="error-message" />
-                          {q.template && (
-                            <p className="text-[12px] text-muted-foreground ml-1 mt-1">
-                              ✏️ <span className="font-medium">Template:</span> {q.template}
-                            </p>
+              {/* Steps 2–4 — Questions */}
+              {step >= 2 && questions.length > 0 && (
+                <div className="space-y-6">
+                  {[
+                    [0, 1],
+                    [2, 3],
+                    [4, 5],
+                  ][step - 2].map((qIndex) => {
+                    const answerKey = `answer${qIndex + 1}`;
+                    const q = questions[qIndex];
+                    return (
+                      <div key={qIndex} className="space-y-1.5">
+                        <Label className="text-[13px] font-medium text-foreground ml-1">
+                          {q.question}
+                        </Label>
+                        <Textarea
+                          name={answerKey}
+                          rows={4}
+                          autoComplete="off"
+                          placeholder="Write your answer here…"
+                          value={values[answerKey]}
+                          onChange={(e) => setFieldValue(answerKey, e.target.value)}
+                          className={cn(
+                            "resize-none",
+                            errors[answerKey] &&
+                              touched[answerKey] &&
+                              "border-destructive focus-visible:ring-destructive"
                           )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </Form>
-            )}
-          </Formik>
+                        />
+                        <ErrorMessage name={answerKey} component="p" className="error-message" />
+                        {q.template && (
+                          <p className="text-[12px] text-muted-foreground ml-1 mt-1">
+                            ✏️ <span className="font-medium">Template:</span> {q.template}
+                          </p>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </Form>
+          )}
+        </Formik>
       </div>
 
       {/* Footer */}
@@ -286,21 +336,21 @@ export default function CreateAiProject({ openModal }) {
               Back
             </Button>
           )}
-          <Button
-            type="submit"
-            form="aiProjectForm"
-            disabled={isLoading}
-          >
-              {step === 4 ? (
-                <>
-                  {isLoading ? "Generating…" : (
-                    <>
-                      <Sparkles className="w-4 h-4 mr-1.5" />
-                      Generate Now
-                    </>
-                  )}
-                </>
-              ) : "Next"}
+          <Button type="submit" form="aiProjectForm" disabled={isLoading}>
+            {step === 4 ? (
+              <>
+                {isLoading ? (
+                  "Generating…"
+                ) : (
+                  <>
+                    <Sparkles className="w-4 h-4 mr-1.5" />
+                    Generate Now
+                  </>
+                )}
+              </>
+            ) : (
+              "Next"
+            )}
           </Button>
         </div>
       </div>

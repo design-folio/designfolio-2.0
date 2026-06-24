@@ -16,30 +16,22 @@ export default function ChatToolsSection({
 }) {
   const { userDetails, openSidebar } = useGlobalContext();
   const { skills = [], tools = [] } = userDetails || {};
-  const avatarSrc = useMemo(
-    () => getUserAvatarImage(userDetails),
-    [userDetails],
-  );
+  const avatarSrc = useMemo(() => getUserAvatarImage(userDetails), [userDetails]);
 
   return (
-    <div
-      className="flex flex-col gap-3"
-      style={{ order: sectionSteps.tools - 3 }}
-    >
-
+    <div className="flex flex-col gap-3" style={{ order: sectionSteps.tools - 3 }}>
       {/* You: "What are the tools you work with?" */}
       <AnimatePresence mode="popLayout">
-        {chatRevealStep >= s(4) &&
-          (skills.length > 0 || tools.length > 0 || canEdit) && (
-            <motion.div
-              initial={{ opacity: 0, y: 10, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.3 }}
-              className="flex justify-end relative group/msg"
-            >
-              <YouPrompt>What are the tools you work with?</YouPrompt>
-            </motion.div>
-          )}
+        {chatRevealStep >= s(4) && (skills.length > 0 || tools.length > 0 || canEdit) && (
+          <motion.div
+            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.3 }}
+            className="flex justify-end relative group/msg"
+          >
+            <YouPrompt>What are the tools you work with?</YouPrompt>
+          </motion.div>
+        )}
       </AnimatePresence>
 
       {/* Tools bubble */}
@@ -67,10 +59,7 @@ export default function ChatToolsSection({
               </div>
             )}
             <div className="w-8 h-8 shrink-0 mt-auto flex items-end">
-              <ChatAvatar
-                avatarSrc={avatarSrc}
-                show={chatRevealStep < getNextLeftStep("tools")}
-              />
+              <ChatAvatar avatarSrc={avatarSrc} show={chatRevealStep < getNextLeftStep("tools")} />
             </div>
             <div className="bg-[#E5E2DB] dark:bg-[#2A2520] px-4 py-4 rounded-2xl rounded-tl-sm rounded-bl-sm transition-colors duration-100 border border-black/5 dark:border-white/5 overflow-hidden min-w-0">
               {tools.length === 0 ? (

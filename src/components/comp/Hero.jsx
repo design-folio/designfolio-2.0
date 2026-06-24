@@ -46,7 +46,10 @@ export const Hero = ({ userDetails, edit }) => {
                     transition={{ duration: 0.2 }}
                     src={getUserAvatarImage(userDetails)}
                     alt="Profile"
-                    className={cn("rounded-3xl w-full h-full object-cover", !avatar ? "bg-[#FFB088]" : "")}
+                    className={cn(
+                      "rounded-3xl w-full h-full object-cover",
+                      !avatar ? "bg-[#FFB088]" : ""
+                    )}
                     loading="eager"
                     decoding="async"
                     onLoad={() => setIsLoaded(true)}
@@ -65,7 +68,11 @@ export const Hero = ({ userDetails, edit }) => {
               className="bg-tooltip-bg-color text-tooltip-text-color border-0 px-4 py-2 rounded-xl flex items-center gap-2 shadow-xl"
             >
               <span className="text-sm font-medium">Happy to have you here</span>
-              <img src="/assets/png/handshake.png" alt="Handshake" className="w-5 h-5 object-contain" />
+              <img
+                src="/assets/png/handshake.png"
+                alt="Handshake"
+                className="w-5 h-5 object-contain"
+              />
             </TooltipContent>
           </Tooltip>
         </motion.div>
@@ -118,10 +125,7 @@ export const Hero = ({ userDetails, edit }) => {
             }}
           >
             {scrollSkills.map((skill, index) => (
-              <motion.span
-                key={index}
-                className="bg-card px-4 py-2 rounded-full text-sm"
-              >
+              <motion.span key={index} className="bg-card px-4 py-2 rounded-full text-sm">
                 {skill?.label}
               </motion.span>
             ))}

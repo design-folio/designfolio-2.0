@@ -344,8 +344,14 @@ body[data-admin="true"] [cmdk-item] {
 *,
 *:before,
 *:after {
-  @apply cursor-default;
+  cursor: inherit;
 }
+
+/* Make cursor utility classes consume the CSS variables so custom cursor SVGs apply */
+.cursor-pointer    { cursor: var(--cursor-pointer); }
+.cursor-grab       { cursor: var(--cursor-grab); }
+.cursor-grabbing   { cursor: var(--cursor-grabbing); }
+.cursor-not-allowed { cursor: var(--cursor-not-allowed); }
 
 [data-slot="kanban-item-handle"],
 [data-slot="kanban-item-handle"]
@@ -992,8 +998,10 @@ input::-ms-input-placeholder {
   display: none !important;
 }
 
-input {
-  cursor: text; /* This ensures the text cursor is used for input fields */
+input,
+textarea,
+[contenteditable] {
+  cursor: text;
 }
 
 /* Cursor becomes pill when hovering project cards */

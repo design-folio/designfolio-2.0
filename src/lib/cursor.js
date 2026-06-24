@@ -24,20 +24,18 @@ export const getCursor = (
     "--cursor-grabbing",
     `url(${grab}), grabbing`
   );
+  // Drive the custom default cursor onto <html> so * { cursor: inherit } propagates it everywhere
+  document.documentElement.style.cursor = "var(--cursor-default)";
 };
 
 export const removeCursor = () => {
   document.documentElement.style.setProperty("--cursor-default", "default");
   document.documentElement.style.setProperty("--cursor-pointer", "pointer");
-  document.documentElement.style.removeProperty(
-    "--cursor-not-allowed",
-    "not-allowed"
-  );
-  document.documentElement.style.removeProperty("--cursor-grab", "grab");
-  document.documentElement.style.removeProperty(
-    "--cursor-grabbing",
-    "grabbing"
-  );
+  document.documentElement.style.removeProperty("--cursor-not-allowed");
+  document.documentElement.style.removeProperty("--cursor-grab");
+  document.documentElement.style.removeProperty("--cursor-grabbing");
+  // Remove inline cursor so the browser's natural defaults (I-beam on text, etc.) take over
+  document.documentElement.style.removeProperty("cursor");
 };
 
 export const setCursorvalue = (cursorType) => {

@@ -522,7 +522,7 @@ export default function ChatProjectView({
           {showProcessMessages && (
             <motion.div
               variants={itemVariants}
-              className="flex gap-3 max-w-[95%]"
+              className="flex gap-3 "
             >
               <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 mt-auto border border-black/5 dark:border-white/5">
                 <img

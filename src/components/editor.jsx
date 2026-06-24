@@ -91,7 +91,7 @@ export default function Editor({ edit, projectDetails, refetchProjectDetail }) {
           />
           <div className={isMono ? "px-5 md:px-8 py-6" : ""}>
             {isChatfolio ? (
-              <div className="flex items-end gap-3 max-w-[85%] mb-20">
+              <div className="flex items-end gap-3 max-w-[95%] mb-20">
                 <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 mb-0.5 border border-black/5 dark:border-white/5">
                   <img
                     src={avatarSrc}

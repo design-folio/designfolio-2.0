@@ -6,7 +6,6 @@ import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover
 import { Kbd } from "@/components/ui/kbd";
 import { CriteriaEditor } from "./CriteriaEditor";
 import { CreditsBalance } from "./CreditsBalance";
-import { AvatarDropdown } from "@/components/loggedInHeader/avatar-dropdown";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const TABS = [
@@ -224,7 +223,6 @@ export function FilterBar({
         </button>
         <TabSwitcher />
         <CreditsBalance refreshKey={creditsRefreshKey} onBuyClick={onBuyCredits} />
-        <AvatarDropdown />
       </div>
     </div>
   );

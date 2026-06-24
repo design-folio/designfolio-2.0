@@ -1,6 +1,6 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useMemo, Fragment } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronsUpDown, Pencil, Plus } from "lucide-react";
+import { Pencil, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useGlobalContext } from "@/context/globalContext";
 import { sidebars } from "@/lib/constant";
@@ -9,46 +9,61 @@ import { parseTiptapToWords } from "@/lib/tiptapUtils";
 import { MonoRearrangeButton } from "./MonoRearrangeButton";
 
 function ExperienceDescription({ desc }) {
-  const words = parseTiptapToWords(desc);
+  const words = useMemo(() => parseTiptapToWords(desc), [desc]);
+  const [visibleCount, setVisibleCount] = useState(0);
+
+  useEffect(() => {
+    setVisibleCount(0);
+    if (!words.length) return;
+    let count = 0;
+    // 75ms ≈ 5 chars × 15ms — matches the original char stagger pace
+    const interval = setInterval(() => {
+      count++;
+      setVisibleCount(count);
+      if (count >= words.length) clearInterval(interval);
+    }, 75);
+    return () => clearInterval(interval);
+  }, [words]);
+
   if (!words.length) return null;
 
   return (
-    <motion.p
-      variants={{ hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.015 } } }}
-      initial="hidden"
-      animate="show"
-      className="font-jetbrains text-[15px] leading-relaxed max-w-xl break-words whitespace-normal"
+    <p
+      className="font-jetbrains text-[15px] leading-relaxed break-words whitespace-normal"
       style={{ color: "var(--tiptap-work-paragraph, #7a736c)" }}
     >
-      {words.map((word, wordIndex) => {
-        if (word.length === 1 && word[0].isBreak) return <br key={`br-${wordIndex}`} />;
+      {words.slice(0, visibleCount).map((word, wordIndex) => {
+        if (word.length === 1 && word[0].isBreak) return <br key={wordIndex} />;
         return (
-          <span key={wordIndex} className="inline-block whitespace-nowrap">
-            {word.map((c, charIndex) => {
-              let cls = "inline-block";
-              if (c.bold) cls += " font-bold";
-              if (c.italic) cls += " italic";
-              if (c.underline) cls += " underline";
-              if (c.strike) cls += " line-through";
-              return (
-                <motion.span
-                  key={charIndex}
-                  variants={{ hidden: { opacity: 0, filter: "blur(4px)", y: 4 }, show: { opacity: 1, filter: "blur(0px)", y: 0 } }}
-                  transition={{ duration: 0.2 }}
-                  className={cls}
-                  style={c.highlight ? { backgroundColor: "#f9daa3", borderRadius: "0.125rem", padding: "0.125rem 0", color: "black" } : undefined}
-                >
-                  {c.ch}
-                </motion.span>
-              );
-            })}
-            {wordIndex < words.length - 1 && !(words[wordIndex + 1]?.[0]?.isBreak) && (
-              <span className="inline-block">&nbsp;</span>
-            )}
-          </span>
+          <Fragment key={wordIndex}>
+            <motion.span
+              className="inline-block whitespace-nowrap"
+              initial={{ opacity: 0, filter: "blur(4px)", y: 4 }}
+              animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              {word.map((c, charIndex) => {
+                let cls = "inline-block";
+                if (c.bold) cls += " font-bold";
+                if (c.italic) cls += " italic";
+                if (c.underline) cls += " underline";
+                if (c.strike) cls += " line-through";
+                return (
+                  <span
+                    key={charIndex}
+                    className={cls}
+                    style={c.highlight ? { backgroundColor: "#f9daa3", borderRadius: "0.125rem", padding: "0.125rem 0", color: "black" } : undefined}
+                  >
+                    {c.ch}
+                  </span>
+                );
+              })}
+            </motion.span>
+            {wordIndex < words.length - 1 && !words[wordIndex + 1]?.[0]?.isBreak && " "}
+          </Fragment>
         );
       })}
-    </motion.p>
+    </p>
   );
 }
 
@@ -167,8 +182,6 @@ export default function MonoExperienceSection({ isEditing }) {
               <AnimatePresence>
                 {expandedIndex === index && (
                   <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
                     className="overflow-hidden"

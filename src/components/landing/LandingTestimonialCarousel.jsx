@@ -36,8 +36,13 @@ function renderHighlights(t, isDark) {
 export default function LandingTestimonialCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [progress, setProgress] = useState(0);
-  const { theme } = useTheme();
-  const isDark = theme === "dark";
+  const [mounted, setMounted] = useState(false);
+  const { resolvedTheme } = useTheme();
+  const isDark = mounted && resolvedTheme === "dark";
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const navigate = (dir) => {
     setCurrentIndex((prev) => (prev + dir + testimonials.length) % testimonials.length);

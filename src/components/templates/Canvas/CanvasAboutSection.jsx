@@ -6,10 +6,7 @@ import { useGlobalContext } from "@/context/globalContext";
 import { sidebars } from "@/lib/constant";
 import { CanvasSectionControls, CanvasSectionButton } from "./CanvasSectionControls";
 import { SectionVisibilityButton } from "@/components/section";
-import {
-  DEFAULT_PEGBOARD_IMAGES,
-  DEFAULT_PEGBOARD_STICKERS,
-} from "@/lib/aboutConstants";
+import { DEFAULT_PEGBOARD_IMAGES, DEFAULT_PEGBOARD_STICKERS } from "@/lib/aboutConstants";
 import {
   ABOUT_STORY_CHAR_THRESHOLD,
   renderDescriptionLines,
@@ -18,8 +15,7 @@ import {
 
 function playPegboardClick(type) {
   try {
-    const audioContext =
-      new window.AudioContext() || window.webkitAudioContext();
+    const audioContext = new window.AudioContext() || window.webkitAudioContext();
     const now = audioContext.currentTime;
 
     if (type === "grab") {
@@ -50,11 +46,14 @@ function playPegboardClick(type) {
   }
 }
 
-
-
-function MoveOverlay({ rounded = "rounded-[6px] md:rounded-[8px]", size = "w-4 h-4 md:w-5 md:h-5" }) {
+function MoveOverlay({
+  rounded = "rounded-[6px] md:rounded-[8px]",
+  size = "w-4 h-4 md:w-5 md:h-5",
+}) {
   return (
-    <div className={`absolute inset-0 bg-black/5 dark:bg-black/20 ${rounded} flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 pointer-events-none`}>
+    <div
+      className={`absolute inset-0 bg-black/5 dark:bg-black/20 ${rounded} flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 pointer-events-none`}
+    >
       <div className="bg-white/80 dark:bg-black/60 backdrop-blur-md p-2 md:p-2.5 rounded-full shadow-sm scale-90 group-hover:scale-100 transition-transform duration-300">
         <Move className={`${size} text-gray-800 dark:text-gray-200`} />
       </div>
@@ -72,23 +71,19 @@ function CanvasAboutSection({ isEditing }) {
 
   const storyText = about?.description?.trim() ?? "";
   const storyNeedsExpand = storyText.length > ABOUT_STORY_CHAR_THRESHOLD;
-  const storyDisplayText = storyNeedsExpand && !aboutExpanded
-    ? truncatePlainText(storyText, ABOUT_STORY_CHAR_THRESHOLD)
-    : storyText;
+  const storyDisplayText =
+    storyNeedsExpand && !aboutExpanded
+      ? truncatePlainText(storyText, ABOUT_STORY_CHAR_THRESHOLD)
+      : storyText;
 
   useEffect(() => {
     setAboutExpanded(false);
   }, [storyText]);
 
-  const images =
-    about?.pegboardImages?.length > 0
-      ? about.pegboardImages
-      : DEFAULT_PEGBOARD_IMAGES;
+  const images = about?.pegboardImages?.length > 0 ? about.pegboardImages : DEFAULT_PEGBOARD_IMAGES;
 
   const stickers =
-    about?.pegboardStickers?.length > 0
-      ? about.pegboardStickers
-      : DEFAULT_PEGBOARD_STICKERS;
+    about?.pegboardStickers?.length > 0 ? about.pegboardStickers : DEFAULT_PEGBOARD_STICKERS;
 
   const bringToFront = useCallback((id) => {
     setZIndexes((prev) => {
@@ -118,19 +113,14 @@ function CanvasAboutSection({ isEditing }) {
           />
         </CanvasSectionControls>
       )}
-      <h2
-        className="text-[#7A736C] dark:text-[#B5AFA5] font-dm-mono font-medium text-[14px] mb-6"
-      >
+      <h2 className="text-[#7A736C] dark:text-[#B5AFA5] font-dm-mono font-medium text-[14px] mb-6">
         MY STORY
       </h2>
 
       {/* Pegboard Grid Background */}
       <div className="relative w-full mb-8 rounded-[32px] border border-black/5 dark:border-white/10 bg-[#F7F4EF] dark:bg-[#1E1B18]">
         {/* Invisible larger boundary for drag constraints allowing slight overflow */}
-        <div
-          className="absolute -inset-6 md:-inset-10 pointer-events-none"
-          ref={pegboardRef}
-        ></div>
+        <div className="absolute -inset-6 md:-inset-10 pointer-events-none" ref={pegboardRef}></div>
 
         {/* Light Mode Grid */}
         <div
@@ -172,7 +162,6 @@ function CanvasAboutSection({ isEditing }) {
               style={{ zIndex: zIndexes[0] }}
               className="relative w-28 md:w-36 aspect-[3/4] group cursor-grab"
             >
-
               <div
                 className="w-full h-full pointer-events-none relative"
                 style={{ transform: "rotate(-4deg)" }}
@@ -220,7 +209,6 @@ function CanvasAboutSection({ isEditing }) {
               style={{ zIndex: zIndexes[1] }}
               className="relative w-32 md:w-44 aspect-square group cursor-grab"
             >
-
               <div
                 className="w-full h-full pointer-events-none relative"
                 style={{ transform: "rotate(6deg)" }}
@@ -268,7 +256,6 @@ function CanvasAboutSection({ isEditing }) {
               style={{ zIndex: zIndexes[2] }}
               className="relative w-28 md:w-36 aspect-[3/4] group cursor-grab"
             >
-
               <div
                 className="w-full h-full pointer-events-none relative"
                 style={{ transform: "rotate(-2deg)" }}
@@ -326,9 +313,7 @@ function CanvasAboutSection({ isEditing }) {
                 <motion.svg
                   animate={{ rotate: aboutExpanded ? 180 : 0 }}
                   transition={
-                    reduceMotion
-                      ? { duration: 0 }
-                      : { duration: 0.3, ease: [0.23, 1, 0.32, 1] }
+                    reduceMotion ? { duration: 0 } : { duration: 0.3, ease: [0.23, 1, 0.32, 1] }
                   }
                   width="10"
                   height="10"

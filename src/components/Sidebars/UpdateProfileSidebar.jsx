@@ -48,8 +48,7 @@ export default function UpdateProfileSidebar() {
     compress(file);
   };
 
-  const set = (key) => (e) =>
-    setValues((v) => ({ ...v, [key]: e.target.value }));
+  const set = (key) => (e) => setValues((v) => ({ ...v, [key]: e.target.value }));
 
   const handleSave = async () => {
     setLoading(true);
@@ -88,7 +87,6 @@ export default function UpdateProfileSidebar() {
   return (
     <div className="flex flex-col h-full">
       <div className="flex flex-1 flex-col gap-5 overflow-y-auto px-6 py-4">
-
         {/* Avatar */}
         <div className="flex flex-col items-center gap-3">
           <button
@@ -128,10 +126,8 @@ export default function UpdateProfileSidebar() {
           />
         </div>
 
-
         {/* Name */}
         <div className="flex flex-col gap-2">
-
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div className="flex min-w-0 flex-col gap-1.5">
               <Label

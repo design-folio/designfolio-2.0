@@ -22,7 +22,7 @@ export default function LandingFAB({ fabVisible, isDark, onThemeChange, fabRef }
               "w-12 h-12 rounded-full flex items-center justify-center shadow-[0_4px_20px_rgba(0,0,0,0.15)] transition-colors duration-300",
               isDark
                 ? "bg-[#2A2825] text-[#F0EDE7] border border-white/10 hover:bg-[#343230]"
-                : "bg-white text-[#1D1B1A] border border-black/[0.08] hover:bg-[#F5F4EE]",
+                : "bg-white text-[#1D1B1A] border border-black/[0.08] hover:bg-[#F5F4EE]"
             )}
           >
             <AnimatePresence mode="wait">

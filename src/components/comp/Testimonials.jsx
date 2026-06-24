@@ -21,14 +21,14 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-} from '@dnd-kit/core';
+} from "@dnd-kit/core";
 import {
   arrayMove,
   sortableKeyboardCoordinates,
   useSortable,
   verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { _updateUser } from "@/network/post-request";
 import SortableModal from "../SortableModal";
 import ReviewCard from "../reviewCard";
@@ -44,7 +44,8 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
   const isMobile = useIsMobile();
   const visibleTestimonials = showMore ? reviews : reviews?.slice(0, 4);
   const theme = useTheme();
-  const { openSidebar, openNewReview, setSelectedReview, setUserDetails, updateCache } = useGlobalContext();
+  const { openSidebar, openNewReview, setSelectedReview, setUserDetails, updateCache } =
+    useGlobalContext();
 
   const sortSensors = useSensors(
     useSensor(PointerSensor),
@@ -57,18 +58,10 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
-    const oldIndex = userDetails.reviews.findIndex(
-      (review) => review._id === active.id
-    );
-    const newIndex = userDetails.reviews.findIndex(
-      (review) => review._id === over.id
-    );
+    const oldIndex = userDetails.reviews.findIndex((review) => review._id === active.id);
+    const newIndex = userDetails.reviews.findIndex((review) => review._id === over.id);
 
-    const sortedReviews = arrayMove(
-      userDetails.reviews,
-      oldIndex,
-      newIndex
-    );
+    const sortedReviews = arrayMove(userDetails.reviews, oldIndex, newIndex);
 
     setUserDetails((prev) => ({ ...prev, reviews: sortedReviews }));
     _updateUser({ reviews: sortedReviews }).then((res) =>
@@ -77,15 +70,11 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
   };
 
   const handleNext = () => {
-    setCurrentIndex((prev) =>
-      prev + 1 >= visibleTestimonials.length ? 0 : prev + 1
-    );
+    setCurrentIndex((prev) => (prev + 1 >= visibleTestimonials.length ? 0 : prev + 1));
   };
 
   const handlePrev = () => {
-    setCurrentIndex((prev) =>
-      prev - 1 < 0 ? visibleTestimonials.length - 1 : prev - 1
-    );
+    setCurrentIndex((prev) => (prev - 1 < 0 ? visibleTestimonials.length - 1 : prev - 1));
   };
 
   const toggleExpand = (id) => {
@@ -107,8 +96,9 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
       </div>
 
       <div
-        className={`relative ${isMobile ? "px-4" : "grid grid-cols-2 gap-6 max-w-[848px] mx-auto px-4"
-          }`}
+        className={`relative ${
+          isMobile ? "px-4" : "grid grid-cols-2 gap-6 max-w-[848px] mx-auto px-4"
+        }`}
       >
         {isMobile ? (
           <>
@@ -149,7 +139,10 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
                     <div className="flex items-center gap-3">
                       <Avatar className="w-12 h-12 shrink-0">
                         <AvatarImage
-                          src={visibleTestimonials[currentIndex]?.avatar?.url || visibleTestimonials[currentIndex]?.avatar}
+                          src={
+                            visibleTestimonials[currentIndex]?.avatar?.url ||
+                            visibleTestimonials[currentIndex]?.avatar
+                          }
                           alt={visibleTestimonials[currentIndex]?.name}
                         />
                         <AvatarFallback
@@ -170,7 +163,7 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
 
                       <div className="flex-1">
                         {visibleTestimonials[currentIndex]?.linkedinLink &&
-                          visibleTestimonials[currentIndex]?.linkedinLink?.trim() !== "" ? (
+                        visibleTestimonials[currentIndex]?.linkedinLink?.trim() !== "" ? (
                           <a
                             href={visibleTestimonials[currentIndex]?.linkedinLink}
                             target="_blank"
@@ -259,16 +252,17 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
                       onClick={() => handleClick(testimonial)}
                       customClass="!p-0 !flex-shrink-0 border-none"
                       type={"secondary"}
-                      icon={
-                        <EditIcon className="text-df-icon-color cursor-pointer" />
-                      }
+                      icon={<EditIcon className="text-df-icon-color cursor-pointer" />}
                     />
                   )}
                 </div>
 
                 <div className="flex items-center gap-3">
                   <Avatar className="w-12 h-12 shrink-0">
-                    <AvatarImage src={testimonial?.avatar?.url || testimonial?.avatar} alt={testimonial?.name} />
+                    <AvatarImage
+                      src={testimonial?.avatar?.url || testimonial?.avatar}
+                      alt={testimonial?.name}
+                    />
                     <AvatarFallback
                       style={{
                         backgroundColor: "#FF9966",
@@ -299,9 +293,7 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
                         </span>
                       </a>
                     ) : (
-                      <h3 className="font-semibold text-base mb-0">
-                        {testimonial?.name}
-                      </h3>
+                      <h3 className="font-semibold text-base mb-0">{testimonial?.name}</h3>
                     )}
                     <p className="text-sm text-df-description-color">
                       {testimonial?.role ? `${testimonial.role}, ` : ""}
@@ -390,11 +382,7 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
         useButton2={true}
       >
         {userDetails?.reviews?.map((review) => (
-          <SortableTestimonialItem
-            key={review._id}
-            review={review}
-            edit={edit}
-          />
+          <SortableTestimonialItem key={review._id} review={review} edit={edit} />
         ))}
       </SortableModal>
     </section>
@@ -402,14 +390,9 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
 };
 
 const SortableTestimonialItem = ({ review, edit }) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: review._id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: review._id,
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -422,7 +405,7 @@ const SortableTestimonialItem = ({ review, edit }) => {
     <div
       ref={setNodeRef}
       style={style}
-      className={`flex justify-between gap-4 items-center ${isDragging ? 'relative' : ''}`}
+      className={`flex justify-between gap-4 items-center ${isDragging ? "relative" : ""}`}
     >
       <div className="flex-1 min-w-0">
         <ReviewCard review={review} sorting={true} edit={edit} />

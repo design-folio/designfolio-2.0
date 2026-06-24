@@ -10,10 +10,7 @@ export const ThemeToggle = () => {
       return savedTheme;
     }
     // Check system preference
-    if (
-      window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches
-    ) {
+    if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
       return "dark";
     }
     return "light";
@@ -29,8 +26,7 @@ export const ThemeToggle = () => {
 
   // Listen for system theme changes
   useEffect(() => {
-    const mediaQuery =
-      window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)");
+    const mediaQuery = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)");
     const handleChange = (e) => {
       const newTheme = e.matches ? "dark" : "light";
       setTheme(newTheme);
@@ -52,17 +48,8 @@ export const ThemeToggle = () => {
   };
 
   return (
-    <Button
-      variant="outline"
-      size="icon"
-      className="w-8 h-8"
-      onClick={toggleTheme}
-    >
-      {theme === "dark" ? (
-        <Sun className="h-4 w-4" />
-      ) : (
-        <Moon className="h-4 w-4" />
-      )}
+    <Button variant="outline" size="icon" className="w-8 h-8" onClick={toggleTheme}>
+      {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
     </Button>
   );
 };

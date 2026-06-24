@@ -40,21 +40,20 @@ export default function AddReview() {
 
   const formikRef = useRef(null);
 
-  const { compress, compressedImage, compressionProgress } =
-    useImageCompression();
+  const { compress, compressedImage, compressionProgress } = useImageCompression();
 
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [avatarFile, setAvatarFile] = useState(null);
 
   const isOpen = activeSidebar === sidebars.review;
 
-
   useEffect(() => {
     if (selectedReview?.avatar) {
       // Handle avatar as object with url/key or as string
-      const avatarUrl = typeof selectedReview.avatar === 'object'
-        ? (selectedReview.avatar.url || selectedReview.avatar.key || null)
-        : selectedReview.avatar;
+      const avatarUrl =
+        typeof selectedReview.avatar === "object"
+          ? selectedReview.avatar.url || selectedReview.avatar.key || null
+          : selectedReview.avatar;
       setAvatarPreview(avatarUrl);
     } else {
       setAvatarPreview(null);
@@ -83,13 +82,7 @@ export default function AddReview() {
     if (!v) return false;
 
     if (!selectedReview) {
-      return !!(
-        v.name ||
-        v.company ||
-        v.linkedinLink ||
-        v.description ||
-        avatarFile !== null
-      );
+      return !!(v.name || v.company || v.linkedinLink || v.description || avatarFile !== null);
     }
 
     return (
@@ -163,10 +156,9 @@ export default function AddReview() {
     }
   };
 
-
   const renderFormContent = () => (
     <Formik
-      key={selectedReview?._id || 'new'}
+      key={selectedReview?._id || "new"}
       innerRef={formikRef}
       enableReinitialize
       initialValues={{
@@ -183,14 +175,11 @@ export default function AddReview() {
           const reviewData = {
             ...values,
             ...(avatarData && { avatar: avatarData }),
-            ...(!avatarData &&
-              selectedReview?.avatar && { avatar: selectedReview.avatar }),
+            ...(!avatarData && selectedReview?.avatar && { avatar: selectedReview.avatar }),
           };
 
           const reviews = selectedReview
-            ? userDetails.reviews.filter(
-              (r) => r._id !== selectedReview._id
-            )
+            ? userDetails.reviews.filter((r) => r._id !== selectedReview._id)
             : userDetails.reviews;
 
           _updateUser({ reviews: [...reviews, reviewData] })
@@ -218,17 +207,16 @@ export default function AddReview() {
       }}
     >
       {({ isSubmitting, errors, touched, values, setFieldValue }) => {
-        useEffect(() => { setEditingValues(values); }, [values]);
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        useEffect(() => {
+          setEditingValues(values);
+        }, [values]);
 
         return (
           <Form id="reviewForm" className="flex flex-col h-full">
             <div className="flex-1 overflow-auto px-6 py-4">
               <div>
-                <Text
-                  size={"p-xxsmall"}
-                  className="mt-6 font-medium"
-                  required
-                >
+                <Text size={"p-xxsmall"} className="mt-6 font-medium" required>
                   Name of the Person
                 </Text>
                 <Field name="name">
@@ -241,18 +229,11 @@ export default function AddReview() {
                     />
                   )}
                 </Field>
-                <ErrorMessage
-                  name="name"
-                  component="div"
-                  className="error-message"
-                />
+                <ErrorMessage name="name" component="div" className="error-message" />
               </div>
 
               <div className="mt-6">
-                <Text
-                  size={"p-xxsmall"}
-                  className="font-medium"
-                >
+                <Text size={"p-xxsmall"} className="font-medium">
                   LinkedIn Link
                 </Text>
                 <Field name="linkedinLink">
@@ -266,19 +247,11 @@ export default function AddReview() {
                     />
                   )}
                 </Field>
-                <ErrorMessage
-                  name="linkedinLink"
-                  component="div"
-                  className="error-message"
-                />
+                <ErrorMessage name="linkedinLink" component="div" className="error-message" />
               </div>
 
               <div className="mt-6">
-                <Text
-                  size={"p-xxsmall"}
-                  className="font-medium"
-                  required
-                >
+                <Text size={"p-xxsmall"} className="font-medium" required>
                   Company Name
                 </Text>
                 <Field name="company">
@@ -291,19 +264,11 @@ export default function AddReview() {
                     />
                   )}
                 </Field>
-                <ErrorMessage
-                  name="company"
-                  component="div"
-                  className="error-message"
-                />
+                <ErrorMessage name="company" component="div" className="error-message" />
               </div>
 
               <div className="mt-6">
-                <Text
-                  size={"p-xxsmall"}
-                  className="font-medium"
-                  required
-                >
+                <Text size={"p-xxsmall"} className="font-medium" required>
                   Add testimonial
                 </Text>
                 <div className="mt-2">
@@ -321,10 +286,7 @@ export default function AddReview() {
               </div>
 
               <div className="mt-6">
-                <Text
-                  size={"p-xxsmall"}
-                  className="font-medium"
-                >
+                <Text size={"p-xxsmall"} className="font-medium">
                   Photo of the Person
                 </Text>
                 <div className="flex justify-start mt-2">
@@ -359,8 +321,9 @@ export default function AddReview() {
             </div>
 
             <div
-              className={`flex gap-2 py-3 px-6 border-t border-border ${selectedReview?.name ? "justify-between" : "justify-end"
-                }`}
+              className={`flex gap-2 py-3 px-6 border-t border-border ${
+                selectedReview?.name ? "justify-between" : "justify-end"
+              }`}
             >
               {selectedReview?.name && (
                 <Button
@@ -375,22 +338,30 @@ export default function AddReview() {
               )}
 
               <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  type="button"
-                  onClick={handleCancel}
-                >
+                <Button variant="outline" type="button" onClick={handleCancel}>
                   Cancel
                 </Button>
-                <Button
-                  type="submit"
-                  form="reviewForm"
-                  disabled={loading}
-                >
+                <Button type="submit" form="reviewForm" disabled={loading}>
                   {loading && (
-                    <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V2.5A9.5 9.5 0 002.5 12H4z" />
+                    <svg
+                      className="animate-spin h-4 w-4"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V2.5A9.5 9.5 0 002.5 12H4z"
+                      />
                     </svg>
                   )}
                   Save
@@ -410,7 +381,12 @@ export default function AddReview() {
       {renderFormContent()}
 
       <UnsavedChangesDialog
-        open={showUnsavedWarning && isOpen && !isSwitchingSidebar && pendingSidebarAction?.type === "close"}
+        open={
+          showUnsavedWarning &&
+          isOpen &&
+          !isSwitchingSidebar &&
+          pendingSidebarAction?.type === "close"
+        }
         onOpenChange={(open) => {
           if (!open) {
             handleCancelDiscardSidebar();

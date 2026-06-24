@@ -34,12 +34,7 @@ import {
   Columns3,
 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { CopyButton } from "@/components/ui/copy-button";
 import UserRowActions from "./UserRowActions";
 import TimestampCell from "./TimestampCell";
@@ -82,7 +77,8 @@ function PlanBadge({ plan }) {
       </span>
     );
   }
-  const label = { lifetime: "Lifetime", mthly: "Monthly", qtrly: "Quarterly", yrly: "Yearly" }[plan] ?? plan;
+  const label =
+    { lifetime: "Lifetime", mthly: "Monthly", qtrly: "Quarterly", yrly: "Yearly" }[plan] ?? plan;
   return (
     <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-[#F0EDE7] dark:bg-[#2A2520] text-[#1A1A1A] dark:text-[#F0EDE7] border border-[#E5D7C4] dark:border-white/10">
       {label}
@@ -128,11 +124,11 @@ const COLUMN_LABELS = {
 };
 
 const DELETION_REASON_LABELS = {
-  "not-useful":       "Didn't find it useful",
+  "not-useful": "Didn't find it useful",
   "missing-features": "Missing features I need",
-  "switching":        "Switching to another tool",
-  "expensive":        "Too expensive",
-  "exploring":        "Just exploring",
+  switching: "Switching to another tool",
+  expensive: "Too expensive",
+  exploring: "Just exploring",
 };
 
 const COLUMNS = [
@@ -182,7 +178,9 @@ const COLUMNS = [
           Verified
         </Badge>
       ) : (
-        <span className="text-[#7A736C] dark:text-[#B5AFA5] text-sm" aria-label="Not verified">—</span>
+        <span className="text-[#7A736C] dark:text-[#B5AFA5] text-sm" aria-label="Not verified">
+          —
+        </span>
       );
     },
   },
@@ -202,13 +200,30 @@ const COLUMNS = [
         { label: "Via", value: aggregatorLabel },
         orderId ? { label: "Order ID", value: orderId } : null,
         activeOrder.amountMajor != null
-          ? { label: "Amount", value: `${activeOrder.currency} ${activeOrder.amountMajor.toLocaleString()}` }
+          ? {
+              label: "Amount",
+              value: `${activeOrder.currency} ${activeOrder.amountMajor.toLocaleString()}`,
+            }
           : null,
         activeOrder.createdAt
-          ? { label: "Date", value: new Date(activeOrder.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) }
+          ? {
+              label: "Date",
+              value: new Date(activeOrder.createdAt).toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              }),
+            }
           : null,
         activeOrder.proExpiresAt
-          ? { label: "Expires", value: new Date(activeOrder.proExpiresAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) }
+          ? {
+              label: "Expires",
+              value: new Date(activeOrder.proExpiresAt).toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              }),
+            }
           : null,
       ].filter(Boolean);
 
@@ -239,7 +254,11 @@ const COLUMNS = [
     cell: ({ row }) => {
       const { hasLive, username, status } = row.original;
       if (status === 1 || !hasLive) {
-        return <span className="text-[#7A736C] dark:text-[#B5AFA5] text-sm" aria-label="Not live">—</span>;
+        return (
+          <span className="text-[#7A736C] dark:text-[#B5AFA5] text-sm" aria-label="Not live">
+            —
+          </span>
+        );
       }
       if (username) {
         return (
@@ -254,7 +273,11 @@ const COLUMNS = [
           </a>
         );
       }
-      return <Badge variant="default" className="text-xs">Live</Badge>;
+      return (
+        <Badge variant="default" className="text-xs">
+          Live
+        </Badge>
+      );
     },
   },
   {
@@ -304,13 +327,27 @@ const COLUMNS = [
     cell: ({ row }) => {
       const { customDomain, domainVerified } = row.original;
       if (!customDomain) {
-        return <span className="text-[#7A736C] dark:text-[#B5AFA5] text-sm" aria-label="No custom domain">—</span>;
+        return (
+          <span
+            className="text-[#7A736C] dark:text-[#B5AFA5] text-sm"
+            aria-label="No custom domain"
+          >
+            —
+          </span>
+        );
       }
       if (domainVerified) {
         return (
           <div className="flex items-center gap-1.5">
-            <ShieldCheck size={13} className="text-green-500 shrink-0" aria-label="Domain verified" />
-            <span className="text-xs font-mono text-[#1A1A1A] dark:text-[#F0EDE7] truncate max-w-[140px]" title={customDomain}>
+            <ShieldCheck
+              size={13}
+              className="text-green-500 shrink-0"
+              aria-label="Domain verified"
+            />
+            <span
+              className="text-xs font-mono text-[#1A1A1A] dark:text-[#F0EDE7] truncate max-w-[140px]"
+              title={customDomain}
+            >
               {customDomain}
             </span>
           </div>
@@ -321,8 +358,15 @@ const COLUMNS = [
           <Tooltip>
             <TooltipTrigger asChild>
               <div className="flex items-center gap-1.5 cursor-default">
-                <AlertCircle size={13} className="text-amber-500 shrink-0" aria-label="Domain unverified" />
-                <span className="text-xs font-mono text-[#1A1A1A] dark:text-[#F0EDE7] truncate max-w-[140px]" title={customDomain}>
+                <AlertCircle
+                  size={13}
+                  className="text-amber-500 shrink-0"
+                  aria-label="Domain unverified"
+                />
+                <span
+                  className="text-xs font-mono text-[#1A1A1A] dark:text-[#F0EDE7] truncate max-w-[140px]"
+                  title={customDomain}
+                >
                   {customDomain}
                 </span>
               </div>
@@ -446,22 +490,30 @@ const DELETED_EXTRA_COLUMNS = [
 ];
 
 const GENERIC_FILTERS = [
-  { value: "all",          label: "All" },
-  { value: "live",         label: "Live" },
-  { value: "verified",     label: "Verified" },
+  { value: "all", label: "All" },
+  { value: "live", label: "Live" },
+  { value: "verified", label: "Verified" },
   { value: "no-portfolio", label: "No Portfolio" },
-  { value: "deleted",      label: "Deleted" },
+  { value: "deleted", label: "Deleted" },
 ];
 
 const REVENUE_FILTERS = [
-  { value: "paid",                 label: "Paid" },
-  { value: "churned",              label: "Churned" },
+  { value: "paid", label: "Paid" },
+  { value: "churned", label: "Churned" },
   { value: "pending-cancellation", label: "Pending Cancel" },
 ];
 
 const ALL_FILTERS = [...GENERIC_FILTERS, ...REVENUE_FILTERS];
 
-function FilterPopover({ open, onOpenChange, filter, pendingFilter, setPendingFilter, setFilter, setPage }) {
+function FilterPopover({
+  open,
+  onOpenChange,
+  filter,
+  pendingFilter,
+  setPendingFilter,
+  setFilter,
+  setPage,
+}) {
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
@@ -477,7 +529,10 @@ function FilterPopover({ open, onOpenChange, filter, pendingFilter, setPendingFi
           <SlidersHorizontal data-icon="inline-start" />
           Filters
           {filter !== "all" && (
-            <Badge variant="secondary" className="px-1.5 py-0 h-4 text-[10px] font-semibold leading-none">
+            <Badge
+              variant="secondary"
+              className="px-1.5 py-0 h-4 text-[10px] font-semibold leading-none"
+            >
               {ALL_FILTERS.find((o) => o.value === filter)?.label}
             </Badge>
           )}
@@ -498,7 +553,11 @@ function FilterPopover({ open, onOpenChange, filter, pendingFilter, setPendingFi
           <p className="text-[10px] font-medium text-muted-foreground px-2 py-1 mb-0.5 uppercase tracking-wider">
             General
           </p>
-          <RadioGroup value={pendingFilter} onValueChange={setPendingFilter} className="flex flex-col gap-0">
+          <RadioGroup
+            value={pendingFilter}
+            onValueChange={setPendingFilter}
+            className="flex flex-col gap-0"
+          >
             {GENERIC_FILTERS.map((opt) => (
               <label
                 key={opt.value}
@@ -510,7 +569,11 @@ function FilterPopover({ open, onOpenChange, filter, pendingFilter, setPendingFi
                     : "text-foreground hover:bg-muted"
                 )}
               >
-                <RadioGroupItem value={opt.value} id={`filter-${opt.value}`} className="size-3.5 shrink-0" />
+                <RadioGroupItem
+                  value={opt.value}
+                  id={`filter-${opt.value}`}
+                  className="size-3.5 shrink-0"
+                />
                 {opt.label}
               </label>
             ))}
@@ -521,7 +584,11 @@ function FilterPopover({ open, onOpenChange, filter, pendingFilter, setPendingFi
           <p className="text-[10px] font-medium text-muted-foreground px-2 py-1 mb-0.5 uppercase tracking-wider">
             Revenue
           </p>
-          <RadioGroup value={pendingFilter} onValueChange={setPendingFilter} className="flex flex-col gap-0">
+          <RadioGroup
+            value={pendingFilter}
+            onValueChange={setPendingFilter}
+            className="flex flex-col gap-0"
+          >
             {REVENUE_FILTERS.map((opt) => (
               <label
                 key={opt.value}
@@ -533,7 +600,11 @@ function FilterPopover({ open, onOpenChange, filter, pendingFilter, setPendingFi
                     : "text-foreground hover:bg-muted"
                 )}
               >
-                <RadioGroupItem value={opt.value} id={`filter-${opt.value}`} className="size-3.5 shrink-0" />
+                <RadioGroupItem
+                  value={opt.value}
+                  id={`filter-${opt.value}`}
+                  className="size-3.5 shrink-0"
+                />
                 {opt.label}
               </label>
             ))}
@@ -598,23 +669,25 @@ function ColumnPopover({ open, onOpenChange, table }) {
         <Separator />
         <div className="p-1.5 flex flex-col gap-0.5">
           {table.getAllColumns().flatMap((col) =>
-            col.getCanHide() ? [
-              <label
-                key={col.id}
-                className={cn(
-                  "flex items-center gap-2.5 px-2 py-1.5 rounded-md cursor-pointer text-[13px] select-none transition-colors duration-150 hover:bg-muted",
-                  col.getIsVisible() ? "text-foreground" : "text-muted-foreground"
-                )}
-              >
-                <Checkbox
-                  checked={col.getIsVisible()}
-                  onCheckedChange={(val) => col.toggleVisibility(!!val)}
-                  className="size-3.5 shrink-0"
-                  aria-label={`Toggle ${COLUMN_LABELS[col.id] ?? col.id} column`}
-                />
-                {COLUMN_LABELS[col.id] ?? col.id}
-              </label>
-            ] : []
+            col.getCanHide()
+              ? [
+                  <label
+                    key={col.id}
+                    className={cn(
+                      "flex items-center gap-2.5 px-2 py-1.5 rounded-md cursor-pointer text-[13px] select-none transition-colors duration-150 hover:bg-muted",
+                      col.getIsVisible() ? "text-foreground" : "text-muted-foreground"
+                    )}
+                  >
+                    <Checkbox
+                      checked={col.getIsVisible()}
+                      onCheckedChange={(val) => col.toggleVisibility(!!val)}
+                      className="size-3.5 shrink-0"
+                      aria-label={`Toggle ${COLUMN_LABELS[col.id] ?? col.id} column`}
+                    />
+                    {COLUMN_LABELS[col.id] ?? col.id}
+                  </label>,
+                ]
+              : []
           )}
         </div>
       </PopoverContent>
@@ -646,7 +719,7 @@ export default function UsersTable() {
   }, []);
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["admin-users", debouncedSearch, filter, page],
+    queryKey: ["admin-users", debouncedSearch, filter, page, LIMIT],
     queryFn: () =>
       _getAdminUsers({
         search: debouncedSearch,
@@ -720,14 +793,14 @@ export default function UsersTable() {
           setPage={setPage}
         />
 
-        <ColumnPopover
-          open={colMenuOpen}
-          onOpenChange={setColMenuOpen}
-          table={table}
-        />
+        <ColumnPopover open={colMenuOpen} onOpenChange={setColMenuOpen} table={table} />
 
         {!isLoading && (
-          <p className="text-xs text-[#7A736C] dark:text-[#B5AFA5] ml-auto" aria-live="polite" aria-atomic="true">
+          <p
+            className="text-xs text-[#7A736C] dark:text-[#B5AFA5] ml-auto"
+            aria-live="polite"
+            aria-atomic="true"
+          >
             {total.toLocaleString()} user{total !== 1 ? "s" : ""}
           </p>
         )}
@@ -739,7 +812,10 @@ export default function UsersTable() {
           <Table aria-label="Users table" aria-busy={isLoading}>
             <TableHeader>
               {table.getHeaderGroups().map((hg) => (
-                <TableRow key={hg.id} className="bg-[#FAF8F5] dark:bg-[#231F1A] hover:bg-[#FAF8F5] dark:hover:bg-[#231F1A] border-b border-[#E5D7C4] dark:border-white/10">
+                <TableRow
+                  key={hg.id}
+                  className="bg-[#FAF8F5] dark:bg-[#231F1A] hover:bg-[#FAF8F5] dark:hover:bg-[#231F1A] border-b border-[#E5D7C4] dark:border-white/10"
+                >
                   {hg.headers.map((header) => {
                     const sorted = header.column.getIsSorted();
                     return (
@@ -750,10 +826,10 @@ export default function UsersTable() {
                           sorted === "asc"
                             ? "ascending"
                             : sorted === "desc"
-                            ? "descending"
-                            : header.column.getCanSort()
-                            ? "none"
-                            : undefined
+                              ? "descending"
+                              : header.column.getCanSort()
+                                ? "none"
+                                : undefined
                         }
                       >
                         {flexRender(header.column.columnDef.header, header.getContext())}
@@ -824,7 +900,10 @@ export default function UsersTable() {
           >
             <ChevronLeft data-icon="inline-start" aria-hidden="true" /> Previous
           </Button>
-          <span className="text-xs text-[#7A736C] dark:text-[#B5AFA5] tabular-nums" aria-live="polite">
+          <span
+            className="text-xs text-[#7A736C] dark:text-[#B5AFA5] tabular-nums"
+            aria-live="polite"
+          >
             Page {page} of {totalPages}
           </span>
           <Button

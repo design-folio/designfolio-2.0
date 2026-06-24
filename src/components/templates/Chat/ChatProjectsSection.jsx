@@ -31,13 +31,10 @@ export default function ChatProjectsSection({
   } = useGlobalContext();
   const router = useRouter();
   const { projects = [] } = userDetails || {};
-  const avatarSrc = useMemo(
-    () => getUserAvatarImage(userDetails),
-    [userDetails],
-  );
+  const avatarSrc = useMemo(() => getUserAvatarImage(userDetails), [userDetails]);
   const visibleProjects = useMemo(
-    () => isEditing ? (projects || []) : (projects || []).filter((p) => !p.hidden),
-    [projects, isEditing],
+    () => (isEditing ? projects || [] : (projects || []).filter((p) => !p.hidden)),
+    [projects, isEditing]
   );
 
   const handleToggleProjectVisibility = useCallback(
@@ -59,58 +56,53 @@ export default function ChatProjectsSection({
       setUserDetails((prev) => ({ ...prev, projects: updatedProjects }));
       updateCache("userDetails", (prev) => ({ ...prev, projects: updatedProjects }));
     },
-    [projects, userDetails, setUserDetails, updateCache, setShowUpgradeModal, setUpgradeModalUnhideProject],
+    [
+      projects,
+      userDetails,
+      setUserDetails,
+      updateCache,
+      setShowUpgradeModal,
+      setUpgradeModalUnhideProject,
+    ]
   );
   const getProjectHref = useCallback(
     (id) => (isEditing ? `/project/${id}/editor` : `/project/${id}`),
-    [isEditing],
+    [isEditing]
   );
 
   return (
-    <div
-      className="flex flex-col gap-3"
-      style={{ order: sectionSteps.projects - 3 }}
-    >
+    <div className="flex flex-col gap-3" style={{ order: sectionSteps.projects - 3 }}>
       {/* You: "Can I see your work?" */}
       <AnimatePresence mode="popLayout">
-        {chatRevealStep >= s(7) &&
-          (visibleProjects.length > 0 || canEdit) && (
-            <motion.div
-              initial={{ opacity: 0, y: 10, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.3 }}
-              className="flex justify-end relative group/msg"
-            >
-              <YouPrompt>Can I see your work?</YouPrompt>
-            </motion.div>
-          )}
+        {chatRevealStep >= s(7) && (visibleProjects.length > 0 || canEdit) && (
+          <motion.div
+            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.3 }}
+            className="flex justify-end relative group/msg"
+          >
+            <YouPrompt>Can I see your work?</YouPrompt>
+          </motion.div>
+        )}
       </AnimatePresence>
 
       {/* "And here's some recent work" */}
       <AnimatePresence mode="popLayout">
-        {chatRevealStep >= s(8) &&
-          (visibleProjects.length > 0 || canEdit) && (
-            <motion.div
-              initial={{ opacity: 0, y: 10, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.3 }}
-              className="flex gap-3 max-w-[85%] relative group/msg"
-            >
-              <div className="w-8 h-8 shrink-0 mt-auto flex items-end">
-                <ChatAvatar
-                  avatarSrc={avatarSrc}
-                  show={chatRevealStep < s(9)}
-                />
-              </div>
-              <div className="bg-[#E5E2DB] dark:bg-[#2A2520] px-4 py-3 rounded-2xl rounded-tl-sm rounded-bl-sm text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed transition-colors duration-100 border border-black/5 dark:border-white/5 min-h-[46px] flex items-center">
-                {chatRevealStep === s(8) ? (
-                  <TypingIndicator />
-                ) : (
-                  "And here's some recent work"
-                )}
-              </div>
-            </motion.div>
-          )}
+        {chatRevealStep >= s(8) && (visibleProjects.length > 0 || canEdit) && (
+          <motion.div
+            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.3 }}
+            className="flex gap-3 max-w-[85%] relative group/msg"
+          >
+            <div className="w-8 h-8 shrink-0 mt-auto flex items-end">
+              <ChatAvatar avatarSrc={avatarSrc} show={chatRevealStep < s(9)} />
+            </div>
+            <div className="bg-[#E5E2DB] dark:bg-[#2A2520] px-4 py-3 rounded-2xl rounded-tl-sm rounded-bl-sm text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed transition-colors duration-100 border border-black/5 dark:border-white/5 min-h-[46px] flex items-center">
+              {chatRevealStep === s(8) ? <TypingIndicator /> : "And here's some recent work"}
+            </div>
+          </motion.div>
+        )}
       </AnimatePresence>
 
       {/* Project cards */}
@@ -155,7 +147,10 @@ export default function ChatProjectsSection({
                         isHidden={!!project.hidden}
                         iconSize="w-3 h-3"
                         className="h-7 w-7"
-                        onClick={(e) => { e.stopPropagation(); handleToggleProjectVisibility(project._id); }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleToggleProjectVisibility(project._id);
+                        }}
                       />
                       <Button
                         variant="outline"
@@ -208,32 +203,33 @@ export default function ChatProjectsSection({
           >
             <div className="w-8 h-8 shrink-0" />
             <div className="w-full bg-[#E5E2DB] dark:bg-[#2A2520] p-3 rounded-2xl rounded-tl-sm rounded-bl-sm border border-dashed border-black/15 dark:border-white/10">
-                <div className="w-full aspect-[3/2] rounded-xl flex flex-col items-center justify-center gap-3 bg-black/[0.02] dark:bg-white/[0.02]">
-                  <div className="w-9 h-9 rounded-full bg-black/[0.05] dark:bg-white/[0.05] flex items-center justify-center">
-                    <Plus className="w-4 h-4 text-[#7A736C] dark:text-[#9E9893]" />
-                  </div>
-                  <p className="text-[11px] font-medium text-[#A09890] dark:text-[#7A736C] tracking-widest uppercase">New project</p>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      onClick={() => openSidebar(sidebars.project)}
-                      className="h-8 px-3.5 rounded-full text-[12px] font-medium bg-[#1A1A1A] dark:bg-white text-white dark:text-black hover:bg-black/80 dark:hover:bg-white/90 transition-colors shadow-sm flex items-center gap-1.5"
-                    >
-                      <Pencil className="w-3 h-3" />
-                      Add Project
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={() => openModal(modals.aiProject)}
-                      className="h-8 px-3.5 rounded-full text-[12px] font-medium bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors flex items-center gap-1.5 text-[#1A1A1A] dark:text-[#F0EDE7]"
-                    >
-                      <Sparkles className="w-3 h-3" />
-                      Write with AI
-                    </Button>
-                  </div>
+              <div className="w-full aspect-[3/2] rounded-xl flex flex-col items-center justify-center gap-3 bg-black/[0.02] dark:bg-white/[0.02]">
+                <div className="w-9 h-9 rounded-full bg-black/[0.05] dark:bg-white/[0.05] flex items-center justify-center">
+                  <Plus className="w-4 h-4 text-[#7A736C] dark:text-[#9E9893]" />
+                </div>
+                <p className="text-[11px] font-medium text-[#A09890] dark:text-[#7A736C] tracking-widest uppercase">
+                  New project
+                </p>
+                <div className="flex items-center gap-2">
+                  <Button
+                    onClick={() => openSidebar(sidebars.project)}
+                    className="h-8 px-3.5 rounded-full text-[12px] font-medium bg-[#1A1A1A] dark:bg-white text-white dark:text-black hover:bg-black/80 dark:hover:bg-white/90 transition-colors shadow-sm flex items-center gap-1.5"
+                  >
+                    <Pencil className="w-3 h-3" />
+                    Add Project
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => openModal(modals.aiProject)}
+                    className="h-8 px-3.5 rounded-full text-[12px] font-medium bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors flex items-center gap-1.5 text-[#1A1A1A] dark:text-[#F0EDE7]"
+                  >
+                    <Sparkles className="w-3 h-3" />
+                    Write with AI
+                  </Button>
                 </div>
               </div>
+            </div>
           </motion.div>
-
         </AnimatePresence>
       )}
 

@@ -26,19 +26,16 @@ export const ImageWithOverlayAndPicker = ({
   function updateProjectImage(projectId, payload) {
     return _updateProject(projectId, payload).then((res) => {
       setSource(res?.data?.project?.thumbnail?.key);
-      queryClient.setQueriesData(
-        { queryKey: [`project-editor-${projectId}`] },
-        (oldData) => ({
-          ...oldData,
-          project: {
-            ...oldData.project,
-            thumbnail: {
-              ...oldData.project.thumbnail,
-              key: res?.data?.project?.thumbnail?.key,
-            },
+      queryClient.setQueriesData({ queryKey: [`project-editor-${projectId}`] }, (oldData) => ({
+        ...oldData,
+        project: {
+          ...oldData.project,
+          thumbnail: {
+            ...oldData.project.thumbnail,
+            key: res?.data?.project?.thumbnail?.key,
           },
-        })
-      );
+        },
+      }));
       userDetailsRefecth();
       return res;
     });
@@ -71,20 +68,36 @@ export const ImageWithOverlayAndPicker = ({
         },
       };
       toast.promise(updateProjectImage(project._id, payload), {
-        pending: { render() { return "Updating project image..."; }, icon: true },
-        success: { render() { return "Project image was successfully updated."; }, icon: "🟢" },
-        error: { render() { return "Failed to update project image."; }, icon: "🔴" },
+        pending: {
+          render() {
+            return "Updating project image...";
+          },
+          icon: true,
+        },
+        success: {
+          render() {
+            return "Project image was successfully updated.";
+          },
+          icon: "🟢",
+        },
+        error: {
+          render() {
+            return "Failed to update project image.";
+          },
+          icon: "🔴",
+        },
       });
     };
     reader.readAsDataURL(file);
   };
 
-  const aspectClass = {
-    "16/9": "aspect-[16/9]",
-    "4/3": "aspect-[4/3]",
-    "1/1": "aspect-square",
-    "3/2": "aspect-[3/2]",
-  }[aspectRatio] ?? "aspect-[16/9]";
+  const aspectClass =
+    {
+      "16/9": "aspect-[16/9]",
+      "4/3": "aspect-[4/3]",
+      "1/1": "aspect-square",
+      "3/2": "aspect-[3/2]",
+    }[aspectRatio] ?? "aspect-[16/9]";
 
   return (
     <div className={cn("relative w-full overflow-hidden rounded-[20px]", aspectClass, className)}>
@@ -97,9 +110,7 @@ export const ImageWithOverlayAndPicker = ({
         decoding="async"
         onLoad={() => setImageLoaded(true)}
       />
-      {!imageLoaded && (
-        <div className="absolute inset-0 bg-df-placeholder-color" />
-      )}
+      {!imageLoaded && <div className="absolute inset-0 bg-df-placeholder-color" />}
 
       <input
         ref={fileInputRef}

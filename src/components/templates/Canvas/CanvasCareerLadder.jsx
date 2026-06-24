@@ -12,13 +12,7 @@ import { UnsavedChangesDialog } from "@/components/ui/UnsavedChangesDialog";
 import { _deleteExperience } from "@/network/post-request";
 import { cn } from "@/lib/utils";
 
-function ExperienceCard({
-  experience,
-  isEditing,
-  expandedCards,
-  onToggleExpand,
-  onDelete,
-}) {
+function ExperienceCard({ experience, isEditing, expandedCards, onToggleExpand, onDelete }) {
   const { setSelectedWork, openSidebar, activeSidebar, selectedWork } = useGlobalContext();
 
   const {
@@ -84,8 +78,8 @@ function ExperienceCard({
           {`${startMonth} ${startYear}  — ${currentlyWorking ? "Present" : `${endMonth} ${endYear}`}`}
         </div>
       </div>
-      {hasDescription && (
-        needsExpand ? (
+      {hasDescription &&
+        (needsExpand ? (
           <>
             <motion.div
               initial={false}
@@ -133,8 +127,7 @@ function ExperienceCard({
             className="text-[#7A736C] dark:text-[#B5AFA5] text-[15px] leading-relaxed"
             noCardStyle
           />
-        )
-      )}
+        ))}
     </div>
   );
 }
@@ -142,8 +135,7 @@ function ExperienceCard({
 const MemoizedExperienceCard = React.memo(ExperienceCard);
 
 function CanvasCareerLadder({ isEditing, preview = false }) {
-  const { userDetails, setUserDetails, updateCache, openSidebar, openNewWork } =
-    useGlobalContext();
+  const { userDetails, setUserDetails, updateCache, openSidebar, openNewWork } = useGlobalContext();
   const { experiences = [] } = userDetails || {};
 
   const careerLadderRef = useRef(null);
@@ -154,9 +146,7 @@ function CanvasCareerLadder({ isEditing, preview = false }) {
 
   const toggleExpand = useCallback((id) => {
     setExpandedCards((prev) =>
-      prev.includes(id)
-        ? prev.filter((cardId) => cardId !== id)
-        : [...prev, id],
+      prev.includes(id) ? prev.filter((cardId) => cardId !== id) : [...prev, id]
     );
   }, []);
 
@@ -169,8 +159,7 @@ function CanvasCareerLadder({ isEditing, preview = false }) {
     if (!target?._id) return;
 
     _deleteExperience(target._id).then(() => {
-      const removeById = (list) =>
-        (list || []).filter((item) => item._id !== target._id);
+      const removeById = (list) => (list || []).filter((item) => item._id !== target._id);
       setUserDetails((prev) => ({
         ...prev,
         experiences: removeById(prev?.experiences),
@@ -281,9 +270,7 @@ function CanvasCareerLadder({ isEditing, preview = false }) {
           />
         </CanvasSectionControls>
       )}
-      <h2
-        className="text-[#7A736C] dark:text-[#B5AFA5] font-dm-mono font-medium text-[14px] mb-6"
-      >
+      <h2 className="text-[#7A736C] dark:text-[#B5AFA5] font-dm-mono font-medium text-[14px] mb-6">
         CAREER LADDER
       </h2>
 
@@ -339,10 +326,7 @@ function CanvasCareerLadder({ isEditing, preview = false }) {
               </div>
               <div className="absolute left-0 top-3 bottom-0 w-[42px] flex flex-col justify-between items-start border-x-[5px] border-[#F0EDE7] dark:border-[#3A352E] py-1 bg-transparent">
                 {[...Array(30)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="w-full h-[5px] bg-[#F0EDE7] dark:bg-[#3A352E]"
-                  ></div>
+                  <div key={i} className="w-full h-[5px] bg-[#F0EDE7] dark:bg-[#3A352E]"></div>
                 ))}
               </div>
             </>

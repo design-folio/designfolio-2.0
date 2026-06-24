@@ -8,7 +8,7 @@ export function usePegboardSounds(options = {}) {
     try {
       const audio = new Audio(src);
       audio.volume = volume;
-      audio.play().catch(() => { });
+      audio.play().catch(() => {});
     } catch {
       // ignore
     }
@@ -19,4 +19,3 @@ export function usePegboardSounds(options = {}) {
 
   return { playPick, playPlace };
 }
-

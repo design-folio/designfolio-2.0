@@ -12,9 +12,7 @@ import { setToken } from "@/lib/cooikeManager";
 
 // Yup validation schema
 const SignupValidationSchema = Yup.object().shape({
-  firstName: Yup.string()
-    .max(50, "Too Long!")
-    .required("First name is required"),
+  firstName: Yup.string().max(50, "Too Long!").required("First name is required"),
   lastName: Yup.string().max(50, "Last name is too Long"),
   email: Yup.string().email("Invalid email").required("Email is required"),
   password: Yup.string()
@@ -29,14 +27,11 @@ export default function Signup() {
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       try {
-        const response = await fetch(
-          "https://www.googleapis.com/oauth2/v2/userinfo",
-          {
-            headers: {
-              Authorization: `Bearer ${tokenResponse.access_token}`,
-            },
-          }
-        );
+        const response = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
+          headers: {
+            Authorization: `Bearer ${tokenResponse.access_token}`,
+          },
+        });
         const userData = await response.json();
 
         const data = {
@@ -85,28 +80,15 @@ export default function Signup() {
           type="secondary"
           size="small"
           icon={
-            <img
-              src="/assets/svgs/left-arrow.svg"
-              alt="back arrow"
-              className="cursor-pointer"
-            />
+            <img src="/assets/svgs/left-arrow.svg" alt="back arrow" className="cursor-pointer" />
           }
         />
-        <Text
-          as="h1"
-          size={"p-large"}
-          className="text-landing-heading-text-color font-bold mt-4"
-        >
+        <Text as="h1" size={"p-large"} className="text-landing-heading-text-color font-bold mt-4">
           Now, create your account
         </Text>
-        <Text
-          size={"p-xsmall"}
-          className="mt-2 text-landing-description-text-color font-medium"
-        >
+        <Text size={"p-xsmall"} className="mt-2 text-landing-description-text-color font-medium">
           🎉 Just a step away from claiming{" "}
-          <span className="text-df-orange-color">
-            {`${router.query.username}.designfolio.me`}
-          </span>
+          <span className="text-df-orange-color">{`${router.query.username}.designfolio.me`}</span>
         </Text>
         <div className="mt-[24px]">
           <Button
@@ -155,12 +137,7 @@ export default function Signup() {
                 <Form id="signupForm">
                   <div className="md:flex justify-center gap-6">
                     <div className="flex-1">
-                      <Text
-                        as="p"
-                        size={"p-xxsmall"}
-                        className="mt-6 font-medium"
-                        required
-                      >
+                      <Text as="p" size={"p-xxsmall"} className="mt-6 font-medium" required>
                         First Name
                       </Text>
                       <Field
@@ -181,11 +158,7 @@ export default function Signup() {
                     </div>
 
                     <div className="flex-1 mt-6 md:mt-0">
-                      <Text
-                        as="p"
-                        size={"p-xxsmall"}
-                        className="mt-6 font-medium"
-                      >
+                      <Text as="p" size={"p-xxsmall"} className="mt-6 font-medium">
                         Last Name
                       </Text>
 
@@ -206,12 +179,7 @@ export default function Signup() {
                       />
                     </div>
                   </div>
-                  <Text
-                    as="p"
-                    size={"p-xxsmall"}
-                    className="mt-6 font-medium"
-                    required
-                  >
+                  <Text as="p" size={"p-xxsmall"} className="mt-6 font-medium" required>
                     Email
                   </Text>
 
@@ -231,12 +199,7 @@ export default function Signup() {
                     className="error-message text-[14px]"
                   />
 
-                  <Text
-                    as="p"
-                    size={"p-xxsmall"}
-                    className="mt-6 font-medium"
-                    required
-                  >
+                  <Text as="p" size={"p-xxsmall"} className="mt-6 font-medium" required>
                     Password
                   </Text>
 

@@ -61,7 +61,9 @@ export default function RevenuePanel({ overall }) {
         >
           <TrendingUp size={14} className="text-[#7A736C] dark:text-[#B5AFA5]" />
         </div>
-        <h3 className="text-sm font-manrope font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">Revenue</h3>
+        <h3 className="text-sm font-manrope font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
+          Revenue
+        </h3>
         <span className="ml-auto text-[10px] font-medium text-[#B5AFA5] dark:text-[#7A736C] uppercase tracking-wider">
           INR · USD
         </span>

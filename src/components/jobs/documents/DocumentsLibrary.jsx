@@ -1,10 +1,25 @@
 import { useEffect, useState, useCallback, useRef } from "react";
-import { FileText, PenLine, Trash2, Loader2, FolderOpen, Download, Pencil, MoreHorizontal } from "lucide-react";
+import {
+  FileText,
+  PenLine,
+  Trash2,
+  Loader2,
+  FolderOpen,
+  Download,
+  Pencil,
+  MoreHorizontal,
+} from "lucide-react";
 import { _getDocuments, _deleteDocument, _postExportDocument } from "@/network/documents";
 import DocumentStudio from "./DocumentStudio";
 import {
-  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
-  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 
@@ -20,21 +35,25 @@ const TYPE_META = {
     Icon: FileText,
     color: "text-blue-500 dark:text-blue-400",
     bg: "bg-blue-50 dark:bg-blue-400/10",
-    badge: "bg-blue-50 dark:bg-blue-400/10 text-blue-600 dark:text-blue-400 border border-blue-200/60 dark:border-blue-400/20",
+    badge:
+      "bg-blue-50 dark:bg-blue-400/10 text-blue-600 dark:text-blue-400 border border-blue-200/60 dark:border-blue-400/20",
   },
   coverLetter: {
     label: "Cover letter",
     Icon: PenLine,
     color: "text-violet-500 dark:text-violet-400",
     bg: "bg-violet-50 dark:bg-violet-400/10",
-    badge: "bg-violet-50 dark:bg-violet-400/10 text-violet-600 dark:text-violet-400 border border-violet-200/60 dark:border-violet-400/20",
+    badge:
+      "bg-violet-50 dark:bg-violet-400/10 text-violet-600 dark:text-violet-400 border border-violet-200/60 dark:border-violet-400/20",
   },
 };
 
 function formatDate(iso) {
   if (!iso) return null;
   return new Date(iso).toLocaleDateString("en-US", {
-    month: "short", day: "numeric", year: "numeric",
+    month: "short",
+    day: "numeric",
+    year: "numeric",
   });
 }
 
@@ -67,7 +86,9 @@ function DocRow({ d, onEdit, onDeleteClick, onDownload, deletingId, downloadingI
   return (
     <div className="group flex items-center gap-3 py-3.5 px-5 transition-[background-color] duration-150 ease-out hover:bg-black/[0.03] dark:hover:bg-white/[0.03]">
       {/* Doc type icon */}
-      <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${meta.bg}`}>
+      <div
+        className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${meta.bg}`}
+      >
         <meta.Icon className={`w-4 h-4 ${meta.color}`} aria-hidden="true" />
       </div>
 
@@ -84,7 +105,9 @@ function DocRow({ d, onEdit, onDeleteClick, onDownload, deletingId, downloadingI
       </div>
 
       {/* Type pill badge */}
-      <span className={`hidden sm:inline-flex items-center gap-1.5 text-[12px] font-semibold px-3 py-1.5 rounded-full flex-shrink-0 ${meta.badge}`}>
+      <span
+        className={`hidden sm:inline-flex items-center gap-1.5 text-[12px] font-semibold px-3 py-1.5 rounded-full flex-shrink-0 ${meta.badge}`}
+      >
         <meta.Icon className="w-3.5 h-3.5" aria-hidden="true" />
         {meta.label}
       </span>
@@ -102,9 +125,11 @@ function DocRow({ d, onEdit, onDeleteClick, onDownload, deletingId, downloadingI
             aria-label="Document options"
             className="w-9 h-9 rounded-lg flex items-center justify-center text-foreground/30 hover:text-foreground/70 hover:bg-black/[0.06] dark:hover:bg-white/[0.07] transition-colors flex-shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring data-[state=open]:text-foreground/70 data-[state=open]:bg-black/[0.06] dark:data-[state=open]:bg-white/[0.07]"
           >
-            {isBusy
-              ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
-              : <MoreHorizontal className="w-4 h-4" aria-hidden="true" />}
+            {isBusy ? (
+              <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
+            ) : (
+              <MoreHorizontal className="w-4 h-4" aria-hidden="true" />
+            )}
           </button>
         </PopoverTrigger>
 
@@ -119,7 +144,10 @@ function DocRow({ d, onEdit, onDeleteClick, onDownload, deletingId, downloadingI
           {/* Edit */}
           <button
             type="button"
-            onClick={() => { setMenuOpen(false); onEdit(d); }}
+            onClick={() => {
+              setMenuOpen(false);
+              onEdit(d);
+            }}
             className="w-full flex items-center gap-2.5 px-3.5 py-3 rounded-xl text-[14px] font-medium text-foreground/70 hover:text-foreground hover:bg-foreground/[0.05] active:bg-foreground/[0.08] transition-colors text-left"
           >
             <Pencil className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
@@ -130,12 +158,17 @@ function DocRow({ d, onEdit, onDeleteClick, onDownload, deletingId, downloadingI
           <button
             type="button"
             disabled={isDownloading}
-            onClick={() => { setMenuOpen(false); onDownload(d._id); }}
+            onClick={() => {
+              setMenuOpen(false);
+              onDownload(d._id);
+            }}
             className="w-full flex items-center gap-2.5 px-3.5 py-3 rounded-xl text-[14px] font-medium text-foreground/70 hover:text-foreground hover:bg-foreground/[0.05] active:bg-foreground/[0.08] transition-colors text-left disabled:opacity-50 disabled:pointer-events-none"
           >
-            {isDownloading
-              ? <Loader2 className="w-4 h-4 flex-shrink-0 animate-spin" aria-hidden="true" />
-              : <Download className="w-4 h-4 flex-shrink-0" aria-hidden="true" />}
+            {isDownloading ? (
+              <Loader2 className="w-4 h-4 flex-shrink-0 animate-spin" aria-hidden="true" />
+            ) : (
+              <Download className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
+            )}
             Download PDF
           </button>
 
@@ -145,12 +178,17 @@ function DocRow({ d, onEdit, onDeleteClick, onDownload, deletingId, downloadingI
           <button
             type="button"
             disabled={isDeleting}
-            onClick={() => { setMenuOpen(false); onDeleteClick(d); }}
+            onClick={() => {
+              setMenuOpen(false);
+              onDeleteClick(d);
+            }}
             className="w-full flex items-center gap-2.5 px-3.5 py-3 rounded-xl text-[14px] font-medium text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-400/10 active:bg-red-100 dark:active:bg-red-400/15 transition-colors text-left disabled:opacity-50 disabled:pointer-events-none"
           >
-            {isDeleting
-              ? <Loader2 className="w-4 h-4 flex-shrink-0 animate-spin" aria-hidden="true" />
-              : <Trash2 className="w-4 h-4 flex-shrink-0" aria-hidden="true" />}
+            {isDeleting ? (
+              <Loader2 className="w-4 h-4 flex-shrink-0 animate-spin" aria-hidden="true" />
+            ) : (
+              <Trash2 className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
+            )}
             Delete
           </button>
         </PopoverContent>
@@ -174,7 +212,9 @@ function JobGroup({ jobSnapshot, docs, ...rowProps }) {
                 src={jobSnapshot.companyLogo}
                 alt=""
                 className="w-full h-full object-cover"
-                onError={(e) => { e.currentTarget.style.display = "none"; }}
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                }}
               />
             </div>
           )}
@@ -230,7 +270,13 @@ export default function DocumentsLibrary() {
   const [downloadingId, setDownloadingId] = useState(null);
   const [filter, setFilter] = useState("all");
   const [deleteTarget, setDeleteTarget] = useState(null);
-  const [studio, setStudio] = useState({ open: false, type: "resume", docId: null, job: null, profileId: null });
+  const [studio, setStudio] = useState({
+    open: false,
+    type: "resume",
+    docId: null,
+    job: null,
+    profileId: null,
+  });
   const [isScrolled, setIsScrolled] = useState(false);
   const listRef = useRef(null);
 
@@ -238,11 +284,13 @@ export default function DocumentsLibrary() {
     setLoading(true);
     _getDocuments()
       .then((res) => setDocs(res.data || []))
-      .catch(() => { })
+      .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 
-  useEffect(() => { refresh(); }, [refresh]);
+  useEffect(() => {
+    refresh();
+  }, [refresh]);
 
   const openStudio = (d) =>
     setStudio({
@@ -266,8 +314,11 @@ export default function DocumentsLibrary() {
     try {
       await _deleteDocument(id);
       setDocs((p) => p.filter((d) => d._id !== id));
-    } catch { /* interceptor toasts */ }
-    finally { setDeletingId(null); }
+    } catch {
+      /* interceptor toasts */
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   const handleDownload = async (id) => {
@@ -275,8 +326,11 @@ export default function DocumentsLibrary() {
     try {
       const res = await _postExportDocument(id, "pdf");
       if (res.data?.url) window.open(res.data.url, "_blank", "noopener,noreferrer");
-    } catch { /* interceptor toasts */ }
-    finally { setDownloadingId(null); }
+    } catch {
+      /* interceptor toasts */
+    } finally {
+      setDownloadingId(null);
+    }
   };
 
   const counts = {
@@ -299,7 +353,6 @@ export default function DocumentsLibrary() {
   return (
     <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
       <div className="flex flex-col flex-1 min-h-0 max-w-4xl mx-auto w-full px-4 pt-8 overflow-hidden">
-
         {/* ── Header ── */}
         <div className="flex items-baseline justify-between gap-3 mb-6 flex-shrink-0">
           <h1 className="text-[26px] font-semibold text-foreground tracking-tight">Documents</h1>
@@ -327,14 +380,17 @@ export default function DocumentsLibrary() {
             </div>
             <p className="text-[16px] font-medium text-foreground/60">No documents yet</p>
             <p className="text-[14px] text-foreground/35 mt-2 max-w-[300px] leading-relaxed">
-              Open a job and use &quot;Tailor resume&quot; or &quot;Cover letter&quot; to create your first document.
+              Open a job and use &quot;Tailor resume&quot; or &quot;Cover letter&quot; to create
+              your first document.
             </p>
           </div>
         ) : (
           <div className="flex gap-[31px] flex-1 min-h-0 max-md:flex-col">
-
             {/* ── Nav sidebar ── */}
-            <nav aria-label="Document type filter" className="w-[160px] flex-shrink-0 flex flex-col gap-0.5 max-md:w-auto max-md:flex-row max-md:flex-wrap max-md:gap-1.5 max-md:mb-5">
+            <nav
+              aria-label="Document type filter"
+              className="w-[160px] flex-shrink-0 flex flex-col gap-0.5 max-md:w-auto max-md:flex-row max-md:flex-wrap max-md:gap-1.5 max-md:mb-5"
+            >
               {FILTERS.map(({ key, label }) => {
                 const count = counts[key];
                 const isOn = filter === key;
@@ -344,14 +400,17 @@ export default function DocumentsLibrary() {
                     type="button"
                     onClick={() => setFilter(key)}
                     aria-pressed={isOn}
-                    className={`flex items-center justify-between gap-2 py-2.5 px-3 rounded-lg text-[14px] w-full text-left border-0 transition-all duration-200 ease-out max-md:w-auto ${isOn
-                      ? "bg-[hsl(46,15%,91%)] text-foreground font-semibold shadow-[inset_0_1px_3px_rgba(0,0,0,0.07)] cursor-default dark:bg-white/[0.13] dark:shadow-[inset_0_1px_3px_rgba(0,0,0,0.2)]"
-                      : "text-muted-foreground font-medium hover:bg-black/[0.07] dark:hover:bg-white/10 cursor-pointer"
-                      }`}
+                    className={`flex items-center justify-between gap-2 py-2.5 px-3 rounded-lg text-[14px] w-full text-left border-0 transition-all duration-200 ease-out max-md:w-auto ${
+                      isOn
+                        ? "bg-[hsl(46,15%,91%)] text-foreground font-semibold shadow-[inset_0_1px_3px_rgba(0,0,0,0.07)] cursor-default dark:bg-white/[0.13] dark:shadow-[inset_0_1px_3px_rgba(0,0,0,0.2)]"
+                        : "text-muted-foreground font-medium hover:bg-black/[0.07] dark:hover:bg-white/10 cursor-pointer"
+                    }`}
                   >
                     <span>{label}</span>
                     {count > 0 && (
-                      <span className={`text-[12px] font-semibold tabular-nums ${isOn ? "text-foreground/40" : "text-foreground/30"}`}>
+                      <span
+                        className={`text-[12px] font-semibold tabular-nums ${isOn ? "text-foreground/40" : "text-foreground/30"}`}
+                      >
                         {count}
                       </span>
                     )}
@@ -363,7 +422,9 @@ export default function DocumentsLibrary() {
             {/* ── List area — only this scrolls ── */}
             <div className="relative flex-1 min-w-0 overflow-hidden">
               {/* Top fade — only visible once scrolled */}
-              <div className={`pointer-events-none absolute top-0 left-0 right-0 h-12 bg-gradient-to-b from-background to-transparent z-10 transition-opacity duration-200 ${isScrolled ? "opacity-100" : "opacity-0"}`} />
+              <div
+                className={`pointer-events-none absolute top-0 left-0 right-0 h-12 bg-gradient-to-b from-background to-transparent z-10 transition-opacity duration-200 ${isScrolled ? "opacity-100" : "opacity-0"}`}
+              />
               {/* Bottom fade */}
               <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-background to-transparent z-10" />
               <div
@@ -389,22 +450,22 @@ export default function DocumentsLibrary() {
                 )}
               </div>
             </div>
-
           </div>
         )}
       </div>
 
       {/* ── Delete confirm dialog ── */}
-      <AlertDialog open={deleteTarget !== null} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+      <AlertDialog
+        open={deleteTarget !== null}
+        onOpenChange={(open) => !open && setDeleteTarget(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete document?</AlertDialogTitle>
             <AlertDialogDescription>
               This will permanently delete this{" "}
               {deleteTarget?.type === "resume" ? "resume" : "cover letter"}
-              {deleteTarget?.jobSnapshot?.title
-                ? ` for ${deleteTarget.jobSnapshot.title}`
-                : ""}
+              {deleteTarget?.jobSnapshot?.title ? ` for ${deleteTarget.jobSnapshot.title}` : ""}
               {deleteTarget?.jobSnapshot?.companyName
                 ? ` at ${deleteTarget.jobSnapshot.companyName}`
                 : ""}

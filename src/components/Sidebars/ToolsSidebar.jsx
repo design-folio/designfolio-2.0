@@ -14,9 +14,7 @@ import { motion } from "framer-motion";
 import { Plus, Search } from "lucide-react";
 
 const validationSchema = Yup.object().shape({
-  selectedTools: Yup.array()
-    .of(Yup.object())
-    .min(3, "Please select at least 3 tools"),
+  selectedTools: Yup.array().of(Yup.object()).min(3, "Please select at least 3 tools"),
 });
 
 export default function AddTools() {
@@ -96,6 +94,7 @@ export default function AddTools() {
       }}
     >
       {({ values, setFieldValue, errors, touched }) => {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
         useEffect(() => {
           setEditingValues(values);
         }, [values]);
@@ -116,9 +115,7 @@ export default function AddTools() {
         };
 
         const filteredTools = toolsOptions
-          .filter((t) =>
-            t.label.toLowerCase().includes(toolSearchQuery.toLowerCase())
-          )
+          .filter((t) => t.label.toLowerCase().includes(toolSearchQuery.toLowerCase()))
           .sort((a, b) => {
             const isASelected = selectedTools.some((t) => t.value === a.value);
             const isBSelected = selectedTools.some((t) => t.value === b.value);
@@ -131,9 +128,7 @@ export default function AddTools() {
             <div className="flex-1 overflow-auto px-6 py-5 space-y-5">
               {/* Search */}
               <div className="space-y-2">
-                <Label className="text-sm font-medium text-foreground ml-1">
-                  Search Tools
-                </Label>
+                <Label className="text-sm font-medium text-foreground ml-1">Search Tools</Label>
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/30 pointer-events-none" />
                   <Input
@@ -163,9 +158,7 @@ export default function AddTools() {
                       transition={{ type: "spring", stiffness: 400, damping: 25 }}
                       key={`tool-${tool.value}`}
                       type="button"
-                      onClick={() =>
-                        isSelected ? handleRemoveTool(tool) : handleAddTool(tool)
-                      }
+                      onClick={() => (isSelected ? handleRemoveTool(tool) : handleAddTool(tool))}
                       className={`group h-[34px] px-3.5 rounded-xl flex items-center gap-2.5 text-[13px] font-medium transition-colors border ${
                         isSelected
                           ? "bg-muted border-border text-foreground shadow-sm"

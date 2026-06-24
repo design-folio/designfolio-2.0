@@ -13,8 +13,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import MemoLinkedin from "@/components/icons/Linkedin";
 
 export const SortableTestimonialItem = ({ review, edit, onEdit }) => {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id: review._id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: review._id,
+  });
 
   return (
     <div
@@ -79,9 +80,9 @@ export const TestimonialWidget = ({ reviews, edit, onEditClick, onAddReview }) =
     : [];
   const testimonials = hasReviews
     ? reviews.map((r) => ({
-      text: extractTextFromTipTap(r.description) || "",
-      author: r.name || r.author || "Client",
-    }))
+        text: extractTextFromTipTap(r.description) || "",
+        author: r.name || r.author || "Client",
+      }))
     : [];
   const validTestimonials = testimonials.filter((t) => t.text);
 
@@ -103,18 +104,18 @@ export const TestimonialWidget = ({ reviews, edit, onEditClick, onAddReview }) =
   const isEmpty = !hasReviews;
   const outerProps = isEmpty
     ? {
-      role: "button",
-      tabIndex: 0,
-      onClick: () => onAddReview?.(),
-      onKeyDown: (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          onAddReview?.();
-        }
-      },
-      className:
-        "bg-[#F5C75D] rounded-2xl p-1 shadow-lg font-sans max-w-[calc(100vw-32px)] cursor-pointer hover:opacity-95 transition-opacity",
-    }
+        role: "button",
+        tabIndex: 0,
+        onClick: () => onAddReview?.(),
+        onKeyDown: (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            onAddReview?.();
+          }
+        },
+        className:
+          "bg-[#F5C75D] rounded-2xl p-1 shadow-lg font-sans max-w-[calc(100vw-32px)] cursor-pointer hover:opacity-95 transition-opacity",
+      }
     : { className: "bg-[#F5C75D] rounded-2xl p-1 shadow-lg font-sans max-w-[calc(100vw-32px)]" };
 
   const expandedMaxHeight =
@@ -200,7 +201,8 @@ export const TestimonialWidget = ({ reviews, edit, onEditClick, onAddReview }) =
             <div
               className={cn(
                 "font-medium text-black/90 leading-relaxed relative",
-                !expanded && "line-clamp-3 [&_.ProseMirror]:line-clamp-3 [&_.ProseMirror]:overflow-hidden [&_.ProseMirror]:break-words"
+                !expanded &&
+                  "line-clamp-3 [&_.ProseMirror]:line-clamp-3 [&_.ProseMirror]:overflow-hidden [&_.ProseMirror]:break-words"
               )}
             >
               <AnimatePresence mode="wait">
@@ -229,16 +231,17 @@ export const TestimonialWidget = ({ reviews, edit, onEditClick, onAddReview }) =
           </div>
 
           {/* ── Pinned footer ── avatar, author, LinkedIn */}
-          <div
-            className="relative z-10 flex-shrink-0"
-          >
+          <div className="relative z-10 flex-shrink-0">
             <div className="h-px w-full bg-black/5" />
             <div
               className="flex items-center gap-3 h-full flex-wrap py-2"
               style={{ paddingLeft: BODY_PX, paddingRight: BODY_PX }}
             >
               <Avatar className="w-9 h-9 shrink-0">
-                <AvatarImage src={currentReview?.avatar?.url || currentReview?.avatar} alt={currentReview?.name} />
+                <AvatarImage
+                  src={currentReview?.avatar?.url || currentReview?.avatar}
+                  alt={currentReview?.name}
+                />
                 <AvatarFallback className="bg-[#F5C75D]/50 text-[#4A3708] text-xs font-medium">
                   {currentReview?.name
                     ?.split(" ")

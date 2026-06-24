@@ -34,7 +34,10 @@ const InputGroupInput = React.forwardRef(function InputGroupInput({ className, .
 });
 InputGroupInput.displayName = "InputGroupInput";
 
-const InputGroupAddon = React.forwardRef(function InputGroupAddon({ className, children, ...props }, ref) {
+const InputGroupAddon = React.forwardRef(function InputGroupAddon(
+  { className, children, ...props },
+  ref
+) {
   return (
     <div ref={ref} className={cn("flex shrink-0 items-center", className)} {...props}>
       {children}
@@ -43,7 +46,10 @@ const InputGroupAddon = React.forwardRef(function InputGroupAddon({ className, c
 });
 InputGroupAddon.displayName = "InputGroupAddon";
 
-const InputGroupText = React.forwardRef(function InputGroupText({ className, children, ...props }, ref) {
+const InputGroupText = React.forwardRef(function InputGroupText(
+  { className, children, ...props },
+  ref
+) {
   return (
     <span
       ref={ref}

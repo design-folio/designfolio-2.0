@@ -1,14 +1,6 @@
 import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { SmoothCursor } from "@/components/ui/smooth-cursor";
-import {
-  Mail,
-  Twitter,
-  Linkedin,
-  Instagram,
-  Globe,
-  FileText,
-  Phone,
-} from "lucide-react";
+import { Mail, Twitter, Linkedin, Instagram, Globe, FileText, Phone } from "lucide-react";
 import { _updateProject } from "@/network/post-request";
 import { useGlobalContext } from "@/context/globalContext";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
@@ -23,11 +15,7 @@ import ProfessionalAboutTab from "./ProfessionalAboutTab";
 import ProfessionalContactTab from "./ProfessionalContactTab";
 import ProfessionalTestimonialsTab from "./ProfessionalTestimonialsTab";
 
-export default function Professional({
-  isEditing,
-  preview = false,
-  publicView = false,
-}) {
+export default function Professional({ isEditing, preview = false, publicView = false }) {
   const {
     userDetails,
     setUserDetails,
@@ -58,10 +46,7 @@ export default function Professional({
     resume,
   } = userDetails || {};
 
-  const avatarSrc = useMemo(
-    () => getUserAvatarImage(userDetails),
-    [userDetails],
-  );
+  const avatarSrc = useMemo(() => getUserAvatarImage(userDetails), [userDetails]);
   const email = userDetails?.contact_email || userDetails?.email;
   const phone = userDetails?.phone;
   const fullName = (
@@ -70,7 +55,10 @@ export default function Professional({
     "Your Name"
   ).toUpperCase();
   const displayName = `HEY I'M ${fullName}`;
-  const userRole = userDetails?.persona?.label !== "Others" ? userDetails?.persona?.label : userDetails?.persona?.custom;
+  const userRole =
+    userDetails?.persona?.label !== "Others"
+      ? userDetails?.persona?.label
+      : userDetails?.persona?.custom;
 
   const visibleProjects = useMemo(() => {
     if (!isEditing && projects) {
@@ -89,7 +77,7 @@ export default function Professional({
         router.push(`/project/${project._id}`);
       }
     },
-    [isEditing, preview, router],
+    [isEditing, preview, router]
   );
 
   const onDeleteProject = useCallback(
@@ -98,14 +86,14 @@ export default function Professional({
       openModal(modals.deleteProject);
       setSelectedProject(project);
     },
-    [openModal, setSelectedProject],
+    [openModal, setSelectedProject]
   );
 
   const handleEditProject = useCallback(
     (project) => {
       router.push(`/project/${project._id}/editor`);
     },
-    [router],
+    [router]
   );
 
   const handleToggleProjectVisibility = useCallback(
@@ -127,21 +115,26 @@ export default function Professional({
       setUserDetails((prev) => ({ ...prev, projects: updatedProjects }));
       updateCache("userDetails", (prev) => ({ ...prev, projects: updatedProjects }));
     },
-    [projects, userDetails, setUserDetails, updateCache, setShowUpgradeModal, setUpgradeModalUnhideProject],
+    [
+      projects,
+      userDetails,
+      setUserDetails,
+      updateCache,
+      setShowUpgradeModal,
+      setUpgradeModalUnhideProject,
+    ]
   );
 
   const socialLinks = useMemo(() => {
     const links = [];
-    if (email)
-      links.push({ label: "Email Me", icon: Mail, href: `mailto:${email}` });
+    if (email) links.push({ label: "Email Me", icon: Mail, href: `mailto:${email}` });
     if (socials.twitter)
       links.push({
         label: "Twitter / X",
         icon: Twitter,
         href: socials.twitter,
       });
-    if (socials.linkedin)
-      links.push({ label: "LinkedIn", icon: Linkedin, href: socials.linkedin });
+    if (socials.linkedin) links.push({ label: "LinkedIn", icon: Linkedin, href: socials.linkedin });
     if (socials.instagram)
       links.push({
         label: "Instagram",
@@ -150,12 +143,9 @@ export default function Professional({
       });
     if (portfolios.dribbble)
       links.push({ label: "Dribbble", icon: Globe, href: portfolios.dribbble });
-    if (portfolios.medium)
-      links.push({ label: "Medium", icon: Globe, href: portfolios.medium });
-    if (phone)
-      links.push({ label: "Phone", icon: Phone, href: `tel:${phone}` });
-    if (resume?.url)
-      links.push({ label: "Resume", icon: FileText, href: resume.url });
+    if (portfolios.medium) links.push({ label: "Medium", icon: Globe, href: portfolios.medium });
+    if (phone) links.push({ label: "Phone", icon: Phone, href: `tel:${phone}` });
+    if (resume?.url) links.push({ label: "Resume", icon: FileText, href: resume.url });
     return links;
   }, [email, socials, portfolios, phone, resume]);
 
@@ -169,31 +159,31 @@ export default function Professional({
       Boolean(portfolios?.medium) &&
       Boolean(phone) &&
       Boolean(resume?.url),
-    [email, socials, portfolios, phone, resume],
+    [email, socials, portfolios, phone, resume]
   );
 
   const { hiddenSections = [], sectionOrder } = userDetails || {};
 
   const orderedSectionIds = useMemo(() => {
     const normalized = normalizeSectionOrder(sectionOrder, PROFESSIONAL_DEFAULT_ORDER);
-    return normalized.filter(id => PROFESSIONAL_DEFAULT_ORDER.includes(id));
+    return normalized.filter((id) => PROFESSIONAL_DEFAULT_ORDER.includes(id));
   }, [sectionOrder]);
 
   const visibleTabs = useMemo(() => {
     const sorted = orderedSectionIds
-      .filter(id => {
+      .filter((id) => {
         if (hiddenSections.includes(id) && !isEditing) return false;
         // Hide Projects tab in preview/public when there are no visible projects
-        if (id === 'projects' && !isEditing && visibleProjects.length === 0) return false;
+        if (id === "projects" && !isEditing && visibleProjects.length === 0) return false;
         // Hide Experience / Testimonials when empty for any read-only view (portfolio preview & public site); builder still shows tabs
-        if (!isEditing && id === 'works' && (experiences || []).length === 0) return false;
-        if (!isEditing && id === 'reviews' && (reviews || []).length === 0) return false;
+        if (!isEditing && id === "works" && (experiences || []).length === 0) return false;
+        if (!isEditing && id === "reviews" && (reviews || []).length === 0) return false;
         return true;
       })
-      .map(id => PROFESSIONAL_TAB_MAP[id]);
+      .map((id) => PROFESSIONAL_TAB_MAP[id]);
     // Contact is not in sectionOrder (backend restriction) — always appended last, non-sortable
-    if (isEditing || !hiddenSections.includes('contact')) {
-      sorted.push(PROFESSIONAL_TAB_MAP['contact']);
+    if (isEditing || !hiddenSections.includes("contact")) {
+      sorted.push(PROFESSIONAL_TAB_MAP["contact"]);
     }
     return sorted;
   }, [orderedSectionIds, hiddenSections, isEditing, visibleProjects, experiences, reviews]);
@@ -205,56 +195,29 @@ export default function Professional({
       ? userSelectedTab
       : visibleTabs[0]?.key || "Projects";
 
-  const handleEditProfile = useCallback(
-    () => openSidebar(sidebars.profile),
-    [openSidebar],
-  );
-  const handleEditSkills = useCallback(
-    () => openSidebar(sidebars.skills),
-    [openSidebar],
-  );
-  const handleEditPersona = useCallback(
-    () => openSidebar(sidebars.persona),
-    [openSidebar],
-  );
-  const handleAddProject = useCallback(
-    () => openSidebar(sidebars.project),
-    [openSidebar],
-  );
+  const handleEditProfile = useCallback(() => openSidebar(sidebars.profile), [openSidebar]);
+  const handleEditSkills = useCallback(() => openSidebar(sidebars.skills), [openSidebar]);
+  const handleEditPersona = useCallback(() => openSidebar(sidebars.persona), [openSidebar]);
+  const handleAddProject = useCallback(() => openSidebar(sidebars.project), [openSidebar]);
   const handleEditExperience = useCallback(
     (exp) => {
       setSelectedWork(exp);
       openSidebar(sidebars.work);
     },
-    [setSelectedWork, openSidebar],
+    [setSelectedWork, openSidebar]
   );
 
-  const handleAddExperience = useCallback(
-    () => openNewWork(),
-    [openNewWork],
-  );
-  const handleEditAbout = useCallback(
-    () => openSidebar(sidebars.about),
-    [openSidebar],
-  );
-  const handleEditTools = useCallback(
-    () => openSidebar(sidebars.tools),
-    [openSidebar],
-  );
-  const handleEditContact = useCallback(
-    () => openSidebar(sidebars.footer),
-    [openSidebar],
-  );
-  const handleAddReview = useCallback(
-    () => openNewReview(),
-    [openNewReview],
-  );
+  const handleAddExperience = useCallback(() => openNewWork(), [openNewWork]);
+  const handleEditAbout = useCallback(() => openSidebar(sidebars.about), [openSidebar]);
+  const handleEditTools = useCallback(() => openSidebar(sidebars.tools), [openSidebar]);
+  const handleEditContact = useCallback(() => openSidebar(sidebars.footer), [openSidebar]);
+  const handleAddReview = useCallback(() => openNewReview(), [openNewReview]);
   const handleEditReview = useCallback(
     (review) => {
       setSelectedReview(review);
       openSidebar(sidebars.review);
     },
-    [setSelectedReview, openSidebar],
+    [setSelectedReview, openSidebar]
   );
 
   const renderActiveTab = () => {
@@ -271,7 +234,7 @@ export default function Professional({
             onToggleVisibility={handleToggleProjectVisibility}
             openSidebar={openSidebar}
             isPro={!!userDetails?.pro}
-            hasHiddenProjects={(userDetails?.projects || []).filter(p => !p.hidden).length >= 2}
+            hasHiddenProjects={(userDetails?.projects || []).filter((p) => !p.hidden).length >= 2}
           />
         );
       case "Experience":

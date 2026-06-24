@@ -23,10 +23,7 @@ const Menubar = forwardRef(function Menubar({ className, ...props }, ref) {
 });
 Menubar.displayName = MenubarPrimitive.Root.displayName;
 
-const MenubarTrigger = forwardRef(function MenubarTrigger(
-  { className, ...props },
-  ref
-) {
+const MenubarTrigger = forwardRef(function MenubarTrigger({ className, ...props }, ref) {
   return (
     <MenubarPrimitive.Trigger
       ref={ref}
@@ -61,10 +58,7 @@ const MenubarSubTrigger = forwardRef(function MenubarSubTrigger(
 });
 MenubarSubTrigger.displayName = MenubarPrimitive.SubTrigger.displayName;
 
-const MenubarSubContent = forwardRef(function MenubarSubContent(
-  { className, ...props },
-  ref
-) {
+const MenubarSubContent = forwardRef(function MenubarSubContent({ className, ...props }, ref) {
   return (
     <MenubarPrimitive.SubContent
       ref={ref}
@@ -100,10 +94,7 @@ const MenubarContent = forwardRef(function MenubarContent(
 });
 MenubarContent.displayName = MenubarPrimitive.Content.displayName;
 
-const MenubarItem = forwardRef(function MenubarItem(
-  { className, inset, ...props },
-  ref
-) {
+const MenubarItem = forwardRef(function MenubarItem({ className, inset, ...props }, ref) {
   return (
     <MenubarPrimitive.Item
       ref={ref}
@@ -167,28 +158,18 @@ const MenubarRadioItem = forwardRef(function MenubarRadioItem(
 });
 MenubarRadioItem.displayName = MenubarPrimitive.RadioItem.displayName;
 
-const MenubarLabel = forwardRef(function MenubarLabel(
-  { className, inset, ...props },
-  ref
-) {
+const MenubarLabel = forwardRef(function MenubarLabel({ className, inset, ...props }, ref) {
   return (
     <MenubarPrimitive.Label
       ref={ref}
-      className={cn(
-        "px-2 py-1.5 text-sm font-semibold",
-        inset && "pl-8",
-        className
-      )}
+      className={cn("px-2 py-1.5 text-sm font-semibold", inset && "pl-8", className)}
       {...props}
     />
   );
 });
 MenubarLabel.displayName = MenubarPrimitive.Label.displayName;
 
-const MenubarSeparator = forwardRef(function MenubarSeparator(
-  { className, ...props },
-  ref
-) {
+const MenubarSeparator = forwardRef(function MenubarSeparator({ className, ...props }, ref) {
   return (
     <MenubarPrimitive.Separator
       ref={ref}
@@ -202,10 +183,7 @@ MenubarSeparator.displayName = MenubarPrimitive.Separator.displayName;
 const MenubarShortcut = ({ className, ...props }) => {
   return (
     <span
-      className={cn(
-        "ml-auto text-xs tracking-widest text-muted-foreground",
-        className
-      )}
+      className={cn("ml-auto text-xs tracking-widest text-muted-foreground", className)}
       {...props}
     />
   );

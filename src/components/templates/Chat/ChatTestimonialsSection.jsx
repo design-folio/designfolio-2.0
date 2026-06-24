@@ -18,17 +18,9 @@ export default function ChatTestimonialsSection({
   getNextLeftStep,
   canEdit,
 }) {
-  const {
-    userDetails,
-    openSidebar,
-    openNewReview,
-    setSelectedReview,
-  } = useGlobalContext();
+  const { userDetails, openSidebar, openNewReview, setSelectedReview } = useGlobalContext();
   const { reviews = [] } = userDetails || {};
-  const avatarSrc = useMemo(
-    () => getUserAvatarImage(userDetails),
-    [userDetails],
-  );
+  const avatarSrc = useMemo(() => getUserAvatarImage(userDetails), [userDetails]);
 
   const [expandedIds, setExpandedIds] = useState(new Set());
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
@@ -45,10 +37,7 @@ export default function ChatTestimonialsSection({
   const hasMore = reviews.length > visibleCount;
 
   return (
-    <div
-      className="flex flex-col gap-3"
-      style={{ order: sectionSteps.reviews - 3 }}
-    >
+    <div className="flex flex-col gap-3" style={{ order: sectionSteps.reviews - 3 }}>
       {/* You: Testimonials prompt */}
       <AnimatePresence mode="popLayout">
         {chatRevealStep >= s(13) && (reviews.length > 0 || canEdit) && (
@@ -78,10 +67,7 @@ export default function ChatTestimonialsSection({
                   className="flex gap-3 max-w-[85%] relative group/msg"
                 >
                   <div className="w-8 h-8 shrink-0 mt-auto flex items-end">
-                    <ChatAvatar
-                      avatarSrc={avatarSrc}
-                      show={chatRevealStep < s(15)}
-                    />
+                    <ChatAvatar avatarSrc={avatarSrc} show={chatRevealStep < s(15)} />
                   </div>
                   <div className="bg-[#E5E2DB] dark:bg-[#2A2520] px-4 py-3 rounded-2xl rounded-tl-sm rounded-bl-sm text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed transition-colors duration-100 border border-black/5 dark:border-white/5 min-h-[46px] flex items-center">
                     {chatRevealStep === s(14) ? (
@@ -98,8 +84,7 @@ export default function ChatTestimonialsSection({
                     const reviewId = review._id || `review-${index}`;
                     const plainText = tiptapToDisplayString(review.description);
                     const needsExpand =
-                      getPlainTextLength(review.description) >
-                      REVIEW_CHAR_THRESHOLD;
+                      getPlainTextLength(review.description) > REVIEW_CHAR_THRESHOLD;
                     const isExpanded = expandedIds.has(reviewId);
 
                     return (
@@ -244,9 +229,7 @@ export default function ChatTestimonialsSection({
                   >
                     <div className="h-px flex-1 bg-black/[0.07] dark:bg-white/[0.07]" />
                     <button
-                      onClick={() =>
-                        setVisibleCount((v) => v + INITIAL_VISIBLE)
-                      }
+                      onClick={() => setVisibleCount((v) => v + INITIAL_VISIBLE)}
                       className="flex items-center gap-1 text-[11px] font-medium text-[#7A736C] dark:text-[#B5AFA5] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7] active:scale-[0.97] transition-[color,transform] duration-150 whitespace-nowrap"
                     >
                       {reviews.length - visibleCount} more

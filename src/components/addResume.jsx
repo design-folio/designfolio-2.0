@@ -8,8 +8,7 @@ import NoteIcon from "../../public/assets/svgs/noteIcon.svg";
 import DeleteIcon from "../../public/assets/svgs/deleteIcon.svg";
 
 export default function AddResume() {
-  const { userDetails, closeModal, userDetailsRefecth, updateCache } =
-    useGlobalContext();
+  const { userDetails, closeModal, userDetailsRefecth, updateCache } = useGlobalContext();
   const [resume, setResume] = useState(userDetails?.resume);
   const [loading, setLoading] = useState(false);
 
@@ -55,10 +54,7 @@ export default function AddResume() {
           <label htmlFor="picture">
             <div className="bg-background rounded-[18px] p-4 m-auto text-center flex flex-col items-center  w-full justify-center border border-dashed border-input-upload-border-color h-[250px] mt-2 ">
               <img src="/assets/svgs/upload-red.svg" alt="" />
-              <Text
-                size="p-xsmall"
-                className="text-input-upload-heading-color mt-2 text-center"
-              >
+              <Text size="p-xsmall" className="text-input-upload-heading-color mt-2 text-center">
                 Select the PDF file of your resume.
               </Text>
               <Text
@@ -67,7 +63,9 @@ export default function AddResume() {
               >
                 Maximum size should be 5MB.
               </Text>
-              <Button variant="outline" type="button" className="mt-4 pointer-events-none">Browse and choose</Button>
+              <Button variant="outline" type="button" className="mt-4 pointer-events-none">
+                Browse and choose
+              </Button>
             </div>
           </label>
           <input
@@ -105,12 +103,16 @@ export default function AddResume() {
       </div>
 
       <div className="flex gap-2 mt-[26px] justify-end p-3 bg-modal-footer-bg-color rounded-br-[24px] rounded-bl-[24px]">
-        <Button variant="outline" type="button" onClick={closeModal}>Cancel</Button>
+        <Button variant="outline" type="button" onClick={closeModal}>
+          Cancel
+        </Button>
         <Button
           type="button"
           onClick={handleSubmit}
           disabled={loading || !resume || !!resume?.extension}
-        >{loading ? "Saving…" : "Save resume"}</Button>
+        >
+          {loading ? "Saving…" : "Save resume"}
+        </Button>
       </div>
     </div>
   );

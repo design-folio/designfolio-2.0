@@ -42,9 +42,7 @@ function Dropdown({ data, onClick, defaultValue, theme }) {
         onClick={handleToggle}
       >
         <span className="mr-2">
-          {selectedOption.length > 15
-            ? `${selectedOption.substring(0, 14)}...`
-            : selectedOption}
+          {selectedOption.length > 15 ? `${selectedOption.substring(0, 14)}...` : selectedOption}
         </span>
         <svg
           className="w-5 h-5 text-gray-500"
@@ -65,9 +63,7 @@ function Dropdown({ data, onClick, defaultValue, theme }) {
       {isOpen && (
         <div
           className={`pt-2 absolute z-20 right-0 origin-top-right transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${
-            isOpen
-              ? "opacity-100 scale-100"
-              : "opacity-0 scale-90 pointer-events-none"
+            isOpen ? "opacity-100 scale-100" : "opacity-0 scale-90 pointer-events-none"
           }`}
           style={{
             maxHeight: "25vh",

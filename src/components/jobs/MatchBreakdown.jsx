@@ -6,22 +6,40 @@ import { ChevronDown, Check, X } from "lucide-react";
 // 3 zones — proportional widths: 64% Weak / 20% Strong / 16% Excellent
 const ZONES = [
   {
-    label: "Weak", pct: 64, barStart: 0, barEnd: 64,
-    brightL: "#fca5a5", midL: "#ef4444",
-    brightD: "#fca5a5", midD: "#b91c1c",
-    fadedL: "rgba(239,68,68,0.13)", fadedD: "rgba(185,28,28,0.14)",
+    label: "Weak",
+    pct: 64,
+    barStart: 0,
+    barEnd: 64,
+    brightL: "#fca5a5",
+    midL: "#ef4444",
+    brightD: "#fca5a5",
+    midD: "#b91c1c",
+    fadedL: "rgba(239,68,68,0.13)",
+    fadedD: "rgba(185,28,28,0.14)",
   },
   {
-    label: "Strong", pct: 20, barStart: 64, barEnd: 84,
-    brightL: "#fde68a", midL: "#f97316",
-    brightD: "#fde68a", midD: "#ea580c",
-    fadedL: "rgba(249,115,22,0.13)", fadedD: "rgba(234,88,12,0.14)",
+    label: "Strong",
+    pct: 20,
+    barStart: 64,
+    barEnd: 84,
+    brightL: "#fde68a",
+    midL: "#f97316",
+    brightD: "#fde68a",
+    midD: "#ea580c",
+    fadedL: "rgba(249,115,22,0.13)",
+    fadedD: "rgba(234,88,12,0.14)",
   },
   {
-    label: "Excellent", pct: 16, barStart: 84, barEnd: 100,
-    brightL: "#4ade80", midL: "#10b981",
-    brightD: "#4ade80", midD: "#16a34a",
-    fadedL: "rgba(16,185,129,0.13)", fadedD: "rgba(22,163,74,0.14)",
+    label: "Excellent",
+    pct: 16,
+    barStart: 84,
+    barEnd: 100,
+    brightL: "#4ade80",
+    midL: "#10b981",
+    brightD: "#4ade80",
+    midD: "#16a34a",
+    fadedL: "rgba(16,185,129,0.13)",
+    fadedD: "rgba(22,163,74,0.14)",
   },
 ];
 
@@ -38,13 +56,15 @@ export function MatchBreakdown({ job, open }) {
 
   const s = job.match ?? 0;
   const allAligns = (job.aligns ?? []).slice(0, 3);
-  const allGaps   = (job.gaps   ?? []).slice(0, 3);
+  const allGaps = (job.gaps ?? []).slice(0, 3);
   const markerBarPct = Math.max(1, Math.min(98.5, scoreToBarPct(s)));
 
   const headline =
-    s >= 85 ? "You're an excellent match for this role." :
-    s >= 65 ? "You're a strong match — excellence is within reach." :
-              "You're in the mix, with some key areas to work on.";
+    s >= 85
+      ? "You're an excellent match for this role."
+      : s >= 65
+        ? "You're a strong match — excellence is within reach."
+        : "You're in the mix, with some key areas to work on.";
 
   return (
     <div
@@ -67,9 +87,13 @@ export function MatchBreakdown({ job, open }) {
         >
           <span
             style={{
-              fontSize: 9, fontWeight: 600, letterSpacing: "0.06em",
+              fontSize: 9,
+              fontWeight: 600,
+              letterSpacing: "0.06em",
               color: isDark ? "rgba(255,255,255,0.45)" : "rgba(0,0,0,0.38)",
-              lineHeight: 1, userSelect: "none", textTransform: "uppercase",
+              lineHeight: 1,
+              userSelect: "none",
+              textTransform: "uppercase",
             }}
           >
             you
@@ -80,15 +104,15 @@ export function MatchBreakdown({ job, open }) {
         <div className="relative flex h-[14px] rounded-lg overflow-hidden gap-[2px]">
           {ZONES.map((z) => {
             const filledBars = Math.max(0, Math.min(markerBarPct, z.barEnd) - z.barStart);
-            const fadedBars  = z.pct - filledBars;
-            const bright     = isDark ? z.brightD : z.brightL;
-            const mid        = isDark ? z.midD    : z.midL;
-            const vividGrad  = `linear-gradient(to right, ${bright}, ${mid})`;
-            const fadedColor = isDark ? z.fadedD  : z.fadedL;
+            const fadedBars = z.pct - filledBars;
+            const bright = isDark ? z.brightD : z.brightL;
+            const mid = isDark ? z.midD : z.midL;
+            const vividGrad = `linear-gradient(to right, ${bright}, ${mid})`;
+            const fadedColor = isDark ? z.fadedD : z.fadedL;
             return (
               <div key={z.label} style={{ width: `${z.pct}%`, display: "flex" }}>
                 {filledBars > 0 && <div style={{ flex: filledBars, background: vividGrad }} />}
-                {fadedBars  > 0 && <div style={{ flex: fadedBars,  background: fadedColor }} />}
+                {fadedBars > 0 && <div style={{ flex: fadedBars, background: fadedColor }} />}
               </div>
             );
           })}
@@ -97,7 +121,8 @@ export function MatchBreakdown({ job, open }) {
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
-              background: "linear-gradient(to bottom, rgba(255,255,255,0.30) 0%, rgba(255,255,255,0.06) 45%, rgba(0,0,0,0.08) 100%)",
+              background:
+                "linear-gradient(to bottom, rgba(255,255,255,0.30) 0%, rgba(255,255,255,0.06) 45%, rgba(0,0,0,0.08) 100%)",
               boxShadow: "inset 0 1px 0 rgba(255,255,255,0.45), inset 0 -1px 0 rgba(0,0,0,0.14)",
             }}
           />
@@ -110,7 +135,10 @@ export function MatchBreakdown({ job, open }) {
             left: open ? `${markerBarPct}%` : "0%",
             transform: "translateX(-50%)",
             transition: open ? "left 1s cubic-bezier(0.22,1,0.36,1) 0.15s" : "none",
-            top: -3, bottom: -3, width: 2.5, borderRadius: 2,
+            top: -3,
+            bottom: -3,
+            width: 2.5,
+            borderRadius: 2,
             background: isDark ? "rgba(255,255,255,0.70)" : "rgba(0,0,0,0.50)",
             boxShadow: isDark
               ? "0 0 6px 1px rgba(255,255,255,0.22)"
@@ -140,10 +168,14 @@ export function MatchBreakdown({ job, open }) {
                 onClick={() => setExpandedSection(expandedSection === "signals" ? null : "signals")}
                 className="w-full flex items-center justify-between px-3 py-2.5 text-left cursor-pointer hover:bg-black/[0.06] dark:hover:bg-white/[0.09] transition-colors duration-150"
               >
-                <span className="text-[9.5px] font-semibold uppercase tracking-widest text-foreground/40">Strongest signals</span>
+                <span className="text-[9.5px] font-semibold uppercase tracking-widest text-foreground/40">
+                  Strongest signals
+                </span>
                 <ChevronDown
                   className="w-3 h-3 text-foreground/30 transition-transform duration-200 flex-shrink-0"
-                  style={{ transform: expandedSection === "signals" ? "rotate(180deg)" : "rotate(0deg)" }}
+                  style={{
+                    transform: expandedSection === "signals" ? "rotate(180deg)" : "rotate(0deg)",
+                  }}
                 />
               </button>
               <AnimatePresence initial={false}>
@@ -180,10 +212,14 @@ export function MatchBreakdown({ job, open }) {
                 onClick={() => setExpandedSection(expandedSection === "missing" ? null : "missing")}
                 className="w-full flex items-center justify-between px-3 py-2.5 text-left cursor-pointer hover:bg-black/[0.06] dark:hover:bg-white/[0.09] transition-colors duration-150"
               >
-                <span className="text-[9.5px] font-semibold uppercase tracking-widest text-foreground/40">Missing</span>
+                <span className="text-[9.5px] font-semibold uppercase tracking-widest text-foreground/40">
+                  Missing
+                </span>
                 <ChevronDown
                   className="w-3 h-3 text-foreground/30 transition-transform duration-200 flex-shrink-0"
-                  style={{ transform: expandedSection === "missing" ? "rotate(180deg)" : "rotate(0deg)" }}
+                  style={{
+                    transform: expandedSection === "missing" ? "rotate(180deg)" : "rotate(0deg)",
+                  }}
                 />
               </button>
               <AnimatePresence initial={false}>

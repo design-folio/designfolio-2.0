@@ -109,9 +109,7 @@ export default function Index() {
 
     if (initializedRef.current) return;
 
-    const cachedProject = userDetails.projects?.find(
-      (project) => project._id === projectId,
-    );
+    const cachedProject = userDetails.projects?.find((project) => project._id === projectId);
 
     if (cachedProject) {
       setProjectData(cachedProject);
@@ -133,12 +131,13 @@ export default function Index() {
         const analysis = res.data?.quota?.caseStudyAnalysis;
         if (analysis) {
           const limit = analysis.limit ?? 2;
-          const remaining = analysis.limit === null ? Infinity : Math.max(0, limit - (analysis.used ?? 0));
+          const remaining =
+            analysis.limit === null ? Infinity : Math.max(0, limit - (analysis.used ?? 0));
           setAnalysisCreditsRemaining(remaining);
           setAnalysisCreditsLimit(limit);
         }
       })
-      .catch(() => { });
+      .catch(() => {});
   }, [router.query.id]);
 
   // Compensate for scrollbar gutter when sidebar opens so content doesn't shift.
@@ -160,10 +159,7 @@ export default function Index() {
   if (!userDetails && userDetailLoading) {
     return (
       <>
-        <WallpaperBackground
-          wallpaperUrl={wallpaperUrl}
-          effects={wallpaperEffects}
-        />
+        <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div className="w-8 h-8 border-2 border-[#888] border-t-transparent rounded-full animate-spin" />
         </div>
@@ -208,11 +204,7 @@ export default function Index() {
 
   const editorContent = (
     <div className={projectContainerClass}>
-      <Editor
-        edit
-        projectDetails={projectDetails}
-        refetchProjectDetail={refetchProjectDetail}
-      />
+      <Editor edit projectDetails={projectDetails} refetchProjectDetail={refetchProjectDetail} />
     </div>
   );
 
@@ -243,36 +235,27 @@ export default function Index() {
     }
 
     const updatedProjects = projects.map((p) =>
-      p._id === projectId ? { ...p, hidden: !p.hidden } : p,
+      p._id === projectId ? { ...p, hidden: !p.hidden } : p
     );
 
-    setUserDetails((prev) =>
-      prev ? { ...prev, projects: updatedProjects } : prev,
-    );
+    setUserDetails((prev) => (prev ? { ...prev, projects: updatedProjects } : prev));
     _updateProject(projectId, { hidden: !existing.hidden });
     _updateUser({ projects: updatedProjects });
 
     setProjectDetails((prev) =>
-      prev
-        ? { project: { ...prev.project, hidden: !prev.project.hidden } }
-        : prev,
+      prev ? { project: { ...prev.project, hidden: !prev.project.hidden } } : prev
     );
   };
 
   // Embed mode: only render editor content (no shell, no background)
   if (isEmbed) {
-    return (
-      <div className="min-h-full bg-white overflow-auto">{editorContent}</div>
-    );
+    return <div className="min-h-full bg-white overflow-auto">{editorContent}</div>;
   }
 
   return (
     <SidebarProvider {...sidebarProviderProps}>
       <div className="flex-1 min-w-0">
-        <WallpaperBackground
-          wallpaperUrl={wallpaperUrl}
-          effects={wallpaperEffects}
-        />
+        <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
 
         {isMacOS ? (
           <>
@@ -307,7 +290,14 @@ export default function Index() {
             <BuilderShell />
           </>
         ) : (
-          <main className={cn("min-h-screen", isChatfolio && "bg-[#F0EDE7] dark:bg-[#1A1A1A] font-inter")}>{editorContent}</main>
+          <main
+            className={cn(
+              "min-h-screen",
+              isChatfolio && "bg-[#F0EDE7] dark:bg-[#1A1A1A] font-inter"
+            )}
+          >
+            {editorContent}
+          </main>
         )}
       </div>
       <AppSidebar />

@@ -25,28 +25,21 @@ export default function AiToolsHeader() {
             <>
               <HamburgerIcon
                 className={`mb-[4.67px] transition-transform easeInOut ${
-                  popovers.landingMenu === popoverMenu &&
-                  "translate-y-3.2 rotate-45"
+                  popovers.landingMenu === popoverMenu && "translate-y-3.2 rotate-45"
                 } cursor-pointer`}
               />
               <HamburgerIcon
                 className={`transition-transform easeInOut ${
-                  popovers.landingMenu === popoverMenu &&
-                  "-rotate-45 -translate-y-3.2"
+                  popovers.landingMenu === popoverMenu && "-rotate-45 -translate-y-3.2"
                 } cursor-pointer`}
               />
             </>
           }
           onClick={() =>
-            setPopoverMenu((prev) =>
-              prev == popovers.landingMenu ? null : popovers.landingMenu
-            )
+            setPopoverMenu((prev) => (prev == popovers.landingMenu ? null : popovers.landingMenu))
           }
         />
-        <Popover
-          show={popovers.landingMenu === popoverMenu}
-          className="right-[4px] mt-2"
-        >
+        <Popover show={popovers.landingMenu === popoverMenu} className="right-[4px] mt-2">
           <Link href={"/ai-tools?type=optimize-resume"}>
             <Button
               customClass="w-full"

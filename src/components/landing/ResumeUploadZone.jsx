@@ -43,7 +43,9 @@ export default function ResumeUploadZone({
   const [cutoutPos, setCutoutPos] = useState({ x: 0, y: 300 });
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Cycle AI status text while processing
   useEffect(() => {
@@ -113,8 +115,7 @@ export default function ResumeUploadZone({
       } catch (err) {
         setIsProcessing(false);
         const msg =
-          err?.response?.data?.message ||
-          "Couldn't read your resume. Try a text-based PDF.";
+          err?.response?.data?.message || "Couldn't read your resume. Try a text-based PDF.";
         phEvent(POSTHOG_EVENT_NAMES.RESUME_UPLOAD_FAILED, {
           source: "landing_hero",
           error: msg,
@@ -122,7 +123,7 @@ export default function ResumeUploadZone({
         toast.error(msg);
       }
     },
-    [router, phEvent],
+    [router, phEvent]
   );
 
   const handleFileInput = (e) => {
@@ -222,26 +223,41 @@ export default function ResumeUploadZone({
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.97 }}
               transition={{ duration: 0.25 }}
-              className={variant === "modal" ? "w-full flex flex-col items-center gap-4" : undefined}
+              className={
+                variant === "modal" ? "w-full flex flex-col items-center gap-4" : undefined
+              }
             >
               <div
                 data-testid="dropzone-resume"
                 onClick={() => canUpload && fileInputRef.current?.click()}
-                onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setIsDragging(true);
+                }}
                 onDragLeave={() => setIsDragging(false)}
                 onDrop={handleDrop}
-                className={`group/dropzone cursor-pointer ${variant === "modal"
-                  ? "w-full flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed px-6 py-10 [&_*]:cursor-pointer"
-                  : "inline-flex items-center gap-3.5 rounded-xl border border-dashed px-5 py-3 [&_*]:cursor-pointer"
-                  } transition-all duration-200 ${isDragging
+                className={`group/dropzone cursor-pointer ${
+                  variant === "modal"
+                    ? "w-full flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed px-6 py-10 [&_*]:cursor-pointer"
+                    : "inline-flex items-center gap-3.5 rounded-xl border border-dashed px-5 py-3 [&_*]:cursor-pointer"
+                } transition-all duration-200 ${
+                  isDragging
                     ? "border-[--lp-accent] bg-lp-accent/[0.08]"
                     : "border-lp-text/25 bg-lp-text/[0.03] hover:border-lp-text/45 hover:bg-lp-text/[0.05]"
-                  }`}
+                }`}
               >
                 <Folder isDragging={isDragging} />
-                <div className={`flex flex-col ${variant === "modal" ? "items-center text-center" : "items-start"} gap-0.5`}>
-                  <span className={`text-[14px] mb-1 font-semibold leading-none transition-colors duration-200 ${isDragging ? "text-[--lp-accent]" : "text-[--lp-text]"}`}>
-                    {isDragging ? "Drop it here" : variant === "modal" ? "Click to upload Resume" : "Upload your resume"}
+                <div
+                  className={`flex flex-col ${variant === "modal" ? "items-center text-center" : "items-start"} gap-0.5`}
+                >
+                  <span
+                    className={`text-[14px] mb-1 font-semibold leading-none transition-colors duration-200 ${isDragging ? "text-[--lp-accent]" : "text-[--lp-text]"}`}
+                  >
+                    {isDragging
+                      ? "Drop it here"
+                      : variant === "modal"
+                        ? "Click to upload Resume"
+                        : "Upload your resume"}
                   </span>
                   <span className="text-[12px] text-[--lp-text-faint] leading-none">
                     {variant === "modal" ? "PDF format only · Max 5MB" : "PDF · max 5MB"}
@@ -261,7 +277,10 @@ export default function ResumeUploadZone({
 
                   <div className="flex items-center justify-center gap-3 flex-wrap">
                     {["Data never sold", "Delete anytime"].map((label) => (
-                      <span key={label} className="flex items-center gap-1 text-[11px] text-[--lp-text-faint] font-medium">
+                      <span
+                        key={label}
+                        className="flex items-center gap-1 text-[11px] text-[--lp-text-faint] font-medium"
+                      >
                         <CheckCircle2 className="w-3 h-3 shrink-0" strokeWidth={2} />
                         {label}
                       </span>
@@ -275,99 +294,130 @@ export default function ResumeUploadZone({
       </div>
 
       {/* Fixed overlays — portalled to document.body */}
-      {mounted && createPortal(
-        <>
-          {/* Backdrop spotlight */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: isProcessing ? 1 : 0 }}
-            transition={{ duration: 0.55, ease: "easeOut" }}
-            className="fixed inset-0 z-[80] pointer-events-none"
-            style={{
-              backdropFilter: isProcessing ? "blur(4px)" : "none",
-              WebkitBackdropFilter: isProcessing ? "blur(4px)" : "none",
-              background: isDark
-                ? `radial-gradient(ellipse 400px 120px at ${x}px ${y}px, transparent 0%, rgba(8,7,6,0.65) 62%)`
-                : `radial-gradient(ellipse 400px 120px at ${x}px ${y}px, transparent 0%, rgba(250,248,238,0.72) 62%)`,
-              maskImage: `radial-gradient(ellipse 400px 120px at ${x}px ${y}px, transparent 0%, black 62%)`,
-              WebkitMaskImage: `radial-gradient(ellipse 400px 120px at ${x}px ${y}px, transparent 0%, black 62%)`,
-            }}
-          />
+      {mounted &&
+        createPortal(
+          <>
+            {/* Backdrop spotlight */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: isProcessing ? 1 : 0 }}
+              transition={{ duration: 0.55, ease: "easeOut" }}
+              className="fixed inset-0 z-[80] pointer-events-none"
+              style={{
+                backdropFilter: isProcessing ? "blur(4px)" : "none",
+                WebkitBackdropFilter: isProcessing ? "blur(4px)" : "none",
+                background: isDark
+                  ? `radial-gradient(ellipse 400px 120px at ${x}px ${y}px, transparent 0%, rgba(8,7,6,0.65) 62%)`
+                  : `radial-gradient(ellipse 400px 120px at ${x}px ${y}px, transparent 0%, rgba(250,248,238,0.72) 62%)`,
+                maskImage: `radial-gradient(ellipse 400px 120px at ${x}px ${y}px, transparent 0%, black 62%)`,
+                WebkitMaskImage: `radial-gradient(ellipse 400px 120px at ${x}px ${y}px, transparent 0%, black 62%)`,
+              }}
+            />
 
-          {/* Corner bracket — top-left */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: isProcessing ? 0.8 : 0, x: isProcessing ? 0 : 5, y: isProcessing ? 0 : 5 }}
-            transition={{ duration: 0.35, delay: isProcessing ? 0.15 : 0 }}
-            className="fixed z-[82] pointer-events-none"
-            style={{
-              left: x - 212, top: y - 66,
-              width: 14, height: 14,
-              borderTop: "1.5px solid rgba(255,85,62,0.9)",
-              borderLeft: "1.5px solid rgba(255,85,62,0.9)",
-            }}
-          />
-          {/* Corner bracket — top-right */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: isProcessing ? 0.8 : 0, x: isProcessing ? 0 : -5, y: isProcessing ? 0 : 5 }}
-            transition={{ duration: 0.35, delay: isProcessing ? 0.15 : 0 }}
-            className="fixed z-[82] pointer-events-none"
-            style={{
-              left: x + 198, top: y - 66,
-              width: 14, height: 14,
-              borderTop: "1.5px solid rgba(255,85,62,0.9)",
-              borderRight: "1.5px solid rgba(255,85,62,0.9)",
-            }}
-          />
-          {/* Corner bracket — bottom-left */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: isProcessing ? 0.8 : 0, x: isProcessing ? 0 : 5, y: isProcessing ? 0 : -5 }}
-            transition={{ duration: 0.35, delay: isProcessing ? 0.15 : 0 }}
-            className="fixed z-[82] pointer-events-none"
-            style={{
-              left: x - 212, top: y + 52,
-              width: 14, height: 14,
-              borderBottom: "1.5px solid rgba(255,85,62,0.9)",
-              borderLeft: "1.5px solid rgba(255,85,62,0.9)",
-            }}
-          />
-          {/* Corner bracket — bottom-right */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: isProcessing ? 0.8 : 0, x: isProcessing ? 0 : -5, y: isProcessing ? 0 : -5 }}
-            transition={{ duration: 0.35, delay: isProcessing ? 0.15 : 0 }}
-            className="fixed z-[82] pointer-events-none"
-            style={{
-              left: x + 198, top: y + 52,
-              width: 14, height: 14,
-              borderBottom: "1.5px solid rgba(255,85,62,0.9)",
-              borderRight: "1.5px solid rgba(255,85,62,0.9)",
-            }}
-          />
-          {/* Scanning line */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={
-              isProcessing
-                ? { top: [`${y - 35}px`, `${y + 35}px`, `${y - 35}px`], opacity: [0, 0.5, 0.5, 0] }
-                : { opacity: 0 }
-            }
-            transition={
-              isProcessing
-                ? { duration: 2.2, repeat: Infinity, ease: "easeInOut", times: [0, 0.45, 0.9, 1] }
-                : { duration: 0.25 }
-            }
-            className="fixed z-[82] pointer-events-none"
-            style={{
-              left: x - 190, width: 380, height: 1,
-              background: "linear-gradient(to right, transparent, rgba(255,85,62,0.65) 20%, rgba(255,85,62,0.65) 80%, transparent)",
-            }}
-          />
-        </>,
-        document.body,
-      )}
+            {/* Corner bracket — top-left */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{
+                opacity: isProcessing ? 0.8 : 0,
+                x: isProcessing ? 0 : 5,
+                y: isProcessing ? 0 : 5,
+              }}
+              transition={{ duration: 0.35, delay: isProcessing ? 0.15 : 0 }}
+              className="fixed z-[82] pointer-events-none"
+              style={{
+                left: x - 212,
+                top: y - 66,
+                width: 14,
+                height: 14,
+                borderTop: "1.5px solid rgba(255,85,62,0.9)",
+                borderLeft: "1.5px solid rgba(255,85,62,0.9)",
+              }}
+            />
+            {/* Corner bracket — top-right */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{
+                opacity: isProcessing ? 0.8 : 0,
+                x: isProcessing ? 0 : -5,
+                y: isProcessing ? 0 : 5,
+              }}
+              transition={{ duration: 0.35, delay: isProcessing ? 0.15 : 0 }}
+              className="fixed z-[82] pointer-events-none"
+              style={{
+                left: x + 198,
+                top: y - 66,
+                width: 14,
+                height: 14,
+                borderTop: "1.5px solid rgba(255,85,62,0.9)",
+                borderRight: "1.5px solid rgba(255,85,62,0.9)",
+              }}
+            />
+            {/* Corner bracket — bottom-left */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{
+                opacity: isProcessing ? 0.8 : 0,
+                x: isProcessing ? 0 : 5,
+                y: isProcessing ? 0 : -5,
+              }}
+              transition={{ duration: 0.35, delay: isProcessing ? 0.15 : 0 }}
+              className="fixed z-[82] pointer-events-none"
+              style={{
+                left: x - 212,
+                top: y + 52,
+                width: 14,
+                height: 14,
+                borderBottom: "1.5px solid rgba(255,85,62,0.9)",
+                borderLeft: "1.5px solid rgba(255,85,62,0.9)",
+              }}
+            />
+            {/* Corner bracket — bottom-right */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{
+                opacity: isProcessing ? 0.8 : 0,
+                x: isProcessing ? 0 : -5,
+                y: isProcessing ? 0 : -5,
+              }}
+              transition={{ duration: 0.35, delay: isProcessing ? 0.15 : 0 }}
+              className="fixed z-[82] pointer-events-none"
+              style={{
+                left: x + 198,
+                top: y + 52,
+                width: 14,
+                height: 14,
+                borderBottom: "1.5px solid rgba(255,85,62,0.9)",
+                borderRight: "1.5px solid rgba(255,85,62,0.9)",
+              }}
+            />
+            {/* Scanning line */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={
+                isProcessing
+                  ? {
+                      top: [`${y - 35}px`, `${y + 35}px`, `${y - 35}px`],
+                      opacity: [0, 0.5, 0.5, 0],
+                    }
+                  : { opacity: 0 }
+              }
+              transition={
+                isProcessing
+                  ? { duration: 2.2, repeat: Infinity, ease: "easeInOut", times: [0, 0.45, 0.9, 1] }
+                  : { duration: 0.25 }
+              }
+              className="fixed z-[82] pointer-events-none"
+              style={{
+                left: x - 190,
+                width: 380,
+                height: 1,
+                background:
+                  "linear-gradient(to right, transparent, rgba(255,85,62,0.65) 20%, rgba(255,85,62,0.65) 80%, transparent)",
+              }}
+            />
+          </>,
+          document.body
+        )}
     </>
   );
 }

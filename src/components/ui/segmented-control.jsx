@@ -2,7 +2,13 @@ import * as React from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-export function SegmentedControl({ options, value, onChange, className, layoutId = "segmented-control-active" }) {
+export function SegmentedControl({
+  options,
+  value,
+  onChange,
+  className,
+  layoutId = "segmented-control-active",
+}) {
   return (
     <div
       className={cn(

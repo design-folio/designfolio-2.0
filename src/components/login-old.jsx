@@ -12,9 +12,7 @@ import Link from "next/link";
 
 // Yup validation schema
 const LoginValidationSchema = Yup.object().shape({
-  email: Yup.string()
-    .email("Invalid email address")
-    .required("Email is required"),
+  email: Yup.string().email("Invalid email address").required("Email is required"),
   password: Yup.string().required("Password is required"),
 });
 
@@ -31,14 +29,11 @@ export default function Login() {
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       try {
-        const response = await fetch(
-          "https://www.googleapis.com/oauth2/v2/userinfo",
-          {
-            headers: {
-              Authorization: `Bearer ${tokenResponse.access_token}`,
-            },
-          }
-        );
+        const response = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
+          headers: {
+            Authorization: `Bearer ${tokenResponse.access_token}`,
+          },
+        });
         const userData = await response.json();
 
         const data = {
@@ -86,17 +81,10 @@ export default function Login() {
   return (
     <div className="pt-[16px] pb-20">
       <Card>
-        <Text
-          as="h1"
-          size={"p-large"}
-          className="text-landing-heading-text-color font-bold"
-        >
+        <Text as="h1" size={"p-large"} className="text-landing-heading-text-color font-bold">
           Welcome back,
         </Text>
-        <Text
-          size={"p-xsmall"}
-          className="mt-2 text-landing-description-text-color font-medium"
-        >
+        <Text size={"p-xsmall"} className="mt-2 text-landing-description-text-color font-medium">
           Login to your account to access all the features
         </Text>
         <div className="mt-[24px]">
@@ -140,12 +128,7 @@ export default function Login() {
             >
               {({ errors, touched }) => (
                 <Form id="LoginForm">
-                  <Text
-                    as="p"
-                    size={"p-xxsmall"}
-                    className="mt-6 font-medium"
-                    required
-                  >
+                  <Text as="p" size={"p-xxsmall"} className="mt-6 font-medium" required>
                     Email
                   </Text>
 
@@ -166,12 +149,7 @@ export default function Login() {
                     className="error-message text-[14px]"
                   />
 
-                  <Text
-                    as="p"
-                    size={"p-xxsmall"}
-                    className="mt-6 font-medium"
-                    required
-                  >
+                  <Text as="p" size={"p-xxsmall"} className="mt-6 font-medium" required>
                     Password
                   </Text>
 
@@ -229,6 +207,3 @@ export default function Login() {
     </div>
   );
 }
-
-
-

@@ -61,12 +61,8 @@ export function FluidDropdown() {
   const selectedCategory = React.useMemo(() => {
     const asPath = router.asPath;
     // Longer paths first so `/builder?view=ai-tools&...` matches AI tools, not bare `/builder`.
-    const bySpecificity = [...categories].sort(
-      (a, b) => b.navigation.length - a.navigation.length,
-    );
-    return (
-      bySpecificity.find((c) => asPath.startsWith(c.navigation)) ?? categories[0]
-    );
+    const bySpecificity = [...categories].sort((a, b) => b.navigation.length - a.navigation.length);
+    return bySpecificity.find((c) => asPath.startsWith(c.navigation)) ?? categories[0];
   }, [router.asPath]);
 
   useClickAway(dropdownRef, () => setIsOpen(false));
@@ -125,8 +121,7 @@ export function FluidDropdown() {
                     animate={{
                       y:
                         categories.findIndex(
-                          (c) =>
-                            (hoveredCategory || selectedCategory.id) === c.id,
+                          (c) => (hoveredCategory || selectedCategory.id) === c.id
                         ) * 44,
                       height: 44,
                     }}
@@ -137,8 +132,7 @@ export function FluidDropdown() {
                     }}
                   />
                   {categories.map((category) => {
-                    const isActive =
-                      (hoveredCategory || selectedCategory.id) === category.id;
+                    const isActive = (hoveredCategory || selectedCategory.id) === category.id;
                     return (
                       <button
                         key={category.id}
@@ -154,9 +148,7 @@ export function FluidDropdown() {
                           "relative z-10 flex w-full items-center justify-start px-3 h-[44px] text-[13px] font-medium rounded-xl text-left",
                           "transition-colors duration-150",
                           "focus:outline-none cursor-pointer",
-                          isActive
-                            ? "text-foreground"
-                            : "text-muted-foreground",
+                          isActive ? "text-foreground" : "text-muted-foreground"
                         )}
                       >
                         <div className="flex items-center justify-start w-full">

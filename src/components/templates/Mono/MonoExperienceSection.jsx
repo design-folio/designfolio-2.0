@@ -52,7 +52,16 @@ function ExperienceDescription({ desc }) {
                   <span
                     key={charIndex}
                     className={cls}
-                    style={c.highlight ? { backgroundColor: "#f9daa3", borderRadius: "0.125rem", padding: "0.125rem 0", color: "black" } : undefined}
+                    style={
+                      c.highlight
+                        ? {
+                            backgroundColor: "#f9daa3",
+                            borderRadius: "0.125rem",
+                            padding: "0.125rem 0",
+                            color: "black",
+                          }
+                        : undefined
+                    }
                   >
                     {c.ch}
                   </span>
@@ -82,7 +91,7 @@ export default function MonoExperienceSection({ isEditing }) {
         openNewWork();
       }
     },
-    [setSelectedWork, openSidebar, openNewWork],
+    [setSelectedWork, openSidebar, openNewWork]
   );
 
   if (!isEditing && experiences.length === 0) return null;
@@ -121,11 +130,23 @@ export default function MonoExperienceSection({ isEditing }) {
       {experiences.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 px-4 text-center rounded-2xl border border-dashed border-black/10 dark:border-white/10 bg-background backdrop-blur-sm">
           <div className="w-12 h-12 rounded-full bg-black/[0.03] dark:bg-white/[0.03] flex items-center justify-center mb-4">
-            <svg className="w-6 h-6 text-[#7A736C] dark:text-[#9E9893]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 13.255A23.193 23.193 0 0112 15c-3.183 0-6.22-.64-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            <svg
+              className="w-6 h-6 text-[#7A736C] dark:text-[#9E9893]"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M21 13.255A23.193 23.193 0 0112 15c-3.183 0-6.22-.64-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+              />
             </svg>
           </div>
-          <h3 className="text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] mb-1">No experience yet</h3>
+          <h3 className="text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] mb-1">
+            No experience yet
+          </h3>
           <p className="text-[13px] text-[#7A736C] dark:text-[#9E9893] max-w-[250px] mb-5">
             Add your work experience to showcase your career journey.
           </p>
@@ -151,7 +172,10 @@ export default function MonoExperienceSection({ isEditing }) {
                     variant="outline"
                     size="sm"
                     className="h-7 w-7 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
-                    onClick={(e) => { e.stopPropagation(); handleOpenWorkSidebar(exp); }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleOpenWorkSidebar(exp);
+                    }}
                   >
                     <Pencil className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
                   </Button>

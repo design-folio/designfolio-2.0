@@ -12,7 +12,6 @@ import { UnsavedChangesDialog } from "../ui/UnsavedChangesDialog";
 import { sidebars } from "@/lib/constant";
 import { WorkValidationSchema as validationSchema } from "@/lib/validationSchemas";
 
-
 // Generate year options
 const yearOptions = [];
 for (let year = 1998; year <= 2030; year++) {
@@ -92,8 +91,8 @@ export default function AddWork() {
       );
     }
 
-    const originalEndMonth = selectedWork.currentlyWorking ? "" : (selectedWork.endMonth || "");
-    const originalEndYear = selectedWork.currentlyWorking ? "" : (selectedWork.endYear || "");
+    const originalEndMonth = selectedWork.currentlyWorking ? "" : selectedWork.endMonth || "";
+    const originalEndYear = selectedWork.currentlyWorking ? "" : selectedWork.endYear || "";
 
     return (
       v.role !== (selectedWork.role || "") ||
@@ -160,7 +159,7 @@ export default function AddWork() {
 
   const renderFormContent = () => (
     <Formik
-      key={selectedWork?._id || 'new'}
+      key={selectedWork?._id || "new"}
       innerRef={formikRef}
       enableReinitialize
       initialValues={{
@@ -169,12 +168,8 @@ export default function AddWork() {
         description: normalizeDescription(selectedWork?.description),
         startMonth: selectedWork?.startMonth ?? "",
         startYear: selectedWork?.startYear ?? "",
-        endMonth: selectedWork?.currentlyWorking
-          ? ""
-          : selectedWork?.endMonth ?? "",
-        endYear: selectedWork?.currentlyWorking
-          ? ""
-          : selectedWork?.endYear ?? "",
+        endMonth: selectedWork?.currentlyWorking ? "" : (selectedWork?.endMonth ?? ""),
+        endYear: selectedWork?.currentlyWorking ? "" : (selectedWork?.endYear ?? ""),
         currentlyWorking: selectedWork?.currentlyWorking ?? false,
       }}
       validationSchema={validationSchema}
@@ -197,9 +192,7 @@ export default function AddWork() {
         setLoading(true);
 
         if (!!selectedWork?.role) {
-          const index = userDetails?.experiences.findIndex(
-            (job) => job._id === selectedWork._id
-          );
+          const index = userDetails?.experiences.findIndex((job) => job._id === selectedWork._id);
           let works = userDetails?.experiences;
           works[index] = {
             ...values,
@@ -214,9 +207,15 @@ export default function AddWork() {
           let insertIdx = list.length;
           for (let i = 0; i < list.length; i++) {
             const cur = list[i];
-            if (newExp.currentlyWorking && !cur.currentlyWorking) { insertIdx = i; break; }
+            if (newExp.currentlyWorking && !cur.currentlyWorking) {
+              insertIdx = i;
+              break;
+            }
             if (!newExp.currentlyWorking && cur.currentlyWorking) continue;
-            if ((newExp.startYear || 0) > (cur.startYear || 0)) { insertIdx = i; break; }
+            if ((newExp.startYear || 0) > (cur.startYear || 0)) {
+              insertIdx = i;
+              break;
+            }
           }
           list.splice(insertIdx, 0, newExp);
           payload = { experiences: list };
@@ -232,7 +231,10 @@ export default function AddWork() {
       }}
     >
       {({ isSubmitting, errors, touched, values, setFieldValue }) => {
-        useEffect(() => { setEditingValues(values); }, [values]);
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        useEffect(() => {
+          setEditingValues(values);
+        }, [values]);
 
         return (
           <Form id="workForm" className="flex flex-col h-full">
@@ -252,11 +254,7 @@ export default function AddWork() {
                     />
                   )}
                 </Field>
-                <ErrorMessage
-                  name="role"
-                  component="div"
-                  className="error-message"
-                />
+                <ErrorMessage name="role" component="div" className="error-message" />
               </div>
               <Text size={"p-xxsmall"} className="font-medium mt-4" required>
                 Name of the Company
@@ -272,11 +270,7 @@ export default function AddWork() {
                   />
                 )}
               </Field>
-              <ErrorMessage
-                name="company"
-                component="div"
-                className="error-message"
-              />
+              <ErrorMessage name="company" component="div" className="error-message" />
               <Text size={"p-xxsmall"} className="font-medium mt-4" required>
                 Start Date
               </Text>
@@ -290,11 +284,7 @@ export default function AddWork() {
                     <option value="">Choose Month</option>
                     {monthOptions}
                   </Field>
-                  <ErrorMessage
-                    name="startMonth"
-                    component="div"
-                    className="error-message"
-                  />
+                  <ErrorMessage name="startMonth" component="div" className="error-message" />
                 </div>
 
                 <div className="flex-1 select-container">
@@ -306,11 +296,7 @@ export default function AddWork() {
                     <option value="">Choose Year</option>
                     {yearOptions}
                   </Field>
-                  <ErrorMessage
-                    name="startYear"
-                    component="div"
-                    className="error-message"
-                  />
+                  <ErrorMessage name="startYear" component="div" className="error-message" />
                 </div>
               </div>
 
@@ -334,11 +320,7 @@ export default function AddWork() {
                       <option value="">Choose Month</option>
                       {monthOptions}
                     </Field>
-                    <ErrorMessage
-                      name="endMonth"
-                      component="div"
-                      className="error-message"
-                    />
+                    <ErrorMessage name="endMonth" component="div" className="error-message" />
                   </div>
 
                   <div className="flex-1 select-container">
@@ -351,11 +333,7 @@ export default function AddWork() {
                       <option value="">Choose Year</option>
                       {yearOptions}
                     </Field>
-                    <ErrorMessage
-                      name="endYear"
-                      component="div"
-                      className="error-message"
-                    />
+                    <ErrorMessage name="endYear" component="div" className="error-message" />
                   </div>
                 </div>
               </div>
@@ -374,11 +352,7 @@ export default function AddWork() {
                   }}
                 />
 
-                <Text
-                  size={"p-xxsmall"}
-                  className="font-medium"
-                  required={values.currentlyWorking}
-                >
+                <Text size={"p-xxsmall"} className="font-medium" required={values.currentlyWorking}>
                   I am currently Working here{" "}
                 </Text>
               </label>
@@ -402,8 +376,9 @@ export default function AddWork() {
             </div>
 
             <div
-              className={`flex gap-2 py-3 px-6 border-t border-border ${selectedWork?.company ? "justify-between" : "justify-end"
-                }`}
+              className={`flex gap-2 py-3 px-6 border-t border-border ${
+                selectedWork?.company ? "justify-between" : "justify-end"
+              }`}
             >
               {selectedWork?.company && (
                 <Button
@@ -417,16 +392,12 @@ export default function AddWork() {
               )}
 
               <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  type="button"
-                  onClick={handleCancel}
-                >Cancel</Button>
-                <Button
-                  type="submit"
-                  form="workForm"
-                  disabled={loading}
-                >{loading ? "Saving…" : "Save"}</Button>
+                <Button variant="outline" type="button" onClick={handleCancel}>
+                  Cancel
+                </Button>
+                <Button type="submit" form="workForm" disabled={loading}>
+                  {loading ? "Saving…" : "Save"}
+                </Button>
               </div>
             </div>
           </Form>
@@ -442,7 +413,12 @@ export default function AddWork() {
       {renderFormContent()}
 
       <UnsavedChangesDialog
-        open={showUnsavedWarning && isOpen && !isSwitchingSidebar && pendingSidebarAction?.type === "close"}
+        open={
+          showUnsavedWarning &&
+          isOpen &&
+          !isSwitchingSidebar &&
+          pendingSidebarAction?.type === "close"
+        }
         onOpenChange={(open) => {
           if (!open) {
             handleCancelDiscardSidebar();

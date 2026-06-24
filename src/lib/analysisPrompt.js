@@ -34,12 +34,8 @@ Provide a clear, balanced 2-3 sentence overview of the offer, including the perc
 } roles in ${data.country}]
 
 # Market Context
-- Industry Standards: [Provide specific salary ranges for ${
-  data.position
-} roles in ${data.country}]
-- Company Position: [${
-  data.company
-}'s market position and compensation practices]
+- Industry Standards: [Provide specific salary ranges for ${data.position} roles in ${data.country}]
+- Company Position: [${data.company}'s market position and compensation practices]
 - Market Trends: [Current trends affecting this role and compensation]
 
 # Negotiation Strategy

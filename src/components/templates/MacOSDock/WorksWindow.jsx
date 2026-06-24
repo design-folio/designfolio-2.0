@@ -63,16 +63,13 @@ const WorksWindow = ({
         </div>
         <div className="flex flex-col gap-1.5 px-2">
           <div className="flex items-center gap-2 text-[10px] text-[#555] cursor-pointer hover:text-[#222]">
-            <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57] shadow-sm" />{" "}
-            Work
+            <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57] shadow-sm" /> Work
           </div>
           <div className="flex items-center gap-2 text-[10px] text-[#555] cursor-pointer hover:text-[#222]">
-            <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e] shadow-sm" />{" "}
-            Personal
+            <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e] shadow-sm" /> Personal
           </div>
           <div className="flex items-center gap-2 text-[10px] text-[#555] cursor-pointer hover:text-[#222]">
-            <div className="w-2.5 h-2.5 rounded-full bg-[#28c841] shadow-sm" />{" "}
-            Important
+            <div className="w-2.5 h-2.5 rounded-full bg-[#28c841] shadow-sm" /> Important
           </div>
         </div>
       </div>
@@ -95,8 +92,7 @@ const WorksWindow = ({
           <Alert className="max-w-4xl mx-auto mb-6 bg-blue-50/50 border-blue-200/50 text-blue-700 py-2 shadow-sm flex items-center gap-2 [&>svg]:static [&>svg]:!left-auto [&>svg]:!top-auto [&>svg~*]:!pl-0">
             <Info size={14} className="text-blue-500 shrink-0" />
             <span className="text-xs font-medium">
-              You can re-arrange projects by dragging them into your preferred
-              order.
+              You can re-arrange projects by dragging them into your preferred order.
             </span>
           </Alert>
         )}

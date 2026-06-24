@@ -11,11 +11,7 @@ const SelectField = ({ options, theme, placeholder = "Select", ...props }) => {
     <components.Option {...props}>
       <div className={`flex gap-2 items-center text-black dark:!text-black`}>
         {data.image && (
-          <img
-            src={data.image}
-            alt=""
-            style={{ width: 20, height: 20, marginRight: 8 }}
-          />
+          <img src={data.image} alt="" style={{ width: 20, height: 20, marginRight: 8 }} />
         )}
         {props.children}
       </div>
@@ -29,19 +25,10 @@ const SelectField = ({ options, theme, placeholder = "Select", ...props }) => {
   const CustomMultiValue = (props) => {
     // Directly use the default MultiValue and MultiValueRemove components for layout and functionality
     return (
-      <components.MultiValue
-        {...props}
-        className={"bg-[#E6E6E6] dark:bg-[#30323D]"}
-      >
-        <div
-          className={`flex items-center !rounded-none dark:text-[#E9EAEB] text-black`}
-        >
+      <components.MultiValue {...props} className={"bg-[#E6E6E6] dark:bg-[#30323D]"}>
+        <div className={`flex items-center !rounded-none dark:text-[#E9EAEB] text-black`}>
           {props.data.image && (
-            <img
-              src={props.data.image}
-              alt=""
-              style={{ width: 20, height: 20, marginRight: 8 }}
-            />
+            <img src={props.data.image} alt="" style={{ width: 20, height: 20, marginRight: 8 }} />
           )}
           {props.children}
         </div>

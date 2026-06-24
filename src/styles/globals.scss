@@ -37,8 +37,7 @@
     --secondary-border-hover: #cdd1d8;
     --primary-border: hsl(var(--primary));
     --primary-border: hsl(
-      from hsl(var(--primary)) h s
-        calc(l + var(--opaque-button-border-intensity)) / alpha
+      from hsl(var(--primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha
     );
     --muted: 38 14% 90%;
     --muted-foreground: 0 0% 35%;
@@ -84,12 +83,11 @@
 
     /* Font families - using Next.js font variables from _app.jsx */
     --font-sans:
-      var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-      sans-serif;
+      var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     --font-serif: var(--font-inter), Georgia, serif;
     --font-heading:
-      var(--font-eudoxus), var(--font-gsans), -apple-system, BlinkMacSystemFont,
-      "Segoe UI", Roboto, sans-serif;
+      var(--font-eudoxus), var(--font-gsans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      sans-serif;
     --font-mono: Menlo, Monaco, "Courier New", monospace;
 
     /* Tracking and spacing */
@@ -105,15 +103,13 @@
     /* Fallback for older browsers - computed borders */
     --sidebar-primary-border: hsl(var(--sidebar-primary));
     --sidebar-primary-border: hsl(
-      from hsl(var(--sidebar-primary)) h s
-        calc(l + var(--opaque-button-border-intensity)) / alpha
+      from hsl(var(--sidebar-primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha
     );
 
     /* Fallback for older browsers */
     --sidebar-accent-border: hsl(var(--sidebar-accent));
     --sidebar-accent-border: hsl(
-      from hsl(var(--sidebar-accent)) h s
-        calc(l + var(--opaque-button-border-intensity)) / alpha
+      from hsl(var(--sidebar-accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha
     );
 
     /* Note: --primary-border and --secondary-border are already defined above with existing values */
@@ -121,22 +117,19 @@
     /* Fallback for older browsers */
     --muted-border: hsl(var(--muted));
     --muted-border: hsl(
-      from hsl(var(--muted)) h s
-        calc(l + var(--opaque-button-border-intensity)) / alpha
+      from hsl(var(--muted)) h s calc(l + var(--opaque-button-border-intensity)) / alpha
     );
 
     /* Fallback for older browsers */
     --accent-border: hsl(var(--accent));
     --accent-border: hsl(
-      from hsl(var(--accent)) h s
-        calc(l + var(--opaque-button-border-intensity)) / alpha
+      from hsl(var(--accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha
     );
 
     /* Fallback for older browsers */
     --destructive-border: hsl(var(--destructive));
     --destructive-border: hsl(
-      from hsl(var(--destructive)) h s
-        calc(l + var(--opaque-button-border-intensity)) / alpha
+      from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha
     );
     /* Elevation system */
     --elevate-1: rgba(0, 0, 0, 0.03);
@@ -144,18 +137,11 @@
     /* Shadow system */
     --shadow-2xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.05);
     --shadow-xs: 0px 1px 3px 0px hsl(0 0% 0% / 0.08);
-    --shadow-sm:
-      0px 2px 4px -1px hsl(0 0% 0% / 0.06), 0px 1px 2px -1px hsl(0 0% 0% / 0.04);
-    --shadow:
-      0px 4px 6px -1px hsl(0 0% 0% / 0.08), 0px 2px 4px -2px hsl(0 0% 0% / 0.05);
-    --shadow-md:
-      0px 6px 12px -2px hsl(0 0% 0% / 0.1), 0px 3px 6px -3px hsl(0 0% 0% / 0.07);
-    --shadow-lg:
-      0px 10px 20px -3px hsl(0 0% 0% / 0.12),
-      0px 4px 8px -4px hsl(0 0% 0% / 0.08);
-    --shadow-xl:
-      0px 20px 30px -5px hsl(0 0% 0% / 0.15),
-      0px 8px 12px -6px hsl(0 0% 0% / 0.1);
+    --shadow-sm: 0px 2px 4px -1px hsl(0 0% 0% / 0.06), 0px 1px 2px -1px hsl(0 0% 0% / 0.04);
+    --shadow: 0px 4px 6px -1px hsl(0 0% 0% / 0.08), 0px 2px 4px -2px hsl(0 0% 0% / 0.05);
+    --shadow-md: 0px 6px 12px -2px hsl(0 0% 0% / 0.1), 0px 3px 6px -3px hsl(0 0% 0% / 0.07);
+    --shadow-lg: 0px 10px 20px -3px hsl(0 0% 0% / 0.12), 0px 4px 8px -4px hsl(0 0% 0% / 0.08);
+    --shadow-xl: 0px 20px 30px -5px hsl(0 0% 0% / 0.15), 0px 8px 12px -6px hsl(0 0% 0% / 0.1);
     --shadow-2xl: 0px 30px 50px -8px hsl(0 0% 0% / 0.2);
 
     /* Skills banner */
@@ -170,8 +156,8 @@
       #f6f3f0 100%
     );
     --skills-banner-shadow:
-      inset 0 2px 3px rgba(255, 255, 255, 0.7),
-      inset 0 -2px 3px rgba(0, 0, 0, 0.04), 0 1px 1px rgba(0, 0, 0, 0.02);
+      inset 0 2px 3px rgba(255, 255, 255, 0.7), inset 0 -2px 3px rgba(0, 0, 0, 0.04),
+      0 1px 1px rgba(0, 0, 0, 0.02);
   }
 
   [data-theme="dark"] {
@@ -243,13 +229,9 @@
     /* Shadow system */
     --shadow-2xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.4);
     --shadow-xs: 0px 1px 3px 0px hsl(0 0% 0% / 0.5);
-    --shadow-sm:
-      0px 2px 4px -1px hsl(0 0% 0% / 0.45), 0px 1px 2px -1px hsl(0 0% 0% / 0.35);
-    --shadow:
-      0px 4px 6px -1px hsl(0 0% 0% / 0.5), 0px 2px 4px -2px hsl(0 0% 0% / 0.4);
-    --shadow-md:
-      0px 6px 12px -2px hsl(0 0% 0% / 0.55),
-      0px 3px 6px -3px hsl(0 0% 0% / 0.45);
+    --shadow-sm: 0px 2px 4px -1px hsl(0 0% 0% / 0.45), 0px 1px 2px -1px hsl(0 0% 0% / 0.35);
+    --shadow: 0px 4px 6px -1px hsl(0 0% 0% / 0.5), 0px 2px 4px -2px hsl(0 0% 0% / 0.4);
+    --shadow-md: 0px 6px 12px -2px hsl(0 0% 0% / 0.55), 0px 3px 6px -3px hsl(0 0% 0% / 0.45);
 
     /* Skills banner for dark mode */
     --skills-banner-bg: linear-gradient(
@@ -263,13 +245,10 @@
       #1a1c22 100%
     );
     --skills-banner-shadow:
-      inset 0 2px 3px rgba(255, 255, 255, 0.03),
-      inset 0 -2px 3px rgba(0, 0, 0, 0.2), 0 1px 1px rgba(0, 0, 0, 0.3);
-    --shadow-lg:
-      0px 10px 20px -3px hsl(0 0% 0% / 0.6), 0px 4px 8px -4px hsl(0 0% 0% / 0.5);
-    --shadow-xl:
-      0px 20px 30px -5px hsl(0 0% 0% / 0.65),
-      0px 8px 12px -6px hsl(0 0% 0% / 0.55);
+      inset 0 2px 3px rgba(255, 255, 255, 0.03), inset 0 -2px 3px rgba(0, 0, 0, 0.2),
+      0 1px 1px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0px 10px 20px -3px hsl(0 0% 0% / 0.6), 0px 4px 8px -4px hsl(0 0% 0% / 0.5);
+    --shadow-xl: 0px 20px 30px -5px hsl(0 0% 0% / 0.65), 0px 8px 12px -6px hsl(0 0% 0% / 0.55);
     --shadow-2xl: 0px 30px 50px -8px hsl(0 0% 0% / 0.7);
   }
 
@@ -348,20 +327,26 @@ body[data-admin="true"] [cmdk-item] {
 }
 
 /* Make cursor utility classes consume the CSS variables so custom cursor SVGs apply */
-.cursor-pointer    { cursor: var(--cursor-pointer); }
-.cursor-grab       { cursor: var(--cursor-grab); }
-.cursor-grabbing   { cursor: var(--cursor-grabbing); }
-.cursor-not-allowed { cursor: var(--cursor-not-allowed); }
+.cursor-pointer {
+  cursor: var(--cursor-pointer);
+}
+.cursor-grab {
+  cursor: var(--cursor-grab);
+}
+.cursor-grabbing {
+  cursor: var(--cursor-grabbing);
+}
+.cursor-not-allowed {
+  cursor: var(--cursor-not-allowed);
+}
 
 [data-slot="kanban-item-handle"],
-[data-slot="kanban-item-handle"]
-  *:not(button):not(a):not(input):not(select):not(textarea) {
+[data-slot="kanban-item-handle"] *:not(button):not(a):not(input):not(select):not(textarea) {
   cursor: grab !important;
 }
 
 [data-slot="kanban-item-handle"]:active,
-[data-slot="kanban-item-handle"]:active
-  *:not(button):not(a):not(input):not(select):not(textarea) {
+[data-slot="kanban-item-handle"]:active *:not(button):not(a):not(input):not(select):not(textarea) {
   cursor: grabbing !important;
 }
 
@@ -1111,11 +1096,7 @@ body.cursor-pill-active * {
   }
 
   .marker-highlight {
-    background: linear-gradient(
-      to right,
-      rgba(255, 107, 74, 0.15),
-      rgba(255, 107, 74, 0.15)
-    );
+    background: linear-gradient(to right, rgba(255, 107, 74, 0.15), rgba(255, 107, 74, 0.15));
     background-size: 0% 100%;
     background-repeat: no-repeat;
     background-position: left center;
@@ -1288,11 +1269,7 @@ body.cursor-pill-active * {
 }
 
 [data-theme="dark"] .bottom-nav-gradient {
-  background: linear-gradient(
-    to bottom,
-    transparent 0%,
-    var(--df-bg-color) 100%
-  );
+  background: linear-gradient(to bottom, transparent 0%, var(--df-bg-color) 100%);
 }
 
 /* Next.js root container */

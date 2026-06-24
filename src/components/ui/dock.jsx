@@ -2,12 +2,7 @@ import * as React from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export default function Dock({ items, className }) {
   const [hovered, setHovered] = React.useState(null);
@@ -85,4 +80,3 @@ export default function Dock({ items, className }) {
     </div>
   );
 }
-

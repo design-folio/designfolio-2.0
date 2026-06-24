@@ -13,8 +13,7 @@ const SwitchToggleThemeDemo = ({ changeTheme }) => {
     // Initial check
     setIsDark(document.documentElement.dataset.theme === "dark");
 
-    const syncTheme = () =>
-      setIsDark(document.documentElement.dataset.theme === "dark");
+    const syncTheme = () => setIsDark(document.documentElement.dataset.theme === "dark");
 
     const observer = new MutationObserver(syncTheme);
 
@@ -28,8 +27,7 @@ const SwitchToggleThemeDemo = ({ changeTheme }) => {
 
   const playHeartbeat = useCallback(() => {
     try {
-      const audioContext =
-        new window.AudioContext() || window.webkitAudioContext();
+      const audioContext = new window.AudioContext() || window.webkitAudioContext();
       const now = audioContext.currentTime;
 
       const osc1 = audioContext.createOscillator();
@@ -51,7 +49,7 @@ const SwitchToggleThemeDemo = ({ changeTheme }) => {
       gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
       osc2.start(now + 0.12);
       osc2.stop(now + 0.22);
-    } catch (e) { }
+    } catch (e) {}
   }, []);
 
   const handleCheckedChange = async (checked) => {
@@ -73,15 +71,14 @@ const SwitchToggleThemeDemo = ({ changeTheme }) => {
     }).ready;
 
     if (containerRef.current) {
-      const { left, top, width, height } =
-        containerRef.current.getBoundingClientRect();
+      const { left, top, width, height } = containerRef.current.getBoundingClientRect();
 
       const centerX = left + width / 2;
       const centerY = top + height / 2;
 
       const maxDistance = Math.hypot(
         Math.max(centerX, window.innerWidth - centerX),
-        Math.max(centerY, window.innerHeight - centerY),
+        Math.max(centerY, window.innerHeight - centerY)
       );
 
       document.documentElement.animate(
@@ -95,23 +92,21 @@ const SwitchToggleThemeDemo = ({ changeTheme }) => {
           duration: 700,
           easing: "ease-in-out",
           pseudoElement: "::view-transition-new(root)",
-        },
+        }
       );
     }
   };
 
   return (
     <div className="flex items-center justify-between p-4 border border-black/10 dark:border-white/10 rounded-[16px] bg-black/[0.02] dark:bg-white/[0.02]">
-      <div className="text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
-        Appearance
-      </div>
+      <div className="text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">Appearance</div>
 
       <div ref={containerRef} className="group inline-flex items-center gap-2">
         <span
           id={`${id}-light`}
           className={cn(
             "cursor-pointer text-left text-sm font-medium transition-colors",
-            isDark ? "text-[#7A736C]" : "text-[#1A1A1A]",
+            isDark ? "text-[#7A736C]" : "text-[#1A1A1A]"
           )}
           aria-controls={id}
           onClick={() => handleCheckedChange(false)}
@@ -131,7 +126,7 @@ const SwitchToggleThemeDemo = ({ changeTheme }) => {
           id={`${id}-dark`}
           className={cn(
             "cursor-pointer text-right text-sm font-medium transition-colors",
-            !isDark ? "text-[#7A736C]" : "text-[#1A1A1A]",
+            !isDark ? "text-[#7A736C]" : "text-[#1A1A1A]"
           )}
           aria-controls={id}
           onClick={() => handleCheckedChange(true)}

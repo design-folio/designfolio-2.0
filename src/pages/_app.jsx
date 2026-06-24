@@ -202,8 +202,7 @@ function ShellClassManager({ isSidebarRoute }) {
   const router = useRouter();
 
   useEffect(() => {
-    const isRetroOsBuilder =
-      router.pathname === "/builder" && template === TEMPLATE_IDS.RETRO_OS;
+    const isRetroOsBuilder = router.pathname === "/builder" && template === TEMPLATE_IDS.RETRO_OS;
     document.documentElement.classList.toggle(
       "sidebar-layout",
       isSidebarRoute && !isRetroOsBuilder
@@ -217,8 +216,7 @@ function ShellClassManager({ isSidebarRoute }) {
 function ConditionalHeader({ dfToken, hideHeader, isSidebarRoute }) {
   const { template } = useGlobalContext();
   const router = useRouter();
-  const isRetroOsBuilder =
-    router.pathname === "/builder" && template === TEMPLATE_IDS.RETRO_OS;
+  const isRetroOsBuilder = router.pathname === "/builder" && template === TEMPLATE_IDS.RETRO_OS;
   const hideOnDesktop = isSidebarRoute && !isRetroOsBuilder;
   return (
     <div className={hideOnDesktop ? "md:hidden" : ""}>
@@ -274,7 +272,6 @@ function MyApp({ Component, pageProps, dfToken, hideHeader }) {
     }
   }, [router.pathname]);
 
-
   useEffect(() => {
     const sessionCount = Number(localStorage.getItem("session_count") || "0");
     const newSessionCount = sessionCount + 1;
@@ -298,10 +295,7 @@ function MyApp({ Component, pageProps, dfToken, hideHeader }) {
     <>
       <Head>
         {/* Google Analytics Script */}
-        <script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=G-QBX45FVX2Z"
-        ></script>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-QBX45FVX2Z"></script>
         <script>
           {`
             window.dataLayer = window.dataLayer || [];

@@ -15,15 +15,13 @@ export const _postGenerateCoverLetter = (jobId, profileId) =>
 
 // GET /documents — list saved docs (no content field). Optional filters: { jobId, type }.
 // type: 'resume' | 'coverLetter'. Used by the per-job versions list and the global Documents area.
-export const _getDocuments = (params = {}) =>
-  axiosInstance.get("/documents", { params });
+export const _getDocuments = (params = {}) => axiosInstance.get("/documents", { params });
 
 // GET /documents/:id — full document including content + styling.
 export const _getDocument = (id) => axiosInstance.get(`/documents/${id}`);
 
 // PATCH /documents/:id — persist edits. payload: { content?, styling? }. Free.
-export const _patchDocument = (id, payload) =>
-  axiosInstance.patch(`/documents/${id}`, payload);
+export const _patchDocument = (id, payload) => axiosInstance.patch(`/documents/${id}`, payload);
 
 // DELETE /documents/:id — Free.
 export const _deleteDocument = (id) => axiosInstance.delete(`/documents/${id}`);

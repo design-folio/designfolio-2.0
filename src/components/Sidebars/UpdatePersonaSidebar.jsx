@@ -28,10 +28,7 @@ export default function UpdatePersonaSidebar() {
 
   const { data: roles = [], isLoading: rolesLoading } = useQuery({
     queryKey: ["personas"],
-    queryFn: () =>
-      _getPersonas().then((res) =>
-        (res?.data?.personas || []).map(normalizePersona)
-      ),
+    queryFn: () => _getPersonas().then((res) => (res?.data?.personas || []).map(normalizePersona)),
     staleTime: Infinity, // personas never change during a session
   });
 

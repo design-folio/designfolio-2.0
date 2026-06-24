@@ -23,7 +23,7 @@ export default function Tools({ userDetails, edit }) {
       transition={{
         duration: 0.7,
         ease: [0.21, 0.47, 0.32, 0.98],
-        delay: 0.1
+        delay: 0.1,
       }}
     >
       <Section

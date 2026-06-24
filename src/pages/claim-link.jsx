@@ -23,7 +23,6 @@ export default function Index() {
   );
 }
 
-
 export async function getServerSideProps(context) {
   const baseProps = await getAuthServerSideProps(context);
   return {

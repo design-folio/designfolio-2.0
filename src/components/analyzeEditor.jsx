@@ -47,8 +47,7 @@ export default function AnalyzeEditor() {
             class: Paragraph,
             inlineToolbar: true,
             config: {
-              placeholder:
-                "Type here or copy-paste at least 300 words of content.",
+              placeholder: "Type here or copy-paste at least 300 words of content.",
             },
           },
           list: {
@@ -120,9 +119,7 @@ export default function AnalyzeEditor() {
       >
         <div
           ref={editorContainer}
-          className={
-            "block w-[100%] mx-0 my-auto h-full relative overflow-auto"
-          }
+          className={"block w-[100%] mx-0 my-auto h-full relative overflow-auto"}
         >
           {/* {!isDataPresent && (
           <div className="relative">

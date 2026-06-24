@@ -102,8 +102,8 @@ export function RichText({ content }) {
             const fullImageUrl = imageUrl.startsWith("//")
               ? `https:${imageUrl}`
               : imageUrl.startsWith("http")
-              ? imageUrl
-              : `https:${imageUrl}`;
+                ? imageUrl
+                : `https:${imageUrl}`;
 
             return (
               <div key={index} className="my-8 md:my-12 relative">

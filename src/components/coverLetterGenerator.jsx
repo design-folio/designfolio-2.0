@@ -22,7 +22,13 @@ const validationSchema = Yup.object().shape({
 
 const RESULT_STORAGE_KEY = "optimize-resume";
 
-export default function CoverLetterGenerator({ onViewChange, onToolUsed, onStartNewAnalysis, guestUsageLimitReached = false, skipRestore = false }) {
+export default function CoverLetterGenerator({
+  onViewChange,
+  onToolUsed,
+  onStartNewAnalysis,
+  guestUsageLimitReached = false,
+  skipRestore = false,
+}) {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisProgress, setAnalysisProgress] = useState(0);
   const [analysis, setAnalysis] = useState(null);
@@ -90,7 +96,10 @@ export default function CoverLetterGenerator({ onViewChange, onToolUsed, onStart
         onToolUsed?.();
         return;
       }
-      const errorMessage = error?.response?.data?.error || error?.message || "There was an error analyzing your resume.";
+      const errorMessage =
+        error?.response?.data?.error ||
+        error?.message ||
+        "There was an error analyzing your resume.";
       toast.error(errorMessage);
     } finally {
       setIsAnalyzing(false);
@@ -185,16 +194,26 @@ export default function CoverLetterGenerator({ onViewChange, onToolUsed, onStart
                 >
                   <Form id="EmailForm" className="space-y-4">
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-foreground ml-1">Upload Resume (PDF Only)<span className="text-[#FF553E] ml-0.5">*</span></label>
+                      <label className="text-sm font-medium text-foreground ml-1">
+                        Upload Resume (PDF Only)<span className="text-[#FF553E] ml-0.5">*</span>
+                      </label>
                       <ResumeUploader
                         onUpload={(text, file) => handleResumeUpload(text, setFieldValue, file)}
                         disabled={guestUsageLimitReached}
                       />
-                      <ErrorMessage name="resumeText" component="p" className="text-sm text-red-500 ml-1" />
+                      <ErrorMessage
+                        name="resumeText"
+                        component="p"
+                        className="text-sm text-red-500 ml-1"
+                      />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-foreground ml-1">Paste the Job Description<span className="text-[#FF553E] ml-0.5">*</span></label>
-                      <div className={`bg-white dark:bg-white border-2 border-border rounded-2xl hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] transition-all duration-300 ease-out overflow-hidden ${errors.jobDescription && touched.jobDescription ? "border-red-500" : ""}`}>
+                      <label className="text-sm font-medium text-foreground ml-1">
+                        Paste the Job Description<span className="text-[#FF553E] ml-0.5">*</span>
+                      </label>
+                      <div
+                        className={`bg-white dark:bg-white border-2 border-border rounded-2xl hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] transition-all duration-300 ease-out overflow-hidden ${errors.jobDescription && touched.jobDescription ? "border-red-500" : ""}`}
+                      >
                         <Field
                           placeholder="Paste the job description here..."
                           name="jobDescription"
@@ -203,7 +222,11 @@ export default function CoverLetterGenerator({ onViewChange, onToolUsed, onStart
                           autoComplete="off"
                         />
                       </div>
-                      <ErrorMessage name="jobDescription" component="p" className="text-sm text-red-500 ml-1" />
+                      <ErrorMessage
+                        name="jobDescription"
+                        component="p"
+                        className="text-sm text-red-500 ml-1"
+                      />
                     </div>
                     <button
                       type="submit"

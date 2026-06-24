@@ -10,7 +10,8 @@ export const portfolioProjects = [
     imageSrc: "/assets/png/project2.jpg",
   },
   {
-    title: "Boosting user trust & task completion by optimizing doctor video call scheduling, reducing drop-offs",
+    title:
+      "Boosting user trust & task completion by optimizing doctor video call scheduling, reducing drop-offs",
     projectUrl: "https://swati.designfolio.me/project/668693af389ca972e6170b71",
     imageSrc: "/assets/png/project3.png",
   },

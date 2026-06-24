@@ -133,7 +133,7 @@ export function TypeRoom({ questions, onDone, onReset }) {
         {/* Question text — re-mounts on question change for stagger reset */}
         <BlurredStagger
           key={current}
-          text={current === 0 ? (q0?.text || "") : (q1?.text || "")}
+          text={current === 0 ? q0?.text || "" : q1?.text || ""}
           className="text-foreground text-[22px] font-medium leading-snug tracking-tight"
         />
 
@@ -162,10 +162,11 @@ export function TypeRoom({ questions, onDone, onReset }) {
                     key={s.label}
                     data-testid={`suggestion-${s.label.toLowerCase().replace(/\s+/g, "-")}`}
                     onClick={() => setRole(s.label)}
-                    className={`cursor-pointer px-4 py-2 rounded-full border text-[13px] transition-all duration-200 ${role === s.label
-                      ? "bg-foreground text-background border-foreground"
-                      : "border-border text-muted-foreground bg-background dark:bg-foreground/8 hover:border-foreground/30 hover:text-foreground"
-                      }`}
+                    className={`cursor-pointer px-4 py-2 rounded-full border text-[13px] transition-all duration-200 ${
+                      role === s.label
+                        ? "bg-foreground text-background border-foreground"
+                        : "border-border text-muted-foreground bg-background dark:bg-foreground/8 hover:border-foreground/30 hover:text-foreground"
+                    }`}
                   >
                     {s.label}
                   </button>
@@ -205,7 +206,6 @@ export function TypeRoom({ questions, onDone, onReset }) {
               </AnimatePresence>
             </motion.div>
           )}
-
         </AnimatePresence>
       </div>
 
@@ -233,9 +233,13 @@ export function TypeRoom({ questions, onDone, onReset }) {
             className="px-5 py-3 h-auto text-[14px]"
           >
             {isLastStep ? (
-              <>Find matching Jobs <Search /></>
+              <>
+                Find matching Jobs <Search />
+              </>
             ) : (
-              <>Continue <ArrowRight /></>
+              <>
+                Continue <ArrowRight />
+              </>
             )}
           </Button>
         </div>

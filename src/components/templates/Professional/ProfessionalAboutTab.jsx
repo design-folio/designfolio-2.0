@@ -15,11 +15,8 @@ function ProfessionalAboutTab({
   onEditSkills,
   onEditTools,
 }) {
-
   const aboutImages =
-    about?.pegboardImages?.length > 0
-      ? about.pegboardImages
-      : DEFAULT_PEGBOARD_IMAGES;
+    about?.pegboardImages?.length > 0 ? about.pegboardImages : DEFAULT_PEGBOARD_IMAGES;
 
   const storyImageUrls = useMemo(
     () =>
@@ -27,7 +24,7 @@ function ProfessionalAboutTab({
         .map((img) => img?.src || img?.key || "")
         .filter(Boolean)
         .slice(0, 4),
-    [aboutImages],
+    [aboutImages]
   );
 
   const [selectedStoryImage, setSelectedStoryImage] = useState(null);
@@ -75,11 +72,7 @@ function ProfessionalAboutTab({
               onClick={() => setSelectedStoryImage(storyImageUrls[1])}
               className="absolute z-10 h-36 w-36 cursor-pointer overflow-hidden rounded-xl border-4 border-white shadow-lg dark:border-[#2A2520]"
             >
-              <img
-                src={storyImageUrls[1]}
-                alt="Designing"
-                className="h-full w-full object-cover"
-              />
+              <img src={storyImageUrls[1]} alt="Designing" className="h-full w-full object-cover" />
             </motion.div>
           ) : null}
           {storyImageUrls[2] ? (
@@ -154,9 +147,7 @@ function ProfessionalAboutTab({
                     key={index}
                     className="px-3 py-1.5 border border-[#D5D0C6] dark:border-[#3A352E] font-jetbrains text-[14px] text-[#7A736C] dark:text-[#B5AFA5] rounded-full"
                   >
-                    {typeof skill === "string"
-                      ? skill
-                      : skill.label || skill.name || ""}
+                    {typeof skill === "string" ? skill : skill.label || skill.name || ""}
                   </span>
                 ))}
               </div>

@@ -1,12 +1,12 @@
-import React, { useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { motion } from 'framer-motion';
-import BlockRenderer from '@/components/blockRenderer';
-import ProjectInfo from '@/components/projectInfo';
-import ProjectPassword from '@/components/projectPassword';
-import TiptapRenderer from '@/components/tiptapRenderer';
-import { _getProjectDetails } from '@/network/get-request';
-import { containerVariants, itemVariants } from '@/lib/animationVariants';
+import React, { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { motion } from "framer-motion";
+import BlockRenderer from "@/components/blockRenderer";
+import ProjectInfo from "@/components/projectInfo";
+import ProjectPassword from "@/components/projectPassword";
+import TiptapRenderer from "@/components/tiptapRenderer";
+import { _getProjectDetails } from "@/network/get-request";
+import { containerVariants, itemVariants } from "@/lib/animationVariants";
 
 /**
  * Renders project content for the in-place dock window.
@@ -22,7 +22,11 @@ const ProjectContentView = ({ projectId, userDetails }) => {
 
   const shouldFetch = !!projectId && userDetails !== null && !contextProject;
 
-  const { data: fetchedData, isLoading, isFetching } = useQuery({
+  const {
+    data: fetchedData,
+    isLoading,
+    isFetching,
+  } = useQuery({
     queryKey: [`project-${projectId}`],
     queryFn: async () => {
       const response = await _getProjectDetails(projectId, 1);
@@ -105,7 +109,7 @@ const ProjectContentView = ({ projectId, userDetails }) => {
             </motion.div>
             {project?.contentVersion === 2 && project?.tiptapContent ? (
               <motion.div variants={itemVariants}>
-                <TiptapRenderer content={project.tiptapContent} cla/>
+                <TiptapRenderer content={project.tiptapContent} cla />
               </motion.div>
             ) : project?.content ? (
               <motion.div variants={itemVariants}>

@@ -2,28 +2,28 @@ import { _getPaymentDetails, _getDodoPortalUrl } from "@/network/get-request";
 import React, { useEffect, useState } from "react";
 
 const STATUS_LABEL = {
-  active:    'Active',
-  on_hold:   'Payment issue',
-  cancelled: 'Cancelled',
-  expired:   'Expired',
-  paid:      'Active',
+  active: "Active",
+  on_hold: "Payment issue",
+  cancelled: "Cancelled",
+  expired: "Expired",
+  paid: "Active",
 };
 
 const STATUS_COLOR = {
-  active:    { dot: 'bg-[#22C55E]', text: 'text-[#065F46] dark:text-[#4ADE80]' },
-  paid:      { dot: 'bg-[#22C55E]', text: 'text-[#065F46] dark:text-[#4ADE80]' },
-  on_hold:   { dot: 'bg-[#F59E0B]', text: 'text-[#92400E] dark:text-[#FCD34D]' },
-  cancelled: { dot: 'bg-[#EF4444]', text: 'text-[#991B1B] dark:text-[#FCA5A5]' },
-  expired:   { dot: 'bg-[#9CA3AF]', text: 'text-[#6B7280] dark:text-[#9CA3AF]'  },
+  active: { dot: "bg-[#22C55E]", text: "text-[#065F46] dark:text-[#4ADE80]" },
+  paid: { dot: "bg-[#22C55E]", text: "text-[#065F46] dark:text-[#4ADE80]" },
+  on_hold: { dot: "bg-[#F59E0B]", text: "text-[#92400E] dark:text-[#FCD34D]" },
+  cancelled: { dot: "bg-[#EF4444]", text: "text-[#991B1B] dark:text-[#FCA5A5]" },
+  expired: { dot: "bg-[#9CA3AF]", text: "text-[#6B7280] dark:text-[#9CA3AF]" },
 };
 
 const PLAN_LABEL = {
-  qtrly:    'Quarterly',
-  yrly:     'Yearly',
-  '1m':     '1 Month',
-  '3m':     '3 Months',
-  lifetime: 'Lifetime',
-  topup:    'Credits Top-up',
+  qtrly: "Quarterly",
+  yrly: "Yearly",
+  "1m": "1 Month",
+  "3m": "3 Months",
+  lifetime: "Lifetime",
+  topup: "Credits Top-up",
 };
 
 export default function Transaction() {
@@ -46,7 +46,7 @@ export default function Transaction() {
   }
 
   function formatDate(isoDate) {
-    if (!isoDate) return '—';
+    if (!isoDate) return "—";
     return new Date(isoDate).toLocaleDateString("en-US", {
       month: "short",
       day: "2-digit",
@@ -61,7 +61,7 @@ export default function Transaction() {
       const res = await _getDodoPortalUrl();
       window.location.href = res.data.portalUrl;
     } catch (err) {
-      console.error('[Transaction] Portal failed:', err.message);
+      console.error("[Transaction] Portal failed:", err.message);
     } finally {
       setPortalLoading(false);
     }
@@ -69,13 +69,11 @@ export default function Transaction() {
 
   if (!transaction) return null;
 
-  const status = transaction?.status ?? 'paid';
+  const status = transaction?.status ?? "paid";
   const colors = STATUS_COLOR[status] ?? STATUS_COLOR.paid;
   const isDodo = transaction?.aggregator === 2;
-  const planLabel = PLAN_LABEL[transaction?.planType] ?? transaction?.planType ?? 'Pro';
-  const orderId = isDodo
-    ? transaction?.dodoSubscriptionId
-    : transaction?.razorpayOrderID;
+  const planLabel = PLAN_LABEL[transaction?.planType] ?? transaction?.planType ?? "Pro";
+  const orderId = isDodo ? transaction?.dodoSubscriptionId : transaction?.razorpayOrderID;
 
   return (
     <div>
@@ -101,7 +99,7 @@ export default function Transaction() {
         {orderId && (
           <div className="flex items-center justify-between">
             <span className="text-[13px] text-[#7A736C] dark:text-[#B5AFA5]">
-              {isDodo ? 'Subscription ID' : 'Order ID'}
+              {isDodo ? "Subscription ID" : "Order ID"}
             </span>
             <span className="text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] break-all text-right max-w-[60%]">
               {orderId}
@@ -113,14 +111,14 @@ export default function Transaction() {
           <div className="flex items-center gap-1.5">
             <span className={`w-2 h-2 rounded-full ${colors.dot}`} />
             <span className={`text-[13px] font-medium ${colors.text}`}>
-              {STATUS_LABEL[status] ?? 'Active'}
+              {STATUS_LABEL[status] ?? "Active"}
             </span>
           </div>
         </div>
         {transaction?.proExpiresAt && (
           <div className="flex items-center justify-between">
             <span className="text-[13px] text-[#7A736C] dark:text-[#B5AFA5]">
-              {status === 'active' ? 'Renews' : 'Expires'}
+              {status === "active" ? "Renews" : "Expires"}
             </span>
             <span className="text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
               {formatDate(transaction?.proExpiresAt)}
@@ -135,7 +133,7 @@ export default function Transaction() {
         </p>
       )}
 
-      {status === 'on_hold' && (
+      {status === "on_hold" && (
         <p className="text-[12px] text-[#B45309] dark:text-[#FCD34D] mb-4">
           There was an issue with your last payment. Update your payment method to keep access.
         </p>
@@ -148,7 +146,7 @@ export default function Transaction() {
             disabled={portalLoading}
             className="text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] underline underline-offset-2 text-left disabled:opacity-50"
           >
-            {portalLoading ? 'Opening portal…' : 'Manage Subscription'}
+            {portalLoading ? "Opening portal…" : "Manage Subscription"}
           </button>
         )}
         <p className="text-[13px] text-[#7A736C] dark:text-[#B5AFA5]">

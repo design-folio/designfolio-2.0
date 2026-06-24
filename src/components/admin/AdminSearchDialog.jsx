@@ -41,8 +41,7 @@ export function AdminSearchDialog({ open, onOpenChange }) {
 
   const { data, isFetching } = useQuery({
     queryKey: ["admin-search-users", debouncedQuery],
-    queryFn: () =>
-      _getAdminUsers({ search: debouncedQuery, limit: 5 }).then((r) => r.data),
+    queryFn: () => _getAdminUsers({ search: debouncedQuery, limit: 5 }).then((r) => r.data),
     enabled: debouncedQuery.length >= 2,
     staleTime: 30_000,
   });
@@ -76,12 +75,9 @@ export function AdminSearchDialog({ open, onOpenChange }) {
   const users = data?.users ?? [];
   const showUsers = debouncedQuery.length >= 2;
   const filteredNav = query
-    ? NAV_ITEMS.filter((item) =>
-      item.label.toLowerCase().includes(query.toLowerCase())
-    )
+    ? NAV_ITEMS.filter((item) => item.label.toLowerCase().includes(query.toLowerCase()))
     : NAV_ITEMS;
-  const hasResults =
-    filteredNav.length > 0 || (showUsers && users.length > 0);
+  const hasResults = filteredNav.length > 0 || (showUsers && users.length > 0);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -168,7 +164,9 @@ export function AdminSearchDialog({ open, onOpenChange }) {
                             {initials}
                           </div>
                           <div className="flex flex-col min-w-0 flex-1 gap-0.5">
-                            <span className={`text-sm font-medium text-[#1A1A1A] dark:text-[#F0EDE7] truncate leading-tight ${isDeleted ? "line-through opacity-60" : ""}`}>
+                            <span
+                              className={`text-sm font-medium text-[#1A1A1A] dark:text-[#F0EDE7] truncate leading-tight ${isDeleted ? "line-through opacity-60" : ""}`}
+                            >
                               {name}
                             </span>
                             <span className="text-xs text-[#7A736C] dark:text-[#B5AFA5] truncate leading-tight">
@@ -188,7 +186,11 @@ export function AdminSearchDialog({ open, onOpenChange }) {
                                   </span>
                                 )}
                                 {user.username && (
-                                  <ExternalLink size={11} className="text-[#7A736C] dark:text-[#B5AFA5]" aria-hidden="true" />
+                                  <ExternalLink
+                                    size={11}
+                                    className="text-[#7A736C] dark:text-[#B5AFA5]"
+                                    aria-hidden="true"
+                                  />
                                 )}
                               </>
                             )}

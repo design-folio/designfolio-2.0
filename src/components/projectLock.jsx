@@ -8,20 +8,29 @@ export default function ProjectLock({ className }) {
   const { setShowUpgradeModal, setUpgradeModalUnhideProject } = useGlobalContext();
 
   return (
-    <div className={cn("w-full h-full rounded-2xl flex flex-col items-center justify-center p-10 min-h-[400px] gap-4 relative bg-background border border-border shadow-sm", className)}>
+    <div
+      className={cn(
+        "w-full h-full rounded-2xl flex flex-col items-center justify-center p-10 min-h-[400px] gap-4 relative bg-background border border-border shadow-sm",
+        className
+      )}
+    >
       <div className="flex flex-col items-center text-center max-w-xs">
         <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4 bg-muted/80">
           <Crown className="w-8 h-8 text-foreground/70" />
         </div>
 
-        <h3 className="text-xl font-semibold mb-2 text-foreground">
-          Unlock Unlimited Projects
-        </h3>
+        <h3 className="text-xl font-semibold mb-2 text-foreground">Unlock Unlimited Projects</h3>
         <p className="text-sm text-muted-foreground mb-4">
-          You've reached the 2-projects limit on the free plan. Upgrade to PRO to add unlimited projects and unlock all premium features.
+          You&apos;ve reached the 2-projects limit on the free plan. Upgrade to PRO to add unlimited
+          projects and unlock all premium features.
         </p>
 
-        <StardustButton onClick={() => { setUpgradeModalUnhideProject(null); setShowUpgradeModal(true); }}>
+        <StardustButton
+          onClick={() => {
+            setUpgradeModalUnhideProject(null);
+            setShowUpgradeModal(true);
+          }}
+        >
           Upgrade to PRO
         </StardustButton>
 

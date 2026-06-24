@@ -28,10 +28,11 @@ export default function ReviewCard({ review, edit = false, sorting = false }) {
   return (
     <div
       key={review?._id}
-      className={`bg-review-card-bg-color border-2 ${sorting ? 'rounded-2xl p-4' : 'rounded-3xl p-6'} flex flex-col ${sorting ? '' : 'hover-elevate transition-all'} ${isEditing
-        ? "border-default-cursor-box-border shadow-review-card-editing focus-within:shadow-review-card-focus-ring"
-        : "border-border/30 shadow-review-card-default"
-        }`}
+      className={`bg-review-card-bg-color border-2 ${sorting ? "rounded-2xl p-4" : "rounded-3xl p-6"} flex flex-col ${sorting ? "" : "hover-elevate transition-all"} ${
+        isEditing
+          ? "border-default-cursor-box-border shadow-review-card-editing focus-within:shadow-review-card-focus-ring"
+          : "border-border/30 shadow-review-card-default"
+      }`}
     >
       {/* Review Text with Edit button */}
       {!sorting && (

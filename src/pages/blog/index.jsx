@@ -35,20 +35,13 @@ export default function Index({ posts }) {
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto">
             {posts.map((post) => {
               return (
-                <Link
-                  key={post.id}
-                  href={post.slug ? `/blog/${post.slug}` : `/blog/${post.id}`}
-                >
+                <Link key={post.id} href={post.slug ? `/blog/${post.slug}` : `/blog/${post.id}`}>
                   <BlogCard post={post} />
                 </Link>
               );
             })}
           </div>
-          <Footer
-            dfToken={dfToken}
-            innerClass="!bg-landing-bg-color"
-            className="!p-0"
-          />
+          <Footer dfToken={dfToken} innerClass="!bg-landing-bg-color" className="!p-0" />
         </main>
       </div>
     </>

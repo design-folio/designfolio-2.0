@@ -1,29 +1,12 @@
-export const getCursor = (
-  defaultCursor = "",
-  pointer = "",
-  notAllowed = "",
-  grab = ""
-) => {
-  document.documentElement.style.setProperty(
-    "--cursor-default",
-    `url(${defaultCursor}), default`
-  );
-  document.documentElement.style.setProperty(
-    "--cursor-pointer",
-    `url(${pointer}), pointer`
-  );
+export const getCursor = (defaultCursor = "", pointer = "", notAllowed = "", grab = "") => {
+  document.documentElement.style.setProperty("--cursor-default", `url(${defaultCursor}), default`);
+  document.documentElement.style.setProperty("--cursor-pointer", `url(${pointer}), pointer`);
   document.documentElement.style.setProperty(
     "--cursor-not-allowed",
     `url(${notAllowed}), not-allowed`
   );
-  document.documentElement.style.setProperty(
-    "--cursor-grab",
-    `url(${grab}), grab`
-  );
-  document.documentElement.style.setProperty(
-    "--cursor-grabbing",
-    `url(${grab}), grabbing`
-  );
+  document.documentElement.style.setProperty("--cursor-grab", `url(${grab}), grab`);
+  document.documentElement.style.setProperty("--cursor-grabbing", `url(${grab}), grabbing`);
   // Drive the custom default cursor onto <html> so * { cursor: inherit } propagates it everywhere
   document.documentElement.style.cursor = "var(--cursor-default)";
 };

@@ -8,7 +8,8 @@ import Text from "./text";
 import { modals, sidebars } from "@/lib/constant";
 
 export default function Task({ setOpen }) {
-  const { checkList, openModal, openSidebar, openNewWork, openNewReview, setStep } = useGlobalContext();
+  const { checkList, openModal, openSidebar, openNewWork, openNewReview, setStep } =
+    useGlobalContext();
 
   const handleClick = (i) => {
     if (i == 0 && !checkList[0].checked) {
@@ -29,19 +30,14 @@ export default function Task({ setOpen }) {
       style={{ boxShadow: "0px 8.3px 33.2px 0px rgba(32, 41, 55, 0.14)" }}
     >
       <div className="flex justify-between items-center">
-        <Text
-          size="p-xsmall"
-          className="text-checked-list-item-text-color cursor-pointer"
-        >
+        <Text size="p-xsmall" className="text-checked-list-item-text-color cursor-pointer">
           Launch your portfolio
         </Text>
         <Button
           // customClass="lg:hidden"
           type="secondary"
           customClass="!p-2"
-          icon={
-            <CloseIcon className="text-icon-color text-base cursor-pointer" />
-          }
+          icon={<CloseIcon className="text-icon-color text-base cursor-pointer" />}
           onClick={setOpen}
         />
       </div>
@@ -51,8 +47,9 @@ export default function Task({ setOpen }) {
           <div
             key={i}
             onClick={() => handleClick(i)}
-            className={`border group border-checked-list-item-border-color bg-checked-list-item-bg-color  transition-all duration-200 ease-in-out hover:bg-checked-list-item-bg-hover-color rounded-2xl flex gap-[10px] items-center p-[10px]  ${!item?.checked ? "cursor-pointer " : "cursor-default"
-              }`}
+            className={`border group border-checked-list-item-border-color bg-checked-list-item-bg-color  transition-all duration-200 ease-in-out hover:bg-checked-list-item-bg-hover-color rounded-2xl flex gap-[10px] items-center p-[10px]  ${
+              !item?.checked ? "cursor-pointer " : "cursor-default"
+            }`}
           >
             {item?.checked ? (
               <CheckedIcon className="text-checked-list-item-icon-color" />
@@ -61,8 +58,9 @@ export default function Task({ setOpen }) {
             )}
             <Text
               size={`p-xxxsmall`}
-              className={`text-checked-list-item-text-color cursor-pointer ${item?.checked && "line-through"
-                }`}
+              className={`text-checked-list-item-text-color cursor-pointer ${
+                item?.checked && "line-through"
+              }`}
             >
               {item.name}
             </Text>

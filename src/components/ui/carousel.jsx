@@ -1,10 +1,4 @@
-import React, {
-  useContext,
-  useState,
-  useCallback,
-  useEffect,
-  useRef,
-} from "react";
+import React, { useContext, useState, useCallback, useEffect, useRef } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
@@ -24,15 +18,7 @@ function useCarousel() {
 }
 
 const Carousel = React.forwardRef(function Carousel(
-  {
-    orientation = "horizontal",
-    opts,
-    setApi,
-    plugins,
-    className,
-    children,
-    ...props
-  },
+  { orientation = "horizontal", opts, setApi, plugins, className, children, ...props },
   ref
 ) {
   const [carouselRef, api] = useEmblaCarousel(
@@ -103,8 +89,7 @@ const Carousel = React.forwardRef(function Carousel(
         carouselRef,
         api: api,
         opts,
-        orientation:
-          orientation || (opts?.axis === "y" ? "vertical" : "horizontal"),
+        orientation: orientation || (opts?.axis === "y" ? "vertical" : "horizontal"),
         scrollPrev,
         scrollNext,
         canScrollPrev,
@@ -126,21 +111,14 @@ const Carousel = React.forwardRef(function Carousel(
 });
 Carousel.displayName = "Carousel";
 
-const CarouselContent = React.forwardRef(function CarouselContent(
-  { className, ...props },
-  ref
-) {
+const CarouselContent = React.forwardRef(function CarouselContent({ className, ...props }, ref) {
   const { carouselRef, orientation } = useCarousel();
 
   return (
     <div ref={carouselRef} className="overflow-hidden">
       <div
         ref={ref}
-        className={cn(
-          "flex",
-          orientation === "horizontal" ? "-ml-4" : "-mt-4 flex-col",
-          className
-        )}
+        className={cn("flex", orientation === "horizontal" ? "-ml-4" : "-mt-4 flex-col", className)}
         {...props}
       />
     </div>
@@ -148,10 +126,7 @@ const CarouselContent = React.forwardRef(function CarouselContent(
 });
 CarouselContent.displayName = "CarouselContent";
 
-const CarouselItem = React.forwardRef(function CarouselItem(
-  { className, ...props },
-  ref
-) {
+const CarouselItem = React.forwardRef(function CarouselItem({ className, ...props }, ref) {
   const { orientation } = useCarousel();
 
   return (
@@ -230,10 +205,4 @@ const CarouselNext = React.forwardRef(function CarouselNext(
 });
 CarouselNext.displayName = "CarouselNext";
 
-export {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselPrevious,
-  CarouselNext,
-};
+export { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext };

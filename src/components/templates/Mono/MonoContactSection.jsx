@@ -94,10 +94,7 @@ export default function MonoContactSection({ isEditing }) {
     setTimeout(() => setCopiedField(null), 2000);
   }, []);
 
-  const openFooter = useCallback(
-    () => openSidebar?.(sidebars.footer),
-    [openSidebar]
-  );
+  const openFooter = useCallback(() => openSidebar?.(sidebars.footer), [openSidebar]);
 
   const hasAnyLink =
     !!email ||
@@ -129,10 +126,7 @@ export default function MonoContactSection({ isEditing }) {
     !!resumeUrl;
 
   return (
-    <motion.div
-      variants={itemVariants}
-      className="px-6 md:px-10 py-10 relative group/section"
-    >
+    <motion.div variants={itemVariants} className="px-6 md:px-10 py-10 relative group/section">
       {isEditing && (
         <div className="absolute top-4 right-4 transition-opacity z-10 opacity-100 md:opacity-0 md:group-hover/section:opacity-100">
           <Button
@@ -186,21 +180,13 @@ export default function MonoContactSection({ isEditing }) {
           <div className="space-y-1">
             <FieldLabel>links</FieldLabel>
             <div className="ml-4 mt-2 space-y-2">
-              {socials.linkedin && (
-                <ExternalLink href={socials.linkedin}>LinkedIn</ExternalLink>
-              )}
+              {socials.linkedin && <ExternalLink href={socials.linkedin}>LinkedIn</ExternalLink>}
               {portfolios.dribbble && (
                 <ExternalLink href={portfolios.dribbble}>Dribbble</ExternalLink>
               )}
-              {socials.twitter && (
-                <ExternalLink href={socials.twitter}>X</ExternalLink>
-              )}
-              {portfolios.medium && (
-                <ExternalLink href={portfolios.medium}>Medium</ExternalLink>
-              )}
-              {resumeUrl && (
-                <ExternalLink href={resumeUrl}>Resume</ExternalLink>
-              )}
+              {socials.twitter && <ExternalLink href={socials.twitter}>X</ExternalLink>}
+              {portfolios.medium && <ExternalLink href={portfolios.medium}>Medium</ExternalLink>}
+              {resumeUrl && <ExternalLink href={resumeUrl}>Resume</ExternalLink>}
             </div>
           </div>
         )}

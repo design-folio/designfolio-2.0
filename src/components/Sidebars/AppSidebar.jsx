@@ -4,11 +4,7 @@ import { useTheme } from "next-themes";
 import { sidebars } from "@/lib/constant";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarHeader,
-} from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarHeader } from "@/components/ui/sidebar";
 import { getTemplatePreviewImage, TEMPLATES_LIST } from "@/lib/templates";
 import { cursors, getWallpapers } from "../loggedInHeader/constants";
 import ThemeSidebar from "./ThemeSidebar";
@@ -68,8 +64,7 @@ export default function AppSidebar() {
       ? "bg-selected-cursor-bg-color hover:bg-selected-cursor-bg-color shadow-selected-cursor-shadow"
       : "";
 
-  const getStyles = (i) =>
-    i === cursor ? "bg-muted border-primary hover:bg-muted" : "";
+  const getStyles = (i) => (i === cursor ? "bg-muted border-primary hover:bg-muted" : "");
 
   const renderPanel = () => {
     switch (activeSidebar) {
@@ -139,25 +134,14 @@ export default function AppSidebar() {
   const title = getDynamicTitle();
 
   return (
-    <Sidebar
-      side="right"
-      collapsible="offcanvas"
-      className="border-l border-border"
-    >
+    <Sidebar side="right" collapsible="offcanvas" className="border-l border-border">
       <SidebarHeader className="flex flex-row items-center justify-between px-6 border-b border-border py-4">
         <h2 className=" text-[15px] font-medium">{title}</h2>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => closeSidebar()}
-          className="h-8 w-8"
-        >
+        <Button variant="ghost" size="icon" onClick={() => closeSidebar()} className="h-8 w-8">
           <X className="w-4 h-4" />
         </Button>
       </SidebarHeader>
-      <SidebarContent className="overflow-hidden p-0">
-        {renderPanel()}
-      </SidebarContent>
+      <SidebarContent className="overflow-hidden p-0">{renderPanel()}</SidebarContent>
     </Sidebar>
   );
 }

@@ -20,14 +20,9 @@ import { useGlobalContext } from "@/context/globalContext";
 import { _updateUser } from "@/network/post-request";
 
 function SortableProjectCard({ project }) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: project._id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: project._id,
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -79,7 +74,7 @@ export default function RearrangeProjectsSidebar() {
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    }),
+    })
   );
 
   const handleSortEnd = useCallback(
@@ -97,17 +92,13 @@ export default function RearrangeProjectsSidebar() {
       updateCache("userDetails", { projects: sortedProjects });
       _updateUser({ projects: sortedProjects });
     },
-    [userDetails?.projects, setUserDetails, updateCache],
+    [userDetails?.projects, setUserDetails, updateCache]
   );
 
   return (
     <div className="flex flex-col h-full">
       <div className="flex-1 overflow-y-auto p-4 space-y-2">
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleSortEnd}
-        >
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleSortEnd}>
           <SortableContext
             items={projects.map((p) => p._id)}
             strategy={verticalListSortingStrategy}

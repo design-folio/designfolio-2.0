@@ -7,9 +7,7 @@ import { modals, sidebars } from "@/lib/constant";
 import { useGlobalContext } from "@/context/globalContext";
 import { ProfessionalRearrangeButton } from "./ProfessionalRearrangeButton";
 
-const ScrewDot = ({ className }) => (
-  <div className={`absolute ${className} ${screwClass}`} />
-);
+const ScrewDot = ({ className }) => <div className={`absolute ${className} ${screwClass}`} />;
 
 const FrameScrews = () => (
   <>
@@ -66,7 +64,9 @@ function ProfessionalProjectsTab({
           className={`group cursor-pointer relative flex flex-col ${frameBorderClass}`}
         >
           {isEditing && (
-            <div className={`absolute top-4 right-4 z-40 flex gap-2 transition-opacity ${project.hidden ? "opacity-100" : "opacity-100 md:opacity-0 md:group-hover:opacity-100"}`}>
+            <div
+              className={`absolute top-4 right-4 z-40 flex gap-2 transition-opacity ${project.hidden ? "opacity-100" : "opacity-100 md:opacity-0 md:group-hover:opacity-100"}`}
+            >
               <Button
                 variant="outline"
                 size="sm"
@@ -80,7 +80,10 @@ function ProfessionalProjectsTab({
               </Button>
               <ProjectVisibilityButton
                 isHidden={!!project.hidden}
-                onClick={(e) => { e.stopPropagation(); onToggleVisibility(project._id); }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onToggleVisibility(project._id);
+                }}
               />
               <Button
                 variant="outline"
@@ -121,20 +124,23 @@ function ProfessionalProjectsTab({
         </div>
       ))}
       {isEditing && (
-        <div
-          className={`relative flex flex-col ${frameBorderClass}`}
-        >
+        <div className={`relative flex flex-col ${frameBorderClass}`}>
           <FrameBorders />
           <div className="bg-white/50 dark:bg-[#1A1A1A]/50 p-6 md:p-8 relative overflow-hidden flex-1 flex flex-col items-center justify-center gap-3 min-h-[140px] md:min-h-[180px]">
             <FrameScrews />
             <div className="w-10 h-10 rounded-full border border-dashed border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#2A2520] flex items-center justify-center">
               <Plus className="w-4 h-4 text-[#7A736C] dark:text-[#9E9893]" />
             </div>
-            <p className="font-jetbrains text-[10px] font-medium text-[#A09890] dark:text-[#5A5550] tracking-widest uppercase">New project slot</p>
+            <p className="font-jetbrains text-[10px] font-medium text-[#A09890] dark:text-[#5A5550] tracking-widest uppercase">
+              New project slot
+            </p>
             <div className="flex items-center gap-2">
               <Button
                 className="h-8 px-3.5 rounded-full font-jetbrains text-[12px] font-medium bg-[#1A1A1A] dark:bg-white text-white dark:text-black hover:bg-black/80 dark:hover:bg-white/90 transition-colors shadow-sm flex items-center gap-1.5"
-                onClick={(e) => { e.stopPropagation(); onAddProject(); }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onAddProject();
+                }}
               >
                 <Pencil className="w-3 h-3" />
                 Add Project
@@ -142,7 +148,10 @@ function ProfessionalProjectsTab({
               <Button
                 variant="outline"
                 className="h-8 px-3.5 rounded-full font-jetbrains text-[12px] font-medium border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520] transition-colors flex items-center gap-1.5 text-[#7A736C] dark:text-[#9E9893] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7]"
-                onClick={(e) => { e.stopPropagation(); openModal(modals.aiProject); }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  openModal(modals.aiProject);
+                }}
               >
                 <Sparkles className="w-3 h-3" />
                 Write with AI

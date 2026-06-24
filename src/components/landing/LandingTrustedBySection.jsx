@@ -19,8 +19,7 @@ export default function LandingTrustedBySection() {
       <div
         className="w-full overflow-hidden relative"
         style={{
-          maskImage:
-            "linear-gradient(to right, transparent, black 10%, black 90%, transparent)",
+          maskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)",
           WebkitMaskImage:
             "linear-gradient(to right, transparent, black 10%, black 90%, transparent)",
         }}

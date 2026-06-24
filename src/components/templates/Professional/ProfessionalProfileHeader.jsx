@@ -101,7 +101,6 @@ function ProfessionalProfileHeader({
             </Button>
           )}
           <span className="tracking-wider">{(userRole || "").toUpperCase()}</span>
-
         </div>
       </div>
     </>

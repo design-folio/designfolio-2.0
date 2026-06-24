@@ -20,20 +20,11 @@ import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { sidebars } from "@/lib/constant";
 import { TypingIndicator, ChatAvatar, YouPrompt } from "./chatUtils";
 
-export default function ChatContactSection({
-  chatRevealStep,
-  s,
-  sectionSteps,
-  canEdit,
-  preview,
-}) {
+export default function ChatContactSection({ chatRevealStep, s, sectionSteps, canEdit, preview }) {
   const { userDetails, openSidebar } = useGlobalContext();
   const { socials = {}, portfolios = {}, resume, phone } = userDetails || {};
   const email = userDetails?.contact_email || userDetails?.email;
-  const avatarSrc = useMemo(
-    () => getUserAvatarImage(userDetails),
-    [userDetails],
-  );
+  const avatarSrc = useMemo(() => getUserAvatarImage(userDetails), [userDetails]);
 
   const [copiedField, setCopiedField] = useState(null);
   const handleCopy = useCallback((value, field) => {
@@ -43,10 +34,7 @@ export default function ChatContactSection({
   }, []);
 
   return (
-    <div
-      className="flex flex-col gap-3"
-      style={{ order: sectionSteps._contact - 3 }}
-    >
+    <div className="flex flex-col gap-3" style={{ order: sectionSteps._contact - 3 }}>
       {/* You: Contact prompt */}
       <AnimatePresence mode="popLayout">
         {chatRevealStep >= s(19) && !(preview && !email && !phone) && (
@@ -86,10 +74,7 @@ export default function ChatContactSection({
               </div>
             )}
             <div className="w-8 h-8 shrink-0 mt-auto flex items-end">
-              <ChatAvatar
-                avatarSrc={avatarSrc}
-                show={chatRevealStep < s(21)}
-              />
+              <ChatAvatar avatarSrc={avatarSrc} show={chatRevealStep < s(21)} />
             </div>
             <div className="bg-[#E5E2DB] dark:bg-[#2A2520] p-4 rounded-2xl rounded-tl-sm rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5 w-full">
               {chatRevealStep === s(20) ? (
@@ -217,19 +202,11 @@ export default function ChatContactSection({
                 <div className="bg-[#E5E2DB] dark:bg-[#2A2520] p-4 rounded-2xl rounded-tl-sm rounded-bl-sm transition-colors duration-100 border border-black/5 dark:border-white/5 w-full">
                   {hasLinks ? (
                     <div className="space-y-3">
-                      <p className="text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px]">
-                        You can also
-                      </p>
+                      <p className="text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px]">You can also</p>
                       <div className="space-y-2">
                         {hasResume && (
                           <button
-                            onClick={() =>
-                              window.open(
-                                resume.url,
-                                "_blank",
-                                "noopener,noreferrer",
-                              )
-                            }
+                            onClick={() => window.open(resume.url, "_blank", "noopener,noreferrer")}
                             className="w-full bg-[#F5F3EF] dark:bg-[#35302A] hover:bg-white dark:hover:bg-[#403B35] text-[#1A1A1A] dark:text-[#F0EDE7] py-2.5 px-4 rounded-xl flex items-center justify-between text-[14px] font-medium transition-all shadow-sm border border-black/5 dark:border-white/5 group"
                           >
                             <span>View my Resume</span>
@@ -242,11 +219,7 @@ export default function ChatContactSection({
                             <button
                               key={link.label}
                               onClick={() =>
-                                window.open(
-                                  link.href,
-                                  "_blank",
-                                  "noopener,noreferrer",
-                                )
+                                window.open(link.href, "_blank", "noopener,noreferrer")
                               }
                               className="w-full bg-[#F5F3EF] dark:bg-[#35302A] hover:bg-white dark:hover:bg-[#403B35] text-[#1A1A1A] dark:text-[#F0EDE7] py-2.5 px-4 rounded-xl flex items-center justify-between text-[14px] font-medium transition-all shadow-sm border border-black/5 dark:border-white/5 group"
                             >

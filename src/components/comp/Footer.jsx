@@ -61,15 +61,11 @@ export const Footer = ({ userDetails, edit }) => {
           className="flex flex-col items-center gap-8"
         >
           <h2 className="text-3xl font-bold text-foreground max-w-2xl text-center leading-tight">
-            Let's work together
+            Let&apos;s work together
           </h2>
           {userDetails?.resume?.url && (
             <div className="flex flex-wrap gap-4 justify-center">
-              <a
-                href={userDetails?.resume?.url}
-                download={true}
-                target="_blank"
-              >
+              <a href={userDetails?.resume?.url} download={true} target="_blank">
                 <Button size="lg" variant="outline" className="text-lg px-8">
                   <Download className="mr-2" />
                   Download Resume

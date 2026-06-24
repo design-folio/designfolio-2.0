@@ -24,14 +24,14 @@ export const SPOTLIGHT_TABS = [
 ];
 
 // Only backend-valid sectionOrder values — contact is excluded (backend rejects it)
-export const PROFESSIONAL_DEFAULT_ORDER = ['projects', 'works', 'about', 'reviews'];
+export const PROFESSIONAL_DEFAULT_ORDER = ["projects", "works", "about", "reviews"];
 
 export const PROFESSIONAL_TAB_MAP = {
-  projects: { key: 'Projects', label: 'Projects' },
-  works:    { key: 'Experience', label: 'Experience' },
-  about:    { key: 'About', label: 'About me' },
-  contact:  { key: 'Contact', label: 'Contact' },
-  reviews:  { key: 'Testimonials', label: 'Testimonials' },
+  projects: { key: "Projects", label: "Projects" },
+  works: { key: "Experience", label: "Experience" },
+  about: { key: "About", label: "About me" },
+  contact: { key: "Contact", label: "Contact" },
+  reviews: { key: "Testimonials", label: "Testimonials" },
 };
 
 export function extractText(content) {

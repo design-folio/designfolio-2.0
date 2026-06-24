@@ -46,9 +46,7 @@ export default function AnalysisReport({ analysis, onRestart, isRestarting = fal
       <div id="pdf-content">
         {/* Header with Score */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-6">
-            Salary Analysis Report
-          </h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-6">Salary Analysis Report</h1>
           <div className="flex flex-col items-center justify-center gap-4">
             <div className="relative w-32 h-32">
               <div className="absolute inset-0 flex items-center justify-center">
@@ -87,29 +85,17 @@ export default function AnalysisReport({ analysis, onRestart, isRestarting = fal
           <ReactMarkdown
             components={{
               h1: ({ children }) => (
-                <h2 className="text-2xl font-bold mb-4 text-gray-900 border-b pb-2">
-                  {children}
-                </h2>
+                <h2 className="text-2xl font-bold mb-4 text-gray-900 border-b pb-2">{children}</h2>
               ),
               h2: ({ children }) => (
-                <h3 className="text-xl font-bold mt-6 mb-3 text-gray-800">
-                  {children}
-                </h3>
+                <h3 className="text-xl font-bold mt-6 mb-3 text-gray-800">{children}</h3>
               ),
               h3: ({ children }) => (
-                <h4 className="text-lg font-semibold mt-4 mb-2 text-gray-700">
-                  {children}
-                </h4>
+                <h4 className="text-lg font-semibold mt-4 mb-2 text-gray-700">{children}</h4>
               ),
-              p: ({ children }) => (
-                <p className="mb-4 leading-relaxed text-gray-600">{children}</p>
-              ),
-              ul: ({ children }) => (
-                <ul className="list-disc pl-6 mb-4 space-y-2">{children}</ul>
-              ),
-              li: ({ children }) => (
-                <li className="leading-relaxed">{children}</li>
-              ),
+              p: ({ children }) => <p className="mb-4 leading-relaxed text-gray-600">{children}</p>,
+              ul: ({ children }) => <ul className="list-disc pl-6 mb-4 space-y-2">{children}</ul>,
+              li: ({ children }) => <li className="leading-relaxed">{children}</li>,
               table: ({ node }) => <TableRenderer node={node} />,
             }}
           >

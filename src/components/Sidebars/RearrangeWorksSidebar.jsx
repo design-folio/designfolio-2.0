@@ -30,8 +30,9 @@ const sortByDate = (list) =>
   });
 
 function SortableWorkCard({ experience, rank }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id: experience._id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: experience._id,
+  });
 
   const dateRange = experience.currentlyWorking
     ? `${experience.startYear} – Present`
@@ -52,7 +53,7 @@ function SortableWorkCard({ experience, rank }) {
         "group flex items-center gap-2.5 p-3 rounded-xl border cursor-grab active:cursor-grabbing",
         "bg-white dark:bg-[#2A2520] border-black/5 dark:border-white/5",
         "hover:bg-black/[0.03] dark:hover:bg-white/[0.03]",
-        isDragging && "shadow-lg ring-1 ring-black/10 dark:ring-white/10",
+        isDragging && "shadow-lg ring-1 ring-black/10 dark:ring-white/10"
       )}
       {...listeners}
       {...attributes}
@@ -90,7 +91,7 @@ export default function RearrangeWorksSidebar() {
 
   const sensors = useSensors(
     useSensor(PointerSensor),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
   const persist = useCallback(
@@ -99,7 +100,7 @@ export default function RearrangeWorksSidebar() {
       updateCache("userDetails", { experiences: reordered });
       _updateUser({ experiences: reordered });
     },
-    [setUserDetails, updateCache],
+    [setUserDetails, updateCache]
   );
 
   const handleDragEnd = useCallback(
@@ -111,7 +112,7 @@ export default function RearrangeWorksSidebar() {
       setSorted(false);
       persist(arrayMove(experiences, oldIndex, newIndex));
     },
-    [experiences, persist],
+    [experiences, persist]
   );
 
   const handleSortByDate = useCallback(() => {
@@ -135,7 +136,7 @@ export default function RearrangeWorksSidebar() {
             "active:scale-[0.97] disabled:opacity-40 disabled:cursor-not-allowed",
             sorted
               ? "bg-green-500/10 text-green-700 dark:text-green-500"
-              : "bg-black/[0.04] dark:bg-white/[0.04] text-[#7A736C] dark:text-[#9E9893]",
+              : "bg-black/[0.04] dark:bg-white/[0.04] text-[#7A736C] dark:text-[#9E9893]"
           )}
         >
           {sorted ? <Check className="w-3 h-3" /> : <ArrowUpDown className="w-3 h-3" />}
@@ -147,12 +148,23 @@ export default function RearrangeWorksSidebar() {
         {experiences.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-center">
             <Building className="w-8 h-8 mb-3 text-[#C8C0B8] dark:text-[#5E5852]" />
-            <p className="text-[13px] font-medium text-[#7A736C] dark:text-[#9E9893]">No experience yet</p>
-            <p className="text-[11px] mt-1 text-[#B8B0A8] dark:text-[#5E5852]">Add work experience to reorder it here.</p>
+            <p className="text-[13px] font-medium text-[#7A736C] dark:text-[#9E9893]">
+              No experience yet
+            </p>
+            <p className="text-[11px] mt-1 text-[#B8B0A8] dark:text-[#5E5852]">
+              Add work experience to reorder it here.
+            </p>
           </div>
         ) : (
-          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-            <SortableContext items={experiences.map((e) => e._id)} strategy={verticalListSortingStrategy}>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={experiences.map((e) => e._id)}
+              strategy={verticalListSortingStrategy}
+            >
               {experiences.map((exp, index) => (
                 <SortableWorkCard key={exp._id} experience={exp} rank={index + 1} />
               ))}

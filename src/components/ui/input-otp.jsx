@@ -3,10 +3,7 @@ import { OTPInput, OTPInputContext } from "input-otp";
 import { Dot } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const InputOTP = forwardRef(function InputOTP(
-  { className, containerClassName, ...props },
-  ref
-) {
+const InputOTP = forwardRef(function InputOTP({ className, containerClassName, ...props }, ref) {
   return (
     <OTPInput
       ref={ref}
@@ -21,20 +18,12 @@ const InputOTP = forwardRef(function InputOTP(
 });
 InputOTP.displayName = "InputOTP";
 
-const InputOTPGroup = forwardRef(function InputOTPGroup(
-  { className, ...props },
-  ref
-) {
-  return (
-    <div ref={ref} className={cn("flex items-center", className)} {...props} />
-  );
+const InputOTPGroup = forwardRef(function InputOTPGroup({ className, ...props }, ref) {
+  return <div ref={ref} className={cn("flex items-center", className)} {...props} />;
 });
 InputOTPGroup.displayName = "InputOTPGroup";
 
-const InputOTPSlot = forwardRef(function InputOTPSlot(
-  { index, className, ...props },
-  ref
-) {
+const InputOTPSlot = forwardRef(function InputOTPSlot({ index, className, ...props }, ref) {
   const inputOTPContext = useContext(OTPInputContext);
   const { char, hasFakeCaret, isActive } = inputOTPContext.slots[index];
 

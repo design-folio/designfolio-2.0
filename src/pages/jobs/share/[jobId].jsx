@@ -5,12 +5,12 @@ import Cookies from "js-cookie";
 import { AnimatePresence } from "framer-motion";
 
 import { _getJobsCheckSaved, _postJobsAddFromShare, _getJobsJobScore } from "@/network/jobs";
-import { ShareNav }          from "@/components/jobs/share/ShareNav";
-import { SharerBadge }       from "@/components/jobs/share/SharerBadge";
-import { JobHeroCard }       from "@/components/jobs/share/JobHeroCard";
+import { ShareNav } from "@/components/jobs/share/ShareNav";
+import { SharerBadge } from "@/components/jobs/share/SharerBadge";
+import { JobHeroCard } from "@/components/jobs/share/JobHeroCard";
 import { JobDescriptionCard } from "@/components/jobs/share/JobContentCards";
 import { BoostCard, CTASkeleton } from "@/components/jobs/share/BoostCard";
-import { ScoreModal }        from "@/components/jobs/share/ScoreModal";
+import { ScoreModal } from "@/components/jobs/share/ScoreModal";
 
 const SCORE_POLL_INTERVAL_MS = 2500;
 const SCORE_POLL_MAX_ATTEMPTS = 8; // ~20s total
@@ -45,7 +45,10 @@ export default function SharedJobPage({ job, sharer, sharerUsername }) {
   // Auth detection — lightweight single-query check instead of full history load
   useEffect(() => {
     const token = Cookies.get("df-token");
-    if (!token) { setAuthState("new"); return; }
+    if (!token) {
+      setAuthState("new");
+      return;
+    }
     _getJobsCheckSaved(job.id)
       .then(({ data }) => {
         if (data?.saved) {
@@ -69,7 +72,9 @@ export default function SharedJobPage({ job, sharer, sharerUsername }) {
           setMatchScore(data.match);
           clearInterval(scorePollRef.current);
         }
-      } catch { /* silent */ }
+      } catch {
+        /* silent */
+      }
       if (attempts >= SCORE_POLL_MAX_ATTEMPTS) clearInterval(scorePollRef.current);
     }, SCORE_POLL_INTERVAL_MS);
   };
@@ -84,8 +89,11 @@ export default function SharedJobPage({ job, sharer, sharerUsername }) {
       } else {
         startScorePoll(job.id);
       }
-    } catch { /* axiosInstance surfaces a toast */ }
-    finally { setIsSaving(false); }
+    } catch {
+      /* axiosInstance surfaces a toast */
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const badge = <SharerBadge sharer={sharer} sharerUsername={sharerUsername} />;
@@ -93,7 +101,9 @@ export default function SharedJobPage({ job, sharer, sharerUsername }) {
   return (
     <>
       <Head>
-        <title>{job.role} at {job.company} · Designfolio</title>
+        <title>
+          {job.role} at {job.company} · Designfolio
+        </title>
         <meta
           name="description"
           content={`${job.role} at ${job.company}${job.location ? ` — ${job.location}` : ""}. Track your application with Designfolio.`}
@@ -107,7 +117,6 @@ export default function SharedJobPage({ job, sharer, sharerUsername }) {
         <main className="flex-1 max-w-5xl mx-auto w-full px-5 pt-[70px] pb-16">
           <div className="py-8">
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_284px] gap-5 items-start">
-
               {/* ── Left: job content ── */}
               <div className="min-w-0 space-y-4">
                 <JobHeroCard
@@ -119,7 +128,9 @@ export default function SharedJobPage({ job, sharer, sharerUsername }) {
 
                 {/* Mobile BoostCard — shows between hero and description */}
                 <div className="lg:hidden">
-                  {authState === "loading" ? <CTASkeleton /> : (
+                  {authState === "loading" ? (
+                    <CTASkeleton />
+                  ) : (
                     <BoostCard
                       authState={authState}
                       isDark={isDark}
@@ -136,7 +147,9 @@ export default function SharedJobPage({ job, sharer, sharerUsername }) {
 
               {/* ── Right: sticky sidebar (desktop) ── */}
               <div className="hidden lg:block min-w-0 lg:sticky lg:top-[74px]">
-                {authState === "loading" ? <CTASkeleton /> : (
+                {authState === "loading" ? (
+                  <CTASkeleton />
+                ) : (
                   <BoostCard
                     authState={authState}
                     isDark={isDark}
@@ -147,11 +160,9 @@ export default function SharedJobPage({ job, sharer, sharerUsername }) {
                   />
                 )}
               </div>
-
             </div>
           </div>
         </main>
-
       </div>
 
       {/* Score Modal */}
@@ -175,32 +186,30 @@ function stripHtmlToText(raw) {
   const HTML_TAG_RE_SSR = /<(p|div|ul|ol|li|h[1-6]|br|span|a|strong)\b/i;
   if (!HTML_TAG_RE_SSR.test(raw)) return raw;
   return raw
-    .replace(/<br\s*\/?>/gi,    "\n")
-    .replace(/<\/p>/gi,         "\n\n")
-    .replace(/<\/li>/gi,        "\n")
-    .replace(/<\/h[1-6]>/gi,    "\n\n")
-    .replace(/<[^>]+>/g,        "")
-    .replace(/&amp;/g,          "&")
-    .replace(/&lt;/g,           "<")
-    .replace(/&gt;/g,           ">")
-    .replace(/&quot;/g,         '"')
-    .replace(/&#39;/g,          "'")
-    .replace(/&nbsp;/g,         " ")
-    .replace(/\n{3,}/g,         "\n\n")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/p>/gi, "\n\n")
+    .replace(/<\/li>/gi, "\n")
+    .replace(/<\/h[1-6]>/gi, "\n\n")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&nbsp;/g, " ")
+    .replace(/\n{3,}/g, "\n\n")
     .trim();
 }
 
 export async function getServerSideProps({ params, query }) {
   const { jobId } = params;
-  const { ref }   = query;
-  const baseUrl   = process.env.NEXT_PUBLIC_BASE_URL;
+  const { ref } = query;
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
   try {
     const [jobRes, sharerRes] = await Promise.all([
       axios.get(`${baseUrl}/jobs/public/${jobId}`),
-      ref
-        ? axios.get(`${baseUrl}/user/public/${ref}`).catch(() => null)
-        : Promise.resolve(null),
+      ref ? axios.get(`${baseUrl}/user/public/${ref}`).catch(() => null) : Promise.resolve(null),
     ]);
 
     const job = jobRes.data.job;
@@ -209,7 +218,7 @@ export async function getServerSideProps({ params, query }) {
     return {
       props: {
         job,
-        sharer:         sharerRes?.data ?? null,
+        sharer: sharerRes?.data ?? null,
         sharerUsername: ref ?? null,
         hideHeader: true,
       },

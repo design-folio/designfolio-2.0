@@ -45,8 +45,8 @@ export default function UpdateSkillsSidebar() {
     (userDetails?.skills || []).forEach((s) => map.set(s.label, s));
     return map;
   });
-  const [selectedLabels, setSelectedLabels] = useState(
-    () => (userDetails?.skills || []).map((s) => s.label)
+  const [selectedLabels, setSelectedLabels] = useState(() =>
+    (userDetails?.skills || []).map((s) => s.label)
   );
   const [search, setSearch] = useState("");
   const [saving, setSaving] = useState(false);
@@ -77,7 +77,11 @@ export default function UpdateSkillsSidebar() {
   }, [search]);
 
   const hasSearch = debouncedSearch.length > 0;
-  const queryKey = ["skills", hasSearch ? debouncedSearch : personaId, hasSearch ? "search" : "persona"];
+  const queryKey = [
+    "skills",
+    hasSearch ? debouncedSearch : personaId,
+    hasSearch ? "search" : "persona",
+  ];
 
   const { data: fetchedSkills = [], isFetching: skillsLoading } = useQuery({
     queryKey,
@@ -116,18 +120,18 @@ export default function UpdateSkillsSidebar() {
       search.trim()
         ? allLabels.filter((s) => s.toLowerCase().includes(search.toLowerCase()))
         : allLabels,
-    [allLabels, search],
+    [allLabels, search]
   );
 
   const hasExact = useMemo(
     () => allLabels.some((s) => s.toLowerCase() === search.trim().toLowerCase()),
-    [allLabels, search],
+    [allLabels, search]
   );
   const showAdd = search.trim() !== "" && !hasExact;
 
   const toggle = (label) =>
     setSelectedLabels((prev) =>
-      prev.includes(label) ? prev.filter((l) => l !== label) : [...prev, label],
+      prev.includes(label) ? prev.filter((l) => l !== label) : [...prev, label]
     );
 
   const addCustom = (label) => {
@@ -238,7 +242,7 @@ export default function UpdateSkillsSidebar() {
               className="px-3.5 py-1.5 rounded-full border border-dashed border-border text-sm font-medium flex items-center gap-1.5 text-muted-foreground hover:border-foreground hover:text-foreground transition-colors"
             >
               <Plus className="w-3.5 h-3.5" />
-              Add "{search}"
+              Add &quot;{search}&quot;
             </motion.button>
           )}
 
@@ -258,8 +262,15 @@ export default function UpdateSkillsSidebar() {
       </div>
 
       <UnsavedChangesDialog
-        open={showUnsavedWarning && isOpen && !isSwitchingSidebar && pendingSidebarAction?.type === "close"}
-        onOpenChange={(open) => { if (!open) handleCancelDiscardSidebar(); }}
+        open={
+          showUnsavedWarning &&
+          isOpen &&
+          !isSwitchingSidebar &&
+          pendingSidebarAction?.type === "close"
+        }
+        onOpenChange={(open) => {
+          if (!open) handleCancelDiscardSidebar();
+        }}
         onConfirmDiscard={() => {
           handleConfirmDiscardSidebar();
           resetStateAndClose();

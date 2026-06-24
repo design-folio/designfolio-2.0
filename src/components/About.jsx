@@ -7,7 +7,7 @@ import casestudyJson from "../../public/lottie/casestuddy.json";
 import publishButtonJson from "../../public/lottie/publishbutton.json";
 const Lottie = dynamic(() => import("lottie-react"), {
   ssr: false,
-  loading: () => <></>
+  loading: () => <></>,
 });
 
 // Section Component with CSS Transitions
@@ -17,7 +17,7 @@ const AnimatedSection = ({ children, animationData, className, delay }) => {
   const isInView = useInView(ref, { once: true });
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       setWidth(window.innerWidth);
     }
   }, []);
@@ -44,12 +44,7 @@ const AnimatedSection = ({ children, animationData, className, delay }) => {
         <p className="text-landing-card-description-color text-sm font-medium mb-6">
           {children.description}
         </p>
-        <Lottie
-          animationData={animationData}
-          loop
-          autoplay
-          style={{ maxWidth: "100%" }}
-        />
+        <Lottie animationData={animationData} loop autoplay style={{ maxWidth: "100%" }} />
       </div>
     </section>
   );

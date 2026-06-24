@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { toast } from "sonner";
 
 const CONTENTFUL_CONFIG = {
@@ -61,12 +59,8 @@ export async function fetchPosts() {
         statusText: response.statusText,
         error: errorText,
       });
-      toast.error(
-        `Failed to fetch posts: ${response.status} ${response.statusText}`
-      );
-      throw new Error(
-        `Contentful API error: ${response.status} ${response.statusText}`
-      );
+      toast.error(`Failed to fetch posts: ${response.status} ${response.statusText}`);
+      throw new Error(`Contentful API error: ${response.status} ${response.statusText}`);
     }
 
     const data = await response.json();
@@ -107,9 +101,7 @@ export async function fetchPosts() {
           console.log("Processing thumbnail for post:", title);
           console.log("Thumbnail reference:", thumbnail);
 
-          const thumbnailAsset = thumbnail?.sys?.id
-            ? findAsset(thumbnail.sys.id, assets)
-            : null;
+          const thumbnailAsset = thumbnail?.sys?.id ? findAsset(thumbnail.sys.id, assets) : null;
           console.log("Found thumbnail asset:", thumbnailAsset);
 
           const imageUrl = thumbnailAsset?.fields?.file?.url;
@@ -178,9 +170,7 @@ export async function fetchRecommendedPosts(postId) {
     }
 
     // Fetch each recommended post
-    const recommendedPostsPromises = post.recommendedPostIds.map((id) =>
-      fetchPost(id)
-    );
+    const recommendedPostsPromises = post.recommendedPostIds.map((id) => fetchPost(id));
     const recommendedPosts = await Promise.all(recommendedPostsPromises);
 
     // Filter out any null results
@@ -258,22 +248,13 @@ export async function fetchPost(identifier) {
 
     // Check for recommended posts
     if (entryData.fields.recommendedPosts) {
-      console.log(
-        "Recommended posts found in Contentful data:",
-        entryData.fields.recommendedPosts
-      );
+      console.log("Recommended posts found in Contentful data:", entryData.fields.recommendedPosts);
     } else {
       console.log("No recommendedPosts field found in Contentful data");
     }
 
-    console.log(
-      "SEO Title from Contentful:",
-      entryData.fields.seoTitle || entryData.fields.title
-    );
-    console.log(
-      "SEO Description from Contentful:",
-      entryData.fields.seoDescription || ""
-    );
+    console.log("SEO Title from Contentful:", entryData.fields.seoTitle || entryData.fields.title);
+    console.log("SEO Description from Contentful:", entryData.fields.seoDescription || "");
 
     const assetIds = [];
 
@@ -283,10 +264,7 @@ export async function fetchPost(identifier) {
 
     if (entryData.fields?.body?.content) {
       entryData.fields.body.content.forEach((node) => {
-        if (
-          node.nodeType === "embedded-asset-block" &&
-          node.data?.target?.sys?.id
-        ) {
+        if (node.nodeType === "embedded-asset-block" && node.data?.target?.sys?.id) {
           assetIds.push(node.data.target.sys.id);
         }
       });
@@ -317,11 +295,7 @@ export async function fetchPost(identifier) {
       const tagRefs = entryData.fields.tags;
 
       // Check if tags are direct strings or references
-      if (
-        tagRefs.length > 0 &&
-        typeof tagRefs[0] === "object" &&
-        tagRefs[0]?.sys?.id
-      ) {
+      if (tagRefs.length > 0 && typeof tagRefs[0] === "object" && tagRefs[0]?.sys?.id) {
         console.log("Tags are references, looking for tag entries in includes");
         // Tags are references, look for them in the includes
         if (data.includes && data.includes.Entry) {
@@ -336,13 +310,8 @@ export async function fetchPost(identifier) {
 
           // Map tag references to their actual names
           tagNames = tagRefs.map((tagRef) => {
-            const tagEntry = tagEntries.find(
-              (entry) => entry.sys.id === tagRef.sys.id
-            );
-            const tagName =
-              tagEntry?.fields?.name ||
-              tagEntry?.fields?.title ||
-              "Unknown Tag";
+            const tagEntry = tagEntries.find((entry) => entry.sys.id === tagRef.sys.id);
+            const tagName = tagEntry?.fields?.name || tagEntry?.fields?.title || "Unknown Tag";
             console.log(`Mapped tag ID ${tagRef.sys.id} to name: ${tagName}`);
             return tagName;
           });
@@ -359,9 +328,7 @@ export async function fetchPost(identifier) {
         if (tag.sys?.id) {
           // Try to find the tag name in includes
           if (data.includes && data.includes.Entry) {
-            const tagEntry = data.includes.Entry.find(
-              (entry) => entry.sys.id === tag.sys.id
-            );
+            const tagEntry = data.includes.Entry.find((entry) => entry.sys.id === tag.sys.id);
             if (tagEntry && (tagEntry.fields.name || tagEntry.fields.title)) {
               return tagEntry.fields.name || tagEntry.fields.title;
             }
@@ -413,14 +380,8 @@ export async function fetchPost(identifier) {
 
     // Process and extract recommended post IDs
     let recommendedPostIds = [];
-    if (
-      entryData.fields.recommendedPosts &&
-      Array.isArray(entryData.fields.recommendedPosts)
-    ) {
-      console.log(
-        "Processing recommended posts:",
-        entryData.fields.recommendedPosts
-      );
+    if (entryData.fields.recommendedPosts && Array.isArray(entryData.fields.recommendedPosts)) {
+      console.log("Processing recommended posts:", entryData.fields.recommendedPosts);
 
       recommendedPostIds = entryData.fields.recommendedPosts
         .filter((rec) => rec.sys && rec.sys.id)

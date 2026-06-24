@@ -4,13 +4,13 @@ import { Button } from "@/components/ui/buttonNew";
 import { Pencil, ThumbsUp, X } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { getWallpaperUrl } from "@/lib/wallpaper" ;
+import { getWallpaperUrl } from "@/lib/wallpaper";
 import { useTheme } from "next-themes";
 import { modals } from "@/lib/constant";
 
 // CrypticText component for animated text
 const CrypticText = ({ text, className }) => {
-  const [displayText, setDisplayText] = useState(text.split('').map(() => ''));
+  const [displayText, setDisplayText] = useState(text.split("").map(() => ""));
   const [isInView, setIsInView] = useState(false);
   const containerRef = useRef(null);
 
@@ -34,8 +34,8 @@ const CrypticText = ({ text, className }) => {
   useEffect(() => {
     if (!isInView) return;
 
-    const chars = '!@#$%^&*()_+-=[]{}|;:,.<>?/~`ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const targetChars = text.split('');
+    const chars = "!@#$%^&*()_+-=[]{}|;:,.<>?/~`ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const targetChars = text.split("");
     let iteration = 0;
 
     const interval = setInterval(() => {
@@ -44,7 +44,7 @@ const CrypticText = ({ text, className }) => {
           if (index < iteration) {
             return targetChars[index];
           }
-          if (char === ' ') return ' ';
+          if (char === " ") return " ";
           return chars[Math.floor(Math.random() * chars.length)];
         })
       );
@@ -62,7 +62,7 @@ const CrypticText = ({ text, className }) => {
 
   return (
     <span ref={containerRef} className={className}>
-      {displayText.join('')}
+      {displayText.join("")}
     </span>
   );
 };
@@ -79,8 +79,8 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
 
   // Get wallpaper URL for mask effect
   const wp = userDetails?.wallpaper;
-  const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
-  const currentTheme = resolvedTheme || 'light';
+  const wpValue = wp && typeof wp === "object" ? wp.url || wp.value : wp;
+  const currentTheme = resolvedTheme || "light";
   const wallpaperUrl = getWallpaperUrl(wpValue ?? 0, currentTheme, userDetails?.template);
   const selectedWallpaper = wallpaperUrl;
 
@@ -110,8 +110,8 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
     }
 
     return {
-      WebkitMaskImage: positions.join(', '),
-      WebkitMaskComposite: 'source-in'
+      WebkitMaskImage: positions.join(", "),
+      WebkitMaskComposite: "source-in",
     };
   };
 
@@ -160,7 +160,9 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
                     viewport={{ once: false, amount: 0.8 }}
                     transition={{ duration: 0.5, delay: 0 }}
                   >
-                    <span className="text-sm sm:text-base text-foreground-landing/50 dark:text-foreground-landing/60">Resume</span>
+                    <span className="text-sm sm:text-base text-foreground-landing/50 dark:text-foreground-landing/60">
+                      Resume
+                    </span>
                     {resume?.url ? (
                       <button
                         onClick={() => setIsResumeDialogOpen(true)}
@@ -189,7 +191,9 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
                     viewport={{ once: false, amount: 0.8 }}
                     transition={{ duration: 0.5, delay: 0.1 }}
                   >
-                    <span className="text-sm sm:text-base text-foreground-landing/50 dark:text-foreground-landing/60">Mail</span>
+                    <span className="text-sm sm:text-base text-foreground-landing/50 dark:text-foreground-landing/60">
+                      Mail
+                    </span>
                     {email ? (
                       <a
                         href={`mailto:${email}`}
@@ -218,13 +222,15 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
                     viewport={{ once: false, amount: 0.8 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
                   >
-                    <span className="text-sm sm:text-base text-foreground-landing/50 dark:text-foreground-landing/60">Phone number</span>
+                    <span className="text-sm sm:text-base text-foreground-landing/50 dark:text-foreground-landing/60">
+                      Phone number
+                    </span>
                     {phone ? (
                       <TooltipProvider>
                         <Tooltip delayDuration={0}>
                           <TooltipTrigger asChild>
                             <button
-                              className={`text-sm sm:text-base font-medium transition-all duration-300 min-w-0 sm:min-w-[180px] text-left sm:text-right flex items-center justify-start sm:justify-end gap-2 ${!isCopied ? 'hover:underline underline-offset-4 cursor-pointer' : 'cursor-default'}`}
+                              className={`text-sm sm:text-base font-medium transition-all duration-300 min-w-0 sm:min-w-[180px] text-left sm:text-right flex items-center justify-start sm:justify-end gap-2 ${!isCopied ? "hover:underline underline-offset-4 cursor-pointer" : "cursor-default"}`}
                               onClick={handleCopyPhone}
                               data-testid="button-copy-phone"
                             >
@@ -269,7 +275,9 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
                     viewport={{ once: false, amount: 0.8 }}
                     transition={{ duration: 0.5, delay: 0.3 }}
                   >
-                    <span className="text-sm sm:text-base text-foreground-landing/50 dark:text-foreground-landing/60">Blogs</span>
+                    <span className="text-sm sm:text-base text-foreground-landing/50 dark:text-foreground-landing/60">
+                      Blogs
+                    </span>
                     {portfolios?.medium ? (
                       <a
                         href={portfolios.medium}
@@ -291,7 +299,11 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
                 )}
 
                 {/* Socials */}
-                {((socials?.linkedin || socials?.twitter || socials?.instagram || portfolios?.dribbble) || edit) && (
+                {(socials?.linkedin ||
+                  socials?.twitter ||
+                  socials?.instagram ||
+                  portfolios?.dribbble ||
+                  edit) && (
                   <motion.div
                     className="flex flex-col sm:flex-row sm:items-center justify-between py-3 sm:py-2.5 border-b border-border/10 group gap-1 sm:gap-4"
                     data-testid="footer-item-socials"
@@ -300,7 +312,9 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
                     viewport={{ once: false, amount: 0.8 }}
                     transition={{ duration: 0.5, delay: 0.4 }}
                   >
-                    <span className="text-sm sm:text-base text-foreground-landing/50 dark:text-foreground-landing/60">Socials</span>
+                    <span className="text-sm sm:text-base text-foreground-landing/50 dark:text-foreground-landing/60">
+                      Socials
+                    </span>
                     <div className="flex items-center gap-2 flex-wrap">
                       {socials?.linkedin ? (
                         <>
@@ -357,14 +371,18 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
                           Dribbble
                         </a>
                       ) : null}
-                      {edit && !socials?.linkedin && !socials?.twitter && !socials?.instagram && !portfolios?.dribbble && (
-                        <button
-                          onClick={() => openSidebar?.("footer")}
-                          className="text-sm sm:text-base font-medium hover:underline underline-offset-4 cursor-pointer"
-                        >
-                          Add Socials
-                        </button>
-                      )}
+                      {edit &&
+                        !socials?.linkedin &&
+                        !socials?.twitter &&
+                        !socials?.instagram &&
+                        !portfolios?.dribbble && (
+                          <button
+                            onClick={() => openSidebar?.("footer")}
+                            className="text-sm sm:text-base font-medium hover:underline underline-offset-4 cursor-pointer"
+                          >
+                            Add Socials
+                          </button>
+                        )}
                     </div>
                   </motion.div>
                 )}
@@ -401,7 +419,7 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
                     viewport={{ once: false, amount: 0.1 }}
                     transition={{
                       pathLength: { duration: 2, ease: "easeInOut" },
-                      opacity: { duration: 0.3 }
+                      opacity: { duration: 0.3 },
                     }}
                   />
                 </svg>

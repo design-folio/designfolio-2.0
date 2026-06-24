@@ -14,11 +14,12 @@ function CanvasHeader({ persistTheme = false }) {
     return () => clearInterval(timer);
   }, []);
 
-  const currentDate = currentTime?.toLocaleDateString("en-US", {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-  }) ?? "";
+  const currentDate =
+    currentTime?.toLocaleDateString("en-US", {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+    }) ?? "";
 
   return (
     <motion.div

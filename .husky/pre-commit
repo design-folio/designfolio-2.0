@@ -1,0 +1,11 @@
+echo ""
+echo "⚡ Pre-commit checks"
+echo ""
+echo "  ➜  Linting & formatting staged files..."
+echo ""
+
+npx lint-staged
+
+echo ""
+echo "✅  All good — committing."
+echo ""

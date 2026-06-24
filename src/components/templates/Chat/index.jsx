@@ -9,8 +9,9 @@ import ChatContactSection from "./ChatContactSection";
 
 export default function Chat({ isEditing = false, preview = false }) {
   const canEdit = isEditing && !preview;
-  const { chatRevealStep, containerRef, s, sectionSteps, getNextLeftStep } =
-    useChatReveal({ preview });
+  const { chatRevealStep, containerRef, s, sectionSteps, getNextLeftStep } = useChatReveal({
+    preview,
+  });
 
   const sharedProps = {
     chatRevealStep,

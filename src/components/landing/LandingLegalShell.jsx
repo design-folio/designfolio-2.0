@@ -44,16 +44,33 @@ export default function LandingLegalShell({ title, seoTitle, seoDescription, chi
             </Link>
             <div className="flex items-center gap-3">
               {hasDfToken ? (
-                <Button asChild variant="darker" size="sm" className="rounded-full px-4 text-[13px] font-semibold">
+                <Button
+                  asChild
+                  variant="darker"
+                  size="sm"
+                  className="rounded-full px-4 text-[13px] font-semibold"
+                >
                   <Link href="/builder">Launch Builder</Link>
                 </Button>
               ) : (
                 <>
-                  <Button asChild variant="ghost" size="sm" className="text-[13px] font-medium text-[--lp-text-muted] hover:text-[--lp-text] hover:bg-transparent px-0">
+                  <Button
+                    asChild
+                    variant="ghost"
+                    size="sm"
+                    className="text-[13px] font-medium text-[--lp-text-muted] hover:text-[--lp-text] hover:bg-transparent px-0"
+                  >
                     <Link href="/login">Login</Link>
                   </Button>
-                  <Button asChild variant="darker" size="sm" className="rounded-full px-4 text-[13px] font-semibold">
-                    <Link href="/claim-link">{hasParsedResume ? "Continue Signup" : "Get Started"}</Link>
+                  <Button
+                    asChild
+                    variant="darker"
+                    size="sm"
+                    className="rounded-full px-4 text-[13px] font-semibold"
+                  >
+                    <Link href="/claim-link">
+                      {hasParsedResume ? "Continue Signup" : "Get Started"}
+                    </Link>
                   </Button>
                 </>
               )}
@@ -62,12 +79,8 @@ export default function LandingLegalShell({ title, seoTitle, seoDescription, chi
 
           {/* Content */}
           <div className="flex-1 px-6 py-6">
-            <h1 className="text-[24px] font-bold text-[--lp-text] mb-6 tracking-tight">
-              {title}
-            </h1>
-            <div
-              className="space-y-6 text-[15px] leading-relaxed text-lp-text/80 [&_h2]:text-[18px] [&_h2]:font-semibold [&_h2]:text-[--lp-text] [&_h2]:mt-2 [&_h2]:mb-2 [&_a]:text-[--lp-accent] [&_a:hover]:underline [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1"
-            >
+            <h1 className="text-[24px] font-bold text-[--lp-text] mb-6 tracking-tight">{title}</h1>
+            <div className="space-y-6 text-[15px] leading-relaxed text-lp-text/80 [&_h2]:text-[18px] [&_h2]:font-semibold [&_h2]:text-[--lp-text] [&_h2]:mt-2 [&_h2]:mb-2 [&_a]:text-[--lp-accent] [&_a:hover]:underline [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1">
               {children}
             </div>
           </div>

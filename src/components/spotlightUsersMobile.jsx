@@ -1,11 +1,6 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, ArrowUpRight } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 const SpotlightUsersMobile = ({ projects }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -80,9 +75,7 @@ const SpotlightUsersMobile = ({ projects }) => {
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="max-w-[85vw] w-[85vw] h-[85vh] p-0 overflow-hidden rounded-[20px] bg-white">
           <DialogTitle className="sr-only">{currentProject.title}</DialogTitle>
-          <DialogDescription className="sr-only">
-            {currentProject.title}
-          </DialogDescription>
+          <DialogDescription className="sr-only">{currentProject.title}</DialogDescription>
           <div className="relative w-full h-full rounded-[20px] overflow-hidden">
             <iframe
               src={currentProject.projectUrl}

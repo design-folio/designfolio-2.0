@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState, useRef, useEffect } from "react";
+import { motion } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function ImgStack({ images, autoPlayInterval = 5000 }) {
   const [cards, setCards] = useState(
@@ -12,7 +12,9 @@ export default function ImgStack({ images, autoPlayInterval = 5000 }) {
 
   useEffect(() => {
     if (!autoPlayInterval) return;
-    const interval = setInterval(() => { handleNext(); }, autoPlayInterval);
+    const interval = setInterval(() => {
+      handleNext();
+    }, autoPlayInterval);
     return () => clearInterval(interval);
   }, [autoPlayInterval, isAnimating]);
 
@@ -51,7 +53,7 @@ export default function ImgStack({ images, autoPlayInterval = 5000 }) {
   const handleDragEnd = (_, info) => {
     const dragDistance = Math.sqrt(
       Math.pow(info.point.x - dragStartPos.current.x, 2) +
-      Math.pow(info.point.y - dragStartPos.current.y, 2)
+        Math.pow(info.point.y - dragStartPos.current.y, 2)
     );
     if (isAnimating || dragDistance < minDragDistance) return;
     handleNext();
@@ -81,10 +83,18 @@ export default function ImgStack({ images, autoPlayInterval = 5000 }) {
               dragConstraints={{ left: -150, right: 150, top: -150, bottom: 150 }}
               dragSnapToOrigin={true}
               dragTransition={{ bounceStiffness: 600, bounceDamping: 10 }}
-              onDragStart={(_, info) => { dragStartPos.current = { x: info.point.x, y: info.point.y }; }}
+              onDragStart={(_, info) => {
+                dragStartPos.current = { x: info.point.x, y: info.point.y };
+              }}
               onDragEnd={handleDragEnd}
               whileHover={isTopCard ? { scale: 1.05, transition: { duration: 0.2 } } : {}}
-              whileDrag={{ scale: 1.1, rotate: 0, zIndex: 100, boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)", transition: { duration: 0.1 } }}
+              whileDrag={{
+                scale: 1.1,
+                rotate: 0,
+                zIndex: 100,
+                boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)",
+                transition: { duration: 0.1 },
+              }}
             >
               <img
                 src={card.src}

@@ -12,8 +12,7 @@ import { cn } from "@/lib/utils";
 // Custom list renderer component
 const CustomListRenderer = React.memo(({ items, listType = "unordered" }) => {
   const ListTag = listType === "unordered" ? "ul" : "ol";
-  const listClass =
-    listType === "ordered" ? "list-decimal pl-5" : "list-disc pl-5";
+  const listClass = listType === "ordered" ? "list-decimal pl-5" : "list-disc pl-5";
 
   const renderedItems = useMemo(() => {
     return items.map((item, index) => {
@@ -131,8 +130,9 @@ const RenderImageBlock = React.memo(({ block }) => {
           <img
             src={block?.data?.file?.url}
             alt="project image"
-            className={`w-full h-full ${getClassNames} rounded-[20px] object-cover transition-opacity duration-100 mt-6 md:mt-8 ${isImageLoaded ? "opacity-100" : "opacity-0"
-              }`}
+            className={`w-full h-full ${getClassNames} rounded-[20px] object-cover transition-opacity duration-100 mt-6 md:mt-8 ${
+              isImageLoaded ? "opacity-100" : "opacity-0"
+            }`}
             loading="lazy"
             fetchPriority="high"
             decoding="async"
@@ -166,12 +166,7 @@ const BreakLineBlock = ({ data }) => {
 const BlockRenderer = ({ editorJsData, className }) => {
   const renderers = useMemo(
     () => ({
-      list: (data) => (
-        <CustomListRenderer
-          items={data.data.items}
-          listType={data.data.style}
-        />
-      ),
+      list: (data) => <CustomListRenderer items={data.data.items} listType={data.data.style} />,
       image: (data) => <RenderImageBlock block={data} />,
       table: (data) => (
         <div className="table-wrapper mt-4">
@@ -218,7 +213,12 @@ const BlockRenderer = ({ editorJsData, className }) => {
   );
 
   return (
-    <div className={cn("bg-card shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words project-editor", className)}>
+    <div
+      className={cn(
+        "bg-card shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words project-editor",
+        className
+      )}
+    >
       <Blocks
         data={editorJsData}
         config={{

@@ -24,9 +24,7 @@ export default function BlogPostRecommendations({ postId }) {
   if (!recommendedPosts && isLoading) {
     return (
       <div className="mt-10 pt-8 border-t border-gray-200">
-        <h3 className="text-xl font-semibold mb-4 text-gray-800">
-          More from Shai and Designfolio
-        </h3>
+        <h3 className="text-xl font-semibold mb-4 text-gray-800">More from Shai and Designfolio</h3>
 
         <div className="space-y-4">
           {Array.from({ length: 2 }).map((_, index) => (

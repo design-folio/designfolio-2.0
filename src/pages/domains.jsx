@@ -10,8 +10,13 @@ import { _getDomainDetails } from "@/network/get-request";
 import WallpaperBackground from "@/components/WallpaperBackground";
 
 export default function Domains() {
-  const { userDetails, setIsUserDetailsFromCache, userDetailsIsState, wallpaperUrl, wallpaperEffects } =
-    useGlobalContext();
+  const {
+    userDetails,
+    setIsUserDetailsFromCache,
+    userDetailsIsState,
+    wallpaperUrl,
+    wallpaperEffects,
+  } = useGlobalContext();
   const [domainDetails, setDomainDetails] = useState(null);
   const router = useRouter();
   const handleBack = () => {
@@ -35,9 +40,7 @@ export default function Domains() {
     <>
       <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
       <main className="min-h-screen">
-        <div
-          className={`max-w-[848px]  mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0`}
-        >
+        <div className={`max-w-[848px]  mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0`}>
           <div className="bg-df-section-card-bg-color p-8 rounded-2xl">
             <Button
               text="Go Back"
@@ -51,10 +54,7 @@ export default function Domains() {
             </div>
           </div>
           <div className="bg-df-section-card-bg-color p-8 rounded-2xl mt-6">
-            <CustomDomain
-              domainDetails={domainDetails}
-              fetchDomainDetails={fetchDomainDetails}
-            />
+            <CustomDomain domainDetails={domainDetails} fetchDomainDetails={fetchDomainDetails} />
           </div>
 
           <div className="bg-df-section-card-bg-color p-8 rounded-2xl mt-6">

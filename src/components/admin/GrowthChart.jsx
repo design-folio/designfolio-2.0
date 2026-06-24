@@ -66,11 +66,7 @@ export default function GrowthChart({ timeSeries }) {
                 <stop offset="95%" stopColor="hsl(var(--chart-2))" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid
-              strokeDasharray="3 3"
-              stroke="hsl(var(--border))"
-              vertical={false}
-            />
+            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
             <XAxis
               dataKey="date"
               ticks={xTicks}
@@ -95,9 +91,7 @@ export default function GrowthChart({ timeSeries }) {
               }}
               labelFormatter={formatDate}
             />
-            <Legend
-              wrapperStyle={{ fontSize: "12px", paddingTop: "12px" }}
-            />
+            <Legend wrapperStyle={{ fontSize: "12px", paddingTop: "12px" }} />
             <Area
               type="monotone"
               dataKey="New Users"

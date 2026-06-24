@@ -6,9 +6,7 @@ export function UpgradePill() {
   const router = useRouter();
   const { setShowUpgradeModal, userDetails, activeSidebar } = useGlobalContext();
 
-  const isValidRoute =
-    router.pathname === "/builder" ||
-    router.pathname === "/project/[id]/editor";
+  const isValidRoute = router.pathname === "/builder" || router.pathname === "/project/[id]/editor";
 
   if (!isValidRoute || userDetails?.pro || activeSidebar) return null;
 

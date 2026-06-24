@@ -2,21 +2,14 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { LayoutTemplate, Briefcase } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Spinner } from "@/components/ui/spinner";
 import MemoDFLogoV2 from "../icons/DFLogoV2";
-
 
 const ALL_NAV_ITEMS = [
   { icon: LayoutTemplate, label: "Portfolio Builder", href: "/builder" },
   { icon: Briefcase, label: "Jobs", href: "/jobs" },
 ];
-
 
 export function JobsFloatingNav() {
   const router = useRouter();
@@ -42,7 +35,11 @@ export function JobsFloatingNav() {
               <MemoDFLogoV2 />
             </div>
           </TooltipTrigger>
-          <TooltipContent side="right" sideOffset={8} className="bg-foreground text-background text-xs px-2 py-1 rounded">
+          <TooltipContent
+            side="right"
+            sideOffset={8}
+            className="bg-foreground text-background text-xs px-2 py-1 rounded"
+          >
             Designfolio
           </TooltipContent>
         </Tooltip>
@@ -53,9 +50,7 @@ export function JobsFloatingNav() {
         {/* Nav items */}
         {ALL_NAV_ITEMS.map(({ icon: Icon, label, href }) => {
           const isActive =
-            href === "/builder"
-              ? router.pathname === "/builder"
-              : router.pathname.startsWith(href);
+            href === "/builder" ? router.pathname === "/builder" : router.pathname.startsWith(href);
           const isLoading = pendingHref === href;
           return (
             <Tooltip key={href}>
@@ -65,34 +60,28 @@ export function JobsFloatingNav() {
                   onClick={(e) => {
                     // Ignore the active item and modified clicks (new tab, etc.)
                     // so the spinner only shows for a real in-place navigation.
-                    if (
-                      isActive ||
-                      e.metaKey ||
-                      e.ctrlKey ||
-                      e.shiftKey ||
-                      e.button !== 0
-                    )
-                      return;
+                    if (isActive || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
                     setPendingHref(href);
                   }}
                 >
                   <button
                     data-testid={`nav-${label.toLowerCase().replace(/\s+/g, "-")}`}
                     aria-busy={isLoading}
-                    className={`flex items-center justify-center w-9 h-9 rounded-full transition-all duration-200 ease-out ${isActive
-                      ? "bg-[hsl(46,15%,91%)] text-foreground shadow-[inset_0_1px_3px_rgba(0,0,0,0.07)] scale-[1.08] dark:bg-white/[0.13] dark:text-foreground dark:shadow-[inset_0_1px_3px_rgba(0,0,0,0.2)]"
-                      : "text-muted-foreground hover:bg-black/[0.07] hover:scale-[1.05] dark:hover:bg-white/10"
-                      }`}
+                    className={`flex items-center justify-center w-9 h-9 rounded-full transition-all duration-200 ease-out ${
+                      isActive
+                        ? "bg-[hsl(46,15%,91%)] text-foreground shadow-[inset_0_1px_3px_rgba(0,0,0,0.07)] scale-[1.08] dark:bg-white/[0.13] dark:text-foreground dark:shadow-[inset_0_1px_3px_rgba(0,0,0,0.2)]"
+                        : "text-muted-foreground hover:bg-black/[0.07] hover:scale-[1.05] dark:hover:bg-white/10"
+                    }`}
                   >
-                    {isLoading ? (
-                      <Spinner className="size-4" />
-                    ) : (
-                      <Icon className="w-4 h-4" />
-                    )}
+                    {isLoading ? <Spinner className="size-4" /> : <Icon className="w-4 h-4" />}
                   </button>
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right" sideOffset={8} className="bg-foreground text-background text-xs px-2 py-1 rounded">
+              <TooltipContent
+                side="right"
+                sideOffset={8}
+                className="bg-foreground text-background text-xs px-2 py-1 rounded"
+              >
                 {label}
               </TooltipContent>
             </Tooltip>

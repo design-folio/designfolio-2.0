@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { cn } from '@/lib/utils';
-import { AnimatePresence, motion } from 'framer-motion';
-import React from 'react';
+import { cn } from "@/lib/utils";
+import { AnimatePresence, motion } from "framer-motion";
+import React from "react";
 
 const defaultStaggerTimes = {
   char: 0.03,
@@ -35,9 +35,9 @@ const presetVariants = {
   blur: {
     container: defaultContainerVariants,
     item: {
-      hidden: { opacity: 0, filter: 'blur(12px)' },
-      visible: { opacity: 1, filter: 'blur(0px)' },
-      exit: { opacity: 0, filter: 'blur(12px)' },
+      hidden: { opacity: 0, filter: "blur(12px)" },
+      visible: { opacity: 1, filter: "blur(0px)" },
+      exit: { opacity: 0, filter: "blur(12px)" },
     },
   },
   shake: {
@@ -74,29 +74,24 @@ const presetVariants = {
   },
 };
 
-const AnimationComponent = React.memo(
-  ({ segment, variants, per, segmentWrapperClassName }) => {
+const AnimationComponent = React.memo(({ segment, variants, per, segmentWrapperClassName }) => {
   const content =
-    per === 'line' ? (
-      <motion.span variants={variants} className='block'>
+    per === "line" ? (
+      <motion.span variants={variants} className="block">
         {segment}
       </motion.span>
-    ) : per === 'word' ? (
-      <motion.span
-        aria-hidden='true'
-        variants={variants}
-        className='inline-block whitespace-pre'
-      >
+    ) : per === "word" ? (
+      <motion.span aria-hidden="true" variants={variants} className="inline-block whitespace-pre">
         {segment}
       </motion.span>
     ) : (
-      <motion.span className='inline-block whitespace-pre'>
-        {segment.split('').map((char, charIndex) => (
+      <motion.span className="inline-block whitespace-pre">
+        {segment.split("").map((char, charIndex) => (
           <motion.span
             key={`char-${charIndex}`}
-            aria-hidden='true'
+            aria-hidden="true"
             variants={variants}
-            className='inline-block whitespace-pre'
+            className="inline-block whitespace-pre"
           >
             {char}
           </motion.span>
@@ -108,21 +103,17 @@ const AnimationComponent = React.memo(
     return content;
   }
 
-  const defaultWrapperClassName = per === 'line' ? 'block' : 'inline-block';
+  const defaultWrapperClassName = per === "line" ? "block" : "inline-block";
 
-  return (
-    <span className={cn(defaultWrapperClassName, segmentWrapperClassName)}>
-      {content}
-    </span>
-  );
+  return <span className={cn(defaultWrapperClassName, segmentWrapperClassName)}>{content}</span>;
 });
 
-AnimationComponent.displayName = 'AnimationComponent';
+AnimationComponent.displayName = "AnimationComponent";
 
 export function TextEffect({
   children,
-  per = 'word',
-  as = 'p',
+  per = "word",
+  as = "p",
   variants,
   className,
   preset,
@@ -133,12 +124,12 @@ export function TextEffect({
 }) {
   let segments;
 
-  if (per === 'line') {
-    segments = children.split('\n');
-  } else if (per === 'word') {
+  if (per === "line") {
+    segments = children.split("\n");
+  } else if (per === "word") {
     segments = children.split(/(\s+)/);
   } else {
-    segments = children.split('');
+    segments = children.split("");
   }
 
   const MotionTag = motion?.[as] || motion.p;
@@ -147,7 +138,7 @@ export function TextEffect({
     : { container: defaultContainerVariants, item: defaultItemVariants };
   const containerVariants = variants?.container || selectedVariants.container;
   const itemVariants = variants?.item || selectedVariants.item;
-  const ariaLabel = per === 'line' ? undefined : children;
+  const ariaLabel = per === "line" ? undefined : children;
 
   const stagger = defaultStaggerTimes[per];
 
@@ -157,8 +148,7 @@ export function TextEffect({
       ...containerVariants.visible,
       transition: {
         ...(containerVariants.visible?.transition || {}),
-        staggerChildren:
-          containerVariants.visible?.transition?.staggerChildren || stagger,
+        staggerChildren: containerVariants.visible?.transition?.staggerChildren || stagger,
         delayChildren: delay,
       },
     },
@@ -166,15 +156,15 @@ export function TextEffect({
   };
 
   return (
-    <AnimatePresence mode='popLayout'>
+    <AnimatePresence mode="popLayout">
       {trigger && (
         <MotionTag
-          initial='hidden'
-          animate='visible'
-          exit='exit'
+          initial="hidden"
+          animate="visible"
+          exit="exit"
           aria-label={ariaLabel}
           variants={delayedContainerVariants}
-          className={cn('whitespace-pre-wrap', className)}
+          className={cn("whitespace-pre-wrap", className)}
           onAnimationComplete={onAnimationComplete}
         >
           {segments.map((segment, index) => (

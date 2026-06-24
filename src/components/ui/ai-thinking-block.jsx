@@ -59,9 +59,7 @@ Preparing final portfolio website preview...`;
     <div className="flex flex-col p-3 w-full max-w-xl mx-auto">
       <div className="flex items-center justify-start gap-2 mb-4">
         <Loader2 className="h-4 w-4 animate-spin text-primary" />
-        <p
-          className="bg-[linear-gradient(110deg,#404040,35%,#fff,50%,#404040,75%,#404040)] bg-[length:200%_100%] bg-clip-text text-base text-transparent animate-shimmer"
-        >
+        <p className="bg-[linear-gradient(110deg,#404040,35%,#fff,50%,#404040,75%,#404040)] bg-[length:200%_100%] bg-clip-text text-base text-transparent animate-shimmer">
           Designfolio AI is thinking
         </p>
         <span className="text-sm text-muted-foreground ml-auto">{timer}s</span>

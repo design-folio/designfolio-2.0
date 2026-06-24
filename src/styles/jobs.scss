@@ -1,15 +1,52 @@
 /* ── Jobs: HTML description (old DB records pre-Turndown conversion) ──────── */
 .job-description {
-  p, div { margin-bottom: 0.75rem; line-height: 1.7; }
-  p:last-child, div:last-child { margin-bottom: 0; }
-  ul { list-style: disc; padding-left: 1.25rem; margin-bottom: 0.75rem; }
-  ol { list-style: decimal; padding-left: 1.25rem; margin-bottom: 0.75rem; }
-  li { margin-bottom: 0.25rem; line-height: 1.6; }
-  strong, b { font-weight: 600; }
-  em, i { font-style: italic; }
-  a { text-decoration: underline; text-underline-offset: 2px; opacity: 0.7; transition: opacity 0.15s ease; }
-  a:hover { opacity: 1; }
-  h1, h2, h3 { font-weight: 600; margin-top: 1rem; margin-bottom: 0.5rem; }
+  p,
+  div {
+    margin-bottom: 0.75rem;
+    line-height: 1.7;
+  }
+  p:last-child,
+  div:last-child {
+    margin-bottom: 0;
+  }
+  ul {
+    list-style: disc;
+    padding-left: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+  ol {
+    list-style: decimal;
+    padding-left: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+  li {
+    margin-bottom: 0.25rem;
+    line-height: 1.6;
+  }
+  strong,
+  b {
+    font-weight: 600;
+  }
+  em,
+  i {
+    font-style: italic;
+  }
+  a {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    opacity: 0.7;
+    transition: opacity 0.15s ease;
+  }
+  a:hover {
+    opacity: 1;
+  }
+  h1,
+  h2,
+  h3 {
+    font-weight: 600;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+  }
 }
 
 /* ── Jobs: Kanban column — hide scrollbar cross-browser ───────────────────── */
@@ -19,10 +56,15 @@
 
 /* ── Jobs: Bubble-rise animation (used in CreditsBalance badge) ────────────── */
 @keyframes bubble-rise {
-  0%   { transform: translateY(0) scale(1);     opacity: 0.4; }
-  100% { transform: translateY(-100px) scale(0); opacity: 0;   }
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateY(-100px) scale(0);
+    opacity: 0;
+  }
 }
-
 
 /* ── Jobs: Color Orb ───────────────────────────────────────────────────────── */
 @property --orb-angle {
@@ -55,12 +97,42 @@
 
 .color-orb::before {
   background:
-    conic-gradient(from calc(var(--orb-angle) * 2) at 25% 70%, var(--orb-accent3), transparent 20% 80%, var(--orb-accent3)),
-    conic-gradient(from calc(var(--orb-angle) * 2) at 45% 75%, var(--orb-accent2), transparent 30% 60%, var(--orb-accent2)),
-    conic-gradient(from calc(var(--orb-angle) * -3) at 80% 20%, var(--orb-accent1), transparent 40% 60%, var(--orb-accent1)),
-    conic-gradient(from calc(var(--orb-angle) * 2) at 15% 5%, var(--orb-accent2), transparent 10% 90%, var(--orb-accent2)),
-    conic-gradient(from calc(var(--orb-angle) * 1) at 20% 80%, var(--orb-accent1), transparent 10% 90%, var(--orb-accent1)),
-    conic-gradient(from calc(var(--orb-angle) * -2) at 85% 10%, var(--orb-accent3), transparent 20% 80%, var(--orb-accent3));
+    conic-gradient(
+      from calc(var(--orb-angle) * 2) at 25% 70%,
+      var(--orb-accent3),
+      transparent 20% 80%,
+      var(--orb-accent3)
+    ),
+    conic-gradient(
+      from calc(var(--orb-angle) * 2) at 45% 75%,
+      var(--orb-accent2),
+      transparent 30% 60%,
+      var(--orb-accent2)
+    ),
+    conic-gradient(
+      from calc(var(--orb-angle) * -3) at 80% 20%,
+      var(--orb-accent1),
+      transparent 40% 60%,
+      var(--orb-accent1)
+    ),
+    conic-gradient(
+      from calc(var(--orb-angle) * 2) at 15% 5%,
+      var(--orb-accent2),
+      transparent 10% 90%,
+      var(--orb-accent2)
+    ),
+    conic-gradient(
+      from calc(var(--orb-angle) * 1) at 20% 80%,
+      var(--orb-accent1),
+      transparent 10% 90%,
+      var(--orb-accent1)
+    ),
+    conic-gradient(
+      from calc(var(--orb-angle) * -2) at 85% 10%,
+      var(--orb-accent3),
+      transparent 20% 80%,
+      var(--orb-accent3)
+    );
   box-shadow: inset var(--orb-base) 0 0 var(--orb-shadow) calc(var(--orb-shadow) * 0.2);
   filter: blur(var(--orb-blur)) contrast(var(--orb-contrast));
   animation: orb-spin var(--orb-spin-duration) linear infinite;
@@ -70,7 +142,11 @@
 }
 
 .color-orb::after {
-  background-image: radial-gradient(circle at center, oklch(48% 0.01 80 / 0.45) 1px, transparent 1px);
+  background-image: radial-gradient(
+    circle at center,
+    oklch(48% 0.01 80 / 0.45) 1px,
+    transparent 1px
+  );
   background-size: 3px 3px;
   mix-blend-mode: normal;
   opacity: 1;
@@ -82,7 +158,9 @@
   gap: 6px;
   padding-left: 12px;
   padding-right: 12px;
-  transition: color 0.4s ease, background-color 0.4s ease;
+  transition:
+    color 0.4s ease,
+    background-color 0.4s ease;
 }
 
 .orb-activates-on-hover .color-orb {
@@ -142,9 +220,14 @@
 }
 
 @keyframes orb-spin {
-  to { --orb-angle: 360deg; }
+  to {
+    --orb-angle: 360deg;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .color-orb::before { animation: none !important; opacity: 0 !important; }
+  .color-orb::before {
+    animation: none !important;
+    opacity: 0 !important;
+  }
 }

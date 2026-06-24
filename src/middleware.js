@@ -21,9 +21,7 @@ export async function middleware(request) {
     const subdomain = hostname.replace(`.${baseDomain}`, "");
 
     if (subdomain && subdomain !== "www" && pathname === "/") {
-      return NextResponse.rewrite(
-        new URL(`/preview/${subdomain}`, request.url)
-      );
+      return NextResponse.rewrite(new URL(`/preview/${subdomain}`, request.url));
     }
   }
 
@@ -36,9 +34,7 @@ export async function middleware(request) {
       const data = await response.json();
 
       if (data?.success && data?.username && pathname === "/") {
-        return NextResponse.rewrite(
-          new URL(`/preview/${data.username}`, request.url)
-        );
+        return NextResponse.rewrite(new URL(`/preview/${data.username}`, request.url));
       }
     }
   } catch (error) {

@@ -58,7 +58,9 @@ export function CriteriaEditor({ answers, onRescan, isRescanning }) {
       <div className="px-4 pt-3.5 pb-3 flex flex-col gap-3">
         {/* Role */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-[11px] font-medium text-foreground/40 uppercase tracking-wide">Role</label>
+          <label className="text-[11px] font-medium text-foreground/40 uppercase tracking-wide">
+            Role
+          </label>
           <input
             type="text"
             value={role}
@@ -73,10 +75,11 @@ export function CriteriaEditor({ answers, onRescan, isRescanning }) {
                   key={s.label}
                   type="button"
                   onClick={() => setRole(s.label)}
-                  className={`h-6 px-2.5 rounded-full border text-[11px] transition-colors ${role === s.label
+                  className={`h-6 px-2.5 rounded-full border text-[11px] transition-colors ${
+                    role === s.label
                       ? "bg-foreground text-background border-foreground"
                       : "border-black/[0.08] dark:border-white/[0.1] bg-black/[0.03] dark:bg-white/[0.04] text-foreground/55 hover:text-foreground hover:border-black/[0.16] dark:hover:border-white/[0.2] hover:bg-black/[0.06] dark:hover:bg-white/[0.08]"
-                    }`}
+                  }`}
                 >
                   {s.label}
                 </button>
@@ -87,7 +90,9 @@ export function CriteriaEditor({ answers, onRescan, isRescanning }) {
 
         {/* Location */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-[11px] font-medium text-foreground/40 uppercase tracking-wide">Location</label>
+          <label className="text-[11px] font-medium text-foreground/40 uppercase tracking-wide">
+            Location
+          </label>
           <LocationAutocomplete
             value={city}
             onChange={setCity}

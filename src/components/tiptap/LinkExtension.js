@@ -35,18 +35,11 @@ export const LinkNode = Node.create({
       stopEvent: (event) => {
         // Prevent ProseMirror from handling events in the node view
         const tagName = event.target?.tagName?.toUpperCase();
-        if (
-          tagName &&
-          ["INPUT", "TEXTAREA", "BUTTON", "SELECT"].includes(tagName)
-        ) {
+        if (tagName && ["INPUT", "TEXTAREA", "BUTTON", "SELECT"].includes(tagName)) {
           return true;
         }
         // Stop all keyboard events within the node view
-        if (
-          event.type === "keydown" ||
-          event.type === "keyup" ||
-          event.type === "keypress"
-        ) {
+        if (event.type === "keydown" || event.type === "keyup" || event.type === "keypress") {
           return true;
         }
         return false;

@@ -20,10 +20,7 @@ import { _removeDomain } from "@/network/get-request";
 
 const DomainValidationSchema = Yup.object().shape({
   domain: Yup.string()
-    .matches(
-      /^(?=.{1,253}$)((?!-)[A-Za-z0-9-]{1,63}(?<!-)\.)+[A-Za-z]{2,}$/,
-      "Invalid domain"
-    )
+    .matches(/^(?=.{1,253}$)((?!-)[A-Za-z0-9-]{1,63}(?<!-)\.)+[A-Za-z]{2,}$/, "Invalid domain")
     .required("Domain is required"),
 });
 
@@ -45,8 +42,7 @@ export default function CustomDomain({ domainDetails, fetchDomainDetails }) {
   };
 
   const isVerified =
-    domainDetails?.customDomain?.isCustomVerified &&
-    domainDetails?.customDomain?.isCustomVerified;
+    domainDetails?.customDomain?.isCustomVerified && domainDetails?.customDomain?.isCustomVerified;
 
   return (
     <div>
@@ -57,8 +53,8 @@ export default function CustomDomain({ domainDetails, fetchDomainDetails }) {
         <span className="text-[11px] font-semibold px-2 py-0.5  bg-gradient-to-r from-[#FF8C00] to-[#FFB347] text-white uppercase tracking-wide rounded-full">
           PRO
         </span>
-        {domainDetails?.customDomain?.domain && (
-          isVerified ? (
+        {domainDetails?.customDomain?.domain &&
+          (isVerified ? (
             <Badge className="text-[#15803D] bg-[#DCFCE7] dark:bg-[#14532D]/30 dark:text-[#4ADE80] border-0 gap-1 items-center">
               <span className="w-2 h-2  bg-[#22C55E] inline-block" />
               Connected
@@ -68,8 +64,7 @@ export default function CustomDomain({ domainDetails, fetchDomainDetails }) {
               <span className="w-2 h-2  bg-[#FACC15] inline-block" />
               Verification pending
             </Badge>
-          )
-        )}
+          ))}
       </div>
       <p className="text-[13px] text-[#7A736C] dark:text-[#B5AFA5] mt-1 leading-relaxed">
         Use your own domain — make your portfolio truly yours
@@ -81,8 +76,12 @@ export default function CustomDomain({ domainDetails, fetchDomainDetails }) {
             <div className="mt-6 space-y-4">
               <div className="flex items-center justify-between gap-4">
                 <div>
-                  <p className="text-[12px] font-medium text-[#7A736C] dark:text-[#B5AFA5] mb-0.5">URL</p>
-                  <p className="text-[14px] font-medium text-red-500">{domainDetails.customDomain.domain}</p>
+                  <p className="text-[12px] font-medium text-[#7A736C] dark:text-[#B5AFA5] mb-0.5">
+                    URL
+                  </p>
+                  <p className="text-[14px] font-medium text-red-500">
+                    {domainDetails.customDomain.domain}
+                  </p>
                 </div>
                 <Button
                   variant="outline"
@@ -95,7 +94,9 @@ export default function CustomDomain({ domainDetails, fetchDomainDetails }) {
               </div>
 
               <div>
-                <p className="text-[12px] font-medium text-[#7A736C] dark:text-[#B5AFA5] mb-0.5">Status</p>
+                <p className="text-[12px] font-medium text-[#7A736C] dark:text-[#B5AFA5] mb-0.5">
+                  Status
+                </p>
                 {isVerified ? (
                   <p className="text-[14px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                     Website is published and optimized
@@ -104,7 +105,8 @@ export default function CustomDomain({ domainDetails, fetchDomainDetails }) {
                   <p className="text-[14px] text-[#1A1A1A] dark:text-[#F0EDE7]">
                     Your <span className="text-red-500">DNS records</span> must be set up with the
                     following values. Once done, click{" "}
-                    <span className="text-red-500">&apos;Verify Domain&apos;</span> to complete verification.
+                    <span className="text-red-500">&apos;Verify Domain&apos;</span> to complete
+                    verification.
                   </p>
                 )}
               </div>
@@ -122,7 +124,10 @@ export default function CustomDomain({ domainDetails, fetchDomainDetails }) {
                       </thead>
                       <tbody className="text-[#1A1A1A] dark:text-[#F0EDE7]">
                         {domainDetails?.customDomain?.verificationData?.map((record, index) => (
-                          <tr className="border-t border-[#E5D7C4] dark:border-white/10" key={index}>
+                          <tr
+                            className="border-t border-[#E5D7C4] dark:border-white/10"
+                            key={index}
+                          >
                             <td className="px-4 py-3">{record?.domain}</td>
                             <td className="px-4 py-3">{record?.type}</td>
                             <td className="px-4 py-3 break-all">{record?.value}</td>
@@ -198,11 +203,15 @@ export default function CustomDomain({ domainDetails, fetchDomainDetails }) {
             Available on Designfolio Pro
           </h3>
           <p className="text-[13px] text-[#7A736C] dark:text-[#B5AFA5] mb-4 max-w-xs mx-auto">
-            Want to connect your own domain? Upgrade to Designfolio Pro and make your portfolio look like a real website.
+            Want to connect your own domain? Upgrade to Designfolio Pro and make your portfolio look
+            like a real website.
           </p>
           <Button
             className=""
-            onClick={() => { setUpgradeModalUnhideProject(null); setShowUpgradeModal(true); }}
+            onClick={() => {
+              setUpgradeModalUnhideProject(null);
+              setShowUpgradeModal(true);
+            }}
           >
             Upgrade to Pro
           </Button>
@@ -214,7 +223,8 @@ export default function CustomDomain({ domainDetails, fetchDomainDetails }) {
           <DialogHeader>
             <DialogTitle className="text-[#1A1A1A] dark:text-[#F0EDE7]">Remove domain</DialogTitle>
             <DialogDescription className="text-[#7A736C] dark:text-[#B5AFA5]">
-              Are you sure you want to remove this domain? Your visitors will no longer be able to find you through this link.
+              Are you sure you want to remove this domain? Your visitors will no longer be able to
+              find you through this link.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

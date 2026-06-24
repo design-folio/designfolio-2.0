@@ -27,10 +27,7 @@ const BlogPost = ({ post }) => {
       <Head>
         <Head>
           <title>{post.seoTitle || post.title}</title>
-          <meta
-            name="description"
-            content={post.seoDescription || post.excerpt}
-          />
+          <meta name="description" content={post.seoDescription || post.excerpt} />
           <meta name="keywords" content={hasTags ? post.tags.join(", ") : ""} />
           <meta name="author" content={post.author || "Unknown Author"} />
           <meta name="robots" content="index, follow" />
@@ -38,20 +35,14 @@ const BlogPost = ({ post }) => {
 
           <meta property="og:type" content="article" />
           <meta property="og:title" content={post.seoTitle || post.title} />
-          <meta
-            property="og:description"
-            content={post.seoDescription || post.excerpt}
-          />
+          <meta property="og:description" content={post.seoDescription || post.excerpt} />
           <meta property="og:url" content={currentUrl} />
           {post.image && <meta property="og:image" content={post.image} />}
           <meta property="og:site_name" content="YourWebsite" />
 
           <meta name="twitter:card" content="summary_large_image" />
           <meta name="twitter:title" content={post.seoTitle || post.title} />
-          <meta
-            name="twitter:description"
-            content={post.seoDescription || post.excerpt}
-          />
+          <meta name="twitter:description" content={post.seoDescription || post.excerpt} />
           {post.image && <meta name="twitter:image" content={post.image} />}
           {/* <meta name="twitter:site" content="@YourTwitterHandle" /> */}
           {/* <meta
@@ -59,17 +50,12 @@ const BlogPost = ({ post }) => {
             content={post.author || "@YourTwitterHandle"}
           /> */}
 
-          <meta
-            property="article:author"
-            content={post.author || "Unknown Author"}
-          />
+          <meta property="article:author" content={post.author || "Unknown Author"} />
           <meta
             property="article:published_time"
             content={post.publishedAt || new Date().toISOString()}
           />
-          {hasTags && (
-            <meta property="article:tag" content={post.tags.join(", ")} />
-          )}
+          {hasTags && <meta property="article:tag" content={post.tags.join(", ")} />}
 
           <link rel="canonical" href={currentUrl} />
         </Head>
@@ -97,9 +83,7 @@ const BlogPost = ({ post }) => {
 
             {hasTags && (
               <div className="mt-8 pt-6 border-t border-gray-200">
-                <h3 className="text-sm font-medium text-gray-500 mb-2">
-                  Tags:
-                </h3>
+                <h3 className="text-sm font-medium text-gray-500 mb-2">Tags:</h3>
                 <div className="flex flex-wrap gap-2">
                   {post.tags.map((tag, index) => (
                     <span
@@ -116,11 +100,7 @@ const BlogPost = ({ post }) => {
 
             <BlogPostRecommendations postId={post.id} />
           </article>
-          <Footer
-            dfToken={dfToken}
-            innerClass="!bg-landing-bg-color"
-            className="!p-0"
-          />
+          <Footer dfToken={dfToken} innerClass="!bg-landing-bg-color" className="!p-0" />
         </main>
       </div>
     </>

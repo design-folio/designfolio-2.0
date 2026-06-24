@@ -35,12 +35,7 @@ export const extractOfferDetails = async (model, data) => {
       const [key, ...valueParts] = line.split(":");
       const value = valueParts.join(":").trim();
 
-      if (
-        value &&
-        !value.includes("[") &&
-        value !== "not found" &&
-        value !== "not mentioned"
-      ) {
+      if (value && !value.includes("[") && value !== "not found" && value !== "not mentioned") {
         switch (key.trim()) {
           case "Position":
             extractedData.position = value || data.position;

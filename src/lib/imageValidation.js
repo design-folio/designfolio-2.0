@@ -2,18 +2,9 @@ import imageCompression from "browser-image-compression";
 
 // Constants from onboarding-old.jsx
 export const FILE_SIZE = 5 * 1024 * 1024; // 5MB
-export const SUPPORTED_MIME_TYPES = [
-  "image/jpeg",
-  "image/png",
-  "image/gif",
-];
+export const SUPPORTED_MIME_TYPES = ["image/jpeg", "image/png", "image/gif"];
 
-export const SUPPORTED_EXTENSIONS = [
-  "jpg",
-  "jpeg",
-  "png",
-  "gif",
-];
+export const SUPPORTED_EXTENSIONS = ["jpg", "jpeg", "png", "gif"];
 
 /**
  * Validates image file type and size
@@ -38,14 +29,12 @@ export const validateImageFile = (file) => {
 
   // Check file extension
   const extension = file.name?.split(".").pop()?.toLowerCase();
-  const extensionValid =
-    extension && SUPPORTED_EXTENSIONS.includes(extension);
+  const extensionValid = extension && SUPPORTED_EXTENSIONS.includes(extension);
 
   if (!mimeValid && !extensionValid) {
     return {
       valid: false,
-      error:
-        "Unsupported file format. Only jpg, jpeg, png and gif files are allowed.",
+      error: "Unsupported file format. Only jpg, jpeg, png and gif files are allowed.",
     };
   }
 
@@ -63,7 +52,7 @@ export const compressImage = async (file, onProgress) => {
     maxSizeMB: 1,
     maxWidthOrHeight: 1920,
     useWebWorker: true,
-    onProgress: onProgress || (() => { }),
+    onProgress: onProgress || (() => {}),
     fileType: "image/webp",
     alwaysKeepResolution: false,
   };
@@ -99,8 +88,7 @@ export const handleImageFile = async (
 
   // Determine if compression is needed
   const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
-  const needsCompression =
-    shouldCompress !== null ? shouldCompress : file.size > maxSizeInBytes;
+  const needsCompression = shouldCompress !== null ? shouldCompress : file.size > maxSizeInBytes;
 
   try {
     if (needsCompression) {
@@ -125,19 +113,16 @@ export const imageValidationSchema = {
   },
   fileType: {
     test: "fileType",
-    message:
-      "Unsupported file format. Only jpg, jpeg, png and gif files are allowed.",
+    message: "Unsupported file format. Only jpg, jpeg, png and gif files are allowed.",
     testFn: (value) => {
       if (!value) return true;
 
       const mimeValid = SUPPORTED_MIME_TYPES.includes(value.type);
 
       const extension = value.name?.split(".").pop()?.toLowerCase();
-      const extensionValid =
-        extension && SUPPORTED_EXTENSIONS.includes(extension);
+      const extensionValid = extension && SUPPORTED_EXTENSIONS.includes(extension);
 
       return mimeValid || extensionValid;
     },
   },
 };
-

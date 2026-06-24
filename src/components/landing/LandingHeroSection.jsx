@@ -34,9 +34,7 @@ export default function LandingHeroSection({
                 onClick={() => setHeroTab(tab)}
                 className={cn(
                   "relative px-4 py-1.5 rounded-full text-[13px] font-semibold transition-colors duration-200",
-                  heroTab === tab
-                    ? "text-[--lp-text]"
-                    : "text-lp-text/45 hover:text-lp-text/70"
+                  heroTab === tab ? "text-[--lp-text]" : "text-lp-text/45 hover:text-lp-text/70"
                 )}
               >
                 {heroTab === tab && (
@@ -63,7 +61,8 @@ export default function LandingHeroSection({
         style={{ fontWeight: 650 }}
       >
         Build your Portfolio.
-        <br />Land 6X more Interviews.
+        <br />
+        Land 6X more Interviews.
       </motion.h1>
 
       <motion.p
@@ -88,7 +87,9 @@ export default function LandingHeroSection({
           creating/destroying a GPU compositing layer on every tab switch, which caused
           the whole-page "remount" flicker.
         */}
-        <div className={(heroTab === "resume" || hasDfToken) ? "w-full flex justify-center" : "hidden"}>
+        <div
+          className={heroTab === "resume" || hasDfToken ? "w-full flex justify-center" : "hidden"}
+        >
           <ResumeUploadZone
             hasDfToken={hasDfToken}
             hasParsedResume={hasParsedResume}

@@ -16,14 +16,13 @@ import {
   CarouselContent,
   CarouselItem,
   CarouselPrevious,
-  CarouselNext
+  CarouselNext,
 } from "@/components/ui/carousel";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import ClampableTiptapContent from "./ClampableTiptapContent";
 import MemoQuoteIcon from "./icons/QuoteIcon";
 
 export default function Reviews({ edit = false, openModal, userDetails }) {
-
   const { setSelectedReview } = useGlobalContext();
   const reviews = userDetails?.reviews || [];
   const hasMultipleReviews = reviews.length >= 2;
@@ -66,7 +65,11 @@ export default function Reviews({ edit = false, openModal, userDetails }) {
                         <SortIcon className="w-4 h-4 text-df-icon-color cursor-pointer" />
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent side="top" sideOffset={8} className="bg-tooltip-bg-color text-tooltip-text-color border-0 px-4 py-2 rounded-xl shadow-xl">
+                    <TooltipContent
+                      side="top"
+                      sideOffset={8}
+                      className="bg-tooltip-bg-color text-tooltip-text-color border-0 px-4 py-2 rounded-xl shadow-xl"
+                    >
                       <span className="text-sm font-medium">Reorder Testimonials</span>
                     </TooltipContent>
                   </Tooltip>
@@ -97,85 +100,96 @@ export default function Reviews({ edit = false, openModal, userDetails }) {
             >
               <div className="overflow-visible">
                 <CarouselContent className={hasMultipleReviews ? "-ml-6" : "justify-center ml-0"}>
-                  {(hasMultipleReviews ? [...reviews, ...reviews, ...reviews] : reviews).map((review, idx) => (
-                    <CarouselItem
-                      key={`${review._id}-${idx}`}
-                      className={
-                        hasMultipleReviews
-                          ? "pl-6 md:basis-1/2 overflow-visible py-4"
-                          : "pl-0 md:basis-full overflow-visible py-4 max-w-2xl mx-auto"
-                      }
-                    >
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, amount: 0.2 }}
-                        transition={{ duration: 0.5, delay: idx * 0.1 }}
-                        className="group rounded-2xl p-6 flex flex-col relative transition-all duration-300 h-full bg-review-card-bg-color hover-elevate border border-border/50 shadow-df-card-soft-shadow"
+                  {(hasMultipleReviews ? [...reviews, ...reviews, ...reviews] : reviews).map(
+                    (review, idx) => (
+                      <CarouselItem
+                        key={`${review._id}-${idx}`}
+                        className={
+                          hasMultipleReviews
+                            ? "pl-6 md:basis-1/2 overflow-visible py-4"
+                            : "pl-0 md:basis-full overflow-visible py-4 max-w-2xl mx-auto"
+                        }
                       >
-                        <div className="mb-4 mt-2 flex items-center justify-between">
-                          <MemoQuoteIcon className="text-df-icon-color opacity-20" />
+                        <motion.div
+                          initial={{ opacity: 0, y: 20 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true, amount: 0.2 }}
+                          transition={{ duration: 0.5, delay: idx * 0.1 }}
+                          className="group rounded-2xl p-6 flex flex-col relative transition-all duration-300 h-full bg-review-card-bg-color hover-elevate border border-border/50 shadow-df-card-soft-shadow"
+                        >
+                          <div className="mb-4 mt-2 flex items-center justify-between">
+                            <MemoQuoteIcon className="text-df-icon-color opacity-20" />
 
-                          {edit && (
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
-                              onClick={() => {
-                                setSelectedReview(review);
-                                openModal(sidebars.review);
-                              }}
-                            >
-                              <Pencil className="w-4 h-4 text-df-icon-color" />
-                            </Button>
-                          )}
-                        </div>
-
-                        <div className="flex-1 mb-8">
-                          <ClampableTiptapContent
-                            content={review?.description || ""}
-                            mode="review"
-                            enableBulletList={false}
-                            maxLines={3}
-                            itemId={review?._id ?? `${idx}`}
-                            expandedIds={expandedReviewIds}
-                            onToggleExpand={toggleExpandReview}
-                          />
-                        </div>
-
-                        <div className="flex items-center justify-between gap-3 mt-auto">
-                          <div className="flex items-center gap-3">
-                            <Avatar className="w-10 h-10 shrink-0 rounded-xl">
-                              <AvatarImage src={review?.avatar?.url || review?.avatar} alt={review?.name} />
-                              <AvatarFallback className="rounded-none" style={{ backgroundColor: '#FF9966', color: '#FFFFFF' }}>
-                                {review?.name?.split(' ').map(n => n[0]).join('')}
-                              </AvatarFallback>
-                            </Avatar>
-
-                            <div>
-                              <h3 className="font-semibold text-sm mb-0.5 text-df-heading-color">
-                                {review?.name}
-                              </h3>
-                              <p className="text-xs text-df-description-color">
-                                {review?.role ? `${review.role}, ` : ""}
-                                {review?.company}
-                              </p>
-                            </div>
+                            {edit && (
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                                onClick={() => {
+                                  setSelectedReview(review);
+                                  openModal(sidebars.review);
+                                }}
+                              >
+                                <Pencil className="w-4 h-4 text-df-icon-color" />
+                              </Button>
+                            )}
                           </div>
-                          {review.linkedinLink && review.linkedinLink?.trim() !== "" && (
-                            <a
-                              href={review.linkedinLink}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-foreground-landing/20 hover:text-[#0077B5] transition-colors p-2 -mr-2"
-                            >
-                              <Linkedin className="w-5 h-5" />
-                            </a>
-                          )}
-                        </div>
-                      </motion.div>
-                    </CarouselItem>
-                  ))}
+
+                          <div className="flex-1 mb-8">
+                            <ClampableTiptapContent
+                              content={review?.description || ""}
+                              mode="review"
+                              enableBulletList={false}
+                              maxLines={3}
+                              itemId={review?._id ?? `${idx}`}
+                              expandedIds={expandedReviewIds}
+                              onToggleExpand={toggleExpandReview}
+                            />
+                          </div>
+
+                          <div className="flex items-center justify-between gap-3 mt-auto">
+                            <div className="flex items-center gap-3">
+                              <Avatar className="w-10 h-10 shrink-0 rounded-xl">
+                                <AvatarImage
+                                  src={review?.avatar?.url || review?.avatar}
+                                  alt={review?.name}
+                                />
+                                <AvatarFallback
+                                  className="rounded-none"
+                                  style={{ backgroundColor: "#FF9966", color: "#FFFFFF" }}
+                                >
+                                  {review?.name
+                                    ?.split(" ")
+                                    .map((n) => n[0])
+                                    .join("")}
+                                </AvatarFallback>
+                              </Avatar>
+
+                              <div>
+                                <h3 className="font-semibold text-sm mb-0.5 text-df-heading-color">
+                                  {review?.name}
+                                </h3>
+                                <p className="text-xs text-df-description-color">
+                                  {review?.role ? `${review.role}, ` : ""}
+                                  {review?.company}
+                                </p>
+                              </div>
+                            </div>
+                            {review.linkedinLink && review.linkedinLink?.trim() !== "" && (
+                              <a
+                                href={review.linkedinLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-foreground-landing/20 hover:text-[#0077B5] transition-colors p-2 -mr-2"
+                              >
+                                <Linkedin className="w-5 h-5" />
+                              </a>
+                            )}
+                          </div>
+                        </motion.div>
+                      </CarouselItem>
+                    )
+                  )}
                 </CarouselContent>
               </div>
               {hasMultipleReviews && (
@@ -226,9 +240,8 @@ export default function Reviews({ edit = false, openModal, userDetails }) {
               />
             </div>
           )
-        )
-        }
-      </Section >
-    </motion.div >
+        )}
+      </Section>
+    </motion.div>
   );
 }

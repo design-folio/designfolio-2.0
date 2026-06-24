@@ -13,7 +13,10 @@ export function ResumeFixerIcon({ className = "" }) {
       className={className}
     >
       <g clipPath="url(#clip0_resume_fixer)">
-        <path d="M30.472 3.045H28.952V1.525H27.432V-0.00500488H6.09197V12.195H1.52197V13.715H9.14197V12.195H7.62197V1.525H24.382V7.615H30.472V22.855H28.952V25.905H30.472V30.475H32.002V4.575H30.472V3.045Z" fill="currentColor" />
+        <path
+          d="M30.472 3.045H28.952V1.525H27.432V-0.00500488H6.09197V12.195H1.52197V13.715H9.14197V12.195H7.62197V1.525H24.382V7.615H30.472V22.855H28.952V25.905H30.472V30.475H32.002V4.575H30.472V3.045Z"
+          fill="currentColor"
+        />
         <path d="M30.4719 30.475H7.62195V31.995H30.4719V30.475Z" fill="currentColor" />
         <path d="M28.952 19.805H27.432V22.855H28.952V19.805Z" fill="currentColor" />
         <path d="M27.432 16.765H25.902V19.805H27.432V16.765Z" fill="currentColor" />

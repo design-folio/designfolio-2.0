@@ -11,9 +11,7 @@ export default function Error404() {
     <>
       <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
       <main className="min-h-screen">
-        <div
-          className={`max-w-[848px] mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0`}
-        >
+        <div className={`max-w-[848px] mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0`}>
           <div className="flex justify-center items-center rounded-2xl p-4 md:p-8">
             <div className="text-center m-auto flex flex-col items-center justify-center">
               <img src="/assets/svgs/404.svg" alt="" />
@@ -24,10 +22,7 @@ export default function Error404() {
                 >
                   Oops. The page you’re looking for doesn’t exist.
                 </Text>
-                <Text
-                  size="p-small"
-                  className="mt-4 text-center text-df-secondary-text-color"
-                >
+                <Text size="p-small" className="mt-4 text-center text-df-secondary-text-color">
                   You may have mistyped the address or the page may have moved
                 </Text>
                 <Link href={"/"}>

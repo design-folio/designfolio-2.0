@@ -1,24 +1,20 @@
-import React from 'react';
-import { ChevronLeft, ChevronRight, Lock, Copy, RefreshCw } from 'lucide-react';
-import { toast } from 'react-toastify';
+import React from "react";
+import { ChevronLeft, ChevronRight, Lock, Copy, RefreshCw } from "lucide-react";
+import { toast } from "react-toastify";
 
-const MacOSProjectToolbar = ({
-  projectUrl,
-  onBack,
-  onRefresh,
-  rightSlot,
-  className = '',
-}) => {
-  const displayUrl = projectUrl || (typeof window !== 'undefined' ? `${window.location.origin}/project` : '');
-  const urlToCopy = projectUrl || (typeof window !== 'undefined' ? `${window.location.origin}/project` : '');
+const MacOSProjectToolbar = ({ projectUrl, onBack, onRefresh, rightSlot, className = "" }) => {
+  const displayUrl =
+    projectUrl || (typeof window !== "undefined" ? `${window.location.origin}/project` : "");
+  const urlToCopy =
+    projectUrl || (typeof window !== "undefined" ? `${window.location.origin}/project` : "");
 
   const handleCopy = async () => {
     if (!urlToCopy) return;
     try {
       await navigator.clipboard.writeText(urlToCopy);
-      toast.success('URL copied to clipboard');
+      toast.success("URL copied to clipboard");
     } catch {
-      toast.error('Could not copy URL');
+      toast.error("Could not copy URL");
     }
   };
 

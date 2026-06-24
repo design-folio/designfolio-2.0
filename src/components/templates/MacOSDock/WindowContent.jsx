@@ -1,10 +1,10 @@
-import React from 'react';
-import HomeWindow from './HomeWindow';
-import WorksWindow from './WorksWindow';
-import WorkExperienceWindow from './WorkExperienceWindow';
-import AboutWindow from './AboutWindow';
-import ContactWindow from './ContactWindow';
-import ToolsWindow from './ToolsWindow';
+import React from "react";
+import HomeWindow from "./HomeWindow";
+import WorksWindow from "./WorksWindow";
+import WorkExperienceWindow from "./WorkExperienceWindow";
+import AboutWindow from "./AboutWindow";
+import ContactWindow from "./ContactWindow";
+import ToolsWindow from "./ToolsWindow";
 
 /**
  * Routes to the correct window content component based on appId.
@@ -29,21 +29,22 @@ const WindowContent = ({
   onEditTools,
   onEditBio,
 }) => {
-  const fullName = [userDetails?.firstName, userDetails?.lastName].filter(Boolean).join(' ') || 'Portfolio';
+  const fullName =
+    [userDetails?.firstName, userDetails?.lastName].filter(Boolean).join(" ") || "Portfolio";
   const workExperiences = userDetails?.experiences || [];
   const rawContactEmail = userDetails?.contact_email;
-  const contactEmail = typeof rawContactEmail === 'string' ? rawContactEmail.trim() : '';
+  const contactEmail = typeof rawContactEmail === "string" ? rawContactEmail.trim() : "";
   const contactInfo = {
-    contact_email: contactEmail ? rawContactEmail : (userDetails?.email || ''),
-    phone: userDetails?.phone || '',
-    blogs: userDetails?.portfolios?.medium || '',
-    linkedin: userDetails?.socials?.linkedin || '',
-    twitter: userDetails?.socials?.twitter || '',
-    instagram: userDetails?.socials?.instagram || '',
-    dribbble: userDetails?.portfolios?.dribbble || '',
+    contact_email: contactEmail ? rawContactEmail : userDetails?.email || "",
+    phone: userDetails?.phone || "",
+    blogs: userDetails?.portfolios?.medium || "",
+    linkedin: userDetails?.socials?.linkedin || "",
+    twitter: userDetails?.socials?.twitter || "",
+    instagram: userDetails?.socials?.instagram || "",
+    dribbble: userDetails?.portfolios?.dribbble || "",
   };
   switch (appId) {
-    case 'works':
+    case "works":
       return (
         <WorksWindow
           isMobile={isMobile}
@@ -59,21 +60,28 @@ const WindowContent = ({
           edit={edit}
         />
       );
-    case 'work_experience':
+    case "work_experience":
       return <WorkExperienceWindow workExperiences={workExperiences} />;
-    case 'about':
-      return <AboutWindow userDetails={userDetails} fullName={fullName} edit={edit} onEdit={onEditBio} />;
-    case 'contact':
-      return <ContactWindow contactInfo={contactInfo} fullName={fullName} onOpenPdf={onOpenPdf} edit={edit} onEdit={onEditContact} hasResume={!!userDetails?.resume?.url} />;
-    case 'tools':
+    case "about":
+      return (
+        <AboutWindow userDetails={userDetails} fullName={fullName} edit={edit} onEdit={onEditBio} />
+      );
+    case "contact":
+      return (
+        <ContactWindow
+          contactInfo={contactInfo}
+          fullName={fullName}
+          onOpenPdf={onOpenPdf}
+          edit={edit}
+          onEdit={onEditContact}
+          hasResume={!!userDetails?.resume?.url}
+        />
+      );
+    case "tools":
       return <ToolsWindow tools={userDetails?.tools} edit={edit} onEdit={onEditTools} />;
     default:
       return (
-        <HomeWindow
-          userDetails={userDetails}
-          fullName={fullName}
-          onViewProjects={onViewProjects}
-        />
+        <HomeWindow userDetails={userDetails} fullName={fullName} onViewProjects={onViewProjects} />
       );
   }
 };

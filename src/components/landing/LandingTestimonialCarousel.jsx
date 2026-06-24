@@ -14,9 +14,15 @@ function renderHighlights(t, isDark) {
   for (const phrase of phrases) {
     const next = [];
     for (const part of parts) {
-      if (typeof part !== "string") { next.push(part); continue; }
+      if (typeof part !== "string") {
+        next.push(part);
+        continue;
+      }
       const idx = part.indexOf(phrase);
-      if (idx === -1) { next.push(part); continue; }
+      if (idx === -1) {
+        next.push(part);
+        continue;
+      }
       if (idx > 0) next.push(part.slice(0, idx));
       next.push(
         <mark
@@ -101,11 +107,7 @@ export default function LandingTestimonialCarousel() {
               <div className="flex items-center justify-between gap-3 mb-3.5">
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="w-11 h-11 rounded-full overflow-hidden shrink-0 border border-[--lp-video-border] shadow-sm">
-                    <img
-                      src={t.image}
-                      alt={t.name}
-                      className="w-full h-full object-cover"
-                    />
+                    <img src={t.image} alt={t.name} className="w-full h-full object-cover" />
                   </div>
                   <div className="flex flex-col min-w-0">
                     <div className="text-[--lp-text] text-[15px] font-bold leading-tight mb-0.5">

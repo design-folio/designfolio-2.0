@@ -66,7 +66,6 @@ export default function Settings() {
         return "max-w-[840px] mx-auto py-[94px] md:py-[124px] min-h-screen";
       default:
         return "max-w-[700px] mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0";
-
     }
   })();
 
@@ -107,10 +106,7 @@ export default function Settings() {
             {isMono && <div className="custom-dashed-t" />}
             <div className={cardClass}>
               <Link href="/builder">
-                <Button
-                  variant="secondary"
-                  className="rounded-full px-4 h-9 text-sm font-medium"
-                >
+                <Button variant="secondary" className="rounded-full px-4 h-9 text-sm font-medium">
                   <MemoLeftArrow className="!size-2.5" />
                   Go Back
                 </Button>
@@ -122,10 +118,7 @@ export default function Settings() {
 
             {isMono && <div className="custom-dashed-t" />}
             <div className={`${cardClass} ${!isMono ? "mt-6" : ""}`}>
-              <CustomDomain
-                domainDetails={domainDetails}
-                fetchDomainDetails={fetchDomainDetails}
-              />
+              <CustomDomain domainDetails={domainDetails} fetchDomainDetails={fetchDomainDetails} />
             </div>
 
             {isMono && <div className="custom-dashed-t" />}

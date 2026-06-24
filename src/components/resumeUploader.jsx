@@ -100,9 +100,7 @@ const ResumeUploader = ({ onUpload, disabled = false }) => {
       />
       <div
         className={`p-6 rounded-2xl border-2 border-dashed transition-all duration-300 group ${
-          disabled
-            ? "cursor-not-allowed opacity-60 border-border/40 bg-muted/30"
-            : "cursor-pointer"
+          disabled ? "cursor-not-allowed opacity-60 border-border/40 bg-muted/30" : "cursor-pointer"
         } ${
           !disabled && fileName
             ? "border-[#FF553E]/20 bg-[#FF553E]/[0.02]"

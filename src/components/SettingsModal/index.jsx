@@ -1,14 +1,6 @@
 import React, { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Sheet,
-  SheetContent,
-  SheetTitle,
-} from "@/components/ui/sheet";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
@@ -42,9 +34,7 @@ const TABS = [
 function SectionBlock({ title, children }) {
   return (
     <div>
-      <h2 className="text-[18px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
-        {title}
-      </h2>
+      <h2 className="text-[18px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">{title}</h2>
       <Separator className="mt-3 mb-6" />
       {children}
     </div>
@@ -55,29 +45,25 @@ function SectionDivider() {
   return <Separator />;
 }
 
-
 /* ─────────────────────────── tab panels ────────────────────────── */
 
 function AccountTab({ userDetails, onSignOut }) {
   return (
     <div className="flex flex-col gap-7">
-
       {/* ── Profile ── */}
       <SectionBlock title="Profile">
         {/* Avatar row */}
         <div className="flex items-center gap-4">
           <Avatar className="size-14 border border-black/10 dark:border-white/10 shrink-0">
-            <AvatarImage
-              src={getUserAvatarImage(userDetails)}
-              className="object-cover"
-            />
+            <AvatarImage src={getUserAvatarImage(userDetails)} className="object-cover" />
             <AvatarFallback className="text-base font-semibold bg-[#F0EDE7] dark:bg-[#2A2520] text-[#1A1A1A] dark:text-[#F0EDE7]">
               {userDetails?.username?.[0]?.toUpperCase() ?? "U"}
             </AvatarFallback>
           </Avatar>
           <div>
             <p className="text-[15px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7] leading-snug">
-              {[userDetails?.firstName, userDetails?.lastName].filter(Boolean).join(" ") || userDetails?.username}
+              {[userDetails?.firstName, userDetails?.lastName].filter(Boolean).join(" ") ||
+                userDetails?.username}
             </p>
             <p className="text-[13px] text-[#7A736C] dark:text-[#9E9893] mt-0.5">
               {userDetails?.email}
@@ -105,18 +91,12 @@ function AccountTab({ userDetails, onSignOut }) {
               You are signed in as {userDetails?.email}
             </p>
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            className="shrink-0"
-            onClick={onSignOut}
-          >
+          <Button variant="outline" size="sm" className="shrink-0" onClick={onSignOut}>
             <LogOut data-icon="inline-start" />
             Sign out
           </Button>
         </div>
       </SectionBlock>
-
     </div>
   );
 }
@@ -128,10 +108,7 @@ function DomainsTab({ domainDetails, fetchDomainDetails }) {
       <DefaultDomain />
       <SectionDivider />
       {/* CustomDomain renders its own "Custom domain" heading */}
-      <CustomDomain
-        domainDetails={domainDetails}
-        fetchDomainDetails={fetchDomainDetails}
-      />
+      <CustomDomain domainDetails={domainDetails} fetchDomainDetails={fetchDomainDetails} />
     </div>
   );
 }
@@ -146,7 +123,6 @@ function SecurityTab({ userDetails }) {
 
   return (
     <div className="flex flex-col gap-7">
-
       {/* ChangePassword renders its own "Change password" heading */}
       {isPasswordLogin && (
         <>
@@ -157,7 +133,6 @@ function SecurityTab({ userDetails }) {
 
       {/* DeleteAccount renders its own "Danger zone" heading */}
       <DeleteAccount />
-
     </div>
   );
 }
@@ -262,7 +237,14 @@ function SidebarNav({ activeTab, setActiveTab }) {
 
 /* ─────────────────────────── shared tab content ────────────────── */
 
-function TabContent({ activeTab, userDetails, domainDetails, fetchDomainDetails, onSignOut, padding }) {
+function TabContent({
+  activeTab,
+  userDetails,
+  domainDetails,
+  fetchDomainDetails,
+  onSignOut,
+  padding,
+}) {
   return (
     <AnimatePresence mode="wait">
       <motion.div
@@ -273,9 +255,7 @@ function TabContent({ activeTab, userDetails, domainDetails, fetchDomainDetails,
         transition={{ duration: 0.18, ease: [0.23, 1, 0.32, 1] }}
         className={padding}
       >
-        {activeTab === "account" && (
-          <AccountTab userDetails={userDetails} onSignOut={onSignOut} />
-        )}
+        {activeTab === "account" && <AccountTab userDetails={userDetails} onSignOut={onSignOut} />}
         {activeTab === "domains" && (
           <DomainsTab domainDetails={domainDetails} fetchDomainDetails={fetchDomainDetails} />
         )}
@@ -341,11 +321,13 @@ export default function SettingsModal() {
   /* ── Desktop: centered dialog ── */
   return (
     <Dialog open={showSettingsModal} onOpenChange={setShowSettingsModal}>
-      <DialogContent overlayClassName="z-[201]" className="z-[202] max-w-[860px] p-0 overflow-hidden gap-0 rounded-2xl border border-black/10 dark:border-white/10 bg-white dark:bg-[#1C1C1C] h-[580px] shadow-2xl flex flex-col">
+      <DialogContent
+        overlayClassName="z-[201]"
+        className="z-[202] max-w-[860px] p-0 overflow-hidden gap-0 rounded-2xl border border-black/10 dark:border-white/10 bg-white dark:bg-[#1C1C1C] h-[580px] shadow-2xl flex flex-col"
+      >
         <DialogTitle className="sr-only">Settings</DialogTitle>
 
         <div className="flex flex-1 min-h-0">
-
           {/* ── Left sidebar ── */}
           <div className="w-[210px] shrink-0 border-r border-black/[0.06] dark:border-white/[0.06] bg-[#F7F6F4] dark:bg-[#161616] flex flex-col overflow-hidden rounded-l-2xl">
             <div className="px-5 pt-5 pb-4">
@@ -360,7 +342,6 @@ export default function SettingsModal() {
           <div className="flex-1 min-w-0 overflow-y-auto rounded-r-2xl custom-thin-scrollbar">
             <TabContent {...sharedProps} padding="p-8 pr-10" />
           </div>
-
         </div>
       </DialogContent>
     </Dialog>

@@ -45,11 +45,7 @@ const RulerLines = ({ totalLines = 41 }) => {
     );
   }
 
-  return (
-    <div className="flex items-center justify-between w-full px-8">
-      {lines}
-    </div>
-  );
+  return <div className="flex items-center justify-between w-full px-8">{lines}</div>;
 };
 
 const ITEM_WIDTH = 160;
@@ -59,9 +55,7 @@ export function RulerCarousel({ originalItems, onItemSelect, selectedIndex }) {
   const infiniteItems = createInfiniteItems(originalItems);
   const itemsPerSet = originalItems.length;
 
-  const [activeIndex, setActiveIndex] = useState(
-    itemsPerSet + (selectedIndex ?? 0)
-  );
+  const [activeIndex, setActiveIndex] = useState(itemsPerSet + (selectedIndex ?? 0));
   const [isResetting, setIsResetting] = useState(false);
   const previousIndexRef = useRef(itemsPerSet);
 
@@ -188,9 +182,7 @@ export function RulerCarousel({ originalItems, onItemSelect, selectedIndex }) {
                 key={item.id}
                 onClick={() => handleItemClick(index)}
                 className={`text-sm font-semibold whitespace-nowrap cursor-pointer flex items-center justify-center ${
-                  isActive
-                    ? "text-[#FF553E]"
-                    : "text-[#0A0A0A]/60 hover:text-[#0A0A0A]/80"
+                  isActive ? "text-[#FF553E]" : "text-[#0A0A0A]/60 hover:text-[#0A0A0A]/80"
                 }`}
                 animate={{
                   scale: isActive ? 1 : 0.9,
@@ -230,13 +222,9 @@ export function RulerCarousel({ originalItems, onItemSelect, selectedIndex }) {
         </button>
 
         <div className="flex items-center gap-1">
-          <span className="text-xs font-medium text-[#0A0A0A]/70">
-            {currentPage}
-          </span>
+          <span className="text-xs font-medium text-[#0A0A0A]/70">{currentPage}</span>
           <span className="text-xs text-[#0A0A0A]/40">/</span>
-          <span className="text-xs font-medium text-[#0A0A0A]/70">
-            {totalPages}
-          </span>
+          <span className="text-xs font-medium text-[#0A0A0A]/70">{totalPages}</span>
         </div>
 
         <button

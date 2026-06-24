@@ -20,24 +20,24 @@ import {
 
 // ── Edit this list to change the deletion reason options ─────────────────────
 const DELETION_REASONS = [
-  { id: "not-useful",        label: "Didn't find it useful" },
-  { id: "missing-features",  label: "Missing features I need" },
-  { id: "switching",         label: "Switching to another tool" },
-  { id: "expensive",         label: "Too expensive" },
-  { id: "exploring",         label: "Just exploring, don't need it anymore" },
-  { id: "other",             label: "Other" },
+  { id: "not-useful", label: "Didn't find it useful" },
+  { id: "missing-features", label: "Missing features I need" },
+  { id: "switching", label: "Switching to another tool" },
+  { id: "expensive", label: "Too expensive" },
+  { id: "exploring", label: "Just exploring, don't need it anymore" },
+  { id: "other", label: "Other" },
 ];
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function DeleteAccount() {
   const router = useRouter();
   const { setUserDetails, setShowSettingsModal } = useGlobalContext();
-  const [open, setOpen]               = useState(false);
-  const [step, setStep]               = useState("reason"); // "reason" | "confirm"
+  const [open, setOpen] = useState(false);
+  const [step, setStep] = useState("reason"); // "reason" | "confirm"
   const [selectedReason, setSelected] = useState(null);
-  const [customReason, setCustom]     = useState("");
+  const [customReason, setCustom] = useState("");
   const [confirmText, setConfirmText] = useState("");
-  const [loading, setLoading]         = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleOpenChange = (val) => {
     setOpen(val);
@@ -75,31 +75,23 @@ export default function DeleteAccount() {
   };
 
   const canProceed =
-    selectedReason !== null &&
-    (selectedReason !== "other" || customReason.trim().length > 0);
+    selectedReason !== null && (selectedReason !== "other" || customReason.trim().length > 0);
 
   return (
     <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
       <div>
-        <p className="text-[18px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
-          Danger zone
-        </p>
+        <p className="text-[18px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">Danger zone</p>
         <p className="text-[13px] text-[#7A736C] dark:text-[#B5AFA5] mt-1 leading-relaxed">
           Delete your account and account data. This can&apos;t be undone.
         </p>
       </div>
 
-      <Button
-        variant="destructive"
-        className="w-full lg:w-fit"
-        onClick={() => setOpen(true)}
-      >
+      <Button variant="destructive" className="w-full lg:w-fit" onClick={() => setOpen(true)}>
         Delete account
       </Button>
 
       <AlertDialog open={open} onOpenChange={handleOpenChange}>
         <AlertDialogContent className="max-w-[420px] rounded-2xl bg-white dark:bg-[#2A2520] border border-[#E5D7C4] dark:border-white/10">
-
           {/* ── Step 1: Reason ── */}
           {step === "reason" && (
             <>
@@ -162,17 +154,10 @@ export default function DeleteAccount() {
                   Delete Account
                 </AlertDialogTitle>
                 <AlertDialogDescription className="text-[#7A736C] dark:text-[#B5AFA5] leading-relaxed">
-                  This action{" "}
-                  <strong className="text-[#1A1A1A] dark:text-[#F0EDE7]">
-                    CANNOT
-                  </strong>{" "}
-                  be undone. This will permanently delete everything associated
-                  with this account, from your published website to the content
-                  in draft—
-                  <strong className="text-[#1A1A1A] dark:text-[#F0EDE7]">
-                    EVERYTHING
-                  </strong>
-                  .
+                  This action <strong className="text-[#1A1A1A] dark:text-[#F0EDE7]">CANNOT</strong>{" "}
+                  be undone. This will permanently delete everything associated with this account,
+                  from your published website to the content in draft—
+                  <strong className="text-[#1A1A1A] dark:text-[#F0EDE7]">EVERYTHING</strong>.
                 </AlertDialogDescription>
               </AlertDialogHeader>
 
@@ -207,7 +192,6 @@ export default function DeleteAccount() {
               </AlertDialogFooter>
             </>
           )}
-
         </AlertDialogContent>
       </AlertDialog>
     </div>

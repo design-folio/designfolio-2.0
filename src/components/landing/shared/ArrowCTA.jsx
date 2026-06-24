@@ -24,14 +24,14 @@ export default function ArrowCTA({
 }) {
   const isLg = size === "lg";
 
-  const textCls = isLg
-    ? "px-6 py-[13px] text-[15px]"
-    : "px-4 py-[6px] text-[13px]";
+  const textCls = isLg ? "px-6 py-[13px] text-[15px]" : "px-4 py-[6px] text-[13px]";
 
   const circleSz = isLg ? "h-[46px] w-[46px]" : "h-[32px] w-[32px]";
   const arrowSz = isLg ? "h-[18px] w-[18px]" : "h-[14px] w-[14px]";
   const spinnerSz = isLg ? "size-[18px]" : "size-[14px]";
-  const translateOut = isLg ? "group-hover:translate-x-8 group-hover:-translate-y-8" : "group-hover:translate-x-6 group-hover:-translate-y-6";
+  const translateOut = isLg
+    ? "group-hover:translate-x-8 group-hover:-translate-y-8"
+    : "group-hover:translate-x-6 group-hover:-translate-y-6";
   const translateIn = isLg ? "-translate-x-10 translate-y-10" : "-translate-x-7 translate-y-7";
 
   const content = (
@@ -65,7 +65,8 @@ export default function ArrowCTA({
     </>
   );
 
-  const wrapperClass = `group inline-flex cursor-pointer items-center gap-0 rounded-full no-underline ${loading ? "pointer-events-none" : ""} ${className}`.trim();
+  const wrapperClass =
+    `group inline-flex cursor-pointer items-center gap-0 rounded-full no-underline ${loading ? "pointer-events-none" : ""} ${className}`.trim();
 
   if (href) {
     return (

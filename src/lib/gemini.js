@@ -37,9 +37,7 @@ const checkRateLimit = () => {
 
   if (attempts >= MAX_ATTEMPTS) {
     const remainingTime = Math.ceil((COOLDOWN_PERIOD - timePassed) / 1000);
-    throw new Error(
-      `Rate limit reached. Please try again in ${remainingTime} seconds.`
-    );
+    throw new Error(`Rate limit reached. Please try again in ${remainingTime} seconds.`);
   }
 
   localStorage.setItem(
@@ -57,10 +55,7 @@ export const generateEmail = async (context) => {
 
   const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
-  const emailType =
-    context.emailType === "custom"
-      ? context.customEmailType
-      : context.emailType;
+  const emailType = context.emailType === "custom" ? context.customEmailType : context.emailType;
 
   const prompt = `Write a friendly and conversational email for a job seeker. Make it professional but warm and personable, avoiding overly formal language. Details:
 - Type: ${emailType} email
@@ -68,11 +63,7 @@ export const generateEmail = async (context) => {
 - Position: ${context.position}
 - Interviewer: ${context.interviewer}
 - Sender: ${context.name}
-${
-  context.additionalContext
-    ? `- Additional Context: ${context.additionalContext}`
-    : ""
-}
+${context.additionalContext ? `- Additional Context: ${context.additionalContext}` : ""}
 
 Guidelines:
 - Use a warm, friendly tone while maintaining professionalism
@@ -114,9 +105,7 @@ export const analyzeOffer = async (data) => {
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     // Extract data from offer letter if provided
-    const extractedData = data.offerContent
-      ? await extractOfferDetails(model, data)
-      : data;
+    const extractedData = data.offerContent ? await extractOfferDetails(model, data) : data;
 
     console.log("Preparing analysis with data:", extractedData);
     const analysisPrompt = generateAnalysisPrompt(extractedData);
@@ -132,11 +121,7 @@ export const analyzeOffer = async (data) => {
   }
 };
 
-export const generateInterviewQuestions = async (
-  jobDescription,
-  role,
-  difficulty = "mid"
-) => {
+export const generateInterviewQuestions = async (jobDescription, role, difficulty = "mid") => {
   const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
   const difficultyPrompts = {
@@ -209,11 +194,7 @@ export const generateWithRetry = async (model, prompt, retryCount = 0) => {
   }
 };
 
-export const handleFeedbackGeneration = async (
-  role,
-  questions,
-  userAnswers
-) => {
+export const handleFeedbackGeneration = async (role, questions, userAnswers) => {
   const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
   const prompt = generateFeedbackPrompt(role, questions, userAnswers);
 

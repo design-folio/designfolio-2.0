@@ -11,13 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
+import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
 import { useGlobalContext } from "@/context/globalContext";
 import { _updateProject } from "@/network/post-request";
@@ -27,20 +21,10 @@ import {
   renderDescriptionLines,
   truncatePlainText,
 } from "@/lib/aboutStoryPreview";
-import {
-  DEFAULT_SECTION_ORDER,
-  modals,
-  normalizeSectionOrder,
-  sidebars,
-} from "@/lib/constant";
+import { DEFAULT_SECTION_ORDER, modals, normalizeSectionOrder, sidebars } from "@/lib/constant";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import {
-  AtSignIcon,
-  DownloadIcon,
-  DribbbleIcon,
-  TwitterIcon,
-} from "lucide-animated";
+import { AtSignIcon, DownloadIcon, DribbbleIcon, TwitterIcon } from "lucide-animated";
 import {
   ChevronDown,
   ChevronsUpDown,
@@ -50,16 +34,10 @@ import {
   Sparkles,
   Trash2,
   UserCircle,
-  X
+  X,
 } from "lucide-react";
 import { useRouter } from "next/router";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatedThemeToggler } from "./animated-theme-toggler";
 import MonoContactSection from "./MonoContactSection";
 import MonoExperienceSection from "./MonoExperienceSection";
@@ -116,22 +94,16 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
     setShowUpgradeModal,
     setUpgradeModalUnhideProject,
   } = useGlobalContext();
-  const avatarSrc = useMemo(
-    () => getUserAvatarImage(userDetails),
-    [userDetails],
-  );
+  const avatarSrc = useMemo(() => getUserAvatarImage(userDetails), [userDetails]);
   const atSignRef = useRef(null);
   const downloadRef = useRef(null);
   const dribbbleRef = useRef(null);
   const twitterRef = useRef(null);
 
-  const [isRecommendationsPanelOpen, setIsRecommendationsPanelOpen] =
-    useState(false);
+  const [isRecommendationsPanelOpen, setIsRecommendationsPanelOpen] = useState(false);
   const [isProjectsPanelOpen, setIsProjectsPanelOpen] = useState(false);
-  const [isProjectsAddDropdownOpen, setIsProjectsAddDropdownOpen] =
-    useState(false);
-  const [isProjectPasswordEnabled, setIsProjectPasswordEnabled] =
-    useState(false);
+  const [isProjectsAddDropdownOpen, setIsProjectsAddDropdownOpen] = useState(false);
+  const [isProjectPasswordEnabled, setIsProjectPasswordEnabled] = useState(false);
   const mappedProjects = useMemo(
     () =>
       (userDetails?.projects || []).map((project, index) => ({
@@ -143,7 +115,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
         hidden: Boolean(project.hidden),
         raw: project,
       })),
-    [userDetails?.projects],
+    [userDetails?.projects]
   );
   const [projects, setProjects] = useState(mappedProjects);
   const mappedStoryImages = useMemo(() => {
@@ -162,10 +134,9 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
         name: tool.label || tool.name || `Tool ${index + 1}`,
         icon: tool.image || tool.icon || "",
       })),
-    [userDetails?.tools],
+    [userDetails?.tools]
   );
   const [activeTools, setActiveTools] = useState(mappedTools);
-
 
   const displayName =
     userDetails?.name ||
@@ -181,25 +152,22 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
   const resumeUrl = userDetails?.resume?.url || "";
   const storyText = userDetails?.about?.description || "";
   const aboutStoryPlain = storyText.trim();
-  const aboutStoryNeedsExpand =
-    aboutStoryPlain.length > ABOUT_STORY_CHAR_THRESHOLD;
+  const aboutStoryNeedsExpand = aboutStoryPlain.length > ABOUT_STORY_CHAR_THRESHOLD;
   const [aboutStoryExpanded, setAboutStoryExpanded] = useState(false);
   const aboutStoryReduceMotion = useReducedMotion();
-  const userRole = userDetails?.persona?.label !== "Others" ? userDetails?.persona?.label : userDetails?.persona?.custom;
+  const userRole =
+    userDetails?.persona?.label !== "Others"
+      ? userDetails?.persona?.label
+      : userDetails?.persona?.custom;
   const visibleProjects = useMemo(
     () => (preview ? projects.filter((project) => !project.hidden) : projects),
-    [preview, projects],
+    [preview, projects]
   );
-  const avatarFallbackText = useMemo(
-    () => getInitials(displayName, "U"),
-    [displayName],
-  );
-
+  const avatarFallbackText = useMemo(() => getInitials(displayName, "U"), [displayName]);
 
   useEffect(() => {
     setProjects(mappedProjects);
   }, [mappedProjects]);
-
 
   useEffect(() => {
     setActiveTools(mappedTools);
@@ -219,7 +187,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
       if (!projectId) return;
       router.push(`/project/${projectId}/editor`);
     },
-    [router],
+    [router]
   );
 
   const handleDeleteProject = useCallback(
@@ -227,13 +195,10 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
       setSelectedProject?.(project?.raw || project);
       openModal?.(modals.deleteProject);
     },
-    [openModal, setSelectedProject],
+    [openModal, setSelectedProject]
   );
 
-  const handleEditPersona = useCallback(
-    () => openSidebar?.(sidebars.persona),
-    [openSidebar],
-  );
+  const handleEditPersona = useCallback(() => openSidebar?.(sidebars.persona), [openSidebar]);
 
   const handleToggleProjectVisibility = useCallback(
     (projectId) => {
@@ -256,7 +221,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
       setUserDetails((prev) => ({ ...prev, projects: updatedProjects }));
       updateCache("userDetails", (prev) => ({ ...prev, projects: updatedProjects }));
     },
-    [userDetails, setUserDetails, updateCache, setShowUpgradeModal, setUpgradeModalUnhideProject],
+    [userDetails, setUserDetails, updateCache, setShowUpgradeModal, setUpgradeModalUnhideProject]
   );
 
   useEffect(() => {
@@ -273,17 +238,12 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
     };
   }, [isRecommendationsPanelOpen, isProjectsPanelOpen]);
 
-
   useEffect(() => {
     if (isRecommendationsPanelOpen) {
-      window.dispatchEvent(
-        new CustomEvent("panelOpened", { detail: "recommendations" }),
-      );
+      window.dispatchEvent(new CustomEvent("panelOpened", { detail: "recommendations" }));
     }
     if (isProjectsPanelOpen) {
-      window.dispatchEvent(
-        new CustomEvent("panelOpened", { detail: "projects" }),
-      );
+      window.dispatchEvent(new CustomEvent("panelOpened", { detail: "projects" }));
     }
   }, [isRecommendationsPanelOpen, isProjectsPanelOpen]);
 
@@ -303,8 +263,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
 
   const handleProjectClick = (projectId) => {
     if (isEditing) router.push(`/project/${projectId}/editor`);
-    else if (preview && !publicView)
-      router.push(`/project/${projectId}/preview`);
+    else if (preview && !publicView) router.push(`/project/${projectId}/preview`);
     else router.push(`/project/${projectId}`);
   };
 
@@ -383,12 +342,8 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
           .map((obs) => ({ ...obs, x: obs.x - 5.5 * (deltaTime / 16) })) // speed
           .filter((obs) => obs.x > -50);
 
-        const lastObsX =
-          newObstacles.length > 0 ? newObstacles[newObstacles.length - 1].x : 0;
-        if (
-          newObstacles.length === 0 ||
-          (lastObsX < 400 && Math.random() < 0.02)
-        ) {
+        const lastObsX = newObstacles.length > 0 ? newObstacles[newObstacles.length - 1].x : 0;
+        if (newObstacles.length === 0 || (lastObsX < 400 && Math.random() < 0.02)) {
           newObstacles.push({ id: Date.now(), x: 700 });
         }
 
@@ -405,11 +360,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
           const obsRight = obs.x + 20;
           const obsTop = 28; // height of cactus
 
-          if (
-            dinoRight > obsLeft &&
-            dinoLeft < obsRight &&
-            dinoBottom < obsTop
-          ) {
+          if (dinoRight > obsLeft && dinoLeft < obsRight && dinoBottom < obsTop) {
             hit = true;
             break;
           }
@@ -418,9 +369,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
         if (hit) {
           setIsGameOver(true);
           setIsPlaying(false);
-          setHighScore((current) =>
-            Math.max(current, Math.floor(scoreRef.current / 10)),
-          );
+          setHighScore((current) => Math.max(current, Math.floor(scoreRef.current / 10)));
         } else {
           // Sync state for rendering
           setScore(scoreRef.current);
@@ -444,7 +393,8 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
     const handleKeyDown = (e) => {
       if (e.code === "Space" || e.code === "ArrowUp") {
         const tag = document.activeElement?.tagName;
-        const isEditable = tag === "INPUT" || tag === "TEXTAREA" || document.activeElement?.isContentEditable;
+        const isEditable =
+          tag === "INPUT" || tag === "TEXTAREA" || document.activeElement?.isContentEditable;
         if (isEditable) return;
         e.preventDefault();
         jump();
@@ -454,379 +404,369 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [jump]);
 
-
-  const sectionOrder = normalizeSectionOrder(
-    userDetails?.sectionOrder,
-    DEFAULT_SECTION_ORDER,
-  );
+  const sectionOrder = normalizeSectionOrder(userDetails?.sectionOrder, DEFAULT_SECTION_ORDER);
   const hiddenSections = userDetails?.hiddenSections || [];
   const isSectionVisible = (id) => isEditing || !hiddenSections.includes(id);
 
   const sectionComponents = {
     works: (
       <React.Fragment key="works">
-        <motion.div
-          variants={itemVariants}
-          className="custom-dashed-t"
-        ></motion.div>
+        <motion.div variants={itemVariants} className="custom-dashed-t"></motion.div>
 
         {/* Experience Section — using MonoExperienceSection */}
         <MonoExperienceSection isEditing={isEditing} />
       </React.Fragment>
     ),
-    projects: !isEditing && visibleProjects.length === 0 ? null : (
-      <React.Fragment key="projects">
-        <motion.div
-          variants={itemVariants}
-          className="custom-dashed-t"
-        ></motion.div>
+    projects:
+      !isEditing && visibleProjects.length === 0 ? null : (
+        <React.Fragment key="projects">
+          <motion.div variants={itemVariants} className="custom-dashed-t"></motion.div>
 
-        {/* Projects Section */}
-        <motion.div
-          variants={itemVariants}
-          className="px-6 md:px-10 py-10 pb-16 relative group/section"
-        >
-          {isEditing && (
-            <div
-              className="absolute top-4 right-4 z-10 transition-opacity flex gap-2"
-            >
-              <DropdownMenu
-                open={isProjectsAddDropdownOpen}
-                onOpenChange={setIsProjectsAddDropdownOpen}
-              >
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className={`h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors ${isProjectsAddDropdownOpen
-                      ? "opacity-100"
-                      : "opacity-100 md:opacity-0 md:group-hover/section:opacity-100"
+          {/* Projects Section */}
+          <motion.div
+            variants={itemVariants}
+            className="px-6 md:px-10 py-10 pb-16 relative group/section"
+          >
+            {isEditing && (
+              <div className="absolute top-4 right-4 z-10 transition-opacity flex gap-2">
+                <DropdownMenu
+                  open={isProjectsAddDropdownOpen}
+                  onOpenChange={setIsProjectsAddDropdownOpen}
+                >
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className={`h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors ${
+                        isProjectsAddDropdownOpen
+                          ? "opacity-100"
+                          : "opacity-100 md:opacity-0 md:group-hover/section:opacity-100"
                       }`}
+                    >
+                      <Plus className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    align="end"
+                    className="w-48 bg-white dark:bg-[#2A2520] border border-black/10 dark:border-white/10 shadow-lg rounded-xl overflow-hidden p-1"
                   >
-                    <Plus className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  align="end"
-                  className="w-48 bg-white dark:bg-[#2A2520] border border-black/10 dark:border-white/10 shadow-lg rounded-xl overflow-hidden p-1"
-                >
-                  <DropdownMenuItem
-                    onClick={() => openSidebar?.(sidebars.project)}
-                    className="flex items-center gap-2 px-3 py-2 text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer rounded-lg focus:bg-black/5 dark:focus:bg-white/5"
-                  >
-                    <Pencil className="w-3.5 h-3.5" />
-                    <span>Write from Scratch</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => openModal?.(modals.aiProject)}
-                    className="flex items-center gap-2 px-3 py-2 text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer rounded-lg focus:bg-black/5 dark:focus:bg-white/5"
-                  >
-                    <Sparkles className="w-3.5 h-3.5" />
-                    <span>Write using AI</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                    <DropdownMenuItem
+                      onClick={() => openSidebar?.(sidebars.project)}
+                      className="flex items-center gap-2 px-3 py-2 text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer rounded-lg focus:bg-black/5 dark:focus:bg-white/5"
+                    >
+                      <Pencil className="w-3.5 h-3.5" />
+                      <span>Write from Scratch</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => openModal?.(modals.aiProject)}
+                      className="flex items-center gap-2 px-3 py-2 text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer rounded-lg focus:bg-black/5 dark:focus:bg-white/5"
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>Write using AI</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
 
-              <Sheet
-                modal={false}
-                open={isProjectsPanelOpen}
-                onOpenChange={setIsProjectsPanelOpen}
-              >
-                <SheetContent
-                  className="border-l border-black/10 dark:border-white/10 bg-white dark:bg-[#2A2520] p-0 flex flex-col"
-                  hasOverlay={false}
-                  onInteractOutside={(e) => {
-                    e.preventDefault();
-                  }}
+                <Sheet
+                  modal={false}
+                  open={isProjectsPanelOpen}
+                  onOpenChange={setIsProjectsPanelOpen}
                 >
-                  <SheetHeader className="px-5 py-4 border-b border-black/10 dark:border-white/10 flex-shrink-0 flex flex-row items-center m-0 space-y-0 h-[65px]">
-                    <SheetTitle className="text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] font-medium m-0">
-                      Add Project
-                    </SheetTitle>
-                  </SheetHeader>
+                  <SheetContent
+                    className="border-l border-black/10 dark:border-white/10 bg-white dark:bg-[#2A2520] p-0 flex flex-col"
+                    hasOverlay={false}
+                    onInteractOutside={(e) => {
+                      e.preventDefault();
+                    }}
+                  >
+                    <SheetHeader className="px-5 py-4 border-b border-black/10 dark:border-white/10 flex-shrink-0 flex flex-row items-center m-0 space-y-0 h-[65px]">
+                      <SheetTitle className="text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] font-medium m-0">
+                        Add Project
+                      </SheetTitle>
+                    </SheetHeader>
 
-                  <div className="flex-1 overflow-y-auto p-6 space-y-6">
-                    <div className="space-y-4">
-                      <div className="space-y-1.5">
-                        <Label
-                          htmlFor="proj-title"
-                          className="text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] ml-1"
-                        >
-                          Project Title
-                        </Label>
-                        <Input
-                          id="proj-title"
-                          placeholder="e.g. Slate"
-                          className="h-10 bg-black/[0.03] dark:bg-white/[0.03] border-transparent rounded-xl text-[14px] text-[#1A1A1A] dark:text-[#F0EDE7] focus-visible:bg-transparent focus-visible:ring-2 focus-visible:ring-black/10 dark:focus-visible:ring-white/10 focus-visible:border-black/20 dark:focus-visible:border-white/20 transition-all px-3.5 shadow-none placeholder:text-black/30 dark:placeholder:text-white/30"
-                        />
-                      </div>
-                      <div className="space-y-1.5">
-                        <Label
-                          htmlFor="proj-desc"
-                          className="text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] ml-1"
-                        >
-                          Description
-                        </Label>
-                        <textarea
-                          id="proj-desc"
-                          rows={3}
-                          placeholder="Short description of the project"
-                          className="w-full bg-black/[0.03] dark:bg-white/[0.03] border-transparent rounded-xl text-[14px] text-[#1A1A1A] dark:text-[#F0EDE7] focus-visible:bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/10 dark:focus-visible:ring-white/10 focus-visible:border-black/20 dark:focus-visible:border-white/20 transition-all p-3.5 shadow-none placeholder:text-black/30 dark:placeholder:text-white/30 resize-none"
-                        />
-                      </div>
-                      <div className="space-y-1.5">
-                        <Label className="text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] ml-1">
-                          Cover Image
-                        </Label>
-                        <div className="flex items-center gap-4">
-                          <div className="w-24 h-16 rounded-xl bg-black/[0.03] dark:bg-white/[0.03] border border-black/10 dark:border-white/10 flex items-center justify-center overflow-hidden">
-                            <Plus className="w-5 h-5 text-[#7A736C] dark:text-[#9E9893]" />
-                          </div>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="h-8 rounded-full text-[12px] border-black/10 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5"
+                    <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                      <div className="space-y-4">
+                        <div className="space-y-1.5">
+                          <Label
+                            htmlFor="proj-title"
+                            className="text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] ml-1"
                           >
-                            Upload Image
-                          </Button>
-                        </div>
-                      </div>
-
-                      <div className="pt-2">
-                        <div className="flex items-center justify-between">
-                          <div className="space-y-0.5">
-                            <Label className="text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] ml-1">
-                              Protect Project
-                            </Label>
-                            <p className="text-[12px] text-[#7A736C] dark:text-[#9E9893] ml-1">
-                              Require a password to view this project (e.g., for
-                              NDAs).
-                            </p>
-                          </div>
-                          <Switch
-                            checked={isProjectPasswordEnabled}
-                            onCheckedChange={setIsProjectPasswordEnabled}
+                            Project Title
+                          </Label>
+                          <Input
+                            id="proj-title"
+                            placeholder="e.g. Slate"
+                            className="h-10 bg-black/[0.03] dark:bg-white/[0.03] border-transparent rounded-xl text-[14px] text-[#1A1A1A] dark:text-[#F0EDE7] focus-visible:bg-transparent focus-visible:ring-2 focus-visible:ring-black/10 dark:focus-visible:ring-white/10 focus-visible:border-black/20 dark:focus-visible:border-white/20 transition-all px-3.5 shadow-none placeholder:text-black/30 dark:placeholder:text-white/30"
                           />
                         </div>
-                        <AnimatePresence>
-                          {isProjectPasswordEnabled && (
-                            <motion.div
-                              initial={{
-                                opacity: 0,
-                                height: 0,
-                                marginTop: 0,
-                              }}
-                              animate={{
-                                opacity: 1,
-                                height: "auto",
-                                marginTop: 12,
-                              }}
-                              exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                              transition={{ duration: 0.2 }}
-                              className="overflow-hidden"
-                            >
-                              <div className="space-y-1.5 px-1">
-                                <Input
-                                  id="proj-password"
-                                  type="password"
-                                  placeholder="Enter password"
-                                  className="h-10 bg-black/[0.03] dark:bg-white/[0.03] border-transparent rounded-xl text-[14px] text-[#1A1A1A] dark:text-[#F0EDE7] focus-visible:bg-transparent focus-visible:ring-2 focus-visible:ring-black/10 dark:focus-visible:ring-white/10 focus-visible:border-black/20 dark:focus-visible:border-white/20 transition-all px-3.5 shadow-none placeholder:text-black/30 dark:placeholder:text-white/30"
-                                />
-                              </div>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="p-5 border-t border-black/10 dark:border-white/10 flex justify-end gap-3 flex-shrink-0 bg-white dark:bg-[#2A2520]">
-                    <SheetClose asChild>
-                      <Button
-                        variant="outline"
-                        className="h-9 px-4 rounded-full text-[13px] font-medium border-black/10 dark:border-white/10 text-[#1A1A1A] dark:text-[#F0EDE7] hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
-                      >
-                        Cancel
-                      </Button>
-                    </SheetClose>
-                    <SheetClose asChild>
-                      <Button className="h-9 px-5 rounded-full text-[13px] font-medium bg-[#1A1A1A] dark:bg-white text-white dark:text-black hover:bg-black/80 dark:hover:bg-white/90 transition-colors shadow-sm">
-                        Add Project
-                      </Button>
-                    </SheetClose>
-                  </div>
-                </SheetContent>
-              </Sheet>
-              {visibleProjects.length >= 2 && (
-                <MonoRearrangeButton
-                  onClick={() => openSidebar(sidebars.sortProjects)}
-                  title="Rearrange projects"
-                  tooltipText="Rearrange"
-                />
-
-              )}
-              <SectionVisibilityButton
-                sectionId="projects"
-                showOnHoverWhenVisible
-                className="h-8 w-8 rounded-full border border-black/10 dark:border-white/10 shadow-sm bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A]"
-              />
-            </div>
-          )}
-          <h2 className="text-[14px] font-bold text-[#463B34] dark:text-[#D4C9BC] font-dm-mono uppercase tracking-wider mb-5">
-            Projects
-          </h2>
-
-          {visibleProjects.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 px-4 text-center rounded-2xl border border-dashed border-black/10 dark:border-white/10 bg-background backdrop-blur-sm">
-              <div className="w-12 h-12 rounded-full bg-black/[0.03] dark:bg-white/[0.03] flex items-center justify-center mb-4">
-                <svg
-                  className="w-6 h-6 text-[#7A736C] dark:text-[#9E9893]"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-                  />
-                </svg>
-              </div>
-              <h3 className="text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] mb-1">
-                No projects yet
-              </h3>
-              <p className="text-[13px] text-[#7A736C] dark:text-[#9E9893] max-w-[250px] mb-5">
-                Add some projects to showcase your work and experience.
-              </p>
-              {isEditing && (
-                <div className="flex flex-col sm:flex-row items-center gap-3">
-                  <Button
-                    onClick={() => openSidebar?.(sidebars.project)}
-                    className="h-9 px-5 rounded-full text-[13px] font-medium bg-[#1A1A1A] dark:bg-white text-white dark:text-black hover:bg-black/80 dark:hover:bg-white/90 transition-colors shadow-sm flex items-center gap-2"
-                  >
-                    <Pencil className="w-3.5 h-3.5" />
-                    Write from Scratch
-                  </Button>
-                  <Button
-                    variant="secondary"
-                    onClick={() => openModal?.(modals.aiProject)}
-                    className="h-9 px-5 rounded-full text-[13px] font-medium border-button-outline hover:border-button-outline-hover"
-                  >
-                    <Sparkles className="w-3.5 h-3.5" />
-                    Write using AI
-                  </Button>
-                </div>
-              )}
-            </div>
-          ) : (
-            <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-8">
-                {visibleProjects.map((project) => (
-                  <div
-                    key={project.id}
-                    onClick={() => handleProjectClick(project.slug)}
-                    className="group cursor-pointer flex flex-col p-4 -m-4 rounded-2xl hover:bg-black/[0.05] dark:hover:bg-white/[0.05] transition-all duration-300 relative"
-                  >
-                    {isEditing && (
-                      <div
-                        className={`absolute top-8 right-8 z-10 flex gap-2 transition-opacity ${project.hidden ? "opacity-100" : "opacity-100 md:opacity-0 md:group-hover:opacity-100"}`}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-black/10 dark:border-white/10 shadow-sm hover:bg-white dark:hover:bg-[#35302A]"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleOpenProjectEditor(project);
-                          }}
-                        >
-                          <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                        </Button>
-                        <ProjectVisibilityButton
-                          isHidden={!!project.hidden}
-                          onClick={(e) => { e.stopPropagation(); handleToggleProjectVisibility(project.raw?._id || project.id); }}
-                        />
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-black/10 dark:border-white/10 shadow-sm hover:bg-red-50 dark:hover:bg-red-950/30 hover:border-red-200 dark:hover:border-red-900/50 hover:text-red-600 dark:hover:text-red-400"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteProject(project);
-                          }}
-                        >
-                          <Trash2 className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-                        </Button>
-                      </div>
-                    )}
-                    <div className="rounded-xl overflow-hidden mb-4 aspect-[3/2] bg-white dark:bg-[#2A2520] drop-shadow-sm border border-black/5 dark:border-white/10 group-hover:border-black/10 dark:group-hover:border-white/20 transition-colors relative">
-                      <img
-                        src={project.image}
-                        alt={project.title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      />
-                      {project.hidden && (
-                        <div className="absolute top-2 left-2 bg-amber-100 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 px-2 py-0.5 rounded-full text-xs font-medium flex items-center gap-1 z-10">
-                          <EyeOff className="w-3 h-3" /> Hidden from live site
+                        <div className="space-y-1.5">
+                          <Label
+                            htmlFor="proj-desc"
+                            className="text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] ml-1"
+                          >
+                            Description
+                          </Label>
+                          <textarea
+                            id="proj-desc"
+                            rows={3}
+                            placeholder="Short description of the project"
+                            className="w-full bg-black/[0.03] dark:bg-white/[0.03] border-transparent rounded-xl text-[14px] text-[#1A1A1A] dark:text-[#F0EDE7] focus-visible:bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/10 dark:focus-visible:ring-white/10 focus-visible:border-black/20 dark:focus-visible:border-white/20 transition-all p-3.5 shadow-none placeholder:text-black/30 dark:placeholder:text-white/30 resize-none"
+                          />
                         </div>
-                      )}
-                    </div>
-                    <h3 className="font-medium text-base mb-1.5 text-[#1A1A1A] dark:text-[#F0EDE7]">
-                      {project.title}
-                    </h3>
-                    <p
-                      className="text-base text-[#7A736C] dark:text-[#B5AFA5] leading-relaxed"
-                      style={{ fontWeight: 450 }}
-                    >
-                      {project.description}
-                    </p>
-                  </div>
-                ))}
-                {isEditing && (
-                  <div className="flex flex-col gap-4">
-                    <div className="rounded-xl aspect-[3/2] border border-dashed border-black/15 dark:border-white/10 bg-black/[0.015] dark:bg-white/[0.015] flex flex-col items-center justify-center gap-3 transition-colors hover:bg-black/[0.03] dark:hover:bg-white/[0.03]">
-                      <div className="w-10 h-10 rounded-full bg-black/[0.05] dark:bg-white/[0.05] flex items-center justify-center">
-                        <Plus className="w-4 h-4 text-[#7A736C] dark:text-[#9E9893]" />
+                        <div className="space-y-1.5">
+                          <Label className="text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] ml-1">
+                            Cover Image
+                          </Label>
+                          <div className="flex items-center gap-4">
+                            <div className="w-24 h-16 rounded-xl bg-black/[0.03] dark:bg-white/[0.03] border border-black/10 dark:border-white/10 flex items-center justify-center overflow-hidden">
+                              <Plus className="w-5 h-5 text-[#7A736C] dark:text-[#9E9893]" />
+                            </div>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-8 rounded-full text-[12px] border-black/10 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5"
+                            >
+                              Upload Image
+                            </Button>
+                          </div>
+                        </div>
+
+                        <div className="pt-2">
+                          <div className="flex items-center justify-between">
+                            <div className="space-y-0.5">
+                              <Label className="text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] ml-1">
+                                Protect Project
+                              </Label>
+                              <p className="text-[12px] text-[#7A736C] dark:text-[#9E9893] ml-1">
+                                Require a password to view this project (e.g., for NDAs).
+                              </p>
+                            </div>
+                            <Switch
+                              checked={isProjectPasswordEnabled}
+                              onCheckedChange={setIsProjectPasswordEnabled}
+                            />
+                          </div>
+                          <AnimatePresence>
+                            {isProjectPasswordEnabled && (
+                              <motion.div
+                                initial={{
+                                  opacity: 0,
+                                  height: 0,
+                                  marginTop: 0,
+                                }}
+                                animate={{
+                                  opacity: 1,
+                                  height: "auto",
+                                  marginTop: 12,
+                                }}
+                                exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                                transition={{ duration: 0.2 }}
+                                className="overflow-hidden"
+                              >
+                                <div className="space-y-1.5 px-1">
+                                  <Input
+                                    id="proj-password"
+                                    type="password"
+                                    placeholder="Enter password"
+                                    className="h-10 bg-black/[0.03] dark:bg-white/[0.03] border-transparent rounded-xl text-[14px] text-[#1A1A1A] dark:text-[#F0EDE7] focus-visible:bg-transparent focus-visible:ring-2 focus-visible:ring-black/10 dark:focus-visible:ring-white/10 focus-visible:border-black/20 dark:focus-visible:border-white/20 transition-all px-3.5 shadow-none placeholder:text-black/30 dark:placeholder:text-white/30"
+                                  />
+                                </div>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
                       </div>
-                      <p className="text-[11px] font-medium text-[#A09890] dark:text-[#7A736C] tracking-widest uppercase">New project</p>
-                      <div className="flex items-center gap-2">
+                    </div>
+
+                    <div className="p-5 border-t border-black/10 dark:border-white/10 flex justify-end gap-3 flex-shrink-0 bg-white dark:bg-[#2A2520]">
+                      <SheetClose asChild>
                         <Button
-                          onClick={() => openSidebar?.(sidebars.project)}
-                          className="h-8 px-3.5 rounded-full text-[12px] font-medium bg-[#1A1A1A] dark:bg-white text-white dark:text-black hover:bg-black/80 dark:hover:bg-white/90 transition-colors shadow-sm flex items-center gap-1.5"
+                          variant="outline"
+                          className="h-9 px-4 rounded-full text-[13px] font-medium border-black/10 dark:border-white/10 text-[#1A1A1A] dark:text-[#F0EDE7] hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
                         >
-                          <Pencil className="w-3 h-3" />
+                          Cancel
+                        </Button>
+                      </SheetClose>
+                      <SheetClose asChild>
+                        <Button className="h-9 px-5 rounded-full text-[13px] font-medium bg-[#1A1A1A] dark:bg-white text-white dark:text-black hover:bg-black/80 dark:hover:bg-white/90 transition-colors shadow-sm">
                           Add Project
                         </Button>
-                        <Button
-                          variant="secondary"
-                          onClick={() => openModal(modals.aiProject)}
-                          className="h-8 px-3.5 rounded-full text-[12px] font-medium flex items-center gap-1.5"
-                        >
-                          <Sparkles className="w-3 h-3" />
-                          Write with AI
-                        </Button>
-                      </div>
+                      </SheetClose>
                     </div>
+                  </SheetContent>
+                </Sheet>
+                {visibleProjects.length >= 2 && (
+                  <MonoRearrangeButton
+                    onClick={() => openSidebar(sidebars.sortProjects)}
+                    title="Rearrange projects"
+                    tooltipText="Rearrange"
+                  />
+                )}
+                <SectionVisibilityButton
+                  sectionId="projects"
+                  showOnHoverWhenVisible
+                  className="h-8 w-8 rounded-full border border-black/10 dark:border-white/10 shadow-sm bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A]"
+                />
+              </div>
+            )}
+            <h2 className="text-[14px] font-bold text-[#463B34] dark:text-[#D4C9BC] font-dm-mono uppercase tracking-wider mb-5">
+              Projects
+            </h2>
+
+            {visibleProjects.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-16 px-4 text-center rounded-2xl border border-dashed border-black/10 dark:border-white/10 bg-background backdrop-blur-sm">
+                <div className="w-12 h-12 rounded-full bg-black/[0.03] dark:bg-white/[0.03] flex items-center justify-center mb-4">
+                  <svg
+                    className="w-6 h-6 text-[#7A736C] dark:text-[#9E9893]"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] mb-1">
+                  No projects yet
+                </h3>
+                <p className="text-[13px] text-[#7A736C] dark:text-[#9E9893] max-w-[250px] mb-5">
+                  Add some projects to showcase your work and experience.
+                </p>
+                {isEditing && (
+                  <div className="flex flex-col sm:flex-row items-center gap-3">
+                    <Button
+                      onClick={() => openSidebar?.(sidebars.project)}
+                      className="h-9 px-5 rounded-full text-[13px] font-medium bg-[#1A1A1A] dark:bg-white text-white dark:text-black hover:bg-black/80 dark:hover:bg-white/90 transition-colors shadow-sm flex items-center gap-2"
+                    >
+                      <Pencil className="w-3.5 h-3.5" />
+                      Write from Scratch
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      onClick={() => openModal?.(modals.aiProject)}
+                      className="h-9 px-5 rounded-full text-[13px] font-medium border-button-outline hover:border-button-outline-hover"
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      Write using AI
+                    </Button>
                   </div>
                 )}
               </div>
+            ) : (
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-8">
+                  {visibleProjects.map((project) => (
+                    <div
+                      key={project.id}
+                      onClick={() => handleProjectClick(project.slug)}
+                      className="group cursor-pointer flex flex-col p-4 -m-4 rounded-2xl hover:bg-black/[0.05] dark:hover:bg-white/[0.05] transition-all duration-300 relative"
+                    >
+                      {isEditing && (
+                        <div
+                          className={`absolute top-8 right-8 z-10 flex gap-2 transition-opacity ${project.hidden ? "opacity-100" : "opacity-100 md:opacity-0 md:group-hover:opacity-100"}`}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-black/10 dark:border-white/10 shadow-sm hover:bg-white dark:hover:bg-[#35302A]"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleOpenProjectEditor(project);
+                            }}
+                          >
+                            <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                          </Button>
+                          <ProjectVisibilityButton
+                            isHidden={!!project.hidden}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleToggleProjectVisibility(project.raw?._id || project.id);
+                            }}
+                          />
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-black/10 dark:border-white/10 shadow-sm hover:bg-red-50 dark:hover:bg-red-950/30 hover:border-red-200 dark:hover:border-red-900/50 hover:text-red-600 dark:hover:text-red-400"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteProject(project);
+                            }}
+                          >
+                            <Trash2 className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                          </Button>
+                        </div>
+                      )}
+                      <div className="rounded-xl overflow-hidden mb-4 aspect-[3/2] bg-white dark:bg-[#2A2520] drop-shadow-sm border border-black/5 dark:border-white/10 group-hover:border-black/10 dark:group-hover:border-white/20 transition-colors relative">
+                        <img
+                          src={project.image}
+                          alt={project.title}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        />
+                        {project.hidden && (
+                          <div className="absolute top-2 left-2 bg-amber-100 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 px-2 py-0.5 rounded-full text-xs font-medium flex items-center gap-1 z-10">
+                            <EyeOff className="w-3 h-3" /> Hidden from live site
+                          </div>
+                        )}
+                      </div>
+                      <h3 className="font-medium text-base mb-1.5 text-[#1A1A1A] dark:text-[#F0EDE7]">
+                        {project.title}
+                      </h3>
+                      <p
+                        className="text-base text-[#7A736C] dark:text-[#B5AFA5] leading-relaxed"
+                        style={{ fontWeight: 450 }}
+                      >
+                        {project.description}
+                      </p>
+                    </div>
+                  ))}
+                  {isEditing && (
+                    <div className="flex flex-col gap-4">
+                      <div className="rounded-xl aspect-[3/2] border border-dashed border-black/15 dark:border-white/10 bg-black/[0.015] dark:bg-white/[0.015] flex flex-col items-center justify-center gap-3 transition-colors hover:bg-black/[0.03] dark:hover:bg-white/[0.03]">
+                        <div className="w-10 h-10 rounded-full bg-black/[0.05] dark:bg-white/[0.05] flex items-center justify-center">
+                          <Plus className="w-4 h-4 text-[#7A736C] dark:text-[#9E9893]" />
+                        </div>
+                        <p className="text-[11px] font-medium text-[#A09890] dark:text-[#7A736C] tracking-widest uppercase">
+                          New project
+                        </p>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            onClick={() => openSidebar?.(sidebars.project)}
+                            className="h-8 px-3.5 rounded-full text-[12px] font-medium bg-[#1A1A1A] dark:bg-white text-white dark:text-black hover:bg-black/80 dark:hover:bg-white/90 transition-colors shadow-sm flex items-center gap-1.5"
+                          >
+                            <Pencil className="w-3 h-3" />
+                            Add Project
+                          </Button>
+                          <Button
+                            variant="secondary"
+                            onClick={() => openModal(modals.aiProject)}
+                            className="h-8 px-3.5 rounded-full text-[12px] font-medium flex items-center gap-1.5"
+                          >
+                            <Sparkles className="w-3 h-3" />
+                            Write with AI
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
 
-              {/* <div className="bg-[#1A1A1A] dark:bg-[#F0EDE7] text-[#F0EDE7] dark:text-[#1A1A1A] px-3 py-1.5 rounded-full text-[13px] font-medium shadow-2xl flex items-center gap-1.5">
+                {/* <div className="bg-[#1A1A1A] dark:bg-[#F0EDE7] text-[#F0EDE7] dark:text-[#1A1A1A] px-3 py-1.5 rounded-full text-[13px] font-medium shadow-2xl flex items-center gap-1.5">
                                 View Project <ArrowUpRight size={14} />
                             </div> */}
-            </>
-          )}
-        </motion.div>
-      </React.Fragment>
-    ),
+              </>
+            )}
+          </motion.div>
+        </React.Fragment>
+      ),
     reviews: (
       <React.Fragment key="reviews">
-        <motion.div
-          variants={itemVariants}
-          className="custom-dashed-t"
-        ></motion.div>
+        <motion.div variants={itemVariants} className="custom-dashed-t"></motion.div>
 
         {/* Recommendations Section — using MonoReviewsSection */}
         <MonoReviewsSection isEditing={isEditing} />
@@ -834,10 +774,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
     ),
     about: (
       <React.Fragment key="about">
-        <motion.div
-          variants={itemVariants}
-          className="custom-dashed-t"
-        ></motion.div>
+        <motion.div variants={itemVariants} className="custom-dashed-t"></motion.div>
 
         {/* My Story Section */}
         <motion.div
@@ -869,37 +806,23 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
             <motion.div
               initial={{ rotate: -8, x: -120, y: 0 }}
               whileHover={{ rotate: -2, scale: 1.1, zIndex: 50 }}
-              onClick={() =>
-                storyImages[0] && setSelectedStoryImage(storyImages[0])
-              }
+              onClick={() => storyImages[0] && setSelectedStoryImage(storyImages[0])}
               className="absolute w-32 h-40 rounded-xl overflow-hidden border-4 border-white dark:border-[#2A2520] shadow-lg z-0 cursor-pointer"
             >
-              <img
-                src={storyImages[0]}
-                alt="My workspace"
-                className="w-full h-full object-cover"
-              />
+              <img src={storyImages[0]} alt="My workspace" className="w-full h-full object-cover" />
             </motion.div>
             <motion.div
               initial={{ rotate: 12, x: -40, y: 15 }}
               whileHover={{ rotate: 5, scale: 1.1, zIndex: 50 }}
-              onClick={() =>
-                storyImages[1] && setSelectedStoryImage(storyImages[1])
-              }
+              onClick={() => storyImages[1] && setSelectedStoryImage(storyImages[1])}
               className="absolute w-36 h-36 rounded-xl overflow-hidden border-4 border-white dark:border-[#2A2520] shadow-lg z-10 cursor-pointer"
             >
-              <img
-                src={storyImages[1]}
-                alt="Designing"
-                className="w-full h-full object-cover"
-              />
+              <img src={storyImages[1]} alt="Designing" className="w-full h-full object-cover" />
             </motion.div>
             <motion.div
               initial={{ rotate: -5, x: 40, y: -10 }}
               whileHover={{ rotate: 0, scale: 1.1, zIndex: 50 }}
-              onClick={() =>
-                storyImages[2] && setSelectedStoryImage(storyImages[2])
-              }
+              onClick={() => storyImages[2] && setSelectedStoryImage(storyImages[2])}
               className="absolute w-32 h-40 rounded-xl overflow-hidden border-4 border-white dark:border-[#2A2520] shadow-lg z-20 cursor-pointer"
             >
               <img
@@ -911,9 +834,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
             <motion.div
               initial={{ rotate: 8, x: 120, y: 20 }}
               whileHover={{ rotate: 3, scale: 1.1, zIndex: 50 }}
-              onClick={() =>
-                storyImages[3] && setSelectedStoryImage(storyImages[3])
-              }
+              onClick={() => storyImages[3] && setSelectedStoryImage(storyImages[3])}
               className="absolute w-36 h-36 rounded-xl overflow-hidden border-4 border-white dark:border-[#2A2520] shadow-lg z-30 cursor-pointer"
             >
               <img
@@ -946,10 +867,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                     ) : (
                       <p className="break-words">
                         {renderDescriptionLines(
-                          truncatePlainText(
-                            aboutStoryPlain,
-                            ABOUT_STORY_CHAR_THRESHOLD,
-                          ),
+                          truncatePlainText(aboutStoryPlain, ABOUT_STORY_CHAR_THRESHOLD)
                         )}
                       </p>
                     )}
@@ -986,9 +904,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                 aboutStoryPlain
                   .split("\n")
                   .filter(Boolean)
-                  .map((paragraph, idx) => (
-                    <p key={idx}>{paragraph}</p>
-                  ))
+                  .map((paragraph, idx) => <p key={idx}>{paragraph}</p>)
               )
             ) : isEditing ? (
               <button
@@ -1003,104 +919,102 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
         </motion.div>
       </React.Fragment>
     ),
-    tools: !isEditing && activeTools.length === 0 ? null : (
-      <React.Fragment key="tools">
-        <motion.div
-          variants={itemVariants}
-          className="custom-dashed-t"
-        ></motion.div>
+    tools:
+      !isEditing && activeTools.length === 0 ? null : (
+        <React.Fragment key="tools">
+          <motion.div variants={itemVariants} className="custom-dashed-t"></motion.div>
 
-        {/* Stack Section */}
-        <motion.div
-          variants={itemVariants}
-          className="px-6 md:px-10 py-10 relative group/section"
-        >
-          {isEditing && (
-            <div className="absolute top-4 right-4 transition-opacity z-10 flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  openSidebar?.(sidebars.tools);
-                }}
-                className="h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors opacity-100 md:opacity-0 md:group-hover/section:opacity-100"
-              >
-                <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-              </Button>
-              <SectionVisibilityButton
-                sectionId="tools"
-                showOnHoverWhenVisible
-                className="h-8 w-8 rounded-full border border-black/10 dark:border-white/10 shadow-sm bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A]"
-              />
-            </div>
-          )}
-          <h2 className="text-[14px] font-bold text-[#463B34] dark:text-[#D4C9BC] font-dm-mono uppercase tracking-wider mb-5">
-            Stack
-          </h2>
-          {activeTools.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 px-4 text-center rounded-2xl border border-dashed border-black/10 dark:border-white/10 bg-white/50 dark:bg-[#2A2520]/50 backdrop-blur-sm">
-              <div className="w-12 h-12 rounded-full bg-black/[0.03] dark:bg-white/[0.03] flex items-center justify-center mb-4">
-                <svg
-                  className="w-6 h-6 text-[#7A736C] dark:text-[#9E9893]"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                  />
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
-                </svg>
-              </div>
-              <h3 className="text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] mb-1">
-                No tools yet
-              </h3>
-              <p className="text-[13px] text-[#7A736C] dark:text-[#9E9893] max-w-[250px] mb-5">
-                Add tools to showcase your stack and workflow.
-              </p>
-              {isEditing && (
+          {/* Stack Section */}
+          <motion.div
+            variants={itemVariants}
+            className="px-6 md:px-10 py-10 relative group/section"
+          >
+            {isEditing && (
+              <div className="absolute top-4 right-4 transition-opacity z-10 flex gap-2">
                 <Button
-                  onClick={() => openSidebar?.(sidebars.tools)}
-                  className="h-9 px-4 rounded-full text-[13px] font-medium bg-[#1A1A1A] dark:bg-white text-white dark:text-black hover:bg-black/80 dark:hover:bg-white/90 transition-colors shadow-sm"
+                  variant="outline"
+                  size="sm"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    openSidebar?.(sidebars.tools);
+                  }}
+                  className="h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors opacity-100 md:opacity-0 md:group-hover/section:opacity-100"
                 >
-                  Add Tools
+                  <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
                 </Button>
-              )}
-            </div>
-          ) : (
-            <div className="flex flex-wrap gap-8 items-end">
-              {activeTools.map((tool, i) => (
-                <motion.div
-                  key={i}
-                  whileHover={{ y: -5, scale: 1.05, rotate: i % 2 === 0 ? 2 : -2 }}
-                  transition={{ type: "spring", stiffness: 350, damping: 18 }}
-                  className="flex flex-col items-center gap-1.5 cursor-pointer relative group/tool"
-                >
-                  <img
-                    src={tool.icon}
-                    alt={tool.name}
-                    className="w-10 h-10 object-contain cursor-pointer transition-[filter] duration-300 group-hover/tool:[filter:drop-shadow(0_4px_8px_rgba(0,0,0,0.18))]"
-                  />
-                  <span className="text-[10px] font-medium text-[#7A736C] dark:text-[#9E9893] opacity-0 group-hover/tool:opacity-100 transition-opacity duration-200 whitespace-nowrap leading-none">
-                    {tool.name}
-                  </span>
-                </motion.div>
-              ))}
-            </div>
-          )}
-        </motion.div>
-      </React.Fragment>
-    ),
+                <SectionVisibilityButton
+                  sectionId="tools"
+                  showOnHoverWhenVisible
+                  className="h-8 w-8 rounded-full border border-black/10 dark:border-white/10 shadow-sm bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A]"
+                />
+              </div>
+            )}
+            <h2 className="text-[14px] font-bold text-[#463B34] dark:text-[#D4C9BC] font-dm-mono uppercase tracking-wider mb-5">
+              Stack
+            </h2>
+            {activeTools.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-16 px-4 text-center rounded-2xl border border-dashed border-black/10 dark:border-white/10 bg-white/50 dark:bg-[#2A2520]/50 backdrop-blur-sm">
+                <div className="w-12 h-12 rounded-full bg-black/[0.03] dark:bg-white/[0.03] flex items-center justify-center mb-4">
+                  <svg
+                    className="w-6 h-6 text-[#7A736C] dark:text-[#9E9893]"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] mb-1">
+                  No tools yet
+                </h3>
+                <p className="text-[13px] text-[#7A736C] dark:text-[#9E9893] max-w-[250px] mb-5">
+                  Add tools to showcase your stack and workflow.
+                </p>
+                {isEditing && (
+                  <Button
+                    onClick={() => openSidebar?.(sidebars.tools)}
+                    className="h-9 px-4 rounded-full text-[13px] font-medium bg-[#1A1A1A] dark:bg-white text-white dark:text-black hover:bg-black/80 dark:hover:bg-white/90 transition-colors shadow-sm"
+                  >
+                    Add Tools
+                  </Button>
+                )}
+              </div>
+            ) : (
+              <div className="flex flex-wrap gap-8 items-end">
+                {activeTools.map((tool, i) => (
+                  <motion.div
+                    key={i}
+                    whileHover={{ y: -5, scale: 1.05, rotate: i % 2 === 0 ? 2 : -2 }}
+                    transition={{ type: "spring", stiffness: 350, damping: 18 }}
+                    className="flex flex-col items-center gap-1.5 cursor-pointer relative group/tool"
+                  >
+                    <img
+                      src={tool.icon}
+                      alt={tool.name}
+                      className="w-10 h-10 object-contain cursor-pointer transition-[filter] duration-300 group-hover/tool:[filter:drop-shadow(0_4px_8px_rgba(0,0,0,0.18))]"
+                    />
+                    <span className="text-[10px] font-medium text-[#7A736C] dark:text-[#9E9893] opacity-0 group-hover/tool:opacity-100 transition-opacity duration-200 whitespace-nowrap leading-none">
+                      {tool.name}
+                    </span>
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </motion.div>
+        </React.Fragment>
+      ),
   };
 
   return (
@@ -1130,7 +1044,6 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               >
                 <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
               </Button>
-
             </div>
           )}
           <div className="flex items-start justify-between gap-4 mb-6">
@@ -1156,7 +1069,6 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               </h1>
               {isEditing ? (
                 <div className="flex items-center gap-2 group/role">
-
                   <p
                     className="text-[#4A4440] dark:text-[#C8C0B5] text-[17px]"
                     style={{ fontWeight: 450 }}
@@ -1198,12 +1110,14 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
           </div>
         </motion.div>
 
-        <MonoEmailSocialLinksSection email={email} socials={socials} portfolios={portfolios} isEditing={isEditing} />
+        <MonoEmailSocialLinksSection
+          email={email}
+          socials={socials}
+          portfolios={portfolios}
+          isEditing={isEditing}
+        />
         {/* Intro Section */}
-        <motion.div
-          variants={itemVariants}
-          className="px-6 md:px-10 py-10 relative group/section"
-        >
+        <motion.div variants={itemVariants} className="px-6 md:px-10 py-10 relative group/section">
           {isEditing && (
             <div className="absolute top-4 right-4 transition-opacity z-10 opacity-100 md:opacity-0 md:group-hover/section:opacity-100">
               <Button
@@ -1227,14 +1141,9 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
           </p>
         </motion.div>
 
-        {sectionOrder.map((id) =>
-          isSectionVisible(id) ? sectionComponents[id] : null,
-        )}
+        {sectionOrder.map((id) => (isSectionVisible(id) ? sectionComponents[id] : null))}
 
-        <motion.div
-          variants={itemVariants}
-          className="custom-dashed-t"
-        ></motion.div>
+        <motion.div variants={itemVariants} className="custom-dashed-t"></motion.div>
 
         {/* Contact Section — using MonoContactSection */}
         <MonoContactSection isEditing={isEditing} />
@@ -1247,9 +1156,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
           className="relative flex flex-col items-center justify-center overflow-hidden border-b border-[#E5D7C4]/50"
         >
           <div className="absolute top-6 left-8 right-8 flex justify-between z-10 font-dm-mono text-[10px] uppercase tracking-widest text-[#463B34] dark:text-[#C4B5A0] pointer-events-none">
-            <span>
-              {isGameOver ? "Game Over" : isPlaying ? "Playing" : "Tap to play"}
-            </span>
+            <span>{isGameOver ? "Game Over" : isPlaying ? "Playing" : "Tap to play"}</span>
             <div className="flex gap-4">
               <span>HI {String(highScore).padStart(5, "0")}</span>
               <span>{String(Math.floor(score / 10)).padStart(5, "0")}</span>

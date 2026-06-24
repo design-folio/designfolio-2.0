@@ -98,27 +98,16 @@ export default function VerifyEmail() {
           type="secondary"
           size="small"
           icon={
-            <img
-              src={"/assets/svgs/left-arrow.svg"}
-              alt="back arrow"
-              className="cursor-pointer"
-            />
+            <img src={"/assets/svgs/left-arrow.svg"} alt="back arrow" className="cursor-pointer" />
           }
         />
-        <Text
-          as="h1"
-          size={"p-large"}
-          className="text-landing-heading-text-color font-bold mt-4"
-        >
+        <Text as="h1" size={"p-large"} className="text-landing-heading-text-color font-bold mt-4">
           Verify Email
         </Text>
-        <Text
-          size={"p-xsmall"}
-          className="mt-2 text-landing-description-text-color font-medium"
-        >
+        <Text size={"p-xsmall"} className="mt-2 text-landing-description-text-color font-medium">
           We have sent an email to{" "}
-          <span className="text-df-orange-color">{router?.query?.email}</span>{" "}
-          with a verification code. Please enter it below confirm your email.
+          <span className="text-df-orange-color">{router?.query?.email}</span> with a verification
+          code. Please enter it below confirm your email.
         </Text>
         <div className="mt-[24px]">
           <div>
@@ -140,12 +129,7 @@ export default function VerifyEmail() {
             >
               {({ isSubmitting, isValid, errors, touched }) => (
                 <Form id="emailverifyform">
-                  <Text
-                    as="p"
-                    size={"p-xxsmall"}
-                    className="mt-6 font-medium"
-                    required
-                  >
+                  <Text as="p" size={"p-xxsmall"} className="mt-6 font-medium" required>
                     Verification code
                   </Text>
 
@@ -170,9 +154,7 @@ export default function VerifyEmail() {
                   <div className="flex  gap-1 items-center pt-2">
                     <p className="w-fit text-[12px] font-inter md:!text-[14px] mt-[2px] font-[500] text-landing-description-text-color">
                       {`${
-                        timeLeft == 0
-                          ? "Didn't received the code?"
-                          : `Time left: ${timeLeft} sec`
+                        timeLeft == 0 ? "Didn't received the code?" : `Time left: ${timeLeft} sec`
                       }`}
                     </p>
                     <Button

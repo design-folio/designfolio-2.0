@@ -1,12 +1,7 @@
 import { useEffect, useState } from "react";
 import { Info, TrendingUp, TrendingDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 function useCountUp(target, duration = 800) {
   const [value, setValue] = useState(0);
@@ -43,21 +38,38 @@ function DeltaBadge({ delta, label }) {
     <div
       className={cn(
         "inline-flex items-center gap-0.5 mt-1.5 text-[10px] font-mono leading-none",
-        isPos ? "text-emerald-500 dark:text-emerald-400"
-              : isNeg ? "text-red-500 dark:text-red-400"
-              : "text-[#B5AFA5] dark:text-[#5A544E]"
+        isPos
+          ? "text-emerald-500 dark:text-emerald-400"
+          : isNeg
+            ? "text-red-500 dark:text-red-400"
+            : "text-[#B5AFA5] dark:text-[#5A544E]"
       )}
       aria-label={`${isPos ? "Up" : isNeg ? "Down" : "No change"} ${abs}% ${label}`}
     >
       {isPos && <TrendingUp size={9} aria-hidden="true" />}
       {isNeg && <TrendingDown size={9} aria-hidden="true" />}
-      <span>{isPos ? "+" : isNeg ? "–" : ""}{abs}%</span>
+      <span>
+        {isPos ? "+" : isNeg ? "–" : ""}
+        {abs}%
+      </span>
       <span className="text-[#B5AFA5] dark:text-[#5A544E] ml-0.5">{label}</span>
     </div>
   );
 }
 
-export default function StatsCard({ label, value, icon: Icon, suffix = "", index = 0, subText, info, smartText, wide = false, delta, deltaLabel }) {
+export default function StatsCard({
+  label,
+  value,
+  icon: Icon,
+  suffix = "",
+  index = 0,
+  subText,
+  info,
+  smartText,
+  wide = false,
+  delta,
+  deltaLabel,
+}) {
   const displayValue = useCountUp(typeof value === "number" ? value : 0);
 
   const formatted =
@@ -90,7 +102,9 @@ export default function StatsCard({ label, value, icon: Icon, suffix = "", index
               </div>
             )}
             <div className="flex items-center gap-1.5">
-              <p className="text-sm font-manrope text-[#7A736C] dark:text-[#B5AFA5] leading-none">{label}</p>
+              <p className="text-sm font-manrope text-[#7A736C] dark:text-[#B5AFA5] leading-none">
+                {label}
+              </p>
               {info && (
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -102,7 +116,9 @@ export default function StatsCard({ label, value, icon: Icon, suffix = "", index
                       <Info size={12} />
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent side="top" className="max-w-xs text-xs leading-relaxed">{info}</TooltipContent>
+                  <TooltipContent side="top" className="max-w-xs text-xs leading-relaxed">
+                    {info}
+                  </TooltipContent>
                 </Tooltip>
               )}
             </div>
@@ -114,7 +130,9 @@ export default function StatsCard({ label, value, icon: Icon, suffix = "", index
                 {formatted}
               </p>
               {subText && (
-                <p className="text-xs font-manrope text-[#7A736C] dark:text-[#B5AFA5] mt-0.5 leading-none">{subText}</p>
+                <p className="text-xs font-manrope text-[#7A736C] dark:text-[#B5AFA5] mt-0.5 leading-none">
+                  {subText}
+                </p>
               )}
             </div>
           </div>

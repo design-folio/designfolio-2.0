@@ -11,10 +11,7 @@ const NavigationMenu = React.forwardRef(function NavigationMenu(
   return (
     <NavigationMenuPrimitive.Root
       ref={ref}
-      className={cn(
-        "relative z-10 flex max-w-max flex-1 items-center justify-center",
-        className
-      )}
+      className={cn("relative z-10 flex max-w-max flex-1 items-center justify-center", className)}
       {...props}
     >
       {children}
@@ -31,10 +28,7 @@ const NavigationMenuList = React.forwardRef(function NavigationMenuList(
   return (
     <NavigationMenuPrimitive.List
       ref={ref}
-      className={cn(
-        "group flex flex-1 list-none items-center justify-center space-x-1",
-        className
-      )}
+      className={cn("group flex flex-1 list-none items-center justify-center space-x-1", className)}
       {...props}
     />
   );
@@ -103,27 +97,26 @@ const NavigationMenuViewport = React.forwardRef(function NavigationMenuViewport(
     </div>
   );
 });
-NavigationMenuViewport.displayName =
-  NavigationMenuPrimitive.Viewport.displayName;
+NavigationMenuViewport.displayName = NavigationMenuPrimitive.Viewport.displayName;
 
-const NavigationMenuIndicator = React.forwardRef(
-  function NavigationMenuIndicator({ className, ...props }, ref) {
-    return (
-      <NavigationMenuPrimitive.Indicator
-        ref={ref}
-        className={cn(
-          "top-full z-[1] flex h-1.5 items-end justify-center overflow-hidden data-[state=visible]:animate-in data-[state=hidden]:animate-out data-[state=hidden]:fade-out data-[state=visible]:fade-in",
-          className
-        )}
-        {...props}
-      >
-        <div className="relative top-[60%] h-2 w-2 rotate-45 rounded-tl-sm bg-border shadow-md" />
-      </NavigationMenuPrimitive.Indicator>
-    );
-  }
-);
-NavigationMenuIndicator.displayName =
-  NavigationMenuPrimitive.Indicator.displayName;
+const NavigationMenuIndicator = React.forwardRef(function NavigationMenuIndicator(
+  { className, ...props },
+  ref
+) {
+  return (
+    <NavigationMenuPrimitive.Indicator
+      ref={ref}
+      className={cn(
+        "top-full z-[1] flex h-1.5 items-end justify-center overflow-hidden data-[state=visible]:animate-in data-[state=hidden]:animate-out data-[state=hidden]:fade-out data-[state=visible]:fade-in",
+        className
+      )}
+      {...props}
+    >
+      <div className="relative top-[60%] h-2 w-2 rotate-45 rounded-tl-sm bg-border shadow-md" />
+    </NavigationMenuPrimitive.Indicator>
+  );
+});
+NavigationMenuIndicator.displayName = NavigationMenuPrimitive.Indicator.displayName;
 
 export {
   navigationMenuTriggerStyle,

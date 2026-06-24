@@ -30,7 +30,9 @@ export default function LandingPage({ dfToken, dfParsedResume }) {
   const { theme, setTheme } = useTheme();
   // Defer theme resolution to client — avoids server/client hydration mismatch
   const [mounted, setMounted] = useState(false);
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   const isDark = mounted && theme === "dark";
 
   const containerRef = useRef(null);
@@ -68,7 +70,7 @@ export default function LandingPage({ dfToken, dfParsedResume }) {
       gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
       osc2.start(now + 0.12);
       osc2.stop(now + 0.22);
-    } catch { }
+    } catch {}
   }, []);
 
   const handleThemeChange = useCallback(
@@ -90,26 +92,22 @@ export default function LandingPage({ dfToken, dfParsedResume }) {
         const cy = top + height / 2;
         const maxD = Math.hypot(
           Math.max(cx, window.innerWidth - cx),
-          Math.max(cy, window.innerHeight - cy),
+          Math.max(cy, window.innerHeight - cy)
         );
         document.documentElement.animate(
           {
-            clipPath: [
-              `circle(0px at ${cx}px ${cy}px)`,
-              `circle(${maxD}px at ${cx}px ${cy}px)`,
-            ],
+            clipPath: [`circle(0px at ${cx}px ${cy}px)`, `circle(${maxD}px at ${cx}px ${cy}px)`],
           },
           {
             duration: 700,
             easing: "ease-in-out",
             pseudoElement: "::view-transition-new(root)",
-          },
+          }
         );
       }
     },
-    [playHeartbeat, setTheme],
+    [playHeartbeat, setTheme]
   );
-
 
   useEffect(() => {
     let parsedResumePresent = !!dfParsedResume;
@@ -118,7 +116,7 @@ export default function LandingPage({ dfToken, dfParsedResume }) {
         parsedResumePresent ||
         Boolean(sessionStorage.getItem("df_parsed_resume")) ||
         Boolean(localStorage.getItem("df_parsed_resume"));
-    } catch { }
+    } catch {}
     parsedResumePresent = parsedResumePresent || Boolean(getCookieValue("df_parsed_resume"));
     if (parsedResumePresent) setHasParsedResume(true);
   }, [dfParsedResume]);
@@ -137,7 +135,7 @@ export default function LandingPage({ dfToken, dfParsedResume }) {
         if (hit) setActiveSection(hit.target.id);
         else if (window.scrollY < 100) setActiveSection("overview");
       },
-      { rootMargin: "-10% 0px -70% 0px" },
+      { rootMargin: "-10% 0px -70% 0px" }
     );
     ["overview", "stories", "how", "why"].forEach((id) => {
       const el = document.getElementById(id);
@@ -161,9 +159,7 @@ export default function LandingPage({ dfToken, dfParsedResume }) {
       const videoTop = rect.top + window.scrollY;
       const halfway = videoTop + rect.height * 0.5;
       const whyEl = document.getElementById("why");
-      const whyTop = whyEl
-        ? whyEl.getBoundingClientRect().top + window.scrollY
-        : Infinity;
+      const whyTop = whyEl ? whyEl.getBoundingClientRect().top + window.scrollY : Infinity;
       setShowNavCTA(window.scrollY > halfway && window.scrollY < whyTop);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -221,8 +217,7 @@ export default function LandingPage({ dfToken, dfParsedResume }) {
             "@type": "WebSite",
             name: "Designfolio",
             url: "https://designfolio.me",
-            description:
-              "The fastest way to build your design portfolio website.",
+            description: "The fastest way to build your design portfolio website.",
             potentialAction: {
               "@type": "SearchAction",
               target: "https://designfolio.me/preview/{search_term_string}",
@@ -260,7 +255,9 @@ export default function LandingPage({ dfToken, dfParsedResume }) {
               hasDfToken={dfToken}
               hasParsedResume={hasParsedResume}
               onPrimaryCta={handleCta}
-              primaryCtaLabel={dfToken ? "Launch Builder" : hasParsedResume ? "Continue Signup" : "Upload Resume"}
+              primaryCtaLabel={
+                dfToken ? "Launch Builder" : hasParsedResume ? "Continue Signup" : "Upload Resume"
+              }
               primaryCtaLoading={isNavigating}
             />
             <LandingVideoSection ref={videoSectionRef} isDark={isDark} />

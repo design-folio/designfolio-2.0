@@ -36,7 +36,8 @@ export default function BuiltForTypewriter() {
       <Sun className="w-[13px] h-[13px] text-yellow-500 flex-shrink-0" fill="currentColor" />
       <span className="text-lp-text/70 font-semibold">BUILT FOR</span>
       <span className="font-bold text-lp-text">
-        {displayed}<span className="animate-pulse">_</span>
+        {displayed}
+        <span className="animate-pulse">_</span>
       </span>
     </div>
   );

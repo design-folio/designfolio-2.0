@@ -24,10 +24,7 @@ export const YoutubeNode = Node.create({
   },
 
   renderHTML({ HTMLAttributes }) {
-    return [
-      "div",
-      mergeAttributes(HTMLAttributes, { "data-youtube-node": "" }),
-    ];
+    return ["div", mergeAttributes(HTMLAttributes, { "data-youtube-node": "" })];
   },
 
   addNodeView() {

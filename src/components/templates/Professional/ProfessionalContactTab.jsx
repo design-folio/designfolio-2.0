@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Pencil, Plus } from "lucide-react";
 import ProfessionalEmptyStateButton from "./ProfessionalEmptyStateButton";
 
-
 function ProfessionalContactTab({ isEditing, socialLinks, onEditContact, allFieldsFilled }) {
   console.log(allFieldsFilled);
   return (
@@ -28,14 +27,12 @@ function ProfessionalContactTab({ isEditing, socialLinks, onEditContact, allFiel
               <a
                 href={link.href}
                 target={
-                  link.href.startsWith("mailto:") ||
-                    link.href.startsWith("tel:")
+                  link.href.startsWith("mailto:") || link.href.startsWith("tel:")
                     ? undefined
                     : "_blank"
                 }
                 rel={
-                  link.href.startsWith("mailto:") ||
-                    link.href.startsWith("tel:")
+                  link.href.startsWith("mailto:") || link.href.startsWith("tel:")
                     ? undefined
                     : "noopener noreferrer"
                 }
@@ -50,7 +47,7 @@ function ProfessionalContactTab({ isEditing, socialLinks, onEditContact, allFiel
           ))}
           {isEditing && !allFieldsFilled && (
             <ProfessionalEmptyStateButton
-              className='min-h-[128px]'
+              className="min-h-[128px]"
               label="Add Contact Info"
               onClick={onEditContact}
             />

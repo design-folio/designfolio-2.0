@@ -21,7 +21,8 @@ function TypingDots() {
         <span
           key={i}
           style={{
-            width: 5, height: 5,
+            width: 5,
+            height: 5,
             borderRadius: "50%",
             display: "inline-block",
             backgroundColor: "currentColor",
@@ -36,14 +37,14 @@ function TypingDots() {
 }
 
 export function ScoutChat({ job, onClose, profileId }) {
-  const [messages, setMessages]     = useState([]);
-  const [input, setInput]           = useState("");
-  const [loading, setLoading]       = useState(false);
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
-  const [showAll, setShowAll]       = useState(false);
-  const [expanded, setExpanded]     = useState(false);
+  const [showAll, setShowAll] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const bottomRef = useRef(null);
-  const inputRef  = useRef(null);
+  const inputRef = useRef(null);
 
   const visibleSuggestions = showAll ? SCOUT_SUGGESTIONS : SCOUT_SUGGESTIONS.slice(0, 3);
 
@@ -58,7 +59,7 @@ export function ScoutChat({ job, onClose, profileId }) {
     if (!trimmed || loading) return;
 
     const history = [...messages];
-    setMessages(prev => [...prev, { role: "user", text: trimmed }]);
+    setMessages((prev) => [...prev, { role: "user", text: trimmed }]);
     setHasStarted(true);
     setInput("");
     setLoading(true);
@@ -66,9 +67,12 @@ export function ScoutChat({ job, onClose, profileId }) {
     try {
       const res = await _postJobsScout(profileId, job.id, trimmed, history);
       const reply = res.data?.reply ?? "I couldn't get a response right now. Please try again.";
-      setMessages(prev => [...prev, { role: "ai", text: reply }]);
+      setMessages((prev) => [...prev, { role: "ai", text: reply }]);
     } catch {
-      setMessages(prev => [...prev, { role: "ai", text: "Something went wrong. Please try again." }]);
+      setMessages((prev) => [
+        ...prev,
+        { role: "ai", text: "Something went wrong. Please try again." },
+      ]);
     } finally {
       setLoading(false);
       setTimeout(() => inputRef.current?.focus(), 80);
@@ -76,9 +80,7 @@ export function ScoutChat({ job, onClose, profileId }) {
   };
 
   // While loading, append a transient bubble with null text so we can render dots
-  const allMessages = loading
-    ? [...messages, { role: "ai", text: null }]
-    : messages;
+  const allMessages = loading ? [...messages, { role: "ai", text: null }] : messages;
 
   return createPortal(
     <div className="fixed inset-0 z-[200] pointer-events-none">
@@ -104,10 +106,10 @@ export function ScoutChat({ job, onClose, profileId }) {
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 16, scale: 0.97 }}
         transition={{
-          layout:   { type: "spring", bounce: 0.18, duration: 0.5 },
-          opacity:  { duration: 0.22 },
-          y:        { duration: 0.22 },
-          scale:    { duration: 0.22 },
+          layout: { type: "spring", bounce: 0.18, duration: 0.5 },
+          opacity: { duration: 0.22 },
+          y: { duration: 0.22 },
+          scale: { duration: 0.22 },
         }}
         className={`absolute pointer-events-auto flex flex-col overflow-hidden bg-white dark:bg-card border border-black/[0.1] dark:border-border shadow-2xl rounded-2xl ${
           expanded
@@ -118,18 +120,26 @@ export function ScoutChat({ job, onClose, profileId }) {
         {/* Header */}
         <div className="flex-shrink-0 flex items-center justify-between px-4 py-3 bg-black/[0.02] dark:bg-white/[0.04] border-b border-black/[0.08] dark:border-border">
           <div className="flex items-center gap-2 min-w-0">
-            <span className="orb-spinning"><ColorOrb dimension="14px" spinDuration={6} /></span>
+            <span className="orb-spinning">
+              <ColorOrb dimension="14px" spinDuration={6} />
+            </span>
             <span className="text-[14px] font-semibold text-foreground">Scout</span>
-            <span className="text-[13px] text-foreground/50 truncate">· {job.role} at {job.company}</span>
+            <span className="text-[13px] text-foreground/50 truncate">
+              · {job.role} at {job.company}
+            </span>
           </div>
           <div className="flex items-center gap-0.5 flex-shrink-0 ml-2">
             <button
               data-testid="button-scout-expand"
-              onClick={() => setExpanded(v => !v)}
+              onClick={() => setExpanded((v) => !v)}
               aria-label={expanded ? "Collapse Scout" : "Expand Scout"}
               className="w-7 h-7 flex items-center justify-center rounded-md text-foreground/40 hover:text-foreground/70 hover:bg-black/[0.05] dark:hover:bg-white/[0.08] transition-colors cursor-pointer"
             >
-              {expanded ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
+              {expanded ? (
+                <Minimize2 className="w-3.5 h-3.5" />
+              ) : (
+                <Maximize2 className="w-3.5 h-3.5" />
+              )}
             </button>
             <button
               onClick={onClose}
@@ -182,7 +192,11 @@ export function ScoutChat({ job, onClose, profileId }) {
                       onClick={() => send(s)}
                       initial={{ opacity: 0, x: 16 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.06 + 0.18, duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                      transition={{
+                        delay: i * 0.06 + 0.18,
+                        duration: 0.3,
+                        ease: [0.22, 1, 0.36, 1],
+                      }}
                       className="bg-black/[0.04] dark:bg-white/[0.06] rounded-2xl px-4 py-2.5 text-[14px] text-foreground/70 border border-black/[0.06] dark:border-border hover:text-foreground transition-colors cursor-pointer"
                     >
                       {s}
@@ -212,9 +226,13 @@ export function ScoutChat({ job, onClose, profileId }) {
               >
                 <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3 min-h-0">
                   {allMessages.map((msg, i) => {
-                    const isLastAi = msg.role === "ai" && allMessages.slice(i + 1).every(m => m.role !== "ai");
+                    const isLastAi =
+                      msg.role === "ai" && allMessages.slice(i + 1).every((m) => m.role !== "ai");
                     return (
-                      <div key={i} className={`flex items-end gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                      <div
+                        key={i}
+                        className={`flex items-end gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                      >
                         {msg.role === "ai" && (
                           <div className="flex-shrink-0 mb-0.5 w-5 h-5 flex items-center justify-center">
                             {isLastAi ? (
@@ -226,11 +244,13 @@ export function ScoutChat({ job, onClose, profileId }) {
                             )}
                           </div>
                         )}
-                        <div className={`text-[14px] leading-[1.6] rounded-2xl px-3.5 py-2.5 max-w-[80%] ${
-                          msg.role === "user"
-                            ? "bg-foreground text-background rounded-br-sm"
-                            : "bg-black/[0.04] dark:bg-white/[0.06] text-foreground/85 border border-black/[0.06] dark:border-border rounded-bl-sm"
-                        }`}>
+                        <div
+                          className={`text-[14px] leading-[1.6] rounded-2xl px-3.5 py-2.5 max-w-[80%] ${
+                            msg.role === "user"
+                              ? "bg-foreground text-background rounded-br-sm"
+                              : "bg-black/[0.04] dark:bg-white/[0.06] text-foreground/85 border border-black/[0.06] dark:border-border rounded-bl-sm"
+                          }`}
+                        >
                           {msg.text ?? <TypingDots />}
                         </div>
                       </div>
@@ -250,8 +270,10 @@ export function ScoutChat({ job, onClose, profileId }) {
               ref={inputRef}
               type="text"
               value={input}
-              onChange={e => setInput(e.target.value)}
-              onKeyDown={e => { if (e.key === "Enter" && !loading) send(input); }}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !loading) send(input);
+              }}
               placeholder={hasStarted ? "Ask a follow-up…" : "Or type your own question…"}
               disabled={loading}
               aria-label="Message Scout"

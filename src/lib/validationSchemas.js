@@ -32,18 +32,11 @@ export const SkillsValidationSchema = Yup.object().shape({
     .required("Please select at least 3 skills or strengths."),
 });
 
-
 export const DomainValidationSchema = Yup.object().shape({
   domain: Yup.string()
-    .matches(
-      /^[a-z0-9][a-z0-9-]{1,61}[a-z0-9](?:\.[a-z]{2,})?$/,
-      "Invalid subdomain"
-    )
+    .matches(/^[a-z0-9][a-z0-9-]{1,61}[a-z0-9](?:\.[a-z]{2,})?$/, "Invalid subdomain")
     .required("Domain is required"),
 });
-
-
-
 
 export const ReviewValidationSchema = Yup.object().shape({
   name: Yup.string()
@@ -52,36 +45,30 @@ export const ReviewValidationSchema = Yup.object().shape({
   company: Yup.string()
     .max(100, "Company name must be 100 characters or less")
     .required("Company Name is required"),
-  description: Yup.mixed()
-    .test('is-valid-content', 'Description is required', (value) => {
-      // Accept JSON objects or non-empty strings
-      if (!value) return false;
-      if (typeof value === 'object' && value !== null && value.type === 'doc') return true;
-      if (typeof value === 'string' && value.trim() !== '') return true;
-      return false;
-    }),
+  description: Yup.mixed().test("is-valid-content", "Description is required", (value) => {
+    // Accept JSON objects or non-empty strings
+    if (!value) return false;
+    if (typeof value === "object" && value !== null && value.type === "doc") return true;
+    if (typeof value === "string" && value.trim() !== "") return true;
+    return false;
+  }),
   linkedinLink: Yup.string()
     .url("Please enter a valid URL")
     .matches(/(linkedin.com)/, "Invalid LinkedIn Link"),
 });
 
-
-
 export const WorkValidationSchema = Yup.object().shape({
-  role: Yup.string()
-    .max(50, "Role must be 50 characters or less")
-    .required("Role is required"),
+  role: Yup.string().max(50, "Role must be 50 characters or less").required("Role is required"),
   company: Yup.string()
     .max(150, "Company name must be 150 characters or less")
     .required("Company Name is required"),
-  description: Yup.mixed()
-    .test('is-valid-content', 'Description is required', (value) => {
-      // Accept JSON objects or non-empty strings
-      if (!value) return false;
-      if (typeof value === 'object' && value !== null && value.type === 'doc') return true;
-      if (typeof value === 'string' && value.trim() !== '') return true;
-      return false;
-    }),
+  description: Yup.mixed().test("is-valid-content", "Description is required", (value) => {
+    // Accept JSON objects or non-empty strings
+    if (!value) return false;
+    if (typeof value === "object" && value !== null && value.type === "doc") return true;
+    if (typeof value === "string" && value.trim() !== "") return true;
+    return false;
+  }),
   startMonth: Yup.string().required("Month is required"),
   startYear: Yup.string().required("Year is required"),
   currentlyWorking: Yup.boolean(),
@@ -100,9 +87,6 @@ export const WorkValidationSchema = Yup.object().shape({
     }
   ),
 });
-
-
-
 
 export const FooterValidationSchema = Yup.object().shape({
   contact_email: Yup.string()
@@ -201,11 +185,8 @@ export const FooterValidationSchema = Yup.object().shape({
     }),
 });
 
-
 export const AboutSchema = Yup.object().shape({
-  description: Yup.string()
-    .max(1200, "About me must be 1200 characters or less")
-    .nullable(),
+  description: Yup.string().max(1200, "About me must be 1200 characters or less").nullable(),
   pegboardImages: Yup.array()
     .of(
       Yup.object().shape({
@@ -228,7 +209,6 @@ export const AboutSchema = Yup.object().shape({
     .nullable(),
 });
 
-
 export const linkedinValidation = Yup.object({
   url: Yup.string()
     .required("LinkedIn URL is required")
@@ -239,23 +219,35 @@ export const linkedinValidation = Yup.object({
         const full = /^https?:\/\//i.test(val) ? val : `https://${val}`;
         const id = new URL(full).searchParams.get("currentJobId");
         return Boolean(id && /^\d+$/.test(id));
-      } catch { return false; }
+      } catch {
+        return false;
+      }
     }),
 });
 
 export const manualValidation = Yup.object({
   title: Yup.string().trim().min(2, "Job title is required").required("Job title is required"),
-  company: Yup.string().trim().min(2, "Company name is required").required("Company name is required"),
-  applyUrl: Yup.string().trim().required("Apply URL is required").test(
-    "is-url",
-    "Enter a valid URL (e.g. company.com/jobs/…)",
-    (val = "") => {
+  company: Yup.string()
+    .trim()
+    .min(2, "Company name is required")
+    .required("Company name is required"),
+  applyUrl: Yup.string()
+    .trim()
+    .required("Apply URL is required")
+    .test("is-url", "Enter a valid URL (e.g. company.com/jobs/…)", (val = "") => {
       if (!val) return false;
       const full = /^https?:\/\//i.test(val) ? val : `https://${val}`;
-      try { new URL(full); return true; } catch { return false; }
-    }
-  ),
+      try {
+        new URL(full);
+        return true;
+      } catch {
+        return false;
+      }
+    }),
   location: Yup.string().trim(),
   workMode: Yup.string().oneOf(["", "remote", "hybrid", "onsite"]),
-  description: Yup.string().trim().min(10, "Job description is required").required("Job description is required"),
+  description: Yup.string()
+    .trim()
+    .min(10, "Job description is required")
+    .required("Job description is required"),
 });

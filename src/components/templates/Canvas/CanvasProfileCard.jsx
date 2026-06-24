@@ -12,14 +12,10 @@ function CanvasProfileCard({ isEditing, skills = [], persistTheme = false }) {
   const { userDetails, openSidebar } = useGlobalContext();
   const { introduction, bio } = userDetails || {};
 
-  const avatarSrc = useMemo(
-    () => getUserAvatarImage(userDetails),
-    [userDetails],
-  );
+  const avatarSrc = useMemo(() => getUserAvatarImage(userDetails), [userDetails]);
   const { isDark, toggleTheme } = usePersistableThemeToggle(persistTheme);
-  const repeatedSkills = skills.length > 0
-    ? [...skills, ...skills, ...skills, ...skills, ...skills]
-    : [];
+  const repeatedSkills =
+    skills.length > 0 ? [...skills, ...skills, ...skills, ...skills, ...skills] : [];
 
   return (
     <motion.div

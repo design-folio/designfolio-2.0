@@ -26,13 +26,21 @@ const StepOneValidationSchema = Yup.object().shape({
   picture: Yup.mixed()
     .nullable()
     .notRequired()
-    .test("fileSize", "File size is too large. Maximum size is 5MB.", (value) => !value || value.size <= FILE_SIZE)
-    .test("fileType", "Unsupported file format. Only jpg, jpeg, png and gif files are allowed.", (value) => {
-      if (!value) return true;
-      const mimeValid = SUPPORTED_MIME_TYPES.includes(value.type);
-      const extension = value.name?.split(".").pop()?.toLowerCase();
-      return mimeValid || (extension && SUPPORTED_EXTENSIONS.includes(extension));
-    }),
+    .test(
+      "fileSize",
+      "File size is too large. Maximum size is 5MB.",
+      (value) => !value || value.size <= FILE_SIZE
+    )
+    .test(
+      "fileType",
+      "Unsupported file format. Only jpg, jpeg, png and gif files are allowed.",
+      (value) => {
+        if (!value) return true;
+        const mimeValid = SUPPORTED_MIME_TYPES.includes(value.type);
+        const extension = value.name?.split(".").pop()?.toLowerCase();
+        return mimeValid || (extension && SUPPORTED_EXTENSIONS.includes(extension));
+      }
+    ),
   introduction: Yup.string()
     .required("Headline is required")
     .max(50, "Headline must be 50 characters or less"),
@@ -71,7 +79,8 @@ function normalizePersona(p) {
 }
 
 export default function Onboarding() {
-  const { userDetails, step, setStep, closeModal, setUserDetails, updateCache } = useGlobalContext();
+  const { userDetails, step, setStep, closeModal, setUserDetails, updateCache } =
+    useGlobalContext();
   const { theme } = useTheme();
   const [imagePreview, setImagePreview] = useState();
   const [skillOptions, setSkillsOptions] = useState([]);
@@ -106,7 +115,7 @@ export default function Onboarding() {
   useEffect(() => {
     _getTools()
       .then((res) => setToolsOptions(res.data.tools))
-      .catch(() => { });
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -120,7 +129,7 @@ export default function Onboarding() {
           setInitialValues((prev) => ({ ...prev, picture: file }));
           setImagePreview(URL.createObjectURL(file));
         })
-        .catch(() => { });
+        .catch(() => {});
     } else {
       setImagePreview(null);
     }
@@ -187,7 +196,11 @@ export default function Onboarding() {
       if (values?.picture) {
         const reader = new FileReader();
         reader.onloadend = () => {
-          payload.avatar = { key: reader.result, originalName: values.picture.name, extension: values.picture.type.split("/")[1] };
+          payload.avatar = {
+            key: reader.result,
+            originalName: values.picture.name,
+            extension: values.picture.type.split("/")[1],
+          };
           handleNetwork(payload, actions);
         };
         reader.readAsDataURL(values.picture);
@@ -229,7 +242,9 @@ export default function Onboarding() {
         setCustomRole(persona.custom || (persona.label === "Others" ? "" : persona.label));
         setSelectedPersonaId(persona.value);
       } else {
-        const matched = roles.find((r) => r._id === persona.value) || roles.find((r) => r.label === persona.label);
+        const matched =
+          roles.find((r) => r._id === persona.value) ||
+          roles.find((r) => r.label === persona.label);
         if (matched) {
           setSelectedRole(matched.label);
           setSelectedPersonaId(matched._id);
@@ -257,8 +272,14 @@ export default function Onboarding() {
           <div className="p-5 lg:p-6">
             <div className="mb-4 flex gap-3">
               <ProgressBar progress={100} />
-              <ProgressBar progress={step >= 2 ? 100 : 0} bg="linear-gradient(to right, #F26855, #EC7DFD)" />
-              <ProgressBar progress={step === 3 ? 100 : 0} bg="linear-gradient(to right, #6EE7B7, #3B82F6)" />
+              <ProgressBar
+                progress={step >= 2 ? 100 : 0}
+                bg="linear-gradient(to right, #F26855, #EC7DFD)"
+              />
+              <ProgressBar
+                progress={step === 3 ? 100 : 0}
+                bg="linear-gradient(to right, #6EE7B7, #3B82F6)"
+              />
             </div>
             {userDetails && userDetails?.skills?.length !== 0 && (
               <div className="flex justify-between items-center">
@@ -273,10 +294,18 @@ export default function Onboarding() {
             {userDetails && userDetails?.skills?.length == 0 && (
               <>
                 <Text size="p-medium" className="font-semibold text-center mb-2">
-                  {step === 1 ? "Welcome to designfolio" : step === 2 ? "Your top skills, roles & tools?" : "What describes you best?"}
+                  {step === 1
+                    ? "Welcome to designfolio"
+                    : step === 2
+                      ? "Your top skills, roles & tools?"
+                      : "What describes you best?"}
                 </Text>
                 <Text size="p-small" className="font-inter font-normal text-center">
-                  {step === 1 ? "A little bit more about you" : step === 2 ? "Choose your superpowers" : "Help us tailor your experience"}
+                  {step === 1
+                    ? "A little bit more about you"
+                    : step === 2
+                      ? "Choose your superpowers"
+                      : "Help us tailor your experience"}
                 </Text>
               </>
             )}
@@ -285,7 +314,13 @@ export default function Onboarding() {
           <Formik
             initialValues={initialValues}
             innerRef={formikRef}
-            validationSchema={step === 1 ? StepOneValidationSchema : step === 2 ? StepTwoValidationSchema : undefined}
+            validationSchema={
+              step === 1
+                ? StepOneValidationSchema
+                : step === 2
+                  ? StepTwoValidationSchema
+                  : undefined
+            }
             onSubmit={handleSubmit}
           >
             {({ setFieldValue, values, errors, touched }) => (
@@ -294,7 +329,12 @@ export default function Onboarding() {
                   {step === 1 && (
                     <div>
                       <div className="flex items-center gap-4">
-                        <div className={cn("w-32 h-32 flex flex-col justify-center items-center gap-1 rounded-full relative", !userDetails?.avatar && !imagePreview ? "bg-[#FFB088]" : "")}>
+                        <div
+                          className={cn(
+                            "w-32 h-32 flex flex-col justify-center items-center gap-1 rounded-full relative",
+                            !userDetails?.avatar && !imagePreview ? "bg-[#FFB088]" : ""
+                          )}
+                        >
                           <img
                             src={imagePreview || getUserAvatarImage(userDetails)}
                             className="w-24 h-24 rounded-full object-cover"
@@ -302,7 +342,12 @@ export default function Onboarding() {
                           />
                         </div>
                         <label htmlFor="picture" className="cursor-pointer">
-                          <Button variant="secondary" size="sm" type="button" className="pointer-events-none rounded-full">
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            type="button"
+                            className="pointer-events-none rounded-full"
+                          >
                             {imagePreview ? "Change photo" : "Upload photo"}
                           </Button>
                         </label>
@@ -315,11 +360,19 @@ export default function Onboarding() {
                         hidden
                         onChange={(e) => handleImageChange(e, setFieldValue)}
                       />
-                      <ErrorMessage name="picture" component="div" className="error-message text-sm" />
+                      <ErrorMessage
+                        name="picture"
+                        component="div"
+                        className="error-message text-sm"
+                      />
 
                       <div className="mt-6 flex justify-between">
-                        <Text as="p" size="p-xxsmall" className="font-medium">Headline</Text>
-                        <Text as="p" size="p-xxsmall" className="font-medium">{values.introduction.length ?? 0}/50</Text>
+                        <Text as="p" size="p-xxsmall" className="font-medium">
+                          Headline
+                        </Text>
+                        <Text as="p" size="p-xxsmall" className="font-medium">
+                          {values.introduction.length ?? 0}/50
+                        </Text>
                       </div>
                       <Field name="introduction">
                         {({ field }) => (
@@ -328,18 +381,31 @@ export default function Onboarding() {
                             id="introduction"
                             autoComplete="off"
                             placeholder="Eg: Hey I'm Bruce, a Product Designer."
-                            className={cn("mt-2", errors.introduction && touched.introduction && "border-destructive focus-visible:ring-destructive")}
+                            className={cn(
+                              "mt-2",
+                              errors.introduction &&
+                                touched.introduction &&
+                                "border-destructive focus-visible:ring-destructive"
+                            )}
                           />
                         )}
                       </Field>
-                      <ErrorMessage name="introduction" component="div" className="error-message text-[14px]" />
+                      <ErrorMessage
+                        name="introduction"
+                        component="div"
+                        className="error-message text-[14px]"
+                      />
                       <Text size="p-xxxsmall" className="text-muted-foreground mt-3">
                         ✏️ <b>Tip:</b> This is the very first thing people read about you.
                       </Text>
 
                       <div className="mt-4 flex justify-between">
-                        <Text as="p" size="p-xxsmall" className="font-medium" required>Professional summary</Text>
-                        <Text as="p" size="p-xxsmall" className="font-medium">{values.bio.length ?? 0}/250</Text>
+                        <Text as="p" size="p-xxsmall" className="font-medium" required>
+                          Professional summary
+                        </Text>
+                        <Text as="p" size="p-xxsmall" className="font-medium">
+                          {values.bio.length ?? 0}/250
+                        </Text>
                       </div>
                       <Field name="bio">
                         {({ field }) => (
@@ -348,11 +414,20 @@ export default function Onboarding() {
                             id="bio"
                             autoComplete="off"
                             placeholder="Eg: 7 years of building kickass experiences"
-                            className={cn(textareaClass, errors.bio && touched.bio && "border-destructive focus-visible:ring-destructive")}
+                            className={cn(
+                              textareaClass,
+                              errors.bio &&
+                                touched.bio &&
+                                "border-destructive focus-visible:ring-destructive"
+                            )}
                           />
                         )}
                       </Field>
-                      <ErrorMessage name="bio" component="div" className="error-message text-[14px] !mt-[2px]" />
+                      <ErrorMessage
+                        name="bio"
+                        component="div"
+                        className="error-message text-[14px] !mt-[2px]"
+                      />
                       <Text size="p-xxxsmall" className="text-muted-foreground mt-3">
                         ✏️ <b>Tip:</b> Mention your role, experience, skills and achievements
                       </Text>
@@ -362,17 +437,34 @@ export default function Onboarding() {
                   {step === 2 && (
                     <div className="mb-[18px]">
                       <div className="flex justify-between mb-2">
-                        <Text as="p" size="p-xxsmall" className="font-medium" required>Skills</Text>
-                        <Text as="p" size="p-xxsmall" className="font-medium">{values?.expertise?.length ?? 0}/10</Text>
+                        <Text as="p" size="p-xxsmall" className="font-medium" required>
+                          Skills
+                        </Text>
+                        <Text as="p" size="p-xxsmall" className="font-medium">
+                          {values?.expertise?.length ?? 0}/10
+                        </Text>
                       </div>
-                      <SelectField name="expertise" options={skillOptions} theme={theme} placeholder="Search skills" />
-                      <ErrorMessage name="expertise" component="div" className="error-message text-[14px]" />
+                      <SelectField
+                        name="expertise"
+                        options={skillOptions}
+                        theme={theme}
+                        placeholder="Search skills"
+                      />
+                      <ErrorMessage
+                        name="expertise"
+                        component="div"
+                        className="error-message text-[14px]"
+                      />
 
                       <Text as="p" size="p-xxsmall" className="font-medium mt-4 mb-2" required>
                         Choose the tools you work with
                       </Text>
                       <SelectField name="selectedTools" options={toolsOptions} theme={theme} />
-                      <ErrorMessage name="selectedTools" component="div" className="error-message text-[14px]" />
+                      <ErrorMessage
+                        name="selectedTools"
+                        component="div"
+                        className="error-message text-[14px]"
+                      />
 
                       <div className="flex flex-wrap gap-4 mt-4">
                         {toolsOptions.map((tool) => (

@@ -42,16 +42,8 @@ export const ReplacePortfolioDialog = ({
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <Button
-            type="secondary"
-            onClick={handleKeep}
-            text={keepText}
-          />
-          <ButtonNew
-            className="rounded-full"
-            variant="destructive"
-            onClick={handleReplace}
-          >
+          <Button type="secondary" onClick={handleKeep} text={keepText} />
+          <ButtonNew className="rounded-full" variant="destructive" onClick={handleReplace}>
             {replaceText}
           </ButtonNew>
         </AlertDialogFooter>

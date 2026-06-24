@@ -17,15 +17,15 @@ import {
   useSensor,
   useSensors,
   DragEndEvent,
-} from '@dnd-kit/core';
+} from "@dnd-kit/core";
 import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   useSortable,
   verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { _updateUser } from "@/network/post-request";
 import MemoWorkExperience from "../icons/WorkExperience";
 
@@ -86,15 +86,9 @@ export const Spotlight = ({ userDetails, edit, headerActions }) => {
   const handleDragEnd = (event) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
-    const oldIndex = sortedExperiences.findIndex(
-      (exp) => exp._id === active.id
-    );
+    const oldIndex = sortedExperiences.findIndex((exp) => exp._id === active.id);
     const newIndex = sortedExperiences.findIndex((exp) => exp._id === over.id);
-    const newSortedExperiences = arrayMove(
-      sortedExperiences,
-      oldIndex,
-      newIndex
-    );
+    const newSortedExperiences = arrayMove(sortedExperiences, oldIndex, newIndex);
     setSortedExperiences(newSortedExperiences);
 
     // Update global user details and sync with API
@@ -108,16 +102,16 @@ export const Spotlight = ({ userDetails, edit, headerActions }) => {
   // Helper to get plain text length from Tiptap JSON
   const getTextLength = (content) => {
     if (!content) return 0;
-    if (typeof content === 'string') return content.length;
-    if (typeof content === 'object' && content.type === 'doc') {
+    if (typeof content === "string") return content.length;
+    if (typeof content === "object" && content.type === "doc") {
       const extractText = (node) => {
-        if (!node) return '';
-        if (typeof node === 'string') return node;
-        if (node.type === 'text') return node.text || '';
+        if (!node) return "";
+        if (typeof node === "string") return node;
+        if (node.type === "text") return node.text || "";
         if (node.content && Array.isArray(node.content)) {
-          return node.content.map(extractText).join('');
+          return node.content.map(extractText).join("");
         }
-        return '';
+        return "";
       };
       return extractText(content).length;
     }
@@ -126,10 +120,9 @@ export const Spotlight = ({ userDetails, edit, headerActions }) => {
 
   // Sortable card for each work experience
   const SortableExperienceCard = ({ experience, index }) => {
-    const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-      useSortable({
-        id: experience._id,
-      });
+    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+      id: experience._id,
+    });
     const style = {
       transform: CSS.Transform.toString(transform),
       transition,
@@ -138,7 +131,7 @@ export const Spotlight = ({ userDetails, edit, headerActions }) => {
     const descriptionLength = getTextLength(experience.description);
 
     return (
-      <div ref={setNodeRef} style={style} className={isDragging ? 'relative' : ''}>
+      <div ref={setNodeRef} style={style} className={isDragging ? "relative" : ""}>
         <motion.div
           variants={itemVariants}
           className="group bg-card p-6 rounded-lg hover:bg-card/80 transition-colors relative overflow-hidden shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
@@ -153,10 +146,11 @@ export const Spotlight = ({ userDetails, edit, headerActions }) => {
                 <h3 className="font-semibold text-lg">{experience.role}</h3>
                 <div className="flex flex-1 gap-2 lg:justify-end w-full items-center">
                   <span className="text-sm text-gray-600 dark:text-gray-400">
-                    {`${experience?.startMonth} ${experience?.startYear} - ${experience?.currentlyWorking
-                      ? "Present"
-                      : `${experience?.endMonth} ${experience?.endYear}`
-                      }`}
+                    {`${experience?.startMonth} ${experience?.startYear} - ${
+                      experience?.currentlyWorking
+                        ? "Present"
+                        : `${experience?.endMonth} ${experience?.endYear}`
+                    }`}
                   </span>
                   {edit && (
                     <div className="flex gap-4">
@@ -178,9 +172,7 @@ export const Spotlight = ({ userDetails, edit, headerActions }) => {
                   )}
                 </div>
               </div>
-              <div className="text-base text-gray-600 dark:text-gray-400">
-                {experience.company}
-              </div>
+              <div className="text-base text-gray-600 dark:text-gray-400">{experience.company}</div>
               {descriptionLength > 0 && (
                 <div className="text-sm text-gray-600 dark:text-gray-400 relative">
                   <ClampableTiptapContent
@@ -208,11 +200,7 @@ export const Spotlight = ({ userDetails, edit, headerActions }) => {
         <h2 className="text-2xl font-bold">Work Experience</h2>
         {headerActions && <div className="flex-shrink-0">{headerActions}</div>}
       </div>
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
-      >
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext
           items={sortedExperiences.map((exp) => exp._id)}
           strategy={verticalListSortingStrategy}
@@ -225,11 +213,7 @@ export const Spotlight = ({ userDetails, edit, headerActions }) => {
             className="space-y-6"
           >
             {sortedExperiences.map((experience, index) => (
-              <SortableExperienceCard
-                key={experience._id}
-                experience={experience}
-                index={index}
-              />
+              <SortableExperienceCard key={experience._id} experience={experience} index={index} />
             ))}
           </motion.div>
         </SortableContext>

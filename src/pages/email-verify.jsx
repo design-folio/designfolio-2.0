@@ -18,9 +18,7 @@ export default function Index() {
         imageUrl={"https://designfolio.me/images/png/designfolio-thumbnail.png"}
         url={`https://designfolio.me`}
       />
-      <main>
-        {router?.query?.change == "email" ? <ChangeEmail /> : <VerifyEmail />}
-      </main>
+      <main>{router?.query?.change == "email" ? <ChangeEmail /> : <VerifyEmail />}</main>
     </div>
   );
 }
@@ -39,6 +37,3 @@ export const getServerSideProps = async (context) => {
     props: { hideHeader: true, dfToken: !!dfToken },
   };
 };
-
-
-

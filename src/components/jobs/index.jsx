@@ -23,16 +23,16 @@ import { _getJobsQuestions, _getJobsHistory, _postJobsAddFromShare } from "@/net
  * Error states: 'empty' (no jobs found), 'error' (unexpected)
  */
 export function Jobs() {
-  const [phase,          setPhase]          = useState("loading");
-  const [errorType,      setErrorType]      = useState(null); // "auth" | "generic"
-  const [questions,      setQuestions]      = useState([]);
-  const [answers,        setAnswers]        = useState([]);
-  const [jobs,           setJobs]           = useState([]);
-  const [profileId,      setProfileId]      = useState(null);
+  const [phase, setPhase] = useState("loading");
+  const [errorType, setErrorType] = useState(null); // "auth" | "generic"
+  const [questions, setQuestions] = useState([]);
+  const [answers, setAnswers] = useState([]);
+  const [jobs, setJobs] = useState([]);
+  const [profileId, setProfileId] = useState(null);
   // null = no history yet (build fresh from jobs); object = restored column state
   const [initialColumns, setInitialColumns] = useState(null);
   // Quiz answers for Criteria panel — populated from history or new search
-  const [quizAnswers,    setQuizAnswers]    = useState([]);
+  const [quizAnswers, setQuizAnswers] = useState([]);
 
   // On mount: parallel fetch questions + history
   useEffect(() => {
@@ -45,9 +45,9 @@ export function Jobs() {
 
         const fetchedQuestions = questionsRes.data.questions ?? [];
         const {
-          jobs:        historyJobs       = [],
-          profileId:   historyProfileId,
-          columns:     historyColumns,
+          jobs: historyJobs = [],
+          profileId: historyProfileId,
+          columns: historyColumns,
           quizAnswers: historyQuizAnswers,
         } = historyRes.data;
 
@@ -59,32 +59,39 @@ export function Jobs() {
 
           // Restore board column state: prefer backend response, fall back to
           // sessionStorage (written by Dashboard on every column change).
-          const columnsSource = historyColumns || (() => {
-            try {
-              const stored = sessionStorage.getItem(`df_pipeline_${historyProfileId}`);
-              return stored ? JSON.parse(stored) : null;
-            } catch { return null; }
-          })();
+          const columnsSource =
+            historyColumns ||
+            (() => {
+              try {
+                const stored = sessionStorage.getItem(`df_pipeline_${historyProfileId}`);
+                return stored ? JSON.parse(stored) : null;
+              } catch {
+                return null;
+              }
+            })();
 
           if (columnsSource) {
             const jobMap = Object.fromEntries(historyJobs.map((j) => [j.id, j]));
             const restored = {
-              picks:     [],
-              saved:     (columnsSource.saved     || []).map((id) => jobMap[id]).filter(Boolean),
-              applied:   (columnsSource.applied   || []).map((id) => jobMap[id]).filter(Boolean),
+              picks: [],
+              saved: (columnsSource.saved || []).map((id) => jobMap[id]).filter(Boolean),
+              applied: (columnsSource.applied || []).map((id) => jobMap[id]).filter(Boolean),
               interview: (columnsSource.interview || []).map((id) => jobMap[id]).filter(Boolean),
-              offer:     (columnsSource.offer     || []).map((id) => jobMap[id]).filter(Boolean),
-              archived:  (columnsSource.archived  || []).map((id) => jobMap[id]).filter(Boolean),
+              offer: (columnsSource.offer || []).map((id) => jobMap[id]).filter(Boolean),
+              archived: (columnsSource.archived || []).map((id) => jobMap[id]).filter(Boolean),
             };
 
             // Unplaced jobs (not in any pipeline column) go to picks
             const placedIds = new Set(
-              Object.values(restored).flat().map((j) => j.id),
+              Object.values(restored)
+                .flat()
+                .map((j) => j.id)
             );
             restored.picks = historyJobs.filter((j) => !placedIds.has(j.id));
 
-            const hasPipelineData = ['saved','applied','interview','offer','archived']
-              .some((c) => restored[c].length > 0);
+            const hasPipelineData = ["saved", "applied", "interview", "offer", "archived"].some(
+              (c) => restored[c].length > 0
+            );
             setInitialColumns(hasPipelineData ? restored : null);
           }
 
@@ -197,8 +204,8 @@ export function Jobs() {
           No matching roles found.
         </p>
         <p className="text-foreground/50 text-sm max-w-xs text-center leading-relaxed">
-          We couldn&apos;t find jobs for your location or preferences right now.
-          Try different answers.
+          We couldn&apos;t find jobs for your location or preferences right now. Try different
+          answers.
         </p>
         <button
           onClick={() => {
@@ -217,10 +224,7 @@ export function Jobs() {
     <>
       <AnimatePresence mode="wait">
         {phase === "transition" && (
-          <TransitionScreen
-            key="transition"
-            onType={() => setPhase("type")}
-          />
+          <TransitionScreen key="transition" onType={() => setPhase("type")} />
         )}
         {phase === "type" && (
           <TypeRoom

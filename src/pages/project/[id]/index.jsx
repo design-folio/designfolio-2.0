@@ -25,24 +25,16 @@ import ProfessionalProjectInfo from "@/components/templates/Professional/Profess
 import ChatProjectView from "@/components/templates/Chat/ChatProjectView";
 import MemoMadewithdesignfolio from "@/components/icons/Madewithdesignfolio";
 
-export default function Index({
-  data,
-  ownerTemplate,
-  ownerWallpaper,
-  ownerUser,
-}) {
+export default function Index({ data, ownerTemplate, ownerWallpaper, ownerUser }) {
   const router = useRouter();
   const { setTheme, theme, resolvedTheme } = useTheme();
-  const { setCursor, setWallpaper, userDetails, wallpaperEffects } =
-    useGlobalContext();
+  const { setCursor, setWallpaper, userDetails, wallpaperEffects } = useGlobalContext();
   const [unlockedProjectData, setUnlockedProjectData] = useState(null);
 
   // Try to get project from context first (fastest)
   const contextProject = useMemo(() => {
     if (!router.query.id || !userDetails?.projects) return null;
-    return userDetails.projects.find(
-      (project) => project._id === router.query.id,
-    );
+    return userDetails.projects.find((project) => project._id === router.query.id);
   }, [router.query.id, userDetails?.projects]);
 
   const shouldFetch =
@@ -151,18 +143,15 @@ export default function Index({
 
   // Wallpaper priority: project wallpaper → owner wallpaper (for MacOS) → userDetails wallpaper
   const projectWallpaper = project?.wallpaper;
-  const rawWp =
-    projectWallpaper ||
-    (isMacOS ? ownerWallpaper : null) ||
-    userDetails?.wallpaper;
-  const wpValue =
-    rawWp && typeof rawWp === "object" ? rawWp.url || rawWp.value : rawWp;
+  const rawWp = projectWallpaper || (isMacOS ? ownerWallpaper : null) || userDetails?.wallpaper;
+  const wpValue = rawWp && typeof rawWp === "object" ? rawWp.url || rawWp.value : rawWp;
 
   // Compute wallpaper URL for this project
-  const currentTheme =
-    resolvedTheme || theme || (project?.theme == 1 ? "dark" : "light");
+  const currentTheme = resolvedTheme || theme || (project?.theme == 1 ? "dark" : "light");
   // Chat template uses solid bg — no wallpaper. Remove the isChatfolio check to re-enable.
-  const wallpaperUrl = isChatfolio ? null : getWallpaperUrl(wpValue ?? 0, currentTheme, effectiveTemplate);
+  const wallpaperUrl = isChatfolio
+    ? null
+    : getWallpaperUrl(wpValue ?? 0, currentTheme, effectiveTemplate);
 
   // Get wallpaper effects from project → owner → userDetails
   const effects =
@@ -173,9 +162,12 @@ export default function Index({
 
   const tiptapClassName = (() => {
     switch (effectiveTemplate) {
-      case TEMPLATE_IDS.CANVAS: return "";
-      case TEMPLATE_IDS.SPOTLIGHT: return "shadow-none bg-card";
-      default: return "shadow-none bg-transparent";
+      case TEMPLATE_IDS.CANVAS:
+        return "";
+      case TEMPLATE_IDS.SPOTLIGHT:
+        return "shadow-none bg-card";
+      default:
+        return "shadow-none bg-transparent";
     }
   })();
 
@@ -183,9 +175,7 @@ export default function Index({
     <CanvasProjectCta ownerUser={ownerUser} />
   );
 
-  const monoCta = isMono && !isProtected && project && (
-    <MonoProjectFooter ownerUser={ownerUser} />
-  );
+  const monoCta = isMono && !isProtected && project && <MonoProjectFooter ownerUser={ownerUser} />;
 
   const projectContent = (
     <div
@@ -233,11 +223,21 @@ export default function Index({
                   <ProjectInfo projectDetails={project} ownerTemplate={ownerTemplate} />
                 </motion.div>
                 {project?.contentVersion === 2 && project?.tiptapContent ? (
-                  <motion.div variants={itemVariants} className={cn(isMono ? "px-6 md:px-10 py-8" : "")}>
-                    <TiptapRenderer key={project._id} content={project.tiptapContent} className={tiptapClassName} />
+                  <motion.div
+                    variants={itemVariants}
+                    className={cn(isMono ? "px-6 md:px-10 py-8" : "")}
+                  >
+                    <TiptapRenderer
+                      key={project._id}
+                      content={project.tiptapContent}
+                      className={tiptapClassName}
+                    />
                   </motion.div>
                 ) : project?.content ? (
-                  <motion.div variants={itemVariants} className={isMono ? "px-6 md:px-10 py-8" : ""}>
+                  <motion.div
+                    variants={itemVariants}
+                    className={isMono ? "px-6 md:px-10 py-8" : ""}
+                  >
                     <BlockRenderer editorJsData={project.content} />
                   </motion.div>
                 ) : null}
@@ -258,20 +258,14 @@ export default function Index({
         description={project?.description || data?.project?.description}
         keywords={project?.description || data?.project?.description}
         imageUrl={
-          project?.thumbnail?.key ||
-          data?.project?.thumbnail?.key ||
-          "/assets/png/seo-profile.png"
+          project?.thumbnail?.key || data?.project?.thumbnail?.key || "/assets/png/seo-profile.png"
         }
         url={`https://${project?.username || data?.project?.username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`}
       />
       <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={effects} />
 
       {isChatfolio && !isProtected && project ? (
-        <ChatProjectView
-          project={project}
-          ownerUser={ownerUser}
-          onBack={() => router.back()}
-        />
+        <ChatProjectView project={project} ownerUser={ownerUser} onBack={() => router.back()} />
       ) : isProfessional && !isProtected && project ? (
         <ProfessionalProjectInfo projectDetails={project} userDetails={ownerUser} />
       ) : isMacOS ? (
@@ -302,9 +296,7 @@ export default function Index({
           {!ownerUser?.pro && (
             <div
               className={`text-center flex justify-center fixed bottom-0 left-0 right-0 lg:left-1/2 lg:-translate-x-1/2 lg:bottom-[24px] lg:right-[unset] mb-2 xl:block cursor-pointer`}
-              onClick={() =>
-                window.open("https://www.designfolio.me", "_blank")
-              }
+              onClick={() => window.open("https://www.designfolio.me", "_blank")}
             >
               <MemoMadewithdesignfolio />
             </div>
@@ -337,7 +329,7 @@ export async function getServerSideProps(context) {
             ownerUser = owner;
           }
         }
-      } catch (_) { }
+      } catch (_) {}
       return {
         props: {
           data: projectData,

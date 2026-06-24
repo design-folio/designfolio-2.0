@@ -24,10 +24,7 @@ export default function AddUsername() {
         </Text>
       </div>
       <div className="pb-10">
-        <ClaimDomain
-          className="xl:!w-[100%] !p-5"
-          onClaimWebsite={onClaimWebsite}
-        />
+        <ClaimDomain className="xl:!w-[100%] !p-5" onClaimWebsite={onClaimWebsite} />
       </div>
     </div>
   );

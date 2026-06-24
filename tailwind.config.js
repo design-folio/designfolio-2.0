@@ -47,21 +47,17 @@ module.exports = {
         "landng-header-border-color": "var(--landng-header-border-color)",
         "landing-nav-link-color": "var(--landing-nav-link-color)",
         "landing-nav-link-hover-color": "var(--landing-nav-link-hover-color)",
-        "landing-nav-link-bg-hover-color":
-          "var(--landing-nav-link-bg-hover-color)",
+        "landing-nav-link-bg-hover-color": "var(--landing-nav-link-bg-hover-color)",
         "landing-nav-link-base-color": "var(--landing-nav-link-base-color)",
         "landing-heading-text-color": "var(--landing-heading-text-color)",
-        "landing-description-text-color":
-          "var(--landing-description-text-color)",
+        "landing-description-text-color": "var(--landing-description-text-color)",
         "landing-card-bg-color": "var(--landing-card-bg-color)",
         "landing-card-border-color": "var(--landing-card-border-color)",
         "landing-card-step-text-color": "var(--landing-card-step-text-color)",
         "landing-card-step-bg-color": "var(--landing-card-step-bg-color)",
-        "landing-card-step-border-color":
-          "var(--landing-card-step-border-color)",
+        "landing-card-step-border-color": "var(--landing-card-step-border-color)",
         "landing-card-heading-color": "var(--landing-card-heading-color)",
-        "landing-card-description-color":
-          "var(--landing-card-description-color)",
+        "landing-card-description-color": "var(--landing-card-description-color)",
         "landing-footer-heading-color": "var(--landing-footer-heading-color)",
         "landing-footer-link-color": "var(--landing-footer-link-color)",
 
@@ -74,11 +70,9 @@ module.exports = {
         "secondary-btn-bg-color": "var(--secondary-btn-bg-color)",
         "secondary-btn-text-color": "var(--secondary-btn-text-color)",
         "secondary-btn-bg-hover-color": "var(--secondary-btn-bg-hover-color)",
-        "secondary-btn-text-hover-color":
-          "var(--secondary-btn-text-hover-color)",
+        "secondary-btn-text-hover-color": "var(--secondary-btn-text-hover-color)",
         "secondary-btn-border-color": "var(--secondary-btn-border-color)",
-        "secondary-btn-border-hover-color":
-          "var(--secondary-btn-border-hover-color)",
+        "secondary-btn-border-hover-color": "var(--secondary-btn-border-hover-color)",
         "secondary-btn-shadow": "var(--secondary-btn-shadow)",
 
         "tertiary-btn-bg-color": "var(--tertiary-btn-bg-color)",
@@ -86,8 +80,7 @@ module.exports = {
         "tertiary-btn-bg-hover-color": "var(--tertiary-btn-bg-hover-color)",
         "tertiary-btn-text-hover-color": "var(--tertiary-btn-text-hover-color)",
         "tertiary-btn-border-color": "var(--tertiary-btn-border-color)",
-        "tertiary-btn-border-hover-color":
-          "var(--tertiary-btn-border-hover-color)",
+        "tertiary-btn-border-hover-color": "var(--tertiary-btn-border-hover-color)",
 
         "normal-btn-text-color": "var(--normal-btn-text-color)",
         "normal-btn-bg-hover-color": "var(--normal-btn-bg-hover-color)",
@@ -115,8 +108,7 @@ module.exports = {
         "radio-btn-bg-hover-color": "var(--radio-btn-bg-hover-color)",
         "radio-btn-bg-selected-color": "var(--radio-btn-bg-selected-color)",
         "radio-btn-selected-fill-color": "var(--radio-btn-selected-fill-color)",
-        "radio-btn-selected-stroke-color":
-          "var(--radio-btn-selected-stroke-color)",
+        "radio-btn-selected-stroke-color": "var(--radio-btn-selected-stroke-color)",
 
         // Application
         "df-bg-color": "var(--df-bg-color)",
@@ -147,8 +139,7 @@ module.exports = {
 
         // Profile card
         "profile-card-heading-color": "var(--profile-card-heading-color)",
-        "profile-card-description-color":
-          "var(--profile-card-description-color)",
+        "profile-card-description-color": "var(--profile-card-description-color)",
         "profile-card-skill-color": "var(--profile-card-skill-color)",
         "df-profile-strip-bg-color": "var(--df-profile-strip-bg-color)",
 
@@ -156,20 +147,14 @@ module.exports = {
         "project-card-bg-color": "var(--project-card-bg-color)",
         "project-card-border-color": "var(--project-card-border-color)",
         "project-card-heading-color": "var(--project-card-heading-color)",
-        "project-card-description-color":
-          "var(--project-card-description-color)",
-        "project-card-reorder-btn-bg-color":
-          "var(--project-card-reorder-btn-bg-color)",
-        "project-card-reorder-btn-bg-hover-color":
-          "var(--project-card-reorder-btn-bg-hover-color)",
-        "project-card-reorder-btn-icon-color":
-          "var(--project-card-reorder-btn-icon-color)",
+        "project-card-description-color": "var(--project-card-description-color)",
+        "project-card-reorder-btn-bg-color": "var(--project-card-reorder-btn-bg-color)",
+        "project-card-reorder-btn-bg-hover-color": "var(--project-card-reorder-btn-bg-hover-color)",
+        "project-card-reorder-btn-icon-color": "var(--project-card-reorder-btn-icon-color)",
 
         // Project Info card
-        "project-info-card-heading-color":
-          "var(--project-info-card-heading-color)",
-        "project-info-card-description-color":
-          "var(--project-info-card-description-color)",
+        "project-info-card-heading-color": "var(--project-info-card-heading-color)",
+        "project-info-card-description-color": "var(--project-info-card-description-color)",
 
         // Review card
         "review-card-bg-color": "var(--review-card-bg-color)",
@@ -205,8 +190,7 @@ module.exports = {
 
         // Theme-popover
         "default-theme-box-bg-color": "var(--default-theme-box-bg-color)",
-        "default-theme-box-border-color":
-          "var(--default-theme-box-border-color)",
+        "default-theme-box-border-color": "var(--default-theme-box-border-color)",
         "default-theme-selected-color": "var(--default-theme-selected-color)",
         "default-theme-bg-hover-color": "var(--default-theme-bg-hover-color)",
 
@@ -223,18 +207,15 @@ module.exports = {
 
         // Publish-popover
         "publish-popover-text-color": "var(--publish-popover-text-color)",
-        "publish-popover-description-color":
-          "var(--publish-popover-description-color)",
+        "publish-popover-description-color": "var(--publish-popover-description-color)",
 
         // Task
         "progress-active-color": "var(--progress-active-color)",
         "progress-text-color": "var(--progress-text-color)",
         "progess-trail-color": "var(--progess-trail-color)",
         "checked-list-item-bg-color": "var(--checked-list-item-bg-color)",
-        "checked-list-item-border-color":
-          "var(--checked-list-item-border-color)",
-        "checked-list-item-bg-hover-color":
-          "var(--checked-list-item-bg-hover-color)",
+        "checked-list-item-border-color": "var(--checked-list-item-border-color)",
+        "checked-list-item-bg-hover-color": "var(--checked-list-item-bg-hover-color)",
         "checked-list-item-icon-color": "var(--checked-list-item-icon-color)",
         "checked-list-item-text-color": "var(--checked-list-item-text-color)",
         "check-list-empty-border-color": "var(--check-list-empty-border-color)",
@@ -254,21 +235,16 @@ module.exports = {
         "input-upload-border-color": "var(--input-upload-border-color)",
         "input-upload-bg-color": "var(--input-upload-bg-color)",
         "input-upload-heading-color": "var(--input-upload-heading-color)",
-        "input-upload-description-color":
-          "var(--input-upload-description-color)",
+        "input-upload-description-color": "var(--input-upload-description-color)",
         "input-upload-icon-color": "var(--input-upload-icon-color)",
         "input-password-bg-color": "var(--input-password-bg-color)",
         "input-password-heading-color": "var(--input-password-heading-color)",
-        "input-password-description-color":
-          "var(--input-password-description-color)",
-        "bottom-navigation-active-stroke":
-          "var(--bottom-navigation-active-stroke)",
+        "input-password-description-color": "var(--input-password-description-color)",
+        "bottom-navigation-active-stroke": "var(--bottom-navigation-active-stroke)",
         "bottom-navigation-border": "var(--bottom-navigation-border)",
         "bottom-navigation-active-fill": "var(--bottom-navigation-active-fill)",
-        "bottom-navigation-inactive-stroke":
-          "var(--bottom-navigation-inactive-stroke)",
-        "bottom-navigation-inactive-fill":
-          "var(--bottom-navigation-inactive-fill)",
+        "bottom-navigation-inactive-stroke": "var(--bottom-navigation-inactive-stroke)",
+        "bottom-navigation-inactive-fill": "var(--bottom-navigation-inactive-fill)",
         "used-credit-text-color": "var(--used-credit-text-color)",
         "good-bg-color": "var(--good-bg-color)",
         "good-text-color": "var(--good-text-color)",
@@ -280,8 +256,7 @@ module.exports = {
         "template-text-left-bg-color": "var(--template-text-left-bg-color)",
         "template-text-left-text-color": "var(--template-text-left-text-color)",
         "template-text-right-bg-color": "var(--template-text-right-bg-color)",
-        "template-text-right-text-color":
-          "var(--template-text-right-text-color)",
+        "template-text-right-text-color": "var(--template-text-right-text-color)",
 
         // System variables
         "button-outline": "var(--button-outline)",
@@ -422,7 +397,7 @@ module.exports = {
         // Inputs
         "input-border-focus-shadow": "var(--input-border-focus-shadow)",
         "input-border-hover-shadow": "var(--input-border-hover-shadow)",
-        "input-focus": "var(--input-border-focus-shadow",
+        "input-focus": "var(--input-border-focus-shadow)",
         "input-hover": "var(--input-border-hover-shadow)",
         "input-error-shadow": "var(--input-error-shadow)",
         "popver-shadow": "var(--popver-shadow)",
@@ -435,14 +410,11 @@ module.exports = {
         "selected-cursor-shadow": "var(--selected-cursor-shadow)",
         "default-cursor-shadow": "var(--default-cursor-shadow)",
         tools: "0px 0px 8.8px 3px rgba(0, 0, 0, 0.02)",
-        "bottom-nav-floating":
-          "0 6px 20px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.04)",
+        "bottom-nav-floating": "0 6px 20px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.04)",
 
         // Review card shadows - using border color variable (adapts to light/dark mode)
-        "review-card-default":
-          "0 0 0 1px rgba(0,0,0,0.03), 0 0 40px rgba(0,0,0,0.015)",
-        "review-card-editing":
-          "0 0 0 1px hsl(var(--border)), 0 0 40px rgba(0,0,0,0.015)",
+        "review-card-default": "0 0 0 1px rgba(0,0,0,0.03), 0 0 40px rgba(0,0,0,0.015)",
+        "review-card-editing": "0 0 0 1px hsl(var(--border)), 0 0 40px rgba(0,0,0,0.015)",
         "review-card-focus-ring": "0 0 0 4px hsla(var(--border) / 0.12)",
       },
       fontSize: {

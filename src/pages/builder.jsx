@@ -45,7 +45,6 @@ import Professional from "@/components/templates/Professional";
 export default function Index() {
   const {
     setIsUserDetailsFromCache,
-    userDetailsIsState,
     userDetails,
     openModal,
     showModal,
@@ -114,12 +113,8 @@ export default function Index() {
   }, [router.query?.view, setTheme, resolvedTheme]);
 
   useEffect(() => {
-    if (userDetailsIsState) {
-      setIsUserDetailsFromCache(false);
-    } else {
-      setIsUserDetailsFromCache(true);
-    }
-  }, [userDetailsIsState, setIsUserDetailsFromCache]);
+    setIsUserDetailsFromCache(true);
+  }, []);
 
   // Restore wallpaper from userDetails when component mounts
   useEffect(() => {

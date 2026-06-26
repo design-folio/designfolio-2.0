@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import ResumeUploader from "./resumeUploader";
 import AnalysisResult from "./analysisResult";
 import { Download, RefreshCcw, Loader2 } from "lucide-react";

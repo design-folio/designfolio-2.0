@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const createInfiniteItems = (originalItems) => {
@@ -39,7 +39,7 @@ const RulerLines = ({ totalLines = 41 }) => {
     lines.push(
       <div
         key={i}
-        className={`w-[1px] ${color} flex-shrink-0`}
+        className={`w-px ${color} shrink-0`}
         style={{ height: `${height * 0.75}px` }}
       />
     );

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import ChatBubble from "./chatBubble";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import LeftBubble from "../../public/assets/svgs/chat-bubble-left.svg";
 import RightBubble from "../../public/assets/svgs/chat-bubble-right.svg";
 

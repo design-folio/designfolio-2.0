@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { testimonials } from "./shared/testimonialData";
@@ -90,7 +90,7 @@ export default function LandingTestimonialCarousel() {
   return (
     <section
       id="stories"
-      className="w-full border-y border-[--lp-border] py-8 px-6 bg-[--lp-card] overflow-hidden scroll-mt-[30vh]"
+      className="w-full border-y border-(--lp-border) py-8 px-6 bg-(--lp-card) overflow-hidden scroll-mt-[30vh]"
       style={{ fontFamily: "var(--font-manrope), sans-serif" }}
     >
       <div className="w-full max-w-[560px] mx-auto flex flex-col items-center">
@@ -106,14 +106,14 @@ export default function LandingTestimonialCarousel() {
             >
               <div className="flex items-center justify-between gap-3 mb-3.5">
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-11 h-11 rounded-full overflow-hidden shrink-0 border border-[--lp-video-border] shadow-sm">
+                  <div className="w-11 h-11 rounded-full overflow-hidden shrink-0 border border-(--lp-video-border) shadow-sm">
                     <img src={t.image} alt={t.name} className="w-full h-full object-cover" />
                   </div>
                   <div className="flex flex-col min-w-0">
-                    <div className="text-[--lp-text] text-[15px] font-bold leading-tight mb-0.5">
+                    <div className="text-(--lp-text) text-[15px] font-bold leading-tight mb-0.5">
                       {t.name}
                     </div>
-                    <div className="text-[13px] font-medium text-[--lp-text-muted] leading-tight">
+                    <div className="text-[13px] font-medium text-(--lp-text-muted) leading-tight">
                       {t.role}
                     </div>
                   </div>
@@ -121,7 +121,7 @@ export default function LandingTestimonialCarousel() {
                 {t.logoSrc && (
                   <div
                     className={cn(
-                      "shrink-0 w-11 h-11 rounded-full overflow-hidden border border-[--lp-video-border]",
+                      "shrink-0 w-11 h-11 rounded-full overflow-hidden border border-(--lp-video-border)",
                       !t.logoRaw && "bg-white dark:bg-white/5"
                     )}
                   >

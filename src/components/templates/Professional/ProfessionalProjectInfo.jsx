@@ -1,6 +1,6 @@
 import { _analyzeCaseStudy, _analyzeCaseStudyStatus, _updateProject } from "@/network/post-request";
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/router";
 import TiptapRenderer from "@/components/tiptapRenderer";

@@ -1,5 +1,5 @@
 import { useId } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { Lock, Sparkles, BookmarkPlus, Check, ArrowRight, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -188,7 +188,7 @@ export function BoostCard({ authState, isDark, isSaving, matchScore, onSave, onF
             <h3 className="text-[14px] font-semibold text-foreground leading-snug">
               Boost your interview chances
             </h3>
-            <span className="flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-400/10 border border-emerald-200 dark:border-emerald-400/20 rounded-full px-2 py-0.5 mt-0.5">
+            <span className="shrink-0 inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-400/10 border border-emerald-200 dark:border-emerald-400/20 rounded-full px-2 py-0.5 mt-0.5">
               FREE
             </span>
           </div>
@@ -201,7 +201,7 @@ export function BoostCard({ authState, isDark, isSaving, matchScore, onSave, onF
                 Your Score
               </span>
             </div>
-            <div className="flex items-center gap-[2px] opacity-20 mb-6 flex-shrink-0">
+            <div className="flex items-center gap-[2px] opacity-20 mb-6 shrink-0">
               {[0, 1, 2].map((i) => (
                 <svg key={i} width="8" height="12" viewBox="0 0 8 12" fill="none">
                   <path
@@ -299,7 +299,7 @@ export function BoostCard({ authState, isDark, isSaving, matchScore, onSave, onF
                 Your Score
               </span>
             </div>
-            <div className="flex items-center gap-[2px] opacity-20 mb-6 flex-shrink-0">
+            <div className="flex items-center gap-[2px] opacity-20 mb-6 shrink-0">
               {[0, 1, 2].map((i) => (
                 <svg key={i} width="8" height="12" viewBox="0 0 8 12" fill="none">
                   <path
@@ -385,7 +385,7 @@ export function BoostCard({ authState, isDark, isSaving, matchScore, onSave, onF
             <h3 className="text-[14px] font-semibold text-foreground leading-snug">
               {matchScore !== null ? "Your match score" : "Scoring your profile…"}
             </h3>
-            <span className="flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-400/10 border border-emerald-200 dark:border-emerald-400/20 rounded-full px-2 py-0.5">
+            <span className="shrink-0 inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-400/10 border border-emerald-200 dark:border-emerald-400/20 rounded-full px-2 py-0.5">
               <Check className="w-2.5 h-2.5" />
               Saved
             </span>

@@ -1,5 +1,5 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { Check } from "lucide-react";
 import { FormButton } from "./ui/form-button";
 

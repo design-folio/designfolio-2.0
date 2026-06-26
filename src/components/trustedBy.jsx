@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useInView } from "framer-motion";
+import { useInView } from "motion/react";
 import Text from "./text";
 
 // Section Component with CSS Transitions

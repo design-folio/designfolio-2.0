@@ -24,8 +24,6 @@ import {
   AlignCenter,
   AlignRight,
   Code2,
-  Youtube,
-  Figma,
   Minus,
   Trash2,
   ArrowLeftToLine,
@@ -36,6 +34,7 @@ import {
   Columns,
   Rows,
 } from "lucide-react";
+import { FaYoutube as Youtube, FaFigma as Figma } from "react-icons/fa6";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const MenuButton = ({

@@ -5,7 +5,7 @@ import { _getProPlanDetails, createDodoCheckout } from "@/network/get-request";
 import { usePostHogEvent } from "@/hooks/usePostHogEvent";
 import { POSTHOG_EVENT_NAMES } from "@/lib/posthogEventNames";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { ChevronDown, Gem, HelpCircle, Rocket, Sprout, Star, X, Zap } from "lucide-react";
 import { CompanyLogo } from "@/components/jobs/CompanyLogo";
 import {
@@ -259,30 +259,30 @@ export default function UpgradeModal() {
 
   const heading = upgradeModalUnhideProject
     ? {
-        title: "Project is hidden",
-        subtitle:
-          "You've reached the Free plan limit of 2 visible projects. Upgrade to Pro to unhide it and get unlimited projects.",
-      }
+      title: "Project is hidden",
+      subtitle:
+        "You've reached the Free plan limit of 2 visible projects. Upgrade to Pro to unhide it and get unlimited projects.",
+    }
     : isJobTool
       ? { title: jobToolConfig.title, subtitle: jobToolConfig.subtitle }
       : upgradeModalSource === "pro-template"
         ? {
-            title: "Upgrade to publish",
-            subtitle:
-              "You're using a Pro template. Upgrade to publish your portfolio and unlock all Pro features.",
-          }
+          title: "Upgrade to publish",
+          subtitle:
+            "You're using a Pro template. Upgrade to publish your portfolio and unlock all Pro features.",
+        }
         : upgradeModalSource === "write-ai"
           ? {
-              title: "Unlock AI Case Study Writing",
-              subtitle:
-                "You've used all your free credits. Upgrade to Pro for unlimited AI-written case studies.",
-            }
+            title: "Unlock AI Case Study Writing",
+            subtitle:
+              "You've used all your free credits. Upgrade to Pro for unlimited AI-written case studies.",
+          }
           : upgradeModalSource === "analyze"
             ? {
-                title: "Unlock AI Case Study Analysis",
-                subtitle:
-                  "You've used all your free analysis credits. Upgrade to Pro for unlimited AI feedback on your work.",
-              }
+              title: "Unlock AI Case Study Analysis",
+              subtitle:
+                "You've used all your free analysis credits. Upgrade to Pro for unlimited AI feedback on your work.",
+            }
             : PLAN_HEADING;
 
   const isPremiumPlan = selectedPlan?.plan === "yrly" || selectedPlan?.plan === "lifetime";
@@ -371,7 +371,7 @@ export default function UpgradeModal() {
                             logoUrl={upgradeModalJob.logoUrl}
                             company={upgradeModalJob.company}
                             size={24}
-                            className="rounded-md flex-shrink-0"
+                            className="rounded-md shrink-0"
                           />
                           <span className="text-[14px] font-medium text-[#1f2937] line-clamp-1">
                             {upgradeModalJob.role}
@@ -451,7 +451,7 @@ export default function UpgradeModal() {
                                     <span className="line-through">
                                       {formatAmount(
                                         LIFETIME_STASHED_PRICES[selectedPlan?.currency] ??
-                                          LIFETIME_STASHED_PRICES.INR,
+                                        LIFETIME_STASHED_PRICES.INR,
                                         selectedPlan?.currency
                                       )}
                                     </span>{" "}
@@ -529,13 +529,12 @@ export default function UpgradeModal() {
                     <div className="flex mt-3">
                       <button
                         onClick={() => setShowFaq((s) => !s)}
-                        className={`flex items-center gap-1.5 text-[11px] font-medium rounded-full px-2.5 py-[5px] border transition-all duration-200 ${
-                          showFaq
+                        className={`flex items-center gap-1.5 text-[11px] font-medium rounded-full px-2.5 py-[5px] border transition-all duration-200 ${showFaq
                             ? "border-[#9ca3af] bg-[#f3f4f6] text-[#374151]"
                             : "border-[#c4c9d4] bg-transparent text-[#6b7280] hover:text-[#374151] hover:border-[#9ca3af]"
-                        }`}
+                          }`}
                       >
-                        <HelpCircle className="w-3 h-3 flex-shrink-0" />
+                        <HelpCircle className="w-3 h-3 shrink-0" />
                         Have more doubts? FAQ
                       </button>
                     </div>
@@ -612,7 +611,7 @@ function PlanQuote({ plan }) {
       }}
     >
       <span
-        className="flex-shrink-0 w-[22px] h-[22px] rounded-md flex items-center justify-center"
+        className="shrink-0 w-[22px] h-[22px] rounded-md flex items-center justify-center"
         style={{ background: "rgba(232,89,58,0.12)" }}
       >
         <Icon className="w-3 h-3" style={{ color: "#E8593A" }} />
@@ -679,9 +678,8 @@ function FaqAccordion({ compact = false }) {
           className="border-b border-[#f3f4f6] last:border-0"
         >
           <AccordionTrigger
-            className={`font-medium text-left hover:no-underline leading-snug ${
-              compact ? "text-[12px] py-3 text-[#374151]" : "text-[13.5px] py-4 text-[#1f2937]"
-            }`}
+            className={`font-medium text-left hover:no-underline leading-snug ${compact ? "text-[12px] py-3 text-[#374151]" : "text-[13.5px] py-4 text-[#1f2937]"
+              }`}
           >
             {item.q}
           </AccordionTrigger>
@@ -721,7 +719,7 @@ function LogoMarquee() {
               {logos.map((logo, i) => (
                 <div
                   key={i}
-                  className="flex items-center justify-center px-2 flex-shrink-0 min-h-8 min-w-[48px]"
+                  className="flex items-center justify-center px-2 shrink-0 min-h-8 min-w-[48px]"
                 >
                   <img
                     src={logo}
@@ -743,7 +741,7 @@ function LogoMarquee() {
 function UrgencyBanner() {
   return (
     <div className="flex items-center justify-center gap-2 mt-2.5 mb-4">
-      <span className="relative flex-shrink-0 flex h-[7px] w-[7px]">
+      <span className="relative shrink-0 flex h-[7px] w-[7px]">
         <span
           className="animate-ping absolute inline-flex h-full w-full rounded-full"
           style={{ backgroundColor: "#E8593A", opacity: 0.5 }}

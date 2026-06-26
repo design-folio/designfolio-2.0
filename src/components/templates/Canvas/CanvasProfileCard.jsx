@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { Moon, Pencil, Sun } from "lucide-react";
 import { useGlobalContext } from "@/context/globalContext";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
@@ -70,9 +70,9 @@ function CanvasProfileCard({ isEditing, skills = [], persistTheme = false }) {
               />
             </CanvasSectionControls>
           )}
-          <div className="border-t border-[#E5D7C4] dark:border-white/10 py-2 overflow-hidden relative w-full bg-gradient-to-b from-[#EEE9E3] to-[#F4F1EC] dark:from-[#252119] dark:to-[#2B2620] rounded-b-[26px]">
-            <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-[#F0EBE5] dark:from-[#272219] to-transparent z-10" />
-            <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-[#F0EBE5] dark:from-[#272219] to-transparent z-10" />
+          <div className="border-t border-[#E5D7C4] dark:border-white/10 py-2 overflow-hidden relative w-full bg-linear-to-b from-[#EEE9E3] to-[#F4F1EC] dark:from-[#252119] dark:to-[#2B2620] rounded-b-[26px]">
+            <div className="absolute left-0 top-0 bottom-0 w-12 bg-linear-to-r from-[#F0EBE5] dark:from-[#272219] to-transparent z-10" />
+            <div className="absolute right-0 top-0 bottom-0 w-12 bg-linear-to-l from-[#F0EBE5] dark:from-[#272219] to-transparent z-10" />
             <motion.div
               className="flex gap-4 whitespace-nowrap"
               animate={{ x: [0, "-50%"] }}

@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { sidebars } from "@/lib/constant";
 import { useGlobalContext } from "@/context/globalContext";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";

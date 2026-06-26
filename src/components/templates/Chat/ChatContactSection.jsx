@@ -8,13 +8,10 @@ import {
   Phone,
   ArrowUp,
   FileText,
-  Linkedin,
-  Twitter,
-  Dribbble,
   Globe,
-  Instagram,
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { FaLinkedin as Linkedin, FaXTwitter as Twitter, FaDribbble as Dribbble, FaInstagram as Instagram } from "react-icons/fa6";
+import { motion, AnimatePresence } from "motion/react";
 import { useGlobalContext } from "@/context/globalContext";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { sidebars } from "@/lib/constant";

@@ -72,10 +72,10 @@ export default function FeaturesShowcase() {
                 className="flex items-center gap-2"
                 data-testid={`feature-item-${index}`}
               >
-                <Check className="w-5 h-5 text-black flex-shrink-0" />
+                <Check className="w-5 h-5 text-black shrink-0" />
                 <span className="text-sm text-foreground">{feature}</span>
                 <span
-                  className="px-2 py-0.5 text-xs font-bold tracking-wide uppercase flex-shrink-0 font-kalam"
+                  className="px-2 py-0.5 text-xs font-bold tracking-wide uppercase shrink-0 font-kalam"
                   style={{
                     background: "#10B981",
                     color: "#fff",

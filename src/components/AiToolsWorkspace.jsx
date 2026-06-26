@@ -24,7 +24,7 @@ import { getAiToolResult } from "@/lib/ai-tools-usage";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { cn } from "@/lib/utils";
 
 const navigation = {

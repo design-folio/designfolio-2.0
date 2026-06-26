@@ -1,5 +1,5 @@
 import { useEffect, useRef, useCallback, useState } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import MacOSMenuBar from "@/components/ui/MacOSMenuBar";
 import MacOSDock from "@/components/templates/MacOSDock";
 import { DivOrigami } from "@/components/ui/animated-logo-rolodex";

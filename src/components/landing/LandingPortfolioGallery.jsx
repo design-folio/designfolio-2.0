@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { ChevronLeft, ChevronRight, ArrowUpRight } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { portfolioProjects } from "./shared/portfolioData";
@@ -24,15 +24,15 @@ export default function LandingPortfolioGallery() {
 
   const chevronStyle = isDark
     ? {
-        background: "linear-gradient(to bottom, #2e2c2a, #252320)",
-        boxShadow: "0 1px 3px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06)",
-        border: "1px solid rgba(255,255,255,0.07)",
-      }
+      background: "linear-gradient(to bottom, #2e2c2a, #252320)",
+      boxShadow: "0 1px 3px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06)",
+      border: "1px solid rgba(255,255,255,0.07)",
+    }
     : {
-        background: "linear-gradient(to bottom, #ffffff, #ece9e3)",
-        boxShadow: "0 1px 3px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.85)",
-        border: "1px solid rgba(0,0,0,0.07)",
-      };
+      background: "linear-gradient(to bottom, #ffffff, #ece9e3)",
+      boxShadow: "0 1px 3px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.85)",
+      border: "1px solid rgba(0,0,0,0.07)",
+    };
 
   const navigateMobile = (dir) => {
     const next = Math.max(0, Math.min(portfolioProjects.length - 1, mobileIndex + dir));
@@ -46,11 +46,11 @@ export default function LandingPortfolioGallery() {
   return (
     <>
       <section
-        className="w-full border-y border-[--lp-border] pt-10 pb-10 overflow-hidden bg-[--lp-card]"
+        className="w-full border-y border-(--lp-border) pt-10 pb-10 overflow-hidden bg-(--lp-card)"
         style={{ fontFamily: "var(--font-manrope), sans-serif" }}
       >
         <div className="px-6 mb-6 text-center">
-          <h2 className="text-[22px] font-bold text-[--lp-text] tracking-tight">
+          <h2 className="text-[22px] font-bold text-(--lp-text) tracking-tight">
             See what people are building
           </h2>
           <p className="mt-1.5 text-[14px] text-lp-text/50 font-medium">
@@ -69,9 +69,9 @@ export default function LandingPortfolioGallery() {
               <div
                 key={i}
                 onClick={() => setSelectedProject(card)}
-                className="group snap-center flex-shrink-0 w-[80%] rounded-2xl overflow-hidden bg-[--lp-bg] border border-[--lp-border] cursor-pointer"
+                className="group snap-center shrink-0 w-[80%] rounded-2xl overflow-hidden bg-(--lp-bg) border border-(--lp-border) cursor-pointer"
               >
-                <div className="w-full h-[200px] overflow-hidden bg-[--lp-surface] relative">
+                <div className="w-full h-[200px] overflow-hidden bg-(--lp-surface) relative">
                   <img
                     src={card.imageSrc}
                     alt={card.title}
@@ -79,7 +79,7 @@ export default function LandingPortfolioGallery() {
                   />
                 </div>
                 <div className="p-4 flex flex-col gap-3">
-                  <p className="text-[15px] font-semibold text-[--lp-text] leading-snug line-clamp-2">
+                  <p className="text-[15px] font-semibold text-(--lp-text) leading-snug line-clamp-2">
                     {card.title}
                   </p>
                   <button
@@ -87,7 +87,7 @@ export default function LandingPortfolioGallery() {
                       e.stopPropagation();
                       setSelectedProject(card);
                     }}
-                    className="self-start flex items-center gap-1.5 text-[12px] font-semibold text-[--lp-text] border border-[--lp-border] rounded-full px-3 py-1.5 hover:bg-[--lp-text] hover:text-[--lp-fg-white] transition-colors duration-200"
+                    className="self-start flex items-center gap-1.5 text-[12px] font-semibold text-(--lp-text) border border-(--lp-border) rounded-full px-3 py-1.5 hover:bg-(--lp-text) hover:text-(--lp-fg-white) transition-colors duration-200"
                   >
                     View Project <ArrowUpRight className="w-3 h-3" />
                   </button>
@@ -115,7 +115,7 @@ export default function LandingPortfolioGallery() {
                   key={i}
                   className={cn(
                     "w-1.5 h-1.5 rounded-full transition-colors duration-200",
-                    i === mobileIndex ? "bg-[--lp-text]" : "bg-lp-text/20"
+                    i === mobileIndex ? "bg-(--lp-text)" : "bg-lp-text/20"
                   )}
                 />
               ))}
@@ -153,9 +153,9 @@ export default function LandingPortfolioGallery() {
               <div
                 key={i}
                 onClick={() => setSelectedProject(card)}
-                className="group relative flex-shrink-0 w-[360px] rounded-2xl overflow-hidden bg-[--lp-bg] border border-[--lp-border] cursor-pointer"
+                className="group relative shrink-0 w-[360px] rounded-2xl overflow-hidden bg-(--lp-bg) border border-(--lp-border) cursor-pointer"
               >
-                <div className="w-full h-[240px] overflow-hidden bg-[--lp-surface] relative">
+                <div className="w-full h-[240px] overflow-hidden bg-(--lp-surface) relative">
                   <img
                     src={card.imageSrc}
                     alt={card.title}
@@ -164,7 +164,7 @@ export default function LandingPortfolioGallery() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
                 <div className="p-5 flex flex-col gap-3.5">
-                  <p className="text-[17px] font-semibold text-[--lp-text] leading-snug line-clamp-2">
+                  <p className="text-[17px] font-semibold text-(--lp-text) leading-snug line-clamp-2">
                     {card.title}
                   </p>
                   <button
@@ -172,7 +172,7 @@ export default function LandingPortfolioGallery() {
                       e.stopPropagation();
                       setSelectedProject(card);
                     }}
-                    className="self-start flex items-center gap-1.5 text-[13px] font-semibold text-[--lp-text] border border-[--lp-border] rounded-full px-3.5 py-1.5 hover:bg-[--lp-text] hover:text-[--lp-fg-white] transition-colors duration-200"
+                    className="self-start flex items-center gap-1.5 text-[13px] font-semibold text-(--lp-text) border border-(--lp-border) rounded-full px-3.5 py-1.5 hover:bg-(--lp-text) hover:text-(--lp-fg-white) transition-colors duration-200"
                   >
                     View Project <ArrowUpRight className="w-3.5 h-3.5" />
                   </button>

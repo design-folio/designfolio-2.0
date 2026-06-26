@@ -7,7 +7,7 @@ function WorkExperience(props) {
       height={31}
       viewBox="0 0 32 32"
       fill="none"
-      className="flex-shrink-0"
+      className="shrink-0"
       {...props}
     >
       <path

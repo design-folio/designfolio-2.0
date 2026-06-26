@@ -6,7 +6,7 @@ import {
   useSpring,
   useMotionTemplate,
   AnimatePresence,
-} from "framer-motion";
+} from "motion/react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import ClaimDomain from "./claimDomain";
 import Link from "next/link";

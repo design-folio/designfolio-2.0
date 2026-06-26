@@ -1,6 +1,6 @@
 "use client";
 import React, { createContext, useContext, useEffect } from "react";
-import { useTransform, motion, useMotionValue, animate } from "framer-motion";
+import { useTransform, motion, useMotionValue, animate } from "motion/react";
 import { cn } from "@/lib/utils";
 
 const TextGradientScrollContext = createContext({});

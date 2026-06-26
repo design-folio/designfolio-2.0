@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { Plus } from "lucide-react";
 import { useGlobalContext } from "@/context/globalContext";
 import { sidebars } from "@/lib/constant";
@@ -54,7 +54,7 @@ function CanvasToolsMarquee({ isEditing }) {
               key={i}
               src={tool.image}
               alt={tool.label}
-              className="flex-shrink-0 w-9 h-9 hover:scale-110 transition-transform cursor-pointer"
+              className="shrink-0 w-9 h-9 hover:scale-110 transition-transform cursor-pointer"
             />
           ))}
         </motion.div>

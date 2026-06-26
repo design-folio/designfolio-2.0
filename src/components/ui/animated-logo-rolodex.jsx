@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { twMerge } from "tailwind-merge";
 import { useGlobalContext } from "@/context/globalContext";
 

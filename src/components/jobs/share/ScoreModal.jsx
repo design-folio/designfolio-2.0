@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/router";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { X, CheckCircle2 } from "lucide-react";
 import { ColorOrb } from "@/components/ui/color-orb";
 import { Folder } from "@/components/ui/folder";
@@ -108,10 +108,10 @@ export function ScoreModal({ job, isDark, onClose }) {
                     <img
                       src={job.logoUrl}
                       alt={job.company}
-                      className="w-7 h-7 rounded-lg object-contain border border-black/[0.05] flex-shrink-0"
+                      className="w-7 h-7 rounded-lg object-contain border border-black/[0.05] shrink-0"
                     />
                   ) : (
-                    <div className="w-7 h-7 rounded-lg bg-foreground/[0.08] flex items-center justify-center text-foreground/50 text-[11px] font-bold flex-shrink-0">
+                    <div className="w-7 h-7 rounded-lg bg-foreground/[0.08] flex items-center justify-center text-foreground/50 text-[11px] font-bold shrink-0">
                       {job.company?.[0]?.toUpperCase() || "?"}
                     </div>
                   )}
@@ -133,11 +133,10 @@ export function ScoreModal({ job, isDark, onClose }) {
                 <div className="flex flex-col gap-4">
                   {/* Dropzone */}
                   <div
-                    className={`group/dropzone w-full cursor-pointer flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed px-6 py-10 transition-all duration-200 ${
-                      isDragging
+                    className={`group/dropzone w-full cursor-pointer flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed px-6 py-10 transition-all duration-200 ${isDragging
                         ? "border-[#FF553E] bg-[#FF553E]/5"
                         : "border-[#1D1B1A]/20 dark:border-white/20 bg-[#1D1B1A]/[0.025] dark:bg-white/[0.04] hover:border-[#1D1B1A]/40 dark:hover:border-white/35 hover:bg-[#1D1B1A]/[0.04] dark:hover:bg-white/[0.06]"
-                    }`}
+                      }`}
                     onClick={() => fileInputRef.current?.click()}
                     onDragOver={(e) => {
                       e.preventDefault();

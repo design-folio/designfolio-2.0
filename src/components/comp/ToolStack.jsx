@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { useEffect, useState, useRef } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Button from "../button";
@@ -80,7 +80,7 @@ export const ToolStack = ({ userDetails, edit, titleClasses, headerActions }) =>
     <section className="py-12 overflow-hidden">
       <div className="flex items-center justify-between mb-8">
         <h2 className={cn("text-2xl font-bold", titleClasses)}>Tool Stack</h2>
-        {headerActions && <div className="flex-shrink-0">{headerActions}</div>}
+        {headerActions && <div className="shrink-0">{headerActions}</div>}
       </div>
       {isMobile ? (
         <div
@@ -142,7 +142,7 @@ export const ToolStack = ({ userDetails, edit, titleClasses, headerActions }) =>
                   <PlusIcon className="text-secondary-btn-text-color w-[32px] h-[32px] cursor-pointer" />
                 }
                 onClick={() => openSidebar(sidebars.tools)}
-                // customClass="px-[22px]"
+              // customClass="px-[22px]"
               />{" "}
               <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-sm whitespace-nowrap">
                 Edit

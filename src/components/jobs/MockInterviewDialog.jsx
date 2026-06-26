@@ -6,7 +6,7 @@ import { CompanyLogo } from "./CompanyLogo";
 function PermissionCard({ icon: Icon, label, description, state, onRequest }) {
   return (
     <div className="flex items-start gap-4 p-4 rounded-xl border border-black/[0.07] dark:border-white/[0.07] bg-black/[0.02] dark:bg-white/[0.02]">
-      <div className="flex-shrink-0 w-9 h-9 rounded-full bg-black/[0.05] dark:bg-white/[0.05] flex items-center justify-center mt-0.5">
+      <div className="shrink-0 w-9 h-9 rounded-full bg-black/[0.05] dark:bg-white/[0.05] flex items-center justify-center mt-0.5">
         <Icon className="w-4 h-4 text-foreground/60" />
       </div>
       <div className="flex-1 min-w-0">
@@ -15,7 +15,7 @@ function PermissionCard({ icon: Icon, label, description, state, onRequest }) {
           {description}
         </div>
       </div>
-      <div className="flex-shrink-0 mt-0.5">
+      <div className="shrink-0 mt-0.5">
         {state === "granted" ? (
           <div className="flex items-center gap-1.5 text-[13px] font-medium text-emerald-600 dark:text-emerald-400">
             <CheckCircle2 className="w-4 h-4" />

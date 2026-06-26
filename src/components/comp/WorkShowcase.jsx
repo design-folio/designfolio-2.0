@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { ArrowUpRight, Eye, EyeOff, Pencil } from "lucide-react";
 import { useCursorTooltip } from "@/context/cursorTooltipContext";
 import { useRouter } from "next/router";
@@ -358,7 +358,7 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
     <section className="pt-0 pb-16">
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-2xl font-bold">Featured Projects</h2>
-        {headerActions && <div className="flex-shrink-0">{headerActions}</div>}
+        {headerActions && <div className="shrink-0">{headerActions}</div>}
       </div>
       {sortedProjects.length > 0 && (
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
@@ -383,9 +383,8 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
       {edit &&
         (userDetails?.pro || (userDetails?.projects || []).filter((p) => !p.hidden).length < 2 ? (
           <AddCard
-            title={`${
-              visibleProjects.length === 0 ? "Upload your first case study" : "Add case study"
-            }`}
+            title={`${visibleProjects.length === 0 ? "Upload your first case study" : "Add case study"
+              }`}
             subTitle="Show off your best work."
             first={sortedProjects.length !== 0}
             buttonTitle="Add case study"
@@ -393,10 +392,9 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
             onClick={() => openSidebar(sidebars.project)}
             icon={<MemoCasestudy className="cursor-pointer size-[72px]" />}
             openModal={openModal}
-            className={`bg-secondary flex items-center justify-center mt-6 ${
-              visibleProjects.length !== 0 &&
+            className={`bg-secondary flex items-center justify-center mt-6 ${visibleProjects.length !== 0 &&
               "shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] hover:shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
-            }`}
+              }`}
           />
         ) : (
           <div className="mt-6">

@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useMemo, Fragment } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { Pencil, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useGlobalContext } from "@/context/globalContext";
@@ -29,7 +29,7 @@ function ExperienceDescription({ desc }) {
 
   return (
     <p
-      className="font-jetbrains text-[15px] leading-relaxed break-words whitespace-normal"
+      className="font-jetbrains text-[15px] leading-relaxed wrap-break-word whitespace-normal"
       style={{ color: "var(--tiptap-work-paragraph, #7a736c)" }}
     >
       {words.slice(0, visibleCount).map((word, wordIndex) => {

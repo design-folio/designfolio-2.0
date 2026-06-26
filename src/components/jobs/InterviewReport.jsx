@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { MessageSquare, Star, AlertTriangle, Crosshair, X, Loader2 } from "lucide-react";
 
 // ---------------------------------------------------------------------------
@@ -8,7 +8,7 @@ import { MessageSquare, Star, AlertTriangle, Crosshair, X, Loader2 } from "lucid
 function ScoreBar({ value, label }) {
   return (
     <div className="flex items-center gap-3">
-      <span className="w-20 text-[12px] text-foreground/50 flex-shrink-0">{label}</span>
+      <span className="w-20 text-[12px] text-foreground/50 shrink-0">{label}</span>
       <div className="flex-1 h-1.5 bg-black/[0.06] dark:bg-white/[0.08] rounded-full overflow-hidden">
         <motion.div
           className="h-full rounded-full bg-emerald-500 dark:bg-emerald-400"
@@ -41,11 +41,11 @@ export function InterviewReport({ job, report, loading = false, onClose }) {
       {/* ------------------------------------------------------------------ */}
       {/* Header                                                              */}
       {/* ------------------------------------------------------------------ */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-black/[0.06] dark:border-border bg-white dark:bg-[#1A1713] flex-shrink-0">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-black/[0.06] dark:border-border bg-white dark:bg-[#1A1713] shrink-0">
         {/* Left: logo + role/company */}
         <div className="flex items-center gap-3 min-w-0">
           <div
-            className="w-8 h-8 rounded-md flex items-center justify-center flex-shrink-0 text-white text-[11px] font-bold"
+            className="w-8 h-8 rounded-md flex items-center justify-center shrink-0 text-white text-[11px] font-bold"
             style={{ backgroundColor: job.logoColor }}
           >
             {job.logoLetter}
@@ -59,7 +59,7 @@ export function InterviewReport({ job, report, loading = false, onClose }) {
         </div>
 
         {/* Right: label + close */}
-        <div className="flex items-center gap-3 flex-shrink-0">
+        <div className="flex items-center gap-3 shrink-0">
           <span className="text-[12px] font-semibold text-foreground/40 uppercase tracking-widest hidden sm:block">
             Interview Report
           </span>
@@ -104,7 +104,7 @@ export function InterviewReport({ job, report, loading = false, onClose }) {
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1], delay: 0.05 }}
             >
               <div className="flex items-center gap-2 mb-4">
-                <MessageSquare className="w-4 h-4 text-foreground/40 flex-shrink-0" />
+                <MessageSquare className="w-4 h-4 text-foreground/40 shrink-0" />
                 <span className="text-[13px] font-semibold text-foreground/60">
                   Communication score
                 </span>
@@ -130,7 +130,7 @@ export function InterviewReport({ job, report, loading = false, onClose }) {
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1], delay: 0.12 }}
             >
               <div className="flex items-center gap-2 mb-4">
-                <Star className="w-4 h-4 text-foreground/40 flex-shrink-0" />
+                <Star className="w-4 h-4 text-foreground/40 shrink-0" />
                 <span className="text-[13px] font-semibold text-foreground/60">
                   Strongest answer
                 </span>
@@ -151,13 +151,13 @@ export function InterviewReport({ job, report, loading = false, onClose }) {
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1], delay: 0.19 }}
             >
               <div className="flex items-center gap-2 mb-4">
-                <AlertTriangle className="w-4 h-4 text-foreground/40 flex-shrink-0" />
+                <AlertTriangle className="w-4 h-4 text-foreground/40 shrink-0" />
                 <span className="text-[13px] font-semibold text-foreground/60">Watch out for</span>
               </div>
               <div className="space-y-3.5">
                 {report.watchOutFor.map((item, i) => (
                   <div key={i} className="flex gap-3">
-                    <div className="flex-shrink-0 mt-[3px] w-5 h-5 rounded-full bg-orange-50 dark:bg-orange-950/30 flex items-center justify-center">
+                    <div className="shrink-0 mt-[3px] w-5 h-5 rounded-full bg-orange-50 dark:bg-orange-950/30 flex items-center justify-center">
                       <span className="text-[10px] font-bold text-orange-400">{i + 1}</span>
                     </div>
                     <p className="text-[14px] text-foreground/75 leading-[1.65]">{item}</p>
@@ -174,7 +174,7 @@ export function InterviewReport({ job, report, loading = false, onClose }) {
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1], delay: 0.26 }}
             >
               <div className="flex items-center gap-2 mb-4">
-                <Crosshair className="w-4 h-4 text-foreground/40 flex-shrink-0" />
+                <Crosshair className="w-4 h-4 text-foreground/40 shrink-0" />
                 <span className="text-[13px] font-semibold text-foreground/60">
                   Role-specific gaps · {job.company}
                 </span>
@@ -182,7 +182,7 @@ export function InterviewReport({ job, report, loading = false, onClose }) {
               <div className="space-y-3.5">
                 {report.roleSpecificGaps.map((item, i) => (
                   <div key={i} className="flex gap-3">
-                    <div className="flex-shrink-0 mt-[3px] w-1 rounded-full bg-foreground/15 self-stretch min-h-[20px]" />
+                    <div className="shrink-0 mt-[3px] w-1 rounded-full bg-foreground/15 self-stretch min-h-[20px]" />
                     <p className="text-[14px] text-foreground/75 leading-[1.65]">{item}</p>
                   </div>
                 ))}
@@ -195,7 +195,7 @@ export function InterviewReport({ job, report, loading = false, onClose }) {
       {/* ------------------------------------------------------------------ */}
       {/* Footer                                                              */}
       {/* ------------------------------------------------------------------ */}
-      <div className="flex items-center justify-between px-6 py-4 border-t border-black/[0.06] dark:border-border bg-white dark:bg-[#1A1713] flex-shrink-0">
+      <div className="flex items-center justify-between px-6 py-4 border-t border-black/[0.06] dark:border-border bg-white dark:bg-[#1A1713] shrink-0">
         <p className="text-[11px] text-foreground/35">
           Generated after your mock session · {job.company}
         </p>

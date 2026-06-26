@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { useGlobalContext } from "@/context/globalContext";
 import { itemVariants } from "@/lib/animationVariants";
 import { sidebars } from "@/lib/constant";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import {
   AtSignIcon,
   DribbbleIcon,

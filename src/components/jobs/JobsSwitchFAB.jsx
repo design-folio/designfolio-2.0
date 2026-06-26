@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { Briefcase } from "lucide-react";
 import { useRouter } from "next/router";
 
@@ -24,7 +24,7 @@ export function JobsSwitchFAB() {
         whileTap={{ scale: 0.96 }}
         title="Find Jobs"
       >
-        <Briefcase className="w-4 h-4 flex-shrink-0" />
+        <Briefcase className="w-4 h-4 shrink-0" />
         Find Jobs
       </motion.button>
     </motion.div>

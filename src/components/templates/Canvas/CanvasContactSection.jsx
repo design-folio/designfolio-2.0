@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { Phone, Globe, FileText, Pencil, Plus } from "lucide-react";
 import { AtSignIcon, DribbbleIcon, TwitterIcon } from "lucide-animated";
 import { Button } from "../../ui/button";

@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";

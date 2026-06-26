@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import {
   ChevronLeft,
   ChevronDown,
@@ -150,7 +150,7 @@ export default function TailoredResumeView({
   return (
     <div className="flex flex-col h-full">
       {/* ── Header ── */}
-      <div className="px-4 flex-shrink-0 flex items-center gap-3 h-[64px] border-b border-black/[0.08] dark:border-white/[0.08]">
+      <div className="px-4 shrink-0 flex items-center gap-3 h-[64px] border-b border-black/[0.08] dark:border-white/[0.08]">
         <button
           onClick={onBack}
           className="flex items-center gap-1.5 text-foreground/45 hover:text-foreground/75 transition-colors group -ml-1"
@@ -171,9 +171,9 @@ export default function TailoredResumeView({
         {/* ── Left: preview ── */}
         <div className="flex flex-col flex-1 min-w-0">
           {/* Toolbar */}
-          <div className="flex items-center gap-1 px-4 py-2 border-b border-black/[0.05] dark:border-white/[0.05] flex-shrink-0">
+          <div className="flex items-center gap-1 px-4 py-2 border-b border-black/[0.05] dark:border-white/[0.05] shrink-0">
             <div className="flex items-center gap-1.5 text-foreground/35 select-none">
-              <Info className="w-3 h-3 flex-shrink-0" />
+              <Info className="w-3 h-3 shrink-0" />
               <span className="text-[11px]">Edit sections in the Editor tab →</span>
             </div>
             <div className="flex-1" />
@@ -292,7 +292,7 @@ export default function TailoredResumeView({
                           {exp.company ? ` · ${exp.company}` : ""}
                         </p>
                         <p
-                          className="text-[10px] whitespace-nowrap flex-shrink-0"
+                          className="text-[10px] whitespace-nowrap shrink-0"
                           style={{ color: "#777" }}
                         >
                           {exp.dates}
@@ -337,7 +337,7 @@ export default function TailoredResumeView({
                           {edu.school ? ` · ${edu.school}` : ""}
                         </p>
                         <p
-                          className="text-[10px] whitespace-nowrap flex-shrink-0"
+                          className="text-[10px] whitespace-nowrap shrink-0"
                           style={{ color: "#777" }}
                         >
                           {edu.dates}
@@ -387,7 +387,7 @@ export default function TailoredResumeView({
           </div>
 
           {/* Footer */}
-          <div className="px-5 py-3.5 border-t border-black/[0.06] dark:border-white/[0.06] flex gap-2.5 flex-shrink-0">
+          <div className="px-5 py-3.5 border-t border-black/[0.06] dark:border-white/[0.06] flex gap-2.5 shrink-0">
             <button
               onClick={() => onSave(buildContent(), buildStyling())}
               disabled={saving || !dirty}
@@ -426,12 +426,12 @@ export default function TailoredResumeView({
           </div>
         </div>
 
-        <div className="w-px bg-black/[0.06] dark:bg-white/[0.06] flex-shrink-0" />
+        <div className="w-px bg-black/[0.06] dark:bg-white/[0.06] shrink-0" />
 
         {/* ── Right: Editor / Style panel ── */}
-        <div className="w-[300px] flex-shrink-0 flex flex-col bg-[#F4F1EC] dark:bg-[#131008]">
+        <div className="w-[300px] shrink-0 flex flex-col bg-[#F4F1EC] dark:bg-[#131008]">
           {/* Tab bar */}
-          <div className="flex items-center px-3 pt-3 pb-0 gap-0.5 flex-shrink-0">
+          <div className="flex items-center px-3 pt-3 pb-0 gap-0.5 shrink-0">
             {[
               { key: "editor", label: "Editor" },
               { key: "style", label: "Style" },
@@ -439,17 +439,16 @@ export default function TailoredResumeView({
               <button
                 key={tab.key}
                 onClick={() => setRightTab(tab.key)}
-                className={`flex-1 py-2 text-[11.5px] font-semibold rounded-t-lg transition-all ${
-                  rightTab === tab.key
+                className={`flex-1 py-2 text-[11.5px] font-semibold rounded-t-lg transition-all ${rightTab === tab.key
                     ? "bg-white dark:bg-[#1E1A16] text-foreground/85 border border-black/[0.07] dark:border-white/[0.07] border-b-0"
                     : "text-foreground/40 hover:text-foreground/65"
-                }`}
+                  }`}
               >
                 {tab.label}
               </button>
             ))}
           </div>
-          <div className="h-px bg-black/[0.07] dark:bg-white/[0.07] flex-shrink-0" />
+          <div className="h-px bg-black/[0.07] dark:bg-white/[0.07] shrink-0" />
 
           {/* ── Editor tab ── */}
           {rightTab === "editor" && (
@@ -457,7 +456,7 @@ export default function TailoredResumeView({
               <div className="px-3 py-3 space-y-2.5">
                 {/* Change notice */}
                 <div className="flex items-start gap-2.5 bg-amber-50 dark:bg-amber-400/10 border border-amber-200/70 dark:border-amber-400/20 rounded-xl px-3 py-2.5">
-                  <AlertTriangle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0 mt-0.5" />
+                  <AlertTriangle className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
                   <p className="text-[11px] leading-[1.6] text-amber-800 dark:text-amber-300">
                     Changes apply only to this tailored resume and update the preview instantly.
                   </p>
@@ -692,11 +691,10 @@ export default function TailoredResumeView({
                       <button
                         key={f}
                         onClick={() => setFont(f)}
-                        className={`h-9 rounded-xl border text-[11.5px] font-medium transition-colors ${
-                          font === f
+                        className={`h-9 rounded-xl border text-[11.5px] font-medium transition-colors ${font === f
                             ? "border-foreground/35 bg-white dark:bg-[#1E1A16] text-foreground/85"
                             : "border-black/[0.07] dark:border-white/[0.07] bg-white dark:bg-[#1E1A16] text-foreground/45 hover:text-foreground/70 hover:border-black/[0.15] dark:hover:border-white/[0.15]"
-                        }`}
+                          }`}
                       >
                         {f}
                       </button>
@@ -713,11 +711,10 @@ export default function TailoredResumeView({
                       <button
                         key={s}
                         onClick={() => setSpacing(s)}
-                        className={`flex-1 h-8 rounded-xl border text-[11px] font-medium transition-colors ${
-                          spacing === s
+                        className={`flex-1 h-8 rounded-xl border text-[11px] font-medium transition-colors ${spacing === s
                             ? "border-foreground/35 bg-white dark:bg-[#1E1A16] text-foreground/85"
                             : "border-black/[0.07] dark:border-white/[0.07] bg-white dark:bg-[#1E1A16] text-foreground/45 hover:text-foreground/70 hover:border-black/[0.15] dark:hover:border-white/[0.15]"
-                        }`}
+                          }`}
                       >
                         {s}
                       </button>
@@ -735,11 +732,10 @@ export default function TailoredResumeView({
                         key={color}
                         onClick={() => setAccent(color)}
                         style={{ backgroundColor: color }}
-                        className={`w-7 h-7 rounded-full transition-all ${
-                          accent === color
+                        className={`w-7 h-7 rounded-full transition-all ${accent === color
                             ? "ring-2 ring-offset-2 ring-foreground/50 dark:ring-offset-[#131008] scale-110"
                             : "hover:scale-110"
-                        }`}
+                          }`}
                       />
                     ))}
                   </div>

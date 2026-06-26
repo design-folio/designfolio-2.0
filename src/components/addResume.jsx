@@ -93,7 +93,7 @@ export default function AddResume() {
               variant="outline"
               size="icon"
               type="button"
-              className="border-[var(--delete-btn-border-color)] bg-[var(--delete-btn-bg-color)] hover:bg-[var(--delete-btn-bg-hover-color)] hover:border-[var(--delete-btn-border-hover-color)]"
+              className="border-(--delete-btn-border-color) bg-(--delete-btn-bg-color) hover:bg-(--delete-btn-bg-hover-color) hover:border-(--delete-btn-border-hover-color)"
               onClick={handleDelete}
             >
               <DeleteIcon className="stroke-delete-btn-icon-color w-5 h-5" />

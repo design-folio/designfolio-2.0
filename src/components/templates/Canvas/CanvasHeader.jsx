@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { Moon, Sun } from "lucide-react";
 import { Switch } from "./switch-button";
 import { usePersistableThemeToggle } from "@/hooks/usePersistableThemeToggle";

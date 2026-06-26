@@ -16,7 +16,7 @@ import { POSTHOG_EVENT_NAMES } from "@/lib/posthogEventNames";
 import posthog from "posthog-js";
 import { UnsavedChangesDialog } from "../ui/UnsavedChangesDialog";
 import { sidebars } from "@/lib/constant";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { ImageIcon } from "lucide-react";
 
 const FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -93,8 +93,8 @@ export default function AddProject() {
       ),
     password: isPassword
       ? Yup.string()
-          .required("Password is required.")
-          .min(6, "Password is too short - should be 6 chars minimum.")
+        .required("Password is required.")
+        .min(6, "Password is too short - should be 6 chars minimum.")
       : Yup.string().min(6, "Password is too short - should be 6 chars minimum."),
   });
 
@@ -355,7 +355,7 @@ export default function AddProject() {
               </div>
             </div>
 
-            <div className="flex gap-2 py-3 px-6 border-t border-border justify-end flex-shrink-0 bg-sidebar">
+            <div className="flex gap-2 py-3 px-6 border-t border-border justify-end shrink-0 bg-sidebar">
               <Button variant="outline" type="button" onClick={() => closeSidebar()}>
                 Cancel
               </Button>

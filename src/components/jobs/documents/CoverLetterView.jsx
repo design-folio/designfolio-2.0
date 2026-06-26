@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import {
   ChevronLeft,
   Copy,
@@ -41,7 +41,7 @@ export default function CoverLetterView({
   return (
     <div className="flex flex-col h-full">
       {/* ── Header ── */}
-      <div className="px-4 flex-shrink-0 flex items-center gap-3 h-[64px] border-b border-black/[0.08] dark:border-white/[0.08]">
+      <div className="px-4 shrink-0 flex items-center gap-3 h-[64px] border-b border-black/[0.08] dark:border-white/[0.08]">
         <button
           onClick={onBack}
           className="flex items-center gap-1.5 text-foreground/45 hover:text-foreground/75 transition-colors group -ml-1"
@@ -109,7 +109,7 @@ export default function CoverLetterView({
           {/* Toolbar inside card */}
           <div className="flex items-center gap-1.5 px-4 pt-3 pb-2.5 border-b border-black/[0.04]">
             <div className="flex items-center gap-1.5 select-none" style={{ color: "#999" }}>
-              <Info className="w-3 h-3 flex-shrink-0" />
+              <Info className="w-3 h-3 shrink-0" />
               <span className="text-[11.5px]">Click and type below to edit your letter</span>
             </div>
           </div>
@@ -144,7 +144,7 @@ export default function CoverLetterView({
       </div>
 
       {/* ── Footer ── */}
-      <div className="px-5 py-3.5 border-t border-black/[0.06] dark:border-white/[0.06] flex gap-2.5 flex-shrink-0">
+      <div className="px-5 py-3.5 border-t border-black/[0.06] dark:border-white/[0.06] flex gap-2.5 shrink-0">
         <button
           onClick={() => onSave(buildContent(), doc.styling)}
           disabled={saving || !dirty}

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { ChevronDown, ChevronLeft, ChevronRight, Clapperboard } from "lucide-react";
 import Lottie from "lottie-react";
 import aiAssistantAnimation from "@/assets/AI-Assistant.json";
@@ -176,7 +176,7 @@ export function PipelineCol({
     const morphEase = [0.22, 1, 0.36, 1];
     const morphDur = 0.42;
     const colBgCollapsible =
-      "relative flex-1 rounded-xl bg-[var(--shell-bg)] overflow-hidden h-full";
+      "relative flex-1 rounded-xl bg-(--shell-bg) overflow-hidden h-full";
     return (
       <KanbanColumn value={colId} className={colBgCollapsible}>
         {/* Expanded state */}
@@ -186,7 +186,7 @@ export function PipelineCol({
           transition={{ duration: morphDur, ease: morphEase }}
           style={{ pointerEvents: collapseActive ? "none" : "auto" }}
         >
-          <div className="flex items-center gap-2 px-4 pt-4 pb-2 flex-shrink-0 select-none">
+          <div className="flex items-center gap-2 px-4 pt-4 pb-2 shrink-0 select-none">
             <span
               className="font-jetbrains-mono text-[11px] font-semibold uppercase tracking-wider text-foreground"
               style={{ opacity: 0.5 }}
@@ -229,7 +229,7 @@ export function PipelineCol({
         >
           <button
             onClick={onToggleCollapse}
-            className="cursor-pointer w-6 h-6 flex items-center justify-center rounded-md hover:bg-black/10 dark:hover:bg-white/10 transition-colors flex-shrink-0"
+            className="cursor-pointer w-6 h-6 flex items-center justify-center rounded-md hover:bg-black/10 dark:hover:bg-white/10 transition-colors shrink-0"
             title="Expand"
           >
             <ChevronRight className="w-3.5 h-3.5 text-foreground/50" />
@@ -261,7 +261,7 @@ export function PipelineCol({
 
   return (
     <KanbanColumn value={colId} className={colBg}>
-      <div className="flex items-center gap-2 px-4 pt-4 pb-2 flex-shrink-0 select-none">
+      <div className="flex items-center gap-2 px-4 pt-4 pb-2 shrink-0 select-none">
         <span
           className="font-jetbrains-mono text-[11px] font-semibold uppercase tracking-wider text-foreground"
           style={{ opacity: 0.5 }}
@@ -285,7 +285,7 @@ export function PipelineCol({
             animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
             exit={{ opacity: 0, y: -6, scale: 0.97, filter: "blur(4px)" }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="mx-2 mb-1.5 flex-shrink-0"
+            className="mx-2 mb-1.5 shrink-0"
           >
             <div className="relative overflow-hidden rounded-xl bg-white dark:bg-card border border-black/[0.06] dark:border-border shadow-sm">
               <div
@@ -297,7 +297,7 @@ export function PipelineCol({
               />
               <div className="px-3.5 pt-4 pb-3.5">
                 <div className="flex items-center gap-2.5 mb-3">
-                  <div className="w-[44px] h-[44px] flex-shrink-0">
+                  <div className="w-[44px] h-[44px] shrink-0">
                     <Lottie animationData={aiAssistantAnimation} loop={true} />
                   </div>
                   <div className="min-w-0">

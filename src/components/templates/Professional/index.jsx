@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { SmoothCursor } from "@/components/ui/smooth-cursor";
-import { Mail, Twitter, Linkedin, Instagram, Globe, FileText, Phone } from "lucide-react";
+import { Mail, Globe, FileText, Phone } from "lucide-react";
+import { FaXTwitter as Twitter, FaLinkedin as Linkedin, FaInstagram as Instagram } from "react-icons/fa6";
 import { _updateProject } from "@/network/post-request";
 import { useGlobalContext } from "@/context/globalContext";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";

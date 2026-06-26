@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { X, Maximize2, Minimize2, SendHorizontal } from "lucide-react";
 import { SCOUT_SUGGESTIONS } from "@/data/jobs";
 import { _postJobsScout } from "@/network/jobs";
@@ -111,14 +111,13 @@ export function ScoutChat({ job, onClose, profileId }) {
           y: { duration: 0.22 },
           scale: { duration: 0.22 },
         }}
-        className={`absolute pointer-events-auto flex flex-col overflow-hidden bg-white dark:bg-card border border-black/[0.1] dark:border-border shadow-2xl rounded-2xl ${
-          expanded
+        className={`absolute pointer-events-auto flex flex-col overflow-hidden bg-white dark:bg-card border border-black/[0.1] dark:border-border shadow-2xl rounded-2xl ${expanded
             ? "inset-y-[6%] inset-x-0 mx-auto w-full max-w-[620px]"
             : "bottom-4 right-4 w-[360px] h-[500px]"
-        }`}
+          }`}
       >
         {/* Header */}
-        <div className="flex-shrink-0 flex items-center justify-between px-4 py-3 bg-black/[0.02] dark:bg-white/[0.04] border-b border-black/[0.08] dark:border-border">
+        <div className="shrink-0 flex items-center justify-between px-4 py-3 bg-black/[0.02] dark:bg-white/[0.04] border-b border-black/[0.08] dark:border-border">
           <div className="flex items-center gap-2 min-w-0">
             <span className="orb-spinning">
               <ColorOrb dimension="14px" spinDuration={6} />
@@ -128,7 +127,7 @@ export function ScoutChat({ job, onClose, profileId }) {
               · {job.role} at {job.company}
             </span>
           </div>
-          <div className="flex items-center gap-0.5 flex-shrink-0 ml-2">
+          <div className="flex items-center gap-0.5 shrink-0 ml-2">
             <button
               data-testid="button-scout-expand"
               onClick={() => setExpanded((v) => !v)}
@@ -184,7 +183,7 @@ export function ScoutChat({ job, onClose, profileId }) {
                 </div>
 
                 {/* Right-aligned suggestion pills, staggered */}
-                <div className="flex-shrink-0 flex flex-col items-end gap-2 px-4 pb-4">
+                <div className="shrink-0 flex flex-col items-end gap-2 px-4 pb-4">
                   {visibleSuggestions.map((s, i) => (
                     <motion.button
                       key={s}
@@ -234,7 +233,7 @@ export function ScoutChat({ job, onClose, profileId }) {
                         className={`flex items-end gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
                       >
                         {msg.role === "ai" && (
-                          <div className="flex-shrink-0 mb-0.5 w-5 h-5 flex items-center justify-center">
+                          <div className="shrink-0 mb-0.5 w-5 h-5 flex items-center justify-center">
                             {isLastAi ? (
                               <span className="orb-spinning">
                                 <ColorOrb dimension="20px" spinDuration={6} />
@@ -245,11 +244,10 @@ export function ScoutChat({ job, onClose, profileId }) {
                           </div>
                         )}
                         <div
-                          className={`text-[14px] leading-[1.6] rounded-2xl px-3.5 py-2.5 max-w-[80%] ${
-                            msg.role === "user"
+                          className={`text-[14px] leading-[1.6] rounded-2xl px-3.5 py-2.5 max-w-[80%] ${msg.role === "user"
                               ? "bg-foreground text-background rounded-br-sm"
                               : "bg-black/[0.04] dark:bg-white/[0.06] text-foreground/85 border border-black/[0.06] dark:border-border rounded-bl-sm"
-                          }`}
+                            }`}
                         >
                           {msg.text ?? <TypingDots />}
                         </div>
@@ -264,7 +262,7 @@ export function ScoutChat({ job, onClose, profileId }) {
         </div>
 
         {/* Input bar */}
-        <div className="flex-shrink-0 px-3 pb-3 pt-2 border-t border-black/[0.08] dark:border-border">
+        <div className="shrink-0 px-3 pb-3 pt-2 border-t border-black/[0.08] dark:border-border">
           <div className="flex items-center gap-2 bg-black/[0.04] dark:bg-white/[0.06] rounded-xl border border-black/[0.07] dark:border-border px-3 py-2.5">
             <input
               ref={inputRef}
@@ -284,7 +282,7 @@ export function ScoutChat({ job, onClose, profileId }) {
               onClick={() => send(input)}
               disabled={loading || !input.trim()}
               aria-label="Send message"
-              className="w-7 h-7 flex items-center justify-center rounded-full bg-foreground disabled:opacity-20 transition-opacity flex-shrink-0 cursor-pointer"
+              className="w-7 h-7 flex items-center justify-center rounded-full bg-foreground disabled:opacity-20 transition-opacity shrink-0 cursor-pointer"
             >
               <SendHorizontal className="w-3.5 h-3.5 text-background" />
             </button>

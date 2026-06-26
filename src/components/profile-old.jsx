@@ -1,5 +1,5 @@
 import { useGlobalContext } from "@/context/globalContext";
-import { motion, useAnimation } from "framer-motion";
+import { motion, useAnimation } from "motion/react";
 import React, { useEffect, useMemo, useRef } from "react";
 import Button from "./button";
 import DfImage from "./image";
@@ -73,7 +73,7 @@ export default function Profile({ preview = false, edit = false, userDetails = n
               <div>
                 <Button
                   onClick={() => openModal("onboarding")}
-                  customClass="!p-[13.38px] !flex-shrink-0"
+                  customClass="!p-[13.38px] !shrink-0"
                   type={"secondary"}
                   icon={<EditIcon className="text-df-icon-color cursor-pointer" />}
                 />

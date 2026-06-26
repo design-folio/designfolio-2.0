@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import MemoDFLogoV2 from "@/components/icons/DFLogoV2";
 import { EASE_OUT } from "./motion-constants";
 

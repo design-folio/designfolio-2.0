@@ -225,7 +225,7 @@ export default function AddReview() {
                       {...field}
                       type="text"
                       autoComplete="off"
-                      className={`mt-2 ${errors.name && touched.name ? "!border-[var(--input-error-color)] focus-visible:!shadow-[var(--input-error-shadow)]" : ""}`}
+                      className={`mt-2 ${errors.name && touched.name ? "!border-(--input-error-color) focus-visible:!shadow-(--input-error-shadow)" : ""}`}
                     />
                   )}
                 </Field>
@@ -243,7 +243,7 @@ export default function AddReview() {
                       type="text"
                       autoComplete="off"
                       placeholder="https://linkedin.com/in/..."
-                      className={`mt-2 ${errors.linkedinLink && touched.linkedinLink ? "!border-[var(--input-error-color)] focus-visible:!shadow-[var(--input-error-shadow)]" : ""}`}
+                      className={`mt-2 ${errors.linkedinLink && touched.linkedinLink ? "!border-(--input-error-color) focus-visible:!shadow-(--input-error-shadow)" : ""}`}
                     />
                   )}
                 </Field>
@@ -260,7 +260,7 @@ export default function AddReview() {
                       {...field}
                       type="text"
                       autoComplete="off"
-                      className={`mt-2 ${errors.company && touched.company ? "!border-[var(--input-error-color)] focus-visible:!shadow-[var(--input-error-shadow)]" : ""}`}
+                      className={`mt-2 ${errors.company && touched.company ? "!border-(--input-error-color) focus-visible:!shadow-(--input-error-shadow)" : ""}`}
                     />
                   )}
                 </Field>

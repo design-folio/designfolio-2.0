@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { linkedinValidation, manualValidation } from "@/lib/validationSchemas";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { Link2, PenLine, AlertCircle, Check, Plus, Sparkles, ChevronDown } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -29,11 +29,10 @@ function TabToggle({ mode, onChange }) {
           key={id}
           type="button"
           onClick={() => onChange(id)}
-          className={`flex items-center gap-1.5 flex-1 justify-center h-8 rounded-lg text-[12px] font-medium transition-all ${
-            mode === id
+          className={`flex items-center gap-1.5 flex-1 justify-center h-8 rounded-lg text-[12px] font-medium transition-all ${mode === id
               ? "bg-white dark:bg-white/10 text-foreground shadow-sm"
               : "text-foreground/40 hover:text-foreground/60"
-          }`}
+            }`}
         >
           <Icon className="w-3 h-3" />
           {label}
@@ -86,8 +85,8 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
       clearTimeout(stepTimerRef.current);
       setError(
         err?.response?.data?.message ||
-          err?.response?.data?.error ||
-          "Failed to add job. Please check the URL and try again."
+        err?.response?.data?.error ||
+        "Failed to add job. Please check the URL and try again."
       );
       setLoading(false);
       setStep(0);
@@ -121,8 +120,8 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
       clearTimeout(stepTimerRef.current);
       setError(
         err?.response?.data?.message ||
-          err?.response?.data?.error ||
-          "Failed to add job. Please try again."
+        err?.response?.data?.error ||
+        "Failed to add job. Please try again."
       );
       setLoading(false);
       setStep(0);
@@ -159,7 +158,7 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                       animate={{ opacity: i > step ? 0.3 : 1 }}
                       transition={{ duration: 0.3 }}
                     >
-                      <div className="w-5 h-5 flex-shrink-0 flex items-center justify-center">
+                      <div className="w-5 h-5 shrink-0 flex items-center justify-center">
                         {isDone ? (
                           <motion.div
                             initial={{ scale: 0 }}
@@ -179,13 +178,12 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                         )}
                       </div>
                       <span
-                        className={`text-[13px] font-medium transition-colors duration-300 ${
-                          isActive
+                        className={`text-[13px] font-medium transition-colors duration-300 ${isActive
                             ? "text-[#1A1A1A] dark:text-[#F0EDE7]"
                             : isDone
                               ? "text-foreground/45"
                               : "text-foreground/25"
-                        }`}
+                          }`}
                       >
                         {label}
                       </span>
@@ -247,8 +245,8 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                                     placeholder="https://linkedin.com/jobs/view/…"
                                     className={cn(
                                       errors.url &&
-                                        touched.url &&
-                                        "border-destructive focus-visible:ring-destructive"
+                                      touched.url &&
+                                      "border-destructive focus-visible:ring-destructive"
                                     )}
                                     onChange={(e) => {
                                       form.setFieldValue("url", e.target.value);
@@ -273,7 +271,7 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                                   className="overflow-hidden"
                                 >
                                   <div className="flex items-start gap-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/30 rounded-xl px-3.5 py-3">
-                                    <AlertCircle className="w-3.5 h-3.5 text-red-500 flex-shrink-0 mt-0.5" />
+                                    <AlertCircle className="w-3.5 h-3.5 text-red-500 shrink-0 mt-0.5" />
                                     <p className="text-[12px] text-red-600 dark:text-red-400 leading-relaxed">
                                       {error}
                                     </p>
@@ -327,8 +325,8 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                                     placeholder="e.g. Senior Product Designer"
                                     className={cn(
                                       errors.title &&
-                                        touched.title &&
-                                        "border-destructive focus-visible:ring-destructive"
+                                      touched.title &&
+                                      "border-destructive focus-visible:ring-destructive"
                                     )}
                                   />
                                 )}
@@ -352,8 +350,8 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                                     placeholder="e.g. Figma"
                                     className={cn(
                                       errors.company &&
-                                        touched.company &&
-                                        "border-destructive focus-visible:ring-destructive"
+                                      touched.company &&
+                                      "border-destructive focus-visible:ring-destructive"
                                     )}
                                   />
                                 )}
@@ -427,8 +425,8 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                                     placeholder="https://company.com/jobs/…"
                                     className={cn(
                                       errors.applyUrl &&
-                                        touched.applyUrl &&
-                                        "border-destructive focus-visible:ring-destructive"
+                                      touched.applyUrl &&
+                                      "border-destructive focus-visible:ring-destructive"
                                     )}
                                     onChange={(e) => form.setFieldValue("applyUrl", e.target.value)}
                                   />
@@ -455,8 +453,8 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                                     className={cn(
                                       "resize-none",
                                       form.errors.description &&
-                                        form.touched.description &&
-                                        "border-destructive focus-visible:ring-destructive"
+                                      form.touched.description &&
+                                      "border-destructive focus-visible:ring-destructive"
                                     )}
                                   />
                                 )}
@@ -477,7 +475,7 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                                   className="overflow-hidden"
                                 >
                                   <div className="flex items-start gap-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/30 rounded-xl px-3.5 py-3">
-                                    <AlertCircle className="w-3.5 h-3.5 text-red-500 flex-shrink-0 mt-0.5" />
+                                    <AlertCircle className="w-3.5 h-3.5 text-red-500 shrink-0 mt-0.5" />
                                     <p className="text-[12px] text-red-600 dark:text-red-400 leading-relaxed">
                                       {error}
                                     </p>

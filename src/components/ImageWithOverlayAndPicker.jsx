@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { ImageUp } from "lucide-react";
 import { _updateProject } from "@/network/post-request";
 import { toast } from "react-toastify";

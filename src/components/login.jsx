@@ -13,7 +13,7 @@ import { FormButton } from "@/components/ui/form-button";
 import { GoogleButton } from "@/components/ui/google-button";
 import { Divider } from "@/components/ui/divider";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { usePostHogEvent } from "@/hooks/usePostHogEvent";
 import { usePostHogIdentify } from "@/hooks/usePostHogIdentify";
 import { POSTHOG_EVENT_NAMES } from "@/lib/posthogEventNames";
@@ -249,7 +249,7 @@ export default function Login() {
 
           <Button
             variant="outline"
-            className="w-full rounded-full h-[50px] px-5 text-base font-medium border-border bg-[--input-bg-color] hover:bg-muted gap-3"
+            className="w-full rounded-full h-[50px] px-5 text-base font-medium border-border bg-(--input-bg-color) hover:bg-muted gap-3"
             onClick={() => {
               event(POSTHOG_EVENT_NAMES.LOGIN_STARTED);
               event(POSTHOG_EVENT_NAMES.LOGIN_METHOD_SELECTED, {

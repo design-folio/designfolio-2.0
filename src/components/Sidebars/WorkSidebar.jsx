@@ -279,7 +279,7 @@ export default function AddWork() {
                   <Field
                     as="select"
                     name="startMonth"
-                    className={`h-10 w-full rounded-xl border border-transparent bg-black/[0.03] dark:bg-white/[0.03] px-3.5 text-sm font-inter font-medium custom-select mt-2 shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10 focus:border-black/20 dark:focus:border-white/20 ${!values.startMonth ? "text-black/30 dark:text-white/30" : "text-foreground"} ${errors.startMonth && touched.startMonth ? "!border-destructive" : ""}`}
+                    className={`h-10 w-full rounded-xl border border-transparent bg-black/[0.03] dark:bg-white/[0.03] px-3.5 text-sm font-inter font-medium custom-select mt-2 shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10 focus:border-black/20 dark:focus:border-white/20 ${!values.startMonth ? "text-black/30 dark:text-white/30" : "text-foreground"} ${errors.startMonth && touched.startMonth ? "border-destructive!" : ""}`}
                   >
                     <option value="">Choose Month</option>
                     {monthOptions}
@@ -291,7 +291,7 @@ export default function AddWork() {
                   <Field
                     as="select"
                     name="startYear"
-                    className={`h-10 w-full rounded-xl border border-transparent bg-black/[0.03] dark:bg-white/[0.03] px-3.5 text-sm font-inter font-medium custom-select mt-2 shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10 focus:border-black/20 dark:focus:border-white/20 ${!values.startYear ? "text-black/30 dark:text-white/30" : "text-foreground"} ${errors.startYear && touched.startYear ? "!border-destructive" : ""}`}
+                    className={`h-10 w-full rounded-xl border border-transparent bg-black/[0.03] dark:bg-white/[0.03] px-3.5 text-sm font-inter font-medium custom-select mt-2 shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10 focus:border-black/20 dark:focus:border-white/20 ${!values.startYear ? "text-black/30 dark:text-white/30" : "text-foreground"} ${errors.startYear && touched.startYear ? "border-destructive!" : ""}`}
                   >
                     <option value="">Choose Year</option>
                     {yearOptions}
@@ -314,7 +314,7 @@ export default function AddWork() {
                     <Field
                       as="select"
                       name="endMonth"
-                      className={`h-10 w-full rounded-xl border border-transparent bg-black/[0.03] dark:bg-white/[0.03] px-3.5 text-sm font-inter font-medium custom-select mt-2 shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10 focus:border-black/20 dark:focus:border-white/20 ${!values.endMonth ? "text-black/30 dark:text-white/30" : "text-foreground"} ${errors.endMonth && touched.endMonth ? "!border-destructive" : ""}`}
+                      className={`h-10 w-full rounded-xl border border-transparent bg-black/[0.03] dark:bg-white/[0.03] px-3.5 text-sm font-inter font-medium custom-select mt-2 shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10 focus:border-black/20 dark:focus:border-white/20 ${!values.endMonth ? "text-black/30 dark:text-white/30" : "text-foreground"} ${errors.endMonth && touched.endMonth ? "border-destructive!" : ""}`}
                       disabled={values.currentlyWorking}
                     >
                       <option value="">Choose Month</option>
@@ -327,7 +327,7 @@ export default function AddWork() {
                     <Field
                       as="select"
                       name="endYear"
-                      className={`h-10 w-full rounded-xl border border-transparent bg-black/[0.03] dark:bg-white/[0.03] px-3.5 text-sm font-inter font-medium custom-select mt-2 shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10 focus:border-black/20 dark:focus:border-white/20 ${!values.endYear ? "text-black/30 dark:text-white/30" : "text-foreground"} ${errors.endYear && touched.endYear ? "!border-destructive" : ""}`}
+                      className={`h-10 w-full rounded-xl border border-transparent bg-black/[0.03] dark:bg-white/[0.03] px-3.5 text-sm font-inter font-medium custom-select mt-2 shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10 focus:border-black/20 dark:focus:border-white/20 ${!values.endYear ? "text-black/30 dark:text-white/30" : "text-foreground"} ${errors.endYear && touched.endYear ? "border-destructive!" : ""}`}
                       disabled={values.currentlyWorking}
                     >
                       <option value="">Choose Year</option>
@@ -376,15 +376,14 @@ export default function AddWork() {
             </div>
 
             <div
-              className={`flex gap-2 py-3 px-6 border-t border-border ${
-                selectedWork?.company ? "justify-between" : "justify-end"
-              }`}
+              className={`flex gap-2 py-3 px-6 border-t border-border ${selectedWork?.company ? "justify-between" : "justify-end"
+                }`}
             >
               {selectedWork?.company && (
                 <Button
                   variant="outline"
                   type="button"
-                  className="border-[var(--delete-btn-border-color)] bg-[var(--delete-btn-bg-color)] hover:bg-[var(--delete-btn-bg-hover-color)] hover:border-[var(--delete-btn-border-hover-color)]"
+                  className="border-(--delete-btn-border-color) bg-(--delete-btn-bg-color) hover:bg-(--delete-btn-bg-hover-color) hover:border-(--delete-btn-border-hover-color)"
                   onClick={handleDeleteWork}
                 >
                   <DeleteIcon className="stroke-delete-btn-icon-color w-5 h-5" />

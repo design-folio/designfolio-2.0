@@ -1,34 +1,16 @@
 import React, { useState } from "react";
-import * as pdfjsLib from "pdfjs-dist";
-import { getDocument } from "pdfjs-dist";
 import { toast } from "react-toastify";
 import { FileText, Upload } from "lucide-react";
-
-// Setting the worker source for pdf.js
-if (typeof window !== "undefined") {
-  // Polyfill for Promise.withResolvers
-  if (typeof Promise.withResolvers === "undefined") {
-    Promise.withResolvers = function () {
-      let resolve;
-      let reject;
-      const promise = new Promise((res, rej) => {
-        resolve = res;
-        reject = rej;
-      });
-      return { promise, resolve, reject };
-    };
-  }
-
-  pdfjsLib.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjsLib.version}/legacy/build/pdf.worker.min.mjs`;
-}
 
 const ResumeUploader = ({ onUpload, disabled = false }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [fileName, setFileName] = useState(null);
 
   const extractTextFromPdf = async (file) => {
+    const pdfjsLib = await import("pdfjs-dist");
+    pdfjsLib.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
     const arrayBuffer = await file.arrayBuffer();
-    const pdf = await getDocument({ data: arrayBuffer }).promise;
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
     let fullText = "";
 
     for (let i = 1; i <= pdf.numPages; i++) {

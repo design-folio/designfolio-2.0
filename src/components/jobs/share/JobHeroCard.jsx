@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import {
   MapPin,
   Briefcase,
@@ -47,10 +47,10 @@ export function JobHeroCard({ job, badge, authState, onApplyClick }) {
           <img
             src={job.logoUrl}
             alt={job.company}
-            className="w-12 h-12 rounded-xl object-contain border border-black/[0.05] dark:border-white/[0.05] bg-white dark:bg-[#1F1C1C] flex-shrink-0"
+            className="w-12 h-12 rounded-xl object-contain border border-black/[0.05] dark:border-white/[0.05] bg-white dark:bg-[#1F1C1C] shrink-0"
           />
         ) : (
-          <div className="w-12 h-12 rounded-xl bg-foreground/[0.08] flex items-center justify-center text-foreground/50 font-bold text-lg flex-shrink-0">
+          <div className="w-12 h-12 rounded-xl bg-foreground/[0.08] flex items-center justify-center text-foreground/50 font-bold text-lg shrink-0">
             {job.company?.[0]?.toUpperCase() || "?"}
           </div>
         )}

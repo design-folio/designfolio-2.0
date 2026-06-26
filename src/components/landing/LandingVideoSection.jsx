@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { LayoutTemplate, Sparkles } from "lucide-react";
 import { forwardRef, useState } from "react";
 
@@ -50,15 +50,15 @@ const LandingVideoSection = forwardRef(function LandingVideoSection({ isDark }, 
                 <span
                   className={cn(
                     "inline-flex items-center gap-1.5 text-[13px] font-semibold leading-none transition-colors duration-200 whitespace-nowrap cursor-pointer",
-                    isActive ? "text-[--lp-text]" : "text-lp-text/35 group-hover:text-lp-text/55"
+                    isActive ? "text-(--lp-text)" : "text-lp-text/35 group-hover:text-lp-text/55"
                   )}
                 >
-                  <step.icon className="w-3.5 h-3.5 flex-shrink-0" strokeWidth={2} />
+                  <step.icon className="w-3.5 h-3.5 shrink-0" strokeWidth={2} />
                   {step.label}
                 </span>
                 <div className="w-full h-[2px] rounded-full bg-lp-text/10 overflow-hidden">
                   <div
-                    className="h-full rounded-full bg-[--lp-accent] transition-none"
+                    className="h-full rounded-full bg-(--lp-accent) transition-none"
                     style={{ width: isActive ? `${heroProgress}%` : "0%" }}
                   />
                 </div>
@@ -68,7 +68,7 @@ const LandingVideoSection = forwardRef(function LandingVideoSection({ isDark }, 
         </div>
 
         {/* Video */}
-        <div className="rounded-[16px] overflow-hidden border border-[--lp-video-border] bg-[#141414]">
+        <div className="rounded-[16px] overflow-hidden border border-(--lp-video-border) bg-[#141414]">
           <div className="relative w-full" style={{ paddingTop: "78.75%" }}>
             <video
               key={heroStep}

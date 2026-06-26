@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { _postJobsRecommend, _getJobsRecommendations } from "@/network/jobs";
 import { ColorOrb } from "@/components/ui/color-orb";
 
@@ -197,7 +197,7 @@ export function ThinkingScreen({ answers, onComplete, onError }) {
               Matching roles to your portfolio and preferences
             </p>
           </div>
-          <span className="text-[12px] text-muted-foreground/35 font-mono tabular-nums mt-0.5 flex-shrink-0">
+          <span className="text-[12px] text-muted-foreground/35 font-mono tabular-nums mt-0.5 shrink-0">
             {timer}s
           </span>
         </motion.div>
@@ -221,7 +221,7 @@ export function ThinkingScreen({ answers, onComplete, onError }) {
                 transition={{ duration: 0.5, ease: "easeOut" }}
               >
                 {/* Dot + vertical connector */}
-                <div className="flex flex-col items-center flex-shrink-0" style={{ width: 16 }}>
+                <div className="flex flex-col items-center shrink-0" style={{ width: 16 }}>
                   <div
                     className="relative flex items-center justify-center"
                     style={{ width: 16, height: 16 }}

@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 /**
  * Shows defaultText by default. On hover (or when scrollActive=true),

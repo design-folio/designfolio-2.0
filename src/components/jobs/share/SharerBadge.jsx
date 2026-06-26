@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { fadeUp } from "./motion-constants";
 
@@ -18,11 +18,11 @@ export function SharerBadge({ sharer, sharerUsername }) {
           <img
             src={avatarUrl}
             alt={name}
-            className="w-5 h-5 rounded-full object-cover flex-shrink-0"
+            className="w-5 h-5 rounded-full object-cover shrink-0"
             onError={() => setImgBroken(true)}
           />
         ) : (
-          <div className="w-5 h-5 rounded-full bg-gradient-to-br from-[#FF553E] to-[#a855f7] flex items-center justify-center text-white text-[9px] font-bold flex-shrink-0">
+          <div className="w-5 h-5 rounded-full bg-gradient-to-br from-[#FF553E] to-[#a855f7] flex items-center justify-center text-white text-[9px] font-bold shrink-0">
             {name[0]?.toUpperCase()}
           </div>
         )}

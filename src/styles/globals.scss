@@ -1,10 +1,11 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@plugin "tailwind-scrollbar-hide";
 
 @import "./hover-elevate.scss";
 @import "./stardust-button.scss";
 @import "./landing.css";
+
+@import "./tokens.css";
 
 @layer base {
   input:-webkit-autofill,
@@ -272,20 +273,6 @@
   color: rgb(156 163 175) !important;
 }
 
-/* Force dark mode background colors */
-[data-theme="dark"]\:bg-secondary:is([data-theme="dark"] *) {
-  background-color: var(--secondary);
-}
-
-/* Apply styles to the specific component */
-.bg-card[data-theme="dark"]\:bg-secondary.border.border-card-border[data-theme="dark"]\:border-secondary-border.rounded-xl.p-3.shadow-\[0px_0px_16\.4px_0px_rgba\(0\,0\,0\,0\.02\)\] {
-  background-color: var(--card);
-}
-
-[data-theme="dark"]
-  .bg-card[data-theme="dark"]\:bg-secondary.border.border-card-border[data-theme="dark"]\:border-secondary-border.rounded-xl.p-3.shadow-\[0px_0px_16\.4px_0px_rgba\(0\,0\,0\,0\.02\)\] {
-  background-color: var(--secondary);
-}
 
 @import url("./colors.css");
 @import url("./animation.css");
@@ -446,7 +433,7 @@ body.macos-desktop {
 }
 
 .text-input::placeholder {
-  color: var(--muted-foreground/60, #9ca3af);
+  color: hsl(var(--muted-foreground) / 0.6);
 }
 
 .text-input:disabled {

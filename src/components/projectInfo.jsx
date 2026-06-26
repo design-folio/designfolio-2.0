@@ -16,7 +16,7 @@ import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { popovers } from "@/lib/constant";
 import { ErrorMessage, Field, Form, Formik } from "formik";

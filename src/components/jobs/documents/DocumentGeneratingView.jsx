@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { ChevronLeft } from "lucide-react";
 import { ColorOrb } from "@/components/ui/color-orb";
 
@@ -44,7 +44,7 @@ export default function DocumentGeneratingView({ type = "resume", job, onBack })
 
   return (
     <div className="flex flex-col h-full">
-      <div className="px-4 flex-shrink-0 flex items-center gap-3 h-[64px] border-b border-black/[0.08] dark:border-white/[0.08]">
+      <div className="px-4 shrink-0 flex items-center gap-3 h-[64px] border-b border-black/[0.08] dark:border-white/[0.08]">
         <button
           onClick={onBack}
           className="flex items-center gap-1.5 text-foreground/45 hover:text-foreground/75 transition-colors group -ml-1"

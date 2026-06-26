@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useMotionValue, useSpring } from "framer-motion";
+import { useMotionValue, useSpring } from "motion/react";
 import { cn } from "@/lib/utils";
 
 export function useNumberCounter({ value, direction = "up", delay = 0, decimalPlaces = 0 }) {

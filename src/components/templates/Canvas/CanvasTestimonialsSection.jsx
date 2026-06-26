@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { ChevronsUpDown, Pencil, Plus, Trash2, Play, Square } from "lucide-react";
 import { Button } from "../../ui/button";
 import { useGlobalContext } from "@/context/globalContext";

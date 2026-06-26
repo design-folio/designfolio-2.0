@@ -24,7 +24,7 @@ export function UpgradePill() {
         active:shadow-[inset_0_2px_3px_rgba(0,0,0,0.07)]
         hover:-translate-y-[1px] active:translate-y-0 transition-all duration-150"
     >
-      <Gem size={12} className="text-df-orange-color flex-shrink-0" />
+      <Gem size={12} className="text-df-orange-color shrink-0" />
       Upgrade
     </button>
   );

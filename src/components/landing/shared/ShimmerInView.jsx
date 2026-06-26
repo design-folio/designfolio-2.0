@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 /**
  * Wraps the quoted portion of `text` in a shimmer gradient animation

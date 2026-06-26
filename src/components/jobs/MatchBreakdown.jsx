@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTheme } from "next-themes";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { ChevronDown, Check, X } from "lucide-react";
 
 // 3 zones — proportional widths: 64% Weak / 20% Strong / 16% Excellent
@@ -172,7 +172,7 @@ export function MatchBreakdown({ job, open }) {
                   Strongest signals
                 </span>
                 <ChevronDown
-                  className="w-3 h-3 text-foreground/30 transition-transform duration-200 flex-shrink-0"
+                  className="w-3 h-3 text-foreground/30 transition-transform duration-200 shrink-0"
                   style={{
                     transform: expandedSection === "signals" ? "rotate(180deg)" : "rotate(0deg)",
                   }}
@@ -191,7 +191,7 @@ export function MatchBreakdown({ job, open }) {
                     <ul className="px-3 pb-2.5 space-y-1.5">
                       {allAligns.map((a) => (
                         <li key={a} className="flex items-start gap-2">
-                          <Check className="w-3 h-3 mt-[2px] text-foreground/40 flex-shrink-0" />
+                          <Check className="w-3 h-3 mt-[2px] text-foreground/40 shrink-0" />
                           <span className="text-[11.5px] text-foreground/60 leading-snug">{a}</span>
                         </li>
                       ))}
@@ -216,7 +216,7 @@ export function MatchBreakdown({ job, open }) {
                   Missing
                 </span>
                 <ChevronDown
-                  className="w-3 h-3 text-foreground/30 transition-transform duration-200 flex-shrink-0"
+                  className="w-3 h-3 text-foreground/30 transition-transform duration-200 shrink-0"
                   style={{
                     transform: expandedSection === "missing" ? "rotate(180deg)" : "rotate(0deg)",
                   }}
@@ -235,7 +235,7 @@ export function MatchBreakdown({ job, open }) {
                     <ul className="px-3 pb-2.5 space-y-1.5">
                       {allGaps.map((g) => (
                         <li key={g} className="flex items-start gap-2">
-                          <X className="w-3 h-3 mt-[2px] text-foreground/30 flex-shrink-0" />
+                          <X className="w-3 h-3 mt-[2px] text-foreground/30 shrink-0" />
                           <span className="text-[11.5px] text-foreground/45 leading-snug">{g}</span>
                         </li>
                       ))}

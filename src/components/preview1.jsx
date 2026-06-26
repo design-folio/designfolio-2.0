@@ -1,5 +1,5 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import BottomLayout from "@/components/bottomLayout";
 // import Others from "@/components/others";
 // import OthersPreview from "@/components/othersPreview";

@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { motion, useAnimation } from "framer-motion";
+import { motion, useAnimation } from "motion/react";
 import { Button } from "@/components/ui/buttonNew";
 import DfImage from "./image";
 import Link from "next/link";

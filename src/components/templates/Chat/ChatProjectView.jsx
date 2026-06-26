@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { ChevronLeft } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import TiptapRenderer from "@/components/tiptapRenderer";
 import BlockRenderer from "@/components/blockRenderer";
@@ -554,14 +554,14 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
                 <div className="">
                   {project?.contentVersion === 2 && project?.tiptapContent ? (
                     <TiptapRenderer
-                      className="bg-[#E5E2DB] dark:bg-[#2A2520] !p-4 rounded-2xl rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5 w-full"
+                      className="bg-[#E5E2DB] dark:bg-[#2A2520] p-4! rounded-2xl rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5 w-full"
                       key={project._id}
                       content={project.tiptapContent}
                     />
                   ) : project?.content ? (
                     <BlockRenderer
                       editorJsData={project.content}
-                      className="bg-[#E5E2DB] dark:bg-[#2A2520] !p-4 rounded-2xl rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5 w-full"
+                      className="bg-[#E5E2DB] dark:bg-[#2A2520] p-4! rounded-2xl rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5 w-full"
                     />
                   ) : null}
                 </div>

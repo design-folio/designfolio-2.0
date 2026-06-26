@@ -1,5 +1,5 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import Text from "./text";
 import CloseIcon from "../../public/assets/svgs/close.svg";
 import Good from "../../public/assets/svgs/good.svg";

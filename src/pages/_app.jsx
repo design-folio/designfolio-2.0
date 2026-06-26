@@ -1,3 +1,4 @@
+import "@/styles/tw-animate.css";
 import "@/styles/globals.scss";
 import "@/styles/tiptap.css";
 import "@/styles/theme.css";

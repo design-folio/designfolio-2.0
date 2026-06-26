@@ -7,7 +7,7 @@ import Button from "./button";
 import SortIcon from "../../public/assets/svgs/sort.svg";
 import { useTheme } from "next-themes";
 import MemoWorkExperience from "./icons/WorkExperience";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { PencilIcon, Building, ChevronDown } from "lucide-react";
 import ClampableTiptapContent from "./ClampableTiptapContent";
 import { getPlainTextLength } from "@/lib/tiptapUtils";

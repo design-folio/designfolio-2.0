@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { Mail } from "lucide-react";
 import { useRouter } from "next/router";
 import { itemVariants } from "@/lib/animationVariants";

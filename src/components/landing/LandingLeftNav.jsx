@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { Sun, Moon } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
@@ -38,11 +38,11 @@ export default function LandingLeftNav({
           initial={{ y: 0 }}
           animate={{ y: 52 }}
           transition={{ duration: 0.6, delay: 1.0, ease: [0.16, 1, 0.3, 1] }}
-          className="flex flex-col relative z-10 bg-[--lp-bg] w-full"
+          className="flex flex-col relative z-10 bg-(--lp-bg) w-full"
         >
           {/* /Designfolio wordmark */}
           <div
-            className="font-bold text-[15px] tracking-tight text-[--lp-text] flex items-center h-9 pr-4 bg-[--lp-bg]"
+            className="font-bold text-[15px] tracking-tight text-(--lp-text) flex items-center h-9 pr-4 bg-(--lp-bg)"
             style={{ fontFamily: "var(--font-manrope), sans-serif" }}
           >
             <span className="mr-1.5">/</span>
@@ -75,7 +75,7 @@ export default function LandingLeftNav({
             <span
               className={cn(
                 "cursor-pointer text-sm transition-colors",
-                isDark ? "text-lp-text/30" : "text-[--lp-text]"
+                isDark ? "text-lp-text/30" : "text-(--lp-text)"
               )}
               onClick={() => onThemeChange(false)}
             >
@@ -92,7 +92,7 @@ export default function LandingLeftNav({
             <span
               className={cn(
                 "cursor-pointer text-sm transition-colors",
-                !isDark ? "text-lp-text/30" : "text-[--lp-text]"
+                !isDark ? "text-lp-text/30" : "text-(--lp-text)"
               )}
               onClick={() => onThemeChange(true)}
             >
@@ -102,7 +102,7 @@ export default function LandingLeftNav({
 
           {/* Section nav */}
           <nav
-            className="flex flex-col gap-2.5 text-[15px] font-medium text-lp-text/50 pb-4 bg-[--lp-bg]"
+            className="flex flex-col gap-2.5 text-[15px] font-medium text-lp-text/50 pb-4 bg-(--lp-bg)"
             style={{ fontFamily: "var(--font-manrope), sans-serif" }}
           >
             {NAV_LINKS.map(({ id, label }) => (
@@ -116,8 +116,8 @@ export default function LandingLeftNav({
                 className={cn(
                   "transition-colors cursor-pointer",
                   activeSection === id
-                    ? "text-[--lp-accent] font-semibold"
-                    : "hover:text-[--lp-text]"
+                    ? "text-(--lp-accent) font-semibold"
+                    : "hover:text-(--lp-text)"
                 )}
               >
                 {label}

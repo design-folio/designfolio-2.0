@@ -1,7 +1,7 @@
 import { useGlobalContext } from "@/context/globalContext";
 import { DEFAULT_SECTION_ORDER } from "@/lib/constant";
 import React, { useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 // import OthersPreview from "@/components/othersPreview";
 import PortfolioFooter from "@/components/portfolioFooter";
 import Profile from "@/components/profile";

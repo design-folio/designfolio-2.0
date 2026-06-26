@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useTheme } from "next-themes";
 import { Bookmark, Clapperboard, Maximize2, Loader2, X, Check, ArrowRight } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { ColorOrb } from "@/components/ui/color-orb";
 import { CompanyLogo } from "./CompanyLogo";
@@ -22,7 +22,7 @@ function AnalyzingRing({ isDark }) {
   const arc = isDark ? "rgba(255,255,255,0.22)" : "rgba(0,0,0,0.18)";
 
   return (
-    <div className="relative w-[40px] h-[40px] flex-shrink-0 mt-0.5">
+    <div className="relative w-[40px] h-[40px] shrink-0 mt-0.5">
       <svg width="40" height="40" viewBox="0 0 100 100" className="absolute inset-0" fill="none">
         <circle cx="50" cy="50" r="46.5" strokeWidth="7" stroke={track} strokeLinecap="round" />
       </svg>
@@ -126,7 +126,7 @@ export function JobCard({
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.85 }}
               transition={{ duration: 0.26, ease: EASING }}
-              className="relative flex-shrink-0 mt-0.5"
+              className="relative shrink-0 mt-0.5"
               onMouseEnter={() => setGaugeHovered(true)}
               onMouseLeave={() => setGaugeHovered(false)}
             >
@@ -156,7 +156,7 @@ export function JobCard({
                       <div className="flex flex-col gap-1">
                         {gaugeAligns.map((a) => (
                           <div key={a} className="flex items-start gap-1.5">
-                            <Check className="w-2.5 h-2.5 mt-[2px] flex-shrink-0 text-emerald-500 dark:text-emerald-400" />
+                            <Check className="w-2.5 h-2.5 mt-[2px] shrink-0 text-emerald-500 dark:text-emerald-400" />
                             <span className="text-[11px] text-foreground/65 leading-snug">{a}</span>
                           </div>
                         ))}
@@ -169,7 +169,7 @@ export function JobCard({
                       <div className="flex flex-col gap-1">
                         {gaugeGaps.map((g) => (
                           <div key={g} className="flex items-start gap-1.5">
-                            <X className="w-2.5 h-2.5 mt-[2px] flex-shrink-0 text-foreground/30" />
+                            <X className="w-2.5 h-2.5 mt-[2px] shrink-0 text-foreground/30" />
                             <span className="text-[11px] text-foreground/40 leading-snug">{g}</span>
                           </div>
                         ))}
@@ -211,7 +211,7 @@ export function JobCard({
                   setTooltipVisible(false);
                 }}
                 onPointerDown={(e) => e.stopPropagation()}
-                className="flex items-center justify-center w-5 h-5 rounded-full hover:bg-white/20 dark:hover:bg-black/10 transition-colors flex-shrink-0 !cursor-pointer"
+                className="flex items-center justify-center w-5 h-5 rounded-full hover:bg-white/20 dark:hover:bg-black/10 transition-colors shrink-0 !cursor-pointer"
               >
                 <X className="w-3 h-3" />
               </button>

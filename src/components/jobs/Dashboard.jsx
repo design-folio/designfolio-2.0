@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import { toast } from "react-toastify";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { useRouter } from "next/router";
 import { COL_ORDER } from "@/data/jobs";
 import { extractLinkedInJobId } from "@/lib/jobsUtils";

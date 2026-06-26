@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "motion/react";
 import { Move, Pencil, Trash2 } from "lucide-react";
 import { Button } from "../../ui/button";
 import { useGlobalContext } from "@/context/globalContext";

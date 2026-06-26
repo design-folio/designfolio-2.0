@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import EmailForm from "./emailForm";
 import EmailPreview from "./emailPreview";
 import TetrisLoading from "./ui/tetris-loader";

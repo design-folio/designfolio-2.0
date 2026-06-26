@@ -1,5 +1,5 @@
 import { useIsMobile } from "@/hooks/use-mobile";
-import { motion, useSpring } from "framer-motion";
+import { motion, useSpring } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
 const defaultSpringConfig = {

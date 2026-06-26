@@ -52,7 +52,7 @@ const UsageBadge = React.forwardRef(
               )}
             >
               <Bubbles />
-              <div className="relative z-10 flex-shrink-0">{icon}</div>
+              <div className="relative z-10 shrink-0">{icon}</div>
               <div className="relative z-10 whitespace-nowrap">
                 <span>{planName}:</span>
                 <span className="ml-1.5 font-semibold">{usage}</span>

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { ArrowRight, ArrowLeft, Search } from "lucide-react";
 import Lottie from "lottie-react";
 import aiAssistantAnimation from "@/assets/AI-Assistant.json";

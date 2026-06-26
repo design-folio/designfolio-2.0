@@ -1,11 +1,24 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  experimental: {
-    scrollRestoration: true,
-    esmExternals: true, // Enable ESM support
+  turbopack: {
+    rules: {
+      "*.svg?url": {
+        loaders: [],
+        as: "*.png",
+      },
+      "*.svg": {
+        loaders: [
+          {
+            loader: "@svgr/webpack",
+            options: {
+              typescript: false,
+              ext: "jsx",
+            },
+          },
+        ],
+        as: "*.js",
+      },
+    },
   },
   webpack: (config) => {
     // SVG

@@ -13,7 +13,7 @@ import { twMerge } from "tailwind-merge";
 import { Badge } from "../ui/badge";
 import { Slider } from "../ui/slider";
 import { Switch as SwitchCanvas } from "../templates/Canvas/switch-button";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import Text from "../text";
 import {
   DndContext,
@@ -98,7 +98,7 @@ function TemplateCard({ tmpl, isSelected, onChange, previewSrc }) {
         </button>
 
         {isSelected && (
-          <div className="absolute -bottom-1 -left-1 bg-df-orange-color text-primary-foreground rounded-full p-1.5 shadow-sm flex items-center justify-center border-[2px] border-sidebar z-10 pointer-events-none">
+          <div className="absolute -bottom-1 -left-1 bg-df-orange-color text-primary-foreground rounded-full p-1.5 shadow-sm flex items-center justify-center border-2 border-sidebar z-10 pointer-events-none">
             <Check size={14} strokeWidth={3.5} />
           </div>
         )}
@@ -469,7 +469,7 @@ const ThemePanel = ({
   const renderContent = (isMobile) => (
     <Tabs defaultValue="layouts" className="w-full h-full flex flex-col">
       <div
-        className={`sticky top-0 z-50 px-6 ${isMobile ? "pb-2" : "pt-4 pb-2"} border-b border-border/30 bg-background/95 backdrop-blur-sm`}
+        className={`sticky top-0 z-50 px-6 ${isMobile ? "pb-2" : "pt-4 pb-2"} border-b border-border/30 backdrop-blur-sm`}
       >
         <div className="overflow-x-auto hide-scrollbar -mx-6 px-6">
           <TabsList className="w-full bg-transparent p-0 h-auto gap-6 justify-start min-w-fit">
@@ -832,7 +832,7 @@ const ThemePanel = ({
                       className="aspect-video object-cover w-full pointer-events-none"
                     />
                   ) : (
-                    <div className="aspect-video bg-gradient-to-br from-background to-muted flex items-center justify-center pointer-events-none">
+                    <div className="aspect-video bg-linear-to-br from-background to-muted flex items-center justify-center pointer-events-none">
                       <span className="text-sm font-medium text-foreground/60">Default</span>
                     </div>
                   )}
@@ -899,7 +899,7 @@ const ThemePanel = ({
                         isMobile ? `button-wallpaper-${wp.id}-mobile` : `button-wallpaper-${wp.id}`
                       }
                     >
-                      <div className="w-full aspect-video [&>div]:!h-full [&>div]:!rounded-none pointer-events-none">
+                      <div className="w-full aspect-video [&>div]:h-full! [&>div]:rounded-none! pointer-events-none">
                         {wp.item}
                       </div>
                       {wallpaper === wp.value && (

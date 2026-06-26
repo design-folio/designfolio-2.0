@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Head from "next/head";
 import Cookies from "js-cookie";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "motion/react";
 
 import { _getJobsCheckSaved, _postJobsAddFromShare, _getJobsJobScore } from "@/network/jobs";
 import { ShareNav } from "@/components/jobs/share/ShareNav";

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { Check, Loader2 } from "lucide-react";
 import { useGlobalContext } from "@/context/globalContext";
 import { _getPersonas } from "@/network/get-request";

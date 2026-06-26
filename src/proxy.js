@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-export async function middleware(request) {
+export async function proxy(request) {
   const { hostname, pathname } = request.nextUrl;
 
   const baseDomain = process.env.NEXT_PUBLIC_BASE_DOMAIN;

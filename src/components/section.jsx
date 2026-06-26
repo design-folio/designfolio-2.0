@@ -4,7 +4,7 @@ import { PencilIcon, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { useGlobalContext } from "@/context/globalContext";
 import { _updateUser } from "@/network/post-request";
 

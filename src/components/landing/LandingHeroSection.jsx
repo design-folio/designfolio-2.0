@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
+import { motion, AnimatePresence, LayoutGroup } from "motion/react";
 import { cn } from "@/lib/utils";
 import ResumeUploadZone from "./ResumeUploadZone";
 import ClaimDomain from "../claimDomain";
@@ -26,7 +26,7 @@ export default function LandingHeroSection({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            className="mb-6 inline-flex items-center rounded-full border border-lp-text/10 bg-lp-text/[0.04] dark:bg-[--lp-card] dark:border-[--lp-border] p-0.5"
+            className="mb-6 inline-flex items-center rounded-full border border-lp-text/10 bg-lp-text/[0.04] dark:bg-(--lp-card) dark:border-(--lp-border) p-0.5"
           >
             {["resume", "scratch"].map((tab) => (
               <button
@@ -34,13 +34,13 @@ export default function LandingHeroSection({
                 onClick={() => setHeroTab(tab)}
                 className={cn(
                   "relative px-4 py-1.5 rounded-full text-[13px] font-semibold transition-colors duration-200",
-                  heroTab === tab ? "text-[--lp-text]" : "text-lp-text/45 hover:text-lp-text/70"
+                  heroTab === tab ? "text-(--lp-text)" : "text-lp-text/45 hover:text-lp-text/70"
                 )}
               >
                 {heroTab === tab && (
                   <motion.span
                     layoutId="tab-pill"
-                    className="absolute inset-0 rounded-full bg-[--lp-surface] border border-lp-text/10 shadow-sm"
+                    className="absolute inset-0 rounded-full bg-(--lp-surface) border border-lp-text/10 shadow-sm"
                     transition={{ type: "spring", stiffness: 500, damping: 38 }}
                   />
                 )}
@@ -57,7 +57,7 @@ export default function LandingHeroSection({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.05, ease: "easeOut" }}
-        className="text-[35px] sm:text-[45px] leading-[1.1] tracking-[-0.02em] max-w-[660px] mb-5 text-[#463B34] dark:text-foreground text-center text-[--lp-heading]"
+        className="text-[35px] sm:text-[45px] leading-[1.1] tracking-[-0.02em] max-w-[660px] mb-5 text-[#463B34] dark:text-foreground text-center text-(--lp-heading)"
         style={{ fontWeight: 650 }}
       >
         Build your Portfolio.
@@ -69,7 +69,7 @@ export default function LandingHeroSection({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
-        className="text-[17px] mb-8 max-w-[572px] leading-relaxed font-semibold text-[--lp-text-muted]"
+        className="text-[17px] mb-8 max-w-[572px] leading-relaxed font-semibold text-(--lp-text-muted)"
       >
         {heroTab === "resume" || hasDfToken
           ? "Upload your resume. We'll turn it into a portfolio website and match you with jobs that fit your experience."

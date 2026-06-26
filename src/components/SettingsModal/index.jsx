@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useGlobalContext } from "@/context/globalContext";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { User, Globe, CreditCard, Shield, LogOut } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { cn } from "@/lib/utils";
 import DefaultDomain from "@/components/defaultDomain";
 import CustomDomain from "@/components/customDomain";

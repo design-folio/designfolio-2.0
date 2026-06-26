@@ -61,7 +61,7 @@ export default function BlogPostRecommendations({ postId }) {
             className="block group"
           >
             <div className="flex gap-4 hover:bg-gray-50 p-2 -mx-2 rounded-md transition-colors cursor-pointer">
-              <div className="w-1/3 md:w-1/4 flex-shrink-0 cursor-pointer">
+              <div className="w-1/3 md:w-1/4 shrink-0 cursor-pointer">
                 <div className="aspect-[4/3] rounded-md overflow-hidden bg-gray-100 cursor-pointer">
                   <img
                     src={post.image}

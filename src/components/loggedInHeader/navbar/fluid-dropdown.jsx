@@ -1,5 +1,5 @@
 import React from "react";
-import { motion, AnimatePresence, MotionConfig } from "framer-motion";
+import { motion, AnimatePresence, MotionConfig } from "motion/react";
 import { ChevronDown, Briefcase, Sparkles, LayoutTemplate } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";

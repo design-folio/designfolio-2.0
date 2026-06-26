@@ -7,7 +7,7 @@ export default function RefundPolicy() {
       seoTitle="Refund Policy – Designfolio"
       seoDescription="Designfolio's refund and cancellation policy for all purchases."
     >
-      <p className="text-sm text-[--lp-text-muted]">Effective Date: October 31, 2025</p>
+      <p className="text-sm text-(--lp-text-muted)">Effective Date: October 31, 2025</p>
 
       <p>
         At Designfolio Labs LLP, we value transparency and fairness in every transaction. This

@@ -1,4 +1,4 @@
-import { motion, useInView } from "framer-motion";
+import { motion, useInView } from "motion/react";
 import { useRef, useState, useEffect } from "react";
 import { EditIcon } from "lucide-react";
 import AddItem from "../addItem";
@@ -146,17 +146,16 @@ export const Spotlight = ({ userDetails, edit, headerActions }) => {
                 <h3 className="font-semibold text-lg">{experience.role}</h3>
                 <div className="flex flex-1 gap-2 lg:justify-end w-full items-center">
                   <span className="text-sm text-gray-600 dark:text-gray-400">
-                    {`${experience?.startMonth} ${experience?.startYear} - ${
-                      experience?.currentlyWorking
+                    {`${experience?.startMonth} ${experience?.startYear} - ${experience?.currentlyWorking
                         ? "Present"
                         : `${experience?.endMonth} ${experience?.endYear}`
-                    }`}
+                      }`}
                   </span>
                   {edit && (
                     <div className="flex gap-4">
                       <Button
                         onClick={() => handleClick(experience)}
-                        customClass="!p-0 !flex-shrink-0 border-none"
+                        customClass="!p-0 !shrink-0 border-none"
                         type={"secondary"}
                         icon={
                           <EditIcon className="text-gray-600 dark:text-gray-400 cursor-pointer" />
@@ -198,7 +197,7 @@ export const Spotlight = ({ userDetails, edit, headerActions }) => {
     <section className="py-12">
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-2xl font-bold">Work Experience</h2>
-        {headerActions && <div className="flex-shrink-0">{headerActions}</div>}
+        {headerActions && <div className="shrink-0">{headerActions}</div>}
       </div>
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext

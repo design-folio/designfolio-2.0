@@ -1,6 +1,6 @@
 import React, { useState, useRef, Suspense, useEffect } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { motion, AnimatePresence, MotionConfig } from "framer-motion";
+import { motion, AnimatePresence, MotionConfig } from "motion/react";
 import { Crown, Settings, LogOut } from "lucide-react";
 import { useGlobalContext } from "@/context/globalContext";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
@@ -50,7 +50,7 @@ export function AvatarDropdown({ onClose, variant = "navbar" }) {
     fetch("/lottie/diamond-lottie.json")
       .then((res) => res.json())
       .then(setDiamondLottie)
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   useClickAway(dropdownRef, () => setIsOpen(false));
@@ -90,14 +90,14 @@ export function AvatarDropdown({ onClose, variant = "navbar" }) {
   const menuItems = [
     ...(!userDetails?.pro
       ? [
-          {
-            id: "upgrade",
-            label: "Upgrade PRO",
-            icon: null,
-            action: handleUpgrade,
-            isUpgrade: true,
-          },
-        ]
+        {
+          id: "upgrade",
+          label: "Upgrade PRO",
+          icon: null,
+          action: handleUpgrade,
+          isUpgrade: true,
+        },
+      ]
       : []),
     {
       id: "settings",
@@ -120,7 +120,7 @@ export function AvatarDropdown({ onClose, variant = "navbar" }) {
         >
           <div className="relative">
             <Avatar
-              className={`border border-black/10 dark:border-white/10 flex-shrink-0 transition-transform hover:scale-105 ${isSidebar ? "h-10 w-10 rounded-xl" : "h-10 w-10"}`}
+              className={`border border-black/10 dark:border-white/10 shrink-0 transition-transform hover:scale-105 ${isSidebar ? "h-10 w-10 rounded-xl" : "h-10 w-10"}`}
             >
               <AvatarImage
                 src={getUserAvatarImage(userDetails)}

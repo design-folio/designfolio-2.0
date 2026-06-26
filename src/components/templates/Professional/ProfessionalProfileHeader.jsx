@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Pencil, UserCircle } from "lucide-react";
 import { format } from "date-fns";

@@ -49,7 +49,7 @@ export function BuilderTopNav() {
                 >
                   <ChartSpline
                     size={15}
-                    className="transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110 flex-shrink-0"
+                    className="transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110 shrink-0"
                   />
                   Insights
                 </Button>
@@ -72,7 +72,7 @@ export function BuilderTopNav() {
                 >
                   <PaintRoller
                     size={15}
-                    className="transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110 flex-shrink-0"
+                    className="transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110 shrink-0"
                   />
                   Themes
                 </Button>

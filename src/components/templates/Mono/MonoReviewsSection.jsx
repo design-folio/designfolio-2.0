@@ -1,5 +1,5 @@
-import { useState, useCallback, useEffect, useMemo, useRef } from "react";
-import { motion } from "framer-motion";
+import { useState, useCallback, useEffect, useMemo, useRef, startTransition } from "react";
+import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import {
   AlertDialog,
@@ -191,7 +191,7 @@ export default function MonoReviewsSection({ isEditing }) {
   const [recommendations, setRecommendations] = useState(mappedRecommendations);
 
   useEffect(() => {
-    setRecommendations(mappedRecommendations);
+    startTransition(() => setRecommendations(mappedRecommendations));
   }, [mappedRecommendations]);
 
   const handleOpenReviewSidebar = useCallback(

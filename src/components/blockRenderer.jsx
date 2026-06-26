@@ -76,20 +76,21 @@ const useIntersectionObserver = (options) => {
   const ref = useRef(null);
 
   React.useEffect(() => {
+    const node = ref.current;
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting && !inView) {
         setInView(true);
-        observer.unobserve(ref.current); // Stop observing once in view
+        if (node) observer.unobserve(node);
       }
     }, options);
 
-    if (ref.current) {
-      observer.observe(ref.current);
+    if (node) {
+      observer.observe(node);
     }
 
     return () => {
-      if (ref.current) {
-        observer.unobserve(ref.current);
+      if (node) {
+        observer.unobserve(node);
       }
     };
   }, [options, inView]);

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, startTransition } from "react";
 import { NodeViewWrapper } from "@tiptap/react";
 import { Move, AlignLeft, AlignCenter, AlignRight } from "lucide-react";
 
@@ -50,7 +50,7 @@ const ResizableImageView = ({ node, updateAttributes, editor, selected }) => {
 
   useEffect(() => {
     if (showAltInput) {
-      setAltText(node.attrs.alt || "");
+      startTransition(() => setAltText(node.attrs.alt || ""));
       setTimeout(() => {
         inputRef.current?.focus();
       }, 50);

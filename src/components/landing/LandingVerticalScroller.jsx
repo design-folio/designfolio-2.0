@@ -4,7 +4,7 @@ import { testimonials, scrollerExtraTestimonials } from "./shared/testimonialDat
 
 function MasonryScrollCard({ t }) {
   return (
-    <div className="px-4 py-4 rounded-xl border border-[--lp-video-border] bg-[--lp-bg]">
+    <div className="px-4 py-4 rounded-xl border border-(--lp-video-border) bg-(--lp-bg)">
       <p className="text-[14px] leading-[1.65] text-lp-text/75 font-medium mb-4">
         &quot;{t.content}&quot;
       </p>
@@ -13,7 +13,7 @@ function MasonryScrollCard({ t }) {
           <img
             src={t.image}
             alt={t.name}
-            className="h-8 w-8 rounded-full object-cover flex-shrink-0"
+            className="h-8 w-8 rounded-full object-cover shrink-0"
           />
           <div className="flex flex-col gap-0.5 min-w-0">
             <span className="text-[13px] font-semibold text-lp-text leading-none truncate">
@@ -121,7 +121,7 @@ export default function LandingVerticalScroller() {
 
   return (
     <section
-      className="w-full overflow-hidden border-y border-[--lp-border] bg-[--lp-card]"
+      className="w-full overflow-hidden border-y border-(--lp-border) bg-(--lp-card)"
       style={{ fontFamily: "var(--font-manrope), sans-serif" }}
     >
       <div

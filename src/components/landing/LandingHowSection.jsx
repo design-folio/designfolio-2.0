@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { User } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useState, useEffect } from "react";
+import { useState, useEffect, startTransition } from "react";
 
 const STEPS = [
   {
@@ -76,7 +76,7 @@ export default function LandingHowSection() {
   const { theme } = useTheme();
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
-    setMounted(true);
+    startTransition(() => setMounted(true));
   }, []);
   const isDark = mounted && theme === "dark";
 
@@ -105,7 +105,7 @@ export default function LandingHowSection() {
                   className={`flex items-end gap-2 ${msg.from === "shai" ? "flex-row-reverse" : "flex-row"}`}
                 >
                   {msg.from === "viewer" ? (
-                    <div className="shrink-0 w-[30px] h-[30px] rounded-full bg-[--lp-chat-avatar-bg] flex items-center justify-center">
+                    <div className="shrink-0 w-[30px] h-[30px] rounded-full bg-(--lp-chat-avatar-bg) flex items-center justify-center">
                       <User className="w-[14px] h-[14px] text-white" strokeWidth={2.5} />
                     </div>
                   ) : (
@@ -120,7 +120,7 @@ export default function LandingHowSection() {
                     className={`max-w-[72%] px-[14px] py-[10px] text-[17px] font-medium leading-snug ${
                       msg.from === "shai"
                         ? "bg-[#007AFF] text-white rounded-[20px] rounded-br-[5px]"
-                        : "bg-[--lp-chat-viewer-bg] text-[--lp-text] rounded-[20px] rounded-bl-[5px]"
+                        : "bg-(--lp-chat-viewer-bg) text-(--lp-text) rounded-[20px] rounded-bl-[5px]"
                     }`}
                   >
                     {msg.text}
@@ -140,23 +140,23 @@ export default function LandingHowSection() {
                   <Link
                     key={card.label}
                     href={card.href}
-                    className="group flex flex-col items-center gap-3 rounded-2xl border border-[--lp-video-border] bg-[--lp-bg] p-5 hover:bg-[--lp-card] transition-colors duration-150 no-underline cursor-pointer"
+                    className="group flex flex-col items-center gap-3 rounded-2xl border border-(--lp-video-border) bg-(--lp-bg) p-5 hover:bg-(--lp-card) transition-colors duration-150 no-underline cursor-pointer"
                   >
-                    <div className="w-14 h-14 rounded-2xl overflow-hidden flex items-center justify-center bg-[--lp-card]">
+                    <div className="w-14 h-14 rounded-2xl overflow-hidden flex items-center justify-center bg-(--lp-card)">
                       <img
                         src={card.icon}
                         alt={card.label}
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    <span className="text-[13px] font-semibold text-[--lp-text] text-center leading-snug">
+                    <span className="text-[13px] font-semibold text-(--lp-text) text-center leading-snug">
                       {card.label}
                     </span>
                   </Link>
                 ))}
               </div>
             ) : (
-              <div className="w-full rounded-[12px] overflow-hidden border border-[--lp-video-border] shadow-sm bg-[#141414]">
+              <div className="w-full rounded-[12px] overflow-hidden border border-(--lp-video-border) shadow-sm bg-[#141414]">
                 <div className="relative w-full overflow-hidden" style={{ paddingTop: "78.75%" }}>
                   <video
                     key={isDark ? "dark" : "light"}

@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import ClaimDomain from "./claimDomain-old";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView } from "motion/react";
 import Link from "next/link";
 import Button from "./button";
 

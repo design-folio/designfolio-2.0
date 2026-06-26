@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, startTransition } from "react";
 import { fetchPosts } from "@/services/contentful";
 import Link from "next/link";
 import BlogCard from "@/components/BlogCard";
@@ -9,8 +9,7 @@ export default function Index({ posts }) {
   const [dfToken, setDfToken] = useState(false);
 
   useEffect(() => {
-    const token = Cookies.get("df-token");
-    setDfToken(!!token);
+    startTransition(() => setDfToken(!!Cookies.get("df-token")));
   }, []);
   return (
     <>

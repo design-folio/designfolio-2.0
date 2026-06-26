@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback, startTransition } from "react";
 import { useTheme } from "next-themes";
 import { flushSync } from "react-dom";
 import Seo from "@/components/seo";
@@ -31,7 +31,7 @@ export default function LandingPage({ dfToken, dfParsedResume }) {
   // Defer theme resolution to client — avoids server/client hydration mismatch
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
-    setMounted(true);
+    startTransition(() => setMounted(true));
   }, []);
   const isDark = mounted && theme === "dark";
 
@@ -118,7 +118,7 @@ export default function LandingPage({ dfToken, dfParsedResume }) {
         Boolean(localStorage.getItem("df_parsed_resume"));
     } catch {}
     parsedResumePresent = parsedResumePresent || Boolean(getCookieValue("df_parsed_resume"));
-    if (parsedResumePresent) setHasParsedResume(true);
+    if (parsedResumePresent) startTransition(() => setHasParsedResume(true));
   }, [dfParsedResume]);
 
   const { ctaLabel, ctaDest, handleCta, isNavigating } = useLandingCta({
@@ -229,10 +229,10 @@ export default function LandingPage({ dfToken, dfParsedResume }) {
 
       <div
         id="overview"
-        className="min-h-screen bg-[--lp-bg] text-[--lp-text] antialiased overflow-x-clip flex justify-center"
+        className="min-h-screen bg-(--lp-bg) text-(--lp-text) antialiased overflow-x-clip flex justify-center"
         style={{ fontFamily: "var(--font-manrope), sans-serif" }}
       >
-        <div className="w-full max-w-[792px] bg-[--lp-bg] min-h-screen border-x border-[--lp-border] relative z-10 shadow-[0_0_40px_rgba(0,0,0,0.02)]">
+        <div className="w-full max-w-[792px] bg-(--lp-bg) min-h-screen border-x border-(--lp-border) relative z-10 shadow-[0_0_40px_rgba(0,0,0,0.02)]">
           <LandingLeftNav
             activeSection={activeSection}
             onSectionClick={scrollToSection}

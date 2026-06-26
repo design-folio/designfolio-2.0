@@ -1,6 +1,6 @@
 import { Avatar } from "@/components/ui/avatar";
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import Button from "../button";
 import { EditIcon } from "lucide-react";
 import { useGlobalContext } from "@/context/globalContext";
@@ -88,7 +88,7 @@ export const Hero = ({ userDetails, edit }) => {
             <div className="lg:absolute lg:right-[-54px]">
               <Button
                 onClick={() => openModal("onboarding")}
-                customClass="!p-[13.38px] !flex-shrink-0"
+                customClass="!p-[13.38px] !shrink-0"
                 type={"secondary"}
                 icon={<EditIcon className="text-df-icon-color cursor-pointer" />}
               />

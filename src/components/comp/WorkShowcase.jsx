@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { ArrowUpRight, Eye, EyeOff, Pencil } from "lucide-react";
 import { useCursorTooltip } from "@/context/cursorTooltipContext";
 import { useRouter } from "next/router";
@@ -78,17 +78,18 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
   const ref = useRef(null);
 
   useEffect(() => {
+    const node = ref.current;
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting && !inView) {
         setInView(true);
       }
     });
-    if (ref.current) {
-      observer.observe(ref.current);
+    if (node) {
+      observer.observe(node);
     }
     return () => {
-      if (ref.current) {
-        observer.unobserve(ref.current);
+      if (node) {
+        observer.unobserve(node);
       }
     };
   }, [inView]);
@@ -137,7 +138,7 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
   // Update state when userDetails changes
   useEffect(() => {
     const currentProjects = userDetails?.projects || [];
-    setSortedProjects([...currentProjects]);
+    queueMicrotask(() => setSortedProjects([...currentProjects]));
   }, [userDetails]);
 
   // Filter out hidden projects in preview mode (when edit is false)
@@ -358,7 +359,7 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
     <section className="pt-0 pb-16">
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-2xl font-bold">Featured Projects</h2>
-        {headerActions && <div className="flex-shrink-0">{headerActions}</div>}
+        {headerActions && <div className="shrink-0">{headerActions}</div>}
       </div>
       {sortedProjects.length > 0 && (
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>

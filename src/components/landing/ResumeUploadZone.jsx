@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, startTransition } from "react";
 import { createPortal } from "react-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { useRouter } from "next/router";
 import { useTheme } from "next-themes";
 import toast from "react-hot-toast";
@@ -44,13 +44,13 @@ export default function ResumeUploadZone({
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    startTransition(() => setMounted(true));
   }, []);
 
   // Cycle AI status text while processing
   useEffect(() => {
     if (!isProcessing) return;
-    setAiStatusIndex(0);
+    startTransition(() => setAiStatusIndex(0));
     const interval = setInterval(() => {
       setAiStatusIndex((i) => Math.min(i + 1, AI_STATUSES.length - 1));
     }, 1600);
@@ -194,7 +194,7 @@ export default function ResumeUploadZone({
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -4 }}
                   transition={{ duration: 0.3, ease: "easeOut" }}
-                  className="text-[14px] font-semibold leading-none text-[--lp-text] whitespace-nowrap"
+                  className="text-[14px] font-semibold leading-none text-(--lp-text) whitespace-nowrap"
                 >
                   {AI_STATUSES[aiStatusIndex]}
                 </motion.span>
@@ -242,7 +242,7 @@ export default function ResumeUploadZone({
                     : "inline-flex items-center gap-3.5 rounded-xl border border-dashed px-5 py-3 [&_*]:cursor-pointer"
                 } transition-all duration-200 ${
                   isDragging
-                    ? "border-[--lp-accent] bg-lp-accent/[0.08]"
+                    ? "border-(--lp-accent) bg-lp-accent/[0.08]"
                     : "border-lp-text/25 bg-lp-text/[0.03] hover:border-lp-text/45 hover:bg-lp-text/[0.05]"
                 }`}
               >
@@ -251,7 +251,7 @@ export default function ResumeUploadZone({
                   className={`flex flex-col ${variant === "modal" ? "items-center text-center" : "items-start"} gap-0.5`}
                 >
                   <span
-                    className={`text-[14px] mb-1 font-semibold leading-none transition-colors duration-200 ${isDragging ? "text-[--lp-accent]" : "text-[--lp-text]"}`}
+                    className={`text-[14px] mb-1 font-semibold leading-none transition-colors duration-200 ${isDragging ? "text-(--lp-accent)" : "text-(--lp-text)"}`}
                   >
                     {isDragging
                       ? "Drop it here"
@@ -259,7 +259,7 @@ export default function ResumeUploadZone({
                         ? "Click to upload Resume"
                         : "Upload your resume"}
                   </span>
-                  <span className="text-[12px] text-[--lp-text-faint] leading-none">
+                  <span className="text-[12px] text-(--lp-text-faint) leading-none">
                     {variant === "modal" ? "PDF format only · Max 5MB" : "PDF · max 5MB"}
                   </span>
                 </div>
@@ -279,7 +279,7 @@ export default function ResumeUploadZone({
                     {["Data never sold", "Delete anytime"].map((label) => (
                       <span
                         key={label}
-                        className="flex items-center gap-1 text-[11px] text-[--lp-text-faint] font-medium"
+                        className="flex items-center gap-1 text-[11px] text-(--lp-text-faint) font-medium"
                       >
                         <CheckCircle2 className="w-3 h-3 shrink-0" strokeWidth={2} />
                         {label}

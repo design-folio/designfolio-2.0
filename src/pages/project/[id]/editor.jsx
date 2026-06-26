@@ -9,7 +9,7 @@ import { _updateProject, _updateUser } from "@/network/post-request";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useTheme } from "next-themes";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback, startTransition } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { modals } from "@/lib/constant";
 import AppSidebar from "@/components/Sidebars";
@@ -44,8 +44,10 @@ export default function Index() {
   } = useGlobalContext();
   const [projectDetails, setProjectDetails] = useState(null);
   const initializedRef = useRef(false);
-  const lastSidebarRef = useRef(null);
-  if (activeSidebar) lastSidebarRef.current = activeSidebar;
+  const [lastSidebar, setLastSidebar] = useState(() => activeSidebar ?? null);
+  useEffect(() => {
+    if (activeSidebar != null) startTransition(() => setLastSidebar(activeSidebar));
+  }, [activeSidebar]);
   const isMobile = useIsMobile();
 
   // Enable the userDetails query — required on every authenticated page
@@ -55,36 +57,41 @@ export default function Index() {
     } else {
       setIsUserDetailsFromCache(true);
     }
-  }, []);
+  }, [userDetailsIsState, setIsUserDetailsFromCache]);
 
-  const setProjectData = (project, isFromRefetch = false) => {
-    setProjectDetails({ project: project });
+  const setProjectData = useCallback(
+    (project, isFromRefetch = false) => {
+      startTransition(() => {
+        setProjectDetails({ project: project });
 
-    if (isFromRefetch) {
-      setTheme(project?.theme == 1 ? "dark" : "light");
-      setWallpaper(project?.wallpaper);
-    } else {
-      if (project?.theme !== undefined) {
-        setTheme(project.theme == 1 ? "dark" : "light");
-      } else if (userDetails?.theme !== undefined) {
-        setTheme(userDetails.theme == 1 ? "dark" : "light");
-      }
+        if (isFromRefetch) {
+          setTheme(project?.theme == 1 ? "dark" : "light");
+          setWallpaper(project?.wallpaper);
+        } else {
+          if (project?.theme !== undefined) {
+            setTheme(project.theme == 1 ? "dark" : "light");
+          } else if (userDetails?.theme !== undefined) {
+            setTheme(userDetails.theme == 1 ? "dark" : "light");
+          }
 
-      if (project?.wallpaper !== undefined) {
-        setWallpaper(project.wallpaper);
-      } else if (userDetails?.wallpaper !== undefined) {
-        setWallpaper(userDetails.wallpaper);
-      }
-    }
+          if (project?.wallpaper !== undefined) {
+            setWallpaper(project.wallpaper);
+          } else if (userDetails?.wallpaper !== undefined) {
+            setWallpaper(userDetails.wallpaper);
+          }
+        }
 
-    const cursor =
-      project?.cursor != null
-        ? project.cursor
-        : project?.theme != null
-          ? project.theme
-          : userDetails?.cursor || 0;
-    setCursor(cursor);
-  };
+        const cursor =
+          project?.cursor != null
+            ? project.cursor
+            : project?.theme != null
+              ? project.theme
+              : userDetails?.cursor || 0;
+        setCursor(cursor);
+      });
+    },
+    [userDetails, setProjectDetails, setTheme, setWallpaper, setCursor]
+  );
 
   const { mutate: refetchProjectDetail } = useMutation({
     mutationKey: [`project-editor-${router.query.id}`],
@@ -118,7 +125,7 @@ export default function Index() {
       refetchProjectDetail();
       initializedRef.current = projectId;
     }
-  }, [router.query.id, userDetails, refetchProjectDetail]);
+  }, [router.query.id, userDetails, refetchProjectDetail, setProjectData]);
 
   // Fetch analysis credits on page load. Kept separate from the project-init
   // guard so it always runs when the project changes.
@@ -138,7 +145,7 @@ export default function Index() {
         }
       })
       .catch(() => {});
-  }, [router.query.id]);
+  }, [router.query.id, setAnalysisCreditsRemaining, setAnalysisCreditsLimit]);
 
   // Compensate for scrollbar gutter when sidebar opens so content doesn't shift.
   useEffect(() => {
@@ -178,7 +185,7 @@ export default function Index() {
     open: !!activeSidebar,
     onOpenChange: (open) => !open && closeSidebar(true),
     style: {
-      "--sidebar-width": getSidebarShiftWidth(lastSidebarRef.current) || "400px",
+      "--sidebar-width": getSidebarShiftWidth(lastSidebar) || "400px",
     },
     defaultOpen: false,
   };

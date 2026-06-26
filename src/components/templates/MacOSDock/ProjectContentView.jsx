@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import BlockRenderer from "@/components/blockRenderer";
 import ProjectInfo from "@/components/projectInfo";
 import ProjectPassword from "@/components/projectPassword";
@@ -18,7 +18,7 @@ const ProjectContentView = ({ projectId, userDetails }) => {
   const contextProject = useMemo(() => {
     if (!projectId || !userDetails?.projects) return null;
     return userDetails.projects.find((p) => p._id === projectId);
-  }, [projectId, userDetails?.projects]);
+  }, [projectId, userDetails]);
 
   const shouldFetch = !!projectId && userDetails !== null && !contextProject;
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { Pencil, Plus, ChevronDown, ChevronUp } from "lucide-react";
 import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
@@ -31,7 +31,7 @@ export const SortableTestimonialItem = ({ review, edit, onEdit }) => {
       <div className="flex-1 min-w-0">
         <ReviewCard review={review} sorting={true} edit={edit} />
       </div>
-      <div className="flex items-center flex-col gap-2 flex-shrink-0">
+      <div className="flex items-center flex-col gap-2 shrink-0">
         {edit && (
           <Button
             variant="secondary"
@@ -80,9 +80,9 @@ export const TestimonialWidget = ({ reviews, edit, onEditClick, onAddReview }) =
     : [];
   const testimonials = hasReviews
     ? reviews.map((r) => ({
-        text: extractTextFromTipTap(r.description) || "",
-        author: r.name || r.author || "Client",
-      }))
+      text: extractTextFromTipTap(r.description) || "",
+      author: r.name || r.author || "Client",
+    }))
     : [];
   const validTestimonials = testimonials.filter((t) => t.text);
 
@@ -104,18 +104,18 @@ export const TestimonialWidget = ({ reviews, edit, onEditClick, onAddReview }) =
   const isEmpty = !hasReviews;
   const outerProps = isEmpty
     ? {
-        role: "button",
-        tabIndex: 0,
-        onClick: () => onAddReview?.(),
-        onKeyDown: (e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            onAddReview?.();
-          }
-        },
-        className:
-          "bg-[#F5C75D] rounded-2xl p-1 shadow-lg font-sans max-w-[calc(100vw-32px)] cursor-pointer hover:opacity-95 transition-opacity",
-      }
+      role: "button",
+      tabIndex: 0,
+      onClick: () => onAddReview?.(),
+      onKeyDown: (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onAddReview?.();
+        }
+      },
+      className:
+        "bg-[#F5C75D] rounded-2xl p-1 shadow-lg font-sans max-w-[calc(100vw-32px)] cursor-pointer hover:opacity-95 transition-opacity",
+    }
     : { className: "bg-[#F5C75D] rounded-2xl p-1 shadow-lg font-sans max-w-[calc(100vw-32px)]" };
 
   const expandedMaxHeight =
@@ -202,7 +202,7 @@ export const TestimonialWidget = ({ reviews, edit, onEditClick, onAddReview }) =
               className={cn(
                 "font-medium text-black/90 leading-relaxed relative",
                 !expanded &&
-                  "line-clamp-3 [&_.ProseMirror]:line-clamp-3 [&_.ProseMirror]:overflow-hidden [&_.ProseMirror]:break-words"
+                "line-clamp-3 [&_.ProseMirror]:line-clamp-3 [&_.ProseMirror]:overflow-hidden [&_.ProseMirror]:break-words"
               )}
             >
               <AnimatePresence mode="wait">
@@ -231,7 +231,7 @@ export const TestimonialWidget = ({ reviews, edit, onEditClick, onAddReview }) =
           </div>
 
           {/* ── Pinned footer ── avatar, author, LinkedIn */}
-          <div className="relative z-10 flex-shrink-0">
+          <div className="relative z-10 shrink-0">
             <div className="h-px w-full bg-black/5" />
             <div
               className="flex items-center gap-3 h-full flex-wrap py-2"

@@ -19,12 +19,12 @@ import { RulerCarousel } from "@/components/ui/ruler-carousel";
 import { Button } from "@/components/ui/button";
 import Cookies from "js-cookie";
 import { Home, Lock, ArrowRight } from "lucide-react";
-import { getAiWorkspaceToolIcon } from "@/components/ui/ai-workspace-icons";
+import { AiWorkspaceToolIcon } from "@/components/ui/ai-workspace-icons";
 import { getAiToolResult } from "@/lib/ai-tools-usage";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useEffect, useMemo, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useEffect, useMemo, useRef, useState, startTransition } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import { cn } from "@/lib/utils";
 
 const navigation = {
@@ -85,9 +85,8 @@ const GUEST_USAGE_TOOL_TYPES = [
  */
 export default function AiToolsWorkspace({ embedInBuilder = false }) {
   const router = useRouter();
-  const [selectedTool, setSelectedTool] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
+  const lastScrollYRef = useRef(0);
 
   const currentType = router.query?.type;
   const selectedIndex = useMemo(
@@ -97,46 +96,6 @@ export default function AiToolsWorkspace({ embedInBuilder = false }) {
 
   const buildToolUrl = (type) =>
     embedInBuilder ? `/builder?view=ai-tools&type=${type}` : `/ai-tools?type=${type}`;
-
-  useEffect(() => {
-    document.body.style.overflowY = "auto";
-  }, []);
-
-  useEffect(() => {
-    if (!router.isReady) return;
-    const needsDefault = embedInBuilder
-      ? router.query?.view === "ai-tools" && router.query?.type === undefined
-      : router.query?.type === undefined;
-    if (needsDefault) {
-      const url = embedInBuilder
-        ? "/builder?view=ai-tools&type=optimize-resume"
-        : "/ai-tools?type=optimize-resume";
-      router.replace(url, undefined, { shallow: true });
-    }
-  }, [router.isReady, router.query?.view, router.query?.type, embedInBuilder]);
-
-  useEffect(() => {
-    setSelectedTool(selectedIndex);
-  }, [selectedIndex]);
-
-  useEffect(() => {
-    if (router.query?.type !== navigation.optimizeResume) setOptimizeResumeHasResult(false);
-    if (router.query?.type !== navigation.salary) setSalaryHasResult(false);
-    if (router.query?.type !== navigation.email) setEmailHasResult(false);
-    if (router.query?.type !== navigation.MockInterview) setMockInterviewHasResult(false);
-    setHasClickedStartNewAnalysis(false);
-  }, [router.query?.type]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      if (currentScrollY > lastScrollY && currentScrollY > 100) setIsVisible(false);
-      else setIsVisible(true);
-      setLastScrollY(currentScrollY);
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
 
   const isLoggedIn = !!Cookies.get("df-token");
   const currentTypeForLock = router.query?.type || navigation.optimizeResume;
@@ -163,10 +122,49 @@ export default function AiToolsWorkspace({ embedInBuilder = false }) {
           : router.query?.type === navigation.MockInterview
             ? "mock-interview"
             : null;
-  const [hasStoredResult, setHasStoredResult] = useState(false);
+
+  const hasStoredResult = useMemo(
+    () => !!(currentToolStorageKey && getAiToolResult(currentToolStorageKey)),
+    [currentToolStorageKey]
+  );
+
   useEffect(() => {
-    setHasStoredResult(!!(currentToolStorageKey && getAiToolResult(currentToolStorageKey)));
-  }, [currentToolStorageKey]);
+    document.body.style.overflowY = "auto";
+  }, []);
+
+  useEffect(() => {
+    if (!router.isReady) return;
+    const needsDefault = embedInBuilder
+      ? router.query?.view === "ai-tools" && router.query?.type === undefined
+      : router.query?.type === undefined;
+    if (needsDefault) {
+      const url = embedInBuilder
+        ? "/builder?view=ai-tools&type=optimize-resume"
+        : "/ai-tools?type=optimize-resume";
+      router.replace(url, undefined, { shallow: true });
+    }
+  }, [router.isReady, router.query?.view, router.query?.type, embedInBuilder, router]);
+
+  useEffect(() => {
+    startTransition(() => {
+      if (router.query?.type !== navigation.optimizeResume) setOptimizeResumeHasResult(false);
+      if (router.query?.type !== navigation.salary) setSalaryHasResult(false);
+      if (router.query?.type !== navigation.email) setEmailHasResult(false);
+      if (router.query?.type !== navigation.MockInterview) setMockInterviewHasResult(false);
+      setHasClickedStartNewAnalysis(false);
+    });
+  }, [router.query?.type]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > lastScrollYRef.current && currentScrollY > 100) setIsVisible(false);
+      else setIsVisible(true);
+      lastScrollYRef.current = currentScrollY;
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const currentToolHasResult =
     (router.query?.type === navigation.optimizeResume && optimizeResumeHasResult) ||
@@ -323,13 +321,12 @@ export default function AiToolsWorkspace({ embedInBuilder = false }) {
     router.push(buildToolUrl(type), undefined, { shallow: true });
   };
 
-  const currentTool = navItems[selectedTool];
+  const currentTool = navItems[selectedIndex];
   const isWideLayout =
     router.query?.type === navigation.email ||
     router.query?.type === navigation.analyze ||
     (router.query?.type === navigation.optimizeResume && optimizeResumeHasResult) ||
     (router.query?.type === navigation.salary && salaryHasResult);
-  const ToolIconComponent = getAiWorkspaceToolIcon(currentTypeForLock);
 
   return (
     <div className="flex flex-col min-h-screen" style={{ background: "#F1EDE2" }}>
@@ -391,7 +388,7 @@ export default function AiToolsWorkspace({ embedInBuilder = false }) {
                       </div>
                     ) : (
                       <div className="flex items-center justify-center text-foreground">
-                        <ToolIconComponent className="w-10 h-10" />
+                        <AiWorkspaceToolIcon type={currentTypeForLock} className="w-10 h-10" />
                       </div>
                     )}
                   </div>

@@ -1,7 +1,7 @@
 import { Search, SlidersHorizontal, RotateCcw, Plus } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { motion, LayoutGroup } from "framer-motion";
+import { motion, LayoutGroup } from "motion/react";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Kbd } from "@/components/ui/kbd";
 import { CriteriaEditor } from "./CriteriaEditor";
@@ -19,7 +19,7 @@ export function TabSwitcher() {
 
   return (
     <LayoutGroup id="filterbar-tabs">
-      <div className="flex items-center rounded-full bg-[#EEECE7] dark:bg-[#1C1917] border border-[#d4d0c4] dark:border-[#38312e] p-0.5 flex-shrink-0">
+      <div className="flex items-center rounded-full bg-[#EEECE7] dark:bg-[#1C1917] border border-[#d4d0c4] dark:border-[#38312e] p-0.5 shrink-0">
         {TABS.map(({ href, label, key }) => (
           <Link key={key} href={href}>
             <span
@@ -82,7 +82,7 @@ export function FilterBar({
   const isMobile = useIsMobile();
 
   return (
-    <div className="flex flex-row flex-shrink-0 items-center pl-4 pr-4 mt-2.5 md:mt-6 mb-1.5 md:mb-2 gap-2">
+    <div className="flex flex-row shrink-0 items-center pl-4 pr-4 mt-2.5 md:mt-6 mb-1.5 md:mb-2 gap-2">
       {/* Left group: criteria + filters */}
       <div
         ref={filterBarRef}
@@ -98,7 +98,7 @@ export function FilterBar({
               data-testid="button-criteria"
               className="flex items-center gap-2.5 bg-card border border-border h-9 text-sm text-foreground min-w-0 flex-1 md:max-w-[360px] select-none rounded-full pl-1.5 pr-4 hover:border-foreground/20 transition-colors cursor-pointer"
             >
-              <div className="w-6 h-6 flex-shrink-0 rounded-full bg-foreground/[0.07] dark:bg-white/[0.08] flex items-center justify-center pointer-events-none">
+              <div className="w-6 h-6 shrink-0 rounded-full bg-foreground/[0.07] dark:bg-white/[0.08] flex items-center justify-center pointer-events-none">
                 <Search className="w-3 h-3 text-foreground/55" aria-hidden="true" />
               </div>
               <span className="truncate text-[13px] text-foreground/70 pointer-events-none">
@@ -144,7 +144,7 @@ export function FilterBar({
             <PopoverTrigger asChild>
               <button
                 data-testid="button-filters"
-                className="flex-shrink-0 flex items-center justify-center gap-1.5 h-9 w-9 md:w-auto md:px-4 rounded-full border border-border bg-card text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer"
+                className="shrink-0 flex items-center justify-center gap-1.5 h-9 w-9 md:w-auto md:px-4 rounded-full border border-border bg-card text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer"
               >
                 <SlidersHorizontal className="w-3.5 h-3.5" aria-hidden="true" />
                 <span className="hidden md:inline">Filters</span>
@@ -227,7 +227,7 @@ export function FilterBar({
       <div className="hidden md:flex items-center gap-1.5 ml-auto">
         <button
           onClick={onAddJob}
-          className="flex-shrink-0 flex items-center gap-1.5 h-9 px-4 rounded-full border border-border bg-card text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer"
+          className="shrink-0 flex items-center gap-1.5 h-9 px-4 rounded-full border border-border bg-card text-sm font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer"
         >
           <Plus className="w-3.5 h-3.5" aria-hidden="true" />
           Add job manually

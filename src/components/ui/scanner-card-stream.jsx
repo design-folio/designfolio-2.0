@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect, useMemo, useState } from "react";
+import React, { useRef, useEffect, useMemo, useState, startTransition } from "react";
 
 const ASCII_CHARS =
   "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789(){}[]<>;:,._-+=!@#$%^&*|\\/\"'`~?";
@@ -25,10 +25,10 @@ export default function ScannerCardStream({ file = null, isScanning = true }) {
   useEffect(() => {
     if (file) {
       const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
+      startTransition(() => setPreviewUrl(url));
       return () => URL.revokeObjectURL(url);
     }
-    setPreviewUrl(null);
+    startTransition(() => setPreviewUrl(null));
   }, [file]);
 
   useEffect(() => {

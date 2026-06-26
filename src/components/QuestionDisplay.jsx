@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import React, { useEffect, useMemo, useState } from "react";
+import { motion } from "motion/react";
 import { Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -81,26 +81,11 @@ const generateTip = (question) => {
 
 const STREAM_SPEED_MS = 40;
 
-export default function QuestionDisplay({
-  currentQuestion,
-  questionNumber,
-  totalQuestions,
-  userAnswer,
-  onAnswerChange,
-  onNext,
-  isGeneratingFeedback = false,
-}) {
-  const [tip, setTip] = useState("");
+function StreamedQuestion({ currentQuestion }) {
   const [streamedText, setStreamedText] = useState("");
 
   useEffect(() => {
-    setTip(generateTip(currentQuestion));
-  }, [currentQuestion]);
-
-  // Stream question text (typewriter effect)
-  useEffect(() => {
     const full = currentQuestion || "";
-    setStreamedText("");
     if (!full) return;
     let index = 0;
     const timer = setInterval(() => {
@@ -110,6 +95,30 @@ export default function QuestionDisplay({
     }, STREAM_SPEED_MS);
     return () => clearInterval(timer);
   }, [currentQuestion]);
+
+  return (
+    <p className="text-base font-medium text-foreground leading-relaxed">
+      {streamedText || (currentQuestion ? "" : "Loading question...")}
+      {currentQuestion && streamedText.length < (currentQuestion?.length || 0) ? (
+        <span
+          className="inline-block w-0.5 h-4 bg-foreground/70 align-middle animate-pulse ml-0.5"
+          aria-hidden
+        />
+      ) : null}
+    </p>
+  );
+}
+
+export default function QuestionDisplay({
+  currentQuestion,
+  questionNumber,
+  totalQuestions,
+  userAnswer,
+  onAnswerChange,
+  onNext,
+  isGeneratingFeedback = false,
+}) {
+  const tip = useMemo(() => generateTip(currentQuestion), [currentQuestion]);
 
   const handleAnswerChange = (e) => {
     const text = e.target.value;
@@ -162,15 +171,7 @@ export default function QuestionDisplay({
       </div>
 
       <div className="space-y-6 pt-4">
-        <p className="text-base font-medium text-foreground leading-relaxed">
-          {streamedText || (currentQuestion ? "" : "Loading question...")}
-          {currentQuestion && streamedText.length < (currentQuestion?.length || 0) ? (
-            <span
-              className="inline-block w-0.5 h-4 bg-foreground/70 align-middle animate-pulse ml-0.5"
-              aria-hidden
-            />
-          ) : null}
-        </p>
+        <StreamedQuestion key={currentQuestion} currentQuestion={currentQuestion} />
 
         <div className="relative group">
           <div className="bg-white dark:bg-white border-2 border-border rounded-2xl hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] transition-all duration-300 ease-out overflow-hidden">

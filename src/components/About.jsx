@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useInView } from "framer-motion";
+import React, { useRef, useState } from "react";
+import { useInView } from "motion/react";
 import dynamic from "next/dynamic";
 import claimUrl from "../../public/lottie/claimurl.json";
 import aboutJson from "../../public/lottie/about.json";
@@ -12,22 +12,16 @@ const Lottie = dynamic(() => import("lottie-react"), {
 
 // Section Component with CSS Transitions
 const AnimatedSection = ({ children, animationData, className, delay }) => {
-  const [width, setWidth] = useState(0);
+  const [width] = useState(() => (typeof window !== "undefined" ? window.innerWidth : 0));
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setWidth(window.innerWidth);
-    }
-  }, []);
 
   const adjustedDelay = width < 768 ? 0.3 : delay;
 
   return (
     <section
       ref={ref}
-      className={`${className}  border-[6px] border-solid  !rounded-[16px] p-[16px] md:p-[32px] transition-all duration-700 ease-out`}
+      className={`${className}  border-[6px] border-solid  rounded-[16px]! p-[16px] md:p-[32px] transition-all duration-700 ease-out`}
       style={{
         opacity: isInView ? 1 : 0,
         transform: isInView ? "none" : "translateY(80px)",

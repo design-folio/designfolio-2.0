@@ -23,7 +23,7 @@ import {
 } from "@/lib/aboutStoryPreview";
 import { DEFAULT_SECTION_ORDER, modals, normalizeSectionOrder, sidebars } from "@/lib/constant";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { AtSignIcon, DownloadIcon, DribbbleIcon, TwitterIcon } from "lucide-animated";
 import {
   ChevronDown,
@@ -37,7 +37,7 @@ import {
   X,
 } from "lucide-react";
 import { useRouter } from "next/router";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState, startTransition } from "react";
 import { AnimatedThemeToggler } from "./animated-theme-toggler";
 import MonoContactSection from "./MonoContactSection";
 import MonoExperienceSection from "./MonoExperienceSection";
@@ -166,19 +166,19 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
   const avatarFallbackText = useMemo(() => getInitials(displayName, "U"), [displayName]);
 
   useEffect(() => {
-    setProjects(mappedProjects);
+    startTransition(() => setProjects(mappedProjects));
   }, [mappedProjects]);
 
   useEffect(() => {
-    setActiveTools(mappedTools);
+    startTransition(() => setActiveTools(mappedTools));
   }, [mappedTools]);
 
   useEffect(() => {
-    setStoryImages(mappedStoryImages);
+    startTransition(() => setStoryImages(mappedStoryImages));
   }, [mappedStoryImages]);
 
   useEffect(() => {
-    setAboutStoryExpanded(false);
+    startTransition(() => setAboutStoryExpanded(false));
   }, [aboutStoryPlain]);
 
   const handleOpenProjectEditor = useCallback(
@@ -479,7 +479,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                       e.preventDefault();
                     }}
                   >
-                    <SheetHeader className="px-5 py-4 border-b border-black/10 dark:border-white/10 flex-shrink-0 flex flex-row items-center m-0 space-y-0 h-[65px]">
+                    <SheetHeader className="px-5 py-4 border-b border-black/10 dark:border-white/10 shrink-0 flex flex-row items-center m-0 space-y-0 h-[65px]">
                       <SheetTitle className="text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] font-medium m-0">
                         Add Project
                       </SheetTitle>
@@ -579,7 +579,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                       </div>
                     </div>
 
-                    <div className="p-5 border-t border-black/10 dark:border-white/10 flex justify-end gap-3 flex-shrink-0 bg-white dark:bg-[#2A2520]">
+                    <div className="p-5 border-t border-black/10 dark:border-white/10 flex justify-end gap-3 shrink-0 bg-white dark:bg-[#2A2520]">
                       <SheetClose asChild>
                         <Button
                           variant="outline"
@@ -865,7 +865,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                           </p>
                         ))
                     ) : (
-                      <p className="break-words">
+                      <p className="wrap-break-word">
                         {renderDescriptionLines(
                           truncatePlainText(aboutStoryPlain, ABOUT_STORY_CHAR_THRESHOLD)
                         )}
@@ -873,7 +873,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                     )}
                     {!aboutStoryExpanded && (
                       <div
-                        className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-[#F0EDE7] to-transparent dark:from-[#1A1A1A]"
+                        className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-linear-to-t from-[#F0EDE7] to-transparent dark:from-[#1A1A1A]"
                         aria-hidden
                       />
                     )}
@@ -1169,7 +1169,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
             className="w-full h-48 relative flex items-end overflow-hidden cursor-pointer select-none bg-black/[0.015] dark:bg-white/[0.03] transition-colors hover:bg-black/[0.025] dark:hover:bg-white/[0.05]"
           >
             {/* Ground Line */}
-            <div className="absolute bottom-12 left-0 w-full h-[1px] bg-[#E5D7C4] dark:bg-[#3A352E]"></div>
+            <div className="absolute bottom-12 left-0 w-full h-px bg-[#E5D7C4] dark:bg-[#3A352E]"></div>
 
             {/* Dino */}
             <motion.div
@@ -1222,7 +1222,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
             ))}
 
             {/* Decorative Background Elements */}
-            <div className="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#E5D7C4]/30 dark:via-[#3A352E]/40 to-transparent -translate-y-12"></div>
+            <div className="absolute top-1/2 left-0 w-full h-px bg-linear-to-r from-transparent via-[#E5D7C4]/30 dark:via-[#3A352E]/40 to-transparent -translate-y-12"></div>
 
             {isGameOver && (
               <div className="absolute inset-0 flex items-center justify-center bg-[#F0EDE7]/40 dark:bg-[#1A1A1A]/60 backdrop-blur-[2px] z-30">

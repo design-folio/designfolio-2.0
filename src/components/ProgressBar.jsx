@@ -1,5 +1,5 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 const ProgressBar = ({ progress, bg = "linear-gradient(to right, #FFB736 0%, #F86845 200%)" }) => {
   // Ensure progress is between 0 and 100

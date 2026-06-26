@@ -1,5 +1,5 @@
-import { useState, useCallback, useEffect, useMemo, Fragment } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useCallback, useEffect, useMemo, Fragment, startTransition } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import { Pencil, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useGlobalContext } from "@/context/globalContext";
@@ -13,7 +13,7 @@ function ExperienceDescription({ desc }) {
   const [visibleCount, setVisibleCount] = useState(0);
 
   useEffect(() => {
-    setVisibleCount(0);
+    startTransition(() => setVisibleCount(0));
     if (!words.length) return;
     let count = 0;
     // 75ms ≈ 5 chars × 15ms — matches the original char stagger pace
@@ -29,7 +29,7 @@ function ExperienceDescription({ desc }) {
 
   return (
     <p
-      className="font-jetbrains text-[15px] leading-relaxed break-words whitespace-normal"
+      className="font-jetbrains text-[15px] leading-relaxed wrap-break-word whitespace-normal"
       style={{ color: "var(--tiptap-work-paragraph, #7a736c)" }}
     >
       {words.slice(0, visibleCount).map((word, wordIndex) => {

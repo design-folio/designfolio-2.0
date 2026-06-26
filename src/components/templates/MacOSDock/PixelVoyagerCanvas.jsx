@@ -7,10 +7,11 @@ export default function PixelVoyagerCanvas() {
   const mountRef = useRef(null);
 
   useEffect(() => {
-    if (!mountRef.current) return;
+    const mount = mountRef.current;
+    if (!mount) return;
 
-    const width = mountRef.current.clientWidth;
-    const height = mountRef.current.clientHeight;
+    const width = mount.clientWidth;
+    const height = mount.clientHeight;
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
@@ -18,7 +19,7 @@ export default function PixelVoyagerCanvas() {
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(width, height);
     renderer.setPixelRatio(window.devicePixelRatio);
-    mountRef.current.appendChild(renderer.domElement);
+    mount.appendChild(renderer.domElement);
 
     const mouse = new THREE.Vector2(0, 0);
     const clock = new THREE.Clock();
@@ -174,15 +175,15 @@ export default function PixelVoyagerCanvas() {
     };
     window.addEventListener("resize", handleResize);
     const resizeObserver = new ResizeObserver(handleResize);
-    resizeObserver.observe(mountRef.current);
+    resizeObserver.observe(mount);
 
     return () => {
       cancelAnimationFrame(animationId);
       resizeObserver.disconnect();
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("mousemove", handleMouseMove);
-      if (mountRef.current && renderer.domElement.parentNode === mountRef.current) {
-        mountRef.current.removeChild(renderer.domElement);
+      if (mount && renderer.domElement.parentNode === mount) {
+        mount.removeChild(renderer.domElement);
       }
       renderer.dispose();
     };

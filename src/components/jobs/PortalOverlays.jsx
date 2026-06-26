@@ -1,5 +1,5 @@
 import { createPortal } from "react-dom";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "motion/react";
 import { MockInterviewRoom } from "./MockInterviewRoom";
 import { InterviewReport } from "./InterviewReport";
 import { ScoutChat } from "./ScoutChat";

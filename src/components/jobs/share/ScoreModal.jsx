@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, startTransition } from "react";
 import { useRouter } from "next/router";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { X, CheckCircle2 } from "lucide-react";
 import { ColorOrb } from "@/components/ui/color-orb";
 import { Folder } from "@/components/ui/folder";
@@ -54,7 +54,7 @@ export function ScoreModal({ job, isDark, onClose }) {
   // Cycle AI status messages while processing
   useEffect(() => {
     if (stage !== "processing") return;
-    setAiStatusIndex(0);
+    startTransition(() => setAiStatusIndex(0));
     const interval = setInterval(() => {
       setAiStatusIndex((i) => (i + 1) % AI_STATUSES.length);
     }, 2000);
@@ -108,10 +108,10 @@ export function ScoreModal({ job, isDark, onClose }) {
                     <img
                       src={job.logoUrl}
                       alt={job.company}
-                      className="w-7 h-7 rounded-lg object-contain border border-black/[0.05] flex-shrink-0"
+                      className="w-7 h-7 rounded-lg object-contain border border-black/[0.05] shrink-0"
                     />
                   ) : (
-                    <div className="w-7 h-7 rounded-lg bg-foreground/[0.08] flex items-center justify-center text-foreground/50 text-[11px] font-bold flex-shrink-0">
+                    <div className="w-7 h-7 rounded-lg bg-foreground/[0.08] flex items-center justify-center text-foreground/50 text-[11px] font-bold shrink-0">
                       {job.company?.[0]?.toUpperCase() || "?"}
                     </div>
                   )}

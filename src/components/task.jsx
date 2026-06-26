@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import React from "react";
 import { useGlobalContext } from "@/context/globalContext";
 import CloseIcon from "../../public/assets/svgs/close.svg";

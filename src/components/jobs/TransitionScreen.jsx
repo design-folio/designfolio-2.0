@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { ArrowRight } from "lucide-react";
 
 // Orbiting company logos
@@ -148,7 +148,7 @@ function AnimatedJobCount({ onDone }) {
       if (shimmerTimeoutRef.current) clearTimeout(shimmerTimeoutRef.current);
       if (shimmerResetRef.current) clearTimeout(shimmerResetRef.current);
     };
-  }, []);
+  }, [onDone]);
 
   const display = count >= 1200 ? "1,200+" : count.toLocaleString();
 

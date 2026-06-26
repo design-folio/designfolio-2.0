@@ -338,7 +338,7 @@ export default function EmailMockup() {
 
             <div className="p-8 sm:p-10 md:p-12">
               <div className="flex flex-col sm:flex-row items-start gap-6 sm:gap-8 pb-8">
-                <div className="flex-shrink-0">
+                <div className="shrink-0">
                   <div className="relative">
                     <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full overflow-hidden shadow-md bg-muted/20 dark:bg-muted/10 relative">
                       {/* Shimmer background effect */}

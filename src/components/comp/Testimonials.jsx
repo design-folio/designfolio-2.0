@@ -1,5 +1,5 @@
 import { useIsMobile } from "@/hooks/use-mobile";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { ChevronLeft, ChevronRight, EditIcon } from "lucide-react";
 import { useState, useRef } from "react";
 import PlusIcon from "../../../public/assets/svgs/plus.svg";
@@ -92,13 +92,12 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
     <section className="py-12">
       <div className="flex items-center justify-between gap-4 mb-12">
         <h2 className="text-3xl font-bold flex-1">What People Say</h2>
-        {headerActions && <div className="flex-shrink-0">{headerActions}</div>}
+        {headerActions && <div className="shrink-0">{headerActions}</div>}
       </div>
 
       <div
-        className={`relative ${
-          isMobile ? "px-4" : "grid grid-cols-2 gap-6 max-w-[848px] mx-auto px-4"
-        }`}
+        className={`relative ${isMobile ? "px-4" : "grid grid-cols-2 gap-6 max-w-[848px] mx-auto px-4"
+          }`}
       >
         {isMobile ? (
           <>
@@ -163,7 +162,7 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
 
                       <div className="flex-1">
                         {visibleTestimonials[currentIndex]?.linkedinLink &&
-                        visibleTestimonials[currentIndex]?.linkedinLink?.trim() !== "" ? (
+                          visibleTestimonials[currentIndex]?.linkedinLink?.trim() !== "" ? (
                           <a
                             href={visibleTestimonials[currentIndex]?.linkedinLink}
                             target="_blank"
@@ -250,7 +249,7 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
                   {edit && (
                     <Button2
                       onClick={() => handleClick(testimonial)}
-                      customClass="!p-0 !flex-shrink-0 border-none"
+                      customClass="!p-0 !shrink-0 border-none"
                       type={"secondary"}
                       icon={<EditIcon className="text-df-icon-color cursor-pointer" />}
                     />
@@ -410,7 +409,7 @@ const SortableTestimonialItem = ({ review, edit }) => {
       <div className="flex-1 min-w-0">
         <ReviewCard review={review} sorting={true} edit={edit} />
       </div>
-      <div className="flex-shrink-0">
+      <div className="shrink-0">
         <DragHandle listeners={listeners} attributes={attributes} />
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/buttonNew";
 import { ChevronUp, GraduationCap, Calendar, X } from "lucide-react";
 import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog";
@@ -9,7 +9,6 @@ import { modals, isSidebarThatShifts, getSidebarShiftWidth } from "@/lib/constan
 const COURSE_CARD_SEEN_KEY = "bottom_notification_seen";
 
 export function CourseCard() {
-  const [isExpanded, setIsExpanded] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const isMobile = useIsMobile();
   const { activeSidebar, showModal, userDetails } = useGlobalContext();
@@ -17,24 +16,18 @@ export function CourseCard() {
     showModal === modals.onBoardingNewUser || showModal === modals.onboarding;
   const shouldShiftCard = !isMobile && isSidebarThatShifts(activeSidebar);
 
-  useEffect(() => {
-    const hasSeenCard = localStorage.getItem(COURSE_CARD_SEEN_KEY);
+  const isNewUser = useMemo(() => {
+    if (!userDetails?.createdAt) return false;
+    const hoursSinceCreation = (new Date() - new Date(userDetails.createdAt)) / (1000 * 60 * 60);
+    return hoursSinceCreation < 24;
+  }, [userDetails?.createdAt]);
 
-    // Check if user was created less than 24 hours ago
-    const isNewUser = (() => {
-      if (!userDetails?.createdAt) return false;
-      const createdAt = new Date(userDetails.createdAt);
-      const now = new Date();
-      const hoursSinceCreation = (now - createdAt) / (1000 * 60 * 60);
-      return hoursSinceCreation < 24;
-    })();
-    if (!hasSeenCard && !isOnboardingModalOpen && !isNewUser) {
-      setIsExpanded(true);
-    }
-  }, [isOnboardingModalOpen, userDetails?.createdAt]);
+  const [isExpanded, setIsExpanded] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return !localStorage.getItem(COURSE_CARD_SEEN_KEY);
+  });
 
-  // Don't render if onboarding modal is open or if user hasn't completed onboarding
-  if (isOnboardingModalOpen) {
+  if (isOnboardingModalOpen || isNewUser) {
     return null;
   }
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useMemo, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,18 +18,15 @@ const FooterSettingsPanel = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingResume, setIsUploadingResume] = useState(false);
   const [isRemovingResume, setIsRemovingResume] = useState(false);
-  const [uploadedResume, setUploadedResume] = useState(null); // { name: string, size: string } | null
+  const [freshUpload, setFreshUpload] = useState(null);
   const resumeInputRef = useRef(null);
 
-  // Sync uploadedResume from userDetails when they have an existing resume (no size from API)
-  useEffect(() => {
+  const resumeFromServer = useMemo(() => {
     const name = userDetails?.resume?.originalName;
-    if (name) {
-      setUploadedResume({ name, size: null });
-    } else {
-      setUploadedResume(null);
-    }
+    return name ? { name, size: null } : null;
   }, [userDetails?.resume?.originalName]);
+
+  const uploadedResume = freshUpload ?? resumeFromServer;
 
   const handleClose = () => {
     closeSidebar();
@@ -45,6 +42,7 @@ const FooterSettingsPanel = () => {
     setIsRemovingResume(true);
     try {
       await _deleteResume();
+      setFreshUpload(null);
       await userDetailsRefecth();
       toast.success("Resume removed");
     } catch (error) {
@@ -92,7 +90,7 @@ const FooterSettingsPanel = () => {
       if (res?.data?.user) {
         updateCache("userDetails", res.data.user);
         setUserDetails(res.data.user);
-        setUploadedResume({
+        setFreshUpload({
           name: file.name,
           size: (file.size / (1024 * 1024)).toFixed(2) + "MB",
         });

@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { Input } from "@/components/ui/input";
 import { Check, Search, Loader2 } from "lucide-react";
 import ErrorBanner from "./ErrorBanner";

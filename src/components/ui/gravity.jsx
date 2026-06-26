@@ -4,7 +4,9 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useId,
   useImperativeHandle,
+  useLayoutEffect,
   useRef,
   useState,
 } from "react";
@@ -77,12 +79,14 @@ export const MatterBody = ({
   ...props
 }) => {
   const elementRef = useRef(null);
-  const idRef = useRef(Math.random().toString(36).substring(7));
+  const stableId = useId();
+  const idRef = useRef(stableId);
   const context = useContext(GravityContext);
 
   useEffect(() => {
     if (!elementRef.current || !context) return;
-    context.registerElement(idRef.current, elementRef.current, {
+    const elementId = idRef.current;
+    context.registerElement(elementId, elementRef.current, {
       children,
       matterBodyOptions,
       bodyType,
@@ -93,8 +97,19 @@ export const MatterBody = ({
       angle,
       ...props,
     });
-    return () => context.unregisterElement(idRef.current);
-  }, [props, children, matterBodyOptions, isDraggable]);
+    return () => context.unregisterElement(elementId);
+  }, [
+    props,
+    children,
+    matterBodyOptions,
+    isDraggable,
+    bodyType,
+    sampleLength,
+    context,
+    x,
+    y,
+    angle,
+  ]);
 
   return (
     <div
@@ -199,14 +214,18 @@ export const Gravity = forwardRef(
       }
     }, []);
 
+    const updateElementsRef = useRef(null);
     const updateElements = useCallback(() => {
       bodiesMap.current.forEach(({ element, body }) => {
         const { x, y } = body.position;
         const rotation = body.angle * (180 / Math.PI);
         element.style.transform = `translate(${x - element.offsetWidth / 2}px, ${y - element.offsetHeight / 2}px) rotate(${rotation}deg)`;
       });
-      frameId.current = requestAnimationFrame(updateElements);
+      frameId.current = requestAnimationFrame(() => updateElementsRef.current?.());
     }, []);
+    useLayoutEffect(() => {
+      updateElementsRef.current = updateElements;
+    }, [updateElements]);
 
     const startEngine = useCallback(() => {
       if (runner.current) {
@@ -303,16 +322,7 @@ export const Gravity = forwardRef(
       runner.current = Runner.create();
 
       if (autoStart) startEngine();
-    }, [
-      updateElements,
-      debug,
-      autoStart,
-      gravity.x,
-      gravity.y,
-      addTopWall,
-      grabCursor,
-      startEngine,
-    ]);
+    }, [debug, autoStart, gravity.x, gravity.y, addTopWall, grabCursor, startEngine]);
 
     const clearRenderer = useCallback(() => {
       if (frameId.current) cancelAnimationFrame(frameId.current);

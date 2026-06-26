@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { useTheme } from "next-themes";
 import {
   X,
@@ -64,7 +64,7 @@ export function CreditsShopModal({ open, onClose, onBuy, buying = false }) {
         if (topup) setPack(topup);
       })
       .catch(() => {});
-  }, [open]);
+  }, [open, pack]);
 
   const quantities = pack?.quantities ?? {};
   const amount = pack?.amount ?? 999;
@@ -162,7 +162,7 @@ export function CreditsShopModal({ open, onClose, onBuy, buying = false }) {
                 <div className="space-y-1">
                   {rows.map(({ key, icon: Icon, label, sub, count }) => (
                     <div key={key} className="flex items-center gap-3 py-1.5">
-                      <div className="w-8 h-8 rounded-xl bg-foreground/[0.05] flex items-center justify-center flex-shrink-0">
+                      <div className="w-8 h-8 rounded-xl bg-foreground/[0.05] flex items-center justify-center shrink-0">
                         <Icon className="w-3.5 h-3.5 text-foreground/40" />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -173,7 +173,7 @@ export function CreditsShopModal({ open, onClose, onBuy, buying = false }) {
                           {sub}
                         </div>
                       </div>
-                      <span className="flex items-center gap-0.5 bg-amber-100 dark:bg-amber-400/20 border border-amber-300/60 dark:border-amber-400/30 rounded-full px-1.5 py-0.5 flex-shrink-0">
+                      <span className="flex items-center gap-0.5 bg-amber-100 dark:bg-amber-400/20 border border-amber-300/60 dark:border-amber-400/30 rounded-full px-1.5 py-0.5 shrink-0">
                         <Zap className="w-2.5 h-2.5 text-amber-500 fill-amber-500" />
                         <span className="text-[10px] font-semibold tabular-nums text-amber-600 dark:text-amber-400">
                           +{count}

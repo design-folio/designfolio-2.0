@@ -6,7 +6,7 @@ import Text from "../text";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import DeleteIcon from "../../../public/assets/svgs/deleteIcon.svg";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import SimpleTiptapEditor from "../SimpleTiptapEditor";
 import { UnsavedChangesDialog } from "../ui/UnsavedChangesDialog";
 import { sidebars } from "@/lib/constant";
@@ -74,10 +74,9 @@ export default function AddWork() {
     return JSON.stringify(desc1) === JSON.stringify(desc2);
   };
 
-  const hasUnsavedChanges = () => {
+  const hasUnsavedChanges = useCallback(() => {
     const v = editingValues;
     if (!v) return false;
-
     if (!selectedWork) {
       return !!(
         v.role ||
@@ -90,10 +89,8 @@ export default function AddWork() {
         v.currentlyWorking
       );
     }
-
     const originalEndMonth = selectedWork.currentlyWorking ? "" : selectedWork.endMonth || "";
     const originalEndYear = selectedWork.currentlyWorking ? "" : selectedWork.endYear || "";
-
     return (
       v.role !== (selectedWork.role || "") ||
       v.company !== (selectedWork.company || "") ||
@@ -104,13 +101,13 @@ export default function AddWork() {
       v.endYear !== originalEndYear ||
       v.currentlyWorking !== (selectedWork.currentlyWorking || false)
     );
-  };
+  }, [editingValues, selectedWork]);
 
-  const resetState = () => {
+  const resetState = useCallback(() => {
     setSelectedWork(null);
     setEditingValues(null);
     setShowDeleteWarning(false);
-  };
+  }, [setSelectedWork]);
 
   const resetStateAndClose = () => {
     resetState();
@@ -124,17 +121,16 @@ export default function AddWork() {
   // Clear state when sidebar closes using resetState
   useEffect(() => {
     if (!isOpen) {
-      // Reset state when sidebar closes (after unsaved changes dialog is handled if needed)
-      resetState();
+      queueMicrotask(() => resetState());
     }
-  }, [isOpen]);
+  }, [isOpen, resetState]);
 
   useEffect(() => {
     if (isOpen) {
       registerUnsavedChangesChecker(sidebars.work, hasUnsavedChanges);
     }
     return () => unregisterUnsavedChangesChecker(sidebars.work);
-  }, [isOpen, editingValues, selectedWork]);
+  }, [isOpen, hasUnsavedChanges, registerUnsavedChangesChecker, unregisterUnsavedChangesChecker]);
 
   const handleDeleteWork = () => {
     setShowDeleteWarning(true);
@@ -279,7 +275,7 @@ export default function AddWork() {
                   <Field
                     as="select"
                     name="startMonth"
-                    className={`h-10 w-full rounded-xl border border-transparent bg-black/[0.03] dark:bg-white/[0.03] px-3.5 text-sm font-inter font-medium custom-select mt-2 shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10 focus:border-black/20 dark:focus:border-white/20 ${!values.startMonth ? "text-black/30 dark:text-white/30" : "text-foreground"} ${errors.startMonth && touched.startMonth ? "!border-destructive" : ""}`}
+                    className={`h-10 w-full rounded-xl border border-transparent bg-black/[0.03] dark:bg-white/[0.03] px-3.5 text-sm font-inter font-medium custom-select mt-2 shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10 focus:border-black/20 dark:focus:border-white/20 ${!values.startMonth ? "text-black/30 dark:text-white/30" : "text-foreground"} ${errors.startMonth && touched.startMonth ? "border-destructive!" : ""}`}
                   >
                     <option value="">Choose Month</option>
                     {monthOptions}
@@ -291,7 +287,7 @@ export default function AddWork() {
                   <Field
                     as="select"
                     name="startYear"
-                    className={`h-10 w-full rounded-xl border border-transparent bg-black/[0.03] dark:bg-white/[0.03] px-3.5 text-sm font-inter font-medium custom-select mt-2 shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10 focus:border-black/20 dark:focus:border-white/20 ${!values.startYear ? "text-black/30 dark:text-white/30" : "text-foreground"} ${errors.startYear && touched.startYear ? "!border-destructive" : ""}`}
+                    className={`h-10 w-full rounded-xl border border-transparent bg-black/[0.03] dark:bg-white/[0.03] px-3.5 text-sm font-inter font-medium custom-select mt-2 shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10 focus:border-black/20 dark:focus:border-white/20 ${!values.startYear ? "text-black/30 dark:text-white/30" : "text-foreground"} ${errors.startYear && touched.startYear ? "border-destructive!" : ""}`}
                   >
                     <option value="">Choose Year</option>
                     {yearOptions}
@@ -314,7 +310,7 @@ export default function AddWork() {
                     <Field
                       as="select"
                       name="endMonth"
-                      className={`h-10 w-full rounded-xl border border-transparent bg-black/[0.03] dark:bg-white/[0.03] px-3.5 text-sm font-inter font-medium custom-select mt-2 shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10 focus:border-black/20 dark:focus:border-white/20 ${!values.endMonth ? "text-black/30 dark:text-white/30" : "text-foreground"} ${errors.endMonth && touched.endMonth ? "!border-destructive" : ""}`}
+                      className={`h-10 w-full rounded-xl border border-transparent bg-black/[0.03] dark:bg-white/[0.03] px-3.5 text-sm font-inter font-medium custom-select mt-2 shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10 focus:border-black/20 dark:focus:border-white/20 ${!values.endMonth ? "text-black/30 dark:text-white/30" : "text-foreground"} ${errors.endMonth && touched.endMonth ? "border-destructive!" : ""}`}
                       disabled={values.currentlyWorking}
                     >
                       <option value="">Choose Month</option>
@@ -327,7 +323,7 @@ export default function AddWork() {
                     <Field
                       as="select"
                       name="endYear"
-                      className={`h-10 w-full rounded-xl border border-transparent bg-black/[0.03] dark:bg-white/[0.03] px-3.5 text-sm font-inter font-medium custom-select mt-2 shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10 focus:border-black/20 dark:focus:border-white/20 ${!values.endYear ? "text-black/30 dark:text-white/30" : "text-foreground"} ${errors.endYear && touched.endYear ? "!border-destructive" : ""}`}
+                      className={`h-10 w-full rounded-xl border border-transparent bg-black/[0.03] dark:bg-white/[0.03] px-3.5 text-sm font-inter font-medium custom-select mt-2 shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10 focus:border-black/20 dark:focus:border-white/20 ${!values.endYear ? "text-black/30 dark:text-white/30" : "text-foreground"} ${errors.endYear && touched.endYear ? "border-destructive!" : ""}`}
                       disabled={values.currentlyWorking}
                     >
                       <option value="">Choose Year</option>
@@ -384,7 +380,7 @@ export default function AddWork() {
                 <Button
                   variant="outline"
                   type="button"
-                  className="border-[var(--delete-btn-border-color)] bg-[var(--delete-btn-bg-color)] hover:bg-[var(--delete-btn-bg-hover-color)] hover:border-[var(--delete-btn-border-hover-color)]"
+                  className="border-(--delete-btn-border-color) bg-(--delete-btn-bg-color) hover:bg-(--delete-btn-bg-hover-color) hover:border-(--delete-btn-border-hover-color)"
                   onClick={handleDeleteWork}
                 >
                   <DeleteIcon className="stroke-delete-btn-icon-color w-5 h-5" />

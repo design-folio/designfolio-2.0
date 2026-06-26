@@ -2,7 +2,7 @@ export default function LandingLogoSVG({ size = 24, id = "logo" }) {
   return (
     <div
       style={{ width: size, height: size }}
-      className="rounded-full overflow-hidden flex-shrink-0 shadow-sm"
+      className="rounded-full overflow-hidden shrink-0 shadow-sm"
     >
       <svg
         width="125"

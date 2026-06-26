@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from "react";
-import { motion } from "framer-motion";
+import { useState, useRef, useEffect, useCallback } from "react";
+import { motion } from "motion/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function ImgStack({ images, autoPlayInterval = 5000 }) {
@@ -10,23 +10,7 @@ export default function ImgStack({ images, autoPlayInterval = 5000 }) {
   const dragStartPos = useRef({ x: 0, y: 0 });
   const minDragDistance = 50;
 
-  useEffect(() => {
-    if (!autoPlayInterval) return;
-    const interval = setInterval(() => {
-      handleNext();
-    }, autoPlayInterval);
-    return () => clearInterval(interval);
-  }, [autoPlayInterval, isAnimating]);
-
-  const getCardStyles = (index) => ({
-    x: index * -12,
-    y: index * -8,
-    rotate: index === 0 ? 0 : -(2 + index * 3),
-    scale: 1,
-    transition: { duration: 0.5 },
-  });
-
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (isAnimating) return;
     setIsAnimating(true);
     setCards((prev) => {
@@ -36,9 +20,9 @@ export default function ImgStack({ images, autoPlayInterval = 5000 }) {
       return newCards.map((card, index) => ({ ...card, zIndex: 50 - index * 10 }));
     });
     setTimeout(() => setIsAnimating(false), 300);
-  };
+  }, [isAnimating]);
 
-  const handlePrev = () => {
+  const handlePrev = useCallback(() => {
     if (isAnimating) return;
     setIsAnimating(true);
     setCards((prev) => {
@@ -48,7 +32,23 @@ export default function ImgStack({ images, autoPlayInterval = 5000 }) {
       return newCards.map((card, index) => ({ ...card, zIndex: 50 - index * 10 }));
     });
     setTimeout(() => setIsAnimating(false), 300);
-  };
+  }, [isAnimating]);
+
+  useEffect(() => {
+    if (!autoPlayInterval) return;
+    const interval = setInterval(() => {
+      handleNext();
+    }, autoPlayInterval);
+    return () => clearInterval(interval);
+  }, [autoPlayInterval, handleNext]);
+
+  const getCardStyles = (index) => ({
+    x: index * -12,
+    y: index * -8,
+    rotate: index === 0 ? 0 : -(2 + index * 3),
+    scale: 1,
+    transition: { duration: 0.5 },
+  });
 
   const handleDragEnd = (_, info) => {
     const dragDistance = Math.sqrt(

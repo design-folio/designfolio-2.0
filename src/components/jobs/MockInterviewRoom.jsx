@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { Mic, MicOff, Phone, ChevronLeft } from "lucide-react";
 import { _postJobsInterviewSession, _deleteJobsInterviewSession } from "@/network/jobs";
 
@@ -7,7 +7,6 @@ import { _postJobsInterviewSession, _deleteJobsInterviewSession } from "@/networ
 let createClient = null;
 let AnamEvent = null;
 try {
-  // eslint-disable-next-line
   const anamSdk = require("@anam-ai/js-sdk");
   createClient = anamSdk.createClient;
   AnamEvent = anamSdk.AnamEvent;
@@ -237,7 +236,7 @@ export function MockInterviewRoom({ job, profileId, onEnd }) {
               className={`flex gap-2.5 items-start ${!isPersona ? "flex-row-reverse" : ""}`}
             >
               <div
-                className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white ${
+                className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white ${
                   isPersona ? "bg-indigo-600" : "bg-white/20"
                 }`}
               >
@@ -256,7 +255,7 @@ export function MockInterviewRoom({ job, profileId, onEnd }) {
       </div>
 
       {/* Bottom navbar */}
-      <div className="h-[56px] bg-[#1C1C1E] border-t border-white/[0.08] flex items-center justify-between px-4 flex-shrink-0">
+      <div className="h-[56px] bg-[#1C1C1E] border-t border-white/[0.08] flex items-center justify-between px-4 shrink-0">
         <button
           onClick={handleEnd}
           className="flex items-center gap-1.5 text-white/50 hover:text-white/80 transition-colors"

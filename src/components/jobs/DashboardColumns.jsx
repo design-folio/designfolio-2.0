@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect, useCallback, startTransition } from "react";
+import { motion } from "motion/react";
 import { Kanban, KanbanBoard, KanbanOverlay } from "@/components/ui/kanban";
 import { PipelineCol } from "./PipelineCol";
 import { JobCard } from "./JobCard";
@@ -36,7 +36,7 @@ export function DashboardColumns({
 
   // Mirror the desktop split animation: switch to saved tab when pipeline unlocks
   useEffect(() => {
-    if (phase === "split" && isMobile) setActiveTab("saved");
+    if (phase === "split" && isMobile) startTransition(() => setActiveTab("saved"));
   }, [phase, isMobile]);
 
   const findJob = (id) =>
@@ -85,7 +85,7 @@ export function DashboardColumns({
         {/* Column tab strip — only visible after first shortlist */}
         {phase === "split" && (
           <div
-            className="flex-shrink-0 overflow-x-auto border-b border-black/[0.06] dark:border-border"
+            className="shrink-0 overflow-x-auto border-b border-black/[0.06] dark:border-border"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
             <div className="flex gap-1.5 px-4 py-2 w-max">
@@ -233,7 +233,7 @@ export function DashboardColumns({
           {COL_ORDER.filter((c) => c !== "picks").map((colId, i) => (
             <motion.div
               key={colId}
-              className="overflow-hidden flex-shrink-0 h-full"
+              className="overflow-hidden shrink-0 h-full"
               initial={{ maxWidth: 0, opacity: 0 }}
               animate={{
                 maxWidth: phase === "split" ? 362 : 0,
@@ -270,7 +270,7 @@ export function DashboardColumns({
 
           {/* Archived column — separate for collapse animation */}
           <motion.div
-            className="overflow-hidden flex-shrink-0 h-full"
+            className="overflow-hidden shrink-0 h-full"
             initial={{ maxWidth: 0, opacity: 0 }}
             animate={{
               maxWidth: phase === "split" ? 362 : 0,
@@ -309,7 +309,7 @@ export function DashboardColumns({
             </motion.div>
           </motion.div>
 
-          <div className="flex-shrink-0 w-10 h-full" />
+          <div className="shrink-0 w-10 h-full" />
         </KanbanBoard>
 
         <KanbanOverlay>

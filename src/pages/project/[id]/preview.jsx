@@ -10,7 +10,7 @@ import { _updateProject, _updateUser } from "@/network/post-request";
 import { useMutation } from "@tanstack/react-query";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, startTransition, useCallback } from "react";
 import MacOSWindowShell from "@/components/templates/MacOSDock/MacOSWindowShell";
 import MacOSTemplate from "@/components/comp/MacOSTemplate";
 import BuilderShell from "@/components/BuilderShell";
@@ -45,45 +45,44 @@ export default function Index() {
 
   // Enable the userDetails query — required on every authenticated page
   useEffect(() => {
-    if (userDetailsIsState) {
-      setIsUserDetailsFromCache(false);
-    } else {
-      setIsUserDetailsFromCache(true);
-    }
-  }, []);
+    startTransition(() => setIsUserDetailsFromCache(!userDetailsIsState));
+  }, [userDetailsIsState, setIsUserDetailsFromCache]);
 
-  const setProjectData = (project, isProtectedValue = false, isFromRefetch = false) => {
-    setProjectDetails({
-      project: project,
-      isProtected: isProtectedValue,
-    });
+  const setProjectData = useCallback(
+    (project, isProtectedValue = false, isFromRefetch = false) => {
+      setProjectDetails({
+        project: project,
+        isProtected: isProtectedValue,
+      });
 
-    if (isFromRefetch) {
-      setTheme(project?.theme == 1 ? "dark" : "light");
-      setWallpaper(project?.wallpaper);
-    } else {
-      if (project?.theme !== undefined) {
-        setTheme(project.theme == 1 ? "dark" : "light");
-      } else if (userDetails?.theme !== undefined) {
-        setTheme(userDetails.theme == 1 ? "dark" : "light");
+      if (isFromRefetch) {
+        setTheme(project?.theme == 1 ? "dark" : "light");
+        setWallpaper(project?.wallpaper);
+      } else {
+        if (project?.theme !== undefined) {
+          setTheme(project.theme == 1 ? "dark" : "light");
+        } else if (userDetails?.theme !== undefined) {
+          setTheme(userDetails.theme == 1 ? "dark" : "light");
+        }
+
+        if (project?.wallpaper !== undefined) {
+          setWallpaper(project.wallpaper);
+        } else if (userDetails?.wallpaper !== undefined) {
+          setWallpaper(userDetails.wallpaper);
+        }
       }
 
-      if (project?.wallpaper !== undefined) {
-        setWallpaper(project.wallpaper);
-      } else if (userDetails?.wallpaper !== undefined) {
-        setWallpaper(userDetails.wallpaper);
-      }
-    }
-
-    const cursor =
-      project?.cursor != null
-        ? project.cursor
-        : project?.theme != null
-          ? project.theme
-          : userDetails?.cursor || 0;
-    setCursor(cursor);
-    setIsProtected(isProtectedValue);
-  };
+      const cursor =
+        project?.cursor != null
+          ? project.cursor
+          : project?.theme != null
+            ? project.theme
+            : userDetails?.cursor || 0;
+      setCursor(cursor);
+      setIsProtected(isProtectedValue);
+    },
+    [userDetails, setTheme, setWallpaper, setCursor, setProjectDetails]
+  );
 
   const { mutate: refetchProjectDetail } = useMutation({
     mutationKey: [`project-editor-${router.query.id}`],
@@ -111,13 +110,13 @@ export default function Index() {
     const cachedProject = userDetails.projects?.find((project) => project._id === projectId);
 
     if (cachedProject) {
-      setProjectData(cachedProject, cachedProject.protected || false);
+      startTransition(() => setProjectData(cachedProject, cachedProject.protected || false));
       initializedRef.current = projectId;
     } else {
       refetchProjectDetail();
       initializedRef.current = projectId;
     }
-  }, [router.query.id, userDetails, refetchProjectDetail]);
+  }, [router.query.id, userDetails, refetchProjectDetail, setProjectData]);
 
   // Wait for userDetails to load before rendering — prevents a flash of the
   // wrong layout on refresh (before userDetails.template is known).

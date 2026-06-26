@@ -10,7 +10,7 @@ export default function Index({ dfToken }) {
     return () => {
       setCursor(userDetails?.cursor ? userDetails?.cursor : 0);
     };
-  }, [userDetails]);
+  }, [userDetails, setCursor]);
   return (
     <div className="bg-landing-bg-color min-h-screen">
       <Seo

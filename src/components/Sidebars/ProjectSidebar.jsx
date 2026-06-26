@@ -16,7 +16,7 @@ import { POSTHOG_EVENT_NAMES } from "@/lib/posthogEventNames";
 import posthog from "posthog-js";
 import { UnsavedChangesDialog } from "../ui/UnsavedChangesDialog";
 import { sidebars } from "@/lib/constant";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { ImageIcon } from "lucide-react";
 
 const FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -47,19 +47,6 @@ export default function AddProject() {
   const formikRef = useRef(null);
 
   const isOpen = activeSidebar === sidebars.project;
-
-  // Reset state when sidebar closes
-  useEffect(() => {
-    if (!isOpen) {
-      setImagePreview(null);
-      setPassword(false);
-      setShowEye(false);
-      setLoading(false);
-      if (formikRef.current) {
-        formikRef.current.resetForm();
-      }
-    }
-  }, [isOpen]);
 
   const hasUnsavedChanges = () => {
     if (!formikRef.current) return false;
@@ -131,6 +118,7 @@ export default function AddProject() {
   return (
     <>
       <Formik
+        key={isOpen ? "open" : "closed"}
         innerRef={formikRef}
         initialValues={{
           description: "",
@@ -355,7 +343,7 @@ export default function AddProject() {
               </div>
             </div>
 
-            <div className="flex gap-2 py-3 px-6 border-t border-border justify-end flex-shrink-0 bg-sidebar">
+            <div className="flex gap-2 py-3 px-6 border-t border-border justify-end shrink-0 bg-sidebar">
               <Button variant="outline" type="button" onClick={() => closeSidebar()}>
                 Cancel
               </Button>

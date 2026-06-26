@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 const Button3D = ({ children, onClick, disabled = false, className = "" }) => {
   const [isPressed, setIsPressed] = useState(false);

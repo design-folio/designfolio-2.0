@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { Spinner } from "@/components/ui/spinner";
 import { useRouter } from "next/router";
 import * as Yup from "yup";
@@ -74,7 +74,7 @@ export default function ClaimDomain({ className = "", onClaimWebsite }) {
     <div className={`w-full flex flex-col items-center gap-2.5 ${className}`}>
       <div className="w-full flex items-stretch gap-2">
         {/* Domain input pill */}
-        <div className="flex-1 flex items-center rounded-full border border-lp-text/[0.12] dark:border-[--lp-border] bg-white dark:bg-[--lp-card] overflow-hidden transition-all duration-200 focus-within:border-lp-text/30 dark:focus-within:border-lp-text/25 focus-within:shadow-[0_0_0_3px_rgba(29,27,26,0.07)] dark:focus-within:shadow-[0_0_0_3px_rgba(255,255,255,0.05)]">
+        <div className="flex-1 flex items-center rounded-full border border-lp-text/[0.12] dark:border-(--lp-border) bg-white dark:bg-(--lp-card) overflow-hidden transition-all duration-200 focus-within:border-lp-text/30 dark:focus-within:border-lp-text/25 focus-within:shadow-[0_0_0_3px_rgba(29,27,26,0.07)] dark:focus-within:shadow-[0_0_0_3px_rgba(255,255,255,0.05)]">
           <div className="relative flex-1 min-w-0">
             <input
               type="text"
@@ -84,7 +84,7 @@ export default function ClaimDomain({ className = "", onClaimWebsite }) {
               onBlur={() => setIsFocused(false)}
               placeholder={isFocused ? "yourname" : ""}
               autoComplete="off"
-              className="w-full bg-transparent pl-5 pr-1 py-3.5 text-[15px] font-semibold text-[--lp-text] placeholder:text-lp-text/45 outline-none appearance-none border-0 ring-0 focus:ring-0 focus:outline-none [box-shadow:none]"
+              className="w-full bg-transparent pl-5 pr-1 py-3.5 text-[15px] font-semibold text-(--lp-text) placeholder:text-lp-text/45 outline-none appearance-none border-0 ring-0 focus:ring-0 focus:outline-none [box-shadow:none]"
             />
             {!inputValue && !isFocused && (
               <motion.span
@@ -99,7 +99,7 @@ export default function ClaimDomain({ className = "", onClaimWebsite }) {
               </motion.span>
             )}
           </div>
-          <div className="flex items-center gap-2 pl-3 pr-5 border-l border-lp-text/[0.08] dark:border-[--lp-border]">
+          <div className="flex items-center gap-2 pl-3 pr-5 border-l border-lp-text/[0.08] dark:border-(--lp-border)">
             <span className="text-[14px] font-medium text-lp-text/35 whitespace-nowrap select-none">
               .designfolio.me
             </span>
@@ -115,7 +115,7 @@ export default function ClaimDomain({ className = "", onClaimWebsite }) {
           disabled={!canSubmit}
           whileTap={canSubmit ? { y: 2 } : {}}
           transition={{ type: "spring", stiffness: 600, damping: 30 }}
-          className="flex-shrink-0 rounded-full text-white px-6 py-3.5 text-[14px] font-semibold whitespace-nowrap select-none transition-opacity duration-200"
+          className="shrink-0 rounded-full text-white px-6 py-3.5 text-[14px] font-semibold whitespace-nowrap select-none transition-opacity duration-200"
           style={{
             background: "linear-gradient(to bottom, #FF6E52 0%, #E8391E 100%)",
             boxShadow: canSubmit

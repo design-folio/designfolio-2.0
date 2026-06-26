@@ -37,7 +37,7 @@ export const SortableWorkExperienceItem = ({ exp, edit, onEdit }) => {
           </p>
         )}
       </div>
-      <div className="flex items-center flex-col gap-2 flex-shrink-0">
+      <div className="flex items-center flex-col gap-2 shrink-0">
         {edit && (
           <Button
             variant="secondary"

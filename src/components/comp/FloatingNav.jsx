@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Home, Briefcase, Award, Wrench } from "lucide-react";
 import { useRouter } from "next/router";
 import { FLOATING_NAV_SECTIONS } from "@/lib/constant";
@@ -6,6 +6,10 @@ import { FLOATING_NAV_SECTIONS } from "@/lib/constant";
 const NAV_ICONS = { hero: Home, spotlight: Award, tools: Wrench, work: Briefcase };
 
 const SCROLL_IGNORE_MS = 800; // ignore scroll-based updates after a click (smooth scroll duration)
+
+const SECTION_IDS = FLOATING_NAV_SECTIONS.map((s) => s.sectionId);
+const SECTION_TO_NAV = Object.fromEntries(FLOATING_NAV_SECTIONS.map((s) => [s.sectionId, s.navId]));
+const NAV_TO_SECTION = Object.fromEntries(FLOATING_NAV_SECTIONS.map((s) => [s.navId, s.sectionId]));
 
 export const FloatingNav = () => {
   const [activeSection, setActiveSection] = useState("hero");
@@ -19,14 +23,6 @@ export const FloatingNav = () => {
     label,
     icon: NAV_ICONS[navId],
   }));
-
-  const SECTION_IDS = FLOATING_NAV_SECTIONS.map((s) => s.sectionId);
-  const SECTION_TO_NAV = Object.fromEntries(
-    FLOATING_NAV_SECTIONS.map((s) => [s.sectionId, s.navId])
-  );
-  const NAV_TO_SECTION = Object.fromEntries(
-    FLOATING_NAV_SECTIONS.map((s) => [s.navId, s.sectionId])
-  );
 
   useEffect(() => {
     lastActiveRef.current = activeSection;
@@ -63,21 +59,22 @@ export const FloatingNav = () => {
       window.removeEventListener("scroll", handleScroll);
       if (rafIdRef.current != null) cancelAnimationFrame(rafIdRef.current);
     };
-    // SECTION_IDS, SECTION_TO_NAV from FLOATING_NAV_SECTIONS (stable)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const scrollToSection = (id) => {
-    lastActiveRef.current = id;
-    setActiveSection(id);
-    ignoreScrollUntilRef.current = Date.now() + SCROLL_IGNORE_MS;
+  const scrollToSection = useCallback(
+    (id) => {
+      lastActiveRef.current = id;
+      setActiveSection(id);
+      ignoreScrollUntilRef.current = Date.now() + SCROLL_IGNORE_MS;
 
-    const targetId = NAV_TO_SECTION[id] || id;
-    const element = document.getElementById(targetId);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  };
+      const targetId = NAV_TO_SECTION[id] || id;
+      const element = document.getElementById(targetId);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    },
+    [setActiveSection]
+  );
 
   const hasSideNav =
     router.pathname === "/builder" ||

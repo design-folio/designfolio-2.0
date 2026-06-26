@@ -1,4 +1,4 @@
-import { motion, useInView } from "framer-motion";
+import { motion, useInView } from "motion/react";
 import { useRef, useState, useEffect } from "react";
 import { EditIcon } from "lucide-react";
 import AddItem from "../addItem";
@@ -41,7 +41,7 @@ export const Spotlight = ({ userDetails, edit, headerActions }) => {
 
   // Update sorted experiences when the prop changes
   useEffect(() => {
-    setSortedExperiences(experiences || []);
+    queueMicrotask(() => setSortedExperiences(experiences || []));
   }, [experiences]);
 
   const handleClick = (work) => {
@@ -156,7 +156,7 @@ export const Spotlight = ({ userDetails, edit, headerActions }) => {
                     <div className="flex gap-4">
                       <Button
                         onClick={() => handleClick(experience)}
-                        customClass="!p-0 !flex-shrink-0 border-none"
+                        customClass="!p-0 !shrink-0 border-none"
                         type={"secondary"}
                         icon={
                           <EditIcon className="text-gray-600 dark:text-gray-400 cursor-pointer" />
@@ -198,7 +198,7 @@ export const Spotlight = ({ userDetails, edit, headerActions }) => {
     <section className="py-12">
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-2xl font-bold">Work Experience</h2>
-        {headerActions && <div className="flex-shrink-0">{headerActions}</div>}
+        {headerActions && <div className="shrink-0">{headerActions}</div>}
       </div>
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext

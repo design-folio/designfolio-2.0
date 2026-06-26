@@ -5,7 +5,7 @@ import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import DribbbleIcon from "../../public/assets/svgs/dribbble.svg";
 import ExperienceShape from "../../public/assets/svgs/experience-shape.svg";
@@ -71,18 +71,22 @@ export default function Template2({
     return idx === -1 ? 999 : 3 + idx;
   }
 
-  const isSectionVisible = (id) => !hiddenSections.includes(id);
+  const isSectionVisible = useCallback((id) => !hiddenSections.includes(id), [hiddenSections]);
   const { projectRef, setCursor } = useGlobalContext();
 
   const [internalStep, setInternalStep] = useState(1);
   const isControlled = activeStepProp != null && typeof onStepComplete === "function";
   const activeStep = isControlled ? activeStepProp : internalStep;
-  const setActiveStep = isControlled
-    ? (fn) => {
-        const next = typeof fn === "function" ? fn(activeStepProp) : fn;
-        onStepComplete(next);
-      }
-    : setInternalStep;
+  const setActiveStep = useMemo(
+    () =>
+      isControlled
+        ? (fn) => {
+            const next = typeof fn === "function" ? fn(activeStepProp) : fn;
+            onStepComplete(next);
+          }
+        : setInternalStep,
+    [isControlled, activeStepProp, onStepComplete, setInternalStep]
+  );
 
   const portfolioCheck =
     portfolios && !Object.values(portfolios).every((portfolio) => portfolio == "");
@@ -137,6 +141,8 @@ export default function Template2({
     hiddenSections,
     sectionOrder,
     contentSteps,
+    isSectionVisible,
+    setActiveStep,
   ]);
 
   // Trigger effect when activeStep or projects change

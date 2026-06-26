@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "motion/react";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 import { TransitionScreen } from "./TransitionScreen";

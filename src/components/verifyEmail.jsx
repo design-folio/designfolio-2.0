@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, startTransition } from "react";
 import { Formik, Form } from "formik";
 import { useRouter } from "next/router";
 import { _resendOTP } from "@/network/get-request";
@@ -39,7 +39,7 @@ export default function VerifyEmail() {
         // Cleanup interval on component unmount
         return () => clearInterval(intervalId);
       } else {
-        setIsActive(false); // Deactivate the timer if time runs out
+        startTransition(() => setIsActive(false)); // Deactivate the timer if time runs out
       }
     }
   }, [isActive, timeLeft]);

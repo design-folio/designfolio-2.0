@@ -18,7 +18,7 @@ const Minimal = ({ userDetails, edit }) => {
   const { setCursor, openSidebar } = useGlobalContext();
   useEffect(() => {
     setCursor(userDetails?.cursor ? userDetails?.cursor : 0);
-  }, []);
+  }, [setCursor, userDetails?.cursor]);
 
   const hasAbout = userDetails?.about !== null && userDetails?.about !== undefined;
 

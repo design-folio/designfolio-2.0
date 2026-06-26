@@ -41,7 +41,7 @@ export default function TrustedBySection({ classNames }) {
               {companyLogos.map((logo, index) => (
                 <div
                   key={`first-${index}`}
-                  className="flex items-center justify-center px-4 sm:px-6 md:px-10 flex-shrink-0"
+                  className="flex items-center justify-center px-4 sm:px-6 md:px-10 shrink-0"
                   data-testid={`logo-company-${index}`}
                 >
                   <img
@@ -57,7 +57,7 @@ export default function TrustedBySection({ classNames }) {
               {companyLogos.map((logo, index) => (
                 <div
                   key={`second-${index}`}
-                  className="flex items-center justify-center px-4 sm:px-6 md:px-10 flex-shrink-0"
+                  className="flex items-center justify-center px-4 sm:px-6 md:px-10 shrink-0"
                 >
                   <img
                     src={logo}

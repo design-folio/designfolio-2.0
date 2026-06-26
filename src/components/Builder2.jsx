@@ -502,11 +502,10 @@ export default function Builder2({ edit = false }) {
                       ) : (
                         <div className="flex items-start gap-2 w-full">
                           <AddCard
-                            title={`${
-                              projects?.length === 0
+                            title={`${projects?.length === 0
                                 ? "Upload your first case study"
                                 : "Add case study"
-                            }`}
+                              }`}
                             subTitle="Show off your best work."
                             first={projects?.length !== 0}
                             buttonTitle="Add case study"
@@ -538,9 +537,8 @@ export default function Builder2({ edit = false }) {
                   {edit && reviews?.length == 0 && (
                     <div className="flex items-start gap-2 flex-wrap">
                       <AddCard
-                        title={`${
-                          userDetails?.reviews?.length == 0 ? "My testimonials" : "Add more reviews"
-                        } `}
+                        title={`${userDetails?.reviews?.length == 0 ? "My testimonials" : "Add more reviews"
+                          } `}
                         subTitle="Share colleague's feedback."
                         onClick={() => openNewReview()}
                         className={
@@ -777,7 +775,7 @@ export default function Builder2({ edit = false }) {
                             </div>
                             <Button
                               onClick={() => handleEditWork(experience)}
-                              customClass="!p-[13.38px] !flex-shrink-0"
+                              customClass="!p-[13.38px] !shrink-0"
                               type={"secondary"}
                               size="icon"
                               icon={<EditIcon className="text-df-icon-color cursor-pointer" />}
@@ -1050,7 +1048,7 @@ const SortableReviewItemBuilder2 = ({ review, edit }) => {
       <div className="flex-1 min-w-0">
         <ReviewCard review={review} sorting={true} edit={edit} />
       </div>
-      <div className="flex-shrink-0">
+      <div className="shrink-0">
         <DragHandle listeners={listeners} attributes={attributes} />
       </div>
     </div>

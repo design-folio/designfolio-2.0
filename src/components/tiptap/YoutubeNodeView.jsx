@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, startTransition } from "react";
 import { NodeViewWrapper } from "@tiptap/react";
 
 const YoutubeNodeView = ({ node, updateAttributes, editor, getPos }) => {
@@ -9,7 +9,7 @@ const YoutubeNodeView = ({ node, updateAttributes, editor, getPos }) => {
 
   useEffect(() => {
     if (!node.attrs.src) {
-      setIsEditing(true);
+      startTransition(() => setIsEditing(true));
     }
   }, [node.attrs.src]);
 

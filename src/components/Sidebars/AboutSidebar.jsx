@@ -1,7 +1,7 @@
 import { useGlobalContext } from "@/context/globalContext";
 import { _updateUser } from "@/network/post-request";
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import Text from "../text";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
@@ -31,43 +31,28 @@ export default function AddAbout() {
   const [loading, setLoading] = useState(false);
   const [editingValues, setEditingValues] = useState(null);
   const [uploadingImageIndex, setUploadingImageIndex] = useState(null);
-  const [lastCompressedTarget, setLastCompressedTarget] = useState(null);
+  const lastCompressedTargetRef = useRef(null);
   const formikRef = useRef(null);
 
   const { compress, compressedImage, compressionProgress } = useImageCompression();
 
   const isOpen = activeSidebar === sidebars.about;
 
-  // Initialize images and stickers
-  const getInitialImages = () => {
+  const initialImages = useMemo(() => {
     const userImages = userDetails?.about?.pegboardImages;
-    if (userImages && userImages.length > 0) {
-      return userImages.map((img) =>
-        img
-          ? {
-              src: img.src,
-              isDefault: !!img.isDefault,
-            }
-          : null
-      );
+    if (userImages?.length > 0) {
+      return userImages.map((img) => (img ? { src: img.src, isDefault: !!img.isDefault } : null));
     }
     return DEFAULT_PEGBOARD_IMAGES.map((img) => ({ ...img, isDefault: true }));
-  };
+  }, [userDetails?.about?.pegboardImages]);
 
-  const getInitialStickers = () => {
+  const initialStickers = useMemo(() => {
     const userStickers = userDetails?.about?.pegboardStickers;
-    if (userStickers && userStickers.length > 0) {
-      return userStickers.map((s) =>
-        s
-          ? {
-              src: s.src,
-              isDefault: !!s.isDefault,
-            }
-          : null
-      );
+    if (userStickers?.length > 0) {
+      return userStickers.map((s) => (s ? { src: s.src, isDefault: !!s.isDefault } : null));
     }
     return DEFAULT_PEGBOARD_STICKERS.map((s) => ({ ...s, isDefault: true }));
-  };
+  }, [userDetails?.about?.pegboardStickers]);
 
   // Helper to convert file to base64
   const fileToBase64 = (file) => {
@@ -85,9 +70,9 @@ export default function AddAbout() {
       compressionProgress === 100 &&
       compressedImage &&
       formikRef.current &&
-      lastCompressedTarget
+      lastCompressedTargetRef.current
     ) {
-      const { type, index } = lastCompressedTarget;
+      const { type, index } = lastCompressedTargetRef.current;
       const fieldName = type === "image" ? "pegboardImages" : "pegboardStickers";
       const currentItems = formikRef.current.values[fieldName];
       const updatedItems = [...currentItems];
@@ -95,11 +80,11 @@ export default function AddAbout() {
       updatedItems[index] = {
         src: URL.createObjectURL(compressedImage),
         isDefault: false,
-        file: compressedImage, // Store File object for submission
+        file: compressedImage,
       };
 
       formikRef.current.setFieldValue(fieldName, updatedItems);
-      setLastCompressedTarget(null);
+      lastCompressedTargetRef.current = null;
       if (type === "image") setUploadingImageIndex(null);
     }
   }, [compressionProgress, compressedImage]);
@@ -120,25 +105,21 @@ export default function AddAbout() {
     });
   };
 
-  const hasUnsavedChanges = () => {
+  const hasUnsavedChanges = useCallback(() => {
     if (!editingValues) return false;
-
     const initialDescription = userDetails?.about?.description || "";
-    const initialImages = getInitialImages();
-    const initialStickers = getInitialStickers();
-
     return (
       editingValues.description !== initialDescription ||
       !arraysEqual(editingValues.pegboardImages, initialImages) ||
       !arraysEqual(editingValues.pegboardStickers, initialStickers)
     );
-  };
+  }, [editingValues, userDetails?.about?.description, initialImages, initialStickers]);
 
-  const resetState = () => {
+  const resetState = useCallback(() => {
     setEditingValues(null);
     setUploadingImageIndex(null);
-    setLastCompressedTarget(null);
-  };
+    lastCompressedTargetRef.current = null;
+  }, []);
 
   const resetStateAndClose = () => {
     resetState();
@@ -152,9 +133,9 @@ export default function AddAbout() {
   // Clear state when sidebar closes
   useEffect(() => {
     if (!isOpen) {
-      resetState();
+      queueMicrotask(() => resetState());
     }
-  }, [isOpen]);
+  }, [isOpen, resetState]);
 
   // Register unsaved changes checker
   useEffect(() => {
@@ -164,12 +145,12 @@ export default function AddAbout() {
     return () => {
       unregisterUnsavedChangesChecker(sidebars.about);
     };
-  }, [isOpen, editingValues, registerUnsavedChangesChecker, unregisterUnsavedChangesChecker]);
+  }, [isOpen, hasUnsavedChanges, registerUnsavedChangesChecker, unregisterUnsavedChangesChecker]);
 
   // Handle image upload
   const handleImageUpload = async (file, index, setFieldValue, currentImages) => {
     setUploadingImageIndex(index);
-    setLastCompressedTarget({ type: "image", index });
+    lastCompressedTargetRef.current = { type: "image", index };
 
     const maxSizeInBytes = 2 * 1024 * 1024;
     if (file.size > maxSizeInBytes) {
@@ -184,7 +165,7 @@ export default function AddAbout() {
       };
       setFieldValue("pegboardImages", updatedImages);
       setUploadingImageIndex(null);
-      setLastCompressedTarget(null);
+      lastCompressedTargetRef.current = null;
     }
   };
 
@@ -202,8 +183,8 @@ export default function AddAbout() {
       enableReinitialize
       initialValues={{
         description: userDetails?.about?.description || "",
-        pegboardImages: getInitialImages(),
-        pegboardStickers: getInitialStickers(),
+        pegboardImages: initialImages,
+        pegboardStickers: initialStickers,
       }}
       validationSchema={AboutSchema}
       onSubmit={async (values, actions) => {

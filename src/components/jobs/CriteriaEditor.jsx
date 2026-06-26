@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { Zap } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { LocationAutocomplete } from "./LocationAutocomplete";
 import { _getJobRoleSuggestions } from "@/network/jobs";
 

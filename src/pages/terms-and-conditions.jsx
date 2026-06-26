@@ -7,7 +7,7 @@ export default function TermsAndConditions() {
       seoTitle="Terms & Conditions – Designfolio"
       seoDescription="Read the Terms & Conditions for using Designfolio's portfolio builder platform."
     >
-      <p className="text-sm text-[--lp-text-muted]">
+      <p className="text-sm text-(--lp-text-muted)">
         Last updated:{" "}
         {new Date().toLocaleDateString("en-US", {
           month: "long",

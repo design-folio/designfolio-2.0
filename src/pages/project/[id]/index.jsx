@@ -8,7 +8,7 @@ import { containerVariants, itemVariants } from "@/lib/animationVariants";
 import { capitalizeWords } from "@/lib/capitalizeText";
 import { _getProjectDetails, _getUser } from "@/network/get-request";
 import { useQuery } from "@tanstack/react-query";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
@@ -35,7 +35,7 @@ export default function Index({ data, ownerTemplate, ownerWallpaper, ownerUser }
   const contextProject = useMemo(() => {
     if (!router.query.id || !userDetails?.projects) return null;
     return userDetails.projects.find((project) => project._id === router.query.id);
-  }, [router.query.id, userDetails?.projects]);
+  }, [router.query.id, userDetails]);
 
   const shouldFetch =
     router.isReady &&

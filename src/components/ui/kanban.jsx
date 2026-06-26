@@ -1,4 +1,3 @@
-/* eslint-disable react/display-name */
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import {
@@ -333,10 +332,10 @@ function KanbanOverlay({ children, className }) {
       );
       if (element) {
         const rect = element.getBoundingClientRect();
-        setDimensions({ width: rect.width, height: rect.height });
+        React.startTransition(() => setDimensions({ width: rect.width, height: rect.height }));
       }
     } else {
-      setDimensions(null);
+      React.startTransition(() => setDimensions(null));
     }
   }, [activeId, isColumn]);
 

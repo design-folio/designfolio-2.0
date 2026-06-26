@@ -123,7 +123,7 @@ export default function Navbar() {
       {/* Logo + mode switcher */}
       <div className="flex items-center gap-3">
         {/* <Link href="/builder">
-          <MemoDFLogoV2 className="flex-shrink-0" />
+          <MemoDFLogoV2 className="shrink-0" />
         </Link> */}
         <div>
           <FluidDropdown />
@@ -214,7 +214,7 @@ export default function Navbar() {
                       : "Not published yet"}
                   </span>
                 </div>
-                <div className="flex items-center gap-2 flex-shrink-0">
+                <div className="flex items-center gap-2 shrink-0">
                   <Button
                     variant="ghost"
                     size="icon"

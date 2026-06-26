@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { Formik, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useGlobalContext } from "@/context/globalContext";
@@ -86,7 +86,7 @@ export default function CreateAiProject({ openModal }) {
         }
       })
       .catch(() => setGenerationCredits({ limit: 2, used: 2, remaining: 0 }));
-  }, []);
+  }, [openModal, setShowUpgradeModal, setUpgradeModalSource]);
 
   const getSchemaValidation = () => {
     switch (step) {
@@ -172,7 +172,7 @@ export default function CreateAiProject({ openModal }) {
       transition={{ duration: 0.35, ease: "easeInOut" }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-border flex-shrink-0">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-border shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-black/[0.05] dark:bg-white/[0.05] flex items-center justify-center">
             <Sparkles className="w-4 h-4 text-foreground" />
@@ -188,7 +188,7 @@ export default function CreateAiProject({ openModal }) {
       </div>
 
       {/* Step progress */}
-      <div className="flex gap-1.5 px-6 pt-4 flex-shrink-0">
+      <div className="flex gap-1.5 px-6 pt-4 shrink-0">
         {[1, 2, 3, 4].map((s) => (
           <div
             key={s}
@@ -316,7 +316,7 @@ export default function CreateAiProject({ openModal }) {
       </div>
 
       {/* Footer */}
-      <div className="flex items-center justify-between gap-2 px-6 py-4 border-t border-border flex-shrink-0 bg-card">
+      <div className="flex items-center justify-between gap-2 px-6 py-4 border-t border-border shrink-0 bg-card">
         <Button
           variant="outline"
           type="button"

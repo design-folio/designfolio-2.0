@@ -1,7 +1,7 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, startTransition } from "react";
 import { linkedinValidation, manualValidation } from "@/lib/validationSchemas";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { Link2, PenLine, AlertCircle, Check, Plus, Sparkles, ChevronDown } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -54,19 +54,21 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
 
   useEffect(() => {
     if (open) {
-      setError(null);
-      setLoading(false);
-      setStep(0);
+      startTransition(() => {
+        setError(null);
+        setLoading(false);
+        setStep(0);
+      });
       setTimeout(() => {
         if (mode === "linkedin") urlInputRef.current?.focus();
         else titleInputRef.current?.focus();
       }, 80);
     }
     return () => clearTimeout(stepTimerRef.current);
-  }, [open]);
+  }, [open, mode]);
 
   useEffect(() => {
-    setError(null);
+    startTransition(() => setError(null));
   }, [mode]);
 
   const STEPS = mode === "linkedin" ? STEPS_LINKEDIN : STEPS_MANUAL;
@@ -159,7 +161,7 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                       animate={{ opacity: i > step ? 0.3 : 1 }}
                       transition={{ duration: 0.3 }}
                     >
-                      <div className="w-5 h-5 flex-shrink-0 flex items-center justify-center">
+                      <div className="w-5 h-5 shrink-0 flex items-center justify-center">
                         {isDone ? (
                           <motion.div
                             initial={{ scale: 0 }}
@@ -273,7 +275,7 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                                   className="overflow-hidden"
                                 >
                                   <div className="flex items-start gap-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/30 rounded-xl px-3.5 py-3">
-                                    <AlertCircle className="w-3.5 h-3.5 text-red-500 flex-shrink-0 mt-0.5" />
+                                    <AlertCircle className="w-3.5 h-3.5 text-red-500 shrink-0 mt-0.5" />
                                     <p className="text-[12px] text-red-600 dark:text-red-400 leading-relaxed">
                                       {error}
                                     </p>
@@ -477,7 +479,7 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                                   className="overflow-hidden"
                                 >
                                   <div className="flex items-start gap-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/30 rounded-xl px-3.5 py-3">
-                                    <AlertCircle className="w-3.5 h-3.5 text-red-500 flex-shrink-0 mt-0.5" />
+                                    <AlertCircle className="w-3.5 h-3.5 text-red-500 shrink-0 mt-0.5" />
                                     <p className="text-[12px] text-red-600 dark:text-red-400 leading-relaxed">
                                       {error}
                                     </p>

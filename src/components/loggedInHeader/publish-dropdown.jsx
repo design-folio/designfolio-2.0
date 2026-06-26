@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Copy, Check } from "lucide-react";
 import { ZapIcon } from "lucide-animated";
 import { cn } from "@/lib/utils";
-import { motion, AnimatePresence, MotionConfig } from "framer-motion";
+import { motion, AnimatePresence, MotionConfig } from "motion/react";
 import { useGlobalContext } from "@/context/globalContext";
 import { _publish } from "@/network/post-request";
 import { formatTimestamp } from "@/lib/times";

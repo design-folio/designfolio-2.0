@@ -12,7 +12,7 @@ import {
 import { useCursorTooltip } from "@/context/cursorTooltipContext";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView } from "motion/react";
 import React, { useRef, useState, useEffect } from "react";
 import { Footer } from "@/components/comp/Footer";
 import { useRouter } from "next/router";
@@ -243,14 +243,14 @@ const Portfolio = ({ userDetails, edit }) => {
             setIsHovered(false);
             setIsHoveringInteractive(false);
           }}
-          className="group bg-card border border-card-border rounded-lg overflow-hidden hover:bg-card/80 transition-colors relative !cursor-pointer"
+          className="group bg-card border border-card-border rounded-lg overflow-hidden hover:bg-card/80 transition-colors relative cursor-pointer!"
         >
-          <div className="flex flex-col md:flex-row !cursor-pointer">
+          <div className="flex flex-col md:flex-row cursor-pointer!">
             <div className="relative w-full lg:w-[320px] h-[261px] shrink-0 overflow-hidden">
               <img
                 src={project?.thumbnail?.url}
                 alt={project.title}
-                className="object-cover group-hover:scale-105 transition-transform duration-300 w-full h-full !cursor-pointer"
+                className="object-cover group-hover:scale-105 transition-transform duration-300 w-full h-full cursor-pointer!"
               />
               {project?.hidden && (
                 <div className="absolute top-3 right-3 bg-amber-100 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1.5 z-10">
@@ -259,12 +259,12 @@ const Portfolio = ({ userDetails, edit }) => {
                 </div>
               )}
             </div>
-            <div className="p-8 flex flex-col justify-between flex-grow !cursor-pointer">
+            <div className="p-8 flex flex-col justify-between grow cursor-pointer!">
               <div>
-                <h4 className="text-2xl font-semibold mb-3 line-clamp-2 !cursor-pointer">
+                <h4 className="text-2xl font-semibold mb-3 line-clamp-2 cursor-pointer!">
                   {project.title}
                 </h4>
-                <p className="dark:text-gray-400 text-gray-600 line-clamp-2 !cursor-pointer">
+                <p className="dark:text-gray-400 text-gray-600 line-clamp-2 cursor-pointer!">
                   {project.description}
                 </p>
               </div>
@@ -438,7 +438,7 @@ const Portfolio = ({ userDetails, edit }) => {
                 {edit && (
                   <Button2
                     onClick={() => openModal("onboarding")}
-                    customClass="!p-[8px] rounded-[8px] !flex-shrink-0"
+                    customClass="!p-[8px] rounded-[8px] !shrink-0"
                     type={"secondary"}
                     icon={<EditIcon className="text-df-icon-color cursor-pointer" size={20} />}
                   />
@@ -468,7 +468,7 @@ const Portfolio = ({ userDetails, edit }) => {
               {/* Skills Infinite Scroll */}
               <motion.div
                 variants={textReveal}
-                className="w-full overflow-hidden relative py-4 before:absolute before:left-0 before:top-0 before:z-10 before:w-20 before:h-full before:bg-gradient-to-r before:from-background before:to-transparent after:absolute after:right-0 after:top-0 after:z-10 after:w-20 after:h-full after:bg-gradient-to-l after:from-background after:to-transparent"
+                className="w-full overflow-hidden relative py-4 before:absolute before:left-0 before:top-0 before:z-10 before:w-20 before:h-full before:bg-linear-to-r before:from-background before:to-transparent after:absolute after:right-0 after:top-0 after:z-10 after:w-20 after:h-full after:bg-linear-to-l after:from-background after:to-transparent"
               >
                 <motion.div
                   className="flex gap-4 whitespace-nowrap"
@@ -524,7 +524,7 @@ const Portfolio = ({ userDetails, edit }) => {
                         <SectionVisibilityButton sectionId="about" />
                         <Button2
                           onClick={() => openModal(modals.about)}
-                          customClass="!p-[8px] rounded-[10px] !flex-shrink-0"
+                          customClass="!p-[8px] rounded-[10px] !shrink-0"
                           type={"secondary"}
                           icon={
                             <EditIcon className="text-df-icon-color cursor-pointer" size={20} />
@@ -596,13 +596,12 @@ const Portfolio = ({ userDetails, edit }) => {
                             ))}
                             {edit &&
                               (userDetails?.pro ||
-                              (userDetails?.projects || []).filter((p) => !p.hidden).length < 2 ? (
+                                (userDetails?.projects || []).filter((p) => !p.hidden).length < 2 ? (
                                 <AddCard
-                                  title={`${
-                                    userDetails?.projects?.length === 0
-                                      ? "Upload your first case study"
-                                      : "Add case study"
-                                  }`}
+                                  title={`${userDetails?.projects?.length === 0
+                                    ? "Upload your first case study"
+                                    : "Add case study"
+                                    }`}
                                   subTitle="Show off your best work."
                                   first
                                   buttonTitle="Add case study"
@@ -610,10 +609,9 @@ const Portfolio = ({ userDetails, edit }) => {
                                   onClick={() => openSidebar(sidebars.project)}
                                   icon={<MemoCasestudy className="cursor-pointer size-[72px]" />}
                                   openModal={openModal}
-                                  className={`bg-card flex items-center justify-center min-h-[269px] rounded-lg ${
-                                    userDetails?.projects?.length !== 0 &&
+                                  className={`bg-card flex items-center justify-center min-h-[269px] rounded-lg ${userDetails?.projects?.length !== 0 &&
                                     " shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] hover:shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
-                                  }`}
+                                    }`}
                                 />
                               ) : (
                                 <ProjectLock />

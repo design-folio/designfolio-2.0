@@ -1,6 +1,6 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { Check, Search, Loader2, Plus } from "lucide-react";
 import { useGlobalContext } from "@/context/globalContext";
 import { _getSkills } from "@/network/get-request";
@@ -53,20 +53,20 @@ export default function UpdateSkillsSidebar() {
 
   const initialLabels = (userDetails?.skills || []).map((s) => s.label);
 
-  const hasUnsavedChanges = () => {
+  const hasUnsavedChanges = useCallback(() => {
     const initial = JSON.stringify(initialLabels.slice().sort());
     const current = JSON.stringify(selectedLabels.slice().sort());
     return initial !== current;
-  };
+  }, [initialLabels, selectedLabels]);
 
   useEffect(() => {
     if (isOpen) registerUnsavedChangesChecker(sidebars.skills, hasUnsavedChanges);
     return () => unregisterUnsavedChangesChecker(sidebars.skills);
-  }, [isOpen, selectedLabels]);
+  }, [isOpen, hasUnsavedChanges, registerUnsavedChangesChecker, unregisterUnsavedChangesChecker]);
 
   // Reset search when sidebar closes
   useEffect(() => {
-    if (!isOpen) setSearch("");
+    if (!isOpen) queueMicrotask(() => setSearch(""));
   }, [isOpen]);
 
   // Debounced search term for the query key
@@ -102,11 +102,13 @@ export default function UpdateSkillsSidebar() {
   // Merge fetched skills into the map and visible list
   useEffect(() => {
     if (!fetchedSkills.length) return;
-    setSkillsMap((prev) => {
-      const next = new Map(prev);
-      fetchedSkills.forEach((s) => next.set(s.label, s));
-      return next;
-    });
+    queueMicrotask(() =>
+      setSkillsMap((prev) => {
+        const next = new Map(prev);
+        fetchedSkills.forEach((s) => next.set(s.label, s));
+        return next;
+      })
+    );
   }, [fetchedSkills]);
 
   // All labels to display: selected first, then fetched

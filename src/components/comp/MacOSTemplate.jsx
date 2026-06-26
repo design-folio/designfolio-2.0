@@ -1,5 +1,5 @@
 import { useEffect, useRef, useCallback, useState } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import MacOSMenuBar from "@/components/ui/MacOSMenuBar";
 import MacOSDock from "@/components/templates/MacOSDock";
 import { DivOrigami } from "@/components/ui/animated-logo-rolodex";
@@ -45,7 +45,7 @@ const MacOSTemplate = ({
 
   useEffect(() => {
     setCursor(userDetails?.cursor ? userDetails.cursor : 0);
-  }, []);
+  }, [setCursor, userDetails?.cursor]);
 
   // Hide body scrollbar on MacOS desktop so the desktop doesn’t show unnecessary scroll
   useEffect(() => {

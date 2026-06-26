@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, startTransition } from "react";
 import { Formik, Form } from "formik";
 import { Mail } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useGoogleLogin } from "@react-oauth/google";
@@ -46,7 +46,7 @@ export default function Signup() {
       return;
     }
 
-    setDomain(router.query.username);
+    startTransition(() => setDomain(router.query.username));
 
     // Persist shared job context so it survives email-verify + quiz flow
     if (router.query.job) {
@@ -60,7 +60,7 @@ export default function Signup() {
           ? "resume-upload"
           : "claim-link",
     });
-  }, [router.isReady, router.query.username, router.query.job]);
+  }, [router.isReady, router.query.username, router.query.job, router, event]);
 
   // Apply parsed resume to user profile silently (fire-and-forget)
   const applyParsedResume = async () => {
@@ -216,7 +216,7 @@ export default function Signup() {
 
           <Button
             variant="outline"
-            className="w-full rounded-full h-[50px] px-5 text-base font-medium border-border bg-[--input-bg-color] hover:bg-muted gap-3"
+            className="w-full rounded-full h-[50px] px-5 text-base font-medium border-border bg-(--input-bg-color) hover:bg-muted gap-3"
             onClick={() => {
               event(POSTHOG_EVENT_NAMES.SIGNUP_METHOD_SELECTED, {
                 method: "email",

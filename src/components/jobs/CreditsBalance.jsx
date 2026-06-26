@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef, useCallback, useId } from "react";
+import { useState, useEffect, useRef, useCallback, useId, startTransition } from "react";
 import { useTheme } from "next-themes";
-import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue, useSpring } from "motion/react";
 import { FlaskConical } from "lucide-react";
 import { _getUserQuota, createDodoCheckout } from "@/network/get-request";
 import { ConicButton } from "@/components/ui/ConicButton";
@@ -411,7 +411,9 @@ export function CreditsBalance({ refreshKey = 0 }) {
 
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    startTransition(() => setMounted(true));
+  }, []);
   const isDark = mounted ? resolvedTheme === "dark" : false;
 
   useEffect(() => {
@@ -500,7 +502,7 @@ export function CreditsBalance({ refreshKey = 0 }) {
         }`}
       >
         <BadgeBubbles />
-        <div className="relative z-10 flex-shrink-0 pointer-events-none">
+        <div className="relative z-10 shrink-0 pointer-events-none">
           <FlaskConical className="w-3.5 h-3.5 opacity-70" />
         </div>
         <div className="relative z-10 whitespace-nowrap pointer-events-none">

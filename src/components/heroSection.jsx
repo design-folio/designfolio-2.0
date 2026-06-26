@@ -6,7 +6,7 @@ import {
   useSpring,
   useMotionTemplate,
   AnimatePresence,
-} from "framer-motion";
+} from "motion/react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import ClaimDomain from "./claimDomain";
 import Link from "next/link";
@@ -39,7 +39,10 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab, onResume
   const [resultContent, setResultContent] = useState(null);
   const [conversionError, setConversionError] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [analyzeUsed, setAnalyzeUsed] = useState(false);
+  const [analyzeUsed, setAnalyzeUsed] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem(LANDING_ANALYZE_USED_KEY) === "true";
+  });
 
   const [leftCardOffset, setLeftCardOffset] = useState({ x: 0, y: 0 });
   const [rightCardOffset, setRightCardOffset] = useState({ x: 0, y: 0 });
@@ -50,12 +53,6 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab, onResume
   const [scrollRange, setScrollRange] = useState(800);
 
   const isResumeMode = effectiveTab === "resume";
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const used = localStorage.getItem(LANDING_ANALYZE_USED_KEY) === "true";
-    setAnalyzeUsed(used);
-  }, []);
 
   useEffect(() => {
     const compact = isResumeMode && analyzeUsed && !resultContent;

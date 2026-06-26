@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, startTransition } from "react";
 import styles from "@/styles/domain.module.css";
 import { useGlobalContext } from "@/context/globalContext";
 import { _getProPlanDetails, createDodoCheckout } from "@/network/get-request";
 import { usePostHogEvent } from "@/hooks/usePostHogEvent";
 import { POSTHOG_EVENT_NAMES } from "@/lib/posthogEventNames";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { ChevronDown, Gem, HelpCircle, Rocket, Sprout, Star, X, Zap } from "lucide-react";
 import { CompanyLogo } from "@/components/jobs/CompanyLogo";
 import {
@@ -173,13 +173,15 @@ export default function UpgradeModal() {
       });
       hasTrackedView.current = true;
     }
-  }, [showUpgradeModal, selectedPlan]);
+  }, [showUpgradeModal, selectedPlan, phEvent, upgradeModalSource, upgradeModalUnhideProject]);
 
   useEffect(() => {
     if (!showUpgradeModal) {
       hasTrackedView.current = false;
-      setShowFaq(false);
-      setShowAllFeatures(false);
+      startTransition(() => {
+        setShowFaq(false);
+        setShowAllFeatures(false);
+      });
     }
   }, [showUpgradeModal]);
 
@@ -371,7 +373,7 @@ export default function UpgradeModal() {
                             logoUrl={upgradeModalJob.logoUrl}
                             company={upgradeModalJob.company}
                             size={24}
-                            className="rounded-md flex-shrink-0"
+                            className="rounded-md shrink-0"
                           />
                           <span className="text-[14px] font-medium text-[#1f2937] line-clamp-1">
                             {upgradeModalJob.role}
@@ -535,7 +537,7 @@ export default function UpgradeModal() {
                             : "border-[#c4c9d4] bg-transparent text-[#6b7280] hover:text-[#374151] hover:border-[#9ca3af]"
                         }`}
                       >
-                        <HelpCircle className="w-3 h-3 flex-shrink-0" />
+                        <HelpCircle className="w-3 h-3 shrink-0" />
                         Have more doubts? FAQ
                       </button>
                     </div>
@@ -612,7 +614,7 @@ function PlanQuote({ plan }) {
       }}
     >
       <span
-        className="flex-shrink-0 w-[22px] h-[22px] rounded-md flex items-center justify-center"
+        className="shrink-0 w-[22px] h-[22px] rounded-md flex items-center justify-center"
         style={{ background: "rgba(232,89,58,0.12)" }}
       >
         <Icon className="w-3 h-3" style={{ color: "#E8593A" }} />
@@ -721,7 +723,7 @@ function LogoMarquee() {
               {logos.map((logo, i) => (
                 <div
                   key={i}
-                  className="flex items-center justify-center px-2 flex-shrink-0 min-h-8 min-w-[48px]"
+                  className="flex items-center justify-center px-2 shrink-0 min-h-8 min-w-[48px]"
                 >
                   <img
                     src={logo}
@@ -743,7 +745,7 @@ function LogoMarquee() {
 function UrgencyBanner() {
   return (
     <div className="flex items-center justify-center gap-2 mt-2.5 mb-4">
-      <span className="relative flex-shrink-0 flex h-[7px] w-[7px]">
+      <span className="relative shrink-0 flex h-[7px] w-[7px]">
         <span
           className="animate-ping absolute inline-flex h-full w-full rounded-full"
           style={{ backgroundColor: "#E8593A", opacity: 0.5 }}

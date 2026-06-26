@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { Check, Loader2 } from "lucide-react";
 import { useGlobalContext } from "@/context/globalContext";
 import { _getPersonas } from "@/network/get-request";
@@ -34,27 +34,30 @@ export default function UpdatePersonaSidebar() {
 
   useEffect(() => {
     if (!userDetails || roles.length === 0) return;
-    const { persona } = userDetails;
-    if (persona?.value && persona?.label) {
-      const isCustom = persona.__isNew__ === true || persona.label === "Others" || !!persona.custom;
-      if (isCustom) {
-        setSelectedRole("Others");
-        setCustomRole(persona.custom || "");
-        setSelectedPersonaId(persona.value);
-      } else {
-        const match =
-          roles.find((r) => r._id === persona.value) ||
-          roles.find((r) => r.label === persona.label);
-        if (match) {
-          setSelectedRole(match.label);
-          setSelectedPersonaId(match._id);
-        } else {
+    queueMicrotask(() => {
+      const { persona } = userDetails;
+      if (persona?.value && persona?.label) {
+        const isCustom =
+          persona.__isNew__ === true || persona.label === "Others" || !!persona.custom;
+        if (isCustom) {
           setSelectedRole("Others");
-          setCustomRole(persona.label);
+          setCustomRole(persona.custom || "");
           setSelectedPersonaId(persona.value);
+        } else {
+          const match =
+            roles.find((r) => r._id === persona.value) ||
+            roles.find((r) => r.label === persona.label);
+          if (match) {
+            setSelectedRole(match.label);
+            setSelectedPersonaId(match._id);
+          } else {
+            setSelectedRole("Others");
+            setCustomRole(persona.label);
+            setSelectedPersonaId(persona.value);
+          }
         }
       }
-    }
+    });
   }, [roles, userDetails]);
 
   const handleSave = async () => {

@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useRef, startTransition } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import {
   MapPin,
   Briefcase,
@@ -22,7 +22,7 @@ const EASE = [0.22, 1, 0.36, 1];
 function Pill({ icon: Icon, children }) {
   return (
     <span className="inline-flex items-center gap-1.5 font-jetbrains text-[10px] font-semibold uppercase tracking-wide text-[#3D3630] dark:text-white/55 bg-[#EAE5DF] dark:bg-[#1F1C1C] rounded-md px-2.5 py-1 whitespace-nowrap">
-      {Icon && <Icon className="w-3 h-3 flex-shrink-0" />}
+      {Icon && <Icon className="w-3 h-3 shrink-0" />}
       {children}
     </span>
   );
@@ -38,7 +38,7 @@ function JobSkeleton() {
   return (
     <div className="flex flex-col gap-4 px-6 py-6">
       <div className="flex items-center gap-3.5">
-        <Shimmer className="w-11 h-11 rounded-xl flex-shrink-0" />
+        <Shimmer className="w-11 h-11 rounded-xl shrink-0" />
         <div className="flex flex-col gap-2 flex-1">
           <Shimmer className="h-2.5 w-20" />
           <Shimmer className="h-4 w-48" />
@@ -67,7 +67,7 @@ export function SharedJobPromptDialog({ jobId, onClose, onSaved }) {
   // Reset local state whenever a new jobId opens the dialog
   useEffect(() => {
     if (jobId) {
-      setForceClosed(false);
+      startTransition(() => setForceClosed(false));
       resolvedRef.current = false;
       savedJobRef.current = null;
     }
@@ -75,10 +75,12 @@ export function SharedJobPromptDialog({ jobId, onClose, onSaved }) {
 
   useEffect(() => {
     if (!jobId) return;
-    setJob(null);
-    setFetchError(false);
-    setSaved(false);
-    setAlreadySaved(false);
+    startTransition(() => {
+      setJob(null);
+      setFetchError(false);
+      setSaved(false);
+      setAlreadySaved(false);
+    });
     Promise.all([
       _getPublicJob(jobId),
       _getJobsCheckSaved(jobId).catch(() => ({ data: { saved: false } })),

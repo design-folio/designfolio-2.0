@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { GripVertical, Building, ArrowUpDown, Check } from "lucide-react";
 import {
   DndContext,
@@ -87,7 +87,7 @@ export default function RearrangeWorksSidebar() {
   const { userDetails, setUserDetails, updateCache } = useGlobalContext();
   const [sorted, setSorted] = useState(false);
 
-  const experiences = userDetails?.experiences || [];
+  const experiences = useMemo(() => userDetails?.experiences || [], [userDetails?.experiences]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),

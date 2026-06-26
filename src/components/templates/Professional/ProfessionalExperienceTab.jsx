@@ -1,5 +1,5 @@
 import React, { memo, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { ChevronsUpDown, Pencil, Plus } from "lucide-react";
 import { parseTiptapToWords } from "@/lib/tiptapUtils";

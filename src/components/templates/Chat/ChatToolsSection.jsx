@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Pencil, Plus } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { useGlobalContext } from "@/context/globalContext";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { sidebars } from "@/lib/constant";
@@ -98,7 +98,7 @@ export default function ChatToolsSection({
                         {[...tools, ...tools].map((tool, i) => (
                           <div
                             key={i}
-                            className="w-10 h-10 rounded-2xl bg-[#E5E2DB] dark:bg-[#35302A] shadow-sm flex items-center justify-center border border-black/5 dark:border-white/5 flex-shrink-0"
+                            className="w-10 h-10 rounded-2xl bg-[#E5E2DB] dark:bg-[#35302A] shadow-sm flex items-center justify-center border border-black/5 dark:border-white/5 shrink-0"
                           >
                             <img
                               src={tool.image}

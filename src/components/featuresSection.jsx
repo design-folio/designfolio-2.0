@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import Text from "./text";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import dynamic from "next/dynamic";
 import { TestimonialsMinimal } from "./ui/minimal-testimonial";
 import { FlickeringGrid } from "./ui/flickering-grid";

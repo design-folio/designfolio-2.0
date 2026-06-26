@@ -1,6 +1,6 @@
 import { Sun, Moon } from "lucide-react";
 import { useState, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { runThemeTransition } from "@/hooks/use-theme-switch-audio";
 import { usePersistableThemeToggle } from "@/hooks/usePersistableThemeToggle";
 

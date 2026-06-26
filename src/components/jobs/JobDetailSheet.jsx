@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, startTransition } from "react";
 import { useTheme } from "next-themes";
 import {
   MapPin,
@@ -161,7 +161,7 @@ function CopyButton({ text }) {
 function CreditBadge({ count }) {
   if (count === null) return null;
   return (
-    <span className="flex items-center gap-0.5 bg-amber-100 dark:bg-amber-400/20 border border-amber-300/60 dark:border-amber-400/30 rounded-full px-1.5 py-0.5 flex-shrink-0">
+    <span className="flex items-center gap-0.5 bg-amber-100 dark:bg-amber-400/20 border border-amber-300/60 dark:border-amber-400/30 rounded-full px-1.5 py-0.5 shrink-0">
       <Zap className="w-2.5 h-2.5 text-amber-500 fill-amber-500" />
       <span className="text-[10px] font-semibold text-amber-600 dark:text-amber-400">{count}</span>
     </span>
@@ -170,7 +170,7 @@ function CreditBadge({ count }) {
 
 function ComingSoonBadge() {
   return (
-    <span className="relative flex items-center gap-0.5 bg-violet-50 dark:bg-violet-500/10 border border-violet-200/60 dark:border-violet-400/20 rounded-full px-1.5 py-0.5 flex-shrink-0 overflow-hidden cursor-not-allowed">
+    <span className="relative flex items-center gap-0.5 bg-violet-50 dark:bg-violet-500/10 border border-violet-200/60 dark:border-violet-400/20 rounded-full px-1.5 py-0.5 shrink-0 overflow-hidden cursor-not-allowed">
       {/* sweep shimmer */}
       <span
         className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-violet-300/25 dark:via-violet-400/15 to-transparent"
@@ -196,9 +196,10 @@ export function JobDetailSheet({
 }) {
   const { userDetails, setShowUpgradeModal, setUpgradeModalSource, setUpgradeModalJob } =
     useGlobalContext();
-  const lastJobRef = useRef(null);
-  if (job) lastJobRef.current = job;
-  const displayJob = job ?? lastJobRef.current;
+  const [displayJob, setDisplayJob] = useState(() => job ?? null);
+  useEffect(() => {
+    if (job != null) startTransition(() => setDisplayJob(job));
+  }, [job]);
 
   const openJobUpgradeModal = (source) => {
     setUpgradeModalSource(source);
@@ -291,11 +292,13 @@ export function JobDetailSheet({
 
   useEffect(() => {
     if (!job) return;
-    setResumeResult(null);
-    setLetterResult(null);
-    setFitResult(null);
+    startTransition(() => {
+      setResumeResult(null);
+      setLetterResult(null);
+      setFitResult(null);
+    });
     scrollRef.current?.scrollTo({ top: 0 });
-  }, [job?.id]);
+  }, [job]);
 
   // Load this job's saved documents (refreshes when the studio closes / after mutations).
   useEffect(() => {
@@ -392,11 +395,11 @@ export function JobDetailSheet({
         ) : (
           <>
             {/* Header */}
-            <SheetHeader className="px-5 py-4 border-b border-black/10 dark:border-white/10 flex-shrink-0 flex flex-row items-center justify-between m-0 space-y-0 h-[65px]">
+            <SheetHeader className="px-5 py-4 border-b border-black/10 dark:border-white/10 shrink-0 flex flex-row items-center justify-between m-0 space-y-0 h-[65px]">
               <SheetTitle className="text-[#1A1A1A] dark:text-[#F0EDE7] text-base font-semibold m-0 truncate">
                 {displayJob.role}
               </SheetTitle>
-              <div className="flex items-center gap-2 flex-shrink-0">
+              <div className="flex items-center gap-2 shrink-0">
                 <button
                   onClick={handleShare}
                   aria-label="Copy share link"
@@ -452,7 +455,7 @@ export function JobDetailSheet({
                 {/* Property rows */}
                 <div className="mt-5 space-y-3.5">
                   <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-2 w-[124px] flex-shrink-0">
+                    <div className="flex items-center gap-2 w-[124px] shrink-0">
                       <Calendar className="w-4 h-4 text-foreground/30" />
                       <span className="text-sm text-foreground/40">Posted</span>
                     </div>
@@ -462,7 +465,7 @@ export function JobDetailSheet({
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-2 w-[124px] flex-shrink-0">
+                    <div className="flex items-center gap-2 w-[124px] shrink-0">
                       <Briefcase className="w-4 h-4 text-foreground/30" />
                       <span className="text-sm text-foreground/40">Type</span>
                     </div>
@@ -472,7 +475,7 @@ export function JobDetailSheet({
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-2 w-[124px] flex-shrink-0">
+                    <div className="flex items-center gap-2 w-[124px] shrink-0">
                       <Monitor className="w-4 h-4 text-foreground/30" />
                       <span className="text-sm text-foreground/40">Work mode</span>
                     </div>
@@ -483,7 +486,7 @@ export function JobDetailSheet({
 
                   {displayJob.yearsExp && (
                     <div className="flex items-center gap-3">
-                      <div className="flex items-center gap-2 w-[124px] flex-shrink-0">
+                      <div className="flex items-center gap-2 w-[124px] shrink-0">
                         <Clock className="w-4 h-4 text-foreground/30" />
                         <span className="text-sm text-foreground/40">Experience</span>
                       </div>
@@ -495,7 +498,7 @@ export function JobDetailSheet({
 
                   {formatSalary(displayJob.salary) && (
                     <div className="flex items-center gap-3">
-                      <div className="flex items-center gap-2 w-[124px] flex-shrink-0">
+                      <div className="flex items-center gap-2 w-[124px] shrink-0">
                         <DollarSign className="w-4 h-4 text-foreground/30" />
                         <span className="text-sm text-foreground/40">Salary</span>
                       </div>
@@ -523,7 +526,7 @@ export function JobDetailSheet({
                       }}
                       className="w-full flex items-center gap-2.5 px-4 py-3 hover:bg-black/[0.03] dark:hover:bg-white/[0.03] transition-colors group text-left border-b border-black/[0.05] dark:border-white/[0.05] cursor-pointer"
                     >
-                      <div className="w-8 h-8 rounded-xl bg-black/[0.05] dark:bg-white/[0.06] group-hover:bg-black/[0.07] dark:group-hover:bg-white/[0.09] transition-colors flex items-center justify-center flex-shrink-0">
+                      <div className="w-8 h-8 rounded-xl bg-black/[0.05] dark:bg-white/[0.06] group-hover:bg-black/[0.07] dark:group-hover:bg-white/[0.09] transition-colors flex items-center justify-center shrink-0">
                         <Clapperboard className="w-3.5 h-3.5 text-foreground/55" />
                       </div>
                       <div className="flex-1 min-w-0 cursor-pointer">
@@ -556,7 +559,7 @@ export function JobDetailSheet({
                         className="flex flex-col items-start gap-2 px-3.5 py-3 hover:bg-black/[0.03] dark:hover:bg-white/[0.03] transition-colors group text-left"
                       >
                         <div className="flex items-center justify-between w-full">
-                          <div className="w-6 h-6 rounded-lg bg-black/[0.05] dark:bg-white/[0.06] group-hover:bg-black/[0.07] dark:group-hover:bg-white/[0.09] transition-colors flex items-center justify-center flex-shrink-0">
+                          <div className="w-6 h-6 rounded-lg bg-black/[0.05] dark:bg-white/[0.06] group-hover:bg-black/[0.07] dark:group-hover:bg-white/[0.09] transition-colors flex items-center justify-center shrink-0">
                             <FileText className="w-3 h-3 text-foreground/45" />
                           </div>
                           <CreditBadge count={featureRemaining("resumeCustomize")} />
@@ -578,7 +581,7 @@ export function JobDetailSheet({
                         className="flex flex-col items-start gap-2 px-3.5 py-3 hover:bg-black/[0.03] dark:hover:bg-white/[0.03] transition-colors group text-left"
                       >
                         <div className="flex items-center justify-between w-full">
-                          <div className="w-6 h-6 rounded-lg bg-black/[0.05] dark:bg-white/[0.06] group-hover:bg-black/[0.07] dark:group-hover:bg-white/[0.09] transition-colors flex items-center justify-center flex-shrink-0">
+                          <div className="w-6 h-6 rounded-lg bg-black/[0.05] dark:bg-white/[0.06] group-hover:bg-black/[0.07] dark:group-hover:bg-white/[0.09] transition-colors flex items-center justify-center shrink-0">
                             <PenLine className="w-3 h-3 text-foreground/45" />
                           </div>
                           <CreditBadge count={featureRemaining("coverLetter")} />
@@ -601,7 +604,7 @@ export function JobDetailSheet({
                         className="flex flex-col items-start gap-2 px-3.5 py-3 hover:bg-black/[0.03] dark:hover:bg-white/[0.03] transition-colors group text-left disabled:opacity-60"
                       >
                         <div className="flex items-center justify-between w-full">
-                          <div className="w-6 h-6 rounded-lg bg-black/[0.05] dark:bg-white/[0.06] group-hover:bg-black/[0.07] dark:group-hover:bg-white/[0.09] transition-colors flex items-center justify-center flex-shrink-0">
+                          <div className="w-6 h-6 rounded-lg bg-black/[0.05] dark:bg-white/[0.06] group-hover:bg-black/[0.07] dark:group-hover:bg-white/[0.09] transition-colors flex items-center justify-center shrink-0">
                             {fitLoading ? (
                               <Loader2 className="w-3 h-3 text-foreground/40 animate-spin" />
                             ) : (
@@ -629,9 +632,9 @@ export function JobDetailSheet({
                             className="w-full flex items-center gap-2 py-1.5 text-left group"
                           >
                             {d.type === "resume" ? (
-                              <FileText className="w-3 h-3 text-foreground/40 flex-shrink-0" />
+                              <FileText className="w-3 h-3 text-foreground/40 shrink-0" />
                             ) : (
-                              <PenLine className="w-3 h-3 text-foreground/40 flex-shrink-0" />
+                              <PenLine className="w-3 h-3 text-foreground/40 shrink-0" />
                             )}
                             <span className="text-[12px] text-foreground/65 group-hover:text-foreground/90 transition-colors">
                               {d.type === "resume" ? "Tailored resume" : "Cover letter"}
@@ -700,7 +703,7 @@ export function JobDetailSheet({
                                     key={i}
                                     className="flex items-start gap-2 text-[12px] text-foreground/70"
                                   >
-                                    <span className="mt-1 w-1 h-1 rounded-full bg-emerald-500 flex-shrink-0" />
+                                    <span className="mt-1 w-1 h-1 rounded-full bg-emerald-500 shrink-0" />
                                     {s}
                                   </li>
                                 ))}
@@ -718,7 +721,7 @@ export function JobDetailSheet({
                                     key={i}
                                     className="flex items-start gap-2 text-[12px] text-foreground/70"
                                   >
-                                    <span className="mt-1 w-1 h-1 rounded-full bg-amber-500 flex-shrink-0" />
+                                    <span className="mt-1 w-1 h-1 rounded-full bg-amber-500 shrink-0" />
                                     {g}
                                   </li>
                                 ))}
@@ -762,7 +765,7 @@ export function JobDetailSheet({
                         key={i}
                         className="flex items-start gap-2.5 text-sm text-foreground/75 leading-[1.6]"
                       >
-                        <span className="mt-[5px] w-1.5 h-1.5 rounded-full bg-foreground/25 flex-shrink-0" />
+                        <span className="mt-[5px] w-1.5 h-1.5 rounded-full bg-foreground/25 shrink-0" />
                         {req}
                       </li>
                     ))}
@@ -786,7 +789,7 @@ export function JobDetailSheet({
 
                 {pastReports.length === 0 ? (
                   <div className="flex items-center gap-3 py-4">
-                    <div className="w-8 h-8 rounded-lg bg-foreground/[0.04] flex items-center justify-center flex-shrink-0">
+                    <div className="w-8 h-8 rounded-lg bg-foreground/[0.04] flex items-center justify-center shrink-0">
                       <Clapperboard className="w-3.5 h-3.5 text-foreground/25" />
                     </div>
                     <p className="text-[13px] text-foreground/35 leading-snug">
@@ -820,7 +823,7 @@ export function JobDetailSheet({
                             className="w-full flex items-center justify-between gap-3 py-3 group text-left"
                           >
                             <div className="flex items-center gap-3 min-w-0">
-                              <div className="w-8 h-8 rounded-lg bg-foreground/[0.04] group-hover:bg-foreground/[0.07] transition-colors flex items-center justify-center flex-shrink-0">
+                              <div className="w-8 h-8 rounded-lg bg-foreground/[0.04] group-hover:bg-foreground/[0.07] transition-colors flex items-center justify-center shrink-0">
                                 <Clapperboard className="w-3.5 h-3.5 text-foreground/35" />
                               </div>
                               <div className="min-w-0">
@@ -832,7 +835,7 @@ export function JobDetailSheet({
                                 </div>
                               </div>
                             </div>
-                            <div className="flex items-center gap-2 flex-shrink-0">
+                            <div className="flex items-center gap-2 shrink-0">
                               <span className={`text-[15px] font-bold ${scoreColor}`}>{score}</span>
                               <span className="text-[11px] text-foreground/30">/100</span>
                               <ChevronRight className="w-3.5 h-3.5 text-foreground/20 group-hover:text-foreground/45 transition-colors" />
@@ -850,7 +853,7 @@ export function JobDetailSheet({
             </div>
 
             {/* Footer CTA */}
-            <div className="px-5 py-4 border-t border-black/[0.06] dark:border-white/[0.06] flex-shrink-0">
+            <div className="px-5 py-4 border-t border-black/[0.06] dark:border-white/[0.06] shrink-0">
               <button
                 data-testid={`button-apply-${displayJob.id}`}
                 onClick={handleApply}

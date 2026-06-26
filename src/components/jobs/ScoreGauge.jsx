@@ -1,5 +1,5 @@
 import { useState, useEffect, useId } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 // SVG geometry — 270° arc, 90° gap at the bottom
 const SG_A0 = 225; // start deg (bottom-left)

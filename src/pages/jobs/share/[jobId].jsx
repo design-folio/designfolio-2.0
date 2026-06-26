@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, startTransition } from "react";
 import axios from "axios";
 import Head from "next/head";
 import Cookies from "js-cookie";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "motion/react";
 
 import { _getJobsCheckSaved, _postJobsAddFromShare, _getJobsJobScore } from "@/network/jobs";
 import { ShareNav } from "@/components/jobs/share/ShareNav";
@@ -42,25 +42,6 @@ export default function SharedJobPage({ job, sharer, sharerUsername }) {
   // Cleanup score poll on unmount
   useEffect(() => () => clearInterval(scorePollRef.current), []);
 
-  // Auth detection — lightweight single-query check instead of full history load
-  useEffect(() => {
-    const token = Cookies.get("df-token");
-    if (!token) {
-      setAuthState("new");
-      return;
-    }
-    _getJobsCheckSaved(job.id)
-      .then(({ data }) => {
-        if (data?.saved) {
-          setAuthState("saved");
-          startScorePoll(job.id);
-        } else {
-          setAuthState("loggedin");
-        }
-      })
-      .catch(() => setAuthState("loggedin"));
-  }, [job.id]);
-
   const startScorePoll = (jobId) => {
     clearInterval(scorePollRef.current);
     let attempts = 0;
@@ -78,6 +59,25 @@ export default function SharedJobPage({ job, sharer, sharerUsername }) {
       if (attempts >= SCORE_POLL_MAX_ATTEMPTS) clearInterval(scorePollRef.current);
     }, SCORE_POLL_INTERVAL_MS);
   };
+
+  // Auth detection — lightweight single-query check instead of full history load
+  useEffect(() => {
+    const token = Cookies.get("df-token");
+    if (!token) {
+      startTransition(() => setAuthState("new"));
+      return;
+    }
+    _getJobsCheckSaved(job.id)
+      .then(({ data }) => {
+        if (data?.saved) {
+          setAuthState("saved");
+          startScorePoll(job.id);
+        } else {
+          setAuthState("loggedin");
+        }
+      })
+      .catch(() => setAuthState("loggedin"));
+  }, [job.id]);
 
   const handleSave = async () => {
     setIsSaving(true);

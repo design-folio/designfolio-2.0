@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, startTransition } from "react";
 import { ChevronLeft } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import TiptapRenderer from "@/components/tiptapRenderer";
 import BlockRenderer from "@/components/blockRenderer";
@@ -156,7 +156,7 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
     }
   };
 
-  const fetchAnalyzeStatus = async () => {
+  const fetchAnalyzeStatus = useCallback(async () => {
     if (!project?._id) return;
     try {
       const response = await _analyzeCaseStudyStatus(project._id);
@@ -168,7 +168,7 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
     } catch (e) {
       console.log(e);
     }
-  };
+  }, [project]);
 
   const handleAnalyzeClick = async () => {
     if (suggestions.length > 0) {
@@ -237,13 +237,13 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
   };
 
   useEffect(() => {
-    setWordCount(null);
+    startTransition(() => setWordCount(null));
     if (!edit) return;
-    fetchAnalyzeStatus();
-  }, [edit]);
+    startTransition(() => void fetchAnalyzeStatus());
+  }, [edit, fetchAnalyzeStatus, setWordCount]);
 
   useEffect(() => {
-    setAvatarImageSrc(avatarSrc || "/assets/svgs/avatar.svg");
+    startTransition(() => setAvatarImageSrc(avatarSrc || "/assets/svgs/avatar.svg"));
   }, [avatarSrc]);
 
   return (
@@ -554,14 +554,14 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
                 <div className="">
                   {project?.contentVersion === 2 && project?.tiptapContent ? (
                     <TiptapRenderer
-                      className="bg-[#E5E2DB] dark:bg-[#2A2520] !p-4 rounded-2xl rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5 w-full"
+                      className="bg-[#E5E2DB] dark:bg-[#2A2520] p-4! rounded-2xl rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5 w-full"
                       key={project._id}
                       content={project.tiptapContent}
                     />
                   ) : project?.content ? (
                     <BlockRenderer
                       editorJsData={project.content}
-                      className="bg-[#E5E2DB] dark:bg-[#2A2520] !p-4 rounded-2xl rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5 w-full"
+                      className="bg-[#E5E2DB] dark:bg-[#2A2520] p-4! rounded-2xl rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5 w-full"
                     />
                   ) : null}
                 </div>

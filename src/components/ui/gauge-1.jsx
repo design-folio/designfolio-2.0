@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useMotionValue, useSpring } from "framer-motion";
+import { useEffect, useState, startTransition } from "react";
+import { useMotionValue, useSpring } from "motion/react";
 import { cn } from "@/lib/utils";
 
 export function useNumberCounter({ value, direction = "up", delay = 0, decimalPlaces = 0 }) {
@@ -12,8 +12,10 @@ export function useNumberCounter({ value, direction = "up", delay = 0, decimalPl
 
   useEffect(() => {
     const initialValue = direction === "down" ? value : 0;
-    setDisplayValue(initialValue);
-    setRawValue(initialValue);
+    startTransition(() => {
+      setDisplayValue(initialValue);
+      setRawValue(initialValue);
+    });
   }, [direction, value]);
 
   useEffect(() => {

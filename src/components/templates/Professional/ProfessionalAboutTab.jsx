@@ -1,5 +1,5 @@
 import React, { memo, useMemo, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Pencil, X } from "lucide-react";
 import { TextGradientScroll } from "./text-gradient-scroll";

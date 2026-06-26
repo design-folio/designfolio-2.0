@@ -12,7 +12,7 @@ function useCountUp(target, duration = 800) {
 
   useEffect(() => {
     if (prefersReducedMotion || target === 0) {
-      setValue(target);
+      queueMicrotask(() => setValue(target));
       return;
     }
     const start = performance.now();

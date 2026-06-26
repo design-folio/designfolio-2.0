@@ -1,5 +1,5 @@
 import { Download } from "lucide-react";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView } from "motion/react";
 import { useRef } from "react";
 
 import InstagramIcon from "../../../public/assets/svgs/instagram.svg";

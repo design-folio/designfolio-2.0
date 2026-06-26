@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { useEffect, useState, useRef } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Button from "../button";
@@ -56,6 +56,7 @@ export const ToolStack = ({ userDetails, edit, titleClasses, headerActions }) =>
   const ref = useRef(null);
 
   useEffect(() => {
+    const node = ref.current;
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && !inView) {
@@ -65,13 +66,13 @@ export const ToolStack = ({ userDetails, edit, titleClasses, headerActions }) =>
       { threshold: 0.5 }
     );
 
-    if (ref.current) {
-      observer.observe(ref.current);
+    if (node) {
+      observer.observe(node);
     }
 
     return () => {
-      if (ref.current) {
-        observer.unobserve(ref.current);
+      if (node) {
+        observer.unobserve(node);
       }
     };
   }, [inView]);
@@ -80,7 +81,7 @@ export const ToolStack = ({ userDetails, edit, titleClasses, headerActions }) =>
     <section className="py-12 overflow-hidden">
       <div className="flex items-center justify-between mb-8">
         <h2 className={cn("text-2xl font-bold", titleClasses)}>Tool Stack</h2>
-        {headerActions && <div className="flex-shrink-0">{headerActions}</div>}
+        {headerActions && <div className="shrink-0">{headerActions}</div>}
       </div>
       {isMobile ? (
         <div
@@ -95,7 +96,7 @@ export const ToolStack = ({ userDetails, edit, titleClasses, headerActions }) =>
             {scrollTools.map((tool, index) => (
               <div key={index} className="flex flex-col items-center gap-2 min-w-[100px]">
                 <div className="bg-card p-4 rounded-2xl flex items-center justify-center transition-colors hover:bg-card/80">
-                  <img src={tool.image} className="w-8" />
+                  <img src={tool.image} className="w-8" alt={tool.name} />
                 </div>
                 <span className="text-sm whitespace-nowrap">{tool.name}</span>
               </div>
@@ -122,6 +123,7 @@ export const ToolStack = ({ userDetails, edit, titleClasses, headerActions }) =>
                 <img
                   src={tool.image ? tool.image : "/assets/svgs/default-tools.svg"}
                   className="w-8"
+                  alt={tool.label || tool.name || ""}
                 />
               </div>
               <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-sm whitespace-nowrap">

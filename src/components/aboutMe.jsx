@@ -2,7 +2,7 @@ import { usePegboardSounds } from "@/hooks/use-pegboard-sounds";
 import { DEFAULT_PEGBOARD_IMAGES, DEFAULT_PEGBOARD_STICKERS } from "@/lib/aboutConstants";
 import { sidebars } from "@/lib/constant";
 import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { useRef } from "react";
 import Section from "./section";
 

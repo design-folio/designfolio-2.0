@@ -16,7 +16,7 @@ export default function LandingQuoteBanner() {
         style={{ animation: "quoteScroll 60s linear infinite" }}
       >
         {allQuotes.map((quote, i) => (
-          <span key={i} className="flex items-center gap-2.5 flex-shrink-0">
+          <span key={i} className="flex items-center gap-2.5 shrink-0">
             <span className="text-white text-[13px] font-bold whitespace-nowrap">
               &ldquo;{quote}&rdquo;
             </span>

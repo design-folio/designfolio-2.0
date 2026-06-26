@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { X } from "lucide-react";
 import { useTheme } from "next-themes";
 import ResumeUploadZone from "./ResumeUploadZone";
@@ -37,12 +37,12 @@ export default function ResumeUploadModal({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 8 }}
             transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-            className="relative w-full max-w-[640px] rounded-3xl border border-[--lp-video-border] bg-[--lp-fg-white] dark:bg-[--lp-card] shadow-2xl overflow-hidden"
+            className="relative w-full max-w-[640px] rounded-3xl border border-(--lp-video-border) bg-(--lp-fg-white) dark:bg-(--lp-card) shadow-2xl overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-lp-text/[0.06] text-lp-text/50 hover:bg-lp-text/[0.12] hover:text-[--lp-text] transition-all duration-150"
+              className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-lp-text/[0.06] text-lp-text/50 hover:bg-lp-text/[0.12] hover:text-(--lp-text) transition-all duration-150"
               aria-label="Close"
             >
               <X className="w-3.5 h-3.5" strokeWidth={2.5} />
@@ -51,13 +51,13 @@ export default function ResumeUploadModal({
             <div className="p-7 md:p-9">
               <div className="mb-7">
                 <h2
-                  className="text-[22px] font-bold text-[--lp-text] tracking-tight leading-tight mb-1.5"
+                  className="text-[22px] font-bold text-(--lp-text) tracking-tight leading-tight mb-1.5"
                   style={{ fontFamily: "var(--font-manrope), sans-serif" }}
                 >
                   Everything starts with your Resume
                 </h2>
                 <p
-                  className="text-[14px] text-[--lp-text-muted] leading-relaxed"
+                  className="text-[14px] text-(--lp-text-muted) leading-relaxed"
                   style={{ fontFamily: "var(--font-manrope), sans-serif" }}
                 >
                   Upload once. AI builds your portfolio, matches jobs, and sets you up for your next
@@ -101,10 +101,10 @@ export default function ResumeUploadModal({
                         style={{ borderRadius: "22%" }}
                       />
                       <div>
-                        <p className="text-[15px] font-semibold text-[--lp-text] leading-snug mb-1">
+                        <p className="text-[15px] font-semibold text-(--lp-text) leading-snug mb-1">
                           {title}
                         </p>
-                        <p className="text-[13px] text-[--lp-text-muted] leading-relaxed">{desc}</p>
+                        <p className="text-[13px] text-(--lp-text-muted) leading-relaxed">{desc}</p>
                       </div>
                     </div>
                   ))}

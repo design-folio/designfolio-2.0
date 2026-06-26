@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useRef, useEffect, startTransition } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import { ArrowRight, ArrowLeft, Search } from "lucide-react";
 import Lottie from "lottie-react";
 import aiAssistantAnimation from "@/assets/AI-Assistant.json";
@@ -72,7 +72,7 @@ export function TypeRoom({ questions, onDone, onReset }) {
   // Auto-select the only option when Q1 appears so city input shows immediately
   useEffect(() => {
     if (current === 1 && q1?.options?.length > 0 && locationChoice === null) {
-      setLocationChoice(q1.options[0]);
+      startTransition(() => setLocationChoice(q1.options[0]));
     }
   }, [current, q1, locationChoice]);
 

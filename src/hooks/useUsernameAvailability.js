@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, startTransition } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { _checkUsername } from "@/network/post-request";
 
@@ -25,20 +25,26 @@ export function useUsernameAvailability(value) {
 
   useEffect(() => {
     if (!value) {
-      setIsChecking(false);
-      setIsAvailable(false);
-      setError("");
+      startTransition(() => {
+        setIsChecking(false);
+        setIsAvailable(false);
+        setError("");
+      });
       return;
     }
     if (value.length < MIN_LENGTH) {
-      setIsChecking(false);
-      setIsAvailable(false);
-      setError(`Username must be at least ${MIN_LENGTH} characters.`);
+      startTransition(() => {
+        setIsChecking(false);
+        setIsAvailable(false);
+        setError(`Username must be at least ${MIN_LENGTH} characters.`);
+      });
       return;
     }
-    setIsAvailable(false);
-    setError("");
-    setIsChecking(true);
+    startTransition(() => {
+      setIsAvailable(false);
+      setError("");
+      setIsChecking(true);
+    });
     checkDebounced(value);
   }, [value, checkDebounced]);
 

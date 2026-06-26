@@ -3,14 +3,14 @@ import { _getTools } from "@/network/get-request";
 import { _updateUser } from "@/network/post-request";
 import { Form, Formik } from "formik";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import * as Yup from "yup";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { UnsavedChangesDialog } from "../ui/UnsavedChangesDialog";
 import { sidebars } from "@/lib/constant";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { Plus, Search } from "lucide-react";
 
 const validationSchema = Yup.object().shape({
@@ -47,20 +47,22 @@ export default function AddTools() {
 
   const isOpen = activeSidebar === sidebars.tools;
 
-  // Reset search when panel closes
-  useEffect(() => {
-    if (!isOpen) {
-      setEditingValues(null);
-      setToolSearchQuery("");
-    }
-  }, [isOpen]);
-
-  const hasUnsavedChanges = () => {
+  const hasUnsavedChanges = useCallback(() => {
     if (!editingValues) return false;
     const initial = JSON.stringify(userDetails?.tools ?? []);
     const current = JSON.stringify(editingValues.selectedTools ?? []);
     return initial !== current;
-  };
+  }, [editingValues, userDetails?.tools]);
+
+  // Reset search when panel closes
+  useEffect(() => {
+    if (!isOpen) {
+      queueMicrotask(() => {
+        setEditingValues(null);
+        setToolSearchQuery("");
+      });
+    }
+  }, [isOpen]);
 
   const resetStateAndClose = () => {
     setEditingValues(null);
@@ -72,7 +74,7 @@ export default function AddTools() {
       registerUnsavedChangesChecker(sidebars.tools, hasUnsavedChanges);
     }
     return () => unregisterUnsavedChangesChecker(sidebars.tools);
-  }, [isOpen, editingValues, registerUnsavedChangesChecker, unregisterUnsavedChangesChecker]);
+  }, [isOpen, hasUnsavedChanges, registerUnsavedChangesChecker, unregisterUnsavedChangesChecker]);
 
   const renderFormContent = () => (
     <Formik
@@ -198,7 +200,7 @@ export default function AddTools() {
               )}
             </div>
 
-            <div className="flex gap-2 py-3 px-6 border-t border-border justify-end flex-shrink-0 bg-sidebar">
+            <div className="flex gap-2 py-3 px-6 border-t border-border justify-end shrink-0 bg-sidebar">
               <Button variant="outline" type="button" onClick={() => closeSidebar()}>
                 Cancel
               </Button>

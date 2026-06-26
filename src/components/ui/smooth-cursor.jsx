@@ -1,5 +1,5 @@
 import { useIsMobile } from "@/hooks/use-mobile";
-import { motion, useSpring } from "framer-motion";
+import { motion, useSpring } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
 const defaultSpringConfig = {
@@ -101,7 +101,7 @@ export function SmoothCursor({ springConfig = defaultSpringConfig, type = "profe
   const [isHovering, setIsHovering] = useState(false);
   const lastMousePos = useRef({ x: 0, y: 0 });
   const velocity = useRef({ x: 0, y: 0 });
-  const lastUpdateTime = useRef(Date.now());
+  const lastUpdateTime = useRef(0);
   const previousAngle = useRef(0);
   const accumulatedRotation = useRef(0);
 

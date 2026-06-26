@@ -33,3 +33,12 @@ export function getAiWorkspaceToolIcon(type) {
   };
   return map[type] || WriteCaseStudyIcon;
 }
+
+export function AiWorkspaceToolIcon({ type, className }) {
+  if (type === NAV.analyze) return <CaseStudyAuditIcon className={className} />;
+  if (type === NAV.mockInterview) return <MockInterviewIcon className={className} />;
+  if (type === NAV.salary) return <SalaryNegotiationIcon className={className} />;
+  if (type === NAV.email) return <EmailGeneratorIcon className={className} />;
+  if (type === NAV.optimizeResume) return <ResumeFixerIcon className={className} />;
+  return <WriteCaseStudyIcon className={className} />;
+}

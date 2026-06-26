@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { useDebouncedCallback } from "use-debounce";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import * as Yup from "yup";
 import { _checkUsername } from "@/network/post-request";
 import { AuthLayout } from "@/components/ui/auth-layout";
@@ -114,7 +114,7 @@ export default function ClaimLink() {
                 data-testid="input-domain"
                 className="min-w-0 flex-1 bg-transparent py-1 text-sm text-foreground outline-none placeholder:text-black/30 dark:placeholder:text-white/30 disabled:cursor-not-allowed disabled:opacity-50"
               />
-              <div className="flex items-center gap-2 flex-shrink-0">
+              <div className="flex items-center gap-2 shrink-0">
                 <span className="text-sm text-foreground/40 whitespace-nowrap select-none">
                   .designfolio.me
                 </span>

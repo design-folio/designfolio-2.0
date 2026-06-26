@@ -1,4 +1,11 @@
-import React, { useContext, useState, useCallback, useEffect, useRef } from "react";
+import React, {
+  useContext,
+  useState,
+  useCallback,
+  useEffect,
+  useRef,
+  startTransition,
+} from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
@@ -66,7 +73,7 @@ const Carousel = React.forwardRef(function Carousel(
       return;
     }
 
-    setApi(api);
+    startTransition(() => setApi(api));
   }, [api, setApi]);
 
   useEffect(() => {
@@ -74,7 +81,7 @@ const Carousel = React.forwardRef(function Carousel(
       return;
     }
 
-    onSelect(api);
+    startTransition(() => onSelect(api));
     api.on("reInit", onSelect);
     api.on("select", onSelect);
 

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { EyeOff, Pencil, Plus, Sparkles, Trash2 } from "lucide-react";
 import { ProjectVisibilityButton } from "@/components/section";
 import { _updateProject } from "@/network/post-request";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { useGlobalContext } from "@/context/globalContext";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { modals, sidebars } from "@/lib/constant";

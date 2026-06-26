@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { Briefcase, Sparkles } from "lucide-react";
 import MemoDFLogoV2 from "@/components/icons/DFLogoV2";
 import { AvatarDropdown } from "@/components/loggedInHeader/avatar-dropdown";
@@ -17,7 +17,7 @@ export function ShareNav({ authState, jobId }) {
       className="fixed top-0 left-0 right-0 z-50 h-14 bg-background/90 backdrop-blur-md border-b border-black/[0.06] dark:border-white/[0.06]"
     >
       <div className="max-w-5xl mx-auto px-5 h-full flex items-center justify-between">
-        <Link href="/" className="flex-shrink-0 flex items-center">
+        <Link href="/" className="shrink-0 flex items-center">
           <MemoDesignfolioLogoV2 />
         </Link>
 

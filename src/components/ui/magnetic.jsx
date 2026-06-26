@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import React, { useState, useEffect, useRef, startTransition } from "react";
+import { motion, useMotionValue, useSpring } from "motion/react";
 
 const SPRING_CONFIG = { stiffness: 26.7, damping: 4.1, mass: 0.2 };
 
@@ -63,7 +63,7 @@ export function Magnetic({
         parent.removeEventListener("mouseleave", handleParentLeave);
       };
     } else if (actionArea === "global") {
-      setIsHovered(true);
+      startTransition(() => setIsHovered(true));
     }
   }, [actionArea]);
 

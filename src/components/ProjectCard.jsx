@@ -1,5 +1,5 @@
 import customTwMerge from "@/lib/customTailwindMerge";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { Eye, EyeOff, Pencil } from "lucide-react";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";

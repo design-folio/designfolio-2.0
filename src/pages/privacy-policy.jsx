@@ -7,7 +7,7 @@ export default function PrivacyPolicy() {
       seoTitle="Privacy Policy – Designfolio"
       seoDescription="Learn how Designfolio collects, uses, and protects your personal data."
     >
-      <p className="text-sm text-[--lp-text-muted]">
+      <p className="text-sm text-(--lp-text-muted)">
         Last updated:{" "}
         {new Date().toLocaleDateString("en-US", {
           month: "long",

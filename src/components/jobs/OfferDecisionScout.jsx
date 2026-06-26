@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { X, Maximize2, Minimize2, SendHorizontal, ArrowRight } from "lucide-react";
 import { ColorOrb } from "@/components/ui/color-orb";
 import { _postJobsOfferDecision } from "@/network/jobs";
@@ -112,7 +112,7 @@ function ResultCard({ winner, analysis, regretNote, take }) {
             <p className="text-[22px] font-bold text-foreground leading-tight tracking-tight">
               {winner}
             </p>
-            <div className="w-7 h-7 rounded-full bg-foreground/[0.06] flex items-center justify-center flex-shrink-0">
+            <div className="w-7 h-7 rounded-full bg-foreground/[0.06] flex items-center justify-center shrink-0">
               <ArrowRight className="w-3.5 h-3.5 text-foreground/50" />
             </div>
           </div>
@@ -229,14 +229,13 @@ export function OfferDecisionScout({ jobs, profileId, onClose, onCreditUsed }) {
           y: { duration: 0.25, ease: [0.22, 1, 0.36, 1] },
           scale: { duration: 0.22 },
         }}
-        className={`absolute pointer-events-auto flex flex-col bg-[#F5F2EE] dark:bg-[#161412] border border-black/[0.1] dark:border-white/[0.1] shadow-2xl rounded-2xl overflow-hidden ${
-          expanded
+        className={`absolute pointer-events-auto flex flex-col bg-[#F5F2EE] dark:bg-[#161412] border border-black/[0.1] dark:border-white/[0.1] shadow-2xl rounded-2xl overflow-hidden ${expanded
             ? "inset-y-[5%] inset-x-0 mx-auto w-full max-w-[600px]"
             : "bottom-4 right-4 w-[390px] h-[560px]"
-        }`}
+          }`}
       >
         {/* ── Header ────────────────────────────────────────────────────────── */}
-        <div className="flex-shrink-0 flex items-center justify-between px-4 py-3 bg-white/60 dark:bg-white/[0.04] border-b border-black/[0.07] dark:border-white/[0.08] backdrop-blur-sm">
+        <div className="shrink-0 flex items-center justify-between px-4 py-3 bg-white/60 dark:bg-white/[0.04] border-b border-black/[0.07] dark:border-white/[0.08] backdrop-blur-sm">
           <div className="flex items-center gap-2 min-w-0">
             <span className="orb-spinning">
               <ColorOrb dimension="14px" spinDuration={6} />
@@ -246,7 +245,7 @@ export function OfferDecisionScout({ jobs, profileId, onClose, onCreditUsed }) {
               · {compA} vs {compB}
             </span>
           </div>
-          <div className="flex items-center gap-0.5 flex-shrink-0 ml-2">
+          <div className="flex items-center gap-0.5 shrink-0 ml-2">
             <button
               onClick={() => setExpanded((v) => !v)}
               aria-label={expanded ? "Collapse" : "Expand"}
@@ -270,7 +269,7 @@ export function OfferDecisionScout({ jobs, profileId, onClose, onCreditUsed }) {
 
         {/* ── Progress bar ──────────────────────────────────────────────────── */}
         {!done && (
-          <div className="flex-shrink-0 flex items-center gap-[3px] px-4 pt-3 pb-0">
+          <div className="shrink-0 flex items-center gap-[3px] px-4 pt-3 pb-0">
             {steps.map((_, i) => (
               <motion.div
                 key={i}
@@ -334,7 +333,7 @@ export function OfferDecisionScout({ jobs, profileId, onClose, onCreditUsed }) {
                     className={`flex items-end gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
                   >
                     {msg.role === "ai" && (
-                      <div className="flex-shrink-0 mb-0.5 w-5 h-5 flex items-center justify-center">
+                      <div className="shrink-0 mb-0.5 w-5 h-5 flex items-center justify-center">
                         {isLastAi ? (
                           <span className="orb-spinning">
                             <ColorOrb dimension="18px" spinDuration={5} />
@@ -345,11 +344,10 @@ export function OfferDecisionScout({ jobs, profileId, onClose, onCreditUsed }) {
                       </div>
                     )}
                     <div
-                      className={`text-[13.5px] leading-[1.65] rounded-2xl px-3.5 py-2.5 max-w-[82%] ${
-                        msg.role === "user"
+                      className={`text-[13.5px] leading-[1.65] rounded-2xl px-3.5 py-2.5 max-w-[82%] ${msg.role === "user"
                           ? "bg-[#1C1C1C] dark:bg-white text-white dark:text-[#141414] rounded-br-sm"
                           : "bg-white dark:bg-white/[0.07] text-foreground/85 border border-black/[0.07] dark:border-white/[0.09] rounded-bl-sm shadow-sm"
-                      }`}
+                        }`}
                     >
                       {msg.text ?? <TypingDots />}
                     </div>
@@ -362,7 +360,7 @@ export function OfferDecisionScout({ jobs, profileId, onClose, onCreditUsed }) {
         </AnimatePresence>
 
         {/* ── Footer ────────────────────────────────────────────────────────── */}
-        <div className="flex-shrink-0 border-t border-black/[0.07] dark:border-white/[0.08] bg-white/40 dark:bg-white/[0.02]">
+        <div className="shrink-0 border-t border-black/[0.07] dark:border-white/[0.08] bg-white/40 dark:bg-white/[0.02]">
           {done ? (
             <div className="px-4 py-3 flex items-center justify-between gap-3">
               <p className="text-[11px] text-foreground/35">AI-powered</p>
@@ -406,7 +404,7 @@ export function OfferDecisionScout({ jobs, profileId, onClose, onCreditUsed }) {
                 <button
                   onClick={() => submit(input)}
                   disabled={!input.trim()}
-                  className="w-7 h-7 flex items-center justify-center rounded-full bg-foreground disabled:opacity-20 transition-opacity flex-shrink-0 cursor-pointer"
+                  className="w-7 h-7 flex items-center justify-center rounded-full bg-foreground disabled:opacity-20 transition-opacity shrink-0 cursor-pointer"
                 >
                   <SendHorizontal className="w-3.5 h-3.5 text-background" />
                 </button>

@@ -1,7 +1,7 @@
 import React from "react";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import Logo from "../../../public/assets/svgs/logo.svg";
 import Link from "next/link";
 import TrustedBySection from "@/components/trustedBySection";
@@ -68,7 +68,7 @@ export function AuthLayout({
                     <button
                       type="button"
                       onClick={onBack}
-                      className="flex items-center gap-2 text-sm text-foreground/70 hover:text-[--ring] -ml-2 mb-6 hover-elevate px-2 py-1 rounded-md transition-colors"
+                      className="flex items-center gap-2 text-sm text-foreground/70 hover:text-(--ring) -ml-2 mb-6 hover-elevate px-2 py-1 rounded-md transition-colors"
                       data-testid="button-back"
                     >
                       <ArrowLeft className="w-4 h-4" />

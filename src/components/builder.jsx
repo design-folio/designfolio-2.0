@@ -7,7 +7,7 @@ import Tools from "./tools";
 import Works from "./works";
 // import Others from "./others";
 import PortfolioFooter from "./portfolioFooter";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { sidebars, DEFAULT_SECTION_ORDER, normalizeSectionOrder } from "@/lib/constant";
 import AboutMe from "./aboutMe";
 

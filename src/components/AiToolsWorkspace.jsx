@@ -143,7 +143,7 @@ export default function AiToolsWorkspace({ embedInBuilder = false }) {
         : "/ai-tools?type=optimize-resume";
       router.replace(url, undefined, { shallow: true });
     }
-  }, [router.isReady, router.query?.view, router.query?.type, embedInBuilder, router]);
+  }, [router.isReady, router.query?.view, router.query?.type, embedInBuilder]);
 
   useEffect(() => {
     startTransition(() => {

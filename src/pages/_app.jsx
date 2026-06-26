@@ -305,7 +305,7 @@ function MyApp({ Component, pageProps, dfToken, hideHeader }) {
               attribute="data-theme"
               defaultTheme="light"
               themes={["light", "dark"]}
-              forcedTheme={Component.theme || null}
+              forcedTheme={Component.theme || (router.query?.view === "ai-tools" ? "light" : null)}
             >
               <style jsx global>{`
                 :root {

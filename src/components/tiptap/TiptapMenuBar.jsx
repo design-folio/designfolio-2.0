@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, startTransition } from "react";
 import { useTheme } from "next-themes";
 import {
   Bold,
@@ -12,7 +12,7 @@ import {
   Code,
   Highlighter,
   AlignLeft,
-  Image,
+  Image as ImageIcon,
   Link2,
   Table as TableIcon,
   Undo2,
@@ -80,12 +80,14 @@ const TiptapMenuBar = ({ editor, showToolbar, onImageUpload }) => {
   // Close all dropdowns when toolbar is hidden
   useEffect(() => {
     if (!showToolbar) {
-      setShowHeadingMenu(false);
-      setShowAlignMenu(false);
-      setShowInsertMenu(false);
-      setShowMoreMenu(false);
-      setShowColorMenu(false);
-      setShowListMenu(false);
+      startTransition(() => {
+        setShowHeadingMenu(false);
+        setShowAlignMenu(false);
+        setShowInsertMenu(false);
+        setShowMoreMenu(false);
+        setShowColorMenu(false);
+        setShowListMenu(false);
+      });
     }
   }, [showToolbar]);
 
@@ -579,7 +581,7 @@ const TiptapMenuBar = ({ editor, showToolbar, onImageUpload }) => {
             isActive={activeNodes.image}
             title="Image"
           >
-            <Image size={18} />
+            <ImageIcon size={18} />
           </MenuButton>
           <MenuButton
             onClick={() => addLink()}

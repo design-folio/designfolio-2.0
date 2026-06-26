@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useRef, startTransition } from "react";
 import {
   FileText,
   PenLine,
@@ -86,9 +86,7 @@ function DocRow({ d, onEdit, onDeleteClick, onDownload, deletingId, downloadingI
   return (
     <div className="group flex items-center gap-3 py-3.5 px-5 transition-[background-color] duration-150 ease-out hover:bg-black/[0.03] dark:hover:bg-white/[0.03]">
       {/* Doc type icon */}
-      <div
-        className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${meta.bg}`}
-      >
+      <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${meta.bg}`}>
         <meta.Icon className={`w-4 h-4 ${meta.color}`} aria-hidden="true" />
       </div>
 
@@ -284,12 +282,12 @@ export default function DocumentsLibrary() {
     setLoading(true);
     _getDocuments()
       .then((res) => setDocs(res.data || []))
-      .catch(() => { })
+      .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {
-    refresh();
+    startTransition(() => refresh());
   }, [refresh]);
 
   const openStudio = (d) =>
@@ -400,10 +398,11 @@ export default function DocumentsLibrary() {
                     type="button"
                     onClick={() => setFilter(key)}
                     aria-pressed={isOn}
-                    className={`flex items-center justify-between gap-2 py-2.5 px-3 rounded-lg text-[14px] w-full text-left border-0 transition-all duration-200 ease-out max-md:w-auto ${isOn
+                    className={`flex items-center justify-between gap-2 py-2.5 px-3 rounded-lg text-[14px] w-full text-left border-0 transition-all duration-200 ease-out max-md:w-auto ${
+                      isOn
                         ? "bg-[hsl(46,15%,91%)] text-foreground font-semibold shadow-[inset_0_1px_3px_rgba(0,0,0,0.07)] cursor-default dark:bg-white/[0.13] dark:shadow-[inset_0_1px_3px_rgba(0,0,0,0.2)]"
                         : "text-muted-foreground font-medium hover:bg-black/[0.07] dark:hover:bg-white/10 cursor-pointer"
-                      }`}
+                    }`}
                   >
                     <span>{label}</span>
                     {count > 0 && (

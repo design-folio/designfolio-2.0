@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, startTransition } from "react";
 import { Video, Mic, CheckCircle2, XCircle, Clapperboard, Zap } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { CompanyLogo } from "./CompanyLogo";
@@ -55,8 +55,10 @@ export function MockInterviewDialog({ job, open, onClose, onStart }) {
 
   useEffect(() => {
     if (open) {
-      setCamPerm("idle");
-      setMicPerm("idle");
+      startTransition(() => {
+        setCamPerm("idle");
+        setMicPerm("idle");
+      });
     }
   }, [open]);
 

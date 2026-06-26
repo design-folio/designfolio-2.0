@@ -1,6 +1,6 @@
 import Button from "@/components/button";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, startTransition } from "react";
 import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
 import DeleteAccount from "@/components/deleteAccount";
 import DefaultDomain from "@/components/defaultDomain";
@@ -22,20 +22,16 @@ export default function Domains() {
   const handleBack = () => {
     router.back({ scroll: false });
   };
-  useEffect(() => {
-    if (userDetailsIsState) {
-      setIsUserDetailsFromCache(false);
-    } else {
-      setIsUserDetailsFromCache(true);
-    }
-    fetchDomainDetails();
-  }, []);
-
   const fetchDomainDetails = () => {
     _getDomainDetails().then((res) => {
       setDomainDetails(res.data);
     });
   };
+
+  useEffect(() => {
+    startTransition(() => setIsUserDetailsFromCache(!userDetailsIsState));
+    fetchDomainDetails();
+  }, [userDetailsIsState, setIsUserDetailsFromCache]);
   return (
     <>
       <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />

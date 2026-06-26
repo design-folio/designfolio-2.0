@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState, startTransition } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { Move, Pencil, Trash2 } from "lucide-react";
 import { Button } from "../../ui/button";
@@ -77,7 +77,7 @@ function CanvasAboutSection({ isEditing }) {
       : storyText;
 
   useEffect(() => {
-    setAboutExpanded(false);
+    startTransition(() => setAboutExpanded(false));
   }, [storyText]);
 
   const images = about?.pegboardImages?.length > 0 ? about.pegboardImages : DEFAULT_PEGBOARD_IMAGES;

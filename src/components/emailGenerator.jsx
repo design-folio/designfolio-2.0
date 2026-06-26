@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, startTransition } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import EmailForm from "./emailForm";
 import EmailPreview from "./emailPreview";
@@ -23,12 +23,13 @@ export default function EmailGenerator({
   useEffect(() => {
     const stored = getAiToolResult(RESULT_STORAGE_KEY);
     if (stored && typeof stored === "object" && (stored.subject || stored.body)) {
-      setGeneratedEmail({ subject: stored.subject || "", body: stored.body || "" });
-      setShowPreview(true);
+      startTransition(() => {
+        setGeneratedEmail({ subject: stored.subject || "", body: stored.body || "" });
+        setShowPreview(true);
+      });
       onViewChange?.(true);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [onViewChange]);
 
   useEffect(() => {
     onViewChange?.(!!(generatedEmail.subject || generatedEmail.body));

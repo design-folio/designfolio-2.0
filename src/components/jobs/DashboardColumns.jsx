@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, startTransition } from "react";
 import { motion } from "motion/react";
 import { Kanban, KanbanBoard, KanbanOverlay } from "@/components/ui/kanban";
 import { PipelineCol } from "./PipelineCol";
@@ -36,7 +36,7 @@ export function DashboardColumns({
 
   // Mirror the desktop split animation: switch to saved tab when pipeline unlocks
   useEffect(() => {
-    if (phase === "split" && isMobile) setActiveTab("saved");
+    if (phase === "split" && isMobile) startTransition(() => setActiveTab("saved"));
   }, [phase, isMobile]);
 
   const findJob = (id) =>
@@ -170,10 +170,10 @@ export function DashboardColumns({
                     <div className="rounded-lg shadow-xl ring-1 ring-foreground/10 opacity-95 rotate-1 scale-[1.02]">
                       <JobCard
                         job={job}
-                        onShortlist={inPicks ? () => { } : undefined}
-                        onMockInterview={!inPicks ? () => { } : undefined}
-                        onAskScout={() => { }}
-                        onOpen={() => { }}
+                        onShortlist={inPicks ? () => {} : undefined}
+                        onMockInterview={!inPicks ? () => {} : undefined}
+                        onAskScout={() => {}}
+                        onOpen={() => {}}
                       />
                     </div>
                   );
@@ -322,10 +322,10 @@ export function DashboardColumns({
                   <div className="rounded-lg shadow-xl ring-1 ring-foreground/10 opacity-95 rotate-1 scale-[1.02]">
                     <JobCard
                       job={job}
-                      onShortlist={inPicks ? () => { } : undefined}
-                      onMockInterview={!inPicks ? () => { } : undefined}
-                      onAskScout={() => { }}
-                      onOpen={() => { }}
+                      onShortlist={inPicks ? () => {} : undefined}
+                      onMockInterview={!inPicks ? () => {} : undefined}
+                      onAskScout={() => {}}
+                      onOpen={() => {}}
                     />
                   </div>
                 );

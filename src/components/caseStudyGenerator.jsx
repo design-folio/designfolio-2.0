@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState, startTransition } from "react";
 import AiIcon from "../../public/assets/svgs/ai.svg";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -65,7 +65,7 @@ export default function CaseStudyGenerator() {
     }
   };
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const response = await _getProjectTypes();
       if (response) {
@@ -89,11 +89,11 @@ export default function CaseStudyGenerator() {
     } catch (err) {
       console.log(err);
     }
-  };
+  }, [userDetails]);
 
   useEffect(() => {
-    fetchData();
-  }, [userDetails?._id]);
+    startTransition(() => void fetchData());
+  }, [fetchData]);
 
   const handleStepOne = (values) => {
     const selectedQuestion = typeProjects.find((item) => item.name == values.projectType);

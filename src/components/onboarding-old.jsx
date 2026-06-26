@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, startTransition } from "react";
 import { motion } from "motion/react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -131,9 +131,9 @@ export default function Onboarding() {
         })
         .catch(() => {});
     } else {
-      setImagePreview(null);
+      startTransition(() => setImagePreview(null));
     }
-  }, [userDetails?.avatar?.url]);
+  }, [userDetails?.avatar?.url, userDetails?.avatar?.originalName, userDetails?.avatar?.extension]);
 
   useEffect(() => {
     if (compressionProgress === 100 && compressedImage && formikRef.current) {
@@ -237,25 +237,27 @@ export default function Onboarding() {
     const { persona } = userDetails;
     if (persona?.value && persona?.label) {
       const isCustom = persona.__isNew__ === true || persona.label === "Others" || !!persona.custom;
-      if (isCustom) {
-        setSelectedRole("Others");
-        setCustomRole(persona.custom || (persona.label === "Others" ? "" : persona.label));
-        setSelectedPersonaId(persona.value);
-      } else {
-        const matched =
-          roles.find((r) => r._id === persona.value) ||
-          roles.find((r) => r.label === persona.label);
-        if (matched) {
-          setSelectedRole(matched.label);
-          setSelectedPersonaId(matched._id);
-        } else {
+      startTransition(() => {
+        if (isCustom) {
           setSelectedRole("Others");
-          setCustomRole(persona.label);
+          setCustomRole(persona.custom || (persona.label === "Others" ? "" : persona.label));
           setSelectedPersonaId(persona.value);
+        } else {
+          const matched =
+            roles.find((r) => r._id === persona.value) ||
+            roles.find((r) => r.label === persona.label);
+          if (matched) {
+            setSelectedRole(matched.label);
+            setSelectedPersonaId(matched._id);
+          } else {
+            setSelectedRole("Others");
+            setCustomRole(persona.label);
+            setSelectedPersonaId(persona.value);
+          }
         }
-      }
+      });
     }
-  }, [roles, userDetails?.persona]);
+  }, [roles, userDetails?.persona, userDetails]);
 
   return (
     <motion.div

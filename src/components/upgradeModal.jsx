@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, startTransition } from "react";
 import styles from "@/styles/domain.module.css";
 import { useGlobalContext } from "@/context/globalContext";
 import { _getProPlanDetails, createDodoCheckout } from "@/network/get-request";
@@ -173,13 +173,15 @@ export default function UpgradeModal() {
       });
       hasTrackedView.current = true;
     }
-  }, [showUpgradeModal, selectedPlan]);
+  }, [showUpgradeModal, selectedPlan, phEvent, upgradeModalSource, upgradeModalUnhideProject]);
 
   useEffect(() => {
     if (!showUpgradeModal) {
       hasTrackedView.current = false;
-      setShowFaq(false);
-      setShowAllFeatures(false);
+      startTransition(() => {
+        setShowFaq(false);
+        setShowAllFeatures(false);
+      });
     }
   }, [showUpgradeModal]);
 
@@ -259,30 +261,30 @@ export default function UpgradeModal() {
 
   const heading = upgradeModalUnhideProject
     ? {
-      title: "Project is hidden",
-      subtitle:
-        "You've reached the Free plan limit of 2 visible projects. Upgrade to Pro to unhide it and get unlimited projects.",
-    }
+        title: "Project is hidden",
+        subtitle:
+          "You've reached the Free plan limit of 2 visible projects. Upgrade to Pro to unhide it and get unlimited projects.",
+      }
     : isJobTool
       ? { title: jobToolConfig.title, subtitle: jobToolConfig.subtitle }
       : upgradeModalSource === "pro-template"
         ? {
-          title: "Upgrade to publish",
-          subtitle:
-            "You're using a Pro template. Upgrade to publish your portfolio and unlock all Pro features.",
-        }
+            title: "Upgrade to publish",
+            subtitle:
+              "You're using a Pro template. Upgrade to publish your portfolio and unlock all Pro features.",
+          }
         : upgradeModalSource === "write-ai"
           ? {
-            title: "Unlock AI Case Study Writing",
-            subtitle:
-              "You've used all your free credits. Upgrade to Pro for unlimited AI-written case studies.",
-          }
+              title: "Unlock AI Case Study Writing",
+              subtitle:
+                "You've used all your free credits. Upgrade to Pro for unlimited AI-written case studies.",
+            }
           : upgradeModalSource === "analyze"
             ? {
-              title: "Unlock AI Case Study Analysis",
-              subtitle:
-                "You've used all your free analysis credits. Upgrade to Pro for unlimited AI feedback on your work.",
-            }
+                title: "Unlock AI Case Study Analysis",
+                subtitle:
+                  "You've used all your free analysis credits. Upgrade to Pro for unlimited AI feedback on your work.",
+              }
             : PLAN_HEADING;
 
   const isPremiumPlan = selectedPlan?.plan === "yrly" || selectedPlan?.plan === "lifetime";
@@ -451,7 +453,7 @@ export default function UpgradeModal() {
                                     <span className="line-through">
                                       {formatAmount(
                                         LIFETIME_STASHED_PRICES[selectedPlan?.currency] ??
-                                        LIFETIME_STASHED_PRICES.INR,
+                                          LIFETIME_STASHED_PRICES.INR,
                                         selectedPlan?.currency
                                       )}
                                     </span>{" "}
@@ -529,10 +531,11 @@ export default function UpgradeModal() {
                     <div className="flex mt-3">
                       <button
                         onClick={() => setShowFaq((s) => !s)}
-                        className={`flex items-center gap-1.5 text-[11px] font-medium rounded-full px-2.5 py-[5px] border transition-all duration-200 ${showFaq
+                        className={`flex items-center gap-1.5 text-[11px] font-medium rounded-full px-2.5 py-[5px] border transition-all duration-200 ${
+                          showFaq
                             ? "border-[#9ca3af] bg-[#f3f4f6] text-[#374151]"
                             : "border-[#c4c9d4] bg-transparent text-[#6b7280] hover:text-[#374151] hover:border-[#9ca3af]"
-                          }`}
+                        }`}
                       >
                         <HelpCircle className="w-3 h-3 shrink-0" />
                         Have more doubts? FAQ
@@ -678,8 +681,9 @@ function FaqAccordion({ compact = false }) {
           className="border-b border-[#f3f4f6] last:border-0"
         >
           <AccordionTrigger
-            className={`font-medium text-left hover:no-underline leading-snug ${compact ? "text-[12px] py-3 text-[#374151]" : "text-[13.5px] py-4 text-[#1f2937]"
-              }`}
+            className={`font-medium text-left hover:no-underline leading-snug ${
+              compact ? "text-[12px] py-3 text-[#374151]" : "text-[13.5px] py-4 text-[#1f2937]"
+            }`}
           >
             {item.q}
           </AccordionTrigger>

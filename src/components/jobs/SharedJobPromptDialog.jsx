@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, startTransition } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   MapPin,
@@ -67,7 +67,7 @@ export function SharedJobPromptDialog({ jobId, onClose, onSaved }) {
   // Reset local state whenever a new jobId opens the dialog
   useEffect(() => {
     if (jobId) {
-      setForceClosed(false);
+      startTransition(() => setForceClosed(false));
       resolvedRef.current = false;
       savedJobRef.current = null;
     }
@@ -75,10 +75,12 @@ export function SharedJobPromptDialog({ jobId, onClose, onSaved }) {
 
   useEffect(() => {
     if (!jobId) return;
-    setJob(null);
-    setFetchError(false);
-    setSaved(false);
-    setAlreadySaved(false);
+    startTransition(() => {
+      setJob(null);
+      setFetchError(false);
+      setSaved(false);
+      setAlreadySaved(false);
+    });
     Promise.all([
       _getPublicJob(jobId),
       _getJobsCheckSaved(jobId).catch(() => ({ data: { saved: false } })),

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, startTransition } from "react";
 import { motion } from "motion/react";
 import { Moon, Sun } from "lucide-react";
 import { Switch } from "./switch-button";
@@ -9,8 +9,8 @@ function CanvasHeader({ persistTheme = false }) {
   const { isDark, toggleTheme } = usePersistableThemeToggle(persistTheme);
 
   useEffect(() => {
-    setCurrentTime(new Date());
-    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    startTransition(() => setCurrentTime(new Date()));
+    const timer = setInterval(() => startTransition(() => setCurrentTime(new Date())), 1000);
     return () => clearInterval(timer);
   }, []);
 

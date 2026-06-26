@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, startTransition } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/router";
@@ -69,12 +69,12 @@ export default function Onboarding() {
 
   // Clear error when step changes
   useEffect(() => {
-    setError("");
+    startTransition(() => setError(""));
   }, [currentStep]);
 
   // Fetch Personas
   useEffect(() => {
-    setLoading(true);
+    startTransition(() => setLoading(true));
     _getPersonas()
       .then((response) => {
         const personas = response?.data?.personas || [];
@@ -89,51 +89,47 @@ export default function Onboarding() {
     if (!userDetails || isPreFilled || roles.length === 0) return;
 
     const { persona, goal, experienceLevel, skills } = userDetails;
-    if (persona) {
-      // Handles new format { value, label, __isNew__, custom }
-      if (persona.value && persona.label) {
-        const personaId = persona.value;
-        const personaLabel = persona.label;
-        // Check if it's a custom persona: has __isNew__, label is "Others", or has custom field
-        const isCustom =
-          persona.__isNew__ === true || personaLabel === "Others" || !!persona.custom;
-        const customValue = persona.custom || (personaLabel === "Others" ? "" : personaLabel);
+    startTransition(() => {
+      if (persona) {
+        if (persona.value && persona.label) {
+          const personaId = persona.value;
+          const personaLabel = persona.label;
+          const isCustom =
+            persona.__isNew__ === true || personaLabel === "Others" || !!persona.custom;
+          const customValue = persona.custom || (personaLabel === "Others" ? "" : personaLabel);
 
-        if (isCustom) {
-          setSelectedRole("Others");
-          // Use custom field if available, otherwise use empty string (user can fill it)
-          setCustomRole(customValue);
-          // Set personaId even for custom to trigger skills fetch
-          setSelectedPersonaId(personaId);
-        } else {
-          const matchedById = roles.find((r) => r._id === personaId);
-          const matchedByLabel = roles.find((r) => r.label === personaLabel);
-          if (matchedById) {
-            setSelectedRole(matchedById.label);
-            setSelectedPersonaId(matchedById._id);
-          } else if (matchedByLabel) {
-            // LLM persona (from resume) uses label; resolve to backend _id for skills fetch
-            setSelectedRole(matchedByLabel.label);
-            setSelectedPersonaId(matchedByLabel._id);
-          } else {
-            // No match - treat as custom (e.g. LLM returned "Growth Marketer" not in backend list)
+          if (isCustom) {
             setSelectedRole("Others");
-            setCustomRole(personaLabel);
+            setCustomRole(customValue);
             setSelectedPersonaId(personaId);
+          } else {
+            const matchedById = roles.find((r) => r._id === personaId);
+            const matchedByLabel = roles.find((r) => r.label === personaLabel);
+            if (matchedById) {
+              setSelectedRole(matchedById.label);
+              setSelectedPersonaId(matchedById._id);
+            } else if (matchedByLabel) {
+              setSelectedRole(matchedByLabel.label);
+              setSelectedPersonaId(matchedByLabel._id);
+            } else {
+              setSelectedRole("Others");
+              setCustomRole(personaLabel);
+              setSelectedPersonaId(personaId);
+            }
           }
         }
       }
-    }
-    if (goal !== undefined) setSelectedGoalId(goal);
-    if (experienceLevel !== undefined) setSelectedExperienceId(experienceLevel);
-    if (skills && Array.isArray(skills)) {
-      const labels = skills.map((s) => s.label);
-      const map = new Map();
-      skills.forEach((s) => map.set(s.label, s));
-      setSkillsMap(map);
-      setSelectedInterests(labels);
-    }
-    setIsPreFilled(true);
+      if (goal !== undefined) setSelectedGoalId(goal);
+      if (experienceLevel !== undefined) setSelectedExperienceId(experienceLevel);
+      if (skills && Array.isArray(skills)) {
+        const labels = skills.map((s) => s.label);
+        const map = new Map();
+        skills.forEach((s) => map.set(s.label, s));
+        setSkillsMap(map);
+        setSelectedInterests(labels);
+      }
+      setIsPreFilled(true);
+    });
   }, [roles, userDetails, isPreFilled]);
 
   // Fetch Skills (Persona + Search)
@@ -141,7 +137,7 @@ export default function Onboarding() {
     if (!selectedPersonaId && !skillsSearch.trim()) return;
 
     const hasSearch = skillsSearch.trim().length > 0;
-    setSkillsLoading(true);
+    startTransition(() => setSkillsLoading(true));
 
     const timer = setTimeout(
       () => {
@@ -176,7 +172,7 @@ export default function Onboarding() {
     );
 
     return () => clearTimeout(timer);
-  }, [selectedPersonaId, skillsSearch]);
+  }, [selectedPersonaId, skillsSearch, selectedInterests, skillsMap]);
 
   // Handlers
   const handleInterestToggle = (interest) => {

@@ -37,7 +37,7 @@ import {
   X,
 } from "lucide-react";
 import { useRouter } from "next/router";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState, startTransition } from "react";
 import { AnimatedThemeToggler } from "./animated-theme-toggler";
 import MonoContactSection from "./MonoContactSection";
 import MonoExperienceSection from "./MonoExperienceSection";
@@ -166,19 +166,19 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
   const avatarFallbackText = useMemo(() => getInitials(displayName, "U"), [displayName]);
 
   useEffect(() => {
-    setProjects(mappedProjects);
+    startTransition(() => setProjects(mappedProjects));
   }, [mappedProjects]);
 
   useEffect(() => {
-    setActiveTools(mappedTools);
+    startTransition(() => setActiveTools(mappedTools));
   }, [mappedTools]);
 
   useEffect(() => {
-    setStoryImages(mappedStoryImages);
+    startTransition(() => setStoryImages(mappedStoryImages));
   }, [mappedStoryImages]);
 
   useEffect(() => {
-    setAboutStoryExpanded(false);
+    startTransition(() => setAboutStoryExpanded(false));
   }, [aboutStoryPlain]);
 
   const handleOpenProjectEditor = useCallback(
@@ -437,10 +437,11 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                     <Button
                       variant="outline"
                       size="sm"
-                      className={`h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors ${isProjectsAddDropdownOpen
+                      className={`h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors ${
+                        isProjectsAddDropdownOpen
                           ? "opacity-100"
                           : "opacity-100 md:opacity-0 md:group-hover/section:opacity-100"
-                        }`}
+                      }`}
                     >
                       <Plus className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
                     </Button>

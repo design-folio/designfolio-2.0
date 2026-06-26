@@ -11,7 +11,7 @@ export default function ProjectRenderer({ projectDetails }) {
     if (projectDetails?.projects?.theme) {
       setTheme(projectDetails?.projects?.theme == 1 ? "dark" : "light");
     }
-  }, [projectDetails]);
+  }, [projectDetails, setTheme]);
 
   return (
     <div className="flex-1 flex flex-col gap-3">

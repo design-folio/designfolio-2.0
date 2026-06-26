@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, startTransition } from "react";
 import { Formik, Form } from "formik";
 import { Mail } from "lucide-react";
 import { motion } from "motion/react";
@@ -46,7 +46,7 @@ export default function Signup() {
       return;
     }
 
-    setDomain(router.query.username);
+    startTransition(() => setDomain(router.query.username));
 
     // Persist shared job context so it survives email-verify + quiz flow
     if (router.query.job) {
@@ -60,7 +60,7 @@ export default function Signup() {
           ? "resume-upload"
           : "claim-link",
     });
-  }, [router.isReady, router.query.username, router.query.job]);
+  }, [router.isReady, router.query.username, router.query.job, router, event]);
 
   // Apply parsed resume to user profile silently (fire-and-forget)
   const applyParsedResume = async () => {

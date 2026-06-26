@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, startTransition } from "react";
 import { linkedinValidation, manualValidation } from "@/lib/validationSchemas";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { motion, AnimatePresence } from "motion/react";
@@ -29,10 +29,11 @@ function TabToggle({ mode, onChange }) {
           key={id}
           type="button"
           onClick={() => onChange(id)}
-          className={`flex items-center gap-1.5 flex-1 justify-center h-8 rounded-lg text-[12px] font-medium transition-all ${mode === id
+          className={`flex items-center gap-1.5 flex-1 justify-center h-8 rounded-lg text-[12px] font-medium transition-all ${
+            mode === id
               ? "bg-white dark:bg-white/10 text-foreground shadow-sm"
               : "text-foreground/40 hover:text-foreground/60"
-            }`}
+          }`}
         >
           <Icon className="w-3 h-3" />
           {label}
@@ -53,19 +54,21 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
 
   useEffect(() => {
     if (open) {
-      setError(null);
-      setLoading(false);
-      setStep(0);
+      startTransition(() => {
+        setError(null);
+        setLoading(false);
+        setStep(0);
+      });
       setTimeout(() => {
         if (mode === "linkedin") urlInputRef.current?.focus();
         else titleInputRef.current?.focus();
       }, 80);
     }
     return () => clearTimeout(stepTimerRef.current);
-  }, [open]);
+  }, [open, mode]);
 
   useEffect(() => {
-    setError(null);
+    startTransition(() => setError(null));
   }, [mode]);
 
   const STEPS = mode === "linkedin" ? STEPS_LINKEDIN : STEPS_MANUAL;
@@ -85,8 +88,8 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
       clearTimeout(stepTimerRef.current);
       setError(
         err?.response?.data?.message ||
-        err?.response?.data?.error ||
-        "Failed to add job. Please check the URL and try again."
+          err?.response?.data?.error ||
+          "Failed to add job. Please check the URL and try again."
       );
       setLoading(false);
       setStep(0);
@@ -120,8 +123,8 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
       clearTimeout(stepTimerRef.current);
       setError(
         err?.response?.data?.message ||
-        err?.response?.data?.error ||
-        "Failed to add job. Please try again."
+          err?.response?.data?.error ||
+          "Failed to add job. Please try again."
       );
       setLoading(false);
       setStep(0);
@@ -178,12 +181,13 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                         )}
                       </div>
                       <span
-                        className={`text-[13px] font-medium transition-colors duration-300 ${isActive
+                        className={`text-[13px] font-medium transition-colors duration-300 ${
+                          isActive
                             ? "text-[#1A1A1A] dark:text-[#F0EDE7]"
                             : isDone
                               ? "text-foreground/45"
                               : "text-foreground/25"
-                          }`}
+                        }`}
                       >
                         {label}
                       </span>
@@ -245,8 +249,8 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                                     placeholder="https://linkedin.com/jobs/view/…"
                                     className={cn(
                                       errors.url &&
-                                      touched.url &&
-                                      "border-destructive focus-visible:ring-destructive"
+                                        touched.url &&
+                                        "border-destructive focus-visible:ring-destructive"
                                     )}
                                     onChange={(e) => {
                                       form.setFieldValue("url", e.target.value);
@@ -325,8 +329,8 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                                     placeholder="e.g. Senior Product Designer"
                                     className={cn(
                                       errors.title &&
-                                      touched.title &&
-                                      "border-destructive focus-visible:ring-destructive"
+                                        touched.title &&
+                                        "border-destructive focus-visible:ring-destructive"
                                     )}
                                   />
                                 )}
@@ -350,8 +354,8 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                                     placeholder="e.g. Figma"
                                     className={cn(
                                       errors.company &&
-                                      touched.company &&
-                                      "border-destructive focus-visible:ring-destructive"
+                                        touched.company &&
+                                        "border-destructive focus-visible:ring-destructive"
                                     )}
                                   />
                                 )}
@@ -425,8 +429,8 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                                     placeholder="https://company.com/jobs/…"
                                     className={cn(
                                       errors.applyUrl &&
-                                      touched.applyUrl &&
-                                      "border-destructive focus-visible:ring-destructive"
+                                        touched.applyUrl &&
+                                        "border-destructive focus-visible:ring-destructive"
                                     )}
                                     onChange={(e) => form.setFieldValue("applyUrl", e.target.value)}
                                   />
@@ -453,8 +457,8 @@ export function AddJobDialog({ open, profileId, onClose, onJobAdded }) {
                                     className={cn(
                                       "resize-none",
                                       form.errors.description &&
-                                      form.touched.description &&
-                                      "border-destructive focus-visible:ring-destructive"
+                                        form.touched.description &&
+                                        "border-destructive focus-visible:ring-destructive"
                                     )}
                                   />
                                 )}

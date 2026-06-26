@@ -6,22 +6,19 @@ import { MoonIcon, SunIcon } from "lucide-react";
 
 const SwitchToggleThemeDemo = ({ changeTheme }) => {
   const id = useId();
-  const [isDark, setIsDark] = useState(true);
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof document === "undefined") return true;
+    return document.documentElement.dataset.theme === "dark";
+  });
   const containerRef = useRef(null);
 
   useEffect(() => {
-    // Initial check
-    setIsDark(document.documentElement.dataset.theme === "dark");
-
     const syncTheme = () => setIsDark(document.documentElement.dataset.theme === "dark");
-
     const observer = new MutationObserver(syncTheme);
-
     observer.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ["data-theme"],
     });
-
     return () => observer.disconnect();
   }, []);
 

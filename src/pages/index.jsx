@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback, startTransition } from "react";
 import { useTheme } from "next-themes";
 import { flushSync } from "react-dom";
 import Seo from "@/components/seo";
@@ -31,7 +31,7 @@ export default function LandingPage({ dfToken, dfParsedResume }) {
   // Defer theme resolution to client — avoids server/client hydration mismatch
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
-    setMounted(true);
+    startTransition(() => setMounted(true));
   }, []);
   const isDark = mounted && theme === "dark";
 
@@ -118,7 +118,7 @@ export default function LandingPage({ dfToken, dfParsedResume }) {
         Boolean(localStorage.getItem("df_parsed_resume"));
     } catch {}
     parsedResumePresent = parsedResumePresent || Boolean(getCookieValue("df_parsed_resume"));
-    if (parsedResumePresent) setHasParsedResume(true);
+    if (parsedResumePresent) startTransition(() => setHasParsedResume(true));
   }, [dfParsedResume]);
 
   const { ctaLabel, ctaDest, handleCta, isNavigating } = useLandingCta({

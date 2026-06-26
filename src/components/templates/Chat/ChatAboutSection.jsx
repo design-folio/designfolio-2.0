@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, startTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, Pencil, Plus, X } from "lucide-react";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
@@ -40,7 +40,7 @@ export default function ChatAboutSection({
   const reduceMotion = useReducedMotion();
 
   useEffect(() => {
-    setAboutStoryExpanded(false);
+    startTransition(() => setAboutStoryExpanded(false));
   }, [storyPlain]);
 
   return (

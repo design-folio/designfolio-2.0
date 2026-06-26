@@ -1,8 +1,6 @@
-/* eslint-disable @next/next/no-img-element */
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState, startTransition } from "react";
 import { motion, useAnimation } from "motion/react";
 import { Button } from "@/components/ui/buttonNew";
-import DfImage from "./image";
 import Link from "next/link";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { capitalizeWords } from "@/lib/capitalizeText";
@@ -30,7 +28,7 @@ export default function Profile({
 
   // Ensure avatar never stays invisible (cached images may not fire onLoad)
   useEffect(() => {
-    setImageLoaded(false);
+    startTransition(() => setImageLoaded(false));
   }, [avatarSrc]);
 
   useEffect(() => {
@@ -43,7 +41,7 @@ export default function Profile({
 
   const skills = useMemo(
     () => (userDetails?.skills?.length ? userDetails.skills.map((skill) => skill.label) : []),
-    [userDetails?.skills]
+    [userDetails]
   );
 
   useEffect(() => {

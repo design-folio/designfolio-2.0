@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { User } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useState, useEffect } from "react";
+import { useState, useEffect, startTransition } from "react";
 
 const STEPS = [
   {
@@ -76,7 +76,7 @@ export default function LandingHowSection() {
   const { theme } = useTheme();
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
-    setMounted(true);
+    startTransition(() => setMounted(true));
   }, []);
   const isDark = mounted && theme === "dark";
 

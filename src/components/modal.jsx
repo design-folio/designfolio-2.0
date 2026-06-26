@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, startTransition } from "react";
 import ReactDOM from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { twMerge } from "tailwind-merge";
@@ -11,8 +11,10 @@ const Modal = ({ show, onClose, children, className }) => {
     if (typeof window !== "undefined") {
       const createdEl = document.createElement("div");
       const root = document.getElementById("modal-root");
-      setEl(createdEl);
-      setModalRoot(root);
+      startTransition(() => {
+        setEl(createdEl);
+        setModalRoot(root);
+      });
 
       if (root && createdEl) {
         root.appendChild(createdEl);

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, startTransition } from "react";
 import { useRouter } from "next/router";
 import { motion, AnimatePresence } from "motion/react";
 import { X, CheckCircle2 } from "lucide-react";
@@ -54,7 +54,7 @@ export function ScoreModal({ job, isDark, onClose }) {
   // Cycle AI status messages while processing
   useEffect(() => {
     if (stage !== "processing") return;
-    setAiStatusIndex(0);
+    startTransition(() => setAiStatusIndex(0));
     const interval = setInterval(() => {
       setAiStatusIndex((i) => (i + 1) % AI_STATUSES.length);
     }, 2000);
@@ -133,10 +133,11 @@ export function ScoreModal({ job, isDark, onClose }) {
                 <div className="flex flex-col gap-4">
                   {/* Dropzone */}
                   <div
-                    className={`group/dropzone w-full cursor-pointer flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed px-6 py-10 transition-all duration-200 ${isDragging
+                    className={`group/dropzone w-full cursor-pointer flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed px-6 py-10 transition-all duration-200 ${
+                      isDragging
                         ? "border-[#FF553E] bg-[#FF553E]/5"
                         : "border-[#1D1B1A]/20 dark:border-white/20 bg-[#1D1B1A]/[0.025] dark:bg-white/[0.04] hover:border-[#1D1B1A]/40 dark:hover:border-white/35 hover:bg-[#1D1B1A]/[0.04] dark:hover:bg-white/[0.06]"
-                      }`}
+                    }`}
                     onClick={() => fileInputRef.current?.click()}
                     onDragOver={(e) => {
                       e.preventDefault();

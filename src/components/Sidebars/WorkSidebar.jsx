@@ -6,7 +6,7 @@ import Text from "../text";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import DeleteIcon from "../../../public/assets/svgs/deleteIcon.svg";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import SimpleTiptapEditor from "../SimpleTiptapEditor";
 import { UnsavedChangesDialog } from "../ui/UnsavedChangesDialog";
 import { sidebars } from "@/lib/constant";
@@ -74,10 +74,9 @@ export default function AddWork() {
     return JSON.stringify(desc1) === JSON.stringify(desc2);
   };
 
-  const hasUnsavedChanges = () => {
+  const hasUnsavedChanges = useCallback(() => {
     const v = editingValues;
     if (!v) return false;
-
     if (!selectedWork) {
       return !!(
         v.role ||
@@ -90,10 +89,8 @@ export default function AddWork() {
         v.currentlyWorking
       );
     }
-
     const originalEndMonth = selectedWork.currentlyWorking ? "" : selectedWork.endMonth || "";
     const originalEndYear = selectedWork.currentlyWorking ? "" : selectedWork.endYear || "";
-
     return (
       v.role !== (selectedWork.role || "") ||
       v.company !== (selectedWork.company || "") ||
@@ -104,13 +101,13 @@ export default function AddWork() {
       v.endYear !== originalEndYear ||
       v.currentlyWorking !== (selectedWork.currentlyWorking || false)
     );
-  };
+  }, [editingValues, selectedWork]);
 
-  const resetState = () => {
+  const resetState = useCallback(() => {
     setSelectedWork(null);
     setEditingValues(null);
     setShowDeleteWarning(false);
-  };
+  }, [setSelectedWork]);
 
   const resetStateAndClose = () => {
     resetState();
@@ -124,17 +121,16 @@ export default function AddWork() {
   // Clear state when sidebar closes using resetState
   useEffect(() => {
     if (!isOpen) {
-      // Reset state when sidebar closes (after unsaved changes dialog is handled if needed)
-      resetState();
+      queueMicrotask(() => resetState());
     }
-  }, [isOpen]);
+  }, [isOpen, resetState]);
 
   useEffect(() => {
     if (isOpen) {
       registerUnsavedChangesChecker(sidebars.work, hasUnsavedChanges);
     }
     return () => unregisterUnsavedChangesChecker(sidebars.work);
-  }, [isOpen, editingValues, selectedWork]);
+  }, [isOpen, hasUnsavedChanges, registerUnsavedChangesChecker, unregisterUnsavedChangesChecker]);
 
   const handleDeleteWork = () => {
     setShowDeleteWarning(true);
@@ -376,8 +372,9 @@ export default function AddWork() {
             </div>
 
             <div
-              className={`flex gap-2 py-3 px-6 border-t border-border ${selectedWork?.company ? "justify-between" : "justify-end"
-                }`}
+              className={`flex gap-2 py-3 px-6 border-t border-border ${
+                selectedWork?.company ? "justify-between" : "justify-end"
+              }`}
             >
               {selectedWork?.company && (
                 <Button

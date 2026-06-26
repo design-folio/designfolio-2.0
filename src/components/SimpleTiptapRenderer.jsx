@@ -42,7 +42,7 @@ const SimpleTiptapRenderer = ({
 
   useEffect(() => {
     hasHydrated = true;
-    setIsMounted(true);
+    queueMicrotask(() => setIsMounted(true));
   }, []);
 
   const editor = useEditor({

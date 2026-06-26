@@ -1,6 +1,6 @@
 import { _analyzeCaseStudy, _analyzeCaseStudyStatus, _updateProject } from "@/network/post-request";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, startTransition } from "react";
 import * as Yup from "yup";
 import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
 import LockIcon from "../../public/assets/svgs/lock.svg";
@@ -75,6 +75,9 @@ export default function ProjectInfo({
   } = useGlobalContext();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [AnalyzeStatus, setAnalyzeStatus] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
+  const [score, setScore] = useState(0);
+  const [rating, setRating] = useState("");
   // ownerTemplate (from SSR prop) takes priority; fall back to the logged-in user's template
   // only in builder/preview contexts where ownerTemplate is not passed.
   const activeTemplate = ownerTemplate ?? userDetails?.template ?? TEMPLATE_IDS.CANVAS;
@@ -105,7 +108,7 @@ export default function ProjectInfo({
     }
   };
 
-  const fetchAnalyzeStatus = async () => {
+  const fetchAnalyzeStatus = useCallback(async () => {
     try {
       const response = await _analyzeCaseStudyStatus(projectDetails._id);
       if (response.data.status) {
@@ -117,7 +120,7 @@ export default function ProjectInfo({
     } catch (e) {
       console.log(e);
     }
-  };
+  }, [projectDetails]);
 
   const handleInput = (e) => {
     const textContent = e.target.textContent;
@@ -138,10 +141,6 @@ export default function ProjectInfo({
     saveProject(field, e.target.textContent);
     e.target.textContent = e.target.textContent.length > 0 ? e.target.textContent : "Type here...";
   };
-
-  const [suggestions, setSuggestions] = useState([]);
-  const [score, setScore] = useState(0);
-  const [rating, setRating] = useState("");
 
   const needsMoreWords = suggestions?.length === 0 && wordCount !== null && wordCount < 400;
   const outOfCredits = analysisCreditsRemaining !== null && analysisCreditsRemaining <= 0;
@@ -244,8 +243,8 @@ export default function ProjectInfo({
   };
 
   useEffect(() => {
-    fetchAnalyzeStatus();
-  }, []);
+    startTransition(() => void fetchAnalyzeStatus());
+  }, [fetchAnalyzeStatus]);
 
   // ─── Professional (template 5) layout ────────────────────────────────────
   if (isProfessional) {

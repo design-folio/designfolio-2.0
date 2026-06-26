@@ -37,6 +37,7 @@ import { CursorTooltipProvider } from "@/context/cursorTooltipContext";
 import { CursorPill } from "@/components/CursorPill";
 import { TEMPLATE_IDS } from "@/lib/templates";
 import posthog from "@/lib/postHog";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { PostHogProvider } from "@posthog/react";
 import { usePostHogEvent } from "@/hooks/usePostHogEvent";
 import { POSTHOG_EVENT_NAMES } from "@/lib/posthogEventNames";
@@ -290,22 +291,11 @@ function MyApp({ Component, pageProps, dfToken, hideHeader }) {
     //   });
     // }
     localStorage.setItem("session_count", newSessionCount);
-  }, []);
+  }, [dfToken, phEvent]);
 
   return (
     <>
-      <Head>
-        {/* Google Analytics Script */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-QBX45FVX2Z"></script>
-        <script>
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-QBX45FVX2Z');
-          `}
-        </script>
-      </Head>
+      <GoogleAnalytics gaId="G-QBX45FVX2Z" />
 
       <PostHogProvider client={posthog}>
         <QueryClientProvider client={queryClient}>

@@ -45,7 +45,7 @@ const MacOSTemplate = ({
 
   useEffect(() => {
     setCursor(userDetails?.cursor ? userDetails.cursor : 0);
-  }, []);
+  }, [setCursor, userDetails?.cursor]);
 
   // Hide body scrollbar on MacOS desktop so the desktop doesn’t show unnecessary scroll
   useEffect(() => {

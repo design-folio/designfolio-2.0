@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef, startTransition } from "react";
 import { useGlobalContext } from "@/context/globalContext";
 import { getPlainTextLength } from "@/lib/tiptapUtils";
 
@@ -106,7 +106,7 @@ export default function useChatReveal({ preview = false }) {
   const isInViewRef = useRef(false);
 
   useEffect(() => {
-    setChatRevealStep(0);
+    startTransition(() => setChatRevealStep(0));
     let queueIndex = 0;
     let timerId = null;
 

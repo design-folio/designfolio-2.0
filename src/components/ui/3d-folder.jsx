@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, startTransition } from "react";
 import { cn } from "@/lib/utils";
 import {
   X,
@@ -158,10 +158,12 @@ function BrowserWindow({ projects, currentIndex, isOpen, onClose, onCloseComplet
 
   useEffect(() => {
     if (isOpen) {
-      setInternalIndex(currentIndex);
-      setShouldRender(true);
-      setAnimationPhase("initial");
-      setIsClosing(false);
+      startTransition(() => {
+        setInternalIndex(currentIndex);
+        setShouldRender(true);
+        setAnimationPhase("initial");
+        setIsClosing(false);
+      });
       requestAnimationFrame(() => {
         requestAnimationFrame(() => setAnimationPhase("animating"));
       });

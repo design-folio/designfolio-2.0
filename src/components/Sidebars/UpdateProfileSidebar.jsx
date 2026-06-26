@@ -25,18 +25,22 @@ export default function UpdateProfileSidebar() {
   });
 
   useEffect(() => {
-    setValues({
-      firstName: userDetails?.firstName || "",
-      lastName: userDetails?.lastName || "",
-      introduction: userDetails?.introduction || "",
-      bio: userDetails?.bio || "",
-    });
+    queueMicrotask(() =>
+      setValues({
+        firstName: userDetails?.firstName || "",
+        lastName: userDetails?.lastName || "",
+        introduction: userDetails?.introduction || "",
+        bio: userDetails?.bio || "",
+      })
+    );
   }, [userDetails]);
 
   useEffect(() => {
     if (compressionProgress === 100 && compressedImage) {
-      setAvatarFile(compressedImage);
-      setAvatarPreview(URL.createObjectURL(compressedImage));
+      queueMicrotask(() => {
+        setAvatarFile(compressedImage);
+        setAvatarPreview(URL.createObjectURL(compressedImage));
+      });
     }
   }, [compressionProgress, compressedImage]);
 

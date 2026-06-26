@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, startTransition } from "react";
 import { toast } from "react-toastify";
 import {
   _getDocument,
@@ -50,11 +50,11 @@ export default function DocumentStudio({ open, onClose, type, job, profileId, do
 
   useEffect(() => {
     if (!open) return;
-    setDoc(null);
-    if (docId) load(docId);
-    else generate();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, docId]);
+    startTransition(() => {
+      setDoc(null);
+      void (docId ? load(docId) : generate());
+    });
+  }, [open, docId, load, generate]);
 
   const handleSave = async (content, styling) => {
     if (!doc?._id) return;

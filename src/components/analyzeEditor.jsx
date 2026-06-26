@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, startTransition } from "react";
 import Header from "@editorjs/header";
 import Paragraph from "@editorjs/paragraph";
 import NestedList from "@editorjs/nested-list";
@@ -14,9 +14,30 @@ export default function AnalyzeEditor() {
   const [isClient, setIsClient] = useState(false);
   const [isDataPresent, setIsDataPresent] = useState(false);
 
+  // Function to update content in the editor
+  const handleUpdateContent = useCallback(
+    (editorInstance) => {
+      if (editorInstance) {
+        editorInstance
+          .save()
+          .then((data) => {
+            if (data && data.blocks && data.blocks.length > 0) {
+              setIsDataPresent(true);
+            } else {
+              setIsDataPresent(false);
+            }
+          })
+          .catch((error) => {
+            console.error("Error saving editor content:", error);
+          });
+      }
+    },
+    [setIsDataPresent]
+  );
+
   // Set up the editor after the component mounts
   useEffect(() => {
-    setIsClient(true);
+    startTransition(() => setIsClient(true));
 
     if (!editorContainer.current) return;
 
@@ -68,7 +89,6 @@ export default function AnalyzeEditor() {
         },
       });
 
-      // Store the editor instance in the ref for future use
       editor.current = editorInstance;
 
       return () => {
@@ -77,25 +97,7 @@ export default function AnalyzeEditor() {
         }
       };
     }
-  }, [isClient]);
-
-  // Function to update content in the editor
-  const handleUpdateContent = (editorInstance) => {
-    if (editorInstance) {
-      editorInstance
-        .save()
-        .then((data) => {
-          if (data && data.blocks && data.blocks.length > 0) {
-            setIsDataPresent(true);
-          } else {
-            setIsDataPresent(false);
-          }
-        })
-        .catch((error) => {
-          console.error("Error saving editor content:", error);
-        });
-    }
-  };
+  }, [isClient, handleUpdateContent]);
 
   const handleAnalyze = (editorInstance) => {
     if (editor.current) {

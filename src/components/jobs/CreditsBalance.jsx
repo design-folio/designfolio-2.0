@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback, useId } from "react";
+import { useState, useEffect, useRef, useCallback, useId, startTransition } from "react";
 import { useTheme } from "next-themes";
 import { motion, AnimatePresence, useMotionValue, useSpring } from "motion/react";
 import { FlaskConical } from "lucide-react";
@@ -411,7 +411,9 @@ export function CreditsBalance({ refreshKey = 0 }) {
 
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    startTransition(() => setMounted(true));
+  }, []);
   const isDark = mounted ? resolvedTheme === "dark" : false;
 
   useEffect(() => {
@@ -420,7 +422,7 @@ export function CreditsBalance({ refreshKey = 0 }) {
       .then((res) => {
         if (!cancelled) setQuota(res.data?.quota ?? null);
       })
-      .catch(() => { });
+      .catch(() => {});
     return () => {
       cancelled = true;
     };
@@ -468,17 +470,17 @@ export function CreditsBalance({ refreshKey = 0 }) {
 
   const card = isDark
     ? {
-      background: "linear-gradient(160deg, hsl(20,10%,13%) 0%, hsl(20,10%,10%) 100%)",
-      border: "1px solid hsl(20,10%,20%)",
-      boxShadow: "0 4px 24px rgba(0,0,0,0.28), 0 1px 4px rgba(0,0,0,0.18)",
-      gloss: "linear-gradient(90deg, transparent, rgba(255,255,255,0.07), transparent)",
-    }
+        background: "linear-gradient(160deg, hsl(20,10%,13%) 0%, hsl(20,10%,10%) 100%)",
+        border: "1px solid hsl(20,10%,20%)",
+        boxShadow: "0 4px 24px rgba(0,0,0,0.28), 0 1px 4px rgba(0,0,0,0.18)",
+        gloss: "linear-gradient(90deg, transparent, rgba(255,255,255,0.07), transparent)",
+      }
     : {
-      background: "linear-gradient(160deg, #FDFCFB 0%, #F0EDE7 100%)",
-      border: "1px solid rgba(26,26,26,0.10)",
-      boxShadow: "0 4px 24px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04)",
-      gloss: "linear-gradient(90deg, transparent, rgba(255,255,255,0.70), transparent)",
-    };
+        background: "linear-gradient(160deg, #FDFCFB 0%, #F0EDE7 100%)",
+        border: "1px solid rgba(26,26,26,0.10)",
+        boxShadow: "0 4px 24px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04)",
+        gloss: "linear-gradient(90deg, transparent, rgba(255,255,255,0.70), transparent)",
+      };
 
   const divColor = isDark ? "rgba(255,255,255,0.06)" : "rgba(26,26,26,0.07)";
   const descColor = isDark ? "hsl(46,10%,60%)" : "rgba(26,26,26,0.45)";
@@ -493,10 +495,11 @@ export function CreditsBalance({ refreshKey = 0 }) {
         tabIndex={0}
         onClick={() => setOpen((o) => !o)}
         onKeyDown={(e) => e.key === "Enter" && setOpen((o) => !o)}
-        className={`group relative inline-flex cursor-pointer select-none items-center gap-2 overflow-hidden rounded-full h-9 px-4 text-sm font-medium text-foreground transition-all hover:bg-card hover:text-accent-foreground border-[#d4d0c4] dark:border-[#38312e] ${open
+        className={`group relative inline-flex cursor-pointer select-none items-center gap-2 overflow-hidden rounded-full h-9 px-4 text-sm font-medium text-foreground transition-all hover:bg-card hover:text-accent-foreground border-[#d4d0c4] dark:border-[#38312e] ${
+          open
             ? "border-2  bg-card text-accent-foreground"
             : "border  bg-[#EEECE7] dark:bg-[#1C1917]"
-          }`}
+        }`}
       >
         <BadgeBubbles />
         <div className="relative z-10 shrink-0 pointer-events-none">

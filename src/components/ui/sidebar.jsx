@@ -61,7 +61,7 @@ const SidebarProvider = React.forwardRef(
 
     // Sync openMobile with controlled open prop when on mobile
     React.useEffect(() => {
-      if (isMobile) _setOpenMobile(open);
+      if (isMobile) React.startTransition(() => _setOpenMobile(open));
     }, [isMobile, open]);
 
     // When mobile sheet closes, propagate back to onOpenChange
@@ -545,9 +545,7 @@ SidebarMenuBadge.displayName = "SidebarMenuBadge";
 
 const SidebarMenuSkeleton = React.forwardRef(({ className, showIcon = false, ...props }, ref) => {
   // Random width between 50 to 90%.
-  const width = React.useMemo(() => {
-    return `${Math.floor(Math.random() * 40) + 50}%`;
-  }, []);
+  const [width] = React.useState(() => `${Math.floor(Math.random() * 40) + 50}%`);
 
   return (
     <div

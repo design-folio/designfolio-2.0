@@ -7,7 +7,6 @@ import { _postJobsInterviewSession, _deleteJobsInterviewSession } from "@/networ
 let createClient = null;
 let AnamEvent = null;
 try {
-  // eslint-disable-next-line
   const anamSdk = require("@anam-ai/js-sdk");
   createClient = anamSdk.createClient;
   AnamEvent = anamSdk.AnamEvent;
@@ -193,8 +192,9 @@ export function MockInterviewRoom({ job, profileId, onEnd }) {
           {/* Timer */}
           {timeLeftMs !== null && status === "ready" && (
             <div
-              className={`absolute top-3 right-3 text-[12px] font-mono font-medium px-2 py-1 rounded-md ${isWarning ? "bg-red-500/20 text-red-400" : "bg-black/30 text-white/50"
-                }`}
+              className={`absolute top-3 right-3 text-[12px] font-mono font-medium px-2 py-1 rounded-md ${
+                isWarning ? "bg-red-500/20 text-red-400" : "bg-black/30 text-white/50"
+              }`}
             >
               {formatTime(timeLeftMs)}
             </div>
@@ -236,14 +236,16 @@ export function MockInterviewRoom({ job, profileId, onEnd }) {
               className={`flex gap-2.5 items-start ${!isPersona ? "flex-row-reverse" : ""}`}
             >
               <div
-                className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white ${isPersona ? "bg-indigo-600" : "bg-white/20"
-                  }`}
+                className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white ${
+                  isPersona ? "bg-indigo-600" : "bg-white/20"
+                }`}
               >
                 {isPersona ? "K" : "Y"}
               </div>
               <p
-                className={`text-[13px] leading-[1.55] max-w-[70%] ${isPersona ? "text-white/80" : "text-white/60"
-                  }`}
+                className={`text-[13px] leading-[1.55] max-w-[70%] ${
+                  isPersona ? "text-white/80" : "text-white/60"
+                }`}
               >
                 {msg.content}
               </p>
@@ -268,8 +270,9 @@ export function MockInterviewRoom({ job, profileId, onEnd }) {
           </div>
           <button
             onClick={toggleMute}
-            className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${muted ? "bg-red-500/20 text-red-400" : "text-white/50 hover:text-white/80"
-              }`}
+            className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
+              muted ? "bg-red-500/20 text-red-400" : "text-white/50 hover:text-white/80"
+            }`}
           >
             {muted ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
           </button>

@@ -57,7 +57,7 @@ function TemplateCard({ tmpl, isSelected, onChange, previewSrc }) {
   const [imageFailed, setImageFailed] = useState(false);
 
   useEffect(() => {
-    setImageFailed(false);
+    queueMicrotask(() => setImageFailed(false));
   }, [previewSrc]);
 
   const showThumbnail = Boolean(previewSrc) && !imageFailed;
@@ -213,7 +213,7 @@ const ThemePanel = ({
   const [customWallpaper, setCustomWallpaper] = useState(null);
   const [isCompressing, setIsCompressing] = useState(false);
   const isMobileOrTablet = useIsMobile();
-  const [isDarkWallpapers, setIsDarkWallpapers] = useState(theme === "dark" || theme === 1);
+  const isDarkWallpapers = theme === "dark" || theme === 1;
 
   const isMacOSTemplate = template === 4;
   const isChatfolioTemplate = template === 1;
@@ -240,7 +240,9 @@ const ThemePanel = ({
   // Update sectionOrder when template or userDetails changes
   useEffect(() => {
     const newAvailableSections = getAvailableSections(template);
-    setSectionOrder(normalizeSectionOrder(userDetails?.sectionOrder, newAvailableSections));
+    queueMicrotask(() =>
+      setSectionOrder(normalizeSectionOrder(userDetails?.sectionOrder, newAvailableSections))
+    );
   }, [template, userDetails?.sectionOrder]);
 
   // DnD sensors
@@ -358,14 +360,9 @@ const ThemePanel = ({
     };
   }, [registerUnsavedChangesChecker, unregisterUnsavedChangesChecker]);
 
-  // Sync isDarkWallpapers with theme prop changes
-  useEffect(() => {
-    setIsDarkWallpapers(theme === "dark" || theme === 1);
-  }, [theme]);
-
   useEffect(() => {
     if (typeof wallpaper === "string") {
-      setCustomWallpaper(wallpaper);
+      queueMicrotask(() => setCustomWallpaper(wallpaper));
     }
   }, [wallpaper]);
 

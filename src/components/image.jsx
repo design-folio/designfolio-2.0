@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import { useState, useEffect } from "react";
 import { twMerge } from "tailwind-merge";
 
@@ -7,14 +6,14 @@ const DfImage = ({ src, style, className, alt, onClick }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    queueMicrotask(() => setMounted(true));
   }, []);
 
   useEffect(() => {
     if (!mounted || !src) return;
     const img = new Image();
     img.src = src;
-    if (img.complete) setImageLoaded(true);
+    if (img.complete) queueMicrotask(() => setImageLoaded(true));
     else img.onload = () => setImageLoaded(true);
   }, [mounted, src]);
 

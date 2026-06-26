@@ -1,10 +1,9 @@
 import { _analyzeCaseStudy, _analyzeCaseStudyStatus, _updateProject } from "@/network/post-request";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, startTransition } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/router";
 import TiptapRenderer from "@/components/tiptapRenderer";
-import BlockRenderer from "@/components/blockRenderer";
 import { ImageWithOverlayAndPicker } from "@/components/ImageWithOverlayAndPicker";
 import { itemVariants, frameBorderClass, screwClass, extractText } from "./professional-utils";
 import queryClient from "@/network/queryClient";
@@ -72,7 +71,7 @@ const containerVariants = {
 function EditableDetailField({ label, field, value, onBlur }) {
   const [isPlaceholder, setIsPlaceholder] = useState(!value);
   useEffect(() => {
-    setIsPlaceholder(!value);
+    startTransition(() => setIsPlaceholder(!value));
   }, [value]);
 
   return (
@@ -133,23 +132,39 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
     platform,
     contentVersion,
     tiptapContent,
-    content,
     _id,
     password,
     protected: isProtected,
   } = projectDetails || {};
 
   useEffect(() => {
-    setIsPassword(!!isProtected);
-    setPasswordInput(password || "");
-    setTitleIsPlaceholder(!title);
-    setDescIsPlaceholder(!description);
+    startTransition(() => {
+      setIsPassword(!!isProtected);
+      setPasswordInput(password || "");
+      setTitleIsPlaceholder(!title);
+      setDescIsPlaceholder(!description);
+    });
   }, [isProtected, password, title, description]);
 
+  const fetchAnalyzeStatus = useCallback(async () => {
+    try {
+      const response = await _analyzeCaseStudyStatus(projectDetails._id);
+      if (response.data.status) {
+        setSuggestions(response.data.data.data.response);
+        setRating(response.data.data.data.rating);
+      }
+      setAnalyzeStatus(true);
+    } catch (e) {
+      console.log(e);
+    }
+  }, [projectDetails._id, setSuggestions, setRating, setAnalyzeStatus]);
+
   useEffect(() => {
-    setWordCount(null);
-    if (edit) fetchAnalyzeStatus();
-  }, [edit]);
+    startTransition(() => {
+      setWordCount(null);
+      if (edit) fetchAnalyzeStatus();
+    });
+  }, [edit, fetchAnalyzeStatus, setWordCount]);
 
   const projectId = _id || router.query.id;
 
@@ -189,19 +204,6 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
   const handleOnBlur = (field, e) => {
     const val = e.target.textContent.trim();
     saveProject(field, val);
-  };
-
-  const fetchAnalyzeStatus = async () => {
-    try {
-      const response = await _analyzeCaseStudyStatus(projectDetails._id);
-      if (response.data.status) {
-        setSuggestions(response.data.data.data.response);
-        setRating(response.data.data.data.rating);
-      }
-      setAnalyzeStatus(true);
-    } catch (e) {
-      console.log(e);
-    }
   };
 
   const handleAnalyzeClick = async () => {
@@ -277,7 +279,6 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
 
   const viewDetailFields = detailFields.filter((f) => f.value);
   const hasTiptapContent = contentVersion === 2 && tiptapContent;
-  const hasEditorJSContent = contentVersion === 1 && content;
   const descriptionText = extractText(description);
 
   const innerContent = (

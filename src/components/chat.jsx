@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, startTransition } from "react";
 import ChatBubble from "./chatBubble";
 import { motion } from "motion/react";
 import LeftBubble from "../../public/assets/svgs/chat-bubble-left.svg";
@@ -13,12 +13,14 @@ export default function Chat({
 }) {
   const [show, setShow] = useState(delay === 0);
   const onCompleteRef = useRef(onComplete);
-  onCompleteRef.current = onComplete;
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  });
 
   // Reveal on mount after delay (no IntersectionObserver – works on both pages and avoids zero-height div)
   useEffect(() => {
     if (delay === 0) {
-      setShow(true);
+      startTransition(() => setShow(true));
       onCompleteRef.current();
       return;
     }

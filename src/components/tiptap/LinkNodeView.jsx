@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, startTransition } from "react";
 import { NodeViewWrapper } from "@tiptap/react";
 
 const LinkNodeView = ({ node, updateAttributes, deleteNode, editor }) => {
@@ -9,7 +9,7 @@ const LinkNodeView = ({ node, updateAttributes, deleteNode, editor }) => {
 
   useEffect(() => {
     if (isEditable && !node.attrs.href) {
-      setIsEditing(true);
+      startTransition(() => setIsEditing(true));
     }
   }, [isEditable, node.attrs.href]);
 

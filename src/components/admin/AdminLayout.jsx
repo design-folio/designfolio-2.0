@@ -9,7 +9,9 @@ export default function AdminLayout({ children, title }) {
   const router = useRouter();
   const [searchOpen, setSearchOpen] = useState(false);
   const searchOpenRef = useRef(searchOpen);
-  searchOpenRef.current = searchOpen;
+  useEffect(() => {
+    searchOpenRef.current = searchOpen;
+  }, [searchOpen]);
 
   useEffect(() => {
     document.body.setAttribute("data-admin", "true");

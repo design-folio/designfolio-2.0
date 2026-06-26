@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState, startTransition } from "react";
 
 import { getServerSideProps } from "@/lib/loggedInServerSideProps";
 import { useGlobalContext } from "@/context/globalContext";
@@ -75,8 +75,10 @@ export default function Index() {
   const { setTheme, resolvedTheme } = useTheme();
   const themeBeforeAiToolsRef = useRef(null);
   // Keep last known sidebar width so closing animation has a non-zero right offset
-  const lastSidebarRef = useRef(null);
-  if (activeSidebar) lastSidebarRef.current = activeSidebar;
+  const [lastSidebar, setLastSidebar] = useState(() => activeSidebar ?? null);
+  useEffect(() => {
+    if (activeSidebar != null) startTransition(() => setLastSidebar(activeSidebar));
+  }, [activeSidebar]);
 
   // Lock page scroll when sidebar is open on desktop.
   // Compensates for scrollbar gutter width so content doesn't shift (same trick
@@ -117,7 +119,7 @@ export default function Index() {
     } else {
       setIsUserDetailsFromCache(true);
     }
-  }, []);
+  }, [userDetailsIsState, setIsUserDetailsFromCache]);
 
   // Restore wallpaper from userDetails when component mounts
   useEffect(() => {
@@ -163,7 +165,7 @@ export default function Index() {
     } else {
       closeModal();
     }
-  }, [userDetails, showModal]);
+  }, [userDetails, showModal, closeModal, openModal, router]);
 
   const modalContent = () => {
     switch (showModal) {
@@ -225,7 +227,7 @@ export default function Index() {
     open: !!activeSidebar,
     onOpenChange: (open) => !open && closeSidebar(true),
     style: {
-      "--sidebar-width": getSidebarShiftWidth(lastSidebarRef.current || activeSidebar) || "400px",
+      "--sidebar-width": getSidebarShiftWidth(lastSidebar || activeSidebar) || "400px",
     },
     defaultOpen: false,
   };

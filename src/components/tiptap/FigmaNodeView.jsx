@@ -1,5 +1,5 @@
 import { NodeViewWrapper } from "@tiptap/react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, startTransition } from "react";
 
 export default function FigmaNodeView({ node, updateAttributes, editor, getPos }) {
   const [isEditing, setIsEditing] = useState(!node.attrs.embedCode);
@@ -44,7 +44,7 @@ export default function FigmaNodeView({ node, updateAttributes, editor, getPos }
 
   useEffect(() => {
     if (!node.attrs.embedCode) {
-      setIsEditing(true);
+      startTransition(() => setIsEditing(true));
     }
   }, [node.attrs.embedCode]);
 

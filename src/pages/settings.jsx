@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState, startTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { useGlobalContext } from "@/context/globalContext";
 import ChangePassword from "@/components/changePassword";
@@ -29,8 +29,10 @@ export default function Settings() {
   } = useGlobalContext();
 
   const isMobile = useIsMobile();
-  const lastSidebarRef = useRef(null);
-  if (activeSidebar) lastSidebarRef.current = activeSidebar;
+  const [lastSidebar, setLastSidebar] = useState(() => activeSidebar ?? null);
+  useEffect(() => {
+    if (activeSidebar != null) startTransition(() => setLastSidebar(activeSidebar));
+  }, [activeSidebar]);
 
   // Compensate for scrollbar gutter when sidebar opens so content doesn't shift.
   useEffect(() => {
@@ -48,11 +50,11 @@ export default function Settings() {
 
   useEffect(() => {
     if (userDetailsIsState) {
-      setIsUserDetailsFromCache(false);
+      startTransition(() => setIsUserDetailsFromCache(false));
     } else {
-      setIsUserDetailsFromCache(true);
+      startTransition(() => setIsUserDetailsFromCache(true));
     }
-  }, []);
+  }, [userDetailsIsState, setIsUserDetailsFromCache]);
 
   const template = userDetails?.template;
 
@@ -92,7 +94,7 @@ export default function Settings() {
     open: !!activeSidebar,
     onOpenChange: (open) => !open && closeSidebar(true),
     style: {
-      "--sidebar-width": getSidebarShiftWidth(lastSidebarRef.current) || "400px",
+      "--sidebar-width": getSidebarShiftWidth(lastSidebar) || "400px",
     },
     defaultOpen: false,
   };

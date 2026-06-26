@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState, startTransition } from "react";
 import { Minus, Square, X, Trash2, Eye, EyeOff, Lock } from "lucide-react";
 import MacOSProjectToolbar from "./MacOSProjectToolbar";
 import { useRouter } from "next/router";
@@ -107,10 +107,12 @@ const MacOSWindowShell = ({
   // Centre the window on first mount (client only).
   // Top offset = logged-in header (62px) + macOS menu bar (28px) = 90px.
   useEffect(() => {
-    setPos({
-      x: Math.max(0, window.innerWidth / 2 - 480),
-      y: 100,
-    });
+    startTransition(() =>
+      setPos({
+        x: Math.max(0, window.innerWidth / 2 - 480),
+        y: 100,
+      })
+    );
   }, []);
 
   // ── Drag ──────────────────────────────────────────────────────────────────

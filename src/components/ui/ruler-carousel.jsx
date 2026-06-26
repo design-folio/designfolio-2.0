@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, startTransition, useCallback } from "react";
 import { motion } from "motion/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -37,11 +37,7 @@ const RulerLines = ({ totalLines = 41 }) => {
     }
 
     lines.push(
-      <div
-        key={i}
-        className={`w-px ${color} shrink-0`}
-        style={{ height: `${height * 0.75}px` }}
-      />
+      <div key={i} className={`w-px ${color} shrink-0`} style={{ height: `${height * 0.75}px` }} />
     );
   }
 
@@ -89,27 +85,27 @@ export function RulerCarousel({ originalItems, onItemSelect, selectedIndex }) {
     }
   };
 
-  const handlePrevious = () => {
+  const handlePrevious = useCallback(() => {
     if (isResetting) return;
     const newIndex = activeIndex - 1;
     setActiveIndex(newIndex);
     if (onItemSelect) {
       onItemSelect(((newIndex % itemsPerSet) + itemsPerSet) % itemsPerSet);
     }
-  };
+  }, [isResetting, activeIndex, onItemSelect, itemsPerSet]);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (isResetting) return;
     const newIndex = activeIndex + 1;
     setActiveIndex(newIndex);
     if (onItemSelect) {
       onItemSelect(newIndex % itemsPerSet);
     }
-  };
+  }, [isResetting, activeIndex, onItemSelect, itemsPerSet]);
 
   useEffect(() => {
     if (selectedIndex !== undefined) {
-      setActiveIndex(itemsPerSet + selectedIndex);
+      startTransition(() => setActiveIndex(itemsPerSet + selectedIndex));
     }
   }, [selectedIndex, itemsPerSet]);
 
@@ -117,16 +113,20 @@ export function RulerCarousel({ originalItems, onItemSelect, selectedIndex }) {
     if (isResetting) return;
 
     if (activeIndex < itemsPerSet) {
-      setIsResetting(true);
+      startTransition(() => setIsResetting(true));
       setTimeout(() => {
-        setActiveIndex(activeIndex + itemsPerSet);
-        setIsResetting(false);
+        startTransition(() => {
+          setActiveIndex(activeIndex + itemsPerSet);
+          setIsResetting(false);
+        });
       }, 0);
     } else if (activeIndex >= itemsPerSet * 2) {
-      setIsResetting(true);
+      startTransition(() => setIsResetting(true));
       setTimeout(() => {
-        setActiveIndex(activeIndex - itemsPerSet);
-        setIsResetting(false);
+        startTransition(() => {
+          setActiveIndex(activeIndex - itemsPerSet);
+          setIsResetting(false);
+        });
       }, 0);
     }
   }, [activeIndex, itemsPerSet, isResetting]);
@@ -146,7 +146,7 @@ export function RulerCarousel({ originalItems, onItemSelect, selectedIndex }) {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isResetting, activeIndex]);
+  }, [isResetting, handleNext, handlePrevious]);
 
   const targetX = -(activeIndex * (ITEM_WIDTH + ITEM_GAP));
 

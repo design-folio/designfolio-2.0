@@ -26,12 +26,8 @@ function TextGradientScroll({ text, className, type = "letter", textOpacity = "s
   // Split by double newline to maintain paragraphs
   const paragraphs = text.split("\n\n");
 
-  let totalWords = 0;
-  const paragraphWords = paragraphs.map((p) => {
-    const words = p.split(/\s+/).filter((w) => w.length > 0);
-    totalWords += words.length;
-    return words;
-  });
+  const paragraphWords = paragraphs.map((p) => p.split(/\s+/).filter((w) => w.length > 0));
+  const totalWords = paragraphWords.reduce((sum, words) => sum + words.length, 0);
 
   let currentWordIndex = 0;
 

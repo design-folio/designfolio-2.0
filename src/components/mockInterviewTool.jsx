@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, startTransition } from "react";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
@@ -65,8 +65,10 @@ export default function MockInterviewTool({
     if (stored && typeof stored === "object" && stored.feedback) {
       try {
         JSON.parse(stored.feedback);
-        setFeedback(stored.feedback);
-        setIsFinished(true);
+        startTransition(() => {
+          setFeedback(stored.feedback);
+          setIsFinished(true);
+        });
         onViewChange?.(true);
       } catch (_) {}
     }
@@ -156,11 +158,15 @@ export default function MockInterviewTool({
   };
 
   if (isFinished) {
+    let feedbackData = null;
+    let feedbackParseError = false;
     try {
-      const feedbackData = JSON.parse(feedback);
-      return <DetailedFeedback feedbackData={feedbackData} onStartNew={handleStartNewInterview} />;
+      feedbackData = JSON.parse(feedback);
     } catch (error) {
       console.error("Feedback parse error:", error);
+      feedbackParseError = true;
+    }
+    if (feedbackParseError) {
       return (
         <div className="max-w-lg mx-auto p-4">
           <div className="p-6 bg-red-50 rounded-2xl border-2 border-red-200">
@@ -178,6 +184,7 @@ export default function MockInterviewTool({
         </div>
       );
     }
+    return <DetailedFeedback feedbackData={feedbackData} onStartNew={handleStartNewInterview} />;
   }
 
   if (isInterviewStarted) {

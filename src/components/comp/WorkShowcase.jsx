@@ -78,17 +78,18 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
   const ref = useRef(null);
 
   useEffect(() => {
+    const node = ref.current;
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting && !inView) {
         setInView(true);
       }
     });
-    if (ref.current) {
-      observer.observe(ref.current);
+    if (node) {
+      observer.observe(node);
     }
     return () => {
-      if (ref.current) {
-        observer.unobserve(ref.current);
+      if (node) {
+        observer.unobserve(node);
       }
     };
   }, [inView]);
@@ -137,7 +138,7 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
   // Update state when userDetails changes
   useEffect(() => {
     const currentProjects = userDetails?.projects || [];
-    setSortedProjects([...currentProjects]);
+    queueMicrotask(() => setSortedProjects([...currentProjects]));
   }, [userDetails]);
 
   // Filter out hidden projects in preview mode (when edit is false)
@@ -383,8 +384,9 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
       {edit &&
         (userDetails?.pro || (userDetails?.projects || []).filter((p) => !p.hidden).length < 2 ? (
           <AddCard
-            title={`${visibleProjects.length === 0 ? "Upload your first case study" : "Add case study"
-              }`}
+            title={`${
+              visibleProjects.length === 0 ? "Upload your first case study" : "Add case study"
+            }`}
             subTitle="Show off your best work."
             first={sortedProjects.length !== 0}
             buttonTitle="Add case study"
@@ -392,9 +394,10 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
             onClick={() => openSidebar(sidebars.project)}
             icon={<MemoCasestudy className="cursor-pointer size-[72px]" />}
             openModal={openModal}
-            className={`bg-secondary flex items-center justify-center mt-6 ${visibleProjects.length !== 0 &&
+            className={`bg-secondary flex items-center justify-center mt-6 ${
+              visibleProjects.length !== 0 &&
               "shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] hover:shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
-              }`}
+            }`}
           />
         ) : (
           <div className="mt-6">

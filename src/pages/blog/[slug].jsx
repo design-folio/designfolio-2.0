@@ -18,8 +18,7 @@ const BlogPost = ({ post }) => {
   const [dfToken, setDfToken] = useState(false);
 
   useEffect(() => {
-    const token = Cookies.get("df-token");
-    setDfToken(!!token);
+    startTransition(() => setDfToken(!!Cookies.get("df-token")));
   }, []);
 
   return (

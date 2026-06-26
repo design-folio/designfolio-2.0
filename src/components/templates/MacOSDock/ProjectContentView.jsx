@@ -18,7 +18,7 @@ const ProjectContentView = ({ projectId, userDetails }) => {
   const contextProject = useMemo(() => {
     if (!projectId || !userDetails?.projects) return null;
     return userDetails.projects.find((p) => p._id === projectId);
-  }, [projectId, userDetails?.projects]);
+  }, [projectId, userDetails]);
 
   const shouldFetch = !!projectId && userDetails !== null && !contextProject;
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState, startTransition } from "react";
 import EditorJS from "@editorjs/editorjs";
 import Header from "@editorjs/header";
 import Embed from "@editorjs/embed";
@@ -104,8 +104,48 @@ const ProjectEditor = ({ projectDetails, userDetails }) => {
   const { setWordCount, setProjectValue } = useGlobalContext();
   const phEvent = usePostHogEvent();
 
+  const checkWordCount = useCallback(
+    async (edit) => {
+      const outputData = await edit.save();
+      let totalText = "";
+      outputData.blocks.forEach((block, index) => {
+        if (block.data.text) {
+          const tempElement = document.createElement("div");
+          tempElement.textContent = index >= 1 ? " " + block.data.text : block.data.text;
+          const textWithoutTags = tempElement.innerText;
+          totalText += textWithoutTags;
+        }
+
+        if (block.type === "table") {
+          totalText += " ";
+          block.data.content.forEach((row) => {
+            row.forEach((cell) => {
+              if (cell !== "") totalText += cell + " ";
+            });
+          });
+        }
+
+        if (block.type === "list") {
+          block.data.items.forEach((item) => {
+            if (item.content != "") {
+              totalText += " " + item.content;
+            }
+          });
+        }
+
+        if (block.type === "image") {
+          const imageCaption = block.data.caption;
+          totalText += " " + imageCaption;
+        }
+      });
+      setProjectValue(totalText.replace("&nbsp;", "").trim());
+      setWordCount(totalText.replace("&nbsp;", "").trim().split(" ").length);
+    },
+    [setProjectValue, setWordCount]
+  );
+
   useEffect(() => {
-    setIsClient(true);
+    startTransition(() => setIsClient(true));
 
     if (!editorContainer.current) return;
 
@@ -351,49 +391,7 @@ const ProjectEditor = ({ projectDetails, userDetails }) => {
         }
       };
     }
-  }, [isClient, projectDetails]);
-
-  let checkWordCount = async (edit) => {
-    const outputData = await edit.save();
-    let totalText = "";
-    // Loop through all blocks and concatenate their text content
-    outputData.blocks.forEach((block, index) => {
-      if (block.data.text) {
-        const tempElement = document.createElement("div");
-        tempElement.textContent = index >= 1 ? " " + block.data.text : block.data.text;
-        const textWithoutTags = tempElement.innerText;
-        totalText += textWithoutTags;
-      }
-
-      if (block.type === "table") {
-        let wordCount = 0;
-        totalText += " ";
-        block.data.content.forEach((row) => {
-          row.forEach((cell) => {
-            if (cell !== "") totalText += cell + " ";
-          });
-        });
-      }
-
-      if (block.type === "list") {
-        let wordCount = 0;
-        block.data.items.forEach((item) => {
-          if (item.content != "") {
-            wordCount += item.content;
-            totalText += " " + wordCount;
-          }
-        });
-      }
-
-      if (block.type === "image") {
-        // Calculate word count based on image caption
-        const imageCaption = block.data.caption;
-        totalText += " " + imageCaption;
-      }
-    });
-    setProjectValue(totalText.replace("&nbsp;", "").trim());
-    setWordCount(totalText.replace("&nbsp;", "").trim().split(" ").length);
-  };
+  }, [isClient, projectDetails, checkWordCount, phEvent, projectId, userDetails]);
 
   return (
     <>

@@ -63,8 +63,8 @@ export function CreditsShopModal({ open, onClose, onBuy, buying = false }) {
         const topup = res.data?.jobTopup;
         if (topup) setPack(topup);
       })
-      .catch(() => { });
-  }, [open]);
+      .catch(() => {});
+  }, [open, pack]);
 
   const quantities = pack?.quantities ?? {};
   const amount = pack?.amount ?? 999;

@@ -115,7 +115,7 @@ export default function Pricing() {
 
   useEffect(() => {
     phEvent(POSTHOG_EVENT_NAMES.PRICING_VIEWED);
-  }, []);
+  }, [phEvent]);
 
   return (
     <LandingLegalShell

@@ -1,5 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
-
 import { Skeleton } from "@/components/ui/skeleton";
 import { useState } from "react";
 

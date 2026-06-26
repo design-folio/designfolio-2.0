@@ -1,8 +1,15 @@
-import { useState, useCallback, useEffect, useRef, useMemo } from "react";
+import {
+  useState,
+  useCallback,
+  useEffect,
+  useRef,
+  useMemo,
+  useLayoutEffect,
+  startTransition,
+} from "react";
 import { toast } from "react-toastify";
 import { motion } from "motion/react";
 import { useRouter } from "next/router";
-import { COL_ORDER } from "@/data/jobs";
 import { extractLinkedInJobId } from "@/lib/jobsUtils";
 import {
   _postJobsInteract,
@@ -172,6 +179,16 @@ export function Dashboard({
   // Paginates through all recommendation pages until every unscored pick
   // is found — prevents picks that sort below page-0 from staying null forever.
   // Auto-stops when all picks are scored. 10-min safety cap as fallback.
+  const hasUnscoredJobs = [
+    columns.picks,
+    columns.saved,
+    columns.applied,
+    columns.interview,
+    columns.offer,
+  ]
+    .flat()
+    .some((j) => j?.match === null);
+
   useEffect(() => {
     if (!profileId) return;
     const unscoredIds = new Set(
@@ -239,12 +256,7 @@ export function Dashboard({
 
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    profileId,
-    [columns.picks, columns.saved, columns.applied, columns.interview, columns.offer]
-      .flat()
-      .some((j) => j?.match === null),
-  ]);
+  }, [profileId, hasUnscoredJobs]);
 
   // Targeted score poll for a job added via the share flow.
   // getRecommendations excludes pipeline jobs, so we hit getJobScore directly.
@@ -322,7 +334,9 @@ export function Dashboard({
 
   const allJobs = Object.values(columns).flat();
   const allJobsRef = useRef(allJobs);
-  allJobsRef.current = allJobs;
+  useLayoutEffect(() => {
+    allJobsRef.current = allJobs;
+  });
 
   const filteredPicks = useMemo(() => {
     return (columns.picks || []).filter((job) => {
@@ -418,7 +432,7 @@ export function Dashboard({
     } finally {
       setIsRescanning(false);
     }
-  }, [isRescanning, rescanExhausted, profileId, columns.picks, bumpCredits]);
+  }, [isRescanning, rescanExhausted, profileId, bumpCredits]);
 
   const handleRescan = useCallback(
     async (answers = currentAnswers) => {
@@ -475,8 +489,8 @@ export function Dashboard({
   }, []);
 
   useEffect(() => {
-    if (isRescanning && showJoyride) dismissJoyride();
-  }, [isRescanning]); // eslint-disable-line react-hooks/exhaustive-deps
+    if (isRescanning && showJoyride) startTransition(() => dismissJoyride());
+  }, [isRescanning, showJoyride, dismissJoyride]);
 
   const handleShortlist = useCallback(
     (id) => {

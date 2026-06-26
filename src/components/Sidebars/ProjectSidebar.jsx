@@ -48,19 +48,6 @@ export default function AddProject() {
 
   const isOpen = activeSidebar === sidebars.project;
 
-  // Reset state when sidebar closes
-  useEffect(() => {
-    if (!isOpen) {
-      setImagePreview(null);
-      setPassword(false);
-      setShowEye(false);
-      setLoading(false);
-      if (formikRef.current) {
-        formikRef.current.resetForm();
-      }
-    }
-  }, [isOpen]);
-
   const hasUnsavedChanges = () => {
     if (!formikRef.current) return false;
     const values = formikRef.current.values;
@@ -93,8 +80,8 @@ export default function AddProject() {
       ),
     password: isPassword
       ? Yup.string()
-        .required("Password is required.")
-        .min(6, "Password is too short - should be 6 chars minimum.")
+          .required("Password is required.")
+          .min(6, "Password is too short - should be 6 chars minimum.")
       : Yup.string().min(6, "Password is too short - should be 6 chars minimum."),
   });
 
@@ -131,6 +118,7 @@ export default function AddProject() {
   return (
     <>
       <Formik
+        key={isOpen ? "open" : "closed"}
         innerRef={formikRef}
         initialValues={{
           description: "",

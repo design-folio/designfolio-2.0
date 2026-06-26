@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, startTransition } from "react";
 import Link from "next/link";
 import LandingFooter from "./LandingFooter";
 import Seo from "@/components/seo";
@@ -21,8 +21,10 @@ export default function LandingLegalShell({ title, seoTitle, seoDescription, chi
   const [hasParsedResume, setHasParsedResume] = useState(false);
 
   useEffect(() => {
-    setHasDfToken(!!getCookieValue("df-token"));
-    setHasParsedResume(!!getCookieValue("df_parsed_resume"));
+    startTransition(() => {
+      setHasDfToken(!!getCookieValue("df-token"));
+      setHasParsedResume(!!getCookieValue("df_parsed_resume"));
+    });
   }, []);
   return (
     <>

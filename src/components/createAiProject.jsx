@@ -70,7 +70,7 @@ export default function CreateAiProject({ openModal }) {
       .then((res) => {
         if (res) setTypeprojects(res.data);
       })
-      .catch(() => { });
+      .catch(() => {});
     _getUserQuota()
       .then((res) => {
         const gen = res.data?.quota?.caseStudyGeneration;
@@ -86,7 +86,7 @@ export default function CreateAiProject({ openModal }) {
         }
       })
       .catch(() => setGenerationCredits({ limit: 2, used: 2, remaining: 0 }));
-  }, []);
+  }, [openModal, setShowUpgradeModal, setUpgradeModalSource]);
 
   const getSchemaValidation = () => {
     switch (step) {
@@ -295,8 +295,8 @@ export default function CreateAiProject({ openModal }) {
                           className={cn(
                             "resize-none",
                             errors[answerKey] &&
-                            touched[answerKey] &&
-                            "border-destructive focus-visible:ring-destructive"
+                              touched[answerKey] &&
+                              "border-destructive focus-visible:ring-destructive"
                           )}
                         />
                         <ErrorMessage name={answerKey} component="p" className="error-message" />

@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, startTransition } from "react";
 import { useTheme } from "next-themes";
 import {
   MapPin,
@@ -196,9 +196,10 @@ export function JobDetailSheet({
 }) {
   const { userDetails, setShowUpgradeModal, setUpgradeModalSource, setUpgradeModalJob } =
     useGlobalContext();
-  const lastJobRef = useRef(null);
-  if (job) lastJobRef.current = job;
-  const displayJob = job ?? lastJobRef.current;
+  const [displayJob, setDisplayJob] = useState(() => job ?? null);
+  useEffect(() => {
+    if (job != null) startTransition(() => setDisplayJob(job));
+  }, [job]);
 
   const openJobUpgradeModal = (source) => {
     setUpgradeModalSource(source);
@@ -270,7 +271,7 @@ export function JobDetailSheet({
       .then((res) => {
         if (!cancelled) setQuota(res.data?.quota ?? null);
       })
-      .catch(() => { });
+      .catch(() => {});
     return () => {
       cancelled = true;
     };
@@ -291,11 +292,13 @@ export function JobDetailSheet({
 
   useEffect(() => {
     if (!job) return;
-    setResumeResult(null);
-    setLetterResult(null);
-    setFitResult(null);
+    startTransition(() => {
+      setResumeResult(null);
+      setLetterResult(null);
+      setFitResult(null);
+    });
     scrollRef.current?.scrollTo({ top: 0 });
-  }, [job?.id]);
+  }, [job]);
 
   // Load this job's saved documents (refreshes when the studio closes / after mutations).
   useEffect(() => {
@@ -305,7 +308,7 @@ export function JobDetailSheet({
       .then((res) => {
         if (!cancelled) setJobDocs(res.data || []);
       })
-      .catch(() => { });
+      .catch(() => {});
     return () => {
       cancelled = true;
     };
@@ -386,7 +389,7 @@ export function JobDetailSheet({
               if (job?.id)
                 _getDocuments({ jobId: job.id })
                   .then((res) => setJobDocs(res.data || []))
-                  .catch(() => { });
+                  .catch(() => {});
             }}
           />
         ) : (
@@ -400,10 +403,11 @@ export function JobDetailSheet({
                 <button
                   onClick={handleShare}
                   aria-label="Copy share link"
-                  className={`flex items-center gap-1.5 px-3 h-7 rounded-full border text-xs font-medium transition-all duration-150 ${copiedShare
+                  className={`flex items-center gap-1.5 px-3 h-7 rounded-full border text-xs font-medium transition-all duration-150 ${
+                    copiedShare
                       ? "bg-green-50 dark:bg-green-500/10 border-green-200 dark:border-green-500/30 text-green-600 dark:text-green-400"
                       : "bg-black/[0.04] dark:bg-white/[0.06] border-black/[0.08] dark:border-white/[0.10] text-black/50 dark:text-white/50 hover:text-black dark:hover:text-white hover:bg-black/[0.08] dark:hover:bg-white/[0.10]"
-                    }`}
+                  }`}
                 >
                   {copiedShare ? (
                     <>

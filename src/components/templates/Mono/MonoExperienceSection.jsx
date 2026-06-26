@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useMemo, Fragment } from "react";
+import { useState, useCallback, useEffect, useMemo, Fragment, startTransition } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Pencil, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,7 @@ function ExperienceDescription({ desc }) {
   const [visibleCount, setVisibleCount] = useState(0);
 
   useEffect(() => {
-    setVisibleCount(0);
+    startTransition(() => setVisibleCount(0));
     if (!words.length) return;
     let count = 0;
     // 75ms ≈ 5 chars × 15ms — matches the original char stagger pace

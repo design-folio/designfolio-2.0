@@ -41,7 +41,7 @@ export const Spotlight = ({ userDetails, edit, headerActions }) => {
 
   // Update sorted experiences when the prop changes
   useEffect(() => {
-    setSortedExperiences(experiences || []);
+    queueMicrotask(() => setSortedExperiences(experiences || []));
   }, [experiences]);
 
   const handleClick = (work) => {
@@ -146,10 +146,11 @@ export const Spotlight = ({ userDetails, edit, headerActions }) => {
                 <h3 className="font-semibold text-lg">{experience.role}</h3>
                 <div className="flex flex-1 gap-2 lg:justify-end w-full items-center">
                   <span className="text-sm text-gray-600 dark:text-gray-400">
-                    {`${experience?.startMonth} ${experience?.startYear} - ${experience?.currentlyWorking
+                    {`${experience?.startMonth} ${experience?.startYear} - ${
+                      experience?.currentlyWorking
                         ? "Present"
                         : `${experience?.endMonth} ${experience?.endYear}`
-                      }`}
+                    }`}
                   </span>
                   {edit && (
                     <div className="flex gap-4">

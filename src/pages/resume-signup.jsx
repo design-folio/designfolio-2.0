@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, startTransition } from "react";
 import { useDebouncedCallback } from "use-debounce";
 
 import Seo from "@/components/seo";
@@ -497,8 +497,22 @@ export default function ResumeSignup() {
   const [showMobileSheet, setShowMobileSheet] = useState(false);
   const [mobileTab, setMobileTab] = useState("My Portfolio");
 
+  const debouncedCheck = useDebouncedCallback(async (val) => {
+    if (!val) return;
+    setDomainLoading(true);
+    try {
+      const res = await _checkUsername({ username: val });
+      setDomainAvail(res?.data?.available ?? false);
+      setDomainError(res?.data?.available ? "" : `${val}.designfolio.me is taken`);
+    } catch {
+      setDomainAvail(false);
+    } finally {
+      setDomainLoading(false);
+    }
+  }, 600);
+
   useEffect(() => {
-    setMounted(true);
+    startTransition(() => setMounted(true));
     try {
       const raw = sessionStorage.getItem("df_parsed_resume");
       if (!raw) {
@@ -506,16 +520,18 @@ export default function ResumeSignup() {
         return;
       }
       const data = JSON.parse(raw);
-      setParsed(data);
-      if (data.name) setName(data.name);
-      if (data.email) setEmail(data.email);
+      startTransition(() => {
+        setParsed(data);
+        if (data.name) setName(data.name);
+        if (data.email) setEmail(data.email);
+      });
       const slug = (data.name || "")
         .trim()
         .toLowerCase()
         .replace(/\s+/g, "-")
         .replace(/[^a-z0-9-]/g, "");
       if (slug) {
-        setDomain(slug);
+        startTransition(() => setDomain(slug));
         debouncedCheck(slug);
       }
       const jobId = router.query.job || sessionStorage.getItem("df_pending_job_id") || "";
@@ -530,21 +546,7 @@ export default function ResumeSignup() {
     } catch {
       router.replace("/claim-link");
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const debouncedCheck = useDebouncedCallback(async (val) => {
-    if (!val) return;
-    setDomainLoading(true);
-    try {
-      const res = await _checkUsername({ username: val });
-      setDomainAvail(res?.data?.available ?? false);
-      setDomainError(res?.data?.available ? "" : `${val}.designfolio.me is taken`);
-    } catch {
-      setDomainAvail(false);
-    } finally {
-      setDomainLoading(false);
-    }
-  }, 600);
+  }, [debouncedCheck, event, router, setMounted, setParsed, setName, setEmail, setDomain]);
 
   const handleDomainChange = (e) => {
     const raw = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "");

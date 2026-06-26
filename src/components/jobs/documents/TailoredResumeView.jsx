@@ -100,7 +100,7 @@ export default function TailoredResumeView({
         },
         s: doc?.styling,
       }),
-    [doc]
+    [doc, c.personalInfo, c.summary, c.experiences, c.education, c.skills]
   );
   const current = JSON.stringify({
     c: { personalInfo, summary, experiences, education, skills },
@@ -439,10 +439,11 @@ export default function TailoredResumeView({
               <button
                 key={tab.key}
                 onClick={() => setRightTab(tab.key)}
-                className={`flex-1 py-2 text-[11.5px] font-semibold rounded-t-lg transition-all ${rightTab === tab.key
+                className={`flex-1 py-2 text-[11.5px] font-semibold rounded-t-lg transition-all ${
+                  rightTab === tab.key
                     ? "bg-white dark:bg-[#1E1A16] text-foreground/85 border border-black/[0.07] dark:border-white/[0.07] border-b-0"
                     : "text-foreground/40 hover:text-foreground/65"
-                  }`}
+                }`}
               >
                 {tab.label}
               </button>
@@ -691,10 +692,11 @@ export default function TailoredResumeView({
                       <button
                         key={f}
                         onClick={() => setFont(f)}
-                        className={`h-9 rounded-xl border text-[11.5px] font-medium transition-colors ${font === f
+                        className={`h-9 rounded-xl border text-[11.5px] font-medium transition-colors ${
+                          font === f
                             ? "border-foreground/35 bg-white dark:bg-[#1E1A16] text-foreground/85"
                             : "border-black/[0.07] dark:border-white/[0.07] bg-white dark:bg-[#1E1A16] text-foreground/45 hover:text-foreground/70 hover:border-black/[0.15] dark:hover:border-white/[0.15]"
-                          }`}
+                        }`}
                       >
                         {f}
                       </button>
@@ -711,10 +713,11 @@ export default function TailoredResumeView({
                       <button
                         key={s}
                         onClick={() => setSpacing(s)}
-                        className={`flex-1 h-8 rounded-xl border text-[11px] font-medium transition-colors ${spacing === s
+                        className={`flex-1 h-8 rounded-xl border text-[11px] font-medium transition-colors ${
+                          spacing === s
                             ? "border-foreground/35 bg-white dark:bg-[#1E1A16] text-foreground/85"
                             : "border-black/[0.07] dark:border-white/[0.07] bg-white dark:bg-[#1E1A16] text-foreground/45 hover:text-foreground/70 hover:border-black/[0.15] dark:hover:border-white/[0.15]"
-                          }`}
+                        }`}
                       >
                         {s}
                       </button>
@@ -732,10 +735,11 @@ export default function TailoredResumeView({
                         key={color}
                         onClick={() => setAccent(color)}
                         style={{ backgroundColor: color }}
-                        className={`w-7 h-7 rounded-full transition-all ${accent === color
+                        className={`w-7 h-7 rounded-full transition-all ${
+                          accent === color
                             ? "ring-2 ring-offset-2 ring-foreground/50 dark:ring-offset-[#131008] scale-110"
                             : "hover:scale-110"
-                          }`}
+                        }`}
                       />
                     ))}
                   </div>

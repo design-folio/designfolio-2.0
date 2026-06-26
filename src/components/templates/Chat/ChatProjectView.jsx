@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, startTransition } from "react";
 import { ChevronLeft } from "lucide-react";
 import { motion } from "motion/react";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
@@ -156,7 +156,7 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
     }
   };
 
-  const fetchAnalyzeStatus = async () => {
+  const fetchAnalyzeStatus = useCallback(async () => {
     if (!project?._id) return;
     try {
       const response = await _analyzeCaseStudyStatus(project._id);
@@ -168,7 +168,7 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
     } catch (e) {
       console.log(e);
     }
-  };
+  }, [project]);
 
   const handleAnalyzeClick = async () => {
     if (suggestions.length > 0) {
@@ -237,13 +237,13 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
   };
 
   useEffect(() => {
-    setWordCount(null);
+    startTransition(() => setWordCount(null));
     if (!edit) return;
-    fetchAnalyzeStatus();
-  }, [edit]);
+    startTransition(() => void fetchAnalyzeStatus());
+  }, [edit, fetchAnalyzeStatus, setWordCount]);
 
   useEffect(() => {
-    setAvatarImageSrc(avatarSrc || "/assets/svgs/avatar.svg");
+    startTransition(() => setAvatarImageSrc(avatarSrc || "/assets/svgs/avatar.svg"));
   }, [avatarSrc]);
 
   return (

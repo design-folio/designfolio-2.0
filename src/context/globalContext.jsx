@@ -1,5 +1,5 @@
 import { setCursorvalue } from "@/lib/cursor";
-import { getWallpaperUrl, hasNoWallpaper, extractWallpaperValue } from "@/lib/wallpaper";
+import { getWallpaperUrl, extractWallpaperValue } from "@/lib/wallpaper";
 import { useRouter } from "next/router";
 import { mapPendingPortfolioToUpdatePayload } from "@/lib/mapPendingPortfolioToUpdatePayload";
 import {
@@ -25,6 +25,7 @@ import React, {
   useRef,
   useMemo,
   useCallback,
+  startTransition,
 } from "react";
 
 // Create a new context instance
@@ -165,37 +166,24 @@ export const GlobalProvider = ({ children }) => {
   useEffect(() => {
     if (data && !userDetailsIsState) {
       const userData = data?.user;
+      const prevUserDetails = userDetailsRef.current;
 
       // Skip update if projects are ONLY reordered (same IDs, different order, same data)
-      const oldProjectIds = userDetails?.projects?.map((p) => p._id) || [];
+      const oldProjectIds = prevUserDetails?.projects?.map((p) => p._id) || [];
       const newProjectIds = userData?.projects?.map((p) => p._id) || [];
       const sameIdsDifferentOrder =
-        userDetails &&
+        prevUserDetails &&
         oldProjectIds.length === newProjectIds.length &&
         oldProjectIds.every((id) => newProjectIds.includes(id)) &&
-        JSON.stringify(oldProjectIds) !== JSON.stringify(newProjectIds); // Different order
+        JSON.stringify(oldProjectIds) !== JSON.stringify(newProjectIds);
 
-      if (sameIdsDifferentOrder) {
-        return;
-      }
+      if (sameIdsDifferentOrder) return;
 
       // Template 4 (macOS) is always light mode
       const isTemplate4 = userData?.template === 4;
-      if (isTemplate4) {
-        setTheme("light");
-      } else if (userData?.theme != null) {
-        // Only override theme if user has an explicit preference saved on their account.
-        // For new users (theme === null), preserve whatever was in localStorage
-        // (e.g. the theme they chose on the landing page before signing up).
-        setTheme(userData.theme == 1 ? "dark" : "light");
-      }
-      setCursor(userData?.cursor ? userData?.cursor : 0);
-      setTemplate(userData?.template ? userData?.template : 0);
 
       const wp = userData?.wallpaper;
       const wpValue = wp && typeof wp === "object" ? wp.url || wp.value : wp;
-      setWallpaper(wpValue !== undefined ? wpValue : 0);
-
       const wpEffects = userData?.wallpaper?.effects;
 
       // Helper to check if effects object has valid values (not all null/undefined)
@@ -207,48 +195,35 @@ export const GlobalProvider = ({ children }) => {
           (wpEffects.grainIntensity !== null && wpEffects.grainIntensity !== undefined) ||
           (wpEffects.motion !== null && wpEffects.motion !== undefined));
 
+      let newWallpaperEffects = null;
       if (!effectsInitializedRef.current) {
+        isUpdatingEffectsFromAPI.current = true;
         if (hasValidEffects) {
-          // Set flag to prevent updateWallpaperEffects useEffect from triggering during initial load
-          isUpdatingEffectsFromAPI.current = true;
-          // Sanitize wpEffects: remove null/undefined values, and also remove false for motion (treat as "not set")
-          // This ensures defaults are used when backend doesn't provide proper values
           const sanitizedEffects = Object.fromEntries(
             Object.entries(wpEffects).filter(([key, v]) => {
               if (v === null || v === undefined) return false;
-              // Treat motion: false as "not set" so default (true) is used
               if (key === "motion" && v === false) return false;
-              // Treat grainIntensity 0 as "not set" so default (25) is used
               if (key === "grainIntensity" && v === 0) return false;
               return true;
             })
           );
-          // Merge with defaults: defaults first, then sanitized effects override (only valid values)
-          setWallpaperEffects({
+          newWallpaperEffects = {
             blur: 0,
             effectType: "blur",
             grainIntensity: 25,
             motion: true,
             ...sanitizedEffects,
-          });
-          effectsInitializedRef.current = true;
+          };
         } else {
-          // Only set defaults if effects haven't been initialized yet
-          isUpdatingEffectsFromAPI.current = true;
-          setWallpaperEffects({
-            blur: 0,
-            effectType: "blur",
-            grainIntensity: 25,
-            motion: true,
-          });
-          effectsInitializedRef.current = true;
+          newWallpaperEffects = { blur: 0, effectType: "blur", grainIntensity: 25, motion: true };
         }
+        effectsInitializedRef.current = true;
       }
 
       // Merge sectionOrder: prefer existing custom order when API returns default (avoids overwriting with stale refetch)
       const mergedUserData = { ...userData };
       const incomingOrder = userData?.sectionOrder;
-      const prevOrder = userDetails?.sectionOrder;
+      const prevOrder = prevUserDetails?.sectionOrder;
       const defaultStr = JSON.stringify(DEFAULT_SECTION_ORDER);
       if (incomingOrder && prevOrder) {
         const incomingStr = JSON.stringify(incomingOrder);
@@ -259,47 +234,58 @@ export const GlobalProvider = ({ children }) => {
       } else if (!incomingOrder && prevOrder) {
         mergedUserData.sectionOrder = prevOrder;
       }
-      setUserDetails(mergedUserData);
-      setIsUserDetailsFromCache(true);
-      setCheckList((prevList) => {
-        const newList = prevList.map((item) => {
-          switch (item.name) {
-            case "Add at least 1 Case Study":
-              return {
-                ...item,
-                checked: userData?.projects?.length > 0,
-              };
-            case "Add Skills":
-              return { ...item, checked: userData?.skills?.length > 0 };
-            case "Add Experience":
-              return {
-                ...item,
-                checked: userData?.experiences?.length > 0,
-              };
-            case "Add Testimonials":
-              return { ...item, checked: userData?.reviews?.length > 0 };
 
-            default:
-              return item;
-          }
+      startTransition(() => {
+        if (isTemplate4) {
+          setTheme("light");
+        } else if (userData?.theme != null) {
+          setTheme(userData.theme == 1 ? "dark" : "light");
+        }
+        setCursor(userData?.cursor ? userData?.cursor : 0);
+        setTemplate(userData?.template ? userData?.template : 0);
+        setWallpaper(wpValue !== undefined ? wpValue : 0);
+        if (newWallpaperEffects) setWallpaperEffects(newWallpaperEffects);
+        setUserDetails(mergedUserData);
+        setIsUserDetailsFromCache(true);
+        setCheckList((prevList) => {
+          const newList = prevList.map((item) => {
+            switch (item.name) {
+              case "Add at least 1 Case Study":
+                return { ...item, checked: userData?.projects?.length > 0 };
+              case "Add Skills":
+                return { ...item, checked: userData?.skills?.length > 0 };
+              case "Add Experience":
+                return { ...item, checked: userData?.experiences?.length > 0 };
+              case "Add Testimonials":
+                return { ...item, checked: userData?.reviews?.length > 0 };
+              default:
+                return item;
+            }
+          });
+          const completedTasks = newList.filter((item) => item.checked).length;
+          setIsTaskCompleted(completedTasks === newList.length);
+          setTaskPercentage((completedTasks / newList.length) * 100);
+          return newList;
         });
-        const completedTasks = newList.filter((item) => item.checked).length;
-        setIsTaskCompleted(completedTasks === newList.length);
-        setTaskPercentage((completedTasks / newList.length) * 100);
-        return newList;
       });
     }
-  }, [data, userDetailsIsState]);
+  }, [data, userDetailsIsState, setTheme]);
 
   useEffect(() => {
     setCursorvalue(cursor);
   }, [cursor]);
 
+  const fetchDomainDetails = useCallback(() => {
+    _getDomainDetails().then((res) => {
+      setDomainDetails(res.data);
+    });
+  }, []);
+
   useEffect(() => {
     if (userDetails?.pro) {
       fetchDomainDetails();
     }
-  }, [userDetails?.pro]);
+  }, [userDetails?.pro, fetchDomainDetails]);
 
   // Compute wallpaper URL centrally - handles object and primitive values
   const wallpaperUrl = useMemo(() => {
@@ -310,20 +296,14 @@ export const GlobalProvider = ({ children }) => {
     return getWallpaperUrl(wpValue ?? 0, currentTheme, template);
   }, [wallpaper, resolvedTheme, theme, template]);
 
-  const fetchDomainDetails = () => {
-    _getDomainDetails().then((res) => {
-      setDomainDetails(res.data);
-    });
-  };
-
-  const updateCache = (key, data) => {
+  const updateCache = useCallback((key, data) => {
     queryClient.setQueriesData({ queryKey: [key] }, (oldData) => {
       const existingUser = oldData?.user;
       const newUser =
         typeof data === "function" ? data(existingUser) : { ...existingUser, ...data };
       return { user: newUser };
     });
-  };
+  }, []);
 
   const applyPendingPortfolio = useCallback(() => {
     if (pendingPrefillAppliedRef.current || typeof window === "undefined") return;
@@ -386,10 +366,10 @@ export const GlobalProvider = ({ children }) => {
       (Array.isArray(userDetails.projects) && userDetails.projects.length > 0) ||
       !!(userDetails.user?.aboutMe || userDetails.user?.name || userDetails.aboutMe);
     if (hasExistingProfile) {
-      setPendingReplaceAwaitingConfirmation(true);
+      startTransition(() => setPendingReplaceAwaitingConfirmation(true));
       return;
     }
-    applyPendingPortfolio();
+    startTransition(() => applyPendingPortfolio());
   }, [userDetails, applyPendingPortfolio]);
 
   const changeCursor = (cursor) => {
@@ -605,7 +585,7 @@ export const GlobalProvider = ({ children }) => {
           });
       }
     },
-    [updateCache]
+    [updateCache, wallpaperEffects]
   );
 
   // Debounced version for slider updates (blur and grainIntensity)

@@ -1,6 +1,6 @@
 import { _analyzeCaseStudy, _analyzeCaseStudyStatus, _updateProject } from "@/network/post-request";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, startTransition, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -22,10 +22,6 @@ import { useGlobalContext } from "@/context/globalContext";
 import { TEMPLATE_IDS } from "@/lib/templates";
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-
-// Returns muted italic style for empty contentEditable placeholders
-const ph = (val) =>
-  val ? "text-[#1A1A1A] dark:text-[#F0EDE7]" : "text-[#C5BFB8] dark:text-[#4A4238] italic";
 
 function AnalyzeIcon({ className = "w-4 h-4" }) {
   return (
@@ -74,7 +70,7 @@ function ProjectDetailField({ label, value, field, edit, handleOnBlur, handleInp
   const [isPlaceholder, setIsPlaceholder] = useState(!value);
 
   useEffect(() => {
-    setIsPlaceholder(!value);
+    startTransition(() => setIsPlaceholder(!value));
   }, [value]);
 
   if (!edit && !value) return null;
@@ -166,10 +162,12 @@ export default function CanvasProjectInfo({ projectDetails, userDetails, edit, o
 
   useEffect(() => {
     // Reset for URL changes and support cached images after hydration.
-    setImageLoaded(false);
-    if (projectImageRef.current?.complete) {
-      setImageLoaded(true);
-    }
+    startTransition(() => {
+      setImageLoaded(false);
+      if (projectImageRef.current?.complete) {
+        setImageLoaded(true);
+      }
+    });
   }, [thumbnail?.url]);
 
   const saveProject = (key, value) => {
@@ -190,7 +188,7 @@ export default function CanvasProjectInfo({ projectDetails, userDetails, edit, o
     }
   };
 
-  const fetchAnalyzeStatus = async () => {
+  const fetchAnalyzeStatus = useCallback(async () => {
     try {
       const response = await _analyzeCaseStudyStatus(projectDetails._id);
       if (response.data.status) {
@@ -201,7 +199,7 @@ export default function CanvasProjectInfo({ projectDetails, userDetails, edit, o
     } catch (e) {
       console.log(e);
     }
-  };
+  }, [projectDetails._id, setSuggestions, setRating, setAnalyzeStatus]);
 
   const handleInput = (e) => {
     const textContent = e.target.textContent;
@@ -286,9 +284,11 @@ export default function CanvasProjectInfo({ projectDetails, userDetails, edit, o
   };
 
   useEffect(() => {
-    setWordCount(null);
-    fetchAnalyzeStatus();
-  }, []);
+    startTransition(() => {
+      setWordCount(null);
+      fetchAnalyzeStatus();
+    });
+  }, [fetchAnalyzeStatus, setWordCount]);
 
   return (
     <motion.div

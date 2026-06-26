@@ -1,5 +1,5 @@
 import { useGlobalContext } from "@/context/globalContext";
-import { useEffect } from "react";
+import { useEffect, startTransition } from "react";
 import Template2 from "@/components/template2";
 import Minimal from "@/components/comp/Minimal";
 import { Button } from "@/components/ui/button";
@@ -173,12 +173,8 @@ export default function Index() {
   };
 
   useEffect(() => {
-    if (userDetailsIsState) {
-      setIsUserDetailsFromCache(false);
-    } else {
-      setIsUserDetailsFromCache(true);
-    }
-  }, []);
+    startTransition(() => setIsUserDetailsFromCache(!userDetailsIsState));
+  }, [userDetailsIsState, setIsUserDetailsFromCache]);
 
   if (!userDetails && userDetailLoading) return null;
 

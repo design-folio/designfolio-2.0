@@ -15,19 +15,17 @@ export default function OfferAnalysis({
   skipRestore = false,
   guestUsageLimitReached = false,
 }) {
-  const [analysis, setAnalysis] = useState("");
+  const [analysis, setAnalysis] = useState(() => {
+    if (skipRestore) return "";
+    const stored = getAiToolResult(RESULT_STORAGE_KEY);
+    return typeof stored === "string" && stored.length > 0 ? stored : "";
+  });
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isRestarting, setIsRestarting] = useState(false);
 
   useEffect(() => {
-    if (skipRestore) return;
-    const stored = getAiToolResult(RESULT_STORAGE_KEY);
-    if (typeof stored === "string" && stored.length > 0) {
-      setAnalysis(stored);
-      onViewChange?.(true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [skipRestore]);
+    onViewChange?.(!!analysis);
+  }, [analysis, onViewChange]);
 
   const handleRateLimitError = () => {
     toast.error("Rate limit reached.");
@@ -38,7 +36,6 @@ export default function OfferAnalysis({
     if (isRestarting) return;
     setIsRestarting(true);
     setAnalysis("");
-    onViewChange?.(false);
     onStartNewAnalysis?.();
     setIsRestarting(false);
   };
@@ -54,7 +51,6 @@ export default function OfferAnalysis({
       const { data: result } = await axiosInstance.post("/ai/tools/offer/analyze", data);
       setAnalysis(result.analysis);
       setAiToolResult(RESULT_STORAGE_KEY, result.analysis);
-      onViewChange?.(true);
       onToolUsed?.();
     } catch (error) {
       console.error("Analysis error:", error);

@@ -7,7 +7,7 @@ import { Input } from "../ui/input";
 import CloseIcon from "../../../public/assets/svgs/close.svg";
 import Text from "../text";
 import DeleteIcon from "../../../public/assets/svgs/deleteIcon.svg";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import SimpleTiptapEditor from "../SimpleTiptapEditor";
 import { UnsavedChangesDialog } from "../ui/UnsavedChangesDialog";
 import { sidebars } from "@/lib/constant";
@@ -48,23 +48,26 @@ export default function AddReview() {
   const isOpen = activeSidebar === sidebars.review;
 
   useEffect(() => {
-    if (selectedReview?.avatar) {
-      // Handle avatar as object with url/key or as string
-      const avatarUrl =
-        typeof selectedReview.avatar === "object"
-          ? selectedReview.avatar.url || selectedReview.avatar.key || null
-          : selectedReview.avatar;
-      setAvatarPreview(avatarUrl);
-    } else {
-      setAvatarPreview(null);
-    }
-    setAvatarFile(null);
+    queueMicrotask(() => {
+      if (selectedReview?.avatar) {
+        const avatarUrl =
+          typeof selectedReview.avatar === "object"
+            ? selectedReview.avatar.url || selectedReview.avatar.key || null
+            : selectedReview.avatar;
+        setAvatarPreview(avatarUrl);
+      } else {
+        setAvatarPreview(null);
+      }
+      setAvatarFile(null);
+    });
   }, [selectedReview]);
 
   useEffect(() => {
     if (compressionProgress === 100 && compressedImage) {
-      setAvatarFile(compressedImage);
-      setAvatarPreview(URL.createObjectURL(compressedImage));
+      queueMicrotask(() => {
+        setAvatarFile(compressedImage);
+        setAvatarPreview(URL.createObjectURL(compressedImage));
+      });
     }
   }, [compressionProgress, compressedImage]);
 
@@ -77,30 +80,13 @@ export default function AddReview() {
     return JSON.stringify(desc1) === JSON.stringify(desc2);
   };
 
-  const hasUnsavedChanges = () => {
-    const v = editingValues;
-    if (!v) return false;
-
-    if (!selectedReview) {
-      return !!(v.name || v.company || v.linkedinLink || v.description || avatarFile !== null);
-    }
-
-    return (
-      v.name !== selectedReview.name ||
-      v.company !== selectedReview.company ||
-      v.linkedinLink !== (selectedReview.linkedinLink || "") ||
-      !compareDescription(v.description, selectedReview.description) ||
-      avatarFile !== null
-    );
-  };
-
-  const resetState = () => {
+  const resetState = useCallback(() => {
     setSelectedReview(null);
     setEditingValues(null);
     setAvatarPreview(null);
     setAvatarFile(null);
     setShowDeleteWarning(false);
-  };
+  }, [setSelectedReview]);
 
   const resetStateAndClose = () => {
     resetState();
@@ -111,20 +97,34 @@ export default function AddReview() {
     closeSidebar();
   };
 
+  const hasUnsavedChanges = useCallback(() => {
+    const v = editingValues;
+    if (!v) return false;
+    if (!selectedReview) {
+      return !!(v.name || v.company || v.linkedinLink || v.description || avatarFile !== null);
+    }
+    return (
+      v.name !== selectedReview.name ||
+      v.company !== selectedReview.company ||
+      v.linkedinLink !== (selectedReview.linkedinLink || "") ||
+      !compareDescription(v.description, selectedReview.description) ||
+      avatarFile !== null
+    );
+  }, [editingValues, selectedReview, avatarFile]);
+
   // Clear state when sidebar closes using resetState
   useEffect(() => {
     if (!isOpen) {
-      // Reset state when sidebar closes (after unsaved changes dialog is handled if needed)
-      resetState();
+      queueMicrotask(() => resetState());
     }
-  }, [isOpen]);
+  }, [isOpen, resetState]);
 
   useEffect(() => {
     if (isOpen) {
       registerUnsavedChangesChecker(sidebars.review, hasUnsavedChanges);
     }
     return () => unregisterUnsavedChangesChecker(sidebars.review);
-  }, [isOpen, editingValues, selectedReview, avatarFile]);
+  }, [isOpen, hasUnsavedChanges, registerUnsavedChangesChecker, unregisterUnsavedChangesChecker]);
 
   const handleDelete = () => {
     setShowDeleteWarning(true);

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, startTransition } from "react";
 import { useInView } from "motion/react";
 import Text from "./text";
 
@@ -9,7 +9,7 @@ const AnimatedSection = ({ children, animationData, className, delay }) => {
   const isInView = useInView(ref, { once: true });
 
   useEffect(() => {
-    setWidth(window?.innerWidth);
+    startTransition(() => setWidth(window?.innerWidth));
   }, []);
 
   const adjustedDelay = width < 768 ? 0.3 : delay;

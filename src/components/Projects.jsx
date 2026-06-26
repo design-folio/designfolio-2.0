@@ -138,13 +138,11 @@ export default function Projects({
   // Track recently moved items to prevent navigation after drag (use state to trigger re-renders)
   const [recentlyMovedIds, setRecentlyMovedIds] = React.useState(new Set());
 
-  // Filter out hidden projects in preview mode
+  const projects = userDetails?.projects;
   const visibleProjects = React.useMemo(() => {
-    if (preview && userDetails?.projects) {
-      return userDetails.projects.filter((project) => !project.hidden);
-    }
-    return userDetails?.projects || [];
-  }, [userDetails?.projects, preview]);
+    if (preview && projects) return projects.filter((project) => !project.hidden);
+    return projects || [];
+  }, [projects, preview]);
 
   const { setShowUpgradeModal, setUpgradeModalUnhideProject, openSidebar } = useGlobalContext();
 

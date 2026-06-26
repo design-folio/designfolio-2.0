@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, startTransition } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ChevronDown, ChevronLeft, ChevronRight, Clapperboard } from "lucide-react";
 import Lottie from "lottie-react";
@@ -39,10 +39,10 @@ export function PipelineCol({
 
   useEffect(() => {
     if (!offerThreshold) {
-      setBannerReady(false);
+      startTransition(() => setBannerReady(false));
       return;
     }
-    const t = setTimeout(() => setBannerReady(true), 1200);
+    const t = setTimeout(() => startTransition(() => setBannerReady(true)), 1200);
     return () => clearTimeout(t);
   }, [offerThreshold]);
 
@@ -175,8 +175,7 @@ export function PipelineCol({
   if (onToggleCollapse) {
     const morphEase = [0.22, 1, 0.36, 1];
     const morphDur = 0.42;
-    const colBgCollapsible =
-      "relative flex-1 rounded-xl bg-(--shell-bg) overflow-hidden h-full";
+    const colBgCollapsible = "relative flex-1 rounded-xl bg-(--shell-bg) overflow-hidden h-full";
     return (
       <KanbanColumn value={colId} className={colBgCollapsible}>
         {/* Expanded state */}

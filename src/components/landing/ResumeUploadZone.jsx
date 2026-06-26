@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, startTransition } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { useRouter } from "next/router";
@@ -44,13 +44,13 @@ export default function ResumeUploadZone({
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    startTransition(() => setMounted(true));
   }, []);
 
   // Cycle AI status text while processing
   useEffect(() => {
     if (!isProcessing) return;
-    setAiStatusIndex(0);
+    startTransition(() => setAiStatusIndex(0));
     const interval = setInterval(() => {
       setAiStatusIndex((i) => Math.min(i + 1, AI_STATUSES.length - 1));
     }, 1600);

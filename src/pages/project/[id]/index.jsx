@@ -35,7 +35,7 @@ export default function Index({ data, ownerTemplate, ownerWallpaper, ownerUser }
   const contextProject = useMemo(() => {
     if (!router.query.id || !userDetails?.projects) return null;
     return userDetails.projects.find((project) => project._id === router.query.id);
-  }, [router.query.id, userDetails?.projects]);
+  }, [router.query.id, userDetails]);
 
   const shouldFetch =
     router.isReady &&

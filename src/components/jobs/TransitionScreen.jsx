@@ -148,7 +148,7 @@ function AnimatedJobCount({ onDone }) {
       if (shimmerTimeoutRef.current) clearTimeout(shimmerTimeoutRef.current);
       if (shimmerResetRef.current) clearTimeout(shimmerResetRef.current);
     };
-  }, []);
+  }, [onDone]);
 
   const display = count >= 1200 ? "1,200+" : count.toLocaleString();
 

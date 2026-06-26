@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useMemo, useState } from "react";
 import * as Yup from "yup";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { _checkUsername, _updateUsername } from "@/network/post-request";
@@ -51,7 +51,7 @@ export default function ChangeUsername() {
   };
 
   // Debounced API call
-  const debouncedCheckUsername = useCallback(debounce(checkUsername, 200), []);
+  const debouncedCheckUsername = useMemo(() => debounce(checkUsername, 200), []);
 
   // Formik handleChange function with API call
   const handleChange = (e, setFieldValue) => {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, startTransition } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
@@ -39,15 +39,14 @@ export default function CoverLetterGenerator({
     if (skipRestore) return;
     const stored = getAiToolResult(RESULT_STORAGE_KEY);
     if (stored && typeof stored === "object" && stored.matchScore != null) {
-      setAnalysis(stored);
+      startTransition(() => setAnalysis(stored));
       onViewChange?.(true);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [skipRestore]);
+  }, [skipRestore, onViewChange]);
 
   useEffect(() => {
     if (!isAnalyzing) {
-      setAnalysisProgress(0);
+      startTransition(() => setAnalysisProgress(0));
       return;
     }
     const duration = 8000;

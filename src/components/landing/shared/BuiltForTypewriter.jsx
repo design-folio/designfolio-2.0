@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, startTransition } from "react";
 import { Sun } from "lucide-react";
 
+const roles = ["PRODUCT DESIGNERS", "DEVS", "PRODUCT MANAGERS"];
+
 export default function BuiltForTypewriter() {
-  const roles = ["PRODUCT DESIGNERS", "DEVS", "PRODUCT MANAGERS"];
   const [roleIndex, setRoleIndex] = useState(0);
   const [displayed, setDisplayed] = useState("");
   const [phase, setPhase] = useState("typing");
@@ -23,8 +24,10 @@ export default function BuiltForTypewriter() {
       if (displayed.length > 0) {
         timeout = setTimeout(() => setDisplayed(displayed.slice(0, -1)), 35);
       } else {
-        setRoleIndex((i) => (i + 1) % roles.length);
-        setPhase("typing");
+        startTransition(() => {
+          setRoleIndex((i) => (i + 1) % roles.length);
+          setPhase("typing");
+        });
       }
     }
 

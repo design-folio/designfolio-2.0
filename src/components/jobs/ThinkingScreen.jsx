@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, startTransition } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { _postJobsRecommend, _getJobsRecommendations } from "@/network/jobs";
 import { ColorOrb } from "@/components/ui/color-orb";
@@ -44,8 +44,8 @@ export function ThinkingScreen({ answers, onComplete, onError }) {
   // Advance timeline steps 4+5 when real data resolves
   useEffect(() => {
     if (liStatus !== "done") return;
-    setVisibleCount((v) => Math.max(v, 5));
-    const t = setTimeout(() => setVisibleCount((v) => Math.max(v, 6)), 600);
+    startTransition(() => setVisibleCount((v) => Math.max(v, 5)));
+    const t = setTimeout(() => startTransition(() => setVisibleCount((v) => Math.max(v, 6))), 600);
     return () => clearTimeout(t);
   }, [liStatus]);
 

@@ -27,7 +27,7 @@ export default function WallpaperBackground({
     if (wallpaperUrl && !previousWallpaperUrlRef.current) {
       previousWallpaperUrlRef.current = wallpaperUrl;
     }
-  }, []);
+  }, [wallpaperUrl]);
 
   // Track wallpaper changes for smooth transitions
   useEffect(() => {
@@ -66,7 +66,7 @@ export default function WallpaperBackground({
   // Handle scroll offset for motion effect (simple scale on scroll, no parallax)
   useEffect(() => {
     if (!effects?.motion) {
-      setScrollOffset(0);
+      queueMicrotask(() => setScrollOffset(0));
       return;
     }
 
@@ -123,9 +123,7 @@ export default function WallpaperBackground({
   // Build className (only wallpaper-transition, matching Dashboard)
   const className = shouldAnimate ? "wallpaper-transition" : "";
 
-  // Use ref value directly to avoid render delay - ensures previous wallpaper is always available
-  const previousWallpaperToShow =
-    previousWallpaperUrl || (shouldAnimate ? previousWallpaperUrlRef.current : null);
+  const previousWallpaperToShow = previousWallpaperUrl;
 
   return (
     <>

@@ -1,4 +1,11 @@
-import React, { useState, useRef, useCallback, useEffect } from "react";
+import React, {
+  useState,
+  useRef,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  startTransition,
+} from "react";
 import { createPortal } from "react-dom";
 import { X, Minus, Square, RefreshCw, ChevronDown, ZoomIn, ZoomOut } from "lucide-react";
 import Button3D from "../../ui/button-3d";
@@ -128,10 +135,13 @@ const MacOSDock = ({
 
   useEffect(() => {
     const initialScales = apps.map(() => minScale);
-    setCurrentScales(initialScales);
-    setCurrentPositions(calculatePositions(initialScales));
+    startTransition(() => {
+      setCurrentScales(initialScales);
+      setCurrentPositions(calculatePositions(initialScales));
+    });
   }, [apps, calculatePositions, minScale, config]);
 
+  const animateToTargetRef = useRef(null);
   const animateToTarget = useCallback(() => {
     const targetScales = calculateTargetMagnification(mouseX);
     const targetPositions = calculatePositions(targetScales);
@@ -146,9 +156,12 @@ const MacOSDock = ({
     );
 
     if (scalesNeedUpdate || positionsNeedUpdate || mouseX !== null) {
-      animationFrameRef.current = requestAnimationFrame(animateToTarget);
+      animationFrameRef.current = requestAnimationFrame(() => animateToTargetRef.current?.());
     }
   }, [mouseX, calculateTargetMagnification, calculatePositions, currentScales, currentPositions]);
+  useLayoutEffect(() => {
+    animateToTargetRef.current = animateToTarget;
+  }, [animateToTarget]);
 
   useEffect(() => {
     if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
@@ -206,8 +219,10 @@ const MacOSDock = ({
         sidebarOffsetPx,
         topOffsetPx
       );
-      setWindowPositions({ [firstId]: clamped });
-      setOpenWindows([firstId]);
+      startTransition(() => {
+        setWindowPositions({ [firstId]: clamped });
+        setOpenWindows([firstId]);
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -228,7 +243,7 @@ const MacOSDock = ({
 
   // When sidebar or top offset changes, re-clamp all window positions
   useEffect(() => {
-    reclampAllPositions();
+    startTransition(() => reclampAllPositions());
   }, [sidebarOffsetPx, topOffsetPx, reclampAllPositions]);
 
   // When browser window is resized, re-clamp so windows stay within the new viewport
@@ -250,7 +265,7 @@ const MacOSDock = ({
 
   // Keep orderedProjects in sync when userDetails changes externally
   useEffect(() => {
-    setOrderedProjects(userDetails?.projects || []);
+    startTransition(() => setOrderedProjects(userDetails?.projects || []));
   }, [userDetails?.projects]);
 
   // Prefetch project data so dock project windows show content immediately (no white screen delay)
@@ -378,15 +393,12 @@ const MacOSDock = ({
       setTimeout(() => setAnimatingProjectWindow(null), 500);
     },
     [
-      edit,
-      router,
       projectWindows,
       minimizedWindows,
       activeWindowId,
-      openWindows.length,
-      pdfWindows.length,
       sidebarOffsetPx,
       topOffsetPx,
+      onProjectWindowFocus,
     ]
   );
 
@@ -409,7 +421,7 @@ const MacOSDock = ({
       setActiveWindowId(pdfId);
       setTimeout(() => setAnimatingPdf(null), 500);
     },
-    [openWindows.length, pdfWindows.length, sidebarOffsetPx]
+    [openWindows.length, pdfWindows.length, sidebarOffsetPx, topOffsetPx]
   );
 
   const closePdf = (pdfId) => {

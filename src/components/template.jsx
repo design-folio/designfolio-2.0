@@ -40,7 +40,7 @@ export default function Template1({ userDetails, edit = false }) {
   const { projectRef, setCursor } = useGlobalContext();
   useEffect(() => {
     setCursor(userDetails?.cursor ? userDetails?.cursor : 0);
-  }, []);
+  }, [setCursor, userDetails?.cursor]);
 
   // Get section order from userDetails or use template default
   const sectionOrder = normalizeSectionOrder(userDetails?.sectionOrder, DEFAULT_SECTION_ORDER);

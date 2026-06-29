@@ -23,13 +23,13 @@ export default function OfferForm({ onSubmit, isAnalyzing, guestUsageLimitReache
 
   return (
     <div className="space-y-4">
-      <div className="bg-white/60 p-1 rounded-full flex items-center border-2 border-border">
+      <div className="border-border flex items-center rounded-full border-2 bg-white/60 p-1">
         <div
           className={`${
             currentTab === "manual"
               ? "bg-foreground text-background"
-              : "bg-transparent text-muted-foreground"
-          } font-medium py-2.5 px-4 rounded-full flex-1 text-center cursor-pointer transition-all duration-300 ease-in-out`}
+              : "text-muted-foreground bg-transparent"
+          } flex-1 cursor-pointer rounded-full px-4 py-2.5 text-center font-medium transition-all duration-300 ease-in-out`}
           onClick={() => setCurrentTab("manual")}
         >
           Enter Details Manually
@@ -38,8 +38,8 @@ export default function OfferForm({ onSubmit, isAnalyzing, guestUsageLimitReache
           className={`${
             currentTab === "offer"
               ? "bg-foreground text-background"
-              : "bg-transparent text-muted-foreground"
-          } font-medium py-2.5 px-4 rounded-full flex-1 text-center cursor-pointer transition-all duration-300 ease-in-out`}
+              : "text-muted-foreground bg-transparent"
+          } flex-1 cursor-pointer rounded-full px-4 py-2.5 text-center font-medium transition-all duration-300 ease-in-out`}
           onClick={() => setCurrentTab("offer")}
         >
           Upload Offer Letter
@@ -64,7 +64,7 @@ export default function OfferForm({ onSubmit, isAnalyzing, guestUsageLimitReache
                   <div className="space-y-2">
                     <Label
                       htmlFor="current-salary"
-                      className="text-sm font-medium text-foreground ml-1"
+                      className="text-foreground ml-1 text-sm font-medium"
                     >
                       Current Salary*
                     </Label>
@@ -86,13 +86,13 @@ export default function OfferForm({ onSubmit, isAnalyzing, guestUsageLimitReache
                     <ErrorMessage
                       name="currentSalary"
                       component="p"
-                      className="text-sm text-red-500 ml-1"
+                      className="ml-1 text-sm text-red-500"
                     />
                   </div>
                   <div className="space-y-2">
                     <Label
                       htmlFor="offered-salary"
-                      className="text-sm font-medium text-foreground ml-1"
+                      className="text-foreground ml-1 text-sm font-medium"
                     >
                       Offered Salary*
                     </Label>
@@ -114,7 +114,7 @@ export default function OfferForm({ onSubmit, isAnalyzing, guestUsageLimitReache
                     <ErrorMessage
                       name="offeredSalary"
                       component="p"
-                      className="text-sm text-red-500 ml-1"
+                      className="ml-1 text-sm text-red-500"
                     />
                   </div>
                 </div>
@@ -122,7 +122,7 @@ export default function OfferForm({ onSubmit, isAnalyzing, guestUsageLimitReache
                   <div className="space-y-2">
                     <Label
                       htmlFor="position-title"
-                      className="text-sm font-medium text-foreground ml-1"
+                      className="text-foreground ml-1 text-sm font-medium"
                     >
                       Position Title
                     </Label>
@@ -144,11 +144,11 @@ export default function OfferForm({ onSubmit, isAnalyzing, guestUsageLimitReache
                     <ErrorMessage
                       name="position"
                       component="p"
-                      className="text-sm text-red-500 ml-1"
+                      className="ml-1 text-sm text-red-500"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="company" className="text-sm font-medium text-foreground ml-1">
+                    <Label htmlFor="company" className="text-foreground ml-1 text-sm font-medium">
                       Company
                     </Label>
                     <div
@@ -169,12 +169,12 @@ export default function OfferForm({ onSubmit, isAnalyzing, guestUsageLimitReache
                     <ErrorMessage
                       name="company"
                       component="p"
-                      className="text-sm text-red-500 ml-1"
+                      className="ml-1 text-sm text-red-500"
                     />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="country" className="text-sm font-medium text-foreground ml-1">
+                  <Label htmlFor="country" className="text-foreground ml-1 text-sm font-medium">
                     Country
                   </Label>
                   <div
@@ -199,13 +199,13 @@ export default function OfferForm({ onSubmit, isAnalyzing, guestUsageLimitReache
                   <ErrorMessage
                     name="country"
                     component="p"
-                    className="text-sm text-red-500 ml-1"
+                    className="ml-1 text-sm text-red-500"
                   />
                 </div>
                 <Button
                   type="submit"
                   disabled={isAnalyzing || guestUsageLimitReached}
-                  className="w-full rounded-full h-12 px-6 text-base font-semibold bg-[#1A1F2C] text-white hover:bg-[#1A1F2C]/90 border-0 mt-2"
+                  className="mt-2 h-12 w-full rounded-full border-0 bg-[#1A1F2C] px-6 text-base font-semibold text-white hover:bg-[#1A1F2C]/90"
                 >
                   {guestUsageLimitReached
                     ? "Sign up to analyze again"
@@ -233,12 +233,12 @@ export default function OfferForm({ onSubmit, isAnalyzing, guestUsageLimitReache
                 <ErrorMessage
                   name="offerContent"
                   component="p"
-                  className="text-sm text-red-500 ml-1"
+                  className="ml-1 text-sm text-red-500"
                 />
                 <Button
                   type="submit"
                   disabled={isAnalyzing || guestUsageLimitReached}
-                  className="w-full rounded-full h-12 px-6 text-base font-semibold bg-[#1A1F2C] text-white hover:bg-[#1A1F2C]/90 border-0"
+                  className="h-12 w-full rounded-full border-0 bg-[#1A1F2C] px-6 text-base font-semibold text-white hover:bg-[#1A1F2C]/90"
                 >
                   {guestUsageLimitReached
                     ? "Sign up to analyze again"

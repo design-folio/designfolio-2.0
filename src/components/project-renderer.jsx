@@ -14,7 +14,7 @@ export default function ProjectRenderer({ projectDetails }) {
   }, [projectDetails, setTheme]);
 
   return (
-    <div className="flex-1 flex flex-col gap-3">
+    <div className="flex flex-1 flex-col gap-3">
       {projectDetails && (
         <>
           <ProjectInfo projectDetails={projectDetails?.project} />

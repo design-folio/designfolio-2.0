@@ -360,7 +360,7 @@ export const Gravity = forwardRef(
 
     return (
       <GravityContext.Provider value={{ registerElement, unregisterElement }}>
-        <div ref={canvas} className={cn(className, "relative w-full h-full")} {...props}>
+        <div ref={canvas} className={cn(className, "relative h-full w-full")} {...props}>
           {children}
         </div>
       </GravityContext.Provider>

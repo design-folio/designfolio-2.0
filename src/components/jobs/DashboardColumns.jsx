@@ -81,30 +81,30 @@ export function DashboardColumns({
   if (isMobile) {
     const activeTabData = mobileTabs.find((t) => t.id === activeTab) ?? mobileTabs[0];
     return (
-      <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
         {/* Column tab strip — only visible after first shortlist */}
         {phase === "split" && (
           <div
-            className="shrink-0 overflow-x-auto border-b border-black/[0.06] dark:border-border"
+            className="dark:border-border shrink-0 overflow-x-auto border-b border-black/[0.06]"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
-            <div className="flex gap-1.5 px-4 py-2 w-max">
+            <div className="flex w-max gap-1.5 px-4 py-2">
               {mobileTabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={cn(
-                    "flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[13px] font-medium whitespace-nowrap transition-all duration-200",
+                    "flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[13px] font-medium whitespace-nowrap transition-all duration-200",
                     activeTab === tab.id
                       ? "bg-foreground text-background"
-                      : "bg-white dark:bg-card border border-black/[0.06] dark:border-border text-foreground/60"
+                      : "dark:bg-card dark:border-border text-foreground/60 border border-black/[0.06] bg-white"
                   )}
                 >
                   {tab.label}
                   {tab.jobs.length > 0 && (
                     <span
                       className={cn(
-                        "flex items-center justify-center w-4 h-4 rounded-full text-[10px] font-semibold",
+                        "flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-semibold",
                         activeTab === tab.id
                           ? "bg-background/20 text-background"
                           : "bg-foreground/10 text-foreground/70"
@@ -124,7 +124,7 @@ export function DashboardColumns({
           value={columns}
           onValueChange={onColumnsChange}
           getItemValue={(job) => job.id}
-          className="flex-1 min-h-0"
+          className="min-h-0 flex-1"
         >
           <KanbanBoard className="flex h-full p-2 pb-4">
             <PipelineCol
@@ -167,7 +167,7 @@ export function DashboardColumns({
                 if (job) {
                   const inPicks = (columns.picks || []).some((j) => j.id === overlayValue);
                   return (
-                    <div className="rounded-lg shadow-xl ring-1 ring-foreground/10 opacity-95 rotate-1 scale-[1.02]">
+                    <div className="ring-foreground/10 scale-[1.02] rotate-1 rounded-lg opacity-95 shadow-xl ring-1">
                       <JobCard
                         job={job}
                         onShortlist={inPicks ? () => {} : undefined}
@@ -179,7 +179,7 @@ export function DashboardColumns({
                   );
                 }
               }
-              return <div className="rounded-xl bg-muted/60 border border-border w-full h-full" />;
+              return <div className="bg-muted/60 border-border h-full w-full rounded-xl border" />;
             }}
           </KanbanOverlay>
         </Kanban>
@@ -188,7 +188,7 @@ export function DashboardColumns({
   }
 
   return (
-    <div className="flex-1 min-h-0 overflow-x-auto overflow-y-hidden custom-thin-scrollbar">
+    <div className="custom-thin-scrollbar min-h-0 flex-1 overflow-x-auto overflow-y-hidden">
       <Kanban
         value={columns}
         onValueChange={onColumnsChange}
@@ -233,7 +233,7 @@ export function DashboardColumns({
           {COL_ORDER.filter((c) => c !== "picks").map((colId, i) => (
             <motion.div
               key={colId}
-              className="overflow-hidden shrink-0 h-full"
+              className="h-full shrink-0 overflow-hidden"
               initial={{ maxWidth: 0, opacity: 0 }}
               animate={{
                 maxWidth: phase === "split" ? 362 : 0,
@@ -252,7 +252,7 @@ export function DashboardColumns({
                 },
               }}
             >
-              <div className="flex flex-col w-[350px] ml-3 h-full">
+              <div className="ml-3 flex h-full w-[350px] flex-col">
                 <PipelineCol
                   colId={colId}
                   colIndex={i + 1}
@@ -270,7 +270,7 @@ export function DashboardColumns({
 
           {/* Archived column — separate for collapse animation */}
           <motion.div
-            className="overflow-hidden shrink-0 h-full"
+            className="h-full shrink-0 overflow-hidden"
             initial={{ maxWidth: 0, opacity: 0 }}
             animate={{
               maxWidth: phase === "split" ? 362 : 0,
@@ -290,7 +290,7 @@ export function DashboardColumns({
             }}
           >
             <motion.div
-              className="flex flex-col h-full ml-3 overflow-hidden"
+              className="ml-3 flex h-full flex-col overflow-hidden"
               animate={{ width: archivedCollapsed ? 43 : 350 }}
               transition={{ duration: 0.48, ease: [0.22, 1, 0.36, 1] }}
             >
@@ -309,7 +309,7 @@ export function DashboardColumns({
             </motion.div>
           </motion.div>
 
-          <div className="shrink-0 w-10 h-full" />
+          <div className="h-full w-10 shrink-0" />
         </KanbanBoard>
 
         <KanbanOverlay>
@@ -319,7 +319,7 @@ export function DashboardColumns({
               if (job) {
                 const inPicks = (columns.picks || []).some((j) => j.id === value);
                 return (
-                  <div className="rounded-lg shadow-xl ring-1 ring-foreground/10 opacity-95 rotate-1 scale-[1.02]">
+                  <div className="ring-foreground/10 scale-[1.02] rotate-1 rounded-lg opacity-95 shadow-xl ring-1">
                     <JobCard
                       job={job}
                       onShortlist={inPicks ? () => {} : undefined}
@@ -331,7 +331,7 @@ export function DashboardColumns({
                 );
               }
             }
-            return <div className="rounded-xl bg-muted/60 border border-border w-full h-full" />;
+            return <div className="bg-muted/60 border-border h-full w-full rounded-xl border" />;
           }}
         </KanbanOverlay>
       </Kanban>

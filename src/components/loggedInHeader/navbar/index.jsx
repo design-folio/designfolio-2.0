@@ -119,7 +119,7 @@ export default function Navbar() {
 
   // Shared inner nav content
   const navContent = (
-    <div className="px-2 md:px-2 py-2 flex items-center justify-between gap-4 md:gap-8">
+    <div className="flex items-center justify-between gap-4 px-2 py-2 md:gap-8 md:px-2">
       {/* Logo + mode switcher */}
       <div className="flex items-center gap-3">
         {/* <Link href="/builder">
@@ -131,7 +131,7 @@ export default function Navbar() {
       </div>
 
       {/* Mobile right */}
-      <div className="flex md:hidden items-center gap-2">
+      <div className="flex items-center gap-2 md:hidden">
         <AvatarDropdown variant="new" onClose={() => setIsMobileMenuOpen(false)} />
         {!isAiToolsWorkspace && (
           <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
@@ -139,21 +139,21 @@ export default function Navbar() {
               <Button
                 variant="secondary"
                 size="icon"
-                className="bg-secondary hover:bg-secondary-hover border border-border text-foreground h-10 w-10 rounded-full"
+                className="bg-secondary hover:bg-secondary-hover border-border text-foreground h-10 w-10 rounded-full border"
               >
                 <Menu size={18} />
               </Button>
             </SheetTrigger>
             <SheetContent
               side="bottom"
-              className="rounded-t-3xl bg-card border-t border-border p-6 flex flex-col gap-4"
+              className="bg-card border-border flex flex-col gap-4 rounded-t-3xl border-t p-6"
             >
               <SheetTitle>Menu</SheetTitle>
 
               <div className="flex flex-col gap-1">
                 <Button
                   variant="ghost"
-                  className="w-full justify-start h-11 px-4 text-[14px] text-muted-foreground hover:text-foreground hover:bg-secondary"
+                  className="text-muted-foreground hover:text-foreground hover:bg-secondary h-11 w-full justify-start px-4 text-[14px]"
                   onClick={() => {
                     setIsMobileMenuOpen(false);
                     handleTheme();
@@ -163,7 +163,7 @@ export default function Navbar() {
                 </Button>
                 <Button
                   variant="ghost"
-                  className="w-full justify-start h-11 px-4 text-[14px] text-muted-foreground hover:text-foreground hover:bg-secondary"
+                  className="text-muted-foreground hover:text-foreground hover:bg-secondary h-11 w-full justify-start px-4 text-[14px]"
                   onClick={() => {
                     setIsMobileMenuOpen(false);
                     router.push("/portfolio-preview");
@@ -173,7 +173,7 @@ export default function Navbar() {
                 </Button>
                 <Button
                   variant="ghost"
-                  className="w-full justify-start h-11 px-4 text-[14px] text-muted-foreground hover:text-foreground hover:bg-secondary"
+                  className="text-muted-foreground hover:text-foreground hover:bg-secondary h-11 w-full justify-start px-4 text-[14px]"
                   onClick={() => {
                     setIsMobileMenuOpen(false);
                     router.push("/analytics");
@@ -183,7 +183,7 @@ export default function Navbar() {
                 </Button>
                 <Button
                   variant="ghost"
-                  className="w-full justify-start h-11 px-4 text-[14px] text-muted-foreground hover:text-foreground hover:bg-secondary"
+                  className="text-muted-foreground hover:text-foreground hover:bg-secondary h-11 w-full justify-start px-4 text-[14px]"
                   onClick={() => {
                     setIsMobileMenuOpen(false);
                     setShowSettingsModal(true);
@@ -193,36 +193,36 @@ export default function Navbar() {
                 </Button>
                 <Button
                   variant="ghost"
-                  className="w-full justify-start h-11 px-4 text-[14px] text-destructive hover:text-destructive hover:bg-destructive/5"
+                  className="text-destructive hover:text-destructive hover:bg-destructive/5 h-11 w-full justify-start px-4 text-[14px]"
                   onClick={handleLogout}
                 >
                   <LogOut className="mr-2 h-4 w-4" /> Logout
                 </Button>
               </div>
 
-              <div className="h-px w-full bg-border" />
+              <div className="bg-border h-px w-full" />
 
-              <div className="flex w-full items-center justify-between gap-3 p-3 bg-muted rounded-xl border border-border">
+              <div className="bg-muted border-border flex w-full items-center justify-between gap-3 rounded-xl border p-3">
                 <div
-                  className="flex flex-col gap-0.5 overflow-hidden flex-1 min-w-0 cursor-pointer"
+                  className="flex min-w-0 flex-1 cursor-pointer flex-col gap-0.5 overflow-hidden"
                   onClick={() => window.open(`https://${domain}`, "_blank")}
                 >
-                  <span className="text-[13px] font-medium text-foreground truncate">{domain}</span>
-                  <span className="text-[11px] text-muted-foreground">
+                  <span className="text-foreground truncate text-[13px] font-medium">{domain}</span>
+                  <span className="text-muted-foreground text-[11px]">
                     {latestPublishDate
                       ? `Updated ${formatTimestamp(latestPublishDate)}`
                       : "Not published yet"}
                   </span>
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="flex shrink-0 items-center gap-2">
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-8 w-8 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground"
+                    className="text-muted-foreground hover:bg-muted hover:text-foreground h-8 w-8 rounded-xl"
                     onClick={handleCopy}
                   >
                     {isCopied ? (
-                      <Check className="h-4 w-4 text-foreground" />
+                      <Check className="text-foreground h-4 w-4" />
                     ) : (
                       <Copy className="h-4 w-4" />
                     )}
@@ -230,7 +230,7 @@ export default function Navbar() {
                   <Button
                     disabled={isPublishing}
                     onClick={handlePublish}
-                    className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium px-4 h-8 text-xs rounded-lg"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground h-8 rounded-lg px-4 text-xs font-medium"
                   >
                     {isPublishing ? "Updating…" : "Publish"}
                   </Button>
@@ -242,7 +242,7 @@ export default function Navbar() {
       </div>
 
       {/* Desktop right */}
-      <div className="hidden md:flex items-center gap-2">
+      <div className="hidden items-center gap-2 md:flex">
         {!isAiToolsWorkspace && (
           <>
             <Tooltip delayDuration={100}>
@@ -250,19 +250,19 @@ export default function Navbar() {
                 <Button
                   variant="secondary"
                   size="icon"
-                  className="group bg-secondary hover:bg-secondary-hover border border-border text-muted-foreground hover:text-foreground h-9 w-9 rounded-full cursor-pointer"
+                  className="group bg-secondary hover:bg-secondary-hover border-border text-muted-foreground hover:text-foreground h-9 w-9 cursor-pointer rounded-full border"
                   onClick={() => router.push("/analytics")}
                   data-testid="button-insights"
                 >
                   <ChartSpline
                     size={18}
-                    className="transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110"
+                    className="transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12"
                   />
                 </Button>
               </TooltipTrigger>
               <TooltipContent
                 side="bottom"
-                className="bg-foreground text-background text-xs px-2 py-1 rounded"
+                className="bg-foreground text-background rounded px-2 py-1 text-xs"
               >
                 Insights
               </TooltipContent>
@@ -273,19 +273,19 @@ export default function Navbar() {
                 <Button
                   variant="secondary"
                   size="icon"
-                  className="group bg-secondary hover:bg-secondary-hover border border-border text-muted-foreground hover:text-foreground h-9 w-9 rounded-full cursor-pointer"
+                  className="group bg-secondary hover:bg-secondary-hover border-border text-muted-foreground hover:text-foreground h-9 w-9 cursor-pointer rounded-full border"
                   onClick={handleTheme}
                   data-testid="button-themes"
                 >
                   <PaintRoller
                     size={18}
-                    className="transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110"
+                    className="transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12"
                   />
                 </Button>
               </TooltipTrigger>
               <TooltipContent
                 side="bottom"
-                className="bg-foreground text-background text-xs px-2 py-1 rounded"
+                className="bg-foreground text-background rounded px-2 py-1 text-xs"
               >
                 Themes
               </TooltipContent>
@@ -296,7 +296,7 @@ export default function Navbar() {
                 <Button
                   variant="secondary"
                   size="icon"
-                  className="group bg-secondary hover:bg-secondary-hover border border-border text-muted-foreground hover:text-foreground h-9 w-9 rounded-full cursor-pointer"
+                  className="group bg-secondary hover:bg-secondary-hover border-border text-muted-foreground hover:text-foreground h-9 w-9 cursor-pointer rounded-full border"
                   onClick={() => router.push("/portfolio-preview")}
                   data-testid="button-preview"
                 >
@@ -308,7 +308,7 @@ export default function Navbar() {
               </TooltipTrigger>
               <TooltipContent
                 side="bottom"
-                className="bg-foreground text-background text-xs px-2 py-1 rounded"
+                className="bg-foreground text-background rounded px-2 py-1 text-xs"
               >
                 Preview
               </TooltipContent>
@@ -327,7 +327,7 @@ export default function Navbar() {
     return (
       <TooltipProvider>
         <div
-          className="fixed top-0 left-0 bg-card border-b border-border h-[62px]"
+          className="bg-card border-border fixed top-0 left-0 h-[62px] border-b"
           style={{
             zIndex: isMobileMenuOpen ? 10050 : 110,
             right: shiftWidth,
@@ -344,7 +344,7 @@ export default function Navbar() {
   return (
     <TooltipProvider>
       <div
-        className="fixed top-0 left-0 z-50 flex justify-center pointer-events-none pt-4 px-4"
+        className="pointer-events-none fixed top-0 left-0 z-50 flex justify-center px-4 pt-4"
         style={{
           right: shouldShift ? `calc(${shiftWidth} + 16px)` : shiftWidth,
           transform: isVisible ? "translateY(0)" : "translateY(-120%)",
@@ -353,7 +353,7 @@ export default function Navbar() {
       >
         <nav
           className={cn(
-            "bg-card border border-border rounded-full shadow-sm pointer-events-auto w-full",
+            "bg-card border-border pointer-events-auto w-full rounded-full border shadow-sm",
             template === TEMPLATE_IDS.SPOTLIGHT
               ? "max-w-[848px]"
               : template === TEMPLATE_IDS.CANVAS

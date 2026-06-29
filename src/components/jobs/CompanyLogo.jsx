@@ -49,7 +49,7 @@ export function CompanyLogo({ logoUrl, company = "", size = 42, className = "" }
         <img
           src={logoUrl}
           alt={company}
-          className="w-full h-full object-cover"
+          className="h-full w-full object-cover"
           onError={() => setImgFailed(true)}
         />
       </div>
@@ -58,7 +58,7 @@ export function CompanyLogo({ logoUrl, company = "", size = 42, className = "" }
 
   return (
     <div
-      className={`${base} flex items-center justify-center text-white font-bold`}
+      className={`${base} flex items-center justify-center font-bold text-white`}
       style={{ ...style, backgroundColor: color, fontSize: Math.round(size * 0.36) }}
     >
       {letter}

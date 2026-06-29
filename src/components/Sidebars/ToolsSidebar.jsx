@@ -126,13 +126,13 @@ export default function AddTools() {
           });
 
         return (
-          <Form id="toolsForm" className="flex flex-col h-full">
-            <div className="flex-1 overflow-auto px-6 py-5 space-y-5">
+          <Form id="toolsForm" className="flex h-full flex-col">
+            <div className="flex-1 space-y-5 overflow-auto px-6 py-5">
               {/* Search */}
               <div className="space-y-2">
-                <Label className="text-sm font-medium text-foreground ml-1">Search Tools</Label>
+                <Label className="text-foreground ml-1 text-sm font-medium">Search Tools</Label>
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/30 pointer-events-none" />
+                  <Search className="text-foreground/30 pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                   <Input
                     placeholder="Search for a tool..."
                     value={toolSearchQuery}
@@ -145,7 +145,7 @@ export default function AddTools() {
 
               {/* Count */}
               {selectedTools.length > 0 && (
-                <p className="text-xs text-foreground/40 px-1">
+                <p className="text-foreground/40 px-1 text-xs">
                   {selectedTools.length} tool{selectedTools.length !== 1 ? "s" : ""} selected
                 </p>
               )}
@@ -161,26 +161,26 @@ export default function AddTools() {
                       key={`tool-${tool.value}`}
                       type="button"
                       onClick={() => (isSelected ? handleRemoveTool(tool) : handleAddTool(tool))}
-                      className={`group h-[34px] px-3.5 rounded-xl flex items-center gap-2.5 text-[13px] font-medium transition-colors border ${
+                      className={`group flex h-[34px] items-center gap-2.5 rounded-xl border px-3.5 text-[13px] font-medium transition-colors ${
                         isSelected
                           ? "bg-muted border-border text-foreground shadow-sm"
-                          : "bg-transparent border-transparent text-foreground/50 hover:bg-black/[0.04] dark:hover:bg-white/[0.04] hover:text-foreground"
+                          : "text-foreground/50 hover:text-foreground border-transparent bg-transparent hover:bg-black/[0.04] dark:hover:bg-white/[0.04]"
                       }`}
                     >
-                      <div className="relative w-4 h-4 flex items-center justify-center shrink-0">
+                      <div className="relative flex h-4 w-4 shrink-0 items-center justify-center">
                         {tool.image && (
                           <img
                             src={tool.image}
                             alt={tool.label}
-                            className={`absolute inset-0 w-4 h-4 object-contain transition-all duration-200 ${
+                            className={`absolute inset-0 h-4 w-4 object-contain transition-all duration-200 ${
                               isSelected
-                                ? "grayscale-0 opacity-100"
-                                : "grayscale opacity-50 group-hover:opacity-0 group-hover:scale-50 group-hover:-rotate-45"
+                                ? "opacity-100 grayscale-0"
+                                : "opacity-50 grayscale group-hover:scale-50 group-hover:-rotate-45 group-hover:opacity-0"
                             }`}
                           />
                         )}
                         {!isSelected && (
-                          <Plus className="absolute inset-0 w-4 h-4 opacity-0 group-hover:opacity-100 transition-all duration-200 scale-50 group-hover:scale-100 rotate-45 group-hover:rotate-0" />
+                          <Plus className="absolute inset-0 h-4 w-4 scale-50 rotate-45 opacity-0 transition-all duration-200 group-hover:scale-100 group-hover:rotate-0 group-hover:opacity-100" />
                         )}
                       </div>
                       {tool.label}
@@ -189,7 +189,7 @@ export default function AddTools() {
                 })}
 
                 {filteredTools.length === 0 && (
-                  <p className="text-sm text-foreground/40 py-4 w-full text-center">
+                  <p className="text-foreground/40 w-full py-4 text-center text-sm">
                     No tools found for &ldquo;{toolSearchQuery}&rdquo;
                   </p>
                 )}
@@ -200,7 +200,7 @@ export default function AddTools() {
               )}
             </div>
 
-            <div className="flex gap-2 py-3 px-6 border-t border-border justify-end shrink-0 bg-sidebar">
+            <div className="border-border bg-sidebar flex shrink-0 justify-end gap-2 border-t px-6 py-3">
               <Button variant="outline" type="button" onClick={() => closeSidebar()}>
                 Cancel
               </Button>

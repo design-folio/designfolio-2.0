@@ -121,7 +121,7 @@ const TiptapRenderer = ({ content, className }) => {
     <>
       <div
         className={cn(
-          "bg-card shadow-df-section-card-shadow rounded-[26px] p-4 lg:p-[32px] break-words project-editor",
+          "bg-card shadow-df-section-card-shadow project-editor rounded-[26px] p-4 break-words lg:p-[32px]",
           className
         )}
         onClick={handleContentClick}
@@ -142,12 +142,12 @@ const TiptapRenderer = ({ content, className }) => {
             <img
               src={fullscreenImageSrc}
               alt="Fullscreen"
-              className="max-h-full max-w-full object-contain rounded-lg"
+              className="max-h-full max-w-full rounded-lg object-contain"
               onClick={(e) => e.stopPropagation()}
               draggable={false}
             />
-            <span className="absolute top-4 right-4 rounded-full bg-white/10 p-2 text-white hover:bg-white/20 transition-colors">
-              <X className="w-6 h-6" />
+            <span className="absolute top-4 right-4 rounded-full bg-white/10 p-2 text-white transition-colors hover:bg-white/20">
+              <X className="h-6 w-6" />
             </span>
           </button>,
           document.body

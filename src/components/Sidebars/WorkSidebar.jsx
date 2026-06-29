@@ -233,7 +233,7 @@ export default function AddWork() {
         }, [values]);
 
         return (
-          <Form id="workForm" className="flex flex-col h-full">
+          <Form id="workForm" className="flex h-full flex-col">
             <div className="flex-1 overflow-auto px-6 py-4">
               <div>
                 <Text size={"p-xxsmall"} className="font-medium" required>
@@ -252,7 +252,7 @@ export default function AddWork() {
                 </Field>
                 <ErrorMessage name="role" component="div" className="error-message" />
               </div>
-              <Text size={"p-xxsmall"} className="font-medium mt-4" required>
+              <Text size={"p-xxsmall"} className="mt-4 font-medium" required>
                 Name of the Company
               </Text>
               <Field name="company">
@@ -267,15 +267,15 @@ export default function AddWork() {
                 )}
               </Field>
               <ErrorMessage name="company" component="div" className="error-message" />
-              <Text size={"p-xxsmall"} className="font-medium mt-4" required>
+              <Text size={"p-xxsmall"} className="mt-4 font-medium" required>
                 Start Date
               </Text>
-              <div className=" flex flex-col lg:flex-row gap-4 w-full">
-                <div className="flex-1 select-container">
+              <div className="flex w-full flex-col gap-4 lg:flex-row">
+                <div className="select-container flex-1">
                   <Field
                     as="select"
                     name="startMonth"
-                    className={`h-10 w-full rounded-xl border border-transparent bg-black/[0.03] dark:bg-white/[0.03] px-3.5 text-sm font-inter font-medium custom-select mt-2 shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10 focus:border-black/20 dark:focus:border-white/20 ${!values.startMonth ? "text-black/30 dark:text-white/30" : "text-foreground"} ${errors.startMonth && touched.startMonth ? "border-destructive!" : ""}`}
+                    className={`font-inter custom-select mt-2 h-10 w-full rounded-xl border border-transparent bg-black/[0.03] px-3.5 text-sm font-medium shadow-none transition-all focus:border-black/20 focus:ring-2 focus:ring-black/10 focus:outline-none dark:bg-white/[0.03] dark:focus:border-white/20 dark:focus:ring-white/10 ${!values.startMonth ? "text-black/30 dark:text-white/30" : "text-foreground"} ${errors.startMonth && touched.startMonth ? "border-destructive!" : ""}`}
                   >
                     <option value="">Choose Month</option>
                     {monthOptions}
@@ -283,11 +283,11 @@ export default function AddWork() {
                   <ErrorMessage name="startMonth" component="div" className="error-message" />
                 </div>
 
-                <div className="flex-1 select-container">
+                <div className="select-container flex-1">
                   <Field
                     as="select"
                     name="startYear"
-                    className={`h-10 w-full rounded-xl border border-transparent bg-black/[0.03] dark:bg-white/[0.03] px-3.5 text-sm font-inter font-medium custom-select mt-2 shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10 focus:border-black/20 dark:focus:border-white/20 ${!values.startYear ? "text-black/30 dark:text-white/30" : "text-foreground"} ${errors.startYear && touched.startYear ? "border-destructive!" : ""}`}
+                    className={`font-inter custom-select mt-2 h-10 w-full rounded-xl border border-transparent bg-black/[0.03] px-3.5 text-sm font-medium shadow-none transition-all focus:border-black/20 focus:ring-2 focus:ring-black/10 focus:outline-none dark:bg-white/[0.03] dark:focus:border-white/20 dark:focus:ring-white/10 ${!values.startYear ? "text-black/30 dark:text-white/30" : "text-foreground"} ${errors.startYear && touched.startYear ? "border-destructive!" : ""}`}
                   >
                     <option value="">Choose Year</option>
                     {yearOptions}
@@ -299,18 +299,18 @@ export default function AddWork() {
               <div className={`${values.currentlyWorking && "opacity-50"}`}>
                 <Text
                   size={"p-xxsmall"}
-                  className="font-medium mt-4"
+                  className="mt-4 font-medium"
                   required={!values.currentlyWorking}
                 >
                   End Date
                 </Text>
 
-                <div className="flex  flex-col lg:flex-row gap-4 w-full">
-                  <div className="flex-1 select-container">
+                <div className="flex w-full flex-col gap-4 lg:flex-row">
+                  <div className="select-container flex-1">
                     <Field
                       as="select"
                       name="endMonth"
-                      className={`h-10 w-full rounded-xl border border-transparent bg-black/[0.03] dark:bg-white/[0.03] px-3.5 text-sm font-inter font-medium custom-select mt-2 shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10 focus:border-black/20 dark:focus:border-white/20 ${!values.endMonth ? "text-black/30 dark:text-white/30" : "text-foreground"} ${errors.endMonth && touched.endMonth ? "border-destructive!" : ""}`}
+                      className={`font-inter custom-select mt-2 h-10 w-full rounded-xl border border-transparent bg-black/[0.03] px-3.5 text-sm font-medium shadow-none transition-all focus:border-black/20 focus:ring-2 focus:ring-black/10 focus:outline-none dark:bg-white/[0.03] dark:focus:border-white/20 dark:focus:ring-white/10 ${!values.endMonth ? "text-black/30 dark:text-white/30" : "text-foreground"} ${errors.endMonth && touched.endMonth ? "border-destructive!" : ""}`}
                       disabled={values.currentlyWorking}
                     >
                       <option value="">Choose Month</option>
@@ -319,11 +319,11 @@ export default function AddWork() {
                     <ErrorMessage name="endMonth" component="div" className="error-message" />
                   </div>
 
-                  <div className="flex-1 select-container">
+                  <div className="select-container flex-1">
                     <Field
                       as="select"
                       name="endYear"
-                      className={`h-10 w-full rounded-xl border border-transparent bg-black/[0.03] dark:bg-white/[0.03] px-3.5 text-sm font-inter font-medium custom-select mt-2 shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10 focus:border-black/20 dark:focus:border-white/20 ${!values.endYear ? "text-black/30 dark:text-white/30" : "text-foreground"} ${errors.endYear && touched.endYear ? "border-destructive!" : ""}`}
+                      className={`font-inter custom-select mt-2 h-10 w-full rounded-xl border border-transparent bg-black/[0.03] px-3.5 text-sm font-medium shadow-none transition-all focus:border-black/20 focus:ring-2 focus:ring-black/10 focus:outline-none dark:bg-white/[0.03] dark:focus:border-white/20 dark:focus:ring-white/10 ${!values.endYear ? "text-black/30 dark:text-white/30" : "text-foreground"} ${errors.endYear && touched.endYear ? "border-destructive!" : ""}`}
                       disabled={values.currentlyWorking}
                     >
                       <option value="">Choose Year</option>
@@ -334,7 +334,7 @@ export default function AddWork() {
                 </div>
               </div>
 
-              <label className="flex items-center gap-1 ml-1  mt-[24px]">
+              <label className="mt-[24px] ml-1 flex items-center gap-1">
                 <Field
                   name="currentlyWorking"
                   type="checkbox"
@@ -372,7 +372,7 @@ export default function AddWork() {
             </div>
 
             <div
-              className={`flex gap-2 py-3 px-6 border-t border-border ${
+              className={`border-border flex gap-2 border-t px-6 py-3 ${
                 selectedWork?.company ? "justify-between" : "justify-end"
               }`}
             >
@@ -380,10 +380,10 @@ export default function AddWork() {
                 <Button
                   variant="outline"
                   type="button"
-                  className="border-(--delete-btn-border-color) bg-(--delete-btn-bg-color) hover:bg-(--delete-btn-bg-hover-color) hover:border-(--delete-btn-border-hover-color)"
+                  className="border-(--delete-btn-border-color) bg-(--delete-btn-bg-color) hover:border-(--delete-btn-border-hover-color) hover:bg-(--delete-btn-bg-hover-color)"
                   onClick={handleDeleteWork}
                 >
-                  <DeleteIcon className="stroke-delete-btn-icon-color w-5 h-5" />
+                  <DeleteIcon className="stroke-delete-btn-icon-color h-5 w-5" />
                 </Button>
               )}
 

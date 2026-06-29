@@ -21,8 +21,8 @@ const EASE = [0.22, 1, 0.36, 1];
 
 function Pill({ icon: Icon, children }) {
   return (
-    <span className="inline-flex items-center gap-1.5 font-jetbrains text-[10px] font-semibold uppercase tracking-wide text-[#3D3630] dark:text-white/55 bg-[#EAE5DF] dark:bg-[#1F1C1C] rounded-md px-2.5 py-1 whitespace-nowrap">
-      {Icon && <Icon className="w-3 h-3 shrink-0" />}
+    <span className="font-jetbrains inline-flex items-center gap-1.5 rounded-md bg-[#EAE5DF] px-2.5 py-1 text-[10px] font-semibold tracking-wide whitespace-nowrap text-[#3D3630] uppercase dark:bg-[#1F1C1C] dark:text-white/55">
+      {Icon && <Icon className="h-3 w-3 shrink-0" />}
       {children}
     </span>
   );
@@ -30,7 +30,7 @@ function Pill({ icon: Icon, children }) {
 
 function Shimmer({ className }) {
   return (
-    <div className={`rounded-md bg-black/[0.06] dark:bg-white/[0.06] animate-pulse ${className}`} />
+    <div className={`animate-pulse rounded-md bg-black/[0.06] dark:bg-white/[0.06] ${className}`} />
   );
 }
 
@@ -38,8 +38,8 @@ function JobSkeleton() {
   return (
     <div className="flex flex-col gap-4 px-6 py-6">
       <div className="flex items-center gap-3.5">
-        <Shimmer className="w-11 h-11 rounded-xl shrink-0" />
-        <div className="flex flex-col gap-2 flex-1">
+        <Shimmer className="h-11 w-11 shrink-0 rounded-xl" />
+        <div className="flex flex-1 flex-col gap-2">
           <Shimmer className="h-2.5 w-20" />
           <Shimmer className="h-4 w-48" />
         </div>
@@ -121,7 +121,7 @@ export function SharedJobPromptDialog({ jobId, onClose, onSaved }) {
       <DialogContent
         aria-describedby={undefined}
         overlayClassName="fixed inset-0 z-[300] bg-black/40 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
-        className="bg-white dark:bg-[#2A2520] border border-black/[0.08] dark:border-white/[0.08] p-0 gap-0 max-w-[400px] w-[calc(100vw-32px)] rounded-2xl overflow-hidden [&>button]:hidden z-[301]"
+        className="z-[301] w-[calc(100vw-32px)] max-w-[400px] gap-0 overflow-hidden rounded-2xl border border-black/[0.08] bg-white p-0 dark:border-white/[0.08] dark:bg-[#2A2520] [&>button]:hidden"
         onInteractOutside={(e) => saving && e.preventDefault()}
         onEscapeKeyDown={(e) => saving && e.preventDefault()}
       >
@@ -133,18 +133,18 @@ export function SharedJobPromptDialog({ jobId, onClose, onSaved }) {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.22, ease: EASE }}
-              className="flex flex-col items-center gap-3 px-6 py-10 cursor-pointer"
+              className="flex cursor-pointer flex-col items-center gap-3 px-6 py-10"
               onClick={() => resolve(savedJobRef.current)}
             >
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", stiffness: 360, damping: 22, delay: 0.05 }}
-                className="w-12 h-12 rounded-full bg-[#1A1A1A] dark:bg-white flex items-center justify-center"
+                className="flex h-12 w-12 items-center justify-center rounded-full bg-[#1A1A1A] dark:bg-white"
               >
-                <Check className="w-5 h-5 text-white dark:text-black" strokeWidth={2.5} />
+                <Check className="h-5 w-5 text-white dark:text-black" strokeWidth={2.5} />
               </motion.div>
-              <p className="text-[14px] font-medium text-foreground/70">Added to your board</p>
+              <p className="text-foreground/70 text-[14px] font-medium">Added to your board</p>
             </motion.div>
           ) : (
             <motion.div
@@ -155,13 +155,13 @@ export function SharedJobPromptDialog({ jobId, onClose, onSaved }) {
               transition={{ duration: 0.22, ease: EASE }}
             >
               {/* Header */}
-              <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-black/[0.06] dark:border-white/[0.06]">
-                <span className="text-[11px] font-semibold uppercase tracking-widest text-foreground/35">
+              <div className="flex items-center justify-between border-b border-black/[0.06] px-6 pt-5 pb-4 dark:border-white/[0.06]">
+                <span className="text-foreground/35 text-[11px] font-semibold tracking-widest uppercase">
                   Shared with you
                 </span>
                 <button
                   onClick={() => !saving && onClose()}
-                  className="w-7 h-7 rounded-full flex items-center justify-center text-foreground/30 hover:text-foreground/60 hover:bg-black/[0.05] dark:hover:bg-white/[0.06] transition-colors"
+                  className="text-foreground/30 hover:text-foreground/60 flex h-7 w-7 items-center justify-center rounded-full transition-colors hover:bg-black/[0.05] dark:hover:bg-white/[0.06]"
                   aria-label="Dismiss"
                 >
                   <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
@@ -195,7 +195,7 @@ export function SharedJobPromptDialog({ jobId, onClose, onSaved }) {
                     transition={{ duration: 0.15 }}
                     className="px-6 py-6"
                   >
-                    <p className="text-[13px] text-foreground/45 text-center">
+                    <p className="text-foreground/45 text-center text-[13px]">
                       Could not load job details.
                     </p>
                   </motion.div>
@@ -208,13 +208,13 @@ export function SharedJobPromptDialog({ jobId, onClose, onSaved }) {
                     className="px-6 py-5"
                   >
                     {/* Logo + title */}
-                    <div className="flex items-center gap-3.5 mb-4">
+                    <div className="mb-4 flex items-center gap-3.5">
                       <CompanyLogo logoUrl={job.logoUrl} company={job.company} size={44} />
                       <div className="min-w-0">
-                        <div className="text-[10px] font-semibold uppercase tracking-widest text-foreground/35 mb-0.5 truncate">
+                        <div className="text-foreground/35 mb-0.5 truncate text-[10px] font-semibold tracking-widest uppercase">
                           {job.company}
                         </div>
-                        <div className="text-[16px] font-semibold text-foreground leading-snug line-clamp-2">
+                        <div className="text-foreground line-clamp-2 text-[16px] leading-snug font-semibold">
                           {job.role}
                         </div>
                       </div>
@@ -234,8 +234,8 @@ export function SharedJobPromptDialog({ jobId, onClose, onSaved }) {
               </AnimatePresence>
 
               {/* Footer */}
-              <div className="px-6 pb-6 pt-1 flex flex-col gap-2.5 border-t border-black/[0.05] dark:border-white/[0.05]">
-                <p className="text-[12px] text-foreground/45 leading-relaxed pt-3 pb-0.5">
+              <div className="flex flex-col gap-2.5 border-t border-black/[0.05] px-6 pt-1 pb-6 dark:border-white/[0.05]">
+                <p className="text-foreground/45 pt-3 pb-0.5 text-[12px] leading-relaxed">
                   {alreadySaved
                     ? "This job is already on your board."
                     : "Save this job to track your application and see how well you match."}
@@ -251,7 +251,7 @@ export function SharedJobPromptDialog({ jobId, onClose, onSaved }) {
                       onClose();
                     }}
                   >
-                    <Check className="w-4 h-4" />
+                    <Check className="h-4 w-4" />
                     View on Board
                   </Button>
                 ) : (
@@ -262,9 +262,9 @@ export function SharedJobPromptDialog({ jobId, onClose, onSaved }) {
                     disabled={saving || !job}
                   >
                     {saving ? (
-                      <Spinner data-icon="inline-start" className="w-4 h-4" />
+                      <Spinner data-icon="inline-start" className="h-4 w-4" />
                     ) : (
-                      <BookmarkPlus className="w-4 h-4" />
+                      <BookmarkPlus className="h-4 w-4" />
                     )}
                     {saving ? "Saving…" : "Save Job to Board"}
                   </Button>

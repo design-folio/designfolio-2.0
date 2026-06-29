@@ -143,9 +143,9 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
       >
-        <div className="max-w-[848px] mx-auto">
+        <div className="mx-auto max-w-[848px]">
           <div
-            className="relative bg-df-section-card-bg-color p-8 shadow-df-section-card-shadow rounded-2xl overflow-hidden"
+            className="bg-df-section-card-bg-color shadow-df-section-card-shadow relative overflow-hidden rounded-2xl p-8"
             style={selectedWallpaper ? getWallpaperMask() : {}}
           >
             <div className="flex flex-col gap-3">
@@ -153,27 +153,27 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
                 {/* Resume */}
                 {(resume || edit) && (
                   <motion.div
-                    className="flex flex-col sm:flex-row sm:items-center justify-between py-3 sm:py-2.5 border-b border-border/10 group gap-1 sm:gap-4"
+                    className="border-border/10 group flex flex-col justify-between gap-1 border-b py-3 sm:flex-row sm:items-center sm:gap-4 sm:py-2.5"
                     data-testid="footer-item-resume"
                     initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: false, amount: 0.8 }}
                     transition={{ duration: 0.5, delay: 0 }}
                   >
-                    <span className="text-sm sm:text-base text-foreground-landing/50 dark:text-foreground-landing/60">
+                    <span className="text-foreground-landing/50 dark:text-foreground-landing/60 text-sm sm:text-base">
                       Resume
                     </span>
                     {resume?.url ? (
                       <button
                         onClick={() => setIsResumeDialogOpen(true)}
-                        className="group/resume text-sm sm:text-base font-medium hover:underline underline-offset-4 cursor-pointer text-left sm:text-right flex items-center justify-start sm:justify-end gap-1.5"
+                        className="group/resume flex cursor-pointer items-center justify-start gap-1.5 text-left text-sm font-medium underline-offset-4 hover:underline sm:justify-end sm:text-right sm:text-base"
                       >
                         <span>View Resume</span>
                       </button>
                     ) : edit ? (
                       <button
                         onClick={() => openSidebar?.("footer")}
-                        className="text-sm sm:text-base font-medium hover:underline underline-offset-4 cursor-pointer text-left sm:text-right"
+                        className="cursor-pointer text-left text-sm font-medium underline-offset-4 hover:underline sm:text-right sm:text-base"
                       >
                         Add Resume
                       </button>
@@ -184,27 +184,27 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
                 {/* Email */}
                 {(email || edit) && (
                   <motion.div
-                    className="flex flex-col sm:flex-row sm:items-center justify-between py-3 sm:py-2.5 border-b border-border/10 group gap-1 sm:gap-4"
+                    className="border-border/10 group flex flex-col justify-between gap-1 border-b py-3 sm:flex-row sm:items-center sm:gap-4 sm:py-2.5"
                     data-testid="footer-item-mail"
                     initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: false, amount: 0.8 }}
                     transition={{ duration: 0.5, delay: 0.1 }}
                   >
-                    <span className="text-sm sm:text-base text-foreground-landing/50 dark:text-foreground-landing/60">
+                    <span className="text-foreground-landing/50 dark:text-foreground-landing/60 text-sm sm:text-base">
                       Mail
                     </span>
                     {email ? (
                       <a
                         href={`mailto:${email}`}
-                        className="text-sm sm:text-base font-medium hover:underline underline-offset-4 break-all sm:break-normal text-left sm:text-right"
+                        className="text-left text-sm font-medium break-all underline-offset-4 hover:underline sm:text-right sm:text-base sm:break-normal"
                       >
                         {email}
                       </a>
                     ) : edit ? (
                       <button
                         onClick={() => openSidebar?.("footer")}
-                        className="text-sm sm:text-base font-medium hover:underline underline-offset-4 cursor-pointer text-left sm:text-right"
+                        className="cursor-pointer text-left text-sm font-medium underline-offset-4 hover:underline sm:text-right sm:text-base"
                       >
                         Add Email
                       </button>
@@ -215,14 +215,14 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
                 {/* Phone */}
                 {(phone || edit) && (
                   <motion.div
-                    className="flex flex-col sm:flex-row sm:items-center justify-between py-3 sm:py-2.5 border-b border-border/10 group gap-1 sm:gap-4"
+                    className="border-border/10 group flex flex-col justify-between gap-1 border-b py-3 sm:flex-row sm:items-center sm:gap-4 sm:py-2.5"
                     data-testid="footer-item-phone"
                     initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: false, amount: 0.8 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
                   >
-                    <span className="text-sm sm:text-base text-foreground-landing/50 dark:text-foreground-landing/60">
+                    <span className="text-foreground-landing/50 dark:text-foreground-landing/60 text-sm sm:text-base">
                       Phone number
                     </span>
                     {phone ? (
@@ -230,7 +230,7 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
                         <Tooltip delayDuration={0}>
                           <TooltipTrigger asChild>
                             <button
-                              className={`text-sm sm:text-base font-medium transition-all duration-300 min-w-0 sm:min-w-[180px] text-left sm:text-right flex items-center justify-start sm:justify-end gap-2 ${!isCopied ? "hover:underline underline-offset-4 cursor-pointer" : "cursor-default"}`}
+                              className={`flex min-w-0 items-center justify-start gap-2 text-left text-sm font-medium transition-all duration-300 sm:min-w-[180px] sm:justify-end sm:text-right sm:text-base ${!isCopied ? "cursor-pointer underline-offset-4 hover:underline" : "cursor-default"}`}
                               onClick={handleCopyPhone}
                               data-testid="button-copy-phone"
                             >
@@ -240,7 +240,7 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
                                   animate={{ opacity: 1, y: 0 }}
                                   className="flex items-center gap-2 text-[#FF553E]"
                                 >
-                                  Copied <ThumbsUp className="w-4 h-4" />
+                                  Copied <ThumbsUp className="h-4 w-4" />
                                 </motion.span>
                               ) : (
                                 <span>{phone}</span>
@@ -248,7 +248,7 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
                             </button>
                           </TooltipTrigger>
                           {!isCopied && (
-                            <TooltipContent className="bg-foreground-landing text-background border-none px-2 py-1 text-[10px] font-bold uppercase tracking-wider">
+                            <TooltipContent className="bg-foreground-landing text-background border-none px-2 py-1 text-[10px] font-bold tracking-wider uppercase">
                               <p>Copy</p>
                             </TooltipContent>
                           )}
@@ -257,7 +257,7 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
                     ) : edit ? (
                       <button
                         onClick={() => openSidebar?.("footer")}
-                        className="text-sm sm:text-base font-medium hover:underline underline-offset-4 cursor-pointer text-left sm:text-right"
+                        className="cursor-pointer text-left text-sm font-medium underline-offset-4 hover:underline sm:text-right sm:text-base"
                       >
                         Add Phone
                       </button>
@@ -268,14 +268,14 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
                 {/* Blogs/Medium */}
                 {(portfolios?.medium || edit) && (
                   <motion.div
-                    className="flex flex-col sm:flex-row sm:items-center justify-between py-3 sm:py-2.5 border-b border-border/10 group gap-1 sm:gap-4"
+                    className="border-border/10 group flex flex-col justify-between gap-1 border-b py-3 sm:flex-row sm:items-center sm:gap-4 sm:py-2.5"
                     data-testid="footer-item-blogs"
                     initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: false, amount: 0.8 }}
                     transition={{ duration: 0.5, delay: 0.3 }}
                   >
-                    <span className="text-sm sm:text-base text-foreground-landing/50 dark:text-foreground-landing/60">
+                    <span className="text-foreground-landing/50 dark:text-foreground-landing/60 text-sm sm:text-base">
                       Blogs
                     </span>
                     {portfolios?.medium ? (
@@ -283,14 +283,14 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
                         href={portfolios.medium}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm sm:text-base font-medium hover:underline underline-offset-4 text-left sm:text-right"
+                        className="text-left text-sm font-medium underline-offset-4 hover:underline sm:text-right sm:text-base"
                       >
                         Medium
                       </a>
                     ) : edit ? (
                       <button
                         onClick={() => openSidebar?.("footer")}
-                        className="text-sm sm:text-base font-medium hover:underline underline-offset-4 cursor-pointer text-left sm:text-right"
+                        className="cursor-pointer text-left text-sm font-medium underline-offset-4 hover:underline sm:text-right sm:text-base"
                       >
                         Add Blog Link
                       </button>
@@ -305,24 +305,24 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
                   portfolios?.dribbble ||
                   edit) && (
                   <motion.div
-                    className="flex flex-col sm:flex-row sm:items-center justify-between py-3 sm:py-2.5 border-b border-border/10 group gap-1 sm:gap-4"
+                    className="border-border/10 group flex flex-col justify-between gap-1 border-b py-3 sm:flex-row sm:items-center sm:gap-4 sm:py-2.5"
                     data-testid="footer-item-socials"
                     initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: false, amount: 0.8 }}
                     transition={{ duration: 0.5, delay: 0.4 }}
                   >
-                    <span className="text-sm sm:text-base text-foreground-landing/50 dark:text-foreground-landing/60">
+                    <span className="text-foreground-landing/50 dark:text-foreground-landing/60 text-sm sm:text-base">
                       Socials
                     </span>
-                    <div className="flex items-center gap-2 flex-wrap">
+                    <div className="flex flex-wrap items-center gap-2">
                       {socials?.linkedin ? (
                         <>
                           <a
                             href={socials.linkedin}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-sm sm:text-base font-medium hover:underline underline-offset-4"
+                            className="text-sm font-medium underline-offset-4 hover:underline sm:text-base"
                           >
                             LinkedIn
                           </a>
@@ -337,7 +337,7 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
                             href={socials.twitter}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-sm sm:text-base font-medium hover:underline underline-offset-4"
+                            className="text-sm font-medium underline-offset-4 hover:underline sm:text-base"
                           >
                             X
                           </a>
@@ -352,7 +352,7 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
                             href={socials.instagram}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-sm sm:text-base font-medium hover:underline underline-offset-4"
+                            className="text-sm font-medium underline-offset-4 hover:underline sm:text-base"
                           >
                             Instagram
                           </a>
@@ -366,7 +366,7 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
                           href={portfolios.dribbble}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-sm sm:text-base font-medium hover:underline underline-offset-4"
+                          className="text-sm font-medium underline-offset-4 hover:underline sm:text-base"
                         >
                           Dribbble
                         </a>
@@ -378,7 +378,7 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
                         !portfolios?.dribbble && (
                           <button
                             onClick={() => openSidebar?.("footer")}
-                            className="text-sm sm:text-base font-medium hover:underline underline-offset-4 cursor-pointer"
+                            className="cursor-pointer text-sm font-medium underline-offset-4 hover:underline sm:text-base"
                           >
                             Add Socials
                           </button>
@@ -388,16 +388,16 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
                 )}
               </div>
 
-              <div className="pt-6 flex flex-col items-center justify-center gap-4">
+              <div className="flex flex-col items-center justify-center gap-4 pt-6">
                 {edit && (
                   <Button
                     variant="outline"
                     size="icon"
-                    className="rounded-full h-11 w-11"
+                    className="h-11 w-11 rounded-full"
                     onClick={() => openSidebar?.("footer")}
                     data-testid="button-edit-footer"
                   >
-                    <Pencil className="w-5 h-5" />
+                    <Pencil className="h-5 w-5" />
                   </Button>
                 )}
                 <svg
@@ -425,7 +425,7 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
                 </svg>
                 <CrypticText
                   text={`© ${getUserName()}`}
-                  className="text-[11px] font-bold uppercase tracking-[0.3em] text-foreground-landing/20 dark:text-foreground-landing/30"
+                  className="text-foreground-landing/20 dark:text-foreground-landing/30 text-[11px] font-bold tracking-[0.3em] uppercase"
                 />
               </div>
             </div>
@@ -436,24 +436,24 @@ export default function PortfolioFooter({ userDetails, edit, openModal, openSide
       {/* Resume PDF Dialog */}
       {resume?.url && (
         <Dialog open={isResumeDialogOpen} onOpenChange={setIsResumeDialogOpen}>
-          <DialogContent className="max-w-[90vw] w-[90vw] h-[90vh] p-0 overflow-hidden border-none bg-background shadow-2xl rounded-2xl">
-            <div className="relative w-full h-full flex flex-col min-h-0">
+          <DialogContent className="bg-background h-[90vh] w-[90vw] max-w-[90vw] overflow-hidden rounded-2xl border-none p-0 shadow-2xl">
+            <div className="relative flex h-full min-h-0 w-full flex-col">
               <div className="absolute top-4 right-4 z-50">
                 <Button
                   variant="outline"
                   size="icon"
-                  className="rounded-full h-10 w-10 bg-white dark:bg-df-section-card-bg-color"
+                  className="dark:bg-df-section-card-bg-color h-10 w-10 rounded-full bg-white"
                   onClick={() => setIsResumeDialogOpen(false)}
                 >
-                  <X className="w-4 h-4" />
+                  <X className="h-4 w-4" />
                 </Button>
               </div>
-              <div className="flex-1 min-h-0 overflow-hidden">
+              <div className="min-h-0 flex-1 overflow-hidden">
                 {/* On mobile, scale PDF out so it’s not zoomed in; desktop unchanged */}
-                <div className="w-[130%] h-[130%] origin-top-left scale-[0.769] md:w-full md:h-full md:scale-100">
+                <div className="h-[130%] w-[130%] origin-top-left scale-[0.769] md:h-full md:w-full md:scale-100">
                   <iframe
                     src={`https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(resume.url)}#zoom=page-width&pagemode=none`}
-                    className="w-full h-full border-0"
+                    className="h-full w-full border-0"
                     title="Resume PDF"
                   />
                 </div>

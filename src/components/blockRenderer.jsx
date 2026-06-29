@@ -61,7 +61,7 @@ const FigmaBlock = ({ block }) => {
             title="Figma Embed"
           />
         ) : (
-          <div className="w-full h-full bg-[#EFF0F0] dark:bg-[#383A47] rounded-[18px]">
+          <div className="h-full w-full rounded-[18px] bg-[#EFF0F0] dark:bg-[#383A47]">
             No Figma URL provided.
           </div>
         )}
@@ -131,7 +131,7 @@ const RenderImageBlock = React.memo(({ block }) => {
           <img
             src={block?.data?.file?.url}
             alt="project image"
-            className={`w-full h-full ${getClassNames} rounded-[20px] object-cover transition-opacity duration-100 mt-6 md:mt-8 ${
+            className={`h-full w-full ${getClassNames} mt-6 rounded-[20px] object-cover transition-opacity duration-100 md:mt-8 ${
               isImageLoaded ? "opacity-100" : "opacity-0"
             }`}
             loading="lazy"
@@ -142,11 +142,11 @@ const RenderImageBlock = React.memo(({ block }) => {
             }}
           />
           {!isImageLoaded && (
-            <div className="w-full h-full bg-df-placeholder-color rounded-[18px] absolute top-0 right-0" />
+            <div className="bg-df-placeholder-color absolute top-0 right-0 h-full w-full rounded-[18px]" />
           )}
         </Zoom>
       ) : (
-        <div className="w-full h-full bg-df-placeholder-color rounded-[18px]" />
+        <div className="bg-df-placeholder-color h-full w-full rounded-[18px]" />
       )}
       <figcaption
         dangerouslySetInnerHTML={{
@@ -171,7 +171,7 @@ const BlockRenderer = ({ editorJsData, className }) => {
       image: (data) => <RenderImageBlock block={data} />,
       table: (data) => (
         <div className="table-wrapper mt-4">
-          <table className="border-collapse table-auto w-full text-sm">
+          <table className="w-full table-auto border-collapse text-sm">
             <thead>
               <tr>
                 {data?.data?.content[0]?.map((header, index) => {
@@ -216,7 +216,7 @@ const BlockRenderer = ({ editorJsData, className }) => {
   return (
     <div
       className={cn(
-        "bg-card shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words project-editor",
+        "bg-card shadow-df-section-card-shadow project-editor rounded-[24px] p-4 break-words lg:p-[32px]",
         className
       )}
     >

@@ -10,15 +10,15 @@ export default function Home({ dfToken }) {
   return (
     <div className="md:mt-20">
       <HeroBanner dfToken={dfToken} />
-      <div className={`max-w-[1192px] mx-auto mt-[75px] xl:mt-[180px]`} id="trusted-by">
+      <div className={`mx-auto mt-[75px] max-w-[1192px] xl:mt-[180px]`} id="trusted-by">
         <TrustedBy />
       </div>
-      <div className={`max-w-[1192px] mx-auto mt-[75px] xl:mt-[115px]`} id="how-it-works">
+      <div className={`mx-auto mt-[75px] max-w-[1192px] xl:mt-[115px]`} id="how-it-works">
         <About />
       </div>
       <AiToolsSection />
 
-      <div className={` mx-auto mt-[75px] xl:mt-[115px]`}>
+      <div className={`mx-auto mt-[75px] xl:mt-[115px]`}>
         <SpotlightUsers />
       </div>
 

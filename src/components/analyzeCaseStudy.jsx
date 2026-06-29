@@ -31,17 +31,17 @@ const states = {
 
 const status = {
   good: (
-    <div className="bg-good-bg-color text-good-text-color text-sm font-semibold p-[10px] rounded-[7px]">
+    <div className="bg-good-bg-color text-good-text-color rounded-[7px] p-[10px] text-sm font-semibold">
       Good 🤟🏼
     </div>
   ),
   notBad: (
-    <div className="bg-not-bad-bg-color text-not-bad-text-color text-sm font-semibold p-[10px] rounded-[7px]">
+    <div className="bg-not-bad-bg-color text-not-bad-text-color rounded-[7px] p-[10px] text-sm font-semibold">
       Not Bad 💡
     </div>
   ),
   bad: (
-    <div className="bg-bad-bg-color text-bad-text-color text-sm font-semibold p-[10px] rounded-[7px]">
+    <div className="bg-bad-bg-color text-bad-text-color rounded-[7px] p-[10px] text-sm font-semibold">
       Needs Work 🚧
     </div>
   ),
@@ -70,17 +70,17 @@ export default function AnalyzeCaseStudy({
 
   const renderItems = suggestions.map((item) => {
     return (
-      <div className="mt-4 bg-muted rounded-2xl p-3 border border-border" key={item.metric}>
-        <div className="flex gap-2 items-center">
+      <div className="bg-muted border-border mt-4 rounded-2xl border p-3" key={item.metric}>
+        <div className="flex items-center gap-2">
           {status[item.score > 8 ? category.good : item.score > 6 ? category.notBad : category.bad]}
           <Text as="h3" size="p-xsmall" className="font-semibold">
             {item.metric}
           </Text>
         </div>
-        <p className="font-inter text-sm mt-4 font-medium">
+        <p className="font-inter mt-4 text-sm font-medium">
           <span className="font-semibold">Comments:</span> {item.comments}
         </p>
-        <p className="font-inter text-sm mt-6 font-medium">
+        <p className="font-inter mt-6 text-sm font-medium">
           <span className="font-semibold">Suggestion:</span> {item.suggestion}
         </p>
       </div>
@@ -89,15 +89,15 @@ export default function AnalyzeCaseStudy({
 
   return (
     <motion.div
-      className="bg-card h-[95%] w-[95%] m-auto md:w-[602px] md:fixed md:top-[2.25%] md:right-4 flex flex-col rounded-2xl border border-border"
+      className="bg-card border-border m-auto flex h-[95%] w-[95%] flex-col rounded-2xl border md:fixed md:top-[2.25%] md:right-4 md:w-[602px]"
       initial="hidden"
       animate="visible"
       variants={variants}
       transition={{ duration: 0.5, ease: "easeInOut" }}
     >
-      <header className="p-8 text-lg font-bold pb-0">
+      <header className="p-8 pb-0 text-lg font-bold">
         <div className="flex items-center justify-between gap-4">
-          <Text size="p-small" className="font-semibold font-inter">
+          <Text size="p-small" className="font-inter font-semibold">
             Scorecard
           </Text>
           <Button variant="ghost" size="icon" className="h-8 w-8" onClick={setShowModal}>
@@ -105,8 +105,8 @@ export default function AnalyzeCaseStudy({
           </Button>
         </div>
       </header>
-      <main className={`flex-1 overflow-y-auto p-8 relative ${isAnalyzing && "opacity-20"}`}>
-        <div className="flex flex-col justify-center items-center mb-8">
+      <main className={`relative flex-1 overflow-y-auto p-8 ${isAnalyzing && "opacity-20"}`}>
+        <div className="mb-8 flex flex-col items-center justify-center">
           {rating === 1
             ? states["good"].image
             : rating === 2
@@ -123,8 +123,8 @@ export default function AnalyzeCaseStudy({
 
         {renderItems}
       </main>
-      <footer className="bg-card py-4 px-8 rounded-b-2xl border-t border-border">
-        <div className="flex justify-end items-center gap-2">
+      <footer className="bg-card border-border rounded-b-2xl border-t px-8 py-4">
+        <div className="flex items-center justify-end gap-2">
           {outOfCredits ? (
             <Button
               onClick={() => {
@@ -139,7 +139,7 @@ export default function AnalyzeCaseStudy({
             <TooltipProvider delayDuration={200}>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <span className={isDisabled ? "cursor-not-allowed inline-flex" : "inline-flex"}>
+                  <span className={isDisabled ? "inline-flex cursor-not-allowed" : "inline-flex"}>
                     <Button disabled={isDisabled || isAnalyzing} onClick={analyzeCallback}>
                       {isAnalyzing ? "Analyzing…" : "Analyze with AI"}
                     </Button>

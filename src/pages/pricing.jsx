@@ -99,9 +99,9 @@ function Cell({ value, accent }) {
     return (
       <div className="flex items-center justify-center gap-1.5">
         {value.type === "unavailable" ? (
-          <X className="h-3.5 w-3.5 text-(--lp-text-muted) shrink-0" />
+          <X className="h-3.5 w-3.5 shrink-0 text-(--lp-text-muted)" />
         ) : (
-          <Check className="h-3.5 w-3.5 text-(--lp-accent) shrink-0" />
+          <Check className="h-3.5 w-3.5 shrink-0 text-(--lp-accent)" />
         )}
         <span className="text-[13px]">{value.text}</span>
       </div>
@@ -129,21 +129,21 @@ export default function Pricing() {
 
       {/* Pro pricing band */}
       <div className="space-y-2">
-        <p className="text-[12px] font-semibold uppercase tracking-wide text-(--lp-text-muted)">
+        <p className="text-[12px] font-semibold tracking-wide text-(--lp-text-muted) uppercase">
           Pro pricing
         </p>
         <div
-          className="grid grid-cols-3 rounded-xl border border-(--lp-border) overflow-hidden text-center"
+          className="grid grid-cols-3 overflow-hidden rounded-xl border border-(--lp-border) text-center"
           data-testid="pro-pricing"
         >
           {PRO_PLANS.map((p, idx) => (
             <div
               key={p.testId}
-              className={`flex flex-col items-center justify-center gap-3 py-4 px-3 ${idx > 0 ? "border-l border-(--lp-border)" : ""}`}
+              className={`flex flex-col items-center justify-center gap-3 px-3 py-4 ${idx > 0 ? "border-l border-(--lp-border)" : ""}`}
               data-testid={`plan-${p.testId}`}
             >
-              <div className="flex items-center gap-2 h-4">
-                <span className="text-[11px] font-semibold uppercase tracking-wide text-(--lp-text-muted)">
+              <div className="flex h-4 items-center gap-2">
+                <span className="text-[11px] font-semibold tracking-wide text-(--lp-text-muted) uppercase">
                   {p.label}
                 </span>
                 {p.save && (
@@ -153,18 +153,18 @@ export default function Pricing() {
 
               <div className="flex items-end justify-center gap-5">
                 <div className="flex flex-col items-center gap-1">
-                  <span className="text-[17px] font-bold text-(--lp-text) tabular-nums leading-none">
+                  <span className="text-[17px] leading-none font-bold text-(--lp-text) tabular-nums">
                     {p.inr}
                   </span>
-                  <span className="text-[9px] font-medium uppercase tracking-wider text-(--lp-text-muted)">
+                  <span className="text-[9px] font-medium tracking-wider text-(--lp-text-muted) uppercase">
                     India
                   </span>
                 </div>
                 <div className="flex flex-col items-center gap-1">
-                  <span className="text-[15px] font-semibold text-(--lp-text) tabular-nums leading-none">
+                  <span className="text-[15px] leading-none font-semibold text-(--lp-text) tabular-nums">
                     {p.usd}
                   </span>
-                  <span className="text-[9px] font-medium uppercase tracking-wider text-(--lp-text-muted)">
+                  <span className="text-[9px] font-medium tracking-wider text-(--lp-text-muted) uppercase">
                     Global
                   </span>
                 </div>
@@ -175,7 +175,7 @@ export default function Pricing() {
       </div>
 
       <div
-        className="rounded-xl border border-(--lp-border) overflow-hidden"
+        className="overflow-hidden rounded-xl border border-(--lp-border)"
         data-testid="table-pricing-comparison"
       >
         <div className="overflow-x-auto">
@@ -183,19 +183,19 @@ export default function Pricing() {
             <thead>
               <tr className="border-b border-(--lp-border) bg-(--lp-bg)">
                 <th
-                  className="text-left py-3 px-4 font-semibold text-(--lp-text)"
+                  className="px-4 py-3 text-left font-semibold text-(--lp-text)"
                   data-testid="header-feature"
                 >
                   Feature
                 </th>
                 <th
-                  className="text-center py-3 px-4 font-semibold text-(--lp-text)"
+                  className="px-4 py-3 text-center font-semibold text-(--lp-text)"
                   data-testid="header-free"
                 >
                   Free
                 </th>
                 <th
-                  className="text-center py-3 px-4 font-semibold text-(--lp-text)"
+                  className="px-4 py-3 text-center font-semibold text-(--lp-text)"
                   data-testid="header-pro"
                 >
                   Pro
@@ -210,19 +210,19 @@ export default function Pricing() {
                   data-testid={`row-${row.testId}`}
                 >
                   <td
-                    className="py-3 px-4 font-medium text-(--lp-text) align-top"
+                    className="px-4 py-3 align-top font-medium text-(--lp-text)"
                     data-testid={`feature-${row.testId}`}
                   >
                     {row.feature}
                   </td>
                   <td
-                    className="py-3 px-4 text-(--lp-text-muted) align-top"
+                    className="px-4 py-3 align-top text-(--lp-text-muted)"
                     data-testid={`free-${row.testId}`}
                   >
                     <Cell value={row.free} />
                   </td>
                   <td
-                    className="py-3 px-4 text-(--lp-text) align-top"
+                    className="px-4 py-3 align-top text-(--lp-text)"
                     data-testid={`pro-${row.testId}`}
                   >
                     <Cell value={row.pro} accent />
@@ -239,7 +239,7 @@ export default function Pricing() {
           asChild
           variant="darker"
           size="lg"
-          className="rounded-full !no-underline !text-(--lp-fg-white) hover:!text-[#fdfcf8]"
+          className="rounded-full !text-(--lp-fg-white) !no-underline hover:!text-[#fdfcf8]"
           data-testid="button-get-started-free"
         >
           <Link href="/claim-link">Get Started for Free</Link>
@@ -247,13 +247,13 @@ export default function Pricing() {
       </div>
 
       <h2
-        className="!text-[18px] !font-semibold !text-(--lp-text) !mt-6 !mb-2"
+        className="!mt-6 !mb-2 !text-[18px] !font-semibold !text-(--lp-text)"
         data-testid="text-section-faq"
       >
         Frequently Asked Questions
       </h2>
 
-      <Accordion type="single" collapsible className="w-full !space-y-0 -mt-2">
+      <Accordion type="single" collapsible className="-mt-2 w-full !space-y-0">
         <AccordionItem
           value="item-1"
           className="border-(--lp-border)"
@@ -391,9 +391,9 @@ export default function Pricing() {
         </AccordionItem>
       </Accordion>
 
-      <section className="pt-2 border-t border-(--lp-border)">
+      <section className="border-t border-(--lp-border) pt-2">
         <h2
-          className="!text-[18px] !font-semibold !text-(--lp-text) !mt-0 !mb-2"
+          className="!mt-0 !mb-2 !text-[18px] !font-semibold !text-(--lp-text)"
           data-testid="text-section-contact"
         >
           Need Help Choosing?

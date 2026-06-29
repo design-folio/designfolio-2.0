@@ -11,7 +11,7 @@ export function JobsSwitchFAB() {
 
   return (
     <motion.div
-      className="fixed bottom-6 right-6 z-[9999]"
+      className="fixed right-6 bottom-6 z-[9999]"
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.8 }}
@@ -19,12 +19,12 @@ export function JobsSwitchFAB() {
     >
       <motion.button
         onClick={() => router.push("/jobs")}
-        className="flex items-center gap-2 bg-foreground text-background text-[13px] font-semibold pl-3.5 pr-4 h-10 rounded-full shadow-lg shadow-black/20 hover:bg-foreground/90 transition-colors"
+        className="bg-foreground text-background hover:bg-foreground/90 flex h-10 items-center gap-2 rounded-full pr-4 pl-3.5 text-[13px] font-semibold shadow-lg shadow-black/20 transition-colors"
         whileHover={{ scale: 1.04 }}
         whileTap={{ scale: 0.96 }}
         title="Find Jobs"
       >
-        <Briefcase className="w-4 h-4 shrink-0" />
+        <Briefcase className="h-4 w-4 shrink-0" />
         Find Jobs
       </motion.button>
     </motion.div>

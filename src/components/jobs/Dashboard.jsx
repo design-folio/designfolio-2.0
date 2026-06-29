@@ -631,7 +631,7 @@ export function Dashboard({
 
   return (
     <motion.div
-      className="flex-1 flex flex-col min-h-0"
+      className="flex min-h-0 flex-1 flex-col"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}

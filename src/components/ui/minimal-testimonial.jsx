@@ -59,9 +59,9 @@ export function TestimonialsMinimal() {
   }, [active]);
 
   return (
-    <div className="w-full max-w-2xl mx-auto px-6 py-6 text-center">
+    <div className="mx-auto w-full max-w-2xl px-6 py-6 text-center">
       {/* Quote */}
-      <div className="relative min-h-[100px] mb-6 flex items-center justify-center">
+      <div className="relative mb-6 flex min-h-[100px] items-center justify-center">
         <AnimatePresence mode="wait">
           <motion.p
             key={active}
@@ -69,7 +69,7 @@ export function TestimonialsMinimal() {
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             exit={{ opacity: 0, y: -5, filter: "blur(4px)" }}
             transition={{ duration: 0.4, ease: "easeOut" }}
-            className="text-lg md:text-xl font-light leading-relaxed text-foreground-landing"
+            className="text-foreground-landing text-lg leading-relaxed font-light md:text-xl"
           >
             &quot;{testimonials[active].quote}&quot;
           </motion.p>
@@ -84,10 +84,10 @@ export function TestimonialsMinimal() {
               setActive((prev) => (prev - 1 + testimonials.length) % testimonials.length);
               setProgress(0);
             }}
-            className="p-1 rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+            className="hover:bg-muted text-muted-foreground hover:text-foreground rounded-full p-1 transition-colors"
             aria-label="Previous testimonial"
           >
-            <ChevronLeft className="w-4 h-4" />
+            <ChevronLeft className="h-4 w-4" />
           </button>
 
           {/* Avatars */}
@@ -99,20 +99,16 @@ export function TestimonialsMinimal() {
                   setActive(i);
                   setProgress(0);
                 }}
-                className={`
-                  relative w-8 h-8 rounded-full overflow-hidden ring-2 ring-background-landing
-                  transition-all duration-500 ease-in-out
-                  ${
-                    active === i
-                      ? "z-10 scale-125 shadow-md"
-                      : "grayscale opacity-70 hover:grayscale-0 hover:opacity-100 hover:scale-110"
-                  }
-                `}
+                className={`ring-background-landing relative h-8 w-8 overflow-hidden rounded-full ring-2 transition-all duration-500 ease-in-out ${
+                  active === i
+                    ? "z-10 scale-125 shadow-md"
+                    : "opacity-70 grayscale hover:scale-110 hover:opacity-100 hover:grayscale-0"
+                } `}
               >
                 <img
                   src={t.image || "/placeholder.svg"}
                   alt={t.name}
-                  className="w-full h-full object-cover"
+                  className="h-full w-full object-cover"
                 />
               </button>
             ))}
@@ -123,10 +119,10 @@ export function TestimonialsMinimal() {
               setActive((prev) => (prev + 1) % testimonials.length);
               setProgress(0);
             }}
-            className="p-1 rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-foreground-landing"
+            className="hover:bg-muted text-muted-foreground hover:text-foreground-landing rounded-full p-1 transition-colors"
             aria-label="Next testimonial"
           >
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="h-4 w-4" />
           </button>
         </div>
 
@@ -141,18 +137,18 @@ export function TestimonialsMinimal() {
               transition={{ duration: 0.2 }}
               className="flex flex-col items-center justify-center"
             >
-              <span className="text-sm font-medium text-foreground-landing">
+              <span className="text-foreground-landing text-sm font-medium">
                 {testimonials[active].name}
               </span>
-              <span className="text-xs text-muted-foreground">{testimonials[active].role}</span>
+              <span className="text-muted-foreground text-xs">{testimonials[active].role}</span>
             </motion.div>
           </AnimatePresence>
         </div>
 
         {/* Progress Bar */}
-        <div className="w-32 h-0.5 bg-muted rounded-full overflow-hidden">
+        <div className="bg-muted h-0.5 w-32 overflow-hidden rounded-full">
           <motion.div
-            className="h-full bg-foreground-landing/10"
+            className="bg-foreground-landing/10 h-full"
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
             transition={{ duration: 0.1, ease: "linear" }}

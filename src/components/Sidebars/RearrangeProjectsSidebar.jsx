@@ -35,28 +35,28 @@ function SortableProjectCard({ project }) {
     <div
       ref={setNodeRef}
       style={style}
-      className={`flex items-center gap-3 p-3 bg-white dark:bg-[#2A2520] border border-black/5 dark:border-white/5 rounded-xl transition-colors hover:bg-black/[0.04] dark:hover:bg-white/[0.04] cursor-grab active:cursor-grabbing ${
+      className={`flex cursor-grab items-center gap-3 rounded-xl border border-black/5 bg-white p-3 transition-colors hover:bg-black/[0.04] active:cursor-grabbing dark:border-white/5 dark:bg-[#2A2520] dark:hover:bg-white/[0.04] ${
         isDragging ? "shadow-lg" : ""
       }`}
       {...listeners}
       {...attributes}
     >
-      <GripVertical className="w-4 h-4 text-[#7A736C] dark:text-[#9E9893] shrink-0" />
-      <div className="w-12 h-10 rounded-md overflow-hidden bg-black/5 dark:bg-white/5 shrink-0">
+      <GripVertical className="h-4 w-4 shrink-0 text-[#7A736C] dark:text-[#9E9893]" />
+      <div className="h-10 w-12 shrink-0 overflow-hidden rounded-md bg-black/5 dark:bg-white/5">
         {project?.thumbnail?.url && (
           <img
             src={project.thumbnail.url}
             alt={project.title || "Project thumbnail"}
-            className="w-full h-full object-cover"
+            className="h-full w-full object-cover"
           />
         )}
       </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] truncate">
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
           {project?.title || "Untitled project"}
         </p>
         {project?.description && (
-          <p className="text-[11px] text-[#7A736C] dark:text-[#9E9893] truncate mt-0.5">
+          <p className="mt-0.5 truncate text-[11px] text-[#7A736C] dark:text-[#9E9893]">
             {project.description}
           </p>
         )}
@@ -96,8 +96,8 @@ export default function RearrangeProjectsSidebar() {
   );
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex-1 overflow-y-auto p-4 space-y-2">
+    <div className="flex h-full flex-col">
+      <div className="flex-1 space-y-2 overflow-y-auto p-4">
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleSortEnd}>
           <SortableContext
             items={projects.map((p) => p._id)}

@@ -30,7 +30,7 @@ const FrameScrews = () => (
     <ScrewDot className="top-2.5 left-2.5 md:top-3 md:left-3" />
     <ScrewDot className="top-2.5 right-2.5 md:top-3 md:right-3" />
     <ScrewDot className="bottom-2.5 left-2.5 md:bottom-3 md:left-3" />
-    <ScrewDot className="bottom-2.5 right-2.5 md:bottom-3 md:right-3" />
+    <ScrewDot className="right-2.5 bottom-2.5 md:right-3 md:bottom-3" />
   </>
 );
 
@@ -76,11 +76,11 @@ function EditableDetailField({ label, field, value, onBlur }) {
 
   return (
     <div>
-      <h4 className="font-jetbrains text-[11px] text-[#7A736C] dark:text-[#9E9893] uppercase tracking-wider mb-2">
+      <h4 className="font-jetbrains mb-2 text-[11px] tracking-wider text-[#7A736C] uppercase dark:text-[#9E9893]">
         {label}
       </h4>
       <p
-        className={`font-jetbrains text-[13px] uppercase outline-none ${isPlaceholder ? "text-[#B5AFA5] dark:text-[#4A4238] italic" : "text-[#1A1A1A] dark:text-[#F0EDE7]"}`}
+        className={`font-jetbrains text-[13px] uppercase outline-none ${isPlaceholder ? "text-[#B5AFA5] italic dark:text-[#4A4238]" : "text-[#1A1A1A] dark:text-[#F0EDE7]"}`}
         contentEditable
         suppressContentEditableWarning
         onFocus={(e) => {
@@ -286,16 +286,16 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
       initial="hidden"
       animate="visible"
       variants={containerVariants}
-      className={`w-full max-w-[700px] relative bg-[#EFECE6] dark:bg-[#1A1A1A] flex flex-col transition-colors duration-700 border-x border-[#D5D0C6] dark:border-[#3A352E] ${edit ? "" : "min-h-screen"}`}
+      className={`relative flex w-full max-w-[700px] flex-col border-x border-[#D5D0C6] bg-[#EFECE6] transition-colors duration-700 dark:border-[#3A352E] dark:bg-[#1A1A1A] ${edit ? "" : "min-h-screen"}`}
     >
       {/* Header */}
       <motion.div
         variants={itemVariants}
-        className={`border-b border-[#D5D0C6] dark:border-[#3A352E] flex justify-between items-center px-4 py-3 font-jetbrains text-[13px] uppercase tracking-wide text-[#1A1A1A] dark:text-[#B5AFA5] bg-[#EFECE6] dark:bg-[#1A1A1A] ${edit ? "" : "sticky top-0 z-50"}`}
+        className={`font-jetbrains flex items-center justify-between border-b border-[#D5D0C6] bg-[#EFECE6] px-4 py-3 text-[13px] tracking-wide text-[#1A1A1A] uppercase dark:border-[#3A352E] dark:bg-[#1A1A1A] dark:text-[#B5AFA5] ${edit ? "" : "sticky top-0 z-50"}`}
       >
         <button
           onClick={() => router.back()}
-          className="flex items-center gap-2 hover:text-[#E37941] transition-colors"
+          className="flex items-center gap-2 transition-colors hover:text-[#E37941]"
         >
           <ChevronLeft size={16} /> BACK
         </button>
@@ -307,7 +307,7 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
               <DropdownMenu modal={false} open={isLockOpen} onOpenChange={setIsLockOpen}>
                 <DropdownMenuTrigger asChild>
                   <button
-                    className="flex items-center gap-1.5 hover:text-[#E37941] transition-colors"
+                    className="flex items-center gap-1.5 transition-colors hover:text-[#E37941]"
                     // title="Lock Case Study"
                   >
                     <svg
@@ -328,15 +328,15 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
                 <DropdownMenuContent
                   align="end"
                   sideOffset={8}
-                  className="w-[280px] p-4 bg-[#EFECE6] dark:bg-[#1A1A1A] border border-[#D5D0C6] dark:border-[#3A352E] rounded-none shadow-xl z-50 font-jetbrains"
+                  className="font-jetbrains z-50 w-[280px] rounded-none border border-[#D5D0C6] bg-[#EFECE6] p-4 shadow-xl dark:border-[#3A352E] dark:bg-[#1A1A1A]"
                 >
                   <div className="flex flex-col gap-4">
                     <div className="flex items-start justify-between gap-3">
                       <div className="space-y-1">
-                        <Label className="text-[12px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] uppercase tracking-wider cursor-pointer">
+                        <Label className="cursor-pointer text-[12px] font-medium tracking-wider text-[#1A1A1A] uppercase dark:text-[#F0EDE7]">
                           Protect Project
                         </Label>
-                        <p className="text-[11px] text-[#7A736C] dark:text-[#9E9893] leading-snug">
+                        <p className="text-[11px] leading-snug text-[#7A736C] dark:text-[#9E9893]">
                           Require a password (e.g., for NDAs).
                         </p>
                       </div>
@@ -361,12 +361,12 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
                               placeholder="Enter password"
                               value={passwordInput}
                               onChange={(e) => setPasswordInput(e.target.value)}
-                              className="h-9 text-[13px] rounded-none border-[#D5D0C6] dark:border-[#3A352E] bg-white/50 dark:bg-white/5"
+                              className="h-9 rounded-none border-[#D5D0C6] bg-white/50 text-[13px] dark:border-[#3A352E] dark:bg-white/5"
                             />
                             <Button
                               size="sm"
                               onClick={handlePasswordSave}
-                              className="rounded-none h-8 bg-[#1A1A1A] dark:bg-[#F0EDE7] text-white dark:text-[#1A1A1A] text-[12px] font-jetbrains uppercase tracking-wider"
+                              className="font-jetbrains h-8 rounded-none bg-[#1A1A1A] text-[12px] tracking-wider text-white uppercase dark:bg-[#F0EDE7] dark:text-[#1A1A1A]"
                             >
                               Save Password
                             </Button>
@@ -392,12 +392,12 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
                         <button
                           onClick={handleAnalyzeClick}
                           disabled={isAnalyzeDisabled}
-                          className="flex items-center gap-1.5 hover:text-[#E37941] cursor-pointer transition-colors disabled:opacity-40 disabled:cursor-not-allowed text-[11px] uppercase tracking-wider"
+                          className="flex cursor-pointer items-center gap-1.5 text-[11px] tracking-wider uppercase transition-colors hover:text-[#E37941] disabled:cursor-not-allowed disabled:opacity-40"
                         >
                           {isAnalyzing ? (
-                            <AnimatedLoadingDots className="w-[18px] h-[5px] shrink-0" />
+                            <AnimatedLoadingDots className="h-[5px] w-[18px] shrink-0" />
                           ) : (
-                            <AnalyzeIcon className="w-[13px] h-[13px] shrink-0" />
+                            <AnalyzeIcon className="h-[13px] w-[13px] shrink-0" />
                           )}
                           {analyzeButtonLabel}
                         </button>
@@ -406,7 +406,7 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
                     {tooltipMessage && (
                       <TooltipContent
                         side="bottom"
-                        className="bg-foreground text-background text-xs px-2 py-1 rounded"
+                        className="bg-foreground text-background rounded px-2 py-1 text-xs"
                       >
                         {tooltipMessage}
                       </TooltipContent>
@@ -420,11 +420,11 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
         </div>
       </motion.div>
 
-      <div className="p-4 md:p-6 space-y-10 pb-16">
+      <div className="space-y-10 p-4 pb-16 md:p-6">
         {/* Title + Description */}
         <motion.div variants={itemVariants}>
           <h1
-            className={`font-jetbrains text-[22px] md:text-[28px] font-semibold leading-[1.2] mb-4 uppercase tracking-tight ${edit ? "outline-none" : ""} ${edit && titleIsPlaceholder ? "text-[#B5AFA5] dark:text-[#4A4238] italic" : "text-[#1A1A1A] dark:text-[#F0EDE7]"}`}
+            className={`font-jetbrains mb-4 text-[22px] leading-[1.2] font-semibold tracking-tight uppercase md:text-[28px] ${edit ? "outline-none" : ""} ${edit && titleIsPlaceholder ? "text-[#B5AFA5] italic dark:text-[#4A4238]" : "text-[#1A1A1A] dark:text-[#F0EDE7]"}`}
             contentEditable={edit}
             suppressContentEditableWarning={edit}
             onFocus={
@@ -450,7 +450,7 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
           </h1>
           {(edit || descriptionText) && (
             <p
-              className={`font-jetbrains text-[15px] leading-relaxed ${edit ? "outline-none" : ""} ${edit && descIsPlaceholder ? "text-[#B5AFA5] dark:text-[#4A4238] italic" : "text-[#7A736C] dark:text-[#B5AFA5]"}`}
+              className={`font-jetbrains text-[15px] leading-relaxed ${edit ? "outline-none" : ""} ${edit && descIsPlaceholder ? "text-[#B5AFA5] italic dark:text-[#4A4238]" : "text-[#7A736C] dark:text-[#B5AFA5]"}`}
               contentEditable={edit}
               suppressContentEditableWarning={edit}
               onFocus={
@@ -483,11 +483,11 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
             variants={itemVariants}
             className={`relative flex flex-col ${frameBorderClass}`}
           >
-            <div className="absolute inset-[-16px] md:inset-[-20px] border border-[#D5D0C6] dark:border-[#3A352E] pointer-events-none" />
-            <div className="absolute inset-0 border border-[#D5D0C6] dark:border-[#3A352E] pointer-events-none z-30" />
-            <div className="bg-gradient-to-br from-[#D2CEC8] to-[#A8A49D] dark:from-[#3A352E] dark:to-[#1A1A1A] p-4 md:p-5 relative overflow-hidden">
+            <div className="pointer-events-none absolute inset-[-16px] border border-[#D5D0C6] md:inset-[-20px] dark:border-[#3A352E]" />
+            <div className="pointer-events-none absolute inset-0 z-30 border border-[#D5D0C6] dark:border-[#3A352E]" />
+            <div className="relative overflow-hidden bg-gradient-to-br from-[#D2CEC8] to-[#A8A49D] p-4 md:p-5 dark:from-[#3A352E] dark:to-[#1A1A1A]">
               <FrameScrews />
-              <div className="w-full aspect-[3/2] relative overflow-hidden bg-white dark:bg-[#1A1A1A] shadow-[0_0_10px_rgba(0,0,0,0.2)]">
+              <div className="relative aspect-[3/2] w-full overflow-hidden bg-white shadow-[0_0_10px_rgba(0,0,0,0.2)] dark:bg-[#1A1A1A]">
                 {edit ? (
                   <ImageWithOverlayAndPicker
                     src={thumbnail?.url}
@@ -501,7 +501,7 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
                     <img
                       src={thumbnail.url}
                       alt={title || "Project"}
-                      className={`w-full h-full object-cover transition-opacity duration-300 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
+                      className={`h-full w-full object-cover transition-opacity duration-300 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
                       loading="lazy"
                       onLoad={() => setImageLoaded(true)}
                     />
@@ -519,7 +519,7 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
         {(edit || viewDetailFields.length > 0) && (
           <motion.div
             variants={itemVariants}
-            className="grid grid-cols-2 md:grid-cols-4 gap-6 border-y border-[#D5D0C6] dark:border-[#3A352E] py-6"
+            className="grid grid-cols-2 gap-6 border-y border-[#D5D0C6] py-6 md:grid-cols-4 dark:border-[#3A352E]"
           >
             {edit
               ? detailFields.map(({ label, value, field }) => (
@@ -533,10 +533,10 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
                 ))
               : viewDetailFields.map(({ label, value }) => (
                   <div key={label}>
-                    <h4 className="font-jetbrains text-[11px] text-[#7A736C] dark:text-[#9E9893] uppercase tracking-wider mb-2">
+                    <h4 className="font-jetbrains mb-2 text-[11px] tracking-wider text-[#7A736C] uppercase dark:text-[#9E9893]">
                       {label}
                     </h4>
-                    <p className="font-jetbrains text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] uppercase">
+                    <p className="font-jetbrains text-[13px] text-[#1A1A1A] uppercase dark:text-[#F0EDE7]">
                       {value}
                     </p>
                   </div>
@@ -547,7 +547,7 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
         {/* Case Study Content — view mode only; edit mode shows TiptapEditor below */}
         {!edit && hasTiptapContent && (
           <motion.div variants={itemVariants}>
-            <TiptapRenderer content={tiptapContent} className={"bg-background !p-0 shadow-none "} />
+            <TiptapRenderer content={tiptapContent} className={"bg-background !p-0 shadow-none"} />
           </motion.div>
         )}
 
@@ -564,11 +564,11 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
         {!edit && (
           <motion.div
             variants={itemVariants}
-            className="pt-8 border-t border-[#D5D0C6] dark:border-[#3A352E] flex justify-between items-center"
+            className="flex items-center justify-between border-t border-[#D5D0C6] pt-8 dark:border-[#3A352E]"
           >
             <button
               onClick={() => router.back()}
-              className="font-jetbrains text-[13px] uppercase tracking-wide text-[#1A1A1A] dark:text-[#F0EDE7] hover:text-[#E37941] dark:hover:text-[#E37941] transition-colors flex items-center gap-2"
+              className="font-jetbrains flex items-center gap-2 text-[13px] tracking-wide text-[#1A1A1A] uppercase transition-colors hover:text-[#E37941] dark:text-[#F0EDE7] dark:hover:text-[#E37941]"
             >
               <ChevronLeft size={16} /> All Projects
             </button>
@@ -600,7 +600,7 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
 
   // In view mode: full-page centered wrapper with background
   return (
-    <div className="min-h-screen bg-[#F0EDE7] dark:bg-[#1A1A1A] flex justify-center font-inter text-[#1A1A1A] dark:text-[#F0EDE7] selection:bg-[#E37941] selection:text-white transition-colors duration-700">
+    <div className="font-inter flex min-h-screen justify-center bg-[#F0EDE7] text-[#1A1A1A] transition-colors duration-700 selection:bg-[#E37941] selection:text-white dark:bg-[#1A1A1A] dark:text-[#F0EDE7]">
       {innerContent}
     </div>
   );

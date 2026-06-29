@@ -15,10 +15,10 @@ import { UserPlus, TrendingDown, ArrowRightCircle } from "lucide-react";
 function SectionHeader({ children }) {
   return (
     <div className="mb-4">
-      <h2 className="text-xs font-manrope font-semibold uppercase tracking-widest text-[#7A736C] dark:text-[#B5AFA5]">
+      <h2 className="font-manrope text-xs font-semibold tracking-widest text-[#7A736C] uppercase dark:text-[#B5AFA5]">
         {children}
       </h2>
-      <div className="h-px bg-[#E5D7C4] dark:bg-white/[0.07] mt-2" />
+      <div className="mt-2 h-px bg-[#E5D7C4] dark:bg-white/[0.07]" />
     </div>
   );
 }
@@ -26,9 +26,9 @@ function SectionHeader({ children }) {
 function CardSkeleton({ className = "" }) {
   return (
     <div
-      className={`bg-white dark:bg-[#2A2520] rounded-2xl border border-[#E5D7C4] dark:border-white/10 p-5 ${className}`}
+      className={`rounded-2xl border border-[#E5D7C4] bg-white p-5 dark:border-white/10 dark:bg-[#2A2520] ${className}`}
     >
-      <Skeleton className="h-3 w-20 mb-3" />
+      <Skeleton className="mb-3 h-3 w-20" />
       <Skeleton className="h-8 w-24" />
     </div>
   );
@@ -57,7 +57,7 @@ export default function AdminStats() {
                 <SectionHeader>Overview</SectionHeader>
                 {isLoading ? (
                   <div className="flex flex-col gap-3">
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
                       {Array.from({ length: 5 }).map((_, i) => (
                         <CardSkeleton key={i} />
                       ))}
@@ -73,8 +73,8 @@ export default function AdminStats() {
               <section>
                 <SectionHeader>Revenue &amp; Growth</SectionHeader>
                 {isLoading ? (
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                    <div className="bg-white dark:bg-[#2A2520] rounded-2xl border border-[#E5D7C4] dark:border-white/10 p-5 space-y-3">
+                  <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                    <div className="space-y-3 rounded-2xl border border-[#E5D7C4] bg-white p-5 dark:border-white/10 dark:bg-[#2A2520]">
                       <Skeleton className="h-3 w-20" />
                       <Skeleton className="h-3 w-full" />
                       <Skeleton className="h-3 w-full" />
@@ -89,7 +89,7 @@ export default function AdminStats() {
                     </div>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                     <RevenuePanel overall={data?.overall} />
 
                     <div className="flex flex-col gap-3">
@@ -100,7 +100,7 @@ export default function AdminStats() {
                         index={0}
                         subText="converted in last 30 days"
                       />
-                      <div className="grid grid-cols-2 gap-3 flex-1">
+                      <div className="grid flex-1 grid-cols-2 gap-3">
                         <StatsCard
                           label="Churn Rate"
                           value={data?.growth?.churnRate ?? 0}
@@ -124,14 +124,14 @@ export default function AdminStats() {
               </section>
 
               {/* ── Subscriptions + Recent ──────────────────────────────── */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:items-stretch">
+              <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:items-stretch">
                 <section className="flex flex-col">
                   <SectionHeader>Subscriptions</SectionHeader>
                   {isLoading ? (
-                    <div className="flex-1 bg-white dark:bg-[#2A2520] rounded-2xl border border-[#E5D7C4] dark:border-white/10 p-5 space-y-4">
+                    <div className="flex-1 space-y-4 rounded-2xl border border-[#E5D7C4] bg-white p-5 dark:border-white/10 dark:bg-[#2A2520]">
                       <Skeleton className="h-3 w-24" />
                       <Skeleton className="h-1.5 w-full rounded-full" />
-                      <div className="flex gap-2 flex-wrap">
+                      <div className="flex flex-wrap gap-2">
                         {Array.from({ length: 4 }).map((_, i) => (
                           <Skeleton key={i} className="h-7 w-24 rounded-full" />
                         ))}
@@ -144,14 +144,14 @@ export default function AdminStats() {
 
                 <section className="flex flex-col">
                   <SectionHeader>Recent</SectionHeader>
-                  <div className="flex-1 bg-white dark:bg-[#2A2520] rounded-2xl border border-[#E5D7C4] dark:border-white/10 p-5 flex flex-col">
+                  <div className="flex flex-1 flex-col rounded-2xl border border-[#E5D7C4] bg-white p-5 dark:border-white/10 dark:bg-[#2A2520]">
                     {isLoading ? (
                       <div className="grid grid-cols-2 gap-3">
                         <CardSkeleton />
                         <CardSkeleton />
                       </div>
                     ) : (
-                      <Tabs defaultValue="today" className="flex flex-col flex-1">
+                      <Tabs defaultValue="today" className="flex flex-1 flex-col">
                         <TabsList className="w-fit">
                           <TabsTrigger value="today">Today</TabsTrigger>
                           <TabsTrigger value="7days">7 Days</TabsTrigger>
@@ -187,7 +187,7 @@ export default function AdminStats() {
               {/* ── Growth Chart ────────────────────────────────────────── */}
               <section>
                 <SectionHeader>Trends</SectionHeader>
-                <div className="bg-white dark:bg-[#2A2520] rounded-2xl border border-[#E5D7C4] dark:border-white/10 p-5">
+                <div className="rounded-2xl border border-[#E5D7C4] bg-white p-5 dark:border-white/10 dark:bg-[#2A2520]">
                   {isLoading ? (
                     <Skeleton className="h-64 w-full" />
                   ) : (

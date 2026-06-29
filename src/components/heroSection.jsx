@@ -339,7 +339,7 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab, onResume
   )}), 0 4px 6px -4px rgba(0, 0, 0, ${useTransform(shadowOpacity, (v) => v * 0.1)})`;
 
   return (
-    <section ref={sectionRef} className="relative overflow-visible py-8 sm:py-12 md:py-16 px-6">
+    <section ref={sectionRef} className="relative overflow-visible px-6 py-8 sm:py-12 md:py-16">
       <AnimatePresence mode="wait">
         {isResumeMode ? (
           <motion.div
@@ -347,7 +347,7 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab, onResume
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute -top-16 sm:-top-20 left-0 right-0 h-[600px] sm:h-[700px] pointer-events-none z-0"
+            className="pointer-events-none absolute -top-16 right-0 left-0 z-0 h-[600px] sm:-top-20 sm:h-[700px]"
           >
             <div
               className="absolute inset-0"
@@ -359,25 +359,25 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab, onResume
             <motion.img
               src="/cloud.avif"
               alt=""
-              className="absolute left-0 top-20 w-48 sm:w-64 opacity-90 z-[1]"
+              className="absolute top-20 left-0 z-[1] w-48 opacity-90 sm:w-64"
               style={{ transform: "scaleX(-1)", y: cloud1Y }}
             />
             <motion.img
               src="/cloud.avif"
               alt=""
-              className="absolute right-0 top-28 w-56 sm:w-72 opacity-90 z-[1]"
+              className="absolute top-28 right-0 z-[1] w-56 opacity-90 sm:w-72"
               style={{ y: cloud2Y }}
             />
             <motion.img
               src="/cloud.avif"
               alt=""
-              className="absolute left-[10%] bottom-0 w-40 sm:w-52 opacity-80 z-[1]"
+              className="absolute bottom-0 left-[10%] z-[1] w-40 opacity-80 sm:w-52"
               style={{ y: cloud3Y }}
             />
             <motion.img
               src="/cloud.avif"
               alt=""
-              className="absolute right-[15%] bottom-10 w-36 sm:w-48 opacity-70 z-[1]"
+              className="absolute right-[15%] bottom-10 z-[1] w-36 opacity-70 sm:w-48"
               style={{ transform: "scaleX(-1)", y: cloud4Y }}
             />
           </motion.div>
@@ -387,7 +387,7 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab, onResume
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute left-0 right-0 z-0"
+            className="absolute right-0 left-0 z-0"
             style={{
               top: "40%",
               bottom: "-120%",
@@ -406,7 +406,7 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab, onResume
         <>
           <motion.div
             ref={leftCardRef}
-            className="absolute -left-40 -top-12 lg:-left-8 xl:left-4 2xl:left-16 lg:top-20 xl:top-28 z-[31] will-change-transform"
+            className="absolute -top-12 -left-40 z-[31] will-change-transform lg:top-20 lg:-left-8 xl:top-28 xl:left-4 2xl:left-16"
             style={{
               width: leftCardWidth ? `${leftCardWidth}px` : undefined,
               y: leftCardTranslateY,
@@ -422,28 +422,28 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab, onResume
             }}
           >
             <motion.div
-              className="bg-white dark:bg-card rounded-lg md:rounded-xl lg:rounded-2xl border border-border overflow-hidden flex flex-col"
+              className="dark:bg-card border-border flex flex-col overflow-hidden rounded-lg border bg-white md:rounded-xl lg:rounded-2xl"
               style={{
                 boxShadow: cardBoxShadow,
               }}
               data-testid="card-project-left"
             >
-              <div className="aspect-video relative overflow-hidden">
+              <div className="relative aspect-video overflow-hidden">
                 <img
                   src="/assets/svgs/casestudyux1.svg"
                   alt="Fitness app redesign case study"
-                  className="w-full h-full object-cover"
+                  className="h-full w-full object-cover"
                 />
               </div>
-              <div className="p-4 md:p-5 flex-1 flex flex-col">
+              <div className="flex flex-1 flex-col p-4 md:p-5">
                 <h3
-                  className="font-gsans text-base md:text-lg lg:text-xl font-semibold text-foreground mb-1 line-clamp-2 min-h-[2.5rem] md:min-h-[3rem]"
+                  className="font-gsans text-foreground mb-1 line-clamp-2 min-h-[2.5rem] text-base font-semibold md:min-h-[3rem] md:text-lg lg:text-xl"
                   data-testid="text-project-left-title"
                 >
                   Redesigning fitness app experience for 4M users.
                 </h3>
                 <p
-                  className="text-xs md:text-sm text-df-description-color"
+                  className="text-df-description-color text-xs md:text-sm"
                   data-testid="text-project-left-category"
                 >
                   AI Fitness Tracker
@@ -454,7 +454,7 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab, onResume
 
           <motion.div
             ref={rightCardRef}
-            className="absolute -right-32 -bottom-20 lg:-right-8 xl:right-4 2xl:right-16 lg:top-32 xl:top-40 lg:bottom-auto z-[29] will-change-transform"
+            className="absolute -right-32 -bottom-20 z-[29] will-change-transform lg:top-32 lg:-right-8 lg:bottom-auto xl:top-40 xl:right-4 2xl:right-16"
             style={{
               width: rightCardWidth ? `${rightCardWidth}px` : undefined,
               y: rightCardTranslateY,
@@ -470,28 +470,28 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab, onResume
             }}
           >
             <motion.div
-              className="bg-white dark:bg-card rounded-lg md:rounded-xl lg:rounded-2xl border border-border overflow-hidden flex flex-col"
+              className="dark:bg-card border-border flex flex-col overflow-hidden rounded-lg border bg-white md:rounded-xl lg:rounded-2xl"
               style={{
                 boxShadow: cardBoxShadow,
               }}
               data-testid="card-project-right"
             >
-              <div className="aspect-video relative overflow-hidden">
+              <div className="relative aspect-video overflow-hidden">
                 <img
                   src="/assets/svgs/casestudyux2.svg"
                   alt="Blockchain crypto app case study"
-                  className="w-full h-full object-cover"
+                  className="h-full w-full object-cover"
                 />
               </div>
-              <div className="p-4 md:p-5 flex-1 flex flex-col">
+              <div className="flex flex-1 flex-col p-4 md:p-5">
                 <h3
-                  className="font-gsans text-base md:text-lg lg:text-xl font-semibold text-foreground mb-1 line-clamp-2 min-h-[2.5rem] md:min-h-[3rem]"
+                  className="font-gsans text-foreground mb-1 line-clamp-2 min-h-[2.5rem] text-base font-semibold md:min-h-[3rem] md:text-lg lg:text-xl"
                   data-testid="text-project-right-title"
                 >
                   Built a blockchain crypto app using Next.js
                 </h3>
                 <p
-                  className="text-xs md:text-sm text-df-description-color"
+                  className="text-df-description-color text-xs md:text-sm"
                   data-testid="text-project-right-category"
                 >
                   Launched on Product Hunt
@@ -502,10 +502,10 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab, onResume
         </>
       )}
 
-      <div className="max-w-5xl mx-auto relative z-50">
-        <div className="max-w-3xl mx-auto text-center px-4 sm:px-6 md:px-12 lg:px-0">
+      <div className="relative z-50 mx-auto max-w-5xl">
+        <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 md:px-12 lg:px-0">
           <motion.div
-            className="flex flex-col items-center gap-6 mb-8"
+            className="mb-8 flex flex-col items-center gap-6"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.05 }}
@@ -541,26 +541,26 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab, onResume
                     as="h1"
                     preset="blur"
                     per="word"
-                    className="font-gsans font-semibold text-3xl sm:text-5xl md:text-5xl lg:text-6xl xl:text-6xl leading-tight mb-4 sm:mb-6 text-foreground-landing max-w-3xl mx-auto"
+                    className="font-gsans text-foreground-landing mx-auto mb-4 max-w-3xl text-3xl leading-tight font-semibold sm:mb-6 sm:text-5xl md:text-5xl lg:text-6xl xl:text-6xl"
                     data-testid="text-resume-headline"
                     delay={0.1}
                   >
                     Turn your resume into a personal website
                   </TextEffect>
                   <motion.p
-                    className="text-sm sm:text-base md:text-lg lg:text-xl text-[rgb(125,125,125)] leading-relaxed max-w-3xl mx-auto mb-6 sm:mb-8"
+                    className="mx-auto mb-6 max-w-3xl text-sm leading-relaxed text-[rgb(125,125,125)] sm:mb-8 sm:text-base md:text-lg lg:text-xl"
                     data-testid="text-resume-description"
                   >
                     Skip the busywork with Designfolio — publish in hours, not weeks.
                   </motion.p>
 
                   {analyzeUsed && !resultContent ? (
-                    <div className="max-w-xl mx-auto rounded-2xl p-6 bg-foreground-landing/5 border border-foreground-landing/10">
-                      <p className="text-sm text-foreground-landing/80">
+                    <div className="bg-foreground-landing/5 border-foreground-landing/10 mx-auto max-w-xl rounded-2xl border p-6">
+                      <p className="text-foreground-landing/80 text-sm">
                         You&apos;ve already used Analyze once on this visit.{" "}
                         <button
                           type="button"
-                          className="text-df-orange-color hover:underline font-medium"
+                          className="text-df-orange-color font-medium hover:underline"
                           onClick={() => {
                             try {
                               const raw =
@@ -578,9 +578,9 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab, onResume
                   ) : (
                     <div
                       className={cn(
-                        "max-w-xl mx-auto rounded-[1.25rem] sm:rounded-[1.5rem] p-[1px] relative z-10 bg-gradient-to-b shadow-lg group transition-all duration-300",
+                        "group relative z-10 mx-auto max-w-xl rounded-[1.25rem] bg-gradient-to-b p-[1px] shadow-lg transition-all duration-300 sm:rounded-[1.5rem]",
                         isDragging
-                          ? "from-[#FF553E]/60 via-[#FF553E]/20 to-[#FF553E]/60 scale-[1.01] ring-8 ring-[#FF553E]/5"
+                          ? "scale-[1.01] from-[#FF553E]/60 via-[#FF553E]/20 to-[#FF553E]/60 ring-8 ring-[#FF553E]/5"
                           : "from-border/60 via-border/30 to-border/60"
                       )}
                       data-testid="card-resume-upload"
@@ -590,47 +590,47 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab, onResume
                     >
                       <div
                         className={cn(
-                          "bg-white dark:bg-[#1a1a1a] rounded-[1.125rem] sm:rounded-[1.375rem] overflow-hidden transition-colors duration-300",
+                          "overflow-hidden rounded-[1.125rem] bg-white transition-colors duration-300 sm:rounded-[1.375rem] dark:bg-[#1a1a1a]",
                           isDragging && "bg-[#FF553E]/[0.01] dark:bg-[#FF553E]/[0.01]"
                         )}
                       >
-                        <div className="bg-[#f6f6f6] dark:bg-[#252525] border-b border-border/50 px-4 py-2.5 flex items-center gap-2">
+                        <div className="border-border/50 flex items-center gap-2 border-b bg-[#f6f6f6] px-4 py-2.5 dark:bg-[#252525]">
                           <div className="flex gap-1.5">
-                            <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f56] border border-[#e0443e]" />
-                            <div className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e] border border-[#dea123]" />
-                            <div className="w-2.5 h-2.5 rounded-full bg-[#27c93f] border border-[#1aab29]" />
+                            <div className="h-2.5 w-2.5 rounded-full border border-[#e0443e] bg-[#ff5f56]" />
+                            <div className="h-2.5 w-2.5 rounded-full border border-[#dea123] bg-[#ffbd2e]" />
+                            <div className="h-2.5 w-2.5 rounded-full border border-[#1aab29] bg-[#27c93f]" />
                           </div>
-                          <div className="flex-1 flex justify-center">
-                            <div className="bg-white dark:bg-[#2a2a2a] rounded-md px-3 py-1 text-[10px] text-foreground/40 border border-border/40 min-w-[140px] text-center truncate">
+                          <div className="flex flex-1 justify-center">
+                            <div className="text-foreground/40 border-border/40 min-w-[140px] truncate rounded-md border bg-white px-3 py-1 text-center text-[10px] dark:bg-[#2a2a2a]">
                               yourname.designfolio.me
                             </div>
                           </div>
                           <div className="w-10" />
                         </div>
-                        <div className="p-8 sm:p-10 flex flex-col items-center gap-5">
+                        <div className="flex flex-col items-center gap-5 p-8 sm:p-10">
                           {isConverting ? (
                             <AIThinkingBlock />
                           ) : (
                             <>
                               <div
                                 className={cn(
-                                  "w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300",
+                                  "flex h-14 w-14 items-center justify-center rounded-full transition-all duration-300",
                                   isDragging
-                                    ? "bg-[#FF553E] text-white scale-110 shadow-lg shadow-[#FF553E]/30"
+                                    ? "scale-110 bg-[#FF553E] text-white shadow-lg shadow-[#FF553E]/30"
                                     : "bg-[#FF553E]/10 text-[#FF553E]"
                                 )}
                               >
-                                <Upload className="w-7 h-7" />
+                                <Upload className="h-7 w-7" />
                               </div>
                               {conversionError ? (
-                                <div className="px-4 py-2 rounded-lg bg-destructive/10 border border-destructive/20 w-full max-w-md">
+                                <div className="bg-destructive/10 border-destructive/20 w-full max-w-md rounded-lg border px-4 py-2">
                                   <p className="text-destructive text-sm font-medium">
                                     {conversionError}
                                   </p>
                                 </div>
                               ) : (
                                 <div className="space-y-1.5 text-center">
-                                  <p className="text-lg sm:text-xl font-semibold text-foreground">
+                                  <p className="text-foreground text-lg font-semibold sm:text-xl">
                                     {isDragging
                                       ? "Drop your resume here"
                                       : "Click to upload or drag and drop"}
@@ -640,7 +640,7 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab, onResume
                                   </p>
                                 </div>
                               )}
-                              <div className="w-full max-w-xs mx-auto pt-2">
+                              <div className="mx-auto w-full max-w-xs pt-2">
                                 <Input
                                   type="file"
                                   className="hidden"
@@ -653,10 +653,10 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab, onResume
                                 <label
                                   htmlFor={analyzeUsed ? undefined : "resume-upload"}
                                   className={cn(
-                                    "flex items-center justify-center gap-2 w-full rounded-full h-12 text-base font-semibold text-white border-none transition-transform active:scale-[0.98]",
+                                    "flex h-12 w-full items-center justify-center gap-2 rounded-full border-none text-base font-semibold text-white transition-transform active:scale-[0.98]",
                                     analyzeUsed
-                                      ? "bg-foreground-landing/50 cursor-not-allowed pointer-events-none"
-                                      : "bg-[#FF553E] hover:bg-[#E64935] cursor-pointer"
+                                      ? "bg-foreground-landing/50 pointer-events-none cursor-not-allowed"
+                                      : "cursor-pointer bg-[#FF553E] hover:bg-[#E64935]"
                                   )}
                                 >
                                   {analyzeUsed ? "Already used" : "Select Resume"}
@@ -671,11 +671,11 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab, onResume
                   {resultContent && (
                     <ResultPopup content={resultContent} onClose={() => setResultContent(null)} />
                   )}
-                  <p className="text-muted-foreground text-base mt-8">
+                  <p className="text-muted-foreground mt-8 text-base">
                     By uploading, you agree to our{" "}
                     <Link
                       href="/terms-and-conditions"
-                      className="underline hover:text-foreground transition-colors"
+                      className="hover:text-foreground underline transition-colors"
                     >
                       Terms of Service
                     </Link>
@@ -703,10 +703,10 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab, onResume
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6, delay: 0.1 }}
-                      className="flex items-center justify-center gap-2 mb-4"
+                      className="mb-4 flex items-center justify-center gap-2"
                     >
-                      <Sun className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                      <p className="text-xs sm:text-sm font-medium text-foreground-landing/60 uppercase tracking-wider">
+                      <Sun className="h-4 w-4 fill-yellow-500 text-yellow-500" />
+                      <p className="text-foreground-landing/60 text-xs font-medium tracking-wider uppercase sm:text-sm">
                         Built for{" "}
                         <Typewriter
                           text={["Product Designers", "Product Managers", "DEVs"]}
@@ -723,7 +723,7 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab, onResume
                       as="h1"
                       preset="blur"
                       per="word"
-                      className="min-[420px]:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl leading-[1.1] mb-4 sm:mb-6 font-eudoxus font-bold text-2xl text-foreground-landing"
+                      className="font-eudoxus text-foreground-landing mb-4 text-2xl leading-[1.1] font-bold min-[420px]:text-3xl sm:mb-6 sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl"
                       data-testid="text-hero-headline"
                       delay={0.1}
                     >
@@ -731,7 +731,7 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab, onResume
                     </TextEffect>
                   </motion.div>
                   <motion.p
-                    className="sm:text-base md:text-[1rem] text-[rgb(125,125,125)] leading-relaxed max-w-3xl mx-auto mb-6 sm:mb-8"
+                    className="mx-auto mb-6 max-w-3xl leading-relaxed text-[rgb(125,125,125)] sm:mb-8 sm:text-base md:text-[1rem]"
                     data-testid="text-hero-description"
                     initial={{ opacity: 0, filter: "blur(4px)", y: 8 }}
                     animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
@@ -753,7 +753,7 @@ export default function HeroSection({ dfToken, activeTab, setActiveTab, onResume
                     }}
                   >
                     {dfToken ? (
-                      <Link href="builder" className="flex items-center justify-center mt-6">
+                      <Link href="builder" className="mt-6 flex items-center justify-center">
                         <Button
                           text="Launch Builder"
                           customClass="bg-foreground-landing text-background-landing border border-foreground rounded-full py-2 px-3 sm:px-4 md:px-6 text-xs sm:text-sm md:text-base font-medium hover:bg-foreground-landing/80 transition-colors"

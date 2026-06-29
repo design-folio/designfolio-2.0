@@ -110,13 +110,13 @@ export default function SharedJobPage({ job, sharer, sharerUsername }) {
         />
       </Head>
 
-      <div className="min-h-screen bg-background flex flex-col">
+      <div className="bg-background flex min-h-screen flex-col">
         <ShareNav authState={authState} jobId={job.id} />
 
         {/* pt-[70px] clears the fixed nav */}
-        <main className="flex-1 max-w-5xl mx-auto w-full px-5 pt-[70px] pb-16">
+        <main className="mx-auto w-full max-w-5xl flex-1 px-5 pt-[70px] pb-16">
           <div className="py-8">
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_284px] gap-5 items-start">
+            <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-[1fr_284px]">
               {/* ── Left: job content ── */}
               <div className="min-w-0 space-y-4">
                 <JobHeroCard
@@ -146,7 +146,7 @@ export default function SharedJobPage({ job, sharer, sharerUsername }) {
               </div>
 
               {/* ── Right: sticky sidebar (desktop) ── */}
-              <div className="hidden lg:block min-w-0 lg:sticky lg:top-[74px]">
+              <div className="hidden min-w-0 lg:sticky lg:top-[74px] lg:block">
                 {authState === "loading" ? (
                   <CTASkeleton />
                 ) : (

@@ -137,8 +137,9 @@ export function LocationAutocomplete({
     <div ref={containerRef} className="relative w-full">
       <div className="relative flex items-center">
         <MapPin
-          className={`absolute left-3 pointer-events-none shrink-0 text-muted-foreground/50 ${isSm ? "w-3 h-3" : "w-4 h-4 left-4"
-            }`}
+          className={`text-muted-foreground/50 pointer-events-none absolute left-3 shrink-0 ${
+            isSm ? "h-3 w-3" : "left-4 h-4 w-4"
+          }`}
         />
         <Input
           ref={inputRef}
@@ -149,17 +150,18 @@ export function LocationAutocomplete({
           onFocus={() => suggestions.length > 0 && setIsOpen(true)}
           placeholder={placeholder}
           autoComplete="off"
-          className={`h-auto ${isSm
-              ? "pl-7 pr-7 py-2 text-[13px] rounded-xl"
-              : "pl-10 pr-10 py-4 text-[15px] rounded-2xl"
-            } ${inputClassName}`}
+          className={`h-auto ${
+            isSm
+              ? "rounded-xl py-2 pr-7 pl-7 text-[13px]"
+              : "rounded-2xl py-4 pr-10 pl-10 text-[15px]"
+          } ${inputClassName}`}
         />
         {isLoading && (
           <div className={`absolute flex gap-[3px] ${isSm ? "right-3" : "right-4"}`}>
             {[0, 1, 2].map((i) => (
               <div
                 key={i}
-                className="w-1 h-1 rounded-full bg-muted-foreground/40 animate-pulse"
+                className="bg-muted-foreground/40 h-1 w-1 animate-pulse rounded-full"
                 style={{ animationDelay: `${i * 0.15}s` }}
               />
             ))}
@@ -169,10 +171,11 @@ export function LocationAutocomplete({
           <button
             type="button"
             onClick={handleClear}
-            className={`absolute text-muted-foreground/40 hover:text-muted-foreground transition-colors ${isSm ? "right-2.5" : "right-4"
-              }`}
+            className={`text-muted-foreground/40 hover:text-muted-foreground absolute transition-colors ${
+              isSm ? "right-2.5" : "right-4"
+            }`}
           >
-            <X className={isSm ? "w-3 h-3" : "w-3.5 h-3.5"} />
+            <X className={isSm ? "h-3 w-3" : "h-3.5 w-3.5"} />
           </button>
         )}
       </div>
@@ -180,7 +183,7 @@ export function LocationAutocomplete({
       <AnimatePresence>
         {isOpen && suggestions.length > 0 && (
           <motion.ul
-            className="absolute z-50 mt-1.5 w-full bg-background dark:bg-muted border border-border rounded-xl shadow-lg overflow-y-auto max-h-[min(220px,30vh)]"
+            className="bg-background dark:bg-muted border-border absolute z-50 mt-1.5 max-h-[min(220px,30vh)] w-full overflow-y-auto rounded-xl border shadow-lg"
             initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
@@ -195,12 +198,13 @@ export function LocationAutocomplete({
                     handleSelect(s);
                   }}
                   onMouseEnter={() => setActiveIndex(i)}
-                  className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-left text-[13px] transition-colors ${i === activeIndex
+                  className={`flex w-full items-center gap-2.5 px-3 py-2.5 text-left text-[13px] transition-colors ${
+                    i === activeIndex
                       ? "bg-foreground/6 dark:bg-foreground/10 text-foreground"
                       : "text-foreground/80 hover:bg-foreground/4 dark:hover:bg-foreground/8"
-                    } ${i < suggestions.length - 1 ? "border-b border-border/50" : ""}`}
+                  } ${i < suggestions.length - 1 ? "border-border/50 border-b" : ""}`}
                 >
-                  <MapPin className="w-3 h-3 text-muted-foreground/50 shrink-0 mt-px" />
+                  <MapPin className="text-muted-foreground/50 mt-px h-3 w-3 shrink-0" />
                   <span className="truncate">{s.label}</span>
                 </button>
               </li>

@@ -92,7 +92,7 @@ function AnalyticsPage() {
 
   return (
     <SidebarProvider {...sidebarProviderProps}>
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
         <div className={containerClass}>
           {template === TEMPLATE_IDS.MONO && <div className="custom-dashed-t" />}

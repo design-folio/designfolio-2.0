@@ -192,7 +192,7 @@ export default function Login() {
                 <div className="flex justify-end">
                   <Link
                     href="/forgot-password"
-                    className="text-sm font-medium hover:underline text-[#FF553E]"
+                    className="text-sm font-medium text-[#FF553E] hover:underline"
                   >
                     Forgot password?
                   </Link>
@@ -208,7 +208,7 @@ export default function Login() {
                   Log in with Google
                 </GoogleButton>
 
-                <p className="text-center text-sm text-foreground/70 mt-6">
+                <p className="text-foreground/70 mt-6 text-center text-sm">
                   Don&apos;t have an account?{" "}
                   <button
                     type="button"
@@ -218,7 +218,7 @@ export default function Login() {
                         !!sessionStorage.getItem("df_parsed_resume");
                       router.push(hasResume ? "/resume-signup" : "/claim-link");
                     }}
-                    className="hover:underline font-medium text-[#FF553E] cursor-pointer"
+                    className="cursor-pointer font-medium text-[#FF553E] hover:underline"
                   >
                     Sign up
                   </button>
@@ -249,7 +249,7 @@ export default function Login() {
 
           <Button
             variant="outline"
-            className="w-full rounded-full h-[50px] px-5 text-base font-medium border-border bg-(--input-bg-color) hover:bg-muted gap-3"
+            className="border-border hover:bg-muted h-[50px] w-full gap-3 rounded-full bg-(--input-bg-color) px-5 text-base font-medium"
             onClick={() => {
               event(POSTHOG_EVENT_NAMES.LOGIN_STARTED);
               event(POSTHOG_EVENT_NAMES.LOGIN_METHOD_SELECTED, {
@@ -258,12 +258,12 @@ export default function Login() {
               setLoginStep("email");
             }}
           >
-            <Mail className="w-5 h-5" />
+            <Mail className="h-5 w-5" />
             Log in with Email
           </Button>
         </div>
 
-        <p className="text-center text-sm text-foreground/70 mt-8">
+        <p className="text-foreground/70 mt-8 text-center text-sm">
           Don&apos;t have an account?{" "}
           <button
             type="button"
@@ -272,7 +272,7 @@ export default function Login() {
                 typeof window !== "undefined" && !!sessionStorage.getItem("df_parsed_resume");
               router.push(hasResume ? "/resume-signup" : "/claim-link");
             }}
-            className="hover:underline font-medium text-[#FF553E] cursor-pointer"
+            className="cursor-pointer font-medium text-[#FF553E] hover:underline"
           >
             Sign up
           </button>

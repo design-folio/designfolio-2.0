@@ -344,7 +344,7 @@ export default function UpgradeModal() {
                   minWidth: 320,
                 }}
               >
-                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-foreground/30" />
+                <div className="border-foreground/30 h-8 w-8 animate-spin rounded-full border-t-2 border-b-2" />
               </div>
             ) : (
               <>
@@ -368,16 +368,16 @@ export default function UpgradeModal() {
                       />
                       <h2 className={styles.modalTitle}>{heading.title}</h2>
                       {isJobTool && upgradeModalJob && (
-                        <div className="flex items-center gap-2 mb-2 min-w-0">
+                        <div className="mb-2 flex min-w-0 items-center gap-2">
                           <CompanyLogo
                             logoUrl={upgradeModalJob.logoUrl}
                             company={upgradeModalJob.company}
                             size={24}
-                            className="rounded-md shrink-0"
+                            className="shrink-0 rounded-md"
                           />
-                          <span className="text-[14px] font-medium text-[#1f2937] line-clamp-1">
+                          <span className="line-clamp-1 text-[14px] font-medium text-[#1f2937]">
                             {upgradeModalJob.role}
-                            <span className="text-[#9ca3af] mx-1">•</span>
+                            <span className="mx-1 text-[#9ca3af]">•</span>
                             {upgradeModalJob.company}
                           </span>
                         </div>
@@ -404,16 +404,16 @@ export default function UpgradeModal() {
                           });
                         }}
                       >
-                        <TabsList className="flex p-1 rounded-lg gap-1 w-full h-auto bg-[#f0f0f0] overflow-visible">
+                        <TabsList className="flex h-auto w-full gap-1 overflow-visible rounded-lg bg-[#f0f0f0] p-1">
                           {proPlans.map((p) => (
                             <TabsTrigger
                               key={p.plan}
                               value={p.plan}
-                              className="relative flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 text-[#525252] hover:text-[#0a0a0a] data-[state=active]:bg-[#ffffff] data-[state=active]:text-[#0a0a0a] data-[state=active]:shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]"
+                              className="relative flex-1 rounded-md px-3 py-1.5 text-xs font-medium text-[#525252] transition-all duration-200 hover:text-[#0a0a0a] data-[state=active]:bg-[#ffffff] data-[state=active]:text-[#0a0a0a] data-[state=active]:shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]"
                             >
                               {p.plan === "lifetime" && (
                                 <span
-                                  className="absolute -top-[18px] left-1/2 -translate-x-1/2 whitespace-nowrap px-2 py-[3.5px] rounded-full text-[8.5px] font-semibold uppercase select-none"
+                                  className="absolute -top-[18px] left-1/2 -translate-x-1/2 rounded-full px-2 py-[3.5px] text-[8.5px] font-semibold whitespace-nowrap uppercase select-none"
                                   style={{
                                     background: "linear-gradient(180deg, #383838 0%, #1c1c1c 100%)",
                                     color: "rgba(255,255,255,0.82)",
@@ -460,7 +460,7 @@ export default function UpgradeModal() {
                                     /one-time
                                   </div>
                                 </div>
-                                <div className="text-sm text-[#6b7280] font-medium mt-0.5">
+                                <div className="mt-0.5 text-sm font-medium text-[#6b7280]">
                                   Pay once. Use it throughout your career.
                                 </div>
                               </>
@@ -475,7 +475,7 @@ export default function UpgradeModal() {
                                   </div>
                                   <div className={styles.priceSubtext}>/ per month</div>
                                 </div>
-                                <div className="text-sm text-[#6b7280] font-medium mt-1">
+                                <div className="mt-1 text-sm font-medium text-[#6b7280]">
                                   {selectedPlan?.plan === "mthly"
                                     ? "billed monthly"
                                     : `billed ${formatAmount(selectedPlan?.amount, selectedPlan?.currency)} ${{ qtrly: "quarterly", yrly: "yearly" }[selectedPlan?.plan] ?? "per period"}`}
@@ -514,7 +514,7 @@ export default function UpgradeModal() {
                       <Button
                         onClick={openCheckout}
                         disabled={checkoutLoading}
-                        className="w-full h-12 text-sm font-bold bg-[hsl(7,100%,62%)] hover:bg-[hsl(7,100%,55%)] text-white border-none"
+                        className="h-12 w-full border-none bg-[hsl(7,100%,62%)] text-sm font-bold text-white hover:bg-[hsl(7,100%,55%)]"
                       >
                         {getButtonText()}
                       </Button>
@@ -528,16 +528,16 @@ export default function UpgradeModal() {
                     />
 
                     {/* FAQ toggle chip */}
-                    <div className="flex mt-3">
+                    <div className="mt-3 flex">
                       <button
                         onClick={() => setShowFaq((s) => !s)}
-                        className={`flex items-center gap-1.5 text-[11px] font-medium rounded-full px-2.5 py-[5px] border transition-all duration-200 ${
+                        className={`flex items-center gap-1.5 rounded-full border px-2.5 py-[5px] text-[11px] font-medium transition-all duration-200 ${
                           showFaq
                             ? "border-[#9ca3af] bg-[#f3f4f6] text-[#374151]"
-                            : "border-[#c4c9d4] bg-transparent text-[#6b7280] hover:text-[#374151] hover:border-[#9ca3af]"
+                            : "border-[#c4c9d4] bg-transparent text-[#6b7280] hover:border-[#9ca3af] hover:text-[#374151]"
                         }`}
                       >
-                        <HelpCircle className="w-3 h-3 shrink-0" />
+                        <HelpCircle className="h-3 w-3 shrink-0" />
                         Have more doubts? FAQ
                       </button>
                     </div>
@@ -556,8 +556,8 @@ export default function UpgradeModal() {
                             transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
                             className="overflow-hidden"
                           >
-                            <div className="pt-4 mt-3 border-t border-[#e5e7eb]">
-                              <h3 className="text-[14px] font-bold text-[#111827] tracking-tight mb-0.5">
+                            <div className="mt-3 border-t border-[#e5e7eb] pt-4">
+                              <h3 className="mb-0.5 text-[14px] font-bold tracking-tight text-[#111827]">
                                 FAQs
                               </h3>
                               <FaqAccordion compact />
@@ -581,12 +581,12 @@ export default function UpgradeModal() {
                         transition={{ duration: 0.18, delay: 0.14 }}
                         className={styles.modalRightPanel}
                       >
-                        <div className="px-5 py-4 border-b border-[#f3f4f6]">
-                          <h3 className="text-[16px] font-bold text-[#111827] tracking-tight">
+                        <div className="border-b border-[#f3f4f6] px-5 py-4">
+                          <h3 className="text-[16px] font-bold tracking-tight text-[#111827]">
                             FAQs
                           </h3>
                         </div>
-                        <div className="overflow-y-auto flex-1 px-5 py-2">
+                        <div className="flex-1 overflow-y-auto px-5 py-2">
                           <FaqAccordion />
                         </div>
                       </motion.div>
@@ -606,7 +606,7 @@ function PlanQuote({ plan }) {
   const { Icon, text } = PLAN_QUOTES[plan] ?? PLAN_QUOTES.yrly;
   return (
     <div
-      className="flex items-center gap-2.5 mb-4 px-3 py-2.5 rounded-xl"
+      className="mb-4 flex items-center gap-2.5 rounded-xl px-3 py-2.5"
       style={{
         border: "1px solid #e5e7eb",
         background: "#f9fafb",
@@ -614,10 +614,10 @@ function PlanQuote({ plan }) {
       }}
     >
       <span
-        className="shrink-0 w-[22px] h-[22px] rounded-md flex items-center justify-center"
+        className="flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-md"
         style={{ background: "rgba(232,89,58,0.12)" }}
       >
-        <Icon className="w-3 h-3" style={{ color: "#E8593A" }} />
+        <Icon className="h-3 w-3" style={{ color: "#E8593A" }} />
       </span>
       <p className="text-[11.5px] leading-snug" style={{ color: "#4b5563" }}>
         {text}
@@ -645,7 +645,7 @@ function FeaturesList({ showAll, onToggle }) {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-            className="overflow-hidden flex flex-col gap-3"
+            className="flex flex-col gap-3 overflow-hidden"
           >
             {hidden.map((f) => (
               <div key={f} className={styles.featureItem}>
@@ -658,7 +658,7 @@ function FeaturesList({ showAll, onToggle }) {
       </AnimatePresence>
       <button
         onClick={onToggle}
-        className="flex items-center gap-1 text-[11px] font-medium text-[#9ca3af] hover:text-[#6b7280] transition-colors duration-150"
+        className="flex items-center gap-1 text-[11px] font-medium text-[#9ca3af] transition-colors duration-150 hover:text-[#6b7280]"
       >
         <ChevronDown
           size={12}
@@ -681,15 +681,15 @@ function FaqAccordion({ compact = false }) {
           className="border-b border-[#f3f4f6] last:border-0"
         >
           <AccordionTrigger
-            className={`font-medium text-left hover:no-underline leading-snug ${
-              compact ? "text-[12px] py-3 text-[#374151]" : "text-[13.5px] py-4 text-[#1f2937]"
+            className={`text-left leading-snug font-medium hover:no-underline ${
+              compact ? "py-3 text-[12px] text-[#374151]" : "py-4 text-[13.5px] text-[#1f2937]"
             }`}
           >
             {item.q}
           </AccordionTrigger>
           <AccordionContent>
             <p
-              className={`text-[#6b7280] leading-relaxed ${compact ? "text-[11.5px] pb-1" : "text-[13px] pb-2"}`}
+              className={`leading-relaxed text-[#6b7280] ${compact ? "pb-1 text-[11.5px]" : "pb-2 text-[13px]"}`}
             >
               {item.a}
             </p>
@@ -702,35 +702,35 @@ function FaqAccordion({ compact = false }) {
 
 function LogoMarquee() {
   return (
-    <div className="pt-4 flex flex-col gap-2">
+    <div className="flex flex-col gap-2 pt-4">
       <div className="flex items-center gap-2">
-        <div className="flex-1 h-px bg-[#e5e7eb]" />
-        <span className="text-[10px] font-semibold tracking-[0.08em] uppercase text-[#9ca3af] whitespace-nowrap">
+        <div className="h-px flex-1 bg-[#e5e7eb]" />
+        <span className="text-[10px] font-semibold tracking-[0.08em] whitespace-nowrap text-[#9ca3af] uppercase">
           31,000+ Designfolio users work at
         </span>
-        <div className="flex-1 h-px bg-[#e5e7eb]" />
+        <div className="h-px flex-1 bg-[#e5e7eb]" />
       </div>
       <div className="relative min-h-8 py-1">
-        <div className="absolute left-0 top-0 bottom-0 w-6 z-10 pointer-events-none bg-gradient-to-r from-white to-transparent" />
-        <div className="absolute right-0 top-0 bottom-0 w-6 z-10 pointer-events-none bg-gradient-to-l from-white to-transparent" />
-        <div className="flex gap-0 overflow-x-hidden min-h-8 px-1">
+        <div className="pointer-events-none absolute top-0 bottom-0 left-0 z-10 w-6 bg-gradient-to-r from-white to-transparent" />
+        <div className="pointer-events-none absolute top-0 right-0 bottom-0 z-10 w-6 bg-gradient-to-l from-white to-transparent" />
+        <div className="flex min-h-8 gap-0 overflow-x-hidden px-1">
           {[TRUSTED_BY_LOGOS, TRUSTED_BY_LOGOS].map((logos, pass) => (
             <div
               key={pass}
-              className="flex animate-scroll items-center gap-0 shrink-0 min-h-8 py-0.5"
+              className="animate-scroll flex min-h-8 shrink-0 items-center gap-0 py-0.5"
               aria-hidden={pass === 1 ? "true" : undefined}
             >
               {logos.map((logo, i) => (
                 <div
                   key={i}
-                  className="flex items-center justify-center px-2 shrink-0 min-h-8 min-w-[48px]"
+                  className="flex min-h-8 min-w-[48px] shrink-0 items-center justify-center px-2"
                 >
                   <img
                     src={logo}
                     alt=""
                     width={32}
                     height={16}
-                    className="h-4 w-auto max-h-6 opacity-50 grayscale object-contain"
+                    className="h-4 max-h-6 w-auto object-contain opacity-50 grayscale"
                   />
                 </div>
               ))}
@@ -744,14 +744,14 @@ function LogoMarquee() {
 
 function UrgencyBanner() {
   return (
-    <div className="flex items-center justify-center gap-2 mt-2.5 mb-4">
-      <span className="relative shrink-0 flex h-[7px] w-[7px]">
+    <div className="mt-2.5 mb-4 flex items-center justify-center gap-2">
+      <span className="relative flex h-[7px] w-[7px] shrink-0">
         <span
-          className="animate-ping absolute inline-flex h-full w-full rounded-full"
+          className="absolute inline-flex h-full w-full animate-ping rounded-full"
           style={{ backgroundColor: "#E8593A", opacity: 0.5 }}
         />
         <span
-          className="relative inline-flex rounded-full h-[7px] w-[7px]"
+          className="relative inline-flex h-[7px] w-[7px] rounded-full"
           style={{ backgroundColor: "#E8593A" }}
         />
       </span>

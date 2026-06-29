@@ -41,7 +41,7 @@ const PreviewProjectCard = ({ project, preview, embeddedPreview }) => {
     }
   };
   return (
-    <div className="h-full w-full flex">
+    <div className="flex h-full w-full">
       <ProjectCard
         project={project}
         onDeleteProject={() => {}}
@@ -94,7 +94,7 @@ const SortableItem = ({
     <div
       ref={setNodeRef}
       style={style}
-      className={`h-full w-full flex ${isDragging ? "relative" : ""}`}
+      className={`flex h-full w-full ${isDragging ? "relative" : ""}`}
     >
       <ProjectCard
         project={project}

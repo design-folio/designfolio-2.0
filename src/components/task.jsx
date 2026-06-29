@@ -25,10 +25,10 @@ export default function Task({ setOpen }) {
 
   return (
     <div
-      className="bg-popover-bg-color shadow-lg border-4 border-popover-border-color transition-all ease-in-out duration-400 p-4 rounded-[24px] flex flex-col gap-[14px] w-[286px]"
+      className="bg-popover-bg-color border-popover-border-color flex w-[286px] flex-col gap-[14px] rounded-[24px] border-4 p-4 shadow-lg transition-all duration-400 ease-in-out"
       style={{ boxShadow: "0px 8.3px 33.2px 0px rgba(32, 41, 55, 0.14)" }}
     >
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <Text size="p-xsmall" className="text-checked-list-item-text-color cursor-pointer">
           Launch your portfolio
         </Text>
@@ -36,7 +36,7 @@ export default function Task({ setOpen }) {
           // customClass="lg:hidden"
           type="secondary"
           customClass="!p-2"
-          icon={<CloseIcon className="text-icon-color text-base cursor-pointer" />}
+          icon={<CloseIcon className="text-icon-color cursor-pointer text-base" />}
           onClick={setOpen}
         />
       </div>
@@ -46,14 +46,14 @@ export default function Task({ setOpen }) {
           <div
             key={i}
             onClick={() => handleClick(i)}
-            className={`border group border-checked-list-item-border-color bg-checked-list-item-bg-color  transition-all duration-200 ease-in-out hover:bg-checked-list-item-bg-hover-color rounded-2xl flex gap-[10px] items-center p-[10px]  ${
+            className={`group border-checked-list-item-border-color bg-checked-list-item-bg-color hover:bg-checked-list-item-bg-hover-color flex items-center gap-[10px] rounded-2xl border p-[10px] transition-all duration-200 ease-in-out ${
               !item?.checked ? "cursor-pointer " : "cursor-default"
             }`}
           >
             {item?.checked ? (
               <CheckedIcon className="text-checked-list-item-icon-color" />
             ) : (
-              <div className="w-[25px] h-[25px] border border-check-list-empty-border-color rounded-full cursor-pointer"></div>
+              <div className="border-check-list-empty-border-color h-[25px] w-[25px] cursor-pointer rounded-full border"></div>
             )}
             <Text
               size={`p-xxxsmall`}

@@ -99,7 +99,7 @@ export default function StatsWindow({
         <div className="mb-3">
           <h3 className="text-sm font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">{title}</h3>
           {description && (
-            <p className="text-xs text-[#7A736C] dark:text-[#B5AFA5] mt-0.5">{description}</p>
+            <p className="mt-0.5 text-xs text-[#7A736C] dark:text-[#B5AFA5]">{description}</p>
           )}
         </div>
       )}

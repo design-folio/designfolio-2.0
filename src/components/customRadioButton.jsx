@@ -9,7 +9,7 @@ import CheckedIcon from "../../public/assets/svgs/checked.svg";
 const CustomRadioButton = ({ field, label, value, selected, disabled }) => {
   return (
     <label
-      className={`border group border-checked-list-item-border-color w-fit bg-checked-list-item-bg-color  transition-all duration-200 ease-in-out hover:bg-checked-list-item-bg-hover-color rounded-2xl flex gap-[10px] items-center p-[10px]  ${
+      className={`group border-checked-list-item-border-color bg-checked-list-item-bg-color hover:bg-checked-list-item-bg-hover-color flex w-fit items-center gap-[10px] rounded-2xl border p-[10px] transition-all duration-200 ease-in-out ${
         !selected ? "cursor-pointer " : "cursor-default"
       }`}
     >
@@ -25,7 +25,7 @@ const CustomRadioButton = ({ field, label, value, selected, disabled }) => {
       {selected ? (
         <CheckedIcon className="text-checked-list-item-icon-color" />
       ) : (
-        <div className="w-[25px] h-[25px] border border-check-list-empty-border-color rounded-full"></div>
+        <div className="border-check-list-empty-border-color h-[25px] w-[25px] rounded-full border"></div>
       )}
       <Text size="p-xxsmall" className="text-checked-list-item-text-color">
         {label}

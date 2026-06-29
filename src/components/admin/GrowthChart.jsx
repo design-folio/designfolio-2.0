@@ -47,7 +47,7 @@ export default function GrowthChart({ timeSeries }) {
 
   return (
     <figure>
-      <h3 className="text-sm font-manrope font-medium text-[#1A1A1A] dark:text-[#F0EDE7] mb-4">
+      <h3 className="font-manrope mb-4 text-sm font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
         Growth — Last 30 Days
       </h3>
       <figcaption className="sr-only">

@@ -54,18 +54,18 @@ function AccountTab({ userDetails, onSignOut }) {
       <SectionBlock title="Profile">
         {/* Avatar row */}
         <div className="flex items-center gap-4">
-          <Avatar className="size-14 border border-black/10 dark:border-white/10 shrink-0">
+          <Avatar className="size-14 shrink-0 border border-black/10 dark:border-white/10">
             <AvatarImage src={getUserAvatarImage(userDetails)} className="object-cover" />
-            <AvatarFallback className="text-base font-semibold bg-[#F0EDE7] dark:bg-[#2A2520] text-[#1A1A1A] dark:text-[#F0EDE7]">
+            <AvatarFallback className="bg-[#F0EDE7] text-base font-semibold text-[#1A1A1A] dark:bg-[#2A2520] dark:text-[#F0EDE7]">
               {userDetails?.username?.[0]?.toUpperCase() ?? "U"}
             </AvatarFallback>
           </Avatar>
           <div>
-            <p className="text-[15px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7] leading-snug">
+            <p className="text-[15px] leading-snug font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
               {[userDetails?.firstName, userDetails?.lastName].filter(Boolean).join(" ") ||
                 userDetails?.username}
             </p>
-            <p className="text-[13px] text-[#7A736C] dark:text-[#9E9893] mt-0.5">
+            <p className="mt-0.5 text-[13px] text-[#7A736C] dark:text-[#9E9893]">
               {userDetails?.email}
             </p>
           </div>
@@ -87,7 +87,7 @@ function AccountTab({ userDetails, onSignOut }) {
             <p className="text-[14px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
               Sign out from this device
             </p>
-            <p className="text-[13px] text-[#7A736C] dark:text-[#9E9893] mt-0.5">
+            <p className="mt-0.5 text-[13px] text-[#7A736C] dark:text-[#9E9893]">
               You are signed in as {userDetails?.email}
             </p>
           </div>
@@ -143,11 +143,11 @@ function MobileTabBar({ activeTab, setActiveTab }) {
   return (
     <div className="shrink-0 border-b border-black/[0.06] dark:border-white/[0.06]">
       <div className="px-5 pt-5 pb-2">
-        <span className="text-[13px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7] tracking-[0.01em]">
+        <span className="text-[13px] font-semibold tracking-[0.01em] text-[#1A1A1A] dark:text-[#F0EDE7]">
           Settings
         </span>
       </div>
-      <div className="flex overflow-x-auto hide-scrollbar relative">
+      <div className="hide-scrollbar relative flex overflow-x-auto">
         {TABS.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -156,9 +156,9 @@ function MobileTabBar({ activeTab, setActiveTab }) {
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={cn(
-                "relative flex items-center gap-1.5 px-4 pb-3 text-[13px] whitespace-nowrap transition-colors shrink-0 focus:outline-none",
+                "relative flex shrink-0 items-center gap-1.5 px-4 pb-3 text-[13px] whitespace-nowrap transition-colors focus:outline-none",
                 isActive
-                  ? "text-[#1A1A1A] dark:text-[#F0EDE7] font-medium"
+                  ? "font-medium text-[#1A1A1A] dark:text-[#F0EDE7]"
                   : "text-[#7A736C] dark:text-[#9E9893]"
               )}
             >
@@ -167,7 +167,7 @@ function MobileTabBar({ activeTab, setActiveTab }) {
               {isActive && (
                 <motion.div
                   layoutId="settings-mobile-indicator"
-                  className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#1A1A1A] dark:bg-[#F0EDE7] rounded-full"
+                  className="absolute right-0 bottom-0 left-0 h-[2px] rounded-full bg-[#1A1A1A] dark:bg-[#F0EDE7]"
                   initial={false}
                   transition={{ type: "spring", bounce: 0.15, duration: 0.3 }}
                 />
@@ -186,7 +186,7 @@ function SidebarNav({ activeTab, setActiveTab }) {
   const [hoveredTab, setHoveredTab] = useState(null);
 
   return (
-    <nav className="px-2 flex-1" onMouseLeave={() => setHoveredTab(null)}>
+    <nav className="flex-1 px-2" onMouseLeave={() => setHoveredTab(null)}>
       {TABS.map((tab) => {
         const Icon = tab.icon;
         const isActive = activeTab === tab.id;
@@ -197,22 +197,22 @@ function SidebarNav({ activeTab, setActiveTab }) {
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             onMouseEnter={() => setHoveredTab(tab.id)}
-            className="relative w-full text-left flex items-center gap-2.5 px-3 py-[7px] rounded-xl cursor-pointer mb-0.5 focus:outline-none"
+            className="relative mb-0.5 flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-3 py-[7px] text-left focus:outline-none"
           >
             {isActive && (
               <motion.div
                 layoutId="settings-tab-active"
-                className="absolute inset-0 rounded-xl bg-black/[0.07] dark:bg-white/[0.07] pointer-events-none"
+                className="pointer-events-none absolute inset-0 rounded-xl bg-black/[0.07] dark:bg-white/[0.07]"
                 initial={false}
                 transition={{ type: "spring", bounce: 0.15, duration: 0.35 }}
               />
             )}
             {!isActive && isHovered && (
-              <div className="absolute inset-0 rounded-xl bg-black/[0.04] dark:bg-white/[0.04] pointer-events-none" />
+              <div className="pointer-events-none absolute inset-0 rounded-xl bg-black/[0.04] dark:bg-white/[0.04]" />
             )}
             <Icon
               className={cn(
-                "size-[15px] shrink-0 relative z-10 cursor-pointer",
+                "relative z-10 size-[15px] shrink-0 cursor-pointer",
                 isActive
                   ? "text-[#1A1A1A] dark:text-[#F0EDE7]"
                   : "text-[#7A736C] dark:text-[#9E9893]"
@@ -220,10 +220,10 @@ function SidebarNav({ activeTab, setActiveTab }) {
             />
             <span
               className={cn(
-                "text-[13px] relative z-10 cursor-pointer",
+                "relative z-10 cursor-pointer text-[13px]",
                 isActive
-                  ? "text-[#1A1A1A] dark:text-[#F0EDE7] font-medium"
-                  : "text-[#7A736C] dark:text-[#9E9893] font-normal"
+                  ? "font-medium text-[#1A1A1A] dark:text-[#F0EDE7]"
+                  : "font-normal text-[#7A736C] dark:text-[#9E9893]"
               )}
             >
               {tab.label}
@@ -306,11 +306,11 @@ export default function SettingsModal() {
       <Sheet open={showSettingsModal} onOpenChange={setShowSettingsModal}>
         <SheetContent
           side="bottom"
-          className="rounded-t-3xl bg-white dark:bg-[#1C1C1C] border-t border-black/10 dark:border-white/10 p-0 flex flex-col h-[90dvh]"
+          className="flex h-[90dvh] flex-col rounded-t-3xl border-t border-black/10 bg-white p-0 dark:border-white/10 dark:bg-[#1C1C1C]"
         >
           <SheetTitle className="sr-only">Settings</SheetTitle>
           <MobileTabBar activeTab={activeTab} setActiveTab={setActiveTab} />
-          <div className="flex-1 min-h-0 overflow-y-auto custom-thin-scrollbar">
+          <div className="custom-thin-scrollbar min-h-0 flex-1 overflow-y-auto">
             <TabContent {...sharedProps} padding="p-5 pb-10" />
           </div>
         </SheetContent>
@@ -323,15 +323,15 @@ export default function SettingsModal() {
     <Dialog open={showSettingsModal} onOpenChange={setShowSettingsModal}>
       <DialogContent
         overlayClassName="z-[201]"
-        className="z-[202] max-w-[860px] p-0 overflow-hidden gap-0 rounded-2xl border border-black/10 dark:border-white/10 bg-white dark:bg-[#1C1C1C] h-[580px] shadow-2xl flex flex-col"
+        className="z-[202] flex h-[580px] max-w-[860px] flex-col gap-0 overflow-hidden rounded-2xl border border-black/10 bg-white p-0 shadow-2xl dark:border-white/10 dark:bg-[#1C1C1C]"
       >
         <DialogTitle className="sr-only">Settings</DialogTitle>
 
-        <div className="flex flex-1 min-h-0">
+        <div className="flex min-h-0 flex-1">
           {/* ── Left sidebar ── */}
-          <div className="w-[210px] shrink-0 border-r border-black/[0.06] dark:border-white/[0.06] bg-[#F7F6F4] dark:bg-[#161616] flex flex-col overflow-hidden rounded-l-2xl">
+          <div className="flex w-[210px] shrink-0 flex-col overflow-hidden rounded-l-2xl border-r border-black/[0.06] bg-[#F7F6F4] dark:border-white/[0.06] dark:bg-[#161616]">
             <div className="px-5 pt-5 pb-4">
-              <span className="text-[13px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7] tracking-[0.01em]">
+              <span className="text-[13px] font-semibold tracking-[0.01em] text-[#1A1A1A] dark:text-[#F0EDE7]">
                 Settings
               </span>
             </div>
@@ -339,7 +339,7 @@ export default function SettingsModal() {
           </div>
 
           {/* ── Right content ── */}
-          <div className="flex-1 min-w-0 overflow-y-auto rounded-r-2xl custom-thin-scrollbar">
+          <div className="custom-thin-scrollbar min-w-0 flex-1 overflow-y-auto rounded-r-2xl">
             <TabContent {...sharedProps} padding="p-8 pr-10" />
           </div>
         </div>

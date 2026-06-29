@@ -7,7 +7,7 @@ function Spinner({ className, variant = "default", ...props }) {
       <svg
         role="status"
         aria-label="Loading"
-        className={cn("animate-spin size-4", className)}
+        className={cn("size-4 animate-spin", className)}
         viewBox="0 0 24 24"
         fill="none"
         {...props}

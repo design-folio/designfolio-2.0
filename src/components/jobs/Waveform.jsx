@@ -16,11 +16,11 @@ export function Waveform({ listening }) {
   const [barParams] = useState(makeBarParams);
 
   return (
-    <div className="flex items-center justify-center gap-[3px] h-14">
+    <div className="flex h-14 items-center justify-center gap-[3px]">
       {barParams.map((p, i) => (
         <motion.div
           key={i}
-          className="w-[3px] rounded-full bg-foreground/60"
+          className="bg-foreground/60 w-[3px] rounded-full"
           animate={
             listening
               ? {

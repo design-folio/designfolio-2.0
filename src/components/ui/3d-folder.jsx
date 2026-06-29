@@ -45,7 +45,7 @@ export function AnimatedFolder({ title, projects, className, onProjectClick }) {
     <>
       <div
         className={cn(
-          "relative flex flex-col items-center justify-center p-4 rounded-2xl cursor-pointer bg-transparent group",
+          "group relative flex cursor-pointer flex-col items-center justify-center rounded-2xl bg-transparent p-4",
           className
         )}
         style={{ minWidth: "120px", minHeight: "140px", perspective: "1000px" }}
@@ -54,12 +54,12 @@ export function AnimatedFolder({ title, projects, className, onProjectClick }) {
         onClick={handleFolderClick}
       >
         <div
-          className="relative flex items-center justify-center mb-2"
+          className="relative mb-2 flex items-center justify-center"
           style={{ height: "80px", width: "100px" }}
         >
           {/* Folder back layer */}
           <div
-            className="absolute w-16 h-12 bg-[#007aff] rounded-md shadow-sm"
+            className="absolute h-12 w-16 rounded-md bg-[#007aff] shadow-sm"
             style={{
               transformOrigin: "bottom center",
               transform: isHovered ? "rotateX(-15deg)" : "rotateX(0deg)",
@@ -69,7 +69,7 @@ export function AnimatedFolder({ title, projects, className, onProjectClick }) {
           />
           {/* Folder tab */}
           <div
-            className="absolute w-6 h-2 bg-[#007aff] rounded-t-sm"
+            className="absolute h-2 w-6 rounded-t-sm bg-[#007aff]"
             style={{
               top: "calc(50% - 24px - 6px)",
               left: "calc(50% - 32px + 8px)",
@@ -95,8 +95,8 @@ export function AnimatedFolder({ title, projects, className, onProjectClick }) {
                   handleFolderClick();
                 }}
                 className={cn(
-                  "absolute w-12 h-12 bg-white rounded-sm shadow-sm border border-black/5 overflow-hidden transition-all duration-500",
-                  hiddenCardId === project.id ? "opacity-0 scale-90" : "opacity-100 scale-100"
+                  "absolute h-12 w-12 overflow-hidden rounded-sm border border-black/5 bg-white shadow-sm transition-all duration-500",
+                  hiddenCardId === project.id ? "scale-90 opacity-0" : "scale-100 opacity-100"
                 )}
                 style={{
                   left: "-24px",
@@ -112,10 +112,10 @@ export function AnimatedFolder({ title, projects, className, onProjectClick }) {
                   <img
                     src={project.image}
                     alt={project.title}
-                    className="w-full h-full object-cover"
+                    className="h-full w-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-xs bg-gray-100">
+                  <div className="flex h-full w-full items-center justify-center bg-gray-100 text-xs">
                     {project.image}
                   </div>
                 )}
@@ -124,7 +124,7 @@ export function AnimatedFolder({ title, projects, className, onProjectClick }) {
           </div>
           {/* Folder front layer */}
           <div
-            className="absolute w-16 h-12 bg-[#4ca1ff] rounded-md shadow-md"
+            className="absolute h-12 w-16 rounded-md bg-[#4ca1ff] shadow-md"
             style={{
               top: "calc(50% - 24px + 2px)",
               transformOrigin: "bottom center",
@@ -134,7 +134,7 @@ export function AnimatedFolder({ title, projects, className, onProjectClick }) {
             }}
           />
         </div>
-        <h3 className="text-[11px] font-medium text-[#333] leading-tight group-hover:bg-[#0063e1] group-hover:text-white px-1.5 py-0.5 rounded transition-colors truncate max-w-full">
+        <h3 className="max-w-full truncate rounded px-1.5 py-0.5 text-[11px] leading-tight font-medium text-[#333] transition-colors group-hover:bg-[#0063e1] group-hover:text-white">
           {title}
         </h3>
       </div>
@@ -194,7 +194,7 @@ function BrowserWindow({ projects, currentIndex, isOpen, onClose, onCloseComplet
     >
       <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
       <div
-        className="relative bg-[#f3f3f3] rounded-lg shadow-2xl overflow-hidden w-full max-w-5xl h-[80vh] flex flex-col border border-gray-400"
+        className="relative flex h-[80vh] w-full max-w-5xl flex-col overflow-hidden rounded-lg border border-gray-400 bg-[#f3f3f3] shadow-2xl"
         onClick={(e) => e.stopPropagation()}
         style={{
           transform:
@@ -204,95 +204,95 @@ function BrowserWindow({ projects, currentIndex, isOpen, onClose, onCloseComplet
         }}
       >
         {/* Title Bar */}
-        <div className="h-10 bg-[#e7e7e7] flex items-center justify-between px-3 border-b border-gray-300 shrink-0 select-none">
+        <div className="flex h-10 shrink-0 items-center justify-between border-b border-gray-300 bg-[#e7e7e7] px-3 select-none">
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded-sm overflow-hidden bg-gray-200 flex items-center justify-center text-[10px] text-gray-500">
+            <div className="flex h-4 w-4 items-center justify-center overflow-hidden rounded-sm bg-gray-200 text-[10px] text-gray-500">
               {currentProject?.image?.startsWith?.("http") ? (
                 <img
                   src={currentProject.image}
                   alt={currentProject.title}
-                  className="w-full h-full object-cover"
+                  className="h-full w-full object-cover"
                 />
               ) : (
                 currentProject?.image
               )}
             </div>
-            <span className="text-[11px] text-gray-600 truncate max-w-[200px]">
+            <span className="max-w-[200px] truncate text-[11px] text-gray-600">
               {currentProject?.title || "New Tab"}
             </span>
           </div>
           <div className="flex items-center">
-            <button className="h-10 w-11 flex items-center justify-center hover:bg-gray-300 transition-colors">
+            <button className="flex h-10 w-11 items-center justify-center transition-colors hover:bg-gray-300">
               <Minus size={14} className="text-gray-600" />
             </button>
-            <button className="h-10 w-11 flex items-center justify-center hover:bg-gray-300 transition-colors">
+            <button className="flex h-10 w-11 items-center justify-center transition-colors hover:bg-gray-300">
               <Square size={10} className="text-gray-600" />
             </button>
             <button
               onClick={handleClose}
-              className="h-10 w-11 flex items-center justify-center hover:bg-[#e81123] hover:text-white transition-colors"
+              className="flex h-10 w-11 items-center justify-center transition-colors hover:bg-[#e81123] hover:text-white"
             >
               <X size={16} className="text-gray-600" />
             </button>
           </div>
         </div>
         {/* Toolbar */}
-        <div className="bg-white border-b border-gray-200 p-2 flex flex-col gap-2 shrink-0">
+        <div className="flex shrink-0 flex-col gap-2 border-b border-gray-200 bg-white p-2">
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1">
-              <button className="p-1.5 rounded-full hover:bg-gray-100">
+              <button className="rounded-full p-1.5 hover:bg-gray-100">
                 <ChevronLeft size={18} className="text-gray-600" />
               </button>
-              <button className="p-1.5 rounded-full hover:bg-gray-100">
+              <button className="rounded-full p-1.5 hover:bg-gray-100">
                 <ChevronRight size={18} className="text-gray-600" />
               </button>
-              <button className="p-1.5 rounded-full hover:bg-gray-100">
+              <button className="rounded-full p-1.5 hover:bg-gray-100">
                 <RefreshCw size={16} className="text-gray-600" />
               </button>
             </div>
-            <div className="flex-1 flex items-center bg-[#f0f2f5] rounded-full px-3 py-1.5 border border-transparent hover:border-gray-300 transition-all">
-              <Lock size={12} className="text-gray-500 mr-2" />
+            <div className="flex flex-1 items-center rounded-full border border-transparent bg-[#f0f2f5] px-3 py-1.5 transition-all hover:border-gray-300">
+              <Lock size={12} className="mr-2 text-gray-500" />
               <input
                 type="text"
                 readOnly
                 value={`https://${currentProject?.title?.toLowerCase()?.replace(/\s+/g, "-") || "project"}.com`}
-                className="bg-transparent border-none outline-none text-xs text-gray-700 w-full"
+                className="w-full border-none bg-transparent text-xs text-gray-700 outline-none"
               />
-              <Star size={14} className="text-gray-500 cursor-pointer hover:text-yellow-500 ml-2" />
+              <Star size={14} className="ml-2 cursor-pointer text-gray-500 hover:text-yellow-500" />
             </div>
-            <button className="p-1.5 rounded hover:bg-gray-100">
+            <button className="rounded p-1.5 hover:bg-gray-100">
               <User size={18} className="text-gray-600" />
             </button>
           </div>
         </div>
         {/* Content */}
-        <div className="flex-1 bg-white overflow-auto flex flex-col items-center justify-center text-center p-8">
-          <div className="max-w-md space-y-6 w-full">
+        <div className="flex flex-1 flex-col items-center justify-center overflow-auto bg-white p-8 text-center">
+          <div className="w-full max-w-md space-y-6">
             {currentProject?.image?.startsWith?.("http") ? (
               <img
                 src={currentProject.image}
                 alt={currentProject.title}
-                className="w-full max-h-64 object-cover rounded-xl shadow-md mb-4"
+                className="mb-4 max-h-64 w-full rounded-xl object-cover shadow-md"
               />
             ) : (
-              <div className="text-8xl mb-8 opacity-20 grayscale">{currentProject?.image}</div>
+              <div className="mb-8 text-8xl opacity-20 grayscale">{currentProject?.image}</div>
             )}
             <h1 className="text-2xl font-semibold text-gray-800">{currentProject?.title}</h1>
-            <p className="text-gray-500 leading-relaxed">
+            <p className="leading-relaxed text-gray-500">
               Preview for {currentProject?.title}. This is a case study preview window.
             </p>
-            <div className="pt-8 flex flex-col items-center gap-4">
-              <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-                <div className="w-1/3 h-full bg-[#007aff] animate-pulse" />
+            <div className="flex flex-col items-center gap-4 pt-8">
+              <div className="h-2 w-full overflow-hidden rounded-full bg-gray-100">
+                <div className="h-full w-1/3 animate-pulse bg-[#007aff]" />
               </div>
-              <span className="text-[11px] text-gray-400 uppercase tracking-widest font-bold">
+              <span className="text-[11px] font-bold tracking-widest text-gray-400 uppercase">
                 Connection Secure
               </span>
             </div>
           </div>
         </div>
         {/* Status Bar */}
-        <div className="h-6 bg-[#f3f3f3] border-t border-gray-200 px-3 flex items-center justify-between shrink-0">
+        <div className="flex h-6 shrink-0 items-center justify-between border-t border-gray-200 bg-[#f3f3f3] px-3">
           <span className="text-[10px] text-gray-500">Ready</span>
           <span className="text-[10px] text-gray-500">100%</span>
         </div>

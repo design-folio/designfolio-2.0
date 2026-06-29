@@ -93,7 +93,7 @@ export const AnimatedThemeToggler = ({ className, persist = false }) => {
         ref={buttonRef}
         aria-label="Switch theme"
         className={cn(
-          "flex items-center justify-center p-2 rounded-full outline-none focus:outline-none active:outline-none focus:ring-0 cursor-pointer hover:bg-black/10 dark:hover:bg-white/10 transition-all",
+          "flex cursor-pointer items-center justify-center rounded-full p-2 transition-all outline-none hover:bg-black/10 focus:ring-0 focus:outline-none active:outline-none dark:hover:bg-white/10",
           className
         )}
         type="button"
@@ -112,7 +112,7 @@ export const AnimatedThemeToggler = ({ className, persist = false }) => {
       onClick={onToggle}
       aria-label="Switch theme"
       className={cn(
-        "flex items-center justify-center p-2 rounded-full outline-none focus:outline-none active:outline-none focus:ring-0 cursor-pointer hover:bg-black/10 dark:hover:bg-white/10 transition-all",
+        "flex cursor-pointer items-center justify-center rounded-full p-2 transition-all outline-none hover:bg-black/10 focus:ring-0 focus:outline-none active:outline-none dark:hover:bg-white/10",
         className
       )}
       type="button"

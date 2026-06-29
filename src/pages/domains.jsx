@@ -36,8 +36,8 @@ export default function Domains() {
     <>
       <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
       <main className="min-h-screen">
-        <div className={`max-w-[848px]  mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0`}>
-          <div className="bg-df-section-card-bg-color p-8 rounded-2xl">
+        <div className={`mx-auto max-w-[848px] px-2 py-[94px] md:px-4 md:py-[124px] lg:px-0`}>
+          <div className="bg-df-section-card-bg-color rounded-2xl p-8">
             <Button
               text="Go Back"
               onClick={handleBack}
@@ -49,11 +49,11 @@ export default function Domains() {
               <DefaultDomain />
             </div>
           </div>
-          <div className="bg-df-section-card-bg-color p-8 rounded-2xl mt-6">
+          <div className="bg-df-section-card-bg-color mt-6 rounded-2xl p-8">
             <CustomDomain domainDetails={domainDetails} fetchDomainDetails={fetchDomainDetails} />
           </div>
 
-          <div className="bg-df-section-card-bg-color p-8 rounded-2xl mt-6">
+          <div className="bg-df-section-card-bg-color mt-6 rounded-2xl p-8">
             <DeleteAccount />
           </div>
         </div>

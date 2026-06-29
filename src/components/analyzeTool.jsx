@@ -8,7 +8,7 @@ const AnalyzeEditor = dynamic(() => import("./analyzeEditor"), {
 
 export default function AnalyzeTool() {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start h-full">
+    <div className="grid h-full grid-cols-1 items-start gap-8 lg:grid-cols-2 lg:gap-16">
       <AnalyzeEditor />
       <AnalyzeEmptyState />
     </div>

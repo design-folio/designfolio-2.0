@@ -264,14 +264,14 @@ export default function TetrisLoading({
     <div className="flex flex-col items-center">
       <div className="mb-4">
         <div
-          className={`inline-block border-2 border-foreground/20 bg-white dark:bg-[#1a1a1a] ${config.padding} transition-colors`}
+          className={`border-foreground/20 inline-block border-2 bg-white dark:bg-[#1a1a1a] ${config.padding} transition-colors`}
         >
           {displayGrid.map((row, rowIndex) => (
             <div key={rowIndex} className="flex">
               {row.map((cell, colIndex) => (
                 <div
                   key={`${rowIndex}-${colIndex}`}
-                  className={`${config.cellSize} border border-border/50 transition-all duration-100 ${
+                  className={`${config.cellSize} border-border/50 border transition-all duration-100 ${
                     cell.filled ? `${cell.color} scale-100` : "bg-muted/30 scale-95"
                   } ${isClearing && rowIndex < 4 ? "animate-pulse" : ""}`}
                 />
@@ -282,7 +282,7 @@ export default function TetrisLoading({
       </div>
       {showLoadingText && (
         <div className="text-center">
-          <p className="text-foreground font-medium text-sm">{loadingText}</p>
+          <p className="text-foreground text-sm font-medium">{loadingText}</p>
         </div>
       )}
     </div>

@@ -33,7 +33,7 @@ export default function Chat({
 
   return (
     <div
-      className={`flex flex-1 flex-col min-w-min relative  w-full max-w-[680px]  ${
+      className={`relative flex w-full max-w-[680px] min-w-min flex-1 flex-col ${
         direction == "left" ? " mr-auto" : " ml-auto"
       }`}
     >
@@ -49,18 +49,18 @@ export default function Chat({
           direction == "left"
             ? "bg-template-text-left-bg-color text-template-text-left-text-color mr-auto"
             : "bg-template-text-right-bg-color text-template-text-right-text-color ml-auto"
-        } p-4 rounded-[24px] break-words ${className}`}
+        } rounded-[24px] p-4 break-words ${className}`}
       >
         {show ? children : <ChatBubble className="cursor-pointer" color={"#000"} />}
 
         {direction == "left" ? (
           <LeftBubble
-            className="absolute bottom-0 left-[-10px] text-template-text-left-bg-color"
+            className="text-template-text-left-bg-color absolute bottom-0 left-[-10px]"
             style={{ zIndex: "-1" }}
           />
         ) : (
           <RightBubble
-            className="absolute bottom-0 right-[-10px] text-template-text-left-bg-color"
+            className="text-template-text-left-bg-color absolute right-[-10px] bottom-0"
             style={{ zIndex: "-1" }}
           />
         )}

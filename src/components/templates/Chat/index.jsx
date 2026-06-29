@@ -25,7 +25,7 @@ export default function Chat({ isEditing = false, preview = false }) {
   return (
     <div
       ref={containerRef}
-      className={`w-full flex flex-col gap-3 pb-20 ${preview ? "pt-20" : "pt-0"} px-4 md:px-0 max-w-[700px] mx-auto font-inter text-[#1A1A1A] dark:text-[#F0EDE7] selection:bg-[#1A8CFF] selection:text-white`}
+      className={`flex w-full flex-col gap-3 pb-20 ${preview ? "pt-20" : "pt-0"} font-inter mx-auto max-w-[700px] px-4 text-[#1A1A1A] selection:bg-[#1A8CFF] selection:text-white md:px-0 dark:text-[#F0EDE7]`}
     >
       <ChatHeader chatRevealStep={chatRevealStep} s={s} canEdit={canEdit} />
       <ChatToolsSection {...sharedProps} />

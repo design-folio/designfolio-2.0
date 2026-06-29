@@ -46,7 +46,7 @@ export default function ChangeEmail() {
         <Text as="h1" size={"p-large"} className="text-landing-heading-text-color font-bold">
           Change Email
         </Text>
-        <Text size={"p-xsmall"} className="mt-2 text-landing-description-text-color font-medium">
+        <Text size={"p-xsmall"} className="text-landing-description-text-color mt-2 font-medium">
           Please enter your new email address.
         </Text>
         <div className="mt-[24px]">

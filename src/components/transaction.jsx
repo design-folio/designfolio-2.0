@@ -77,31 +77,31 @@ export default function Transaction() {
 
   return (
     <div>
-      <p className="text-[18px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7] mb-4">
+      <p className="mb-4 text-[18px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
         Payment Details
       </p>
 
-      <div className="flex flex-col lg:flex-row justify-between gap-2 mb-4">
+      <div className="mb-4 flex flex-col justify-between gap-2 lg:flex-row">
         <p className="text-[14px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">
           Designfolio Pro • {planLabel}
         </p>
         <div className="text-right">
-          <span className="block text-[22px] font-bold text-[#1A1A1A] dark:text-[#F0EDE7] leading-none">
+          <span className="block text-[22px] leading-none font-bold text-[#1A1A1A] dark:text-[#F0EDE7]">
             {formatAmount(transaction?.amount, transaction?.currency)}
           </span>
-          <span className="text-[13px] text-[#7A736C] dark:text-[#B5AFA5] mt-0.5 block">
+          <span className="mt-0.5 block text-[13px] text-[#7A736C] dark:text-[#B5AFA5]">
             {formatDate(transaction?.updatedAt)}
           </span>
         </div>
       </div>
 
-      <div className="space-y-2 mb-4">
+      <div className="mb-4 space-y-2">
         {orderId && (
           <div className="flex items-center justify-between">
             <span className="text-[13px] text-[#7A736C] dark:text-[#B5AFA5]">
               {isDodo ? "Subscription ID" : "Order ID"}
             </span>
-            <span className="text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] break-all text-right max-w-[60%]">
+            <span className="max-w-[60%] text-right text-[13px] font-medium break-all text-[#1A1A1A] dark:text-[#F0EDE7]">
               {orderId}
             </span>
           </div>
@@ -109,7 +109,7 @@ export default function Transaction() {
         <div className="flex items-center justify-between">
           <span className="text-[13px] text-[#7A736C] dark:text-[#B5AFA5]">Status</span>
           <div className="flex items-center gap-1.5">
-            <span className={`w-2 h-2 rounded-full ${colors.dot}`} />
+            <span className={`h-2 w-2 rounded-full ${colors.dot}`} />
             <span className={`text-[13px] font-medium ${colors.text}`}>
               {STATUS_LABEL[status] ?? "Active"}
             </span>
@@ -128,23 +128,23 @@ export default function Transaction() {
       </div>
 
       {transaction?.cancellationScheduled && (
-        <p className="text-[12px] text-[#B45309] dark:text-[#FCD34D] mb-4">
+        <p className="mb-4 text-[12px] text-[#B45309] dark:text-[#FCD34D]">
           Your plan is cancelled and will end on {formatDate(transaction?.proExpiresAt)}.
         </p>
       )}
 
       {status === "on_hold" && (
-        <p className="text-[12px] text-[#B45309] dark:text-[#FCD34D] mb-4">
+        <p className="mb-4 text-[12px] text-[#B45309] dark:text-[#FCD34D]">
           There was an issue with your last payment. Update your payment method to keep access.
         </p>
       )}
 
-      <div className="pt-4 border-t border-[#E5D7C4] dark:border-white/10 flex flex-col gap-2">
+      <div className="flex flex-col gap-2 border-t border-[#E5D7C4] pt-4 dark:border-white/10">
         {isDodo && (
           <button
             onClick={openPortal}
             disabled={portalLoading}
-            className="text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] underline underline-offset-2 text-left disabled:opacity-50"
+            className="text-left text-[13px] font-medium text-[#1A1A1A] underline underline-offset-2 disabled:opacity-50 dark:text-[#F0EDE7]"
           >
             {portalLoading ? "Opening portal…" : "Manage Subscription"}
           </button>

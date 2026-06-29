@@ -56,25 +56,25 @@ Preparing final portfolio website preview...`;
   }, [scrollPosition]);
 
   return (
-    <div className="flex flex-col p-3 w-full max-w-xl mx-auto">
-      <div className="flex items-center justify-start gap-2 mb-4">
-        <Loader2 className="h-4 w-4 animate-spin text-primary" />
-        <p className="bg-[linear-gradient(110deg,#404040,35%,#fff,50%,#404040,75%,#404040)] bg-[length:200%_100%] bg-clip-text text-base text-transparent animate-shimmer">
+    <div className="mx-auto flex w-full max-w-xl flex-col p-3">
+      <div className="mb-4 flex items-center justify-start gap-2">
+        <Loader2 className="text-primary h-4 w-4 animate-spin" />
+        <p className="animate-shimmer bg-[linear-gradient(110deg,#404040,35%,#fff,50%,#404040,75%,#404040)] bg-[length:200%_100%] bg-clip-text text-base text-transparent">
           Designfolio AI is thinking
         </p>
-        <span className="text-sm text-muted-foreground ml-auto">{timer}s</span>
+        <span className="text-muted-foreground ml-auto text-sm">{timer}s</span>
       </div>
-      <Card className="relative h-[150px] overflow-hidden bg-secondary/50 p-4 rounded-xl border-dashed">
+      <Card className="bg-secondary/50 relative h-[150px] overflow-hidden rounded-xl border-dashed p-4">
         {/* Top fade overlay */}
-        <div className="absolute top-0 left-0 right-0 bg-gradient-to-b from-secondary to-transparent z-10 pointer-events-none h-12" />
+        <div className="from-secondary pointer-events-none absolute top-0 right-0 left-0 z-10 h-12 bg-gradient-to-b to-transparent" />
 
         {/* Bottom fade overlay */}
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-secondary to-transparent z-10 pointer-events-none h-12" />
+        <div className="from-secondary pointer-events-none absolute right-0 bottom-0 left-0 z-10 h-12 bg-gradient-to-t to-transparent" />
 
         {/* Scrolling content */}
         <div
           ref={contentRef}
-          className="h-full overflow-y-auto overflow-x-hidden text-sm text-muted-foreground/80 font-mono leading-relaxed [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="text-muted-foreground/80 h-full [scrollbar-width:none] overflow-x-hidden overflow-y-auto font-mono text-sm leading-relaxed [&::-webkit-scrollbar]:hidden"
         >
           {ThinkingContent.split("\n").map((line, i) => (
             <div key={i} className="py-1">

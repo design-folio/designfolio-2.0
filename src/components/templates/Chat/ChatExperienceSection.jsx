@@ -27,7 +27,7 @@ function ExperienceDescription({ desc }) {
         }}
         initial="hidden"
         animate="show"
-        className="text-[14px] leading-relaxed mt-1 break-words whitespace-normal"
+        className="mt-1 text-[14px] leading-relaxed break-words whitespace-normal"
         style={{ color: "var(--tiptap-work-paragraph, #7a736c)" }}
       >
         {words.map((word, wordIndex) => {
@@ -96,7 +96,7 @@ export default function ChatExperienceSection({
             initial={{ opacity: 0, y: 10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.3 }}
-            className="flex justify-end relative group/msg"
+            className="group/msg relative flex justify-end"
           >
             <YouPrompt>Tell me about your work experience?</YouPrompt>
           </motion.div>
@@ -113,34 +113,34 @@ export default function ChatExperienceSection({
                 initial={{ opacity: 0, y: 10, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ duration: 0.3 }}
-                className="flex gap-3 max-w-[85%] relative group/msg"
+                className="group/msg relative flex max-w-[85%] gap-3"
               >
-                <div className="w-8 h-8 shrink-0 mt-auto flex items-end">
+                <div className="mt-auto flex h-8 w-8 shrink-0 items-end">
                   <ChatAvatar
                     avatarSrc={avatarSrc}
                     show={chatRevealStep < getNextLeftStep("works")}
                   />
                 </div>
-                <div className="bg-[#E5E2DB] dark:bg-[#2A2520] px-4 py-4 rounded-2xl rounded-tl-sm rounded-bl-sm transition-colors duration-100 border border-black/5 dark:border-white/5 w-full">
+                <div className="w-full rounded-2xl rounded-tl-sm rounded-bl-sm border border-black/5 bg-[#E5E2DB] px-4 py-4 transition-colors duration-100 dark:border-white/5 dark:bg-[#2A2520]">
                   {chatRevealStep === s(11) ? (
                     <TypingIndicator />
                   ) : (
                     <div className="space-y-4">
-                      <div className="flex items-center justify-between mb-3">
-                        <p className="text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px]">
+                      <div className="mb-3 flex items-center justify-between">
+                        <p className="text-[15px] text-[#1A1A1A] dark:text-[#F0EDE7]">
                           Here&apos;s a quick overview of my experience:
                         </p>
                         {canEdit && experiences.length >= 2 && (
                           <Button
                             variant="outline"
                             size="sm"
-                            className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] shrink-0"
+                            className="h-7 w-7 shrink-0 rounded-full border-[#E5D7C4] bg-white/90 p-0 shadow-sm backdrop-blur-sm hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520]/90 dark:hover:bg-[#35302A]"
                             onClick={(e) => {
                               e.stopPropagation();
                               openSidebar(sidebars.sortWorks);
                             }}
                           >
-                            <ChevronsUpDown className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                            <ChevronsUpDown className="h-3 w-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
                           </Button>
                         )}
                       </div>
@@ -149,40 +149,40 @@ export default function ChatExperienceSection({
                           <AccordionItem
                             key={index}
                             value={`item-${index}`}
-                            className="relative group/exp border-b border-black/5 dark:border-white/5 last:border-0"
+                            className="group/exp relative border-b border-black/5 last:border-0 dark:border-white/5"
                           >
                             {canEdit && (
-                              <div className="absolute top-2 right-1 z-40 opacity-0 group-hover/exp:opacity-100 transition-opacity">
+                              <div className="absolute top-2 right-1 z-40 opacity-0 transition-opacity group-hover/exp:opacity-100">
                                 <Button
                                   variant="outline"
                                   size="sm"
-                                  className="h-6 w-6 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
+                                  className="h-6 w-6 rounded-full border-[#E5D7C4] bg-white/90 p-0 shadow-sm backdrop-blur-sm hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520]/90 dark:hover:bg-[#35302A]"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     setSelectedWork(exp);
                                     openSidebar(sidebars.work);
                                   }}
                                 >
-                                  <Pencil className="w-2.5 h-2.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                                  <Pencil className="h-2.5 w-2.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
                                 </Button>
                               </div>
                             )}
-                            <AccordionTrigger className="hover:no-underline py-3 px-1">
-                              <div className="flex flex-col w-full pr-4 text-left">
-                                <div className="flex justify-between items-baseline w-full">
-                                  <h4 className="text-[#1A1A1A] dark:text-[#F0EDE7] font-medium text-[15px]">
+                            <AccordionTrigger className="px-1 py-3 hover:no-underline">
+                              <div className="flex w-full flex-col pr-4 text-left">
+                                <div className="flex w-full items-baseline justify-between">
+                                  <h4 className="text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                                     {exp.role}
                                   </h4>
-                                  <span className="text-[#7A736C] dark:text-[#B5AFA5] text-[13px]">
+                                  <span className="text-[13px] text-[#7A736C] dark:text-[#B5AFA5]">
                                     {`${exp.startMonth || ""} ${exp.startYear || ""}`}
                                   </span>
                                 </div>
-                                <span className="text-[#7A736C] dark:text-[#B5AFA5] text-[14px] mt-0.5">
+                                <span className="mt-0.5 text-[14px] text-[#7A736C] dark:text-[#B5AFA5]">
                                   {exp.company}
                                 </span>
                               </div>
                             </AccordionTrigger>
-                            <AccordionContent className="pb-3 px-1">
+                            <AccordionContent className="px-1 pb-3">
                               <ExperienceDescription desc={exp.description} />
                             </AccordionContent>
                           </AccordionItem>
@@ -197,13 +197,13 @@ export default function ChatExperienceSection({
                 key="experience-empty"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex gap-3 max-w-[85%]"
+                className="flex max-w-[85%] gap-3"
               >
-                <div className="w-8 h-8 shrink-0" />
-                <div className="flex flex-col items-center justify-center w-full py-16 px-4 text-center rounded-2xl border border-dashed border-black/10 dark:border-white/10 bg-white dark:bg-[#2A2520]/50 backdrop-blur-sm">
-                  <div className="w-12 h-12 rounded-full bg-black/[0.03] dark:bg-white/[0.03] flex items-center justify-center mb-4">
+                <div className="h-8 w-8 shrink-0" />
+                <div className="flex w-full flex-col items-center justify-center rounded-2xl border border-dashed border-black/10 bg-white px-4 py-16 text-center backdrop-blur-sm dark:border-white/10 dark:bg-[#2A2520]/50">
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-black/[0.03] dark:bg-white/[0.03]">
                     <svg
-                      className="w-6 h-6 text-[#7A736C] dark:text-[#9E9893]"
+                      className="h-6 w-6 text-[#7A736C] dark:text-[#9E9893]"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -216,18 +216,18 @@ export default function ChatExperienceSection({
                       />
                     </svg>
                   </div>
-                  <h3 className="text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] mb-1">
+                  <h3 className="mb-1 text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                     No experience yet
                   </h3>
-                  <p className="text-[13px] text-[#7A736C] dark:text-[#9E9893] max-w-[250px] mb-5">
+                  <p className="mb-5 max-w-[250px] text-[13px] text-[#7A736C] dark:text-[#9E9893]">
                     Add your work experience to showcase your career journey.
                   </p>
                   {canEdit && (
                     <Button
                       onClick={() => openNewWork()}
-                      className="h-9 px-5 rounded-full text-[13px] font-medium bg-[#1A1A1A] dark:bg-white text-white dark:text-black hover:bg-black/80 dark:hover:bg-white/90 transition-colors shadow-sm flex items-center gap-2"
+                      className="flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
                     >
-                      <Plus className="w-3.5 h-3.5" />
+                      <Plus className="h-3.5 w-3.5" />
                       Add Experience
                     </Button>
                   )}

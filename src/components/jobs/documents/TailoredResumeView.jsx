@@ -148,51 +148,51 @@ export default function TailoredResumeView({
   const lineHeight = lineHeightOf(spacing);
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex h-full flex-col">
       {/* ── Header ── */}
-      <div className="px-4 shrink-0 flex items-center gap-3 h-[64px] border-b border-black/[0.08] dark:border-white/[0.08]">
+      <div className="flex h-[64px] shrink-0 items-center gap-3 border-b border-black/[0.08] px-4 dark:border-white/[0.08]">
         <button
           onClick={onBack}
-          className="flex items-center gap-1.5 text-foreground/45 hover:text-foreground/75 transition-colors group -ml-1"
+          className="text-foreground/45 hover:text-foreground/75 group -ml-1 flex items-center gap-1.5 transition-colors"
         >
-          <ChevronLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
+          <ChevronLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
           <span className="text-[13px]">{job?.role}</span>
         </button>
         <div className="h-3.5 w-px bg-black/[0.10] dark:bg-white/[0.10]" />
-        <span className="text-[13px] font-semibold text-foreground/80">Tailored Resume</span>
+        <span className="text-foreground/80 text-[13px] font-semibold">Tailored Resume</span>
         {doc?.version ? (
-          <span className="text-[11px] text-foreground/35">v{doc.version}</span>
+          <span className="text-foreground/35 text-[11px]">v{doc.version}</span>
         ) : null}
-        <span className="ml-auto text-[12px] text-foreground/40">{job?.company}</span>
+        <span className="text-foreground/40 ml-auto text-[12px]">{job?.company}</span>
       </div>
 
       {/* ── Body ── */}
-      <div className="flex flex-1 min-h-0">
+      <div className="flex min-h-0 flex-1">
         {/* ── Left: preview ── */}
-        <div className="flex flex-col flex-1 min-w-0">
+        <div className="flex min-w-0 flex-1 flex-col">
           {/* Toolbar */}
-          <div className="flex items-center gap-1 px-4 py-2 border-b border-black/[0.05] dark:border-white/[0.05] shrink-0">
-            <div className="flex items-center gap-1.5 text-foreground/35 select-none">
-              <Info className="w-3 h-3 shrink-0" />
+          <div className="flex shrink-0 items-center gap-1 border-b border-black/[0.05] px-4 py-2 dark:border-white/[0.05]">
+            <div className="text-foreground/35 flex items-center gap-1.5 select-none">
+              <Info className="h-3 w-3 shrink-0" />
               <span className="text-[11px]">Edit sections in the Editor tab →</span>
             </div>
             <div className="flex-1" />
             <button
               onClick={onRegenerate}
               disabled={regenerating}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-foreground/45 hover:text-foreground/70 hover:bg-foreground/[0.05] transition-all text-[11px] font-medium group disabled:opacity-40"
+              className="text-foreground/45 hover:text-foreground/70 hover:bg-foreground/[0.05] group flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[11px] font-medium transition-all disabled:opacity-40"
             >
               {regenerating ? (
-                <Loader2 className="w-3 h-3 animate-spin" />
+                <Loader2 className="h-3 w-3 animate-spin" />
               ) : (
-                <RotateCcw className="w-3 h-3 group-hover:-rotate-45 transition-transform duration-300" />
+                <RotateCcw className="h-3 w-3 transition-transform duration-300 group-hover:-rotate-45" />
               )}
               Regenerate
             </button>
-            <div className="w-px h-3.5 bg-black/[0.07] dark:bg-white/[0.07]" />
+            <div className="h-3.5 w-px bg-black/[0.07] dark:bg-white/[0.07]" />
             <button
               onClick={handleCopy}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-foreground/45 hover:text-foreground/70 hover:bg-foreground/[0.05] transition-all text-[11px] font-medium"
+              className="text-foreground/45 hover:text-foreground/70 hover:bg-foreground/[0.05] flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[11px] font-medium transition-all"
             >
               <AnimatePresence mode="wait" initial={false}>
                 {copied ? (
@@ -204,7 +204,7 @@ export default function TailoredResumeView({
                     transition={{ duration: 0.14 }}
                     className="flex items-center gap-1.5 text-emerald-500"
                   >
-                    <Check className="w-3 h-3" />
+                    <Check className="h-3 w-3" />
                     Copied
                   </motion.span>
                 ) : (
@@ -216,7 +216,7 @@ export default function TailoredResumeView({
                     transition={{ duration: 0.14 }}
                     className="flex items-center gap-1.5"
                   >
-                    <Copy className="w-3 h-3" />
+                    <Copy className="h-3 w-3" />
                     Copy
                   </motion.span>
                 )}
@@ -225,9 +225,9 @@ export default function TailoredResumeView({
           </div>
 
           {/* Resume paper — always white regardless of app theme */}
-          <div className="flex-1 overflow-y-auto custom-thin-scrollbar bg-[#F7F5F2] dark:bg-[#161210] px-5 py-5">
+          <div className="custom-thin-scrollbar flex-1 overflow-y-auto bg-[#F7F5F2] px-5 py-5 dark:bg-[#161210]">
             <div
-              className="bg-white border border-black/[0.07] rounded-xl shadow-[0_2px_16px_rgba(0,0,0,0.07)] px-8 py-7 min-h-[520px]"
+              className="min-h-[520px] rounded-xl border border-black/[0.07] bg-white px-8 py-7 shadow-[0_2px_16px_rgba(0,0,0,0.07)]"
               style={{ fontFamily, lineHeight }}
             >
               {/* Name */}
@@ -261,7 +261,7 @@ export default function TailoredResumeView({
               {summary ? (
                 <div className="mb-4">
                   <p
-                    className="text-[10px] font-bold uppercase tracking-[0.09em] mb-1"
+                    className="mb-1 text-[10px] font-bold tracking-[0.09em] uppercase"
                     style={{ color: accent }}
                   >
                     Summary
@@ -277,7 +277,7 @@ export default function TailoredResumeView({
               {experiences.length ? (
                 <div className="mb-4">
                   <p
-                    className="text-[10px] font-bold uppercase tracking-[0.09em] mb-1"
+                    className="mb-1 text-[10px] font-bold tracking-[0.09em] uppercase"
                     style={{ color: accent }}
                   >
                     Experience
@@ -292,7 +292,7 @@ export default function TailoredResumeView({
                           {exp.company ? ` · ${exp.company}` : ""}
                         </p>
                         <p
-                          className="text-[10px] whitespace-nowrap shrink-0"
+                          className="shrink-0 text-[10px] whitespace-nowrap"
                           style={{ color: "#777" }}
                         >
                           {exp.dates}
@@ -322,7 +322,7 @@ export default function TailoredResumeView({
               {education.length ? (
                 <div className="mb-4">
                   <p
-                    className="text-[10px] font-bold uppercase tracking-[0.09em] mb-1"
+                    className="mb-1 text-[10px] font-bold tracking-[0.09em] uppercase"
                     style={{ color: accent }}
                   >
                     Education
@@ -337,7 +337,7 @@ export default function TailoredResumeView({
                           {edu.school ? ` · ${edu.school}` : ""}
                         </p>
                         <p
-                          className="text-[10px] whitespace-nowrap shrink-0"
+                          className="shrink-0 text-[10px] whitespace-nowrap"
                           style={{ color: "#777" }}
                         >
                           {edu.dates}
@@ -352,7 +352,7 @@ export default function TailoredResumeView({
               {skills.length ? (
                 <div>
                   <p
-                    className="text-[10px] font-bold uppercase tracking-[0.09em] mb-1"
+                    className="mb-1 text-[10px] font-bold tracking-[0.09em] uppercase"
                     style={{ color: accent }}
                   >
                     Skills
@@ -379,36 +379,36 @@ export default function TailoredResumeView({
             </div>
 
             {/* Page indicator */}
-            <div className="flex items-center justify-center mt-3">
-              <span className="text-[11px] text-foreground/25 font-medium tracking-wide">
+            <div className="mt-3 flex items-center justify-center">
+              <span className="text-foreground/25 text-[11px] font-medium tracking-wide">
                 1 / 1
               </span>
             </div>
           </div>
 
           {/* Footer */}
-          <div className="px-5 py-3.5 border-t border-black/[0.06] dark:border-white/[0.06] flex gap-2.5 shrink-0">
+          <div className="flex shrink-0 gap-2.5 border-t border-black/[0.06] px-5 py-3.5 dark:border-white/[0.06]">
             <button
               onClick={() => onSave(buildContent(), buildStyling())}
               disabled={saving || !dirty}
-              className="flex items-center justify-center gap-2 h-9 px-4 rounded-full border border-black/[0.12] dark:border-white/[0.12] text-foreground/65 hover:text-foreground hover:border-black/[0.20] dark:hover:border-white/[0.20] text-[12.5px] font-medium transition-colors disabled:opacity-40"
+              className="text-foreground/65 hover:text-foreground flex h-9 items-center justify-center gap-2 rounded-full border border-black/[0.12] px-4 text-[12.5px] font-medium transition-colors hover:border-black/[0.20] disabled:opacity-40 dark:border-white/[0.12] dark:hover:border-white/[0.20]"
             >
               {saving ? (
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
               ) : (
-                <Save className="w-3.5 h-3.5" />
+                <Save className="h-3.5 w-3.5" />
               )}
               {dirty ? "Save changes" : "Saved"}
             </button>
             <button
               onClick={() => onExport(buildContent(), buildStyling())}
               disabled={exporting}
-              className="flex items-center justify-center gap-2 h-9 px-4 rounded-full border border-black/[0.12] dark:border-white/[0.12] text-foreground/65 hover:text-foreground hover:border-black/[0.20] dark:hover:border-white/[0.20] text-[12.5px] font-medium transition-colors disabled:opacity-40"
+              className="text-foreground/65 hover:text-foreground flex h-9 items-center justify-center gap-2 rounded-full border border-black/[0.12] px-4 text-[12.5px] font-medium transition-colors hover:border-black/[0.20] disabled:opacity-40 dark:border-white/[0.12] dark:hover:border-white/[0.20]"
             >
               {exporting ? (
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
               ) : (
-                <Download className="w-3.5 h-3.5" />
+                <Download className="h-3.5 w-3.5" />
               )}
               Download PDF
             </button>
@@ -418,20 +418,20 @@ export default function TailoredResumeView({
                 href={job.applyUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 h-9 px-5 rounded-full bg-[#1A1A1A] dark:bg-[#F0EDE7] text-white dark:text-[#1A1A1A] text-[12.5px] font-semibold hover:opacity-80 transition-opacity"
+                className="flex h-9 items-center justify-center gap-2 rounded-full bg-[#1A1A1A] px-5 text-[12.5px] font-semibold text-white transition-opacity hover:opacity-80 dark:bg-[#F0EDE7] dark:text-[#1A1A1A]"
               >
-                Apply Now <ExternalLink className="w-3.5 h-3.5" />
+                Apply Now <ExternalLink className="h-3.5 w-3.5" />
               </a>
             ) : null}
           </div>
         </div>
 
-        <div className="w-px bg-black/[0.06] dark:bg-white/[0.06] shrink-0" />
+        <div className="w-px shrink-0 bg-black/[0.06] dark:bg-white/[0.06]" />
 
         {/* ── Right: Editor / Style panel ── */}
-        <div className="w-[300px] shrink-0 flex flex-col bg-[#F4F1EC] dark:bg-[#131008]">
+        <div className="flex w-[300px] shrink-0 flex-col bg-[#F4F1EC] dark:bg-[#131008]">
           {/* Tab bar */}
-          <div className="flex items-center px-3 pt-3 pb-0 gap-0.5 shrink-0">
+          <div className="flex shrink-0 items-center gap-0.5 px-3 pt-3 pb-0">
             {[
               { key: "editor", label: "Editor" },
               { key: "style", label: "Style" },
@@ -439,9 +439,9 @@ export default function TailoredResumeView({
               <button
                 key={tab.key}
                 onClick={() => setRightTab(tab.key)}
-                className={`flex-1 py-2 text-[11.5px] font-semibold rounded-t-lg transition-all ${
+                className={`flex-1 rounded-t-lg py-2 text-[11.5px] font-semibold transition-all ${
                   rightTab === tab.key
-                    ? "bg-white dark:bg-[#1E1A16] text-foreground/85 border border-black/[0.07] dark:border-white/[0.07] border-b-0"
+                    ? "text-foreground/85 border border-b-0 border-black/[0.07] bg-white dark:border-white/[0.07] dark:bg-[#1E1A16]"
                     : "text-foreground/40 hover:text-foreground/65"
                 }`}
               >
@@ -449,15 +449,15 @@ export default function TailoredResumeView({
               </button>
             ))}
           </div>
-          <div className="h-px bg-black/[0.07] dark:bg-white/[0.07] shrink-0" />
+          <div className="h-px shrink-0 bg-black/[0.07] dark:bg-white/[0.07]" />
 
           {/* ── Editor tab ── */}
           {rightTab === "editor" && (
-            <div className="flex flex-col flex-1 min-h-0 overflow-y-auto custom-thin-scrollbar">
-              <div className="px-3 py-3 space-y-2.5">
+            <div className="custom-thin-scrollbar flex min-h-0 flex-1 flex-col overflow-y-auto">
+              <div className="space-y-2.5 px-3 py-3">
                 {/* Change notice */}
-                <div className="flex items-start gap-2.5 bg-amber-50 dark:bg-amber-400/10 border border-amber-200/70 dark:border-amber-400/20 rounded-xl px-3 py-2.5">
-                  <AlertTriangle className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
+                <div className="flex items-start gap-2.5 rounded-xl border border-amber-200/70 bg-amber-50 px-3 py-2.5 dark:border-amber-400/20 dark:bg-amber-400/10">
+                  <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500" />
                   <p className="text-[11px] leading-[1.6] text-amber-800 dark:text-amber-300">
                     Changes apply only to this tailored resume and update the preview instantly.
                   </p>
@@ -466,20 +466,20 @@ export default function TailoredResumeView({
                 {SECTIONS.map((section) => (
                   <div
                     key={section.id}
-                    className="bg-white dark:bg-[#1E1A16] border border-black/[0.06] dark:border-white/[0.06] rounded-xl overflow-hidden"
+                    className="overflow-hidden rounded-xl border border-black/[0.06] bg-white dark:border-white/[0.06] dark:bg-[#1E1A16]"
                   >
                     <button
                       onClick={() => toggle(section.id)}
-                      className="w-full flex items-center gap-2 px-3 py-2.5 text-left"
+                      className="flex w-full items-center gap-2 px-3 py-2.5 text-left"
                     >
-                      <span className="flex-1 text-[12px] font-semibold text-foreground/75">
+                      <span className="text-foreground/75 flex-1 text-[12px] font-semibold">
                         {section.label}
                       </span>
                       <motion.div
                         animate={{ rotate: expanded[section.id] ? 180 : 0 }}
                         transition={{ duration: 0.2 }}
                       >
-                        <ChevronDown className="w-3.5 h-3.5 text-foreground/35" />
+                        <ChevronDown className="text-foreground/35 h-3.5 w-3.5" />
                       </motion.div>
                     </button>
 
@@ -492,11 +492,11 @@ export default function TailoredResumeView({
                           transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
                           className="overflow-hidden"
                         >
-                          <div className="border-t border-black/[0.05] dark:border-white/[0.05] px-3 py-3 space-y-2">
+                          <div className="space-y-2 border-t border-black/[0.05] px-3 py-3 dark:border-white/[0.05]">
                             {section.id === "personal" &&
                               ["name", "email", "linkedin", "portfolio"].map((field) => (
                                 <div key={field}>
-                                  <p className="text-[10px] text-foreground/40 font-medium mb-0.5 capitalize">
+                                  <p className="text-foreground/40 mb-0.5 text-[10px] font-medium capitalize">
                                     {field}
                                   </p>
                                   <input
@@ -526,18 +526,18 @@ export default function TailoredResumeView({
                                       <div className="h-px bg-black/[0.05] dark:bg-white/[0.05]" />
                                     )}
                                     <div className="flex items-center justify-between">
-                                      <p className="text-[10px] font-semibold text-foreground/40 uppercase tracking-wide">
+                                      <p className="text-foreground/40 text-[10px] font-semibold tracking-wide uppercase">
                                         Role {idx + 1}
                                       </p>
                                       <button
                                         onClick={() => removeExp(idx)}
-                                        className="text-foreground/25 hover:text-red-400 transition-colors"
+                                        className="text-foreground/25 transition-colors hover:text-red-400"
                                       >
-                                        <Trash2 className="w-3 h-3" />
+                                        <Trash2 className="h-3 w-3" />
                                       </button>
                                     </div>
                                     <div>
-                                      <p className="text-[10px] text-foreground/40 font-medium mb-0.5">
+                                      <p className="text-foreground/40 mb-0.5 text-[10px] font-medium">
                                         Company
                                       </p>
                                       <input
@@ -548,7 +548,7 @@ export default function TailoredResumeView({
                                       />
                                     </div>
                                     <div>
-                                      <p className="text-[10px] text-foreground/40 font-medium mb-0.5">
+                                      <p className="text-foreground/40 mb-0.5 text-[10px] font-medium">
                                         Title
                                       </p>
                                       <input
@@ -559,7 +559,7 @@ export default function TailoredResumeView({
                                       />
                                     </div>
                                     <div>
-                                      <p className="text-[10px] text-foreground/40 font-medium mb-0.5">
+                                      <p className="text-foreground/40 mb-0.5 text-[10px] font-medium">
                                         Dates
                                       </p>
                                       <input
@@ -570,7 +570,7 @@ export default function TailoredResumeView({
                                       />
                                     </div>
                                     <div>
-                                      <p className="text-[10px] text-foreground/40 font-medium mb-0.5">
+                                      <p className="text-foreground/40 mb-0.5 text-[10px] font-medium">
                                         Bullet points (one per line)
                                       </p>
                                       <textarea
@@ -585,9 +585,9 @@ export default function TailoredResumeView({
                                 ))}
                                 <button
                                   onClick={addExp}
-                                  className="w-full flex items-center justify-center gap-1.5 h-8 rounded-lg border border-dashed border-black/[0.12] dark:border-white/[0.12] text-foreground/40 hover:text-foreground/65 hover:border-black/[0.22] dark:hover:border-white/[0.22] text-[11.5px] font-medium transition-colors"
+                                  className="text-foreground/40 hover:text-foreground/65 flex h-8 w-full items-center justify-center gap-1.5 rounded-lg border border-dashed border-black/[0.12] text-[11.5px] font-medium transition-colors hover:border-black/[0.22] dark:border-white/[0.12] dark:hover:border-white/[0.22]"
                                 >
-                                  <Plus className="w-3 h-3" />
+                                  <Plus className="h-3 w-3" />
                                   Add role
                                 </button>
                               </div>
@@ -601,18 +601,18 @@ export default function TailoredResumeView({
                                       <div className="h-px bg-black/[0.05] dark:bg-white/[0.05]" />
                                     )}
                                     <div className="flex items-center justify-between">
-                                      <p className="text-[10px] font-semibold text-foreground/40 uppercase tracking-wide">
+                                      <p className="text-foreground/40 text-[10px] font-semibold tracking-wide uppercase">
                                         Entry {idx + 1}
                                       </p>
                                       <button
                                         onClick={() => removeEdu(idx)}
-                                        className="text-foreground/25 hover:text-red-400 transition-colors"
+                                        className="text-foreground/25 transition-colors hover:text-red-400"
                                       >
-                                        <Trash2 className="w-3 h-3" />
+                                        <Trash2 className="h-3 w-3" />
                                       </button>
                                     </div>
                                     <div>
-                                      <p className="text-[10px] text-foreground/40 font-medium mb-0.5">
+                                      <p className="text-foreground/40 mb-0.5 text-[10px] font-medium">
                                         School
                                       </p>
                                       <input
@@ -623,7 +623,7 @@ export default function TailoredResumeView({
                                       />
                                     </div>
                                     <div>
-                                      <p className="text-[10px] text-foreground/40 font-medium mb-0.5">
+                                      <p className="text-foreground/40 mb-0.5 text-[10px] font-medium">
                                         Degree
                                       </p>
                                       <input
@@ -634,7 +634,7 @@ export default function TailoredResumeView({
                                       />
                                     </div>
                                     <div>
-                                      <p className="text-[10px] text-foreground/40 font-medium mb-0.5">
+                                      <p className="text-foreground/40 mb-0.5 text-[10px] font-medium">
                                         Dates
                                       </p>
                                       <input
@@ -648,9 +648,9 @@ export default function TailoredResumeView({
                                 ))}
                                 <button
                                   onClick={addEdu}
-                                  className="w-full flex items-center justify-center gap-1.5 h-8 rounded-lg border border-dashed border-black/[0.12] dark:border-white/[0.12] text-foreground/40 hover:text-foreground/65 hover:border-black/[0.22] dark:hover:border-white/[0.22] text-[11.5px] font-medium transition-colors"
+                                  className="text-foreground/40 hover:text-foreground/65 flex h-8 w-full items-center justify-center gap-1.5 rounded-lg border border-dashed border-black/[0.12] text-[11.5px] font-medium transition-colors hover:border-black/[0.22] dark:border-white/[0.12] dark:hover:border-white/[0.22]"
                                 >
-                                  <Plus className="w-3 h-3" />
+                                  <Plus className="h-3 w-3" />
                                   Add education
                                 </button>
                               </div>
@@ -658,7 +658,7 @@ export default function TailoredResumeView({
 
                             {section.id === "skills" && (
                               <div>
-                                <p className="text-[10px] text-foreground/40 font-medium mb-0.5">
+                                <p className="text-foreground/40 mb-0.5 text-[10px] font-medium">
                                   Skills (one per line)
                                 </p>
                                 <textarea
@@ -681,10 +681,10 @@ export default function TailoredResumeView({
 
           {/* ── Style tab ── */}
           {rightTab === "style" && (
-            <div className="flex flex-col flex-1 min-h-0 overflow-y-auto custom-thin-scrollbar">
-              <div className="px-3 py-4 space-y-5">
+            <div className="custom-thin-scrollbar flex min-h-0 flex-1 flex-col overflow-y-auto">
+              <div className="space-y-5 px-3 py-4">
                 <div>
-                  <p className="text-[10.5px] font-semibold text-foreground/45 uppercase tracking-[0.07em] mb-2">
+                  <p className="text-foreground/45 mb-2 text-[10.5px] font-semibold tracking-[0.07em] uppercase">
                     Font
                   </p>
                   <div className="grid grid-cols-2 gap-1.5">
@@ -694,8 +694,8 @@ export default function TailoredResumeView({
                         onClick={() => setFont(f)}
                         className={`h-9 rounded-xl border text-[11.5px] font-medium transition-colors ${
                           font === f
-                            ? "border-foreground/35 bg-white dark:bg-[#1E1A16] text-foreground/85"
-                            : "border-black/[0.07] dark:border-white/[0.07] bg-white dark:bg-[#1E1A16] text-foreground/45 hover:text-foreground/70 hover:border-black/[0.15] dark:hover:border-white/[0.15]"
+                            ? "border-foreground/35 text-foreground/85 bg-white dark:bg-[#1E1A16]"
+                            : "text-foreground/45 hover:text-foreground/70 border-black/[0.07] bg-white hover:border-black/[0.15] dark:border-white/[0.07] dark:bg-[#1E1A16] dark:hover:border-white/[0.15]"
                         }`}
                       >
                         {f}
@@ -705,7 +705,7 @@ export default function TailoredResumeView({
                 </div>
 
                 <div>
-                  <p className="text-[10.5px] font-semibold text-foreground/45 uppercase tracking-[0.07em] mb-2">
+                  <p className="text-foreground/45 mb-2 text-[10.5px] font-semibold tracking-[0.07em] uppercase">
                     Line Spacing
                   </p>
                   <div className="flex gap-1.5">
@@ -713,10 +713,10 @@ export default function TailoredResumeView({
                       <button
                         key={s}
                         onClick={() => setSpacing(s)}
-                        className={`flex-1 h-8 rounded-xl border text-[11px] font-medium transition-colors ${
+                        className={`h-8 flex-1 rounded-xl border text-[11px] font-medium transition-colors ${
                           spacing === s
-                            ? "border-foreground/35 bg-white dark:bg-[#1E1A16] text-foreground/85"
-                            : "border-black/[0.07] dark:border-white/[0.07] bg-white dark:bg-[#1E1A16] text-foreground/45 hover:text-foreground/70 hover:border-black/[0.15] dark:hover:border-white/[0.15]"
+                            ? "border-foreground/35 text-foreground/85 bg-white dark:bg-[#1E1A16]"
+                            : "text-foreground/45 hover:text-foreground/70 border-black/[0.07] bg-white hover:border-black/[0.15] dark:border-white/[0.07] dark:bg-[#1E1A16] dark:hover:border-white/[0.15]"
                         }`}
                       >
                         {s}
@@ -726,18 +726,18 @@ export default function TailoredResumeView({
                 </div>
 
                 <div>
-                  <p className="text-[10.5px] font-semibold text-foreground/45 uppercase tracking-[0.07em] mb-2">
+                  <p className="text-foreground/45 mb-2 text-[10.5px] font-semibold tracking-[0.07em] uppercase">
                     Section Header Colour
                   </p>
-                  <div className="flex gap-2 flex-wrap">
+                  <div className="flex flex-wrap gap-2">
                     {ACCENTS.map((color) => (
                       <button
                         key={color}
                         onClick={() => setAccent(color)}
                         style={{ backgroundColor: color }}
-                        className={`w-7 h-7 rounded-full transition-all ${
+                        className={`h-7 w-7 rounded-full transition-all ${
                           accent === color
-                            ? "ring-2 ring-offset-2 ring-foreground/50 dark:ring-offset-[#131008] scale-110"
+                            ? "ring-foreground/50 scale-110 ring-2 ring-offset-2 dark:ring-offset-[#131008]"
                             : "hover:scale-110"
                         }`}
                       />

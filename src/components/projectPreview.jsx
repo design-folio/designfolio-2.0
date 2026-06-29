@@ -27,7 +27,7 @@ export default function ProjectPreview({ projectDetails }) {
 
   return (
     <motion.div
-      className="flex-1 flex flex-col gap-3"
+      className="flex flex-1 flex-col gap-3"
       variants={containerVariants}
       initial="hidden"
       animate="visible"

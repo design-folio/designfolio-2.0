@@ -19,7 +19,7 @@ const DockBar = ({
 }) => (
   <div
     ref={dockRef}
-    className={`backdrop-blur-md mb-0 pointer-events-auto ${className}`}
+    className={`pointer-events-auto mb-0 backdrop-blur-md ${className}`}
     style={{
       width: `${contentWidth + padding * 2}px`,
       background: "rgba(45, 45, 45, 0.75)",
@@ -46,7 +46,7 @@ const DockBar = ({
             ref={(el) => {
               iconRefs.current[index] = el;
             }}
-            className="absolute cursor-pointer flex flex-col items-center justify-end"
+            className="absolute flex cursor-pointer flex-col items-center justify-end"
             title={app.name}
             onClick={() => handleAppClick(app.id, index)}
             style={{

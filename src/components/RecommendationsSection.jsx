@@ -19,22 +19,22 @@ const RecommendationsSection = ({ recommendations }) => {
 
   return (
     <Card2 className="p-6">
-      <h3 className="text-lg font-semibold mb-4 flex items-center">
-        <AlertCircle className="w-5 h-5 text-blue-500 mr-2" />
+      <h3 className="mb-4 flex items-center text-lg font-semibold">
+        <AlertCircle className="mr-2 h-5 w-5 text-blue-500" />
         Priority Recommendations
       </h3>
       <div className="space-y-4">
         {recommendations.map((rec, index) => (
           <div
             key={index}
-            className="flex flex-col lg:flex-row items-start gap-4 p-4 bg-gray-50 rounded-lg"
+            className="flex flex-col items-start gap-4 rounded-lg bg-gray-50 p-4 lg:flex-row"
           >
             <Badge variant="outline" className={getPriorityColor(rec.priority)}>
               {rec.priority}
             </Badge>
             <div>
               <p className="font-medium">{rec.action}</p>
-              <p className="text-sm text-gray-600 mt-1">{rec.impact}</p>
+              <p className="mt-1 text-sm text-gray-600">{rec.impact}</p>
             </div>
           </div>
         ))}

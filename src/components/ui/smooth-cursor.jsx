@@ -14,7 +14,7 @@ const MinimalCursor = ({ isHovering }) => {
   if (isMobile) return null;
   return (
     <motion.div
-      className="relative flex items-center justify-center rounded-full pointer-events-none z-[9999]"
+      className="pointer-events-none relative z-[9999] flex items-center justify-center rounded-full"
       animate={{
         width: isHovering ? 48 : 12,
         height: isHovering ? 48 : 12,

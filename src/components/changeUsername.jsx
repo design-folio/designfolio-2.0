@@ -65,11 +65,11 @@ export default function ChangeUsername() {
   }
   return (
     <div>
-      <p className="text-[20px] text-df-section-card-heading-color font-[500] font-inter ">
+      <p className="text-df-section-card-heading-color font-inter text-[20px] font-[500]">
         Change username
       </p>
 
-      <p className="text-[#4d545f] dark:text-[#B4B8C6] text-[12.8px] font-[400] leading-[22.4px] font-inter mt-2">
+      <p className="font-inter mt-2 text-[12.8px] leading-[22.4px] font-[400] text-[#4d545f] dark:text-[#B4B8C6]">
         You can change your username to another username that is not currently in use. Designfolio
         cannot set up redirects for links to your {""}
         <span className="text-[#FF553E]">DesignFolio profile</span> that includes your old username.
@@ -87,8 +87,8 @@ export default function ChangeUsername() {
         }}
       >
         {({ isSubmitting, isValid, setFieldValue, values, errors, touched }) => (
-          <Form id={"usernameForm"} className=" w-full mt-[24px]">
-            <div className="flex flex-col xl:flex-row items-end  gap-4  m-auto">
+          <Form id={"usernameForm"} className="mt-[24px] w-full">
+            <div className="m-auto flex flex-col items-end gap-4 xl:flex-row">
               <div className="w-full">
                 <div className="relative">
                   <Field name="domain">
@@ -108,19 +108,19 @@ export default function ChangeUsername() {
                       />
                     )}
                   </Field>
-                  <div className="flex justify-center items-center gap-[10px] absolute top-[18px] right-[20px]">
+                  <div className="absolute top-[18px] right-[20px] flex items-center justify-center gap-[10px]">
                     {domainValue && values?.domain !== userDetails?.username && (
                       <>
                         {isAvailable ? (
                           <img
                             src="/assets/svgs/checkbox.svg"
-                            className="w-[18px] h-[18px]"
+                            className="h-[18px] w-[18px]"
                             alt="designfolio logo"
                           />
                         ) : (
                           <img
                             src="/assets/svgs/no.svg"
-                            className="w-[18px] h-[18px]"
+                            className="h-[18px] w-[18px]"
                             alt="designfolio logo"
                           />
                         )}
@@ -131,7 +131,7 @@ export default function ChangeUsername() {
                 <ErrorMessage
                   name="domain"
                   component="div"
-                  className="error-message text-[14px] absolute"
+                  className="error-message absolute text-[14px]"
                 />
               </div>
             </div>

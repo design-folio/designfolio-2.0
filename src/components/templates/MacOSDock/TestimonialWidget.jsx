@@ -26,20 +26,20 @@ export const SortableTestimonialItem = ({ review, edit, onEdit }) => {
         opacity: isDragging ? 0.5 : 1,
         zIndex: isDragging ? 9999 : 1,
       }}
-      className={`flex justify-between gap-4 items-center ${isDragging ? "relative" : ""}`}
+      className={`flex items-center justify-between gap-4 ${isDragging ? "relative" : ""}`}
     >
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         <ReviewCard review={review} sorting={true} edit={edit} />
       </div>
-      <div className="flex items-center flex-col gap-2 shrink-0">
+      <div className="flex shrink-0 flex-col items-center gap-2">
         {edit && (
           <Button
             variant="secondary"
             size="icon"
-            className="h-8 w-8 rounded-full hover:bg-foreground/5"
+            className="hover:bg-foreground/5 h-8 w-8 rounded-full"
             onClick={() => onEdit(review)}
           >
-            <Pencil className="w-4 h-4 text-df-icon-color" />
+            <Pencil className="text-df-icon-color h-4 w-4" />
           </Button>
         )}
         <DragHandle size="sm" listeners={listeners} attributes={attributes} />
@@ -80,9 +80,9 @@ export const TestimonialWidget = ({ reviews, edit, onEditClick, onAddReview }) =
     : [];
   const testimonials = hasReviews
     ? reviews.map((r) => ({
-      text: extractTextFromTipTap(r.description) || "",
-      author: r.name || r.author || "Client",
-    }))
+        text: extractTextFromTipTap(r.description) || "",
+        author: r.name || r.author || "Client",
+      }))
     : [];
   const validTestimonials = testimonials.filter((t) => t.text);
 
@@ -104,18 +104,18 @@ export const TestimonialWidget = ({ reviews, edit, onEditClick, onAddReview }) =
   const isEmpty = !hasReviews;
   const outerProps = isEmpty
     ? {
-      role: "button",
-      tabIndex: 0,
-      onClick: () => onAddReview?.(),
-      onKeyDown: (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          onAddReview?.();
-        }
-      },
-      className:
-        "bg-[#F5C75D] rounded-2xl p-1 shadow-lg font-sans max-w-[calc(100vw-32px)] cursor-pointer hover:opacity-95 transition-opacity",
-    }
+        role: "button",
+        tabIndex: 0,
+        onClick: () => onAddReview?.(),
+        onKeyDown: (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            onAddReview?.();
+          }
+        },
+        className:
+          "bg-[#F5C75D] rounded-2xl p-1 shadow-lg font-sans max-w-[calc(100vw-32px)] cursor-pointer hover:opacity-95 transition-opacity",
+      }
     : { className: "bg-[#F5C75D] rounded-2xl p-1 shadow-lg font-sans max-w-[calc(100vw-32px)]" };
 
   const expandedMaxHeight =
@@ -129,36 +129,36 @@ export const TestimonialWidget = ({ reviews, edit, onEditClick, onAddReview }) =
   return (
     <div {...outerProps} style={{ width, overflow: "hidden" }}>
       {/* Header */}
-      <div className="px-4 py-3 flex justify-between items-center text-[#4A3708] font-medium text-[13px]">
+      <div className="flex items-center justify-between px-4 py-3 text-[13px] font-medium text-[#4A3708]">
         <span>Testimonials</span>
         <div className="flex items-center gap-3">
           {!isEmpty && showExpandShrink ? (
             <button
               type="button"
               onClick={() => setExpanded((v) => !v)}
-              className="flex items-center gap-1.5 text-[#4A3708] font-medium text-[13px] hover:underline cursor-pointer"
+              className="flex cursor-pointer items-center gap-1.5 text-[13px] font-medium text-[#4A3708] hover:underline"
             >
               {expanded ? (
                 <>
-                  Shrink <ChevronUp className="w-3.5 h-3.5" />
+                  Shrink <ChevronUp className="h-3.5 w-3.5" />
                 </>
               ) : (
                 <>
-                  Expand <ChevronDown className="w-3.5 h-3.5" />
+                  Expand <ChevronDown className="h-3.5 w-3.5" />
                 </>
               )}
             </button>
           ) : (
             <div className="flex gap-1" aria-hidden>
-              <div className="w-1 h-1 rounded-full bg-[#4A3708]/40" />
-              <div className="w-1 h-1 rounded-full bg-[#4A3708]/40" />
-              <div className="w-1 h-1 rounded-full bg-[#4A3708]/40" />
+              <div className="h-1 w-1 rounded-full bg-[#4A3708]/40" />
+              <div className="h-1 w-1 rounded-full bg-[#4A3708]/40" />
+              <div className="h-1 w-1 rounded-full bg-[#4A3708]/40" />
             </div>
           )}
           {edit && !isEmpty && (
             <button
               onClick={onEditClick}
-              className="text-[#4A3708] font-medium text-[13px] hover:underline cursor-pointer"
+              className="cursor-pointer text-[13px] font-medium text-[#4A3708] hover:underline"
             >
               Edit
             </button>
@@ -170,7 +170,7 @@ export const TestimonialWidget = ({ reviews, edit, onEditClick, onAddReview }) =
         <TestimonialEmptyState />
       ) : (
         <div
-          className="bg-white rounded-xl relative overflow-hidden flex flex-col"
+          className="relative flex flex-col overflow-hidden rounded-xl bg-white"
           style={{
             height: "auto",
             maxHeight: expanded ? expandedMaxHeight : COLLAPSED_MAX_H,
@@ -184,7 +184,7 @@ export const TestimonialWidget = ({ reviews, edit, onEditClick, onAddReview }) =
             className={cn(
               "relative z-10 min-h-0",
               isCurrentLong ? "pt-5" : "py-5",
-              expanded ? "overflow-y-auto custom-scrollbar" : "overflow-hidden"
+              expanded ? "custom-scrollbar overflow-y-auto" : "overflow-hidden"
             )}
             style={{
               paddingLeft: BODY_PX,
@@ -200,9 +200,9 @@ export const TestimonialWidget = ({ reviews, edit, onEditClick, onAddReview }) =
              */}
             <div
               className={cn(
-                "font-medium text-black/90 leading-relaxed relative",
+                "relative leading-relaxed font-medium text-black/90",
                 !expanded &&
-                "line-clamp-3 [&_.ProseMirror]:line-clamp-3 [&_.ProseMirror]:overflow-hidden [&_.ProseMirror]:break-words"
+                  "line-clamp-3 [&_.ProseMirror]:line-clamp-3 [&_.ProseMirror]:overflow-hidden [&_.ProseMirror]:break-words"
               )}
             >
               <AnimatePresence mode="wait">
@@ -219,9 +219,9 @@ export const TestimonialWidget = ({ reviews, edit, onEditClick, onAddReview }) =
                     mode="review"
                     enableBulletList={false}
                     className={cn(
-                      "rounded-none shadow-none bg-transparent min-w-0 [&_.ProseMirror]:min-h-0 [&_.ProseMirror]:p-0",
+                      "min-w-0 rounded-none bg-transparent shadow-none [&_.ProseMirror]:min-h-0 [&_.ProseMirror]:p-0",
                       !expanded
-                        ? "[&_.ProseMirror]:text-[14px] [&_.ProseMirror]:line-clamp-3 [&_.ProseMirror]:overflow-hidden"
+                        ? "[&_.ProseMirror]:line-clamp-3 [&_.ProseMirror]:overflow-hidden [&_.ProseMirror]:text-[14px]"
                         : "[&_.ProseMirror]:text-[14px]"
                     )}
                   />
@@ -234,15 +234,15 @@ export const TestimonialWidget = ({ reviews, edit, onEditClick, onAddReview }) =
           <div className="relative z-10 shrink-0">
             <div className="h-px w-full bg-black/5" />
             <div
-              className="flex items-center gap-3 h-full flex-wrap py-2"
+              className="flex h-full flex-wrap items-center gap-3 py-2"
               style={{ paddingLeft: BODY_PX, paddingRight: BODY_PX }}
             >
-              <Avatar className="w-9 h-9 shrink-0">
+              <Avatar className="h-9 w-9 shrink-0">
                 <AvatarImage
                   src={currentReview?.avatar?.url || currentReview?.avatar}
                   alt={currentReview?.name}
                 />
-                <AvatarFallback className="bg-[#F5C75D]/50 text-[#4A3708] text-xs font-medium">
+                <AvatarFallback className="bg-[#F5C75D]/50 text-xs font-medium text-[#4A3708]">
                   {currentReview?.name
                     ?.split(" ")
                     .map((n) => n[0])
@@ -251,7 +251,7 @@ export const TestimonialWidget = ({ reviews, edit, onEditClick, onAddReview }) =
                     .toUpperCase() || "?"}
                 </AvatarFallback>
               </Avatar>
-              <div className="flex-1 min-w-0 flex flex-col justify-center gap-0.5">
+              <div className="flex min-w-0 flex-1 flex-col justify-center gap-0.5">
                 <div className="flex items-center gap-1.5">
                   <AnimatePresence mode="wait">
                     <motion.span
@@ -260,7 +260,7 @@ export const TestimonialWidget = ({ reviews, edit, onEditClick, onAddReview }) =
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: -10 }}
                       transition={{ type: "spring", damping: 30, stiffness: 400 }}
-                      className="text-[11px] text-black/50 font-bold uppercase tracking-wider leading-none"
+                      className="text-[11px] leading-none font-bold tracking-wider text-black/50 uppercase"
                     >
                       {currentTestimonial?.author ?? "Client"}
                     </motion.span>
@@ -270,10 +270,10 @@ export const TestimonialWidget = ({ reviews, edit, onEditClick, onAddReview }) =
                       href={currentReview.linkedinLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-[#0A66C2] hover:opacity-80 p-0.5 rounded transition-opacity"
+                      className="rounded p-0.5 text-[#0A66C2] transition-opacity hover:opacity-80"
                       aria-label="LinkedIn profile"
                     >
-                      <MemoLinkedin className="w-3.5 h-3.5" />
+                      <MemoLinkedin className="h-3.5 w-3.5" />
                     </a>
                   )}
                 </div>
@@ -288,13 +288,13 @@ export const TestimonialWidget = ({ reviews, edit, onEditClick, onAddReview }) =
 
 function TestimonialEmptyState() {
   return (
-    <div className="bg-white rounded-xl flex flex-col items-center justify-center gap-3 min-h-[120px] py-8 px-6">
+    <div className="flex min-h-[120px] flex-col items-center justify-center gap-3 rounded-xl bg-white px-6 py-8">
       <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#4A3708]/10 text-[#4A3708]/70">
         <Plus className="h-5 w-5" strokeWidth={2.5} />
       </div>
-      <div className="text-center space-y-0.5">
-        <p className="text-[#4A3708] font-semibold text-sm">No testimonials yet</p>
-        <p className="text-[#4A3708]/60 text-xs">Tap to add your first review</p>
+      <div className="space-y-0.5 text-center">
+        <p className="text-sm font-semibold text-[#4A3708]">No testimonials yet</p>
+        <p className="text-xs text-[#4A3708]/60">Tap to add your first review</p>
       </div>
     </div>
   );

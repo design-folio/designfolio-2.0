@@ -64,9 +64,9 @@ const rightBannerVariants = {
 
 export default function HeroBanner({ dfToken }) {
   return (
-    <div className="relative md:max-w-[680px] xl:max-w-[814px] m-auto">
+    <div className="relative m-auto md:max-w-[680px] xl:max-w-[814px]">
       <motion.h1
-        className="font-satoshi text-[32px] px-4 md:px-[24px] leading-[120%] md:text-[62px] xl:leading-[73px] font-[700] text-landing-heading-text-color md:text-center overflow-hidden"
+        className="font-satoshi text-landing-heading-text-color overflow-hidden px-4 text-[32px] leading-[120%] font-[700] md:px-[24px] md:text-center md:text-[62px] xl:leading-[73px]"
         style={{ perspective: "600px" }}
         initial="initial"
         animate="animate"
@@ -91,7 +91,7 @@ export default function HeroBanner({ dfToken }) {
       </motion.h1>
 
       <motion.p
-        className="font-inter text-[20px] px-4 md:px-[24px] text-landing-description-text-color font-[500] md:text-center mt-6"
+        className="font-inter text-landing-description-text-color mt-6 px-4 text-[20px] font-[500] md:px-[24px] md:text-center"
         style={{ perspective: "600px" }}
         initial="initial"
         animate="animate"
@@ -102,7 +102,7 @@ export default function HeroBanner({ dfToken }) {
       <motion.img
         src="/assets/svgs/left-banner.svg"
         alt=""
-        className="hidden md:block absolute md:top-[15px] xl:top-[75px] md:left-[-330px] transition-transform duration-500 ease-out"
+        className="absolute hidden transition-transform duration-500 ease-out md:top-[15px] md:left-[-330px] md:block xl:top-[75px]"
         variants={leftBannerVariants}
         initial="hidden"
         animate="visible"
@@ -110,7 +110,7 @@ export default function HeroBanner({ dfToken }) {
       <motion.img
         src="/assets/svgs/right-banner.svg"
         alt=""
-        className="hidden md:block absolute md:top-[15px] xl:top-[85px] md:right-[-330px] transition-transform duration-500 ease-out"
+        className="absolute hidden transition-transform duration-500 ease-out md:top-[15px] md:right-[-330px] md:block xl:top-[85px]"
         variants={rightBannerVariants}
         initial="hidden"
         animate="visible"

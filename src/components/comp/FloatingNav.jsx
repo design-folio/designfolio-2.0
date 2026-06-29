@@ -88,10 +88,10 @@ export const FloatingNav = () => {
     <>
       {/* Desktop Navigation */}
       <nav
-        className="fixed top-1/2 -translate-y-1/2 z-50 hidden lg:block transition-[left] duration-300"
+        className="fixed top-1/2 z-50 hidden -translate-y-1/2 transition-[left] duration-300 lg:block"
         style={{ left: hasSideNav ? "88px" : "32px" }}
       >
-        <div className="bg-card dark:bg-secondary border border-card-border dark:border-secondary-border rounded-xl p-3 shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]">
+        <div className="bg-card dark:bg-secondary border-card-border dark:border-secondary-border rounded-xl border p-3 shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]">
           <div className="flex flex-col gap-4">
             {sections.map(({ id, label, icon: Icon }) => (
               <button
@@ -102,21 +102,21 @@ export const FloatingNav = () => {
                 }`}
               >
                 <div
-                  className={`flex items-center justify-center w-10 h-10 rounded-full transition-colors ${
+                  className={`flex h-10 w-10 items-center justify-center rounded-full transition-colors ${
                     activeSection === id
                       ? "bg-foreground dark:bg-[#2A2D37]"
-                      : "bg-[#e5e5e7] dark:bg-secondary-hover hover:bg-primary-hover dark:hover:bg-primary-hover"
+                      : "dark:bg-secondary-hover hover:bg-primary-hover dark:hover:bg-primary-hover bg-[#e5e5e7]"
                   }`}
                 >
                   <Icon
-                    className={`w-5 h-5 ${
+                    className={`h-5 w-5 ${
                       activeSection === id
                         ? "text-background dark:text-white"
                         : "text-foreground dark:text-foreground-dark"
                     }`}
                   />
                 </div>
-                <span className="text-sm opacity-0 group-hover:opacity-100 transition-opacity absolute left-full pl-4 whitespace-nowrap">
+                <span className="absolute left-full pl-4 text-sm whitespace-nowrap opacity-0 transition-opacity group-hover:opacity-100">
                   {label}
                 </span>
               </button>
@@ -127,8 +127,8 @@ export const FloatingNav = () => {
 
       {/* Mobile and Tablet Navigation */}
       {!router.asPath.includes("portfolio-preview") && (
-        <nav className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 lg:hidden">
-          <div className="bg-card dark:bg-secondary border border-card-border dark:border-secondary-border rounded-xl p-3 shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]">
+        <nav className="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 lg:hidden">
+          <div className="bg-card dark:bg-secondary border-card-border dark:border-secondary-border rounded-xl border p-3 shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]">
             <div className="flex items-center gap-4">
               {sections.map(({ id, icon: Icon }) => (
                 <button
@@ -139,14 +139,14 @@ export const FloatingNav = () => {
                   }`}
                 >
                   <div
-                    className={`flex items-center justify-center w-10 h-10 rounded-full transition-colors ${
+                    className={`flex h-10 w-10 items-center justify-center rounded-full transition-colors ${
                       activeSection === id
                         ? "bg-foreground dark:bg-[#2A2D37]"
-                        : "bg-[#e5e5e7] dark:bg-secondary-hover hover:bg-primary-hover dark:hover:bg-primary-hover"
+                        : "dark:bg-secondary-hover hover:bg-primary-hover dark:hover:bg-primary-hover bg-[#e5e5e7]"
                     }`}
                   >
                     <Icon
-                      className={`w-5 h-5 ${
+                      className={`h-5 w-5 ${
                         activeSection === id
                           ? "text-background dark:text-white"
                           : "text-foreground dark:text-foreground-dark"

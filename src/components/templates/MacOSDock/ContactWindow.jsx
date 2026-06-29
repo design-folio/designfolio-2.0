@@ -26,7 +26,7 @@ function ContactEmptyState({ label, message, onClick }) {
   const content = (
     <>
       {label && <div className={styles.label}>{label}</div>}
-      <p className="text-sm text-[#37352f]/60 font-medium">{message}</p>
+      <p className="text-sm font-medium text-[#37352f]/60">{message}</p>
     </>
   );
 
@@ -44,7 +44,7 @@ function ContactEmptyState({ label, message, onClick }) {
 
   return (
     <div
-      className={`min-h-[4rem] w-full ${baseClass} ${interactiveClass} p-4 flex flex-col justify-center`}
+      className={`min-h-[4rem] w-full ${baseClass} ${interactiveClass} flex flex-col justify-center p-4`}
     >
       {content}
     </div>
@@ -68,22 +68,22 @@ const ContactWindow = ({ contactInfo, fullName, onOpenPdf, edit, onEdit, hasResu
   const showBlogs = edit || hasBlogs;
 
   return (
-    <div className="w-full h-full bg-white flex flex-col font-azeretMono text-[#37352f]">
+    <div className="font-azeretMono flex h-full w-full flex-col bg-white text-[#37352f]">
       {/* Header */}
       <div className="px-10 pt-12 pb-4">
-        <div className="flex items-center gap-4 mb-2 opacity-50 text-sm">
+        <div className="mb-2 flex items-center gap-4 text-sm opacity-50">
           <span>📂</span>
           <span>Contacts</span>
           <span>/</span>
           <span>contact.mdx</span>
         </div>
-        <div className="flex items-center justify-between mb-8">
+        <div className="mb-8 flex items-center justify-between">
           <h1 className="text-4xl font-bold text-[#37352f]">Get in touch</h1>
         </div>
       </div>
 
       {/* Content */}
-      <div className="px-10 pb-20 space-y-8">
+      <div className="space-y-8 px-10 pb-20">
         {/* Contact Details */}
         {showContactDetails && (
           <section>
@@ -91,7 +91,7 @@ const ContactWindow = ({ contactInfo, fullName, onOpenPdf, edit, onEdit, hasResu
               <span className="text-xl">📧</span>
               <h2 className={styles.sectionTitle}>Contact Details</h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {contactInfo.contact_email ? (
                 <a
                   href={`mailto:${contactInfo.contact_email}`}
@@ -160,7 +160,7 @@ const ContactWindow = ({ contactInfo, fullName, onOpenPdf, edit, onEdit, hasResu
                       rel="noopener noreferrer"
                       className={styles.row}
                     >
-                      <span className="w-6 h-6 flex items-center justify-center bg-[#0077b5] text-white rounded text-[10px] font-bold shrink-0">
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded bg-[#0077b5] text-[10px] font-bold text-white">
                         in
                       </span>
                       <span className="flex-1 border-b border-[#e9e9e7] pb-1">
@@ -175,7 +175,7 @@ const ContactWindow = ({ contactInfo, fullName, onOpenPdf, edit, onEdit, hasResu
                       rel="noopener noreferrer"
                       className={styles.row}
                     >
-                      <span className="w-6 h-6 flex items-center justify-center bg-black text-white rounded text-[10px] font-bold shrink-0">
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded bg-black text-[10px] font-bold text-white">
                         X
                       </span>
                       <span className="flex-1 border-b border-[#e9e9e7] pb-1">
@@ -190,7 +190,7 @@ const ContactWindow = ({ contactInfo, fullName, onOpenPdf, edit, onEdit, hasResu
                       rel="noopener noreferrer"
                       className={styles.row}
                     >
-                      <span className="w-6 h-6 flex items-center justify-center bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] text-white rounded text-[10px] font-bold shrink-0">
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] text-[10px] font-bold text-white">
                         IG
                       </span>
                       <span className="flex-1 border-b border-[#e9e9e7] pb-1">
@@ -205,7 +205,7 @@ const ContactWindow = ({ contactInfo, fullName, onOpenPdf, edit, onEdit, hasResu
                       rel="noopener noreferrer"
                       className={styles.row}
                     >
-                      <span className="w-6 h-6 flex items-center justify-center bg-[#ea4c89] text-white rounded text-[10px] font-bold shrink-0">
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded bg-[#ea4c89] text-[10px] font-bold text-white">
                         Dr
                       </span>
                       <span className="flex-1 border-b border-[#e9e9e7] pb-1">
@@ -235,7 +235,7 @@ const ContactWindow = ({ contactInfo, fullName, onOpenPdf, edit, onEdit, hasResu
                 rel="noopener noreferrer"
                 className={styles.row}
               >
-                <span className="w-6 h-6 flex items-center justify-center bg-black text-white rounded text-[10px] font-bold shrink-0">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded bg-black text-[10px] font-bold text-white">
                   M
                 </span>
                 <span className="flex-1 border-b border-[#e9e9e7] pb-1 text-[#37352f]">

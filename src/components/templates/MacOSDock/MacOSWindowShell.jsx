@@ -180,47 +180,46 @@ const MacOSWindowShell = ({
   return (
     <div
       ref={windowRef}
-      className="fixed z-[300] flex flex-col overflow-hidden bg-[#faf9f6] border border-[#d1d1d1] shadow-2xl pointer-events-auto"
+      className="pointer-events-auto fixed z-[300] flex flex-col overflow-hidden border border-[#d1d1d1] bg-[#faf9f6] shadow-2xl"
       style={sizeStyles}
     >
       {/* ── Title bar ── */}
       <div
         onMouseDown={handleTitleBarMouseDown}
-        className={`h-9 shrink-0 bg-[#f6f6f6] border-b border-[#d1d1d1] flex items-center px-3 justify-between select-none
-          ${isMobile || isMaximized ? "cursor-default" : "cursor-move active:cursor-grabbing"}`}
+        className={`flex h-9 shrink-0 items-center justify-between border-b border-[#d1d1d1] bg-[#f6f6f6] px-3 select-none ${isMobile || isMaximized ? "cursor-default" : "cursor-move active:cursor-grabbing"}`}
       >
-        <div className="flex gap-2 items-center">
-          <div className="text-[12px] font-medium text-[#444] flex items-center gap-1 ml-2">
+        <div className="flex items-center gap-2">
+          <div className="ml-2 flex items-center gap-1 text-[12px] font-medium text-[#444]">
             <span className="opacity-70">🌐</span>
-            <span className="font-sans truncate max-w-[240px] md:max-w-[360px]">{title}</span>
+            <span className="max-w-[240px] truncate font-sans md:max-w-[360px]">{title}</span>
           </div>
         </div>
 
         {/* Right-side controls */}
-        <div className="flex items-center gap-1 text-[#666] shrink-0">
+        <div className="flex shrink-0 items-center gap-1 text-[#666]">
           <button
             type="button"
-            className="p-1 rounded hover:bg-black/10 transition-colors"
+            className="rounded p-1 transition-colors hover:bg-black/10"
             onClick={handleMinimize}
             title="Minimize"
           >
-            <Minus className="w-4 h-4" />
+            <Minus className="h-4 w-4" />
           </button>
           <button
             type="button"
-            className="p-1 rounded hover:bg-black/10 transition-colors"
+            className="rounded p-1 transition-colors hover:bg-black/10"
             onClick={handleMaximize}
             title="Maximize"
           >
-            <Square className="w-3 h-3" />
+            <Square className="h-3 w-3" />
           </button>
           <button
             type="button"
-            className="p-1 rounded hover:bg-red-500/20 hover:text-red-600 transition-colors"
+            className="rounded p-1 transition-colors hover:bg-red-500/20 hover:text-red-600"
             onClick={handleClose}
             title="Close"
           >
-            <X className="w-4 h-4" />
+            <X className="h-4 w-4" />
           </button>
         </div>
       </div>
@@ -235,11 +234,11 @@ const MacOSWindowShell = ({
         onBack={() => router.back()}
         rightSlot={
           canManage && (
-            <div className="flex items-center gap-1 border-l border-[#d1d1d1] ml-1 pl-2">
+            <div className="ml-1 flex items-center gap-1 border-l border-[#d1d1d1] pl-2">
               {onDelete && (
                 <button
                   type="button"
-                  className="p-1.5 hover:bg-red-50 text-red-500/70 hover:text-red-500 rounded transition-colors"
+                  className="rounded p-1.5 text-red-500/70 transition-colors hover:bg-red-50 hover:text-red-500"
                   title="Delete Project"
                   onClick={onDelete}
                 >
@@ -249,7 +248,7 @@ const MacOSWindowShell = ({
               {onToggleVisibility && (
                 <button
                   type="button"
-                  className="p-1.5 hover:bg-black/5 text-[#666] rounded transition-colors"
+                  className="rounded p-1.5 text-[#666] transition-colors hover:bg-black/5"
                   title={isHidden ? "Unhide Project" : "Hide Project"}
                   onClick={onToggleVisibility}
                 >
@@ -262,7 +261,7 @@ const MacOSWindowShell = ({
                 <div className="relative" data-popover-id={popovers.password}>
                   <button
                     type="button"
-                    className="p-1.5 hover:bg-black/5 text-[#666] rounded transition-colors"
+                    className="rounded p-1.5 text-[#666] transition-colors hover:bg-black/5"
                     title={isPasswordEnabled ? "Edit Password" : "Add Password"}
                     onClick={() =>
                       setPopoverMenu((prev) =>
@@ -274,13 +273,13 @@ const MacOSWindowShell = ({
                   </button>
 
                   <div
-                    className={`pt-2 origin-top-right absolute z-20 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${
+                    className={`translateZ(0) absolute right-0 z-20 origin-top-right pt-2 transition-all duration-120 ease-in-out will-change-transform ${
                       popoverMenu === popovers.password
-                        ? "opacity-100 scale-100"
-                        : "opacity-0 scale-90 pointer-events-none"
+                        ? "scale-100 opacity-100"
+                        : "pointer-events-none scale-90 opacity-0"
                     }`}
                   >
-                    <div className="w-[350px] md:w-[386px] bg-popover-bg-color rounded-2xl shadow-lg border-[5px] border-popover-border-color p-2">
+                    <div className="bg-popover-bg-color border-popover-border-color w-[350px] rounded-2xl border-[5px] p-2 shadow-lg md:w-[386px]">
                       <Formik
                         initialValues={{
                           password: initialPassword || "",
@@ -313,18 +312,18 @@ const MacOSWindowShell = ({
                       >
                         {({ isSubmitting, errors, touched, validateField }) => (
                           <Form id="macProjectPasswordForm" autoComplete="off">
-                            <div className="bg-input-password-bg-color rounded-lg py-4 px-3 transition-all">
-                              <div className="flex justify-between gap-[12px] items-center">
+                            <div className="bg-input-password-bg-color rounded-lg px-3 py-4 transition-all">
+                              <div className="flex items-center justify-between gap-[12px]">
                                 <div>
                                   <Text
                                     size="p-xxsmall"
-                                    className="font-medium text-input-password-heading-color"
+                                    className="text-input-password-heading-color font-medium"
                                   >
                                     Set Password
                                   </Text>
                                   <Text
                                     size="p-xxsmall"
-                                    className="font-medium text-input-password-description-color"
+                                    className="text-input-password-description-color font-medium"
                                   >
                                     Protect your project if you&apos;ve an NDA.
                                   </Text>
@@ -358,9 +357,9 @@ const MacOSWindowShell = ({
                                       }}
                                     >
                                       {showEye ? (
-                                        <EyeOff className="w-4 h-4 text-df-icon-color" />
+                                        <EyeOff className="text-df-icon-color h-4 w-4" />
                                       ) : (
-                                        <Eye className="w-4 h-4 text-df-icon-color" />
+                                        <Eye className="text-df-icon-color h-4 w-4" />
                                       )}
                                     </div>
                                   </div>
@@ -374,7 +373,7 @@ const MacOSWindowShell = ({
                             </div>
 
                             {isPasswordEnabled && (
-                              <div className="flex gap-2 justify-end mt-4">
+                              <div className="mt-4 flex justify-end gap-2">
                                 <Button
                                   text="Cancel"
                                   onClick={() => setPopoverMenu(null)}

@@ -396,7 +396,7 @@ const ProjectEditor = ({ projectDetails, userDetails }) => {
   return (
     <>
       <div className="project-editor bg-card rounded-[26px] p-[16px] md:p-[32px]">
-        <div ref={editorContainer} className={"block w-[100%] mx-0 my-auto"}></div>
+        <div ref={editorContainer} className={"mx-0 my-auto block w-[100%]"}></div>
       </div>
     </>
   );

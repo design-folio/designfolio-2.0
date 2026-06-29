@@ -33,7 +33,7 @@ export default function DragHandle({
             e.preventDefault();
             e.stopPropagation();
           }}
-          className={cn("[cursor:grab] active:[cursor:grabbing] rounded-full", className)}
+          className={cn("[cursor:grab] rounded-full active:[cursor:grabbing]", className)}
           {...props}
         >
           <GripVertical className="pointer-events-none size-4" />
@@ -46,14 +46,14 @@ export default function DragHandle({
           style={{ touchAction: "none" }}
           onClick={handleClick}
           className={cn(
-            "h-8 w-8 rounded-full flex items-center justify-center transition-colors duration-200",
-            "bg-secondary-btn-bg-color hover:bg-secondary-btn-bg-hover-color border border-secondary-btn-border-color",
+            "flex h-8 w-8 items-center justify-center rounded-full transition-colors duration-200",
+            "bg-secondary-btn-bg-color hover:bg-secondary-btn-bg-hover-color border-secondary-btn-border-color border",
             "text-secondary-btn-text-color [cursor:grab] active:[cursor:grabbing]",
             className
           )}
           {...props}
         >
-          <GripVertical className="pointer-events-none w-4 h-4" />
+          <GripVertical className="pointer-events-none h-4 w-4" />
         </div>
       ) : (
         <div
@@ -63,12 +63,12 @@ export default function DragHandle({
           style={{ touchAction: "none" }}
           onClick={handleClick}
           className={cn(
-            "px-[24.5px] py-[19px] transition-shadow duration-500 ease-out bg-project-card-reorder-btn-bg-color rounded-full border-project-card-reorder-btn-bg-color hover:border-project-card-reorder-btn-bg-hover-color hover:bg-project-card-reorder-btn-bg-hover-color [cursor:grab] active:[cursor:grabbing]",
+            "bg-project-card-reorder-btn-bg-color border-project-card-reorder-btn-bg-color hover:border-project-card-reorder-btn-bg-hover-color hover:bg-project-card-reorder-btn-bg-hover-color [cursor:grab] rounded-full px-[24.5px] py-[19px] transition-shadow duration-500 ease-out active:[cursor:grabbing]",
             className
           )}
           {...props}
         >
-          <GripVertical className="text-project-card-reorder-btn-icon-color pointer-events-none w-5 h-5" />
+          <GripVertical className="text-project-card-reorder-btn-icon-color pointer-events-none h-5 w-5" />
         </div>
       )}
     </>

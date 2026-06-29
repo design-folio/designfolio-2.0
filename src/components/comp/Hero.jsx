@@ -19,7 +19,7 @@ export const Hero = ({ userDetails, edit }) => {
 
   return (
     <TooltipProvider>
-      <section className="flex flex-col items-center text-center py-12">
+      <section className="flex flex-col items-center py-12 text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -27,8 +27,8 @@ export const Hero = ({ userDetails, edit }) => {
         >
           <Tooltip delayDuration={300}>
             <TooltipTrigger asChild>
-              <Avatar className="w-24 h-24 mb-6 relative rounded-[24px]">
-                <div className="relative w-full h-full ">
+              <Avatar className="relative mb-6 h-24 w-24 rounded-[24px]">
+                <div className="relative h-full w-full">
                   <AnimatePresence mode="wait">
                     {!isLoaded && (
                       <motion.div
@@ -36,7 +36,7 @@ export const Hero = ({ userDetails, edit }) => {
                         initial={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute inset-0 bg-secondary/50 animate-pulse rounded-2xl"
+                        className="bg-secondary/50 absolute inset-0 animate-pulse rounded-2xl"
                       />
                     )}
                   </AnimatePresence>
@@ -47,7 +47,7 @@ export const Hero = ({ userDetails, edit }) => {
                     src={getUserAvatarImage(userDetails)}
                     alt="Profile"
                     className={cn(
-                      "rounded-3xl w-full h-full object-cover",
+                      "h-full w-full rounded-3xl object-cover",
                       !avatar ? "bg-[#FFB088]" : ""
                     )}
                     loading="eager"
@@ -65,20 +65,20 @@ export const Hero = ({ userDetails, edit }) => {
               side="top"
               sideOffset={8}
               avoidCollisions={true}
-              className="bg-tooltip-bg-color text-tooltip-text-color border-0 px-4 py-2 rounded-xl flex items-center gap-2 shadow-xl"
+              className="bg-tooltip-bg-color text-tooltip-text-color flex items-center gap-2 rounded-xl border-0 px-4 py-2 shadow-xl"
             >
               <span className="text-sm font-medium">Happy to have you here</span>
               <img
                 src="/assets/png/handshake.png"
                 alt="Handshake"
-                className="w-5 h-5 object-contain"
+                className="h-5 w-5 object-contain"
               />
             </TooltipContent>
           </Tooltip>
         </motion.div>
 
         <motion.div
-          className="mb-4 flex flex-col lg:row justify-center lg:items-start gap-3 relative"
+          className="lg:row relative mb-4 flex flex-col justify-center gap-3 lg:items-start"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
@@ -97,7 +97,7 @@ export const Hero = ({ userDetails, edit }) => {
         </motion.div>
 
         <motion.p
-          className="dark:text-gray-400 text-gray-600 max-w-xl mb-8"
+          className="mb-8 max-w-xl text-gray-600 dark:text-gray-400"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.5 }}
@@ -110,7 +110,7 @@ export const Hero = ({ userDetails, edit }) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.7 }}
-          className="w-full overflow-hidden relative py-4 before:absolute before:left-0 before:top-0 before:z-10 before:w-20 before:h-full before:bg-gradient-to-r before:from-background before:to-transparent after:absolute after:right-0 after:top-0 after:z-10 after:w-20 after:h-full after:bg-gradient-to-l after:from-background after:to-transparent"
+          className="before:from-background after:from-background relative w-full overflow-hidden py-4 before:absolute before:top-0 before:left-0 before:z-10 before:h-full before:w-20 before:bg-gradient-to-r before:to-transparent after:absolute after:top-0 after:right-0 after:z-10 after:h-full after:w-20 after:bg-gradient-to-l after:to-transparent"
         >
           <motion.div
             className="flex gap-4 whitespace-nowrap"
@@ -125,7 +125,7 @@ export const Hero = ({ userDetails, edit }) => {
             }}
           >
             {scrollSkills.map((skill, index) => (
-              <motion.span key={index} className="bg-card px-4 py-2 rounded-full text-sm">
+              <motion.span key={index} className="bg-card rounded-full px-4 py-2 text-sm">
                 {skill?.label}
               </motion.span>
             ))}

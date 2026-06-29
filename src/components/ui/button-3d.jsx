@@ -19,7 +19,7 @@ const Button3D = ({ children, onClick, disabled = false, className = "" }) => {
 
   return (
     <motion.button
-      className={`font-bold rounded-md px-4 py-2 text-xs text-black ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"} focus:outline-none select-none flex items-center justify-center transition-colors ${className}`}
+      className={`rounded-md px-4 py-2 text-xs font-bold text-black ${disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"} flex items-center justify-center transition-colors select-none focus:outline-none ${className}`}
       style={{ backgroundColor: baseColor }}
       initial={{ boxShadow: `0 4px 0 0 ${shadowColor}`, y: 0 }}
       whileHover={

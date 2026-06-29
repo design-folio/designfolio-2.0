@@ -20,14 +20,14 @@ const DfImage = ({ src, style, className, alt, onClick }) => {
   const hasPointerCursor = className?.includes("cursor-pointer");
 
   return (
-    <div className={twMerge("relative w-full h-full", className)}>
+    <div className={twMerge("relative h-full w-full", className)}>
       {mounted ? (
         <>
           <img
             src={src}
             alt={alt ?? ""}
             className={twMerge(
-              "absolute inset-0 w-full h-full object-cover rounded-full transition-opacity duration-300",
+              "absolute inset-0 h-full w-full rounded-full object-cover transition-opacity duration-300",
               imageLoaded ? "opacity-100" : "opacity-0",
               hasPointerCursor && "cursor-pointer"
             )}
@@ -39,14 +39,14 @@ const DfImage = ({ src, style, className, alt, onClick }) => {
           />
           {!imageLoaded && (
             <div
-              className="absolute inset-0 bg-placeholder-color rounded-full animate-pulse"
+              className="bg-placeholder-color absolute inset-0 animate-pulse rounded-full"
               aria-hidden
             />
           )}
         </>
       ) : (
         <div
-          className="absolute inset-0 bg-placeholder-color rounded-full animate-pulse"
+          className="bg-placeholder-color absolute inset-0 animate-pulse rounded-full"
           aria-hidden
         />
       )}

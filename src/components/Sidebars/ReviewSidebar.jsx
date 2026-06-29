@@ -213,7 +213,7 @@ export default function AddReview() {
         }, [values]);
 
         return (
-          <Form id="reviewForm" className="flex flex-col h-full">
+          <Form id="reviewForm" className="flex h-full flex-col">
             <div className="flex-1 overflow-auto px-6 py-4">
               <div>
                 <Text size={"p-xxsmall"} className="mt-6 font-medium" required>
@@ -289,24 +289,24 @@ export default function AddReview() {
                 <Text size={"p-xxsmall"} className="font-medium">
                   Photo of the Person
                 </Text>
-                <div className="flex justify-start mt-2">
+                <div className="mt-2 flex justify-start">
                   <label
                     htmlFor="review-avatar"
-                    className="relative w-24 h-24 rounded-full border-2 border-border bg-muted hover:border-foreground/30 cursor-pointer flex items-center justify-center transition-all duration-300 ease-out hover:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] overflow-hidden group"
+                    className="border-border bg-muted hover:border-foreground/30 group relative flex h-24 w-24 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 transition-all duration-300 ease-out hover:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)]"
                   >
                     {avatarPreview ? (
                       <>
                         <img
                           src={avatarPreview}
                           alt="Avatar preview"
-                          className="w-full h-full object-cover"
+                          className="h-full w-full object-cover"
                         />
-                        <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
-                          <Upload className="w-5 h-5 text-white" />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-all duration-300 group-hover:bg-black/50 group-hover:opacity-100">
+                          <Upload className="h-5 w-5 text-white" />
                         </div>
                       </>
                     ) : (
-                      <Upload className="w-6 h-6 text-foreground/40 group-hover:text-foreground/60 transition-colors" />
+                      <Upload className="text-foreground/40 group-hover:text-foreground/60 h-6 w-6 transition-colors" />
                     )}
                   </label>
                 </div>
@@ -321,7 +321,7 @@ export default function AddReview() {
             </div>
 
             <div
-              className={`flex gap-2 py-3 px-6 border-t border-border ${
+              className={`border-border flex gap-2 border-t px-6 py-3 ${
                 selectedReview?.name ? "justify-between" : "justify-end"
               }`}
             >
@@ -333,7 +333,7 @@ export default function AddReview() {
                   onClick={handleDelete}
                   className="border-destructive/40 hover:border-destructive hover:bg-destructive/10"
                 >
-                  <DeleteIcon className="stroke-destructive w-5 h-5" />
+                  <DeleteIcon className="stroke-destructive h-5 w-5" />
                 </Button>
               )}
 
@@ -344,7 +344,7 @@ export default function AddReview() {
                 <Button type="submit" form="reviewForm" disabled={loading}>
                   {loading && (
                     <svg
-                      className="animate-spin h-4 w-4"
+                      className="h-4 w-4 animate-spin"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"

@@ -27,7 +27,7 @@ const BUBBLES = Array.from({ length: 15 }, (_, i) => ({
 
 function BadgeBubbles() {
   return (
-    <div className="absolute inset-0 z-[5] overflow-hidden rounded-full pointer-events-none">
+    <div className="pointer-events-none absolute inset-0 z-[5] overflow-hidden rounded-full">
       {BUBBLES.map((b) => (
         <span
           key={b.id}
@@ -495,19 +495,17 @@ export function CreditsBalance({ refreshKey = 0 }) {
         tabIndex={0}
         onClick={() => setOpen((o) => !o)}
         onKeyDown={(e) => e.key === "Enter" && setOpen((o) => !o)}
-        className={`group relative inline-flex cursor-pointer select-none items-center gap-2 overflow-hidden rounded-full h-9 px-4 text-sm font-medium text-foreground transition-all hover:bg-card hover:text-accent-foreground border-[#d4d0c4] dark:border-[#38312e] ${
-          open
-            ? "border-2  bg-card text-accent-foreground"
-            : "border  bg-[#EEECE7] dark:bg-[#1C1917]"
+        className={`group text-foreground hover:bg-card hover:text-accent-foreground relative inline-flex h-9 cursor-pointer items-center gap-2 overflow-hidden rounded-full border-[#d4d0c4] px-4 text-sm font-medium transition-all select-none dark:border-[#38312e] ${
+          open ? "bg-card text-accent-foreground border-2" : "border bg-[#EEECE7] dark:bg-[#1C1917]"
         }`}
       >
         <BadgeBubbles />
-        <div className="relative z-10 shrink-0 pointer-events-none">
-          <FlaskConical className="w-3.5 h-3.5 opacity-70" />
+        <div className="pointer-events-none relative z-10 shrink-0">
+          <FlaskConical className="h-3.5 w-3.5 opacity-70" />
         </div>
-        <div className="relative z-10 whitespace-nowrap pointer-events-none">
+        <div className="pointer-events-none relative z-10 whitespace-nowrap">
           <span className="font-semibold">{balance ?? "…"}</span>
-          <span className="ml-1 opacity-50 text-xs">Credits</span>
+          <span className="ml-1 text-xs opacity-50">Credits</span>
         </div>
       </div>
 
@@ -519,7 +517,7 @@ export function CreditsBalance({ refreshKey = 0 }) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.95 }}
             transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute right-0 top-[calc(100%+10px)] z-50"
+            className="absolute top-[calc(100%+10px)] right-0 z-50"
             style={{ width: 272 }}
           >
             <div

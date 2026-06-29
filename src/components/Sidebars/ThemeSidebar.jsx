@@ -39,15 +39,15 @@ import { PROFESSIONAL_DEFAULT_ORDER } from "@/components/templates/Professional/
 
 function TemplateCardPlaceholder() {
   return (
-    <div className="absolute inset-0 p-3 flex flex-col gap-2 opacity-40">
+    <div className="absolute inset-0 flex flex-col gap-2 p-3 opacity-40">
       <div className="flex items-center gap-2">
-        <div className="w-5 h-5 rounded-full bg-black/20 dark:bg-white/20" />
-        <div className="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20" />
+        <div className="h-5 w-5 rounded-full bg-black/20 dark:bg-white/20" />
+        <div className="h-1.5 w-12 rounded-full bg-black/20 dark:bg-white/20" />
       </div>
-      <div className="w-full h-12 mt-1 rounded-md bg-black/10 dark:bg-white/10" />
-      <div className="flex gap-2 mt-auto">
-        <div className="w-full h-8 rounded-md bg-black/10 dark:bg-white/10" />
-        <div className="w-full h-8 rounded-md bg-black/10 dark:bg-white/10" />
+      <div className="mt-1 h-12 w-full rounded-md bg-black/10 dark:bg-white/10" />
+      <div className="mt-auto flex gap-2">
+        <div className="h-8 w-full rounded-md bg-black/10 dark:bg-white/10" />
+        <div className="h-8 w-full rounded-md bg-black/10 dark:bg-white/10" />
       </div>
     </div>
   );
@@ -63,21 +63,21 @@ function TemplateCard({ tmpl, isSelected, onChange, previewSrc }) {
   const showThumbnail = Boolean(previewSrc) && !imageFailed;
 
   return (
-    <div className="flex flex-col gap-3 items-center">
+    <div className="flex flex-col items-center gap-3">
       <div className="relative w-full">
         <button
           type="button"
           onClick={() => onChange(tmpl.id)}
           className={twMerge(
-            "w-full aspect-square rounded-[24px] transition-colors focus:outline-none cursor-pointer group/card",
+            "group/card aspect-square w-full cursor-pointer rounded-[24px] transition-colors focus:outline-none",
             isSelected
-              ? "border-[2.5px] border-df-orange-color p-1.5"
+              ? "border-df-orange-color border-[2.5px] p-1.5"
               : "border-[2.5px] border-transparent p-1.5 hover:bg-black/5 dark:hover:bg-white/5"
           )}
         >
           <div
             className={twMerge(
-              "pointer-events-none w-full h-full rounded-[14px] overflow-hidden shadow-sm border border-black/5 dark:border-white/5 relative",
+              "pointer-events-none relative h-full w-full overflow-hidden rounded-[14px] border border-black/5 shadow-sm dark:border-white/5",
               "transition-[box-shadow,background-color] duration-200 ease-out",
               isSelected ? "bg-accent" : "bg-card group-hover/card:shadow-md"
             )}
@@ -86,7 +86,7 @@ function TemplateCard({ tmpl, isSelected, onChange, previewSrc }) {
               <img
                 src={previewSrc}
                 alt=""
-                className="absolute inset-0 w-full h-full object-cover object-top pointer-events-none"
+                className="pointer-events-none absolute inset-0 h-full w-full object-cover object-top"
                 onError={() => setImageFailed(true)}
               />
             ) : (
@@ -98,26 +98,26 @@ function TemplateCard({ tmpl, isSelected, onChange, previewSrc }) {
         </button>
 
         {isSelected && (
-          <div className="absolute -bottom-1 -left-1 bg-df-orange-color text-primary-foreground rounded-full p-1.5 shadow-sm flex items-center justify-center border-2 border-sidebar z-10 pointer-events-none">
+          <div className="bg-df-orange-color text-primary-foreground border-sidebar pointer-events-none absolute -bottom-1 -left-1 z-10 flex items-center justify-center rounded-full border-2 p-1.5 shadow-sm">
             <Check size={14} strokeWidth={3.5} />
           </div>
         )}
       </div>
 
-      <div className="flex items-center gap-1.5 pointer-events-none">
+      <div className="pointer-events-none flex items-center gap-1.5">
         <span
           className={twMerge(
-            "text-[14px] text-center transition-colors font-medium",
+            "text-center text-[14px] font-medium transition-colors",
             isSelected ? "text-primary" : "text-muted-foreground"
           )}
         >
           {tmpl.item}
         </span>
         {tmpl.isNew && (
-          <Badge className="bg-[#EE7F70] text-white text-[10px] font-medium px-1.5 py-0">New</Badge>
+          <Badge className="bg-[#EE7F70] px-1.5 py-0 text-[10px] font-medium text-white">New</Badge>
         )}
         {tmpl.isPro && (
-          <Badge className="bg-[#EE7F70] text-white text-[10px] font-medium px-1.5 py-0">Pro</Badge>
+          <Badge className="bg-[#EE7F70] px-1.5 py-0 text-[10px] font-medium text-white">Pro</Badge>
         )}
       </div>
     </div>
@@ -157,10 +157,10 @@ const SortableSectionItem = ({ id, isMobile, isHidden, onToggleHide }) => {
       ref={setNodeRef}
       style={style}
       className={twMerge(
-        "flex items-center gap-3 p-3 rounded-xl border transition-all cursor-pointer",
+        "flex cursor-pointer items-center gap-3 rounded-xl border p-3 transition-all",
         "bg-muted/50 border-border",
         "hover:bg-muted",
-        isDragging && "shadow-lg z-50 opacity-50"
+        isDragging && "z-50 opacity-50 shadow-lg"
       )}
       data-testid={isMobile ? `section-item-${id}-mobile` : `section-item-${id}`}
     >
@@ -168,7 +168,7 @@ const SortableSectionItem = ({ id, isMobile, isHidden, onToggleHide }) => {
         listeners={listeners}
         attributes={attributes}
         isButton={true}
-        className="cursor-grab active:cursor-grabbing text-foreground/40 hover:text-foreground/60 transition-colors"
+        className="text-foreground/40 hover:text-foreground/60 cursor-grab transition-colors active:cursor-grabbing"
       />
       <span className="flex-1 text-sm font-medium">{SECTION_NAMES[id] || id}</span>
       <button
@@ -176,11 +176,11 @@ const SortableSectionItem = ({ id, isMobile, isHidden, onToggleHide }) => {
           e.stopPropagation();
           onToggleHide();
         }}
-        className="p-1 rounded-md text-foreground/40 hover:text-foreground transition-colors"
+        className="text-foreground/40 hover:text-foreground rounded-md p-1 transition-colors"
         aria-label={isHidden ? "Show section" : "Hide section"}
         type="button"
       >
-        {isHidden ? <EyeOff className="w-4 h-4 text-amber-500" /> : <Eye className="w-4 h-4" />}
+        {isHidden ? <EyeOff className="h-4 w-4 text-amber-500" /> : <Eye className="h-4 w-4" />}
       </button>
     </div>
   );
@@ -464,22 +464,22 @@ const ThemePanel = ({
   };
 
   const renderContent = (isMobile) => (
-    <Tabs defaultValue="layouts" className="w-full h-full flex flex-col">
+    <Tabs defaultValue="layouts" className="flex h-full w-full flex-col">
       <div
-        className={`sticky top-0 z-50 px-6 ${isMobile ? "pb-2" : "pt-4 pb-2"} border-b border-border/30 backdrop-blur-sm`}
+        className={`sticky top-0 z-50 px-6 ${isMobile ? "pb-2" : "pt-4 pb-2"} border-border/30 border-b backdrop-blur-sm`}
       >
-        <div className="overflow-x-auto hide-scrollbar -mx-6 px-6">
-          <TabsList className="w-full bg-transparent p-0 h-auto gap-6 justify-start min-w-fit">
+        <div className="hide-scrollbar -mx-6 overflow-x-auto px-6">
+          <TabsList className="h-auto w-full min-w-fit justify-start gap-6 bg-transparent p-0">
             <TabsTrigger
               value="layouts"
-              className="bg-transparent border-b-2 border-transparent rounded-none px-0 pb-2 data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none text-foreground/60 data-[state=active]:text-foreground font-medium transition-all"
+              className="data-[state=active]:border-foreground text-foreground/60 data-[state=active]:text-foreground rounded-none border-b-2 border-transparent bg-transparent px-0 pb-2 font-medium transition-all data-[state=active]:bg-transparent data-[state=active]:shadow-none"
               data-testid={isMobile ? "tab-layouts-mobile" : "tab-layouts"}
             >
               Layouts
             </TabsTrigger>
             <TabsTrigger
               value="background"
-              className="bg-transparent border-b-2 border-transparent rounded-none px-0 pb-2 data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none text-foreground/60 data-[state=active]:text-foreground font-medium transition-all"
+              className="data-[state=active]:border-foreground text-foreground/60 data-[state=active]:text-foreground rounded-none border-b-2 border-transparent bg-transparent px-0 pb-2 font-medium transition-all data-[state=active]:bg-transparent data-[state=active]:shadow-none"
               data-testid={isMobile ? "tab-background-mobile" : "tab-background"}
             >
               Background
@@ -487,7 +487,7 @@ const ThemePanel = ({
             {!isMacOSTemplate && (
               <TabsTrigger
                 value="blocks"
-                className="bg-transparent border-b-2 border-transparent rounded-none px-0 pb-2 data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none text-foreground/60 data-[state=active]:text-foreground font-medium transition-all"
+                className="data-[state=active]:border-foreground text-foreground/60 data-[state=active]:text-foreground rounded-none border-b-2 border-transparent bg-transparent px-0 pb-2 font-medium transition-all data-[state=active]:bg-transparent data-[state=active]:shadow-none"
                 data-testid={isMobile ? "tab-blocks-mobile" : "tab-blocks"}
               >
                 Blocks
@@ -495,7 +495,7 @@ const ThemePanel = ({
             )}
             <TabsTrigger
               value="cursors"
-              className="bg-transparent border-b-2 border-transparent rounded-none px-0 pb-2 data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none text-foreground/60 data-[state=active]:text-foreground font-medium transition-all"
+              className="data-[state=active]:border-foreground text-foreground/60 data-[state=active]:text-foreground rounded-none border-b-2 border-transparent bg-transparent px-0 pb-2 font-medium transition-all data-[state=active]:bg-transparent data-[state=active]:shadow-none"
               data-testid={isMobile ? "tab-cursors-mobile" : "tab-cursors"}
             >
               Cursors
@@ -506,13 +506,13 @@ const ThemePanel = ({
 
       <TabsContent
         value="layouts"
-        className="flex-1 overflow-y-auto p-6 m-0 thin-scrollbar"
+        className="thin-scrollbar m-0 flex-1 overflow-y-auto p-6"
         data-testid={isMobile ? "content-layouts-mobile" : "content-layouts"}
       >
         <div className="space-y-4">
           {!isMacOSTemplate && (
-            <div className="flex items-center justify-between p-4 border border-border rounded-[16px] bg-black/[0.02] dark:bg-white/[0.02] mb-4">
-              <span className="text-[13px] font-medium text-foreground">Appearance</span>
+            <div className="border-border mb-4 flex items-center justify-between rounded-[16px] border bg-black/[0.02] p-4 dark:bg-white/[0.02]">
+              <span className="text-foreground text-[13px] font-medium">Appearance</span>
               {template === TEMPLATE_IDS.CANVAS ? (
                 <div className="flex items-center gap-3">
                   <SwitchCanvas
@@ -560,7 +560,7 @@ const ThemePanel = ({
             </div>
           )}
 
-          <div className="text-[13px] font-medium text-muted-foreground px-1">Templates</div>
+          <div className="text-muted-foreground px-1 text-[13px] font-medium">Templates</div>
           <div className="grid grid-cols-2 gap-x-4 gap-y-6 pb-4">
             {templates.map((tmpl) => (
               <TemplateCard
@@ -580,13 +580,13 @@ const ThemePanel = ({
 
       <TabsContent
         value="background"
-        className="flex-1 overflow-y-auto p-6 m-0"
+        className="m-0 flex-1 overflow-y-auto p-6"
         data-testid={isMobile ? "content-background-mobile" : "content-background"}
       >
         <div className="space-y-4">
           {!isMacOSTemplate && (
-            <div className="flex items-center justify-between p-4 border border-border rounded-[16px] bg-black/[0.02] dark:bg-white/[0.02] mb-4">
-              <span className="text-[13px] font-medium text-foreground">Appearance</span>
+            <div className="border-border mb-4 flex items-center justify-between rounded-[16px] border bg-black/[0.02] p-4 dark:bg-white/[0.02]">
+              <span className="text-foreground text-[13px] font-medium">Appearance</span>
               <div className="inline-flex items-center gap-2">
                 <span
                   className={twMerge(
@@ -622,11 +622,11 @@ const ThemePanel = ({
           )}
 
           {isChatfolioTemplate ? (
-            <div className="flex flex-col items-center justify-center py-10 px-4 text-center rounded-xl border border-dashed border-border bg-muted/20">
-              <p className="text-sm font-medium text-foreground/70 mb-1">
+            <div className="border-border bg-muted/20 flex flex-col items-center justify-center rounded-xl border border-dashed px-4 py-10 text-center">
+              <p className="text-foreground/70 mb-1 text-sm font-medium">
                 No wallpaper for Chat theme
               </p>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-muted-foreground text-xs">
                 Chat theme uses a solid background colour. Switch templates to use wallpapers.
               </p>
             </div>
@@ -642,16 +642,16 @@ const ThemePanel = ({
                     transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
                     className="overflow-hidden"
                   >
-                    <div className="p-4 rounded-xl bg-muted/50 mb-4">
-                      <div className="flex items-center justify-between mb-4">
+                    <div className="bg-muted/50 mb-4 rounded-xl p-4">
+                      <div className="mb-4 flex items-center justify-between">
                         <Text size="p-xs-uppercase">Background Texture</Text>
                       </div>
-                      <div className="flex p-1 bg-muted/50 rounded-lg gap-1 mb-4">
+                      <div className="bg-muted/50 mb-4 flex gap-1 rounded-lg p-1">
                         <Button
                           variant={currentEffects.effectType === "blur" ? "secondary" : "ghost"}
                           size="sm"
                           onClick={() => currentUpdateWallpaperEffect("effectType", "blur")}
-                          className="flex-1 text-xs rounded-md"
+                          className="flex-1 rounded-md text-xs"
                           data-testid={
                             isMobileOrTablet ? "button-effect-blur-mobile" : "button-effect-blur"
                           }
@@ -671,7 +671,7 @@ const ThemePanel = ({
                             }
                             currentUpdateWallpaperEffect("effectType", "grain");
                           }}
-                          className="flex-1 text-xs rounded-md"
+                          className="flex-1 rounded-md text-xs"
                           data-testid={
                             isMobileOrTablet ? "button-effect-grain-mobile" : "button-effect-grain"
                           }
@@ -683,11 +683,11 @@ const ThemePanel = ({
                       <div className="space-y-4">
                         {currentEffects.effectType === "blur" ? (
                           <div className="animate-in fade-in slide-in-from-top-1 duration-300">
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="text-[11px] font-medium text-foreground/60">
+                            <div className="mb-2 flex items-center justify-between">
+                              <span className="text-foreground/60 text-[11px] font-medium">
                                 Depth
                               </span>
-                              <span className="text-[11px] tabular-nums text-foreground/40">
+                              <span className="text-foreground/40 text-[11px] tabular-nums">
                                 {currentEffects.blur}px
                               </span>
                             </div>
@@ -708,11 +708,11 @@ const ThemePanel = ({
                           </div>
                         ) : (
                           <div className="animate-in fade-in slide-in-from-top-1 duration-300">
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="text-[11px] font-medium text-foreground/60">
+                            <div className="mb-2 flex items-center justify-between">
+                              <span className="text-foreground/60 text-[11px] font-medium">
                                 Opacity
                               </span>
-                              <span className="text-[11px] tabular-nums text-foreground/40">
+                              <span className="text-foreground/40 text-[11px] tabular-nums">
                                 {currentEffects.grainIntensity}%
                               </span>
                             </div>
@@ -735,12 +735,12 @@ const ThemePanel = ({
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between p-4 rounded-xl  bg-muted/50 mb-4">
+                    <div className="bg-muted/50 mb-4 flex items-center justify-between rounded-xl p-4">
                       <div>
                         <Text size="p-xs-uppercase" className="text-df-heading-color">
                           Dynamic Motion
                         </Text>
-                        <p className="text-[11px] text-df-description-color mt-0.5 font-medium">
+                        <p className="text-df-description-color mt-0.5 text-[11px] font-medium">
                           Parallax zoom interaction
                         </p>
                       </div>
@@ -760,12 +760,12 @@ const ThemePanel = ({
                   </motion.div>
                 )}
               </AnimatePresence>
-              <div className="p-4 rounded-md border border-border bg-card/50 mb-4">
-                <div className="flex items-start gap-3 mb-3">
-                  <Upload className="w-5 h-5 text-df-heading-color  mt-0.5" />
+              <div className="border-border bg-card/50 mb-4 rounded-md border p-4">
+                <div className="mb-3 flex items-start gap-3">
+                  <Upload className="text-df-heading-color mt-0.5 h-5 w-5" />
                   <div className="flex-1">
-                    <h4 className="text-sm font-semibold mb-1">Upload Custom Background</h4>
-                    <p className="text-xs text-df-description-color mb-2">
+                    <h4 className="mb-1 text-sm font-semibold">Upload Custom Background</h4>
+                    <p className="text-df-description-color mb-2 text-xs">
                       Upload your own image. Minimum: 500x300. Maximum file size: 5MB. Image will be
                       resized to 1920x1080.
                     </p>
@@ -803,7 +803,7 @@ const ThemePanel = ({
                           isMobile ? "button-upload-wallpaper-mobile" : "button-upload-wallpaper"
                         }
                       >
-                        <Upload className="w-4 h-4" />
+                        <Upload className="h-4 w-4" />
                         {"Choose File"}
                       </Button>
                     </label>
@@ -811,12 +811,12 @@ const ThemePanel = ({
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <button
                   onClick={() => changeWallpaper(0)}
                   className={twMerge(
-                    "relative rounded-md overflow-hidden border-2 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer",
-                    wallpaper === 0 ? "border-primary-landing " : "border-border"
+                    "relative cursor-pointer overflow-hidden rounded-md border-2 transition-all hover:scale-[1.02] active:scale-[0.98]",
+                    wallpaper === 0 ? "border-primary-landing" : "border-border"
                   )}
                   data-testid={isMobile ? "button-wallpaper-none-mobile" : "button-wallpaper-none"}
                 >
@@ -826,16 +826,16 @@ const ThemePanel = ({
                         isDarkWallpapers ? "/wallpaper/darkui/wall8.png" : "/wallpaper/wall8.png"
                       }
                       alt="Default"
-                      className="aspect-video object-cover w-full pointer-events-none"
+                      className="pointer-events-none aspect-video w-full object-cover"
                     />
                   ) : (
-                    <div className="aspect-video bg-linear-to-br from-background to-muted flex items-center justify-center pointer-events-none">
-                      <span className="text-sm font-medium text-foreground/60">Default</span>
+                    <div className="from-background to-muted pointer-events-none flex aspect-video items-center justify-center bg-linear-to-br">
+                      <span className="text-foreground/60 text-sm font-medium">Default</span>
                     </div>
                   )}
                   {wallpaper === 0 && (
-                    <div className="absolute top-2 right-2 bg-primary-landing  text-primary-landing -foreground rounded-full p-1 pointer-events-none">
-                      <svg className="w-4 h-4" fill="background" viewBox="0 0 20 20">
+                    <div className="bg-primary-landing text-primary-landing -foreground pointer-events-none absolute top-2 right-2 rounded-full p-1">
+                      <svg className="h-4 w-4" fill="background" viewBox="0 0 20 20">
                         <path
                           fillRule="evenodd"
                           d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
@@ -850,7 +850,7 @@ const ThemePanel = ({
                   <button
                     onClick={() => changeWallpaper(customWallpaper)}
                     className={twMerge(
-                      "relative rounded-md overflow-hidden border-2 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer",
+                      "relative cursor-pointer overflow-hidden rounded-md border-2 transition-all hover:scale-[1.02] active:scale-[0.98]",
                       wallpaper === customWallpaper ? "border-primary-landing" : "border-border"
                     )}
                     data-testid={
@@ -860,16 +860,16 @@ const ThemePanel = ({
                     <img
                       src={customWallpaper}
                       alt="Custom wallpaper"
-                      className="aspect-video object-cover w-full pointer-events-none"
+                      className="pointer-events-none aspect-video w-full object-cover"
                     />
-                    <div className="absolute bottom-2 left-2 pointer-events-none">
+                    <div className="pointer-events-none absolute bottom-2 left-2">
                       <Badge variant="secondary" className="text-xs">
                         Custom
                       </Badge>
                     </div>
                     {wallpaper === customWallpaper && (
-                      <div className="absolute top-2 right-2 bg-primary-landing  text-primary-landing -foreground rounded-full p-1 z-10 pointer-events-none">
-                        <svg className="w-4 h-4" fill="background" viewBox="0 0 20 20">
+                      <div className="bg-primary-landing text-primary-landing -foreground pointer-events-none absolute top-2 right-2 z-10 rounded-full p-1">
+                        <svg className="h-4 w-4" fill="background" viewBox="0 0 20 20">
                           <path
                             fillRule="evenodd"
                             d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
@@ -889,19 +889,19 @@ const ThemePanel = ({
                       key={index}
                       onClick={() => changeWallpaper(wp.value)}
                       className={twMerge(
-                        "relative rounded-md overflow-hidden border-2 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer",
-                        wallpaper === wp.value ? "border-primary-landing " : "border-border"
+                        "relative cursor-pointer overflow-hidden rounded-md border-2 transition-all hover:scale-[1.02] active:scale-[0.98]",
+                        wallpaper === wp.value ? "border-primary-landing" : "border-border"
                       )}
                       data-testid={
                         isMobile ? `button-wallpaper-${wp.id}-mobile` : `button-wallpaper-${wp.id}`
                       }
                     >
-                      <div className="w-full aspect-video [&>div]:h-full! [&>div]:rounded-none! pointer-events-none">
+                      <div className="pointer-events-none aspect-video w-full [&>div]:h-full! [&>div]:rounded-none!">
                         {wp.item}
                       </div>
                       {wallpaper === wp.value && (
-                        <div className="absolute top-2 right-2 bg-primary-landing  text-primary-landing -foreground rounded-full p-1 z-10 pointer-events-none">
-                          <svg className="w-4 h-4" fill="background" viewBox="0 0 20 20">
+                        <div className="bg-primary-landing text-primary-landing -foreground pointer-events-none absolute top-2 right-2 z-10 rounded-full p-1">
+                          <svg className="h-4 w-4" fill="background" viewBox="0 0 20 20">
                             <path
                               fillRule="evenodd"
                               d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
@@ -922,22 +922,22 @@ const ThemePanel = ({
       {!isMacOSTemplate && (
         <TabsContent
           value="blocks"
-          className="flex-1 overflow-y-auto p-6 m-0"
+          className="m-0 flex-1 overflow-y-auto p-6"
           data-testid={isMobile ? "content-blocks-mobile" : "content-blocks"}
         >
           <div className="space-y-4">
-            <div className="flex items-center justify-between mb-4">
-              <p className="text-sm font-medium text-foreground/60">
+            <div className="mb-4 flex items-center justify-between">
+              <p className="text-foreground/60 text-sm font-medium">
                 Re-arrange your portfolio sections
               </p>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={resetSectionOrder}
-                className="h-8 px-2 text-xs gap-1.5 text-foreground/40 hover:text-foreground"
+                className="text-foreground/40 hover:text-foreground h-8 gap-1.5 px-2 text-xs"
                 data-testid={isMobile ? "button-reset-blocks-mobile" : "button-reset-blocks"}
               >
-                <RotateCcw className="w-3.5 h-3.5" />
+                <RotateCcw className="h-3.5 w-3.5" />
                 Reset
               </Button>
             </div>
@@ -966,17 +966,17 @@ const ThemePanel = ({
 
       <TabsContent
         value="cursors"
-        className="flex-1 overflow-y-auto p-6 m-0"
+        className="m-0 flex-1 overflow-y-auto p-6"
         data-testid={isMobile ? "content-cursors-mobile" : "content-cursors"}
       >
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
           {cursors.map((c, index) => (
             <div
               key={index}
               onClick={() => handleChangeCursor(index)}
               className={twMerge(
-                "px-4 py-6 flex justify-center items-center border rounded-[16px] cursor-pointer transition-all hover:scale-[1.02] active:scale-[0.98]",
-                "bg-transparent border-border",
+                "flex cursor-pointer items-center justify-center rounded-[16px] border px-4 py-6 transition-all hover:scale-[1.02] active:scale-[0.98]",
+                "border-border bg-transparent",
                 "hover:bg-muted",
                 getStyles(index)
               )}

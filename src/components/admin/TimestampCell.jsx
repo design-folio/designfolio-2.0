@@ -20,7 +20,7 @@ function relativeTime(date) {
 export default function TimestampCell({ date: dateStr }) {
   const date = new Date(dateStr);
   if (isNaN(date.getTime()))
-    return <span className="text-[#7A736C] dark:text-[#B5AFA5] text-sm">—</span>;
+    return <span className="text-sm text-[#7A736C] dark:text-[#B5AFA5]">—</span>;
 
   const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const fmt = (timeZone) =>
@@ -45,16 +45,16 @@ export default function TimestampCell({ date: dateStr }) {
     <TooltipProvider delayDuration={200}>
       <Tooltip>
         <TooltipTrigger asChild>
-          <span className="text-sm text-[#7A736C] dark:text-[#B5AFA5] tabular-nums cursor-default">
+          <span className="cursor-default text-sm text-[#7A736C] tabular-nums dark:text-[#B5AFA5]">
             {relativeTime(date)}
           </span>
         </TooltipTrigger>
-        <TooltipContent side="top" className="p-0 bg-foreground border-0 shadow-none">
-          <div className="bg-[#231F1A] text-[#F0EDE7] rounded-md p-3 min-w-[280px] space-y-1.5 border border-white/10 shadow-lg">
+        <TooltipContent side="top" className="bg-foreground border-0 p-0 shadow-none">
+          <div className="min-w-[280px] space-y-1.5 rounded-md border border-white/10 bg-[#231F1A] p-3 text-[#F0EDE7] shadow-lg">
             {rows.map(({ label, value }) => (
               <div key={label} className="flex items-baseline justify-between gap-4">
-                <span className="text-[10px] font-mono text-[#B5AFA5] shrink-0">{label}:</span>
-                <span className="text-[11px] font-mono text-right">{value}</span>
+                <span className="shrink-0 font-mono text-[10px] text-[#B5AFA5]">{label}:</span>
+                <span className="text-right font-mono text-[11px]">{value}</span>
               </div>
             ))}
           </div>

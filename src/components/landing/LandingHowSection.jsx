@@ -83,17 +83,17 @@ export default function LandingHowSection() {
   return (
     <section
       id="how"
-      className="w-full px-6 mb-16 mt-6 scroll-mt-24"
+      className="mt-6 mb-16 w-full scroll-mt-24 px-6"
       style={{ fontFamily: "var(--font-manrope), sans-serif" }}
     >
-      <div className="w-full flex flex-col gap-12">
+      <div className="flex w-full flex-col gap-12">
         {STEPS.map((item, i) => (
           <div key={i} className="flex flex-col gap-4">
             {/* Chat header */}
             <div className="flex flex-col gap-2.5">
               {i === 0 && (
                 <div className="text-center">
-                  <span className="text-[11px] font-semibold tracking-widest uppercase text-lp-text/25">
+                  <span className="text-lp-text/25 text-[11px] font-semibold tracking-widest uppercase">
                     Today
                   </span>
                 </div>
@@ -105,22 +105,22 @@ export default function LandingHowSection() {
                   className={`flex items-end gap-2 ${msg.from === "shai" ? "flex-row-reverse" : "flex-row"}`}
                 >
                   {msg.from === "viewer" ? (
-                    <div className="shrink-0 w-[30px] h-[30px] rounded-full bg-(--lp-chat-avatar-bg) flex items-center justify-center">
-                      <User className="w-[14px] h-[14px] text-white" strokeWidth={2.5} />
+                    <div className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full bg-(--lp-chat-avatar-bg)">
+                      <User className="h-[14px] w-[14px] text-white" strokeWidth={2.5} />
                     </div>
                   ) : (
                     <div
-                      className="shrink-0 w-[30px] h-[30px] rounded-full flex items-center justify-center text-white text-[12px] font-bold"
+                      className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full text-[12px] font-bold text-white"
                       style={{ background: "linear-gradient(135deg, #FF553E 0%, #FF8C42 100%)" }}
                     >
                       D
                     </div>
                   )}
                   <div
-                    className={`max-w-[72%] px-[14px] py-[10px] text-[17px] font-medium leading-snug ${
+                    className={`max-w-[72%] px-[14px] py-[10px] text-[17px] leading-snug font-medium ${
                       msg.from === "shai"
-                        ? "bg-[#007AFF] text-white rounded-[20px] rounded-br-[5px]"
-                        : "bg-(--lp-chat-viewer-bg) text-(--lp-text) rounded-[20px] rounded-bl-[5px]"
+                        ? "rounded-[20px] rounded-br-[5px] bg-[#007AFF] text-white"
+                        : "rounded-[20px] rounded-bl-[5px] bg-(--lp-chat-viewer-bg) text-(--lp-text)"
                     }`}
                   >
                     {msg.text}
@@ -129,7 +129,7 @@ export default function LandingHowSection() {
               ))}
 
               <div className="flex justify-end pr-[42px]">
-                <span className="text-[11px] font-medium text-lp-text/25">Delivered</span>
+                <span className="text-lp-text/25 text-[11px] font-medium">Delivered</span>
               </div>
             </div>
 
@@ -140,23 +140,23 @@ export default function LandingHowSection() {
                   <Link
                     key={card.label}
                     href={card.href}
-                    className="group flex flex-col items-center gap-3 rounded-2xl border border-(--lp-video-border) bg-(--lp-bg) p-5 hover:bg-(--lp-card) transition-colors duration-150 no-underline cursor-pointer"
+                    className="group flex cursor-pointer flex-col items-center gap-3 rounded-2xl border border-(--lp-video-border) bg-(--lp-bg) p-5 no-underline transition-colors duration-150 hover:bg-(--lp-card)"
                   >
-                    <div className="w-14 h-14 rounded-2xl overflow-hidden flex items-center justify-center bg-(--lp-card)">
+                    <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl bg-(--lp-card)">
                       <img
                         src={card.icon}
                         alt={card.label}
-                        className="w-full h-full object-cover"
+                        className="h-full w-full object-cover"
                       />
                     </div>
-                    <span className="text-[13px] font-semibold text-(--lp-text) text-center leading-snug">
+                    <span className="text-center text-[13px] leading-snug font-semibold text-(--lp-text)">
                       {card.label}
                     </span>
                   </Link>
                 ))}
               </div>
             ) : (
-              <div className="w-full rounded-[12px] overflow-hidden border border-(--lp-video-border) shadow-sm bg-[#141414]">
+              <div className="w-full overflow-hidden rounded-[12px] border border-(--lp-video-border) bg-[#141414] shadow-sm">
                 <div className="relative w-full overflow-hidden" style={{ paddingTop: "78.75%" }}>
                   <video
                     key={isDark ? "dark" : "light"}
@@ -165,7 +165,7 @@ export default function LandingHowSection() {
                     loop
                     muted
                     playsInline
-                    className="absolute inset-0 w-full h-full object-cover"
+                    className="absolute inset-0 h-full w-full object-cover"
                   />
                 </div>
               </div>

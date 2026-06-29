@@ -134,11 +134,11 @@ export default function AppSidebar() {
   const title = getDynamicTitle();
 
   return (
-    <Sidebar side="right" collapsible="offcanvas" className="border-l border-border">
-      <SidebarHeader className="flex flex-row items-center justify-between px-6 border-b border-border py-4">
-        <h2 className=" text-[15px] font-medium">{title}</h2>
+    <Sidebar side="right" collapsible="offcanvas" className="border-border border-l">
+      <SidebarHeader className="border-border flex flex-row items-center justify-between border-b px-6 py-4">
+        <h2 className="text-[15px] font-medium">{title}</h2>
         <Button variant="ghost" size="icon" onClick={() => closeSidebar()} className="h-8 w-8">
-          <X className="w-4 h-4" />
+          <X className="h-4 w-4" />
         </Button>
       </SidebarHeader>
       <SidebarContent className="overflow-hidden p-0">{renderPanel()}</SidebarContent>

@@ -2,19 +2,19 @@ import { motion } from "motion/react";
 
 export function TypingIndicator() {
   return (
-    <div className="flex space-x-1.5 items-center px-1 min-h-[22px]">
+    <div className="flex min-h-[22px] items-center space-x-1.5 px-1">
       <motion.div
-        className="w-1.5 h-1.5 bg-[#7A736C] dark:bg-[#B5AFA5] rounded-full"
+        className="h-1.5 w-1.5 rounded-full bg-[#7A736C] dark:bg-[#B5AFA5]"
         animate={{ y: [0, -3, 0] }}
         transition={{ duration: 0.6, repeat: Infinity, delay: 0 }}
       />
       <motion.div
-        className="w-1.5 h-1.5 bg-[#7A736C] dark:bg-[#B5AFA5] rounded-full"
+        className="h-1.5 w-1.5 rounded-full bg-[#7A736C] dark:bg-[#B5AFA5]"
         animate={{ y: [0, -3, 0] }}
         transition={{ duration: 0.6, repeat: Infinity, delay: 0.2 }}
       />
       <motion.div
-        className="w-1.5 h-1.5 bg-[#7A736C] dark:bg-[#B5AFA5] rounded-full"
+        className="h-1.5 w-1.5 rounded-full bg-[#7A736C] dark:bg-[#B5AFA5]"
         animate={{ y: [0, -3, 0] }}
         transition={{ duration: 0.6, repeat: Infinity, delay: 0.4 }}
       />
@@ -27,9 +27,9 @@ export function ChatAvatar({ avatarSrc, show = true }) {
   return (
     <motion.div
       layoutId="matt-avatar-sequence"
-      className="w-8 h-8 rounded-full overflow-hidden border border-black/5 dark:border-white/5"
+      className="h-8 w-8 overflow-hidden rounded-full border border-black/5 dark:border-white/5"
     >
-      <img src={avatarSrc} alt="Profile" className="w-full h-full object-cover" />
+      <img src={avatarSrc} alt="Profile" className="h-full w-full object-cover" />
     </motion.div>
   );
 }
@@ -38,18 +38,18 @@ export function EditButtons({ canEdit, onEdit, onDelete, className = "" }) {
   if (!canEdit) return null;
   return (
     <div
-      className={`absolute -left-0 top-1/2 -translate-y-1/2 z-40 transition-opacity flex gap-1.5 opacity-0 group-hover/msg:opacity-100 ${className}`}
+      className={`absolute top-1/2 -left-0 z-40 flex -translate-y-1/2 gap-1.5 opacity-0 transition-opacity group-hover/msg:opacity-100 ${className}`}
     >
       {onEdit && (
         <button
-          className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] flex items-center justify-center"
+          className="flex h-7 w-7 items-center justify-center rounded-full border border-[#E5D7C4] bg-white/90 p-0 shadow-sm backdrop-blur-sm hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520]/90 dark:hover:bg-[#35302A]"
           onClick={(e) => {
             e.stopPropagation();
             onEdit();
           }}
         >
           <svg
-            className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]"
+            className="h-3 w-3 text-[#1A1A1A] dark:text-[#F0EDE7]"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -65,14 +65,14 @@ export function EditButtons({ canEdit, onEdit, onDelete, className = "" }) {
       )}
       {onDelete && (
         <button
-          className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-red-50 dark:hover:bg-red-950/30 hover:border-red-200 dark:hover:border-red-900/50 flex items-center justify-center"
+          className="flex h-7 w-7 items-center justify-center rounded-full border border-[#E5D7C4] bg-white/90 p-0 shadow-sm backdrop-blur-sm hover:border-red-200 hover:bg-red-50 dark:border-white/10 dark:bg-[#2A2520]/90 dark:hover:border-red-900/50 dark:hover:bg-red-950/30"
           onClick={(e) => {
             e.stopPropagation();
             onDelete();
           }}
         >
           <svg
-            className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]"
+            className="h-3 w-3 text-[#1A1A1A] dark:text-[#F0EDE7]"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -92,9 +92,9 @@ export function EditButtons({ canEdit, onEdit, onDelete, className = "" }) {
 
 export function YouPrompt({ children }) {
   return (
-    <div className="flex flex-col gap-1 max-w-[85%] items-end">
-      <span className="text-[11px] text-[#7A736C] dark:text-[#B5AFA5] mr-1 font-medium">You</span>
-      <div className="bg-[#1A8CFF] dark:bg-[#0073E6] text-white px-4 py-3 rounded-2xl rounded-br-sm text-[15px] leading-relaxed shadow-sm">
+    <div className="flex max-w-[85%] flex-col items-end gap-1">
+      <span className="mr-1 text-[11px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">You</span>
+      <div className="rounded-2xl rounded-br-sm bg-[#1A8CFF] px-4 py-3 text-[15px] leading-relaxed text-white shadow-sm dark:bg-[#0073E6]">
         {children}
       </div>
     </div>

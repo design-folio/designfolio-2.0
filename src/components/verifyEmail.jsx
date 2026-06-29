@@ -129,14 +129,14 @@ export default function VerifyEmail() {
                 data-testid="input-verification-code"
               />
 
-              <div className="flex items-center gap-2 text-sm pt-1">
+              <div className="flex items-center gap-2 pt-1 text-sm">
                 {timeLeft > 0 ? (
                   <>
                     <span className="text-foreground/70">Time left: {timeLeft} sec</span>
                     <button
                       type="button"
                       disabled
-                      className="text-red-400 font-medium opacity-50 cursor-not-allowed"
+                      className="cursor-not-allowed font-medium text-red-400 opacity-50"
                       data-testid="button-resend-code"
                     >
                       Resend code
@@ -148,7 +148,7 @@ export default function VerifyEmail() {
                     <button
                       type="button"
                       onClick={restartTimer}
-                      className="text-red-400 hover:text-red-500 font-medium"
+                      className="font-medium text-red-400 hover:text-red-500"
                       data-testid="button-resend-code"
                     >
                       Resend code
@@ -171,7 +171,7 @@ export default function VerifyEmail() {
               <button
                 type="button"
                 onClick={updateQueryParams}
-                className="text-sm text-foreground/70 hover:text-foreground font-medium hover:underline"
+                className="text-foreground/70 hover:text-foreground text-sm font-medium hover:underline"
                 data-testid="button-change-email"
               >
                 Change email address

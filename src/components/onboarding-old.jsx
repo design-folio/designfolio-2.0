@@ -263,10 +263,10 @@ export default function Onboarding() {
     <motion.div
       animate={isLoadingModal ? "loading" : "default"}
       variants={variants}
-      className="w-[95vw] m-auto lg:w-[577.5px] rounded-2xl flex flex-col bg-card"
+      className="bg-card m-auto flex w-[95vw] flex-col rounded-2xl lg:w-[577.5px]"
     >
       {isLoadingModal ? (
-        <motion.div className="h-full w-[95vw] md:w-full flex justify-center items-center rotating">
+        <motion.div className="rotating flex h-full w-[95vw] items-center justify-center md:w-full">
           <img src="/assets/svgs/star.svg" alt="loading state" />
         </motion.div>
       ) : (
@@ -284,7 +284,7 @@ export default function Onboarding() {
               />
             </div>
             {userDetails && userDetails?.skills?.length !== 0 && (
-              <div className="flex justify-between items-center">
+              <div className="flex items-center justify-between">
                 <Text size="p-small" className="font-semibold">
                   {step === 1 ? "Update profile" : step === 2 ? "Skills & Tools" : "Your Role"}
                 </Text>
@@ -295,14 +295,14 @@ export default function Onboarding() {
             )}
             {userDetails && userDetails?.skills?.length == 0 && (
               <>
-                <Text size="p-medium" className="font-semibold text-center mb-2">
+                <Text size="p-medium" className="mb-2 text-center font-semibold">
                   {step === 1
                     ? "Welcome to designfolio"
                     : step === 2
                       ? "Your top skills, roles & tools?"
                       : "What describes you best?"}
                 </Text>
-                <Text size="p-small" className="font-inter font-normal text-center">
+                <Text size="p-small" className="font-inter text-center font-normal">
                   {step === 1
                     ? "A little bit more about you"
                     : step === 2
@@ -327,19 +327,19 @@ export default function Onboarding() {
           >
             {({ setFieldValue, values, errors, touched }) => (
               <Form id="onboarding" className="flex-1 overflow-y-auto" ref={scrollDivRef}>
-                <div className="p-5 lg:py-6 lg:px-8 !pt-0">
+                <div className="p-5 !pt-0 lg:px-8 lg:py-6">
                   {step === 1 && (
                     <div>
                       <div className="flex items-center gap-4">
                         <div
                           className={cn(
-                            "w-32 h-32 flex flex-col justify-center items-center gap-1 rounded-full relative",
+                            "relative flex h-32 w-32 flex-col items-center justify-center gap-1 rounded-full",
                             !userDetails?.avatar && !imagePreview ? "bg-[#FFB088]" : ""
                           )}
                         >
                           <img
                             src={imagePreview || getUserAvatarImage(userDetails)}
-                            className="w-24 h-24 rounded-full object-cover"
+                            className="h-24 w-24 rounded-full object-cover"
                             alt="avatar"
                           />
                         </div>
@@ -428,7 +428,7 @@ export default function Onboarding() {
                       <ErrorMessage
                         name="bio"
                         component="div"
-                        className="error-message text-[14px] !mt-[2px]"
+                        className="error-message !mt-[2px] text-[14px]"
                       />
                       <Text size="p-xxxsmall" className="text-muted-foreground mt-3">
                         ✏️ <b>Tip:</b> Mention your role, experience, skills and achievements
@@ -438,7 +438,7 @@ export default function Onboarding() {
 
                   {step === 2 && (
                     <div className="mb-[18px]">
-                      <div className="flex justify-between mb-2">
+                      <div className="mb-2 flex justify-between">
                         <Text as="p" size="p-xxsmall" className="font-medium" required>
                           Skills
                         </Text>
@@ -458,7 +458,7 @@ export default function Onboarding() {
                         className="error-message text-[14px]"
                       />
 
-                      <Text as="p" size="p-xxsmall" className="font-medium mt-4 mb-2" required>
+                      <Text as="p" size="p-xxsmall" className="mt-4 mb-2 font-medium" required>
                         Choose the tools you work with
                       </Text>
                       <SelectField name="selectedTools" options={toolsOptions} theme={theme} />
@@ -468,7 +468,7 @@ export default function Onboarding() {
                         className="error-message text-[14px]"
                       />
 
-                      <div className="flex flex-wrap gap-4 mt-4">
+                      <div className="mt-4 flex flex-wrap gap-4">
                         {toolsOptions.map((tool) => (
                           <Field
                             key={tool.value}
@@ -507,7 +507,7 @@ export default function Onboarding() {
             )}
           </Formik>
 
-          <div className="flex justify-end gap-3 py-3 px-5 rounded-b-2xl border-t border-border bg-card">
+          <div className="border-border bg-card flex justify-end gap-3 rounded-b-2xl border-t px-5 py-3">
             {step > 1 && (
               <Button variant="outline" type="button" onClick={handleBack}>
                 Back

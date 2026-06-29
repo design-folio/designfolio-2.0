@@ -65,8 +65,8 @@ const ProjectContentView = ({ projectId, userDetails }) => {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[280px] gap-4 p-8 text-[#666]">
-        <div className="w-10 h-10 border-2 border-[#d1d1d1] border-t-[#007aff] rounded-full animate-spin" />
+      <div className="flex min-h-[280px] flex-col items-center justify-center gap-4 p-8 text-[#666]">
+        <div className="h-10 w-10 animate-spin rounded-full border-2 border-[#d1d1d1] border-t-[#007aff]" />
         <span className="text-sm">Loading project…</span>
       </div>
     );
@@ -74,14 +74,14 @@ const ProjectContentView = ({ projectId, userDetails }) => {
 
   if (!project) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[280px] p-8 text-[#666] text-sm">
+      <div className="flex min-h-[280px] flex-col items-center justify-center p-8 text-sm text-[#666]">
         Project not found.
       </div>
     );
   }
 
   return (
-    <div className="max-w-[848px] mx-auto pt-4 pb-10 px-4 lg:px-0">
+    <div className="mx-auto max-w-[848px] px-4 pt-4 pb-10 lg:px-0">
       <motion.div
         className="flex flex-col gap-3"
         variants={containerVariants}

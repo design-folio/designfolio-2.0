@@ -15,7 +15,7 @@ export default function AdminGrantPlan() {
             <h2 className="text-base font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
               Grant Plan
             </h2>
-            <p className="text-xs text-[#7A736C] dark:text-[#B5AFA5] mt-0.5">
+            <p className="mt-0.5 text-xs text-[#7A736C] dark:text-[#B5AFA5]">
               Manually grant Pro access to one or more users by email.
             </p>
           </div>

@@ -28,12 +28,12 @@ export default function Others({ openModal, userDetails, edit }) {
   return (
     <div
       className={cn(
-        " flex flex-col gap-8 bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words"
+        "bg-df-section-card-bg-color shadow-df-section-card-shadow flex flex-col gap-8 rounded-[24px] p-4 break-words lg:p-[32px]"
       )}
     >
       {(!!resume || edit) && (
         <div>
-          <div className="flex justify-between items-center mb-4">
+          <div className="mb-4 flex items-center justify-between">
             <Text size="p-small" className="text-modal-heading-color font-semibold">
               Resume
             </Text>
@@ -70,7 +70,7 @@ export default function Others({ openModal, userDetails, edit }) {
                     type="secondary"
                     customClass="w-fit gap-0"
                     icon={
-                      <PlusIcon className="text-secondary-btn-text-color w-[14px] h-[14px] cursor-pointer" />
+                      <PlusIcon className="text-secondary-btn-text-color h-[14px] w-[14px] cursor-pointer" />
                     }
                   />
                 }
@@ -81,7 +81,7 @@ export default function Others({ openModal, userDetails, edit }) {
       )}
 
       <div>
-        <div className="flex items-center justify-between mb-4">
+        <div className="mb-4 flex items-center justify-between">
           {(!!userDetails?.socials?.instagram ||
             !!userDetails?.socials?.twitter ||
             !!userDetails?.socials?.linkedin ||
@@ -107,7 +107,7 @@ export default function Others({ openModal, userDetails, edit }) {
           {!!userDetails?.socials?.instagram ||
           !!userDetails?.socials?.twitter ||
           !!userDetails?.socials?.linkedin ? (
-            <div className="flex flex-col lg:flex-row gap-[24px]">
+            <div className="flex flex-col gap-[24px] lg:flex-row">
               {userDetails?.socials?.instagram && (
                 <Link
                   href={userDetails?.socials?.instagram}
@@ -161,7 +161,7 @@ export default function Others({ openModal, userDetails, edit }) {
                     type="secondary"
                     customClass="w-fit gap-0"
                     icon={
-                      <PlusIcon className="text-secondary-btn-text-color w-[14px] h-[14px] cursor-pointer" />
+                      <PlusIcon className="text-secondary-btn-text-color h-[14px] w-[14px] cursor-pointer" />
                     }
                   />
                 }
@@ -171,7 +171,7 @@ export default function Others({ openModal, userDetails, edit }) {
         </div>
       </div>
       <div>
-        <div className="flex items-center justify-between mb-4">
+        <div className="mb-4 flex items-center justify-between">
           {(!!userDetails?.portfolios?.dribbble ||
             !!userDetails?.portfolios?.notion ||
             !!userDetails?.portfolios?.medium ||
@@ -197,7 +197,7 @@ export default function Others({ openModal, userDetails, edit }) {
           {!!userDetails?.portfolios?.dribbble ||
           !!userDetails?.portfolios?.notion ||
           !!userDetails?.portfolios?.medium ? (
-            <div className="flex flex-col lg:flex-row gap-[24px]">
+            <div className="flex flex-col gap-[24px] lg:flex-row">
               {userDetails?.portfolios?.dribbble && (
                 <Link
                   href={userDetails?.portfolios?.dribbble}
@@ -250,7 +250,7 @@ export default function Others({ openModal, userDetails, edit }) {
                     type="secondary"
                     customClass="w-fit gap-0"
                     icon={
-                      <PlusIcon className="text-secondary-btn-text-color w-[14px] h-[14px] cursor-pointer" />
+                      <PlusIcon className="text-secondary-btn-text-color h-[14px] w-[14px] cursor-pointer" />
                     }
                   />
                 }

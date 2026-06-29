@@ -13,7 +13,7 @@ export default function Index({ dfToken }) {
     };
   }, [userDetails, setCursor]);
   return (
-    <div className="min-h-screen bg-background-landing overflow-x-hidden">
+    <div className="bg-background-landing min-h-screen overflow-x-hidden">
       <Seo
         title={"Designfolio - Build your Design Portfolio Website super Fast"}
         description={

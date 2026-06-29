@@ -59,7 +59,7 @@ const MenuButton = ({
         {children}
       </button>
     </TooltipTrigger>
-    <TooltipContent side="top" className="bg-white dark:bg-[#262A34] border-none">
+    <TooltipContent side="top" className="border-none bg-white dark:bg-[#262A34]">
       <p>{title}</p>
     </TooltipContent>
   </Tooltip>
@@ -536,7 +536,7 @@ const TiptapMenuBar = ({ editor, showToolbar, onImageUpload }) => {
             isActive={activeNodes.heading2}
             title="Heading 2"
           >
-            <span className="font-bold text-sm">H2</span>
+            <span className="text-sm font-bold">H2</span>
           </MenuButton>
           <MenuButton
             onClick={() => {
@@ -547,7 +547,7 @@ const TiptapMenuBar = ({ editor, showToolbar, onImageUpload }) => {
             isActive={activeNodes.heading3}
             title="Heading 3"
           >
-            <span className="font-bold text-sm">H3</span>
+            <span className="text-sm font-bold">H3</span>
           </MenuButton>
           <MenuButton
             onClick={() => {
@@ -558,7 +558,7 @@ const TiptapMenuBar = ({ editor, showToolbar, onImageUpload }) => {
             isActive={activeNodes.heading4}
             title="Heading 4"
           >
-            <span className="font-bold text-sm">H4</span>
+            <span className="text-sm font-bold">H4</span>
           </MenuButton>
           <MenuButton
             onClick={() => {
@@ -569,7 +569,7 @@ const TiptapMenuBar = ({ editor, showToolbar, onImageUpload }) => {
             isActive={activeNodes.heading5}
             title="Heading 5"
           >
-            <span className="font-bold text-sm">H5</span>
+            <span className="text-sm font-bold">H5</span>
           </MenuButton>
         </div>
 

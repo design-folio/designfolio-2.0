@@ -95,7 +95,7 @@ const SwitchToggleThemeDemo = ({ changeTheme }) => {
   };
 
   return (
-    <div className="flex items-center justify-between p-4 border border-black/10 dark:border-white/10 rounded-[16px] bg-black/[0.02] dark:bg-white/[0.02]">
+    <div className="flex items-center justify-between rounded-[16px] border border-black/10 bg-black/[0.02] p-4 dark:border-white/10 dark:bg-white/[0.02]">
       <div className="text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">Appearance</div>
 
       <div ref={containerRef} className="group inline-flex items-center gap-2">

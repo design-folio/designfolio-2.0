@@ -15,7 +15,7 @@ const typingKeyframes = `
 
 function TypingDots() {
   return (
-    <span className="flex gap-[5px] items-center py-1">
+    <span className="flex items-center gap-[5px] py-1">
       <style>{typingKeyframes}</style>
       {[0, 1, 2].map((i) => (
         <span
@@ -83,7 +83,7 @@ export function ScoutChat({ job, onClose, profileId }) {
   const allMessages = loading ? [...messages, { role: "ai", text: null }] : messages;
 
   return createPortal(
-    <div className="fixed inset-0 z-[200] pointer-events-none">
+    <div className="pointer-events-none fixed inset-0 z-[200]">
       {/* Backdrop — only when expanded */}
       <AnimatePresence>
         {expanded && (
@@ -93,7 +93,7 @@ export function ScoutChat({ job, onClose, profileId }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="absolute inset-0 bg-black/20 backdrop-blur-[3px] pointer-events-auto"
+            className="pointer-events-auto absolute inset-0 bg-black/20 backdrop-blur-[3px]"
             onClick={() => setExpanded(false)}
           />
         )}
@@ -111,47 +111,48 @@ export function ScoutChat({ job, onClose, profileId }) {
           y: { duration: 0.22 },
           scale: { duration: 0.22 },
         }}
-        className={`absolute pointer-events-auto flex flex-col overflow-hidden bg-white dark:bg-card border border-black/[0.1] dark:border-border shadow-2xl rounded-2xl ${expanded
-            ? "inset-y-[6%] inset-x-0 mx-auto w-full max-w-[620px]"
-            : "bottom-4 right-4 w-[360px] h-[500px]"
-          }`}
+        className={`dark:bg-card dark:border-border pointer-events-auto absolute flex flex-col overflow-hidden rounded-2xl border border-black/[0.1] bg-white shadow-2xl ${
+          expanded
+            ? "inset-x-0 inset-y-[6%] mx-auto w-full max-w-[620px]"
+            : "right-4 bottom-4 h-[500px] w-[360px]"
+        }`}
       >
         {/* Header */}
-        <div className="shrink-0 flex items-center justify-between px-4 py-3 bg-black/[0.02] dark:bg-white/[0.04] border-b border-black/[0.08] dark:border-border">
-          <div className="flex items-center gap-2 min-w-0">
+        <div className="dark:border-border flex shrink-0 items-center justify-between border-b border-black/[0.08] bg-black/[0.02] px-4 py-3 dark:bg-white/[0.04]">
+          <div className="flex min-w-0 items-center gap-2">
             <span className="orb-spinning">
               <ColorOrb dimension="14px" spinDuration={6} />
             </span>
-            <span className="text-[14px] font-semibold text-foreground">Scout</span>
-            <span className="text-[13px] text-foreground/50 truncate">
+            <span className="text-foreground text-[14px] font-semibold">Scout</span>
+            <span className="text-foreground/50 truncate text-[13px]">
               · {job.role} at {job.company}
             </span>
           </div>
-          <div className="flex items-center gap-0.5 shrink-0 ml-2">
+          <div className="ml-2 flex shrink-0 items-center gap-0.5">
             <button
               data-testid="button-scout-expand"
               onClick={() => setExpanded((v) => !v)}
               aria-label={expanded ? "Collapse Scout" : "Expand Scout"}
-              className="w-7 h-7 flex items-center justify-center rounded-md text-foreground/40 hover:text-foreground/70 hover:bg-black/[0.05] dark:hover:bg-white/[0.08] transition-colors cursor-pointer"
+              className="text-foreground/40 hover:text-foreground/70 flex h-7 w-7 cursor-pointer items-center justify-center rounded-md transition-colors hover:bg-black/[0.05] dark:hover:bg-white/[0.08]"
             >
               {expanded ? (
-                <Minimize2 className="w-3.5 h-3.5" />
+                <Minimize2 className="h-3.5 w-3.5" />
               ) : (
-                <Maximize2 className="w-3.5 h-3.5" />
+                <Maximize2 className="h-3.5 w-3.5" />
               )}
             </button>
             <button
               onClick={onClose}
               aria-label="Close Scout chat"
-              className="w-7 h-7 flex items-center justify-center rounded-md text-foreground/40 hover:text-foreground/70 hover:bg-black/[0.05] dark:hover:bg-white/[0.08] transition-colors cursor-pointer"
+              className="text-foreground/40 hover:text-foreground/70 flex h-7 w-7 cursor-pointer items-center justify-center rounded-md transition-colors hover:bg-black/[0.05] dark:hover:bg-white/[0.08]"
             >
-              <X className="w-3.5 h-3.5" />
+              <X className="h-3.5 w-3.5" />
             </button>
           </div>
         </div>
 
         {/* Body */}
-        <div className="flex-1 min-h-0 relative">
+        <div className="relative min-h-0 flex-1">
           <AnimatePresence mode="wait">
             {!hasStarted ? (
               /* ── Initial: orb + prompt + suggestions ── */
@@ -163,7 +164,7 @@ export function ScoutChat({ job, onClose, profileId }) {
                 transition={{ duration: 0.2 }}
               >
                 {/* Centred orb + question */}
-                <div className="flex-1 flex flex-col items-center justify-center px-5 pb-4">
+                <div className="flex flex-1 flex-col items-center justify-center px-5 pb-4">
                   <motion.div
                     initial={{ scale: 0.75, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
@@ -176,14 +177,14 @@ export function ScoutChat({ job, onClose, profileId }) {
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.12, duration: 0.35 }}
-                    className={`text-center font-light text-foreground/55 mt-5 leading-[1.5] max-w-[240px] ${expanded ? "text-[20px]" : "text-[15px]"}`}
+                    className={`text-foreground/55 mt-5 max-w-[240px] text-center leading-[1.5] font-light ${expanded ? "text-[20px]" : "text-[15px]"}`}
                   >
                     What do you want to know about {job.company}?
                   </motion.p>
                 </div>
 
                 {/* Right-aligned suggestion pills, staggered */}
-                <div className="shrink-0 flex flex-col items-end gap-2 px-4 pb-4">
+                <div className="flex shrink-0 flex-col items-end gap-2 px-4 pb-4">
                   {visibleSuggestions.map((s, i) => (
                     <motion.button
                       key={s}
@@ -196,7 +197,7 @@ export function ScoutChat({ job, onClose, profileId }) {
                         duration: 0.3,
                         ease: [0.22, 1, 0.36, 1],
                       }}
-                      className="bg-black/[0.04] dark:bg-white/[0.06] rounded-2xl px-4 py-2.5 text-[14px] text-foreground/70 border border-black/[0.06] dark:border-border hover:text-foreground transition-colors cursor-pointer"
+                      className="text-foreground/70 dark:border-border hover:text-foreground cursor-pointer rounded-2xl border border-black/[0.06] bg-black/[0.04] px-4 py-2.5 text-[14px] transition-colors dark:bg-white/[0.06]"
                     >
                       {s}
                     </motion.button>
@@ -207,7 +208,7 @@ export function ScoutChat({ job, onClose, profileId }) {
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.4 }}
                       onClick={() => setShowAll(true)}
-                      className="text-[13px] text-foreground/30 hover:text-foreground/50 transition-colors mt-0.5 pr-1 cursor-pointer"
+                      className="text-foreground/30 hover:text-foreground/50 mt-0.5 cursor-pointer pr-1 text-[13px] transition-colors"
                     >
                       Show more
                     </motion.button>
@@ -218,12 +219,12 @@ export function ScoutChat({ job, onClose, profileId }) {
               /* ── Chat state ── */
               <motion.div
                 key="chat"
-                className="absolute inset-0 flex flex-col min-h-0"
+                className="absolute inset-0 flex min-h-0 flex-col"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.25 }}
               >
-                <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3 min-h-0">
+                <div className="min-h-0 flex-1 space-y-3 overflow-y-auto px-4 py-4">
                   {allMessages.map((msg, i) => {
                     const isLastAi =
                       msg.role === "ai" && allMessages.slice(i + 1).every((m) => m.role !== "ai");
@@ -233,21 +234,22 @@ export function ScoutChat({ job, onClose, profileId }) {
                         className={`flex items-end gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
                       >
                         {msg.role === "ai" && (
-                          <div className="shrink-0 mb-0.5 w-5 h-5 flex items-center justify-center">
+                          <div className="mb-0.5 flex h-5 w-5 shrink-0 items-center justify-center">
                             {isLastAi ? (
                               <span className="orb-spinning">
                                 <ColorOrb dimension="20px" spinDuration={6} />
                               </span>
                             ) : (
-                              <div className="w-[18px] h-[18px] rounded-full border-[1.5px] border-dashed border-foreground/20" />
+                              <div className="border-foreground/20 h-[18px] w-[18px] rounded-full border-[1.5px] border-dashed" />
                             )}
                           </div>
                         )}
                         <div
-                          className={`text-[14px] leading-[1.6] rounded-2xl px-3.5 py-2.5 max-w-[80%] ${msg.role === "user"
+                          className={`max-w-[80%] rounded-2xl px-3.5 py-2.5 text-[14px] leading-[1.6] ${
+                            msg.role === "user"
                               ? "bg-foreground text-background rounded-br-sm"
-                              : "bg-black/[0.04] dark:bg-white/[0.06] text-foreground/85 border border-black/[0.06] dark:border-border rounded-bl-sm"
-                            }`}
+                              : "text-foreground/85 dark:border-border rounded-bl-sm border border-black/[0.06] bg-black/[0.04] dark:bg-white/[0.06]"
+                          }`}
                         >
                           {msg.text ?? <TypingDots />}
                         </div>
@@ -262,8 +264,8 @@ export function ScoutChat({ job, onClose, profileId }) {
         </div>
 
         {/* Input bar */}
-        <div className="shrink-0 px-3 pb-3 pt-2 border-t border-black/[0.08] dark:border-border">
-          <div className="flex items-center gap-2 bg-black/[0.04] dark:bg-white/[0.06] rounded-xl border border-black/[0.07] dark:border-border px-3 py-2.5">
+        <div className="dark:border-border shrink-0 border-t border-black/[0.08] px-3 pt-2 pb-3">
+          <div className="dark:border-border flex items-center gap-2 rounded-xl border border-black/[0.07] bg-black/[0.04] px-3 py-2.5 dark:bg-white/[0.06]">
             <input
               ref={inputRef}
               type="text"
@@ -275,16 +277,16 @@ export function ScoutChat({ job, onClose, profileId }) {
               placeholder={hasStarted ? "Ask a follow-up…" : "Or type your own question…"}
               disabled={loading}
               aria-label="Message Scout"
-              className="flex-1 text-[14px] text-foreground placeholder:text-foreground/30 bg-transparent outline-none disabled:opacity-50"
+              className="text-foreground placeholder:text-foreground/30 flex-1 bg-transparent text-[14px] outline-none disabled:opacity-50"
             />
             <button
               data-testid="button-scout-send"
               onClick={() => send(input)}
               disabled={loading || !input.trim()}
               aria-label="Send message"
-              className="w-7 h-7 flex items-center justify-center rounded-full bg-foreground disabled:opacity-20 transition-opacity shrink-0 cursor-pointer"
+              className="bg-foreground flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-full transition-opacity disabled:opacity-20"
             >
-              <SendHorizontal className="w-3.5 h-3.5 text-background" />
+              <SendHorizontal className="text-background h-3.5 w-3.5" />
             </button>
           </div>
         </div>

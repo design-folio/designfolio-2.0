@@ -4,12 +4,12 @@ import { BorderBeam } from "@/components/ui/border-beam";
 export default function EmailMockup() {
   return (
     <section
-      className="max-w-6xl mx-auto py-8 sm:py-12 md:py-16 px-4 sm:px-6 relative bg-cover bg-center bg-no-repeat rounded-[2rem]"
+      className="relative mx-auto max-w-6xl rounded-[2rem] bg-cover bg-center bg-no-repeat px-4 py-8 sm:px-6 sm:py-12 md:py-16"
       style={{ backgroundImage: 'url("/assets/png/portfoliomock.png")' }}
     >
-      <div className="relative max-w-4xl mx-auto">
+      <div className="relative mx-auto max-w-4xl">
         <div
-          className="rounded-[1.25rem] sm:rounded-[1.75rem] p-[2px] relative z-10 bg-gradient-to-r from-border/80 via-border/20 to-border/80 shadow-xl"
+          className="from-border/80 via-border/20 to-border/80 relative z-10 rounded-[1.25rem] bg-gradient-to-r p-[2px] shadow-xl sm:rounded-[1.75rem]"
           data-testid="container-portfolio-gradient"
         >
           <BorderBeam
@@ -21,11 +21,11 @@ export default function EmailMockup() {
             colorTo="#9c40ff"
           />
           <div
-            className="bg-white dark:bg-background rounded-[1.125rem] sm:rounded-[1.625rem] overflow-hidden flex flex-col"
+            className="dark:bg-background flex flex-col overflow-hidden rounded-[1.125rem] bg-white sm:rounded-[1.625rem]"
             data-testid="container-portfolio-mockup"
           >
             {/* Background SVG - Kept as subtle decoration */}
-            <div className="absolute top-0 right-0 w-32 h-32 sm:w-48 sm:h-48 opacity-[0.03] pointer-events-none z-0 translate-x-1/4 -translate-y-1/4">
+            <div className="pointer-events-none absolute top-0 right-0 z-0 h-32 w-32 translate-x-1/4 -translate-y-1/4 opacity-[0.03] sm:h-48 sm:w-48">
               <svg
                 width="100%"
                 height="100%"
@@ -312,13 +312,13 @@ export default function EmailMockup() {
               </svg>
             </div>
             {/* Mac Chrome Frame Header */}
-            <div className="bg-[#f6f6f6] dark:bg-[#1a1a1a] border-b border-border px-4 py-3 flex items-center gap-2">
+            <div className="border-border flex items-center gap-2 border-b bg-[#f6f6f6] px-4 py-3 dark:bg-[#1a1a1a]">
               <div className="flex gap-2">
-                <div className="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e]"></div>
-                <div className="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123]"></div>
-                <div className="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29]"></div>
+                <div className="h-3 w-3 rounded-full border border-[#e0443e] bg-[#ff5f56]"></div>
+                <div className="h-3 w-3 rounded-full border border-[#dea123] bg-[#ffbd2e]"></div>
+                <div className="h-3 w-3 rounded-full border border-[#1aab29] bg-[#27c93f]"></div>
               </div>
-              <div className="flex-1 flex justify-center">
+              <div className="flex flex-1 justify-center">
                 <div className="relative rounded-md">
                   <BorderBeam
                     className="rounded-md"
@@ -328,7 +328,7 @@ export default function EmailMockup() {
                     colorFrom="#ffaa40"
                     colorTo="#9c40ff"
                   />
-                  <div className="relative bg-white dark:bg-[#2a2a2a] rounded-md px-3 py-1 text-[10px] text-foreground/40 border border-border/40 min-w-[200px] text-center truncate">
+                  <div className="text-foreground/40 border-border/40 relative min-w-[200px] truncate rounded-md border bg-white px-3 py-1 text-center text-[10px] dark:bg-[#2a2a2a]">
                     morgan.designfolio.me
                   </div>
                 </div>
@@ -337,14 +337,14 @@ export default function EmailMockup() {
             </div>
 
             <div className="p-8 sm:p-10 md:p-12">
-              <div className="flex flex-col sm:flex-row items-start gap-6 sm:gap-8 pb-8">
+              <div className="flex flex-col items-start gap-6 pb-8 sm:flex-row sm:gap-8">
                 <div className="shrink-0">
                   <div className="relative">
-                    <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full overflow-hidden shadow-md bg-muted/20 dark:bg-muted/10 relative">
+                    <div className="bg-muted/20 dark:bg-muted/10 relative h-20 w-20 overflow-hidden rounded-full shadow-md sm:h-24 sm:w-24 md:h-28 md:w-28">
                       {/* Shimmer background effect */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-muted/30 to-transparent animate-shimmer"></div>
+                      <div className="via-muted/30 animate-shimmer absolute inset-0 bg-gradient-to-r from-transparent to-transparent"></div>
                       <video
-                        className="w-full h-full object-cover relative z-10"
+                        className="relative z-10 h-full w-full object-cover"
                         autoPlay
                         loop
                         muted
@@ -357,23 +357,23 @@ export default function EmailMockup() {
                   </div>
                 </div>
 
-                <div className="flex-1 min-w-0">
+                <div className="min-w-0 flex-1">
                   <Text
                     as="h3"
                     size="section-heading-sm"
-                    className="text-xl sm:text-2xl md:text-3xl font-semibold mb-2"
+                    className="mb-2 text-xl font-semibold sm:text-2xl md:text-3xl"
                     data-testid="text-portfolio-name"
                   >
                     Hey, I&apos;m Morgan.
                   </Text>
                   <p
-                    className="text-sm sm:text-base md:text-lg text-foreground/60 mb-4"
+                    className="text-foreground/60 mb-4 text-sm sm:text-base md:text-lg"
                     data-testid="text-portfolio-role"
                   >
                     Product Designer & Developer
                   </p>
                   <p
-                    className="text-xs sm:text-sm md:text-base text-foreground/70 leading-relaxed mb-4"
+                    className="text-foreground/70 mb-4 text-xs leading-relaxed sm:text-sm md:text-base"
                     data-testid="text-portfolio-description"
                   >
                     A unicorn designer who can both design and code. Designed experiences in sports,
@@ -381,11 +381,11 @@ export default function EmailMockup() {
                   </p>
                   <div className="flex flex-wrap gap-2">
                     <span
-                      className="inline-flex items-center gap-1.5 px-3 py-1 bg-primary-landing/10 text-primary-landing  text-xs sm:text-sm rounded-full"
+                      className="bg-primary-landing/10 text-primary-landing inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs sm:text-sm"
                       data-testid="badge-location"
                     >
                       <svg
-                        className="w-3 h-3"
+                        className="h-3 w-3"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -406,12 +406,12 @@ export default function EmailMockup() {
                       Gotham City
                     </span>
                     <span
-                      className="relative inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-50/80 dark:bg-green-950/30 backdrop-blur-sm border border-green-200/50 dark:border-green-800/50 text-green-700 dark:text-green-400 text-xs sm:text-sm rounded-full overflow-hidden"
+                      className="relative inline-flex items-center gap-1.5 overflow-hidden rounded-full border border-green-200/50 bg-green-50/80 px-3 py-1.5 text-xs text-green-700 backdrop-blur-sm sm:text-sm dark:border-green-800/50 dark:bg-green-950/30 dark:text-green-400"
                       data-testid="badge-availability"
                     >
-                      <span className="absolute inset-0 bg-gradient-to-r from-green-100/50 to-emerald-100/50 dark:from-green-900/20 dark:to-emerald-900/20 animate-pulse"></span>
+                      <span className="absolute inset-0 animate-pulse bg-gradient-to-r from-green-100/50 to-emerald-100/50 dark:from-green-900/20 dark:to-emerald-900/20"></span>
                       <svg
-                        className="w-3 h-3 relative z-10 animate-pulse"
+                        className="relative z-10 h-3 w-3 animate-pulse"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >
@@ -428,17 +428,17 @@ export default function EmailMockup() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 md:gap-8 mt-8">
+              <div className="mt-8 grid grid-cols-1 gap-10 sm:grid-cols-2 md:gap-8">
                 <div
                   id="portfolio-card-1"
-                  className="bg-muted/30 dark:bg-muted/20 rounded-xl border border-dashed border-border overflow-hidden"
+                  className="bg-muted/30 dark:bg-muted/20 border-border overflow-hidden rounded-xl border border-dashed"
                   data-testid="placeholder-project-1"
                 >
-                  <div className="aspect-video bg-muted/40 dark:bg-muted/30 relative overflow-hidden">
+                  <div className="bg-muted/40 dark:bg-muted/30 relative aspect-video overflow-hidden">
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-16 h-16 rounded-full bg-muted/50 dark:bg-muted/40 flex items-center justify-center">
+                      <div className="bg-muted/50 dark:bg-muted/40 flex h-16 w-16 items-center justify-center rounded-full">
                         <svg
-                          className="w-8 h-8 text-muted-foreground/30"
+                          className="text-muted-foreground/30 h-8 w-8"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -454,21 +454,21 @@ export default function EmailMockup() {
                     </div>
                   </div>
                   <div className="p-4 sm:p-5">
-                    <div className="h-5 bg-muted/40 dark:bg-muted/30 rounded mb-2 w-3/4"></div>
-                    <div className="h-4 bg-muted/30 dark:bg-muted/20 rounded w-1/2"></div>
+                    <div className="bg-muted/40 dark:bg-muted/30 mb-2 h-5 w-3/4 rounded"></div>
+                    <div className="bg-muted/30 dark:bg-muted/20 h-4 w-1/2 rounded"></div>
                   </div>
                 </div>
 
                 <div
                   id="portfolio-card-2"
-                  className="bg-muted/30 dark:bg-muted/20 rounded-xl border border-dashed border-border overflow-hidden"
+                  className="bg-muted/30 dark:bg-muted/20 border-border overflow-hidden rounded-xl border border-dashed"
                   data-testid="placeholder-project-2"
                 >
-                  <div className="aspect-video bg-muted/40 dark:bg-muted/30 relative overflow-hidden">
+                  <div className="bg-muted/40 dark:bg-muted/30 relative aspect-video overflow-hidden">
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-16 h-16 rounded-full bg-muted/50 dark:bg-muted/40 flex items-center justify-center">
+                      <div className="bg-muted/50 dark:bg-muted/40 flex h-16 w-16 items-center justify-center rounded-full">
                         <svg
-                          className="w-8 h-8 text-muted-foreground/30"
+                          className="text-muted-foreground/30 h-8 w-8"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -484,8 +484,8 @@ export default function EmailMockup() {
                     </div>
                   </div>
                   <div className="p-4 sm:p-5">
-                    <div className="h-5 bg-muted/40 dark:bg-muted/30 rounded mb-2 w-3/4"></div>
-                    <div className="h-4 bg-muted/30 dark:bg-muted/20 rounded w-1/2"></div>
+                    <div className="bg-muted/40 dark:bg-muted/30 mb-2 h-5 w-3/4 rounded"></div>
+                    <div className="bg-muted/30 dark:bg-muted/20 h-4 w-1/2 rounded"></div>
                   </div>
                 </div>
               </div>

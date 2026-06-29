@@ -104,13 +104,13 @@ export const ImageWithOverlayAndPicker = ({
       <img
         src={source}
         alt="project image"
-        className={`w-full h-full object-cover transition-opacity duration-100 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
+        className={`h-full w-full object-cover transition-opacity duration-100 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
         loading="lazy"
         fetchPriority="high"
         decoding="async"
         onLoad={() => setImageLoaded(true)}
       />
-      {!imageLoaded && <div className="absolute inset-0 bg-df-placeholder-color" />}
+      {!imageLoaded && <div className="bg-df-placeholder-color absolute inset-0" />}
 
       <input
         ref={fileInputRef}
@@ -122,14 +122,14 @@ export const ImageWithOverlayAndPicker = ({
 
       <motion.div
         onClick={handleClick}
-        className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/50 opacity-0 hover:opacity-100 cursor-pointer rounded-[20px]"
+        className="absolute inset-0 flex cursor-pointer flex-col items-center justify-center gap-2 rounded-[20px] bg-black/50 opacity-0 hover:opacity-100"
         initial={{ opacity: 0 }}
         whileHover={{ opacity: 1 }}
         transition={{ duration: 0.3 }}
       >
-        <ImageUp className="w-6 h-6 text-white" />
-        <p className="text-white text-sm font-medium">Change Image</p>
-        <p className="text-white/60 text-xs">Recommended: {recommendedSize}</p>
+        <ImageUp className="h-6 w-6 text-white" />
+        <p className="text-sm font-medium text-white">Change Image</p>
+        <p className="text-xs text-white/60">Recommended: {recommendedSize}</p>
       </motion.div>
     </div>
   );

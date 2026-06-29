@@ -201,12 +201,12 @@ const MacOSTemplate = ({
 
       {/* Desktop area — starts below the menu bar (and LoggedInHeader in edit mode) */}
       <div
-        className="min-h-screen relative overflow-hidden"
+        className="relative min-h-screen overflow-hidden"
         style={{ marginTop: `${desktopTopMargin}px` }}
       >
         {/* Desktop Widgets Layer — fixed, pointer-events only on widgets, shifts with sidebar */}
         <div
-          className="fixed left-0 bottom-0 pointer-events-none z-10 overflow-hidden"
+          className="pointer-events-none fixed bottom-0 left-0 z-10 overflow-hidden"
           style={{
             top: `${macOSMenuBarTop}px`,
             right: sidebarShiftWidth,
@@ -219,7 +219,7 @@ const MacOSTemplate = ({
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
             className={cn(
-              "absolute left-0 right-0 top-0 bottom-0 md:right-auto md:left-8 md:bottom-auto flex flex-col gap-6 pointer-events-auto items-center justify-center md:items-stretch md:justify-start min-w-0 max-w-full md:max-w-none px-4 md:px-0",
+              "pointer-events-auto absolute top-0 right-0 bottom-0 left-0 flex max-w-full min-w-0 flex-col items-center justify-center gap-6 px-4 md:right-auto md:bottom-auto md:left-8 md:max-w-none md:items-stretch md:justify-start md:px-0",
               isProWarningVisible ? "md:top-24" : "md:top-16"
             )}
           >
@@ -229,7 +229,7 @@ const MacOSTemplate = ({
               onEditClick={handleWidgetEditClick}
               onAddReview={handleAddReview}
             />
-            <div className="w-80 bg-transparent p-0 flex items-center justify-center">
+            <div className="flex w-80 items-center justify-center bg-transparent p-0">
               <DivOrigami userDetails={userDetails} />
             </div>
           </motion.div>
@@ -241,14 +241,14 @@ const MacOSTemplate = ({
         {/* MacOS Dock — fixed at bottom, shifts with sidebar */}
         <div
           ref={dockWrapperRef}
-          className="fixed bottom-0 sm:bottom-2 left-0 flex justify-center pointer-events-none"
+          className="pointer-events-none fixed bottom-0 left-0 flex justify-center sm:bottom-2"
           style={{
             zIndex: 200,
             right: sidebarShiftWidth,
             transition: sidebarTransition,
           }}
         >
-          <div className="pointer-events-auto w-full h-full" style={{ position: "relative" }}>
+          <div className="pointer-events-auto h-full w-full" style={{ position: "relative" }}>
             <MacOSDock
               apps={visibleDockApps}
               openApps={[activeTab, isResumeDialogOpen ? "resume" : ""].filter(Boolean)}

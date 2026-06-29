@@ -16,19 +16,19 @@ export default function OthersPreview({ userDetails }) {
     <>
       <div
         className={cn(
-          " flex flex-col gap-8 bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words"
+          "bg-df-section-card-bg-color shadow-df-section-card-shadow flex flex-col gap-8 rounded-[24px] p-4 break-words lg:p-[32px]"
         )}
       >
         {(!!userDetails?.socials?.instagram ||
           !!userDetails?.socials?.twitter ||
           !!userDetails?.socials?.linkedin) && (
           <div>
-            <div className="flex items-center justify-between mb-4">
+            <div className="mb-4 flex items-center justify-between">
               <Text size="p-small" className="text-modal-heading-color font-semibold">
                 Connect with me
               </Text>
             </div>
-            <div className="flex flex-col lg:flex-row gap-[24px]">
+            <div className="flex flex-col gap-[24px] lg:flex-row">
               {userDetails?.socials?.instagram && (
                 <Link
                   href={userDetails?.socials?.instagram}
@@ -77,13 +77,13 @@ export default function OthersPreview({ userDetails }) {
           !!userDetails?.portfolios?.notion ||
           !!userDetails?.portfolios?.medium) && (
           <div>
-            <div className="flex items-center justify-between mb-4">
+            <div className="mb-4 flex items-center justify-between">
               <Text size="p-small" className="text-modal-heading-color font-semibold">
                 Other portfolio
               </Text>
             </div>
             <div>
-              <div className="flex flex-col lg:flex-row gap-[24px]">
+              <div className="flex flex-col gap-[24px] lg:flex-row">
                 {userDetails?.portfolios?.dribbble && (
                   <Link
                     href={userDetails?.portfolios?.dribbble}

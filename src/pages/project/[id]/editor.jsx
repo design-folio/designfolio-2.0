@@ -167,8 +167,8 @@ export default function Index() {
     return (
       <>
         <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="w-8 h-8 border-2 border-[#888] border-t-transparent rounded-full animate-spin" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#888] border-t-transparent" />
         </div>
       </>
     );
@@ -256,12 +256,12 @@ export default function Index() {
 
   // Embed mode: only render editor content (no shell, no background)
   if (isEmbed) {
-    return <div className="min-h-full bg-white overflow-auto">{editorContent}</div>;
+    return <div className="min-h-full overflow-auto bg-white">{editorContent}</div>;
   }
 
   return (
     <SidebarProvider {...sidebarProviderProps}>
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
 
         {isMacOS ? (
@@ -300,7 +300,7 @@ export default function Index() {
           <main
             className={cn(
               "min-h-screen",
-              isChatfolio && "bg-[#F0EDE7] dark:bg-[#1A1A1A] font-inter"
+              isChatfolio && "font-inter bg-[#F0EDE7] dark:bg-[#1A1A1A]"
             )}
           >
             {editorContent}

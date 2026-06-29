@@ -29,12 +29,12 @@ export default function LandingHeader({ dfToken }) {
   return (
     <header>
       {/* isolate + translateZ(0) force a compositing layer so Safari keeps header above overscroll/bounce */}
-      <div className="fixed top-0 left-0 right-0 z-[999999] isolate transition-all duration-700 pt-3 px-4 pointer-events-none [transform:translateZ(0)]">
+      <div className="pointer-events-none fixed top-0 right-0 left-0 isolate z-[999999] [transform:translateZ(0)] px-4 pt-3 transition-all duration-700">
         <nav
-          className="w-full mx-auto transition-all duration-700 ease-in-out border border-border backdrop-blur-md rounded-full shadow-sm max-w-[640px] bg-white/80 dark:bg-[#1a1a1a]/80 pointer-events-auto"
+          className="border-border pointer-events-auto mx-auto w-full max-w-[640px] rounded-full border bg-white/80 shadow-sm backdrop-blur-md transition-all duration-700 ease-in-out dark:bg-[#1a1a1a]/80"
           style={{ background: "linear-gradient(180deg, #fff6 10%, #fffc)" }}
         >
-          <div className="transition-all duration-700 ease-in-out px-4 sm:px-6">
+          <div className="px-4 transition-all duration-700 ease-in-out sm:px-6">
             <div
               className={`flex items-center justify-between transition-all duration-700 ease-in-out ${
                 isScrolled ? "h-14 sm:h-16" : "h-14 sm:h-16"
@@ -68,7 +68,7 @@ export default function LandingHeader({ dfToken }) {
                   <div className="flex items-center gap-2 sm:gap-4">
                     <Link
                       href="/login"
-                      className="text-sm sm:text-[15px] text-foreground hover-elevate px-2 sm:px-3 py-2 rounded-md cursor-pointer"
+                      className="text-foreground hover-elevate cursor-pointer rounded-md px-2 py-2 text-sm sm:px-3 sm:text-[15px]"
                       data-testid="link-login"
                     >
                       Login
@@ -108,7 +108,7 @@ export default function LandingHeader({ dfToken }) {
             />
           </Link>
         ) : (
-          <div className="flex flex-col gap-4 w-full">
+          <div className="flex w-full flex-col gap-4">
             <Link href="/login" className="" data-testid="link-login">
               <Button
                 type="secondary"

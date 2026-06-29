@@ -74,7 +74,7 @@ export default function EmailGenerator({
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95 }}
-          className="flex flex-col items-center justify-center py-4 space-y-6"
+          className="flex flex-col items-center justify-center space-y-6 py-4"
         >
           <div className="flex flex-col items-center">
             <TetrisLoading size="sm" speed="fast" loadingText="Drafting your email..." />
@@ -99,7 +99,7 @@ export default function EmailGenerator({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-8"
+          className="grid grid-cols-1 gap-8 md:grid-cols-2"
         >
           <EmailForm
             generateEmailContent={generateEmailContent}

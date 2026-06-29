@@ -20,35 +20,35 @@ export function AuthLayout({
 
   return (
     <div
-      className="min-h-screen bg-background flex flex-col relative overflow-hidden"
+      className="bg-background relative flex min-h-screen flex-col overflow-hidden"
       style={{ fontFamily: "var(--font-manrope), sans-serif" }}
     >
       {/* Warm tinted 3x3 grid background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none grid grid-cols-3 grid-rows-3 gap-8 p-8">
+      <div className="pointer-events-none absolute inset-0 grid grid-cols-3 grid-rows-3 gap-8 overflow-hidden p-8">
         {/* Row 1 */}
-        <div className="rounded-[4rem] bg-muted" />
-        <div className="rounded-[5rem] bg-muted opacity-70" />
-        <div className="rounded-[4rem] bg-muted" />
+        <div className="bg-muted rounded-[4rem]" />
+        <div className="bg-muted rounded-[5rem] opacity-70" />
+        <div className="bg-muted rounded-[4rem]" />
 
         {/* Row 2 */}
-        <div className="rounded-[5rem] bg-muted opacity-70" />
-        <div className="rounded-[4rem] bg-muted" />
-        <div className="rounded-[5rem] bg-muted opacity-70" />
+        <div className="bg-muted rounded-[5rem] opacity-70" />
+        <div className="bg-muted rounded-[4rem]" />
+        <div className="bg-muted rounded-[5rem] opacity-70" />
 
         {/* Row 3 */}
-        <div className="rounded-[4rem] bg-muted" />
-        <div className="rounded-[5rem] bg-muted opacity-70" />
-        <div className="rounded-[4rem] bg-muted" />
+        <div className="bg-muted rounded-[4rem]" />
+        <div className="bg-muted rounded-[5rem] opacity-70" />
+        <div className="bg-muted rounded-[4rem]" />
       </div>
 
-      <div className="flex-1 flex flex-col relative z-10">
-        <div className="pt-8 pb-4 flex justify-center">
+      <div className="relative z-10 flex flex-1 flex-col">
+        <div className="flex justify-center pt-8 pb-4">
           <Link href="/" className="cursor-pointer" data-testid="link-home">
             <MemoDesignfolioLogoV2 className="text-df-icon-color" />
           </Link>
         </div>
 
-        <div className="flex-1 flex items-center justify-center px-6">
+        <div className="flex flex-1 items-center justify-center px-6">
           <motion.div
             className="w-full max-w-md"
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
@@ -56,7 +56,7 @@ export function AuthLayout({
             transition={{ duration: 0.35, ease: "easeOut" }}
           >
             <Card
-              className={`bg-card backdrop-blur-sm py-8 px-6 sm:px-8 border border-border rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.06)] overflow-hidden ${className}`}
+              className={`bg-card border-border overflow-hidden rounded-3xl border px-6 py-8 shadow-[0_0_40px_rgba(0,0,0,0.06)] backdrop-blur-sm sm:px-8 ${className}`}
             >
               <motion.div
                 initial={false}
@@ -68,10 +68,10 @@ export function AuthLayout({
                     <button
                       type="button"
                       onClick={onBack}
-                      className="flex items-center gap-2 text-sm text-foreground/70 hover:text-(--ring) -ml-2 mb-6 hover-elevate px-2 py-1 rounded-md transition-colors"
+                      className="text-foreground/70 hover-elevate mb-6 -ml-2 flex items-center gap-2 rounded-md px-2 py-1 text-sm transition-colors hover:text-(--ring)"
                       data-testid="button-back"
                     >
-                      <ArrowLeft className="w-4 h-4" />
+                      <ArrowLeft className="h-4 w-4" />
                       Go Back
                     </button>
                   )}
@@ -80,14 +80,14 @@ export function AuthLayout({
                     <div className="mb-8">
                       {title && (
                         <h1
-                          className="font-semibold text-2xl mb-2 text-foreground text-center"
+                          className="text-foreground mb-2 text-center text-2xl font-semibold"
                           style={{ fontFamily: "var(--font-manrope), sans-serif" }}
                         >
                           {title}
                         </h1>
                       )}
                       {description && (
-                        <p className="text-sm text-foreground/60 text-center">{description}</p>
+                        <p className="text-foreground/60 text-center text-sm">{description}</p>
                       )}
                     </div>
                   )}

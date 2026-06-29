@@ -597,9 +597,9 @@ const MacOSDock = ({
   }, [aboutEditMenuOpen]);
 
   return (
-    <div className="flex flex-col items-center w-full h-full relative pointer-events-none">
+    <div className="pointer-events-none relative flex h-full w-full flex-col items-center">
       {/* ── App Windows ── */}
-      <div className="flex-1 w-full relative pointer-events-none">
+      <div className="pointer-events-none relative w-full flex-1">
         {apps.map((app, index) => {
           const isOpen = openWindows.includes(app.id);
           const isMinimized = minimizedWindows.includes(app.id);
@@ -629,15 +629,15 @@ const MacOSDock = ({
               key={`window-${app.id}`}
               onMouseDown={() => setActiveWindowId(app.id)}
               onWheel={(e) => e.stopPropagation()}
-              className={`fixed z-40 overflow-hidden border shadow-2xl flex flex-col pointer-events-auto ${
+              className={`pointer-events-auto fixed z-40 flex flex-col overflow-hidden border shadow-2xl ${
                 app.id === "work_experience"
-                  ? "bg-[#1e1e1e] border-[#333]"
-                  : "bg-[#faf9f6] border-[#d1d1d1]"
+                  ? "border-[#333] bg-[#1e1e1e]"
+                  : "border-[#d1d1d1] bg-[#faf9f6]"
               } ${
                 isMaximized || isMobile
                   ? "max-w-none rounded-none border-0 transition-all duration-300"
-                  : "w-[896px] h-[70vh] rounded-lg transition-shadow"
-              } ${isActive ? "shadow-2xl ring-1 ring-black/5" : "shadow-lg opacity-95"}`}
+                  : "h-[70vh] w-[896px] rounded-lg transition-shadow"
+              } ${isActive ? "shadow-2xl ring-1 ring-black/5" : "opacity-95 shadow-lg"}`}
               style={{
                 ...(isMaximized || isMobile
                   ? {
@@ -704,19 +704,19 @@ const MacOSDock = ({
               {/* Title bar */}
               <div
                 onMouseDown={(e) => !isMobile && !isMaximized && handleMouseDown(app.id, e)}
-                className={`h-10 border-b flex items-center px-4 justify-between select-none ${
+                className={`flex h-10 items-center justify-between border-b px-4 select-none ${
                   app.id === "work_experience"
-                    ? "bg-[#2d2d2d] border-[#1e1e1e]"
-                    : "bg-[#e8e6e1] border-[#d1d1d1]"
+                    ? "border-[#1e1e1e] bg-[#2d2d2d]"
+                    : "border-[#d1d1d1] bg-[#e8e6e1]"
                 } ${isMobile || isMaximized ? "cursor-default" : "cursor-move active:cursor-grabbing"}`}
               >
-                <div className="flex gap-2 items-center">
+                <div className="flex items-center gap-2">
                   <div
-                    className={`text-sm font-medium flex items-center gap-2 ${app.id === "work_experience" ? "text-[#d4d4d4]" : "text-[#444]"}`}
+                    className={`flex items-center gap-2 text-sm font-medium ${app.id === "work_experience" ? "text-[#d4d4d4]" : "text-[#444]"}`}
                   >
                     <span className="opacity-70">{app.id === "works" ? "📂" : "📄"}</span>
                     {app.id === "works" ? "Projects" : `${app.name}.mdx`}{" "}
-                    <span className="opacity-50 text-[10px]">⌄</span>
+                    <span className="text-[10px] opacity-50">⌄</span>
                   </div>
                 </div>
                 <div
@@ -724,27 +724,27 @@ const MacOSDock = ({
                 >
                   <button
                     type="button"
-                    className={`p-1 rounded transition-colors ${app.id === "work_experience" ? "hover:bg-white/10" : "hover:bg-black/10"}`}
+                    className={`rounded p-1 transition-colors ${app.id === "work_experience" ? "hover:bg-white/10" : "hover:bg-black/10"}`}
                     onClick={(e) => toggleMinimize(app.id, e)}
                     title="Minimize"
                   >
-                    <Minus className="w-4 h-4" />
+                    <Minus className="h-4 w-4" />
                   </button>
                   <button
                     type="button"
-                    className={`p-1 rounded transition-colors ${app.id === "work_experience" ? "hover:bg-white/10" : "hover:bg-black/10"}`}
+                    className={`rounded p-1 transition-colors ${app.id === "work_experience" ? "hover:bg-white/10" : "hover:bg-black/10"}`}
                     onClick={(e) => toggleMaximize(app.id, e)}
                     title="Maximize"
                   >
-                    <Square className="w-3 h-3" />
+                    <Square className="h-3 w-3" />
                   </button>
                   <button
                     type="button"
-                    className={`p-1 rounded transition-colors ${app.id === "work_experience" ? "hover:bg-red-500/30 hover:text-red-400" : "hover:bg-red-500/20 hover:text-red-600"}`}
+                    className={`rounded p-1 transition-colors ${app.id === "work_experience" ? "hover:bg-red-500/30 hover:text-red-400" : "hover:bg-red-500/20 hover:text-red-600"}`}
                     onClick={() => closeWindow(app.id)}
                     title="Close"
                   >
-                    <X className="w-4 h-4" />
+                    <X className="h-4 w-4" />
                   </button>
                 </div>
               </div>
@@ -752,54 +752,54 @@ const MacOSDock = ({
               {/* Toolbar (not shown for the Finder/works window) */}
               {app.id !== "works" && (
                 <div
-                  className={`h-12 border-b flex items-center px-4 gap-4 overflow-x-auto justify-between ${
+                  className={`flex h-12 items-center justify-between gap-4 overflow-x-auto border-b px-4 ${
                     app.id === "work_experience"
-                      ? "bg-[#252525] border-[#1e1e1e]"
-                      : "bg-[#f4f2ee] border-[#e0ddd8]"
+                      ? "border-[#1e1e1e] bg-[#252525]"
+                      : "border-[#e0ddd8] bg-[#f4f2ee]"
                   }`}
                 >
                   <div className="flex items-center gap-4">
                     {app.id === "work_experience" ? (
                       <div className="flex items-center gap-3">
                         <div className="flex gap-1">
-                          <button className="h-8 px-2 flex items-center justify-center gap-1.5 text-[11px] text-[#aaa] hover:bg-white/5 rounded border border-transparent hover:border-[#333] transition-all">
+                          <button className="flex h-8 items-center justify-center gap-1.5 rounded border border-transparent px-2 text-[11px] text-[#aaa] transition-all hover:border-[#333] hover:bg-white/5">
                             <RefreshCw size={12} className="text-[#007aff]" />
                             <span>Build</span>
                           </button>
-                          <button className="h-8 px-2 flex items-center justify-center gap-1.5 text-[11px] text-[#aaa] hover:bg-white/5 rounded border border-transparent hover:border-[#333] transition-all">
-                            <div className="w-2 h-2 rounded-full bg-[#28c841]" />
+                          <button className="flex h-8 items-center justify-center gap-1.5 rounded border border-transparent px-2 text-[11px] text-[#aaa] transition-all hover:border-[#333] hover:bg-white/5">
+                            <div className="h-2 w-2 rounded-full bg-[#28c841]" />
                             <span>Run</span>
                           </button>
                         </div>
-                        <div className="h-4 w-px bg-[#333] mx-1" />
+                        <div className="mx-1 h-4 w-px bg-[#333]" />
                         <div
                           className={`flex gap-1 text-[11px] text-[#666] ${isMobile ? "hidden" : ""}`}
                         >
-                          <span className="hover:text-[#aaa] cursor-pointer">Terminal</span>
-                          <span className="hover:text-[#aaa] cursor-pointer ml-2">Debug</span>
-                          <span className="hover:text-[#aaa] cursor-pointer ml-2">Console</span>
+                          <span className="cursor-pointer hover:text-[#aaa]">Terminal</span>
+                          <span className="ml-2 cursor-pointer hover:text-[#aaa]">Debug</span>
+                          <span className="ml-2 cursor-pointer hover:text-[#aaa]">Console</span>
                         </div>
                       </div>
                     ) : (
                       <>
                         <div
-                          className={`flex bg-white/50 border border-[#dcd9d4] rounded-md overflow-hidden ${isMobile ? "hidden" : ""}`}
+                          className={`flex overflow-hidden rounded-md border border-[#dcd9d4] bg-white/50 ${isMobile ? "hidden" : ""}`}
                         >
-                          <button className="px-3 py-1 border-r border-[#dcd9d4] hover:bg-white text-[#888] text-sm">
+                          <button className="border-r border-[#dcd9d4] px-3 py-1 text-sm text-[#888] hover:bg-white">
                             ↺
                           </button>
-                          <button className="px-3 py-1 hover:bg-white text-[#888] text-sm">
+                          <button className="px-3 py-1 text-sm text-[#888] hover:bg-white">
                             ↻
                           </button>
                         </div>
                         <div className="flex gap-1">
-                          <button className="w-8 h-8 flex items-center justify-center font-bold text-[#444] hover:bg-white rounded">
+                          <button className="flex h-8 w-8 items-center justify-center rounded font-bold text-[#444] hover:bg-white">
                             B
                           </button>
-                          <button className="w-8 h-8 flex items-center justify-center italic text-[#444] hover:bg-white rounded">
+                          <button className="flex h-8 w-8 items-center justify-center rounded text-[#444] italic hover:bg-white">
                             I
                           </button>
-                          <button className="w-8 h-8 flex items-center justify-center line-through text-[#444] hover:bg-white rounded">
+                          <button className="flex h-8 w-8 items-center justify-center rounded text-[#444] line-through hover:bg-white">
                             S
                           </button>
                         </div>
@@ -832,7 +832,7 @@ const MacOSDock = ({
                           <span className="flex items-center gap-1">
                             EDIT
                             <ChevronDown
-                              className={`w-3 h-3 transition-transform ${aboutEditMenuOpen ? "rotate-180" : ""}`}
+                              className={`h-3 w-3 transition-transform ${aboutEditMenuOpen ? "rotate-180" : ""}`}
                             />
                           </span>
                         </Button3D>
@@ -843,7 +843,7 @@ const MacOSDock = ({
                         createPortal(
                           <div
                             id="about-edit-dropdown"
-                            className="fixed w-40 bg-white rounded-md shadow-lg border border-black/5 text-xs text-[#444]"
+                            className="fixed w-40 rounded-md border border-black/5 bg-white text-xs text-[#444] shadow-lg"
                             style={{
                               top: aboutDropdownRect.top,
                               left: aboutDropdownRect.left,
@@ -851,7 +851,7 @@ const MacOSDock = ({
                             }}
                           >
                             <button
-                              className="w-full text-left px-3 py-2 hover:bg-[#f5f3ef] rounded-t-md"
+                              className="w-full rounded-t-md px-3 py-2 text-left hover:bg-[#f5f3ef]"
                               onClick={() => {
                                 setAboutEditMenuOpen(false);
                                 setAboutDropdownRect(null);
@@ -861,7 +861,7 @@ const MacOSDock = ({
                               Edit about
                             </button>
                             <button
-                              className="w-full text-left px-3 py-2 hover:bg-[#f5f3ef]"
+                              className="w-full px-3 py-2 text-left hover:bg-[#f5f3ef]"
                               onClick={() => {
                                 setAboutEditMenuOpen(false);
                                 setAboutDropdownRect(null);
@@ -871,7 +871,7 @@ const MacOSDock = ({
                               Edit skills
                             </button>
                             <button
-                              className="w-full text-left px-3 py-2 hover:bg-[#f5f3ef] rounded-b-md"
+                              className="w-full rounded-b-md px-3 py-2 text-left hover:bg-[#f5f3ef]"
                               onClick={() => {
                                 setAboutEditMenuOpen(false);
                                 setAboutDropdownRect(null);
@@ -903,16 +903,16 @@ const MacOSDock = ({
 
               {/* Content area */}
               <div
-                className={`flex-1 overflow-hidden relative ${
+                className={`relative flex-1 overflow-hidden ${
                   app.id === "works"
                     ? ""
                     : app.id === "work_experience"
-                      ? "bg-[#1e1e1e] m-4 rounded-md border border-[#333] shadow-sm"
-                      : "bg-white m-4 rounded-md border border-[#e0ddd8] shadow-sm"
+                      ? "m-4 rounded-md border border-[#333] bg-[#1e1e1e] shadow-sm"
+                      : "m-4 rounded-md border border-[#e0ddd8] bg-white shadow-sm"
                 }`}
               >
-                <div className="w-full h-full overflow-y-auto">
-                  <div className="w-full h-full flex flex-col relative">
+                <div className="h-full w-full overflow-y-auto">
+                  <div className="relative flex h-full w-full flex-col">
                     <WindowContent
                       appId={app.id}
                       userDetails={userDetails}
@@ -978,11 +978,11 @@ const MacOSDock = ({
                   onProjectWindowFocus?.();
                 }}
                 onWheel={(e) => e.stopPropagation()}
-                className={`fixed overflow-hidden border shadow-2xl flex flex-col pointer-events-auto bg-[#faf9f6] border-[#d1d1d1] ${
+                className={`pointer-events-auto fixed flex flex-col overflow-hidden border border-[#d1d1d1] bg-[#faf9f6] shadow-2xl ${
                   isMaximizedPw || isMobile
                     ? "max-w-none rounded-none border-0 transition-all duration-300"
-                    : "w-[896px] h-[70vh] rounded-lg transition-shadow"
-                } ${isActive ? "shadow-2xl ring-1 ring-black/5" : "shadow-lg opacity-95"}`}
+                    : "h-[70vh] w-[896px] rounded-lg transition-shadow"
+                } ${isActive ? "shadow-2xl ring-1 ring-black/5" : "opacity-95 shadow-lg"}`}
                 style={{
                   ...(isMaximizedPw || isMobile
                     ? {
@@ -1047,38 +1047,38 @@ const MacOSDock = ({
                 />
                 <div
                   onMouseDown={(e) => !isMobile && !isMaximizedPw && handleMouseDown(pw.id, e)}
-                  className={`h-10 border-b flex items-center px-4 justify-between select-none bg-[#e8e6e1] border-[#d1d1d1] ${isMobile || maximizedWindows.includes(pw.id) ? "cursor-default" : "cursor-move active:cursor-grabbing"}`}
+                  className={`flex h-10 items-center justify-between border-b border-[#d1d1d1] bg-[#e8e6e1] px-4 select-none ${isMobile || maximizedWindows.includes(pw.id) ? "cursor-default" : "cursor-move active:cursor-grabbing"}`}
                 >
-                  <div className="flex gap-2 items-center">
-                    <div className="text-sm font-medium flex items-center gap-2 text-[#444]">
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 text-sm font-medium text-[#444]">
                       <span className="opacity-70">🌐</span>
-                      <span className="truncate max-w-[200px]">{pw.title}</span>
+                      <span className="max-w-[200px] truncate">{pw.title}</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-1 text-[#666]">
                     <button
                       type="button"
-                      className="p-1 rounded transition-colors hover:bg-black/10"
+                      className="rounded p-1 transition-colors hover:bg-black/10"
                       onClick={(e) => toggleMinimize(pw.id, e)}
                       title="Minimize"
                     >
-                      <Minus className="w-4 h-4" />
+                      <Minus className="h-4 w-4" />
                     </button>
                     <button
                       type="button"
-                      className="p-1 rounded transition-colors hover:bg-black/10"
+                      className="rounded p-1 transition-colors hover:bg-black/10"
                       onClick={(e) => toggleMaximize(pw.id, e)}
                       title="Maximize"
                     >
-                      <Square className="w-4 h-4" />
+                      <Square className="h-4 w-4" />
                     </button>
                     <button
                       type="button"
-                      className="p-1 rounded transition-colors hover:bg-red-500/20 hover:text-red-600"
+                      className="rounded p-1 transition-colors hover:bg-red-500/20 hover:text-red-600"
                       onClick={() => closeProjectWindow(pw.id)}
                       title="Close"
                     >
-                      <X className="w-4 h-4" />
+                      <X className="h-4 w-4" />
                     </button>
                   </div>
                 </div>
@@ -1098,12 +1098,12 @@ const MacOSDock = ({
                     queryClient.invalidateQueries({ queryKey: [`project-${pw.projectId}`] })
                   }
                 />
-                <div className="flex-1 min-h-0 bg-white">
+                <div className="min-h-0 flex-1 bg-white">
                   <iframe
                     key={iframeUrl}
                     src={iframeUrl}
                     title={pw.title}
-                    className="w-full h-full border-0"
+                    className="h-full w-full border-0"
                     allow="clipboard-write"
                   />
                 </div>
@@ -1142,7 +1142,7 @@ const MacOSDock = ({
                 onDockWindowFocus?.();
               }}
               onWheel={(e) => e.stopPropagation()}
-              className={`fixed z-40 overflow-hidden bg-[#525659] border border-[#333] shadow-2xl flex flex-col pointer-events-auto ${isMobile ? "max-w-none rounded-xl" : "w-[800px] h-[85vh] rounded-lg"} ${isActive ? "shadow-2xl ring-1 ring-black/5" : "shadow-lg opacity-95"}`}
+              className={`pointer-events-auto fixed z-40 flex flex-col overflow-hidden border border-[#333] bg-[#525659] shadow-2xl ${isMobile ? "max-w-none rounded-xl" : "h-[85vh] w-[800px] rounded-lg"} ${isActive ? "shadow-2xl ring-1 ring-black/5" : "opacity-95 shadow-lg"}`}
               style={{
                 ...(isMobile
                   ? {
@@ -1172,24 +1172,24 @@ const MacOSDock = ({
               />
               <div
                 onMouseDown={(e) => handleMouseDown(pdf.id, e)}
-                className="h-9 bg-[#323639] border-b border-[#1a1a1a] flex items-center px-3 justify-between select-none cursor-move active:cursor-grabbing rounded-t-lg"
+                className="flex h-9 cursor-move items-center justify-between rounded-t-lg border-b border-[#1a1a1a] bg-[#323639] px-3 select-none active:cursor-grabbing"
               >
-                <div className="flex gap-2 items-center">
-                  <div className="text-[12px] font-medium text-[#eee] flex items-center gap-1 ml-2">
+                <div className="flex items-center gap-2">
+                  <div className="ml-2 flex items-center gap-1 text-[12px] font-medium text-[#eee]">
                     <span className="opacity-70">📄</span>
                     <span>{pdf.title}</span>
                   </div>
                 </div>
                 <button
                   type="button"
-                  className="p-1 rounded transition-colors hover:bg-red-500/30 hover:text-red-400 text-[#ccc]"
+                  className="rounded p-1 text-[#ccc] transition-colors hover:bg-red-500/30 hover:text-red-400"
                   onClick={() => closePdf(pdf.id)}
                   title="Close"
                 >
-                  <X className="w-3.5 h-3.5" />
+                  <X className="h-3.5 w-3.5" />
                 </button>
               </div>
-              <div className="h-12 bg-[#323639] border-b border-[#1a1a1a] flex items-center px-3 md:px-4 justify-between gap-2 flex-wrap sm:flex-nowrap">
+              <div className="flex h-12 flex-wrap items-center justify-between gap-2 border-b border-[#1a1a1a] bg-[#323639] px-3 sm:flex-nowrap md:px-4">
                 {/* <div className="flex items-center gap-2 md:gap-4 text-[#eee] shrink-0">
                   <div className="flex items-center gap-2 bg-[#202124] px-2 md:px-3 py-1 rounded border border-[#444] text-xs"><span>1 / 1</span></div>
                   <div className="h-4 w-[1px] bg-[#444]" />
@@ -1203,7 +1203,7 @@ const MacOSDock = ({
                     </button>
                   </div>
                 </div> */}
-                <div className="flex items-center gap-2 shrink-0 ml-auto">
+                <div className="ml-auto flex shrink-0 items-center gap-2">
                   {edit && userDetails?.resume?.url && (
                     <Button3D onClick={onEditContact}>EDIT</Button3D>
                   )}
@@ -1214,7 +1214,7 @@ const MacOSDock = ({
                   )} */}
                 </div>
               </div>
-              <div className="flex-1 bg-[#525659] overflow-auto flex justify-center min-h-0">
+              <div className="flex min-h-0 flex-1 justify-center overflow-auto bg-[#525659]">
                 <div
                   className="origin-top transition-transform duration-150"
                   style={{ transform: `scale(${pdfZoom / 100})` }}
@@ -1223,16 +1223,16 @@ const MacOSDock = ({
                     <iframe
                       title="Resume"
                       src={`https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(userDetails.resume.url)}#zoom=page-width&pagemode=none`}
-                      className="w-[min(90vw,800px)] h-[min(75vh,900px)] md:w-[800px] md:h-[85vh] rounded border-0 bg-[#525659]"
+                      className="h-[min(75vh,900px)] w-[min(90vw,800px)] rounded border-0 bg-[#525659] md:h-[85vh] md:w-[800px]"
                     />
                   ) : (
-                    <div className="bg-white w-full min-w-0 max-w-[600px] min-h-full shadow-2xl p-5 md:p-6 box-border flex flex-col">
-                      <div className="flex flex-col items-center justify-center flex-1 py-8 text-center px-4 sm:px-6 w-full min-w-0 box-border">
-                        <span className="text-4xl mb-4 opacity-60 shrink-0" aria-hidden>
+                    <div className="box-border flex min-h-full w-full max-w-[600px] min-w-0 flex-col bg-white p-5 shadow-2xl md:p-6">
+                      <div className="box-border flex w-full min-w-0 flex-1 flex-col items-center justify-center px-4 py-8 text-center sm:px-6">
+                        <span className="mb-4 shrink-0 text-4xl opacity-60" aria-hidden>
                           📄
                         </span>
-                        <h3 className="text-lg font-semibold text-[#333] mb-2 w-full">Resume</h3>
-                        <p className="text-sm text-[#666] mb-2 w-full max-w-md mx-auto">
+                        <h3 className="mb-2 w-full text-lg font-semibold text-[#333]">Resume</h3>
+                        <p className="mx-auto mb-2 w-full max-w-md text-sm text-[#666]">
                           Add your resume in Footer settings to show it here.
                         </p>
                         <Button3D onClick={onEditContact} className="shrink-0">

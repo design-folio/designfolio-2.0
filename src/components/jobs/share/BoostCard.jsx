@@ -162,9 +162,9 @@ const CARD =
 
 export function CTASkeleton() {
   return (
-    <div className={`${CARD} p-5 space-y-3`}>
-      <div className="h-9 rounded-full bg-foreground/[0.06] animate-pulse" />
-      <div className="h-3 w-2/3 mx-auto rounded-full bg-foreground/[0.04] animate-pulse" />
+    <div className={`${CARD} space-y-3 p-5`}>
+      <div className="bg-foreground/[0.06] h-9 animate-pulse rounded-full" />
+      <div className="bg-foreground/[0.04] mx-auto h-3 w-2/3 animate-pulse rounded-full" />
     </div>
   );
 }
@@ -184,24 +184,24 @@ export function BoostCard({ authState, isDark, isSaving, matchScore, onSave, onF
           className={`${CARD} p-5`}
         >
           {/* Header */}
-          <div className="flex items-start justify-between gap-2 mb-5">
-            <h3 className="text-[14px] font-semibold text-foreground leading-snug">
+          <div className="mb-5 flex items-start justify-between gap-2">
+            <h3 className="text-foreground text-[14px] leading-snug font-semibold">
               Boost your interview chances
             </h3>
-            <span className="shrink-0 inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-400/10 border border-emerald-200 dark:border-emerald-400/20 rounded-full px-2 py-0.5 mt-0.5">
+            <span className="mt-0.5 inline-flex shrink-0 items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-600 dark:border-emerald-400/20 dark:bg-emerald-400/10 dark:text-emerald-400">
               FREE
             </span>
           </div>
 
           {/* Gauges */}
-          <div className="flex items-center justify-between gap-1 mb-4 px-0.5">
-            <div className="flex flex-col items-center gap-1.5 flex-1">
+          <div className="mb-4 flex items-center justify-between gap-1 px-0.5">
+            <div className="flex flex-1 flex-col items-center gap-1.5">
               <YourScoreGauge isDark={isDark} />
-              <span className="text-[11px] text-foreground/50 font-medium tracking-tight">
+              <span className="text-foreground/50 text-[11px] font-medium tracking-tight">
                 Your Score
               </span>
             </div>
-            <div className="flex items-center gap-[2px] opacity-20 mb-6 shrink-0">
+            <div className="mb-6 flex shrink-0 items-center gap-[2px] opacity-20">
               {[0, 1, 2].map((i) => (
                 <svg key={i} width="8" height="12" viewBox="0 0 8 12" fill="none">
                   <path
@@ -215,33 +215,33 @@ export function BoostCard({ authState, isDark, isSaving, matchScore, onSave, onF
                 </svg>
               ))}
             </div>
-            <div className="flex flex-col items-center gap-1.5 flex-1">
+            <div className="flex flex-1 flex-col items-center gap-1.5">
               <TopApplicantsGauge isDark={isDark} />
-              <span className="text-[11px] text-foreground/50 font-medium tracking-tight">
+              <span className="text-foreground/50 text-[11px] font-medium tracking-tight">
                 Top Applicants
               </span>
             </div>
           </div>
 
-          <div className="h-px bg-black/[0.06] dark:bg-white/[0.06] mb-4" />
+          <div className="mb-4 h-px bg-black/[0.06] dark:bg-white/[0.06]" />
 
           {/* Blurred skills */}
           <div className="mb-4">
-            <div className="flex items-center gap-1.5 mb-2.5">
-              <Lock className="w-3 h-3 text-foreground/35" />
-              <span className="text-[11px] font-semibold text-foreground/50 uppercase tracking-widest">
+            <div className="mb-2.5 flex items-center gap-1.5">
+              <Lock className="text-foreground/35 h-3 w-3" />
+              <span className="text-foreground/50 text-[11px] font-semibold tracking-widest uppercase">
                 Must-Have Skills
               </span>
             </div>
             <div className="relative">
               <div
-                className="flex flex-wrap gap-1.5 select-none pointer-events-none"
+                className="pointer-events-none flex flex-wrap gap-1.5 select-none"
                 style={{ filter: "blur(4px)" }}
               >
                 {BLURRED_SKILLS.map((s) => (
                   <span
                     key={s}
-                    className="inline-flex items-center font-jetbrains text-[10px] font-semibold uppercase tracking-wide text-[#3D3630] dark:text-white/55 bg-[#EAE5DF] dark:bg-[#1F1C1C] rounded-md px-2 py-1 whitespace-nowrap"
+                    className="font-jetbrains inline-flex items-center rounded-md bg-[#EAE5DF] px-2 py-1 text-[10px] font-semibold tracking-wide whitespace-nowrap text-[#3D3630] uppercase dark:bg-[#1F1C1C] dark:text-white/55"
                   >
                     {s}
                   </span>
@@ -250,10 +250,10 @@ export function BoostCard({ authState, isDark, isSaving, matchScore, onSave, onF
               <div className="absolute inset-0 flex items-center justify-center">
                 <button
                   onClick={onFindScore}
-                  className="flex items-center gap-1.5 bg-white/70 dark:bg-[#28231E]/80 backdrop-blur-[2px] rounded-lg px-3 py-1.5 border border-black/[0.06] dark:border-white/[0.07] hover:bg-white/90 dark:hover:bg-[#28231E]/95 transition-colors"
+                  className="flex items-center gap-1.5 rounded-lg border border-black/[0.06] bg-white/70 px-3 py-1.5 backdrop-blur-[2px] transition-colors hover:bg-white/90 dark:border-white/[0.07] dark:bg-[#28231E]/80 dark:hover:bg-[#28231E]/95"
                 >
-                  <Lock className="w-3 h-3 text-foreground/50" />
-                  <span className="text-[11px] font-semibold text-foreground/55">
+                  <Lock className="text-foreground/50 h-3 w-3" />
+                  <span className="text-foreground/55 text-[11px] font-semibold">
                     Sign up to unlock
                   </span>
                 </button>
@@ -264,12 +264,12 @@ export function BoostCard({ authState, isDark, isSaving, matchScore, onSave, onF
           {/* CTA */}
           <button
             onClick={onFindScore}
-            className="w-full flex items-center justify-center gap-2 h-10 rounded-full bg-[#1A1A1A] dark:bg-white text-white dark:text-black text-[13px] font-semibold hover:opacity-80 transition-opacity active:scale-[0.97]"
+            className="flex h-10 w-full items-center justify-center gap-2 rounded-full bg-[#1A1A1A] text-[13px] font-semibold text-white transition-opacity hover:opacity-80 active:scale-[0.97] dark:bg-white dark:text-black"
           >
-            <Sparkles className="w-3.5 h-3.5" />
+            <Sparkles className="h-3.5 w-3.5" />
             Find my Score
           </button>
-          <p className="text-[11px] text-foreground/35 text-center mt-3 leading-relaxed">
+          <p className="text-foreground/35 mt-3 text-center text-[11px] leading-relaxed">
             Connect your portfolio to see how you rank against top applicants.
           </p>
         </motion.div>
@@ -285,21 +285,21 @@ export function BoostCard({ authState, isDark, isSaving, matchScore, onSave, onF
           className={`${CARD} p-5`}
         >
           {/* Header */}
-          <div className="flex items-start justify-between gap-2 mb-5">
-            <h3 className="text-[14px] font-semibold text-foreground leading-snug">
+          <div className="mb-5 flex items-start justify-between gap-2">
+            <h3 className="text-foreground text-[14px] leading-snug font-semibold">
               Save this job to reveal your match score.
             </h3>
           </div>
 
           {/* Gauges */}
-          <div className="flex items-center justify-between gap-1 mb-4 px-0.5">
-            <div className="flex flex-col items-center gap-1.5 flex-1">
+          <div className="mb-4 flex items-center justify-between gap-1 px-0.5">
+            <div className="flex flex-1 flex-col items-center gap-1.5">
               <YourScoreGauge isDark={isDark} />
-              <span className="text-[11px] text-foreground/50 font-medium tracking-tight">
+              <span className="text-foreground/50 text-[11px] font-medium tracking-tight">
                 Your Score
               </span>
             </div>
-            <div className="flex items-center gap-[2px] opacity-20 mb-6 shrink-0">
+            <div className="mb-6 flex shrink-0 items-center gap-[2px] opacity-20">
               {[0, 1, 2].map((i) => (
                 <svg key={i} width="8" height="12" viewBox="0 0 8 12" fill="none">
                   <path
@@ -313,41 +313,41 @@ export function BoostCard({ authState, isDark, isSaving, matchScore, onSave, onF
                 </svg>
               ))}
             </div>
-            <div className="flex flex-col items-center gap-1.5 flex-1">
+            <div className="flex flex-1 flex-col items-center gap-1.5">
               <TopApplicantsGauge isDark={isDark} />
-              <span className="text-[11px] text-foreground/50 font-medium tracking-tight">
+              <span className="text-foreground/50 text-[11px] font-medium tracking-tight">
                 Top Applicants
               </span>
             </div>
           </div>
 
-          <div className="h-px bg-black/[0.06] dark:bg-white/[0.06] mb-4" />
+          <div className="mb-4 h-px bg-black/[0.06] dark:bg-white/[0.06]" />
 
           {/* Blurred skills */}
           <div className="mb-4">
-            <div className="flex items-center gap-1.5 mb-2.5">
-              <Lock className="w-3 h-3 text-foreground/35" />
-              <span className="text-[11px] font-semibold text-foreground/50 uppercase tracking-widest">
+            <div className="mb-2.5 flex items-center gap-1.5">
+              <Lock className="text-foreground/35 h-3 w-3" />
+              <span className="text-foreground/50 text-[11px] font-semibold tracking-widest uppercase">
                 Must-Have Skills
               </span>
             </div>
             <div className="relative">
               <div
-                className="flex flex-wrap gap-1.5 select-none pointer-events-none"
+                className="pointer-events-none flex flex-wrap gap-1.5 select-none"
                 style={{ filter: "blur(4px)" }}
               >
                 {BLURRED_SKILLS.map((s) => (
                   <span
                     key={s}
-                    className="inline-flex items-center font-jetbrains text-[10px] font-semibold uppercase tracking-wide text-[#3D3630] dark:text-white/55 bg-[#EAE5DF] dark:bg-[#1F1C1C] rounded-md px-2 py-1 whitespace-nowrap"
+                    className="font-jetbrains inline-flex items-center rounded-md bg-[#EAE5DF] px-2 py-1 text-[10px] font-semibold tracking-wide whitespace-nowrap text-[#3D3630] uppercase dark:bg-[#1F1C1C] dark:text-white/55"
                   >
                     {s}
                   </span>
                 ))}
               </div>
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="flex items-center gap-1.5 bg-white/70 dark:bg-[#28231E]/80 backdrop-blur-[2px] rounded-lg px-3 py-1.5 border border-black/[0.06] dark:border-white/[0.07] text-[11px] font-semibold text-foreground/55">
-                  <Lock className="w-3 h-3 text-foreground/50" />
+                <span className="text-foreground/55 flex items-center gap-1.5 rounded-lg border border-black/[0.06] bg-white/70 px-3 py-1.5 text-[11px] font-semibold backdrop-blur-[2px] dark:border-white/[0.07] dark:bg-[#28231E]/80">
+                  <Lock className="text-foreground/50 h-3 w-3" />
                   Save to unlock
                 </span>
               </div>
@@ -357,15 +357,15 @@ export function BoostCard({ authState, isDark, isSaving, matchScore, onSave, onF
           {/* CTA */}
           <Button className="w-full" onClick={onSave} isLoading={isSaving} disabled={isSaving}>
             {isSaving ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
+              <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
-              <BookmarkPlus className="w-4 h-4 inline-start" />
+              <BookmarkPlus className="inline-start h-4 w-4" />
             )}
 
             {isSaving ? "Saving…" : "Save Job to Board"}
           </Button>
-          <p className="text-center text-[11px] text-foreground/45 mt-3 leading-relaxed">
-            Adds to <span className="font-medium text-foreground/60">My Jobs</span> · Reveals your
+          <p className="text-foreground/45 mt-3 text-center text-[11px] leading-relaxed">
+            Adds to <span className="text-foreground/60 font-medium">My Jobs</span> · Reveals your
             match score
           </p>
         </motion.div>
@@ -381,25 +381,25 @@ export function BoostCard({ authState, isDark, isSaving, matchScore, onSave, onF
           className={`${CARD} p-5`}
         >
           {/* Saved badge */}
-          <div className="flex items-center justify-between gap-2 mb-4">
-            <h3 className="text-[14px] font-semibold text-foreground leading-snug">
+          <div className="mb-4 flex items-center justify-between gap-2">
+            <h3 className="text-foreground text-[14px] leading-snug font-semibold">
               {matchScore !== null ? "Your match score" : "Scoring your profile…"}
             </h3>
-            <span className="shrink-0 inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-400/10 border border-emerald-200 dark:border-emerald-400/20 rounded-full px-2 py-0.5">
-              <Check className="w-2.5 h-2.5" />
+            <span className="inline-flex shrink-0 items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-600 dark:border-emerald-400/20 dark:bg-emerald-400/10 dark:text-emerald-400">
+              <Check className="h-2.5 w-2.5" />
               Saved
             </span>
           </div>
 
           {/* Gauge */}
-          <div className="flex flex-col items-center gap-1.5 mb-4">
+          <div className="mb-4 flex flex-col items-center gap-1.5">
             <YourScoreGauge isDark={isDark} score={matchScore} />
-            <span className="text-[11px] text-foreground/50 font-medium tracking-tight">
+            <span className="text-foreground/50 text-[11px] font-medium tracking-tight">
               Your Score
             </span>
           </div>
 
-          <div className="h-px bg-black/[0.06] dark:bg-white/[0.06] mb-3" />
+          <div className="mb-3 h-px bg-black/[0.06] dark:bg-white/[0.06]" />
 
           <Button
             asChild
@@ -408,7 +408,7 @@ export function BoostCard({ authState, isDark, isSaving, matchScore, onSave, onF
           >
             <Link href="/jobs">
               Go to My Jobs
-              <ArrowRight className="w-3.5 h-3.5" />
+              <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </Button>
         </motion.div>

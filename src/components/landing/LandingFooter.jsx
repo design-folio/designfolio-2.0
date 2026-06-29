@@ -14,18 +14,18 @@ export default function LandingFooter() {
       className="w-full border-t border-(--lp-border)"
       style={{ fontFamily: "var(--font-manrope), sans-serif" }}
     >
-      <div className="px-6 py-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-[13px] font-medium text-lp-text/50 bg-(--lp-card)">
+      <div className="text-lp-text/50 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 bg-(--lp-card) px-6 py-5 text-[13px] font-medium">
         {FOOTER_LINKS.map(({ label, href }) => (
           <Link
             key={href}
             href={href}
-            className="hover:text-(--lp-text) transition-colors cursor-pointer"
+            className="cursor-pointer transition-colors hover:text-(--lp-text)"
           >
             {label}
           </Link>
         ))}
       </div>
-      <div className="border-t border-(--lp-border) px-6 py-4 text-center text-[12px] font-medium text-lp-text/40 bg-(--lp-card)">
+      <div className="text-lp-text/40 border-t border-(--lp-border) bg-(--lp-card) px-6 py-4 text-center text-[12px] font-medium">
         © {new Date().getFullYear()} Designfolio Labs LLP. All rights reserved.
       </div>
     </footer>

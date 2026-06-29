@@ -68,16 +68,16 @@ export function MatchBreakdown({ job, open }) {
 
   return (
     <div
-      className="rounded-xl border border-black/[0.06] dark:border-white/[0.07] px-4 pt-4 pb-0 overflow-hidden"
+      className="overflow-hidden rounded-xl border border-black/[0.06] px-4 pt-4 pb-0 dark:border-white/[0.07]"
       style={{ background: isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.028)" }}
     >
-      <p className="text-[14.5px] font-semibold text-foreground leading-snug mb-4">{headline}</p>
+      <p className="text-foreground mb-4 text-[14.5px] leading-snug font-semibold">{headline}</p>
 
       {/* Zoned bar + YOU marker */}
       <div className="relative mt-7">
         {/* YOU label chip */}
         <div
-          className="absolute flex flex-col items-center pointer-events-none"
+          className="pointer-events-none absolute flex flex-col items-center"
           style={{
             left: open ? `${markerBarPct}%` : "0%",
             transform: "translateX(-50%)",
@@ -101,7 +101,7 @@ export function MatchBreakdown({ job, open }) {
         </div>
 
         {/* Bar segments */}
-        <div className="relative flex h-[14px] rounded-lg overflow-hidden gap-[2px]">
+        <div className="relative flex h-[14px] gap-[2px] overflow-hidden rounded-lg">
           {ZONES.map((z) => {
             const filledBars = Math.max(0, Math.min(markerBarPct, z.barEnd) - z.barStart);
             const fadedBars = z.pct - filledBars;
@@ -119,7 +119,7 @@ export function MatchBreakdown({ job, open }) {
 
           {/* 3D gloss overlay */}
           <div
-            className="absolute inset-0 pointer-events-none"
+            className="pointer-events-none absolute inset-0"
             style={{
               background:
                 "linear-gradient(to bottom, rgba(255,255,255,0.30) 0%, rgba(255,255,255,0.06) 45%, rgba(0,0,0,0.08) 100%)",
@@ -130,7 +130,7 @@ export function MatchBreakdown({ job, open }) {
 
         {/* Tick line */}
         <div
-          className="absolute pointer-events-none"
+          className="pointer-events-none absolute"
           style={{
             left: open ? `${markerBarPct}%` : "0%",
             transform: "translateX(-50%)",
@@ -148,10 +148,10 @@ export function MatchBreakdown({ job, open }) {
       </div>
 
       {/* Zone labels */}
-      <div className="flex mt-1">
+      <div className="mt-1 flex">
         {ZONES.map((z) => (
           <div key={z.label} style={{ width: `${z.pct}%` }}>
-            <span className="text-[9.5px] text-foreground/50 whitespace-nowrap">{z.label}</span>
+            <span className="text-foreground/50 text-[9.5px] whitespace-nowrap">{z.label}</span>
           </div>
         ))}
       </div>
@@ -159,20 +159,20 @@ export function MatchBreakdown({ job, open }) {
       {/* Signals + Missing accordion — only shown when data is available */}
       {(allAligns.length > 0 || allGaps.length > 0) && (
         <div
-          className="mt-3.5 -mx-4 border-t border-black/[0.06] dark:border-white/[0.06] overflow-hidden"
+          className="-mx-4 mt-3.5 overflow-hidden border-t border-black/[0.06] dark:border-white/[0.06]"
           style={{ background: isDark ? "rgba(0,0,0,0.22)" : "rgba(0,0,0,0.038)" }}
         >
           {allAligns.length > 0 && (
             <>
               <button
                 onClick={() => setExpandedSection(expandedSection === "signals" ? null : "signals")}
-                className="w-full flex items-center justify-between px-3 py-2.5 text-left cursor-pointer hover:bg-black/[0.06] dark:hover:bg-white/[0.09] transition-colors duration-150"
+                className="flex w-full cursor-pointer items-center justify-between px-3 py-2.5 text-left transition-colors duration-150 hover:bg-black/[0.06] dark:hover:bg-white/[0.09]"
               >
-                <span className="text-[9.5px] font-semibold uppercase tracking-widest text-foreground/40">
+                <span className="text-foreground/40 text-[9.5px] font-semibold tracking-widest uppercase">
                   Strongest signals
                 </span>
                 <ChevronDown
-                  className="w-3 h-3 text-foreground/30 transition-transform duration-200 shrink-0"
+                  className="text-foreground/30 h-3 w-3 shrink-0 transition-transform duration-200"
                   style={{
                     transform: expandedSection === "signals" ? "rotate(180deg)" : "rotate(0deg)",
                   }}
@@ -188,11 +188,11 @@ export function MatchBreakdown({ job, open }) {
                     transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
                     style={{ overflow: "hidden" }}
                   >
-                    <ul className="px-3 pb-2.5 space-y-1.5">
+                    <ul className="space-y-1.5 px-3 pb-2.5">
                       {allAligns.map((a) => (
                         <li key={a} className="flex items-start gap-2">
-                          <Check className="w-3 h-3 mt-[2px] text-foreground/40 shrink-0" />
-                          <span className="text-[11.5px] text-foreground/60 leading-snug">{a}</span>
+                          <Check className="text-foreground/40 mt-[2px] h-3 w-3 shrink-0" />
+                          <span className="text-foreground/60 text-[11.5px] leading-snug">{a}</span>
                         </li>
                       ))}
                     </ul>
@@ -210,13 +210,13 @@ export function MatchBreakdown({ job, open }) {
             <>
               <button
                 onClick={() => setExpandedSection(expandedSection === "missing" ? null : "missing")}
-                className="w-full flex items-center justify-between px-3 py-2.5 text-left cursor-pointer hover:bg-black/[0.06] dark:hover:bg-white/[0.09] transition-colors duration-150"
+                className="flex w-full cursor-pointer items-center justify-between px-3 py-2.5 text-left transition-colors duration-150 hover:bg-black/[0.06] dark:hover:bg-white/[0.09]"
               >
-                <span className="text-[9.5px] font-semibold uppercase tracking-widest text-foreground/40">
+                <span className="text-foreground/40 text-[9.5px] font-semibold tracking-widest uppercase">
                   Missing
                 </span>
                 <ChevronDown
-                  className="w-3 h-3 text-foreground/30 transition-transform duration-200 shrink-0"
+                  className="text-foreground/30 h-3 w-3 shrink-0 transition-transform duration-200"
                   style={{
                     transform: expandedSection === "missing" ? "rotate(180deg)" : "rotate(0deg)",
                   }}
@@ -232,11 +232,11 @@ export function MatchBreakdown({ job, open }) {
                     transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
                     style={{ overflow: "hidden" }}
                   >
-                    <ul className="px-3 pb-2.5 space-y-1.5">
+                    <ul className="space-y-1.5 px-3 pb-2.5">
                       {allGaps.map((g) => (
                         <li key={g} className="flex items-start gap-2">
-                          <X className="w-3 h-3 mt-[2px] text-foreground/30 shrink-0" />
-                          <span className="text-[11.5px] text-foreground/45 leading-snug">{g}</span>
+                          <X className="text-foreground/30 mt-[2px] h-3 w-3 shrink-0" />
+                          <span className="text-foreground/45 text-[11.5px] leading-snug">{g}</span>
                         </li>
                       ))}
                     </ul>

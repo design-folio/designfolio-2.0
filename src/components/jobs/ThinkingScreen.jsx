@@ -159,7 +159,7 @@ export function ThinkingScreen({ answers, onComplete, onError }) {
 
   return (
     <motion.div
-      className="flex-1 flex flex-col items-center justify-center px-6"
+      className="flex flex-1 flex-col items-center justify-center px-6"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -167,11 +167,11 @@ export function ThinkingScreen({ answers, onComplete, onError }) {
     >
       <style>{keyframes}</style>
 
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[560px] h-[380px] rounded-full dark:bg-[#FF553E]/6 blur-[130px]" />
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute top-1/2 left-1/2 h-[380px] w-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[130px] dark:bg-[#FF553E]/6" />
       </div>
 
-      <div className="relative z-10 w-full max-w-xs flex flex-col gap-8">
+      <div className="relative z-10 flex w-full max-w-xs flex-col gap-8">
         {/* Header */}
         <motion.div
           className="flex items-start justify-between"
@@ -187,17 +187,17 @@ export function ThinkingScreen({ answers, onComplete, onError }) {
                 </span>
               </div>
               <p
-                className="text-[18px] font-semibold tracking-tight text-foreground"
+                className="text-foreground text-[18px] font-semibold tracking-tight"
                 style={{ animation: "heading-fade 2.8s ease-in-out infinite" }}
               >
                 Finding your matches
               </p>
             </div>
-            <p className="text-[12px] text-muted-foreground/50 leading-snug">
+            <p className="text-muted-foreground/50 text-[12px] leading-snug">
               Matching roles to your portfolio and preferences
             </p>
           </div>
-          <span className="text-[12px] text-muted-foreground/35 font-mono tabular-nums mt-0.5 shrink-0">
+          <span className="text-muted-foreground/35 mt-0.5 shrink-0 font-mono text-[12px] tabular-nums">
             {timer}s
           </span>
         </motion.div>
@@ -221,7 +221,7 @@ export function ThinkingScreen({ answers, onComplete, onError }) {
                 transition={{ duration: 0.5, ease: "easeOut" }}
               >
                 {/* Dot + vertical connector */}
-                <div className="flex flex-col items-center shrink-0" style={{ width: 16 }}>
+                <div className="flex shrink-0 flex-col items-center" style={{ width: 16 }}>
                   <div
                     className="relative flex items-center justify-center"
                     style={{ width: 16, height: 16 }}
@@ -235,13 +235,13 @@ export function ThinkingScreen({ answers, onComplete, onError }) {
                           transition={{ duration: 1.6, repeat: Infinity, ease: "easeOut" }}
                         />
                         <div
-                          className="w-2 h-2 rounded-full bg-[#FF553E]"
+                          className="h-2 w-2 rounded-full bg-[#FF553E]"
                           style={{ animation: "thinking-pulse 1.4s ease-in-out infinite" }}
                         />
                       </>
                     ) : (
                       <div
-                        className="w-1.5 h-1.5 rounded-full transition-all duration-500"
+                        className="h-1.5 w-1.5 rounded-full transition-all duration-500"
                         style={{
                           background: isDone
                             ? "hsl(var(--muted-foreground) / 0.35)"
@@ -302,11 +302,11 @@ export function ThinkingScreen({ answers, onComplete, onError }) {
                         transition={{ duration: 0.25 }}
                       >
                         {isScanning && !detail.includes("found") && (
-                          <span className="inline-flex gap-[3px] items-center mr-1">
+                          <span className="mr-1 inline-flex items-center gap-[3px]">
                             {[0, 1, 2].map((j) => (
                               <motion.span
                                 key={j}
-                                className="inline-block w-[3px] h-[3px] rounded-full bg-current"
+                                className="inline-block h-[3px] w-[3px] rounded-full bg-current"
                                 animate={{ opacity: [0.3, 1, 0.3] }}
                                 transition={{ duration: 0.9, repeat: Infinity, delay: j * 0.2 }}
                               />

@@ -30,10 +30,10 @@ const SpotlightUsersMobile = ({ projects }) => {
   const currentProject = projects[currentIndex];
 
   return (
-    <div className="md:hidden w-full px-6 mt-6 ">
+    <div className="mt-6 w-full px-6 md:hidden">
       <div
         onClick={() => setIsOpen(true)}
-        className={`w-full border border-[#E3E7ED] bg-white rounded-3xl p-6 transition-opacity duration-300 cursor-pointer ${
+        className={`w-full cursor-pointer rounded-3xl border border-[#E3E7ED] bg-white p-6 transition-opacity duration-300 ${
           isAnimating ? "opacity-0" : "opacity-100"
         }`}
       >
@@ -41,45 +41,45 @@ const SpotlightUsersMobile = ({ projects }) => {
           <img
             src={currentProject.imageSrc}
             alt={currentProject.title}
-            className="w-full rounded-2xl mb-4"
+            className="mb-4 w-full rounded-2xl"
           />
         )}
 
-        <h2 className="text-[#2F4858] text-xl font-semibold leading-tight mb-4 line-clamp-2">
+        <h2 className="mb-4 line-clamp-2 text-xl leading-tight font-semibold text-[#2F4858]">
           {currentProject.title}
         </h2>
 
-        <div className="w-full mt-4 px-4 py-3 bg-white border-2 border-[#2F4858] rounded-xl text-[#2F4858] font-medium flex items-center justify-center gap-2 transition-all duration-300 group-hover:bg-[#2F4858] group-hover:text-white">
+        <div className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-[#2F4858] bg-white px-4 py-3 font-medium text-[#2F4858] transition-all duration-300 group-hover:bg-[#2F4858] group-hover:text-white">
           View project
-          <ArrowUpRight className="w-5 h-5" />
+          <ArrowUpRight className="h-5 w-5" />
         </div>
       </div>
 
-      <div className="flex justify-center gap-8 mt-6">
+      <div className="mt-6 flex justify-center gap-8">
         <button
           onClick={handlePrev}
-          className="bg-white h-10 w-10 rounded-full flex items-center justify-center shadow-sm border border-gray-100 hover:bg-gray-50 active:bg-gray-100 transition-colors disabled:opacity-50"
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-100 bg-white shadow-sm transition-colors hover:bg-gray-50 active:bg-gray-100 disabled:opacity-50"
           disabled={isAnimating}
         >
-          <ChevronLeft className="w-5 h-5 text-[#2F4858]" />
+          <ChevronLeft className="h-5 w-5 text-[#2F4858]" />
         </button>
         <button
           onClick={handleNext}
-          className="bg-white h-10 w-10 rounded-full flex items-center justify-center shadow-sm border border-gray-100 hover:bg-gray-50 active:bg-gray-100 transition-colors disabled:opacity-50"
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-100 bg-white shadow-sm transition-colors hover:bg-gray-50 active:bg-gray-100 disabled:opacity-50"
           disabled={isAnimating}
         >
-          <ChevronRight className="w-5 h-5 text-[#2F4858]" />
+          <ChevronRight className="h-5 w-5 text-[#2F4858]" />
         </button>
       </div>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="max-w-[85vw] w-[85vw] h-[85vh] p-0 overflow-hidden rounded-[20px] bg-white">
+        <DialogContent className="h-[85vh] w-[85vw] max-w-[85vw] overflow-hidden rounded-[20px] bg-white p-0">
           <DialogTitle className="sr-only">{currentProject.title}</DialogTitle>
           <DialogDescription className="sr-only">{currentProject.title}</DialogDescription>
-          <div className="relative w-full h-full rounded-[20px] overflow-hidden">
+          <div className="relative h-full w-full overflow-hidden rounded-[20px]">
             <iframe
               src={currentProject.projectUrl}
-              className="w-full h-full"
+              className="h-full w-full"
               title="Project Preview"
             />
           </div>

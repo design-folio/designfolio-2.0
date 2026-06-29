@@ -13,9 +13,9 @@ const btnClass =
 /** flex-[1_1_10rem]: grow/shrink with ~10rem basis so flex-wrap moves items to the next row instead of crushing them. */
 function LinkButton({ label, icon: Icon, iconRotate = 0, onClick }) {
   return (
-    <motion.div whileHover="hover" initial="rest" className="min-w-0 flex-[1_1_10rem] max-w-full">
+    <motion.div whileHover="hover" initial="rest" className="max-w-full min-w-0 flex-[1_1_10rem]">
       <Button variant="outline" size="sm" onClick={onClick} className={btnClass}>
-        <span className="text-[#1A1A1A] dark:text-[#F0EDE7] font-medium text-sm truncate min-w-0 text-left">
+        <span className="min-w-0 truncate text-left text-sm font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
           {label}
         </span>
         <motion.div
@@ -25,7 +25,7 @@ function LinkButton({ label, icon: Icon, iconRotate = 0, onClick }) {
         >
           <Icon
             size={14}
-            className="text-[#7A736C] dark:text-[#9E9893] group-hover:text-[#1A1A1A] dark:group-hover:text-[#F0EDE7]"
+            className="text-[#7A736C] group-hover:text-[#1A1A1A] dark:text-[#9E9893] dark:group-hover:text-[#F0EDE7]"
           />
         </motion.div>
       </Button>
@@ -84,26 +84,26 @@ function CanvasContactSection({ isEditing }) {
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 100, damping: 12, delay: 1.05 }}
-      className="bg-white dark:bg-[#2A2520] rounded-[26px] border border-[#E5D7C4] dark:border-white/10 w-full relative group/section"
+      className="group/section relative w-full rounded-[26px] border border-[#E5D7C4] bg-white dark:border-white/10 dark:bg-[#2A2520]"
     >
       {isEditing && (
         <CanvasSectionControls>
           <CanvasSectionButton
-            icon={<Pencil className="w-3.5 h-3.5" />}
+            icon={<Pencil className="h-3.5 w-3.5" />}
             label="Edit Contact"
             onClick={openFooter}
           />
         </CanvasSectionControls>
       )}
 
-      <div className="px-5 md:px-8 py-8">
-        <h2 className="text-[14px] font-bold text-[#463B34] dark:text-[#D4C9BC] font-dm-mono uppercase tracking-widest mb-6">
+      <div className="px-5 py-8 md:px-8">
+        <h2 className="font-dm-mono mb-6 text-[14px] font-bold tracking-widest text-[#463B34] uppercase dark:text-[#D4C9BC]">
           Contact
         </h2>
 
         {/* Email / Phone */}
         {(email || phone) && (
-          <div className="flex flex-wrap gap-3 mb-3">
+          <div className="mb-3 flex flex-wrap gap-3">
             {email && (
               <LinkButton
                 label={copiedField === "email" ? "Copied!" : "Copy mail"}
@@ -129,7 +129,7 @@ function CanvasContactSection({ isEditing }) {
           socials.twitter ||
           portfolios.medium ||
           resumeUrl) && (
-          <div className="flex flex-wrap gap-3 mb-3">
+          <div className="mb-3 flex flex-wrap gap-3">
             {socials.linkedin && (
               <LinkButton
                 label="Linkedin"
@@ -177,9 +177,9 @@ function CanvasContactSection({ isEditing }) {
         {showAddButton && (
           <button
             onClick={openFooter}
-            className="mt-3 w-full flex items-center justify-center gap-2 py-3.5 rounded-xl border-2 border-dashed border-[#E5D7C4] dark:border-white/10 text-sm text-[#B5AFA5] dark:text-[#7A736C] hover:border-[#1A1A1A]/20 dark:hover:border-white/20 hover:text-[#7A736C] dark:hover:text-[#B5AFA5] transition-colors"
+            className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[#E5D7C4] py-3.5 text-sm text-[#B5AFA5] transition-colors hover:border-[#1A1A1A]/20 hover:text-[#7A736C] dark:border-white/10 dark:text-[#7A736C] dark:hover:border-white/20 dark:hover:text-[#B5AFA5]"
           >
-            <Plus className="w-3.5 h-3.5" />
+            <Plus className="h-3.5 w-3.5" />
             Add
           </button>
         )}

@@ -69,14 +69,14 @@ export default function DefaultDomain() {
 
   return (
     <div>
-      <div className="flex items-center gap-2 flex-wrap">
+      <div className="flex flex-wrap items-center gap-2">
         <p className="text-[18px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">Base domain</p>
-        <Badge className="text-[#15803D] bg-[#DCFCE7] dark:bg-[#14532D]/30 dark:text-[#4ADE80] border-0 gap-1 items-center">
-          <span className="w-2 h-2 rounded-full bg-[#22C55E] inline-block" />
+        <Badge className="items-center gap-1 border-0 bg-[#DCFCE7] text-[#15803D] dark:bg-[#14532D]/30 dark:text-[#4ADE80]">
+          <span className="inline-block h-2 w-2 rounded-full bg-[#22C55E]" />
           Connected
         </Badge>
       </div>
-      <p className="text-[13px] text-[#7A736C] dark:text-[#B5AFA5] mt-1 leading-relaxed">
+      <p className="mt-1 text-[13px] leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]">
         This is your current Designfolio link. You can change your username anytime (if it&apos;s
         available).
       </p>
@@ -94,9 +94,9 @@ export default function DefaultDomain() {
         {({ isSubmitting, isValid, setFieldValue, values, errors, touched }) => (
           <Form
             id="usernameForm"
-            className="w-full mt-6 flex flex-col lg:flex-row items-start lg:items-center gap-4"
+            className="mt-6 flex w-full flex-col items-start gap-4 lg:flex-row lg:items-center"
           >
-            <div className="flex-1 w-full">
+            <div className="w-full flex-1">
               <div className="relative">
                 <Field name="domain">
                   {({ field }) => (
@@ -119,23 +119,23 @@ export default function DefaultDomain() {
                     />
                   )}
                 </Field>
-                <div className="absolute top-1/2 -translate-y-1/2 right-1.5 bg-[#F4F6FA] dark:bg-[#35302A] px-3 py-1.5 rounded-lg flex items-center gap-2">
+                <div className="absolute top-1/2 right-1.5 flex -translate-y-1/2 items-center gap-2 rounded-lg bg-[#F4F6FA] px-3 py-1.5 dark:bg-[#35302A]">
                   <span className="text-[13px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
                     designfolio.me
                   </span>
                   {domainValue &&
                     values.domain !== userDetails?.username &&
                     (isAvailable ? (
-                      <CheckCircle2 className="w-4 h-4 text-green-500" />
+                      <CheckCircle2 className="h-4 w-4 text-green-500" />
                     ) : (
-                      <XCircle className="w-4 h-4 text-red-500" />
+                      <XCircle className="h-4 w-4 text-red-500" />
                     ))}
                 </div>
               </div>
               <ErrorMessage
                 name="domain"
                 component="p"
-                className="text-destructive text-[13px] mt-1"
+                className="text-destructive mt-1 text-[13px]"
               />
             </div>
 
@@ -151,15 +151,15 @@ export default function DefaultDomain() {
         )}
       </Formik>
 
-      <div className="flex flex-wrap items-center gap-4 mt-5">
+      <div className="mt-5 flex flex-wrap items-center gap-4">
         <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#22C55E]" />
+          <span className="h-2.5 w-2.5 rounded-full bg-[#22C55E]" />
           <p className="text-[13px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">
             Published &amp; optimized
           </p>
         </div>
         <div className="flex items-center gap-1.5">
-          <Clock className="w-3.5 h-3.5 text-[#7A736C] dark:text-[#B5AFA5]" />
+          <Clock className="h-3.5 w-3.5 text-[#7A736C] dark:text-[#B5AFA5]" />
           <p className="text-[13px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">
             Updated {formatedValue}
           </p>

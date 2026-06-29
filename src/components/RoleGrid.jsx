@@ -15,7 +15,7 @@ export default function RoleGrid({
 }) {
   return (
     <>
-      <div className="overflow-y-auto md:mb-8 mb-4 pr-2 -mr-2 max-h-[calc(100vh-420px)] md:max-h-[calc(100vh-450px)]">
+      <div className="-mr-2 mb-4 max-h-[calc(100vh-420px)] overflow-y-auto pr-2 md:mb-8 md:max-h-[calc(100vh-450px)]">
         <ErrorBanner message={message} />
         <motion.div
           className="grid grid-cols-2 gap-3"
@@ -30,7 +30,7 @@ export default function RoleGrid({
               <button
                 key={role.label}
                 onClick={() => onSelect(role.label)}
-                className="px-4 py-3 rounded-2xl border-2 text-sm font-medium transition-all hover-elevate text-left flex items-center md:gap-3 gap-2 relative overflow-hidden"
+                className="hover-elevate relative flex items-center gap-2 overflow-hidden rounded-2xl border-2 px-4 py-3 text-left text-sm font-medium transition-all md:gap-3"
                 style={
                   isSelected
                     ? {
@@ -49,7 +49,7 @@ export default function RoleGrid({
                 <motion.img
                   src={role.image}
                   alt={role.label}
-                  className="w-10 h-10 object-contain"
+                  className="h-10 w-10 object-contain"
                   animate={isSelected ? { scale: [1, 1.1, 1], rotate: [0, 5, -5, 0] } : {}}
                   transition={{ duration: 0.5, ease: "easeInOut" }}
                 />
@@ -62,7 +62,7 @@ export default function RoleGrid({
                       exit={{ scale: 0, opacity: 0 }}
                       transition={{ duration: 0.2, ease: "easeOut" }}
                     >
-                      <Check className="w-4 h-4" style={{ color: "#FF553E" }} />
+                      <Check className="h-4 w-4" style={{ color: "#FF553E" }} />
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -79,19 +79,19 @@ export default function RoleGrid({
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="md:mb-8 mb-4 space-y-2"
+            className="mb-4 space-y-2 md:mb-8"
           >
-            <Label htmlFor="custom-role" className="text-sm font-medium text-foreground">
+            <Label htmlFor="custom-role" className="text-foreground text-sm font-medium">
               Your Role
             </Label>
-            <div className="bg-(--input-bg-color) border-2 border-border rounded-full hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--ring)/0.15)] transition-all duration-300 ease-out">
+            <div className="border-border hover:border-foreground/20 focus-within:border-foreground/30 rounded-full border-2 bg-(--input-bg-color) transition-all duration-300 ease-out focus-within:shadow-[0_0_0_4px_hsl(var(--ring)/0.15)]">
               <Input
                 id="custom-role"
                 type="text"
                 placeholder="Tell us your role..."
                 value={customRole}
                 onChange={(e) => setCustomRole(e.target.value)}
-                className="border-0 bg-transparent dark:bg-transparent h-11 px-4 focus-visible:ring-0 focus-visible:ring-offset-0 text-base text-foreground placeholder:text-base placeholder:text-muted-foreground/60"
+                className="text-foreground placeholder:text-muted-foreground/60 h-11 border-0 bg-transparent px-4 text-base placeholder:text-base focus-visible:ring-0 focus-visible:ring-offset-0 dark:bg-transparent"
                 data-testid="input-custom-role"
               />
             </div>

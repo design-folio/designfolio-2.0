@@ -7,12 +7,12 @@ const MetricsTable = ({ metrics }) => {
   const getStatusBadge = (status) => {
     switch (status) {
       case "Matched":
-        return <Badge className="bg-green-100 text-green-800 border-green-200">Matched</Badge>;
+        return <Badge className="border-green-200 bg-green-100 text-green-800">Matched</Badge>;
       case "Missing":
-        return <Badge className="bg-red-100 text-red-800 border-red-200">Missing</Badge>;
+        return <Badge className="border-red-200 bg-red-100 text-red-800">Missing</Badge>;
       case "Additional":
         return (
-          <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">Additional</Badge>
+          <Badge className="border-yellow-200 bg-yellow-100 text-yellow-800">Additional</Badge>
         );
       default:
         return null;
@@ -38,13 +38,13 @@ const MetricsTable = ({ metrics }) => {
               <TableCell className="font-medium">{row.skill}</TableCell>
               <TableCell>
                 <div className="flex items-center gap-2">
-                  <ProgressBar progress={row.resumeCoverage} className="w-24 h-2" />
+                  <ProgressBar progress={row.resumeCoverage} className="h-2 w-24" />
                   <span className="text-sm">{row.resumeCoverage}%</span>
                 </div>
               </TableCell>
               <TableCell>
                 <div className="flex items-center gap-2">
-                  <ProgressBar progress={row.jdCoverage} className="w-24 h-2" />
+                  <ProgressBar progress={row.jdCoverage} className="h-2 w-24" />
                   <span className="text-sm">{row.jdCoverage}%</span>
                 </div>
               </TableCell>

@@ -7,7 +7,7 @@ function FeatureCta({ children, testId, href = "/claim-link" }) {
   return (
     <Link href={href}>
       <button
-        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium border-2 transition-all group"
+        className="group inline-flex items-center gap-2 rounded-full border-2 px-5 py-2.5 text-sm font-medium transition-all"
         style={{
           borderColor: "#000000",
           color: "#000000",
@@ -24,7 +24,7 @@ function FeatureCta({ children, testId, href = "/claim-link" }) {
         data-testid={testId}
       >
         {children}
-        <ArrowRight className="w-4 h-4" />
+        <ArrowRight className="h-4 w-4" />
       </button>
     </Link>
   );
@@ -39,9 +39,9 @@ export default function FeaturesShowcase() {
   ];
 
   return (
-    <section id="otheraitools" className="w-full py-16 px-6">
-      <div className="max-w-5xl mx-auto space-y-12">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
+    <section id="otheraitools" className="w-full px-6 py-16">
+      <div className="mx-auto max-w-5xl space-y-12">
+        <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
           <div>
             <Text
               as="h2"
@@ -51,7 +51,7 @@ export default function FeaturesShowcase() {
             >
               Can telling your story be simple?{" "}
               <span
-                className="inline-block px-3 py-1 text-2xl sm:text-3xl lg:text-4xl font-bold tracking-wide uppercase align-middle font-kalam"
+                className="font-kalam inline-block px-3 py-1 align-middle text-2xl font-bold tracking-wide uppercase sm:text-3xl lg:text-4xl"
                 style={{
                   background: "#FF8C00",
                   color: "#fff",
@@ -72,10 +72,10 @@ export default function FeaturesShowcase() {
                 className="flex items-center gap-2"
                 data-testid={`feature-item-${index}`}
               >
-                <Check className="w-5 h-5 text-black shrink-0" />
-                <span className="text-sm text-foreground">{feature}</span>
+                <Check className="h-5 w-5 shrink-0 text-black" />
+                <span className="text-foreground text-sm">{feature}</span>
                 <span
-                  className="px-2 py-0.5 text-xs font-bold tracking-wide uppercase shrink-0 font-kalam"
+                  className="font-kalam shrink-0 px-2 py-0.5 text-xs font-bold tracking-wide uppercase"
                   style={{
                     background: "#10B981",
                     color: "#fff",
@@ -91,10 +91,10 @@ export default function FeaturesShowcase() {
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
-          <Card className="p-4 space-y-4 bg-card-landing">
+        <div className="grid gap-6 md:grid-cols-2">
+          <Card className="bg-card-landing space-y-4 p-4">
             <video
-              className="rounded-md w-full border"
+              className="w-full rounded-md border"
               autoPlay
               muted
               loop
@@ -108,7 +108,7 @@ export default function FeaturesShowcase() {
                 AI Case Study Writer
               </h3>
               <p
-                className="text-sm text-muted-foreground leading-relaxed"
+                className="text-muted-foreground text-sm leading-relaxed"
                 data-testid="text-feature-description-1"
               >
                 Describe your project in a few lines — Designfolio shapes it into a clear,
@@ -120,9 +120,9 @@ export default function FeaturesShowcase() {
             </div>
           </Card>
 
-          <Card className="p-4 space-y-4 bg-card-landing">
+          <Card className="bg-card-landing space-y-4 p-4">
             <video
-              className="rounded-md w-full border"
+              className="w-full rounded-md border"
               autoPlay
               muted
               loop
@@ -136,7 +136,7 @@ export default function FeaturesShowcase() {
                 AI Case Study Analyzer
               </h3>
               <p
-                className="text-sm text-muted-foreground leading-relaxed"
+                className="text-muted-foreground text-sm leading-relaxed"
                 data-testid="text-feature-description-2"
               >
                 Designfolio compares it with thousands of top portfolios and gives you an honest,

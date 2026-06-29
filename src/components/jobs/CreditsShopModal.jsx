@@ -99,7 +99,7 @@ export function CreditsShopModal({ open, onClose, onBuy, buying = false }) {
 
           {/* Card */}
           <motion.div
-            className="relative z-10 w-full max-w-[400px] rounded-[28px] overflow-hidden"
+            className="relative z-10 w-full max-w-[400px] overflow-hidden rounded-[28px]"
             style={{
               background: isDark
                 ? "linear-gradient(160deg, #252220 0%, #1C1917 100%)"
@@ -117,34 +117,34 @@ export function CreditsShopModal({ open, onClose, onBuy, buying = false }) {
             {/* Close */}
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 z-10 w-7 h-7 flex items-center justify-center rounded-full bg-foreground/[0.07] hover:bg-foreground/[0.12] transition-colors text-foreground/50 hover:text-foreground"
+              className="bg-foreground/[0.07] hover:bg-foreground/[0.12] text-foreground/50 hover:text-foreground absolute top-4 right-4 z-10 flex h-7 w-7 items-center justify-center rounded-full transition-colors"
             >
-              <X className="w-3.5 h-3.5" />
+              <X className="h-3.5 w-3.5" />
             </button>
 
             {/* Header */}
-            <div className="px-6 pt-7 pb-5 border-b border-black/[0.06] dark:border-white/[0.06]">
-              <div className="flex flex-col items-start gap-2 mb-2 orb-always-active p-2 ">
+            <div className="border-b border-black/[0.06] px-6 pt-7 pb-5 dark:border-white/[0.06]">
+              <div className="orb-always-active mb-2 flex flex-col items-start gap-2 p-2">
                 <ColorOrb dimension="28px" spinDuration={5} />
               </div>
-              <h2 className="text-[20px] font-bold text-foreground leading-tight tracking-tight">
+              <h2 className="text-foreground text-[20px] leading-tight font-bold tracking-tight">
                 Topup AI Credits
               </h2>
-              <p className="text-[13px] text-foreground/45 mt-1 leading-relaxed">
+              <p className="text-foreground/45 mt-1 text-[13px] leading-relaxed">
                 Extra credits for every Job AI feature — no subscription, pay only when you need
                 more.
               </p>
 
               {/* Price row */}
               <div className="mt-4 flex items-center gap-3">
-                <span className="text-[34px] font-extrabold text-foreground tracking-tight leading-none">
+                <span className="text-foreground text-[34px] leading-none font-extrabold tracking-tight">
                   {symbol}
                   {amount}
                 </span>
                 {totalUses > 0 && (
                   <>
-                    <div className="h-7 w-px bg-foreground opacity-10 rounded-full" />
-                    <span className="text-[14px] font-medium text-foreground opacity-50 leading-tight">
+                    <div className="bg-foreground h-7 w-px rounded-full opacity-10" />
+                    <span className="text-foreground text-[14px] leading-tight font-medium opacity-50">
                       {totalUses} credits (no expiry)
                     </span>
                   </>
@@ -154,7 +154,7 @@ export function CreditsShopModal({ open, onClose, onBuy, buying = false }) {
 
             {/* Per-feature breakdown */}
             <div className="px-6 py-4">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-foreground/30 mb-3">
+              <p className="text-foreground/30 mb-3 text-[10px] font-semibold tracking-[0.1em] uppercase">
                 What&apos;s included
               </p>
 
@@ -162,20 +162,20 @@ export function CreditsShopModal({ open, onClose, onBuy, buying = false }) {
                 <div className="space-y-1">
                   {rows.map(({ key, icon: Icon, label, sub, count }) => (
                     <div key={key} className="flex items-center gap-3 py-1.5">
-                      <div className="w-8 h-8 rounded-xl bg-foreground/[0.05] flex items-center justify-center shrink-0">
-                        <Icon className="w-3.5 h-3.5 text-foreground/40" />
+                      <div className="bg-foreground/[0.05] flex h-8 w-8 shrink-0 items-center justify-center rounded-xl">
+                        <Icon className="text-foreground/40 h-3.5 w-3.5" />
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="text-[13px] font-medium text-foreground/80 leading-none">
+                      <div className="min-w-0 flex-1">
+                        <div className="text-foreground/80 text-[13px] leading-none font-medium">
                           {label}
                         </div>
-                        <div className="text-[11px] text-foreground/40 mt-0.5 leading-tight">
+                        <div className="text-foreground/40 mt-0.5 text-[11px] leading-tight">
                           {sub}
                         </div>
                       </div>
-                      <span className="flex items-center gap-0.5 bg-amber-100 dark:bg-amber-400/20 border border-amber-300/60 dark:border-amber-400/30 rounded-full px-1.5 py-0.5 shrink-0">
-                        <Zap className="w-2.5 h-2.5 text-amber-500 fill-amber-500" />
-                        <span className="text-[10px] font-semibold tabular-nums text-amber-600 dark:text-amber-400">
+                      <span className="flex shrink-0 items-center gap-0.5 rounded-full border border-amber-300/60 bg-amber-100 px-1.5 py-0.5 dark:border-amber-400/30 dark:bg-amber-400/20">
+                        <Zap className="h-2.5 w-2.5 fill-amber-500 text-amber-500" />
+                        <span className="text-[10px] font-semibold text-amber-600 tabular-nums dark:text-amber-400">
                           +{count}
                         </span>
                       </span>
@@ -186,13 +186,13 @@ export function CreditsShopModal({ open, onClose, onBuy, buying = false }) {
                 /* Loading skeleton */
                 <div className="space-y-2">
                   {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="flex items-center gap-3 animate-pulse">
-                      <div className="w-8 h-8 rounded-xl bg-foreground/[0.05]" />
+                    <div key={i} className="flex animate-pulse items-center gap-3">
+                      <div className="bg-foreground/[0.05] h-8 w-8 rounded-xl" />
                       <div className="flex-1 space-y-1.5">
-                        <div className="h-3 w-24 rounded bg-foreground/[0.07]" />
-                        <div className="h-2.5 w-36 rounded bg-foreground/[0.05]" />
+                        <div className="bg-foreground/[0.07] h-3 w-24 rounded" />
+                        <div className="bg-foreground/[0.05] h-2.5 w-36 rounded" />
                       </div>
-                      <div className="h-5 w-8 rounded-full bg-foreground/[0.06]" />
+                      <div className="bg-foreground/[0.06] h-5 w-8 rounded-full" />
                     </div>
                   ))}
                 </div>
@@ -200,12 +200,12 @@ export function CreditsShopModal({ open, onClose, onBuy, buying = false }) {
             </div>
 
             {/* CTA */}
-            <div className="px-5 pb-6 pt-1">
+            <div className="px-5 pt-1 pb-6">
               <ConicButton onClick={onBuy} disabled={buying || !pack}>
-                <Zap className="w-4 h-4 fill-white" />
+                <Zap className="h-4 w-4 fill-white" />
                 {buying ? "Opening checkout…" : pack ? `Buy pack ${symbol}${amount}` : "Loading…"}
               </ConicButton>
-              <p className="text-center text-[11px] text-foreground opacity-30 mt-2.5">
+              <p className="text-foreground mt-2.5 text-center text-[11px] opacity-30">
                 No subscription · Credits never expire
               </p>
             </div>

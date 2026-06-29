@@ -37,13 +37,13 @@ export default function ArrowCTA({
   const content = (
     <>
       <span
-        className={`cursor-pointer rounded-full bg-(--lp-text) px-6 font-medium text-(--lp-fg-white) transition-colors duration-500 ease-in-out group-hover:bg-(--lp-accent-hover) group-hover:text-white whitespace-nowrap ${textCls}`}
+        className={`cursor-pointer rounded-full bg-(--lp-text) px-6 font-medium whitespace-nowrap text-(--lp-fg-white) transition-colors duration-500 ease-in-out group-hover:bg-(--lp-accent-hover) group-hover:text-white ${textCls}`}
         style={{ paddingLeft: isLg ? "24px" : "16px", paddingRight: isLg ? "24px" : "16px" }}
       >
         {label}
       </span>
       <div
-        className={`cursor-pointer relative shrink-0 overflow-hidden rounded-full bg-(--lp-text) text-(--lp-fg-white) transition-colors duration-500 ease-in-out group-hover:bg-(--lp-accent-hover) group-hover:text-white ${circleSz}`}
+        className={`relative shrink-0 cursor-pointer overflow-hidden rounded-full bg-(--lp-text) text-(--lp-fg-white) transition-colors duration-500 ease-in-out group-hover:bg-(--lp-accent-hover) group-hover:text-white ${circleSz}`}
       >
         {loading ? (
           <span className="absolute inset-0 flex items-center justify-center">

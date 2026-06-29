@@ -21,8 +21,8 @@ export default function WorkCard({ work, onClick, show = true, edit, sorting = f
   };
 
   return (
-    <div className="flex flex-col-reverse lg:flex-row gap-2 lg:gap-10">
-      <div className="lg:w-[25%] hidden md:block">
+    <div className="flex flex-col-reverse gap-2 lg:flex-row lg:gap-10">
+      <div className="hidden md:block lg:w-[25%]">
         <Text size="p-xsmall" className="text-df-description-color">
           {`${work?.startMonth} ${work?.startYear} - ${
             work?.currentlyWorking ? "Present" : `${work?.endMonth} ${work?.endYear}`
@@ -32,7 +32,7 @@ export default function WorkCard({ work, onClick, show = true, edit, sorting = f
 
       <div className="flex-1">
         <div>
-          <div className="flex flex-col md:flex-row gap-2 justify-between">
+          <div className="flex flex-col justify-between gap-2 md:flex-row">
             <Text size="p-xsmall" className="text-work-card-company-color">
               {work?.company}
             </Text>

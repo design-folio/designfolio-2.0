@@ -36,7 +36,7 @@ import { UpgradePill } from "@/components/loggedInHeader/navbar/UpgradePill";
 import { CursorTooltipProvider } from "@/context/cursorTooltipContext";
 import { CursorPill } from "@/components/CursorPill";
 import { TEMPLATE_IDS } from "@/lib/templates";
-import posthog from "@/lib/postHog";
+import posthog, { initPostHog } from "@/lib/postHog";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { PostHogProvider } from "@posthog/react";
 import { usePostHogEvent } from "@/hooks/usePostHogEvent";
@@ -79,12 +79,14 @@ const cedarvilleCursive = Cedarville_Cursive({
   subsets: ["latin"],
   variable: "--font-cedarville",
   weight: ["400"],
+  preload: false, // only used in Mono template project footer
 });
 
 const pixelifySans = Pixelify_Sans({
   subsets: ["latin"],
   variable: "--font-pixelify-sans",
   weight: ["400", "500", "600", "700"],
+  preload: false, // only used in Professional template
 });
 
 const jetbrainsMono = JetBrains_Mono({
@@ -94,6 +96,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 const satoshi = localFont({
+  display: "swap",
   src: [
     {
       path: "./fonts/satoshi/Satoshi-Regular.ttf",
@@ -125,6 +128,7 @@ const satoshi = localFont({
 });
 
 const sfpro = localFont({
+  display: "swap",
   src: [
     {
       path: "./fonts/sf-pro/SF-Pro-Text-Regular.otf",
@@ -150,6 +154,7 @@ const sfpro = localFont({
   variable: "--font-sfpro",
 });
 const gsans = localFont({
+  display: "swap",
   src: [
     {
       path: "./fonts/general-sans/GeneralSans-Light.otf",
@@ -181,6 +186,7 @@ const gsans = localFont({
 });
 
 const eudoxus = localFont({
+  display: "swap",
   src: [
     {
       path: "./fonts/exodus/EudoxusSans-Bold.ttf",
@@ -293,9 +299,18 @@ function MyApp({ Component, pageProps, dfToken, hideHeader }) {
     localStorage.setItem("session_count", newSessionCount);
   }, [dfToken, phEvent]);
 
+  useEffect(() => {
+    const run = () => initPostHog();
+    if (typeof window !== "undefined" && "requestIdleCallback" in window) {
+      requestIdleCallback(run);
+    } else {
+      setTimeout(run, 0);
+    }
+  }, []);
+
   return (
     <>
-      <GoogleAnalytics gaId="G-QBX45FVX2Z" />
+      <GoogleAnalytics gaId="G-QBX45FVX2Z" strategy="lazyOnload" />
 
       <PostHogProvider client={posthog}>
         <QueryClientProvider client={queryClient}>

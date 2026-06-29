@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "motion/react";
-import { ArrowUpRight, Eye, EyeOff, Pencil } from "lucide-react";
+import { Eye, EyeOff, Pencil } from "lucide-react";
 import { useCursorTooltip } from "@/context/cursorTooltipContext";
 import { useRouter } from "next/router";
-import Button from "../button";
-import DeleteIcon from "../../../public/assets/svgs/deleteIcon.svg";
-import AddCard from "../AddCard";
+import Button from "@/components/button";
+import DeleteIcon from "../../../../public/assets/svgs/deleteIcon.svg";
+import AddCard from "@/components/AddCard";
 import { useGlobalContext } from "@/context/globalContext";
 import { modals, sidebars } from "@/lib/constant";
-import DragHandle from "../DragHandle";
+import DragHandle from "@/components/DragHandle";
 import { _updateUser, _updateProject } from "@/network/post-request";
 
 // DND Kit Imports
@@ -19,7 +19,6 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-  DragEndEvent,
 } from "@dnd-kit/core";
 import {
   arrayMove,
@@ -29,12 +28,12 @@ import {
   rectSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import ProjectLock from "../projectLock";
-import MemoCasestudy from "../icons/Casestudy";
-import Text from "../text";
+import ProjectLock from "@/components/projectLock";
+import MemoCasestudy from "@/components/icons/Casestudy";
+import Text from "@/components/text";
 import { cn } from "@/lib/utils";
 
-export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions }) => {
+export const SpotlightProjectsSection = ({ userDetails: userDetailsProp, edit, headerActions }) => {
   const router = useRouter();
   const {
     openModal,
@@ -279,12 +278,6 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
                 Hidden from live site
               </div>
             )}
-            {/* <a
-              href={project.link}
-              className="absolute top-6 right-6 size-14 rounded-full bg-tertiary flex items-center justify-center opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300 hover:bg-tertiary-hover"
-            >
-              <ArrowUpRight className="size-6 text-white" />
-            </a> */}
           </div>
           <div className="flex flex-1 cursor-pointer flex-col justify-between">
             <div className={cn("p-6", edit && "pb-0")}>
@@ -412,4 +405,4 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
   );
 };
 
-export default WorkShowcase;
+export default SpotlightProjectsSection;

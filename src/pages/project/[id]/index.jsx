@@ -14,16 +14,31 @@ import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import WallpaperBackground from "@/components/WallpaperBackground";
 import { getWallpaperUrl } from "@/lib/wallpaper";
-import MacOSWindowShell from "@/components/templates/MacOSDock/MacOSWindowShell";
 import { cn, getProjectUrl } from "@/lib/utils";
-import MacOSTemplate from "@/components/comp/MacOSTemplate";
 import { ChevronLeft } from "lucide-react";
 import { TEMPLATE_IDS, TEMPLATES_BY_ID } from "@/lib/templates";
-import CanvasProjectCta from "@/components/templates/Canvas/CanvasProjectCta";
-import MonoProjectFooter from "@/components/templates/Mono/MonoProjectFooter";
-import ProfessionalProjectInfo from "@/components/templates/Professional/ProfessionalProjectInfo";
-import ChatProjectView from "@/components/templates/Chat/ChatProjectView";
 import MemoMadewithdesignfolio from "@/components/icons/Madewithdesignfolio";
+import dynamic from "next/dynamic";
+
+// ssr: false — these components depend on useGlobalContext and useTheme (client-only hooks).
+const MacOSWindowShell = dynamic(
+  () => import("@/components/templates/MacOSDock/MacOSWindowShell"),
+  { ssr: false }
+);
+const MacOSTemplate = dynamic(() => import("@/components/comp/MacOSTemplate"), { ssr: false });
+const CanvasProjectCta = dynamic(() => import("@/components/templates/Canvas/CanvasProjectCta"), {
+  ssr: false,
+});
+const MonoProjectFooter = dynamic(() => import("@/components/templates/Mono/MonoProjectFooter"), {
+  ssr: false,
+});
+const ProfessionalProjectInfo = dynamic(
+  () => import("@/components/templates/Professional/ProfessionalProjectInfo"),
+  { ssr: false }
+);
+const ChatProjectView = dynamic(() => import("@/components/templates/Chat/ChatProjectView"), {
+  ssr: false,
+});
 
 export default function Index({ data, ownerTemplate, ownerWallpaper, ownerUser }) {
   const router = useRouter();
@@ -182,16 +197,16 @@ export default function Index({ data, ownerTemplate, ownerWallpaper, ownerUser }
       className={(() => {
         switch (effectiveTemplate) {
           case TEMPLATE_IDS.CANVAS:
-            return "max-w-[848px] mx-auto flex flex-col gap-3 pb-20 pt-[40px] px-4 md:px-0";
+            return "mx-auto flex max-w-[848px] flex-col gap-3 px-4 pt-[40px] pb-20 md:px-0";
           case TEMPLATE_IDS.MONO:
-            return "max-w-[848px] mx-auto pb-20 custom-dashed-x bg-[#F0EDE7] dark:bg-[#1A1A1A] min-h-screen";
+            return "custom-dashed-x mx-auto min-h-screen max-w-[848px] bg-[#F0EDE7] pb-20 dark:bg-[#1A1A1A]";
           default:
-            return "max-w-[848px] mx-auto pt-[16px] pb-[80px] lg:py-[40px] px-2 md:px-4 lg:px-0";
+            return "mx-auto max-w-[848px] px-2 pt-[16px] pb-[80px] md:px-4 lg:px-0 lg:py-[40px]";
         }
       })()}
     >
       <motion.div
-        className={`flex-1 flex flex-col ${isMono ? "" : "gap-3"}`}
+        className={`flex flex-1 flex-col ${isMono ? "" : "gap-3"}`}
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -225,7 +240,7 @@ export default function Index({ data, ownerTemplate, ownerWallpaper, ownerUser }
                 {project?.contentVersion === 2 && project?.tiptapContent ? (
                   <motion.div
                     variants={itemVariants}
-                    className={cn(isMono ? "px-6 md:px-10 py-8" : "")}
+                    className={cn(isMono ? "px-6 py-8 md:px-10" : "")}
                   >
                     <TiptapRenderer
                       key={project._id}
@@ -236,7 +251,7 @@ export default function Index({ data, ownerTemplate, ownerWallpaper, ownerUser }
                 ) : project?.content ? (
                   <motion.div
                     variants={itemVariants}
-                    className={isMono ? "px-6 md:px-10 py-8" : ""}
+                    className={isMono ? "px-6 py-8 md:px-10" : ""}
                   >
                     <BlockRenderer editorJsData={project.content} />
                   </motion.div>
@@ -295,7 +310,7 @@ export default function Index({ data, ownerTemplate, ownerWallpaper, ownerUser }
           {projectContent}
           {!ownerUser?.pro && (
             <div
-              className={`text-center flex justify-center fixed bottom-0 left-0 right-0 lg:left-1/2 lg:-translate-x-1/2 lg:bottom-[24px] lg:right-[unset] mb-2 xl:block cursor-pointer`}
+              className={`fixed right-0 bottom-0 left-0 mb-2 flex cursor-pointer justify-center text-center lg:right-[unset] lg:bottom-[24px] lg:left-1/2 lg:-translate-x-1/2 xl:block`}
               onClick={() => window.open("https://www.designfolio.me", "_blank")}
             >
               <MemoMadewithdesignfolio />

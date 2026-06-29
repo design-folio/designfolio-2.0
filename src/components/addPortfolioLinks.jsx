@@ -29,8 +29,8 @@ export default function AddPortfolioLinks() {
   const { userDetails, closeModal, updateCache } = useGlobalContext();
 
   return (
-    <div className="rounded-2xl bg-card flex flex-col justify-between  m-auto lg:w-[500px] max-h-[550px] my-auto overflow-hidden">
-      <div className="flex p-5 justify-between items-center">
+    <div className="bg-card m-auto my-auto flex max-h-[550px] flex-col justify-between overflow-hidden rounded-2xl lg:w-[500px]">
+      <div className="flex items-center justify-between p-5">
         <Text size="p-small" className="font-semibold">
           Add Portfolio Links
         </Text>
@@ -61,23 +61,23 @@ export default function AddPortfolioLinks() {
         >
           {({ isSubmitting, errors, touched }) => (
             <Form id="socialForm">
-              <div className="px-5 pb-10 h-[370px] overflow-auto">
+              <div className="h-[370px] overflow-auto px-5 pb-10">
                 <div>
                   <Text size={"p-xxsmall"} className="font-medium">
                     Dribbble
                   </Text>
                   <Field name="dribbble">
                     {({ field }) => (
-                      <Input {...field} id="dribbble" type="text" autoComplete="off"
+                      <Input
+                        {...field}
+                        id="dribbble"
+                        type="text"
+                        autoComplete="off"
                         className={`mt-2 ${errors.dribbble && touched.dribbble ? "border-destructive focus-visible:ring-destructive" : ""}`}
                       />
                     )}
                   </Field>
-                  <ErrorMessage
-                    name="dribbble"
-                    component="div"
-                    className="error-message"
-                  />
+                  <ErrorMessage name="dribbble" component="div" className="error-message" />
                 </div>
 
                 <div className="mt-[24px]">
@@ -86,16 +86,16 @@ export default function AddPortfolioLinks() {
                   </Text>
                   <Field name="notion">
                     {({ field }) => (
-                      <Input {...field} id="notion" type="text" autoComplete="off"
+                      <Input
+                        {...field}
+                        id="notion"
+                        type="text"
+                        autoComplete="off"
                         className={`mt-2 ${errors.notion && touched.notion ? "border-destructive focus-visible:ring-destructive" : ""}`}
                       />
                     )}
                   </Field>
-                  <ErrorMessage
-                    name="notion"
-                    component="div"
-                    className="error-message"
-                  />
+                  <ErrorMessage name="notion" component="div" className="error-message" />
                 </div>
                 <div className="mt-[24px]">
                   <Text size={"p-xxsmall"} className="font-medium">
@@ -103,22 +103,26 @@ export default function AddPortfolioLinks() {
                   </Text>
                   <Field name="medium">
                     {({ field }) => (
-                      <Input {...field} id="medium" type="text" autoComplete="off"
+                      <Input
+                        {...field}
+                        id="medium"
+                        type="text"
+                        autoComplete="off"
                         className={`mt-2 ${errors.medium && touched.medium ? "border-destructive focus-visible:ring-destructive" : ""}`}
                       />
                     )}
                   </Field>
-                  <ErrorMessage
-                    name="medium"
-                    component="div"
-                    className="error-message"
-                  />
+                  <ErrorMessage name="medium" component="div" className="error-message" />
                 </div>
               </div>
 
-              <div className="flex gap-2  justify-end p-3 bg-modal-footer-bg-color rounded-br-[24px] rounded-bl-[24px]">
-                <Button variant="outline" type="button" onClick={closeModal}>Cancel</Button>
-                <Button type="submit" form="socialForm" disabled={isSubmitting}>{isSubmitting ? "Saving…" : "Save"}</Button>
+              <div className="bg-modal-footer-bg-color flex justify-end gap-2 rounded-br-[24px] rounded-bl-[24px] p-3">
+                <Button variant="outline" type="button" onClick={closeModal}>
+                  Cancel
+                </Button>
+                <Button type="submit" form="socialForm" disabled={isSubmitting}>
+                  {isSubmitting ? "Saving…" : "Save"}
+                </Button>
               </div>
             </Form>
           )}

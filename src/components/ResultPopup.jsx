@@ -1,7 +1,7 @@
 "use client";
 
 import { createPortal } from "react-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/router";
@@ -14,9 +14,7 @@ const PENDING_PORTFOLIO_KEY = "pending-portfolio-data";
 export function ResultPopup({ content, onClose }) {
   const router = useRouter();
   const isStructured = content && typeof content === "object" && !content.raw;
-  const userDetailsFromContent = isStructured
-    ? mapContentToUserDetails(content)
-    : null;
+  const userDetailsFromContent = isStructured ? mapContentToUserDetails(content) : null;
 
   if (typeof document === "undefined" || !content) return null;
 
@@ -51,38 +49,38 @@ export function ResultPopup({ content, onClose }) {
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          className="relative w-full max-w-5xl h-[90vh] bg-df-section-card-bg-color border border-project-card-border-color rounded-2xl shadow-df-section-card-shadow flex flex-col overflow-hidden"
+          className="bg-df-section-card-bg-color border-project-card-border-color shadow-df-section-card-shadow relative flex h-[90vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl border"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Top Bar - matches project card border */}
-          <div className="bg-df-section-card-bg-color border-b border-project-card-border-color flex items-center h-12 px-4 lg:px-6 shrink-0 gap-2 min-w-0">
-            <div className="hidden sm:flex gap-1.5 w-[72px] shrink-0">
-              <div className="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e]" />
-              <div className="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123]" />
-              <div className="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29]" />
+          <div className="bg-df-section-card-bg-color border-project-card-border-color flex h-12 min-w-0 shrink-0 items-center gap-2 border-b px-4 lg:px-6">
+            <div className="hidden w-[72px] shrink-0 gap-1.5 sm:flex">
+              <div className="h-3 w-3 rounded-full border border-[#e0443e] bg-[#ff5f56]" />
+              <div className="h-3 w-3 rounded-full border border-[#dea123] bg-[#ffbd2e]" />
+              <div className="h-3 w-3 rounded-full border border-[#1aab29] bg-[#27c93f]" />
             </div>
-            <div className="flex-1 min-w-0 flex justify-center overflow-hidden">
-              <div className="bg-project-card-bg-color rounded-lg h-8 px-3 sm:px-4 flex items-center gap-2 border border-project-card-border-color min-w-0 max-w-full">
-                <Lock className="w-3 h-3 text-foreground/40 shrink-0" />
-                <span className="text-[11px] text-foreground/40 font-medium truncate">
+            <div className="flex min-w-0 flex-1 justify-center overflow-hidden">
+              <div className="bg-project-card-bg-color border-project-card-border-color flex h-8 max-w-full min-w-0 items-center gap-2 rounded-lg border px-3 sm:px-4">
+                <Lock className="text-foreground/40 h-3 w-3 shrink-0" />
+                <span className="text-foreground/40 truncate text-[11px] font-medium">
                   your-new-portfolio.designfolio.me
                 </span>
               </div>
             </div>
-            <div className="flex items-center gap-2 justify-end shrink-0">
+            <div className="flex shrink-0 items-center justify-end gap-2">
               {isStructured && (
                 <>
                   <Button
                     variant="outline"
                     onClick={onClose}
-                    className="rounded-full h-8 px-3 sm:px-4 text-xs font-bold border-border/50 transition-all focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 shrink-0"
+                    className="border-border/50 h-8 shrink-0 rounded-full px-3 text-xs font-bold transition-all focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 sm:px-4"
                     data-testid="button-discard"
                   >
                     Discard
                   </Button>
                   <Button
                     onClick={handleContinueClick}
-                    className="bg-[#FF553E] hover:bg-[#FF553E]/90 text-white rounded-full h-8 px-3 sm:px-4 text-xs font-bold shadow-sm transition-all focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 shrink-0"
+                    className="h-8 shrink-0 rounded-full bg-[#FF553E] px-3 text-xs font-bold text-white shadow-sm transition-all hover:bg-[#FF553E]/90 focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 sm:px-4"
                     data-testid="button-continue-signup"
                   >
                     Open Editor
@@ -92,16 +90,12 @@ export function ResultPopup({ content, onClose }) {
             </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto min-h-0 bg-df-bg-color">
+          <div className="bg-df-bg-color min-h-0 flex-1 overflow-y-auto">
             {isStructured && userDetailsFromContent ? (
-              <Preview1
-                userDetails={userDetailsFromContent}
-                projectRef={null}
-                embeddedPreview
-              />
+              <Preview1 userDetails={userDetailsFromContent} projectRef={null} embeddedPreview />
             ) : (
               <div className="p-4 lg:p-6">
-                <pre className="p-4 lg:p-6 bg-df-section-card-bg-color border border-project-card-border-color rounded-2xl overflow-x-auto whitespace-pre-wrap font-mono text-sm">
+                <pre className="bg-df-section-card-bg-color border-project-card-border-color overflow-x-auto rounded-2xl border p-4 font-mono text-sm whitespace-pre-wrap lg:p-6">
                   {content?.raw || JSON.stringify(content, null, 2)}
                 </pre>
               </div>
@@ -110,14 +104,14 @@ export function ResultPopup({ content, onClose }) {
 
           {isStructured && (
             <div className="relative shrink-0">
-              <div className="absolute inset-x-0 -top-8 h-8 bg-gradient-to-t from-df-bg-color to-transparent pointer-events-none" />
-              <div className="bg-df-bg-color border-t border-project-card-border-color px-4 lg:px-6 py-4 flex items-center justify-center">
-                <span className="text-[11px] text-foreground/50 tracking-wide">
+              <div className="from-df-bg-color pointer-events-none absolute inset-x-0 -top-8 h-8 bg-gradient-to-t to-transparent" />
+              <div className="bg-df-bg-color border-project-card-border-color flex items-center justify-center border-t px-4 py-4 lg:px-6">
+                <span className="text-foreground/50 text-[11px] tracking-wide">
                   This is a preview —{" "}
                   <button
                     type="button"
                     onClick={handleContinueClick}
-                    className="text-[#FF553E] hover:text-[#E64935] font-medium underline underline-offset-2 transition-colors"
+                    className="font-medium text-[#FF553E] underline underline-offset-2 transition-colors hover:text-[#E64935]"
                     data-testid="link-open-editor-footer"
                   >
                     Open Editor

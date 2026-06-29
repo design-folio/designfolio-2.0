@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { useEffect, useState, useRef } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Button from "../button";
@@ -56,6 +56,7 @@ export const ToolStack = ({ userDetails, edit, titleClasses, headerActions }) =>
   const ref = useRef(null);
 
   useEffect(() => {
+    const node = ref.current;
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && !inView) {
@@ -65,22 +66,22 @@ export const ToolStack = ({ userDetails, edit, titleClasses, headerActions }) =>
       { threshold: 0.5 }
     );
 
-    if (ref.current) {
-      observer.observe(ref.current);
+    if (node) {
+      observer.observe(node);
     }
 
     return () => {
-      if (ref.current) {
-        observer.unobserve(ref.current);
+      if (node) {
+        observer.unobserve(node);
       }
     };
   }, [inView]);
 
   return (
-    <section className="py-12 overflow-hidden">
-      <div className="flex items-center justify-between mb-8">
+    <section className="overflow-hidden py-12">
+      <div className="mb-8 flex items-center justify-between">
         <h2 className={cn("text-2xl font-bold", titleClasses)}>Tool Stack</h2>
-        {headerActions && <div className="flex-shrink-0">{headerActions}</div>}
+        {headerActions && <div className="shrink-0">{headerActions}</div>}
       </div>
       {isMobile ? (
         <div
@@ -93,12 +94,9 @@ export const ToolStack = ({ userDetails, edit, titleClasses, headerActions }) =>
         >
           <motion.div className="flex gap-4 px-4" animate={scrollAnimation}>
             {scrollTools.map((tool, index) => (
-              <div
-                key={index}
-                className="flex flex-col items-center gap-2 min-w-[100px]"
-              >
-                <div className="bg-card p-4 rounded-2xl flex items-center justify-center transition-colors hover:bg-card/80">
-                  <img src={tool.image} className="w-8" />
+              <div key={index} className="flex min-w-[100px] flex-col items-center gap-2">
+                <div className="bg-card hover:bg-card/80 flex items-center justify-center rounded-2xl p-4 transition-colors">
+                  <img src={tool.image} className="w-8" alt={tool.name} />
                 </div>
                 <span className="text-sm whitespace-nowrap">{tool.name}</span>
               </div>
@@ -111,25 +109,24 @@ export const ToolStack = ({ userDetails, edit, titleClasses, headerActions }) =>
           variants={containerVariants}
           initial="hidden"
           animate={inView ? "show" : "hidden"} // Uses IntersectionObserver-based inView state
-          className="flex justify-center flex-wrap gap-4"
+          className="flex flex-wrap justify-center gap-4"
         >
           {tools.map((tool, index) => (
             <motion.div
               key={index}
               variants={itemVariants}
-              whileHover={{ scale: 1.2, y: -8, }}
-              className="relative group hover:z-50"
+              whileHover={{ scale: 1.2, y: -8 }}
+              className="group relative hover:z-50"
             >
-              <div className="bg-card p-4 rounded-2xl flex items-center justify-center transition-colors hover:bg-card/80">
+              <div className="bg-card hover:bg-card/80 flex items-center justify-center rounded-2xl p-4 transition-colors">
                 {/* <Tool.icon className="size-8" /> */}
                 <img
-                  src={
-                    tool.image ? tool.image : "/assets/svgs/default-tools.svg"
-                  }
+                  src={tool.image ? tool.image : "/assets/svgs/default-tools.svg"}
                   className="w-8"
+                  alt={tool.label || tool.name || ""}
                 />
               </div>
-              <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-sm whitespace-nowrap">
+              <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-sm whitespace-nowrap opacity-0 transition-opacity group-hover:opacity-100">
                 {tool.label}
               </div>
             </motion.div>
@@ -138,18 +135,18 @@ export const ToolStack = ({ userDetails, edit, titleClasses, headerActions }) =>
             <motion.div
               variants={itemVariants}
               whileHover={{ scale: 1.2, y: -8 }}
-              className="relative group"
+              className="group relative"
             >
               <Button
                 type="secondary"
                 size="icon"
                 icon={
-                  <PlusIcon className="text-secondary-btn-text-color w-[32px] h-[32px] cursor-pointer" />
+                  <PlusIcon className="text-secondary-btn-text-color h-[32px] w-[32px] cursor-pointer" />
                 }
                 onClick={() => openSidebar(sidebars.tools)}
-              // customClass="px-[22px]"
+                // customClass="px-[22px]"
               />{" "}
-              <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-sm whitespace-nowrap">
+              <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-sm whitespace-nowrap opacity-0 transition-opacity group-hover:opacity-100">
                 Edit
               </div>
             </motion.div>

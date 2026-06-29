@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { NodeViewWrapper } from '@tiptap/react';
+import React, { useState, useEffect, startTransition } from "react";
+import { NodeViewWrapper } from "@tiptap/react";
 
 const LinkNodeView = ({ node, updateAttributes, deleteNode, editor }) => {
   const isEditable = editor?.isEditable ?? false;
   const [isEditing, setIsEditing] = useState(isEditable && !node.attrs.href);
-  const [href, setHref] = useState(node.attrs.href || '');
-  const [text, setText] = useState(node.attrs.text || '');
+  const [href, setHref] = useState(node.attrs.href || "");
+  const [text, setText] = useState(node.attrs.text || "");
 
   useEffect(() => {
     if (isEditable && !node.attrs.href) {
-      setIsEditing(true);
+      startTransition(() => setIsEditing(true));
     }
   }, [isEditable, node.attrs.href]);
 
@@ -19,17 +19,17 @@ const LinkNodeView = ({ node, updateAttributes, deleteNode, editor }) => {
         href: href.trim(),
         text: text.trim() || href.trim(),
       });
-      
+
       // Replace this node with actual link
       const linkText = text.trim() || href.trim();
       editor
         .chain()
         .focus()
-        .deleteNode('linkNode')
+        .deleteNode("linkNode")
         .insertContent({
-          type: 'text',
+          type: "text",
           text: linkText,
-          marks: [{ type: 'link', attrs: { href: href.trim() } }],
+          marks: [{ type: "link", attrs: { href: href.trim() } }],
         })
         .run();
     }
@@ -40,10 +40,10 @@ const LinkNodeView = ({ node, updateAttributes, deleteNode, editor }) => {
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
       e.preventDefault();
       handleSave();
-    } else if (e.key === 'Escape') {
+    } else if (e.key === "Escape") {
       e.preventDefault();
       handleCancel();
     }
@@ -52,19 +52,19 @@ const LinkNodeView = ({ node, updateAttributes, deleteNode, editor }) => {
   if (!isEditing && node.attrs.href) {
     return (
       <NodeViewWrapper>
-        <div className="relative inline-block my-3">
+        <div className="relative my-3 inline-block">
           <a
             href={node.attrs.href}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-500 dark:text-blue-400 underline cursor-pointer hover:text-blue-600 dark:hover:text-blue-300"
+            className="cursor-pointer text-blue-500 underline hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300"
           >
             {node.attrs.text || node.attrs.href}
           </a>
           {isEditable && (
             <button
               onClick={() => setIsEditing(true)}
-              className="absolute -top-1 -right-6 bg-blue-500 dark:bg-blue-600 hover:bg-blue-600 dark:hover:bg-blue-700 text-white rounded px-2 py-0.5 text-xs cursor-pointer transition-colors"
+              className="absolute -top-1 -right-6 cursor-pointer rounded bg-blue-500 px-2 py-0.5 text-xs text-white transition-colors hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
             >
               Edit
             </button>
@@ -81,7 +81,7 @@ const LinkNodeView = ({ node, updateAttributes, deleteNode, editor }) => {
           href={node.attrs.href}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-blue-500 dark:text-blue-400 underline cursor-pointer hover:text-blue-600 dark:hover:text-blue-300 my-3 inline-block"
+          className="my-3 inline-block cursor-pointer text-blue-500 underline hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300"
         >
           {node.attrs.text || node.attrs.href}
         </a>
@@ -91,7 +91,10 @@ const LinkNodeView = ({ node, updateAttributes, deleteNode, editor }) => {
 
   return (
     <NodeViewWrapper>
-      <div className="rounded-lg p-4 my-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 select-none" onMouseDown={(e) => e.stopPropagation()}>
+      <div
+        className="my-3 rounded-lg border border-slate-200 bg-slate-50 p-4 select-none dark:border-slate-700 dark:bg-slate-900"
+        onMouseDown={(e) => e.stopPropagation()}
+      >
         <div className="mb-3">
           <input
             type="url"
@@ -100,7 +103,7 @@ const LinkNodeView = ({ node, updateAttributes, deleteNode, editor }) => {
             onKeyDown={handleKeyDown}
             placeholder="Enter URL (e.g., https://example.com)"
             autoFocus
-            className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-md text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 mb-2 select-text"
+            className="mb-2 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-500 select-text focus:ring-2 focus:ring-blue-500 focus:outline-none dark:border-slate-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400 dark:focus:ring-blue-600"
             onMouseDown={(e) => e.stopPropagation()}
           />
           <input
@@ -109,10 +112,13 @@ const LinkNodeView = ({ node, updateAttributes, deleteNode, editor }) => {
             onChange={(e) => setText(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Link text (optional)"
-            className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-md text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 select-text"
+            className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-500 select-text focus:ring-2 focus:ring-blue-500 focus:outline-none dark:border-slate-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400 dark:focus:ring-blue-600"
             onMouseDown={(e) => e.stopPropagation()}
           />
-          <div className="text-xs text-slate-600 dark:text-slate-400 mt-1" onMouseDown={(e) => e.stopPropagation()}>
+          <div
+            className="mt-1 text-xs text-slate-600 dark:text-slate-400"
+            onMouseDown={(e) => e.stopPropagation()}
+          >
             Press Ctrl+Enter to save, Esc to cancel
           </div>
         </div>
@@ -120,17 +126,17 @@ const LinkNodeView = ({ node, updateAttributes, deleteNode, editor }) => {
           <button
             onClick={handleSave}
             disabled={!href.trim()}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+            className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
               href.trim()
-                ? 'bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white cursor-pointer'
-                : 'bg-slate-400 dark:bg-slate-700 text-white cursor-not-allowed'
+                ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
+                : "cursor-not-allowed bg-slate-400 text-white dark:bg-slate-700"
             }`}
           >
             Save
           </button>
           <button
             onClick={handleCancel}
-            className="px-4 py-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-md text-sm font-medium cursor-pointer transition-colors"
+            className="cursor-pointer rounded-md bg-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
           >
             Cancel
           </button>

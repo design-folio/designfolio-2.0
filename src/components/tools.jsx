@@ -1,7 +1,6 @@
-/* eslint-disable @next/next/no-img-element */
 import { sidebars } from "@/lib/constant";
 import { useGlobalContext } from "@/context/globalContext";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -23,7 +22,7 @@ export default function Tools({ userDetails, edit }) {
       transition={{
         duration: 0.7,
         ease: [0.21, 0.47, 0.32, 0.98],
-        delay: 0.1
+        delay: 0.1,
       }}
     >
       <Section
@@ -34,20 +33,20 @@ export default function Tools({ userDetails, edit }) {
           <Button
             variant="outline"
             size="icon"
-            className="rounded-full h-11 w-11"
+            className="h-11 w-11 rounded-full"
             data-testid="button-add-tool"
             onClick={() => openSidebar(sidebars.tools)}
           >
-            <Plus className="w-5 h-5" />
+            <Plus className="h-5 w-5" />
           </Button>
         }
       >
-        <div className="relative mt-2 overflow-x-hidden overflow-y-visible -mx-2 lg:-mx-6 px-4 lg:px-6">
+        <div className="relative -mx-2 mt-2 overflow-x-hidden overflow-y-visible px-4 lg:-mx-6 lg:px-6">
           {shouldScroll && (
             <>
               {/* Left fade */}
               <div
-                className="absolute left-0 top-0 bottom-0 w-24 md:w-20 z-10 pointer-events-none"
+                className="pointer-events-none absolute top-0 bottom-0 left-0 z-10 w-24 md:w-20"
                 style={{
                   background:
                     "linear-gradient(to right, var(--df-section-card-bg-color) 0%, var(--df-section-card-bg-color) 30%, transparent 100%)",
@@ -55,7 +54,7 @@ export default function Tools({ userDetails, edit }) {
               />
               {/* Right fade */}
               <div
-                className="absolute right-0 top-0 bottom-0 w-24 md:w-20 z-10 pointer-events-none"
+                className="pointer-events-none absolute top-0 right-0 bottom-0 z-10 w-24 md:w-20"
                 style={{
                   background:
                     "linear-gradient(to left, var(--df-section-card-bg-color) 0%, var(--df-section-card-bg-color) 30%, transparent 100%)",
@@ -64,11 +63,11 @@ export default function Tools({ userDetails, edit }) {
             </>
           )}
 
-          <div className="flex group">
+          <div className="group flex">
             <div
               className={
                 shouldScroll
-                  ? "flex animate-scroll group-hover:[animation-play-state:paused] py-4"
+                  ? "animate-scroll flex py-4 group-hover:[animation-play-state:paused]"
                   : "flex flex-wrap gap-3 py-4"
               }
             >
@@ -79,22 +78,22 @@ export default function Tools({ userDetails, edit }) {
                       <div
                         className={
                           shouldScroll
-                            ? "bg-tools-card-item-bg-color border border-tools-card-item-border-color rounded-2xl p-3 md:p-4 hover-elevate mx-2 shrink-0 flex items-center justify-center w-16 h-16 md:w-20 md:h-20 cursor-default"
-                            : "bg-tools-card-item-bg-color border border-tools-card-item-border-color rounded-2xl p-3 md:p-4 hover-elevate shrink-0 flex items-center justify-center w-16 h-16 md:w-20 md:h-20 cursor-default"
+                            ? "bg-tools-card-item-bg-color border-tools-card-item-border-color hover-elevate mx-2 flex h-16 w-16 shrink-0 cursor-default items-center justify-center rounded-2xl border p-3 md:h-20 md:w-20 md:p-4"
+                            : "bg-tools-card-item-bg-color border-tools-card-item-border-color hover-elevate flex h-16 w-16 shrink-0 cursor-default items-center justify-center rounded-2xl border p-3 md:h-20 md:w-20 md:p-4"
                         }
                         data-testid={`card-tool-${tool?.label || tool?.name || idx}-${idx}`}
                       >
                         <img
                           src={tool?.image || tool?.logo || "/assets/svgs/default-tools.svg"}
                           alt={tool?.label || tool?.name || "Tool"}
-                          className="w-8 h-8 md:w-10 md:h-10 object-contain"
+                          className="h-8 w-8 object-contain md:h-10 md:w-10"
                         />
                       </div>
                     </TooltipTrigger>
                     <TooltipContent
                       side="top"
                       sideOffset={5}
-                      className="bg-foreground text-background border-none px-3 py-1.5 text-xs font-semibold rounded-full shadow-lg z-[100]"
+                      className="bg-foreground text-background z-[100] rounded-full border-none px-3 py-1.5 text-xs font-semibold shadow-lg"
                     >
                       <p>{tool?.label || tool?.name || "Tool"}</p>
                     </TooltipContent>

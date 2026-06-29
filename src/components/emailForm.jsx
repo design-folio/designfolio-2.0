@@ -45,8 +45,15 @@ export default function EmailForm({ generateEmailContent, isGenerating, disableG
         <Form id="EmailForm" className="contents">
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email-type" className="text-sm font-medium text-foreground ml-1">Email Type*</Label>
-              <div className={cn(inputWrapperClass, errors.emailType && touched.emailType && "border-red-500")}>
+              <Label htmlFor="email-type" className="text-foreground ml-1 text-sm font-medium">
+                Email Type*
+              </Label>
+              <div
+                className={cn(
+                  inputWrapperClass,
+                  errors.emailType && touched.emailType && "border-red-500"
+                )}
+              >
                 <Field as="select" id="email-type" name="emailType" className={selectInnerClass}>
                   <option value="follow-up">Interview Follow-up</option>
                   <option value="thank-you">Thank You</option>
@@ -57,55 +64,138 @@ export default function EmailForm({ generateEmailContent, isGenerating, disableG
                   <option value="custom">Custom</option>
                 </Field>
               </div>
-              <ErrorMessage name="emailType" component="p" className="text-sm text-red-500 ml-1" />
+              <ErrorMessage name="emailType" component="p" className="ml-1 text-sm text-red-500" />
             </div>
 
             {values?.emailType === "custom" && (
               <div className="space-y-2">
-                <Label htmlFor="custom-email-type" className="text-sm font-medium text-foreground ml-1">Custom Email Type*</Label>
-                <div className={cn(inputWrapperClass, errors.customEmailType && touched.customEmailType && "border-red-500")}>
-                  <Field id="custom-email-type" name="customEmailType" type="text" placeholder="Enter custom Email Type" className={inputInnerClass} autoComplete="off" />
+                <Label
+                  htmlFor="custom-email-type"
+                  className="text-foreground ml-1 text-sm font-medium"
+                >
+                  Custom Email Type*
+                </Label>
+                <div
+                  className={cn(
+                    inputWrapperClass,
+                    errors.customEmailType && touched.customEmailType && "border-red-500"
+                  )}
+                >
+                  <Field
+                    id="custom-email-type"
+                    name="customEmailType"
+                    type="text"
+                    placeholder="Enter custom Email Type"
+                    className={inputInnerClass}
+                    autoComplete="off"
+                  />
                 </div>
-                <ErrorMessage name="customEmailType" component="p" className="text-sm text-red-500 ml-1" />
+                <ErrorMessage
+                  name="customEmailType"
+                  component="p"
+                  className="ml-1 text-sm text-red-500"
+                />
               </div>
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="company-name" className="text-sm font-medium text-foreground ml-1">Company Name*</Label>
-              <div className={cn(inputWrapperClass, errors.company && touched.company && "border-red-500")}>
-                <Field id="company-name" name="company" type="text" placeholder="Enter company name" className={inputInnerClass} autoComplete="off" />
+              <Label htmlFor="company-name" className="text-foreground ml-1 text-sm font-medium">
+                Company Name*
+              </Label>
+              <div
+                className={cn(
+                  inputWrapperClass,
+                  errors.company && touched.company && "border-red-500"
+                )}
+              >
+                <Field
+                  id="company-name"
+                  name="company"
+                  type="text"
+                  placeholder="Enter company name"
+                  className={inputInnerClass}
+                  autoComplete="off"
+                />
               </div>
-              <ErrorMessage name="company" component="p" className="text-sm text-red-500 ml-1" />
+              <ErrorMessage name="company" component="p" className="ml-1 text-sm text-red-500" />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="position" className="text-sm font-medium text-foreground ml-1">Position*</Label>
-              <div className={cn(inputWrapperClass, errors.position && touched.position && "border-red-500")}>
-                <Field id="position" name="position" type="text" placeholder="Enter position title" className={inputInnerClass} autoComplete="off" />
+              <Label htmlFor="position" className="text-foreground ml-1 text-sm font-medium">
+                Position*
+              </Label>
+              <div
+                className={cn(
+                  inputWrapperClass,
+                  errors.position && touched.position && "border-red-500"
+                )}
+              >
+                <Field
+                  id="position"
+                  name="position"
+                  type="text"
+                  placeholder="Enter position title"
+                  className={inputInnerClass}
+                  autoComplete="off"
+                />
               </div>
-              <ErrorMessage name="position" component="p" className="text-sm text-red-500 ml-1" />
+              <ErrorMessage name="position" component="p" className="ml-1 text-sm text-red-500" />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="interviewer-name" className="text-sm font-medium text-foreground ml-1">Interviewer Name*</Label>
-              <div className={cn(inputWrapperClass, errors.interviewer && touched.interviewer && "border-red-500")}>
-                <Field id="interviewer-name" name="interviewer" type="text" placeholder="Enter interviewer's name" className={inputInnerClass} autoComplete="off" />
+              <Label
+                htmlFor="interviewer-name"
+                className="text-foreground ml-1 text-sm font-medium"
+              >
+                Interviewer Name*
+              </Label>
+              <div
+                className={cn(
+                  inputWrapperClass,
+                  errors.interviewer && touched.interviewer && "border-red-500"
+                )}
+              >
+                <Field
+                  id="interviewer-name"
+                  name="interviewer"
+                  type="text"
+                  placeholder="Enter interviewer's name"
+                  className={inputInnerClass}
+                  autoComplete="off"
+                />
               </div>
-              <ErrorMessage name="interviewer" component="p" className="text-sm text-red-500 ml-1" />
+              <ErrorMessage
+                name="interviewer"
+                component="p"
+                className="ml-1 text-sm text-red-500"
+              />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="your-name" className="text-sm font-medium text-foreground ml-1">Your Name*</Label>
-              <div className={cn(inputWrapperClass, errors.name && touched.name && "border-red-500")}>
-                <Field id="your-name" name="name" type="text" placeholder="Enter your name" className={inputInnerClass} autoComplete="off" />
+              <Label htmlFor="your-name" className="text-foreground ml-1 text-sm font-medium">
+                Your Name*
+              </Label>
+              <div
+                className={cn(inputWrapperClass, errors.name && touched.name && "border-red-500")}
+              >
+                <Field
+                  id="your-name"
+                  name="name"
+                  type="text"
+                  placeholder="Enter your name"
+                  className={inputInnerClass}
+                  autoComplete="off"
+                />
               </div>
-              <ErrorMessage name="name" component="p" className="text-sm text-red-500 ml-1" />
+              <ErrorMessage name="name" component="p" className="ml-1 text-sm text-red-500" />
             </div>
           </div>
 
-          <div className="flex flex-col h-full">
-            <div className="space-y-2 flex-1 flex flex-col">
-              <Label htmlFor="context" className="text-sm font-medium text-foreground ml-1">Additional Context</Label>
+          <div className="flex h-full flex-col">
+            <div className="flex flex-1 flex-col space-y-2">
+              <Label htmlFor="context" className="text-foreground ml-1 text-sm font-medium">
+                Additional Context
+              </Label>
               <div className={cn(textareaWrapperClass, "flex-1")}>
                 <Field
                   id="context"
@@ -120,10 +210,14 @@ export default function EmailForm({ generateEmailContent, isGenerating, disableG
             <Button
               type="submit"
               disabled={isGenerating || disableGenerate}
-              className="w-full mt-6 rounded-full h-12 px-6 text-base font-semibold gap-2 bg-foreground text-background hover:bg-foreground/90 border-0"
+              className="bg-foreground text-background hover:bg-foreground/90 mt-6 h-12 w-full gap-2 rounded-full border-0 px-6 text-base font-semibold"
             >
-              {disableGenerate ? "Sign up to generate again" : isGenerating ? "Generating..." : "Generate Email"}
-              <Send className="w-4 h-4" />
+              {disableGenerate
+                ? "Sign up to generate again"
+                : isGenerating
+                  ? "Generating..."
+                  : "Generate Email"}
+              <Send className="h-4 w-4" />
             </Button>
           </div>
         </Form>

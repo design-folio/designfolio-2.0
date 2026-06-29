@@ -1,5 +1,5 @@
 import React from "react";
-import { Button as ButtonNew } from "./ui/buttonNew"
+import { Button as ButtonNew } from "./ui/buttonNew";
 import Button from "./button";
 import EditIcon from "../../public/assets/svgs/edit.svg";
 import NoteIcon from "../../public/assets/svgs/noteIcon.svg";
@@ -27,25 +27,26 @@ export default function Others({ openModal, userDetails, edit }) {
   const { resume } = userDetails || {};
   return (
     <div
-      className={cn(" flex flex-col gap-8 bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words")}
+      className={cn(
+        "bg-df-section-card-bg-color shadow-df-section-card-shadow flex flex-col gap-8 rounded-[24px] p-4 break-words lg:p-[32px]"
+      )}
     >
       {(!!resume || edit) && (
         <div>
-          <div className="flex justify-between items-center mb-4">
-            <Text
-              size="p-small"
-              className="text-modal-heading-color font-semibold"
-            >
+          <div className="mb-4 flex items-center justify-between">
+            <Text size="p-small" className="text-modal-heading-color font-semibold">
               Resume
             </Text>
 
-            {edit && resume &&
-              < ButtonNew
+            {edit && resume && (
+              <ButtonNew
                 className="h-11 w-11"
                 onClick={() => openModal(modals.resume)}
                 variant={"secondary"}
-              ><PencilIcon className="text-df-icon-color cursor-pointer" /></ButtonNew>
-            }
+              >
+                <PencilIcon className="text-df-icon-color cursor-pointer" />
+              </ButtonNew>
+            )}
           </div>
 
           {edit && !!userDetails?.resume ? (
@@ -54,9 +55,7 @@ export default function Others({ openModal, userDetails, edit }) {
                 text={"Download Resume"}
                 customClass="w-full justify-start"
                 type="secondary"
-                icon={
-                  <NoteIcon className="text-df-icon-color cursor-pointer" />
-                }
+                icon={<NoteIcon className="text-df-icon-color cursor-pointer" />}
               />
             </a>
           ) : (
@@ -71,7 +70,7 @@ export default function Others({ openModal, userDetails, edit }) {
                     type="secondary"
                     customClass="w-fit gap-0"
                     icon={
-                      <PlusIcon className="text-secondary-btn-text-color w-[14px] h-[14px] cursor-pointer" />
+                      <PlusIcon className="text-secondary-btn-text-color h-[14px] w-[14px] cursor-pointer" />
                     }
                   />
                 }
@@ -79,22 +78,18 @@ export default function Others({ openModal, userDetails, edit }) {
             )
           )}
         </div>
-      )
-      }
+      )}
 
       <div>
-        <div className="flex items-center justify-between mb-4">
+        <div className="mb-4 flex items-center justify-between">
           {(!!userDetails?.socials?.instagram ||
             !!userDetails?.socials?.twitter ||
             !!userDetails?.socials?.linkedin ||
             edit) && (
-              <Text
-                size="p-small"
-                className="text-modal-heading-color font-semibold"
-              >
-                Connect with me
-              </Text>
-            )}
+            <Text size="p-small" className="text-modal-heading-color font-semibold">
+              Connect with me
+            </Text>
+          )}
           {edit &&
             (userDetails?.socials?.instagram ||
               userDetails?.socials?.twitter ||
@@ -103,14 +98,16 @@ export default function Others({ openModal, userDetails, edit }) {
                 className="h-11 w-11"
                 onClick={() => openModal(modals.socialMedia)}
                 variant={"secondary"}
-              ><PencilIcon className="text-df-icon-color cursor-pointer" /></ButtonNew>
+              >
+                <PencilIcon className="text-df-icon-color cursor-pointer" />
+              </ButtonNew>
             )}
         </div>
         <div>
           {!!userDetails?.socials?.instagram ||
-            !!userDetails?.socials?.twitter ||
-            !!userDetails?.socials?.linkedin ? (
-            <div className="flex flex-col lg:flex-row gap-[24px]">
+          !!userDetails?.socials?.twitter ||
+          !!userDetails?.socials?.linkedin ? (
+            <div className="flex flex-col gap-[24px] lg:flex-row">
               {userDetails?.socials?.instagram && (
                 <Link
                   href={userDetails?.socials?.instagram}
@@ -120,9 +117,7 @@ export default function Others({ openModal, userDetails, edit }) {
                   <Button
                     text={"Instagram"}
                     type="secondary"
-                    icon={
-                      <InstagramIcon className="text-df-icon-color cursor-pointer" />
-                    }
+                    icon={<InstagramIcon className="text-df-icon-color cursor-pointer" />}
                   />
                 </Link>
               )}
@@ -136,9 +131,7 @@ export default function Others({ openModal, userDetails, edit }) {
                   <Button
                     text={"Twitter"}
                     type="secondary"
-                    icon={
-                      <TwitterIcon className="text-df-icon-color cursor-pointer" />
-                    }
+                    icon={<TwitterIcon className="text-df-icon-color cursor-pointer" />}
                   />
                 </Link>
               )}
@@ -151,9 +144,7 @@ export default function Others({ openModal, userDetails, edit }) {
                   <Button
                     text={"LinkedIn"}
                     type="secondary"
-                    icon={
-                      <LinkedInIcon className="text-df-icon-color cursor-pointer" />
-                    }
+                    icon={<LinkedInIcon className="text-df-icon-color cursor-pointer" />}
                   />
                 </Link>
               )}
@@ -170,7 +161,7 @@ export default function Others({ openModal, userDetails, edit }) {
                     type="secondary"
                     customClass="w-fit gap-0"
                     icon={
-                      <PlusIcon className="text-secondary-btn-text-color w-[14px] h-[14px] cursor-pointer" />
+                      <PlusIcon className="text-secondary-btn-text-color h-[14px] w-[14px] cursor-pointer" />
                     }
                   />
                 }
@@ -180,18 +171,15 @@ export default function Others({ openModal, userDetails, edit }) {
         </div>
       </div>
       <div>
-        <div className="flex items-center justify-between mb-4">
+        <div className="mb-4 flex items-center justify-between">
           {(!!userDetails?.portfolios?.dribbble ||
             !!userDetails?.portfolios?.notion ||
             !!userDetails?.portfolios?.medium ||
             edit) && (
-              <Text
-                size="p-small"
-                className="text-modal-heading-color font-semibold"
-              >
-                Other portfolio
-              </Text>
-            )}
+            <Text size="p-small" className="text-modal-heading-color font-semibold">
+              Other portfolio
+            </Text>
+          )}
           {edit &&
             (userDetails?.portfolios?.dribbble ||
               userDetails?.portfolios?.notion ||
@@ -200,14 +188,16 @@ export default function Others({ openModal, userDetails, edit }) {
                 className="h-11 w-11"
                 onClick={() => openModal(modals.portfolioLinks)}
                 variant={"secondary"}
-              ><PencilIcon className="text-df-icon-color cursor-pointer" /></ButtonNew>
+              >
+                <PencilIcon className="text-df-icon-color cursor-pointer" />
+              </ButtonNew>
             )}
         </div>
         <div>
           {!!userDetails?.portfolios?.dribbble ||
-            !!userDetails?.portfolios?.notion ||
-            !!userDetails?.portfolios?.medium ? (
-            <div className="flex flex-col lg:flex-row gap-[24px]">
+          !!userDetails?.portfolios?.notion ||
+          !!userDetails?.portfolios?.medium ? (
+            <div className="flex flex-col gap-[24px] lg:flex-row">
               {userDetails?.portfolios?.dribbble && (
                 <Link
                   href={userDetails?.portfolios?.dribbble}
@@ -217,9 +207,7 @@ export default function Others({ openModal, userDetails, edit }) {
                   <Button
                     text={"Dribbble"}
                     type="secondary"
-                    icon={
-                      <DribbbleIcon className="text-df-icon-color cursor-pointer" />
-                    }
+                    icon={<DribbbleIcon className="text-df-icon-color cursor-pointer" />}
                   />
                 </Link>
               )}
@@ -232,9 +220,7 @@ export default function Others({ openModal, userDetails, edit }) {
                   <Button
                     text={"Notion"}
                     type="secondary"
-                    icon={
-                      <NotionIcon className="text-df-icon-color cursor-pointer" />
-                    }
+                    icon={<NotionIcon className="text-df-icon-color cursor-pointer" />}
                   />
                 </Link>
               )}
@@ -247,9 +233,7 @@ export default function Others({ openModal, userDetails, edit }) {
                   <Button
                     text={"Medium"}
                     type="secondary"
-                    icon={
-                      <MediumIcon className="text-df-icon-color cursor-pointer" />
-                    }
+                    icon={<MediumIcon className="text-df-icon-color cursor-pointer" />}
                   />
                 </Link>
               )}
@@ -266,7 +250,7 @@ export default function Others({ openModal, userDetails, edit }) {
                     type="secondary"
                     customClass="w-fit gap-0"
                     icon={
-                      <PlusIcon className="text-secondary-btn-text-color w-[14px] h-[14px] cursor-pointer" />
+                      <PlusIcon className="text-secondary-btn-text-color h-[14px] w-[14px] cursor-pointer" />
                     }
                   />
                 }
@@ -275,6 +259,6 @@ export default function Others({ openModal, userDetails, edit }) {
           )}
         </div>
       </div>
-    </div >
+    </div>
   );
 }

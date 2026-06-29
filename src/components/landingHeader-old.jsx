@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import Link from "next/link";
 import Button from "./button";
 import HamburgerIcon from "../../public/assets/svgs/hamburger.svg";
@@ -61,7 +61,7 @@ export default function LandingHeader({ dfToken }) {
     : "fixed top-0 left-0 right-0 lg:px-10 xl:px-0 z-10 transform translate-y-[-100%] transition-transform duration-300 ease-out border-b borderb-solid border-landng-header-border-color";
 
   const commonTextClass =
-    "text-landing-nav-link-color hover:text-landing-nav-link-hover-color py-[0.5px] hover:py-1 px-[8px] rounded-[5px] font-sfpro  text-[16px] font-[500] cursor-pointer hover:bg-landing-nav-link-bg-hover-color transition-all duration-[350ms] ease-in-out";
+    "text-landing-nav-link-color hover:text-landing-nav-link-hover-color py-[0.5px] hover:py-1 px-[8px] rounded-[5px] font-sfpro  text-[16px] font-[500] cursor-pointer hover:bg-landing-nav-link-bg-hover-color transition-all [transition-duration:350ms] ease-in-out";
 
   return (
     <motion.header
@@ -70,14 +70,12 @@ export default function LandingHeader({ dfToken }) {
       animate="animate"
       variants={textVariants}
     >
-      <div className="flex relative justify-between max-w-[1192px] p-3 md:px-0 md:py-3 mx-auto items-center ">
-        <nav className=" md:flex gap-7 items-center md:pl-3 lg:pl-0">
+      <div className="relative mx-auto flex max-w-[1192px] items-center justify-between p-3 md:px-0 md:py-3">
+        <nav className="items-center gap-7 md:flex md:pl-3 lg:pl-0">
           <Logo className="text-df-icon-color" />
 
-          <span className="text-landing-nav-link-base-color text-2xl hidden md:block">
-            /
-          </span>
-          <ul className=" gap-6 list-none items-center p-0 hidden md:flex">
+          <span className="text-landing-nav-link-base-color hidden text-2xl md:block">/</span>
+          <ul className="hidden list-none items-center gap-6 p-0 md:flex">
             <li className={commonTextClass}>
               <Link
                 href={"#how-it-works"}
@@ -120,7 +118,7 @@ export default function LandingHeader({ dfToken }) {
               />
             </Link>
           ) : (
-            <div className=" hidden md:flex gap-4">
+            <div className="hidden gap-4 md:flex">
               <Link href="/login">
                 <Button type="secondary" text="Login" />
               </Link>
@@ -137,23 +135,19 @@ export default function LandingHeader({ dfToken }) {
           icon={
             <>
               <HamburgerIcon
-                className={`mb-[4.67px] transition-transform easeInOut ${
-                  popovers.landingMenu === popoverMenu &&
-                  "translate-y-3.2 rotate-45"
+                className={`easeInOut mb-[4.67px] transition-transform ${
+                  popovers.landingMenu === popoverMenu && "translate-y-3.2 rotate-45"
                 } cursor-pointer`}
               />
               <HamburgerIcon
-                className={`transition-transform easeInOut ${
-                  popovers.landingMenu === popoverMenu &&
-                  "-rotate-45 -translate-y-3.2"
+                className={`easeInOut transition-transform ${
+                  popovers.landingMenu === popoverMenu && "-translate-y-3.2 -rotate-45"
                 } cursor-pointer`}
               />
             </>
           }
           onClick={() =>
-            setPopoverMenu((prev) =>
-              prev == popovers.landingMenu ? null : popovers.landingMenu
-            )
+            setPopoverMenu((prev) => (prev == popovers.landingMenu ? null : popovers.landingMenu))
           }
         />
       </div>

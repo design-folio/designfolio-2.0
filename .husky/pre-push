@@ -1,0 +1,17 @@
+echo ""
+echo "🚀 Pre-push checks"
+echo ""
+echo "  [1/2] Running full lint..."
+echo ""
+
+npm run lint
+
+echo ""
+echo "  [2/2] Running build..."
+echo ""
+
+npm run build
+
+echo ""
+echo "✅  All checks passed — pushing to remote."
+echo ""

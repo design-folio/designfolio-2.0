@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 /**
  * Wraps the quoted portion of `text` in a shimmer gradient animation
@@ -20,7 +20,7 @@ export default function ShimmerInView({ text }) {
         whileInView={{ backgroundPosition: "0% center" }}
         viewport={{ once: true, margin: "0px 0px -20% 0px" }}
         transition={{ duration: 1.5, ease: "easeInOut" }}
-        className="text-transparent bg-clip-text inline-block"
+        className="inline-block bg-clip-text text-transparent"
         style={{
           backgroundImage:
             "linear-gradient(to right, var(--lp-text) 0%, var(--lp-text) 30%, #5D3560 40%, #E54D2E 50%, #F5A623 60%, var(--lp-text) 70%, var(--lp-text) 100%)",

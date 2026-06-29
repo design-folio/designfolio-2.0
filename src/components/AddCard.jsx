@@ -22,67 +22,56 @@ export default function AddCard({
   };
   return (
     <div
-      className={`bg-background shadow-df-add-card-inset-shadow transition-shadow duration-500 ease-in border-border/30 hover:shadow-df-add-item-shadow rounded-2xl min-h-[344px] cursor-pointer ${className}`}
+      className={`bg-background shadow-df-add-card-inset-shadow border-border/30 hover:shadow-df-add-item-shadow min-h-[344px] cursor-pointer rounded-2xl transition-shadow duration-500 ease-in ${className}`}
       onClick={onClick}
     >
       {!first ? (
-        <div className=" flex flex-col justify-center items-center  h-full">
+        <div className="flex h-full flex-col items-center justify-center">
           {icon}
           <Text size="p-small" className="text-df-add-card-heading-color mt-5">
             {title}
           </Text>
 
-          <Text
-            size="p-xxsmall"
-            className="text-df-add-card-description-color mt-1 mb-6"
-          >
+          <Text size="p-xxsmall" className="text-df-add-card-description-color mt-1 mb-6">
             {subTitle}
           </Text>
 
-          <div className="flex flex-col md:flex-row gap-2">
-            <Button
-              className="w-fit gap-1 items-center"
-            >
+          <div className="flex flex-col gap-2 md:flex-row">
+            <Button className="w-fit items-center gap-1">
               <PlusIcon className="" />
               {buttonTitle}
             </Button>
             {secondaryButtonTitle && (
-              <p className="text-df-add-card-description-color text-center md:hidden">
-                {" "}
-                or
-              </p>
+              <p className="text-df-add-card-description-color text-center md:hidden"> or</p>
             )}
 
             {secondaryButtonTitle && (
               <Button
                 onClick={handleClick}
                 variant="secondary"
-                className="w-fit gap-1 items-center rounded-full"
-              ><AiIcon className="text-secondary-btn-text-color w-[22px] h-[22px] mb-[2px] cursor-pointer" />
+                className="w-fit items-center gap-1 rounded-full"
+              >
+                <AiIcon className="text-secondary-btn-text-color mb-[2px] h-[22px] w-[22px] cursor-pointer" />
                 {secondaryButtonTitle}
               </Button>
             )}
           </div>
         </div>
       ) : (
-        <div className="flex flex-col gap-3 justify-center items-center  h-full">
-          <Button
-            className="w-fit gap-1 items-center"
-          >
-            <PlusIcon className="text-primary-btn-text-color w-[20px] h-[20px] mb-[2px] cursor-pointer" />
+        <div className="flex h-full flex-col items-center justify-center gap-3">
+          <Button className="w-fit items-center gap-1">
+            <PlusIcon className="text-primary-btn-text-color mb-[2px] h-[20px] w-[20px] cursor-pointer" />
             {title}
           </Button>
-          {secondaryButtonTitle && (
-            <p className="text-df-add-card-description-color"> or</p>
-          )}
+          {secondaryButtonTitle && <p className="text-df-add-card-description-color"> or</p>}
 
           {secondaryButtonTitle && (
             <Button
               onClick={handleClick}
               variant="secondary"
-              className="w-fit gap-1 items-center rounded-full"
+              className="w-fit items-center gap-1 rounded-full"
             >
-              <AiIcon className="text-secondary-btn-text-color w-[22px] h-[22px] mb-[2px] cursor-pointer" />
+              <AiIcon className="text-secondary-btn-text-color mb-[2px] h-[22px] w-[22px] cursor-pointer" />
               {secondaryButtonTitle}
             </Button>
           )}

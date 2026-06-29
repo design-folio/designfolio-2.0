@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronsUpDown, ChevronDown, Pencil, Plus } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { useGlobalContext } from "@/context/globalContext";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { sidebars } from "@/lib/constant";
@@ -18,17 +18,9 @@ export default function ChatTestimonialsSection({
   getNextLeftStep,
   canEdit,
 }) {
-  const {
-    userDetails,
-    openSidebar,
-    openNewReview,
-    setSelectedReview,
-  } = useGlobalContext();
+  const { userDetails, openSidebar, openNewReview, setSelectedReview } = useGlobalContext();
   const { reviews = [] } = userDetails || {};
-  const avatarSrc = useMemo(
-    () => getUserAvatarImage(userDetails),
-    [userDetails],
-  );
+  const avatarSrc = useMemo(() => getUserAvatarImage(userDetails), [userDetails]);
 
   const [expandedIds, setExpandedIds] = useState(new Set());
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
@@ -45,10 +37,7 @@ export default function ChatTestimonialsSection({
   const hasMore = reviews.length > visibleCount;
 
   return (
-    <div
-      className="flex flex-col gap-3"
-      style={{ order: sectionSteps.reviews - 3 }}
-    >
+    <div className="flex flex-col gap-3" style={{ order: sectionSteps.reviews - 3 }}>
       {/* You: Testimonials prompt */}
       <AnimatePresence mode="popLayout">
         {chatRevealStep >= s(13) && (reviews.length > 0 || canEdit) && (
@@ -56,7 +45,7 @@ export default function ChatTestimonialsSection({
             initial={{ opacity: 0, y: 10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.3 }}
-            className="flex justify-end relative group/msg"
+            className="group/msg relative flex justify-end"
           >
             <YouPrompt>What do clients say about your work?</YouPrompt>
           </motion.div>
@@ -75,15 +64,12 @@ export default function ChatTestimonialsSection({
                   initial={{ opacity: 0, y: 10, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   transition={{ duration: 0.3 }}
-                  className="flex gap-3 max-w-[85%] relative group/msg"
+                  className="group/msg relative flex max-w-[85%] gap-3"
                 >
-                  <div className="w-8 h-8 shrink-0 mt-auto flex items-end">
-                    <ChatAvatar
-                      avatarSrc={avatarSrc}
-                      show={chatRevealStep < s(15)}
-                    />
+                  <div className="mt-auto flex h-8 w-8 shrink-0 items-end">
+                    <ChatAvatar avatarSrc={avatarSrc} show={chatRevealStep < s(15)} />
                   </div>
-                  <div className="bg-[#E5E2DB] dark:bg-[#2A2520] px-4 py-3 rounded-2xl rounded-tl-sm rounded-bl-sm text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed transition-colors duration-100 border border-black/5 dark:border-white/5 min-h-[46px] flex items-center">
+                  <div className="flex min-h-[46px] items-center rounded-2xl rounded-tl-sm rounded-bl-sm border border-black/5 bg-[#E5E2DB] px-4 py-3 text-[15px] leading-relaxed text-[#1A1A1A] transition-colors duration-100 dark:border-white/5 dark:bg-[#2A2520] dark:text-[#F0EDE7]">
                     {chatRevealStep === s(14) ? (
                       <TypingIndicator />
                     ) : (
@@ -98,8 +84,7 @@ export default function ChatTestimonialsSection({
                     const reviewId = review._id || `review-${index}`;
                     const plainText = tiptapToDisplayString(review.description);
                     const needsExpand =
-                      getPlainTextLength(review.description) >
-                      REVIEW_CHAR_THRESHOLD;
+                      getPlainTextLength(review.description) > REVIEW_CHAR_THRESHOLD;
                     const isExpanded = expandedIds.has(reviewId);
 
                     return (
@@ -108,39 +93,39 @@ export default function ChatTestimonialsSection({
                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         transition={{ duration: 0.25, delay: index * 0.06 }}
-                        className="flex gap-3 max-w-[85%] relative group/msg"
+                        className="group/msg relative flex max-w-[85%] gap-3"
                       >
                         {canEdit && (
-                          <div className="absolute -left-0 top-1/2 -translate-y-1/2 z-40 flex gap-1.5 opacity-0 group-hover/msg:opacity-100 transition-opacity duration-150">
+                          <div className="absolute top-1/2 -left-0 z-40 flex -translate-y-1/2 gap-1.5 opacity-0 transition-opacity duration-150 group-hover/msg:opacity-100">
                             {reviews.length >= 2 && index === 0 && (
                               <Button
                                 variant="outline"
                                 size="sm"
-                                className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] active:scale-[0.97] transition-transform duration-100"
+                                className="h-7 w-7 rounded-full border-[#E5D7C4] bg-white/90 p-0 shadow-sm backdrop-blur-sm transition-transform duration-100 hover:bg-gray-50 active:scale-[0.97] dark:border-white/10 dark:bg-[#2A2520]/90 dark:hover:bg-[#35302A]"
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   openSidebar(sidebars.sortReviews);
                                 }}
                               >
-                                <ChevronsUpDown className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                                <ChevronsUpDown className="h-3 w-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
                               </Button>
                             )}
                             <Button
                               variant="outline"
                               size="sm"
-                              className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] active:scale-[0.97] transition-transform duration-100"
+                              className="h-7 w-7 rounded-full border-[#E5D7C4] bg-white/90 p-0 shadow-sm backdrop-blur-sm transition-transform duration-100 hover:bg-gray-50 active:scale-[0.97] dark:border-white/10 dark:bg-[#2A2520]/90 dark:hover:bg-[#35302A]"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setSelectedReview(review);
                                 openSidebar(sidebars.review);
                               }}
                             >
-                              <Pencil className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                              <Pencil className="h-3 w-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
                             </Button>
                           </div>
                         )}
 
-                        <div className="w-8 h-8 shrink-0 mt-auto flex items-end">
+                        <div className="mt-auto flex h-8 w-8 shrink-0 items-end">
                           <ChatAvatar
                             avatarSrc={avatarSrc}
                             show={
@@ -151,34 +136,34 @@ export default function ChatTestimonialsSection({
                           />
                         </div>
 
-                        <div className="bg-[#E5E2DB] dark:bg-[#2A2520] p-4 rounded-2xl rounded-tl-sm rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5 w-full">
+                        <div className="w-full rounded-2xl rounded-tl-sm rounded-bl-sm border border-black/5 bg-[#E5E2DB] p-4 transition-colors duration-700 dark:border-white/5 dark:bg-[#2A2520]">
                           {/* Reviewer header */}
-                          <div className="flex items-center gap-3 mb-3">
-                            <div className="w-9 h-9 rounded-full overflow-hidden shrink-0 ring-1 ring-black/5 dark:ring-white/5">
+                          <div className="mb-3 flex items-center gap-3">
+                            <div className="h-9 w-9 shrink-0 overflow-hidden rounded-full ring-1 ring-black/5 dark:ring-white/5">
                               <img
                                 src={review?.avatar?.url || review?.avatar || ""}
                                 alt={review?.name || "Reviewer"}
-                                className="w-full h-full object-cover bg-[#D5CFC7] dark:bg-[#3A352E]"
+                                className="h-full w-full bg-[#D5CFC7] object-cover dark:bg-[#3A352E]"
                                 onError={(e) => {
                                   e.currentTarget.src =
                                     "https://i.pravatar.cc/150?u=a042581f4e29026704d";
                                 }}
                               />
                             </div>
-                            <div className="flex flex-col min-w-0">
-                              <span className="text-[#1A1A1A] dark:text-[#F0EDE7] font-medium text-[14px] truncate">
+                            <div className="flex min-w-0 flex-col">
+                              <span className="truncate text-[14px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                                 {review?.name || "Anonymous"}
                               </span>
                               {review?.designation && (
                                 <div className="flex items-center gap-1">
                                   <svg
-                                    className="w-3 h-3 text-[#0077b5] shrink-0"
+                                    className="h-3 w-3 shrink-0 text-[#0077b5]"
                                     viewBox="0 0 24 24"
                                     fill="currentColor"
                                   >
                                     <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
                                   </svg>
-                                  <span className="text-[#7A736C] dark:text-[#B5AFA5] text-[12px] truncate">
+                                  <span className="truncate text-[12px] text-[#7A736C] dark:text-[#B5AFA5]">
                                     {review.designation}
                                   </span>
                                 </div>
@@ -192,13 +177,13 @@ export default function ChatTestimonialsSection({
                               {/* Clipped region + gradient as a single positioned unit */}
                               <div className="relative">
                                 <p
-                                  className={`text-[#1A1A1A] dark:text-[#F0EDE7] text-[13px] leading-relaxed italic break-words overflow-hidden${isExpanded ? "" : " line-clamp-4"}`}
+                                  className={`text-[13px] leading-relaxed break-words text-[#1A1A1A] italic dark:text-[#F0EDE7] overflow-hidden${isExpanded ? "" : " line-clamp-4"}`}
                                 >
                                   {plainText ? `"${plainText}"` : ""}
                                 </p>
                                 {!isExpanded && (
                                   <div
-                                    className="pointer-events-none absolute inset-x-0 bottom-0 h-7 bg-gradient-to-t from-[#E5E2DB] dark:from-[#2A2520] to-transparent"
+                                    className="pointer-events-none absolute inset-x-0 bottom-0 h-7 bg-gradient-to-t from-[#E5E2DB] to-transparent dark:from-[#2A2520]"
                                     aria-hidden
                                   />
                                 )}
@@ -209,7 +194,7 @@ export default function ChatTestimonialsSection({
                                   e.stopPropagation();
                                   toggleExpand(reviewId);
                                 }}
-                                className="mt-2 flex items-center gap-0.5 text-[12px] font-medium text-[#7A736C] dark:text-[#B5AFA5] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7] active:scale-[0.97] transition-[color,transform] duration-150"
+                                className="mt-2 flex items-center gap-0.5 text-[12px] font-medium text-[#7A736C] transition-[color,transform] duration-150 hover:text-[#1A1A1A] active:scale-[0.97] dark:text-[#B5AFA5] dark:hover:text-[#F0EDE7]"
                               >
                                 {isExpanded ? "View less" : "View more"}
                                 <motion.span
@@ -220,12 +205,12 @@ export default function ChatTestimonialsSection({
                                   }}
                                   className="inline-flex"
                                 >
-                                  <ChevronDown className="w-3.5 h-3.5" />
+                                  <ChevronDown className="h-3.5 w-3.5" />
                                 </motion.span>
                               </button>
                             </div>
                           ) : (
-                            <p className="text-[#1A1A1A] dark:text-[#F0EDE7] text-[13px] leading-relaxed italic">
+                            <p className="text-[13px] leading-relaxed text-[#1A1A1A] italic dark:text-[#F0EDE7]">
                               {plainText ? `"${plainText}"` : ""}
                             </p>
                           )}
@@ -244,13 +229,11 @@ export default function ChatTestimonialsSection({
                   >
                     <div className="h-px flex-1 bg-black/[0.07] dark:bg-white/[0.07]" />
                     <button
-                      onClick={() =>
-                        setVisibleCount((v) => v + INITIAL_VISIBLE)
-                      }
-                      className="flex items-center gap-1 text-[11px] font-medium text-[#7A736C] dark:text-[#B5AFA5] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7] active:scale-[0.97] transition-[color,transform] duration-150 whitespace-nowrap"
+                      onClick={() => setVisibleCount((v) => v + INITIAL_VISIBLE)}
+                      className="flex items-center gap-1 text-[11px] font-medium whitespace-nowrap text-[#7A736C] transition-[color,transform] duration-150 hover:text-[#1A1A1A] active:scale-[0.97] dark:text-[#B5AFA5] dark:hover:text-[#F0EDE7]"
                     >
                       {reviews.length - visibleCount} more
-                      <ChevronDown className="w-3 h-3" />
+                      <ChevronDown className="h-3 w-3" />
                     </button>
                     <div className="h-px flex-1 bg-black/[0.07] dark:bg-white/[0.07]" />
                   </motion.div>
@@ -262,13 +245,13 @@ export default function ChatTestimonialsSection({
                 key="testimonials-empty"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex gap-3 max-w-[85%]"
+                className="flex max-w-[85%] gap-3"
               >
-                <div className="w-8 h-8 shrink-0" />
-                <div className="flex flex-col items-center justify-center w-full py-16 px-4 text-center rounded-2xl border border-dashed border-black/10 dark:border-white/10 bg-[#E5E2DB] dark:bg-[#2A2520]/50">
-                  <div className="w-12 h-12 rounded-full bg-black/[0.03] dark:bg-white/[0.03] flex items-center justify-center mb-4">
+                <div className="h-8 w-8 shrink-0" />
+                <div className="flex w-full flex-col items-center justify-center rounded-2xl border border-dashed border-black/10 bg-[#E5E2DB] px-4 py-16 text-center dark:border-white/10 dark:bg-[#2A2520]/50">
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-black/[0.03] dark:bg-white/[0.03]">
                     <svg
-                      className="w-6 h-6 text-[#7A736C] dark:text-[#9E9893]"
+                      className="h-6 w-6 text-[#7A736C] dark:text-[#9E9893]"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -281,18 +264,18 @@ export default function ChatTestimonialsSection({
                       />
                     </svg>
                   </div>
-                  <h3 className="text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] mb-1">
+                  <h3 className="mb-1 text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                     No recommendations yet
                   </h3>
-                  <p className="text-[13px] text-[#7A736C] dark:text-[#9E9893] max-w-[250px] mb-5">
+                  <p className="mb-5 max-w-[250px] text-[13px] text-[#7A736C] dark:text-[#9E9893]">
                     Add recommendations to build trust and credibility.
                   </p>
                   {canEdit && (
                     <Button
                       onClick={() => openNewReview()}
-                      className="h-9 px-4 rounded-full text-[13px] font-medium bg-[#1A1A1A] dark:bg-white text-white dark:text-black hover:bg-black/80 dark:hover:bg-white/90 transition-colors shadow-sm flex items-center gap-2"
+                      className="flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-4 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
                     >
-                      <Plus className="w-3.5 h-3.5" />
+                      <Plus className="h-3.5 w-3.5" />
                       Add Testimonial
                     </Button>
                   )}

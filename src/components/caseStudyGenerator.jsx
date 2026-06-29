@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState, startTransition } from "react";
 import AiIcon from "../../public/assets/svgs/ai.svg";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -65,7 +65,7 @@ export default function CaseStudyGenerator() {
     }
   };
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const response = await _getProjectTypes();
       if (response) {
@@ -89,35 +89,31 @@ export default function CaseStudyGenerator() {
     } catch (err) {
       console.log(err);
     }
-  };
+  }, [userDetails]);
 
   useEffect(() => {
-    fetchData();
-  }, [userDetails?._id]);
+    startTransition(() => void fetchData());
+  }, [fetchData]);
 
   const handleStepOne = (values) => {
-    const selectedQuestion = typeProjects.find(
-      (item) => item.name == values.projectType
-    );
+    const selectedQuestion = typeProjects.find((item) => item.name == values.projectType);
     if (!selectedQuestion) return;
     const csType = selectedQuestion.type;
     let quest =
       csType === "dev"
         ? aiQuestions.dev
         : csType === "design"
-        ? aiQuestions.design
-        : csType === "product"
-        ? aiQuestions.product
-        : aiQuestions.others;
+          ? aiQuestions.design
+          : csType === "product"
+            ? aiQuestions.product
+            : aiQuestions.others;
     setQuestions(quest.data);
     setStep(2);
   };
 
   const handleSubmit = async (values) => {
     setIsLoading(true);
-    const selectedQuestion = typeProjects.find(
-      (item) => item.name == values.projectType
-    );
+    const selectedQuestion = typeProjects.find((item) => item.name == values.projectType);
     if (!selectedQuestion) return;
     const csType = selectedQuestion.type;
     const data = {
@@ -139,15 +135,15 @@ export default function CaseStudyGenerator() {
   return (
     <div className="w-full">
       <div className="space-y-4">
-        <header className="flex justify-between items-center">
-          <h2 className="text-base font-semibold text-foreground">Generate Case Study</h2>
+        <header className="flex items-center justify-between">
+          <h2 className="text-foreground text-base font-semibold">Generate Case Study</h2>
           <div className="flex gap-4">
             {step > 1 && (
               <button
                 type="button"
                 onClick={() => setStep((prev) => prev - 1)}
                 disabled={isLoading || cred <= 0}
-                className="rounded-full border-2 border-foreground/20 bg-white/50 px-4 py-2 text-sm font-medium text-foreground hover:bg-foreground/10 disabled:opacity-50 transition-colors"
+                className="border-foreground/20 text-foreground hover:bg-foreground/10 rounded-full border-2 bg-white/50 px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
               >
                 Back
               </button>
@@ -156,21 +152,21 @@ export default function CaseStudyGenerator() {
               type="submit"
               form="aiProjectForm"
               disabled={isLoading || cred <= 0}
-              className="rounded-full h-11 px-6 text-base font-semibold bg-foreground text-background hover:bg-foreground/90 disabled:opacity-50 transition-colors flex items-center gap-2"
+              className="bg-foreground text-background hover:bg-foreground/90 flex h-11 items-center gap-2 rounded-full px-6 text-base font-semibold transition-colors disabled:opacity-50"
             >
               {step == 4 && isLoading ? "Generating..." : step == 4 ? "Generate Now" : "Next"}
-              {step == 4 && <AiIcon className="text-background w-4 h-4" />}
+              {step == 4 && <AiIcon className="text-background h-4 w-4" />}
             </button>
           </div>
         </header>
         <main>
-          <div className="flex gap-2 mt-6">
+          <div className="mt-6 flex gap-2">
             <ProgressBar progress={100} />
             <ProgressBar progress={step >= 2 && 100} />
             <ProgressBar progress={step >= 3 && 100} />
             <ProgressBar progress={step == 4 && 100} />
           </div>
-          <div className="flex-1 overflow-y-auto py-6 relative">
+          <div className="relative flex-1 overflow-y-auto py-6">
             {/* {cred <= 0 && <Info className={"mb-4"} />} */}
             {/* This is the scrollable body */}
             <div className={`${(cred <= 0 || isLoading) && "opacity-25"}`}>
@@ -215,10 +211,10 @@ export default function CaseStudyGenerator() {
                   <Form id="aiProjectForm" disabled={isLoading}>
                     {step == 1 && (
                       <div className="space-y-4">
-                        <p className="text-sm font-semibold text-foreground">
+                        <p className="text-foreground text-sm font-semibold">
                           I want to create a project or write a case study on:
                         </p>
-                        <div className="flex flex-col gap-4 mb-2">
+                        <div className="mb-2 flex flex-col gap-4">
                           {typeProjects?.map((res) => (
                             <Field
                               key={res?.name}
@@ -239,65 +235,145 @@ export default function CaseStudyGenerator() {
                       </div>
                     )}
                     {step == 2 && questions.length > 0 && (
-                      <div className="pb-10 space-y-4">
+                      <div className="space-y-4 pb-10">
                         <div className="space-y-2">
-                          <p className="text-sm font-semibold text-foreground">{questions[0]?.question}</p>
-                          <div className={`bg-white dark:bg-white border-2 border-border rounded-2xl hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] transition-all duration-300 ease-out overflow-hidden ${errors.answer1 && touched.answer1 ? "border-red-500" : ""}`}>
+                          <p className="text-foreground text-sm font-semibold">
+                            {questions[0]?.question}
+                          </p>
+                          <div
+                            className={`border-border hover:border-foreground/20 focus-within:border-foreground/30 overflow-hidden rounded-2xl border-2 bg-white transition-all duration-300 ease-out focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] dark:bg-white ${errors.answer1 && touched.answer1 ? "border-red-500" : ""}`}
+                          >
                             <Field
                               name="answer1"
                               as="textarea"
-                              className="border-0 bg-transparent min-h-[100px] px-4 py-3 w-full focus:outline-none text-base text-foreground placeholder:text-muted-foreground/60 resize-none"
+                              className="text-foreground placeholder:text-muted-foreground/60 min-h-[100px] w-full resize-none border-0 bg-transparent px-4 py-3 text-base focus:outline-none"
                               autoComplete="off"
                             />
                           </div>
-                          <ErrorMessage name="answer1" component="p" className="text-sm text-red-500 ml-1" />
-                          <p className="text-xs text-muted-foreground mt-2">✏️<b>Template: </b> {questions[0]?.template}</p>
-                          <p className="text-sm font-semibold text-foreground mt-4">{questions[1]?.question}</p>
-                          <div className={`bg-white dark:bg-white border-2 border-border rounded-2xl hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] transition-all duration-300 ease-out overflow-hidden ${errors.answer2 && touched.answer2 ? "border-red-500" : ""}`}>
+                          <ErrorMessage
+                            name="answer1"
+                            component="p"
+                            className="ml-1 text-sm text-red-500"
+                          />
+                          <p className="text-muted-foreground mt-2 text-xs">
+                            ✏️<b>Template: </b> {questions[0]?.template}
+                          </p>
+                          <p className="text-foreground mt-4 text-sm font-semibold">
+                            {questions[1]?.question}
+                          </p>
+                          <div
+                            className={`border-border hover:border-foreground/20 focus-within:border-foreground/30 overflow-hidden rounded-2xl border-2 bg-white transition-all duration-300 ease-out focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] dark:bg-white ${errors.answer2 && touched.answer2 ? "border-red-500" : ""}`}
+                          >
                             <Field
                               name="answer2"
                               as="textarea"
-                              className="border-0 bg-transparent min-h-[100px] px-4 py-3 w-full focus:outline-none text-base text-foreground placeholder:text-muted-foreground/60 resize-none"
+                              className="text-foreground placeholder:text-muted-foreground/60 min-h-[100px] w-full resize-none border-0 bg-transparent px-4 py-3 text-base focus:outline-none"
                               autoComplete="off"
                             />
                           </div>
-                          <ErrorMessage name="answer2" component="p" className="text-sm text-red-500 ml-1" />
-                          <p className="text-xs text-muted-foreground mt-2">✏️<b>Template: </b> {questions[1]?.template}</p>
+                          <ErrorMessage
+                            name="answer2"
+                            component="p"
+                            className="ml-1 text-sm text-red-500"
+                          />
+                          <p className="text-muted-foreground mt-2 text-xs">
+                            ✏️<b>Template: </b> {questions[1]?.template}
+                          </p>
                         </div>
                       </div>
                     )}
 
                     {step == 3 && questions.length > 0 && (
-                      <div className="pb-10 space-y-4">
-                        <p className="text-sm font-semibold text-foreground">{questions[2]?.question}</p>
-                        <div className={`bg-white dark:bg-white border-2 border-border rounded-2xl hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] transition-all duration-300 ease-out overflow-hidden ${errors.answer3 && touched.answer3 ? "border-red-500" : ""}`}>
-                          <Field name="answer3" as="textarea" className="border-0 bg-transparent min-h-[100px] px-4 py-3 w-full focus:outline-none text-base text-foreground placeholder:text-muted-foreground/60 resize-none" autoComplete="off" />
+                      <div className="space-y-4 pb-10">
+                        <p className="text-foreground text-sm font-semibold">
+                          {questions[2]?.question}
+                        </p>
+                        <div
+                          className={`border-border hover:border-foreground/20 focus-within:border-foreground/30 overflow-hidden rounded-2xl border-2 bg-white transition-all duration-300 ease-out focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] dark:bg-white ${errors.answer3 && touched.answer3 ? "border-red-500" : ""}`}
+                        >
+                          <Field
+                            name="answer3"
+                            as="textarea"
+                            className="text-foreground placeholder:text-muted-foreground/60 min-h-[100px] w-full resize-none border-0 bg-transparent px-4 py-3 text-base focus:outline-none"
+                            autoComplete="off"
+                          />
                         </div>
-                        <ErrorMessage name="answer3" component="p" className="text-sm text-red-500 ml-1" />
-                        <p className="text-xs text-muted-foreground">✏️<b>Template: </b> {questions[2]?.template}</p>
-                        <p className="text-sm font-semibold text-foreground mt-4">{questions[3]?.question}</p>
-                        <div className={`bg-white dark:bg-white border-2 border-border rounded-2xl hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] transition-all duration-300 ease-out overflow-hidden ${errors.answer4 && touched.answer4 ? "border-red-500" : ""}`}>
-                          <Field name="answer4" as="textarea" className="border-0 bg-transparent min-h-[100px] px-4 py-3 w-full focus:outline-none text-base text-foreground placeholder:text-muted-foreground/60 resize-none" autoComplete="off" />
+                        <ErrorMessage
+                          name="answer3"
+                          component="p"
+                          className="ml-1 text-sm text-red-500"
+                        />
+                        <p className="text-muted-foreground text-xs">
+                          ✏️<b>Template: </b> {questions[2]?.template}
+                        </p>
+                        <p className="text-foreground mt-4 text-sm font-semibold">
+                          {questions[3]?.question}
+                        </p>
+                        <div
+                          className={`border-border hover:border-foreground/20 focus-within:border-foreground/30 overflow-hidden rounded-2xl border-2 bg-white transition-all duration-300 ease-out focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] dark:bg-white ${errors.answer4 && touched.answer4 ? "border-red-500" : ""}`}
+                        >
+                          <Field
+                            name="answer4"
+                            as="textarea"
+                            className="text-foreground placeholder:text-muted-foreground/60 min-h-[100px] w-full resize-none border-0 bg-transparent px-4 py-3 text-base focus:outline-none"
+                            autoComplete="off"
+                          />
                         </div>
-                        <ErrorMessage name="answer4" component="p" className="text-sm text-red-500 ml-1" />
-                        <p className="text-xs text-muted-foreground">✏️<b>Template: </b> {questions[3]?.template}</p>
+                        <ErrorMessage
+                          name="answer4"
+                          component="p"
+                          className="ml-1 text-sm text-red-500"
+                        />
+                        <p className="text-muted-foreground text-xs">
+                          ✏️<b>Template: </b> {questions[3]?.template}
+                        </p>
                       </div>
                     )}
 
                     {step == 4 && questions.length > 0 && (
-                      <div className="pb-10 space-y-4">
-                        <p className="text-sm font-semibold text-foreground">{questions[4]?.question}</p>
-                        <div className={`bg-white dark:bg-white border-2 border-border rounded-2xl hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] transition-all duration-300 ease-out overflow-hidden ${errors.answer5 && touched.answer5 ? "border-red-500" : ""}`}>
-                          <Field name="answer5" as="textarea" className="border-0 bg-transparent min-h-[100px] px-4 py-3 w-full focus:outline-none text-base text-foreground placeholder:text-muted-foreground/60 resize-none" autoComplete="off" />
+                      <div className="space-y-4 pb-10">
+                        <p className="text-foreground text-sm font-semibold">
+                          {questions[4]?.question}
+                        </p>
+                        <div
+                          className={`border-border hover:border-foreground/20 focus-within:border-foreground/30 overflow-hidden rounded-2xl border-2 bg-white transition-all duration-300 ease-out focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] dark:bg-white ${errors.answer5 && touched.answer5 ? "border-red-500" : ""}`}
+                        >
+                          <Field
+                            name="answer5"
+                            as="textarea"
+                            className="text-foreground placeholder:text-muted-foreground/60 min-h-[100px] w-full resize-none border-0 bg-transparent px-4 py-3 text-base focus:outline-none"
+                            autoComplete="off"
+                          />
                         </div>
-                        <ErrorMessage name="answer5" component="p" className="text-sm text-red-500 ml-1" />
-                        <p className="text-xs text-muted-foreground">✏️<b>Template: </b> {questions[4]?.template}</p>
-                        <p className="text-sm font-semibold text-foreground mt-4">{questions[5]?.question}</p>
-                        <div className={`bg-white dark:bg-white border-2 border-border rounded-2xl hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] transition-all duration-300 ease-out overflow-hidden ${errors.answer6 && touched.answer6 ? "border-red-500" : ""}`}>
-                          <Field name="answer6" as="textarea" className="border-0 bg-transparent min-h-[100px] px-4 py-3 w-full focus:outline-none text-base text-foreground placeholder:text-muted-foreground/60 resize-none" autoComplete="off" />
+                        <ErrorMessage
+                          name="answer5"
+                          component="p"
+                          className="ml-1 text-sm text-red-500"
+                        />
+                        <p className="text-muted-foreground text-xs">
+                          ✏️<b>Template: </b> {questions[4]?.template}
+                        </p>
+                        <p className="text-foreground mt-4 text-sm font-semibold">
+                          {questions[5]?.question}
+                        </p>
+                        <div
+                          className={`border-border hover:border-foreground/20 focus-within:border-foreground/30 overflow-hidden rounded-2xl border-2 bg-white transition-all duration-300 ease-out focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] dark:bg-white ${errors.answer6 && touched.answer6 ? "border-red-500" : ""}`}
+                        >
+                          <Field
+                            name="answer6"
+                            as="textarea"
+                            className="text-foreground placeholder:text-muted-foreground/60 min-h-[100px] w-full resize-none border-0 bg-transparent px-4 py-3 text-base focus:outline-none"
+                            autoComplete="off"
+                          />
                         </div>
-                        <ErrorMessage name="answer6" component="p" className="text-sm text-red-500 ml-1" />
-                        <p className="text-xs text-muted-foreground">✏️<b>Template: </b> {questions[5]?.template}</p>
+                        <ErrorMessage
+                          name="answer6"
+                          component="p"
+                          className="ml-1 text-sm text-red-500"
+                        />
+                        <p className="text-muted-foreground text-xs">
+                          ✏️<b>Template: </b> {questions[5]?.template}
+                        </p>
                       </div>
                     )}
                   </Form>

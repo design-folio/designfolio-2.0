@@ -1,12 +1,12 @@
-import React, { useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { motion } from 'framer-motion';
-import BlockRenderer from '@/components/blockRenderer';
-import ProjectInfo from '@/components/projectInfo';
-import ProjectPassword from '@/components/projectPassword';
-import TiptapRenderer from '@/components/tiptapRenderer';
-import { _getProjectDetails } from '@/network/get-request';
-import { containerVariants, itemVariants } from '@/lib/animationVariants';
+import React, { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { motion } from "motion/react";
+import BlockRenderer from "@/components/blockRenderer";
+import ProjectInfo from "@/components/projectInfo";
+import ProjectPassword from "@/components/projectPassword";
+import TiptapRenderer from "@/components/tiptapRenderer";
+import { _getProjectDetails } from "@/network/get-request";
+import { containerVariants, itemVariants } from "@/lib/animationVariants";
 
 /**
  * Renders project content for the in-place dock window.
@@ -18,11 +18,15 @@ const ProjectContentView = ({ projectId, userDetails }) => {
   const contextProject = useMemo(() => {
     if (!projectId || !userDetails?.projects) return null;
     return userDetails.projects.find((p) => p._id === projectId);
-  }, [projectId, userDetails?.projects]);
+  }, [projectId, userDetails]);
 
   const shouldFetch = !!projectId && userDetails !== null && !contextProject;
 
-  const { data: fetchedData, isLoading, isFetching } = useQuery({
+  const {
+    data: fetchedData,
+    isLoading,
+    isFetching,
+  } = useQuery({
     queryKey: [`project-${projectId}`],
     queryFn: async () => {
       const response = await _getProjectDetails(projectId, 1);
@@ -61,8 +65,8 @@ const ProjectContentView = ({ projectId, userDetails }) => {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[280px] gap-4 p-8 text-[#666]">
-        <div className="w-10 h-10 border-2 border-[#d1d1d1] border-t-[#007aff] rounded-full animate-spin" />
+      <div className="flex min-h-[280px] flex-col items-center justify-center gap-4 p-8 text-[#666]">
+        <div className="h-10 w-10 animate-spin rounded-full border-2 border-[#d1d1d1] border-t-[#007aff]" />
         <span className="text-sm">Loading project…</span>
       </div>
     );
@@ -70,14 +74,14 @@ const ProjectContentView = ({ projectId, userDetails }) => {
 
   if (!project) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[280px] p-8 text-[#666] text-sm">
+      <div className="flex min-h-[280px] flex-col items-center justify-center p-8 text-sm text-[#666]">
         Project not found.
       </div>
     );
   }
 
   return (
-    <div className="max-w-[848px] mx-auto pt-4 pb-10 px-4 lg:px-0">
+    <div className="mx-auto max-w-[848px] px-4 pt-4 pb-10 lg:px-0">
       <motion.div
         className="flex flex-col gap-3"
         variants={containerVariants}
@@ -105,7 +109,7 @@ const ProjectContentView = ({ projectId, userDetails }) => {
             </motion.div>
             {project?.contentVersion === 2 && project?.tiptapContent ? (
               <motion.div variants={itemVariants}>
-                <TiptapRenderer content={project.tiptapContent} cla/>
+                <TiptapRenderer content={project.tiptapContent} cla />
               </motion.div>
             ) : project?.content ? (
               <motion.div variants={itemVariants}>

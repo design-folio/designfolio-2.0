@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState, startTransition } from "react";
 import Analytics from "@/components/analytics";
 import { useGlobalContext } from "@/context/globalContext";
 import { getServerSideProps } from "@/lib/loggedInServerSideProps";
@@ -22,8 +22,10 @@ function AnalyticsPage() {
   } = useGlobalContext();
 
   const isMobile = useIsMobile();
-  const lastSidebarRef = useRef(null);
-  if (activeSidebar) lastSidebarRef.current = activeSidebar;
+  const [lastSidebar, setLastSidebar] = useState(() => activeSidebar ?? null);
+  useEffect(() => {
+    if (activeSidebar != null) startTransition(() => setLastSidebar(activeSidebar));
+  }, [activeSidebar]);
 
   // Compensate for scrollbar gutter when sidebar opens so content doesn't shift.
   useEffect(() => {
@@ -41,16 +43,16 @@ function AnalyticsPage() {
 
   useEffect(() => {
     if (userDetailsIsState) {
-      setIsUserDetailsFromCache(false);
+      startTransition(() => setIsUserDetailsFromCache(false));
     } else {
-      setIsUserDetailsFromCache(true);
+      startTransition(() => setIsUserDetailsFromCache(true));
     }
-  }, []);
+  }, [userDetailsIsState, setIsUserDetailsFromCache]);
 
   useEffect(() => {
     if (userDetails?.wallpaper !== undefined) {
       const wp = userDetails.wallpaper;
-      const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
+      const wpValue = wp && typeof wp === "object" ? wp.url || wp.value : wp;
       setWallpaper(wpValue !== undefined ? wpValue : 0);
     }
   }, [userDetails?.wallpaper, setWallpaper]);
@@ -83,14 +85,14 @@ function AnalyticsPage() {
     open: !!activeSidebar,
     onOpenChange: (open) => !open && closeSidebar(true),
     style: {
-      "--sidebar-width": getSidebarShiftWidth(lastSidebarRef.current) || "400px",
+      "--sidebar-width": getSidebarShiftWidth(lastSidebar) || "400px",
     },
     defaultOpen: false,
   };
 
   return (
     <SidebarProvider {...sidebarProviderProps}>
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
         <div className={containerClass}>
           {template === TEMPLATE_IDS.MONO && <div className="custom-dashed-t" />}

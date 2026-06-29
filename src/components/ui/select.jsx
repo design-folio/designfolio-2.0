@@ -46,10 +46,7 @@ const SelectScrollUpButton = React.forwardRef(function SelectScrollUpButton(
     SelectPrimitive.ScrollUpButton,
     {
       ref: ref,
-      className: cn(
-        "flex cursor-default items-center justify-center py-1",
-        className
-      ),
+      className: cn("flex cursor-default items-center justify-center py-1", className),
       ...props,
     },
     /*#__PURE__*/ React.createElement(ChevronUp, {
@@ -68,10 +65,7 @@ const SelectScrollDownButton = React.forwardRef(function SelectScrollDownButton(
     SelectPrimitive.ScrollDownButton,
     {
       ref: ref,
-      className: cn(
-        "flex cursor-default items-center justify-center py-1",
-        className
-      ),
+      className: cn("flex cursor-default items-center justify-center py-1", className),
       ...props,
     },
     /*#__PURE__*/ React.createElement(ChevronDown, {
@@ -80,8 +74,7 @@ const SelectScrollDownButton = React.forwardRef(function SelectScrollDownButton(
   );
 });
 
-SelectScrollDownButton.displayName =
-  SelectPrimitive.ScrollDownButton.displayName;
+SelectScrollDownButton.displayName = SelectPrimitive.ScrollDownButton.displayName;
 
 const SelectContent = React.forwardRef(function SelectContent(
   { className, children, position = "popper", ...props },
@@ -110,7 +103,7 @@ const SelectContent = React.forwardRef(function SelectContent(
           className: cn(
             "p-1",
             position === "popper" &&
-              "h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]"
+              "h-(--radix-select-trigger-height) w-full min-w-(--radix-select-trigger-width)"
           ),
         },
         children
@@ -122,10 +115,7 @@ const SelectContent = React.forwardRef(function SelectContent(
 
 SelectContent.displayName = SelectPrimitive.Content.displayName;
 
-const SelectLabel = React.forwardRef(function SelectLabel(
-  { className, ...props },
-  ref
-) {
+const SelectLabel = React.forwardRef(function SelectLabel({ className, ...props }, ref) {
   return /*#__PURE__*/ React.createElement(SelectPrimitive.Label, {
     ref: ref,
     className: cn("py-1.5 pl-8 pr-2 text-sm font-semibold", className),
@@ -135,10 +125,7 @@ const SelectLabel = React.forwardRef(function SelectLabel(
 
 SelectLabel.displayName = SelectPrimitive.Label.displayName;
 
-const SelectItem = React.forwardRef(function SelectItem(
-  { className, children, ...props },
-  ref
-) {
+const SelectItem = React.forwardRef(function SelectItem({ className, children, ...props }, ref) {
   return /*#__PURE__*/ React.createElement(
     SelectPrimitive.Item,
     {
@@ -152,8 +139,7 @@ const SelectItem = React.forwardRef(function SelectItem(
     /*#__PURE__*/ React.createElement(
       "span",
       {
-        className:
-          "absolute left-2 flex h-3.5 w-3.5 items-center justify-center",
+        className: "absolute left-2 flex h-3.5 w-3.5 items-center justify-center",
       },
       /*#__PURE__*/ React.createElement(
         SelectPrimitive.ItemIndicator,
@@ -169,10 +155,7 @@ const SelectItem = React.forwardRef(function SelectItem(
 
 SelectItem.displayName = SelectPrimitive.Item.displayName;
 
-const SelectSeparator = React.forwardRef(function SelectSeparator(
-  { className, ...props },
-  ref
-) {
+const SelectSeparator = React.forwardRef(function SelectSeparator({ className, ...props }, ref) {
   return /*#__PURE__*/ React.createElement(SelectPrimitive.Separator, {
     ref: ref,
     className: cn("-mx-1 my-1 h-px bg-muted", className),

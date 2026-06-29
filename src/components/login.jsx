@@ -1,32 +1,30 @@
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { Formik, Form } from 'formik';
-import * as Yup from 'yup';
-import { useGoogleLogin } from '@react-oauth/google';
-import { _loginWithEmail, _loginWithGmail } from '@/network/post-request';
-import { setToken } from '@/lib/cooikeManager';
-import { Mail } from 'lucide-react';
-import Link from 'next/link';
-import { AuthLayout } from '@/components/ui/auth-layout';
-import { FormInput } from '@/components/ui/form-input';
-import { FormButton } from '@/components/ui/form-button';
-import { GoogleButton } from '@/components/ui/google-button';
-import { Divider } from '@/components/ui/divider';
-import { Button } from '@/components/ui/button';
-import { motion } from 'framer-motion';
-import { usePostHogEvent } from '@/hooks/usePostHogEvent';
-import { usePostHogIdentify } from '@/hooks/usePostHogIdentify';
-import { POSTHOG_EVENT_NAMES } from '@/lib/posthogEventNames';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import { Formik, Form } from "formik";
+import * as Yup from "yup";
+import { useGoogleLogin } from "@react-oauth/google";
+import { _loginWithEmail, _loginWithGmail } from "@/network/post-request";
+import { setToken } from "@/lib/cooikeManager";
+import { Mail } from "lucide-react";
+import Link from "next/link";
+import { AuthLayout } from "@/components/ui/auth-layout";
+import { FormInput } from "@/components/ui/form-input";
+import { FormButton } from "@/components/ui/form-button";
+import { GoogleButton } from "@/components/ui/google-button";
+import { Divider } from "@/components/ui/divider";
+import { Button } from "@/components/ui/button";
+import { motion } from "motion/react";
+import { usePostHogEvent } from "@/hooks/usePostHogEvent";
+import { usePostHogIdentify } from "@/hooks/usePostHogIdentify";
+import { POSTHOG_EVENT_NAMES } from "@/lib/posthogEventNames";
 
 const LoginValidationSchema = Yup.object().shape({
-  email: Yup.string()
-    .email('Invalid email address')
-    .required('Email is required'),
-  password: Yup.string().required('Password is required'),
+  email: Yup.string().email("Invalid email address").required("Email is required"),
+  password: Yup.string().required("Password is required"),
 });
 
 export default function Login() {
-  const [loginStep, setLoginStep] = useState('method');
+  const [loginStep, setLoginStep] = useState("method");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -35,21 +33,18 @@ export default function Login() {
 
   useEffect(() => {
     if (router) {
-      router.prefetch('/builder');
-      router.prefetch('/email-verify');
+      router.prefetch("/builder");
+      router.prefetch("/email-verify");
     }
   }, [router]);
 
   const googleLogin = useGoogleLogin({
-    onSuccess: async tokenResponse => {
+    onSuccess: async (tokenResponse) => {
       try {
         setIsLoading(true);
-        const response = await fetch(
-          'https://www.googleapis.com/oauth2/v2/userinfo',
-          {
-            headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
-          }
-        );
+        const response = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
+          headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+        });
         const userData = await response.json();
 
         const data = {
@@ -64,30 +59,30 @@ export default function Login() {
         const jobId = router.query.job;
         const redirect = jobId
           ? `/jobs/share/${jobId}`
-          : router.query.redirect && typeof router.query.redirect === 'string'
+          : router.query.redirect && typeof router.query.redirect === "string"
             ? router.query.redirect
-            : '/builder';
-        const emailVerifyUrl = `/email-verify${jobId ? `?job=${jobId}` : ''}`;
+            : "/builder";
+        const emailVerifyUrl = `/email-verify${jobId ? `?job=${jobId}` : ""}`;
         router.push(emailVerification ? redirect : emailVerifyUrl);
 
         identify(userData.email, {
           email: userData.email,
         });
         event(POSTHOG_EVENT_NAMES.LOGIN_SUCCESS, {
-          method: 'google',
+          method: "google",
           email: userData.email,
         });
       } catch (err) {
         event(POSTHOG_EVENT_NAMES.LOGIN_FAILED, {
-          method: 'google',
+          method: "google",
           error: err?.response?.data?.message || err.message,
         });
-        console.error('Google login failed:', err);
+        console.error("Google login failed:", err);
       } finally {
         setIsLoading(false);
       }
     },
-    onError: () => console.log('Google login failed'),
+    onError: () => console.log("Google login failed"),
   });
 
   const handleEmailLogin = async (values, actions) => {
@@ -104,26 +99,26 @@ export default function Login() {
       const jobId = router.query.job;
       const redirect = jobId
         ? `/jobs/share/${jobId}`
-        : router.query.redirect && typeof router.query.redirect === 'string'
+        : router.query.redirect && typeof router.query.redirect === "string"
           ? router.query.redirect
-          : '/builder';
-      const emailVerifyUrl = `/email-verify?email=${values.email}${jobId ? `&job=${jobId}` : ''}`;
+          : "/builder";
+      const emailVerifyUrl = `/email-verify?email=${values.email}${jobId ? `&job=${jobId}` : ""}`;
       router.push(emailVerification ? redirect : emailVerifyUrl);
 
       identify(data.email, {
         email: data.email,
       });
       event(POSTHOG_EVENT_NAMES.LOGIN_SUCCESS, {
-        method: 'email',
+        method: "email",
         email: data.email,
       });
     } catch (err) {
       event(POSTHOG_EVENT_NAMES.LOGIN_FAILED, {
-        method: 'email',
+        method: "email",
         error: err?.response?.data?.message || err.message,
       });
 
-      console.error('Email login error:', err);
+      console.error("Email login error:", err);
     } finally {
       setIsLoading(false);
       actions.setSubmitting(false);
@@ -133,18 +128,18 @@ export default function Login() {
   const handleGoogleLogin = () => {
     event(POSTHOG_EVENT_NAMES.LOGIN_STARTED);
     event(POSTHOG_EVENT_NAMES.LOGIN_METHOD_SELECTED, {
-      method: 'google',
+      method: "google",
     });
     googleLogin();
   };
 
-  if (loginStep === 'email') {
+  if (loginStep === "email") {
     return (
       <AuthLayout
         title="Log in with email"
         description="Enter your credentials to continue"
         showBackButton
-        onBack={() => setLoginStep('method')}
+        onBack={() => setLoginStep("method")}
       >
         <motion.div
           key="email"
@@ -154,7 +149,7 @@ export default function Login() {
           transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
         >
           <Formik
-            initialValues={{ email: '', password: '' }}
+            initialValues={{ email: "", password: "" }}
             validationSchema={LoginValidationSchema}
             onSubmit={handleEmailLogin}
           >
@@ -197,17 +192,13 @@ export default function Login() {
                 <div className="flex justify-end">
                   <Link
                     href="/forgot-password"
-                    className="text-sm font-medium hover:underline text-[#FF553E]"
+                    className="text-sm font-medium text-[#FF553E] hover:underline"
                   >
                     Forgot password?
                   </Link>
                 </div>
 
-                <FormButton
-                  type="submit"
-                  isLoading={isLoading}
-                  disabled={isSubmitting}
-                >
+                <FormButton type="submit" isLoading={isLoading} disabled={isSubmitting}>
                   Log in
                 </FormButton>
 
@@ -217,15 +208,17 @@ export default function Login() {
                   Log in with Google
                 </GoogleButton>
 
-                <p className="text-center text-sm text-foreground/70 mt-6">
-                  Don't have an account?{' '}
+                <p className="text-foreground/70 mt-6 text-center text-sm">
+                  Don&apos;t have an account?{" "}
                   <button
                     type="button"
                     onClick={() => {
-                      const hasResume = typeof window !== "undefined" && !!sessionStorage.getItem("df_parsed_resume");
+                      const hasResume =
+                        typeof window !== "undefined" &&
+                        !!sessionStorage.getItem("df_parsed_resume");
                       router.push(hasResume ? "/resume-signup" : "/claim-link");
                     }}
-                    className="hover:underline font-medium text-[#FF553E] cursor-pointer"
+                    className="cursor-pointer font-medium text-[#FF553E] hover:underline"
                   >
                     Sign up
                   </button>
@@ -239,10 +232,7 @@ export default function Login() {
   }
 
   return (
-    <AuthLayout
-      title="Welcome back"
-      description="Log in to your account to continue"
-    >
+    <AuthLayout title="Welcome back" description="Log in to your account to continue">
       <motion.div
         key="method"
         initial={{ opacity: 0, y: 10 }}
@@ -259,29 +249,30 @@ export default function Login() {
 
           <Button
             variant="outline"
-            className="w-full rounded-full h-[50px] px-5 text-base font-medium border-border bg-[--input-bg-color] hover:bg-muted gap-3"
+            className="border-border hover:bg-muted h-[50px] w-full gap-3 rounded-full bg-(--input-bg-color) px-5 text-base font-medium"
             onClick={() => {
               event(POSTHOG_EVENT_NAMES.LOGIN_STARTED);
               event(POSTHOG_EVENT_NAMES.LOGIN_METHOD_SELECTED, {
-                method: 'email',
+                method: "email",
               });
-              setLoginStep('email');
+              setLoginStep("email");
             }}
           >
-            <Mail className="w-5 h-5" />
+            <Mail className="h-5 w-5" />
             Log in with Email
           </Button>
         </div>
 
-        <p className="text-center text-sm text-foreground/70 mt-8">
-          Don't have an account?{' '}
+        <p className="text-foreground/70 mt-8 text-center text-sm">
+          Don&apos;t have an account?{" "}
           <button
             type="button"
             onClick={() => {
-              const hasResume = typeof window !== "undefined" && !!sessionStorage.getItem("df_parsed_resume");
+              const hasResume =
+                typeof window !== "undefined" && !!sessionStorage.getItem("df_parsed_resume");
               router.push(hasResume ? "/resume-signup" : "/claim-link");
             }}
-            className="hover:underline font-medium text-[#FF553E] cursor-pointer"
+            className="cursor-pointer font-medium text-[#FF553E] hover:underline"
           >
             Sign up
           </button>

@@ -23,10 +23,8 @@ export default function BlogPostRecommendations({ postId }) {
 
   if (!recommendedPosts && isLoading) {
     return (
-      <div className="mt-10 pt-8 border-t border-gray-200">
-        <h3 className="text-xl font-semibold mb-4 text-gray-800">
-          More from Shai and Designfolio
-        </h3>
+      <div className="mt-10 border-t border-gray-200 pt-8">
+        <h3 className="mb-4 text-xl font-semibold text-gray-800">More from Shai and Designfolio</h3>
 
         <div className="space-y-4">
           {Array.from({ length: 2 }).map((_, index) => (
@@ -35,7 +33,7 @@ export default function BlogPostRecommendations({ postId }) {
                 <Skeleton className="aspect-[4/3] rounded-md" />
               </div>
               <div className="w-2/3 md:w-3/4">
-                <Skeleton className="h-6 w-3/4 mb-2" />
+                <Skeleton className="mb-2 h-6 w-3/4" />
                 <Skeleton className="h-4 w-1/2" />
               </div>
             </div>
@@ -50,8 +48,8 @@ export default function BlogPostRecommendations({ postId }) {
   }
 
   return (
-    <div className="mt-10 pt-8 border-t border-gray-200 cursor-pointer">
-      <h3 className="text-xl font-semibold mb-4 text-gray-800 cursor-pointer">
+    <div className="mt-10 cursor-pointer border-t border-gray-200 pt-8">
+      <h3 className="mb-4 cursor-pointer text-xl font-semibold text-gray-800">
         More from Shai and Designfolio
       </h3>
 
@@ -60,23 +58,23 @@ export default function BlogPostRecommendations({ postId }) {
           <Link
             key={post.id}
             href={post.slug ? `/blog/${post.slug}` : `/blog/${post.id}`}
-            className="block group"
+            className="group block"
           >
-            <div className="flex gap-4 hover:bg-gray-50 p-2 -mx-2 rounded-md transition-colors cursor-pointer">
-              <div className="w-1/3 md:w-1/4 flex-shrink-0 cursor-pointer">
-                <div className="aspect-[4/3] rounded-md overflow-hidden bg-gray-100 cursor-pointer">
+            <div className="-mx-2 flex cursor-pointer gap-4 rounded-md p-2 transition-colors hover:bg-gray-50">
+              <div className="w-1/3 shrink-0 cursor-pointer md:w-1/4">
+                <div className="aspect-[4/3] cursor-pointer overflow-hidden rounded-md bg-gray-100">
                   <img
                     src={post.image}
                     alt={post.title}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 cursor-pointer"
+                    className="h-full w-full cursor-pointer object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                 </div>
               </div>
-              <div className="w-2/3 md:w-3/4 cursor-pointer">
-                <h4 className="font-medium text-gray-900 mb-1 line-clamp-2 group-hover:text-blue-600 transition-colors cursor-pointer">
+              <div className="w-2/3 cursor-pointer md:w-3/4">
+                <h4 className="mb-1 line-clamp-2 cursor-pointer font-medium text-gray-900 transition-colors group-hover:text-blue-600">
                   {post.title}
                 </h4>
-                <p className="text-sm text-gray-500 cursor-pointer">
+                <p className="cursor-pointer text-sm text-gray-500">
                   {new Date(post.date).toLocaleDateString("en-US", {
                     month: "short",
                     day: "numeric",

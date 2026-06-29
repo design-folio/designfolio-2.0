@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { twMerge } from "tailwind-merge";
 import { useGlobalContext } from "@/context/globalContext";
 
@@ -24,7 +24,7 @@ export const DivOrigami = ({ userDetails: userDetailsProp } = {}) => {
       <img
         src={tool?.image || tool?.logo}
         alt={tool?.label || tool?.name}
-        className="w-12 h-12 object-contain"
+        className="h-12 w-12 object-contain"
       />
     </LogoItem>
   ));
@@ -47,7 +47,9 @@ const LogoRolodex = ({ items }) => {
     intervalRef.current = setInterval(() => {
       setIndex((pv) => pv + 1);
     }, DELAY_IN_MS);
-    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
   }, []);
 
   return (
@@ -57,38 +59,55 @@ const LogoRolodex = ({ items }) => {
     >
       <AnimatePresence mode="sync">
         <motion.div
-          style={{ y: "-50%", x: "-50%", clipPath: "polygon(0 0, 100% 0, 100% 50%, 0 50%)", zIndex: -index, backfaceVisibility: "hidden" }}
+          style={{
+            y: "-50%",
+            x: "-50%",
+            clipPath: "polygon(0 0, 100% 0, 100% 50%, 0 50%)",
+            zIndex: -index,
+            backfaceVisibility: "hidden",
+          }}
           key={index}
           transition={{ duration: TRANSITION_DURATION_IN_SECS, ease: "easeInOut" }}
           initial={{ rotateX: "0deg" }}
           animate={{ rotateX: "0deg" }}
           exit={{ rotateX: "-180deg" }}
-          className="absolute left-1/2 top-1/2"
+          className="absolute top-1/2 left-1/2"
         >
           {items[index % items.length]}
         </motion.div>
         <motion.div
-          style={{ y: "-50%", x: "-50%", clipPath: "polygon(0 50%, 100% 50%, 100% 100%, 0 100%)", zIndex: index, backfaceVisibility: "hidden" }}
+          style={{
+            y: "-50%",
+            x: "-50%",
+            clipPath: "polygon(0 50%, 100% 50%, 100% 100%, 0 100%)",
+            zIndex: index,
+            backfaceVisibility: "hidden",
+          }}
           key={(index + 1) * 2}
           initial={{ rotateX: "180deg" }}
           animate={{ rotateX: "0deg" }}
           exit={{ rotateX: "0deg" }}
           transition={{ duration: TRANSITION_DURATION_IN_SECS, ease: "easeInOut" }}
-          className="absolute left-1/2 top-1/2"
+          className="absolute top-1/2 left-1/2"
         >
           {items[index % items.length]}
         </motion.div>
       </AnimatePresence>
       <hr
         style={{ transform: "translateZ(1px)" }}
-        className="absolute left-0 right-0 top-1/2 z-[999999999] -translate-y-1/2 border-t border-black/10"
+        className="absolute top-1/2 right-0 left-0 z-[999999999] -translate-y-1/2 border-t border-black/10"
       />
     </div>
   );
 };
 
 const LogoItem = ({ children, className }) => (
-  <div className={twMerge("grid h-44 w-80 place-content-center text-6xl shadow-sm border-r border-black/5", className)}>
+  <div
+    className={twMerge(
+      "grid h-44 w-80 place-content-center border-r border-black/5 text-6xl shadow-sm",
+      className
+    )}
+  >
     {children}
   </div>
 );

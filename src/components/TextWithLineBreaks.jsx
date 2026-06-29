@@ -13,21 +13,20 @@ export default function TextWithLineBreaks({ text, color }) {
 
   // Join lines into a single text block for truncation
   const fullText = text;
-  const truncatedText =
-    text.length > splitCount ? `${text.substring(0, splitCount)}...` : text;
+  const truncatedText = text.length > splitCount ? `${text.substring(0, splitCount)}...` : text;
 
   return (
     <div>
       {/* Render formatted text using dangerouslySetInnerHTML to preserve line breaks */}
       <p
-        className={`text-[16px] font-medium leading-[22.4px] font-inter whitespace-pre-line break-all ${color}`}
+        className={`font-inter text-[16px] leading-[22.4px] font-medium break-all whitespace-pre-line ${color}`}
       >
         {showFullText ? fullText : truncatedText}
       </p>
 
       {text.length > splitCount && ( // Show button only if truncation is needed
         <button
-          className="text-blue-700 hover:text-blue-900 hover:underline font-medium"
+          className="font-medium text-blue-700 hover:text-blue-900 hover:underline"
           onClick={handleShowMore}
           style={{ color: "#5C6486" }}
         >

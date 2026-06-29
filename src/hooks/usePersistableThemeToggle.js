@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, startTransition } from "react";
 import { useTheme } from "next-themes";
 import { useGlobalContext } from "@/context/globalContext";
 
@@ -12,7 +12,9 @@ export function usePersistableThemeToggle(persist) {
   const { changeTheme } = useGlobalContext();
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    startTransition(() => setMounted(true));
+  }, []);
 
   const resolved = (resolvedTheme ?? theme) || "light";
   const isDark = mounted && resolved === "dark";
@@ -25,7 +27,7 @@ export function usePersistableThemeToggle(persist) {
         setTheme(nextDark ? "dark" : "light");
       }
     },
-    [persist, changeTheme, setTheme],
+    [persist, changeTheme, setTheme]
   );
 
   const toggleTheme = useCallback(() => {

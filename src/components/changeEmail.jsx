@@ -9,9 +9,7 @@ import * as Yup from "yup";
 
 // Yup validation schema
 const changeEmailSchema = Yup.object().shape({
-  email: Yup.string()
-    .email("Invalid email address")
-    .required("Email is required"),
+  email: Yup.string().email("Invalid email address").required("Email is required"),
 });
 
 export default function ChangeEmail() {
@@ -39,7 +37,8 @@ export default function ChangeEmail() {
       }
     } catch (error) {
       console.error("Change email error:", error);
-      const errorMessage = error.response?.data?.message || "Failed to change email. Please try again.";
+      const errorMessage =
+        error.response?.data?.message || "Failed to change email. Please try again.";
     } finally {
       setLoading(false);
     }

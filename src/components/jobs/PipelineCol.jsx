@@ -1,9 +1,14 @@
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, startTransition } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import { ChevronDown, ChevronLeft, ChevronRight, Clapperboard } from "lucide-react";
 import Lottie from "lottie-react";
 import aiAssistantAnimation from "@/assets/AI-Assistant.json";
-import { KanbanColumn, KanbanColumnContent, KanbanItem, KanbanItemHandle } from "@/components/ui/kanban";
+import {
+  KanbanColumn,
+  KanbanColumnContent,
+  KanbanItem,
+  KanbanItemHandle,
+} from "@/components/ui/kanban";
 import { JobCard } from "./JobCard";
 import { COL_LABELS } from "@/data/jobs";
 
@@ -18,7 +23,7 @@ export function PipelineCol({
   onMoveTo,
   onDecide,
   colIndex = 0,
-  onExhausted,      // undefined = exhausted (hide button); function = show "Get More" button
+  onExhausted, // undefined = exhausted (hide button); function = show "Get More" button
   isRescanning = false,
   isListPhase = false,
   isCollapsed,
@@ -33,8 +38,11 @@ export function PipelineCol({
   const [bannerReady, setBannerReady] = useState(false);
 
   useEffect(() => {
-    if (!offerThreshold) { setBannerReady(false); return; }
-    const t = setTimeout(() => setBannerReady(true), 1200);
+    if (!offerThreshold) {
+      startTransition(() => setBannerReady(false));
+      return;
+    }
+    const t = setTimeout(() => startTransition(() => setBannerReady(true)), 1200);
     return () => clearTimeout(t);
   }, [offerThreshold]);
 
@@ -58,7 +66,7 @@ export function PipelineCol({
             ease: "easeOut",
           }}
         >
-          <KanbanItem value={job.id} className="rounded-lg group/item">
+          <KanbanItem value={job.id} className="group/item rounded-lg">
             <KanbanItemHandle className="w-full cursor-grab active:cursor-grabbing">
               <JobCard
                 job={job}
@@ -67,7 +75,9 @@ export function PipelineCol({
                 onDismiss={onDismiss ? () => onDismiss(job.id) : undefined}
                 onMockInterview={!isPicks ? () => onMockInterview(job.id) : undefined}
                 onAskScout={() => onAskScout(job.id)}
-                onMoveTo={!isPicks && onMoveTo ? (targetColId) => onMoveTo(job.id, targetColId) : undefined}
+                onMoveTo={
+                  !isPicks && onMoveTo ? (targetColId) => onMoveTo(job.id, targetColId) : undefined
+                }
                 currentColId={colId}
                 joyrideActive={isPicks && joyrideActive}
                 joyrideFirst={isPicks && joyrideActive && idx === 0}
@@ -89,14 +99,14 @@ export function PipelineCol({
           {!isRescanning && onExhausted && (
             <button
               onClick={onExhausted}
-              className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-black/[0.08] dark:border-border text-[12px] font-medium text-foreground/50 hover:text-foreground hover:border-foreground/20 transition-colors bg-transparent"
+              className="dark:border-border text-foreground/50 hover:text-foreground hover:border-foreground/20 flex w-full items-center justify-center gap-1.5 rounded-xl border border-black/[0.08] bg-transparent py-2.5 text-[12px] font-medium transition-colors"
             >
-              <ChevronDown className="w-3.5 h-3.5" />
+              <ChevronDown className="h-3.5 w-3.5" />
               Get more matches
             </button>
           )}
           {!isRescanning && !onExhausted && (
-            <p className="text-center text-[11px] text-muted-foreground/40 py-2">
+            <p className="text-muted-foreground/40 py-2 text-center text-[11px]">
               No more new roles found
             </p>
           )}
@@ -117,19 +127,19 @@ export function PipelineCol({
             {[0, 1, 2].map((i) => (
               <motion.div
                 key={i}
-                className="w-1.5 h-1.5 rounded-full bg-[#FF553E]"
+                className="h-1.5 w-1.5 rounded-full bg-[#FF553E]"
                 animate={{ opacity: [0.3, 1, 0.3], scale: [0.8, 1.2, 0.8] }}
                 transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }}
               />
             ))}
           </div>
-          <span className="text-[11px] text-muted-foreground/50">Finding more roles…</span>
+          <span className="text-muted-foreground/50 text-[11px]">Finding more roles…</span>
         </motion.div>
       )}
 
       {jobs.length === 0 && !isRescanning && !isPicks && (
-        <div className="flex items-center justify-center py-10 rounded-lg border border-dashed border-black/10 dark:border-border/50 mx-0.5">
-          <p className="text-[11px] text-muted-foreground/40 text-center leading-relaxed">
+        <div className="dark:border-border/50 mx-0.5 flex items-center justify-center rounded-lg border border-dashed border-black/10 py-10">
+          <p className="text-muted-foreground/40 text-center text-[11px] leading-relaxed">
             Drag a role here
             <br />
             to track it
@@ -139,7 +149,7 @@ export function PipelineCol({
 
       {isPicks && jobs.length === 0 && !isRescanning && (
         <div className="flex flex-col items-center gap-3 px-4 py-10 text-center">
-          <p className="text-[11px] text-muted-foreground/40">No roles found yet</p>
+          <p className="text-muted-foreground/40 text-[11px]">No roles found yet</p>
         </div>
       )}
 
@@ -149,7 +159,7 @@ export function PipelineCol({
             {[0, 1, 2].map((i) => (
               <motion.div
                 key={i}
-                className="w-1.5 h-1.5 rounded-full bg-[#FF553E]"
+                className="h-1.5 w-1.5 rounded-full bg-[#FF553E]"
                 animate={{ opacity: [0.3, 1, 0.3], scale: [0.8, 1.2, 0.8] }}
                 transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }}
               />
@@ -165,7 +175,7 @@ export function PipelineCol({
   if (onToggleCollapse) {
     const morphEase = [0.22, 1, 0.36, 1];
     const morphDur = 0.42;
-    const colBgCollapsible = "relative flex-1 rounded-xl bg-[var(--shell-bg)] overflow-hidden h-full";
+    const colBgCollapsible = "relative flex-1 rounded-xl bg-(--shell-bg) overflow-hidden h-full";
     return (
       <KanbanColumn value={colId} className={colBgCollapsible}>
         {/* Expanded state */}
@@ -175,15 +185,15 @@ export function PipelineCol({
           transition={{ duration: morphDur, ease: morphEase }}
           style={{ pointerEvents: collapseActive ? "none" : "auto" }}
         >
-          <div className="flex items-center gap-2 px-4 pt-4 pb-2 flex-shrink-0 select-none">
+          <div className="flex shrink-0 items-center gap-2 px-4 pt-4 pb-2 select-none">
             <span
-              className="font-jetbrains-mono text-[11px] font-semibold uppercase tracking-wider text-foreground"
+              className="font-jetbrains-mono text-foreground text-[11px] font-semibold tracking-wider uppercase"
               style={{ opacity: 0.5 }}
             >
               {COL_LABELS[colId]}
             </span>
             {jobs.length > 0 && (
-              <span className="text-[10px] font-semibold text-foreground/40 bg-black/[0.08] dark:bg-white/[0.08] rounded-full px-1.5 py-0.5 leading-none">
+              <span className="text-foreground/40 rounded-full bg-black/[0.08] px-1.5 py-0.5 text-[10px] leading-none font-semibold dark:bg-white/[0.08]">
                 {jobs.length}
               </span>
             )}
@@ -193,16 +203,16 @@ export function PipelineCol({
             {(!isPicks || !isListPhase) && (
               <button
                 onClick={onToggleCollapse}
-                className="hidden md:flex cursor-pointer ml-auto w-6 h-6 items-center justify-center rounded-md hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
+                className="ml-auto hidden h-6 w-6 cursor-pointer items-center justify-center rounded-md transition-colors hover:bg-black/10 md:flex dark:hover:bg-white/10"
                 title="Collapse"
               >
-                <ChevronLeft className="w-3.5 h-3.5 text-foreground/40" />
+                <ChevronLeft className="text-foreground/40 h-3.5 w-3.5" />
               </button>
             )}
           </div>
           <KanbanColumnContent
             value={colId}
-            className="flex-1 overflow-y-auto px-3 pt-1 pb-4 min-h-[60px]"
+            className="min-h-[60px] flex-1 overflow-y-auto px-3 pt-1 pb-4"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
             {cardList}
@@ -211,28 +221,28 @@ export function PipelineCol({
 
         {/* Collapsed state (thin strip) */}
         <motion.div
-          className="absolute inset-0 flex flex-col items-center py-3 gap-2"
+          className="absolute inset-0 flex flex-col items-center gap-2 py-3"
           animate={{ opacity: collapseActive ? 1 : 0 }}
           transition={{ duration: morphDur, ease: morphEase }}
           style={{ pointerEvents: collapseActive ? "auto" : "none" }}
         >
           <button
             onClick={onToggleCollapse}
-            className="cursor-pointer w-6 h-6 flex items-center justify-center rounded-md hover:bg-black/10 dark:hover:bg-white/10 transition-colors flex-shrink-0"
+            className="flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-md transition-colors hover:bg-black/10 dark:hover:bg-white/10"
             title="Expand"
           >
-            <ChevronRight className="w-3.5 h-3.5 text-foreground/50" />
+            <ChevronRight className="text-foreground/50 h-3.5 w-3.5" />
           </button>
-          <div className="flex-1 flex flex-col items-center justify-center gap-3 min-h-0">
+          <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-3">
             <span
-              className="font-jetbrains-mono text-[11px] font-semibold uppercase tracking-wider text-foreground select-none"
+              className="font-jetbrains-mono text-foreground text-[11px] font-semibold tracking-wider uppercase select-none"
               style={{ writingMode: "vertical-rl", transform: "rotate(180deg)", opacity: 0.45 }}
             >
               {COL_LABELS[colId]}
             </span>
             {jobs.length > 0 && (
               <span
-                className="font-jetbrains-mono text-[10px] font-semibold text-foreground/40 bg-black/[0.08] dark:bg-white/[0.08] rounded-full px-0.5 py-1.5 leading-none select-none"
+                className="font-jetbrains-mono text-foreground/40 rounded-full bg-black/[0.08] px-0.5 py-1.5 text-[10px] leading-none font-semibold select-none dark:bg-white/[0.08]"
                 style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
               >
                 {jobs.length}
@@ -250,16 +260,20 @@ export function PipelineCol({
 
   return (
     <KanbanColumn value={colId} className={colBg}>
-      <div className="flex items-center gap-2 px-4 pt-4 pb-2 flex-shrink-0 select-none">
-        <span className="font-jetbrains-mono text-[11px] font-semibold uppercase tracking-wider text-foreground"
-          style={{ opacity: 0.5 }}>{COL_LABELS[colId]}</span>
+      <div className="flex shrink-0 items-center gap-2 px-4 pt-4 pb-2 select-none">
+        <span
+          className="font-jetbrains-mono text-foreground text-[11px] font-semibold tracking-wider uppercase"
+          style={{ opacity: 0.5 }}
+        >
+          {COL_LABELS[colId]}
+        </span>
         {jobs.length > 0 && (
-          <span className="text-[10px] font-semibold text-foreground/40 bg-black/[0.08] dark:bg-white/[0.08] rounded-full px-1.5 py-0.5 leading-none">
+          <span className="text-foreground/40 rounded-full bg-black/[0.08] px-1.5 py-0.5 text-[10px] leading-none font-semibold dark:bg-white/[0.08]">
             {jobs.length}
           </span>
         )}
         {isPicks && isRescanning && (
-          <span className="text-[10px] text-[#FF553E]/70 ml-auto">scanning…</span>
+          <span className="ml-auto text-[10px] text-[#FF553E]/70">scanning…</span>
         )}
       </div>
       {bannerReady && !isPicks && (
@@ -270,24 +284,34 @@ export function PipelineCol({
             animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
             exit={{ opacity: 0, y: -6, scale: 0.97, filter: "blur(4px)" }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="mx-2 mb-1.5 flex-shrink-0"
+            className="mx-2 mb-1.5 shrink-0"
           >
-            <div className="relative overflow-hidden rounded-xl bg-white dark:bg-card border border-black/[0.06] dark:border-border shadow-sm">
+            <div className="dark:bg-card dark:border-border relative overflow-hidden rounded-xl border border-black/[0.06] bg-white shadow-sm">
               <div
-                className="absolute inset-x-0 top-0 h-10 pointer-events-none"
-                style={{ background: "radial-gradient(ellipse 70% 100% at 50% 0%, rgba(192,74,56,0.18) 0%, rgba(245,166,35,0.10) 40%, transparent 100%)" }}
+                className="pointer-events-none absolute inset-x-0 top-0 h-10"
+                style={{
+                  background:
+                    "radial-gradient(ellipse 70% 100% at 50% 0%, rgba(192,74,56,0.18) 0%, rgba(245,166,35,0.10) 40%, transparent 100%)",
+                }}
               />
               <div className="px-3.5 pt-4 pb-3.5">
-                <div className="flex items-center gap-2.5 mb-3">
-                  <div className="w-[44px] h-[44px] flex-shrink-0">
+                <div className="mb-3 flex items-center gap-2.5">
+                  <div className="h-[44px] w-[44px] shrink-0">
                     <Lottie animationData={aiAssistantAnimation} loop={true} />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-[14px] font-semibold text-foreground/85 leading-tight">Two offers. Big decision.</p>
-                    <p className="text-[12px] font-normal text-foreground/45 mt-0.5 leading-snug">Let Scout help you think it through.</p>
+                    <p className="text-foreground/85 text-[14px] leading-tight font-semibold">
+                      Two offers. Big decision.
+                    </p>
+                    <p className="text-foreground/45 mt-0.5 text-[12px] leading-snug font-normal">
+                      Let Scout help you think it through.
+                    </p>
                   </div>
                 </div>
-                <button onClick={onDecide} className="w-full flex items-center justify-center gap-1.5 bg-foreground text-background text-[12px] font-medium h-8 rounded-lg hover:opacity-85 transition-opacity cursor-pointer">
+                <button
+                  onClick={onDecide}
+                  className="bg-foreground text-background flex h-8 w-full cursor-pointer items-center justify-center gap-1.5 rounded-lg text-[12px] font-medium transition-opacity hover:opacity-85"
+                >
                   Help me decide
                 </button>
               </div>
@@ -297,7 +321,7 @@ export function PipelineCol({
       )}
       <KanbanColumnContent
         value={colId}
-        className="flex-1 overflow-y-auto px-3 pt-1 pb-4 min-h-[60px]"
+        className="min-h-[60px] flex-1 overflow-y-auto px-3 pt-1 pb-4"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         {cardList}

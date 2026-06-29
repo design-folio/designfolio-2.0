@@ -1,8 +1,14 @@
 import { setCursorvalue } from "@/lib/cursor";
-import { getWallpaperUrl, hasNoWallpaper, extractWallpaperValue } from "@/lib/wallpaper";
+import { getWallpaperUrl, extractWallpaperValue } from "@/lib/wallpaper";
 import { useRouter } from "next/router";
 import { mapPendingPortfolioToUpdatePayload } from "@/lib/mapPendingPortfolioToUpdatePayload";
-import { _getDomainDetails, _getUserDetails, _getPersonas, _getTools, _getUserQuota } from "@/network/get-request";
+import {
+  _getDomainDetails,
+  _getUserDetails,
+  _getPersonas,
+  _getTools,
+  _getUserQuota,
+} from "@/network/get-request";
 import { _updateUser } from "@/network/post-request";
 import queryClient from "@/network/queryClient";
 import { useQuery } from "@tanstack/react-query";
@@ -19,6 +25,7 @@ import React, {
   useRef,
   useMemo,
   useCallback,
+  startTransition,
 } from "react";
 
 // Create a new context instance
@@ -56,8 +63,8 @@ export const GlobalProvider = ({ children }) => {
 
   // Sync data-template attribute on <html> for theme.css accent overrides
   useEffect(() => {
-    if (router.pathname === '/project/[id]') return;
-    const templateValue = TEMPLATES_BY_ID[template]?.value ?? 'canvas';
+    if (router.pathname === "/project/[id]") return;
+    const templateValue = TEMPLATES_BY_ID[template]?.value ?? "canvas";
     document.documentElement.dataset.template = templateValue;
   }, [template, router.pathname]);
 
@@ -65,12 +72,12 @@ export const GlobalProvider = ({ children }) => {
   // clean up the attribute on unmount; this ensures globalContext restores it for the next page.
   useEffect(() => {
     const handleRouteChangeComplete = (url) => {
-      if (url.startsWith('/project/')) return;
-      const templateValue = TEMPLATES_BY_ID[template]?.value ?? 'canvas';
+      if (url.startsWith("/project/")) return;
+      const templateValue = TEMPLATES_BY_ID[template]?.value ?? "canvas";
       document.documentElement.dataset.template = templateValue;
     };
-    router.events.on('routeChangeComplete', handleRouteChangeComplete);
-    return () => router.events.off('routeChangeComplete', handleRouteChangeComplete);
+    router.events.on("routeChangeComplete", handleRouteChangeComplete);
+    return () => router.events.off("routeChangeComplete", handleRouteChangeComplete);
   }, [router.events, template]);
 
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
@@ -89,9 +96,9 @@ export const GlobalProvider = ({ children }) => {
   const [wallpaper, setWallpaper] = useState(0);
   const [wallpaperEffects, setWallpaperEffects] = useState({
     blur: 0,
-    effectType: 'blur',
+    effectType: "blur",
     grainIntensity: 25,
-    motion: true
+    motion: true,
   });
   const [isLoadingTemplate, setIsLoadingTemplate] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
@@ -99,7 +106,8 @@ export const GlobalProvider = ({ children }) => {
   const [showUnsavedWarning, setShowUnsavedWarning] = useState(false);
   const [pendingSidebarAction, setPendingSidebarAction] = useState(null);
   const [isSwitchingSidebar, setIsSwitchingSidebar] = useState(false);
-  const [pendingReplaceAwaitingConfirmation, setPendingReplaceAwaitingConfirmation] = useState(false);
+  const [pendingReplaceAwaitingConfirmation, setPendingReplaceAwaitingConfirmation] =
+    useState(false);
   const unsavedChangesCheckers = useRef({});
   const userDetailsRef = useRef(userDetails);
   const isUpdatingEffectsFromAPI = useRef(false);
@@ -126,9 +134,7 @@ export const GlobalProvider = ({ children }) => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      const popoverElement = document.querySelector(
-        `[data-popover-id="${popoverMenu}"]`
-      );
+      const popoverElement = document.querySelector(`[data-popover-id="${popoverMenu}"]`);
 
       if (popoverElement && !popoverElement.contains(event.target)) {
         setPopoverMenu(null);
@@ -160,88 +166,64 @@ export const GlobalProvider = ({ children }) => {
   useEffect(() => {
     if (data && !userDetailsIsState) {
       const userData = data?.user;
+      const prevUserDetails = userDetailsRef.current;
 
       // Skip update if projects are ONLY reordered (same IDs, different order, same data)
-      const oldProjectIds = userDetails?.projects?.map(p => p._id) || [];
-      const newProjectIds = userData?.projects?.map(p => p._id) || [];
-      const sameIdsDifferentOrder = userDetails &&
+      const oldProjectIds = prevUserDetails?.projects?.map((p) => p._id) || [];
+      const newProjectIds = userData?.projects?.map((p) => p._id) || [];
+      const sameIdsDifferentOrder =
+        prevUserDetails &&
         oldProjectIds.length === newProjectIds.length &&
-        oldProjectIds.every(id => newProjectIds.includes(id)) &&
-        JSON.stringify(oldProjectIds) !== JSON.stringify(newProjectIds); // Different order
+        oldProjectIds.every((id) => newProjectIds.includes(id)) &&
+        JSON.stringify(oldProjectIds) !== JSON.stringify(newProjectIds);
 
-      if (sameIdsDifferentOrder) {
-        return;
-      }
+      if (sameIdsDifferentOrder) return;
 
       // Template 4 (macOS) is always light mode
       const isTemplate4 = userData?.template === 4;
-      if (isTemplate4) {
-        setTheme("light");
-      } else if (userData?.theme != null) {
-        // Only override theme if user has an explicit preference saved on their account.
-        // For new users (theme === null), preserve whatever was in localStorage
-        // (e.g. the theme they chose on the landing page before signing up).
-        setTheme(userData.theme == 1 ? "dark" : "light");
-      }
-      setCursor(userData?.cursor ? userData?.cursor : 0);
-      setTemplate(userData?.template ? userData?.template : 0);
 
       const wp = userData?.wallpaper;
-      const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
-      setWallpaper(wpValue !== undefined ? wpValue : 0);
-
+      const wpValue = wp && typeof wp === "object" ? wp.url || wp.value : wp;
       const wpEffects = userData?.wallpaper?.effects;
 
       // Helper to check if effects object has valid values (not all null/undefined)
-      const hasValidEffects = wpEffects && typeof wpEffects === 'object' && (
-        (wpEffects.blur !== null && wpEffects.blur !== undefined) ||
-        (wpEffects.effectType !== null && wpEffects.effectType !== undefined) ||
-        (wpEffects.grainIntensity !== null && wpEffects.grainIntensity !== undefined) ||
-        (wpEffects.motion !== null && wpEffects.motion !== undefined)
-      );
+      const hasValidEffects =
+        wpEffects &&
+        typeof wpEffects === "object" &&
+        ((wpEffects.blur !== null && wpEffects.blur !== undefined) ||
+          (wpEffects.effectType !== null && wpEffects.effectType !== undefined) ||
+          (wpEffects.grainIntensity !== null && wpEffects.grainIntensity !== undefined) ||
+          (wpEffects.motion !== null && wpEffects.motion !== undefined));
 
+      let newWallpaperEffects = null;
       if (!effectsInitializedRef.current) {
+        isUpdatingEffectsFromAPI.current = true;
         if (hasValidEffects) {
-          // Set flag to prevent updateWallpaperEffects useEffect from triggering during initial load
-          isUpdatingEffectsFromAPI.current = true;
-          // Sanitize wpEffects: remove null/undefined values, and also remove false for motion (treat as "not set")
-          // This ensures defaults are used when backend doesn't provide proper values
           const sanitizedEffects = Object.fromEntries(
             Object.entries(wpEffects).filter(([key, v]) => {
               if (v === null || v === undefined) return false;
-              // Treat motion: false as "not set" so default (true) is used
-              if (key === 'motion' && v === false) return false;
-              // Treat grainIntensity 0 as "not set" so default (25) is used
-              if (key === 'grainIntensity' && v === 0) return false;
+              if (key === "motion" && v === false) return false;
+              if (key === "grainIntensity" && v === 0) return false;
               return true;
             })
           );
-          // Merge with defaults: defaults first, then sanitized effects override (only valid values)
-          setWallpaperEffects({
+          newWallpaperEffects = {
             blur: 0,
-            effectType: 'blur',
+            effectType: "blur",
             grainIntensity: 25,
             motion: true,
-            ...sanitizedEffects
-          });
-          effectsInitializedRef.current = true;
+            ...sanitizedEffects,
+          };
         } else {
-          // Only set defaults if effects haven't been initialized yet
-          isUpdatingEffectsFromAPI.current = true;
-          setWallpaperEffects({
-            blur: 0,
-            effectType: 'blur',
-            grainIntensity: 25,
-            motion: true
-          });
-          effectsInitializedRef.current = true;
+          newWallpaperEffects = { blur: 0, effectType: "blur", grainIntensity: 25, motion: true };
         }
+        effectsInitializedRef.current = true;
       }
 
       // Merge sectionOrder: prefer existing custom order when API returns default (avoids overwriting with stale refetch)
       const mergedUserData = { ...userData };
       const incomingOrder = userData?.sectionOrder;
-      const prevOrder = userDetails?.sectionOrder;
+      const prevOrder = prevUserDetails?.sectionOrder;
       const defaultStr = JSON.stringify(DEFAULT_SECTION_ORDER);
       if (incomingOrder && prevOrder) {
         const incomingStr = JSON.stringify(incomingOrder);
@@ -252,73 +234,76 @@ export const GlobalProvider = ({ children }) => {
       } else if (!incomingOrder && prevOrder) {
         mergedUserData.sectionOrder = prevOrder;
       }
-      setUserDetails(mergedUserData);
-      setIsUserDetailsFromCache(true);
-      setCheckList((prevList) => {
-        const newList = prevList.map((item) => {
-          switch (item.name) {
-            case "Add at least 1 Case Study":
-              return {
-                ...item,
-                checked: userData?.projects?.length > 0,
-              };
-            case "Add Skills":
-              return { ...item, checked: userData?.skills?.length > 0 };
-            case "Add Experience":
-              return {
-                ...item,
-                checked: userData?.experiences?.length > 0,
-              };
-            case "Add Testimonials":
-              return { ...item, checked: userData?.reviews?.length > 0 };
 
-            default:
-              return item;
-          }
+      startTransition(() => {
+        if (isTemplate4) {
+          setTheme("light");
+        } else if (userData?.theme != null) {
+          setTheme(userData.theme == 1 ? "dark" : "light");
+        }
+        setCursor(userData?.cursor ? userData?.cursor : 0);
+        setTemplate(userData?.template ? userData?.template : 0);
+        setWallpaper(wpValue !== undefined ? wpValue : 0);
+        if (newWallpaperEffects) setWallpaperEffects(newWallpaperEffects);
+        setUserDetails(mergedUserData);
+        setIsUserDetailsFromCache(true);
+        setCheckList((prevList) => {
+          const newList = prevList.map((item) => {
+            switch (item.name) {
+              case "Add at least 1 Case Study":
+                return { ...item, checked: userData?.projects?.length > 0 };
+              case "Add Skills":
+                return { ...item, checked: userData?.skills?.length > 0 };
+              case "Add Experience":
+                return { ...item, checked: userData?.experiences?.length > 0 };
+              case "Add Testimonials":
+                return { ...item, checked: userData?.reviews?.length > 0 };
+              default:
+                return item;
+            }
+          });
+          const completedTasks = newList.filter((item) => item.checked).length;
+          setIsTaskCompleted(completedTasks === newList.length);
+          setTaskPercentage((completedTasks / newList.length) * 100);
+          return newList;
         });
-        const completedTasks = newList.filter((item) => item.checked).length;
-        setIsTaskCompleted(completedTasks === newList.length);
-        setTaskPercentage((completedTasks / newList.length) * 100);
-        return newList;
       });
     }
-  }, [data, userDetailsIsState]);
+  }, [data, userDetailsIsState, setTheme]);
 
   useEffect(() => {
     setCursorvalue(cursor);
   }, [cursor]);
 
+  const fetchDomainDetails = useCallback(() => {
+    _getDomainDetails().then((res) => {
+      setDomainDetails(res.data);
+    });
+  }, []);
+
   useEffect(() => {
     if (userDetails?.pro) {
       fetchDomainDetails();
     }
-  }, [userDetails?.pro]);
+  }, [userDetails?.pro, fetchDomainDetails]);
 
   // Compute wallpaper URL centrally - handles object and primitive values
   const wallpaperUrl = useMemo(() => {
     if (template === 1) return null; // Chat theme uses solid bg — no wallpaper. Remove this line to re-enable.
     const wp = wallpaper;
-    const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
+    const wpValue = wp && typeof wp === "object" ? wp.url || wp.value : wp;
     const currentTheme = resolvedTheme || theme;
     return getWallpaperUrl(wpValue ?? 0, currentTheme, template);
   }, [wallpaper, resolvedTheme, theme, template]);
 
-  const fetchDomainDetails = () => {
-    _getDomainDetails().then((res) => {
-      setDomainDetails(res.data);
-    });
-  };
-
-  const updateCache = (key, data) => {
+  const updateCache = useCallback((key, data) => {
     queryClient.setQueriesData({ queryKey: [key] }, (oldData) => {
       const existingUser = oldData?.user;
       const newUser =
-        typeof data === "function"
-          ? data(existingUser)
-          : { ...existingUser, ...data };
+        typeof data === "function" ? data(existingUser) : { ...existingUser, ...data };
       return { user: newUser };
     });
-  };
+  }, []);
 
   const applyPendingPortfolio = useCallback(() => {
     if (pendingPrefillAppliedRef.current || typeof window === "undefined") return;
@@ -329,8 +314,12 @@ export const GlobalProvider = ({ children }) => {
       pendingPrefillAppliedRef.current = true;
       setPendingReplaceAwaitingConfirmation(false);
       Promise.all([
-        _getPersonas().then((res) => res?.data?.personas || []).catch(() => []),
-        _getTools().then((res) => res?.data?.tools || []).catch(() => []),
+        _getPersonas()
+          .then((res) => res?.data?.personas || [])
+          .catch(() => []),
+        _getTools()
+          .then((res) => res?.data?.tools || [])
+          .catch(() => []),
       ])
         .then(([personas, tools]) => {
           const payload = mapPendingPortfolioToUpdatePayload(content, personas, tools);
@@ -377,10 +366,10 @@ export const GlobalProvider = ({ children }) => {
       (Array.isArray(userDetails.projects) && userDetails.projects.length > 0) ||
       !!(userDetails.user?.aboutMe || userDetails.user?.name || userDetails.aboutMe);
     if (hasExistingProfile) {
-      setPendingReplaceAwaitingConfirmation(true);
+      startTransition(() => setPendingReplaceAwaitingConfirmation(true));
       return;
     }
-    applyPendingPortfolio();
+    startTransition(() => applyPendingPortfolio());
   }, [userDetails, applyPendingPortfolio]);
 
   const changeCursor = (cursor) => {
@@ -398,17 +387,17 @@ export const GlobalProvider = ({ children }) => {
     const existingEffects = userDetails?.wallpaper?.effects;
     const defaultEffects = {
       blur: 0,
-      effectType: 'blur',
+      effectType: "blur",
       grainIntensity: 25,
-      motion: true
+      motion: true,
     };
 
     // Check for custom wallpaper object (Base64)
-    if (typeof wallpaper === 'object' && wallpaper.base64) {
+    if (typeof wallpaper === "object" && wallpaper.base64) {
       wallpaperPayload = {
         key: wallpaper.base64,
         originalName: wallpaper.name, // or filename argument
-        __isNew__: true
+        __isNew__: true,
       };
       // Preserve effects if they exist, otherwise use defaults
       wallpaperPayload.effects = existingEffects || defaultEffects;
@@ -416,11 +405,11 @@ export const GlobalProvider = ({ children }) => {
       wallpaper = wallpaper.base64;
     }
     // Handle string URL
-    else if (typeof wallpaper === 'string') {
+    else if (typeof wallpaper === "string") {
       let key = wallpaper;
 
       // If it's a full URL (existing S3 URL), extract the key component
-      if (wallpaper.startsWith('http') || wallpaper.startsWith('/')) {
+      if (wallpaper.startsWith("http") || wallpaper.startsWith("/")) {
         const match = wallpaper.match(/(wallpaper\/.*?)(\?|$)/);
         if (match) {
           key = match[1];
@@ -434,7 +423,7 @@ export const GlobalProvider = ({ children }) => {
 
       wallpaperPayload = {
         key: key,
-        __isNew__: true
+        __isNew__: true,
       };
       // Preserve effects if they exist, otherwise use defaults
       wallpaperPayload.effects = existingEffects || defaultEffects;
@@ -442,7 +431,7 @@ export const GlobalProvider = ({ children }) => {
     // Handle Preset (number)
     else {
       wallpaperPayload = {
-        value: wallpaper
+        value: wallpaper,
       };
       // Preserve effects if they exist, otherwise use defaults
       wallpaperPayload.effects = existingEffects || defaultEffects;
@@ -453,7 +442,7 @@ export const GlobalProvider = ({ children }) => {
 
       // Extract authoritative wallpaper value from response
       const wp = updatedUser?.wallpaper;
-      const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
+      const wpValue = wp && typeof wp === "object" ? wp.url || wp.value : wp;
 
       // Update local state and context - only update wallpaper field to prevent signed URL changes
       setWallpaper(wpValue || wallpaper);
@@ -530,70 +519,74 @@ export const GlobalProvider = ({ children }) => {
   };
 
   // Function to save effects to backend (used by debounced and immediate calls)
-  const saveWallpaperEffectsToBackend = useCallback((effectsToSave) => {
-    // Get current wallpaper object from ref (always has latest value)
-    const currentWallpaper = userDetailsRef.current?.wallpaper || {};
+  const saveWallpaperEffectsToBackend = useCallback(
+    (effectsToSave) => {
+      // Get current wallpaper object from ref (always has latest value)
+      const currentWallpaper = userDetailsRef.current?.wallpaper || {};
 
-    // Build wallpaper payload - exclude 'type' field, only include relevant fields
-    const wallpaperPayload = {};
+      // Build wallpaper payload - exclude 'type' field, only include relevant fields
+      const wallpaperPayload = {};
 
-    // For preset wallpapers, only include 'value'
-    if (currentWallpaper.value !== undefined) {
-      wallpaperPayload.value = currentWallpaper.value;
-    }
+      // For preset wallpapers, only include 'value'
+      if (currentWallpaper.value !== undefined) {
+        wallpaperPayload.value = currentWallpaper.value;
+      }
 
-    // For custom wallpapers, include key, originalName, __isNew__
-    if (currentWallpaper.key !== undefined) {
-      wallpaperPayload.key = currentWallpaper.key;
-    }
-    if (currentWallpaper.originalName !== undefined) {
-      wallpaperPayload.originalName = currentWallpaper.originalName;
-    }
-    if (currentWallpaper.__isNew__ !== undefined) {
-      wallpaperPayload.__isNew__ = currentWallpaper.__isNew__;
-    }
+      // For custom wallpapers, include key, originalName, __isNew__
+      if (currentWallpaper.key !== undefined) {
+        wallpaperPayload.key = currentWallpaper.key;
+      }
+      if (currentWallpaper.originalName !== undefined) {
+        wallpaperPayload.originalName = currentWallpaper.originalName;
+      }
+      if (currentWallpaper.__isNew__ !== undefined) {
+        wallpaperPayload.__isNew__ = currentWallpaper.__isNew__;
+      }
 
-    // Only save if we have a valid wallpaper (value or key), otherwise just update local state
-    if (wallpaperPayload.value !== undefined || wallpaperPayload.key !== undefined) {
-      // Always include effects when we have a valid wallpaper
-      wallpaperPayload.effects = effectsToSave;
+      // Only save if we have a valid wallpaper (value or key), otherwise just update local state
+      if (wallpaperPayload.value !== undefined || wallpaperPayload.key !== undefined) {
+        // Always include effects when we have a valid wallpaper
+        wallpaperPayload.effects = effectsToSave;
 
-      // Save to backend as part of wallpaper object
-      _updateUser({ wallpaper: wallpaperPayload }).then((res) => {
-        if (res?.data?.user) {
-          const updatedUser = res?.data?.user;
-          // Update cache with wallpaper including effects
-          updateCache("userDetails", { wallpaper: updatedUser.wallpaper });
-          // Update userDetails with wallpaper including effects
-          setUserDetails((prev) => ({
-            ...prev,
-            wallpaper: updatedUser.wallpaper
-          }));
-          // Update local effects state from response
-          // Only update if effects have actually changed (prevent unnecessary updates)
-          if (updatedUser.wallpaper?.effects) {
-            const newEffects = updatedUser.wallpaper.effects;
-            const currentEffects = wallpaperEffects;
-            const effectsChanged = (
-              currentEffects.blur !== newEffects.blur ||
-              currentEffects.effectType !== newEffects.effectType ||
-              currentEffects.grainIntensity !== newEffects.grainIntensity ||
-              currentEffects.motion !== newEffects.motion
-            );
+        // Save to backend as part of wallpaper object
+        _updateUser({ wallpaper: wallpaperPayload })
+          .then((res) => {
+            if (res?.data?.user) {
+              const updatedUser = res?.data?.user;
+              // Update cache with wallpaper including effects
+              updateCache("userDetails", { wallpaper: updatedUser.wallpaper });
+              // Update userDetails with wallpaper including effects
+              setUserDetails((prev) => ({
+                ...prev,
+                wallpaper: updatedUser.wallpaper,
+              }));
+              // Update local effects state from response
+              // Only update if effects have actually changed (prevent unnecessary updates)
+              if (updatedUser.wallpaper?.effects) {
+                const newEffects = updatedUser.wallpaper.effects;
+                const currentEffects = wallpaperEffects;
+                const effectsChanged =
+                  currentEffects.blur !== newEffects.blur ||
+                  currentEffects.effectType !== newEffects.effectType ||
+                  currentEffects.grainIntensity !== newEffects.grainIntensity ||
+                  currentEffects.motion !== newEffects.motion;
 
-            // Only update if effects have actually changed
-            if (effectsChanged) {
-              // Set flag to prevent updateWallpaperEffects useEffect from triggering
-              isUpdatingEffectsFromAPI.current = true;
-              setWallpaperEffects(newEffects);
+                // Only update if effects have actually changed
+                if (effectsChanged) {
+                  // Set flag to prevent updateWallpaperEffects useEffect from triggering
+                  isUpdatingEffectsFromAPI.current = true;
+                  setWallpaperEffects(newEffects);
+                }
+              }
             }
-          }
-        }
-      }).catch((err) => {
-        console.error("Error updating wallpaper effects:", err);
-      });
-    }
-  }, [updateCache]);
+          })
+          .catch((err) => {
+            console.error("Error updating wallpaper effects:", err);
+          });
+      }
+    },
+    [updateCache, wallpaperEffects]
+  );
 
   // Debounced version for slider updates (blur and grainIntensity)
   const debouncedSaveEffects = useDebouncedCallback(
@@ -611,7 +604,7 @@ export const GlobalProvider = ({ children }) => {
 
     // Debounce API calls for slider values (blur and grainIntensity)
     // Immediate API calls for toggles (effectType and motion)
-    if (key === 'blur' || key === 'grainIntensity') {
+    if (key === "blur" || key === "grainIntensity") {
       debouncedSaveEffects(updatedEffects);
     } else {
       // Immediate save for effectType and motion
@@ -621,8 +614,14 @@ export const GlobalProvider = ({ children }) => {
 
   const openModal = (type = null) => {
     if (type === modals.aiProject) {
-      const open = () => { setShowModal(type); setPopoverMenu(null); };
-      const openUpgrade = () => { setUpgradeModalSource("write-ai"); setShowUpgradeModal(true); };
+      const open = () => {
+        setShowModal(type);
+        setPopoverMenu(null);
+      };
+      const openUpgrade = () => {
+        setUpgradeModalSource("write-ai");
+        setShowUpgradeModal(true);
+      };
       if (_aiWritingCredits !== null) {
         _aiWritingCredits <= 0 ? openUpgrade() : open();
         return;
@@ -630,7 +629,8 @@ export const GlobalProvider = ({ children }) => {
       _getUserQuota()
         .then((res) => {
           const gen = res.data?.quota?.caseStudyGeneration;
-          const remaining = gen?.limit === null ? Infinity : Math.max(0, (gen?.limit ?? 2) - (gen?.used ?? 0));
+          const remaining =
+            gen?.limit === null ? Infinity : Math.max(0, (gen?.limit ?? 2) - (gen?.used ?? 0));
           _setAiWritingCredits(remaining);
           remaining <= 0 ? openUpgrade() : open();
         })
@@ -648,7 +648,6 @@ export const GlobalProvider = ({ children }) => {
     setSelectedWork(null);
     setStep(1);
   };
-
 
   const setTemplateContext = (value) => {
     setTemplate(value);
@@ -757,8 +756,6 @@ export const GlobalProvider = ({ children }) => {
     setIsSwitchingSidebar(false);
     setPendingSidebarAction(null);
   };
-
-
 
   return (
     <GlobalContext.Provider

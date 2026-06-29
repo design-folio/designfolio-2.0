@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { Zap } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { LocationAutocomplete } from "./LocationAutocomplete";
 import { _getJobRoleSuggestions } from "@/network/jobs";
 
@@ -50,21 +50,23 @@ export function CriteriaEditor({ answers, onRescan, isRescanning }) {
   return (
     <div className="flex flex-col">
       {/* Header */}
-      <div className="px-4 pt-4 pb-3.5 border-b border-black/[0.05] dark:border-white/[0.06]">
-        <p className="text-[11px] text-foreground/40">Edit below to refresh your AI picks</p>
+      <div className="border-b border-black/[0.05] px-4 pt-4 pb-3.5 dark:border-white/[0.06]">
+        <p className="text-foreground/40 text-[11px]">Edit below to refresh your AI picks</p>
       </div>
 
       {/* Inputs */}
-      <div className="px-4 pt-3.5 pb-3 flex flex-col gap-3">
+      <div className="flex flex-col gap-3 px-4 pt-3.5 pb-3">
         {/* Role */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-[11px] font-medium text-foreground/40 uppercase tracking-wide">Role</label>
+          <label className="text-foreground/40 text-[11px] font-medium tracking-wide uppercase">
+            Role
+          </label>
           <input
             type="text"
             value={role}
             onChange={(e) => setRole(e.target.value)}
             placeholder="e.g. Product Designer"
-            className="w-full h-9 px-3 rounded-xl border border-black/[0.08] dark:border-white/[0.1] bg-black/[0.03] dark:bg-white/[0.05] text-[13px] text-foreground placeholder:text-foreground/30 outline-none focus:border-black/[0.18] dark:focus:border-white/[0.22] transition-colors"
+            className="text-foreground placeholder:text-foreground/30 h-9 w-full rounded-xl border border-black/[0.08] bg-black/[0.03] px-3 text-[13px] transition-colors outline-none focus:border-black/[0.18] dark:border-white/[0.1] dark:bg-white/[0.05] dark:focus:border-white/[0.22]"
           />
           {roleSuggestions.length > 0 && (
             <div className="flex flex-wrap gap-1.5 pt-0.5">
@@ -73,10 +75,11 @@ export function CriteriaEditor({ answers, onRescan, isRescanning }) {
                   key={s.label}
                   type="button"
                   onClick={() => setRole(s.label)}
-                  className={`h-6 px-2.5 rounded-full border text-[11px] transition-colors ${role === s.label
+                  className={`h-6 rounded-full border px-2.5 text-[11px] transition-colors ${
+                    role === s.label
                       ? "bg-foreground text-background border-foreground"
-                      : "border-black/[0.08] dark:border-white/[0.1] bg-black/[0.03] dark:bg-white/[0.04] text-foreground/55 hover:text-foreground hover:border-black/[0.16] dark:hover:border-white/[0.2] hover:bg-black/[0.06] dark:hover:bg-white/[0.08]"
-                    }`}
+                      : "text-foreground/55 hover:text-foreground border-black/[0.08] bg-black/[0.03] hover:border-black/[0.16] hover:bg-black/[0.06] dark:border-white/[0.1] dark:bg-white/[0.04] dark:hover:border-white/[0.2] dark:hover:bg-white/[0.08]"
+                  }`}
                 >
                   {s.label}
                 </button>
@@ -87,7 +90,9 @@ export function CriteriaEditor({ answers, onRescan, isRescanning }) {
 
         {/* Location */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-[11px] font-medium text-foreground/40 uppercase tracking-wide">Location</label>
+          <label className="text-foreground/40 text-[11px] font-medium tracking-wide uppercase">
+            Location
+          </label>
           <LocationAutocomplete
             value={city}
             onChange={setCity}
@@ -103,15 +108,15 @@ export function CriteriaEditor({ answers, onRescan, isRescanning }) {
         <button
           onClick={handleRescan}
           disabled={!canRescan || !isDirty || isRescanning}
-          className="w-full h-10 flex items-center justify-center gap-2.5 rounded-xl text-[13px] font-semibold transition-opacity select-none bg-foreground dark:bg-[#2E2B27] text-background dark:text-white hover:opacity-90 active:opacity-80 disabled:opacity-80 disabled:cursor-not-allowed cursor-pointer"
+          className="bg-foreground text-background flex h-10 w-full cursor-pointer items-center justify-center gap-2.5 rounded-xl text-[13px] font-semibold transition-opacity select-none hover:opacity-90 active:opacity-80 disabled:cursor-not-allowed disabled:opacity-80 dark:bg-[#2E2B27] dark:text-white"
         >
           {isRescanning ? (
             <>
-              <div className="flex gap-[3px] pointer-events-none">
+              <div className="pointer-events-none flex gap-[3px]">
                 {[0, 1, 2].map((i) => (
                   <motion.div
                     key={i}
-                    className="w-1 h-1 rounded-full bg-current"
+                    className="h-1 w-1 rounded-full bg-current"
                     animate={{ opacity: [0.3, 1, 0.3] }}
                     transition={{ duration: 0.9, repeat: Infinity, delay: i * 0.2 }}
                   />

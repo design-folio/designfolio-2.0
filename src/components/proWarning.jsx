@@ -4,7 +4,13 @@ import styles from "@/styles/domain.module.css";
 import { Zap } from "lucide-react";
 
 export default function ProWarning() {
-  const { template, setShowUpgradeModal, setUpgradeModalUnhideProject, setUpgradeModalSource, changeTemplate } = useGlobalContext();
+  const {
+    template,
+    setShowUpgradeModal,
+    setUpgradeModalUnhideProject,
+    setUpgradeModalSource,
+    changeTemplate,
+  } = useGlobalContext();
 
   if (template === 0) return null;
   const isMacOS = template === 4;
@@ -14,7 +20,7 @@ export default function ProWarning() {
         <div className={styles.proTemplateBannerLeft}>
           <div className={styles.proTemplateBannerIcon} />
           <div className={styles.proTemplateBannerTextBlock}>
-            <div className={styles.proTemplateBannerTitle}>You're using a Pro template</div>
+            <div className={styles.proTemplateBannerTitle}>You&apos;re using a Pro template</div>
             <div className={styles.proTemplateBannerSubtext}>
               Customize it freely. Upgrade to publish this portfolio.{" "}
               <span className={styles.proTemplateBannerLink} onClick={() => changeTemplate(0)}>
@@ -25,7 +31,11 @@ export default function ProWarning() {
         </div>
         <button
           className={styles.proTemplateBannerButton}
-          onClick={() => { setUpgradeModalUnhideProject(null); setUpgradeModalSource('pro-template'); setShowUpgradeModal(true); }}
+          onClick={() => {
+            setUpgradeModalUnhideProject(null);
+            setUpgradeModalSource("pro-template");
+            setShowUpgradeModal(true);
+          }}
         >
           <Zap size={13} fill="white" />
           Upgrade to Publish

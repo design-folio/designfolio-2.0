@@ -16,14 +16,14 @@ export function Switch({ value, onToggle, iconOn, iconOff, className = "", ...re
   return (
     <button
       ref={toggleRef}
-      className={`flex w-10 cursor-pointer rounded-full p-0.5 bg-[#E5D7C4] dark:bg-[#6D5F4C] ${
+      className={`flex w-10 cursor-pointer rounded-full bg-[#E5D7C4] p-0.5 dark:bg-[#6D5F4C] ${
         value ? "justify-end" : "justify-start"
       } ${className}`}
       onClick={handleToggle}
       {...rest}
     >
       <motion.div
-        className="flex justify-center items-center size-5 rounded-full bg-white dark:bg-background text-[#1A1A1A] dark:text-foreground"
+        className="dark:bg-background dark:text-foreground flex size-5 items-center justify-center rounded-full bg-white text-[#1A1A1A]"
         layout
         transition={{
           type: "spring",
@@ -38,7 +38,7 @@ export function Switch({ value, onToggle, iconOn, iconOff, className = "", ...re
             animate={{ opacity: 1, rotate: 0 }}
             exit={{ opacity: 0, rotate: 60 }}
             transition={{ duration: 0.3 }}
-            className="flex justify-center items-center size-4 text-foreground"
+            className="text-foreground flex size-4 items-center justify-center"
           >
             {iconOn}
           </motion.div>
@@ -49,7 +49,7 @@ export function Switch({ value, onToggle, iconOn, iconOff, className = "", ...re
             animate={{ opacity: 1, rotate: 0 }}
             exit={{ opacity: 0, rotate: -60 }}
             transition={{ duration: 0.3 }}
-            className="flex justify-center items-center size-4 text-foreground"
+            className="text-foreground flex size-4 items-center justify-center"
           >
             {iconOff}
           </motion.div>

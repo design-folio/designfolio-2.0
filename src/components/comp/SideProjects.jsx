@@ -1,5 +1,5 @@
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
+import { motion } from "motion/react";
+import { useInView } from "motion/react";
 import { useRef } from "react";
 
 export const SideProjects = () => {
@@ -39,7 +39,7 @@ export const SideProjects = () => {
 
   return (
     <section className="py-16">
-      <h2 className="text-2xl font-bold mb-8">Side Projects</h2>
+      <h2 className="mb-8 text-2xl font-bold">Side Projects</h2>
       <motion.div
         ref={ref}
         variants={container}
@@ -51,7 +51,7 @@ export const SideProjects = () => {
           <motion.div
             key={index}
             variants={item}
-            className="bg-card p-4 rounded-lg flex items-center justify-between hover:bg-card/80 transition-colors cursor-pointer shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
+            className="bg-card hover:bg-card/80 flex cursor-pointer items-center justify-between rounded-lg p-4 shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] transition-colors"
           >
             <div className="flex items-center gap-3">
               <span className="text-2xl">{project.icon}</span>

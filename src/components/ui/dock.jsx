@@ -1,26 +1,21 @@
 import * as React from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export default function Dock({ items, className }) {
   const [hovered, setHovered] = React.useState(null);
 
   return (
-    <div className={cn("flex items-center justify-center w-full", className)}>
+    <div className={cn("flex w-full items-center justify-center", className)}>
       <motion.div
         animate={{ y: [0, -2, 0] }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
         className={cn(
-          "flex items-end gap-2 px-3 py-2 rounded-3xl",
-          "border border-border bg-white/90 backdrop-blur-2xl shadow-sm shadow-black/5",
-          "dark:bg-black/40 dark:border-white/10"
+          "flex items-end gap-2 rounded-3xl px-3 py-2",
+          "border-border border bg-white/90 shadow-sm shadow-black/5 backdrop-blur-2xl",
+          "dark:border-white/10 dark:bg-black/40"
         )}
       >
         <TooltipProvider delayDuration={100}>
@@ -45,7 +40,7 @@ export default function Dock({ items, className }) {
                       variant="ghost"
                       size="icon"
                       className={cn(
-                        "rounded-2xl relative w-12 h-12 no-default-hover-elevate no-default-active-elevate",
+                        "no-default-hover-elevate no-default-active-elevate relative h-12 w-12 rounded-2xl",
                         "transition-colors duration-200",
                         isActive ? "bg-[#FF553E]/10" : "hover:bg-[#FF553E]/5",
                         isHovered && "bg-[#FF553E]/5 shadow-lg shadow-[#FF553E]/10"
@@ -73,7 +68,7 @@ export default function Dock({ items, className }) {
                 </TooltipTrigger>
                 <TooltipContent
                   side="top"
-                  className="bg-foreground text-background border-none px-2 py-1 text-[10px] font-bold uppercase tracking-wider"
+                  className="bg-foreground text-background border-none px-2 py-1 text-[10px] font-bold tracking-wider uppercase"
                 >
                   {item.label}
                 </TooltipContent>
@@ -85,4 +80,3 @@ export default function Dock({ items, className }) {
     </div>
   );
 }
-

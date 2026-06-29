@@ -1,18 +1,18 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { NodeViewWrapper } from '@tiptap/react';
-import { Move, AlignLeft, AlignCenter, AlignRight } from 'lucide-react';
+import React, { useState, useRef, useEffect, startTransition } from "react";
+import { NodeViewWrapper } from "@tiptap/react";
+import { Move, AlignLeft, AlignCenter, AlignRight } from "lucide-react";
 
 const ResizableImageView = ({ node, updateAttributes, editor, selected }) => {
   const [isResizing, setIsResizing] = useState(false);
   const [showAltInput, setShowAltInput] = useState(false);
-  const [altText, setAltText] = useState(node.attrs.alt || '');
+  const [altText, setAltText] = useState(node.attrs.alt || "");
   const imageRef = useRef(null);
   const startXRef = useRef(0);
   const startWidthRef = useRef(0);
   const inputRef = useRef(null);
 
   // Default alignment to 'left' if not set
-  const alignment = node.attrs.alignment || 'left';
+  const alignment = node.attrs.alignment || "left";
 
   const handleMouseDown = (e) => {
     e.preventDefault();
@@ -39,18 +39,18 @@ const ResizableImageView = ({ node, updateAttributes, editor, selected }) => {
       setIsResizing(false);
     };
 
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
 
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
     };
   }, [isResizing, updateAttributes]);
 
   useEffect(() => {
     if (showAltInput) {
-      setAltText(node.attrs.alt || '');
+      startTransition(() => setAltText(node.attrs.alt || ""));
       setTimeout(() => {
         inputRef.current?.focus();
       }, 50);
@@ -72,7 +72,7 @@ const ResizableImageView = ({ node, updateAttributes, editor, selected }) => {
       e.preventDefault();
       e.stopPropagation();
     }
-    setAltText(node.attrs.alt || '');
+    setAltText(node.attrs.alt || "");
     setShowAltInput(false);
     editor.commands.focus();
   };
@@ -82,28 +82,28 @@ const ResizableImageView = ({ node, updateAttributes, editor, selected }) => {
   };
 
   const getWrapperAlignment = () => {
-    if (alignment === 'center') return 'mx-auto';
-    if (alignment === 'right') return 'ml-auto';
-    return 'mr-auto';
+    if (alignment === "center") return "mx-auto";
+    if (alignment === "right") return "ml-auto";
+    return "mr-auto";
   };
 
   return (
     <NodeViewWrapper className="resizable-image-wrapper">
       <div
-        className={`relative block my-4 ${getWrapperAlignment()}`}
+        className={`relative my-4 block ${getWrapperAlignment()}`}
         style={{
-          maxWidth: '100%',
-          width: node.attrs.width ? `${node.attrs.width}px` : 'auto',
+          maxWidth: "100%",
+          width: node.attrs.width ? `${node.attrs.width}px` : "auto",
         }}
       >
         <img
           ref={imageRef}
           src={node.attrs.src || node.attrs.url || node.attrs.key}
-          alt={node.attrs.alt || ''}
-          title={node.attrs.title || ''}
-          className={`block w-full h-auto rounded-lg ${selected ? 'shadow-xl' : ''} ${!editor.isEditable ? 'cursor-pointer' : ''}`}
+          alt={node.attrs.alt || ""}
+          title={node.attrs.title || ""}
+          className={`block h-auto w-full rounded-lg ${selected ? "shadow-xl" : ""} ${!editor.isEditable ? "cursor-pointer" : ""}`}
           style={{
-            cursor: isResizing ? 'ew-resize' : (editor.isEditable ? 'default' : 'pointer'),
+            cursor: isResizing ? "ew-resize" : editor.isEditable ? "default" : "pointer",
           }}
         />
 
@@ -111,41 +111,44 @@ const ResizableImageView = ({ node, updateAttributes, editor, selected }) => {
           <>
             {/* Resize handle */}
             <div
-              className="absolute -bottom-3 -right-3 w-8 h-8 bg-blue-500 rounded-full cursor-nwse-resize flex items-center justify-center shadow-lg hover:bg-blue-600 transition-colors group"
+              className="group absolute -right-3 -bottom-3 flex h-8 w-8 cursor-nwse-resize items-center justify-center rounded-full bg-blue-500 shadow-lg transition-colors hover:bg-blue-600"
               onMouseDown={handleMouseDown}
-              style={{ border: '2px solid white' }}
+              style={{ border: "2px solid white" }}
             >
               <Move size={14} className="text-white" />
             </div>
 
             {/* Alignment buttons */}
-            <div className="absolute top-2 right-2 flex gap-1 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 p-1">
+            <div className="absolute top-2 right-2 flex gap-1 rounded-md border border-gray-200 bg-white p-1 shadow-lg dark:border-gray-700 dark:bg-gray-800">
               <button
-                onClick={() => setAlignment('left')}
-                className={`p-1.5 rounded transition-colors ${alignment === 'left'
-                  ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
-                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
-                  }`}
+                onClick={() => setAlignment("left")}
+                className={`rounded p-1.5 transition-colors ${
+                  alignment === "left"
+                    ? "bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-gray-100"
+                    : "text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
+                }`}
                 title="Align left"
               >
                 <AlignLeft size={14} />
               </button>
               <button
-                onClick={() => setAlignment('center')}
-                className={`p-1.5 rounded transition-colors ${alignment === 'center'
-                  ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
-                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
-                  }`}
+                onClick={() => setAlignment("center")}
+                className={`rounded p-1.5 transition-colors ${
+                  alignment === "center"
+                    ? "bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-gray-100"
+                    : "text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
+                }`}
                 title="Align center"
               >
                 <AlignCenter size={14} />
               </button>
               <button
-                onClick={() => setAlignment('right')}
-                className={`p-1.5 rounded transition-colors ${alignment === 'right'
-                  ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
-                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
-                  }`}
+                onClick={() => setAlignment("right")}
+                className={`rounded p-1.5 transition-colors ${
+                  alignment === "right"
+                    ? "bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-gray-100"
+                    : "text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
+                }`}
                 title="Align right"
               >
                 <AlignRight size={14} />
@@ -155,25 +158,25 @@ const ResizableImageView = ({ node, updateAttributes, editor, selected }) => {
             {/* Alt text button */}
             <button
               onClick={() => setShowAltInput(true)}
-              className="absolute top-2 left-2 px-3 py-1.5 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-md text-xs font-medium shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              className="absolute top-2 left-2 rounded-md border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 shadow-lg transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
             >
-              {node.attrs.alt ? 'Edit Alt' : 'Add Alt'}
+              {node.attrs.alt ? "Edit Alt" : "Add Alt"}
             </button>
           </>
         )}
 
         {showAltInput && (
-          <div 
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm"
+          <div
+            className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black p-4 backdrop-blur-sm"
             onMouseDown={(e) => e.stopPropagation()}
             onClick={(e) => e.stopPropagation()}
             onKeyDown={(e) => e.stopPropagation()}
           >
-            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-2xl max-w-md w-full">
-              <h3 className="text-base font-semibold mb-3 text-gray-900 dark:text-gray-100">
+            <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-2xl dark:bg-gray-800">
+              <h3 className="mb-3 text-base font-semibold text-gray-900 dark:text-gray-100">
                 Image Alt Text
               </h3>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
+              <p className="mb-3 text-xs text-gray-500 dark:text-gray-400">
                 Describe this image for accessibility and SEO
               </p>
               <input
@@ -182,23 +185,23 @@ const ResizableImageView = ({ node, updateAttributes, editor, selected }) => {
                 value={altText}
                 onChange={(e) => setAltText(e.target.value)}
                 placeholder="e.g., Product screenshot showing dashboard..."
-                className="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 mb-4"
+                className="mb-4 w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:focus:ring-blue-600"
                 onKeyDown={(e) => {
                   e.stopPropagation();
-                  if (e.key === 'Enter') handleAltSave(e);
-                  if (e.key === 'Escape') handleAltCancel(e);
+                  if (e.key === "Enter") handleAltSave(e);
+                  if (e.key === "Escape") handleAltCancel(e);
                 }}
               />
-              <div className="flex gap-2 justify-end">
+              <div className="flex justify-end gap-2">
                 <button
                   onClick={handleAltCancel}
-                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg text-sm font-medium transition-colors"
+                  className="rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleAltSave}
-                  className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium transition-colors"
+                  className="rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-600"
                 >
                   Save
                 </button>

@@ -17,21 +17,15 @@ export default function GeneratorCard({
     router.push(route);
   };
   return (
-    <div className="rounded-[24px] bg-white border border-[#E3E7ED] p-6 hover:shadow-ai-card transition-shadow duration-500 ease-out group">
+    <div className="hover:shadow-ai-card group rounded-[24px] border border-[#E3E7ED] bg-white p-6 transition-shadow duration-500 ease-out">
       <div className="flex items-center gap-2">
         <img src={src} alt="generator tool" />
-        <Text
-          as="h3"
-          size="section-card-title"
-        >
+        <Text as="h3" size="section-card-title">
           {title}
         </Text>
       </div>
 
-      <Text
-        size="p-xsmall"
-        className="mt-4 text-sm font-normal text-muted-foreground"
-      >
+      <Text size="p-xsmall" className="text-muted-foreground mt-4 text-sm font-normal">
         {description}
       </Text>
       <Button

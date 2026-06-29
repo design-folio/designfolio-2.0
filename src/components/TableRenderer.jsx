@@ -29,9 +29,7 @@ export const TableRenderer = ({ node }) => {
   };
 
   const tableText = node.children
-    .map((row) =>
-      row.children.map((cell) => cell.children[0]?.value || "").join(" | ")
-    )
+    .map((row) => row.children.map((cell) => cell.children[0]?.value || "").join(" | "))
     .join("\n");
 
   console.log("Table text extracted:", tableText);
@@ -40,14 +38,12 @@ export const TableRenderer = ({ node }) => {
 
   if (parsedTable) {
     console.log("Table parsed successfully, rendering ReportTable");
-    return (
-      <ReportTable headers={parsedTable.headers} rows={parsedTable.rows} />
-    );
+    return <ReportTable headers={parsedTable.headers} rows={parsedTable.rows} />;
   }
 
   return (
-    <div className="overflow-x-auto my-6">
-      <table className="w-full border-collapse bg-white shadow-sm rounded-lg">
+    <div className="my-6 overflow-x-auto">
+      <table className="w-full border-collapse rounded-lg bg-white shadow-sm">
         <tbody>
           {node.children.map((row, i) => (
             <tr key={i} className="border-b border-gray-200">

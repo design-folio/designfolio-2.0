@@ -1,38 +1,15 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import {
-  Sheet,
-  SheetContent,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import {
-  ChartSpline,
-  Eye,
-  PaintRoller,
-  Menu,
-  LogOut,
-  Settings,
-  Check,
-  Copy,
-} from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { ChartSpline, Eye, PaintRoller, Menu, LogOut, Settings, Check, Copy } from "lucide-react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { FluidDropdown } from "./fluid-dropdown";
 import { PublishDropdown } from "../publish-dropdown";
 import { AvatarDropdown } from "../avatar-dropdown";
 import { useGlobalContext } from "@/context/globalContext";
 import { useIsMobile } from "@/hooks/use-mobile";
-import {
-  getSidebarShiftWidth,
-  isSidebarThatShifts,
-  sidebars,
-} from "@/lib/constant";
+import { getSidebarShiftWidth, isSidebarThatShifts, sidebars } from "@/lib/constant";
 import { formatTimestamp } from "@/lib/times";
 import { _publish } from "@/network/post-request";
 import { toast } from "react-toastify";
@@ -71,8 +48,7 @@ export default function Navbar() {
 
   const router = useRouter();
 
-  const isAiToolsWorkspace =
-    router.pathname === "/builder" && router.query?.view === "ai-tools";
+  const isAiToolsWorkspace = router.pathname === "/builder" && router.query?.view === "ai-tools";
 
   const isMacOS = template === 4 && MACOS_ROUTES.includes(router.pathname);
 
@@ -105,7 +81,7 @@ export default function Navbar() {
 
   const handlePublish = () => {
     if (!userDetails?.pro && TEMPLATES_BY_ID[template]?.isPro) {
-      setUpgradeModalSource('pro-template');
+      setUpgradeModalSource("pro-template");
       setShowUpgradeModal(true);
       return;
     }
@@ -143,11 +119,11 @@ export default function Navbar() {
 
   // Shared inner nav content
   const navContent = (
-    <div className="px-2 md:px-2 py-2 flex items-center justify-between gap-4 md:gap-8">
+    <div className="flex items-center justify-between gap-4 px-2 py-2 md:gap-8 md:px-2">
       {/* Logo + mode switcher */}
       <div className="flex items-center gap-3">
         {/* <Link href="/builder">
-          <MemoDFLogoV2 className="flex-shrink-0" />
+          <MemoDFLogoV2 className="shrink-0" />
         </Link> */}
         <div>
           <FluidDropdown />
@@ -155,7 +131,7 @@ export default function Navbar() {
       </div>
 
       {/* Mobile right */}
-      <div className="flex md:hidden items-center gap-2">
+      <div className="flex items-center gap-2 md:hidden">
         <AvatarDropdown variant="new" onClose={() => setIsMobileMenuOpen(false)} />
         {!isAiToolsWorkspace && (
           <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
@@ -163,85 +139,90 @@ export default function Navbar() {
               <Button
                 variant="secondary"
                 size="icon"
-                className="bg-secondary hover:bg-secondary-hover border border-border text-foreground h-10 w-10 rounded-full"
+                className="bg-secondary hover:bg-secondary-hover border-border text-foreground h-10 w-10 rounded-full border"
               >
                 <Menu size={18} />
               </Button>
             </SheetTrigger>
             <SheetContent
               side="bottom"
-              className="rounded-t-3xl bg-card border-t border-border p-6 flex flex-col gap-4"
+              className="bg-card border-border flex flex-col gap-4 rounded-t-3xl border-t p-6"
             >
-
               <SheetTitle>Menu</SheetTitle>
-
-
-
-
 
               <div className="flex flex-col gap-1">
                 <Button
                   variant="ghost"
-                  className="w-full justify-start h-11 px-4 text-[14px] text-muted-foreground hover:text-foreground hover:bg-secondary"
-                  onClick={() => { setIsMobileMenuOpen(false); handleTheme(); }}
+                  className="text-muted-foreground hover:text-foreground hover:bg-secondary h-11 w-full justify-start px-4 text-[14px]"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    handleTheme();
+                  }}
                 >
                   <PaintRoller className="mr-2 h-4 w-4" /> Theme settings
                 </Button>
                 <Button
                   variant="ghost"
-                  className="w-full justify-start h-11 px-4 text-[14px] text-muted-foreground hover:text-foreground hover:bg-secondary"
-                  onClick={() => { setIsMobileMenuOpen(false); router.push("/portfolio-preview"); }}
+                  className="text-muted-foreground hover:text-foreground hover:bg-secondary h-11 w-full justify-start px-4 text-[14px]"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    router.push("/portfolio-preview");
+                  }}
                 >
                   <Eye className="mr-2 h-4 w-4" /> Preview
                 </Button>
                 <Button
                   variant="ghost"
-                  className="w-full justify-start h-11 px-4 text-[14px] text-muted-foreground hover:text-foreground hover:bg-secondary"
-                  onClick={() => { setIsMobileMenuOpen(false); router.push("/analytics"); }}
+                  className="text-muted-foreground hover:text-foreground hover:bg-secondary h-11 w-full justify-start px-4 text-[14px]"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    router.push("/analytics");
+                  }}
                 >
                   <ChartSpline className="mr-2 h-4 w-4" /> Insights
                 </Button>
                 <Button
                   variant="ghost"
-                  className="w-full justify-start h-11 px-4 text-[14px] text-muted-foreground hover:text-foreground hover:bg-secondary"
-                  onClick={() => { setIsMobileMenuOpen(false); setShowSettingsModal(true); }}
+                  className="text-muted-foreground hover:text-foreground hover:bg-secondary h-11 w-full justify-start px-4 text-[14px]"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    setShowSettingsModal(true);
+                  }}
                 >
                   <Settings className="mr-2 h-4 w-4" /> Settings
                 </Button>
                 <Button
                   variant="ghost"
-                  className="w-full justify-start h-11 px-4 text-[14px] text-destructive hover:text-destructive hover:bg-destructive/5"
+                  className="text-destructive hover:text-destructive hover:bg-destructive/5 h-11 w-full justify-start px-4 text-[14px]"
                   onClick={handleLogout}
                 >
                   <LogOut className="mr-2 h-4 w-4" /> Logout
                 </Button>
               </div>
 
-              <div className="h-px w-full bg-border" />
+              <div className="bg-border h-px w-full" />
 
-              <div className="flex w-full items-center justify-between gap-3 p-3 bg-muted rounded-xl border border-border">
+              <div className="bg-muted border-border flex w-full items-center justify-between gap-3 rounded-xl border p-3">
                 <div
-                  className="flex flex-col gap-0.5 overflow-hidden flex-1 min-w-0 cursor-pointer"
+                  className="flex min-w-0 flex-1 cursor-pointer flex-col gap-0.5 overflow-hidden"
                   onClick={() => window.open(`https://${domain}`, "_blank")}
                 >
-                  <span className="text-[13px] font-medium text-foreground truncate">
-                    {domain}
-                  </span>
-                  <span className="text-[11px] text-muted-foreground">
+                  <span className="text-foreground truncate text-[13px] font-medium">{domain}</span>
+                  <span className="text-muted-foreground text-[11px]">
                     {latestPublishDate
                       ? `Updated ${formatTimestamp(latestPublishDate)}`
                       : "Not published yet"}
                   </span>
                 </div>
-                <div className="flex items-center gap-2 flex-shrink-0">
+                <div className="flex shrink-0 items-center gap-2">
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-8 w-8 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground"
+                    className="text-muted-foreground hover:bg-muted hover:text-foreground h-8 w-8 rounded-xl"
                     onClick={handleCopy}
                   >
                     {isCopied ? (
-                      <Check className="h-4 w-4 text-foreground" />
+                      <Check className="text-foreground h-4 w-4" />
                     ) : (
                       <Copy className="h-4 w-4" />
                     )}
@@ -249,7 +230,7 @@ export default function Navbar() {
                   <Button
                     disabled={isPublishing}
                     onClick={handlePublish}
-                    className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium px-4 h-8 text-xs rounded-lg"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground h-8 rounded-lg px-4 text-xs font-medium"
                   >
                     {isPublishing ? "Updating…" : "Publish"}
                   </Button>
@@ -261,7 +242,7 @@ export default function Navbar() {
       </div>
 
       {/* Desktop right */}
-      <div className="hidden md:flex items-center gap-2">
+      <div className="hidden items-center gap-2 md:flex">
         {!isAiToolsWorkspace && (
           <>
             <Tooltip delayDuration={100}>
@@ -269,14 +250,20 @@ export default function Navbar() {
                 <Button
                   variant="secondary"
                   size="icon"
-                  className="group bg-secondary hover:bg-secondary-hover border border-border text-muted-foreground hover:text-foreground h-9 w-9 rounded-full cursor-pointer"
+                  className="group bg-secondary hover:bg-secondary-hover border-border text-muted-foreground hover:text-foreground h-9 w-9 cursor-pointer rounded-full border"
                   onClick={() => router.push("/analytics")}
                   data-testid="button-insights"
                 >
-                  <ChartSpline size={18} className="transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110" />
+                  <ChartSpline
+                    size={18}
+                    className="transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12"
+                  />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent side="bottom" className="bg-foreground text-background text-xs px-2 py-1 rounded">
+              <TooltipContent
+                side="bottom"
+                className="bg-foreground text-background rounded px-2 py-1 text-xs"
+              >
                 Insights
               </TooltipContent>
             </Tooltip>
@@ -286,14 +273,20 @@ export default function Navbar() {
                 <Button
                   variant="secondary"
                   size="icon"
-                  className="group bg-secondary hover:bg-secondary-hover border border-border text-muted-foreground hover:text-foreground h-9 w-9 rounded-full cursor-pointer"
+                  className="group bg-secondary hover:bg-secondary-hover border-border text-muted-foreground hover:text-foreground h-9 w-9 cursor-pointer rounded-full border"
                   onClick={handleTheme}
                   data-testid="button-themes"
                 >
-                  <PaintRoller size={18} className="transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110" />
+                  <PaintRoller
+                    size={18}
+                    className="transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12"
+                  />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent side="bottom" className="bg-foreground text-background text-xs px-2 py-1 rounded">
+              <TooltipContent
+                side="bottom"
+                className="bg-foreground text-background rounded px-2 py-1 text-xs"
+              >
                 Themes
               </TooltipContent>
             </Tooltip>
@@ -303,14 +296,20 @@ export default function Navbar() {
                 <Button
                   variant="secondary"
                   size="icon"
-                  className="group bg-secondary hover:bg-secondary-hover border border-border text-muted-foreground hover:text-foreground h-9 w-9 rounded-full cursor-pointer"
+                  className="group bg-secondary hover:bg-secondary-hover border-border text-muted-foreground hover:text-foreground h-9 w-9 cursor-pointer rounded-full border"
                   onClick={() => router.push("/portfolio-preview")}
                   data-testid="button-preview"
                 >
-                  <Eye size={18} className="transition-transform duration-300 group-hover:scale-125" />
+                  <Eye
+                    size={18}
+                    className="transition-transform duration-300 group-hover:scale-125"
+                  />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent side="bottom" className="bg-foreground text-background text-xs px-2 py-1 rounded">
+              <TooltipContent
+                side="bottom"
+                className="bg-foreground text-background rounded px-2 py-1 text-xs"
+              >
                 Preview
               </TooltipContent>
             </Tooltip>
@@ -328,7 +327,7 @@ export default function Navbar() {
     return (
       <TooltipProvider>
         <div
-          className="fixed top-0 left-0 bg-card border-b border-border h-[62px]"
+          className="bg-card border-border fixed top-0 left-0 h-[62px] border-b"
           style={{
             zIndex: isMobileMenuOpen ? 10050 : 110,
             right: shiftWidth,
@@ -345,7 +344,7 @@ export default function Navbar() {
   return (
     <TooltipProvider>
       <div
-        className="fixed top-0 left-0 z-50 flex justify-center pointer-events-none pt-4 px-4"
+        className="pointer-events-none fixed top-0 left-0 z-50 flex justify-center px-4 pt-4"
         style={{
           right: shouldShift ? `calc(${shiftWidth} + 16px)` : shiftWidth,
           transform: isVisible ? "translateY(0)" : "translateY(-120%)",
@@ -354,7 +353,7 @@ export default function Navbar() {
       >
         <nav
           className={cn(
-            "bg-card border border-border rounded-full shadow-sm pointer-events-auto w-full",
+            "bg-card border-border pointer-events-auto w-full rounded-full border shadow-sm",
             template === TEMPLATE_IDS.SPOTLIGHT
               ? "max-w-[848px]"
               : template === TEMPLATE_IDS.CANVAS

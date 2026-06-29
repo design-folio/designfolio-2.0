@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState, startTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { useGlobalContext } from "@/context/globalContext";
 import ChangePassword from "@/components/changePassword";
@@ -29,8 +29,10 @@ export default function Settings() {
   } = useGlobalContext();
 
   const isMobile = useIsMobile();
-  const lastSidebarRef = useRef(null);
-  if (activeSidebar) lastSidebarRef.current = activeSidebar;
+  const [lastSidebar, setLastSidebar] = useState(() => activeSidebar ?? null);
+  useEffect(() => {
+    if (activeSidebar != null) startTransition(() => setLastSidebar(activeSidebar));
+  }, [activeSidebar]);
 
   // Compensate for scrollbar gutter when sidebar opens so content doesn't shift.
   useEffect(() => {
@@ -48,11 +50,11 @@ export default function Settings() {
 
   useEffect(() => {
     if (userDetailsIsState) {
-      setIsUserDetailsFromCache(false);
+      startTransition(() => setIsUserDetailsFromCache(false));
     } else {
-      setIsUserDetailsFromCache(true);
+      startTransition(() => setIsUserDetailsFromCache(true));
     }
-  }, []);
+  }, [userDetailsIsState, setIsUserDetailsFromCache]);
 
   const template = userDetails?.template;
 
@@ -66,7 +68,6 @@ export default function Settings() {
         return "max-w-[840px] mx-auto py-[94px] md:py-[124px] min-h-screen";
       default:
         return "max-w-[700px] mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0";
-
     }
   })();
 
@@ -93,24 +94,21 @@ export default function Settings() {
     open: !!activeSidebar,
     onOpenChange: (open) => !open && closeSidebar(true),
     style: {
-      "--sidebar-width": getSidebarShiftWidth(lastSidebarRef.current) || "400px",
+      "--sidebar-width": getSidebarShiftWidth(lastSidebar) || "400px",
     },
     defaultOpen: false,
   };
 
   return (
     <SidebarProvider {...sidebarProviderProps}>
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
         <main className="min-h-screen">
           <div className={containerClass}>
             {isMono && <div className="custom-dashed-t" />}
             <div className={cardClass}>
               <Link href="/builder">
-                <Button
-                  variant="secondary"
-                  className="rounded-full px-4 h-9 text-sm font-medium"
-                >
+                <Button variant="secondary" className="h-9 rounded-full px-4 text-sm font-medium">
                   <MemoLeftArrow className="!size-2.5" />
                   Go Back
                 </Button>
@@ -122,10 +120,7 @@ export default function Settings() {
 
             {isMono && <div className="custom-dashed-t" />}
             <div className={`${cardClass} ${!isMono ? "mt-6" : ""}`}>
-              <CustomDomain
-                domainDetails={domainDetails}
-                fetchDomainDetails={fetchDomainDetails}
-              />
+              <CustomDomain domainDetails={domainDetails} fetchDomainDetails={fetchDomainDetails} />
             </div>
 
             {isMono && <div className="custom-dashed-t" />}

@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { Sun, Moon } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
@@ -19,15 +19,15 @@ export default function LandingLeftNav({
   containerRef,
 }) {
   return (
-    <div className="hidden lg:block absolute right-full top-0 bottom-0 z-40">
-      <div className="sticky top-[120px] flex flex-col items-start pr-12 w-max">
+    <div className="absolute top-0 right-full bottom-0 z-40 hidden lg:block">
+      <div className="sticky top-[120px] flex w-max flex-col items-start pr-12">
         {/* Animated logo */}
-        <div className="absolute top-0 left-0 w-9 h-9 z-0">
+        <div className="absolute top-0 left-0 z-0 h-9 w-9">
           <motion.div
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            className="w-full h-full"
+            className="h-full w-full"
           >
             <LandingLogoSVG size={36} id="leftnav-logo" />
           </motion.div>
@@ -38,11 +38,11 @@ export default function LandingLeftNav({
           initial={{ y: 0 }}
           animate={{ y: 52 }}
           transition={{ duration: 0.6, delay: 1.0, ease: [0.16, 1, 0.3, 1] }}
-          className="flex flex-col relative z-10 bg-[--lp-bg] w-full"
+          className="relative z-10 flex w-full flex-col bg-(--lp-bg)"
         >
           {/* /Designfolio wordmark */}
           <div
-            className="font-bold text-[15px] tracking-tight text-[--lp-text] flex items-center h-9 pr-4 bg-[--lp-bg]"
+            className="flex h-9 items-center bg-(--lp-bg) pr-4 text-[15px] font-bold tracking-tight text-(--lp-text)"
             style={{ fontFamily: "var(--font-manrope), sans-serif" }}
           >
             <span className="mr-1.5">/</span>
@@ -71,17 +71,17 @@ export default function LandingLeftNav({
           </div>
 
           {/* Theme toggle */}
-          <div ref={containerRef} className="group inline-flex items-center gap-2 mt-4 mb-4">
+          <div ref={containerRef} className="group mt-4 mb-4 inline-flex items-center gap-2">
             <span
               className={cn(
                 "cursor-pointer text-sm transition-colors",
-                isDark ? "text-lp-text/30" : "text-[--lp-text]",
+                isDark ? "text-lp-text/30" : "text-(--lp-text)"
               )}
               onClick={() => onThemeChange(false)}
             >
               <Sun className="size-4" aria-hidden="true" />
             </span>
-            <span className="inline-flex [&_button>span]:!bg-background">
+            <span className="[&_button>span]:!bg-background inline-flex">
               <Switch
                 checked={isDark}
                 onCheckedChange={onThemeChange}
@@ -92,7 +92,7 @@ export default function LandingLeftNav({
             <span
               className={cn(
                 "cursor-pointer text-sm transition-colors",
-                !isDark ? "text-lp-text/30" : "text-[--lp-text]",
+                !isDark ? "text-lp-text/30" : "text-(--lp-text)"
               )}
               onClick={() => onThemeChange(true)}
             >
@@ -102,7 +102,7 @@ export default function LandingLeftNav({
 
           {/* Section nav */}
           <nav
-            className="flex flex-col gap-2.5 text-[15px] font-medium text-lp-text/50 pb-4 bg-[--lp-bg]"
+            className="text-lp-text/50 flex flex-col gap-2.5 bg-(--lp-bg) pb-4 text-[15px] font-medium"
             style={{ fontFamily: "var(--font-manrope), sans-serif" }}
           >
             {NAV_LINKS.map(({ id, label }) => (
@@ -114,10 +114,10 @@ export default function LandingLeftNav({
                   onSectionClick(id, id === "stories" ? "center" : "start");
                 }}
                 className={cn(
-                  "transition-colors cursor-pointer",
+                  "cursor-pointer transition-colors",
                   activeSection === id
-                    ? "text-[--lp-accent] font-semibold"
-                    : "hover:text-[--lp-text]",
+                    ? "font-semibold text-(--lp-accent)"
+                    : "hover:text-(--lp-text)"
                 )}
               >
                 {label}

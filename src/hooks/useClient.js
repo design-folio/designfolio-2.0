@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, startTransition } from "react";
 
 export default function useClient() {
   const [isClient, setIsclient] = useState(false);
 
   useEffect(() => {
-    setIsclient(true);
+    startTransition(() => setIsclient(true));
   }, []);
 
   return { isClient };

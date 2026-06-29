@@ -810,16 +810,7 @@
 }
 
 .proBadge {
-  background: linear-gradient(
-    45deg,
-    #ff8c00,
-    #ffa500,
-    #ffb347,
-    #ffd700,
-    #ffb347,
-    #ffa500,
-    #ff8c00
-  );
+  background: linear-gradient(45deg, #ff8c00, #ffa500, #ffb347, #ffd700, #ffb347, #ffa500, #ff8c00);
   background-size: 300% 300%;
   animation: smoothGradientFlow 8s ease-in-out infinite;
   color: white;
@@ -868,16 +859,7 @@
 }
 
 .upgradeButton {
-  background: linear-gradient(
-    45deg,
-    #ff8c00,
-    #ffa500,
-    #ffb347,
-    #ffd700,
-    #ffb347,
-    #ffa500,
-    #ff8c00
-  );
+  background: linear-gradient(45deg, #ff8c00, #ffa500, #ffb347, #ffd700, #ffb347, #ffa500, #ff8c00);
   background-size: 300% 300%;
   animation: smoothButtonGradient 10s ease-in-out infinite;
   color: white;
@@ -1032,12 +1014,7 @@
   left: 0;
   right: 0;
   height: 80px;
-  background: linear-gradient(
-    180deg,
-    #f97316 0%,
-    #fbbf24 40%,
-    transparent 100%
-  );
+  background: linear-gradient(180deg, #f97316 0%, #fbbf24 40%, transparent 100%);
   opacity: 0;
   animation: glowFadeIn 1.2s ease-out forwards;
   pointer-events: none;
@@ -1052,105 +1029,29 @@
   height: 80px;
   background-image:
     radial-gradient(2px 2px at 20px 30px, rgba(255, 255, 255, 1), transparent),
-    radial-gradient(
-      1.5px 1.5px at 40px 70px,
-      rgba(255, 255, 255, 0.95),
-      transparent
-    ),
-    radial-gradient(
-      2.5px 2.5px at 90px 40px,
-      rgba(255, 255, 255, 1),
-      transparent
-    ),
-    radial-gradient(
-      1.5px 1.5px at 130px 80px,
-      rgba(255, 255, 255, 0.9),
-      transparent
-    ),
-    radial-gradient(
-      2.5px 2.5px at 160px 30px,
-      rgba(255, 255, 255, 1),
-      transparent
-    ),
-    radial-gradient(
-      2px 2px at 200px 60px,
-      rgba(255, 255, 255, 0.95),
-      transparent
-    ),
+    radial-gradient(1.5px 1.5px at 40px 70px, rgba(255, 255, 255, 0.95), transparent),
+    radial-gradient(2.5px 2.5px at 90px 40px, rgba(255, 255, 255, 1), transparent),
+    radial-gradient(1.5px 1.5px at 130px 80px, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(2.5px 2.5px at 160px 30px, rgba(255, 255, 255, 1), transparent),
+    radial-gradient(2px 2px at 200px 60px, rgba(255, 255, 255, 0.95), transparent),
     radial-gradient(2px 2px at 240px 20px, rgba(255, 255, 255, 1), transparent),
-    radial-gradient(
-      2px 2px at 280px 50px,
-      rgba(255, 255, 255, 0.9),
-      transparent
-    ),
-    radial-gradient(
-      1.5px 1.5px at 320px 35px,
-      rgba(255, 255, 255, 1),
-      transparent
-    ),
-    radial-gradient(
-      1.5px 1.5px at 350px 70px,
-      rgba(255, 255, 255, 0.85),
-      transparent
-    ),
+    radial-gradient(2px 2px at 280px 50px, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(1.5px 1.5px at 320px 35px, rgba(255, 255, 255, 1), transparent),
+    radial-gradient(1.5px 1.5px at 350px 70px, rgba(255, 255, 255, 0.85), transparent),
     radial-gradient(2px 2px at 380px 15px, rgba(255, 255, 255, 1), transparent),
-    radial-gradient(
-      2.5px 2.5px at 60px 15px,
-      rgba(255, 255, 255, 0.95),
-      transparent
-    ),
-    radial-gradient(
-      1.5px 1.5px at 100px 70px,
-      rgba(255, 255, 255, 1),
-      transparent
-    ),
-    radial-gradient(
-      1.5px 1.5px at 180px 75px,
-      rgba(255, 255, 255, 0.9),
-      transparent
-    ),
+    radial-gradient(2.5px 2.5px at 60px 15px, rgba(255, 255, 255, 0.95), transparent),
+    radial-gradient(1.5px 1.5px at 100px 70px, rgba(255, 255, 255, 1), transparent),
+    radial-gradient(1.5px 1.5px at 180px 75px, rgba(255, 255, 255, 0.9), transparent),
     radial-gradient(2px 2px at 300px 10px, rgba(255, 255, 255, 1), transparent),
-    radial-gradient(
-      1.5px 1.5px at 420px 25px,
-      rgba(255, 255, 255, 0.9),
-      transparent
-    ),
+    radial-gradient(1.5px 1.5px at 420px 25px, rgba(255, 255, 255, 0.9), transparent),
     radial-gradient(2px 2px at 460px 65px, rgba(255, 255, 255, 1), transparent),
-    radial-gradient(
-      2.5px 2.5px at 500px 45px,
-      rgba(255, 255, 255, 0.95),
-      transparent
-    ),
-    radial-gradient(
-      1.5px 1.5px at 540px 15px,
-      rgba(255, 255, 255, 1),
-      transparent
-    ),
-    radial-gradient(
-      2px 2px at 580px 75px,
-      rgba(255, 255, 255, 0.9),
-      transparent
-    ),
-    radial-gradient(
-      1.5px 1.5px at 620px 50px,
-      rgba(255, 255, 255, 1),
-      transparent
-    ),
-    radial-gradient(
-      2px 2px at 660px 30px,
-      rgba(255, 255, 255, 0.95),
-      transparent
-    ),
-    radial-gradient(
-      2.5px 2.5px at 700px 70px,
-      rgba(255, 255, 255, 1),
-      transparent
-    ),
-    radial-gradient(
-      1.5px 1.5px at 740px 20px,
-      rgba(255, 255, 255, 0.9),
-      transparent
-    ),
+    radial-gradient(2.5px 2.5px at 500px 45px, rgba(255, 255, 255, 0.95), transparent),
+    radial-gradient(1.5px 1.5px at 540px 15px, rgba(255, 255, 255, 1), transparent),
+    radial-gradient(2px 2px at 580px 75px, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(1.5px 1.5px at 620px 50px, rgba(255, 255, 255, 1), transparent),
+    radial-gradient(2px 2px at 660px 30px, rgba(255, 255, 255, 0.95), transparent),
+    radial-gradient(2.5px 2.5px at 700px 70px, rgba(255, 255, 255, 1), transparent),
+    radial-gradient(1.5px 1.5px at 740px 20px, rgba(255, 255, 255, 0.9), transparent),
     radial-gradient(2px 2px at 780px 55px, rgba(255, 255, 255, 1), transparent);
   background-repeat: repeat-x;
   background-size: 800px 80px;
@@ -1937,8 +1838,7 @@
   }
 
   .modalExiting {
-    animation: slideOutDownBottomSheet 0.25s
-      cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
+    animation: slideOutDownBottomSheet 0.25s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
   }
 
   @keyframes slideInUpBottomSheet {
@@ -2049,8 +1949,7 @@
   }
 
   .personalizationPanelExiting {
-    animation: slideOutDownBottomSheet 0.25s
-      cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards !important;
+    animation: slideOutDownBottomSheet 0.25s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards !important;
   }
 
   .personalizationOverlayExiting {
@@ -2567,8 +2466,7 @@
 }
 
 /* Pending state */
-.paymentStatusIconWrapper:has(svg polyline[points="12,6 12,12 16,14"])
-  .paymentStatusIcon {
+.paymentStatusIconWrapper:has(svg polyline[points="12,6 12,12 16,14"]) .paymentStatusIcon {
   color: #f59e0b;
 }
 
@@ -2932,12 +2830,7 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(245, 158, 11, 0.1),
-    transparent
-  );
+  background: linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.1), transparent);
   animation: dealBannerShimmer 2s ease-in-out infinite;
 }
 

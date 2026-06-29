@@ -12,7 +12,7 @@ import {
 import { useCursorTooltip } from "@/context/cursorTooltipContext";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView } from "motion/react";
 import React, { useRef, useState, useEffect } from "react";
 import { Footer } from "@/components/comp/Footer";
 import { useRouter } from "next/router";
@@ -34,15 +34,15 @@ import {
   useSensor,
   useSensors,
   DragEndEvent,
-} from '@dnd-kit/core';
+} from "@dnd-kit/core";
 import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   useSortable,
   verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { Testimonials } from "./Testimonials";
 import { _updateUser, _updateProject } from "@/network/post-request";
 import ProjectLock from "../projectLock";
@@ -72,8 +72,15 @@ const Portfolio = ({ userDetails, edit }) => {
   } = userDetails || {};
 
   const hasAbout = userDetails?.about !== null && userDetails?.about !== undefined;
-  const { openModal, openSidebar, setSelectedWork, setSelectedProject, setUserDetails, setShowUpgradeModal, setUpgradeModalUnhideProject } =
-    useGlobalContext();
+  const {
+    openModal,
+    openSidebar,
+    setSelectedWork,
+    setSelectedProject,
+    setUserDetails,
+    setShowUpgradeModal,
+    setUpgradeModalUnhideProject,
+  } = useGlobalContext();
 
   // Get section order from userDetails or use template default
   const sectionOrder = normalizeSectionOrder(userDetails?.sectionOrder, DEFAULT_SECTION_ORDER);
@@ -108,23 +115,17 @@ const Portfolio = ({ userDetails, edit }) => {
   };
 
   // Duplicate skills for smooth infinite scroll
-  const scrollSkills = [
-    ...skills,
-    ...skills,
-    ...skills,
-    ...skills,
-    ...skills,
-    ...skills,
-  ];
+  const scrollSkills = [...skills, ...skills, ...skills, ...skills, ...skills, ...skills];
+
+  const getProjectHref = (id) =>
+    edit
+      ? `/project/${id}/editor`
+      : router.asPath.includes("/portfolio-preview")
+        ? `/project/${id}/preview`
+        : `/project/${id}`;
 
   const handleNavigation = (id) => {
-    router.push(
-      edit
-        ? `/project/${id}/editor`
-        : router.asPath.includes("/portfolio-preview")
-          ? `/project/${id}/preview`
-          : `/project/${id}`
-    );
+    router.push(getProjectHref(id));
   };
 
   const onDeleteProject = (project) => {
@@ -192,12 +193,8 @@ const Portfolio = ({ userDetails, edit }) => {
   const handleDragEnd = (event) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
-    const oldIndex = sortedProjects.findIndex(
-      (project) => project._id === active.id
-    );
-    const newIndex = sortedProjects.findIndex(
-      (project) => project._id === over.id
-    );
+    const oldIndex = sortedProjects.findIndex((project) => project._id === active.id);
+    const newIndex = sortedProjects.findIndex((project) => project._id === over.id);
     const newSortedProjects = arrayMove(sortedProjects, oldIndex, newIndex);
     setSortedProjects(newSortedProjects);
     setUserDetails((prev) => ({ ...prev, projects: newSortedProjects }));
@@ -217,8 +214,9 @@ const Portfolio = ({ userDetails, edit }) => {
       setMousePosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
     };
 
-    const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-      useSortable({ id: project._id });
+    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+      id: project._id,
+    });
     const style = {
       transform: CSS.Transform.toString(transform),
       transition,
@@ -231,43 +229,46 @@ const Portfolio = ({ userDetails, edit }) => {
     }, [shouldShowTooltip, setCursorPill]);
 
     return (
-      <div ref={setNodeRef} style={style} className={isDragging ? 'relative' : ''}>
+      <div ref={setNodeRef} style={style} className={isDragging ? "relative" : ""}>
         <motion.div
-            ref={cardRef}
-            variants={item}
-            onClick={() => {
-              setCursorPill(false);
-              handleNavigation(project?._id);
-            }}
-            onMouseDown={() => setCursorPill(false)}
-            onMouseMove={handleMouseMove}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => {
-              setIsHovered(false);
-              setIsHoveringInteractive(false);
-            }}
-            className="group bg-card border border-card-border rounded-lg overflow-hidden hover:bg-card/80 transition-colors relative !cursor-pointer"
-          >
-          <div className="flex flex-col md:flex-row !cursor-pointer">
-            <div className="relative w-full lg:w-[320px] h-[261px] shrink-0 overflow-hidden">
+          ref={cardRef}
+          variants={item}
+          onClick={() => {
+            setCursorPill(false);
+            handleNavigation(project?._id);
+          }}
+          onMouseDown={() => setCursorPill(false)}
+          onMouseMove={handleMouseMove}
+          onMouseEnter={() => {
+            setIsHovered(true);
+            router.prefetch(getProjectHref(project?._id));
+          }}
+          onMouseLeave={() => {
+            setIsHovered(false);
+            setIsHoveringInteractive(false);
+          }}
+          className="group bg-card border-card-border hover:bg-card/80 relative cursor-pointer! overflow-hidden rounded-lg border transition-colors"
+        >
+          <div className="flex cursor-pointer! flex-col md:flex-row">
+            <div className="relative h-[261px] w-full shrink-0 overflow-hidden lg:w-[320px]">
               <img
                 src={project?.thumbnail?.url}
                 alt={project.title}
-                className="object-cover group-hover:scale-105 transition-transform duration-300 w-full h-full !cursor-pointer"
+                className="h-full w-full cursor-pointer! object-cover transition-transform duration-300 group-hover:scale-105"
               />
               {project?.hidden && (
-                <div className="absolute top-3 right-3 bg-amber-100 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1.5 z-10">
-                  <EyeOff className="w-3 h-3" />
+                <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-700 dark:bg-amber-950/30 dark:text-amber-400">
+                  <EyeOff className="h-3 w-3" />
                   Hidden from live site
                 </div>
               )}
             </div>
-            <div className="p-8 flex flex-col justify-between flex-grow !cursor-pointer">
+            <div className="flex grow cursor-pointer! flex-col justify-between p-8">
               <div>
-                <h4 className="text-2xl font-semibold mb-3 line-clamp-2 !cursor-pointer">
+                <h4 className="mb-3 line-clamp-2 cursor-pointer! text-2xl font-semibold">
                   {project.title}
                 </h4>
-                <p className="dark:text-gray-400 text-gray-600 line-clamp-2 !cursor-pointer">
+                <p className="line-clamp-2 cursor-pointer! text-gray-600 dark:text-gray-400">
                   {project.description}
                 </p>
               </div>
@@ -277,12 +278,8 @@ const Portfolio = ({ userDetails, edit }) => {
                   onMouseEnter={() => setIsHoveringInteractive(true)}
                   onMouseLeave={() => setIsHoveringInteractive(false)}
                 >
-                  <DragHandle
-                    isButton
-                    listeners={listeners}
-                    attributes={attributes}
-                  />
-                  <div className="flex gap-2 ml-auto">
+                  <DragHandle isButton listeners={listeners} attributes={attributes} />
+                  <div className="ml-auto flex gap-2">
                     <Button2
                       size="medium"
                       onClick={(e) => {
@@ -290,7 +287,7 @@ const Portfolio = ({ userDetails, edit }) => {
                         e.stopPropagation();
                         handleNavigation(project?._id);
                       }}
-                      icon={<Pencil className="w-4 h-4" />}
+                      icon={<Pencil className="h-4 w-4" />}
                       text={"Edit"}
                       type="secondary"
                     />
@@ -303,7 +300,13 @@ const Portfolio = ({ userDetails, edit }) => {
                         e.stopPropagation();
                         handleToggleVisibility(project?._id);
                       }}
-                      icon={project?.hidden ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      icon={
+                        project?.hidden ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )
+                      }
                       text={project?.hidden ? "Hidden" : "Visible"}
                     />
                     <Button2
@@ -325,20 +328,20 @@ const Portfolio = ({ userDetails, edit }) => {
                 <Button2
                   variant="outline"
                   size="sm"
-                  className="self-start mt-6 group/btn relative overflow-hidden"
+                  className="group/btn relative mt-6 self-start overflow-hidden"
                   asChild
                 >
                   <a href={project.link} className="relative z-10">
-                    <span className="absolute inset-0 group-hover/btn:bg-white/10 transition-colors duration-300" />
+                    <span className="absolute inset-0 transition-colors duration-300 group-hover/btn:bg-white/10" />
                     View Project
-                    <ArrowRight className="w-4 h-4 ml-2" />
+                    <ArrowRight className="ml-2 h-4 w-4" />
                   </a>
                 </Button2>
               )}
             </div>
           </div>
           <div
-            className="pointer-events-none absolute -inset-px opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            className="pointer-events-none absolute -inset-px opacity-0 transition-opacity duration-300 group-hover:opacity-100"
             style={{
               background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255,255,255,.1), transparent 40%)`,
             }}
@@ -351,11 +354,21 @@ const Portfolio = ({ userDetails, edit }) => {
   const wallpaperExists = userDetails?.wallpaper && userDetails?.wallpaper?.value != 0;
   return (
     <TooltipProvider>
-      <div className={cn("min-h-screen bg-background text-foreground transition-colors duration-300", wallpaperExists && "max-w-[848px] mx-auto rounded-2xl mb-8", !edit && wallpaperExists && "mt-8")}>
+      <div
+        className={cn(
+          "bg-background text-foreground min-h-screen transition-colors duration-300",
+          wallpaperExists && "mx-auto mb-8 max-w-[848px] rounded-2xl",
+          !edit && wallpaperExists && "mt-8"
+        )}
+      >
         {/* Header */}
 
-        <header className={cn("border-b border-secondary-border py-6 bg-background transition-colors duration-300 rounded-t-2xl",)}>
-          <div className="container max-w-3xl mx-auto px-4">
+        <header
+          className={cn(
+            "border-secondary-border bg-background rounded-t-2xl border-b py-6 transition-colors duration-300"
+          )}
+        >
+          <div className="container mx-auto max-w-3xl px-4">
             <motion.div
               className="flex items-center justify-between"
               initial="hidden"
@@ -380,14 +393,14 @@ const Portfolio = ({ userDetails, edit }) => {
                   <TooltipTrigger asChild>
                     <div
                       className={cn(
-                        "w-10 h-10 rounded-xl flex items-center justify-center relative overflow-hidden",
+                        "relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl",
                         !avatar ? "bg-[#FFB088]" : ""
                       )}
                     >
                       <img
                         src={getUserAvatarImage(userDetails)}
                         alt="Profile"
-                        className="w-full h-full object-cover"
+                        className="h-full w-full object-cover"
                       />
                     </div>
                   </TooltipTrigger>
@@ -395,10 +408,14 @@ const Portfolio = ({ userDetails, edit }) => {
                     side="top"
                     sideOffset={8}
                     avoidCollisions={true}
-                    className="bg-tooltip-bg-color text-tooltip-text-color border-0 px-4 py-2 rounded-xl flex items-center gap-2 shadow-xl"
+                    className="bg-tooltip-bg-color text-tooltip-text-color flex items-center gap-2 rounded-xl border-0 px-4 py-2 shadow-xl"
                   >
                     <span className="text-sm font-medium">Happy to have you here</span>
-                    <img src="/assets/png/handshake.png" alt="Handshake" className="w-5 h-5 object-contain" />
+                    <img
+                      src="/assets/png/handshake.png"
+                      alt="Handshake"
+                      className="h-5 w-5 object-contain"
+                    />
                   </TooltipContent>
                 </Tooltip>
                 <div>
@@ -418,21 +435,16 @@ const Portfolio = ({ userDetails, edit }) => {
               >
                 <a href={`mailto:${email}`}>
                   <Button variant="outline" size="sm" className="gap-2">
-                    <Mail className="w-4 h-4" />
+                    <Mail className="h-4 w-4" />
                     E-mail
                   </Button>
                 </a>
                 {edit && (
                   <Button2
                     onClick={() => openModal("onboarding")}
-                    customClass="!p-[8px] rounded-[8px] !flex-shrink-0"
+                    customClass="!p-[8px] rounded-[8px] !shrink-0"
                     type={"secondary"}
-                    icon={
-                      <EditIcon
-                        className="text-df-icon-color cursor-pointer"
-                        size={20}
-                      />
-                    }
+                    icon={<EditIcon className="text-df-icon-color cursor-pointer" size={20} />}
                   />
                 )}
               </motion.div>
@@ -440,33 +452,27 @@ const Portfolio = ({ userDetails, edit }) => {
           </div>
         </header>
 
-        <div className="container max-w-3xl mx-auto px-4 relative rounded-b-2xl">
-          <div className="absolute left-0 top-0 w-px h-full bg-secondary-border" />
-          <div className="absolute right-0 top-0 w-px h-full bg-secondary-border" />
+        <div className="relative container mx-auto max-w-3xl rounded-b-2xl px-4">
+          <div className="bg-secondary-border absolute top-0 left-0 h-full w-px" />
+          <div className="bg-secondary-border absolute top-0 right-0 h-full w-px" />
 
           {/* Hero Section with Text Reveal */}
-          <section className="py-12 border-b border-secondary-border overflow-hidden">
+          <section className="border-secondary-border overflow-hidden border-b py-12">
             <motion.div
               initial="initial"
               animate="animate"
               variants={{ animate: { transition: { staggerChildren: 0.2 } } }}
             >
-              <motion.h1
-                className="text-4xl font-bold mb-4"
-                variants={textReveal}
-              >
+              <motion.h1 className="mb-4 text-4xl font-bold" variants={textReveal}>
                 {introduction}
               </motion.h1>
-              <motion.p
-                className="dark:text-gray-400 text-gray-600 mb-6"
-                variants={textReveal}
-              >
+              <motion.p className="mb-6 text-gray-600 dark:text-gray-400" variants={textReveal}>
                 {bio}
               </motion.p>
               {/* Skills Infinite Scroll */}
               <motion.div
                 variants={textReveal}
-                className="w-full overflow-hidden relative py-4 before:absolute before:left-0 before:top-0 before:z-10 before:w-20 before:h-full before:bg-gradient-to-r before:from-background before:to-transparent after:absolute after:right-0 after:top-0 after:z-10 after:w-20 after:h-full after:bg-gradient-to-l after:from-background after:to-transparent"
+                className="before:from-background after:from-background relative w-full overflow-hidden py-4 before:absolute before:top-0 before:left-0 before:z-10 before:h-full before:w-20 before:bg-linear-to-r before:to-transparent after:absolute after:top-0 after:right-0 after:z-10 after:h-full after:w-20 after:bg-linear-to-l after:to-transparent"
               >
                 <motion.div
                   className="flex gap-4 whitespace-nowrap"
@@ -491,7 +497,7 @@ const Portfolio = ({ userDetails, edit }) => {
                         delay: (index % skills.length) * 0.05,
                         ease: [0.25, 0.46, 0.45, 0.94],
                       }}
-                      className="bg-card px-4 py-2 rounded-full text-sm"
+                      className="bg-card rounded-full px-4 py-2 text-sm"
                     >
                       {skill?.label}
                     </motion.span>
@@ -504,7 +510,7 @@ const Portfolio = ({ userDetails, edit }) => {
           {/* Sections rendered in order based on sectionOrder */}
           {sectionOrder.map((sectionId) => {
             if (!isSectionVisible(sectionId)) return null;
-            if (sectionId === 'about') {
+            if (sectionId === "about") {
               if (!edit && !hasAbout) return null;
               return (
                 <motion.section
@@ -513,18 +519,20 @@ const Portfolio = ({ userDetails, edit }) => {
                   variants={container}
                   initial="hidden"
                   animate="show"
-                  className="py-12 border-b border-secondary-border"
+                  className="border-secondary-border border-b py-12"
                 >
-                  <div className="flex items-center justify-between mb-8">
+                  <div className="mb-8 flex items-center justify-between">
                     <h3 className="text-3xl font-bold">About</h3>
                     {edit && (
-                      <div className="flex items-center gap-2 justify-end">
+                      <div className="flex items-center justify-end gap-2">
                         <SectionVisibilityButton sectionId="about" />
                         <Button2
                           onClick={() => openModal(modals.about)}
-                          customClass="!p-[8px] rounded-[10px] !flex-shrink-0"
+                          customClass="!p-[8px] rounded-[10px] !shrink-0"
                           type={"secondary"}
-                          icon={<EditIcon className="text-df-icon-color cursor-pointer" size={20} />}
+                          icon={
+                            <EditIcon className="text-df-icon-color cursor-pointer" size={20} />
+                          }
                         />
                       </div>
                     )}
@@ -538,7 +546,7 @@ const Portfolio = ({ userDetails, edit }) => {
                 </motion.section>
               );
             }
-            if (sectionId === 'works') {
+            if (sectionId === "works") {
               return (
                 <div key="works" id="section-works">
                   {(experiences.length > 0 || edit) && (
@@ -552,7 +560,7 @@ const Portfolio = ({ userDetails, edit }) => {
               );
             }
 
-            if (sectionId === 'projects') {
+            if (sectionId === "projects") {
               return (
                 <div key="projects" id="section-projects">
                   {(projects.length > 0 || edit) && (
@@ -569,9 +577,9 @@ const Portfolio = ({ userDetails, edit }) => {
                           variants={container}
                           initial="hidden"
                           animate="show"
-                          className="py-12 border-b border-secondary-border"
+                          className="border-secondary-border border-b py-12"
                         >
-                          <div className="flex items-center justify-between mb-12">
+                          <div className="mb-12 flex items-center justify-between">
                             <h3 className="text-3xl font-bold">Featured Projects</h3>
                             {edit && (
                               <div className="flex items-center justify-end">
@@ -591,24 +599,25 @@ const Portfolio = ({ userDetails, edit }) => {
                               />
                             ))}
                             {edit &&
-                              (userDetails?.pro || (userDetails?.projects || []).filter(p => !p.hidden).length < 2 ? (
+                              (userDetails?.pro ||
+                              (userDetails?.projects || []).filter((p) => !p.hidden).length < 2 ? (
                                 <AddCard
-                                  title={`${userDetails?.projects?.length === 0
-                                    ? "Upload your first case study"
-                                    : "Add case study"
-                                    }`}
+                                  title={`${
+                                    userDetails?.projects?.length === 0
+                                      ? "Upload your first case study"
+                                      : "Add case study"
+                                  }`}
                                   subTitle="Show off your best work."
                                   first
                                   buttonTitle="Add case study"
                                   secondaryButtonTitle="Write using AI"
                                   onClick={() => openSidebar(sidebars.project)}
-                                  icon={
-                                    <MemoCasestudy className="cursor-pointer size-[72px]" />
-                                  }
+                                  icon={<MemoCasestudy className="size-[72px] cursor-pointer" />}
                                   openModal={openModal}
-                                  className={`bg-card flex items-center justify-center min-h-[269px] rounded-lg ${userDetails?.projects?.length !== 0 &&
+                                  className={`bg-card flex min-h-[269px] items-center justify-center rounded-lg ${
+                                    userDetails?.projects?.length !== 0 &&
                                     " shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] hover:shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
-                                    }`}
+                                  }`}
                                 />
                               ) : (
                                 <ProjectLock />
@@ -622,7 +631,7 @@ const Portfolio = ({ userDetails, edit }) => {
               );
             }
 
-            if (sectionId === 'tools') {
+            if (sectionId === "tools") {
               return (
                 <div key="tools" id="section-tools">
                   <ToolStack
@@ -635,7 +644,7 @@ const Portfolio = ({ userDetails, edit }) => {
               );
             }
 
-            if (sectionId === 'reviews') {
+            if (sectionId === "reviews") {
               return (
                 <div key="reviews" id="section-reviews">
                   {(reviews?.length > 0 || edit) && (

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { EyeOff, Pencil, Plus, Sparkles, Trash2 } from "lucide-react";
 import { ProjectVisibilityButton } from "@/components/section";
 import { _updateProject } from "@/network/post-request";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { useGlobalContext } from "@/context/globalContext";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { modals, sidebars } from "@/lib/constant";
@@ -31,13 +31,10 @@ export default function ChatProjectsSection({
   } = useGlobalContext();
   const router = useRouter();
   const { projects = [] } = userDetails || {};
-  const avatarSrc = useMemo(
-    () => getUserAvatarImage(userDetails),
-    [userDetails],
-  );
+  const avatarSrc = useMemo(() => getUserAvatarImage(userDetails), [userDetails]);
   const visibleProjects = useMemo(
-    () => isEditing ? (projects || []) : (projects || []).filter((p) => !p.hidden),
-    [projects, isEditing],
+    () => (isEditing ? projects || [] : (projects || []).filter((p) => !p.hidden)),
+    [projects, isEditing]
   );
 
   const handleToggleProjectVisibility = useCallback(
@@ -59,58 +56,53 @@ export default function ChatProjectsSection({
       setUserDetails((prev) => ({ ...prev, projects: updatedProjects }));
       updateCache("userDetails", (prev) => ({ ...prev, projects: updatedProjects }));
     },
-    [projects, userDetails, setUserDetails, updateCache, setShowUpgradeModal, setUpgradeModalUnhideProject],
+    [
+      projects,
+      userDetails,
+      setUserDetails,
+      updateCache,
+      setShowUpgradeModal,
+      setUpgradeModalUnhideProject,
+    ]
   );
   const getProjectHref = useCallback(
     (id) => (isEditing ? `/project/${id}/editor` : `/project/${id}`),
-    [isEditing],
+    [isEditing]
   );
 
   return (
-    <div
-      className="flex flex-col gap-3"
-      style={{ order: sectionSteps.projects - 3 }}
-    >
+    <div className="flex flex-col gap-3" style={{ order: sectionSteps.projects - 3 }}>
       {/* You: "Can I see your work?" */}
       <AnimatePresence mode="popLayout">
-        {chatRevealStep >= s(7) &&
-          (visibleProjects.length > 0 || canEdit) && (
-            <motion.div
-              initial={{ opacity: 0, y: 10, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.3 }}
-              className="flex justify-end relative group/msg"
-            >
-              <YouPrompt>Can I see your work?</YouPrompt>
-            </motion.div>
-          )}
+        {chatRevealStep >= s(7) && (visibleProjects.length > 0 || canEdit) && (
+          <motion.div
+            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.3 }}
+            className="group/msg relative flex justify-end"
+          >
+            <YouPrompt>Can I see your work?</YouPrompt>
+          </motion.div>
+        )}
       </AnimatePresence>
 
       {/* "And here's some recent work" */}
       <AnimatePresence mode="popLayout">
-        {chatRevealStep >= s(8) &&
-          (visibleProjects.length > 0 || canEdit) && (
-            <motion.div
-              initial={{ opacity: 0, y: 10, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.3 }}
-              className="flex gap-3 max-w-[85%] relative group/msg"
-            >
-              <div className="w-8 h-8 shrink-0 mt-auto flex items-end">
-                <ChatAvatar
-                  avatarSrc={avatarSrc}
-                  show={chatRevealStep < s(9)}
-                />
-              </div>
-              <div className="bg-[#E5E2DB] dark:bg-[#2A2520] px-4 py-3 rounded-2xl rounded-tl-sm rounded-bl-sm text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed transition-colors duration-100 border border-black/5 dark:border-white/5 min-h-[46px] flex items-center">
-                {chatRevealStep === s(8) ? (
-                  <TypingIndicator />
-                ) : (
-                  "And here's some recent work"
-                )}
-              </div>
-            </motion.div>
-          )}
+        {chatRevealStep >= s(8) && (visibleProjects.length > 0 || canEdit) && (
+          <motion.div
+            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.3 }}
+            className="group/msg relative flex max-w-[85%] gap-3"
+          >
+            <div className="mt-auto flex h-8 w-8 shrink-0 items-end">
+              <ChatAvatar avatarSrc={avatarSrc} show={chatRevealStep < s(9)} />
+            </div>
+            <div className="flex min-h-[46px] items-center rounded-2xl rounded-tl-sm rounded-bl-sm border border-black/5 bg-[#E5E2DB] px-4 py-3 text-[15px] leading-relaxed text-[#1A1A1A] transition-colors duration-100 dark:border-white/5 dark:bg-[#2A2520] dark:text-[#F0EDE7]">
+              {chatRevealStep === s(8) ? <TypingIndicator /> : "And here's some recent work"}
+            </div>
+          </motion.div>
+        )}
       </AnimatePresence>
 
       {/* Project cards */}
@@ -121,9 +113,9 @@ export default function ChatProjectsSection({
               initial={{ opacity: 0, y: 10, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.3, delay: index * 0.2 }}
-              className="flex gap-3 max-w-[85%] relative group/msg"
+              className="group/msg relative flex max-w-[85%] gap-3"
             >
-              <div className="w-8 h-8 shrink-0 mt-auto flex items-end">
+              <div className="mt-auto flex h-8 w-8 shrink-0 items-end">
                 {index === visibleProjects.length - 1 &&
                   chatRevealStep < getNextLeftStep("projects") && (
                     <ChatAvatar avatarSrc={avatarSrc} />
@@ -132,7 +124,8 @@ export default function ChatProjectsSection({
               <div className="w-full min-w-0">
                 <div
                   onClick={() => router.push(getProjectHref(project._id))}
-                  className="bg-[#E5E2DB] dark:bg-[#2A2520] p-3 rounded-2xl rounded-tl-sm rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5 w-full cursor-pointer hover:shadow-md hover:scale-[1.01] transform group/proj relative"
+                  onMouseEnter={() => router.prefetch(getProjectHref(project._id))}
+                  className="group/proj relative w-full transform cursor-pointer rounded-2xl rounded-tl-sm rounded-bl-sm border border-black/5 bg-[#E5E2DB] p-3 transition-colors duration-700 hover:scale-[1.01] hover:shadow-md dark:border-white/5 dark:bg-[#2A2520]"
                 >
                   {/* Actions — inside card, top-right */}
                   {canEdit && (
@@ -143,51 +136,54 @@ export default function ChatProjectsSection({
                       <Button
                         variant="outline"
                         size="sm"
-                        className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
+                        className="h-7 w-7 rounded-full border-[#E5D7C4] bg-white/90 p-0 shadow-sm backdrop-blur-sm hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520]/90 dark:hover:bg-[#35302A]"
                         onClick={(e) => {
                           e.stopPropagation();
                           router.push(getProjectHref(project._id));
                         }}
                       >
-                        <Pencil className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                        <Pencil className="h-3 w-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
                       </Button>
                       <ProjectVisibilityButton
                         isHidden={!!project.hidden}
                         iconSize="w-3 h-3"
                         className="h-7 w-7"
-                        onClick={(e) => { e.stopPropagation(); handleToggleProjectVisibility(project._id); }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleToggleProjectVisibility(project._id);
+                        }}
                       />
                       <Button
                         variant="outline"
                         size="sm"
-                        className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-red-50 dark:hover:bg-red-950/30 hover:border-red-200 dark:hover:border-red-900/50 hover:text-red-600 dark:hover:text-red-400"
+                        className="h-7 w-7 rounded-full border-[#E5D7C4] bg-white/90 p-0 shadow-sm backdrop-blur-sm hover:border-red-200 hover:bg-red-50 hover:text-red-600 dark:border-white/10 dark:bg-[#2A2520]/90 dark:hover:border-red-900/50 dark:hover:bg-red-950/30 dark:hover:text-red-400"
                         onClick={(e) => {
                           e.stopPropagation();
                           setSelectedProject(project);
                           openModal(modals.deleteProject);
                         }}
                       >
-                        <Trash2 className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                        <Trash2 className="h-3 w-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
                       </Button>
                     </div>
                   )}
 
-                  <div className="w-full aspect-[3/2] rounded-xl overflow-hidden mb-3 relative bg-[#D5D0C6] dark:bg-[#1A1A1A]">
+                  <div className="relative mb-3 aspect-[3/2] w-full overflow-hidden rounded-xl bg-[#D5D0C6] dark:bg-[#1A1A1A]">
                     <img
                       src={project?.thumbnail?.url}
                       alt={project?.title || "project"}
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover/proj:scale-110"
+                      className="h-full w-full object-cover transition-transform duration-300 group-hover/proj:scale-110"
                     />
                     {project.hidden && (
-                      <div className="absolute top-2 left-2 bg-amber-100 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 px-2 py-0.5 rounded-full text-xs font-medium flex items-center gap-1">
-                        <EyeOff className="w-3 h-3" /> Hidden from live site
+                      <div className="absolute top-2 left-2 flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700 dark:bg-amber-950/30 dark:text-amber-400">
+                        <EyeOff className="h-3 w-3" /> Hidden from live site
                       </div>
                     )}
                   </div>
-                  <h3 className="text-[#1A1A1A] dark:text-[#F0EDE7] font-medium text-[15px] mb-1 px-1 line-clamp-2">
+                  <h3 className="mb-1 line-clamp-2 px-1 text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                     {project?.title}
                   </h3>
-                  <p className="text-[#7A736C] dark:text-[#B5AFA5] text-[14px] leading-relaxed px-1 line-clamp-2">
+                  <p className="line-clamp-2 px-1 text-[14px] leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]">
                     {project?.description}
                   </p>
                 </div>
@@ -204,36 +200,37 @@ export default function ChatProjectsSection({
             initial={{ opacity: 0, y: 10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.3, delay: visibleProjects.length * 0.2 }}
-            className="flex gap-3 max-w-[85%]"
+            className="flex max-w-[85%] gap-3"
           >
-            <div className="w-8 h-8 shrink-0" />
-            <div className="w-full bg-[#E5E2DB] dark:bg-[#2A2520] p-3 rounded-2xl rounded-tl-sm rounded-bl-sm border border-dashed border-black/15 dark:border-white/10">
-                <div className="w-full aspect-[3/2] rounded-xl flex flex-col items-center justify-center gap-3 bg-black/[0.02] dark:bg-white/[0.02]">
-                  <div className="w-9 h-9 rounded-full bg-black/[0.05] dark:bg-white/[0.05] flex items-center justify-center">
-                    <Plus className="w-4 h-4 text-[#7A736C] dark:text-[#9E9893]" />
-                  </div>
-                  <p className="text-[11px] font-medium text-[#A09890] dark:text-[#7A736C] tracking-widest uppercase">New project</p>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      onClick={() => openSidebar(sidebars.project)}
-                      className="h-8 px-3.5 rounded-full text-[12px] font-medium bg-[#1A1A1A] dark:bg-white text-white dark:text-black hover:bg-black/80 dark:hover:bg-white/90 transition-colors shadow-sm flex items-center gap-1.5"
-                    >
-                      <Pencil className="w-3 h-3" />
-                      Add Project
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={() => openModal(modals.aiProject)}
-                      className="h-8 px-3.5 rounded-full text-[12px] font-medium bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors flex items-center gap-1.5 text-[#1A1A1A] dark:text-[#F0EDE7]"
-                    >
-                      <Sparkles className="w-3 h-3" />
-                      Write with AI
-                    </Button>
-                  </div>
+            <div className="h-8 w-8 shrink-0" />
+            <div className="w-full rounded-2xl rounded-tl-sm rounded-bl-sm border border-dashed border-black/15 bg-[#E5E2DB] p-3 dark:border-white/10 dark:bg-[#2A2520]">
+              <div className="flex aspect-[3/2] w-full flex-col items-center justify-center gap-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.02]">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-black/[0.05] dark:bg-white/[0.05]">
+                  <Plus className="h-4 w-4 text-[#7A736C] dark:text-[#9E9893]" />
+                </div>
+                <p className="text-[11px] font-medium tracking-widest text-[#A09890] uppercase dark:text-[#7A736C]">
+                  New project
+                </p>
+                <div className="flex items-center gap-2">
+                  <Button
+                    onClick={() => openSidebar(sidebars.project)}
+                    className="flex h-8 items-center gap-1.5 rounded-full bg-[#1A1A1A] px-3.5 text-[12px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
+                  >
+                    <Pencil className="h-3 w-3" />
+                    Add Project
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => openModal(modals.aiProject)}
+                    className="flex h-8 items-center gap-1.5 rounded-full border-black/10 bg-white px-3.5 text-[12px] font-medium text-[#1A1A1A] shadow-sm transition-colors hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520] dark:text-[#F0EDE7] dark:hover:bg-[#35302A]"
+                  >
+                    <Sparkles className="h-3 w-3" />
+                    Write with AI
+                  </Button>
                 </div>
               </div>
+            </div>
           </motion.div>
-
         </AnimatePresence>
       )}
 
@@ -242,13 +239,13 @@ export default function ChatProjectsSection({
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex gap-3 max-w-[85%]"
+          className="flex max-w-[85%] gap-3"
         >
-          <div className="w-8 h-8 shrink-0" />
-          <div className="flex flex-col items-center justify-center w-full py-16 px-4 text-center rounded-2xl border border-dashed border-black/10 dark:border-white/10 bg-background backdrop-blur-sm">
-            <div className="w-12 h-12 rounded-full bg-black/[0.03] dark:bg-white/[0.03] flex items-center justify-center mb-4">
+          <div className="h-8 w-8 shrink-0" />
+          <div className="bg-background flex w-full flex-col items-center justify-center rounded-2xl border border-dashed border-black/10 px-4 py-16 text-center backdrop-blur-sm dark:border-white/10">
+            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-black/[0.03] dark:bg-white/[0.03]">
               <svg
-                className="w-6 h-6 text-[#7A736C] dark:text-[#9E9893]"
+                className="h-6 w-6 text-[#7A736C] dark:text-[#9E9893]"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -261,25 +258,25 @@ export default function ChatProjectsSection({
                 />
               </svg>
             </div>
-            <h3 className="text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] mb-1">
+            <h3 className="mb-1 text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
               No projects yet
             </h3>
-            <p className="text-[13px] text-[#7A736C] dark:text-[#9E9893] max-w-[250px] mb-5">
+            <p className="mb-5 max-w-[250px] text-[13px] text-[#7A736C] dark:text-[#9E9893]">
               Add some projects to showcase your work and experience.
             </p>
             {canEdit && (
-              <div className="flex flex-col sm:flex-row items-center gap-3">
+              <div className="flex flex-col items-center gap-3 sm:flex-row">
                 <Button
                   onClick={() => openSidebar(sidebars.project)}
-                  className="h-9 px-5 rounded-full text-[13px] font-medium bg-[#1A1A1A] dark:bg-white text-white dark:text-black hover:bg-black/80 dark:hover:bg-white/90 transition-colors shadow-sm flex items-center gap-2"
+                  className="flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
                 >
-                  <Pencil className="w-3.5 h-3.5" />
+                  <Pencil className="h-3.5 w-3.5" />
                   Write from Scratch
                 </Button>
                 <Button
                   variant="outline"
                   onClick={() => openModal(modals.aiProject)}
-                  className="h-9 px-5 rounded-full text-[13px] font-medium bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors flex items-center gap-2 text-[#1A1A1A] dark:text-[#F0EDE7]"
+                  className="flex h-9 items-center gap-2 rounded-full border-black/10 bg-white px-5 text-[13px] font-medium text-[#1A1A1A] shadow-sm transition-colors hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520] dark:text-[#F0EDE7] dark:hover:bg-[#35302A]"
                 >
                   Write using AI
                 </Button>

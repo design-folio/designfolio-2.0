@@ -46,8 +46,7 @@ export const ALL_SIDEBARS = Object.values(sidebars);
 /** Sidebars that cause header/card layout to shift on desktop (used by loggedInHeader and CourseCard) */
 export const SIDEBARS_THAT_SHIFT = [...ALL_SIDEBARS];
 
-export const isSidebarThatShifts = (activeSidebar) =>
-  SIDEBARS_THAT_SHIFT.includes(activeSidebar);
+export const isSidebarThatShifts = (activeSidebar) => SIDEBARS_THAT_SHIFT.includes(activeSidebar);
 
 /** Shift width (px) per sidebar for header/card layout (used by loggedInHeader and CourseCard) */
 export const SIDEBAR_SHIFT_WIDTHS = {
@@ -137,16 +136,15 @@ export const chatBubbleItems = {
   scrollUp: "scroll-up",
 };
 
-
-export const DEFAULT_SECTION_ORDER = ['projects', 'reviews', 'tools', 'about', 'works',];
+export const DEFAULT_SECTION_ORDER = ["projects", "reviews", "tools", "about", "works"];
 
 /**
  * Floating nav sections (Minimal/Portfolio template).
  * sectionId is the DOM id used in Minimal.jsx / Portfolio.jsx (section-* matches DEFAULT_SECTION_ORDER keys).
  */
 export const FLOATING_NAV_SECTIONS = [
-  { navId: 'hero', sectionId: 'hero', label: 'Home' },
-  { navId: 'spotlight', sectionId: 'section-projects', label: 'Projects' },
-  { navId: 'tools', sectionId: 'section-tools', label: 'Tools' },
-  { navId: 'work', sectionId: 'section-works', label: 'Work' },
+  { navId: "hero", sectionId: "hero", label: "Home" },
+  { navId: "spotlight", sectionId: "section-projects", label: "Projects" },
+  { navId: "tools", sectionId: "section-tools", label: "Tools" },
+  { navId: "work", sectionId: "section-works", label: "Work" },
 ];

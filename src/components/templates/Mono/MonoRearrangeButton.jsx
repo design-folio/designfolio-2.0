@@ -1,31 +1,20 @@
 import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ChevronsUpDown } from "lucide-react";
 import React from "react";
 
-export const MonoRearrangeButton = ({
-  onClick,
-  title,
-  tooltipText,
-  ariaLabel,
-  ...props
-}) => {
+export const MonoRearrangeButton = ({ onClick, title, tooltipText, ariaLabel, ...props }) => {
   const iconButton = (
     <Button
       variant="outline"
       size="sm"
-      className="h-8 w-8 p-0 rounded-full border-black/10 dark:border-white/10 shadow-sm bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A] opacity-100 md:opacity-0 md:group-hover/section:opacity-100 transition-opacity"
+      className="h-8 w-8 rounded-full border-black/10 bg-white p-0 opacity-100 shadow-sm transition-opacity hover:bg-gray-50 md:opacity-0 md:group-hover/section:opacity-100 dark:border-white/10 dark:bg-[#2A2520] dark:hover:bg-[#35302A]"
       onClick={onClick}
       title={tooltipText ? undefined : title}
       aria-label={ariaLabel ?? title ?? tooltipText}
       {...props}
     >
-      <ChevronsUpDown className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+      <ChevronsUpDown className="h-3.5 w-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
     </Button>
   );
 
@@ -40,7 +29,7 @@ export const MonoRearrangeButton = ({
         <TooltipContent
           side="top"
           sideOffset={8}
-          className="rounded-xl border-0 bg-tooltip-bg-color px-4 py-2 text-tooltip-text-color shadow-xl"
+          className="bg-tooltip-bg-color text-tooltip-text-color rounded-xl border-0 px-4 py-2 shadow-xl"
         >
           <span className="text-sm font-medium">{tooltipText}</span>
         </TooltipContent>

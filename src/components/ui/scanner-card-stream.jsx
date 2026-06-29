@@ -1,8 +1,9 @@
-'use client';
+"use client";
 
-import React, { useRef, useEffect, useMemo, useState } from 'react';
+import React, { useRef, useEffect, useMemo, useState, startTransition } from "react";
 
-const ASCII_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789(){}[]<>;:,._-+=!@#$%^&*|\\/\"'`~?";
+const ASCII_CHARS =
+  "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789(){}[]<>;:,._-+=!@#$%^&*|\\/\"'`~?";
 const generateCode = (width, height) => {
   let text = "";
   for (let i = 0; i < width * height; i++) {
@@ -24,17 +25,17 @@ export default function ScannerCardStream({ file = null, isScanning = true }) {
   useEffect(() => {
     if (file) {
       const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
+      startTransition(() => setPreviewUrl(url));
       return () => URL.revokeObjectURL(url);
     }
-    setPreviewUrl(null);
+    startTransition(() => setPreviewUrl(null));
   }, [file]);
 
   useEffect(() => {
     const scannerCanvas = scannerCanvasRef.current;
     if (!scannerCanvas) return;
 
-    const ctx = scannerCanvas.getContext('2d');
+    const ctx = scannerCanvas.getContext("2d");
     scannerCanvas.width = 400;
     scannerCanvas.height = 300;
 
@@ -91,12 +92,10 @@ export default function ScannerCardStream({ file = null, isScanning = true }) {
   }, [isScanning]);
 
   return (
-    <div className="relative w-full h-[300px] flex items-center justify-center overflow-hidden bg-black rounded-3xl border border-white/5 shadow-2xl">
-      <div className="relative w-full h-full bg-zinc-950 overflow-hidden flex items-center justify-center">
+    <div className="relative flex h-[300px] w-full items-center justify-center overflow-hidden rounded-3xl border border-white/5 bg-black shadow-2xl">
+      <div className="relative flex h-full w-full items-center justify-center overflow-hidden bg-zinc-950">
         {/* Digital code layer */}
-        <div
-          className="absolute inset-0 p-4 font-mono text-[9px] leading-[1.2] text-white/30 overflow-hidden whitespace-pre pointer-events-none flex items-center justify-center text-center break-all"
-        >
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden p-4 text-center font-mono text-[9px] leading-[1.2] break-all whitespace-pre text-white/30">
           <div className="max-w-full">{asciiCode}</div>
         </div>
 
@@ -104,25 +103,25 @@ export default function ScannerCardStream({ file = null, isScanning = true }) {
         <div
           className="absolute inset-0 bg-white"
           style={{
-            clipPath: isScanning ? `inset(${scanProgress * 100}% 0 0 0)` : 'none',
+            clipPath: isScanning ? `inset(${scanProgress * 100}% 0 0 0)` : "none",
           }}
         >
           {previewUrl ? (
             <iframe
               src={`${previewUrl}#toolbar=0&navpanes=0&scrollbar=0`}
-              className="w-full h-full border-0 pointer-events-none"
+              className="pointer-events-none h-full w-full border-0"
               title="Resume Preview"
             />
           ) : (
-            <div className="w-full h-full bg-white flex items-center justify-center p-8">
-              <div className="space-y-4 w-full max-w-sm">
-                <div className="h-4 w-2/3 bg-slate-100 rounded mx-auto" />
-                <div className="h-2 w-full bg-slate-50 rounded" />
-                <div className="h-2 w-full bg-slate-50 rounded" />
-                <div className="pt-8 space-y-2">
-                  <div className="h-3 w-1/2 bg-slate-100 rounded mx-auto" />
-                  <div className="h-2 w-full bg-slate-50 rounded" />
-                  <div className="h-2 w-5/6 bg-slate-50 rounded mx-auto" />
+            <div className="flex h-full w-full items-center justify-center bg-white p-8">
+              <div className="w-full max-w-sm space-y-4">
+                <div className="mx-auto h-4 w-2/3 rounded bg-slate-100" />
+                <div className="h-2 w-full rounded bg-slate-50" />
+                <div className="h-2 w-full rounded bg-slate-50" />
+                <div className="space-y-2 pt-8">
+                  <div className="mx-auto h-3 w-1/2 rounded bg-slate-100" />
+                  <div className="h-2 w-full rounded bg-slate-50" />
+                  <div className="mx-auto h-2 w-5/6 rounded bg-slate-50" />
                 </div>
               </div>
             </div>
@@ -132,8 +131,8 @@ export default function ScannerCardStream({ file = null, isScanning = true }) {
         {/* Scanner line and particles canvas */}
         <canvas
           ref={scannerCanvasRef}
-          className="absolute inset-0 pointer-events-none z-30 w-full h-full"
-          style={{ width: '100%', height: '100%' }}
+          className="pointer-events-none absolute inset-0 z-30 h-full w-full"
+          style={{ width: "100%", height: "100%" }}
         />
       </div>
     </div>

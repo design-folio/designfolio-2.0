@@ -8,10 +8,9 @@ export const withAdminAuth = (inner) => async (ctx) => {
   if (!token) return { notFound: true };
 
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/admin/me`,
-      { headers: { Authorization: token } }
-    );
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/admin/me`, {
+      headers: { Authorization: token },
+    });
     if (!res.ok) return { notFound: true };
   } catch {
     return { notFound: true };

@@ -1,11 +1,6 @@
 import { cn } from "@/lib/utils";
 
-export function ColorOrb({
-  dimension = "24px",
-  className,
-  tones,
-  spinDuration = 12,
-}) {
+export function ColorOrb({ dimension = "24px", className, tones, spinDuration = 12 }) {
   const palette = {
     base: "oklch(94% 0.01 80)",
     accent1: "oklch(62% 0.28 318)",
@@ -16,7 +11,8 @@ export function ColorOrb({
 
   const dim = parseInt(dimension.replace("px", ""), 10);
   const blur = dim < 50 ? Math.max(dim * 0.008, 1) : Math.max(dim * 0.015, 4);
-  const contrast = dim < 30 ? 1.1 : dim < 50 ? Math.max(dim * 0.004 * 1.2, 1.3) : Math.max(dim * 0.008, 1.5);
+  const contrast =
+    dim < 30 ? 1.1 : dim < 50 ? Math.max(dim * 0.004 * 1.2, 1.3) : Math.max(dim * 0.008, 1.5);
   const dot = dim < 50 ? Math.max(dim * 0.004, 0.05) : Math.max(dim * 0.008, 0.1);
   const shadow = dim < 50 ? Math.max(dim * 0.004, 0.5) : Math.max(dim * 0.008, 2);
   const mask = dim < 30 ? "0%" : dim < 50 ? "5%" : dim < 100 ? "15%" : "25%";

@@ -1,5 +1,5 @@
 import { useIsMobile } from "@/hooks/use-mobile";
-import { motion, useSpring } from "framer-motion";
+import { motion, useSpring } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
 const defaultSpringConfig = {
@@ -14,7 +14,7 @@ const MinimalCursor = ({ isHovering }) => {
   if (isMobile) return null;
   return (
     <motion.div
-      className="relative flex items-center justify-center rounded-full pointer-events-none z-[9999]"
+      className="pointer-events-none relative z-[9999] flex items-center justify-center rounded-full"
       animate={{
         width: isHovering ? 48 : 12,
         height: isHovering ? 48 : 12,
@@ -82,15 +82,8 @@ const ProfessionalCursor = ({ isHovering }) => {
           <feOffset dy={2.25825} />
           <feGaussianBlur stdDeviation={2.25825} />
           <feComposite in2="hardAlpha" operator="out" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.08 0"
-          />
-          <feBlend
-            mode="normal"
-            in2="BackgroundImageFix"
-            result="effect1_dropShadow_91_7928"
-          />
+          <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.08 0" />
+          <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_91_7928" />
           <feBlend
             mode="normal"
             in="SourceGraphic"
@@ -104,13 +97,11 @@ const ProfessionalCursor = ({ isHovering }) => {
 };
 
 export function SmoothCursor({ springConfig = defaultSpringConfig, type = "professional" }) {
-
-
   const isMobile = useIsMobile();
   const [isHovering, setIsHovering] = useState(false);
   const lastMousePos = useRef({ x: 0, y: 0 });
   const velocity = useRef({ x: 0, y: 0 });
-  const lastUpdateTime = useRef(Date.now());
+  const lastUpdateTime = useRef(0);
   const previousAngle = useRef(0);
   const accumulatedRotation = useRef(0);
 
@@ -151,16 +142,16 @@ export function SmoothCursor({ springConfig = defaultSpringConfig, type = "profe
       const currentPos = { x: e.clientX, y: e.clientY };
       updateVelocity(currentPos);
 
-      const speed = Math.sqrt(
-        Math.pow(velocity.current.x, 2) + Math.pow(velocity.current.y, 2)
-      );
+      const speed = Math.sqrt(Math.pow(velocity.current.x, 2) + Math.pow(velocity.current.y, 2));
 
       cursorX.set(e.clientX);
       cursorY.set(e.clientY);
 
       const target = e.target;
       if (target) {
-        const isClickable = target.closest('a, button, [class*="cursor-pointer"], input, textarea, select');
+        const isClickable = target.closest(
+          'a, button, [class*="cursor-pointer"], input, textarea, select'
+        );
         setIsHovering(!!isClickable);
       }
 

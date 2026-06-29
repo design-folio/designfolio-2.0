@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 const DockBar = ({
   dockRef,
@@ -19,12 +19,12 @@ const DockBar = ({
 }) => (
   <div
     ref={dockRef}
-    className={`backdrop-blur-md mb-0 pointer-events-auto ${className}`}
+    className={`pointer-events-auto mb-0 backdrop-blur-md ${className}`}
     style={{
       width: `${contentWidth + padding * 2}px`,
-      background: 'rgba(45, 45, 45, 0.75)',
+      background: "rgba(45, 45, 45, 0.75)",
       borderRadius: `${Math.max(12, baseIconSize * 0.4)}px`,
-      border: '1px solid rgba(255, 255, 255, 0.15)',
+      border: "1px solid rgba(255, 255, 255, 0.15)",
       boxShadow: `0 ${Math.max(4, baseIconSize * 0.1)}px ${Math.max(16, baseIconSize * 0.4)}px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.15)`,
       padding: `${padding}px`,
       zIndex: 100,
@@ -32,7 +32,7 @@ const DockBar = ({
     onMouseMove={handleMouseMove}
     onMouseLeave={handleMouseLeave}
   >
-    <div className="relative" style={{ height: `${baseIconSize}px`, width: '100%' }}>
+    <div className="relative" style={{ height: `${baseIconSize}px`, width: "100%" }}>
       {apps.map((app, index) => {
         const scale = currentScales[index];
         const position = currentPositions[index] || 0;
@@ -43,16 +43,18 @@ const DockBar = ({
         return (
           <div
             key={app.id}
-            ref={(el) => { iconRefs.current[index] = el; }}
-            className="absolute cursor-pointer flex flex-col items-center justify-end"
+            ref={(el) => {
+              iconRefs.current[index] = el;
+            }}
+            className="absolute flex cursor-pointer flex-col items-center justify-end"
             title={app.name}
             onClick={() => handleAppClick(app.id, index)}
             style={{
               left: `${position - scaledSize / 2}px`,
-              bottom: '0px',
+              bottom: "0px",
               width: `${scaledSize}px`,
               height: `${scaledSize}px`,
-              transformOrigin: 'bottom center',
+              transformOrigin: "bottom center",
               zIndex: Math.round(scale * 10),
             }}
           >
@@ -62,20 +64,22 @@ const DockBar = ({
               width={scaledSize}
               height={scaledSize}
               className="object-contain"
-              style={{ filter: `drop-shadow(0 ${scale > 1.2 ? Math.max(2, baseIconSize * 0.05) : Math.max(1, baseIconSize * 0.03)}px ${scale > 1.2 ? Math.max(4, baseIconSize * 0.1) : Math.max(2, baseIconSize * 0.06)}px rgba(0,0,0,${0.2 + (scale - 1) * 0.15}))` }}
+              style={{
+                filter: `drop-shadow(0 ${scale > 1.2 ? Math.max(2, baseIconSize * 0.05) : Math.max(1, baseIconSize * 0.03)}px ${scale > 1.2 ? Math.max(4, baseIconSize * 0.1) : Math.max(2, baseIconSize * 0.06)}px rgba(0,0,0,${0.2 + (scale - 1) * 0.15}))`,
+              }}
             />
             {(isOpen || openApps.includes(app.id)) && (
               <div
                 className="absolute"
                 style={{
                   bottom: `${Math.max(-2, -baseIconSize * 0.05)}px`,
-                  left: '50%',
-                  transform: 'translateX(-50%)',
+                  left: "50%",
+                  transform: "translateX(-50%)",
                   width: `${Math.max(3, baseIconSize * 0.06)}px`,
                   height: `${Math.max(3, baseIconSize * 0.06)}px`,
-                  borderRadius: '50%',
-                  backgroundColor: isActive ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.5)',
-                  boxShadow: '0 0 4px rgba(0,0,0,0.3)',
+                  borderRadius: "50%",
+                  backgroundColor: isActive ? "rgba(255,255,255,1)" : "rgba(255,255,255,0.5)",
+                  boxShadow: "0 0 4px rgba(0,0,0,0.3)",
                 }}
               />
             )}

@@ -4,7 +4,7 @@ export const cursors = [
   {
     id: 1,
     item: (
-      <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer">
+      <p className="text-popover-heading-color font-inter cursor-pointer text-[14px] font-[500] md:text-[16px]">
         Default
       </p>
     ),
@@ -23,7 +23,7 @@ export const cursors = [
   },
   {
     id: 5,
-    item: <img src="/assets/svgs/default4.svg" alt="cursor4" className="w-8 h-8 cursor-pointer" />,
+    item: <img src="/assets/svgs/default4.svg" alt="cursor4" className="h-8 w-8 cursor-pointer" />,
   },
   {
     id: 6,
@@ -40,7 +40,7 @@ export function getWallpapers(isDark, templateId) {
 
   const wallpaperImage = (src) => (
     <div
-      className="w-full h-8 rounded"
+      className="h-8 w-full rounded"
       style={{ backgroundImage: `url(${src})`, backgroundSize: "cover" }}
     />
   );
@@ -50,7 +50,7 @@ export function getWallpapers(isDark, templateId) {
       id: 1,
       value: 0,
       item: (
-        <p className="text-[14px] md:text-[16px] text-popover-heading-color font-inter font-[500] cursor-pointer">
+        <p className="text-popover-heading-color font-inter cursor-pointer text-[14px] font-[500] md:text-[16px]">
           Default
         </p>
       ),

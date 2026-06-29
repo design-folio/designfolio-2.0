@@ -1,10 +1,25 @@
-import { useState, useCallback, useEffect, useRef, useMemo } from "react";
+import {
+  useState,
+  useCallback,
+  useEffect,
+  useRef,
+  useMemo,
+  useLayoutEffect,
+  startTransition,
+} from "react";
 import { toast } from "react-toastify";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { useRouter } from "next/router";
-import { COL_ORDER } from "@/data/jobs";
 import { extractLinkedInJobId } from "@/lib/jobsUtils";
-import { _postJobsInteract, _postJobsRecommend, _postJobsMore, _postJobsInterviewReport, _getJobsRecommendations, _postJobsPipelineReorder, _getJobsJobScore } from "@/network/jobs";
+import {
+  _postJobsInteract,
+  _postJobsRecommend,
+  _postJobsMore,
+  _postJobsInterviewReport,
+  _getJobsRecommendations,
+  _postJobsPipelineReorder,
+  _getJobsJobScore,
+} from "@/network/jobs";
 import { _getUserQuota } from "@/network/get-request";
 import { useGlobalContext } from "@/context/globalContext";
 import { JobDetailSheet } from "./JobDetailSheet";
@@ -76,7 +91,11 @@ export function Dashboard({
   const [viewingReport, setViewingReport] = useState(null);
   const [offerDecisionOpen, setOfferDecisionOpen] = useState(false);
   const [archivedCollapsed, setArchivedCollapsed] = useState(() => {
-    try { return localStorage.getItem("df_archived_collapsed") !== "false"; } catch { return true; }
+    try {
+      return localStorage.getItem("df_archived_collapsed") !== "false";
+    } catch {
+      return true;
+    }
   });
   const [picksCollapsed, setPicksCollapsed] = useState(false);
   const [showJoyride, setShowJoyride] = useState(() => {
@@ -84,12 +103,14 @@ export function Dashboard({
       if (localStorage.getItem("df_jobs_joyride_seen")) return false;
       if (initialColumns) {
         const hasPipeline = ["saved", "applied", "interview", "offer", "archived"].some(
-          (c) => (initialColumns[c] || []).length > 0,
+          (c) => (initialColumns[c] || []).length > 0
         );
         if (hasPipeline) return false;
       }
       return true;
-    } catch { return false; }
+    } catch {
+      return false;
+    }
   });
   const [creditsRefreshKey, setCreditsRefreshKey] = useState(0);
   const bumpCredits = useCallback(() => setCreditsRefreshKey((k) => k + 1), []);
@@ -98,27 +119,45 @@ export function Dashboard({
   const [mockInterviewCreditsRemaining, setMockInterviewCreditsRemaining] = useState(undefined);
 
   useEffect(() => {
-    _getUserQuota().then((res) => {
-      const q = res.data?.quota;
-      const base = q?.mockInterview ?? { limit: 0, used: 0 };
-      const topup = q?.topup?.mockInterview ?? { limit: 0, used: 0 };
-      const remaining = base.limit === null
-        ? null
-        : Math.max(0, (base.limit - base.used) + ((topup.limit ?? 0) - (topup.used ?? 0)));
-      setMockInterviewCreditsRemaining(remaining);
-    }).catch(() => {});
+    _getUserQuota()
+      .then((res) => {
+        const q = res.data?.quota;
+        const base = q?.mockInterview ?? { limit: 0, used: 0 };
+        const topup = q?.topup?.mockInterview ?? { limit: 0, used: 0 };
+        const remaining =
+          base.limit === null
+            ? null
+            : Math.max(0, base.limit - base.used + ((topup.limit ?? 0) - (topup.used ?? 0)));
+        setMockInterviewCreditsRemaining(remaining);
+      })
+      .catch(() => {});
   }, [creditsRefreshKey]);
 
-  const handleMockInterview = useCallback((jobId) => {
-    if (mockInterviewCreditsRemaining === 0) {
-      const job = Object.values(columns).flat().find((j) => j.id === jobId);
-      setUpgradeModalSource("mock-interview");
-      setUpgradeModalJob({ role: job?.role ?? "", company: job?.company ?? "", logoUrl: job?.logoUrl ?? null });
-      setShowUpgradeModal(true);
-      return;
-    }
-    setInterviewJobId(jobId);
-  }, [mockInterviewCreditsRemaining, columns, setShowUpgradeModal, setUpgradeModalSource, setUpgradeModalJob]);
+  const handleMockInterview = useCallback(
+    (jobId) => {
+      if (mockInterviewCreditsRemaining === 0) {
+        const job = Object.values(columns)
+          .flat()
+          .find((j) => j.id === jobId);
+        setUpgradeModalSource("mock-interview");
+        setUpgradeModalJob({
+          role: job?.role ?? "",
+          company: job?.company ?? "",
+          logoUrl: job?.logoUrl ?? null,
+        });
+        setShowUpgradeModal(true);
+        return;
+      }
+      setInterviewJobId(jobId);
+    },
+    [
+      mockInterviewCreditsRemaining,
+      columns,
+      setShowUpgradeModal,
+      setUpgradeModalSource,
+      setUpgradeModalJob,
+    ]
+  );
   const [addJobOpen, setAddJobOpen] = useState(false);
   const [shareScoringJobId, setShareScoringJobId] = useState(null);
 
@@ -140,6 +179,16 @@ export function Dashboard({
   // Paginates through all recommendation pages until every unscored pick
   // is found — prevents picks that sort below page-0 from staying null forever.
   // Auto-stops when all picks are scored. 10-min safety cap as fallback.
+  const hasUnscoredJobs = [
+    columns.picks,
+    columns.saved,
+    columns.applied,
+    columns.interview,
+    columns.offer,
+  ]
+    .flat()
+    .some((j) => j?.match === null);
+
   useEffect(() => {
     if (!profileId) return;
     const unscoredIds = new Set(
@@ -151,13 +200,16 @@ export function Dashboard({
         ...(columns.offer || []),
       ]
         .filter((j) => j.match === null)
-        .map((j) => j.id),
+        .map((j) => j.id)
     );
     if (!unscoredIds.size) return;
 
     let safetyCount = 0;
     const interval = setInterval(async () => {
-      if (++safetyCount > 120) { clearInterval(interval); return; }
+      if (++safetyCount > 120) {
+        clearInterval(interval);
+        return;
+      }
       try {
         const scored = new Map();
         for (let page = 0; scored.size < unscoredIds.size && page < 20; page++) {
@@ -204,7 +256,7 @@ export function Dashboard({
 
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profileId, [columns.picks, columns.saved, columns.applied, columns.interview, columns.offer].flat().some((j) => j?.match === null)]);
+  }, [profileId, hasUnscoredJobs]);
 
   // Targeted score poll for a job added via the share flow.
   // getRecommendations excludes pipeline jobs, so we hit getJobScore directly.
@@ -212,14 +264,19 @@ export function Dashboard({
     if (!shareScoringJobId) return;
     let attempts = 0;
     const interval = setInterval(async () => {
-      if (++attempts > 8) { clearInterval(interval); setShareScoringJobId(null); return; }
+      if (++attempts > 8) {
+        clearInterval(interval);
+        setShareScoringJobId(null);
+        return;
+      }
       try {
         const { data } = await _getJobsJobScore(shareScoringJobId);
         if (data?.match !== null && data?.match !== undefined) {
           setColumns((prev) => {
-            const patch = (jobs) => (jobs || []).map((j) =>
-              j.id === shareScoringJobId ? { ...j, match: data.match } : j
-            );
+            const patch = (jobs) =>
+              (jobs || []).map((j) =>
+                j.id === shareScoringJobId ? { ...j, match: data.match } : j
+              );
             return { ...prev, saved: patch(prev.saved), applied: patch(prev.applied) };
           });
           setShareScoringJobId(null);
@@ -231,7 +288,9 @@ export function Dashboard({
   }, [shareScoringJobId]);
 
   const hasRestoredPipeline = initialColumns
-    ? ["saved", "applied", "interview", "offer", "archived"].some((c) => (initialColumns[c] || []).length > 0)
+    ? ["saved", "applied", "interview", "offer", "archived"].some(
+        (c) => (initialColumns[c] || []).length > 0
+      )
     : false;
 
   const [phase, setPhase] = useState(() => (hasRestoredPipeline ? "split" : "list"));
@@ -264,11 +323,20 @@ export function Dashboard({
         sessionStorage.removeItem(`df_pipeline_${profileId}`);
       }
     } catch {}
-  }, [columns.saved, columns.applied, columns.interview, columns.offer, columns.archived, profileId]);
+  }, [
+    columns.saved,
+    columns.applied,
+    columns.interview,
+    columns.offer,
+    columns.archived,
+    profileId,
+  ]);
 
   const allJobs = Object.values(columns).flat();
   const allJobsRef = useRef(allJobs);
-  allJobsRef.current = allJobs;
+  useLayoutEffect(() => {
+    allJobsRef.current = allJobs;
+  });
 
   const filteredPicks = useMemo(() => {
     return (columns.picks || []).filter((job) => {
@@ -279,44 +347,52 @@ export function Dashboard({
     });
   }, [columns.picks, filters]);
 
-  const activeFilterCount = [
-    filters.workMode !== "all",
-    filters.minMatch > 0,
-  ].filter(Boolean).length;
+  const activeFilterCount = [filters.workMode !== "all", filters.minMatch > 0].filter(
+    Boolean
+  ).length;
 
   const promptSummary = useMemo(() => {
     if (!currentAnswers.length) return "AI-matched roles for your profile";
-    const parts = [currentAnswers[0]?.answer, currentAnswers[1]?.answer, currentAnswers[2]?.answer].filter(Boolean);
+    const parts = [
+      currentAnswers[0]?.answer,
+      currentAnswers[1]?.answer,
+      currentAnswers[2]?.answer,
+    ].filter(Boolean);
     return parts.join(" · ") || "AI-matched roles for your profile";
   }, [currentAnswers]);
 
-  const selectedJob = selectedJobId ? allJobs.find((j) => j.id === selectedJobId) ?? null : null;
-  const interviewJob = interviewJobId ? allJobs.find((j) => j.id === interviewJobId) ?? null : null;
-  const roomJob = roomJobId ? allJobs.find((j) => j.id === roomJobId) ?? null : null;
-  const scoutJob = scoutJobId ? allJobs.find((j) => j.id === scoutJobId) ?? null : null;
-  const reportJob = reportJobId ? allJobs.find((j) => j.id === reportJobId) ?? null : null;
+  const selectedJob = selectedJobId ? (allJobs.find((j) => j.id === selectedJobId) ?? null) : null;
+  const interviewJob = interviewJobId
+    ? (allJobs.find((j) => j.id === interviewJobId) ?? null)
+    : null;
+  const roomJob = roomJobId ? (allJobs.find((j) => j.id === roomJobId) ?? null) : null;
+  const scoutJob = scoutJobId ? (allJobs.find((j) => j.id === scoutJobId) ?? null) : null;
+  const reportJob = reportJobId ? (allJobs.find((j) => j.id === reportJobId) ?? null) : null;
 
   // ── Handlers ──────────────────────────────────────────────────────────────
 
-  const handleColumnsChange = useCallback((newCols) => {
-    Object.keys(newCols).forEach((colId) => {
-      const action = COL_DRAG_ACTION[colId];
-      if (!action) return;
-      const prevIds = (columns[colId] || []).map((j) => j.id);
-      const newIds = (newCols[colId] || []).map((j) => j.id);
-      const prevSet = new Set(prevIds);
-      const entered = newIds.filter((id) => !prevSet.has(id));
-      entered.forEach((id) => _postJobsInteract(profileId, id, action));
-      if (
-        entered.length === 0 &&
-        newIds.length === prevIds.length &&
-        prevIds.some((id, i) => id !== newIds[i])
-      ) {
-        _postJobsPipelineReorder(profileId, colId, newIds);
-      }
-    });
-    setColumns(newCols);
-  }, [columns, profileId]);
+  const handleColumnsChange = useCallback(
+    (newCols) => {
+      Object.keys(newCols).forEach((colId) => {
+        const action = COL_DRAG_ACTION[colId];
+        if (!action) return;
+        const prevIds = (columns[colId] || []).map((j) => j.id);
+        const newIds = (newCols[colId] || []).map((j) => j.id);
+        const prevSet = new Set(prevIds);
+        const entered = newIds.filter((id) => !prevSet.has(id));
+        entered.forEach((id) => _postJobsInteract(profileId, id, action));
+        if (
+          entered.length === 0 &&
+          newIds.length === prevIds.length &&
+          prevIds.some((id, i) => id !== newIds[i])
+        ) {
+          _postJobsPipelineReorder(profileId, colId, newIds);
+        }
+      });
+      setColumns(newCols);
+    },
+    [columns, profileId]
+  );
 
   const handleFetchMore = useCallback(async () => {
     if (isRescanning || rescanExhausted || !profileId) return;
@@ -345,47 +421,59 @@ export function Dashboard({
           resolved = true;
           break;
         }
-        if (data.status === "exhausted") { setRescanExhausted(true); resolved = true; break; }
+        if (data.status === "exhausted") {
+          setRescanExhausted(true);
+          resolved = true;
+          break;
+        }
       }
       if (!resolved) setRescanExhausted(true);
     } catch {
     } finally {
       setIsRescanning(false);
     }
-  }, [isRescanning, rescanExhausted, profileId, columns.picks, bumpCredits]);
+  }, [isRescanning, rescanExhausted, profileId, bumpCredits]);
 
-  const handleRescan = useCallback(async (answers = currentAnswers) => {
-    if (isRescanning) return;
-    setIsRescanning(true);
-    setRescanExhausted(false);
-    seenJobIds.current.clear();
-    try {
-      const { data } = await _postJobsRecommend(answers);
-      bumpCredits();
-      const newProfileId = data.profileId;
-      setProfileId(newProfileId);
-      setCurrentAnswers(answers);
-      let resolved = false;
-      for (let i = 0; i < 60; i++) {
-        await new Promise((r) => setTimeout(r, 5000));
-        const { data: pollData } = await _getJobsRecommendations(newProfileId);
-        if (pollData.status === "ready") {
-          const newPicks = pollData.jobs || [];
-          newPicks.forEach((j) => seenJobIds.current.add(j.id));
-          setColumns((prev) => ({ ...prev, picks: newPicks }));
-          resolved = true;
-          break;
+  const handleRescan = useCallback(
+    async (answers = currentAnswers) => {
+      if (isRescanning) return;
+      setIsRescanning(true);
+      setRescanExhausted(false);
+      seenJobIds.current.clear();
+      try {
+        const { data } = await _postJobsRecommend(answers);
+        bumpCredits();
+        const newProfileId = data.profileId;
+        setProfileId(newProfileId);
+        setCurrentAnswers(answers);
+        let resolved = false;
+        for (let i = 0; i < 60; i++) {
+          await new Promise((r) => setTimeout(r, 5000));
+          const { data: pollData } = await _getJobsRecommendations(newProfileId);
+          if (pollData.status === "ready") {
+            const newPicks = pollData.jobs || [];
+            newPicks.forEach((j) => seenJobIds.current.add(j.id));
+            setColumns((prev) => ({ ...prev, picks: newPicks }));
+            resolved = true;
+            break;
+          }
+          if (pollData.status === "exhausted") {
+            resolved = true;
+            break;
+          }
         }
-        if (pollData.status === "exhausted") { resolved = true; break; }
+        if (!resolved) {
+          toast.info("Still scanning in the background — check back in a minute.", {
+            autoClose: 6000,
+          });
+        }
+      } catch {
+      } finally {
+        setIsRescanning(false);
       }
-      if (!resolved) {
-        toast.info("Still scanning in the background — check back in a minute.", { autoClose: 6000 });
-      }
-    } catch {
-    } finally {
-      setIsRescanning(false);
-    }
-  }, [isRescanning, currentAnswers, bumpCredits]);
+    },
+    [isRescanning, currentAnswers, bumpCredits]
+  );
 
   const handleOpenJob = useCallback((id) => {
     const job = allJobsRef.current.find((j) => j.id === id);
@@ -394,81 +482,99 @@ export function Dashboard({
   }, []);
 
   const dismissJoyride = useCallback(() => {
-    try { localStorage.setItem("df_jobs_joyride_seen", "1"); } catch {}
+    try {
+      localStorage.setItem("df_jobs_joyride_seen", "1");
+    } catch {}
     setShowJoyride(false);
   }, []);
 
   useEffect(() => {
-    if (isRescanning && showJoyride) dismissJoyride();
-  }, [isRescanning]); // eslint-disable-line react-hooks/exhaustive-deps
+    if (isRescanning && showJoyride) startTransition(() => dismissJoyride());
+  }, [isRescanning, showJoyride, dismissJoyride]);
 
-  const handleShortlist = useCallback((id) => {
-    dismissJoyride();
-    setColumns((prev) => {
-      const fromCol = Object.keys(prev).find((col) => prev[col].some((j) => j.id === id));
-      if (!fromCol) return prev;
-      const job = prev[fromCol].find((j) => j.id === id);
-      return {
-        ...prev,
-        [fromCol]: prev[fromCol].filter((j) => j.id !== id),
-        saved: [{ ...job }, ...(prev.saved || [])],
-      };
-    });
-    _postJobsInteract(profileId, id, "saved");
+  const handleShortlist = useCallback(
+    (id) => {
+      dismissJoyride();
+      setColumns((prev) => {
+        const fromCol = Object.keys(prev).find((col) => prev[col].some((j) => j.id === id));
+        if (!fromCol) return prev;
+        const job = prev[fromCol].find((j) => j.id === id);
+        return {
+          ...prev,
+          [fromCol]: prev[fromCol].filter((j) => j.id !== id),
+          saved: [{ ...job }, ...(prev.saved || [])],
+        };
+      });
+      _postJobsInteract(profileId, id, "saved");
 
-    if (phase !== "list") return;
+      if (phase !== "list") return;
 
-    const CARD_EXIT_MS = 480;
-    const ease = "cubic-bezier(0.22, 1, 0.36, 1)";
-    const dur = "0.65s";
-
-    setTimeout(() => {
-      const el = picksRef.current;
-      const filterEl = filterBarRef.current;
-
-      if (el) {
-        const currentWidth = el.getBoundingClientRect().width;
-        el.style.transition = "none";
-        el.style.flex = "none";
-        el.style.width = `${currentWidth}px`;
-        el.style.marginLeft = `${centerMargin}px`;
-        void el.offsetWidth;
-        el.style.transition = `width ${dur} ${ease}, margin-left ${dur} ${ease}`;
-        el.style.width = "350px";
-        el.style.marginLeft = "0px";
-      }
-      if (filterEl) {
-        filterEl.style.transition = "none";
-        filterEl.style.marginLeft = `${centerMargin}px`;
-        void filterEl.offsetWidth;
-        filterEl.style.transition = `margin-left ${dur} ${ease}`;
-        filterEl.style.marginLeft = "0px";
-      }
-      setPhase("shrinking");
+      const CARD_EXIT_MS = 480;
+      const ease = "cubic-bezier(0.22, 1, 0.36, 1)";
+      const dur = "0.65s";
 
       setTimeout(() => {
-        if (el) { el.style.transition = ""; el.style.width = ""; el.style.flex = ""; el.style.marginLeft = ""; }
-        if (filterEl) { filterEl.style.transition = ""; filterEl.style.marginLeft = ""; }
-        setPhase("settled");
-      }, 700);
+        const el = picksRef.current;
+        const filterEl = filterBarRef.current;
 
-      setTimeout(() => setPhase("split"), 960);
-    }, CARD_EXIT_MS);
-  }, [phase, centerMargin, profileId, dismissJoyride]);
+        if (el) {
+          const currentWidth = el.getBoundingClientRect().width;
+          el.style.transition = "none";
+          el.style.flex = "none";
+          el.style.width = `${currentWidth}px`;
+          el.style.marginLeft = `${centerMargin}px`;
+          void el.offsetWidth;
+          el.style.transition = `width ${dur} ${ease}, margin-left ${dur} ${ease}`;
+          el.style.width = "350px";
+          el.style.marginLeft = "0px";
+        }
+        if (filterEl) {
+          filterEl.style.transition = "none";
+          filterEl.style.marginLeft = `${centerMargin}px`;
+          void filterEl.offsetWidth;
+          filterEl.style.transition = `margin-left ${dur} ${ease}`;
+          filterEl.style.marginLeft = "0px";
+        }
+        setPhase("shrinking");
 
-  const handleDismiss = useCallback((id) => {
-    setColumns((prev) => {
-      const fromCol = Object.keys(prev).find((col) => prev[col].some((j) => j.id === id));
-      if (!fromCol) return prev;
-      return { ...prev, [fromCol]: prev[fromCol].filter((j) => j.id !== id) };
-    });
-    _postJobsInteract(profileId, id, "dismissed");
-  }, [profileId]);
+        setTimeout(() => {
+          if (el) {
+            el.style.transition = "";
+            el.style.width = "";
+            el.style.flex = "";
+            el.style.marginLeft = "";
+          }
+          if (filterEl) {
+            filterEl.style.transition = "";
+            filterEl.style.marginLeft = "";
+          }
+          setPhase("settled");
+        }, 700);
+
+        setTimeout(() => setPhase("split"), 960);
+      }, CARD_EXIT_MS);
+    },
+    [phase, centerMargin, profileId, dismissJoyride]
+  );
+
+  const handleDismiss = useCallback(
+    (id) => {
+      setColumns((prev) => {
+        const fromCol = Object.keys(prev).find((col) => prev[col].some((j) => j.id === id));
+        if (!fromCol) return prev;
+        return { ...prev, [fromCol]: prev[fromCol].filter((j) => j.id !== id) };
+      });
+      _postJobsInteract(profileId, id, "dismissed");
+    },
+    [profileId]
+  );
 
   const handleToggleArchive = useCallback(() => {
     setArchivedCollapsed((v) => {
       const next = !v;
-      try { localStorage.setItem("df_archived_collapsed", String(next)); } catch {}
+      try {
+        localStorage.setItem("df_archived_collapsed", String(next));
+      } catch {}
       return next;
     });
   }, []);
@@ -489,34 +595,43 @@ export function Dashboard({
       return {
         ...prev,
         picks: filteredPicks,
-        saved: [{ ...job, match: job.match === undefined ? null : job.match }, ...(prev.saved || [])],
+        saved: [
+          { ...job, match: job.match === undefined ? null : job.match },
+          ...(prev.saved || []),
+        ],
       };
     });
     setPhase("split");
   }, []);
 
-  const handleRoomEnd = useCallback((transcript) => {
-    const finishedId = roomJobId;
-    setRoomJobId(null);
-    if (!finishedId) return;
-    setReportJobId(finishedId);
-    setReportLoading(true);
-    _postJobsInterviewReport(finishedId, profileId, transcript)
-      .then(({ data }) => {
-        setCompletedReports((prev) => ({
-          ...prev,
-          [finishedId]: [...(prev[finishedId] ?? []), { date: new Date().toISOString(), report: data.report }],
-        }));
-        setReportLoading(false);
-      })
-      .catch(() => setReportLoading(false));
-  }, [roomJobId, profileId]);
+  const handleRoomEnd = useCallback(
+    (transcript) => {
+      const finishedId = roomJobId;
+      setRoomJobId(null);
+      if (!finishedId) return;
+      setReportJobId(finishedId);
+      setReportLoading(true);
+      _postJobsInterviewReport(finishedId, profileId, transcript)
+        .then(({ data }) => {
+          setCompletedReports((prev) => ({
+            ...prev,
+            [finishedId]: [
+              ...(prev[finishedId] ?? []),
+              { date: new Date().toISOString(), report: data.report },
+            ],
+          }));
+          setReportLoading(false);
+        })
+        .catch(() => setReportLoading(false));
+    },
+    [roomJobId, profileId]
+  );
 
   // ── Render ────────────────────────────────────────────────────────────────
 
   return (
     <motion.div
-      className="flex-1 flex flex-col min-h-0"
+      className="flex min-h-0 flex-1 flex-col"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -589,15 +704,26 @@ export function Dashboard({
         profileId={profileId}
         onClose={() => setSelectedJobId(null)}
         pastReports={selectedJob ? (completedReports[selectedJob.id] ?? []).slice().reverse() : []}
-        onViewReport={(entry) => { if (selectedJob) setViewingReport({ job: selectedJob, entry }); }}
+        onViewReport={(entry) => {
+          if (selectedJob) setViewingReport({ job: selectedJob, entry });
+        }}
         onCreditUsed={bumpCredits}
-        onStartMockInterview={selectedJobId ? () => { setInterviewJobId(selectedJobId); } : undefined}
+        onStartMockInterview={
+          selectedJobId
+            ? () => {
+                setInterviewJobId(selectedJobId);
+              }
+            : undefined
+        }
       />
       <MockInterviewDialog
         job={interviewJob}
         open={!!interviewJobId}
         onClose={() => setInterviewJobId(null)}
-        onStart={() => { setRoomJobId(interviewJobId); setInterviewJobId(null); }}
+        onStart={() => {
+          setRoomJobId(interviewJobId);
+          setInterviewJobId(null);
+        }}
       />
 
       <PortalOverlays

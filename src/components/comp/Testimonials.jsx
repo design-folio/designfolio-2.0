@@ -1,5 +1,5 @@
 import { useIsMobile } from "@/hooks/use-mobile";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { ChevronLeft, ChevronRight, EditIcon } from "lucide-react";
 import { useState, useRef } from "react";
 import PlusIcon from "../../../public/assets/svgs/plus.svg";
@@ -21,14 +21,14 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-} from '@dnd-kit/core';
+} from "@dnd-kit/core";
 import {
   arrayMove,
   sortableKeyboardCoordinates,
   useSortable,
   verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { _updateUser } from "@/network/post-request";
 import SortableModal from "../SortableModal";
 import ReviewCard from "../reviewCard";
@@ -44,7 +44,8 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
   const isMobile = useIsMobile();
   const visibleTestimonials = showMore ? reviews : reviews?.slice(0, 4);
   const theme = useTheme();
-  const { openSidebar, openNewReview, setSelectedReview, setUserDetails, updateCache } = useGlobalContext();
+  const { openSidebar, openNewReview, setSelectedReview, setUserDetails, updateCache } =
+    useGlobalContext();
 
   const sortSensors = useSensors(
     useSensor(PointerSensor),
@@ -57,18 +58,10 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
-    const oldIndex = userDetails.reviews.findIndex(
-      (review) => review._id === active.id
-    );
-    const newIndex = userDetails.reviews.findIndex(
-      (review) => review._id === over.id
-    );
+    const oldIndex = userDetails.reviews.findIndex((review) => review._id === active.id);
+    const newIndex = userDetails.reviews.findIndex((review) => review._id === over.id);
 
-    const sortedReviews = arrayMove(
-      userDetails.reviews,
-      oldIndex,
-      newIndex
-    );
+    const sortedReviews = arrayMove(userDetails.reviews, oldIndex, newIndex);
 
     setUserDetails((prev) => ({ ...prev, reviews: sortedReviews }));
     _updateUser({ reviews: sortedReviews }).then((res) =>
@@ -77,15 +70,11 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
   };
 
   const handleNext = () => {
-    setCurrentIndex((prev) =>
-      prev + 1 >= visibleTestimonials.length ? 0 : prev + 1
-    );
+    setCurrentIndex((prev) => (prev + 1 >= visibleTestimonials.length ? 0 : prev + 1));
   };
 
   const handlePrev = () => {
-    setCurrentIndex((prev) =>
-      prev - 1 < 0 ? visibleTestimonials.length - 1 : prev - 1
-    );
+    setCurrentIndex((prev) => (prev - 1 < 0 ? visibleTestimonials.length - 1 : prev - 1));
   };
 
   const toggleExpand = (id) => {
@@ -101,14 +90,15 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
 
   return (
     <section className="py-12">
-      <div className="flex items-center justify-between gap-4 mb-12">
-        <h2 className="text-3xl font-bold flex-1">What People Say</h2>
-        {headerActions && <div className="flex-shrink-0">{headerActions}</div>}
+      <div className="mb-12 flex items-center justify-between gap-4">
+        <h2 className="flex-1 text-3xl font-bold">What People Say</h2>
+        {headerActions && <div className="shrink-0">{headerActions}</div>}
       </div>
 
       <div
-        className={`relative ${isMobile ? "px-4" : "grid grid-cols-2 gap-6 max-w-[848px] mx-auto px-4"
-          }`}
+        className={`relative ${
+          isMobile ? "px-4" : "mx-auto grid max-w-[848px] grid-cols-2 gap-6 px-4"
+        }`}
       >
         {isMobile ? (
           <>
@@ -129,9 +119,9 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
                       rotate: 4,
                       transition: { duration: 0.2 },
                     }}
-                    className="bg-review-card-bg-color border border-border/30 rounded-2xl p-6 flex flex-col hover-elevate transition-all shadow-df-card-soft-shadow"
+                    className="bg-review-card-bg-color border-border/30 hover-elevate shadow-df-card-soft-shadow flex flex-col rounded-2xl border p-6 transition-all"
                   >
-                    <div className="flex items-start gap-2 mb-6 flex-1">
+                    <div className="mb-6 flex flex-1 items-start gap-2">
                       <div className="flex-1">
                         <ClampableTiptapContent
                           content={visibleTestimonials[currentIndex]?.description || ""}
@@ -147,9 +137,12 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
                     </div>
 
                     <div className="flex items-center gap-3">
-                      <Avatar className="w-12 h-12 shrink-0">
+                      <Avatar className="h-12 w-12 shrink-0">
                         <AvatarImage
-                          src={visibleTestimonials[currentIndex]?.avatar?.url || visibleTestimonials[currentIndex]?.avatar}
+                          src={
+                            visibleTestimonials[currentIndex]?.avatar?.url ||
+                            visibleTestimonials[currentIndex]?.avatar
+                          }
                           alt={visibleTestimonials[currentIndex]?.name}
                         />
                         <AvatarFallback
@@ -170,24 +163,24 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
 
                       <div className="flex-1">
                         {visibleTestimonials[currentIndex]?.linkedinLink &&
-                          visibleTestimonials[currentIndex]?.linkedinLink?.trim() !== "" ? (
+                        visibleTestimonials[currentIndex]?.linkedinLink?.trim() !== "" ? (
                           <a
                             href={visibleTestimonials[currentIndex]?.linkedinLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-1 text-blue-500 hover:text-blue-600 transition-colors cursor-pointer"
+                            className="flex cursor-pointer items-center gap-1 text-blue-500 transition-colors hover:text-blue-600"
                           >
-                            <MemoLinkedin className="text-df-icon-color w-4 h-4 cursor-pointer" />
-                            <span className="font-semibold text-base cursor-pointer">
+                            <MemoLinkedin className="text-df-icon-color h-4 w-4 cursor-pointer" />
+                            <span className="cursor-pointer text-base font-semibold">
                               {visibleTestimonials[currentIndex]?.name}
                             </span>
                           </a>
                         ) : (
-                          <h3 className="font-semibold text-base mb-0">
+                          <h3 className="mb-0 text-base font-semibold">
                             {visibleTestimonials[currentIndex]?.name}
                           </h3>
                         )}
-                        <p className="text-sm text-df-description-color">
+                        <p className="text-df-description-color text-sm">
                           {visibleTestimonials[currentIndex]?.role
                             ? `${visibleTestimonials[currentIndex]?.role}, `
                             : ""}
@@ -197,7 +190,7 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
                     </div>
                   </motion.div>
                 </AnimatePresence>
-                <div className="flex justify-center gap-4 mt-6">
+                <div className="mt-6 flex justify-center gap-4">
                   <Button
                     variant="outline"
                     size="icon"
@@ -239,9 +232,9 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
                   delay: index * 0.1,
                   ease: "easeOut",
                 }}
-                className="bg-review-card-bg-color border border-border/30 rounded-2xl p-6 flex flex-col hover-elevate transition-all shadow-df-card-soft-shadow"
+                className="bg-review-card-bg-color border-border/30 hover-elevate shadow-df-card-soft-shadow flex flex-col rounded-2xl border p-6 transition-all"
               >
-                <div className="flex items-start gap-2 mb-6 flex-1">
+                <div className="mb-6 flex flex-1 items-start gap-2">
                   <div className="flex-1">
                     <ClampableTiptapContent
                       content={testimonial.description || ""}
@@ -257,18 +250,19 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
                   {edit && (
                     <Button2
                       onClick={() => handleClick(testimonial)}
-                      customClass="!p-0 !flex-shrink-0 border-none"
+                      customClass="!p-0 !shrink-0 border-none"
                       type={"secondary"}
-                      icon={
-                        <EditIcon className="text-df-icon-color cursor-pointer" />
-                      }
+                      icon={<EditIcon className="text-df-icon-color cursor-pointer" />}
                     />
                   )}
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <Avatar className="w-12 h-12 shrink-0">
-                    <AvatarImage src={testimonial?.avatar?.url || testimonial?.avatar} alt={testimonial?.name} />
+                  <Avatar className="h-12 w-12 shrink-0">
+                    <AvatarImage
+                      src={testimonial?.avatar?.url || testimonial?.avatar}
+                      alt={testimonial?.name}
+                    />
                     <AvatarFallback
                       style={{
                         backgroundColor: "#FF9966",
@@ -291,19 +285,17 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
                         href={testimonial.linkedinLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-1 text-blue-500 hover:text-blue-600 transition-colors cursor-pointer"
+                        className="flex cursor-pointer items-center gap-1 text-blue-500 transition-colors hover:text-blue-600"
                       >
-                        <MemoLinkedin className="text-df-icon-color w-4 h-4 cursor-pointer" />
-                        <span className="font-semibold text-base cursor-pointer">
+                        <MemoLinkedin className="text-df-icon-color h-4 w-4 cursor-pointer" />
+                        <span className="cursor-pointer text-base font-semibold">
                           {testimonial?.name}
                         </span>
                       </a>
                     ) : (
-                      <h3 className="font-semibold text-base mb-0">
-                        {testimonial?.name}
-                      </h3>
+                      <h3 className="mb-0 text-base font-semibold">{testimonial?.name}</h3>
                     )}
-                    <p className="text-sm text-df-description-color">
+                    <p className="text-df-description-color text-sm">
                       {testimonial?.role ? `${testimonial.role}, ` : ""}
                       {testimonial?.company}
                     </p>
@@ -317,7 +309,7 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
 
       {!isMobile && reviews?.length > 4 && (
         <motion.div
-          className="text-center mt-8"
+          className="mt-8 text-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
@@ -329,7 +321,7 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
       )}
 
       {edit && (
-        <div className="flex items-center gap-2 mt-6">
+        <div className="mt-6 flex items-center gap-2">
           <AddItem
             className="bg-card shadow-df-section-card-shadow flex-1"
             title="Add your testimonial"
@@ -339,7 +331,7 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
                 <Button2
                   type="secondary"
                   icon={
-                    <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                    <PlusIcon className="text-secondary-btn-text-color h-[12px] w-[12px] cursor-pointer" />
                   }
                   onClick={() => openNewReview()}
                   size="small"
@@ -354,7 +346,7 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
                 <Button2
                   type="secondary"
                   icon={
-                    <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                    <PlusIcon className="text-secondary-btn-text-color h-[12px] w-[12px] cursor-pointer" />
                   }
                   onClick={() => openNewReview()}
                   size="small"
@@ -372,9 +364,9 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
               onClick={() => {
                 setShowSortModal(true);
               }}
-              className="rounded-full h-14 w-14"
+              className="h-14 w-14 rounded-full"
             >
-              <SortIcon className="w-4 h-4 text-df-icon-color cursor-pointer" />
+              <SortIcon className="text-df-icon-color h-4 w-4 cursor-pointer" />
             </ButtonNew>
           )}
         </div>
@@ -390,11 +382,7 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
         useButton2={true}
       >
         {userDetails?.reviews?.map((review) => (
-          <SortableTestimonialItem
-            key={review._id}
-            review={review}
-            edit={edit}
-          />
+          <SortableTestimonialItem key={review._id} review={review} edit={edit} />
         ))}
       </SortableModal>
     </section>
@@ -402,14 +390,9 @@ export const Testimonials = ({ userDetails, edit, headerActions }) => {
 };
 
 const SortableTestimonialItem = ({ review, edit }) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: review._id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: review._id,
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -422,12 +405,12 @@ const SortableTestimonialItem = ({ review, edit }) => {
     <div
       ref={setNodeRef}
       style={style}
-      className={`flex justify-between gap-4 items-center ${isDragging ? 'relative' : ''}`}
+      className={`flex items-center justify-between gap-4 ${isDragging ? "relative" : ""}`}
     >
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         <ReviewCard review={review} sorting={true} edit={edit} />
       </div>
-      <div className="flex-shrink-0">
+      <div className="shrink-0">
         <DragHandle listeners={listeners} attributes={attributes} />
       </div>
     </div>

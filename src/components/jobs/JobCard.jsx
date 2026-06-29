@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useTheme } from "next-themes";
 import { Bookmark, Clapperboard, Maximize2, Loader2, X, Check, ArrowRight } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { ColorOrb } from "@/components/ui/color-orb";
 import { CompanyLogo } from "./CompanyLogo";
@@ -22,18 +22,22 @@ function AnalyzingRing({ isDark }) {
   const arc = isDark ? "rgba(255,255,255,0.22)" : "rgba(0,0,0,0.18)";
 
   return (
-    <div className="relative w-[40px] h-[40px] flex-shrink-0 mt-0.5">
+    <div className="relative mt-0.5 h-[40px] w-[40px] shrink-0">
       <svg width="40" height="40" viewBox="0 0 100 100" className="absolute inset-0" fill="none">
         <circle cx="50" cy="50" r="46.5" strokeWidth="7" stroke={track} strokeLinecap="round" />
       </svg>
       <svg
-        width="40" height="40" viewBox="0 0 100 100"
+        width="40"
+        height="40"
+        viewBox="0 0 100 100"
         className="absolute inset-0"
         fill="none"
         style={{ animation: "spin 1.4s linear infinite" }}
       >
         <circle
-          cx="50" cy="50" r="46.5"
+          cx="50"
+          cy="50"
+          r="46.5"
           strokeWidth="7"
           stroke={arc}
           strokeLinecap="round"
@@ -44,9 +48,21 @@ function AnalyzingRing({ isDark }) {
   );
 }
 
-const PILL_BTN = "flex items-center gap-1.5 h-8 px-2 md:px-3 rounded-full border border-black/[0.08] dark:border-white/[0.1] bg-black/[0.04] dark:bg-white/[0.06] text-[12px] font-medium text-foreground/65 hover:text-foreground hover:border-black/[0.15] dark:hover:border-white/[0.18] transition-[transform,color,border-color,background-color] duration-150 active:scale-[0.97]";
+const PILL_BTN =
+  "flex items-center gap-1.5 h-8 px-2 md:px-3 rounded-full border border-black/[0.08] dark:border-white/[0.1] bg-black/[0.04] dark:bg-white/[0.06] text-[12px] font-medium text-foreground/65 hover:text-foreground hover:border-black/[0.15] dark:hover:border-white/[0.18] transition-[transform,color,border-color,background-color] duration-150 active:scale-[0.97]";
 
-export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, onAskScout, onMoveTo, currentColId, joyrideActive = false, joyrideFirst = false }) {
+export function JobCard({
+  job,
+  onShortlist,
+  onOpen,
+  onDismiss,
+  onMockInterview,
+  onAskScout,
+  onMoveTo,
+  currentColId,
+  joyrideActive = false,
+  joyrideFirst = false,
+}) {
   const [tooltipVisible, setTooltipVisible] = useState(joyrideFirst);
   const [gaugeHovered, setGaugeHovered] = useState(false);
   const [moveOpen, setMoveOpen] = useState(false);
@@ -61,32 +77,29 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
   return (
     <div
       data-testid={`card-job-${job.id}`}
-      className="job-card relative flex flex-col gap-3 p-3 rounded-xl border border-black/[0.04] dark:border-[#302B28] bg-white dark:bg-[#28231E] select-none
-        shadow-[0_1px_3px_rgba(0,0,0,0.06)] dark:shadow-[0_1px_4px_rgba(0,0,0,0.4)]
-        transition-[transform,box-shadow,border-color] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]
-        hover:-translate-y-1 hover:z-10 hover:border-black/[0.1] dark:hover:border-[#4A4440] hover:shadow-[0_4px_14px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_4px_14px_rgba(0,0,0,0.55)]
-        active:translate-y-0 active:shadow-[0_1px_3px_rgba(0,0,0,0.06)] dark:active:shadow-[0_1px_4px_rgba(0,0,0,0.4)]"
+      className="job-card relative flex flex-col gap-3 rounded-xl border border-black/[0.04] bg-white p-3 shadow-[0_1px_3px_rgba(0,0,0,0.06)] transition-[transform,box-shadow,border-color] duration-200 [transition-timing-function:cubic-bezier(0.23,1,0.32,1)] select-none hover:z-10 hover:-translate-y-1 hover:border-black/[0.1] hover:shadow-[0_4px_14px_rgba(0,0,0,0.1)] active:translate-y-0 active:shadow-[0_1px_3px_rgba(0,0,0,0.06)] dark:border-[#302B28] dark:bg-[#28231E] dark:shadow-[0_1px_4px_rgba(0,0,0,0.4)] dark:hover:border-[#4A4440] dark:hover:shadow-[0_4px_14px_rgba(0,0,0,0.55)] dark:active:shadow-[0_1px_4px_rgba(0,0,0,0.4)]"
     >
       {/* Row 1: Logo + Role/Company + Gauge */}
       <div className="flex items-start justify-between gap-2.5">
-        <div className="flex items-start gap-3 min-w-0 flex-1">
+        <div className="flex min-w-0 flex-1 items-start gap-3">
           <CompanyLogo logoUrl={job.logoUrl} company={job.company} size={40} />
           <div className="min-w-0 flex-1">
             {isAnalyzing ? (
-              <div className="text-[15px] font-semibold text-foreground/50 leading-snug w-full">
+              <div className="text-foreground/50 w-full text-[15px] leading-snug font-semibold">
                 {job.role}
               </div>
             ) : (
               <button
-                onClick={(e) => { e.stopPropagation(); onOpen?.(); }}
-                className="text-[15px] font-semibold text-foreground leading-snug text-left hover:text-foreground/60 active:text-foreground/40 transition-colors duration-100 cursor-pointer w-full"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onOpen?.();
+                }}
+                className="text-foreground hover:text-foreground/60 active:text-foreground/40 w-full cursor-pointer text-left text-[15px] leading-snug font-semibold transition-colors duration-100"
               >
                 {job.role}
               </button>
             )}
-            <div className="text-[12px] text-foreground/45 mt-0.5 truncate">
-              {job.company}
-            </div>
+            <div className="text-foreground/45 mt-0.5 truncate text-[12px]">{job.company}</div>
           </div>
         </div>
 
@@ -109,7 +122,7 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.85 }}
               transition={{ duration: 0.26, ease: EASING }}
-              className="relative flex-shrink-0 mt-0.5"
+              className="relative mt-0.5 shrink-0"
               onMouseEnter={() => setGaugeHovered(true)}
               onMouseLeave={() => setGaugeHovered(false)}
             >
@@ -118,7 +131,7 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
               {/* Hover popover with aligns/gaps */}
               {hasPopover && (
                 <div
-                  className="absolute right-full top-0 mr-2 z-50 pointer-events-none"
+                  className="pointer-events-none absolute top-0 right-full z-50 mr-2"
                   style={{
                     opacity: gaugeHovered ? 1 : 0,
                     transform: gaugeHovered ? "translateY(0)" : "translateY(4px)",
@@ -126,7 +139,7 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
                   }}
                 >
                   <div
-                    className="w-[172px] rounded-xl border border-black/[0.07] dark:border-white/[0.09] px-3 py-2.5 flex flex-col gap-2"
+                    className="flex w-[172px] flex-col gap-2 rounded-xl border border-black/[0.07] px-3 py-2.5 dark:border-white/[0.09]"
                     style={{
                       background: isDark ? "rgba(30,26,22,0.97)" : "rgba(255,255,255,0.97)",
                       boxShadow: isDark
@@ -139,8 +152,8 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
                       <div className="flex flex-col gap-1">
                         {gaugeAligns.map((a) => (
                           <div key={a} className="flex items-start gap-1.5">
-                            <Check className="w-2.5 h-2.5 mt-[2px] flex-shrink-0 text-emerald-500 dark:text-emerald-400" />
-                            <span className="text-[11px] text-foreground/65 leading-snug">{a}</span>
+                            <Check className="mt-[2px] h-2.5 w-2.5 shrink-0 text-emerald-500 dark:text-emerald-400" />
+                            <span className="text-foreground/65 text-[11px] leading-snug">{a}</span>
                           </div>
                         ))}
                       </div>
@@ -152,8 +165,8 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
                       <div className="flex flex-col gap-1">
                         {gaugeGaps.map((g) => (
                           <div key={g} className="flex items-start gap-1.5">
-                            <X className="w-2.5 h-2.5 mt-[2px] flex-shrink-0 text-foreground/30" />
-                            <span className="text-[11px] text-foreground/40 leading-snug">{g}</span>
+                            <X className="text-foreground/30 mt-[2px] h-2.5 w-2.5 shrink-0" />
+                            <span className="text-foreground/40 text-[11px] leading-snug">{g}</span>
                           </div>
                         ))}
                       </div>
@@ -167,14 +180,14 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
       </div>
 
       {/* Row 2: Tags */}
-      <div className="flex items-center gap-1.5 flex-wrap">
-        <span className="inline-flex items-center font-jetbrains-mono text-[10px] font-semibold uppercase tracking-wide text-[#3D3630] dark:text-white/55 bg-[#EAE5DF] dark:bg-[#1F1C1C] rounded-md px-2 py-1 whitespace-nowrap">
+      <div className="flex flex-wrap items-center gap-1.5">
+        <span className="font-jetbrains-mono inline-flex items-center rounded-md bg-[#EAE5DF] px-2 py-1 text-[10px] font-semibold tracking-wide whitespace-nowrap text-[#3D3630] uppercase dark:bg-[#1F1C1C] dark:text-white/55">
           {job.location}
         </span>
-        <span className="inline-flex items-center font-jetbrains-mono text-[10px] font-semibold uppercase tracking-wide text-[#3D3630] dark:text-white/55 bg-[#EAE5DF] dark:bg-[#1F1C1C] rounded-md px-2 py-1 whitespace-nowrap">
+        <span className="font-jetbrains-mono inline-flex items-center rounded-md bg-[#EAE5DF] px-2 py-1 text-[10px] font-semibold tracking-wide whitespace-nowrap text-[#3D3630] uppercase dark:bg-[#1F1C1C] dark:text-white/55">
           {job.type}
         </span>
-        <span className="inline-flex items-center font-jetbrains-mono text-[10px] font-semibold uppercase tracking-wide text-[#3D3630] dark:text-white/55 bg-[#EAE5DF] dark:bg-[#1F1C1C] rounded-md px-2 py-1 whitespace-nowrap">
+        <span className="font-jetbrains-mono inline-flex items-center rounded-md bg-[#EAE5DF] px-2 py-1 text-[10px] font-semibold tracking-wide whitespace-nowrap text-[#3D3630] uppercase dark:bg-[#1F1C1C] dark:text-white/55">
           {job.workMode}
         </span>
       </div>
@@ -182,21 +195,24 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
       {/* Joyride tooltip */}
       {tooltipVisible && (
         <div
-          className="flex items-start !cursor-default"
+          className="flex !cursor-default items-start"
           onPointerDown={(e) => e.stopPropagation()}
         >
           <div className="relative">
-            <div className="flex items-center gap-1.5 bg-[#1a1a1a] dark:bg-white text-white dark:text-[#1a1a1a] text-[11px] font-medium pl-3 pr-1.5 py-1.5 rounded-lg leading-none whitespace-nowrap">
+            <div className="flex items-center gap-1.5 rounded-lg bg-[#1a1a1a] py-1.5 pr-1.5 pl-3 text-[11px] leading-none font-medium whitespace-nowrap text-white dark:bg-white dark:text-[#1a1a1a]">
               Shortlist jobs you want to track →
               <button
-                onClick={(e) => { e.stopPropagation(); setTooltipVisible(false); }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setTooltipVisible(false);
+                }}
                 onPointerDown={(e) => e.stopPropagation()}
-                className="flex items-center justify-center w-5 h-5 rounded-full hover:bg-white/20 dark:hover:bg-black/10 transition-colors flex-shrink-0 !cursor-pointer"
+                className="flex h-5 w-5 shrink-0 !cursor-pointer items-center justify-center rounded-full transition-colors hover:bg-white/20 dark:hover:bg-black/10"
               >
-                <X className="w-3 h-3" />
+                <X className="h-3 w-3" />
               </button>
             </div>
-            <div className="absolute left-4 top-full w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[5px] border-t-[#1a1a1a] dark:border-t-white" />
+            <div className="absolute top-full left-4 h-0 w-0 border-t-[5px] border-r-[5px] border-l-[5px] border-t-[#1a1a1a] border-r-transparent border-l-transparent dark:border-t-white" />
           </div>
         </div>
       )}
@@ -206,17 +222,23 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
         <div className="flex items-center gap-1.5">
           <button
             data-testid={`button-shortlist-${job.id}`}
-            onClick={(e) => { e.stopPropagation(); onShortlist(); }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onShortlist();
+            }}
             className={`${PILL_BTN}${joyrideActive ? " joyride-btn-glow" : ""}`}
           >
-            <Bookmark className="w-3 h-3" />
+            <Bookmark className="h-3 w-3" />
             Shortlist
           </button>
 
           {onAskScout && !isAnalyzing && (
             <button
               data-testid={`button-ask-scout-${job.id}`}
-              onClick={(e) => { e.stopPropagation(); onAskScout(); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onAskScout();
+              }}
               className={`orb-activates-on-hover ${PILL_BTN}`}
             >
               <ColorOrb dimension="12px" spinDuration={8} />
@@ -226,16 +248,22 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
 
           <div className="ml-auto">
             {isAnalyzing ? (
-              <div className="flex items-center justify-center w-7 h-7 text-foreground/20 rounded-full">
-                <Loader2 className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: "1.8s" }} />
+              <div className="text-foreground/20 flex h-7 w-7 items-center justify-center rounded-full">
+                <Loader2
+                  className="h-3.5 w-3.5 animate-spin"
+                  style={{ animationDuration: "1.8s" }}
+                />
               </div>
             ) : (
               <button
                 data-testid={`button-expand-${job.id}`}
-                onClick={(e) => { e.stopPropagation(); onOpen?.(); }}
-                className="flex items-center justify-center w-7 h-7 text-foreground/30 hover:text-foreground/60 hover:bg-black/[0.05] dark:hover:bg-white/[0.07] transition-[transform,color,background-color] duration-100 active:scale-[0.88] rounded-full"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onOpen?.();
+                }}
+                className="text-foreground/30 hover:text-foreground/60 flex h-7 w-7 items-center justify-center rounded-full transition-[transform,color,background-color] duration-100 hover:bg-black/[0.05] active:scale-[0.88] dark:hover:bg-white/[0.07]"
               >
-                <Maximize2 className="w-3.5 h-3.5 pointer-events-none" />
+                <Maximize2 className="pointer-events-none h-3.5 w-3.5" />
               </button>
             )}
           </div>
@@ -245,10 +273,13 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
           {onMockInterview && !isAnalyzing && (
             <button
               data-testid={`button-mock-interview-${job.id}`}
-              onClick={(e) => { e.stopPropagation(); onMockInterview(); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onMockInterview();
+              }}
               className={PILL_BTN}
             >
-              <Clapperboard className="w-3 h-3" />
+              <Clapperboard className="h-3 w-3" />
               <span className="hidden md:inline">Mock interview</span>
             </button>
           )}
@@ -256,7 +287,10 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
           {onAskScout && !isAnalyzing && (
             <button
               data-testid={`button-ask-scout-${job.id}`}
-              onClick={(e) => { e.stopPropagation(); onAskScout(); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onAskScout();
+              }}
               className={`orb-activates-on-hover ${PILL_BTN}`}
             >
               <ColorOrb dimension="12px" spinDuration={8} />
@@ -267,11 +301,8 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
           {onMoveTo && !isAnalyzing && (
             <Popover open={moveOpen} onOpenChange={setMoveOpen}>
               <PopoverTrigger asChild>
-                <button
-                  className={`md:hidden ${PILL_BTN}`}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <ArrowRight className="w-3 h-3" />
+                <button className={`md:hidden ${PILL_BTN}`} onClick={(e) => e.stopPropagation()}>
+                  <ArrowRight className="h-3 w-3" />
                   Move to
                 </button>
               </PopoverTrigger>
@@ -281,13 +312,17 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
                 sideOffset={6}
                 collisionPadding={12}
                 onOpenAutoFocus={(e) => e.preventDefault()}
-                className="w-[176px] p-1.5 rounded-2xl border border-black/[0.08] dark:border-border shadow-xl bg-white dark:bg-card"
+                className="dark:border-border dark:bg-card w-[176px] rounded-2xl border border-black/[0.08] bg-white p-1.5 shadow-xl"
               >
                 {MOVE_COLS.filter((c) => c.id !== currentColId).map(({ id, label }) => (
                   <button
                     key={id}
-                    onClick={(e) => { e.stopPropagation(); onMoveTo(id); setMoveOpen(false); }}
-                    className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-[13px] font-medium text-foreground/70 hover:text-foreground hover:bg-foreground/[0.05] active:bg-foreground/[0.08] transition-colors text-left"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onMoveTo(id);
+                      setMoveOpen(false);
+                    }}
+                    className="text-foreground/70 hover:text-foreground hover:bg-foreground/[0.05] active:bg-foreground/[0.08] flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-[13px] font-medium transition-colors"
                   >
                     {label}
                   </button>
@@ -298,16 +333,22 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
 
           <div className="ml-auto">
             {isAnalyzing ? (
-              <div className="flex items-center justify-center w-7 h-7 text-foreground/20 rounded-full">
-                <Loader2 className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: "1.8s" }} />
+              <div className="text-foreground/20 flex h-7 w-7 items-center justify-center rounded-full">
+                <Loader2
+                  className="h-3.5 w-3.5 animate-spin"
+                  style={{ animationDuration: "1.8s" }}
+                />
               </div>
             ) : (
               <button
                 data-testid={`button-expand-other-${job.id}`}
-                onClick={(e) => { e.stopPropagation(); onOpen?.(); }}
-                className="flex items-center justify-center w-7 h-7 text-foreground/30 hover:text-foreground/60 hover:bg-black/[0.05] dark:hover:bg-white/[0.07] transition-[transform,color,background-color] duration-100 active:scale-[0.88] rounded-full"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onOpen?.();
+                }}
+                className="text-foreground/30 hover:text-foreground/60 flex h-7 w-7 items-center justify-center rounded-full transition-[transform,color,background-color] duration-100 hover:bg-black/[0.05] active:scale-[0.88] dark:hover:bg-white/[0.07]"
               >
-                <Maximize2 className="w-3.5 h-3.5 pointer-events-none" />
+                <Maximize2 className="pointer-events-none h-3.5 w-3.5" />
               </button>
             )}
           </div>
@@ -324,7 +365,7 @@ export function JobCard({ job, onShortlist, onOpen, onDismiss, onMockInterview, 
             transition={{ duration: 0.2, ease: EASING }}
             className="overflow-hidden"
           >
-            <p className="text-[10px] font-jetbrains-mono text-foreground/30 tracking-wide text-center pb-0.5">
+            <p className="font-jetbrains-mono text-foreground/30 pb-0.5 text-center text-[10px] tracking-wide">
               Analyzing match score…
             </p>
           </motion.div>

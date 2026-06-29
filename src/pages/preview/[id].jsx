@@ -1,22 +1,24 @@
-import Minimal from "@/components/comp/Minimal";
-import MacOSTemplate from "@/components/comp/MacOSTemplate";
+import dynamic from "next/dynamic";
 import Seo from "@/components/seo";
-import Template2 from "@/components/template2";
 import { useGlobalContext } from "@/context/globalContext";
 import useClient from "@/hooks/useClient";
 import { getWallpaperUrl } from "@/lib/wallpaper";
 import { TEMPLATE_IDS } from "@/lib/templates";
-import Chat from "@/components/templates/Chat";
 import { _getUser } from "@/network/get-request";
 import { useQuery } from "@tanstack/react-query";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import WallpaperBackground from "@/components/WallpaperBackground";
-import Canvas from "@/components/templates/Canvas";
-import Mono from "@/components/templates/Mono";
-import Professional from "@/components/templates/Professional";
 import MemoMadewithdesignfolio from "@/components/icons/Madewithdesignfolio";
+
+// ssr: false — templates depend on useGlobalContext and useTheme (client-only hooks).
+const Canvas = dynamic(() => import("@/components/templates/Canvas"), { ssr: false });
+const Chat = dynamic(() => import("@/components/templates/Chat"), { ssr: false });
+const Minimal = dynamic(() => import("@/components/templates/Spotlight"), { ssr: false });
+const Mono = dynamic(() => import("@/components/templates/Mono"), { ssr: false });
+const Professional = dynamic(() => import("@/components/templates/Professional"), { ssr: false });
+const MacOSTemplate = dynamic(() => import("@/components/comp/MacOSTemplate"), { ssr: false });
 
 export default function Index({ initialUserDetails }) {
   const { setTheme, theme, resolvedTheme } = useTheme();
@@ -65,9 +67,9 @@ export default function Index({ initialUserDetails }) {
 
     if (finalUserDetails?.wallpaper !== undefined) {
       const wp = finalUserDetails.wallpaper;
-      const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
+      const wpValue = wp && typeof wp === "object" ? wp.url || wp.value : wp;
       setWallpaper(wpValue !== undefined ? wpValue : 0);
-      if (wp && typeof wp === 'object' && wp.effects) {
+      if (wp && typeof wp === "object" && wp.effects) {
         setWallpaperEffects(wp.effects);
       }
     }
@@ -75,13 +77,15 @@ export default function Index({ initialUserDetails }) {
   }, [userDetailsId, userDetailsUpdatedAt]);
 
   const wp = finalUserDetails?.wallpaper;
-  const wpValue = (wp && typeof wp === 'object') ? (wp.url || wp.value) : wp;
+  const wpValue = wp && typeof wp === "object" ? wp.url || wp.value : wp;
   const currentTheme = resolvedTheme || theme || (finalUserDetails?.theme == 1 ? "dark" : "light");
   const isChatfolioTemplate = finalUserDetails?.template === TEMPLATE_IDS.CHATFOLIO;
-  const wallpaperUrl = isChatfolioTemplate ? null : getWallpaperUrl(wpValue ?? 0, currentTheme, finalUserDetails?.template);
+  const wallpaperUrl = isChatfolioTemplate
+    ? null
+    : getWallpaperUrl(wpValue ?? 0, currentTheme, finalUserDetails?.template);
   const ProBadge = !finalUserDetails?.pro && (
     <div
-      className="text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[20px] xl:block cursor-pointer mb-[120px] lg:m-1"
+      className="relative mb-[120px] flex cursor-pointer justify-center text-center lg:fixed lg:right-[36px] lg:bottom-[20px] lg:m-1 xl:block"
       onClick={() => window.open("https://www.designfolio.me", "_blank")}
     >
       <MemoMadewithdesignfolio />
@@ -91,24 +95,60 @@ export default function Index({ initialUserDetails }) {
   const renderTemplate = () => {
     switch (finalUserDetails?.template) {
       case TEMPLATE_IDS.CANVAS:
-        return <><Canvas preview publicView />{ProBadge}</>;
+        return (
+          <>
+            <Canvas preview publicView />
+            {ProBadge}
+          </>
+        );
       case TEMPLATE_IDS.CHATFOLIO:
-        return <><Chat publicView />{ProBadge}</>;
+        return (
+          <>
+            <Chat publicView />
+            {ProBadge}
+          </>
+        );
       case TEMPLATE_IDS.SPOTLIGHT:
-        return <><Minimal userDetails={finalUserDetails} />{ProBadge}</>;
+        return (
+          <>
+            <Minimal userDetails={finalUserDetails} />
+            {ProBadge}
+          </>
+        );
       case TEMPLATE_IDS.MONO:
-        return <><Mono preview publicView />{ProBadge}</>;
+        return (
+          <>
+            <Mono preview publicView />
+            {ProBadge}
+          </>
+        );
       case TEMPLATE_IDS.PROFESSIONAL:
-        return <><Professional isEditing={false} />{ProBadge}</>;
+        return (
+          <>
+            <Professional isEditing={false} />
+            {ProBadge}
+          </>
+        );
       case TEMPLATE_IDS.RETRO_OS:
-        return <><MacOSTemplate userDetails={finalUserDetails} />{ProBadge}</>;
+        return (
+          <>
+            <MacOSTemplate userDetails={finalUserDetails} />
+            {ProBadge}
+          </>
+        );
       default:
-        return <><Canvas preview publicView />{ProBadge}</>;
+        return (
+          <>
+            <Canvas preview publicView />
+            {ProBadge}
+          </>
+        );
     }
   };
 
-
-  const fullName = [finalUserDetails?.firstName, finalUserDetails?.lastName].filter(Boolean).join(' ');
+  const fullName = [finalUserDetails?.firstName, finalUserDetails?.lastName]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <>
@@ -121,7 +161,13 @@ export default function Index({ initialUserDetails }) {
         url={`https://${finalUserDetails?.username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`}
       />
       <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
-      <main className={isChatfolioTemplate ? "min-h-screen bg-[#F0EDE7] dark:bg-[#1A1A1A] transition-colors duration-700 flex justify-center" : "min-h-screen"}>
+      <main
+        className={
+          isChatfolioTemplate
+            ? "flex min-h-screen justify-center bg-[#F0EDE7] transition-colors duration-700 dark:bg-[#1A1A1A]"
+            : "min-h-screen"
+        }
+      >
         <div
           className={(() => {
             switch (finalUserDetails?.template) {

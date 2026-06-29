@@ -1,5 +1,5 @@
-import { useState, useCallback, useEffect, useMemo, useRef } from "react";
-import { motion } from "framer-motion";
+import { useState, useCallback, useEffect, useMemo, useRef, startTransition } from "react";
+import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import {
   AlertDialog,
@@ -48,16 +48,19 @@ function ReviewCard({ rec, isEditing, onEdit, onDelete }) {
   }, [rec.description]);
 
   return (
-    <div className="bg-white dark:bg-[#2A2520] rounded-[16px] border border-black/5 dark:border-white/10 drop-shadow-sm overflow-hidden group/card relative">
+    <div className="group/card relative overflow-hidden rounded-[16px] border border-black/5 bg-white drop-shadow-sm dark:border-white/10 dark:bg-[#2A2520]">
       {isEditing && (
-        <div className="absolute top-3 right-3 z-20 transition-opacity flex gap-2 opacity-100 md:opacity-0 md:group-hover/card:opacity-100">
+        <div className="absolute top-3 right-3 z-20 flex gap-2 opacity-100 transition-opacity md:opacity-0 md:group-hover/card:opacity-100">
           <Button
             variant="outline"
             size="sm"
-            className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-black/10 dark:border-white/10 shadow-sm hover:bg-white dark:hover:bg-[#35302A]"
-            onClick={(e) => { e.stopPropagation(); onEdit(rec); }}
+            className="h-8 w-8 rounded-full border-black/10 bg-white/90 p-0 shadow-sm backdrop-blur-sm hover:bg-white dark:border-white/10 dark:bg-[#2A2520]/90 dark:hover:bg-[#35302A]"
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit(rec);
+            }}
           >
-            <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+            <Pencil className="h-3.5 w-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
           </Button>
           <div onClick={(e) => e.stopPropagation()}>
             <AlertDialog>
@@ -65,30 +68,34 @@ function ReviewCard({ rec, isEditing, onEdit, onDelete }) {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-black/10 dark:border-white/10 shadow-sm hover:bg-red-50 dark:hover:bg-red-950/30 hover:border-red-200 dark:hover:border-red-900/50 hover:text-red-600 dark:hover:text-red-400"
+                  className="h-8 w-8 rounded-full border-black/10 bg-white/90 p-0 shadow-sm backdrop-blur-sm hover:border-red-200 hover:bg-red-50 hover:text-red-600 dark:border-white/10 dark:bg-[#2A2520]/90 dark:hover:border-red-900/50 dark:hover:bg-red-950/30 dark:hover:text-red-400"
                 >
-                  <Trash2 className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                  <Trash2 className="h-3.5 w-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent
                 onClick={(e) => e.stopPropagation()}
-                className="bg-[#F0EDE7] dark:bg-[#1A1A1A] border-black/10 dark:border-white/10 rounded-2xl p-6 gap-6 max-w-md w-[90vw]"
+                className="w-[90vw] max-w-md gap-6 rounded-2xl border-black/10 bg-[#F0EDE7] p-6 dark:border-white/10 dark:bg-[#1A1A1A]"
               >
                 <AlertDialogHeader>
                   <AlertDialogTitle className="text-xl font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
                     Delete Recommendation
                   </AlertDialogTitle>
                   <AlertDialogDescription className="text-[15px] text-[#7A736C] dark:text-[#B5AFA5]">
-                    Are you sure you want to delete this recommendation from {rec.name}? This action cannot be undone.
+                    Are you sure you want to delete this recommendation from {rec.name}? This action
+                    cannot be undone.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter className="gap-3 sm:gap-2">
-                  <AlertDialogCancel className="rounded-xl border-black/10 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5 text-[#1A1A1A] dark:text-[#F0EDE7] m-0 h-11 px-6">
+                  <AlertDialogCancel className="m-0 h-11 rounded-xl border-black/10 px-6 text-[#1A1A1A] hover:bg-black/5 dark:border-white/10 dark:text-[#F0EDE7] dark:hover:bg-white/5">
                     Cancel
                   </AlertDialogCancel>
                   <AlertDialogAction
-                    onClick={(e) => { e.stopPropagation(); onDelete(rec.id); }}
-                    className="rounded-xl bg-red-600 text-white hover:bg-red-700 m-0 h-11 px-6 border-none shadow-none"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDelete(rec.id);
+                    }}
+                    className="m-0 h-11 rounded-xl border-none bg-red-600 px-6 text-white shadow-none hover:bg-red-700"
                   >
                     Delete
                   </AlertDialogAction>
@@ -99,53 +106,61 @@ function ReviewCard({ rec, isEditing, onEdit, onDelete }) {
         </div>
       )}
 
-      <div className="flex justify-between items-center px-6 py-4">
+      <div className="flex items-center justify-between px-6 py-4">
         <div className="flex flex-col">
-          <h3 className="font-medium text-base text-[#1A1A1A] dark:text-[#F0EDE7] mb-1">{rec.name}</h3>
+          <h3 className="mb-1 text-base font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+            {rec.name}
+          </h3>
           <div className="flex items-center gap-2">
-            <svg viewBox="0 0 24 24" className="w-4 h-4 text-black dark:text-[#F0EDE7] transition-colors duration-200 hover:text-[#0077B5] dark:hover:text-[#87CEEB] cursor-pointer" fill="currentColor">
+            <svg
+              viewBox="0 0 24 24"
+              className="h-4 w-4 cursor-pointer text-black transition-colors duration-200 hover:text-[#0077B5] dark:text-[#F0EDE7] dark:hover:text-[#87CEEB]"
+              fill="currentColor"
+            >
               <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
             </svg>
             <span className="text-[13px] text-[#7A736C] dark:text-[#9E9893]">{rec.role}</span>
           </div>
         </div>
-        <Avatar className="w-[80px] h-[80px] rounded-none -mr-6 -my-4 transition-all duration-700">
+        <Avatar className="-my-4 -mr-6 h-[80px] w-[80px] rounded-none transition-all duration-700">
           <AvatarImage src={rec.image} className="object-cover" />
-          <AvatarFallback className="rounded-none bg-[#E5D7C4] dark:bg-[#3A352E] text-[#1A1A1A] dark:text-[#F0EDE7]">
+          <AvatarFallback className="rounded-none bg-[#E5D7C4] text-[#1A1A1A] dark:bg-[#3A352E] dark:text-[#F0EDE7]">
             {getInitials(rec.name, "A")}
           </AvatarFallback>
         </Avatar>
       </div>
 
       <div className="p-0">
-        <div className="border border-dashed border-[#E5D7C4] dark:border-[#3A352E] rounded-[16px] p-4">
-          <div
-            ref={contentRef}
-            className={cn(
-              "overflow-hidden",
-              !expanded && "line-clamp-3"
-            )}
-          >
+        <div className="rounded-[16px] border border-dashed border-[#E5D7C4] p-4 dark:border-[#3A352E]">
+          <div ref={contentRef} className={cn("overflow-hidden", !expanded && "line-clamp-3")}>
             <SimpleTiptapRenderer
               content={rec.description || ""}
               mode="review"
               enableBulletList={false}
-              className="text-[#7A736C] dark:text-[#B5AFA5] text-[15px] leading-relaxed"
+              className="text-[15px] leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]"
               noCardStyle
             />
           </div>
           {needsExpand && (
             <button
-              onClick={(e) => { e.stopPropagation(); setExpanded((v) => !v); }}
-              className="text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] mt-3 flex items-center gap-1.5 opacity-70 hover:opacity-100 transition-opacity"
+              onClick={(e) => {
+                e.stopPropagation();
+                setExpanded((v) => !v);
+              }}
+              className="mt-3 flex items-center gap-1.5 text-[13px] font-medium text-[#1A1A1A] opacity-70 transition-opacity hover:opacity-100 dark:text-[#F0EDE7]"
             >
               {expanded ? "View less" : "View more"}
               <motion.svg
                 animate={{ rotate: expanded ? 180 : 0 }}
                 transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
-                width="10" height="10" viewBox="0 0 24 24"
-                fill="none" stroke="currentColor" strokeWidth="2"
-                strokeLinecap="round" strokeLinejoin="round"
+                width="10"
+                height="10"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
                 <path d="m6 9 6 6 6-6" />
               </motion.svg>
@@ -170,13 +185,13 @@ export default function MonoReviewsSection({ isEditing }) {
         image: review?.avatar?.url || review?.avatar || "",
         raw: review,
       })),
-    [userDetails?.reviews],
+    [userDetails?.reviews]
   );
 
   const [recommendations, setRecommendations] = useState(mappedRecommendations);
 
   useEffect(() => {
-    setRecommendations(mappedRecommendations);
+    startTransition(() => setRecommendations(mappedRecommendations));
   }, [mappedRecommendations]);
 
   const handleOpenReviewSidebar = useCallback(
@@ -188,7 +203,7 @@ export default function MonoReviewsSection({ isEditing }) {
         openNewReview();
       }
     },
-    [openSidebar, openNewReview, setSelectedReview],
+    [openSidebar, openNewReview, setSelectedReview]
   );
 
   const handleDelete = useCallback((id) => {
@@ -198,9 +213,9 @@ export default function MonoReviewsSection({ isEditing }) {
   if (!isEditing && recommendations.length === 0) return null;
 
   return (
-    <div className="px-6 md:px-10 py-10 relative group/section">
+    <div className="group/section relative px-6 py-10 md:px-10">
       {isEditing && (
-        <div className="absolute top-4 right-4 transition-opacity z-10 flex gap-2">
+        <div className="absolute top-4 right-4 z-10 flex gap-2 transition-opacity">
           {recommendations.length >= 2 && (
             <MonoRearrangeButton
               onClick={() => openSidebar?.(sidebars.sortReviews)}
@@ -212,37 +227,49 @@ export default function MonoReviewsSection({ isEditing }) {
             variant="outline"
             size="sm"
             onClick={() => handleOpenReviewSidebar(null)}
-            className="h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors opacity-100 md:opacity-0 md:group-hover/section:opacity-100"
+            className="h-8 w-8 rounded-full border-black/10 bg-white p-0 opacity-100 shadow-sm transition-colors hover:bg-gray-50 md:opacity-0 md:group-hover/section:opacity-100 dark:border-white/10 dark:bg-[#2A2520] dark:hover:bg-[#35302A]"
           >
-            <Plus className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+            <Plus className="h-3.5 w-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
           </Button>
           <SectionVisibilityButton
             sectionId="reviews"
             showOnHoverWhenVisible
-            className="h-8 w-8 rounded-full border-black/10 dark:border-white/10 shadow-sm bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A]"
+            className="h-8 w-8 rounded-full border-black/10 bg-white shadow-sm hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520] dark:hover:bg-[#35302A]"
           />
         </div>
       )}
 
-      <h2 className="text-[14px] font-bold text-[#463B34] dark:text-[#D4C9BC] font-dm-mono uppercase tracking-wider mb-5">
+      <h2 className="font-dm-mono mb-5 text-[14px] font-bold tracking-wider text-[#463B34] uppercase dark:text-[#D4C9BC]">
         Recommendations
       </h2>
 
       {recommendations.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 px-4 text-center rounded-2xl border border-dashed border-black/10 dark:border-white/10 bg-background backdrop-blur-sm">
-          <div className="w-12 h-12 rounded-full bg-black/[0.03] dark:bg-white/[0.03] flex items-center justify-center mb-4">
-            <svg className="w-6 h-6 text-[#7A736C] dark:text-[#9E9893]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+        <div className="bg-background flex flex-col items-center justify-center rounded-2xl border border-dashed border-black/10 px-4 py-16 text-center backdrop-blur-sm dark:border-white/10">
+          <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-black/[0.03] dark:bg-white/[0.03]">
+            <svg
+              className="h-6 w-6 text-[#7A736C] dark:text-[#9E9893]"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+              />
             </svg>
           </div>
-          <h3 className="text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] mb-1">No recommendations yet</h3>
-          <p className="text-[13px] text-[#7A736C] dark:text-[#9E9893] max-w-[250px] mb-5">
+          <h3 className="mb-1 text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+            No recommendations yet
+          </h3>
+          <p className="mb-5 max-w-[250px] text-[13px] text-[#7A736C] dark:text-[#9E9893]">
             Add recommendations to build trust and credibility.
           </p>
           {isEditing && (
             <Button
               onClick={() => handleOpenReviewSidebar(null)}
-              className="h-9 px-4 rounded-full text-[13px] font-medium bg-[#1A1A1A] dark:bg-white text-white dark:text-black hover:bg-black/80 dark:hover:bg-white/90 transition-colors shadow-sm"
+              className="h-9 rounded-full bg-[#1A1A1A] px-4 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
             >
               Add Testimonial
             </Button>

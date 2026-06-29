@@ -15,9 +15,7 @@ export const _getJobsRecommendations = (profileId, page = 0, limit = 10) =>
 // POST /jobs/interact — fire-and-forget tracking; action: 'saved'|'applied'|'interview'|'offer'|'dismissed'
 export const _postJobsInteract = (profileId, jobId, action) => {
   if (!profileId || !jobId) return;
-  axiosInstance
-    .post("/jobs/interact", { profileId, jobId, action })
-    .catch(() => {}); // intentional fire-and-forget — swallow silently
+  axiosInstance.post("/jobs/interact", { profileId, jobId, action }).catch(() => {}); // intentional fire-and-forget — swallow silently
 };
 
 // GET /jobs/history — restore last recommendation session on page mount
@@ -25,8 +23,7 @@ export const _getJobsHistory = () => axiosInstance.get("/jobs/history");
 
 // POST /jobs/more — trigger Lambda to fetch more jobs for existing profile
 // Returns { status: "processing" } — poll _getJobsRecommendations for new results
-export const _postJobsMore = (profileId) =>
-  axiosInstance.post("/jobs/more", { profileId });
+export const _postJobsMore = (profileId) => axiosInstance.post("/jobs/more", { profileId });
 
 // POST /jobs/scout — Scout AI chat; returns { reply: string }
 export const _postJobsScout = (profileId, jobId, message, history = []) =>
@@ -58,42 +55,38 @@ export const _postJobsInterviewReport = (jobId, profileId, transcript) =>
 
 // POST /jobs/offer-decision — compare two offers with AI; returns { winner, analysis, regretNote, take }
 export const _postJobsOfferDecision = (profileId, jobAId, jobBId, answers) =>
-  axiosInstance.post('/jobs/offer-decision', { profileId, jobAId, jobBId, answers });
+  axiosInstance.post("/jobs/offer-decision", { profileId, jobAId, jobBId, answers });
 
 // POST /jobs/pipeline/reorder — persist custom card order within a stage
 // column: 'saved'|'applied'|'interview'|'offer', jobIds: string[] (full ordered array)
 export const _postJobsPipelineReorder = (profileId, column, jobIds) => {
   if (!profileId) return;
-  axiosInstance
-    .post('/jobs/pipeline/reorder', { profileId, column, jobIds })
-    .catch(() => {}); // fire-and-forget
+  axiosInstance.post("/jobs/pipeline/reorder", { profileId, column, jobIds }).catch(() => {}); // fire-and-forget
 };
 
 // GET /jobs/role-suggestions?q=... — fuzzy search over curated job titles (no auth required)
 export const _getJobRoleSuggestions = (q) =>
-  axiosInstance.get('/jobs/role-suggestions', { params: { q } });
+  axiosInstance.get("/jobs/role-suggestions", { params: { q } });
 
 // POST /jobs/add-manual — invoke Lambda to scrape LinkedIn URL and add job to Shortlisted
 // Returns { status: 'processing', profileId }
 export const _postJobsAddManual = (linkedinUrl, profileId) =>
-  axiosInstance.post('/jobs/add-manual', { linkedinUrl, profileId });
+  axiosInstance.post("/jobs/add-manual", { linkedinUrl, profileId });
 
 export const _postJobsAddManualEntry = (fields, profileId) =>
-  axiosInstance.post('/jobs/add-manual-entry', { ...fields, profileId });
+  axiosInstance.post("/jobs/add-manual-entry", { ...fields, profileId });
 
 // GET /jobs/public/:jobId — no auth, returns job data for shared page SSR
-export const _getPublicJob = (jobId) =>
-  axiosInstance.get(`/jobs/public/${jobId}`);
+export const _getPublicJob = (jobId) => axiosInstance.get(`/jobs/public/${jobId}`);
 
 // POST /jobs/add-from-share — add a shared job to the user's Saved column (idempotent)
 export const _postJobsAddFromShare = (jobId) =>
-  axiosInstance.post('/jobs/add-from-share', { jobId });
+  axiosInstance.post("/jobs/add-from-share", { jobId });
 
 // GET /jobs/check-saved — fast pipeline membership check (single query, no job docs)
 export const _getJobsCheckSaved = (jobId) =>
-  axiosInstance.get('/jobs/check-saved', { params: { jobId } });
+  axiosInstance.get("/jobs/check-saved", { params: { jobId } });
 
 // GET /jobs/job-score — poll for a job's match score after async Lambda scoring
 export const _getJobsJobScore = (jobId) =>
-  axiosInstance.get('/jobs/job-score', { params: { jobId } });
-
+  axiosInstance.get("/jobs/job-score", { params: { jobId } });

@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, startTransition } from "react";
 import { ChevronLeft } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import TiptapRenderer from "@/components/tiptapRenderer";
 import BlockRenderer from "@/components/blockRenderer";
@@ -11,7 +11,11 @@ import { useGlobalContext } from "@/context/globalContext";
 import queryClient from "@/network/queryClient";
 import Modal from "@/components/modal";
 import AnalyzeCaseStudy from "@/components/analyzeCaseStudy";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
@@ -42,8 +46,14 @@ const itemVariants = {
 function AnalyzeIcon({ className = "w-4 h-4" }) {
   return (
     <svg className={className} viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M10.5 7L9.98415 8.39405C9.30774 10.222 8.96953 11.136 8.30278 11.8028C7.63603 12.4695 6.72204 12.8077 4.89405 13.4842L3.5 14L4.89405 14.5158C6.72204 15.1923 7.63603 15.5305 8.30278 16.1972C8.96953 16.864 9.30774 17.778 9.98415 19.6059L10.5 21L11.0158 19.6059C11.6923 17.778 12.0305 16.864 12.6972 16.1972C13.364 15.5305 14.278 15.1923 16.1059 14.5158L17.5 14L16.1059 13.4842C14.278 12.8077 13.364 12.4695 12.6972 11.8028C12.0305 11.136 11.6923 10.222 11.0158 8.39405L10.5 7Z" fill="#FF553E" />
-      <path d="M18.5 3L18.2789 3.59745C17.989 4.38087 17.8441 4.77259 17.5583 5.05833C17.2726 5.34408 16.8809 5.48903 16.0975 5.77892L15.5 6L16.0975 6.22108C16.8809 6.51097 17.2726 6.65592 17.5583 6.94167C17.8441 7.22741 17.989 7.61913 18.2789 8.40255L18.5 9L18.7211 8.40255C19.011 7.61913 19.1559 7.22741 19.4417 6.94166C19.7274 6.65592 20.1191 6.51097 20.9025 6.22108L21.5 6L20.9025 5.77892C20.1191 5.48903 19.7274 5.34408 19.4417 5.05833C19.1559 4.77259 19.011 4.38087 18.7211 3.59745L18.5 3Z" fill="#FF553E" />
+      <path
+        d="M10.5 7L9.98415 8.39405C9.30774 10.222 8.96953 11.136 8.30278 11.8028C7.63603 12.4695 6.72204 12.8077 4.89405 13.4842L3.5 14L4.89405 14.5158C6.72204 15.1923 7.63603 15.5305 8.30278 16.1972C8.96953 16.864 9.30774 17.778 9.98415 19.6059L10.5 21L11.0158 19.6059C11.6923 17.778 12.0305 16.864 12.6972 16.1972C13.364 15.5305 14.278 15.1923 16.1059 14.5158L17.5 14L16.1059 13.4842C14.278 12.8077 13.364 12.4695 12.6972 11.8028C12.0305 11.136 11.6923 10.222 11.0158 8.39405L10.5 7Z"
+        fill="#FF553E"
+      />
+      <path
+        d="M18.5 3L18.2789 3.59745C17.989 4.38087 17.8441 4.77259 17.5583 5.05833C17.2726 5.34408 16.8809 5.48903 16.0975 5.77892L15.5 6L16.0975 6.22108C16.8809 6.51097 17.2726 6.65592 17.5583 6.94167C17.8441 7.22741 17.989 7.61913 18.2789 8.40255L18.5 9L18.7211 8.40255C19.011 7.61913 19.1559 7.22741 19.4417 6.94166C19.7274 6.65592 20.1191 6.51097 20.9025 6.22108L21.5 6L20.9025 5.77892C20.1191 5.48903 19.7274 5.34408 19.4417 5.05833C19.1559 4.77259 19.011 4.38087 18.7211 3.59745L18.5 3Z"
+        fill="#FF553E"
+      />
     </svg>
   );
 }
@@ -58,19 +68,18 @@ function AnimatedLoadingDots({ className = "w-[22px] h-[6px]" }) {
   );
 }
 
-export default function ChatProjectView({
-  project,
-  ownerUser,
-  onBack,
-  edit = false,
-}) {
+export default function ChatProjectView({ project, ownerUser, onBack, edit = false }) {
   const router = useRouter();
   const { setTheme } = useTheme();
-  const { wordCount, setWordCount, setShowUpgradeModal, setUpgradeModalSource, analysisCreditsRemaining, setAnalysisCreditsRemaining } = useGlobalContext();
-  const avatarSrc = useMemo(
-    () => getUserAvatarImage(ownerUser),
-    [ownerUser],
-  );
+  const {
+    wordCount,
+    setWordCount,
+    setShowUpgradeModal,
+    setUpgradeModalSource,
+    analysisCreditsRemaining,
+    setAnalysisCreditsRemaining,
+  } = useGlobalContext();
+  const avatarSrc = useMemo(() => getUserAvatarImage(ownerUser), [ownerUser]);
   const [avatarImageSrc, setAvatarImageSrc] = useState(avatarSrc);
   const firstName = ownerUser?.firstName || ownerUser?.name || "Me";
   const [isPassword, setIsPassword] = useState(project?.protected);
@@ -80,7 +89,6 @@ export default function ChatProjectView({
   const [analyzeStatus, setAnalyzeStatus] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const [rating, setRating] = useState("");
-
 
   const projectId = project?._id || router.query.id;
 
@@ -92,9 +100,7 @@ export default function ChatProjectView({
     (edit || project?.platform) && { key: "platform", label: "Platform", value: project?.platform },
   ].filter(Boolean);
 
-  const hasContent =
-    (project?.contentVersion === 2 && project?.tiptapContent) ||
-    project?.content;
+  const hasContent = (project?.contentVersion === 2 && project?.tiptapContent) || project?.content;
   const showProcessPrompt = hasContent || edit;
   const showProcessMessages = !edit && hasContent;
   const needsMoreWords = suggestions?.length === 0 && wordCount !== null && wordCount < 400;
@@ -124,7 +130,7 @@ export default function ChatProjectView({
   const updateProjectCache = (key, value) => {
     if (!ownerUser) return;
     const updatedProjects = ownerUser?.projects?.map((item) =>
-      item._id === projectId ? { ...item, [key]: value } : item,
+      item._id === projectId ? { ...item, [key]: value } : item
     );
     queryClient.setQueriesData({ queryKey: ["userDetails"] }, (oldData) => ({
       user: { ...oldData?.user, projects: updatedProjects },
@@ -150,7 +156,7 @@ export default function ChatProjectView({
     }
   };
 
-  const fetchAnalyzeStatus = async () => {
+  const fetchAnalyzeStatus = useCallback(async () => {
     if (!project?._id) return;
     try {
       const response = await _analyzeCaseStudyStatus(project._id);
@@ -162,7 +168,7 @@ export default function ChatProjectView({
     } catch (e) {
       console.log(e);
     }
-  };
+  }, [project]);
 
   const handleAnalyzeClick = async () => {
     if (suggestions.length > 0) {
@@ -181,7 +187,9 @@ export default function ChatProjectView({
       setShowModal(true);
       setSuggestions(response.data.response);
       setRating(response.data.rating);
-      setAnalysisCreditsRemaining((prev) => (prev !== null && prev !== Infinity ? Math.max(0, prev - 1) : prev));
+      setAnalysisCreditsRemaining((prev) =>
+        prev !== null && prev !== Infinity ? Math.max(0, prev - 1) : prev
+      );
     } catch (e) {
       setAnalysisCreditsRemaining(0);
       setUpgradeModalSource("analyze");
@@ -199,7 +207,9 @@ export default function ChatProjectView({
       setShowModal(true);
       setSuggestions(response.data.response);
       setRating(response.data.rating);
-      setAnalysisCreditsRemaining((prev) => (prev !== null && prev !== Infinity ? Math.max(0, prev - 1) : prev));
+      setAnalysisCreditsRemaining((prev) =>
+        prev !== null && prev !== Infinity ? Math.max(0, prev - 1) : prev
+      );
     } catch (e) {
       setAnalysisCreditsRemaining(0);
       setUpgradeModalSource("analyze");
@@ -227,13 +237,13 @@ export default function ChatProjectView({
   };
 
   useEffect(() => {
-    setWordCount(null);
+    startTransition(() => setWordCount(null));
     if (!edit) return;
-    fetchAnalyzeStatus();
-  }, [edit]);
+    startTransition(() => void fetchAnalyzeStatus());
+  }, [edit, fetchAnalyzeStatus, setWordCount]);
 
   useEffect(() => {
-    setAvatarImageSrc(avatarSrc || "/assets/svgs/avatar.svg");
+    startTransition(() => setAvatarImageSrc(avatarSrc || "/assets/svgs/avatar.svg"));
   }, [avatarSrc]);
 
   return (
@@ -242,27 +252,25 @@ export default function ChatProjectView({
       animate="visible"
       variants={containerVariants}
       className={cn(
-        "bg-[#F0EDE7] dark:bg-[#1A1A1A] flex justify-center font-inter text-[#1A1A1A] dark:text-[#F0EDE7] selection:bg-[#1A8CFF] selection:text-white transition-colors duration-100",
-        edit ? "min-h-0" : "min-h-screen",
+        "font-inter flex justify-center bg-[#F0EDE7] text-[#1A1A1A] transition-colors duration-100 selection:bg-[#1A8CFF] selection:text-white dark:bg-[#1A1A1A] dark:text-[#F0EDE7]",
+        edit ? "min-h-0" : "min-h-screen"
       )}
     >
       <div
         className={cn(
-          "w-full max-w-[700px] flex flex-col relative",
-          edit ? "pt-2 pb-6" : "min-h-screen pt-8 pb-24",
+          "relative flex w-full max-w-[700px] flex-col",
+          edit ? "pt-2 pb-6" : "min-h-screen pt-8 pb-24"
         )}
       >
-
         <motion.div variants={itemVariants} className="mb-6 pt-2">
-          <div className={cn("py-2 px-4 flex justify-between items-center w-full", edit && "mt-20")}>
+          <div
+            className={cn("flex w-full items-center justify-between px-4 py-2", edit && "mt-20")}
+          >
             <button
               onClick={onBack}
-              className="flex items-center gap-1.5 text-[13px] font-medium text-[#7A736C] dark:text-[#9E9893] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7] transition-colors group"
+              className="group flex items-center gap-1.5 text-[13px] font-medium text-[#7A736C] transition-colors hover:text-[#1A1A1A] dark:text-[#9E9893] dark:hover:text-[#F0EDE7]"
             >
-              <ChevronLeft
-                size={18}
-                className="transition-transform group-hover:-translate-x-1"
-              />
+              <ChevronLeft size={18} className="transition-transform group-hover:-translate-x-1" />
               Back to Projects
             </button>
             {edit && (
@@ -272,10 +280,19 @@ export default function ChatProjectView({
                     <Button
                       variant="outline"
                       size="icon"
-                      className="h-7 w-7 rounded-full border border-black/10 dark:border-white/10 bg-white/50 dark:bg-[#2A2520]/50 hover:bg-black/5 dark:hover:bg-white/5 text-[#1A1A1A] dark:text-[#F0EDE7] transition-all focus-visible:ring-0 focus-visible:ring-offset-0"
+                      className="h-7 w-7 rounded-full border border-black/10 bg-white/50 text-[#1A1A1A] transition-all hover:bg-black/5 focus-visible:ring-0 focus-visible:ring-offset-0 dark:border-white/10 dark:bg-[#2A2520]/50 dark:text-[#F0EDE7] dark:hover:bg-white/5"
                       title="Lock Project"
                     >
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <svg
+                        width="13"
+                        height="13"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
                         <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
                         <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                       </svg>
@@ -284,15 +301,15 @@ export default function ChatProjectView({
                   <DropdownMenuContent
                     align="end"
                     sideOffset={8}
-                    className="w-[300px] p-4 bg-white/95 dark:bg-[#2A2520]/95 backdrop-blur-xl border border-black/10 dark:border-white/10 rounded-2xl shadow-xl z-50"
+                    className="z-50 w-[300px] rounded-2xl border border-black/10 bg-white/95 p-4 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-[#2A2520]/95"
                   >
                     <div className="flex flex-col gap-4">
                       <div className="flex items-start justify-between gap-3">
                         <div className="space-y-1">
-                          <Label className="text-[14px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] cursor-pointer">
+                          <Label className="cursor-pointer text-[14px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                             Protect Project
                           </Label>
-                          <p className="text-[12px] text-[#7A736C] dark:text-[#9E9893] leading-snug">
+                          <p className="text-[12px] leading-snug text-[#7A736C] dark:text-[#9E9893]">
                             Require a password to view this project.
                           </p>
                         </div>
@@ -309,12 +326,12 @@ export default function ChatProjectView({
                             placeholder="Enter password"
                             value={passwordInput}
                             onChange={(e) => setPasswordInput(e.target.value)}
-                            className="h-10 bg-black/[0.03] dark:bg-white/[0.03] border-transparent rounded-xl text-[14px] text-[#1A1A1A] dark:text-[#F0EDE7] focus-visible:ring-2 focus-visible:ring-black/10 dark:focus-visible:ring-white/10 shadow-none placeholder:text-black/30 dark:placeholder:text-white/30"
+                            className="h-10 rounded-xl border-transparent bg-black/[0.03] text-[14px] text-[#1A1A1A] shadow-none placeholder:text-black/30 focus-visible:ring-2 focus-visible:ring-black/10 dark:bg-white/[0.03] dark:text-[#F0EDE7] dark:placeholder:text-white/30 dark:focus-visible:ring-white/10"
                           />
                           <Button
                             size="sm"
                             onClick={handlePasswordSave}
-                            className="rounded-xl h-9 bg-[#1A1A1A] dark:bg-white text-white dark:text-[#1A1A1A] hover:bg-black/80 dark:hover:bg-white/90 text-[13px]"
+                            className="h-9 rounded-xl bg-[#1A1A1A] text-[13px] text-white hover:bg-black/80 dark:bg-white dark:text-[#1A1A1A] dark:hover:bg-white/90"
                           >
                             Save Password
                           </Button>
@@ -328,31 +345,39 @@ export default function ChatProjectView({
                   <TooltipProvider delayDuration={200}>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <span className={cn("inline-flex", isAnalyzeDisabled ? "cursor-not-allowed" : "cursor-pointer")}>
+                        <span
+                          className={cn(
+                            "inline-flex",
+                            isAnalyzeDisabled ? "cursor-not-allowed" : "cursor-pointer"
+                          )}
+                        >
                           <Button
                             variant="outline"
                             size="sm"
                             onClick={handleAnalyzeClick}
                             disabled={isAnalyzeDisabled}
                             className={cn(
-                              "h-7 text-[12px] rounded-full border border-black/10 dark:border-white/10",
-                              "bg-white/50 dark:bg-[#2A2520]/50 text-[#1A1A1A] dark:text-[#F0EDE7]",
+                              "h-7 rounded-full border border-black/10 text-[12px] dark:border-white/10",
+                              "bg-white/50 text-[#1A1A1A] dark:bg-[#2A2520]/50 dark:text-[#F0EDE7]",
                               "flex items-center gap-1.5 px-3 transition-all focus-visible:ring-0 focus-visible:ring-offset-0",
-                              "cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed",
-                              !isAnalyzeDisabled && "hover:bg-black/5 dark:hover:bg-white/5",
+                              "cursor-pointer disabled:cursor-not-allowed disabled:opacity-60",
+                              !isAnalyzeDisabled && "hover:bg-black/5 dark:hover:bg-white/5"
                             )}
                           >
                             {isAnalyzing ? (
-                              <AnimatedLoadingDots className="w-[18px] h-[5px] shrink-0" />
+                              <AnimatedLoadingDots className="h-[5px] w-[18px] shrink-0" />
                             ) : (
-                              <AnalyzeIcon className="w-4 h-4 shrink-0" />
+                              <AnalyzeIcon className="h-4 w-4 shrink-0" />
                             )}
                             {analyzeButtonLabel}
                           </Button>
                         </span>
                       </TooltipTrigger>
                       {tooltipMessage && (
-                        <TooltipContent side="bottom" className="bg-foreground text-background text-xs px-2 py-1 rounded">
+                        <TooltipContent
+                          side="bottom"
+                          className="bg-foreground text-background rounded px-2 py-1 text-xs"
+                        >
                           {tooltipMessage}
                         </TooltipContent>
                       )}
@@ -365,30 +390,26 @@ export default function ChatProjectView({
         </motion.div>
 
         <div className="space-y-6">
-
           {/* Message 1 — title + description + cover image */}
-          <motion.div
-            variants={itemVariants}
-            className="flex gap-3 max-w-[95%] pt-2"
-          >
-            <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 mt-auto border border-black/5 dark:border-white/5">
+          <motion.div variants={itemVariants} className="flex max-w-[95%] gap-3 pt-2">
+            <div className="mt-auto h-8 w-8 shrink-0 overflow-hidden rounded-full border border-black/5 dark:border-white/5">
               <img
                 src={avatarImageSrc || "/assets/svgs/avatar.svg"}
                 alt={firstName}
-                className="w-full h-full object-cover"
+                className="h-full w-full object-cover"
                 onError={() => setAvatarImageSrc("/assets/svgs/avatar.svg")}
               />
             </div>
-            <div className="flex flex-col gap-1 w-full">
-              <span className="text-[11px] text-[#7A736C] dark:text-[#B5AFA5] ml-1 font-medium">
+            <div className="flex w-full flex-col gap-1">
+              <span className="ml-1 text-[11px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">
                 {firstName}
               </span>
-              <div className="bg-[#E5E2DB] dark:bg-[#2A2520] p-4 rounded-2xl rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5 w-full flex flex-col gap-4">
-                <div className="flex flex-col text-left px-1">
+              <div className="flex w-full flex-col gap-4 rounded-2xl rounded-bl-sm border border-black/5 bg-[#E5E2DB] p-4 transition-colors duration-700 dark:border-white/5 dark:bg-[#2A2520]">
+                <div className="flex flex-col px-1 text-left">
                   <h1
                     className={cn(
-                      "text-2xl font-semibold mb-2 leading-tight text-[#1A1A1A] dark:text-[#F0EDE7]",
-                      edit && !project?.title && "text-[#C5BFB8] dark:text-[#4A4238] italic",
+                      "mb-2 text-2xl leading-tight font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]",
+                      edit && !project?.title && "text-[#C5BFB8] italic dark:text-[#4A4238]"
                     )}
                     contentEditable={edit}
                     suppressContentEditableWarning
@@ -404,8 +425,8 @@ export default function ChatProjectView({
                       className={cn(
                         "text-[15px] leading-relaxed",
                         edit && !project?.description
-                          ? "text-[#C5BFB8] dark:text-[#4A4238] italic"
-                          : "text-[#7A736C] dark:text-[#B5AFA5]",
+                          ? "text-[#C5BFB8] italic dark:text-[#4A4238]"
+                          : "text-[#7A736C] dark:text-[#B5AFA5]"
                       )}
                       contentEditable={edit}
                       suppressContentEditableWarning
@@ -419,7 +440,7 @@ export default function ChatProjectView({
                   )}
                 </div>
                 {(edit || project?.thumbnail?.url) && (
-                  <div className="rounded-2xl overflow-hidden aspect-[3/2] bg-[#F5F5F5] dark:bg-[#1A1A1A] relative border border-black/5 dark:border-white/5">
+                  <div className="relative aspect-[3/2] overflow-hidden rounded-2xl border border-black/5 bg-[#F5F5F5] dark:border-white/5 dark:bg-[#1A1A1A]">
                     {edit ? (
                       <ImageWithOverlayAndPicker
                         src={project?.thumbnail?.url}
@@ -432,7 +453,7 @@ export default function ChatProjectView({
                       <img
                         src={project.thumbnail.url}
                         alt={project.title}
-                        className="w-full h-full object-cover"
+                        className="h-full w-full object-cover"
                       />
                     )}
                   </div>
@@ -443,11 +464,11 @@ export default function ChatProjectView({
 
           {/* You: "Can you share more details?" */}
           <motion.div variants={itemVariants} className="flex justify-end">
-            <div className="flex flex-col gap-1 max-w-[85%] items-end">
-              <span className="text-[11px] text-[#7A736C] dark:text-[#B5AFA5] mr-1 font-medium">
+            <div className="flex max-w-[85%] flex-col items-end gap-1">
+              <span className="mr-1 text-[11px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">
                 You
               </span>
-              <div className="bg-[#1A8CFF] dark:bg-[#0073E6] text-white px-4 py-3 rounded-2xl rounded-br-sm text-[15px] leading-relaxed shadow-sm">
+              <div className="rounded-2xl rounded-br-sm bg-[#1A8CFF] px-4 py-3 text-[15px] leading-relaxed text-white shadow-sm dark:bg-[#0073E6]">
                 Can you share more details about this project?
               </div>
             </div>
@@ -455,36 +476,33 @@ export default function ChatProjectView({
 
           {/* Message 2 — details grid (only if fields exist) */}
           {detailFields.length > 0 && (
-            <motion.div
-              variants={itemVariants}
-              className="flex gap-3 max-w-[95%]"
-            >
-              <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 mt-auto border border-black/5 dark:border-white/5">
+            <motion.div variants={itemVariants} className="flex max-w-[95%] gap-3">
+              <div className="mt-auto h-8 w-8 shrink-0 overflow-hidden rounded-full border border-black/5 dark:border-white/5">
                 <img
                   src={avatarImageSrc || "/assets/svgs/avatar.svg"}
                   alt={firstName}
-                  className="w-full h-full object-cover"
+                  className="h-full w-full object-cover"
                   onError={() => setAvatarImageSrc("/assets/svgs/avatar.svg")}
                 />
               </div>
-              <div className="flex flex-col gap-1 w-full">
-                <span className="text-[11px] text-[#7A736C] dark:text-[#B5AFA5] ml-1 font-medium">
+              <div className="flex w-full flex-col gap-1">
+                <span className="ml-1 text-[11px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">
                   {firstName}
                 </span>
-                <div className="bg-[#E5E2DB] dark:bg-[#2A2520] px-5 py-4 rounded-2xl rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5 w-full">
-                  <p className="text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] mb-4">
+                <div className="w-full rounded-2xl rounded-bl-sm border border-black/5 bg-[#E5E2DB] px-5 py-4 transition-colors duration-700 dark:border-white/5 dark:bg-[#2A2520]">
+                  <p className="mb-4 text-[15px] text-[#1A1A1A] dark:text-[#F0EDE7]">
                     Sure! Here are the core details:
                   </p>
-                  <div className="grid grid-cols-2 gap-y-4 gap-x-6">
+                  <div className="grid grid-cols-2 gap-x-6 gap-y-4">
                     {detailFields.map(({ key, label, value }) => (
                       <div key={key} className="flex flex-col gap-1">
-                        <span className="text-[12px] font-medium text-[#7A736C] dark:text-[#9E9893] uppercase tracking-wide">
+                        <span className="text-[12px] font-medium tracking-wide text-[#7A736C] uppercase dark:text-[#9E9893]">
                           {label}
                         </span>
                         <p
                           className={cn(
                             "text-[14px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]",
-                            edit && !value && "text-[#C5BFB8] dark:text-[#4A4238] italic",
+                            edit && !value && "text-[#C5BFB8] italic dark:text-[#4A4238]"
                           )}
                           contentEditable={edit}
                           suppressContentEditableWarning
@@ -507,11 +525,11 @@ export default function ChatProjectView({
           {/* You: "What was the process like?" */}
           {showProcessPrompt && (
             <motion.div variants={itemVariants} className="flex justify-end">
-              <div className="flex flex-col gap-1 max-w-[85%] items-end">
-                <span className="text-[11px] text-[#7A736C] dark:text-[#B5AFA5] mr-1 font-medium">
+              <div className="flex max-w-[85%] flex-col items-end gap-1">
+                <span className="mr-1 text-[11px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">
                   You
                 </span>
-                <div className="bg-[#1A8CFF] dark:bg-[#0073E6] text-white px-4 py-3 rounded-2xl rounded-br-sm text-[15px] leading-relaxed shadow-sm">
+                <div className="rounded-2xl rounded-br-sm bg-[#1A8CFF] px-4 py-3 text-[15px] leading-relaxed text-white shadow-sm dark:bg-[#0073E6]">
                   What was the process like?
                 </div>
               </div>
@@ -520,31 +538,31 @@ export default function ChatProjectView({
 
           {/* Message 3 — tiptap / block content */}
           {showProcessMessages && (
-            <motion.div
-              variants={itemVariants}
-              className="flex gap-3 "
-            >
-              <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 mt-auto border border-black/5 dark:border-white/5">
+            <motion.div variants={itemVariants} className="flex gap-3">
+              <div className="mt-auto h-8 w-8 shrink-0 overflow-hidden rounded-full border border-black/5 dark:border-white/5">
                 <img
                   src={avatarImageSrc || "/assets/svgs/avatar.svg"}
                   alt={firstName}
-                  className="w-full h-full object-cover"
+                  className="h-full w-full object-cover"
                   onError={() => setAvatarImageSrc("/assets/svgs/avatar.svg")}
                 />
               </div>
-              <div className="flex flex-col gap-1 w-full">
-                <span className="text-[11px] text-[#7A736C] dark:text-[#B5AFA5] ml-1 font-medium">
+              <div className="flex w-full flex-col gap-1">
+                <span className="ml-1 text-[11px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">
                   {firstName}
                 </span>
                 <div className="">
                   {project?.contentVersion === 2 && project?.tiptapContent ? (
                     <TiptapRenderer
-                      className="bg-[#E5E2DB] dark:bg-[#2A2520] !p-4 rounded-2xl rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5 w-full"
+                      className="w-full rounded-2xl rounded-bl-sm border border-black/5 bg-[#E5E2DB] p-4! transition-colors duration-700 dark:border-white/5 dark:bg-[#2A2520]"
                       key={project._id}
                       content={project.tiptapContent}
                     />
                   ) : project?.content ? (
-                    <BlockRenderer editorJsData={project.content} className="bg-[#E5E2DB] dark:bg-[#2A2520] !p-4 rounded-2xl rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5 w-full" />
+                    <BlockRenderer
+                      editorJsData={project.content}
+                      className="w-full rounded-2xl rounded-bl-sm border border-black/5 bg-[#E5E2DB] p-4! transition-colors duration-700 dark:border-white/5 dark:bg-[#2A2520]"
+                    />
                   ) : null}
                 </div>
               </div>
@@ -552,18 +570,16 @@ export default function ChatProjectView({
           )}
 
           {/* CTA */}
-          {!edit && (<motion.div
-            variants={itemVariants}
-            className="flex justify-center mt-12 mb-8"
-          >
-            <button
-              onClick={onBack}
-              className="rounded-full bg-[#1A1A1A] text-white hover:bg-[#333] dark:bg-white dark:text-[#1A1A1A] dark:hover:bg-gray-200 h-12 px-8 shadow-sm text-[15px] font-medium transition-colors"
-            >
-              Back to Projects
-            </button>
-          </motion.div>)}
-
+          {!edit && (
+            <motion.div variants={itemVariants} className="mt-12 mb-8 flex justify-center">
+              <button
+                onClick={onBack}
+                className="h-12 rounded-full bg-[#1A1A1A] px-8 text-[15px] font-medium text-white shadow-sm transition-colors hover:bg-[#333] dark:bg-white dark:text-[#1A1A1A] dark:hover:bg-gray-200"
+              >
+                Back to Projects
+              </button>
+            </motion.div>
+          )}
         </div>
       </div>
       <Modal show={showModal} className={"md:block"}>

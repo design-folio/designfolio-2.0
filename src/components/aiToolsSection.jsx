@@ -4,21 +4,19 @@ import GeneratorCard from "./generatorCard";
 
 export default function AiToolsSection() {
   return (
-    <div className="max-w-[1192px] mx-auto py-16 px-6" id="other-ai-tools">
-      <Text as="h2" size="section-heading" className="text-center mb-2 sm:mb-6">
+    <div className="mx-auto max-w-[1192px] px-6 py-16" id="other-ai-tools">
+      <Text as="h2" size="section-heading" className="mb-2 text-center sm:mb-6">
         ...and so much more ✨
       </Text>
-      <Text className="text-center sm:mt-4 text-sm sm:text-base md:text-lg text-foreground/60 font-normal">
+      <Text className="text-foreground/60 text-center text-sm font-normal sm:mt-4 sm:text-base md:text-lg">
         Use these AI tools and save all your time — thank us later!
       </Text>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4  lg:gap-8 mt-[56px] lg:w-[90%] m-auto">
+      <div className="m-auto mt-[56px] grid grid-cols-1 gap-4 lg:w-[90%] lg:grid-cols-2 lg:gap-8">
         <GeneratorCard
           title="Fix your Resume"
           src={"/assets/svgs/fixResume.svg"}
-          description={
-            "See how your resume stacks up against the \n Job Description."
-          }
+          description={"See how your resume stacks up against the \n Job Description."}
           buttonText="Analyze my Resume"
           route="/ai-tools?type=optimize-resume"
         />
@@ -39,9 +37,7 @@ export default function AiToolsSection() {
         <GeneratorCard
           title="AI Email Generator for Job Seekers"
           src={"/assets/svgs/emailGen.svg"}
-          description={
-            "Get personalized emails for any situation—ready to send or tweak."
-          }
+          description={"Get personalized emails for any situation—ready to send or tweak."}
           route="/ai-tools?type=email-generator"
         />
 

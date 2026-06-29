@@ -8,34 +8,34 @@ import axiosInstance from "@/network/axiosInstance";
 
 const RESULT_STORAGE_KEY = "salary-negotiator";
 
-export default function OfferAnalysis({ onToolUsed, onViewChange, onStartNewAnalysis, skipRestore = false, guestUsageLimitReached = false }) {
-  const [analysis, setAnalysis] = useState("");
+export default function OfferAnalysis({
+  onToolUsed,
+  onViewChange,
+  onStartNewAnalysis,
+  skipRestore = false,
+  guestUsageLimitReached = false,
+}) {
+  const [analysis, setAnalysis] = useState(() => {
+    if (skipRestore) return "";
+    const stored = getAiToolResult(RESULT_STORAGE_KEY);
+    return typeof stored === "string" && stored.length > 0 ? stored : "";
+  });
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isRestarting, setIsRestarting] = useState(false);
 
   useEffect(() => {
-    if (skipRestore) return;
-    const stored = getAiToolResult(RESULT_STORAGE_KEY);
-    if (typeof stored === "string" && stored.length > 0) {
-      setAnalysis(stored);
-      onViewChange?.(true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [skipRestore]);
+    onViewChange?.(!!analysis);
+  }, [analysis, onViewChange]);
 
   const handleRateLimitError = () => {
     toast.error("Rate limit reached.");
-    setAnalysis(
-      "⚠️ Rate Limit Reached\n\n" +
-      "Please try again in a few moments."
-    );
+    setAnalysis("⚠️ Rate Limit Reached\n\n" + "Please try again in a few moments.");
   };
 
   const handleRestart = () => {
     if (isRestarting) return;
     setIsRestarting(true);
     setAnalysis("");
-    onViewChange?.(false);
     onStartNewAnalysis?.();
     setIsRestarting(false);
   };
@@ -51,7 +51,6 @@ export default function OfferAnalysis({ onToolUsed, onViewChange, onStartNewAnal
       const { data: result } = await axiosInstance.post("/ai/tools/offer/analyze", data);
       setAnalysis(result.analysis);
       setAiToolResult(RESULT_STORAGE_KEY, result.analysis);
-      onViewChange?.(true);
       onToolUsed?.();
     } catch (error) {
       console.error("Analysis error:", error);
@@ -61,10 +60,14 @@ export default function OfferAnalysis({ onToolUsed, onViewChange, onStartNewAnal
         return;
       } else if (!error.response) {
         toast.error("Please check your internet connection and try again.");
-        setAnalysis("🌐 Network Error: Unable to reach our AI service. Please check your internet connection and try again.");
+        setAnalysis(
+          "🌐 Network Error: Unable to reach our AI service. Please check your internet connection and try again."
+        );
       } else {
         toast.error("An unexpected error occurred. Please try again in a few moments.");
-        setAnalysis("❌ Unexpected error occurred. If this persists:\n\n1. Try refreshing the page\n2. Contact support if the issue continues");
+        setAnalysis(
+          "❌ Unexpected error occurred. If this persists:\n\n1. Try refreshing the page\n2. Contact support if the issue continues"
+        );
       }
     } finally {
       setIsAnalyzing(false);
@@ -72,15 +75,19 @@ export default function OfferAnalysis({ onToolUsed, onViewChange, onStartNewAnal
   };
 
   return (
-    <div className="w-full relative">
+    <div className="relative w-full">
       {!analysis ? (
-        <OfferForm onSubmit={handleSubmit} isAnalyzing={isAnalyzing} guestUsageLimitReached={guestUsageLimitReached} />
+        <OfferForm
+          onSubmit={handleSubmit}
+          isAnalyzing={isAnalyzing}
+          guestUsageLimitReached={guestUsageLimitReached}
+        />
       ) : (
         <AnalysisReport analysis={analysis} onRestart={handleRestart} isRestarting={isRestarting} />
       )}
       {isAnalyzing && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
-          <div className="bg-white p-8 rounded-3xl shadow-xl flex flex-col items-center gap-4 border border-border/40">
+        <div className="bg-background/80 fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
+          <div className="border-border/40 flex flex-col items-center gap-4 rounded-3xl border bg-white p-8 shadow-xl">
             <TetrisLoading loadingText="Analyzing your offer..." />
           </div>
         </div>

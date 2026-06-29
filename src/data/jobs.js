@@ -171,28 +171,28 @@ export const BASE_JOBS = [
 export const COL_ORDER = ["picks", "saved", "applied", "interview", "offer"];
 
 export const COL_LABELS = {
-  picks:    "AI Picks",
-  saved:    "Shortlisted",
-  applied:  "Applied",
-  interview:"Interview",
-  offer:    "Offer",
+  picks: "AI Picks",
+  saved: "Shortlisted",
+  applied: "Applied",
+  interview: "Interview",
+  offer: "Offer",
   archived: "Archived",
 };
 
 export const COL_BG = {
-  picks:     "bg-[#E5E1DA] border border-[#D5CFC7] dark:bg-card dark:border-border",
-  saved:     "bg-[#E5E1DA] border border-[#D5CFC7] dark:bg-card dark:border-border",
-  applied:   "bg-[#E5E1DA] border border-[#D5CFC7] dark:bg-card dark:border-border",
+  picks: "bg-[#E5E1DA] border border-[#D5CFC7] dark:bg-card dark:border-border",
+  saved: "bg-[#E5E1DA] border border-[#D5CFC7] dark:bg-card dark:border-border",
+  applied: "bg-[#E5E1DA] border border-[#D5CFC7] dark:bg-card dark:border-border",
   interview: "bg-[#E5E1DA] border border-[#D5CFC7] dark:bg-card dark:border-border",
-  offer:     "bg-[#E5E1DA] border border-[#D5CFC7] dark:bg-card dark:border-border",
+  offer: "bg-[#E5E1DA] border border-[#D5CFC7] dark:bg-card dark:border-border",
 };
 
 export const INITIAL_COLUMNS = {
-  picks:     BASE_JOBS,
-  saved:     [],
-  applied:   [],
+  picks: BASE_JOBS,
+  saved: [],
+  applied: [],
   interview: [],
-  offer:     [],
+  offer: [],
 };
 
 // NOTE: APIS TO BE INTEGRATED HERE — replace SCOUT_RESPONSES with POST /api/jobs/scout { jobId, message }

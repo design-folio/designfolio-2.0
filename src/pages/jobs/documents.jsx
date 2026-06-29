@@ -6,9 +6,9 @@ import DocumentsLibrary from "@/components/jobs/documents/DocumentsLibrary";
 
 function DocumentsTopBar() {
   return (
-    <div className="flex flex-row flex-shrink-0 items-center pl-4 pr-4 mt-2.5 md:mt-6 mb-1.5 md:mb-2 gap-2">
+    <div className="mt-2.5 mb-1.5 flex shrink-0 flex-row items-center gap-2 pr-4 pl-4 md:mt-6 md:mb-2">
       <div className="flex-1 md:flex-none" />
-      <div className="hidden md:flex items-center gap-1.5 ml-auto">
+      <div className="ml-auto hidden items-center gap-1.5 md:flex">
         <TabSwitcher />
         <CreditsBalance />
         <AvatarDropdown />
@@ -20,7 +20,7 @@ function DocumentsTopBar() {
 export default function JobsDocumentsPage() {
   return (
     <>
-      <div className="flex flex-col h-screen overflow-hidden">
+      <div className="flex h-screen flex-col overflow-hidden">
         <DocumentsTopBar />
         <DocumentsLibrary />
       </div>

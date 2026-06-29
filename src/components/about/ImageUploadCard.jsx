@@ -6,13 +6,13 @@ import Button from "../button";
  * Reusable component for individual image upload cards
  * Handles display, upload, edit, and delete actions for pegboard images/stickers
  */
-const ImageUploadCard = ({ 
-  image, 
-  onUpload, 
-  onDelete, 
-  index, 
+const ImageUploadCard = ({
+  image,
+  onUpload,
+  onDelete,
+  index,
   type = "image",
-  isUploading = false 
+  isUploading = false,
 }) => {
   const fileInputRef = useRef(null);
   const [isHovering, setIsHovering] = useState(false);
@@ -53,10 +53,10 @@ const ImageUploadCard = ({
 
   return (
     <div
-      className={`relative group aspect-square rounded-xl overflow-hidden border-2 transition-all ${
+      className={`group relative aspect-square overflow-hidden rounded-xl border-2 transition-all ${
         image
           ? "border-border bg-muted/30"
-          : "border-dashed border-border bg-muted/20 cursor-pointer hover:bg-muted/30"
+          : "border-border bg-muted/20 hover:bg-muted/30 cursor-pointer border-dashed"
       }`}
       onClick={handleClick}
       onMouseEnter={() => setIsHovering(true)}
@@ -76,21 +76,21 @@ const ImageUploadCard = ({
           <img
             src={image.src}
             alt={`${type} ${index + 1}`}
-            className={`w-full h-full object-cover ${
+            className={`h-full w-full object-cover ${
               type === "sticker" ? "object-contain p-2" : ""
             }`}
           />
 
           {/* Hover Overlay with Actions */}
           <div
-            className={`absolute inset-0 bg-black/50 transition-opacity flex items-center justify-center gap-2 ${
+            className={`absolute inset-0 flex items-center justify-center gap-2 bg-black/50 transition-opacity ${
               isHovering ? "opacity-100" : "opacity-0"
             }`}
           >
             <Button
               type="secondary"
               customClass="!p-2 !h-8 !w-8 bg-white/20 hover:bg-white/30 border-0"
-              icon={<Pencil className="w-4 h-4 text-white" />}
+              icon={<Pencil className="h-4 w-4 text-white" />}
               onClick={(e) => {
                 e.stopPropagation();
                 fileInputRef.current?.click();
@@ -99,14 +99,14 @@ const ImageUploadCard = ({
             <Button
               type="secondary"
               customClass="!p-2 !h-8 !w-8 bg-white/20 hover:bg-white/30 border-0"
-              icon={<Trash2 className="w-4 h-4 text-white" />}
+              icon={<Trash2 className="h-4 w-4 text-white" />}
               onClick={handleDelete}
             />
           </div>
 
           {/* Default Badge */}
           {isDefaultImage && (
-            <div className="absolute top-2 left-2 bg-muted/90 text-foreground px-2 py-0.5 rounded text-[10px] font-medium">
+            <div className="bg-muted/90 text-foreground absolute top-2 left-2 rounded px-2 py-0.5 text-[10px] font-medium">
               Default
             </div>
           )}
@@ -114,18 +114,16 @@ const ImageUploadCard = ({
       ) : (
         <>
           {/* Upload Placeholder */}
-          <div className="flex flex-col items-center justify-center h-full gap-2">
+          <div className="flex h-full flex-col items-center justify-center gap-2">
             {isUploading ? (
               <>
-                <Upload className="w-6 h-6 text-foreground/40 animate-pulse" />
-                <span className="text-xs text-foreground/40 font-medium">
-                  Uploading...
-                </span>
+                <Upload className="text-foreground/40 h-6 w-6 animate-pulse" />
+                <span className="text-foreground/40 text-xs font-medium">Uploading...</span>
               </>
             ) : (
               <>
-                <Plus className="w-6 h-6 text-foreground/40" />
-                <span className="text-xs text-foreground/40 font-medium">
+                <Plus className="text-foreground/40 h-6 w-6" />
+                <span className="text-foreground/40 text-xs font-medium">
                   Add {type === "sticker" ? "Sticker" : "Photo"}
                 </span>
               </>

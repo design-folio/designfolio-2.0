@@ -10,10 +10,7 @@ const resetPasswordValidationSchema = Yup.object().shape({
   password: Yup.string()
     .min(6, "Password is too short - should be 6 chars minimum.")
     .required("Required")
-    .notOneOf(
-      [Yup.ref("oldPassword")],
-      "New password must be different from the old password."
-    ),
+    .notOneOf([Yup.ref("oldPassword")], "New password must be different from the old password."),
   oldPassword: Yup.string()
     .min(6, "Old password is too short - should be 6 chars minimum.")
     .required("Required"),
@@ -65,10 +62,14 @@ export default function ChangePassword() {
                   />
                 )}
               </Field>
-              <ErrorMessage name="oldPassword" component="p" className="text-destructive text-[13px] mt-1" />
+              <ErrorMessage
+                name="oldPassword"
+                component="p"
+                className="text-destructive mt-1 text-[13px]"
+              />
             </div>
 
-            <div className="md:flex gap-8 mt-5">
+            <div className="mt-5 gap-8 md:flex">
               <div className="flex-1">
                 <label className="text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                   New password <span className="text-destructive">*</span>
@@ -84,10 +85,14 @@ export default function ChangePassword() {
                     />
                   )}
                 </Field>
-                <ErrorMessage name="password" component="p" className="text-destructive text-[13px] mt-1" />
+                <ErrorMessage
+                  name="password"
+                  component="p"
+                  className="text-destructive mt-1 text-[13px]"
+                />
               </div>
 
-              <div className="flex-1 mt-5 md:mt-0">
+              <div className="mt-5 flex-1 md:mt-0">
                 <label className="text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                   Confirm password <span className="text-destructive">*</span>
                 </label>
@@ -102,11 +107,15 @@ export default function ChangePassword() {
                     />
                   )}
                 </Field>
-                <ErrorMessage name="confirmPassword" component="p" className="text-destructive text-[13px] mt-1" />
+                <ErrorMessage
+                  name="confirmPassword"
+                  component="p"
+                  className="text-destructive mt-1 text-[13px]"
+                />
               </div>
             </div>
 
-            <div className="flex justify-end mt-6">
+            <div className="mt-6 flex justify-end">
               <Button
                 type="submit"
                 form="resetPasswordForm"

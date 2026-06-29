@@ -18,8 +18,7 @@ const BlogPost = ({ post }) => {
   const [dfToken, setDfToken] = useState(false);
 
   useEffect(() => {
-    const token = Cookies.get("df-token");
-    setDfToken(!!token);
+    startTransition(() => setDfToken(!!Cookies.get("df-token")));
   }, []);
 
   return (
@@ -27,10 +26,7 @@ const BlogPost = ({ post }) => {
       <Head>
         <Head>
           <title>{post.seoTitle || post.title}</title>
-          <meta
-            name="description"
-            content={post.seoDescription || post.excerpt}
-          />
+          <meta name="description" content={post.seoDescription || post.excerpt} />
           <meta name="keywords" content={hasTags ? post.tags.join(", ") : ""} />
           <meta name="author" content={post.author || "Unknown Author"} />
           <meta name="robots" content="index, follow" />
@@ -38,20 +34,14 @@ const BlogPost = ({ post }) => {
 
           <meta property="og:type" content="article" />
           <meta property="og:title" content={post.seoTitle || post.title} />
-          <meta
-            property="og:description"
-            content={post.seoDescription || post.excerpt}
-          />
+          <meta property="og:description" content={post.seoDescription || post.excerpt} />
           <meta property="og:url" content={currentUrl} />
           {post.image && <meta property="og:image" content={post.image} />}
           <meta property="og:site_name" content="YourWebsite" />
 
           <meta name="twitter:card" content="summary_large_image" />
           <meta name="twitter:title" content={post.seoTitle || post.title} />
-          <meta
-            name="twitter:description"
-            content={post.seoDescription || post.excerpt}
-          />
+          <meta name="twitter:description" content={post.seoDescription || post.excerpt} />
           {post.image && <meta name="twitter:image" content={post.image} />}
           {/* <meta name="twitter:site" content="@YourTwitterHandle" /> */}
           {/* <meta
@@ -59,33 +49,28 @@ const BlogPost = ({ post }) => {
             content={post.author || "@YourTwitterHandle"}
           /> */}
 
-          <meta
-            property="article:author"
-            content={post.author || "Unknown Author"}
-          />
+          <meta property="article:author" content={post.author || "Unknown Author"} />
           <meta
             property="article:published_time"
             content={post.publishedAt || new Date().toISOString()}
           />
-          {hasTags && (
-            <meta property="article:tag" content={post.tags.join(", ")} />
-          )}
+          {hasTags && <meta property="article:tag" content={post.tags.join(", ")} />}
 
           <link rel="canonical" href={currentUrl} />
         </Head>
       </Head>
 
       <div className="min-h-screen" style={{ backgroundColor: "#F2F2F0" }}>
-        <main className="container mx-auto px-4 pb-10 pt-[108px] md:pb-8">
-          <article className="max-w-2xl mx-auto">
+        <main className="container mx-auto px-4 pt-[108px] pb-10 md:pb-8">
+          <article className="mx-auto max-w-2xl">
             <Link href="/" passHref>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => router.back()}
-                className="mb-8 text-gray-600 border-gray-300 hover:border-gray-400 hover:bg-transparent"
+                className="mb-8 border-gray-300 text-gray-600 hover:border-gray-400 hover:bg-transparent"
               >
-                <ArrowLeft className="w-3 h-3 mr-1" />
+                <ArrowLeft className="mr-1 h-3 w-3" />
                 Back to posts
               </Button>
             </Link>
@@ -96,15 +81,13 @@ const BlogPost = ({ post }) => {
             </div>
 
             {hasTags && (
-              <div className="mt-8 pt-6 border-t border-gray-200">
-                <h3 className="text-sm font-medium text-gray-500 mb-2">
-                  Tags:
-                </h3>
+              <div className="mt-8 border-t border-gray-200 pt-6">
+                <h3 className="mb-2 text-sm font-medium text-gray-500">Tags:</h3>
                 <div className="flex flex-wrap gap-2">
                   {post.tags.map((tag, index) => (
                     <span
                       key={index}
-                      className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium transition-colors duration-200 shadow-sm"
+                      className="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium shadow-sm transition-colors duration-200"
                       style={{ backgroundColor: "#D9D9D3", color: "#757566" }}
                     >
                       {tag}
@@ -116,11 +99,7 @@ const BlogPost = ({ post }) => {
 
             <BlogPostRecommendations postId={post.id} />
           </article>
-          <Footer
-            dfToken={dfToken}
-            innerClass="!bg-landing-bg-color"
-            className="!p-0"
-          />
+          <Footer dfToken={dfToken} innerClass="!bg-landing-bg-color" className="!p-0" />
         </main>
       </div>
     </>

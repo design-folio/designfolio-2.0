@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useRef, startTransition } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import { _postJobsRecommend, _getJobsRecommendations } from "@/network/jobs";
 import { ColorOrb } from "@/components/ui/color-orb";
 
@@ -44,8 +44,8 @@ export function ThinkingScreen({ answers, onComplete, onError }) {
   // Advance timeline steps 4+5 when real data resolves
   useEffect(() => {
     if (liStatus !== "done") return;
-    setVisibleCount((v) => Math.max(v, 5));
-    const t = setTimeout(() => setVisibleCount((v) => Math.max(v, 6)), 600);
+    startTransition(() => setVisibleCount((v) => Math.max(v, 5)));
+    const t = setTimeout(() => startTransition(() => setVisibleCount((v) => Math.max(v, 6))), 600);
     return () => clearTimeout(t);
   }, [liStatus]);
 
@@ -55,8 +55,18 @@ export function ThinkingScreen({ answers, onComplete, onError }) {
     // Visual step reveals — independent of polling timing
     addTimer(setTimeout(() => setVisibleCount(1), 350));
     addTimer(setTimeout(() => setVisibleCount(2), 1000));
-    addTimer(setTimeout(() => { setLiStatus("scraping"); setVisibleCount(3); }, 1800));
-    addTimer(setTimeout(() => { setIndeedStatus("scraping"); setVisibleCount(4); }, 3000));
+    addTimer(
+      setTimeout(() => {
+        setLiStatus("scraping");
+        setVisibleCount(3);
+      }, 1800)
+    );
+    addTimer(
+      setTimeout(() => {
+        setIndeedStatus("scraping");
+        setVisibleCount(4);
+      }, 3000)
+    );
 
     const run = async () => {
       try {
@@ -67,7 +77,10 @@ export function ThinkingScreen({ answers, onComplete, onError }) {
         let attempts = 0;
 
         pollRef.current = setInterval(async () => {
-          if (done) { clearInterval(pollRef.current); return; }
+          if (done) {
+            clearInterval(pollRef.current);
+            return;
+          }
 
           attempts++;
           if (attempts > 30) {
@@ -127,15 +140,17 @@ export function ThinkingScreen({ answers, onComplete, onError }) {
     {
       label: "Scanning LinkedIn",
       getDetail: () =>
-        liStatus === "done" ? `${liCount} roles found` :
-          liStatus === "scraping" ? "scanning…" : null,
+        liStatus === "done"
+          ? `${liCount} roles found`
+          : liStatus === "scraping"
+            ? "scanning…"
+            : null,
       isScanning: liStatus === "scraping",
     },
     {
       label: "Scanning Indeed",
       getDetail: () =>
-        indeedStatus === "done" ? "indexed" :
-          indeedStatus === "scraping" ? "scanning…" : null,
+        indeedStatus === "done" ? "indexed" : indeedStatus === "scraping" ? "scanning…" : null,
       isScanning: indeedStatus === "scraping",
     },
     { label: "Cross-referencing your portfolio" },
@@ -144,7 +159,7 @@ export function ThinkingScreen({ answers, onComplete, onError }) {
 
   return (
     <motion.div
-      className="flex-1 flex flex-col items-center justify-center px-6"
+      className="flex flex-1 flex-col items-center justify-center px-6"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -152,12 +167,11 @@ export function ThinkingScreen({ answers, onComplete, onError }) {
     >
       <style>{keyframes}</style>
 
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[560px] h-[380px] rounded-full dark:bg-[#FF553E]/6 blur-[130px]" />
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute top-1/2 left-1/2 h-[380px] w-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[130px] dark:bg-[#FF553E]/6" />
       </div>
 
-      <div className="relative z-10 w-full max-w-xs flex flex-col gap-8">
-
+      <div className="relative z-10 flex w-full max-w-xs flex-col gap-8">
         {/* Header */}
         <motion.div
           className="flex items-start justify-between"
@@ -168,21 +182,22 @@ export function ThinkingScreen({ answers, onComplete, onError }) {
           <div className="flex flex-col gap-1">
             <div className="flex items-center gap-2">
               <div className="flex gap-[4px]">
-                <span className="orb-spinning"><ColorOrb dimension="18px" spinDuration={4} /></span>
-
+                <span className="orb-spinning">
+                  <ColorOrb dimension="18px" spinDuration={4} />
+                </span>
               </div>
               <p
-                className="text-[18px] font-semibold tracking-tight text-foreground"
+                className="text-foreground text-[18px] font-semibold tracking-tight"
                 style={{ animation: "heading-fade 2.8s ease-in-out infinite" }}
               >
                 Finding your matches
               </p>
             </div>
-            <p className="text-[12px] text-muted-foreground/50 leading-snug">
+            <p className="text-muted-foreground/50 text-[12px] leading-snug">
               Matching roles to your portfolio and preferences
             </p>
           </div>
-          <span className="text-[12px] text-muted-foreground/35 font-mono tabular-nums mt-0.5 flex-shrink-0">
+          <span className="text-muted-foreground/35 mt-0.5 shrink-0 font-mono text-[12px] tabular-nums">
             {timer}s
           </span>
         </motion.div>
@@ -206,8 +221,11 @@ export function ThinkingScreen({ answers, onComplete, onError }) {
                 transition={{ duration: 0.5, ease: "easeOut" }}
               >
                 {/* Dot + vertical connector */}
-                <div className="flex flex-col items-center flex-shrink-0" style={{ width: 16 }}>
-                  <div className="relative flex items-center justify-center" style={{ width: 16, height: 16 }}>
+                <div className="flex shrink-0 flex-col items-center" style={{ width: 16 }}>
+                  <div
+                    className="relative flex items-center justify-center"
+                    style={{ width: 16, height: 16 }}
+                  >
                     {isActive ? (
                       <>
                         <motion.div
@@ -217,14 +235,18 @@ export function ThinkingScreen({ answers, onComplete, onError }) {
                           transition={{ duration: 1.6, repeat: Infinity, ease: "easeOut" }}
                         />
                         <div
-                          className="w-2 h-2 rounded-full bg-[#FF553E]"
+                          className="h-2 w-2 rounded-full bg-[#FF553E]"
                           style={{ animation: "thinking-pulse 1.4s ease-in-out infinite" }}
                         />
                       </>
                     ) : (
                       <div
-                        className="w-1.5 h-1.5 rounded-full transition-all duration-500"
-                        style={{ background: isDone ? "hsl(var(--muted-foreground) / 0.35)" : "hsl(var(--border))" }}
+                        className="h-1.5 w-1.5 rounded-full transition-all duration-500"
+                        style={{
+                          background: isDone
+                            ? "hsl(var(--muted-foreground) / 0.35)"
+                            : "hsl(var(--border))",
+                        }}
                       />
                     )}
                   </div>
@@ -245,7 +267,10 @@ export function ThinkingScreen({ answers, onComplete, onError }) {
                 </div>
 
                 {/* Step text */}
-                <div className={`${isLast ? "pb-0" : "pb-1"} flex flex-col gap-0.5`} style={{ paddingTop: 1 }}>
+                <div
+                  className={`${isLast ? "pb-0" : "pb-1"} flex flex-col gap-0.5`}
+                  style={{ paddingTop: 1 }}
+                >
                   <p
                     className="text-[13.5px] leading-snug transition-colors duration-500"
                     style={{
@@ -266,9 +291,10 @@ export function ThinkingScreen({ answers, onComplete, onError }) {
                         key={detail}
                         className="text-[11.5px]"
                         style={{
-                          color: detail.includes("found") || detail === "indexed"
-                            ? "hsl(142 60% 42%)"
-                            : "hsl(var(--muted-foreground) / 0.5)",
+                          color:
+                            detail.includes("found") || detail === "indexed"
+                              ? "hsl(142 60% 42%)"
+                              : "hsl(var(--muted-foreground) / 0.5)",
                         }}
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
@@ -276,11 +302,11 @@ export function ThinkingScreen({ answers, onComplete, onError }) {
                         transition={{ duration: 0.25 }}
                       >
                         {isScanning && !detail.includes("found") && (
-                          <span className="inline-flex gap-[3px] items-center mr-1">
+                          <span className="mr-1 inline-flex items-center gap-[3px]">
                             {[0, 1, 2].map((j) => (
                               <motion.span
                                 key={j}
-                                className="inline-block w-[3px] h-[3px] rounded-full bg-current"
+                                className="inline-block h-[3px] w-[3px] rounded-full bg-current"
                                 animate={{ opacity: [0.3, 1, 0.3] }}
                                 transition={{ duration: 0.9, repeat: Infinity, delay: j * 0.2 }}
                               />
@@ -296,7 +322,6 @@ export function ThinkingScreen({ answers, onComplete, onError }) {
             );
           })}
         </div>
-
       </div>
     </motion.div>
   );

@@ -6,8 +6,7 @@ import axiosInstance from "./axiosInstance";
 
 export const _getAdminMe = () => axiosInstance.get("/admin/me");
 export const _getAdminStats = () => axiosInstance.get("/admin/stats");
-export const _getAdminUsers = (params) =>
-  axiosInstance.get("/admin/users", { params });
+export const _getAdminUsers = (params) => axiosInstance.get("/admin/users", { params });
 export const _grantPlan = (data) => axiosInstance.post("/admin/grant-plan", data);
 
 export const clearDfToken = () => {

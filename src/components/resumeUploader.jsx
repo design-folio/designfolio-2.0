@@ -1,34 +1,16 @@
 import React, { useState } from "react";
-import * as pdfjsLib from "pdfjs-dist";
-import { getDocument } from "pdfjs-dist";
 import { toast } from "react-toastify";
 import { FileText, Upload } from "lucide-react";
-
-// Setting the worker source for pdf.js
-if (typeof window !== "undefined") {
-  // Polyfill for Promise.withResolvers
-  if (typeof Promise.withResolvers === "undefined") {
-    Promise.withResolvers = function () {
-      let resolve;
-      let reject;
-      const promise = new Promise((res, rej) => {
-        resolve = res;
-        reject = rej;
-      });
-      return { promise, resolve, reject };
-    };
-  }
-
-  pdfjsLib.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjsLib.version}/legacy/build/pdf.worker.min.mjs`;
-}
 
 const ResumeUploader = ({ onUpload, disabled = false }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [fileName, setFileName] = useState(null);
 
   const extractTextFromPdf = async (file) => {
+    const pdfjsLib = await import("pdfjs-dist");
+    pdfjsLib.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
     const arrayBuffer = await file.arrayBuffer();
-    const pdf = await getDocument({ data: arrayBuffer }).promise;
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
     let fullText = "";
 
     for (let i = 1; i <= pdf.numPages; i++) {
@@ -99,10 +81,8 @@ const ResumeUploader = ({ onUpload, disabled = false }) => {
         id="resume-upload"
       />
       <div
-        className={`p-6 rounded-2xl border-2 border-dashed transition-all duration-300 group ${
-          disabled
-            ? "cursor-not-allowed opacity-60 border-border/40 bg-muted/30"
-            : "cursor-pointer"
+        className={`group rounded-2xl border-2 border-dashed p-6 transition-all duration-300 ${
+          disabled ? "border-border/40 bg-muted/30 cursor-not-allowed opacity-60" : "cursor-pointer"
         } ${
           !disabled && fileName
             ? "border-[#FF553E]/20 bg-[#FF553E]/[0.02]"
@@ -117,21 +97,21 @@ const ResumeUploader = ({ onUpload, disabled = false }) => {
       >
         <div className="flex items-center gap-4">
           <div
-            className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
+            className={`flex h-10 w-10 items-center justify-center rounded-xl transition-colors ${
               fileName ? "bg-[#FF553E]/10" : "bg-muted/30 group-hover:bg-[#FF553E]/10"
             }`}
           >
             {fileName ? (
-              <FileText className="w-5 h-5 text-[#FF553E]" />
+              <FileText className="h-5 w-5 text-[#FF553E]" />
             ) : (
-              <Upload className="w-5 h-5 text-foreground/30 group-hover:text-[#FF553E] transition-colors" />
+              <Upload className="text-foreground/30 h-5 w-5 transition-colors group-hover:text-[#FF553E]" />
             )}
           </div>
           <div className="flex-1 text-left">
-            <h4 className="text-sm font-semibold text-foreground">
+            <h4 className="text-foreground text-sm font-semibold">
               {fileName ? fileName : "Upload Resume"}
             </h4>
-            <p className="text-[11px] text-foreground/40 font-medium">
+            <p className="text-foreground/40 text-[11px] font-medium">
               {fileName ? "PDF uploaded • Click to replace" : "PDF Only • Max 5MB"}
             </p>
           </div>

@@ -11,33 +11,25 @@ export default function BottomTask() {
   return (
     <div data-modal-id={popovers.task}>
       <div
-        className={`mb-4 transition-all will-change-transform translateZ(0) origin-bottom duration-120 ease-in-out fixed right-0 left-0 flex justify-center bottom-[88px] z-50 ${
+        className={`translateZ(0) fixed right-0 bottom-[88px] left-0 z-50 mb-4 flex origin-bottom justify-center transition-all duration-120 ease-in-out will-change-transform ${
           popoverMenu == popovers.task
-            ? "opacity-100 scale-100"
-            : "opacity-0 scale-90 pointer-events-none"
+            ? "scale-100 opacity-100"
+            : "pointer-events-none scale-90 opacity-0"
         }`}
       >
         <Task
-          setOpen={() =>
-            setPopoverMenu((prev) =>
-              prev == popovers.task ? null : popovers.task
-            )
-          }
+          setOpen={() => setPopoverMenu((prev) => (prev == popovers.task ? null : popovers.task))}
         />
       </div>
       <div
-        className={`px-2 pointer-events-none fixed bottom-0 py-4 cursor-pointer left-0 right-0 flex flex-col justify-center items-center overflow-hidden z-10 `}
+        className={`pointer-events-none fixed right-0 bottom-0 left-0 z-10 flex cursor-pointer flex-col items-center justify-center overflow-hidden px-2 py-4`}
       >
         <div
-          onClick={() =>
-            setPopoverMenu((prev) =>
-              prev == popovers.task ? null : popovers.task
-            )
-          }
+          onClick={() => setPopoverMenu((prev) => (prev == popovers.task ? null : popovers.task))}
           style={{ boxShadow: "0px 8.3px 33.2px 0px rgba(32, 41, 55, 0.14)" }}
-          className="bg-popover-bg-color pointer-events-auto shadow-lg border-[5px] border-popover-border-color rounded-[24px] px-[14px] py-[10.42px] flex gap-[8.5px] items-center justify-center cursor-pointer"
+          className="bg-popover-bg-color border-popover-border-color pointer-events-auto flex cursor-pointer items-center justify-center gap-[8.5px] rounded-[24px] border-[5px] px-[14px] py-[10.42px] shadow-lg"
         >
-          <div className="w-[47.24px] h-[46.28px] ">
+          <div className="h-[46.28px] w-[47.24px]">
             <CircularProgressbar
               value={taskPercentage}
               text={`${taskPercentage}%`}
@@ -49,10 +41,7 @@ export default function BottomTask() {
               })}
             />
           </div>
-          <Text
-            size="p-xxsmall"
-            className="text-checked-list-item-text-color cursor-pointer"
-          >
+          <Text size="p-xxsmall" className="text-checked-list-item-text-color cursor-pointer">
             Complete portfolio
           </Text>
           {/* <p className="text-checked-list-item-text-color font-inter text-[13.28px] font-[600]">

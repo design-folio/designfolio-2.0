@@ -1,5 +1,5 @@
 import React, { memo, useMemo, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Pencil, X } from "lucide-react";
 import { TextGradientScroll } from "./text-gradient-scroll";
@@ -15,11 +15,8 @@ function ProfessionalAboutTab({
   onEditSkills,
   onEditTools,
 }) {
-
   const aboutImages =
-    about?.pegboardImages?.length > 0
-      ? about.pegboardImages
-      : DEFAULT_PEGBOARD_IMAGES;
+    about?.pegboardImages?.length > 0 ? about.pegboardImages : DEFAULT_PEGBOARD_IMAGES;
 
   const storyImageUrls = useMemo(
     () =>
@@ -27,28 +24,28 @@ function ProfessionalAboutTab({
         .map((img) => img?.src || img?.key || "")
         .filter(Boolean)
         .slice(0, 4),
-    [aboutImages],
+    [aboutImages]
   );
 
   const [selectedStoryImage, setSelectedStoryImage] = useState(null);
 
   return (
-    <div className="px-4 md:px-6 pb-20 group/section">
+    <div className="group/section px-4 pb-20 md:px-6">
       {isEditing && (
-        <div className="-mx-4 md:-mx-6 px-1 py-2 flex items-center justify-end gap-2 border-b border-[#D5D0C6] dark:border-[#3A352E] mb-6">
+        <div className="-mx-4 mb-6 flex items-center justify-end gap-2 border-b border-[#D5D0C6] px-1 py-2 md:-mx-6 dark:border-[#3A352E]">
           <Button
             variant="outline"
             size="sm"
-            className="h-8 w-8 p-0 rounded-full border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520] text-[#1A1A1A] dark:text-[#F0EDE7] opacity-100 md:opacity-0 md:group-hover/section:opacity-100 transition-opacity"
+            className="h-8 w-8 rounded-full border-[#D5D0C6] bg-[#EFECE6] p-0 text-[#1A1A1A] opacity-100 transition-opacity hover:bg-[#E5E0D8] md:opacity-0 md:group-hover/section:opacity-100 dark:border-[#3A352E] dark:bg-[#1A1A1A] dark:text-[#F0EDE7] dark:hover:bg-[#2A2520]"
             onClick={onEditAbout}
             title="Edit story"
           >
-            <Pencil className="w-3.5 h-3.5" />
+            <Pencil className="h-3.5 w-3.5" />
           </Button>
           <SectionVisibilityButton
             sectionId="about"
             showOnHoverWhenVisible
-            className="h-8 w-8 rounded-full border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520]"
+            className="h-8 w-8 rounded-full border-[#D5D0C6] bg-[#EFECE6] hover:bg-[#E5E0D8] dark:border-[#3A352E] dark:bg-[#1A1A1A] dark:hover:bg-[#2A2520]"
           />
         </div>
       )}
@@ -75,11 +72,7 @@ function ProfessionalAboutTab({
               onClick={() => setSelectedStoryImage(storyImageUrls[1])}
               className="absolute z-10 h-36 w-36 cursor-pointer overflow-hidden rounded-xl border-4 border-white shadow-lg dark:border-[#2A2520]"
             >
-              <img
-                src={storyImageUrls[1]}
-                alt="Designing"
-                className="h-full w-full object-cover"
-              />
+              <img src={storyImageUrls[1]} alt="Designing" className="h-full w-full object-cover" />
             </motion.div>
           ) : null}
           {storyImageUrls[2] ? (
@@ -111,20 +104,20 @@ function ProfessionalAboutTab({
             </motion.div>
           ) : null}
         </div>
-        <p className="mb-8 -mt-2 text-center text-[10px] font-medium uppercase tracking-widest text-[#7A736C]/70 dark:text-[#B5AFA5]/60 pointer-events-none">
+        <p className="pointer-events-none -mt-2 mb-8 text-center text-[10px] font-medium tracking-widest text-[#7A736C]/70 uppercase dark:text-[#B5AFA5]/60">
           Try moving things around :)
         </p>
 
         {about?.description ? (
           <TextGradientScroll
             text={about.description}
-            className="font-jetbrains text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] leading-relaxed mb-8"
+            className="font-jetbrains mb-8 text-[15px] leading-relaxed text-[#1A1A1A] dark:text-[#F0EDE7]"
             textOpacity="medium"
           />
         ) : isEditing ? (
           <button
             onClick={onEditAbout}
-            className="mb-8 text-left font-jetbrains text-[13px] text-[#7A736C] dark:text-[#B5AFA5] hover:text-[#1A1A1A] dark:hover:text-white transition-colors"
+            className="font-jetbrains mb-8 text-left text-[13px] text-[#7A736C] transition-colors hover:text-[#1A1A1A] dark:text-[#B5AFA5] dark:hover:text-white"
           >
             Click here to add your story...
           </button>
@@ -132,31 +125,29 @@ function ProfessionalAboutTab({
 
         <div className="flex flex-col gap-6">
           {skills.length > 0 && (
-            <div className="relative group/skill">
+            <div className="group/skill relative">
               {isEditing && (
-                <div className="absolute top-0 right-0 z-10 opacity-100 md:opacity-0 md:group-hover/skill:opacity-100 transition-opacity">
+                <div className="absolute top-0 right-0 z-10 opacity-100 transition-opacity md:opacity-0 md:group-hover/skill:opacity-100">
                   <Button
                     variant="outline"
                     size="sm"
-                    className="h-7 w-7 p-0 rounded-full border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520] text-[#1A1A1A] dark:text-[#F0EDE7]"
+                    className="h-7 w-7 rounded-full border-[#D5D0C6] bg-[#EFECE6] p-0 text-[#1A1A1A] hover:bg-[#E5E0D8] dark:border-[#3A352E] dark:bg-[#1A1A1A] dark:text-[#F0EDE7] dark:hover:bg-[#2A2520]"
                     onClick={onEditSkills}
                   >
-                    <Pencil className="w-3 h-3" />
+                    <Pencil className="h-3 w-3" />
                   </Button>
                 </div>
               )}
-              <h4 className="font-jetbrains text-[#1A1A1A] dark:text-[#F0EDE7] text-[18px] uppercase tracking-wider mb-3 font-semibold">
+              <h4 className="font-jetbrains mb-3 text-[18px] font-semibold tracking-wider text-[#1A1A1A] uppercase dark:text-[#F0EDE7]">
                 Capabilities
               </h4>
               <div className="flex flex-wrap gap-2">
                 {skills.map((skill, index) => (
                   <span
                     key={index}
-                    className="px-3 py-1.5 border border-[#D5D0C6] dark:border-[#3A352E] font-jetbrains text-[14px] text-[#7A736C] dark:text-[#B5AFA5] rounded-full"
+                    className="font-jetbrains rounded-full border border-[#D5D0C6] px-3 py-1.5 text-[14px] text-[#7A736C] dark:border-[#3A352E] dark:text-[#B5AFA5]"
                   >
-                    {typeof skill === "string"
-                      ? skill
-                      : skill.label || skill.name || ""}
+                    {typeof skill === "string" ? skill : skill.label || skill.name || ""}
                   </span>
                 ))}
               </div>
@@ -164,27 +155,27 @@ function ProfessionalAboutTab({
           )}
 
           {tools.length > 0 && (
-            <div className="relative group/tech">
+            <div className="group/tech relative">
               {isEditing && (
-                <div className="absolute top-0 right-0 z-10 opacity-100 md:opacity-0 md:group-hover/tech:opacity-100 transition-opacity">
+                <div className="absolute top-0 right-0 z-10 opacity-100 transition-opacity md:opacity-0 md:group-hover/tech:opacity-100">
                   <Button
                     variant="outline"
                     size="sm"
-                    className="h-7 w-7 p-0 rounded-full border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520] text-[#1A1A1A] dark:text-[#F0EDE7]"
+                    className="h-7 w-7 rounded-full border-[#D5D0C6] bg-[#EFECE6] p-0 text-[#1A1A1A] hover:bg-[#E5E0D8] dark:border-[#3A352E] dark:bg-[#1A1A1A] dark:text-[#F0EDE7] dark:hover:bg-[#2A2520]"
                     onClick={onEditTools}
                   >
-                    <Pencil className="w-3 h-3" />
+                    <Pencil className="h-3 w-3" />
                   </Button>
                 </div>
               )}
-              <h4 className="font-jetbrains text-[#1A1A1A] dark:text-[#F0EDE7] text-[18px] uppercase tracking-wider mb-3 font-semibold">
+              <h4 className="font-jetbrains mb-3 text-[18px] font-semibold tracking-wider text-[#1A1A1A] uppercase dark:text-[#F0EDE7]">
                 Stack
               </h4>
               <div className="flex flex-wrap gap-2">
                 {tools.map((tool, index) => (
                   <span
                     key={index}
-                    className="px-3 py-1.5 border border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] font-jetbrains text-[14px] text-[#1A1A1A] dark:text-[#F0EDE7] rounded-full"
+                    className="font-jetbrains rounded-full border border-[#D5D0C6] bg-[#EFECE6] px-3 py-1.5 text-[14px] text-[#1A1A1A] dark:border-[#3A352E] dark:bg-[#1A1A1A] dark:text-[#F0EDE7]"
                   >
                     {tool.label || tool.name || tool}
                   </span>
@@ -216,7 +207,7 @@ function ProfessionalAboutTab({
                 type="button"
                 aria-label="Close full image"
                 onClick={() => setSelectedStoryImage(null)}
-                className="absolute right-4 top-4 z-10 flex size-10 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-md transition-colors hover:bg-black/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+                className="absolute top-4 right-4 z-10 flex size-10 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-md transition-colors hover:bg-black/70 focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:outline-none"
               >
                 <X className="size-5" />
               </button>

@@ -29,8 +29,8 @@ export default function AddSocial() {
   const { userDetails, closeModal, updateCache } = useGlobalContext();
 
   return (
-    <div className="rounded-2xl bg-card flex flex-col justify-between  m-auto lg:w-[500px] max-h-[550px] my-auto overflow-hidden">
-      <div className="flex p-5 justify-between items-center">
+    <div className="bg-card m-auto my-auto flex max-h-[550px] flex-col justify-between overflow-hidden rounded-2xl lg:w-[500px]">
+      <div className="flex items-center justify-between p-5">
         <Text size="p-small" className="font-semibold">
           Add Social Links
         </Text>
@@ -77,11 +77,7 @@ export default function AddSocial() {
                       />
                     )}
                   </Field>
-                  <ErrorMessage
-                    name="instagram"
-                    component="div"
-                    className="error-message"
-                  />
+                  <ErrorMessage name="instagram" component="div" className="error-message" />
                 </div>
 
                 <div className="mt-[24px]">
@@ -99,11 +95,7 @@ export default function AddSocial() {
                       />
                     )}
                   </Field>
-                  <ErrorMessage
-                    name="linkedin"
-                    component="div"
-                    className="error-message"
-                  />
+                  <ErrorMessage name="linkedin" component="div" className="error-message" />
                 </div>
 
                 <div className="mt-[24px]">
@@ -121,17 +113,17 @@ export default function AddSocial() {
                       />
                     )}
                   </Field>
-                  <ErrorMessage
-                    name="twitter"
-                    component="div"
-                    className="error-message"
-                  />
+                  <ErrorMessage name="twitter" component="div" className="error-message" />
                 </div>
               </div>
 
-              <div className="flex gap-2 mt-[26px] justify-end p-3 bg-modal-footer-bg-color rounded-br-[24px] rounded-bl-[24px]">
-                <Button variant="outline" type="button" onClick={closeModal}>Cancel</Button>
-                <Button type="submit" form="socialForm" disabled={isSubmitting}>{isSubmitting ? "Saving…" : "Save"}</Button>
+              <div className="bg-modal-footer-bg-color mt-[26px] flex justify-end gap-2 rounded-br-[24px] rounded-bl-[24px] p-3">
+                <Button variant="outline" type="button" onClick={closeModal}>
+                  Cancel
+                </Button>
+                <Button type="submit" form="socialForm" disabled={isSubmitting}>
+                  {isSubmitting ? "Saving…" : "Save"}
+                </Button>
               </div>
             </Form>
           )}

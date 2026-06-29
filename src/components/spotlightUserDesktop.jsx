@@ -1,10 +1,5 @@
 import { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import PreviewIcon from "../../public/assets/svgs/previewIcon.svg";
 import Button from "./button";
 
@@ -34,19 +29,19 @@ const SpotlightUsersDesktop = ({ title, projectUrl, imageSrc, onHover }) => {
       onClick={handleCardClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className="flex-none w-[408px] bg-white rounded-3xl p-6 transition-all duration-500 ease-in-out hover:border-2 border border-[#E3E7ED] hover:border-[#FF553E] cursor-pointer group [backface-visibility:hidden] [-webkit-font-smoothing:antialiased] [transform:translateZ(0)]"
+      className="group w-[408px] flex-none [transform:translateZ(0)] cursor-pointer rounded-3xl border border-[#E3E7ED] bg-white p-6 [-webkit-font-smoothing:antialiased] transition-all duration-500 ease-in-out [backface-visibility:hidden] hover:border-2 hover:border-[#FF553E]"
     >
-      <div className="h-full flex flex-col justify-between">
-        <div className="space-y-4 ">
+      <div className="flex h-full flex-col justify-between">
+        <div className="space-y-4">
           {imageSrc && (
             <img
               src={imageSrc}
               alt={title}
-              className="w-full rounded-2xl cursor-pointer h-[253.07px] object-cover"
+              className="h-[253.07px] w-full cursor-pointer rounded-2xl object-cover"
             />
           )}
 
-          <h2 className="text-[#2F4858] text-left cursor-pointer text-xl font-semibold leading-tight [backface-visibility:hidden] [-webkit-font-smoothing:antialiased] line-clamp-2">
+          <h2 className="line-clamp-2 cursor-pointer text-left text-xl leading-tight font-semibold text-[#2F4858] [-webkit-font-smoothing:antialiased] [backface-visibility:hidden]">
             {title}
           </h2>
         </div>
@@ -70,17 +65,13 @@ const SpotlightUsersDesktop = ({ title, projectUrl, imageSrc, onHover }) => {
         }}
       >
         <DialogContent
-          className="max-w-[85vw] w-[85vw] h-[85vh] p-0 overflow-hidden rounded-[20px] bg-white"
+          className="h-[85vh] w-[85vw] max-w-[85vw] overflow-hidden rounded-[20px] bg-white p-0"
           onClick={(e) => e.stopPropagation()}
         >
           <DialogTitle className="sr-only">{title}</DialogTitle>
           <DialogDescription className="sr-only">{title}</DialogDescription>
-          <div className="relative w-full h-full rounded-[20px] overflow-hidden">
-            <iframe
-              src={projectUrl}
-              className="w-full h-full"
-              title="Project Preview"
-            />
+          <div className="relative h-full w-full overflow-hidden rounded-[20px]">
+            <iframe src={projectUrl} className="h-full w-full" title="Project Preview" />
           </div>
         </DialogContent>
       </Dialog>

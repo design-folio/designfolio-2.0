@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, startTransition } from "react";
 import { useTheme } from "next-themes";
 import {
   Bold,
@@ -12,7 +12,7 @@ import {
   Code,
   Highlighter,
   AlignLeft,
-  Image,
+  Image as ImageIcon,
   Link2,
   Table as TableIcon,
   Undo2,
@@ -24,8 +24,6 @@ import {
   AlignCenter,
   AlignRight,
   Code2,
-  Youtube,
-  Figma,
   Minus,
   Trash2,
   ArrowLeftToLine,
@@ -36,12 +34,8 @@ import {
   Columns,
   Rows,
 } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { FaYoutube as Youtube, FaFigma as Figma } from "react-icons/fa6";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const MenuButton = ({
   onClick,
@@ -65,7 +59,7 @@ const MenuButton = ({
         {children}
       </button>
     </TooltipTrigger>
-    <TooltipContent side="top" className="bg-white dark:bg-[#262A34] border-none">
+    <TooltipContent side="top" className="border-none bg-white dark:bg-[#262A34]">
       <p>{title}</p>
     </TooltipContent>
   </Tooltip>
@@ -86,12 +80,14 @@ const TiptapMenuBar = ({ editor, showToolbar, onImageUpload }) => {
   // Close all dropdowns when toolbar is hidden
   useEffect(() => {
     if (!showToolbar) {
-      setShowHeadingMenu(false);
-      setShowAlignMenu(false);
-      setShowInsertMenu(false);
-      setShowMoreMenu(false);
-      setShowColorMenu(false);
-      setShowListMenu(false);
+      startTransition(() => {
+        setShowHeadingMenu(false);
+        setShowAlignMenu(false);
+        setShowInsertMenu(false);
+        setShowMoreMenu(false);
+        setShowColorMenu(false);
+        setShowListMenu(false);
+      });
     }
   }, [showToolbar]);
 
@@ -373,11 +369,7 @@ const TiptapMenuBar = ({ editor, showToolbar, onImageUpload }) => {
   };
 
   const addTable = () => {
-    editor
-      .chain()
-      .focus()
-      .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
-      .run();
+    editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run();
     closeAllDropdowns();
   };
 
@@ -385,8 +377,7 @@ const TiptapMenuBar = ({ editor, showToolbar, onImageUpload }) => {
     <TooltipProvider delayDuration={0}>
       <div
         ref={toolbarRef}
-        className={`tiptap-menu-bar ${showToolbar ? "toolbar-visible" : "toolbar-hidden"
-          }`}
+        className={`tiptap-menu-bar ${showToolbar ? "toolbar-visible" : "toolbar-hidden"}`}
       >
         {/* Primary Text Formatting */}
         <div className="menu-group">
@@ -466,10 +457,9 @@ const TiptapMenuBar = ({ editor, showToolbar, onImageUpload }) => {
                           }
                           closeAllDropdowns();
                         }}
-                        className={`color-button ${color.isDefault
-                          ? "color-default text-color-default"
-                          : ""
-                          } ${isActive ? "is-active" : ""}`}
+                        className={`color-button ${
+                          color.isDefault ? "color-default text-color-default" : ""
+                        } ${isActive ? "is-active" : ""}`}
                         style={{ border: "none" }}
                         title={color.name}
                       >
@@ -478,14 +468,9 @@ const TiptapMenuBar = ({ editor, showToolbar, onImageUpload }) => {
                           style={{
                             color: color.display,
                             WebkitTextStroke:
-                              (resolvedTheme === "dark" &&
-                                color.display === "#000000") ||
-                                (resolvedTheme !== "dark" &&
-                                  color.display === "#ffffff")
-                                ? `0.5px ${resolvedTheme === "dark"
-                                  ? "#ffffff"
-                                  : "#000000"
-                                }`
+                              (resolvedTheme === "dark" && color.display === "#000000") ||
+                              (resolvedTheme !== "dark" && color.display === "#ffffff")
+                                ? `0.5px ${resolvedTheme === "dark" ? "#ffffff" : "#000000"}`
                                 : "unset",
                           }}
                         >
@@ -510,33 +495,24 @@ const TiptapMenuBar = ({ editor, showToolbar, onImageUpload }) => {
                         key={index}
                         onClick={() => {
                           if (color.value) {
-                            editor
-                              .chain()
-                              .focus()
-                              .setHighlight({ color: color.value })
-                              .run();
+                            editor.chain().focus().setHighlight({ color: color.value }).run();
                           } else {
                             editor.chain().focus().unsetHighlight().run();
                           }
                           closeAllDropdowns();
                         }}
-                        className={`color-button ${color.isDefault ? "color-default" : ""
-                          } ${isActive ? "is-active" : ""}`}
+                        className={`color-button ${
+                          color.isDefault ? "color-default" : ""
+                        } ${isActive ? "is-active" : ""}`}
                         style={{
                           backgroundColor: color.bgColor,
-                          borderColor: color.isDefault
-                            ? undefined
-                            : color.bgColor,
+                          borderColor: color.isDefault ? undefined : color.bgColor,
                         }}
                         title={color.name}
                       >
                         <span
                           className="color-letter"
-                          style={
-                            color.textColor
-                              ? { color: color.textColor }
-                              : undefined
-                          }
+                          style={color.textColor ? { color: color.textColor } : undefined}
                         >
                           A
                         </span>
@@ -560,7 +536,7 @@ const TiptapMenuBar = ({ editor, showToolbar, onImageUpload }) => {
             isActive={activeNodes.heading2}
             title="Heading 2"
           >
-            <span className="font-bold text-sm">H2</span>
+            <span className="text-sm font-bold">H2</span>
           </MenuButton>
           <MenuButton
             onClick={() => {
@@ -571,7 +547,7 @@ const TiptapMenuBar = ({ editor, showToolbar, onImageUpload }) => {
             isActive={activeNodes.heading3}
             title="Heading 3"
           >
-            <span className="font-bold text-sm">H3</span>
+            <span className="text-sm font-bold">H3</span>
           </MenuButton>
           <MenuButton
             onClick={() => {
@@ -582,7 +558,7 @@ const TiptapMenuBar = ({ editor, showToolbar, onImageUpload }) => {
             isActive={activeNodes.heading4}
             title="Heading 4"
           >
-            <span className="font-bold text-sm">H4</span>
+            <span className="text-sm font-bold">H4</span>
           </MenuButton>
           <MenuButton
             onClick={() => {
@@ -593,7 +569,7 @@ const TiptapMenuBar = ({ editor, showToolbar, onImageUpload }) => {
             isActive={activeNodes.heading5}
             title="Heading 5"
           >
-            <span className="font-bold text-sm">H5</span>
+            <span className="text-sm font-bold">H5</span>
           </MenuButton>
         </div>
 
@@ -605,7 +581,7 @@ const TiptapMenuBar = ({ editor, showToolbar, onImageUpload }) => {
             isActive={activeNodes.image}
             title="Image"
           >
-            <Image size={18} />
+            <ImageIcon size={18} />
           </MenuButton>
           <MenuButton
             onClick={() => addLink()}

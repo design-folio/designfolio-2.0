@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, startTransition } from "react";
 import { NodeViewWrapper } from "@tiptap/react";
 
 const YoutubeNodeView = ({ node, updateAttributes, editor, getPos }) => {
@@ -9,7 +9,7 @@ const YoutubeNodeView = ({ node, updateAttributes, editor, getPos }) => {
 
   useEffect(() => {
     if (!node.attrs.src) {
-      setIsEditing(true);
+      startTransition(() => setIsEditing(true));
     }
   }, [node.attrs.src]);
 
@@ -77,7 +77,7 @@ const YoutubeNodeView = ({ node, updateAttributes, editor, getPos }) => {
         <div
           ref={wrapperRef}
           contentEditable={false}
-          className="rounded-lg p-4 my-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700"
+          className="my-3 rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-900"
           onClick={(e) => {
             e.stopPropagation();
             if (inputRef.current && e.target !== inputRef.current) {
@@ -96,14 +96,14 @@ const YoutubeNodeView = ({ node, updateAttributes, editor, getPos }) => {
               onClick={(e) => e.stopPropagation()}
               onMouseDown={(e) => e.stopPropagation()}
               autoFocus
-              className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-md text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600"
+              className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:border-slate-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400 dark:focus:ring-blue-600"
             />
             <div
-              className="text-xs text-slate-600 dark:text-slate-400 mt-2"
+              className="mt-2 text-xs text-slate-600 dark:text-slate-400"
               onClick={(e) => e.stopPropagation()}
             >
               <strong>Supported formats:</strong>
-              <ul className="mt-1 pl-5 list-disc">
+              <ul className="mt-1 list-disc pl-5">
                 <li>https://www.youtube.com/watch?v=VIDEO_ID</li>
                 <li>https://youtu.be/VIDEO_ID</li>
                 <li>https://www.youtube.com/embed/VIDEO_ID</li>
@@ -122,10 +122,10 @@ const YoutubeNodeView = ({ node, updateAttributes, editor, getPos }) => {
                 handleSave();
               }}
               disabled={!url.trim()}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+              className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
                 url.trim()
-                  ? "bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white cursor-pointer"
-                  : "bg-slate-400 dark:bg-slate-700 text-white cursor-not-allowed"
+                  ? "cursor-pointer bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
+                  : "cursor-not-allowed bg-slate-400 text-white dark:bg-slate-700"
               }`}
             >
               Save
@@ -139,7 +139,7 @@ const YoutubeNodeView = ({ node, updateAttributes, editor, getPos }) => {
                 e.stopPropagation();
                 handleCancel();
               }}
-              className="px-4 py-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-md text-sm font-medium cursor-pointer transition-colors"
+              className="cursor-pointer rounded-md bg-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
             >
               Cancel
             </button>
@@ -155,21 +155,21 @@ const YoutubeNodeView = ({ node, updateAttributes, editor, getPos }) => {
       <div className="relative my-4">
         {videoId ? (
           <iframe
-            className="w-full aspect-video rounded-lg"
+            className="aspect-video w-full rounded-lg"
             src={`https://www.youtube-nocookie.com/embed/${videoId}`}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
             title="YouTube Video"
           />
         ) : (
-          <div className="w-full h-[450px] bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center text-slate-500 dark:text-slate-400">
+          <div className="flex h-[450px] w-full items-center justify-center rounded-lg bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
             No valid YouTube URL provided.
           </div>
         )}
         {editor.isEditable && (
           <button
             onClick={() => setIsEditing(true)}
-            className="absolute top-2 right-2 px-3 py-1.5 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md text-xs font-medium cursor-pointer shadow-sm transition-colors"
+            className="absolute top-2 right-2 cursor-pointer rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
           >
             Edit
           </button>

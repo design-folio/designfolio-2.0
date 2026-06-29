@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { Mail, Phone } from "lucide-react";
 import { itemVariants } from "@/lib/animationVariants";
 
@@ -19,9 +19,7 @@ const SOCIALS = [
 ];
 
 export default function MonoProjectFooter({ ownerUser }) {
-  const fullName = [ownerUser?.firstName, ownerUser?.lastName]
-    .filter(Boolean)
-    .join(" ");
+  const fullName = [ownerUser?.firstName, ownerUser?.lastName].filter(Boolean).join(" ");
 
   const activeSocials = SOCIALS.filter(({ key, from }) =>
     from === "socials" ? ownerUser?.socials?.[key] : ownerUser?.portfolios?.[key]
@@ -33,23 +31,25 @@ export default function MonoProjectFooter({ ownerUser }) {
       <motion.div variants={itemVariants} className="custom-dashed-t" />
       <motion.div
         variants={itemVariants}
-        className="px-5 md:px-8 py-10 flex flex-col items-center text-center gap-6"
+        className="flex flex-col items-center gap-6 px-5 py-10 text-center md:px-8"
       >
         {fullName && (
-          <span className="text-[22px] text-[#1A1A1A] dark:text-[#F0EDE7] font-cedarville">
+          <span className="font-cedarville text-[22px] text-[#1A1A1A] dark:text-[#F0EDE7]">
             {fullName}
           </span>
         )}
-        <p className="text-[#1A1A1A] dark:text-[#F0EDE7] text-[22px] font-semibold max-w-sm leading-tight">
-          Got a project in mind?<br />Let&apos;s talk.
+        <p className="max-w-sm text-[22px] leading-tight font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
+          Got a project in mind?
+          <br />
+          Let&apos;s talk.
         </p>
 
         {/* Contact actions */}
-        <div className="flex flex-wrap gap-3 justify-center">
+        <div className="flex flex-wrap justify-center gap-3">
           {ownerUser?.email && (
             <button
               onClick={() => navigator.clipboard.writeText(ownerUser.email)}
-              className="flex items-center gap-2 px-5 py-2.5 bg-[#1A1A1A] dark:bg-[#F0EDE7] text-white dark:text-[#1A1A1A] rounded-full text-sm font-medium hover:opacity-90 transition-opacity"
+              className="flex items-center gap-2 rounded-full bg-[#1A1A1A] px-5 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90 dark:bg-[#F0EDE7] dark:text-[#1A1A1A]"
             >
               <Mail size={14} />
               Copy Email
@@ -58,7 +58,7 @@ export default function MonoProjectFooter({ ownerUser }) {
           {ownerUser?.phone && (
             <button
               onClick={() => navigator.clipboard.writeText(ownerUser.phone)}
-              className="flex items-center gap-2 px-5 py-2.5 border border-[#C8C4BD] dark:border-[#3A352E] bg-white dark:bg-[#2A2520] text-[#1A1A1A] dark:text-[#F0EDE7] rounded-full text-sm font-medium hover:bg-[#F5F0EA] dark:hover:bg-[#35302A] transition-colors"
+              className="flex items-center gap-2 rounded-full border border-[#C8C4BD] bg-white px-5 py-2.5 text-sm font-medium text-[#1A1A1A] transition-colors hover:bg-[#F5F0EA] dark:border-[#3A352E] dark:bg-[#2A2520] dark:text-[#F0EDE7] dark:hover:bg-[#35302A]"
             >
               <Phone size={14} />
               Copy Phone
@@ -71,16 +71,14 @@ export default function MonoProjectFooter({ ownerUser }) {
           <div className="flex items-center gap-5 text-[#7A736C] dark:text-[#9E9893]">
             {activeSocials.map(({ key, from, Icon, label }) => {
               const href =
-                from === "socials"
-                  ? ownerUser?.socials?.[key]
-                  : ownerUser?.portfolios?.[key];
+                from === "socials" ? ownerUser?.socials?.[key] : ownerUser?.portfolios?.[key];
               return (
                 <a
                   key={key}
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7] transition-colors"
+                  className="transition-colors hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7]"
                   aria-label={label}
                 >
                   <Icon />
@@ -95,16 +93,16 @@ export default function MonoProjectFooter({ ownerUser }) {
       <motion.div variants={itemVariants} className="custom-dashed-t" />
       <motion.div
         variants={itemVariants}
-        className="px-5 md:px-8 py-4 flex items-center justify-between gap-4"
+        className="flex items-center justify-between gap-4 px-5 py-4 md:px-8"
       >
         <p
-          className="text-[11px] text-[#7A736C] dark:text-[#9E9893] uppercase tracking-widest"
+          className="text-[11px] tracking-widest text-[#7A736C] uppercase dark:text-[#9E9893]"
           style={{ fontWeight: 450 }}
         >
           © {new Date().getFullYear()} {fullName || "All rights reserved"}
         </p>
         <p
-          className="text-[11px] text-[#7A736C] dark:text-[#9E9893] uppercase tracking-widest"
+          className="text-[11px] tracking-widest text-[#7A736C] uppercase dark:text-[#9E9893]"
           style={{ fontWeight: 450 }}
         >
           All rights reserved

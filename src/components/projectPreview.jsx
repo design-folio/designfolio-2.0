@@ -1,5 +1,5 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import ProjectInfo from "./projectInfo";
 import { useGlobalContext } from "@/context/globalContext";
 import BlockRenderer from "./blockRenderer";
@@ -16,15 +16,18 @@ export default function ProjectPreview({ projectDetails }) {
 
   const tiptapClassName = (() => {
     switch (userDetails?.template) {
-      case TEMPLATE_IDS.CANVAS: return "";
-      case TEMPLATE_IDS.SPOTLIGHT: return "shadow-none bg-card";
-      default: return "shadow-none bg-transparent";
+      case TEMPLATE_IDS.CANVAS:
+        return "";
+      case TEMPLATE_IDS.SPOTLIGHT:
+        return "shadow-none bg-card";
+      default:
+        return "shadow-none bg-transparent";
     }
   })();
 
   return (
     <motion.div
-      className="flex-1 flex flex-col gap-3"
+      className="flex flex-1 flex-col gap-3"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -40,7 +43,10 @@ export default function ProjectPreview({ projectDetails }) {
           </motion.div>
           {hasTiptapContent && (
             <motion.div variants={itemVariants}>
-              <TiptapRenderer content={projectDetails?.project?.tiptapContent} className={tiptapClassName} />
+              <TiptapRenderer
+                content={projectDetails?.project?.tiptapContent}
+                className={tiptapClassName}
+              />
             </motion.div>
           )}
           {hasEditorJSContent && (

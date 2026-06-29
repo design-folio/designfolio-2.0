@@ -1,7 +1,7 @@
 import { useGlobalContext } from "@/context/globalContext";
 import { DEFAULT_SECTION_ORDER } from "@/lib/constant";
 import React, { useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 // import OthersPreview from "@/components/othersPreview";
 import PortfolioFooter from "@/components/portfolioFooter";
 import Profile from "@/components/profile";
@@ -40,7 +40,7 @@ export default function Template1({ userDetails, edit = false }) {
   const { projectRef, setCursor } = useGlobalContext();
   useEffect(() => {
     setCursor(userDetails?.cursor ? userDetails?.cursor : 0);
-  }, []);
+  }, [setCursor, userDetails?.cursor]);
 
   // Get section order from userDetails or use template default
   const sectionOrder = normalizeSectionOrder(userDetails?.sectionOrder, DEFAULT_SECTION_ORDER);
@@ -49,7 +49,7 @@ export default function Template1({ userDetails, edit = false }) {
   const hiddenSections = userDetails?.hiddenSections || [];
 
   const hasAbout = userDetails?.about !== null && userDetails?.about !== undefined;
-  const showAbout = !hiddenSections.includes('about') && (edit || hasAbout);
+  const showAbout = !hiddenSections.includes("about") && (edit || hasAbout);
 
   // Section component mapping
   const sectionComponents = {
@@ -58,22 +58,22 @@ export default function Template1({ userDetails, edit = false }) {
         <AboutMe userDetails={userDetails} />
       </motion.div>
     ),
-    projects: userDetails?.projects?.length > 0 && !hiddenSections.includes('projects') && (
+    projects: userDetails?.projects?.length > 0 && !hiddenSections.includes("projects") && (
       <motion.div variants={itemVariants} id="section-projects">
         <Projects userDetails={userDetails} projectRef={projectRef} />
       </motion.div>
     ),
-    reviews: userDetails?.reviews?.length > 0 && !hiddenSections.includes('reviews') && (
+    reviews: userDetails?.reviews?.length > 0 && !hiddenSections.includes("reviews") && (
       <motion.div variants={itemVariants} id="section-reviews">
         <Reviews userDetails={userDetails} />
       </motion.div>
     ),
-    tools: !hiddenSections.includes('tools') && (
+    tools: !hiddenSections.includes("tools") && (
       <motion.div variants={itemVariants} id="section-tools">
         <Tools userDetails={userDetails} />
       </motion.div>
     ),
-    works: userDetails?.experiences?.length > 0 && !hiddenSections.includes('works') && (
+    works: userDetails?.experiences?.length > 0 && !hiddenSections.includes("works") && (
       <motion.div variants={itemVariants} id="section-works">
         <Works userDetails={userDetails} />
       </motion.div>
@@ -81,12 +81,10 @@ export default function Template1({ userDetails, edit = false }) {
   };
 
   return (
-    <div
-      className={`max-w-[848px] mx-auto py-[32px] px-2 md:px-4 lg:px-0`}
-    >
+    <div className={`mx-auto max-w-[848px] px-2 py-[32px] md:px-4 lg:px-0`}>
       <BottomLayout userDetails={userDetails}>
         <motion.div
-          className="flex-1 flex flex-col gap-3"
+          className="flex flex-1 flex-col gap-3"
           variants={containerVariants}
           initial="hidden"
           animate="visible"

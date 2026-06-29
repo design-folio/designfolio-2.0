@@ -1,0 +1,10 @@
+node_modules
+.next
+out
+build
+public
+*.min.js
+
+# TypeScript syntax in .js files — can't be parsed by Prettier
+src/hooks/use-toast.js
+src/components/ui/scroll-area.jsx

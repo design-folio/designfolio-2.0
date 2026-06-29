@@ -25,18 +25,22 @@ export default function UpdateProfileSidebar() {
   });
 
   useEffect(() => {
-    setValues({
-      firstName: userDetails?.firstName || "",
-      lastName: userDetails?.lastName || "",
-      introduction: userDetails?.introduction || "",
-      bio: userDetails?.bio || "",
-    });
+    queueMicrotask(() =>
+      setValues({
+        firstName: userDetails?.firstName || "",
+        lastName: userDetails?.lastName || "",
+        introduction: userDetails?.introduction || "",
+        bio: userDetails?.bio || "",
+      })
+    );
   }, [userDetails]);
 
   useEffect(() => {
     if (compressionProgress === 100 && compressedImage) {
-      setAvatarFile(compressedImage);
-      setAvatarPreview(URL.createObjectURL(compressedImage));
+      queueMicrotask(() => {
+        setAvatarFile(compressedImage);
+        setAvatarPreview(URL.createObjectURL(compressedImage));
+      });
     }
   }, [compressionProgress, compressedImage]);
 
@@ -48,8 +52,7 @@ export default function UpdateProfileSidebar() {
     compress(file);
   };
 
-  const set = (key) => (e) =>
-    setValues((v) => ({ ...v, [key]: e.target.value }));
+  const set = (key) => (e) => setValues((v) => ({ ...v, [key]: e.target.value }));
 
   const handleSave = async () => {
     setLoading(true);
@@ -86,15 +89,14 @@ export default function UpdateProfileSidebar() {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex h-full flex-col">
       <div className="flex flex-1 flex-col gap-5 overflow-y-auto px-6 py-4">
-
         {/* Avatar */}
         <div className="flex flex-col items-center gap-3">
           <button
             type="button"
             aria-label="Change profile photo"
-            className="relative size-24 overflow-hidden rounded-2xl border border-border group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/10 dark:focus-visible:ring-white/10"
+            className="border-border group relative size-24 overflow-hidden rounded-2xl border focus-visible:ring-2 focus-visible:ring-black/10 focus-visible:outline-none dark:focus-visible:ring-white/10"
             onClick={() => fileInputRef.current?.click()}
           >
             <img
@@ -106,7 +108,7 @@ export default function UpdateProfileSidebar() {
             />
             <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
               {compressionProgress > 0 && compressionProgress < 100 ? (
-                <Loader2 className="size-5 text-white animate-spin" aria-hidden />
+                <Loader2 className="size-5 animate-spin text-white" aria-hidden />
               ) : (
                 <Camera className="size-5 text-white" aria-hidden />
               )}
@@ -115,7 +117,7 @@ export default function UpdateProfileSidebar() {
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="text-xs text-muted-foreground transition-colors hover:text-foreground"
+            className="text-muted-foreground hover:text-foreground text-xs transition-colors"
           >
             Change photo
           </button>
@@ -128,15 +130,13 @@ export default function UpdateProfileSidebar() {
           />
         </div>
 
-
         {/* Name */}
         <div className="flex flex-col gap-2">
-
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div className="flex min-w-0 flex-col gap-1.5">
               <Label
                 htmlFor="update-profile-first-name"
-                className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
+                className="text-muted-foreground text-xs font-medium tracking-wide uppercase"
               >
                 First name
               </Label>
@@ -155,7 +155,7 @@ export default function UpdateProfileSidebar() {
             <div className="flex min-w-0 flex-col gap-1.5">
               <Label
                 htmlFor="update-profile-last-name"
-                className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
+                className="text-muted-foreground text-xs font-medium tracking-wide uppercase"
               >
                 Last name
               </Label>
@@ -178,7 +178,7 @@ export default function UpdateProfileSidebar() {
         <div className="flex flex-col gap-1.5">
           <Label
             htmlFor="update-profile-introduction"
-            className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
+            className="text-muted-foreground text-xs font-medium tracking-wide uppercase"
           >
             Introduction / Tagline
           </Label>
@@ -191,7 +191,7 @@ export default function UpdateProfileSidebar() {
             placeholder="e.g. Product designer in Berlin…"
             maxLength={50}
           />
-          <p className="text-right text-[11px] text-muted-foreground tabular-nums">
+          <p className="text-muted-foreground text-right text-[11px] tabular-nums">
             {values.introduction.length}/50
           </p>
         </div>
@@ -200,7 +200,7 @@ export default function UpdateProfileSidebar() {
         <div className="flex flex-col gap-1.5">
           <Label
             htmlFor="update-profile-bio"
-            className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
+            className="text-muted-foreground text-xs font-medium tracking-wide uppercase"
           >
             Bio
           </Label>
@@ -214,13 +214,13 @@ export default function UpdateProfileSidebar() {
             className="min-h-[100px] resize-none"
             maxLength={250}
           />
-          <p className="text-right text-[11px] text-muted-foreground tabular-nums">
+          <p className="text-muted-foreground text-right text-[11px] tabular-nums">
             {values.bio.length}/250
           </p>
         </div>
       </div>
 
-      <div className="flex gap-2 py-3 px-6 border-t border-border justify-end">
+      <div className="border-border flex justify-end gap-2 border-t px-6 py-3">
         <Button variant="outline" type="button" onClick={() => closeSidebar(true)}>
           Cancel
         </Button>

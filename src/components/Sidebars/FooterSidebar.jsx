@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useMemo, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,29 +12,21 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { toast } from "react-toastify";
 
 const FooterSettingsPanel = () => {
-  const {
-    closeSidebar,
-    userDetails,
-    updateCache,
-    setUserDetails,
-    userDetailsRefecth,
-  } = useGlobalContext();
+  const { closeSidebar, userDetails, updateCache, setUserDetails, userDetailsRefecth } =
+    useGlobalContext();
 
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingResume, setIsUploadingResume] = useState(false);
   const [isRemovingResume, setIsRemovingResume] = useState(false);
-  const [uploadedResume, setUploadedResume] = useState(null); // { name: string, size: string } | null
+  const [freshUpload, setFreshUpload] = useState(null);
   const resumeInputRef = useRef(null);
 
-  // Sync uploadedResume from userDetails when they have an existing resume (no size from API)
-  useEffect(() => {
+  const resumeFromServer = useMemo(() => {
     const name = userDetails?.resume?.originalName;
-    if (name) {
-      setUploadedResume({ name, size: null });
-    } else {
-      setUploadedResume(null);
-    }
+    return name ? { name, size: null } : null;
   }, [userDetails?.resume?.originalName]);
+
+  const uploadedResume = freshUpload ?? resumeFromServer;
 
   const handleClose = () => {
     closeSidebar();
@@ -50,6 +42,7 @@ const FooterSettingsPanel = () => {
     setIsRemovingResume(true);
     try {
       await _deleteResume();
+      setFreshUpload(null);
       await userDetailsRefecth();
       toast.success("Resume removed");
     } catch (error) {
@@ -97,7 +90,7 @@ const FooterSettingsPanel = () => {
       if (res?.data?.user) {
         updateCache("userDetails", res.data.user);
         setUserDetails(res.data.user);
-        setUploadedResume({
+        setFreshUpload({
           name: file.name,
           size: (file.size / (1024 * 1024)).toFixed(2) + "MB",
         });
@@ -113,12 +106,11 @@ const FooterSettingsPanel = () => {
 
   const getInitialValues = () => {
     const rawContactEmail = userDetails?.contact_email;
-    const contactEmail =
-      typeof rawContactEmail === "string" ? rawContactEmail.trim() : "";
+    const contactEmail = typeof rawContactEmail === "string" ? rawContactEmail.trim() : "";
 
     return {
       // If contact_email is empty/missing/null, show account email by default
-      contact_email: contactEmail ? rawContactEmail : (userDetails?.email || ""),
+      contact_email: contactEmail ? rawContactEmail : userDetails?.email || "",
       phone: userDetails?.phone || "",
       blogs: userDetails?.portfolios?.medium || "",
       linkedin: userDetails?.socials?.linkedin || "",
@@ -131,7 +123,7 @@ const FooterSettingsPanel = () => {
   const renderContent = () => {
     return (
       <Formik
-        key={userDetails?._id || 'footer-form'}
+        key={userDetails?._id || "footer-form"}
         initialValues={getInitialValues()}
         validationSchema={FooterValidationSchema}
         enableReinitialize
@@ -172,11 +164,11 @@ const FooterSettingsPanel = () => {
         }}
       >
         {({ isSubmitting, errors, touched, values }) => (
-          <Form id="footerForm" className="flex flex-col h-full">
-            <div className="flex-1 overflow-auto p-6 flex flex-col gap-8">
+          <Form id="footerForm" className="flex h-full flex-col">
+            <div className="flex flex-1 flex-col gap-8 overflow-auto p-6">
               {/* Resume Section */}
               <div className="flex flex-col gap-3">
-                <Label className="px-1 text-xs font-semibold uppercase tracking-wider text-foreground-landing/40">
+                <Label className="text-foreground-landing/40 px-1 text-xs font-semibold tracking-wider uppercase">
                   Resume
                 </Label>
                 <input
@@ -190,9 +182,7 @@ const FooterSettingsPanel = () => {
                   role="button"
                   tabIndex={0}
                   aria-label={
-                    uploadedResume
-                      ? `Resume: ${uploadedResume.name}`
-                      : "Upload resume PDF"
+                    uploadedResume ? `Resume: ${uploadedResume.name}` : "Upload resume PDF"
                   }
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
@@ -201,18 +191,18 @@ const FooterSettingsPanel = () => {
                     }
                   }}
                   className={cn(
-                    "group/resume relative rounded-2xl border p-8 pt-10 outline-none transition-[border-color,box-shadow,background-color] duration-200",
-                    "cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                    "group/resume relative rounded-2xl border p-8 pt-10 transition-[border-color,box-shadow,background-color] duration-200 outline-none",
+                    "focus-visible:ring-ring focus-visible:ring-offset-background cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-2",
                     uploadedResume
                       ? [
                           "border-border bg-card shadow-sm",
-                          "ring-1 ring-border/80",
-                          "hover:border-primary/35 hover:bg-accent/25 hover:shadow-md hover:ring-primary/20",
+                          "ring-border/80 ring-1",
+                          "hover:border-primary/35 hover:bg-accent/25 hover:ring-primary/20 hover:shadow-md",
                         ]
                       : [
-                          "border-dashed border-border/90 bg-card/60",
+                          "border-border/90 bg-card/60 border-dashed",
                           "hover:border-muted-foreground/35 hover:bg-accent/20 hover:shadow-sm",
-                        ],
+                        ]
                   )}
                   onClick={handleResumeUpload}
                 >
@@ -221,11 +211,9 @@ const FooterSettingsPanel = () => {
                       variant="ghost"
                       size="icon"
                       type="button"
-                      className="absolute right-2 top-2 z-10 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                      className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive absolute top-2 right-2 z-10"
                       disabled={isUploadingResume || isRemovingResume}
-                      aria-label={
-                        isRemovingResume ? "Removing resume" : "Delete resume"
-                      }
+                      aria-label={isRemovingResume ? "Removing resume" : "Delete resume"}
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
@@ -235,14 +223,14 @@ const FooterSettingsPanel = () => {
                       <Trash2 />
                     </Button>
                   ) : null}
-                  <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/[0.04] via-transparent to-transparent opacity-0 transition-opacity duration-200 group-hover/resume:opacity-100" />
+                  <div className="from-primary/[0.04] pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br via-transparent to-transparent opacity-0 transition-opacity duration-200 group-hover/resume:opacity-100" />
                   <div className="relative flex flex-col items-center gap-4 text-center">
                     <div
                       className={cn(
                         "flex size-14 shrink-0 items-center justify-center rounded-2xl transition-colors duration-200",
                         uploadedResume
                           ? "bg-primary/10 text-primary"
-                          : "bg-muted text-muted-foreground group-hover/resume:bg-accent group-hover/resume:text-foreground",
+                          : "bg-muted text-muted-foreground group-hover/resume:bg-accent group-hover/resume:text-foreground"
                       )}
                     >
                       {uploadedResume ? (
@@ -251,26 +239,19 @@ const FooterSettingsPanel = () => {
                         <Upload className="size-7 transition-colors" aria-hidden />
                       )}
                     </div>
-                    <div className="min-w-0 w-full">
-                      <h4 className="truncate px-1 text-base font-semibold text-foreground">
-                        {uploadedResume
-                          ? uploadedResume.name
-                          : "Resume (optional)"}
+                    <div className="w-full min-w-0">
+                      <h4 className="text-foreground truncate px-1 text-base font-semibold">
+                        {uploadedResume ? uploadedResume.name : "Resume (optional)"}
                       </h4>
                       {uploadedResume?.size ? (
-                        <p className="mt-1 text-sm text-muted-foreground">
-                          {uploadedResume.size}
-                        </p>
+                        <p className="text-muted-foreground mt-1 text-sm">{uploadedResume.size}</p>
                       ) : null}
                     </div>
-                    <div
-                      className="w-full"
-                      onClick={(e) => e.stopPropagation()}
-                    >
+                    <div className="w-full" onClick={(e) => e.stopPropagation()}>
                       <Button
                         variant="outline"
                         size="lg"
-                        className="h-12 w-full rounded-full border-border bg-background font-semibold shadow-xs hover:bg-accent"
+                        className="border-border bg-background hover:bg-accent h-12 w-full rounded-full font-semibold shadow-xs"
                         type="button"
                         disabled={isUploadingResume || isRemovingResume}
                         onClick={(e) => {
@@ -293,15 +274,12 @@ const FooterSettingsPanel = () => {
 
               {/* Contact Info Section */}
               <div className="space-y-6">
-                <Label className="text-xs font-semibold uppercase tracking-wider text-foreground-landing/40 px-1">
+                <Label className="text-foreground-landing/40 px-1 text-xs font-semibold tracking-wider uppercase">
                   Contact Info
                 </Label>
                 <div className="space-y-5">
                   <div>
-                    <Text
-                      size={"p-xxsmall"}
-                      className="font-medium"
-                    >
+                    <Text size={"p-xxsmall"} className="font-medium">
                       Contact Email
                     </Text>
                     <Field name="contact_email">
@@ -316,18 +294,10 @@ const FooterSettingsPanel = () => {
                         />
                       )}
                     </Field>
-                    <ErrorMessage
-                      name="contact_email"
-                      component="div"
-                      className="error-message"
-                    />
+                    <ErrorMessage name="contact_email" component="div" className="error-message" />
                   </div>
                   <div>
-                    <Text
-                      size={"p-xxsmall"}
-                      className="font-medium"
-                      required
-                    >
+                    <Text size={"p-xxsmall"} className="font-medium" required>
                       Phone Number
                     </Text>
                     <Field name="phone">
@@ -342,26 +312,19 @@ const FooterSettingsPanel = () => {
                         />
                       )}
                     </Field>
-                    <ErrorMessage
-                      name="phone"
-                      component="div"
-                      className="error-message"
-                    />
+                    <ErrorMessage name="phone" component="div" className="error-message" />
                   </div>
                 </div>
               </div>
 
               {/* Links & Socials Section */}
               <div className="space-y-6">
-                <Label className="text-xs font-semibold uppercase tracking-wider text-foreground-landing/40 px-1">
+                <Label className="text-foreground-landing/40 px-1 text-xs font-semibold tracking-wider uppercase">
                   Links & Socials
                 </Label>
                 <div className="space-y-5">
                   <div>
-                    <Text
-                      size={"p-xxsmall"}
-                      className="font-medium"
-                    >
+                    <Text size={"p-xxsmall"} className="font-medium">
                       Blogs (Medium)
                     </Text>
                     <Field name="blogs">
@@ -376,17 +339,10 @@ const FooterSettingsPanel = () => {
                         />
                       )}
                     </Field>
-                    <ErrorMessage
-                      name="blogs"
-                      component="div"
-                      className="error-message"
-                    />
+                    <ErrorMessage name="blogs" component="div" className="error-message" />
                   </div>
                   <div>
-                    <Text
-                      size={"p-xxsmall"}
-                      className="font-medium"
-                    >
+                    <Text size={"p-xxsmall"} className="font-medium">
                       LinkedIn
                     </Text>
                     <Field name="linkedin">
@@ -401,17 +357,10 @@ const FooterSettingsPanel = () => {
                         />
                       )}
                     </Field>
-                    <ErrorMessage
-                      name="linkedin"
-                      component="div"
-                      className="error-message"
-                    />
+                    <ErrorMessage name="linkedin" component="div" className="error-message" />
                   </div>
                   <div>
-                    <Text
-                      size={"p-xxsmall"}
-                      className="font-medium"
-                    >
+                    <Text size={"p-xxsmall"} className="font-medium">
                       X (Twitter)
                     </Text>
                     <Field name="x">
@@ -426,17 +375,10 @@ const FooterSettingsPanel = () => {
                         />
                       )}
                     </Field>
-                    <ErrorMessage
-                      name="x"
-                      component="div"
-                      className="error-message"
-                    />
+                    <ErrorMessage name="x" component="div" className="error-message" />
                   </div>
                   <div>
-                    <Text
-                      size={"p-xxsmall"}
-                      className="font-medium"
-                    >
+                    <Text size={"p-xxsmall"} className="font-medium">
                       Instagram
                     </Text>
                     <Field name="instagram">
@@ -451,17 +393,10 @@ const FooterSettingsPanel = () => {
                         />
                       )}
                     </Field>
-                    <ErrorMessage
-                      name="instagram"
-                      component="div"
-                      className="error-message"
-                    />
+                    <ErrorMessage name="instagram" component="div" className="error-message" />
                   </div>
                   <div>
-                    <Text
-                      size={"p-xxsmall"}
-                      className="font-medium"
-                    >
+                    <Text size={"p-xxsmall"} className="font-medium">
                       Dribbble
                     </Text>
                     <Field name="dribbble">
@@ -476,20 +411,16 @@ const FooterSettingsPanel = () => {
                         />
                       )}
                     </Field>
-                    <ErrorMessage
-                      name="dribbble"
-                      component="div"
-                      className="error-message"
-                    />
+                    <ErrorMessage name="dribbble" component="div" className="error-message" />
                   </div>
                 </div>
               </div>
             </div>
-            <div className="p-6 border-t border-border bg-sidebar sticky bottom-0">
+            <div className="border-border bg-sidebar sticky bottom-0 border-t p-6">
               <Button
                 type="submit"
                 form="footerForm"
-                className="w-full h-11 rounded-full font-semibold"
+                className="h-11 w-full rounded-full font-semibold"
                 disabled={isSubmitting || isSaving}
               >
                 {isSubmitting || isSaving ? "Saving..." : "Save Changes"}

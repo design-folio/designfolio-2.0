@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, startTransition } from "react";
 import ReactDOM from "react-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { twMerge } from "tailwind-merge";
 
 const Modal = ({ show, onClose, children, className }) => {
@@ -11,8 +11,10 @@ const Modal = ({ show, onClose, children, className }) => {
     if (typeof window !== "undefined") {
       const createdEl = document.createElement("div");
       const root = document.getElementById("modal-root");
-      setEl(createdEl);
-      setModalRoot(root);
+      startTransition(() => {
+        setEl(createdEl);
+        setModalRoot(root);
+      });
 
       if (root && createdEl) {
         root.appendChild(createdEl);
@@ -55,7 +57,7 @@ const Modal = ({ show, onClose, children, className }) => {
       {show && (
         <motion.div
           className={twMerge(
-            "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[10000]",
+            "bg-opacity-50 fixed inset-0 z-[10000] flex items-center justify-center bg-black",
             className
           )}
           onClick={onClose}

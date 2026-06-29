@@ -1,16 +1,18 @@
-import React, { useRef, useEffect } from 'react';
-import { motion, useAnimation } from 'framer-motion';
-import * as THREE from 'three';
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
-import PixelVoyagerCanvas from './PixelVoyagerCanvas';
+import React, { useRef, useEffect } from "react";
+import { motion, useAnimation } from "motion/react";
+import * as THREE from "three";
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
+import PixelVoyagerCanvas from "./PixelVoyagerCanvas";
 
 const HomeWindow = ({ userDetails, fullName, onViewProjects }) => {
   const textControls = useAnimation();
   const buttonControls = useAnimation();
 
-  const headline = userDetails?.introduction ? userDetails?.introduction : `${"Hey, I'm"} ${fullName}`;
+  const headline = userDetails?.introduction
+    ? userDetails?.introduction
+    : `${"Hey, I'm"} ${fullName}`;
 
   useEffect(() => {
     textControls.start({
@@ -30,23 +32,23 @@ const HomeWindow = ({ userDetails, fullName, onViewProjects }) => {
 
   return (
     <div
-      className="relative flex h-full w-full min-h-0 flex-col items-center justify-center overflow-hidden bg-[#1a0033]"
+      className="relative flex h-full min-h-0 w-full flex-col items-center justify-center overflow-hidden bg-[#1a0033]"
       style={{ fontFamily: "'Press Start 2P', system-ui" }}
     >
-      <div className="absolute inset-0 z-0 w-full h-full">
+      <div className="absolute inset-0 z-0 h-full w-full">
         <PixelVoyagerCanvas />
       </div>
-      <div className="relative z-10 text-center px-4">
+      <div className="relative z-10 px-4 text-center">
         {userDetails?.avatar?.url && (
           <img
             src={userDetails.avatar.url}
             alt={fullName}
-            className="w-24 h-24 rounded-full mx-auto mb-6 object-cover border-4 border-white/20 shadow-xl"
+            className="mx-auto mb-6 h-24 w-24 rounded-full border-4 border-white/20 object-cover shadow-xl"
           />
         )}
         <motion.h1
-          className="text-2xl font-bold tracking-tighter text-white md:text-4xl max-w-3xl mx-auto"
-          style={{ textShadow: '2px 2px 0px #ff00ff', lineHeight: '3rem' }}
+          className="mx-auto max-w-3xl text-2xl font-bold tracking-tighter text-white md:text-4xl"
+          style={{ textShadow: "2px 2px 0px #ff00ff", lineHeight: "3rem" }}
           initial={{ opacity: 0, y: 50 }}
           animate={textControls}
         >

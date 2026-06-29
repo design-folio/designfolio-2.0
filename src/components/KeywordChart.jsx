@@ -28,15 +28,11 @@ const KeywordChart = ({ data }) => {
 
   return (
     <Card2 className="p-6">
-      <div className="flex items-center justify-between mb-6">
+      <div className="mb-6 flex items-center justify-between">
         <h3 className="text-lg font-semibold">Keyword Frequency Analysis</h3>
         <div className="flex gap-2">
           {["high", "medium", "low"].map((importance) => (
-            <Badge
-              key={importance}
-              variant="outline"
-              className={getImportanceColor(importance)}
-            >
+            <Badge key={importance} variant="outline" className={getImportanceColor(importance)}>
               {importance}
             </Badge>
           ))}
@@ -50,18 +46,8 @@ const KeywordChart = ({ data }) => {
             <YAxis />
             <Tooltip />
             <Legend />
-            <Bar
-              dataKey="resumeCount"
-              name="Resume"
-              fill="#4ade80"
-              radius={[4, 4, 0, 0]}
-            />
-            <Bar
-              dataKey="jdCount"
-              name="Job Description"
-              fill="#60a5fa"
-              radius={[4, 4, 0, 0]}
-            />
+            <Bar dataKey="resumeCount" name="Resume" fill="#4ade80" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="jdCount" name="Job Description" fill="#60a5fa" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>

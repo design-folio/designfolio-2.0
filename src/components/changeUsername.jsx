@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useMemo, useState } from "react";
 import * as Yup from "yup";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { _checkUsername, _updateUsername } from "@/network/post-request";
@@ -10,10 +10,7 @@ import { Input } from "./ui/input";
 // Yup validation schema
 const DomainValidationSchema = Yup.object().shape({
   domain: Yup.string()
-    .matches(
-      /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})?$/,
-      "Invalid subdomain"
-    )
+    .matches(/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})?$/, "Invalid subdomain")
     .required("Username is required"),
 });
 
@@ -54,7 +51,7 @@ export default function ChangeUsername() {
   };
 
   // Debounced API call
-  const debouncedCheckUsername = useCallback(debounce(checkUsername, 200), []);
+  const debouncedCheckUsername = useMemo(() => debounce(checkUsername, 200), []);
 
   // Formik handleChange function with API call
   const handleChange = (e, setFieldValue) => {
@@ -68,15 +65,14 @@ export default function ChangeUsername() {
   }
   return (
     <div>
-      <p className="text-[20px] text-df-section-card-heading-color font-[500] font-inter ">
+      <p className="text-df-section-card-heading-color font-inter text-[20px] font-[500]">
         Change username
       </p>
 
-      <p className="text-[#4d545f] dark:text-[#B4B8C6] text-[12.8px] font-[400] leading-[22.4px] font-inter mt-2">
-        You can change your username to another username that is not currently
-        in use. Designfolio cannot set up redirects for links to your {""}
-        <span className="text-[#FF553E]">DesignFolio profile</span> that
-        includes your old username.
+      <p className="font-inter mt-2 text-[12.8px] leading-[22.4px] font-[400] text-[#4d545f] dark:text-[#B4B8C6]">
+        You can change your username to another username that is not currently in use. Designfolio
+        cannot set up redirects for links to your {""}
+        <span className="text-[#FF553E]">DesignFolio profile</span> that includes your old username.
       </p>
       <Formik
         initialValues={{ domain: userDetails?.username ?? "" }}
@@ -90,16 +86,9 @@ export default function ChangeUsername() {
           }
         }}
       >
-        {({
-          isSubmitting,
-          isValid,
-          setFieldValue,
-          values,
-          errors,
-          touched,
-        }) => (
-          <Form id={"usernameForm"} className=" w-full mt-[24px]">
-            <div className="flex flex-col xl:flex-row items-end  gap-4  m-auto">
+        {({ isSubmitting, isValid, setFieldValue, values, errors, touched }) => (
+          <Form id={"usernameForm"} className="mt-[24px] w-full">
+            <div className="m-auto flex flex-col items-end gap-4 xl:flex-row">
               <div className="w-full">
                 <div className="relative">
                   <Field name="domain">
@@ -110,36 +99,39 @@ export default function ChangeUsername() {
                         type="text"
                         placeholder="Your-name"
                         autoComplete="off"
-                        className={((!!errors.domain && values.domain) || (!isAvailable && values.domain)) ? "border-destructive focus-visible:ring-destructive" : ""}
+                        className={
+                          (!!errors.domain && values.domain) || (!isAvailable && values.domain)
+                            ? "border-destructive focus-visible:ring-destructive"
+                            : ""
+                        }
                         onChange={(e) => handleChange(e, setFieldValue)}
                       />
                     )}
                   </Field>
-                  <div className="flex justify-center items-center gap-[10px] absolute top-[18px] right-[20px]">
-                    {domainValue &&
-                      values?.domain !== userDetails?.username && (
-                        <>
-                          {isAvailable ? (
-                            <img
-                              src="/assets/svgs/checkbox.svg"
-                              className="w-[18px] h-[18px]"
-                              alt="designfolio logo"
-                            />
-                          ) : (
-                            <img
-                              src="/assets/svgs/no.svg"
-                              className="w-[18px] h-[18px]"
-                              alt="designfolio logo"
-                            />
-                          )}
-                        </>
-                      )}
+                  <div className="absolute top-[18px] right-[20px] flex items-center justify-center gap-[10px]">
+                    {domainValue && values?.domain !== userDetails?.username && (
+                      <>
+                        {isAvailable ? (
+                          <img
+                            src="/assets/svgs/checkbox.svg"
+                            className="h-[18px] w-[18px]"
+                            alt="designfolio logo"
+                          />
+                        ) : (
+                          <img
+                            src="/assets/svgs/no.svg"
+                            className="h-[18px] w-[18px]"
+                            alt="designfolio logo"
+                          />
+                        )}
+                      </>
+                    )}
                   </div>
                 </div>
                 <ErrorMessage
                   name="domain"
                   component="div"
-                  className="error-message text-[14px] absolute"
+                  className="error-message absolute text-[14px]"
                 />
               </div>
             </div>
@@ -149,7 +141,9 @@ export default function ChangeUsername() {
                 form="usernameForm"
                 className="mt-6"
                 disabled={isSubmitting || !isValid || values?.domain == userDetails?.username}
-              >{isSubmitting ? "Saving…" : "Change username"}</Button>
+              >
+                {isSubmitting ? "Saving…" : "Change username"}
+              </Button>
             </div>
           </Form>
         )}

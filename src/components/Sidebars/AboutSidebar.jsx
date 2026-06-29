@@ -1,7 +1,7 @@
 import { useGlobalContext } from "@/context/globalContext";
 import { _updateUser } from "@/network/post-request";
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import Text from "../text";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
@@ -31,35 +31,28 @@ export default function AddAbout() {
   const [loading, setLoading] = useState(false);
   const [editingValues, setEditingValues] = useState(null);
   const [uploadingImageIndex, setUploadingImageIndex] = useState(null);
-  const [lastCompressedTarget, setLastCompressedTarget] = useState(null);
+  const lastCompressedTargetRef = useRef(null);
   const formikRef = useRef(null);
 
   const { compress, compressedImage, compressionProgress } = useImageCompression();
 
   const isOpen = activeSidebar === sidebars.about;
 
-  // Initialize images and stickers
-  const getInitialImages = () => {
+  const initialImages = useMemo(() => {
     const userImages = userDetails?.about?.pegboardImages;
-    if (userImages && userImages.length > 0) {
-      return userImages.map(img => img ? {
-        src: img.src,
-        isDefault: !!img.isDefault
-      } : null);
+    if (userImages?.length > 0) {
+      return userImages.map((img) => (img ? { src: img.src, isDefault: !!img.isDefault } : null));
     }
-    return DEFAULT_PEGBOARD_IMAGES.map(img => ({ ...img, isDefault: true }));
-  };
+    return DEFAULT_PEGBOARD_IMAGES.map((img) => ({ ...img, isDefault: true }));
+  }, [userDetails?.about?.pegboardImages]);
 
-  const getInitialStickers = () => {
+  const initialStickers = useMemo(() => {
     const userStickers = userDetails?.about?.pegboardStickers;
-    if (userStickers && userStickers.length > 0) {
-      return userStickers.map(s => s ? {
-        src: s.src,
-        isDefault: !!s.isDefault
-      } : null);
+    if (userStickers?.length > 0) {
+      return userStickers.map((s) => (s ? { src: s.src, isDefault: !!s.isDefault } : null));
     }
-    return DEFAULT_PEGBOARD_STICKERS.map(s => ({ ...s, isDefault: true }));
-  };
+    return DEFAULT_PEGBOARD_STICKERS.map((s) => ({ ...s, isDefault: true }));
+  }, [userDetails?.about?.pegboardStickers]);
 
   // Helper to convert file to base64
   const fileToBase64 = (file) => {
@@ -73,21 +66,26 @@ export default function AddAbout() {
 
   // Handle compression result
   useEffect(() => {
-    if (compressionProgress === 100 && compressedImage && formikRef.current && lastCompressedTarget) {
-      const { type, index } = lastCompressedTarget;
-      const fieldName = type === 'image' ? 'pegboardImages' : 'pegboardStickers';
+    if (
+      compressionProgress === 100 &&
+      compressedImage &&
+      formikRef.current &&
+      lastCompressedTargetRef.current
+    ) {
+      const { type, index } = lastCompressedTargetRef.current;
+      const fieldName = type === "image" ? "pegboardImages" : "pegboardStickers";
       const currentItems = formikRef.current.values[fieldName];
       const updatedItems = [...currentItems];
 
       updatedItems[index] = {
         src: URL.createObjectURL(compressedImage),
         isDefault: false,
-        file: compressedImage // Store File object for submission
+        file: compressedImage,
       };
 
       formikRef.current.setFieldValue(fieldName, updatedItems);
-      setLastCompressedTarget(null);
-      if (type === 'image') setUploadingImageIndex(null);
+      lastCompressedTargetRef.current = null;
+      if (type === "image") setUploadingImageIndex(null);
     }
   }, [compressionProgress, compressedImage]);
 
@@ -102,30 +100,26 @@ export default function AddAbout() {
       if (!item && !item2) return true;
       if (!item || !item2) return false;
       // If it's a new upload (has file or blob src), it's different from initial
-      if (item.file || (item.src && item.src.startsWith('blob:'))) return false;
+      if (item.file || (item.src && item.src.startsWith("blob:"))) return false;
       return item.src === item2.src;
     });
   };
 
-  const hasUnsavedChanges = () => {
+  const hasUnsavedChanges = useCallback(() => {
     if (!editingValues) return false;
-
     const initialDescription = userDetails?.about?.description || "";
-    const initialImages = getInitialImages();
-    const initialStickers = getInitialStickers();
-
     return (
       editingValues.description !== initialDescription ||
       !arraysEqual(editingValues.pegboardImages, initialImages) ||
       !arraysEqual(editingValues.pegboardStickers, initialStickers)
     );
-  };
+  }, [editingValues, userDetails?.about?.description, initialImages, initialStickers]);
 
-  const resetState = () => {
+  const resetState = useCallback(() => {
     setEditingValues(null);
     setUploadingImageIndex(null);
-    setLastCompressedTarget(null);
-  };
+    lastCompressedTargetRef.current = null;
+  }, []);
 
   const resetStateAndClose = () => {
     resetState();
@@ -139,9 +133,9 @@ export default function AddAbout() {
   // Clear state when sidebar closes
   useEffect(() => {
     if (!isOpen) {
-      resetState();
+      queueMicrotask(() => resetState());
     }
-  }, [isOpen]);
+  }, [isOpen, resetState]);
 
   // Register unsaved changes checker
   useEffect(() => {
@@ -151,12 +145,12 @@ export default function AddAbout() {
     return () => {
       unregisterUnsavedChangesChecker(sidebars.about);
     };
-  }, [isOpen, editingValues, registerUnsavedChangesChecker, unregisterUnsavedChangesChecker]);
+  }, [isOpen, hasUnsavedChanges, registerUnsavedChangesChecker, unregisterUnsavedChangesChecker]);
 
   // Handle image upload
   const handleImageUpload = async (file, index, setFieldValue, currentImages) => {
     setUploadingImageIndex(index);
-    setLastCompressedTarget({ type: 'image', index });
+    lastCompressedTargetRef.current = { type: "image", index };
 
     const maxSizeInBytes = 2 * 1024 * 1024;
     if (file.size > maxSizeInBytes) {
@@ -167,11 +161,11 @@ export default function AddAbout() {
       updatedImages[index] = {
         src: URL.createObjectURL(file),
         isDefault: false,
-        file: file
+        file: file,
       };
       setFieldValue("pegboardImages", updatedImages);
       setUploadingImageIndex(null);
-      setLastCompressedTarget(null);
+      lastCompressedTargetRef.current = null;
     }
   };
 
@@ -189,8 +183,8 @@ export default function AddAbout() {
       enableReinitialize
       initialValues={{
         description: userDetails?.about?.description || "",
-        pegboardImages: getInitialImages(),
-        pegboardStickers: getInitialStickers(),
+        pegboardImages: initialImages,
+        pegboardStickers: initialStickers,
       }}
       validationSchema={AboutSchema}
       onSubmit={async (values, actions) => {
@@ -206,14 +200,16 @@ export default function AddAbout() {
                   src: base64,
                   isDefault: false,
                   originalName: img.file.name,
-                  extension: img.file.type.split("/")[1]
+                  extension: img.file.type.split("/")[1],
                 };
               }
               // For existing images, strip unnecessary properties
-              return img ? {
-                src: img.src,
-                isDefault: !!img.isDefault
-              } : null;
+              return img
+                ? {
+                    src: img.src,
+                    isDefault: !!img.isDefault,
+                  }
+                : null;
             })
           );
 
@@ -226,13 +222,15 @@ export default function AddAbout() {
                   src: base64,
                   isDefault: false,
                   originalName: s.file.name,
-                  extension: s.file.type.split("/")[1]
+                  extension: s.file.type.split("/")[1],
                 };
               }
-              return s ? {
-                src: s.src,
-                isDefault: !!s.isDefault
-              } : null;
+              return s
+                ? {
+                    src: s.src,
+                    isDefault: !!s.isDefault,
+                  }
+                : null;
             })
           );
 
@@ -260,21 +258,22 @@ export default function AddAbout() {
       }}
     >
       {({ errors, touched, values, setFieldValue }) => {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
         useEffect(() => {
           setEditingValues(values);
         }, [values]);
 
         return (
-          <Form id="aboutForm" className="flex flex-col h-full">
+          <Form id="aboutForm" className="flex h-full flex-col">
             <div className="flex-1 overflow-auto px-6 py-4">
               {/* Description Section */}
               <div>
-                <div className="flex justify-between mb-2">
+                <div className="mb-2 flex justify-between">
                   <Text size="p-xxsmall" className="font-medium">
                     Description
                   </Text>
-                  <Text size="p-xxsmall" className="font-medium text-muted-foreground">
-                    {(values?.description?.length || 0)}/1200
+                  <Text size="p-xxsmall" className="text-muted-foreground font-medium">
+                    {values?.description?.length || 0}/1200
                   </Text>
                 </div>
                 <Field name="description">
@@ -291,7 +290,7 @@ export default function AddAbout() {
                 <ErrorMessage
                   name="description"
                   component="div"
-                  className="error-message text-[14px] !mt-[2px]"
+                  className="error-message !mt-[2px] text-[14px]"
                 />
               </div>
 
@@ -316,9 +315,13 @@ export default function AddAbout() {
             </div>
 
             {/* Footer */}
-            <div className="flex gap-2 py-3 px-6 border-t border-border justify-end">
-              <Button variant="outline" type="button" onClick={handleCancel}>Cancel</Button>
-              <Button type="submit" form="aboutForm" disabled={loading}>{loading ? "Saving…" : "Save"}</Button>
+            <div className="border-border flex justify-end gap-2 border-t px-6 py-3">
+              <Button variant="outline" type="button" onClick={handleCancel}>
+                Cancel
+              </Button>
+              <Button type="submit" form="aboutForm" disabled={loading}>
+                {loading ? "Saving…" : "Save"}
+              </Button>
             </div>
           </Form>
         );

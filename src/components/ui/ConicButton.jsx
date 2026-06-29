@@ -31,13 +31,15 @@ export function ConicButton({
 }) {
   const [hovered, setHovered] = useState(false);
 
-  useEffect(() => { injectKeyframes(); }, []);
+  useEffect(() => {
+    injectKeyframes();
+  }, []);
 
   const isOrange = variant === "orange";
 
   const outerBg = isOrange
-    // ? "conic-gradient(from var(--rgb-angle, 0deg), #ffffff 0deg, #d0ccc6 6deg, #706c68 18deg, #302e2b 32deg, #1c1916 60deg, #1c1916 300deg, #302e2b 328deg, #706c68 342deg, #d0ccc6 354deg, #ffffff 360deg)"
-    ? "conic-gradient(from var(--rgb-angle, 0deg), #ffffff 0deg, #FFD580 6deg, #FF9A3C 18deg, #C0392B 32deg, #E8593A 60deg, #E8593A 300deg, #C0392B 328deg, #FF9A3C 342deg, #FFD580 354deg, #ffffff 360deg)"
+    ? // ? "conic-gradient(from var(--rgb-angle, 0deg), #ffffff 0deg, #d0ccc6 6deg, #706c68 18deg, #302e2b 32deg, #1c1916 60deg, #1c1916 300deg, #302e2b 328deg, #706c68 342deg, #d0ccc6 354deg, #ffffff 360deg)"
+      "conic-gradient(from var(--rgb-angle, 0deg), #ffffff 0deg, #FFD580 6deg, #FF9A3C 18deg, #C0392B 32deg, #E8593A 60deg, #E8593A 300deg, #C0392B 328deg, #FF9A3C 342deg, #FFD580 354deg, #ffffff 360deg)"
     : isDark
       ? "conic-gradient(from var(--rgb-angle, 0deg), #ffffff 0deg, #d0ccc6 6deg, #706c68 18deg, #302e2b 32deg, #1c1916 60deg, #1c1916 300deg, #302e2b 328deg, #706c68 342deg, #d0ccc6 354deg, #ffffff 360deg)"
       : "conic-gradient(from var(--rgb-angle, 0deg), #ffffff 0deg, #c8c4be 6deg, #686460 18deg, #282522 32deg, #1c1916 60deg, #1c1916 300deg, #282522 328deg, #686460 342deg, #c8c4be 354deg, #ffffff 360deg)";
@@ -55,10 +57,16 @@ export function ConicButton({
         : "0 0 0 1px hsl(20,10%,72%), inset 0 1px 0 rgba(255,255,255,0.5)";
 
   const innerBg = isOrange
-    ? hovered && !disabled ? "hsl(7, 100%, 55%)" : "hsl(7, 100%, 62%)"
+    ? hovered && !disabled
+      ? "hsl(7, 100%, 55%)"
+      : "hsl(7, 100%, 62%)"
     : isDark
-      ? hovered ? "hsl(46,35%,97%)" : "hsl(46,29%,94%)"
-      : hovered ? "hsl(20,12%,18%)" : "hsl(20,10%,15%)";
+      ? hovered
+        ? "hsl(46,35%,97%)"
+        : "hsl(46,29%,94%)"
+      : hovered
+        ? "hsl(20,12%,18%)"
+        : "hsl(20,10%,15%)";
 
   const innerColor = isOrange ? "#fff" : isDark ? "hsl(20,10%,10%)" : "hsl(46,29%,94%)";
 

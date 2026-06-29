@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import ClaimDomain from "./claimDomain-old";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView } from "motion/react";
 import Link from "next/link";
 import Button from "./button";
 
@@ -14,19 +14,18 @@ export default function Footer({ dfToken, innerClass = "", className = "" }) {
     <>
       <motion.div
         ref={ref}
-        className={`mt-[75px] w-full xl:mt-[120px] px-[16px] lg:px-0 md:max-w-[1192px] mx-auto ${className}`}
+        className={`mx-auto mt-[75px] w-full px-[16px] md:max-w-[1192px] lg:px-0 xl:mt-[120px] ${className}`}
         initial={{ opacity: 0, translateY: 80 }} // Initial state
         animate={{ opacity: isInView ? 1 : 0, translateY: isInView ? 0 : 80 }} // Animated state
         transition={{ duration: 0.5, ease: [0.17, 0.55, 0.55, 1] }} // Smooth transition
       >
         <div
-          className={`bg-landing-card-bg-color border-[6px] border-solid border-landing-card-border-color py-10 xl:p-0 xl:h-[500px] rounded-[24px] flex flex-col justify-center items-center px-4 md:px-0 ${innerClass}`}
+          className={`bg-landing-card-bg-color border-landing-card-border-color flex flex-col items-center justify-center rounded-[24px] border-[6px] border-solid px-4 py-10 md:px-0 xl:h-[500px] xl:p-0 ${innerClass}`}
         >
-          <p className="text-center text-landing-footer-heading-color md:hidden px-[40px] text-[22px] xl:text-[39.5px] font-satoshi font-[500] xl:leading-[46.87px]">
-            Build your portfolio website now – it&lsquo;s simpler than you
-            think!
+          <p className="text-landing-footer-heading-color font-satoshi px-[40px] text-center text-[22px] font-[500] md:hidden xl:text-[39.5px] xl:leading-[46.87px]">
+            Build your portfolio website now – it&lsquo;s simpler than you think!
           </p>
-          <p className="text-center hidden text-landing-footer-heading-color md:block px-[40px] text-[22px] xl:text-[39.5px] font-satoshi font-[500] xl:leading-[46.87px]">
+          <p className="text-landing-footer-heading-color font-satoshi hidden px-[40px] text-center text-[22px] font-[500] md:block xl:text-[39.5px] xl:leading-[46.87px]">
             <b>
               Your dream port<i>folio</i> is, not days, not{" "}
             </b>
@@ -56,7 +55,7 @@ export default function Footer({ dfToken, innerClass = "", className = "" }) {
 
       <motion.div
         ref={refLink}
-        className="flex flex-col lg:flex-row justify-center items-center gap-5 lg:px-10 lg:justify-between max-w-[1192px] mx-auto pt-20 pb-5"
+        className="mx-auto flex max-w-[1192px] flex-col items-center justify-center gap-5 pt-20 pb-5 lg:flex-row lg:justify-between lg:px-10"
         initial={{ opacity: 0, translateY: 80 }} // Initial state
         animate={{
           opacity: isInLinkView ? 1 : 0,
@@ -64,22 +63,22 @@ export default function Footer({ dfToken, innerClass = "", className = "" }) {
         }} // Animated state
         transition={{ duration: 0.5, ease: [0.17, 0.55, 0.55, 1] }} // Smooth transition
       >
-        <p className="text-[14px] font-[500] text-landing-footer-link-color font-inter">
+        <p className="text-landing-footer-link-color font-inter text-[14px] font-[500]">
           Copyright © {new Date().getFullYear()} Designfolio
         </p>
         <div className="flex gap-3 lg:gap-10">
           <Link href={"/privacy-policy"}>
-            <p className="text-[10px] lg:text-[14px] font-[500] text-landing-footer-link-color font-inter cursor-pointer">
+            <p className="text-landing-footer-link-color font-inter cursor-pointer text-[10px] font-[500] lg:text-[14px]">
               Privacy Policy
             </p>
           </Link>
           <Link href={"terms-and-conditions"}>
-            <p className="text-[10px] lg:text-[14px] font-[500] text-landing-footer-link-color font-inter cursor-pointer">
+            <p className="text-landing-footer-link-color font-inter cursor-pointer text-[10px] font-[500] lg:text-[14px]">
               Terms & Conditions
             </p>
           </Link>
           <Link href={"refund-policy"}>
-            <p className="text-[10px] lg:text-[14px] font-[500] text-landing-footer-link-color font-inter cursor-pointer">
+            <p className="text-landing-footer-link-color font-inter cursor-pointer text-[10px] font-[500] lg:text-[14px]">
               Refund Policy
             </p>
           </Link>

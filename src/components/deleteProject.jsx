@@ -5,8 +5,7 @@ import { _deleteProject } from "@/network/post-request";
 import { useGlobalContext } from "@/context/globalContext";
 
 export default function DeleteProject() {
-  const { closeModal, selectedProject, userDetailsRefecth } =
-    useGlobalContext();
+  const { closeModal, selectedProject, userDetailsRefecth } = useGlobalContext();
   const [loading, setLoading] = useState(false);
   const onDelete = () => {
     setLoading(true);
@@ -18,21 +17,16 @@ export default function DeleteProject() {
       .finally(() => setLoading(false));
   };
   return (
-    <div className="p-[24px] rounded-2xl bg-card  w-[400px]">
+    <div className="bg-card w-[400px] rounded-2xl p-[24px]">
       <Text className="text-modal-heading-color">Confirm Deletion</Text>
       <Text size="p-xsmall" className="text-df-secondary-text-color mt-2">
-        Are you sure you want to delete this case study from your portfolio?
-        This action cannot be undone.
+        Are you sure you want to delete this case study from your portfolio? This action cannot be
+        undone.
       </Text>
 
-      <div className="flex gap-2 mt-[26px] justify-end">
+      <div className="mt-[26px] flex justify-end gap-2">
         <Button text={"Cancel"} onClick={closeModal} type="secondary" />
-        <Button
-          onClick={onDelete}
-          text={"Delete"}
-          type="tertiary"
-          isLoading={loading}
-        />
+        <Button onClick={onDelete} text={"Delete"} type="tertiary" isLoading={loading} />
       </div>
     </div>
   );

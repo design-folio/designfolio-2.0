@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { Plus } from "lucide-react";
 import { useGlobalContext } from "@/context/globalContext";
 import { sidebars } from "@/lib/constant";
@@ -24,28 +24,28 @@ function CanvasToolsMarquee({ isEditing }) {
         damping: 12,
         delay: 0.75,
       }}
-      className="bg-white dark:bg-[#2A2520] rounded-[26px] border border-[#E5D7C4] dark:border-white/10 py-2 w-full relative group/section"
+      className="group/section relative w-full rounded-[26px] border border-[#E5D7C4] bg-white py-2 dark:border-white/10 dark:bg-[#2A2520]"
     >
       {isEditing && (
         <CanvasSectionControls>
           <CanvasSectionButton
-            icon={<Plus className="w-3.5 h-3.5" />}
+            icon={<Plus className="h-3.5 w-3.5" />}
             label="Add Tool"
             onClick={() => openSidebar(sidebars.tools)}
           />
           <SectionVisibilityButton
             sectionId="tools"
             showOnHoverWhenVisible
-            className="w-8 h-8 rounded-full bg-white dark:bg-[#2A2520] shadow-md border border-[#E5D7C4] dark:border-white/10 hover:bg-gray-50 dark:hover:bg-[#35302A]"
+            className="h-8 w-8 rounded-full border border-[#E5D7C4] bg-white shadow-md hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520] dark:hover:bg-[#35302A]"
           />
         </CanvasSectionControls>
       )}
-      <div className="overflow-hidden relative w-full rounded-[32px]">
-        <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-white/80 dark:from-[#2A2520]/80 to-transparent z-10"></div>
-        <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-white/80 dark:from-[#2A2520]/80 to-transparent z-10"></div>
+      <div className="relative w-full overflow-hidden rounded-[32px]">
+        <div className="absolute top-0 bottom-0 left-0 z-10 w-12 bg-gradient-to-r from-white/80 to-transparent dark:from-[#2A2520]/80"></div>
+        <div className="absolute top-0 right-0 bottom-0 z-10 w-12 bg-gradient-to-l from-white/80 to-transparent dark:from-[#2A2520]/80"></div>
 
         <motion.div
-          className="flex gap-8 py-1 w-max"
+          className="flex w-max gap-8 py-1"
           animate={{ x: [0, "-50%"] }}
           transition={{ ease: "linear", duration: 75, repeat: Infinity }}
         >
@@ -54,7 +54,7 @@ function CanvasToolsMarquee({ isEditing }) {
               key={i}
               src={tool.image}
               alt={tool.label}
-              className="flex-shrink-0 w-9 h-9 hover:scale-110 transition-transform cursor-pointer"
+              className="h-9 w-9 shrink-0 cursor-pointer transition-transform hover:scale-110"
             />
           ))}
         </motion.div>

@@ -40,28 +40,19 @@ export function runThemeTransition(originElement, onToggle, options = {}) {
 
   if (playSound) playThemeSwitchSound();
 
-  if (
-    ripple &&
-    typeof document !== "undefined" &&
-    document.startViewTransition
-  ) {
+  if (ripple && typeof document !== "undefined" && document.startViewTransition) {
     document
       .startViewTransition(() => {
         flushSync(() => onToggle());
       })
       .ready.then(() => {
         const el = originElement;
-        const {
-          left = 0,
-          top = 0,
-          width = 0,
-          height = 0,
-        } = el ? el.getBoundingClientRect() : {};
+        const { left = 0, top = 0, width = 0, height = 0 } = el ? el.getBoundingClientRect() : {};
         const centerX = left + width / 2;
         const centerY = top + height / 2;
         const maxDistance = Math.hypot(
           Math.max(centerX, window.innerWidth - centerX),
-          Math.max(centerY, window.innerHeight - centerY),
+          Math.max(centerY, window.innerHeight - centerY)
         );
         document.documentElement.animate(
           {
@@ -74,7 +65,7 @@ export function runThemeTransition(originElement, onToggle, options = {}) {
             duration: 700,
             easing: "ease-in-out",
             pseudoElement: "::view-transition-new(root)",
-          },
+          }
         );
       });
   } else {

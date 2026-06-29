@@ -37,13 +37,8 @@ const TiptapEditor = dynamic(() => import("./tiptapEditor"), {
 });
 
 export default function Editor({ edit, projectDetails, refetchProjectDetail }) {
-  const {
-    userDetails,
-    setUserDetails,
-    setPopoverMenu,
-    showModal,
-    popoverMenu,
-  } = useGlobalContext();
+  const { userDetails, setUserDetails, setPopoverMenu, showModal, popoverMenu } =
+    useGlobalContext();
 
   const isMono = userDetails?.template === TEMPLATE_IDS.MONO;
   const isChatfolio = userDetails?.template === TEMPLATE_IDS.CHATFOLIO;
@@ -76,7 +71,7 @@ export default function Editor({ edit, projectDetails, refetchProjectDetail }) {
     );
 
   return (
-    <div className="editor-container flex-1 flex flex-col gap-3">
+    <div className="editor-container flex flex-1 flex-col gap-3">
       {projectDetails && (
         <>
           <ProjectInfo
@@ -89,18 +84,14 @@ export default function Editor({ edit, projectDetails, refetchProjectDetail }) {
             popoverMenu={popoverMenu}
             refetchProjectDetail={refetchProjectDetail}
           />
-          <div className={isMono ? "px-5 md:px-8 py-6" : ""}>
+          <div className={isMono ? "px-5 py-6 md:px-8" : ""}>
             {isChatfolio ? (
-              <div className="flex items-end gap-3 max-w-[95%] mb-20">
-                <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 mb-0.5 border border-black/5 dark:border-white/5">
-                  <img
-                    src={avatarSrc}
-                    alt={firstName}
-                    className="w-full h-full object-cover"
-                  />
+              <div className="mb-20 flex max-w-[95%] items-end gap-3">
+                <div className="mb-0.5 h-8 w-8 shrink-0 overflow-hidden rounded-full border border-black/5 dark:border-white/5">
+                  <img src={avatarSrc} alt={firstName} className="h-full w-full object-cover" />
                 </div>
-                <div className="flex flex-col gap-1 w-full">
-                  <span className="text-[11px] text-[#7A736C] dark:text-[#B5AFA5] ml-1 font-medium">
+                <div className="flex w-full flex-col gap-1">
+                  <span className="ml-1 text-[11px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">
                     {firstName}
                   </span>
                   {editorBody}

@@ -1,12 +1,5 @@
-import {
-  forwardRef,
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useMemo,
-  useState,
-} from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { cn } from "@/lib/utils";
 
 const TextRotate = forwardRef(
@@ -77,35 +70,52 @@ const TextRotate = forwardRef(
       [staggerFrom, staggerDuration]
     );
 
-    const handleIndexChange = useCallback((newIndex) => {
-      setCurrentTextIndex(newIndex);
-      onNext?.(newIndex);
-    }, [onNext]);
+    const handleIndexChange = useCallback(
+      (newIndex) => {
+        setCurrentTextIndex(newIndex);
+        onNext?.(newIndex);
+      },
+      [onNext]
+    );
 
     const next = useCallback(() => {
-      const nextIndex = currentTextIndex === texts.length - 1
-        ? (loop ? 0 : currentTextIndex)
-        : currentTextIndex + 1;
+      const nextIndex =
+        currentTextIndex === texts.length - 1
+          ? loop
+            ? 0
+            : currentTextIndex
+          : currentTextIndex + 1;
       if (nextIndex !== currentTextIndex) handleIndexChange(nextIndex);
     }, [currentTextIndex, texts.length, loop, handleIndexChange]);
 
     const previous = useCallback(() => {
-      const prevIndex = currentTextIndex === 0
-        ? (loop ? texts.length - 1 : currentTextIndex)
-        : currentTextIndex - 1;
+      const prevIndex =
+        currentTextIndex === 0
+          ? loop
+            ? texts.length - 1
+            : currentTextIndex
+          : currentTextIndex - 1;
       if (prevIndex !== currentTextIndex) handleIndexChange(prevIndex);
     }, [currentTextIndex, texts.length, loop, handleIndexChange]);
 
-    const jumpTo = useCallback((index) => {
-      const validIndex = Math.max(0, Math.min(index, texts.length - 1));
-      if (validIndex !== currentTextIndex) handleIndexChange(validIndex);
-    }, [texts.length, currentTextIndex, handleIndexChange]);
+    const jumpTo = useCallback(
+      (index) => {
+        const validIndex = Math.max(0, Math.min(index, texts.length - 1));
+        if (validIndex !== currentTextIndex) handleIndexChange(validIndex);
+      },
+      [texts.length, currentTextIndex, handleIndexChange]
+    );
 
     const reset = useCallback(() => {
       if (currentTextIndex !== 0) handleIndexChange(0);
     }, [currentTextIndex, handleIndexChange]);
 
-    useImperativeHandle(ref, () => ({ next, previous, jumpTo, reset }), [next, previous, jumpTo, reset]);
+    useImperativeHandle(ref, () => ({ next, previous, jumpTo, reset }), [
+      next,
+      previous,
+      jumpTo,
+      reset,
+    ]);
 
     useEffect(() => {
       if (!auto) return;
@@ -124,7 +134,7 @@ const TextRotate = forwardRef(
         <AnimatePresence mode={animatePresenceMode} initial={animatePresenceInitial}>
           <motion.div
             key={currentTextIndex}
-            className={cn("flex flex-wrap", splitBy === "lines" && "flex-col w-full")}
+            className={cn("flex flex-wrap", splitBy === "lines" && "w-full flex-col")}
             layout
             aria-hidden="true"
           >

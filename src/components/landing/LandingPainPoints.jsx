@@ -1,10 +1,10 @@
 export default function LandingPainPoints() {
   return (
     <section
-      className="w-full px-6 pt-12 pb-4 flex flex-col items-center"
+      className="flex w-full flex-col items-center px-6 pt-12 pb-4"
       style={{ fontFamily: "var(--font-manrope), sans-serif" }}
     >
-      <h2 className="text-[28px] font-bold text-[--lp-text] tracking-tight leading-tight text-center text-balance" >
+      <h2 className="text-center text-[28px] leading-tight font-bold tracking-tight text-balance text-(--lp-text)">
         If you and Designfolio ever talked....
       </h2>
     </section>

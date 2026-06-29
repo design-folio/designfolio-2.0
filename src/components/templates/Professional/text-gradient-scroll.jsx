@@ -1,6 +1,6 @@
 "use client";
 import React, { createContext, useContext, useEffect } from "react";
-import { useTransform, motion, useMotionValue, animate } from "framer-motion";
+import { useTransform, motion, useMotionValue, animate } from "motion/react";
 import { cn } from "@/lib/utils";
 
 const TextGradientScrollContext = createContext({});
@@ -10,12 +10,7 @@ function useGradientScroll() {
   return context;
 }
 
-function TextGradientScroll({
-  text,
-  className,
-  type = "letter",
-  textOpacity = "soft",
-}) {
+function TextGradientScroll({ text, className, type = "letter", textOpacity = "soft" }) {
   const progress = useMotionValue(0);
 
   useEffect(() => {
@@ -31,12 +26,8 @@ function TextGradientScroll({
   // Split by double newline to maintain paragraphs
   const paragraphs = text.split("\n\n");
 
-  let totalWords = 0;
-  const paragraphWords = paragraphs.map((p) => {
-    const words = p.split(/\s+/).filter((w) => w.length > 0);
-    totalWords += words.length;
-    return words;
-  });
+  const paragraphWords = paragraphs.map((p) => p.split(/\s+/).filter((w) => w.length > 0));
+  const totalWords = paragraphWords.reduce((sum, words) => sum + words.length, 0);
 
   let currentWordIndex = 0;
 
@@ -44,10 +35,7 @@ function TextGradientScroll({
     <TextGradientScrollContext.Provider value={{ textOpacity, type }}>
       <div className={cn("", className)}>
         {paragraphWords.map((words, pIndex) => (
-          <p
-            key={pIndex}
-            className={pIndex < paragraphWords.length - 1 ? "mb-8" : "m-0"}
-          >
+          <p key={pIndex} className={pIndex < paragraphWords.length - 1 ? "mb-8" : "m-0"}>
             {words.map((word, i) => {
               const start = currentWordIndex / totalWords;
               const end = (currentWordIndex + 1) / totalWords;

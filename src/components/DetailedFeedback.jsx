@@ -47,11 +47,11 @@ const DetailedFeedback = ({ feedbackData, onStartNew }) => {
   };
 
   return (
-    <div className="w-full max-w-6xl 2xl:max-w-7xl mx-auto space-y-6 px-4">
-      <div className="flex flex-wrap gap-4 justify-center action-buttons">
+    <div className="mx-auto w-full max-w-6xl space-y-6 px-4 2xl:max-w-7xl">
+      <div className="action-buttons flex flex-wrap justify-center gap-4">
         <button
           onClick={handleDownloadPDF}
-          className="rounded-full border-2 border-foreground/20 bg-white/50 backdrop-blur-sm px-4 py-2 text-sm font-medium text-foreground hover:bg-foreground/10 transition-colors"
+          className="border-foreground/20 text-foreground hover:bg-foreground/10 rounded-full border-2 bg-white/50 px-4 py-2 text-sm font-medium backdrop-blur-sm transition-colors"
         >
           Download PDF
         </button>
@@ -59,7 +59,7 @@ const DetailedFeedback = ({ feedbackData, onStartNew }) => {
           type="button"
           onClick={handleStartOver}
           disabled={isStartingOver}
-          className="rounded-full h-11 px-6 text-base font-semibold bg-foreground text-background hover:bg-foreground/90 transition-colors disabled:opacity-70 disabled:pointer-events-none"
+          className="bg-foreground text-background hover:bg-foreground/90 h-11 rounded-full px-6 text-base font-semibold transition-colors disabled:pointer-events-none disabled:opacity-70"
         >
           {isStartingOver ? "Loading…" : "Start New Interview"}
         </button>
@@ -67,10 +67,10 @@ const DetailedFeedback = ({ feedbackData, onStartNew }) => {
 
       <div ref={reportRef}>
         <div className="p-6">
-          <h2 className="text-2xl font-bold mb-6">Interview Feedback Report</h2>
+          <h2 className="mb-6 text-2xl font-bold">Interview Feedback Report</h2>
 
           <div className="mb-8">
-            <h3 className="text-xl font-semibold mb-4">Interview Summary</h3>
+            <h3 className="mb-4 text-xl font-semibold">Interview Summary</h3>
             <div className="grid grid-cols-3 gap-4">
               <div>
                 <p className="font-medium">Duration</p>
@@ -89,14 +89,12 @@ const DetailedFeedback = ({ feedbackData, onStartNew }) => {
 
           {/* Overall Score */}
           <div className="mb-8">
-            <div className="flex justify-center my-10">
-              <div className="relative w-32 h-32">
+            <div className="my-10 flex justify-center">
+              <div className="relative h-32 w-32">
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-2xl font-bold text-gray-900">
-                    {feedbackData.score}%
-                  </span>
+                  <span className="text-2xl font-bold text-gray-900">{feedbackData.score}%</span>
                 </div>
-                <svg className="w-32 h-32 transform -rotate-90">
+                <svg className="h-32 w-32 -rotate-90 transform">
                   <circle
                     cx="64"
                     cy="64"
@@ -116,123 +114,79 @@ const DetailedFeedback = ({ feedbackData, onStartNew }) => {
                     strokeLinecap="round"
                     className="text-primary"
                     strokeDasharray={351.86}
-                    strokeDashoffset={
-                      351.86 - (351.86 * feedbackData.score) / 100
-                    }
+                    strokeDashoffset={351.86 - (351.86 * feedbackData.score) / 100}
                   />
                 </svg>
               </div>
             </div>
-            <p className="text-gray-700 text-center mt-4">
-              {feedbackData.overallFeedback}
-            </p>
+            <p className="mt-4 text-center text-gray-700">{feedbackData.overallFeedback}</p>
           </div>
 
           <div className="mb-8">
-            <h3 className="text-xl font-semibold mb-4">Skill Analysis</h3>
+            <h3 className="mb-4 text-xl font-semibold">Skill Analysis</h3>
             <div className="space-y-4">
               <div>
                 <h4 className="font-medium">Technical Skills</h4>
-                <p className="text-gray-700">
-                  {feedbackData.skillAnalysis.technical}
-                </p>
+                <p className="text-gray-700">{feedbackData.skillAnalysis.technical}</p>
               </div>
               <div>
                 <h4 className="font-medium">Domain Knowledge</h4>
-                <p className="text-gray-700">
-                  {feedbackData.skillAnalysis.domain}
-                </p>
+                <p className="text-gray-700">{feedbackData.skillAnalysis.domain}</p>
               </div>
               <div>
                 <h4 className="font-medium">Methodology</h4>
-                <p className="text-gray-700">
-                  {feedbackData.skillAnalysis.methodology}
-                </p>
+                <p className="text-gray-700">{feedbackData.skillAnalysis.methodology}</p>
               </div>
             </div>
           </div>
 
           {/* Soft Skills */}
           <div className="mb-8">
-            <h3 className="text-xl font-semibold mb-4">
-              Soft Skills Evaluation
-            </h3>
+            <h3 className="mb-4 text-xl font-semibold">Soft Skills Evaluation</h3>
             <div className="space-y-4">
               <div>
                 <label className="text-sm font-medium">Communication</label>
                 <ProgressBar
                   progress={feedbackData.softSkills.communication}
-                  className="h-2 !mt-4"
+                  className="!mt-4 h-2"
                 />
-                <p className="text-sm text-gray-600 mt-1">
-                  Clarity and structure of responses
-                </p>
+                <p className="mt-1 text-sm text-gray-600">Clarity and structure of responses</p>
               </div>
               <div>
-                <label className="text-sm font-medium">
-                  Technical Articulation
-                </label>
-                <ProgressBar
-                  progress={feedbackData.softSkills.articulation}
-                  className="h-2"
-                />
-                <p className="text-sm text-gray-600 mt-1">
-                  Ability to explain technical concepts
-                </p>
+                <label className="text-sm font-medium">Technical Articulation</label>
+                <ProgressBar progress={feedbackData.softSkills.articulation} className="h-2" />
+                <p className="mt-1 text-sm text-gray-600">Ability to explain technical concepts</p>
               </div>
               <div>
                 <label className="text-sm font-medium">Problem Solving</label>
-                <ProgressBar
-                  progress={feedbackData.softSkills.problemSolving}
-                  className="h-2"
-                />
-                <p className="text-sm text-gray-600 mt-1">
-                  Approach to solving complex problems
-                </p>
+                <ProgressBar progress={feedbackData.softSkills.problemSolving} className="h-2" />
+                <p className="mt-1 text-sm text-gray-600">Approach to solving complex problems</p>
               </div>
               <div>
-                <label className="text-sm font-medium">
-                  Professional Communication
-                </label>
+                <label className="text-sm font-medium">Professional Communication</label>
                 <ProgressBar
                   progress={feedbackData.softSkills.professionalCommunication}
                   className="h-2"
                 />
-                <p className="text-sm text-gray-600 mt-1">
-                  Tone and professionalism
-                </p>
+                <p className="mt-1 text-sm text-gray-600">Tone and professionalism</p>
               </div>
               <div>
                 <label className="text-sm font-medium">Adaptability</label>
-                <ProgressBar
-                  progress={feedbackData.softSkills.adaptability}
-                  className="h-2"
-                />
-                <p className="text-sm text-gray-600 mt-1">
-                  Flexibility in approach
-                </p>
+                <ProgressBar progress={feedbackData.softSkills.adaptability} className="h-2" />
+                <p className="mt-1 text-sm text-gray-600">Flexibility in approach</p>
               </div>
               <div>
-                <label className="text-sm font-medium">
-                  Detail Orientation
-                </label>
-                <ProgressBar
-                  progress={feedbackData.softSkills.detailOrientation}
-                  className="h-2"
-                />
-                <p className="text-sm text-gray-600 mt-1">
-                  Thoroughness and precision
-                </p>
+                <label className="text-sm font-medium">Detail Orientation</label>
+                <ProgressBar progress={feedbackData.softSkills.detailOrientation} className="h-2" />
+                <p className="mt-1 text-sm text-gray-600">Thoroughness and precision</p>
               </div>
             </div>
           </div>
 
           {/* Strengths & Areas for Improvement */}
-          <div className="grid md:grid-cols-2 gap-6 mb-8">
+          <div className="mb-8 grid gap-6 md:grid-cols-2">
             <div>
-              <h3 className="text-xl font-semibold text-green-600 mb-2">
-                Strengths
-              </h3>
+              <h3 className="mb-2 text-xl font-semibold text-green-600">Strengths</h3>
               <ul className="list-disc pl-6">
                 {feedbackData.strengths.map((strength, index) => (
                   <li key={index}>{strength}</li>
@@ -240,9 +194,7 @@ const DetailedFeedback = ({ feedbackData, onStartNew }) => {
               </ul>
             </div>
             <div>
-              <h3 className="text-xl font-semibold text-orange-600 mb-2">
-                Areas for Improvement
-              </h3>
+              <h3 className="mb-2 text-xl font-semibold text-orange-600">Areas for Improvement</h3>
               <ul className="list-disc pl-6">
                 {feedbackData.improvements.map((improvement, index) => (
                   <li key={index}>{improvement}</li>
@@ -253,25 +205,17 @@ const DetailedFeedback = ({ feedbackData, onStartNew }) => {
 
           {/* Question Analysis */}
           <div className="mb-8">
-            <h3 className="text-xl font-semibold mb-4">
-              Detailed Question Analysis
-            </h3>
+            <h3 className="mb-4 text-xl font-semibold">Detailed Question Analysis</h3>
             {feedbackData.questionAnswers.map((qa, index) => (
-              <div key={index} className="mb-6 p-4 border rounded-lg">
-                <div className="flex justify-between items-start mb-2">
+              <div key={index} className="mb-6 rounded-lg border p-4">
+                <div className="mb-2 flex items-start justify-between">
                   <h4 className="font-medium">Question {index + 1}</h4>
-                  <span
-                    className={`px-2 py-1 rounded ${getScoreColor(
-                      qa.score
-                    )} bg-opacity-10`}
-                  >
+                  <span className={`rounded px-2 py-1 ${getScoreColor(qa.score)} bg-opacity-10`}>
                     Score: {qa.score}
                   </span>
                 </div>
                 <p className="mb-2 font-medium">{qa.question}</p>
-                <p className="mb-2 text-gray-600">
-                  Your Answer: {qa.userAnswer}
-                </p>
+                <p className="mb-2 text-gray-600">Your Answer: {qa.userAnswer}</p>
                 <p className="text-sm text-gray-700">Feedback: {qa.feedback}</p>
                 <p className="text-sm text-gray-700">
                   Communication Feedback: {qa.communicationFeedback}
@@ -280,11 +224,9 @@ const DetailedFeedback = ({ feedbackData, onStartNew }) => {
             ))}
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid gap-6 md:grid-cols-3">
             <div>
-              <h3 className="text-xl font-semibold text-blue-600 mb-4">
-                Skill Recommendations
-              </h3>
+              <h3 className="mb-4 text-xl font-semibold text-blue-600">Skill Recommendations</h3>
               <ul className="list-disc pl-6">
                 {feedbackData.recommendations.skillBased.map((rec, index) => (
                   <li key={index}>{rec}</li>
@@ -292,33 +234,25 @@ const DetailedFeedback = ({ feedbackData, onStartNew }) => {
               </ul>
             </div>
             <div>
-              <h3 className="text-xl font-semibold text-blue-600 mb-4">
-                Resources
-              </h3>
+              <h3 className="mb-4 text-xl font-semibold text-blue-600">Resources</h3>
               <ul className="list-disc pl-6">
-                {feedbackData.recommendations.resources.map(
-                  (resource, index) => (
-                    <li key={index}>{resource}</li>
-                  )
-                )}
+                {feedbackData.recommendations.resources.map((resource, index) => (
+                  <li key={index}>{resource}</li>
+                ))}
               </ul>
             </div>
             <div>
-              <h3 className="text-xl font-semibold text-blue-600 mb-4">
-                Interview Tips
-              </h3>
+              <h3 className="mb-4 text-xl font-semibold text-blue-600">Interview Tips</h3>
               <ul className="list-disc pl-6">
-                {feedbackData.recommendations.interviewTips.map(
-                  (tip, index) => (
-                    <li key={index}>{tip}</li>
-                  )
-                )}
+                {feedbackData.recommendations.interviewTips.map((tip, index) => (
+                  <li key={index}>{tip}</li>
+                ))}
               </ul>
             </div>
           </div>
 
           {/* Footer */}
-          <div className="mt-8 pt-4 border-t text-center">
+          <div className="mt-8 border-t pt-4 text-center">
             <a
               href="https://www.designfolio.me/"
               target="_blank"
@@ -343,9 +277,7 @@ const DetailedFeedback = ({ feedbackData, onStartNew }) => {
                 />
               </svg>
             </a>
-            <p className="mt-2 text-sm text-gray-500">
-              Mock Interview Results by designfolio.me
-            </p>
+            <p className="mt-2 text-sm text-gray-500">Mock Interview Results by designfolio.me</p>
           </div>
         </div>
       </div>

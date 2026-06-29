@@ -8,13 +8,7 @@ const labelVariants = cva(
 );
 
 const Label = forwardRef(function Label({ className, ...props }, ref) {
-  return (
-    <LabelPrimitive.Root
-      ref={ref}
-      className={cn(labelVariants(), className)}
-      {...props}
-    />
-  );
+  return <LabelPrimitive.Root ref={ref} className={cn(labelVariants(), className)} {...props} />;
 });
 Label.displayName = LabelPrimitive.Root.displayName;
 

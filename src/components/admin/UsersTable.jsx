@@ -34,12 +34,7 @@ import {
   Columns3,
 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { CopyButton } from "@/components/ui/copy-button";
 import UserRowActions from "./UserRowActions";
 import TimestampCell from "./TimestampCell";
@@ -54,7 +49,7 @@ function AvatarInitials({ name, email }) {
     .toUpperCase();
   return (
     <div
-      className="size-8 rounded-full bg-[#F0EDE7] dark:bg-[#231F1A] flex items-center justify-center shrink-0"
+      className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#F0EDE7] dark:bg-[#231F1A]"
       aria-hidden="true"
     >
       <span className="text-xs font-medium text-[#7A736C] dark:text-[#B5AFA5]">{initials}</span>
@@ -77,14 +72,15 @@ function getOrderId(order) {
 function PlanBadge({ plan }) {
   if (!plan || plan === "free") {
     return (
-      <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-[#F0EDE7] dark:bg-[#2A2520] text-[#7A736C] dark:text-[#B5AFA5] border border-[#E5D7C4] dark:border-white/10">
+      <span className="inline-flex items-center rounded border border-[#E5D7C4] bg-[#F0EDE7] px-1.5 py-0.5 text-[10px] font-medium text-[#7A736C] dark:border-white/10 dark:bg-[#2A2520] dark:text-[#B5AFA5]">
         Free
       </span>
     );
   }
-  const label = { lifetime: "Lifetime", mthly: "Monthly", qtrly: "Quarterly", yrly: "Yearly" }[plan] ?? plan;
+  const label =
+    { lifetime: "Lifetime", mthly: "Monthly", qtrly: "Quarterly", yrly: "Yearly" }[plan] ?? plan;
   return (
-    <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-[#F0EDE7] dark:bg-[#2A2520] text-[#1A1A1A] dark:text-[#F0EDE7] border border-[#E5D7C4] dark:border-white/10">
+    <span className="inline-flex items-center rounded border border-[#E5D7C4] bg-[#F0EDE7] px-1.5 py-0.5 text-[10px] font-medium text-[#1A1A1A] dark:border-white/10 dark:bg-[#2A2520] dark:text-[#F0EDE7]">
       {label}
     </span>
   );
@@ -94,17 +90,17 @@ function UserCell({ user }) {
   const name = [user.firstName, user.lastName].filter(Boolean).join(" ") || user.username || "—";
 
   return (
-    <div className="flex items-center gap-2.5 min-w-0">
+    <div className="flex min-w-0 items-center gap-2.5">
       <AvatarInitials name={name} email={user.email} />
       <div className="min-w-0">
-        <p className="text-sm font-medium text-[#1A1A1A] dark:text-[#F0EDE7] truncate">{name}</p>
-        <div className="flex items-center gap-1 min-w-0">
-          <p className="text-xs text-[#7A736C] dark:text-[#B5AFA5] truncate">{user.email}</p>
+        <p className="truncate text-sm font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">{name}</p>
+        <div className="flex min-w-0 items-center gap-1">
+          <p className="truncate text-xs text-[#7A736C] dark:text-[#B5AFA5]">{user.email}</p>
           <CopyButton
             content={user.email}
             delay={1500}
             iconSize={11}
-            className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity text-[#7A736C] dark:text-[#B5AFA5] size-4"
+            className="size-4 shrink-0 text-[#7A736C] opacity-0 transition-opacity group-hover:opacity-100 dark:text-[#B5AFA5]"
             aria-label={`Copy ${user.email}`}
           />
         </div>
@@ -128,11 +124,11 @@ const COLUMN_LABELS = {
 };
 
 const DELETION_REASON_LABELS = {
-  "not-useful":       "Didn't find it useful",
+  "not-useful": "Didn't find it useful",
   "missing-features": "Missing features I need",
-  "switching":        "Switching to another tool",
-  "expensive":        "Too expensive",
-  "exploring":        "Just exploring",
+  switching: "Switching to another tool",
+  expensive: "Too expensive",
+  exploring: "Just exploring",
 };
 
 const COLUMNS = [
@@ -150,7 +146,7 @@ const COLUMNS = [
       return (
         <button
           type="button"
-          className="flex items-center gap-1 text-xs font-medium text-[#7A736C] dark:text-[#B5AFA5] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7] transition-colors duration-120"
+          className="flex items-center gap-1 text-xs font-medium text-[#7A736C] transition-colors duration-120 hover:text-[#1A1A1A] dark:text-[#B5AFA5] dark:hover:text-[#F0EDE7]"
           onClick={() => column.toggleSorting(sorted === "asc")}
           aria-label={`Sort by joined date${sorted === "asc" ? ", ascending" : sorted === "desc" ? ", descending" : ""}`}
         >
@@ -168,7 +164,7 @@ const COLUMNS = [
         return (
           <Badge
             variant="outline"
-            className="text-xs border-red-200 text-red-700 bg-red-50 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800"
+            className="border-red-200 bg-red-50 text-xs text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400"
           >
             Deleted
           </Badge>
@@ -177,12 +173,14 @@ const COLUMNS = [
       return getValue() ? (
         <Badge
           variant="outline"
-          className="text-xs border-green-200 text-green-700 bg-green-50 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800"
+          className="border-green-200 bg-green-50 text-xs text-green-700 dark:border-green-800 dark:bg-green-900/20 dark:text-green-400"
         >
           Verified
         </Badge>
       ) : (
-        <span className="text-[#7A736C] dark:text-[#B5AFA5] text-sm" aria-label="Not verified">—</span>
+        <span className="text-sm text-[#7A736C] dark:text-[#B5AFA5]" aria-label="Not verified">
+          —
+        </span>
       );
     },
   },
@@ -202,13 +200,30 @@ const COLUMNS = [
         { label: "Via", value: aggregatorLabel },
         orderId ? { label: "Order ID", value: orderId } : null,
         activeOrder.amountMajor != null
-          ? { label: "Amount", value: `${activeOrder.currency} ${activeOrder.amountMajor.toLocaleString()}` }
+          ? {
+              label: "Amount",
+              value: `${activeOrder.currency} ${activeOrder.amountMajor.toLocaleString()}`,
+            }
           : null,
         activeOrder.createdAt
-          ? { label: "Date", value: new Date(activeOrder.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) }
+          ? {
+              label: "Date",
+              value: new Date(activeOrder.createdAt).toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              }),
+            }
           : null,
         activeOrder.proExpiresAt
-          ? { label: "Expires", value: new Date(activeOrder.proExpiresAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) }
+          ? {
+              label: "Expires",
+              value: new Date(activeOrder.proExpiresAt).toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              }),
+            }
           : null,
       ].filter(Boolean);
 
@@ -218,12 +233,12 @@ const COLUMNS = [
             <TooltipTrigger asChild>
               <span className="cursor-default">{badge}</span>
             </TooltipTrigger>
-            <TooltipContent side="top" className="p-0 bg-transparent border-0 shadow-none">
-              <div className="bg-[#231F1A] text-[#F0EDE7] rounded-md p-3 min-w-[220px] space-y-1.5 border border-white/10 shadow-lg">
+            <TooltipContent side="top" className="border-0 bg-transparent p-0 shadow-none">
+              <div className="min-w-[220px] space-y-1.5 rounded-md border border-white/10 bg-[#231F1A] p-3 text-[#F0EDE7] shadow-lg">
                 {rows.map(({ label, value }) => (
                   <div key={label} className="flex items-baseline justify-between gap-4">
-                    <span className="text-[10px] font-mono text-[#B5AFA5] shrink-0">{label}:</span>
-                    <span className="text-[11px] font-mono text-right break-all">{value}</span>
+                    <span className="shrink-0 font-mono text-[10px] text-[#B5AFA5]">{label}:</span>
+                    <span className="text-right font-mono text-[11px] break-all">{value}</span>
                   </div>
                 ))}
               </div>
@@ -239,7 +254,11 @@ const COLUMNS = [
     cell: ({ row }) => {
       const { hasLive, username, status } = row.original;
       if (status === 1 || !hasLive) {
-        return <span className="text-[#7A736C] dark:text-[#B5AFA5] text-sm" aria-label="Not live">—</span>;
+        return (
+          <span className="text-sm text-[#7A736C] dark:text-[#B5AFA5]" aria-label="Not live">
+            —
+          </span>
+        );
       }
       if (username) {
         return (
@@ -248,13 +267,17 @@ const COLUMNS = [
             target="_blank"
             rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()}
-            className="inline-flex items-center gap-1 text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline"
+            className="inline-flex items-center gap-1 text-xs font-medium text-blue-600 hover:underline dark:text-blue-400"
           >
             Live <ExternalLink size={10} aria-hidden="true" />
           </a>
         );
       }
-      return <Badge variant="default" className="text-xs">Live</Badge>;
+      return (
+        <Badge variant="default" className="text-xs">
+          Live
+        </Badge>
+      );
     },
   },
   {
@@ -264,7 +287,7 @@ const COLUMNS = [
       return (
         <button
           type="button"
-          className="flex items-center gap-1 text-xs font-medium text-[#7A736C] dark:text-[#B5AFA5] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7] transition-colors duration-120"
+          className="flex items-center gap-1 text-xs font-medium text-[#7A736C] transition-colors duration-120 hover:text-[#1A1A1A] dark:text-[#B5AFA5] dark:hover:text-[#F0EDE7]"
           onClick={() => column.toggleSorting(sorted === "asc")}
           aria-label={`Sort by published date${sorted === "asc" ? ", ascending" : sorted === "desc" ? ", descending" : ""}`}
         >
@@ -274,7 +297,7 @@ const COLUMNS = [
     },
     cell: ({ getValue }) => {
       const val = getValue();
-      if (!val) return <span className="text-[#7A736C] dark:text-[#B5AFA5] text-sm">—</span>;
+      if (!val) return <span className="text-sm text-[#7A736C] dark:text-[#B5AFA5]">—</span>;
       return <TimestampCell date={val} />;
     },
   },
@@ -285,7 +308,7 @@ const COLUMNS = [
       return (
         <button
           type="button"
-          className="flex items-center gap-1 text-xs font-medium text-[#7A736C] dark:text-[#B5AFA5] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7] transition-colors duration-120"
+          className="flex items-center gap-1 text-xs font-medium text-[#7A736C] transition-colors duration-120 hover:text-[#1A1A1A] dark:text-[#B5AFA5] dark:hover:text-[#F0EDE7]"
           onClick={() => column.toggleSorting(sorted === "asc")}
           aria-label={`Sort by project count${sorted === "asc" ? ", ascending" : sorted === "desc" ? ", descending" : ""}`}
         >
@@ -294,7 +317,7 @@ const COLUMNS = [
       );
     },
     cell: ({ getValue }) => (
-      <span className="text-sm tabular-nums text-[#7A736C] dark:text-[#B5AFA5]">{getValue()}</span>
+      <span className="text-sm text-[#7A736C] tabular-nums dark:text-[#B5AFA5]">{getValue()}</span>
     ),
   },
   {
@@ -304,13 +327,27 @@ const COLUMNS = [
     cell: ({ row }) => {
       const { customDomain, domainVerified } = row.original;
       if (!customDomain) {
-        return <span className="text-[#7A736C] dark:text-[#B5AFA5] text-sm" aria-label="No custom domain">—</span>;
+        return (
+          <span
+            className="text-sm text-[#7A736C] dark:text-[#B5AFA5]"
+            aria-label="No custom domain"
+          >
+            —
+          </span>
+        );
       }
       if (domainVerified) {
         return (
           <div className="flex items-center gap-1.5">
-            <ShieldCheck size={13} className="text-green-500 shrink-0" aria-label="Domain verified" />
-            <span className="text-xs font-mono text-[#1A1A1A] dark:text-[#F0EDE7] truncate max-w-[140px]" title={customDomain}>
+            <ShieldCheck
+              size={13}
+              className="shrink-0 text-green-500"
+              aria-label="Domain verified"
+            />
+            <span
+              className="max-w-[140px] truncate font-mono text-xs text-[#1A1A1A] dark:text-[#F0EDE7]"
+              title={customDomain}
+            >
               {customDomain}
             </span>
           </div>
@@ -320,15 +357,22 @@ const COLUMNS = [
         <TooltipProvider delayDuration={200}>
           <Tooltip>
             <TooltipTrigger asChild>
-              <div className="flex items-center gap-1.5 cursor-default">
-                <AlertCircle size={13} className="text-amber-500 shrink-0" aria-label="Domain unverified" />
-                <span className="text-xs font-mono text-[#1A1A1A] dark:text-[#F0EDE7] truncate max-w-[140px]" title={customDomain}>
+              <div className="flex cursor-default items-center gap-1.5">
+                <AlertCircle
+                  size={13}
+                  className="shrink-0 text-amber-500"
+                  aria-label="Domain unverified"
+                />
+                <span
+                  className="max-w-[140px] truncate font-mono text-xs text-[#1A1A1A] dark:text-[#F0EDE7]"
+                  title={customDomain}
+                >
                   {customDomain}
                 </span>
               </div>
             </TooltipTrigger>
-            <TooltipContent side="top" className="p-0 bg-transparent border-0 shadow-none">
-              <div className="bg-[#231F1A] text-[#F0EDE7] rounded-md px-2.5 py-1.5 text-[11px] border border-white/10 shadow-lg">
+            <TooltipContent side="top" className="border-0 bg-transparent p-0 shadow-none">
+              <div className="rounded-md border border-white/10 bg-[#231F1A] px-2.5 py-1.5 text-[11px] text-[#F0EDE7] shadow-lg">
                 Not verified yet
               </div>
             </TooltipContent>
@@ -359,7 +403,7 @@ const CHURNED_EXTRA_COLUMNS = [
     enableSorting: false,
     cell: ({ getValue }) => {
       const val = getValue();
-      if (!val) return <span className="text-[#7A736C] dark:text-[#B5AFA5] text-sm">—</span>;
+      if (!val) return <span className="text-sm text-[#7A736C] dark:text-[#B5AFA5]">—</span>;
       return <PlanBadge plan={normalisePlan(val)} />;
     },
   },
@@ -370,7 +414,7 @@ const CHURNED_EXTRA_COLUMNS = [
       return (
         <button
           type="button"
-          className="flex items-center gap-1 text-xs font-medium text-[#7A736C] dark:text-[#B5AFA5] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7] transition-colors duration-120"
+          className="flex items-center gap-1 text-xs font-medium text-[#7A736C] transition-colors duration-120 hover:text-[#1A1A1A] dark:text-[#B5AFA5] dark:hover:text-[#F0EDE7]"
           onClick={() => column.toggleSorting(sorted === "asc")}
           aria-label={`Sort by expired date${sorted === "asc" ? ", ascending" : sorted === "desc" ? ", descending" : ""}`}
         >
@@ -380,7 +424,7 @@ const CHURNED_EXTRA_COLUMNS = [
     },
     cell: ({ getValue }) => {
       const val = getValue();
-      if (!val) return <span className="text-[#7A736C] dark:text-[#B5AFA5] text-sm">—</span>;
+      if (!val) return <span className="text-sm text-[#7A736C] dark:text-[#B5AFA5]">—</span>;
       return <TimestampCell date={val} />;
     },
   },
@@ -394,11 +438,11 @@ const DELETED_EXTRA_COLUMNS = [
     enableSorting: false,
     cell: ({ getValue }) => {
       const val = getValue();
-      if (!val) return <span className="text-[#7A736C] dark:text-[#B5AFA5] text-sm">—</span>;
+      if (!val) return <span className="text-sm text-[#7A736C] dark:text-[#B5AFA5]">—</span>;
       const label = DELETION_REASON_LABELS[val];
       if (label) {
         return (
-          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50 whitespace-nowrap">
+          <span className="inline-flex items-center rounded border border-amber-200 bg-amber-50 px-1.5 py-0.5 text-[10px] font-medium whitespace-nowrap text-amber-700 dark:border-amber-800/50 dark:bg-amber-900/20 dark:text-amber-400">
             {label}
           </span>
         );
@@ -407,12 +451,12 @@ const DELETED_EXTRA_COLUMNS = [
         <TooltipProvider delayDuration={200}>
           <Tooltip>
             <TooltipTrigger asChild>
-              <span className="text-xs text-[#7A736C] dark:text-[#B5AFA5] italic truncate max-w-[160px] block cursor-default">
+              <span className="block max-w-[160px] cursor-default truncate text-xs text-[#7A736C] italic dark:text-[#B5AFA5]">
                 {val}
               </span>
             </TooltipTrigger>
-            <TooltipContent side="top" className="p-0 bg-transparent border-0 shadow-none">
-              <div className="bg-[#231F1A] text-[#F0EDE7] rounded-md px-2.5 py-1.5 text-[11px] border border-white/10 shadow-lg max-w-[280px] break-words">
+            <TooltipContent side="top" className="border-0 bg-transparent p-0 shadow-none">
+              <div className="max-w-[280px] rounded-md border border-white/10 bg-[#231F1A] px-2.5 py-1.5 text-[11px] break-words text-[#F0EDE7] shadow-lg">
                 {val}
               </div>
             </TooltipContent>
@@ -429,7 +473,7 @@ const DELETED_EXTRA_COLUMNS = [
       return (
         <button
           type="button"
-          className="flex items-center gap-1 text-xs font-medium text-[#7A736C] dark:text-[#B5AFA5] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7] transition-colors duration-120"
+          className="flex items-center gap-1 text-xs font-medium text-[#7A736C] transition-colors duration-120 hover:text-[#1A1A1A] dark:text-[#B5AFA5] dark:hover:text-[#F0EDE7]"
           onClick={() => column.toggleSorting(sorted === "asc")}
           aria-label={`Sort by deletion date${sorted === "asc" ? ", ascending" : sorted === "desc" ? ", descending" : ""}`}
         >
@@ -439,29 +483,37 @@ const DELETED_EXTRA_COLUMNS = [
     },
     cell: ({ getValue }) => {
       const val = getValue();
-      if (!val) return <span className="text-[#7A736C] dark:text-[#B5AFA5] text-sm">—</span>;
+      if (!val) return <span className="text-sm text-[#7A736C] dark:text-[#B5AFA5]">—</span>;
       return <TimestampCell date={val} />;
     },
   },
 ];
 
 const GENERIC_FILTERS = [
-  { value: "all",          label: "All" },
-  { value: "live",         label: "Live" },
-  { value: "verified",     label: "Verified" },
+  { value: "all", label: "All" },
+  { value: "live", label: "Live" },
+  { value: "verified", label: "Verified" },
   { value: "no-portfolio", label: "No Portfolio" },
-  { value: "deleted",      label: "Deleted" },
+  { value: "deleted", label: "Deleted" },
 ];
 
 const REVENUE_FILTERS = [
-  { value: "paid",                 label: "Paid" },
-  { value: "churned",              label: "Churned" },
+  { value: "paid", label: "Paid" },
+  { value: "churned", label: "Churned" },
   { value: "pending-cancellation", label: "Pending Cancel" },
 ];
 
 const ALL_FILTERS = [...GENERIC_FILTERS, ...REVENUE_FILTERS];
 
-function FilterPopover({ open, onOpenChange, filter, pendingFilter, setPendingFilter, setFilter, setPage }) {
+function FilterPopover({
+  open,
+  onOpenChange,
+  filter,
+  pendingFilter,
+  setPendingFilter,
+  setFilter,
+  setPage,
+}) {
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
@@ -469,7 +521,7 @@ function FilterPopover({ open, onOpenChange, filter, pendingFilter, setPendingFi
           variant="outline"
           size="sm"
           className={cn(
-            "h-9 gap-2 text-xs shrink-0 transition-colors duration-150",
+            "h-9 shrink-0 gap-2 text-xs transition-colors duration-150",
             filter !== "all" && "border-foreground/40 bg-muted"
           )}
           aria-label="Filter users"
@@ -477,7 +529,10 @@ function FilterPopover({ open, onOpenChange, filter, pendingFilter, setPendingFi
           <SlidersHorizontal data-icon="inline-start" />
           Filters
           {filter !== "all" && (
-            <Badge variant="secondary" className="px-1.5 py-0 h-4 text-[10px] font-semibold leading-none">
+            <Badge
+              variant="secondary"
+              className="h-4 px-1.5 py-0 text-[10px] leading-none font-semibold"
+            >
               {ALL_FILTERS.find((o) => o.value === filter)?.label}
             </Badge>
           )}
@@ -486,31 +541,39 @@ function FilterPopover({ open, onOpenChange, filter, pendingFilter, setPendingFi
       <PopoverContent
         align="start"
         sideOffset={6}
-        className="w-48 p-0 overflow-hidden rounded-xl shadow-lg"
+        className="w-48 overflow-hidden rounded-xl p-0 shadow-lg"
       >
         <div className="px-3 pt-3 pb-2">
-          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">
+          <p className="text-muted-foreground text-[10px] font-semibold tracking-widest uppercase">
             Filter by
           </p>
         </div>
         <Separator />
         <div className="p-1.5">
-          <p className="text-[10px] font-medium text-muted-foreground px-2 py-1 mb-0.5 uppercase tracking-wider">
+          <p className="text-muted-foreground mb-0.5 px-2 py-1 text-[10px] font-medium tracking-wider uppercase">
             General
           </p>
-          <RadioGroup value={pendingFilter} onValueChange={setPendingFilter} className="flex flex-col gap-0">
+          <RadioGroup
+            value={pendingFilter}
+            onValueChange={setPendingFilter}
+            className="flex flex-col gap-0"
+          >
             {GENERIC_FILTERS.map((opt) => (
               <label
                 key={opt.value}
                 htmlFor={`filter-${opt.value}`}
                 className={cn(
-                  "flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer text-[13px] select-none transition-colors duration-150",
+                  "flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-[13px] transition-colors duration-150 select-none",
                   pendingFilter === opt.value
                     ? "bg-accent text-accent-foreground font-medium"
                     : "text-foreground hover:bg-muted"
                 )}
               >
-                <RadioGroupItem value={opt.value} id={`filter-${opt.value}`} className="size-3.5 shrink-0" />
+                <RadioGroupItem
+                  value={opt.value}
+                  id={`filter-${opt.value}`}
+                  className="size-3.5 shrink-0"
+                />
                 {opt.label}
               </label>
             ))}
@@ -518,33 +581,41 @@ function FilterPopover({ open, onOpenChange, filter, pendingFilter, setPendingFi
         </div>
         <Separator />
         <div className="p-1.5">
-          <p className="text-[10px] font-medium text-muted-foreground px-2 py-1 mb-0.5 uppercase tracking-wider">
+          <p className="text-muted-foreground mb-0.5 px-2 py-1 text-[10px] font-medium tracking-wider uppercase">
             Revenue
           </p>
-          <RadioGroup value={pendingFilter} onValueChange={setPendingFilter} className="flex flex-col gap-0">
+          <RadioGroup
+            value={pendingFilter}
+            onValueChange={setPendingFilter}
+            className="flex flex-col gap-0"
+          >
             {REVENUE_FILTERS.map((opt) => (
               <label
                 key={opt.value}
                 htmlFor={`filter-${opt.value}`}
                 className={cn(
-                  "flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer text-[13px] select-none transition-colors duration-150",
+                  "flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-[13px] transition-colors duration-150 select-none",
                   pendingFilter === opt.value
                     ? "bg-accent text-accent-foreground font-medium"
                     : "text-foreground hover:bg-muted"
                 )}
               >
-                <RadioGroupItem value={opt.value} id={`filter-${opt.value}`} className="size-3.5 shrink-0" />
+                <RadioGroupItem
+                  value={opt.value}
+                  id={`filter-${opt.value}`}
+                  className="size-3.5 shrink-0"
+                />
                 {opt.label}
               </label>
             ))}
           </RadioGroup>
         </div>
         <Separator />
-        <div className="p-1.5 flex gap-1.5">
+        <div className="flex gap-1.5 p-1.5">
           <Button
             variant="ghost"
             size="sm"
-            className="flex-1 h-7 text-xs"
+            className="h-7 flex-1 text-xs"
             onClick={() => {
               setPendingFilter("all");
               setFilter("all");
@@ -556,7 +627,7 @@ function FilterPopover({ open, onOpenChange, filter, pendingFilter, setPendingFi
           </Button>
           <Button
             size="sm"
-            className="flex-1 h-7 text-xs"
+            className="h-7 flex-1 text-xs"
             onClick={() => {
               setFilter(pendingFilter);
               setPage(1);
@@ -578,7 +649,7 @@ function ColumnPopover({ open, onOpenChange, table }) {
         <Button
           variant="outline"
           size="sm"
-          className="h-9 gap-2 text-xs shrink-0 transition-colors duration-150"
+          className="h-9 shrink-0 gap-2 text-xs transition-colors duration-150"
           aria-label="Toggle columns"
         >
           <Columns3 data-icon="inline-start" />
@@ -588,33 +659,35 @@ function ColumnPopover({ open, onOpenChange, table }) {
       <PopoverContent
         align="start"
         sideOffset={6}
-        className="w-44 p-0 overflow-hidden rounded-xl shadow-lg"
+        className="w-44 overflow-hidden rounded-xl p-0 shadow-lg"
       >
         <div className="px-3 pt-3 pb-2">
-          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">
+          <p className="text-muted-foreground text-[10px] font-semibold tracking-widest uppercase">
             Show / Hide
           </p>
         </div>
         <Separator />
-        <div className="p-1.5 flex flex-col gap-0.5">
+        <div className="flex flex-col gap-0.5 p-1.5">
           {table.getAllColumns().flatMap((col) =>
-            col.getCanHide() ? [
-              <label
-                key={col.id}
-                className={cn(
-                  "flex items-center gap-2.5 px-2 py-1.5 rounded-md cursor-pointer text-[13px] select-none transition-colors duration-150 hover:bg-muted",
-                  col.getIsVisible() ? "text-foreground" : "text-muted-foreground"
-                )}
-              >
-                <Checkbox
-                  checked={col.getIsVisible()}
-                  onCheckedChange={(val) => col.toggleVisibility(!!val)}
-                  className="size-3.5 shrink-0"
-                  aria-label={`Toggle ${COLUMN_LABELS[col.id] ?? col.id} column`}
-                />
-                {COLUMN_LABELS[col.id] ?? col.id}
-              </label>
-            ] : []
+            col.getCanHide()
+              ? [
+                  <label
+                    key={col.id}
+                    className={cn(
+                      "hover:bg-muted flex cursor-pointer items-center gap-2.5 rounded-md px-2 py-1.5 text-[13px] transition-colors duration-150 select-none",
+                      col.getIsVisible() ? "text-foreground" : "text-muted-foreground"
+                    )}
+                  >
+                    <Checkbox
+                      checked={col.getIsVisible()}
+                      onCheckedChange={(val) => col.toggleVisibility(!!val)}
+                      className="size-3.5 shrink-0"
+                      aria-label={`Toggle ${COLUMN_LABELS[col.id] ?? col.id} column`}
+                    />
+                    {COLUMN_LABELS[col.id] ?? col.id}
+                  </label>,
+                ]
+              : []
           )}
         </div>
       </PopoverContent>
@@ -646,7 +719,7 @@ export default function UsersTable() {
   }, []);
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["admin-users", debouncedSearch, filter, page],
+    queryKey: ["admin-users", debouncedSearch, filter, page, LIMIT],
     queryFn: () =>
       _getAdminUsers({
         search: debouncedSearch,
@@ -689,11 +762,11 @@ export default function UsersTable() {
   return (
     <div className="flex flex-col gap-4">
       {/* Controls */}
-      <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+      <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
         <div className="relative w-full sm:w-72">
           <Search
             size={14}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-[#7A736C] dark:text-[#B5AFA5] pointer-events-none"
+            className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-[#7A736C] dark:text-[#B5AFA5]"
             aria-hidden="true"
           />
           <Input
@@ -701,7 +774,7 @@ export default function UsersTable() {
             placeholder="Search by name or email…"
             value={search}
             onChange={handleSearch}
-            className="pl-8 h-9 text-sm bg-white dark:bg-[#2A2520] border-[#E5D7C4] dark:border-white/10 text-[#1A1A1A] dark:text-[#F0EDE7] placeholder:text-[#7A736C] dark:placeholder:text-[#B5AFA5] focus-visible:ring-[#E5D7C4] dark:focus-visible:ring-white/20"
+            className="h-9 border-[#E5D7C4] bg-white pl-8 text-sm text-[#1A1A1A] placeholder:text-[#7A736C] focus-visible:ring-[#E5D7C4] dark:border-white/10 dark:bg-[#2A2520] dark:text-[#F0EDE7] dark:placeholder:text-[#B5AFA5] dark:focus-visible:ring-white/20"
             aria-label="Search users"
             type="search"
           />
@@ -720,40 +793,43 @@ export default function UsersTable() {
           setPage={setPage}
         />
 
-        <ColumnPopover
-          open={colMenuOpen}
-          onOpenChange={setColMenuOpen}
-          table={table}
-        />
+        <ColumnPopover open={colMenuOpen} onOpenChange={setColMenuOpen} table={table} />
 
         {!isLoading && (
-          <p className="text-xs text-[#7A736C] dark:text-[#B5AFA5] ml-auto" aria-live="polite" aria-atomic="true">
+          <p
+            className="ml-auto text-xs text-[#7A736C] dark:text-[#B5AFA5]"
+            aria-live="polite"
+            aria-atomic="true"
+          >
             {total.toLocaleString()} user{total !== 1 ? "s" : ""}
           </p>
         )}
       </div>
 
       {/* Table */}
-      <div className="rounded-2xl border border-[#E5D7C4] dark:border-white/10 overflow-hidden bg-white dark:bg-[#2A2520]">
+      <div className="overflow-hidden rounded-2xl border border-[#E5D7C4] bg-white dark:border-white/10 dark:bg-[#2A2520]">
         <div className="overflow-x-auto">
           <Table aria-label="Users table" aria-busy={isLoading}>
             <TableHeader>
               {table.getHeaderGroups().map((hg) => (
-                <TableRow key={hg.id} className="bg-[#FAF8F5] dark:bg-[#231F1A] hover:bg-[#FAF8F5] dark:hover:bg-[#231F1A] border-b border-[#E5D7C4] dark:border-white/10">
+                <TableRow
+                  key={hg.id}
+                  className="border-b border-[#E5D7C4] bg-[#FAF8F5] hover:bg-[#FAF8F5] dark:border-white/10 dark:bg-[#231F1A] dark:hover:bg-[#231F1A]"
+                >
                   {hg.headers.map((header) => {
                     const sorted = header.column.getIsSorted();
                     return (
                       <TableHead
                         key={header.id}
-                        className="text-xs h-10 px-4 text-[#7A736C] dark:text-[#B5AFA5]"
+                        className="h-10 px-4 text-xs text-[#7A736C] dark:text-[#B5AFA5]"
                         aria-sort={
                           sorted === "asc"
                             ? "ascending"
                             : sorted === "desc"
-                            ? "descending"
-                            : header.column.getCanSort()
-                            ? "none"
-                            : undefined
+                              ? "descending"
+                              : header.column.getCanSort()
+                                ? "none"
+                                : undefined
                         }
                       >
                         {flexRender(header.column.columnDef.header, header.getContext())}
@@ -796,7 +872,7 @@ export default function UsersTable() {
                 table.getRowModel().rows.map((row) => (
                   <TableRow
                     key={row.id}
-                    className="group hover:bg-[#F5F2EE] dark:hover:bg-[#302B25] transition-colors duration-150"
+                    className="group transition-colors duration-150 hover:bg-[#F5F2EE] dark:hover:bg-[#302B25]"
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id} className="px-4 py-3">
@@ -819,12 +895,15 @@ export default function UsersTable() {
             size="sm"
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="h-8 text-xs bg-white dark:bg-[#2A2520] border-[#E5D7C4] dark:border-white/10 text-[#7A736C] dark:text-[#B5AFA5] hover:bg-[#F5F2EE] dark:hover:bg-[#302B25] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7]"
+            className="h-8 border-[#E5D7C4] bg-white text-xs text-[#7A736C] hover:bg-[#F5F2EE] hover:text-[#1A1A1A] dark:border-white/10 dark:bg-[#2A2520] dark:text-[#B5AFA5] dark:hover:bg-[#302B25] dark:hover:text-[#F0EDE7]"
             aria-label="Previous page"
           >
             <ChevronLeft data-icon="inline-start" aria-hidden="true" /> Previous
           </Button>
-          <span className="text-xs text-[#7A736C] dark:text-[#B5AFA5] tabular-nums" aria-live="polite">
+          <span
+            className="text-xs text-[#7A736C] tabular-nums dark:text-[#B5AFA5]"
+            aria-live="polite"
+          >
             Page {page} of {totalPages}
           </span>
           <Button
@@ -832,7 +911,7 @@ export default function UsersTable() {
             size="sm"
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
-            className="h-8 text-xs bg-white dark:bg-[#2A2520] border-[#E5D7C4] dark:border-white/10 text-[#7A736C] dark:text-[#B5AFA5] hover:bg-[#F5F2EE] dark:hover:bg-[#302B25] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7]"
+            className="h-8 border-[#E5D7C4] bg-white text-xs text-[#7A736C] hover:bg-[#F5F2EE] hover:text-[#1A1A1A] dark:border-white/10 dark:bg-[#2A2520] dark:text-[#B5AFA5] dark:hover:bg-[#302B25] dark:hover:text-[#F0EDE7]"
             aria-label="Next page"
           >
             Next <ChevronRight data-icon="inline-end" aria-hidden="true" />

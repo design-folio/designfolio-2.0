@@ -17,7 +17,9 @@ export function useLandingCta({ dfToken, hasParsedResume, onShowUploadModal }) {
     if (!ctaDest) return;
     const matches = (url) =>
       url === ctaDest || url.startsWith(`${ctaDest}?`) || url.startsWith(`${ctaDest}/`);
-    const onStart = (url) => { if (matches(url)) setIsNavigating(true); };
+    const onStart = (url) => {
+      if (matches(url)) setIsNavigating(true);
+    };
     const onDone = () => setIsNavigating(false);
     router.events.on("routeChangeStart", onStart);
     router.events.on("routeChangeComplete", onDone);
@@ -30,8 +32,14 @@ export function useLandingCta({ dfToken, hasParsedResume, onShowUploadModal }) {
   }, [ctaDest, router.events]);
 
   const handleCta = useCallback(() => {
-    if (dfToken) { router.push("/builder"); return; }
-    if (hasParsedResume) { router.push("/resume-signup"); return; }
+    if (dfToken) {
+      router.push("/builder");
+      return;
+    }
+    if (hasParsedResume) {
+      router.push("/resume-signup");
+      return;
+    }
     onShowUploadModal?.();
   }, [dfToken, hasParsedResume, router, onShowUploadModal]);
 

@@ -1,39 +1,23 @@
 import { useState, useCallback, useMemo } from "react";
 import { Button } from "@/components/ui/button";
+import { Pencil, Plus, Copy, Check, Phone, ArrowUp, FileText, Globe } from "lucide-react";
 import {
-  Pencil,
-  Plus,
-  Copy,
-  Check,
-  Phone,
-  ArrowUp,
-  FileText,
-  Linkedin,
-  Twitter,
-  Dribbble,
-  Globe,
-  Instagram,
-} from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+  FaLinkedin as Linkedin,
+  FaXTwitter as Twitter,
+  FaDribbble as Dribbble,
+  FaInstagram as Instagram,
+} from "react-icons/fa6";
+import { motion, AnimatePresence } from "motion/react";
 import { useGlobalContext } from "@/context/globalContext";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { sidebars } from "@/lib/constant";
 import { TypingIndicator, ChatAvatar, YouPrompt } from "./chatUtils";
 
-export default function ChatContactSection({
-  chatRevealStep,
-  s,
-  sectionSteps,
-  canEdit,
-  preview,
-}) {
+export default function ChatContactSection({ chatRevealStep, s, sectionSteps, canEdit, preview }) {
   const { userDetails, openSidebar } = useGlobalContext();
   const { socials = {}, portfolios = {}, resume, phone } = userDetails || {};
   const email = userDetails?.contact_email || userDetails?.email;
-  const avatarSrc = useMemo(
-    () => getUserAvatarImage(userDetails),
-    [userDetails],
-  );
+  const avatarSrc = useMemo(() => getUserAvatarImage(userDetails), [userDetails]);
 
   const [copiedField, setCopiedField] = useState(null);
   const handleCopy = useCallback((value, field) => {
@@ -43,10 +27,7 @@ export default function ChatContactSection({
   }, []);
 
   return (
-    <div
-      className="flex flex-col gap-3"
-      style={{ order: sectionSteps._contact - 3 }}
-    >
+    <div className="flex flex-col gap-3" style={{ order: sectionSteps._contact - 3 }}>
       {/* You: Contact prompt */}
       <AnimatePresence mode="popLayout">
         {chatRevealStep >= s(19) && !(preview && !email && !phone) && (
@@ -54,7 +35,7 @@ export default function ChatContactSection({
             initial={{ opacity: 0, y: 10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.3 }}
-            className="flex justify-end relative group/msg"
+            className="group/msg relative flex justify-end"
           >
             <YouPrompt>Where can I reach you?</YouPrompt>
           </motion.div>
@@ -68,35 +49,32 @@ export default function ChatContactSection({
             initial={{ opacity: 0, y: 10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.3 }}
-            className="flex gap-3 max-w-[85%] relative group/msg"
+            className="group/msg relative flex max-w-[85%] gap-3"
           >
             {canEdit && chatRevealStep >= s(21) && (
-              <div className="absolute -left-0 top-1/2 -translate-y-1/2 z-40 transition-opacity flex gap-1.5 opacity-0 group-hover/msg:opacity-100">
+              <div className="absolute top-1/2 -left-0 z-40 flex -translate-y-1/2 gap-1.5 opacity-0 transition-opacity group-hover/msg:opacity-100">
                 <Button
                   variant="outline"
                   size="sm"
-                  className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
+                  className="h-7 w-7 rounded-full border-[#E5D7C4] bg-white/90 p-0 shadow-sm backdrop-blur-sm hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520]/90 dark:hover:bg-[#35302A]"
                   onClick={(e) => {
                     e.stopPropagation();
                     openSidebar?.(sidebars.footer);
                   }}
                 >
-                  <Pencil className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                  <Pencil className="h-3 w-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
                 </Button>
               </div>
             )}
-            <div className="w-8 h-8 shrink-0 mt-auto flex items-end">
-              <ChatAvatar
-                avatarSrc={avatarSrc}
-                show={chatRevealStep < s(21)}
-              />
+            <div className="mt-auto flex h-8 w-8 shrink-0 items-end">
+              <ChatAvatar avatarSrc={avatarSrc} show={chatRevealStep < s(21)} />
             </div>
-            <div className="bg-[#E5E2DB] dark:bg-[#2A2520] p-4 rounded-2xl rounded-tl-sm rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5 w-full">
+            <div className="w-full rounded-2xl rounded-tl-sm rounded-bl-sm border border-black/5 bg-[#E5E2DB] p-4 transition-colors duration-700 dark:border-white/5 dark:bg-[#2A2520]">
               {chatRevealStep === s(20) ? (
                 <TypingIndicator />
               ) : email || phone ? (
                 <div className="space-y-3">
-                  <p className="text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px]">
+                  <p className="text-[15px] text-[#1A1A1A] dark:text-[#F0EDE7]">
                     You can primarily reach me on{email ? " mail" : ""}
                     {email && phone ? " or" : ""}
                     {phone ? " phone" : ""}
@@ -105,12 +83,12 @@ export default function ChatContactSection({
                     {email && (
                       <button
                         onClick={() => handleCopy(email, "email")}
-                        className="w-full bg-[#F5F3EF] dark:bg-[#35302A] hover:bg-white dark:hover:bg-[#403B35] text-[#1A1A1A] dark:text-[#F0EDE7] py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 text-[14px] font-medium transition-all shadow-sm border border-black/5 dark:border-white/5 group"
+                        className="group flex w-full items-center justify-center gap-2 rounded-xl border border-black/5 bg-[#F5F3EF] px-4 py-2.5 text-[14px] font-medium text-[#1A1A1A] shadow-sm transition-all hover:bg-white dark:border-white/5 dark:bg-[#35302A] dark:text-[#F0EDE7] dark:hover:bg-[#403B35]"
                       >
                         {copiedField === "email" ? (
-                          <Check className="w-4 h-4 text-green-500" />
+                          <Check className="h-4 w-4 text-green-500" />
                         ) : (
-                          <Copy className="w-4 h-4 text-[#7A736C] dark:text-[#B5AFA5] group-hover:text-[#1A1A1A] dark:group-hover:text-white transition-colors" />
+                          <Copy className="h-4 w-4 text-[#7A736C] transition-colors group-hover:text-[#1A1A1A] dark:text-[#B5AFA5] dark:group-hover:text-white" />
                         )}
                         {copiedField === "email" ? "Copied!" : "Copy mail"}
                       </button>
@@ -118,12 +96,12 @@ export default function ChatContactSection({
                     {phone && (
                       <button
                         onClick={() => handleCopy(phone, "phone")}
-                        className="w-full bg-[#F5F3EF] dark:bg-[#35302A] hover:bg-white dark:hover:bg-[#403B35] text-[#1A1A1A] dark:text-[#F0EDE7] py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 text-[14px] font-medium transition-all shadow-sm border border-black/5 dark:border-white/5 group"
+                        className="group flex w-full items-center justify-center gap-2 rounded-xl border border-black/5 bg-[#F5F3EF] px-4 py-2.5 text-[14px] font-medium text-[#1A1A1A] shadow-sm transition-all hover:bg-white dark:border-white/5 dark:bg-[#35302A] dark:text-[#F0EDE7] dark:hover:bg-[#403B35]"
                       >
                         {copiedField === "phone" ? (
-                          <Check className="w-4 h-4 text-green-500" />
+                          <Check className="h-4 w-4 text-green-500" />
                         ) : (
-                          <Phone className="w-4 h-4 text-[#7A736C] dark:text-[#B5AFA5] group-hover:text-[#1A1A1A] dark:group-hover:text-white transition-colors" />
+                          <Phone className="h-4 w-4 text-[#7A736C] transition-colors group-hover:text-[#1A1A1A] dark:text-[#B5AFA5] dark:group-hover:text-white" />
                         )}
                         {copiedField === "phone" ? "Copied!" : "Copy phone"}
                       </button>
@@ -133,13 +111,13 @@ export default function ChatContactSection({
               ) : canEdit ? (
                 <button
                   onClick={() => openSidebar?.(sidebars.footer)}
-                  className="flex items-center gap-2 text-[13px] text-[#7A736C] dark:text-[#B5AFA5] hover:text-[#1A1A1A] dark:hover:text-white transition-colors"
+                  className="flex items-center gap-2 text-[13px] text-[#7A736C] transition-colors hover:text-[#1A1A1A] dark:text-[#B5AFA5] dark:hover:text-white"
                 >
-                  <Plus className="w-3.5 h-3.5" />
+                  <Plus className="h-3.5 w-3.5" />
                   Add contact info
                 </button>
               ) : (
-                <p className="text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px]">
+                <p className="text-[15px] text-[#1A1A1A] dark:text-[#F0EDE7]">
                   Feel free to reach out!
                 </p>
               )}
@@ -194,46 +172,38 @@ export default function ChatContactSection({
                 initial={{ opacity: 0, y: 10, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ duration: 0.3 }}
-                className="flex gap-3 max-w-[85%] relative group/msg"
+                className="group/msg relative flex max-w-[85%] gap-3"
               >
                 {canEdit && (
-                  <div className="absolute -left-0 top-1/2 -translate-y-1/2 z-40 transition-opacity flex gap-1.5 opacity-0 group-hover/msg:opacity-100">
+                  <div className="absolute top-1/2 -left-0 z-40 flex -translate-y-1/2 gap-1.5 opacity-0 transition-opacity group-hover/msg:opacity-100">
                     <Button
                       variant="outline"
                       size="sm"
-                      className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
+                      className="h-7 w-7 rounded-full border-[#E5D7C4] bg-white/90 p-0 shadow-sm backdrop-blur-sm hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520]/90 dark:hover:bg-[#35302A]"
                       onClick={(e) => {
                         e.stopPropagation();
                         openSidebar?.(sidebars.footer);
                       }}
                     >
-                      <Pencil className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                      <Pencil className="h-3 w-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
                     </Button>
                   </div>
                 )}
-                <div className="w-8 h-8 shrink-0 mt-auto flex items-end">
+                <div className="mt-auto flex h-8 w-8 shrink-0 items-end">
                   <ChatAvatar avatarSrc={avatarSrc} />
                 </div>
-                <div className="bg-[#E5E2DB] dark:bg-[#2A2520] p-4 rounded-2xl rounded-tl-sm rounded-bl-sm transition-colors duration-100 border border-black/5 dark:border-white/5 w-full">
+                <div className="w-full rounded-2xl rounded-tl-sm rounded-bl-sm border border-black/5 bg-[#E5E2DB] p-4 transition-colors duration-100 dark:border-white/5 dark:bg-[#2A2520]">
                   {hasLinks ? (
                     <div className="space-y-3">
-                      <p className="text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px]">
-                        You can also
-                      </p>
+                      <p className="text-[15px] text-[#1A1A1A] dark:text-[#F0EDE7]">You can also</p>
                       <div className="space-y-2">
                         {hasResume && (
                           <button
-                            onClick={() =>
-                              window.open(
-                                resume.url,
-                                "_blank",
-                                "noopener,noreferrer",
-                              )
-                            }
-                            className="w-full bg-[#F5F3EF] dark:bg-[#35302A] hover:bg-white dark:hover:bg-[#403B35] text-[#1A1A1A] dark:text-[#F0EDE7] py-2.5 px-4 rounded-xl flex items-center justify-between text-[14px] font-medium transition-all shadow-sm border border-black/5 dark:border-white/5 group"
+                            onClick={() => window.open(resume.url, "_blank", "noopener,noreferrer")}
+                            className="group flex w-full items-center justify-between rounded-xl border border-black/5 bg-[#F5F3EF] px-4 py-2.5 text-[14px] font-medium text-[#1A1A1A] shadow-sm transition-all hover:bg-white dark:border-white/5 dark:bg-[#35302A] dark:text-[#F0EDE7] dark:hover:bg-[#403B35]"
                           >
                             <span>View my Resume</span>
-                            <FileText className="w-4 h-4 text-[#7A736C] dark:text-[#B5AFA5] group-hover:text-[#1A1A1A] dark:group-hover:text-white transition-colors" />
+                            <FileText className="h-4 w-4 text-[#7A736C] transition-colors group-hover:text-[#1A1A1A] dark:text-[#B5AFA5] dark:group-hover:text-white" />
                           </button>
                         )}
                         {socialLinks.map((link) => {
@@ -242,16 +212,12 @@ export default function ChatContactSection({
                             <button
                               key={link.label}
                               onClick={() =>
-                                window.open(
-                                  link.href,
-                                  "_blank",
-                                  "noopener,noreferrer",
-                                )
+                                window.open(link.href, "_blank", "noopener,noreferrer")
                               }
-                              className="w-full bg-[#F5F3EF] dark:bg-[#35302A] hover:bg-white dark:hover:bg-[#403B35] text-[#1A1A1A] dark:text-[#F0EDE7] py-2.5 px-4 rounded-xl flex items-center justify-between text-[14px] font-medium transition-all shadow-sm border border-black/5 dark:border-white/5 group"
+                              className="group flex w-full items-center justify-between rounded-xl border border-black/5 bg-[#F5F3EF] px-4 py-2.5 text-[14px] font-medium text-[#1A1A1A] shadow-sm transition-all hover:bg-white dark:border-white/5 dark:bg-[#35302A] dark:text-[#F0EDE7] dark:hover:bg-[#403B35]"
                             >
                               <span>{link.label}</span>
-                              <Icon className="w-4 h-4 text-[#7A736C] dark:text-[#B5AFA5] group-hover:text-[#1A1A1A] dark:group-hover:text-white transition-colors" />
+                              <Icon className="h-4 w-4 text-[#7A736C] transition-colors group-hover:text-[#1A1A1A] dark:text-[#B5AFA5] dark:group-hover:text-white" />
                             </button>
                           );
                         })}
@@ -260,9 +226,9 @@ export default function ChatContactSection({
                   ) : canEdit ? (
                     <button
                       onClick={() => openSidebar?.(sidebars.footer)}
-                      className="flex items-center gap-2 text-[13px] text-[#7A736C] dark:text-[#B5AFA5] hover:text-[#1A1A1A] dark:hover:text-white transition-colors"
+                      className="flex items-center gap-2 text-[13px] text-[#7A736C] transition-colors hover:text-[#1A1A1A] dark:text-[#B5AFA5] dark:hover:text-white"
                     >
-                      <Plus className="w-3.5 h-3.5" />
+                      <Plus className="h-3.5 w-3.5" />
                       Add social links
                     </button>
                   ) : null}
@@ -279,13 +245,13 @@ export default function ChatContactSection({
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3, delay: 0.5 }}
-            className="flex justify-center pb-8 pt-4 w-full"
+            className="flex w-full justify-center pt-4 pb-8"
           >
             <button
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              className="w-10 h-10 rounded-full bg-[#E5E2DB] dark:bg-[#2A2520] hover:bg-[#D5D0C6] dark:hover:bg-[#35302A] text-[#7A736C] dark:text-[#B5AFA5] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7] flex items-center justify-center transition-all duration-300"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-[#E5E2DB] text-[#7A736C] transition-all duration-300 hover:bg-[#D5D0C6] hover:text-[#1A1A1A] dark:bg-[#2A2520] dark:text-[#B5AFA5] dark:hover:bg-[#35302A] dark:hover:text-[#F0EDE7]"
             >
-              <ArrowUp className="w-5 h-5" />
+              <ArrowUp className="h-5 w-5" />
             </button>
           </motion.div>
         )}
@@ -296,9 +262,9 @@ export default function ChatContactSection({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.8 }}
-          className="flex justify-center pb-12 w-full"
+          className="flex w-full justify-center pb-12"
         >
-          <p className="text-[13px] text-[#7A736C] dark:text-[#B5AFA5] font-medium">
+          <p className="text-[13px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">
             © ALL RIGHTS RESERVED.
           </p>
         </motion.div>

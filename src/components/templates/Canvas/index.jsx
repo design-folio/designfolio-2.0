@@ -20,27 +20,32 @@ export default function Canvas({ isEditing, preview = false, publicView = false 
   const isSectionVisible = (id) => isEditing || !hiddenSections.includes(id);
 
   const sectionComponents = {
-    projects: isSectionVisible('projects') && (
-      <CanvasProjectsSection key="projects" isEditing={isEditing} preview={preview} publicView={publicView} />
+    projects: isSectionVisible("projects") && (
+      <CanvasProjectsSection
+        key="projects"
+        isEditing={isEditing}
+        preview={preview}
+        publicView={publicView}
+      />
     ),
-    works: isSectionVisible('works') && (
+    works: isSectionVisible("works") && (
       <CanvasCareerLadder key="works" isEditing={isEditing} preview={preview} />
     ),
-    tools: isSectionVisible('tools') && (
-      <CanvasToolsMarquee key="tools" isEditing={isEditing} />
-    ),
-    about: isSectionVisible('about') && (
-      <CanvasAboutSection key="about" isEditing={isEditing} />
-    ),
-    reviews: isSectionVisible('reviews') && (
+    tools: isSectionVisible("tools") && <CanvasToolsMarquee key="tools" isEditing={isEditing} />,
+    about: isSectionVisible("about") && <CanvasAboutSection key="about" isEditing={isEditing} />,
+    reviews: isSectionVisible("reviews") && (
       <CanvasTestimonialsSection key="reviews" isEditing={isEditing} preview={preview} />
     ),
   };
 
   return (
-    <div className="w-full flex-1 flex flex-col gap-3 pb-20 pt-0 px-4 md:px-0 max-w-[848px] mx-auto">
+    <div className="mx-auto flex w-full max-w-[848px] flex-1 flex-col gap-3 px-4 pt-0 pb-20 md:px-0">
       {/* <CanvasHeader persistTheme={isEditing && !preview} /> */}
-      <CanvasProfileCard isEditing={isEditing} skills={skills} persistTheme={isEditing && !preview} />
+      <CanvasProfileCard
+        isEditing={isEditing}
+        skills={skills}
+        persistTheme={isEditing && !preview}
+      />
       {sectionOrder.map((id) => sectionComponents[id] || null)}
       <CanvasContactSection isEditing={isEditing} />
     </div>

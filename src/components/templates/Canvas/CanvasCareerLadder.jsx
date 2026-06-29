@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { ChevronsUpDown, Pencil, Plus, Trash2 } from "lucide-react";
 import { Button } from "../../ui/button";
 import { useGlobalContext } from "@/context/globalContext";
@@ -12,13 +12,7 @@ import { UnsavedChangesDialog } from "@/components/ui/UnsavedChangesDialog";
 import { _deleteExperience } from "@/network/post-request";
 import { cn } from "@/lib/utils";
 
-function ExperienceCard({
-  experience,
-  isEditing,
-  expandedCards,
-  onToggleExpand,
-  onDelete,
-}) {
+function ExperienceCard({ experience, isEditing, expandedCards, onToggleExpand, onDelete }) {
   const { setSelectedWork, openSidebar, activeSidebar, selectedWork } = useGlobalContext();
 
   const {
@@ -45,47 +39,47 @@ function ExperienceCard({
     <div
       key={_id}
       className={cn(
-        "relative group cursor-pointer p-4 -mx-4 rounded-2xl transition-colors",
+        "group relative -mx-4 cursor-pointer rounded-2xl p-4 transition-colors",
         "hover:bg-black/5 dark:hover:bg-white/5",
         isActive && "bg-black/5 dark:bg-white/5"
       )}
     >
       {isEditing && (
-        <div className="absolute top-4 right-4 z-20 transition-opacity flex gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100">
+        <div className="absolute top-4 right-4 z-20 flex gap-2 opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100">
           <Button
             variant="outline"
             size="sm"
-            className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
+            className="h-8 w-8 rounded-full border-[#E5D7C4] bg-white/90 p-0 shadow-sm backdrop-blur-sm hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520]/90 dark:hover:bg-[#35302A]"
             onClick={() => {
               setSelectedWork(experience);
               openSidebar(sidebars.work);
             }}
           >
-            <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+            <Pencil className="h-3.5 w-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
           </Button>
           <Button
             variant="outline"
             size="sm"
-            className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-red-50 dark:hover:bg-red-950/30 hover:border-red-200 dark:hover:border-red-900/50 hover:text-red-600 dark:hover:text-red-400"
+            className="h-8 w-8 rounded-full border-[#E5D7C4] bg-white/90 p-0 shadow-sm backdrop-blur-sm hover:border-red-200 hover:bg-red-50 hover:text-red-600 dark:border-white/10 dark:bg-[#2A2520]/90 dark:hover:border-red-900/50 dark:hover:bg-red-950/30 dark:hover:text-red-400"
             onClick={(e) => {
               e.stopPropagation();
               onDelete(experience);
             }}
           >
-            <Trash2 className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+            <Trash2 className="h-3.5 w-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
           </Button>
         </div>
       )}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 gap-2 sm:gap-0">
-        <h3 className="text-base font-semibold text-[#1A1A1A] dark:text-[#F0EDE7] md:max-w-sm">
+      <div className="mb-3 flex flex-col justify-between gap-2 sm:flex-row sm:items-center sm:gap-0">
+        <h3 className="text-base font-semibold text-[#1A1A1A] md:max-w-sm dark:text-[#F0EDE7]">
           {role} @ {company}
         </h3>
-        <div className="bg-[#F0EDE7] dark:bg-[#3A352E] px-3 py-1 rounded-full text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] w-fit whitespace-nowrap">
+        <div className="w-fit rounded-full bg-[#F0EDE7] px-3 py-1 text-[13px] whitespace-nowrap text-[#1A1A1A] dark:bg-[#3A352E] dark:text-[#F0EDE7]">
           {`${startMonth} ${startYear}  — ${currentlyWorking ? "Present" : `${endMonth} ${endYear}`}`}
         </div>
       </div>
-      {hasDescription && (
-        needsExpand ? (
+      {hasDescription &&
+        (needsExpand ? (
           <>
             <motion.div
               initial={false}
@@ -97,7 +91,7 @@ function ExperienceCard({
                 content={description || ""}
                 mode="work"
                 enableBulletList={true}
-                className="text-[#7A736C] dark:text-[#B5AFA5] text-[15px] leading-relaxed"
+                className="text-[15px] leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]"
                 noCardStyle
               />
             </motion.div>
@@ -106,7 +100,7 @@ function ExperienceCard({
                 e.stopPropagation();
                 onToggleExpand(_id);
               }}
-              className="text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] mt-3 flex items-center gap-1.5 opacity-70 hover:opacity-100 transition-opacity"
+              className="mt-3 flex items-center gap-1.5 text-[13px] font-medium text-[#1A1A1A] opacity-70 transition-opacity hover:opacity-100 dark:text-[#F0EDE7]"
             >
               {isExpanded ? "View less" : "View more"}
               <motion.svg
@@ -130,11 +124,10 @@ function ExperienceCard({
             content={description || ""}
             mode="work"
             enableBulletList={true}
-            className="text-[#7A736C] dark:text-[#B5AFA5] text-[15px] leading-relaxed"
+            className="text-[15px] leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]"
             noCardStyle
           />
-        )
-      )}
+        ))}
     </div>
   );
 }
@@ -142,8 +135,7 @@ function ExperienceCard({
 const MemoizedExperienceCard = React.memo(ExperienceCard);
 
 function CanvasCareerLadder({ isEditing, preview = false }) {
-  const { userDetails, setUserDetails, updateCache, openSidebar, openNewWork } =
-    useGlobalContext();
+  const { userDetails, setUserDetails, updateCache, openSidebar, openNewWork } = useGlobalContext();
   const { experiences = [] } = userDetails || {};
 
   const careerLadderRef = useRef(null);
@@ -154,9 +146,7 @@ function CanvasCareerLadder({ isEditing, preview = false }) {
 
   const toggleExpand = useCallback((id) => {
     setExpandedCards((prev) =>
-      prev.includes(id)
-        ? prev.filter((cardId) => cardId !== id)
-        : [...prev, id],
+      prev.includes(id) ? prev.filter((cardId) => cardId !== id) : [...prev, id]
     );
   }, []);
 
@@ -169,8 +159,7 @@ function CanvasCareerLadder({ isEditing, preview = false }) {
     if (!target?._id) return;
 
     _deleteExperience(target._id).then(() => {
-      const removeById = (list) =>
-        (list || []).filter((item) => item._id !== target._id);
+      const removeById = (list) => (list || []).filter((item) => item._id !== target._id);
       setUserDetails((prev) => ({
         ...prev,
         experiences: removeById(prev?.experiences),
@@ -256,20 +245,20 @@ function CanvasCareerLadder({ isEditing, preview = false }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 100, damping: 12, delay: 0.6 }}
       ref={careerLadderRef}
-      className="bg-white dark:bg-[#2A2520] rounded-[26px] border border-[#E5D7C4] dark:border-white/10 p-4 md:p-6 w-full  relative group/section"
+      className="group/section relative w-full rounded-[26px] border border-[#E5D7C4] bg-white p-4 md:p-6 dark:border-white/10 dark:bg-[#2A2520]"
     >
       {isEditing && (
         <CanvasSectionControls>
           {experiences.length >= 2 && (
             <CanvasSectionButton
-              icon={<ChevronsUpDown className="w-3.5 h-3.5" />}
+              icon={<ChevronsUpDown className="h-3.5 w-3.5" />}
               tooltipText="Rearrange"
               onClick={() => openSidebar(sidebars.sortWorks)}
             />
           )}
           {experiences.length > 0 && (
             <CanvasSectionButton
-              icon={<Plus className="w-3.5 h-3.5" />}
+              icon={<Plus className="h-3.5 w-3.5" />}
               label="Add Experience"
               onClick={() => openNewWork()}
             />
@@ -277,21 +266,19 @@ function CanvasCareerLadder({ isEditing, preview = false }) {
           <SectionVisibilityButton
             sectionId="works"
             showOnHoverWhenVisible
-            className="w-8 h-8 rounded-full bg-white dark:bg-[#2A2520] shadow-md border border-[#E5D7C4] dark:border-white/10 hover:bg-gray-50 dark:hover:bg-[#35302A]"
+            className="h-8 w-8 rounded-full border border-[#E5D7C4] bg-white shadow-md hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520] dark:hover:bg-[#35302A]"
           />
         </CanvasSectionControls>
       )}
-      <h2
-        className="text-[#7A736C] dark:text-[#B5AFA5] font-dm-mono font-medium text-[14px] mb-6"
-      >
+      <h2 className="font-dm-mono mb-6 text-[14px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">
         CAREER LADDER
       </h2>
 
       {experiences.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 px-4 text-center rounded-2xl border border-dashed border-black/10 dark:border-white/10 bg-background backdrop-blur-sm">
-          <div className="w-12 h-12 rounded-full bg-black/[0.03] dark:bg-white/[0.03] flex items-center justify-center mb-4">
+        <div className="bg-background flex flex-col items-center justify-center rounded-2xl border border-dashed border-black/10 px-4 py-16 text-center backdrop-blur-sm dark:border-white/10">
+          <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-black/[0.03] dark:bg-white/[0.03]">
             <svg
-              className="w-6 h-6 text-[#7A736C] dark:text-[#9E9893]"
+              className="h-6 w-6 text-[#7A736C] dark:text-[#9E9893]"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -304,18 +291,18 @@ function CanvasCareerLadder({ isEditing, preview = false }) {
               />
             </svg>
           </div>
-          <h3 className="text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] mb-1">
+          <h3 className="mb-1 text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
             No experience yet
           </h3>
-          <p className="text-[13px] text-[#7A736C] dark:text-[#9E9893] max-w-[250px] mb-5">
+          <p className="mb-5 max-w-[250px] text-[13px] text-[#7A736C] dark:text-[#9E9893]">
             Add your work experience to showcase your career journey.
           </p>
           {isEditing && (
             <Button
               onClick={() => openNewWork()}
-              className="h-9 px-5 rounded-full text-[13px] font-medium bg-[#1A1A1A] dark:bg-white text-white dark:text-black hover:bg-black/80 dark:hover:bg-white/90 transition-colors shadow-sm flex items-center gap-2"
+              className="flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
             >
-              <Plus className="w-3.5 h-3.5" />
+              <Plus className="h-3.5 w-3.5" />
               Add Experience
             </Button>
           )}
@@ -325,7 +312,7 @@ function CanvasCareerLadder({ isEditing, preview = false }) {
           {experiences.length > 1 && (
             <>
               <div
-                className="absolute left-[1px] z-20 w-[40px] h-[54px]"
+                className="absolute left-[1px] z-20 h-[54px] w-[40px]"
                 style={{
                   top: `${characterPosition}px`,
                   willChange: "transform",
@@ -334,15 +321,12 @@ function CanvasCareerLadder({ isEditing, preview = false }) {
                 <img
                   src="/assets/svgs/character-me.svg"
                   alt="Character climbing"
-                  className="w-full h-full object-contain"
+                  className="h-full w-full object-contain"
                 />
               </div>
-              <div className="absolute left-0 top-3 bottom-0 w-[42px] flex flex-col justify-between items-start border-x-[5px] border-[#F0EDE7] dark:border-[#3A352E] py-1 bg-transparent">
+              <div className="absolute top-3 bottom-0 left-0 flex w-[42px] flex-col items-start justify-between border-x-[5px] border-[#F0EDE7] bg-transparent py-1 dark:border-[#3A352E]">
                 {[...Array(30)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="w-full h-[5px] bg-[#F0EDE7] dark:bg-[#3A352E]"
-                  ></div>
+                  <div key={i} className="h-[5px] w-full bg-[#F0EDE7] dark:bg-[#3A352E]"></div>
                 ))}
               </div>
             </>

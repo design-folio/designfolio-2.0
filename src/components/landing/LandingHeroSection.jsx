@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
+import { motion, AnimatePresence, LayoutGroup } from "motion/react";
 import { cn } from "@/lib/utils";
 import ResumeUploadZone from "./ResumeUploadZone";
 import ClaimDomain from "../claimDomain";
@@ -16,7 +16,7 @@ export default function LandingHeroSection({
 
   return (
     <section
-      className="w-full px-6 pt-12 pb-12 flex flex-col items-center text-center"
+      className="flex w-full flex-col items-center px-6 pt-12 pb-12 text-center"
       style={{ fontFamily: "var(--font-manrope), sans-serif" }}
     >
       {/* LayoutGroup scopes layoutId to this component — prevents page-wide layout recalculation */}
@@ -26,23 +26,21 @@ export default function LandingHeroSection({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            className="mb-6 inline-flex items-center rounded-full border border-lp-text/10 bg-lp-text/[0.04] dark:bg-[--lp-card] dark:border-[--lp-border] p-0.5"
+            className="border-lp-text/10 bg-lp-text/[0.04] mb-6 inline-flex items-center rounded-full border p-0.5 dark:border-(--lp-border) dark:bg-(--lp-card)"
           >
             {["resume", "scratch"].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setHeroTab(tab)}
                 className={cn(
-                  "relative px-4 py-1.5 rounded-full text-[13px] font-semibold transition-colors duration-200",
-                  heroTab === tab
-                    ? "text-[--lp-text]"
-                    : "text-lp-text/45 hover:text-lp-text/70"
+                  "relative rounded-full px-4 py-1.5 text-[13px] font-semibold transition-colors duration-200",
+                  heroTab === tab ? "text-(--lp-text)" : "text-lp-text/45 hover:text-lp-text/70"
                 )}
               >
                 {heroTab === tab && (
                   <motion.span
                     layoutId="tab-pill"
-                    className="absolute inset-0 rounded-full bg-[--lp-surface] border border-lp-text/10 shadow-sm"
+                    className="border-lp-text/10 absolute inset-0 rounded-full border bg-(--lp-surface) shadow-sm"
                     transition={{ type: "spring", stiffness: 500, damping: 38 }}
                   />
                 )}
@@ -59,18 +57,19 @@ export default function LandingHeroSection({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.05, ease: "easeOut" }}
-        className="text-[35px] sm:text-[45px] leading-[1.1] tracking-[-0.02em] max-w-[660px] mb-5 text-[#463B34] dark:text-foreground text-center text-[--lp-heading]"
+        className="dark:text-foreground mb-5 max-w-[660px] text-center text-[35px] leading-[1.1] tracking-[-0.02em] text-(--lp-heading) text-[#463B34] sm:text-[45px]"
         style={{ fontWeight: 650 }}
       >
         Build your Portfolio.
-        <br />Land 6X more Interviews.
+        <br />
+        Land 6X more Interviews.
       </motion.h1>
 
       <motion.p
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
-        className="text-[17px] mb-8 max-w-[572px] leading-relaxed font-semibold text-[--lp-text-muted]"
+        className="mb-8 max-w-[572px] text-[17px] leading-relaxed font-semibold text-(--lp-text-muted)"
       >
         {heroTab === "resume" || hasDfToken
           ? "Upload your resume. We'll turn it into a portfolio website and match you with jobs that fit your experience."
@@ -81,14 +80,16 @@ export default function LandingHeroSection({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
-        className="w-full max-w-[450px] flex flex-col items-center"
+        className="flex w-full max-w-[450px] flex-col items-center"
       >
         {/*
           ResumeUploadZone is always mounted to prevent the backdrop-filter portal from
           creating/destroying a GPU compositing layer on every tab switch, which caused
           the whole-page "remount" flicker.
         */}
-        <div className={(heroTab === "resume" || hasDfToken) ? "w-full flex justify-center" : "hidden"}>
+        <div
+          className={heroTab === "resume" || hasDfToken ? "flex w-full justify-center" : "hidden"}
+        >
           <ResumeUploadZone
             hasDfToken={hasDfToken}
             hasParsedResume={hasParsedResume}

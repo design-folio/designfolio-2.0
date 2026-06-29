@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useEffect, startTransition } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import EmailForm from "./emailForm";
 import EmailPreview from "./emailPreview";
 import TetrisLoading from "./ui/tetris-loader";
@@ -9,7 +9,11 @@ import axiosInstance from "@/network/axiosInstance";
 
 const RESULT_STORAGE_KEY = "email-generator";
 
-export default function EmailGenerator({ onToolUsed, onViewChange, guestUsageLimitReached = false }) {
+export default function EmailGenerator({
+  onToolUsed,
+  onViewChange,
+  guestUsageLimitReached = false,
+}) {
   const [generatedEmail, setGeneratedEmail] = useState({
     subject: "",
     body: "",
@@ -19,12 +23,13 @@ export default function EmailGenerator({ onToolUsed, onViewChange, guestUsageLim
   useEffect(() => {
     const stored = getAiToolResult(RESULT_STORAGE_KEY);
     if (stored && typeof stored === "object" && (stored.subject || stored.body)) {
-      setGeneratedEmail({ subject: stored.subject || "", body: stored.body || "" });
-      setShowPreview(true);
+      startTransition(() => {
+        setGeneratedEmail({ subject: stored.subject || "", body: stored.body || "" });
+        setShowPreview(true);
+      });
       onViewChange?.(true);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [onViewChange]);
 
   useEffect(() => {
     onViewChange?.(!!(generatedEmail.subject || generatedEmail.body));
@@ -69,7 +74,7 @@ export default function EmailGenerator({ onToolUsed, onViewChange, guestUsageLim
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95 }}
-          className="flex flex-col items-center justify-center py-4 space-y-6"
+          className="flex flex-col items-center justify-center space-y-6 py-4"
         >
           <div className="flex flex-col items-center">
             <TetrisLoading size="sm" speed="fast" loadingText="Drafting your email..." />
@@ -94,7 +99,7 @@ export default function EmailGenerator({ onToolUsed, onViewChange, guestUsageLim
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-8"
+          className="grid grid-cols-1 gap-8 md:grid-cols-2"
         >
           <EmailForm
             generateEmailContent={generateEmailContent}

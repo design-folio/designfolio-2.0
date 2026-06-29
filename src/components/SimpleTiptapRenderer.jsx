@@ -19,20 +19,20 @@ const SimpleTiptapRenderer = ({
   const normalizeContent = (content) => {
     if (!content) {
       return {
-        type: 'doc',
-        content: [{ type: 'paragraph', content: [] }]
+        type: "doc",
+        content: [{ type: "paragraph", content: [] }],
       };
     }
 
     // If it's already a Tiptap JSON object, use it
-    if (typeof content === 'object' && content !== null && content.type === 'doc') {
+    if (typeof content === "object" && content !== null && content.type === "doc") {
       return content;
     }
 
     // If it's not valid Tiptap JSON, return empty document
     return {
-      type: 'doc',
-      content: [{ type: 'paragraph', content: [] }]
+      type: "doc",
+      content: [{ type: "paragraph", content: [] }],
     };
   };
 
@@ -42,7 +42,7 @@ const SimpleTiptapRenderer = ({
 
   useEffect(() => {
     hasHydrated = true;
-    setIsMounted(true);
+    queueMicrotask(() => setIsMounted(true));
   }, []);
 
   const editor = useEditor({
@@ -53,11 +53,13 @@ const SimpleTiptapRenderer = ({
         codeBlock: false,
         code: false,
         orderedList: false, // Never allow ordered lists
-        bulletList: enableBulletList ? {
-          HTMLAttributes: {
-            class: "list-disc pl-5",
-          },
-        } : false, // Only allow bullet lists if enabled
+        bulletList: enableBulletList
+          ? {
+              HTMLAttributes: {
+                class: "list-disc pl-5",
+              },
+            }
+          : false, // Only allow bullet lists if enabled
       }),
       Highlight.configure({
         multicolor: false,
@@ -99,18 +101,19 @@ const SimpleTiptapRenderer = ({
   }
 
   return (
-    <div className={cn(
-      noCardStyle
-        ? "break-words"
-        : mode === "work"
+    <div
+      className={cn(
+        noCardStyle
           ? "break-words"
-          : "bg-review-card-bg-color shadow-df-section-card-shadow rounded-[24px] break-words",
-      className
-    )}>
+          : mode === "work"
+            ? "break-words"
+            : "bg-review-card-bg-color shadow-df-section-card-shadow rounded-[24px] break-words",
+        className
+      )}
+    >
       <EditorContent editor={editor} />
     </div>
   );
 };
 
 export default SimpleTiptapRenderer;
-

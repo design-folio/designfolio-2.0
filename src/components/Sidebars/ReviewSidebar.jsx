@@ -7,7 +7,7 @@ import { Input } from "../ui/input";
 import CloseIcon from "../../../public/assets/svgs/close.svg";
 import Text from "../text";
 import DeleteIcon from "../../../public/assets/svgs/deleteIcon.svg";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import SimpleTiptapEditor from "../SimpleTiptapEditor";
 import { UnsavedChangesDialog } from "../ui/UnsavedChangesDialog";
 import { sidebars } from "@/lib/constant";
@@ -40,32 +40,34 @@ export default function AddReview() {
 
   const formikRef = useRef(null);
 
-  const { compress, compressedImage, compressionProgress } =
-    useImageCompression();
+  const { compress, compressedImage, compressionProgress } = useImageCompression();
 
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [avatarFile, setAvatarFile] = useState(null);
 
   const isOpen = activeSidebar === sidebars.review;
 
-
   useEffect(() => {
-    if (selectedReview?.avatar) {
-      // Handle avatar as object with url/key or as string
-      const avatarUrl = typeof selectedReview.avatar === 'object'
-        ? (selectedReview.avatar.url || selectedReview.avatar.key || null)
-        : selectedReview.avatar;
-      setAvatarPreview(avatarUrl);
-    } else {
-      setAvatarPreview(null);
-    }
-    setAvatarFile(null);
+    queueMicrotask(() => {
+      if (selectedReview?.avatar) {
+        const avatarUrl =
+          typeof selectedReview.avatar === "object"
+            ? selectedReview.avatar.url || selectedReview.avatar.key || null
+            : selectedReview.avatar;
+        setAvatarPreview(avatarUrl);
+      } else {
+        setAvatarPreview(null);
+      }
+      setAvatarFile(null);
+    });
   }, [selectedReview]);
 
   useEffect(() => {
     if (compressionProgress === 100 && compressedImage) {
-      setAvatarFile(compressedImage);
-      setAvatarPreview(URL.createObjectURL(compressedImage));
+      queueMicrotask(() => {
+        setAvatarFile(compressedImage);
+        setAvatarPreview(URL.createObjectURL(compressedImage));
+      });
     }
   }, [compressionProgress, compressedImage]);
 
@@ -78,36 +80,13 @@ export default function AddReview() {
     return JSON.stringify(desc1) === JSON.stringify(desc2);
   };
 
-  const hasUnsavedChanges = () => {
-    const v = editingValues;
-    if (!v) return false;
-
-    if (!selectedReview) {
-      return !!(
-        v.name ||
-        v.company ||
-        v.linkedinLink ||
-        v.description ||
-        avatarFile !== null
-      );
-    }
-
-    return (
-      v.name !== selectedReview.name ||
-      v.company !== selectedReview.company ||
-      v.linkedinLink !== (selectedReview.linkedinLink || "") ||
-      !compareDescription(v.description, selectedReview.description) ||
-      avatarFile !== null
-    );
-  };
-
-  const resetState = () => {
+  const resetState = useCallback(() => {
     setSelectedReview(null);
     setEditingValues(null);
     setAvatarPreview(null);
     setAvatarFile(null);
     setShowDeleteWarning(false);
-  };
+  }, [setSelectedReview]);
 
   const resetStateAndClose = () => {
     resetState();
@@ -118,20 +97,34 @@ export default function AddReview() {
     closeSidebar();
   };
 
+  const hasUnsavedChanges = useCallback(() => {
+    const v = editingValues;
+    if (!v) return false;
+    if (!selectedReview) {
+      return !!(v.name || v.company || v.linkedinLink || v.description || avatarFile !== null);
+    }
+    return (
+      v.name !== selectedReview.name ||
+      v.company !== selectedReview.company ||
+      v.linkedinLink !== (selectedReview.linkedinLink || "") ||
+      !compareDescription(v.description, selectedReview.description) ||
+      avatarFile !== null
+    );
+  }, [editingValues, selectedReview, avatarFile]);
+
   // Clear state when sidebar closes using resetState
   useEffect(() => {
     if (!isOpen) {
-      // Reset state when sidebar closes (after unsaved changes dialog is handled if needed)
-      resetState();
+      queueMicrotask(() => resetState());
     }
-  }, [isOpen]);
+  }, [isOpen, resetState]);
 
   useEffect(() => {
     if (isOpen) {
       registerUnsavedChangesChecker(sidebars.review, hasUnsavedChanges);
     }
     return () => unregisterUnsavedChangesChecker(sidebars.review);
-  }, [isOpen, editingValues, selectedReview, avatarFile]);
+  }, [isOpen, hasUnsavedChanges, registerUnsavedChangesChecker, unregisterUnsavedChangesChecker]);
 
   const handleDelete = () => {
     setShowDeleteWarning(true);
@@ -163,10 +156,9 @@ export default function AddReview() {
     }
   };
 
-
   const renderFormContent = () => (
     <Formik
-      key={selectedReview?._id || 'new'}
+      key={selectedReview?._id || "new"}
       innerRef={formikRef}
       enableReinitialize
       initialValues={{
@@ -183,14 +175,11 @@ export default function AddReview() {
           const reviewData = {
             ...values,
             ...(avatarData && { avatar: avatarData }),
-            ...(!avatarData &&
-              selectedReview?.avatar && { avatar: selectedReview.avatar }),
+            ...(!avatarData && selectedReview?.avatar && { avatar: selectedReview.avatar }),
           };
 
           const reviews = selectedReview
-            ? userDetails.reviews.filter(
-              (r) => r._id !== selectedReview._id
-            )
+            ? userDetails.reviews.filter((r) => r._id !== selectedReview._id)
             : userDetails.reviews;
 
           _updateUser({ reviews: [...reviews, reviewData] })
@@ -218,17 +207,16 @@ export default function AddReview() {
       }}
     >
       {({ isSubmitting, errors, touched, values, setFieldValue }) => {
-        useEffect(() => { setEditingValues(values); }, [values]);
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        useEffect(() => {
+          setEditingValues(values);
+        }, [values]);
 
         return (
-          <Form id="reviewForm" className="flex flex-col h-full">
+          <Form id="reviewForm" className="flex h-full flex-col">
             <div className="flex-1 overflow-auto px-6 py-4">
               <div>
-                <Text
-                  size={"p-xxsmall"}
-                  className="mt-6 font-medium"
-                  required
-                >
+                <Text size={"p-xxsmall"} className="mt-6 font-medium" required>
                   Name of the Person
                 </Text>
                 <Field name="name">
@@ -237,22 +225,15 @@ export default function AddReview() {
                       {...field}
                       type="text"
                       autoComplete="off"
-                      className={`mt-2 ${errors.name && touched.name ? "!border-[var(--input-error-color)] focus-visible:!shadow-[var(--input-error-shadow)]" : ""}`}
+                      className={`mt-2 ${errors.name && touched.name ? "!border-(--input-error-color) focus-visible:!shadow-(--input-error-shadow)" : ""}`}
                     />
                   )}
                 </Field>
-                <ErrorMessage
-                  name="name"
-                  component="div"
-                  className="error-message"
-                />
+                <ErrorMessage name="name" component="div" className="error-message" />
               </div>
 
               <div className="mt-6">
-                <Text
-                  size={"p-xxsmall"}
-                  className="font-medium"
-                >
+                <Text size={"p-xxsmall"} className="font-medium">
                   LinkedIn Link
                 </Text>
                 <Field name="linkedinLink">
@@ -262,23 +243,15 @@ export default function AddReview() {
                       type="text"
                       autoComplete="off"
                       placeholder="https://linkedin.com/in/..."
-                      className={`mt-2 ${errors.linkedinLink && touched.linkedinLink ? "!border-[var(--input-error-color)] focus-visible:!shadow-[var(--input-error-shadow)]" : ""}`}
+                      className={`mt-2 ${errors.linkedinLink && touched.linkedinLink ? "!border-(--input-error-color) focus-visible:!shadow-(--input-error-shadow)" : ""}`}
                     />
                   )}
                 </Field>
-                <ErrorMessage
-                  name="linkedinLink"
-                  component="div"
-                  className="error-message"
-                />
+                <ErrorMessage name="linkedinLink" component="div" className="error-message" />
               </div>
 
               <div className="mt-6">
-                <Text
-                  size={"p-xxsmall"}
-                  className="font-medium"
-                  required
-                >
+                <Text size={"p-xxsmall"} className="font-medium" required>
                   Company Name
                 </Text>
                 <Field name="company">
@@ -287,23 +260,15 @@ export default function AddReview() {
                       {...field}
                       type="text"
                       autoComplete="off"
-                      className={`mt-2 ${errors.company && touched.company ? "!border-[var(--input-error-color)] focus-visible:!shadow-[var(--input-error-shadow)]" : ""}`}
+                      className={`mt-2 ${errors.company && touched.company ? "!border-(--input-error-color) focus-visible:!shadow-(--input-error-shadow)" : ""}`}
                     />
                   )}
                 </Field>
-                <ErrorMessage
-                  name="company"
-                  component="div"
-                  className="error-message"
-                />
+                <ErrorMessage name="company" component="div" className="error-message" />
               </div>
 
               <div className="mt-6">
-                <Text
-                  size={"p-xxsmall"}
-                  className="font-medium"
-                  required
-                >
+                <Text size={"p-xxsmall"} className="font-medium" required>
                   Add testimonial
                 </Text>
                 <div className="mt-2">
@@ -321,30 +286,27 @@ export default function AddReview() {
               </div>
 
               <div className="mt-6">
-                <Text
-                  size={"p-xxsmall"}
-                  className="font-medium"
-                >
+                <Text size={"p-xxsmall"} className="font-medium">
                   Photo of the Person
                 </Text>
-                <div className="flex justify-start mt-2">
+                <div className="mt-2 flex justify-start">
                   <label
                     htmlFor="review-avatar"
-                    className="relative w-24 h-24 rounded-full border-2 border-border bg-muted hover:border-foreground/30 cursor-pointer flex items-center justify-center transition-all duration-300 ease-out hover:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] overflow-hidden group"
+                    className="border-border bg-muted hover:border-foreground/30 group relative flex h-24 w-24 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 transition-all duration-300 ease-out hover:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)]"
                   >
                     {avatarPreview ? (
                       <>
                         <img
                           src={avatarPreview}
                           alt="Avatar preview"
-                          className="w-full h-full object-cover"
+                          className="h-full w-full object-cover"
                         />
-                        <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
-                          <Upload className="w-5 h-5 text-white" />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-all duration-300 group-hover:bg-black/50 group-hover:opacity-100">
+                          <Upload className="h-5 w-5 text-white" />
                         </div>
                       </>
                     ) : (
-                      <Upload className="w-6 h-6 text-foreground/40 group-hover:text-foreground/60 transition-colors" />
+                      <Upload className="text-foreground/40 group-hover:text-foreground/60 h-6 w-6 transition-colors" />
                     )}
                   </label>
                 </div>
@@ -359,8 +321,9 @@ export default function AddReview() {
             </div>
 
             <div
-              className={`flex gap-2 py-3 px-6 border-t border-border ${selectedReview?.name ? "justify-between" : "justify-end"
-                }`}
+              className={`border-border flex gap-2 border-t px-6 py-3 ${
+                selectedReview?.name ? "justify-between" : "justify-end"
+              }`}
             >
               {selectedReview?.name && (
                 <Button
@@ -370,27 +333,35 @@ export default function AddReview() {
                   onClick={handleDelete}
                   className="border-destructive/40 hover:border-destructive hover:bg-destructive/10"
                 >
-                  <DeleteIcon className="stroke-destructive w-5 h-5" />
+                  <DeleteIcon className="stroke-destructive h-5 w-5" />
                 </Button>
               )}
 
               <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  type="button"
-                  onClick={handleCancel}
-                >
+                <Button variant="outline" type="button" onClick={handleCancel}>
                   Cancel
                 </Button>
-                <Button
-                  type="submit"
-                  form="reviewForm"
-                  disabled={loading}
-                >
+                <Button type="submit" form="reviewForm" disabled={loading}>
                   {loading && (
-                    <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V2.5A9.5 9.5 0 002.5 12H4z" />
+                    <svg
+                      className="h-4 w-4 animate-spin"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V2.5A9.5 9.5 0 002.5 12H4z"
+                      />
                     </svg>
                   )}
                   Save
@@ -410,7 +381,12 @@ export default function AddReview() {
       {renderFormContent()}
 
       <UnsavedChangesDialog
-        open={showUnsavedWarning && isOpen && !isSwitchingSidebar && pendingSidebarAction?.type === "close"}
+        open={
+          showUnsavedWarning &&
+          isOpen &&
+          !isSwitchingSidebar &&
+          pendingSidebarAction?.type === "close"
+        }
         onOpenChange={(open) => {
           if (!open) {
             handleCancelDiscardSidebar();

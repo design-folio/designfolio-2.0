@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { Moon, Pencil, Sun } from "lucide-react";
 import { useGlobalContext } from "@/context/globalContext";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
@@ -12,33 +12,29 @@ function CanvasProfileCard({ isEditing, skills = [], persistTheme = false }) {
   const { userDetails, openSidebar } = useGlobalContext();
   const { introduction, bio } = userDetails || {};
 
-  const avatarSrc = useMemo(
-    () => getUserAvatarImage(userDetails),
-    [userDetails],
-  );
+  const avatarSrc = useMemo(() => getUserAvatarImage(userDetails), [userDetails]);
   const { isDark, toggleTheme } = usePersistableThemeToggle(persistTheme);
-  const repeatedSkills = skills.length > 0
-    ? [...skills, ...skills, ...skills, ...skills, ...skills]
-    : [];
+  const repeatedSkills =
+    skills.length > 0 ? [...skills, ...skills, ...skills, ...skills, ...skills] : [];
 
   return (
     <motion.div
       initial={{ opacity: 0, y: -40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 100, damping: 12, delay: 0.15 }}
-      className="bg-white dark:bg-[#2A2520] rounded-[26px] border border-[#E5D7C4] dark:border-white/10 w-full relative group/section flex flex-col"
+      className="group/section relative flex w-full flex-col rounded-[26px] border border-[#E5D7C4] bg-white dark:border-white/10 dark:bg-[#2A2520]"
     >
       {isEditing && (
         <CanvasSectionControls>
           <CanvasSectionButton
-            icon={<Pencil className="w-3.5 h-3.5" />}
+            icon={<Pencil className="h-3.5 w-3.5" />}
             label="Edit Profile"
             onClick={() => openSidebar(sidebars.profile)}
           />
         </CanvasSectionControls>
       )}
 
-      <div className="absolute top-5 right-5 md:top-6 md:right-6 z-20">
+      <div className="absolute top-5 right-5 z-20 md:top-6 md:right-6">
         <Switch
           value={isDark}
           onToggle={toggleTheme}
@@ -48,15 +44,15 @@ function CanvasProfileCard({ isEditing, skills = [], persistTheme = false }) {
       </div>
 
       {/* Profile content */}
-      <div className="p-5 md:p-6 flex flex-col md:flex-row gap-8 items-start md:items-center">
-        <div className="w-28 h-28 rounded-2xl overflow-hidden shrink-0 border border-black/5 dark:border-white/10 shadow-sm">
-          <img src={avatarSrc} alt="Profile" className="w-full h-full object-cover" />
+      <div className="flex flex-col items-start gap-8 p-5 md:flex-row md:items-center md:p-6">
+        <div className="h-28 w-28 shrink-0 overflow-hidden rounded-2xl border border-black/5 shadow-sm dark:border-white/10">
+          <img src={avatarSrc} alt="Profile" className="h-full w-full object-cover" />
         </div>
-        <div className="flex flex-col gap-2 w-full">
-          <h1 className="text-[24px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7] tracking-tight leading-tight text-pretty pr-12">
+        <div className="flex w-full flex-col gap-2">
+          <h1 className="pr-12 text-[24px] leading-tight font-semibold tracking-tight text-pretty text-[#1A1A1A] dark:text-[#F0EDE7]">
             {introduction}
           </h1>
-          <p className="text-[#7A736C] dark:text-[#B5AFA5] text-[16px] leading-relaxed text-pretty">
+          <p className="text-[16px] leading-relaxed text-pretty text-[#7A736C] dark:text-[#B5AFA5]">
             {bio}
           </p>
         </div>
@@ -68,26 +64,27 @@ function CanvasProfileCard({ isEditing, skills = [], persistTheme = false }) {
           {isEditing && (
             <CanvasSectionControls>
               <CanvasSectionButton
-                icon={<Pencil className="w-3.5 h-3.5" />}
+                icon={<Pencil className="h-3.5 w-3.5" />}
                 label="Edit Skills"
                 onClick={() => openSidebar(sidebars.skills)}
               />
             </CanvasSectionControls>
           )}
-          <div className="border-t border-[#E5D7C4] dark:border-white/10 py-2 overflow-hidden relative w-full bg-gradient-to-b from-[#EEE9E3] to-[#F4F1EC] dark:from-[#252119] dark:to-[#2B2620] rounded-b-[26px]">
-            <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-[#F0EBE5] dark:from-[#272219] to-transparent z-10" />
-            <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-[#F0EBE5] dark:from-[#272219] to-transparent z-10" />
+          <div className="relative w-full overflow-hidden rounded-b-[26px] border-t border-[#E5D7C4] bg-linear-to-b from-[#EEE9E3] to-[#F4F1EC] py-2 dark:border-white/10 dark:from-[#252119] dark:to-[#2B2620]">
+            <div className="absolute top-0 bottom-0 left-0 z-10 w-12 bg-linear-to-r from-[#F0EBE5] to-transparent dark:from-[#272219]" />
+            <div className="absolute top-0 right-0 bottom-0 z-10 w-12 bg-linear-to-l from-[#F0EBE5] to-transparent dark:from-[#272219]" />
             <motion.div
               className="flex gap-4 whitespace-nowrap"
+              style={{ willChange: "transform" }}
               animate={{ x: [0, "-50%"] }}
               transition={{ ease: "linear", duration: 20, repeat: Infinity }}
             >
               {repeatedSkills.map((skill, index) => (
-                <div key={index} className="flex gap-4 items-center shrink-0">
-                  <span className="text-[#7A736C] dark:text-[#B5AFA5] font-medium text-[12px] uppercase tracking-wider">
+                <div key={index} className="flex shrink-0 items-center gap-4">
+                  <span className="text-[12px] font-medium tracking-wider text-[#7A736C] uppercase dark:text-[#B5AFA5]">
                     {skill.label}
                   </span>
-                  <div className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]">
+                  <div className="h-3 w-3 text-[#1A1A1A] dark:text-[#F0EDE7]">
                     <svg viewBox="0 0 24 24" fill="currentColor">
                       <path d="M12 0l2 9 9 2-9 2-2 9-2-9-9-2 9-2 2-9z" />
                     </svg>

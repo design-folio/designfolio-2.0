@@ -7,8 +7,7 @@ export const _getProjectDetails = (id, status, body) =>
 
 export const _getUser = (id) => axiosInstance.get(`/user/user?username=${id}`);
 
-export const _resendOTP = () =>
-  axiosInstance.get("/user/resendEmailVerification");
+export const _resendOTP = () => axiosInstance.get("/user/resendEmailVerification");
 
 export const _getSkills = (search = "", personaID = "") => {
   const params = new URLSearchParams();
@@ -23,25 +22,20 @@ export const _getPersonas = () => axiosInstance.get("persona/get/all");
 
 export const _getProjectTypes = () => axiosInstance.get("/projectType/get/all");
 
-export const _getDomainDetails = () =>
-  axiosInstance.get("/user/getCustomDomainStatus");
+export const _getDomainDetails = () => axiosInstance.get("/user/getCustomDomainStatus");
 
-export const _removeDomain = () =>
-  axiosInstance.delete("/user/removeCustomDomain");
+export const _removeDomain = () => axiosInstance.delete("/user/removeCustomDomain");
 
 export const createDodoCheckout = (plan) =>
   axiosInstance.get(`/user/createDodoCheckout?plan=${encodeURIComponent(plan)}`);
 
-export const _getDodoPortalUrl = () =>
-  axiosInstance.get("/user/getDodoPortalUrl");
+export const _getDodoPortalUrl = () => axiosInstance.get("/user/getDodoPortalUrl");
 
-export const _getProPlanDetails = () =>
-  axiosInstance.get("/user/getProPlanDetails");
+export const _getProPlanDetails = () => axiosInstance.get("/user/getProPlanDetails");
 
 export const _getPaymentDetails = () => axiosInstance.get("/user/getUserOrder");
 
 export const _getUserQuota = () => axiosInstance.get("/user/getUserQuota");
 
 // GET /user/public/:username — no auth, minimal public info for "shared by" badge
-export const _getPublicUserInfo = (username) =>
-  axiosInstance.get(`/user/public/${username}`);
+export const _getPublicUserInfo = (username) => axiosInstance.get(`/user/public/${username}`);

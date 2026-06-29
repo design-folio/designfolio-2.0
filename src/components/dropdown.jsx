@@ -38,16 +38,14 @@ function Dropdown({ data, onClick, defaultValue, theme }) {
   return (
     <div className="relative inline-block" ref={dropdownRef}>
       <button
-        className={`flex items-center justify-between px-4 py-4 rounded-lg cursor-pointer text-sm border-2 border-solid border-popover-border-color`}
+        className={`border-popover-border-color flex cursor-pointer items-center justify-between rounded-lg border-2 border-solid px-4 py-4 text-sm`}
         onClick={handleToggle}
       >
         <span className="mr-2">
-          {selectedOption.length > 15
-            ? `${selectedOption.substring(0, 14)}...`
-            : selectedOption}
+          {selectedOption.length > 15 ? `${selectedOption.substring(0, 14)}...` : selectedOption}
         </span>
         <svg
-          className="w-5 h-5 text-gray-500"
+          className="h-5 w-5 text-gray-500"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -64,21 +62,19 @@ function Dropdown({ data, onClick, defaultValue, theme }) {
 
       {isOpen && (
         <div
-          className={`pt-2 absolute z-20 right-0 origin-top-right transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${
-            isOpen
-              ? "opacity-100 scale-100"
-              : "opacity-0 scale-90 pointer-events-none"
+          className={`translateZ(0) absolute right-0 z-20 origin-top-right pt-2 transition-all duration-120 ease-in-out will-change-transform ${
+            isOpen ? "scale-100 opacity-100" : "pointer-events-none scale-90 opacity-0"
           }`}
           style={{
             maxHeight: "25vh",
           }}
         >
-          <div className="w-[250px] rounded-xl shadow-lg bg-popover-bg-color border-4 border-solid border-popover-border-color">
+          <div className="bg-popover-bg-color border-popover-border-color w-[250px] rounded-xl border-4 border-solid shadow-lg">
             <div className="p-4">
               {data.map((item) => (
                 <div
                   key={item}
-                  className={`px-4 py-2 cursor-pointer hover:bg-normal-btn-bg-hover-color rounded-lg text-[14px] font-medium `}
+                  className={`hover:bg-normal-btn-bg-hover-color cursor-pointer rounded-lg px-4 py-2 text-[14px] font-medium`}
                   onClick={() => handleOptionClick(item)}
                 >
                   {item}

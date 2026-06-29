@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, startTransition } from "react";
 import Header from "@editorjs/header";
 import Paragraph from "@editorjs/paragraph";
 import NestedList from "@editorjs/nested-list";
@@ -14,9 +14,30 @@ export default function AnalyzeEditor() {
   const [isClient, setIsClient] = useState(false);
   const [isDataPresent, setIsDataPresent] = useState(false);
 
+  // Function to update content in the editor
+  const handleUpdateContent = useCallback(
+    (editorInstance) => {
+      if (editorInstance) {
+        editorInstance
+          .save()
+          .then((data) => {
+            if (data && data.blocks && data.blocks.length > 0) {
+              setIsDataPresent(true);
+            } else {
+              setIsDataPresent(false);
+            }
+          })
+          .catch((error) => {
+            console.error("Error saving editor content:", error);
+          });
+      }
+    },
+    [setIsDataPresent]
+  );
+
   // Set up the editor after the component mounts
   useEffect(() => {
-    setIsClient(true);
+    startTransition(() => setIsClient(true));
 
     if (!editorContainer.current) return;
 
@@ -47,8 +68,7 @@ export default function AnalyzeEditor() {
             class: Paragraph,
             inlineToolbar: true,
             config: {
-              placeholder:
-                "Type here or copy-paste at least 300 words of content.",
+              placeholder: "Type here or copy-paste at least 300 words of content.",
             },
           },
           list: {
@@ -69,7 +89,6 @@ export default function AnalyzeEditor() {
         },
       });
 
-      // Store the editor instance in the ref for future use
       editor.current = editorInstance;
 
       return () => {
@@ -78,25 +97,7 @@ export default function AnalyzeEditor() {
         }
       };
     }
-  }, [isClient]);
-
-  // Function to update content in the editor
-  const handleUpdateContent = (editorInstance) => {
-    if (editorInstance) {
-      editorInstance
-        .save()
-        .then((data) => {
-          if (data && data.blocks && data.blocks.length > 0) {
-            setIsDataPresent(true);
-          } else {
-            setIsDataPresent(false);
-          }
-        })
-        .catch((error) => {
-          console.error("Error saving editor content:", error);
-        });
-    }
-  };
+  }, [isClient, handleUpdateContent]);
 
   const handleAnalyze = (editorInstance) => {
     if (editor.current) {
@@ -113,16 +114,14 @@ export default function AnalyzeEditor() {
   };
 
   return (
-    <div className="flex flex-col items-stretch w-full h-full">
+    <div className="flex h-full w-full flex-col items-stretch">
       <div
-        className="project-editor bg-white border-2 border-border rounded-2xl py-4 md:py-6 w-full hover:border-foreground/20 focus-within:border-foreground/30 transition-all duration-300"
+        className="project-editor border-border hover:border-foreground/20 focus-within:border-foreground/30 w-full rounded-2xl border-2 bg-white py-4 transition-all duration-300 md:py-6"
         style={{ minHeight: "280px" }}
       >
         <div
           ref={editorContainer}
-          className={
-            "block w-[100%] mx-0 my-auto h-full relative overflow-auto"
-          }
+          className={"relative mx-0 my-auto block h-full w-[100%] overflow-auto"}
         >
           {/* {!isDataPresent && (
           <div className="relative">
@@ -213,7 +212,7 @@ export default function AnalyzeEditor() {
       <button
         type="button"
         onClick={() => handleAnalyze(editor.current)}
-        className="w-full mt-4 bg-foreground text-background hover:bg-foreground/90 focus-visible:outline-none border-0 rounded-full h-11 px-6 text-base font-semibold transition-colors"
+        className="bg-foreground text-background hover:bg-foreground/90 mt-4 h-11 w-full rounded-full border-0 px-6 text-base font-semibold transition-colors focus-visible:outline-none"
       >
         Analyze
       </button>

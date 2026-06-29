@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useRef, useEffect, startTransition } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import { ArrowRight, ArrowLeft, Search } from "lucide-react";
 import Lottie from "lottie-react";
 import aiAssistantAnimation from "@/assets/AI-Assistant.json";
@@ -17,7 +17,7 @@ function BlurredStagger({ text, className }) {
       {words.map((word, i) => (
         <motion.span
           key={`${text}-${i}`}
-          className="inline-block mr-[0.25em]"
+          className="mr-[0.25em] inline-block"
           initial={{ opacity: 0, filter: "blur(8px)", y: 6 }}
           animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
           transition={{ duration: 0.4, delay: i * 0.06, ease: "easeOut" }}
@@ -72,7 +72,7 @@ export function TypeRoom({ questions, onDone, onReset }) {
   // Auto-select the only option when Q1 appears so city input shows immediately
   useEffect(() => {
     if (current === 1 && q1?.options?.length > 0 && locationChoice === null) {
-      setLocationChoice(q1.options[0]);
+      startTransition(() => setLocationChoice(q1.options[0]));
     }
   }, [current, q1, locationChoice]);
 
@@ -106,26 +106,26 @@ export function TypeRoom({ questions, onDone, onReset }) {
 
   return (
     <motion.div
-      className="flex-1 flex flex-col items-center justify-between px-6 py-12 overflow-y-auto"
+      className="flex flex-1 flex-col items-center justify-between overflow-y-auto px-6 py-12"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full bg-[#FF553E]/5 dark:bg-[#FF553E]/15 blur-[120px]" />
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute top-1/2 left-1/2 h-[400px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#FF553E]/5 blur-[120px] dark:bg-[#FF553E]/15" />
       </div>
 
       <div />
 
       {/* Question + answer area */}
-      <div className="relative z-20 flex flex-col items-center text-center max-w-lg gap-6 w-full">
+      <div className="relative z-20 flex w-full max-w-lg flex-col items-center gap-6 text-center">
         {/* Lottie AI animation */}
         <motion.div
           initial={{ scale: 0.75, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.5, type: "spring", bounce: 0.35 }}
-          className="w-16 h-16"
+          className="h-16 w-16"
         >
           <Lottie animationData={aiAssistantAnimation} loop />
         </motion.div>
@@ -133,8 +133,8 @@ export function TypeRoom({ questions, onDone, onReset }) {
         {/* Question text — re-mounts on question change for stagger reset */}
         <BlurredStagger
           key={current}
-          text={current === 0 ? (q0?.text || "") : (q1?.text || "")}
-          className="text-foreground text-[22px] font-medium leading-snug tracking-tight"
+          text={current === 0 ? q0?.text || "" : q1?.text || ""}
+          className="text-foreground text-[22px] leading-snug font-medium tracking-tight"
         />
 
         <AnimatePresence mode="wait">
@@ -142,7 +142,7 @@ export function TypeRoom({ questions, onDone, onReset }) {
           {current === 0 && (
             <motion.div
               key="role-input"
-              className="flex flex-col items-center gap-4 w-full"
+              className="flex w-full flex-col items-center gap-4"
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -12 }}
@@ -154,7 +154,7 @@ export function TypeRoom({ questions, onDone, onReset }) {
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && advance()}
-                className="rounded-2xl px-5 py-4 text-[15px] h-auto"
+                className="h-auto rounded-2xl px-5 py-4 text-[15px]"
               />
               <div className="flex flex-wrap justify-center gap-2">
                 {roleSuggestions.map((s) => (
@@ -162,10 +162,11 @@ export function TypeRoom({ questions, onDone, onReset }) {
                     key={s.label}
                     data-testid={`suggestion-${s.label.toLowerCase().replace(/\s+/g, "-")}`}
                     onClick={() => setRole(s.label)}
-                    className={`cursor-pointer px-4 py-2 rounded-full border text-[13px] transition-all duration-200 ${role === s.label
-                      ? "bg-foreground text-background border-foreground"
-                      : "border-border text-muted-foreground bg-background dark:bg-foreground/8 hover:border-foreground/30 hover:text-foreground"
-                      }`}
+                    className={`cursor-pointer rounded-full border px-4 py-2 text-[13px] transition-all duration-200 ${
+                      role === s.label
+                        ? "bg-foreground text-background border-foreground"
+                        : "border-border text-muted-foreground bg-background dark:bg-foreground/8 hover:border-foreground/30 hover:text-foreground"
+                    }`}
                   >
                     {s.label}
                   </button>
@@ -178,7 +179,7 @@ export function TypeRoom({ questions, onDone, onReset }) {
           {current === 1 && (
             <motion.div
               key="location"
-              className="flex flex-col items-center gap-5 w-full"
+              className="flex w-full flex-col items-center gap-5"
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -12 }}
@@ -205,19 +206,18 @@ export function TypeRoom({ questions, onDone, onReset }) {
               </AnimatePresence>
             </motion.div>
           )}
-
         </AnimatePresence>
       </div>
 
       {/* Bottom nav */}
-      <div className="relative z-10 flex flex-col items-center gap-5 w-full max-w-lg mt-8">
-        <div className="flex items-center justify-between w-full gap-3">
+      <div className="relative z-10 mt-8 flex w-full max-w-lg flex-col items-center gap-5">
+        <div className="flex w-full items-center justify-between gap-3">
           {/* Back */}
           <Button
             data-testid="button-back"
             variant="outline"
             onClick={goBack}
-            className={`px-5 py-3 h-auto text-[14px] ${current === 0 ? "invisible" : ""}`}
+            className={`h-auto px-5 py-3 text-[14px] ${current === 0 ? "invisible" : ""}`}
           >
             <ArrowLeft />
             Back
@@ -230,12 +230,16 @@ export function TypeRoom({ questions, onDone, onReset }) {
             data-testid={isLastStep ? "button-scan-jobs" : "button-next"}
             onClick={advance}
             disabled={!canNext()}
-            className="px-5 py-3 h-auto text-[14px]"
+            className="h-auto px-5 py-3 text-[14px]"
           >
             {isLastStep ? (
-              <>Find matching Jobs <Search /></>
+              <>
+                Find matching Jobs <Search />
+              </>
             ) : (
-              <>Continue <ArrowRight /></>
+              <>
+                Continue <ArrowRight />
+              </>
             )}
           </Button>
         </div>
@@ -244,7 +248,7 @@ export function TypeRoom({ questions, onDone, onReset }) {
           variant="ghost"
           data-testid="button-do-later-type"
           onClick={onReset}
-          className="cursor-pointer text-muted-foreground/50 text-[12px] hover:text-muted-foreground transition-colors"
+          className="text-muted-foreground/50 hover:text-muted-foreground cursor-pointer text-[12px] transition-colors"
         >
           I&apos;ll do it later
         </Button>

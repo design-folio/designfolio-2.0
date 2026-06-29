@@ -3,18 +3,8 @@ import * as React from "react";
 function Testimonial(props) {
   return (
     <svg width={31} height={31} viewBox="0 0 32 32" fill="none" {...props}>
-      <circle
-        cx={26.281}
-        cy={15.946}
-        r={3.781}
-        fill="url(#prefix__paint0_radial_18_17873)"
-      />
-      <circle
-        cx={26.281}
-        cy={15.946}
-        r={3.781}
-        fill="url(#prefix__paint1_linear_18_17873)"
-      />
+      <circle cx={26.281} cy={15.946} r={3.781} fill="url(#prefix__paint0_radial_18_17873)" />
+      <circle cx={26.281} cy={15.946} r={3.781} fill="url(#prefix__paint1_linear_18_17873)" />
       <path
         d="M5.25 21.04h4.844v7.28a.5.5 0 01-.5.5H5.75a.5.5 0 01-.5-.5v-7.28z"
         fill="url(#prefix__paint2_radial_18_17873)"

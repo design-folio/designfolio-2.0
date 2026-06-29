@@ -8,42 +8,49 @@ import { containerVariants, itemVariants } from "@/lib/animationVariants";
 import { capitalizeWords } from "@/lib/capitalizeText";
 import { _getProjectDetails, _getUser } from "@/network/get-request";
 import { useQuery } from "@tanstack/react-query";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import WallpaperBackground from "@/components/WallpaperBackground";
 import { getWallpaperUrl } from "@/lib/wallpaper";
-import MacOSWindowShell from "@/components/templates/MacOSDock/MacOSWindowShell";
 import { cn, getProjectUrl } from "@/lib/utils";
-import MacOSTemplate from "@/components/comp/MacOSTemplate";
 import { ChevronLeft } from "lucide-react";
 import { TEMPLATE_IDS, TEMPLATES_BY_ID } from "@/lib/templates";
-import CanvasProjectCta from "@/components/templates/Canvas/CanvasProjectCta";
-import MonoProjectFooter from "@/components/templates/Mono/MonoProjectFooter";
-import ProfessionalProjectInfo from "@/components/templates/Professional/ProfessionalProjectInfo";
-import ChatProjectView from "@/components/templates/Chat/ChatProjectView";
 import MemoMadewithdesignfolio from "@/components/icons/Madewithdesignfolio";
+import dynamic from "next/dynamic";
 
-export default function Index({
-  data,
-  ownerTemplate,
-  ownerWallpaper,
-  ownerUser,
-}) {
+// ssr: false — these components depend on useGlobalContext and useTheme (client-only hooks).
+const MacOSWindowShell = dynamic(
+  () => import("@/components/templates/MacOSDock/MacOSWindowShell"),
+  { ssr: false }
+);
+const MacOSTemplate = dynamic(() => import("@/components/comp/MacOSTemplate"), { ssr: false });
+const CanvasProjectCta = dynamic(() => import("@/components/templates/Canvas/CanvasProjectCta"), {
+  ssr: false,
+});
+const MonoProjectFooter = dynamic(() => import("@/components/templates/Mono/MonoProjectFooter"), {
+  ssr: false,
+});
+const ProfessionalProjectInfo = dynamic(
+  () => import("@/components/templates/Professional/ProfessionalProjectInfo"),
+  { ssr: false }
+);
+const ChatProjectView = dynamic(() => import("@/components/templates/Chat/ChatProjectView"), {
+  ssr: false,
+});
+
+export default function Index({ data, ownerTemplate, ownerWallpaper, ownerUser }) {
   const router = useRouter();
   const { setTheme, theme, resolvedTheme } = useTheme();
-  const { setCursor, setWallpaper, userDetails, wallpaperEffects } =
-    useGlobalContext();
+  const { setCursor, setWallpaper, userDetails, wallpaperEffects } = useGlobalContext();
   const [unlockedProjectData, setUnlockedProjectData] = useState(null);
 
   // Try to get project from context first (fastest)
   const contextProject = useMemo(() => {
     if (!router.query.id || !userDetails?.projects) return null;
-    return userDetails.projects.find(
-      (project) => project._id === router.query.id,
-    );
-  }, [router.query.id, userDetails?.projects]);
+    return userDetails.projects.find((project) => project._id === router.query.id);
+  }, [router.query.id, userDetails]);
 
   const shouldFetch =
     router.isReady &&
@@ -151,18 +158,15 @@ export default function Index({
 
   // Wallpaper priority: project wallpaper → owner wallpaper (for MacOS) → userDetails wallpaper
   const projectWallpaper = project?.wallpaper;
-  const rawWp =
-    projectWallpaper ||
-    (isMacOS ? ownerWallpaper : null) ||
-    userDetails?.wallpaper;
-  const wpValue =
-    rawWp && typeof rawWp === "object" ? rawWp.url || rawWp.value : rawWp;
+  const rawWp = projectWallpaper || (isMacOS ? ownerWallpaper : null) || userDetails?.wallpaper;
+  const wpValue = rawWp && typeof rawWp === "object" ? rawWp.url || rawWp.value : rawWp;
 
   // Compute wallpaper URL for this project
-  const currentTheme =
-    resolvedTheme || theme || (project?.theme == 1 ? "dark" : "light");
+  const currentTheme = resolvedTheme || theme || (project?.theme == 1 ? "dark" : "light");
   // Chat template uses solid bg — no wallpaper. Remove the isChatfolio check to re-enable.
-  const wallpaperUrl = isChatfolio ? null : getWallpaperUrl(wpValue ?? 0, currentTheme, effectiveTemplate);
+  const wallpaperUrl = isChatfolio
+    ? null
+    : getWallpaperUrl(wpValue ?? 0, currentTheme, effectiveTemplate);
 
   // Get wallpaper effects from project → owner → userDetails
   const effects =
@@ -173,9 +177,12 @@ export default function Index({
 
   const tiptapClassName = (() => {
     switch (effectiveTemplate) {
-      case TEMPLATE_IDS.CANVAS: return "";
-      case TEMPLATE_IDS.SPOTLIGHT: return "shadow-none bg-card";
-      default: return "shadow-none bg-transparent";
+      case TEMPLATE_IDS.CANVAS:
+        return "";
+      case TEMPLATE_IDS.SPOTLIGHT:
+        return "shadow-none bg-card";
+      default:
+        return "shadow-none bg-transparent";
     }
   })();
 
@@ -183,25 +190,23 @@ export default function Index({
     <CanvasProjectCta ownerUser={ownerUser} />
   );
 
-  const monoCta = isMono && !isProtected && project && (
-    <MonoProjectFooter ownerUser={ownerUser} />
-  );
+  const monoCta = isMono && !isProtected && project && <MonoProjectFooter ownerUser={ownerUser} />;
 
   const projectContent = (
     <div
       className={(() => {
         switch (effectiveTemplate) {
           case TEMPLATE_IDS.CANVAS:
-            return "max-w-[848px] mx-auto flex flex-col gap-3 pb-20 pt-[40px] px-4 md:px-0";
+            return "mx-auto flex max-w-[848px] flex-col gap-3 px-4 pt-[40px] pb-20 md:px-0";
           case TEMPLATE_IDS.MONO:
-            return "max-w-[848px] mx-auto pb-20 custom-dashed-x bg-[#F0EDE7] dark:bg-[#1A1A1A] min-h-screen";
+            return "custom-dashed-x mx-auto min-h-screen max-w-[848px] bg-[#F0EDE7] pb-20 dark:bg-[#1A1A1A]";
           default:
-            return "max-w-[848px] mx-auto pt-[16px] pb-[80px] lg:py-[40px] px-2 md:px-4 lg:px-0";
+            return "mx-auto max-w-[848px] px-2 pt-[16px] pb-[80px] md:px-4 lg:px-0 lg:py-[40px]";
         }
       })()}
     >
       <motion.div
-        className={`flex-1 flex flex-col ${isMono ? "" : "gap-3"}`}
+        className={`flex flex-1 flex-col ${isMono ? "" : "gap-3"}`}
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -233,11 +238,21 @@ export default function Index({
                   <ProjectInfo projectDetails={project} ownerTemplate={ownerTemplate} />
                 </motion.div>
                 {project?.contentVersion === 2 && project?.tiptapContent ? (
-                  <motion.div variants={itemVariants} className={cn(isMono ? "px-6 md:px-10 py-8" : "")}>
-                    <TiptapRenderer key={project._id} content={project.tiptapContent} className={tiptapClassName} />
+                  <motion.div
+                    variants={itemVariants}
+                    className={cn(isMono ? "px-6 py-8 md:px-10" : "")}
+                  >
+                    <TiptapRenderer
+                      key={project._id}
+                      content={project.tiptapContent}
+                      className={tiptapClassName}
+                    />
                   </motion.div>
                 ) : project?.content ? (
-                  <motion.div variants={itemVariants} className={isMono ? "px-6 md:px-10 py-8" : ""}>
+                  <motion.div
+                    variants={itemVariants}
+                    className={isMono ? "px-6 py-8 md:px-10" : ""}
+                  >
                     <BlockRenderer editorJsData={project.content} />
                   </motion.div>
                 ) : null}
@@ -258,20 +273,14 @@ export default function Index({
         description={project?.description || data?.project?.description}
         keywords={project?.description || data?.project?.description}
         imageUrl={
-          project?.thumbnail?.key ||
-          data?.project?.thumbnail?.key ||
-          "/assets/png/seo-profile.png"
+          project?.thumbnail?.key || data?.project?.thumbnail?.key || "/assets/png/seo-profile.png"
         }
         url={`https://${project?.username || data?.project?.username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`}
       />
       <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={effects} />
 
       {isChatfolio && !isProtected && project ? (
-        <ChatProjectView
-          project={project}
-          ownerUser={ownerUser}
-          onBack={() => router.back()}
-        />
+        <ChatProjectView project={project} ownerUser={ownerUser} onBack={() => router.back()} />
       ) : isProfessional && !isProtected && project ? (
         <ProfessionalProjectInfo projectDetails={project} userDetails={ownerUser} />
       ) : isMacOS ? (
@@ -301,10 +310,8 @@ export default function Index({
           {projectContent}
           {!ownerUser?.pro && (
             <div
-              className={`text-center flex justify-center fixed bottom-0 left-0 right-0 lg:left-1/2 lg:-translate-x-1/2 lg:bottom-[24px] lg:right-[unset] mb-2 xl:block cursor-pointer`}
-              onClick={() =>
-                window.open("https://www.designfolio.me", "_blank")
-              }
+              className={`fixed right-0 bottom-0 left-0 mb-2 flex cursor-pointer justify-center text-center lg:right-[unset] lg:bottom-[24px] lg:left-1/2 lg:-translate-x-1/2 xl:block`}
+              onClick={() => window.open("https://www.designfolio.me", "_blank")}
             >
               <MemoMadewithdesignfolio />
             </div>
@@ -337,7 +344,7 @@ export async function getServerSideProps(context) {
             ownerUser = owner;
           }
         }
-      } catch (_) { }
+      } catch (_) {}
       return {
         props: {
           data: projectData,

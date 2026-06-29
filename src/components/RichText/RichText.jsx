@@ -24,7 +24,7 @@ export function RichText({ content }) {
           return (
             <p
               key={index}
-              className="text-[18px] md:text-[20px] leading-[1.6] md:leading-[1.8] mb-6 md:mb-8 text-gray-800 font-normal"
+              className="mb-6 text-[18px] leading-[1.6] font-normal text-gray-800 md:mb-8 md:text-[20px] md:leading-[1.8]"
             >
               {node.content.map((inline, i) => {
                 if (!inline || !inline.nodeType) return null;
@@ -56,7 +56,7 @@ export function RichText({ content }) {
                       <a
                         key={i}
                         href={inline.data.uri}
-                        className="text-blue-600 hover:underline decoration-blue-400 decoration-2"
+                        className="text-blue-600 decoration-blue-400 decoration-2 hover:underline"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
@@ -73,7 +73,7 @@ export function RichText({ content }) {
           return (
             <h1
               key={index}
-              className="text-3xl md:text-4xl font-bold mb-6 md:mb-8 mt-8 md:mt-12 text-gray-900 leading-tight"
+              className="mt-8 mb-6 text-3xl leading-tight font-bold text-gray-900 md:mt-12 md:mb-8 md:text-4xl"
             >
               {node.content?.[0]?.value || ""}
             </h1>
@@ -82,7 +82,7 @@ export function RichText({ content }) {
           return (
             <h2
               key={index}
-              className="text-2xl md:text-3xl font-bold mb-4 md:mb-6 mt-8 md:mt-10 text-gray-900 leading-tight"
+              className="mt-8 mb-4 text-2xl leading-tight font-bold text-gray-900 md:mt-10 md:mb-6 md:text-3xl"
             >
               {node.content?.[0]?.value || ""}
             </h2>
@@ -91,7 +91,7 @@ export function RichText({ content }) {
           return (
             <h3
               key={index}
-              className="text-xl md:text-2xl font-bold mb-3 md:mb-4 mt-6 md:mt-8 text-gray-900 leading-tight"
+              className="mt-6 mb-3 text-xl leading-tight font-bold text-gray-900 md:mt-8 md:mb-4 md:text-2xl"
             >
               {node.content?.[0]?.value || ""}
             </h3>
@@ -102,18 +102,18 @@ export function RichText({ content }) {
             const fullImageUrl = imageUrl.startsWith("//")
               ? `https:${imageUrl}`
               : imageUrl.startsWith("http")
-              ? imageUrl
-              : `https:${imageUrl}`;
+                ? imageUrl
+                : `https:${imageUrl}`;
 
             return (
-              <div key={index} className="my-8 md:my-12 relative">
-                <div className="bg-gray-100 overflow-hidden rounded-lg relative">
+              <div key={index} className="relative my-8 md:my-12">
+                <div className="relative overflow-hidden rounded-lg bg-gray-100">
                   <Zoom>
                     <img
                       src={fullImageUrl}
                       alt={node.data.target.fields.title || ""}
                       loading="eager"
-                      className="w-full transition-opacity duration-300 cursor-zoom-in rounded-lg opacity-100"
+                      className="w-full cursor-zoom-in rounded-lg opacity-100 transition-opacity duration-300"
                       style={{ objectFit: "contain" }}
                     />
                   </Zoom>
@@ -127,7 +127,7 @@ export function RichText({ content }) {
           return (
             <ul
               key={index}
-              className="list-disc list-outside ml-6 mb-6 md:mb-8 space-y-2 md:space-y-3 text-[18px] md:text-[20px] leading-[1.6] md:leading-[1.8] text-gray-800"
+              className="mb-6 ml-6 list-outside list-disc space-y-2 text-[18px] leading-[1.6] text-gray-800 md:mb-8 md:space-y-3 md:text-[20px] md:leading-[1.8]"
             >
               {node.content.map((item, i) => (
                 <li key={i} className="pl-2">
@@ -141,7 +141,7 @@ export function RichText({ content }) {
           return (
             <ol
               key={index}
-              className="list-decimal list-outside ml-6 mb-6 md:mb-8 space-y-2 md:space-y-3 text-[18px] md:text-[20px] leading-[1.6] md:leading-[1.8] text-gray-800"
+              className="mb-6 ml-6 list-outside list-decimal space-y-2 text-[18px] leading-[1.6] text-gray-800 md:mb-8 md:space-y-3 md:text-[20px] md:leading-[1.8]"
             >
               {node.content.map((item, i) => (
                 <li key={i} className="pl-2">

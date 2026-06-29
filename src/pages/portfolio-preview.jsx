@@ -1,7 +1,7 @@
 import { useGlobalContext } from "@/context/globalContext";
-import { useEffect } from "react";
+import { useEffect, startTransition } from "react";
 import Template2 from "@/components/template2";
-import Minimal from "@/components/comp/Minimal";
+import Minimal from "@/components/templates/Spotlight";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/router";
 import { ArrowLeft } from "lucide-react";
@@ -41,12 +41,10 @@ export default function Index() {
 
   const ProBadge = !userDetails?.pro && (
     <div
-      className="text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[10px] xl:block cursor-pointer mb-[120px] lg:m-0"
+      className="relative mb-[120px] flex cursor-pointer justify-center text-center lg:fixed lg:right-[36px] lg:bottom-[10px] lg:m-0 xl:block"
       onClick={() => window.open("https://www.designfolio.me", "_blank")}
     >
-
       <MemoMadewithdesignfolio />
-
     </div>
   );
 
@@ -55,14 +53,14 @@ export default function Index() {
       case TEMPLATE_IDS.CANVAS:
         return (
           <>
-            <div className="max-w-[848px] mx-auto w-full px-4 md:px-0 pt-6 pb-2">
+            <div className="mx-auto w-full max-w-[848px] px-4 pt-6 pb-2 md:px-0">
               <Button
                 variant="outline"
-                className="bg-white dark:bg-[#2A2520] rounded-full hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors border border-[#E5D7C4] dark:border-white/10"
+                className="rounded-full border border-[#E5D7C4] bg-white transition-colors hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520] dark:hover:bg-[#35302A]"
                 size="sm"
                 onClick={() => router.push("/builder")}
               >
-                <ArrowLeft className="w-4 h-4" />
+                <ArrowLeft className="h-4 w-4" />
                 Exit Preview
               </Button>
             </div>
@@ -71,15 +69,15 @@ export default function Index() {
         );
       case TEMPLATE_IDS.CHATFOLIO:
         return (
-          <div className="min-h-screen bg-[#F0EDE7] dark:bg-[#1A1A1A] transition-colors duration-700 flex flex-col items-center">
-            <div className="w-full max-w-[700px] pt-6 pb-2 px-4">
+          <div className="flex min-h-screen flex-col items-center bg-[#F0EDE7] transition-colors duration-700 dark:bg-[#1A1A1A]">
+            <div className="w-full max-w-[700px] px-4 pt-6 pb-2">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => router.push("/builder")}
-                className="rounded-full bg-[#E5E2DB] dark:bg-[#2A2520] hover:bg-[#DEDAD3] dark:hover:bg-[#35302A] border border-black/10 dark:border-white/10 text-[#1A1A1A] dark:text-[#F0EDE7]"
+                className="rounded-full border border-black/10 bg-[#E5E2DB] text-[#1A1A1A] hover:bg-[#DEDAD3] dark:border-white/10 dark:bg-[#2A2520] dark:text-[#F0EDE7] dark:hover:bg-[#35302A]"
               >
-                <ArrowLeft className="w-4 h-4" />
+                <ArrowLeft className="h-4 w-4" />
                 Exit Preview
               </Button>
             </div>
@@ -95,7 +93,7 @@ export default function Index() {
               onClick={() => router.push("/builder")}
               className="mt-8"
             >
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="h-4 w-4" />
               Go Back
             </Button>
             <Minimal userDetails={userDetails} edit={false} />
@@ -105,14 +103,14 @@ export default function Index() {
       case TEMPLATE_IDS.MONO:
         return (
           <>
-            <div className="max-w-[848px] mx-auto w-full px-4 md:px-0 pt-6 pb-2">
+            <div className="mx-auto w-full max-w-[848px] px-4 pt-6 pb-2 md:px-0">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => router.push("/builder")}
-                className="rounded-full bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A] border border-[#D5D0C6] dark:border-white/10"
+                className="rounded-full border border-[#D5D0C6] bg-white hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520] dark:hover:bg-[#35302A]"
               >
-                <ArrowLeft className="w-4 h-4" />
+                <ArrowLeft className="h-4 w-4" />
                 Exit Preview
               </Button>
             </div>
@@ -123,13 +121,13 @@ export default function Index() {
       case TEMPLATE_IDS.PROFESSIONAL:
         return (
           <>
-            <div className="w-full sticky top-0 z-[100] border-b border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] flex justify-center">
-              <div className="w-full max-w-[700px] px-4 py-2 flex items-center">
+            <div className="sticky top-0 z-[100] flex w-full justify-center border-b border-[#D5D0C6] bg-[#EFECE6] dark:border-[#3A352E] dark:bg-[#1A1A1A]">
+              <div className="flex w-full max-w-[700px] items-center px-4 py-2">
                 <button
                   onClick={() => router.push("/builder")}
-                  className="flex items-center gap-2 font-jetbrains text-[13px] uppercase tracking-wide text-[#1A1A1A] dark:text-[#B5AFA5] hover:text-[#E37941] transition-colors"
+                  className="font-jetbrains flex items-center gap-2 text-[13px] tracking-wide text-[#1A1A1A] uppercase transition-colors hover:text-[#E37941] dark:text-[#B5AFA5]"
                 >
-                  <ArrowLeft className="w-4 h-4" />
+                  <ArrowLeft className="h-4 w-4" />
                   Exit Preview
                 </button>
               </div>
@@ -141,11 +139,7 @@ export default function Index() {
       case TEMPLATE_IDS.RETRO_OS:
         return (
           <>
-            <MacOSTemplate
-              userDetails={userDetails}
-              edit={false}
-              preview={false}
-            />
+            <MacOSTemplate userDetails={userDetails} edit={false} preview={false} />
             {ProBadge}
             <Button
               variant="outline"
@@ -153,7 +147,7 @@ export default function Index() {
               onClick={() => router.push("/builder")}
               className="absolute top-4 left-8"
             >
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="h-4 w-4" />
               Go Back
             </Button>
           </>
@@ -161,14 +155,14 @@ export default function Index() {
       default:
         return (
           <>
-            <div className="max-w-[848px] mx-auto w-full px-4 md:px-0 pt-6 pb-2">
+            <div className="mx-auto w-full max-w-[848px] px-4 pt-6 pb-2 md:px-0">
               <Button
                 variant="outline"
-                className="bg-white dark:bg-[#2A2520] rounded-full hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors border border-[#E5D7C4] dark:border-white/10"
+                className="rounded-full border border-[#E5D7C4] bg-white transition-colors hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520] dark:hover:bg-[#35302A]"
                 size="sm"
                 onClick={() => router.push("/builder")}
               >
-                <ArrowLeft className="w-4 h-4" />
+                <ArrowLeft className="h-4 w-4" />
                 Exit Preview
               </Button>
             </div>
@@ -179,12 +173,8 @@ export default function Index() {
   };
 
   useEffect(() => {
-    if (userDetailsIsState) {
-      setIsUserDetailsFromCache(false);
-    } else {
-      setIsUserDetailsFromCache(true);
-    }
-  }, []);
+    startTransition(() => setIsUserDetailsFromCache(!userDetailsIsState));
+  }, [userDetailsIsState, setIsUserDetailsFromCache]);
 
   if (!userDetails && userDetailLoading) return null;
 
@@ -197,14 +187,9 @@ export default function Index() {
 
   return (
     <>
-      <WallpaperBackground
-        wallpaperUrl={wallpaperUrl}
-        effects={wallpaperEffects}
-      />
+      <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
       <main className="min-h-screen">
-        <div
-          className={`mx-auto px-2 md:px-4 lg:px-0 ${fullWidth ? "" : "max-w-[848px]"}`}
-        >
+        <div className={`mx-auto px-2 md:px-4 lg:px-0 ${fullWidth ? "" : "max-w-[848px]"}`}>
           {userDetails && renderTemplate()}
         </div>
       </main>

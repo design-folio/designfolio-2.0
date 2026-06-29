@@ -1,32 +1,26 @@
-import useImageCompression from '@/hooks/useImageCompression';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { useEffect, useRef, useState } from 'react';
-import * as Yup from 'yup';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Textarea } from '../ui/textarea';
-import { Label } from '../ui/label';
+import useImageCompression from "@/hooks/useImageCompression";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import { useEffect, useRef, useState } from "react";
+import * as Yup from "yup";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
+import { Label } from "../ui/label";
 import EyeIcon from "../../../public/assets/svgs/eye.svg";
 import EyeCloseIcon from "../../../public/assets/svgs/eye-close.svg";
-import { Switch } from '../ui/switch';
-import { useGlobalContext } from '@/context/globalContext';
-import { _updateUser } from '@/network/post-request';
-import { usePostHogEvent } from '@/hooks/usePostHogEvent';
-import { POSTHOG_EVENT_NAMES } from '@/lib/posthogEventNames';
-import posthog from 'posthog-js';
-import { UnsavedChangesDialog } from '../ui/UnsavedChangesDialog';
-import { sidebars } from '@/lib/constant';
-import { AnimatePresence, motion } from 'framer-motion';
-import { ImageIcon } from 'lucide-react';
+import { Switch } from "../ui/switch";
+import { useGlobalContext } from "@/context/globalContext";
+import { _updateUser } from "@/network/post-request";
+import { usePostHogEvent } from "@/hooks/usePostHogEvent";
+import { POSTHOG_EVENT_NAMES } from "@/lib/posthogEventNames";
+import posthog from "posthog-js";
+import { UnsavedChangesDialog } from "../ui/UnsavedChangesDialog";
+import { sidebars } from "@/lib/constant";
+import { AnimatePresence, motion } from "motion/react";
+import { ImageIcon } from "lucide-react";
 
 const FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const SUPPORTED_FORMATS = [
-  'image/jpg',
-  'image/jpeg',
-  'image/png',
-  'image/gif',
-  'image/webp',
-];
+const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png", "image/gif", "image/webp"];
 
 export default function AddProject() {
   const [imagePreview, setImagePreview] = useState(null);
@@ -54,19 +48,6 @@ export default function AddProject() {
 
   const isOpen = activeSidebar === sidebars.project;
 
-  // Reset state when sidebar closes
-  useEffect(() => {
-    if (!isOpen) {
-      setImagePreview(null);
-      setPassword(false);
-      setShowEye(false);
-      setLoading(false);
-      if (formikRef.current) {
-        formikRef.current.resetForm();
-      }
-    }
-  }, [isOpen]);
-
   const hasUnsavedChanges = () => {
     if (!formikRef.current) return false;
     const values = formikRef.current.values;
@@ -81,28 +62,27 @@ export default function AddProject() {
   }, [isOpen, registerUnsavedChangesChecker, unregisterUnsavedChangesChecker]);
 
   const validationSchema = Yup.object().shape({
-    description: Yup.string()
-      .max(160, 'Description must be 160 characters or less'),
+    description: Yup.string().max(160, "Description must be 160 characters or less"),
     title: Yup.string()
-      .max(80, 'Project title must be 80 characters or less')
-      .required('Project title is required'),
+      .max(80, "Project title must be 80 characters or less")
+      .required("Project title is required"),
     picture: Yup.mixed()
-      .required('A file is required')
+      .required("A file is required")
       .test(
-        'fileSize',
-        'File size is too large. Maximum size is 5MB.',
-        value => value && value.size <= FILE_SIZE
+        "fileSize",
+        "File size is too large. Maximum size is 5MB.",
+        (value) => value && value.size <= FILE_SIZE
       )
       .test(
-        'fileType',
-        'Unsupported file format. Only jpg, jpeg, png and gif files are allowed.',
-        value => value && SUPPORTED_FORMATS.includes(value.type)
+        "fileType",
+        "Unsupported file format. Only jpg, jpeg, png and gif files are allowed.",
+        (value) => value && SUPPORTED_FORMATS.includes(value.type)
       ),
     password: isPassword
       ? Yup.string()
-        .required('Password is required.')
-        .min(6, 'Password is too short - should be 6 chars minimum.')
-      : Yup.string().min(6, 'Password is too short - should be 6 chars minimum.'),
+          .required("Password is required.")
+          .min(6, "Password is too short - should be 6 chars minimum.")
+      : Yup.string().min(6, "Password is too short - should be 6 chars minimum."),
   });
 
   const { compress, compressedImage, compressionProgress } = useImageCompression();
@@ -110,20 +90,20 @@ export default function AddProject() {
   const handleImageChange = (event, setFieldValue) => {
     const file = event.currentTarget.files[0];
     if (!file) return;
-    const isGif = file.type === 'image/gif';
+    const isGif = file.type === "image/gif";
     if (isGif) {
-      setFieldValue('picture', file);
+      setFieldValue("picture", file);
       setImagePreview(URL.createObjectURL(file));
     } else {
       compress(file);
-      setFieldValue('picture', file);
+      setFieldValue("picture", file);
       setImagePreview(URL.createObjectURL(file));
     }
   };
 
   useEffect(() => {
     if (compressionProgress === 100 && compressedImage && formikRef.current) {
-      formikRef.current.setFieldValue('picture', compressedImage);
+      formikRef.current.setFieldValue("picture", compressedImage);
       setImagePreview(URL.createObjectURL(compressedImage));
     }
   }, [compressionProgress, compressedImage]);
@@ -138,12 +118,13 @@ export default function AddProject() {
   return (
     <>
       <Formik
+        key={isOpen ? "open" : "closed"}
         innerRef={formikRef}
         initialValues={{
-          description: '',
-          title: '',
+          description: "",
+          title: "",
           picture: null,
-          password: '',
+          password: "",
         }}
         validateOnChange
         validateOnBlur
@@ -172,16 +153,16 @@ export default function AddProject() {
                   protected: isPassword,
                   contentVersion: 2,
                   tiptapContent: {
-                    type: 'doc',
+                    type: "doc",
                     content: [],
                   },
                 },
               ],
             };
             _updateUser(payload)
-              .then(res => {
+              .then((res) => {
                 setUserDetails(res?.data?.user);
-                updateCache('userDetails', res?.data?.user);
+                updateCache("userDetails", res?.data?.user);
                 phEvent(POSTHOG_EVENT_NAMES.PROJECT_ADDED, {
                   project_title: values.title,
                   industry: values.industry || null,
@@ -201,15 +182,15 @@ export default function AddProject() {
         }}
       >
         {({ setFieldValue, values, validateField, errors, touched }) => (
-          <Form id="projectForm" autoComplete="off" className="flex flex-col h-full">
-            <div className="flex-1 overflow-auto px-6 py-5 space-y-5">
+          <Form id="projectForm" autoComplete="off" className="flex h-full flex-col">
+            <div className="flex-1 space-y-5 overflow-auto px-6 py-5">
               {/* Project title */}
               <div className="space-y-1.5">
-                <div className="flex justify-between items-center">
-                  <Label className="text-[13px] font-medium text-foreground ml-1">
+                <div className="flex items-center justify-between">
+                  <Label className="text-foreground ml-1 text-[13px] font-medium">
                     Project title <span className="text-destructive">*</span>
                   </Label>
-                  <span className="text-xs text-foreground/40">{values.title.length}/80</span>
+                  <span className="text-foreground/40 text-xs">{values.title.length}/80</span>
                 </div>
                 <Field name="title">
                   {({ field }) => (
@@ -219,7 +200,11 @@ export default function AddProject() {
                       type="text"
                       autoComplete="off"
                       placeholder="Eg: Designing an onboarding for 1M users"
-                      className={errors.title && touched.title ? 'border-destructive focus-visible:ring-destructive' : ''}
+                      className={
+                        errors.title && touched.title
+                          ? "border-destructive focus-visible:ring-destructive"
+                          : ""
+                      }
                     />
                   )}
                 </Field>
@@ -228,11 +213,13 @@ export default function AddProject() {
 
               {/* Description */}
               <div className="space-y-1.5">
-                <div className="flex justify-between items-center">
-                  <Label className="text-[13px] font-medium text-foreground ml-1">
+                <div className="flex items-center justify-between">
+                  <Label className="text-foreground ml-1 text-[13px] font-medium">
                     Description <span className="text-destructive">*</span>
                   </Label>
-                  <span className="text-xs text-foreground/40">{values.description.length}/160</span>
+                  <span className="text-foreground/40 text-xs">
+                    {values.description.length}/160
+                  </span>
                 </div>
                 <Field name="description">
                   {({ field }) => (
@@ -242,7 +229,7 @@ export default function AddProject() {
                       rows={3}
                       autoComplete="off"
                       placeholder="Short description of the project"
-                      className={`resize-none ${errors.description && touched.description ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                      className={`resize-none ${errors.description && touched.description ? "border-destructive focus-visible:ring-destructive" : ""}`}
                     />
                   )}
                 </Field>
@@ -251,43 +238,40 @@ export default function AddProject() {
 
               {/* Cover image */}
               <div className="space-y-1.5">
-                <Label className="text-[13px] font-medium text-foreground ml-1">
+                <Label className="text-foreground ml-1 text-[13px] font-medium">
                   Cover image <span className="text-destructive">*</span>
                 </Label>
                 <div className="flex items-center gap-4">
-                  <label htmlFor="picture" className="cursor-pointer shrink-0">
-                    <div className="w-24 h-16 rounded-xl bg-black/[0.03] dark:bg-white/[0.03] border border-border flex items-center justify-center overflow-hidden">
+                  <label htmlFor="picture" className="shrink-0 cursor-pointer">
+                    <div className="border-border flex h-16 w-24 items-center justify-center overflow-hidden rounded-xl border bg-black/[0.03] dark:bg-white/[0.03]">
                       {imagePreview ? (
                         <img
                           src={imagePreview}
-                          className="w-full h-full object-cover"
+                          className="h-full w-full object-cover"
                           alt="project cover"
                         />
                       ) : (
-                        <ImageIcon className="w-5 h-5 text-foreground/30" />
+                        <ImageIcon className="text-foreground/30 h-5 w-5" />
                       )}
                     </div>
                   </label>
                   <div className="flex flex-col gap-1.5">
                     <label
                       htmlFor="picture"
-                      onClick={event => {
+                      onClick={(event) => {
                         // Ensure the file picker always opens when clicking this button.
                         // Some nested Button implementations can interfere with native label behavior.
                         event.preventDefault();
-                        document.getElementById('picture')?.click();
+                        document.getElementById("picture")?.click();
                       }}
                     >
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        type="button"
-                        className="rounded-full"
-                      >
-                        {imagePreview ? 'Change image' : 'Upload image'}
+                      <Button variant="outline" size="sm" type="button" className="rounded-full">
+                        {imagePreview ? "Change image" : "Upload image"}
                       </Button>
                     </label>
-                    <span className="text-[11px] text-muted-foreground ml-1">Recommended: 1600 × 900px (16:9)</span>
+                    <span className="text-muted-foreground ml-1 text-[11px]">
+                      Recommended: 1600 × 900px (16:9)
+                    </span>
                   </div>
                 </div>
                 <input
@@ -295,7 +279,7 @@ export default function AddProject() {
                   name="picture"
                   type="file"
                   hidden
-                  onChange={event => handleImageChange(event, setFieldValue)}
+                  onChange={(event) => handleImageChange(event, setFieldValue)}
                   accept="image/png, image/jpeg, image/jpg, image/gif"
                 />
                 <ErrorMessage name="picture" component="div" className="error-message" />
@@ -305,14 +289,14 @@ export default function AddProject() {
               <div className="pt-2">
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
-                    <p className="text-[13px] font-medium text-foreground ml-1">Protect Project</p>
-                    <p className="text-[12px] text-muted-foreground ml-1">
+                    <p className="text-foreground ml-1 text-[13px] font-medium">Protect Project</p>
+                    <p className="text-muted-foreground ml-1 text-[12px]">
                       Require a password to view this project (e.g., for NDAs).
                     </p>
                   </div>
                   <Switch
                     checked={isPassword}
-                    onCheckedChange={checked => setPassword(checked)}
+                    onCheckedChange={(checked) => setPassword(checked)}
                     className="data-[state=unchecked]:bg-input"
                   />
                 </div>
@@ -320,7 +304,7 @@ export default function AddProject() {
                   {isPassword && (
                     <motion.div
                       initial={{ opacity: 0, height: 0, marginTop: 0 }}
-                      animate={{ opacity: 1, height: 'auto', marginTop: 8 }}
+                      animate={{ opacity: 1, height: "auto", marginTop: 8 }}
                       exit={{ opacity: 0, height: 0, marginTop: 0 }}
                       transition={{ duration: 0.2 }}
                       className="overflow-hidden"
@@ -331,18 +315,18 @@ export default function AddProject() {
                             <Input
                               {...field}
                               id="password"
-                              type={showEye ? 'text' : 'password'}
+                              type={showEye ? "text" : "password"}
                               placeholder="Password"
                               autoComplete="new-password"
-                              className={`pr-10 ${errors.password && touched.password ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                              className={`pr-10 ${errors.password && touched.password ? "border-destructive focus-visible:ring-destructive" : ""}`}
                             />
                           )}
                         </Field>
                         <div
                           className="absolute top-[10px] right-3 cursor-pointer"
                           onClick={() => {
-                            setShowEye(prev => !prev);
-                            validateField('password');
+                            setShowEye((prev) => !prev);
+                            validateField("password");
                           }}
                         >
                           {showEye ? (
@@ -359,12 +343,12 @@ export default function AddProject() {
               </div>
             </div>
 
-            <div className="flex gap-2 py-3 px-6 border-t border-border justify-end flex-shrink-0 bg-sidebar">
+            <div className="border-border bg-sidebar flex shrink-0 justify-end gap-2 border-t px-6 py-3">
               <Button variant="outline" type="button" onClick={() => closeSidebar()}>
                 Cancel
               </Button>
               <Button type="submit" form="projectForm" disabled={loading}>
-                {loading ? 'Saving…' : 'Save case study'}
+                {loading ? "Saving…" : "Save case study"}
               </Button>
             </div>
           </Form>
@@ -376,9 +360,9 @@ export default function AddProject() {
           showUnsavedWarning &&
           isOpen &&
           !isSwitchingSidebar &&
-          pendingSidebarAction?.type === 'close'
+          pendingSidebarAction?.type === "close"
         }
-        onOpenChange={open => {
+        onOpenChange={(open) => {
           if (!open) handleCancelDiscardSidebar();
         }}
         onConfirmDiscard={() => {

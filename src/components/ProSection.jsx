@@ -5,22 +5,29 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
 const PLAN_LABEL = {
-  mthly:    "Monthly",
-  qtrly:    "Quarterly",
-  yrly:     "Yearly",
-  "1m":     "1 Month",
-  "3m":     "3 Months",
+  mthly: "Monthly",
+  qtrly: "Quarterly",
+  yrly: "Yearly",
+  "1m": "1 Month",
+  "3m": "3 Months",
   lifetime: "Lifetime",
-  free:     "Free",
+  free: "Free",
 };
 
-
 const STATUS_CONFIG = {
-  active:    { dot: "#22C55E", label: "Active",          textClass: "text-[#15803d] dark:text-[#4ade80]" },
-  paid:      { dot: "#22C55E", label: "Active",          textClass: "text-[#15803d] dark:text-[#4ade80]" },
-  on_hold:   { dot: "#F59E0B", label: "Payment issue",   textClass: "text-[#b45309] dark:text-[#fcd34d]" },
-  cancelled: { dot: "#EF4444", label: "Cancelled",       textClass: "text-[#b91c1c] dark:text-[#fca5a5]" },
-  expired:   { dot: "#9CA3AF", label: "Expired",         textClass: "text-[#6b7280] dark:text-[#9ca3af]" },
+  active: { dot: "#22C55E", label: "Active", textClass: "text-[#15803d] dark:text-[#4ade80]" },
+  paid: { dot: "#22C55E", label: "Active", textClass: "text-[#15803d] dark:text-[#4ade80]" },
+  on_hold: {
+    dot: "#F59E0B",
+    label: "Payment issue",
+    textClass: "text-[#b45309] dark:text-[#fcd34d]",
+  },
+  cancelled: {
+    dot: "#EF4444",
+    label: "Cancelled",
+    textClass: "text-[#b91c1c] dark:text-[#fca5a5]",
+  },
+  expired: { dot: "#9CA3AF", label: "Expired", textClass: "text-[#6b7280] dark:text-[#9ca3af]" },
 };
 
 function formatDate(iso) {
@@ -34,9 +41,11 @@ function formatDate(iso) {
 
 function DataRow({ label, children }) {
   return (
-    <div className="flex items-start justify-between gap-4 py-3 px-2 border-b border-black/[0.05] dark:border-white/[0.05] last:border-0">
-      <span className="text-[13px] text-[#7A736C] dark:text-[#B5AFA5] shrink-0">{label}</span>
-      <span className="text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] text-right">{children}</span>
+    <div className="flex items-start justify-between gap-4 border-b border-black/[0.05] px-2 py-3 last:border-0 dark:border-white/[0.05]">
+      <span className="shrink-0 text-[13px] text-[#7A736C] dark:text-[#B5AFA5]">{label}</span>
+      <span className="text-right text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+        {children}
+      </span>
     </div>
   );
 }
@@ -55,7 +64,7 @@ function Skeleton() {
 
 export default function ProSection() {
   const { setShowUpgradeModal } = useGlobalContext();
-  const [order, setOrder]               = useState(undefined);
+  const [order, setOrder] = useState(undefined);
   const [portalLoading, setPortalLoading] = useState(false);
 
   useEffect(() => {
@@ -75,21 +84,22 @@ export default function ProSection() {
     }
   };
 
-  const loading  = order === undefined;
-  const isPro    = (order && ["active", "on_hold", "paid"].includes(order.status))
-                || (order?.status === "cancelled" && order?.cancellationScheduled);
-  const isDodo   = order?.aggregator === 2;
-  const status   = order?.status ?? "free";
+  const loading = order === undefined;
+  const isPro =
+    (order && ["active", "on_hold", "paid"].includes(order.status)) ||
+    (order?.status === "cancelled" && order?.cancellationScheduled);
+  const isDodo = order?.aggregator === 2;
+  const status = order?.status ?? "free";
   const statusCfg = STATUS_CONFIG[status] ?? STATUS_CONFIG.active;
-  const planType = (isPro && order?.planType) ? order.planType : "free";
+  const planType = isPro && order?.planType ? order.planType : "free";
   const cancelScheduled = isPro && !!order?.cancellationScheduled;
 
   // For active Dodo subscriptions: proExpiresAt is null (active indefinitely), periodEnd = renewal date
   // For cancelled: proExpiresAt = when access ends; for expired: proExpiresAt = when it expired
   const renewalDate = cancelScheduled
-    ? (order?.proExpiresAt || order?.periodEnd)
-    : (status === "active" || status === "paid")
-      ? (order?.periodEnd || order?.proExpiresAt)
+    ? order?.proExpiresAt || order?.periodEnd
+    : status === "active" || status === "paid"
+      ? order?.periodEnd || order?.proExpiresAt
       : order?.proExpiresAt;
 
   return (
@@ -103,19 +113,18 @@ export default function ProSection() {
         <Skeleton />
       ) : (
         <div className="transition-opacity duration-300">
-
           {isPro ? (
             /* ── Active / Pro state ── */
             <>
-              <div className="rounded-xl border border-black/[0.07] dark:border-white/[0.07] overflow-hidden mb-5">
-                <DataRow label="Plan">
-                  {PLAN_LABEL[planType] ?? planType}
-                </DataRow>
+              <div className="mb-5 overflow-hidden rounded-xl border border-black/[0.07] dark:border-white/[0.07]">
+                <DataRow label="Plan">{PLAN_LABEL[planType] ?? planType}</DataRow>
 
                 <DataRow label="Status">
-                  <span className={`flex items-center justify-end gap-1.5 ${cancelScheduled ? "text-[#b45309] dark:text-[#fcd34d]" : statusCfg.textClass}`}>
+                  <span
+                    className={`flex items-center justify-end gap-1.5 ${cancelScheduled ? "text-[#b45309] dark:text-[#fcd34d]" : statusCfg.textClass}`}
+                  >
                     <span
-                      className="inline-block w-1.5 h-1.5 rounded-full shrink-0"
+                      className="inline-block h-1.5 w-1.5 shrink-0 rounded-full"
                       style={{ background: cancelScheduled ? "#F59E0B" : statusCfg.dot }}
                     />
                     {cancelScheduled ? "Cancels soon" : statusCfg.label}
@@ -123,36 +132,40 @@ export default function ProSection() {
                 </DataRow>
 
                 {renewalDate && (
-                  <DataRow label={cancelScheduled ? "Ends on" : status === "active" || status === "paid" ? "Renews on" : "Expired on"}>
+                  <DataRow
+                    label={
+                      cancelScheduled
+                        ? "Ends on"
+                        : status === "active" || status === "paid"
+                          ? "Renews on"
+                          : "Expired on"
+                    }
+                  >
                     {formatDate(renewalDate)}
                   </DataRow>
                 )}
               </div>
 
               {isDodo && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled={portalLoading}
-                  onClick={openPortal}
-                >
+                <Button variant="outline" size="sm" disabled={portalLoading} onClick={openPortal}>
                   {portalLoading ? "Opening…" : "Manage subscription"}
                 </Button>
               )}
 
               {/* ── Warnings ── */}
               {status === "on_hold" && (
-                <div className="mt-4 px-3 py-2.5 rounded-xl bg-[#fffbeb] dark:bg-[#F59E0B]/10 border border-[#fde68a] dark:border-[#F59E0B]/20">
-                  <p className="text-[12px] text-[#92400e] dark:text-[#fcd34d] leading-relaxed">
+                <div className="mt-4 rounded-xl border border-[#fde68a] bg-[#fffbeb] px-3 py-2.5 dark:border-[#F59E0B]/20 dark:bg-[#F59E0B]/10">
+                  <p className="text-[12px] leading-relaxed text-[#92400e] dark:text-[#fcd34d]">
                     Your last payment failed. Update your payment method to keep access.
                   </p>
                 </div>
               )}
               {cancelScheduled && (
-                <div className="mt-4 px-3 py-2.5 rounded-xl bg-[#fff7ed] dark:bg-[#f59e0b]/10 border border-[#fed7aa] dark:border-[#f59e0b]/20">
-                  <p className="text-[12px] text-[#9a3412] dark:text-[#fed7aa] leading-relaxed">
+                <div className="mt-4 rounded-xl border border-[#fed7aa] bg-[#fff7ed] px-3 py-2.5 dark:border-[#f59e0b]/20 dark:bg-[#f59e0b]/10">
+                  <p className="text-[12px] leading-relaxed text-[#9a3412] dark:text-[#fed7aa]">
                     Your Pro plan is set to cancel. You&apos;ll keep full access until{" "}
-                    <span className="font-semibold">{formatDate(renewalDate)}</span>, then move to Free.
+                    <span className="font-semibold">{formatDate(renewalDate)}</span>, then move to
+                    Free.
                     {isDodo && " Changed your mind? Resume anytime from Manage subscription."}
                   </p>
                 </div>
@@ -160,14 +173,10 @@ export default function ProSection() {
             </>
           ) : (
             /* ── Free state ── */
-            <div className="rounded-xl border border-black/[0.07] dark:border-white/[0.07] overflow-hidden mb-5">
+            <div className="mb-5 overflow-hidden rounded-xl border border-black/[0.07] dark:border-white/[0.07]">
               <DataRow label="Plan">Free</DataRow>
               <DataRow label="Status">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setShowUpgradeModal(true)}
-                >
+                <Button variant="outline" size="sm" onClick={() => setShowUpgradeModal(true)}>
                   Upgrade to Pro
                 </Button>
               </DataRow>

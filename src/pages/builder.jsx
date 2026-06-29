@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState, startTransition } from "react";
 
 import { getServerSideProps } from "@/lib/loggedInServerSideProps";
 import { useGlobalContext } from "@/context/globalContext";
@@ -20,7 +20,7 @@ import { useRouter } from "next/router";
 import { _resendOTP } from "@/network/get-request";
 import AddUsername from "@/components/addUsername";
 import Builder2 from "@/components/Builder2";
-import Minimal from "@/components/comp/Minimal";
+import Minimal from "@/components/templates/Spotlight";
 import Portfolio from "@/components/comp/Portfolio";
 import MacOSTemplate from "@/components/comp/MacOSTemplate";
 import ProWarning from "@/components/proWarning";
@@ -45,7 +45,6 @@ import Professional from "@/components/templates/Professional";
 export default function Index() {
   const {
     setIsUserDetailsFromCache,
-    userDetailsIsState,
     userDetails,
     openModal,
     showModal,
@@ -75,8 +74,10 @@ export default function Index() {
   const { setTheme, resolvedTheme } = useTheme();
   const themeBeforeAiToolsRef = useRef(null);
   // Keep last known sidebar width so closing animation has a non-zero right offset
-  const lastSidebarRef = useRef(null);
-  if (activeSidebar) lastSidebarRef.current = activeSidebar;
+  const [lastSidebar, setLastSidebar] = useState(() => activeSidebar ?? null);
+  useEffect(() => {
+    if (activeSidebar != null) startTransition(() => setLastSidebar(activeSidebar));
+  }, [activeSidebar]);
 
   // Lock page scroll when sidebar is open on desktop.
   // Compensates for scrollbar gutter width so content doesn't shift (same trick
@@ -112,11 +113,7 @@ export default function Index() {
   }, [router.query?.view, setTheme, resolvedTheme]);
 
   useEffect(() => {
-    if (userDetailsIsState) {
-      setIsUserDetailsFromCache(false);
-    } else {
-      setIsUserDetailsFromCache(true);
-    }
+    setIsUserDetailsFromCache(true);
   }, []);
 
   // Restore wallpaper from userDetails when component mounts
@@ -140,22 +137,16 @@ export default function Index() {
       openModal(modals.username);
     } else if (userDetails) {
       // Note: goal and experienceLevel can be 0, so we check for null/undefined specifically
-      const hasGoal =
-        userDetails.goal !== undefined && userDetails.goal !== null;
+      const hasGoal = userDetails.goal !== undefined && userDetails.goal !== null;
       const hasExperienceLevel =
-        userDetails.experienceLevel !== undefined &&
-        userDetails.experienceLevel !== null;
+        userDetails.experienceLevel !== undefined && userDetails.experienceLevel !== null;
       const hasSkills = userDetails.skills && userDetails.skills.length > 0;
       const hasPersona =
-        userDetails.persona &&
-        userDetails.persona.value &&
-        userDetails.persona.label;
-      const needsOnboarding =
-        !hasGoal || !hasExperienceLevel || !hasSkills || !hasPersona;
+        userDetails.persona && userDetails.persona.value && userDetails.persona.label;
+      const needsOnboarding = !hasGoal || !hasExperienceLevel || !hasSkills || !hasPersona;
 
       const hasPendingResumePrefill =
-        typeof window !== "undefined" &&
-        !!localStorage.getItem("pending-portfolio-data");
+        typeof window !== "undefined" && !!localStorage.getItem("pending-portfolio-data");
 
       if (needsOnboarding && !hasPendingResumePrefill) {
         openModal(modals.onBoardingNewUser);
@@ -169,7 +160,7 @@ export default function Index() {
     } else {
       closeModal();
     }
-  }, [userDetails, showModal]);
+  }, [userDetails, showModal, closeModal, openModal, router]);
 
   const modalContent = () => {
     switch (showModal) {
@@ -231,9 +222,7 @@ export default function Index() {
     open: !!activeSidebar,
     onOpenChange: (open) => !open && closeSidebar(true),
     style: {
-      "--sidebar-width":
-        getSidebarShiftWidth(lastSidebarRef.current || activeSidebar) ||
-        "400px",
+      "--sidebar-width": getSidebarShiftWidth(lastSidebar || activeSidebar) || "400px",
     },
     defaultOpen: false,
   };
@@ -242,7 +231,7 @@ export default function Index() {
   if (router.query?.view === "ai-tools") {
     return (
       <SidebarProvider {...sidebarProviderProps}>
-        <div className="flex-1 min-w-0">
+        <div className="min-w-0 flex-1">
           <AiToolsWorkspace embedInBuilder />
           <Modal
             show={
@@ -259,11 +248,7 @@ export default function Index() {
             <CreateAiProject openModal={openModal} />
           </Modal>
           <UnsavedChangesDialog
-            open={
-              showUnsavedWarning &&
-              isSwitchingSidebar &&
-              pendingSidebarAction?.type === "open"
-            }
+            open={showUnsavedWarning && isSwitchingSidebar && pendingSidebarAction?.type === "open"}
             onOpenChange={(open) => {
               if (!open) handleCancelDiscardSidebar();
             }}
@@ -294,7 +279,7 @@ export default function Index() {
 
   return (
     <SidebarProvider {...sidebarProviderProps}>
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         <WallpaperBackground
           wallpaperUrl={wallpaperUrl}
           effects={
@@ -307,27 +292,28 @@ export default function Index() {
           className={cn(
             "min-h-screen",
             t === TEMPLATE_IDS.CHATFOLIO
-              ? "bg-[#F0EDE7] dark:bg-[#1A1A1A] flex justify-center transition-colors duration-700"
+              ? "flex justify-center bg-[#F0EDE7] transition-colors duration-700 dark:bg-[#1A1A1A]"
               : hasNoWallpaper(wallpaper, template) &&
-              "bg-background flex justify-center font-inter text-foreground selection:bg-foreground selection:text-background transition-colors duration-700",
+                  "bg-background font-inter text-foreground selection:bg-foreground selection:text-background flex justify-center transition-colors duration-700"
           )}
         >
           <div
-            className={cn("mx-auto w-full", {
-              [TEMPLATE_IDS.CHATFOLIO]: "py-[94px]",
-              [TEMPLATE_IDS.SPOTLIGHT]: "pt-24",
-              [TEMPLATE_IDS.PROFESSIONAL]: "pt-24",
-              [TEMPLATE_IDS.RETRO_OS]: "",
-            }[t] ?? "px-2 md:px-4 lg:px-0 pt-24 pb-0 max-w-[880px]")}
-          >
-            {userDetails && !userDetails?.pro && TEMPLATES_BY_ID[t]?.isPro && (
-              <ProWarning />
+            className={cn(
+              "mx-auto w-full",
+              {
+                [TEMPLATE_IDS.CHATFOLIO]: "py-[94px]",
+                [TEMPLATE_IDS.SPOTLIGHT]: "pt-24",
+                [TEMPLATE_IDS.PROFESSIONAL]: "pt-24",
+                [TEMPLATE_IDS.RETRO_OS]: "",
+              }[t] ?? "max-w-[880px] px-2 pt-24 pb-0 md:px-4 lg:px-0"
             )}
+          >
+            {userDetails && !userDetails?.pro && TEMPLATES_BY_ID[t]?.isPro && <ProWarning />}
             {userDetails && (
               <>
                 {isLoadingTemplate ? (
-                  <div className="flex items-center justify-center min-h-[calc(100vh-126px)]">
-                    <Loader2 className="animate-spin h-8 w-8 text-df-orange-color" />
+                  <div className="flex min-h-[calc(100vh-126px)] items-center justify-center">
+                    <Loader2 className="text-df-orange-color h-8 w-8 animate-spin" />
                   </div>
                 ) : (
                   renderTemplate()
@@ -354,11 +340,7 @@ export default function Index() {
             <CreateAiProject openModal={openModal} />
           </Modal>
           <UnsavedChangesDialog
-            open={
-              showUnsavedWarning &&
-              isSwitchingSidebar &&
-              pendingSidebarAction?.type === "open"
-            }
+            open={showUnsavedWarning && isSwitchingSidebar && pendingSidebarAction?.type === "open"}
             onOpenChange={(open) => {
               if (!open) {
                 handleCancelDiscardSidebar();

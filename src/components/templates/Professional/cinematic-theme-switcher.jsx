@@ -1,6 +1,6 @@
 import { Sun, Moon } from "lucide-react";
 import { useState, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { runThemeTransition } from "@/hooks/use-theme-switch-audio";
 import { usePersistableThemeToggle } from "@/hooks/usePersistableThemeToggle";
 
@@ -47,31 +47,21 @@ export default function CinematicThemeSwitcher({ persist = false }) {
   // Prevent hydration mismatch - show placeholder during SSR
   if (!mounted) {
     return (
-      <div className="relative inline-block scale-75 origin-top-right">
-        <div className="relative flex h-[64px] w-[104px] items-center rounded-full bg-[#EFECE6] dark:bg-[#1A1A1A] border border-[#D5D0C6] dark:border-[#3A352E] p-1" />
+      <div className="relative inline-block origin-top-right scale-75">
+        <div className="relative flex h-[64px] w-[104px] items-center rounded-full border border-[#D5D0C6] bg-[#EFECE6] p-1 dark:border-[#3A352E] dark:bg-[#1A1A1A]" />
       </div>
     );
   }
 
   return (
-    <div className="relative inline-block scale-75 origin-top-right">
+    <div className="relative inline-block origin-top-right scale-75">
       {/* SVG Filter for Film Grain Texture */}
-      <svg className="absolute w-0 h-0">
+      <svg className="absolute h-0 w-0">
         <defs>
           {/* Light mode grain - subtle */}
           <filter id="grain-light">
-            <feTurbulence
-              type="fractalNoise"
-              baseFrequency="0.9"
-              numOctaves="4"
-              result="noise"
-            />
-            <feColorMatrix
-              in="noise"
-              type="saturate"
-              values="0"
-              result="desaturatedNoise"
-            />
+            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" result="noise" />
+            <feColorMatrix in="noise" type="saturate" values="0" result="desaturatedNoise" />
             <feComponentTransfer in="desaturatedNoise" result="lightGrain">
               <feFuncA type="linear" slope="0.3" />
             </feComponentTransfer>
@@ -80,18 +70,8 @@ export default function CinematicThemeSwitcher({ persist = false }) {
 
           {/* Dark mode grain - more visible */}
           <filter id="grain-dark">
-            <feTurbulence
-              type="fractalNoise"
-              baseFrequency="0.9"
-              numOctaves="4"
-              result="noise"
-            />
-            <feColorMatrix
-              in="noise"
-              type="saturate"
-              values="0"
-              result="desaturatedNoise"
-            />
+            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" result="noise" />
+            <feColorMatrix in="noise" type="saturate" values="0" result="desaturatedNoise" />
             <feComponentTransfer in="desaturatedNoise" result="darkGrain">
               <feFuncA type="linear" slope="0.5" />
             </feComponentTransfer>
@@ -128,7 +108,7 @@ export default function CinematicThemeSwitcher({ persist = false }) {
       >
         {/* Deep inner groove/rim effect */}
         <div
-          className="absolute inset-[3px] rounded-full pointer-events-none"
+          className="pointer-events-none absolute inset-[3px] rounded-full"
           style={{
             boxShadow: isDark
               ? "inset 0 2px 6px rgba(0, 0, 0, 0.5)"
@@ -138,19 +118,13 @@ export default function CinematicThemeSwitcher({ persist = false }) {
 
         {/* Background Icons */}
         <div className="absolute inset-0 flex items-center justify-between px-4">
-          <Sun
-            size={20}
-            className={isDark ? "text-[#3A352E]" : "text-[#7A736C]"}
-          />
-          <Moon
-            size={20}
-            className={isDark ? "text-[#7A736C]" : "text-[#D5D0C6]"}
-          />
+          <Sun size={20} className={isDark ? "text-[#3A352E]" : "text-[#7A736C]"} />
+          <Moon size={20} className={isDark ? "text-[#7A736C]" : "text-[#D5D0C6]"} />
         </div>
 
         {/* Circular Thumb with Bouncy Spring Physics */}
         <motion.div
-          className="relative z-10 flex h-[44px] w-[44px] items-center justify-center rounded-full overflow-hidden"
+          className="relative z-10 flex h-[44px] w-[44px] items-center justify-center overflow-hidden rounded-full"
           style={{
             background: isDark ? "#2A2520" : "#F0EDE7",
             boxShadow: isDark
@@ -180,7 +154,7 @@ export default function CinematicThemeSwitcher({ persist = false }) {
             particles.map((particle) => (
               <motion.div
                 key={particle.id}
-                className="absolute inset-0 flex items-center justify-center pointer-events-none"
+                className="pointer-events-none absolute inset-0 flex items-center justify-center"
               >
                 <motion.div
                   className="absolute rounded-full"

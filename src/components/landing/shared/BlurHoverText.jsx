@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 /**
  * Shows defaultText by default. On hover (or when scrollActive=true),
@@ -12,11 +12,11 @@ export default function BlurHoverText({ defaultText, hoverText, scrollActive }) 
 
   return (
     <div
-      className="relative cursor-default inline-flex h-full items-center"
+      className="relative inline-flex h-full cursor-default items-center"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="flex gap-[0.3em] items-center whitespace-nowrap">
+      <div className="flex items-center gap-[0.3em] whitespace-nowrap">
         {defaultText.split(" ").map((word, i) => (
           <motion.span
             key={i}
@@ -31,7 +31,7 @@ export default function BlurHoverText({ defaultText, hoverText, scrollActive }) 
         ))}
       </div>
 
-      <div className="absolute left-0 flex gap-[0.3em] whitespace-nowrap pointer-events-none">
+      <div className="pointer-events-none absolute left-0 flex gap-[0.3em] whitespace-nowrap">
         {hoverText.split(" ").map((word, i) => (
           <motion.span
             key={i}

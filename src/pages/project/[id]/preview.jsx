@@ -10,15 +10,26 @@ import { _updateProject, _updateUser } from "@/network/post-request";
 import { useMutation } from "@tanstack/react-query";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
-import React, { useEffect, useState, useRef } from "react";
-import MacOSWindowShell from "@/components/templates/MacOSDock/MacOSWindowShell";
-import MacOSTemplate from "@/components/comp/MacOSTemplate";
+import React, { useEffect, useState, useRef, startTransition, useCallback } from "react";
 import BuilderShell from "@/components/BuilderShell";
-import ProfessionalProjectInfo from "@/components/templates/Professional/ProfessionalProjectInfo";
-import ChatProjectView from "@/components/templates/Chat/ChatProjectView";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { modals } from "@/lib/constant";
+import dynamic from "next/dynamic";
+
+// ssr: false — these components depend on useGlobalContext and useTheme (client-only hooks).
+const MacOSWindowShell = dynamic(
+  () => import("@/components/templates/MacOSDock/MacOSWindowShell"),
+  { ssr: false }
+);
+const MacOSTemplate = dynamic(() => import("@/components/comp/MacOSTemplate"), { ssr: false });
+const ProfessionalProjectInfo = dynamic(
+  () => import("@/components/templates/Professional/ProfessionalProjectInfo"),
+  { ssr: false }
+);
+const ChatProjectView = dynamic(() => import("@/components/templates/Chat/ChatProjectView"), {
+  ssr: false,
+});
 
 export default function Index() {
   const { setTheme } = useTheme();
@@ -45,49 +56,44 @@ export default function Index() {
 
   // Enable the userDetails query — required on every authenticated page
   useEffect(() => {
-    if (userDetailsIsState) {
-      setIsUserDetailsFromCache(false);
-    } else {
-      setIsUserDetailsFromCache(true);
-    }
-  }, []);
+    startTransition(() => setIsUserDetailsFromCache(!userDetailsIsState));
+  }, [userDetailsIsState, setIsUserDetailsFromCache]);
 
-  const setProjectData = (
-    project,
-    isProtectedValue = false,
-    isFromRefetch = false,
-  ) => {
-    setProjectDetails({
-      project: project,
-      isProtected: isProtectedValue,
-    });
+  const setProjectData = useCallback(
+    (project, isProtectedValue = false, isFromRefetch = false) => {
+      setProjectDetails({
+        project: project,
+        isProtected: isProtectedValue,
+      });
 
-    if (isFromRefetch) {
-      setTheme(project?.theme == 1 ? "dark" : "light");
-      setWallpaper(project?.wallpaper);
-    } else {
-      if (project?.theme !== undefined) {
-        setTheme(project.theme == 1 ? "dark" : "light");
-      } else if (userDetails?.theme !== undefined) {
-        setTheme(userDetails.theme == 1 ? "dark" : "light");
+      if (isFromRefetch) {
+        setTheme(project?.theme == 1 ? "dark" : "light");
+        setWallpaper(project?.wallpaper);
+      } else {
+        if (project?.theme !== undefined) {
+          setTheme(project.theme == 1 ? "dark" : "light");
+        } else if (userDetails?.theme !== undefined) {
+          setTheme(userDetails.theme == 1 ? "dark" : "light");
+        }
+
+        if (project?.wallpaper !== undefined) {
+          setWallpaper(project.wallpaper);
+        } else if (userDetails?.wallpaper !== undefined) {
+          setWallpaper(userDetails.wallpaper);
+        }
       }
 
-      if (project?.wallpaper !== undefined) {
-        setWallpaper(project.wallpaper);
-      } else if (userDetails?.wallpaper !== undefined) {
-        setWallpaper(userDetails.wallpaper);
-      }
-    }
-
-    const cursor =
-      project?.cursor != null
-        ? project.cursor
-        : project?.theme != null
-          ? project.theme
-          : userDetails?.cursor || 0;
-    setCursor(cursor);
-    setIsProtected(isProtectedValue);
-  };
+      const cursor =
+        project?.cursor != null
+          ? project.cursor
+          : project?.theme != null
+            ? project.theme
+            : userDetails?.cursor || 0;
+      setCursor(cursor);
+      setIsProtected(isProtectedValue);
+    },
+    [userDetails, setTheme, setWallpaper, setCursor, setProjectDetails]
+  );
 
   const { mutate: refetchProjectDetail } = useMutation({
     mutationKey: [`project-editor-${router.query.id}`],
@@ -112,30 +118,25 @@ export default function Index() {
 
     if (initializedRef.current) return;
 
-    const cachedProject = userDetails.projects?.find(
-      (project) => project._id === projectId,
-    );
+    const cachedProject = userDetails.projects?.find((project) => project._id === projectId);
 
     if (cachedProject) {
-      setProjectData(cachedProject, cachedProject.protected || false);
+      startTransition(() => setProjectData(cachedProject, cachedProject.protected || false));
       initializedRef.current = projectId;
     } else {
       refetchProjectDetail();
       initializedRef.current = projectId;
     }
-  }, [router.query.id, userDetails, refetchProjectDetail]);
+  }, [router.query.id, userDetails, refetchProjectDetail, setProjectData]);
 
   // Wait for userDetails to load before rendering — prevents a flash of the
   // wrong layout on refresh (before userDetails.template is known).
   if (!userDetails && userDetailLoading) {
     return (
       <>
-        <WallpaperBackground
-          wallpaperUrl={wallpaperUrl}
-          effects={wallpaperEffects}
-        />
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="w-8 h-8 border-2 border-[#888] border-t-transparent rounded-full animate-spin" />
+        <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#888] border-t-transparent" />
         </div>
       </>
     );
@@ -161,7 +162,7 @@ export default function Index() {
       case TEMPLATE_IDS.PROFESSIONAL:
         return "max-w-[848px] mx-auto px-2 md:px-4 lg:px-0";
       case TEMPLATE_IDS.SPOTLIGHT:
-        return "max-w-[848px] mx-auto flex flex-col gap-3 pb-20 pt-[40px] px-4 md:px-0"
+        return "max-w-[848px] mx-auto flex flex-col gap-3 pb-20 pt-[40px] px-4 md:px-0";
       default:
         return "max-w-[700px] mx-auto flex flex-col gap-3 pb-20 pt-[40px] px-4 md:px-0";
     }
@@ -199,31 +200,26 @@ export default function Index() {
     }
 
     const updatedProjects = projects.map((p) =>
-      p._id === projectId ? { ...p, hidden: !p.hidden } : p,
+      p._id === projectId ? { ...p, hidden: !p.hidden } : p
     );
 
-    setUserDetails((prev) =>
-      prev ? { ...prev, projects: updatedProjects } : prev,
-    );
+    setUserDetails((prev) => (prev ? { ...prev, projects: updatedProjects } : prev));
     _updateProject(projectId, { hidden: !existing.hidden });
     _updateUser({ projects: updatedProjects });
 
     setProjectDetails((prev) =>
       prev
         ? {
-          ...prev,
-          project: { ...prev.project, hidden: !prev.project.hidden },
-        }
-        : prev,
+            ...prev,
+            project: { ...prev.project, hidden: !prev.project.hidden },
+          }
+        : prev
     );
   };
 
   return (
     <>
-      <WallpaperBackground
-        wallpaperUrl={wallpaperUrl}
-        effects={wallpaperEffects}
-      />
+      <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
 
       {isChatfolio && currentProject ? (
         <>
@@ -273,17 +269,17 @@ export default function Index() {
       ) : (
         <main className={cn("min-h-screen")}>
           <div className="fixed top-4 left-4 z-50">
-            {
-              !template === TEMPLATE_IDS.MONO && (<Button
+            {!template === TEMPLATE_IDS.MONO && (
+              <Button
                 variant="outline"
                 size="sm"
                 onClick={() => router.back()}
-                className="rounded-full shadow-md bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm hover:bg-white dark:hover:bg-[#2A2520]"
+                className="rounded-full bg-white/90 shadow-md backdrop-blur-sm hover:bg-white dark:bg-[#2A2520]/90 dark:hover:bg-[#2A2520]"
               >
-                <ArrowLeft className="w-4 h-4" />
+                <ArrowLeft className="h-4 w-4" />
                 Back to Preview
-              </Button>)
-            }
+              </Button>
+            )}
           </div>
           {previewContent}
         </main>

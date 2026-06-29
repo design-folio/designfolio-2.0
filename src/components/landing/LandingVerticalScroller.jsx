@@ -4,30 +4,24 @@ import { testimonials, scrollerExtraTestimonials } from "./shared/testimonialDat
 
 function MasonryScrollCard({ t }) {
   return (
-    <div className="px-4 py-4 rounded-xl border border-[--lp-video-border] bg-[--lp-bg]">
-      <p className="text-[14px] leading-[1.65] text-lp-text/75 font-medium mb-4">
-        "{t.content}"
+    <div className="rounded-xl border border-(--lp-video-border) bg-(--lp-bg) px-4 py-4">
+      <p className="text-lp-text/75 mb-4 text-[14px] leading-[1.65] font-medium">
+        &quot;{t.content}&quot;
       </p>
       <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2.5 min-w-0">
-          <img
-            src={t.image}
-            alt={t.name}
-            className="h-8 w-8 rounded-full object-cover flex-shrink-0"
-          />
-          <div className="flex flex-col gap-0.5 min-w-0">
-            <span className="text-[13px] font-semibold text-lp-text leading-none truncate">
+        <div className="flex min-w-0 items-center gap-2.5">
+          <img src={t.image} alt={t.name} className="h-8 w-8 shrink-0 rounded-full object-cover" />
+          <div className="flex min-w-0 flex-col gap-0.5">
+            <span className="text-lp-text truncate text-[13px] leading-none font-semibold">
               {t.name}
             </span>
-            <span className="text-[11.5px] text-lp-text/45 leading-tight truncate">
-              {t.role}
-            </span>
+            <span className="text-lp-text/45 truncate text-[11.5px] leading-tight">{t.role}</span>
           </div>
         </div>
         {t.logoSrc && (
           <div
             className={cn(
-              "shrink-0 w-7 h-7 rounded-full overflow-hidden",
+              "h-7 w-7 shrink-0 overflow-hidden rounded-full",
               !t.logoRaw && "bg-white dark:bg-white/5"
             )}
           >
@@ -35,10 +29,7 @@ function MasonryScrollCard({ t }) {
               src={t.logoSrc}
               alt=""
               aria-hidden="true"
-              className={cn(
-                "w-full h-full object-cover",
-                !t.logoRaw && "opacity-40 dark:invert"
-              )}
+              className={cn("h-full w-full object-cover", !t.logoRaw && "opacity-40 dark:invert")}
             />
           </div>
         )}
@@ -51,8 +42,8 @@ function MasonryScrollCard({ t }) {
 function MasonryScrollColumn({ items, innerRef, className }) {
   const doubled = [...items, ...items];
   return (
-    <div className={cn("flex-1 min-w-0 overflow-hidden", className)}>
-      <div ref={innerRef} className="flex flex-col gap-3 w-full">
+    <div className={cn("min-w-0 flex-1 overflow-hidden", className)}>
+      <div ref={innerRef} className="flex w-full flex-col gap-3">
         {doubled.map((t, i) => (
           <MasonryScrollCard key={i} t={t} />
         ))}
@@ -94,7 +85,7 @@ export default function LandingVerticalScroller() {
       lastTimeRef.current = timestamp;
 
       const effectivePps = hoveredRef.current ? pps * 0.35 : pps;
-      pixelsRef.current += effectivePps * delta / 1000;
+      pixelsRef.current += (effectivePps * delta) / 1000;
 
       // col1 scrolls up: translateY goes from 0 toward -h1, then wraps
       const col1 = col1Ref.current;
@@ -126,14 +117,18 @@ export default function LandingVerticalScroller() {
 
   return (
     <section
-      className="w-full overflow-hidden border-y border-[--lp-border] bg-[--lp-card]"
+      className="w-full overflow-hidden border-y border-(--lp-border) bg-(--lp-card)"
       style={{ fontFamily: "var(--font-manrope), sans-serif" }}
     >
       <div
-        className="flex gap-3 px-6 overflow-hidden"
+        className="flex gap-3 overflow-hidden px-6"
         style={{ height: 440 }}
-        onMouseEnter={() => { hoveredRef.current = true; }}
-        onMouseLeave={() => { hoveredRef.current = false; }}
+        onMouseEnter={() => {
+          hoveredRef.current = true;
+        }}
+        onMouseLeave={() => {
+          hoveredRef.current = false;
+        }}
       >
         <MasonryScrollColumn items={col1Items} innerRef={col1Ref} />
         <MasonryScrollColumn

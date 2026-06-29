@@ -1,5 +1,5 @@
 import React from "react";
-import { motion, AnimatePresence, MotionConfig } from "framer-motion";
+import { motion, AnimatePresence, MotionConfig } from "motion/react";
 import { ChevronDown, Briefcase, Sparkles, LayoutTemplate } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -47,8 +47,8 @@ const categories = [
 ];
 
 const IconWrapper = ({ icon: Icon }) => (
-  <div className="w-4 h-4 mr-2.5 relative flex items-center justify-center shrink-0">
-    <Icon className="w-4 h-4" />
+  <div className="relative mr-2.5 flex h-4 w-4 shrink-0 items-center justify-center">
+    <Icon className="h-4 w-4" />
   </div>
 );
 
@@ -61,12 +61,8 @@ export function FluidDropdown() {
   const selectedCategory = React.useMemo(() => {
     const asPath = router.asPath;
     // Longer paths first so `/builder?view=ai-tools&...` matches AI tools, not bare `/builder`.
-    const bySpecificity = [...categories].sort(
-      (a, b) => b.navigation.length - a.navigation.length,
-    );
-    return (
-      bySpecificity.find((c) => asPath.startsWith(c.navigation)) ?? categories[0]
-    );
+    const bySpecificity = [...categories].sort((a, b) => b.navigation.length - a.navigation.length);
+    return bySpecificity.find((c) => asPath.startsWith(c.navigation)) ?? categories[0];
   }, [router.asPath]);
 
   useClickAway(dropdownRef, () => setIsOpen(false));
@@ -83,7 +79,7 @@ export function FluidDropdown() {
         <Button
           variant="secondary"
           onClick={() => setIsOpen(!isOpen)}
-          className="bg-secondary hover:bg-secondary-hover border border-border text-foreground font-medium px-3 text-sm rounded-full flex items-center gap-1 hover:cursor-pointer transition-all duration-200"
+          className="bg-secondary hover:bg-secondary-hover border-border text-foreground flex items-center gap-1 rounded-full border px-3 text-sm font-medium transition-all duration-200 hover:cursor-pointer"
           aria-expanded={isOpen}
           aria-haspopup="true"
         >
@@ -91,9 +87,9 @@ export function FluidDropdown() {
           <motion.div
             animate={{ rotate: isOpen ? 180 : 0 }}
             transition={{ duration: 0.2 }}
-            className="flex items-center justify-center w-4 h-4 shrink-0 ml-1"
+            className="ml-1 flex h-4 w-4 shrink-0 items-center justify-center"
           >
-            <ChevronDown className="w-4 h-4" />
+            <ChevronDown className="h-4 w-4" />
           </motion.div>
         </Button>
 
@@ -113,20 +109,19 @@ export function FluidDropdown() {
                 pointerEvents: "none",
                 transition: { duration: 0.15, ease: "easeIn" },
               }}
-              className="absolute -left-1.5 top-full mt-2 z-50 min-w-[200px]"
+              className="absolute top-full -left-1.5 z-50 mt-2 min-w-[200px]"
               onKeyDown={handleKeyDown}
               style={{ transformOrigin: "top left" }}
             >
-              <div className="w-full rounded-2xl border border-border bg-card p-1.5 shadow-lg overflow-hidden">
+              <div className="border-border bg-card w-full overflow-hidden rounded-2xl border p-1.5 shadow-lg">
                 <div className="relative flex flex-col">
                   <motion.div
-                    className="absolute top-0 left-0 right-0 bg-secondary-hover rounded-xl z-0"
+                    className="bg-secondary-hover absolute top-0 right-0 left-0 z-0 rounded-xl"
                     initial={false}
                     animate={{
                       y:
                         categories.findIndex(
-                          (c) =>
-                            (hoveredCategory || selectedCategory.id) === c.id,
+                          (c) => (hoveredCategory || selectedCategory.id) === c.id
                         ) * 44,
                       height: 44,
                     }}
@@ -137,8 +132,7 @@ export function FluidDropdown() {
                     }}
                   />
                   {categories.map((category) => {
-                    const isActive =
-                      (hoveredCategory || selectedCategory.id) === category.id;
+                    const isActive = (hoveredCategory || selectedCategory.id) === category.id;
                     return (
                       <button
                         key={category.id}
@@ -151,15 +145,13 @@ export function FluidDropdown() {
                         onMouseEnter={() => setHoveredCategory(category.id)}
                         onMouseLeave={() => setHoveredCategory(null)}
                         className={cn(
-                          "relative z-10 flex w-full items-center justify-start px-3 h-[44px] text-[13px] font-medium rounded-xl text-left",
+                          "relative z-10 flex h-[44px] w-full items-center justify-start rounded-xl px-3 text-left text-[13px] font-medium",
                           "transition-colors duration-150",
-                          "focus:outline-none cursor-pointer",
-                          isActive
-                            ? "text-foreground"
-                            : "text-muted-foreground",
+                          "cursor-pointer focus:outline-none",
+                          isActive ? "text-foreground" : "text-muted-foreground"
                         )}
                       >
-                        <div className="flex items-center justify-start w-full">
+                        <div className="flex w-full items-center justify-start">
                           <IconWrapper icon={category.icon} />
                           {category.label}
                         </div>

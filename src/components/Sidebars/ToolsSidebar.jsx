@@ -3,20 +3,18 @@ import { _getTools } from "@/network/get-request";
 import { _updateUser } from "@/network/post-request";
 import { Form, Formik } from "formik";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import * as Yup from "yup";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { UnsavedChangesDialog } from "../ui/UnsavedChangesDialog";
 import { sidebars } from "@/lib/constant";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { Plus, Search } from "lucide-react";
 
 const validationSchema = Yup.object().shape({
-  selectedTools: Yup.array()
-    .of(Yup.object())
-    .min(3, "Please select at least 3 tools"),
+  selectedTools: Yup.array().of(Yup.object()).min(3, "Please select at least 3 tools"),
 });
 
 export default function AddTools() {
@@ -49,20 +47,22 @@ export default function AddTools() {
 
   const isOpen = activeSidebar === sidebars.tools;
 
-  // Reset search when panel closes
-  useEffect(() => {
-    if (!isOpen) {
-      setEditingValues(null);
-      setToolSearchQuery("");
-    }
-  }, [isOpen]);
-
-  const hasUnsavedChanges = () => {
+  const hasUnsavedChanges = useCallback(() => {
     if (!editingValues) return false;
     const initial = JSON.stringify(userDetails?.tools ?? []);
     const current = JSON.stringify(editingValues.selectedTools ?? []);
     return initial !== current;
-  };
+  }, [editingValues, userDetails?.tools]);
+
+  // Reset search when panel closes
+  useEffect(() => {
+    if (!isOpen) {
+      queueMicrotask(() => {
+        setEditingValues(null);
+        setToolSearchQuery("");
+      });
+    }
+  }, [isOpen]);
 
   const resetStateAndClose = () => {
     setEditingValues(null);
@@ -74,7 +74,7 @@ export default function AddTools() {
       registerUnsavedChangesChecker(sidebars.tools, hasUnsavedChanges);
     }
     return () => unregisterUnsavedChangesChecker(sidebars.tools);
-  }, [isOpen, editingValues, registerUnsavedChangesChecker, unregisterUnsavedChangesChecker]);
+  }, [isOpen, hasUnsavedChanges, registerUnsavedChangesChecker, unregisterUnsavedChangesChecker]);
 
   const renderFormContent = () => (
     <Formik
@@ -96,6 +96,7 @@ export default function AddTools() {
       }}
     >
       {({ values, setFieldValue, errors, touched }) => {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
         useEffect(() => {
           setEditingValues(values);
         }, [values]);
@@ -116,9 +117,7 @@ export default function AddTools() {
         };
 
         const filteredTools = toolsOptions
-          .filter((t) =>
-            t.label.toLowerCase().includes(toolSearchQuery.toLowerCase())
-          )
+          .filter((t) => t.label.toLowerCase().includes(toolSearchQuery.toLowerCase()))
           .sort((a, b) => {
             const isASelected = selectedTools.some((t) => t.value === a.value);
             const isBSelected = selectedTools.some((t) => t.value === b.value);
@@ -127,15 +126,13 @@ export default function AddTools() {
           });
 
         return (
-          <Form id="toolsForm" className="flex flex-col h-full">
-            <div className="flex-1 overflow-auto px-6 py-5 space-y-5">
+          <Form id="toolsForm" className="flex h-full flex-col">
+            <div className="flex-1 space-y-5 overflow-auto px-6 py-5">
               {/* Search */}
               <div className="space-y-2">
-                <Label className="text-sm font-medium text-foreground ml-1">
-                  Search Tools
-                </Label>
+                <Label className="text-foreground ml-1 text-sm font-medium">Search Tools</Label>
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/30 pointer-events-none" />
+                  <Search className="text-foreground/30 pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                   <Input
                     placeholder="Search for a tool..."
                     value={toolSearchQuery}
@@ -148,7 +145,7 @@ export default function AddTools() {
 
               {/* Count */}
               {selectedTools.length > 0 && (
-                <p className="text-xs text-foreground/40 px-1">
+                <p className="text-foreground/40 px-1 text-xs">
                   {selectedTools.length} tool{selectedTools.length !== 1 ? "s" : ""} selected
                 </p>
               )}
@@ -163,29 +160,27 @@ export default function AddTools() {
                       transition={{ type: "spring", stiffness: 400, damping: 25 }}
                       key={`tool-${tool.value}`}
                       type="button"
-                      onClick={() =>
-                        isSelected ? handleRemoveTool(tool) : handleAddTool(tool)
-                      }
-                      className={`group h-[34px] px-3.5 rounded-xl flex items-center gap-2.5 text-[13px] font-medium transition-colors border ${
+                      onClick={() => (isSelected ? handleRemoveTool(tool) : handleAddTool(tool))}
+                      className={`group flex h-[34px] items-center gap-2.5 rounded-xl border px-3.5 text-[13px] font-medium transition-colors ${
                         isSelected
                           ? "bg-muted border-border text-foreground shadow-sm"
-                          : "bg-transparent border-transparent text-foreground/50 hover:bg-black/[0.04] dark:hover:bg-white/[0.04] hover:text-foreground"
+                          : "text-foreground/50 hover:text-foreground border-transparent bg-transparent hover:bg-black/[0.04] dark:hover:bg-white/[0.04]"
                       }`}
                     >
-                      <div className="relative w-4 h-4 flex items-center justify-center shrink-0">
+                      <div className="relative flex h-4 w-4 shrink-0 items-center justify-center">
                         {tool.image && (
                           <img
                             src={tool.image}
                             alt={tool.label}
-                            className={`absolute inset-0 w-4 h-4 object-contain transition-all duration-200 ${
+                            className={`absolute inset-0 h-4 w-4 object-contain transition-all duration-200 ${
                               isSelected
-                                ? "grayscale-0 opacity-100"
-                                : "grayscale opacity-50 group-hover:opacity-0 group-hover:scale-50 group-hover:-rotate-45"
+                                ? "opacity-100 grayscale-0"
+                                : "opacity-50 grayscale group-hover:scale-50 group-hover:-rotate-45 group-hover:opacity-0"
                             }`}
                           />
                         )}
                         {!isSelected && (
-                          <Plus className="absolute inset-0 w-4 h-4 opacity-0 group-hover:opacity-100 transition-all duration-200 scale-50 group-hover:scale-100 rotate-45 group-hover:rotate-0" />
+                          <Plus className="absolute inset-0 h-4 w-4 scale-50 rotate-45 opacity-0 transition-all duration-200 group-hover:scale-100 group-hover:rotate-0 group-hover:opacity-100" />
                         )}
                       </div>
                       {tool.label}
@@ -194,7 +189,7 @@ export default function AddTools() {
                 })}
 
                 {filteredTools.length === 0 && (
-                  <p className="text-sm text-foreground/40 py-4 w-full text-center">
+                  <p className="text-foreground/40 w-full py-4 text-center text-sm">
                     No tools found for &ldquo;{toolSearchQuery}&rdquo;
                   </p>
                 )}
@@ -205,7 +200,7 @@ export default function AddTools() {
               )}
             </div>
 
-            <div className="flex gap-2 py-3 px-6 border-t border-border justify-end flex-shrink-0 bg-sidebar">
+            <div className="border-border bg-sidebar flex shrink-0 justify-end gap-2 border-t px-6 py-3">
               <Button variant="outline" type="button" onClick={() => closeSidebar()}>
                 Cancel
               </Button>

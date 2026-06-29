@@ -3,12 +3,11 @@ import React from "react";
 export default function Popover({ children, show, className = "" }) {
   return (
     <div
-      className={`fixed md:hidden px-[12px] top-[62px] shadow-popver-shadow transform origin-top-right w-full z-[60] overflow-hidden transition-all duration-100 ease-out ${show
-        ? "opacity-100 scale-100"
-        : "opacity-0 scale-90 pointer-events-none"
-        } ${className}`}
+      className={`shadow-popver-shadow fixed top-[62px] z-[60] w-full origin-top-right transform overflow-hidden px-[12px] transition-all duration-100 ease-out md:hidden ${
+        show ? "scale-100 opacity-100" : "pointer-events-none scale-90 opacity-0"
+      } ${className}`}
     >
-      <div className="bg-popover-bg-color rounded-2xl shadow-lg border-[5px] border-popover-border-color p-4">
+      <div className="bg-popover-bg-color border-popover-border-color rounded-2xl border-[5px] p-4 shadow-lg">
         {children}
       </div>
     </div>
@@ -18,12 +17,11 @@ export default function Popover({ children, show, className = "" }) {
 export function TempPopoverForLanding({ children, show, className = "" }) {
   return (
     <div
-      className={`fixed md:hidden px-[12px] top-[72px] shadow-popver-shadow transform origin-top-right w-full z-[60] overflow-hidden transition-all duration-100 ease-out ${show
-        ? "opacity-100 scale-100"
-        : "opacity-0 scale-90 pointer-events-none"
-        } ${className}`}
+      className={`shadow-popver-shadow fixed top-[72px] z-[60] w-full origin-top-right transform overflow-hidden px-[12px] transition-all duration-100 ease-out md:hidden ${
+        show ? "scale-100 opacity-100" : "pointer-events-none scale-90 opacity-0"
+      } ${className}`}
     >
-      <div className="bg-background-landing rounded-2xl shadow-sm border-[5px] border-border p-4">
+      <div className="bg-background-landing border-border rounded-2xl border-[5px] p-4 shadow-sm">
         {children}
       </div>
     </div>

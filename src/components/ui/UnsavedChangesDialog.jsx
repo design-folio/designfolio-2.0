@@ -36,7 +36,7 @@ export const UnsavedChangesDialog = ({
 
       observer.observe(document.body, {
         attributes: true,
-        attributeFilter: ['style'],
+        attributeFilter: ["style"],
       });
 
       return () => {
@@ -54,18 +54,20 @@ export const UnsavedChangesDialog = ({
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            {cancelText}
+          </Button>
           <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-          >{cancelText}</Button>
-          <Button variant="destructive"
+            variant="destructive"
             onClick={() => {
               onConfirmDiscard();
               onOpenChange(false);
-            }}>{confirmText}</Button>
+            }}
+          >
+            {confirmText}
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
   );
 };
-

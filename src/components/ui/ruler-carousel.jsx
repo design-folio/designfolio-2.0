@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { motion } from "framer-motion";
+import { useState, useRef, useEffect, startTransition, useCallback } from "react";
+import { motion } from "motion/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const createInfiniteItems = (originalItems) => {
@@ -37,19 +37,11 @@ const RulerLines = ({ totalLines = 41 }) => {
     }
 
     lines.push(
-      <div
-        key={i}
-        className={`w-[1px] ${color} flex-shrink-0`}
-        style={{ height: `${height * 0.75}px` }}
-      />
+      <div key={i} className={`w-px ${color} shrink-0`} style={{ height: `${height * 0.75}px` }} />
     );
   }
 
-  return (
-    <div className="flex items-center justify-between w-full px-8">
-      {lines}
-    </div>
-  );
+  return <div className="flex w-full items-center justify-between px-8">{lines}</div>;
 };
 
 const ITEM_WIDTH = 160;
@@ -59,9 +51,7 @@ export function RulerCarousel({ originalItems, onItemSelect, selectedIndex }) {
   const infiniteItems = createInfiniteItems(originalItems);
   const itemsPerSet = originalItems.length;
 
-  const [activeIndex, setActiveIndex] = useState(
-    itemsPerSet + (selectedIndex ?? 0)
-  );
+  const [activeIndex, setActiveIndex] = useState(itemsPerSet + (selectedIndex ?? 0));
   const [isResetting, setIsResetting] = useState(false);
   const previousIndexRef = useRef(itemsPerSet);
 
@@ -95,27 +85,27 @@ export function RulerCarousel({ originalItems, onItemSelect, selectedIndex }) {
     }
   };
 
-  const handlePrevious = () => {
+  const handlePrevious = useCallback(() => {
     if (isResetting) return;
     const newIndex = activeIndex - 1;
     setActiveIndex(newIndex);
     if (onItemSelect) {
       onItemSelect(((newIndex % itemsPerSet) + itemsPerSet) % itemsPerSet);
     }
-  };
+  }, [isResetting, activeIndex, onItemSelect, itemsPerSet]);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (isResetting) return;
     const newIndex = activeIndex + 1;
     setActiveIndex(newIndex);
     if (onItemSelect) {
       onItemSelect(newIndex % itemsPerSet);
     }
-  };
+  }, [isResetting, activeIndex, onItemSelect, itemsPerSet]);
 
   useEffect(() => {
     if (selectedIndex !== undefined) {
-      setActiveIndex(itemsPerSet + selectedIndex);
+      startTransition(() => setActiveIndex(itemsPerSet + selectedIndex));
     }
   }, [selectedIndex, itemsPerSet]);
 
@@ -123,16 +113,20 @@ export function RulerCarousel({ originalItems, onItemSelect, selectedIndex }) {
     if (isResetting) return;
 
     if (activeIndex < itemsPerSet) {
-      setIsResetting(true);
+      startTransition(() => setIsResetting(true));
       setTimeout(() => {
-        setActiveIndex(activeIndex + itemsPerSet);
-        setIsResetting(false);
+        startTransition(() => {
+          setActiveIndex(activeIndex + itemsPerSet);
+          setIsResetting(false);
+        });
       }, 0);
     } else if (activeIndex >= itemsPerSet * 2) {
-      setIsResetting(true);
+      startTransition(() => setIsResetting(true));
       setTimeout(() => {
-        setActiveIndex(activeIndex - itemsPerSet);
-        setIsResetting(false);
+        startTransition(() => {
+          setActiveIndex(activeIndex - itemsPerSet);
+          setIsResetting(false);
+        });
       }, 0);
     }
   }, [activeIndex, itemsPerSet, isResetting]);
@@ -152,7 +146,7 @@ export function RulerCarousel({ originalItems, onItemSelect, selectedIndex }) {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isResetting, activeIndex]);
+  }, [isResetting, handleNext, handlePrevious]);
 
   const targetX = -(activeIndex * (ITEM_WIDTH + ITEM_GAP));
 
@@ -160,12 +154,12 @@ export function RulerCarousel({ originalItems, onItemSelect, selectedIndex }) {
   const totalPages = itemsPerSet;
 
   return (
-    <div className="w-full flex flex-col items-center">
+    <div className="flex w-full flex-col items-center">
       <RulerLines />
 
-      <div className="w-full h-8 relative overflow-hidden my-0.5">
+      <div className="relative my-0.5 h-8 w-full overflow-hidden">
         <motion.div
-          className="absolute flex items-center h-full"
+          className="absolute flex h-full items-center"
           style={{ gap: `${ITEM_GAP}px`, left: "50%" }}
           animate={{
             x: `calc(-${ITEM_WIDTH / 2}px + ${targetX}px)`,
@@ -187,10 +181,8 @@ export function RulerCarousel({ originalItems, onItemSelect, selectedIndex }) {
               <motion.button
                 key={item.id}
                 onClick={() => handleItemClick(index)}
-                className={`text-sm font-semibold whitespace-nowrap cursor-pointer flex items-center justify-center ${
-                  isActive
-                    ? "text-[#FF553E]"
-                    : "text-[#0A0A0A]/60 hover:text-[#0A0A0A]/80"
+                className={`flex cursor-pointer items-center justify-center text-sm font-semibold whitespace-nowrap ${
+                  isActive ? "text-[#FF553E]" : "text-[#0A0A0A]/60 hover:text-[#0A0A0A]/80"
                 }`}
                 animate={{
                   scale: isActive ? 1 : 0.9,
@@ -219,33 +211,29 @@ export function RulerCarousel({ originalItems, onItemSelect, selectedIndex }) {
 
       <RulerLines />
 
-      <div className="flex items-center justify-center gap-4 mt-1">
+      <div className="mt-1 flex items-center justify-center gap-4">
         <button
           onClick={handlePrevious}
           disabled={isResetting}
-          className="flex items-center justify-center cursor-pointer p-1"
+          className="flex cursor-pointer items-center justify-center p-1"
           aria-label="Previous item"
         >
-          <ChevronLeft className="w-4 h-4 text-[#0A0A0A]/70" />
+          <ChevronLeft className="h-4 w-4 text-[#0A0A0A]/70" />
         </button>
 
         <div className="flex items-center gap-1">
-          <span className="text-xs font-medium text-[#0A0A0A]/70">
-            {currentPage}
-          </span>
+          <span className="text-xs font-medium text-[#0A0A0A]/70">{currentPage}</span>
           <span className="text-xs text-[#0A0A0A]/40">/</span>
-          <span className="text-xs font-medium text-[#0A0A0A]/70">
-            {totalPages}
-          </span>
+          <span className="text-xs font-medium text-[#0A0A0A]/70">{totalPages}</span>
         </div>
 
         <button
           onClick={handleNext}
           disabled={isResetting}
-          className="flex items-center justify-center cursor-pointer p-1"
+          className="flex cursor-pointer items-center justify-center p-1"
           aria-label="Next item"
         >
-          <ChevronRight className="w-4 h-4 text-[#0A0A0A]/70" />
+          <ChevronRight className="h-4 w-4 text-[#0A0A0A]/70" />
         </button>
       </div>
     </div>

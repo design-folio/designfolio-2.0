@@ -8,9 +8,9 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary-hover border border-[var(--button-outline)]",
-        destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        default:
+          "bg-primary text-primary-foreground hover:bg-primary-hover border border-(--button-outline)",
+        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
           "border [border-color:var(--button-outline)] bg-transparent text-foreground hover:bg-accent hover:text-accent-foreground shadow-xs",
         secondary:
@@ -19,7 +19,8 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         tertiary:
           "bg-tertiary text-tertiary-foreground hover:bg-tertiary-hover border-tertiary hover:border-tertiary-border-hover",
-        darker: "bg-[--lp-text] text-[--lp-fg-white] hover:bg-[--lp-accent-hover] hover:text-[#fdfcf8] transition-colors duration-300"
+        darker:
+          "bg-(--lp-text) text-(--lp-fg-white) hover:bg-(--lp-accent-hover) hover:text-[#fdfcf8] transition-colors duration-300",
       },
       size: {
         default: "h-9 px-4 py-2",
@@ -35,18 +36,10 @@ const buttonVariants = cva(
   }
 );
 
-const Button = React.forwardRef(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? Slot : "button";
-    return (
-      <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
-        ref={ref}
-        {...props}
-      />
-    );
-  }
-);
+const Button = React.forwardRef(({ className, variant, size, asChild = false, ...props }, ref) => {
+  const Comp = asChild ? Slot : "button";
+  return <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />;
+});
 Button.displayName = "Button";
 
 export { Button, buttonVariants };

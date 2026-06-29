@@ -2,7 +2,7 @@ export default function LandingLogoSVG({ size = 24, id = "logo" }) {
   return (
     <div
       style={{ width: size, height: size }}
-      className="rounded-full overflow-hidden flex-shrink-0 shadow-sm"
+      className="shrink-0 overflow-hidden rounded-full shadow-sm"
     >
       <svg
         width="125"
@@ -10,15 +10,10 @@ export default function LandingLogoSVG({ size = 24, id = "logo" }) {
         viewBox="0 0 125 125"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="w-full h-full"
+        className="h-full w-full"
       >
         <g filter={`url(#${id}-filter)`}>
-          <rect
-            width="124.5"
-            height="124.5"
-            rx="62.25"
-            fill={`url(#${id}-gradient)`}
-          />
+          <rect width="124.5" height="124.5" rx="62.25" fill={`url(#${id}-gradient)`} />
           <path
             d="M67.437 15.5625H57.062V49.7263L32.9046 25.5688L25.5683 32.9051L49.7258 57.0625H15.562V67.4375H49.7258L25.5684 91.5949L32.9046 98.9311L57.062 74.7737V108.937H67.437V74.7737L91.5944 98.9312L98.9307 91.5949L74.7732 67.4375H108.937V57.0625H74.7732L98.9307 32.9051L91.5944 25.5688L67.437 49.7263V15.5625Z"
             fill="white"
@@ -35,12 +30,7 @@ export default function LandingLogoSVG({ size = 24, id = "logo" }) {
             colorInterpolationFilters="sRGB"
           >
             <feFlood floodOpacity="0" result="BackgroundImageFix" />
-            <feBlend
-              mode="normal"
-              in="SourceGraphic"
-              in2="BackgroundImageFix"
-              result="shape"
-            />
+            <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
             <feColorMatrix
               in="SourceAlpha"
               type="matrix"

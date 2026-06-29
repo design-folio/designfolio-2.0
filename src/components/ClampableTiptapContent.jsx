@@ -35,9 +35,7 @@ export default function ClampableTiptapContent({
   const likelyExceeds = plainLength > charThreshold;
 
   const [internalExpanded, setInternalExpanded] = useState(false);
-  const isExpanded = itemId && expandedIds
-    ? expandedIds.includes(itemId)
-    : internalExpanded;
+  const isExpanded = itemId && expandedIds ? expandedIds.includes(itemId) : internalExpanded;
   const shouldShowToggle = likelyExceeds;
   const isCollapsed = shouldShowToggle && !isExpanded;
 
@@ -72,14 +70,8 @@ export default function ClampableTiptapContent({
   if (!content) return null;
 
   return (
-    <div className={cn("text-base leading-relaxed text-df-description-color", className)}>
-      <div
-        ref={containerRef}
-        className={cn(
-          "relative",
-          isCollapsed && "line-clamp-3"
-        )}
-      >
+    <div className={cn("text-df-description-color text-base leading-relaxed", className)}>
+      <div ref={containerRef} className={cn("relative", isCollapsed && "line-clamp-3")}>
         <SimpleTiptapRenderer
           content={content}
           mode={mode}

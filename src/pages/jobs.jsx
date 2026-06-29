@@ -10,18 +10,14 @@ import Navbar from "@/components/loggedInHeader/navbar";
 // ─────────────────────────────────────────────────────────────────────────────
 import { isBetaUser } from "@/lib/betaEnv";
 import { useGlobalContext } from "@/context/globalContext";
-import { useEffect } from "react";
+import { useEffect, startTransition } from "react";
 
 export default function JobsPage() {
   const { setIsUserDetailsFromCache, userDetailsIsState } = useGlobalContext();
 
   useEffect(() => {
-    if (userDetailsIsState) {
-      setIsUserDetailsFromCache(false);
-    } else {
-      setIsUserDetailsFromCache(true);
-    }
-  }, []);
+    startTransition(() => setIsUserDetailsFromCache(!userDetailsIsState));
+  }, [userDetailsIsState, setIsUserDetailsFromCache]);
 
   return (
     <>

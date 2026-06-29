@@ -12,8 +12,7 @@ import { cn } from "@/lib/utils";
 // Custom list renderer component
 const CustomListRenderer = React.memo(({ items, listType = "unordered" }) => {
   const ListTag = listType === "unordered" ? "ul" : "ol";
-  const listClass =
-    listType === "ordered" ? "list-decimal pl-5" : "list-disc pl-5";
+  const listClass = listType === "ordered" ? "list-decimal pl-5" : "list-disc pl-5";
 
   const renderedItems = useMemo(() => {
     return items.map((item, index) => {
@@ -62,7 +61,7 @@ const FigmaBlock = ({ block }) => {
             title="Figma Embed"
           />
         ) : (
-          <div className="w-full h-full bg-[#EFF0F0] dark:bg-[#383A47] rounded-[18px]">
+          <div className="h-full w-full rounded-[18px] bg-[#EFF0F0] dark:bg-[#383A47]">
             No Figma URL provided.
           </div>
         )}
@@ -77,20 +76,21 @@ const useIntersectionObserver = (options) => {
   const ref = useRef(null);
 
   React.useEffect(() => {
+    const node = ref.current;
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting && !inView) {
         setInView(true);
-        observer.unobserve(ref.current); // Stop observing once in view
+        if (node) observer.unobserve(node);
       }
     }, options);
 
-    if (ref.current) {
-      observer.observe(ref.current);
+    if (node) {
+      observer.observe(node);
     }
 
     return () => {
-      if (ref.current) {
-        observer.unobserve(ref.current);
+      if (node) {
+        observer.unobserve(node);
       }
     };
   }, [options, inView]);
@@ -131,8 +131,9 @@ const RenderImageBlock = React.memo(({ block }) => {
           <img
             src={block?.data?.file?.url}
             alt="project image"
-            className={`w-full h-full ${getClassNames} rounded-[20px] object-cover transition-opacity duration-100 mt-6 md:mt-8 ${isImageLoaded ? "opacity-100" : "opacity-0"
-              }`}
+            className={`h-full w-full ${getClassNames} mt-6 rounded-[20px] object-cover transition-opacity duration-100 md:mt-8 ${
+              isImageLoaded ? "opacity-100" : "opacity-0"
+            }`}
             loading="lazy"
             fetchPriority="high"
             decoding="async"
@@ -141,11 +142,11 @@ const RenderImageBlock = React.memo(({ block }) => {
             }}
           />
           {!isImageLoaded && (
-            <div className="w-full h-full bg-df-placeholder-color rounded-[18px] absolute top-0 right-0" />
+            <div className="bg-df-placeholder-color absolute top-0 right-0 h-full w-full rounded-[18px]" />
           )}
         </Zoom>
       ) : (
-        <div className="w-full h-full bg-df-placeholder-color rounded-[18px]" />
+        <div className="bg-df-placeholder-color h-full w-full rounded-[18px]" />
       )}
       <figcaption
         dangerouslySetInnerHTML={{
@@ -166,16 +167,11 @@ const BreakLineBlock = ({ data }) => {
 const BlockRenderer = ({ editorJsData, className }) => {
   const renderers = useMemo(
     () => ({
-      list: (data) => (
-        <CustomListRenderer
-          items={data.data.items}
-          listType={data.data.style}
-        />
-      ),
+      list: (data) => <CustomListRenderer items={data.data.items} listType={data.data.style} />,
       image: (data) => <RenderImageBlock block={data} />,
       table: (data) => (
         <div className="table-wrapper mt-4">
-          <table className="border-collapse table-auto w-full text-sm">
+          <table className="w-full table-auto border-collapse text-sm">
             <thead>
               <tr>
                 {data?.data?.content[0]?.map((header, index) => {
@@ -218,7 +214,12 @@ const BlockRenderer = ({ editorJsData, className }) => {
   );
 
   return (
-    <div className={cn("bg-card shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words project-editor", className)}>
+    <div
+      className={cn(
+        "bg-card shadow-df-section-card-shadow project-editor rounded-[24px] p-4 break-words lg:p-[32px]",
+        className
+      )}
+    >
       <Blocks
         data={editorJsData}
         config={{

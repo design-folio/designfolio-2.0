@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { ArrowUpRight, Eye, EyeOff, Pencil } from "lucide-react";
 import { useCursorTooltip } from "@/context/cursorTooltipContext";
 import { useRouter } from "next/router";
@@ -20,15 +20,15 @@ import {
   useSensor,
   useSensors,
   DragEndEvent,
-} from '@dnd-kit/core';
+} from "@dnd-kit/core";
 import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   useSortable,
   rectSortingStrategy,
-} from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import ProjectLock from "../projectLock";
 import MemoCasestudy from "../icons/Casestudy";
 import Text from "../text";
@@ -78,42 +78,44 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
   const ref = useRef(null);
 
   useEffect(() => {
+    const node = ref.current;
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting && !inView) {
         setInView(true);
       }
     });
-    if (ref.current) {
-      observer.observe(ref.current);
+    if (node) {
+      observer.observe(node);
     }
     return () => {
-      if (ref.current) {
-        observer.unobserve(ref.current);
+      if (node) {
+        observer.unobserve(node);
       }
     };
   }, [inView]);
 
+  const getProjectHref = (id) =>
+    edit
+      ? `/project/${id}/editor`
+      : router.asPath.includes("/portfolio-preview")
+        ? `/project/${id}/preview`
+        : `/project/${id}`;
+
   const handleNavigation = (id) => {
-    router.push(
-      edit
-        ? `/project/${id}/editor`
-        : router.asPath.includes("/portfolio-preview")
-          ? `/project/${id}/preview`
-          : `/project/${id}`
-    );
+    router.push(getProjectHref(id));
   };
 
   // Image component with loading state
   const ImageWithPreload = ({ src, alt }) => {
     const [isLoaded, setIsLoaded] = useState(false);
     return (
-      <div className="relative w-full h-full">
+      <div className="relative h-full w-full">
         {!isLoaded && (
           <motion.div
             initial={{ opacity: 1 }}
             animate={{ opacity: 0 }}
             transition={{ duration: 0.4 }}
-            className="absolute inset-0 bg-secondary/50"
+            className="bg-secondary/50 absolute inset-0"
           />
         )}
         <motion.img
@@ -122,7 +124,7 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
           transition={{ duration: 0.4 }}
           src={src}
           alt={alt}
-          className="w-full cursor-pointer h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
+          className="h-full w-full cursor-pointer object-cover object-center transition-transform duration-300 group-hover:scale-105"
           loading="eager"
           decoding="async"
           onLoad={() => setIsLoaded(true)}
@@ -132,14 +134,12 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
   };
 
   // Maintain local state for sorted projects
-  const [sortedProjects, setSortedProjects] = useState(
-    () => userDetails?.projects || []
-  );
+  const [sortedProjects, setSortedProjects] = useState(() => userDetails?.projects || []);
 
   // Update state when userDetails changes
   useEffect(() => {
     const currentProjects = userDetails?.projects || [];
-    setSortedProjects([...currentProjects]);
+    queueMicrotask(() => setSortedProjects([...currentProjects]));
   }, [userDetails]);
 
   // Filter out hidden projects in preview mode (when edit is false)
@@ -162,12 +162,8 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
-    const oldIndex = sortedProjects.findIndex(
-      (project) => project._id === active.id
-    );
-    const newIndex = sortedProjects.findIndex(
-      (project) => project._id === over.id
-    );
+    const oldIndex = sortedProjects.findIndex((project) => project._id === active.id);
+    const newIndex = sortedProjects.findIndex((project) => project._id === over.id);
 
     // Update the sorted order
     const newSortedProjects = arrayMove(sortedProjects, oldIndex, newIndex);
@@ -186,8 +182,9 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
     const containerRef = useRef(null);
     const { setCursorPill } = useCursorTooltip();
     // Setup DND Kit sortable functionality.
-    const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-      useSortable({ id: project._id });
+    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+      id: project._id,
+    });
     const style = {
       transform: CSS.Transform.toString(transform),
       transition,
@@ -248,7 +245,7 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
           containerRef.current = node;
         }}
         style={style}
-        className={`${isDragging ? 'relative' : ''} h-full`}
+        className={`${isDragging ? "relative" : ""} h-full`}
       >
         <motion.div
           onMouseMove={handleMouseMove}
@@ -257,28 +254,28 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
             handleNavigation(project?._id);
           }}
           onMouseDown={() => setCursorPill(false)}
-          onMouseEnter={() => setIsHovered(true)}
+          onMouseEnter={() => {
+            setIsHovered(true);
+            router.prefetch(getProjectHref(project?._id));
+          }}
           onMouseLeave={() => {
             setIsHovered(false);
             setIsHoveringInteractive(false);
           }}
           variants={itemVariants}
-          className="group rounded-3xl bg-card overflow-hidden relative shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] cursor-pointer h-full flex flex-col"
+          className="group bg-card relative flex h-full cursor-pointer flex-col overflow-hidden rounded-3xl shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
         >
           <div
-            className="pointer-events-none absolute -inset-px opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            className="pointer-events-none absolute -inset-px opacity-0 transition-opacity duration-300 group-hover:opacity-100"
             style={{
               background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255,255,255,.1), transparent 40%)`,
             }}
           />
-          <div className="aspect-[4/3] cursor-pointer overflow-hidden bg-secondary/50 relative">
-            <ImageWithPreload
-              src={project?.thumbnail?.url}
-              alt={project.title}
-            />
+          <div className="bg-secondary/50 relative aspect-[4/3] cursor-pointer overflow-hidden">
+            <ImageWithPreload src={project?.thumbnail?.url} alt={project.title} />
             {project?.hidden && (
-              <div className="absolute top-3 right-3 bg-amber-100 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1.5 z-10">
-                <EyeOff className="w-3 h-3" />
+              <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-700 dark:bg-amber-950/30 dark:text-amber-400">
+                <EyeOff className="h-3 w-3" />
                 Hidden from live site
               </div>
             )}
@@ -289,15 +286,15 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
               <ArrowUpRight className="size-6 text-white" />
             </a> */}
           </div>
-          <div className="flex-1 flex flex-col justify-between cursor-pointer">
-            <div className={cn('p-6', edit && 'pb-0')}>
-              <h3 className="text-lg font-semibold line-clamp-2 project-info-card-heading-color">
+          <div className="flex flex-1 cursor-pointer flex-col justify-between">
+            <div className={cn("p-6", edit && "pb-0")}>
+              <h3 className="project-info-card-heading-color line-clamp-2 text-lg font-semibold">
                 {project.title}
               </h3>
               {project.description && (
                 <Text
                   size="p-xxsmall"
-                  className="text-df-description-color font-normal line-clamp-3 leading-relaxed "
+                  className="text-df-description-color line-clamp-3 leading-relaxed font-normal"
                 >
                   {project.description}
                 </Text>
@@ -305,7 +302,7 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
             </div>
             {edit && (
               <div
-                className="flex px-4 py-4 items-center"
+                className="flex items-center px-4 py-4"
                 onMouseEnter={() => setIsHoveringInteractive(true)}
                 onMouseLeave={() => setIsHoveringInteractive(false)}
               >
@@ -315,7 +312,7 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
                   attributes={attributes}
                   className={"max-h-[34px]"}
                 />
-                <div className="flex gap-2 ml-auto">
+                <div className="ml-auto flex gap-2">
                   <Button
                     onClick={(e) => {
                       e.preventDefault();
@@ -323,7 +320,7 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
                       handleNavigation(project?._id);
                     }}
                     customClass="!py-2 text-sm max-h-[38px] "
-                    icon={<Pencil className="w-4 h-4" />}
+                    icon={<Pencil className="h-4 w-4" />}
                     text={"Edit"}
                     type="secondary"
                   />
@@ -336,7 +333,9 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
                       e.stopPropagation();
                       handleToggleVisibility(project?._id);
                     }}
-                    icon={project?.hidden ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    icon={
+                      project?.hidden ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />
+                    }
                     text={project?.hidden ? "Hidden" : "Visible"}
                   />
                   <Button
@@ -362,16 +361,12 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
 
   return (
     <section className="pt-0 pb-16">
-      <div className="flex items-center justify-between mb-8">
+      <div className="mb-8 flex items-center justify-between">
         <h2 className="text-2xl font-bold">Featured Projects</h2>
-        {headerActions && <div className="flex-shrink-0">{headerActions}</div>}
+        {headerActions && <div className="shrink-0">{headerActions}</div>}
       </div>
       {sortedProjects.length > 0 && (
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-        >
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext
             items={visibleProjects.map((project) => project._id)}
             strategy={rectSortingStrategy}
@@ -381,7 +376,7 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
               variants={containerVariants}
               initial="hidden"
               animate={inView ? "show" : "hidden"}
-              className="grid grid-cols-1 md:grid-cols-2 gap-6"
+              className="grid grid-cols-1 gap-6 md:grid-cols-2"
             >
               {visibleProjects.map((project) => (
                 <ProjectCard key={project._id} project={project} />
@@ -391,22 +386,22 @@ export const WorkShowcase = ({ userDetails: userDetailsProp, edit, headerActions
         </DndContext>
       )}
       {edit &&
-        (userDetails?.pro || (userDetails?.projects || []).filter(p => !p.hidden).length < 2 ? (
+        (userDetails?.pro || (userDetails?.projects || []).filter((p) => !p.hidden).length < 2 ? (
           <AddCard
-            title={`${visibleProjects.length === 0
-              ? "Upload your first case study"
-              : "Add case study"
-              }`}
+            title={`${
+              visibleProjects.length === 0 ? "Upload your first case study" : "Add case study"
+            }`}
             subTitle="Show off your best work."
             first={sortedProjects.length !== 0}
             buttonTitle="Add case study"
             secondaryButtonTitle="Write using AI"
             onClick={() => openSidebar(sidebars.project)}
-            icon={<MemoCasestudy className="cursor-pointer size-[72px]" />}
+            icon={<MemoCasestudy className="size-[72px] cursor-pointer" />}
             openModal={openModal}
-            className={`bg-secondary flex items-center justify-center mt-6 ${visibleProjects.length !== 0 &&
+            className={`bg-secondary mt-6 flex items-center justify-center ${
+              visibleProjects.length !== 0 &&
               "shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] hover:shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
-              }`}
+            }`}
           />
         ) : (
           <div className="mt-6">

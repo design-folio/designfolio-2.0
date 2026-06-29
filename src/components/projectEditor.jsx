@@ -1,38 +1,38 @@
-import React, { useEffect, useRef, useState } from 'react';
-import EditorJS from '@editorjs/editorjs';
-import Header from '@editorjs/header';
-import Embed from '@editorjs/embed';
-import NestedList from '@editorjs/nested-list';
-import Table from '@editorjs/table';
-import Marker from '@editorjs/marker';
-import InlineCode from '@editorjs/inline-code';
-import Underline from '@editorjs/underline';
-import ImageTool from '@editorjs/image';
-import Paragraph from '@editorjs/paragraph';
-import BreakLine from 'editorjs-break-line';
+import React, { useCallback, useEffect, useRef, useState, startTransition } from "react";
+import EditorJS from "@editorjs/editorjs";
+import Header from "@editorjs/header";
+import Embed from "@editorjs/embed";
+import NestedList from "@editorjs/nested-list";
+import Table from "@editorjs/table";
+import Marker from "@editorjs/marker";
+import InlineCode from "@editorjs/inline-code";
+import Underline from "@editorjs/underline";
+import ImageTool from "@editorjs/image";
+import Paragraph from "@editorjs/paragraph";
+import BreakLine from "editorjs-break-line";
 
-import { _updateProject, _uploadImage } from '@/network/post-request';
-import { useGlobalContext } from '@/context/globalContext';
+import { _updateProject, _uploadImage } from "@/network/post-request";
+import { useGlobalContext } from "@/context/globalContext";
 
-import { useRouter } from 'next/router';
-import Undo from 'editorjs-undo';
+import { useRouter } from "next/router";
+import Undo from "editorjs-undo";
 
-import Compressor from 'compressorjs';
-import queryClient from '@/network/queryClient';
+import Compressor from "compressorjs";
+import queryClient from "@/network/queryClient";
 
-import { usePostHogEvent } from '@/hooks/usePostHogEvent';
-import { POSTHOG_EVENT_NAMES } from '@/lib/posthogEventNames';
+import { usePostHogEvent } from "@/hooks/usePostHogEvent";
+import { POSTHOG_EVENT_NAMES } from "@/lib/posthogEventNames";
 
-import CodepenIcon from '../../public/assets/svgs/codepen.svg';
+import CodepenIcon from "../../public/assets/svgs/codepen.svg";
 
 class FigmaTool {
   constructor({ data }) {
-    this.data = data || { url: '' };
+    this.data = data || { url: "" };
   }
 
   static get toolbox() {
     return {
-      title: 'Embed Figma',
+      title: "Embed Figma",
       icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="#000000" fill="none">
     <circle cx="15" cy="12" r="3" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
     <path d="M9 21C10.6569 21 12 19.6569 12 18V15H9C7.34315 15 6 16.3431 6 18C6 19.6569 7.34315 21 9 21Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
@@ -44,20 +44,20 @@ class FigmaTool {
   }
 
   render() {
-    const container = document.createElement('div');
-    container.classList.add('figma-tool');
+    const container = document.createElement("div");
+    container.classList.add("figma-tool");
 
-    this.input = document.createElement('textarea');
+    this.input = document.createElement("textarea");
     this.input.placeholder =
-      'Paste your Figma embed code here. \n\nClick share on Figma > Click Get embed code > Copy and paste.';
-    this.input.value = this.data.url || '';
+      "Paste your Figma embed code here. \n\nClick share on Figma > Click Get embed code > Copy and paste.";
+    this.input.value = this.data.url || "";
     container.appendChild(this.input);
 
-    this.preview = document.createElement('div');
-    this.preview.classList.add('figma-preview');
+    this.preview = document.createElement("div");
+    this.preview.classList.add("figma-preview");
     container.appendChild(this.preview);
 
-    this.input.addEventListener('input', () => {
+    this.input.addEventListener("input", () => {
       this.updatePreview();
     });
 
@@ -68,12 +68,12 @@ class FigmaTool {
 
   updatePreview() {
     const code = this.input.value.trim();
-    if (code.startsWith('<iframe')) {
-      this.input.style.display = 'none'; // Hide input when iframe code is present
+    if (code.startsWith("<iframe")) {
+      this.input.style.display = "none"; // Hide input when iframe code is present
       this.preview.innerHTML = code; // Display iframe
     } else {
-      this.input.style.display = 'block'; // Show input if not iframe code
-      this.preview.innerHTML = ''; // Clear preview
+      this.input.style.display = "block"; // Show input if not iframe code
+      this.preview.innerHTML = ""; // Clear preview
     }
   }
 
@@ -104,8 +104,48 @@ const ProjectEditor = ({ projectDetails, userDetails }) => {
   const { setWordCount, setProjectValue } = useGlobalContext();
   const phEvent = usePostHogEvent();
 
+  const checkWordCount = useCallback(
+    async (edit) => {
+      const outputData = await edit.save();
+      let totalText = "";
+      outputData.blocks.forEach((block, index) => {
+        if (block.data.text) {
+          const tempElement = document.createElement("div");
+          tempElement.textContent = index >= 1 ? " " + block.data.text : block.data.text;
+          const textWithoutTags = tempElement.innerText;
+          totalText += textWithoutTags;
+        }
+
+        if (block.type === "table") {
+          totalText += " ";
+          block.data.content.forEach((row) => {
+            row.forEach((cell) => {
+              if (cell !== "") totalText += cell + " ";
+            });
+          });
+        }
+
+        if (block.type === "list") {
+          block.data.items.forEach((item) => {
+            if (item.content != "") {
+              totalText += " " + item.content;
+            }
+          });
+        }
+
+        if (block.type === "image") {
+          const imageCaption = block.data.caption;
+          totalText += " " + imageCaption;
+        }
+      });
+      setProjectValue(totalText.replace("&nbsp;", "").trim());
+      setWordCount(totalText.replace("&nbsp;", "").trim().split(" ").length);
+    },
+    [setProjectValue, setWordCount]
+  );
+
   useEffect(() => {
-    setIsClient(true);
+    startTransition(() => setIsClient(true));
 
     if (!editorContainer.current) return;
 
@@ -120,7 +160,7 @@ const ProjectEditor = ({ projectDetails, userDetails }) => {
             try {
               undo.initialize();
             } catch (error) {
-              console.error('Error initializing Undo plugin:', error);
+              console.error("Error initializing Undo plugin:", error);
             }
           }, 500);
 
@@ -131,7 +171,7 @@ const ProjectEditor = ({ projectDetails, userDetails }) => {
           header: {
             class: Header,
             config: {
-              placeholder: 'Enter a heading',
+              placeholder: "Enter a heading",
               levels: [2, 3, 4, 5, 6],
               defaultLevel: 2,
             },
@@ -140,14 +180,14 @@ const ProjectEditor = ({ projectDetails, userDetails }) => {
             class: Paragraph,
             inlineToolbar: true,
             config: {
-              placeholder: 'Type here...',
+              placeholder: "Type here...",
             },
           },
           list: {
             class: NestedList,
             inlineToolbar: true,
             config: {
-              defaultStyle: 'unordered',
+              defaultStyle: "unordered",
             },
           },
           embed: {
@@ -180,15 +220,15 @@ const ProjectEditor = ({ projectDetails, userDetails }) => {
 
           marker: {
             class: Marker,
-            shortcut: 'CMD+SHIFT+M',
+            shortcut: "CMD+SHIFT+M",
           },
           inlineCode: {
             class: InlineCode,
-            shortcut: 'CMD+SHIFT+C',
+            shortcut: "CMD+SHIFT+C",
           },
           underline: {
             class: Underline,
-            shortcut: 'CMD+U',
+            shortcut: "CMD+U",
           },
           image: {
             class: ImageTool,
@@ -209,7 +249,7 @@ const ProjectEditor = ({ projectDetails, userDetails }) => {
                     try {
                       let compressedFile; // Compress before upload
 
-                      if (file?.type === 'image/gif') {
+                      if (file?.type === "image/gif") {
                         compressedFile = file;
                       } else {
                         try {
@@ -217,7 +257,7 @@ const ProjectEditor = ({ projectDetails, userDetails }) => {
                             (resolveCompression, rejectCompression) => {
                               new Compressor(file, {
                                 quality: 0.8, // Adjust the desired image quality (0.0 - 1.0)
-                                mimeType: 'image/webp', // Specify the output image format
+                                mimeType: "image/webp", // Specify the output image format
                                 maxHeight: 3840,
 
                                 success(result) {
@@ -236,19 +276,19 @@ const ProjectEditor = ({ projectDetails, userDetails }) => {
 
                       const reader = new FileReader();
                       reader.onload = function (e) {
-                        const base64 = e.target.result.split(',')[1];
+                        const base64 = e.target.result.split(",")[1];
 
                         _uploadImage({
                           file: {
-                            key: 'data:image/png;base64,' + base64,
+                            key: "data:image/png;base64," + base64,
                             originalName: compressedFile.name, // Use compressed file's name
                             extension: compressedFile.type, // Use compressed file's type
                           },
                         })
-                          .then(result => {
+                          .then((result) => {
                             resolve(result.data);
                           })
-                          .catch(error => reject(error));
+                          .catch((error) => reject(error));
                       };
 
                       reader.readAsDataURL(compressedFile); // Read the compressed file
@@ -258,16 +298,16 @@ const ProjectEditor = ({ projectDetails, userDetails }) => {
                   });
                 },
               },
-              field: 'image',
-              types: 'image/*',
-              captionPlaceholder: 'Enter caption',
-              buttonContent: 'Select an image',
+              field: "image",
+              types: "image/*",
+              captionPlaceholder: "Enter caption",
+              buttonContent: "Select an image",
             },
           },
           breakLine: {
             class: BreakLine,
             inlineToolbar: true,
-            shortcut: 'CMD+SHIFT+ENTER',
+            shortcut: "CMD+SHIFT+ENTER",
           },
         },
         data: projectDetails?.content ?? null,
@@ -276,35 +316,31 @@ const ProjectEditor = ({ projectDetails, userDetails }) => {
           (async () => {
             const content = await editor?.save();
             if (
-              JSON.stringify(content?.blocks) !==
-              JSON.stringify(projectDetails?.content?.blocks)
+              JSON.stringify(content?.blocks) !== JSON.stringify(projectDetails?.content?.blocks)
             ) {
-              content?.blocks?.forEach(block => {
-                if (block.type == 'image') {
+              content?.blocks?.forEach((block) => {
+                if (block.type == "image") {
                   block.data.file.url = block.data.file.key;
                 }
               });
-              _updateProject(projectId, { content }).then(res => {
+              _updateProject(projectId, { content }).then((res) => {
                 if (userDetails) {
-                  const updatedProjects = userDetails?.projects?.map(item =>
+                  const updatedProjects = userDetails?.projects?.map((item) =>
                     item._id === projectId
                       ? { ...item, content: res?.data?.project?.content }
                       : item
                   );
-                  queryClient.setQueriesData(
-                    { queryKey: ['userDetails'] },
-                    oldData => {
-                      return {
-                        user: { ...oldData?.user, projects: updatedProjects },
-                      };
-                    }
-                  );
+                  queryClient.setQueriesData({ queryKey: ["userDetails"] }, (oldData) => {
+                    return {
+                      user: { ...oldData?.user, projects: updatedProjects },
+                    };
+                  });
 
                   // Track event
                   phEvent(POSTHOG_EVENT_NAMES.PROJECT_EDITED, {
                     project_id: projectId,
                     user_email: userDetails?.email,
-                    editor_type: 'project_editor',
+                    editor_type: "project_editor",
                   });
                 }
               });
@@ -316,20 +352,20 @@ const ProjectEditor = ({ projectDetails, userDetails }) => {
       });
 
       // MutationObserver to detect when .ce-popover__items is available
-      const observer = new MutationObserver(mutationsList => {
+      const observer = new MutationObserver((mutationsList) => {
         for (const mutation of mutationsList) {
-          if (mutation.type === 'childList') {
-            const popoverItems = document.querySelector('.ce-popover__items');
+          if (mutation.type === "childList") {
+            const popoverItems = document.querySelector(".ce-popover__items");
             if (popoverItems) {
               // Create the <p> tag
-              const div = document.createElement('div');
+              const div = document.createElement("div");
               div.innerHTML =
                 "💡Embed <img src='/assets/svgs/youtube.svg' style='width:16px'/> or <img src='/assets/svgs/codepen.svg' style='width:16px'/> by pasting the link in the editor.";
-              div.classList.add('!text-[12px]');
-              div.classList.add('flex');
-              div.classList.add('flex-wrap');
-              div.classList.add('gap-x-1');
-              div.classList.add('mt-2');
+              div.classList.add("!text-[12px]");
+              div.classList.add("flex");
+              div.classList.add("flex-wrap");
+              div.classList.add("gap-x-1");
+              div.classList.add("mt-2");
 
               // Append the <p> tag to the target element
               popoverItems.appendChild(div);
@@ -349,64 +385,18 @@ const ProjectEditor = ({ projectDetails, userDetails }) => {
       });
 
       return async () => {
-        if (editor && typeof editor.destroy === 'function') {
+        if (editor && typeof editor.destroy === "function") {
           // refetchProjectDetail();
           editor.destroy();
         }
       };
     }
-  }, [isClient, projectDetails]);
-
-  let checkWordCount = async edit => {
-    const outputData = await edit.save();
-    let totalText = '';
-    // Loop through all blocks and concatenate their text content
-    outputData.blocks.forEach((block, index) => {
-      if (block.data.text) {
-        const tempElement = document.createElement('div');
-        tempElement.textContent =
-          index >= 1 ? ' ' + block.data.text : block.data.text;
-        const textWithoutTags = tempElement.innerText;
-        totalText += textWithoutTags;
-      }
-
-      if (block.type === 'table') {
-        let wordCount = 0;
-        totalText += ' ';
-        block.data.content.forEach(row => {
-          row.forEach(cell => {
-            if (cell !== '') totalText += cell + ' ';
-          });
-        });
-      }
-
-      if (block.type === 'list') {
-        let wordCount = 0;
-        block.data.items.forEach(item => {
-          if (item.content != '') {
-            wordCount += item.content;
-            totalText += ' ' + wordCount;
-          }
-        });
-      }
-
-      if (block.type === 'image') {
-        // Calculate word count based on image caption
-        const imageCaption = block.data.caption;
-        totalText += ' ' + imageCaption;
-      }
-    });
-    setProjectValue(totalText.replace('&nbsp;', '').trim());
-    setWordCount(totalText.replace('&nbsp;', '').trim().split(' ').length);
-  };
+  }, [isClient, projectDetails, checkWordCount, phEvent, projectId, userDetails]);
 
   return (
     <>
       <div className="project-editor bg-card rounded-[26px] p-[16px] md:p-[32px]">
-        <div
-          ref={editorContainer}
-          className={'block w-[100%] mx-0 my-auto'}
-        ></div>
+        <div ref={editorContainer} className={"mx-0 my-auto block w-[100%]"}></div>
       </div>
     </>
   );

@@ -14,9 +14,9 @@ export default function AddUsername() {
     });
   };
   return (
-    <div className=" rounded-2xl bg-white custom-width lg:min-w-[500px]">
-      <div className=" p-5">
-        <p className="text-[18px] md:text-[25px] text-[#202937] font-[500]">
+    <div className="custom-width rounded-2xl bg-white lg:min-w-[500px]">
+      <div className="p-5">
+        <p className="text-[18px] font-[500] text-[#202937] md:text-[25px]">
           Claim your unique website
         </p>
         <Text size="p-xxsmall" className="mt-2">
@@ -24,10 +24,7 @@ export default function AddUsername() {
         </Text>
       </div>
       <div className="pb-10">
-        <ClaimDomain
-          className="xl:!w-[100%] !p-5"
-          onClaimWebsite={onClaimWebsite}
-        />
+        <ClaimDomain className="!p-5 xl:!w-[100%]" onClaimWebsite={onClaimWebsite} />
       </div>
     </div>
   );

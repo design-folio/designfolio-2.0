@@ -7,13 +7,13 @@ export default function Index({ dfToken }) {
   const { setCursor, userDetails } = useGlobalContext();
   useEffect(() => {
     setCursor(0);
-    document.documentElement.classList.add('landing-page');
+    document.documentElement.classList.add("landing-page");
     return () => {
       setCursor(userDetails?.cursor ? userDetails?.cursor : 0);
     };
-  }, [userDetails]);
+  }, [userDetails, setCursor]);
   return (
-    <div className="min-h-screen bg-background-landing overflow-x-hidden">
+    <div className="bg-background-landing min-h-screen overflow-x-hidden">
       <Seo
         title={"Designfolio - Build your Design Portfolio Website super Fast"}
         description={
@@ -25,9 +25,6 @@ export default function Index({ dfToken }) {
         url={`https://designfolio.me`}
       />
       <main className="pt-16 sm:pt-20">
-
-
-
         <Home dfToken={dfToken} />
       </main>
     </div>

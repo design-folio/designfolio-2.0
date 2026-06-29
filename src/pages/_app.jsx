@@ -1,3 +1,4 @@
+import "@/styles/tw-animate.css";
 import "@/styles/globals.scss";
 import "@/styles/tiptap.css";
 import "@/styles/theme.css";
@@ -35,7 +36,8 @@ import { UpgradePill } from "@/components/loggedInHeader/navbar/UpgradePill";
 import { CursorTooltipProvider } from "@/context/cursorTooltipContext";
 import { CursorPill } from "@/components/CursorPill";
 import { TEMPLATE_IDS } from "@/lib/templates";
-import posthog from "@/lib/postHog";
+import posthog, { initPostHog } from "@/lib/postHog";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { PostHogProvider } from "@posthog/react";
 import { usePostHogEvent } from "@/hooks/usePostHogEvent";
 import { POSTHOG_EVENT_NAMES } from "@/lib/posthogEventNames";
@@ -77,21 +79,24 @@ const cedarvilleCursive = Cedarville_Cursive({
   subsets: ["latin"],
   variable: "--font-cedarville",
   weight: ["400"],
+  preload: false, // only used in Mono template project footer
 });
 
 const pixelifySans = Pixelify_Sans({
   subsets: ["latin"],
-  variable: "--font-pixelify-sans",
+  variable: "--font-pixelify",
   weight: ["400", "500", "600", "700"],
+  preload: false, // only used in Professional template
 });
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
-  variable: "--font-jetbrains-mono",
+  variable: "--font-jetbrains",
   weight: ["400", "500", "600", "700"],
 });
 
 const satoshi = localFont({
+  display: "swap",
   src: [
     {
       path: "./fonts/satoshi/Satoshi-Regular.ttf",
@@ -123,6 +128,7 @@ const satoshi = localFont({
 });
 
 const sfpro = localFont({
+  display: "swap",
   src: [
     {
       path: "./fonts/sf-pro/SF-Pro-Text-Regular.otf",
@@ -148,6 +154,7 @@ const sfpro = localFont({
   variable: "--font-sfpro",
 });
 const gsans = localFont({
+  display: "swap",
   src: [
     {
       path: "./fonts/general-sans/GeneralSans-Light.otf",
@@ -179,6 +186,7 @@ const gsans = localFont({
 });
 
 const eudoxus = localFont({
+  display: "swap",
   src: [
     {
       path: "./fonts/exodus/EudoxusSans-Bold.ttf",
@@ -202,8 +210,7 @@ function ShellClassManager({ isSidebarRoute }) {
   const router = useRouter();
 
   useEffect(() => {
-    const isRetroOsBuilder =
-      router.pathname === "/builder" && template === TEMPLATE_IDS.RETRO_OS;
+    const isRetroOsBuilder = router.pathname === "/builder" && template === TEMPLATE_IDS.RETRO_OS;
     document.documentElement.classList.toggle(
       "sidebar-layout",
       isSidebarRoute && !isRetroOsBuilder
@@ -217,8 +224,7 @@ function ShellClassManager({ isSidebarRoute }) {
 function ConditionalHeader({ dfToken, hideHeader, isSidebarRoute }) {
   const { template } = useGlobalContext();
   const router = useRouter();
-  const isRetroOsBuilder =
-    router.pathname === "/builder" && template === TEMPLATE_IDS.RETRO_OS;
+  const isRetroOsBuilder = router.pathname === "/builder" && template === TEMPLATE_IDS.RETRO_OS;
   const hideOnDesktop = isSidebarRoute && !isRetroOsBuilder;
   return (
     <div className={hideOnDesktop ? "md:hidden" : ""}>
@@ -274,7 +280,6 @@ function MyApp({ Component, pageProps, dfToken, hideHeader }) {
     }
   }, [router.pathname]);
 
-
   useEffect(() => {
     const sessionCount = Number(localStorage.getItem("session_count") || "0");
     const newSessionCount = sessionCount + 1;
@@ -292,25 +297,20 @@ function MyApp({ Component, pageProps, dfToken, hideHeader }) {
     //   });
     // }
     localStorage.setItem("session_count", newSessionCount);
+  }, [dfToken, phEvent]);
+
+  useEffect(() => {
+    const run = () => initPostHog();
+    if (typeof window !== "undefined" && "requestIdleCallback" in window) {
+      requestIdleCallback(run);
+    } else {
+      setTimeout(run, 0);
+    }
   }, []);
 
   return (
     <>
-      <Head>
-        {/* Google Analytics Script */}
-        <script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=G-QBX45FVX2Z"
-        ></script>
-        <script>
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-QBX45FVX2Z');
-          `}
-        </script>
-      </Head>
+      <GoogleAnalytics gaId="G-QBX45FVX2Z" strategy="lazyOnload" />
 
       <PostHogProvider client={posthog}>
         <QueryClientProvider client={queryClient}>
@@ -320,7 +320,7 @@ function MyApp({ Component, pageProps, dfToken, hideHeader }) {
               attribute="data-theme"
               defaultTheme="light"
               themes={["light", "dark"]}
-              forcedTheme={Component.theme || null}
+              forcedTheme={Component.theme || (router.query?.view === "ai-tools" ? "light" : null)}
             >
               <style jsx global>{`
                 :root {

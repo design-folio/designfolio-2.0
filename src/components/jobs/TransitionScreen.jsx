@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { ArrowRight } from "lucide-react";
 
 // Orbiting company logos
@@ -42,7 +42,7 @@ function OrbitRing({ visible }) {
     <AnimatePresence>
       {visible && (
         <motion.div
-          className="absolute top-1/2 left-1/2 pointer-events-none"
+          className="pointer-events-none absolute top-1/2 left-1/2"
           style={{ transform: "translate(-50%, -50%)", width: stageSize, height: stageSize }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -77,7 +77,12 @@ function OrbitRing({ visible }) {
                     height: imageSize,
                   }}
                   initial={{ opacity: 0, y: 8, filter: "blur(8px)", rotate: -angle }}
-                  animate={{ opacity: 1, y: 0, filter: "blur(0px)", rotate: [-angle, -angle - 360] }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                    filter: "blur(0px)",
+                    rotate: [-angle, -angle - 360],
+                  }}
                   transition={{
                     opacity: { delay: 0.7 + i * 0.07, duration: 0.55, ease: [0.22, 1, 0.36, 1] },
                     y: { delay: 0.7 + i * 0.07, duration: 0.55, ease: [0.22, 1, 0.36, 1] },
@@ -93,7 +98,6 @@ function OrbitRing({ visible }) {
               </motion.div>
             );
           })}
-
         </motion.div>
       )}
     </AnimatePresence>
@@ -144,7 +148,7 @@ function AnimatedJobCount({ onDone }) {
       if (shimmerTimeoutRef.current) clearTimeout(shimmerTimeoutRef.current);
       if (shimmerResetRef.current) clearTimeout(shimmerResetRef.current);
     };
-  }, []);
+  }, [onDone]);
 
   const display = count >= 1200 ? "1,200+" : count.toLocaleString();
 
@@ -153,18 +157,18 @@ function AnimatedJobCount({ onDone }) {
       style={
         showGradient
           ? {
-            display: "inline-block",
-            whiteSpace: "nowrap",
-            fontVariantNumeric: "tabular-nums",
-            paddingRight: "0.08em",
-            color: "transparent",
-            WebkitBackgroundClip: "text",
-            backgroundClip: "text",
-            backgroundImage:
-              "linear-gradient(to right, var(--foreground) 0%, var(--foreground) 38%, #5D3560 52%, #E54D2E 62%, #F5A623 72%, var(--foreground) 86%, var(--foreground) 100%)",
-            backgroundSize: "300% 100%",
-            animation: "shimmer-text 3s ease-in-out forwards",
-          }
+              display: "inline-block",
+              whiteSpace: "nowrap",
+              fontVariantNumeric: "tabular-nums",
+              paddingRight: "0.08em",
+              color: "transparent",
+              WebkitBackgroundClip: "text",
+              backgroundClip: "text",
+              backgroundImage:
+                "linear-gradient(to right, var(--foreground) 0%, var(--foreground) 38%, #5D3560 52%, #E54D2E 62%, #F5A623 72%, var(--foreground) 86%, var(--foreground) 100%)",
+              backgroundSize: "300% 100%",
+              animation: "shimmer-text 3s ease-in-out forwards",
+            }
           : { display: "inline-block", whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums" }
       }
     >
@@ -178,32 +182,32 @@ export function TransitionScreen({ onType }) {
 
   return (
     <motion.div
-      className="flex-1 flex flex-col items-center justify-center px-6"
+      className="flex flex-1 flex-col items-center justify-center px-6"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.6 }}
     >
       {/* Background glow */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full bg-[#FF553E]/5 dark:bg-[#FF553E]/15 blur-[120px]" />
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute top-1/2 left-1/2 h-[400px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#FF553E]/5 blur-[120px] dark:bg-[#FF553E]/15" />
       </div>
 
       <OrbitRing visible={orbitVisible} />
 
       <motion.div
-        className="relative z-10 max-w-md text-center space-y-6"
+        className="relative z-10 max-w-md space-y-6 text-center"
         initial={{ y: 24, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.2, duration: 0.7, ease: "easeOut" }}
       >
         <div className="space-y-3">
-          <h1 className="text-[28px] font-semibold leading-tight tracking-tight text-foreground">
+          <h1 className="text-foreground text-[28px] leading-tight font-semibold tracking-tight">
             We found <AnimatedJobCount onDone={() => setOrbitVisible(true)} />
             <br />
             jobs that match your profile.
           </h1>
-          <p className="text-[16px] text-muted-foreground leading-relaxed font-light">
+          <p className="text-muted-foreground text-[16px] leading-relaxed font-light">
             Answer 2 quick questions and let AI rank the best matches based on your portfolio.
           </p>
         </div>
@@ -217,10 +221,10 @@ export function TransitionScreen({ onType }) {
           <button
             data-testid="button-lets-do-it"
             onClick={onType}
-            className="cursor-pointer flex items-center gap-2 bg-foreground text-background font-medium text-[14px] px-7 py-3 rounded-full hover:bg-foreground/90 transition-all active:scale-[0.97]"
+            className="bg-foreground text-background hover:bg-foreground/90 flex cursor-pointer items-center gap-2 rounded-full px-7 py-3 text-[14px] font-medium transition-all active:scale-[0.97]"
           >
             Narrow It Down
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="h-4 w-4" />
           </button>
         </motion.div>
       </motion.div>

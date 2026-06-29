@@ -1,12 +1,18 @@
 import * as React from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 
-export function SegmentedControl({ options, value, onChange, className, layoutId = "segmented-control-active" }) {
+export function SegmentedControl({
+  options,
+  value,
+  onChange,
+  className,
+  layoutId = "segmented-control-active",
+}) {
   return (
     <div
       className={cn(
-        "inline-flex p-1 bg-muted/30 backdrop-blur-sm rounded-full border border-border/50",
+        "bg-muted/30 border-border/50 inline-flex rounded-full border p-1 backdrop-blur-sm",
         className
       )}
     >
@@ -17,7 +23,7 @@ export function SegmentedControl({ options, value, onChange, className, layoutId
             key={option}
             onClick={() => onChange(option)}
             className={cn(
-              "relative px-6 py-2 text-sm font-medium transition-colors duration-200 rounded-full outline-none",
+              "relative rounded-full px-6 py-2 text-sm font-medium transition-colors duration-200 outline-none",
               isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground/80"
             )}
             type="button"
@@ -25,11 +31,11 @@ export function SegmentedControl({ options, value, onChange, className, layoutId
             {isActive && (
               <motion.div
                 layoutId={layoutId}
-                className="absolute inset-0 bg-white dark:bg-project-card-bg-color rounded-full shadow-sm border border-border/50"
+                className="dark:bg-project-card-bg-color border-border/50 absolute inset-0 rounded-full border bg-white shadow-sm"
                 transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
               />
             )}
-            <span className="relative cursor-pointer z-10">{option}</span>
+            <span className="relative z-10 cursor-pointer">{option}</span>
           </button>
         );
       })}

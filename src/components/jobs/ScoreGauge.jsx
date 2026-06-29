@@ -1,16 +1,16 @@
 import { useState, useEffect, useId } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 // SVG geometry — 270° arc, 90° gap at the bottom
-const SG_A0    = 225; // start deg (bottom-left)
-const SG_A1    = 135; // end deg   (bottom-right)
+const SG_A0 = 225; // start deg (bottom-left)
+const SG_A1 = 135; // end deg   (bottom-right)
 const SG_SWEEP = 270;
-const SG_CX    = 18;
-const SG_CY    = 16;
-const SG_R     = 12;
-const SG_SW    = 3;
-const SG_VBW   = SG_CX * 2;
-const SG_VBH   = SG_CY + SG_R * 0.52 + 7;
+const SG_CX = 18;
+const SG_CY = 16;
+const SG_R = 12;
+const SG_SW = 3;
+const SG_VBW = SG_CX * 2;
+const SG_VBH = SG_CY + SG_R * 0.52 + 7;
 
 function sgPt(deg) {
   const rad = (deg * Math.PI) / 180;
@@ -20,7 +20,7 @@ function sgPt(deg) {
 function sgArc(a1, a2) {
   const s = sgPt(a1);
   const e = sgPt(a2);
-  const sw = ((a2 - a1) + 360) % 360;
+  const sw = (a2 - a1 + 360) % 360;
   if (sw < 0.1) return "";
   return `M ${s.x.toFixed(2)} ${s.y.toFixed(2)} A ${SG_R} ${SG_R} 0 ${sw > 180 ? 1 : 0} 1 ${e.x.toFixed(2)} ${e.y.toFixed(2)}`;
 }
@@ -47,12 +47,12 @@ export function ScoreGauge({ value, isDark, scale = 1.55 }) {
   const pct = Math.max(0, Math.min(100, value)) / 100;
   const c = sgPalette(value, isDark);
   const filledSweep = SG_SWEEP * pct;
-  const filledEnd   = (SG_A0 + filledSweep) % 360;
-  const track  = sgArc(SG_A0, SG_A1);
+  const filledEnd = (SG_A0 + filledSweep) % 360;
+  const track = sgArc(SG_A0, SG_A1);
   const filled = filledSweep > 0.5 ? sgArc(SG_A0, filledEnd) : "";
-  const arcLen  = (filledSweep * Math.PI / 180) * SG_R;
+  const arcLen = ((filledSweep * Math.PI) / 180) * SG_R;
   const trackSurface = isDark ? "hsl(20,8%,20%)" : "rgba(210,205,198,0.90)";
-  const scoreColor   = isDark ? "rgba(240,237,232,0.88)" : "#1A1A1A";
+  const scoreColor = isDark ? "rgba(240,237,232,0.88)" : "#1A1A1A";
 
   const [displayNum, setDisplayNum] = useState(0);
   useEffect(() => {
@@ -81,15 +81,27 @@ export function ScoreGauge({ value, isDark, scale = 1.55 }) {
         style={{ display: "block", overflow: "visible" }}
       >
         <defs>
-          <linearGradient id={`sg-fg-${uid}`} gradientUnits="userSpaceOnUse"
-            x1={SG_CX} y1={SG_CY - SG_R} x2={SG_CX} y2={SG_CY + SG_R * 0.5}>
-            <stop offset="0%"   stopColor={c.bright} />
-            <stop offset="100%" stopColor={c.mid}    />
+          <linearGradient
+            id={`sg-fg-${uid}`}
+            gradientUnits="userSpaceOnUse"
+            x1={SG_CX}
+            y1={SG_CY - SG_R}
+            x2={SG_CX}
+            y2={SG_CY + SG_R * 0.5}
+          >
+            <stop offset="0%" stopColor={c.bright} />
+            <stop offset="100%" stopColor={c.mid} />
           </linearGradient>
         </defs>
 
         {/* Track */}
-        <path d={track} fill="none" stroke={trackSurface} strokeWidth={SG_SW} strokeLinecap="round" />
+        <path
+          d={track}
+          fill="none"
+          stroke={trackSurface}
+          strokeWidth={SG_SW}
+          strokeLinecap="round"
+        />
 
         {/* Filled arc */}
         {filled && (

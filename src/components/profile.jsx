@@ -1,8 +1,6 @@
-/* eslint-disable @next/next/no-img-element */
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { motion, useAnimation } from "framer-motion";
+import React, { useEffect, useMemo, useRef, useState, startTransition } from "react";
+import { motion, useAnimation } from "motion/react";
 import { Button } from "@/components/ui/buttonNew";
-import DfImage from "./image";
 import Link from "next/link";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { capitalizeWords } from "@/lib/capitalizeText";
@@ -30,7 +28,7 @@ export default function Profile({
 
   // Ensure avatar never stays invisible (cached images may not fire onLoad)
   useEffect(() => {
-    setImageLoaded(false);
+    startTransition(() => setImageLoaded(false));
   }, [avatarSrc]);
 
   useEffect(() => {
@@ -42,17 +40,13 @@ export default function Profile({
   }, [avatarSrc]);
 
   const skills = useMemo(
-    () =>
-      userDetails?.skills?.length
-        ? userDetails.skills.map((skill) => skill.label)
-        : [],
-    [userDetails?.skills]
+    () => (userDetails?.skills?.length ? userDetails.skills.map((skill) => skill.label) : []),
+    [userDetails]
   );
 
   useEffect(() => {
     const skillElementWidthIncludingMargin = 100;
-    const totalWidth =
-      (userDetails?.skills?.length || 0) * skillElementWidthIncludingMargin * 3;
+    const totalWidth = (userDetails?.skills?.length || 0) * skillElementWidthIncludingMargin * 3;
     controls.start({
       x: [0, -totalWidth],
       transition: {
@@ -75,17 +69,14 @@ export default function Profile({
       >
         <div
           className={cn(
-            "bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-2xl overflow-hidden items-center relative backdrop-blur-sm border-0"
+            "bg-df-section-card-bg-color shadow-df-section-card-shadow relative items-center overflow-hidden rounded-2xl border-0 backdrop-blur-sm"
           )}
         >
           {/* Preview Mode: show Exit preview only when not embedded (e.g. ResultPopup) */}
           {preview && !embeddedPreview && (
             <div className="p-4">
               <Link href={"/builder"}>
-                <Button
-                  variant="secondary"
-                  className="rounded-full px-4 h-9 text-sm font-medium"
-                >
+                <Button variant="secondary" className="h-9 rounded-full px-4 text-sm font-medium">
                   <MemoLeftArrow className="!size-2.5" />
                   Exit preview
                 </Button>
@@ -102,14 +93,14 @@ export default function Profile({
                 className="h-11 w-11 rounded-full"
                 onClick={() => openModal("onboarding")}
               >
-                <PencilIcon className="w-4 h-4" />
+                <PencilIcon className="h-4 w-4" />
               </Button>
             </div>
           )}
 
           {/* Profile Info */}
-          <div className="p-6 sm:p-8 pb-6">
-            <div className="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
+          <div className="p-6 pb-6 sm:p-8">
+            <div className="flex flex-col items-center gap-6 text-center sm:flex-row sm:text-left">
               {/* Avatar Container */}
               <Tooltip delayDuration={300}>
                 <Magnetic intensity={0.2} range={100}>
@@ -125,7 +116,8 @@ export default function Profile({
                       }}
                       whileHover={{
                         scale: 1.05,
-                        boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03)"
+                        boxShadow:
+                          "0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03)",
                       }}
                       onMouseMove={(e) => {
                         const rect = e.currentTarget.getBoundingClientRect();
@@ -142,13 +134,15 @@ export default function Profile({
                         type: "spring",
                         stiffness: 150,
                         damping: 20,
-                        mass: 0.5
+                        mass: 0.5,
                       }}
-
-                      className={cn("w-24 h-24 sm:w-32 sm:h-32 rounded-2xl flex items-center justify-center relative overflow-hidden shrink-0", !userDetails?.avatar ? "bf-[#F5F3F1] dark:bg-df-bg-color" : "")}
+                      className={cn(
+                        "relative flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl sm:h-32 sm:w-32",
+                        !userDetails?.avatar ? "bf-[#F5F3F1] dark:bg-df-bg-color" : ""
+                      )}
                       style={{
                         perspective: "1000px",
-                        transformStyle: "preserve-3d"
+                        transformStyle: "preserve-3d",
                       }}
                       data-testid="avatar-profile"
                     >
@@ -156,8 +150,9 @@ export default function Profile({
                         <div
                           className="absolute inset-0 rounded-2xl"
                           style={{
-                            background: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%)',
-                            animation: 'shimmer 1.5s infinite'
+                            background:
+                              "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%)",
+                            animation: "shimmer 1.5s infinite",
                           }}
                         />
                       )}
@@ -165,10 +160,10 @@ export default function Profile({
                         ref={avatarImgRef}
                         src={avatarSrc}
                         alt={userDetails?.firstName || "Avatar"}
-                        className="w-full h-full object-cover"
+                        className="h-full w-full object-cover"
                         onLoad={() => setImageLoaded(true)}
                         onError={() => setImageLoaded(true)}
-                        style={{ opacity: imageLoaded ? 1 : 0, transition: 'opacity 0.3s' }}
+                        style={{ opacity: imageLoaded ? 1 : 0, transition: "opacity 0.3s" }}
                       />
                     </motion.div>
                   </TooltipTrigger>
@@ -177,10 +172,14 @@ export default function Profile({
                   side="top"
                   sideOffset={8}
                   avoidCollisions={true}
-                  className="bg-tooltip-bg-color text-tooltip-text-color border-0 px-4 py-2 rounded-xl flex items-center gap-2 shadow-xl"
+                  className="bg-tooltip-bg-color text-tooltip-text-color flex items-center gap-2 rounded-xl border-0 px-4 py-2 shadow-xl"
                 >
                   <span className="text-sm font-medium">Happy to have you here</span>
-                  <img src="/assets/png/handshake.png" alt="Handshake" className="w-5 h-5 object-contain" />
+                  <img
+                    src="/assets/png/handshake.png"
+                    alt="Handshake"
+                    className="h-5 w-5 object-contain"
+                  />
                 </TooltipContent>
               </Tooltip>
 
@@ -190,16 +189,17 @@ export default function Profile({
                   initial={{ opacity: 0, filter: "blur(10px)", y: 10 }}
                   animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
                   transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1], delay: 0.2 }}
-                  className="text-2xl sm:text-3xl font-semibold mb-2 font-gsans text-df-heading-color break-words"
+                  className="font-gsans text-df-heading-color mb-2 text-2xl font-semibold break-words sm:text-3xl"
                   data-testid="text-user-name"
                 >
-                  {userDetails?.introduction || `Hey, I'm ${capitalizeWords(userDetails?.firstName) || ""}`}
+                  {userDetails?.introduction ||
+                    `Hey, I'm ${capitalizeWords(userDetails?.firstName) || ""}`}
                 </motion.h1>
                 <motion.p
                   initial={{ opacity: 0, filter: "blur(10px)", y: 10 }}
                   animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
                   transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1], delay: 0.3 }}
-                  className="text-sm sm:text-base text-df-description-color break-words leading-relaxed max-w-2xl"
+                  className="text-df-description-color max-w-2xl text-sm leading-relaxed break-words sm:text-base"
                   data-testid="text-user-role"
                 >
                   {userDetails?.bio || "Write your intro here..."}
@@ -208,13 +208,9 @@ export default function Profile({
             </div>
           </div>
 
-
-
           {/* Skills banner strip */}
           {skills?.length > 0 && (
-            <div
-              className="relative overflow-hidden border-t border-border/10 py-3 bg-df-profile-strip-bg-color rounded-b-2xl"
-            >
+            <div className="border-border/10 bg-df-profile-strip-bg-color relative overflow-hidden rounded-b-2xl border-t py-3">
               <motion.div
                 ref={skillsRef}
                 animate={controls}
@@ -235,14 +231,11 @@ export default function Profile({
                   ...skills,
                   ...skills,
                 ].map((skill, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center gap-3 shrink-0 mr-3"
-                  >
-                    <span className="text-xs font-medium tracking-normal text-df-ink-color whitespace-nowrap uppercase">
+                  <div key={index} className="mr-3 flex shrink-0 items-center gap-3">
+                    <span className="text-df-ink-color text-xs font-medium tracking-normal whitespace-nowrap uppercase">
                       {skill}
                     </span>
-                    <Sparkle className="w-2.5 h-2.5 text-df-ink-color fill-df-ink-color" />
+                    <Sparkle className="text-df-ink-color fill-df-ink-color h-2.5 w-2.5" />
                   </div>
                 ))}
               </motion.div>

@@ -6,10 +6,8 @@ export function FloatingPageContainer({ isSidebarRoute, children }) {
   const router = useRouter();
   const { template } = useGlobalContext();
 
-  const isRetroOsBuilder =
-    router.pathname === "/builder" && template === TEMPLATE_IDS.RETRO_OS;
-  const isJobsRoute =
-    router.pathname === "/jobs" || router.pathname.startsWith("/jobs/");
+  const isRetroOsBuilder = router.pathname === "/builder" && template === TEMPLATE_IDS.RETRO_OS;
+  const isJobsRoute = router.pathname === "/jobs" || router.pathname.startsWith("/jobs/");
   const shouldFloat = isSidebarRoute && !isRetroOsBuilder;
 
   if (!shouldFloat) {
@@ -18,7 +16,7 @@ export function FloatingPageContainer({ isSidebarRoute, children }) {
 
   if (isJobsRoute) {
     return (
-      <div className="fixed inset-0 md:top-2 md:bottom-2 md:left-[72px] md:right-2 flex flex-col bg-[#F0EDE7] dark:bg-background pt-[72px] md:pt-0 md:rounded-[32px] md:border md:border-black/[0.07] md:dark:border-white/[0.07] md:overflow-hidden">
+      <div className="dark:bg-background fixed inset-0 flex flex-col bg-[#F0EDE7] pt-[72px] md:top-2 md:right-2 md:bottom-2 md:left-[72px] md:overflow-hidden md:rounded-[32px] md:border md:border-black/[0.07] md:pt-0 md:dark:border-white/[0.07]">
         {children}
       </div>
     );
@@ -32,7 +30,7 @@ export function FloatingPageContainer({ isSidebarRoute, children }) {
   // viewport-relative and escape the clip naturally.
   // On mobile the md: classes don't apply — children render in normal flow.
   return (
-    <div className="md:fixed md:top-2 md:bottom-2 md:left-[72px] md:right-2 md:bg-background md:overflow-y-auto md:rounded-[32px] md:border md:border-black/[0.07] md:dark:border-white/[0.07] custom-thin-scrollbar">
+    <div className="md:bg-background custom-thin-scrollbar md:fixed md:top-2 md:right-2 md:bottom-2 md:left-[72px] md:overflow-y-auto md:rounded-[32px] md:border md:border-black/[0.07] md:dark:border-white/[0.07]">
       {children}
     </div>
   );

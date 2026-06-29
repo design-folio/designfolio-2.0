@@ -134,7 +134,7 @@ const TextRotate = forwardRef(
         <AnimatePresence mode={animatePresenceMode} initial={animatePresenceInitial}>
           <motion.div
             key={currentTextIndex}
-            className={cn("flex flex-wrap", splitBy === "lines" && "flex-col w-full")}
+            className={cn("flex flex-wrap", splitBy === "lines" && "w-full flex-col")}
             layout
             aria-hidden="true"
           >

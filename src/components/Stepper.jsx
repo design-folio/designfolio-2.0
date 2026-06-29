@@ -9,13 +9,13 @@ export default function Stepper({ current }) {
   ];
   return (
     <div className="mb-3 md:mb-8">
-      <div className="flex gap-1 mb-3" data-testid="progress-bar">
+      <div className="mb-3 flex gap-1" data-testid="progress-bar">
         {[1, 2, 3, 4].map((step) => {
           const isActive = step <= current;
           return (
             <div
               key={step}
-              className="flex-1 h-2 rounded-full overflow-hidden"
+              className="h-2 flex-1 overflow-hidden rounded-full"
               style={{ backgroundColor: "#E5E5E5" }}
               data-testid={`stepper-${step}`}
             >
@@ -31,14 +31,14 @@ export default function Stepper({ current }) {
         })}
       </div>
       <div className="flex items-center gap-1.5" data-testid="text-step-indicator">
-        <span className="text-sm font-semibold text-foreground">
+        <span className="text-foreground text-sm font-semibold">
           {Math.round((current / 4) * 100)}% of magic completed
         </span>
         <motion.img
           key={current}
           src="/assets/png/heartonfire.png"
           alt="heart on fire"
-          className="w-6 h-6"
+          className="h-6 w-6"
           initial={{ scale: 0 }}
           animate={{ scale: [0, 1.3, 1] }}
           transition={{ duration: 0.5, times: [0, 0.6, 1], ease: [0.34, 1.56, 0.64, 1] }}

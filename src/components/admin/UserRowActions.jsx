@@ -120,7 +120,7 @@ export default function UserRowActions({ user }) {
             <DialogTitle>Grant Plan</DialogTitle>
           </DialogHeader>
           <div className="flex flex-col gap-3 py-1">
-            <p className="text-sm text-muted-foreground break-all">{user.email}</p>
+            <p className="text-muted-foreground text-sm break-all">{user.email}</p>
             <Select value={planType} onValueChange={setPlanType}>
               <SelectTrigger>
                 <SelectValue />

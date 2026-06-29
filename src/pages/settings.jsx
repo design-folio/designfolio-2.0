@@ -101,14 +101,14 @@ export default function Settings() {
 
   return (
     <SidebarProvider {...sidebarProviderProps}>
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
         <main className="min-h-screen">
           <div className={containerClass}>
             {isMono && <div className="custom-dashed-t" />}
             <div className={cardClass}>
               <Link href="/builder">
-                <Button variant="secondary" className="rounded-full px-4 h-9 text-sm font-medium">
+                <Button variant="secondary" className="h-9 rounded-full px-4 text-sm font-medium">
                   <MemoLeftArrow className="!size-2.5" />
                   Go Back
                 </Button>

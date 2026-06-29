@@ -166,29 +166,29 @@ export default function CreateAiProject({ openModal }) {
 
   return (
     <motion.div
-      className="bg-card h-[95%] w-[95%] m-auto md:w-[560px] md:fixed md:top-[2.5%] md:right-4 flex flex-col rounded-2xl border border-border shadow-xl overflow-hidden"
+      className="bg-card border-border m-auto flex h-[95%] w-[95%] flex-col overflow-hidden rounded-2xl border shadow-xl md:fixed md:top-[2.5%] md:right-4 md:w-[560px]"
       initial={{ x: "100%" }}
       animate={{ x: "0%" }}
       transition={{ duration: 0.35, ease: "easeInOut" }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-border shrink-0">
+      <div className="border-border flex shrink-0 items-center justify-between border-b px-6 py-4">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-black/[0.05] dark:bg-white/[0.05] flex items-center justify-center">
-            <Sparkles className="w-4 h-4 text-foreground" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-black/[0.05] dark:bg-white/[0.05]">
+            <Sparkles className="text-foreground h-4 w-4" />
           </div>
-          <span className="text-[15px] font-semibold text-foreground">Write using AI</span>
+          <span className="text-foreground text-[15px] font-semibold">Write using AI</span>
         </div>
-        <div className="flex items-center gap-1.5 h-8 px-3 rounded-full bg-black/[0.04] dark:bg-white/[0.04] border border-border">
-          <Coins className="w-3.5 h-3.5 text-foreground/50" />
-          <span className="text-[13px] font-medium text-foreground/70">
+        <div className="border-border flex h-8 items-center gap-1.5 rounded-full border bg-black/[0.04] px-3 dark:bg-white/[0.04]">
+          <Coins className="text-foreground/50 h-3.5 w-3.5" />
+          <span className="text-foreground/70 text-[13px] font-medium">
             {creditsLeft === Infinity ? "∞" : creditsLeft} credit{creditsLeft !== 1 ? "s" : ""} left
           </span>
         </div>
       </div>
 
       {/* Step progress */}
-      <div className="flex gap-1.5 px-6 pt-4 shrink-0">
+      <div className="flex shrink-0 gap-1.5 px-6 pt-4">
         {[1, 2, 3, 4].map((s) => (
           <div
             key={s}
@@ -238,7 +238,7 @@ export default function CreateAiProject({ openModal }) {
               {/* Step 1 — Project type */}
               {step === 1 && (
                 <div className="space-y-4">
-                  <p className="text-[14px] font-medium text-foreground">
+                  <p className="text-foreground text-[14px] font-medium">
                     I want to create a project or write a case study on:
                   </p>
                   <RadioGroup
@@ -251,10 +251,10 @@ export default function CreateAiProject({ openModal }) {
                         key={res.name}
                         htmlFor={`type-${res.name}`}
                         className={cn(
-                          "flex items-center gap-3 px-4 py-3.5 rounded-xl border cursor-pointer transition-all",
+                          "flex cursor-pointer items-center gap-3 rounded-xl border px-4 py-3.5 transition-all",
                           values.projectType === res.name
                             ? "border-foreground/30 bg-black/[0.04] dark:bg-white/[0.04]"
-                            : "border-border bg-black/[0.02] dark:bg-white/[0.02] hover:bg-black/[0.04] dark:hover:bg-white/[0.04]"
+                            : "border-border bg-black/[0.02] hover:bg-black/[0.04] dark:bg-white/[0.02] dark:hover:bg-white/[0.04]"
                         )}
                       >
                         <RadioGroupItem
@@ -262,7 +262,7 @@ export default function CreateAiProject({ openModal }) {
                           value={res.name}
                           className="shrink-0"
                         />
-                        <span className="text-[14px] font-medium text-foreground">{res.name}</span>
+                        <span className="text-foreground text-[14px] font-medium">{res.name}</span>
                       </label>
                     ))}
                   </RadioGroup>
@@ -282,7 +282,7 @@ export default function CreateAiProject({ openModal }) {
                     const q = questions[qIndex];
                     return (
                       <div key={qIndex} className="space-y-1.5">
-                        <Label className="text-[13px] font-medium text-foreground ml-1">
+                        <Label className="text-foreground ml-1 text-[13px] font-medium">
                           {q.question}
                         </Label>
                         <Textarea
@@ -301,7 +301,7 @@ export default function CreateAiProject({ openModal }) {
                         />
                         <ErrorMessage name={answerKey} component="p" className="error-message" />
                         {q.template && (
-                          <p className="text-[12px] text-muted-foreground ml-1 mt-1">
+                          <p className="text-muted-foreground mt-1 ml-1 text-[12px]">
                             ✏️ <span className="font-medium">Template:</span> {q.template}
                           </p>
                         )}
@@ -316,7 +316,7 @@ export default function CreateAiProject({ openModal }) {
       </div>
 
       {/* Footer */}
-      <div className="flex items-center justify-between gap-2 px-6 py-4 border-t border-border shrink-0 bg-card">
+      <div className="border-border bg-card flex shrink-0 items-center justify-between gap-2 border-t px-6 py-4">
         <Button
           variant="outline"
           type="button"
@@ -343,7 +343,7 @@ export default function CreateAiProject({ openModal }) {
                   "Generating…"
                 ) : (
                   <>
-                    <Sparkles className="w-4 h-4 mr-1.5" />
+                    <Sparkles className="mr-1.5 h-4 w-4" />
                     Generate Now
                   </>
                 )}

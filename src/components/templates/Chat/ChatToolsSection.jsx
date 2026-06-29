@@ -27,7 +27,7 @@ export default function ChatToolsSection({
             initial={{ opacity: 0, y: 10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.3 }}
-            className="flex justify-end relative group/msg"
+            className="group/msg relative flex justify-end"
           >
             <YouPrompt>What are the tools you work with?</YouPrompt>
           </motion.div>
@@ -41,53 +41,53 @@ export default function ChatToolsSection({
             initial={{ opacity: 0, y: 10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.3 }}
-            className="flex gap-3 max-w-[72%] relative group/msg"
+            className="group/msg relative flex max-w-[72%] gap-3"
           >
             {canEdit && chatRevealStep >= sectionSteps.tools + 3 && (
-              <div className="absolute -left-0 top-1/2 -translate-y-1/2 z-40 transition-opacity flex gap-1.5 opacity-0 group-hover/msg:opacity-100">
+              <div className="absolute top-1/2 -left-0 z-40 flex -translate-y-1/2 gap-1.5 opacity-0 transition-opacity group-hover/msg:opacity-100">
                 <Button
                   variant="outline"
                   size="sm"
-                  className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
+                  className="h-7 w-7 rounded-full border-[#E5D7C4] bg-white/90 p-0 shadow-sm backdrop-blur-sm hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520]/90 dark:hover:bg-[#35302A]"
                   onClick={(e) => {
                     e.stopPropagation();
                     openSidebar(sidebars.tools);
                   }}
                 >
-                  <Pencil className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                  <Pencil className="h-3 w-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
                 </Button>
               </div>
             )}
-            <div className="w-8 h-8 shrink-0 mt-auto flex items-end">
+            <div className="mt-auto flex h-8 w-8 shrink-0 items-end">
               <ChatAvatar avatarSrc={avatarSrc} show={chatRevealStep < getNextLeftStep("tools")} />
             </div>
-            <div className="bg-[#E5E2DB] dark:bg-[#2A2520] px-4 py-4 rounded-2xl rounded-tl-sm rounded-bl-sm transition-colors duration-100 border border-black/5 dark:border-white/5 overflow-hidden min-w-0">
+            <div className="min-w-0 overflow-hidden rounded-2xl rounded-tl-sm rounded-bl-sm border border-black/5 bg-[#E5E2DB] px-4 py-4 transition-colors duration-100 dark:border-white/5 dark:bg-[#2A2520]">
               {tools.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-8 px-4 text-center">
-                  <p className="text-[13px] text-[#7A736C] dark:text-[#9E9893] mb-3">
+                <div className="flex flex-col items-center justify-center px-4 py-8 text-center">
+                  <p className="mb-3 text-[13px] text-[#7A736C] dark:text-[#9E9893]">
                     No tools added yet.
                   </p>
                   {canEdit && (
                     <Button
                       onClick={() => openSidebar(sidebars.tools)}
-                      className="h-9 px-4 rounded-full text-[13px] font-medium bg-[#1A1A1A] dark:bg-white text-white dark:text-black hover:bg-black/80 dark:hover:bg-white/90 transition-colors shadow-sm flex items-center gap-2"
+                      className="flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-4 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
                     >
-                      <Plus className="w-3.5 h-3.5" />
+                      <Plus className="h-3.5 w-3.5" />
                       Add Tools
                     </Button>
                   )}
                 </div>
               ) : (
                 <>
-                  <p className="text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] mb-3">
+                  <p className="mb-3 text-[15px] text-[#1A1A1A] dark:text-[#F0EDE7]">
                     This is my toolbox:
                   </p>
                   {tools.length > 6 ? (
                     <div className="relative overflow-hidden rounded-xl">
-                      <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-[#E5E2DB] dark:from-[#2A2520] to-transparent z-10 pointer-events-none"></div>
-                      <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[#E5E2DB] dark:from-[#2A2520] to-transparent z-10 pointer-events-none"></div>
+                      <div className="pointer-events-none absolute top-0 bottom-0 left-0 z-10 w-8 bg-gradient-to-r from-[#E5E2DB] to-transparent dark:from-[#2A2520]"></div>
+                      <div className="pointer-events-none absolute top-0 right-0 bottom-0 z-10 w-8 bg-gradient-to-l from-[#E5E2DB] to-transparent dark:from-[#2A2520]"></div>
                       <motion.div
-                        className="flex gap-2 w-max py-1"
+                        className="flex w-max gap-2 py-1"
                         animate={{ x: ["0%", "-50%"] }}
                         transition={{
                           ease: "linear",
@@ -98,11 +98,11 @@ export default function ChatToolsSection({
                         {[...tools, ...tools].map((tool, i) => (
                           <div
                             key={i}
-                            className="w-10 h-10 rounded-2xl bg-[#E5E2DB] dark:bg-[#35302A] shadow-sm flex items-center justify-center border border-black/5 dark:border-white/5 shrink-0"
+                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-black/5 bg-[#E5E2DB] shadow-sm dark:border-white/5 dark:bg-[#35302A]"
                           >
                             <img
                               src={tool.image}
-                              className="w-6 h-6 object-contain"
+                              className="h-6 w-6 object-contain"
                               alt={tool.label || "tool"}
                             />
                           </div>
@@ -114,11 +114,11 @@ export default function ChatToolsSection({
                       {tools.map((tool, i) => (
                         <div
                           key={tool._id || i}
-                          className="w-10 h-10 rounded-2xl bg-[#E5E2DB] dark:bg-[#35302A] shadow-sm flex items-center justify-center border border-black/5 dark:border-white/5 relative group/tool"
+                          className="group/tool relative flex h-10 w-10 items-center justify-center rounded-2xl border border-black/5 bg-[#E5E2DB] shadow-sm dark:border-white/5 dark:bg-[#35302A]"
                         >
                           <img
                             src={tool.image}
-                            className="w-6 h-6 object-contain"
+                            className="h-6 w-6 object-contain"
                             alt={tool.label || "tool"}
                           />
                         </div>
@@ -128,9 +128,9 @@ export default function ChatToolsSection({
                   {canEdit && (
                     <button
                       onClick={() => openSidebar(sidebars.tools)}
-                      className="w-10 h-10 rounded-2xl bg-white/50 dark:bg-[#35302A]/50 border border-dashed border-black/20 dark:border-white/20 flex items-center justify-center hover:bg-black/5 dark:hover:bg-white/5 transition-colors mt-2"
+                      className="mt-2 flex h-10 w-10 items-center justify-center rounded-2xl border border-dashed border-black/20 bg-white/50 transition-colors hover:bg-black/5 dark:border-white/20 dark:bg-[#35302A]/50 dark:hover:bg-white/5"
                     >
-                      <Plus className="w-5 h-5 text-[#7A736C] dark:text-[#9E9893]" />
+                      <Plus className="h-5 w-5 text-[#7A736C] dark:text-[#9E9893]" />
                     </button>
                   )}
                 </>

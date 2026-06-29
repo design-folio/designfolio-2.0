@@ -266,7 +266,7 @@ export default function Onboarding() {
 
   return (
     <div
-      className="fixed inset-0 z-[1000] overflow-hidden bg-background"
+      className="bg-background fixed inset-0 z-[1000] overflow-hidden"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }} // Add this to handle safe area on iOS
       onClick={(e) => e.stopPropagation()}
       role="dialog"
@@ -274,7 +274,7 @@ export default function Onboarding() {
       aria-labelledby="onboarding-title"
       aria-describedby="onboarding-description"
     >
-      <div className="min-h-full w-full flex items-center justify-center p-4 md:p-6">
+      <div className="flex min-h-full w-full items-center justify-center p-4 md:p-6">
         <div className="w-full max-w-2xl md:py-8">
           <Stepper current={currentStep} />
 
@@ -306,10 +306,10 @@ export default function Onboarding() {
                 <Button
                   onClick={handleNext}
                   disabled={loading}
-                  className="w-full mt-4 h-11 rounded-full bg-foreground text-background font-semibold"
+                  className="bg-foreground text-background mt-4 h-11 w-full rounded-full font-semibold"
                 >
                   Continue
-                  <ArrowRight className="ml-2 w-4 h-4" />
+                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </motion.div>
             )}
@@ -332,7 +332,7 @@ export default function Onboarding() {
                   selected={GOALS.find((g) => g.id === selectedGoalId)?.label || ""}
                   onSelect={(label) => setSelectedGoalId(GOALS.find((g) => g.label === label)?.id)}
                 />
-                <div className="flex gap-3 md:mt-6 mt-4">
+                <div className="mt-4 flex gap-3 md:mt-6">
                   <Button
                     onClick={() => setCurrentStep(1)}
                     variant="outline"
@@ -343,10 +343,10 @@ export default function Onboarding() {
                   <Button
                     onClick={handleNext}
                     disabled={loading}
-                    className="flex-1 h-11 rounded-full bg-foreground text-background font-semibold"
+                    className="bg-foreground text-background h-11 flex-1 rounded-full font-semibold"
                   >
                     Continue
-                    <ArrowRight className="ml-2 w-4 h-4" />
+                    <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </div>
               </motion.div>
@@ -374,7 +374,7 @@ export default function Onboarding() {
                     setSelectedExperienceId(EXPERIENCE_LEVELS.find((e) => e.label === label)?.id)
                   }
                 />
-                <div className="flex gap-3 md:mt-6 mt-4">
+                <div className="mt-4 flex gap-3 md:mt-6">
                   <Button
                     onClick={() => setCurrentStep(2)}
                     variant="outline"
@@ -385,10 +385,10 @@ export default function Onboarding() {
                   <Button
                     onClick={handleNext}
                     disabled={loading}
-                    className="flex-1 h-11 rounded-full bg-foreground text-background font-semibold"
+                    className="bg-foreground text-background h-11 flex-1 rounded-full font-semibold"
                   >
                     Continue
-                    <ArrowRight className="ml-2 w-4 h-4" />
+                    <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </div>
               </motion.div>
@@ -416,7 +416,7 @@ export default function Onboarding() {
                   loading={skillsLoading}
                   message={error}
                 />
-                <div className="flex gap-3 md:mt-6 mt-4">
+                <div className="mt-4 flex gap-3 md:mt-6">
                   <Button
                     onClick={() => setCurrentStep(3)}
                     variant="outline"
@@ -427,10 +427,10 @@ export default function Onboarding() {
                   <Button
                     onClick={handleNext}
                     disabled={loading}
-                    className="flex-1 h-11 rounded-full"
+                    className="h-11 flex-1 rounded-full"
                   >
                     {loading ? "Saving..." : "Get Started"}
-                    <ArrowRight className="ml-2 w-4 h-4" />
+                    <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </div>
               </motion.div>

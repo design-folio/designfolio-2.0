@@ -19,7 +19,7 @@ export function AiToolButton({ children, className, disabled, ...props }) {
       type="submit"
       disabled={disabled}
       className={cn(
-        "w-full bg-foreground text-background hover:bg-foreground/90 focus-visible:outline-none border-0 rounded-full h-11 px-6 text-base font-semibold transition-colors disabled:opacity-50",
+        "bg-foreground text-background hover:bg-foreground/90 h-11 w-full rounded-full border-0 px-6 text-base font-semibold transition-colors focus-visible:outline-none disabled:opacity-50",
         className
       )}
       {...props}

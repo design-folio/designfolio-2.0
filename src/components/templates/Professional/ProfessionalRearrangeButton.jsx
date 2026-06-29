@@ -14,13 +14,13 @@ export const ProfessionalRearrangeButton = ({
     <Button
       variant="outline"
       size="sm"
-      className="h-8 w-8 p-0 rounded-full border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520] text-[#1A1A1A] dark:text-[#F0EDE7] opacity-100 md:opacity-0 md:group-hover/section:opacity-100 transition-opacity"
+      className="h-8 w-8 rounded-full border-[#D5D0C6] bg-[#EFECE6] p-0 text-[#1A1A1A] opacity-100 transition-opacity hover:bg-[#E5E0D8] md:opacity-0 md:group-hover/section:opacity-100 dark:border-[#3A352E] dark:bg-[#1A1A1A] dark:text-[#F0EDE7] dark:hover:bg-[#2A2520]"
       onClick={onClick}
       title={tooltipText ? undefined : title}
       aria-label={ariaLabel ?? title ?? tooltipText}
       {...props}
     >
-      <ChevronsUpDown className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+      <ChevronsUpDown className="h-3.5 w-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
     </Button>
   );
 
@@ -35,7 +35,7 @@ export const ProfessionalRearrangeButton = ({
         <TooltipContent
           side="top"
           sideOffset={8}
-          className="rounded-xl border-0 bg-tooltip-bg-color px-4 py-2 text-tooltip-text-color shadow-xl"
+          className="bg-tooltip-bg-color text-tooltip-text-color rounded-xl border-0 px-4 py-2 shadow-xl"
         >
           <span className="text-sm font-medium">{tooltipText}</span>
         </TooltipContent>

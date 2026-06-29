@@ -25,7 +25,7 @@ const LandingVideoSection = forwardRef(function LandingVideoSection({ isDark }, 
   return (
     <section
       ref={ref}
-      className="w-full px-6 mb-16"
+      className="mb-16 w-full px-6"
       style={{ fontFamily: "var(--font-manrope), sans-serif" }}
     >
       <motion.div
@@ -45,18 +45,18 @@ const LandingVideoSection = forwardRef(function LandingVideoSection({ isDark }, 
                   setHeroStep(i);
                   setHeroProgress(0);
                 }}
-                className="relative flex flex-col items-start gap-2 cursor-pointer group "
+                className="group relative flex cursor-pointer flex-col items-start gap-2"
               >
                 <span
                   className={cn(
-                    "inline-flex items-center gap-1.5 text-[13px] font-semibold leading-none transition-colors duration-200 whitespace-nowrap cursor-pointer",
+                    "inline-flex cursor-pointer items-center gap-1.5 text-[13px] leading-none font-semibold whitespace-nowrap transition-colors duration-200",
                     isActive ? "text-(--lp-text)" : "text-lp-text/35 group-hover:text-lp-text/55"
                   )}
                 >
-                  <step.icon className="w-3.5 h-3.5 shrink-0" strokeWidth={2} />
+                  <step.icon className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
                   {step.label}
                 </span>
-                <div className="w-full h-[2px] rounded-full bg-lp-text/10 overflow-hidden">
+                <div className="bg-lp-text/10 h-[2px] w-full overflow-hidden rounded-full">
                   <div
                     className="h-full rounded-full bg-(--lp-accent) transition-none"
                     style={{ width: isActive ? `${heroProgress}%` : "0%" }}
@@ -68,7 +68,7 @@ const LandingVideoSection = forwardRef(function LandingVideoSection({ isDark }, 
         </div>
 
         {/* Video */}
-        <div className="rounded-[16px] overflow-hidden border border-(--lp-video-border) bg-[#141414]">
+        <div className="overflow-hidden rounded-[16px] border border-(--lp-video-border) bg-[#141414]">
           <div className="relative w-full" style={{ paddingTop: "78.75%" }}>
             <video
               key={heroStep}
@@ -76,7 +76,7 @@ const LandingVideoSection = forwardRef(function LandingVideoSection({ isDark }, 
               autoPlay
               muted
               playsInline
-              className="absolute inset-0 w-full h-full object-cover origin-center"
+              className="absolute inset-0 h-full w-full origin-center object-cover"
               onTimeUpdate={(e) => {
                 const v = e.currentTarget;
                 if (v.duration) setHeroProgress((v.currentTime / v.duration) * 100);

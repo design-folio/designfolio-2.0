@@ -39,22 +39,22 @@ export default function SpotlightUsers() {
   const projects = portfolioProjects;
   return (
     <div>
-      <div className="text-center mb-12">
+      <div className="mb-12 text-center">
         <Text
           as="h2"
           size="section-heading"
-          className="text-center leading-[46px] text-landing-card-heading-color"
+          className="text-landing-card-heading-color text-center leading-[46px]"
         >
           Created with Designfolio
         </Text>
 
-        <Text className="text-center sm:mt-4 text-sm sm:text-base md:text-lg text-foreground/60 font-normal">
+        <Text className="text-foreground/60 text-center text-sm font-normal sm:mt-4 sm:text-base md:text-lg">
           Explore some of the portfolios powered by Designfolio
         </Text>
         {/* Desktop View */}
         <div
           ref={scrollRef}
-          className="hidden mt-[56px] md:flex gap-6 overflow-x-hidden [backface-visibility:hidden] [transform:translateZ(0)] will-change-transform"
+          className="mt-[56px] hidden [transform:translateZ(0)] gap-6 overflow-x-hidden will-change-transform [backface-visibility:hidden] md:flex"
         >
           {[...projects, ...projects].map((project, index) => (
             <SpotlightUsersDesktop

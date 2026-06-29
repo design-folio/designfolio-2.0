@@ -11,26 +11,26 @@ export default function LandingFounderSection({
   return (
     <section
       id="why"
-      className="w-full border-t border-(--lp-border) pt-16 pb-12 px-6 scroll-mt-24"
+      className="w-full scroll-mt-24 border-t border-(--lp-border) px-6 pt-16 pb-12"
       style={{ fontFamily: "var(--font-manrope), sans-serif" }}
     >
-      <div className="max-w-[560px] mx-auto">
-        <h2 className="text-[26px] font-bold text-(--lp-text) mb-6 tracking-tight">
+      <div className="mx-auto max-w-[560px]">
+        <h2 className="mb-6 text-[26px] font-bold tracking-tight text-(--lp-text)">
           Yo. I&apos;m Shai (I built Designfolio)
         </h2>
 
         <img
           src="/assets/svgs/footerimageformob.svg"
           alt="Shai"
-          className="w-full rounded-2xl mb-8 sm:hidden"
+          className="mb-8 w-full rounded-2xl sm:hidden"
         />
         <img
           src="/assets/svgs/footerimage.svg"
           alt="Shai"
-          className="w-full rounded-2xl mb-8 hidden sm:block"
+          className="mb-8 hidden w-full rounded-2xl sm:block"
         />
 
-        <div className="flex flex-col gap-6 text-[15px] leading-[1.6] text-lp-text/80 font-medium">
+        <div className="text-lp-text/80 flex flex-col gap-6 text-[15px] leading-[1.6] font-medium">
           <p>
             For the last decade, I&apos;ve been designing products.
             <br />
@@ -55,16 +55,16 @@ export default function LandingFounderSection({
 
         <div className="mt-8 mb-6">
           <div
-            className="text-[32px] text-(--lp-text) mb-2 leading-none"
+            className="mb-2 text-[32px] leading-none text-(--lp-text)"
             style={{ fontFamily: "var(--font-caveat), cursive" }}
           >
             Shai
           </div>
-          <div className="text-[14px] font-medium text-lp-text/70">
+          <div className="text-lp-text/70 text-[14px] font-medium">
             Say hi -{" "}
             <a
               href="mailto:shai@designfolio.me"
-              className="hover:text-(--lp-accent) transition-colors"
+              className="transition-colors hover:text-(--lp-accent)"
             >
               shai@designfolio.me
             </a>

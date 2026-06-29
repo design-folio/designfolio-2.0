@@ -50,7 +50,7 @@ export default function BottomNavigation({ userDetails, className = "", watermar
       {/* Floating Dock (v3-style) */}
       {!router?.asPath?.includes("project") && (
         <div
-          className={`fixed bottom-1 sm:bottom-4 left-0 right-0 z-[100] flex justify-center pointer-events-none ${className}`}
+          className={`pointer-events-none fixed right-0 bottom-1 left-0 z-[100] flex justify-center sm:bottom-4 ${className}`}
         >
           <div className="pointer-events-auto">
             <Dock
@@ -120,7 +120,7 @@ export default function BottomNavigation({ userDetails, className = "", watermar
 
       {!userDetails?.pro && (
         <div
-          className={`hidden text-center lg:flex justify-center lg:fixed lg:right-[36px] lg:bottom-[24px] xl:block cursor-pointer ${watermarkClassName}`}
+          className={`hidden cursor-pointer justify-center text-center lg:fixed lg:right-[36px] lg:bottom-[24px] lg:flex xl:block ${watermarkClassName}`}
           onClick={() => window.open("https://www.designfolio.me", "_blank")}
         >
           <MemoMadewithdesignfolio />
@@ -128,8 +128,8 @@ export default function BottomNavigation({ userDetails, className = "", watermar
       )}
       {/* Resume Dialog */}
       <Dialog open={isResumeDialogOpen} onOpenChange={setIsResumeDialogOpen}>
-        <DialogContent className="max-w-3xl p-0 overflow-hidden">
-          <div className="p-6 border-b border-border">
+        <DialogContent className="max-w-3xl overflow-hidden p-0">
+          <div className="border-border border-b p-6">
             <DialogHeader>
               <DialogTitle>Resume Preview</DialogTitle>
             </DialogHeader>
@@ -139,21 +139,21 @@ export default function BottomNavigation({ userDetails, className = "", watermar
               <iframe
                 title="Resume Preview"
                 src={`https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(userDetails.resume.url)}#zoom=page-width&pagemode=none`}
-                className="w-full h-[70vh] rounded-xl border border-border"
+                className="border-border h-[70vh] w-full rounded-xl border"
               />
             ) : (
-              <div className="p-6 text-sm text-muted-foreground">No resume uploaded.</div>
+              <div className="text-muted-foreground p-6 text-sm">No resume uploaded.</div>
             )}
           </div>
           {userDetails?.resume?.url && (
-            <div className="p-4 border-t border-border flex gap-2 justify-end">
+            <div className="border-border flex justify-end gap-2 border-t p-4">
               <a href={userDetails.resume.url} target="_blank" rel="noreferrer">
-                <Button variant="outline" className="rounded-full h-11">
+                <Button variant="outline" className="h-11 rounded-full">
                   Download
                 </Button>
               </a>
               <Button
-                className="rounded-full h-11 bg-foreground-landing text-background-landing hover:bg-foreground-landing/90"
+                className="bg-foreground-landing text-background-landing hover:bg-foreground-landing/90 h-11 rounded-full"
                 onClick={() => setIsResumeDialogOpen(false)}
               >
                 Close

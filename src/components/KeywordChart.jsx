@@ -28,7 +28,7 @@ const KeywordChart = ({ data }) => {
 
   return (
     <Card2 className="p-6">
-      <div className="flex items-center justify-between mb-6">
+      <div className="mb-6 flex items-center justify-between">
         <h3 className="text-lg font-semibold">Keyword Frequency Analysis</h3>
         <div className="flex gap-2">
           {["high", "medium", "low"].map((importance) => (

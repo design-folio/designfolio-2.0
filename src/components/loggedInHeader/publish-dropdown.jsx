@@ -111,7 +111,7 @@ export function PublishDropdown({ onClose }) {
           disabled={isPublishing}
           onMouseEnter={() => !isPublishing && zapRef.current?.startAnimation()}
           onMouseLeave={() => zapRef.current?.stopAnimation()}
-          className="bg-black hover:bg-[#2A2A2A] dark:bg-white dark:hover:bg-[#E8E8E8] text-white dark:text-black font-medium pl-4 pr-5 h-9 text-[13px] rounded-full hover:cursor-pointer transition-colors gap-1.5 inline-flex items-center"
+          className="inline-flex h-9 items-center gap-1.5 rounded-full bg-black pr-5 pl-4 text-[13px] font-medium text-white transition-colors hover:cursor-pointer hover:bg-[#2A2A2A] dark:bg-white dark:text-black dark:hover:bg-[#E8E8E8]"
           data-testid="button-publish"
           aria-expanded={isOpen}
           aria-haspopup="true"
@@ -132,18 +132,18 @@ export function PublishDropdown({ onClose }) {
                 pointerEvents: "none",
                 transition: { duration: 0.15, ease: "easeIn" },
               }}
-              className="absolute right-0 top-full mt-2 z-50 min-w-[260px]"
+              className="absolute top-full right-0 z-50 mt-2 min-w-[260px]"
               onKeyDown={(e) => e.key === "Escape" && setIsOpen(false)}
               style={{ transformOrigin: "top right" }}
             >
-              <div className="w-full rounded-2xl border border-black/10 dark:border-white/10 bg-white dark:bg-[#2A2520] p-1.5 shadow-lg overflow-hidden">
+              <div className="w-full overflow-hidden rounded-2xl border border-black/10 bg-white p-1.5 shadow-lg dark:border-white/10 dark:bg-[#2A2520]">
                 <div className="flex flex-col">
                   <div className="flex items-center justify-between gap-3 px-3 py-2">
                     <div
-                      className="flex flex-col gap-0.5 overflow-hidden cursor-pointer"
+                      className="flex cursor-pointer flex-col gap-0.5 overflow-hidden"
                       onClick={() => window.open(`https://${domain}`, "_blank")}
                     >
-                      <span className="text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] truncate hover:underline underline-offset-2">
+                      <span className="truncate text-[13px] font-medium text-[#1A1A1A] underline-offset-2 hover:underline dark:text-[#F0EDE7]">
                         {domain}
                       </span>
                       <span className="text-[12px] text-[#7A736C] dark:text-[#9E9893]">
@@ -154,7 +154,7 @@ export function PublishDropdown({ onClose }) {
                       variant="ghost"
                       size="icon"
                       onClick={handleCopy}
-                      className="h-8 w-8 rounded-xl shrink-0 cursor-pointer text-[#7A736C] dark:text-[#9E9893] hover:bg-black/5 dark:hover:bg-white/5 hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7] relative"
+                      className="relative h-8 w-8 shrink-0 cursor-pointer rounded-xl text-[#7A736C] hover:bg-black/5 hover:text-[#1A1A1A] dark:text-[#9E9893] dark:hover:bg-white/5 dark:hover:text-[#F0EDE7]"
                     >
                       <AnimatePresence mode="wait" initial={false}>
                         {copied ? (
@@ -164,7 +164,7 @@ export function PublishDropdown({ onClose }) {
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.8 }}
                             transition={{ duration: 0.15 }}
-                            className="absolute inset-0 flex items-center justify-center text-[#1A1A1A] dark:text-[#F0EDE7] "
+                            className="absolute inset-0 flex items-center justify-center text-[#1A1A1A] dark:text-[#F0EDE7]"
                           >
                             <Check className="h-4 w-4" />
                           </motion.div>
@@ -175,7 +175,7 @@ export function PublishDropdown({ onClose }) {
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.8 }}
                             transition={{ duration: 0.15 }}
-                            className="absolute inset-0 flex items-center justify-center cursor-pointer"
+                            className="absolute inset-0 flex cursor-pointer items-center justify-center"
                           >
                             <Copy className="h-4 w-4" />
                           </motion.div>
@@ -188,10 +188,10 @@ export function PublishDropdown({ onClose }) {
                     onClick={handlePublish}
                     disabled={isPublishing}
                     className={cn(
-                      "relative z-10 flex w-full items-center justify-center gap-2 px-3 h-[44px] text-[13px] font-medium rounded-xl transition-colors duration-150 focus:outline-none mt-1",
+                      "relative z-10 mt-1 flex h-[44px] w-full items-center justify-center gap-2 rounded-xl px-3 text-[13px] font-medium transition-colors duration-150 focus:outline-none",
                       isPublishing
-                        ? "cursor-not-allowed bg-black/5 dark:bg-white/5 text-[#7A736C] dark:text-[#9E9893]"
-                        : "cursor-pointer bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-[#1A1A1A] dark:text-[#F0EDE7]"
+                        ? "cursor-not-allowed bg-black/5 text-[#7A736C] dark:bg-white/5 dark:text-[#9E9893]"
+                        : "cursor-pointer bg-black/5 text-[#1A1A1A] hover:bg-black/10 dark:bg-white/5 dark:text-[#F0EDE7] dark:hover:bg-white/10"
                     )}
                   >
                     {isPublishing && <Spinner className="size-3.5" />}

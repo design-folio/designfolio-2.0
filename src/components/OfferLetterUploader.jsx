@@ -108,21 +108,21 @@ const OfferLetterUploader = ({ onUpload, disabled = false }) => {
         <div
           className={`flex items-center justify-center rounded-xl transition-colors ${
             fileName
-              ? "w-12 h-12 bg-[#FF553E]/10"
-              : "w-12 h-12 bg-muted/30 group-hover:bg-[#FF553E]/10"
+              ? "h-12 w-12 bg-[#FF553E]/10"
+              : "bg-muted/30 h-12 w-12 group-hover:bg-[#FF553E]/10"
           }`}
         >
           {fileName ? (
-            <FileText className="w-6 h-6 text-[#FF553E]" />
+            <FileText className="h-6 w-6 text-[#FF553E]" />
           ) : (
-            <Upload className="w-6 h-6 text-foreground/30 group-hover:text-[#FF553E] transition-colors" />
+            <Upload className="text-foreground/30 h-6 w-6 transition-colors group-hover:text-[#FF553E]" />
           )}
         </div>
         <div className="text-center">
-          <h4 className="text-sm font-semibold text-foreground">
+          <h4 className="text-foreground text-sm font-semibold">
             {fileName ? fileName : "Upload Offer Letter"}
           </h4>
-          <p className="text-[11px] text-foreground/40 font-medium">
+          <p className="text-foreground/40 text-[11px] font-medium">
             {fileName ? "PDF uploaded • Click to replace" : "PDF or DOCX • Max 5MB"}
           </p>
         </div>

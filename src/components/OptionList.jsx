@@ -4,7 +4,7 @@ import ErrorBanner from "./ErrorBanner";
 
 export default function OptionList({ items, selected, onSelect, testPrefix, message }) {
   return (
-    <div className="overflow-y-auto md:mb-8 mb-4 pr-2 -mr-2 max-h-[calc(100vh-420px)] md:max-h-[calc(100vh-450px)]">
+    <div className="-mr-2 mb-4 max-h-[calc(100vh-420px)] overflow-y-auto pr-2 md:mb-8 md:max-h-[calc(100vh-450px)]">
       <ErrorBanner message={message} />
       <motion.div
         className="flex flex-col gap-3"
@@ -18,7 +18,7 @@ export default function OptionList({ items, selected, onSelect, testPrefix, mess
             <button
               key={item.label}
               onClick={() => onSelect(item.label)}
-              className="px-6 py-4 rounded-2xl border-2 text-base font-medium transition-all hover-elevate text-left flex items-center gap-4 relative overflow-hidden"
+              className="hover-elevate relative flex items-center gap-4 overflow-hidden rounded-2xl border-2 px-6 py-4 text-left text-base font-medium transition-all"
               style={
                 isSelected
                   ? {
@@ -37,7 +37,7 @@ export default function OptionList({ items, selected, onSelect, testPrefix, mess
               <motion.img
                 src={item.image}
                 alt={item.label}
-                className="w-12 h-12 object-contain"
+                className="h-12 w-12 object-contain"
                 animate={isSelected ? { scale: [1, 1.1, 1], rotate: [0, 5, -5, 0] } : {}}
                 transition={{ duration: 0.5, ease: "easeInOut" }}
               />
@@ -50,7 +50,7 @@ export default function OptionList({ items, selected, onSelect, testPrefix, mess
                     exit={{ scale: 0, opacity: 0 }}
                     transition={{ duration: 0.2, ease: "easeOut" }}
                   >
-                    <Check className="w-5 h-5" style={{ color: "#FF553E" }} />
+                    <Check className="h-5 w-5" style={{ color: "#FF553E" }} />
                   </motion.div>
                 )}
               </AnimatePresence>

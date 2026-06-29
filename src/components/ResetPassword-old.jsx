@@ -40,7 +40,7 @@ export default function ResetPassword() {
         <Text as="h1" size={"p-large"} className="text-sub-heading-text-color font-bold">
           Reset Your Password
         </Text>
-        <Text size={"p-xsmall"} className="mt-2 text-description-text font-medium">
+        <Text size={"p-xsmall"} className="text-description-text mt-2 font-medium">
           We&apos;ve verified your Email ID , Reset your password
         </Text>
         <div className="mt-[24px]">

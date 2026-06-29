@@ -21,21 +21,21 @@ const AnimatedSection = ({ children, animationData, className, delay }) => {
   return (
     <section
       ref={ref}
-      className={`${className}  border-[6px] border-solid  rounded-[16px]! p-[16px] md:p-[32px] transition-all duration-700 ease-out`}
+      className={`${className} rounded-[16px]! border-[6px] border-solid p-[16px] transition-all duration-700 ease-out md:p-[32px]`}
       style={{
         opacity: isInView ? 1 : 0,
         transform: isInView ? "none" : "translateY(80px)",
         transition: `all 0.2s cubic-bezier(0.17, 0.55, 0.55, 1) ${adjustedDelay}s`,
       }}
     >
-      <div className="py-[10px] px-4 text-[14px] bg-landing-card-step-bg-color text-landing-card-step-text-color border-landing-card-step-border-color font-[600] border-solid  w-fit border-[3px] border-df-secondary-600 rounded-[16px] p-2 shadow-sm bg-white">
+      <div className="bg-landing-card-step-bg-color text-landing-card-step-text-color border-landing-card-step-border-color border-df-secondary-600 w-fit rounded-[16px] border-[3px] border-solid bg-white p-2 px-4 py-[10px] text-[14px] font-[600] shadow-sm">
         {children.stepLabel}
       </div>
       <div className="mt-4">
-        <h3 className="text-xl md:text-2xl font-satoshi font-bold text-landing-card-heading-color">
+        <h3 className="font-satoshi text-landing-card-heading-color text-xl font-bold md:text-2xl">
           {children.title}
         </h3>
-        <p className="text-landing-card-description-color text-sm font-medium mb-6">
+        <p className="text-landing-card-description-color mb-6 text-sm font-medium">
           {children.description}
         </p>
         <Lottie animationData={animationData} loop autoplay style={{ maxWidth: "100%" }} />
@@ -47,10 +47,10 @@ const AnimatedSection = ({ children, animationData, className, delay }) => {
 // Main Component
 export default function About() {
   return (
-    <div className="px-4 md:px-0  grid gap-6 md:grid w-full md:gap-10 md:grid-cols-2 md:grid-rows-3">
+    <div className="grid w-full gap-6 px-4 md:grid md:grid-cols-2 md:grid-rows-3 md:gap-10 md:px-0">
       <AnimatedSection
         animationData={claimUrl}
-        className="bg-landing-card-bg-color border-6 border-solid border-landing-card-border-color rounded-md p-4 md:p-8"
+        className="bg-landing-card-bg-color border-landing-card-border-color rounded-md border-6 border-solid p-4 md:p-8"
         delay={0}
       >
         {{
@@ -61,7 +61,7 @@ export default function About() {
       </AnimatedSection>
       <AnimatedSection
         animationData={aboutJson}
-        className="bg-landing-card-bg-color row-span-2 border-6 border-solid  border-landing-card-border-color rounded-md p-4 md:p-8"
+        className="bg-landing-card-bg-color border-landing-card-border-color row-span-2 rounded-md border-6 border-solid p-4 md:p-8"
         delay={0.1}
       >
         {{
@@ -72,7 +72,7 @@ export default function About() {
       </AnimatedSection>
       <AnimatedSection
         animationData={casestudyJson}
-        className="bg-landing-card-bg-color row-span-2 border-6 border-solid border-landing-card-border-color rounded-md p-4 md:p-8"
+        className="bg-landing-card-bg-color border-landing-card-border-color row-span-2 rounded-md border-6 border-solid p-4 md:p-8"
         delay={0.3}
       >
         {{
@@ -83,7 +83,7 @@ export default function About() {
       </AnimatedSection>
       <AnimatedSection
         animationData={publishButtonJson}
-        className="bg-landing-card-bg-color border-6 border-solid  border-landing-card-border-color rounded-md p-4 md:p-8"
+        className="bg-landing-card-bg-color border-landing-card-border-color rounded-md border-6 border-solid p-4 md:p-8"
         delay={0.4}
       >
         {{

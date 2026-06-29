@@ -77,14 +77,14 @@ function ProjectDetailField({ label, value, field, edit, handleOnBlur, handleInp
 
   return (
     <div className="flex flex-col gap-1">
-      <span className="text-[12px] font-medium text-[#7A736C] dark:text-[#9E9893] uppercase tracking-wide">
+      <span className="text-[12px] font-medium tracking-wide text-[#7A736C] uppercase dark:text-[#9E9893]">
         {label}
       </span>
       <p
         className={cn(
           "text-[15px] font-medium",
           isPlaceholder
-            ? "text-[#C5BFB8] dark:text-[#4A4238] italic"
+            ? "text-[#C5BFB8] italic dark:text-[#4A4238]"
             : "text-[#1A1A1A] dark:text-[#F0EDE7]"
         )}
         contentEditable={edit}
@@ -295,17 +295,17 @@ export default function CanvasProjectInfo({ projectDetails, userDetails, edit, o
       initial="hidden"
       animate="visible"
       variants={containerVariants}
-      className="flex flex-col gap-3 w-full"
+      className="flex w-full flex-col gap-3"
     >
       {/* Toolbar: Back + breadcrumb + lock + analyze */}
       <motion.div
         variants={itemVariants}
-        className="bg-white dark:bg-[#2A2520] rounded-[26px] border border-[#E5D7C4] dark:border-white/10 py-2 px-4 flex justify-between items-center w-full"
+        className="flex w-full items-center justify-between rounded-[26px] border border-[#E5D7C4] bg-white px-4 py-2 dark:border-white/10 dark:bg-[#2A2520]"
       >
         {!isMacOS ? (
           <button
             onClick={() => router.back()}
-            className="flex items-center gap-1.5 text-[13px] font-medium text-[#7A736C] dark:text-[#9E9893] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7] transition-colors group"
+            className="group flex items-center gap-1.5 text-[13px] font-medium text-[#7A736C] transition-colors hover:text-[#1A1A1A] dark:text-[#9E9893] dark:hover:text-[#F0EDE7]"
           >
             <ChevronLeft size={18} className="transition-transform group-hover:-translate-x-1" />
             Back to Projects
@@ -324,7 +324,7 @@ export default function CanvasProjectInfo({ projectDetails, userDetails, edit, o
                     <Button
                       variant="outline"
                       size="icon"
-                      className="h-7 w-7 rounded-full border border-black/10 dark:border-white/10 bg-white/50 dark:bg-[#2A2520]/50 hover:bg-black/5 dark:hover:bg-white/5 text-[#1A1A1A] dark:text-[#F0EDE7] transition-all focus-visible:ring-0 focus-visible:ring-offset-0"
+                      className="h-7 w-7 rounded-full border border-black/10 bg-white/50 text-[#1A1A1A] transition-all hover:bg-black/5 focus-visible:ring-0 focus-visible:ring-offset-0 dark:border-white/10 dark:bg-[#2A2520]/50 dark:text-[#F0EDE7] dark:hover:bg-white/5"
                       title="Lock Case Study"
                     >
                       <svg
@@ -345,15 +345,15 @@ export default function CanvasProjectInfo({ projectDetails, userDetails, edit, o
                   <DropdownMenuContent
                     align="end"
                     sideOffset={8}
-                    className="w-[300px] p-4 bg-white/95 dark:bg-[#2A2520]/95 backdrop-blur-xl border border-black/10 dark:border-white/10 rounded-2xl shadow-xl z-50"
+                    className="z-50 w-[300px] rounded-2xl border border-black/10 bg-white/95 p-4 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-[#2A2520]/95"
                   >
                     <div className="flex flex-col gap-4">
                       <div className="flex items-start justify-between gap-3">
                         <div className="space-y-1">
-                          <Label className="text-[14px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] cursor-pointer">
+                          <Label className="cursor-pointer text-[14px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                             Protect Project
                           </Label>
-                          <p className="text-[12px] text-[#7A736C] dark:text-[#9E9893] leading-snug">
+                          <p className="text-[12px] leading-snug text-[#7A736C] dark:text-[#9E9893]">
                             Require a password to view this project (e.g., for NDAs).
                           </p>
                         </div>
@@ -378,12 +378,12 @@ export default function CanvasProjectInfo({ projectDetails, userDetails, edit, o
                                 placeholder="Enter password"
                                 value={passwordInput}
                                 onChange={(e) => setPasswordInput(e.target.value)}
-                                className="h-10 bg-black/[0.03] dark:bg-white/[0.03] border-transparent rounded-xl text-[14px] text-[#1A1A1A] dark:text-[#F0EDE7] focus-visible:ring-2 focus-visible:ring-black/10 dark:focus-visible:ring-white/10 shadow-none placeholder:text-black/30 dark:placeholder:text-white/30"
+                                className="h-10 rounded-xl border-transparent bg-black/[0.03] text-[14px] text-[#1A1A1A] shadow-none placeholder:text-black/30 focus-visible:ring-2 focus-visible:ring-black/10 dark:bg-white/[0.03] dark:text-[#F0EDE7] dark:placeholder:text-white/30 dark:focus-visible:ring-white/10"
                               />
                               <Button
                                 size="sm"
                                 onClick={handlePasswordSave}
-                                className="rounded-xl h-9 bg-[#1A1A1A] dark:bg-white text-white dark:text-[#1A1A1A] hover:bg-black/80 dark:hover:bg-white/90 text-[13px]"
+                                className="h-9 rounded-xl bg-[#1A1A1A] text-[13px] text-white hover:bg-black/80 dark:bg-white dark:text-[#1A1A1A] dark:hover:bg-white/90"
                               >
                                 Save Password
                               </Button>
@@ -413,17 +413,17 @@ export default function CanvasProjectInfo({ projectDetails, userDetails, edit, o
                           onClick={handleAnalyzeClick}
                           disabled={isAnalyzeDisabled}
                           className={cn(
-                            "h-7 text-[12px] rounded-full border border-black/10 dark:border-white/10",
-                            "bg-white/50 dark:bg-[#2A2520]/50 text-[#1A1A1A] dark:text-[#F0EDE7]",
+                            "h-7 rounded-full border border-black/10 text-[12px] dark:border-white/10",
+                            "bg-white/50 text-[#1A1A1A] dark:bg-[#2A2520]/50 dark:text-[#F0EDE7]",
                             "flex items-center gap-1.5 px-3 transition-all focus-visible:ring-0 focus-visible:ring-offset-0",
-                            "cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed",
+                            "cursor-pointer disabled:cursor-not-allowed disabled:opacity-60",
                             !isAnalyzeDisabled && "hover:bg-black/5 dark:hover:bg-white/5"
                           )}
                         >
                           {isAnalyzing ? (
-                            <AnimatedLoadingDots className="w-[18px] h-[5px] shrink-0" />
+                            <AnimatedLoadingDots className="h-[5px] w-[18px] shrink-0" />
                           ) : (
-                            <AnalyzeIcon className="w-4 h-4 shrink-0" />
+                            <AnalyzeIcon className="h-4 w-4 shrink-0" />
                           )}
                           {analyzeButtonLabel}
                         </Button>
@@ -432,7 +432,7 @@ export default function CanvasProjectInfo({ projectDetails, userDetails, edit, o
                     {tooltipMessage && (
                       <TooltipContent
                         side="bottom"
-                        className="bg-foreground text-background text-xs px-2 py-1 rounded"
+                        className="bg-foreground text-background rounded px-2 py-1 text-xs"
                       >
                         {tooltipMessage}
                       </TooltipContent>
@@ -448,11 +448,11 @@ export default function CanvasProjectInfo({ projectDetails, userDetails, edit, o
       {/* Title + Description + Featured Image — combined */}
       <motion.div
         variants={itemVariants}
-        className="bg-white dark:bg-[#2A2520] rounded-[26px] border border-[#E5D7C4] dark:border-white/10 p-2 md:p-3 w-full"
+        className="w-full rounded-[26px] border border-[#E5D7C4] bg-white p-2 md:p-3 dark:border-white/10 dark:bg-[#2A2520]"
       >
-        <div className="p-4 md:p-5 pb-6 md:pb-8">
+        <div className="p-4 pb-6 md:p-5 md:pb-8">
           <h1
-            className={`text-[24px] font-semibold tracking-tight leading-tight mb-4 ${titleIsPlaceholder ? "text-[#C5BFB8] dark:text-[#4A4238] italic" : "text-[#1A1A1A] dark:text-[#F0EDE7]"}`}
+            className={`mb-4 text-[24px] leading-tight font-semibold tracking-tight ${titleIsPlaceholder ? "text-[#C5BFB8] italic dark:text-[#4A4238]" : "text-[#1A1A1A] dark:text-[#F0EDE7]"}`}
             contentEditable={edit}
             suppressContentEditableWarning
             onFocus={(e) => {
@@ -469,7 +469,7 @@ export default function CanvasProjectInfo({ projectDetails, userDetails, edit, o
           </h1>
           {(edit || !!description) && (
             <p
-              className={`text-[16px] leading-relaxed min-w-0 webkit-fill ${descIsPlaceholder ? "text-[#C5BFB8] dark:text-[#4A4238] italic" : "text-[#7A736C] dark:text-[#B5AFA5]"}`}
+              className={`webkit-fill min-w-0 text-[16px] leading-relaxed ${descIsPlaceholder ? "text-[#C5BFB8] italic dark:text-[#4A4238]" : "text-[#7A736C] dark:text-[#B5AFA5]"}`}
               contentEditable={edit}
               suppressContentEditableWarning
               onFocus={(e) => {
@@ -486,7 +486,7 @@ export default function CanvasProjectInfo({ projectDetails, userDetails, edit, o
             </p>
           )}
         </div>
-        <div className="w-full aspect-[3/2] rounded-[26px] overflow-hidden bg-[#F5F5F5] dark:bg-[#1A1A1A]">
+        <div className="aspect-[3/2] w-full overflow-hidden rounded-[26px] bg-[#F5F5F5] dark:bg-[#1A1A1A]">
           {edit ? (
             <ImageWithOverlayAndPicker
               src={thumbnail?.url}
@@ -501,7 +501,7 @@ export default function CanvasProjectInfo({ projectDetails, userDetails, edit, o
                 ref={projectImageRef}
                 src={thumbnail?.url}
                 alt={title || "project image"}
-                className={`w-full h-full object-cover transition-opacity duration-100 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
+                className={`h-full w-full object-cover transition-opacity duration-100 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
                 loading="lazy"
                 fetchPriority="high"
                 decoding="async"
@@ -518,12 +518,12 @@ export default function CanvasProjectInfo({ projectDetails, userDetails, edit, o
       {(edit || !!client || !!role || !!industry || !!platform) && (
         <motion.div
           variants={itemVariants}
-          className="bg-white dark:bg-[#2A2520] rounded-[32px] border border-[#E5D7C4] dark:border-white/10 p-6 md:p-8 w-full"
+          className="w-full rounded-[32px] border border-[#E5D7C4] bg-white p-6 md:p-8 dark:border-white/10 dark:bg-[#2A2520]"
         >
-          <h2 className="text-[#7A736C] dark:text-[#B5AFA5] font-dm-mono font-medium text-[14px] mb-6">
+          <h2 className="font-dm-mono mb-6 text-[14px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">
             PROJECT DETAILS
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
             {[
               { label: "Client", value: client, field: "client" },
               { label: "My Role", value: role, field: "role" },

@@ -33,8 +33,8 @@ export default function SkillsPicker({
         className="mb-4 md:mb-6"
       >
         <div className="relative">
-          <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
-            <Search className="w-4 h-4 text-muted-foreground/60" />
+          <div className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2">
+            <Search className="text-muted-foreground/60 h-4 w-4" />
           </div>
           <Input
             type="text"
@@ -45,14 +45,14 @@ export default function SkillsPicker({
             data-testid="input-skills-search"
           />
           {loading && (
-            <div className="absolute right-4 top-1/2 -translate-y-1/2">
-              <Loader2 className="animate-spin h-4 w-4 text-muted-foreground" />
+            <div className="absolute top-1/2 right-4 -translate-y-1/2">
+              <Loader2 className="text-muted-foreground h-4 w-4 animate-spin" />
             </div>
           )}
         </div>
       </motion.div>
 
-      <div className="overflow-y-auto md:mb-8 mb-4 pr-2 -mr-2 max-h-[calc(100vh-420px)] md:max-h-[calc(100vh-450px)]">
+      <div className="-mr-2 mb-4 max-h-[calc(100vh-420px)] overflow-y-auto pr-2 md:mb-8 md:max-h-[calc(100vh-450px)]">
         <ErrorBanner message={message} />
         <motion.div
           className="flex flex-wrap gap-2"
@@ -61,10 +61,10 @@ export default function SkillsPicker({
           transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
         >
           {loading && filtered.length === 0 ? (
-            <div className="px-5 py-2.5 rounded-full border-2 border-border relative overflow-hidden bg-muted/10 flex items-center gap-2">
-              <Loader2 className="animate-spin h-4 w-4 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">Loading</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent shimmer-animation"></div>
+            <div className="border-border bg-muted/10 relative flex items-center gap-2 overflow-hidden rounded-full border-2 px-5 py-2.5">
+              <Loader2 className="text-muted-foreground h-4 w-4 animate-spin" />
+              <span className="text-muted-foreground text-sm">Loading</span>
+              <div className="shimmer-animation absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
             </div>
           ) : (
             <>
@@ -74,7 +74,7 @@ export default function SkillsPicker({
                   <button
                     key={interest}
                     onClick={() => onToggle(interest)}
-                    className="px-5 py-2.5 rounded-full border-2 text-sm font-medium transition-all hover-elevate relative cursor-pointer flex items-center gap-2"
+                    className="hover-elevate relative flex cursor-pointer items-center gap-2 rounded-full border-2 px-5 py-2.5 text-sm font-medium transition-all"
                     style={
                       isSelected
                         ? {
@@ -98,7 +98,7 @@ export default function SkillsPicker({
                           exit={{ scale: 0, opacity: 0 }}
                           transition={{ duration: 0.2, ease: "easeOut" }}
                         >
-                          <Check className="w-4 h-4" style={{ color: "#FF553E" }} />
+                          <Check className="h-4 w-4" style={{ color: "#FF553E" }} />
                         </motion.div>
                       )}
                     </AnimatePresence>
@@ -113,7 +113,7 @@ export default function SkillsPicker({
                   exit={{ scale: 0.8, opacity: 0 }}
                   transition={{ duration: 0.2 }}
                   onClick={() => onAdd(search)}
-                  className="px-5 py-2.5 rounded-full border-2 border-dashed text-sm font-medium transition-all hover-elevate relative flex items-center gap-2"
+                  className="hover-elevate relative flex items-center gap-2 rounded-full border-2 border-dashed px-5 py-2.5 text-sm font-medium transition-all"
                   style={{
                     backgroundColor: "transparent",
                     borderColor: "#FF553E",

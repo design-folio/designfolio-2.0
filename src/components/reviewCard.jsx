@@ -36,7 +36,7 @@ export default function ReviewCard({ review, edit = false, sorting = false }) {
     >
       {/* Review Text with Edit button */}
       {!sorting && (
-        <div className="flex items-start gap-2 mb-6 flex-1">
+        <div className="mb-6 flex flex-1 items-start gap-2">
           <div className="flex-1">
             <ClampableTiptapContent
               content={review?.description || ""}
@@ -53,9 +53,9 @@ export default function ReviewCard({ review, edit = false, sorting = false }) {
             <Button
               onClick={handleEdit}
               variant={"secondary"}
-              className="h-8 w-8 rounded-full hover:bg-foreground/5 shrink-0"
+              className="hover:bg-foreground/5 h-8 w-8 shrink-0 rounded-full"
             >
-              <PencilIcon className="text-df-icon-color w-4 h-4" />
+              <PencilIcon className="text-df-icon-color h-4 w-4" />
             </Button>
           )}
         </div>
@@ -63,7 +63,7 @@ export default function ReviewCard({ review, edit = false, sorting = false }) {
 
       {/* Avatar + User Info */}
       <div className="flex items-center gap-3">
-        <Avatar className="w-12 h-12 shrink-0">
+        <Avatar className="h-12 w-12 shrink-0">
           <AvatarImage src={review?.avatar?.url || review?.avatar} alt={review?.name} />
           <AvatarFallback
             style={{
@@ -89,13 +89,13 @@ export default function ReviewCard({ review, edit = false, sorting = false }) {
               rel="noopener noreferrer"
               className="flex items-center gap-1 text-blue-500"
             >
-              <MemoLinkedin className="text-df-icon-color w-4 h-4" />
-              <span className="font-semibold text-base">{review?.name}</span>
+              <MemoLinkedin className="text-df-icon-color h-4 w-4" />
+              <span className="text-base font-semibold">{review?.name}</span>
             </a>
           ) : (
-            <h3 className="font-semibold text-base mb-0">{review?.name}</h3>
+            <h3 className="mb-0 text-base font-semibold">{review?.name}</h3>
           )}
-          <p className="text-sm text-df-description-color">
+          <p className="text-df-description-color text-sm">
             {review?.role ? `${review.role}, ` : ""}
             {review?.company}
           </p>

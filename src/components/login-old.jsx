@@ -84,7 +84,7 @@ export default function Login() {
         <Text as="h1" size={"p-large"} className="text-landing-heading-text-color font-bold">
           Welcome back,
         </Text>
-        <Text size={"p-xsmall"} className="mt-2 text-landing-description-text-color font-medium">
+        <Text size={"p-xsmall"} className="text-landing-description-text-color mt-2 font-medium">
           Login to your account to access all the features
         </Text>
         <div className="mt-[24px]">
@@ -101,10 +101,10 @@ export default function Login() {
             onClick={googleLogin}
             customClass="w-full "
           />
-          <div className="flex items-center gap-[24px] my-[24px] text-landing-description-text-color">
-            <div className="w-full h-[1px] bg-landing-card-border-color" />
+          <div className="text-landing-description-text-color my-[24px] flex items-center gap-[24px]">
+            <div className="bg-landing-card-border-color h-[1px] w-full" />
             or
-            <div className="w-full h-[1px] bg-landing-card-border-color" />
+            <div className="bg-landing-card-border-color h-[1px] w-full" />
           </div>
           <div>
             <Formik
@@ -173,7 +173,7 @@ export default function Login() {
                   <Link href={"/forgot-password"}>
                     <Text
                       size={"p-xxsmall"}
-                      className="mt-[8px] text-right w-fit ml-auto cursor-pointer text-landing-description-text-color font-medium"
+                      className="text-landing-description-text-color mt-[8px] ml-auto w-fit cursor-pointer text-right font-medium"
                     >
                       Forgot Password?
                     </Text>
@@ -197,7 +197,7 @@ export default function Login() {
           >
             Don’t have an account?
             <Link href={"/claim-link"}>
-              <span className="text-input-error-color underline cursor-pointer ml-2">
+              <span className="text-input-error-color ml-2 cursor-pointer underline">
                 Create Account
               </span>
             </Link>

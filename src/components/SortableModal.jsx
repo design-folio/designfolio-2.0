@@ -41,8 +41,8 @@ export default function SortableModal({
 
   return (
     <Modal show={show}>
-      <div className="rounded-2xl flex flex-col justify-between  m-auto lg:w-[500px] max-h-[550px] my-auto overflow-hidden bg-card">
-        <div className="flex p-5 justify-between items-center">
+      <div className="bg-card m-auto my-auto flex max-h-[550px] flex-col justify-between overflow-hidden rounded-2xl lg:w-[500px]">
+        <div className="flex items-center justify-between p-5">
           <Text size="p-small" className="font-semibold">
             {title}
           </Text>
@@ -66,7 +66,7 @@ export default function SortableModal({
           <SortableContext items={items || []} strategy={verticalListSortingStrategy}>
             <div
               ref={scrollContainerRef}
-              className="flex flex-col gap-4 py-5 px-5 list-none max-h-[450px] overflow-auto "
+              className="flex max-h-[450px] list-none flex-col gap-4 overflow-auto px-5 py-5"
             >
               {children}
             </div>

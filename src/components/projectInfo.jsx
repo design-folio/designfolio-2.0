@@ -292,14 +292,14 @@ export default function ProjectInfo({
     ].filter(({ value }) => edit || !!value);
 
     return (
-      <div className="flex flex-col w-full">
+      <div className="flex w-full flex-col">
         {/* Header: Back + editing controls */}
         {(!isMacOS || edit) && (
-          <div className="px-5 md:px-8 pt-8 pb-6 flex items-center justify-between gap-3">
+          <div className="flex items-center justify-between gap-3 px-5 pt-8 pb-6 md:px-8">
             {!isMacOS && (
               <button
                 onClick={handleBack}
-                className="flex items-center gap-1.5 text-[13px] font-medium text-[#7A736C] dark:text-[#9E9893] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7] transition-colors group"
+                className="group flex items-center gap-1.5 text-[13px] font-medium text-[#7A736C] transition-colors hover:text-[#1A1A1A] dark:text-[#9E9893] dark:hover:text-[#F0EDE7]"
               >
                 <ChevronLeft
                   size={18}
@@ -317,7 +317,7 @@ export default function ProjectInfo({
                       <UIButton
                         variant="outline"
                         size="icon"
-                        className="h-7 w-7 rounded-full border border-black/10 dark:border-white/10 bg-white/50 dark:bg-[#2A2520]/50 hover:bg-black/5 dark:hover:bg-white/5 text-[#1A1A1A] dark:text-[#F0EDE7] transition-all focus-visible:ring-0 focus-visible:ring-offset-0"
+                        className="h-7 w-7 rounded-full border border-black/10 bg-white/50 text-[#1A1A1A] transition-all hover:bg-black/5 focus-visible:ring-0 focus-visible:ring-offset-0 dark:border-white/10 dark:bg-[#2A2520]/50 dark:text-[#F0EDE7] dark:hover:bg-white/5"
                       >
                         <svg
                           width="13"
@@ -337,15 +337,15 @@ export default function ProjectInfo({
                     <DropdownMenuContent
                       align="end"
                       sideOffset={8}
-                      className="w-[300px] p-4 bg-white/95 dark:bg-[#2A2520]/95 backdrop-blur-xl border border-black/10 dark:border-white/10 rounded-2xl shadow-xl z-50"
+                      className="z-50 w-[300px] rounded-2xl border border-black/10 bg-white/95 p-4 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-[#2A2520]/95"
                     >
                       <div className="flex flex-col gap-4">
                         <div className="flex items-start justify-between gap-3">
                           <div className="space-y-1">
-                            <Label className="text-[14px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] cursor-pointer">
+                            <Label className="cursor-pointer text-[14px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                               Protect Project
                             </Label>
-                            <p className="text-[12px] text-[#7A736C] dark:text-[#9E9893] leading-snug">
+                            <p className="text-[12px] leading-snug text-[#7A736C] dark:text-[#9E9893]">
                               Require a password to view this project (e.g., for NDAs).
                             </p>
                           </div>
@@ -370,12 +370,12 @@ export default function ProjectInfo({
                                   placeholder="Enter password"
                                   value={passwordInput}
                                   onChange={(e) => setPasswordInput(e.target.value)}
-                                  className="h-10 bg-black/[0.03] dark:bg-white/[0.03] border-transparent rounded-xl text-[14px] text-[#1A1A1A] dark:text-[#F0EDE7] focus-visible:ring-2 focus-visible:ring-black/10 dark:focus-visible:ring-white/10 shadow-none placeholder:text-black/30 dark:placeholder:text-white/30"
+                                  className="h-10 rounded-xl border-transparent bg-black/[0.03] text-[14px] text-[#1A1A1A] shadow-none placeholder:text-black/30 focus-visible:ring-2 focus-visible:ring-black/10 dark:bg-white/[0.03] dark:text-[#F0EDE7] dark:placeholder:text-white/30 dark:focus-visible:ring-white/10"
                                 />
                                 <UIButton
                                   size="sm"
                                   onClick={handlePasswordSave}
-                                  className="rounded-xl h-9 bg-[#1A1A1A] dark:bg-white text-white dark:text-[#1A1A1A] hover:bg-black/80 dark:hover:bg-white/90 text-[13px]"
+                                  className="h-9 rounded-xl bg-[#1A1A1A] text-[13px] text-white hover:bg-black/80 dark:bg-white dark:text-[#1A1A1A] dark:hover:bg-white/90"
                                 >
                                   Save Password
                                 </UIButton>
@@ -405,16 +405,16 @@ export default function ProjectInfo({
                             onClick={handleAnalyzeClick}
                             disabled={isAnalyzeDisabled}
                             className={cn(
-                              "h-7 text-[12px] rounded-full border border-black/10 dark:border-white/10",
-                              "bg-white/50 dark:bg-[#2A2520]/50 text-[#1A1A1A] dark:text-[#F0EDE7]",
+                              "h-7 rounded-full border border-black/10 text-[12px] dark:border-white/10",
+                              "bg-white/50 text-[#1A1A1A] dark:bg-[#2A2520]/50 dark:text-[#F0EDE7]",
                               "flex items-center gap-1.5 px-3 transition-all focus-visible:ring-0 focus-visible:ring-offset-0",
-                              "cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed",
+                              "cursor-pointer disabled:cursor-not-allowed disabled:opacity-60",
                               !isAnalyzeDisabled && "hover:bg-black/5 dark:hover:bg-white/5"
                             )}
                           >
                             {isAnalyzing ? (
                               <svg
-                                className="w-[18px] h-[5px] shrink-0"
+                                className="h-[5px] w-[18px] shrink-0"
                                 viewBox="0 0 22 6"
                                 fill="none"
                                 xmlns="http://www.w3.org/2000/svg"
@@ -443,7 +443,7 @@ export default function ProjectInfo({
                               </svg>
                             ) : (
                               <svg
-                                className="w-4 h-4 shrink-0"
+                                className="h-4 w-4 shrink-0"
                                 viewBox="0 0 25 24"
                                 fill="none"
                                 xmlns="http://www.w3.org/2000/svg"
@@ -465,7 +465,7 @@ export default function ProjectInfo({
                       {tooltipMessage && (
                         <TooltipContent
                           side="bottom"
-                          className="bg-foreground text-background text-xs px-2 py-1 rounded"
+                          className="bg-foreground text-background rounded px-2 py-1 text-xs"
                         >
                           {tooltipMessage}
                         </TooltipContent>
@@ -481,9 +481,9 @@ export default function ProjectInfo({
         <div className="custom-dashed-t" />
 
         {/* Title + subtitle */}
-        <div className="px-5 md:px-8 pt-8 pb-6">
+        <div className="px-5 pt-8 pb-6 md:px-8">
           <h1
-            className="text-[24px] font-semibold mb-3 tracking-tight text-[#1A1A1A] dark:text-[#F0EDE7]"
+            className="mb-3 text-[24px] font-semibold tracking-tight text-[#1A1A1A] dark:text-[#F0EDE7]"
             contentEditable={edit}
             suppressContentEditableWarning
             onBlur={(e) => handleOnBlur("title", e)}
@@ -495,7 +495,7 @@ export default function ProjectInfo({
           </h1>
           {(edit || !!description) && (
             <p
-              className="text-[#7A736C] dark:text-[#B5AFA5] text-base leading-relaxed min-w-0 webkit-fill"
+              className="webkit-fill min-w-0 text-base leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]"
               style={{ fontWeight: 450 }}
               contentEditable={edit}
               suppressContentEditableWarning
@@ -510,7 +510,7 @@ export default function ProjectInfo({
         </div>
 
         {/* Featured Image */}
-        <div className="px-5 md:px-8 pb-4">
+        <div className="px-5 pb-4 md:px-8">
           {edit ? (
             <ImageWithOverlayAndPicker
               src={thumbnail?.url}
@@ -519,11 +519,11 @@ export default function ProjectInfo({
               recommendedSize="1600 × 900px"
             />
           ) : (
-            <figure className="relative w-full aspect-[3/2] rounded-xl overflow-hidden drop-shadow-sm border border-black/5 dark:border-white/10">
+            <figure className="relative aspect-[3/2] w-full overflow-hidden rounded-xl border border-black/5 drop-shadow-sm dark:border-white/10">
               <img
                 src={thumbnail?.url}
                 alt="project image"
-                className={`w-full h-full object-cover transition-opacity duration-100 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
+                className={`h-full w-full object-cover transition-opacity duration-100 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
                 loading="lazy"
                 fetchPriority="high"
                 decoding="async"
@@ -536,8 +536,8 @@ export default function ProjectInfo({
 
         {/* Project Details */}
         {monoDetailFields.length > 0 && (
-          <div className="px-5 md:px-8 py-5">
-            <div className="flex items-center gap-2 mb-4">
+          <div className="px-5 py-5 md:px-8">
+            <div className="mb-4 flex items-center gap-2">
               <svg
                 width="18"
                 height="18"
@@ -549,17 +549,17 @@ export default function ProjectInfo({
               >
                 <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
               </svg>
-              <h2 className="text-[11px] font-bold text-[#463B34] dark:text-[#D4C9BC] font-mono uppercase tracking-widest">
+              <h2 className="font-mono text-[11px] font-bold tracking-widest text-[#463B34] uppercase dark:text-[#D4C9BC]">
                 Project Details
               </h2>
             </div>
-            <div className="border border-[#C8C4BD] dark:border-[#3A352E] rounded-lg overflow-hidden bg-[#E7E3D9] dark:bg-[#2A2520]">
+            <div className="overflow-hidden rounded-lg border border-[#C8C4BD] bg-[#E7E3D9] dark:border-[#3A352E] dark:bg-[#2A2520]">
               {monoDetailFields.map(({ key, label, value }, index) => (
                 <div
                   key={key}
-                  className={`flex justify-between items-center px-4 py-3 ${index !== monoDetailFields.length - 1 ? "border-b border-[#C8C4BD] dark:border-[#3A352E]" : ""}`}
+                  className={`flex items-center justify-between px-4 py-3 ${index !== monoDetailFields.length - 1 ? "border-b border-[#C8C4BD] dark:border-[#3A352E]" : ""}`}
                 >
-                  <span className="text-[12px] font-medium text-[#463B34] dark:text-[#D4C9BC] uppercase tracking-wide">
+                  <span className="text-[12px] font-medium tracking-wide text-[#463B34] uppercase dark:text-[#D4C9BC]">
                     {label}
                   </span>
                   <p
@@ -601,7 +601,7 @@ export default function ProjectInfo({
   // ─── Default layout (all other templates) ────────────────────────────────
   return (
     <div className="bg-df-section-card-bg-color rounded-[26px] p-[16px] md:p-[32px]">
-      <div className="flex justify-between items-center mb-2">
+      <div className="mb-2 flex items-center justify-between">
         {!isMacOS && (
           <Button
             text="Go Back"
@@ -613,7 +613,7 @@ export default function ProjectInfo({
         )}
 
         {edit && (
-          <div className="flex gap-3 items-center justify-center">
+          <div className="flex items-center justify-center gap-3">
             {AnalyzeStatus && (
               <>
                 <Button
@@ -656,7 +656,7 @@ export default function ProjectInfo({
               </>
             )}
             {!isMacOS && (
-              <div className=" relative" data-popover-id={popovers.password}>
+              <div className="relative" data-popover-id={popovers.password}>
                 <Button
                   type="secondary"
                   size="small"
@@ -674,13 +674,13 @@ export default function ProjectInfo({
                 />
 
                 <div
-                  className={`pt-2 origin-top-right absolute z-50 right-0 transition-all will-change-transform translateZ(0) duration-120 ease-in-out ${
+                  className={`translateZ(0) absolute right-0 z-50 origin-top-right pt-2 transition-all duration-120 ease-in-out will-change-transform ${
                     popoverMenu === popovers.password
-                      ? "opacity-100 scale-100"
-                      : "opacity-0 scale-90 pointer-events-none"
+                      ? "scale-100 opacity-100"
+                      : "pointer-events-none scale-90 opacity-0"
                   }`}
                 >
-                  <div className=" w-[350px] md:w-[386px]  bg-popover-bg-color rounded-2xl shadow-lg border-[5px] border-popover-border-color p-2">
+                  <div className="bg-popover-bg-color border-popover-border-color w-[350px] rounded-2xl border-[5px] p-2 shadow-lg md:w-[386px]">
                     <Formik
                       initialValues={{
                         password: password,
@@ -701,18 +701,18 @@ export default function ProjectInfo({
                     >
                       {({ isSubmitting, errors, touched, validateField }) => (
                         <Form id="projectForm" autoComplete="off">
-                          <div className="bg-input-password-bg-color rounded-lg  py-4 px-3 transition-all">
-                            <div className="flex justify-between gap-[12px] items-center">
+                          <div className="bg-input-password-bg-color rounded-lg px-3 py-4 transition-all">
+                            <div className="flex items-center justify-between gap-[12px]">
                               <div>
                                 <Text
                                   size={"p-xxsmall"}
-                                  className="font-medium text-input-password-heading-color"
+                                  className="text-input-password-heading-color font-medium"
                                 >
                                   Set Password
                                 </Text>
                                 <Text
                                   size={"p-xxsmall"}
-                                  className="font-medium text-input-password-description-color"
+                                  className="text-input-password-description-color font-medium"
                                 >
                                   Protect your project if you&apos;ve an NDA.
                                 </Text>
@@ -758,7 +758,7 @@ export default function ProjectInfo({
                             )}
                           </div>
                           {isPassword && (
-                            <div className="flex gap-2 justify-end mt-4">
+                            <div className="mt-4 flex justify-end gap-2">
                               <Button
                                 text="Cancel"
                                 onClick={() => setPopoverMenu(null)}
@@ -784,7 +784,7 @@ export default function ProjectInfo({
         )}
       </div>
       <h1
-        className="text-3xl font-semibold text-df-heading-color"
+        className="text-df-heading-color text-3xl font-semibold"
         contentEditable={edit}
         suppressContentEditableWarning
         onBlur={(e) => handleOnBlur("title", e)}
@@ -799,7 +799,7 @@ export default function ProjectInfo({
 
       {(edit || !!description) && (
         <p
-          className="text-[16px] text-df-description-color font-inter font-[500] mt-2 min-w-0 webkit-fill"
+          className="text-df-description-color font-inter webkit-fill mt-2 min-w-0 text-[16px] font-[500]"
           contentEditable={edit}
           suppressContentEditableWarning
           onBlur={(e) => handleOnBlur("description", e)}
@@ -813,14 +813,14 @@ export default function ProjectInfo({
         </p>
       )}
 
-      <div className="flex flex-col gap-4 md:grid md:grid-cols-4 md:gap-6 mt-4">
+      <div className="mt-4 flex flex-col gap-4 md:grid md:grid-cols-4 md:gap-6">
         {(edit || !!client) && (
           <div>
-            <p className="text-[14px] text-df-heading-color font-inter font-[500]">
+            <p className="text-df-heading-color font-inter text-[14px] font-[500]">
               App name / Client
             </p>
             <p
-              className="text-[14px] text-df-description-color font-inter font-[500]"
+              className="text-df-description-color font-inter text-[14px] font-[500]"
               contentEditable={edit}
               suppressContentEditableWarning
               onBlur={(e) => handleOnBlur("client", e)}
@@ -838,9 +838,9 @@ export default function ProjectInfo({
 
         {(edit || !!role) && (
           <div>
-            <p className="text-[14px] text-df-heading-color font-inter font-[500]">My Role</p>
+            <p className="text-df-heading-color font-inter text-[14px] font-[500]">My Role</p>
             <p
-              className="text-[14px] text-df-description-color font-inter font-[500]"
+              className="text-df-description-color font-inter text-[14px] font-[500]"
               contentEditable={edit}
               suppressContentEditableWarning
               onBlur={(e) => handleOnBlur("role", e)}
@@ -857,9 +857,9 @@ export default function ProjectInfo({
         )}
         {(edit || !!industry) && (
           <div>
-            <p className="text-[14px] text-df-heading-color font-inter font-[500]">Industry</p>
+            <p className="text-df-heading-color font-inter text-[14px] font-[500]">Industry</p>
             <p
-              className="text-[14px] text-df-description-color font-inter font-[500]"
+              className="text-df-description-color font-inter text-[14px] font-[500]"
               contentEditable={edit}
               suppressContentEditableWarning
               onBlur={(e) => handleOnBlur("industry", e)}
@@ -876,9 +876,9 @@ export default function ProjectInfo({
         )}
         {(edit || !!platform) && (
           <div>
-            <p className="text-[14px] text-df-heading-color font-inter font-[500]">Platform</p>
+            <p className="text-df-heading-color font-inter text-[14px] font-[500]">Platform</p>
             <p
-              className="text-[14px] text-df-description-color font-inter font-[500]"
+              className="text-df-description-color font-inter text-[14px] font-[500]"
               contentEditable={edit}
               suppressContentEditableWarning
               onBlur={(e) => handleOnBlur("platform", e)}
@@ -903,17 +903,17 @@ export default function ProjectInfo({
           className="mt-6 md:mt-8"
         />
       ) : (
-        <figure className="relative w-full aspect-[3/2] rounded-[20px] overflow-hidden mt-6 md:mt-8">
+        <figure className="relative mt-6 aspect-[3/2] w-full overflow-hidden rounded-[20px] md:mt-8">
           <img
             src={thumbnail?.url}
             alt="project image"
-            className={`w-full h-full object-cover transition-opacity duration-100 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
+            className={`h-full w-full object-cover transition-opacity duration-100 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
             loading="lazy"
             fetchPriority="high"
             decoding="async"
             onLoad={() => setImageLoaded(true)}
           />
-          {!imageLoaded && <div className="absolute inset-0 bg-df-placeholder-color" />}
+          {!imageLoaded && <div className="bg-df-placeholder-color absolute inset-0" />}
         </figure>
       )}
       <Modal show={showModal} className={"md:block"}>

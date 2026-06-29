@@ -151,12 +151,12 @@ export function Jobs() {
   // ── Loading ──────────────────────────────────────────────────────────────
   if (phase === "loading") {
     return (
-      <div className="flex-1 flex items-center justify-center">
+      <div className="flex flex-1 items-center justify-center">
         <div className="flex gap-[5px]">
           {[0, 1, 2].map((i) => (
             <div
               key={i}
-              className="w-1.5 h-1.5 rounded-full bg-[#FF553E] animate-pulse"
+              className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#FF553E]"
               style={{ animationDelay: `${i * 0.2}s` }}
             />
           ))}
@@ -169,11 +169,11 @@ export function Jobs() {
   if (phase === "error") {
     const isAuth = errorType === "auth";
     return (
-      <div className="flex-1 flex flex-col items-center justify-center gap-3 px-6">
-        <p className="text-foreground text-[18px] font-medium tracking-tight text-center">
+      <div className="flex flex-1 flex-col items-center justify-center gap-3 px-6">
+        <p className="text-foreground text-center text-[18px] font-medium tracking-tight">
           {isAuth ? "Session expired" : "Something went wrong"}
         </p>
-        <p className="text-foreground/50 text-sm max-w-xs text-center leading-relaxed">
+        <p className="text-foreground/50 max-w-xs text-center text-sm leading-relaxed">
           {isAuth
             ? "Your session has expired or you're not signed in. Please log in to continue."
             : "We couldn't load your jobs. Please try again."}
@@ -188,7 +188,7 @@ export function Jobs() {
               window.location.reload();
             }
           }}
-          className="mt-2 h-10 px-6 rounded-full bg-foreground text-background text-sm font-medium"
+          className="bg-foreground text-background mt-2 h-10 rounded-full px-6 text-sm font-medium"
         >
           {isAuth ? "Sign in" : "Retry"}
         </button>
@@ -199,11 +199,11 @@ export function Jobs() {
   // ── Empty (no jobs found) ─────────────────────────────────────────────────
   if (phase === "empty") {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center gap-4 px-6">
-        <p className="text-foreground text-[22px] font-medium tracking-tight text-center">
+      <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6">
+        <p className="text-foreground text-center text-[22px] font-medium tracking-tight">
           No matching roles found.
         </p>
-        <p className="text-foreground/50 text-sm max-w-xs text-center leading-relaxed">
+        <p className="text-foreground/50 max-w-xs text-center text-sm leading-relaxed">
           We couldn&apos;t find jobs for your location or preferences right now. Try different
           answers.
         </p>
@@ -212,7 +212,7 @@ export function Jobs() {
             setAnswers([]);
             setPhase("transition");
           }}
-          className="mt-2 h-10 px-6 rounded-full bg-foreground text-background text-sm font-medium"
+          className="bg-foreground text-background mt-2 h-10 rounded-full px-6 text-sm font-medium"
         >
           Try again
         </button>

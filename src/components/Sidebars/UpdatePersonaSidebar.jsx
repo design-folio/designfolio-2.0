@@ -83,16 +83,16 @@ export default function UpdatePersonaSidebar() {
   };
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex-1 overflow-y-auto px-6 py-4 space-y-6">
+    <div className="flex h-full flex-col">
+      <div className="flex-1 space-y-6 overflow-y-auto px-6 py-4">
         <div>
-          <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-3">
+          <p className="text-muted-foreground mb-3 text-xs font-medium tracking-widest uppercase">
             Role
           </p>
 
           {rolesLoading ? (
-            <div className="flex items-center gap-2 py-4 text-sm text-muted-foreground">
-              <Loader2 className="w-4 h-4 animate-spin" />
+            <div className="text-muted-foreground flex items-center gap-2 py-4 text-sm">
+              <Loader2 className="h-4 w-4 animate-spin" />
               Loading roles...
             </div>
           ) : (
@@ -112,17 +112,17 @@ export default function UpdatePersonaSidebar() {
                       if (role._id) setSelectedPersonaId(role._id);
                     }}
                     className={cn(
-                      "px-3 py-2.5 rounded-xl border-2 text-sm font-medium transition-all text-left flex items-center gap-2 relative overflow-hidden",
+                      "relative flex items-center gap-2 overflow-hidden rounded-xl border-2 px-3 py-2.5 text-left text-sm font-medium transition-all",
                       isSelected
                         ? "bg-foreground border-foreground text-background"
-                        : "bg-transparent border-border text-foreground hover:bg-muted"
+                        : "border-border text-foreground hover:bg-muted bg-transparent"
                     )}
                   >
                     <motion.img
                       src={role.image}
                       alt={role.label}
                       className={cn(
-                        "w-8 h-8 object-contain shrink-0 transition-all",
+                        "h-8 w-8 shrink-0 object-contain transition-all",
                         isSelected && "invert dark:invert-0"
                       )}
                       animate={isSelected ? { scale: [1, 1.1, 1] } : {}}
@@ -137,7 +137,7 @@ export default function UpdatePersonaSidebar() {
                           exit={{ scale: 0, opacity: 0 }}
                           transition={{ duration: 0.15 }}
                         >
-                          <Check className="w-3.5 h-3.5 shrink-0" />
+                          <Check className="h-3.5 w-3.5 shrink-0" />
                         </motion.div>
                       )}
                     </AnimatePresence>
@@ -156,7 +156,7 @@ export default function UpdatePersonaSidebar() {
                 transition={{ duration: 0.2 }}
                 className="mt-3 space-y-1.5 overflow-hidden"
               >
-                <Label className="text-xs font-medium text-muted-foreground uppercase tracking-widest">
+                <Label className="text-muted-foreground text-xs font-medium tracking-widest uppercase">
                   Your Role
                 </Label>
                 <Input
@@ -171,7 +171,7 @@ export default function UpdatePersonaSidebar() {
         </div>
       </div>
 
-      <div className="flex gap-2 py-3 px-6 border-t border-border justify-end">
+      <div className="border-border flex justify-end gap-2 border-t px-6 py-3">
         <Button variant="outline" type="button" onClick={() => closeSidebar(true)}>
           Cancel
         </Button>

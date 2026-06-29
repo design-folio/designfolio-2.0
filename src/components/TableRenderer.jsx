@@ -42,8 +42,8 @@ export const TableRenderer = ({ node }) => {
   }
 
   return (
-    <div className="overflow-x-auto my-6">
-      <table className="w-full border-collapse bg-white shadow-sm rounded-lg">
+    <div className="my-6 overflow-x-auto">
+      <table className="w-full border-collapse rounded-lg bg-white shadow-sm">
         <tbody>
           {node.children.map((row, i) => (
             <tr key={i} className="border-b border-gray-200">

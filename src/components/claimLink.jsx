@@ -100,10 +100,10 @@ export default function ClaimLink() {
       >
         <form onSubmit={handleDomainSubmit} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="domain" className="text-sm font-medium text-foreground">
+            <Label htmlFor="domain" className="text-foreground text-sm font-medium">
               Your Domain
             </Label>
-            <div className="flex h-10 w-full items-center rounded-xl border border-transparent bg-black/[0.03] dark:bg-white/[0.03] px-3.5 transition-colors focus-within:bg-transparent focus-within:ring-2 focus-within:ring-black/10 dark:focus-within:ring-white/10 focus-within:border-black/20 dark:focus-within:border-white/20">
+            <div className="flex h-10 w-full items-center rounded-xl border border-transparent bg-black/[0.03] px-3.5 transition-colors focus-within:border-black/20 focus-within:bg-transparent focus-within:ring-2 focus-within:ring-black/10 dark:bg-white/[0.03] dark:focus-within:border-white/20 dark:focus-within:ring-white/10">
               <input
                 id="domain"
                 type="text"
@@ -112,15 +112,15 @@ export default function ClaimLink() {
                 onChange={handleDomainChange}
                 required
                 data-testid="input-domain"
-                className="min-w-0 flex-1 bg-transparent py-1 text-sm text-foreground outline-none placeholder:text-black/30 dark:placeholder:text-white/30 disabled:cursor-not-allowed disabled:opacity-50"
+                className="text-foreground min-w-0 flex-1 bg-transparent py-1 text-sm outline-none placeholder:text-black/30 disabled:cursor-not-allowed disabled:opacity-50 dark:placeholder:text-white/30"
               />
-              <div className="flex items-center gap-2 shrink-0">
-                <span className="text-sm text-foreground/40 whitespace-nowrap select-none">
+              <div className="flex shrink-0 items-center gap-2">
+                <span className="text-foreground/40 text-sm whitespace-nowrap select-none">
                   .designfolio.me
                 </span>
                 {loading && domain && (
                   <svg
-                    className="animate-spin h-4 w-4 text-muted-foreground"
+                    className="text-muted-foreground h-4 w-4 animate-spin"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
@@ -152,7 +152,7 @@ export default function ClaimLink() {
                   className="overflow-hidden"
                 >
                   <div className="flex items-center gap-2 text-sm text-red-600">
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                       <path
                         fillRule="evenodd"
                         d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
@@ -173,7 +173,7 @@ export default function ClaimLink() {
                   className="overflow-hidden"
                 >
                   <div className="flex items-center gap-2 text-sm text-green-600">
-                    <Check className="w-4 h-4" />
+                    <Check className="h-4 w-4" />
                     <span>{domain}.designfolio.me is available!</span>
                   </div>
                 </motion.div>
@@ -188,7 +188,7 @@ export default function ClaimLink() {
                   className="overflow-hidden"
                 >
                   <div className="flex items-center gap-2 text-sm text-red-600">
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                       <path
                         fillRule="evenodd"
                         d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
@@ -205,18 +205,18 @@ export default function ClaimLink() {
           <Button
             variant="darker"
             type="submit"
-            className="w-full rounded-full h-11 px-6 text-base font-semibold no-default-hover-elevate no-default-active-elevate transition-colors"
+            className="no-default-hover-elevate no-default-active-elevate h-11 w-full rounded-full px-6 text-base font-semibold transition-colors"
             disabled={!domain.trim() || !isAvailable || loading || !!validationError}
             data-testid="button-claim-domain"
           >
             Continue
           </Button>
 
-          <p className="text-center text-sm text-foreground/70 mt-6">
+          <p className="text-foreground/70 mt-6 text-center text-sm">
             Already have an account?{" "}
             <Link
               href={router.query.job ? `/login?job=${router.query.job}` : "/login"}
-              className="hover:underline font-medium cursor-pointer"
+              className="cursor-pointer font-medium hover:underline"
               style={{ color: "#FF553E" }}
               data-testid="link-login"
             >

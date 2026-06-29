@@ -23,7 +23,7 @@ export default function Index({ dfToken }) {
         imageUrl={"https://designfolio.me/assets/png/designfolio-thumbnail.png"}
         url={`https://designfolio.me`}
       />
-      <main className={"pt-[88px] md:pt-[104px] pb-5"}>
+      <main className={"pt-[88px] pb-5 md:pt-[104px]"}>
         <Home dfToken={dfToken} />
       </main>
     </div>

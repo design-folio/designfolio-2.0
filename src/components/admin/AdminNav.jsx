@@ -39,7 +39,7 @@ export default function AdminNav() {
             className="h-7 w-auto shrink-0 text-[#1A1A1A] dark:text-[#F0EDE7]"
             aria-label="Designfolio"
           />
-          <Badge className="bg-[#E37941]/12 text-[#E37941] border-0 text-[10px] font-semibold tracking-wide uppercase leading-none shrink-0 mb-4">
+          <Badge className="mb-4 shrink-0 border-0 bg-[#E37941]/12 text-[10px] leading-none font-semibold tracking-wide text-[#E37941] uppercase">
             Admin
           </Badge>
         </div>

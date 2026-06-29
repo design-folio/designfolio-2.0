@@ -48,7 +48,7 @@ export function AboutMeContent({
     <div className={cn("space-y-4", className)}>
       <div className={cn("space-y-4 leading-relaxed", textClassName)}>
         <p
-          className="leading-relaxed whitespace-pre-wrap text-foreground-landing/80"
+          className="text-foreground-landing/80 leading-relaxed whitespace-pre-wrap"
           data-testid="text-about-description-1"
         >
           {hasDescription ? description : edit ? "Write something about yourself here..." : ""}
@@ -61,7 +61,7 @@ export function AboutMeContent({
           {showCaption && (
             <div
               className={cn(
-                "mb-4 text-center text-[10px] font-medium tracking-widest uppercase pointer-events-none",
+                "pointer-events-none mb-4 text-center text-[10px] font-medium tracking-widest uppercase",
                 textClassName,
                 "text-foreground-landing/20"
               )}
@@ -123,19 +123,19 @@ function Pegboard({ images = [], stickers = [] }) {
   ];
 
   return (
-    <div className="relative group/pegboard mb-8">
+    <div className="group/pegboard relative mb-8">
       {/* Board depth */}
-      <div className="absolute inset-0 bg-black/5 rounded-2xl translate-y-[2px] translate-x-[1px] blur-[3px] pointer-events-none" />
+      <div className="pointer-events-none absolute inset-0 translate-x-[1px] translate-y-[2px] rounded-2xl bg-black/5 blur-[3px]" />
 
       <div
         ref={pinBoardRef}
-        className="relative w-full aspect-[4/3] sm:aspect-[16/10] lg:aspect-[16/9] bg-white dark:bg-background rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.02)] z-10 overflow-visible border border-black/[0.03]"
+        className="dark:bg-background relative z-10 aspect-[4/3] w-full overflow-visible rounded-2xl border border-black/[0.03] bg-white shadow-[0_1px_4px_rgba(0,0,0,0.02)] sm:aspect-[16/10] lg:aspect-[16/9]"
       >
         {/* Pegboard holes */}
-        <div className="absolute inset-0 pointer-events-none rounded-2xl bg-center p-[18px] [background-size:36px_36px] [background-origin:content-box] [background-clip:content-box] bg-[radial-gradient(circle,rgba(0,0,0,0.10)_2px,transparent_2px)] dark:bg-[radial-gradient(circle,#30323C_2px,transparent_2px)]" />
+        <div className="pointer-events-none absolute inset-0 rounded-2xl bg-[radial-gradient(circle,rgba(0,0,0,0.10)_2px,transparent_2px)] [background-size:36px_36px] [background-clip:content-box] bg-center [background-origin:content-box] p-[18px] dark:bg-[radial-gradient(circle,#30323C_2px,transparent_2px)]" />
 
         {/* Lighting */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden bg-gradient-to-tr from-black/[0.01] via-transparent to-white/[0.05]" />
+        <div className="pointer-events-none absolute inset-0 overflow-hidden bg-gradient-to-tr from-black/[0.01] via-transparent to-white/[0.05]" />
 
         {/* Render Images */}
         {/* OLD: PegboardItem with initial={config.initial} animate={config.initial} instead of style */}
@@ -225,18 +225,18 @@ function PegboardItem({
         dragElastic={0.1}
         onDragStart={onDragStart}
         onDragEnd={onDragEnd}
-        className="relative w-full h-full p-1 bg-white shadow-[0_8px_16px_rgba(0,0,0,0.06),0_2px_4px_rgba(0,0,0,0.02)] cursor-grab active:cursor-grabbing rounded-sm"
+        className="relative h-full w-full cursor-grab rounded-sm bg-white p-1 shadow-[0_8px_16px_rgba(0,0,0,0.06),0_2px_4px_rgba(0,0,0,0.02)] active:cursor-grabbing"
         whileDrag={{
           scale: 1.05,
           zIndex: 50,
           boxShadow: "0_20px_25px_-5px_rgba(0,0,0,0.1),0_10px_10px_-5px_rgba(0,0,0,0.04)",
         }}
       >
-        <div className="w-full h-full overflow-hidden rounded-sm">
+        <div className="h-full w-full overflow-hidden rounded-sm">
           <img
             src={imgSrc}
             alt={alt}
-            className="w-full h-full object-cover pointer-events-none"
+            className="pointer-events-none h-full w-full object-cover"
             onError={(e) => {
               e.currentTarget.onerror = null;
               e.currentTarget.src = fallbackSrc;
@@ -253,14 +253,14 @@ function Pin({ color = "#FF553E", small = false }) {
   return (
     <div
       className={cn(
-        "absolute left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none z-20",
-        small ? "-top-2 w-4 h-4" : "-top-3 w-6 h-6"
+        "pointer-events-none absolute left-1/2 z-20 flex -translate-x-1/2 items-center justify-center",
+        small ? "-top-2 h-4 w-4" : "-top-3 h-6 w-6"
       )}
     >
       <div
         className={cn(
-          "rounded-full relative",
-          small ? "w-3.5 h-3.5" : "w-5 h-5",
+          "relative rounded-full",
+          small ? "h-3.5 w-3.5" : "h-5 w-5",
           // v3: different shadow strength for sticker pins
           small
             ? "shadow-[0_1.5px_3px_rgba(0,0,0,0.2),inset_0_-0.75px_1.5px_rgba(0,0,0,0.2)]"
@@ -271,8 +271,8 @@ function Pin({ color = "#FF553E", small = false }) {
         <div
           className={cn(
             // v3: smaller highlight for sticker pin
-            small ? "absolute top-0.5 left-1 w-1 h-1" : "absolute top-1 left-1.5 w-1.5 h-1.5",
-            "bg-white/40 rounded-full blur-[0.5px]"
+            small ? "absolute top-0.5 left-1 h-1 w-1" : "absolute top-1 left-1.5 h-1.5 w-1.5",
+            "rounded-full bg-white/40 blur-[0.5px]"
           )}
         />
         <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-black/10 to-transparent" />
@@ -280,7 +280,7 @@ function Pin({ color = "#FF553E", small = false }) {
       <div
         className={cn(
           // match v3 needle styling
-          "absolute w-[1px] bg-black/20 blur-[0.5px] -rotate-12",
+          "absolute w-[1px] -rotate-12 bg-black/20 blur-[0.5px]",
           small ? "top-3 h-1.5" : "top-4 h-2"
         )}
       />

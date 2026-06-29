@@ -33,10 +33,10 @@ const Minimal = ({ userDetails, edit }) => {
   const sectionComponents = {
     about: isSectionVisible("about") && (edit || hasAbout) && (
       <section id="section-about" className="py-12">
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-bold  flex-1">About</h2>
+        <div className="mb-8 flex items-center justify-between">
+          <h2 className="flex-1 text-2xl font-bold">About</h2>
           {edit && (
-            <div className="flex items-center gap-2 justify-end">
+            <div className="flex items-center justify-end gap-2">
               <SectionVisibilityButton sectionId="about" />
               <ButtonNew
                 variant="secondary"
@@ -44,7 +44,7 @@ const Minimal = ({ userDetails, edit }) => {
                 className="h-11 w-11 rounded-full"
                 onClick={() => openSidebar?.(sidebars.about)}
               >
-                <PencilIcon className="w-4 h-4 text-df-icon-color" />
+                <PencilIcon className="text-df-icon-color h-4 w-4" />
               </ButtonNew>
             </div>
           )}
@@ -99,14 +99,14 @@ const Minimal = ({ userDetails, edit }) => {
     <>
       <div
         className={cn(
-          "min-h-screen max-w-[848px] bg-background mx-auto text-foreground rounded-2xl",
+          "bg-background text-foreground mx-auto min-h-screen max-w-[848px] rounded-2xl",
           userDetails?.wallpaper && userDetails?.wallpaper?.value != 0 && ""
         )}
       >
         <div className="fixed top-8 left-8 z-50">{/* <ThemeToggle /> */}</div>
         <div
           className={cn(
-            "container max-w-3xl mx-auto px-4",
+            "container mx-auto max-w-3xl px-4",
             userDetails?.wallpaper && userDetails?.wallpaper?.value != 0 && "my-8"
           )}
         >

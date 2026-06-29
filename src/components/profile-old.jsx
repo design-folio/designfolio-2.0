@@ -40,7 +40,7 @@ export default function Profile({ preview = false, edit = false, userDetails = n
   return (
     <section
       className={cn(
-        "bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-[32px] break-words"
+        "bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 break-words lg:p-[32px]"
       )}
     >
       {preview && (
@@ -54,18 +54,18 @@ export default function Profile({ preview = false, edit = false, userDetails = n
           />
         </Link>
       )}
-      <div className="flex flex-col lg:flex-row gap-[16px] lg:gap-[32px] items-start ">
+      <div className="flex flex-col items-start gap-[16px] lg:flex-row lg:gap-[32px]">
         <DfImage
           src={userDetails?.avatar?.url ? userDetails?.avatar?.url : "/assets/svgs/avatar.svg"}
-          className={"w-[136px] h-[136px] lg:w-[142px] lg:h-[142px] rounded-[24px]"}
+          className={"h-[136px] w-[136px] rounded-[24px] lg:h-[142px] lg:w-[142px]"}
         />
 
-        <div className="flex-1 relative min-w-0 webkit-fill">
+        <div className="webkit-fill relative min-w-0 flex-1">
           <div className="flex justify-between gap-4">
             <Text
               as="h1"
               size="h3"
-              className="text-df-heading-color min-w-0 webkit-fil font-medium"
+              className="text-df-heading-color webkit-fil min-w-0 font-medium"
             >
               {userDetails?.introduction}
             </Text>
@@ -80,13 +80,13 @@ export default function Profile({ preview = false, edit = false, userDetails = n
               </div>
             )}
           </div>
-          <Text size="p-xsmall" className="min-w-0 webkit-fill mt-[12px] text-df-description-color">
+          <Text size="p-xsmall" className="webkit-fill text-df-description-color mt-[12px] min-w-0">
             {userDetails?.bio ? userDetails?.bio : "Write your Intro here.."}
           </Text>
         </div>
       </div>
       <div
-        className="relative overflow-hidden mt-7"
+        className="relative mt-7 overflow-hidden"
         style={{
           opacity: 1,
           maskImage:
@@ -119,7 +119,7 @@ export default function Profile({ preview = false, edit = false, userDetails = n
                 <img src="/assets/svgs/scroll-star.svg" className="mr-2" alt="" />
                 <Text
                   size="p-xxsmall"
-                  className=" text-profile-card-skill-color px-[10px] cursor-default mr-2"
+                  className="text-profile-card-skill-color mr-2 cursor-default px-[10px]"
                 >
                   {skill}
                 </Text>

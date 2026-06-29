@@ -51,8 +51,8 @@ export const Footer = ({ userDetails, edit }) => {
   };
 
   return (
-    <footer className="pt-16 pb-[140px] lg:pb-[80px] border-t border-secondary-border">
-      <div className="container max-w-3xl mx-auto px-4">
+    <footer className="border-secondary-border border-t pt-16 pb-[140px] lg:pb-[80px]">
+      <div className="container mx-auto max-w-3xl px-4">
         <motion.div
           ref={ref}
           variants={containerVariants}
@@ -60,13 +60,13 @@ export const Footer = ({ userDetails, edit }) => {
           animate={isInView ? "visible" : "hidden"}
           className="flex flex-col items-center gap-8"
         >
-          <h2 className="text-3xl font-bold text-foreground max-w-2xl text-center leading-tight">
+          <h2 className="text-foreground max-w-2xl text-center text-3xl leading-tight font-bold">
             Let&apos;s work together
           </h2>
           {userDetails?.resume?.url && (
-            <div className="flex flex-wrap gap-4 justify-center">
+            <div className="flex flex-wrap justify-center gap-4">
               <a href={userDetails?.resume?.url} download={true} target="_blank">
-                <Button size="lg" variant="outline" className="text-lg px-8">
+                <Button size="lg" variant="outline" className="px-8 text-lg">
                   <Download className="mr-2" />
                   Download Resume
                 </Button>
@@ -74,7 +74,7 @@ export const Footer = ({ userDetails, edit }) => {
               {edit && (
                 <Button2
                   icon={
-                    <DeleteIcon className="stroke-delete-btn-icon-color w-6 h-6 cursor-pointer" />
+                    <DeleteIcon className="stroke-delete-btn-icon-color h-6 w-6 cursor-pointer" />
                   }
                   type="normal"
                   className=""
@@ -95,18 +95,18 @@ export const Footer = ({ userDetails, edit }) => {
                   type="secondary"
                   customClass="w-fit gap-0"
                   icon={
-                    <PlusIcon className="text-secondary-btn-text-color w-[14px] h-[14px] cursor-pointer" />
+                    <PlusIcon className="text-secondary-btn-text-color h-[14px] w-[14px] cursor-pointer" />
                   }
                 />
               }
               className="bg-card w-full"
             />
           )}
-          <div className="flex items-center gap-8 text-foreground/60 dark:text-gray-400">
+          <div className="text-foreground/60 flex items-center gap-8 dark:text-gray-400">
             {socials?.instagram && (
               <a
                 href={socials?.instagram}
-                className="hover:text-foreground dark:hover:text-white transition-colors"
+                className="hover:text-foreground transition-colors dark:hover:text-white"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -117,7 +117,7 @@ export const Footer = ({ userDetails, edit }) => {
             {socials?.linkedin && (
               <a
                 href={socials?.linkedin}
-                className="hover:text-foreground dark:hover:text-white transition-colors cursor-pointer"
+                className="hover:text-foreground cursor-pointer transition-colors dark:hover:text-white"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -128,7 +128,7 @@ export const Footer = ({ userDetails, edit }) => {
             {socials?.twitter && (
               <a
                 href={socials?.twitter}
-                className="hover:text-foreground dark:hover:text-white transition-colors"
+                className="hover:text-foreground transition-colors dark:hover:text-white"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -139,7 +139,7 @@ export const Footer = ({ userDetails, edit }) => {
             {portfolios?.dribbble && (
               <a
                 href={portfolios?.dribbble}
-                className="hover:text-foreground dark:hover:text-white transition-colors"
+                className="hover:text-foreground transition-colors dark:hover:text-white"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -150,7 +150,7 @@ export const Footer = ({ userDetails, edit }) => {
             {portfolios?.medium && (
               <a
                 href={portfolios?.medium}
-                className="hover:text-foreground dark:hover:text-white transition-colors"
+                className="hover:text-foreground transition-colors dark:hover:text-white"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -161,7 +161,7 @@ export const Footer = ({ userDetails, edit }) => {
             {portfolios?.notion && (
               <a
                 href={portfolios?.notion}
-                className="hover:text-foreground dark:hover:text-white transition-colors"
+                className="hover:text-foreground transition-colors dark:hover:text-white"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -171,7 +171,7 @@ export const Footer = ({ userDetails, edit }) => {
             )}
           </div>
           {edit && (
-            <div className="flex flex-col lg:flex-row gap-4">
+            <div className="flex flex-col gap-4 lg:flex-row">
               <AddItem
                 title="Add your social media"
                 onClick={() => openModal(modals.socialMedia)}
@@ -182,7 +182,7 @@ export const Footer = ({ userDetails, edit }) => {
                     type="secondary"
                     customClass="w-fit gap-0"
                     icon={
-                      <PlusIcon className="text-secondary-btn-text-color w-[14px] h-[14px] cursor-pointer" />
+                      <PlusIcon className="text-secondary-btn-text-color h-[14px] w-[14px] cursor-pointer" />
                     }
                   />
                 }
@@ -198,7 +198,7 @@ export const Footer = ({ userDetails, edit }) => {
                     type="secondary"
                     customClass="w-fit gap-0"
                     icon={
-                      <PlusIcon className="text-secondary-btn-text-color w-[14px] h-[14px] cursor-pointer" />
+                      <PlusIcon className="text-secondary-btn-text-color h-[14px] w-[14px] cursor-pointer" />
                     }
                   />
                 }

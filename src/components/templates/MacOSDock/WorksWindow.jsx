@@ -34,19 +34,19 @@ const WorksWindow = ({
   <div className="flex h-full bg-[#faf9f6]">
     {/* Finder Sidebar */}
     <div
-      className={`w-44 bg-[#ebe9e4]/50 backdrop-blur-md border-r border-[#d1d1d1] p-3 flex flex-col gap-6 ${isMobile ? "hidden" : "flex"}`}
+      className={`flex w-44 flex-col gap-6 border-r border-[#d1d1d1] bg-[#ebe9e4]/50 p-3 backdrop-blur-md ${isMobile ? "hidden" : "flex"}`}
     >
       <div>
-        <div className="text-[10px] font-bold text-[#8e8c87] uppercase tracking-wider mb-2 px-2">
+        <div className="mb-2 px-2 text-[10px] font-bold tracking-wider text-[#8e8c87] uppercase">
           Favorites
         </div>
         <div className="flex flex-col gap-0.5">
           {FAVORITES.map((item) => (
             <div
               key={item.name}
-              className={`px-2 py-1.5 rounded-md text-[11px] flex items-center gap-2 cursor-pointer transition-colors ${
+              className={`flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-[11px] transition-colors ${
                 item.name === "Desktop"
-                  ? "bg-[#d1cfca] text-[#222] font-semibold"
+                  ? "bg-[#d1cfca] font-semibold text-[#222]"
                   : "text-[#555] hover:bg-[#e1dfda]"
               }`}
             >
@@ -58,46 +58,46 @@ const WorksWindow = ({
       </div>
 
       <div>
-        <div className="text-[10px] font-bold text-[#8e8c87] uppercase tracking-wider mb-2 px-2">
+        <div className="mb-2 px-2 text-[10px] font-bold tracking-wider text-[#8e8c87] uppercase">
           Tags
         </div>
         <div className="flex flex-col gap-1.5 px-2">
-          <div className="flex items-center gap-2 text-[10px] text-[#555] cursor-pointer hover:text-[#222]">
-            <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57] shadow-sm" /> Work
+          <div className="flex cursor-pointer items-center gap-2 text-[10px] text-[#555] hover:text-[#222]">
+            <div className="h-2.5 w-2.5 rounded-full bg-[#ff5f57] shadow-sm" /> Work
           </div>
-          <div className="flex items-center gap-2 text-[10px] text-[#555] cursor-pointer hover:text-[#222]">
-            <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e] shadow-sm" /> Personal
+          <div className="flex cursor-pointer items-center gap-2 text-[10px] text-[#555] hover:text-[#222]">
+            <div className="h-2.5 w-2.5 rounded-full bg-[#febc2e] shadow-sm" /> Personal
           </div>
-          <div className="flex items-center gap-2 text-[10px] text-[#555] cursor-pointer hover:text-[#222]">
-            <div className="w-2.5 h-2.5 rounded-full bg-[#28c841] shadow-sm" /> Important
+          <div className="flex cursor-pointer items-center gap-2 text-[10px] text-[#555] hover:text-[#222]">
+            <div className="h-2.5 w-2.5 rounded-full bg-[#28c841] shadow-sm" /> Important
           </div>
         </div>
       </div>
     </div>
 
     {/* Main Content */}
-    <div className="flex-1 flex flex-col bg-white">
-      <div className="h-8 border-b border-[#e0ddd8] flex items-center px-4 gap-2 text-[10px] text-[#888] bg-[#fdfdfb]">
+    <div className="flex flex-1 flex-col bg-white">
+      <div className="flex h-8 items-center gap-2 border-b border-[#e0ddd8] bg-[#fdfdfb] px-4 text-[10px] text-[#888]">
         <span>Macintosh HD</span>
         <span className="opacity-40">›</span>
         <span>Users</span>
         <span className="opacity-40">›</span>
         <span>{fullName}</span>
         <span className="opacity-40">›</span>
-        <span className="text-[#444] font-medium">Projects</span>
+        <span className="font-medium text-[#444]">Projects</span>
       </div>
 
-      <div className="flex-1 p-8 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto p-8">
         {edit && (
-          <Alert className="max-w-4xl mx-auto mb-6 bg-blue-50/50 border-blue-200/50 text-blue-700 py-2 shadow-sm flex items-center gap-2 [&>svg]:static [&>svg]:!left-auto [&>svg]:!top-auto [&>svg~*]:!pl-0">
-            <Info size={14} className="text-blue-500 shrink-0" />
+          <Alert className="mx-auto mb-6 flex max-w-4xl items-center gap-2 border-blue-200/50 bg-blue-50/50 py-2 text-blue-700 shadow-sm [&>svg]:static [&>svg]:!top-auto [&>svg]:!left-auto [&>svg~*]:!pl-0">
+            <Info size={14} className="shrink-0 text-blue-500" />
             <span className="text-xs font-medium">
               You can re-arrange projects by dragging them into your preferred order.
             </span>
           </Alert>
         )}
         <div
-          className={`grid ${isMobile ? "grid-cols-2" : "grid-cols-3"} gap-x-6 gap-y-10 max-w-4xl mx-auto`}
+          className={`grid ${isMobile ? "grid-cols-2" : "grid-cols-3"} mx-auto max-w-4xl gap-x-6 gap-y-10`}
         >
           {projects.map((proj, index) => {
             const id = proj._id || proj.id;
@@ -107,7 +107,7 @@ const WorksWindow = ({
             return (
               <div
                 key={id}
-                className={`transform scale-110 origin-center transition-all duration-500 ease-in-out ${edit ? "cursor-move" : "cursor-pointer"} ${draggedProjectIndex === index ? "opacity-50 scale-100 z-50" : "opacity-100"}`}
+                className={`origin-center scale-110 transform transition-all duration-500 ease-in-out ${edit ? "cursor-move" : "cursor-pointer"} ${draggedProjectIndex === index ? "z-50 scale-100 opacity-50" : "opacity-100"}`}
                 draggable={edit}
                 onDragStart={edit ? (e) => onDragStart(e, index) : undefined}
                 onDragEnd={edit ? onDragEnd : undefined}
@@ -131,7 +131,7 @@ const WorksWindow = ({
             );
           })}
           {edit && onAddProject && (
-            <div className="transform scale-110 origin-center transition-all duration-500 ease-in-out cursor-pointer">
+            <div className="origin-center scale-110 transform cursor-pointer transition-all duration-500 ease-in-out">
               <AnimatedFolder
                 title="Add Project"
                 projects={[ADD_PROJECT_PLACEHOLDER]}

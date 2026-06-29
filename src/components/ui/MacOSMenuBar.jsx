@@ -123,7 +123,7 @@ const MenuDropdown = ({ isOpen, onClose, items, position, onAction }) => {
   return (
     <div
       ref={dropdownRef}
-      className="fixed backdrop-blur-md z-[1100]"
+      className="fixed z-[1100] backdrop-blur-md"
       style={{
         left: `${position.x}px`,
         top: `${position.y}px`,
@@ -138,13 +138,13 @@ const MenuDropdown = ({ isOpen, onClose, items, position, onAction }) => {
       <div className="py-1">
         {items.map((item, index) => {
           if (item.type === "separator") {
-            return <div key={index} className="h-px bg-white/15 mx-2 my-1" />;
+            return <div key={index} className="mx-2 my-1 h-px bg-white/15" />;
           }
 
           return (
             <div
               key={index}
-              className="px-4 py-1 text-white text-sm cursor-pointer hover:bg-white/10 transition-colors duration-100 flex justify-between items-center"
+              className="flex cursor-pointer items-center justify-between px-4 py-1 text-sm text-white transition-colors duration-100 hover:bg-white/10"
               onClick={() => {
                 if (item.action) onAction?.(item.action);
                 onClose();
@@ -154,7 +154,7 @@ const MenuDropdown = ({ isOpen, onClose, items, position, onAction }) => {
                 {item.label}
                 {item.hasSubmenu && <span className="ml-2 text-xs opacity-70">▶</span>}
               </span>
-              {item.shortcut && <span className="text-xs text-white/60 ml-4">{item.shortcut}</span>}
+              {item.shortcut && <span className="ml-4 text-xs text-white/60">{item.shortcut}</span>}
             </div>
           );
         })}
@@ -221,7 +221,7 @@ export default function MacOSMenuBar({
 
   return (
     <div
-      className={`fixed left-0 h-7 backdrop-blur-md z-[99] flex justify-between items-center px-4 select-none ${className}`}
+      className={`fixed left-0 z-[99] flex h-7 items-center justify-between px-4 backdrop-blur-md select-none ${className}`}
       style={{
         top: 0,
         right: 0,
@@ -236,7 +236,7 @@ export default function MacOSMenuBar({
         <div
           ref={appleLogoRef}
           onClick={handleAppleMenuClick}
-          className="cursor-pointer hover:opacity-80 transition-opacity duration-150"
+          className="cursor-pointer transition-opacity duration-150 hover:opacity-80"
         >
           <svg
             width="18"
@@ -274,7 +274,7 @@ export default function MacOSMenuBar({
         </div>
 
         {/* Current App Name */}
-        <span className="text-white text-[13px] font-bold cursor-default px-2">{appName}</span>
+        <span className="cursor-default px-2 text-[13px] font-bold text-white">{appName}</span>
 
         {/* Menu Items */}
         {menus.map((menu) => (
@@ -284,7 +284,7 @@ export default function MacOSMenuBar({
               menuRefs.current[menu.label] = el;
             }}
             onClick={() => handleMenuItemClick(menu.label)}
-            className="hidden md:inline-block text-white text-[13px] cursor-default px-2 py-0.5 rounded hover:bg-white/10 transition-colors"
+            className="hidden cursor-default rounded px-2 py-0.5 text-[13px] text-white transition-colors hover:bg-white/10 md:inline-block"
           >
             {menu.label}
           </span>
@@ -328,7 +328,7 @@ export default function MacOSMenuBar({
             <line x1="12" y1="20" x2="12.01" y2="20" />
           </svg>
         </div>
-        <span className="text-white text-[13px] font-medium cursor-default">{currentTime}</span>
+        <span className="cursor-default text-[13px] font-medium text-white">{currentTime}</span>
       </div>
 
       {/* Dropdowns portaled to body so position:fixed is viewport-relative and matches getBoundingClientRect() */}

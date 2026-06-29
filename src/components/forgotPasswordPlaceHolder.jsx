@@ -18,29 +18,29 @@ export default function ForgotPasswordPlaceHolder({
       exit={{ opacity: 0, y: -10 }}
       transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
     >
-      <div className="text-center mb-6">
-        <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+      <div className="mb-6 text-center">
+        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
           <Check />
         </div>
         <h1
-          className="font-semibold text-2xl mb-2 text-foreground"
+          className="text-foreground mb-2 text-2xl font-semibold"
           data-testid="text-reset-sent-headline"
         >
           Check your email
         </h1>
-        <p className="text-sm text-foreground/60" data-testid="text-reset-sent-description">
+        <p className="text-foreground/60 text-sm" data-testid="text-reset-sent-description">
           We&apos;ve sent password reset instructions to <strong>{email}</strong>
         </p>
       </div>
 
       <div className="space-y-4">
-        <p className="text-sm text-foreground/70 text-center">
+        <p className="text-foreground/70 text-center text-sm">
           Didn&apos;t receive the email? Check your spam folder or{" "}
           <button
             type="button"
             onClick={onTryAgain}
             disabled={isLoading || retryDelay > 0}
-            className="font-medium hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
+            className="font-medium hover:underline disabled:cursor-not-allowed disabled:opacity-50"
             style={{ color: "#FF553E" }}
             data-testid="link-try-again"
           >

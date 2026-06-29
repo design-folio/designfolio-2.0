@@ -3,14 +3,14 @@ import React from "react";
 export function GoogleButton({ onClick, isLoading = false, children = "Sign up with Google" }) {
   return (
     <div
-      className={`bg-(--input-bg-color) border border-border rounded-full px-5 py-3 flex items-center justify-center gap-3 hover-elevate cursor-pointer transition-colors hover:border-foreground/20 ${
-        isLoading ? "opacity-50 cursor-not-allowed" : ""
+      className={`border-border hover-elevate hover:border-foreground/20 flex cursor-pointer items-center justify-center gap-3 rounded-full border bg-(--input-bg-color) px-5 py-3 transition-colors ${
+        isLoading ? "cursor-not-allowed opacity-50" : ""
       }`}
       onClick={isLoading ? undefined : onClick}
       data-testid="button-google"
     >
-      <img src="/assets/svgs/google.svg" alt="" className="w-5 h-5" />
-      <span className="text-base font-medium text-foreground">
+      <img src="/assets/svgs/google.svg" alt="" className="h-5 w-5" />
+      <span className="text-foreground text-base font-medium">
         {isLoading ? "Loading..." : children}
       </span>
     </div>

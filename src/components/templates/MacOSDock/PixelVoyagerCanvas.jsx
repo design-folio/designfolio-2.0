@@ -189,5 +189,5 @@ export default function PixelVoyagerCanvas() {
     };
   }, []);
 
-  return <div ref={mountRef} className="absolute inset-0 z-0 w-full h-full min-w-0 min-h-0" />;
+  return <div ref={mountRef} className="absolute inset-0 z-0 h-full min-h-0 w-full min-w-0" />;
 }

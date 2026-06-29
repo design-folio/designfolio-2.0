@@ -182,15 +182,15 @@ export default function AddProject() {
         }}
       >
         {({ setFieldValue, values, validateField, errors, touched }) => (
-          <Form id="projectForm" autoComplete="off" className="flex flex-col h-full">
-            <div className="flex-1 overflow-auto px-6 py-5 space-y-5">
+          <Form id="projectForm" autoComplete="off" className="flex h-full flex-col">
+            <div className="flex-1 space-y-5 overflow-auto px-6 py-5">
               {/* Project title */}
               <div className="space-y-1.5">
-                <div className="flex justify-between items-center">
-                  <Label className="text-[13px] font-medium text-foreground ml-1">
+                <div className="flex items-center justify-between">
+                  <Label className="text-foreground ml-1 text-[13px] font-medium">
                     Project title <span className="text-destructive">*</span>
                   </Label>
-                  <span className="text-xs text-foreground/40">{values.title.length}/80</span>
+                  <span className="text-foreground/40 text-xs">{values.title.length}/80</span>
                 </div>
                 <Field name="title">
                   {({ field }) => (
@@ -213,11 +213,11 @@ export default function AddProject() {
 
               {/* Description */}
               <div className="space-y-1.5">
-                <div className="flex justify-between items-center">
-                  <Label className="text-[13px] font-medium text-foreground ml-1">
+                <div className="flex items-center justify-between">
+                  <Label className="text-foreground ml-1 text-[13px] font-medium">
                     Description <span className="text-destructive">*</span>
                   </Label>
-                  <span className="text-xs text-foreground/40">
+                  <span className="text-foreground/40 text-xs">
                     {values.description.length}/160
                   </span>
                 </div>
@@ -238,20 +238,20 @@ export default function AddProject() {
 
               {/* Cover image */}
               <div className="space-y-1.5">
-                <Label className="text-[13px] font-medium text-foreground ml-1">
+                <Label className="text-foreground ml-1 text-[13px] font-medium">
                   Cover image <span className="text-destructive">*</span>
                 </Label>
                 <div className="flex items-center gap-4">
-                  <label htmlFor="picture" className="cursor-pointer shrink-0">
-                    <div className="w-24 h-16 rounded-xl bg-black/[0.03] dark:bg-white/[0.03] border border-border flex items-center justify-center overflow-hidden">
+                  <label htmlFor="picture" className="shrink-0 cursor-pointer">
+                    <div className="border-border flex h-16 w-24 items-center justify-center overflow-hidden rounded-xl border bg-black/[0.03] dark:bg-white/[0.03]">
                       {imagePreview ? (
                         <img
                           src={imagePreview}
-                          className="w-full h-full object-cover"
+                          className="h-full w-full object-cover"
                           alt="project cover"
                         />
                       ) : (
-                        <ImageIcon className="w-5 h-5 text-foreground/30" />
+                        <ImageIcon className="text-foreground/30 h-5 w-5" />
                       )}
                     </div>
                   </label>
@@ -269,7 +269,7 @@ export default function AddProject() {
                         {imagePreview ? "Change image" : "Upload image"}
                       </Button>
                     </label>
-                    <span className="text-[11px] text-muted-foreground ml-1">
+                    <span className="text-muted-foreground ml-1 text-[11px]">
                       Recommended: 1600 × 900px (16:9)
                     </span>
                   </div>
@@ -289,8 +289,8 @@ export default function AddProject() {
               <div className="pt-2">
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
-                    <p className="text-[13px] font-medium text-foreground ml-1">Protect Project</p>
-                    <p className="text-[12px] text-muted-foreground ml-1">
+                    <p className="text-foreground ml-1 text-[13px] font-medium">Protect Project</p>
+                    <p className="text-muted-foreground ml-1 text-[12px]">
                       Require a password to view this project (e.g., for NDAs).
                     </p>
                   </div>
@@ -343,7 +343,7 @@ export default function AddProject() {
               </div>
             </div>
 
-            <div className="flex gap-2 py-3 px-6 border-t border-border justify-end shrink-0 bg-sidebar">
+            <div className="border-border bg-sidebar flex shrink-0 justify-end gap-2 border-t px-6 py-3">
               <Button variant="outline" type="button" onClick={() => closeSidebar()}>
                 Cancel
               </Button>

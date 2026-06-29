@@ -211,7 +211,7 @@ function AnalyticsChart({ duration, setUniqueVisits }) {
   }
 
   return (
-    <div className="w-full h-[60vh] md:h-[400px]">
+    <div className="h-[60vh] w-full md:h-[400px]">
       <Line data={chartData} options={options} />
     </div>
   );

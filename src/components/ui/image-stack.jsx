@@ -60,22 +60,22 @@ export default function ImgStack({ images, autoPlayInterval = 5000 }) {
   };
 
   return (
-    <div className="relative flex items-center justify-center w-full h-80 my-8 group">
+    <div className="group relative my-8 flex h-80 w-full items-center justify-center">
       <button
         onClick={handlePrev}
-        className="absolute left-0 z-[60] p-2 bg-black/20 hover:bg-black/40 rounded-full text-white backdrop-blur-sm transition-all -translate-x-4"
+        className="absolute left-0 z-[60] -translate-x-4 rounded-full bg-black/20 p-2 text-white backdrop-blur-sm transition-all hover:bg-black/40"
       >
         <ChevronLeft size={24} />
       </button>
 
-      <div className="relative w-48 h-64">
+      <div className="relative h-64 w-48">
         {cards.map((card, index) => {
           const isTopCard = index === 0;
           const canDrag = isTopCard && !isAnimating;
           return (
             <motion.div
               key={card.id}
-              className="absolute inset-0 origin-bottom-center overflow-hidden rounded-xl shadow-xl bg-white cursor-grab active:cursor-grabbing border border-white/20"
+              className="origin-bottom-center absolute inset-0 cursor-grab overflow-hidden rounded-xl border border-white/20 bg-white shadow-xl active:cursor-grabbing"
               style={{ zIndex: card.zIndex }}
               animate={getCardStyles(index)}
               drag={canDrag}
@@ -99,7 +99,7 @@ export default function ImgStack({ images, autoPlayInterval = 5000 }) {
               <img
                 src={card.src}
                 alt={`Card ${card.id + 1}`}
-                className="w-full h-full object-cover rounded-lg pointer-events-none"
+                className="pointer-events-none h-full w-full rounded-lg object-cover"
                 draggable={false}
               />
             </motion.div>
@@ -109,7 +109,7 @@ export default function ImgStack({ images, autoPlayInterval = 5000 }) {
 
       <button
         onClick={handleNext}
-        className="absolute right-0 z-[60] p-2 bg-black/20 hover:bg-black/40 rounded-full text-white backdrop-blur-sm transition-all translate-x-4"
+        className="absolute right-0 z-[60] translate-x-4 rounded-full bg-black/20 p-2 text-white backdrop-blur-sm transition-all hover:bg-black/40"
       >
         <ChevronRight size={24} />
       </button>

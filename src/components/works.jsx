@@ -34,7 +34,7 @@ export default function Works({ edit, openSidebar, userDetails, setUserDetails, 
       btnType="normal"
       icon={
         userDetails?.experiences?.length != 0 && (
-          <SortIcon className="w-4 h-4 text-df-icon-color cursor-pointer" />
+          <SortIcon className="text-df-icon-color h-4 w-4 cursor-pointer" />
         )
       }
       tooltip="Reorder experience"
@@ -61,11 +61,11 @@ export default function Works({ edit, openSidebar, userDetails, setUserDetails, 
             <ButtonNew
               variant="ghost"
               size="sm"
-              className="text-foreground/40 hover:text-foreground text-xs font-medium uppercase tracking-widest gap-2 group transition-all"
+              className="text-foreground/40 hover:text-foreground group gap-2 text-xs font-medium tracking-widest uppercase transition-all"
               onClick={() => setShowAllExperience(true)}
             >
               View More Experience
-              <ChevronDown className="w-3 h-3 transition-transform group-hover:translate-y-0.5" />
+              <ChevronDown className="h-3 w-3 transition-transform group-hover:translate-y-0.5" />
             </ButtonNew>
           </div>
         )}
@@ -79,7 +79,7 @@ export default function Works({ edit, openSidebar, userDetails, setUserDetails, 
                 <Button
                   type="secondary"
                   icon={
-                    <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                    <PlusIcon className="text-secondary-btn-text-color h-[12px] w-[12px] cursor-pointer" />
                   }
                   onClick={() => openNewWork()}
                   size="small"
@@ -93,7 +93,7 @@ export default function Works({ edit, openSidebar, userDetails, setUserDetails, 
                 <Button
                   type="secondary"
                   icon={
-                    <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                    <PlusIcon className="text-secondary-btn-text-color h-[12px] w-[12px] cursor-pointer" />
                   }
                   onClick={() => openNewWork()}
                   size="small"
@@ -137,9 +137,9 @@ const WorkExperienceCard = ({
       transition={{ duration: 0.5, delay: index * 0.1 }}
       className="group"
     >
-      <div className="grid grid-cols-1 md:grid-cols-[150px_1fr] gap-1 md:gap-6">
+      <div className="grid grid-cols-1 gap-1 md:grid-cols-[150px_1fr] md:gap-6">
         <div className="shrink-0">
-          <span className="text-xs font-medium text-foreground-landing/40 uppercase tracking-wider">
+          <span className="text-foreground-landing/40 text-xs font-medium tracking-wider uppercase">
             {`${experience?.startMonth} ${experience?.startYear} - ${
               experience?.currentlyWorking
                 ? "Present"
@@ -148,24 +148,24 @@ const WorkExperienceCard = ({
           </span>
         </div>
 
-        <div className="flex-1 min-w-0">
+        <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-2">
-                <h3 className="font-semibold text-base text-foreground-landing truncate">
+              <div className="mb-2 flex flex-wrap items-center gap-x-2 gap-y-1">
+                <h3 className="text-foreground-landing truncate text-base font-semibold">
                   {experience?.role}
                 </h3>
                 <span className="text-foreground-landing/30">at</span>
-                <div className="flex items-center gap-1.5 min-w-0">
-                  <Building className="w-4 h-4 text-foreground-landing/40 shrink-0" />
-                  <span className="font-semibold text-base text-foreground-landing truncate">
+                <div className="flex min-w-0 items-center gap-1.5">
+                  <Building className="text-foreground-landing/40 h-4 w-4 shrink-0" />
+                  <span className="text-foreground-landing truncate text-base font-semibold">
                     {experience?.company}
                   </span>
                 </div>
               </div>
 
               {hasDescription && (
-                <div className="text-sm text-foreground-landing/60 leading-relaxed max-w-xl">
+                <div className="text-foreground-landing/60 max-w-xl text-sm leading-relaxed">
                   <ClampableTiptapContent
                     content={experience?.description || ""}
                     mode="work"
@@ -182,7 +182,7 @@ const WorkExperienceCard = ({
 
             {edit && (
               <ButtonNew
-                className="h-11 w-11 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                className="h-11 w-11 shrink-0 opacity-0 transition-opacity group-hover:opacity-100"
                 onClick={() => {
                   setSelectedWork(experience);
                   openSidebar(sidebars.work);
@@ -197,7 +197,7 @@ const WorkExperienceCard = ({
         </div>
       </div>
 
-      {showDivider && <div className="mt-6 border-b border-border/10" />}
+      {showDivider && <div className="border-border/10 mt-6 border-b" />}
     </motion.div>
   );
 };

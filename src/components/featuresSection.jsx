@@ -95,31 +95,31 @@ export default function FeaturesSection() {
   }, []);
 
   return (
-    <section id="howitworks" className="py-8 sm:py-12 md:py-16 px-6 bg-background-landing">
-      <div className="max-w-5xl mx-auto">
-        <div className="mt-8 mb-8 relative">
-          <div className="absolute inset-0 z-0 pointer-events-none opacity-40 overflow-hidden rounded-3xl">
+    <section id="howitworks" className="bg-background-landing px-6 py-8 sm:py-12 md:py-16">
+      <div className="mx-auto max-w-5xl">
+        <div className="relative mt-8 mb-8">
+          <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden rounded-3xl opacity-40">
             <FlickeringGrid
               squareSize={4}
               gridGap={6}
               color="#6B7280"
               maxOpacity={0.4}
               flickerChance={0.25}
-              className="w-full h-full [mask-image:radial-gradient(ellipse_at_center,black_80%,transparent_100%)]"
+              className="h-full w-full [mask-image:radial-gradient(ellipse_at_center,black_80%,transparent_100%)]"
             />
           </div>
           <div className="relative z-10">
             <TestimonialsMinimal />
           </div>
         </div>
-        <p className="text-muted-foreground text-lg mb-2 text-center ">
+        <p className="text-muted-foreground mb-2 text-center text-lg">
           I know what you&apos;re thinking...
         </p>
 
         <Text
           as="h2"
           size="section-heading"
-          className="text-center mb-8 sm:mb-12"
+          className="mb-8 text-center sm:mb-12"
           data-testid="text-features-heading"
         >
           How does it work?
@@ -137,11 +137,11 @@ export default function FeaturesSection() {
                     </div>
                 </div> */}
 
-        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-8 sm:mb-12">
+        <div className="mb-8 flex flex-wrap items-center justify-center gap-2 sm:mb-12 sm:gap-3">
           {features.map((feature, index) => (
             <div
               key={index}
-              className="bg-white border border-border rounded-full px-3 sm:px-5 py-2 sm:py-3 flex items-center gap-2 sm:gap-2.5 hover-elevate cursor-pointer"
+              className="border-border hover-elevate flex cursor-pointer items-center gap-2 rounded-full border bg-white px-3 py-2 sm:gap-2.5 sm:px-5 sm:py-3"
               data-testid={`badge-feature-${index}`}
             >
               <feature.icon
@@ -149,7 +149,7 @@ export default function FeaturesSection() {
                 data-testid={`icon-feature-${index}`}
               />
               <span
-                className="text-xs sm:text-sm font-medium text-foreground whitespace-nowrap"
+                className="text-foreground text-xs font-medium whitespace-nowrap sm:text-sm"
                 data-testid={`text-feature-title-${index}`}
               >
                 {feature.title}
@@ -158,8 +158,8 @@ export default function FeaturesSection() {
           ))}
         </div>
 
-        <div className="flex flex-col md:flex-row gap-4 sm:gap-6 pt-6">
-          <div className="flex flex-col gap-4 sm:gap-6 flex-1">
+        <div className="flex flex-col gap-4 pt-6 sm:gap-6 md:flex-row">
+          <div className="flex flex-1 flex-col gap-4 sm:gap-6">
             {inspirationCards
               .filter((_, index) => index % 2 === 0)
               .map((card, originalIndex) => {
@@ -177,7 +177,7 @@ export default function FeaturesSection() {
                     }}
                   >
                     <Card
-                      className="relative p-6 sm:p-8 transition-all duration-300 bg-muted/40 border-border/30 overflow-visible shadow-none"
+                      className="bg-muted/40 border-border/30 relative overflow-visible p-6 shadow-none transition-all duration-300 sm:p-8"
                       style={{
                         boxShadow:
                           "inset 0 3px 8px 0 rgb(0 0 0 / 0.08), inset 0 -3px 8px 0 rgb(0 0 0 / 0.05)",
@@ -185,7 +185,7 @@ export default function FeaturesSection() {
                       data-testid={`card-inspiration-${index}`}
                     >
                       <div
-                        className="absolute -top-3 left-6 px-5 py-2 text-xs font-bold tracking-wide uppercase font-kalam"
+                        className="font-kalam absolute -top-3 left-6 px-5 py-2 text-xs font-bold tracking-wide uppercase"
                         style={{
                           background: "linear-gradient(135deg, #FF6B35 0%, #FF8A65 100%)",
                           color: "#fff",
@@ -206,7 +206,7 @@ export default function FeaturesSection() {
                       </Text>
 
                       <p
-                        className="text-sm sm:text-base text-muted-foreground mb-6"
+                        className="text-muted-foreground mb-6 text-sm sm:text-base"
                         data-testid={`text-card-description-${index}`}
                       >
                         {card.description}
@@ -265,7 +265,7 @@ export default function FeaturesSection() {
               })}
           </div>
 
-          <div className="flex flex-col gap-4 sm:gap-6 flex-1">
+          <div className="flex flex-1 flex-col gap-4 sm:gap-6">
             {inspirationCards
               .filter((_, index) => index % 2 === 1)
               .map((card, originalIndex) => {
@@ -283,7 +283,7 @@ export default function FeaturesSection() {
                     }}
                   >
                     <Card
-                      className="relative p-6 sm:p-8 transition-all duration-300 bg-muted/40 border-border/30 overflow-visible shadow-none"
+                      className="bg-muted/40 border-border/30 relative overflow-visible p-6 shadow-none transition-all duration-300 sm:p-8"
                       style={{
                         boxShadow:
                           "inset 0 3px 8px 0 rgb(0 0 0 / 0.08), inset 0 -3px 8px 0 rgb(0 0 0 / 0.05)",
@@ -291,7 +291,7 @@ export default function FeaturesSection() {
                       data-testid={`card-inspiration-${index}`}
                     >
                       <div
-                        className="absolute -top-3 left-6 px-5 py-2 text-xs font-bold tracking-wide uppercase font-kalam"
+                        className="font-kalam absolute -top-3 left-6 px-5 py-2 text-xs font-bold tracking-wide uppercase"
                         style={{
                           background: "linear-gradient(135deg, #FF6B35 0%, #FF8A65 100%)",
                           color: "#fff",
@@ -312,7 +312,7 @@ export default function FeaturesSection() {
                       </Text>
 
                       <p
-                        className="text-sm sm:text-base text-muted-foreground mb-6"
+                        className="text-muted-foreground mb-6 text-sm sm:text-base"
                         data-testid={`text-card-description-${index}`}
                       >
                         {card.description}

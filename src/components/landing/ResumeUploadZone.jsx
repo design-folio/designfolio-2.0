@@ -177,8 +177,8 @@ export default function ResumeUploadZone({
               transition={{ duration: 0.25 }}
               className={
                 variant === "modal"
-                  ? "orb-always-active w-full flex items-start gap-4 rounded-2xl border border-dashed border-lp-text/25 bg-lp-text/[0.03] px-6 py-10"
-                  : "orb-always-active inline-flex items-start gap-3.5 rounded-xl border border-dashed border-lp-text/25 bg-lp-text/[0.03] px-5 py-3.5"
+                  ? "orb-always-active border-lp-text/25 bg-lp-text/[0.03] flex w-full items-start gap-4 rounded-2xl border border-dashed px-6 py-10"
+                  : "orb-always-active border-lp-text/25 bg-lp-text/[0.03] inline-flex items-start gap-3.5 rounded-xl border border-dashed px-5 py-3.5"
               }
               style={{
                 boxShadow: isDark
@@ -194,7 +194,7 @@ export default function ResumeUploadZone({
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -4 }}
                   transition={{ duration: 0.3, ease: "easeOut" }}
-                  className="text-[14px] font-semibold leading-none text-(--lp-text) whitespace-nowrap"
+                  className="text-[14px] leading-none font-semibold whitespace-nowrap text-(--lp-text)"
                 >
                   {AI_STATUSES[aiStatusIndex]}
                 </motion.span>
@@ -224,7 +224,7 @@ export default function ResumeUploadZone({
               exit={{ opacity: 0, scale: 0.97 }}
               transition={{ duration: 0.25 }}
               className={
-                variant === "modal" ? "w-full flex flex-col items-center gap-4" : undefined
+                variant === "modal" ? "flex w-full flex-col items-center gap-4" : undefined
               }
             >
               <div
@@ -238,11 +238,11 @@ export default function ResumeUploadZone({
                 onDrop={handleDrop}
                 className={`group/dropzone cursor-pointer ${
                   variant === "modal"
-                    ? "w-full flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed px-6 py-10 [&_*]:cursor-pointer"
+                    ? "flex w-full flex-col items-center justify-center gap-3 rounded-2xl border border-dashed px-6 py-10 [&_*]:cursor-pointer"
                     : "inline-flex items-center gap-3.5 rounded-xl border border-dashed px-5 py-3 [&_*]:cursor-pointer"
                 } transition-all duration-200 ${
                   isDragging
-                    ? "border-(--lp-accent) bg-lp-accent/[0.08]"
+                    ? "bg-lp-accent/[0.08] border-(--lp-accent)"
                     : "border-lp-text/25 bg-lp-text/[0.03] hover:border-lp-text/45 hover:bg-lp-text/[0.05]"
                 }`}
               >
@@ -251,7 +251,7 @@ export default function ResumeUploadZone({
                   className={`flex flex-col ${variant === "modal" ? "items-center text-center" : "items-start"} gap-0.5`}
                 >
                   <span
-                    className={`text-[14px] mb-1 font-semibold leading-none transition-colors duration-200 ${isDragging ? "text-(--lp-accent)" : "text-(--lp-text)"}`}
+                    className={`mb-1 text-[14px] leading-none font-semibold transition-colors duration-200 ${isDragging ? "text-(--lp-accent)" : "text-(--lp-text)"}`}
                   >
                     {isDragging
                       ? "Drop it here"
@@ -259,7 +259,7 @@ export default function ResumeUploadZone({
                         ? "Click to upload Resume"
                         : "Upload your resume"}
                   </span>
-                  <span className="text-[12px] text-(--lp-text-faint) leading-none">
+                  <span className="text-[12px] leading-none text-(--lp-text-faint)">
                     {variant === "modal" ? "PDF format only · Max 5MB" : "PDF · max 5MB"}
                   </span>
                 </div>
@@ -270,18 +270,18 @@ export default function ResumeUploadZone({
                   <Button
                     variant="darker"
                     onClick={() => fileInputRef.current?.click()}
-                    className="w-full rounded-xl py-3.5 text-[15px] h-[50px]"
+                    className="h-[50px] w-full rounded-xl py-3.5 text-[15px]"
                   >
                     Upload Resume
                   </Button>
 
-                  <div className="flex items-center justify-center gap-3 flex-wrap">
+                  <div className="flex flex-wrap items-center justify-center gap-3">
                     {["Data never sold", "Delete anytime"].map((label) => (
                       <span
                         key={label}
-                        className="flex items-center gap-1 text-[11px] text-(--lp-text-faint) font-medium"
+                        className="flex items-center gap-1 text-[11px] font-medium text-(--lp-text-faint)"
                       >
-                        <CheckCircle2 className="w-3 h-3 shrink-0" strokeWidth={2} />
+                        <CheckCircle2 className="h-3 w-3 shrink-0" strokeWidth={2} />
                         {label}
                       </span>
                     ))}
@@ -302,7 +302,7 @@ export default function ResumeUploadZone({
               initial={{ opacity: 0 }}
               animate={{ opacity: isProcessing ? 1 : 0 }}
               transition={{ duration: 0.55, ease: "easeOut" }}
-              className="fixed inset-0 z-[80] pointer-events-none"
+              className="pointer-events-none fixed inset-0 z-[80]"
               style={{
                 backdropFilter: isProcessing ? "blur(4px)" : "none",
                 WebkitBackdropFilter: isProcessing ? "blur(4px)" : "none",
@@ -323,7 +323,7 @@ export default function ResumeUploadZone({
                 y: isProcessing ? 0 : 5,
               }}
               transition={{ duration: 0.35, delay: isProcessing ? 0.15 : 0 }}
-              className="fixed z-[82] pointer-events-none"
+              className="pointer-events-none fixed z-[82]"
               style={{
                 left: x - 212,
                 top: y - 66,
@@ -342,7 +342,7 @@ export default function ResumeUploadZone({
                 y: isProcessing ? 0 : 5,
               }}
               transition={{ duration: 0.35, delay: isProcessing ? 0.15 : 0 }}
-              className="fixed z-[82] pointer-events-none"
+              className="pointer-events-none fixed z-[82]"
               style={{
                 left: x + 198,
                 top: y - 66,
@@ -361,7 +361,7 @@ export default function ResumeUploadZone({
                 y: isProcessing ? 0 : -5,
               }}
               transition={{ duration: 0.35, delay: isProcessing ? 0.15 : 0 }}
-              className="fixed z-[82] pointer-events-none"
+              className="pointer-events-none fixed z-[82]"
               style={{
                 left: x - 212,
                 top: y + 52,
@@ -380,7 +380,7 @@ export default function ResumeUploadZone({
                 y: isProcessing ? 0 : -5,
               }}
               transition={{ duration: 0.35, delay: isProcessing ? 0.15 : 0 }}
-              className="fixed z-[82] pointer-events-none"
+              className="pointer-events-none fixed z-[82]"
               style={{
                 left: x + 198,
                 top: y + 52,
@@ -406,7 +406,7 @@ export default function ResumeUploadZone({
                   ? { duration: 2.2, repeat: Infinity, ease: "easeInOut", times: [0, 0.45, 0.9, 1] }
                   : { duration: 0.25 }
               }
-              className="fixed z-[82] pointer-events-none"
+              className="pointer-events-none fixed z-[82]"
               style={{
                 left: x - 190,
                 width: 380,

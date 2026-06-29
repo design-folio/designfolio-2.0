@@ -5,19 +5,19 @@ const LOGO_COUNT = 7;
 export default function LandingTrustedBySection() {
   return (
     <section
-      className="w-full px-6 mb-20 flex flex-col gap-6"
+      className="mb-20 flex w-full flex-col gap-6 px-6"
       style={{ fontFamily: "var(--font-manrope), sans-serif" }}
     >
       <div className="flex items-center gap-3">
-        <div className="flex-1 h-px bg-lp-text/[0.07]" />
-        <span className="text-[12px] font-semibold tracking-[0.08em] uppercase text-lp-text/55 whitespace-nowrap">
+        <div className="bg-lp-text/[0.07] h-px flex-1" />
+        <span className="text-lp-text/55 text-[12px] font-semibold tracking-[0.08em] whitespace-nowrap uppercase">
           31,000+ Designfolio users work at
         </span>
-        <div className="flex-1 h-px bg-lp-text/[0.07]" />
+        <div className="bg-lp-text/[0.07] h-px flex-1" />
       </div>
 
       <div
-        className="w-full overflow-hidden relative"
+        className="relative w-full overflow-hidden"
         style={{
           maskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)",
           WebkitMaskImage:
@@ -25,7 +25,7 @@ export default function LandingTrustedBySection() {
         }}
       >
         <motion.div
-          className="flex items-center w-max"
+          className="flex w-max items-center"
           animate={{ x: ["0%", "-50%"] }}
           transition={{ ease: "linear", duration: 40, repeat: Infinity }}
         >
@@ -36,7 +36,7 @@ export default function LandingTrustedBySection() {
                   key={num}
                   src={`/companylogo/companienames0${num + 1}.svg`}
                   alt={`Company logo ${num + 1}`}
-                  className="h-[40px] w-auto opacity-60 hover:opacity-85 transition-opacity duration-300 dark:invert dark:opacity-70 dark:hover:opacity-90"
+                  className="h-[40px] w-auto opacity-60 transition-opacity duration-300 hover:opacity-85 dark:opacity-70 dark:invert dark:hover:opacity-90"
                 />
               ))}
             </div>

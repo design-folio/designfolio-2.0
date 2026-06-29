@@ -134,17 +134,17 @@ export const Spotlight = ({ userDetails, edit, headerActions }) => {
       <div ref={setNodeRef} style={style} className={isDragging ? "relative" : ""}>
         <motion.div
           variants={itemVariants}
-          className="group bg-card p-6 rounded-lg hover:bg-card/80 transition-colors relative overflow-hidden shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
+          className="group bg-card hover:bg-card/80 relative overflow-hidden rounded-lg p-6 shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] transition-colors"
           onClick={() => handleClick(experience)}
         >
           <div className="absolute inset-0 overflow-hidden">
-            <div className="absolute inset-0 group-hover:animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full" />
+            <div className="group-hover:animate-shimmer absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent" />
           </div>
           <div className="relative z-10">
             <div className="flex flex-col gap-1">
-              <div className="flex flex-col lg:flex-row gap-2 justify-between items-start">
-                <h3 className="font-semibold text-lg">{experience.role}</h3>
-                <div className="flex flex-1 gap-2 lg:justify-end w-full items-center">
+              <div className="flex flex-col items-start justify-between gap-2 lg:flex-row">
+                <h3 className="text-lg font-semibold">{experience.role}</h3>
+                <div className="flex w-full flex-1 items-center gap-2 lg:justify-end">
                   <span className="text-sm text-gray-600 dark:text-gray-400">
                     {`${experience?.startMonth} ${experience?.startYear} - ${
                       experience?.currentlyWorking
@@ -159,7 +159,7 @@ export const Spotlight = ({ userDetails, edit, headerActions }) => {
                         customClass="!p-0 !shrink-0 border-none"
                         type={"secondary"}
                         icon={
-                          <EditIcon className="text-gray-600 dark:text-gray-400 cursor-pointer" />
+                          <EditIcon className="cursor-pointer text-gray-600 dark:text-gray-400" />
                         }
                       />
                       {/* Drag handle: attach the drag listeners only here */}
@@ -174,7 +174,7 @@ export const Spotlight = ({ userDetails, edit, headerActions }) => {
               </div>
               <div className="text-base text-gray-600 dark:text-gray-400">{experience.company}</div>
               {descriptionLength > 0 && (
-                <div className="text-sm text-gray-600 dark:text-gray-400 relative">
+                <div className="relative text-sm text-gray-600 dark:text-gray-400">
                   <ClampableTiptapContent
                     content={experience.description}
                     mode="work"
@@ -196,7 +196,7 @@ export const Spotlight = ({ userDetails, edit, headerActions }) => {
 
   return (
     <section className="py-12">
-      <div className="flex items-center justify-between mb-8">
+      <div className="mb-8 flex items-center justify-between">
         <h2 className="text-2xl font-bold">Work Experience</h2>
         {headerActions && <div className="shrink-0">{headerActions}</div>}
       </div>
@@ -228,7 +228,7 @@ export const Spotlight = ({ userDetails, edit, headerActions }) => {
               <Button
                 type="secondary"
                 icon={
-                  <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                  <PlusIcon className="text-secondary-btn-text-color h-[12px] w-[12px] cursor-pointer" />
                 }
                 onClick={() => openNewWork()}
                 size="small"
@@ -242,7 +242,7 @@ export const Spotlight = ({ userDetails, edit, headerActions }) => {
               <Button
                 type="secondary"
                 icon={
-                  <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                  <PlusIcon className="text-secondary-btn-text-color h-[12px] w-[12px] cursor-pointer" />
                 }
                 onClick={() => openNewWork()}
                 size="small"

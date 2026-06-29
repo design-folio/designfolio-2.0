@@ -4,8 +4,8 @@ import { Plus } from "lucide-react";
 export default function ProfessionalEmptyStateButton({ label, onClick, className }) {
   return (
     <button onClick={onClick} className={cn(buttonClass, className)} type="button">
-      <Plus className="w-4 h-4" />
-      <span className="font-jetbrains text-[13px] uppercase tracking-wider font-medium">
+      <Plus className="h-4 w-4" />
+      <span className="font-jetbrains text-[13px] font-medium tracking-wider uppercase">
         {label}
       </span>
     </button>

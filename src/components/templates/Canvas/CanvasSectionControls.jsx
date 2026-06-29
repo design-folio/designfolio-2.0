@@ -34,12 +34,12 @@ export const CanvasSectionButton = forwardRef(function CanvasSectionButton(
         size="sm"
         onClick={onClick}
         aria-label={ariaLabel}
-        className={`h-8 flex items-center px-2 md:px-3 ${baseClass} ${visibilityClass}`}
+        className={`flex h-8 items-center px-2 md:px-3 ${baseClass} ${visibilityClass}`}
         {...props}
       >
         <span className="pointer-events-none flex items-center gap-0 md:gap-1.5">
-          <span className="text-[#1A1A1A] dark:text-[#F0EDE7] flex items-center">{icon}</span>
-          <span className="hidden md:inline text-xs font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+          <span className="flex items-center text-[#1A1A1A] dark:text-[#F0EDE7]">{icon}</span>
+          <span className="hidden text-xs font-medium text-[#1A1A1A] md:inline dark:text-[#F0EDE7]">
             {label}
           </span>
         </span>
@@ -54,7 +54,7 @@ export const CanvasSectionButton = forwardRef(function CanvasSectionButton(
       size="icon"
       onClick={onClick}
       aria-label={ariaLabel}
-      className={`w-8 h-8 ${baseClass} ${visibilityClass}`}
+      className={`h-8 w-8 ${baseClass} ${visibilityClass}`}
       {...props}
     >
       <span className="pointer-events-none flex items-center justify-center text-[#1A1A1A] dark:text-[#F0EDE7]">
@@ -74,7 +74,7 @@ export const CanvasSectionButton = forwardRef(function CanvasSectionButton(
         <TooltipContent
           side="top"
           sideOffset={8}
-          className="bg-tooltip-bg-color text-tooltip-text-color border-0 px-4 py-2 rounded-xl shadow-xl"
+          className="bg-tooltip-bg-color text-tooltip-text-color rounded-xl border-0 px-4 py-2 shadow-xl"
         >
           <span className="text-sm font-medium">{tooltipText}</span>
         </TooltipContent>

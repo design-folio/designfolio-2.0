@@ -114,14 +114,14 @@ export default function AnalyzeEditor() {
   };
 
   return (
-    <div className="flex flex-col items-stretch w-full h-full">
+    <div className="flex h-full w-full flex-col items-stretch">
       <div
-        className="project-editor bg-white border-2 border-border rounded-2xl py-4 md:py-6 w-full hover:border-foreground/20 focus-within:border-foreground/30 transition-all duration-300"
+        className="project-editor border-border hover:border-foreground/20 focus-within:border-foreground/30 w-full rounded-2xl border-2 bg-white py-4 transition-all duration-300 md:py-6"
         style={{ minHeight: "280px" }}
       >
         <div
           ref={editorContainer}
-          className={"block w-[100%] mx-0 my-auto h-full relative overflow-auto"}
+          className={"relative mx-0 my-auto block h-full w-[100%] overflow-auto"}
         >
           {/* {!isDataPresent && (
           <div className="relative">
@@ -212,7 +212,7 @@ export default function AnalyzeEditor() {
       <button
         type="button"
         onClick={() => handleAnalyze(editor.current)}
-        className="w-full mt-4 bg-foreground text-background hover:bg-foreground/90 focus-visible:outline-none border-0 rounded-full h-11 px-6 text-base font-semibold transition-colors"
+        className="bg-foreground text-background hover:bg-foreground/90 mt-4 h-11 w-full rounded-full border-0 px-6 text-base font-semibold transition-colors focus-visible:outline-none"
       >
         Analyze
       </button>

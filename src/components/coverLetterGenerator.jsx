@@ -114,7 +114,7 @@ export default function CoverLetterGenerator({
   if (analysis) {
     return (
       <div className="w-full space-y-8">
-        <div className="flex justify-between flex-wrap gap-4 max-w-5xl mx-auto">
+        <div className="mx-auto flex max-w-5xl flex-wrap justify-between gap-4">
           <button
             type="button"
             disabled={isStartingNew}
@@ -127,9 +127,9 @@ export default function CoverLetterGenerator({
               onStartNewAnalysis?.();
               setIsStartingNew(false);
             }}
-            className="rounded-full border-2 border-foreground/20 bg-white/50 backdrop-blur-sm px-4 py-2 text-sm font-medium text-foreground hover:bg-foreground/10 transition-colors flex items-center gap-2 disabled:opacity-70 disabled:pointer-events-none ml-auto"
+            className="border-foreground/20 text-foreground hover:bg-foreground/10 ml-auto flex items-center gap-2 rounded-full border-2 bg-white/50 px-4 py-2 text-sm font-medium backdrop-blur-sm transition-colors disabled:pointer-events-none disabled:opacity-70"
           >
-            <RefreshCcw className="h-4 w-4 text-foreground/60" />
+            <RefreshCcw className="text-foreground/60 h-4 w-4" />
             {isStartingNew ? "Loading…" : "Start New Analysis"}
           </button>
           {/* <button
@@ -163,22 +163,22 @@ export default function CoverLetterGenerator({
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95 }}
-                  className="flex flex-col items-center justify-center py-4 space-y-6"
+                  className="flex flex-col items-center justify-center space-y-6 py-4"
                 >
                   <ScannerCardStream isScanning={true} file={uploadedResumeFile} />
                   <div className="w-full max-w-xs space-y-3 text-center">
-                    <div className="flex items-center justify-center gap-2 text-foreground font-medium">
-                      <Loader2 className="w-4 h-4 animate-spin text-[#FF553E]" />
+                    <div className="text-foreground flex items-center justify-center gap-2 font-medium">
+                      <Loader2 className="h-4 w-4 animate-spin text-[#FF553E]" />
                       <span className="text-sm">AI is thinking...</span>
                     </div>
-                    <div className="h-1.5 w-full bg-foreground/5 rounded-full overflow-hidden">
+                    <div className="bg-foreground/5 h-1.5 w-full overflow-hidden rounded-full">
                       <motion.div
                         className="h-full bg-[#FF553E]"
                         initial={{ width: 0 }}
                         animate={{ width: `${analysisProgress}%` }}
                       />
                     </div>
-                    <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">
+                    <p className="text-muted-foreground text-[10px] font-bold tracking-widest uppercase">
                       Matching Job Requirements
                     </p>
                   </div>
@@ -193,8 +193,8 @@ export default function CoverLetterGenerator({
                 >
                   <Form id="EmailForm" className="space-y-4">
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-foreground ml-1">
-                        Upload Resume (PDF Only)<span className="text-[#FF553E] ml-0.5">*</span>
+                      <label className="text-foreground ml-1 text-sm font-medium">
+                        Upload Resume (PDF Only)<span className="ml-0.5 text-[#FF553E]">*</span>
                       </label>
                       <ResumeUploader
                         onUpload={(text, file) => handleResumeUpload(text, setFieldValue, file)}
@@ -203,34 +203,34 @@ export default function CoverLetterGenerator({
                       <ErrorMessage
                         name="resumeText"
                         component="p"
-                        className="text-sm text-red-500 ml-1"
+                        className="ml-1 text-sm text-red-500"
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-foreground ml-1">
-                        Paste the Job Description<span className="text-[#FF553E] ml-0.5">*</span>
+                      <label className="text-foreground ml-1 text-sm font-medium">
+                        Paste the Job Description<span className="ml-0.5 text-[#FF553E]">*</span>
                       </label>
                       <div
-                        className={`bg-white dark:bg-white border-2 border-border rounded-2xl hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] transition-all duration-300 ease-out overflow-hidden ${errors.jobDescription && touched.jobDescription ? "border-red-500" : ""}`}
+                        className={`border-border hover:border-foreground/20 focus-within:border-foreground/30 overflow-hidden rounded-2xl border-2 bg-white transition-all duration-300 ease-out focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] dark:bg-white ${errors.jobDescription && touched.jobDescription ? "border-red-500" : ""}`}
                       >
                         <Field
                           placeholder="Paste the job description here..."
                           name="jobDescription"
                           as="textarea"
-                          className="border-0 bg-transparent min-h-[100px] px-4 py-3 focus-visible:ring-0 focus-visible:ring-offset-0 text-base text-foreground placeholder:text-muted-foreground/60 resize-none w-full"
+                          className="text-foreground placeholder:text-muted-foreground/60 min-h-[100px] w-full resize-none border-0 bg-transparent px-4 py-3 text-base focus-visible:ring-0 focus-visible:ring-offset-0"
                           autoComplete="off"
                         />
                       </div>
                       <ErrorMessage
                         name="jobDescription"
                         component="p"
-                        className="text-sm text-red-500 ml-1"
+                        className="ml-1 text-sm text-red-500"
                       />
                     </div>
                     <button
                       type="submit"
                       disabled={isAnalyzing || guestUsageLimitReached}
-                      className="w-full bg-foreground text-background hover:bg-foreground/90 focus-visible:outline-none border-0 rounded-full h-11 px-6 text-base font-semibold transition-colors disabled:opacity-50"
+                      className="bg-foreground text-background hover:bg-foreground/90 h-11 w-full rounded-full border-0 px-6 text-base font-semibold transition-colors focus-visible:outline-none disabled:opacity-50"
                     >
                       {guestUsageLimitReached ? "Sign up to analyze again" : "Analyze Resume"}
                     </button>

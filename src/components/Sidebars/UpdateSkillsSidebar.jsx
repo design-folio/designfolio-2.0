@@ -171,25 +171,25 @@ export default function UpdateSkillsSidebar() {
   };
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
+    <div className="flex h-full flex-col">
+      <div className="flex-1 space-y-4 overflow-y-auto px-6 py-4">
         {/* Search */}
         <div className="relative">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+          <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2" />
           <Input
             type="text"
             placeholder="Search skills..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-10 pr-10"
+            className="pr-10 pl-10"
           />
           {skillsLoading && (
-            <Loader2 className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground animate-spin" />
+            <Loader2 className="text-muted-foreground absolute top-1/2 right-3.5 h-4 w-4 -translate-y-1/2 animate-spin" />
           )}
         </div>
 
         {selectedLabels.length > 0 && (
-          <p className="text-xs text-muted-foreground">
+          <p className="text-muted-foreground text-xs">
             {selectedLabels.length} skill{selectedLabels.length !== 1 ? "s" : ""} selected
           </p>
         )}
@@ -210,10 +210,10 @@ export default function UpdateSkillsSidebar() {
                 transition={{ type: "spring", stiffness: 500, damping: 30 }}
                 onClick={() => toggle(skill)}
                 className={cn(
-                  "px-3.5 py-1.5 rounded-full border text-sm font-medium transition-all duration-200 flex items-center gap-1.5",
+                  "flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-medium transition-all duration-200",
                   isSelected
                     ? "bg-foreground border-foreground text-background"
-                    : "bg-transparent border-border text-foreground hover:bg-muted"
+                    : "border-border text-foreground hover:bg-muted bg-transparent"
                 )}
               >
                 <AnimatePresence mode="popLayout">
@@ -223,9 +223,9 @@ export default function UpdateSkillsSidebar() {
                       animate={{ scale: 1, opacity: 1, width: "auto", marginRight: 2 }}
                       exit={{ scale: 0, opacity: 0, width: 0, marginRight: 0 }}
                       transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                      className="overflow-hidden flex items-center"
+                      className="flex items-center overflow-hidden"
                     >
-                      <Check className="w-3.5 h-3.5" />
+                      <Check className="h-3.5 w-3.5" />
                     </motion.span>
                   )}
                 </AnimatePresence>
@@ -241,20 +241,20 @@ export default function UpdateSkillsSidebar() {
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ duration: 0.15 }}
               onClick={() => addCustom(search)}
-              className="px-3.5 py-1.5 rounded-full border border-dashed border-border text-sm font-medium flex items-center gap-1.5 text-muted-foreground hover:border-foreground hover:text-foreground transition-colors"
+              className="border-border text-muted-foreground hover:border-foreground hover:text-foreground flex items-center gap-1.5 rounded-full border border-dashed px-3.5 py-1.5 text-sm font-medium transition-colors"
             >
-              <Plus className="w-3.5 h-3.5" />
+              <Plus className="h-3.5 w-3.5" />
               Add &quot;{search}&quot;
             </motion.button>
           )}
 
           {!skillsLoading && filtered.length === 0 && !showAdd && (
-            <p className="text-sm text-muted-foreground py-2">No skills found</p>
+            <p className="text-muted-foreground py-2 text-sm">No skills found</p>
           )}
         </motion.div>
       </div>
 
-      <div className="flex gap-2 py-3 px-6 border-t border-border justify-end">
+      <div className="border-border flex justify-end gap-2 border-t px-6 py-3">
         <Button variant="outline" type="button" onClick={() => closeSidebar()}>
           Cancel
         </Button>

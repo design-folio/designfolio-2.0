@@ -85,8 +85,8 @@ export default function ClaimDomain({ form = "default", className = "", onClaimW
         }}
       >
         {({ setFieldValue, setFieldError, setFieldTouched, errors, values }) => (
-          <Form id={form} className={`w-full xl:w-[836px] md:pr-5 m-auto ${className}`}>
-            <div className="flex flex-col md:flex-row items-end justify-center gap-4 md:max-w-[848px] m-auto">
+          <Form id={form} className={`m-auto w-full md:pr-5 xl:w-[836px] ${className}`}>
+            <div className="m-auto flex flex-col items-end justify-center gap-4 md:max-w-[848px] md:flex-row">
               <div className="w-full md:w-[432px]">
                 <div className="relative">
                   <Field
@@ -96,7 +96,7 @@ export default function ClaimDomain({ form = "default", className = "", onClaimW
                     autoComplete="off"
                     className={`text-input !rounded-[16px] ${
                       loading ? "!pr-[182px]" : "!pr-[158px]"
-                    } !py-[19.2px] xl:!py-[18.8px] placeholder-[#9CA3AF] ${
+                    } !py-[19.2px] placeholder-[#9CA3AF] xl:!py-[18.8px] ${
                       ((!!errors.domain && values.domain && !loading) ||
                         (!isAvailable && !loading && values.domain)) &&
                       "!text-input-error-color"
@@ -109,9 +109,9 @@ export default function ClaimDomain({ form = "default", className = "", onClaimW
                     }`}
                     onChange={(e) => handleChange(e, setFieldValue, setFieldError, setFieldTouched)}
                   />
-                  <div className="flex justify-center items-center gap-[10px] absolute top-[4px] lg:top-[3px] right-[4px]">
+                  <div className="absolute top-[4px] right-[4px] flex items-center justify-center gap-[10px] lg:top-[3px]">
                     <span
-                      className="text-input-button-color flex  gap-2 items-center text-[17px] font-inter font-[500] p-[14px] rounded-xl transition-all"
+                      className="text-input-button-color font-inter flex items-center gap-2 rounded-xl p-[14px] text-[17px] font-[500] transition-all"
                       style={{
                         background: "linear-gradient(to right, #F1F2F8, #F7F3EB)",
                       }}
@@ -119,7 +119,7 @@ export default function ClaimDomain({ form = "default", className = "", onClaimW
                       .designfolio.me
                       {loading && domainValue && (
                         <svg
-                          className="animate-spin h-4 w-4"
+                          className="h-4 w-4 animate-spin"
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
                           viewBox="0 0 24 24"
@@ -152,44 +152,44 @@ export default function ClaimDomain({ form = "default", className = "", onClaimW
                 isDisabled={!(!errors.domain && domainValue && isAvailable && !loading)}
               />
             </div>
-            <div className="h-6 text-center mt-6">
+            <div className="mt-6 h-6 text-center">
               <div className="flex flex-col justify-center overflow-hidden">
                 <div
-                  className={`transition flex gap-x-1 justify-center items-center duration-300 ${
+                  className={`flex items-center justify-center gap-x-1 transition duration-300 ${
                     !domainValue || loading
-                      ? "h-max animate-slide-up max-h-10 opacity-100"
+                      ? "animate-slide-up h-max max-h-10 opacity-100"
                       : "h-max max-h-0 opacity-0"
                   }`}
                 >
                   <img src="/assets/svgs/normal-emoji.svg" alt="" />
-                  <p className="text-input-button-color font-[500] font-inter">
+                  <p className="text-input-button-color font-inter font-[500]">
                     Claim your domain before it&apos;s late!
                   </p>
                 </div>
 
                 <div
-                  className={`transition-transform flex gap-x-1 justify-center items-center duration-300 ${
+                  className={`flex items-center justify-center gap-x-1 transition-transform duration-300 ${
                     !errors.domain && domainValue && isAvailable && !loading
-                      ? "-translate-y-full h-max animate-slide-down max-h-10 opacity-100"
-                      : "-translate-y-full h-max max-h-0 opacity-0"
+                      ? "animate-slide-down h-max max-h-10 -translate-y-full opacity-100"
+                      : "h-max max-h-0 -translate-y-full opacity-0"
                   }`}
                 >
                   <img src="/assets/svgs/success-emoji.svg" alt="" />
-                  <p className="text-center text-input-success-color font-[500] font-inter">
+                  <p className="text-input-success-color font-inter text-center font-[500]">
                     It&apos;s available, claim it now.
                   </p>
                 </div>
 
                 <div
-                  className={`transition-transform flex gap-x-1 justify-center items-center duration-300 ${
+                  className={`flex items-center justify-center gap-x-1 transition-transform duration-300 ${
                     (!!errors.domain && values.domain && !loading) ||
                     (!isAvailable && !loading && values.domain)
-                      ? "translate-y-full h-max  animate-slide-up max-h-10 opacity-100"
-                      : "translate-y-full h-max max-h-0 opacity-0"
+                      ? "animate-slide-up h-max max-h-10 translate-y-full opacity-100"
+                      : "h-max max-h-0 translate-y-full opacity-0"
                   }`}
                 >
                   <img src="/assets/svgs/error-emoji.svg" alt="" />
-                  <p className="text-center flex text-input-error-color font-[500] font-inter">
+                  <p className="text-input-error-color font-inter flex text-center font-[500]">
                     Username is already taken.{" "}
                     <span className="hidden md:block">Your clone got here first!</span>
                   </p>

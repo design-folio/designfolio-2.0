@@ -61,16 +61,16 @@ const BlogPost = ({ post }) => {
       </Head>
 
       <div className="min-h-screen" style={{ backgroundColor: "#F2F2F0" }}>
-        <main className="container mx-auto px-4 pb-10 pt-[108px] md:pb-8">
-          <article className="max-w-2xl mx-auto">
+        <main className="container mx-auto px-4 pt-[108px] pb-10 md:pb-8">
+          <article className="mx-auto max-w-2xl">
             <Link href="/" passHref>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => router.back()}
-                className="mb-8 text-gray-600 border-gray-300 hover:border-gray-400 hover:bg-transparent"
+                className="mb-8 border-gray-300 text-gray-600 hover:border-gray-400 hover:bg-transparent"
               >
-                <ArrowLeft className="w-3 h-3 mr-1" />
+                <ArrowLeft className="mr-1 h-3 w-3" />
                 Back to posts
               </Button>
             </Link>
@@ -81,13 +81,13 @@ const BlogPost = ({ post }) => {
             </div>
 
             {hasTags && (
-              <div className="mt-8 pt-6 border-t border-gray-200">
-                <h3 className="text-sm font-medium text-gray-500 mb-2">Tags:</h3>
+              <div className="mt-8 border-t border-gray-200 pt-6">
+                <h3 className="mb-2 text-sm font-medium text-gray-500">Tags:</h3>
                 <div className="flex flex-wrap gap-2">
                   {post.tags.map((tag, index) => (
                     <span
                       key={index}
-                      className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium transition-colors duration-200 shadow-sm"
+                      className="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium shadow-sm transition-colors duration-200"
                       style={{ backgroundColor: "#D9D9D3", color: "#757566" }}
                     >
                       {tag}

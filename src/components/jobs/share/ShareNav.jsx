@@ -14,10 +14,10 @@ export function ShareNav({ authState, jobId }) {
       initial={{ y: -10, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.28, ease: EASE_OUT }}
-      className="fixed top-0 left-0 right-0 z-50 h-14 bg-background/90 backdrop-blur-md border-b border-black/[0.06] dark:border-white/[0.06]"
+      className="bg-background/90 fixed top-0 right-0 left-0 z-50 h-14 border-b border-black/[0.06] backdrop-blur-md dark:border-white/[0.06]"
     >
-      <div className="max-w-5xl mx-auto px-5 h-full flex items-center justify-between">
-        <Link href="/" className="shrink-0 flex items-center">
+      <div className="mx-auto flex h-full max-w-5xl items-center justify-between px-5">
+        <Link href="/" className="flex shrink-0 items-center">
           <MemoDesignfolioLogoV2 />
         </Link>
 
@@ -29,7 +29,7 @@ export function ShareNav({ authState, jobId }) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.15 }}
-              className="h-8 w-20 rounded-full bg-foreground/[0.06] animate-pulse"
+              className="bg-foreground/[0.06] h-8 w-20 animate-pulse rounded-full"
             />
           )}
 
@@ -44,15 +44,15 @@ export function ShareNav({ authState, jobId }) {
             >
               <Link
                 href={`/login${jobParam}`}
-                className="hidden sm:flex items-center h-8 px-4 rounded-full border border-black/[0.10] dark:border-white/[0.12] text-[13px] font-medium text-foreground/65 hover:text-foreground hover:border-black/[0.20] dark:hover:border-white/[0.25] transition-colors"
+                className="text-foreground/65 hover:text-foreground hidden h-8 items-center rounded-full border border-black/[0.10] px-4 text-[13px] font-medium transition-colors hover:border-black/[0.20] sm:flex dark:border-white/[0.12] dark:hover:border-white/[0.25]"
               >
                 Sign in
               </Link>
               <Link
                 href={`/claim-link${jobParam}`}
-                className="flex items-center gap-1.5 h-8 px-4 rounded-full bg-[#1A1A1A] dark:bg-white text-white dark:text-black text-[13px] font-medium hover:opacity-80 transition-opacity"
+                className="flex h-8 items-center gap-1.5 rounded-full bg-[#1A1A1A] px-4 text-[13px] font-medium text-white transition-opacity hover:opacity-80 dark:bg-white dark:text-black"
               >
-                <Sparkles className="w-3.5 h-3.5" />
+                <Sparkles className="h-3.5 w-3.5" />
                 Try Designfolio
               </Link>
             </motion.div>
@@ -67,9 +67,9 @@ export function ShareNav({ authState, jobId }) {
               transition={{ duration: 0.22, ease: EASE_OUT }}
               className="flex items-end gap-4"
             >
-              <Button asChild size="sm" className="hidden sm:flex items-center rounded-full">
+              <Button asChild size="sm" className="hidden items-center rounded-full sm:flex">
                 <Link href="/jobs">
-                  <Briefcase className="w-4 h-4" />
+                  <Briefcase className="h-4 w-4" />
                   My Jobs
                 </Link>
               </Button>

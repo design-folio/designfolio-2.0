@@ -56,12 +56,12 @@ export default function GrantPlanForm() {
 
   return (
     <div className="max-w-xl">
-      <div className="bg-white dark:bg-[#2A2520] rounded-2xl border border-[#E5D7C4] dark:border-white/10">
+      <div className="rounded-2xl border border-[#E5D7C4] bg-white dark:border-white/10 dark:bg-[#2A2520]">
         <div className="px-5 pt-5 pb-4">
           <h3 className="text-sm font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">Grant Plan</h3>
         </div>
         <div className="h-px bg-[#E5D7C4] dark:bg-white/10" />
-        <div className="p-5 space-y-4">
+        <div className="space-y-4 p-5">
           <div className="space-y-1.5">
             <Label htmlFor="emails" className="text-sm text-[#1A1A1A] dark:text-[#F0EDE7]">
               User emails
@@ -75,7 +75,7 @@ export default function GrantPlanForm() {
                 setResults(null);
               }}
               rows={6}
-              className="text-sm font-mono resize-none bg-[#F5F2EE] dark:bg-[#231F1A] border-[#E5D7C4] dark:border-white/10 text-[#1A1A1A] dark:text-[#F0EDE7] placeholder:text-[#7A736C] dark:placeholder:text-[#B5AFA5]"
+              className="resize-none border-[#E5D7C4] bg-[#F5F2EE] font-mono text-sm text-[#1A1A1A] placeholder:text-[#7A736C] dark:border-white/10 dark:bg-[#231F1A] dark:text-[#F0EDE7] dark:placeholder:text-[#B5AFA5]"
             />
             {emails.length > 0 && (
               <p className="text-xs text-[#7A736C] dark:text-[#B5AFA5]">
@@ -131,23 +131,23 @@ export default function GrantPlanForm() {
               <div className="h-px bg-[#E5D7C4] dark:bg-white/10" />
               <div className="space-y-2">
                 <p className="text-xs font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">Results</p>
-                <div className="space-y-1.5 max-h-48 overflow-y-auto">
+                <div className="max-h-48 space-y-1.5 overflow-y-auto">
                   {results.map((r, i) => (
                     <div key={i} className="flex items-center justify-between gap-2 text-sm">
-                      <span className="text-[#7A736C] dark:text-[#B5AFA5] truncate font-mono text-xs">
+                      <span className="truncate font-mono text-xs text-[#7A736C] dark:text-[#B5AFA5]">
                         {r.email}
                       </span>
                       {r.status === "granted" ? (
                         <Badge
                           variant="outline"
-                          className="text-xs shrink-0 border-green-200 text-green-700 bg-green-50 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800"
+                          className="shrink-0 border-green-200 bg-green-50 text-xs text-green-700 dark:border-green-800 dark:bg-green-900/20 dark:text-green-400"
                         >
                           Granted
                         </Badge>
                       ) : (
                         <Badge
                           variant="outline"
-                          className="text-xs shrink-0 border-red-200 text-red-700 bg-red-50 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800"
+                          className="shrink-0 border-red-200 bg-red-50 text-xs text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400"
                         >
                           Not found
                         </Badge>

@@ -101,10 +101,10 @@ export default function VerifyEmail() {
             <img src={"/assets/svgs/left-arrow.svg"} alt="back arrow" className="cursor-pointer" />
           }
         />
-        <Text as="h1" size={"p-large"} className="text-landing-heading-text-color font-bold mt-4">
+        <Text as="h1" size={"p-large"} className="text-landing-heading-text-color mt-4 font-bold">
           Verify Email
         </Text>
-        <Text size={"p-xsmall"} className="mt-2 text-landing-description-text-color font-medium">
+        <Text size={"p-xsmall"} className="text-landing-description-text-color mt-2 font-medium">
           We have sent an email to{" "}
           <span className="text-df-orange-color">{router?.query?.email}</span> with a verification
           code. Please enter it below confirm your email.
@@ -151,8 +151,8 @@ export default function VerifyEmail() {
                     component="div"
                     className="error-message text-[14px]"
                   />
-                  <div className="flex  gap-1 items-center pt-2">
-                    <p className="w-fit text-[12px] font-inter md:!text-[14px] mt-[2px] font-[500] text-landing-description-text-color">
+                  <div className="flex items-center gap-1 pt-2">
+                    <p className="font-inter text-landing-description-text-color mt-[2px] w-fit text-[12px] font-[500] md:!text-[14px]">
                       {`${
                         timeLeft == 0 ? "Didn't received the code?" : `Time left: ${timeLeft} sec`
                       }`}

@@ -75,7 +75,7 @@ export default function OfferAnalysis({
   };
 
   return (
-    <div className="w-full relative">
+    <div className="relative w-full">
       {!analysis ? (
         <OfferForm
           onSubmit={handleSubmit}
@@ -86,8 +86,8 @@ export default function OfferAnalysis({
         <AnalysisReport analysis={analysis} onRestart={handleRestart} isRestarting={isRestarting} />
       )}
       {isAnalyzing && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
-          <div className="bg-white p-8 rounded-3xl shadow-xl flex flex-col items-center gap-4 border border-border/40">
+        <div className="bg-background/80 fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
+          <div className="border-border/40 flex flex-col items-center gap-4 rounded-3xl border bg-white p-8 shadow-xl">
             <TetrisLoading loadingText="Analyzing your offer..." />
           </div>
         </div>

@@ -31,7 +31,7 @@ export default function Home({ dfToken }) {
       <FeaturesSection />
       {/* <FeaturesShowcase /> */}
       <AiToolsSection />
-      <div className={` mx-auto mt-[75px] xl:mt-[115px]`}>
+      <div className={`mx-auto mt-[75px] xl:mt-[115px]`}>
         <SpotlightUsers />
       </div>
       <Footer dfToken={dfToken} />

@@ -52,7 +52,7 @@ export default function ChatAboutSection({
             initial={{ opacity: 0, y: 10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.3 }}
-            className="flex justify-end relative group/msg"
+            className="group/msg relative flex justify-end"
           >
             <YouPrompt>Tell me more about you</YouPrompt>
           </motion.div>
@@ -66,37 +66,37 @@ export default function ChatAboutSection({
             initial={{ opacity: 0, y: 10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.3 }}
-            className="flex gap-3 max-w-[85%] relative group/msg"
+            className="group/msg relative flex max-w-[85%] gap-3"
           >
             {canEdit && chatRevealStep >= s(18) && (
-              <div className="absolute -left-2 top-1/2 -translate-y-1/2 z-40 transition-opacity flex gap-1.5 opacity-0 group-hover/msg:opacity-100">
+              <div className="absolute top-1/2 -left-2 z-40 flex -translate-y-1/2 gap-1.5 opacity-0 transition-opacity group-hover/msg:opacity-100">
                 <Button
                   variant="outline"
                   size="sm"
-                  className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
+                  className="h-7 w-7 rounded-full border-[#E5D7C4] bg-white/90 p-0 shadow-sm backdrop-blur-sm hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520]/90 dark:hover:bg-[#35302A]"
                   onClick={(e) => {
                     e.stopPropagation();
                     openSidebar?.(sidebars.about);
                   }}
                 >
-                  <Pencil className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                  <Pencil className="h-3 w-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
                 </Button>
               </div>
             )}
-            <div className="w-8 h-8 shrink-0 mt-auto flex items-end">
+            <div className="mt-auto flex h-8 w-8 shrink-0 items-end">
               <ChatAvatar avatarSrc={avatarSrc} show={chatRevealStep < s(18)} />
             </div>
             <div className="flex flex-col gap-1">
-              <span className="text-[11px] text-[#7A736C] dark:text-[#B5AFA5] ml-1 font-medium">
+              <span className="ml-1 text-[11px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">
                 {userDetails?.firstName || "Me"}
               </span>
-              <div className="bg-[#E5E2DB] dark:bg-[#2A2520] p-3 sm:p-4 rounded-2xl rounded-tl-sm rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5 w-fit">
+              <div className="w-fit rounded-2xl rounded-tl-sm rounded-bl-sm border border-black/5 bg-[#E5E2DB] p-3 transition-colors duration-700 sm:p-4 dark:border-white/5 dark:bg-[#2A2520]">
                 {chatRevealStep === s(17) ? (
-                  <div className="flex space-x-1.5 items-center px-1 min-h-[46px]">
+                  <div className="flex min-h-[46px] items-center space-x-1.5 px-1">
                     <TypingIndicator />
                   </div>
                 ) : aboutImages.length > 0 ? (
-                  <div className="my-1 mx-1">
+                  <div className="mx-1 my-1">
                     <div className="flex gap-2">
                       {aboutImages.slice(0, 2).map((img, idx) => {
                         const imgSrc = img?.src || img?.key || img;
@@ -105,12 +105,12 @@ export default function ChatAboutSection({
                             key={idx}
                             whileHover={{ scale: 1.05, zIndex: 10 }}
                             onClick={() => setSelectedStoryImage(imgSrc)}
-                            className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden shadow-sm border border-black/5 dark:border-white/5 cursor-pointer"
+                            className="h-20 w-20 cursor-pointer overflow-hidden rounded-xl border border-black/5 shadow-sm sm:h-24 sm:w-24 dark:border-white/5"
                           >
                             <img
                               src={imgSrc}
                               alt={`Story ${idx + 1}`}
-                              className="w-full h-full object-cover"
+                              className="h-full w-full object-cover"
                             />
                           </motion.div>
                         );
@@ -120,9 +120,9 @@ export default function ChatAboutSection({
                 ) : canEdit ? (
                   <button
                     onClick={() => openSidebar?.(sidebars.about)}
-                    className="flex items-center gap-2 text-[13px] text-[#7A736C] dark:text-[#B5AFA5] hover:text-[#1A1A1A] dark:hover:text-white transition-colors px-2 py-1"
+                    className="flex items-center gap-2 px-2 py-1 text-[13px] text-[#7A736C] transition-colors hover:text-[#1A1A1A] dark:text-[#B5AFA5] dark:hover:text-white"
                   >
-                    <Plus className="w-3.5 h-3.5" />
+                    <Plus className="h-3.5 w-3.5" />
                     Add Story Images
                   </button>
                 ) : null}
@@ -139,24 +139,24 @@ export default function ChatAboutSection({
             initial={{ opacity: 0, y: 10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.3 }}
-            className="flex gap-3 max-w-[85%] relative group/msg"
+            className="group/msg relative flex max-w-[85%] gap-3"
           >
             {canEdit && (
-              <div className="absolute -left-2 top-1/2 -translate-y-[calc(50%+6px)] z-40 transition-opacity flex gap-1.5 opacity-0 group-hover/msg:opacity-100">
+              <div className="absolute top-1/2 -left-2 z-40 flex -translate-y-[calc(50%+6px)] gap-1.5 opacity-0 transition-opacity group-hover/msg:opacity-100">
                 <Button
                   variant="outline"
                   size="sm"
-                  className="h-7 w-7 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
+                  className="h-7 w-7 rounded-full border-[#E5D7C4] bg-white/90 p-0 shadow-sm backdrop-blur-sm hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520]/90 dark:hover:bg-[#35302A]"
                   onClick={(e) => {
                     e.stopPropagation();
                     openSidebar?.(sidebars.about);
                   }}
                 >
-                  <Pencil className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                  <Pencil className="h-3 w-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
                 </Button>
               </div>
             )}
-            <div className="w-8 h-8 shrink-0 mt-auto flex items-end">
+            <div className="mt-auto flex h-8 w-8 shrink-0 items-end">
               <ChatAvatar avatarSrc={avatarSrc} show={chatRevealStep < getNextLeftStep("about")} />
             </div>
             {hasAboutDescription ? (
@@ -184,7 +184,7 @@ export default function ChatAboutSection({
                     variant="ghost"
                     aria-expanded={aboutStoryExpanded}
                     onClick={() => setAboutStoryExpanded((v) => !v)}
-                    className="mt-2 h-auto justify-start gap-1.5 self-start px-2 py-1 text-[13px] font-medium text-[#1A1A1A] hover:bg-black/[0.06] dark:text-[#F0EDE7] dark:hover:bg-white/[0.08] focus-visible:ring-2 focus-visible:ring-[#1A1A1A]/20 focus-visible:ring-offset-2 focus-visible:ring-offset-[#E5E2DB] dark:focus-visible:ring-white/30 dark:focus-visible:ring-offset-[#2A2520]"
+                    className="mt-2 h-auto justify-start gap-1.5 self-start px-2 py-1 text-[13px] font-medium text-[#1A1A1A] hover:bg-black/[0.06] focus-visible:ring-2 focus-visible:ring-[#1A1A1A]/20 focus-visible:ring-offset-2 focus-visible:ring-offset-[#E5E2DB] dark:text-[#F0EDE7] dark:hover:bg-white/[0.08] dark:focus-visible:ring-white/30 dark:focus-visible:ring-offset-[#2A2520]"
                   >
                     {aboutStoryExpanded ? "View less" : "View more"}
                     <motion.span
@@ -209,10 +209,10 @@ export default function ChatAboutSection({
                 </div>
               )
             ) : canEdit ? (
-              <div className="bg-[#E5E2DB] dark:bg-[#2A2520] px-4 py-3 rounded-2xl rounded-tl-sm rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5">
+              <div className="rounded-2xl rounded-tl-sm rounded-bl-sm border border-black/5 bg-[#E5E2DB] px-4 py-3 transition-colors duration-700 dark:border-white/5 dark:bg-[#2A2520]">
                 <button
                   onClick={() => openSidebar?.(sidebars.about)}
-                  className="text-[13px] text-[#7A736C] dark:text-[#B5AFA5] hover:text-[#1A1A1A] dark:hover:text-white transition-colors"
+                  className="text-[13px] text-[#7A736C] transition-colors hover:text-[#1A1A1A] dark:text-[#B5AFA5] dark:hover:text-white"
                 >
                   Click here to add your story...
                 </button>
@@ -230,26 +230,26 @@ export default function ChatAboutSection({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setSelectedStoryImage(null)}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-8 cursor-zoom-out"
+            className="fixed inset-0 z-[100] flex cursor-zoom-out items-center justify-center bg-black/60 p-4 backdrop-blur-sm sm:p-8"
           >
             <motion.div
               initial={{ scale: 0.9, y: 20, opacity: 0 }}
               animate={{ scale: 1, y: 0, opacity: 1 }}
               exit={{ scale: 0.9, y: 20, opacity: 0 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="relative max-w-4xl max-h-[90vh] rounded-2xl overflow-hidden shadow-2xl border border-white/10"
+              className="relative max-h-[90vh] max-w-4xl overflow-hidden rounded-2xl border border-white/10 shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               <button
                 onClick={() => setSelectedStoryImage(null)}
-                className="absolute top-4 right-4 z-10 w-10 h-10 bg-black/50 hover:bg-black/70 backdrop-blur-md rounded-full flex items-center justify-center text-white transition-colors"
+                className="absolute top-4 right-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-md transition-colors hover:bg-black/70"
               >
-                <X className="w-5 h-5" />
+                <X className="h-5 w-5" />
               </button>
               <img
                 src={selectedStoryImage}
                 alt="Story full view"
-                className="w-auto h-auto max-w-full max-h-[90vh] object-contain"
+                className="h-auto max-h-[90vh] w-auto max-w-full object-contain"
               />
             </motion.div>
           </motion.div>

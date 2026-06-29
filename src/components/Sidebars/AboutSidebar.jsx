@@ -264,15 +264,15 @@ export default function AddAbout() {
         }, [values]);
 
         return (
-          <Form id="aboutForm" className="flex flex-col h-full">
+          <Form id="aboutForm" className="flex h-full flex-col">
             <div className="flex-1 overflow-auto px-6 py-4">
               {/* Description Section */}
               <div>
-                <div className="flex justify-between mb-2">
+                <div className="mb-2 flex justify-between">
                   <Text size="p-xxsmall" className="font-medium">
                     Description
                   </Text>
-                  <Text size="p-xxsmall" className="font-medium text-muted-foreground">
+                  <Text size="p-xxsmall" className="text-muted-foreground font-medium">
                     {values?.description?.length || 0}/1200
                   </Text>
                 </div>
@@ -290,7 +290,7 @@ export default function AddAbout() {
                 <ErrorMessage
                   name="description"
                   component="div"
-                  className="error-message text-[14px] !mt-[2px]"
+                  className="error-message !mt-[2px] text-[14px]"
                 />
               </div>
 
@@ -315,7 +315,7 @@ export default function AddAbout() {
             </div>
 
             {/* Footer */}
-            <div className="flex gap-2 py-3 px-6 border-t border-border justify-end">
+            <div className="border-border flex justify-end gap-2 border-t px-6 py-3">
               <Button variant="outline" type="button" onClick={handleCancel}>
                 Cancel
               </Button>

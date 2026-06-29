@@ -23,7 +23,7 @@ export function ProjectVisibilityButton({
             variant="outline"
             size="icon"
             className={cn(
-              "h-8 w-8 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]",
+              "h-8 w-8 rounded-full border-black/10 bg-white/90 shadow-sm backdrop-blur-sm hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520]/90 dark:hover:bg-[#35302A]",
               className,
               isHidden && "text-amber-500 dark:text-amber-400"
             )}
@@ -37,7 +37,7 @@ export function ProjectVisibilityButton({
         <TooltipContent
           side="top"
           sideOffset={8}
-          className="bg-tooltip-bg-color text-tooltip-text-color border-0 px-4 py-2 rounded-xl shadow-xl"
+          className="bg-tooltip-bg-color text-tooltip-text-color rounded-xl border-0 px-4 py-2 shadow-xl"
         >
           <span className="text-sm font-medium">{isHidden ? "Hidden" : "Hide"}</span>
         </TooltipContent>
@@ -101,13 +101,13 @@ export function SectionVisibilityButton({
             type="button"
             aria-label={isSectionHidden ? "Hidden" : "Hide"}
           >
-            {isSectionHidden ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            {isSectionHidden ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </Button>
         </TooltipTrigger>
         <TooltipContent
           side="top"
           sideOffset={8}
-          className="bg-tooltip-bg-color text-tooltip-text-color border-0 px-4 py-2 rounded-xl shadow-xl"
+          className="bg-tooltip-bg-color text-tooltip-text-color rounded-xl border-0 px-4 py-2 shadow-xl"
         >
           <span className="text-sm font-medium">{isSectionHidden ? "Hidden" : "Hide"}</span>
         </TooltipContent>
@@ -135,12 +135,12 @@ export default function Section({
   return (
     <div
       className={cn(
-        "bg-df-section-card-bg-color shadow-df-section-card-shadow rounded-[24px] p-4 lg:p-6 break-words border-0 backdrop-blur-sm relative",
+        "bg-df-section-card-bg-color shadow-df-section-card-shadow relative rounded-[24px] border-0 p-4 break-words backdrop-blur-sm lg:p-6",
         className
       )}
     >
       <div className={cn("flex items-center justify-between", headerClassName)}>
-        <Text size="p-xs-uppercase" className="text-sm text-df-description-color">
+        <Text size="p-xs-uppercase" className="text-df-description-color text-sm">
           {title}
         </Text>
         {edit && (
@@ -167,7 +167,7 @@ export default function Section({
                       <TooltipContent
                         side="top"
                         sideOffset={8}
-                        className="bg-tooltip-bg-color text-tooltip-text-color border-0 px-4 py-2 rounded-xl shadow-xl"
+                        className="bg-tooltip-bg-color text-tooltip-text-color rounded-xl border-0 px-4 py-2 shadow-xl"
                       >
                         <span className="text-sm font-medium">{tooltip}</span>
                       </TooltipContent>

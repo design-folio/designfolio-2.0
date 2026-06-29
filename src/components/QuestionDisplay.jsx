@@ -97,11 +97,11 @@ function StreamedQuestion({ currentQuestion }) {
   }, [currentQuestion]);
 
   return (
-    <p className="text-base font-medium text-foreground leading-relaxed">
+    <p className="text-foreground text-base leading-relaxed font-medium">
       {streamedText || (currentQuestion ? "" : "Loading question...")}
       {currentQuestion && streamedText.length < (currentQuestion?.length || 0) ? (
         <span
-          className="inline-block w-0.5 h-4 bg-foreground/70 align-middle animate-pulse ml-0.5"
+          className="bg-foreground/70 ml-0.5 inline-block h-4 w-0.5 animate-pulse align-middle"
           aria-hidden
         />
       ) : null}
@@ -137,14 +137,14 @@ export default function QuestionDisplay({
       className="w-full space-y-6"
     >
       <div className="flex items-center justify-between">
-        <h3 className="text-xl font-semibold text-foreground">
+        <h3 className="text-foreground text-xl font-semibold">
           Q. {questionNumber} of {totalQuestions}
         </h3>
         <Button
           type="button"
           disabled={isGeneratingFeedback || !userAnswer.trim()}
           onClick={onNext}
-          className="bg-[#1A1F2C] text-white hover:bg-[#1A1F2C]/90 rounded-full px-8 h-11 font-medium"
+          className="h-11 rounded-full bg-[#1A1F2C] px-8 font-medium text-white hover:bg-[#1A1F2C]/90"
         >
           {questionNumber === totalQuestions
             ? isGeneratingFeedback
@@ -155,7 +155,7 @@ export default function QuestionDisplay({
       </div>
 
       {/* Progress indicator */}
-      <div className="flex gap-2 w-full">
+      <div className="flex w-full gap-2">
         {Array.from({ length: totalCount }).map((_, i) => (
           <div
             key={i}
@@ -173,10 +173,10 @@ export default function QuestionDisplay({
       <div className="space-y-6 pt-4">
         <StreamedQuestion key={currentQuestion} currentQuestion={currentQuestion} />
 
-        <div className="relative group">
-          <div className="bg-white dark:bg-white border-2 border-border rounded-2xl hover:border-foreground/20 focus-within:border-foreground/30 focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] transition-all duration-300 ease-out overflow-hidden">
+        <div className="group relative">
+          <div className="border-border hover:border-foreground/20 focus-within:border-foreground/30 overflow-hidden rounded-2xl border-2 bg-white transition-all duration-300 ease-out focus-within:shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)] dark:bg-white">
             <textarea
-              className="border-0 bg-transparent min-h-[240px] px-6 py-5 w-full focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 text-base text-foreground placeholder:text-muted-foreground/40 resize-none"
+              className="text-foreground placeholder:text-muted-foreground/40 min-h-[240px] w-full resize-none border-0 bg-transparent px-6 py-5 text-base focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
               maxLength={MAX_CHAR_LIMIT}
               placeholder="Type your answer here..."
               value={userAnswer}
@@ -186,11 +186,11 @@ export default function QuestionDisplay({
         </div>
 
         <div className="flex items-center justify-between pt-2">
-          <div className="text-sm font-medium text-foreground/60">
+          <div className="text-foreground/60 text-sm font-medium">
             Characters remaining: {remainingChars}
           </div>
-          <div className="flex items-center gap-2 text-sm text-foreground/60">
-            <Sparkles className="w-4 h-4 text-yellow-500 shrink-0" />
+          <div className="text-foreground/60 flex items-center gap-2 text-sm">
+            <Sparkles className="h-4 w-4 shrink-0 text-yellow-500" />
             <span className="font-medium italic">Tip: {tip}</span>
           </div>
         </div>

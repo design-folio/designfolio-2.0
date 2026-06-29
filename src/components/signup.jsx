@@ -216,7 +216,7 @@ export default function Signup() {
 
           <Button
             variant="outline"
-            className="w-full rounded-full h-[50px] px-5 text-base font-medium border-border bg-(--input-bg-color) hover:bg-muted gap-3"
+            className="border-border hover:bg-muted h-[50px] w-full gap-3 rounded-full bg-(--input-bg-color) px-5 text-base font-medium"
             onClick={() => {
               event(POSTHOG_EVENT_NAMES.SIGNUP_METHOD_SELECTED, {
                 method: "email",
@@ -225,7 +225,7 @@ export default function Signup() {
             }}
             data-testid="button-signup-email"
           >
-            <Mail className="w-5 h-5" />
+            <Mail className="h-5 w-5" />
             Sign up with Email
           </Button>
         </motion.div>
@@ -326,7 +326,7 @@ export default function Signup() {
                 Create account
               </FormButton>
 
-              <p className="text-center text-xs text-muted-foreground">
+              <p className="text-muted-foreground text-center text-xs">
                 By continuing, you agree to Designfolio&apos;s{" "}
                 <Link
                   href="/terms-and-conditions"

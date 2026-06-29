@@ -6,7 +6,7 @@ export function DotTrail({ current, total }) {
       {Array.from({ length: total }).map((_, i) => (
         <motion.div
           key={i}
-          className="rounded-full bg-foreground"
+          className="bg-foreground rounded-full"
           animate={{
             width: i === current ? 20 : 6,
             opacity: i < current ? 0.25 : i === current ? 1 : 0.12,

@@ -11,10 +11,10 @@ export function ShareFooter() {
       transition={{ duration: 0.4, ease: EASE_OUT, delay: 0.45 }}
       className="border-t border-black/[0.06] dark:border-white/[0.06]"
     >
-      <div className="max-w-5xl mx-auto px-5 py-7 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-4 px-5 py-7 sm:flex-row">
         <div className="flex items-center gap-2.5">
           <MemoDFLogoV2 />
-          <span className="text-sm text-foreground/45">The job tracker for designers</span>
+          <span className="text-foreground/45 text-sm">The job tracker for designers</span>
         </div>
         <nav className="flex items-center gap-5">
           {[
@@ -25,7 +25,7 @@ export function ShareFooter() {
             <Link
               key={label}
               href={href}
-              className="text-xs text-foreground/40 hover:text-foreground/70 transition-colors duration-150"
+              className="text-foreground/40 hover:text-foreground/70 text-xs transition-colors duration-150"
             >
               {label}
             </Link>

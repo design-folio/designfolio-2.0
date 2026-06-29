@@ -5,7 +5,7 @@ import Text from "./text";
 export default function Info({ className = "", onUpgrade }) {
   return (
     <div
-      className={`flex gap-4 items-center bg-delete-btn-bg-color px-4 py-3 border border-solid border-delete-btn-icon-color rounded-2xl ${className}`}
+      className={`bg-delete-btn-bg-color border-delete-btn-icon-color flex items-center gap-4 rounded-2xl border border-solid px-4 py-3 ${className}`}
     >
       <div>
         <DangerIcon className="text-delete-btn-icon-color" />
@@ -15,7 +15,7 @@ export default function Info({ className = "", onUpgrade }) {
         {onUpgrade ? (
           <button
             onClick={onUpgrade}
-            className="underline underline-offset-2 hover:opacity-70 transition-opacity"
+            className="underline underline-offset-2 transition-opacity hover:opacity-70"
           >
             Upgrade to Pro
           </button>

@@ -15,7 +15,7 @@ export default function AdminUsers() {
             <h2 className="text-base font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
               All Users
             </h2>
-            <p className="text-xs text-[#7A736C] dark:text-[#B5AFA5] mt-0.5">
+            <p className="mt-0.5 text-xs text-[#7A736C] dark:text-[#B5AFA5]">
               Search, filter, and manage Designfolio users.
             </p>
           </div>

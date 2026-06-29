@@ -252,23 +252,23 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
       animate="visible"
       variants={containerVariants}
       className={cn(
-        "bg-[#F0EDE7] dark:bg-[#1A1A1A] flex justify-center font-inter text-[#1A1A1A] dark:text-[#F0EDE7] selection:bg-[#1A8CFF] selection:text-white transition-colors duration-100",
+        "font-inter flex justify-center bg-[#F0EDE7] text-[#1A1A1A] transition-colors duration-100 selection:bg-[#1A8CFF] selection:text-white dark:bg-[#1A1A1A] dark:text-[#F0EDE7]",
         edit ? "min-h-0" : "min-h-screen"
       )}
     >
       <div
         className={cn(
-          "w-full max-w-[700px] flex flex-col relative",
+          "relative flex w-full max-w-[700px] flex-col",
           edit ? "pt-2 pb-6" : "min-h-screen pt-8 pb-24"
         )}
       >
         <motion.div variants={itemVariants} className="mb-6 pt-2">
           <div
-            className={cn("py-2 px-4 flex justify-between items-center w-full", edit && "mt-20")}
+            className={cn("flex w-full items-center justify-between px-4 py-2", edit && "mt-20")}
           >
             <button
               onClick={onBack}
-              className="flex items-center gap-1.5 text-[13px] font-medium text-[#7A736C] dark:text-[#9E9893] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7] transition-colors group"
+              className="group flex items-center gap-1.5 text-[13px] font-medium text-[#7A736C] transition-colors hover:text-[#1A1A1A] dark:text-[#9E9893] dark:hover:text-[#F0EDE7]"
             >
               <ChevronLeft size={18} className="transition-transform group-hover:-translate-x-1" />
               Back to Projects
@@ -280,7 +280,7 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
                     <Button
                       variant="outline"
                       size="icon"
-                      className="h-7 w-7 rounded-full border border-black/10 dark:border-white/10 bg-white/50 dark:bg-[#2A2520]/50 hover:bg-black/5 dark:hover:bg-white/5 text-[#1A1A1A] dark:text-[#F0EDE7] transition-all focus-visible:ring-0 focus-visible:ring-offset-0"
+                      className="h-7 w-7 rounded-full border border-black/10 bg-white/50 text-[#1A1A1A] transition-all hover:bg-black/5 focus-visible:ring-0 focus-visible:ring-offset-0 dark:border-white/10 dark:bg-[#2A2520]/50 dark:text-[#F0EDE7] dark:hover:bg-white/5"
                       title="Lock Project"
                     >
                       <svg
@@ -301,15 +301,15 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
                   <DropdownMenuContent
                     align="end"
                     sideOffset={8}
-                    className="w-[300px] p-4 bg-white/95 dark:bg-[#2A2520]/95 backdrop-blur-xl border border-black/10 dark:border-white/10 rounded-2xl shadow-xl z-50"
+                    className="z-50 w-[300px] rounded-2xl border border-black/10 bg-white/95 p-4 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-[#2A2520]/95"
                   >
                     <div className="flex flex-col gap-4">
                       <div className="flex items-start justify-between gap-3">
                         <div className="space-y-1">
-                          <Label className="text-[14px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] cursor-pointer">
+                          <Label className="cursor-pointer text-[14px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                             Protect Project
                           </Label>
-                          <p className="text-[12px] text-[#7A736C] dark:text-[#9E9893] leading-snug">
+                          <p className="text-[12px] leading-snug text-[#7A736C] dark:text-[#9E9893]">
                             Require a password to view this project.
                           </p>
                         </div>
@@ -326,12 +326,12 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
                             placeholder="Enter password"
                             value={passwordInput}
                             onChange={(e) => setPasswordInput(e.target.value)}
-                            className="h-10 bg-black/[0.03] dark:bg-white/[0.03] border-transparent rounded-xl text-[14px] text-[#1A1A1A] dark:text-[#F0EDE7] focus-visible:ring-2 focus-visible:ring-black/10 dark:focus-visible:ring-white/10 shadow-none placeholder:text-black/30 dark:placeholder:text-white/30"
+                            className="h-10 rounded-xl border-transparent bg-black/[0.03] text-[14px] text-[#1A1A1A] shadow-none placeholder:text-black/30 focus-visible:ring-2 focus-visible:ring-black/10 dark:bg-white/[0.03] dark:text-[#F0EDE7] dark:placeholder:text-white/30 dark:focus-visible:ring-white/10"
                           />
                           <Button
                             size="sm"
                             onClick={handlePasswordSave}
-                            className="rounded-xl h-9 bg-[#1A1A1A] dark:bg-white text-white dark:text-[#1A1A1A] hover:bg-black/80 dark:hover:bg-white/90 text-[13px]"
+                            className="h-9 rounded-xl bg-[#1A1A1A] text-[13px] text-white hover:bg-black/80 dark:bg-white dark:text-[#1A1A1A] dark:hover:bg-white/90"
                           >
                             Save Password
                           </Button>
@@ -357,17 +357,17 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
                             onClick={handleAnalyzeClick}
                             disabled={isAnalyzeDisabled}
                             className={cn(
-                              "h-7 text-[12px] rounded-full border border-black/10 dark:border-white/10",
-                              "bg-white/50 dark:bg-[#2A2520]/50 text-[#1A1A1A] dark:text-[#F0EDE7]",
+                              "h-7 rounded-full border border-black/10 text-[12px] dark:border-white/10",
+                              "bg-white/50 text-[#1A1A1A] dark:bg-[#2A2520]/50 dark:text-[#F0EDE7]",
                               "flex items-center gap-1.5 px-3 transition-all focus-visible:ring-0 focus-visible:ring-offset-0",
-                              "cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed",
+                              "cursor-pointer disabled:cursor-not-allowed disabled:opacity-60",
                               !isAnalyzeDisabled && "hover:bg-black/5 dark:hover:bg-white/5"
                             )}
                           >
                             {isAnalyzing ? (
-                              <AnimatedLoadingDots className="w-[18px] h-[5px] shrink-0" />
+                              <AnimatedLoadingDots className="h-[5px] w-[18px] shrink-0" />
                             ) : (
-                              <AnalyzeIcon className="w-4 h-4 shrink-0" />
+                              <AnalyzeIcon className="h-4 w-4 shrink-0" />
                             )}
                             {analyzeButtonLabel}
                           </Button>
@@ -376,7 +376,7 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
                       {tooltipMessage && (
                         <TooltipContent
                           side="bottom"
-                          className="bg-foreground text-background text-xs px-2 py-1 rounded"
+                          className="bg-foreground text-background rounded px-2 py-1 text-xs"
                         >
                           {tooltipMessage}
                         </TooltipContent>
@@ -391,25 +391,25 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
 
         <div className="space-y-6">
           {/* Message 1 — title + description + cover image */}
-          <motion.div variants={itemVariants} className="flex gap-3 max-w-[95%] pt-2">
-            <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 mt-auto border border-black/5 dark:border-white/5">
+          <motion.div variants={itemVariants} className="flex max-w-[95%] gap-3 pt-2">
+            <div className="mt-auto h-8 w-8 shrink-0 overflow-hidden rounded-full border border-black/5 dark:border-white/5">
               <img
                 src={avatarImageSrc || "/assets/svgs/avatar.svg"}
                 alt={firstName}
-                className="w-full h-full object-cover"
+                className="h-full w-full object-cover"
                 onError={() => setAvatarImageSrc("/assets/svgs/avatar.svg")}
               />
             </div>
-            <div className="flex flex-col gap-1 w-full">
-              <span className="text-[11px] text-[#7A736C] dark:text-[#B5AFA5] ml-1 font-medium">
+            <div className="flex w-full flex-col gap-1">
+              <span className="ml-1 text-[11px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">
                 {firstName}
               </span>
-              <div className="bg-[#E5E2DB] dark:bg-[#2A2520] p-4 rounded-2xl rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5 w-full flex flex-col gap-4">
-                <div className="flex flex-col text-left px-1">
+              <div className="flex w-full flex-col gap-4 rounded-2xl rounded-bl-sm border border-black/5 bg-[#E5E2DB] p-4 transition-colors duration-700 dark:border-white/5 dark:bg-[#2A2520]">
+                <div className="flex flex-col px-1 text-left">
                   <h1
                     className={cn(
-                      "text-2xl font-semibold mb-2 leading-tight text-[#1A1A1A] dark:text-[#F0EDE7]",
-                      edit && !project?.title && "text-[#C5BFB8] dark:text-[#4A4238] italic"
+                      "mb-2 text-2xl leading-tight font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]",
+                      edit && !project?.title && "text-[#C5BFB8] italic dark:text-[#4A4238]"
                     )}
                     contentEditable={edit}
                     suppressContentEditableWarning
@@ -425,7 +425,7 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
                       className={cn(
                         "text-[15px] leading-relaxed",
                         edit && !project?.description
-                          ? "text-[#C5BFB8] dark:text-[#4A4238] italic"
+                          ? "text-[#C5BFB8] italic dark:text-[#4A4238]"
                           : "text-[#7A736C] dark:text-[#B5AFA5]"
                       )}
                       contentEditable={edit}
@@ -440,7 +440,7 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
                   )}
                 </div>
                 {(edit || project?.thumbnail?.url) && (
-                  <div className="rounded-2xl overflow-hidden aspect-[3/2] bg-[#F5F5F5] dark:bg-[#1A1A1A] relative border border-black/5 dark:border-white/5">
+                  <div className="relative aspect-[3/2] overflow-hidden rounded-2xl border border-black/5 bg-[#F5F5F5] dark:border-white/5 dark:bg-[#1A1A1A]">
                     {edit ? (
                       <ImageWithOverlayAndPicker
                         src={project?.thumbnail?.url}
@@ -453,7 +453,7 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
                       <img
                         src={project.thumbnail.url}
                         alt={project.title}
-                        className="w-full h-full object-cover"
+                        className="h-full w-full object-cover"
                       />
                     )}
                   </div>
@@ -464,11 +464,11 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
 
           {/* You: "Can you share more details?" */}
           <motion.div variants={itemVariants} className="flex justify-end">
-            <div className="flex flex-col gap-1 max-w-[85%] items-end">
-              <span className="text-[11px] text-[#7A736C] dark:text-[#B5AFA5] mr-1 font-medium">
+            <div className="flex max-w-[85%] flex-col items-end gap-1">
+              <span className="mr-1 text-[11px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">
                 You
               </span>
-              <div className="bg-[#1A8CFF] dark:bg-[#0073E6] text-white px-4 py-3 rounded-2xl rounded-br-sm text-[15px] leading-relaxed shadow-sm">
+              <div className="rounded-2xl rounded-br-sm bg-[#1A8CFF] px-4 py-3 text-[15px] leading-relaxed text-white shadow-sm dark:bg-[#0073E6]">
                 Can you share more details about this project?
               </div>
             </div>
@@ -476,33 +476,33 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
 
           {/* Message 2 — details grid (only if fields exist) */}
           {detailFields.length > 0 && (
-            <motion.div variants={itemVariants} className="flex gap-3 max-w-[95%]">
-              <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 mt-auto border border-black/5 dark:border-white/5">
+            <motion.div variants={itemVariants} className="flex max-w-[95%] gap-3">
+              <div className="mt-auto h-8 w-8 shrink-0 overflow-hidden rounded-full border border-black/5 dark:border-white/5">
                 <img
                   src={avatarImageSrc || "/assets/svgs/avatar.svg"}
                   alt={firstName}
-                  className="w-full h-full object-cover"
+                  className="h-full w-full object-cover"
                   onError={() => setAvatarImageSrc("/assets/svgs/avatar.svg")}
                 />
               </div>
-              <div className="flex flex-col gap-1 w-full">
-                <span className="text-[11px] text-[#7A736C] dark:text-[#B5AFA5] ml-1 font-medium">
+              <div className="flex w-full flex-col gap-1">
+                <span className="ml-1 text-[11px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">
                   {firstName}
                 </span>
-                <div className="bg-[#E5E2DB] dark:bg-[#2A2520] px-5 py-4 rounded-2xl rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5 w-full">
-                  <p className="text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] mb-4">
+                <div className="w-full rounded-2xl rounded-bl-sm border border-black/5 bg-[#E5E2DB] px-5 py-4 transition-colors duration-700 dark:border-white/5 dark:bg-[#2A2520]">
+                  <p className="mb-4 text-[15px] text-[#1A1A1A] dark:text-[#F0EDE7]">
                     Sure! Here are the core details:
                   </p>
-                  <div className="grid grid-cols-2 gap-y-4 gap-x-6">
+                  <div className="grid grid-cols-2 gap-x-6 gap-y-4">
                     {detailFields.map(({ key, label, value }) => (
                       <div key={key} className="flex flex-col gap-1">
-                        <span className="text-[12px] font-medium text-[#7A736C] dark:text-[#9E9893] uppercase tracking-wide">
+                        <span className="text-[12px] font-medium tracking-wide text-[#7A736C] uppercase dark:text-[#9E9893]">
                           {label}
                         </span>
                         <p
                           className={cn(
                             "text-[14px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]",
-                            edit && !value && "text-[#C5BFB8] dark:text-[#4A4238] italic"
+                            edit && !value && "text-[#C5BFB8] italic dark:text-[#4A4238]"
                           )}
                           contentEditable={edit}
                           suppressContentEditableWarning
@@ -525,11 +525,11 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
           {/* You: "What was the process like?" */}
           {showProcessPrompt && (
             <motion.div variants={itemVariants} className="flex justify-end">
-              <div className="flex flex-col gap-1 max-w-[85%] items-end">
-                <span className="text-[11px] text-[#7A736C] dark:text-[#B5AFA5] mr-1 font-medium">
+              <div className="flex max-w-[85%] flex-col items-end gap-1">
+                <span className="mr-1 text-[11px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">
                   You
                 </span>
-                <div className="bg-[#1A8CFF] dark:bg-[#0073E6] text-white px-4 py-3 rounded-2xl rounded-br-sm text-[15px] leading-relaxed shadow-sm">
+                <div className="rounded-2xl rounded-br-sm bg-[#1A8CFF] px-4 py-3 text-[15px] leading-relaxed text-white shadow-sm dark:bg-[#0073E6]">
                   What was the process like?
                 </div>
               </div>
@@ -538,30 +538,30 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
 
           {/* Message 3 — tiptap / block content */}
           {showProcessMessages && (
-            <motion.div variants={itemVariants} className="flex gap-3 ">
-              <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 mt-auto border border-black/5 dark:border-white/5">
+            <motion.div variants={itemVariants} className="flex gap-3">
+              <div className="mt-auto h-8 w-8 shrink-0 overflow-hidden rounded-full border border-black/5 dark:border-white/5">
                 <img
                   src={avatarImageSrc || "/assets/svgs/avatar.svg"}
                   alt={firstName}
-                  className="w-full h-full object-cover"
+                  className="h-full w-full object-cover"
                   onError={() => setAvatarImageSrc("/assets/svgs/avatar.svg")}
                 />
               </div>
-              <div className="flex flex-col gap-1 w-full">
-                <span className="text-[11px] text-[#7A736C] dark:text-[#B5AFA5] ml-1 font-medium">
+              <div className="flex w-full flex-col gap-1">
+                <span className="ml-1 text-[11px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">
                   {firstName}
                 </span>
                 <div className="">
                   {project?.contentVersion === 2 && project?.tiptapContent ? (
                     <TiptapRenderer
-                      className="bg-[#E5E2DB] dark:bg-[#2A2520] p-4! rounded-2xl rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5 w-full"
+                      className="w-full rounded-2xl rounded-bl-sm border border-black/5 bg-[#E5E2DB] p-4! transition-colors duration-700 dark:border-white/5 dark:bg-[#2A2520]"
                       key={project._id}
                       content={project.tiptapContent}
                     />
                   ) : project?.content ? (
                     <BlockRenderer
                       editorJsData={project.content}
-                      className="bg-[#E5E2DB] dark:bg-[#2A2520] p-4! rounded-2xl rounded-bl-sm transition-colors duration-700 border border-black/5 dark:border-white/5 w-full"
+                      className="w-full rounded-2xl rounded-bl-sm border border-black/5 bg-[#E5E2DB] p-4! transition-colors duration-700 dark:border-white/5 dark:bg-[#2A2520]"
                     />
                   ) : null}
                 </div>
@@ -571,10 +571,10 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
 
           {/* CTA */}
           {!edit && (
-            <motion.div variants={itemVariants} className="flex justify-center mt-12 mb-8">
+            <motion.div variants={itemVariants} className="mt-12 mb-8 flex justify-center">
               <button
                 onClick={onBack}
-                className="rounded-full bg-[#1A1A1A] text-white hover:bg-[#333] dark:bg-white dark:text-[#1A1A1A] dark:hover:bg-gray-200 h-12 px-8 shadow-sm text-[15px] font-medium transition-colors"
+                className="h-12 rounded-full bg-[#1A1A1A] px-8 text-[15px] font-medium text-white shadow-sm transition-colors hover:bg-[#333] dark:bg-white dark:text-[#1A1A1A] dark:hover:bg-gray-200"
               >
                 Back to Projects
               </button>

@@ -5,31 +5,31 @@ import { CompanyLogo } from "./CompanyLogo";
 
 function PermissionCard({ icon: Icon, label, description, state, onRequest }) {
   return (
-    <div className="flex items-start gap-4 p-4 rounded-xl border border-black/[0.07] dark:border-white/[0.07] bg-black/[0.02] dark:bg-white/[0.02]">
-      <div className="shrink-0 w-9 h-9 rounded-full bg-black/[0.05] dark:bg-white/[0.05] flex items-center justify-center mt-0.5">
-        <Icon className="w-4 h-4 text-foreground/60" />
+    <div className="flex items-start gap-4 rounded-xl border border-black/[0.07] bg-black/[0.02] p-4 dark:border-white/[0.07] dark:bg-white/[0.02]">
+      <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-black/[0.05] dark:bg-white/[0.05]">
+        <Icon className="text-foreground/60 h-4 w-4" />
       </div>
-      <div className="flex-1 min-w-0">
-        <div className="text-[14px] font-semibold text-foreground mb-0.5">{label}</div>
-        <div className="text-[13px] text-foreground/50 leading-[1.5] break-words">
+      <div className="min-w-0 flex-1">
+        <div className="text-foreground mb-0.5 text-[14px] font-semibold">{label}</div>
+        <div className="text-foreground/50 text-[13px] leading-[1.5] break-words">
           {description}
         </div>
       </div>
-      <div className="shrink-0 mt-0.5">
+      <div className="mt-0.5 shrink-0">
         {state === "granted" ? (
           <div className="flex items-center gap-1.5 text-[13px] font-medium text-emerald-600 dark:text-emerald-400">
-            <CheckCircle2 className="w-4 h-4" />
+            <CheckCircle2 className="h-4 w-4" />
             Allowed
           </div>
         ) : state === "denied" ? (
           <div className="flex items-center gap-1.5 text-[13px] font-medium text-red-500">
-            <XCircle className="w-4 h-4" />
+            <XCircle className="h-4 w-4" />
             Denied
           </div>
         ) : (
           <button
             onClick={onRequest}
-            className="h-8 px-3.5 rounded-full border border-black/10 dark:border-white/10 text-[13px] font-medium text-foreground/70 hover:text-foreground hover:bg-black/[0.04] dark:hover:bg-white/[0.04] transition-colors"
+            className="text-foreground/70 hover:text-foreground h-8 rounded-full border border-black/10 px-3.5 text-[13px] font-medium transition-colors hover:bg-black/[0.04] dark:border-white/10 dark:hover:bg-white/[0.04]"
           >
             Request
           </button>
@@ -70,28 +70,28 @@ export function MockInterviewDialog({ job, open, onClose, onStart }) {
       <DialogContent
         aria-describedby={undefined}
         overlayClassName="fixed inset-0 z-[300] bg-black/40 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
-        className="bg-white dark:bg-[#2A2520] border border-black/[0.08] dark:border-white/[0.08] p-0 gap-0 max-w-[440px] rounded-2xl overflow-hidden z-[301]"
+        className="z-[301] max-w-[440px] gap-0 overflow-hidden rounded-2xl border border-black/[0.08] bg-white p-0 dark:border-white/[0.08] dark:bg-[#2A2520]"
       >
-        <DialogHeader className="px-6 pt-6 pb-5 border-b border-black/[0.06] dark:border-white/[0.06] min-w-0 overflow-hidden">
-          <div className="w-full flex items-center gap-3 overflow-hidden">
+        <DialogHeader className="min-w-0 overflow-hidden border-b border-black/[0.06] px-6 pt-6 pb-5 dark:border-white/[0.06]">
+          <div className="flex w-full items-center gap-3 overflow-hidden">
             <CompanyLogo logoUrl={job.logoUrl} company={job.company} size={40} />
-            <div className="flex-1 min-w-0 overflow-hidden">
-              <DialogTitle className="text-[#1A1A1A] dark:text-[#F0EDE7] text-[17px] font-semibold leading-tight m-0 truncate">
+            <div className="min-w-0 flex-1 overflow-hidden">
+              <DialogTitle className="m-0 truncate text-[17px] leading-tight font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
                 Ready to practise?
               </DialogTitle>
-              <p className="text-[13px] text-foreground/50 mt-0.5 truncate">
+              <p className="text-foreground/50 mt-0.5 truncate text-[13px]">
                 {job.role} · {job.company}
               </p>
             </div>
           </div>
-          <p className="text-[14px] text-foreground/50 leading-[1.6] mt-4 break-words">
+          <p className="text-foreground/50 mt-4 text-[14px] leading-[1.6] break-words">
             Grant camera and microphone access below so your mock interview session can run
             smoothly.
           </p>
         </DialogHeader>
 
-        <div className="px-6 py-5 space-y-3">
-          <p className="text-[12px] font-semibold text-foreground/40 uppercase tracking-widest mb-4">
+        <div className="space-y-3 px-6 py-5">
+          <p className="text-foreground/40 mb-4 text-[12px] font-semibold tracking-widest uppercase">
             Permissions required
           </p>
           <PermissionCard
@@ -117,13 +117,13 @@ export function MockInterviewDialog({ job, open, onClose, onStart }) {
               onClose();
               onStart();
             }}
-            className="w-full flex items-center justify-center gap-2 h-10 rounded-full bg-[#1A1A1A] dark:bg-white text-white dark:text-black text-[14px] font-medium transition-opacity disabled:opacity-30"
+            className="flex h-10 w-full items-center justify-center gap-2 rounded-full bg-[#1A1A1A] text-[14px] font-medium text-white transition-opacity disabled:opacity-30 dark:bg-white dark:text-black"
           >
-            <Clapperboard className="w-4 h-4" />
+            <Clapperboard className="h-4 w-4" />
             Start mock interview
           </button>
           {!bothGranted && (
-            <p className="text-center text-[12px] text-foreground/35 mt-2.5">
+            <p className="text-foreground/35 mt-2.5 text-center text-[12px]">
               Allow both permissions to continue
             </p>
           )}

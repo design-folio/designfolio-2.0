@@ -21,31 +21,31 @@ export const SortableWorkExperienceItem = ({ exp, edit, onEdit }) => {
         opacity: isDragging ? 0.5 : 1,
         zIndex: isDragging ? 9999 : 1,
       }}
-      className={`flex justify-between gap-4 items-center ${isDragging ? "relative" : ""}`}
+      className={`flex items-center justify-between gap-4 ${isDragging ? "relative" : ""}`}
     >
-      <div className="flex-1 min-w-0 p-3 rounded-lg bg-df-section-card-bg-color border border-border">
-        <p className="text-sm font-semibold text-df-base-text-color truncate">
+      <div className="bg-df-section-card-bg-color border-border min-w-0 flex-1 rounded-lg border p-3">
+        <p className="text-df-base-text-color truncate text-sm font-semibold">
           {exp.company || exp.name}
         </p>
-        <p className="text-xs text-df-secondary-text-color truncate">{exp.role || exp.position}</p>
-        <p className="text-xs text-df-secondary-text-color opacity-60 mt-0.5">
+        <p className="text-df-secondary-text-color truncate text-xs">{exp.role || exp.position}</p>
+        <p className="text-df-secondary-text-color mt-0.5 text-xs opacity-60">
           {formatDuration(exp)}
         </p>
         {exp.description && tiptapToDisplayString(exp.description).trim() && (
-          <p className="text-xs text-df-secondary-text-color mt-1.5 line-clamp-2 whitespace-pre-line">
+          <p className="text-df-secondary-text-color mt-1.5 line-clamp-2 text-xs whitespace-pre-line">
             {tiptapToDisplayString(exp.description).trim()}
           </p>
         )}
       </div>
-      <div className="flex items-center flex-col gap-2 shrink-0">
+      <div className="flex shrink-0 flex-col items-center gap-2">
         {edit && (
           <Button
             variant="secondary"
             size="icon"
-            className="h-8 w-8 rounded-full hover:bg-foreground/5"
+            className="hover:bg-foreground/5 h-8 w-8 rounded-full"
             onClick={() => onEdit(exp)}
           >
-            <Pencil className="w-4 h-4 text-df-icon-color" />
+            <Pencil className="text-df-icon-color h-4 w-4" />
           </Button>
         )}
         <DragHandle size="sm" listeners={listeners} attributes={attributes} />
@@ -59,7 +59,7 @@ function renderExperienceJsonEntry(exp, index, total) {
   const isLast = index === total - 1;
 
   return (
-    <div key={exp._id ?? index} className="pl-4 mt-2">
+    <div key={exp._id ?? index} className="mt-2 pl-4">
       <span className="text-[#abb2bf]">{"{"}</span>
       <div className="pl-4">
         <span className="text-[#d19a66]">company</span>:{" "}
@@ -76,7 +76,7 @@ function renderExperienceJsonEntry(exp, index, total) {
       {descStr !== "" && (
         <div className="pl-4">
           <span className="text-[#d19a66]">description</span>:{" "}
-          <span className="text-[#98c379] whitespace-pre-line break-words">
+          <span className="break-words whitespace-pre-line text-[#98c379]">
             &quot;{descStr}&quot;
           </span>
           ,
@@ -91,18 +91,18 @@ function renderExperienceJsonEntry(exp, index, total) {
 }
 
 const WorkExperienceWindow = ({ workExperiences }) => (
-  <div className="w-full h-full bg-[#1e1e1e] text-[#d4d4d4] font-mono text-xs p-0 flex flex-col overflow-hidden">
+  <div className="flex h-full w-full flex-col overflow-hidden bg-[#1e1e1e] p-0 font-mono text-xs text-[#d4d4d4]">
     {/* Tab bar */}
-    <div className="flex bg-[#2d2d2d] border-b border-[#1e1e1e]">
-      <div className="px-3 py-2 bg-[#1e1e1e] border-t border-t-[#007aff] flex items-center gap-2">
+    <div className="flex border-b border-[#1e1e1e] bg-[#2d2d2d]">
+      <div className="flex items-center gap-2 border-t border-t-[#007aff] bg-[#1e1e1e] px-3 py-2">
         <span className="text-[#e06c75]">experience.ts</span>
         <X size={10} className="opacity-50" />
       </div>
     </div>
 
-    <div className="flex-1 flex overflow-hidden">
+    <div className="flex flex-1 overflow-hidden">
       {/* Line numbers */}
-      <div className="w-10 bg-[#1e1e1e] border-r border-[#333] flex flex-col items-end pr-2 pt-4 text-[#858585] select-none">
+      <div className="flex w-10 flex-col items-end border-r border-[#333] bg-[#1e1e1e] pt-4 pr-2 text-[#858585] select-none">
         {Array.from({ length: 30 }).map((_, i) => (
           <div key={i} className="leading-5">
             {i + 1}
@@ -111,7 +111,7 @@ const WorkExperienceWindow = ({ workExperiences }) => (
       </div>
 
       {/* Code body */}
-      <div className="flex-1 p-4 pt-4 overflow-y-auto leading-5">
+      <div className="flex-1 overflow-y-auto p-4 pt-4 leading-5">
         <div>
           <span className="text-[#c678dd]">const</span>{" "}
           <span className="text-[#e06c75]">workExperience</span> = [
@@ -120,7 +120,7 @@ const WorkExperienceWindow = ({ workExperiences }) => (
         {workExperiences.length > 0 ? (
           workExperiences.map((exp, i) => renderExperienceJsonEntry(exp, i, workExperiences.length))
         ) : (
-          <div className="pl-4 mt-2 text-[#5c6370]">{"// Add work experience to see it here"}</div>
+          <div className="mt-2 pl-4 text-[#5c6370]">{"// Add work experience to see it here"}</div>
         )}
 
         <div className="mt-2">
@@ -134,7 +134,7 @@ const WorkExperienceWindow = ({ workExperiences }) => (
     </div>
 
     {/* VS Code status bar */}
-    <div className="h-6 bg-[#007aff] text-white flex items-center px-2 justify-between text-[10px]">
+    <div className="flex h-6 items-center justify-between bg-[#007aff] px-2 text-[10px] text-white">
       <div className="flex gap-3">
         <span>Main*</span>
         <span>Ln 1, Col 1</span>

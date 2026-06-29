@@ -224,12 +224,12 @@ const SimpleTiptapEditor = ({
   return (
     <div
       className={cn(
-        "tiptap-input-wrapper rounded-xl p-0 overflow-hidden transition-all duration-150",
+        "tiptap-input-wrapper overflow-hidden rounded-xl p-0 transition-all duration-150",
         className
       )}
     >
       {/* Toolbar */}
-      <div className="flex items-center gap-1 px-3 py-2 border-b tiptap-toolbar">
+      <div className="tiptap-toolbar flex items-center gap-1 border-b px-3 py-2">
         <Button
           type="button"
           size="icon"
@@ -239,7 +239,7 @@ const SimpleTiptapEditor = ({
           title="Bold"
           data-testid="button-bold"
         >
-          <Bold className="w-4 h-4" />
+          <Bold className="h-4 w-4" />
         </Button>
         <Button
           type="button"
@@ -250,7 +250,7 @@ const SimpleTiptapEditor = ({
           title="Italic"
           data-testid="button-italic"
         >
-          <Italic className="w-4 h-4" />
+          <Italic className="h-4 w-4" />
         </Button>
         <Button
           type="button"
@@ -261,7 +261,7 @@ const SimpleTiptapEditor = ({
           title="Highlight"
           data-testid="button-highlight"
         >
-          <Highlighter className="w-4 h-4" />
+          <Highlighter className="h-4 w-4" />
         </Button>
         {enableBulletList && (
           <Button
@@ -273,7 +273,7 @@ const SimpleTiptapEditor = ({
             title="Bullet List"
             data-testid="button-bullet-list"
           >
-            <List className="w-4 h-4" />
+            <List className="h-4 w-4" />
           </Button>
         )}
       </div>

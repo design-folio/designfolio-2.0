@@ -19,7 +19,7 @@ export function FormInput({
 
   return (
     <div className="space-y-2">
-      <Label htmlFor={name} className="text-sm font-medium text-foreground">
+      <Label htmlFor={name} className="text-foreground text-sm font-medium">
         {label}
         {required && <span className="text-red-500">*</span>}
       </Label>
@@ -36,7 +36,7 @@ export function FormInput({
         )}
         {...props}
       />
-      <ErrorMessage name={name} component="div" className="text-sm text-red-500 mt-1" />
+      <ErrorMessage name={name} component="div" className="mt-1 text-sm text-red-500" />
     </div>
   );
 }

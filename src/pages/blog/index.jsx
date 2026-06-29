@@ -14,24 +14,24 @@ export default function Index({ posts }) {
   return (
     <>
       <div className="min-h-screen">
-        <main className="container mx-auto px-4 pt-[108px] pb-10 md:pb-8 relative">
-          <header className="text-center mb-12 md:mb-16">
-            <h1 className="text-3xl md:text-5xl font-semibold md:font-bold mb-3 md:mb-4">
+        <main className="relative container mx-auto px-4 pt-[108px] pb-10 md:pb-8">
+          <header className="mb-12 text-center md:mb-16">
+            <h1 className="mb-3 text-3xl font-semibold md:mb-4 md:text-5xl md:font-bold">
               <span className="text-black">Lesser known career</span>
               <br />
               <span className="text-black">hacks</span>
               <span className="mr-1"></span>{" "}
               <span className="relative inline-block">
                 <span className="relative z-10">for job seekers</span>
-                <span className="absolute bottom-0 left-0 w-full h-[0.5em] bg-[#FCE89E] z-0 transform -skew-y-1"></span>
+                <span className="absolute bottom-0 left-0 z-0 h-[0.5em] w-full -skew-y-1 transform bg-[#FCE89E]"></span>
               </span>
             </h1>
-            <p className="text-gray-600 max-w-2xl mx-auto text-base md:text-lg">
+            <p className="mx-auto max-w-2xl text-base text-gray-600 md:text-lg">
               Career tips, stories, and advice to help you grow
             </p>
           </header>
 
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto">
+          <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-2 lg:grid-cols-3">
             {posts.map((post) => {
               return (
                 <Link key={post.id} href={post.slug ? `/blog/${post.slug}` : `/blog/${post.id}`}>

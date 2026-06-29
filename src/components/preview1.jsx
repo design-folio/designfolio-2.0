@@ -64,10 +64,10 @@ export default function Preview1({
 
   const mainContent = (
     <main className="min-h-screen">
-      <div className={`max-w-[848px] mx-auto py-[40px] px-2 md:px-4 lg:px-0 pb-[140px]`}>
+      <div className={`mx-auto max-w-[848px] px-2 py-[40px] pb-[140px] md:px-4 lg:px-0`}>
         {userDetails && (
           <motion.div
-            className="flex-1 flex flex-col gap-3"
+            className="flex flex-1 flex-col gap-3"
             variants={containerVariants}
             initial="hidden"
             animate="visible"

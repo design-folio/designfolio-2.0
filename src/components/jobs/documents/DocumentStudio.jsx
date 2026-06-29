@@ -116,23 +116,23 @@ export default function DocumentStudio({ open, onClose, type, job, profileId, do
   };
 
   return (
-    <div className="h-full w-full bg-[#FBFAF8] dark:bg-[#0E0B07] flex flex-col">
+    <div className="flex h-full w-full flex-col bg-[#FBFAF8] dark:bg-[#0E0B07]">
       {phase === "generating" && <DocumentGeneratingView type={type} job={job} onBack={onClose} />}
 
       {phase === "loading" && (
-        <div className="flex-1 flex items-center justify-center text-foreground/40 text-[13px]">
+        <div className="text-foreground/40 flex flex-1 items-center justify-center text-[13px]">
           Loading…
         </div>
       )}
 
       {phase === "error" && (
-        <div className="flex-1 flex flex-col items-center justify-center gap-3">
-          <p className="text-[13px] text-foreground/60">
+        <div className="flex flex-1 flex-col items-center justify-center gap-3">
+          <p className="text-foreground/60 text-[13px]">
             Something went wrong generating this document.
           </p>
           <button
             onClick={onClose}
-            className="text-[12px] px-4 py-2 rounded-full border border-black/[0.12] dark:border-white/[0.12] text-foreground/70"
+            className="text-foreground/70 rounded-full border border-black/[0.12] px-4 py-2 text-[12px] dark:border-white/[0.12]"
           >
             Close
           </button>

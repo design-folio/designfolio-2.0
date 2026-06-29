@@ -85,15 +85,15 @@ const SortableProjectItem = React.memo(
       <div
         ref={setNodeRef}
         style={style}
-        className={`w-full relative h-full flex flex-col ${isDragging ? "relative" : ""}`}
+        className={`relative flex h-full w-full flex-col ${isDragging ? "relative" : ""}`}
       >
         <ProjectShape className="text-template-text-left-bg-color" />
-        <div className="flex-1 flex flex-col min-h-0">
+        <div className="flex min-h-0 flex-1 flex-col">
           <Chat
             direction="left"
-            className="rounded-tl-none w-full h-full flex-1 flex flex-col min-h-0"
+            className="flex h-full min-h-0 w-full flex-1 flex-col rounded-tl-none"
           >
-            <div className="h-full flex flex-col">
+            <div className="flex h-full flex-col">
               <ProjectCard
                 project={project}
                 onDeleteProject={() => onDeleteProject(project)}
@@ -347,29 +347,29 @@ export default function Builder2({ edit = false }) {
   return (
     <TooltipProvider>
       <div className="flex flex-col gap-6">
-        <div className="flex gap-2 items-end">
+        <div className="flex items-end gap-2">
           <Tooltip delayDuration={300}>
             <TooltipTrigger asChild>
               <div
                 className={cn(
-                  "w-[76px] h-[76px] rounded-[24px] flex items-center justify-center relative overflow-hidden",
+                  "relative flex h-[76px] w-[76px] items-center justify-center overflow-hidden rounded-[24px]",
                   !userDetails?.avatar ? "bg-[#FFB088]" : ""
                 )}
               >
-                <DfImage src={getUserAvatarImage(userDetails)} className="w-full h-full" />
+                <DfImage src={getUserAvatarImage(userDetails)} className="h-full w-full" />
               </div>
             </TooltipTrigger>
             <TooltipContent
               side="top"
               sideOffset={8}
               avoidCollisions={true}
-              className="bg-tooltip-bg-color text-tooltip-text-color border-0 px-4 py-2 rounded-xl flex items-center gap-2 shadow-xl"
+              className="bg-tooltip-bg-color text-tooltip-text-color flex items-center gap-2 rounded-xl border-0 px-4 py-2 shadow-xl"
             >
               <span className="text-sm font-medium">Happy to have you here</span>
               <img
                 src="/assets/png/handshake.png"
                 alt="Handshake"
-                className="w-5 h-5 object-contain"
+                className="h-5 w-5 object-contain"
               />
             </TooltipContent>
           </Tooltip>
@@ -404,7 +404,7 @@ export default function Builder2({ edit = false }) {
               <div key="about" id="section-about" className="flex flex-col gap-6">
                 <Chat direction="right">Tell me a little about yourself?</Chat>
                 <Chat direction="left" className="w-full">
-                  <div className="flex flex-col gap-3 w-full">
+                  <div className="flex w-full flex-col gap-3">
                     {edit && (
                       <div className="flex justify-end gap-2">
                         <SectionVisibilityButton sectionId="about" className="h-11" />
@@ -450,7 +450,7 @@ export default function Builder2({ edit = false }) {
                     items={projects?.map((p) => p._id) || []}
                     strategy={rectSortingStrategy}
                   >
-                    <div className="list grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+                    <div className="list grid grid-cols-1 items-stretch gap-6 md:grid-cols-2">
                       {projects?.map((project) => (
                         <SortableProjectItem
                           key={project._id}
@@ -466,21 +466,21 @@ export default function Builder2({ edit = false }) {
                   </SortableContext>
                 </DndContext>
                 {edit && (
-                  <div className="w-full md:w-[calc(50%-12px)] max-w-[444px] relative">
+                  <div className="relative w-full max-w-[444px] md:w-[calc(50%-12px)]">
                     <ProjectShape className="text-template-text-left-bg-color" />
                     <Chat direction="left" className={cn("rounded-tl-none", "w-full")}>
                       {projects.length > 1 ? (
                         <>
-                          <div className="flex items-center justify-center gap-2 flex-wrap">
+                          <div className="flex flex-wrap items-center justify-center gap-2">
                             <Button
                               text={"Add case study"}
                               customClass="w-fit gap-1 items-center h-11"
                               onClick={() => openSidebar(sidebars.project)}
                               icon={
-                                <PlusIcon className="text-primary-btn-text-color w-[20px] h-[20px] mb-[2px] cursor-pointer" />
+                                <PlusIcon className="text-primary-btn-text-color mb-[2px] h-[20px] w-[20px] cursor-pointer" />
                               }
                             />
-                            <span className="inline-flex items-center leading-none h-full shrink-0">
+                            <span className="inline-flex h-full shrink-0 items-center leading-none">
                               or
                             </span>
                             <Button
@@ -488,7 +488,7 @@ export default function Builder2({ edit = false }) {
                               type="secondary"
                               customClass="w-fit gap-1 items-center h-11"
                               icon={
-                                <AiIcon className="text-secondary-btn-text-color w-[22px] h-[22px] mb-[2px] cursor-pointer" />
+                                <AiIcon className="text-secondary-btn-text-color mb-[2px] h-[22px] w-[22px] cursor-pointer" />
                               }
                               onClick={() => openModal(modals.aiProject)}
                             />
@@ -500,20 +500,21 @@ export default function Builder2({ edit = false }) {
                             )}
                         </>
                       ) : (
-                        <div className="flex items-start gap-2 w-full">
+                        <div className="flex w-full items-start gap-2">
                           <AddCard
-                            title={`${projects?.length === 0
+                            title={`${
+                              projects?.length === 0
                                 ? "Upload your first case study"
                                 : "Add case study"
-                              }`}
+                            }`}
                             subTitle="Show off your best work."
                             first={projects?.length !== 0}
                             buttonTitle="Add case study"
                             secondaryButtonTitle="Write using AI"
                             onClick={() => openSidebar(sidebars.project)}
-                            icon={<MemoCasestudy className="cursor-pointer size-[72px]" />}
+                            icon={<MemoCasestudy className="size-[72px] cursor-pointer" />}
                             openModal={openModal}
-                            className="flex justify-center items-center flex-col p-4 flex-1 min-w-0"
+                            className="flex min-w-0 flex-1 flex-col items-center justify-center p-4"
                           />
                           <SectionVisibilityButton sectionId="projects" />
                         </div>
@@ -535,18 +536,19 @@ export default function Builder2({ edit = false }) {
                 </Chat>
                 <Chat direction="left" className="w-full">
                   {edit && reviews?.length == 0 && (
-                    <div className="flex items-start gap-2 flex-wrap">
+                    <div className="flex flex-wrap items-start gap-2">
                       <AddCard
-                        title={`${userDetails?.reviews?.length == 0 ? "My testimonials" : "Add more reviews"
-                          } `}
+                        title={`${
+                          userDetails?.reviews?.length == 0 ? "My testimonials" : "Add more reviews"
+                        } `}
                         subTitle="Share colleague's feedback."
                         onClick={() => openNewReview()}
                         className={
-                          "flex justify-center items-center flex-col p-4 w-[340px] flex-1 min-w-0"
+                          "flex w-[340px] min-w-0 flex-1 flex-col items-center justify-center p-4"
                         }
                         first={userDetails?.reviews?.length !== 0}
                         buttonTitle="Add testimonial"
-                        icon={<MemoTestimonial className="cursor-pointer size-[72px]" />}
+                        icon={<MemoTestimonial className="size-[72px] cursor-pointer" />}
                       />
                       <SectionVisibilityButton sectionId="reviews" />
                     </div>
@@ -555,10 +557,10 @@ export default function Builder2({ edit = false }) {
                     {(showAllReviews ? reviews : reviews?.slice(0, 3))?.map((review) => (
                       <div
                         key={review?._id}
-                        className="border border-tools-card-item-border-color p-5 rounded-2xl"
+                        className="border-tools-card-item-border-color rounded-2xl border p-5"
                       >
                         <Quote />
-                        <div className="mt-4 text-df-base-text-color">
+                        <div className="text-df-base-text-color mt-4">
                           <ClampableTiptapContent
                             content={review?.description || ""}
                             mode="review"
@@ -570,8 +572,8 @@ export default function Builder2({ edit = false }) {
                             buttonClassName="mt-2 text-foreground/80 hover:text-foreground inline-flex items-center gap-1 underline underline-offset-4"
                           />
                         </div>
-                        <div className="flex items-center gap-3 mt-4">
-                          <Avatar className="w-12 h-12 shrink-0">
+                        <div className="mt-4 flex items-center gap-3">
+                          <Avatar className="h-12 w-12 shrink-0">
                             <AvatarImage
                               src={review?.avatar?.url || review?.avatar}
                               alt={review?.name}
@@ -599,15 +601,15 @@ export default function Builder2({ edit = false }) {
                                 rel="noopener noreferrer"
                                 className="flex items-center gap-1 text-blue-500"
                               >
-                                <MemoLinkedin className="text-df-icon-color w-4 h-4" />
-                                <span className="font-semibold cursor-pointer text-base">
+                                <MemoLinkedin className="text-df-icon-color h-4 w-4" />
+                                <span className="cursor-pointer text-base font-semibold">
                                   {review?.name}
                                 </span>
                               </a>
                             ) : (
-                              <h3 className="font-semibold text-base mb-0">{review?.name}</h3>
+                              <h3 className="mb-0 text-base font-semibold">{review?.name}</h3>
                             )}
-                            <p className="text-sm text-df-description-color">
+                            <p className="text-df-description-color text-sm">
                               {review?.role ? `${review.role}, ` : ""}
                               {review?.company}
                             </p>
@@ -626,21 +628,21 @@ export default function Builder2({ edit = false }) {
                       </div>
                     ))}
                     {!showAllReviews && reviews?.length > 3 && (
-                      <div className="flex justify-center mt-2">
+                      <div className="mt-2 flex justify-center">
                         <ButtonNew
                           variant="ghost"
                           size="sm"
-                          className="text-foreground/40 hover:text-foreground text-xs font-medium uppercase tracking-widest gap-2 group transition-all"
+                          className="text-foreground/40 hover:text-foreground group gap-2 text-xs font-medium tracking-widest uppercase transition-all"
                           onClick={() => setShowAllReviews(true)}
                         >
                           View More Testimonials
-                          <ChevronDown className="w-3 h-3 transition-transform group-hover:translate-y-0.5" />
+                          <ChevronDown className="h-3 w-3 transition-transform group-hover:translate-y-0.5" />
                         </ButtonNew>
                       </div>
                     )}
                   </div>
                   {edit && reviews?.length > 0 && (
-                    <div className="flex items-center gap-2 mt-4 flex-wrap">
+                    <div className="mt-4 flex flex-wrap items-center gap-2">
                       <SectionVisibilityButton sectionId="reviews" className="h-14" />
                       <AddItem
                         className="flex-1"
@@ -651,7 +653,7 @@ export default function Builder2({ edit = false }) {
                             <Button
                               type="secondary"
                               icon={
-                                <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                                <PlusIcon className="text-secondary-btn-text-color h-[12px] w-[12px] cursor-pointer" />
                               }
                               onClick={() => openNewReview()}
                               size="small"
@@ -669,9 +671,9 @@ export default function Builder2({ edit = false }) {
                           onClick={() => {
                             setShowReviewSortModal(true);
                           }}
-                          className="rounded-full h-14 w-14"
+                          className="h-14 w-14 rounded-full"
                         >
-                          <SortIcon className="w-4 h-4 text-df-icon-color cursor-pointer" />
+                          <SortIcon className="text-df-icon-color h-4 w-4 cursor-pointer" />
                         </ButtonNew>
                       )}
                     </div>
@@ -693,15 +695,15 @@ export default function Builder2({ edit = false }) {
                   But mostly:
                 </Chat>
                 <Chat className="w-full">
-                  <div className="flex flex-wrap items-center gap-2 mb-2">
+                  <div className="mb-2 flex flex-wrap items-center gap-2">
                     {tools?.map((tool, i) => (
                       <div
                         title={tool?.label}
                         key={i}
-                        className={`cursor-default h-full flex gap-2 justify-between items-center bg-tools-card-item-bg-color text-tools-card-item-text-color border-tools-card-item-border-color  border border-solid rounded-[16px] p-3`}
+                        className={`bg-tools-card-item-bg-color text-tools-card-item-text-color border-tools-card-item-border-color flex h-full cursor-default items-center justify-between gap-2 rounded-[16px] border border-solid p-3`}
                       >
                         {tool?.image && (
-                          <img src={tool?.image} alt={tool?.label} className="w-[34px] h-[34px] " />
+                          <img src={tool?.image} alt={tool?.label} className="h-[34px] w-[34px]" />
                         )}
                         <Text size="p-xsmall" className="text-tools-card-item-text-color">
                           {tool?.label}
@@ -713,7 +715,7 @@ export default function Builder2({ edit = false }) {
                         <Button
                           type="secondary"
                           icon={
-                            <PlusIcon className="text-secondary-btn-text-color w-[18px] h-[18px] cursor-pointer" />
+                            <PlusIcon className="text-secondary-btn-text-color h-[18px] w-[18px] cursor-pointer" />
                           }
                           size="icon"
                           onClick={() => openSidebar(sidebars.tools)}
@@ -743,23 +745,23 @@ export default function Builder2({ edit = false }) {
                     {(showAllExperiences ? experiences : experiences?.slice(0, 3))?.map(
                       (experience) => (
                         <div key={experience?._id}>
-                          <div className="flex justify-between items-start">
+                          <div className="flex items-start justify-between">
                             <div className="flex">
-                              <ExperienceShape className="w-[54px] relative bottom-2" />{" "}
+                              <ExperienceShape className="relative bottom-2 w-[54px]" />{" "}
                               <div className="mt-[8px] flex-1">
-                                <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-2">
-                                  <span className="font-semibold text-base text-foreground">
+                                <div className="mb-2 flex flex-wrap items-center gap-x-2 gap-y-1">
+                                  <span className="text-foreground text-base font-semibold">
                                     {experience?.role}
                                   </span>
                                   <span className="text-foreground/30">at</span>
-                                  <span className="font-semibold text-base text-foreground">
+                                  <span className="text-foreground text-base font-semibold">
                                     {experience?.company}
                                   </span>
                                 </div>
-                                <span className="text-xs font-medium text-foreground/40 uppercase tracking-wider">
+                                <span className="text-foreground/40 text-xs font-medium tracking-wider uppercase">
                                   {`${experience?.startMonth} ${experience?.startYear} - ${experience?.currentlyWorking ? "Present" : `${experience?.endMonth} ${experience?.endYear}`}`}
                                 </span>
-                                <div className="text-sm text-foreground/60 leading-relaxed mt-2">
+                                <div className="text-foreground/60 mt-2 text-sm leading-relaxed">
                                   <ClampableTiptapContent
                                     content={experience?.description || ""}
                                     mode="work"
@@ -789,19 +791,19 @@ export default function Builder2({ edit = false }) {
                         <ButtonNew
                           variant="ghost"
                           size="sm"
-                          className="text-foreground/40 hover:text-foreground text-xs font-medium uppercase tracking-widest gap-2 group transition-all"
+                          className="text-foreground/40 hover:text-foreground group gap-2 text-xs font-medium tracking-widest uppercase transition-all"
                           onClick={() => setShowAllExperiences(true)}
                         >
                           View More Experience
-                          <ChevronDown className="w-3 h-3 transition-transform group-hover:translate-y-0.5" />
+                          <ChevronDown className="h-3 w-3 transition-transform group-hover:translate-y-0.5" />
                         </ButtonNew>
                       </div>
                     )}
                     {edit && (
-                      <div className="flex items-center gap-2 flex-wrap">
+                      <div className="flex flex-wrap items-center gap-2">
                         <SectionVisibilityButton sectionId="works" className="h-14" />
                         <AddItem
-                          className="flex-1 min-w-0"
+                          className="min-w-0 flex-1"
                           title="Add your work experience"
                           onClick={() => openNewWork()}
                           iconLeft={
@@ -809,7 +811,7 @@ export default function Builder2({ edit = false }) {
                               <Button
                                 type="secondary"
                                 icon={
-                                  <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                                  <PlusIcon className="text-secondary-btn-text-color h-[12px] w-[12px] cursor-pointer" />
                                 }
                                 onClick={() => openNewWork()}
                                 size="small"
@@ -825,7 +827,7 @@ export default function Builder2({ edit = false }) {
                               <Button
                                 type="secondary"
                                 icon={
-                                  <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                                  <PlusIcon className="text-secondary-btn-text-color h-[12px] w-[12px] cursor-pointer" />
                                 }
                                 onClick={() => openNewWork()}
                                 size="small"
@@ -847,7 +849,7 @@ export default function Builder2({ edit = false }) {
         })}
         <Chat direction="right">Got any other places I should check out?</Chat>
         <Chat direction="left" className="w-full pb-5">
-          <div className="flex flex-col lg:flex-row gap-[24px]">
+          <div className="flex flex-col gap-[24px] lg:flex-row">
             {portfolios?.dribbble && (
               <Link href={portfolios?.dribbble} target="_blank" rel="noopener noreferrer">
                 <Button
@@ -897,7 +899,7 @@ export default function Builder2({ edit = false }) {
                     type="secondary"
                     customClass="w-fit gap-0"
                     icon={
-                      <PlusIcon className="text-secondary-btn-text-color w-[14px] h-[14px] cursor-pointer" />
+                      <PlusIcon className="text-secondary-btn-text-color h-[14px] w-[14px] cursor-pointer" />
                     }
                   />
                 }
@@ -920,7 +922,7 @@ export default function Builder2({ edit = false }) {
                   type="secondary"
                   customClass="w-fit gap-0"
                   icon={
-                    <PlusIcon className="text-secondary-btn-text-color w-[14px] h-[14px] cursor-pointer" />
+                    <PlusIcon className="text-secondary-btn-text-color h-[14px] w-[14px] cursor-pointer" />
                   }
                 />
               }
@@ -947,7 +949,7 @@ export default function Builder2({ edit = false }) {
           )}
         </Chat>
         <Chat direction="left" className="w-full pb-5">
-          <div className="flex flex-col lg:flex-row gap-[24px]">
+          <div className="flex flex-col gap-[24px] lg:flex-row">
             {socials?.instagram && (
               <Link href={socials?.instagram} target="_blank" rel="noopener noreferrer">
                 <Button
@@ -996,7 +998,7 @@ export default function Builder2({ edit = false }) {
                     type="secondary"
                     customClass="w-fit gap-0"
                     icon={
-                      <PlusIcon className="text-secondary-btn-text-color w-[14px] h-[14px] cursor-pointer" />
+                      <PlusIcon className="text-secondary-btn-text-color h-[14px] w-[14px] cursor-pointer" />
                     }
                   />
                 }
@@ -1017,7 +1019,7 @@ export default function Builder2({ edit = false }) {
           ))}
         </SortableModal>
 
-        <div className="flex justify-center mt-10" style={{ pointerEvent: "all" }}>
+        <div className="mt-10 flex justify-center" style={{ pointerEvent: "all" }}>
           <a href="#">
             <GoUp className="animate-bounce cursor-pointer" />
           </a>
@@ -1043,9 +1045,9 @@ const SortableReviewItemBuilder2 = ({ review, edit }) => {
     <div
       ref={setNodeRef}
       style={style}
-      className={`flex justify-between gap-4 items-center ${isDragging ? "relative" : ""}`}
+      className={`flex items-center justify-between gap-4 ${isDragging ? "relative" : ""}`}
     >
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         <ReviewCard review={review} sorting={true} edit={edit} />
       </div>
       <div className="shrink-0">

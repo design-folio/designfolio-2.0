@@ -39,7 +39,7 @@ export default function Canvas({ isEditing, preview = false, publicView = false 
   };
 
   return (
-    <div className="w-full flex-1 flex flex-col gap-3 pb-20 pt-0 px-4 md:px-0 max-w-[848px] mx-auto">
+    <div className="mx-auto flex w-full max-w-[848px] flex-1 flex-col gap-3 px-4 pt-0 pb-20 md:px-0">
       {/* <CanvasHeader persistTheme={isEditing && !preview} /> */}
       <CanvasProfileCard
         isEditing={isEditing}

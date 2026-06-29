@@ -20,7 +20,7 @@ function ExperienceDescription({ desc }) {
       }}
       initial="hidden"
       animate="show"
-      className="font-jetbrains text-[15px] leading-relaxed max-w-xl break-words whitespace-normal"
+      className="font-jetbrains max-w-xl text-[15px] leading-relaxed break-words whitespace-normal"
       style={{ color: "var(--tiptap-work-paragraph, #7a736c)" }}
     >
       {words.map((word, wordIndex) => {
@@ -69,39 +69,39 @@ function ExperienceDescription({ desc }) {
 
 function ExperienceItem({ exp, isExpanded, onToggle, isEditing, onEdit }) {
   return (
-    <div className="group border-b border-[#D5D0C6] dark:border-[#3A352E] last:border-0 hover:bg-[#DED9CE]/30 dark:hover:bg-white/[0.02] transition-colors -mx-4 px-4 md:-mx-6 md:px-6 relative">
+    <div className="group relative -mx-4 border-b border-[#D5D0C6] px-4 transition-colors last:border-0 hover:bg-[#DED9CE]/30 md:-mx-6 md:px-6 dark:border-[#3A352E] dark:hover:bg-white/[0.02]">
       {isEditing && (
-        <div className="absolute top-4 right-4 md:right-6 z-20 transition-opacity flex gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100">
+        <div className="absolute top-4 right-4 z-20 flex gap-2 opacity-100 transition-opacity md:right-6 md:opacity-0 md:group-hover:opacity-100">
           <Button
             variant="outline"
             size="sm"
-            className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-[#E5D7C4] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A]"
+            className="h-8 w-8 rounded-full border-[#E5D7C4] bg-white/90 p-0 shadow-sm backdrop-blur-sm hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520]/90 dark:hover:bg-[#35302A]"
             onClick={(e) => {
               e.stopPropagation();
               onEdit(exp);
             }}
           >
-            <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+            <Pencil className="h-3.5 w-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
           </Button>
         </div>
       )}
       <button
         onClick={onToggle}
-        className="w-full flex flex-col sm:flex-row sm:items-center sm:justify-between py-5 gap-2 sm:gap-4 text-left cursor-pointer"
+        className="flex w-full cursor-pointer flex-col gap-2 py-5 text-left sm:flex-row sm:items-center sm:justify-between sm:gap-4"
       >
         <div className="flex items-center gap-4">
           <motion.span
             animate={{ rotate: isExpanded ? 45 : 0 }}
-            className="text-[#1A1A1A] dark:text-[#F0EDE7] font-light text-lg leading-none transition-colors w-4 h-4 flex items-center justify-center shrink-0"
+            className="flex h-4 w-4 shrink-0 items-center justify-center text-lg leading-none font-light text-[#1A1A1A] transition-colors dark:text-[#F0EDE7]"
           >
             +
           </motion.span>
-          <span className="font-jetbrains text-[#1A1A1A] dark:text-[#F0EDE7] text-[14px] font-medium tracking-wide uppercase">
-            <span className="text-[#7A736C] dark:text-[#9E9893] mr-2">{exp.startYear} /</span>
+          <span className="font-jetbrains text-[14px] font-medium tracking-wide text-[#1A1A1A] uppercase dark:text-[#F0EDE7]">
+            <span className="mr-2 text-[#7A736C] dark:text-[#9E9893]">{exp.startYear} /</span>
             {exp.company}
           </span>
         </div>
-        <span className="font-jetbrains text-[#7A736C] dark:text-[#9E9893] text-[14px] uppercase tracking-wider group-hover:text-[#1A1A1A] dark:group-hover:text-[#F0EDE7] transition-colors ml-8 sm:ml-0">
+        <span className="font-jetbrains ml-8 text-[14px] tracking-wider text-[#7A736C] uppercase transition-colors group-hover:text-[#1A1A1A] sm:ml-0 dark:text-[#9E9893] dark:group-hover:text-[#F0EDE7]">
           {exp.role}
         </span>
       </button>
@@ -114,7 +114,7 @@ function ExperienceItem({ exp, isExpanded, onToggle, isEditing, onEdit }) {
             transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
             className="overflow-hidden"
           >
-            <div className="pb-6 pl-12 pr-4 sm:pr-0">
+            <div className="pr-4 pb-6 pl-12 sm:pr-0">
               <ExperienceDescription desc={exp.description} />
             </div>
           </motion.div>
@@ -129,9 +129,9 @@ function ProfessionalExperienceTab({ isEditing, experiences, onEditExperience, o
   const [expandedIndex, setExpandedIndex] = useState(null);
 
   return (
-    <div className="px-4 md:px-6 pb-20 group/section">
+    <div className="group/section px-4 pb-20 md:px-6">
       {isEditing && (
-        <div className="-mx-4 md:-mx-6 px-1 py-2 flex items-center justify-end gap-2 border-b border-[#D5D0C6] dark:border-[#3A352E] mb-2">
+        <div className="-mx-4 mb-2 flex items-center justify-end gap-2 border-b border-[#D5D0C6] px-1 py-2 md:-mx-6 dark:border-[#3A352E]">
           {experiences.length >= 2 && (
             <ProfessionalRearrangeButton
               onClick={() => openSidebar(sidebars.sortWorks)}
@@ -142,7 +142,7 @@ function ProfessionalExperienceTab({ isEditing, experiences, onEditExperience, o
           <SectionVisibilityButton
             sectionId="works"
             showOnHoverWhenVisible
-            className="h-8 w-8 rounded-full border-[#D5D0C6] dark:border-[#3A352E] bg-[#EFECE6] dark:bg-[#1A1A1A] hover:bg-[#E5E0D8] dark:hover:bg-[#2A2520]"
+            className="h-8 w-8 rounded-full border-[#D5D0C6] bg-[#EFECE6] hover:bg-[#E5E0D8] dark:border-[#3A352E] dark:bg-[#1A1A1A] dark:hover:bg-[#2A2520]"
           />
         </div>
       )}
@@ -160,13 +160,13 @@ function ProfessionalExperienceTab({ isEditing, experiences, onEditExperience, o
         ))}
 
         {isEditing && (
-          <div className="pt-6 mt-4 border-t border-[#D5D0C6]/50 dark:border-[#3A352E]/50 border-dashed">
+          <div className="mt-4 border-t border-dashed border-[#D5D0C6]/50 pt-6 dark:border-[#3A352E]/50">
             <button
               onClick={onAddExperience}
-              className="w-full flex items-center justify-center gap-2 py-4 border border-dashed border-[#D5D0C6] dark:border-[#3A352E] rounded-lg text-[#7A736C] dark:text-[#9E9893] hover:border-[#1A1A1A] dark:hover:border-[#F0EDE7] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7] transition-all bg-black/[0.02] dark:bg-white/[0.02] hover:bg-black/[0.04] dark:hover:bg-white/[0.04]"
+              className="flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-[#D5D0C6] bg-black/[0.02] py-4 text-[#7A736C] transition-all hover:border-[#1A1A1A] hover:bg-black/[0.04] hover:text-[#1A1A1A] dark:border-[#3A352E] dark:bg-white/[0.02] dark:text-[#9E9893] dark:hover:border-[#F0EDE7] dark:hover:bg-white/[0.04] dark:hover:text-[#F0EDE7]"
             >
-              <Plus className="w-4 h-4" />
-              <span className="font-jetbrains text-[13px] uppercase tracking-wider font-medium">
+              <Plus className="h-4 w-4" />
+              <span className="font-jetbrains text-[13px] font-medium tracking-wider uppercase">
                 Add New Experience
               </span>
             </button>

@@ -21,21 +21,21 @@ export default function ScrollingBanner() {
 
   return (
     <div
-      className="w-full bg-foreground-landing py-4 overflow-hidden"
+      className="bg-foreground-landing w-full overflow-hidden py-4"
       data-testid="banner-scrolling"
     >
-      <div className="flex animate-scroll whitespace-nowrap">
+      <div className="animate-scroll flex whitespace-nowrap">
         {duplicatedTestimonials.map((text, index) => (
           <div key={index} className="inline-flex items-center gap-2 px-6">
             <span
-              className="text-background-landing font-medium text-sm sm:text-base"
+              className="text-background-landing text-sm font-medium sm:text-base"
               data-testid={`text-testimonial-${index}`}
             >
               &quot;{text}&quot;
             </span>
             <div className="flex gap-0.5" data-testid={`stars-${index}`}>
               {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
               ))}
             </div>
           </div>

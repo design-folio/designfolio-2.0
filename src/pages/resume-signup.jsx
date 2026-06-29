@@ -41,19 +41,19 @@ import { _postResumeApply } from "@/network/resume";
 // ── Animated tabs (app design system) ────────────────────────────────────────
 function Tabs({ tabs, active, onChange }) {
   return (
-    <div className="inline-flex items-center gap-0.5 rounded-full bg-black/[0.07] dark:bg-white/[0.08] p-1">
+    <div className="inline-flex items-center gap-0.5 rounded-full bg-black/[0.07] p-1 dark:bg-white/[0.08]">
       {tabs.map((t) => (
         <button
           key={t}
           onClick={() => onChange(t)}
-          className={`relative px-4 py-1.5 rounded-full text-[13px] font-semibold transition-colors duration-200 ${
+          className={`relative rounded-full px-4 py-1.5 text-[13px] font-semibold transition-colors duration-200 ${
             active === t ? "text-foreground" : "text-foreground/40 hover:text-foreground/65"
           }`}
         >
           {active === t && (
             <motion.span
               layoutId="tab-pill"
-              className="absolute inset-0 rounded-full bg-white dark:bg-card shadow-sm"
+              className="dark:bg-card absolute inset-0 rounded-full bg-white shadow-sm"
               transition={{ type: "spring", stiffness: 380, damping: 32 }}
             />
           )}
@@ -94,42 +94,42 @@ function CanvasPreview({ parsed }) {
   const displayProjs = visibleProjs.length > 0 ? visibleProjs : MOCK_PROJECTS;
 
   return (
-    <div className="w-full flex flex-col gap-3 pb-24 max-w-[848px] mx-auto">
+    <div className="mx-auto flex w-full max-w-[848px] flex-col gap-3 pb-24">
       {/* ── Profile card with skills strip ── */}
       <motion.div
         initial={{ opacity: 0, y: -40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: "spring", stiffness: 100, damping: 12, delay: 0.15 }}
-        className="bg-white dark:bg-[#2A2520] rounded-[26px] border border-[#E5D7C4] dark:border-white/10 w-full flex flex-col overflow-hidden"
+        className="flex w-full flex-col overflow-hidden rounded-[26px] border border-[#E5D7C4] bg-white dark:border-white/10 dark:bg-[#2A2520]"
       >
-        <div className="p-5 md:p-6 flex flex-col md:flex-row gap-8 items-start md:items-center">
-          <div className="w-28 h-28 rounded-2xl shrink-0 border border-black/5 dark:border-white/10 shadow-sm flex items-center justify-center bg-[#F0EDE7] dark:bg-[#3A352E] overflow-hidden">
+        <div className="flex flex-col items-start gap-8 p-5 md:flex-row md:items-center md:p-6">
+          <div className="flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-black/5 bg-[#F0EDE7] shadow-sm dark:border-white/10 dark:bg-[#3A352E]">
             <img src="/previewproject/avatar.png" alt="avatar" />
           </div>
           <div className="flex flex-col gap-2">
-            <h1 className="text-[24px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7] tracking-tight leading-tight text-pretty">
+            <h1 className="text-[24px] leading-tight font-semibold tracking-tight text-pretty text-[#1A1A1A] dark:text-[#F0EDE7]">
               {`Hey, I'm ${name}`}
             </h1>
-            <p className="text-[#7A736C] dark:text-[#B5AFA5] text-[16px] leading-relaxed text-pretty">
+            <p className="text-[16px] leading-relaxed text-pretty text-[#7A736C] dark:text-[#B5AFA5]">
               {bio}
             </p>
           </div>
         </div>
         {skills.length > 0 && (
-          <div className="border-t border-[#E5D7C4] dark:border-white/10 py-2 overflow-hidden relative w-full bg-gradient-to-b from-[#EEE9E3] to-[#F4F1EC] dark:from-[#252119] dark:to-[#2B2620] rounded-b-[26px] shadow-[inset_0_1px_3px_rgba(0,0,0,0.04),inset_0_-1px_1px_rgba(255,255,255,0.45)] dark:shadow-[inset_0_1px_3px_rgba(0,0,0,0.15)]">
-            <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-[#F0EBE5] dark:from-[#272219] to-transparent z-10" />
-            <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-[#F0EBE5] dark:from-[#272219] to-transparent z-10" />
+          <div className="relative w-full overflow-hidden rounded-b-[26px] border-t border-[#E5D7C4] bg-gradient-to-b from-[#EEE9E3] to-[#F4F1EC] py-2 shadow-[inset_0_1px_3px_rgba(0,0,0,0.04),inset_0_-1px_1px_rgba(255,255,255,0.45)] dark:border-white/10 dark:from-[#252119] dark:to-[#2B2620] dark:shadow-[inset_0_1px_3px_rgba(0,0,0,0.15)]">
+            <div className="absolute top-0 bottom-0 left-0 z-10 w-12 bg-gradient-to-r from-[#F0EBE5] to-transparent dark:from-[#272219]" />
+            <div className="absolute top-0 right-0 bottom-0 z-10 w-12 bg-gradient-to-l from-[#F0EBE5] to-transparent dark:from-[#272219]" />
             <motion.div
               className="flex gap-4 whitespace-nowrap"
               animate={{ x: [0, "-50%"] }}
               transition={{ ease: "linear", duration: 20, repeat: Infinity }}
             >
               {repeatedSkills.map((skill, idx) => (
-                <div key={idx} className="flex gap-4 items-center shrink-0">
-                  <span className="text-[#7A736C] dark:text-[#B5AFA5] font-medium text-[12px] uppercase tracking-wider">
+                <div key={idx} className="flex shrink-0 items-center gap-4">
+                  <span className="text-[12px] font-medium tracking-wider text-[#7A736C] uppercase dark:text-[#B5AFA5]">
                     {skill.label}
                   </span>
-                  <div className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7] shrink-0">
+                  <div className="h-3 w-3 shrink-0 text-[#1A1A1A] dark:text-[#F0EDE7]">
                     <svg viewBox="0 0 24 24" fill="currentColor">
                       <path d="M12 0l2 9 9 2-9 2-2 9-2-9-9-2 9-2 2-9z" />
                     </svg>
@@ -146,29 +146,29 @@ function CanvasPreview({ parsed }) {
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: "spring", stiffness: 100, damping: 12, delay: 0.3 }}
-        className="bg-white dark:bg-[#2A2520] rounded-[26px] border border-[#E5D7C4] dark:border-white/10 p-4 md:p-6 w-full"
+        className="w-full rounded-[26px] border border-[#E5D7C4] bg-white p-4 md:p-6 dark:border-white/10 dark:bg-[#2A2520]"
       >
-        <h2 className="text-[#7A736C] dark:text-[#B5AFA5] font-dm-mono font-medium text-[14px] mb-3">
+        <h2 className="font-dm-mono mb-3 text-[14px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">
           PROJECTS
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {displayProjs.map((p, i) => (
-            <div key={i} className="flex flex-col gap-4 group/card">
+            <div key={i} className="group/card flex flex-col gap-4">
               {/* 16:9 placeholder thumbnail */}
-              <div className="rounded-2xl overflow-hidden aspect-[3/2] border border-black/5 dark:border-white/10 bg-[#F5F5F5] dark:bg-[#1A1A1A]">
+              <div className="aspect-[3/2] overflow-hidden rounded-2xl border border-black/5 bg-[#F5F5F5] dark:border-white/10 dark:bg-[#1A1A1A]">
                 <img
                   src={PLACEHOLDER_THUMBNAILS[i % PLACEHOLDER_THUMBNAILS.length]}
                   alt={p.title || "Project"}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-105"
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover/card:scale-105"
                 />
               </div>
               {/* Title + description */}
               <div>
-                <h3 className="text-base font-medium text-[#1A1A1A] dark:text-[#F0EDE7] mb-1 leading-snug line-clamp-2">
+                <h3 className="mb-1 line-clamp-2 text-base leading-snug font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                   {p.title}
                 </h3>
                 {p.description && (
-                  <p className="text-[#7A736C] dark:text-[#B5AFA5] text-sm leading-relaxed line-clamp-2">
+                  <p className="line-clamp-2 text-sm leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]">
                     {p.description}
                   </p>
                 )}
@@ -184,9 +184,9 @@ function CanvasPreview({ parsed }) {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ type: "spring", stiffness: 100, damping: 12, delay: 0.45 }}
-          className="bg-white dark:bg-[#2A2520] rounded-[26px] border border-[#E5D7C4] dark:border-white/10 p-4 md:p-6 w-full"
+          className="w-full rounded-[26px] border border-[#E5D7C4] bg-white p-4 md:p-6 dark:border-white/10 dark:bg-[#2A2520]"
         >
-          <h2 className="text-[#7A736C] dark:text-[#B5AFA5] font-dm-mono font-medium text-[14px] mb-6">
+          <h2 className="font-dm-mono mb-6 text-[14px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">
             CAREER LADDER
           </h2>
 
@@ -195,17 +195,17 @@ function CanvasPreview({ parsed }) {
             {visibleExp.length > 1 && (
               <>
                 {/* Climbing character at top */}
-                <div className="absolute left-[1px] z-20 w-[40px] h-[54px]" style={{ top: 0 }}>
+                <div className="absolute left-[1px] z-20 h-[54px] w-[40px]" style={{ top: 0 }}>
                   <img
                     src="/assets/svgs/character-me.svg"
                     alt="Character climbing"
-                    className="w-full h-full object-contain"
+                    className="h-full w-full object-contain"
                   />
                 </div>
                 {/* Ladder rails + rungs */}
-                <div className="absolute left-0 top-3 bottom-0 w-[42px] flex flex-col justify-between items-start border-x-[5px] border-[#F0EDE7] dark:border-[#3A352E] py-1 bg-transparent">
+                <div className="absolute top-3 bottom-0 left-0 flex w-[42px] flex-col items-start justify-between border-x-[5px] border-[#F0EDE7] bg-transparent py-1 dark:border-[#3A352E]">
                   {[...Array(30)].map((_, i) => (
-                    <div key={i} className="w-full h-[5px] bg-[#F0EDE7] dark:bg-[#3A352E]" />
+                    <div key={i} className="h-[5px] w-full bg-[#F0EDE7] dark:bg-[#3A352E]" />
                   ))}
                 </div>
               </>
@@ -218,9 +218,9 @@ function CanvasPreview({ parsed }) {
               {visibleExp.map((e, i) => (
                 <div
                   key={i}
-                  className="p-4 -mx-4 rounded-2xl transition-colors hover:bg-black/5 dark:hover:bg-white/5"
+                  className="-mx-4 rounded-2xl p-4 transition-colors hover:bg-black/5 dark:hover:bg-white/5"
                 >
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2 gap-2 sm:gap-0">
+                  <div className="mb-2 flex flex-col justify-between gap-2 sm:flex-row sm:items-center sm:gap-0">
                     <h3 className="text-base font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
                       {e.role}
                       {e.company ? ` @ ${e.company}` : ""}
@@ -232,14 +232,14 @@ function CanvasPreview({ parsed }) {
                         : [e.endMonth, e.endYear].filter(Boolean).join(" ");
                       const label = start && end ? `${start} — ${end}` : start || end || "";
                       return label ? (
-                        <div className="bg-[#F0EDE7] dark:bg-[#3A352E] px-3 py-1 rounded-full text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] w-fit whitespace-nowrap">
+                        <div className="w-fit rounded-full bg-[#F0EDE7] px-3 py-1 text-[13px] whitespace-nowrap text-[#1A1A1A] dark:bg-[#3A352E] dark:text-[#F0EDE7]">
                           {label}
                         </div>
                       ) : null;
                     })()}
                   </div>
                   {e.description && (
-                    <p className="text-[#7A736C] dark:text-[#B5AFA5] text-[15px] leading-relaxed line-clamp-3">
+                    <p className="line-clamp-3 text-[15px] leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]">
                       {e.description}
                     </p>
                   )}
@@ -292,16 +292,16 @@ function JobsPreview({ parsed }) {
   ];
 
   return (
-    <div className="w-full max-w-[580px] mx-auto flex flex-col gap-3 pb-24">
+    <div className="mx-auto flex w-full max-w-[580px] flex-col gap-3 pb-24">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: "spring", stiffness: 120, damping: 16 }}
-        className="flex items-center gap-2 mb-1"
+        className="mb-1 flex items-center gap-2"
       >
-        <Sparkles className="w-3.5 h-3.5 text-foreground/40" />
-        <span className="text-[12px] font-bold uppercase tracking-[0.1em] text-foreground/40">
+        <Sparkles className="text-foreground/40 h-3.5 w-3.5" />
+        <span className="text-foreground/40 text-[12px] font-bold tracking-[0.1em] uppercase">
           AI Picks · Based on your resume
         </span>
       </motion.div>
@@ -313,7 +313,7 @@ function JobsPreview({ parsed }) {
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ type: "spring", stiffness: 100, damping: 14, delay: i * 0.07 }}
-          className="flex flex-col gap-3 p-3 rounded-lg border border-black/[0.06] bg-white dark:bg-background dark:border-border select-none"
+          className="dark:bg-background dark:border-border flex flex-col gap-3 rounded-lg border border-black/[0.06] bg-white p-3 select-none"
           style={
             i >= 1
               ? {
@@ -327,18 +327,18 @@ function JobsPreview({ parsed }) {
         >
           {/* Row 1: Logo + company/location + match gauge */}
           <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2.5 min-w-0">
+            <div className="flex min-w-0 items-center gap-2.5">
               <div
-                className="w-[42px] h-[42px] rounded-lg flex items-center justify-center shrink-0 text-white text-[15px] font-bold"
+                className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-lg text-[15px] font-bold text-white"
                 style={{ backgroundColor: job.logoColor }}
               >
                 {job.logoLetter}
               </div>
               <div className="min-w-0">
-                <div className="text-[13px] font-medium text-foreground/70 truncate">
+                <div className="text-foreground/70 truncate text-[13px] font-medium">
                   {job.company}
                 </div>
-                <div className="text-[12px] text-foreground/40 truncate">{job.location}</div>
+                <div className="text-foreground/40 truncate text-[12px]">{job.location}</div>
               </div>
             </div>
             {i === 0 && (
@@ -360,20 +360,20 @@ function JobsPreview({ parsed }) {
           </div>
 
           {/* Row 2: Title */}
-          <p className="text-[15px] font-semibold text-foreground leading-snug">{job.role}</p>
+          <p className="text-foreground text-[15px] leading-snug font-semibold">{job.role}</p>
 
           {/* Row 3: Pills */}
-          <div className="flex items-center gap-1 flex-wrap">
-            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-foreground/55 bg-black/[0.05] dark:bg-white/[0.06] rounded-md px-1.5 py-0.5">
-              <Briefcase className="w-2.5 h-2.5 shrink-0" />
+          <div className="flex flex-wrap items-center gap-1">
+            <span className="text-foreground/55 inline-flex items-center gap-1 rounded-md bg-black/[0.05] px-1.5 py-0.5 text-[11px] font-medium dark:bg-white/[0.06]">
+              <Briefcase className="h-2.5 w-2.5 shrink-0" />
               {job.type}
             </span>
-            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-foreground/55 bg-black/[0.05] dark:bg-white/[0.06] rounded-md px-1.5 py-0.5">
-              <Monitor className="w-2.5 h-2.5 shrink-0" />
+            <span className="text-foreground/55 inline-flex items-center gap-1 rounded-md bg-black/[0.05] px-1.5 py-0.5 text-[11px] font-medium dark:bg-white/[0.06]">
+              <Monitor className="h-2.5 w-2.5 shrink-0" />
               {job.workMode}
             </span>
-            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-foreground/55 bg-black/[0.05] dark:bg-white/[0.06] rounded-md px-1.5 py-0.5">
-              <Clock className="w-2.5 h-2.5 shrink-0" />
+            <span className="text-foreground/55 inline-flex items-center gap-1 rounded-md bg-black/[0.05] px-1.5 py-0.5 text-[11px] font-medium dark:bg-white/[0.06]">
+              <Clock className="h-2.5 w-2.5 shrink-0" />
               {job.yearsExp}
             </span>
           </div>
@@ -385,19 +385,19 @@ function JobsPreview({ parsed }) {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: "spring", stiffness: 100, damping: 14, delay: 0.28 }}
-        className="relative -mt-1 flex flex-col items-center gap-3 rounded-xl border border-black/[0.06] dark:border-border bg-white dark:bg-background p-6 text-center"
+        className="dark:border-border dark:bg-background relative -mt-1 flex flex-col items-center gap-3 rounded-xl border border-black/[0.06] bg-white p-6 text-center"
       >
         <div
-          className="w-9 h-9 rounded-full flex items-center justify-center"
+          className="flex h-9 w-9 items-center justify-center rounded-full"
           style={{ background: "rgba(229,77,46,0.10)" }}
         >
-          <Lock className="w-4 h-4" style={{ color: "#e54d2e" }} />
+          <Lock className="h-4 w-4" style={{ color: "#e54d2e" }} />
         </div>
         <div className="flex flex-col gap-1">
-          <p className="text-[14px] font-semibold text-foreground">
+          <p className="text-foreground text-[14px] font-semibold">
             Real matches unlock after signup
           </p>
-          <p className="text-[12px] text-foreground/50 leading-relaxed max-w-[260px]">
+          <p className="text-foreground/50 max-w-[260px] text-[12px] leading-relaxed">
             AI scans thousands of live jobs, scores each against your resume, and surfaces the best
             fits — in seconds.
           </p>
@@ -410,12 +410,12 @@ function JobsPreview({ parsed }) {
 // ── Right preview panel — defined outside component to avoid remount on every keystroke ──
 function PreviewContent({ tab, onTabChange, parsed }) {
   return (
-    <div className="flex flex-col flex-1 h-full overflow-hidden relative bg-[#f0ede7] dark:bg-[#1a1a1a]">
+    <div className="relative flex h-full flex-1 flex-col overflow-hidden bg-[#f0ede7] dark:bg-[#1a1a1a]">
       {/* Top fade */}
-      <div className="absolute top-0 left-0 right-0 z-20 pointer-events-none h-20 bg-gradient-to-b from-background to-transparent" />
+      <div className="from-background pointer-events-none absolute top-0 right-0 left-0 z-20 h-20 bg-gradient-to-b to-transparent" />
 
       {/* Floating tabs */}
-      <div className="absolute top-4 left-0 right-0 z-30 flex justify-center pointer-events-auto">
+      <div className="pointer-events-auto absolute top-4 right-0 left-0 z-30 flex justify-center">
         <Tabs tabs={["My Portfolio", "My Jobs"]} active={tab} onChange={onTabChange} />
       </div>
 
@@ -428,7 +428,7 @@ function PreviewContent({ tab, onTabChange, parsed }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.18 }}
-            className="flex-1 overflow-y-auto pt-20 pb-8 px-6"
+            className="flex-1 overflow-y-auto px-6 pt-20 pb-8"
             style={{ scrollbarWidth: "none" }}
           >
             <CanvasPreview parsed={parsed} />
@@ -440,7 +440,7 @@ function PreviewContent({ tab, onTabChange, parsed }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.18 }}
-            className="flex-1 overflow-y-auto pt-20 pb-8 px-6"
+            className="flex-1 overflow-y-auto px-6 pt-20 pb-8"
             style={{ scrollbarWidth: "none" }}
           >
             <JobsPreview parsed={parsed} />
@@ -449,7 +449,7 @@ function PreviewContent({ tab, onTabChange, parsed }) {
       </AnimatePresence>
 
       {/* Bottom fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none bg-gradient-to-t from-background to-transparent" />
+      <div className="from-background pointer-events-none absolute right-0 bottom-0 left-0 h-16 bg-gradient-to-t to-transparent" />
     </div>
   );
 }
@@ -458,7 +458,7 @@ function PreviewContent({ tab, onTabChange, parsed }) {
 function Field({ label, children }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <Label className="text-[11px] font-bold text-(--lp-text-faint) uppercase tracking-[0.1em]">
+      <Label className="text-[11px] font-bold tracking-[0.1em] text-(--lp-text-faint) uppercase">
         {label}
       </Label>
       {children}
@@ -688,11 +688,11 @@ export default function ResumeSignup() {
           initial={{ opacity: 0, x: -24 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="relative flex flex-col w-full md:w-[520px] lg:w-[560px] bg-[#FDFCF8] dark:bg-[#1A1A1A] shrink-0 h-full overflow-y-auto z-10 "
+          className="relative z-10 flex h-full w-full shrink-0 flex-col overflow-y-auto bg-[#FDFCF8] md:w-[520px] lg:w-[560px] dark:bg-[#1A1A1A]"
           style={{ scrollbarWidth: "none" }}
         >
           {/* Top bar */}
-          <div className="absolute top-0 left-0 right-0 flex items-center justify-between px-8 py-5 z-10">
+          <div className="absolute top-0 right-0 left-0 z-10 flex items-center justify-between px-8 py-5">
             <Button
               variant="ghost"
               size="sm"
@@ -700,21 +700,21 @@ export default function ResumeSignup() {
                 sessionStorage.removeItem("df_parsed_resume");
                 router.push("/");
               }}
-              className="gap-1.5 px-2 text-[13px] font-semibold text-(--lp-text-faint) hover:text-(--lp-text) hover:bg-transparent"
+              className="gap-1.5 px-2 text-[13px] font-semibold text-(--lp-text-faint) hover:bg-transparent hover:text-(--lp-text)"
             >
-              <ArrowLeft className="w-3.5 h-3.5" />
+              <ArrowLeft className="h-3.5 w-3.5" />
               Restart with different resume
             </Button>
             <button
               onClick={() => setTheme(isDark ? "light" : "dark")}
-              className="flex items-center justify-center w-8 h-8 rounded-full border border-(--lp-border) text-(--lp-text-faint) hover:text-(--lp-text) hover:border-(--lp-text)/30 transition-all"
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-(--lp-border) text-(--lp-text-faint) transition-all hover:border-(--lp-text)/30 hover:text-(--lp-text)"
             >
-              {isDark ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+              {isDark ? <Sun className="h-3.5 w-3.5" /> : <Moon className="h-3.5 w-3.5" />}
             </button>
           </div>
 
           {/* Form content */}
-          <div className="flex flex-col gap-5 w-full max-w-[400px] mx-auto px-6 pt-24 pb-20 md:pb-0 md:my-auto">
+          <div className="mx-auto flex w-full max-w-[400px] flex-col gap-5 px-6 pt-24 pb-20 md:my-auto md:pb-0">
             {/* Badge */}
             <motion.div
               initial={{ opacity: 0, y: 8 }}
@@ -726,7 +726,7 @@ export default function ResumeSignup() {
                 style={{ background: "rgba(229,77,46,0.10)", color: "#e54d2e" }}
               >
                 <span
-                  className="w-1.5 h-1.5 rounded-full animate-pulse"
+                  className="h-1.5 w-1.5 animate-pulse rounded-full"
                   style={{ background: "#e54d2e" }}
                 />
                 Your portfolio is ready
@@ -740,10 +740,10 @@ export default function ResumeSignup() {
               transition={{ delay: 0.14 }}
               className="flex flex-col gap-1.5"
             >
-              <h1 className="text-[26px] font-bold text-(--lp-text) tracking-tight leading-[1.15]">
+              <h1 className="text-[26px] leading-[1.15] font-bold tracking-tight text-(--lp-text)">
                 Sign up. Let{"'"}s get you hired.
               </h1>
-              <p className="text-[14px] text-(--lp-text-muted) leading-relaxed">
+              <p className="text-[14px] leading-relaxed text-(--lp-text-muted)">
                 Your portfolio and matched jobs are one click away.
               </p>
             </motion.div>
@@ -758,7 +758,7 @@ export default function ResumeSignup() {
               <Button
                 variant="outline"
                 onClick={() => setShowMobileSheet(true)}
-                className="rounded-xl h-auto py-2.5 text-[13px] font-medium justify-start"
+                className="h-auto justify-start rounded-xl py-2.5 text-[13px] font-medium"
               >
                 <svg
                   width="14"
@@ -803,7 +803,7 @@ export default function ResumeSignup() {
                     animate={{ opacity: 1, height: "auto" }}
                     exit={{ opacity: 0, height: 0 }}
                     transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
-                    className="overflow-hidden px-0.5 -mx-0.5"
+                    className="-mx-0.5 overflow-hidden px-0.5"
                   >
                     <Field label="Your portfolio URL">
                       <InputGroup className="">
@@ -829,7 +829,7 @@ export default function ResumeSignup() {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0 }}
                             transition={{ duration: 0.2 }}
-                            className={`text-[12px] mt-1 font-medium ${domainAvail ? "text-emerald-600" : "text-red-500"}`}
+                            className={`mt-1 text-[12px] font-medium ${domainAvail ? "text-emerald-600" : "text-red-500"}`}
                           >
                             {domainAvail
                               ? `✓ ${domain}.designfolio.me is available`
@@ -867,9 +867,9 @@ export default function ResumeSignup() {
                     variant="ghost"
                     size="icon"
                     onClick={() => setShowPass((v) => !v)}
-                    className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-foreground"
+                    className="text-muted-foreground hover:text-foreground absolute top-1/2 right-1 h-8 w-8 -translate-y-1/2"
                   >
-                    {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    {showPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </Button>
                 </div>
               </Field>
@@ -878,16 +878,16 @@ export default function ResumeSignup() {
                 type="submit"
                 variant="default"
                 disabled={!canSubmit || submitting}
-                className="group mt-1 w-full h-auto py-3.5 text-[15px] font-semibold rounded-xl"
+                className="group mt-1 h-auto w-full rounded-xl py-3.5 text-[15px] font-semibold"
                 data-testid="button-claim"
               >
                 {submitting ? (
-                  <Spinner variant="circle" className="w-4 h-4" />
+                  <Spinner variant="circle" className="h-4 w-4" />
                 ) : (
                   <>
                     Claim my portfolio {"&"} jobs
                     <ArrowRight
-                      className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5"
+                      className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5"
                       strokeWidth={2.5}
                     />
                   </>
@@ -897,9 +897,9 @@ export default function ResumeSignup() {
 
             {/* Divider */}
             <div className="flex items-center gap-3">
-              <div className="flex-1 h-px bg-(--lp-border)" />
-              <span className="text-[12px] text-(--lp-text-faint) font-medium">or</span>
-              <div className="flex-1 h-px bg-(--lp-border)" />
+              <div className="h-px flex-1 bg-(--lp-border)" />
+              <span className="text-[12px] font-medium text-(--lp-text-faint)">or</span>
+              <div className="h-px flex-1 bg-(--lp-border)" />
             </div>
 
             <GoogleButton onClick={() => googleLogin()} isLoading={googleLoading}>
@@ -910,7 +910,7 @@ export default function ResumeSignup() {
               Already have an account?{" "}
               <button
                 onClick={() => router.push("/login")}
-                className="font-semibold text-(--lp-text-muted) hover:text-(--lp-text) transition-colors underline underline-offset-2"
+                className="font-semibold text-(--lp-text-muted) underline underline-offset-2 transition-colors hover:text-(--lp-text)"
               >
                 Sign in
               </button>
@@ -919,14 +919,14 @@ export default function ResumeSignup() {
         </motion.div>
 
         {/* ── Divider ────────────────────────────────── */}
-        <div className="hidden md:block w-px bg-(--lp-border) shrink-0" />
+        <div className="hidden w-px shrink-0 bg-(--lp-border) md:block" />
 
         {/* ── RIGHT: Preview panel (desktop) ──────────── */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.15 }}
-          className="hidden md:flex flex-col flex-1 h-full overflow-hidden"
+          className="hidden h-full flex-1 flex-col overflow-hidden md:flex"
         >
           <PreviewContent tab={activeTab} onTabChange={setActiveTab} parsed={parsed} />
         </motion.div>
@@ -948,19 +948,19 @@ export default function ResumeSignup() {
                 animate={{ y: 0 }}
                 exit={{ y: "100%" }}
                 transition={{ type: "spring", stiffness: 340, damping: 36, mass: 0.9 }}
-                className="fixed bottom-0 left-0 right-0 z-50 md:hidden flex flex-col bg-background rounded-t-[28px] overflow-hidden"
+                className="bg-background fixed right-0 bottom-0 left-0 z-50 flex flex-col overflow-hidden rounded-t-[28px] md:hidden"
                 style={{ height: "90dvh" }}
               >
                 {/* Handle */}
-                <div className="shrink-0 pt-3 pb-1 flex justify-center">
-                  <div className="w-9 h-1 rounded-full bg-foreground/10" />
+                <div className="flex shrink-0 justify-center pt-3 pb-1">
+                  <div className="bg-foreground/10 h-1 w-9 rounded-full" />
                 </div>
 
                 {/* Top fade */}
-                <div className="absolute top-0 left-0 right-0 z-20 pointer-events-none h-24 bg-gradient-to-b from-background to-transparent" />
+                <div className="from-background pointer-events-none absolute top-0 right-0 left-0 z-20 h-24 bg-gradient-to-b to-transparent" />
 
                 {/* Mobile tabs */}
-                <div className="absolute top-7 left-0 right-0 z-30 flex justify-center pointer-events-auto">
+                <div className="pointer-events-auto absolute top-7 right-0 left-0 z-30 flex justify-center">
                   <Tabs
                     tabs={["My Portfolio", "My Jobs"]}
                     active={mobileTab}
@@ -975,7 +975,7 @@ export default function ResumeSignup() {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      className="flex-1 overflow-y-auto pt-[72px] pb-28 px-4"
+                      className="flex-1 overflow-y-auto px-4 pt-[72px] pb-28"
                       style={{ scrollbarWidth: "none" }}
                     >
                       <CanvasPreview parsed={parsed} />
@@ -986,7 +986,7 @@ export default function ResumeSignup() {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      className="flex-1 overflow-y-auto pt-[72px] pb-28 px-4"
+                      className="flex-1 overflow-y-auto px-4 pt-[72px] pb-28"
                       style={{ scrollbarWidth: "none" }}
                     >
                       <JobsPreview parsed={parsed} />
@@ -995,7 +995,7 @@ export default function ResumeSignup() {
                 </AnimatePresence>
 
                 {/* Bottom fade */}
-                <div className="absolute bottom-0 left-0 right-0 h-24 pointer-events-none bg-gradient-to-t from-background to-transparent" />
+                <div className="from-background pointer-events-none absolute right-0 bottom-0 left-0 h-24 bg-gradient-to-t to-transparent" />
               </motion.div>
             </>
           )}

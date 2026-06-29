@@ -60,16 +60,16 @@ export default function Reviews({ edit = false, openModal, userDetails }) {
                         variant="secondary"
                         size="icon"
                         onClick={() => openModal(sidebars.sortReviews)}
-                        className="rounded-full h-11 w-11"
+                        className="h-11 w-11 rounded-full"
                         aria-label="Reorder Testimonials"
                       >
-                        <SortIcon className="w-4 h-4 text-df-icon-color cursor-pointer" />
+                        <SortIcon className="text-df-icon-color h-4 w-4 cursor-pointer" />
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent
                       side="top"
                       sideOffset={8}
-                      className="bg-tooltip-bg-color text-tooltip-text-color border-0 px-4 py-2 rounded-xl shadow-xl"
+                      className="bg-tooltip-bg-color text-tooltip-text-color rounded-xl border-0 px-4 py-2 shadow-xl"
                     >
                       <span className="text-sm font-medium">Reorder Testimonials</span>
                     </TooltipContent>
@@ -80,10 +80,10 @@ export default function Reviews({ edit = false, openModal, userDetails }) {
                 variant="secondary"
                 size="icon"
                 onClick={() => openModal(sidebars.review)}
-                className="rounded-full h-11 w-11"
+                className="h-11 w-11 rounded-full"
                 data-testid="button-add-testimonial"
               >
-                <Plus className="w-5 h-5" />
+                <Plus className="h-5 w-5" />
               </Button>
             </div>
           ) : null
@@ -91,7 +91,7 @@ export default function Reviews({ edit = false, openModal, userDetails }) {
         wallpaper={userDetails?.wallpaper}
       >
         {reviews.length > 0 ? (
-          <div className="mt-6 -mx-6 lg:-mx-10 px-6 lg:px-10 overflow-visible relative">
+          <div className="relative -mx-6 mt-6 overflow-visible px-6 lg:-mx-10 lg:px-10">
             <Carousel
               opts={{
                 align: hasMultipleReviews ? "start" : "center",
@@ -100,15 +100,15 @@ export default function Reviews({ edit = false, openModal, userDetails }) {
               className="w-full overflow-visible"
             >
               <div className="overflow-visible">
-                <CarouselContent className={hasMultipleReviews ? "-ml-6" : "justify-center ml-0"}>
+                <CarouselContent className={hasMultipleReviews ? "-ml-6" : "ml-0 justify-center"}>
                   {(hasMultipleReviews ? [...reviews, ...reviews, ...reviews] : reviews).map(
                     (review, idx) => (
                       <CarouselItem
                         key={`${review._id}-${idx}`}
                         className={
                           hasMultipleReviews
-                            ? "pl-6 md:basis-1/2 overflow-visible py-4"
-                            : "pl-0 md:basis-full overflow-visible py-4 max-w-2xl mx-auto"
+                            ? "overflow-visible py-4 pl-6 md:basis-1/2"
+                            : "mx-auto max-w-2xl overflow-visible py-4 pl-0 md:basis-full"
                         }
                       >
                         <motion.div
@@ -116,27 +116,27 @@ export default function Reviews({ edit = false, openModal, userDetails }) {
                           whileInView={{ opacity: 1, y: 0 }}
                           viewport={{ once: true, amount: 0.2 }}
                           transition={{ duration: 0.5, delay: idx * 0.1 }}
-                          className="group rounded-2xl p-6 flex flex-col relative transition-all duration-300 h-full bg-review-card-bg-color hover-elevate border border-border/50 shadow-df-card-soft-shadow"
+                          className="group bg-review-card-bg-color hover-elevate border-border/50 shadow-df-card-soft-shadow relative flex h-full flex-col rounded-2xl border p-6 transition-all duration-300"
                         >
-                          <div className="mb-4 mt-2 flex items-center justify-between">
+                          <div className="mt-2 mb-4 flex items-center justify-between">
                             <MemoQuoteIcon className="text-df-icon-color opacity-20" />
 
                             {edit && (
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                                className="h-8 w-8 opacity-0 transition-opacity group-hover:opacity-100"
                                 onClick={() => {
                                   setSelectedReview(review);
                                   openModal(sidebars.review);
                                 }}
                               >
-                                <Pencil className="w-4 h-4 text-df-icon-color" />
+                                <Pencil className="text-df-icon-color h-4 w-4" />
                               </Button>
                             )}
                           </div>
 
-                          <div className="flex-1 mb-8">
+                          <div className="mb-8 flex-1">
                             <ClampableTiptapContent
                               content={review?.description || ""}
                               mode="review"
@@ -148,9 +148,9 @@ export default function Reviews({ edit = false, openModal, userDetails }) {
                             />
                           </div>
 
-                          <div className="flex items-center justify-between gap-3 mt-auto">
+                          <div className="mt-auto flex items-center justify-between gap-3">
                             <div className="flex items-center gap-3">
-                              <Avatar className="w-10 h-10 shrink-0 rounded-xl">
+                              <Avatar className="h-10 w-10 shrink-0 rounded-xl">
                                 <AvatarImage
                                   src={review?.avatar?.url || review?.avatar}
                                   alt={review?.name}
@@ -167,10 +167,10 @@ export default function Reviews({ edit = false, openModal, userDetails }) {
                               </Avatar>
 
                               <div>
-                                <h3 className="font-semibold text-sm mb-0.5 text-df-heading-color">
+                                <h3 className="text-df-heading-color mb-0.5 text-sm font-semibold">
                                   {review?.name}
                                 </h3>
-                                <p className="text-xs text-df-description-color">
+                                <p className="text-df-description-color text-xs">
                                   {review?.role ? `${review.role}, ` : ""}
                                   {review?.company}
                                 </p>
@@ -181,9 +181,9 @@ export default function Reviews({ edit = false, openModal, userDetails }) {
                                 href={review.linkedinLink}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-foreground-landing/20 hover:text-[#0077B5] transition-colors p-2 -mr-2"
+                                className="text-foreground-landing/20 -mr-2 p-2 transition-colors hover:text-[#0077B5]"
                               >
-                                <Linkedin className="w-5 h-5" />
+                                <Linkedin className="h-5 w-5" />
                               </a>
                             )}
                           </div>
@@ -194,7 +194,7 @@ export default function Reviews({ edit = false, openModal, userDetails }) {
                 </CarouselContent>
               </div>
               {hasMultipleReviews && (
-                <div className="flex justify-center gap-2 mt-4">
+                <div className="mt-4 flex justify-center gap-2">
                   <CarouselPrevious className={buttonStyles} />
                   <CarouselNext className={buttonStyles} />
                 </div>
@@ -213,7 +213,7 @@ export default function Reviews({ edit = false, openModal, userDetails }) {
                     <Button2
                       type="secondary"
                       icon={
-                        <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                        <PlusIcon className="text-secondary-btn-text-color h-[12px] w-[12px] cursor-pointer" />
                       }
                       onClick={() => openModal(sidebars.review)}
                       size="small"
@@ -228,7 +228,7 @@ export default function Reviews({ edit = false, openModal, userDetails }) {
                     <Button2
                       type="secondary"
                       icon={
-                        <PlusIcon className="text-secondary-btn-text-color w-[12px] h-[12px] cursor-pointer" />
+                        <PlusIcon className="text-secondary-btn-text-color h-[12px] w-[12px] cursor-pointer" />
                       }
                       onClick={() => openModal(sidebars.review)}
                       size="small"

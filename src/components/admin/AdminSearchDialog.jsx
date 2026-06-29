@@ -84,7 +84,7 @@ export function AdminSearchDialog({ open, onOpenChange }) {
       <DialogContent
         data-admin="true"
         overlayClassName="bg-black/40 backdrop-blur-[2px]"
-        className="fixed left-[50%] top-[18%] z-50 w-full max-w-xl translate-x-[-50%] translate-y-0 overflow-hidden rounded-2xl border border-[#E5D7C4] dark:border-white/10 bg-white dark:bg-[#2A2520] p-0 shadow-[0_8px_40px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_40px_rgba(0,0,0,0.5)] duration-150 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 [&>button]:hidden"
+        className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 fixed top-[18%] left-[50%] z-50 w-full max-w-xl translate-x-[-50%] translate-y-0 overflow-hidden rounded-2xl border border-[#E5D7C4] bg-white p-0 shadow-[0_8px_40px_rgba(0,0,0,0.12)] duration-150 dark:border-white/10 dark:bg-[#2A2520] dark:shadow-[0_8px_40px_rgba(0,0,0,0.5)] [&>button]:hidden"
         aria-label="Global search"
       >
         <Command shouldFilter={false} className="bg-transparent">
@@ -97,7 +97,7 @@ export function AdminSearchDialog({ open, onOpenChange }) {
 
           <CommandList className="max-h-[380px]">
             {!hasResults && query.length >= 2 && (
-              <CommandEmpty className="py-8 text-sm text-[#7A736C] dark:text-[#B5AFA5] text-center">
+              <CommandEmpty className="py-8 text-center text-sm text-[#7A736C] dark:text-[#B5AFA5]">
                 No results for &ldquo;{query}&rdquo;
               </CommandEmpty>
             )}
@@ -112,8 +112,8 @@ export function AdminSearchDialog({ open, onOpenChange }) {
                     onSelect={() => handleNavigate(href)}
                     className="gap-0 dark:data-[selected='true']:bg-[#3A342D]"
                   >
-                    <div className="flex items-center gap-2.5 w-full py-0.5">
-                      <div className="w-6 h-6 rounded-md bg-[#F0EDE7] dark:bg-[#231F1A] flex items-center justify-center shrink-0">
+                    <div className="flex w-full items-center gap-2.5 py-0.5">
+                      <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-[#F0EDE7] dark:bg-[#231F1A]">
                         <Icon
                           size={13}
                           aria-hidden="true"
@@ -121,7 +121,7 @@ export function AdminSearchDialog({ open, onOpenChange }) {
                         />
                       </div>
                       <span className="flex-1 text-sm">{label}</span>
-                      <span className="text-[10px] text-[#7A736C] dark:text-[#B5AFA5] font-mono opacity-60">
+                      <span className="font-mono text-[10px] text-[#7A736C] opacity-60 dark:text-[#B5AFA5]">
                         {hint}
                       </span>
                     </div>
@@ -159,29 +159,29 @@ export function AdminSearchDialog({ open, onOpenChange }) {
                         }
                         className="gap-0 dark:data-[selected='true']:bg-[#3A342D]"
                       >
-                        <div className="flex items-center gap-2.5 w-full min-w-0 py-0.5">
-                          <div className="w-7 h-7 rounded-full bg-[#F0EDE7] dark:bg-[#231F1A] flex items-center justify-center shrink-0 text-[11px] font-semibold text-[#7A736C] dark:text-[#B5AFA5] leading-none">
+                        <div className="flex w-full min-w-0 items-center gap-2.5 py-0.5">
+                          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#F0EDE7] text-[11px] leading-none font-semibold text-[#7A736C] dark:bg-[#231F1A] dark:text-[#B5AFA5]">
                             {initials}
                           </div>
-                          <div className="flex flex-col min-w-0 flex-1 gap-0.5">
+                          <div className="flex min-w-0 flex-1 flex-col gap-0.5">
                             <span
-                              className={`text-sm font-medium text-[#1A1A1A] dark:text-[#F0EDE7] truncate leading-tight ${isDeleted ? "line-through opacity-60" : ""}`}
+                              className={`truncate text-sm leading-tight font-medium text-[#1A1A1A] dark:text-[#F0EDE7] ${isDeleted ? "line-through opacity-60" : ""}`}
                             >
                               {name}
                             </span>
-                            <span className="text-xs text-[#7A736C] dark:text-[#B5AFA5] truncate leading-tight">
+                            <span className="truncate text-xs leading-tight text-[#7A736C] dark:text-[#B5AFA5]">
                               {user.email}
                             </span>
                           </div>
-                          <div className="flex items-center gap-2 shrink-0">
+                          <div className="flex shrink-0 items-center gap-2">
                             {isDeleted ? (
-                              <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 leading-none border border-red-200 dark:border-red-800">
+                              <span className="rounded border border-red-200 bg-red-50 px-1.5 py-0.5 text-[10px] leading-none font-medium text-red-600 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400">
                                 Deleted
                               </span>
                             ) : (
                               <>
                                 {user.hasLive && (
-                                  <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-[#F0EDE7] dark:bg-[#231F1A] text-[#7A736C] dark:text-[#B5AFA5] leading-none border border-[#E5D7C4] dark:border-white/10">
+                                  <span className="rounded border border-[#E5D7C4] bg-[#F0EDE7] px-1.5 py-0.5 text-[10px] leading-none font-medium text-[#7A736C] dark:border-white/10 dark:bg-[#231F1A] dark:text-[#B5AFA5]">
                                     Live
                                   </span>
                                 )}
@@ -205,7 +205,7 @@ export function AdminSearchDialog({ open, onOpenChange }) {
           </CommandList>
 
           {/* Keyboard hint footer */}
-          <div className="border-t border-[#E5D7C4] dark:border-white/10 px-3 py-2 flex items-center gap-4">
+          <div className="flex items-center gap-4 border-t border-[#E5D7C4] px-3 py-2 dark:border-white/10">
             {[
               { keys: "↑↓", label: "navigate" },
               { keys: "↵", label: "select" },
@@ -215,7 +215,7 @@ export function AdminSearchDialog({ open, onOpenChange }) {
                 key={label}
                 className="flex items-center gap-1.5 text-[11px] text-[#7A736C] dark:text-[#B5AFA5]"
               >
-                <kbd className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-[#F0EDE7] dark:bg-[#231F1A] border border-[#E5D7C4] dark:border-white/10 text-[#7A736C] dark:text-[#B5AFA5] leading-none">
+                <kbd className="inline-flex items-center rounded border border-[#E5D7C4] bg-[#F0EDE7] px-1.5 py-0.5 text-[10px] leading-none font-medium text-[#7A736C] dark:border-white/10 dark:bg-[#231F1A] dark:text-[#B5AFA5]">
                   {keys}
                 </kbd>
                 {label}

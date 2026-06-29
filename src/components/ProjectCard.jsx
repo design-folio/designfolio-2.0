@@ -77,7 +77,7 @@ export default function ProjectCard({
 
   const cardContent = (
     <div
-      className="group relative w-full h-full"
+      className="group relative h-full w-full"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => {
         setIsHovered(false);
@@ -87,7 +87,7 @@ export default function ProjectCard({
     >
       <motion.div
         className={customTwMerge(
-          `bg-project-card-bg-color border border-project-card-border-color rounded-2xl min-h-[360px] h-full w-full flex flex-col overflow-hidden relative`,
+          `bg-project-card-bg-color border-project-card-border-color relative flex h-full min-h-[360px] w-full flex-col overflow-hidden rounded-2xl border`,
           !edit && !embeddedPreview && (shouldShowTooltip ? "" : "cursor-pointer"),
           embeddedPreview && "cursor-default",
           className
@@ -108,28 +108,28 @@ export default function ProjectCard({
           opacity: isDragging ? 0.9 : 1,
         }}
       >
-        <div className="h-full flex flex-col min-h-full">
+        <div className="flex h-full min-h-full flex-col">
           {preview && embeddedPreview ? (
             <div
-              className="w-full h-48 flex items-center justify-center relative overflow-hidden rounded-t-[15px]"
+              className="relative flex h-48 w-full items-center justify-center overflow-hidden rounded-t-[15px]"
               style={{
                 background:
                   "linear-gradient(135deg, rgb(252, 249, 246) 0%, rgb(249, 245, 241) 50%, rgb(245, 241, 237) 100%)",
               }}
             >
-              <div className="absolute inset-0 bg-gradient-to-t from-black/[0.02] to-transparent pointer-events-none" />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/[0.02] to-transparent" />
               <img
                 src={project?.thumbnail?.url}
                 alt={project?.title || "Project"}
-                className="w-24 h-24 object-contain opacity-20 transition-transform duration-500 group-hover:scale-110"
+                className="h-24 w-24 object-contain opacity-20 transition-transform duration-500 group-hover:scale-110"
               />
             </div>
           ) : preview ? (
-            <div className="h-[253.072px] relative overflow-hidden rounded-t-[15px]">
+            <div className="relative h-[253.072px] overflow-hidden rounded-t-[15px]">
               <motion.img
                 src={project?.thumbnail?.url}
                 alt="project image"
-                className={`w-full h-full object-cover transition-opacity duration-100 ${shouldShowTooltip ? "" : "cursor-pointer"} ${
+                className={`h-full w-full object-cover transition-opacity duration-100 ${shouldShowTooltip ? "" : "cursor-pointer"} ${
                   imageLoaded ? "opacity-100" : "opacity-100"
                 }`}
                 initial="initial"
@@ -141,14 +141,14 @@ export default function ProjectCard({
                 onLoad={() => setImageLoaded(true)}
                 onError={() => setImageLoaded(true)}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/[0.02] to-transparent pointer-events-none" />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/[0.02] to-transparent" />
             </div>
           ) : (
-            <div className="h-[253.072px] relative overflow-hidden rounded-t-[15px]">
+            <div className="relative h-[253.072px] overflow-hidden rounded-t-[15px]">
               <motion.img
                 src={project?.thumbnail?.url}
                 alt="project image"
-                className={`w-full h-full object-cover transition-opacity duration-100 ${shouldShowTooltip ? "" : "cursor-pointer"} ${
+                className={`h-full w-full object-cover transition-opacity duration-100 ${shouldShowTooltip ? "" : "cursor-pointer"} ${
                   imageLoaded ? "opacity-100" : "opacity-100"
                 }`}
                 initial="initial"
@@ -160,10 +160,10 @@ export default function ProjectCard({
                 onLoad={() => setImageLoaded(true)}
                 onError={() => setImageLoaded(true)}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/[0.02] to-transparent pointer-events-none" />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/[0.02] to-transparent" />
               {project?.hidden && (
-                <div className="absolute top-3 right-3 bg-amber-100 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1.5">
-                  <EyeOff className="w-3 h-3" />
+                <div className="absolute top-3 right-3 flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-700 dark:bg-amber-950/30 dark:text-amber-400">
+                  <EyeOff className="h-3 w-3" />
                   Hidden from live site
                 </div>
               )}
@@ -171,23 +171,23 @@ export default function ProjectCard({
           )}
 
           <div
-            className={`flex-1 flex flex-col justify-between ${!edit && !embeddedPreview && (shouldShowTooltip ? "" : "cursor-pointer")}`}
+            className={`flex flex-1 flex-col justify-between ${!edit && !embeddedPreview && (shouldShowTooltip ? "" : "cursor-pointer")}`}
           >
             <div className="p-6 pb-0">
               <p
-                className={`project-info-card-heading-color font-semibold line-clamp-2 ${!edit && !embeddedPreview && !shouldShowTooltip ? "cursor-pointer" : ""} text-lg mb-2`}
+                className={`project-info-card-heading-color line-clamp-2 font-semibold ${!edit && !embeddedPreview && !shouldShowTooltip ? "cursor-pointer" : ""} mb-2 text-lg`}
               >
                 {project?.title}
               </p>
               <Text
                 size="p-xxsmall"
-                className={`text-df-description-color font-normal line-clamp-3 leading-relaxed ${!edit && !embeddedPreview && !shouldShowTooltip ? "cursor-pointer" : ""}`}
+                className={`text-df-description-color line-clamp-3 leading-relaxed font-normal ${!edit && !embeddedPreview && !shouldShowTooltip ? "cursor-pointer" : ""}`}
               >
                 {project?.description}
               </Text>
             </div>
             <div
-              className="flex px-4 py-4 items-center"
+              className="flex items-center px-4 py-4"
               onMouseEnter={() => setIsHoveringInteractive(true)}
               onMouseLeave={() => setIsHoveringInteractive(false)}
             >
@@ -221,7 +221,7 @@ export default function ProjectCard({
                 </>
               )}
               {edit && (
-                <div className="flex gap-2 ml-auto">
+                <div className="ml-auto flex gap-2">
                   <Button
                     onClick={(e) => {
                       e.preventDefault();
@@ -229,7 +229,7 @@ export default function ProjectCard({
                       handleRouter(project?._id);
                     }}
                     customClass="!py-2 text-sm max-h-[38px] "
-                    icon={<Pencil className="w-4 h-4" />}
+                    icon={<Pencil className="h-4 w-4" />}
                     text={"Edit"}
                     type="secondary"
                   />
@@ -243,7 +243,7 @@ export default function ProjectCard({
                       onToggleVisibility?.(project?._id);
                     }}
                     icon={
-                      project?.hidden ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />
+                      project?.hidden ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />
                     }
                     text={project?.hidden ? "Hidden" : "Visible"}
                   />
@@ -272,7 +272,7 @@ export default function ProjectCard({
   if (shouldBlockNavigation) {
     return (
       <div
-        className="w-full h-full"
+        className="h-full w-full"
         onClick={(e) => {
           setCursorPill(false);
           // Allow buttons and drag handle to work
@@ -299,14 +299,14 @@ export default function ProjectCard({
 
   // Embedded preview (e.g. iframe in builder): no link, no hover, no tooltip
   if (embeddedPreview) {
-    return <div className="w-full h-full block">{cardContent}</div>;
+    return <div className="block h-full w-full">{cardContent}</div>;
   }
 
   // Preview mode: use Link so the project card is clickable (e.g. portfolio-preview, Preview1)
   return (
     <Link
       href={href}
-      className="w-full h-full block"
+      className="block h-full w-full"
       onClick={handleLinkClick}
       onMouseDown={(e) => {
         if (isDragging || wasRecentlyMoved) {

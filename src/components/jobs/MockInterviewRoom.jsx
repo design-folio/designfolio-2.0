@@ -144,36 +144,36 @@ export function MockInterviewRoom({ job, profileId, onEnd }) {
 
   return (
     <motion.div
-      className="fixed inset-0 bg-[#111111] flex flex-col z-[400]"
+      className="fixed inset-0 z-[400] flex flex-col bg-[#111111]"
       initial={{ opacity: 0, scale: 0.98 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.98 }}
       transition={{ duration: 0.25, ease: "easeOut" }}
     >
       {/* Video panels */}
-      <div className="flex-1 flex gap-3 p-4 min-h-0">
+      <div className="flex min-h-0 flex-1 gap-3 p-4">
         {/* AI avatar — anam streams into this video element */}
-        <div className="flex-1 bg-[#1C1C1E] rounded-2xl relative overflow-hidden">
+        <div className="relative flex-1 overflow-hidden rounded-2xl bg-[#1C1C1E]">
           {status === "connecting" && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
-              <div className="w-10 h-10 rounded-full border-2 border-white/10 border-t-white/50 animate-spin" />
-              <p className="text-white/35 text-[13px] mt-3">Connecting to Kevin…</p>
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center">
+              <div className="h-10 w-10 animate-spin rounded-full border-2 border-white/10 border-t-white/50" />
+              <p className="mt-3 text-[13px] text-white/35">Connecting to Kevin…</p>
             </div>
           )}
           {status === "error" && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center z-10 gap-3 px-6 text-center">
-              <p className="text-red-400/80 text-[13px]">Connection failed. Please try again.</p>
-              <button onClick={() => onEnd([])} className="text-white/40 text-[12px] underline">
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 px-6 text-center">
+              <p className="text-[13px] text-red-400/80">Connection failed. Please try again.</p>
+              <button onClick={() => onEnd([])} className="text-[12px] text-white/40 underline">
                 Go back
               </button>
             </div>
           )}
           {status === "busy" && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center z-10 gap-3 px-6 text-center">
-              <p className="text-amber-400/80 text-[13px]">
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 px-6 text-center">
+              <p className="text-[13px] text-amber-400/80">
                 Another interview is in progress. Please try again in a few minutes.
               </p>
-              <button onClick={() => onEnd([])} className="text-white/40 text-[12px] underline">
+              <button onClick={() => onEnd([])} className="text-[12px] text-white/40 underline">
                 Go back
               </button>
             </div>
@@ -182,17 +182,17 @@ export function MockInterviewRoom({ job, profileId, onEnd }) {
             id="anam-avatar-video"
             autoPlay
             playsInline
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 h-full w-full object-cover"
           />
-          <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/60 to-transparent rounded-b-2xl" />
-          <div className="absolute bottom-3 left-4 text-white/70 text-[13px] font-medium">
+          <div className="absolute inset-x-0 bottom-0 h-16 rounded-b-2xl bg-gradient-to-t from-black/60 to-transparent" />
+          <div className="absolute bottom-3 left-4 text-[13px] font-medium text-white/70">
             Kevin · AI Interviewer
           </div>
 
           {/* Timer */}
           {timeLeftMs !== null && status === "ready" && (
             <div
-              className={`absolute top-3 right-3 text-[12px] font-mono font-medium px-2 py-1 rounded-md ${
+              className={`absolute top-3 right-3 rounded-md px-2 py-1 font-mono text-[12px] font-medium ${
                 isWarning ? "bg-red-500/20 text-red-400" : "bg-black/30 text-white/50"
               }`}
             >
@@ -202,19 +202,19 @@ export function MockInterviewRoom({ job, profileId, onEnd }) {
         </div>
 
         {/* User camera */}
-        <div className="flex-1 bg-[#1C1C1E] rounded-2xl relative overflow-hidden">
+        <div className="relative flex-1 overflow-hidden rounded-2xl bg-[#1C1C1E]">
           <video
             ref={userVideoRef}
             autoPlay
             muted
             playsInline
-            className="absolute inset-0 w-full h-full object-cover scale-x-[-1]"
+            className="absolute inset-0 h-full w-full scale-x-[-1] object-cover"
           />
-          <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/60 to-transparent rounded-b-2xl" />
-          <div className="absolute bottom-3 left-4 text-white/70 text-[13px] font-medium">You</div>
+          <div className="absolute inset-x-0 bottom-0 h-16 rounded-b-2xl bg-gradient-to-t from-black/60 to-transparent" />
+          <div className="absolute bottom-3 left-4 text-[13px] font-medium text-white/70">You</div>
           {muted && (
-            <div className="absolute top-3 right-3 w-7 h-7 rounded-full bg-red-500/90 flex items-center justify-center">
-              <MicOff className="w-3.5 h-3.5 text-white" />
+            <div className="absolute top-3 right-3 flex h-7 w-7 items-center justify-center rounded-full bg-red-500/90">
+              <MicOff className="h-3.5 w-3.5 text-white" />
             </div>
           )}
         </div>
@@ -223,27 +223,27 @@ export function MockInterviewRoom({ job, profileId, onEnd }) {
       {/* Transcript */}
       <div
         ref={transcriptRef}
-        className="h-[160px] overflow-y-auto scrollbar-hide px-4 py-3 space-y-2.5 border-t border-white/[0.06]"
+        className="scrollbar-hide h-[160px] space-y-2.5 overflow-y-auto border-t border-white/[0.06] px-4 py-3"
       >
         {transcript.length === 0 && (
-          <p className="text-white/25 text-[13px] text-center pt-6">Transcript will appear here…</p>
+          <p className="pt-6 text-center text-[13px] text-white/25">Transcript will appear here…</p>
         )}
         {transcript.map((msg) => {
           const isPersona = msg.role === "persona";
           return (
             <div
               key={msg.id}
-              className={`flex gap-2.5 items-start ${!isPersona ? "flex-row-reverse" : ""}`}
+              className={`flex items-start gap-2.5 ${!isPersona ? "flex-row-reverse" : ""}`}
             >
               <div
-                className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white ${
+                className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px] font-bold text-white ${
                   isPersona ? "bg-indigo-600" : "bg-white/20"
                 }`}
               >
                 {isPersona ? "K" : "Y"}
               </div>
               <p
-                className={`text-[13px] leading-[1.55] max-w-[70%] ${
+                className={`max-w-[70%] text-[13px] leading-[1.55] ${
                   isPersona ? "text-white/80" : "text-white/60"
                 }`}
               >
@@ -255,32 +255,32 @@ export function MockInterviewRoom({ job, profileId, onEnd }) {
       </div>
 
       {/* Bottom navbar */}
-      <div className="h-[56px] bg-[#1C1C1E] border-t border-white/[0.08] flex items-center justify-between px-4 shrink-0">
+      <div className="flex h-[56px] shrink-0 items-center justify-between border-t border-white/[0.08] bg-[#1C1C1E] px-4">
         <button
           onClick={handleEnd}
-          className="flex items-center gap-1.5 text-white/50 hover:text-white/80 transition-colors"
+          className="flex items-center gap-1.5 text-white/50 transition-colors hover:text-white/80"
         >
-          <ChevronLeft className="w-4 h-4" />
+          <ChevronLeft className="h-4 w-4" />
           <span className="text-[14px]">Interview Room</span>
         </button>
 
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-white text-[11px] font-bold select-none">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-500 text-[11px] font-bold text-white select-none">
             MB
           </div>
           <button
             onClick={toggleMute}
-            className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
+            className={`flex h-8 w-8 items-center justify-center rounded-full transition-colors ${
               muted ? "bg-red-500/20 text-red-400" : "text-white/50 hover:text-white/80"
             }`}
           >
-            {muted ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+            {muted ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
           </button>
           <button
             onClick={handleEnd}
-            className="flex items-center gap-1.5 h-8 px-3.5 rounded-full bg-red-500 hover:bg-red-600 text-white text-[13px] font-medium transition-colors"
+            className="flex h-8 items-center gap-1.5 rounded-full bg-red-500 px-3.5 text-[13px] font-medium text-white transition-colors hover:bg-red-600"
           >
-            <Phone className="w-3.5 h-3.5" />
+            <Phone className="h-3.5 w-3.5" />
             End
           </button>
         </div>

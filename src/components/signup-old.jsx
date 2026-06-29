@@ -83,10 +83,10 @@ export default function Signup() {
             <img src="/assets/svgs/left-arrow.svg" alt="back arrow" className="cursor-pointer" />
           }
         />
-        <Text as="h1" size={"p-large"} className="text-landing-heading-text-color font-bold mt-4">
+        <Text as="h1" size={"p-large"} className="text-landing-heading-text-color mt-4 font-bold">
           Now, create your account
         </Text>
-        <Text size={"p-xsmall"} className="mt-2 text-landing-description-text-color font-medium">
+        <Text size={"p-xsmall"} className="text-landing-description-text-color mt-2 font-medium">
           🎉 Just a step away from claiming{" "}
           <span className="text-df-orange-color">{`${router.query.username}.designfolio.me`}</span>
         </Text>
@@ -104,10 +104,10 @@ export default function Signup() {
             onClick={googleLogin}
             customClass="w-full"
           />
-          <div className="flex items-center gap-[24px] my-[24px]">
-            <div className="w-full h-[1px] bg-project-card-border" />
+          <div className="my-[24px] flex items-center gap-[24px]">
+            <div className="bg-project-card-border h-[1px] w-full" />
             or
-            <div className="w-full h-[1px] bg-project-card-border" />
+            <div className="bg-project-card-border h-[1px] w-full" />
           </div>
           <div>
             <Formik
@@ -135,7 +135,7 @@ export default function Signup() {
             >
               {({ isSubmitting, isValid, errors, touched }) => (
                 <Form id="signupForm">
-                  <div className="md:flex justify-center gap-6">
+                  <div className="justify-center gap-6 md:flex">
                     <div className="flex-1">
                       <Text as="p" size={"p-xxsmall"} className="mt-6 font-medium" required>
                         First Name
@@ -157,7 +157,7 @@ export default function Signup() {
                       />
                     </div>
 
-                    <div className="flex-1 mt-6 md:mt-0">
+                    <div className="mt-6 flex-1 md:mt-0">
                       <Text as="p" size={"p-xxsmall"} className="mt-6 font-medium">
                         Last Name
                       </Text>
@@ -231,17 +231,17 @@ export default function Signup() {
             </Formik>
             <Text
               size={"p-xxsmall"}
-              className="text-df-secondary-text-color  text-center mg:w-[60%] m-auto !text-[14px] mt-6 font-medium"
+              className="text-df-secondary-text-color mg:w-[60%] m-auto mt-6 text-center !text-[14px] font-medium"
             >
               By signing up, you agree to our <br />
               <Link href={"/terms-and-conditions"}>
-                <span className="text-df-orange-color underline underline-offset-2 cursor-pointer">
+                <span className="text-df-orange-color cursor-pointer underline underline-offset-2">
                   Terms and Conditions
                 </span>
               </Link>{" "}
               and{" "}
               <Link href={"/privacy-policy"}>
-                <span className="text-df-orange-color underline underline-offset-2 cursor-pointer">
+                <span className="text-df-orange-color cursor-pointer underline underline-offset-2">
                   Privacy Policy
                 </span>
               </Link>

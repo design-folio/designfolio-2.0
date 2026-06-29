@@ -2,7 +2,7 @@ export default function LandingLogoSVG({ size = 24, id = "logo" }) {
   return (
     <div
       style={{ width: size, height: size }}
-      className="rounded-full overflow-hidden shrink-0 shadow-sm"
+      className="shrink-0 overflow-hidden rounded-full shadow-sm"
     >
       <svg
         width="125"
@@ -10,7 +10,7 @@ export default function LandingLogoSVG({ size = 24, id = "logo" }) {
         viewBox="0 0 125 125"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="w-full h-full"
+        className="h-full w-full"
       >
         <g filter={`url(#${id}-filter)`}>
           <rect width="124.5" height="124.5" rx="62.25" fill={`url(#${id}-gradient)`} />

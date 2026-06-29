@@ -27,19 +27,19 @@ export default function ProjectPassword({
       ? `${projectDetails?.firstName} ${projectDetails?.lastName}`
       : projectDetails?.name;
   return (
-    <div className="px-4 max-w-[500px] m-auto">
+    <div className="m-auto max-w-[500px] px-4">
       <div className="flex justify-center">
         <img
           src={projectDetails?.thumbnail?.url}
           alt="project image"
-          className="lg:w-[545.5px] lg:h-[253.07px] rounded-[24px] mb-5 object-cover"
+          className="mb-5 rounded-[24px] object-cover lg:h-[253.07px] lg:w-[545.5px]"
         />
       </div>
-      <h1 className="text-[20px] text-center lg:w-[480px] m-auto md:text-[20px] line-clamp-2  text-[#202937] font-[600] leading-[32px] dark:text-[#E9EAEB]">
+      <h1 className="m-auto line-clamp-2 text-center text-[20px] leading-[32px] font-[600] text-[#202937] md:text-[20px] lg:w-[480px] dark:text-[#E9EAEB]">
         {projectDetails?.title}
       </h1>
 
-      <p className="text-[16px] text-center mt-1 lg:w-[480px] m-auto md:text-[16px] mb-4 text-[#B4B8C6] font-[400] leading-[24px] dark:text-[#B4B8C6]">
+      <p className="m-auto mt-1 mb-4 text-center text-[16px] leading-[24px] font-[400] text-[#B4B8C6] md:text-[16px] lg:w-[480px] dark:text-[#B4B8C6]">
         By {displayName}
       </p>
       <div>
@@ -65,7 +65,7 @@ export default function ProjectPassword({
           {({ errors, touched, isSubmitting, status }) => (
             <Form id="projectForm" autoComplete="off">
               <div className="relative">
-                <div className="absolute top-[24px] left-4 rounded-[8px] border-[#E9EAEB] dark:border-[#2C2F39] cursor-pointer">
+                <div className="absolute top-[24px] left-4 cursor-pointer rounded-[8px] border-[#E9EAEB] dark:border-[#2C2F39]">
                   <LockIcon className="stroke-bg-df-icon-color" />
                 </div>
                 <Field
@@ -92,9 +92,9 @@ export default function ProjectPassword({
                 </div>
               </div>
               <ErrorMessage name="password" component="div" className="error-message" />
-              {status && <div className="error-message text-center mt-1">{status}</div>}
+              {status && <div className="error-message mt-1 text-center">{status}</div>}
 
-              <div className="flex gap-2 justify-center mt-6">
+              <div className="mt-6 flex justify-center gap-2">
                 <Button
                   text={"Go back"}
                   onClick={() => router.back({ scroll: false })}

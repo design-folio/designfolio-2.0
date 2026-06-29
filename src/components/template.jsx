@@ -81,10 +81,10 @@ export default function Template1({ userDetails, edit = false }) {
   };
 
   return (
-    <div className={`max-w-[848px] mx-auto py-[32px] px-2 md:px-4 lg:px-0`}>
+    <div className={`mx-auto max-w-[848px] px-2 py-[32px] md:px-4 lg:px-0`}>
       <BottomLayout userDetails={userDetails}>
         <motion.div
-          className="flex-1 flex flex-col gap-3"
+          className="flex flex-1 flex-col gap-3"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
